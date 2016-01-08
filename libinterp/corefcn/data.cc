@@ -1167,7 +1167,6 @@ cumsum ([1, 2; 3, 4; 5, 6])\n\
       15  48\n\
 @end group\n\
 @end example\n\
-@end example\n\
 @seealso{prod, cumsum}\n\
 @end deftypefn")
 {
@@ -1213,7 +1212,6 @@ cumsum ([1, 2; 3, 4; 5, 6])\n\
        4   6\n\
        9  12\n\
 @end group\n\
-@end example\n\
 @end example\n\
 \n\
 See @code{sum} for an explanation of the optional parameters\n\

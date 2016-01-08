@@ -102,7 +102,7 @@ function [status, msg, msgid] = fileattrib (file = ".")
       else
         [~, attrib] = dos (sprintf ('attrib "%s"', r(i).Name));
         ## dos never returns error status so have to check it indirectly
-        if (! isempty (strfind (attrib, " - ")))
+        if (! isempty (strfind (attrib, " -")))
           status = false;
           msgid = "fileattrib";
           break;

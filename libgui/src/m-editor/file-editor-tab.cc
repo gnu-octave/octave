@@ -2208,7 +2208,7 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
       connect (this, SIGNAL (remove_all_positions (void)),
                dp,   SLOT (handle_remove (void)));
 
-      center_current_line ();
+      center_current_line (false);
     }
 }
 

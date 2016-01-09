@@ -2069,10 +2069,10 @@ Sparse<T>::assign (const idx_vector& idx_i,
                   if (new_nz > nz)
                     {
                       // Make room first.
-                      std::copy (data () + ui, data () + nz,
-                                 data () + li + rnz);
-                      std::copy (ridx () + ui, ridx () + nz,
-                                 ridx () + li + rnz);
+                      std::copy_backward (data () + ui, data () + nz,
+                                          data () + new_nz);
+                      std::copy_backward (ridx () + ui, ridx () + nz,
+                                          ridx () + new_nz);
                       mx_inline_add2 (nc - ub, cidx () + ub + 1, new_nz - nz);
                     }
 

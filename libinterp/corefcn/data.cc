@@ -1161,7 +1161,7 @@ For example:\n\
 \n\
 @example\n\
 @group\n\
-cumsum ([1, 2; 3, 4; 5, 6])\n\
+cumprod ([1, 2; 3, 4; 5, 6])\n\
    @result{}  1   2\n\
        3   8\n\
       15  48\n\

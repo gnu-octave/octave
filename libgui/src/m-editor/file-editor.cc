@@ -79,12 +79,34 @@ file_editor::~file_editor (void)
 bool
 file_editor::check_closing (void)
 {
-  // Save open files for restoring in next session; this only is possible
-  QSettings *settings = resource_manager::get_settings ();
+  // When the applications is closing all editor tabs are checked whether
+  // they need to be saved. During these ckecked the tabs are not closed
+  // since the user might cancel closing octave during one of these saving
+  // dialogs. Therefore, saving the session for restoring at next start
+  // is not done before the application is definitely closing
 
   // Have all file editor tabs signal what their filenames are.
   editor_tab_map.clear ();
   emit fetab_file_name_query (0);
+
+  // Save all tabs with confirmation.
+  file_editor_tab::reset_cancel ();
+  emit fetab_check_modified_file ();
+
+  // If there was a cancellation, make the already saved/discarded tabs
+  // recovering from the exit by removing the read-only state and by
+  // recovering the debugger breakpoints. Finally return false in order to
+  // cancel closing the application
+  if (file_editor_tab::was_cancelled ())
+    {
+      emit fetab_recover_from_exit ();
+      return false;
+    }
+
+  // Here, the application will be closed -> store the session
+
+  // Save open files for restoring in next session; this only is possible
+  QSettings *settings = resource_manager::get_settings ();
 
   // save filenames (even if last session will not be restored next time)
   // together with encoding and the tab index
@@ -92,7 +114,7 @@ file_editor::check_closing (void)
   QStringList fet_encodings;
   QStringList fet_index;
 
-  // over all open tabs
+  // save all open tabs before they are definitely closed
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
     {
@@ -112,14 +134,8 @@ file_editor::check_closing (void)
   settings->setValue ("editor/saved_session_tab_index", fet_index);
   settings->sync ();
 
-  // Save all tabs with confirmation.
-  file_editor_tab::reset_cancel ();
-  emit fetab_check_modified_file ();
-
-  // Close all tabs if there was no cancellation.
-  if (file_editor_tab::was_cancelled ())
-    return false;
-
+  // Finally close all the tabs and return indication that we can exit
+  // the application
   for (int i = 0; i < _tab_widget->count (); i++)
     {
       delete _tab_widget->widget (i);
@@ -1966,6 +1982,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (check_modified_file (void)));
 
   // Signals from the file_editor trivial operations
+  connect (this, SIGNAL (fetab_recover_from_exit (void)),
+           f, SLOT (recover_from_exit (void)));
+
   connect (this, SIGNAL (fetab_set_directory (const QString&)),
            f, SLOT (set_current_directory (const QString&)));
 

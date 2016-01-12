@@ -152,6 +152,7 @@ signals:
   void fetab_zoom_normal (const QWidget* ID);
 
   void fetab_set_directory (const QString& dir);
+  void fetab_recover_from_exit (void);
 
   void request_settings_dialog (const QString&);
   void execute_command_in_terminal_signal (const QString&);

@@ -129,6 +129,7 @@ public slots:
 
   void do_breakpoint_marker (bool insert, const QWidget *ID, int line = -1);
 
+  void recover_from_exit (void);
   void set_modified (bool modified = true);
 
   void set_encoding (const QString& new_encoding);
@@ -222,7 +223,8 @@ private:
   };
 
   bool valid_file_name (const QString& file=QString ());
-  void save_file (const QString& saveFileName, bool remove_on_success = false);
+  void save_file (const QString& saveFileName, bool remove_on_success = false,
+                                               bool restore_breakpoints = true);
   void save_file_as (bool remove_on_success = false);
   bool check_valid_identifier (QString file_name);
   bool check_valid_codec (QTextCodec *codec);
@@ -240,6 +242,7 @@ private:
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);
   void remove_all_breakpoints_callback (const bp_info& info);
+  void check_restore_breakpoints (void);
   void center_current_line (bool always=true);
 
   void add_octave_apis (octave_value_list key_ovl);
@@ -273,6 +276,8 @@ private:
   bool _smart_indent;
 
   QFileSystemWatcher _file_system_watcher;
+
+  QIntList _bp_list;
 
   find_dialog *_find_dialog;
   bool _find_dialog_is_visible;

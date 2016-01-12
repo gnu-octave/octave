@@ -90,6 +90,8 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _line = 0;
   _col  = 0;
 
+  _bp_list.clear ();  // start with an empty list of breakpoints
+
   connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
            this, SLOT (handle_cursor_moved (int,int)));
 
@@ -1343,7 +1345,7 @@ file_editor_tab::handle_file_modified_answer (int decision)
   if (decision == QMessageBox::Save)
     {
       // Save file, but do not remove from editor.
-      save_file (_file_name, false);
+      save_file (_file_name, false, false);
     }
   else if (decision == QMessageBox::Discard)
     {
@@ -1361,6 +1363,37 @@ void
 file_editor_tab::set_modified (bool modified)
 {
   _edit_area->setModified (modified);
+}
+
+void
+file_editor_tab::recover_from_exit ()
+{
+  // reset the possibly still existing read only state
+  _edit_area->setReadOnly (false);
+
+  // if we are in this slot and the list of breakpoint is not empty,
+  // then this tab was saved during an exit of the applications (not
+  // restoring the breakpoints and not emptying the list) and the user
+  // canceled this closing late on.
+  check_restore_breakpoints ();
+}
+
+void
+file_editor_tab::check_restore_breakpoints ()
+{
+  if (! _bp_list.isEmpty ())
+    {
+      // At least one breakpoint is present.
+      // Get rid of breakpoints at old (now possibly invalid) linenumbers
+      remove_all_breakpoints (this);
+
+      // and set breakpoints at the new linenumbers
+      for (int i = 0; i < _bp_list.length (); i++)
+        handle_request_add_breakpoint (_bp_list.value (i) + 1);
+
+     // reset the list of breakpoints
+      _bp_list.clear ();
+    }
 }
 
 QString
@@ -1536,7 +1569,8 @@ file_editor_tab::new_file (const QString &commands)
 }
 
 void
-file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
+file_editor_tab::save_file (const QString& saveFileName,
+                            bool remove_on_success, bool restore_breakpoints)
 {
   // If it is a new file with no name, signal that saveFileAs
   // should be performed.
@@ -1555,13 +1589,7 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
   QFile file (file_to_save);
 
   // Get a list of all the breakpoint line numbers.
-  QIntList list;
-  emit report_editor_linenr (list);
-  if (! list.isEmpty ())
-    {
-      // At least one breakpoint is present.  Get rid of breakpoints.
-      remove_all_breakpoints (this);
-    }
+  emit report_editor_linenr (_bp_list);
 
   // stop watching file
   QStringList trackedFiles = _file_system_watcher.files ();
@@ -1633,8 +1661,10 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
     }
 
   // Attempt to restore the breakpoints if that is desired.
-  for (int i = 0; i < list.length (); i++)
-    handle_request_add_breakpoint (list.value (i) + 1);
+  // This is only allowed if the tab is not closing since changing
+  // breakpoints would reopen the tab in this case.
+  if (restore_breakpoints)
+    check_restore_breakpoints ();
 }
 
 void

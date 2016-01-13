@@ -52,17 +52,23 @@
 ## @end group
 ## @end example
 ##
-## Notes:
+## The @code{num2str} function is not very flexible.  For better control
+## over the results, use @code{sprintf} (@pxref{Formatted Output}).
+##
+## Programming Notes:
 ##
 ## For @sc{matlab} compatibility, leading spaces are stripped before returning
 ## the string.
 ##
-## The @code{num2str} function is not very flexible.  For better control
-## over the results, use @code{sprintf} (@pxref{Formatted Output}).
+## Integers larger than @code{flintmax} may not be displayed correctly.
 ##
 ## For complex @var{x}, the format string may only contain one output
 ## conversion specification and nothing else.  Otherwise, results will be
 ## unpredictable.
+##
+## Any optional @var{format} specified by the programmer is used without
+## modification.  This is in contrast to @sc{matlab} which tampers with the
+## @var{format} based on internal heuristics.
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 
@@ -91,24 +97,27 @@ function retval = num2str (x, arg)
       endif
     else
       if (isnumeric (x))
-        ## Setup a suitable format string, ignoring inf entries
-        dgt = floor (log10 (max (abs (x(! isinf (x(:)))))));
-        if (isempty (dgt))
-          ## If the whole input array is inf...
-          dgt = 1;
+        ## Set up a suitable format string while ignoring Inf/NaN entries
+        valid = isfinite (x(:));
+        ndgt = floor (log10 (max (abs (x(valid)))));
+        if (isempty (ndgt) || ndgt == -Inf)
+          ndgt = 0;  # All Inf or all zero array
         endif
 
-        if (any (x(:) != fix (x(:))))
+        if (any (x(valid) != fix (x(valid))))
           ## Floating point input
-          dgt = max (dgt + 4, 5);   # Keep 4 sig. figures after decimal point
-          dgt = min (dgt, 16);      # Cap significant digits at 16
-          fmt = sprintf ("%%%d.%dg", dgt+7+any (x(:) < 0), dgt);
+          ndgt = max (ndgt + 5, 5);   # Keep at least 5 significant digits
+          ndgt = min (ndgt, 16);      # Cap significant digits at 16
+          fmt = sprintf ("%%%d.%dg", ndgt+7, ndgt);
         else
           ## Integer input
-          dgt = max (dgt + 1, 1);
+          ndgt += 3;
+          if (any (! valid))
+            ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
+          endif
           ## FIXME: Integers should be masked to show only 16 significant digits
-          ##        See %!xtest below
-          fmt = sprintf ("%%%d.%dg", dgt+2+any (x(:) < 0), dgt);
+          ##        See %!xtest with 1e23 below.
+          fmt = sprintf ("%%%d.0f", ndgt);
         endif
       else
         ## Logical input
@@ -122,8 +131,8 @@ function retval = num2str (x, arg)
     if (! (sum (fmt == "%") > 1 || any (strcmp (fmt, {"%s", "%c"}))))
       fmt = [deblank(repmat (fmt, 1, nc)), "\n"];
     endif
-    tmp    = sprintf (fmt, x);
-    retval = strtrim (char (ostrsplit (tmp, "\n", true)));
+    strtmp = sprintf (fmt, x);
+    retval = strtrim (char (ostrsplit (strtmp, "\n", true)));
   else   # Complex matrix input
     if (nargin == 2)
       if (ischar (arg))
@@ -134,25 +143,26 @@ function retval = num2str (x, arg)
         error ("num2str: PRECISION must be a scalar integer >= 0");
       endif
     else
-      ## Setup a suitable format string
-      dgt = floor (log10 (max (max (abs (real (x(! isinf (real (x(:))))))),
-                               max (abs (imag (x(! isinf (imag (x(:))))))))));
-      if (isempty (dgt))
-        ## If the whole input array is inf...
-        dgt = 1;
+      ## Set up a suitable format string while ignoring Inf/NaN entries
+      valid_real = isfinite (real (x(:)));
+      valid_imag = isfinite (imag (x(:)));
+      ndgt = floor (log10 (max (max (abs (real (x(valid_real)))),
+                                max (abs (imag (x(valid_imag)))))));
+      if (isempty (ndgt) || ndgt == -Inf)
+        ndgt = 0;  # All Inf or all zero array
       endif
 
-      if (any (x(:) != fix (x(:))))
+      if (any (x(valid_real & valid_imag) != fix (x(valid_real & valid_imag))))
         ## Floating point input
-          dgt = max (dgt + 4, 5);   # Keep 4 sig. figures after decimal point
-          dgt = min (dgt, 16);      # Cap significant digits at 16
-          fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", dgt+7, dgt, dgt+7, dgt);
+        ndgt = max (ndgt + 5, 5);   # Keep at least 5 significant digits
+        ndgt = min (ndgt, 16);      # Cap significant digits at 16
+        fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", ndgt+7, ndgt, ndgt+7, ndgt);
       else
         ## Integer input
-        dgt = max (1 + dgt, 1);
+        ndgt += 3;
         ## FIXME: Integers should be masked to show only 16 significant digits
         ##        See %!xtest below
-        fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", dgt+2, dgt, dgt+2, dgt);
+        fmt = sprintf ("%%%d.0f%%-+%d.0fi", ndgt, ndgt);
       endif
     endif
 
@@ -192,8 +202,10 @@ endfunction
 %!assert (num2str (-2^33), "-8589934592")
 %!assert (num2str (2^33+1i), "8589934592+1i")
 %!assert (num2str (-2^33+1i), "-8589934592+1i")
+%!assert (num2str ([0 0 0]), "0  0  0")
 %!assert (num2str (inf), "Inf")
 %!assert (num2str ([inf -inf]), "Inf -Inf")
+%!assert (num2str ([inf NaN -inf]), "Inf  NaN -Inf")
 %!assert (num2str ([complex(Inf,0), complex(0,-Inf)]), "Inf+0i   0-Infi")
 %!assert (num2str (complex(Inf,1)), "Inf+1i")
 %!assert (num2str (complex(1,Inf)), "1+Infi")
@@ -213,9 +225,9 @@ endfunction
 %!test
 %! y = num2str (x);
 %! assert (rows (y) == 3);
-%! assert (y, ["8   1   6  -8  -1  -6"
-%!             "3   5   7  -3  -5  -7"
-%!             "4   9   2  -4  -9  -2"]);
+%! assert (y, ["8  1  6 -8 -1 -6"
+%!             "3  5  7 -3 -5 -7"
+%!             "4  9  2 -4 -9 -2"]);
 
 ## complex case
 %!test
@@ -235,18 +247,20 @@ endfunction
 %! assert (num2str (1e23), "100000000000000000000000");
 
 ## Test for bug #44864, extra rows generated from newlines in format
-%!assert (rows (num2str (magic (3), '%3d %3d %3d\n')), 3)
+%!assert (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
 
 ## Test for bug #45174
-%!assert (num2str ([65 66 67], '%s'), "ABC")
+%!assert (num2str ([65 66 67], "%s"), "ABC")
 
 %!error num2str ()
 %!error num2str (1, 2, 3)
 %!error <X must be a numeric> num2str ({1})
-%!error <PRECISION must be a scalar integer> num2str (1, {1})
-%!error <PRECISION must be a scalar integer> num2str (1, ones (2))
-%!error <PRECISION must be a scalar integer> num2str (1, -1)
-%!error <PRECISION must be a scalar integer> num2str (1+1i, {1})
-%!error <PRECISION must be a scalar integer> num2str (1+1i, ones (2))
-%!error <PRECISION must be a scalar integer> num2str (1+1i, -1)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, {1})
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, ones (2))
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, -1)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, 1.5)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, {1})
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, ones (2))
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, -1)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, 1.5)
 

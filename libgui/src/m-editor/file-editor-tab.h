@@ -229,7 +229,7 @@ private:
   bool check_valid_identifier (QString file_name);
   bool check_valid_codec (QTextCodec *codec);
 
-  void message_cannot_breakpoint_changed_file (void);
+  bool unchanged_or_saved (void);
 
   void update_lexer ();
 

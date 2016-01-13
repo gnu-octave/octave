@@ -21,6 +21,11 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+/**
+ @file A single GUI file tab.
+ This interfaces QSciScintilla with the rest of Octave.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -73,6 +78,12 @@ along with Octave; see the file COPYING.  If not, see
 
 bool file_editor_tab::_cancelled = false;
 
+/**
+ A file_editor_tab object consists of a text area and three left margins.
+ The first holds breakpoints, bookmarks, and the debug program counter.
+ The second holds line numbers.
+ The third holds "fold" marks, to hide sections of text.
+ */
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
 file_editor_tab::file_editor_tab (const QString& directory_arg)
@@ -321,12 +332,12 @@ file_editor_tab::set_file_name (const QString& fileName)
   // update the file editor with current editing directory
   emit editor_state_changed (_copy_available, _is_octave_file);
 
-  // add the new file to the mru list
+  // add the new file to the most-recently-used list
   emit mru_add_file (_file_name, _encoding);
 }
 
-// valid_file_name (file): checks whether "file" names a file
-// by default, "file" is empty, then _file_name is checked
+// valid_file_name (file): checks whether "file" names a file.
+// By default, "file" is empty; then _file_name is checked
 bool
 file_editor_tab::valid_file_name (const QString& file)
 {
@@ -341,22 +352,33 @@ file_editor_tab::valid_file_name (const QString& file)
   return true;
 }
 
-void
-file_editor_tab::message_cannot_breakpoint_changed_file (void)
+// We cannot create a breakpoint when the file is modified
+// because the line number the editor is providing might
+// not match what Octave core is interpreting in the
+// file on disk.  This function gives the user the option
+// to save before creating the breakpoint.
+bool
+file_editor_tab::unchanged_or_saved (void)
 {
-  // Cannot create a breakpoint when the file is modified
-  // because the line number the editor is providing might
-  // not match what Octave core is interpretting in the
-  // file on disk.
-  QMessageBox* msgBox = new QMessageBox (QMessageBox::Critical,
-                                         tr ("Octave Editor"),
-                                         tr ("Cannot add breakpoint to modified file."),
-                                         QMessageBox::Ok, 0);
-  msgBox->setWindowModality (Qt::ApplicationModal);
-  msgBox->exec ();
-  delete msgBox;
+  bool retval = true;
+  if (_edit_area->isModified ())
+    {
+      int ans = QMessageBox::question (0, tr ("Octave Editor"),
+         tr ("Cannot add breakpoint to modified file.\n"
+             "Save and add breakpoint, or canel?"),
+          QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
+
+      if (ans == QMessageBox::Save)
+        save_file (_file_name, false);
+      else
+        retval = false;
+    }
+
+  return retval;
 }
 
+// Toggle a breakpoint at the editor_linenr or, if this was called by
+// a click with CTRL pressed, toggle a bookmark at that point.
 void
 file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
                                         Qt::KeyboardModifiers state)
@@ -367,20 +389,18 @@ file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
 
       if (state & Qt::ControlModifier)
         {
-          if (markers_mask && (1 << marker::bookmark))
+          if (markers_mask & (1 << marker::bookmark))
             _edit_area->markerDelete (editor_linenr, marker::bookmark);
           else
             _edit_area->markerAdd (editor_linenr, marker::bookmark);
         }
       else
         {
-          if (markers_mask && (1 << marker::breakpoint))
+          if (markers_mask & (1 << marker::breakpoint))
             handle_request_remove_breakpoint (editor_linenr + 1);
           else
             {
-              if (_edit_area->isModified ())
-                message_cannot_breakpoint_changed_file ();
-              else
+              if (unchanged_or_saved ())
                 handle_request_add_breakpoint (editor_linenr + 1);
             }
         }
@@ -765,12 +785,14 @@ file_editor_tab::toggle_bookmark (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << marker::bookmark))
+  if (_edit_area->markersAtLine (line) & (1 << marker::bookmark))
     _edit_area->markerDelete (line, marker::bookmark);
   else
     _edit_area->markerAdd (line, marker::bookmark);
 }
 
+// Move the text cursor to the closest bookmark
+// after the current line.
 void
 file_editor_tab::next_bookmark (const QWidget *ID)
 {
@@ -780,14 +802,15 @@ file_editor_tab::next_bookmark (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << marker::bookmark))
-    line++; // we have a breakpoint here, so start search from next line
+  line++; // Find bookmark strictly after the current line.
 
   int nextline = _edit_area->markerFindNext (line, (1 << marker::bookmark));
 
   _edit_area->setCursorPosition (nextline, 0);
 }
 
+// Move the text cursor to the closest bookmark
+// before the current line.
 void
 file_editor_tab::previous_bookmark (const QWidget *ID)
 {
@@ -797,8 +820,7 @@ file_editor_tab::previous_bookmark (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << marker::bookmark))
-    line--; // we have a breakpoint here, so start search from prev line
+  line--; // Find bookmark strictly before the current line.
 
   int prevline = _edit_area->markerFindPrevious (line, (1 << marker::bookmark));
 
@@ -898,17 +920,17 @@ file_editor_tab::toggle_breakpoint (const QWidget *ID)
   int editor_linenr, cur;
   _edit_area->getCursorPosition (&editor_linenr, &cur);
 
-  if (_edit_area->markersAtLine (editor_linenr) && (1 << marker::breakpoint))
+  if (_edit_area->markersAtLine (editor_linenr) & (1 << marker::breakpoint))
     request_remove_breakpoint_via_editor_linenr (editor_linenr);
   else
     {
-      if (_edit_area->isModified ())
-        message_cannot_breakpoint_changed_file ();
-      else
+      if (unchanged_or_saved ())
         handle_request_add_breakpoint (editor_linenr + 1);
     }
 }
 
+// Move the text cursor to the closest breakpoint
+// after the current line.
 void
 file_editor_tab::next_breakpoint (const QWidget *ID)
 {
@@ -918,14 +940,15 @@ file_editor_tab::next_breakpoint (const QWidget *ID)
   int line, cur;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << marker::breakpoint))
-    line++; // we have a breakpoint here, so start search from next line
+  line++; // Find breakpoint strictly after the current line.
 
   int nextline = _edit_area->markerFindNext (line, (1 << marker::breakpoint));
 
   _edit_area->setCursorPosition (nextline, 0);
 }
 
+// Move the text cursor to the closest breakpoint
+// before the current line.
 void
 file_editor_tab::previous_breakpoint (const QWidget *ID)
 {
@@ -935,8 +958,7 @@ file_editor_tab::previous_breakpoint (const QWidget *ID)
   int line, cur, prevline;
   _edit_area->getCursorPosition (&line, &cur);
 
-  if (_edit_area->markersAtLine (line) && (1 << marker::breakpoint))
-    line--; // we have a breakpoint here, so start search from prev line
+  line--; // Find breakpoint strictly before the current line.
 
   prevline = _edit_area->markerFindPrevious (line, (1 << marker::breakpoint));
 
@@ -2186,7 +2208,7 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
   if (ID != this || ID == 0)
     return;
 
-  emit remove_all_positions ();  // remove all positions
+  emit remove_all_positions ();  // debugger_position, unsure_debugger_position
 
   if (line > 0)
     {

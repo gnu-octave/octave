@@ -441,10 +441,7 @@ CollocWt::init (void)
   // Compute roots.
 
   if (! jcobi (n, inc_left, inc_right, Alpha, Beta, pdif1, pdif2, pdif3, pr))
-    {
-      error ("jcobi: newton iteration failed");
-      return;
-    }
+    error ("jcobi: newton iteration failed");
 
   octave_idx_type id;
 

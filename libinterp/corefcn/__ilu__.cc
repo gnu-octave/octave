@@ -361,6 +361,7 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
       // octave_idx_type type due to fill-in during the process.
       if (total_len_l < 0 || total_len_u < 0)
         error ("ilu: integer overflow.  Too many fill-in elements in L or U");
+
       cidx_u[k+1] = cidx_u[k] - cidx_u[0] + w_len_u;
       cidx_l[k+1] = cidx_l[k] - cidx_l[0] + w_len_l;
 

@@ -844,8 +844,7 @@ set_internal_variable (int& var, const octave_value_list& args,
       if (ival < minval)
         error ("%s: arg must be greater than %d", nm, minval);
       else if (ival > maxval)
-        error ("%s: arg must be less than or equal to %d",
-               nm, maxval);
+        error ("%s: arg must be less than or equal to %d", nm, maxval);
       else
         var = ival;
     }
@@ -1611,31 +1610,29 @@ do_who (int argc, const string_vector& argv, bool return_list,
           // stored at all.
           if (i == argc - 1)
             error ("whos: -file argument must be followed by a filename");
-          else
-            {
-              std::string nm = argv[i + 1];
 
-              unwind_protect frame;
+          std::string nm = argv[i + 1];
 
-              // Set up temporary scope.
+          unwind_protect frame;
 
-              symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
-              frame.add_fcn (symbol_table::erase_scope, tmp_scope);
+          // Set up temporary scope.
 
-              symbol_table::set_scope (tmp_scope);
+          symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
+          frame.add_fcn (symbol_table::erase_scope, tmp_scope);
 
-              octave_call_stack::push (tmp_scope, 0);
-              frame.add_fcn (octave_call_stack::pop);
+          symbol_table::set_scope (tmp_scope);
 
-              frame.add_fcn (symbol_table::clear_variables);
+          octave_call_stack::push (tmp_scope, 0);
+          frame.add_fcn (octave_call_stack::pop);
 
-              feval ("load", octave_value (nm), 0);
+          frame.add_fcn (symbol_table::clear_variables);
 
-              std::string newmsg = std::string ("Variables in the file ")
-                + nm + ":\n\n";
+          feval ("load", octave_value (nm), 0);
 
-              retval =  do_who (i, argv, return_list, verbose, newmsg);
-            }
+          std::string newmsg = std::string ("Variables in the file ")
+            + nm + ":\n\n";
+
+          retval =  do_who (i, argv, return_list, verbose, newmsg);
 
           return retval;
         }

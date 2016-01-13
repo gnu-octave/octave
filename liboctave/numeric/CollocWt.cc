@@ -382,10 +382,7 @@ CollocWt&
 CollocWt::set_left (double val)
 {
   if (val >= rb)
-    {
-      error ("CollocWt: left bound greater than right bound");
-      return *this;
-    }
+    error ("CollocWt: left bound greater than right bound");
 
   lb = val;
   initialized = 0;
@@ -396,10 +393,7 @@ CollocWt&
 CollocWt::set_right (double val)
 {
   if (val <= lb)
-    {
-      error ("CollocWt: right bound less than left bound");
-      return *this;
-    }
+    error ("CollocWt: right bound less than left bound");
 
   rb = val;
   initialized = 0;
@@ -421,10 +415,7 @@ CollocWt::init (void)
   octave_idx_type nt = n + inc_left + inc_right;
 
   if (nt < 0)
-    {
-      error ("CollocWt: total number of collocation points less than zero");
-      return;
-    }
+    error ("CollocWt: total number of collocation points less than zero");
   else if (nt == 0)
     return;
 

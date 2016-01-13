@@ -43,18 +43,16 @@ get_dim_vector (const octave_value& val, const char *name)
 
   if (n < 1)
     error ("%s: dimension vector DIMS must not be empty", name);
-  else
+
+  dv.resize (std::max (n, static_cast<octave_idx_type> (2)));
+  dv(1) = 1;
+  for (octave_idx_type i = 0; i < n; i++)
     {
-      dv.resize (std::max (n, static_cast<octave_idx_type> (2)));
-      dv(1) = 1;
-      for (octave_idx_type i = 0; i < n; i++)
-        {
-          octave_idx_type ii = dimsv(i);
-          if (ii == dimsv(i) && ii >= 0)
-            dv(i) = ii;
-          else
-            error ("%s: dimension vector DIMS must contain integers", name);
-        }
+      octave_idx_type ii = dimsv(i);
+      if (ii == dimsv(i) && ii >= 0)
+        dv(i) = ii;
+      else
+        error ("%s: dimension vector DIMS must contain integers", name);
     }
 
   return dv;

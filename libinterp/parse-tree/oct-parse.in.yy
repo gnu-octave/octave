@@ -3740,9 +3740,9 @@ octave_base_parser::validate_array_list (tree_expression *e)
         {
           retval = false;
           if (e->is_matrix ())
-             bison_error ("invalid use of tilde (~) in matrix expression");
-           else
-             bison_error ("invalid use of tilde (~) in cell expression");
+            bison_error ("invalid use of tilde (~) in matrix expression");
+          else
+            bison_error ("invalid use of tilde (~) in cell expression");
           break;
         }
     }

@@ -1730,6 +1730,7 @@ ANY_INCLUDING_NL (.|{NL})
                undo_string_escape (static_cast<char> (c)), c,
                curr_lexer->input_line_number, curr_lexer->current_input_column);
 
+        // FIXME: This is no longer reachable now that error is exception based.
         return LEXICAL_ERROR;
       }
   }

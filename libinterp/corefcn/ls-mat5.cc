@@ -1494,6 +1494,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
     {
       if (! quiet)
         error ("load: can't read binary file");
+
       return -1;
     }
 

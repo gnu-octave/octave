@@ -2730,6 +2730,7 @@ public:
   {
     if (! valid_object ())
       error ("base_graphics_object::get_defaults_list: invalid graphics object");
+
     return property_list ();
   }
 

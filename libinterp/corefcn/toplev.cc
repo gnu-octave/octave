@@ -838,27 +838,25 @@ to run using @code{atexit}.\n\
 
   if (! quit_allowed)
     error ("quit: not supported in embedded mode");
-  else
+
+  if (args.length () > 0)
     {
-      if (args.length () > 0)
-        {
-          int tmp = args(0).nint_value ();
+      int tmp = args(0).nint_value ();
 
-          exit_status = tmp;
-        }
-
-      // Instead of simply calling exit, we simulate an interrupt
-      // with a request to exit cleanly so that no matter where the
-      // call to quit occurs, we will run the unwind_protect stack,
-      // clear the OCTAVE_LOCAL_BUFFER allocations, etc. before
-      // exiting.
-
-      quitting_gracefully = true;
-
-      octave_interrupt_state = -1;
-
-      octave_throw_interrupt_exception ();
+      exit_status = tmp;
     }
+
+  // Instead of simply calling exit, we simulate an interrupt
+  // with a request to exit cleanly so that no matter where the
+  // call to quit occurs, we will run the unwind_protect stack,
+  // clear the OCTAVE_LOCAL_BUFFER allocations, etc. before
+  // exiting.
+
+  quitting_gracefully = true;
+
+  octave_interrupt_state = -1;
+
+  octave_throw_interrupt_exception ();
 
   return retval;
 }
@@ -1078,9 +1076,7 @@ command shell that is started to run the command.\n\
         error ("system: fork failed -- can't create child process");
       else if (pid == 0)
         {
-          // FIXME: should probably replace this
-          // call with something portable.
-
+          // FIXME: should probably replace this call with something portable.
           execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
                  static_cast<void *> (0));
 
@@ -1098,12 +1094,10 @@ command shell that is started to run the command.\n\
 
       if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))
         error ("system: CreateProcess failed -- can't create child process");
-      else
-        {
-          retval(0) = pi.dwProcessId;
-          CloseHandle (pi.hProcess);
-          CloseHandle (pi.hThread);
-        }
+
+      retval(0) = pi.dwProcessId;
+      CloseHandle (pi.hProcess);
+      CloseHandle (pi.hThread);
 #else
       error ("system: asynchronous system calls are not supported");
 #endif

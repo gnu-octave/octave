@@ -1167,8 +1167,8 @@ public:
                  cname.c_str (), ctx.get_name ().c_str ());
 
         if (! is_constructed_object (mname))
-          error ("cannot call superclass constructor with "
-                 "variable `%s'", mname.c_str ());
+          error ("cannot call superclass constructor with variable `%s'",
+                 mname.c_str ());
 
         octave_value sym = symbol_table::varval (mname);
 
@@ -1674,16 +1674,15 @@ cdef_object_array::subsasgn (const std::string& type,
               is_scalar = is_scalar && iv(i).is_scalar ();
 
               if (! is_scalar)
-                error ("subsasgn: invalid indexing for object array "
-                       "assignment, the index must reference a single "
-                       "object in the array.");
+                error ("subsasgn: invalid indexing for object array assignment"
+                       ", the index must reference a single object in the "
+                       "array.");
             }
 
           Array<cdef_object> a = array.index (iv, true);
 
           if (a.numel () != 1)
-            error ("subsasgn: invalid indexing for object array "
-                   "assignment");
+            error ("subsasgn: invalid indexing for object array assignment");
 
           cdef_object obj = a(0);
 
@@ -1713,8 +1712,8 @@ cdef_object_array::subsasgn (const std::string& type,
           if (! robj.ok ()
               || robj.is_array ()
               || robj.get_class () != get_class ())
-            error ("subasgn: invalid assignment into array of %s "
-                   "objects", class_name ().c_str ());
+            error ("subasgn: invalid assignment into array of %s objects",
+                   class_name ().c_str ());
 
           // Small optimization, when dealing with handle
           // objects, we don't need to re-assign the result

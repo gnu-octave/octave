@@ -62,8 +62,8 @@ tree_fcn_handle::rvalue (int nargout)
 
   if (nargout > 1)
     error ("invalid number of output arguments for function handle expression");
-  else
-    retval = rvalue1 (nargout);
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -181,8 +181,8 @@ tree_anon_fcn_handle::rvalue (int nargout)
 
   if (nargout > 1)
     error ("invalid number of output arguments for anonymous function handle expression");
-  else
-    retval = rvalue1 (nargout);
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }

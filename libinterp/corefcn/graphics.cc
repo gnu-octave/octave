@@ -8729,6 +8729,7 @@ uicontrol::properties::set_style (const octave_value& st)
 {
   if (! get___object__ ().is_empty ())
     error ("set: cannot change the style of a uicontrol object after creation.");
+
   style = st;
 }
 

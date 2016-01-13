@@ -629,8 +629,8 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
  \
     if (v.ndims () > 2) \
       error ("transpose not defined for N-D objects"); \
-    else \
-      return octave_value (v.TYPE ## _array_value ().transpose ()); \
+ \
+    return octave_value (v.TYPE ## _array_value ().transpose ()); \
   } \
  \
   DEFNCUNOP_METHOD (m_incr, TYPE ## _matrix, increment) \

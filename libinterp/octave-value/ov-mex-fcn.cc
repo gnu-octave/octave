@@ -134,20 +134,18 @@ octave_mex_function::do_multi_index_op (int nargout,
 
   if (args.has_magic_colon ())
     error ("invalid use of colon in function argument list");
-  else
-    {
-      unwind_protect frame;
 
-      octave_call_stack::push (this);
+  unwind_protect frame;
 
-      frame.add_fcn (octave_call_stack::pop);
+  octave_call_stack::push (this);
 
-      BEGIN_PROFILER_BLOCK (octave_mex_function)
+  frame.add_fcn (octave_call_stack::pop);
 
-        retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+  BEGIN_PROFILER_BLOCK (octave_mex_function)
 
-      END_PROFILER_BLOCK
-    }
+    retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+
+  END_PROFILER_BLOCK
 
   return retval;
 }

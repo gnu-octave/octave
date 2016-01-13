@@ -74,8 +74,8 @@ public:
 
     if (nargout > 1)
       error ("invalid number of output arguments in declaration list");
-    else
-      retval = rvalue1 (nargout);
+
+    retval = rvalue1 (nargout);
 
     return retval;
   }

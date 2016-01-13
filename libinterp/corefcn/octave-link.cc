@@ -74,8 +74,8 @@ octave_link::connect_link (octave_link* obj)
 {
   if (obj && instance)
     error ("octave_link is already linked!");
-  else
-    instance = obj;
+
+  instance = obj;
 }
 
 void

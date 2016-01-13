@@ -2168,9 +2168,8 @@ Undocumented internal function.\n\
 
   if (is_function)
     error ("audioplayer: callbacks not yet implemented");
-  else
-    recorder->set_y (args(0));
 
+  recorder->set_y (args(0));
   recorder->set_fs (args(1).int_value ());
 
   switch (nargin)

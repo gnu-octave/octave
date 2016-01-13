@@ -280,15 +280,14 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
       if (cslen != n_col)
         error ("ccolamd: CMEMBER must be of length equal to #cols of A");
-      else
-        // Order the columns (destroys A)
-        if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p,
-                               knobs, stats, cmember))
-          {
-            CCOLAMD_NAME (_report) (stats) ;
 
-            error ("ccolamd: internal error!");
-          }
+      // Order the columns (destroys A)
+      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, cmember))
+        {
+          CCOLAMD_NAME (_report) (stats) ;
+
+          error ("ccolamd: internal error!");
+        }
     }
   else
     {
@@ -513,8 +512,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
       if (cslen != n_col)
         error ("csymamd: CMEMBER must be of length equal to #cols of A");
-      else if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                                 &calloc, &free, cmember, -1))
+
+      if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
+                             &calloc, &free, cmember, -1))
         {
           CSYMAMD_NAME (_report) (stats) ;
 

@@ -575,25 +575,22 @@ octcellregexp (const octave_value_list &args, int nargout,
             }
           else if (cellstr.numel () == cellpat.numel ())
             {
-
               if (cellstr.dims () != cellpat.dims ())
                 error ("%s: inconsistent cell array dimensions", who.c_str ());
-              else
+
+              for (int j = 0; j < nargout; j++)
+                newretval[j].resize (cellstr.dims ());
+
+              for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                 {
+                  new_args(0) = cellstr(i);
+                  new_args(1) = cellpat(i);
+
+                  octave_value_list tmp = octregexp (new_args, nargout, who,
+                                                     case_insensitive);
+
                   for (int j = 0; j < nargout; j++)
-                    newretval[j].resize (cellstr.dims ());
-
-                  for (octave_idx_type i = 0; i < cellstr.numel (); i++)
-                    {
-                      new_args(0) = cellstr(i);
-                      new_args(1) = cellpat(i);
-
-                      octave_value_list tmp = octregexp (new_args, nargout, who,
-                                                         case_insensitive);
-
-                      for (int j = 0; j < nargout; j++)
-                        newretval[j](i) = tmp(j);
-                    }
+                    newretval[j](i) = tmp(j);
                 }
             }
           else

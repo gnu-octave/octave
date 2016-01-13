@@ -147,18 +147,17 @@ longer running time.\n\
               double val = octave_sparse_params::get_key (str);
               if (xisnan (val))
                 error ("spparms: KEY not recognized");
-              else
-                retval = ovl (val);
+
+              retval = ovl (val);
             }
         }
       else
         {
           NDArray vals = args(0).xarray_value ("spparms: input must be a string or a vector");
-
           if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
             error ("spparms: too many elements in vector VALS");
-          else
-            octave_sparse_params::set_vals (vals);
+
+          octave_sparse_params::set_vals (vals);
         }
     }
   else if (nargin == 2)

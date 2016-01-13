@@ -1871,18 +1871,18 @@ convert (int x, int ibase, int obase)
 
   if (tmp > ibase - 1)
     error ("umask: invalid digit");
-  else
+
+  retval = tmp;
+  int mult = ibase;
+  while ((x = (x - tmp) / obase))
     {
-      retval = tmp;
-      int mult = ibase;
-      while ((x = (x - tmp) / obase))
-        {
-          tmp = x % obase;
-          if (tmp > ibase - 1)
-            error ("umask: invalid digit");
-          retval += mult * tmp;
-          mult *= ibase;
-        }
+      tmp = x % obase;
+
+      if (tmp > ibase - 1)
+        error ("umask: invalid digit");
+
+      retval += mult * tmp;
+      mult *= ibase;
     }
 
   return retval;

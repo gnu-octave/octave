@@ -167,8 +167,8 @@ information.\n\
         {
           if (! issparse)
             error ("lu: can not define pivoting threshold THRES for full matrices");
-          Matrix tmp = args(n++).matrix_value ();
 
+          Matrix tmp = args(n++).matrix_value ();
           if (tmp.numel () == 1)
             {
               thres.resize (1,2);

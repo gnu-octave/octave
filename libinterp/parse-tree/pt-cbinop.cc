@@ -39,9 +39,9 @@ tree_compound_binary_expression::rvalue (int nargout)
 
   if (nargout > 1)
     error ("binary operator '%s': invalid number of output arguments",
-           oper () . c_str ());
-  else
-    retval = rvalue1 (nargout);
+           oper ().c_str ());
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }

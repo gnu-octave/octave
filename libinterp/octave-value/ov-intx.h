@@ -146,14 +146,13 @@ public:
     dim_vector dv = dims ();
     if (dv.length () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
-    else
-      {
-        retval = Matrix (dv(0), dv(1));
-        double *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = matrix(i).double_value ();
-      }
+
+    retval = Matrix (dv(0), dv(1));
+    double *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = matrix(i).double_value ();
+
     return retval;
   }
 
@@ -164,14 +163,13 @@ public:
     dim_vector dv = dims ();
     if (dv.length () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
-    else
-      {
-        retval = FloatMatrix (dv(0), dv(1));
-        float *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = matrix(i).float_value ();
-      }
+
+    retval = FloatMatrix (dv(0), dv(1));
+    float *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = matrix(i).float_value ();
+
     return retval;
   }
 
@@ -182,14 +180,13 @@ public:
     dim_vector dv = dims ();
     if (dv.length () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
-    else
-      {
-        retval = ComplexMatrix (dv(0), dv(1));
-        Complex *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = Complex (matrix(i).double_value ());
-      }
+
+    retval = ComplexMatrix (dv(0), dv(1));
+    Complex *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = Complex (matrix(i).double_value ());
+
     return retval;
   }
 
@@ -200,14 +197,13 @@ public:
     dim_vector dv = dims ();
     if (dv.length () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
-    else
-      {
-        retval = FloatComplexMatrix (dv(0), dv(1));
-        FloatComplex *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = FloatComplex (matrix(i).float_value ());
-      }
+
+    retval = FloatComplexMatrix (dv(0), dv(1));
+    FloatComplex *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = FloatComplex (matrix(i).float_value ());
+
     return retval;
   }
 

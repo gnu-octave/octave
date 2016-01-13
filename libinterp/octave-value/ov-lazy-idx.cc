@@ -169,11 +169,10 @@ bool octave_lazy_index::load_ascii (std::istream& is)
   bool dummy;
 
   std::string nm = read_text_data (is, "", dummy, value, 0);
-
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");
-  else
-    index = value.index_vector ();
+
+  index = value.index_vector ();
 
   return true;
 }
@@ -191,13 +190,11 @@ bool octave_lazy_index::load_binary (std::istream& is, bool swap,
   bool dummy;
   std::string doc;
 
-  std::string nm = read_binary_data (is, swap, fmt, "",
-                                     dummy, value, doc);
-
+  std::string nm = read_binary_data (is, swap, fmt, "", dummy, value, doc);
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");
-  else
-    index = value.index_vector ();
+
+  index = value.index_vector ();
 
   return true;
 }

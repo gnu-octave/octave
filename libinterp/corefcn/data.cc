@@ -926,6 +926,8 @@ negative numbers or when the values are periodic.\n\
 %!assert (mod (0.94, 0.01), 0.0)
 */
 
+// FIXME: Macros NATIVE_REDUCTION_1 and NATIVE_REDUCTION seem to be unused.
+//        Checked 1/23/2016.  They should probably be removed for clarity.
 // FIXME: Need to convert reduction functions of this file for single precision
 
 #define NATIVE_REDUCTION_1(FCN, TYPE, DIM) \
@@ -953,7 +955,8 @@ negative numbers or when the values are periodic.\n\
         isdouble = true; \
       else \
         error ("sum: unrecognized string argument"); \
-      nargin --; \
+ \
+      nargin--; \
     } \
  \
   if (nargin < 1 || nargin > 2) \
@@ -1234,6 +1237,7 @@ See @code{sum} for an explanation of the optional parameters\n\
         isdouble = true;
       else
         error ("cumsum: unrecognized string argument");
+
       nargin --;
     }
 
@@ -1519,6 +1523,7 @@ in double precision even for single precision inputs.\n\
         isdouble = true;
       else
         error ("prod: unrecognized type argument '%s'", str.c_str ());
+
       nargin --;
     }
 
@@ -2117,6 +2122,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
                 {
                   if (j > 1)
                     error ("%s: indexing error", fname.c_str ());
+
                   break;
                 }
               else
@@ -2994,6 +3000,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
         isextra = true;
       else
         error ("sum: unrecognized type argument '%s'", str.c_str ());
+
       nargin --;
     }
 
@@ -5615,6 +5622,7 @@ compute the norms of each column and return a row vector.\n\
         strflag = sfinf;
       else
         error ("norm: unrecognized option: %s", str.c_str ());
+
       // we've handled the last parameter, so act as if it was removed
       nargin --;
     }
@@ -7262,47 +7270,44 @@ do_merge (const Array<bool>& mask,
   bool tscl = tval.numel () == 1;
   bool fscl = fval.numel () == 1;
 
-  if ((! tscl && tval.dims () != dv)
-      || (! fscl && fval.dims () != dv))
+  if ((! tscl && tval.dims () != dv) || (! fscl && fval.dims () != dv))
     error ("merge: MASK, TVAL, and FVAL dimensions must match");
-  else
+
+  T *rv = retval.fortran_vec ();
+  octave_idx_type n = retval.numel ();
+
+  const T *tv = tval.data ();
+  const T *fv = fval.data ();
+  const bool *mv = mask.data ();
+
+  if (tscl)
     {
-      T *rv = retval.fortran_vec ();
-      octave_idx_type n = retval.numel ();
-
-      const T *tv = tval.data ();
-      const T *fv = fval.data ();
-      const bool *mv = mask.data ();
-
-      if (tscl)
+      if (fscl)
         {
-          if (fscl)
-            {
-              T ts = tv[0];
-              T fs = fv[0];
-              for (octave_idx_type i = 0; i < n; i++)
-                rv[i] = mv[i] ? ts : fs;
-            }
-          else
-            {
-              T ts = tv[0];
-              for (octave_idx_type i = 0; i < n; i++)
-                rv[i] = mv[i] ? ts : fv[i];
-            }
+          T ts = tv[0];
+          T fs = fv[0];
+          for (octave_idx_type i = 0; i < n; i++)
+            rv[i] = mv[i] ? ts : fs;
         }
       else
         {
-          if (fscl)
-            {
-              T fs = fv[0];
-              for (octave_idx_type i = 0; i < n; i++)
-                rv[i] = mv[i] ? tv[i] : fs;
-            }
-          else
-            {
-              for (octave_idx_type i = 0; i < n; i++)
-                rv[i] = mv[i] ? tv[i] : fv[i];
-            }
+          T ts = tv[0];
+          for (octave_idx_type i = 0; i < n; i++)
+            rv[i] = mv[i] ? ts : fv[i];
+        }
+    }
+  else
+    {
+      if (fscl)
+        {
+          T fs = fv[0];
+          for (octave_idx_type i = 0; i < n; i++)
+            rv[i] = mv[i] ? tv[i] : fs;
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < n; i++)
+            rv[i] = mv[i] ? tv[i] : fv[i];
         }
     }
 

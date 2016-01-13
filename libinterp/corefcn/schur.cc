@@ -301,7 +301,6 @@ Note also that @var{U} and @var{T} are not unique.\n\
     error ("rsf2csf: UR and TR must be real matrices");
   else
     {
-
       if (args(0).is_single_type () || args(1).is_single_type ())
         {
           FloatMatrix u = args(0).float_matrix_value ();

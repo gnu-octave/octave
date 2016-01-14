@@ -23,29 +23,32 @@
 ## @deftypefn {} {} inputname (@var{n})
 ## Return the name of the @var{n}-th argument to the calling function.
 ##
-## If the argument is not a simple variable name, return an empty string.
-## @code{inputname} may only be used within a function body, not at the
-## command line.
+## If the argument is not a simple variable name, return an empty string.  As
+## an example, a reference to a field in a structure such as @code{s.field} is
+## not a simple name and will return @qcode{""}.
+##
+## @code{inputname} is only useful within a function.  When used at the command
+## line it always returns an empty string.
 ## @seealso{nargin, nthargout}
 ## @end deftypefn
 
-function s = inputname (n)
+function name = inputname (n)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  s = "";
+  name = "";
   try
-    s = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", fix (n)));
+    name = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", fix (n)));
   catch
     return;
   end_try_catch
 
   ## For compatibility with Matlab,
   ## return empty string if argument name is not a valid identifier.
-  if (! isvarname (s))
-    s = "";
+  if (! isvarname (name))
+    name = "";
   endif
 
 endfunction

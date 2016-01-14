@@ -232,13 +232,8 @@ BUILT_OCTAVE_TEXI_SRC = \
 info_TEXINFOS += \
   doc/interpreter/octave.texi
 
-## The $(examples_code_SRC) files are included here because
-## they are included in the manual via the @EXAMPLEFILE macro,
-## so they are dependencies for the documentation.
-
 octave_TEXINFOS = \
-  $(BUILT_OCTAVE_TEXI_SRC) \
-  $(examples_code_SRC)
+  $(BUILT_OCTAVE_TEXI_SRC)
 
 ## As of version 1.14.1, automake does not seem to generate
 ## rules for DVI, PDF, or HTML output that work for us when
@@ -341,7 +336,12 @@ doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk_doc_cache.m | $
 	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
-$(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) $(munge_texi_SOURCES)
+$(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
+
+## These two texi files have an additional dependency through the
+## @EXAMPLEFILE macro.
+doc/interpreter/oop.texi: $(examples_code_SRC)
+doc/interpreter/external.texi: $(examples_code_SRC)
 
 %.texi : %.txi doc/interpreter/munge-texi.pl | doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \

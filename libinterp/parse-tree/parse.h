@@ -145,22 +145,14 @@ octave_base_parser
 {
 public:
 
-  octave_base_parser (octave_base_lexer& lxr)
-    : endfunction_found (false),
-      autoloading (false), fcn_file_from_relative_lookup (false),
-      parsing_subfunctions (false), max_fcn_depth (0),
-      curr_fcn_depth (0), primary_fcn_scope (-1),
-      curr_class_name (), curr_package_name (), function_scopes (),
-      primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
-      stmt_list (0), lexer (lxr)
-  { }
+  octave_base_parser (octave_base_lexer& lxr);
 
   ~octave_base_parser (void);
 
   void reset (void);
 
   // Error mesages for mismatched end tokens.
-  void end_error (const char *type, token::end_tok_type ettype, int l, int c);
+  void end_error (const char *type, token::end_tok_type expected, int l, int c);
 
   // Check to see that end tokens are properly matched.
   bool end_token_ok (token *tok, token::end_tok_type expected);
@@ -458,6 +450,9 @@ public:
   // State of the lexer.
   octave_base_lexer& lexer;
 
+  // Internal state of the Bison parser.
+  void *parser_state;
+
 private:
 
   // No copying!
@@ -507,21 +502,14 @@ octave_push_parser : public octave_base_parser
 public:
 
   octave_push_parser (void)
-    : octave_base_parser (*(new octave_push_lexer ())), parser_state (0)
-  {
-    init ();
-  }
+    : octave_base_parser (*(new octave_push_lexer ()))
+  { }
 
-  ~octave_push_parser (void);
-
-  void init (void);
+  ~octave_push_parser (void) { }
 
   int run (const std::string& input, bool eof);
 
 private:
-
-  // Internal state of the Bison parser.
-  void *parser_state;
 
   // No copying!
 

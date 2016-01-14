@@ -2029,11 +2029,30 @@ yyerror (octave_base_parser& parser, const char *s)
   parser.bison_error (s);
 }
 
+octave_base_parser::octave_base_parser (octave_base_lexer& lxr)
+  : endfunction_found (false), autoloading (false),
+    fcn_file_from_relative_lookup (false), parsing_subfunctions (false),
+    max_fcn_depth (0), curr_fcn_depth (0), primary_fcn_scope (-1),
+    curr_class_name (), curr_package_name (), function_scopes (),
+    primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
+    stmt_list (0), lexer (lxr), parser_state (yypstate_new ())
+{ }
+
 octave_base_parser::~octave_base_parser (void)
 {
   delete stmt_list;
 
   delete &lexer;
+
+  // FIXME: Deleting the internal Bison parser state structure does
+  // not clean up any partial parse trees in the event of an interrupt or
+  // error.  It's not clear how to safely do that with the C language
+  // parser that Bison generates.  The C++ language parser that Bison
+  // generates would do it for us automatically whenever an exception
+  // is thrown while parsing input, but there is currently no C++
+  // interface for a push parser.
+
+  yypstate_delete (static_cast<yypstate *> (parser_state));
 }
 
 void
@@ -2056,6 +2075,9 @@ octave_base_parser::reset (void)
   stmt_list = 0;
 
   lexer.reset ();
+
+  yypstate_delete (static_cast<yypstate *> (parser_state));
+  parser_state = yypstate_new ();
 }
 
 // Error mesages for mismatched end tokens.
@@ -4002,17 +4024,6 @@ int
 octave_parser::run (void)
 {
   return octave_parse (*this);
-}
-
-octave_push_parser::~octave_push_parser (void)
-{
-  yypstate_delete (static_cast<yypstate *> (parser_state));
-}
-
-void
-octave_push_parser::init (void)
-{
-  parser_state = yypstate_new ();
 }
 
 // Parse input from INPUT.  Pass TRUE for EOF if the end of INPUT should

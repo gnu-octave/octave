@@ -27,5 +27,5 @@ DEFUN_DLD (paramdemo, args, nargout, "Parameter Check Demo")
   if (m.all_integers (min_val, max_val))
     octave_stdout << "  includes only integers in [-10,10]\n";
 
-  return octave_value ();
+  return octave_value_list ();
 }

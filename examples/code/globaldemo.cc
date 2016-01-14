@@ -2,10 +2,10 @@
 
 DEFUN_DLD (globaldemo, args, , "Global Demo")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value retval;
 
   std::string s = args(0).string_value ();
 

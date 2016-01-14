@@ -10,8 +10,6 @@ extern "C"
 
 DEFUN_DLD (fortrandemo, args, , "Fortran Demo")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -25,8 +23,5 @@ DEFUN_DLD (fortrandemo, args, , "Fortran Demo")
   F77_XFCN (fortransub, FORTSUB,
             (na, av, ctmp F77_CHAR_ARG_LEN (128)));
 
-  retval(1) = std::string (ctmp);
-  retval(0) = a;
-
-  return retval;
+  return ovl (a, std::string (ctmp));
 }

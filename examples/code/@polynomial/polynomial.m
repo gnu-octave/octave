@@ -12,19 +12,23 @@
 ## @end deftypefn
 
 function p = polynomial (a)
+
+  if (nargin > 1)
+    print_usage ();
+  endif
+
   if (nargin == 0)
     p.poly = [0];
     p = class (p, "polynomial");
-  elseif (nargin == 1)
+  else
     if (strcmp (class (a), "polynomial"))
       p = a;
     elseif (isvector (a) && isreal (a))
-      p.poly = a(:).';
+      p.poly = a(:).';  # force row vector
       p = class (p, "polynomial");
     else
       error ("@polynomial: expecting real vector");
     endif
-  else
-    print_usage ();
   endif
+
 endfunction

@@ -3,8 +3,6 @@
 
 DEFUN_DLD (funcdemo, args, nargout, "Function Demo")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 2)
@@ -14,6 +12,8 @@ DEFUN_DLD (funcdemo, args, nargout, "Function Demo")
 
   for (octave_idx_type i = nargin - 1; i > 0; i--)
     newargs(i-1) = args(i);
+
+  octave_value_list retval;
 
   if (args(0).is_function_handle () || args(0).is_inline_function ())
     {

@@ -6,15 +6,17 @@
 
 function f = FIRfilter (p)
 
-  f.polynomial = [];
-  if (nargin == 0)
-    p = @polynomial ([1]);
-  elseif (nargin == 1)
-    if (!isa (p, "polynomial"))
-      error ("@FIRfilter: expecting polynomial as input argument");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
   endif
+
+  if (nargin == 0)
+    p = @polynomial ([1]);
+  elseif (! isa (p, "polynomial"))
+    error ("@FIRfilter: expecting polynomial as input argument");
+  endif
+
+  f.polynomial = [];
   f = class (f, "FIRfilter", p);
+
 endfunction

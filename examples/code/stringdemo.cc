@@ -2,10 +2,10 @@
 
 DEFUN_DLD (stringdemo, args, , "String Demo")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
+
+  octave_value_list retval;
 
   charMatrix ch = args(0).char_matrix_value ();
 

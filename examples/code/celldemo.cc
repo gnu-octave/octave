@@ -3,12 +3,13 @@
 
 DEFUN_DLD (celldemo, args, , "Cell Demo")
 {
-  octave_value_list retval;
-
   if (args.length () != 1)
     print_usage ();
 
   Cell c = args(0).cell_value ();
+
+  octave_value_list retval;
+  retval.resize (c.numel ());    // faster code by pre-declaring size
 
   for (octave_idx_type i = 0; i < c.numel (); i++)
     {

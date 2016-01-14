@@ -1,7 +1,4 @@
 function n = numel (obj, idx)
-
-  # always produce an array.
-  n = 1;
-
+  n = 1;  # always produce an array.
 endfunction
 

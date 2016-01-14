@@ -391,6 +391,10 @@ public:
   // Generic error messages.
   void bison_error (const std::string& s, int l = -1, int c = -1);
 
+  // Contains error message if Bison-generated parser returns non-zero
+  // status.
+  std::string parse_error_msg;
+
   // Have we found an explicit end to a function?
   bool endfunction_found;
 

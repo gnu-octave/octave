@@ -108,17 +108,6 @@ static std::map<std::string, std::string> autoload_map;
 
 static void yyerror (octave_base_parser& parser, const char *s);
 
-#define ABORT_PARSE \
-  do \
-    { \
-      yyerrok; \
-      if (interactive && ! lexer.input_from_eval_string ()) \
-        YYACCEPT; \
-      else \
-        YYABORT; \
-    } \
-  while (0)
-
 #define lexer parser.lexer
 #define scanner lexer.scanner
 
@@ -422,7 +411,7 @@ input           : simple_list '\n'
                 | parse_error
                   {
                     $$ = 0;
-                    ABORT_PARSE;
+                    YYABORT;
                   }
                 ;
 
@@ -480,7 +469,7 @@ word_list_cmd   : identifier word_list
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $2.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -689,7 +678,7 @@ oper_expr       : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | oper_expr '(' arg_list ')'
@@ -698,7 +687,7 @@ oper_expr       : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | oper_expr '{' '}'
@@ -707,7 +696,7 @@ oper_expr       : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | oper_expr '{' arg_list '}'
@@ -716,7 +705,7 @@ oper_expr       : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | oper_expr HERMITIAN
@@ -775,7 +764,7 @@ power_expr      : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | power_expr '(' arg_list ')'
@@ -784,7 +773,7 @@ power_expr      : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | power_expr '{' '}'
@@ -793,7 +782,7 @@ power_expr      : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | power_expr '{' arg_list '}'
@@ -802,7 +791,7 @@ power_expr      : primary_expr
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | power_expr indirect_ref_op STRUCT_ELT
@@ -835,7 +824,7 @@ colon_expr1     : oper_expr
                       {
                         delete $1;
                         delete $3;
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -877,7 +866,7 @@ assign_lhs      : simple_expr
                     else
                       {
                         // validate_matrix_for_assignment deleted $1.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -923,14 +912,19 @@ expression      : simple_expr
                         else
                           {
                             delete $1;
-                            ABORT_PARSE;
+                            YYABORT;
                           }
                       }
                     else
                       $$ = $1;
                   }
                 | assign_expr
-                  { $$ = $1; }
+                  {
+                    if (! $1)
+                      YYABORT;
+
+                    $$ = $1;
+                  }
                 | anon_fcn_handle
                   { $$ = $1; }
                 ;
@@ -1016,7 +1010,7 @@ if_command      : IF stash_comment if_cmd_list END
                     if (! ($$ = parser.finish_if_command ($1, $3, $4, $2)))
                       {
                         // finish_if_command deleted $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1076,7 +1070,7 @@ switch_command  : SWITCH stash_comment expression opt_sep case_list END
                     if (! ($$ = parser.finish_switch_command ($1, $3, $5, $6, $2)))
                       {
                         // finish_switch_command deleted $3 adn $5.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1134,7 +1128,7 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                     if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
                       {
                         // make_while_command deleted $3 and $6.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | DO stash_comment opt_sep opt_list UNTIL expression
@@ -1153,7 +1147,7 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                                                          $8, $9, $2)))
                       {
                         // make_for_command deleted $3, $5, and $8.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
@@ -1165,7 +1159,7 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                                                          $9, $10, $2)))
                       {
                         // make_for_command deleted $4, $6, and $9.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | PARFOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
@@ -1177,7 +1171,7 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                                                          0, $8, $9, $2)))
                       {
                         // make_for_command deleted $3, $5, and $8.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
@@ -1189,7 +1183,7 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                                                          $8, $11, $12, $2)))
                       {
                         // make_for_command deleted $4, $6, $8, and $11.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1220,7 +1214,7 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                     if (! ($$ = parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
                       {
                         // make_unwind_command deleted $4 and $8.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | TRY stash_comment opt_sep opt_list CATCH stash_comment
@@ -1233,7 +1227,7 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                     if (! ($$ = parser.make_try_command ($1, $4, $7, $8, $9, $2, $6)))
                       {
                         // make_try_command deleted $4 and $8.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | TRY stash_comment opt_sep opt_list END
@@ -1243,7 +1237,7 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                     if (! ($$ = parser.make_try_command ($1, $4, 0, 0, $5, $2, 0)))
                       {
                         // make_try_command deleted $4.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1274,7 +1268,10 @@ push_fcn_symtab : // empty
 
                     if (lexer.reading_script_file
                         && parser.curr_fcn_depth > 1)
-                      parser.bison_error ("nested functions not implemented in this context");
+                      {
+                        parser.bison_error ("nested functions not implemented in this context");
+                        YYABORT;
+                      }
                   }
                 ;
 
@@ -1313,9 +1310,9 @@ param_list      : param_list_beg param_list1 param_list_end
                   }
                 | param_list_beg error
                   {
-                    parser.bison_error ("invalid parameter list");
                     $$ = 0;
-                    ABORT_PARSE;
+                    parser.bison_error ("invalid parameter list");
+                    YYABORT;
                   }
                 ;
 
@@ -1332,7 +1329,7 @@ param_list1     : // empty
                     else
                       {
                         delete $1;
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1377,7 +1374,7 @@ return_list     : '[' ']'
                     else
                       {
                         delete tmp;
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | '[' return_list1 ']'
@@ -1392,7 +1389,7 @@ return_list     : '[' ']'
                     else
                       {
                         delete $2;
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1548,8 +1545,7 @@ function_end    : END
                     else
                       {
                         parser.end_token_error ($1, token::function_end);
-
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | END_OF_INPUT
@@ -1615,7 +1611,7 @@ classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superc
                     if (! ($$ = parser.make_classdef ($1, $3, $4, $5, $7, $9, $2)))
                       {
                         // make_classdef deleted $3, $4, $5, and $7.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep END
@@ -1627,7 +1623,7 @@ classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superc
                     if (! ($$ = parser.make_classdef ($1, $3, $4, $5, 0, $7, $2)))
                       {
                         // make_classdef deleted $3, $4, and $5.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1744,7 +1740,7 @@ properties_block
                            ($1, $3, $5, $7, $2)))
                       {
                         // make_classdef_properties_block delete $3 and $5.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | PROPERTIES stash_comment opt_attr_list opt_sep END
@@ -1755,7 +1751,7 @@ properties_block
                            ($1, $3, 0, $5, $2)))
                       {
                         // make_classdef_properties_block delete $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1792,7 +1788,7 @@ methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_s
                            ($1, $3, $5, $7, $2)))
                       {
                         // make_classdef_methods_block deleted $3 and $5.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | METHODS stash_comment opt_attr_list opt_sep END
@@ -1803,7 +1799,7 @@ methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_s
                            ($1, $3, 0, $5, $2)))
                       {
                         // make_classdef_methods_block deleted $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1812,12 +1808,12 @@ methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_s
 method_decl1    : identifier
                   {
                     if (! ($$ = parser.start_classdef_external_method ($1, 0)))
-                      ABORT_PARSE;
+                      YYABORT;
                   }
                 | identifier param_list
                   {
                     if (! ($$ = parser.start_classdef_external_method ($1, $2)))
-                      ABORT_PARSE;
+                      YYABORT;
                   }
                 ;
 
@@ -1875,7 +1871,7 @@ events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep
                            ($1, $3, $5, $7, $2)))
                       {
                         // make_classdef_events_block deleted $3 and $5.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | EVENTS stash_comment opt_attr_list opt_sep END
@@ -1886,7 +1882,7 @@ events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep
                            ($1, $3, 0, $5, $2)))
                       {
                         // make_classdef_events_block deleted $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -1915,7 +1911,7 @@ enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_
                            ($1, $3, $5, $7, $2)))
                       {
                         // make_classdef_enum_block deleted $3 and $5.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 | ENUMERATION stash_comment opt_attr_list opt_sep END
@@ -1926,7 +1922,7 @@ enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_
                            ($1, $3, 0, $5, $2)))
                       {
                         // make_classdef_enum_block deleted $3.
-                        ABORT_PARSE;
+                        YYABORT;
                       }
                   }
                 ;
@@ -2780,7 +2776,14 @@ octave_base_parser::make_for_command (int tok_id, token *for_tok,
       else
         {
           if (parfor)
-            bison_error ("invalid syntax for parfor statement");
+            {
+              delete lhs;
+              delete expr;
+              delete maxproc;
+              delete body;
+
+              bison_error ("invalid syntax for parfor statement");
+            }
           else
             retval = new tree_complex_for_command (lhs, expr, body,
                                                    lc, tc, l, c);
@@ -3050,7 +3053,12 @@ octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
   else if (t == octave_value::op_asn_eq)
     return new tree_multi_assignment (lhs, rhs, false, l, c);
   else
-    bison_error ("computed multiple assignment not allowed");
+    {
+      delete lhs;
+      delete rhs;
+
+      bison_error ("computed multiple assignment not allowed");
+    }
 
   return retval;
 }
@@ -3602,30 +3610,30 @@ octave_base_parser::make_index_expression (tree_expression *expr,
 
   if (args && args->has_magic_tilde ())
     {
-      bison_error ("invalid use of empty argument (~) in index expression");
-
       delete expr;
       delete args;
 
-      return retval;
-    }
-
-  int l = expr->line ();
-  int c = expr->column ();
-
-  if (! expr->is_postfix_indexed ())
-    expr->set_postfix_index (type);
-
-  if (expr->is_index_expression ())
-    {
-      tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
-
-      tmp->append (args, type);
-
-      retval = tmp;
+      bison_error ("invalid use of empty argument (~) in index expression");
     }
   else
-    retval = new tree_index_expression (expr, args, l, c, type);
+    {
+      int l = expr->line ();
+      int c = expr->column ();
+
+      if (! expr->is_postfix_indexed ())
+        expr->set_postfix_index (type);
+
+      if (expr->is_index_expression ())
+        {
+          tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+
+          tmp->append (args, type);
+
+          retval = tmp;
+        }
+      else
+        retval = new tree_index_expression (expr, args, l, c, type);
+    }
 
   return retval;
 }
@@ -3742,10 +3750,12 @@ octave_base_parser::validate_array_list (tree_expression *e)
       if (row && row->has_magic_tilde ())
         {
           retval = false;
+
           if (e->is_matrix ())
             bison_error ("invalid use of tilde (~) in matrix expression");
           else
             bison_error ("invalid use of tilde (~) in cell expression");
+
           break;
         }
     }
@@ -3762,12 +3772,12 @@ octave_base_parser::validate_matrix_for_assignment (tree_expression *e)
     {
       octave_value ov = e->rvalue1 ();
 
+      delete e;
+
       if (ov.is_empty ())
         bison_error ("invalid empty left hand side of assignment");
       else
         bison_error ("invalid constant left hand side of assignment");
-
-      delete e;
     }
   else
     {
@@ -3797,8 +3807,9 @@ octave_base_parser::validate_matrix_for_assignment (tree_expression *e)
         }
       else
         {
-          bison_error ("invalid left hand side of assignment");
           delete tmp;
+
+          bison_error ("invalid left hand side of assignment");
         }
 
       if (retval && is_simple_assign)
@@ -3997,15 +4008,43 @@ octave_base_parser::bison_error (const std::string& str, int l, int c)
 
   output_buf << "\n";
 
-  std::string msg = output_buf.str ();
-
-  parse_error ("%s", msg.c_str ());
+  parse_error_msg = output_buf.str ();
 }
 
 int
 octave_parser::run (void)
 {
-  return octave_parse (*this);
+  int status = -1;
+
+  yypstate *pstate = static_cast<yypstate *> (parser_state);
+
+  try
+    {
+      status = octave_pull_parse (pstate, *this);
+    }
+  catch (octave_execution_exception& e)
+    {
+      std::string file = lexer.fcn_file_full_name;
+
+      if (file.empty ())
+        error (e, "parse error");
+      else
+        error (e, "parse error in %s", file.c_str ());
+    }
+  catch (...)
+    {
+      std::string file = lexer.fcn_file_full_name;
+
+      if (file.empty ())
+        error ("unexpected exception while parsing input");
+      else
+        error ("unexpected exception while parsing %s", file.c_str ());
+    }
+
+  if (status != 0)
+    parse_error ("%s", parse_error_msg.c_str ());
+
+  return status;
 }
 
 // Parse input from INPUT.  Pass TRUE for EOF if the end of INPUT should
@@ -4035,9 +4074,33 @@ octave_push_parser::run (const std::string& input, bool eof)
 
       yypstate *pstate = static_cast<yypstate *> (parser_state);
 
-      status = octave_push_parse (pstate, token, &lval, *this);
+      try
+        {
+          status = octave_push_parse (pstate, token, &lval, *this);
+        }
+      catch (octave_execution_exception& e)
+        {
+          std::string file = lexer.fcn_file_full_name;
+
+          if (file.empty ())
+            error (e, "parse error");
+          else
+            error (e, "parse error in %s", file.c_str ());
+        }
+      catch (...)
+        {
+          std::string file = lexer.fcn_file_full_name;
+
+          if (file.empty ())
+            error ("unexpected exception while parsing input");
+          else
+            error ("unexpected exception while parsing %s", file.c_str ());
+        }
     }
   while (status == YYPUSH_MORE);
+
+  if (status != 0)
+    parse_error ("%s", parse_error_msg.c_str ());
 
   return status;
 }

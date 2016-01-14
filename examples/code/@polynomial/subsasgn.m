@@ -23,7 +23,7 @@ function p = subsasgn (p, s, val)
     case "."
       fld = s(1).subs;
       if (! strcmp (fld, "poly"))
-        error ("@polynomial/subsasgn: invalid property '%s'", fld);
+        error ('@polynomial/subsasgn: invalid property "%s"', fld);
       endif
       if (numel (s) == 1)
         p.poly = val;

@@ -24,11 +24,11 @@
 @node Object Oriented Programming
 @chapter Object Oriented Programming
 
-Octave includes the capability to create user-defined classes, including the
+Octave has the ability to create user-defined classes---including the
 capabilities of operator and function overloading.  Classes can protect
-internal properties so they can not be altered accidentally which facilitates
-data encapsulation.  In addition, rules can be created to address the issue
-of class precedence in mixed class operations.
+internal properties so that they may not be altered accidentally which
+facilitates data encapsulation.  In addition, rules can be created to address
+the issue of class precedence in mixed class operations.
 
 This chapter discusses the means of constructing a user class, how to query and
 set the properties of a class, and how to overload operators and functions.
@@ -37,7 +37,7 @@ for polynomials.
 
 @menu
 * Creating a Class::
-* Manipulating Classes::
+* Class Methods::
 * Indexing Objects::
 * Overloading Objects::
 * Inheritance and Aggregation::
@@ -47,8 +47,8 @@ for polynomials.
 @section Creating a Class
 
 This chapter illustrates user-defined classes and object oriented programming
-through a custom class designed for polynomials.  This class was chosen as it
-is simple, and therefore doesn't distract unnecessarily from the discussion of
+through a custom class designed for polynomials.  This class was chosen for
+its simplicity which does not distract unnecessarily from the discussion of
 the programming features of Octave.  Even so, a bit of background on the goals
 of the polynomial class is necessary before the syntax and techniques of Octave
 object oriented programming are introduced.
@@ -80,14 +80,14 @@ Thus the polynomial can be represented by a vector
 a = [a0, a1, a2, @dots{}, an];
 @end example
 
-This is is a sufficient specification to begin writing the constructor for the
+This is a sufficient specification to begin writing the constructor for the
 polynomial class.  All object oriented classes in Octave must be located in a
-directory that has the name of the class prepended with the @@ symbol.  For
-example, the polynomial class will have all of its methods defined in the
-@@polynomial directory.
+directory that is the name of the class prepended with the @samp{@@} symbol.
+For example, the polynomial class will have all of its methods defined in the
+@file{@@polynomial} directory.
 
 The constructor for the class must be the name of the class itself; in this
-example the constructor has the name @file{@@polynomial/polynomial.m}.
+example the constructor resides in the file @file{@@polynomial/polynomial.m}.
 Ideally, even when the constructor is called with no arguments it should return
 a valid object.  A constructor for the polynomial class might look like
 
@@ -112,7 +112,7 @@ restricted to a particular class by using the class directory name followed
 by the method.  For example, @code{help @@polynomial/polynomial} is another
 way of displaying the help string for the polynomial constructor.  This second
 means is the only way to obtain help for the overloaded methods and functions
-of the class.
+of a class.
 
 The same specification mechanism can be used wherever Octave expects a function
 name.  For example @code{type @@polynomial/display} will print the code of the
@@ -158,15 +158,16 @@ ismethod (p, "roots")
 @end group
 @end example
 
-@node Manipulating Classes
-@section Manipulating Classes
+@node Class Methods
+@section Class Methods
 
 There are a number of basic class methods that can (and should) be defined to
 allow the contents of the classes to be queried and set.  The most basic of
 these is the @code{display} method.  The @code{display} method is used by
-Octave when displaying a class on the screen, usually the result of an Octave
-expression that does not end with a semicolon.  If this method is not defined,
-then Octave won't print anything when displaying the contents of a class.
+Octave whenever a class should be displayed on the screen.  Usually this is the
+result of an Octave expression that doesn't end with a semicolon.  If this
+method is not defined, then Octave won't print anything when displaying the
+contents of a class which can be confusing.
 
 @DOCSTRING(display)
 
@@ -179,16 +180,16 @@ An example of a display method for the polynomial class might be
 
 @noindent
 Note that in the display method it makes sense to start the method with the
-line @code{printf ("%s =", inputname (1))} to be consistent with the rest of
-Octave and print the variable name to be displayed when displaying a class
-object.
+line @w{@code{printf ("%s =", inputname (1))}} to be consistent with the rest
+of Octave which prints the variable name to be displayed followed by the value.
 
 To be consistent with the Octave graphic handle classes, a class should also
 define the @code{get} and @code{set} methods.  The @code{get} method accepts
 one or two arguments.  The first argument is an object of the appropriate
-class.  If no other argument is given then the method should return a structure
-with all the properties of the class.  If a second argument is given it should
-be a property name and the property specified should be retrieved.
+class.  If no second argument is given then the method should return a
+structure with all the properties of the class.  If the optional second
+argument is given it should be a property name and the specified property
+should be retrieved.
 
 @example
 @EXAMPLEFILE(@polynomial/get.m)
@@ -270,7 +271,7 @@ determined by the @code{subsref} method.
 For example, this class uses the convention that indexing with @qcode{"()"}
 evaluates the polynomial and indexing with @qcode{"@{@}"} returns the
 @var{n}-th coefficient (of the @var{n}-th power).  The code for the
-@code{subsref} method of looks like
+@code{subsref} method looks like
 
 @example
 @EXAMPLEFILE(@polynomial/subsref.m)
@@ -289,7 +290,7 @@ responsibility of these methods to handle the rest of the chain (if needed),
 usually by forwarding it again to @code{subsref} or @code{subsasgn}.
 
 If you wish to use the @code{end} keyword in subscripted expressions of an
-object, then the there must be an @code{end} method defined.  For example, the
+object, then there must be an @code{end} method defined.  For example, the
 @code{end} method for the polynomial class might look like
 
 @example
@@ -300,7 +301,8 @@ object, then the there must be an @code{end} method defined.  For example, the
 
 @noindent
 which is a fairly generic @code{end} method that has a behavior similar to the
-@code{end} keyword for Octave Array classes.  It can then be used as follows:
+@code{end} keyword for Octave Array classes.  An example using the polynomial
+class is then
 
 @example
 @group
@@ -323,7 +325,8 @@ Finally, objects can be used like ranges by providing a @code{colon} method.
 @subsection Indexed Assignment Optimization
 
 Octave's ubiquitous lazily-copied pass-by-value semantics implies a problem for
-performance of user-defined subsasgn methods.  Imagine a call to subsasgn:
+performance of user-defined @code{subsasgn} methods.  Imagine the following
+call to @code{subsasgn}
 
 @example
 @group
@@ -333,7 +336,7 @@ x = subsasgn (x, ss, 1);
 @end example
 
 @noindent
-and the corresponding method looking like this:
+where the corresponding method looking like this:
 
 @example
 @group
@@ -344,7 +347,7 @@ endfunction
 @end group
 @end example
 
-The problem is that on entry to the subsasgn method, @code{x} is still
+The problem is that on entry to the @code{subsasgn} method, @code{x} is still
 referenced from the caller's scope, which means that the method will first need
 to unshare (copy) @code{x} and @code{x.myfield} before performing the
 assignment.  Upon completing the call, unless an error occurs, the result is
@@ -356,15 +359,10 @@ operation is degraded to linear-time one.  This may be a real problem for user
 classes that intrinsically store large arrays.
 
 To partially solve the problem Octave uses a special optimization for
-user-defined subsasgn methods coded as m-files.  When the method gets called as
-a result of the built-in assignment syntax (not a direct subsasgn call as shown
-above), i.e.,
-
-@example
-x(1) = 1;
-@end example
-
-@b{AND} if the subsasgn method is declared with identical input and output
+user-defined @code{subsasgn} methods coded as m-files.  When the method gets
+called as a result of the built-in assignment syntax (not a direct
+@code{subsasgn} call as shown above), i.e., @w{@code{x(1) = 1}},  @b{AND} if
+the @code{subsasgn} method is declared with identical input and output
 arguments, as in the example above, then Octave will ignore the copy of
 @code{x} inside the caller's scope; therefore, any changes made to @code{x}
 during the method execution will directly affect the caller's copy as well.
@@ -381,8 +379,8 @@ subsasgn will not do anything, however, only indexed assignments matter.
 
 Since this optimization may change the way code works (especially if badly
 written), a built-in variable @code{optimize_subsasgn_calls} is provided to
-control it.  It is on by default.  Another option to avoid the effect is to
-declare subsasgn methods with different output and input arguments, like this:
+control it.  It is on by default.  Another way to avoid the optimization is to
+declare subsasgn methods with different output and input arguments like this:
 
 @example
 @group
@@ -404,7 +402,7 @@ endfunction
 @node Function Overloading
 @subsection Function Overloading
 
-Any Octave function can be overloaded, and this allows an object specific
+Any Octave function can be overloaded, and this allows an object-specific
 version of a function to be called as needed.  A pertinent example for the
 polynomial class might be to overload the @code{polyval} function.
 
@@ -430,9 +428,10 @@ roots of the polynomial.
 
 Functions that are of particular interest for overloading are the class
 conversion functions such as @code{double}.  Overloading these functions allows
-the @code{cast} function to work with a user class and can aid in the use of
-methods of other classes with the user class.  An example @code{double}
-function for the polynomial class might look like
+the @code{cast} function to work with a user class.  It can also can aid in the
+use of a class object with methods and functions from other classes since the
+object can be transformed to the requisite input form for the new function.
+An example @code{double} function for the polynomial class might look like
 
 @example
 @group
@@ -605,10 +604,10 @@ An example @code{mtimes} method for the polynomial class might look like
 @node Precedence of Objects
 @subsection Precedence of Objects
 
-Many functions and operators take two or more arguments and so the situation
-can easily arise that these functions are called with objects of different
+Many functions and operators take two or more arguments and the situation can
+easily arise where these functions are called with objects of different
 classes.  It is therefore necessary to determine the precedence of which method
-of which class to call when there are mixed objects given to a function or
+from which class to call when there are mixed objects given to a function or
 operator.  To do this the @code{superiorto} and @code{inferiorto} functions can
 be used
 
@@ -616,14 +615,14 @@ be used
 
 @DOCSTRING(inferiorto)
 
-For example with the polynomial class consider the case
+With the polynomial class, consider the case
 
 @example
 2 * polynomial ([1, 0, 1]);
 @end example
 
 @noindent
-That mixes an object of the class @qcode{"double"} with an object of the class
+that mixes an object of the class @qcode{"double"} with an object of the class
 @qcode{"polynomial"}.  In this case the return type should be
 @qcode{"polynomial"} and so the @code{superiorto} function is used in the class
 constructor.  In particular the polynomial class constructor would be modified
@@ -633,31 +632,30 @@ to
 @EXAMPLEFILE(@polynomial/polynomial_superiorto.m)
 @end example
 
-Note that user classes always have higher precedence than built-in Octave
-types.  Thus, marking the polynomial class higher than the @qcode{"double"}
-class is not actually necessary.
+Note that user classes @emph{always} have higher precedence than built-in
+Octave types.  Thus, marking the polynomial class higher than the
+@qcode{"double"} class is not actually necessary.
 
-When confronted with two objects with equal precedence, Octave will use the
+When confronted with two objects of equal precedence, Octave will use the
 method of the object that appears first in the list of arguments.
 
 @node Inheritance and Aggregation
 @section Inheritance and Aggregation
 
-Using classes to build new classes is supported by octave through the use of
+Using classes to build new classes is supported by Octave through the use of
 both inheritance and aggregation.
 
-Class inheritance is provided by octave using the @code{class} function in the
+Class inheritance is provided by Octave using the @code{class} function in the
 class constructor.  As in the case of the polynomial class, the Octave
 programmer will create a structure that contains the data fields required by
-the class, and then call the class function to indicate that an object is to be
-created from the structure.  Creating a child of an existing object is done by
-creating an object of the parent class and providing that object as the third
-argument of the class function.
+the class, and then call the @code{class} function to indicate that an object
+is to be created from the structure.  Creating a child of an existing object is
+done by creating an object of the parent class and providing that object as the
+third argument of the class function.
 
 This is most easily demonstrated by example.  Suppose the programmer needs a
-FIR filter, i.e., a filter with a numerator polynomial but a unity denominator
-polynomial.  In traditional Octave programming this would be performed as
-follows.
+FIR filter, i.e., a filter with a numerator polynomial but a denominator of 1.
+In traditional Octave programming this would be performed as follows.
 
 @example
 @group
@@ -667,9 +665,9 @@ octave:3> y = filter (n, 1, x);
 @end group
 @end example
 
-The equivalent class could be implemented in a class directory @@FIRfilter that
-is on the Octave path.  The constructor is a file @file{FIRfilter.m} in the
-class directory.
+The equivalent behavior can be implemented as a class @@FIRfilter.  The
+constructor for this class is the file @file{FIRfilter.m} in the class
+directory @file{@@FIRfilter}.
 
 @example
 @EXAMPLEFILE(@FIRfilter/FIRfilter.m)
@@ -678,23 +676,21 @@ class directory.
 As before, the leading comments provide documentation for the class
 constructor.  This constructor is very similar to the polynomial class
 constructor, except that a polynomial object is passed as the third argument to
-the @code{class} function, telling Octave that the FIRfilter class will be
-derived from the polynomial class.  The FIR filter does not have any data
-fields, but it must provide a struct to the @code{class} function.  The
-@code{class} function will add an element named polynomial to the object
-struct, so in this case a dummy element named polynomial is created as the
-first line of the constructor.  This dummy element will be overwritten by the
-@code{class} function.
+the @code{class} function, telling Octave that the @w{FIRfilter} class will be
+derived from the polynomial class.  The FIR filter class itself does not have
+any data fields, but it must provide a struct to the @code{class} function.
+Given that the @@polynomial constructor will add an element named
+@var{polynomial} to the object struct, the @@FIRfilter just initializes a
+struct with a dummy field @var{polynomial} which will later be overwritten.
 
-Note that all of the sample code provide for the case in which no arguments are
-supplied.  This is important because Octave will call the constructor with no
-arguments when loading objects from saved files in order to determine the
+Note that the sample code always provides for the case in which no arguments
+are supplied.  This is important because Octave will call a constructor with
+no arguments when loading objects from saved files in order to determine the
 inheritance structure.
 
-A class may be a child of more than one class (see the documentation for the
-@code{class} function), and inheritance may be nested.  There is no limitation
-to the number of parents or the level of nesting other than memory or other
-physical issues.
+A class may be a child of more than one class (@pxref{XREFclass,,class}), and
+inheritance may be nested.  There is no limitation to the number of parents or
+the level of nesting other than memory or other physical issues.
 
 As before, a class requires a @code{display} method.  A simple example might be
 
@@ -704,8 +700,8 @@ As before, a class requires a @code{display} method.  A simple example might be
 @end group
 @end example
 
-Note that the polynomial field of the struct is used to display the filter
-coefficients.
+Note that the @w{FIRfilter}'s display method relies on the display method
+from the polynomial class to actually display the filter coefficients.
 
 Once a constructor and display method exist, it is possible to create an
 instance of the class.  It is also possible to check the class type and examine
@@ -714,26 +710,27 @@ the underlying structure.
 @example
 @group
 octave:1> f = FIRfilter (polynomial ([1 1 1]/3))
-f.polynomial = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
+f.polynomial = 0.33333 + 0.33333 * X + 0.33333 * X ^ 2
 octave:2> class (f)
 ans = FIRfilter
-octave:3> isa (f,"FIRfilter")
+octave:3> isa (f, "FIRfilter")
 ans =  1
-octave:4> isa (f,"polynomial")
+octave:4> isa (f, "polynomial")
 ans =  1
 octave:5> struct (f)
 ans =
-@{
-polynomial = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
-@}
+
+  scalar structure containing the fields:
+
+polynomial = 0.33333 + 0.33333 * X + 0.33333 * X ^ 2
 @end group
 @end example
 
 The only thing remaining to make this class usable is a method for processing
-data.  However, it is desirable to also have a way of changing the data stored
-in the class.  Since the fields in the underlying struct are private by
-default, it is necessary to provide a mechanism to access the fields.  The
-@code{subsref} method may be used for both tasks.
+data.  But before that, it is usually desirable to also have a way of changing
+the data stored in a class.  Since the fields in the underlying struct are
+private by default, it is necessary to provide a mechanism to access the
+fields.  The @code{subsref} method may be used for both tasks.
 
 @example
 @EXAMPLEFILE(@FIRfilter/subsref.m)
@@ -763,7 +760,7 @@ The @qcode{"."} case allows us to view the contents of the polynomial field.
 @group
 octave:1> f = FIRfilter (polynomial ([1 1 1]/3));
 octave:2> f.polynomial
-ans = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
+ans = 0.33333 + 0.33333 * X + 0.33333 * X ^ 2
 @end group
 @end example
 
@@ -788,10 +785,10 @@ f.polynomial = 1 + 2 * X + 3 * X ^ 2
 @end group
 @end example
 
-Defining the FIRfilter class as a child of the polynomial class implies that
-a FIRfilter object may be used any place that a polynomial object may be used.
-This is not a normal use of a filter.  It may be a more sensible design
-approach to use aggregation rather than inheritance.  In this case, the
+Defining the @w{FIRfilter} class as a child of the polynomial class implies
+that a @w{FIRfilter} object may be used any place that a polynomial object may
+be used.  This is not a normal use of a filter.  It may be a more sensible
+design approach to use aggregation rather than inheritance.  In this case, the
 polynomial is simply a field in the class structure.  A class constructor for
 the aggregation case might be
 
@@ -799,5 +796,6 @@ the aggregation case might be
 @EXAMPLEFILE(@FIRfilter/FIRfilter_aggregation.m)
 @end example
 
-For this example the other class methods remain unchanged.
+For this example only the constructor needs changing, and all other class
+methods stay the same.
 

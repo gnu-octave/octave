@@ -4,7 +4,7 @@ function fout = subsasgn (f, index, val)
     case "."
       fld = index.subs;
       if (! strcmp (fld, "polynomial"))
-        error ("@FIRfilter/subsasgn: invalid property '%s'", fld);
+        error ('@FIRfilter/subsasgn: invalid property "%s"', fld);
       endif
       fout = f;
       fout.polynomial = val;

@@ -2981,13 +2981,13 @@ decode_subscripts (const char* name, const octave_value& arg,
 DEFUN (subsref, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {} {} subsref (@var{val}, @var{idx})\n\
-Perform the subscripted element selection operation according to the\n\
-subscript specified by @var{idx}.\n\
+Perform the subscripted element selection operation on @var{val} according\n\
+to the subscript specified by @var{idx}.\n\
 \n\
-The subscript @var{idx} is expected to be a structure array with fields\n\
-@samp{type} and @samp{subs}.  Valid values for @samp{type} are\n\
-@samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.  The @samp{subs} field may\n\
-be either @samp{\":\"} or a cell array of index values.\n\
+The subscript @var{idx} must be a structure array with fields @samp{type}\n\
+and @samp{subs}.  Valid values for @samp{type} are @qcode{\"()\"},\n\
+@qcode{\"@{@}\"}, and @qcode{\".\"}.  The @samp{subs} field may be either\n\
+@qcode{\":\"} or a cell array of index values.\n\
 \n\
 The following example shows how to extract the first two columns of a matrix\n\
 \n\
@@ -3007,7 +3007,7 @@ subsref (val, idx)\n\
 @end example\n\
 \n\
 @noindent\n\
-Note that this is the same as writing @code{val(:,1:2)}.\n\
+Note that this is the same as writing @code{val(:, 1:2)}.\n\
 \n\
 If @var{idx} is an empty structure array with fields @samp{type} and\n\
 @samp{subs}, return @var{val}.\n\
@@ -3040,10 +3040,10 @@ DEFUN (subsasgn, args, ,
 Perform the subscripted assignment operation according to the subscript\n\
 specified by @var{idx}.\n\
 \n\
-The subscript @var{idx} is expected to be a structure array with fields\n\
-@samp{type} and @samp{subs}.  Valid values for @samp{type} are\n\
-@samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.  The @samp{subs} field may\n\
-be either @samp{\":\"} or a cell array of index values.\n\
+The subscript @var{idx} must be a structure array with fields @samp{type}\n\
+and @samp{subs}.  Valid values for @samp{type} are @qcode{\"()\"},\n\
+@qcode{\"@{@}\"}, and @qcode{\".\"}.  The @samp{subs} field may be either\n\
+@qcode{\":\"} or a cell array of index values.\n\
 \n\
 The following example shows how to set the two first columns of a 3-by-3\n\
 matrix to zero.\n\
@@ -3060,11 +3060,11 @@ subsasgn (val, idx, 0)\n\
 @end group\n\
 @end example\n\
 \n\
-Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
+Note that this is the same as writing @code{val(:, 1:2) = 0}.\n\
 \n\
 If @var{idx} is an empty structure array with fields @samp{type} and\n\
 @samp{subs}, return @var{rhs}.\n\
-@seealso{subsref, substruct}\n\
+@seealso{subsref, substruct, optimize_subsasgn_calls}\n\
 @end deftypefn")
 {
   if (args.length () != 3)

@@ -15,7 +15,7 @@ function val = get (p, prop)
       case "poly"
         val = p.poly;
       otherwise
-        error ("@polynomial/get: invalid PROPERTY '%s'", prop);
+        error ('@polynomial/get: invalid PROPERTY "%s"', prop);
     endswitch
   endif
 

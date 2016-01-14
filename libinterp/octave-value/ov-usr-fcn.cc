@@ -987,14 +987,16 @@ DEFUN (optimize_subsasgn_calls, args, nargout,
 @deftypefn  {} {@var{val} =} optimize_subsasgn_calls ()\n\
 @deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
 @deftypefnx {} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
-Query or set the internal flag for subsasgn method call optimizations.\n\
+Query or set the internal flag for @code{subsasgn} method call\n\
+optimizations.\n\
 \n\
 If true, Octave will attempt to eliminate the redundant copying when calling\n\
-the subsasgn method of a user-defined class.\n\
+the @code{subsasgn} method of a user-defined class.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
+@seealso{subsasgn}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);

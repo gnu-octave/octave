@@ -1993,11 +1993,11 @@ is_built_in_class (const std::string& cn)
 DEFUN (superiorto, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} superiorto (@var{class_name}, @dots{})\n\
-When called from a class constructor, mark the object currently\n\
-constructed as having a higher precedence than @var{class_name}.\n\
+When called from a class constructor, mark the object currently constructed\n\
+as having a higher precedence than @var{class_name}.\n\
 \n\
-More that one such class can be specified in a single call.\n\
-This function may only be called from a class constructor.\n\
+More that one such class can be specified in a single call.  This function\n\
+may @emph{only} be called from a class constructor.\n\
 @seealso{inferiorto}\n\
 @end deftypefn")
 {
@@ -2026,11 +2026,11 @@ This function may only be called from a class constructor.\n\
 DEFUN (inferiorto, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} inferiorto (@var{class_name}, @dots{})\n\
-When called from a class constructor, mark the object currently\n\
-constructed as having a lower precedence than @var{class_name}.\n\
+When called from a class constructor, mark the object currently constructed\n\
+as having a lower precedence than @var{class_name}.\n\
 \n\
-More that one such class can be specified in a single call.\n\
-This function may only be called from a class constructor.\n\
+More that one such class can be specified in a single call.  This function\n\
+may @emph{only} be called from a class constructor.\n\
 @seealso{superiorto}\n\
 @end deftypefn")
 {

@@ -17,36 +17,42 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} display (@var{a})
-## Display the contents of an object.
+## @deftypefn {} {} display (@var{obj})
+## Display the contents of the object @var{obj}.
 ##
-## If @var{a} is an object of the class @qcode{"myclass"}, then @code{display}
-## is called in a case like
+## The Octave interpreter calls the @code{display} function whenever it needs
+## to present a class on-screen.  Typically, this would be a statement which
+## does not end in a semicolon to suppress output.  For example, 
 ##
 ## @example
-## myclass (@dots{})
+## myobj = myclass (@dots{})
 ## @end example
 ##
-## @noindent
-## where Octave is required to display the contents of a variable of the
-## type @qcode{"myclass"}.
+## User-defined classes should overload the @code{display} method so that
+## something useful is printed for a class object.  Otherwise, Octave will
+## report only that the object is an instance of its class.
 ##
+## @example
+## myobj = myclass (@dots{})
+##   @result{} myobj = <class myclass>
+## @end example
+## 
 ## @seealso{class, subsref, subsasgn}
 ## @end deftypefn
 
-function idx = display (a)
+function display (obj)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  ## Only reason we got here is that there was no overloaded display()
-  ## function for object a.  This may mean it is a built-in.
-  str = disp (a);
+  ## Only reason we got here is that there was no overloaded display function.
+  ## This may mean it is a built-in class.
+  str = disp (obj);
   if (isempty (strfind (str, "<class ")))
     disp (str);
   else
-    error ('display: not defined for class "%s"', class (a));
+    error ('display: not defined for class "%s"', class (obj));
   endif
 
 endfunction

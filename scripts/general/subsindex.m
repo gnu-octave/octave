@@ -17,19 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{idx} =} subsindex (@var{a})
+## @deftypefn {} {@var{idx} =} subsindex (@var{obj})
 ## Convert an object to an index vector.
 ##
-## When @var{a} is a class object defined with a class constructor, then
+## When @var{obj} is a class object defined with a class constructor, then
 ## @code{subsindex} is the overloading method that allows the conversion of
 ## this class object to a valid indexing vector.  It is important to note that
 ## @code{subsindex} must return a zero-based real integer vector of the class
-## @qcode{"double"}.  For example, if the class constructor
+## @qcode{"double"}.  For example, if the class constructor were
 ##
 ## @example
 ## @group
-## function b = myclass (a)
-##   b = class (struct ("a", a), "myclass");
+## function obj = myclass (a)
+##   obj = class (struct ("a", a), "myclass");
 ## endfunction
 ## @end group
 ## @end example
@@ -39,14 +39,14 @@
 ##
 ## @example
 ## @group
-## function idx = subsindex (a)
-##   idx = double (a.a) - 1.0;
+## function idx = subsindex (obj)
+##   idx = double (obj.a) - 1.0;
 ## endfunction
 ## @end group
 ## @end example
 ##
 ## @noindent
-## can then be used as follows
+## could be used as follows
 ##
 ## @example
 ## @group
@@ -60,7 +60,21 @@
 ## @seealso{class, subsref, subsasgn}
 ## @end deftypefn
 
-function idx = subsindex (a)
-  error ("subsindex: not defined for class \"%s\"", class (a));
+function idx = subsindex (obj)
+  
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  ## Only way to get here is if subsindex has not been overloaded by a class.
+  error ('subsindex: not defined for class "%s"', class (obj));
+
 endfunction
+
+
+%!error <not defined for class "double"> subsindex (1) 
+
+## Test input validation
+%!error subsindex ()
+%!error subsindex (1, 2)
 

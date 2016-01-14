@@ -9,7 +9,7 @@ function r = subsref (f, x)
     case "."
       fld = x.subs;
       if (! strcmp (fld, "polynomial"))
-        error ("@FIRfilter/subsref: invalid property '%s'", fld);
+        error ('@FIRfilter/subsref: invalid property "%s"', fld);
       endif
       r = f.polynomial;
 

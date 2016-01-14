@@ -756,7 +756,7 @@ Audio Recorder
 Object Oriented Programming
 
 * Creating a Class::
-* Manipulating Classes::
+* Class Methods::
 * Indexing Objects::
 * Overloading Objects::
 * Inheritance and Aggregation::

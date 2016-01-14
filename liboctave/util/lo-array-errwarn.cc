@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include <sstream>
 
 #include "lo-array-errwarn.h"
@@ -215,6 +217,11 @@ namespace octave
   {
     std::ostringstream buf;
     buf << n + 1;
+    // if  n  not an integer, but would be printed as one, show diff
+    double nearest = std::floor (n + 1.5);
+    if (n + 1 != nearest && (buf.str ().find ('.') == std::string::npos))
+      buf << std::showpos << (n + 1 - nearest);
+
     err_invalid_index (buf.str (), nd, dim, var);
   }
 

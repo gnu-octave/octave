@@ -107,7 +107,7 @@ do_minmax_red_op<charNDArray> (const octave_value& arg,
   return retval;
 }
 
-// Specialization for bool arrays.
+// Specialization for bool arrays (dense or sparse).
 template <>
 octave_value_list
 do_minmax_red_op<boolNDArray> (const octave_value& arg,
@@ -115,24 +115,35 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
 {
   octave_value_list retval;
 
-  if (nargout <= 1)
+  if (! arg.is_sparse_type ())
     {
-      // This case can be handled using any/all.
-      boolNDArray array = arg.bool_array_value ();
+      if (nargout <= 1)
+        {
+          // This case can be handled using any/all.
+          boolNDArray array = arg.bool_array_value ();
 
-      if (array.is_empty ())
-        retval(0) = array;
-      else if (ismin)
-        retval(0) = array.all (dim);
+          if (array.is_empty ())
+            retval(0) = array;
+          else if (ismin)
+            retval(0) = array.all (dim);
+          else
+            retval(0) = array.any (dim);
+        }
       else
-        retval(0) = array.any (dim);
+        {
+          // any/all don't have indexed versions, so do it via a conversion.
+          retval = do_minmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
+
+          retval(0) = retval(0).bool_array_value ();
+        }
     }
   else
     {
-      // any/all don't have indexed versions, so do it via a conversion.
-      retval = do_minmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
+      // Sparse: Don't use any/all trick, as full matrix could exceed memory. 
+      // Instead, convert to double.
+      retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim, ismin);
 
-      retval(0) = retval(0).bool_array_value ();
+      retval(0) = retval(0).sparse_bool_matrix_value ();
     }
 
   return retval;

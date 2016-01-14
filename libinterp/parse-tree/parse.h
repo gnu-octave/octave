@@ -389,7 +389,7 @@ public:
                          tree_statement *stmt, bool warn_missing_semi);
 
   // Generic error messages.
-  void bison_error (const char *s);
+  void bison_error (const std::string& s, int l = -1, int c = -1);
 
   // Have we found an explicit end to a function?
   bool endfunction_found;

@@ -3976,20 +3976,21 @@ octave_base_parser::append_statement_list (tree_statement_list *list,
 }
 
 void
-octave_base_parser::bison_error (const char *s)
+octave_base_parser::bison_error (const std::string& str, int l, int c)
 {
-  int err_col = lexer.current_input_column - 1;
+  int err_line = l < 0 ? lexer.input_line_number : l;
+  int err_col = c < 0 ? lexer.current_input_column - 1 : c;
 
   std::ostringstream output_buf;
 
   if (lexer.reading_fcn_file || lexer.reading_script_file || lexer.reading_classdef_file)
-    output_buf << "parse error near line " << lexer.input_line_number
+    output_buf << "parse error near line " << err_line
                << " of file " << lexer.fcn_file_full_name;
   else
     output_buf << "parse error:";
 
-  if (s && strcmp (s, "parse error") != 0)
-    output_buf << "\n\n  " << s;
+  if (str != "parse error")
+    output_buf << "\n\n  " << str;
 
   output_buf << "\n\n";
 

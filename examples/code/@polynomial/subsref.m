@@ -1,4 +1,4 @@
-function b = subsref (a, s)
+function r = subsref (a, s)
 
   if (isempty (s))
     error ("@polynomial/subsref: missing index");
@@ -11,7 +11,7 @@ function b = subsref (a, s)
       if (numel (ind) != 1)
         error ("@polynomial/subsref: need exactly one index");
       endif
-      b = polyval (fliplr (a.poly), ind{1});
+      r = polyval (fliplr (a.poly), ind{1});
 
     case "{}"
       ind = s(1).subs;
@@ -20,17 +20,17 @@ function b = subsref (a, s)
       endif
 
       if (isnumeric (ind{1}))
-        b = a.poly(ind{1}+1);
+        r = a.poly(ind{1}+1);
       else
-        b = a.poly(ind{1});
+        r = a.poly(ind{1});
       endif
 
     case "."
       fld = s.subs;
       if (! strcmp (fld, "poly"))
-        error ("@polynomial/subsref: invalid property \"%s\"", fld);
+        error ("@polynomial/subsref: invalid property '%s'", fld);
       endif
-      b = a.poly;
+      r = a.poly;
 
     otherwise
       error ("@polynomial/subsref: invalid subscript type");
@@ -38,7 +38,7 @@ function b = subsref (a, s)
   endswitch
 
   if (numel (s) > 1)
-    b = subsref (b, s(2:end));
+    r = subsref (r, s(2:end));
   endif
 
 endfunction

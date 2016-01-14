@@ -1,6 +1,6 @@
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} FIRfilter ()
-## @deftypefnx {Function File} {} FIRfilter (@var{p})
+## @deftypefn  {} {} FIRfilter ()
+## @deftypefnx {} {} FIRfilter (@var{p})
 ## Create a FIR filter with polynomial @var{p} as coefficient vector.
 ## @end deftypefn
 
@@ -13,7 +13,7 @@ function f = FIRfilter (p)
   if (nargin == 0)
     p = @polynomial ([1]);
   elseif (! isa (p, "polynomial"))
-    error ("@FIRfilter: expecting polynomial as input argument");
+    error ("@FIRfilter: P must be a polynomial object");
   endif
 
   f.polynomial = [];

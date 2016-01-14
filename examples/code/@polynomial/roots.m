@@ -1,3 +1,3 @@
-function y = roots (p)
-  y = roots (fliplr (p.poly));
+function r = roots (p)
+  r = roots (fliplr (p.poly));
 endfunction

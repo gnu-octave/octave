@@ -1,21 +1,21 @@
-function s = get (p, f)
+function val = get (p, prop)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
   if (nargin == 1)
-    s.poly = p.poly;
+    val.poly = p.poly;
   else
-    if (! ischar (f))
-      error ("@polynomial/get: expecting the property to be a string");
+    if (! ischar (prop))
+      error ("@polynomial/get: PROPERTY must be a string");
     endif
 
-    switch (f)
+    switch (prop)
       case "poly"
-        s = p.poly;
+        val = p.poly;
       otherwise
-        error ("@polynomial/get: invalid property %s", f);
+        error ("@polynomial/get: invalid PROPERTY '%s'", prop);
     endswitch
   endif
 

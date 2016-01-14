@@ -1,22 +1,23 @@
 function display (p)
 
+  printf ("%s =", inputname (1));
+
   a = p.poly;
   first = true;
-  printf ("%s =", inputname (1));
   for i = 1 : length (a);
     if (a(i) != 0)
       if (first)
         first = false;
-      elseif (a(i) > 0)
+      elseif (a(i) > 0 || isnan (a(i)))
         printf (" +");
       endif
       if (a(i) < 0)
         printf (" -");
       endif
       if (i == 1)
-        printf (" %g", abs (a(i)));
-      elseif (abs(a(i)) != 1)
-        printf (" %g *", abs (a(i)));
+        printf (" %.5g", abs (a(i)));
+      elseif (abs (a(i)) != 1)
+        printf (" %.5g *", abs (a(i)));
       endif
       if (i > 1)
         printf (" X");

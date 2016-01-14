@@ -3344,12 +3344,7 @@ octave_base_lexer::display_token (int tok)
 void
 octave_base_lexer::fatal_error (const char *msg)
 {
-  error (msg);
-
-  // FIXME: This is no longer reachable now that error is exception based.
-  OCTAVE_QUIT;
-
-  yy_fatal_error (msg, scanner);
+  error ("fatal lexer error: %s", msg);
 }
 
 void

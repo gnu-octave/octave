@@ -45,8 +45,8 @@ extern "C" {
 /* Octave's idea of not a number.  */
 #define octave_Float_NaN (lo_ieee_float_nan_value ())
 
-/* FIXME -- this code assumes that a double has twice the
-   number of bits as an int */
+/* FIXME: This code assumes that a double has twice the
+          number of bits as an int */
 
 typedef union
 {

@@ -24,10 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_sparse_util_h)
 #define octave_sparse_util_h 1
 
-// The next two functions don't do anything unless CHOLMOD is
-// available
+// The next two functions don't do anything unless CHOLMOD is available
 
-// FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
+// FIXME: This overload is here due to API change in SuiteSparse (3.1 -> 3.2)
 extern OCTAVE_API void
 SparseCholError (int status, char *file, int line, char *message);
 

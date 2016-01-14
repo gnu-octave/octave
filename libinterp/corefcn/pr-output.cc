@@ -2808,7 +2808,7 @@ octave_print_internal (std::ostream& os, const boolNDArray& nda,
 void
 octave_print_internal (std::ostream& os, const charMatrix& chm,
                        bool pr_as_read_syntax,
-                       int /* extra_indent FIXME */,
+                       int /* FIXME: extra_indent */,
                        bool pr_as_string)
 {
   if (pr_as_string)

@@ -171,8 +171,8 @@ not returning a value from a function declared to return something.
 #define F77_NORETURN(retval) return retval;
 #endif
 
-/* FIXME -- these should work for SV1 or Y-MP systems but will
-   need to be changed for others.  */
+/* FIXME: These should work for SV1 or Y-MP systems but will
+          need to be changed for others.  */
 
 typedef union
 {

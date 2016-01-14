@@ -3932,8 +3932,8 @@ psi (const octave_idx_type n, const T z)
       // When n is 1: do nothing since ((-1)**(n+1)/gamma(n+1)) == 1
       // When n is 0: change sign since ((-1)**(n+1)/gamma(n+1)) == -1
       if (n > 1)
-        // FIXME xgamma here is a killer for our precision since it grows
-        //       way too fast
+        // FIXME: xgamma here is a killer for our precision since it grows
+        //        way too fast.
         ans = ans / (pow (-1.0, n + 1) / xgamma (double (n+1)));
       else if (n == 0)
         ans = -ans;

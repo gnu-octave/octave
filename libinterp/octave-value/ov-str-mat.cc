@@ -241,7 +241,8 @@ octave_char_matrix_str::string_value (bool) const
 
   charMatrix chm (matrix);
 
-  return chm.row_as_string (0);  // FIXME?
+  // FIXME: Is this correct?
+  return chm.row_as_string (0);
 }
 
 Array<std::string>

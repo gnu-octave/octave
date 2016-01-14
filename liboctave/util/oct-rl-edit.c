@@ -89,8 +89,7 @@ octave_rl_erase_empty_line (int val)
 
    Instead, temporarily redefine the redisplay function to do nothing.
 
-   FIXME -- It would be safer to do this when protected from
-   interrupts... */
+   FIXME: It would be safer to do this when protected from interrupts... */
 
 static void
 flush_stdout (void)

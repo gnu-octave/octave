@@ -166,7 +166,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "randmtzig.h"
 
-/* FIXME may want to suppress X86 if sizeof(long) > 4 */
+/* FIXME: may want to suppress X86 if sizeof(long) > 4 */
 #if ! defined (USE_X86_32)
 # if defined (i386) || defined (HAVE_X86_32)
 #  define USE_X86_32 1

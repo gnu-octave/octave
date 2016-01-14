@@ -535,8 +535,8 @@ oct_randp (double L)
     }
   else if (INFINITE(L))
     {
-      /* FIXME R uses NaN, but the normal approx. suggests that as
-       * limit should be inf. Which is correct? */
+      /* FIXME: R uses NaN, but the normal approximation suggests that
+       * limit should be Inf.  Which is correct? */
       ret = NAN;
     }
   else
@@ -608,8 +608,8 @@ oct_float_randp (float FL)
     }
   else if (INFINITE(L))
     {
-      /* FIXME R uses NaN, but the normal approx. suggests that as
-       * limit should be inf. Which is correct? */
+      /* FIXME: R uses NaN, but the normal approximation suggests that
+       * limit should be Inf. Which is correct? */
       ret = NAN;
     }
   else

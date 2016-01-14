@@ -82,9 +82,9 @@ typedef unsigned char mxLogical;
 typedef char mxChar;
 
 /*
- * FIXME? Mathworks says these should be size_t on 64-bit system and when
- * mex is used with the -largearraydims flag, but why do that? Its better
- * to conform to the same indexing as the rest of Octave
+ * FIXME: Mathworks says these should be size_t on 64-bit system and when
+ * mex is used with the -largearraydims flag, but why do that?  Its better
+ * to conform to the same indexing as the rest of Octave.
  */
 typedef %OCTAVE_IDX_TYPE% mwSize;
 typedef %OCTAVE_IDX_TYPE% mwIndex;

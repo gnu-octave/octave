@@ -182,7 +182,7 @@ public:
   SparseMatrix sparse_matrix_value (bool = false) const
   { return SparseMatrix (Matrix (1, 1, scalar)); }
 
-  // FIXME Need SparseComplexMatrix (Matrix) constructor!!!
+  // FIXME: Need SparseComplexMatrix (Matrix) constructor!
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
   { return SparseComplexMatrix (sparse_matrix_value ()); }
 

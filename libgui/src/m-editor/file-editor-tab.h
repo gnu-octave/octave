@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QComboBox>
 
-// FIXME -- we should not be including config.h in header files.
+// FIXME: We should not be including config.h in header files.
 // Only needed for octave_value_list type.
 #ifdef HAVE_CONFIG_H
 #include <config.h>

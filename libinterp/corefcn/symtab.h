@@ -173,7 +173,7 @@ public:
     static const unsigned int local = 1;
 
     // varargin, argn, .nargin., .nargout.
-    // (FIXME -- is this really used now?)
+    // (FIXME: is this really used now?)
     static const unsigned int automatic = 2;
 
     // formal parameter

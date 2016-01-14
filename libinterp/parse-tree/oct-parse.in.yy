@@ -85,7 +85,7 @@ along with Octave; see the file COPYING.  If not, see
 extern int octave_lex (YYSTYPE *, void *);
 
 // Global access to currently active lexer.
-// FIXME -- to be removed after more parser+lexer refactoring.
+// FIXME: to be removed after more parser+lexer refactoring.
 octave_base_lexer *LEXER = 0;
 
 #if defined (GNULIB_NAMESPACE)
@@ -2387,7 +2387,7 @@ octave_base_parser::make_constant (int op, token *tok_val)
         if (op == DQ_STRING)
           txt = undo_string_escapes (txt);
 
-        // FIXME -- maybe this should also be handled by
+        // FIXME: maybe this should also be handled by
         // tok_val->text_rep () for character strings?
         retval->stash_original_text (delim + txt + delim);
       }
@@ -2420,7 +2420,7 @@ tree_anon_fcn_handle *
 octave_base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
                                           tree_statement *stmt)
 {
-  // FIXME -- need to get these from the location of the @ symbol.
+  // FIXME: need to get these from the location of the @ symbol.
   int l = lexer.input_line_number;
   int c = lexer.current_input_column;
 
@@ -3172,7 +3172,7 @@ octave_base_parser::frob_function (const std::string& fname,
   if (! autoloading && lexer.reading_fcn_file
       && curr_fcn_depth == 1 && ! parsing_subfunctions)
   {
-    // FIXME -- should lexer.fcn_file_name already be
+    // FIXME: should lexer.fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a
     // problem with relative filenames.
 

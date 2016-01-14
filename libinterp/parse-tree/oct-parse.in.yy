@@ -1541,11 +1541,16 @@ function2       : param_list opt_sep opt_list function_end
 function_end    : END
                   {
                     parser.endfunction_found = true;
+
                     if (parser.end_token_ok ($1, token::function_end))
                       $$ = parser.make_end ("endfunction", false,
                                             $1->line (), $1->column ());
                     else
-                      ABORT_PARSE;
+                      {
+                        parser.end_token_error ($1, token::function_end);
+
+                        ABORT_PARSE;
+                      }
                   }
                 | END_OF_INPUT
                   {
@@ -2084,156 +2089,96 @@ octave_base_parser::reset (void)
 
 // Error mesages for mismatched end tokens.
 
-void
-octave_base_parser::end_error (const char *type, token::end_tok_type ettype,
-                               int l, int c)
+static std::string
+end_token_as_string (token::end_tok_type ettype)
 {
-  static const char *fmt
-    = "'%s' command matched by '%s' near line %d column %d";
+  std::string retval = "<unknown>";
 
   switch (ettype)
     {
     case token::simple_end:
-      error (fmt, type, "end", l, c);
+      retval = "end";
       break;
 
     case token::classdef_end:
-      error (fmt, type, "endclassdef", l, c);
+      retval = "endclassdef";
       break;
 
     case token::enumeration_end:
-      error (fmt, type, "endenumeration", l, c);
+      retval = "endenumeration";
       break;
 
     case token::events_end:
-      error (fmt, type, "endevents", l, c);
+      retval = "endevents";
       break;
 
     case token::for_end:
-      error (fmt, type, "endfor", l, c);
+      retval = "endfor";
       break;
 
     case token::function_end:
-      error (fmt, type, "endfunction", l, c);
+      retval = "endfunction";
       break;
 
     case token::if_end:
-      error (fmt, type, "endif", l, c);
+      retval = "endif";
       break;
 
     case token::methods_end:
-      error (fmt, type, "endmethods", l, c);
+      retval = "endmethods";
       break;
 
     case token::parfor_end:
-      error (fmt, type, "endparfor", l, c);
+      retval = "endparfor";
       break;
 
     case token::properties_end:
-      error (fmt, type, "endproperties", l, c);
+      retval = "endproperties";
       break;
 
     case token::switch_end:
-      error (fmt, type, "endswitch", l, c);
+      retval = "endswitch";
       break;
 
     case token::try_catch_end:
-      error (fmt, type, "end_try_catch", l, c);
+      retval = "end_try_catch";
       break;
 
     case token::unwind_protect_end:
-      error (fmt, type, "end_unwind_protect", l, c);
+      retval = "end_unwind_protect";
       break;
 
     case token::while_end:
-      error (fmt, type, "endwhile", l, c);
+      retval = "endwhile";
       break;
 
     default:
       panic_impossible ();
       break;
     }
+
+  return retval;
 }
+
+void
+octave_base_parser::end_token_error (token *tok, token::end_tok_type expected)
+{
+  std::string msg = ("'" + end_token_as_string (expected)
+                     + "' command matched by '"
+                     + end_token_as_string (tok->ettype ()) + "'");
+
+  bison_error (msg, tok->line (), tok->column ());
+}
+
 
 // Check to see that end tokens are properly matched.
 
 bool
 octave_base_parser::end_token_ok (token *tok, token::end_tok_type expected)
 {
-  bool retval = true;
-
   token::end_tok_type ettype = tok->ettype ();
 
-  if (ettype != expected && ettype != token::simple_end)
-    {
-      retval = false;
-
-      bison_error ("parse error");
-
-      int l = tok->line ();
-      int c = tok->column ();
-
-      switch (expected)
-        {
-        case token::classdef_end:
-          end_error ("classdef", ettype, l, c);
-          break;
-
-        case token::enumeration_end:
-          end_error ("enumeration", ettype, l, c);
-          break;
-
-        case token::events_end:
-          end_error ("events", ettype, l, c);
-          break;
-
-        case token::for_end:
-          end_error ("for", ettype, l, c);
-          break;
-
-        case token::function_end:
-          end_error ("function", ettype, l, c);
-          break;
-
-        case token::if_end:
-          end_error ("if", ettype, l, c);
-          break;
-
-        case token::methods_end:
-          end_error ("methods", ettype, l, c);
-          break;
-
-        case token::parfor_end:
-          end_error ("parfor", ettype, l, c);
-          break;
-
-        case token::properties_end:
-          end_error ("properties", ettype, l, c);
-          break;
-
-        case token::switch_end:
-          end_error ("switch", ettype, l, c);
-          break;
-
-        case token::try_catch_end:
-          end_error ("try", ettype, l, c);
-          break;
-
-        case token::unwind_protect_end:
-          end_error ("unwind_protect", ettype, l, c);
-          break;
-
-        case token::while_end:
-          end_error ("while", ettype, l, c);
-          break;
-
-        default:
-          panic_impossible ();
-          break;
-        }
-    }
-
-  return retval;
+  return ettype == expected || ettype == token::simple_end;
 }
 
 // Maybe print a warning if an assignment expression is used as the
@@ -2679,6 +2624,8 @@ octave_base_parser::make_unwind_command (token *unwind_tok,
     {
       delete body;
       delete cleanup_stmts;
+
+      end_token_error (end_tok, token::unwind_protect_end);
     }
 
   return retval;
@@ -2733,6 +2680,8 @@ octave_base_parser::make_try_command (token *try_tok,
     {
       delete body;
       delete cleanup_stmts;
+
+      end_token_error (end_tok, token::try_catch_end);
     }
 
   return retval;
@@ -2766,6 +2715,8 @@ octave_base_parser::make_while_command (token *while_tok,
     {
       delete expr;
       delete body;
+
+      end_token_error (end_tok, token::while_end);
     }
 
   return retval;
@@ -2841,6 +2792,8 @@ octave_base_parser::make_for_command (int tok_id, token *for_tok,
       delete expr;
       delete maxproc;
       delete body;
+
+      end_token_error (end_tok, parfor ? token::parfor_end : token::for_end);
     }
 
   return retval;
@@ -2923,7 +2876,11 @@ octave_base_parser::finish_if_command (token *if_tok,
       retval = new tree_if_command (list, lc, tc, l, c);
     }
   else
-    delete list;
+    {
+      delete list;
+
+      end_token_error (end_tok, token::if_end);
+    }
 
   return retval;
 }
@@ -2979,6 +2936,8 @@ octave_base_parser::finish_switch_command (token *switch_tok,
     {
       delete expr;
       delete list;
+
+      end_token_error (end_tok, token::switch_end);
     }
 
   return retval;
@@ -3400,27 +3359,39 @@ octave_base_parser::make_classdef (token *tok_val,
     nm = lexer.fcn_file_name.substr (pos+1);
 
   if (nm != cls_name)
-    bison_error ("invalid classdef definition, the class name must match the filename");
-  else if (end_token_ok (end_tok, token::classdef_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = tok_val->line ();
-      int c = tok_val->column ();
-
-      if (! body)
-        body = new tree_classdef_body ();
-
-      retval = new tree_classdef (a, id, sc, body, lc, tc,
-                                  curr_package_name, l, c);
-    }
-
-  if (! retval)
     {
       delete a;
       delete id;
       delete sc;
       delete body;
+
+      bison_error ("invalid classdef definition, the class name must match the filename");
+
+    }
+  else
+    {
+      if (end_token_ok (end_tok, token::classdef_end))
+        {
+          octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+          int l = tok_val->line ();
+          int c = tok_val->column ();
+
+          if (! body)
+            body = new tree_classdef_body ();
+
+          retval = new tree_classdef (a, id, sc, body, lc, tc,
+                                      curr_package_name, l, c);
+        }
+      else
+        {
+          delete a;
+          delete id;
+          delete sc;
+          delete body;
+
+          end_token_error (end_tok, token::switch_end);
+        }
     }
 
   return retval;
@@ -3451,6 +3422,8 @@ octave_base_parser::make_classdef_properties_block (token *tok_val,
     {
       delete a;
       delete plist;
+
+      end_token_error (end_tok, token::properties_end);
     }
 
   return retval;
@@ -3481,6 +3454,8 @@ octave_base_parser::make_classdef_methods_block (token *tok_val,
     {
       delete a;
       delete mlist;
+
+      end_token_error (end_tok, token::methods_end);
     }
 
   return retval;
@@ -3511,6 +3486,8 @@ octave_base_parser::make_classdef_events_block (token *tok_val,
     {
       delete a;
       delete elist;
+
+      end_token_error (end_tok, token::events_end);
     }
 
   return retval;
@@ -3541,6 +3518,8 @@ octave_base_parser::make_classdef_enum_block (token *tok_val,
     {
       delete a;
       delete elist;
+
+      end_token_error (end_tok, token::enumeration_end);
     }
 
   return retval;

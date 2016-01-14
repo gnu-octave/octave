@@ -152,7 +152,7 @@ public:
   void reset (void);
 
   // Error mesages for mismatched end tokens.
-  void end_error (const char *type, token::end_tok_type expected, int l, int c);
+  void end_token_error (token *tok, token::end_tok_type expected);
 
   // Check to see that end tokens are properly matched.
   bool end_token_ok (token *tok, token::end_tok_type expected);

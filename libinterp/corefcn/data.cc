@@ -1238,7 +1238,7 @@ See @code{sum} for an explanation of the optional parameters\n\
       else
         error ("cumsum: unrecognized string argument");
 
-      nargin --;
+      nargin--;
     }
 
   if (nargin < 1 || nargin > 2)
@@ -1524,7 +1524,7 @@ in double precision even for single precision inputs.\n\
       else
         error ("prod: unrecognized type argument '%s'", str.c_str ());
 
-      nargin --;
+      nargin--;
     }
 
   if (nargin < 1 || nargin > 2)
@@ -3001,7 +3001,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
       else
         error ("sum: unrecognized type argument '%s'", str.c_str ());
 
-      nargin --;
+      nargin--;
     }
 
   if (nargin < 1 || nargin > 2)
@@ -5624,7 +5624,7 @@ compute the norms of each column and return a row vector.\n\
         error ("norm: unrecognized option: %s", str.c_str ());
 
       // we've handled the last parameter, so act as if it was removed
-      nargin --;
+      nargin--;
     }
 
   octave_value p_arg = (nargin > 1) ? args(1) : octave_value (2);

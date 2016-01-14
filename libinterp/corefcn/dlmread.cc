@@ -65,12 +65,12 @@ read_cell_spec (std::istream& is, octave_idx_type& row, octave_idx_type& col)
               else
                 col += ch - 'A' + 1;
             }
-          col --;
+          col--;
 
           if (is)
             {
               is >> row;
-              row --;
+              row--;
               if (is)
                 stat = true;
             }

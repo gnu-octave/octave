@@ -179,7 +179,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
       if (nargin == 6)
         {
           nzmax = args(5).idx_type_value ();
-          nargin --;
+          nargin--;
         }
 
       if (nargin == 5)

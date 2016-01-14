@@ -880,7 +880,17 @@ ANY_INCLUDING_NL (.|{NL})
     sscanf (yytext+1, "%o", &result);
 
     if (result > 0xff)
-      error ("invalid octal escape sequence in character string");
+      {
+        token *tok
+          = new token (LEXICAL_ERROR,
+                       "invalid octal escape sequence in character string",
+                       curr_lexer->input_line_number,
+                       curr_lexer->current_input_column);
+
+        curr_lexer->push_token (tok);
+
+        return curr_lexer->count_token_internal (LEXICAL_ERROR);
+      }
     else
       curr_lexer->string_text += static_cast<unsigned char> (result);
   }
@@ -1013,13 +1023,17 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>{NL}");
 
+    token *tok = new token (LEXICAL_ERROR,
+                            "unterminated character string constant",
+                            curr_lexer->input_line_number,
+                            curr_lexer->current_input_column);
+
+    curr_lexer->push_token (tok);
+
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
-    error ("unterminated character string constant");
-
-    // FIXME: This is no longer reachable now that error is exception based.
-    return LEXICAL_ERROR;
+    return curr_lexer->count_token_internal (LEXICAL_ERROR);
   }
 
 %{
@@ -1066,13 +1080,17 @@ ANY_INCLUDING_NL (.|{NL})
 <SQ_STRING_START>{NL} {
     curr_lexer->lexer_debug ("<SQ_STRING_START>{NL}");
 
+    token *tok = new token (LEXICAL_ERROR,
+                            "unterminated character string constant",
+                            curr_lexer->input_line_number,
+                            curr_lexer->current_input_column);
+
+    curr_lexer->push_token (tok);
+
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
-    error ("unterminated character string constant");
-
-    // FIXME: This is no longer reachable now that error is exception based.
-    return LEXICAL_ERROR;
+    return curr_lexer->count_token_internal (LEXICAL_ERROR);
   }
 
 %{
@@ -1332,11 +1350,11 @@ ANY_INCLUDING_NL (.|{NL})
 {NL} {
     curr_lexer->lexer_debug ("{NL}");
 
-    curr_lexer->input_line_number++;
-    curr_lexer->current_input_column = 1;
-
     if (curr_lexer->nesting_level.is_paren ())
       {
+        curr_lexer->input_line_number++;
+        curr_lexer->current_input_column = 1;
+
         curr_lexer->at_beginning_of_statement = false;
         curr_lexer->gripe_language_extension
           ("bare newline inside parentheses");
@@ -1344,11 +1362,27 @@ ANY_INCLUDING_NL (.|{NL})
     else if (curr_lexer->nesting_level.none ()
         || curr_lexer->nesting_level.is_anon_fcn_body ())
       {
+        curr_lexer->input_line_number++;
+        curr_lexer->current_input_column = 1;
+
         curr_lexer->at_beginning_of_statement = true;
+
         return curr_lexer->count_token ('\n');
       }
     else if (curr_lexer->nesting_level.is_bracket_or_brace ())
-      return LEXICAL_ERROR;
+      {
+        token *tok = new token (LEXICAL_ERROR,
+                                "unexpected internal lexer error",
+                                curr_lexer->input_line_number,
+                                curr_lexer->current_input_column);
+
+        curr_lexer->push_token (tok);
+
+        curr_lexer->input_line_number++;
+        curr_lexer->current_input_column = 1;
+
+        return curr_lexer->count_token_internal (LEXICAL_ERROR);
+      }
   }
 
 %{
@@ -1724,14 +1758,21 @@ ANY_INCLUDING_NL (.|{NL})
       return curr_lexer->handle_end_of_input ();
     else
       {
+        std::ostringstream buf;
+
+        buf << "invalid character '"
+            << undo_string_escape (static_cast<char> (c))
+            << "' (ASCII " << c << ")";
+
+        token *tok = new token (LEXICAL_ERROR, buf.str (),
+                                curr_lexer->input_line_number,
+                                curr_lexer->current_input_column);
+
+        curr_lexer->push_token (tok);
+
         curr_lexer->current_input_column++;
 
-        error ("invalid character '%s' (ASCII %d) near line %d, column %d",
-               undo_string_escape (static_cast<char> (c)), c,
-               curr_lexer->input_line_number, curr_lexer->current_input_column);
-
-        // FIXME: This is no longer reachable now that error is exception based.
-        return LEXICAL_ERROR;
+        return curr_lexer->count_token_internal (LEXICAL_ERROR);
       }
   }
 
@@ -2904,9 +2945,14 @@ octave_base_lexer::handle_superclass_identifier (void)
 
   if (kw_token)
     {
-      error ("method, class, and package names may not be keywords");
-      // FIXME: This is no longer reachable now that error is exception based.
-      return LEXICAL_ERROR;
+      token *tok
+        = new token (LEXICAL_ERROR,
+                     "method, class, and package names may not be keywords",
+                     input_line_number, current_input_column);
+
+      push_token (tok);
+
+      return count_token_internal (LEXICAL_ERROR);
     }
 
   push_token (new token (SUPERCLASSREF, meth, cls,
@@ -2924,9 +2970,12 @@ octave_base_lexer::handle_meta_identifier (void)
 
   if (fq_identifier_contains_keyword (cls))
     {
-      error ("class and package names may not be keywords");
-      // FIXME: This is no longer reachable now that error is exception based.
-      return LEXICAL_ERROR;
+      token *tok = new token (LEXICAL_ERROR,
+                              "class and package names may not be keywords",
+                              input_line_number, current_input_column);
+      push_token (tok);
+
+      return count_token_internal (LEXICAL_ERROR);
     }
 
   push_token (new token (METAQUERY, cls, input_line_number,
@@ -2940,16 +2989,21 @@ octave_base_lexer::handle_meta_identifier (void)
 int
 octave_base_lexer::handle_fq_identifier (void)
 {
-  std::string tok = flex_yytext ();
+  std::string fq_id = flex_yytext ();
 
-  if (fq_identifier_contains_keyword (tok))
+  if (fq_identifier_contains_keyword (fq_id))
     {
-      error ("function, method, class, and package names may not be keywords");
-      // FIXME: This is no longer reachable now that error is exception based.
-      return LEXICAL_ERROR;
+      token *tok
+        = new token (LEXICAL_ERROR,
+                     "function, method, class, and package names may not be keywords",
+                     input_line_number, current_input_column);
+
+      push_token (tok);
+
+      return count_token_internal (LEXICAL_ERROR);
     }
 
-  push_token (new token (FQ_IDENT, tok, input_line_number,
+  push_token (new token (FQ_IDENT, fq_id, input_line_number,
                          current_input_column));
 
   current_input_column += flex_yyleng ();
@@ -2964,9 +3018,7 @@ octave_base_lexer::handle_fq_identifier (void)
 int
 octave_base_lexer::handle_identifier (void)
 {
-  char *yytxt = flex_yytext ();
-
-  std::string tok = yytxt;
+  std::string ident = flex_yytext ();
 
   // If we are expecting a structure element, avoid recognizing
   // keywords and other special names and return STRUCT_ELT, which is
@@ -2974,7 +3026,7 @@ octave_base_lexer::handle_identifier (void)
 
   if (looking_at_indirect_ref)
     {
-      push_token (new token (STRUCT_ELT, tok, input_line_number,
+      push_token (new token (STRUCT_ELT, ident, input_line_number,
                              current_input_column));
 
       looking_for_object_index = true;
@@ -2984,23 +3036,28 @@ octave_base_lexer::handle_identifier (void)
       return STRUCT_ELT;
     }
 
-  // If tok is a keyword token, then is_keyword_token will set
+  // If ident is a keyword token, then is_keyword_token will set
   // at_beginning_of_statement.  For example, if tok is an IF
   // token, then at_beginning_of_statement will be false.
 
-  int kw_token = is_keyword_token (tok);
+  int kw_token = is_keyword_token (ident);
 
   if (looking_at_function_handle)
     {
       if (kw_token)
         {
-          error ("function handles may not refer to keywords");
-          // FIXME: This is no longer reachable now that error is exception based.
-          return LEXICAL_ERROR;
+          token *tok
+            = new token (LEXICAL_ERROR,
+                         "function handles may not refer to keywords",
+                         input_line_number, current_input_column);
+
+          push_token (tok);
+
+          return count_token_internal (LEXICAL_ERROR);
         }
       else
         {
-          push_token (new token (FCN_HANDLE, tok, input_line_number,
+          push_token (new token (FCN_HANDLE, ident, input_line_number,
                                  current_input_column));
 
           current_input_column += flex_yyleng ();
@@ -3032,8 +3089,8 @@ octave_base_lexer::handle_identifier (void)
 
   symbol_table::scope_id sid = symtab_context.curr_scope ();
 
-  token *tok_val = new token (NAME, &(symbol_table::insert (tok, sid)),
-                              input_line_number, current_input_column);
+  token *tok = new token (NAME, &(symbol_table::insert (ident, sid)),
+                          input_line_number, current_input_column);
 
   // The following symbols are handled specially so that things like
   //
@@ -3043,21 +3100,21 @@ octave_base_lexer::handle_identifier (void)
   // function call with the argument "+1".
 
   if (at_beginning_of_statement
-      && (! (is_variable (tok)
-             || tok == "e" || tok == "pi"
-             || tok == "I" || tok == "i"
-             || tok == "J" || tok == "j"
-             || tok == "Inf" || tok == "inf"
-             || tok == "NaN" || tok == "nan")))
-    tok_val->mark_may_be_command ();
+      && (! (is_variable (ident)
+             || ident == "e" || ident == "pi"
+             || ident == "I" || ident == "i"
+             || ident == "J" || ident == "j"
+             || ident == "Inf" || ident == "inf"
+             || ident == "NaN" || ident == "nan")))
+    tok->mark_may_be_command ();
 
-  push_token (tok_val);
+  push_token (tok);
 
   current_input_column += flex_yyleng ();
 
   // The magic end index can't be indexed.
 
-  if (tok != "end")
+  if (ident != "end")
     looking_for_object_index = true;
 
   at_beginning_of_statement = false;

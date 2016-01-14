@@ -245,9 +245,10 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %token <tok_val> FQ_IDENT
 %token <tok_val> GET SET
 %token <tok_val> FCN
+%token <tok_val> LEXICAL_ERROR
 
 // Other tokens.
-%token<dummy_type> END_OF_INPUT LEXICAL_ERROR
+%token<dummy_type> END_OF_INPUT
 %token<dummy_type> INPUT_FILE
 // %token VARARGIN VARARGOUT
 
@@ -1958,7 +1959,8 @@ stash_comment   : // empty
 parse_error     : LEXICAL_ERROR
                   {
                     $$ = 0;
-                    parser.bison_error ("parse error");
+                    std::string msg = $1->text ();
+                    parser.bison_error (msg.c_str ());
                   }
                 | error
                   { $$ = 0; }

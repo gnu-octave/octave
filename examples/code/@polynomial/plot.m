@@ -4,9 +4,9 @@ function h = plot (p, varargin)
   rmax = max (abs (roots (p.poly)));
   x = [0 : (n - 1)] / (n - 1) * 2.2 * rmax - 1.1 * rmax;
   if (nargout > 0)
-    h = plot (x, p(x), varargin{:});
+    h = plot (x, polyval (p, x), varargin{:});
   else
-    plot (x, p(x), varargin{:});
+    plot (x, polyval (p, x), varargin{:});
   endif
 
 endfunction

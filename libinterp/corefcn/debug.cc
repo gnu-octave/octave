@@ -847,24 +847,28 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 {
   std::string ff = fcn_file_in_path (name);
 
-  if (! ff.empty ())
+  if (ff.empty ())
     os << "dbtype: unknown function " << name << "\n";
+  else
+  {
+    std::ifstream fs (ff.c_str (), std::ios::in);
 
-  std::ifstream fs (ff.c_str (), std::ios::in);
-
-  if (! fs)
-    os << "dbtype: unable to open '" << ff << "' for reading!\n";
-
-  int line = 1;
-  std::string text;
-
-  while (std::getline (fs, text) && line <= end)
+    if (! fs)
+      os << "dbtype: unable to open '" << ff << "' for reading!\n";
+    else
     {
-      if (line >= start)
-        os << line << "\t" << text << "\n";
+      int line = 1;
+      std::string text;
 
-      line++;
+      while (std::getline (fs, text) && line <= end)
+        {
+          if (line >= start)
+            os << line << "\t" << text << "\n";
+
+          line++;
+        }
     }
+  }
 
   os.flush ();
 }

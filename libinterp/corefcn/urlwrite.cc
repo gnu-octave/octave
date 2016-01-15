@@ -735,8 +735,6 @@ DEFUN (__ftp_rmdir__, args, ,
 Undocumented internal function\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     error ("__ftp_rmdir__: incorrect number of arguments");
 

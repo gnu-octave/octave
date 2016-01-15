@@ -828,13 +828,11 @@ to run using @code{atexit}.\n\
 @seealso{atexit}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   // Confirm OK to shutdown.  Note: A dynamic function installation similar
   // to overriding polymorphism for which the GUI can install its own "quit"
   // yet call this base "quit" could be nice.  No link would be needed here.
   if (! octave_link::confirm_shutdown ())
-    return retval;
+    return ovl ();
 
   if (! quit_allowed)
     error ("quit: not supported in embedded mode");
@@ -858,7 +856,7 @@ to run using @code{atexit}.\n\
 
   octave_throw_interrupt_exception ();
 
-  return retval;
+  return ovl ();
 }
 
 DEFALIAS (exit, quit);
@@ -869,8 +867,6 @@ DEFUN (warranty, , ,
 Describe the conditions for copying and distributing Octave.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
 \n\
 GNU Octave is free software; you can redistribute it and/or modify\n\
@@ -887,7 +883,7 @@ You should have received a copy of the GNU General Public License\n\
 along with this program.  If not, see <http://www.gnu.org/licenses/>.\n\
 \n";
 
-  return retval;
+  return ovl ();
 }
 
 // Execute a shell command.

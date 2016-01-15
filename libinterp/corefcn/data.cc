@@ -404,12 +404,12 @@ hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 2)
     print_usage ();
+
+  octave_value retval;
 
   if (nargin == 2)
     retval = do_hypot (args(0), args(1));
@@ -2837,11 +2837,7 @@ When called with a single or no argument @code{size_equal} returns true.\n\
 @seealso{size, numel, ndims}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
-
-  retval = true;
 
   if (nargin >= 1)
     {
@@ -2852,14 +2848,11 @@ When called with a single or no argument @code{size_equal} returns true.\n\
           dim_vector b_dims = args(i).dims ();
 
           if (a_dims != b_dims)
-            {
-              retval = false;
-              break;
-            }
+            return ovl (false);
         }
     }
 
-  return retval;
+  return ovl (true);
 }
 
 DEFUN (nnz, args, ,
@@ -6220,13 +6213,11 @@ doing nothing at all.\n\
 @seealso{toc, cputime}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 0)
     warning ("tic: ignoring extra arguments");
 
+  octave_value retval;
   octave_time now;
-
   double tmp = now.double_value ();
 
   if (nargout > 0)
@@ -6315,12 +6306,11 @@ CPU time used is nonzero.\n\
 @seealso{tic, toc}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  if (args.length () != 0)
+    warning ("cputime: ignoring extra arguments");
+
   double usr = 0.0;
   double sys = 0.0;
-
-  if (args.length () != 0)
-    warning ("tic: ignoring extra arguments");
 
 #if defined (HAVE_GETRUSAGE)
 
@@ -6360,9 +6350,7 @@ CPU time used is nonzero.\n\
 
 #endif
 
-  retval = ovl (sys + usr, usr, sys);
-
-  return retval;
+  return ovl (sys + usr, usr, sys);
 }
 
 DEFUN (sort, args, nargout,

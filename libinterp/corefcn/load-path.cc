@@ -2287,11 +2287,9 @@ DEFUN (rehash, , ,
 Reinitialize Octave's load path directory cache.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   rehash_internal ();
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (command_line_path, , ,

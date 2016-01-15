@@ -1201,8 +1201,6 @@ dimensions.\n\
 @seealso{cellstr, mat2cell, num2cell, struct2cell}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   dim_vector dims;
@@ -1232,9 +1230,7 @@ dimensions.\n\
 
   check_dimensions (dims, "cell");
 
-  retval = Cell (dims, Matrix ());
-
-  return retval;
+  return ovl (Cell (dims, Matrix ()));
 }
 
 DEFUN (iscellstr, args, ,

@@ -109,7 +109,7 @@ DEFUN (__octave_link_enabled__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  return octave_value (octave_link::enabled ());
+  return ovl (octave_link::enabled ());
 }
 
 DEFUN (__octave_link_edit_file__, args, ,
@@ -375,7 +375,7 @@ DEFUN (__octave_link_show_preferences__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  return octave_value (octave_link::show_preferences ());
+  return ovl (octave_link::show_preferences ());
 }
 
 DEFUN (__octave_link_show_doc__, args, ,
@@ -389,6 +389,6 @@ Undocumented internal function.\n\
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  return octave_value (octave_link::show_doc (file));
+  return ovl (octave_link::show_doc (file));
 }
 

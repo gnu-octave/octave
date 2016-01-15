@@ -523,8 +523,9 @@ DEFUN (__fnmatch__, args, ,
 @deftypefn {} {} fnmatch (@var{pattern}, @var{string})\n\
 Return true or false for each element of @var{string} that matches any of\n\
 the elements of the string array @var{pattern}, using the rules of\n\
+filename pattern matching.\n\
 \n\
-filename pattern matching.  For example:\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -535,8 +536,6 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 @seealso{glob, regexp}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -545,7 +544,7 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 
   glob_match pattern (file_ops::tilde_expand (pat));
 
-  return octave_value (pattern.match (str));
+  return ovl (pattern.match (str));
 }
 
 DEFUN (filesep, args, ,

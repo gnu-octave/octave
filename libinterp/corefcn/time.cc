@@ -440,8 +440,6 @@ Year (1970-).\n\
 @seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 2)
     print_usage ();
 

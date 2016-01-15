@@ -191,12 +191,12 @@ DEFUN (__open_with_system_app__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
   std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
+
+  octave_value retval;
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
   HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
@@ -642,8 +642,6 @@ string.\n\
 @seealso{unsetenv, getenv}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -657,7 +655,7 @@ string.\n\
 
   octave_env::putenv (var, val);
 
-  return retval;
+  return ovl ();
 }
 
 DEFALIAS (putenv, setenv);
@@ -740,7 +738,7 @@ returning the empty string if no key is available.\n\
       retval = s;
     }
 
-  return ovl ();
+  return retval;
 }
 
 DEFUN (pause, args, ,

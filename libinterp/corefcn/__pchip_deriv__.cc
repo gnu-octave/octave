@@ -57,7 +57,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-  const int nargin = args.length ();
+  int nargin = args.length ();
 
   bool rows = (nargin == 3 && args(2).uint_value () == 2);
 

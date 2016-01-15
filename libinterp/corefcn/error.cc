@@ -891,8 +891,6 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
 @seealso{lasterror, lasterr, error}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 
@@ -1014,7 +1012,7 @@ error.  Typically @var{err} is returned from @code{lasterror}.\n\
         }
     }
 
-  return retval;
+  return ovl ();
 }
 
 // Determine whether the first argument to error or warning function
@@ -2054,9 +2052,8 @@ endif\n\
 to check for the proper number of arguments.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
   handle_message (usage_with_id, "", "unknown", args, true);
-  return retval;
+  return ovl ();
 }
 
 DEFUN (beep_on_error, args, nargout,

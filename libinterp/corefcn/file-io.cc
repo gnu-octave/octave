@@ -677,14 +677,12 @@ freport ()\n\
 @seealso{fopen, fclose, is_valid_file_id}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () > 0)
     warning ("freport: ignoring extra arguments");
 
   octave_stdout << octave_stream_list::list_open_files ();
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (frewind, args, nargout,

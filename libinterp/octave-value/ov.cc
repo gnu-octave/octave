@@ -3014,8 +3014,6 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 @seealso{subsasgn, substruct}\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
   if (args.length () != 2)
     print_usage ();
 
@@ -3030,8 +3028,6 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
     return ovl (arg0);
   else
     return arg0.subsref (type, idx, nargout);
-
-  return retval;
 }
 
 DEFUN (subsasgn, args, ,

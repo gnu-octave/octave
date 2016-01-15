@@ -201,8 +201,6 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 @seealso{char, strcat, cstrcat}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
   int n_elts = 0;
   size_t max_len = 0;
@@ -261,9 +259,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
         }
     }
 
-  retval = octave_value (result, '\'');
-
-  return retval;
+  return octave_value (result, '\'');
 }
 
 /*

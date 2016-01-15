@@ -1681,8 +1681,6 @@ particular output.\n\
 \n\
 @end deftypefn")
 {
-  octave_value retval;
-
   if (args.length () != 1)
     print_usage ();
 

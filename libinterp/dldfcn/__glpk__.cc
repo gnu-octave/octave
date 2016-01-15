@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <csetjmp>
 #include <ctime>
 
 #include "lo-ieee.h"
@@ -70,8 +69,6 @@ struct control_params
   double tolint;
   double tolobj;
 };
-
-static jmp_buf mark;  // Address for long jump to jump to
 
 int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
@@ -168,13 +165,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   if (save_pb)
     {
       static char tmp[] = "outpb.lp";
-      if (glp_write_lp (lp, NULL, tmp) != 0)
-        {
-          // FIXME: This doesn't work anymore now that error does not return.
-          //        Should longjmp just be deleted?
-          error ("__glpk__: unable to write problem");
-          longjmp (mark, -1);
-        }
+      if (glp_write_lp (lp, 0, tmp) != 0)
+        error ("__glpk__: unable to write problem");
     }
 
   // scale the problem data
@@ -342,7 +334,7 @@ Undocumented internal function.\n\
     print_usage ();
 
   // 1nd Input.  A column array containing the objective function coefficients.
-  volatile int mrowsc = args(0).rows ();
+  int mrowsc = args(0).rows ();
 
   Matrix C = args(0).xmatrix_value ("__glpk__: invalid value of C");
 
@@ -350,8 +342,8 @@ Undocumented internal function.\n\
   Array<int> rn;
   Array<int> cn;
   ColumnVector a;
-  volatile int mrowsA;
-  volatile int nz = 0;
+  int mrowsA;
+  int nz = 0;
 
   // 2nd Input.  A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
@@ -462,7 +454,7 @@ Undocumented internal function.\n\
   charMatrix VTYPE = args(6).char_matrix_value ("__glpk__: invalid value of VARTYPE");
 
   Array<int> vartype (dim_vector (mrowsc, 1));
-  volatile int isMIP = 0;
+  int isMIP = 0;
   for (int i = 0; i < mrowsc ; i++)
     {
       if (VTYPE(i,0) == 'I')
@@ -475,8 +467,8 @@ Undocumented internal function.\n\
     }
 
   // 8th Input. Sense of optimization.
-  volatile int sense;
-  double SENSE = args(7).scalar_value ("__glpk__: invalid value of SENSE");
+  int sense;
+  double SENSE = args(7).xscalar_value ("__glpk__: invalid value of SENSE");
 
   if (SENSE >= 0)
     sense = 1;
@@ -497,7 +489,7 @@ Undocumented internal function.\n\
     error ("__glpk__: PARAM.msglev must be 0 (no output) or 1 (error and warning messages only [default]) or 2 (normal output) or 3 (full output)");
 
   // scaling option
-  volatile int scale = 16;
+  int scale = 16;
   OCTAVE_GLPK_GET_INT_PARAM ("scale", scale);
   if (scale < 0 || scale > 128)
     error ("__glpk__: PARAM.scale must either be 128 (automatic selection of scaling options), or a bitwise or of: 1 (geometric mean scaling), 16 (equilibration scaling), 32 (round scale factors to power of two), 64 (skip if problem is well scaled");
@@ -541,7 +533,7 @@ Undocumented internal function.\n\
     error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
 
   // LPsolver option
-  volatile int lpsolver = 1;
+  int lpsolver = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("lpsolver", lpsolver);
   if (lpsolver < 1 || lpsolver > 2)
     error ("__glpk__: PARAM.lpsolver must be 1 (simplex method) or 2 (interior point method)");
@@ -559,7 +551,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("outdly", par.outdly);
 
   // Save option
-  volatile int save_pb = 0;
+  int save_pb = 0;
   OCTAVE_GLPK_GET_INT_PARAM ("save", save_pb);
   save_pb = save_pb != 0;
 
@@ -599,17 +591,13 @@ Undocumented internal function.\n\
   ColumnVector redcosts (mrowsc, octave_NA);
   double time;
   int status;
-  volatile int errnum = 0;
 
-  int jmpret = setjmp (mark);
-
-  if (jmpret == 0)
-    errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
-                   cn.fortran_vec (), a.fortran_vec (), b, ctype,
-                   freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
-                   vartype.fortran_vec (), isMIP, lpsolver, save_pb, scale,
-                   &par, xmin.fortran_vec (), &fmin, &status,
-                   lambda.fortran_vec (), redcosts.fortran_vec (), &time);
+  int errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
+                     cn.fortran_vec (), a.fortran_vec (), b, ctype,
+                     freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
+                     vartype.fortran_vec (), isMIP, lpsolver, save_pb, scale,
+                     &par, xmin.fortran_vec (), &fmin, &status,
+                     lambda.fortran_vec (), redcosts.fortran_vec (), &time);
 
   octave_scalar_map extra;
 

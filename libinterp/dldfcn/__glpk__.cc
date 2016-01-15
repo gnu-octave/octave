@@ -446,12 +446,12 @@ Undocumented internal function.\n\
 
   // 6th Input. A column array containing the sense of each constraint
   //            in the constraint matrix.
-  charMatrix CTYPE = args(5).char_matrix_value ("__glpk__: invalid value of CTYPE");
+  charMatrix CTYPE = args(5).xchar_matrix_value ("__glpk__: invalid value of CTYPE");
 
   char *ctype = CTYPE.fortran_vec ();
 
   // 7th Input. A column array containing the types of the variables.
-  charMatrix VTYPE = args(6).char_matrix_value ("__glpk__: invalid value of VARTYPE");
+  charMatrix VTYPE = args(6).xchar_matrix_value ("__glpk__: invalid value of VARTYPE");
 
   Array<int> vartype (dim_vector (mrowsc, 1));
   int isMIP = 0;
@@ -594,10 +594,11 @@ Undocumented internal function.\n\
 
   int errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
                      cn.fortran_vec (), a.fortran_vec (), b, ctype,
-                     freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
-                     vartype.fortran_vec (), isMIP, lpsolver, save_pb, scale,
-                     &par, xmin.fortran_vec (), &fmin, &status,
-                     lambda.fortran_vec (), redcosts.fortran_vec (), &time);
+                     freeLB.fortran_vec (), lb, freeUB.fortran_vec (),
+                     ub, vartype.fortran_vec (), isMIP, lpsolver,
+                     save_pb, scale, &par, xmin.fortran_vec (), &fmin,
+                     &status, lambda.fortran_vec (),
+                     redcosts.fortran_vec (), &time);
 
   octave_scalar_map extra;
 

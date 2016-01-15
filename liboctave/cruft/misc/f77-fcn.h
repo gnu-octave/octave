@@ -284,7 +284,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 
 OCTAVE_NORETURN CRUFT_API extern
-F77_RET_T 
+F77_RET_T
 F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
                            F77_CHAR_ARG_LEN_DECL);
 

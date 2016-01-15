@@ -176,7 +176,7 @@ function retval = num2str (x, arg)
     idx{2} = perm;
     x = horzcat (real (x), imag (x));
     x = x(idx{:});
-    
+
     fmt = [deblank(repmat(fmt, 1, nc * (nd - 1))), "\n"];
     tmp = sprintf (fmt, permute (x, [2, 3:nd, 1]));
 

@@ -1179,7 +1179,7 @@ public:
 
   void make_storable_value (void);
 
-  // FIXME: These should probably be private.  
+  // FIXME: These should probably be private.
   // Conversions.  If a user of this class wants a certain kind of constant,
   // he should simply ask for it, and we should convert it if possible.
 

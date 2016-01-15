@@ -107,7 +107,7 @@ function [status, msg, msgid] = fileattrib (file = ".")
           msgid = "fileattrib";
           break;
         endif
-        attrib = regexprep (attrib, '\S+:.*', ""); 
+        attrib = regexprep (attrib, '\S+:.*', "");
         r(i).archive = any (attrib == "A");
         r(i).system = any (attrib == "S");
         r(i).hidden = any (attrib == "H");

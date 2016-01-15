@@ -61,7 +61,7 @@
 ## @end deftypefn
 
 function idx = subsindex (obj)
-  
+
   if (nargin != 1)
     print_usage ();
   endif
@@ -72,7 +72,7 @@ function idx = subsindex (obj)
 endfunction
 
 
-%!error <not defined for class "double"> subsindex (1) 
+%!error <not defined for class "double"> subsindex (1)
 
 ## Test input validation
 %!error subsindex ()

@@ -22,7 +22,7 @@
 ##
 ## The Octave interpreter calls the @code{display} function whenever it needs
 ## to present a class on-screen.  Typically, this would be a statement which
-## does not end in a semicolon to suppress output.  For example, 
+## does not end in a semicolon to suppress output.  For example,
 ##
 ## @example
 ## myobj = myclass (@dots{})
@@ -36,7 +36,7 @@
 ## myobj = myclass (@dots{})
 ##   @result{} myobj = <class myclass>
 ## @end example
-## 
+##
 ## @seealso{class, subsref, subsasgn}
 ## @end deftypefn
 

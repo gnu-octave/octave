@@ -46,7 +46,7 @@
 ##
 ## Non-integers are rounded to integers before display.  Only the real part
 ## of complex numbers is displayed.
-## 
+##
 ## @seealso{sprintf, num2str, mat2str}
 ## @end deftypefn
 

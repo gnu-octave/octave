@@ -109,51 +109,51 @@ extern OCTAVE_API const char *warning_id_nearly_singular_matrix;
 
 extern OCTAVE_API const char *warning_id_singular_matrix;
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_nan_to_logical_conversion (void);
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_nan_to_character_conversion (void);
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_nonconformant (const char *op,
                      octave_idx_type op1_len,
                      octave_idx_type op2_len);
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_nonconformant (const char *op,
                      octave_idx_type op1_nr, octave_idx_type op1_nc,
                      octave_idx_type op2_nr, octave_idx_type op2_nc);
 
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_nonconformant (const char *op, const dim_vector& op1_dims,
                      const dim_vector& op2_dims);
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_index_out_of_range (int nd, int dim,
                           octave_idx_type iext, octave_idx_type ext,
                           const dim_vector& d);
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_index_out_of_range (int nd, int dim,
                           octave_idx_type iext, octave_idx_type ext);
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_del_index_out_of_range (bool is1d, octave_idx_type iext,
                               octave_idx_type ext);
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_invalid_index (double, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
                      const std::string& var = "");
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_invalid_index (octave_idx_type n, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
                      const std::string& var = "");
 
-OCTAVE_NORETURN OCTAVE_API extern void 
+OCTAVE_NORETURN OCTAVE_API extern void
 gripe_invalid_index (const std::string& idx, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
                      const std::string& var = "");

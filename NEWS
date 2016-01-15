@@ -110,7 +110,7 @@ Summary of important user-visible changes for version 4.2:
     and "current_liboctave_error_with_id_handler".  If a programmer has
     installed their own custom error handling routines when directly linking
     with liboctave then these must be updated to throw an exception and not
-    return to the calling program. 
+    return to the calling program.
 
  ** New configure option, --enable-address-sanitizer-flags, to build Octave
     with memory allocator checks (similar to those in valgrind) built in.

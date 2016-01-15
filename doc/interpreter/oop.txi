@@ -312,7 +312,7 @@ p@{end-1@}
 @end group
 @end example
 
-Objects can also be used themselves as the index in a subscripted expression 
+Objects can also be used themselves as the index in a subscripted expression
 and this is controlled by the @code{subsindex} function.
 
 @DOCSTRING(subsindex)

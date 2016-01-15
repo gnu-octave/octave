@@ -3,6 +3,7 @@
 Copyright (C) 1993-2015 John W. Eaton
 Copyright (C) 2009 David Grundberg
 Copyright (C) 2009-2010 VZLU Prague
+Copyright (C) 2016 Oliver Heimlich
 
 This file is part of Octave.
 
@@ -5001,7 +5002,7 @@ mechanism, rather than for the execution of arbitrary code strings,\n\
 Consider using try/catch blocks or unwind_protect/unwind_protect_cleanup\n\
 blocks instead.  These techniques have higher performance and don't introduce\n\
 the security considerations that the evaluation of arbitrary code does.\n\
-@seealso{evalin}\n\
+@seealso{evalin, evalc, assignin, feval}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -5215,6 +5216,144 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
 
   return retval;
 }
+
+DEFUN (evalc, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {} {@var{s} =} evalc (@var{try})\n\
+@deftypefnx {} {@var{s} =} evalc (@var{try}, @var{catch})\n\
+Parse and evaluate the string @var{try} as if it were an Octave program,\n\
+while capturing the output into the return variable @var{s}.\n\
+\n\
+If execution fails, evaluate the optional string @var{catch}.\n\
+\n\
+This function behaves like @code{eval}, but any output or warning messages\n\
+which would normally be written to the console are captured and returned in\n\
+the string @var{s}.\n\
+\n\
+The @code{diary} is disabled during the execution of this function.  When\n\
+@code{system} is used, any output produced by external programs is @emph{not}\n\
+captured, unless their output is captured by the @code{system} function\n\
+itself.\n\
+\n\
+@example\n\
+@group\n\
+s = evalc (\"t = 42\"), t\n\
+  @result{} s = t =  42\n\
+\n\
+  @result{} t =  42\n\
+@end group\n\
+@end example\n\
+@seealso{eval, diary}\n\
+@end deftypefn")
+{
+  int nargin = args.length ();
+
+  if (nargin == 0 || nargin > 2)
+    print_usage ();
+
+  // redirect stdout/stderr to capturing buffer
+  std::ostringstream buffer;
+
+  std::ostream& out_stream = octave_stdout;
+  std::ostream& err_stream = std::cerr;
+
+  out_stream.flush ();
+  err_stream.flush ();
+
+  std::streambuf* old_out_buf = out_stream.rdbuf (buffer.rdbuf ());
+  std::streambuf* old_err_buf = err_stream.rdbuf (buffer.rdbuf ());
+
+
+  // call standard eval function
+  octave_value_list retval;
+  int eval_nargout = std::max (0, nargout - 1);
+
+  const octave_execution_exception* eval_exception = 0;
+  try
+    {
+      retval = Feval (args, eval_nargout);
+    }
+  catch (const octave_execution_exception& e)
+    {
+      // hold back exception from eval until we have restored streams
+      eval_exception = &e;
+    }
+
+  // stop capturing buffer and restore stdout/stderr
+  out_stream.flush ();
+  err_stream.flush ();
+
+  out_stream.rdbuf (old_out_buf);
+  err_stream.rdbuf (old_err_buf);
+
+  if (eval_exception)
+    {
+      // Print error message again, which was lost because of the stderr buffer
+      // Note: this keeps error_state and last_error_stack intact
+      message_with_id ("error", last_error_id ().c_str (),
+                       last_error_message ().c_str ());
+      // rethrow original exception from above
+      throw *eval_exception;
+    }
+
+  retval.prepend (buffer.str ());
+  return retval;
+}
+
+/*
+
+%!assert (evalc ("1"), "ans =  1\n")
+%!assert (evalc ("1;"), "")
+
+%!test
+%! [s, y] = evalc ("1");
+%! assert (s, "");
+%! assert (y, 1);
+
+%!test
+%! [s, y] = evalc ("1;");
+%! assert (s, "");
+%! assert (y, 1);
+
+%!test
+%! assert (evalc ("y = 2"), "y =  2\n");
+%! assert (y, 2);
+
+%!test
+%! assert (evalc ("y = 3;"), "");
+%! assert (y, 3);
+
+%!test
+%! [s, a, b] = evalc ("deal (1, 2)");
+%! assert (s, "");
+%! assert (a, 1);
+%! assert (b, 2);
+
+%!function [a, b] = __f_evalc ()
+%!  printf ("foo");
+%!  fprintf (stdout, "bar");
+%!  disp (pi)
+%!  a = 1;
+%!  b = 2;
+%!endfunction
+%!test
+%! [s, a, b] = evalc ("__f_evalc ()");
+%! assert (s, "foobar 3.1416\n");
+%! assert (a, 1);
+%! assert (b, 2);
+
+%!error <foo> (evalc ("error ('foo')"))
+%!error <bar> (evalc ("error ('foo')", "error ('bar')"))
+
+%!test
+%! warning ("off", "quiet", "local");
+%! assert (evalc ("warning ('foo')"), "warning: foo\n");
+
+%!test
+%! warning ("off", "quiet", "local");
+%! assert (evalc ("error ('foo')", "warning ('bar')"), "warning: bar\n");
+
+*/
 
 DEFUN (__parser_debug_flag__, args, nargout,
   "-*- texinfo -*-\n\

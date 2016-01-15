@@ -61,6 +61,7 @@ Summary of important user-visible changes for version 4.2:
  ** Other new functions added in 4.2:
 
       deg2rad
+      evalc
       hash
       im2double
       psi
@@ -96,12 +97,11 @@ Summary of important user-visible changes for version 4.2:
       java_debug              read_readline_init_file
       java_invoke             saving_history
 
- ** The global error_state variable in Octave's C++ API has been
-    deprecated and will be removed in a future version.  Now the error
-    and print_usage functions throw an exception
-    (octave_execution_exception) after displaying the error message.
-    This makes the error and print_usage functions in C++ work more like
-    the corresponding functions in the scripting language.
+ ** The global error_state variable in Octave's C++ API has been deprecated
+    and will be removed in a future version.  Now the error and print_usage
+    functions throw an exception (octave_execution_exception) after displaying
+    the error message.  This makes the error and print_usage functions in C++
+    work more like the corresponding functions in the scripting language.
 
  ** The default error handlers in liboctave have been updated to use
     exceptions.  After displaying an error message they no longer return
@@ -109,12 +109,11 @@ Summary of important user-visible changes for version 4.2:
     customized through the global variables "current_liboctave_error_handler"
     and "current_liboctave_error_with_id_handler".  If a programmer has
     installed their own custom error handling routines when directly linking
-    with liboctave then these must be updated to throw an exception and
-    not return to the calling program. 
+    with liboctave then these must be updated to throw an exception and not
+    return to the calling program. 
 
- ** New configure option, --enable-address-sanitizer-flags, to build
-    Octave with memory allocator checks (similar to those provided by
-    valgrind) built in.
+ ** New configure option, --enable-address-sanitizer-flags, to build Octave
+    with memory allocator checks (similar to those in valgrind) built in.
 
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------

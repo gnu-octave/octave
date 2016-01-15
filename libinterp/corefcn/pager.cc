@@ -528,7 +528,7 @@ Record the session in the file named @var{filename}.\n\
 @end table\n\
 \n\
 With no arguments, @code{diary} toggles the current diary state.\n\
-@seealso{history}\n\
+@seealso{history, evalc}\n\
 @end deftypefn")
 {
   int nargin = args.length ();

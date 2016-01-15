@@ -29,6 +29,11 @@ been computed and stored in a string, which is exactly what the
 
 @DOCSTRING(eval)
 
+The @code{evalc} function additionally captures any console output
+produced by the evaluated expression.
+
+@DOCSTRING(evalc)
+
 @menu
 * Calling a Function by its Name::
 * Evaluation in a Different Context::

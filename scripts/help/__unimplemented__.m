@@ -636,7 +636,6 @@ function list = missing_functions ()
   "echodemo",
   "empty",
   "enumeration",
-  "evalc",
   "events",
   "export2wsdlg",
   "figurepalette",

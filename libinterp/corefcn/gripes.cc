@@ -55,11 +55,11 @@ gripe_data_file_in_path (const std::string& fcn, const std::string& file)
 }
 
 void
-gripe_disabled_feature (const std::string& func, const std::string& feature,
+gripe_disabled_feature (const std::string& fcn, const std::string& feature,
                         const std::string& pkg /*="Octave"*/)
 {
-  error ("%s: support for %s was disabled when %s was built",
-         func.c_str (), feature.c_str (), pkg.c_str ());
+  error ("%s: support for %s was unavailable or disabled when %s was built",
+         fcn.c_str (), feature.c_str (), pkg.c_str ());
 }
 
 void

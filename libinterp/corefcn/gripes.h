@@ -44,7 +44,7 @@ extern OCTINTERP_API void
 gripe_data_file_in_path (const std::string& fcn, const std::string& file);
 
 OCTAVE_NORETURN OCTINTERP_API extern
-void gripe_disabled_feature (const std::string& func,
+void gripe_disabled_feature (const std::string& fcn,
                              const std::string& feature,
                              const std::string& pkg="Octave");
 

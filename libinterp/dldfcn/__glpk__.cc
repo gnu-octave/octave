@@ -625,9 +625,7 @@ Undocumented internal function.\n\
   return ovl (xmin, fmin, errnum, extra);
 
 #else
-
-  gripe_not_supported ("glpk");
-
+  gripe_disabled_feature ("glpk", "GNU Linear Programming Kit");
 #endif
 }
 

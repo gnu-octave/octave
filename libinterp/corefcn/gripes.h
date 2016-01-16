@@ -89,7 +89,8 @@ void gripe_nonconformant (octave_idx_type r1, octave_idx_type c1,
 OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_not_implemented (const char *);
 
-OCTAVE_NORETURN OCTINTERP_API extern
+// FIXME: Deprecated in 4.2, remove in 4.6
+OCTAVE_DEPRECATED OCTAVE_NORETURN OCTINTERP_API extern
 void gripe_not_supported (const char *);
 
 OCTAVE_NORETURN OCTINTERP_API extern

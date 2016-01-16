@@ -149,6 +149,7 @@ gripe_not_implemented (const char *fcn)
   error ("%s: not implemented", fcn);
 }
 
+// FIXME: Deprecated in 4.2, remove in 4.6
 void
 gripe_not_supported (const char *fcn)
 {

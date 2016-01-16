@@ -402,16 +402,16 @@ dimensionality as the other array.\n\
 
       if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
         {
-          octave_value_list inputs;
-          inputs (0) = A;
-          inputs (1) = B;
+          octave_value_list inputs (2);
+          inputs(0) = A;
+          inputs(1) = B;
           retval = func.do_multi_index_op (1, inputs);
         }
       else if (dvc.numel () < 1)
         {
-          octave_value_list inputs;
-          inputs (0) = A.resize (dvc);
-          inputs (1) = B.resize (dvc);
+          octave_value_list inputs (2);
+          inputs(0) = A.resize (dvc);
+          inputs(1) = B.resize (dvc);
           retval = func.do_multi_index_op (1, inputs);
         }
       else
@@ -443,17 +443,17 @@ dimensionality as the other array.\n\
           octave_value Bc;
           octave_value_list idxB;
           octave_value C;
-          octave_value_list inputs;
+          octave_value_list inputs (2);
           Array<int> ra_idx (dim_vector (dvc.length (), 1), 0);
 
 
           for (octave_idx_type i = 0; i < ncount; i++)
             {
               if (maybe_update_column (Ac, A, dva, dvc, i, idxA))
-                inputs (0) = Ac;
+                inputs(0) = Ac;
 
               if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
-                inputs (1) = Bc;
+                inputs(1) = Bc;
 
               octave_value_list tmp = func.do_multi_index_op (1, inputs);
 

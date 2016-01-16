@@ -518,6 +518,11 @@ dimensionality as the other array.\n\
                           C = C.resize (dvc);
                         }
                     }
+                  else  // Skip semi-fast path for sparse matrices
+                    {
+                      C = tmp (0);
+                      C = C.resize (dvc);
+                    }
                 }
               else
                 {

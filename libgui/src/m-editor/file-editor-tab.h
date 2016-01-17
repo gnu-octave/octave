@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 // Only needed for octave_value_list type.
 #ifdef HAVE_CONFIG_H
 #include <config.h>
-#include "ov.h"
+#include "ovl.h"
 #endif
 
 #include "find-dialog.h"

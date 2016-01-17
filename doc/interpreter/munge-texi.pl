@@ -31,7 +31,7 @@ foreach $DOCSTRING_file (@ARGV)
     $docstring = extract_docstring ();
     if ($help_text{$symbol})
     {
-      warn "ignoring duplicate entry for $symbol\n";
+      warn "$DOCSTRING_file:$.:warning: ignoring duplicate entry for $symbol\n";
     }
     else
     {
@@ -56,7 +56,7 @@ TXI_LINE: while (<STDIN>)
     $docstring = $help_text{$func};
     if (! $docstring)
     {
-      warn "no docstring entry for $func\n";
+      warn "warning: no DOCSTRING entry for $func\n";
       next TXI_LINE;
     }
 

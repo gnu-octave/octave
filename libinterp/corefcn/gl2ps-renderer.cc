@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unistd.h"
 
 void
-glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
+gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
 {
   static bool in_draw = false;
   static std::string old_print_cmd;
@@ -68,7 +68,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       else if (term.find ("tex") != std::string::npos)
         gl2ps_term = GL2PS_TEX;
       else
-        error ("gl2ps-renderer::draw: Unknown terminal %s", term.c_str ());
+        error ("gl2ps_renderer::draw: Unknown terminal %s", term.c_str ());
 
       GLint gl2ps_text = 0;
       if (term.find ("notxt") != std::string::npos)
@@ -85,7 +85,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       FILE* tmpf = gnulib::tmpfile ();
 
       if (! tmpf)
-        error ("glps_renderer::draw: couldn't open temporary file for printing");
+        error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
 
       GLint buffsize = 2*1024*1024;
       buffer_overflow = true;
@@ -124,7 +124,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
             include_graph = "foobar-inc";
 
           // GL2PS_SILENT was removed to allow gl2ps printing errors on stderr
-          GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", 0,
+          GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave", 0,
                                       gl2ps_term, gl2ps_sort,
                                       (GL2PS_NO_BLENDING
                                        | GL2PS_OCCLUSION_CULL
@@ -137,7 +137,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
           if (ret == GL2PS_ERROR)
             {
               old_print_cmd.clear ();
-              error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
+              error ("gl2ps_renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
             }
 
           opengl_renderer::draw (go);
@@ -147,7 +147,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
 
           // Don't check return value of gl2psEndPage, it is not meaningful.
           // Errors and warnings are checked after gl2psEndViewport in 
-          // glps_renderer::draw_axes instead.
+          // gl2ps_renderer::draw_axes instead.
           gl2psEndPage ();
         }
 
@@ -167,7 +167,7 @@ glps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
 }
 
 int
-glps_renderer::alignment_to_mode (int ha, int va) const
+gl2ps_renderer::alignment_to_mode (int ha, int va) const
 {
   int gl2psa = GL2PS_TEXT_BL;
 
@@ -203,7 +203,7 @@ glps_renderer::alignment_to_mode (int ha, int va) const
 }
 
 void
-glps_renderer::fix_strlist_position (double x, double y, double z,
+gl2ps_renderer::fix_strlist_position (double x, double y, double z,
                                      Matrix box, double rotation,
                                      std::list<ft_render::ft_string>& lst)
 {
@@ -442,7 +442,7 @@ escape_character (const std::string chr, std::string& str)
 }
 
 Matrix
-glps_renderer::render_text (const std::string& txt,
+gl2ps_renderer::render_text (const std::string& txt,
                             double x, double y, double z,
                             int ha, int va, double rotation)
 {
@@ -539,7 +539,7 @@ glps_renderer::render_text (const std::string& txt,
 }
 
 void
-glps_renderer::set_font (const base_properties& props)
+gl2ps_renderer::set_font (const base_properties& props)
 {
   opengl_renderer::set_font (props);
 
@@ -572,7 +572,7 @@ draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data, float maxval)
 }
 
 void
-glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
+gl2ps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
                             GLenum type, const GLvoid *data)
 {
   // gl2psDrawPixels only supports the GL_FLOAT type.
@@ -586,7 +586,7 @@ glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
 }
 
 void
-glps_renderer::draw_text (const text::properties& props)
+gl2ps_renderer::draw_text (const text::properties& props)
 {
   if (props.get_string ().is_empty ())
     return;
@@ -649,7 +649,7 @@ gl2ps_print (const graphics_object& fig, const std::string& cmd,
 
   frame.add_fcn (safe_pclose, fp);
 
-  glps_renderer rend (fp, term);
+  gl2ps_renderer rend (fp, term);
 
   rend.draw (fig, cmd);
 

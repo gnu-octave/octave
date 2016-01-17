@@ -190,7 +190,7 @@ instead.\n\
 
           frame.add_fcn (close_fcn, filep);
 
-          glps_renderer rend (filep, term);
+          gl2ps_renderer rend (filep, term);
           rend.draw (fobj, "");
 
           // Make sure buffered commands are finished!!!

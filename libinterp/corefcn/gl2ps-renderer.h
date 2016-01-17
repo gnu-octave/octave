@@ -32,14 +32,14 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTINTERP_API
-glps_renderer : public opengl_renderer
+gl2ps_renderer : public opengl_renderer
 {
 public:
-  glps_renderer (FILE *_fp, const std::string& _term)
+  gl2ps_renderer (FILE *_fp, const std::string& _term)
     : opengl_renderer () , fp (_fp), term (_term), fontsize (),
     fontname (), buffer_overflow (false) { }
 
-  ~glps_renderer (void) { }
+  ~gl2ps_renderer (void) { }
 
   void draw (const graphics_object& go, const std::string& print_cmd);
 
@@ -66,9 +66,9 @@ protected:
     // Finalize viewport
     GLint state = gl2psEndViewport ();
     if (state == GL2PS_NO_FEEDBACK)
-      warning ("glps_renderer::draw_axes: empty feedback buffer and/or nothing else to print");
+      warning ("gl2ps_renderer::draw_axes: empty feedback buffer and/or nothing else to print");
     else if (state == GL2PS_ERROR)
-      error ("glps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
+      error ("gl2ps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
     
     buffer_overflow |= (state == GL2PS_OVERFLOW);
   }

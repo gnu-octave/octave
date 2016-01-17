@@ -118,8 +118,9 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(histc)
 
-@c FIXME: really want to put a reference to unique here
-@c @DOCSTRING(values)
+@noindent
+@code{unique} function documented at @ref{XREFunique,,unique} is often
+useful for statistics.
 
 @DOCSTRING(nchoosek)
 

@@ -137,7 +137,6 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   nfev = 0;
 
   x = fval = a = fa = b = fb = NaN;
-  eps = eps (class (x0));
 
   ## Prepare...
   a = x0(1);
@@ -194,6 +193,12 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     u = b; fu = fb;
   endif
 
+  if (isa (x0, "single") || isa (fa, "single"))
+    macheps = eps ("single");
+  else
+    macheps = eps ("double");
+  endif
+
   d = e = u;
   fd = fe = fu;
   mba = mu*(b - a);
@@ -201,7 +206,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     switch (itype)
       case 1
         ## The initial test.
-        if (b - a <= 2*(2 * abs (u) * eps + tolx))
+        if (b - a <= 2*(2 * abs (u) * macheps + tolx))
           x = u; fval = fu;
           info = 1;
           break;
@@ -266,7 +271,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     endswitch
 
     ## Don't let c come too close to a or b.
-    delta = 2*0.7*(2 * abs (u) * eps + tolx);
+    delta = 2*0.7*(2 * abs (u) * macheps + tolx);
     if ((b - a) <= 2*delta)
       c = (a + b)/2;
     else
@@ -320,7 +325,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     else
       u = b; fu = fb;
     endif
-    if (b - a <= 2*(2 * abs (u) * eps + tolx))
+    if (b - a <= 2*(2 * abs (u) * macheps + tolx))
       info = 1;
       break;
     endif
@@ -337,7 +342,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   ## Check solution for a singularity by examining slope
   if (info == 1)
     if ((b - a) != 0
-        && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/(eps+tolx)))
+        && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/(macheps+tolx)))
       info = -5;
     endif
   endif

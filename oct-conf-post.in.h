@@ -72,7 +72,7 @@ typedef unsigned long ino_t;
 #pragma warning (disable: 4003)
 /* missing implementations in template instantiation */
 #pragma warning (disable: 4996)
-/* deprecated function names (FIXME?) */
+/* deprecated function names (FIXME: ???) */
 #pragma warning (disable: 4661)
 #endif
 

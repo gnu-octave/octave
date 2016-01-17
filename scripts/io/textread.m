@@ -183,7 +183,7 @@ function varargout = textread (filename, format = "%f", varargin)
   else
     ## Determine EOL from file.
     ## Search for EOL candidates in the first BUFLENGTH chars
-    ## FIXME Ignore risk of 2-byte EOL (\r\n) being split at exactly BUFLENGTH
+    ## FIXME: Ignore risk of 2-byte EOL (\r\n) being split at exactly BUFLENGTH
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
     if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))

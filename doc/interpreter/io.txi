@@ -111,8 +111,7 @@ function, and you can turn paging off by using the function
 
 @DOCSTRING(fflush)
 
-@c FIXME -- maybe this would be a good place to describe the
-@c following message:
+@c FIXME: maybe this would be a good place to describe the following message:
 @c
 @c warning: connection to external pager (pid = 9334) lost --
 @c warning: pending computations and output may be lost

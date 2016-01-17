@@ -623,7 +623,7 @@ sub emit_option_table_entry
 
 sub emit_print_function
 {
-  ## FIXME -- determine the width of the table automatically.
+  ## FIXME: determine the width of the table automatically.
 
   print qq|static void
 print_$CLASS_NAME (std::ostream& os)

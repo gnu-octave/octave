@@ -150,7 +150,7 @@ noinst_LTLIBRARIES += libinterp/octave-value/liboctave-value.la
 
 libinterp_octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
 
-## FIXME -- maybe it would be better to limit the JAVA flags to
+## FIXME: maybe it would be better to limit the JAVA flags to
 ## the compile commands for ov-java.cc?  Does JAVA_LIBS need to be
 ## added to LIBOCTINTERP_LINK_DEPS (see libinterp/link-deps.mk)?
 ## Should we have a separate set of JAVA_LDFLAGS?

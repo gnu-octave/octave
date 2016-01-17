@@ -4,7 +4,7 @@ scripts_CLEANFILES =
 scripts_DISTCLEANFILES =
 scripts_MAINTAINERCLEANFILES =
 
-## FIXME -- including scripts/@ftp/module.mk fails.  Is that an automake bug?
+## FIXME: including scripts/@ftp/module.mk fails.  Is that an automake bug?
 
 FCN_FILE_DIRS += scripts/@ftp
 

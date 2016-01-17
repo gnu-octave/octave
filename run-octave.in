@@ -25,8 +25,8 @@
 : ${SED=%SED%}
 : ${ADDRESS_SANITIZER_OPTIONS="%ADRESS_SANITIZER_OPTIONS%"}
 
-# FIXME -- is there a better way to handle the possibility of spaces
-# in these names?
+# FIXME: is there a better way to handle the possibility of spaces
+#        in these names?
 
 top_srcdir='%abs_top_srcdir%'
 builddir='%builddir%'

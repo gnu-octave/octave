@@ -751,7 +751,7 @@ running Octave, you can improve performance by calling
 ignore the time stamps for all function files.  Passing
 @qcode{"system"} to this function resets the default behavior.
 
-@c FIXME -- note about time stamps on files in NFS environments?
+@c FIXME: note about time stamps on files in NFS environments?
 
 @DOCSTRING(edit)
 

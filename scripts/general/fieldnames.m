@@ -48,7 +48,7 @@ function names = fieldnames (obj)
   elseif (isjava (obj) || ischar (obj))
     ## FIXME: Function prototype that excepts java obj exists, but doesn't
     ##        work if obj is java.lang.String.  Convert obj to classname.
-    ## FIXME this is now working for objects whose class is in the dynamic
+    ## FIXME: this is now working for objects whose class is in the dynamic
     ##        classpath but will continue to fail if such classnames are used
     ##        instead (see bug #42710)
     if (isa (obj, "java.lang.String"))

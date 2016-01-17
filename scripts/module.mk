@@ -4,37 +4,6 @@ scripts_CLEANFILES =
 scripts_DISTCLEANFILES =
 scripts_MAINTAINERCLEANFILES =
 
-## FIXME: including scripts/@ftp/module.mk fails.  Is that an automake bug?
-
-FCN_FILE_DIRS += scripts/@ftp
-
-scripts_@ftp_FCN_FILES = \
-  scripts/@ftp/ascii.m \
-  scripts/@ftp/binary.m  \
-  scripts/@ftp/cd.m  \
-  scripts/@ftp/close.m  \
-  scripts/@ftp/delete.m  \
-  scripts/@ftp/dir.m  \
-  scripts/@ftp/display.m  \
-  scripts/@ftp/ftp.m  \
-  scripts/@ftp/loadobj.m  \
-  scripts/@ftp/mget.m  \
-  scripts/@ftp/mkdir.m  \
-  scripts/@ftp/mput.m  \
-  scripts/@ftp/rename.m  \
-  scripts/@ftp/rmdir.m  \
-  scripts/@ftp/saveobj.m
-
-scripts_@ftpdir = $(fcnfiledir)/@ftp
-
-scripts_@ftp_DATA = $(scripts_@ftp_FCN_FILES)
-
-FCN_FILES += $(scripts_@ftp_FCN_FILES)
-
-PKG_ADD_FILES += scripts/@ftp/PKG_ADD
-
-DIRSTAMP_FILES += scripts/@ftp/$(octave_dirstamp)
-
 include scripts/audio/module.mk
 include scripts/deprecated/module.mk
 include scripts/elfun/module.mk
@@ -69,6 +38,41 @@ include scripts/statistics/tests/module.mk
 include scripts/strings/module.mk
 include scripts/testfun/module.mk
 include scripts/time/module.mk
+
+## include scripts/@ftp/module.mk
+## The include above fails because Automake cannot process the '@' character.
+## As a work around, the contents of scripts/@ftp/module.mk are placed directly
+## in this module.mk file.
+######################## include scripts/@ftp/module.mk ########################
+FCN_FILE_DIRS += scripts/@ftp
+
+scripts_@ftp_FCN_FILES = \
+  scripts/@ftp/ascii.m \
+  scripts/@ftp/binary.m  \
+  scripts/@ftp/cd.m  \
+  scripts/@ftp/close.m  \
+  scripts/@ftp/delete.m  \
+  scripts/@ftp/dir.m  \
+  scripts/@ftp/display.m  \
+  scripts/@ftp/ftp.m  \
+  scripts/@ftp/loadobj.m  \
+  scripts/@ftp/mget.m  \
+  scripts/@ftp/mkdir.m  \
+  scripts/@ftp/mput.m  \
+  scripts/@ftp/rename.m  \
+  scripts/@ftp/rmdir.m  \
+  scripts/@ftp/saveobj.m
+
+scripts_@ftpdir = $(fcnfiledir)/@ftp
+
+scripts_@ftp_DATA = $(scripts_@ftp_FCN_FILES)
+
+FCN_FILES += $(scripts_@ftp_FCN_FILES)
+
+PKG_ADD_FILES += scripts/@ftp/PKG_ADD
+
+DIRSTAMP_FILES += scripts/@ftp/$(octave_dirstamp)
+####################### end include scripts/@ftp/module.mk #####################
 
 image_DATA += $(SCRIPTS_IMAGES)
 

@@ -516,7 +516,10 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 {
   fname_line_map retval;
 
-  for (bp_set_iterator it = bp_set.begin (); it != bp_set.end (); it++)
+  // make copy since changes may invalidate iters of bp_set.
+  std::set<std::string> tmp_bp_set = bp_set;
+
+  for (bp_set_iterator it = tmp_bp_set.begin (); it != tmp_bp_set.end (); it++)
     {
       if (fname_list.length () == 0
           || do_find_bkpt_list (fname_list, *it) != "")

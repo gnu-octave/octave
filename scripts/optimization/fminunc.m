@@ -143,8 +143,6 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   ## These defaults are rather stringent.  I think that normally, user
   ## prefers accuracy to performance.
 
-  macheps = eps (class (x0));
-
   tolx = optimget (options, "TolX", 1e-7);
   tolf = optimget (options, "TolFun", 1e-7);
 
@@ -173,6 +171,12 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       info = -1;
       break;
     endif
+  endif
+
+  if (isa (x0, "single") || isa (fval, "single"))
+    macheps = eps ("single");
+  else
+    macheps = eps ("double");
   endif
 
   nsuciter = 0;

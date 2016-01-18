@@ -185,10 +185,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     fcn = @(x) guarded_eval (fcn, x, complexeqn);
   endif
 
-  ## These defaults are rather stringent. I think that normally, user
-  ## prefers accuracy to performance.
-
-  macheps = eps (class (x0));
+  ## These defaults are rather stringent.
+  ## Normally user prefers accuracy to performance.
 
   tolx = optimget (options, "TolX", 1e-7);
   tolf = optimget (options, "TolFun", 1e-7);
@@ -221,6 +219,12 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       info = -1;
       break;
     endif
+  endif
+
+  if (isa (x0, "single") || isa (fvec, "single"))
+    macheps = eps ("single");
+  else
+    macheps = eps ("double");
   endif
 
   nsuciter = 0;

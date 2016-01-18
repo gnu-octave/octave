@@ -52,10 +52,10 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fminsearch");
 
-## FIXME: Add support for "exitflag" output variable
-## FIXME: Add support for "output" output variable
+## FIXME: Add support for "exitflag" output variable.
+## FIXME: Add support for "output" output variable.
 ## FIXME: For Display option, add 'final' and 'notify' options.  Not too hard.
-## FIXME: Add support for OutputFcn.  See fminunc for a template
+## FIXME: Add support for OutputFcn.  See fminunc for a template.
 ## FIXME: Add support for exiting based on TolFun.  See fminunc for an idea.
 
 function [x, fval] = fminsearch (fun, x0, options = struct ())

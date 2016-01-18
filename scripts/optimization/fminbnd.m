@@ -98,7 +98,6 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   info = 0;
   niter = 0;
   nfev = 0;
-  sqrteps = eps (class (xmin + xmax));
 
   c = 0.5*(3 - sqrt (5));
   a = xmin; b = xmax;
@@ -107,6 +106,12 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   e = 0;
   fv = fw = fval = fun (x);
   nfev += 1;
+
+  if (isa (xmin, "single") || isa (xmax, "single") || isa (fval, "single"))
+    sqrteps = eps ("single");
+  else
+    sqrteps = eps ("double");
+  endif
 
   ## Only for display purposes.
   iter(1).funccount = nfev;
@@ -117,7 +122,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     xm = 0.5*(a+b);
     ## FIXME: the golden section search can actually get closer than sqrt(eps)
     ## sometimes.  Sometimes not, it depends on the function.  This is the
-    ## strategy from the Netlib code.  Something yet smarter would be good.
+    ## strategy from the Netlib code.  Something smarter would be good.
     tol = 2 * sqrteps * abs (x) + tolx / 3;
     if (abs (x - xm) <= (2*tol - 0.5*(b-a)))
       info = 1;

@@ -595,7 +595,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
       return retval;
 #else
-      error ("load: zlib unavailable, cannot read compressed data element");
+      err_disabled_feature ("load", "compressed data elements (zlib)");
 #endif
     }
 

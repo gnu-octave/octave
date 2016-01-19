@@ -87,8 +87,8 @@ instead.\n\
 \n\
 @end deftypefn")
 {
-#if ! defined (HAVE_OSMESA)
-  err_disabled_feature ("__osmesa_print__", "offscreen rendering");
+#ifndef HAVE_OSMESA
+  err_disabled_feature ("__osmesa_print__", "offscreen rendering with OSMesa");
 #else
   int nargin = args.length ();
 

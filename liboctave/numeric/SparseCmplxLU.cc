@@ -239,8 +239,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
             }
         }
     }
+
 #else
-  (*current_liboctave_error_handler) ("UMFPACK not installed");
+  (*current_liboctave_error_handler)
+    ("support for UMFPACK was unavailable or disabled when liboctave was built");
 #endif
 }
 
@@ -477,7 +479,9 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
         (*current_liboctave_error_handler)
           ("Option udiag of incomplete LU not implemented");
     }
+
 #else
-  (*current_liboctave_error_handler) ("UMFPACK not installed");
+  (*current_liboctave_error_handler)
+    ("support for UMFPACK was unavailable or disabled when liboctave was built");
 #endif
 }

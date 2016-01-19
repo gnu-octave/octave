@@ -327,7 +327,7 @@ Undocumented internal function.\n\
   return retval;
 
 #else
-  error ("%s: not available in this version of Octave", caller.c_str ());
+  err_disabled_feature (caller, "Qhull");
 #endif
 }
 

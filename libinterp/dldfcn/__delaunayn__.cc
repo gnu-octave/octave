@@ -225,9 +225,7 @@ Undocumented internal function.\n\
   return retval;
 
 #else
-
-  error ("__delaunayn__: not available in this version of Octave");
-
+  err_disabled_feature ("__delaunayn__", "Qhull");
 #endif
 }
 

@@ -695,7 +695,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 #ifdef HAVE_HDF5
           format = LS_HDF5;
 #else
-          error ("load: octave executable was not linked with HDF5 library");
+          err_disabled_feature ("load", "HDF5");
 #endif
         }
       else if (argv[i] == "-import" || argv[i] == "-i")
@@ -1064,7 +1064,7 @@ parse_save_options (const string_vector &argv,
 #ifdef HAVE_HDF5
           format = LS_HDF5;
 #else
-          error ("save: octave executable was not linked with HDF5 library");
+          err_disabled_feature ("save", "HDF5");
 #endif
         }
       else if (argv[i] == "-mat-binary" || argv[i] == "-mat"
@@ -1096,7 +1096,7 @@ parse_save_options (const string_vector &argv,
           format = LS_HDF5;
           save_as_floats = true;
 #else
-          error ("save: octave executable was not linked with HDF5 library");
+          err_disabled_feature ("save", "HDF5");
 #endif
         }
 #ifdef HAVE_ZLIB

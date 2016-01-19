@@ -345,6 +345,6 @@ factorization as determined by @var{typ}.\n\
   return retval;
 
 #else
-  error ("symbfact: not available in this version of Octave");
+  err_disabled_feature ("symbfact", "CHOLMOD");
 #endif
 }

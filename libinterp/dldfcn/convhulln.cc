@@ -289,7 +289,7 @@ convex hull is calculated.\n\n\
   return retval;
 
 #else
-  error ("convhulln: not available in this version of Octave");
+  err_disabled_feature ("convhulln", "Qhull");
 #endif
 }
 

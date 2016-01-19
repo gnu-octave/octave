@@ -60,9 +60,10 @@ SparseQR::SparseQR_rep::SparseQR_rep (const SparseMatrix& a, int order)
     (*current_liboctave_error_handler)
       ("SparseQR: sparse matrix QR factorization filled");
   count = 1;
+
 #else
   (*current_liboctave_error_handler)
-    ("SparseQR: sparse matrix QR factorization not implemented");
+    ("SparseQR: support for CXSparse was unavailable or disabled when liboctave was built");
 #endif
 }
 

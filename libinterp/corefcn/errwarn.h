@@ -43,7 +43,7 @@ void err_data_conversion (const char *from, const char *to);
 OCTAVE_NORETURN OCTINTERP_API extern
 void err_disabled_feature (const std::string& fcn,
                            const std::string& feature,
-                           const std::string& pkg="Octave");
+                           const std::string& pkg = "Octave");
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void err_indexed_cs_list (void);
@@ -148,6 +148,11 @@ void warn_complex_cmp (void);
 
 OCTINTERP_API extern
 void warn_data_file_in_path (const std::string& fcn, const std::string& file);
+
+OCTINTERP_API extern
+void warn_disabled_feature (const std::string& fcn,
+                            const std::string& feature,
+                            const std::string& pkg = "Octave");
 
 OCTINTERP_API extern
 void warn_divide_by_zero (void);

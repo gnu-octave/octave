@@ -482,10 +482,10 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       CXSPARSE_DNAME (_dfree) (dm);
     }
   return retval;
+
 #else
   (*current_liboctave_error_handler)
-    ("CXSPARSE unavailable; cannot solve minimum norm problem");
-  return RT ();
+    ("support for CXSparse was unavailable or disabled when liboctave was built");
 #endif
 }
 

@@ -213,11 +213,13 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
       CHOLMOD_NAME(print_common) (tmp, cm);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
     }
+
+  return info;
+
 #else
   (*current_liboctave_error_handler)
-    ("Missing CHOLMOD. Sparse cholesky factorization disabled");
+    ("support for CHOLMOD was unavailable or disabled when liboctave was built");
 #endif
-  return info;
 }
 
 template <class chol_type, class chol_elt, class p_type>

@@ -2350,7 +2350,7 @@ Undocumented internal function.  Calls Fl::check ()\n\
 
   return ovl ();
 #else
-  error ("__fltk_check__: not available without OpenGL and FLTK libraries");
+  err_disabled_feature ("__fltk_check__", "OpenGL and FLTK");
 #endif
 }
 
@@ -2382,8 +2382,9 @@ Undocumented internal function.\n\
     }
 
   return ovl ();
+
 #else
-  error ("__init_fltk__: not available without OpenGL and FLTK libraries");
+  err_disabled_feature ("__init_fltk__", "OpenGL and FLTK");
 #endif
 }
 

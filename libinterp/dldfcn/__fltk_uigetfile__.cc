@@ -138,11 +138,8 @@ Undocumented internal function.\n\
   return retval;
 
 #else
-
-  error ("__fltk_uigetfile__: not available without OpenGL and FLTK libraries");
-
+  err_disabled_feature ("__fltk_uigetfile__", "OpenGL and FLTK");
 #endif
-
 }
 
 /*

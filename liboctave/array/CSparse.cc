@@ -1282,11 +1282,12 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
             }
         }
     }
-#else
-  (*current_liboctave_error_handler) ("UMFPACK not installed");
-#endif
-
   return retval;
+
+#else
+  (*current_liboctave_error_handler)
+    ("support for UMFPACK was unavailable or disabled when liboctave was built");
+#endif
 }
 
 ComplexMatrix
@@ -5553,11 +5554,13 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
 
   if (err != 0)
     UMFPACK_ZNAME (free_numeric) (&Numeric);
-#else
-  (*current_liboctave_error_handler) ("UMFPACK not installed");
-#endif
 
   return Numeric;
+
+#else
+  (*current_liboctave_error_handler)
+    ("support for UMFPACK was unavailable or disabled when liboctave was built");
+#endif
 }
 
 ComplexMatrix
@@ -5709,7 +5712,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
             }
 #else
           (*current_liboctave_warning_with_id_handler)
-            ("Octave:missing-dependency", "CHOLMOD not installed");
+            ("Octave:missing-dependency",
+             "support for CHOLMOD was unavailable or disabled "
+             "when liboctave was built");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;
@@ -5791,7 +5796,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
             mattype.mark_as_rectangular ();
 
 #else
-          (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler)
+            ("support for UMFPACK was unavailable or disabled "
+             "when liboctave was built");
 #endif
         }
       else if (typ != MatrixType::Hermitian)
@@ -5966,7 +5973,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
             }
 #else
           (*current_liboctave_warning_with_id_handler)
-            ("Octave:missing-dependency", "CHOLMOD not installed");
+            ("Octave:missing-dependency",
+             "support for CHOLMOD was unavailable or disabled "
+             "when liboctave was built");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;
@@ -6080,7 +6089,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
             mattype.mark_as_rectangular ();
 
 #else
-          (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler)
+            ("support for UMFPACK was unavailable or disabled "
+             "when liboctave was built");
 #endif
         }
       else if (typ != MatrixType::Hermitian)
@@ -6239,7 +6250,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
             }
 #else
           (*current_liboctave_warning_with_id_handler)
-            ("Octave:missing-dependency", "CHOLMOD not installed");
+            ("Octave:missing-dependency",
+             "support for CHOLMOD was unavailable or disabled "
+             "when liboctave was built");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;
@@ -6300,7 +6313,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
             mattype.mark_as_rectangular ();
 
 #else
-          (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler)
+            ("support for UMFPACK was unavailable or disabled "
+             "when liboctave was built");
 #endif
         }
       else if (typ != MatrixType::Hermitian)
@@ -6475,7 +6490,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
             }
 #else
           (*current_liboctave_warning_with_id_handler)
-            ("Octave:missing-dependency", "CHOLMOD not installed");
+            ("Octave:missing-dependency",
+             "support for CHOLMOD was unavailable or disabled "
+             "when liboctave was built");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;
@@ -6581,7 +6598,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
             mattype.mark_as_rectangular ();
 
 #else
-          (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler)
+            ("support for UMFPACK was unavailable or disabled "
+             "when liboctave was built");
 #endif
         }
       else if (typ != MatrixType::Hermitian)

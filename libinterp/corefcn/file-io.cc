@@ -178,7 +178,7 @@ normalize_fopen_mode (std::string& mode, bool& use_zlib)
           use_zlib = true;
           mode.erase (pos, 1);
 #else
-          error ("this version of Octave does not support gzipped files");
+          err_disabled_feature ("", "gzipped files (zlib)");
 #endif
         }
 

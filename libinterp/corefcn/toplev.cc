@@ -1095,7 +1095,7 @@ command shell that is started to run the command.\n\
       CloseHandle (pi.hProcess);
       CloseHandle (pi.hThread);
 #else
-      error ("system: asynchronous system calls are not supported");
+      err_disabled_feature ("system", "asynchronous system calls");
 #endif
     }
   else if (return_output)

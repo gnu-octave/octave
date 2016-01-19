@@ -559,6 +559,6 @@ Undocumented internal function.\n\
   return retval;
 
 #else
-  error ("eigs: not available in this version of Octave");
+  err_disabled_feature ("eigs", "ARPACK");
 #endif
 }

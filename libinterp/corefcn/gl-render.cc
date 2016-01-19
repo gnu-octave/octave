@@ -3269,7 +3269,8 @@ opengl_renderer::render_text (const std::string& txt,
 
   return bbox;
 #else
-  warning ("opengl_renderer: cannot render text, FreeType library not available");
+  warn_disabled_feature ("opengl_renderer::render_text",
+                         "rendering text (FreeType)");
   return Matrix (1, 4, 0.0);
 #endif
 }

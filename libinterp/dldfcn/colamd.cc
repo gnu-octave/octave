@@ -45,11 +45,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #ifdef USE_64_BIT_IDX_T
-#define COLAMD_NAME(name) colamd_l ## name
-#define SYMAMD_NAME(name) symamd_l ## name
+# define COLAMD_NAME(name) colamd_l ## name
+# define SYMAMD_NAME(name) symamd_l ## name
 #else
-#define COLAMD_NAME(name) colamd ## name
-#define SYMAMD_NAME(name) symamd ## name
+# define COLAMD_NAME(name) colamd ## name
+# define SYMAMD_NAME(name) symamd ## name
 #endif
 
 // The symmetric column elimination tree code take from the Davis LDL code.
@@ -441,9 +441,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   return retval;
 
 #else
-
-  error ("colamd: not available in this version of Octave");
-
+  err_disabled_feature ("colamd", "COLAMD");
 #endif
 }
 
@@ -631,9 +629,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   return retval;
 
 #else
-
-  error ("symamd: not available in this version of Octave");
-
+  err_disabled_feature ("symamd", "COLAMD");
 #endif
 }
 

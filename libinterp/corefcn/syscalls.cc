@@ -1313,7 +1313,7 @@ a duplicate file descriptor.\n\
 #if defined (F_DUPFD)
   return const_value (args, F_DUPFD);
 #else
-  error ("F_DUPFD: not available on this system");
+  err_disabled_feature ("F_DUPFD", "F_DUPFD");
 #endif
 }
 
@@ -1328,7 +1328,7 @@ the file descriptor flags.\n\
 #if defined (F_GETFD)
   return const_value (args, F_GETFD);
 #else
-  error ("F_GETFD: not available on this system");
+  err_disabled_feature ("F_GETFD", "F_GETFD");
 #endif
 }
 
@@ -1343,7 +1343,7 @@ the file status flags.\n\
 #if defined (F_GETFL)
   return const_value (args, F_GETFL);
 #else
-  error ("F_GETFL: not available on this system");
+  err_disabled_feature ("F_GETFL", "F_GETFL");
 #endif
 }
 
@@ -1358,7 +1358,7 @@ descriptor flags.\n\
 #if defined (F_SETFD)
   return const_value (args, F_SETFD);
 #else
-  error ("F_SETFD: not available on this system");
+  err_disabled_feature ("F_SETFD", "F_SETFD");
 #endif
 }
 
@@ -1373,7 +1373,7 @@ status flags.\n\
 #if defined (F_SETFL)
   return const_value (args, F_SETFL);
 #else
-  error ("F_SETFL: not available on this system");
+  err_disabled_feature ("F_SETFL", "F_SETFL");
 #endif
 }
 
@@ -1389,7 +1389,7 @@ or that may be passed to @code{fcntl} to set the write mode to append.\n\
 #if defined (O_APPEND)
   return const_value (args, O_APPEND);
 #else
-  error ("O_APPEND: not available on this system");
+  err_disabled_feature ("O_APPEND", "O_APPEND");
 #endif
 }
 
@@ -1404,7 +1404,7 @@ returned by @code{fcntl} to indicate asynchronous I/O.\n\
 #if defined (O_ASYNC)
   return const_value (args, O_ASYNC);
 #else
-  error ("O_ASYNC: not available on this system");
+  err_disabled_feature ("O_ASYNC", "O_ASYNC");
 #endif
 }
 
@@ -1420,7 +1420,7 @@ does not exist.\n\
 #if defined (O_CREAT)
   return const_value (args, O_CREAT);
 #else
-  error ("O_CREAT: not available on this system");
+  err_disabled_feature ("O_CREAT", "O_CREAT");
 #endif
 }
 
@@ -1435,7 +1435,7 @@ returned by @code{fcntl} to indicate that file locking is used.\n\
 #if defined (O_EXCL)
   return const_value (args, O_EXCL);
 #else
-  error ("O_EXCL: not available on this system");
+  err_disabled_feature ("O_EXCL", "O_EXCL");
 #endif
 }
 
@@ -1451,7 +1451,7 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
 #if defined (O_NONBLOCK)
   return const_value (args, O_NONBLOCK);
 #else
-  error ("O_NONBLOCK: not available on this system");
+  err_disabled_feature ("O_NONBLOCK", "O_NONBLOCK");
 #endif
 }
 
@@ -1466,7 +1466,7 @@ returned by @code{fcntl} to indicate that a file is open for reading only.\n\
 #if defined (O_RDONLY)
   return const_value (args, O_RDONLY);
 #else
-  error ("O_RDONLY: not available on this system");
+  err_disabled_feature ("O_RDONLY", "O_RDONLY");
 #endif
 }
 
@@ -1482,7 +1482,7 @@ and writing.\n\
 #if defined (O_RDWR)
   return const_value (args, O_RDWR);
 #else
-  error ("O_RDWR: not available on this system");
+  err_disabled_feature ("O_RDWR", "O_RDWR");
 #endif
 }
 
@@ -1497,7 +1497,7 @@ returned by @code{fcntl} to indicate that a file is open for synchronous I/O.\n\
 #if defined (O_SYNC)
   return const_value (args, O_SYNC);
 #else
-  error ("O_SYNC: not available on this system");
+  err_disabled_feature ("O_SYNC", "O_SYNC");
 #endif
 }
 
@@ -1513,7 +1513,7 @@ truncated when writing.\n\
 #if defined (O_TRUNC)
   return const_value (args, O_TRUNC);
 #else
-  error ("O_TRUNC: not available on this system");
+  err_disabled_feature ("O_TRUNC", "O_TRUNC");
 #endif
 }
 
@@ -1528,7 +1528,7 @@ returned by @code{fcntl} to indicate that a file is open for writing only.\n\
 #if defined (O_WRONLY)
   return const_value (args, O_WRONLY);
 #else
-  error ("O_WRONLY: not available on this system");
+  err_disabled_feature ("O_WRONLY", "O_WRONLY");
 #endif
 }
 

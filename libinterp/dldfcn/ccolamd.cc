@@ -44,11 +44,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #ifdef USE_64_BIT_IDX_T
-#define CCOLAMD_NAME(name) ccolamd_l ## name
-#define CSYMAMD_NAME(name) csymamd_l ## name
+# define CCOLAMD_NAME(name) ccolamd_l ## name
+# define CSYMAMD_NAME(name) csymamd_l ## name
 #else
-#define CCOLAMD_NAME(name) ccolamd ## name
-#define CSYMAMD_NAME(name) csymamd ## name
+# define CCOLAMD_NAME(name) ccolamd ## name
+# define CSYMAMD_NAME(name) csymamd ## name
 #endif
 
 DEFUN_DLD (ccolamd, args, nargout,
@@ -329,9 +329,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
   return retval;
 
 #else
-
-  error ("ccolamd: not available in this version of Octave");
-
+  err_disabled_feature ("ccolamd", "CCOLAMD");
 #endif
 }
 
@@ -561,8 +559,6 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
   return retval;
 
 #else
-
-  error ("csymamd: not available in this version of Octave");
-
+  err_disabled_feature ("csymamd", "CCOLAMD");
 #endif
 }

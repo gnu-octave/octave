@@ -226,8 +226,10 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
             }
         }
     }
+
 #else
-  (*current_liboctave_error_handler) ("UMFPACK not installed");
+  (*current_liboctave_error_handler)
+    ("support for UMFPACK was unavailable or disabled when liboctave was built");
 #endif
 }
 
@@ -454,7 +456,9 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
         (*current_liboctave_error_handler)
           ("Option udiag of incomplete LU not implemented");
     }
+
 #else
-  (*current_liboctave_error_handler) ("UMFPACK not installed");
+  (*current_liboctave_error_handler)
+    ("support for UMFPACK was unavailable or disabled when liboctave was built");
 #endif
 }

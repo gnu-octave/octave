@@ -50,9 +50,7 @@ check_hdf5_types (bool warn)
           ("Octave:internal",
            "the size of octave_hdf5_err is smaller than the size of HDF5 herr_t");
 #else
-      warning_with_id
-        ("Octave:internal",
-         "check_hdf5_id_type called but Octave was not compiled with support for HDF5");
+      warn_disabled_feature ("check_hdf5_id_type", "HDF5");
 #endif
 
       checked = true;

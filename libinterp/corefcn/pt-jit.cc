@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "debug.h"
 #include "defun.h"
+#include "errwarn.h"
 #include "ov.h"
 #include "pt-all.h"
 #include "pt-jit.h"
@@ -2532,8 +2533,8 @@ The original variable value is restored when exiting the function.\n\
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (jit_failcnt);
 #else
-  warning ("jit_failcnt: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  warn_disabled_feature ("jit_failcnt", "JIT compiling");
+  return ovl ();
 #endif
 }
 
@@ -2555,8 +2556,8 @@ The original variable value is restored when exiting the function.\n\
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (debug_jit);
 #else
-  warning ("debug_jit: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  warn_disabled_feature ("debug_jit", "JIT");
+  return ovl ();
 #endif
 }
 
@@ -2577,8 +2578,8 @@ The original variable value is restored when exiting the function.\n\
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (jit_enable);
 #else
-  warning ("jit_enable: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  warn_disabled_feature ("jit_enable", "JIT");
+  return ovl ();
 #endif
 }
 
@@ -2605,7 +2606,7 @@ The original variable value is restored when exiting the function.\n\
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (jit_startcnt, 1,
                                             std::numeric_limits<int>::max ());
 #else
-  warning ("jit_enable: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  warn_disabled_feature ("jit_enable", "JIT");
+  return ovl ();
 #endif
 }

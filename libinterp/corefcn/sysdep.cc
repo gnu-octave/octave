@@ -468,7 +468,7 @@ raw_mode (bool on, bool wait)
     ioctl (tty_fd, TIOCSETN, &s);
   }
 #else
-  warning ("no support for raw mode console I/O on this system");
+  warn_disabled_feature ("", "raw mode console I/O");
 
   // Make sure the current mode doesn't toggle.
   on = curr_on;

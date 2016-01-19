@@ -525,7 +525,6 @@ octave_shlib::shlib_rep::new_instance (const std::string& f)
   return new octave_dyld_shlib (f);
 #else
   (*current_liboctave_error_handler)
-    ("no API for dynamic loading is available");
-  return new shlib_rep ();
+    ("support for dynamically loaded libraries was unavailable or disabled when liboctave was built");
 #endif
 }

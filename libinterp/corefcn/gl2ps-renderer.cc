@@ -654,8 +654,6 @@ gl2ps_print (const graphics_object& fig, const std::string& cmd,
   rend.draw (fig, cmd);
 
 #else
-
-  error ("print: printing not available without gl2ps library");
-
+  err_disabled_feature ("gl2ps_print", "gl2ps");
 #endif
 }

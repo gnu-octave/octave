@@ -38,9 +38,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "SparseCmplxQR.h"
 
 #ifdef USE_64_BIT_IDX_T
-#define CXSPARSE_NAME(name) cs_dl ## name
+# define CXSPARSE_NAME(name) cs_dl ## name
 #else
-#define CXSPARSE_NAME(name) cs_di ## name
+# define CXSPARSE_NAME(name) cs_di ## name
 #endif
 
 static RowVector
@@ -157,7 +157,7 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
   return ovl (dmperm_internal (false, args(0), nargout));
 
 #else
-  error ("dmperm: not available in this version of Octave");
+  err_disabled_feature ("dmperm", "CXSparse");
 #endif
 }
 
@@ -200,7 +200,7 @@ such the numerical rank of the matrix @var{S} is bounded by\n\
   return ovl (dmperm_internal (true, args(0), nargout));
 
 #else
-  error ("sprank: not available in this version of Octave");
+  err_disabled_feature ("sprank", "CXSparse");
 #endif
 }
 

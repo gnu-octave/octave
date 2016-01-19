@@ -80,9 +80,10 @@ SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep
     (*current_liboctave_error_handler)
       ("SparseComplexQR: sparse matrix QR factorization filled");
   count = 1;
+
 #else
   (*current_liboctave_error_handler)
-    ("SparseComplexQR: sparse matrix QR factorization not implemented");
+    ("SparseComplexQR: support for CXSparse was unavailable or disabled when liboctave was built");
 #endif
 }
 

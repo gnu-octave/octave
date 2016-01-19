@@ -315,9 +315,7 @@ used per default.\n\
   return retval;
 
 #else
-
   err_disabled_feature ("fftw", "the FFTW3 planner");
-
 #endif
 }
 

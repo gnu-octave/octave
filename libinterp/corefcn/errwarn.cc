@@ -48,10 +48,14 @@ err_data_conversion (const char *from, const char *to)
 
 void
 err_disabled_feature (const std::string& fcn, const std::string& feature,
-                      const std::string& pkg /*="Octave"*/)
+                      const std::string& pkg /* ="Octave" */)
 {
-  error ("%s: support for %s was unavailable or disabled when %s was built",
-         fcn.c_str (), feature.c_str (), pkg.c_str ());
+  if (! fcn.empty ())
+    error ("%s: support for %s was unavailable or disabled when %s was built",
+           fcn.c_str (), feature.c_str (), pkg.c_str ());
+  else
+    error ("support for %s was unavailable or disabled when %s was built",
+           feature.c_str (), pkg.c_str ());
 }
 
 void
@@ -281,6 +285,18 @@ warn_data_file_in_path (const std::string& fcn, const std::string& file)
   warning_with_id ("Octave:data-file-in-path",
                    "%s: '%s' found by searching load path",
                    fcn.c_str (), file.c_str ());
+}
+
+void
+warn_disabled_feature (const std::string& fcn, const std::string& feature,
+                       const std::string& pkg /*="Octave"*/)
+{
+  if (! fcn.empty ())
+    warning ("%s: support for %s was unavailable or disabled when %s was built",
+             fcn.c_str (), feature.c_str (), pkg.c_str ());
+  else
+    warning ("support for %s was unavailable or disabled when %s was built",
+             feature.c_str (), pkg.c_str ());
 }
 
 void

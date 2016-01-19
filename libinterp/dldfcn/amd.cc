@@ -177,9 +177,7 @@ The author of the code itself is Timothy A. Davis\n\
     return ovl (Pout);
 
 #else
-
-  error ("amd: not available in this version of Octave");
-
+  err_disabled_feature ("amd", "AMD");
 #endif
 }
 

@@ -1015,7 +1015,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
   octave_idx_type j = argj.scalar_value ();
 
   if (argr.columns () != n)
-    error ("choldelete: matrix R must be square");
+    err_square_matrix_required ("choldelete", "R");
 
   if (j < 0 && j > n)
     error ("choldelete: index J out of range");
@@ -1144,7 +1144,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
   octave_idx_type j = argj.scalar_value ();
 
   if (argr.columns () != n)
-    error ("cholshift: R must be a square matrix");
+    err_square_matrix_required ("cholshift", "R");
 
   if (j < 0 || j > n+1 || i < 0 || i > n+1)
     error ("cholshift: index I or J is out of range");

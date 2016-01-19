@@ -194,7 +194,7 @@ factorization as determined by @var{typ}.\n\
     }
 
   if (A->stype && A->nrow != A->ncol)
-    error ("symbfact: S must be a square matrix");
+    err_square_matrix_required ("symbfact", "S");
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Parent, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Post, n);

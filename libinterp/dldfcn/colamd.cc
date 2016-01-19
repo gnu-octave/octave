@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov.h"
 #include "defun-dld.h"
+#include "errwarn.h"
 #include "pager.h"
 #include "ov-re-mat.h"
 
@@ -579,7 +580,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
     }
 
   if (n_row != n_col)
-    error ("symamd: matrix S must be square");
+    err_square_matrix_required ("symamd", "S");
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);

@@ -98,10 +98,10 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
     }
 
   if (nr_a != nc_a)
-    err_square_matrix_required ("eig");
+    err_square_matrix_required ("eig", "A");
 
   if (nargin == 2 && nr_b != nc_b)
-    err_square_matrix_required ("eig");
+    err_square_matrix_required ("eig", "B");
 
   Matrix tmp_a, tmp_b;
   ComplexMatrix ctmp_a, ctmp_b;
@@ -296,7 +296,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 %!error eig ()
 %!error eig ([1, 2; 3, 4], [4, 3; 2, 1], 1)
 %!error <EIG requires same size matrices> eig ([1, 2; 3, 4], 2)
-%!error <argument must be a square matrix> eig ([1, 2; 3, 4; 5, 6])
+%!error <must be a square matrix> eig ([1, 2; 3, 4; 5, 6])
 %!error <wrong type argument> eig ("abcd")
 %!error <wrong type argument> eig ([1 2 ; 2 3], "abcd")
 %!error <wrong type argument> eig (false, [1 2 ; 2 3])

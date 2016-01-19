@@ -469,7 +469,7 @@ compatibility with @sc{matlab}.\n\
       return octave_value_list (2, Matrix ());
     }
   else if (args(0).columns () != nn)
-    err_square_matrix_required ("qz");
+    err_square_matrix_required ("qz", "A");
 
   // Argument 1: dimensions look good; get the value.
   Matrix aa;

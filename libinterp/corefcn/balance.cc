@@ -105,7 +105,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   octave_idx_type nn = args(0).rows ();
 
   if (nn != args(0).columns ())
-    err_square_matrix_required ("balance");
+    err_square_matrix_required ("balance", "A");
 
   bool isfloat = args(0).is_single_type ()
                  || (! AEPcase && args(1).is_single_type ());

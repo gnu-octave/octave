@@ -74,7 +74,7 @@ sparse matrix if possible.\n\
     return octave_value (Matrix ());
 
   if (nr != nc)
-    err_square_matrix_required ("inverse");
+    err_square_matrix_required ("inverse", "A");
 
   octave_value result;
   octave_idx_type info;
@@ -217,7 +217,7 @@ sparse matrix if possible.\n\
 
 %!error inv ()
 %!error inv ([1, 2; 3, 4], 2)
-%!error <argument must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
+%!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 
 %!test
 %! [xinv, rcond] = inv (single ([1,2;3,4]));

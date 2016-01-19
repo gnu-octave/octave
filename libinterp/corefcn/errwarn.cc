@@ -109,9 +109,9 @@ err_range_invalid (void)
 }
 
 void
-err_square_matrix_required (const char *name)
+err_square_matrix_required (const char *fcn, const char *name)
 {
-  error ("%s: argument must be a square matrix", name);
+  error ("%s: %s must be a square matrix", fcn, name);
 }
 
 void

@@ -221,7 +221,7 @@ Mathematics, Manchester, England, January 1999.\n\
   octave_idx_type nc = arg.columns ();
 
   if (n != nc || arg.ndims () > 2)
-    err_square_matrix_required ("sqrtm");
+    err_square_matrix_required ("sqrtm", "A");
 
   octave_value_list retval (nargout > 1 ? 3 : 1);
 

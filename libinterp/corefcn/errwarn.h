@@ -71,7 +71,7 @@ OCTAVE_NORETURN OCTINTERP_API extern
 void err_range_invalid (void);
 
 OCTAVE_NORETURN OCTINTERP_API extern
-void err_square_matrix_required (const char *name);
+void err_square_matrix_required (const char *fcn, const char *name);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void err_string_invalid (void);

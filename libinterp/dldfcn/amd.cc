@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov.h"
 #include "defun-dld.h"
+#include "errwarn.h"
 #include "pager.h"
 #include "ov-re-mat.h"
 
@@ -128,7 +129,7 @@ The author of the code itself is Timothy A. Davis\n\
     }
 
   if (n_row != n_col)
-    error ("amd: matrix S must be square");
+    err_square_matrix_required ("amd", "S");
 
   OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
   AMD_NAME (_defaults) (Control) ;
@@ -193,7 +194,7 @@ The author of the code itself is Timothy A. Davis\n\
 %! opts.aggressive = 1;
 %! assert(amd (A2, opts), [1:30])
 
-%!error <matrix S must be square|not available in this version> amd (A)
+%!error <S must be a square matrix|was unavailable or disabled> amd (A)
 %!error amd (A2, 2)
-%!error <matrix S is corrupted|not available in this version> amd ([])
+%!error <matrix S is corrupted|was unavailable or disabled> amd ([])
 */

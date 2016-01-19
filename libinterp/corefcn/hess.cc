@@ -80,7 +80,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
     return octave_value_list (2, Matrix ());
 
   if (nr != nc)
-    err_square_matrix_required ("hess");
+    err_square_matrix_required ("hess", "A");
 
   octave_value_list retval;
 
@@ -159,5 +159,5 @@ IEEE Transactions on Automatic Control, 1979).\n\
 
 %!error hess ()
 %!error hess ([1, 2; 3, 4], 2)
-%!error <argument must be a square matrix> hess ([1, 2; 3, 4; 5, 6])
+%!error <must be a square matrix> hess ([1, 2; 3, 4; 5, 6])
 */

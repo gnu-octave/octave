@@ -167,7 +167,7 @@ in control (see @code{are} and @code{dare}).\n\
   octave_idx_type nc = arg.columns ();
 
   if (nr != nc)
-    err_square_matrix_required ("schur");
+    err_square_matrix_required ("schur", "A");
 
   octave_value_list retval;
 
@@ -261,7 +261,7 @@ in control (see @code{are} and @code{dare}).\n\
 %!error schur ()
 %!error schur (1,2,3)
 %!error [a,b,c] = schur (1)
-%!error <argument must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
+%!error <must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
 %!error <wrong type argument 'cell'> schur ({1})
 %!warning <incorrect ordered schur argument> schur ([1, 2; 3, 4], "bad_opt");
 

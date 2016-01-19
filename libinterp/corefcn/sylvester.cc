@@ -97,10 +97,10 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   // Arguments are not empty, so check for correct dimensions.
 
   if (a_nr != a_nc)
-    err_square_matrix_required ("sylvester: input A");
-  else if (b_nr != b_nc)
-    err_square_matrix_required ("sylvester: input B");
-  else if (a_nr != c_nr || b_nr != c_nc)
+    err_square_matrix_required ("sylvester", "A");
+  if (b_nr != b_nc)
+    err_square_matrix_required ("sylvester", "B");
+  if (a_nr != c_nr || b_nr != c_nc)
     err_nonconformant ();
 
   if (isfloat)
@@ -166,7 +166,7 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 %!error sylvester (1)
 %!error sylvester (1,2)
 %!error sylvester (1, 2, 3, 4)
-%!error <input A: .* must be a square matrix> sylvester (ones (2,3), ones (2,2), ones (2,2))
-%!error <input B: .* must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
+%!error <A must be a square matrix> sylvester (ones (2,3), ones (2,2), ones (2,2))
+%!error <B must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
 %!error <nonconformant matrices> sylvester (ones (2,2), ones (2,2), ones (3,3))
 */

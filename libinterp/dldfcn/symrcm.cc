@@ -469,7 +469,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   octave_idx_type nc = arg.columns ();
 
   if (nr != nc)
-    err_square_matrix_required ("symrcm");
+    err_square_matrix_required ("symrcm", "S");
 
   if (nr == 0 && nc == 0)
     return ovl (NDArray (dim_vector (1, 0)));

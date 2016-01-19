@@ -4032,6 +4032,10 @@ octave_parser::run (void)
       else
         error (e, "parse error in %s", file.c_str ());
     }
+  catch (octave_interrupt_exception &)
+    {
+      throw;
+    }
   catch (...)
     {
       std::string file = lexer.fcn_file_full_name;
@@ -4087,6 +4091,10 @@ octave_push_parser::run (const std::string& input, bool eof)
             error (e, "parse error");
           else
             error (e, "parse error in %s", file.c_str ());
+        }
+      catch (octave_interrupt_exception &)
+        {
+          throw;
         }
       catch (...)
         {

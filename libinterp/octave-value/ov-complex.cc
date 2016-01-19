@@ -75,7 +75,7 @@ public:
   // ID of error to throw.
   const char *err_id (void) const
   {
-    return error_id_invalid_index;
+    return "Octave:invalid-index";
   }
 };
 

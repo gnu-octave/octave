@@ -99,16 +99,6 @@ protected:
 
 };
 
-extern OCTAVE_API const char *error_id_nonconformant_args;
-
-extern OCTAVE_API const char *error_id_index_out_of_bounds;
-
-extern OCTAVE_API const char *error_id_invalid_index;
-
-extern OCTAVE_API const char *warning_id_nearly_singular_matrix;
-
-extern OCTAVE_API const char *warning_id_singular_matrix;
-
 OCTAVE_NORETURN OCTAVE_API extern
 void err_nan_to_logical_conversion (void);
 

@@ -152,6 +152,6 @@ OCTAVE_NORETURN OCTAVE_API extern
 void err_invalid_resize (void);
 
 OCTAVE_API extern
-void errwarn_singular_matrix (double rcond = 0.0);
+void warn_singular_matrix (double rcond = 0.0);
 
 #endif

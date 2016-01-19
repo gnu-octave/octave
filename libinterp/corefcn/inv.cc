@@ -206,7 +206,7 @@ sparse matrix if possible.\n\
     }
 
   if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
-    errwarn_singular_matrix (isfloat ? frcond : rcond);
+    warn_singular_matrix (isfloat ? frcond : rcond);
 
   return retval;
 }

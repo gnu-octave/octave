@@ -2013,7 +2013,7 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
             }
@@ -2108,7 +2108,7 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
             }
@@ -2193,7 +2193,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
 
@@ -2252,7 +2252,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                errwarn_singular_matrix ();
+                warn_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -2280,7 +2280,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
 

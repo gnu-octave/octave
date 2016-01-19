@@ -309,7 +309,7 @@ err_invalid_resize (void)
 }
 
 void
-errwarn_singular_matrix (double rcond)
+warn_singular_matrix (double rcond)
 {
   if (rcond == 0.0)
     {

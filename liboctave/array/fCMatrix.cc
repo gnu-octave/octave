@@ -2005,7 +2005,7 @@ FloatComplexMatrix::utsolve (MatrixType &mattype, const FloatComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
             }
@@ -2100,7 +2100,7 @@ FloatComplexMatrix::ltsolve (MatrixType &mattype, const FloatComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
             }
@@ -2185,7 +2185,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
 
@@ -2240,7 +2240,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                errwarn_singular_matrix ();
+                warn_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -2268,7 +2268,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
 

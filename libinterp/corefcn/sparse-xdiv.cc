@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 solve_singularity_warning (double rcond)
 {
-  errwarn_singular_matrix (rcond);
+  warn_singular_matrix (rcond);
 }
 
 template <class T1, class T2>

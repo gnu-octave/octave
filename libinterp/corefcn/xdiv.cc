@@ -59,7 +59,7 @@ result_ok (octave_idx_type info)
 static void
 solve_singularity_warning (double rcond)
 {
-  errwarn_singular_matrix (rcond);
+  warn_singular_matrix (rcond);
 }
 
 template <class T1, class T2>
@@ -403,7 +403,7 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ,
 static void
 solve_singularity_warning (float rcond)
 {
-  errwarn_singular_matrix (rcond);
+  warn_singular_matrix (rcond);
 }
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (FloatMatrix, FloatMatrix);

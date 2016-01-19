@@ -1640,7 +1640,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
             }
@@ -1734,7 +1734,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
             }
@@ -1817,7 +1817,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
 
@@ -1870,7 +1870,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                errwarn_singular_matrix ();
+                warn_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -1898,7 +1898,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        errwarn_singular_matrix (rcon);
+                        warn_singular_matrix (rcon);
                     }
                 }
 

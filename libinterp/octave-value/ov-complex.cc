@@ -79,16 +79,6 @@ public:
   }
 };
 
-static void
-gripe_complex_index (const Complex& idx)
-{
-  std::ostringstream buf;
-  buf << std::real (idx) << std::showpos << std::imag (idx) << "i";
-  complex_index_exception e (buf.str ());
-
-  throw e;
-}
-
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
 {
@@ -136,12 +126,15 @@ octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
   return tmp.do_index_op (idx, resize_ok);
 }
 
+// Can't make an index_vector from a complex number.  Throw an error.
 idx_vector
 octave_complex::index_vector (bool) const
 {
-  gripe_complex_index (scalar);
+  std::ostringstream buf;
+  buf << std::real (scalar) << std::showpos << std::imag (scalar) << "i";
+  complex_index_exception e (buf.str ());
 
-  return idx_vector ();
+  throw e;
 }
 
 double

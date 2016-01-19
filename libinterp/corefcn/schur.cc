@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 
@@ -167,12 +167,12 @@ in control (see @code{are} and @code{dare}).\n\
   octave_idx_type nc = arg.columns ();
 
   if (nr != nc)
-    gripe_square_matrix_required ("schur");
+    err_square_matrix_required ("schur");
 
   octave_value_list retval;
 
   if (! arg.is_numeric_type ())
-    gripe_wrong_type_arg ("schur", arg);
+    err_wrong_type_arg ("schur", arg);
   else if (arg.is_single_type ())
     {
       if (! force_complex && arg.is_real_type ())
@@ -294,9 +294,9 @@ Note also that @var{U} and @var{T} are not unique.\n\
   octave_value_list retval;
 
   if (! args(0).is_numeric_type ())
-    gripe_wrong_type_arg ("rsf2csf", args(0));
+    err_wrong_type_arg ("rsf2csf", args(0));
   else if (! args(1).is_numeric_type ())
-    gripe_wrong_type_arg ("rsf2csf", args(1));
+    err_wrong_type_arg ("rsf2csf", args(1));
   else if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("rsf2csf: UR and TR must be real matrices");
   else

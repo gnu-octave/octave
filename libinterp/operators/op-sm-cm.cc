@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
@@ -73,7 +73,7 @@ DEFBINOP (ldiv, sparse_matrix, complex_matrix)
       double d = v1.scalar_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (v2.complex_array_value () / d);
     }

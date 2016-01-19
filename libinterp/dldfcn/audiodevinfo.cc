@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-locbuf.h"
 #include "ovl.h"
 #include "ov.h"
@@ -406,9 +406,9 @@ recording using those parameters.\n\
   return retval;
 
 #else
-  gripe_disabled_feature ("audiodevinfo",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("audiodevinfo",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #endif
 }
 
@@ -1812,9 +1812,9 @@ Undocumented internal function.\n\
   octave_value retval;
 
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_audiorecorder__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_audiorecorder__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
 
   int nargin = args.length ();
@@ -1876,9 +1876,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_getaudiodata__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_getaudiodata__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->getaudiodata ();
 #endif
@@ -1893,9 +1893,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_channels__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_channels__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_channels ();
 #endif
@@ -1910,9 +1910,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_fs__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_fs__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_fs ();
 #endif
@@ -1927,9 +1927,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_id__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_id__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_id ();
 #endif
@@ -1944,9 +1944,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_nbits__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_nbits__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_nbits ();
 #endif
@@ -1961,9 +1961,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_sample_number__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_sample_number__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_sample_number ();
 #endif
@@ -1978,9 +1978,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_tag__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_tag__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_tag ();
 #endif
@@ -1995,9 +1995,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_total_samples__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_total_samples__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_total_samples ();
 #endif
@@ -2012,9 +2012,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_get_userdata__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_get_userdata__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->get_userdata ();
 #endif
@@ -2029,9 +2029,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_isrecording__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_isrecording__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   retval = get_recorder (args(0))->isrecording ();
 #endif
@@ -2045,9 +2045,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_pause__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_pause__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   get_recorder (args(0))->pause ();
 #endif
@@ -2061,9 +2061,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_recordblocking__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_recordblocking__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   float seconds = args(1).float_value ();
   get_recorder (args(0))->recordblocking (seconds);
@@ -2079,9 +2079,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_record__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_record__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   audiorecorder *recorder = get_recorder (args(0));
 
@@ -2100,9 +2100,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_resume__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_resume__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     get_recorder (args(0))->resume ();
@@ -2117,9 +2117,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_set_fs__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_set_fs__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 2)
     get_recorder (args(0))->set_fs (args(1).int_value ());
@@ -2134,9 +2134,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_set_tag__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_set_tag__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 2)
     get_recorder (args(0))->set_tag (args(1).char_matrix_value ());
@@ -2151,9 +2151,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_set_userdata__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_set_userdata__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 2)
     get_recorder (args(0))->set_userdata (args(1));
@@ -2168,9 +2168,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__recorder_stop__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__recorder_stop__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     get_recorder (args(0))->stop ();
@@ -2188,9 +2188,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_audioplayer__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_audioplayer__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
 
   int nargin = args.length ();
@@ -2257,9 +2257,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_channels__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_channels__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_channels ();
@@ -2275,9 +2275,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_fs__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_fs__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_fs ();
@@ -2293,9 +2293,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_id__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_id__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_id ();
@@ -2311,9 +2311,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_nbits__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_nbits__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_nbits ();
@@ -2329,9 +2329,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_sample_number__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_sample_number__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_sample_number ();
@@ -2347,9 +2347,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_tag__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_tag__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_tag ();
@@ -2365,9 +2365,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_total_samples__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_total_samples__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_total_samples ();
@@ -2383,9 +2383,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_get_userdata__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_get_userdata__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->get_userdata ();
@@ -2401,9 +2401,9 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_isplaying__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_isplaying__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     retval = get_player (args(0))->isplaying ();
@@ -2418,9 +2418,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_pause__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_pause__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     get_player (args(0))->pause ();
@@ -2437,9 +2437,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_playblocking__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_playblocking__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
 
   audioplayer *player = get_player (args(0));
@@ -2491,9 +2491,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_play__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_play__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
 
   if (args.length () == 1)
@@ -2543,9 +2543,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_resume__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_resume__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     get_player (args(0))->resume ();
@@ -2560,9 +2560,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_set_fs__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_set_fs__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 2)
     get_player (args(0))->set_fs (args(1).int_value ());
@@ -2577,9 +2577,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_set_tag__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_set_tag__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 2)
     get_player (args(0))->set_tag (args(1).char_matrix_value ());
@@ -2594,9 +2594,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_set_userdata__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_set_userdata__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 2)
     get_player (args(0))->set_userdata (args(1));
@@ -2611,9 +2611,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
-  gripe_disabled_feature ("__player_stop__",
-                          "audio playback and recording through PortAudio",
-                          "Octave");
+  err_disabled_feature ("__player_stop__",
+                        "audio playback and recording through PortAudio",
+                        "Octave");
 #else
   if (args.length () == 1)
     get_player (args(0))->stop ();

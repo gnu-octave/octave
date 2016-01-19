@@ -48,7 +48,7 @@ gripe_invalid_range (void)
 }
 
 static void
-gripe_index_out_of_range (void)
+err_index_out_of_range (void)
 {
   (*current_liboctave_error_handler)
     ("internal error: idx_vector index out of range");
@@ -79,7 +79,7 @@ idx_vector::idx_colon_rep::checkelem (octave_idx_type i) const
 {
   if (i < 0)
     {
-      gripe_index_out_of_range ();
+      err_index_out_of_range ();
       return 0;
     }
   else
@@ -115,12 +115,12 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
     }
   else if (start < 0)
     {
-      gripe_invalid_index (start);
+      err_invalid_index (start);
       err = true;
     }
   else if (step < 0 && start + (len-1)*step < 0)
     {
-      gripe_invalid_index (start + (len-1)*step);
+      err_invalid_index (start + (len-1)*step);
       err = true;
     }
 }
@@ -141,12 +141,12 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
           step = static_cast<octave_idx_type> (r.inc ());
           if (start < 0)
             {
-              gripe_invalid_index (start);
+              err_invalid_index (start);
               err = true;
             }
           else if (step < 0 && start + (len - 1)*step < 0)
             {
-              gripe_invalid_index (start + (len - 1)*step);
+              err_invalid_index (start + (len - 1)*step);
               err = true;
             }
         }
@@ -155,7 +155,7 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
           // find first non-integer, then gripe about it
           double b = r.base ();
           double inc = r.inc ();
-          gripe_invalid_index (b != gnulib::floor (b) ? b : b + inc);
+          err_invalid_index (b != gnulib::floor (b) ? b : b + inc);
           err = true;
         }
     }
@@ -166,7 +166,7 @@ idx_vector::idx_range_rep::checkelem (octave_idx_type i) const
 {
   if (i < 0 || i >= len)
     {
-      gripe_index_out_of_range ();
+      err_index_out_of_range ();
       return 0;
     }
   else
@@ -236,7 +236,7 @@ convert_index (octave_idx_type i, bool& conv_error,
   if (i <= 0)
     {
       if (! conv_error)          // only gripe once, for things like A(-10000:0)
-        gripe_invalid_index (i-1);
+        err_invalid_index (i-1);
       conv_error = true;
     }
 
@@ -253,7 +253,7 @@ convert_index (double x, bool& conv_error, octave_idx_type& ext)
 
   if (static_cast<double> (i) != x)
     {
-      gripe_invalid_index (x-1);
+      err_invalid_index (x-1);
       conv_error = true;
     }
 
@@ -291,7 +291,7 @@ idx_vector::idx_scalar_rep::idx_scalar_rep (octave_idx_type i)
 {
   if (data < 0)
     {
-      gripe_invalid_index (data);
+      err_invalid_index (data);
       err = true;
     }
 }
@@ -300,7 +300,7 @@ octave_idx_type
 idx_vector::idx_scalar_rep::checkelem (octave_idx_type i) const
 {
   if (i != 0)
-    gripe_index_out_of_range ();
+    err_index_out_of_range ();
 
   return data;
 }
@@ -363,7 +363,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
           if (k < 0)
             {
               if (! err)         // only report first error, in case 1000s.
-                gripe_invalid_index (k);
+                err_invalid_index (k);
               err = true;
             }
           else if (k > max)
@@ -474,7 +474,7 @@ idx_vector::idx_vector_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
     {
-      gripe_invalid_index (n);
+      err_invalid_index (n);
       return 0;
     }
 
@@ -724,7 +724,7 @@ idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
     {
-      gripe_invalid_index (n);
+      err_invalid_index (n);
       return 0;
     }
 

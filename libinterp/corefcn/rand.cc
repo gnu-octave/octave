@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -209,7 +209,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           }
         else
           {
-            gripe_wrong_type_arg ("rand", tmp);
+            err_wrong_type_arg ("rand", tmp);
             return retval;
           }
       }

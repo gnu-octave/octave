@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 #include "ops.h"
@@ -82,7 +82,7 @@ For that, use any of the condition number functions: @code{cond},\n\
     return octave_value (1.0);
 
   if (nr != nc)
-    gripe_square_matrix_required ("det");
+    err_square_matrix_required ("det");
 
   octave_value_list retval (2);
 
@@ -226,7 +226,7 @@ For that, use any of the condition number functions: @code{cond},\n\
             }
         }
       else
-        gripe_wrong_type_arg ("det", arg);
+        err_wrong_type_arg ("det", arg);
     }
 
   return retval;

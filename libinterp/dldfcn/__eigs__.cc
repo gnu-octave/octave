@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "quit.h"
 #include "variables.h"
 #include "ov-re-sparse.h"
@@ -64,7 +64,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "eigs");
+          err_user_supplied_eval (e, "eigs");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -80,7 +80,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
       else
         {
           eigs_error = 1;
-          gripe_user_supplied_eval ("eigs");
+          err_user_supplied_eval ("eigs");
         }
     }
 
@@ -104,7 +104,7 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "eigs");
+          err_user_supplied_eval (e, "eigs");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -114,7 +114,7 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
       else
         {
           eigs_error = 1;
-          gripe_user_supplied_eval ("eigs");
+          err_user_supplied_eval ("eigs");
         }
     }
 

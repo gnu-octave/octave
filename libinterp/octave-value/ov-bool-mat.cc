@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
 #include "ovl.h"
 #include "oct-hdf5.h"
@@ -98,13 +98,13 @@ octave_bool_matrix::double_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "bool matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("bool matrix", "real scalar");
+    err_invalid_conversion ("bool matrix", "real scalar");
 
   return retval;
 }
@@ -116,13 +116,13 @@ octave_bool_matrix::float_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "bool matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("bool matrix", "real scalar");
+    err_invalid_conversion ("bool matrix", "real scalar");
 
   return retval;
 }
@@ -136,13 +136,13 @@ octave_bool_matrix::complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "bool matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("bool matrix", "complex scalar");
+    err_invalid_conversion ("bool matrix", "complex scalar");
 
   return retval;
 }
@@ -156,13 +156,13 @@ octave_bool_matrix::float_complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "bool matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("bool matrix", "complex scalar");
+    err_invalid_conversion ("bool matrix", "complex scalar");
 
   return retval;
 }
@@ -559,7 +559,7 @@ Compatibility Note: Octave accepts complex values as input, whereas\n\
         retval = arg.bool_array_value ();
     }
   else
-    gripe_wrong_type_arg ("logical", arg);
+    err_wrong_type_arg ("logical", arg);
 
   return retval;
 }

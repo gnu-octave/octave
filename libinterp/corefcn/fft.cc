@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 
@@ -145,7 +145,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
           retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
         }
       else
-        gripe_wrong_type_arg (fcn, arg);
+        err_wrong_type_arg (fcn, arg);
     }
 
   return retval;

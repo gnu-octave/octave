@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ops.h"
 #include "oct-locbuf.h"
 
@@ -105,13 +105,13 @@ octave_sparse_bool_matrix::double_value (bool) const
   if (numel () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "bool sparse matrix", "real scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  "bool sparse matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("bool sparse matrix", "real scalar");
+    err_invalid_conversion ("bool sparse matrix", "real scalar");
 
   return retval;
 }
@@ -126,13 +126,13 @@ octave_sparse_bool_matrix::complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "bool sparse matrix", "complex scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  "bool sparse matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("bool sparse matrix", "complex scalar");
+    err_invalid_conversion ("bool sparse matrix", "complex scalar");
 
   return retval;
 }

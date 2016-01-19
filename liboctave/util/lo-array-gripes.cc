@@ -30,16 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-array-gripes.h"
 #include "lo-error.h"
 
-const char *error_id_nonconformant_args = "Octave:nonconformant-args";
-
-const char *error_id_index_out_of_bounds = "Octave:index-out-of-bounds";
-
-const char *error_id_invalid_index = "Octave:invalid-index";
-
-const char *warning_id_nearly_singular_matrix = "Octave:nearly-singular-matrix";
-
-const char *warning_id_singular_matrix = "Octave:singular-matrix";
-
 void
 gripe_nan_to_logical_conversion (void)
 {
@@ -100,67 +90,6 @@ gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
   (*current_liboctave_error_with_id_handler)
     (err_id, "A(%s) = []: index out of bounds: value %d out of bound %d",
      is1d ? "I" : "..,I,..", idx, ext);
-}
-
-
-
-// Common procedures of base class index_exception, thrown whenever an
-// object is indexed incorrectly, such as by an index that is out of
-// range, negative, fractional, complex, or of a non-numeric type.
-
-std::string
-index_exception::message (void) const
-{
-  std::string msg = expression () + ": " + details ();
-  return msg.c_str ();
-}
-
-// Show the expression that caused the error, e.g.,  "A(-1,_)",
-// "A(0+1i)", "A(_,3)".  Show how many indices come before/after the
-// offending one, e.g., (<error>), (<error>,_), or (_,<error>,...[x5]...)
-
-std::string
-index_exception::expression (void) const
-{
-  std::ostringstream buf;
-
-  if (var.empty () || var == "<unknown>")
-    buf << "index ";
-  else
-    buf << var;
-
-  bool show_parens = dim > 0;
-
-  if (show_parens)
-    {
-      if (dim < 5)
-        {
-          buf << "(";
-
-          for (octave_idx_type i = 1; i < dim; i++)
-            buf << "_,";
-        }
-      else
-        buf << "(...[x" << dim - 1 << "]...";
-    }
-
-  buf << idx ();
-
-  if (show_parens)
-    {
-      if (nd - dim < 5)
-        {
-          for (octave_idx_type i = 0; i < nd - dim; i++)
-            buf << ",_";
-
-          if (nd >= dim)
-            buf << ")";
-        }
-      else
-        buf << "...[x" << nd - dim << "]...)";
-    }
-
-  return buf.str ();
 }
 
 class invalid_index : public index_exception

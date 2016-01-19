@@ -81,7 +81,7 @@ operator * (const T& s, const MDiagArray2<T>& a)
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
   { \
     if (a.d1 != b.d1 || a.d2 != b.d2) \
-      gripe_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2); \
+      err_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2); \
     return MDiagArray2<T> (do_mm_binary_op<T, T, T> (a, b, FN, FN, FN, #FCN), a.d1, a.d2); \
   }
 

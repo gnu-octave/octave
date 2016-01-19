@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov-builtin.h"
 #include "ov.h"

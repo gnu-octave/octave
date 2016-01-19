@@ -369,7 +369,7 @@ along with Octave; see the file COPYING.  If not, see
           } \
       } \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
         r = R (m1_nr, m1_nc, (m1.nnz () + m2.nnz ())); \
@@ -477,7 +477,7 @@ along with Octave; see the file COPYING.  If not, see
           } \
       } \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
         r = R (m1_nr, m1_nc, (m1.nnz () > m2.nnz () ? m1.nnz () : m2.nnz ())); \
@@ -593,7 +593,7 @@ along with Octave; see the file COPYING.  If not, see
           } \
       } \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
  \
@@ -816,7 +816,7 @@ along with Octave; see the file COPYING.  If not, see
     else \
       { \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
-          gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+          err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
       } \
     return r; \
   }
@@ -964,7 +964,7 @@ along with Octave; see the file COPYING.  If not, see
     else \
       { \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
-          gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+          err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
       } \
     return r; \
   }
@@ -993,7 +993,7 @@ along with Octave; see the file COPYING.  If not, see
     if (m2_nr == 1 && m2_nc == 1) \
       r = R (m1 OP m2.elem (0,0)); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
         r = R (F (m1, m2.matrix_value ())); \
@@ -1016,7 +1016,7 @@ along with Octave; see the file COPYING.  If not, see
     if (m2_nr == 1 && m2_nc == 1) \
       r = R (m1 OP m2.elem (0,0)); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
         if (do_mx_check (m1, mx_inline_all_finite<M1::element_type>)) \
@@ -1104,7 +1104,7 @@ along with Octave; see the file COPYING.  If not, see
     else \
       { \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
-          gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+          err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
       } \
     return r; \
   }
@@ -1170,7 +1170,7 @@ along with Octave; see the file COPYING.  If not, see
     else \
       { \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
-          gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+          err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
       } \
     return r; \
   }
@@ -1199,7 +1199,7 @@ along with Octave; see the file COPYING.  If not, see
     if (m1_nr == 1 && m1_nc == 1) \
       r = R (m1.elem (0,0) OP m2); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
         r = R (m1.matrix_value () OP m2); \
@@ -1230,7 +1230,7 @@ along with Octave; see the file COPYING.  If not, see
     if (m1_nr == 1 && m1_nc == 1) \
       r = R (m1.elem (0,0) OP m2); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
         if (SPARSE_SMM_BIN_OP_2_CHECK_ ## F(M2::element_type)) \
@@ -1317,7 +1317,7 @@ along with Octave; see the file COPYING.  If not, see
     else \
       { \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
-          gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+          err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
       } \
     return r; \
   }
@@ -1383,7 +1383,7 @@ along with Octave; see the file COPYING.  If not, see
     else \
       { \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
-          gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+          err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
       } \
     return r; \
   }
@@ -1742,7 +1742,7 @@ along with Octave; see the file COPYING.  If not, see
    } \
   else if (nc != a_nr) \
     { \
-      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
+      err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
       return RET_TYPE (); \
     } \
   else \
@@ -1874,7 +1874,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nc != a_nr) \
     { \
-      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
+      err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
       return RET_TYPE (); \
     } \
   else \
@@ -1909,7 +1909,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nr != a_nr) \
     { \
-      gripe_nonconformant ("operator *", nc, nr, a_nr, a_nc); \
+      err_nonconformant ("operator *", nc, nr, a_nr, a_nc); \
       return RET_TYPE (); \
     } \
   else \
@@ -1945,7 +1945,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nc != a_nr) \
     { \
-      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
+      err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
       return RET_TYPE (); \
     } \
   else \
@@ -1981,7 +1981,7 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nc != a_nc) \
     { \
-      gripe_nonconformant ("operator *", nr, nc, a_nc, a_nr); \
+      err_nonconformant ("operator *", nr, nc, a_nc, a_nr); \
       return RET_TYPE (); \
     } \
   else \

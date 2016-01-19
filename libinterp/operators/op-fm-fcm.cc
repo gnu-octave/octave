@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-fnda-fcnda.h"
 #include "mx-fcnda-fnda.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"

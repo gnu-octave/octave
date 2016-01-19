@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "ov.h"
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "utils.h"
 
 static inline bool

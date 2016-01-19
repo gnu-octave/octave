@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 
 // Find at most N_TO_FIND nonzero elements in NDA.  Search forward if
@@ -482,7 +482,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
           retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
       else
-        gripe_wrong_type_arg ("find", arg);
+        err_wrong_type_arg ("find", arg);
     }
   else if (arg.is_perm_matrix ())
     {
@@ -524,7 +524,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
       retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
     }
   else
-    gripe_wrong_type_arg ("find", arg);
+    err_wrong_type_arg ("find", arg);
 
   return retval;
 }

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ov.h"
 #include "ovl.h"
 #include "unwind-prot.h"

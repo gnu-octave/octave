@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-scalar.h"
 #include "ov-complex.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #include "oct-hdf5.h"
 
@@ -109,20 +109,20 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
   double retval = lo_ieee_nan_value ();
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex sparse matrix", "real scalar");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex sparse matrix", "real scalar");
 
   // FIXME: maybe this should be a function, valid_as_scalar()
   if (numel () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "complex sparse matrix", "real scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  "complex sparse matrix", "real scalar");
 
       retval = std::real (matrix (0, 0));
     }
   else
-    gripe_invalid_conversion ("complex sparse matrix", "real scalar");
+    err_invalid_conversion ("complex sparse matrix", "real scalar");
 
   return retval;
 }
@@ -133,8 +133,8 @@ octave_sparse_complex_matrix::matrix_value (bool force_conversion) const
   Matrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex sparse matrix", "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex sparse matrix", "real matrix");
 
   retval = ::real (matrix.matrix_value ());
 
@@ -152,13 +152,13 @@ octave_sparse_complex_matrix::complex_value (bool) const
   if (numel () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "complex sparse matrix", "real scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  "complex sparse matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("complex sparse matrix", "real scalar");
+    err_invalid_conversion ("complex sparse matrix", "real scalar");
 
   return retval;
 }
@@ -181,8 +181,8 @@ octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
   charNDArray retval;
 
   if (! frc_str_conv)
-    gripe_implicit_conversion ("Octave:num-to-str",
-                               "sparse complex matrix", "string");
+    warn_implicit_conversion ("Octave:num-to-str",
+                              "sparse complex matrix", "string");
   else
     {
       retval = charNDArray (dims (), 0);
@@ -204,9 +204,9 @@ octave_sparse_complex_matrix::sparse_matrix_value (bool force_conversion) const
   SparseMatrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex sparse matrix",
-                               "real sparse matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex sparse matrix",
+                              "real sparse matrix");
 
   retval = ::real (matrix);
 
@@ -217,10 +217,10 @@ SparseBoolMatrix
 octave_sparse_complex_matrix::sparse_bool_matrix_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
   else if (warn && (! matrix.all_elements_are_real ()
                     || real (matrix).any_element_not_one_or_zero ()))
-    gripe_logical_conversion ();
+    warn_logical_conversion ();
 
   return mx_el_ne (matrix, Complex (0.0));
 }

@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
@@ -56,7 +56,7 @@ DEFBINOP (div, sparse_complex_matrix, scalar)
   octave_value retval;
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   retval = octave_value (v1.sparse_complex_matrix_value () / d);
 
@@ -84,7 +84,7 @@ DEFBINOP (ldiv, sparse_complex_matrix, scalar)
       Complex d = v1.complex_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (SparseComplexMatrix (1, 1, v2.scalar_value () / d));
     }
@@ -117,7 +117,7 @@ DEFBINOP (el_div, sparse_complex_matrix, scalar)
   octave_value retval;
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   retval = octave_value (v1.sparse_complex_matrix_value () / d);
 

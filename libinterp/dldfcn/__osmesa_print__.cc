@@ -34,7 +34,7 @@ from git://anongit.freedesktop.org/mesa/demos
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
 #include "graphics.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #if defined (HAVE_OSMESA_H)
 #include "osmesa.h"
@@ -88,7 +88,7 @@ instead.\n\
 @end deftypefn")
 {
 #if ! defined (HAVE_OSMESA)
-  gripe_disabled_feature ("__osmesa_print__", "offscreen rendering");
+  err_disabled_feature ("__osmesa_print__", "offscreen rendering");
 #else
   int nargin = args.length ();
 
@@ -160,7 +160,7 @@ instead.\n\
     {
       // use gl2ps
 #ifndef HAVE_GL2PS_H
-      gripe_disabled_feature ("__osmesa_print__", "gl2ps");
+      err_disabled_feature ("__osmesa_print__", "gl2ps");
 #else
       std::string file = args(1).string_value ();
       std::string term = args(2).string_value ();

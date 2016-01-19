@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 
@@ -74,7 +74,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
   if (! arg_a.is_double_type () && ! arg_a.is_single_type ())
     {
-      gripe_wrong_type_arg ("eig", arg_a);
+      err_wrong_type_arg ("eig", arg_a);
       return retval;
     }
 
@@ -92,16 +92,16 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
       if (!(arg_b.is_single_type () || arg_b.is_double_type ()))
         {
-          gripe_wrong_type_arg ("eig", arg_b);
+          err_wrong_type_arg ("eig", arg_b);
           return retval;
         }
     }
 
   if (nr_a != nc_a)
-    gripe_square_matrix_required ("eig");
+    err_square_matrix_required ("eig");
 
   if (nargin == 2 && nr_b != nc_b)
-    gripe_square_matrix_required ("eig");
+    err_square_matrix_required ("eig");
 
   Matrix tmp_a, tmp_b;
   ComplexMatrix ctmp_a, ctmp_b;

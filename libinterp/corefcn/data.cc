@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-map.h"
 #include "ovl.h"
 #include "ov.h"
@@ -229,10 +229,10 @@ and @var{x}.\n\
   octave_value retval;
 
   if (! args(0).is_numeric_type ())
-    gripe_wrong_type_arg ("atan2", args(0));
+    err_wrong_type_arg ("atan2", args(0));
 
   if (! args(1).is_numeric_type ())
-    gripe_wrong_type_arg ("atan2", args(1));
+    err_wrong_type_arg ("atan2", args(1));
 
   if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("atan2: not defined for complex numbers");
@@ -339,9 +339,9 @@ do_hypot (const octave_value& x, const octave_value& y)
   octave_value arg0 = x;
   octave_value arg1 = y;
   if (! arg0.is_numeric_type ())
-    gripe_wrong_type_arg ("hypot", arg0);
+    err_wrong_type_arg ("hypot", arg0);
   else if (! arg1.is_numeric_type ())
-    gripe_wrong_type_arg ("hypot", arg1);
+    err_wrong_type_arg ("hypot", arg1);
   else
     {
       if (arg0.is_complex_type ())
@@ -548,7 +548,7 @@ $x = 0$, $f = e = 0$.\n\
       retval = ovl (f, e);
     }
   else
-    gripe_wrong_type_arg ("log2", args(0));
+    err_wrong_type_arg ("log2", args(0));
 
   return retval;
 }
@@ -615,10 +615,10 @@ periodic, @code{mod} is a better choice.\n\
   octave_value retval;
 
   if (! args(0).is_numeric_type ())
-    gripe_wrong_type_arg ("rem", args(0));
+    err_wrong_type_arg ("rem", args(0));
 
   if (! args(1).is_numeric_type ())
-    gripe_wrong_type_arg ("rem", args(1));
+    err_wrong_type_arg ("rem", args(1));
 
   if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("rem: not defined for complex numbers");
@@ -796,10 +796,10 @@ negative numbers or when the values are periodic.\n\
   octave_value retval;
 
   if (! args(0).is_numeric_type ())
-    gripe_wrong_type_arg ("mod", args(0));
+    err_wrong_type_arg ("mod", args(0));
 
   if (! args(1).is_numeric_type ())
-    gripe_wrong_type_arg ("mod", args(1));
+    err_wrong_type_arg ("mod", args(1));
 
   if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("mod: not defined for complex numbers");
@@ -1039,7 +1039,7 @@ negative numbers or when the values are periodic.\n\
             } \
           else \
             { \
-              gripe_wrong_type_arg (#FCN, arg); \
+              err_wrong_type_arg (#FCN, arg); \
               return retval; \
             } \
         } \
@@ -1079,7 +1079,7 @@ negative numbers or when the values are periodic.\n\
         } \
       else \
         { \
-          gripe_wrong_type_arg (#FCN, arg); \
+          err_wrong_type_arg (#FCN, arg); \
           return retval; \
         } \
     } \
@@ -1147,7 +1147,7 @@ negative numbers or when the values are periodic.\n\
     } \
   else \
     { \
-      gripe_wrong_type_arg (#FCN, arg); \
+      err_wrong_type_arg (#FCN, arg); \
       return retval; \
     } \
  \
@@ -1321,7 +1321,7 @@ See @code{sum} for an explanation of the optional parameters\n\
       break;
 
     default:
-      gripe_wrong_type_arg ("cumsum", arg);
+      err_wrong_type_arg ("cumsum", arg);
     }
 
   return retval;
@@ -1608,7 +1608,7 @@ in double precision even for single precision inputs.\n\
       break;
 
     default:
-      gripe_wrong_type_arg ("prod", arg);
+      err_wrong_type_arg ("prod", arg);
     }
 
   return retval;
@@ -2033,8 +2033,8 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           char type = all_dq_strings_p ? '"' : '\'';
 
           if (! all_strings_p)
-            gripe_implicit_conversion ("Octave:num-to-str",
-                                       "numeric", result_type);
+            warn_implicit_conversion ("Octave:num-to-str",
+                                      "numeric", result_type);
           else
             maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
@@ -3095,7 +3095,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
       break;
 
     default:
-      gripe_wrong_type_arg ("sum", arg);
+      err_wrong_type_arg ("sum", arg);
     }
 
   return retval;
@@ -5641,7 +5641,7 @@ compute the norms of each column and return a row vector.\n\
         error ("norm: unrecognized option: %s", str.c_str ());
     }
   else if (! p_arg.is_scalar_type ())
-    gripe_wrong_type_arg ("norm", p_arg, true);
+    err_wrong_type_arg ("norm", p_arg);
 
   octave_value retval;
 
@@ -6929,7 +6929,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
           if (argx.is_cellstr ())
             retval = argx.cellstr_value ().nth_element (n, dim);
           else
-            gripe_wrong_type_arg ("nth_element", argx);
+            err_wrong_type_arg ("nth_element", argx);
         }
     }
   catch (const index_exception& e)
@@ -7015,7 +7015,7 @@ Undocumented internal function.\n\
             retval = do_accumarray_sum (idx, vals.array_value (), n);
         }
       else
-        gripe_wrong_type_arg ("accumarray", vals);
+        err_wrong_type_arg ("accumarray", vals);
     }
   catch (const index_exception& e)
     {
@@ -7126,7 +7126,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
           break;
 
         default:
-          gripe_wrong_type_arg ("accumarray", vals);
+          err_wrong_type_arg ("accumarray", vals);
         }
     }
   catch (const index_exception& e)
@@ -7235,7 +7235,7 @@ Undocumented internal function.\n\
             retval = do_accumdim_sum (idx, vals.array_value (), dim, n);
         }
       else
-        gripe_wrong_type_arg ("accumdim", vals);
+        err_wrong_type_arg ("accumdim", vals);
     }
   catch (const index_exception& e)
     {
@@ -7726,7 +7726,7 @@ endfor\n\
 #undef BTYP_BRANCH
 
     default:
-      gripe_wrong_type_arg ("repelems", x);
+      err_wrong_type_arg ("repelems", x);
     }
 
   return retval;

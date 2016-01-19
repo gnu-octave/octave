@@ -497,7 +497,7 @@ boolNDArray
 FloatComplexNDArray::operator ! (void) const
 {
   if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
 
   return do_mx_unary_op<bool, FloatComplex> (*this, mx_inline_not);
 }

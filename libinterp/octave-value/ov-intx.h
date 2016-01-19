@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-base-int.h"
 #include "ov-typeinfo.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
@@ -104,13 +104,13 @@ public:
 
     if (numel () > 0)
       {
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   type_name (), "real scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  type_name (), "real scalar");
 
         retval = matrix(0).double_value ();
       }
     else
-      gripe_invalid_conversion (type_name (), "real scalar");
+      err_invalid_conversion (type_name (), "real scalar");
 
     return retval;
 
@@ -123,13 +123,13 @@ public:
 
     if (numel () > 0)
       {
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   type_name (), "real scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  type_name (), "real scalar");
 
         retval = matrix(0).float_value ();
       }
     else
-      gripe_invalid_conversion (type_name (), "real scalar");
+      err_invalid_conversion (type_name (), "real scalar");
 
     return retval;
 
@@ -259,7 +259,7 @@ public:
     octave_idx_type nel = numel ();
 
     if (warn && matrix.any_element_not_one_or_zero ())
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     bool *vec = retval.fortran_vec ();
     for (octave_idx_type i = 0; i < nel; i++)
@@ -573,7 +573,7 @@ public:
   bool bool_value (bool warn = false) const
   {
     if (warn && scalar != 0.0 && scalar != 1.0)
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     return scalar.bool_value ();
   }
@@ -584,7 +584,7 @@ public:
     boolNDArray retval (dim_vector (1, 1));
 
     if (warn && scalar != 0.0 && scalar != 1.0)
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     retval(0) = scalar.bool_value ();
 

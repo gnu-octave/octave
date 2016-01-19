@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "variables.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
 #include "ops.h"
 #include "ovl.h"
@@ -186,13 +186,13 @@ octave_range::double_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "range", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "range", "real scalar");
 
       retval = range.base ();
     }
   else
-    gripe_invalid_conversion ("range", "real scalar");
+    err_invalid_conversion ("range", "real scalar");
 
   return retval;
 }
@@ -206,13 +206,13 @@ octave_range::float_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "range", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "range", "real scalar");
 
       retval = range.base ();
     }
   else
-    gripe_invalid_conversion ("range", "real scalar");
+    err_invalid_conversion ("range", "real scalar");
 
   return retval;
 }
@@ -296,13 +296,13 @@ octave_range::complex_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "range", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "range", "complex scalar");
 
       retval = range.base ();
     }
   else
-    gripe_invalid_conversion ("range", "complex scalar");
+    err_invalid_conversion ("range", "complex scalar");
 
   return retval;
 }
@@ -318,13 +318,13 @@ octave_range::float_complex_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "range", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "range", "complex scalar");
 
       retval = range.base ();
     }
   else
-    gripe_invalid_conversion ("range", "complex scalar");
+    err_invalid_conversion ("range", "complex scalar");
 
   return retval;
 }
@@ -335,9 +335,9 @@ octave_range::bool_array_value (bool warn) const
   Matrix m = range.matrix_value ();
 
   if (m.any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
   else if (warn && m.any_element_not_one_or_zero ())
-    gripe_logical_conversion ();
+    warn_logical_conversion ();
 
   return boolNDArray (m);
 }

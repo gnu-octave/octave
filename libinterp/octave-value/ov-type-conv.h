@@ -94,7 +94,7 @@ octave_type_conv_body (const octave_value &arg, const std::string& name,
         ? SCALAR_RESULT_T::static_type_name () \
         : MATRIX_RESULT_T::static_type_name (); \
  \
-      gripe_invalid_conversion (arg_tname, result_tname); \
+      err_invalid_conversion (arg_tname, result_tname); \
     } \
  \
   return retval;

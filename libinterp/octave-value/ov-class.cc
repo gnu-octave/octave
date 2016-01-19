@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-path.h"
 #include "ls-hdf5.h"
 #include "ls-oct-text.h"
@@ -240,21 +240,21 @@ octave_class::get_current_method_class (void)
 
 OCTAVE_NORETURN static
 void
-gripe_invalid_index1 (void)
+err_invalid_index1 (void)
 {
   error ("invalid index for class");
 }
 
 OCTAVE_NORETURN static
 void
-gripe_invalid_index_for_assignment (void)
+err_invalid_index_for_assignment (void)
 {
   error ("invalid index for class assignment");
 }
 
 OCTAVE_NORETURN static
 void
-gripe_invalid_index_type (const std::string& nm, char t)
+err_invalid_index_type (const std::string& nm, char t)
 {
   error ("%s cannot be indexed with %c", nm.c_str (), t);
 }
@@ -409,7 +409,7 @@ octave_class::subsref (const std::string& type,
           break;
 
         case '{':
-          gripe_invalid_index_type (type_name (), type[0]);
+          err_invalid_index_type (type_name (), type[0]);
           break;
 
         default:
@@ -469,7 +469,7 @@ octave_class::subsref (const std::string& type,
             retval(0) = octave_value (map.index (idx.front ()), c_name,
                                       parent_list);
           else
-            gripe_invalid_index1 ();
+            err_invalid_index1 ();
         }
     }
 
@@ -489,7 +489,7 @@ octave_class::numeric_conv (const Cell& val, const std::string& type)
         retval = octave_map ();
     }
   else
-    gripe_invalid_index_for_assignment ();
+    err_invalid_index_for_assignment ();
 
   return retval;
 }
@@ -656,7 +656,7 @@ octave_class::subsasgn_common (const octave_value& obj,
                 t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
               }
             else
-              gripe_invalid_index_for_assignment ();
+              err_invalid_index_for_assignment ();
           }
           break;
 
@@ -699,12 +699,12 @@ octave_class::subsasgn_common (const octave_value& obj,
                 t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
               }
             else
-              gripe_indexed_cs_list ();
+              err_indexed_cs_list ();
           }
           break;
 
         case '{':
-          gripe_invalid_index_type (type_name (), type[0]);
+          err_invalid_index_type (type_name (), type[0]);
           break;
 
         default:
@@ -789,7 +789,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       break;
 
     case '{':
-      gripe_invalid_index_type (type_name (), type[0]);
+      err_invalid_index_type (type_name (), type[0]);
       break;
 
     default:
@@ -847,7 +847,7 @@ string_vector
 octave_class::map_keys (void) const
 {
   string_vector retval;
-  gripe_wrong_type_arg ("octave_class::map_keys()", type_name ());
+  err_wrong_type_arg ("octave_class::map_keys()", type_name ());
   return retval;
 }
 
@@ -1621,7 +1621,7 @@ error_cleanup:
 mxArray *
 octave_class::as_mxArray (void) const
 {
-  gripe_wrong_type_arg ("octave_class::as_mxArray ()", type_name ());
+  err_wrong_type_arg ("octave_class::as_mxArray ()", type_name ());
 
   return 0;
 }

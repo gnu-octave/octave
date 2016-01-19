@@ -56,7 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-path.h"
 #include "load-save.h"
 #include "oct-hdf5.h"
@@ -396,7 +396,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
           break;
 
         default:
-          gripe_unrecognized_data_fmt ("load");
+          err_unrecognized_data_fmt ("load");
           break;
         }
 
@@ -947,7 +947,7 @@ do_save (std::ostream& os, const octave_value& tc,
       break;
 
     default:
-      gripe_unrecognized_data_fmt ("save");
+      err_unrecognized_data_fmt ("save");
       break;
     }
 }

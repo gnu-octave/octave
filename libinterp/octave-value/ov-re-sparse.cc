@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mxarray.h"
 #include "ov-base.h"
 #include "ov-scalar.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #include "oct-hdf5.h"
 #include "ls-hdf5.h"
@@ -62,7 +62,7 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
   else
     {
       std::string nm = "<" + type_name () + ">";
-      gripe_invalid_index (nm.c_str ());
+      err_invalid_index (nm.c_str ());
     }
 }
 
@@ -100,13 +100,13 @@ octave_sparse_matrix::double_value (bool) const
   if (numel () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "real sparse matrix", "real scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  "real sparse matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("real sparse matrix", "real scalar");
+    err_invalid_conversion ("real sparse matrix", "real scalar");
 
   return retval;
 }
@@ -122,13 +122,13 @@ octave_sparse_matrix::complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "real sparse matrix", "complex scalar");
+        warn_implicit_conversion ("Octave:array-to-scalar",
+                                  "real sparse matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("real sparse matrix", "complex scalar");
+    err_invalid_conversion ("real sparse matrix", "complex scalar");
 
   return retval;
 }
@@ -145,9 +145,9 @@ octave_sparse_matrix::bool_array_value (bool warn) const
   NDArray m = matrix.matrix_value ();
 
   if (m.any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
   else if (warn && m.any_element_not_one_or_zero ())
-    gripe_logical_conversion ();
+    warn_logical_conversion ();
 
   return boolNDArray (m);
 }
@@ -188,9 +188,9 @@ SparseBoolMatrix
 octave_sparse_matrix::sparse_bool_matrix_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
   else if (warn && matrix.any_element_not_one_or_zero ())
-    gripe_logical_conversion ();
+    warn_logical_conversion ();
 
   return mx_el_ne (matrix, 0.0);
 }
@@ -224,7 +224,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
             double d = matrix.data (i);
 
             if (xisnan (d))
-              gripe_nan_to_character_conversion ();
+              err_nan_to_character_conversion ();
             else
               {
                 int ival = NINT (d);

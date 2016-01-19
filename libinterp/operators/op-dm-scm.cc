@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-m-cs.h"
 #include "mx-cs-m.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
@@ -350,7 +350,7 @@ DEFBINOP (div_scm_dm, sparse_complex_matrix, diag_matrix)
       double d = v2.scalar_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (v1.sparse_complex_matrix_value () / d);
     }
@@ -372,7 +372,7 @@ DEFBINOP (div_sm_cdm, sparse_matrix, complex_diag_matrix)
       std::complex<double> d = v2.complex_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (v1.sparse_matrix_value () / d);
     }
@@ -394,7 +394,7 @@ DEFBINOP (div_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
       std::complex<double> d = v2.complex_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (v1.sparse_complex_matrix_value () / d);
     }

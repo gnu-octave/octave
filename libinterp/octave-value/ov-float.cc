@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
 #include "ovl.h"
 #include "oct-hdf5.h"
@@ -111,7 +111,7 @@ octave_float_scalar::convert_to_str_internal (bool, bool, char type) const
   octave_value retval;
 
   if (xisnan (scalar))
-    gripe_nan_to_character_conversion ();
+    err_nan_to_character_conversion ();
   else
     {
       int ival = NINT (scalar);

@@ -323,7 +323,7 @@ operator * (const DiagMatrix& a, const DiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   DiagMatrix c (a_nr, b_nc);
 

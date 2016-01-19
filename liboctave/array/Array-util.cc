@@ -178,9 +178,9 @@ octave_idx_type
 compute_index (octave_idx_type n, const dim_vector& dims)
 {
   if (n < 0)
-    gripe_invalid_index (n, 1, 1);
+    err_invalid_index (n, 1, 1);
   if (n >= dims.numel ())
-    gripe_index_out_of_range (1, 1, n+1, dims.numel (), dims);
+    err_index_out_of_range (1, 1, n+1, dims.numel (), dims);
 
   return n;
 }
@@ -189,13 +189,13 @@ octave_idx_type
 compute_index (octave_idx_type i, octave_idx_type j, const dim_vector& dims)
 {
   if (i < 0)
-    gripe_invalid_index (i, 2, 1);
+    err_invalid_index (i, 2, 1);
   else if (j < 0)
-    gripe_invalid_index (j, 2, 2);
+    err_invalid_index (j, 2, 2);
   if (i >= dims(0))
-    gripe_index_out_of_range (2, 1, i+1, dims(0), dims);
+    err_index_out_of_range (2, 1, i+1, dims(0), dims);
   if (j >= dims.numel (1))
-    gripe_index_out_of_range (2, 2, j+1, dims.numel (1), dims);
+    err_index_out_of_range (2, 2, j+1, dims.numel (1), dims);
 
   return j*dims(0) + i;
 }
@@ -205,17 +205,17 @@ compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k,
                const dim_vector& dims)
 {
   if (i < 0)
-    gripe_invalid_index (i, 3, 1);
+    err_invalid_index (i, 3, 1);
   else if (j < 0)
-    gripe_invalid_index (j, 3, 2);
+    err_invalid_index (j, 3, 2);
   else if (k < 0)
-    gripe_invalid_index (k, 3, 3);
+    err_invalid_index (k, 3, 3);
   if (i >= dims(0))
-    gripe_index_out_of_range (3, 1, i+1, dims(0), dims);
+    err_index_out_of_range (3, 1, i+1, dims(0), dims);
   if (j >= dims(1))
-    gripe_index_out_of_range (3, 2, j+1, dims(1), dims);
+    err_index_out_of_range (3, 2, j+1, dims(1), dims);
   if (k >= dims.numel (2))
-    gripe_index_out_of_range (3, 3, k+1, dims.numel (2), dims);
+    err_index_out_of_range (3, 3, k+1, dims.numel (2), dims);
 
   return (k*dims(1) + j)*dims(0) + i;
 }
@@ -228,9 +228,9 @@ compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims)
   for (int d = 0; d < nd; d++)
     {
       if (ra_idx(d) < 0)
-        gripe_invalid_index (ra_idx(d), nd, d+1);
+        err_invalid_index (ra_idx(d), nd, d+1);
       if (ra_idx(d) >= dv(d))
-        gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d), dims);
+        err_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d), dims);
     }
 
   return dv.compute_index (ra_idx.data ());
@@ -559,7 +559,7 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
                   ("sub2ind: lengths of indices must match");
 
               if (idx.extent (n) > n)
-                  gripe_index_out_of_range (len, i+1, idx.extent (n), n);
+                  err_index_out_of_range (len, i+1, idx.extent (n), n);
             }
           catch (index_exception& e)
             {

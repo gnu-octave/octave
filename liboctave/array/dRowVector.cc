@@ -200,7 +200,7 @@ operator * (const RowVector& v, const Matrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (a_nr != len)
-    gripe_nonconformant ("operator *", 1, len, a_nr, a_nc);
+    err_nonconformant ("operator *", 1, len, a_nr, a_nc);
   else
     {
       if (len == 0)
@@ -323,7 +323,7 @@ operator * (const RowVector& v, const ColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
-    gripe_nonconformant ("operator *", len, a_len);
+    err_nonconformant ("operator *", len, a_len);
   else if (len != 0)
     F77_FUNC (xddot, XDDOT) (len, v.data (), 1, a.data (), 1, retval);
 

@@ -73,7 +73,7 @@ ComplexGEPBALANCE::init (const ComplexMatrix& a, const ComplexMatrix& b,
 
   if (a.dims () != b.dims ())
     {
-      gripe_nonconformant ("ComplexGEPBALANCE", n, n, b.rows(), b.cols());
+      err_nonconformant ("ComplexGEPBALANCE", n, n, b.rows(), b.cols());
       return -1;
     }
 

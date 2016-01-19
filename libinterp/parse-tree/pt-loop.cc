@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-map.h"
 #include "oct-lvalue.h"
 #include "ov.h"

@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
@@ -2182,7 +2182,7 @@ public:
 
         if (val.is_map () || val.is_cell () || val.is_object ())
           {
-            gripe_wrong_type_arg (who, val);
+            err_wrong_type_arg (who, val);
             break;
           }
       }

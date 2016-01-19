@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 
@@ -80,7 +80,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
     return octave_value_list (2, Matrix ());
 
   if (nr != nc)
-    gripe_square_matrix_required ("hess");
+    err_square_matrix_required ("hess");
 
   octave_value_list retval;
 
@@ -139,7 +139,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
         }
       else
         {
-          gripe_wrong_type_arg ("hess", arg);
+          err_wrong_type_arg ("hess", arg);
         }
     }
 

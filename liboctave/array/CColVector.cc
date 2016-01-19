@@ -285,7 +285,7 @@ ComplexColumnVector::operator += (const ColumnVector& a)
 
   if (len != a_len)
     {
-      gripe_nonconformant ("operator +=", len, a_len);
+      err_nonconformant ("operator +=", len, a_len);
       return *this;
     }
 
@@ -307,7 +307,7 @@ ComplexColumnVector::operator -= (const ColumnVector& a)
 
   if (len != a_len)
     {
-      gripe_nonconformant ("operator -=", len, a_len);
+      err_nonconformant ("operator -=", len, a_len);
       return *this;
     }
 
@@ -340,7 +340,7 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
+    err_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
       retval.clear (nr);
@@ -386,7 +386,7 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
 
   if (nc != a_len)
     {
-      gripe_nonconformant ("operator *", nr, nc, a_len, 1);
+      err_nonconformant ("operator *", nr, nc, a_len, 1);
       return ComplexColumnVector ();
     }
 
@@ -414,7 +414,7 @@ operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
 
   if (nc != a_len)
     {
-      gripe_nonconformant ("operator *", nr, nc, a_len, 1);
+      err_nonconformant ("operator *", nr, nc, a_len, 1);
       return ComplexColumnVector ();
     }
 
@@ -442,7 +442,7 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 
   if (nc != a_len)
     {
-      gripe_nonconformant ("operator *", nr, nc, a_len, 1);
+      err_nonconformant ("operator *", nr, nc, a_len, 1);
       return ComplexColumnVector ();
     }
 

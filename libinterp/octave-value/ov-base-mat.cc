@@ -261,7 +261,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
     }
   catch (const index_exception& e)
     {
-      gripe_invalid_index (e.idx (), n_idx, k+1);
+      err_invalid_index (e.idx (), n_idx, k+1);
     }
 
   // Clear cache.
@@ -365,7 +365,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
     }
   catch (const index_exception& e)
     {
-      gripe_invalid_index (e.idx (), n_idx, k+1);
+      err_invalid_index (e.idx (), n_idx, k+1);
     }
 
   // Clear cache.
@@ -414,7 +414,7 @@ octave_base_matrix<MT>::is_true (void) const
       MT t1 (matrix.reshape (dim_vector (nel, 1)));
 
       if (t1.any_element_is_nan ())
-        gripe_nan_to_logical_conversion ();
+        err_nan_to_logical_conversion ();
       else
         {
           boolNDArray t2 = t1.all ();

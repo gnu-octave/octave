@@ -53,7 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-save.h"
 #include "load-path.h"
 #include "ovl.h"
@@ -2379,7 +2379,8 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_OBJECT_CLASS;
   else
     {
-      gripe_wrong_type_arg ("save", tc, false);
+      // FIXME: Should this just error out rather than warn?
+      warn_wrong_type_arg ("save", tc);
       goto error_cleanup;
     }
 
@@ -2672,7 +2673,8 @@ save_mat5_binary_element (std::ostream& os,
       }
     }
   else
-    gripe_wrong_type_arg ("save", tc, false);
+    // FIXME: Should this just error out rather than warn?
+    warn_wrong_type_arg ("save", tc);
 
 skip_to_next:
   return true;

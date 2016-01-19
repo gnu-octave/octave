@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 
 Cell::Cell (const octave_value_list& ovl)
@@ -275,7 +275,7 @@ Cell::delete_elements (const octave_value_list& idx_arg)
 octave_idx_type
 Cell::nnz (void) const
 {
-  gripe_wrong_type_arg ("nnz", "cell array");
+  err_wrong_type_arg ("nnz", "cell array");
   return -1;
 }
 

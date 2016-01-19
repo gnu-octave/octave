@@ -204,7 +204,7 @@ operator * (const FloatMatrix& m, const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
+    err_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
       retval.clear (nr);
@@ -241,7 +241,7 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
+    err_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
       if (nr == 0 || nc == 0)

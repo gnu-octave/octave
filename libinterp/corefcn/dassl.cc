@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -81,7 +81,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "dassl");
+          err_user_supplied_eval (e, "dassl");
         }
 
       int tlen = tmp.length ();
@@ -99,10 +99,10 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
             ires = tmp(1).int_value ();
 
           if (retval.is_empty ())
-            gripe_user_supplied_eval ("dassl");
+            err_user_supplied_eval ("dassl");
         }
       else
-        gripe_user_supplied_eval ("dassl");
+        err_user_supplied_eval ("dassl");
     }
 
   return retval;
@@ -133,7 +133,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "dassl");
+          err_user_supplied_eval (e, "dassl");
         }
 
       int tlen = tmp.length ();
@@ -148,10 +148,10 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
           retval = tmp(0).matrix_value ();
 
           if (retval.is_empty ())
-            gripe_user_supplied_eval ("dassl");
+            err_user_supplied_eval ("dassl");
         }
       else
-        gripe_user_supplied_eval ("dassl");
+        err_user_supplied_eval ("dassl");
     }
 
   return retval;

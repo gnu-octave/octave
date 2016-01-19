@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "ov-struct.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 
 #ifdef HAVE_MAGICK
 
@@ -849,7 +849,7 @@ Use @code{imread} instead.\n\
   return output;
 
 #else
-  gripe_disabled_feature ("imread", "Image IO");
+  err_disabled_feature ("imread", "Image IO");
 #endif
 }
 
@@ -1540,7 +1540,7 @@ Use @code{imwrite} instead.\n\
   return ovl ();
 
 #else
-  gripe_disabled_feature ("imwrite", "Image IO");
+  err_disabled_feature ("imwrite", "Image IO");
 #endif
 }
 
@@ -1602,7 +1602,7 @@ This is a private internal function not intended for direct use.\n\
   return ovl (ping);
 
 #else
-  gripe_disabled_feature ("imfinfo", "Image IO");
+  err_disabled_feature ("imfinfo", "Image IO");
 #endif
 }
 
@@ -2209,7 +2209,7 @@ Use @code{imfinfo} instead.\n\
   return ovl (info);
 
 #else
-  gripe_disabled_feature ("imfinfo", "Image IO");
+  err_disabled_feature ("imfinfo", "Image IO");
 #endif
 }
 
@@ -2263,7 +2263,7 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
   return ovl (formats);
 
 #else
-  gripe_disabled_feature ("imformats", "Image IO");
+  err_disabled_feature ("imformats", "Image IO");
 #endif
 }
 

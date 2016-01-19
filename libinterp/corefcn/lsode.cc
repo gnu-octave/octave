@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -78,7 +78,7 @@ lsode_user_function (const ColumnVector& x, double t)
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "lsode");
+          err_user_supplied_eval (e, "lsode");
         }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
@@ -92,10 +92,10 @@ lsode_user_function (const ColumnVector& x, double t)
           retval = tmp(0).xvector_value ("lsode: expecting user supplied function to return numeric vector");
 
           if (retval.is_empty ())
-            gripe_user_supplied_eval ("lsode");
+            err_user_supplied_eval ("lsode");
         }
       else
-        gripe_user_supplied_eval ("lsode");
+        err_user_supplied_eval ("lsode");
     }
 
   return retval;
@@ -120,7 +120,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "lsode");
+          err_user_supplied_eval (e, "lsode");
         }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
@@ -134,10 +134,10 @@ lsode_user_jacobian (const ColumnVector& x, double t)
           retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
 
           if (retval.is_empty ())
-            gripe_user_supplied_eval ("lsode");
+            err_user_supplied_eval ("lsode");
         }
       else
-        gripe_user_supplied_eval ("lsode");
+        err_user_supplied_eval ("lsode");
     }
 
   return retval;

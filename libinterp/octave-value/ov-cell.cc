@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "pr-output.h"
 #include "ov-scalar.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #include "ls-oct-text.h"
 #include "ls-oct-binary.h"
@@ -304,7 +304,7 @@ octave_cell::subsasgn (const std::string& type,
                 t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
               }
             else
-              gripe_indexed_cs_list ();
+              err_indexed_cs_list ();
           }
           break;
 
@@ -369,7 +369,7 @@ octave_cell::subsasgn (const std::string& type,
           octave_base_matrix<Cell>::assign (idxf,
                                             Cell (t_rhs.storable_value ()));
         else
-          gripe_nonbraced_cs_list_assignment ();
+          err_nonbraced_cs_list_assignment ();
 
         count++;
         retval = octave_value (this);

@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-cx-mat.h"
 #include "ov-float.h"
 #include "ov-flt-complex.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "pr-output.h"
 #include "ops.h"
 
@@ -93,8 +93,8 @@ octave_float_complex::double_value (bool force_conversion) const
   double retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex scalar", "real scalar");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex scalar", "real scalar");
 
   retval = std::real (scalar);
 
@@ -107,8 +107,8 @@ octave_float_complex::float_value (bool force_conversion) const
   float retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex scalar", "real scalar");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex scalar", "real scalar");
 
   retval = std::real (scalar);
 
@@ -121,8 +121,8 @@ octave_float_complex::matrix_value (bool force_conversion) const
   Matrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex scalar", "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex scalar", "real matrix");
 
   retval = Matrix (1, 1, std::real (scalar));
 
@@ -135,8 +135,8 @@ octave_float_complex::float_matrix_value (bool force_conversion) const
   FloatMatrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex scalar", "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex scalar", "real matrix");
 
   retval = FloatMatrix (1, 1, std::real (scalar));
 
@@ -149,8 +149,8 @@ octave_float_complex::array_value (bool force_conversion) const
   NDArray retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex scalar", "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex scalar", "real matrix");
 
   retval = NDArray (dim_vector (1, 1), std::real (scalar));
 
@@ -163,8 +163,8 @@ octave_float_complex::float_array_value (bool force_conversion) const
   FloatNDArray retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex scalar", "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex scalar", "real matrix");
 
   retval = FloatNDArray (dim_vector (1, 1), std::real (scalar));
 

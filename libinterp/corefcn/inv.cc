@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ops.h"
 #include "ov-re-diag.h"
@@ -74,7 +74,7 @@ sparse matrix if possible.\n\
     return octave_value (Matrix ());
 
   if (nr != nc)
-    gripe_square_matrix_required ("inverse");
+    err_square_matrix_required ("inverse");
 
   octave_value result;
   octave_idx_type info;
@@ -183,7 +183,7 @@ sparse matrix if possible.\n\
             }
         }
       else
-        gripe_wrong_type_arg ("inv", arg);
+        err_wrong_type_arg ("inv", arg);
     }
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
@@ -206,7 +206,7 @@ sparse matrix if possible.\n\
     }
 
   if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
-    gripe_singular_matrix (isfloat ? frcond : rcond);
+    errwarn_singular_matrix (isfloat ? frcond : rcond);
 
   return retval;
 }

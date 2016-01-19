@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "help.h"
 #include "ovl.h"
 #include "pager.h"

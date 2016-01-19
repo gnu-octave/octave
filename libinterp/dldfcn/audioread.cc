@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-struct.h"
@@ -172,8 +172,8 @@ is stored in the audio file.\n\
   return ovl (ret_audio, info.samplerate);
 
 #else
-  gripe_disabled_feature ("audioread", "reading and writing sound files"
-                          " through libsndfile", "Octave");
+  err_disabled_feature ("audioread", "reading and writing sound files"
+                        " through libsndfile", "Octave");
 #endif
 }
 
@@ -277,7 +277,7 @@ Comment.\n\
     scale = std::pow (2.0, 31);
   else if (args(1).is_integer_type ())
     {
-      gripe_wrong_type_arg ("audiowrite", args(1));
+      err_wrong_type_arg ("audiowrite", args(1));
       return ovl ();
     }
 
@@ -420,8 +420,8 @@ Comment.\n\
   return ovl ();
 
 #else
-  gripe_disabled_feature ("audiowrite", "reading and writing sound files"
-                          " through libsndfile", "Octave");
+  err_disabled_feature ("audiowrite", "reading and writing sound files"
+                        " through libsndfile", "Octave");
 #endif
 }
 
@@ -492,7 +492,7 @@ Return information about an audio file specified by @var{filename}.\n\
   return ovl (result);
 
 #else
-  gripe_disabled_feature ("audioinfo", "reading and writing sound files"
-                          " through libsndfile", "Octave");
+  err_disabled_feature ("audioinfo", "reading and writing sound files"
+                        " through libsndfile", "Octave");
 #endif
 }

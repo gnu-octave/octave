@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "xnorm.h"
 #include "ov.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 octave_value xnorm (const octave_value& x, const octave_value& p)
 {
@@ -91,7 +91,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
         }
     }
   else
-    gripe_wrong_type_arg ("xnorm", x, true);
+    err_wrong_type_arg ("xnorm", x);
 
   return retval;
 }
@@ -132,7 +132,7 @@ octave_value xcolnorms (const octave_value& x, const octave_value& p)
         }
     }
   else
-    gripe_wrong_type_arg ("xcolnorms", x, true);
+    err_wrong_type_arg ("xcolnorms", x);
 
   return retval;
 }
@@ -173,7 +173,7 @@ octave_value xrownorms (const octave_value& x, const octave_value& p)
         }
     }
   else
-    gripe_wrong_type_arg ("xrownorms", x, true);
+    err_wrong_type_arg ("xrownorms", x);
 
   return retval;
 }
@@ -208,7 +208,7 @@ octave_value xfrobnorm (const octave_value& x)
         }
     }
   else
-    gripe_wrong_type_arg ("xfrobnorm", x, true);
+    err_wrong_type_arg ("xfrobnorm", x);
 
   return retval;
 }

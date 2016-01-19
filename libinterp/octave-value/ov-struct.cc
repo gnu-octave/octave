@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
@@ -92,13 +92,13 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 }
 
 static void
-gripe_invalid_index_for_assignment (void)
+err_invalid_index_for_assignment (void)
 {
   error ("invalid index for structure array assignment");
 }
 
 static void
-gripe_invalid_index_type (const std::string& nm, char t)
+err_invalid_index_type (const std::string& nm, char t)
 {
   error ("%s cannot be indexed with %c", nm.c_str (), t);
 }
@@ -165,7 +165,7 @@ octave_struct::subsref (const std::string& type,
       break;
 
     case '{':
-      gripe_invalid_index_type (type_name (), type[0]);
+      err_invalid_index_type (type_name (), type[0]);
       break;
 
     default:
@@ -228,7 +228,7 @@ octave_struct::subsref (const std::string& type,
       break;
 
     case '{':
-      gripe_invalid_index_type (type_name (), type[0]);
+      err_invalid_index_type (type_name (), type[0]);
       break;
 
     default:
@@ -342,10 +342,10 @@ octave_struct::subsasgn (const std::string& type,
                               : tmp.subsasgn (next_type, next_idx, rhs));
                   }
                 else
-                  gripe_indexed_cs_list ();
+                  err_indexed_cs_list ();
               }
             else
-              gripe_invalid_index_for_assignment ();
+              err_invalid_index_for_assignment ();
           }
           break;
 
@@ -396,12 +396,12 @@ octave_struct::subsasgn (const std::string& type,
                          : tmp.subsasgn (next_type, next_idx, rhs));
               }
             else
-              gripe_indexed_cs_list ();
+              err_indexed_cs_list ();
           }
           break;
 
         case '{':
-          gripe_invalid_index_type (type_name (), type[0]);
+          err_invalid_index_type (type_name (), type[0]);
           break;
 
         default:
@@ -460,7 +460,7 @@ octave_struct::subsasgn (const std::string& type,
                     retval = octave_value (this);
                   }
                 else
-                  gripe_nonbraced_cs_list_assignment ();
+                  err_nonbraced_cs_list_assignment ();
               }
           }
         else
@@ -524,7 +524,7 @@ octave_struct::subsasgn (const std::string& type,
       break;
 
     case '{':
-      gripe_invalid_index_type (type_name (), type[0]);
+      err_invalid_index_type (type_name (), type[0]);
       break;
 
     default:

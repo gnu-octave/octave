@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "oct-map.h"
 #include "ov.h"
@@ -460,16 +460,16 @@ compatibility with @sc{matlab}.\n\
 
   if (arg_is_empty < 0)
     {
-      gripe_empty_arg ("qz: parameter 1", 0);
+      warn_empty_arg ("qz: parameter 1");
       return retval;
     }
   else if (arg_is_empty > 0)
     {
-      gripe_empty_arg ("qz: parameter 1; continuing", 0);
+      warn_empty_arg ("qz: parameter 1; continuing");
       return octave_value_list (2, Matrix ());
     }
   else if (args(0).columns () != nn)
-    gripe_square_matrix_required ("qz");
+    err_square_matrix_required ("qz");
 
   // Argument 1: dimensions look good; get the value.
   Matrix aa;
@@ -486,7 +486,7 @@ compatibility with @sc{matlab}.\n\
 
   // Extract argument 2 (bb, or cbb if complex).
   if ((nn != args(1).columns ()) || (nn != args(1).rows ()))
-    gripe_nonconformant ();
+    err_nonconformant ();
 
   Matrix bb;
   ComplexMatrix cbb;

@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "Cell.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-map.h"
 #include "ovl.h"
 #include "utils.h"

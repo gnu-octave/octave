@@ -380,7 +380,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
     }
   else
     {
-      gripe_nonconformant (opname, dx, dy);
+      err_nonconformant (opname, dx, dy);
       return Array<R> ();
     }
 }
@@ -423,7 +423,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
       do_inplace_bsxfun_op (r, x, op, op1);
     }
   else
-    gripe_nonconformant (opname, dr, dx);
+    err_nonconformant (opname, dr, dx);
   return r;
 }
 

@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "parse.h"
 #include "symtab.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "octave-preserve-stream-state.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
@@ -730,7 +730,7 @@ current function.\n\
           bp_list = bp_table::get_breakpoint_list (fcn_list);
         }
       else
-        gripe_wrong_type_arg ("dbstatus", args(0));
+        err_wrong_type_arg ("dbstatus", args(0));
     }
   else
     {

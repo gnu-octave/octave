@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 
@@ -410,7 +410,7 @@ x = @var{R} \\ @var{C}\n\
                 }
             }
           else
-            gripe_wrong_type_arg ("qr", arg);
+            err_wrong_type_arg ("qr", arg);
         }
     }
 

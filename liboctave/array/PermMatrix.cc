@@ -236,7 +236,7 @@ operator *(const PermMatrix& a, const PermMatrix& b)
   octave_idx_type n = a.columns ();
 
   if (n != b.rows ())
-    gripe_nonconformant ("operator *", n, n, b.rows (), b.rows ());
+    err_nonconformant ("operator *", n, n, b.rows (), b.rows ());
   else
     r = PermMatrix (ia.index (idx_vector (ib)), true, false);
 

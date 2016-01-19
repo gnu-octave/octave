@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "utils.h"
 #include "xnorm.h"
 
@@ -221,7 +221,7 @@ Mathematics, Manchester, England, January 1999.\n\
   octave_idx_type nc = arg.columns ();
 
   if (n != nc || arg.ndims () > 2)
-    gripe_square_matrix_required ("sqrtm");
+    err_square_matrix_required ("sqrtm");
 
   octave_value_list retval (nargout > 1 ? 3 : 1);
 

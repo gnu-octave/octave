@@ -74,7 +74,7 @@ double
 Range::checkelem (octave_idx_type i) const
 {
   if (i < 0 || i >= rng_numel)
-    gripe_index_out_of_range (1, 1, i+1, rng_numel);
+    err_index_out_of_range (1, 1, i+1, rng_numel);
 
   if (i == 0)
     return rng_base;
@@ -137,7 +137,7 @@ Range::index (const idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        gripe_index_out_of_range (1, 1, i.extent (n), n); // throws
+        err_index_out_of_range (1, 1, i.extent (n), n); // throws
 
       dim_vector rd = i.orig_dimensions ();
       octave_idx_type il = i.length (n);

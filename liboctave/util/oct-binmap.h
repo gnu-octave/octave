@@ -184,7 +184,7 @@ binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
                                bsxfun_wrapper<U, T, R, F>::op_ms);
         }
       else
-        gripe_nonconformant (name, xad, yad);
+        err_nonconformant (name, xad, yad);
     }
 
   octave_idx_type len = xa.numel ();
@@ -286,7 +286,7 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
   else if (ys.rows () == 1 && ys.cols () == 1)
     return binmap<U, T, R, F> (xs, ys(0,0), fcn);
   else if (xs.dims () != ys.dims ())
-    gripe_nonconformant (name, xs.dims (), ys.dims ());
+    err_nonconformant (name, xs.dims (), ys.dims ());
 
   T xzero = T ();
   R yzero = R ();

@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-sparse.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 
@@ -241,7 +241,7 @@ sparse matrices.\n\
             error ("chol: input matrix must be positive definite");
         }
       else
-        gripe_wrong_type_arg ("chol", arg);
+        err_wrong_type_arg ("chol", arg);
     }
   else if (arg.is_single_type ())
     {
@@ -274,7 +274,7 @@ sparse matrices.\n\
             error ("chol: input matrix must be positive definite");
         }
       else
-        gripe_wrong_type_arg ("chol", arg);
+        err_wrong_type_arg ("chol", arg);
     }
   else
     {
@@ -307,7 +307,7 @@ sparse matrices.\n\
             error ("chol: input matrix must be positive definite");
         }
       else
-        gripe_wrong_type_arg ("chol", arg);
+        err_wrong_type_arg ("chol", arg);
     }
 
   return retval;
@@ -377,7 +377,7 @@ the Cholesky@tie{}factorization.\n\
                 error ("cholinv: A must be positive definite");
             }
           else
-            gripe_wrong_type_arg ("cholinv", arg);
+            err_wrong_type_arg ("cholinv", arg);
         }
       else if (arg.is_single_type ())
         {
@@ -404,7 +404,7 @@ the Cholesky@tie{}factorization.\n\
                 error ("cholinv: A must be positive definite");
             }
           else
-            gripe_wrong_type_arg ("chol", arg);
+            err_wrong_type_arg ("chol", arg);
         }
       else
         {
@@ -431,7 +431,7 @@ the Cholesky@tie{}factorization.\n\
                 error ("cholinv: A must be positive definite");
             }
           else
-            gripe_wrong_type_arg ("chol", arg);
+            err_wrong_type_arg ("chol", arg);
         }
     }
 
@@ -494,7 +494,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
               retval = chol2inv (r);
             }
           else
-            gripe_wrong_type_arg ("chol2inv", arg);
+            err_wrong_type_arg ("chol2inv", arg);
         }
       else if (arg.is_single_type ())
         {
@@ -511,7 +511,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
               retval = chol2inv (r);
             }
           else
-            gripe_wrong_type_arg ("chol2inv", arg);
+            err_wrong_type_arg ("chol2inv", arg);
 
         }
       else
@@ -529,7 +529,7 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
               retval = chol2inv (r);
             }
           else
-            gripe_wrong_type_arg ("chol2inv", arg);
+            err_wrong_type_arg ("chol2inv", arg);
         }
     }
 

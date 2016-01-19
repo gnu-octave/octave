@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
@@ -461,7 +461,7 @@ find_data_file_in_load_path  (const std::string& fcn,
 
           if (! tmp.empty ())
             {
-              gripe_data_file_in_path (fcn, tmp);
+              warn_data_file_in_path (fcn, tmp);
 
               fname = tmp;
             }

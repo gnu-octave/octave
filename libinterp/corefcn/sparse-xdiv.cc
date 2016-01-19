@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 
 #include "Array-util.h"
-#include "lo-array-gripes.h"
+#include "lo-array-errwarn.h"
 #include "oct-cmplx.h"
 #include "quit.h"
 #include "error.h"
@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 solve_singularity_warning (double rcond)
 {
-  gripe_singular_matrix (rcond);
+  errwarn_singular_matrix (rcond);
 }
 
 template <class T1, class T2>
@@ -59,7 +59,7 @@ mx_leftdiv_conform (const T1& a, const T2& b)
       octave_idx_type a_nc = a.cols ();
       octave_idx_type b_nc = b.cols ();
 
-      gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
+      err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
@@ -93,7 +93,7 @@ mx_div_conform (const T1& a, const T2& b)
       octave_idx_type a_nr = a.rows ();
       octave_idx_type b_nr = b.rows ();
 
-      gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
+      err_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;

@@ -36,7 +36,7 @@ RT do_mul_dm_sm (const DM& d, const SM& a)
 
   if (nc != a_nr)
     {
-      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
+      err_nonconformant ("operator *", nr, nc, a_nr, a_nc);
       return RT ();
     }
   else
@@ -77,7 +77,7 @@ RT do_mul_sm_dm (const SM& a, const DM& d)
 
   if (nr != a_nc)
     {
-      gripe_nonconformant ("operator *", a_nr, a_nc, nr, nc);
+      err_nonconformant ("operator *", a_nr, a_nc, nr, nc);
       return RT ();
     }
   else
@@ -187,7 +187,7 @@ RT do_add_dm_sm (const DM& d, const SM& a)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
     {
-      gripe_nonconformant ("operator +", d.rows (), d.cols (), a.rows (), a.cols ());
+      err_nonconformant ("operator +", d.rows (), d.cols (), a.rows (), a.cols ());
       return RT ();
     }
   else
@@ -199,7 +199,7 @@ RT do_sub_dm_sm (const DM& d, const SM& a)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
     {
-      gripe_nonconformant ("operator -", d.rows (), d.cols (), a.rows (), a.cols ());
+      err_nonconformant ("operator -", d.rows (), d.cols (), a.rows (), a.cols ());
       return RT ();
     }
   else
@@ -212,7 +212,7 @@ RT do_add_sm_dm (const SM& a, const DM& d)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
     {
-      gripe_nonconformant ("operator +", a.rows (), a.cols (), d.rows (), d.cols ());
+      err_nonconformant ("operator +", a.rows (), a.cols (), d.rows (), d.cols ());
       return RT ();
     }
   else
@@ -224,7 +224,7 @@ RT do_sub_sm_dm (const SM& a, const DM& d)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
     {
-      gripe_nonconformant ("operator -", a.rows (), a.cols (), d.rows (), d.cols ());
+      err_nonconformant ("operator -", a.rows (), a.cols (), d.rows (), d.cols ());
       return RT ();
     }
   else

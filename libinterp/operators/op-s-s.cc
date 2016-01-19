@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
@@ -46,7 +46,7 @@ DEFUNOP (not, scalar)
   CAST_UNOP_ARG (const octave_scalar&);
   double x = v.scalar_value ();
   if (xisnan (x))
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
 
   return octave_value (x == 0.0);
 }
@@ -72,7 +72,7 @@ DEFBINOP (div, scalar, scalar)
   double d = v2.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.double_value () / d);
 }
@@ -86,7 +86,7 @@ DEFBINOP (ldiv, scalar, scalar)
   double d = v1.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.double_value () / d);
 }
@@ -107,7 +107,7 @@ DEFBINOP (el_div, scalar, scalar)
   double d = v2.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.double_value () / d);
 }
@@ -121,7 +121,7 @@ DEFBINOP (el_ldiv, scalar, scalar)
   double d = v1.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.double_value () / d);
 }

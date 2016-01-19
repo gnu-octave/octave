@@ -8,6 +8,7 @@ UTIL_INC = \
   liboctave/util/data-conv.h \
   liboctave/util/functor.h \
   liboctave/util/glob-match.h \
+  liboctave/util/lo-array-errwarn.h \
   liboctave/util/lo-array-gripes.h \
   liboctave/util/lo-cutils.h \
   liboctave/util/lo-ieee.h \
@@ -51,6 +52,7 @@ UTIL_SRC = \
   liboctave/util/cmd-hist.cc \
   liboctave/util/data-conv.cc \
   liboctave/util/glob-match.cc \
+  liboctave/util/lo-array-errwarn.cc \
   liboctave/util/lo-array-gripes.cc \
   liboctave/util/lo-ieee.cc \
   liboctave/util/lo-utils.cc \

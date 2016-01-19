@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 
 #include "ov-cx-mat.h"
@@ -331,7 +331,7 @@ do_minmax_body (const octave_value_list& args,
           break;
 
         default:
-          gripe_wrong_type_arg (func, arg);
+          err_wrong_type_arg (func, arg);
         }
     }
   else
@@ -966,7 +966,7 @@ do_cumminmax_body (const octave_value_list& args,
       break;
 
     default:
-      gripe_wrong_type_arg (func, arg);
+      err_wrong_type_arg (func, arg);
     }
 
   return retval;

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "pager.h"
 #include "ovl.h"
 #include "ov-fcn.h"
@@ -75,7 +75,7 @@ quad_user_function (double x)
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "quad");
+          err_user_supplied_eval (e, "quad");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -89,7 +89,7 @@ quad_user_function (double x)
           retval = tmp(0).xdouble_value ("quad: expecting user supplied function to return numeric value");
         }
       else
-        gripe_user_supplied_eval ("quad");
+        err_user_supplied_eval ("quad");
     }
 
   return retval;
@@ -113,7 +113,7 @@ quad_float_user_function (float x)
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "quad");
+          err_user_supplied_eval (e, "quad");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -128,7 +128,7 @@ quad_float_user_function (float x)
 
         }
       else
-        gripe_user_supplied_eval ("quad");
+        err_user_supplied_eval ("quad");
     }
 
   return retval;

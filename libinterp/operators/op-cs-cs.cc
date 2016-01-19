@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
@@ -45,7 +45,7 @@ DEFUNOP (not, complex)
   CAST_UNOP_ARG (const octave_complex&);
   Complex x = v.complex_value ();
   if (xisnan (x))
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
 
   return octave_value (x == 0.0);
 }
@@ -77,7 +77,7 @@ DEFBINOP (div, complex, complex)
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.complex_value () / d);
 }
@@ -91,7 +91,7 @@ DEFBINOP (ldiv, complex, complex)
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_value () / d);
 }
@@ -112,7 +112,7 @@ DEFBINOP (el_div, complex, complex)
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.complex_value () / d);
 }
@@ -126,7 +126,7 @@ DEFBINOP (el_ldiv, complex, complex)
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_value () / d);
 }

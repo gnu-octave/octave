@@ -57,7 +57,7 @@ Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
 #include "ov.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "utils.h"
 #include "oct-locbuf.h"
 
@@ -469,7 +469,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   octave_idx_type nc = arg.columns ();
 
   if (nr != nc)
-    gripe_square_matrix_required ("symrcm");
+    err_square_matrix_required ("symrcm");
 
   if (nr == 0 && nc == 0)
     return ovl (NDArray (dim_vector (1, 0)));

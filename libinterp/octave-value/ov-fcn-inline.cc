@@ -37,7 +37,7 @@ Open Source Initiative (www.opensource.org)
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"

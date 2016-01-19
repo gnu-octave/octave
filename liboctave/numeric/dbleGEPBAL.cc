@@ -72,7 +72,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b,
 
   if (a.dims () != b.dims ())
     {
-      gripe_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
+      err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
       return -1;
     }
 

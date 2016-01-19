@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
@@ -48,7 +48,7 @@ DEFBINOP (div, complex, scalar)
   double d = v2.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.complex_value () / d);
 }
@@ -62,7 +62,7 @@ DEFBINOP (ldiv, complex, scalar)
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.double_value () / d);
 }
@@ -83,7 +83,7 @@ DEFBINOP (el_div, complex, scalar)
   double d = v2.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.complex_value () / d);
 }
@@ -97,7 +97,7 @@ DEFBINOP (el_ldiv, complex, scalar)
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.double_value () / d);
 }

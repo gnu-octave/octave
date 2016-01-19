@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "pager.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #include "oct-spparms.h"
 

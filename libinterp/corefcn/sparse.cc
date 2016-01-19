@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "pager.h"
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "quit.h"
 #include "unwind-prot.h"
 
@@ -144,7 +144,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
       else if (arg.is_numeric_type ())
         retval = arg.sparse_matrix_value ();
       else
-        gripe_wrong_type_arg ("sparse", arg);
+        err_wrong_type_arg ("sparse", arg);
     }
   else if (nargin == 2)
     {
@@ -207,7 +207,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
             retval = SparseMatrix (args(2).array_value (), i, j,
                                    m, n, summation, nzmax);
           else
-            gripe_wrong_type_arg ("sparse", args(2));
+            err_wrong_type_arg ("sparse", args(2));
         }
       catch (index_exception& e)
         {

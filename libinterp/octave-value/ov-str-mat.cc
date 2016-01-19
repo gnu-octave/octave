@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "byte-swap.h"
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ls-ascii-helper.h"
 #include "ls-hdf5.h"
 #include "ls-oct-text.h"
@@ -164,7 +164,7 @@ octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
   T retval INIT; \
  \
   if (! force_string_conv) \
-    gripe_invalid_conversion ("string", TNAME); \
+    err_invalid_conversion ("string", TNAME); \
   else \
     { \
       warning_with_id ("Octave:str-to-num", \

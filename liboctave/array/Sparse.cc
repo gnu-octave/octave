@@ -921,7 +921,7 @@ Sparse<T>::resize1 (octave_idx_type n)
   else if (nc == 1)
     resize (n, 1);
   else
-    gripe_invalid_resize ();
+    err_invalid_resize ();
 }
 
 template <class T>
@@ -1164,7 +1164,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
   const dim_vector idx_dims = idx.orig_dimensions ();
 
   if (idx.extent (nel) > nel)
-    gripe_del_index_out_of_range (true, idx.extent (nel), nel);
+    err_del_index_out_of_range (true, idx.extent (nel), nel);
   else if (nc == 1)
     {
       // Sparse column vector.
@@ -1262,7 +1262,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
       // Deleting columns.
       octave_idx_type lb, ub;
       if (idx_j.extent (nc) > nc)
-        gripe_del_index_out_of_range (false, idx_j.extent (nc), nc);
+        err_del_index_out_of_range (false, idx_j.extent (nc), nc);
       else if (idx_j.is_cont_range (nc, lb, ub))
         {
           if (lb == 0 && ub == nc)
@@ -1300,7 +1300,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
       // Deleting rows.
       octave_idx_type lb, ub;
       if (idx_i.extent (nr) > nr)
-        gripe_del_index_out_of_range (false, idx_i.extent (nr), nr);
+        err_del_index_out_of_range (false, idx_i.extent (nr), nr);
       else if (idx_i.is_cont_range (nr, lb, ub))
         {
           if (lb == 0 && ub == nr)
@@ -1431,7 +1431,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           retval = tmp.index (idx);
         }
       else
-        gripe_index_out_of_range (1, 1, idx.extent (nel), nel, dims ());
+        err_index_out_of_range (1, 1, idx.extent (nel), nel, dims ());
     }
   else if (nr == 1 && nc == 1)
     {
@@ -1614,9 +1614,9 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
           retval = tmp.index (idx_i, idx_j);
         }
       else if (idx_i.extent (nr) > nr)
-        gripe_index_out_of_range (2, 1, idx_i.extent (nr), nr, dims ());
+        err_index_out_of_range (2, 1, idx_i.extent (nr), nr, dims ());
       else
-        gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc, dims ());
+        err_index_out_of_range (2, 2, idx_j.extent (nc), nc, dims ());
     }
   else if (nr == 1 && nc == 1)
     {
@@ -1978,7 +1978,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
         assign (idx, Sparse<T> (rhl, 1));
     }
   else
-    gripe_nonconformant ("=", dim_vector(idx.length (n),1), rhs.dims());
+    err_nonconformant ("=", dim_vector(idx.length (n),1), rhs.dims());
 }
 
 template <class T>
@@ -2218,7 +2218,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
       assign (idx_i, idx_j, rhs.transpose ());
     }
   else
-    gripe_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
+    err_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
 }
 
 // Can't use versions of these in Array.cc due to duplication of the

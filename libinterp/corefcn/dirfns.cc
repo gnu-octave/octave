@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dir-ops.h"
 #include "dirfns.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
 #include "load-path.h"
 #include "octave-link.h"

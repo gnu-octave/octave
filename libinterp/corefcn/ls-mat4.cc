@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-save.h"
 #include "ovl.h"
 #include "oct-map.h"
@@ -579,7 +579,8 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       os.write (reinterpret_cast<const char *> (m.data ()), n_bytes);
     }
   else
-    gripe_wrong_type_arg ("save", tc, false);
+    // FIXME: Should this just error out rather than warn?
+    warn_wrong_type_arg ("save", tc);
 
   return ! os.fail ();
 }

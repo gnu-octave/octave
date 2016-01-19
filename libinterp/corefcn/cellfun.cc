@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "variables.h"
 #include "unwind-prot.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "toplev.h"
 #include "utils.h"
 
@@ -1831,7 +1831,7 @@ num2cell ([1,2;3,4],1)\n\
   else if (array.is_cell ())
     retval = do_num2cell (array.cell_value (), dimv);
   else
-    gripe_wrong_type_arg ("num2cell", array);
+    err_wrong_type_arg ("num2cell", array);
 
   return retval;
 }
@@ -2165,7 +2165,7 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
 #undef BTYP_BRANCH
 
     case btyp_func_handle:
-      gripe_wrong_type_arg ("mat2cell", a);
+      err_wrong_type_arg ("mat2cell", a);
       break;
 
     default:

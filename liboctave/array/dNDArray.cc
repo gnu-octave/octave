@@ -541,7 +541,7 @@ boolNDArray
 NDArray::operator ! (void) const
 {
   if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
 
   return do_mx_unary_op<bool, double> (*this, mx_inline_not);
 }

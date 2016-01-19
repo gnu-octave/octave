@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 #include "ov-re-sparse.h"
@@ -330,7 +330,7 @@ information.\n\
 
         }
       else
-        gripe_wrong_type_arg ("lu", arg);
+        err_wrong_type_arg ("lu", arg);
     }
   else
     {
@@ -482,7 +482,7 @@ information.\n\
             }
         }
       else
-        gripe_wrong_type_arg ("lu", arg);
+        err_wrong_type_arg ("lu", arg);
     }
 
   return retval;

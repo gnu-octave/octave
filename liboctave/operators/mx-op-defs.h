@@ -25,17 +25,17 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_mx_op_defs_h)
 #define octave_mx_op_defs_h 1
 
-#include "lo-array-gripes.h"
+#include "lo-array-errwarn.h"
 #include "mx-op-decl.h"
 #include "mx-inlines.cc"
 
 #define SNANCHK(s) \
   if (xisnan (s)) \
-    gripe_nan_to_logical_conversion ()
+    err_nan_to_logical_conversion ()
 
 #define MNANCHK(m, MT) \
   if (do_mx_check (m, mx_inline_any_nan<MT>)) \
-    gripe_nan_to_logical_conversion ()
+    err_nan_to_logical_conversion ()
 
 // vector by scalar operations.
 
@@ -402,7 +402,7 @@ OP (const M& m, const DM& dm) \
   octave_idx_type dm_nc = dm.cols (); \
  \
   if (m_nr != dm_nr || m_nc != dm_nc) \
-    gripe_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc); \
+    err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc); \
   else \
     { \
       r.resize (m_nr, m_nc); \
@@ -434,7 +434,7 @@ operator * (const M& m, const DM& dm) \
   octave_idx_type dm_nc = dm.cols (); \
  \
   if (m_nc != dm_nr) \
-    gripe_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc); \
+    err_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc); \
   else \
     { \
       r = R (m_nr, dm_nc); \
@@ -474,7 +474,7 @@ OP (const DM& dm, const M& m) \
   octave_idx_type m_nc = m.cols (); \
  \
   if (dm_nr != m_nr || dm_nc != m_nc) \
-    gripe_nonconformant (#OP, dm_nr, dm_nc, m_nr, m_nc); \
+    err_nonconformant (#OP, dm_nr, dm_nc, m_nr, m_nc); \
   else \
     { \
       if (m_nr > 0 && m_nc > 0) \
@@ -506,7 +506,7 @@ operator * (const DM& dm, const M& m) \
   octave_idx_type m_nc = m.cols (); \
  \
   if (dm_nc != m_nr) \
-    gripe_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc); \
+    err_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc); \
   else \
     { \
       r = R (dm_nr, m_nc); \
@@ -547,7 +547,7 @@ operator * (const DM& dm, const M& m) \
     octave_idx_type dm2_nc = dm2.cols (); \
  \
     if (dm1_nr != dm2_nr || dm1_nc != dm2_nc) \
-      gripe_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc); \
+      err_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc); \
     else \
       { \
         r.resize (dm1_nr, dm1_nc); \
@@ -604,7 +604,7 @@ M operator * (const PM& p, const M& x) \
   octave_idx_type nc = x.columns (); \
   M result; \
   if (p.columns () != nr) \
-    gripe_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
+    err_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
   else \
     { \
       result = M (nr, nc); \
@@ -621,7 +621,7 @@ M operator * (const M& x, const PM& p) \
   octave_idx_type nc = x.columns (); \
   M result; \
   if (p.rows () != nc) \
-    gripe_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
+    err_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
   else \
     result = x.index (idx_vector::colon, p.col_perm_vec ()); \
   \

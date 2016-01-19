@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ops.h"
 #include "pr-output.h"
 
@@ -144,13 +144,13 @@ octave_perm_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion (type_name (), "real scalar");
+    err_invalid_conversion (type_name (), "real scalar");
 
   return retval;
 }
@@ -162,13 +162,13 @@ octave_perm_matrix::float_value (bool) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion (type_name (), "real scalar");
+    err_invalid_conversion (type_name (), "real scalar");
 
   return retval;
 }
@@ -182,13 +182,13 @@ octave_perm_matrix::complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion (type_name (), "complex scalar");
+    err_invalid_conversion (type_name (), "complex scalar");
 
   return retval;
 }
@@ -202,13 +202,13 @@ octave_perm_matrix::float_complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion (type_name (), "complex scalar");
+    err_invalid_conversion (type_name (), "complex scalar");
 
   return retval;
 }

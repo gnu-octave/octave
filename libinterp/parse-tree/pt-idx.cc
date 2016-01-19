@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "utils.h"
 #include "variables.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 // Index expressions.
 
@@ -181,7 +181,7 @@ make_value_list (tree_argument_list *args, const string_vector& arg_nm,
   if (args)
     {
       if (rvalue && object && args->has_magic_end () && object->is_undefined ())
-        gripe_invalid_inquiry_subscript ();
+        err_invalid_inquiry_subscript ();
       else
         retval = args->convert_to_const_vector (object);
     }
@@ -367,7 +367,7 @@ tree_index_expression::rvalue (int nargout,
                   idx.clear ();
 
                   if (tmp.is_cs_list ())
-                    gripe_indexed_cs_list ();
+                    err_indexed_cs_list ();
 
                   if (tmp.is_function ())
                     {
@@ -382,7 +382,7 @@ tree_index_expression::rvalue (int nargout,
                                  ? tmp_list(0) : octave_value ());
 
                           if (tmp.is_cs_list ())
-                            gripe_indexed_cs_list ();
+                            err_indexed_cs_list ();
                         }
                     }
                 }
@@ -490,7 +490,7 @@ tree_index_expression::lvalue (void)
   for (int i = 0; i < n; i++)
     {
       if (retval.numel () != 1)
-        gripe_indexed_cs_list ();
+        err_indexed_cs_list ();
       else if (tmpi < i)
         {
           try
@@ -533,7 +533,7 @@ tree_index_expression::lvalue (void)
             if (tmp.is_undefined ())
               {
                 if (tidx.has_magic_colon ())
-                  gripe_invalid_inquiry_subscript ();
+                  err_invalid_inquiry_subscript ();
                 else
                   tmp = Cell ();
               }
@@ -568,7 +568,7 @@ tree_index_expression::lvalue (void)
                 if (tmp.is_undefined ())
                   {
                     if (pidx.has_magic_colon ())
-                      gripe_invalid_inquiry_subscript ();
+                      err_invalid_inquiry_subscript ();
                     else
                       tmp = octave_map ();
                   }

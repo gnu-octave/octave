@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
@@ -49,7 +49,7 @@ DEFBINOP (div, matrix, scalar)
   double d = v2.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.array_value () / d);
 }
@@ -86,7 +86,7 @@ DEFBINOP (el_div, matrix, scalar)
   double d = v2.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.array_value () / d);
 }

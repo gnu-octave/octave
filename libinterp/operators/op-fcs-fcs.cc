@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
@@ -43,7 +43,7 @@ DEFUNOP (not, float_complex)
   CAST_UNOP_ARG (const octave_float_complex&);
   FloatComplex x = v.float_complex_value ();
   if (xisnan (x))
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
 
   return octave_value (x == 0.0f);
 }
@@ -75,7 +75,7 @@ DEFBINOP (div, float_complex, float_complex)
   FloatComplex d = v2.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_complex_value () / d);
 }
@@ -89,7 +89,7 @@ DEFBINOP (ldiv, float_complex, float_complex)
   FloatComplex d = v1.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_complex_value () / d);
 }
@@ -110,7 +110,7 @@ DEFBINOP (el_div, float_complex, float_complex)
   FloatComplex d = v2.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_complex_value () / d);
 }
@@ -124,7 +124,7 @@ DEFBINOP (el_ldiv, float_complex, float_complex)
   FloatComplex d = v1.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_complex_value () / d);
 }

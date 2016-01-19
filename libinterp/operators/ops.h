@@ -291,7 +291,7 @@ extern void install_ops (void);
   BINOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (const CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
-    gripe_warn_complex_cmp (); \
+    warn_complex_cmp (); \
     return octave_value \
       (v1.CONCAT2(t1, _value) () op v2.CONCAT2(t2, _value) ()); \
   }
@@ -301,7 +301,7 @@ extern void install_ops (void);
   { \
     CAST_BINOP_ARGS (const CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
     if (xisnan (v1.CONCAT2(t1, _value) ()) || xisnan (v2.CONCAT2(t2, _value) ())) \
-      gripe_nan_to_logical_conversion (); \
+      err_nan_to_logical_conversion (); \
     else \
       return octave_value \
         (v1.CONCAT2(t1, _value) () op v2.CONCAT2(t2, _value) ()); \
@@ -386,7 +386,7 @@ extern void install_ops (void);
   }
 
 #define CATOP_NONCONFORMANT(msg) \
-  gripe_nonconformant (msg, \
+  err_nonconformant (msg, \
                        a1.rows (), a1.columns (), \
                        a2.rows (), a2.columns ()); \
   return octave_value ()

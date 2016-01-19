@@ -102,8 +102,8 @@ octave_complex_diag_matrix::diag_matrix_value (bool force_conversion) const
   DiagMatrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               type_name (), "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              type_name (), "real matrix");
 
   retval = ::real (matrix);
 
@@ -116,8 +116,8 @@ octave_complex_diag_matrix::float_diag_matrix_value (bool force_conversion) cons
   DiagMatrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               type_name (), "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              type_name (), "real matrix");
 
   retval = ::real (matrix);
 

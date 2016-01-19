@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "utils.h"
 
-#include "lo-array-gripes.h"
+#include "lo-array-errwarn.h"
 
 template <class T>
 octave_value

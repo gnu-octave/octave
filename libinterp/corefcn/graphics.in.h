@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "caseless-str.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-handle.h"
 #include "oct-map.h"
 #include "oct-mutex.h"
@@ -2801,7 +2801,7 @@ public:
       error ("base_graphics_object::default: invalid graphics object");
 
     std::string msg = (type () + "::defaults");
-    gripe_not_implemented (msg.c_str ());
+    err_not_implemented (msg.c_str ());
   }
 
   virtual base_properties& get_properties (void)

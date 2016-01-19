@@ -426,7 +426,7 @@ FloatComplexDiagMatrix::operator += (const FloatDiagMatrix& a)
 
   if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator +=", r, c, a_nr, a_nc);
+      err_nonconformant ("operator +=", r, c, a_nr, a_nc);
       return *this;
     }
 
@@ -449,7 +449,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
@@ -475,7 +475,7 @@ operator * (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
 
   if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+      err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
       return FloatComplexDiagMatrix ();
     }
 
@@ -508,7 +508,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 
   if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+      err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
       return FloatComplexDiagMatrix ();
     }
 

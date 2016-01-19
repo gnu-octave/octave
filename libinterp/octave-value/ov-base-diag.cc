@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.h"
 #include "pr-output.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-stream.h"
 #include "ops.h"
 
@@ -297,18 +297,18 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
   typedef typename DMT::element_type el_type;
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real scalar");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex matrix", "real scalar");
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "real scalar");
 
       retval = helper_getreal (el_type (matrix (0, 0)));
     }
   else
-    gripe_invalid_conversion (type_name (), "real scalar");
+    err_invalid_conversion (type_name (), "real scalar");
 
   return retval;
 }
@@ -321,18 +321,18 @@ octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
   typedef typename DMT::element_type el_type;
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real scalar");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              "complex matrix", "real scalar");
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "real scalar");
 
       retval = helper_getreal (el_type (matrix (0, 0)));
     }
   else
-    gripe_invalid_conversion (type_name (), "real scalar");
+    err_invalid_conversion (type_name (), "real scalar");
 
   return retval;
 }
@@ -347,13 +347,13 @@ octave_base_diag<DMT, MT>::complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion (type_name (), "complex scalar");
+    err_invalid_conversion (type_name (), "complex scalar");
 
   return retval;
 }
@@ -368,13 +368,13 @@ octave_base_diag<DMT, MT>::float_complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion (type_name (), "complex scalar");
+    err_invalid_conversion (type_name (), "complex scalar");
 
   return retval;
 }

@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
 #include "ovl.h"
 #include "pager.h"

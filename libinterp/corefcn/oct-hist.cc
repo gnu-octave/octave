@@ -56,7 +56,7 @@ Software Foundation, Inc.
 #include <defaults.h>
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
 #include "oct-hist.h"
 #include "ovl.h"
@@ -162,7 +162,7 @@ do_history (const octave_value_list& args, int nargout)
         }
       else
         {
-          gripe_wrong_type_arg ("history", arg);
+          err_wrong_type_arg ("history", arg);
           return hlist;
         }
 

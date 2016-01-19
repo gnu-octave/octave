@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "str-vec.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "error.h"
 #include "ov-base.h"
 #include "ov-flt-cx-mat.h"
@@ -135,9 +135,9 @@ public:
   bool bool_value (bool warn = false) const
   {
     if (xisnan (scalar))
-      gripe_nan_to_logical_conversion ();
+      err_nan_to_logical_conversion ();
     else if (warn && scalar != 0.0f && scalar != 1.0f)
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     return scalar != 0.0f;
   }
@@ -145,9 +145,9 @@ public:
   boolNDArray bool_array_value (bool warn = false) const
   {
     if (xisnan (scalar))
-      gripe_nan_to_logical_conversion ();
+      err_nan_to_logical_conversion ();
     else if (warn && scalar != 0.0f && scalar != 1.0f)
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     return boolNDArray (dim_vector (1, 1), scalar != 1.0f);
   }

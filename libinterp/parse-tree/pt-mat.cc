@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "data.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
@@ -960,8 +960,8 @@ tree_matrix::rvalue1 (int)
           char type = all_dq_strings_p ? '"' : '\'';
 
           if (! all_strings_p)
-            gripe_implicit_conversion ("Octave:num-to-str",
-                                       "numeric", result_type);
+            warn_implicit_conversion ("Octave:num-to-str",
+                                      "numeric", result_type);
           else
             maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 

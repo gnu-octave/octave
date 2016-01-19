@@ -422,7 +422,7 @@ ComplexDiagMatrix::operator += (const DiagMatrix& a)
 
   if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator +=", r, c, a_nr, a_nc);
+      err_nonconformant ("operator +=", r, c, a_nr, a_nc);
       return *this;
     }
 
@@ -445,7 +445,7 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
@@ -471,7 +471,7 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 
   if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+      err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
       return ComplexDiagMatrix ();
     }
 
@@ -504,7 +504,7 @@ operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 
   if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+      err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
       return ComplexDiagMatrix ();
     }
 

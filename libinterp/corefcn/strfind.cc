@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "defun.h"
 #include "unwind-prot.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "utils.h"
 
 // This allows safe indexing with char.

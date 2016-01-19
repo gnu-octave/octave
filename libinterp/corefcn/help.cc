@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "help.h"
 #include "input.h"
 #include "load-path.h"

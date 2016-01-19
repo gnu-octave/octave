@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-map.h"
 #include "ovl.h"
 #include "pager.h"
@@ -614,7 +614,7 @@ Undocumented internal function.\n\
   return ovl (xmin, fmin, errnum, extra);
 
 #else
-  gripe_disabled_feature ("glpk", "GNU Linear Programming Kit");
+  err_disabled_feature ("glpk", "GNU Linear Programming Kit");
 #endif
 }
 

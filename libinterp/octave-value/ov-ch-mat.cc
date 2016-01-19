@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.h"
 #include "ov-base-mat.cc"
 #include "ov-ch-mat.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "pr-output.h"
 
 template class octave_base_matrix<charNDArray>;
@@ -58,13 +58,13 @@ octave_char_matrix::double_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "character matrix", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "character matrix", "real scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
-    gripe_invalid_conversion ("character matrix", "real scalar");
+    err_invalid_conversion ("character matrix", "real scalar");
 
   return retval;
 }
@@ -76,13 +76,13 @@ octave_char_matrix::float_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "character matrix", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "character matrix", "real scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
-    gripe_invalid_conversion ("character matrix", "real scalar");
+    err_invalid_conversion ("character matrix", "real scalar");
 
   return retval;
 }
@@ -94,13 +94,13 @@ octave_char_matrix::int64_scalar_value () const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "character matrix", "int64 scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "character matrix", "int64 scalar");
 
       retval = octave_int64 (matrix (0, 0));
     }
   else
-    gripe_invalid_conversion ("character matrix", "int64 scalar");
+    err_invalid_conversion ("character matrix", "int64 scalar");
 
   return retval;
 }
@@ -112,13 +112,13 @@ octave_char_matrix::uint64_scalar_value () const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "character matrix", "uint64 scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "character matrix", "uint64 scalar");
 
       retval = octave_uint64 (matrix (0, 0));
     }
   else
-    gripe_invalid_conversion ("character matrix", "uint64 scalar");
+    err_invalid_conversion ("character matrix", "uint64 scalar");
 
   return retval;
 }
@@ -132,13 +132,13 @@ octave_char_matrix::complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "character matrix", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "character matrix", "complex scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
-    gripe_invalid_conversion ("character matrix", "complex scalar");
+    err_invalid_conversion ("character matrix", "complex scalar");
 
   return retval;
 }
@@ -152,13 +152,13 @@ octave_char_matrix::float_complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "character matrix", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "character matrix", "complex scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
   else
-    gripe_invalid_conversion ("character matrix", "complex scalar");
+    err_invalid_conversion ("character matrix", "complex scalar");
 
   return retval;
 }

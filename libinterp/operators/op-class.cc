@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-time.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-path.h"
 #include "ovl.h"
 #include "ov.h"

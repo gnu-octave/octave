@@ -63,7 +63,7 @@ SM octinternal_do_mul_pm_sm (const PermMatrix& p, const SM& a)
   const octave_idx_type nr = a.rows ();
   if (p.cols () != nr)
     {
-      gripe_nonconformant ("operator *", p.rows (), p.cols (), a.rows (), a.cols ());
+      err_nonconformant ("operator *", p.rows (), p.cols (), a.rows (), a.cols ());
       return SM ();
     }
 
@@ -149,7 +149,7 @@ SM octinternal_do_mul_sm_pm (const SM& a, const PermMatrix& p)
   const octave_idx_type nc = a.cols ();
   if (p.rows () != nc)
     {
-      gripe_nonconformant ("operator *", a.rows (), a.cols (), p.rows (), p.cols ());
+      err_nonconformant ("operator *", a.rows (), a.cols (), p.rows (), p.cols ());
       return SM ();
     }
 

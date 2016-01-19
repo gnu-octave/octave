@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "ov.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 
 DEFUN_DLD (fftw, args, ,
            "-*- texinfo -*-\n\
@@ -294,12 +294,12 @@ used per default.\n\
 #if defined (HAVE_FFTW3_THREADS)
           octave_fftw_planner::threads (nthreads);
 #else
-          gripe_disabled_feature ("fftw", "multithreaded FFTW");
+          err_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
 #if defined (HAVE_FFTW3F_THREADS)
           octave_float_fftw_planner::threads (nthreads);
 #else
-          gripe_disabled_feature ("fftw", "multithreaded FFTW");
+          err_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
         }
       else //threads getter
@@ -316,7 +316,7 @@ used per default.\n\
 
 #else
 
-  gripe_disabled_feature ("fftw", "the FFTW3 planner");
+  err_disabled_feature ("fftw", "the FFTW3 planner");
 
 #endif
 }

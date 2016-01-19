@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtins.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
 #include "ovl.h"
 #include "ov-usr-fcn.h"
@@ -1067,7 +1067,7 @@ element-by-element and a logical array is returned.  At the top level,\n\
       return ovl (r);
     }
   else
-    gripe_wrong_type_arg ("isargout", args(0));
+    err_wrong_type_arg ("isargout", args(0));
 
   return ovl ();
 }

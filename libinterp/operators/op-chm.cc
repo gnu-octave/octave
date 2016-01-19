@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-ch-mat.h"
@@ -51,8 +51,8 @@ DEFCATOP (chm_s, char_matrix, scalar)
 {
   CAST_BINOP_ARGS (octave_char_matrix&, const octave_scalar&);
 
-  gripe_implicit_conversion ("Octave:num-to-str",
-                             v2.type_name (), v1.type_name ());
+  warn_implicit_conversion ("Octave:num-to-str",
+                            v2.type_name (), v1.type_name ());
 
   return octave_value (v1.char_array_value (). concat (v2.array_value (),
                        ra_idx));
@@ -62,8 +62,8 @@ DEFCATOP (chm_m, char_matrix, matrix)
 {
   CAST_BINOP_ARGS (octave_char_matrix&, const octave_matrix&);
 
-  gripe_implicit_conversion ("Octave:num-to-str",
-                             v2.type_name (), v1.type_name ());
+  warn_implicit_conversion ("Octave:num-to-str",
+                            v2.type_name (), v1.type_name ());
 
   return octave_value (v1.char_array_value (). concat (v2.array_value (),
                        ra_idx));
@@ -73,8 +73,8 @@ DEFCATOP (s_chm, scalar, char_matrix)
 {
   CAST_BINOP_ARGS (octave_scalar&, const octave_char_matrix&);
 
-  gripe_implicit_conversion ("Octave:num-to-str",
-                             v1.type_name (), v2.type_name ());
+  warn_implicit_conversion ("Octave:num-to-str",
+                            v1.type_name (), v2.type_name ());
 
   return octave_value (v1.array_value (). concat (v2.char_array_value (),
                        ra_idx));
@@ -84,8 +84,8 @@ DEFCATOP (m_chm, matrix, char_matrix)
 {
   CAST_BINOP_ARGS (octave_matrix&, const octave_char_matrix&);
 
-  gripe_implicit_conversion ("Octave:num-to-str",
-                             v1.type_name (), v2.type_name ());
+  warn_implicit_conversion ("Octave:num-to-str",
+                            v1.type_name (), v2.type_name ());
 
   return octave_value (v1.array_value (). concat (v2.char_array_value (),
                        ra_idx));

@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "pr-output.h"
 #include "utils.h"
@@ -272,7 +272,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
                               result.right_singular_matrix ());
             }
           else
-            gripe_wrong_type_arg ("svd", arg);
+            err_wrong_type_arg ("svd", arg);
         }
     }
 

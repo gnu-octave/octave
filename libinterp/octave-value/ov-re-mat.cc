@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
 #include "ovl.h"
 #include "oct-lvalue.h"
@@ -108,13 +108,13 @@ octave_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "real matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("real matrix", "real scalar");
+    err_invalid_conversion ("real matrix", "real scalar");
 
   return retval;
 }
@@ -126,13 +126,13 @@ octave_matrix::float_value (bool) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "real scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "real matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("real matrix", "real scalar");
+    err_invalid_conversion ("real matrix", "real scalar");
 
   return retval;
 }
@@ -160,13 +160,13 @@ octave_matrix::complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "real matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("real matrix", "complex scalar");
+    err_invalid_conversion ("real matrix", "complex scalar");
 
   return retval;
 }
@@ -180,13 +180,13 @@ octave_matrix::float_complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "complex scalar");
+      warn_implicit_conversion ("Octave:array-to-scalar",
+                                "real matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
   else
-    gripe_invalid_conversion ("real matrix", "complex scalar");
+    err_invalid_conversion ("real matrix", "complex scalar");
 
   return retval;
 }
@@ -221,9 +221,9 @@ boolNDArray
 octave_matrix::bool_array_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
   else if (warn && matrix.any_element_not_one_or_zero ())
-    gripe_logical_conversion ();
+    warn_logical_conversion ();
 
   return boolNDArray (matrix);
 }
@@ -392,7 +392,7 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
       double d = matrix (i);
 
       if (xisnan (d))
-        gripe_nan_to_character_conversion ();
+        err_nan_to_character_conversion ();
       else
         {
           int ival = NINT (d);

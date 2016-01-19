@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -81,7 +81,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (e, "dasrt");
         }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
@@ -95,10 +95,10 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
           retval = tmp(0).vector_value ();
 
           if (retval.is_empty ())
-            gripe_user_supplied_eval ("dasrt");
+            err_user_supplied_eval ("dasrt");
         }
       else
-        gripe_user_supplied_eval ("dasrt");
+        err_user_supplied_eval ("dasrt");
     }
 
   return retval;
@@ -124,7 +124,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (e, "dasrt");
         }
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
@@ -138,10 +138,10 @@ dasrt_user_cf (const ColumnVector& x, double t)
           retval = tmp(0).vector_value ();
 
           if (retval.is_empty ())
-            gripe_user_supplied_eval ("dasrt");
+            err_user_supplied_eval ("dasrt");
         }
       else
-        gripe_user_supplied_eval ("dasrt");
+        err_user_supplied_eval ("dasrt");
     }
 
   return retval;
@@ -172,7 +172,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
         }
       catch (octave_execution_exception& e)
         {
-          gripe_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (e, "dasrt");
         }
 
       int tlen = tmp.length ();
@@ -187,10 +187,10 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
           retval = tmp(0).matrix_value ();
 
           if (retval.is_empty ())
-            gripe_user_supplied_eval ("dasrt");
+            err_user_supplied_eval ("dasrt");
         }
       else
-        gripe_user_supplied_eval ("dasrt");
+        err_user_supplied_eval ("dasrt");
     }
 
   return retval;

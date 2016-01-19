@@ -66,7 +66,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-ui16-fnda.h"
 #include "mx-fnda-ui16.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-int16.h"

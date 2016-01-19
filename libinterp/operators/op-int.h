@@ -181,7 +181,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## T1 ## scalar&, const octave_ ## T2 ## scalar&); \
  \
     if (! v2.T2 ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
     return retval; \
@@ -194,7 +194,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## T1 ## scalar&, const octave_ ## T2 ## scalar&); \
  \
     if (! v1.T1 ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
     return retval; \
@@ -207,7 +207,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## T1 ## scalar&, const octave_ ## T2 ## scalar&); \
  \
     if (! v2.T2 ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
     return retval; \
@@ -220,7 +220,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## T1 ## scalar&, const octave_ ## T2 ## scalar&); \
  \
     if (! v1.T1 ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
     return retval; \
@@ -323,7 +323,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## TS ## scalar&, const octave_ ## TM ## matrix&); \
  \
     if (! v1.TS ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.TS ## scalar_value () / v1.TS ## scalar_value ()); \
     return retval; \
@@ -345,7 +345,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## TS ## scalar&, const octave_ ## TM ## matrix&); \
  \
     if (! v1.TS ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
     return retval; \
@@ -468,7 +468,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## TM ## matrix&, const octave_ ## TS ## scalar&); \
  \
     if (! v2.TS ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
     return retval; \
@@ -493,7 +493,7 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## TM ## matrix&, const octave_ ## TS ## scalar&); \
  \
     if (! v2.TS ## scalar_value ()) \
-      gripe_divide_by_zero (); \
+      warn_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
     return retval; \
@@ -703,7 +703,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
         if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           return bsxfun_pow (a, b); \
         else \
-          gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+          err_nonconformant ("operator .^", a_dims, b_dims);  \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.numel (); i++) \
@@ -724,7 +724,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
         if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           return bsxfun_pow (a, b); \
         else \
-          gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+          err_nonconformant ("operator .^", a_dims, b_dims);  \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.numel (); i++) \
@@ -745,7 +745,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
         if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           return bsxfun_pow (a, b); \
         else \
-          gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+          err_nonconformant ("operator .^", a_dims, b_dims);  \
       } \
     T2 ## NDArray result (a_dims); \
     for (int i = 0; i < a.numel (); i++) \
@@ -766,7 +766,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
         if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           return bsxfun_pow (a, b); \
         else \
-          gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+          err_nonconformant ("operator .^", a_dims, b_dims);  \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.numel (); i++) \
@@ -787,7 +787,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
         if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           return bsxfun_pow (a, b); \
         else \
-          gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+          err_nonconformant ("operator .^", a_dims, b_dims);  \
       } \
     T2 ## NDArray result (a_dims); \
     for (int i = 0; i < a.numel (); i++) \

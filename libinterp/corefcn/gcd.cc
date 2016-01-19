@@ -336,7 +336,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       if (aa.numel () == 1)
         dv = bb.dims ();
       else if (bb.numel () != 1 && bb.dims () != dv)
-        gripe_nonconformant ("gcd", a.dims (), b.dims ());
+        err_nonconformant ("gcd", a.dims (), b.dims ());
 
       NDA gg (dv), xx (dv), yy (dv);
 

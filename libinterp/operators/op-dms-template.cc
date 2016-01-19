@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "ops.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "xpow.h"
 #include SINCLUDE
 #include MINCLUDE
@@ -53,7 +53,7 @@ static T
 gripe_if_zero (T x)
 {
   if (x == T ())
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return x;
 }

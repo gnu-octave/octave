@@ -34,6 +34,7 @@ COREFCN_INC = \
   libinterp/corefcn/display.h \
   libinterp/corefcn/dynamic-ld.h \
   libinterp/corefcn/error.h \
+  libinterp/corefcn/errwarn.h \
   libinterp/corefcn/event-queue.h \
   libinterp/corefcn/file-io.h \
   libinterp/corefcn/gl-render.h \
@@ -143,6 +144,7 @@ COREFCN_SRC = \
   libinterp/corefcn/eig.cc \
   libinterp/corefcn/ellipj.cc \
   libinterp/corefcn/error.cc \
+  libinterp/corefcn/errwarn.cc \
   libinterp/corefcn/fft.cc \
   libinterp/corefcn/fft2.cc \
   libinterp/corefcn/fftn.cc \

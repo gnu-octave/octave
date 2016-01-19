@@ -1652,7 +1652,7 @@ FloatMatrix::utsolve (MatrixType &mattype, const FloatMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        gripe_singular_matrix (rcon);
+                        errwarn_singular_matrix (rcon);
                     }
                 }
 
@@ -1748,7 +1748,7 @@ FloatMatrix::ltsolve (MatrixType &mattype, const FloatMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        gripe_singular_matrix (rcon);
+                        errwarn_singular_matrix (rcon);
                     }
                 }
             }
@@ -1832,7 +1832,7 @@ FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        gripe_singular_matrix (rcon);
+                        errwarn_singular_matrix (rcon);
                     }
                 }
 
@@ -1885,7 +1885,7 @@ FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                gripe_singular_matrix ();
+                errwarn_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -1913,7 +1913,7 @@ FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        gripe_singular_matrix (rcon);
+                        errwarn_singular_matrix (rcon);
                     }
                 }
 
@@ -2621,7 +2621,7 @@ FloatMatrix::operator += (const FloatDiagMatrix& a)
 
   if (nr != a_nr || nc != a_nc)
     {
-      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
+      err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -2642,7 +2642,7 @@ FloatMatrix::operator -= (const FloatDiagMatrix& a)
 
   if (nr != a_nr || nc != a_nc)
     {
-      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
+      err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -3112,7 +3112,7 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
   octave_idx_type b_nc = trb ? b.rows () : b.cols ();
 
   if (a_nc != b_nr)
-    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
   else
     {
       if (a_nr == 0 || a_nc == 0 || b_nc == 0)

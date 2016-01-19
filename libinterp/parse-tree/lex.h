@@ -606,15 +606,15 @@ public:
 
   void maybe_warn_separator_insert (char sep);
 
-  void gripe_single_quote_string (void);
+  void warn_single_quote_string (void);
 
-  void gripe_language_extension (const std::string& msg);
+  void warn_language_extension (const std::string& msg);
 
-  void maybe_gripe_language_extension_comment (char c);
+  void maybe_warn_language_extension_comment (char c);
 
-  void gripe_language_extension_continuation (void);
+  void warn_language_extension_continuation (void);
 
-  void gripe_language_extension_operator (const std::string& op);
+  void warn_language_extension_operator (const std::string& op);
 
   void push_token (token *);
 

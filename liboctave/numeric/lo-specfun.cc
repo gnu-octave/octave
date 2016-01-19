@@ -2260,8 +2260,8 @@ biry (const FloatComplexNDArray& z, bool deriv, bool scaled,
   return retval;
 }
 
-static void
-gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
+OCTAVE_NORETURN static void
+err_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
                              const dim_vector& d3)
 {
   std::string d1_str = d1.str ();
@@ -2273,8 +2273,8 @@ gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
      d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
 }
 
-static void
-gripe_betaincinv_nonconformant (const dim_vector& d1, const dim_vector& d2,
+OCTAVE_NORETURN static void
+err_betaincinv_nonconformant (const dim_vector& d1, const dim_vector& d2,
                                 const dim_vector& d3)
 {
   std::string d1_str = d1.str ();
@@ -2344,7 +2344,7 @@ betainc (double x, const Array<double>& a, const Array<double>& b)
         *pretval++ = betainc (x, a(i), b(i));
     }
   else
-    gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
+    err_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
 
   return retval;
 }
@@ -2383,7 +2383,7 @@ betainc (const Array<double>& x, double a, const Array<double>& b)
         *pretval++ = betainc (x(i), a, b(i));
     }
   else
-    gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
+    err_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
 
   return retval;
 }
@@ -2406,7 +2406,7 @@ betainc (const Array<double>& x, const Array<double>& a, double b)
         *pretval++ = betainc (x(i), a(i), b);
     }
   else
-    gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
+    err_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
 
   return retval;
 }
@@ -2429,7 +2429,7 @@ betainc (const Array<double>& x, const Array<double>& a, const Array<double>& b)
         *pretval++ = betainc (x(i), a(i), b(i));
     }
   else
-    gripe_betainc_nonconformant (dv, a.dims (), b.dims ());
+    err_betainc_nonconformant (dv, a.dims (), b.dims ());
 
   return retval;
 }
@@ -2492,7 +2492,7 @@ betainc (float x, const Array<float>& a, const Array<float>& b)
         *pretval++ = betainc (x, a(i), b(i));
     }
   else
-    gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
+    err_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
 
   return retval;
 }
@@ -2531,7 +2531,7 @@ betainc (const Array<float>& x, float a, const Array<float>& b)
         *pretval++ = betainc (x(i), a, b(i));
     }
   else
-    gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
+    err_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
 
   return retval;
 }
@@ -2554,7 +2554,7 @@ betainc (const Array<float>& x, const Array<float>& a, float b)
         *pretval++ = betainc (x(i), a(i), b);
     }
   else
-    gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
+    err_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
 
   return retval;
 }
@@ -2577,7 +2577,7 @@ betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b)
         *pretval++ = betainc (x(i), a(i), b(i));
     }
   else
-    gripe_betainc_nonconformant (dv, a.dims (), b.dims ());
+    err_betainc_nonconformant (dv, a.dims (), b.dims ());
 
   return retval;
 }
@@ -3551,7 +3551,7 @@ betaincinv (double x, const Array<double>& a, const Array<double>& b)
         *pretval++ = betaincinv (x, a(i), b(i));
     }
   else
-    gripe_betaincinv_nonconformant (dim_vector (0, 0), dv, b.dims ());
+    err_betaincinv_nonconformant (dim_vector (0, 0), dv, b.dims ());
 
   return retval;
 }
@@ -3590,7 +3590,7 @@ betaincinv (const Array<double>& x, double a, const Array<double>& b)
         *pretval++ = betaincinv (x(i), a, b(i));
     }
   else
-    gripe_betaincinv_nonconformant (dv, dim_vector (0, 0), b.dims ());
+    err_betaincinv_nonconformant (dv, dim_vector (0, 0), b.dims ());
 
   return retval;
 }
@@ -3613,7 +3613,7 @@ betaincinv (const Array<double>& x, const Array<double>& a, double b)
         *pretval++ = betaincinv (x(i), a(i), b);
     }
   else
-    gripe_betaincinv_nonconformant (dv, a.dims (), dim_vector (0, 0));
+    err_betaincinv_nonconformant (dv, a.dims (), dim_vector (0, 0));
 
   return retval;
 }
@@ -3637,7 +3637,7 @@ betaincinv (const Array<double>& x, const Array<double>& a,
         *pretval++ = betaincinv (x(i), a(i), b(i));
     }
   else
-    gripe_betaincinv_nonconformant (dv, a.dims (), b.dims ());
+    err_betaincinv_nonconformant (dv, a.dims (), b.dims ());
 
   return retval;
 }

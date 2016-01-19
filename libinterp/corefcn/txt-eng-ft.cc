@@ -46,19 +46,17 @@ along with Octave; see the file COPYING.  If not, see
 //        combination.
 
 static void
-gripe_missing_glyph (FT_ULong c)
+warn_missing_glyph (FT_ULong c)
 {
   warning_with_id ("Octave:missing-glyph",
-                   "ft_render: skipping missing glyph for character '%x'",
-                   c);
+                   "ft_render: skipping missing glyph for character '%x'", c);
 }
 
 static void
-gripe_glyph_render (FT_ULong c)
+warn_glyph_render (FT_ULong c)
 {
   warning_with_id ("Octave:glyph-render",
-                   "ft_render: unable to render glyph for character '%x'",
-                   c);
+                   "ft_render: unable to render glyph for character '%x'", c);
 }
 
 #ifdef _MSC_VER
@@ -508,7 +506,7 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
               || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
         {
           glyph_index = 0;
-          gripe_missing_glyph (code);
+          warn_missing_glyph (code);
         }
       else
         {
@@ -522,7 +520,7 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
                       || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
                     {
                       glyph_index = 0;
-                      gripe_missing_glyph (' ');
+                      warn_missing_glyph (' ');
                     }
                   else
                     push_new_line ();
@@ -530,7 +528,7 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
               else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
                 {
                   glyph_index = 0;
-                  gripe_glyph_render (code);
+                  warn_glyph_render (code);
                 }
               else
                 {
@@ -587,7 +585,7 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
                       || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
                     {
                       glyph_index = 0;
-                      gripe_missing_glyph (' ');
+                      warn_missing_glyph (' ');
                     }
                   else
                     push_new_line ();

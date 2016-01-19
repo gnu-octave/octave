@@ -1246,7 +1246,7 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
 }
 
 void
-octave_base_value::gripe_load (const char *type) const
+octave_base_value::warn_load (const char *type) const
 {
   warning_with_id
     ("Octave:load-save-unavailable",
@@ -1255,7 +1255,7 @@ octave_base_value::gripe_load (const char *type) const
 }
 
 void
-octave_base_value::gripe_save (const char *type) const
+octave_base_value::warn_save (const char *type) const
 {
   warning_with_id
     ("Octave:load-save-unavailable",
@@ -1299,7 +1299,7 @@ octave_base_value::dump (std::ostream& os) const
 
 OCTAVE_NORETURN static
 void
-gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
+err_indexed_assignment (const std::string& tn1, const std::string& tn2)
 {
   error ("assignment of '%s' to indexed '%s' not implemented",
          tn2.c_str (), tn1.c_str ());
@@ -1307,7 +1307,7 @@ gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 
 OCTAVE_NORETURN static
 void
-gripe_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
+err_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
 {
   error ("type conversion for assignment of '%s' to indexed '%s' failed",
          tn2.c_str (), tn1.c_str ());
@@ -1315,8 +1315,8 @@ gripe_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
 
 OCTAVE_NORETURN static
 void
-gripe_no_conversion (const std::string& on, const std::string& tn1,
-                     const std::string& tn2)
+err_no_conversion (const std::string& on, const std::string& tn1,
+                   const std::string& tn2)
 {
   error ("operator %s: no conversion for assignment of '%s' to indexed '%s'",
          on.c_str (), tn2.c_str (), tn1.c_str ());
@@ -1376,11 +1376,11 @@ octave_base_value::numeric_assign (const std::string& type,
                   done = true;
                 }
               else
-                gripe_assign_conversion_failed (type_name (),
-                                                rhs.type_name ());
+                err_assign_conversion_failed (type_name (),
+                                              rhs.type_name ());
             }
           else
-            gripe_indexed_assignment (type_name (), rhs.type_name ());
+            err_indexed_assignment (type_name (), rhs.type_name ());
         }
 
       if (! done)
@@ -1415,8 +1415,8 @@ octave_base_value::numeric_assign (const std::string& type,
               if (tmp)
                 tmp_rhs = octave_value (tmp);
               else
-                gripe_assign_conversion_failed (type_name (),
-                                                rhs.type_name ());
+                err_assign_conversion_failed (type_name (),
+                                              rhs.type_name ());
             }
           else
             tmp_rhs = rhs;
@@ -1431,8 +1431,8 @@ octave_base_value::numeric_assign (const std::string& type,
               if (tmp)
                 tmp_lhs = octave_value (tmp);
               else
-                gripe_assign_conversion_failed (type_name (),
-                                                rhs.type_name ());
+                err_assign_conversion_failed (type_name (),
+                                              rhs.type_name ());
             }
 
           if (cf_this || cf_rhs)
@@ -1442,14 +1442,13 @@ octave_base_value::numeric_assign (const std::string& type,
               done = true;
             }
           else
-            gripe_no_conversion (octave_value::assign_op_as_string
-                                   (octave_value::op_asn_eq),
-                                 type_name (), rhs.type_name ());
+            err_no_conversion (octave_value::assign_op_as_string
+                               (octave_value::op_asn_eq),
+                               type_name (), rhs.type_name ());
         }
     }
 
-  // The assignment may have converted to a type that is wider than
-  // necessary.
+  // The assignment may have converted to a type that is wider than necessary.
 
   retval.maybe_mutate ();
 

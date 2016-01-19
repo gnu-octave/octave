@@ -585,7 +585,7 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   H5Sclose (space_hid);
 
 #else
-  gripe_save ("hdf5");
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -760,7 +760,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
 #else
-  gripe_load ("hdf5");
+  warn_load ("hdf5");
 #endif
 
   return retval;

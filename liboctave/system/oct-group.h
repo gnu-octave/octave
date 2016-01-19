@@ -105,8 +105,6 @@ private:
   // This is how we will create an octave_group object from a pointer
   // to a struct group.
   octave_group (void *p, std::string& msg);
-
-  void gripe_invalid (void) const;
 };
 
 #endif

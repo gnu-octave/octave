@@ -441,7 +441,7 @@ octave_jit_print_matrix (jit_matrix *m)
 
 OCTAVE_NORETURN static
 void
-gripe_bad_result (void)
+err_bad_result (void)
 {
   error ("incorrect type information given to the JIT compiler");
 }
@@ -461,7 +461,7 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
   if (result_type)
     {
       if (ovl.length () < 1)
-        gripe_bad_result ();
+        err_bad_result ();
 
       octave_value result = ovl.xelem(0);
       octave_base_value *ret = result.internal_rep ();
@@ -471,7 +471,7 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
 
   if (! (ovl.length () == 0
          || (ovl.length () == 1 && ovl.xelem (0).is_undefined ())))
-    gripe_bad_result ();
+    err_bad_result ();
 
   return 0;
 }

@@ -825,8 +825,8 @@ protected:
 
   static const char *get_umap_name (unary_mapper_t);
 
-  void gripe_load (const char *type) const;
-  void gripe_save (const char *type) const;
+  void warn_load (const char *type) const;
+  void warn_save (const char *type) const;
 
 private:
 

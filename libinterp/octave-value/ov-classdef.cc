@@ -50,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 
 OCTAVE_NORETURN static
 void
-gripe_method_access (const std::string& from, const cdef_method& meth)
+err_method_access (const std::string& from, const cdef_method& meth)
 {
   octave_value acc = meth.get ("Access");
   std::string acc_s;
@@ -66,7 +66,7 @@ gripe_method_access (const std::string& from, const cdef_method& meth)
 
 OCTAVE_NORETURN static
 void
-gripe_property_access (const std::string& from, const cdef_property& prop,
+err_property_access (const std::string& from, const cdef_property& prop,
                        bool is_set = false)
 {
   octave_value acc = prop.get (is_set ? "SetAccess" : "GetAccess");
@@ -2911,7 +2911,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
   octave_value retval;
 
   if (do_check_access && ! check_get_access ())
-    gripe_property_access (who, wrap (), false);
+    err_property_access (who, wrap (), false);
 
   if (! obj.is_constructed ())
     {
@@ -2947,7 +2947,7 @@ cdef_property::cdef_property_rep::get_value (bool do_check_access,
                                              const std::string& who)
 {
   if (do_check_access && ! check_get_access ())
-    gripe_property_access (who, wrap (), false);
+    err_property_access (who, wrap (), false);
 
   return get ("DefaultValue");
 }
@@ -2966,7 +2966,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
                                              const std::string& who)
 {
   if (do_check_access && ! check_set_access ())
-    gripe_property_access (who, wrap (), true);
+    err_property_access (who, wrap (), true);
 
   if (! obj.is_constructed ())
     {
@@ -3083,7 +3083,7 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
   octave_value_list retval;
 
   if (do_check_access && ! check_access ())
-    gripe_method_access (who, wrap ());
+    err_method_access (who, wrap ());
 
   if (get ("Abstract").bool_value ())
     error ("%s: cannot execute abstract method",
@@ -3106,7 +3106,7 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
   octave_value_list retval;
 
   if (do_check_access && ! check_access ())
-    gripe_method_access (who, wrap ());
+    err_method_access (who, wrap ());
 
   if (get ("Abstract").bool_value ())
     error ("%s: cannot execute abstract method",

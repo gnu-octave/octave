@@ -29,9 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 
 void
-unwind_protect_safe::gripe_exception (void)
+unwind_protect_safe::err_unhandled_exception (void)
 {
   // FIXME: can this throw an exception?
+  //        Yes, it can now (1/18/16).  Maybe this needs to be re-done?
 
   (*current_liboctave_error_handler)
     ("internal: unhandled exception in unwind_protect handler");

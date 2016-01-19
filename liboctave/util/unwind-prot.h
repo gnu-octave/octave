@@ -112,7 +112,7 @@ unwind_protect_safe : public unwind_protect
 {
 private:
 
-  static void gripe_exception (void);
+  static void err_unhandled_exception (void);
 
 public:
 
@@ -126,9 +126,9 @@ public:
           {
             run_first ();
           }
-        catch (...) // Yes, the black hole. Remember we're in a dtor.
+        catch (...) // Yes, the black hole.  Remember we're in a destructor.
           {
-            gripe_exception ();
+            err_unhandled_exception ();
           }
       }
   }

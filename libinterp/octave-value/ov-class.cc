@@ -1477,7 +1477,7 @@ error_cleanup:
   return true;
 
 #else
-  gripe_save ("hdf5");
+  warn_save ("hdf5");
   return false;
 #endif
 }
@@ -1612,7 +1612,7 @@ error_cleanup:
     H5Gclose (group_hid);
 
 #else
-  gripe_load ("hdf5");
+  warn_load ("hdf5");
 #endif
 
   return retval;

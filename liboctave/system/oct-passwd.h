@@ -125,8 +125,6 @@ private:
   // This is how we will create an octave_passwd object from a pointer
   // to a struct passwd.
   octave_passwd (void *p, std::string& msg);
-
-  void gripe_invalid (void) const;
 };
 
 #endif

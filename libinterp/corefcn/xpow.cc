@@ -54,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bsxfun.h"
 
+// FIXME: Why does this routine call itself?
 static void
 gripe_failed_diagonalization (void)
 {

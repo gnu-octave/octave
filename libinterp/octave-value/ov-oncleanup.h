@@ -26,11 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 #include "ov.h"
 
-static void
-gripe_internal (void)
-{
-  error ("onCleanup: internal error: cloning nonempty object");
-}
 
 class octave_oncleanup : public octave_base_value
 {
@@ -42,7 +37,7 @@ public:
   octave_base_value *clone (void) const
   {
     if (fcn.is_defined ())
-      gripe_internal ();
+      error ("onCleanup: internal error: cloning nonempty object");
 
     return empty_clone ();
   }

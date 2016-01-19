@@ -40,11 +40,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-mappers.h"
 
-static void
-gripe_invalid_range (void)
+OCTAVE_NORETURN static
+void
+err_invalid_range (void)
 {
-  (*current_liboctave_error_handler)
-    ("invalid range used as index");
+  (*current_liboctave_error_handler) ("invalid range used as index");
 }
 
 static void
@@ -110,7 +110,7 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
 {
   if (len < 0)
     {
-      gripe_invalid_range ();
+      err_invalid_range ();
       err = true;
     }
   else if (start < 0)
@@ -129,11 +129,9 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
   : start (0), len (r.numel ()), step (1)
 {
   if (len < 0)
-    {
-      gripe_invalid_range ();
-      err = true;
-    }
-  else if (len > 0)
+    err_invalid_range ();
+
+  if (len > 0)
     {
       if (r.all_elements_are_ints ())
         {
@@ -233,12 +231,8 @@ inline octave_idx_type
 convert_index (octave_idx_type i, bool& conv_error,
                octave_idx_type& ext)
 {
-  if (i <= 0)
-    {
-      if (! conv_error)          // only gripe once, for things like A(-10000:0)
-        err_invalid_index (i-1);
-      conv_error = true;
-    }
+  if (i <= 0 && ! conv_error)
+    err_invalid_index (i-1);
 
   if (ext < i)
     ext = i;

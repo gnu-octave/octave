@@ -2224,7 +2224,7 @@ write_mat5_sparse_index_vector (std::ostream& os,
 }
 
 static void
-gripe_dim_too_large (const std::string& name)
+warn_dim_too_large (const std::string& name)
 {
   warning ("save: skipping %s: dimension too large for MAT format",
            name.c_str ());
@@ -2254,7 +2254,7 @@ save_mat5_binary_element (std::ostream& os,
     {
       if (dv(i) > max_dim_val)
         {
-          gripe_dim_too_large (name);
+          warn_dim_too_large (name);
           goto skip_to_next;
         }
     }
@@ -2279,7 +2279,7 @@ save_mat5_binary_element (std::ostream& os,
 
       if (nnz > max_dim_val || nc + 1 > max_dim_val)
         {
-          gripe_dim_too_large (name);
+          warn_dim_too_large (name);
           goto skip_to_next;
         }
 
@@ -2287,7 +2287,7 @@ save_mat5_binary_element (std::ostream& os,
     }
   else if (dv.numel () > max_dim_val)
     {
-      gripe_dim_too_large (name);
+      warn_dim_too_large (name);
       goto skip_to_next;
     }
 

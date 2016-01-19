@@ -37,11 +37,18 @@ along with Octave; see the file COPYING.  If not, see
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
 
+OCTAVE_NORETURN static
+void
+err_invalid (void)
+{
+  (*current_liboctave_error_handler) ("invalid group object");
+}
+
 std::string
 octave_group::name (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return gr_name;
 }
@@ -50,7 +57,7 @@ std::string
 octave_group::passwd (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return gr_passwd;
 }
@@ -59,7 +66,7 @@ gid_t
 octave_group::gid (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return gr_gid;
 }
@@ -68,7 +75,7 @@ string_vector
 octave_group::mem (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return gr_mem;
 }
@@ -214,8 +221,3 @@ octave_group::octave_group (void *p, std::string& msg)
 #endif
 }
 
-void
-octave_group::gripe_invalid (void) const
-{
-  (*current_liboctave_error_handler) ("invalid group object");
-}

@@ -131,7 +131,7 @@ private:
 
   void do_decl_command (tree_decl_command&);
 
-  void gripe (const std::string& msg, int line);
+  OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
 
   // No copying!
 

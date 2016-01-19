@@ -128,7 +128,7 @@ static std::string Vsave_header_format_string = default_save_header_format ();
 
 OCTAVE_NORETURN static
 void
-gripe_file_open (const std::string& fcn, const std::string& file)
+err_file_open (const std::string& fcn, const std::string& file)
 {
   if (fcn == "load")
     error ("%s: unable to open input file '%s'", fcn.c_str (), file.c_str ());
@@ -321,7 +321,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
           file.close ();
         }
       else if (! quiet)
-        gripe_file_open ("load", orig_fname);
+        err_file_open ("load", orig_fname);
     }
 #ifdef HAVE_ZLIB
   else
@@ -333,7 +333,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
           gzfile.close ();
         }
       else if (! quiet)
-        gripe_file_open ("load", orig_fname);
+        err_file_open ("load", orig_fname);
     }
 #endif
 
@@ -774,7 +774,7 @@ Force Octave to assume the file is in Octave's text format.\n\
               hdf5_file.close ();
             }
           else
-            gripe_file_open ("load", orig_fname);
+            err_file_open ("load", orig_fname);
         }
       else
 #endif
@@ -821,7 +821,7 @@ Force Octave to assume the file is in Octave's text format.\n\
                   file.close ();
                 }
               else
-                gripe_file_open ("load", orig_fname);
+                err_file_open ("load", orig_fname);
             }
           else
 #endif
@@ -1674,7 +1674,7 @@ the file @file{data} in Octave's binary format.\n\
               hdf5_file.close ();
             }
           else
-            gripe_file_open ("save", fname);
+            err_file_open ("save", fname);
         }
       else
 #endif
@@ -1696,7 +1696,7 @@ the file @file{data} in Octave's binary format.\n\
                   file.close ();
                 }
               else
-                gripe_file_open ("save", fname);
+                err_file_open ("save", fname);
             }
           else
 #endif
@@ -1713,7 +1713,7 @@ the file @file{data} in Octave's binary format.\n\
                   file.close ();
                 }
               else
-                gripe_file_open ("save", fname);
+                err_file_open ("save", fname);
             }
         }
     }

@@ -4157,7 +4157,7 @@ octave_stream_list::do_insert (octave_stream& os)
 
 OCTAVE_NORETURN static
 void
-gripe_invalid_file_id (int fid, const std::string& who)
+err_invalid_file_id (int fid, const std::string& who)
 {
   if (who.empty ())
     ::error ("invalid stream number = %d", fid);
@@ -4171,7 +4171,7 @@ octave_stream_list::do_lookup (int fid, const std::string& who) const
   octave_stream retval;
 
   if (fid < 0)
-    gripe_invalid_file_id (fid, who);
+    err_invalid_file_id (fid, who);
 
   if (lookup_cache != list.end () && lookup_cache->first == fid)
     retval = lookup_cache->second;
@@ -4180,7 +4180,7 @@ octave_stream_list::do_lookup (int fid, const std::string& who) const
       ostrl_map::const_iterator iter = list.find (fid);
 
       if (iter == list.end ())
-        gripe_invalid_file_id (fid, who);
+        err_invalid_file_id (fid, who);
 
       retval = iter->second;
       lookup_cache = iter;
@@ -4203,12 +4203,12 @@ octave_stream_list::do_remove (int fid, const std::string& who)
 {
   // Can't remove stdin (std::cin), stdout (std::cout), or stderr (std::cerr).
   if (fid < 3)
-    gripe_invalid_file_id (fid, who);
+    err_invalid_file_id (fid, who);
 
   ostrl_map::iterator iter = list.find (fid);
 
   if (iter == list.end ())
-    gripe_invalid_file_id (fid, who);
+    err_invalid_file_id (fid, who);
 
   octave_stream os = iter->second;
   list.erase (iter);
@@ -4216,7 +4216,7 @@ octave_stream_list::do_remove (int fid, const std::string& who)
 
   // FIXME: is this check redundant?
   if (! os.is_valid ())
-    gripe_invalid_file_id (fid, who);
+    err_invalid_file_id (fid, who);
 
   os.close ();
 

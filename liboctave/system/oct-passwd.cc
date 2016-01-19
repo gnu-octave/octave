@@ -36,11 +36,18 @@ along with Octave; see the file COPYING.  If not, see
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
 
+OCTAVE_NORETURN static
+void
+err_invalid (void)
+{
+  (*current_liboctave_error_handler) ("invalid password object");
+}
+
 std::string
 octave_passwd::name (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return pw_name;
 }
@@ -49,7 +56,7 @@ std::string
 octave_passwd::passwd (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return pw_passwd;
 }
@@ -58,7 +65,7 @@ uid_t
 octave_passwd::uid (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return pw_uid;
 }
@@ -67,7 +74,7 @@ gid_t
 octave_passwd::gid (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return pw_gid;
 }
@@ -76,7 +83,7 @@ std::string
 octave_passwd::gecos (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return pw_gecos;
 }
@@ -85,7 +92,7 @@ std::string
 octave_passwd::dir (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return pw_dir;
 }
@@ -94,7 +101,7 @@ std::string
 octave_passwd::shell (void) const
 {
   if (! ok ())
-    gripe_invalid ();
+    err_invalid ();
 
   return pw_shell;
 }
@@ -222,8 +229,3 @@ octave_passwd::octave_passwd (void *p, std::string& msg)
 #endif
 }
 
-void
-octave_passwd::gripe_invalid (void) const
-{
-  (*current_liboctave_error_handler) ("invalid password object");
-}

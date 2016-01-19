@@ -523,7 +523,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->current_input_column = 1;
 
     if (curr_lexer->nesting_level.is_paren ())
-      curr_lexer->gripe_language_extension ("bare newline inside parentheses");
+      curr_lexer->warn_language_extension ("bare newline inside parentheses");
     else
       {
         int tok = curr_lexer->previous_token_value ();
@@ -1356,7 +1356,7 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->current_input_column = 1;
 
         curr_lexer->at_beginning_of_statement = false;
-        curr_lexer->gripe_language_extension
+        curr_lexer->warn_language_extension
           ("bare newline inside parentheses");
       }
     else if (curr_lexer->nesting_level.none ()
@@ -2827,7 +2827,7 @@ octave_base_lexer::handle_continuation (void)
 
   int offset = 1;
   if (yytxt[0] == '\\')
-    gripe_language_extension_continuation ();
+    warn_language_extension_continuation ();
   else
     offset = 3;
 
@@ -3138,7 +3138,7 @@ octave_base_lexer::maybe_warn_separator_insert (char sep)
 }
 
 void
-octave_base_lexer::gripe_single_quote_string (void)
+octave_base_lexer::warn_single_quote_string (void)
 {
   std::string nm = fcn_file_full_name;
 
@@ -3153,7 +3153,7 @@ octave_base_lexer::gripe_single_quote_string (void)
 }
 
 void
-octave_base_lexer::gripe_language_extension (const std::string& msg)
+octave_base_lexer::warn_language_extension (const std::string& msg)
 {
   std::string nm = fcn_file_full_name;
 
@@ -3168,26 +3168,26 @@ octave_base_lexer::gripe_language_extension (const std::string& msg)
 }
 
 void
-octave_base_lexer::maybe_gripe_language_extension_comment (char c)
+octave_base_lexer::maybe_warn_language_extension_comment (char c)
 {
   if (c == '#')
-    gripe_language_extension ("# used as comment character");
+    warn_language_extension ("# used as comment character");
 }
 
 void
-octave_base_lexer::gripe_language_extension_continuation (void)
+octave_base_lexer::warn_language_extension_continuation (void)
 {
-  gripe_language_extension ("\\ used as line continuation marker");
+  warn_language_extension ("\\ used as line continuation marker");
 }
 
 void
-octave_base_lexer::gripe_language_extension_operator (const std::string& op)
+octave_base_lexer::warn_language_extension_operator (const std::string& op)
 {
   std::string t = op;
   int n = t.length ();
   if (t[n-1] == '\n')
     t.resize (n-1);
-  gripe_language_extension (t + " used as operator");
+  warn_language_extension (t + " used as operator");
 }
 
 void
@@ -3493,7 +3493,7 @@ int
 octave_base_lexer::handle_op_internal (int tok, bool bos, bool compat)
 {
   if (! compat)
-    gripe_language_extension_operator (flex_yytext ());
+    warn_language_extension_operator (flex_yytext ());
 
   push_token (new token (tok, input_line_number, current_input_column));
 

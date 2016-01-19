@@ -432,7 +432,7 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   H5Sclose (space_hid);
 
 #else
-  gripe_save ("hdf5");
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -503,7 +503,7 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
-  gripe_load ("hdf5");
+  warn_load ("hdf5");
 #endif
 
   return retval;

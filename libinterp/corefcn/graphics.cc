@@ -63,8 +63,9 @@ along with Octave; see the file COPYING.  If not, see
 // forward declarations
 static octave_value xget (const graphics_handle& h, const caseless_str& name);
 
-static void
-gripe_set_invalid (const std::string& pname)
+OCTAVE_NORETURN static
+void
+err_set_invalid (const std::string& pname)
 {
   error ("set: invalid value for %s property", pname.c_str ());
 }
@@ -3394,7 +3395,7 @@ root_figure::properties::set_callbackobject (const octave_value& v)
       callbackobject = val;
     }
   else
-    gripe_set_invalid ("callbackobject");
+    err_set_invalid ("callbackobject");
 }
 
 void
@@ -3410,7 +3411,7 @@ root_figure::properties::set_currentfigure (const octave_value& v)
         gh_manager::push_figure (val);
     }
   else
-    gripe_set_invalid ("currentfigure");
+    err_set_invalid ("currentfigure");
 }
 
 void
@@ -3565,7 +3566,7 @@ figure::properties::set_currentaxes (const octave_value& val)
   if (xisnan (hax.value ()) || is_handle (hax))
     currentaxes = hax;
   else
-    gripe_set_invalid ("currentaxes");
+    err_set_invalid ("currentaxes");
 }
 
 void

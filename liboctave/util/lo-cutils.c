@@ -80,7 +80,7 @@ octave_waitpid (pid_t pid, int *status, int options)
 }
 
 static inline void
-gripe_missing_wait_macro (const char *id, int status)
+warn_missing_wait_macro (const char *id, int status)
 {
   (*current_liboctave_warning_handler)
     ("%s always returns false in this version of Octave; status = %d",
@@ -95,7 +95,7 @@ octave_wifexited (int status)
 #if defined (WIFEXITED)
   retval = WIFEXITED (status);
 #else
-  gripe_missing_wait_macro ("WIFEXITED", status);
+  warn_missing_wait_macro ("WIFEXITED", status);
 #endif
 
   return retval;
@@ -109,7 +109,7 @@ octave_wexitstatus (int status)
 #if defined (WEXITSTATUS)
   retval = WEXITSTATUS (status);
 #else
-  gripe_missing_wait_macro ("WEXITSTATUS", status);
+  warn_missing_wait_macro ("WEXITSTATUS", status);
 #endif
 
   return retval;
@@ -123,7 +123,7 @@ octave_wifsignaled (int status)
 #if defined (WIFSIGNALED)
   retval = WIFSIGNALED (status);
 #else
-  gripe_missing_wait_macro ("WIFSIGNALED", status);
+  warn_missing_wait_macro ("WIFSIGNALED", status);
 #endif
 
   return retval;
@@ -137,7 +137,7 @@ octave_wtermsig (int status)
 #if defined (WTERMSIG)
   retval = WTERMSIG (status);
 #else
-  gripe_missing_wait_macro ("WTERMSIG", status);
+  warn_missing_wait_macro ("WTERMSIG", status);
 #endif
 
   return retval;
@@ -151,7 +151,7 @@ octave_wcoredump (int status)
 #if defined (WCOREDUMP)
   retval = WCOREDUMP (status);
 #else
-  gripe_missing_wait_macro ("WCOREDUMP", status);
+  warn_missing_wait_macro ("WCOREDUMP", status);
 #endif
 
   return retval;
@@ -165,7 +165,7 @@ octave_wifstopped (int status)
 #if defined (WIFSTOPPED)
   retval = WIFSTOPPED (status);
 #else
-  gripe_missing_wait_macro ("WIFSTOPPED", status);
+  warn_missing_wait_macro ("WIFSTOPPED", status);
 #endif
 
   return retval;
@@ -179,7 +179,7 @@ octave_wstopsig (int status)
 #if defined (WSTOPSIG)
   retval = WSTOPSIG (status);
 #else
-  gripe_missing_wait_macro ("WSTOPSIG", status);
+  warn_missing_wait_macro ("WSTOPSIG", status);
 #endif
 
   return retval;
@@ -193,7 +193,7 @@ octave_wifcontinued (int status)
 #if defined (WIFCONTINUED)
   retval = WIFCONTINUED (status);
 #else
-  gripe_missing_wait_macro ("WIFCONTINUED", status);
+  warn_missing_wait_macro ("WIFCONTINUED", status);
 #endif
 
   return retval;

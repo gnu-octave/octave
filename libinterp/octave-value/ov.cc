@@ -2043,16 +2043,16 @@ octave_value::write (octave_stream& os, int block_size,
   return rep->write (os, block_size, output_type, skip, flt_fmt);
 }
 
-static void
-gripe_binary_op (const std::string& on, const std::string& tn1,
-                 const std::string& tn2)
+OCTAVE_NORETURN static void
+err_binary_op (const std::string& on, const std::string& tn1,
+               const std::string& tn2)
 {
   error ("binary operator '%s' not implemented for '%s' by '%s' operations",
          on.c_str (), tn1.c_str (), tn2.c_str ());
 }
 
-static void
-gripe_binary_op_conv (const std::string& on)
+OCTAVE_NORETURN static void
+err_binary_op_conv (const std::string& on)
 {
   error ("type conversion failed for binary operator '%s'", on.c_str ());
 }
@@ -2079,8 +2079,8 @@ do_binary_op (octave_value::binary_op op,
           retval = f (v1, v2);
         }
       else
-        gripe_binary_op (octave_value::binary_op_as_string (op),
-                         v1.class_name (), v2.class_name ());
+        err_binary_op (octave_value::binary_op_as_string (op),
+                       v1.class_name (), v2.class_name ());
     }
   else
     {
@@ -2123,7 +2123,7 @@ do_binary_op (octave_value::binary_op op,
                   t1 = tv1.type_id ();
                 }
               else
-                gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+                err_binary_op_conv (octave_value::binary_op_as_string (op));
             }
           else
             tv1 = v1;
@@ -2138,7 +2138,7 @@ do_binary_op (octave_value::binary_op op,
                   t2 = tv2.type_id ();
                 }
               else
-                gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+                err_binary_op_conv (octave_value::binary_op_as_string (op));
             }
           else
             tv2 = v2;
@@ -2175,7 +2175,7 @@ do_binary_op (octave_value::binary_op op,
                       t1 = tv1.type_id ();
                     }
                   else
-                    gripe_binary_op_conv
+                    err_binary_op_conv
                       (octave_value::binary_op_as_string (op));
                 }
 
@@ -2189,7 +2189,7 @@ do_binary_op (octave_value::binary_op op,
                       t2 = tv2.type_id ();
                     }
                   else
-                    gripe_binary_op_conv
+                    err_binary_op_conv
                       (octave_value::binary_op_as_string (op));
                 }
 
@@ -2200,12 +2200,12 @@ do_binary_op (octave_value::binary_op op,
                   if (f)
                     retval = f (*tv1.rep, *tv2.rep);
                   else
-                    gripe_binary_op (octave_value::binary_op_as_string (op),
-                                     v1.type_name (), v2.type_name ());
+                    err_binary_op (octave_value::binary_op_as_string (op),
+                                   v1.type_name (), v2.type_name ());
                 }
               else
-                gripe_binary_op (octave_value::binary_op_as_string (op),
-                                 v1.type_name (), v2.type_name ());
+                err_binary_op (octave_value::binary_op_as_string (op),
+                               v1.type_name (), v2.type_name ());
             }
         }
     }
@@ -2315,17 +2315,15 @@ do_binary_op (octave_value::compound_binary_op op,
   return retval;
 }
 
-OCTAVE_NORETURN static
-void
-gripe_cat_op (const std::string& tn1, const std::string& tn2)
+OCTAVE_NORETURN static void
+err_cat_op (const std::string& tn1, const std::string& tn2)
 {
   error ("concatenation operator not implemented for '%s' by '%s' operations",
          tn1.c_str (), tn2.c_str ());
 }
 
-OCTAVE_NORETURN static
-void
-gripe_cat_op_conv (void)
+OCTAVE_NORETURN static void
+err_cat_op_conv (void)
 {
   error ("type conversion failed for concatenation operator");
 }
@@ -2373,7 +2371,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
               t1 = tv1.type_id ();
             }
           else
-            gripe_cat_op_conv ();
+            err_cat_op_conv ();
         }
       else
         tv1 = v1;
@@ -2388,7 +2386,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
               t2 = tv2.type_id ();
             }
           else
-            gripe_cat_op_conv ();
+            err_cat_op_conv ();
         }
       else
         tv2 = v2;
@@ -2398,7 +2396,7 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
           retval = do_cat_op (tv1, tv2, ra_idx);
         }
       else
-        gripe_cat_op (v1.type_name (), v2.type_name ());
+        err_cat_op (v1.type_name (), v2.type_name ());
     }
 
   return retval;
@@ -2512,15 +2510,15 @@ octave_value::print_info (std::ostream& os, const std::string& prefix) const
   rep->print_info (os, prefix + " ");
 }
 
-static void
-gripe_unary_op (const std::string& on, const std::string& tn)
+OCTAVE_NORETURN static void
+err_unary_op (const std::string& on, const std::string& tn)
 {
   error ("unary operator '%s' not implemented for '%s' operands",
          on.c_str (), tn.c_str ());
 }
 
-static void
-gripe_unary_op_conv (const std::string& on)
+OCTAVE_NORETURN static void
+err_unary_op_conv (const std::string& on)
 {
   error ("type conversion failed for unary operator '%s'", on.c_str ());
 }
@@ -2541,8 +2539,8 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
       if (f)
         retval = f (v);
       else
-        gripe_unary_op (octave_value::unary_op_as_string (op),
-                        v.class_name ());
+        err_unary_op (octave_value::unary_op_as_string (op),
+                      v.class_name ());
     }
   else
     {
@@ -2570,20 +2568,20 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
                   retval = do_unary_op (op, tv);
                 }
               else
-                gripe_unary_op_conv (octave_value::unary_op_as_string (op));
+                err_unary_op_conv (octave_value::unary_op_as_string (op));
             }
           else
-            gripe_unary_op (octave_value::unary_op_as_string (op),
-                            v.type_name ());
+            err_unary_op (octave_value::unary_op_as_string (op),
+                          v.type_name ());
         }
     }
 
   return retval;
 }
 
-static void
-gripe_unary_op_conversion_failed (const std::string& op,
-                                  const std::string& tn)
+OCTAVE_NORETURN static void
+err_unary_op_conversion_failed (const std::string& op,
+                                const std::string& tn)
 {
   error ("operator %s: type conversion for '%s' failed",
          op.c_str (), tn.c_str ());
@@ -2594,7 +2592,7 @@ octave_value::do_non_const_unary_op (unary_op op)
 {
   if (op == op_incr || op == op_decr)
     {
-      // We want the gripe just here, because in the other branch this should
+      // We want the error just here, because in the other branch this should
       // not happen, and if it did anyway (internal error), the message would
       // be confusing.
       if (is_undefined ())
@@ -2651,17 +2649,17 @@ octave_value::do_non_const_unary_op (unary_op op)
                           rep = old_rep;
                         }
 
-                      gripe_unary_op (octave_value::unary_op_as_string (op),
-                                      type_name ());
+                      err_unary_op (octave_value::unary_op_as_string (op),
+                                    type_name ());
                     }
                 }
               else
-                gripe_unary_op_conversion_failed
+                err_unary_op_conversion_failed
                   (octave_value::unary_op_as_string (op), type_name ());
             }
           else
-            gripe_unary_op (octave_value::unary_op_as_string (op),
-                            type_name ());
+            err_unary_op (octave_value::unary_op_as_string (op),
+                          type_name ());
         }
     }
   else

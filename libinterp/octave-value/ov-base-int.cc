@@ -370,7 +370,7 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   H5Sclose (space_hid);
 
 #else
-  this->gripe_save ("hdf5");
+  this->warn_save ("hdf5");
 #endif
 
   return retval;
@@ -439,7 +439,7 @@ octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
-  this->gripe_load ("hdf5");
+  this->warn_load ("hdf5");
 #endif
 
   return retval;
@@ -577,7 +577,7 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   H5Sclose (space_hid);
 
 #else
-  this->gripe_save ("hdf5");
+  this->warn_save ("hdf5");
 #endif
 
   return retval;
@@ -620,7 +620,7 @@ octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return true;
 
 #else
-  this->gripe_load ("hdf5");
+  this->warn_load ("hdf5");
   return false;
 #endif
 }

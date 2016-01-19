@@ -546,7 +546,7 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   H5Gclose (group_hid);
 
 #else
-  gripe_save ("hdf5");
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -785,7 +785,7 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Gclose (group_hid);
 
 #else
-  gripe_load ("hdf5");
+  warn_load ("hdf5");
 #endif
 
   return retval;

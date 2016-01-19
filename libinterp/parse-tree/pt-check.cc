@@ -41,7 +41,7 @@ tree_checker::visit_argument_list (tree_argument_list& lst)
       if (elt)
         {
           if (do_lvalue_check && ! elt->lvalue_ok ())
-            gripe ("invalid lvalue in multiple assignment", elt->line ());
+            errmsg ("invalid lvalue in multiple assignment", elt->line ());
         }
     }
 }
@@ -146,7 +146,7 @@ tree_checker::visit_simple_for_command (tree_simple_for_command& cmd)
   if (lhs)
     {
       if (! lhs->lvalue_ok ())
-        gripe ("invalid lvalue in for command", cmd.line ());
+        errmsg ("invalid lvalue in for command", cmd.line ());
     }
 
   tree_expression *expr = cmd.control_expr ();
@@ -175,7 +175,7 @@ tree_checker::visit_complex_for_command (tree_complex_for_command& cmd)
       int len = lhs->length ();
 
       if (len == 0 || len > 2)
-        gripe ("invalid number of output arguments in for command",
+        errmsg ("invalid number of output arguments in for command",
                cmd.line ());
 
       do_lvalue_check = true;
@@ -420,7 +420,7 @@ tree_checker::visit_simple_assignment (tree_simple_assignment& expr)
   if (lhs)
     {
       if (! lhs->lvalue_ok ())
-        gripe ("invalid lvalue in assignment", expr.line ());
+        errmsg ("invalid lvalue in assignment", expr.line ());
     }
 
   tree_expression *rhs = expr.right_hand_side ();
@@ -509,7 +509,7 @@ tree_checker::visit_try_catch_command (tree_try_catch_command& cmd)
   if (expr_id)
     {
       if (! expr_id->lvalue_ok ())
-        gripe ("invalid lvalue used for identifier in try-catch command",
+        errmsg ("invalid lvalue used for identifier in try-catch command",
                cmd.line ());
     }
 
@@ -565,7 +565,7 @@ tree_checker::visit_do_until_command (tree_do_until_command& cmd)
 }
 
 void
-tree_checker::gripe (const std::string& msg, int line)
+tree_checker::errmsg (const std::string& msg, int line)
 {
   if (file_name.empty ())
     error ("%s", msg.c_str ());

@@ -617,8 +617,9 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
 
 // Loading variables from files.
 
-static void
-gripe_unrecognized_float_fmt (void)
+OCTAVE_NORETURN static
+void
+err_unrecognized_float_fmt (void)
 {
   (*current_liboctave_error_handler)
     ("unrecognized floating point format requested");
@@ -675,7 +676,7 @@ do_double_format_conversion (void *data, octave_idx_type len,
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;
@@ -691,7 +692,7 @@ do_double_format_conversion (void *data, octave_idx_type len,
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;
@@ -722,7 +723,7 @@ do_float_format_conversion (void *data, octave_idx_type len,
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;
@@ -738,7 +739,7 @@ do_float_format_conversion (void *data, octave_idx_type len,
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;

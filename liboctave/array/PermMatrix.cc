@@ -29,8 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "oct-locbuf.h"
 
-static void
-gripe_invalid_permutation (void)
+OCTAVE_NORETURN static
+void
+err_invalid_permutation (void)
 {
   (*current_liboctave_error_handler)
     ("PermMatrix: invalid permutation vector");
@@ -43,7 +44,7 @@ PermMatrix::setup (const Array<octave_idx_type>& p, bool colp, bool check)
     {
       if (! idx_vector (p).is_permutation (p.numel ()))
         {
-          gripe_invalid_permutation ();
+          err_invalid_permutation ();
           Array<octave_idx_type>::operator = (Array<octave_idx_type> ());
         }
     }
@@ -70,13 +71,11 @@ PermMatrix::setup (const idx_vector& idx, bool colp, octave_idx_type n)
   octave_idx_type len = idx.length (n);
 
   if (! idx.is_permutation (len))
-    gripe_invalid_permutation ();
-  else
-    {
-      Array<octave_idx_type> idxa (dim_vector (len, 1));
-      for (octave_idx_type i = 0; i < len; i++) idxa(i) = idx(i);
-      Array<octave_idx_type>::operator = (idxa);
-    }
+    err_invalid_permutation ();
+
+  Array<octave_idx_type> idxa (dim_vector (len, 1));
+  for (octave_idx_type i = 0; i < len; i++) idxa(i) = idx(i);
+  Array<octave_idx_type>::operator = (idxa);
 
   if (! colp)
     *this = this->transpose ();

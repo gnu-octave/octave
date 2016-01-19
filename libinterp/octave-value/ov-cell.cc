@@ -1057,7 +1057,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
   return true;
 
 #else
-  gripe_save ("hdf5");
+  warn_save ("hdf5");
   return false;
 #endif
 }
@@ -1167,7 +1167,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
 #else
-  gripe_load ("hdf5");
+  warn_load ("hdf5");
 #endif
 
   return retval;

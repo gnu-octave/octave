@@ -242,7 +242,7 @@ octave_TEXINFOS = \
 
 OCTAVE_HTML_DIR = doc/interpreter/octave.html
 OCTAVE_HTML_TMP_DIR = $(OCTAVE_HTML_DIR:.html=.htp)
-OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.html-stamp
+OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.octave-html-stamp
 
 $(srcdir)/doc/interpreter/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 doc/interpreter/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)

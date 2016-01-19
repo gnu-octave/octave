@@ -112,6 +112,10 @@ Summary of important user-visible changes for version 4.2:
     with liboctave then these must be updated to throw an exception and not
     return to the calling program.
 
+ ** The system for common errors and warnings has been renamed from gripe_XXX
+    to either err_XXX if error is called or warn_XXX if warning is called.
+    The gripe_XXX functions are deprecated and will be removed in version 4.6.
+
  ** New configure option, --enable-address-sanitizer-flags, to build Octave
     with memory allocator checks (similar to those in valgrind) built in.
 

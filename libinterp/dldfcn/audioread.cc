@@ -172,8 +172,8 @@ is stored in the audio file.\n\
   return ovl (ret_audio, info.samplerate);
 
 #else
-  err_disabled_feature ("audioread", "reading and writing sound files"
-                        " through libsndfile", "Octave");
+  err_disabled_feature ("audioread",
+                        "reading and writing sound files through libsndfile");
 #endif
 }
 
@@ -420,8 +420,8 @@ Comment.\n\
   return ovl ();
 
 #else
-  err_disabled_feature ("audiowrite", "reading and writing sound files"
-                        " through libsndfile", "Octave");
+  err_disabled_feature ("audiowrite",
+                        "reading and writing sound files through libsndfile");
 #endif
 }
 
@@ -492,7 +492,7 @@ Return information about an audio file specified by @var{filename}.\n\
   return ovl (result);
 
 #else
-  err_disabled_feature ("audioinfo", "reading and writing sound files"
-                        " through libsndfile", "Octave");
+  err_disabled_feature ("audioinfo",
+                        "reading and writing sound files through libsndfile");
 #endif
 }

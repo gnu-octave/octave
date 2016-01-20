@@ -277,8 +277,8 @@ endfunction
 %! [u2,s2,v2,flag] = svds (A,k,0,opts);
 %! s2 = diag (s2);
 %! assert (flag, !1);
-%! tol = 10 * eps() * norm(s2, 1);
-%! assert (s2, s(k:-1:1), tol);
+%! tol = 100 * eps() * norm(s2, 1);
+%! assert (s2, s(length(s2):-1:1), tol);
 %!
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! idx = floor (n/2);

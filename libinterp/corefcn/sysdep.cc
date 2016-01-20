@@ -73,6 +73,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "display.h"
 #include "error.h"
+#include "errwarn.h"
 #include "input.h"
 #include "ovl.h"
 #include "ov.h"

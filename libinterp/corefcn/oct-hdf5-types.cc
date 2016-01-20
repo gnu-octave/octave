@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
+#include "errwarn.h"
 #include "oct-hdf5.h"
 
 bool

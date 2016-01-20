@@ -1152,6 +1152,13 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
                         || c2 == '3' || c2 == '4' || c2 == '5'
                         || c2 == '6' || c2 == '7')
                       is >> std::oct >> ref >> std::dec;
+                    else if (c2 == '8' || c2 == '9')
+                    {
+                      // FIXME: Would like to set error state on octave stream.
+                      // See bug #46493.  But only std::istream is input to fcn
+                      // error ("internal failure to match octal format");
+                      ref = 0;
+                    }
                     else
                       ref = 0;
                   }

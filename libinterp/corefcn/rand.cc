@@ -208,10 +208,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             goto gen_matrix;
           }
         else
-          {
-            err_wrong_type_arg ("rand", tmp);
-            return retval;
-          }
+          err_wrong_type_arg ("rand", tmp);
       }
       break;
 

@@ -2188,10 +2188,7 @@ public:
         octave_value val = values(i);
 
         if (val.is_map () || val.is_cell () || val.is_object ())
-          {
-            err_wrong_type_arg (who, val);
-            break;
-          }
+          err_wrong_type_arg (who, val);
       }
   }
 

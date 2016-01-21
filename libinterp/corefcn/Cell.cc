@@ -276,7 +276,6 @@ octave_idx_type
 Cell::nnz (void) const
 {
   err_wrong_type_arg ("nnz", "cell array");
-  return -1;
 }
 
 /*

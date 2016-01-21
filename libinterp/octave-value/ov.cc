@@ -2172,14 +2172,11 @@ do_binary_op (octave_value::binary_op op,
                 {
                   octave_base_value *tmp = cf2 (*tv2.rep);
 
-                  if (tmp)
-                    {
-                      tv2 = octave_value (tmp);
-                      t2 = tv2.type_id ();
-                    }
-                  else
-                    err_binary_op_conv
-                      (octave_value::binary_op_as_string (op));
+                  if (! tmp)
+                    err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                  tv2 = octave_value (tmp);
+                  t2 = tv2.type_id ();
                 }
 
               if (! cf1 && ! cf2)

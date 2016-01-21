@@ -72,10 +72,7 @@ FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a,
     }
 
   if (a.dims () != b.dims ())
-    {
-      err_nonconformant ("FloatComplexGEPBALANCE", n, n, b.rows(), b.cols());
-      return -1;
-    }
+    err_nonconformant ("FloatComplexGEPBALANCE", n, n, b.rows(), b.cols());
 
   octave_idx_type info;
   octave_idx_type ilo;

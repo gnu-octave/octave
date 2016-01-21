@@ -403,19 +403,17 @@ OP (const M& m, const DM& dm) \
  \
   if (m_nr != dm_nr || m_nc != dm_nc) \
     err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc); \
-  else \
+ \
+  r.resize (m_nr, m_nc); \
+ \
+  if (m_nr > 0 && m_nc > 0) \
     { \
-      r.resize (m_nr, m_nc); \
+      r = R (m); \
  \
-      if (m_nr > 0 && m_nc > 0) \
-        { \
-          r = R (m); \
+      octave_idx_type len = dm.length (); \
  \
-          octave_idx_type len = dm.length (); \
- \
-          for (octave_idx_type i = 0; i < len; i++) \
-            r.elem (i, i) OPEQ dm.elem (i, i); \
-        } \
+      for (octave_idx_type i = 0; i < len; i++) \
+        r.elem (i, i) OPEQ dm.elem (i, i); \
     } \
  \
   return r; \
@@ -435,21 +433,19 @@ operator * (const M& m, const DM& dm) \
  \
   if (m_nc != dm_nr) \
     err_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc); \
-  else \
-    { \
-      r = R (m_nr, dm_nc); \
-      R::element_type *rd = r.fortran_vec (); \
-      const M::element_type *md = m.data (); \
-      const DM::element_type *dd = dm.data (); \
  \
-      octave_idx_type len = dm.length (); \
-      for (octave_idx_type i = 0; i < len; i++) \
-        { \
-          mx_inline_mul (m_nr, rd, md, dd[i]); \
-          rd += m_nr; md += m_nr; \
-        } \
-      mx_inline_fill (m_nr * (dm_nc - len), rd, R_ZERO); \
+  r = R (m_nr, dm_nc); \
+  R::element_type *rd = r.fortran_vec (); \
+  const M::element_type *md = m.data (); \
+  const DM::element_type *dd = dm.data (); \
+ \
+  octave_idx_type len = dm.length (); \
+  for (octave_idx_type i = 0; i < len; i++) \
+    { \
+      mx_inline_mul (m_nr, rd, md, dd[i]); \
+      rd += m_nr; md += m_nr; \
     } \
+  mx_inline_fill (m_nr * (dm_nc - len), rd, R_ZERO); \
  \
   return r; \
 }
@@ -507,21 +503,19 @@ operator * (const DM& dm, const M& m) \
  \
   if (dm_nc != m_nr) \
     err_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc); \
-  else \
-    { \
-      r = R (dm_nr, m_nc); \
-      R::element_type *rd = r.fortran_vec (); \
-      const M::element_type *md = m.data (); \
-      const DM::element_type *dd = dm.data (); \
  \
-      octave_idx_type len = dm.length (); \
-      for (octave_idx_type i = 0; i < m_nc; i++) \
-        { \
-          mx_inline_mul (len, rd, md, dd); \
-          rd += len; md += m_nr; \
-          mx_inline_fill (dm_nr - len, rd, R_ZERO); \
-          rd += dm_nr - len; \
-        } \
+  r = R (dm_nr, m_nc); \
+  R::element_type *rd = r.fortran_vec (); \
+  const M::element_type *md = m.data (); \
+  const DM::element_type *dd = dm.data (); \
+ \
+  octave_idx_type len = dm.length (); \
+  for (octave_idx_type i = 0; i < m_nc; i++) \
+    { \
+      mx_inline_mul (len, rd, md, dd); \
+      rd += len; md += m_nr; \
+      mx_inline_fill (dm_nr - len, rd, R_ZERO); \
+      rd += dm_nr - len; \
     } \
  \
   return r; \
@@ -548,13 +542,11 @@ operator * (const DM& dm, const M& m) \
  \
     if (dm1_nr != dm2_nr || dm1_nc != dm2_nc) \
       err_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc); \
-    else \
-      { \
-        r.resize (dm1_nr, dm1_nc); \
  \
-        if (dm1_nr > 0 && dm1_nc > 0) \
-          F (dm1.length (), r.fortran_vec (), dm1.data (), dm2.data ()); \
-      } \
+    r.resize (dm1_nr, dm1_nc); \
+ \
+    if (dm1_nr > 0 && dm1_nc > 0) \
+      F (dm1.length (), r.fortran_vec (), dm1.data (), dm2.data ()); \
  \
     return r; \
   }
@@ -622,8 +614,8 @@ M operator * (const M& x, const PM& p) \
   M result; \
   if (p.rows () != nc) \
     err_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
-  else \
-    result = x.index (idx_vector::colon, p.col_perm_vec ()); \
+  \
+  result = x.index (idx_vector::colon, p.col_perm_vec ()); \
   \
   return result; \
 }

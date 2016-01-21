@@ -379,10 +379,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
       return do_bsxfun_op (x, y, op, op1, op2);
     }
   else
-    {
-      err_nonconformant (opname, dx, dy);
-      return Array<R> ();
-    }
+    err_nonconformant (opname, dx, dy);
 }
 
 template <class R, class X, class Y>

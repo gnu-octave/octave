@@ -1036,10 +1036,7 @@ negative numbers or when the values are periodic.\n\
               retval = tmp.FCN (dim); \
             } \
           else \
-            { \
-              err_wrong_type_arg (#FCN, arg); \
-              return retval; \
-            } \
+            err_wrong_type_arg (#FCN, arg); \
         } \
       else if (arg.is_bool_type ()) \
         { \
@@ -1076,10 +1073,7 @@ negative numbers or when the values are periodic.\n\
           retval = tmp.FCN (dim); \
         } \
       else \
-        { \
-          err_wrong_type_arg (#FCN, arg); \
-          return retval; \
-        } \
+        err_wrong_type_arg (#FCN, arg); \
     } \
  \
   return retval
@@ -1144,10 +1138,7 @@ negative numbers or when the values are periodic.\n\
         } \
     } \
   else \
-    { \
-      err_wrong_type_arg (#FCN, arg); \
-      return retval; \
-    } \
+    err_wrong_type_arg (#FCN, arg); \
  \
   return retval
 

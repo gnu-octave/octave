@@ -78,12 +78,9 @@ octave_idx_type
 idx_vector::idx_colon_rep::checkelem (octave_idx_type i) const
 {
   if (i < 0)
-    {
-      err_index_out_of_range ();
-      return 0;
-    }
-  else
-    return i;
+    err_index_out_of_range ();
+
+  return i;
 }
 
 idx_vector::idx_base_rep *
@@ -109,20 +106,11 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
   : start(_start), len (_step ? std::max ((_limit - _start) / _step, static_cast<octave_idx_type> (0)) : -1), step (_step)
 {
   if (len < 0)
-    {
-      err_invalid_range ();
-      err = true;
-    }
-  else if (start < 0)
-    {
-      err_invalid_index (start);
-      err = true;
-    }
-  else if (step < 0 && start + (len-1)*step < 0)
-    {
-      err_invalid_index (start + (len-1)*step);
-      err = true;
-    }
+    err_invalid_range ();
+  if (start < 0)
+    err_invalid_index (start);
+  if (step < 0 && start + (len-1)*step < 0)
+    err_invalid_index (start + (len-1)*step);
 }
 
 idx_vector::idx_range_rep::idx_range_rep (const Range& r)
@@ -138,15 +126,9 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
           start = static_cast<octave_idx_type> (r.base ()) - 1;
           step = static_cast<octave_idx_type> (r.inc ());
           if (start < 0)
-            {
-              err_invalid_index (start);
-              err = true;
-            }
-          else if (step < 0 && start + (len - 1)*step < 0)
-            {
-              err_invalid_index (start + (len - 1)*step);
-              err = true;
-            }
+            err_invalid_index (start);
+          if (step < 0 && start + (len - 1)*step < 0)
+            err_invalid_index (start + (len - 1)*step);
         }
       else
         {
@@ -154,7 +136,6 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
           double b = r.base ();
           double inc = r.inc ();
           err_invalid_index (b != gnulib::floor (b) ? b : b + inc);
-          err = true;
         }
     }
 }
@@ -163,12 +144,9 @@ octave_idx_type
 idx_vector::idx_range_rep::checkelem (octave_idx_type i) const
 {
   if (i < 0 || i >= len)
-    {
-      err_index_out_of_range ();
-      return 0;
-    }
-  else
-    return start + i*step;
+    err_index_out_of_range ();
+
+  return start + i*step;
 }
 
 idx_vector::idx_base_rep *
@@ -246,10 +224,7 @@ convert_index (double x, bool& conv_error, octave_idx_type& ext)
   octave_idx_type i = static_cast<octave_idx_type> (x);
 
   if (static_cast<double> (i) != x)
-    {
-      err_invalid_index (x-1);
-      conv_error = true;
-    }
+    err_invalid_index (x-1);
 
   return convert_index (i, conv_error, ext);
 }
@@ -284,10 +259,7 @@ idx_vector::idx_scalar_rep::idx_scalar_rep (octave_idx_type i)
   : data (i)
 {
   if (data < 0)
-    {
-      err_invalid_index (data);
-      err = true;
-    }
+    err_invalid_index (data);
 }
 
 octave_idx_type
@@ -356,9 +328,8 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
           octave_idx_type k = inda.xelem (i);
           if (k < 0)
             {
-              if (! err)         // only report first error, in case 1000s.
+              if (! err)
                 err_invalid_index (k);
-              err = true;
             }
           else if (k > max)
             max = k;
@@ -467,10 +438,7 @@ octave_idx_type
 idx_vector::idx_vector_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
-    {
-      err_invalid_index (n);
-      return 0;
-    }
+    err_invalid_index (n);
 
   return xelem (n);
 }
@@ -717,10 +685,7 @@ octave_idx_type
 idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
-    {
-      err_invalid_index (n);
-      return 0;
-    }
+    err_invalid_index (n);
 
   return xelem (n);
 }

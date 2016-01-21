@@ -138,9 +138,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
                           result.hess_matrix ());
         }
       else
-        {
-          err_wrong_type_arg ("hess", arg);
-        }
+        err_wrong_type_arg ("hess", arg);
     }
 
   return retval;

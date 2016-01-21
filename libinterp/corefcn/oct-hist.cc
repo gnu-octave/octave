@@ -161,10 +161,7 @@ do_history (const octave_value_list& args, int nargout)
           continue;
         }
       else
-        {
-          err_wrong_type_arg ("history", arg);
-          return hlist;
-        }
+        err_wrong_type_arg ("history", arg);
 
       if (option == "-r" || option == "-w" || option == "-a"
           || option == "-n")

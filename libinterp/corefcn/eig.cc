@@ -73,10 +73,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
     return octave_value_list (2, Matrix ());
 
   if (! arg_a.is_double_type () && ! arg_a.is_single_type ())
-    {
-      err_wrong_type_arg ("eig", arg_a);
-      return retval;
-    }
+    err_wrong_type_arg ("eig", arg_a);
 
   if (nargin == 2)
     {
@@ -90,11 +87,8 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
       else if (arg_is_empty > 0)
         return ovl (2, Matrix ());
 
-      if (!(arg_b.is_single_type () || arg_b.is_double_type ()))
-        {
-          err_wrong_type_arg ("eig", arg_b);
-          return retval;
-        }
+      if (! arg_b.is_single_type () && ! arg_b.is_double_type ())
+        err_wrong_type_arg ("eig", arg_b);
     }
 
   if (nr_a != nc_a)

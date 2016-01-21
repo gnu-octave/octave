@@ -43,10 +43,7 @@ PermMatrix::setup (const Array<octave_idx_type>& p, bool colp, bool check)
   if (check)
     {
       if (! idx_vector (p).is_permutation (p.numel ()))
-        {
-          err_invalid_permutation ();
-          Array<octave_idx_type>::operator = (Array<octave_idx_type> ());
-        }
+        err_invalid_permutation ();
     }
 
   if (! colp)

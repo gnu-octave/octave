@@ -71,10 +71,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b,
     }
 
   if (a.dims () != b.dims ())
-    {
-      err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
-      return -1;
-    }
+    err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
 
   octave_idx_type info;
   octave_idx_type ilo;

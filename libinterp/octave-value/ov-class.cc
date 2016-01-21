@@ -842,9 +842,7 @@ octave_class::byte_size (void) const
 string_vector
 octave_class::map_keys (void) const
 {
-  string_vector retval;
   err_wrong_type_arg ("octave_class::map_keys()", type_name ());
-  return retval;
 }
 
 octave_base_value *
@@ -1618,8 +1616,6 @@ mxArray *
 octave_class::as_mxArray (void) const
 {
   err_wrong_type_arg ("octave_class::as_mxArray ()", type_name ());
-
-  return 0;
 }
 
 bool

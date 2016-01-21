@@ -276,10 +276,7 @@ Comment.\n\
   else if (args(1).is_int32_type ())
     scale = std::pow (2.0, 31);
   else if (args(1).is_integer_type ())
-    {
-      err_wrong_type_arg ("audiowrite", args(1));
-      return ovl ();
-    }
+    err_wrong_type_arg ("audiowrite", args(1));
 
   Matrix audio = args(1).matrix_value ();
 

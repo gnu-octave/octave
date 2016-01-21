@@ -284,10 +284,7 @@ ComplexColumnVector::operator += (const ColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
-    {
-      err_nonconformant ("operator +=", len, a_len);
-      return *this;
-    }
+    err_nonconformant ("operator +=", len, a_len);
 
   if (len == 0)
     return *this;
@@ -306,10 +303,7 @@ ComplexColumnVector::operator -= (const ColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
-    {
-      err_nonconformant ("operator -=", len, a_len);
-      return *this;
-    }
+    err_nonconformant ("operator -=", len, a_len);
 
   if (len == 0)
     return *this;
@@ -383,10 +377,7 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    {
-      err_nonconformant ("operator *", nr, nc, a_len, 1);
-      return ComplexColumnVector ();
-    }
+    err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   if (nc == 0 || nr == 0)
     return ComplexColumnVector (0);
@@ -411,10 +402,7 @@ operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    {
-      err_nonconformant ("operator *", nr, nc, a_len, 1);
-      return ComplexColumnVector ();
-    }
+    err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   if (nc == 0 || nr == 0)
     return ComplexColumnVector (0);
@@ -439,10 +427,7 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    {
-      err_nonconformant ("operator *", nr, nc, a_len, 1);
-      return ComplexColumnVector ();
-    }
+    err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   if (nc == 0 || nr == 0)
     return ComplexColumnVector (0);

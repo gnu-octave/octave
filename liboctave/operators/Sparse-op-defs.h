@@ -1741,10 +1741,7 @@ along with Octave; see the file COPYING.  If not, see
      return r; \
    } \
   else if (nc != a_nr) \
-    { \
-      err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
-      return RET_TYPE (); \
-    } \
+    err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
   else \
     { \
       OCTAVE_LOCAL_BUFFER (octave_idx_type, w, nr); \
@@ -1873,10 +1870,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval; \
     } \
   else if (nc != a_nr) \
-    { \
-      err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
-      return RET_TYPE (); \
-    } \
+    err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
   else \
     { \
       RET_TYPE retval (nr, a_nc, ZERO); \
@@ -1908,10 +1902,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval; \
     } \
   else if (nr != a_nr) \
-    { \
-      err_nonconformant ("operator *", nc, nr, a_nr, a_nc); \
-      return RET_TYPE (); \
-    } \
+    err_nonconformant ("operator *", nc, nr, a_nr, a_nc); \
   else \
     { \
       RET_TYPE retval (nc, a_nc); \
@@ -1944,10 +1935,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval; \
     } \
   else if (nc != a_nr) \
-    { \
-      err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
-      return RET_TYPE (); \
-    } \
+    err_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
   else \
     { \
       RET_TYPE retval (nr, a_nc, ZERO); \
@@ -1980,10 +1968,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval; \
     } \
   else if (nc != a_nc) \
-    { \
-      err_nonconformant ("operator *", nr, nc, a_nc, a_nr); \
-      return RET_TYPE (); \
-    } \
+    err_nonconformant ("operator *", nr, nc, a_nc, a_nr); \
   else \
     { \
       RET_TYPE retval (nr, a_nr, ZERO); \

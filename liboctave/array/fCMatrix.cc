@@ -3007,10 +3007,7 @@ FloatComplexMatrix::operator += (const FloatDiagMatrix& a)
   octave_idx_type a_nc = cols ();
 
   if (nr != a_nr || nc != a_nc)
-    {
-      err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
+    err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) += a.elem (i, i);
@@ -3028,10 +3025,7 @@ FloatComplexMatrix::operator -= (const FloatDiagMatrix& a)
   octave_idx_type a_nc = cols ();
 
   if (nr != a_nr || nc != a_nc)
-    {
-      err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
+    err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) -= a.elem (i, i);
@@ -3049,10 +3043,7 @@ FloatComplexMatrix::operator += (const FloatComplexDiagMatrix& a)
   octave_idx_type a_nc = cols ();
 
   if (nr != a_nr || nc != a_nc)
-    {
-      err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
+    err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) += a.elem (i, i);
@@ -3070,10 +3061,7 @@ FloatComplexMatrix::operator -= (const FloatComplexDiagMatrix& a)
   octave_idx_type a_nc = cols ();
 
   if (nr != a_nr || nc != a_nc)
-    {
-      err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
+    err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) -= a.elem (i, i);
@@ -3093,10 +3081,7 @@ FloatComplexMatrix::operator += (const FloatMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (nr != a_nr || nc != a_nc)
-    {
-      err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
+    err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
 
   if (nr == 0 || nc == 0)
     return *this;
@@ -3117,10 +3102,7 @@ FloatComplexMatrix::operator -= (const FloatMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (nr != a_nr || nc != a_nc)
-    {
-      err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
+    err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
 
   if (nr == 0 || nc == 0)
     return *this;

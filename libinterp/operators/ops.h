@@ -387,8 +387,8 @@ extern void install_ops (void);
 
 #define CATOP_NONCONFORMANT(msg) \
   err_nonconformant (msg, \
-                       a1.rows (), a1.columns (), \
-                       a2.rows (), a2.columns ()); \
+                     a1.rows (), a1.columns (), \
+                     a2.rows (), a2.columns ()); \
   return octave_value ()
 
 #endif

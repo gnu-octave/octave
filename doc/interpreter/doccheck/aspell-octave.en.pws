@@ -497,6 +497,7 @@ Jacobian
 Jacobians
 javaaddpath
 javamem
+Javascript
 jbig
 JDK
 JIT
@@ -890,6 +891,7 @@ seealso
 SelectionMode
 semidefinite
 Sep
+SHA
 shiftdim
 si
 signum

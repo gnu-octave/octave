@@ -575,7 +575,8 @@ not on the search path you should use some combination of the functions\n\
 \n\
 Programming Note: If @var{name} is implemented by a buggy .oct/.mex file,\n\
 calling @var{exist} may cause Octave to crash.  To maintain high\n\
-performance, Octave trusts .oct/.mex files instead of sandboxing them.\n\
+performance, Octave trusts .oct/.mex files instead of @nospell{sandboxing}\n\
+them.\n\
 \n\
 @seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}\n\
 @end deftypefn")

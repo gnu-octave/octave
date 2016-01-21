@@ -26,8 +26,8 @@
 ## @deftypefnx {Function File} {@var{solution} =} ode23 (@dots{})
 ##
 ## Solve a set of non-stiff Ordinary Differential Equations (non-stiff ODEs)
-## with the well known explicit Bogacki-Shampine method of order 3. For the
-## definition of this method see
+## with the well known explicit @nospell{Bogacki-Shampine} method of order 3.
+## For the definition of this method see
 ## @url{http://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods}.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
@@ -81,7 +81,7 @@
 ## row of @var{y} contains the values of all unknowns at the time value
 ## contained in the corresponding row in @var{t}.
 ##
-## Example: Solve the Van der Pol equation
+## Example: Solve the @nospell{Van der Pol} equation
 ##
 ## @example
 ## @group

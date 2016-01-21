@@ -84,8 +84,8 @@ Secure Hash Algorithm 2 (384 Bits, RFC 6234)\n\
 Secure Hash Algorithm 2 (512 Bits, RFC 6234)\n\
 @end table\n\
 \n\
-To calculate for example the MD5 hash value of the string @qcode{\"abc\"}\n\
-the @code{hash} function is called as follows:\n\
+To calculate for example the MD5 hash value of the string\n\
+@nospell{@qcode{\"abc\"}} the @code{hash} function is called as follows:\n\
 \n\
 @example\n\
 @group\n\

@@ -48,7 +48,8 @@
 ## performance.
 ##
 ## For example, solve an anonymous implementation of the
-## @qcode{"Van der Pol"} equation and display the results while solving
+## @nospell{@qcode{"Van der Pol"}} equation and display the results while
+## solving
 ##
 ## @example
 ## @group

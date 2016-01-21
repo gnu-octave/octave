@@ -40,6 +40,7 @@ To initialize:
 #include "builtin-defun-decls.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "errwarn.h"
 #include "ov-fcn-handle.h"
 
 #ifdef HAVE_FLTK

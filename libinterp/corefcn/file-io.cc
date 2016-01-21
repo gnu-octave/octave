@@ -62,6 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "defun.h"
+#include "errwarn.h"
 #include "file-io.h"
 #include "load-path.h"
 #include "oct-fstrm.h"

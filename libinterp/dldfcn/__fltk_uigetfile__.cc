@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "defun-dld.h"
+#include "errwarn.h"
 #include "file-ops.h"
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,

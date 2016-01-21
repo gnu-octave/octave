@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "unwind-prot.h"
 

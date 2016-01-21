@@ -21,28 +21,46 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{ret}] =} odeplot (@var{t}, @var{y}, @var{flag})
 ##
-## Open a new figure window and plot the results from the variable @var{y} of type column vector over time while solving. The types and the values of the input parameter @var{t} and the output parameter @var{ret} depend on the input value @var{flag} that is of type string. If @var{flag} is
+## Open a new figure window and plot the results from the variable @var{y} of
+## type column vector over time while solving.  The types and the values of
+## the input parameter @var{t} and the output parameter @var{ret} depend on
+## the input value @var{flag} that is of type string.  If @var{flag} is
+##
 ## @table @option
-## @item  @code{"init"}
-## then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
-## @item  @code{""}
-## then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
-## @item  @code{"done"}
-## then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
+## @item  @qcode{"init"}
+## then @var{t} must be a double column vector of length 2 with the first and
+## the last time step and nothing is returned from this function,
+##
+## @item  @qcode{""}
+## then @var{t} must be a double scalar specifying the actual time step and
+## the return value is false (resp. value 0) for @qcode{"not stop solving"},
+##
+## @item  @qcode{"done"}
+## then @var{t} must be a double scalar specifying the last time step and
+## nothing is returned from this function.
 ## @end table
 ##
-## This function is called by a ode solver function if it was specified in an options structure with the @command{odeset}. This function is an internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
+## This function is called by an ode solver function if it was specified in
+## an options structure with the @command{odeset}.  This function is an
+## internal helper function therefore it should never be necessary that this
+## function is called directly by a user.  There is only little error
+## detection implemented in this function file to achieve the highest
+## performance.
 ##
-## For example, solve an anonymous implementation of the "Van der Pol" equation and display the results while solving
+## For example, solve an anonymous implementation of the
+## @qcode{"Van der Pol"} equation and display the results while solving
+##
 ## @example
+## @group
 ## fvdb = @@(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
 ##
 ## opt = odeset ("OutputFcn", @@odeplot, "RelTol", 1e-6);
 ## sol = ode45 (fvdb, [0 20], [2 0], opt);
+## @end group
 ## @end example
 ## @end deftypefn
 ##
-## @seealso{odeset,odeget}
+## @seealso{odeset, odeget}
 
 function ret = odeplot (t, y, flag, varargin)
 

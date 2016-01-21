@@ -596,7 +596,7 @@ endfor
 @noindent
 In the above case, the multi-dimensional matrix @var{c} is reshaped to a
 two-dimensional matrix as @code{reshape (c, rows (c), prod (size (c)(2:end)))}
-and then the same behavior as a loop over a two dimensional matrix is produced.
+and then the same behavior as a loop over a two-dimensional matrix is produced.
 
 Although it is possible to rewrite all @code{for} loops as @code{while}
 loops, the Octave language has both statements because often a

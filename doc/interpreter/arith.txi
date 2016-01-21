@@ -112,7 +112,11 @@ $\pi/180$
 @code{pi/180}
 @end ifnottex
 or use the @code{deg2rad} function.  For example, @code{sin (30 * pi/180)}
-returns the sine of 30 degrees.  As an alternative, Octave provides a number of trigonometric functions which work directly on an argument specified in degrees.  These functions are named after the base trigonometric function with a @samp{d} suffix.  As an example, @code{sin} expects an angle in radians while @code{sind} expects an angle in degrees.
+returns the sine of 30 degrees.  As an alternative, Octave provides a number of
+trigonometric functions which work directly on an argument specified in
+degrees.  These functions are named after the base trigonometric function with
+a @samp{d} suffix.  As an example, @code{sin} expects an angle in radians while
+@code{sind} expects an angle in degrees.
 
 Octave uses the C library trigonometric functions.  It is expected that these
 functions are defined by the ISO/IEC 9899 Standard.  This Standard is available

@@ -52,7 +52,7 @@ for now.
 
 DEFUN (hash, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {} {} hash (@var{hfun},@var{str})\n\
+@deftypefn {} {} hash (@var{hfun}, @var{str})\n\
 Calculate the hash value of the string @var{str} using the hash function\n\
 @var{hfun}.\n\
 \n\
@@ -84,7 +84,7 @@ Secure Hash Algorithm 2 (384 Bits, RFC 6234)\n\
 Secure Hash Algorithm 2 (512 Bits, RFC 6234)\n\
 @end table\n\
 \n\
-To calculate for example the MD5 hash value of the string @code{\"abc\"}\n\
+To calculate for example the MD5 hash value of the string @qcode{\"abc\"}\n\
 the @code{hash} function is called as follows:\n\
 \n\
 @example\n\
@@ -103,7 +103,7 @@ hash (\"sha1\", \"abc\")\n\
 @end group\n\
 @end example\n\
 \n\
-And to compute the hash value of a file, e.g. @code{file = \"file.txt\"},\n\
+And to compute the hash value of a file, e.g., @code{file = \"file.txt\"},\n\
 call @code{hash} in combination with the @code{fileread}:\n\
 \n\
 @example\n\

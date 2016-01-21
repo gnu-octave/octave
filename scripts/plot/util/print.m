@@ -125,7 +125,7 @@
 ## braces).  The @samp{pdflatex} device, and any of the @samp{standalone}
 ## formats, are not available with the Gnuplot toolkit.
 ##
-##   @item epscairo
+##   @item  epscairo
 ##   @itemx pdfcairo
 ##   @itemx epscairolatex
 ##   @itemx pdfcairolatex
@@ -133,7 +133,7 @@
 ##   @itemx pdfcairolatexstandalone
 ##     Generate Cairo based output when using the Gnuplot graphics toolkit.
 ## The @samp{epscairo} and @samp{pdfcairo} devices are synonymous with
-## the @samp{epsc} device. The @LaTeX{} variants generate a @LaTeX{} file,
+## the @samp{epsc} device.  The @LaTeX{} variants generate a @LaTeX{} file,
 ## @file{@var{filename}.tex}, for the text portions of a plot, and an image
 ## file, @file{@var{filename}.(eps|pdf)}, for the graph portion of the plot.
 ## The @samp{standalone} variants behave as described for
@@ -192,10 +192,10 @@
 ##   @item svg
 ##     Scalable vector graphics
 ##
-##   @item tikz
+##   @item  tikz
 ##   @itemx tikzstandalone
 ##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
-## the result is PGF. The @samp{tikzstandalone} device produces a @LaTeX{}
+## the result is PGF@.  The @samp{tikzstandalone} device produces a @LaTeX{}
 ## document which includes the TikZ file (@samp{tikzstandalone} is only
 ## available for the Gnuplot graphics toolkit).
 ##

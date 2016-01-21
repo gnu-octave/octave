@@ -39,7 +39,7 @@
 ## If the second parameter @var{opt} exists and is true, then calculate the MD5
 ## sum of the string @var{str}.
 ##
-## @seealso{hash,fileread}
+## @seealso{hash, fileread}
 ## @end deftypefn
 
 function r = md5sum (str, opt)

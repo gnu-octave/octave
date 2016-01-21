@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{val} =} known_option_names ()
+## @deftypefn {} {@var{val} =} known_option_names ()
 ## Return a list of known names for ode options.
-## @seealso{odeset,odeget}
+## @seealso{odeset, odeget}
 ## @end deftypefn
 
 function ret = known_option_names ()

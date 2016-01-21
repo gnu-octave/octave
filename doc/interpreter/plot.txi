@@ -949,7 +949,7 @@ These modes provide access to the pdflatex processor and therefore allow full
 use of @LaTeX{} commands.
 
 A complete example showing the capabilities of text printing using the
-@code{-dpdflatexstandalone} option is:
+@option{-dpdflatexstandalone} option is:
 
 @example
 @group
@@ -978,7 +978,7 @@ The result of this example can be seen in @ref{fig:extendedtext}
 
 @float Figure,fig:extendedtext
 @center @image{extended,4in}
-@caption{Example of inclusion of text with use of @code{-dpdflatexstandalone}}
+@caption{Example of inclusion of text with use of @option{-dpdflatexstandalone}}
 @end float
 @end ifnotinfo
 

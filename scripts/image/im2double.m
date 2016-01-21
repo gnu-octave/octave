@@ -43,7 +43,7 @@
 ##
 ## If @var{img} is an indexed image, then the second argument should be
 ## the string @qcode{"indexed"}.  If so, then @var{img} must either be
-## of floating point class, or unsigned integer class  and it will simply
+## of floating point class, or unsigned integer class and it will simply
 ## be cast to double.  If it is an integer class, a +1 offset is applied.
 ##
 ## @seealso{double}

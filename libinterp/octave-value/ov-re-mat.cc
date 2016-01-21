@@ -214,7 +214,7 @@ octave_matrix::bool_array_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
     err_nan_to_logical_conversion ();
-  else if (warn && matrix.any_element_not_one_or_zero ())
+  if (warn && matrix.any_element_not_one_or_zero ())
     warn_logical_conversion ();
 
   return boolNDArray (matrix);

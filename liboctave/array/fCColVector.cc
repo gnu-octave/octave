@@ -344,23 +344,21 @@ operator * (const FloatComplexMatrix& m, const FloatComplexColumnVector& a)
 
   if (nc != a_len)
     err_nonconformant ("operator *", nr, nc, a_len, 1);
-  else
+
+  retval.clear (nr);
+
+  if (nr != 0)
     {
-      retval.clear (nr);
-
-      if (nr != 0)
+      if (nc == 0)
+        retval.fill (0.0);
+      else
         {
-          if (nc == 0)
-            retval.fill (0.0);
-          else
-            {
-              FloatComplex *y = retval.fortran_vec ();
+          FloatComplex *y = retval.fortran_vec ();
 
-              F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                                       nr, nc, 1.0f, m.data (), nr,
-                                       a.data (), 1, 0.0f, y, 1
-                                       F77_CHAR_ARG_LEN (1)));
-            }
+          F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+                                   nr, nc, 1.0f, m.data (), nr,
+                                   a.data (), 1, 0.0f, y, 1
+                                   F77_CHAR_ARG_LEN (1)));
         }
     }
 

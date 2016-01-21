@@ -169,11 +169,12 @@ in control (see @code{are} and @code{dare}).\n\
   if (nr != nc)
     err_square_matrix_required ("schur", "A");
 
-  octave_value_list retval;
-
   if (! arg.is_numeric_type ())
     err_wrong_type_arg ("schur", arg);
-  else if (arg.is_single_type ())
+
+  octave_value_list retval;
+
+  if (arg.is_single_type ())
     {
       if (! force_complex && arg.is_real_type ())
         {
@@ -291,37 +292,31 @@ Note also that @var{U} and @var{T} are not unique.\n\
   if (args.length () != 2 || nargout > 2)
     print_usage ();
 
-  octave_value_list retval;
-
   if (! args(0).is_numeric_type ())
     err_wrong_type_arg ("rsf2csf", args(0));
-  else if (! args(1).is_numeric_type ())
+  if (! args(1).is_numeric_type ())
     err_wrong_type_arg ("rsf2csf", args(1));
-  else if (args(0).is_complex_type () || args(1).is_complex_type ())
+  if (args(0).is_complex_type () || args(1).is_complex_type ())
     error ("rsf2csf: UR and TR must be real matrices");
+
+  if (args(0).is_single_type () || args(1).is_single_type ())
+    {
+      FloatMatrix u = args(0).float_matrix_value ();
+      FloatMatrix t = args(1).float_matrix_value ();
+
+      FloatComplexSCHUR cs (FloatSCHUR (t, u));
+
+      return ovl (cs.unitary_matrix (), cs.schur_matrix ());
+    }
   else
     {
-      if (args(0).is_single_type () || args(1).is_single_type ())
-        {
-          FloatMatrix u = args(0).float_matrix_value ();
-          FloatMatrix t = args(1).float_matrix_value ();
+      Matrix u = args(0).matrix_value ();
+      Matrix t = args(1).matrix_value ();
 
-          FloatComplexSCHUR cs (FloatSCHUR (t, u));
+      ComplexSCHUR cs (SCHUR (t, u));
 
-          retval = ovl (cs.unitary_matrix (), cs.schur_matrix ());
-        }
-      else
-        {
-          Matrix u = args(0).matrix_value ();
-          Matrix t = args(1).matrix_value ();
-
-          ComplexSCHUR cs (SCHUR (t, u));
-
-          retval = ovl (cs.unitary_matrix (), cs.schur_matrix ());
-        }
+      return ovl (cs.unitary_matrix (), cs.schur_matrix ());
     }
-
-  return retval;
 }
 
 /*

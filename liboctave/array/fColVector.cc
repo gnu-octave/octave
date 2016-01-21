@@ -205,23 +205,21 @@ operator * (const FloatMatrix& m, const FloatColumnVector& a)
 
   if (nc != a_len)
     err_nonconformant ("operator *", nr, nc, a_len, 1);
-  else
+
+  retval.clear (nr);
+
+  if (nr != 0)
     {
-      retval.clear (nr);
-
-      if (nr != 0)
+      if (nc == 0)
+        retval.fill (0.0);
+      else
         {
-          if (nc == 0)
-            retval.fill (0.0);
-          else
-            {
-              float *y = retval.fortran_vec ();
+          float *y = retval.fortran_vec ();
 
-              F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                                       nr, nc, 1.0f, m.data (), nr,
-                                       a.data (), 1, 0.0f, y, 1
-                                       F77_CHAR_ARG_LEN (1)));
-            }
+          F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+                                   nr, nc, 1.0f, m.data (), nr,
+                                   a.data (), 1, 0.0f, y, 1
+                                   F77_CHAR_ARG_LEN (1)));
         }
     }
 
@@ -242,20 +240,18 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
 
   if (nc != a_len)
     err_nonconformant ("operator *", nr, nc, a_len, 1);
+
+  if (nr == 0 || nc == 0)
+    retval.resize (nr, 0.0);
   else
     {
-      if (nr == 0 || nc == 0)
-        retval.resize (nr, 0.0);
-      else
-        {
-          retval.resize (nr);
+      retval.resize (nr);
 
-          for (octave_idx_type i = 0; i < a_len; i++)
-            retval.elem (i) = a.elem (i) * m.elem (i, i);
+      for (octave_idx_type i = 0; i < a_len; i++)
+        retval.elem (i) = a.elem (i) * m.elem (i, i);
 
-          for (octave_idx_type i = a_len; i < nr; i++)
-            retval.elem (i) = 0.0;
-        }
+      for (octave_idx_type i = a_len; i < nr; i++)
+        retval.elem (i) = 0.0;
     }
 
   return retval;

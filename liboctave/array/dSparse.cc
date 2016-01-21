@@ -763,60 +763,58 @@ atan2 (const SparseMatrix& x, const SparseMatrix& y)
 
       if (x_nr != y_nr || x_nc != y_nc)
         err_nonconformant ("atan2", x_nr, x_nc, y_nr, y_nc);
-      else
+
+      r = SparseMatrix (x_nr, x_nc, (x.nnz () + y.nnz ()));
+
+      octave_idx_type jx = 0;
+      r.cidx (0) = 0;
+      for (octave_idx_type i = 0 ; i < x_nc ; i++)
         {
-          r = SparseMatrix (x_nr, x_nc, (x.nnz () + y.nnz ()));
+          octave_idx_type  ja = x.cidx (i);
+          octave_idx_type  ja_max = x.cidx (i+1);
+          bool ja_lt_max= ja < ja_max;
 
-          octave_idx_type jx = 0;
-          r.cidx (0) = 0;
-          for (octave_idx_type i = 0 ; i < x_nc ; i++)
+          octave_idx_type  jb = y.cidx (i);
+          octave_idx_type  jb_max = y.cidx (i+1);
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max)
             {
-              octave_idx_type  ja = x.cidx (i);
-              octave_idx_type  ja_max = x.cidx (i+1);
-              bool ja_lt_max= ja < ja_max;
-
-              octave_idx_type  jb = y.cidx (i);
-              octave_idx_type  jb_max = y.cidx (i+1);
-              bool jb_lt_max = jb < jb_max;
-
-              while (ja_lt_max || jb_lt_max)
+              octave_quit ();
+              if ((! jb_lt_max)
+                  || (ja_lt_max && (x.ridx (ja) < y.ridx (jb))))
                 {
-                  octave_quit ();
-                  if ((! jb_lt_max)
-                      || (ja_lt_max && (x.ridx (ja) < y.ridx (jb))))
-                    {
-                      r.ridx (jx) = x.ridx (ja);
-                      r.data (jx) = atan2 (x.data (ja), 0.);
-                      jx++;
-                      ja++;
-                      ja_lt_max= ja < ja_max;
-                    }
-                  else if ((! ja_lt_max)
-                           || (jb_lt_max && (y.ridx (jb) < x.ridx (ja))))
-                    {
-                      jb++;
-                      jb_lt_max= jb < jb_max;
-                    }
-                  else
-                    {
-                      double tmp = atan2 (x.data (ja), y.data (jb));
-                      if (tmp != 0.)
-                        {
-                          r.data (jx) = tmp;
-                          r.ridx (jx) = x.ridx (ja);
-                          jx++;
-                        }
-                      ja++;
-                      ja_lt_max= ja < ja_max;
-                      jb++;
-                      jb_lt_max= jb < jb_max;
-                    }
+                  r.ridx (jx) = x.ridx (ja);
+                  r.data (jx) = atan2 (x.data (ja), 0.);
+                  jx++;
+                  ja++;
+                  ja_lt_max= ja < ja_max;
                 }
-              r.cidx (i+1) = jx;
+              else if ((! ja_lt_max)
+                       || (jb_lt_max && (y.ridx (jb) < x.ridx (ja))))
+                {
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
+              else
+                {
+                  double tmp = atan2 (x.data (ja), y.data (jb));
+                  if (tmp != 0.)
+                    {
+                      r.data (jx) = tmp;
+                      r.ridx (jx) = x.ridx (ja);
+                      jx++;
+                    }
+                  ja++;
+                  ja_lt_max= ja < ja_max;
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
             }
-
-          r.maybe_compress ();
+          r.cidx (i+1) = jx;
         }
+
+      r.maybe_compress ();
     }
   else
     (*current_liboctave_error_handler) ("matrix size mismatch");

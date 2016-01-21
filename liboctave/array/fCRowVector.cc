@@ -327,24 +327,22 @@ operator * (const FloatComplexRowVector& v, const FloatComplexMatrix& a)
 
   if (a_nr != len)
     err_nonconformant ("operator *", 1, len, a_nr, a_nc);
+
+  if (len == 0)
+    retval.resize (a_nc, 0.0);
   else
     {
-      if (len == 0)
-        retval.resize (a_nc, 0.0);
-      else
-        {
-          // Transpose A to form A'*x == (x'*A)'
+      // Transpose A to form A'*x == (x'*A)'
 
-          octave_idx_type ld = a_nr;
+      octave_idx_type ld = a_nr;
 
-          retval.resize (a_nc);
-          FloatComplex *y = retval.fortran_vec ();
+      retval.resize (a_nc);
+      FloatComplex *y = retval.fortran_vec ();
 
-          F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
-                                   a_nr, a_nc, 1.0, a.data (),
-                                   ld, v.data (), 1, 0.0, y, 1
-                                   F77_CHAR_ARG_LEN (1)));
-        }
+      F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
+                               a_nr, a_nc, 1.0, a.data (),
+                               ld, v.data (), 1, 0.0, y, 1
+                               F77_CHAR_ARG_LEN (1)));
     }
 
   return retval;
@@ -452,7 +450,8 @@ operator * (const FloatComplexRowVector& v, const FloatComplexColumnVector& a)
 
   if (len != a_len)
     err_nonconformant ("operator *", len, a_len);
-  else if (len != 0)
+
+  if (len != 0)
     F77_FUNC (xcdotu, XCDOTU) (len, v.data (), 1, a.data (), 1, retval);
 
   return retval;

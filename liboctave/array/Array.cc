@@ -933,51 +933,49 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
 
   if (invalid)
     err_invalid_resize ();
-  else
+
+  octave_idx_type nx = numel ();
+  if (n == nx - 1 && n > 0)
     {
-      octave_idx_type nx = numel ();
-      if (n == nx - 1 && n > 0)
+      // Stack "pop" operation.
+      if (rep->count == 1)
+        slice_data[slice_len-1] = T ();
+      slice_len--;
+      dimensions = dv;
+    }
+  else if (n == nx + 1 && nx > 0)
+    {
+      // Stack "push" operation.
+      if (rep->count == 1
+          && slice_data + slice_len < rep->data + rep->len)
         {
-          // Stack "pop" operation.
-          if (rep->count == 1)
-            slice_data[slice_len-1] = T ();
-          slice_len--;
+          slice_data[slice_len++] = rfv;
           dimensions = dv;
         }
-      else if (n == nx + 1 && nx > 0)
+      else
         {
-          // Stack "push" operation.
-          if (rep->count == 1
-              && slice_data + slice_len < rep->data + rep->len)
-            {
-              slice_data[slice_len++] = rfv;
-              dimensions = dv;
-            }
-          else
-            {
-              static const octave_idx_type max_stack_chunk = 1024;
-              octave_idx_type nn = n + std::min (nx, max_stack_chunk);
-              Array<T> tmp (Array<T> (dim_vector (nn, 1)), dv, 0, n);
-              T *dest = tmp.fortran_vec ();
-
-              std::copy (data (), data () + nx, dest);
-              dest[nx] = rfv;
-
-              *this = tmp;
-            }
-        }
-      else if (n != nx)
-        {
-          Array<T> tmp = Array<T> (dv);
+          static const octave_idx_type max_stack_chunk = 1024;
+          octave_idx_type nn = n + std::min (nx, max_stack_chunk);
+          Array<T> tmp (Array<T> (dim_vector (nn, 1)), dv, 0, n);
           T *dest = tmp.fortran_vec ();
 
-          octave_idx_type n0 = std::min (n, nx);
-          octave_idx_type n1 = n - n0;
-          std::copy (data (), data () + n0, dest);
-          std::fill_n (dest + n0, n1, rfv);
+          std::copy (data (), data () + nx, dest);
+          dest[nx] = rfv;
 
           *this = tmp;
         }
+    }
+  else if (n != nx)
+    {
+      Array<T> tmp = Array<T> (dv);
+      T *dest = tmp.fortran_vec ();
+
+      octave_idx_type n0 = std::min (n, nx);
+      octave_idx_type n1 = n - n0;
+      std::copy (data (), data () + n0, dest);
+      std::fill_n (dest + n0, n1, rfv);
+
+      *this = tmp;
     }
 }
 

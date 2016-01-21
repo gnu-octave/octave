@@ -1165,7 +1165,8 @@ Sparse<T>::delete_elements (const idx_vector& idx)
 
   if (idx.extent (nel) > nel)
     err_del_index_out_of_range (true, idx.extent (nel), nel);
-  else if (nc == 1)
+
+  if (nc == 1)
     {
       // Sparse column vector.
       const Sparse<T> tmp = *this; // constant copy to prevent COW.

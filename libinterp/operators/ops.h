@@ -302,9 +302,9 @@ extern void install_ops (void);
     CAST_BINOP_ARGS (const CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
     if (xisnan (v1.CONCAT2(t1, _value) ()) || xisnan (v2.CONCAT2(t2, _value) ())) \
       err_nan_to_logical_conversion (); \
-    else \
-      return octave_value \
-        (v1.CONCAT2(t1, _value) () op v2.CONCAT2(t2, _value) ()); \
+ \
+    return octave_value \
+      (v1.CONCAT2(t1, _value) () op v2.CONCAT2(t2, _value) ()); \
   }
 
 #define DEFNDBINOP_OP(name, t1, t2, e1, e2, op) \

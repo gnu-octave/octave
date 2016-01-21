@@ -491,7 +491,8 @@ tree_index_expression::lvalue (void)
     {
       if (retval.numel () != 1)
         err_indexed_cs_list ();
-      else if (tmpi < i)
+
+      if (tmpi < i)
         {
           try
             {

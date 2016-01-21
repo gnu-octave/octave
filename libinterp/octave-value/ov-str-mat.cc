@@ -165,14 +165,12 @@ octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
  \
   if (! force_string_conv) \
     err_invalid_conversion ("string", TNAME); \
-  else \
-    { \
-      warning_with_id ("Octave:str-to-num", \
-                       "implicit conversion from %s to %s", \
-                       "string", TNAME); \
  \
-      retval = octave_char_matrix::FCN (); \
-    } \
+  warning_with_id ("Octave:str-to-num", \
+                   "implicit conversion from %s to %s", \
+                   "string", TNAME); \
+ \
+  retval = octave_char_matrix::FCN (); \
  \
   return retval
 

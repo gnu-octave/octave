@@ -3720,102 +3720,100 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   if (a_nc != b_nr)
     err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
-  else
+
+  if (a_nr == 0 || a_nc == 0 || b_nc == 0)
+    retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
+  else if (a.data () == b.data () && a_nr == b_nc && tra != trb)
     {
-      if (a_nr == 0 || a_nc == 0 || b_nc == 0)
-        retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
-      else if (a.data () == b.data () && a_nr == b_nc && tra != trb)
+      octave_idx_type lda = a.rows ();
+
+      // FIXME: looking at the reference BLAS, it appears that it
+      // should not be necessary to initialize the output matrix if
+      // BETA is 0 in the call to CHERK, but ATLAS appears to
+      // use the result matrix before zeroing the elements.
+
+      retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
+      FloatComplex *c = retval.fortran_vec ();
+
+      const char ctra = get_blas_trans_arg (tra, cja);
+      if (cja || cjb)
         {
-          octave_idx_type lda = a.rows ();
-
-          // FIXME: looking at the reference BLAS, it appears that it
-          // should not be necessary to initialize the output matrix if
-          // BETA is 0 in the call to CHERK, but ATLAS appears to
-          // use the result matrix before zeroing the elements.
-
-          retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
-          FloatComplex *c = retval.fortran_vec ();
-
-          const char ctra = get_blas_trans_arg (tra, cja);
-          if (cja || cjb)
-            {
-              F77_XFCN (cherk, CHERK, (F77_CONST_CHAR_ARG2 ("U", 1),
-                                       F77_CONST_CHAR_ARG2 (&ctra, 1),
-                                       a_nr, a_nc, 1.0,
-                                       a.data (), lda, 0.0, c, a_nr
-                                       F77_CHAR_ARG_LEN (1)
-                                       F77_CHAR_ARG_LEN (1)));
-              for (octave_idx_type j = 0; j < a_nr; j++)
-                for (octave_idx_type i = 0; i < j; i++)
-                  retval.xelem (j,i) = std::conj (retval.xelem (i,j));
-            }
-          else
-            {
-              F77_XFCN (csyrk, CSYRK, (F77_CONST_CHAR_ARG2 ("U", 1),
-                                       F77_CONST_CHAR_ARG2 (&ctra, 1),
-                                       a_nr, a_nc, 1.0,
-                                       a.data (), lda, 0.0, c, a_nr
-                                       F77_CHAR_ARG_LEN (1)
-                                       F77_CHAR_ARG_LEN (1)));
-              for (octave_idx_type j = 0; j < a_nr; j++)
-                for (octave_idx_type i = 0; i < j; i++)
-                  retval.xelem (j,i) = retval.xelem (i,j);
-
-            }
-
+          F77_XFCN (cherk, CHERK, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                   F77_CONST_CHAR_ARG2 (&ctra, 1),
+                                   a_nr, a_nc, 1.0,
+                                   a.data (), lda, 0.0, c, a_nr
+                                   F77_CHAR_ARG_LEN (1)
+                                   F77_CHAR_ARG_LEN (1)));
+          for (octave_idx_type j = 0; j < a_nr; j++)
+            for (octave_idx_type i = 0; i < j; i++)
+              retval.xelem (j,i) = std::conj (retval.xelem (i,j));
         }
       else
         {
-          octave_idx_type lda = a.rows ();
-          octave_idx_type tda = a.cols ();
-          octave_idx_type ldb = b.rows ();
-          octave_idx_type tdb = b.cols ();
+          F77_XFCN (csyrk, CSYRK, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                   F77_CONST_CHAR_ARG2 (&ctra, 1),
+                                   a_nr, a_nc, 1.0,
+                                   a.data (), lda, 0.0, c, a_nr
+                                   F77_CHAR_ARG_LEN (1)
+                                   F77_CHAR_ARG_LEN (1)));
+          for (octave_idx_type j = 0; j < a_nr; j++)
+            for (octave_idx_type i = 0; i < j; i++)
+              retval.xelem (j,i) = retval.xelem (i,j);
 
-          retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
-          FloatComplex *c = retval.fortran_vec ();
+        }
 
-          if (b_nc == 1 && a_nr == 1)
+    }
+  else
+    {
+      octave_idx_type lda = a.rows ();
+      octave_idx_type tda = a.cols ();
+      octave_idx_type ldb = b.rows ();
+      octave_idx_type tdb = b.cols ();
+
+      retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
+      FloatComplex *c = retval.fortran_vec ();
+
+      if (b_nc == 1 && a_nr == 1)
+        {
+          if (cja == cjb)
             {
-              if (cja == cjb)
-                {
-                  F77_FUNC (xcdotu, XCDOTU) (a_nc, a.data (), 1, b.data (), 1,
-                                             *c);
-                  if (cja) *c = std::conj (*c);
-                }
-              else if (cja)
-                F77_FUNC (xcdotc, XCDOTC) (a_nc, a.data (), 1, b.data (), 1,
-                                           *c);
-              else
-                F77_FUNC (xcdotc, XCDOTC) (a_nc, b.data (), 1, a.data (), 1,
-                                           *c);
+              F77_FUNC (xcdotu, XCDOTU) (a_nc, a.data (), 1, b.data (), 1,
+                                         *c);
+              if (cja) *c = std::conj (*c);
             }
-          else if (b_nc == 1 && ! cjb)
-            {
-              const char ctra = get_blas_trans_arg (tra, cja);
-              F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (&ctra, 1),
-                                       lda, tda, 1.0,  a.data (), lda,
-                                       b.data (), 1, 0.0, c, 1
-                                       F77_CHAR_ARG_LEN (1)));
-            }
-          else if (a_nr == 1 && ! cja && ! cjb)
-            {
-              const char crevtrb = get_blas_trans_arg (! trb, cjb);
-              F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (&crevtrb, 1),
-                                       ldb, tdb, 1.0,  b.data (), ldb,
-                                       a.data (), 1, 0.0, c, 1
-                                       F77_CHAR_ARG_LEN (1)));
-            }
+          else if (cja)
+            F77_FUNC (xcdotc, XCDOTC) (a_nc, a.data (), 1, b.data (), 1,
+                                       *c);
           else
-            {
-              const char ctra = get_blas_trans_arg (tra, cja);
-              const char ctrb = get_blas_trans_arg (trb, cjb);
-              F77_XFCN (cgemm, CGEMM, (F77_CONST_CHAR_ARG2 (&ctra, 1),
-                                       F77_CONST_CHAR_ARG2 (&ctrb, 1),
-                                       a_nr, b_nc, a_nc, 1.0, a.data (),
-                                       lda, b.data (), ldb, 0.0, c, a_nr
-                                       F77_CHAR_ARG_LEN (1)
-                                       F77_CHAR_ARG_LEN (1)));
-            }
+            F77_FUNC (xcdotc, XCDOTC) (a_nc, b.data (), 1, a.data (), 1,
+                                       *c);
+        }
+      else if (b_nc == 1 && ! cjb)
+        {
+          const char ctra = get_blas_trans_arg (tra, cja);
+          F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (&ctra, 1),
+                                   lda, tda, 1.0,  a.data (), lda,
+                                   b.data (), 1, 0.0, c, 1
+                                   F77_CHAR_ARG_LEN (1)));
+        }
+      else if (a_nr == 1 && ! cja && ! cjb)
+        {
+          const char crevtrb = get_blas_trans_arg (! trb, cjb);
+          F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (&crevtrb, 1),
+                                   ldb, tdb, 1.0,  b.data (), ldb,
+                                   a.data (), 1, 0.0, c, 1
+                                   F77_CHAR_ARG_LEN (1)));
+        }
+      else
+        {
+          const char ctra = get_blas_trans_arg (tra, cja);
+          const char ctrb = get_blas_trans_arg (trb, cjb);
+          F77_XFCN (cgemm, CGEMM, (F77_CONST_CHAR_ARG2 (&ctra, 1),
+                                   F77_CONST_CHAR_ARG2 (&ctrb, 1),
+                                   a_nr, b_nc, a_nc, 1.0, a.data (),
+                                   lda, b.data (), ldb, 0.0, c, a_nr
+                                   F77_CHAR_ARG_LEN (1)
+                                   F77_CHAR_ARG_LEN (1)));
         }
     }
 

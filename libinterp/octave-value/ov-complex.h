@@ -140,7 +140,7 @@ public:
   {
     if (xisnan (scalar))
       err_nan_to_logical_conversion ();
-    else if (warn && scalar != 0.0 && scalar != 1.0)
+    if (warn && scalar != 0.0 && scalar != 1.0)
       warn_logical_conversion ();
 
     return scalar != 0.0;
@@ -150,7 +150,7 @@ public:
   {
     if (xisnan (scalar))
       err_nan_to_logical_conversion ();
-    else if (warn && scalar != 0.0 && scalar != 1.0)
+    if (warn && scalar != 0.0 && scalar != 1.0)
       warn_logical_conversion ();
 
     return boolNDArray (dim_vector (1, 1), scalar != 0.0);

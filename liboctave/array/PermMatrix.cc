@@ -236,8 +236,8 @@ operator *(const PermMatrix& a, const PermMatrix& b)
 
   if (n != b.rows ())
     err_nonconformant ("operator *", n, n, b.rows (), b.rows ());
-  else
-    r = PermMatrix (ia.index (idx_vector (ib)), true, false);
+
+  r = PermMatrix (ia.index (idx_vector (ib)), true, false);
 
   return r;
 }

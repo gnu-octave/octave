@@ -458,9 +458,9 @@ fill empty fields.  The default is zero.\n\
     }
 
   if (iscmplx)
-    return octave_value (cdata);
+    return ovl (cdata);
   else
-    return octave_value (rdata);
+    return ovl (rdata);
 }
 
 /*

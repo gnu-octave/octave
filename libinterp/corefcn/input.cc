@@ -852,7 +852,7 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
   if (nargin == 1)
     prompt = args(0).xstring_value ("yes_or_no: PROMPT must be a string");
 
-  return octave_value (octave_yes_or_no (prompt));
+  return ovl (octave_yes_or_no (prompt));
 }
 
 octave_value
@@ -1250,7 +1250,7 @@ list of input hook functions.\n\
 
   input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
-  return octave_value (hook_fcn.id ());
+  return ovl (hook_fcn.id ());
 }
 
 DEFUN (remove_input_event_hook, args, ,

@@ -1671,8 +1671,6 @@ produces a struct @strong{array}.\n\
 @seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield, orderfields, isstruct, structfun}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   // struct ([]) returns an empty struct.
@@ -1684,14 +1682,10 @@ produces a struct @strong{array}.\n\
   // compatibility with Matlab.
 
   if (nargin == 1 && args(0).is_map ())
-    return args(0);
+    return ovl (args(0));
 
   if (nargin == 1 && args(0).is_object ())
-    {
-      retval = args(0).map_value ();
-
-      return retval;
-    }
+    return ovl (args(0).map_value ());
 
   if ((nargin == 1 || nargin == 2)
       && args(0).is_empty () && args(0).is_real_matrix ())
@@ -1700,12 +1694,10 @@ produces a struct @strong{array}.\n\
         {
           Array<std::string> cstr = args(1).xcellstr_value ("struct: second argument should be a cell array of field names");
 
-          retval = octave_map (args(0).dims (), cstr);
+          return ovl (octave_map (args(0).dims (), cstr));
         }
       else
-        retval = octave_map (args(0).dims ());
-
-      return retval;
+        return ovl (octave_map (args(0).dims ()));
     }
 
   // Check for "field", VALUE pairs.
@@ -1737,9 +1729,9 @@ produces a struct @strong{array}.\n\
                 }
               else if (dims != argdims)
                 {
-                  error ("struct: dimensions of parameter %d do not match those of parameter %d",
+                  error ("struct: dimensions of parameter %d "
+                         "do not match those of parameter %d",
                          first_dimensioned_value, i+1);
-                  return retval;
                 }
             }
         }
@@ -1776,7 +1768,7 @@ produces a struct @strong{array}.\n\
         map.setfield (key, Cell (dims, args(i+1)));
     }
 
-  return octave_value (map);
+  return ovl (map);
 }
 
 /*

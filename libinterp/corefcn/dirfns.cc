@@ -158,7 +158,7 @@ Return the current working directory.\n\
 @seealso{cd, dir, ls, mkdir, rmdir}\n\
 @end deftypefn")
 {
-  return octave_value (octave_env::get_current_directory ());
+  return ovl (octave_env::get_current_directory ());
 }
 
 DEFUN (readdir, args, ,
@@ -483,7 +483,7 @@ glob (\"file[12]\")\n\
 
   glob_match pattern (file_ops::tilde_expand (pat));
 
-  return octave_value (Cell (pattern.glob ()));
+  return ovl (Cell (pattern.glob ()));
 }
 
 /*

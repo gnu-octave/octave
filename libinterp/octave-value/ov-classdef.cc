@@ -3730,7 +3730,7 @@ DEFUN (__superclass_reference__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  return octave_value (new octave_classdef_superclass_ref (args));
+  return ovl (new octave_classdef_superclass_ref (args));
 }
 
 DEFUN (__meta_class_query__, args, ,

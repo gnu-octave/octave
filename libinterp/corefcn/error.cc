@@ -1930,7 +1930,7 @@ fields are set to their default values.\n\
         error ("lasterror: argument must be a structure or a string");
     }
 
-  return octave_value (err);
+  return ovl (err);
 }
 
 DEFUN (lasterr, args, nargout,

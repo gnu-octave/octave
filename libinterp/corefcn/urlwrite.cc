@@ -515,7 +515,7 @@ Undocumented internal function\n\
   curl_handle ch
     = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
 
-  return octave_value (ch.value ());
+  return ovl (ch.value ());
 }
 
 DEFUN (__ftp_pwd__, args, ,

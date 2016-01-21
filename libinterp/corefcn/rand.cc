@@ -1173,7 +1173,7 @@ using std::unordered_map;
     idx.resize (dim_vector (1, m));
 
   // Now create an array object with a cached idx_vector.
-  return octave_value (new octave_matrix (r, idx_vector (idx)));
+  return ovl (new octave_matrix (r, idx_vector (idx)));
 }
 
 /*

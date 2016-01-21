@@ -71,7 +71,7 @@ sparse matrix if possible.\n\
   if (arg_is_empty < 0)
     return ovl ();
   else if (arg_is_empty > 0)
-    return octave_value (Matrix ());
+    return ovl (Matrix ());
 
   if (nr != nc)
     err_square_matrix_required ("inverse", "A");

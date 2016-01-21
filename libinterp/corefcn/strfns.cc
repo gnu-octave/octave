@@ -259,6 +259,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
         }
     }
 
+  // Cannot use ovl.  Relies on overloaded octave_value call.
   return octave_value (result, '\'');
 }
 

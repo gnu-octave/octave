@@ -2343,7 +2343,7 @@ slicing is done along the first non-singleton dimension.\n\
         }
     }
 
-  return octave_value (retcell);
+  return ovl (retcell);
 }
 
 /*

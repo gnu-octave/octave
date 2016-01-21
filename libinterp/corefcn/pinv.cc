@@ -66,7 +66,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
   if (arg_is_empty < 0)
     return ovl ();
   else if (arg_is_empty > 0)
-    return octave_value (Matrix ());
+    return ovl (Matrix ());
 
   octave_value retval;
 

@@ -248,7 +248,7 @@ with gnuplot.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (octave_stream_list::remove (args(0), "fclose"));
+  return ovl (octave_stream_list::remove (args(0), "fclose"));
 }
 
 DEFUN (fclear, args, ,
@@ -741,7 +741,7 @@ be positive, negative, or zero but not all combinations of @var{origin} and\n\
 
   octave_value origin_arg = (nargin == 3) ? args(2) : octave_value (-1.0);
 
-  return octave_value (os.seek (args(1), origin_arg));
+  return ovl (os.seek (args(1), origin_arg));
 }
 
 DEFUN (ftell, args, ,
@@ -757,7 +757,7 @@ beginning of the file specified by file descriptor @var{fid}.\n\
 
   octave_stream os = octave_stream_list::lookup (args(0), "ftell");
 
-  return octave_value (os.tell ());
+  return ovl (os.tell ());
 }
 
 DEFUN (fprintf, args, nargout,
@@ -815,7 +815,7 @@ expanded even when the template string is defined with single quotes.\n\
   result = os.printf (args(fmt_n), tmp_args, who);
 
   if (nargout > 0)
-    return octave_value (result);
+    return ovl (result);
   else
     return ovl ();
 }
@@ -889,7 +889,7 @@ Return a non-negative number on success or EOF on error.\n\
 
   octave_stream os = octave_stream_list::lookup (args(0), who);
 
-  return octave_value (os.puts (args(1), who));
+  return ovl (os.puts (args(1), who));
 }
 
 DEFUN (puts, args, ,
@@ -910,7 +910,7 @@ Return a non-negative number on success and EOF on error.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (stdout_stream.puts (args(0), who));
+  return ovl (stdout_stream.puts (args(0), who));
 }
 
 DEFUN (sprintf, args, ,
@@ -1509,7 +1509,7 @@ are too large to fit in the specified precision.\n\
       skip = 0;
     }
 
-  return octave_value (do_fwrite (os, data, prec, skip, arch));
+  return ovl (do_fwrite (os, data, prec, skip, arch));
 }
 
 DEFUNX ("feof", Ffeof, args, ,
@@ -1529,7 +1529,7 @@ end-of-file condition.\n\
 
   octave_stream os = octave_stream_list::lookup (args(0), "feof");
 
-  return octave_value (os.eof () ? 1.0 : 0.0);
+  return ovl (os.eof () ? 1.0 : 0.0);
 }
 
 DEFUNX ("ferror", Fferror, args, ,
@@ -1652,7 +1652,7 @@ The function @code{fclose} may also be used for the same purpose.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (octave_stream_list::remove (args(0), "pclose"));
+  return ovl (octave_stream_list::remove (args(0), "pclose"));
 }
 
 DEFUN (tempname, args, ,
@@ -1690,7 +1690,7 @@ see @code{tmpfile}.\n\
   if (nargin > 1)
     pfx = args(1).xstring_value ("tempname: PREFIX must be a string");
 
-  return octave_value (octave_tempnam (dir, pfx));
+  return ovl (octave_tempnam (dir, pfx));
 }
 
 /*
@@ -1948,7 +1948,7 @@ environment variable.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (get_P_tmpdir ());
+  return ovl (get_P_tmpdir ());
 }
 
 // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be

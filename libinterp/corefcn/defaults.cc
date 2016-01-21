@@ -587,7 +587,7 @@ Return the name of the top-level Octave installation directory.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (Voctave_home);
+  return ovl (Voctave_home);
 }
 
 /*
@@ -605,7 +605,7 @@ Return the version number of Octave as a string.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (OCTAVE_VERSION);
+  return ovl (OCTAVE_VERSION);
 }
 
 /*

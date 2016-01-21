@@ -10062,9 +10062,9 @@ Undocumented internal function.\n\
   octave_idx_type vals_len = vals.numel ();
 
   if (vals_len > 1)
-    return octave_value (vals);
+    return ovl (vals);
   else if (vals_len == 1)
-    return octave_value (vals(0));
+    return ovl (vals(0));
   else
     return ovl ();
 }
@@ -10275,7 +10275,7 @@ Determine the number of dimensions in a graphics object, either 2 or 3.\n\
 
   double h = args(0).xdouble_value ("__calc_dimensions__: first argument must be a graphics handle");
 
-  return octave_value (calc_dimensions (gh_manager::get_object (h)));
+  return ovl (calc_dimensions (gh_manager::get_object (h)));
 }
 
 DEFUN (__go_axes__, args, ,
@@ -10484,7 +10484,7 @@ Undocumented internal function.\n\
   if (args.length () > 0)
     show_hidden = args(0).bool_value ();
 
-  return octave_value (gh_manager::handle_list (show_hidden));
+  return ovl (gh_manager::handle_list (show_hidden));
 }
 
 DEFUN (__go_figure_handles__, args, ,
@@ -10500,7 +10500,7 @@ Undocumented internal function.\n\
   if (args.length () > 0)
     show_hidden = args(0).bool_value ();
 
-  return octave_value (gh_manager::figure_handle_list (show_hidden));
+  return ovl (gh_manager::figure_handle_list (show_hidden));
 }
 
 DEFUN (__go_execute_callback__, args, ,
@@ -10651,7 +10651,7 @@ Return a cell array of registered graphics toolkits.\n\
 {
   gh_manager::auto_lock guard;
 
-  return octave_value (gtk_manager::available_toolkits_list ());
+  return ovl (gtk_manager::available_toolkits_list ());
 }
 
 DEFUN (register_graphics_toolkit, args, ,
@@ -10682,7 +10682,7 @@ Return a cell array of the currently loaded graphics toolkits.\n\
 {
   gh_manager::auto_lock guard;
 
-  return octave_value (gtk_manager::loaded_toolkits_list ());
+  return ovl (gtk_manager::loaded_toolkits_list ());
 }
 
 DEFUN (drawnow, args, ,

@@ -182,7 +182,7 @@ sparse matrices.\n\
   if (arg_is_empty < 0)
     return ovl ();
   if (arg_is_empty > 0)
-    return octave_value (Matrix ());
+    return ovl (Matrix ());
 
   if (arg.is_sparse_type ())
     {

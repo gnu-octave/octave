@@ -156,6 +156,7 @@ do_kron (const octave_value& a, const octave_value& b)
 {
   MTA am = octave_value_extract<MTA> (a);
   MTB bm = octave_value_extract<MTB> (b);
+
   return octave_value (kron (am, bm));
 }
 

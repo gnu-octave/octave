@@ -1432,7 +1432,7 @@ Return true if in debugging mode, otherwise false.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return octave_value (Vdebugging);
+  return ovl (Vdebugging);
 }
 
 DEFUN (__db_next_breakpoint_quiet__, args, ,

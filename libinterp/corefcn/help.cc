@@ -1167,7 +1167,7 @@ DEFUN (__operators__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  return octave_value (Cell (names (operators_map)));
+  return ovl (Cell (names (operators_map)));
 }
 
 // Return a cell array of strings containing the names of all
@@ -1179,7 +1179,7 @@ DEFUN (__keywords__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  return octave_value (Cell (names (keywords_map)));
+  return ovl (Cell (names (keywords_map)));
 }
 
 // Return a cell array of strings containing the names of all builtin
@@ -1193,7 +1193,7 @@ Undocumented internal function.\n\
 {
   const string_vector bif = symbol_table::built_in_function_names ();
 
-  return octave_value (Cell (bif));
+  return ovl (Cell (bif));
 }
 
 static std::string

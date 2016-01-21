@@ -73,13 +73,13 @@ For that, use any of the condition number functions: @code{cond},\n\
   octave_idx_type nc = arg.columns ();
 
   if (nr == 0 && nc == 0)
-    return octave_value (1.0);
+    return ovl (1.0);
 
   int arg_is_empty = empty_arg ("det", nr, nc);
   if (arg_is_empty < 0)
     return ovl ();
   if (arg_is_empty > 0)
-    return octave_value (1.0);
+    return ovl (1.0);
 
   if (nr != nc)
     err_square_matrix_required ("det", "A");

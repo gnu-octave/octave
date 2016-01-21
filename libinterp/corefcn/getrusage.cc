@@ -202,7 +202,7 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 
 #endif
 
-  return octave_value (m);
+  return ovl (m);
 }
 
 /*

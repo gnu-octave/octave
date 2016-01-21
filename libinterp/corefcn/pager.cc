@@ -635,7 +635,7 @@ window in characters (rows and columns).\n\
   size(0) = command_editor::terminal_rows ();
   size(1) = command_editor::terminal_cols ();
 
-  return octave_value (size);
+  return ovl (size);
 }
 
 DEFUN (page_output_immediately, args, nargout,

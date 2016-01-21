@@ -2300,7 +2300,7 @@ Return the command line path variable.\n\
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {
-  return octave_value (load_path::get_command_line_path ());
+  return ovl (load_path::get_command_line_path ());
 }
 
 DEFUN (restoredefaultpath, , ,
@@ -2313,7 +2313,7 @@ Restore Octave's path to its initial state at startup.\n\
 {
   load_path::initialize (true);
 
-  return octave_value (load_path::system_path ());
+  return ovl (load_path::system_path ());
 }
 
 // Return Octave's original default list of directories in which to
@@ -2327,7 +2327,7 @@ DEFUN (__pathorig__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  return octave_value (load_path::system_path ());
+  return ovl (load_path::system_path ());
 }
 
 DEFUN (path, args, nargout,
@@ -2368,7 +2368,7 @@ No checks are made for duplicate elements.\n\
     }
 
   if (nargout > 0)
-    return octave_value (load_path::path ());
+    return ovl (load_path::path ());
   else if (nargin == 0 && nargout == 0)
     {
       octave_stdout <<

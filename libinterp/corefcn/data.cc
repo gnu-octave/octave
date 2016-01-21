@@ -2423,7 +2423,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
   if (dim < 0)
     error ("cat: DIM must be a valid dimension");
 
-  return octave_value (do_cat (args.slice (1, args.length () - 1), dim, "cat"));
+  return ovl (do_cat (args.slice (1, args.length () - 1), dim, "cat"));
 }
 
 /*
@@ -2653,7 +2653,7 @@ of elements along the largest dimension\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).length ());
+  return ovl (args(0).length ());
 }
 
 DEFUN (ndims, args, ,
@@ -2676,7 +2676,7 @@ ndims (ones (4, 1, 2, 1))\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).ndims ());
+  return ovl (args(0).ndims ());
 }
 
 DEFUN (numel, args, ,
@@ -2863,7 +2863,7 @@ Return the number of nonzero elements in @var{a}.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).nnz ());
+  return ovl (args(0).nnz ());
 }
 
 DEFUN (nzmax, args, ,
@@ -2880,7 +2880,7 @@ same as @code{nnz} except for some cases of user-created sparse objects.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).nzmax ());
+  return ovl (args(0).nzmax ());
 }
 
 DEFUN (rows, args, ,
@@ -2893,7 +2893,7 @@ Return the number of rows of @var{a}.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).rows ());
+  return ovl (args(0).rows ());
 }
 
 /*
@@ -2933,7 +2933,7 @@ Return the number of columns of @var{a}.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).columns ());
+  return ovl (args(0).columns ());
 }
 
 DEFUN (sum, args, ,
@@ -3215,7 +3215,7 @@ Return true if @var{x} is a logical object.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_bool_type ());
+  return ovl (args(0).is_bool_type ());
 }
 
 DEFALIAS (isbool, islogical);
@@ -3247,7 +3247,7 @@ Octave are double precision floating point values.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_integer_type ());
+  return ovl (args(0).is_integer_type ());
 }
 
 DEFUN (iscomplex, args, ,
@@ -3260,7 +3260,7 @@ Return true if @var{x} is a complex-valued numeric object.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_complex_type ());
+  return ovl (args(0).is_complex_type ());
 }
 
 DEFUN (isfloat, args, ,
@@ -3275,7 +3275,7 @@ Objects of class double or single are floating-point objects.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_float_type ());
+  return ovl (args(0).is_float_type ());
 }
 
 // FIXME: perhaps this should be implemented with an
@@ -3558,7 +3558,7 @@ matrices.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_real_type ());
+  return ovl (args(0).is_real_type ());
 }
 
 DEFUN (isempty, args, ,
@@ -3572,7 +3572,7 @@ zero).\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_empty ());
+  return ovl (args(0).is_empty ());
 }
 
 /*
@@ -3593,7 +3593,7 @@ Logical and character arrays are not considered to be numeric.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).is_numeric_type ());
+  return ovl (args(0).is_numeric_type ());
 }
 
 /*
@@ -3622,7 +3622,7 @@ Return true if @var{x} is a scalar.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).numel () == 1);
+  return ovl (args(0).numel () == 1);
 }
 
 /*
@@ -3659,7 +3659,7 @@ consequence a 1x1 array, or scalar, is also a vector.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return octave_value (sz.length () == 2 && (sz(0) == 1 || sz(1) == 1));
+  return ovl (sz.length () == 2 && (sz(0) == 1 || sz(1) == 1));
 }
 
 /*
@@ -3694,7 +3694,7 @@ Return true if @var{x} is a row vector 1xN with non-negative N.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return octave_value (sz.length () == 2 && sz(0) == 1);
+  return ovl (sz.length () == 2 && sz(0) == 1);
 }
 
 /*
@@ -3739,7 +3739,7 @@ Return true if @var{x} is a column vector Nx1 with non-negative N.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return octave_value (sz.length () == 2 && sz(1) == 1);
+  return ovl (sz.length () == 2 && sz(1) == 1);
 }
 
 /*
@@ -3783,7 +3783,7 @@ Return true if @var{a} is a 2-D array.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return octave_value (sz.length () == 2 && sz(0) >= 0 && sz(1) >= 0);
+  return ovl (sz.length () == 2 && sz(0) >= 0 && sz(1) >= 0);
 }
 
 /*
@@ -3826,7 +3826,7 @@ Return true if @var{x} is a square matrix.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return octave_value (sz.length () == 2 && sz(0) == sz(1));
+  return ovl (sz.length () == 2 && sz(0) == sz(1));
 }
 
 /*
@@ -5510,7 +5510,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).squeeze ());
+  return ovl (args(0).squeeze ());
 }
 
 DEFUN (full, args, ,
@@ -5524,7 +5524,7 @@ or a range.\n\
   if (args.length () != 1)
     print_usage ();
 
-  return octave_value (args(0).full_value ());
+  return ovl (args(0).full_value ());
 }
 
 // Compute various norms of the vector X.
@@ -6709,6 +6709,7 @@ Undocumented internal function.\n\
 
   Array<octave_idx_type> idx = arg.sort_rows_idx (smode);
 
+  // This cannot be ovl(), relies on special overloaded octave_value call.
   return octave_value (idx, true, true);
 }
 
@@ -7859,7 +7860,7 @@ dimensions of the decoded array.\n\
       retval = retval.reshape (dims);
     }
 
-  return octave_value (retval);
+  return ovl (retval);
 }
 
 /*

@@ -599,7 +599,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
 endfunction
 
 
-%!test
+%!testif HAVE_GLPK
 %! sense = -1;
 %! c = [10, 6, 4]';
 %! A = [1, 1, 1; 10, 4, 5; 2, 2, 6];
@@ -617,7 +617,7 @@ endfunction
 %!   assert (A(i,:) * xmin <= b(i))
 %! endfor
 
-%!test
+%!testif HAVE_GLPK
 %! sense = 1;
 %! c = [-1, -1]';
 %! A = [-2, 5; 2, -2];
@@ -635,7 +635,7 @@ endfunction
 %! endfor
 
 
-%!test
+%!testif HAVE_GLPK
 %! sense = 1;
 %! c = [0, 0, 0, -1, -1]';
 %! A = [-2, 0, 0, 1, 0; 0, 1, 0, 0, 2; 0, 0, 1, 3, 2];

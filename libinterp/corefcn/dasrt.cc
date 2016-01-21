@@ -84,7 +84,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
           err_user_supplied_eval (e, "dasrt");
         }
 
-      if (tmp.length () < 1 || ! tmp(0).is_defined ())
+      if (tmp.length () == 0 || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
       if (! warned_fcn_imaginary && tmp(0).is_complex_type ())

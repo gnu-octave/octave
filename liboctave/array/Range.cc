@@ -87,7 +87,7 @@ Range::checkelem (octave_idx_type i) const
 double
 Range::elem (octave_idx_type i) const
 {
-#if defined (BOUNDS_CHECKING)
+#if defined (ENABLE_BOUNDS_CHECK)
   return checkelem (i);
 #else
   if (i == 0)

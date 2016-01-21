@@ -258,7 +258,7 @@ Array<T>
 Array<T>::column (octave_idx_type k) const
 {
   octave_idx_type r = dimensions(0);
-#ifdef BOUNDS_CHECKING
+#ifdef ENABLE_BOUNDS_CHECK
   if (k < 0 || k > dimensions.numel (1))
     err_index_out_of_range (2, 2, k+1, dimensions.numel (1), dimensions);
 #endif
@@ -273,7 +273,7 @@ Array<T>::page (octave_idx_type k) const
   octave_idx_type r = dimensions(0);
   octave_idx_type c = dimensions(1);
   octave_idx_type p = r*c;
-#ifdef BOUNDS_CHECKING
+#ifdef ENABLE_BOUNDS_CHECK
   if (k < 0 || k > dimensions.numel (2))
     err_index_out_of_range (3, 3, k+1, dimensions.numel (2), dimensions);
 #endif
@@ -285,7 +285,7 @@ template <class T>
 Array<T>
 Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 {
-#ifdef BOUNDS_CHECKING
+#ifdef ENABLE_BOUNDS_CHECK
   if (lo < 0)
     err_index_out_of_range (1, 1, lo+1, numel (), dimensions);
   if (up > numel ())

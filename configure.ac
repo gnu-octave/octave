@@ -230,26 +230,26 @@ AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
 ### matrix classes.  This slows down some operations a bit, so it is turned off
 ### by default.
 
-BOUNDS_CHECKING=no
+ENABLE_BOUNDS_CHECK=no
 AC_ARG_ENABLE([bounds-check],
   [AS_HELP_STRING([--enable-bounds-check],
     [enable bounds checking for indexing in internal array classes])],
-  [if test "$enableval" = yes; then BOUNDS_CHECKING=yes; fi], [])
-if test $BOUNDS_CHECKING = yes; then
-  AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
+  [if test "$enableval" = yes; then ENABLE_BOUNDS_CHECK=yes; fi], [])
+if test $ENABLE_BOUNDS_CHECK = yes; then
+  AC_DEFINE(ENABLE_BOUNDS_CHECK, 1, [Define to 1 to use internal bounds checking.])
 fi
 
 ### Use atomic operations for internal reference counting.  This is required
 ### for thread-safe behavior (Qt Handles) but incurs a significant slowdown.
 ### Enabled by default until a higher performing solution can be found.
 
-USE_ATOMIC_REFCOUNT=yes
+ENABLE_ATOMIC_REFCOUNT=yes
 AC_ARG_ENABLE([atomic-refcount],
   [AS_HELP_STRING([--disable-atomic-refcount],
     [Do not use atomic operations for internal reference counting.  This option is required for thread-safe behavior as used in the GUI's Qt plotting toolkit.  Performance for CLI-only builds is improved by disabling this feature.])],
-  [if test "$enableval" = no; then USE_ATOMIC_REFCOUNT=no; fi], [])
-if test $USE_ATOMIC_REFCOUNT = yes; then
-  AC_DEFINE(USE_ATOMIC_REFCOUNT, 1,
+  [if test "$enableval" = no; then ENABLE_ATOMIC_REFCOUNT=no; fi], [])
+if test $ENABLE_ATOMIC_REFCOUNT = yes; then
+  AC_DEFINE(ENABLE_ATOMIC_REFCOUNT, 1,
     [Define to 1 to use atomic operations for reference counting.])
 fi
 
@@ -263,18 +263,17 @@ AC_ARG_ENABLE([docs],
      ENABLE_DOCS=no
      warn_docs="building documentation disabled; make dist will fail"
      OCTAVE_CONFIGURE_WARNING([warn_docs])
-   fi],
-  [])
+   fi], [])
 
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
-USE_64_BIT_IDX_T=no
+ENABLE_64=no
 OCTAVE_IDX_TYPE=int
 AC_ARG_ENABLE(64,
   [AS_HELP_STRING([--enable-64],
     [(EXPERIMENTAL) use 64-bit integers for array dimensions and indexing])],
-  [if test "$enableval" = yes; then USE_64_BIT_IDX_T=yes; fi], [])
-if test $USE_64_BIT_IDX_T = yes; then
+  [if test "$enableval" = yes; then ENABLE_64=yes; fi], [])
+if test $ENABLE_64 = yes; then
   AC_CHECK_SIZEOF([void *])
   AC_CHECK_SIZEOF([int])
   AC_CHECK_SIZEOF([long])
@@ -284,17 +283,17 @@ if test $USE_64_BIT_IDX_T = yes; then
   else
     warn_64_bit="pointers are not 64-bits wide; disabling 64-bit features"
     OCTAVE_CONFIGURE_WARNING([warn_64_bit])
-    USE_64_BIT_IDX_T=no
+    ENABLE_64=no
   fi
 fi
 AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
-if test $USE_64_BIT_IDX_T = yes; then
-  AC_DEFINE(USE_64_BIT_IDX_T, 1,
+if test $ENABLE_64 = yes; then
+  AC_DEFINE(ENABLE_64, 1,
     [Define to 1 if using 64-bit integers for array dimensions and indexing.])
 fi
-AC_SUBST(USE_64_BIT_IDX_T)
+AC_SUBST(ENABLE_64)
 
 ### It seems that there are some broken inline assembly functions in
 ### the GNU libc.  Since I'm not sure how to test whether we are using
@@ -435,7 +434,7 @@ CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 ### Test whether the compiler supports OpenMP.  This is enabled by default
 ### now to allow the option of using OpenMP in loadable modules.
 
-USE_OPENMP=no
+ENABLE_OPENMP=no
 check_for_openmp=yes
 AC_ARG_ENABLE([openmp],
   [AS_HELP_STRING([--disable-openmp],
@@ -443,16 +442,16 @@ AC_ARG_ENABLE([openmp],
   [if test "$enableval" = no; then check_for_openmp=no; fi], [])
 if test $check_for_openmp = yes; then
   AC_LANG_PUSH(C)
-  AX_OPENMP([XTRA_CFLAGS="$XTRA_CFLAGS $OPENMP_CFLAGS"; USE_OPENMP=yes], [])
+  AX_OPENMP([XTRA_CFLAGS="$XTRA_CFLAGS $OPENMP_CFLAGS"; ENABLE_OPENMP=yes], [])
   AC_LANG_POP(C)
   AC_LANG_PUSH(C++)
-  AX_OPENMP([XTRA_CXXFLAGS="$XTRA_CXXFLAGS $OPENMP_CXXFLAGS"; USE_OPENMP=yes], [])
+  AX_OPENMP([XTRA_CXXFLAGS="$XTRA_CXXFLAGS $OPENMP_CXXFLAGS"; ENABLE_OPENMP=yes], [])
   AC_LANG_POP(C++)
 fi
 dnl Define here since it is skipped if the first argument to
 dnl AX_OPENMP is not empty.
-if test $USE_OPENMP = yes; then
-  AC_DEFINE(HAVE_OPENMP, 1, [Define if OpenMP is enabled])
+if test $ENABLE_OPENMP = yes; then
+  AC_DEFINE(ENABLE_OPENMP, 1, [Define if OpenMP is enabled.])
 fi
 ## Set these for any other tests that may require them.  They will be
 ## reset before output files are generated.
@@ -469,17 +468,15 @@ CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
 ### Reported bugs indicate that --enable-float-truncate is required for MinGW
 ### and Cygwin platforms and for GCC compilers >= 5.0.  It should not be
 ### necessary for non-x87 targets or when using modern SSE math.
-ac_float_truncate=volatile
+ENABLE_FLOAT_TRUNCATE=yes
 AC_ARG_ENABLE([float-truncate],
   [AS_HELP_STRING([--disable-float-truncate],
     [truncate intermediate FP results])],
-  [if test "$enableval" = no; then
-     ac_float_truncate=
-   fi],
-  [])
-
-AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate],
-  [Define to volatile if you need to truncate intermediate FP results.])
+  [if test "$enableval" = no; then ENABLE_FLOAT_TRUNCATE=no; fi], [])
+if test $ENABLE_FLOAT_TRUNCATE = yes; then
+  AC_DEFINE(ENABLE_FLOAT_TRUNCATE, 1,
+    [Define to 1 if you need to truncate intermediate FP results.])
+fi
 
 ### Determine extra CFLAGS that may be necessary for Octave.
 
@@ -661,7 +658,7 @@ AC_SUBST(F77_ISNAN_MACRO)
 
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
 if test $octave_cv_sizeof_fortran_integer = no; then
-  if test $USE_64_BIT_IDX_T = yes; then
+  if test $ENABLE_64 = yes; then
     case $F77 in
       *gfortran*)
         case $F77_INTEGER_8_FLAG in
@@ -772,21 +769,18 @@ fi
 
  ### Check for the LLVM library
 
-build_jit=no
+ENABLE_JIT=no
 AC_ARG_ENABLE([jit],
   [AS_HELP_STRING([--enable-jit],
     [(EXPERIMENTAL) enable JIT compiler])],
-  [if test "$enableval" = yes; then
-     build_jit=yes
-   fi],
-  [])
+  [if test "$enableval" = yes; then ENABLE_JIT=yes; fi], [])
 
 LLVM_CXXFLAGS=
 LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
 
-if test $build_jit = yes; then
+if test $ENABLE_JIT = yes; then
 
   ## Find llvm-config program from environment variable or by searching
   AC_ARG_VAR([LLVM_CONFIG], [path to llvm-config utility])
@@ -863,7 +857,7 @@ if test $build_jit = yes; then
   if test -z "$warn_llvm"; then
     AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
   else
-    build_jit=no
+    ENABLE_JIT=no
     LLVM_CPPFLAGS=
     LLVM_CXXFLAGS=
     LLVM_LDFLAGS=
@@ -875,6 +869,9 @@ dnl else
 dnl   ## JIT build disabled
 dnl   warn_llvm="JIT compiler disabled, some performance loss for loops"
 dnl   OCTAVE_CONFIGURE_WARNING([warn_llvm])
+fi
+if test $ENABLE_JIT; then
+  AC_DEFINE(ENABLE_JIT, 1, [Define to 1 to enable JIT compiler.])
 fi
 
 AC_SUBST(LLVM_CPPFLAGS)
@@ -1486,7 +1483,7 @@ if test $ax_blas_ok = no; then
 fi
 
 if test $ax_blas_ok = no; then
-  if test $USE_64_BIT_IDX_T = yes && test "$ax_blas_integer_size_ok" = no; then
+  if test $ENABLE_64 = yes && test "$ax_blas_integer_size_ok" = no; then
     ## Attempt to be more informative.
     AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers.  This is incompatible with --enable-64.])
   else
@@ -1526,7 +1523,7 @@ if test -z "$warn_qrupdate"; then
 fi
 LIBS="$save_LIBS"
 
-if test $USE_64_BIT_IDX_T = yes; then
+if test $ENABLE_64 = yes; then
   CHOLMOD_TAG="_l_"
   CXSPARSE_TAG="_dl_"
   UMFPACK_TAG="_zl_"
@@ -2458,6 +2455,10 @@ if test $ENABLE_DOCS = yes; then
     OCTAVE_CONFIGURE_WARNING([warn_docs_makeinfo])
   fi
 fi
+if test $ENABLE_DOCS = yes; then
+  AC_DEFINE(ENABLE_DOCS, 1,
+    [Define to 1 to build Octave documentation files.])
+fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
 ### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
@@ -3175,17 +3176,18 @@ Octave is now configured for $canonical_host_type
   gnuplot:                     $GNUPLOT
 
   Build Octave GUI:                   $build_gui
-  JIT compiler for loops:             $build_jit
+  JIT compiler for loops:             $ENABLE_JIT
   Build Java interface:               $build_java
-  Do internal array bounds checking:  $BOUNDS_CHECKING
+  Do internal array bounds checking:  $ENABLE_BOUNDS_CHECK
   Build static libraries:             $STATIC_LIBS
   Build shared libraries:             $SHARED_LIBS
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG
   Include support for GNU readline:   $USE_READLINE
-  64-bit array dims and indexing:     $USE_64_BIT_IDX_T
-  OpenMP SMP multithreading:          $USE_OPENMP
+  64-bit array dims and indexing:     $ENABLE_64
+  OpenMP SMP multithreading:          $ENABLE_OPENMP
   Build cross tools:                  $cross_tools
   Build docs:                         $ENABLE_DOCS
+  Truncate intermediate FP results:   $ENABLE_FLOAT_TRUNCATE
 ])
 
 warn_msg_printed=false
@@ -3200,7 +3202,7 @@ if test $ENABLE_DYNAMIC_LINKING = yes; then
   fi
 fi
 
-if test $USE_64_BIT_IDX_T = yes; then
+if test $ENABLE_64 = yes; then
   AC_MSG_WARN([])
   AC_MSG_WARN([You used the EXPERIMENTAL --enable-64 option.])
   AC_MSG_WARN([Are you sure that is what you want to do?])
@@ -3252,7 +3254,7 @@ if test -n "$warn_gnuplot"; then
   warn_msg_printed=true
 fi
 
-if test $USE_ATOMIC_REFCOUNT = no; then
+if test $ENABLE_ATOMIC_REFCOUNT = no; then
   AC_MSG_WARN([])
   AC_MSG_WARN([atomic reference counting disabled.])
   AC_MSG_WARN([This feature allows access to Octave data safely from])

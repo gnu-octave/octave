@@ -84,7 +84,7 @@ public:
   octave_idx_type
   operator () (octave_idx_type i, octave_idx_type j) const
   {
-#if defined (BOUNDS_CHECKING)
+#if defined (ENABLE_BOUNDS_CHECK)
     return checkelem (i, j);
 #else
     return elem (i, j);

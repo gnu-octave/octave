@@ -493,14 +493,26 @@ define cp_update_rule
   fi
 endef
 
+## The do_subst_config_vals and do_subst_cross_config_vals differ only in
+## the definitions of the following variables:
+##
+##   OCTAVE_CONF_MKOCTFILE_AR
+##   OCTAVE_CONF_MKOCTFILE_CC
+##   OCTAVE_CONF_MKOCTFILE_CXX
+##   OCTAVE_CONF_MKOCTFILE_DL_LD
+##   OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS
+##   OCTAVE_CONF_MKOCTFILE_F77
+##   OCTAVE_CONF_MKOCTFILE_LD_CXX
+##   OCTAVE_CONF_MKOCTFILE_RANLIB
+
 ## To avoid shell command line limits, break the replacement patterns
 ## into two roughly equal sized parts.
 
 define do_subst_config_vals
   $(SED) < $< \
     -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
-    -e "s|%NO_OCT_FILE_STRIP%|${NO_OCT_FILE_STRIP}|" \
-    -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
+    -e "s|%NO_OCT_FILE_STRIP%|$NO_OCT_FILE_STRIP}|" \
+    -e "s|%OCTAVE_BINDIR%|\"$bindir}\"|" \
     -e "s|%OCTAVE_CONF_ALL_CFLAGS%|\"${ALL_CFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_ALL_CXXFLAGS%|\"${ALL_CXXFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_ALL_FFLAGS%|\"${ALL_FFLAGS}\"|" \
@@ -549,7 +561,13 @@ define do_subst_config_vals
     -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
     -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_DL_LIBS%|\"${DL_LIBS}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_64%|\"${ENABLE_64}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_BOUNDS_CHECK%|\"${ENABLE_BOUNDS_CHECK}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_DOCS%|\"${ENABLE_DOCS}\"|" \
     -e "s|%OCTAVE_CONF_ENABLE_DYNAMIC_LINKING%|\"${ENABLE_DYNAMIC_LINKING}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_FLOAT_TRUNCATE%|\"${ENABLE_FLOAT_TRUNCATE}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_JIT%|\"${ENABLE_JIT}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_OPENMP%|\"${ENABLE_OPENMP}\"|" \
     -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
     -e "s|%OCTAVE_CONF_GCC_VERSION%|\"${GCC_VERSION}\"|" \
     -e "s|%OCTAVE_CONF_GXX_VERSION%|\"${GXX_VERSION}\"|" \
@@ -718,7 +736,13 @@ define do_subst_cross_config_vals
     -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
     -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_DL_LIBS%|\"${DL_LIBS}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_64%|\"${ENABLE_64}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_BOUNDS_CHECK%|\"${ENABLE_BOUNDS_CHECK}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_DOCS%|\"${ENABLE_DOCS}\"|" \
     -e "s|%OCTAVE_CONF_ENABLE_DYNAMIC_LINKING%|\"${ENABLE_DYNAMIC_LINKING}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_FLOAT_TRUNCATE%|\"${ENABLE_FLOAT_TRUNCATE}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_JIT%|\"${ENABLE_JIT}\"|" \
+    -e "s|%OCTAVE_CONF_ENABLE_OPENMP%|\"${ENABLE_OPENMP}\"|" \
     -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
     -e "s|%OCTAVE_CONF_GCC_VERSION%|\"${GCC_VERSION}\"|" \
     -e "s|%OCTAVE_CONF_GXX_VERSION%|\"${GXX_VERSION}\"|" \

@@ -175,6 +175,26 @@ typedef unsigned long ino_t;
 #define OCTGUI_API OCTAVE_IMPORT
 #endif
 
+/* Backward compatibility */
+
+#if defined (ENABLE_ATOMIC_REFCOUNT)
+# define USE_ATOMIC_REFCOUNT 1
+#endif
+
+#if defined (ENABLE_64)
+# define USE_64_BIT_IDX_T
+#endif
+
+#if defined (ENABLE_OPENMP)
+# define HAVE_OPENMP
+#endif
+
+#if defined (ENABLE_FLOAT_TRUNCATE)
+# define FLOAT_TRUNCATE volatile
+#else
+# define FLOAT_TRUNCATE
+#endif
+
 /* oct-types.h */
 
 #include <stdint.h>

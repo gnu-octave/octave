@@ -1412,8 +1412,6 @@ octave_value::assign (assign_op op, const std::string& type,
                       const std::list<octave_value_list>& idx,
                       const octave_value& rhs)
 {
-  octave_value retval;
-
   make_unique ();
 
   octave_value t_rhs = rhs;

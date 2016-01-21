@@ -1266,8 +1266,6 @@ To convert back from a cellstr to a character array use @code{char}.\n\
   if (args.length () != 1)
     print_usage ();
 
-  octave_value retval;
-
   octave_value_list tmp = Fiscellstr (args, 1);
 
   if (tmp(0).is_true ())

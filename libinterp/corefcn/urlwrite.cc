@@ -698,8 +698,6 @@ Undocumented internal function\n\
   if (args.length () != 1)
     error ("__ftp_mode__: incorrect number of arguments");
 
-  octave_value retval;
-
   url_transfer curl = ch_manager::get_object (args(0));
 
   if (! curl.is_valid ())

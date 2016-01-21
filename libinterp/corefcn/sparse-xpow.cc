@@ -670,7 +670,6 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
         {
           octave_quit ();
           double btmp = b(a.ridx (i), j);
-          Complex tmp;
 
           if (xisint (btmp))
             result.xelem (a.ridx (i), j) = std::pow (a.data (i),

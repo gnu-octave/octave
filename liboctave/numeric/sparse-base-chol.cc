@@ -276,7 +276,6 @@ sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
   cholmod_sparse *m = rep->L ();
   octave_idx_type n = m->ncol;
   ColumnVector perms = rep->perm ();
-  chol_type ret;
   double rcond2;
   octave_idx_type info;
   MatrixType mattype (MatrixType::Upper);

@@ -616,8 +616,8 @@ gl2ps_renderer::draw_text (const text::properties& props)
     valign = 1;
 
   // FIXME: handle margin and surrounding box
+  // Matrix bbox;
 
-  Matrix bbox;
   const Matrix pos = get_transform ().scale (props.get_data_position ());
   std::string str = props.get_string ().string_vector_value ().join ("\n");
 

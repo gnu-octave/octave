@@ -1259,8 +1259,6 @@ cdef_object::map_value (void) const
       for (std::map<std::string, cdef_property>::iterator it = props.begin ();
            it != props.end (); ++it)
         {
-          octave_value pvalue;
-
           if (is_array ())
             {
               Array<cdef_object> a_obj = array_value ();

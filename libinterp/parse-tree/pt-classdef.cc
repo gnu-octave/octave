@@ -235,7 +235,6 @@ tree_classdef_body::~tree_classdef_body (void)
 octave_function*
 tree_classdef::make_meta_class (bool is_at_folder)
 {
-  octave_value retval;
   cdef_class cls = cdef_class::make_meta_class (this, is_at_folder);
 
   if (cls.ok ())

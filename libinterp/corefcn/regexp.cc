@@ -1290,8 +1290,6 @@ for details on the syntax of the search pattern.\n\
 static octave_value
 octregexprep (const octave_value_list &args, const std::string &who)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   // Make sure we have string, pattern, replacement

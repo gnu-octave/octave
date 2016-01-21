@@ -1434,8 +1434,6 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<4> (&len);
 
-  dim_vector dv (1, 1);
-
   if (len > 0)
     {
       octave_scalar_map m;
@@ -1699,8 +1697,6 @@ produces a struct @strong{array}.\n\
   if ((nargin == 1 || nargin == 2)
       && args(0).is_empty () && args(0).is_real_matrix ())
     {
-      Cell fields;
-
       if (nargin == 2)
         {
           Array<std::string> cstr = args(1).xcellstr_value ("struct: second argument should be a cell array of field names");

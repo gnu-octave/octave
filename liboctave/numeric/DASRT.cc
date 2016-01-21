@@ -153,8 +153,6 @@ ddasrt_g (const octave_idx_type& neq, const double& t, const double *state,
 void
 DASRT::integrate (double tout)
 {
-  DASRT_result retval;
-
   // I suppose this is the safe thing to do.  If this is the first
   // call, or if anything about the problem has changed, we should
   // start completely fresh.

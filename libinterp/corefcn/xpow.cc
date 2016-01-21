@@ -309,7 +309,6 @@ xpow (const DiagMatrix& a, double b)
 octave_value
 xpow (const PermMatrix& a, double b)
 {
-  octave_value retval;
   int btmp = static_cast<int> (b);
   if (btmp == b)
     return a.power (btmp);

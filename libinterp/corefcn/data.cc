@@ -6765,8 +6765,6 @@ This function does not support sparse matrices.\n\
 
   if (nargin > 1)
     {
-      octave_value mode_arg;
-
       if (nargin == 3)
         smode = get_sort_mode_option (args(2));
 

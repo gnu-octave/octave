@@ -2903,8 +2903,6 @@ base_properties::set_from_list (base_graphics_object& bgo,
 octave_value
 base_properties::get_dynamic (const caseless_str& pname) const
 {
-  octave_value retval;
-
   std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
     all_props.find (pname);
 
@@ -11040,8 +11038,6 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
-
-  octave_value retval;
 
   if (args.length () < 3)
     print_usage ();

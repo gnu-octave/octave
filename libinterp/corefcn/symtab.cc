@@ -1042,8 +1042,6 @@ symbol_table::fcn_info::fcn_info_rep::find_method
 octave_value
 symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 {
-  octave_value retval;
-
   // Autoloaded function.
 
   if (autoload_function.is_defined ())

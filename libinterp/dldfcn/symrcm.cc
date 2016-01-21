@@ -440,8 +440,6 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   if (args.length () != 1)
     print_usage ();
 
-  octave_value retval;
-
   octave_value arg = args(0);
 
   // the parameter of the matrix is converted into a sparse matrix

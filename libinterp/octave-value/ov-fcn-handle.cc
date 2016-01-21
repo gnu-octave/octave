@@ -251,8 +251,6 @@ bool
 octave_fcn_handle::set_fcn (const std::string &octaveroot,
                             const std::string& fpath)
 {
-  bool success = true;
-
   if (octaveroot.length () != 0
       && fpath.length () >= octaveroot.length ()
       && fpath.substr (0, octaveroot.length ()) == octaveroot
@@ -331,7 +329,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
         }
     }
 
-  return success;
+  return true;
 }
 
 bool

@@ -207,8 +207,6 @@ octave_bool_matrix::save_ascii (std::ostream& os)
 bool
 octave_bool_matrix::load_ascii (std::istream& is)
 {
-  bool success = true;
-
   string_vector keywords (2);
 
   keywords[0] = "ndims";
@@ -284,7 +282,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
   else
     panic_impossible ();
 
-  return success;
+  return true;
 }
 
 bool

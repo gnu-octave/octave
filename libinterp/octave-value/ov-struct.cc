@@ -1356,7 +1356,6 @@ octave_scalar_struct::save_ascii (std::ostream& os)
 bool
 octave_scalar_struct::load_ascii (std::istream& is)
 {
-  bool success = true;
   octave_idx_type len = 0;
 
   if (! extract_keyword (is, "length", len) || len < 0)
@@ -1391,7 +1390,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
   else
     panic_impossible ();
 
-  return success;
+  return true;
 }
 
 bool

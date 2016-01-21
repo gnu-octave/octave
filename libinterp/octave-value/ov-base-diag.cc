@@ -490,7 +490,6 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
 {
   octave_idx_type r = 0;
   octave_idx_type c = 0;
-  bool success = true;
 
   if (! extract_keyword (is, "rows", r, true)
       || ! extract_keyword (is, "columns", c, true))
@@ -513,7 +512,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
   // Invalidate cache. Probably not necessary, but safe.
   dense_cache = octave_value ();
 
-  return success;
+  return true;
 }
 
 template <class DMT, class MT>

@@ -205,7 +205,6 @@ bool
 octave_base_int_matrix<T>::load_ascii (std::istream& is)
 {
   int mdims = 0;
-  bool success = true;
 
   if (! extract_keyword (is, "ndims", mdims, true))
     error ("load: failed to extract number of dimensions");
@@ -228,7 +227,7 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
 
   this->matrix = tmp;
 
-  return success;
+  return true;
 }
 
 template <class T>

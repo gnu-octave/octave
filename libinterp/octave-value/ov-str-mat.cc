@@ -322,8 +322,6 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
 bool
 octave_char_matrix_str::load_ascii (std::istream& is)
 {
-  bool success = true;
-
   string_vector keywords(3);
 
   keywords[0] = "ndims";
@@ -432,7 +430,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
   else
     panic_impossible ();
 
-  return success;
+  return true;
 }
 
 bool

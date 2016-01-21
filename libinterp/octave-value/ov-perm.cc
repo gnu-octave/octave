@@ -275,7 +275,6 @@ bool
 octave_perm_matrix::load_ascii (std::istream& is)
 {
   octave_idx_type n;
-  bool success = true;
   char orient;
 
   if (! extract_keyword (is, "size", n, true)
@@ -295,7 +294,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
   // Invalidate cache. Probably not necessary, but safe.
   dense_cache = octave_value ();
 
-  return success;
+  return true;
 }
 
 bool

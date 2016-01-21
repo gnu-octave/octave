@@ -78,18 +78,16 @@ quad_user_function (double x)
           err_user_supplied_eval (e, "quad");
         }
 
-      if (tmp.length () && tmp(0).is_defined ())
-        {
-          if (! warned_imaginary && tmp(0).is_complex_type ())
-            {
-              warning ("quad: ignoring imaginary part returned from user-supplied function");
-              warned_imaginary = true;
-            }
-
-          retval = tmp(0).xdouble_value ("quad: expecting user supplied function to return numeric value");
-        }
-      else
+      if (! tmp.length () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("quad");
+
+      if (! warned_imaginary && tmp(0).is_complex_type ())
+        {
+          warning ("quad: ignoring imaginary part returned from user-supplied function");
+          warned_imaginary = true;
+        }
+
+      retval = tmp(0).xdouble_value ("quad: expecting user supplied function to return numeric value");
     }
 
   return retval;
@@ -116,19 +114,16 @@ quad_float_user_function (float x)
           err_user_supplied_eval (e, "quad");
         }
 
-      if (tmp.length () && tmp(0).is_defined ())
-        {
-          if (! warned_imaginary && tmp(0).is_complex_type ())
-            {
-              warning ("quad: ignoring imaginary part returned from user-supplied function");
-              warned_imaginary = true;
-            }
-
-          retval = tmp(0).xfloat_value ("quad: expecting user supplied function to return numeric value");
-
-        }
-      else
+      if (! tmp.length () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("quad");
+
+      if (! warned_imaginary && tmp(0).is_complex_type ())
+        {
+          warning ("quad: ignoring imaginary part returned from user-supplied function");
+          warned_imaginary = true;
+        }
+
+      retval = tmp(0).xfloat_value ("quad: expecting user supplied function to return numeric value");
     }
 
   return retval;

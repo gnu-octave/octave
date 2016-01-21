@@ -415,15 +415,12 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
   dim_vector dr = r.dims ();
   dim_vector dx = x.dims ();
   if (dr == dx)
-    {
-      op (r.numel (), r.fortran_vec (), x.data ());
-    }
+    op (r.numel (), r.fortran_vec (), x.data ());
   else if (is_valid_inplace_bsxfun (opname, dr, dx))
-    {
-      do_inplace_bsxfun_op (r, x, op, op1);
-    }
+    do_inplace_bsxfun_op (r, x, op, op1);
   else
     err_nonconformant (opname, dr, dx);
+
   return r;
 }
 

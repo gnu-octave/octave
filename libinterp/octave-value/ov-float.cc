@@ -112,21 +112,19 @@ octave_float_scalar::convert_to_str_internal (bool, bool, char type) const
 
   if (xisnan (scalar))
     err_nan_to_character_conversion ();
-  else
+
+  int ival = NINT (scalar);
+
+  if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
     {
-      int ival = NINT (scalar);
+      // FIXME: is there something better we could do?
 
-      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-        {
-          // FIXME: is there something better we could do?
+      ival = 0;
 
-          ival = 0;
-
-          ::warning ("range error for conversion to character value");
-        }
-
-      retval = octave_value (std::string (1, static_cast<char> (ival)), type);
+      ::warning ("range error for conversion to character value");
     }
+
+  retval = octave_value (std::string (1, static_cast<char> (ival)), type);
 
   return retval;
 }

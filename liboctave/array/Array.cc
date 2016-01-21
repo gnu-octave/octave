@@ -912,120 +912,115 @@ template <class T>
 void
 Array<T>::resize1 (octave_idx_type n, const T& rfv)
 {
-  if (n >= 0 && ndims () == 2)
-    {
-      dim_vector dv;
-      // This is driven by Matlab's behaviour of giving a *row* vector
-      // on some out-of-bounds assignments.  Specifically, Matlab
-      // allows a(i) with out-of-bouds i when a is either of 0x0, 1x0,
-      // 1x1, 0xN, and gives a row vector in all cases (yes, even the
-      // last one, search me why).  Giving a column vector would make
-      // much more sense (given the way trailing singleton dims are
-      // treated).
-      bool invalid = false;
-      if (rows () == 0 || rows () == 1)
-        dv = dim_vector (1, n);
-      else if (columns () == 1)
-        dv = dim_vector (n, 1);
-      else
-        invalid = true;
+  if (n < 0 || ndims () != 2)
+    err_invalid_resize ();
 
-      if (invalid)
-        err_invalid_resize ();
-      else
+  dim_vector dv;
+  // This is driven by Matlab's behaviour of giving a *row* vector
+  // on some out-of-bounds assignments.  Specifically, Matlab
+  // allows a(i) with out-of-bouds i when a is either of 0x0, 1x0,
+  // 1x1, 0xN, and gives a row vector in all cases (yes, even the
+  // last one, search me why).  Giving a column vector would make
+  // much more sense (given the way trailing singleton dims are
+  // treated).
+  bool invalid = false;
+  if (rows () == 0 || rows () == 1)
+    dv = dim_vector (1, n);
+  else if (columns () == 1)
+    dv = dim_vector (n, 1);
+  else
+    invalid = true;
+
+  if (invalid)
+    err_invalid_resize ();
+  else
+    {
+      octave_idx_type nx = numel ();
+      if (n == nx - 1 && n > 0)
         {
-          octave_idx_type nx = numel ();
-          if (n == nx - 1 && n > 0)
+          // Stack "pop" operation.
+          if (rep->count == 1)
+            slice_data[slice_len-1] = T ();
+          slice_len--;
+          dimensions = dv;
+        }
+      else if (n == nx + 1 && nx > 0)
+        {
+          // Stack "push" operation.
+          if (rep->count == 1
+              && slice_data + slice_len < rep->data + rep->len)
             {
-              // Stack "pop" operation.
-              if (rep->count == 1)
-                slice_data[slice_len-1] = T ();
-              slice_len--;
+              slice_data[slice_len++] = rfv;
               dimensions = dv;
             }
-          else if (n == nx + 1 && nx > 0)
+          else
             {
-              // Stack "push" operation.
-              if (rep->count == 1
-                  && slice_data + slice_len < rep->data + rep->len)
-                {
-                  slice_data[slice_len++] = rfv;
-                  dimensions = dv;
-                }
-              else
-                {
-                  static const octave_idx_type max_stack_chunk = 1024;
-                  octave_idx_type nn = n + std::min (nx, max_stack_chunk);
-                  Array<T> tmp (Array<T> (dim_vector (nn, 1)), dv, 0, n);
-                  T *dest = tmp.fortran_vec ();
-
-                  std::copy (data (), data () + nx, dest);
-                  dest[nx] = rfv;
-
-                  *this = tmp;
-                }
-            }
-          else if (n != nx)
-            {
-              Array<T> tmp = Array<T> (dv);
+              static const octave_idx_type max_stack_chunk = 1024;
+              octave_idx_type nn = n + std::min (nx, max_stack_chunk);
+              Array<T> tmp (Array<T> (dim_vector (nn, 1)), dv, 0, n);
               T *dest = tmp.fortran_vec ();
 
-              octave_idx_type n0 = std::min (n, nx);
-              octave_idx_type n1 = n - n0;
-              std::copy (data (), data () + n0, dest);
-              std::fill_n (dest + n0, n1, rfv);
+              std::copy (data (), data () + nx, dest);
+              dest[nx] = rfv;
 
               *this = tmp;
             }
         }
+      else if (n != nx)
+        {
+          Array<T> tmp = Array<T> (dv);
+          T *dest = tmp.fortran_vec ();
+
+          octave_idx_type n0 = std::min (n, nx);
+          octave_idx_type n1 = n - n0;
+          std::copy (data (), data () + n0, dest);
+          std::fill_n (dest + n0, n1, rfv);
+
+          *this = tmp;
+        }
     }
-  else
-    err_invalid_resize ();
 }
 
 template <class T>
 void
 Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
 {
-  if (r >= 0 && c >= 0 && ndims () == 2)
-    {
-      octave_idx_type rx = rows ();
-      octave_idx_type cx = columns ();
-      if (r != rx || c != cx)
-        {
-          Array<T> tmp = Array<T> (dim_vector (r, c));
-          T *dest = tmp.fortran_vec ();
-
-          octave_idx_type r0 = std::min (r, rx);
-          octave_idx_type r1 = r - r0;
-          octave_idx_type c0 = std::min (c, cx);
-          octave_idx_type c1 = c - c0;
-          const T *src = data ();
-          if (r == rx)
-            {
-              std::copy (src, src + r * c0, dest);
-              dest += r * c0;
-            }
-          else
-            {
-              for (octave_idx_type k = 0; k < c0; k++)
-                {
-                  std::copy (src, src + r0, dest);
-                  src += rx;
-                  dest += r0;
-                  std::fill_n (dest, r1, rfv);
-                  dest += r1;
-                }
-            }
-
-          std::fill_n (dest, r * c1, rfv);
-
-          *this = tmp;
-        }
-    }
-  else
+  if (r < 0 || c < 0 || ndims () != 2)
     err_invalid_resize ();
 
+  octave_idx_type rx = rows ();
+  octave_idx_type cx = columns ();
+  if (r != rx || c != cx)
+    {
+      Array<T> tmp = Array<T> (dim_vector (r, c));
+      T *dest = tmp.fortran_vec ();
+
+      octave_idx_type r0 = std::min (r, rx);
+      octave_idx_type r1 = r - r0;
+      octave_idx_type c0 = std::min (c, cx);
+      octave_idx_type c1 = c - c0;
+      const T *src = data ();
+      if (r == rx)
+        {
+          std::copy (src, src + r * c0, dest);
+          dest += r * c0;
+        }
+      else
+        {
+          for (octave_idx_type k = 0; k < c0; k++)
+            {
+              std::copy (src, src + r0, dest);
+              src += rx;
+              dest += r0;
+              std::fill_n (dest, r1, rfv);
+              dest += r1;
+            }
+        }
+
+      std::fill_n (dest, r * c1, rfv);
+
+      *this = tmp;
+    }
 }
 
 template<class T>
@@ -1037,18 +1032,16 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
     resize2 (dv(0), dv(1), rfv);
   else if (dimensions != dv)
     {
-      if (dimensions.length () <= dvl && ! dv.any_neg ())
-        {
-          Array<T> tmp (dv);
-          // Prepare for recursive resizing.
-          rec_resize_helper rh (dv, dimensions.redim (dvl));
-
-          // Do it.
-          rh.resize_fill (data (), tmp.fortran_vec (), rfv);
-          *this = tmp;
-        }
-      else
+      if (dimensions.length () > dvl || dv.any_neg ())
         err_invalid_resize ();
+
+      Array<T> tmp (dv);
+      // Prepare for recursive resizing.
+      rec_resize_helper rh (dv, dimensions.redim (dvl));
+
+      // Do it.
+      rh.resize_fill (data (), tmp.fortran_vec (), rfv);
+      *this = tmp;
     }
 }
 
@@ -1143,45 +1136,43 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
   octave_idx_type n = numel ();
   octave_idx_type rhl = rhs.numel ();
 
-  if (rhl == 1 || i.length (n) == rhl)
+  if (rhl != 1 && i.length (n) != rhl)
+    err_nonconformant ("=", dim_vector(i.length(n),1), rhs.dims());
+
+  octave_idx_type nx = i.extent (n);
+  bool colon = i.is_colon_equiv (nx);
+  // Try to resize first if necessary.
+  if (nx != n)
     {
-      octave_idx_type nx = i.extent (n);
-      bool colon = i.is_colon_equiv (nx);
-      // Try to resize first if necessary.
-      if (nx != n)
+      // Optimize case A = []; A(1:n) = X with A empty.
+      if (dimensions.zero_by_zero () && colon)
         {
-          // Optimize case A = []; A(1:n) = X with A empty.
-          if (dimensions.zero_by_zero () && colon)
-            {
-              if (rhl == 1)
-                *this = Array<T> (dim_vector (1, nx), rhs(0));
-              else
-                *this = Array<T> (rhs, dim_vector (1, nx));
-              return;
-            }
-
-          resize1 (nx, rfv);
-          n = numel ();
-        }
-
-      if (colon)
-        {
-          // A(:) = X makes a full fill or a shallow copy.
           if (rhl == 1)
-            fill (rhs(0));
+            *this = Array<T> (dim_vector (1, nx), rhs(0));
           else
-            *this = rhs.reshape (dimensions);
+            *this = Array<T> (rhs, dim_vector (1, nx));
+          return;
         }
+
+      resize1 (nx, rfv);
+      n = numel ();
+    }
+
+  if (colon)
+    {
+      // A(:) = X makes a full fill or a shallow copy.
+      if (rhl == 1)
+        fill (rhs(0));
       else
-        {
-          if (rhl == 1)
-            i.fill (rhs(0), n, fortran_vec ());
-          else
-            i.assign (rhs.data (), n, fortran_vec ());
-        }
+        *this = rhs.reshape (dimensions);
     }
   else
-    err_nonconformant ("=", dim_vector(i.length(n),1), rhs.dims());
+    {
+      if (rhl == 1)
+        i.fill (rhs(0), n, fortran_vec ());
+      else
+        i.assign (rhs.data (), n, fortran_vec ());
+    }
 }
 
 // Assignment to a 2-dimensional array

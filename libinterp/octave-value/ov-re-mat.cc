@@ -106,15 +106,13 @@ octave_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  if (numel () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "real matrix", "real scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (numel () == 0)
     err_invalid_conversion ("real matrix", "real scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "real scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -124,15 +122,13 @@ octave_matrix::float_value (bool) const
 {
   float retval = lo_ieee_float_nan_value ();
 
-  if (numel () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "real matrix", "real scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (numel () == 0)
     err_invalid_conversion ("real matrix", "real scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "real scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -158,15 +154,13 @@ octave_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "real matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("real matrix", "complex scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -178,15 +172,13 @@ octave_matrix::float_complex_value (bool) const
 
   FloatComplex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "real matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("real matrix", "complex scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -389,29 +381,27 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
     {
       octave_quit ();
 
-      double d = matrix (i);
+      double d = matrix(i);
 
       if (xisnan (d))
         err_nan_to_character_conversion ();
-      else
+
+      int ival = NINT (d);
+
+      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         {
-          int ival = NINT (d);
+          // FIXME: is there something better we could do?
 
-          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
+          ival = 0;
+
+          if (! warned)
             {
-              // FIXME: is there something better we could do?
-
-              ival = 0;
-
-              if (! warned)
-                {
-                  ::warning ("range error for conversion to character value");
-                  warned = true;
-                }
+              ::warning ("range error for conversion to character value");
+              warned = true;
             }
-
-          chm (i) = static_cast<char> (ival);
         }
+
+      chm(i) = static_cast<char> (ival);
     }
 
   retval = octave_value (chm, type);

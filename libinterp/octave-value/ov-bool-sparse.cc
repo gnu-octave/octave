@@ -102,16 +102,14 @@ octave_sparse_bool_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  if (numel () > 0)
-    {
-      if (numel () > 1)
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  "bool sparse matrix", "real scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (numel () == 0)
     err_invalid_conversion ("bool sparse matrix", "real scalar");
+
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "bool sparse matrix", "real scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -123,16 +121,14 @@ octave_sparse_bool_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      if (numel () > 1)
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  "bool sparse matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("bool sparse matrix", "complex scalar");
+
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "bool sparse matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }

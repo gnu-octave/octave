@@ -723,14 +723,12 @@ current function.\n\
 
   if (nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          symbol_name = args(0).string_value ();
-          fcn_list(0) = symbol_name;
-          bp_list = bp_table::get_breakpoint_list (fcn_list);
-        }
-      else
+      if (! args(0).is_string ())
         err_wrong_type_arg ("dbstatus", args(0));
+
+      symbol_name = args(0).string_value ();
+      fcn_list(0) = symbol_name;
+      bp_list = bp_table::get_breakpoint_list (fcn_list);
     }
   else
     {

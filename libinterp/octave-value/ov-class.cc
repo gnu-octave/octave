@@ -481,15 +481,13 @@ octave_class::numeric_conv (const Cell& val, const std::string& type)
 {
   octave_value retval;
 
-  if (val.numel () == 1)
-    {
-      retval = val(0);
-
-      if (type.length () > 0 && type[0] == '.' && ! retval.is_map ())
-        retval = octave_map ();
-    }
-  else
+  if (val.numel () != 1)
     err_invalid_index_for_assignment ();
+
+  retval = val(0);
+
+  if (type.length () > 0 && type[0] == '.' && ! retval.is_map ())
+    retval = octave_map ();
 
   return retval;
 }
@@ -683,23 +681,21 @@ octave_class::subsasgn_common (const octave_value& obj,
               }
 
             // FIXME: better code reuse?
-            if (tmpc.numel () == 1)
+            if (tmpc.numel () != 1)
+              err_indexed_cs_list ();
+
+            octave_value& tmp = tmpc(0);
+
+            if (! tmp.is_defined () || tmp.is_zero_by_zero ())
               {
-                octave_value& tmp = tmpc(0);
-
-                if (! tmp.is_defined () || tmp.is_zero_by_zero ())
-                  {
-                    tmp = octave_value::empty_conv (next_type, rhs);
-                    tmp.make_unique (); // probably a no-op.
-                  }
-                else
-                  // optimization: ignore copy still stored inside our map.
-                  tmp.make_unique (1);
-
-                t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
+                tmp = octave_value::empty_conv (next_type, rhs);
+                tmp.make_unique (); // probably a no-op.
               }
             else
-              err_indexed_cs_list ();
+              // optimization: ignore copy still stored inside our map.
+              tmp.make_unique (1);
+
+            t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
           }
           break;
 

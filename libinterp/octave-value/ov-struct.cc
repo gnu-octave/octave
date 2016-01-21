@@ -321,28 +321,26 @@ octave_struct::subsasgn (const std::string& type,
 
                 // FIXME: better code reuse?
                 //        cf. octave_cell::subsasgn and the case below.
-                if (tmpc.numel () == 1)
+                if (tmpc.numel () != 1)
+                  err_indexed_cs_list ();
+
+                octave_value& tmp = tmpc(0);
+
+                bool orig_undefined = tmp.is_undefined ();
+
+                if (orig_undefined || tmp.is_zero_by_zero ())
                   {
-                    octave_value& tmp = tmpc(0);
-
-                    bool orig_undefined = tmp.is_undefined ();
-
-                    if (orig_undefined || tmp.is_zero_by_zero ())
-                      {
-                        tmp = octave_value::empty_conv (next_type, rhs);
-                        tmp.make_unique (); // probably a no-op.
-                      }
-                    else
-                      // optimization: ignore the copy
-                      // still stored inside our map.
-                      tmp.make_unique (1);
-
-                      t_rhs =(orig_undefined
-                              ? tmp.undef_subsasgn (next_type, next_idx, rhs)
-                              : tmp.subsasgn (next_type, next_idx, rhs));
+                    tmp = octave_value::empty_conv (next_type, rhs);
+                    tmp.make_unique (); // probably a no-op.
                   }
                 else
-                  err_indexed_cs_list ();
+                  // optimization: ignore the copy
+                  // still stored inside our map.
+                  tmp.make_unique (1);
+
+                  t_rhs =(orig_undefined
+                          ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                          : tmp.subsasgn (next_type, next_idx, rhs));
               }
             else
               err_invalid_index_for_assignment ();

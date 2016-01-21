@@ -765,16 +765,14 @@ Force Octave to assume the file is in Octave's text format.\n\
 
           hdf5_ifstream hdf5_file (fname.c_str ());
 
-          if (hdf5_file.file_id >= 0)
-            {
-              retval = do_load (hdf5_file, orig_fname, format,
-                                flt_fmt, list_only, swap, verbose,
-                                argv, i, argc, nargout);
-
-              hdf5_file.close ();
-            }
-          else
+          if (hdf5_file.file_id < 0)
             err_file_open ("load", orig_fname);
+
+          retval = do_load (hdf5_file, orig_fname, format,
+                            flt_fmt, list_only, swap, verbose,
+                            argv, i, argc, nargout);
+
+          hdf5_file.close ();
         }
       else
 #endif
@@ -793,35 +791,33 @@ Force Octave to assume the file is in Octave's text format.\n\
             {
               gzifstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  if (format == LS_BINARY)
-                    {
-                      if (read_binary_file_header (file, swap, flt_fmt) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
-                  else if (format == LS_MAT5_BINARY
-                           || format == LS_MAT7_BINARY)
-                    {
-                      if (read_mat5_binary_file_header (file, swap, false,
-                                                        orig_fname) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
-
-                  retval = do_load (file, orig_fname, format,
-                                    flt_fmt, list_only, swap, verbose,
-                                    argv, i, argc, nargout);
-
-                  file.close ();
-                }
-              else
+              if (! file)
                 err_file_open ("load", orig_fname);
+
+              if (format == LS_BINARY)
+                {
+                  if (read_binary_file_header (file, swap, flt_fmt) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+              else if (format == LS_MAT5_BINARY
+                       || format == LS_MAT7_BINARY)
+                {
+                  if (read_mat5_binary_file_header (file, swap, false,
+                                                    orig_fname) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+
+              retval = do_load (file, orig_fname, format,
+                                flt_fmt, list_only, swap, verbose,
+                                argv, i, argc, nargout);
+
+              file.close ();
             }
           else
 #endif
@@ -1666,15 +1662,13 @@ the file @file{data} in Octave's binary format.\n\
 
           hdf5_ofstream hdf5_file (fname.c_str (), mode);
 
-          if (hdf5_file.file_id != -1)
-            {
-              save_vars (argv, i, argc, hdf5_file, format,
-                         save_as_floats, write_header_info);
-
-              hdf5_file.close ();
-            }
-          else
+          if (hdf5_file.file_id == -1)
             err_file_open ("save", fname);
+
+          save_vars (argv, i, argc, hdf5_file, format,
+                     save_as_floats, write_header_info);
+
+          hdf5_file.close ();
         }
       else
 #endif
@@ -1686,34 +1680,30 @@ the file @file{data} in Octave's binary format.\n\
             {
               gzofstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  bool write_header_info = ! file.tellp ();
-
-                  save_vars (argv, i, argc, file, format,
-                             save_as_floats, write_header_info);
-
-                  file.close ();
-                }
-              else
+              if (! file)
                 err_file_open ("save", fname);
+
+              bool write_header_info = ! file.tellp ();
+
+              save_vars (argv, i, argc, file, format,
+                         save_as_floats, write_header_info);
+
+              file.close ();
             }
           else
 #endif
             {
               std::ofstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  bool write_header_info = ! file.tellp ();
-
-                  save_vars (argv, i, argc, file, format,
-                             save_as_floats, write_header_info);
-
-                  file.close ();
-                }
-              else
+              if (! file)
                 err_file_open ("save", fname);
+
+              bool write_header_info = ! file.tellp ();
+
+              save_vars (argv, i, argc, file, format,
+                         save_as_floats, write_header_info);
+
+              file.close ();
             }
         }
     }

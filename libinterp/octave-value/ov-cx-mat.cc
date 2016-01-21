@@ -108,15 +108,13 @@ octave_complex_matrix::double_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                 "complex matrix", "real scalar");
-
-      retval = std::real (matrix (0, 0));
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("complex matrix", "real scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                             "complex matrix", "real scalar");
+
+  retval = std::real (matrix(0, 0));
 
   return retval;
 }
@@ -130,15 +128,13 @@ octave_complex_matrix::float_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                 "complex matrix", "real scalar");
-
-      retval = std::real (matrix (0, 0));
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("complex matrix", "real scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                             "complex matrix", "real scalar");
+
+  retval = std::real (matrix(0, 0));
 
   return retval;
 }
@@ -192,15 +188,13 @@ octave_complex_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                 "complex matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("complex matrix", "complex scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                             "complex matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -212,15 +206,13 @@ octave_complex_matrix::float_complex_value (bool) const
 
   FloatComplex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                 "complex matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("complex matrix", "complex scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                             "complex matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }

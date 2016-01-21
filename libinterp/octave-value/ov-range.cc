@@ -184,15 +184,13 @@ octave_range::double_value (bool) const
 
   octave_idx_type nel = range.numel ();
 
-  if (nel > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "range", "real scalar");
-
-      retval = range.base ();
-    }
-  else
+  if (nel == 0)
     err_invalid_conversion ("range", "real scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "range", "real scalar");
+
+  retval = range.base ();
 
   return retval;
 }
@@ -204,15 +202,13 @@ octave_range::float_value (bool) const
 
   octave_idx_type nel = range.numel ();
 
-  if (nel > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "range", "real scalar");
-
-      retval = range.base ();
-    }
-  else
+  if (nel == 0)
     err_invalid_conversion ("range", "real scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "range", "real scalar");
+
+  retval = range.base ();
 
   return retval;
 }
@@ -294,15 +290,13 @@ octave_range::complex_value (bool) const
 
   octave_idx_type nel = range.numel ();
 
-  if (nel > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "range", "complex scalar");
-
-      retval = range.base ();
-    }
-  else
+  if (nel == 0)
     err_invalid_conversion ("range", "complex scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "range", "complex scalar");
+
+  retval = range.base ();
 
   return retval;
 }
@@ -316,15 +310,13 @@ octave_range::float_complex_value (bool) const
 
   octave_idx_type nel = range.numel ();
 
-  if (nel > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                "range", "complex scalar");
-
-      retval = range.base ();
-    }
-  else
+  if (nel == 0)
     err_invalid_conversion ("range", "complex scalar");
+
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "range", "complex scalar");
+
+  retval = range.base ();
 
   return retval;
 }

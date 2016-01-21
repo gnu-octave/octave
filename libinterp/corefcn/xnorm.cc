@@ -46,52 +46,50 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
   bool issparse = x.is_sparse_type ();
   bool isfloat = x.is_single_type ();
 
-  if (isfloat || x.is_double_type ())
+  if (! isfloat && ! x.is_double_type ())
+    err_wrong_type_arg ("xnorm", x);
+
+  if (x.is_empty ())
+    retval = octave_value (0);
+  else if (isvector)
     {
-      if (x.is_empty ())
-        retval = octave_value (0);
-      else if (isvector)
-        {
-          if (isfloat & iscomplex)
-            retval = xnorm (x.float_complex_column_vector_value (),
-                            p.float_value ());
-          else if (isfloat)
-            retval = xnorm (x.float_column_vector_value (),
-                            p.float_value ());
-          else if (iscomplex)
-            retval = xnorm (x.complex_column_vector_value (),
-                            p.double_value ());
-          else
-            retval = xnorm (x.column_vector_value (),
-                            p.double_value ());
-        }
-      else if (issparse)
-        {
-          if (iscomplex)
-            retval = xnorm (x.sparse_complex_matrix_value (),
-                            p.double_value ());
-          else
-            retval = xnorm (x.sparse_matrix_value (),
-                            p.double_value ());
-        }
+      if (isfloat & iscomplex)
+        retval = xnorm (x.float_complex_column_vector_value (),
+                        p.float_value ());
+      else if (isfloat)
+        retval = xnorm (x.float_column_vector_value (),
+                        p.float_value ());
+      else if (iscomplex)
+        retval = xnorm (x.complex_column_vector_value (),
+                        p.double_value ());
       else
-        {
-          if (isfloat & iscomplex)
-            retval = xnorm (x.float_complex_matrix_value (),
-                            p.float_value ());
-          else if (isfloat)
-            retval = xnorm (x.float_matrix_value (),
-                            p.float_value ());
-          else if (iscomplex)
-            retval = xnorm (x.complex_matrix_value (),
-                            p.double_value ());
-          else
-            retval = xnorm (x.matrix_value (),
-                            p.double_value ());
-        }
+        retval = xnorm (x.column_vector_value (),
+                        p.double_value ());
+    }
+  else if (issparse)
+    {
+      if (iscomplex)
+        retval = xnorm (x.sparse_complex_matrix_value (),
+                        p.double_value ());
+      else
+        retval = xnorm (x.sparse_matrix_value (),
+                        p.double_value ());
     }
   else
-    err_wrong_type_arg ("xnorm", x);
+    {
+      if (isfloat & iscomplex)
+        retval = xnorm (x.float_complex_matrix_value (),
+                        p.float_value ());
+      else if (isfloat)
+        retval = xnorm (x.float_matrix_value (),
+                        p.float_value ());
+      else if (iscomplex)
+        retval = xnorm (x.complex_matrix_value (),
+                        p.double_value ());
+      else
+        retval = xnorm (x.matrix_value (),
+                        p.double_value ());
+    }
 
   return retval;
 }
@@ -104,35 +102,33 @@ octave_value xcolnorms (const octave_value& x, const octave_value& p)
   bool issparse = x.is_sparse_type ();
   bool isfloat = x.is_single_type ();
 
-  if (isfloat || x.is_double_type ())
+  if (! isfloat && ! x.is_double_type ())
+    err_wrong_type_arg ("xcolnorms", x);
+
+  if (issparse)
     {
-      if (issparse)
-        {
-          if (iscomplex)
-            retval = xcolnorms (x.sparse_complex_matrix_value (),
-                                p.double_value ());
-          else
-            retval = xcolnorms (x.sparse_matrix_value (),
-                                p.double_value ());
-        }
+      if (iscomplex)
+        retval = xcolnorms (x.sparse_complex_matrix_value (),
+                            p.double_value ());
       else
-        {
-          if (isfloat & iscomplex)
-            retval = xcolnorms (x.float_complex_matrix_value (),
-                                p.float_value ());
-          else if (isfloat)
-            retval = xcolnorms (x.float_matrix_value (),
-                                p.float_value ());
-          else if (iscomplex)
-            retval = xcolnorms (x.complex_matrix_value (),
-                                p.double_value ());
-          else
-            retval = xcolnorms (x.matrix_value (),
-                                p.double_value ());
-        }
+        retval = xcolnorms (x.sparse_matrix_value (),
+                            p.double_value ());
     }
   else
-    err_wrong_type_arg ("xcolnorms", x);
+    {
+      if (isfloat & iscomplex)
+        retval = xcolnorms (x.float_complex_matrix_value (),
+                            p.float_value ());
+      else if (isfloat)
+        retval = xcolnorms (x.float_matrix_value (),
+                            p.float_value ());
+      else if (iscomplex)
+        retval = xcolnorms (x.complex_matrix_value (),
+                            p.double_value ());
+      else
+        retval = xcolnorms (x.matrix_value (),
+                            p.double_value ());
+    }
 
   return retval;
 }
@@ -145,35 +141,33 @@ octave_value xrownorms (const octave_value& x, const octave_value& p)
   bool issparse = x.is_sparse_type ();
   bool isfloat = x.is_single_type ();
 
-  if (isfloat || x.is_double_type ())
+  if (! isfloat && ! x.is_double_type ())
+    err_wrong_type_arg ("xrownorms", x);
+
+  if (issparse)
     {
-      if (issparse)
-        {
-          if (iscomplex)
-            retval = xrownorms (x.sparse_complex_matrix_value (),
-                                p.double_value ());
-          else
-            retval = xrownorms (x.sparse_matrix_value (),
-                                p.double_value ());
-        }
+      if (iscomplex)
+        retval = xrownorms (x.sparse_complex_matrix_value (),
+                            p.double_value ());
       else
-        {
-          if (isfloat & iscomplex)
-            retval = xrownorms (x.float_complex_matrix_value (),
-                                p.float_value ());
-          else if (isfloat)
-            retval = xrownorms (x.float_matrix_value (),
-                                p.float_value ());
-          else if (iscomplex)
-            retval = xrownorms (x.complex_matrix_value (),
-                                p.double_value ());
-          else
-            retval = xrownorms (x.matrix_value (),
-                                p.double_value ());
-        }
+        retval = xrownorms (x.sparse_matrix_value (),
+                            p.double_value ());
     }
   else
-    err_wrong_type_arg ("xrownorms", x);
+    {
+      if (isfloat & iscomplex)
+        retval = xrownorms (x.float_complex_matrix_value (),
+                            p.float_value ());
+      else if (isfloat)
+        retval = xrownorms (x.float_matrix_value (),
+                            p.float_value ());
+      else if (iscomplex)
+        retval = xrownorms (x.complex_matrix_value (),
+                            p.double_value ());
+      else
+        retval = xrownorms (x.matrix_value (),
+                            p.double_value ());
+    }
 
   return retval;
 }
@@ -186,29 +180,27 @@ octave_value xfrobnorm (const octave_value& x)
   bool issparse = x.is_sparse_type ();
   bool isfloat = x.is_single_type ();
 
-  if (isfloat || x.is_double_type ())
+  if (! isfloat && ! x.is_double_type ())
+    err_wrong_type_arg ("xfrobnorm", x);
+
+  if (issparse)
     {
-      if (issparse)
-        {
-          if (iscomplex)
-            retval = xfrobnorm (x.sparse_complex_matrix_value ());
-          else
-            retval = xfrobnorm (x.sparse_matrix_value ());
-        }
+      if (iscomplex)
+        retval = xfrobnorm (x.sparse_complex_matrix_value ());
       else
-        {
-          if (isfloat & iscomplex)
-            retval = xfrobnorm (x.float_complex_matrix_value ());
-          else if (isfloat)
-            retval = xfrobnorm (x.float_matrix_value ());
-          else if (iscomplex)
-            retval = xfrobnorm (x.complex_matrix_value ());
-          else
-            retval = xfrobnorm (x.matrix_value ());
-        }
+        retval = xfrobnorm (x.sparse_matrix_value ());
     }
   else
-    err_wrong_type_arg ("xfrobnorm", x);
+    {
+      if (isfloat & iscomplex)
+        retval = xfrobnorm (x.float_complex_matrix_value ());
+      else if (isfloat)
+        retval = xfrobnorm (x.float_matrix_value ());
+      else if (iscomplex)
+        retval = xfrobnorm (x.complex_matrix_value ());
+      else
+        retval = xfrobnorm (x.matrix_value ());
+    }
 
   return retval;
 }

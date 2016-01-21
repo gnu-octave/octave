@@ -190,7 +190,7 @@ compute_index (octave_idx_type i, octave_idx_type j, const dim_vector& dims)
 {
   if (i < 0)
     err_invalid_index (i, 2, 1);
-  else if (j < 0)
+  if (j < 0)
     err_invalid_index (j, 2, 2);
   if (i >= dims(0))
     err_index_out_of_range (2, 1, i+1, dims(0), dims);
@@ -206,9 +206,9 @@ compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k,
 {
   if (i < 0)
     err_invalid_index (i, 3, 1);
-  else if (j < 0)
+  if (j < 0)
     err_invalid_index (j, 3, 2);
-  else if (k < 0)
+  if (k < 0)
     err_invalid_index (k, 3, 3);
   if (i >= dims(0))
     err_index_out_of_range (3, 1, i+1, dims(0), dims);

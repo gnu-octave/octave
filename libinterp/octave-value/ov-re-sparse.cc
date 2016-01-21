@@ -97,16 +97,14 @@ octave_sparse_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  if (numel () > 0)
-    {
-      if (numel () > 1)
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  "real sparse matrix", "real scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (numel () == 0)
     err_invalid_conversion ("real sparse matrix", "real scalar");
+
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "real sparse matrix", "real scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -119,16 +117,14 @@ octave_sparse_matrix::complex_value (bool) const
   Complex retval (tmp, tmp);
 
   // FIXME: maybe this should be a function, valid_as_scalar()
-  if (rows () > 0 && columns () > 0)
-    {
-      if (numel () > 1)
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  "real sparse matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("real sparse matrix", "complex scalar");
+
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "real sparse matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -225,27 +221,23 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 
             if (xisnan (d))
               err_nan_to_character_conversion ();
-            else
+
+            int ival = NINT (d);
+
+            if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
               {
-                int ival = NINT (d);
+                // FIXME: is there something better we could do?
 
-                if (ival < 0
-                    || ival > std::numeric_limits<unsigned char>::max ())
+                ival = 0;
+
+                if (! warned)
                   {
-                    // FIXME: is there something better we could do?
-
-                    ival = 0;
-
-                    if (! warned)
-                      {
-                        ::warning ("range error for conversion to character value");
-                        warned = true;
-                      }
+                    ::warning ("range error for conversion to character value");
+                    warned = true;
                   }
-
-                chm (matrix.ridx (i) + j * nr) =
-                  static_cast<char> (ival);
               }
+
+            chm(matrix.ridx (i) + j * nr) = static_cast<char> (ival);
           }
 
       retval = octave_value (chm, type);

@@ -1363,24 +1363,19 @@ octave_base_value::numeric_assign (const std::string& type,
           octave_base_value::type_conv_fcn cf
             = octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
 
-          if (cf)
-            {
-              octave_base_value *tmp = cf (*this);
-
-              if (tmp)
-                {
-                  octave_value val (tmp);
-
-                  retval = val.subsasgn (type, idx, rhs);
-
-                  done = true;
-                }
-              else
-                err_assign_conversion_failed (type_name (),
-                                              rhs.type_name ());
-            }
-          else
+          if (! cf)
             err_indexed_assignment (type_name (), rhs.type_name ());
+
+          octave_base_value *tmp = cf (*this);
+
+          if (! tmp)
+            err_assign_conversion_failed (type_name (), rhs.type_name ());
+
+          octave_value val (tmp);
+
+          retval = val.subsasgn (type, idx, rhs);
+
+          done = true;
         }
 
       if (! done)
@@ -1412,11 +1407,10 @@ octave_base_value::numeric_assign (const std::string& type,
             {
               octave_base_value *tmp = cf_rhs (rhs.get_rep ());
 
-              if (tmp)
-                tmp_rhs = octave_value (tmp);
-              else
-                err_assign_conversion_failed (type_name (),
-                                              rhs.type_name ());
+              if (! tmp)
+                err_assign_conversion_failed (type_name (), rhs.type_name ());
+
+              tmp_rhs = octave_value (tmp);
             }
           else
             tmp_rhs = rhs;
@@ -1428,23 +1422,20 @@ octave_base_value::numeric_assign (const std::string& type,
             {
               octave_base_value *tmp = cf_this (*this);
 
-              if (tmp)
-                tmp_lhs = octave_value (tmp);
-              else
-                err_assign_conversion_failed (type_name (),
-                                              rhs.type_name ());
+              if (! tmp)
+                err_assign_conversion_failed (type_name (), rhs.type_name ());
+
+              tmp_lhs = octave_value (tmp);
             }
 
-          if (cf_this || cf_rhs)
-            {
-              retval = tmp_lhs.subsasgn (type, idx, tmp_rhs);
-
-              done = true;
-            }
-          else
+          if (! cf_this && ! cf_rhs)
             err_no_conversion (octave_value::assign_op_as_string
                                (octave_value::op_asn_eq),
                                type_name (), rhs.type_name ());
+
+          retval = tmp_lhs.subsasgn (type, idx, tmp_rhs);
+
+          done = true;
         }
     }
 

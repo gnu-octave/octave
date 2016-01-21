@@ -415,12 +415,10 @@ octave_base_matrix<MT>::is_true (void) const
 
       if (t1.any_element_is_nan ())
         err_nan_to_logical_conversion ();
-      else
-        {
-          boolNDArray t2 = t1.all ();
 
-          retval = t2(0);
-        }
+      boolNDArray t2 = t1.all ();
+
+      retval = t2(0);
     }
 
   return retval;

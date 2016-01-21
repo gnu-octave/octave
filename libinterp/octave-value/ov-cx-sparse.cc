@@ -113,16 +113,14 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
                               "complex sparse matrix", "real scalar");
 
   // FIXME: maybe this should be a function, valid_as_scalar()
-  if (numel () > 0)
-    {
-      if (numel () > 1)
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  "complex sparse matrix", "real scalar");
-
-      retval = std::real (matrix (0, 0));
-    }
-  else
+  if (numel () == 0)
     err_invalid_conversion ("complex sparse matrix", "real scalar");
+
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "complex sparse matrix", "real scalar");
+
+  retval = std::real (matrix(0, 0));
 
   return retval;
 }
@@ -149,16 +147,14 @@ octave_sparse_complex_matrix::complex_value (bool) const
   Complex retval (tmp, tmp);
 
   // FIXME: maybe this should be a function, valid_as_scalar()
-  if (numel () > 0)
-    {
-      if (numel () > 1)
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  "complex sparse matrix", "real scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
+  if (numel () == 0)
     err_invalid_conversion ("complex sparse matrix", "real scalar");
+
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "complex sparse matrix", "real scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }

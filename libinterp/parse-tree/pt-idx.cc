@@ -182,8 +182,8 @@ make_value_list (tree_argument_list *args, const string_vector& arg_nm,
     {
       if (rvalue && object && args->has_magic_end () && object->is_undefined ())
         err_invalid_inquiry_subscript ();
-      else
-        retval = args->convert_to_const_vector (object);
+
+      retval = args->convert_to_const_vector (object);
     }
 
   octave_idx_type n = retval.length ();
@@ -534,8 +534,8 @@ tree_index_expression::lvalue (void)
               {
                 if (tidx.has_magic_colon ())
                   err_invalid_inquiry_subscript ();
-                else
-                  tmp = Cell ();
+
+                tmp = Cell ();
               }
             else if (tmp.is_zero_by_zero ()
                      && (tmp.is_matrix_type () || tmp.is_string ()))
@@ -569,8 +569,8 @@ tree_index_expression::lvalue (void)
                   {
                     if (pidx.has_magic_colon ())
                       err_invalid_inquiry_subscript ();
-                    else
-                      tmp = octave_map ();
+
+                    tmp = octave_map ();
                   }
                 else if (autoconv)
                   tmp = octave_map ();

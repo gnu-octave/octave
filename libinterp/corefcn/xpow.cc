@@ -1231,18 +1231,16 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          //Potentially complex results
-          NDArray xa = octave_value_extract<NDArray> (a);
-          NDArray xb = octave_value_extract<NDArray> (b);
-          if (! xb.all_integers () && xa.any_element_is_negative ())
-            return octave_value (bsxfun_pow (ComplexNDArray (xa), xb));
-          else
-            return octave_value (bsxfun_pow (xa, xb));
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      //Potentially complex results
+      NDArray xa = octave_value_extract<NDArray> (a);
+      NDArray xb = octave_value_extract<NDArray> (b);
+      if (! xb.all_integers () && xa.any_element_is_negative ())
+        return octave_value (bsxfun_pow (ComplexNDArray (xa), xb));
+      else
+        return octave_value (bsxfun_pow (xa, xb));
     }
 
   int len = a.numel ();
@@ -1316,12 +1314,10 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   ComplexNDArray result (a_dims);
@@ -1412,12 +1408,10 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   ComplexNDArray result (a_dims);
@@ -1459,12 +1453,10 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   ComplexNDArray result (a_dims);
@@ -2553,18 +2545,16 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          //Potentially complex results
-          FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
-          FloatNDArray xb = octave_value_extract<FloatNDArray> (b);
-          if (! xb.all_integers () && xa.any_element_is_negative ())
-            return octave_value (bsxfun_pow (FloatComplexNDArray (xa), xb));
-          else
-            return octave_value (bsxfun_pow (xa, xb));
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      //Potentially complex results
+      FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
+      FloatNDArray xb = octave_value_extract<FloatNDArray> (b);
+      if (! xb.all_integers () && xa.any_element_is_negative ())
+        return octave_value (bsxfun_pow (FloatComplexNDArray (xa), xb));
+      else
+        return octave_value (bsxfun_pow (xa, xb));
     }
 
   int len = a.numel ();
@@ -2638,12 +2628,10 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2734,12 +2722,10 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2781,12 +2767,10 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
         err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   FloatComplexNDArray result (a_dims);

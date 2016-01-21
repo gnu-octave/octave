@@ -102,18 +102,15 @@ public:
   {
     double retval = lo_ieee_nan_value ();
 
-    if (numel () > 0)
-      {
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  type_name (), "real scalar");
-
-        retval = matrix(0).double_value ();
-      }
-    else
+    if (numel () == 0)
       err_invalid_conversion (type_name (), "real scalar");
 
-    return retval;
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              type_name (), "real scalar");
 
+    retval = matrix(0).double_value ();
+
+    return retval;
   }
 
   float
@@ -121,18 +118,15 @@ public:
   {
     float retval = lo_ieee_float_nan_value ();
 
-    if (numel () > 0)
-      {
-        warn_implicit_conversion ("Octave:array-to-scalar",
-                                  type_name (), "real scalar");
-
-        retval = matrix(0).float_value ();
-      }
-    else
+    if (numel () == 0)
       err_invalid_conversion (type_name (), "real scalar");
 
-    return retval;
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              type_name (), "real scalar");
 
+    retval = matrix(0).float_value ();
+
+    return retval;
   }
 
   double scalar_value (bool = false) const { return double_value (); }

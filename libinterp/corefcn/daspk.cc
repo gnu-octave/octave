@@ -85,23 +85,21 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
         }
 
       int tlen = tmp.length ();
-      if (tlen > 0 && tmp(0).is_defined ())
+      if (tlen == 0 || ! tmp(0).is_defined ())
+        err_user_supplied_eval ("daspk");
+
+      if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
         {
-          if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
-            {
-              warning ("daspk: ignoring imaginary part returned from user-supplied function");
-              warned_fcn_imaginary = true;
-            }
-
-          retval = tmp(0).vector_value ();
-
-          if (tlen > 1)
-            ires = tmp(1).idx_type_value ();
-
-          if (retval.is_empty ())
-            err_user_supplied_eval ("daspk");
+          warning ("daspk: ignoring imaginary part returned from user-supplied function");
+          warned_fcn_imaginary = true;
         }
-      else
+
+      retval = tmp(0).vector_value ();
+
+      if (tlen > 1)
+        ires = tmp(1).idx_type_value ();
+
+      if (retval.is_empty ())
         err_user_supplied_eval ("daspk");
     }
 
@@ -137,20 +135,18 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
         }
 
       int tlen = tmp.length ();
-      if (tlen > 0 && tmp(0).is_defined ())
+      if (tlen == 0 || ! tmp(0).is_defined ())
+        err_user_supplied_eval ("daspk");
+
+      if (! warned_jac_imaginary && tmp(0).is_complex_type ())
         {
-          if (! warned_jac_imaginary && tmp(0).is_complex_type ())
-            {
-              warning ("daspk: ignoring imaginary part returned from user-supplied jacobian function");
-              warned_jac_imaginary = true;
-            }
-
-          retval = tmp(0).matrix_value ();
-
-          if (retval.is_empty ())
-            err_user_supplied_eval ("daspk");
+          warning ("daspk: ignoring imaginary part returned from user-supplied jacobian function");
+          warned_jac_imaginary = true;
         }
-      else
+
+      retval = tmp(0).matrix_value ();
+
+      if (retval.is_empty ())
         err_user_supplied_eval ("daspk");
     }
 

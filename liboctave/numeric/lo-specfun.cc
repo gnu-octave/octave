@@ -2332,19 +2332,17 @@ betainc (double x, const Array<double>& a, const Array<double>& b)
   Array<double> retval;
   dim_vector dv = a.dims ();
 
-  if (dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x, a(i), b(i));
-    }
-  else
+  if (dv != b.dims ())
     err_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x, a(i), b(i));
 
   return retval;
 }
@@ -2371,19 +2369,17 @@ betainc (const Array<double>& x, double a, const Array<double>& b)
   Array<double> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x(i), a, b(i));
-    }
-  else
+  if (dv != b.dims ())
     err_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x(i), a, b(i));
 
   return retval;
 }
@@ -2394,19 +2390,17 @@ betainc (const Array<double>& x, const Array<double>& a, double b)
   Array<double> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == a.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x(i), a(i), b);
-    }
-  else
+  if (dv != a.dims ())
     err_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x(i), a(i), b);
 
   return retval;
 }
@@ -2417,19 +2411,17 @@ betainc (const Array<double>& x, const Array<double>& a, const Array<double>& b)
   Array<double> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == a.dims () && dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x(i), a(i), b(i));
-    }
-  else
+  if (dv != a.dims () || dv != b.dims ())
     err_betainc_nonconformant (dv, a.dims (), b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x(i), a(i), b(i));
 
   return retval;
 }
@@ -2480,19 +2472,17 @@ betainc (float x, const Array<float>& a, const Array<float>& b)
   Array<float> retval;
   dim_vector dv = a.dims ();
 
-  if (dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      float *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x, a(i), b(i));
-    }
-  else
+  if (dv != b.dims ())
     err_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  float *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x, a(i), b(i));
 
   return retval;
 }
@@ -2519,19 +2509,17 @@ betainc (const Array<float>& x, float a, const Array<float>& b)
   Array<float> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      float *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x(i), a, b(i));
-    }
-  else
+  if (dv != b.dims ())
     err_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  float *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x(i), a, b(i));
 
   return retval;
 }
@@ -2542,19 +2530,17 @@ betainc (const Array<float>& x, const Array<float>& a, float b)
   Array<float> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == a.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      float *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x(i), a(i), b);
-    }
-  else
+  if (dv != a.dims ())
     err_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  float *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x(i), a(i), b);
 
   return retval;
 }
@@ -2565,19 +2551,17 @@ betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b)
   Array<float> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == a.dims () && dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      float *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betainc (x(i), a(i), b(i));
-    }
-  else
+  if (dv != a.dims () || dv != b.dims ())
     err_betainc_nonconformant (dv, a.dims (), b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  float *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betainc (x(i), a(i), b(i));
 
   return retval;
 }
@@ -3539,19 +3523,17 @@ betaincinv (double x, const Array<double>& a, const Array<double>& b)
   Array<double> retval;
   dim_vector dv = a.dims ();
 
-  if (dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betaincinv (x, a(i), b(i));
-    }
-  else
+  if (dv != b.dims ())
     err_betaincinv_nonconformant (dim_vector (0, 0), dv, b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betaincinv (x, a(i), b(i));
 
   return retval;
 }
@@ -3578,19 +3560,17 @@ betaincinv (const Array<double>& x, double a, const Array<double>& b)
   Array<double> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betaincinv (x(i), a, b(i));
-    }
-  else
+  if (dv != b.dims ())
     err_betaincinv_nonconformant (dv, dim_vector (0, 0), b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betaincinv (x(i), a, b(i));
 
   return retval;
 }
@@ -3601,19 +3581,17 @@ betaincinv (const Array<double>& x, const Array<double>& a, double b)
   Array<double> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == a.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betaincinv (x(i), a(i), b);
-    }
-  else
+  if (dv != a.dims ())
     err_betaincinv_nonconformant (dv, a.dims (), dim_vector (0, 0));
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betaincinv (x(i), a(i), b);
 
   return retval;
 }
@@ -3625,19 +3603,17 @@ betaincinv (const Array<double>& x, const Array<double>& a,
   Array<double> retval;
   dim_vector dv = x.dims ();
 
-  if (dv == a.dims () && dv == b.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-
-      double *pretval = retval.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        *pretval++ = betaincinv (x(i), a(i), b(i));
-    }
-  else
+  if (dv != a.dims () && dv != b.dims ())
     err_betaincinv_nonconformant (dv, a.dims (), b.dims ());
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betaincinv (x(i), a(i), b(i));
 
   return retval;
 }

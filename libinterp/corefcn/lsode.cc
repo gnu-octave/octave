@@ -81,20 +81,18 @@ lsode_user_function (const ColumnVector& x, double t)
           err_user_supplied_eval (e, "lsode");
         }
 
-      if (tmp.length () > 0 && tmp(0).is_defined ())
+      if (tmp.length () == 0 || ! tmp(0).is_defined ())
+        err_user_supplied_eval ("lsode");
+
+      if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
         {
-          if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
-            {
-              warning ("lsode: ignoring imaginary part returned from user-supplied function");
-              warned_fcn_imaginary = true;
-            }
-
-          retval = tmp(0).xvector_value ("lsode: expecting user supplied function to return numeric vector");
-
-          if (retval.is_empty ())
-            err_user_supplied_eval ("lsode");
+          warning ("lsode: ignoring imaginary part returned from user-supplied function");
+          warned_fcn_imaginary = true;
         }
-      else
+
+      retval = tmp(0).xvector_value ("lsode: expecting user supplied function to return numeric vector");
+
+      if (retval.is_empty ())
         err_user_supplied_eval ("lsode");
     }
 
@@ -123,20 +121,18 @@ lsode_user_jacobian (const ColumnVector& x, double t)
           err_user_supplied_eval (e, "lsode");
         }
 
-      if (tmp.length () > 0 && tmp(0).is_defined ())
+      if (tmp.length () == 0 || ! tmp(0).is_defined ())
+        err_user_supplied_eval ("lsode");
+
+      if (! warned_jac_imaginary && tmp(0).is_complex_type ())
         {
-          if (! warned_jac_imaginary && tmp(0).is_complex_type ())
-            {
-              warning ("lsode: ignoring imaginary part returned from user-supplied jacobian function");
-              warned_jac_imaginary = true;
-            }
-
-          retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
-
-          if (retval.is_empty ())
-            err_user_supplied_eval ("lsode");
+          warning ("lsode: ignoring imaginary part returned from user-supplied jacobian function");
+          warned_jac_imaginary = true;
         }
-      else
+
+      retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
+
+      if (retval.is_empty ())
         err_user_supplied_eval ("lsode");
     }
 

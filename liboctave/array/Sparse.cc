@@ -1422,16 +1422,14 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
     }
   else if (idx.extent (nel) > nel)
     {
-      // resize_ok is completely handled here.
-      if (resize_ok)
-        {
-          octave_idx_type ext = idx.extent (nel);
-          Sparse<T> tmp = *this;
-          tmp.resize1 (ext);
-          retval = tmp.index (idx);
-        }
-      else
+      if (! resize_ok)
         err_index_out_of_range (1, 1, idx.extent (nel), nel, dims ());
+
+      // resize_ok is completely handled here.
+      octave_idx_type ext = idx.extent (nel);
+      Sparse<T> tmp = *this;
+      tmp.resize1 (ext);
+      retval = tmp.index (idx);
     }
   else if (nr == 1 && nc == 1)
     {

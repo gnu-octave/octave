@@ -131,14 +131,10 @@ template <class ST>
 bool
 octave_base_scalar<ST>::is_true (void) const
 {
-  bool retval = false;
-
   if (xisnan (scalar))
     err_nan_to_logical_conversion ();
-  else
-    retval = (scalar != ST ());
 
-  return retval;
+  return (scalar != ST ());
 }
 
 template <class ST>

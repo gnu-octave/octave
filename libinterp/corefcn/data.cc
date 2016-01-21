@@ -340,42 +340,40 @@ do_hypot (const octave_value& x, const octave_value& y)
   octave_value arg1 = y;
   if (! arg0.is_numeric_type ())
     err_wrong_type_arg ("hypot", arg0);
-  else if (! arg1.is_numeric_type ())
+  if (! arg1.is_numeric_type ())
     err_wrong_type_arg ("hypot", arg1);
+
+  if (arg0.is_complex_type ())
+    arg0 = arg0.abs ();
+  if (arg1.is_complex_type ())
+    arg1 = arg1.abs ();
+
+  if (arg0.is_single_type () || arg1.is_single_type ())
+    {
+      if (arg0.is_scalar_type () && arg1.is_scalar_type ())
+        retval = hypotf (arg0.float_value (), arg1.float_value ());
+      else
+        {
+          FloatNDArray a0 = arg0.float_array_value ();
+          FloatNDArray a1 = arg1.float_array_value ();
+          retval = binmap<float> (a0, a1, ::hypotf, "hypot");
+        }
+    }
   else
     {
-      if (arg0.is_complex_type ())
-        arg0 = arg0.abs ();
-      if (arg1.is_complex_type ())
-        arg1 = arg1.abs ();
-
-      if (arg0.is_single_type () || arg1.is_single_type ())
+      if (arg0.is_scalar_type () && arg1.is_scalar_type ())
+        retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
+      else if (arg0.is_sparse_type () || arg1.is_sparse_type ())
         {
-          if (arg0.is_scalar_type () && arg1.is_scalar_type ())
-            retval = hypotf (arg0.float_value (), arg1.float_value ());
-          else
-            {
-              FloatNDArray a0 = arg0.float_array_value ();
-              FloatNDArray a1 = arg1.float_array_value ();
-              retval = binmap<float> (a0, a1, ::hypotf, "hypot");
-            }
+          SparseMatrix m0 = arg0.sparse_matrix_value ();
+          SparseMatrix m1 = arg1.sparse_matrix_value ();
+          retval = binmap<double> (m0, m1, ::hypot, "hypot");
         }
       else
         {
-          if (arg0.is_scalar_type () && arg1.is_scalar_type ())
-            retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
-          else if (arg0.is_sparse_type () || arg1.is_sparse_type ())
-            {
-              SparseMatrix m0 = arg0.sparse_matrix_value ();
-              SparseMatrix m1 = arg1.sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, ::hypot, "hypot");
-            }
-          else
-            {
-              NDArray a0 = arg0.array_value ();
-              NDArray a1 = arg1.array_value ();
-              retval = binmap<double> (a0, a1, ::hypot, "hypot");
-            }
+          NDArray a0 = arg0.array_value ();
+          NDArray a1 = arg1.array_value ();
+          retval = binmap<double> (a0, a1, ::hypot, "hypot");
         }
     }
 

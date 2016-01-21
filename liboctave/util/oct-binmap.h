@@ -175,16 +175,14 @@ binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
     return binmap<U, T, R, F> (xa, ya(0), fcn);
   else if (xad != yad)
     {
-      if (is_valid_bsxfun (name, xad, yad))
-        {
-          bsxfun_wrapper<U, T, R, F>::set_f(fcn);
-          return do_bsxfun_op (xa, ya,
-                               bsxfun_wrapper<U, T, R, F>::op_mm,
-                               bsxfun_wrapper<U, T, R, F>::op_sm,
-                               bsxfun_wrapper<U, T, R, F>::op_ms);
-        }
-      else
+      if (! is_valid_bsxfun (name, xad, yad))
         err_nonconformant (name, xad, yad);
+
+      bsxfun_wrapper<U, T, R, F>::set_f(fcn);
+      return do_bsxfun_op (xa, ya,
+                           bsxfun_wrapper<U, T, R, F>::op_mm,
+                           bsxfun_wrapper<U, T, R, F>::op_sm,
+                           bsxfun_wrapper<U, T, R, F>::op_ms);
     }
 
   octave_idx_type len = xa.numel ();

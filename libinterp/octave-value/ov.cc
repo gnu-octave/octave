@@ -2074,13 +2074,11 @@ do_binary_op (octave_value::binary_op op,
       octave_value_typeinfo::binary_class_op_fcn f
         = octave_value_typeinfo::lookup_binary_class_op (op);
 
-      if (f)
-        {
-          retval = f (v1, v2);
-        }
-      else
+      if (! f)
         err_binary_op (octave_value::binary_op_as_string (op),
                        v1.class_name (), v2.class_name ());
+
+      retval = f (v1, v2);
     }
   else
     {
@@ -2117,13 +2115,11 @@ do_binary_op (octave_value::binary_op op,
             {
               octave_base_value *tmp = cf1 (*v1.rep);
 
-              if (tmp)
-                {
-                  tv1 = octave_value (tmp);
-                  t1 = tv1.type_id ();
-                }
-              else
+              if (! tmp)
                 err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+              tv1 = octave_value (tmp);
+              t1 = tv1.type_id ();
             }
           else
             tv1 = v1;
@@ -2132,13 +2128,11 @@ do_binary_op (octave_value::binary_op op,
             {
               octave_base_value *tmp = cf2 (*v2.rep);
 
-              if (tmp)
-                {
-                  tv2 = octave_value (tmp);
-                  t2 = tv2.type_id ();
-                }
-              else
+              if (! tmp)
                 err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+              tv2 = octave_value (tmp);
+              t2 = tv2.type_id ();
             }
           else
             tv2 = v2;
@@ -2169,14 +2163,11 @@ do_binary_op (octave_value::binary_op op,
                 {
                   octave_base_value *tmp = cf1 (*tv1.rep);
 
-                  if (tmp)
-                    {
-                      tv1 = octave_value (tmp);
-                      t1 = tv1.type_id ();
-                    }
-                  else
-                    err_binary_op_conv
-                      (octave_value::binary_op_as_string (op));
+                  if (! tmp)
+                    err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                  tv1 = octave_value (tmp);
+                  t1 = tv1.type_id ();
                 }
 
               if (cf2)
@@ -2193,19 +2184,17 @@ do_binary_op (octave_value::binary_op op,
                       (octave_value::binary_op_as_string (op));
                 }
 
-              if (cf1 || cf2)
-                {
-                  f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
-
-                  if (f)
-                    retval = f (*tv1.rep, *tv2.rep);
-                  else
-                    err_binary_op (octave_value::binary_op_as_string (op),
-                                   v1.type_name (), v2.type_name ());
-                }
-              else
+              if (! cf1 && ! cf2)
                 err_binary_op (octave_value::binary_op_as_string (op),
                                v1.type_name (), v2.type_name ());
+
+              f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+
+              if (! f)
+                err_binary_op (octave_value::binary_op_as_string (op),
+                               v1.type_name (), v2.type_name ());
+
+              retval = f (*tv1.rep, *tv2.rep);
             }
         }
     }
@@ -2365,13 +2354,11 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
         {
           octave_base_value *tmp = cf1 (*v1.rep);
 
-          if (tmp)
-            {
-              tv1 = octave_value (tmp);
-              t1 = tv1.type_id ();
-            }
-          else
+          if (! tmp)
             err_cat_op_conv ();
+
+          tv1 = octave_value (tmp);
+          t1 = tv1.type_id ();
         }
       else
         tv1 = v1;
@@ -2380,23 +2367,19 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
         {
           octave_base_value *tmp = cf2 (*v2.rep);
 
-          if (tmp)
-            {
-              tv2 = octave_value (tmp);
-              t2 = tv2.type_id ();
-            }
-          else
+          if (! tmp)
             err_cat_op_conv ();
+
+          tv2 = octave_value (tmp);
+          t2 = tv2.type_id ();
         }
       else
         tv2 = v2;
 
-      if (cf1 || cf2)
-        {
-          retval = do_cat_op (tv1, tv2, ra_idx);
-        }
-      else
+      if (! cf1 && ! cf2)
         err_cat_op (v1.type_name (), v2.type_name ());
+
+      retval = do_cat_op (tv1, tv2, ra_idx);
     }
 
   return retval;
@@ -2536,11 +2519,10 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
       octave_value_typeinfo::unary_class_op_fcn f
         = octave_value_typeinfo::lookup_unary_class_op (op);
 
-      if (f)
-        retval = f (v);
-      else
-        err_unary_op (octave_value::unary_op_as_string (op),
-                      v.class_name ());
+      if (! f)
+        err_unary_op (octave_value::unary_op_as_string (op), v.class_name ());
+
+      retval = f (v);
     }
   else
     {
@@ -2558,21 +2540,17 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
           octave_base_value::type_conv_fcn cf
             = v.numeric_conversion_function ();
 
-          if (cf)
-            {
-              octave_base_value *tmp = cf (*v.rep);
-
-              if (tmp)
-                {
-                  tv = octave_value (tmp);
-                  retval = do_unary_op (op, tv);
-                }
-              else
-                err_unary_op_conv (octave_value::unary_op_as_string (op));
-            }
-          else
+          if (! cf)
             err_unary_op (octave_value::unary_op_as_string (op),
                           v.type_name ());
+
+          octave_base_value *tmp = cf (*v.rep);
+
+          if (! tmp)
+            err_unary_op_conv (octave_value::unary_op_as_string (op));
+
+          tv = octave_value (tmp);
+          retval = do_unary_op (op, tv);
         }
     }
 
@@ -2619,47 +2597,42 @@ octave_value::do_non_const_unary_op (unary_op op)
         {
           octave_base_value::type_conv_fcn cf = numeric_conversion_function ();
 
-          if (cf)
+          if (! cf)
+            err_unary_op (octave_value::unary_op_as_string (op), type_name ());
+
+          octave_base_value *tmp = cf (*rep);
+
+          if (! tmp)
+            err_unary_op_conversion_failed
+              (octave_value::unary_op_as_string (op), type_name ());
+
+          octave_base_value *old_rep = rep;
+          rep = tmp;
+
+          t = type_id ();
+
+          f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+
+          if (f)
             {
-              octave_base_value *tmp = cf (*rep);
+              f (*rep);
 
-              if (tmp)
-                {
-                  octave_base_value *old_rep = rep;
-                  rep = tmp;
-
-                  t = type_id ();
-
-                  f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
-
-                  if (f)
-                    {
-                      f (*rep);
-
-                      if (old_rep && --old_rep->count == 0)
-                        delete old_rep;
-                    }
-                  else
-                    {
-                      if (old_rep)
-                        {
-                          if (--rep->count == 0)
-                            delete rep;
-
-                          rep = old_rep;
-                        }
-
-                      err_unary_op (octave_value::unary_op_as_string (op),
-                                    type_name ());
-                    }
-                }
-              else
-                err_unary_op_conversion_failed
-                  (octave_value::unary_op_as_string (op), type_name ());
+              if (old_rep && --old_rep->count == 0)
+                delete old_rep;
             }
           else
-            err_unary_op (octave_value::unary_op_as_string (op),
-                          type_name ());
+            {
+              if (old_rep)
+                {
+                  if (--rep->count == 0)
+                    delete rep;
+
+                  rep = old_rep;
+                }
+
+              err_unary_op (octave_value::unary_op_as_string (op),
+                            type_name ());
+            }
         }
     }
   else

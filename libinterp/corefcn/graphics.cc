@@ -9613,7 +9613,7 @@ each individual object will be reset.\n\
 
   Fdrawnow ();
 
-  return octave_value ();
+  return ovl ();
 }
 
 /*

@@ -2037,8 +2037,8 @@ Undocumented internal function.\n\
                         "audio playback and recording through PortAudio");
 #else
   get_recorder (args(0))->pause ();
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__recorder_recordblocking__, args, ,
@@ -2053,8 +2053,8 @@ Undocumented internal function.\n\
 #else
   float seconds = args(1).float_value ();
   get_recorder (args(0))->recordblocking (seconds);
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__recorder_record__, args, ,
@@ -2074,8 +2074,8 @@ Undocumented internal function.\n\
     recorder->set_end_sample (args(1).int_value () * recorder->get_fs ());
 
   recorder->record ();
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__recorder_resume__, args, ,
@@ -2090,8 +2090,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 1)
     get_recorder (args(0))->resume ();
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__recorder_set_fs__, args, ,
@@ -2106,8 +2106,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 2)
     get_recorder (args(0))->set_fs (args(1).int_value ());
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__recorder_set_tag__, args, ,
@@ -2122,8 +2122,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 2)
     get_recorder (args(0))->set_tag (args(1).char_matrix_value ());
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__recorder_set_userdata__, args, ,
@@ -2138,8 +2138,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 2)
     get_recorder (args(0))->set_userdata (args(1));
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__recorder_stop__, args, ,
@@ -2154,8 +2154,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 1)
     get_recorder (args(0))->stop ();
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_audioplayer__, args, ,
@@ -2393,8 +2393,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 1)
     get_player (args(0))->pause ();
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_playblocking__, args, ,
@@ -2445,9 +2445,8 @@ Undocumented internal function.\n\
       player->playblocking ();
     }
 
+  return ovl ();
 #endif
-
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_play__, args, ,
@@ -2498,9 +2497,8 @@ Undocumented internal function.\n\
       player->play ();
     }
 
+  return ovl ();
 #endif
-
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_resume__, args, ,
@@ -2515,8 +2513,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 1)
     get_player (args(0))->resume ();
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_set_fs__, args, ,
@@ -2531,8 +2529,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 2)
     get_player (args(0))->set_fs (args(1).int_value ());
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_set_tag__, args, ,
@@ -2547,8 +2545,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 2)
     get_player (args(0))->set_tag (args(1).char_matrix_value ());
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_set_userdata__, args, ,
@@ -2563,8 +2561,8 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 2)
     get_player (args(0))->set_userdata (args(1));
+  return ovl ();
 #endif
-  return octave_value ();
 }
 
 DEFUN_DLD (__player_stop__, args, ,
@@ -2579,6 +2577,6 @@ Undocumented internal function.\n\
 #else
   if (args.length () == 1)
     get_player (args(0))->stop ();
+  return ovl ();
 #endif
-  return octave_value ();
 }

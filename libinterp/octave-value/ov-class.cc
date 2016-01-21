@@ -2016,7 +2016,7 @@ may @emph{only} be called from a class constructor.\n\
                sup_class.c_str (), inf_class.c_str ());
     }
 
-  return octave_value ();
+  return ovl ();
 }
 
 DEFUN (inferiorto, args, ,

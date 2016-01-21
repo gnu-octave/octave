@@ -28,6 +28,16 @@ am__v_PDFTEX_ = $(am__v_PDFTEX_$(AM_DEFAULT_VERBOSITY))
 am__v_PDFTEX_0 = @echo "  PDFTEX  " $@;
 am__v_PDFTEX_1 =
 
+## Conditionally define the following variables so that --disable-docs
+## can work.  If we don't define them, Automake will always define them,
+## even when AMCOND_BUILD_DOCS is false.
+
+INFO_DEPS =
+DVIS =
+PDFS =
+PSS =
+HTMLS =
+
 if AMCOND_BUILD_DOCS
 
 ## Listing "dvi" explicitly here seems to cause two simultaneous
@@ -235,6 +245,12 @@ info_TEXINFOS += \
 octave_TEXINFOS = \
   $(BUILT_OCTAVE_TEXI_SRC)
 
+INFO_DEPS += $(srcdir)/doc/interpreter/octave.info
+DVIS += doc/interpreter/octave.dvi
+PDFS += doc/interpreter/octave.pdf
+PSS += doc/interpreter/octave.ps
+HTMLS += doc/interpreter/octave.html
+
 ## As of version 1.14.1, automake does not seem to generate
 ## rules for DVI, PDF, or HTML output that work for us when
 ## there are additional dependencies, so we include our own
@@ -432,6 +448,12 @@ liboctave_TEXINFOS = \
 
 info_TEXINFOS += \
   doc/liboctave/liboctave.texi
+
+INFO_DEPS += $(srcdir)/doc/liboctave/liboctave.info
+DVIS += doc/liboctave/liboctave.dvi
+PDFS += doc/liboctave/liboctave.pdf
+PSS += doc/liboctave/liboctave.ps
+HTMLS += doc/liboctave/liboctave.html
 
 doc/liboctave/liboctave.dvi: doc/liboctave/liboctave.texi $(srcdir)/doc/liboctave/version-liboctave.texi | doc/liboctave/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \

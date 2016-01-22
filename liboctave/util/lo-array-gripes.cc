@@ -147,7 +147,17 @@ gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
 {
   std::ostringstream buf;
   buf << n + 1;
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_invalid_index (buf.str (), nd, dim, var);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -156,7 +166,17 @@ gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
 {
   std::ostringstream buf;
   buf << n + 1;
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_invalid_index (buf.str (), nd, dim, var);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 

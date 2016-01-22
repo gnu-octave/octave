@@ -199,7 +199,16 @@ gripe_user_supplied_eval (const char *name)
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_user_supplied_eval (e, name);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -221,7 +230,16 @@ gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, name, s, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -239,14 +257,32 @@ gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, name, s.c_str (), is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
 gripe_wrong_type_arg (octave_execution_exception& e,
                       const char *name, const std::string& s, bool is_error)
 {
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, name, s.c_str (), is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -255,7 +291,16 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, name, tc, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -265,7 +310,16 @@ gripe_wrong_type_arg (octave_execution_exception& e,
 {
   std::string type = tc.type_name ();
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, name, type, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -274,7 +328,16 @@ gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, name, tc, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -282,7 +345,16 @@ gripe_wrong_type_arg (octave_execution_exception& e,
                       const std::string& name, const octave_value& tc,
                       bool is_error)
 {
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, name.c_str (), tc, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -290,7 +362,16 @@ gripe_wrong_type_arg (const char *s, bool is_error)
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, s, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -308,14 +389,32 @@ gripe_wrong_type_arg (const std::string& s, bool is_error)
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, s, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
 gripe_wrong_type_arg (octave_execution_exception& e,
                       const std::string& s, bool is_error)
 {
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, s.c_str (), is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -323,7 +422,16 @@ gripe_wrong_type_arg (const octave_value& tc, bool is_error)
 {
   octave_execution_exception e;
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, tc, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void
@@ -332,7 +440,16 @@ gripe_wrong_type_arg (octave_execution_exception& e,
 {
   std::string type = tc.type_name ();
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   gripe_wrong_type_arg (e, type, is_error);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
+#endif
 }
 
 void

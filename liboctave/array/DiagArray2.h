@@ -97,7 +97,9 @@ public:
 
   dim_vector dims (void) const { return dim_vector (d1, d2); }
 
-  OCTAVE_DEPRECATED Array<T> diag (octave_idx_type k = 0) const;
+  OCTAVE_DEPRECATED ("use 'extract_diag' instead")
+  Array<T> diag (octave_idx_type k = 0) const;
+
   Array<T> extract_diag (octave_idx_type k = 0) const;
   DiagArray2<T> build_diag_matrix () const
   {

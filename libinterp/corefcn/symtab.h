@@ -1339,9 +1339,8 @@ public:
       inst->do_assign (name, value, context, force_add);
   }
 
-  // Use assign (name, value, scope, context, force_add) instead.
-  OCTAVE_DEPRECATED static
-  octave_value&
+  OCTAVE_DEPRECATED ("use 'assign' instead")
+  static octave_value&
   varref (const std::string& name, scope_id scope = xcurrent_scope,
           context_id context = xdefault_context, bool force_add = false)
   {
@@ -1363,9 +1362,8 @@ public:
     assign (name, value, scope, context, true);
   }
 
-  // Use force_assign (name, value, scope, context) instead.
-  OCTAVE_DEPRECATED static
-  octave_value&
+  OCTAVE_DEPRECATED ("use 'force_assign' instead")
+  static octave_value&
   force_varref (const std::string& name, scope_id scope = xcurrent_scope,
                 context_id context = xdefault_context)
   {
@@ -1398,9 +1396,8 @@ public:
       p->second = value;
   }
 
-  // Use global_assign (name, value) instead.
-  OCTAVE_DEPRECATED static
-  octave_value&
+  OCTAVE_DEPRECATED ("use 'global_assign' instead")
+  static octave_value&
   global_varref (const std::string& name)
 
   {
@@ -1424,9 +1421,8 @@ public:
     assign (name, value, top_scope (), 0);
   }
 
-  // Use top_level_assign (name, value) instead.
-  OCTAVE_DEPRECATED static
-  octave_value&
+  OCTAVE_DEPRECATED ("use 'top_level_assign' instead")
+  static octave_value&
   top_level_varref (const std::string& name)
   {
     static octave_value foobar;
@@ -1452,9 +1448,8 @@ public:
       inst->do_persistent_assign (name, value);
   }
 
-  // Use persistent_assign (name, value) instead.
-  OCTAVE_DEPRECATED static
-  octave_value&
+  OCTAVE_DEPRECATED ("use 'persistent_assign' instead")
+  static octave_value&
   persistent_varref (const std::string& name)
   {
     static octave_value foobar;

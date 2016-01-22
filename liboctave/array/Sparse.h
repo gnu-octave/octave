@@ -243,9 +243,12 @@ public:
   //! Amount of storage for nonzero elements.
   //! This may differ from the actual number of elements, see nnz().
   octave_idx_type nzmax (void) const { return rep->length (); }
+
   //! Amount of storage for nonzero elements.
   //! Synonymous with nzmax().
-  OCTAVE_DEPRECATED octave_idx_type capacity (void) const { return nzmax (); }
+  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  octave_idx_type capacity (void) const { return nzmax (); }
+
   //! Actual number of nonzero terms.
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
@@ -256,8 +259,11 @@ public:
     return dimensions.safe_numel ();
   }
 
-  OCTAVE_DEPRECATED octave_idx_type nelem (void) const { return nzmax (); }
-  OCTAVE_DEPRECATED octave_idx_type length (void) const { return numel (); }
+  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  octave_idx_type nelem (void) const { return nzmax (); }
+
+  OCTAVE_DEPRECATED ("use 'numel' instead")
+  octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
   octave_idx_type dim2 (void) const { return dimensions(1); }

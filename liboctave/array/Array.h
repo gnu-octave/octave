@@ -254,7 +254,8 @@ public:
   //! Number of elements in the array.
   //! Synonymous with numel().
   //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED octave_idx_type capacity (void) const { return numel (); }
+  OCTAVE_DEPRECATED ("use 'numel' instead")
+  octave_idx_type capacity (void) const { return numel (); }
 
   //! Number of elements in the array.
   /*! Synonymous with numel().
@@ -266,12 +267,14 @@ public:
       length of the greatest dimension.  This method returns the total
       number of elements.
    */
-  OCTAVE_DEPRECATED octave_idx_type length (void) const { return numel (); }
+  OCTAVE_DEPRECATED ("use 'numel' instead")
+  octave_idx_type length (void) const { return numel (); }
 
   //! Number of elements in the array.
   //! Synonymous with numel().
   //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
+  OCTAVE_DEPRECATED ("use 'numel' instead")
+  octave_idx_type nelem (void) const { return numel (); }
 
   //! Number of elements in the array.
   octave_idx_type numel (void) const { return slice_len; }

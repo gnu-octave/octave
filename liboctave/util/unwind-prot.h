@@ -50,14 +50,16 @@ public:
     lifo.push (new_elem);
   }
 
-  OCTAVE_DEPRECATED void add (void (*fcn) (void *), void *ptr = 0)
+  OCTAVE_DEPRECATED ("use 'add (new fcn_arg_elem<void *> (fcn, ptr))' instead")
+  void add (void (*fcn) (void *), void *ptr = 0)
   {
     add (new fcn_arg_elem<void *> (fcn, ptr));
   }
 
   operator bool (void) const { return ! empty (); }
 
-  OCTAVE_DEPRECATED void run_top (void) { run_first (); }
+  OCTAVE_DEPRECATED ("use 'run_first' instead")
+  void run_top (void) { run_first (); }
 
   void run_first (void)
   {
@@ -70,9 +72,11 @@ public:
       }
   }
 
-  OCTAVE_DEPRECATED void run_top (int num) { run (num); }
+  OCTAVE_DEPRECATED ("use 'run' instead")
+  void run_top (int num) { run (num); }
 
-  OCTAVE_DEPRECATED void discard_top (void) { discard_first (); }
+  OCTAVE_DEPRECATED ("use 'discard_first' instead")
+  void discard_top (void) { discard_first (); }
 
   void discard_first (void)
   {
@@ -84,7 +88,8 @@ public:
       }
   }
 
-  OCTAVE_DEPRECATED void discard_top (int num) { discard (num); }
+  OCTAVE_DEPRECATED ("use 'discard' instead")
+  void discard_top (int num) { discard (num); }
 
   size_t size (void) const { return lifo.size (); }
 

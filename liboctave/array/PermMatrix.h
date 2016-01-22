@@ -37,13 +37,15 @@ public:
 
   PermMatrix (octave_idx_type n);
 
-  OCTAVE_DEPRECATED PermMatrix (const Array<octave_idx_type>& p);
+  OCTAVE_DEPRECATED ("use 'PermMatrix (p, false, true)' instead")
+  PermMatrix (const Array<octave_idx_type>& p);
 
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
 
   PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
 
-  OCTAVE_DEPRECATED PermMatrix (const idx_vector& idx);
+  OCTAVE_DEPRECATED ("use 'PermVector (idx, false, 0)' instead")
+  PermMatrix (const idx_vector& idx);
 
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 
@@ -61,7 +63,10 @@ public:
   // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const
   { return perm_length (); }
-  OCTAVE_DEPRECATED octave_idx_type nelem (void) const { return numel (); }
+
+  OCTAVE_DEPRECATED ("use 'numel' instead")
+  octave_idx_type nelem (void) const { return numel (); }
+
   octave_idx_type numel (void) const { return dim1 () * dim2 (); }
 
   size_t byte_size (void) const

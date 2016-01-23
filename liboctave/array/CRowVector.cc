@@ -79,10 +79,7 @@ ComplexRowVector::insert (const RowVector& a, octave_idx_type c)
   octave_idx_type a_len = a.numel ();
 
   if (c < 0 || c + a_len > numel ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for insert");
 
   if (a_len > 0)
     {
@@ -101,10 +98,7 @@ ComplexRowVector::insert (const ComplexRowVector& a, octave_idx_type c)
   octave_idx_type a_len = a.numel ();
 
   if (c < 0 || c + a_len > numel ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for insert");
 
   if (a_len > 0)
     {
@@ -155,10 +149,7 @@ ComplexRowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
   octave_idx_type len = numel ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   if (c1 > c2) { std::swap (c1, c2); }
 
@@ -180,10 +171,7 @@ ComplexRowVector::fill (const Complex& val,
   octave_idx_type len = numel ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   if (c1 > c2) { std::swap (c1, c2); }
 

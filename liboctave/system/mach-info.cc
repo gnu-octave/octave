@@ -150,12 +150,8 @@ oct_mach_info::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create command history object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create command history object!");
 
   return retval;
 }
@@ -195,8 +191,7 @@ oct_mach_info::string_to_float_format (const std::string& s)
   else if (s == "unknown")
     retval = oct_mach_info::flt_fmt_unknown;
   else
-    (*current_liboctave_error_handler)
-      ("invalid architecture type specified");
+    (*current_liboctave_error_handler) ("invalid architecture type specified");
 
   return retval;
 }

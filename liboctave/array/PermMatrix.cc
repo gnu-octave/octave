@@ -33,8 +33,7 @@ OCTAVE_NORETURN static
 void
 err_invalid_permutation (void)
 {
-  (*current_liboctave_error_handler)
-    ("PermMatrix: invalid permutation vector");
+  (*current_liboctave_error_handler) ("PermMatrix: invalid permutation vector");
 }
 
 void
@@ -102,12 +101,9 @@ PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 {
   octave_idx_type len = Array<octave_idx_type>::numel ();
   if (i < 0 || j < 0 || i > len || j > len)
-    {
-      (*current_liboctave_error_handler) ("index out of range");
-      return 0;
-    }
-  else
-    return elem (i, j);
+    (*current_liboctave_error_handler) ("index out of range");
+
+  return elem (i, j);
 }
 
 

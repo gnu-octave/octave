@@ -269,6 +269,7 @@ octave_ieee_init (void)
           // experiment with building Octave on a system without IEEE
           // floating point should be capable of removing this check and
           // the configure test.
+          // FIXME: Should this be a warning so that abort is reached?
           (*current_liboctave_error_handler)
             ("lo_ieee_init: floating point format is not IEEE!  Maybe DLAMCH is miscompiled, or you are using some strange system without IEEE floating point math?");
           abort ();

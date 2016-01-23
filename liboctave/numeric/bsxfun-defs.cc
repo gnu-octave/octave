@@ -56,12 +56,9 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
       else if (yk == 1 || xk == yk)
         dvr(i) = xk;
       else
-        {
-          (*current_liboctave_error_handler)
-            ("bsxfun: nonconformant dimensions: %s and %s",
-             x.dims ().str ().c_str (), y.dims ().str ().c_str ());
-          break;
-        }
+        (*current_liboctave_error_handler)
+          ("bsxfun: nonconformant dimensions: %s and %s",
+           x.dims ().str ().c_str (), y.dims ().str ().c_str ());
     }
 
   Array<R> retval (dvr);

@@ -175,6 +175,7 @@ LSODE::do_integrate (double tout)
             }
           else
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("lsode: invalid value for maximum order");
               integration_error = true;
@@ -210,6 +211,7 @@ LSODE::do_integrate (double tout)
 
       if (x.numel () != xdot.numel ())
         {
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("lsode: inconsistent sizes for state and derivative vectors");
 
@@ -232,6 +234,7 @@ LSODE::do_integrate (double tout)
         itol = 2;
       else
         {
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("lsode: inconsistent sizes for state and absolute tolerance vectors");
 
@@ -304,8 +307,7 @@ LSODE::do_integrate (double tout)
     default:
       integration_error = true;
       (*current_liboctave_error_handler)
-        ("unrecognized value of istate (= %d) returned from lsode",
-         istate);
+        ("unrecognized value of istate (= %d) returned from lsode", istate);
       break;
     }
 

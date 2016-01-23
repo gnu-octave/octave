@@ -73,10 +73,7 @@ ColumnVector::insert (const ColumnVector& a, octave_idx_type r)
   octave_idx_type a_len = a.numel ();
 
   if (r < 0 || r + a_len > numel ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for insert");
 
   if (a_len > 0)
     {
@@ -111,10 +108,7 @@ ColumnVector::fill (double val, octave_idx_type r1, octave_idx_type r2)
   octave_idx_type len = numel ();
 
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   if (r1 > r2) { std::swap (r1, r2); }
 

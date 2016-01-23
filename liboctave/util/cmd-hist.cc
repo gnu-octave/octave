@@ -512,12 +512,8 @@ command_history::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create command history object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create command history object!");
 
   return retval;
 }

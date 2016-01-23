@@ -65,11 +65,8 @@ FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b,
   octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
-    {
-      (*current_liboctave_error_handler)
-        ("FloatGEPBALANCE requires square matrix");
-      return -1;
-    }
+    (*current_liboctave_error_handler)
+      ("FloatGEPBALANCE requires square matrix");
 
   if (a.dims () != b.dims ())
     err_nonconformant ("FloatGEPBALANCE", n, n, b.rows(), b.cols());

@@ -89,11 +89,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
-    {
-      (*current_liboctave_error_handler)
-        ("SparseCHOL requires square matrix");
-      return -1;
-    }
+    (*current_liboctave_error_handler) ("SparseCHOL requires square matrix");
 
   cholmod_common *cm = &Common;
 

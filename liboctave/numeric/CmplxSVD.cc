@@ -57,26 +57,20 @@ ComplexMatrix
 ComplexSVD::left_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
-    {
-      (*current_liboctave_error_handler)
-        ("ComplexSVD: U not computed because type == SVD::sigma_only");
-      return ComplexMatrix ();
-    }
-  else
-    return left_sm;
+    (*current_liboctave_error_handler)
+      ("ComplexSVD: U not computed because type == SVD::sigma_only");
+
+  return left_sm;
 }
 
 ComplexMatrix
 ComplexSVD::right_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
-    {
-      (*current_liboctave_error_handler)
-        ("ComplexSVD: V not computed because type == SVD::sigma_only");
-      return ComplexMatrix ();
-    }
-  else
-    return right_sm;
+    (*current_liboctave_error_handler)
+      ("ComplexSVD: V not computed because type == SVD::sigma_only");
+
+  return right_sm;
 }
 
 octave_idx_type

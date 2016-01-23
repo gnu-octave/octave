@@ -165,8 +165,7 @@ void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
 
   sdv(dim) = ddv(dim) = 0;
   if (ddv != sdv)
-    (*current_liboctave_error_handler)
-      ("accumdim: dimension mismatch");
+    (*current_liboctave_error_handler) ("accumdim: dimension mismatch");
 
   T *dst = Array<T>::fortran_vec ();
   const T *src = vals.data ();

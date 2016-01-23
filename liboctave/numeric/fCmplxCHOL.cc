@@ -92,11 +92,8 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool upper, bool calc_cond)
   octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
-    {
-      (*current_liboctave_error_handler)
-        ("FloatComplexCHOL requires square matrix");
-      return -1;
-    }
+    (*current_liboctave_error_handler)
+      ("FloatComplexCHOL requires square matrix");
 
   octave_idx_type n = a_nc;
   octave_idx_type info;
@@ -165,41 +162,39 @@ chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
   octave_idx_type r_nr = r.rows ();
   octave_idx_type r_nc = r.cols ();
 
-  if (r_nr == r_nc)
-    {
-      octave_idx_type n = r_nc;
-      octave_idx_type info;
-
-      FloatComplexMatrix tmp = r;
-
-      if (is_upper)
-        F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                                   tmp.fortran_vec (), n, info
-                                   F77_CHAR_ARG_LEN (1)));
-      else
-        F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                                   tmp.fortran_vec (), n, info
-                                   F77_CHAR_ARG_LEN (1)));
-
-      // If someone thinks of a more graceful way of doing this (or
-      // faster for that matter :-)), please let me know!
-
-      if (n > 1)
-        {
-          if (is_upper)
-            for (octave_idx_type j = 0; j < r_nc; j++)
-              for (octave_idx_type i = j+1; i < r_nr; i++)
-                tmp.xelem (i, j) = tmp.xelem (j, i);
-          else
-            for (octave_idx_type j = 0; j < r_nc; j++)
-              for (octave_idx_type i = j+1; i < r_nr; i++)
-                tmp.xelem (j, i) = tmp.xelem (i, j);
-        }
-
-      retval = tmp;
-    }
-  else
+  if (r_nr != r_nc)
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+
+  octave_idx_type n = r_nc;
+  octave_idx_type info;
+
+  FloatComplexMatrix tmp = r;
+
+  if (is_upper)
+    F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                               tmp.fortran_vec (), n, info
+                               F77_CHAR_ARG_LEN (1)));
+  else
+    F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
+                               tmp.fortran_vec (), n, info
+                               F77_CHAR_ARG_LEN (1)));
+
+  // If someone thinks of a more graceful way of doing this (or
+  // faster for that matter :-)), please let me know!
+
+  if (n > 1)
+    {
+      if (is_upper)
+        for (octave_idx_type j = 0; j < r_nc; j++)
+          for (octave_idx_type i = j+1; i < r_nr; i++)
+            tmp.xelem (i, j) = tmp.xelem (j, i);
+      else
+        for (octave_idx_type j = 0; j < r_nc; j++)
+          for (octave_idx_type i = j+1; i < r_nr; i++)
+            tmp.xelem (j, i) = tmp.xelem (i, j);
+    }
+
+  retval = tmp;
 
   return retval;
 }
@@ -214,10 +209,10 @@ FloatComplexCHOL::inverse (void) const
 void
 FloatComplexCHOL::set (const FloatComplexMatrix& R)
 {
-  if (R.is_square ())
-    chol_mat = R;
-  else
+  if (! R.is_square ())
     (*current_liboctave_error_handler) ("CHOL requires square matrix");
+
+  chol_mat = R;
 }
 
 #ifdef HAVE_QRUPDATE
@@ -227,17 +222,15 @@ FloatComplexCHOL::update (const FloatComplexColumnVector& u)
 {
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.numel () == n)
-    {
-      FloatComplexColumnVector utmp = u;
-
-      OCTAVE_LOCAL_BUFFER (float, rw, n);
-
-      F77_XFCN (cch1up, CCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                                 utmp.fortran_vec (), rw));
-    }
-  else
+  if (u.numel () != n)
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
+
+  FloatComplexColumnVector utmp = u;
+
+  OCTAVE_LOCAL_BUFFER (float, rw, n);
+
+  F77_XFCN (cch1up, CCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                             utmp.fortran_vec (), rw));
 }
 
 octave_idx_type
@@ -247,17 +240,15 @@ FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.numel () == n)
-    {
-      FloatComplexColumnVector utmp = u;
-
-      OCTAVE_LOCAL_BUFFER (float, rw, n);
-
-      F77_XFCN (cch1dn, CCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                                 utmp.fortran_vec (), rw, info));
-    }
-  else
+  if (u.numel () != n)
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
+
+  FloatComplexColumnVector utmp = u;
+
+  OCTAVE_LOCAL_BUFFER (float, rw, n);
+
+  F77_XFCN (cch1dn, CCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                             utmp.fortran_vec (), rw, info));
 
   return info;
 }
@@ -272,19 +263,17 @@ FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u,
 
   if (u.numel () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
-  else if (j < 0 || j > n)
+  if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");
-  else
-    {
-      FloatComplexColumnVector utmp = u;
 
-      OCTAVE_LOCAL_BUFFER (float, rw, n);
+  FloatComplexColumnVector utmp = u;
 
-      chol_mat.resize (n+1, n+1);
+  OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      F77_XFCN (cchinx, CCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                                 j + 1, utmp.fortran_vec (), rw, info));
-    }
+  chol_mat.resize (n+1, n+1);
+
+  F77_XFCN (cchinx, CCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                             j + 1, utmp.fortran_vec (), rw, info));
 
   return info;
 }
@@ -296,15 +285,13 @@ FloatComplexCHOL::delete_sym (octave_idx_type j)
 
   if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("choldelete: index out of range");
-  else
-    {
-      OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      F77_XFCN (cchdex, CCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                                 j + 1, rw));
+  OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      chol_mat.resize (n-1, n-1);
-    }
+  F77_XFCN (cchdex, CCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                             j + 1, rw));
+
+  chol_mat.resize (n-1, n-1);
 }
 
 void
@@ -314,14 +301,12 @@ FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 
   if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("cholshift: index out of range");
-  else
-    {
-      OCTAVE_LOCAL_BUFFER (FloatComplex, w, n);
-      OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      F77_XFCN (cchshx, CCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                                 i + 1, j + 1, w, rw));
-    }
+  OCTAVE_LOCAL_BUFFER (FloatComplex, w, n);
+  OCTAVE_LOCAL_BUFFER (float, rw, n);
+
+  F77_XFCN (cchshx, CCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+                             i + 1, j + 1, w, rw));
 }
 
 #else
@@ -333,14 +318,12 @@ FloatComplexCHOL::update (const FloatComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
-    {
-      init (chol_mat.hermitian () * chol_mat
-            + FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (),
-            true, false);
-    }
-  else
+  if (u.length () != n)
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
+
+  init (chol_mat.hermitian () * chol_mat
+        + FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (),
+        true, false);
 }
 
 static bool
@@ -360,21 +343,19 @@ FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () == n)
-    {
-      if (singular (chol_mat))
-        info = 2;
-      else
-        {
-          info = init (chol_mat.hermitian () * chol_mat
-                       - FloatComplexMatrix (u)
-                       * FloatComplexMatrix (u).hermitian (),
-                       true, false);
-          if (info) info = 1;
-        }
-    }
-  else
+  if (u.length () != n)
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
+
+  if (singular (chol_mat))
+    info = 2;
+  else
+    {
+      info = init (chol_mat.hermitian () * chol_mat
+                   - FloatComplexMatrix (u)
+                   * FloatComplexMatrix (u).hermitian (),
+                   true, false);
+      if (info) info = 1;
+    }
 
   return info;
 }
@@ -391,31 +372,29 @@ FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u,
 
   if (u.length () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
-  else if (j < 0 || j > n)
+  if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");
+
+  if (singular (chol_mat))
+    info = 2;
+  else if (u(j).imag () != 0.0)
+    info = 3;
   else
     {
-      if (singular (chol_mat))
-        info = 2;
-      else if (u(j).imag () != 0.0)
-        info = 3;
-      else
-        {
-          FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
-          FloatComplexMatrix a1 (n+1, n+1);
-          for (octave_idx_type k = 0; k < n+1; k++)
-            for (octave_idx_type l = 0; l < n+1; l++)
-              {
-                if (l == j)
-                  a1(k, l) = u(k);
-                else if (k == j)
-                  a1(k, l) = std::conj (u(l));
-                else
-                  a1(k, l) = a(k < j ? k : k-1, l < j ? l : l-1);
-              }
-          info = init (a1, true, false);
-          if (info) info = 1;
-        }
+      FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
+      FloatComplexMatrix a1 (n+1, n+1);
+      for (octave_idx_type k = 0; k < n+1; k++)
+        for (octave_idx_type l = 0; l < n+1; l++)
+          {
+            if (l == j)
+              a1(k, l) = u(k);
+            else if (k == j)
+              a1(k, l) = std::conj (u(l));
+            else
+              a1(k, l) = a(k < j ? k : k-1, l < j ? l : l-1);
+          }
+      info = init (a1, true, false);
+      if (info) info = 1;
     }
 
   return info;
@@ -430,13 +409,11 @@ FloatComplexCHOL::delete_sym (octave_idx_type j)
 
   if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("choldelete: index out of range");
-  else
-    {
-      FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
-      a.delete_elements (1, idx_vector (j));
-      a.delete_elements (0, idx_vector (j));
-      init (a, true, false);
-    }
+
+  FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
+  a.delete_elements (1, idx_vector (j));
+  a.delete_elements (0, idx_vector (j));
+  init (a, true, false);
 }
 
 void
@@ -448,24 +425,22 @@ FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 
   if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("cholshift: index out of range");
-  else
-    {
-      FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
-      Array<octave_idx_type> p (dim_vector (n, 1));
-      for (octave_idx_type k = 0; k < n; k++) p(k) = k;
-      if (i < j)
-        {
-          for (octave_idx_type k = i; k < j; k++) p(k) = k+1;
-          p(j) = i;
-        }
-      else if (j < i)
-        {
-          p(j) = i;
-          for (octave_idx_type k = j+1; k < i+1; k++) p(k) = k-1;
-        }
 
-      init (a.index (idx_vector (p), idx_vector (p)), true, false);
+  FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
+  Array<octave_idx_type> p (dim_vector (n, 1));
+  for (octave_idx_type k = 0; k < n; k++) p(k) = k;
+  if (i < j)
+    {
+      for (octave_idx_type k = i; k < j; k++) p(k) = k+1;
+      p(j) = i;
     }
+  else if (j < i)
+    {
+      p(j) = i;
+      for (octave_idx_type k = j+1; k < i+1; k++) p(k) = k-1;
+    }
+
+  init (a.index (idx_vector (p), idx_vector (p)), true, false);
 }
 
 #endif

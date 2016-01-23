@@ -95,11 +95,8 @@ regexp::compile_internal (void)
           size_t tmp_pos = pattern.find_first_of ('>', new_pos);
 
           if (tmp_pos == std::string::npos)
-            {
-              (*current_liboctave_error_handler)
-                ("regexp: syntax error in pattern");
-              return;
-            }
+            (*current_liboctave_error_handler)
+              ("regexp: syntax error in pattern");
 
           std::string tmp_name =
             pattern.substr (new_pos+3, tmp_pos-new_pos-3);
@@ -235,8 +232,7 @@ regexp::compile_internal (void)
 
   if (! data)
     (*current_liboctave_error_handler)
-      ("%s: %s at position %d of expression", who.c_str (),
-       err, erroffset);
+      ("%s: %s at position %d of expression", who.c_str (), err, erroffset);
 }
 
 regexp::match_data
@@ -309,13 +305,11 @@ regexp::match (const std::string& buffer)
         }
 
       if (matches < 0 && matches != PCRE_ERROR_NOMATCH)
-        {
-          (*current_liboctave_error_handler)
-            ("%s: internal error calling pcre_exec; error code from pcre_exec is %i",
-             who.c_str (), matches);
-          return retval;
-        }
-      else if (matches == PCRE_ERROR_NOMATCH)
+        (*current_liboctave_error_handler)
+          ("%s: internal error calling pcre_exec; "
+           "error code from pcre_exec is %i", who.c_str (), matches);
+
+      if (matches == PCRE_ERROR_NOMATCH)
         break;
       else if (ovector[1] <= ovector[0] && ! options.emptymatch ())
         {
@@ -352,12 +346,9 @@ regexp::match (const std::string& buffer)
                                                 matches, &listptr);
 
           if (status == PCRE_ERROR_NOMEMORY)
-            {
-              (*current_liboctave_error_handler)
-                ("%s: cannot allocate memory in pcre_get_substring_list",
-                 who.c_str ());
-              return retval;
-            }
+            (*current_liboctave_error_handler)
+              ("%s: cannot allocate memory in pcre_get_substring_list",
+               who.c_str ());
 
           string_vector tokens (pos_match);
           string_vector named_tokens (nnames);

@@ -755,45 +755,40 @@ ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
 
   int n = a_dv.length ();
 
-  if (n == dimensions.length ())
-    {
-      Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.length (), 1), 0);
-
-      a_ra_idx.elem (0) = r;
-      a_ra_idx.elem (1) = c;
-
-      for (int i = 0; i < n; i++)
-        {
-          if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dimensions(i))
-            {
-              (*current_liboctave_error_handler)
-                ("Array<T>::insert: range error for insert");
-              return *this;
-            }
-        }
-
-      a_ra_idx.elem (0) = 0;
-      a_ra_idx.elem (1) = 0;
-
-      octave_idx_type n_elt = a.numel ();
-
-      // IS make_unique () NECESSARY HERE?
-
-      for (octave_idx_type i = 0; i < n_elt; i++)
-        {
-          Array<octave_idx_type> ra_idx = a_ra_idx;
-
-          ra_idx.elem (0) = a_ra_idx(0) + r;
-          ra_idx.elem (1) = a_ra_idx(1) + c;
-
-          elem (ra_idx) = a.elem (a_ra_idx);
-
-          increment_index (a_ra_idx, a_dv);
-        }
-    }
-  else
+  if (n != dimensions.length ())
     (*current_liboctave_error_handler)
       ("Array<T>::insert: invalid indexing operation");
+
+  Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.length (), 1), 0);
+
+  a_ra_idx.elem (0) = r;
+  a_ra_idx.elem (1) = c;
+
+  for (int i = 0; i < n; i++)
+    {
+      if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dimensions(i))
+        (*current_liboctave_error_handler)
+          ("Array<T>::insert: range error for insert");
+    }
+
+  a_ra_idx.elem (0) = 0;
+  a_ra_idx.elem (1) = 0;
+
+  octave_idx_type n_elt = a.numel ();
+
+  // IS make_unique () NECESSARY HERE?
+
+  for (octave_idx_type i = 0; i < n_elt; i++)
+    {
+      Array<octave_idx_type> ra_idx = a_ra_idx;
+
+      ra_idx.elem (0) = a_ra_idx(0) + r;
+      ra_idx.elem (1) = a_ra_idx(1) + c;
+
+      elem (ra_idx) = a.elem (a_ra_idx);
+
+      increment_index (a_ra_idx, a_dv);
+    }
 
   return *this;
 }

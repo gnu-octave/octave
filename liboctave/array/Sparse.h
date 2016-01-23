@@ -722,28 +722,29 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 
           if (itmp < 0 || itmp >= nr)
             {
+              is.setstate (std::ios::failbit);
+
               (*current_liboctave_error_handler)
                 ("invalid sparse matrix: row index = %d out of range",
                  itmp + 1);
-              is.setstate (std::ios::failbit);
-              goto done;
             }
 
           if (jtmp < 0 || jtmp >= nc)
             {
+              is.setstate (std::ios::failbit);
+
               (*current_liboctave_error_handler)
                 ("invalid sparse matrix: column index = %d out of range",
                  jtmp + 1);
-              is.setstate (std::ios::failbit);
-              goto done;
             }
 
           if (jtmp < jold)
             {
-              (*current_liboctave_error_handler)
-                ("invalid sparse matrix: column indices must appear in ascending order");
               is.setstate (std::ios::failbit);
-              goto done;
+
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: "
+                 "column indices must appear in ascending order");
             }
           else if (jtmp > jold)
             {
@@ -752,10 +753,11 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
             }
           else if (itmp < iold)
             {
-              (*current_liboctave_error_handler)
-                ("invalid sparse matrix: row indices must appear in ascending order in each column");
               is.setstate (std::ios::failbit);
-              goto done;
+
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: "
+                 "row indices must appear in ascending order in each column");
             }
 
           iold = itmp;
@@ -763,22 +765,16 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 
           tmp = read_fcn (is);
 
-          if (is)
-            {
-              a.data (ii) = tmp;
-              a.ridx (ii++) = itmp;
-            }
-          else
-            goto done;
+          if (! is)
+            return is;  // Problem, return is in error state
+
+          a.data (ii) = tmp;
+          a.ridx (ii++) = itmp;
         }
 
       for (octave_idx_type j = jold; j < nc; j++)
         a.cidx (j+1) = ii;
     }
-
-done:
-
-  return is;
 }
 
 #endif

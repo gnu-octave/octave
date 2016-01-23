@@ -776,11 +776,8 @@ FloatComplexNDArray::insert (const NDArray& a,
       for (int i = 0; i < n; i++)
         {
           if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dimensions(i))
-            {
-              (*current_liboctave_error_handler)
-                ("Array<T>::insert: range error for insert");
-              return *this;
-            }
+            (*current_liboctave_error_handler)
+              ("Array<T>::insert: range error for insert");
         }
 
       a_ra_idx.elem (0) = 0;

@@ -62,10 +62,7 @@ charMatrix::insert (const char *s, octave_idx_type r, octave_idx_type c)
       octave_idx_type s_len = strlen (s);
 
       if (r < 0 || r >= rows () || c < 0 || c + s_len - 1 > cols ())
-        {
-          (*current_liboctave_error_handler) ("range error for insert");
-          return *this;
-        }
+        (*current_liboctave_error_handler) ("range error for insert");
 
       for (octave_idx_type i = 0; i < s_len; i++)
         elem (r, c+i) = s[i];
@@ -92,10 +89,7 @@ charMatrix::row_as_string (octave_idx_type r, bool strip_ws) const
     return retval;
 
   if (r < 0 || r >= nr)
-    {
-      (*current_liboctave_error_handler) ("range error for row_as_string");
-      return retval;
-    }
+    (*current_liboctave_error_handler) ("range error for row_as_string");
 
   retval.resize (nc, '\0');
 

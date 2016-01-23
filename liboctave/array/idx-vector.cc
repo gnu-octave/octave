@@ -59,8 +59,6 @@ idx_vector::idx_base_rep::as_array (void)
 {
   (*current_liboctave_error_handler)
     ("internal error: as_array not allowed for this index class");
-
-  return Array<octave_idx_type> ();
 }
 
 
@@ -70,6 +68,7 @@ idx_vector::idx_colon_rep::idx_colon_rep (char c)
     {
       (*current_liboctave_error_handler)
         ("internal error: invalid character converted to idx_vector; must be ':'");
+      // FIXME: this is unreachable now.
       err = true;
     }
 }
@@ -88,9 +87,6 @@ idx_vector::idx_colon_rep::sort_idx (Array<octave_idx_type>&)
 {
   (*current_liboctave_error_handler)
     ("internal error: idx_colon_rep::sort_idx");
-
-  count++;
-  return this;
 }
 
 std::ostream&
@@ -1266,6 +1262,7 @@ idx_vector::freeze (octave_idx_type z_len, const char *, bool resize_ok)
     {
       (*current_liboctave_error_handler)
         ("invalid matrix index = %d", extent (z_len));
+      // FIXME: Should we call this before calling error_handler?
       rep->err = true;
       chkerr ();
     }

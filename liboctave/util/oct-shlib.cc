@@ -228,18 +228,16 @@ octave_dlopen_shlib::search (const std::string& name,
 {
   void *function = 0;
 
-  if (is_open ())
-    {
-      std::string sym_name = name;
-
-      if (mangler)
-        sym_name = mangler (name);
-
-      function = dlsym (library, sym_name.c_str ());
-    }
-  else
+  if (! is_open ())
     (*current_liboctave_error_handler)
       ("shared library %s is not open", file.c_str ());
+
+  std::string sym_name = name;
+
+  if (mangler)
+    sym_name = mangler (name);
+
+  function = dlsym (library, sym_name.c_str ());
 
   return function;
 }
@@ -280,7 +278,7 @@ octave_shl_load_shlib::octave_shl_load_shlib (const std::string& f)
 
   if (! library)
     {
-      using namespace std;
+      using namespace std;  // FIXME: Why have this line?
       (*current_liboctave_error_handler) ("%s", gnulib::strerror (errno));
     }
 }
@@ -297,19 +295,17 @@ octave_shl_load_shlib::search (const std::string& name,
 {
   void *function = 0;
 
-  if (is_open ())
-    {
-      std::string sym_name = name;
-
-      if (mangler)
-        sym_name = mangler (name);
-
-      int status = shl_findsym (&library, sym_name.c_str (),
-                                TYPE_UNDEFINED, &function);
-    }
-  else
+  if (! is_open ())
     (*current_liboctave_error_handler)
       ("shared library %s is not open", file.c_str ());
+
+  std::string sym_name = name;
+
+  if (mangler)
+    sym_name = mangler (name);
+
+  int status = shl_findsym (&library, sym_name.c_str (),
+                            TYPE_UNDEFINED, &function);
 
   return function;
 }
@@ -391,18 +387,16 @@ octave_w32_shlib::search (const std::string& name,
 {
   void *function = 0;
 
-  if (is_open ())
-    {
-      std::string sym_name = name;
-
-      if (mangler)
-        sym_name = mangler (name);
-
-      function = octave_w32_library_search (handle, sym_name.c_str ());
-    }
-  else
+  if (! is_open ())
     (*current_liboctave_error_handler)
       ("shared library %s is not open", file.c_str ());
+
+  std::string sym_name = name;
+
+  if (mangler)
+    sym_name = mangler (name);
+
+  function = octave_w32_library_search (handle, sym_name.c_str ());
 
   return function;
 }
@@ -444,34 +438,31 @@ octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
 {
   int returnCode = NSCreateObjectFileImageFromFile (file.c_str (), &img);
 
-  if (NSObjectFileImageSuccess == returnCode)
-    {
-      handle = NSLinkModule (img, file.c_str (),
-                             (NSLINKMODULE_OPTION_RETURN_ON_ERROR
-                              | NSLINKMODULE_OPTION_PRIVATE));
-      if (! handle)
-        {
-          NSLinkEditErrors ler;
-          int lerno;
-          const char *file2;
-          const char *errstr = 0;
-
-          NSLinkEditError (&ler, &lerno, &file2, &errstr);
-
-          if (! errstr)
-            errstr = "unspecified error";
-
-          (*current_liboctave_error_handler)
-            ("%s: %s", file.c_str (), errstr);
-        }
-    }
-  else
+  if (NSObjectFileImageSuccess != returnCode)
     {
       (*current_liboctave_error_handler)
         ("got NSObjectFileImageReturnCode %d", returnCode);
 
       // FIXME: should use NSLinkEditError () to get
-      // more info on what went wrong.
+      //        more info on what went wrong.
+    }
+
+  handle = NSLinkModule (img, file.c_str (),
+                         (NSLINKMODULE_OPTION_RETURN_ON_ERROR
+                          | NSLINKMODULE_OPTION_PRIVATE));
+  if (! handle)
+    {
+      NSLinkEditErrors ler;
+      int lerno;
+      const char *file2;
+      const char *errstr = 0;
+
+      NSLinkEditError (&ler, &lerno, &file2, &errstr);
+
+      if (! errstr)
+        errstr = "unspecified error";
+
+      (*current_liboctave_error_handler) ("%s: %s", file.c_str (), errstr);
     }
 }
 
@@ -489,23 +480,21 @@ octave_dyld_shlib::search (const std::string& name,
 {
   void *function = 0;
 
-  if (is_open ())
-    {
-      std::string sym_name = name;
-
-      if (mangler)
-        sym_name = mangler (name);
-
-      NSSymbol symbol = NSLookupSymbolInModule (handle, sym_name.c_str ());
-
-      if (symbol)
-        {
-          function = NSAddressOfSymbol (symbol);
-        }
-    }
-  else
+  if (! is_open ())
     (*current_liboctave_error_handler)
       ("bundle %s is not open", file.c_str ());
+
+  std::string sym_name = name;
+
+  if (mangler)
+    sym_name = mangler (name);
+
+  NSSymbol symbol = NSLookupSymbolInModule (handle, sym_name.c_str ());
+
+  if (symbol)
+    {
+      function = NSAddressOfSymbol (symbol);
+    }
 
   return function;
 }

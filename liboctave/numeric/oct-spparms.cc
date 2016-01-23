@@ -47,12 +47,8 @@ octave_sparse_params::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create octave_sparse_params object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create octave_sparse_params object!");
 
   return retval;
 }
@@ -180,19 +176,13 @@ octave_sparse_params::do_set_vals (const NDArray& vals)
   octave_idx_type len = vals.numel ();
 
   if (len > OCTAVE_SPARSE_CONTROLS_SIZE)
-    {
-      (*current_liboctave_error_handler)
-        ("octave_sparse_params::do_set_vals: too many values");
+    (*current_liboctave_error_handler)
+      ("octave_sparse_params::do_set_vals: too many values");
 
-      return false;
-    }
-  else
-    {
-      for (int i = 0; i < len; i++)
-        params(i) = vals(i);
+  for (int i = 0; i < len; i++)
+    params(i) = vals(i);
 
-      return true;
-    }
+  return true;
 }
 
 bool

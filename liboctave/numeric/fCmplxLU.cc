@@ -122,19 +122,17 @@ void FloatComplexLU::update (const FloatComplexMatrix& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
-    {
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
-        {
-          FloatComplexColumnVector utmp = u.column (i);
-          FloatComplexColumnVector vtmp = v.column (i);
-          F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (),
-                                     m, r.fortran_vec (), k,
-                                     utmp.fortran_vec (), vtmp.fortran_vec ()));
-        }
-    }
-  else
+  if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+
+  for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+    {
+      FloatComplexColumnVector utmp = u.column (i);
+      FloatComplexColumnVector vtmp = v.column (i);
+      F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (),
+                                 m, r.fortran_vec (), k,
+                                 utmp.fortran_vec (), vtmp.fortran_vec ()));
+    }
 }
 
 void FloatComplexLU::update_piv (const FloatComplexColumnVector& u,
@@ -150,20 +148,18 @@ void FloatComplexLU::update_piv (const FloatComplexColumnVector& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.numel () == m && v.numel () == n)
-    {
-      FloatComplexColumnVector utmp = u;
-      FloatComplexColumnVector vtmp = v;
-      OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
-                                   m, r.fortran_vec (), k,
-                                   ipvt.fortran_vec (),
-                                   utmp.data (), vtmp.data (), w));
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
-    }
-  else
+  if (u.numel () != m || v.numel () != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+
+  FloatComplexColumnVector utmp = u;
+  FloatComplexColumnVector vtmp = v;
+  OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
+  for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+  F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
+                               m, r.fortran_vec (), k,
+                               ipvt.fortran_vec (),
+                               utmp.data (), vtmp.data (), w));
+  for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
 }
 
 void FloatComplexLU::update_piv (const FloatComplexMatrix& u,
@@ -179,23 +175,21 @@ void FloatComplexLU::update_piv (const FloatComplexMatrix& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = l.columns ();
 
-  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
-    {
-      OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
-        {
-          FloatComplexColumnVector utmp = u.column (i);
-          FloatComplexColumnVector vtmp = v.column (i);
-          F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
-                                       m, r.fortran_vec (), k,
-                                       ipvt.fortran_vec (),
-                                       utmp.data (), vtmp.data (), w));
-        }
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
-    }
-  else
+  if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+
+  OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
+  for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+  for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+    {
+      FloatComplexColumnVector utmp = u.column (i);
+      FloatComplexColumnVector vtmp = v.column (i);
+      F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
+                                   m, r.fortran_vec (), k,
+                                   ipvt.fortran_vec (),
+                                   utmp.data (), vtmp.data (), w));
+    }
+  for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
 }
 
 #else

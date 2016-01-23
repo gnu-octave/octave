@@ -390,12 +390,8 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
               s = s.substr (pos+1);
             }
           else
-            {
-              (*current_liboctave_error_handler)
-                ("invalid repeat count in '%s'", str.c_str ());
-
-              return;
-            }
+            (*current_liboctave_error_handler)
+              ("invalid repeat count in '%s'", str.c_str ());
         }
     }
 
@@ -461,12 +457,8 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
           s = s.substr (pos+1);
         }
       else
-        {
-          (*current_liboctave_error_handler)
-            ("invalid repeat count in '%s'", str.c_str ());
-
-          return;
-        }
+        (*current_liboctave_error_handler)
+          ("invalid repeat count in '%s'", str.c_str ());
     }
 
   output_type = string_to_data_type (s);

@@ -57,10 +57,7 @@ FloatAEPBALANCE::FloatAEPBALANCE (const FloatMatrix& a,
   octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
-    {
-      (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
-      return;
-    }
+    (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
 
   octave_idx_type info;
 

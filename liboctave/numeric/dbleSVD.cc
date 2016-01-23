@@ -58,26 +58,20 @@ Matrix
 SVD::left_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
-    {
-      (*current_liboctave_error_handler)
-        ("SVD: U not computed because type == SVD::sigma_only");
-      return Matrix ();
-    }
-  else
-    return left_sm;
+    (*current_liboctave_error_handler)
+      ("SVD: U not computed because type == SVD::sigma_only");
+
+  return left_sm;
 }
 
 Matrix
 SVD::right_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
-    {
-      (*current_liboctave_error_handler)
-        ("SVD: V not computed because type == SVD::sigma_only");
-      return Matrix ();
-    }
-  else
-    return right_sm;
+    (*current_liboctave_error_handler)
+      ("SVD: V not computed because type == SVD::sigma_only");
+
+  return right_sm;
 }
 
 octave_idx_type

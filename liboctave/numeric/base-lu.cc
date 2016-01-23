@@ -113,6 +113,7 @@ base_lu <lu_type> :: Y (void) const
   if (! packed ())
     (*current_liboctave_error_handler)
       ("lu: Y () not implemented for unpacked form");
+
   return a_fact;
 }
 

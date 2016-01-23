@@ -65,10 +65,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b,
   octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
-    {
-      (*current_liboctave_error_handler) ("GEPBALANCE requires square matrix");
-      return -1;
-    }
+    (*current_liboctave_error_handler) ("GEPBALANCE requires square matrix");
 
   if (a.dims () != b.dims ())
     err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());

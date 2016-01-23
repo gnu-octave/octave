@@ -79,10 +79,7 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (double val, octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = beg; i <= end; i++)
     elem (i, i) = val;
@@ -95,10 +92,7 @@ ComplexDiagMatrix::fill (const Complex& val,
                          octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = beg; i <= end; i++)
     elem (i, i) = val;
@@ -111,10 +105,7 @@ ComplexDiagMatrix::fill (const ColumnVector& a)
 {
   octave_idx_type len = length ();
   if (a.numel () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -127,10 +118,7 @@ ComplexDiagMatrix::fill (const ComplexColumnVector& a)
 {
   octave_idx_type len = length ();
   if (a.numel () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -143,10 +131,7 @@ ComplexDiagMatrix::fill (const RowVector& a)
 {
   octave_idx_type len = length ();
   if (a.numel () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -159,10 +144,7 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a)
 {
   octave_idx_type len = length ();
   if (a.numel () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -175,10 +157,7 @@ ComplexDiagMatrix::fill (const ColumnVector& a, octave_idx_type beg)
 {
   octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -191,10 +170,7 @@ ComplexDiagMatrix::fill (const ComplexColumnVector& a, octave_idx_type beg)
 {
   octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -207,10 +183,7 @@ ComplexDiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 {
   octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -223,10 +196,7 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a, octave_idx_type beg)
 {
   octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -275,10 +245,7 @@ ComplexDiagMatrix::row (octave_idx_type i) const
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
   if (i < 0 || i >= r)
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return ComplexRowVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid row selection");
 
   ComplexRowVector retval (c, 0.0);
   if (r <= c || (r > c && i < c))
@@ -291,10 +258,7 @@ ComplexRowVector
 ComplexDiagMatrix::row (char *s) const
 {
   if (! s)
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return ComplexRowVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid row selection");
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -302,10 +266,7 @@ ComplexDiagMatrix::row (char *s) const
   else if (c == 'l' || c == 'L')
     return row (rows () - 1);
   else
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return ComplexRowVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid row selection");
 }
 
 ComplexColumnVector
@@ -314,10 +275,7 @@ ComplexDiagMatrix::column (octave_idx_type i) const
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
   if (i < 0 || i >= c)
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return ComplexColumnVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid column selection");
 
   ComplexColumnVector retval (r, 0.0);
   if (r >= c || (r < c && i < r))
@@ -330,10 +288,7 @@ ComplexColumnVector
 ComplexDiagMatrix::column (char *s) const
 {
   if (! s)
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return ComplexColumnVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid column selection");
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -341,10 +296,7 @@ ComplexDiagMatrix::column (char *s) const
   else if (c == 'l' || c == 'L')
     return column (cols () - 1);
   else
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return ComplexColumnVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid column selection");
 }
 
 ComplexDiagMatrix
@@ -360,10 +312,7 @@ ComplexDiagMatrix::inverse (octave_idx_type& info) const
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
   if (r != c)
-    {
-      (*current_liboctave_error_handler) ("inverse requires square matrix");
-      return ComplexDiagMatrix ();
-    }
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   ComplexDiagMatrix retval (r, c);
 
@@ -524,16 +473,11 @@ ComplexDiagMatrix::determinant (void) const
 {
   ComplexDET det (1.0);
   if (rows () != cols ())
-    {
-      (*current_liboctave_error_handler) ("determinant requires square matrix");
-      det = ComplexDET (0.0);
-    }
-  else
-    {
-      octave_idx_type len = length ();
-      for (octave_idx_type i = 0; i < len; i++)
-        det *= elem (i, i);
-    }
+    (*current_liboctave_error_handler) ("determinant requires square matrix");
+
+  octave_idx_type len = length ();
+  for (octave_idx_type i = 0; i < len; i++)
+    det *= elem (i, i);
 
   return det;
 }

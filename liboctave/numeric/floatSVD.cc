@@ -58,26 +58,20 @@ FloatMatrix
 FloatSVD::left_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
-    {
-      (*current_liboctave_error_handler)
-        ("FloatSVD: U not computed because type == SVD::sigma_only");
-      return FloatMatrix ();
-    }
-  else
-    return left_sm;
+    (*current_liboctave_error_handler)
+      ("FloatSVD: U not computed because type == SVD::sigma_only");
+
+  return left_sm;
 }
 
 FloatMatrix
 FloatSVD::right_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
-    {
-      (*current_liboctave_error_handler)
-        ("FloatSVD: V not computed because type == SVD::sigma_only");
-      return FloatMatrix ();
-    }
-  else
-    return right_sm;
+    (*current_liboctave_error_handler)
+      ("FloatSVD: V not computed because type == SVD::sigma_only");
+
+  return right_sm;
 }
 
 octave_idx_type

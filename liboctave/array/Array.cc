@@ -467,22 +467,14 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
     {
       octave_idx_type perm_elt = perm_vec.elem (i);
       if (perm_elt >= perm_vec_len || perm_elt < 0)
-        {
-          (*current_liboctave_error_handler)
-            ("%s: permutation vector contains an invalid element",
-             inv ? "ipermute" : "permute");
-
-          return retval;
-        }
+        (*current_liboctave_error_handler)
+          ("%s: permutation vector contains an invalid element",
+           inv ? "ipermute" : "permute");
 
       if (checked[perm_elt])
-        {
-          (*current_liboctave_error_handler)
-            ("%s: permutation vector cannot contain identical elements",
-             inv ? "ipermute" : "permute");
-
-          return retval;
-        }
+        (*current_liboctave_error_handler)
+          ("%s: permutation vector cannot contain identical elements",
+           inv ? "ipermute" : "permute");
       else
         {
           checked[perm_elt] = true;
@@ -1446,11 +1438,7 @@ void
 Array<T>::delete_elements (int dim, const idx_vector& i)
 {
   if (dim < 0 || dim >= ndims ())
-    {
-      (*current_liboctave_error_handler)
-        ("invalid dimension in delete_elements");
-      return;
-    }
+    (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 
   octave_idx_type n = dimensions(dim);
   if (i.is_colon ())
@@ -1779,11 +1767,7 @@ Array<T>
 Array<T>::sort (int dim, sortmode mode) const
 {
   if (dim < 0)
-    {
-      (*current_liboctave_error_handler)
-        ("sort: invalid dimension");
-      return Array<T> ();
-    }
+    (*current_liboctave_error_handler) ("sort: invalid dimension");
 
   Array<T> m (dims ());
 
@@ -1900,11 +1884,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
                 sortmode mode) const
 {
   if (dim < 0 || dim >= ndims ())
-    {
-      (*current_liboctave_error_handler)
-        ("sort: invalid dimension");
-      return Array<T> ();
-    }
+    (*current_liboctave_error_handler) ("sort: invalid dimension");
 
   Array<T> m (dims ());
 
@@ -2340,11 +2320,7 @@ Array<T>
 Array<T>::nth_element (const idx_vector& n, int dim) const
 {
   if (dim < 0)
-    {
-      (*current_liboctave_error_handler)
-        ("nth_element: invalid dimension");
-      return Array<T> ();
-    }
+    (*current_liboctave_error_handler) ("nth_element: invalid dimension");
 
   dim_vector dv = dims ();
   if (dim >= dv.length ())
@@ -2391,20 +2367,13 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
     }
 
   if (mode == UNSORTED)
-    {
-      (*current_liboctave_error_handler)
-        ("nth_element: n must be a scalar or a contiguous range");
-      return Array<T> ();
-    }
+    (*current_liboctave_error_handler)
+      ("nth_element: n must be a scalar or a contiguous range");
 
   octave_idx_type up = lo + nn;
 
   if (lo < 0 || up > ns)
-    {
-      (*current_liboctave_error_handler)
-        ("nth_element: invalid element index");
-      return Array<T> ();
-    }
+    (*current_liboctave_error_handler) ("nth_element: invalid element index");
 
   octave_idx_type iter = numel () / ns;
   octave_idx_type stride = 1;
@@ -2544,78 +2513,76 @@ Array<T>::diag (octave_idx_type k) const
 
   if (nd > 2)
     (*current_liboctave_error_handler) ("Matrix must be 2-dimensional");
-  else
+
+  octave_idx_type nnr = dv(0);
+  octave_idx_type nnc = dv(1);
+
+  if (nnr == 0 && nnc == 0)
+    ; // do nothing for empty matrix
+  else if (nnr != 1 && nnc != 1)
     {
-      octave_idx_type nnr = dv(0);
-      octave_idx_type nnc = dv(1);
+      // Extract diag from matrix
+      if (k > 0)
+        nnc -= k;
+      else if (k < 0)
+        nnr += k;
 
-      if (nnr == 0 && nnc == 0)
-        ; // do nothing for empty matrix
-      else if (nnr != 1 && nnc != 1)
+      if (nnr > 0 && nnc > 0)
         {
-          // Extract diag from matrix
-          if (k > 0)
-            nnc -= k;
-          else if (k < 0)
-            nnr += k;
+          octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
 
-          if (nnr > 0 && nnc > 0)
-            {
-              octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
+          d.resize (dim_vector (ndiag, 1));
 
-              d.resize (dim_vector (ndiag, 1));
-
-              if (k > 0)
-                {
-                  for (octave_idx_type i = 0; i < ndiag; i++)
-                    d.xelem (i) = elem (i, i+k);
-                }
-              else if (k < 0)
-                {
-                  for (octave_idx_type i = 0; i < ndiag; i++)
-                    d.xelem (i) = elem (i-k, i);
-                }
-              else
-                {
-                  for (octave_idx_type i = 0; i < ndiag; i++)
-                    d.xelem (i) = elem (i, i);
-                }
-            }
-          else  // Matlab returns [] 0x1 for out-of-range diagonal
-            d.resize (dim_vector (0, 1));
-        }
-      else
-        {
-          // Create diag matrix from vector
-          octave_idx_type roff = 0;
-          octave_idx_type coff = 0;
           if (k > 0)
             {
-              roff = 0;
-              coff = k;
+              for (octave_idx_type i = 0; i < ndiag; i++)
+                d.xelem (i) = elem (i, i+k);
             }
           else if (k < 0)
             {
-              roff = -k;
-              coff = 0;
-            }
-
-          if (nnr == 1)
-            {
-              octave_idx_type n = nnc + std::abs (k);
-              d = Array<T> (dim_vector (n, n), resize_fill_value ());
-
-              for (octave_idx_type i = 0; i < nnc; i++)
-                d.xelem (i+roff, i+coff) = elem (0, i);
+              for (octave_idx_type i = 0; i < ndiag; i++)
+                d.xelem (i) = elem (i-k, i);
             }
           else
             {
-              octave_idx_type n = nnr + std::abs (k);
-              d = Array<T> (dim_vector (n, n), resize_fill_value ());
-
-              for (octave_idx_type i = 0; i < nnr; i++)
-                d.xelem (i+roff, i+coff) = elem (i, 0);
+              for (octave_idx_type i = 0; i < ndiag; i++)
+                d.xelem (i) = elem (i, i);
             }
+        }
+      else  // Matlab returns [] 0x1 for out-of-range diagonal
+        d.resize (dim_vector (0, 1));
+    }
+  else
+    {
+      // Create diag matrix from vector
+      octave_idx_type roff = 0;
+      octave_idx_type coff = 0;
+      if (k > 0)
+        {
+          roff = 0;
+          coff = k;
+        }
+      else if (k < 0)
+        {
+          roff = -k;
+          coff = 0;
+        }
+
+      if (nnr == 1)
+        {
+          octave_idx_type n = nnc + std::abs (k);
+          d = Array<T> (dim_vector (n, n), resize_fill_value ());
+
+          for (octave_idx_type i = 0; i < nnc; i++)
+            d.xelem (i+roff, i+coff) = elem (0, i);
+        }
+      else
+        {
+          octave_idx_type n = nnr + std::abs (k);
+          d = Array<T> (dim_vector (n, n), resize_fill_value ());
+
+          for (octave_idx_type i = 0; i < nnr; i++)
+            d.xelem (i+roff, i+coff) = elem (i, 0);
         }
     }
 
@@ -2626,18 +2593,13 @@ template <class T>
 Array<T>
 Array<T>::diag (octave_idx_type m, octave_idx_type n) const
 {
-  Array<T> retval;
+  if (ndims () != 2 || (rows () != 1 && cols () != 1))
+    (*current_liboctave_error_handler) ("cat: invalid dimension");
 
-  if (ndims () == 2 && (rows () == 1 || cols () == 1))
-    {
-      retval.resize (dim_vector (m, n), resize_fill_value ());
+  Array<T> retval (dim_vector (m, n), resize_fill_value ());
 
-      for (octave_idx_type i = 0; i < numel (); i++)
-        retval.xelem (i, i) = xelem (i);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("cat: invalid dimension");
+  for (octave_idx_type i = 0; i < numel (); i++)
+    retval.xelem (i, i) = xelem (i);
 
   return retval;
 }
@@ -2655,8 +2617,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
       dim = -dim - 1;
     }
   else if (dim < 0)
-    (*current_liboctave_error_handler)
-      ("cat: invalid dimension");
+    (*current_liboctave_error_handler) ("cat: invalid dimension");
 
   if (n == 1)
     return array_list[0];
@@ -2707,8 +2668,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
 
   for (octave_idx_type i = istart; i < n; i++)
     if (! (dv.*concat_rule) (array_list[i].dims (), dim))
-      (*current_liboctave_error_handler)
-        ("cat: dimension mismatch");
+      (*current_liboctave_error_handler) ("cat: dimension mismatch");
 
   Array<T> retval (dv);
 

@@ -68,25 +68,23 @@ octave_base64_decode (const std::string& str)
   if (! ok)
     (*current_liboctave_error_handler)
       ("base64_decode: input was not valid base64");
-  else if (! out)
+  if (! out)
     (*current_liboctave_error_handler)
       ("base64_decode: memory allocation error");
+
+  if ((outlen % (sizeof (double) / sizeof (char))) != 0)
+    {
+      ::free (out);
+      (*current_liboctave_error_handler)
+        ("base64_decode: incorrect input size");
+    }
   else
     {
-      if ((outlen % (sizeof (double) / sizeof (char))) != 0)
-        {
-          ::free (out);
-          (*current_liboctave_error_handler)
-            ("base64_decode: incorrect input size");
-        }
-      else
-        {
-          octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);
-          retval.resize (dim_vector (1, len));
-          double *dout = reinterpret_cast<double*> (out);
-          std::copy (dout, dout + len, retval.fortran_vec ());
-          ::free (out);
-        }
+      octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);
+      retval.resize (dim_vector (1, len));
+      double *dout = reinterpret_cast<double*> (out);
+      std::copy (dout, dout + len, retval.fortran_vec ());
+      ::free (out);
     }
 
   return retval;

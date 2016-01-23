@@ -156,7 +156,6 @@ float
 DefQuad::do_integrate (octave_idx_type&, octave_idx_type&, float&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 double
@@ -210,14 +209,12 @@ float
 IndefQuad::do_integrate (octave_idx_type&, octave_idx_type&, float&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 double
 FloatDefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 float
@@ -254,7 +251,6 @@ double
 FloatIndefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 float

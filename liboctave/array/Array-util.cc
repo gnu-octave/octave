@@ -538,83 +538,81 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
   idx_vector retval;
   octave_idx_type len = idxa.numel ();
 
-  if (len >= 1)
+  if (len == 0)
+    (*current_liboctave_error_handler) ("sub2ind: needs at least 2 indices");
+
+  const dim_vector dvx = dv.redim (len);
+  bool all_ranges = true;
+  octave_idx_type clen = -1;
+
+  for (octave_idx_type i = 0; i < len; i++)
     {
-      const dim_vector dvx = dv.redim (len);
-      bool all_ranges = true;
-      octave_idx_type clen = -1;
-
-      for (octave_idx_type i = 0; i < len; i++)
+      try
         {
-          try
-            {
-              idx_vector idx = idxa(i);
-              octave_idx_type n = dvx(i);
+          idx_vector idx = idxa(i);
+          octave_idx_type n = dvx(i);
 
-              all_ranges = all_ranges && idx.is_range ();
-              if (clen < 0)
-                clen = idx.length (n);
-              else if (clen != idx.length (n))
-                (*current_liboctave_error_handler)
-                  ("sub2ind: lengths of indices must match");
+          all_ranges = all_ranges && idx.is_range ();
+          if (clen < 0)
+            clen = idx.length (n);
+          else if (clen != idx.length (n))
+            (*current_liboctave_error_handler)
+              ("sub2ind: lengths of indices must match");
 
-              if (idx.extent (n) > n)
-                  err_index_out_of_range (len, i+1, idx.extent (n), n);
-            }
-          catch (index_exception& e)
-            {
-              e.set_pos_if_unset (len, i+1);
-              e.set_var ();
-              std::string msg = e.message ();
-              (*current_liboctave_error_with_id_handler)
-                (e.err_id (), msg.c_str ());
-            }
+          if (idx.extent (n) > n)
+              err_index_out_of_range (len, i+1, idx.extent (n), n);
         }
-      // idxa known to be valid. Shouldn't need to catch index_exception below here.
-
-
-      if (len == 1)
-        retval = idxa(0);
-      else if (clen == 1)
+      catch (index_exception& e)
         {
-          // All scalars case - the result is a scalar.
-          octave_idx_type idx = idxa(len-1)(0);
-          for (octave_idx_type i = len - 2; i >= 0; i--)
-            idx = dvx(i) * idx + idxa(i)(0);
-          retval = idx_vector (idx);
-        }
-      else if (all_ranges && clen != 0)
-        {
-          // All ranges case - the result is a range.
-          octave_idx_type start = 0;
-          octave_idx_type step = 0;
-          for (octave_idx_type i = len - 1; i >= 0; i--)
-            {
-              octave_idx_type xstart = idxa(i)(0);
-              octave_idx_type xstep = idxa(i)(1) - xstart;
-              start = dvx(i) * start + xstart;
-              step = dvx(i) * step + xstep;
-            }
-          retval = idx_vector::make_range (start, step, clen);
-        }
-      else
-        {
-          Array<octave_idx_type> idx (idxa(0).orig_dimensions ());
-          octave_idx_type *idx_vec = idx.fortran_vec ();
-
-          for (octave_idx_type i = len - 1; i >= 0; i--)
-            {
-              if (i < len - 1)
-                idxa(i).loop (clen, sub2ind_helper (idx_vec, dvx(i)));
-              else
-                idxa(i).copy_data (idx_vec);
-            }
-
-          retval = idx_vector (idx);
+          e.set_pos_if_unset (len, i+1);
+          e.set_var ();
+          std::string msg = e.message ();
+          (*current_liboctave_error_with_id_handler)
+            (e.err_id (), msg.c_str ());
         }
     }
+  // idxa known to be valid. Shouldn't need to catch index_exception below here.
+
+
+  if (len == 1)
+    retval = idxa(0);
+  else if (clen == 1)
+    {
+      // All scalars case - the result is a scalar.
+      octave_idx_type idx = idxa(len-1)(0);
+      for (octave_idx_type i = len - 2; i >= 0; i--)
+        idx = dvx(i) * idx + idxa(i)(0);
+      retval = idx_vector (idx);
+    }
+  else if (all_ranges && clen != 0)
+    {
+      // All ranges case - the result is a range.
+      octave_idx_type start = 0;
+      octave_idx_type step = 0;
+      for (octave_idx_type i = len - 1; i >= 0; i--)
+        {
+          octave_idx_type xstart = idxa(i)(0);
+          octave_idx_type xstep = idxa(i)(1) - xstart;
+          start = dvx(i) * start + xstart;
+          step = dvx(i) * step + xstep;
+        }
+      retval = idx_vector::make_range (start, step, clen);
+    }
   else
-    (*current_liboctave_error_handler) ("sub2ind: needs at least 2 indices");
+    {
+      Array<octave_idx_type> idx (idxa(0).orig_dimensions ());
+      octave_idx_type *idx_vec = idx.fortran_vec ();
+
+      for (octave_idx_type i = len - 1; i >= 0; i--)
+        {
+          if (i < len - 1)
+            idxa(i).loop (clen, sub2ind_helper (idx_vec, dvx(i)));
+          else
+            idxa(i).copy_data (idx_vec);
+        }
+
+      retval = idx_vector (idx);
+    }
 
   return retval;
 }
@@ -629,41 +627,39 @@ ind2sub (const dim_vector& dv, const idx_vector& idx)
 
   if (idx.extent (numel) > numel)
     (*current_liboctave_error_handler) ("ind2sub: index out of range");
+
+  if (idx.is_scalar ())
+    {
+      octave_idx_type k = idx(0);
+      for (octave_idx_type j = 0; j < n; j++)
+        {
+          retval(j) = k % dv(j);
+          k /= dv(j);
+        }
+    }
   else
     {
-      if (idx.is_scalar ())
+      OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, rdata, n);
+
+      dim_vector odv = idx.orig_dimensions ();
+      for (octave_idx_type j = 0; j < n; j++)
+        rdata[j] = Array<octave_idx_type> (odv);
+
+      for (octave_idx_type i = 0; i < len; i++)
         {
-          octave_idx_type k = idx(0);
+          octave_idx_type k = idx(i);
           for (octave_idx_type j = 0; j < n; j++)
             {
-              retval(j) = k % dv(j);
+              rdata[j](i) = k % dv(j);
               k /= dv(j);
             }
         }
-      else
-        {
-          OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, rdata, n);
 
-          dim_vector odv = idx.orig_dimensions ();
-          for (octave_idx_type j = 0; j < n; j++)
-            rdata[j] = Array<octave_idx_type> (odv);
-
-          for (octave_idx_type i = 0; i < len; i++)
-            {
-              octave_idx_type k = idx(i);
-              for (octave_idx_type j = 0; j < n; j++)
-                {
-                  rdata[j](i) = k % dv(j);
-                  k /= dv(j);
-                }
-            }
-
-          for (octave_idx_type j = 0; j < n; j++)
-            retval(j) = rdata[j];
-        }
-
-
+      for (octave_idx_type j = 0; j < n; j++)
+        retval(j) = rdata[j];
     }
+
+
 
   return retval;
 }

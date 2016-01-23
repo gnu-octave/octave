@@ -751,73 +751,71 @@ atan2 (const SparseMatrix& x, const double& y)
 SparseMatrix
 atan2 (const SparseMatrix& x, const SparseMatrix& y)
 {
+  if ((x.rows () != y.rows ()) || (x.cols () != y.cols ()))
+    (*current_liboctave_error_handler) ("matrix size mismatch");
+
+  octave_idx_type x_nr = x.rows ();
+  octave_idx_type x_nc = x.cols ();
+
+  octave_idx_type y_nr = y.rows ();
+  octave_idx_type y_nc = y.cols ();
+
+  if (x_nr != y_nr || x_nc != y_nc)
+    err_nonconformant ("atan2", x_nr, x_nc, y_nr, y_nc);
+
   SparseMatrix r;
 
-  if ((x.rows () == y.rows ()) && (x.cols () == y.cols ()))
+  r = SparseMatrix (x_nr, x_nc, (x.nnz () + y.nnz ()));
+
+  octave_idx_type jx = 0;
+  r.cidx (0) = 0;
+  for (octave_idx_type i = 0 ; i < x_nc ; i++)
     {
-      octave_idx_type x_nr = x.rows ();
-      octave_idx_type x_nc = x.cols ();
+      octave_idx_type  ja = x.cidx (i);
+      octave_idx_type  ja_max = x.cidx (i+1);
+      bool ja_lt_max= ja < ja_max;
 
-      octave_idx_type y_nr = y.rows ();
-      octave_idx_type y_nc = y.cols ();
+      octave_idx_type  jb = y.cidx (i);
+      octave_idx_type  jb_max = y.cidx (i+1);
+      bool jb_lt_max = jb < jb_max;
 
-      if (x_nr != y_nr || x_nc != y_nc)
-        err_nonconformant ("atan2", x_nr, x_nc, y_nr, y_nc);
-
-      r = SparseMatrix (x_nr, x_nc, (x.nnz () + y.nnz ()));
-
-      octave_idx_type jx = 0;
-      r.cidx (0) = 0;
-      for (octave_idx_type i = 0 ; i < x_nc ; i++)
+      while (ja_lt_max || jb_lt_max)
         {
-          octave_idx_type  ja = x.cidx (i);
-          octave_idx_type  ja_max = x.cidx (i+1);
-          bool ja_lt_max= ja < ja_max;
-
-          octave_idx_type  jb = y.cidx (i);
-          octave_idx_type  jb_max = y.cidx (i+1);
-          bool jb_lt_max = jb < jb_max;
-
-          while (ja_lt_max || jb_lt_max)
+          octave_quit ();
+          if ((! jb_lt_max)
+              || (ja_lt_max && (x.ridx (ja) < y.ridx (jb))))
             {
-              octave_quit ();
-              if ((! jb_lt_max)
-                  || (ja_lt_max && (x.ridx (ja) < y.ridx (jb))))
-                {
-                  r.ridx (jx) = x.ridx (ja);
-                  r.data (jx) = atan2 (x.data (ja), 0.);
-                  jx++;
-                  ja++;
-                  ja_lt_max= ja < ja_max;
-                }
-              else if ((! ja_lt_max)
-                       || (jb_lt_max && (y.ridx (jb) < x.ridx (ja))))
-                {
-                  jb++;
-                  jb_lt_max= jb < jb_max;
-                }
-              else
-                {
-                  double tmp = atan2 (x.data (ja), y.data (jb));
-                  if (tmp != 0.)
-                    {
-                      r.data (jx) = tmp;
-                      r.ridx (jx) = x.ridx (ja);
-                      jx++;
-                    }
-                  ja++;
-                  ja_lt_max= ja < ja_max;
-                  jb++;
-                  jb_lt_max= jb < jb_max;
-                }
+              r.ridx (jx) = x.ridx (ja);
+              r.data (jx) = atan2 (x.data (ja), 0.);
+              jx++;
+              ja++;
+              ja_lt_max= ja < ja_max;
             }
-          r.cidx (i+1) = jx;
+          else if ((! ja_lt_max)
+                   || (jb_lt_max && (y.ridx (jb) < x.ridx (ja))))
+            {
+              jb++;
+              jb_lt_max= jb < jb_max;
+            }
+          else
+            {
+              double tmp = atan2 (x.data (ja), y.data (jb));
+              if (tmp != 0.)
+                {
+                  r.data (jx) = tmp;
+                  r.ridx (jx) = x.ridx (ja);
+                  jx++;
+                }
+              ja++;
+              ja_lt_max= ja < ja_max;
+              jb++;
+              jb_lt_max= jb < jb_max;
+            }
         }
-
-      r.maybe_compress ();
+      r.cidx (i+1) = jx;
     }
-  else
-    (*current_liboctave_error_handler) ("matrix size mismatch");
+
+  r.maybe_compress ();
 
   return r;
 }
@@ -859,43 +857,39 @@ SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
 
   if (nr == 0 || nc == 0 || nr != nc)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
+
+  // Print spparms("spumoni") info if requested
+  int typ = mattyp.type ();
+  mattyp.info ();
+
+  if (typ != MatrixType::Diagonal && typ != MatrixType::Permuted_Diagonal)
+    (*current_liboctave_error_handler) ("incorrect matrix type");
+
+  if (typ == MatrixType::Permuted_Diagonal)
+    retval = transpose ();
   else
+    retval = *this;
+
+  // Force make_unique to be called
+  double *v = retval.data ();
+
+  if (calccond)
     {
-      // Print spparms("spumoni") info if requested
-      int typ = mattyp.type ();
-      mattyp.info ();
-
-      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
+      double dmax = 0.;
+      double dmin = octave_Inf;
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          if (typ == MatrixType::Permuted_Diagonal)
-            retval = transpose ();
-          else
-            retval = *this;
-
-          // Force make_unique to be called
-          double *v = retval.data ();
-
-          if (calccond)
-            {
-              double dmax = 0.;
-              double dmin = octave_Inf;
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  double tmp = fabs (v[i]);
-                  if (tmp > dmax)
-                    dmax = tmp;
-                  if (tmp < dmin)
-                    dmin = tmp;
-                }
-              rcond = dmin / dmax;
-            }
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            v[i] = 1.0 / v[i];
+          double tmp = fabs (v[i]);
+          if (tmp > dmax)
+            dmax = tmp;
+          if (tmp < dmin)
+            dmin = tmp;
         }
-      else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+      rcond = dmin / dmax;
     }
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    v[i] = 1.0 / v[i];
 
   return retval;
 }
@@ -913,262 +907,239 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 
   if (nr == 0 || nc == 0 || nr != nc)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
-  else
+
+  // Print spparms("spumoni") info if requested
+  int typ = mattyp.type ();
+  mattyp.info ();
+
+  if (typ != MatrixType::Upper && typ != MatrixType::Permuted_Upper
+      && typ != MatrixType::Lower && typ != MatrixType::Permuted_Lower)
+    (*current_liboctave_error_handler) ("incorrect matrix type");
+
+  double anorm = 0.;
+  double ainvnorm = 0.;
+
+  if (calccond)
     {
-      // Print spparms("spumoni") info if requested
-      int typ = mattyp.type ();
-      mattyp.info ();
-
-      if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper
-          || typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
+      // Calculate the 1-norm of matrix for rcond calculation
+      for (octave_idx_type j = 0; j < nr; j++)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
+          double atmp = 0.;
+          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+            atmp += fabs (data (i));
+          if (atmp > anorm)
+            anorm = atmp;
+        }
+    }
 
-          if (calccond)
+  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+    {
+      octave_idx_type nz = nnz ();
+      octave_idx_type cx = 0;
+      octave_idx_type nz2 = nz;
+      retval = SparseMatrix (nr, nc, nz2);
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          octave_quit ();
+          // place the 1 in the identity position
+          octave_idx_type cx_colstart = cx;
+
+          if (cx == nz2)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nr; j++)
-                {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
+              nz2 *= 2;
+              retval.change_capacity (nz2);
             }
 
-          if (typ == MatrixType::Upper || typ == MatrixType::Lower)
-            {
-              octave_idx_type nz = nnz ();
-              octave_idx_type cx = 0;
-              octave_idx_type nz2 = nz;
-              retval = SparseMatrix (nr, nc, nz2);
+          retval.xcidx (i) = cx;
+          retval.xridx (cx) = i;
+          retval.xdata (cx) = 1.0;
+          cx++;
 
-              for (octave_idx_type i = 0; i < nr; i++)
+          // iterate accross columns of input matrix
+          for (octave_idx_type j = i+1; j < nr; j++)
+            {
+              double v = 0.;
+              // iterate to calculate sum
+              octave_idx_type colXp = retval.xcidx (i);
+              octave_idx_type colUp = cidx (j);
+              octave_idx_type rpX, rpU;
+
+              if (cidx (j) == cidx (j+1))
+                (*current_liboctave_error_handler) ("division by zero");
+
+              do
                 {
                   octave_quit ();
-                  // place the 1 in the identity position
-                  octave_idx_type cx_colstart = cx;
+                  rpX = retval.xridx (colXp);
+                  rpU = ridx (colUp);
 
+                  if (rpX < rpU)
+                    colXp++;
+                  else if (rpX > rpU)
+                    colUp++;
+                  else
+                    {
+                      v -= retval.xdata (colXp) * data (colUp);
+                      colXp++;
+                      colUp++;
+                    }
+                }
+              while (rpX < j && rpU < j && colXp < cx && colUp < nz);
+
+              // get A(m,m)
+              if (typ == MatrixType::Upper)
+                colUp = cidx (j+1) - 1;
+              else
+                colUp = cidx (j);
+              double pivot = data (colUp);
+              if (pivot == 0. || ridx (colUp) != j)
+                (*current_liboctave_error_handler) ("division by zero");
+
+              if (v != 0.)
+                {
                   if (cx == nz2)
                     {
                       nz2 *= 2;
                       retval.change_capacity (nz2);
                     }
 
-                  retval.xcidx (i) = cx;
-                  retval.xridx (cx) = i;
-                  retval.xdata (cx) = 1.0;
+                  retval.xridx (cx) = j;
+                  retval.xdata (cx) = v / pivot;
                   cx++;
-
-                  // iterate accross columns of input matrix
-                  for (octave_idx_type j = i+1; j < nr; j++)
-                    {
-                      double v = 0.;
-                      // iterate to calculate sum
-                      octave_idx_type colXp = retval.xcidx (i);
-                      octave_idx_type colUp = cidx (j);
-                      octave_idx_type rpX, rpU;
-
-                      if (cidx (j) == cidx (j+1))
-                        {
-                          (*current_liboctave_error_handler)
-                            ("division by zero");
-                          goto inverse_singular;
-                        }
-
-                      do
-                        {
-                          octave_quit ();
-                          rpX = retval.xridx (colXp);
-                          rpU = ridx (colUp);
-
-                          if (rpX < rpU)
-                            colXp++;
-                          else if (rpX > rpU)
-                            colUp++;
-                          else
-                            {
-                              v -= retval.xdata (colXp) * data (colUp);
-                              colXp++;
-                              colUp++;
-                            }
-                        }
-                      while (rpX < j && rpU < j && colXp < cx && colUp < nz);
-
-                      // get A(m,m)
-                      if (typ == MatrixType::Upper)
-                        colUp = cidx (j+1) - 1;
-                      else
-                        colUp = cidx (j);
-                      double pivot = data (colUp);
-                      if (pivot == 0. || ridx (colUp) != j)
-                        {
-                          (*current_liboctave_error_handler)
-                            ("division by zero");
-                          goto inverse_singular;
-                        }
-
-                      if (v != 0.)
-                        {
-                          if (cx == nz2)
-                            {
-                              nz2 *= 2;
-                              retval.change_capacity (nz2);
-                            }
-
-                          retval.xridx (cx) = j;
-                          retval.xdata (cx) = v / pivot;
-                          cx++;
-                        }
-                    }
-
-                  // get A(m,m)
-                  octave_idx_type colUp;
-                  if (typ == MatrixType::Upper)
-                    colUp = cidx (i+1) - 1;
-                  else
-                    colUp = cidx (i);
-                  double pivot = data (colUp);
-                  if (pivot == 0. || ridx (colUp) != i)
-                    {
-                      (*current_liboctave_error_handler) ("division by zero");
-                      goto inverse_singular;
-                    }
-
-                  if (pivot != 1.0)
-                    for (octave_idx_type j = cx_colstart; j < cx; j++)
-                      retval.xdata (j) /= pivot;
                 }
-              retval.xcidx (nr) = cx;
-              retval.maybe_compress ();
             }
+
+          // get A(m,m)
+          octave_idx_type colUp;
+          if (typ == MatrixType::Upper)
+            colUp = cidx (i+1) - 1;
           else
-            {
-              octave_idx_type nz = nnz ();
-              octave_idx_type cx = 0;
-              octave_idx_type nz2 = nz;
-              retval = SparseMatrix (nr, nc, nz2);
+            colUp = cidx (i);
+          double pivot = data (colUp);
+          if (pivot == 0. || ridx (colUp) != i)
+            (*current_liboctave_error_handler) ("division by zero");
 
-              OCTAVE_LOCAL_BUFFER (double, work, nr);
-              OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
+          if (pivot != 1.0)
+            for (octave_idx_type j = cx_colstart; j < cx; j++)
+              retval.xdata (j) /= pivot;
+        }
+      retval.xcidx (nr) = cx;
+      retval.maybe_compress ();
+    }
+  else
+    {
+      octave_idx_type nz = nnz ();
+      octave_idx_type cx = 0;
+      octave_idx_type nz2 = nz;
+      retval = SparseMatrix (nr, nc, nz2);
 
-              octave_idx_type *perm = mattyp.triangular_perm ();
-              if (typ == MatrixType::Permuted_Upper)
-                {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    rperm[perm[i]] = i;
-                }
-              else
-                {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    rperm[i] = perm[i];
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    perm[rperm[i]] = i;
-                }
+      OCTAVE_LOCAL_BUFFER (double, work, nr);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
 
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  octave_quit ();
-                  octave_idx_type iidx = rperm[i];
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    work[j] = 0.;
-
-                  // place the 1 in the identity position
-                  work[iidx] = 1.0;
-
-                  // iterate accross columns of input matrix
-                  for (octave_idx_type j = iidx+1; j < nr; j++)
-                    {
-                      double v = 0.;
-                      octave_idx_type jidx = perm[j];
-                      // iterate to calculate sum
-                      for (octave_idx_type k = cidx (jidx);
-                           k < cidx (jidx+1); k++)
-                        {
-                          octave_quit ();
-                          v -= work[ridx (k)] * data (k);
-                        }
-
-                      // get A(m,m)
-                      double pivot;
-                      if (typ == MatrixType::Permuted_Upper)
-                        pivot = data (cidx (jidx+1) - 1);
-                      else
-                        pivot = data (cidx (jidx));
-                      if (pivot == 0.)
-                        {
-                          (*current_liboctave_error_handler)
-                            ("division by zero");
-                          goto inverse_singular;
-                        }
-
-                      work[j] = v / pivot;
-                    }
-
-                  // get A(m,m)
-                  octave_idx_type colUp;
-                  if (typ == MatrixType::Permuted_Upper)
-                    colUp = cidx (perm[iidx]+1) - 1;
-                  else
-                    colUp = cidx (perm[iidx]);
-
-                  double pivot = data (colUp);
-                  if (pivot == 0.)
-                    {
-                      (*current_liboctave_error_handler)
-                        ("division by zero");
-                      goto inverse_singular;
-                    }
-
-                  octave_idx_type new_cx = cx;
-                  for (octave_idx_type j = iidx; j < nr; j++)
-                    if (work[j] != 0.0)
-                      {
-                        new_cx++;
-                        if (pivot != 1.0)
-                          work[j] /= pivot;
-                      }
-
-                  if (cx < new_cx)
-                    {
-                      nz2 = (2*nz2 < new_cx ? new_cx : 2*nz2);
-                      retval.change_capacity (nz2);
-                    }
-
-                  retval.xcidx (i) = cx;
-                  for (octave_idx_type j = iidx; j < nr; j++)
-                    if (work[j] != 0.)
-                      {
-                        retval.xridx (cx) = j;
-                        retval.xdata (cx++) = work[j];
-                      }
-                }
-
-              retval.xcidx (nr) = cx;
-              retval.maybe_compress ();
-            }
-
-          if (calccond)
-            {
-              // Calculate the 1-norm of inverse matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nr; j++)
-                {
-                  double atmp = 0.;
-                  for (octave_idx_type i = retval.cidx (j);
-                       i < retval.cidx (j+1); i++)
-                    atmp += fabs (retval.data (i));
-                  if (atmp > ainvnorm)
-                    ainvnorm = atmp;
-                }
-
-              rcond = 1. / ainvnorm / anorm;
-            }
+      octave_idx_type *perm = mattyp.triangular_perm ();
+      if (typ == MatrixType::Permuted_Upper)
+        {
+          for (octave_idx_type i = 0; i < nr; i++)
+            rperm[perm[i]] = i;
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        {
+          for (octave_idx_type i = 0; i < nr; i++)
+            rperm[i] = perm[i];
+          for (octave_idx_type i = 0; i < nr; i++)
+            perm[rperm[i]] = i;
+        }
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          octave_quit ();
+          octave_idx_type iidx = rperm[i];
+
+          for (octave_idx_type j = 0; j < nr; j++)
+            work[j] = 0.;
+
+          // place the 1 in the identity position
+          work[iidx] = 1.0;
+
+          // iterate accross columns of input matrix
+          for (octave_idx_type j = iidx+1; j < nr; j++)
+            {
+              double v = 0.;
+              octave_idx_type jidx = perm[j];
+              // iterate to calculate sum
+              for (octave_idx_type k = cidx (jidx);
+                   k < cidx (jidx+1); k++)
+                {
+                  octave_quit ();
+                  v -= work[ridx (k)] * data (k);
+                }
+
+              // get A(m,m)
+              double pivot;
+              if (typ == MatrixType::Permuted_Upper)
+                pivot = data (cidx (jidx+1) - 1);
+              else
+                pivot = data (cidx (jidx));
+              if (pivot == 0.)
+                  (*current_liboctave_error_handler) ("division by zero");
+
+              work[j] = v / pivot;
+            }
+
+          // get A(m,m)
+          octave_idx_type colUp;
+          if (typ == MatrixType::Permuted_Upper)
+            colUp = cidx (perm[iidx]+1) - 1;
+          else
+            colUp = cidx (perm[iidx]);
+
+          double pivot = data (colUp);
+          if (pivot == 0.)
+            (*current_liboctave_error_handler) ("division by zero");
+
+          octave_idx_type new_cx = cx;
+          for (octave_idx_type j = iidx; j < nr; j++)
+            if (work[j] != 0.0)
+              {
+                new_cx++;
+                if (pivot != 1.0)
+                  work[j] /= pivot;
+              }
+
+          if (cx < new_cx)
+            {
+              nz2 = (2*nz2 < new_cx ? new_cx : 2*nz2);
+              retval.change_capacity (nz2);
+            }
+
+          retval.xcidx (i) = cx;
+          for (octave_idx_type j = iidx; j < nr; j++)
+            if (work[j] != 0.)
+              {
+                retval.xridx (cx) = j;
+                retval.xdata (cx++) = work[j];
+              }
+        }
+
+      retval.xcidx (nr) = cx;
+      retval.maybe_compress ();
+    }
+
+  if (calccond)
+    {
+      // Calculate the 1-norm of inverse matrix for rcond calculation
+      for (octave_idx_type j = 0; j < nr; j++)
+        {
+          double atmp = 0.;
+          for (octave_idx_type i = retval.cidx (j);
+               i < retval.cidx (j+1); i++)
+            atmp += fabs (retval.data (i));
+          if (atmp > ainvnorm)
+            ainvnorm = atmp;
+        }
+
+      rcond = 1. / ainvnorm / anorm;
     }
 
   return retval;
@@ -1312,13 +1283,13 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 
       if (status < 0)
         {
-          (*current_liboctave_error_handler)
-            ("SparseMatrix::determinant symbolic factorization failed");
-
           UMFPACK_DNAME (report_status) (control, status);
           UMFPACK_DNAME (report_info) (control, info);
 
           UMFPACK_DNAME (free_symbolic) (&Symbolic);
+
+          (*current_liboctave_error_handler)
+            ("SparseMatrix::determinant symbolic factorization failed");
         }
       else
         {
@@ -1333,13 +1304,12 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 
           if (status < 0)
             {
-              (*current_liboctave_error_handler)
-                ("SparseMatrix::determinant numeric factorization failed");
-
               UMFPACK_DNAME (report_status) (control, status);
               UMFPACK_DNAME (report_info) (control, info);
 
               UMFPACK_DNAME (free_numeric) (&Numeric);
+              (*current_liboctave_error_handler)
+                ("SparseMatrix::determinant numeric factorization failed");
             }
           else
             {
@@ -1352,11 +1322,11 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
 
               if (status < 0)
                 {
-                  (*current_liboctave_error_handler)
-                    ("SparseMatrix::determinant error calculating determinant");
-
                   UMFPACK_DNAME (report_status) (control, status);
                   UMFPACK_DNAME (report_info) (control, info);
+
+                  (*current_liboctave_error_handler)
+                    ("SparseMatrix::determinant error calculating determinant");
                 }
               else
                 retval = DET (c10, e10, 10);
@@ -1391,7 +1361,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = Matrix (nc, b.cols (), 0.0);
   else
     {
@@ -1399,38 +1370,36 @@ SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
-        {
-          retval.resize (nc, b.cols (), 0.);
-          if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b.cols (); j++)
-              for (octave_idx_type i = 0; i < nm; i++)
-                retval(i,j) = b(i,j) / data (i);
-          else
-            for (octave_idx_type j = 0; j < b.cols (); j++)
-              for (octave_idx_type k = 0; k < nc; k++)
-                for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-                  retval(k,j) = b(ridx (i),j) / data (i);
+      if (typ != MatrixType::Diagonal && typ != MatrixType::Permuted_Diagonal)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
 
-          if (calc_cond)
+      retval.resize (nc, b.cols (), 0.);
+      if (typ == MatrixType::Diagonal)
+        for (octave_idx_type j = 0; j < b.cols (); j++)
+          for (octave_idx_type i = 0; i < nm; i++)
+            retval(i,j) = b(i,j) / data (i);
+      else
+        for (octave_idx_type j = 0; j < b.cols (); j++)
+          for (octave_idx_type k = 0; k < nc; k++)
+            for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+              retval(k,j) = b(ridx (i),j) / data (i);
+
+      if (calc_cond)
+        {
+          double dmax = 0.;
+          double dmin = octave_Inf;
+          for (octave_idx_type i = 0; i < nm; i++)
             {
-              double dmax = 0.;
-              double dmin = octave_Inf;
-              for (octave_idx_type i = 0; i < nm; i++)
-                {
-                  double tmp = fabs (data (i));
-                  if (tmp > dmax)
-                    dmax = tmp;
-                  if (tmp < dmin)
-                    dmin = tmp;
-                }
-              rcond = dmin / dmax;
+              double tmp = fabs (data (i));
+              if (tmp > dmax)
+                dmax = tmp;
+              if (tmp < dmin)
+                dmin = tmp;
             }
-          else
-            rcond = 1.;
+          rcond = dmin / dmax;
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        rcond = 1.;
     }
 
   return retval;
@@ -1451,7 +1420,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = SparseMatrix (nc, b.cols ());
   else
     {
@@ -1459,68 +1429,66 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
-        {
-          octave_idx_type b_nc = b.cols ();
-          octave_idx_type b_nz = b.nnz ();
-          retval = SparseMatrix (nc, b_nc, b_nz);
+      if (typ != MatrixType::Diagonal && typ != MatrixType::Permuted_Diagonal)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
 
-          retval.xcidx (0) = 0;
-          octave_idx_type ii = 0;
-          if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b_nc; j++)
-              {
-                for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                  {
-                    if (b.ridx (i) >= nm)
-                      break;
-                    retval.xridx (ii) = b.ridx (i);
-                    retval.xdata (ii++) = b.data (i) / data (b.ridx (i));
-                  }
-                retval.xcidx (j+1) = ii;
-              }
-          else
-            for (octave_idx_type j = 0; j < b_nc; j++)
-              {
-                for (octave_idx_type l = 0; l < nc; l++)
-                  for (octave_idx_type i = cidx (l); i < cidx (l+1); i++)
-                    {
-                      bool found = false;
-                      octave_idx_type k;
-                      for (k = b.cidx (j); k < b.cidx (j+1); k++)
-                        if (ridx (i) == b.ridx (k))
-                          {
-                            found = true;
-                            break;
-                          }
-                      if (found)
-                        {
-                          retval.xridx (ii) = l;
-                          retval.xdata (ii++) = b.data (k) / data (i);
-                        }
-                    }
-                retval.xcidx (j+1) = ii;
-              }
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nz = b.nnz ();
+      retval = SparseMatrix (nc, b_nc, b_nz);
 
-          if (calc_cond)
-            {
-              double dmax = 0.;
-              double dmin = octave_Inf;
-              for (octave_idx_type i = 0; i < nm; i++)
+      retval.xcidx (0) = 0;
+      octave_idx_type ii = 0;
+      if (typ == MatrixType::Diagonal)
+        for (octave_idx_type j = 0; j < b_nc; j++)
+          {
+            for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+              {
+                if (b.ridx (i) >= nm)
+                  break;
+                retval.xridx (ii) = b.ridx (i);
+                retval.xdata (ii++) = b.data (i) / data (b.ridx (i));
+              }
+            retval.xcidx (j+1) = ii;
+          }
+      else
+        for (octave_idx_type j = 0; j < b_nc; j++)
+          {
+            for (octave_idx_type l = 0; l < nc; l++)
+              for (octave_idx_type i = cidx (l); i < cidx (l+1); i++)
                 {
-                  double tmp = fabs (data (i));
-                  if (tmp > dmax)
-                    dmax = tmp;
-                  if (tmp < dmin)
-                    dmin = tmp;
+                  bool found = false;
+                  octave_idx_type k;
+                  for (k = b.cidx (j); k < b.cidx (j+1); k++)
+                    if (ridx (i) == b.ridx (k))
+                      {
+                        found = true;
+                        break;
+                      }
+                  if (found)
+                    {
+                      retval.xridx (ii) = l;
+                      retval.xdata (ii++) = b.data (k) / data (i);
+                    }
                 }
-              rcond = dmin / dmax;
+            retval.xcidx (j+1) = ii;
+          }
+
+      if (calc_cond)
+        {
+          double dmax = 0.;
+          double dmin = octave_Inf;
+          for (octave_idx_type i = 0; i < nm; i++)
+            {
+              double tmp = fabs (data (i));
+              if (tmp > dmax)
+                dmax = tmp;
+              if (tmp < dmin)
+                dmin = tmp;
             }
-          else
-            rcond = 1.;
+          rcond = dmin / dmax;
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        rcond = 1.;
     }
 
   return retval;
@@ -1541,7 +1509,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
@@ -1549,38 +1518,36 @@ SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
-        {
-          retval.resize (nc, b.cols (), 0);
-          if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b.cols (); j++)
-              for (octave_idx_type i = 0; i < nm; i++)
-                retval(i,j) = b(i,j) / data (i);
-          else
-            for (octave_idx_type j = 0; j < b.cols (); j++)
-              for (octave_idx_type k = 0; k < nc; k++)
-                for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-                  retval(k,j) = b(ridx (i),j) / data (i);
+      if (typ != MatrixType::Diagonal && typ != MatrixType::Permuted_Diagonal)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
 
-          if (calc_cond)
+      retval.resize (nc, b.cols (), 0);
+      if (typ == MatrixType::Diagonal)
+        for (octave_idx_type j = 0; j < b.cols (); j++)
+          for (octave_idx_type i = 0; i < nm; i++)
+            retval(i,j) = b(i,j) / data (i);
+      else
+        for (octave_idx_type j = 0; j < b.cols (); j++)
+          for (octave_idx_type k = 0; k < nc; k++)
+            for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+              retval(k,j) = b(ridx (i),j) / data (i);
+
+      if (calc_cond)
+        {
+          double dmax = 0.;
+          double dmin = octave_Inf;
+          for (octave_idx_type i = 0; i < nm; i++)
             {
-              double dmax = 0.;
-              double dmin = octave_Inf;
-              for (octave_idx_type i = 0; i < nm; i++)
-                {
-                  double tmp = fabs (data (i));
-                  if (tmp > dmax)
-                    dmax = tmp;
-                  if (tmp < dmin)
-                    dmin = tmp;
-                }
-              rcond = dmin / dmax;
+              double tmp = fabs (data (i));
+              if (tmp > dmax)
+                dmax = tmp;
+              if (tmp < dmin)
+                dmin = tmp;
             }
-          else
-            rcond = 1.;
+          rcond = dmin / dmax;
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        rcond = 1.;
     }
 
   return retval;
@@ -1601,7 +1568,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
@@ -1609,68 +1577,66 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
-        {
-          octave_idx_type b_nc = b.cols ();
-          octave_idx_type b_nz = b.nnz ();
-          retval = SparseComplexMatrix (nc, b_nc, b_nz);
+      if (typ != MatrixType::Diagonal && typ != MatrixType::Permuted_Diagonal)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
 
-          retval.xcidx (0) = 0;
-          octave_idx_type ii = 0;
-          if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b.cols (); j++)
-              {
-                for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                  {
-                    if (b.ridx (i) >= nm)
-                      break;
-                    retval.xridx (ii) = b.ridx (i);
-                    retval.xdata (ii++) = b.data (i) / data (b.ridx (i));
-                  }
-                retval.xcidx (j+1) = ii;
-              }
-          else
-            for (octave_idx_type j = 0; j < b.cols (); j++)
-              {
-                for (octave_idx_type l = 0; l < nc; l++)
-                  for (octave_idx_type i = cidx (l); i < cidx (l+1); i++)
-                    {
-                      bool found = false;
-                      octave_idx_type k;
-                      for (k = b.cidx (j); k < b.cidx (j+1); k++)
-                        if (ridx (i) == b.ridx (k))
-                          {
-                            found = true;
-                            break;
-                          }
-                      if (found)
-                        {
-                          retval.xridx (ii) = l;
-                          retval.xdata (ii++) = b.data (k) / data (i);
-                        }
-                    }
-                retval.xcidx (j+1) = ii;
-              }
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nz = b.nnz ();
+      retval = SparseComplexMatrix (nc, b_nc, b_nz);
 
-          if (calc_cond)
-            {
-              double dmax = 0.;
-              double dmin = octave_Inf;
-              for (octave_idx_type i = 0; i < nm; i++)
+      retval.xcidx (0) = 0;
+      octave_idx_type ii = 0;
+      if (typ == MatrixType::Diagonal)
+        for (octave_idx_type j = 0; j < b.cols (); j++)
+          {
+            for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+              {
+                if (b.ridx (i) >= nm)
+                  break;
+                retval.xridx (ii) = b.ridx (i);
+                retval.xdata (ii++) = b.data (i) / data (b.ridx (i));
+              }
+            retval.xcidx (j+1) = ii;
+          }
+      else
+        for (octave_idx_type j = 0; j < b.cols (); j++)
+          {
+            for (octave_idx_type l = 0; l < nc; l++)
+              for (octave_idx_type i = cidx (l); i < cidx (l+1); i++)
                 {
-                  double tmp = fabs (data (i));
-                  if (tmp > dmax)
-                    dmax = tmp;
-                  if (tmp < dmin)
-                    dmin = tmp;
+                  bool found = false;
+                  octave_idx_type k;
+                  for (k = b.cidx (j); k < b.cidx (j+1); k++)
+                    if (ridx (i) == b.ridx (k))
+                      {
+                        found = true;
+                        break;
+                      }
+                  if (found)
+                    {
+                      retval.xridx (ii) = l;
+                      retval.xdata (ii++) = b.data (k) / data (i);
+                    }
                 }
-              rcond = dmin / dmax;
+            retval.xcidx (j+1) = ii;
+          }
+
+      if (calc_cond)
+        {
+          double dmax = 0.;
+          double dmin = octave_Inf;
+          for (octave_idx_type i = 0; i < nm; i++)
+            {
+              double tmp = fabs (data (i));
+              if (tmp > dmax)
+                dmax = tmp;
+              if (tmp < dmin)
+                dmin = tmp;
             }
-          else
-            rcond = 1.;
+          rcond = dmin / dmax;
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        rcond = 1.;
     }
 
   return retval;
@@ -1692,7 +1658,8 @@ SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = Matrix (nc, b.cols (), 0.0);
   else
     {
@@ -1700,128 +1667,157 @@ SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
+      if (typ != MatrixType::Permuted_Upper && typ != MatrixType::Upper)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      octave_idx_type b_nc = b.cols ();
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          octave_idx_type b_nc = b.cols ();
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      if (typ == MatrixType::Permuted_Upper)
+        {
+          retval.resize (nc, b_nc);
+          octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nr; i++)
+                work[i] = b(i,j);
+              for (octave_idx_type i = nr; i < nc; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type k = nc-1; k >= 0; k--)
+                {
+                  octave_idx_type kidx = perm[k];
+
+                  if (work[k] != 0.)
+                    {
+                      if (ridx (cidx (kidx+1)-1) != k
+                          || data (cidx (kidx+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      double tmp = work[k] / data (cidx (kidx+1)-1);
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (kidx);
+                           i < cidx (kidx+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval.xelem (perm[i], j) = work[i];
+            }
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
+                  work[j] = 1.;
 
-          if (typ == MatrixType::Permuted_Upper)
-            {
-              retval.resize (nc, b_nc);
-              octave_idx_type *perm = mattype.triangular_perm ();
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    work[i] = b(i,j);
-                  for (octave_idx_type i = nr; i < nc; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                  for (octave_idx_type k = j; k >= 0; k--)
                     {
-                      octave_idx_type kidx = perm[k];
+                      octave_idx_type iidx = perm[k];
 
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k
-                              || data (cidx (kidx+1)-1) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          double tmp = work[k] / data (cidx (kidx+1)-1);
+                          double tmp = work[k] / data (cidx (iidx+1)-1);
                           work[k] = tmp;
-                          for (octave_idx_type i = cidx (kidx);
-                               i < cidx (kidx+1)-1; i++)
+                          for (octave_idx_type i = cidx (iidx);
+                               i < cidx (iidx+1)-1; i++)
                             {
-                              octave_idx_type iidx = ridx (i);
-                              work[iidx] = work[iidx] - tmp * data (i);
+                              octave_idx_type idx2 = ridx (i);
+                              work[idx2] = work[idx2] - tmp * data (i);
                             }
                         }
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval.xelem (perm[i], j) = work[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
                     {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          octave_idx_type iidx = perm[k];
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (iidx+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (iidx);
-                                   i < cidx (iidx+1)-1; i++)
-                                {
-                                  octave_idx_type idx2 = ridx (i);
-                                  work[idx2] = work[idx2] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-                  rcond = 1. / ainvnorm / anorm;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
+              rcond = 1. / ainvnorm / anorm;
             }
-          else
+        }
+      else
+        {
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+          retval.resize (nc, b_nc);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
             {
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
-              retval.resize (nc, b_nc);
+              for (octave_idx_type i = 0; i < nr; i++)
+                work[i] = b(i,j);
+              for (octave_idx_type i = nr; i < nc; i++)
+                work[i] = 0.;
 
-              for (octave_idx_type j = 0; j < b_nc; j++)
+              for (octave_idx_type k = nc-1; k >= 0; k--)
                 {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    work[i] = b(i,j);
-                  for (octave_idx_type i = nr; i < nc; i++)
-                    work[i] = 0.;
+                  if (work[k] != 0.)
+                    {
+                      if (ridx (cidx (k+1)-1) != k
+                          || data (cidx (k+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
 
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                      double tmp = work[k] / data (cidx (k+1)-1);
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval.xelem (i, j) = work[i];
+            }
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k >= 0; k--)
                     {
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k+1)-1) != k
-                              || data (cidx (k+1)-1) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
                           double tmp = work[k] / data (cidx (k+1)-1);
                           work[k] = tmp;
                           for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
@@ -1831,76 +1827,45 @@ SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
                             }
                         }
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval.xelem (i, j) = work[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
                     {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-                  rcond = 1. / ainvnorm / anorm;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
-      else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
 
   return retval;
@@ -1922,7 +1887,8 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = SparseMatrix (nc, b.cols ());
   else
     {
@@ -1930,260 +1896,258 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
+      if (typ != MatrixType::Permuted_Upper && typ != MatrixType::Upper)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nz = b.nnz ();
+      retval = SparseMatrix (nc, b_nc, b_nz);
+      retval.xcidx (0) = 0;
+      octave_idx_type ii = 0;
+      octave_idx_type x_nz = b_nz;
+
+      if (typ == MatrixType::Permuted_Upper)
+        {
+          octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
+          for (octave_idx_type i = 0; i < nc; i++)
+            rperm[perm[i]] = i;
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                work[b.ridx (i)] = b.data (i);
+
+              for (octave_idx_type k = nc-1; k >= 0; k--)
+                {
+                  octave_idx_type kidx = perm[k];
+
+                  if (work[k] != 0.)
+                    {
+                      if (ridx (cidx (kidx+1)-1) != k
+                          || data (cidx (kidx+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      double tmp = work[k] / data (cidx (kidx+1)-1);
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (kidx);
+                           i < cidx (kidx+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[rperm[i]] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = work[rperm[i]];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
+                  work[j] = 1.;
 
-          octave_idx_type b_nc = b.cols ();
-          octave_idx_type b_nz = b.nnz ();
-          retval = SparseMatrix (nc, b_nc, b_nz);
-          retval.xcidx (0) = 0;
-          octave_idx_type ii = 0;
-          octave_idx_type x_nz = b_nz;
-
-          if (typ == MatrixType::Permuted_Upper)
-            {
-              octave_idx_type *perm = mattype.triangular_perm ();
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
-
-              OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
-              for (octave_idx_type i = 0; i < nc; i++)
-                rperm[perm[i]] = i;
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    work[b.ridx (i)] = b.data (i);
-
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                  for (octave_idx_type k = j; k >= 0; k--)
                     {
-                      octave_idx_type kidx = perm[k];
+                      octave_idx_type iidx = perm[k];
 
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k
-                              || data (cidx (kidx+1)-1) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          double tmp = work[k] / data (cidx (kidx+1)-1);
+                          double tmp = work[k] / data (cidx (iidx+1)-1);
                           work[k] = tmp;
-                          for (octave_idx_type i = cidx (kidx);
-                               i < cidx (kidx+1)-1; i++)
+                          for (octave_idx_type i = cidx (iidx);
+                               i < cidx (iidx+1)-1; i++)
                             {
-                              octave_idx_type iidx = ridx (i);
-                              work[iidx] = work[iidx] - tmp * data (i);
+                              octave_idx_type idx2 = ridx (i);
+                              work[idx2] = work[idx2] - tmp * data (i);
                             }
                         }
                     }
-
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
                     {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[rperm[i]] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = work[rperm[i]];
-                      }
-                  retval.xcidx (j+1) = ii;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          octave_idx_type iidx = perm[k];
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (iidx+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (iidx);
-                                   i < cidx (iidx+1)-1; i++)
-                                {
-                                  octave_idx_type idx2 = ridx (i);
-                                  work[idx2] = work[idx2] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-          else
-            {
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    work[b.ridx (i)] = b.data (i);
-
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
-                    {
-                      if (work[k] != 0.)
-                        {
-                          if (ridx (cidx (k+1)-1) != k
-                              || data (cidx (k+1)-1) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          double tmp = work[k] / data (cidx (k+1)-1);
-                          work[k] = tmp;
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
-                            {
-                              octave_idx_type iidx = ridx (i);
-                              work[iidx] = work[iidx] - tmp * data (i);
-                            }
-                        }
-                    }
-
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
-                    {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
-                    }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[i] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = work[i];
-                      }
-                  retval.xcidx (j+1) = ii;
-                }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1)-1; i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        {
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                work[b.ridx (i)] = b.data (i);
+
+              for (octave_idx_type k = nc-1; k >= 0; k--)
+                {
+                  if (work[k] != 0.)
+                    {
+                      if (ridx (cidx (k+1)-1) != k
+                          || data (cidx (k+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      double tmp = work[k] / data (cidx (k+1)-1);
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[i] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = work[i];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k >= 0; k--)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          double tmp = work[k] / data (cidx (k+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx (i);
+                              work[iidx] = work[iidx] - tmp * data (i);
+                            }
+                        }
+                    }
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
+                    {
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
+                    }
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
+                }
+              rcond = 1. / ainvnorm / anorm;
+            }
+        }
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
   return retval;
 }
@@ -2204,7 +2168,8 @@ SparseMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
@@ -2212,210 +2177,208 @@ SparseMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
+      if (typ != MatrixType::Permuted_Upper && typ != MatrixType::Upper)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      octave_idx_type b_nc = b.cols ();
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          octave_idx_type b_nc = b.cols ();
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      if (typ == MatrixType::Permuted_Upper)
+        {
+          retval.resize (nc, b_nc);
+          octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nr; i++)
+                cwork[i] = b(i,j);
+              for (octave_idx_type i = nr; i < nc; i++)
+                cwork[i] = 0.;
+
+              for (octave_idx_type k = nc-1; k >= 0; k--)
+                {
+                  octave_idx_type kidx = perm[k];
+
+                  if (cwork[k] != 0.)
+                    {
+                      if (ridx (cidx (kidx+1)-1) != k
+                          || data (cidx (kidx+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (cidx (kidx+1)-1);
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (kidx);
+                           i < cidx (kidx+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          cwork[iidx] = cwork[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval.xelem (perm[i], j) = cwork[i];
+            }
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
+                  work[j] = 1.;
 
-          if (typ == MatrixType::Permuted_Upper)
-            {
-              retval.resize (nc, b_nc);
-              octave_idx_type *perm = mattype.triangular_perm ();
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    cwork[i] = b(i,j);
-                  for (octave_idx_type i = nr; i < nc; i++)
-                    cwork[i] = 0.;
-
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                  for (octave_idx_type k = j; k >= 0; k--)
                     {
-                      octave_idx_type kidx = perm[k];
+                      octave_idx_type iidx = perm[k];
 
-                      if (cwork[k] != 0.)
+                      if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k
-                              || data (cidx (kidx+1)-1) == 0.)
+                          double tmp = work[k] / data (cidx (iidx+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (iidx);
+                               i < cidx (iidx+1)-1; i++)
                             {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (cidx (kidx+1)-1);
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (kidx);
-                               i < cidx (kidx+1)-1; i++)
-                            {
-                              octave_idx_type iidx = ridx (i);
-                              cwork[iidx] = cwork[iidx] - tmp * data (i);
+                              octave_idx_type idx2 = ridx (i);
+                              work[idx2] = work[idx2] - tmp * data (i);
                             }
                         }
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval.xelem (perm[i], j) = cwork[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
                     {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          octave_idx_type iidx = perm[k];
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (iidx+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (iidx);
-                                   i < cidx (iidx+1)-1; i++)
-                                {
-                                  octave_idx_type idx2 = ridx (i);
-                                  work[idx2] = work[idx2] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-                  rcond = 1. / ainvnorm / anorm;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-            }
-          else
-            {
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-              retval.resize (nc, b_nc);
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    cwork[i] = b(i,j);
-                  for (octave_idx_type i = nr; i < nc; i++)
-                    cwork[i] = 0.;
-
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
-                    {
-                      if (cwork[k] != 0.)
-                        {
-                          if (ridx (cidx (k+1)-1) != k
-                              || data (cidx (k+1)-1) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (cidx (k+1)-1);
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
-                            {
-                              octave_idx_type iidx = ridx (i);
-                              cwork[iidx] = cwork[iidx] - tmp  * data (i);
-                            }
-                        }
-                    }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval.xelem (i, j) = cwork[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1)-1; i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+          retval.resize (nc, b_nc);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nr; i++)
+                cwork[i] = b(i,j);
+              for (octave_idx_type i = nr; i < nc; i++)
+                cwork[i] = 0.;
+
+              for (octave_idx_type k = nc-1; k >= 0; k--)
+                {
+                  if (cwork[k] != 0.)
+                    {
+                      if (ridx (cidx (k+1)-1) != k
+                          || data (cidx (k+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (cidx (k+1)-1);
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          cwork[iidx] = cwork[iidx] - tmp  * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval.xelem (i, j) = cwork[i];
+            }
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k >= 0; k--)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          double tmp = work[k] / data (cidx (k+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx (i);
+                              work[iidx] = work[iidx] - tmp * data (i);
+                            }
+                        }
+                    }
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
+                    {
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
+                    }
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
+                }
+              rcond = 1. / ainvnorm / anorm;
+            }
+        }
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
 
   return retval;
@@ -2437,7 +2400,8 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
@@ -2445,262 +2409,260 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
+      if (typ != MatrixType::Permuted_Upper && typ != MatrixType::Upper)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nz = b.nnz ();
+      retval = SparseComplexMatrix (nc, b_nc, b_nz);
+      retval.xcidx (0) = 0;
+      octave_idx_type ii = 0;
+      octave_idx_type x_nz = b_nz;
+
+      if (typ == MatrixType::Permuted_Upper)
+        {
+          octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
+          for (octave_idx_type i = 0; i < nc; i++)
+            rperm[perm[i]] = i;
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                cwork[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                cwork[b.ridx (i)] = b.data (i);
+
+              for (octave_idx_type k = nc-1; k >= 0; k--)
+                {
+                  octave_idx_type kidx = perm[k];
+
+                  if (cwork[k] != 0.)
+                    {
+                      if (ridx (cidx (kidx+1)-1) != k
+                          || data (cidx (kidx+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (cidx (kidx+1)-1);
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (kidx);
+                           i < cidx (kidx+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          cwork[iidx] = cwork[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[rperm[i]] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = cwork[rperm[i]];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
+                  work[j] = 1.;
 
-          octave_idx_type b_nc = b.cols ();
-          octave_idx_type b_nz = b.nnz ();
-          retval = SparseComplexMatrix (nc, b_nc, b_nz);
-          retval.xcidx (0) = 0;
-          octave_idx_type ii = 0;
-          octave_idx_type x_nz = b_nz;
-
-          if (typ == MatrixType::Permuted_Upper)
-            {
-              octave_idx_type *perm = mattype.triangular_perm ();
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-
-              OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
-              for (octave_idx_type i = 0; i < nc; i++)
-                rperm[perm[i]] = i;
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    cwork[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    cwork[b.ridx (i)] = b.data (i);
-
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                  for (octave_idx_type k = j; k >= 0; k--)
                     {
-                      octave_idx_type kidx = perm[k];
+                      octave_idx_type iidx = perm[k];
 
-                      if (cwork[k] != 0.)
+                      if (work[k] != 0.)
                         {
-                          if (ridx (cidx (kidx+1)-1) != k
-                              || data (cidx (kidx+1)-1) == 0.)
+                          double tmp = work[k] / data (cidx (iidx+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (iidx);
+                               i < cidx (iidx+1)-1; i++)
                             {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (cidx (kidx+1)-1);
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (kidx);
-                               i < cidx (kidx+1)-1; i++)
-                            {
-                              octave_idx_type iidx = ridx (i);
-                              cwork[iidx] = cwork[iidx] - tmp * data (i);
+                              octave_idx_type idx2 = ridx (i);
+                              work[idx2] = work[idx2] - tmp * data (i);
                             }
                         }
                     }
-
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
                     {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[rperm[i]] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = cwork[rperm[i]];
-                      }
-                  retval.xcidx (j+1) = ii;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          octave_idx_type iidx = perm[k];
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (iidx+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (iidx);
-                                   i < cidx (iidx+1)-1; i++)
-                                {
-                                  octave_idx_type idx2 = ridx (i);
-                                  work[idx2] = work[idx2] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-          else
-            {
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    cwork[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    cwork[b.ridx (i)] = b.data (i);
-
-                  for (octave_idx_type k = nc-1; k >= 0; k--)
-                    {
-                      if (cwork[k] != 0.)
-                        {
-                          if (ridx (cidx (k+1)-1) != k
-                              || data (cidx (k+1)-1) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (cidx (k+1)-1);
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
-                            {
-                              octave_idx_type iidx = ridx (i);
-                              cwork[iidx] = cwork[iidx] - tmp * data (i);
-                            }
-                        }
-                    }
-
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
-                    {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
-                    }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[i] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = cwork[i];
-                      }
-                  retval.xcidx (j+1) = ii;
-                }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k >= 0; k--)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k+1)-1);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1)-1; i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = 0; i < j+1; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                cwork[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                cwork[b.ridx (i)] = b.data (i);
+
+              for (octave_idx_type k = nc-1; k >= 0; k--)
+                {
+                  if (cwork[k] != 0.)
+                    {
+                      if (ridx (cidx (k+1)-1) != k
+                          || data (cidx (k+1)-1) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (cidx (k+1)-1);
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1)-1; i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          cwork[iidx] = cwork[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[i] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = cwork[i];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k >= 0; k--)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          double tmp = work[k] / data (cidx (k+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx (i);
+                              work[iidx] = work[iidx] - tmp * data (i);
+                            }
+                        }
+                    }
+                  double atmp = 0;
+                  for (octave_idx_type i = 0; i < j+1; i++)
+                    {
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
+                    }
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
+                }
+              rcond = 1. / ainvnorm / anorm;
+            }
+        }
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
 
   return retval;
@@ -2722,7 +2684,8 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = Matrix (nc, b.cols (), 0.0);
   else
     {
@@ -2730,39 +2693,87 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
+      if (typ != MatrixType::Permuted_Lower && typ != MatrixType::Lower)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      octave_idx_type b_nc = b.cols ();
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          octave_idx_type b_nc = b.cols ();
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      if (typ == MatrixType::Permuted_Lower)
+        {
+          retval.resize (nc, b_nc);
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+          octave_idx_type *perm = mattype.triangular_perm ();
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              if (nc > nr)
+                for (octave_idx_type i = 0; i < nm; i++)
+                  work[i] = 0.;
+              for (octave_idx_type i = 0; i < nr; i++)
+                work[perm[i]] = b(i,j);
+
+              for (octave_idx_type k = 0; k < nc; k++)
+                {
+                  if (work[k] != 0.)
+                    {
+                      octave_idx_type minr = nr;
+                      octave_idx_type mini = 0;
+
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        if (perm[ridx (i)] < minr)
+                          {
+                            minr = perm[ridx (i)];
+                            mini = i;
+                          }
+
+                      if (minr != k || data (mini) == 0)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      double tmp = work[k] / data (mini);
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        {
+                          if (i == mini)
+                            continue;
+
+                          octave_idx_type iidx = perm[ridx (i)];
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval(i, j) = work[i];
+            }
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
-                {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
 
-          if (typ == MatrixType::Permuted_Lower)
-            {
-              retval.resize (nc, b_nc);
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
-              octave_idx_type *perm = mattype.triangular_perm ();
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  if (nc > nr)
-                    for (octave_idx_type i = 0; i < nm; i++)
-                      work[i] = 0.;
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    work[perm[i]] = b(i,j);
+                  work[j] = 1.;
 
                   for (octave_idx_type k = 0; k < nc; k++)
                     {
@@ -2771,22 +2782,18 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                           octave_idx_type minr = nr;
                           octave_idx_type mini = 0;
 
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             if (perm[ridx (i)] < minr)
                               {
                                 minr = perm[ridx (i)];
                                 mini = i;
                               }
 
-                          if (minr != k || data (mini) == 0)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
                           double tmp = work[k] / data (mini);
                           work[k] = tmp;
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             {
                               if (i == mini)
                                 continue;
@@ -2797,82 +2804,69 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                         }
                     }
 
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval(i, j) = work[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nc; i++)
                     {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = 0; k < nc; k++)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              octave_idx_type minr = nr;
-                              octave_idx_type mini = 0;
-
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                if (perm[ridx (i)] < minr)
-                                  {
-                                    minr = perm[ridx (i)];
-                                    mini = i;
-                                  }
-
-                              double tmp = work[k] / data (mini);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                {
-                                  if (i == mini)
-                                    continue;
-
-                                  octave_idx_type iidx = perm[ridx (i)];
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nc; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-                  rcond = 1. / ainvnorm / anorm;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
+              rcond = 1. / ainvnorm / anorm;
             }
-          else
-            {
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
-              retval.resize (nc, b_nc, 0.);
+        }
+      else
+        {
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+          retval.resize (nc, b_nc, 0.);
 
-              for (octave_idx_type j = 0; j < b_nc; j++)
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nr; i++)
+                work[i] = b(i,j);
+              for (octave_idx_type i = nr; i < nc; i++)
+                work[i] = 0.;
+              for (octave_idx_type k = 0; k < nc; k++)
                 {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    work[i] = b(i,j);
-                  for (octave_idx_type i = nr; i < nc; i++)
-                    work[i] = 0.;
-                  for (octave_idx_type k = 0; k < nc; k++)
+                  if (work[k] != 0.)
                     {
+                      if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      double tmp = work[k] / data (cidx (k));
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (k)+1;
+                           i < cidx (k+1); i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval.xelem (i, j) = work[i];
+            }
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k < nc; k++)
+                    {
+
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
                           double tmp = work[k] / data (cidx (k));
                           work[k] = tmp;
                           for (octave_idx_type i = cidx (k)+1;
@@ -2883,78 +2877,45 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                             }
                         }
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval.xelem (i, j) = work[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nc; i++)
                     {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k < nc; k++)
-                        {
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k));
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k)+1;
-                                   i < cidx (k+1); i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nc; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-                  rcond = 1. / ainvnorm / anorm;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
-      else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
 
   return retval;
@@ -2976,7 +2937,8 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = SparseMatrix (nc, b.cols ());
   else
     {
@@ -2984,43 +2946,113 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
+      if (typ != MatrixType::Permuted_Lower && typ != MatrixType::Lower)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nz = b.nnz ();
+      retval = SparseMatrix (nc, b_nc, b_nz);
+      retval.xcidx (0) = 0;
+      octave_idx_type ii = 0;
+      octave_idx_type x_nz = b_nz;
+
+      if (typ == MatrixType::Permuted_Lower)
+        {
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+          octave_idx_type *perm = mattype.triangular_perm ();
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                work[perm[b.ridx (i)]] = b.data (i);
+
+              for (octave_idx_type k = 0; k < nc; k++)
+                {
+                  if (work[k] != 0.)
+                    {
+                      octave_idx_type minr = nr;
+                      octave_idx_type mini = 0;
+
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        if (perm[ridx (i)] < minr)
+                          {
+                            minr = perm[ridx (i)];
+                            mini = i;
+                          }
+
+                      if (minr != k || data (mini) == 0)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      double tmp = work[k] / data (mini);
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        {
+                          if (i == mini)
+                            continue;
+
+                          octave_idx_type iidx = perm[ridx (i)];
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[i] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = work[i];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
-
-          octave_idx_type b_nc = b.cols ();
-          octave_idx_type b_nz = b.nnz ();
-          retval = SparseMatrix (nc, b_nc, b_nz);
-          retval.xcidx (0) = 0;
-          octave_idx_type ii = 0;
-          octave_idx_type x_nz = b_nz;
-
-          if (typ == MatrixType::Permuted_Lower)
-            {
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
-              octave_idx_type *perm = mattype.triangular_perm ();
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    work[perm[b.ridx (i)]] = b.data (i);
+                  work[j] = 1.;
 
                   for (octave_idx_type k = 0; k < nc; k++)
                     {
@@ -3029,22 +3061,18 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
                           octave_idx_type minr = nr;
                           octave_idx_type mini = 0;
 
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             if (perm[ridx (i)] < minr)
                               {
                                 minr = perm[ridx (i)];
                                 mini = i;
                               }
 
-                          if (minr != k || data (mini) == 0)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
                           double tmp = work[k] / data (mini);
                           work[k] = tmp;
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             {
                               if (i == mini)
                                 continue;
@@ -3055,207 +3083,139 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
                         }
                     }
 
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nr; i++)
                     {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[i] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = work[i];
-                      }
-                  retval.xcidx (j+1) = ii;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = 0; k < nc; k++)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              octave_idx_type minr = nr;
-                              octave_idx_type mini = 0;
-
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                if (perm[ridx (i)] < minr)
-                                  {
-                                    minr = perm[ridx (i)];
-                                    mini = i;
-                                  }
-
-                              double tmp = work[k] / data (mini);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                {
-                                  if (i == mini)
-                                    continue;
-
-                                  octave_idx_type iidx = perm[ridx (i)];
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nr; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
+              rcond = 1. / ainvnorm / anorm;
             }
-          else
+        }
+      else
+        {
+          OCTAVE_LOCAL_BUFFER (double, work, nm);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
             {
-              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                work[b.ridx (i)] = b.data (i);
 
-              for (octave_idx_type j = 0; j < b_nc; j++)
+              for (octave_idx_type k = 0; k < nc; k++)
                 {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    work[b.ridx (i)] = b.data (i);
-
-                  for (octave_idx_type k = 0; k < nc; k++)
+                  if (work[k] != 0.)
                     {
+                      if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      double tmp = work[k] / data (cidx (k));
+                      work[k] = tmp;
+                      for (octave_idx_type i = cidx (k)+1; i < cidx (k+1); i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          work[iidx] = work[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (work[i] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = work[i];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k < nc; k++)
+                    {
+
                       if (work[k] != 0.)
                         {
-                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
                           double tmp = work[k] / data (cidx (k));
                           work[k] = tmp;
-                          for (octave_idx_type i = cidx (k)+1; i < cidx (k+1); i++)
+                          for (octave_idx_type i = cidx (k)+1;
+                               i < cidx (k+1); i++)
                             {
                               octave_idx_type iidx = ridx (i);
                               work[iidx] = work[iidx] - tmp * data (i);
                             }
                         }
                     }
-
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nc; i++)
                     {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (work[i] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = work[i];
-                      }
-                  retval.xcidx (j+1) = ii;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k < nc; k++)
-                        {
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k));
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k)+1;
-                                   i < cidx (k+1); i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nc; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
-      else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
 
   return retval;
@@ -3277,7 +3237,8 @@ SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
@@ -3285,232 +3246,230 @@ SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
+      if (typ != MatrixType::Permuted_Lower && typ != MatrixType::Lower)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      octave_idx_type b_nc = b.cols ();
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          octave_idx_type b_nc = b.cols ();
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      if (typ == MatrixType::Permuted_Lower)
+        {
+          retval.resize (nc, b_nc);
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+          octave_idx_type *perm = mattype.triangular_perm ();
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                cwork[i] = 0.;
+              for (octave_idx_type i = 0; i < nr; i++)
+                cwork[perm[i]] = b(i,j);
+
+              for (octave_idx_type k = 0; k < nc; k++)
+                {
+                  if (cwork[k] != 0.)
+                    {
+                      octave_idx_type minr = nr;
+                      octave_idx_type mini = 0;
+
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        if (perm[ridx (i)] < minr)
+                          {
+                            minr = perm[ridx (i)];
+                            mini = i;
+                          }
+
+                      if (minr != k || data (mini) == 0)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (mini);
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        {
+                          if (i == mini)
+                            continue;
+
+                          octave_idx_type iidx = perm[ridx (i)];
+                          cwork[iidx] = cwork[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval(i, j) = cwork[i];
+            }
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
-                {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
 
-          if (typ == MatrixType::Permuted_Lower)
-            {
-              retval.resize (nc, b_nc);
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-              octave_idx_type *perm = mattype.triangular_perm ();
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    cwork[i] = 0.;
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    cwork[perm[i]] = b(i,j);
+                  work[j] = 1.;
 
                   for (octave_idx_type k = 0; k < nc; k++)
                     {
-                      if (cwork[k] != 0.)
+                      if (work[k] != 0.)
                         {
                           octave_idx_type minr = nr;
                           octave_idx_type mini = 0;
 
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             if (perm[ridx (i)] < minr)
                               {
                                 minr = perm[ridx (i)];
                                 mini = i;
                               }
 
-                          if (minr != k || data (mini) == 0)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (mini);
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          double tmp = work[k] / data (mini);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             {
                               if (i == mini)
                                 continue;
 
                               octave_idx_type iidx = perm[ridx (i)];
-                              cwork[iidx] = cwork[iidx] - tmp * data (i);
+                              work[iidx] = work[iidx] - tmp * data (i);
                             }
                         }
                     }
 
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval(i, j) = cwork[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nc; i++)
                     {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = 0; k < nc; k++)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              octave_idx_type minr = nr;
-                              octave_idx_type mini = 0;
-
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                if (perm[ridx (i)] < minr)
-                                  {
-                                    minr = perm[ridx (i)];
-                                    mini = i;
-                                  }
-
-                              double tmp = work[k] / data (mini);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                {
-                                  if (i == mini)
-                                    continue;
-
-                                  octave_idx_type iidx = perm[ridx (i)];
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nc; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-                  rcond = 1. / ainvnorm / anorm;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-            }
-          else
-            {
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-              retval.resize (nc, b_nc, 0.);
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    cwork[i] = b(i,j);
-                  for (octave_idx_type i = nr; i < nc; i++)
-                    cwork[i] = 0.;
-
-                  for (octave_idx_type k = 0; k < nc; k++)
-                    {
-                      if (cwork[k] != 0.)
-                        {
-                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (cidx (k));
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (k)+1; i < cidx (k+1); i++)
-                            {
-                              octave_idx_type iidx = ridx (i);
-                              cwork[iidx] = cwork[iidx] - tmp * data (i);
-                            }
-                        }
-                    }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    retval.xelem (i, j) = cwork[i];
-                }
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k < nc; k++)
-                        {
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k));
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k)+1;
-                                   i < cidx (k+1); i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nc; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+          retval.resize (nc, b_nc, 0.);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nr; i++)
+                cwork[i] = b(i,j);
+              for (octave_idx_type i = nr; i < nc; i++)
+                cwork[i] = 0.;
+
+              for (octave_idx_type k = 0; k < nc; k++)
+                {
+                  if (cwork[k] != 0.)
+                    {
+                      if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (cidx (k));
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (k)+1; i < cidx (k+1); i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          cwork[iidx] = cwork[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                retval.xelem (i, j) = cwork[i];
+            }
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k < nc; k++)
+                    {
+
+                      if (work[k] != 0.)
+                        {
+                          double tmp = work[k] / data (cidx (k));
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (k)+1;
+                               i < cidx (k+1); i++)
+                            {
+                              octave_idx_type iidx = ridx (i);
+                              work[iidx] = work[iidx] - tmp * data (i);
+                            }
+                        }
+                    }
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nc; i++)
+                    {
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
+                    }
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
+                }
+              rcond = 1. / ainvnorm / anorm;
+            }
+        }
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
 
   return retval;
@@ -3532,7 +3491,8 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || nc == 0 || b.cols () == 0)
+
+  if (nr == 0 || nc == 0 || b.cols () == 0)
     retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
@@ -3540,280 +3500,278 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       int typ = mattype.type ();
       mattype.info ();
 
-      if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
+      if (typ != MatrixType::Permuted_Lower && typ != MatrixType::Lower)
+        (*current_liboctave_error_handler) ("incorrect matrix type");
+
+      double anorm = 0.;
+      double ainvnorm = 0.;
+      rcond = 1.;
+
+      if (calc_cond)
         {
-          double anorm = 0.;
-          double ainvnorm = 0.;
-          rcond = 1.;
+          // Calculate the 1-norm of matrix for rcond calculation
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double atmp = 0.;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                atmp += fabs (data (i));
+              if (atmp > anorm)
+                anorm = atmp;
+            }
+        }
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nz = b.nnz ();
+      retval = SparseComplexMatrix (nc, b_nc, b_nz);
+      retval.xcidx (0) = 0;
+      octave_idx_type ii = 0;
+      octave_idx_type x_nz = b_nz;
+
+      if (typ == MatrixType::Permuted_Lower)
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+          octave_idx_type *perm = mattype.triangular_perm ();
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                cwork[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                cwork[perm[b.ridx (i)]] = b.data (i);
+
+              for (octave_idx_type k = 0; k < nc; k++)
+                {
+                  if (cwork[k] != 0.)
+                    {
+                      octave_idx_type minr = nr;
+                      octave_idx_type mini = 0;
+
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        if (perm[ridx (i)] < minr)
+                          {
+                            minr = perm[ridx (i)];
+                            mini = i;
+                          }
+
+                      if (minr != k || data (mini) == 0)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (mini);
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                        {
+                          if (i == mini)
+                            continue;
+
+                          octave_idx_type iidx = perm[ridx (i)];
+                          cwork[iidx] = cwork[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[i] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = cwork[i];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
 
           if (calc_cond)
             {
-              // Calculate the 1-norm of matrix for rcond calculation
-              for (octave_idx_type j = 0; j < nc; j++)
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
-                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-                    atmp += fabs (data (i));
-                  if (atmp > anorm)
-                    anorm = atmp;
-                }
-            }
-
-          octave_idx_type b_nc = b.cols ();
-          octave_idx_type b_nz = b.nnz ();
-          retval = SparseComplexMatrix (nc, b_nc, b_nz);
-          retval.xcidx (0) = 0;
-          octave_idx_type ii = 0;
-          octave_idx_type x_nz = b_nz;
-
-          if (typ == MatrixType::Permuted_Lower)
-            {
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-              octave_idx_type *perm = mattype.triangular_perm ();
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    cwork[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    cwork[perm[b.ridx (i)]] = b.data (i);
+                  work[j] = 1.;
 
                   for (octave_idx_type k = 0; k < nc; k++)
                     {
-                      if (cwork[k] != 0.)
+                      if (work[k] != 0.)
                         {
                           octave_idx_type minr = nr;
                           octave_idx_type mini = 0;
 
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             if (perm[ridx (i)] < minr)
                               {
                                 minr = perm[ridx (i)];
                                 mini = i;
                               }
 
-                          if (minr != k || data (mini) == 0)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (mini);
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
+                          double tmp = work[k] / data (mini);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (k);
+                               i < cidx (k+1); i++)
                             {
                               if (i == mini)
                                 continue;
 
                               octave_idx_type iidx = perm[ridx (i)];
-                              cwork[iidx] = cwork[iidx] - tmp * data (i);
+                              work[iidx] = work[iidx] - tmp * data (i);
                             }
                         }
                     }
 
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nc; i++)
                     {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
                     }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[i] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = cwork[i];
-                      }
-                  retval.xcidx (j+1) = ii;
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
                 }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = 0; k < nc; k++)
-                        {
-                          if (work[k] != 0.)
-                            {
-                              octave_idx_type minr = nr;
-                              octave_idx_type mini = 0;
-
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                if (perm[ridx (i)] < minr)
-                                  {
-                                    minr = perm[ridx (i)];
-                                    mini = i;
-                                  }
-
-                              double tmp = work[k] / data (mini);
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k);
-                                   i < cidx (k+1); i++)
-                                {
-                                  if (i == mini)
-                                    continue;
-
-                                  octave_idx_type iidx = perm[ridx (i)];
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nc; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-          else
-            {
-              OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
-
-              for (octave_idx_type j = 0; j < b_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    cwork[i] = 0.;
-                  for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                    cwork[b.ridx (i)] = b.data (i);
-
-                  for (octave_idx_type k = 0; k < nc; k++)
-                    {
-                      if (cwork[k] != 0.)
-                        {
-                          if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
-                            {
-                              err = -2;
-                              goto triangular_error;
-                            }
-
-                          Complex tmp = cwork[k] / data (cidx (k));
-                          cwork[k] = tmp;
-                          for (octave_idx_type i = cidx (k)+1; i < cidx (k+1); i++)
-                            {
-                              octave_idx_type iidx = ridx (i);
-                              cwork[iidx] = cwork[iidx] - tmp * data (i);
-                            }
-                        }
-                    }
-
-                  // Count nonzeros in work vector and adjust space in
-                  // retval if needed
-                  octave_idx_type new_nnz = 0;
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[i] != 0.)
-                      new_nnz++;
-
-                  if (ii + new_nnz > x_nz)
-                    {
-                      // Resize the sparse matrix
-                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-                      retval.change_capacity (sz);
-                      x_nz = sz;
-                    }
-
-                  for (octave_idx_type i = 0; i < nc; i++)
-                    if (cwork[i] != 0.)
-                      {
-                        retval.xridx (ii) = i;
-                        retval.xdata (ii++) = cwork[i];
-                      }
-                  retval.xcidx (j+1) = ii;
-                }
-
-              retval.maybe_compress ();
-
-              if (calc_cond)
-                {
-                  // Calculation of 1-norm of inv(*this)
-                  OCTAVE_LOCAL_BUFFER (double, work, nm);
-                  for (octave_idx_type i = 0; i < nm; i++)
-                    work[i] = 0.;
-
-                  for (octave_idx_type j = 0; j < nr; j++)
-                    {
-                      work[j] = 1.;
-
-                      for (octave_idx_type k = j; k < nc; k++)
-                        {
-
-                          if (work[k] != 0.)
-                            {
-                              double tmp = work[k] / data (cidx (k));
-                              work[k] = tmp;
-                              for (octave_idx_type i = cidx (k)+1;
-                                   i < cidx (k+1); i++)
-                                {
-                                  octave_idx_type iidx = ridx (i);
-                                  work[iidx] = work[iidx] - tmp * data (i);
-                                }
-                            }
-                        }
-                      double atmp = 0;
-                      for (octave_idx_type i = j; i < nc; i++)
-                        {
-                          atmp += fabs (work[i]);
-                          work[i] = 0.;
-                        }
-                      if (atmp > ainvnorm)
-                        ainvnorm = atmp;
-                    }
-                  rcond = 1. / ainvnorm / anorm;
-                }
-            }
-
-        triangular_error:
-          if (err != 0)
-            {
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
-            }
-
-          volatile double rcond_plus_one = rcond + 1.0;
-
-          if (rcond_plus_one == 1.0 || xisnan (rcond))
-            {
-              err = -2;
-
-              if (sing_handler)
-                {
-                  sing_handler (rcond);
-                  mattype.mark_as_rectangular ();
-                }
-              else
-                warn_singular_matrix (rcond);
+              rcond = 1. / ainvnorm / anorm;
             }
         }
       else
-        (*current_liboctave_error_handler) ("incorrect matrix type");
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, cwork, nm);
+
+          for (octave_idx_type j = 0; j < b_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nm; i++)
+                cwork[i] = 0.;
+              for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
+                cwork[b.ridx (i)] = b.data (i);
+
+              for (octave_idx_type k = 0; k < nc; k++)
+                {
+                  if (cwork[k] != 0.)
+                    {
+                      if (ridx (cidx (k)) != k || data (cidx (k)) == 0.)
+                        {
+                          err = -2;
+                          goto triangular_error;
+                        }
+
+                      Complex tmp = cwork[k] / data (cidx (k));
+                      cwork[k] = tmp;
+                      for (octave_idx_type i = cidx (k)+1; i < cidx (k+1); i++)
+                        {
+                          octave_idx_type iidx = ridx (i);
+                          cwork[iidx] = cwork[iidx] - tmp * data (i);
+                        }
+                    }
+                }
+
+              // Count nonzeros in work vector and adjust space in
+              // retval if needed
+              octave_idx_type new_nnz = 0;
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[i] != 0.)
+                  new_nnz++;
+
+              if (ii + new_nnz > x_nz)
+                {
+                  // Resize the sparse matrix
+                  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                  retval.change_capacity (sz);
+                  x_nz = sz;
+                }
+
+              for (octave_idx_type i = 0; i < nc; i++)
+                if (cwork[i] != 0.)
+                  {
+                    retval.xridx (ii) = i;
+                    retval.xdata (ii++) = cwork[i];
+                  }
+              retval.xcidx (j+1) = ii;
+            }
+
+          retval.maybe_compress ();
+
+          if (calc_cond)
+            {
+              // Calculation of 1-norm of inv(*this)
+              OCTAVE_LOCAL_BUFFER (double, work, nm);
+              for (octave_idx_type i = 0; i < nm; i++)
+                work[i] = 0.;
+
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  work[j] = 1.;
+
+                  for (octave_idx_type k = j; k < nc; k++)
+                    {
+
+                      if (work[k] != 0.)
+                        {
+                          double tmp = work[k] / data (cidx (k));
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx (k)+1;
+                               i < cidx (k+1); i++)
+                            {
+                              octave_idx_type iidx = ridx (i);
+                              work[iidx] = work[iidx] - tmp * data (i);
+                            }
+                        }
+                    }
+                  double atmp = 0;
+                  for (octave_idx_type i = j; i < nc; i++)
+                    {
+                      atmp += fabs (work[i]);
+                      work[i] = 0.;
+                    }
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
+                }
+              rcond = 1. / ainvnorm / anorm;
+            }
+        }
+
+    triangular_error:
+      if (err != 0)
+        {
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
+
+      volatile double rcond_plus_one = rcond + 1.0;
+
+      if (rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          err = -2;
+
+          if (sing_handler)
+            {
+              sing_handler (rcond);
+              mattype.mark_as_rectangular ();
+            }
+          else
+            warn_singular_matrix (rcond);
+        }
     }
 
   return retval;
@@ -3834,7 +3792,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = Matrix (nc, b.cols (), 0.0);
   else if (calc_cond)
     (*current_liboctave_error_handler)
@@ -3983,7 +3942,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = SparseMatrix (nc, b.cols ());
   else if (calc_cond)
     (*current_liboctave_error_handler)
@@ -4128,7 +4088,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else if (calc_cond)
     (*current_liboctave_error_handler)
@@ -4279,7 +4240,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = SparseComplexMatrix (nc, b.cols ());
   else if (calc_cond)
     (*current_liboctave_error_handler)
@@ -4384,6 +4346,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   if (err != 0)
                     {
+                      // FIXME: Should this be a warning?
                       (*current_liboctave_error_handler)
                         ("SparseMatrix::solve solve failed");
 
@@ -4399,6 +4362,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   if (err != 0)
                     {
+                      // FIXME: Should this be a warning?
                       (*current_liboctave_error_handler)
                         ("SparseMatrix::solve solve failed");
 
@@ -4457,7 +4421,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = Matrix (nc, b.cols (), 0.0);
   else
     {
@@ -4559,6 +4524,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 
                   if (err != 0)
                     {
+                      // FIXME: Should this be a warning?
                       (*current_liboctave_error_handler)
                         ("SparseMatrix::solve solve failed");
                       err = -1;
@@ -4700,7 +4666,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = SparseMatrix (nc, b.cols ());
   else
     {
@@ -4812,6 +4779,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
                       if (err != 0)
                         {
+                          // FIXME: Should this be a warning?
                           (*current_liboctave_error_handler)
                             ("SparseMatrix::solve solve failed");
                           err = -1;
@@ -5012,7 +4980,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
@@ -5127,6 +5096,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                       if (err != 0)
                         {
+                          // FIXME: Should this be a warning?
                           (*current_liboctave_error_handler)
                             ("SparseMatrix::solve solve failed");
                           err = -1;
@@ -5141,6 +5111,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                       if (err != 0)
                         {
+                          // FIXME: Should this be a warning?
                           (*current_liboctave_error_handler)
                             ("SparseMatrix::solve solve failed");
                           err = -1;
@@ -5305,7 +5276,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
@@ -5426,6 +5398,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                       if (err != 0)
                         {
+                          // FIXME: Should this be a warning?
                           (*current_liboctave_error_handler)
                             ("SparseMatrix::solve solve failed");
                           err = -1;
@@ -5440,6 +5413,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                       if (err != 0)
                         {
+                          // FIXME: Should this be a warning?
                           (*current_liboctave_error_handler)
                             ("SparseMatrix::solve solve failed");
 
@@ -5694,14 +5668,15 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
 
   if (status < 0)
     {
-      (*current_liboctave_error_handler)
-        ("SparseMatrix::solve symbolic factorization failed");
-      err = -1;
-
       UMFPACK_DNAME (report_status) (control, status);
       UMFPACK_DNAME (report_info) (control, info);
 
       UMFPACK_DNAME (free_symbolic) (&Symbolic);
+
+      // FIXME: Should this be a warning?
+      (*current_liboctave_error_handler)
+        ("SparseMatrix::solve symbolic factorization failed");
+      err = -1;
     }
   else
     {
@@ -5731,11 +5706,12 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
         }
       else if (status < 0)
         {
-          (*current_liboctave_error_handler)
-            ("SparseMatrix::solve numeric factorization failed");
-
           UMFPACK_DNAME (report_status) (control, status);
           UMFPACK_DNAME (report_info) (control, info);
+
+          // FIXME: Should this be a warning?
+          (*current_liboctave_error_handler)
+            ("SparseMatrix::solve numeric factorization failed");
 
           err = -1;
         }
@@ -5772,7 +5748,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = Matrix (nc, b.cols (), 0.0);
   else
     {
@@ -5945,13 +5922,13 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
                                                   info);
                   if (status < 0)
                     {
+                      UMFPACK_DNAME (report_status) (control, status);
+
+                      // FIXME: Should this be a warning?
                       (*current_liboctave_error_handler)
                         ("SparseMatrix::solve solve failed");
 
-                      UMFPACK_DNAME (report_status) (control, status);
-
                       err = -1;
-
                       break;
                     }
                 }
@@ -5991,7 +5968,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = SparseMatrix (nc, b.cols ());
   else
     {
@@ -6188,13 +6166,13 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                                                   control, info);
                   if (status < 0)
                     {
+                      UMFPACK_DNAME (report_status) (control, status);
+
+                      // FIXME: Should this be a warning?
                       (*current_liboctave_error_handler)
                         ("SparseMatrix::solve solve failed");
 
-                      UMFPACK_DNAME (report_status) (control, status);
-
                       err = -1;
-
                       break;
                     }
 
@@ -6255,7 +6233,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
@@ -6442,13 +6421,13 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   if (status < 0 || status2 < 0)
                     {
+                      UMFPACK_DNAME (report_status) (control, status);
+
+                      // FIXME: Should this be a warning?
                       (*current_liboctave_error_handler)
                         ("SparseMatrix::solve solve failed");
 
-                      UMFPACK_DNAME (report_status) (control, status);
-
                       err = -1;
-
                       break;
                     }
 
@@ -6491,7 +6470,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
-  else if (nr == 0 || b.cols () == 0)
+
+  if (nr == 0 || b.cols () == 0)
     retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
@@ -6699,13 +6679,13 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   if (status < 0 || status2 < 0)
                     {
+                      UMFPACK_DNAME (report_status) (control, status);
+
+                      // FIXME: Should this be a warning?
                       (*current_liboctave_error_handler)
                         ("SparseMatrix::solve solve failed");
 
-                      UMFPACK_DNAME (report_status) (control, status);
-
                       err = -1;
-
                       break;
                     }
 
@@ -6799,10 +6779,7 @@ SparseMatrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& err,
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
-    {
-      (*current_liboctave_error_handler) ("unknown matrix type");
-      return Matrix ();
-    }
+    (*current_liboctave_error_handler) ("unknown matrix type");
 
   // Rectangular or one of the above solvers flags a singular matrix
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
@@ -6867,10 +6844,7 @@ SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
-    {
-      (*current_liboctave_error_handler) ("unknown matrix type");
-      return SparseMatrix ();
-    }
+    (*current_liboctave_error_handler) ("unknown matrix type");
 
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
@@ -6935,10 +6909,7 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
-    {
-      (*current_liboctave_error_handler) ("unknown matrix type");
-      return ComplexMatrix ();
-    }
+    (*current_liboctave_error_handler) ("unknown matrix type");
 
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
@@ -7003,10 +6974,7 @@ SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
-    {
-      (*current_liboctave_error_handler) ("unknown matrix type");
-      return SparseComplexMatrix ();
-    }
+    (*current_liboctave_error_handler) ("unknown matrix type");
 
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {

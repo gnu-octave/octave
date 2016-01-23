@@ -68,11 +68,9 @@ FloatSCHUR::init (const FloatMatrix& a, const std::string& ord,
   octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
-    {
-      (*current_liboctave_error_handler) ("FloatSCHUR requires square matrix");
-      return -1;
-    }
-  else if (a_nr == 0)
+    (*current_liboctave_error_handler) ("FloatSCHUR requires square matrix");
+
+  if (a_nr == 0)
     {
       schur_mat.clear ();
       unitary_mat.clear ();

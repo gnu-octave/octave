@@ -736,21 +736,16 @@ FloatNDArray::concat (const charNDArray& rb,
       float d = elem (i);
 
       if (xisnan (d))
-        {
-          (*current_liboctave_error_handler)
-            ("invalid conversion from NaN to character");
-          return retval;
-        }
-      else
-        {
-          octave_idx_type ival = NINTbig (d);
+        (*current_liboctave_error_handler)
+          ("invalid conversion from NaN to character");
 
-          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-            // FIXME: is there something better to do?  Should we warn the user?
-            ival = 0;
+      octave_idx_type ival = NINTbig (d);
 
-          retval.elem (i) = static_cast<char>(ival);
-        }
+      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
+        // FIXME: is there something better to do?  Should we warn the user?
+        ival = 0;
+
+      retval.elem (i) = static_cast<char>(ival);
     }
 
   if (rb.is_empty ())

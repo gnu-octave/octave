@@ -67,11 +67,7 @@ ComplexHESS::init (const ComplexMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (a_nr != a_nc)
-    {
-      (*current_liboctave_error_handler)
-        ("ComplexHESS requires square matrix");
-      return -1;
-    }
+    (*current_liboctave_error_handler) ("ComplexHESS requires square matrix");
 
   char job = 'N';
   char side = 'R';

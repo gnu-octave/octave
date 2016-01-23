@@ -55,12 +55,8 @@ dir_path::static_members::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create dir_path::static_members object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create dir_path::static_members object!");
 
   return retval;
 }

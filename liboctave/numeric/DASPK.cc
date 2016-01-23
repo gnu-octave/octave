@@ -198,6 +198,7 @@ DASPK::do_integrate (double tout)
 
           if (res.numel () != x.numel ())
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: inconsistent sizes for state and residual vectors");
 
@@ -207,6 +208,7 @@ DASPK::do_integrate (double tout)
         }
       else
         {
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: no user supplied RHS subroutine!");
 
@@ -253,6 +255,8 @@ DASPK::do_integrate (double tout)
         }
       else
         {
+
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: inconsistent sizes for tolerance arrays");
 
@@ -288,6 +292,7 @@ DASPK::do_integrate (double tout)
             }
           else
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid value for maximum order");
               integration_error = true;
@@ -309,6 +314,7 @@ DASPK::do_integrate (double tout)
                     octave_idx_type val = ict(i);
                     if (val < -2 || val > 2)
                       {
+                        // FIXME: Should this be a warning?
                         (*current_liboctave_error_handler)
                           ("daspk: invalid value for inequality constraint type");
                         integration_error = true;
@@ -319,6 +325,7 @@ DASPK::do_integrate (double tout)
               }
             else
               {
+                // FIXME: Should this be a warning?
                 (*current_liboctave_error_handler)
                   ("daspk: inequality constraint types size mismatch");
                 integration_error = true;
@@ -333,6 +340,7 @@ DASPK::do_integrate (double tout)
           break;
 
         default:
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: invalid value for enforce inequality constraints option");
           integration_error = true;
@@ -362,6 +370,7 @@ DASPK::do_integrate (double tout)
                 }
               else
                 {
+                  // FIXME: Should this be a warning?
                   (*current_liboctave_error_handler)
                     ("daspk: algebraic variables size mismatch");
                   integration_error = true;
@@ -370,6 +379,7 @@ DASPK::do_integrate (double tout)
             }
           else if (ccic != 2)
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid value for compute consistent initial condition option");
               integration_error = true;
@@ -418,6 +428,7 @@ DASPK::do_integrate (double tout)
             }
           else
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid initial condition heuristics option");
               integration_error = true;
@@ -437,6 +448,7 @@ DASPK::do_integrate (double tout)
           break;
 
         default:
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: invalid value for print initial condition info option");
           integration_error = true;
@@ -518,8 +530,7 @@ DASPK::do_integrate (double tout)
     default:
       integration_error = true;
       (*current_liboctave_error_handler)
-        ("unrecognized value of istate (= %d) returned from ddaspk",
-         istate);
+        ("unrecognized value of istate (= %d) returned from ddaspk", istate);
       break;
     }
 

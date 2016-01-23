@@ -73,6 +73,7 @@ octave_fftw_planner::octave_fftw_planner (void)
   int init_ret = fftw_init_threads ();
   if (! init_ret)
     (*current_liboctave_error_handler) ("Error initializing FFTW threads");
+
   //Use number of processors available to the current process
   //This can be later changed with fftw ("threads", nthreads)
   nthreads = num_processors (NPROC_CURRENT);
@@ -114,12 +115,8 @@ octave_fftw_planner::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create octave_fftw_planner object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create octave_fftw_planner object!");
 
   return retval;
 }
@@ -417,6 +414,7 @@ octave_float_fftw_planner::octave_float_fftw_planner (void)
   int init_ret = fftwf_init_threads ();
   if (! init_ret)
     (*current_liboctave_error_handler) ("Error initializing FFTW3F threads");
+
   //Use number of processors available to the current process
   //This can be later changed with fftw ("threads", nthreads)
   nthreads = num_processors (NPROC_CURRENT);
@@ -458,12 +456,8 @@ octave_float_fftw_planner::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create octave_fftw_planner object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create octave_fftw_planner object!");
 
   return retval;
 }

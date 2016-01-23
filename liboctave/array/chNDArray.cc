@@ -120,21 +120,16 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
       double d = rb.elem (i);
 
       if (xisnan (d))
-        {
-          (*current_liboctave_error_handler)
-            ("invalid conversion from NaN to character");
-          return *this;
-        }
-      else
-        {
-          octave_idx_type ival = NINTbig (d);
+        (*current_liboctave_error_handler)
+          ("invalid conversion from NaN to character");
 
-          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-            // FIXME: is there something better to do? Should we warn the user?
-            ival = 0;
+      octave_idx_type ival = NINTbig (d);
 
-          tmp.elem (i) = static_cast<char>(ival);
-        }
+      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
+        // FIXME: is there something better to do? Should we warn the user?
+        ival = 0;
+
+      tmp.elem (i) = static_cast<char>(ival);
     }
 
   insert (tmp, ra_idx);

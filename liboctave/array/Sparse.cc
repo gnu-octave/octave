@@ -76,47 +76,39 @@ Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 {
   octave_idx_type i;
 
-  if (nzmx > 0)
-    {
-      for (i = c[_c]; i < c[_c + 1]; i++)
-        if (r[i] == _r)
-          return d[i];
-        else if (r[i] > _r)
-          break;
+  if (nzmx <= 0)
+    (*current_liboctave_error_handler)
+      ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
 
-      // Ok, If we've gotten here, we're in trouble.. Have to create a
-      // new element in the sparse array. This' gonna be slow!!!
-      if (c[ncols] == nzmx)
-        {
-          (*current_liboctave_error_handler)
-            ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
-          return *d;
-        }
-
-      octave_idx_type to_move = c[ncols] - i;
-      if (to_move != 0)
-        {
-          for (octave_idx_type j = c[ncols]; j > i; j--)
-            {
-              d[j] = d[j-1];
-              r[j] = r[j-1];
-            }
-        }
-
-      for (octave_idx_type j = _c + 1; j < ncols + 1; j++)
-        c[j] = c[j] + 1;
-
-      d[i] = 0.;
-      r[i] = _r;
-
+  for (i = c[_c]; i < c[_c + 1]; i++)
+    if (r[i] == _r)
       return d[i];
-    }
-  else
+    else if (r[i] > _r)
+      break;
+
+  // Ok, If we've gotten here, we're in trouble.. Have to create a
+  // new element in the sparse array. This' gonna be slow!!!
+  if (c[ncols] == nzmx)
+    (*current_liboctave_error_handler)
+      ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
+
+  octave_idx_type to_move = c[ncols] - i;
+  if (to_move != 0)
     {
-      (*current_liboctave_error_handler)
-        ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
-      return *d;
+      for (octave_idx_type j = c[ncols]; j > i; j--)
+        {
+          d[j] = d[j-1];
+          r[j] = r[j-1];
+        }
     }
+
+  for (octave_idx_type j = _c + 1; j < ncols + 1; j++)
+    c[j] = c[j] + 1;
+
+  d[i] = 0.;
+  r[i] = _r;
+
+  return d[i];
 }
 
 template <class T>
@@ -227,8 +219,8 @@ Sparse<T>::Sparse (const dim_vector& dv)
   if (dv.length () != 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const dim_vector&): dimension mismatch");
-  else
-    rep = new typename Sparse<T>::SparseRep (dv(0), dv(1), 0);
+
+  rep = new typename Sparse<T>::SparseRep (dv(0), dv(1), 0);
 }
 
 template <class T>
@@ -245,34 +237,32 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
   if (a_nel != dv_nel)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const Sparse&, const dim_vector&): dimension mismatch");
-  else
-    {
-      dim_vector old_dims = a.dims ();
-      octave_idx_type new_nzmx = a.nnz ();
-      octave_idx_type new_nr = dv(0);
-      octave_idx_type new_nc = dv(1);
-      octave_idx_type old_nr = old_dims(0);
-      octave_idx_type old_nc = old_dims(1);
 
-      rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nzmx);
+  dim_vector old_dims = a.dims ();
+  octave_idx_type new_nzmx = a.nnz ();
+  octave_idx_type new_nr = dv(0);
+  octave_idx_type new_nc = dv(1);
+  octave_idx_type old_nr = old_dims(0);
+  octave_idx_type old_nc = old_dims(1);
 
-      octave_idx_type kk = 0;
-      xcidx (0) = 0;
-      for (octave_idx_type i = 0; i < old_nc; i++)
-        for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++)
-          {
-            octave_idx_type tmp = i * old_nr + a.ridx (j);
-            octave_idx_type ii = tmp % new_nr;
-            octave_idx_type jj = (tmp - ii) / new_nr;
-            for (octave_idx_type k = kk; k < jj; k++)
-              xcidx (k+1) = j;
-            kk = jj;
-            xdata (j) = a.data (j);
-            xridx (j) = ii;
-          }
-      for (octave_idx_type k = kk; k < new_nc; k++)
-        xcidx (k+1) = new_nzmx;
-    }
+  rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nzmx);
+
+  octave_idx_type kk = 0;
+  xcidx (0) = 0;
+  for (octave_idx_type i = 0; i < old_nc; i++)
+    for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++)
+      {
+        octave_idx_type tmp = i * old_nr + a.ridx (j);
+        octave_idx_type ii = tmp % new_nr;
+        octave_idx_type jj = (tmp - ii) / new_nr;
+        for (octave_idx_type k = kk; k < jj; k++)
+          xcidx (k+1) = j;
+        kk = jj;
+        xdata (j) = a.data (j);
+        xridx (j) = ii;
+      }
+  for (octave_idx_type k = kk; k < new_nc; k++)
+    xcidx (k+1) = new_nzmx;
 }
 
 template <class T>
@@ -642,32 +632,30 @@ Sparse<T>::Sparse (const Array<T>& a)
   if (dimensions.length () > 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const Array<T>&): dimension mismatch");
-  else
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type len = a.numel ();
+  octave_idx_type new_nzmx = 0;
+
+  // First count the number of nonzero terms
+  for (octave_idx_type i = 0; i < len; i++)
+    if (a(i) != T ())
+      new_nzmx++;
+
+  rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
+
+  octave_idx_type ii = 0;
+  xcidx (0) = 0;
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-      octave_idx_type len = a.numel ();
-      octave_idx_type new_nzmx = 0;
-
-      // First count the number of nonzero terms
-      for (octave_idx_type i = 0; i < len; i++)
-        if (a(i) != T ())
-          new_nzmx++;
-
-      rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
-
-      octave_idx_type ii = 0;
-      xcidx (0) = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            if (a.elem (i,j) != T ())
-              {
-                xdata (ii) = a.elem (i,j);
-                xridx (ii++) = i;
-              }
-          xcidx (j+1) = ii;
-        }
+      for (octave_idx_type i = 0; i < nr; i++)
+        if (a.elem (i,j) != T ())
+          {
+            xdata (ii) = a.elem (i,j);
+            xridx (ii++) = i;
+          }
+      xcidx (j+1) = ii;
     }
 }
 
@@ -700,23 +688,21 @@ template <class T>
 octave_idx_type
 Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
-  octave_idx_type retval = -1;
-
   octave_idx_type n = dimensions.length ();
 
-  if (n > 0 && n == ra_idx.numel ())
-    {
-      retval = ra_idx(--n);
-
-      while (--n >= 0)
-        {
-          retval *= dimensions(n);
-          retval += ra_idx(n);
-        }
-    }
-  else
+  if (n <= 0 || n != ra_idx.numel ())
     (*current_liboctave_error_handler)
       ("Sparse<T>::compute_index: invalid ra_idxing operation");
+
+  octave_idx_type retval = -1;
+
+  retval = ra_idx(--n);
+
+  while (--n >= 0)
+    {
+      retval *= dimensions(n);
+      retval += ra_idx(n);
+    }
 
   return retval;
 }
@@ -726,7 +712,6 @@ T
 Sparse<T>::range_error (const char *fcn, octave_idx_type n) const
 {
   (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
-  return T ();
 }
 
 template <class T>
@@ -734,8 +719,6 @@ T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type n)
 {
   (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
-  static T foo;
-  return foo;
 }
 
 template <class T>
@@ -743,19 +726,14 @@ T
 Sparse<T>::range_error (const char *fcn, octave_idx_type i,
                         octave_idx_type j) const
 {
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d): range error", fcn, i, j);
-  return T ();
+  (*current_liboctave_error_handler) ("%s (%d, %d): range error", fcn, i, j);
 }
 
 template <class T>
 T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
 {
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d): range error", fcn, i, j);
-  static T foo;
-  return foo;
+  (*current_liboctave_error_handler) ("%s (%d, %d): range error", fcn, i, j);
 }
 
 template <class T>
@@ -780,8 +758,6 @@ Sparse<T>::range_error (const char *fcn,
   std::string buf_str = buf.str ();
 
   (*current_liboctave_error_handler) (buf_str.c_str ());
-
-  return T ();
 }
 
 template <class T>
@@ -805,9 +781,6 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
   std::string buf_str = buf.str ();
 
   (*current_liboctave_error_handler) (buf_str.c_str ());
-
-  static T foo;
-  return foo;
 }
 
 template <class T>
@@ -931,10 +904,7 @@ Sparse<T>::resize (const dim_vector& dv)
   octave_idx_type n = dv.length ();
 
   if (n != 2)
-    {
-      (*current_liboctave_error_handler) ("sparse array must be 2-D");
-      return;
-    }
+    (*current_liboctave_error_handler) ("sparse array must be 2-D");
 
   resize (dv(0), dv(1));
 }
@@ -944,11 +914,7 @@ void
 Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
 {
   if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-        ("can't resize to negative dimension");
-      return;
-    }
+    (*current_liboctave_error_handler) ("can't resize to negative dimension");
 
   if (r == dim1 () && c == dim2 ())
     return;
@@ -1003,10 +969,7 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
   octave_idx_type nc = cols ();
 
   if (r < 0 || r + a_rows > rows () || c < 0 || c + a_cols > cols ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for insert");
 
   // First count the number of elements in the final array
   octave_idx_type nel = cidx (c) + a.nnz ();
@@ -1083,10 +1046,7 @@ Sparse<T>::insert (const Sparse<T>& a, const Array<octave_idx_type>& ra_idx)
 {
 
   if (ra_idx.numel () != 2)
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for insert");
 
   return insert (a, ra_idx(0), ra_idx(1));
 }
@@ -1376,11 +1336,7 @@ Sparse<T>::delete_elements (int dim, const idx_vector& idx)
   else if (dim == 1)
     delete_elements (idx_vector::colon, idx);
   else
-    {
-      (*current_liboctave_error_handler)
-        ("invalid dimension in delete_elements");
-      return;
-    }
+    (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 }
 
 template <class T>
@@ -2595,27 +2551,24 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
       dim = -dim - 1;
     }
   else if (dim < 0)
-    (*current_liboctave_error_handler)
-      ("cat: invalid dimension");
+    (*current_liboctave_error_handler) ("cat: invalid dimension");
 
   dim_vector dv;
   octave_idx_type total_nz = 0;
-  if (dim == 0 || dim == 1)
-    {
-      if (n == 1)
-        return sparse_list[0];
-
-      for (octave_idx_type i = 0; i < n; i++)
-        {
-          if (! (dv.*concat_rule) (sparse_list[i].dims (), dim))
-            (*current_liboctave_error_handler)
-              ("cat: dimension mismatch");
-          total_nz += sparse_list[i].nnz ();
-        }
-    }
-  else
+  if (dim != 0 && dim != 1)
     (*current_liboctave_error_handler)
       ("cat: invalid dimension for sparse concatenation");
+
+  if (n == 1)
+    return sparse_list[0];
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      if (! (dv.*concat_rule) (sparse_list[i].dims (), dim))
+        (*current_liboctave_error_handler) ("cat: dimension mismatch");
+
+      total_nz += sparse_list[i].nnz ();
+    }
 
   Sparse<T> retval (dv, total_nz);
 

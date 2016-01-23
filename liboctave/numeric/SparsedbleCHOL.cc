@@ -41,30 +41,27 @@ chol2inv (const SparseMatrix& r)
   octave_idx_type r_nc = r.cols ();
   SparseMatrix retval;
 
-  if (r_nr == r_nc)
-    {
-      MatrixType mattype (r);
-      int typ = mattype.type (false);
-      double rcond;
-      octave_idx_type info;
-      SparseMatrix rinv;
+  if (r_nr != r_nc)
+    (*current_liboctave_error_handler) ("U must be a square matrix");
 
-      if (typ == MatrixType::Upper)
-        {
-          rinv = r.inverse (mattype, info, rcond, true, false);
-          retval = rinv.transpose () * rinv;
-        }
-      else if (typ == MatrixType::Lower)
-        {
-          rinv = r.transpose ().inverse (mattype, info, rcond, true, false);
-          retval = rinv.transpose () * rinv;
-        }
-      else
-        (*current_liboctave_error_handler)
-          ("U must be a triangular matrix");
+  MatrixType mattype (r);
+  int typ = mattype.type (false);
+  double rcond;
+  octave_idx_type info;
+  SparseMatrix rinv;
+
+  if (typ == MatrixType::Upper)
+    {
+      rinv = r.inverse (mattype, info, rcond, true, false);
+      retval = rinv.transpose () * rinv;
+    }
+  else if (typ == MatrixType::Lower)
+    {
+      rinv = r.transpose ().inverse (mattype, info, rcond, true, false);
+      retval = rinv.transpose () * rinv;
     }
   else
-    (*current_liboctave_error_handler) ("U must be a square matrix");
+    (*current_liboctave_error_handler) ("U must be a triangular matrix");
 
   return retval;
 }

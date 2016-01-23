@@ -216,19 +216,17 @@ FloatComplexQR::update (const FloatComplexColumnVector& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = q.columns ();
 
-  if (u.numel () == m && v.numel () == n)
-    {
-      FloatComplexColumnVector utmp = u;
-      FloatComplexColumnVector vtmp = v;
-      OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
-      OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
-                                 m, r.fortran_vec (), k,
-                                 utmp.fortran_vec (), vtmp.fortran_vec (),
-                                 w, rw));
-    }
-  else
+  if (u.numel () != m || v.numel () != n)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
+
+  FloatComplexColumnVector utmp = u;
+  FloatComplexColumnVector vtmp = v;
+  OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
+  OCTAVE_LOCAL_BUFFER (float, rw, k);
+  F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
+                             m, r.fortran_vec (), k,
+                             utmp.fortran_vec (), vtmp.fortran_vec (),
+                             w, rw));
 }
 
 void
@@ -239,22 +237,20 @@ FloatComplexQR::update (const FloatComplexMatrix& u,
   octave_idx_type n = r.columns ();
   octave_idx_type k = q.columns ();
 
-  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
-    {
-      OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
-      OCTAVE_LOCAL_BUFFER (float, rw, k);
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
-        {
-          FloatComplexColumnVector utmp = u.column (i);
-          FloatComplexColumnVector vtmp = v.column (i);
-          F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
-                                     m, r.fortran_vec (), k,
-                                     utmp.fortran_vec (), vtmp.fortran_vec (),
-                                     w, rw));
-        }
-    }
-  else
+  if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
+
+  OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
+  OCTAVE_LOCAL_BUFFER (float, rw, k);
+  for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+    {
+      FloatComplexColumnVector utmp = u.column (i);
+      FloatComplexColumnVector vtmp = v.column (i);
+      F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
+                                 m, r.fortran_vec (), k,
+                                 utmp.fortran_vec (), vtmp.fortran_vec (),
+                                 w, rw));
+    }
 }
 
 void
@@ -267,26 +263,24 @@ FloatComplexQR::insert_col (const FloatComplexColumnVector& u,
 
   if (u.numel () != m)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > n)
+  if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
+
+  if (k < m)
+    {
+      q.resize (m, k+1);
+      r.resize (k+1, n+1);
+    }
   else
     {
-      if (k < m)
-        {
-          q.resize (m, k+1);
-          r.resize (k+1, n+1);
-        }
-      else
-        {
-          r.resize (k, n+1);
-        }
-
-      FloatComplexColumnVector utmp = u;
-      OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqrinc, CQRINC, (m, n, k, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (), j + 1,
-                                 utmp.data (), rw));
+      r.resize (k, n+1);
     }
+
+  FloatComplexColumnVector utmp = u;
+  OCTAVE_LOCAL_BUFFER (float, rw, k);
+  F77_XFCN (cqrinc, CQRINC, (m, n, k, q.fortran_vec (), q.rows (),
+                             r.fortran_vec (), r.rows (), j + 1,
+                             utmp.data (), rw));
 }
 
 void
@@ -306,11 +300,12 @@ FloatComplexQR::insert_col (const FloatComplexMatrix& u,
 
   if (dups)
     (*current_liboctave_error_handler) ("qrinsert: duplicate index detected");
-  else if (u.numel () != m || u.columns () != nj)
+  if (u.numel () != m || u.columns () != nj)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (nj > 0 && (js(0) < 0 || js(nj-1) > n))
+  if (nj > 0 && (js(0) < 0 || js(nj-1) > n))
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
-  else if (nj > 0)
+
+  if (nj > 0)
     {
       octave_idx_type kmax = std::min (k + nj, m);
       if (k < m)
@@ -344,21 +339,19 @@ FloatComplexQR::delete_col (octave_idx_type j)
 
   if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
+
+  OCTAVE_LOCAL_BUFFER (float, rw, k);
+  F77_XFCN (cqrdec, CQRDEC, (m, n, k, q.fortran_vec (), q.rows (),
+                             r.fortran_vec (), r.rows (), j + 1, rw));
+
+  if (k < m)
+    {
+      q.resize (m, k-1);
+      r.resize (k-1, n-1);
+    }
   else
     {
-      OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqrdec, CQRDEC, (m, n, k, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (), j + 1, rw));
-
-      if (k < m)
-        {
-          q.resize (m, k-1);
-          r.resize (k-1, n-1);
-        }
-      else
-        {
-          r.resize (k, n-1);
-        }
+      r.resize (k, n-1);
     }
 }
 
@@ -378,9 +371,10 @@ FloatComplexQR::delete_col (const Array<octave_idx_type>& j)
 
   if (dups)
     (*current_liboctave_error_handler) ("qrinsert: duplicate index detected");
-  else if (nj > 0 && (js(0) > n-1 || js(nj-1) < 0))
+  if (nj > 0 && (js(0) > n-1 || js(nj-1) < 0))
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
-  else if (nj > 0)
+
+  if (nj > 0)
     {
       OCTAVE_LOCAL_BUFFER (float, rw, k);
       for (volatile octave_idx_type i = 0; i < js.numel (); i++)
@@ -413,19 +407,17 @@ FloatComplexQR::insert_row (const FloatComplexRowVector& u, octave_idx_type j)
 
   if (! q.is_square () || u.numel () != n)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > m)
+  if (j < 0 || j > m)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
-  else
-    {
-      q.resize (m + 1, m + 1);
-      r.resize (m + 1, n);
-      FloatComplexRowVector utmp = u;
-      OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqrinr, CQRINR, (m, n, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (),
-                                 j + 1, utmp.fortran_vec (), rw));
 
-    }
+  q.resize (m + 1, m + 1);
+  r.resize (m + 1, n);
+  FloatComplexRowVector utmp = u;
+  OCTAVE_LOCAL_BUFFER (float, rw, k);
+  F77_XFCN (cqrinr, CQRINR, (m, n, q.fortran_vec (), q.rows (),
+                             r.fortran_vec (), r.rows (),
+                             j + 1, utmp.fortran_vec (), rw));
+
 }
 
 void
@@ -436,19 +428,17 @@ FloatComplexQR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
-  else if (j < 0 || j > m-1)
+  if (j < 0 || j > m-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
-  else
-    {
-      OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
-      OCTAVE_LOCAL_BUFFER (float, rw, m);
-      F77_XFCN (cqrder, CQRDER, (m, n, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (), j + 1,
-                                 w, rw));
 
-      q.resize (m - 1, m - 1);
-      r.resize (m - 1, n);
-    }
+  OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
+  OCTAVE_LOCAL_BUFFER (float, rw, m);
+  F77_XFCN (cqrder, CQRDER, (m, n, q.fortran_vec (), q.rows (),
+                             r.fortran_vec (), r.rows (), j + 1,
+                             w, rw));
+
+  q.resize (m - 1, m - 1);
+  r.resize (m - 1, n);
 }
 
 void
@@ -460,15 +450,13 @@ FloatComplexQR::shift_cols (octave_idx_type i, octave_idx_type j)
 
   if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrshift: index out of range");
-  else
-    {
-      OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
-      OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqrshc, CQRSHC, (m, n, k,
-                                 q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (),
-                                 i + 1, j + 1, w, rw));
-    }
+
+  OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
+  OCTAVE_LOCAL_BUFFER (float, rw, k);
+  F77_XFCN (cqrshc, CQRSHC, (m, n, k,
+                             q.fortran_vec (), q.rows (),
+                             r.fortran_vec (), r.rows (),
+                             i + 1, j + 1, w, rw));
 }
 
 #else
@@ -484,13 +472,11 @@ FloatComplexQR::update (const FloatComplexColumnVector& u,
   octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
-  if (u.numel () == m && v.numel () == n)
-    {
-      init (q*r + FloatComplexMatrix (u) * FloatComplexMatrix (v).hermitian (),
-            get_type ());
-    }
-  else
+  if (u.numel () != m || v.numel () != n)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
+
+  init (q*r + FloatComplexMatrix (u) * FloatComplexMatrix (v).hermitian (),
+        get_type ());
 }
 
 void
@@ -502,12 +488,10 @@ FloatComplexQR::update (const FloatComplexMatrix& u,
   octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
-  if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
-    {
-      init (q*r + u * v.hermitian (), get_type ());
-    }
-  else
+  if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
+
+  init (q*r + u * v.hermitian (), get_type ());
 }
 
 static
@@ -584,12 +568,10 @@ FloatComplexQR::insert_col (const FloatComplexColumnVector& u,
 
   if (u.numel () != m)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > n)
+  if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
-  else
-    {
-      init (::insert_col (q*r, j, u), get_type ());
-    }
+
+  init (::insert_col (q*r, j, u), get_type ());
 }
 
 void
@@ -610,11 +592,12 @@ FloatComplexQR::insert_col (const FloatComplexMatrix& u,
 
   if (dups)
     (*current_liboctave_error_handler) ("qrinsert: duplicate index detected");
-  else if (u.numel () != m || u.columns () != nj)
+  if (u.numel () != m || u.columns () != nj)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (nj > 0 && (js(0) < 0 || js(nj-1) > n))
+  if (nj > 0 && (js(0) < 0 || js(nj-1) > n))
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
-  else if (nj > 0)
+
+  if (nj > 0)
     {
       FloatComplexMatrix a = q*r;
       for (octave_idx_type i = 0; i < js.numel (); i++)
@@ -632,10 +615,8 @@ FloatComplexQR::delete_col (octave_idx_type j)
 
   if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
-  else
-    {
-      init (::delete_col (q*r, j), get_type ());
-    }
+
+  init (::delete_col (q*r, j), get_type ());
 }
 
 void
@@ -654,9 +635,10 @@ FloatComplexQR::delete_col (const Array<octave_idx_type>& j)
 
   if (dups)
     (*current_liboctave_error_handler) ("qrinsert: duplicate index detected");
-  else if (nj > 0 && (js(0) > n-1 || js(nj-1) < 0))
+  if (nj > 0 && (js(0) > n-1 || js(nj-1) < 0))
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
-  else if (nj > 0)
+
+  if (nj > 0)
     {
       FloatComplexMatrix a = q*r;
       for (octave_idx_type i = 0; i < js.numel (); i++)
@@ -675,12 +657,10 @@ FloatComplexQR::insert_row (const FloatComplexRowVector& u, octave_idx_type j)
 
   if (! q.is_square () || u.numel () != n)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > m)
+  if (j < 0 || j > m)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
-  else
-    {
-      init (::insert_row (q*r, j, u), get_type ());
-    }
+
+  init (::insert_row (q*r, j, u), get_type ());
 }
 
 void
@@ -692,12 +672,10 @@ FloatComplexQR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
-  else if (j < 0 || j > m-1)
+  if (j < 0 || j > m-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
-  else
-    {
-      init (::delete_row (q*r, j), get_type ());
-    }
+
+  init (::delete_row (q*r, j), get_type ());
 }
 
 void
@@ -709,10 +687,8 @@ FloatComplexQR::shift_cols (octave_idx_type i, octave_idx_type j)
 
   if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrshift: index out of range");
-  else
-    {
-      init (::shift_cols (q*r, i, j), get_type ());
-    }
+
+  init (::shift_cols (q*r, i, j), get_type ());
 }
 
 #endif

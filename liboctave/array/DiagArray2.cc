@@ -94,10 +94,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
                        const T& rfv)
 {
   if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler) ("can't resize to negative dimensions");
-      return;
-    }
+    (*current_liboctave_error_handler) ("can't resize to negative dimensions");
 
   if (r != dim1 () || c != dim2 ())
     {

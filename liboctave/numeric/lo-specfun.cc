@@ -1196,22 +1196,20 @@ do_bessel (dptr f, const char *fn, const Matrix& alpha,
   octave_idx_type alpha_nr = alpha.rows ();
   octave_idx_type alpha_nc = alpha.cols ();
 
-  if (x_nr == alpha_nr && x_nc == alpha_nc)
-    {
-      octave_idx_type nr = x_nr;
-      octave_idx_type nc = x_nc;
-
-      retval.resize (nr, nc);
-
-      ierr.resize (dim_vector (nr, nc));
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
-    }
-  else
+  if (x_nr != alpha_nr || x_nc != alpha_nc)
     (*current_liboctave_error_handler)
       ("%s: the sizes of alpha and x must conform", fn);
+
+  octave_idx_type nr = x_nr;
+  octave_idx_type nc = x_nc;
+
+  retval.resize (nr, nc);
+
+  ierr.resize (dim_vector (nr, nc));
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
+      retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
 
   return retval;
 }
@@ -1255,19 +1253,17 @@ do_bessel (dptr f, const char *fn, const NDArray& alpha,
   dim_vector dv = x.dims ();
   ComplexNDArray retval;
 
-  if (dv == alpha.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-      ierr.resize (dv);
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        retval(i) = f (x(i), alpha(i), (scaled ? 2 : 1), ierr(i));
-    }
-  else
+  if (dv != alpha.dims ())
     (*current_liboctave_error_handler)
       ("%s: the sizes of alpha and x must conform", fn);
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+  ierr.resize (dv);
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    retval(i) = f (x(i), alpha(i), (scaled ? 2 : 1), ierr(i));
 
   return retval;
 }
@@ -1806,22 +1802,20 @@ do_bessel (fptr f, const char *fn, const FloatMatrix& alpha,
   octave_idx_type alpha_nr = alpha.rows ();
   octave_idx_type alpha_nc = alpha.cols ();
 
-  if (x_nr == alpha_nr && x_nc == alpha_nc)
-    {
-      octave_idx_type nr = x_nr;
-      octave_idx_type nc = x_nc;
-
-      retval.resize (nr, nc);
-
-      ierr.resize (dim_vector (nr, nc));
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
-    }
-  else
+  if (x_nr != alpha_nr || x_nc != alpha_nc)
     (*current_liboctave_error_handler)
       ("%s: the sizes of alpha and x must conform", fn);
+
+  octave_idx_type nr = x_nr;
+  octave_idx_type nc = x_nc;
+
+  retval.resize (nr, nc);
+
+  ierr.resize (dim_vector (nr, nc));
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
+      retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
 
   return retval;
 }
@@ -1866,19 +1860,17 @@ do_bessel (fptr f, const char *fn, const FloatNDArray& alpha,
   dim_vector dv = x.dims ();
   FloatComplexNDArray retval;
 
-  if (dv == alpha.dims ())
-    {
-      octave_idx_type nel = dv.numel ();
-
-      retval.resize (dv);
-      ierr.resize (dv);
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        retval(i) = f (x(i), alpha(i), (scaled ? 2 : 1), ierr(i));
-    }
-  else
+  if (dv != alpha.dims ())
     (*current_liboctave_error_handler)
       ("%s: the sizes of alpha and x must conform", fn);
+
+  octave_idx_type nel = dv.numel ();
+
+  retval.resize (dv);
+  ierr.resize (dv);
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    retval(i) = f (x(i), alpha(i), (scaled ? 2 : 1), ierr(i));
 
   return retval;
 }
@@ -2578,8 +2570,8 @@ gammainc (double x, double a, bool& err)
   if (a < 0.0 || x < 0.0)
     (*current_liboctave_error_handler)
       ("gammainc: A and X must be non-negative");
-  else
-    F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
+
+  F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
 
   return retval;
 }
@@ -2601,7 +2593,7 @@ gammainc (double x, const Matrix& a)
         result(i,j) = gammainc (x, a(i,j), err);
 
         if (err)
-          goto done;
+          goto done;  // FIXME: why not just use return to exit?
       }
 
   retval = result;
@@ -2628,7 +2620,7 @@ gammainc (const Matrix& x, double a)
         result(i,j) = gammainc (x(i,j), a, err);
 
         if (err)
-          goto done;
+          goto done;  // FIXME: why not just use return to exit?
       }
 
   retval = result;
@@ -2650,27 +2642,25 @@ gammainc (const Matrix& x, const Matrix& a)
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
 
-  if (nr == a_nr && nc == a_nc)
-    {
-      result.resize (nr, nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            result(i,j) = gammainc (x(i,j), a(i,j), err);
-
-            if (err)
-              goto done;
-          }
-
-      retval = result;
-    }
-  else
+  if (nr != a_nr || nc != a_nc)
     (*current_liboctave_error_handler)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
+
+  result.resize (nr, nc);
+
+  bool err;
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+        result(i,j) = gammainc (x(i,j), a(i,j), err);
+
+        if (err)
+          goto done;  // FIXME: why not just use return to exit?
+      }
+
+  retval = result;
 
 done:
 
@@ -2693,7 +2683,7 @@ gammainc (double x, const NDArray& a)
       result(i) = gammainc (x, a(i), err);
 
       if (err)
-        goto done;
+        goto done;  // FIXME: why not just use return to exit?
     }
 
   retval = result;
@@ -2719,7 +2709,7 @@ gammainc (const NDArray& x, double a)
       result(i) = gammainc (x(i), a, err);
 
       if (err)
-        goto done;
+        goto done;  // FIXME: why not just use return to exit?
     }
 
   retval = result;
@@ -2735,26 +2725,7 @@ gammainc (const NDArray& x, const NDArray& a)
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
 
-  NDArray retval;
-  NDArray result;
-
-  if (dv == a.dims ())
-    {
-      result.resize (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          result(i) = gammainc (x(i), a(i), err);
-
-          if (err)
-            goto done;
-        }
-
-      retval = result;
-    }
-  else
+  if (dv != a.dims ())
     {
       std::string x_str = dv.str ();
       std::string a_str = a.dims ().str ();
@@ -2763,6 +2734,21 @@ gammainc (const NDArray& x, const NDArray& a)
         ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
          x_str.c_str (), a_str. c_str ());
     }
+
+  NDArray retval;
+  NDArray result (dv);
+
+  bool err;
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      result(i) = gammainc (x(i), a(i), err);
+
+      if (err)
+        goto done;  // FIXME: why not just use return to exit?
+    }
+
+  retval = result;
 
 done:
 
@@ -2779,8 +2765,8 @@ gammainc (float x, float a, bool& err)
   if (a < 0.0 || x < 0.0)
     (*current_liboctave_error_handler)
       ("gammainc: A and X must be non-negative");
-  else
-    F77_XFCN (xsgammainc, XSGAMMAINC, (a, x, retval));
+
+  F77_XFCN (xsgammainc, XSGAMMAINC, (a, x, retval));
 
   return retval;
 }
@@ -2802,7 +2788,7 @@ gammainc (float x, const FloatMatrix& a)
         result(i,j) = gammainc (x, a(i,j), err);
 
         if (err)
-          goto done;
+          goto done;  // FIXME: why not just use return to exit?
       }
 
   retval = result;
@@ -2829,7 +2815,7 @@ gammainc (const FloatMatrix& x, float a)
         result(i,j) = gammainc (x(i,j), a, err);
 
         if (err)
-          goto done;
+          goto done;  // FIXME: why not just use return to exit?
       }
 
   retval = result;
@@ -2851,27 +2837,25 @@ gammainc (const FloatMatrix& x, const FloatMatrix& a)
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
 
-  if (nr == a_nr && nc == a_nc)
-    {
-      result.resize (nr, nc);
-
-      bool err;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            result(i,j) = gammainc (x(i,j), a(i,j), err);
-
-            if (err)
-              goto done;
-          }
-
-      retval = result;
-    }
-  else
+  if (nr != a_nr || nc != a_nc)
     (*current_liboctave_error_handler)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
+
+  result.resize (nr, nc);
+
+  bool err;
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+        result(i,j) = gammainc (x(i,j), a(i,j), err);
+
+        if (err)
+          goto done;  // FIXME: why not just use return to exit?
+      }
+
+  retval = result;
 
 done:
 
@@ -2894,7 +2878,7 @@ gammainc (float x, const FloatNDArray& a)
       result(i) = gammainc (x, a(i), err);
 
       if (err)
-        goto done;
+        goto done;  // FIXME: why not just use return to exit?
     }
 
   retval = result;
@@ -2920,7 +2904,7 @@ gammainc (const FloatNDArray& x, float a)
       result(i) = gammainc (x(i), a, err);
 
       if (err)
-        goto done;
+        goto done;  // FIXME: why not just use return to exit?
     }
 
   retval = result;
@@ -2939,23 +2923,7 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
   FloatNDArray retval;
   FloatNDArray result;
 
-  if (dv == a.dims ())
-    {
-      result.resize (dv);
-
-      bool err;
-
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          result(i) = gammainc (x(i), a(i), err);
-
-          if (err)
-            goto done;
-        }
-
-      retval = result;
-    }
-  else
+  if (dv != a.dims ())
     {
       std::string x_str = dv.str ();
       std::string a_str = a.dims ().str ();
@@ -2964,6 +2932,20 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
         ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
          x_str.c_str (), a_str.c_str ());
     }
+
+  result.resize (dv);
+
+  bool err;
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      result(i) = gammainc (x(i), a(i), err);
+
+      if (err)
+        goto done;  // FIXME: why not just use return to exit?
+    }
+
+  retval = result;
 
 done:
 
@@ -3307,21 +3289,12 @@ betaincinv (double y, double p, double q)
   //  Test for admissibility of parameters.
 
   if (p <= 0.0 || q <= 0.0)
-    {
-      (*current_liboctave_error_handler)
-        ("betaincinv: wrong parameters");
-    }
-
+    (*current_liboctave_error_handler) ("betaincinv: wrong parameters");
   if (y < 0.0 || 1.0 < y)
-    {
-      (*current_liboctave_error_handler)
-        ("betaincinv: wrong parameter Y");
-    }
+    (*current_liboctave_error_handler) ("betaincinv: wrong parameter Y");
 
   if (y == 0.0 || y == 1.0)
-    {
-      return value;
-    }
+    return value;
 
   //  Change tail if necessary.
 

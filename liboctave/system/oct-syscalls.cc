@@ -357,7 +357,7 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
               else
                 child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
 
-              (*current_liboctave_error_handler)(child_msg.c_str ());
+              (*current_liboctave_error_handler) (child_msg.c_str ());
 
               exit (0);
             }

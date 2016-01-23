@@ -56,13 +56,11 @@ octave_getcwd (void)
 
   char *tmp = gnulib::getcwd (0, 0);
 
-  if (tmp)
-    {
-      retval = tmp;
-      free (tmp);
-    }
-  else
+  if (! tmp)
     (*current_liboctave_error_handler) ("unable to find current directory");
+
+  retval = tmp;
+  free (tmp);
 
   return retval;
 }

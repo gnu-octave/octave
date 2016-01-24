@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 // that gets deleted automatically.  For common POD types, we provide
 // specializations.
 
-template <class T>
+template <typename T>
 class octave_local_buffer
 {
 public:
@@ -137,7 +137,7 @@ SPECIALIZE_POD_BUFFER (FloatComplex);
 // MORE ?
 
 // All pointers and const pointers are also POD types.
-template <class T>
+template <typename T>
 class octave_local_buffer<T *> : private octave_chunk_buffer
 {
 public:
@@ -148,7 +148,7 @@ public:
   operator T **() const { return reinterpret_cast<T **> (this->data ()); }
 };
 
-template <class T>
+template <typename T>
 class octave_local_buffer<const T *> : private octave_chunk_buffer
 {
 public:

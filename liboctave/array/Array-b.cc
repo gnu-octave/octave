@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Specialize bool sorting (aka stable partitioning).
 
-template<bool desc>
+template <bool desc>
 static void do_bool_partition (bool *data, octave_idx_type nel)
 {
   octave_idx_type k = 0;
@@ -45,7 +45,7 @@ static void do_bool_partition (bool *data, octave_idx_type nel)
     data[i] = ! desc;
 }
 
-template<bool desc>
+template <bool desc>
 static void do_bool_partition (bool *data, octave_idx_type *idx,
                                octave_idx_type nel)
 {
@@ -72,7 +72,8 @@ static void do_bool_partition (bool *data, octave_idx_type *idx,
     }
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type nel,
                          std::less<bool>)
@@ -80,7 +81,8 @@ octave_sort<bool>::sort (bool *data, octave_idx_type nel,
   do_bool_partition<false> (data, nel);
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type nel,
                          std::greater<bool>)
@@ -88,7 +90,8 @@ octave_sort<bool>::sort (bool *data, octave_idx_type nel,
   do_bool_partition<true> (data, nel);
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
                          std::less<bool>)
@@ -96,7 +99,8 @@ octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
   do_bool_partition<false> (data, idx, nel);
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
                          std::greater<bool>)

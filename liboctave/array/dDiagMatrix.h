@@ -52,7 +52,7 @@ public:
 
   DiagMatrix (const MDiagArray2<double>& a) : MDiagArray2<double> (a) { }
 
-  template <class U>
+  template <typename U>
   DiagMatrix (const DiagArray2<U>& a) : MDiagArray2<double> (a) { }
 
   explicit DiagMatrix (const Array<double>& a) : MDiagArray2<double> (a) { }

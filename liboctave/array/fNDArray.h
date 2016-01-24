@@ -45,13 +45,13 @@ public:
 
   FloatNDArray (const FloatNDArray& a) : MArray<float> (a) { }
 
-  template <class U>
+  template <typename U>
   FloatNDArray (const MArray<U>& a) : MArray<float> (a) { }
 
-  template <class U>
+  template <typename U>
   FloatNDArray (const Array<U>& a) : MArray<float> (a) { }
 
-  template <class U>
+  template <typename U>
   explicit FloatNDArray (const intNDArray<U>& a) : MArray<float> (a) { }
 
   FloatNDArray (const charNDArray&);

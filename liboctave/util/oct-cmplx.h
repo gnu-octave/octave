@@ -41,7 +41,7 @@ typedef std::complex<float> FloatComplex;
 // cut.  Change this to principal value (-pi,pi] by mapping -pi to pi.
 
 #define DEF_COMPLEXR_COMP(OP, OPS) \
-template <class T> \
+template <typename T> \
 inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
 { \
   FLOAT_TRUNCATE const T ax = std::abs (a); \
@@ -64,7 +64,7 @@ inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
   else \
     return ax OPS bx; \
 } \
-template <class T> \
+template <typename T> \
 inline bool operator OP (const std::complex<T>& a, T b) \
 { \
   FLOAT_TRUNCATE const T ax = std::abs (a); \
@@ -79,7 +79,7 @@ inline bool operator OP (const std::complex<T>& a, T b) \
   else \
     return ax OPS bx; \
 } \
-template <class T> \
+template <typename T> \
 inline bool operator OP (T a, const std::complex<T>& b) \
 { \
   FLOAT_TRUNCATE const T ax = std::abs (a); \

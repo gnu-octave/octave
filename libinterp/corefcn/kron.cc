@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "ovl.h"
 
-template <class R, class T>
+template <typename R, typename T>
 static MArray<T>
 kron (const MArray<R>& a, const MArray<T>& b)
 {
@@ -75,7 +75,7 @@ kron (const MArray<R>& a, const MArray<T>& b)
   return c;
 }
 
-template <class R, class T>
+template <typename R, typename T>
 static MArray<T>
 kron (const MDiagArray2<R>& a, const MArray<T>& b)
 {
@@ -100,7 +100,7 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
   return c;
 }
 
-template <class T>
+template <typename T>
 static MSparse<T>
 kron (const MSparse<T>& A, const MSparse<T>& B)
 {
@@ -150,7 +150,7 @@ kron (const PermMatrix& a, const PermMatrix& b)
   return PermMatrix (res_perm, true);
 }
 
-template <class MTA, class MTB>
+template <typename MTA, typename MTB>
 octave_value
 do_kron (const octave_value& a, const octave_value& b)
 {

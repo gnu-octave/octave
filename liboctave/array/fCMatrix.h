@@ -62,11 +62,11 @@ public:
   FloatComplexMatrix (const FloatComplexMatrix& a)
     : FloatComplexNDArray (a) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexMatrix (const MArray<U>& a)
     : FloatComplexNDArray (a.as_matrix ()) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexMatrix (const Array<U>& a)
     : FloatComplexNDArray (a.as_matrix ()) { }
 

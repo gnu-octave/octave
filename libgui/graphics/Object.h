@@ -52,14 +52,14 @@ public:
   const base_properties& properties (void) const
     { return object ().get_properties (); }
 
-  template <class T>
+  template <typename T>
   typename T::properties& properties (void)
     {
       return dynamic_cast<typename T::properties&>
         (object ().get_properties ());
     }
 
-  template <class T>
+  template <typename T>
   const typename T::properties& properties (void) const
     {
       return dynamic_cast<const typename T::properties&>
@@ -70,7 +70,7 @@ public:
 
   virtual QObject* qObject (void) { return m_qobject; }
 
-  template <class T>
+  template <typename T>
   T* qWidget (void) { return qobject_cast<T*>(qObject ()); }
 
   virtual Container* innerContainer (void) = 0;

@@ -48,7 +48,7 @@ DEFNDBINOP_OP (dmsmul, MATRIX, SCALAR, MATRIXV, SCALARV, *)
 #define MATRIX_VALUE CONCAT2(MATRIXV, _value)
 #define SCALAR_VALUE CONCAT2(SCALARV, _value)
 
-template <class T>
+template <typename T>
 static T
 gripe_if_zero (T x)
 {

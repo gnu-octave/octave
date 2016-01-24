@@ -46,7 +46,7 @@ get_vec_dims (const dim_vector& old_dims, octave_idx_type n)
     return dim_vector (n, 1);
 }
 
-template <class ArrayType>
+template <typename ArrayType>
 static void
 get_data_and_bytesize (const ArrayType& array,
                        const void *& data,
@@ -64,7 +64,7 @@ get_data_and_bytesize (const ArrayType& array,
   old_dims = array.dims ();
 }
 
-template <class ArrayType>
+template <typename ArrayType>
 static ArrayType
 reinterpret_copy (const void *data, octave_idx_type byte_size,
                   const dim_vector& old_dims)
@@ -256,7 +256,7 @@ typecast (@var{x}, \"uint8\")\n\
   return retval;
 }
 
-template <class ArrayType>
+template <typename ArrayType>
 ArrayType
 do_bitpack (const boolNDArray& bitp)
 {
@@ -376,7 +376,7 @@ column vector.\n\
   return retval;
 }
 
-template <class ArrayType>
+template <typename ArrayType>
 boolNDArray
 do_bitunpack (const ArrayType& array)
 {

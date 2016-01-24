@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
 
-template <class T>
+template <typename T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   : dimensions (dv), rep (a.rep),
     slice_data (a.slice_data), slice_len (a.slice_len)
@@ -65,7 +65,7 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   dimensions.chop_trailing_singletons ();
 }
 
-template <class T>
+template <typename T>
 void
 Array<T>::fill (const T& val)
 {
@@ -79,7 +79,7 @@ Array<T>::fill (const T& val)
     std::fill_n (slice_data, slice_len, val);
 }
 
-template <class T>
+template <typename T>
 void
 Array<T>::clear (void)
 {
@@ -94,7 +94,7 @@ Array<T>::clear (void)
   dimensions = dim_vector ();
 }
 
-template <class T>
+template <typename T>
 void
 Array<T>::clear (const dim_vector& dv)
 {
@@ -109,7 +109,7 @@ Array<T>::clear (const dim_vector& dv)
   dimensions.chop_trailing_singletons ();
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::squeeze (void) const
 {
@@ -162,14 +162,14 @@ Array<T>::squeeze (void) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 Array<T>::compute_index (octave_idx_type i, octave_idx_type j) const
 {
   return ::compute_index (i, j, dimensions);
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 Array<T>::compute_index (octave_idx_type i, octave_idx_type j,
                          octave_idx_type k) const
@@ -177,14 +177,14 @@ Array<T>::compute_index (octave_idx_type i, octave_idx_type j,
   return ::compute_index (i, j, k, dimensions);
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
   return ::compute_index (ra_idx, dimensions);
 }
 
-template <class T>
+template <typename T>
 T&
 Array<T>::checkelem (octave_idx_type n)
 {
@@ -197,28 +197,28 @@ Array<T>::checkelem (octave_idx_type n)
   return elem (n);
 }
 
-template <class T>
+template <typename T>
 T&
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j)
 {
   return elem (compute_index (i, j));
 }
 
-template <class T>
+template <typename T>
 T&
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
 {
   return elem (compute_index (i, j, k));
 }
 
-template <class T>
+template <typename T>
 T&
 Array<T>::checkelem (const Array<octave_idx_type>& ra_idx)
 {
   return elem (compute_index (ra_idx));
 }
 
-template <class T>
+template <typename T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type n) const
 {
@@ -231,14 +231,14 @@ Array<T>::checkelem (octave_idx_type n) const
   return elem (n);
 }
 
-template <class T>
+template <typename T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j) const
 {
   return elem (compute_index (i, j));
 }
 
-template <class T>
+template <typename T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j,
                      octave_idx_type k) const
@@ -246,14 +246,14 @@ Array<T>::checkelem (octave_idx_type i, octave_idx_type j,
   return elem (compute_index (i, j, k));
 }
 
-template <class T>
+template <typename T>
 typename Array<T>::crefT
 Array<T>::checkelem (const Array<octave_idx_type>& ra_idx) const
 {
   return elem (compute_index (ra_idx));
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::column (octave_idx_type k) const
 {
@@ -266,7 +266,7 @@ Array<T>::column (octave_idx_type k) const
   return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::page (octave_idx_type k) const
 {
@@ -281,7 +281,7 @@ Array<T>::page (octave_idx_type k) const
   return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 {
@@ -349,7 +349,7 @@ public:
   ~rec_permute_helper (void) { delete [] dim; }
 
   // Helper method for fast blocked transpose.
-  template <class T>
+  template <typename T>
   static T *
   blk_trans (const T *src, T *dest, octave_idx_type nr, octave_idx_type nc)
   {
@@ -390,7 +390,7 @@ public:
 private:
 
   // Recursive N-D generalized transpose
-  template <class T>
+  template <typename T>
   T *do_permute (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
@@ -431,12 +431,12 @@ private:
 
 public:
 
-  template <class T>
+  template <typename T>
   void permute (const T *src, T *dest) const { do_permute (src, dest, top); }
 };
 
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 {
@@ -557,7 +557,7 @@ public:
 private:
 
   // Recursive N-D indexing
-  template <class T>
+  template <typename T>
   T *do_index (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
@@ -574,7 +574,7 @@ private:
   }
 
   // Recursive N-D indexed assignment
-  template <class T>
+  template <typename T>
   const T *do_assign (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
@@ -591,7 +591,7 @@ private:
   }
 
   // Recursive N-D indexed assignment
-  template <class T>
+  template <typename T>
   void do_fill (const T& val, T *dest, int lev) const
   {
     if (lev == 0)
@@ -613,13 +613,13 @@ private:
 
 public:
 
-  template <class T>
+  template <typename T>
   void index (const T *src, T *dest) const { do_index (src, dest, top); }
 
-  template <class T>
+  template <typename T>
   void assign (const T *src, T *dest) const { do_assign (src, dest, top); }
 
-  template <class T>
+  template <typename T>
   void fill (const T& val, T *dest) const { do_fill (val, dest, top); }
 
   bool is_cont_range (octave_idx_type& l,
@@ -670,7 +670,7 @@ public:
 private:
 
   // recursive resizing
-  template <class T>
+  template <typename T>
   void do_resize_fill (const T* src, T *dest, const T& rfv, int lev) const
   {
     if (lev == 0)
@@ -698,12 +698,12 @@ private:
 
 public:
 
-  template <class T>
+  template <typename T>
   void resize_fill (const T* src, T *dest, const T& rfv) const
   { do_resize_fill (src, dest, rfv, n-1); }
 };
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::index (const idx_vector& i) const
 {
@@ -767,7 +767,7 @@ Array<T>::index (const idx_vector& i) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::index (const idx_vector& i, const idx_vector& j) const
 {
@@ -825,7 +825,7 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::index (const Array<idx_vector>& ia) const
 {
@@ -889,7 +889,7 @@ Array<T>::index (const Array<idx_vector>& ia) const
 
 // The default fill value.  Override if you want a different one.
 
-template <class T>
+template <typename T>
 T
 Array<T>::resize_fill_value (void) const
 {
@@ -900,7 +900,7 @@ Array<T>::resize_fill_value (void) const
 // Yes, we could do resize using index & assign.  However, that would
 // possibly involve a lot more memory traffic than we actually need.
 
-template <class T>
+template <typename T>
 void
 Array<T>::resize1 (octave_idx_type n, const T& rfv)
 {
@@ -971,7 +971,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
     }
 }
 
-template <class T>
+template <typename T>
 void
 Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
 {
@@ -1013,7 +1013,7 @@ Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
     }
 }
 
-template<class T>
+template <typename T>
 void
 Array<T>::resize (const dim_vector& dv, const T& rfv)
 {
@@ -1035,7 +1035,7 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
     }
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::index (const idx_vector& i, bool resize_ok, const T& rfv) const
 {
@@ -1059,7 +1059,7 @@ Array<T>::index (const idx_vector& i, bool resize_ok, const T& rfv) const
   return tmp.index (i);
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::index (const idx_vector& i, const idx_vector& j,
                  bool resize_ok, const T& rfv) const
@@ -1087,7 +1087,7 @@ Array<T>::index (const idx_vector& i, const idx_vector& j,
   return tmp.index (i, j);
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::index (const Array<idx_vector>& ia,
                  bool resize_ok, const T& rfv) const
@@ -1119,7 +1119,7 @@ Array<T>::index (const Array<idx_vector>& ia,
 }
 
 
-template <class T>
+template <typename T>
 void
 Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
 {
@@ -1166,7 +1166,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
 }
 
 // Assignment to a 2-dimensional array
-template <class T>
+template <typename T>
 void
 Array<T>::assign (const idx_vector& i, const idx_vector& j,
                   const Array<T>& rhs, const T& rfv)
@@ -1270,7 +1270,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
 }
 
 // Assignment to a multi-dimensional array
-template <class T>
+template <typename T>
 void
 Array<T>::assign (const Array<idx_vector>& ia,
                   const Array<T>& rhs, const T& rfv)
@@ -1393,7 +1393,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
 %!error <op1 is 2x2, op2 is 2x1> a(1:2,2:3) = [1;2]
 */
 
-template <class T>
+template <typename T>
 void
 Array<T>::delete_elements (const idx_vector& i)
 {
@@ -1433,7 +1433,7 @@ Array<T>::delete_elements (const idx_vector& i)
     }
 }
 
-template <class T>
+template <typename T>
 void
 Array<T>::delete_elements (int dim, const idx_vector& i)
 {
@@ -1489,7 +1489,7 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
     }
 }
 
-template <class T>
+template <typename T>
 void
 Array<T>::delete_elements (const Array<idx_vector>& ia)
 {
@@ -1566,7 +1566,7 @@ Array<T>::delete_elements (const Array<idx_vector>& ia)
 
 }
 
-template <class T>
+template <typename T>
 Array<T>&
 Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
 {
@@ -1587,7 +1587,7 @@ Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
   return *this;
 }
 
-template <class T>
+template <typename T>
 Array<T>&
 Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
@@ -1603,7 +1603,7 @@ Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 }
 
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::transpose (void) const
 {
@@ -1639,14 +1639,14 @@ Array<T>::transpose (void) const
     }
 }
 
-template <class T>
+template <typename T>
 static T
 no_op_fcn (const T& x)
 {
   return x;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::hermitian (T (*fcn) (const T&)) const
 {
@@ -1745,7 +1745,7 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
 */
 
-template <class T>
+template <typename T>
 T *
 Array<T>::fortran_vec (void)
 {
@@ -1755,14 +1755,14 @@ Array<T>::fortran_vec (void)
 }
 
 // Non-real types don't have NaNs.
-template <class T>
+template <typename T>
 inline bool
 sort_isnan (typename ref_param<T>::type)
 {
   return false;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::sort (int dim, sortmode mode) const
 {
@@ -1878,7 +1878,7 @@ Array<T>::sort (int dim, sortmode mode) const
   return m;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
                 sortmode mode) const
@@ -2026,7 +2026,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
   return m;
 }
 
-template <class T>
+template <typename T>
 typename Array<T>::compare_fcn_type
 safe_comparator (sortmode mode, const Array<T>& /* a */,
                  bool /* allow_chk */)
@@ -2039,7 +2039,7 @@ safe_comparator (sortmode mode, const Array<T>& /* a */,
     return 0;
 }
 
-template <class T>
+template <typename T>
 sortmode
 Array<T>::is_sorted (sortmode mode) const
 {
@@ -2074,7 +2074,7 @@ Array<T>::is_sorted (sortmode mode) const
 
 }
 
-template <class T>
+template <typename T>
 Array<octave_idx_type>
 Array<T>::sort_rows_idx (sortmode mode) const
 {
@@ -2093,7 +2093,7 @@ Array<T>::sort_rows_idx (sortmode mode) const
 }
 
 
-template <class T>
+template <typename T>
 sortmode
 Array<T>::is_sorted_rows (sortmode mode) const
 {
@@ -2154,7 +2154,7 @@ Array<T>::is_sorted_rows (sortmode mode) const
 }
 
 // Do a binary lookup in a sorted array.
-template <class T>
+template <typename T>
 octave_idx_type
 Array<T>::lookup (const T& value, sortmode mode) const
 {
@@ -2175,7 +2175,7 @@ Array<T>::lookup (const T& value, sortmode mode) const
   return lsort.lookup (data (), n, value);
 }
 
-template <class T>
+template <typename T>
 Array<octave_idx_type>
 Array<T>::lookup (const Array<T>& values, sortmode mode) const
 {
@@ -2219,7 +2219,7 @@ Array<T>::lookup (const Array<T>& values, sortmode mode) const
   return idx;
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 Array<T>::nnz (void) const
 {
@@ -2234,7 +2234,7 @@ Array<T>::nnz (void) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 Array<octave_idx_type>
 Array<T>::find (octave_idx_type n, bool backward) const
 {
@@ -2315,7 +2315,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::nth_element (const idx_vector& n, int dim) const
 {
@@ -2503,7 +2503,7 @@ template <> Array<T>  \
 Array<T>::nth_element (const idx_vector&, int) const { return Array<T> (); }
 
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::diag (octave_idx_type k) const
 {
@@ -2589,7 +2589,7 @@ Array<T>::diag (octave_idx_type k) const
   return d;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::diag (octave_idx_type m, octave_idx_type n) const
 {
@@ -2604,7 +2604,7 @@ Array<T>::diag (octave_idx_type m, octave_idx_type n) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
 {
@@ -2708,7 +2708,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
   return retval;
 }
 
-template <class T>
+template <typename T>
 void
 Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 {
@@ -2725,7 +2725,7 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
   //     << prefix << "cols: " << cols () << "\n";
 }
 
-template <class T>
+template <typename T>
 bool Array<T>::optimize_dimensions (const dim_vector& dv)
 {
   bool retval = dimensions == dv;
@@ -2735,7 +2735,7 @@ bool Array<T>::optimize_dimensions (const dim_vector& dv)
   return retval;
 }
 
-template <class T>
+template <typename T>
 void Array<T>::instantiation_guard ()
 {
   // This guards against accidental implicit instantiations.
@@ -2749,7 +2749,7 @@ void Array<T>::instantiation_guard ()
 
 // FIXME: is this used?
 
-template <class T>
+template <typename T>
 std::ostream&
 operator << (std::ostream& os, const Array<T>& a)
 {

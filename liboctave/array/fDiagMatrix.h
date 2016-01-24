@@ -52,7 +52,7 @@ public:
 
   FloatDiagMatrix (const MDiagArray2<float>& a) : MDiagArray2<float> (a) { }
 
-  template <class U>
+  template <typename U>
   FloatDiagMatrix (const DiagArray2<U>& a) : MDiagArray2<float> (a) { }
 
   explicit FloatDiagMatrix (const Array<double>& a) : MDiagArray2<float> (a) { }

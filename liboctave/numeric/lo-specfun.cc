@@ -3692,7 +3692,7 @@ ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
 
 static const double pi = 3.14159265358979323846;
 
-template <class T>
+template <typename T>
 static inline T
 xlog (const T& x)
 {
@@ -3713,7 +3713,7 @@ xlog (const float& x)
   return gnulib::logf (x);
 }
 
-template<class T>
+template <typename T>
 static T
 Lanczos_approximation_psi (const T zc)
 {
@@ -3739,7 +3739,7 @@ Lanczos_approximation_psi (const T zc)
   return p;
 }
 
-template<class T>
+template <typename T>
 T
 psi (const T& z)
 {
@@ -3795,7 +3795,7 @@ psi (const T& z)
 template double psi<double> (const double& z);
 template float  psi<float> (const float& z);
 
-template<class T>
+template <typename T>
 std::complex<T>
 psi (const std::complex<T>& z)
 {
@@ -3845,12 +3845,12 @@ template Complex psi<double> (const Complex& z);
 template FloatComplex psi<float> (const FloatComplex& z);
 
 
-template<typename T>
+template <typename T>
 static inline void
 fortran_psifn (const T z, const octave_idx_type n, T* ans,
                octave_idx_type* ierr);
 
-template<>
+template <>
 inline void
 fortran_psifn<double> (const double z, const octave_idx_type n,
                        double* ans, octave_idx_type* ierr)
@@ -3859,7 +3859,7 @@ fortran_psifn<double> (const double z, const octave_idx_type n,
   F77_XFCN (dpsifn, DPSIFN, (&z, n, 1, 1, ans, &flag, ierr));
 }
 
-template<>
+template <>
 inline void
 fortran_psifn<float> (const float z, const octave_idx_type n,
                       float* ans, octave_idx_type* ierr)
@@ -3868,7 +3868,7 @@ fortran_psifn<float> (const float z, const octave_idx_type n,
   F77_XFCN (psifn, PSIFN, (&z, n, 1, 1, ans, &flag, ierr));
 }
 
-template<class T>
+template <typename T>
 T
 psi (const octave_idx_type n, const T z)
 {

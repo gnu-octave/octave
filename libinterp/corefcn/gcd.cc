@@ -96,7 +96,7 @@ simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
   return aa;
 }
 
-template <class T>
+template <typename T>
 static octave_int<T>
 simple_gcd (const octave_int<T>& a, const octave_int<T>& b)
 {
@@ -196,7 +196,7 @@ extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
   return aa;
 }
 
-template <class T>
+template <typename T>
 static octave_int<T>
 extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
               octave_int<T>& x, octave_int<T>& y)
@@ -229,7 +229,7 @@ extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
   return aa;
 }
 
-template<class NDA>
+template <typename NDA>
 static octave_value
 do_simple_gcd (const octave_value& a, const octave_value& b)
 {
@@ -309,7 +309,7 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
   return retval;
 }
 
-template<class NDA>
+template <typename NDA>
 static octave_value
 do_extended_gcd (const octave_value& a, const octave_value& b,
                  octave_value& x, octave_value& y)

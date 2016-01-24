@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "dColVector.h"
 
-template <class chol_type, class chol_elt, class p_type>
+template <typename chol_type, typename chol_elt, typename p_type>
 class
 sparse_base_chol
 {

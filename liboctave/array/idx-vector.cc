@@ -231,7 +231,7 @@ convert_index (float x, bool& conv_error, octave_idx_type& ext)
   return convert_index (static_cast<double> (x), conv_error, ext);
 }
 
-template <class T>
+template <typename T>
 inline octave_idx_type
 convert_index (octave_int<T> x, bool& conv_error,
                octave_idx_type& ext)
@@ -242,7 +242,7 @@ convert_index (octave_int<T> x, bool& conv_error,
 }
 
 
-template <class T>
+template <typename T>
 idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
   : data (0)
 {
@@ -294,7 +294,7 @@ idx_vector::idx_scalar_rep::as_array (void)
 }
 
 
-template <class T>
+template <typename T>
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
   : data (0), len (nda.numel ()), ext (0), aowner (0), orig_dims (nda.dims ())
 {

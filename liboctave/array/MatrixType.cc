@@ -80,7 +80,7 @@ MatrixType::MatrixType (const MatrixType &a)
     }
 }
 
-template<class T>
+template <typename T>
 MatrixType::matrix_type
 matrix_real_probe (const MArray<T>& a)
 {
@@ -138,7 +138,7 @@ matrix_real_probe (const MArray<T>& a)
   return typ;
 }
 
-template<class T>
+template <typename T>
 MatrixType::matrix_type
 matrix_complex_probe (const MArray<std::complex<T> >& a)
 {

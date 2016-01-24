@@ -48,13 +48,13 @@ public:
   NDArray (const Array<octave_idx_type>& a, bool zero_based = false,
            bool negative_to_nan = false);
 
-  template <class U>
+  template <typename U>
   NDArray (const MArray<U>& a) : MArray<double> (a) { }
 
-  template <class U>
+  template <typename U>
   NDArray (const Array<U>& a) : MArray<double> (a) { }
 
-  template <class U>
+  template <typename U>
   explicit NDArray (const intNDArray<U>& a) : MArray<double> (a) { }
 
   NDArray (const charNDArray&);

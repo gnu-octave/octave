@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "lo-error.h"
 
-template <class T>
+template <typename T>
 struct _idxadds_helper
 {
   T *array;
@@ -39,7 +39,7 @@ struct _idxadds_helper
   { array[i] += val; }
 };
 
-template <class T>
+template <typename T>
 struct _idxadda_helper
 {
   T *array;
@@ -49,7 +49,7 @@ struct _idxadda_helper
   { array[i] += *vals++; }
 };
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_add (const idx_vector& idx, T val)
 {
@@ -67,7 +67,7 @@ MArray<T>::idx_add (const idx_vector& idx, T val)
   idx.loop (len, _idxadds_helper<T> (this->fortran_vec (), val));
 }
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
 {
@@ -85,7 +85,7 @@ MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
   idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
 }
 
-template <class T, T op (typename ref_param<T>::type,
+template <typename T, T op (typename ref_param<T>::type,
                          typename ref_param<T>::type)>
 struct _idxbinop_helper
 {
@@ -96,7 +96,7 @@ struct _idxbinop_helper
   { array[i] = op (array[i], *vals++); }
 };
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
 {
@@ -115,7 +115,7 @@ MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
                                             vals.data ()));
 }
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 {
@@ -136,7 +136,7 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 
 #include <iostream>
 
-template <class T>
+template <typename T>
 void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
                             int dim)
 {
@@ -199,7 +199,7 @@ void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
 }
 
 // N-dimensional array with math ops.
-template <class T>
+template <typename T>
 void
 MArray<T>::changesign (void)
 {
@@ -211,7 +211,7 @@ MArray<T>::changesign (void)
 
 // Element by element MArray by scalar ops.
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator += (MArray<T>& a, const T& s)
 {
@@ -222,7 +222,7 @@ operator += (MArray<T>& a, const T& s)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator -= (MArray<T>& a, const T& s)
 {
@@ -233,7 +233,7 @@ operator -= (MArray<T>& a, const T& s)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator *= (MArray<T>& a, const T& s)
 {
@@ -244,7 +244,7 @@ operator *= (MArray<T>& a, const T& s)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator /= (MArray<T>& a, const T& s)
 {
@@ -257,7 +257,7 @@ operator /= (MArray<T>& a, const T& s)
 
 // Element by element MArray by MArray ops.
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator += (MArray<T>& a, const MArray<T>& b)
 {
@@ -268,7 +268,7 @@ operator += (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator -= (MArray<T>& a, const MArray<T>& b)
 {
@@ -280,7 +280,7 @@ operator -= (MArray<T>& a, const MArray<T>& b)
 }
 
 
-template <class T>
+template <typename T>
 MArray<T>&
 product_eq (MArray<T>& a, const MArray<T>& b)
 {
@@ -291,7 +291,7 @@ product_eq (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 quotient_eq (MArray<T>& a, const MArray<T>& b)
 {
@@ -305,7 +305,7 @@ quotient_eq (MArray<T>& a, const MArray<T>& b)
 // Element by element MArray by scalar ops.
 
 #define MARRAY_NDS_OP(OP, FN) \
-  template <class T> \
+  template <typename T> \
   MArray<T> \
   operator OP (const MArray<T>& a, const T& s) \
   { \
@@ -320,7 +320,7 @@ MARRAY_NDS_OP (/, mx_inline_div)
 // Element by element scalar by MArray ops.
 
 #define MARRAY_SND_OP(OP, FN) \
-  template <class T> \
+  template <typename T> \
   MArray<T> \
   operator OP (const T& s, const MArray<T>& a) \
   { \
@@ -335,7 +335,7 @@ MARRAY_SND_OP (/, mx_inline_div)
 // Element by element MArray by MArray ops.
 
 #define MARRAY_NDND_OP(FCN, OP, FN) \
-  template <class T> \
+  template <typename T> \
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
   { \
@@ -347,14 +347,14 @@ MARRAY_NDND_OP (operator -, -, mx_inline_sub)
 MARRAY_NDND_OP (product,    *, mx_inline_mul)
 MARRAY_NDND_OP (quotient,   /, mx_inline_div)
 
-template <class T>
+template <typename T>
 MArray<T>
 operator + (const MArray<T>& a)
 {
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>
 operator - (const MArray<T>& a)
 {

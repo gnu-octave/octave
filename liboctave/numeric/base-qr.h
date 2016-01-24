@@ -34,7 +34,7 @@ enum qr_type_t
   qr_type_economy
 };
 
-template <class qr_type>
+template <typename qr_type>
 class
 base_qr
 {

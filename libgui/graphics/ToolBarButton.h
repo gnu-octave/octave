@@ -32,7 +32,7 @@ namespace QtHandles
 
 class Container;
 
-template <class T>
+template <typename T>
 class ToolBarButton : public Object
 {
 public:

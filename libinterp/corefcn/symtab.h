@@ -850,7 +850,7 @@ public:
         built_in_function = f;
       }
 
-      template <class T>
+      template <typename T>
       void
       clear_map (std::map<T, octave_value>& map, bool force = false)
       {

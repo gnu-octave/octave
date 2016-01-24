@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "PermMatrix.h"
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 lu_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const
 {
@@ -64,7 +64,7 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const
   return Yout;
 }
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 p_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr (void) const
 {
@@ -84,7 +84,7 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr (void) const
   return Pout;
 }
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 ColumnVector
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr_vec (void) const
 {
@@ -99,14 +99,14 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr_vec (void) const
   return Pout;
 }
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 PermMatrix
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr_mat (void) const
 {
   return PermMatrix (P, false);
 }
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 p_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc (void) const
 {
@@ -125,7 +125,7 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc (void) const
   return Pout;
 }
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 ColumnVector
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_vec (void) const
 {
@@ -140,7 +140,7 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_vec (void) const
   return Pout;
 }
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 PermMatrix
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_mat (void) const
 {

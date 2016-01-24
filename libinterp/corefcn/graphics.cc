@@ -870,7 +870,7 @@ convert_cdata_2 (bool is_scaled, bool is_real, double clim_0, double clim_1,
     }
 }
 
-template <class T>
+template <typename T>
 void
 convert_cdata_1 (bool is_scaled, bool is_real, double clim_0, double clim_1,
                  const double *cmapv, const T *cv, octave_idx_type lda,
@@ -966,7 +966,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   return octave_value (a);
 }
 
-template<class T>
+template <typename T>
 static void
 get_array_limits (const Array<T>& m, double& emin, double& emax,
                   double& eminp, double& emaxp)

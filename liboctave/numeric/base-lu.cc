@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "base-lu.h"
 
-template <class lu_type>
+template <typename lu_type>
 base_lu<lu_type>::base_lu (const lu_type& l, const lu_type& u,
                            const PermMatrix& p)
   : a_fact (u), l_fact (l), ipvt (p.transpose ().col_perm_vec ())
@@ -36,14 +36,14 @@ base_lu<lu_type>::base_lu (const lu_type& l, const lu_type& u,
     (*current_liboctave_error_handler) ("lu: dimension mismatch");
 }
 
-template <class lu_type>
+template <typename lu_type>
 bool
 base_lu <lu_type> :: packed (void) const
 {
   return l_fact.dims () == dim_vector ();
 }
 
-template <class lu_type>
+template <typename lu_type>
 void
 base_lu <lu_type> :: unpack (void)
 {
@@ -55,7 +55,7 @@ base_lu <lu_type> :: unpack (void)
     }
 }
 
-template <class lu_type>
+template <typename lu_type>
 lu_type
 base_lu <lu_type> :: L (void) const
 {
@@ -82,7 +82,7 @@ base_lu <lu_type> :: L (void) const
     return l_fact;
 }
 
-template <class lu_type>
+template <typename lu_type>
 lu_type
 base_lu <lu_type> :: U (void) const
 {
@@ -106,7 +106,7 @@ base_lu <lu_type> :: U (void) const
     return a_fact;
 }
 
-template <class lu_type>
+template <typename lu_type>
 lu_type
 base_lu <lu_type> :: Y (void) const
 {
@@ -117,7 +117,7 @@ base_lu <lu_type> :: Y (void) const
   return a_fact;
 }
 
-template <class lu_type>
+template <typename lu_type>
 Array<octave_idx_type>
 base_lu <lu_type> :: getp (void) const
 {
@@ -148,14 +148,14 @@ base_lu <lu_type> :: getp (void) const
     return ipvt;
 }
 
-template <class lu_type>
+template <typename lu_type>
 PermMatrix
 base_lu <lu_type> :: P (void) const
 {
   return PermMatrix (getp (), false);
 }
 
-template <class lu_type>
+template <typename lu_type>
 ColumnVector
 base_lu <lu_type> :: P_vec (void) const
 {
@@ -171,7 +171,7 @@ base_lu <lu_type> :: P_vec (void) const
   return p;
 }
 
-template <class lu_type>
+template <typename lu_type>
 bool
 base_lu<lu_type>::regular (void) const
 {

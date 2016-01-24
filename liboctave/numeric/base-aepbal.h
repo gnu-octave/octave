@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_base_aepbal_h)
 #define octave_base_aepbal_h 1
 
-template <class MatrixT, class VectorT>
+template <typename MatrixT, typename VectorT>
 class base_aepbal
 {
 protected:

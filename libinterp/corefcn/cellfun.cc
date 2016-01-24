@@ -118,7 +118,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 // Templated function because the user can be stubborn enough to request
 // a cell array as an output even in these cases where the output fits
 // in an ordinary array
-template<typename BNDA, typename NDA>
+template <typename BNDA, typename NDA>
 static octave_value_list
 try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 {
@@ -1639,7 +1639,7 @@ do_num2cell_helper (const dim_vector& dv,
       arraydv(i) = 1;
 }
 
-template<class NDA>
+template <typename NDA>
 static inline typename NDA::element_type
 do_num2cell_elem (const NDA& array, octave_idx_type i)
 { return array(i); }
@@ -1649,7 +1649,7 @@ do_num2cell_elem (const Cell& array, octave_idx_type i)
 { return Cell (array(i)); }
 
 
-template<class NDA>
+template <typename NDA>
 static Cell
 do_num2cell (const NDA& array, const Array<int>& dimv)
 {
@@ -1861,7 +1861,7 @@ mat2cell_mismatch (const dim_vector& dv,
   return false;
 }
 
-template<class container>
+template <typename container>
 static void
 prepare_idx (container *idx, int idim, int nd,
              const Array<octave_idx_type>* d)
@@ -1884,7 +1884,7 @@ prepare_idx (container *idx, int idim, int nd,
 // 2D specialization, works for Array, Sparse and octave_map.
 // Uses 1D or 2D indexing.
 
-template <class Array2D>
+template <typename Array2D>
 static Cell
 do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 {
@@ -1941,7 +1941,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 // Nd case. Works for Arrays and octave_map.
 // Uses Nd indexing.
 
-template <class ArrayND>
+template <typename ArrayND>
 Cell
 do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 {
@@ -1993,7 +1993,7 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 }
 
 // Dispatcher.
-template <class ArrayND>
+template <typename ArrayND>
 Cell
 do_mat2cell (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 {
@@ -2190,7 +2190,7 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
 */
 
 // FIXME: it would be nice to allow ranges being handled without a conversion.
-template <class NDA>
+template <typename NDA>
 static Cell
 do_cellslices_nda (const NDA& array,
                    const Array<octave_idx_type>& lb,

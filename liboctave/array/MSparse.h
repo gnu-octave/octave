@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 
 // Two dimensional sparse array with math ops.
-template <class T>
+template <typename T>
 class
 MSparse : public Sparse<T>
 {
@@ -57,7 +57,7 @@ public:
 
   MSparse (const Sparse<T>& a) : Sparse<T> (a) { }
 
-  template <class U>
+  template <typename U>
   MSparse (const Sparse<U>& a) : Sparse<T> (a) { }
 
   MSparse (const Array<T>& a, const idx_vector& r, const idx_vector& c,
@@ -112,12 +112,12 @@ public:
   }
 
   // FIXME: should go away.
-  template <class U>
+  template <typename U>
   MSparse<U>
   map (U (&fcn) (T)) const
   { return Sparse<T>::template map<U> (fcn); }
 
-  template <class U>
+  template <typename U>
   MSparse<U>
   map (U (&fcn) (const T&)) const
   { return Sparse<T>::template map<U> (fcn); }

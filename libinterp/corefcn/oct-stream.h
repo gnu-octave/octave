@@ -564,7 +564,7 @@ public:
 
   bool skip_bytes (size_t n_elts);
 
-  template <class T>
+  template <typename T>
   octave_idx_type write (const Array<T>& data, octave_idx_type block_size,
                          oct_data_conv::data_type output_type,
                          octave_idx_type skip,

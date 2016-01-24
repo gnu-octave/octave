@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray.h"
 #include "dSparse.h"
 
-template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
 class
 sparse_base_lu
 {

@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-inttypes.h"
 
-template <class T>
+template <typename T>
 static MSparse<T>
 dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
                  const octave_idx_type *Q, octave_idx_type rst,
@@ -125,7 +125,7 @@ dmsolve_extract (const MSparse<Complex> &A, const octave_idx_type *Pinv,
                  bool lazy);
 #endif
 
-template <class T>
+template <typename T>
 static MArray<T>
 dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
                  const octave_idx_type *, octave_idx_type r1,
@@ -163,7 +163,7 @@ dmsolve_extract (const MArray<Complex> &m, const octave_idx_type *,
                  octave_idx_type c2)
 #endif
 
-template <class T>
+template <typename T>
 static void
 dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
                 octave_idx_type r, octave_idx_type c)
@@ -195,7 +195,7 @@ dmsolve_insert (MArray<Complex> &a, const MArray<Complex> &b,
                 const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 #endif
 
-template <class T>
+template <typename T>
 static void
 dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
                 octave_idx_type r, octave_idx_type c)
@@ -282,7 +282,7 @@ dmsolve_insert (MSparse<Complex> &a, const MSparse<Complex> &b,
                 const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 #endif
 
-template <class T, class RT>
+template <typename T, typename RT>
 static void
 dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
 {
@@ -316,7 +316,7 @@ dmsolve_permute (MArray<Complex> &a, const MArray<Complex>& b,
                  const octave_idx_type *p);
 #endif
 
-template <class T, class RT>
+template <typename T, typename RT>
 static void
 dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
 {
@@ -369,7 +369,7 @@ solve_singularity_warning (double)
   // an error for numerically rank defficient matrices
 }
 
-template <class RT, class ST, class T>
+template <typename RT, typename ST, typename T>
 RT
 dmsolve (const ST &a, const T &b, octave_idx_type &info)
 {

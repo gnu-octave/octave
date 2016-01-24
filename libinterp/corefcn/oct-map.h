@@ -254,7 +254,7 @@ private:
 
 };
 
-template<>
+template <>
 inline octave_scalar_map
 octave_value_extract<octave_scalar_map> (const octave_value& v)
 { return v.scalar_map_value (); }
@@ -469,7 +469,7 @@ private:
                       const octave_map *map_list, octave_map& retval);
 };
 
-template<>
+template <>
 inline octave_map octave_value_extract<octave_map> (const octave_value& v)
 { return v.map_value (); }
 

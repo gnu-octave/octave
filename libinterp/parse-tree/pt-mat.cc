@@ -664,7 +664,7 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
                      "concatenation of different character string types may have unintended consequences");
 }
 
-template<class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Array<T>& result,
                     tm_const& tmp)
@@ -702,7 +702,7 @@ single_type_concat (Array<T>& result,
     }
 }
 
-template<class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Array<T>& result,
                     const dim_vector& dv,
@@ -753,7 +753,7 @@ single_type_concat (Array<T>& result,
     }
 }
 
-template<class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Sparse<T>& result,
                     const dim_vector& dv,
@@ -794,7 +794,7 @@ single_type_concat (Sparse<T>& result,
   result = Sparse<T>::cat (-1, nrows, sparse_row_list);
 }
 
-template<class MAP>
+template <typename MAP>
 static void
 single_type_concat (octave_map& result,
                     const dim_vector& dv,
@@ -832,7 +832,7 @@ single_type_concat (octave_map& result,
   result = octave_map::cat (-1, nrows, map_row_list);
 }
 
-template<class TYPE>
+template <typename TYPE>
 static octave_value
 do_single_type_concat (const dim_vector& dv,
                        tm_const& tmp)
@@ -844,7 +844,7 @@ do_single_type_concat (const dim_vector& dv,
   return result;
 }
 
-template<>
+template <>
 octave_value
 do_single_type_concat<octave_map> (const dim_vector& dv,
                                    tm_const& tmp)

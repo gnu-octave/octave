@@ -61,7 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 // about comparisons always false due to limited range of data types.
 // Ugh.  The cure may be worse than the disease.
 
-template <class T, bool is_signed = true, bool can_be_too_big = true>
+template <typename T, bool is_signed = true, bool can_be_too_big = true>
 struct octave_base_int_helper
 {
   static bool
@@ -71,13 +71,13 @@ struct octave_base_int_helper
   }
 };
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper<T, false, false>
 {
   static bool char_value_out_of_range (T) { return false; }
 };
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper<T, false, true>
 {
   static bool char_value_out_of_range (T val)
@@ -86,7 +86,7 @@ struct octave_base_int_helper<T, false, true>
   }
 };
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper<T, true, false>
 {
   static bool char_value_out_of_range (T val) { return val < 0; }
@@ -98,7 +98,7 @@ struct octave_base_int_helper<T, true, false>
 // are still OK, but will see the warnings again for any other types
 // that do not meet this assumption.
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper_traits
 {
   static const bool can_be_larger_than_uchar_max = true;
@@ -123,7 +123,7 @@ struct octave_base_int_helper_traits<unsigned char>
 };
 
 
-template <class T>
+template <typename T>
 octave_base_value *
 octave_base_int_matrix<T>::try_narrowing_conversion (void)
 {
@@ -136,7 +136,7 @@ octave_base_int_matrix<T>::try_narrowing_conversion (void)
   return retval;
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 {
@@ -184,7 +184,7 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 {
@@ -200,7 +200,7 @@ octave_base_int_matrix<T>::save_ascii (std::ostream& os)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::load_ascii (std::istream& is)
 {
@@ -230,7 +230,7 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 {
@@ -253,7 +253,7 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
                                         oct_mach_info::float_format)
@@ -323,7 +323,7 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 {
@@ -375,7 +375,7 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
@@ -444,7 +444,7 @@ octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return retval;
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_int_matrix<T>::print_raw (std::ostream& os,
                                       bool pr_as_read_syntax) const
@@ -453,7 +453,7 @@ octave_base_int_matrix<T>::print_raw (std::ostream& os,
                          this->current_print_indent_level ());
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
 {
@@ -484,7 +484,7 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::save_ascii (std::ostream& os)
 {
@@ -492,7 +492,7 @@ octave_base_int_scalar<T>::save_ascii (std::ostream& os)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::load_ascii (std::istream& is)
 {
@@ -503,7 +503,7 @@ octave_base_int_scalar<T>::load_ascii (std::istream& is)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
 {
@@ -511,7 +511,7 @@ octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
                                         oct_mach_info::float_format)
@@ -540,7 +540,7 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 {
@@ -582,7 +582,7 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {

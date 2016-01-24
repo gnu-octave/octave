@@ -43,7 +43,7 @@ class tree_walker;
 
 class octave_sparse_bool_matrix;
 
-template <class T>
+template <typename T>
 class
 octave_base_sparse : public octave_base_value
 {

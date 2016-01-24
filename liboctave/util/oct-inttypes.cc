@@ -31,10 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-inttypes.h"
 
-template<class T>
+template <typename T>
 const octave_int<T> octave_int<T>::zero (static_cast<T> (0));
 
-template<class T>
+template <typename T>
 const octave_int<T> octave_int<T>::one (static_cast<T> (1));
 
 // define type names.
@@ -57,7 +57,7 @@ DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
 #ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
 
 #define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T) \
-  template <class xop> \
+  template <typename xop> \
   bool \
   octave_int_cmp_op::external_mop (double x, T y) \
   { \
@@ -73,7 +73,7 @@ DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
      return retval; \
   } \
    \
-  template <class xop> \
+  template <typename xop> \
   bool \
   octave_int_cmp_op::external_mop (T x, double y) \
   { \
@@ -189,7 +189,7 @@ OCTAVE_LONG_DOUBLE_OPS(octave_uint64);
 
 // Define comparison operators
 
-template <class xop>
+template <typename xop>
 bool
 octave_int_cmp_op::emulate_mop (uint64_t x, double y)
 {
@@ -209,7 +209,7 @@ octave_int_cmp_op::emulate_mop (uint64_t x, double y)
     }
 }
 
-template <class xop>
+template <typename xop>
 bool
 octave_int_cmp_op::emulate_mop (int64_t x, double y)
 {
@@ -236,7 +236,7 @@ octave_int_cmp_op::emulate_mop (int64_t x, double y)
 // We define double-int operations by reverting the operator
 
 // A trait class reverting the operator
-template <class xop>
+template <typename xop>
 class rev_op
 {
 public:
@@ -256,7 +256,7 @@ DEFINE_REVERTED_OPERATOR(gt,lt);
 DEFINE_REVERTED_OPERATOR(le,ge);
 DEFINE_REVERTED_OPERATOR(ge,le);
 
-template <class xop>
+template <typename xop>
 bool
 octave_int_cmp_op::emulate_mop (double x, uint64_t y)
 {
@@ -264,7 +264,7 @@ octave_int_cmp_op::emulate_mop (double x, uint64_t y)
   return mop<rop> (y, x);
 }
 
-template <class xop>
+template <typename xop>
 bool
 octave_int_cmp_op::emulate_mop (double x, int64_t y)
 {
@@ -663,14 +663,7 @@ INSTANTIATE_INT64_DOUBLE_CMP_OP(ne);
 
 #endif
 
-//template <class T>
-//bool
-//xisnan (const octave_int<T>&)
-//{
-//  return false;
-//}
-
-template <class T>
+template <typename T>
 octave_int<T>
 pow (const octave_int<T>& a, const octave_int<T>& b)
 {
@@ -712,12 +705,12 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
   return retval;
 }
 
-template <class T>
+template <typename T>
 octave_int<T>
 pow (const double& a, const octave_int<T>& b)
 { return octave_int<T> (pow (a, b.double_value ())); }
 
-template <class T>
+template <typename T>
 octave_int<T>
 pow (const octave_int<T>& a, const double& b)
 {
@@ -726,12 +719,12 @@ pow (const octave_int<T>& a, const double& b)
           : octave_int<T> (pow (a.double_value (), b)));
 }
 
-template <class T>
+template <typename T>
 octave_int<T>
 pow (const float& a, const octave_int<T>& b)
 { return octave_int<T> (pow (a, b.float_value ())); }
 
-template <class T>
+template <typename T>
 octave_int<T>
 pow (const octave_int<T>& a, const float& b)
 {
@@ -743,12 +736,12 @@ pow (const octave_int<T>& a, const float& b)
 // FIXME: Do we really need a differently named single-precision
 //        function integer power function here instead of an overloaded
 //        one?
-template <class T>
+template <typename T>
 octave_int<T>
 powf (const float& a, const octave_int<T>& b)
 { return octave_int<T> (pow (a, b.float_value ())); }
 
-template <class T>
+template <typename T>
 octave_int<T>
 powf (const octave_int<T>& a, const float& b)
 {

@@ -1703,7 +1703,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
     }
 }
 
-template <class T>
+template <typename T>
 /* static */ inline void
 pr_plus_format (std::ostream& os, const T& val)
 {
@@ -2970,7 +2970,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
     }
 }
 
-template <class T>
+template <typename T>
 class
 octave_print_conv
 {
@@ -2992,7 +2992,7 @@ PRINT_CONV (octave_uint8, octave_uint16);
 
 #undef PRINT_CONV
 
-template <class T>
+template <typename T>
 /* static */ inline void
 pr_int (std::ostream& os, const T& d, int fw = 0)
 {
@@ -3061,7 +3061,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 //
 // from GCC.  Isn't there a better way?
 
-template <class T>
+template <typename T>
 /* static */ inline T
 abs (T x)
 {
@@ -3115,7 +3115,7 @@ pr_int (std::ostream&, const octave_uint32&, int);
 template void
 pr_int (std::ostream&, const octave_uint64&, int);
 
-template <class T>
+template <typename T>
 void
 octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
                                 bool)
@@ -3149,7 +3149,7 @@ PRINT_INT_SCALAR_INTERNAL (uint32_t)
 PRINT_INT_SCALAR_INTERNAL (int64_t)
 PRINT_INT_SCALAR_INTERNAL (uint64_t)
 
-template <class T>
+template <typename T>
 /* static */ inline void
 octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                                 bool pr_as_read_syntax, int extra_indent)

@@ -60,7 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 // The following template wrappers are provided for automatic bsxfun
 // calls (see the function signature for do_bsxfun_op).
 
-template<typename R, typename X, typename Y, typename F>
+template <typename R, typename X, typename Y, typename F>
 class bsxfun_wrapper
 {
 private:
@@ -96,12 +96,12 @@ public:
 };
 
 // Static init
-template<typename R, typename X, typename Y, typename F>
+template <typename R, typename X, typename Y, typename F>
 F bsxfun_wrapper<R, X, Y, F>::f;
 
 
 // scalar-Array
-template <class U, class T, class R, class F>
+template <typename U, typename T, typename R, typename F>
 Array<U>
 binmap (const T& x, const Array<R>& ya, F fcn)
 {
@@ -132,7 +132,7 @@ binmap (const T& x, const Array<R>& ya, F fcn)
 }
 
 // Array-scalar
-template <class U, class T, class R, class F>
+template <typename U, typename T, typename R, typename F>
 Array<U>
 binmap (const Array<T>& xa, const R& y, F fcn)
 {
@@ -163,7 +163,7 @@ binmap (const Array<T>& xa, const R& y, F fcn)
 }
 
 // Array-Array (treats singletons as scalars)
-template <class U, class T, class R, class F>
+template <typename U, typename T, typename R, typename F>
 Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
 {
@@ -213,7 +213,7 @@ binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
 }
 
 // scalar-Sparse
-template <class U, class T, class R, class F>
+template <typename U, typename T, typename R, typename F>
 Sparse<U>
 binmap (const T& x, const Sparse<R>& ys, F fcn)
 {
@@ -244,7 +244,7 @@ binmap (const T& x, const Sparse<R>& ys, F fcn)
 }
 
 // Sparse-scalar
-template <class U, class T, class R, class F>
+template <typename U, typename T, typename R, typename F>
 Sparse<U>
 binmap (const Sparse<T>& xs, const R& y, F fcn)
 {
@@ -275,7 +275,7 @@ binmap (const Sparse<T>& xs, const R& y, F fcn)
 }
 
 // Sparse-Sparse (treats singletons as scalars)
-template <class U, class T, class R, class F>
+template <typename U, typename T, typename R, typename F>
 Sparse<U>
 binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
 {
@@ -354,136 +354,136 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
 
 // Signature (T, R)
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, R),
         const char *name)
 { return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const T& x, const Array<R>& ya, U (*fcn) (T, R))
 { return binmap<U, T, R, U (*) (T, R)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const R& y, U (*fcn) (T, R))
 { return binmap<U, T, R, U (*) (T, R)> (xa, y, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, R),
         const char *name)
 { return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const T& x, const Sparse<R>& ya, U (*fcn) (T, R))
 { return binmap<U, T, R, U (*) (T, R)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const R& y, U (*fcn) (T, R))
 { return binmap<U, T, R, U (*) (T, R)> (xa, y, fcn); }
 
 // Signature (const T&, const R&)
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, const R&),
         const char *name)
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const T& x, const Array<R>& ya, U (*fcn) (const T&, const R&))
 { return binmap<U, T, R, U (*) (const T&, const R&)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, const R&))
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, y, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, const R&),
         const char *name)
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const T& x, const Sparse<R>& ya, U (*fcn) (const T&, const R&))
 { return binmap<U, T, R, U (*) (const T&, const R&)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, const R&))
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, y, fcn); }
 
 // Signature (const T&, R)
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, R),
         const char *name)
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const T& x, const Array<R>& ya, U (*fcn) (const T&, R))
 { return binmap<U, T, R, U (*) (const T&, R)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, R))
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, y, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, R),
         const char *name)
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const T& x, const Sparse<R>& ya, U (*fcn) (const T&, R))
 { return binmap<U, T, R, U (*) (const T&, R)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, R))
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, y, fcn); }
 
 // Signature (T, const R&)
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, const R&),
         const char *name)
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const T& x, const Array<R>& ya, U (*fcn) (T, const R&))
 { return binmap<U, T, R, U (*) (T, const R&)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Array<U>
 binmap (const Array<T>& xa, const R& y, U (*fcn) (T, const R&))
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, y, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, const R&),
         const char *name)
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const T& x, const Sparse<R>& ya, U (*fcn) (T, const R&))
 { return binmap<U, T, R, U (*) (T, const R&)> (x, ya, fcn); }
 
-template <class U, class T, class R>
+template <typename U, typename T, typename R>
 inline Sparse<U>
 binmap (const Sparse<T>& xa, const R& y, U (*fcn) (T, const R&))
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, y, fcn); }

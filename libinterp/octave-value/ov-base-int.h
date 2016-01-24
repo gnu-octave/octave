@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // base int matrix values.
 
-template <class T>
+template <typename T>
 class
 octave_base_int_matrix : public octave_base_matrix<T>
 {
@@ -85,7 +85,7 @@ public:
 
 // base int scalar values.
 
-template <class T>
+template <typename T>
 class
 octave_base_int_scalar : public octave_base_scalar<T>
 {

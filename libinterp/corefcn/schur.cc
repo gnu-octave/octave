@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "utils.h"
 
-template <class Matrix>
+template <typename Matrix>
 static octave_value
 mark_upper_triangular (const Matrix& a)
 {

@@ -738,7 +738,7 @@ octave_float_fftw_planner::do_method (FftwMethod _meth)
   return ret;
 }
 
-template <class T>
+template <typename T>
 static inline void
 convert_packcomplex_1d (T *out, size_t nr, size_t nc,
                         octave_idx_type stride, octave_idx_type dist)
@@ -754,7 +754,7 @@ convert_packcomplex_1d (T *out, size_t nr, size_t nc,
   octave_quit ();
 }
 
-template <class T>
+template <typename T>
 static inline void
 convert_packcomplex_Nd (T *out, const dim_vector &dv)
 {

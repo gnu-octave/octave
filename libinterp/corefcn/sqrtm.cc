@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "xnorm.h"
 
-template <class Matrix>
+template <typename Matrix>
 static void
 sqrtm_utri_inplace (Matrix& T)
 {
@@ -88,7 +88,7 @@ sqrtm_utri_inplace (Matrix& T)
                      "sqrtm: matrix is singular, may not have a square root");
 }
 
-template <class Matrix, class ComplexMatrix, class ComplexSCHUR>
+template <typename Matrix, typename ComplexMatrix, typename ComplexSCHUR>
 static octave_value
 do_sqrtm (const octave_value& arg)
 {

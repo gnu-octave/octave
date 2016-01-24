@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <ovl.h>
 #include <ov.h>
 
-template <class T>
+template <typename T>
 class java_local_ref
 {
 public:

@@ -2570,7 +2570,7 @@ compute_attribute_value (tree_classdef_attribute* t)
     return octave_value (true);
 }
 
-template<class T>
+template <typename T>
 static std::string
 attribute_value_to_string (T* t, octave_value v)
 {
@@ -3289,7 +3289,7 @@ cdef_package::cdef_package_rep::install_package (const cdef_package& pack,
   member_count++;
 }
 
-template<class T1, class T2>
+template <typename T1, typename T2>
 Cell
 map2Cell (const std::map<T1, T2>& m)
 {

@@ -99,21 +99,21 @@ public:
     return retval;
   }
 
-  template <class T>
+  template <typename T>
   static void post_event (T *obj, void (T::*method) (void))
   {
     if (enabled ())
       instance->do_post_event (obj, method);
   }
 
-  template <class T, class A>
+  template <typename T, typename A>
   static void post_event (T *obj, void (T::*method) (A), A arg)
   {
     if (enabled ())
       instance->do_post_event (obj, method, arg);
   }
 
-  template <class T, class A>
+  template <typename T, typename A>
   static void post_event (T *obj, void (T::*method) (const A&), const A& arg)
   {
     if (enabled ())
@@ -375,19 +375,19 @@ protected:
   void do_process_events (void);
   void do_discard_events (void);
 
-  template <class T>
+  template <typename T>
   void do_post_event (T *obj, void (T::*method) (void))
   {
     gui_event_queue.add_method (obj, method);
   }
 
-  template <class T, class A>
+  template <typename T, typename A>
   void do_post_event (T *obj, void (T::*method) (A), A arg)
   {
     gui_event_queue.add_method (obj, method, arg);
   }
 
-  template <class T, class A>
+  template <typename T, typename A>
   void do_post_event (T *obj, void (T::*method) (const A&), const A& arg)
   {
     gui_event_queue.add_method (obj, method, arg);

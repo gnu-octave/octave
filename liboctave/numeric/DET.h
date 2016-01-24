@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "lo-mappers.h"
 
-template <class T>
+template <typename T>
 class
 base_det
 {

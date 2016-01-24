@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-scalar.h"
 #include "pr-output.h"
 
-template <class MT>
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::subsref (const std::string& type,
                                  const std::list<octave_value_list>& idx)
@@ -65,7 +65,7 @@ octave_base_matrix<MT>::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
-template <class MT>
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::subsasgn (const std::string& type,
                                   const std::list<octave_value_list>& idx,
@@ -124,7 +124,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
   return retval;
 }
 
-template <class MT>
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
                                      bool resize_ok)
@@ -208,7 +208,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 {
@@ -268,7 +268,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
   clear_cached_info ();
 }
 
-template <class MT>
+template <typename MT>
 MatrixType
 octave_base_matrix<MT>::matrix_type (const MatrixType& _typ) const
 {
@@ -277,7 +277,7 @@ octave_base_matrix<MT>::matrix_type (const MatrixType& _typ) const
   return *typ;
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_matrix<MT>::assign (const octave_value_list& idx,
                                 typename MT::element_type rhs)
@@ -372,7 +372,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
   clear_cached_info ();
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
 {
@@ -389,7 +389,7 @@ octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
   clear_cached_info ();
 }
 
-template <class MT>
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
 {
@@ -401,7 +401,7 @@ octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
-template <class MT>
+template <typename MT>
 bool
 octave_base_matrix<MT>::is_true (void) const
 {
@@ -424,7 +424,7 @@ octave_base_matrix<MT>::is_true (void) const
   return retval;
 }
 
-template <class MT>
+template <typename MT>
 bool
 octave_base_matrix<MT>::print_as_scalar (void) const
 {
@@ -433,7 +433,7 @@ octave_base_matrix<MT>::print_as_scalar (void) const
   return (dv.all_ones () || dv.any_zero ());
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax)
 {
@@ -441,7 +441,7 @@ octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax)
   newline (os);
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_matrix<MT>::print_info (std::ostream& os,
                                     const std::string& prefix) const
@@ -449,7 +449,7 @@ octave_base_matrix<MT>::print_info (std::ostream& os,
   matrix.print_info (os, prefix);
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_matrix<MT>::short_disp (std::ostream& os) const
 {
@@ -501,7 +501,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
     os << "...";
 }
 
-template <class MT>
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 {
@@ -511,7 +511,7 @@ octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
     return octave_value ();
 }
 
-template <class MT>
+template <typename MT>
 bool
 octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
                                           const octave_value& x)

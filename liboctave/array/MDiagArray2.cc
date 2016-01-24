@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "lo-error.h"
 
-template <class T>
+template <typename T>
 bool
 MDiagArray2<T>::is_multiple_of_identity (T val) const
 {
@@ -53,7 +53,7 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
 // Element by element MDiagArray2 by scalar ops.
 
 #define MARRAY_DAS_OP(OP, FN) \
-  template <class T> \
+  template <typename T> \
   MDiagArray2<T> \
   operator OP (const MDiagArray2<T>& a, const T& s) \
   { \
@@ -65,7 +65,7 @@ MARRAY_DAS_OP (/, mx_inline_div)
 
 // Element by element scalar by MDiagArray2 ops.
 
-template <class T>
+template <typename T>
 MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
@@ -76,7 +76,7 @@ operator * (const T& s, const MDiagArray2<T>& a)
 // Element by element MDiagArray2 by MDiagArray2 ops.
 
 #define MARRAY_DADA_OP(FCN, OP, FN) \
-  template <class T> \
+  template <typename T> \
   MDiagArray2<T> \
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
   { \
@@ -92,14 +92,14 @@ MARRAY_DADA_OP (product,    *, mx_inline_mul)
 
 // Unary MDiagArray2 ops.
 
-template <class T>
+template <typename T>
 MDiagArray2<T>
 operator + (const MDiagArray2<T>& a)
 {
   return a;
 }
 
-template <class T>
+template <typename T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {

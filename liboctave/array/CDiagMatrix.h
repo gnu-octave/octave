@@ -65,7 +65,7 @@ public:
   ComplexDiagMatrix (const ComplexDiagMatrix& a)
     : MDiagArray2<Complex> (a) { }
 
-  template <class U>
+  template <typename U>
   ComplexDiagMatrix (const DiagArray2<U>& a)
     : MDiagArray2<Complex> (a) { }
 

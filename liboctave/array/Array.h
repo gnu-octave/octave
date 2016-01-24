@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-refcount.h"
 
 //! Handles the reference counting for all the derived classes.
-template <class T>
+template <typename T>
 class
 Array
 {
@@ -62,7 +62,7 @@ protected:
       std::copy (d, d+l, data);
     }
 
-    template <class U>
+    template <typename U>
     ArrayRep (U *d, octave_idx_type l)
       : data (new T [l]), len (l), count (1)
     {
@@ -200,7 +200,7 @@ public:
   Array (const Array<T>& a, const dim_vector& dv);
 
   //! Type conversion case.
-  template <class U>
+  template <typename U>
   Array (const Array<U>& a)
     : dimensions (a.dims ()),
       rep (new typename Array<T>::ArrayRep (a.data (), a.numel ())),
@@ -660,7 +660,7 @@ public:
 
   //! Apply function fcn to each element of the Array<T>. This function
   //! is optimised with a manually unrolled loop.
-  template <class U, class F>
+  template <typename U, typename F>
   Array<U>
   map (F fcn) const
   {
@@ -692,19 +692,19 @@ public:
 
   //@{
   //! Overloads for function references.
-  template <class U>
+  template <typename U>
   Array<U>
   map (U (&fcn) (T)) const
   { return map<U, U (&) (T)> (fcn); }
 
-  template <class U>
+  template <typename U>
   Array<U>
   map (U (&fcn) (const T&)) const
   { return map<U, U (&) (const T&)> (fcn); }
   //@}
 
   //! Generic any/all test functionality with arbitrary predicate.
-  template <class F, bool zero>
+  template <typename F, bool zero>
   bool test (F fcn) const
   {
     return any_all_test<F, T, zero> (fcn, data (), numel ());
@@ -712,11 +712,11 @@ public:
 
   //@{
   //! Simpler calls.
-  template <class F>
+  template <typename F>
   bool test_any (F fcn) const
   { return test<F, false> (fcn); }
 
-  template <class F>
+  template <typename F>
   bool test_all (F fcn) const
   { return test<F, true> (fcn); }
   //@}
@@ -736,7 +736,7 @@ public:
   { return test<bool (&) (const T&), true> (fcn); }
   //@}
 
-  template <class U> friend class Array;
+  template <typename U> friend class Array;
 
   //! Returns true if this->dims () == dv, and if so, replaces this->dimensions
   //! by a shallow copy of dv. This is useful for maintaining several arrays with
@@ -764,7 +764,7 @@ private:
 //! non-const operator() to not check for the array's uniqueness. It
 //! is, however, the user's responsibility to ensure the array is
 //! actually unaliased whenever elements are accessed.
-template<class ArrayClass>
+template <typename ArrayClass>
 class NoAlias : public ArrayClass
 {
   typedef typename ArrayClass::element_type T;
@@ -772,13 +772,13 @@ public:
   NoAlias () : ArrayClass () { }
 
   // FIXME: this would be simpler once C++0x is available
-  template <class X>
+  template <typename X>
     explicit NoAlias (X x) : ArrayClass (x) { }
 
-  template <class X, class Y>
+  template <typename X, typename Y>
     explicit NoAlias (X x, Y y) : ArrayClass (x, y) { }
 
-  template <class X, class Y, class Z>
+  template <typename X, typename Y, typename Z>
     explicit NoAlias (X x, Y y, Z z) : ArrayClass (x, y, z) { }
 
   T& operator () (octave_idx_type n)
@@ -791,7 +791,7 @@ public:
   { return ArrayClass::xelem (ra_idx); }
 };
 
-template <class T>
+template <typename T>
 std::ostream&
 operator << (std::ostream& os, const Array<T>& a);
 

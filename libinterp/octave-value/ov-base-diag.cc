@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ls-oct-text.h"
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::subsref (const std::string& type,
                                     const std::list<octave_value_list>& idx)
@@ -70,7 +70,7 @@ octave_base_diag<DMT, MT>::subsref (const std::string& type,
 }
 
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
 {
@@ -95,7 +95,7 @@ octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
 }
 
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
                                         bool resize_ok)
@@ -143,7 +143,7 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                                      const std::list<octave_value_list>& idx,
@@ -257,7 +257,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
   return retval;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::resize (const dim_vector& dv, bool fill) const
 {
@@ -273,7 +273,7 @@ octave_base_diag<DMT, MT>::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::is_true (void) const
 {
@@ -281,15 +281,15 @@ octave_base_diag<DMT, MT>::is_true (void) const
 }
 
 // FIXME: This should be achieveable using ::real
-template <class T> inline T helper_getreal (T x) { return x; }
-template <class T> inline T helper_getreal (std::complex<T> x)
+template <typename T> inline T helper_getreal (T x) { return x; }
+template <typename T> inline T helper_getreal (std::complex<T> x)
 { return x.real (); }
 // FIXME: We really need some traits so that ad hoc hooks like this
 //        are not necessary.
-template <class T> inline T helper_iscomplex (T) { return false; }
-template <class T> inline T helper_iscomplex (std::complex<T>) { return true; }
+template <typename T> inline T helper_iscomplex (T) { return false; }
+template <typename T> inline T helper_iscomplex (std::complex<T>) { return true; }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 double
 octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
 {
@@ -311,7 +311,7 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
   return retval;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 float
 octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
 {
@@ -335,7 +335,7 @@ octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
   return retval;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 Complex
 octave_base_diag<DMT, MT>::complex_value (bool) const
 {
@@ -354,7 +354,7 @@ octave_base_diag<DMT, MT>::complex_value (bool) const
   return retval;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 FloatComplex
 octave_base_diag<DMT, MT>::float_complex_value (bool) const
 {
@@ -373,98 +373,98 @@ octave_base_diag<DMT, MT>::float_complex_value (bool) const
   return retval;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 Matrix
 octave_base_diag<DMT, MT>::matrix_value (bool) const
 {
   return Matrix (diag_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 FloatMatrix
 octave_base_diag<DMT, MT>::float_matrix_value (bool) const
 {
   return FloatMatrix (float_diag_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 ComplexMatrix
 octave_base_diag<DMT, MT>::complex_matrix_value (bool) const
 {
   return ComplexMatrix (complex_diag_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 FloatComplexMatrix
 octave_base_diag<DMT, MT>::float_complex_matrix_value (bool) const
 {
   return FloatComplexMatrix (float_complex_diag_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 NDArray
 octave_base_diag<DMT, MT>::array_value (bool) const
 {
   return NDArray (matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 FloatNDArray
 octave_base_diag<DMT, MT>::float_array_value (bool) const
 {
   return FloatNDArray (float_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 ComplexNDArray
 octave_base_diag<DMT, MT>::complex_array_value (bool) const
 {
   return ComplexNDArray (complex_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 FloatComplexNDArray
 octave_base_diag<DMT, MT>::float_complex_array_value (bool) const
 {
   return FloatComplexNDArray (float_complex_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 boolNDArray
 octave_base_diag<DMT, MT>::bool_array_value (bool warn) const
 {
   return to_dense ().bool_array_value (warn);
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 charNDArray
 octave_base_diag<DMT, MT>::char_array_value (bool warn) const
 {
   return to_dense ().char_array_value (warn);
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 SparseMatrix
 octave_base_diag<DMT, MT>::sparse_matrix_value (bool) const
 {
   return SparseMatrix (diag_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 SparseComplexMatrix
 octave_base_diag<DMT, MT>::sparse_complex_matrix_value (bool) const
 {
   return SparseComplexMatrix (complex_diag_matrix_value ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 idx_vector
 octave_base_diag<DMT, MT>::index_vector (bool require_integers) const
 {
   return to_dense ().index_vector (require_integers);
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force,
                                                     char type) const
@@ -472,7 +472,7 @@ octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force,
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 {
@@ -484,7 +484,7 @@ octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
   return true;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
 {
@@ -515,7 +515,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
   return true;
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 void
 octave_base_diag<DMT, MT>::print_raw (std::ostream& os,
                                       bool pr_as_read_syntax) const
@@ -524,14 +524,14 @@ octave_base_diag<DMT, MT>::print_raw (std::ostream& os,
                                 current_print_indent_level ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 mxArray *
 octave_base_diag<DMT, MT>::as_mxArray (void) const
 {
   return to_dense ().as_mxArray ();
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::print_as_scalar (void) const
 {
@@ -540,14 +540,14 @@ octave_base_diag<DMT, MT>::print_as_scalar (void) const
   return (dv.all_ones () || dv.any_zero ());
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 void
 octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 int
 octave_base_diag<DMT, MT>::write (octave_stream& os, int block_size,
                                   oct_data_conv::data_type output_type,
@@ -557,7 +557,7 @@ octave_base_diag<DMT, MT>::write (octave_stream& os, int block_size,
   return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 void
 octave_base_diag<DMT, MT>::print_info (std::ostream& os,
                                        const std::string& prefix) const
@@ -565,7 +565,7 @@ octave_base_diag<DMT, MT>::print_info (std::ostream& os,
   matrix.print_info (os, prefix);
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const
 {
@@ -582,7 +582,7 @@ octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const
     return octave_value ();
 }
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::to_dense (void) const
 {

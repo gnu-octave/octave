@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // equivalent to isvector.m
 
-template <class T>
+template <typename T>
 bool
 isvector (const T& array)
 {
@@ -43,7 +43,7 @@ isvector (const T& array)
 }
 
 // lookup a value in a sorted table (lookup.m)
-template <class T>
+template <typename T>
 octave_idx_type
 lookup (const T *x, octave_idx_type n, T y)
 {
@@ -122,7 +122,7 @@ lookup (const T *x, octave_idx_type n, T y)
 
 // n-dimensional linear interpolation
 
-template <class T>
+template <typename T>
 void
 lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
              octave_idx_type Ni, T extrapval, const T **x,
@@ -181,7 +181,7 @@ lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
     }
 }
 
-template <class T, class M>
+template <typename T, typename M>
 octave_value
 lin_interpn (int n, M *X, const M V, M *Y)
 {

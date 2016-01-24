@@ -68,7 +68,7 @@ save_three_d (std::ostream& os, const octave_value& t,
 //
 //  [%#][ \t]*keyword[ \t]*int-value.*\n
 
-template <class T>
+template <typename T>
 bool
 extract_keyword (std::istream& is, const char *keyword, T& value,
                  const bool next_only = false)
@@ -115,7 +115,7 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
   return status;
 }
 
-template <class T>
+template <typename T>
 bool
 extract_keyword (std::istream& is, const std::string& kw, T& value,
                  const bool next_only = false)
@@ -131,7 +131,7 @@ extract_keyword (std::istream& is, const std::string& kw, T& value,
 //
 //  [%#][ \t]*keyword[ \t]*int-value.*\n
 
-template <class T>
+template <typename T>
 bool
 extract_keyword (std::istream& is, const string_vector& keywords,
                  std::string& kw, T& value, const bool next_only = false)

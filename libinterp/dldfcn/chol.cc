@@ -44,14 +44,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "utils.h"
 
-template <class CHOLT>
+template <typename CHOLT>
 static octave_value
 get_chol (const CHOLT& fact)
 {
   return octave_value (fact.chol_matrix());
 }
 
-template <class CHOLT>
+template <typename CHOLT>
 static octave_value
 get_chol_r (const CHOLT& fact)
 {
@@ -59,7 +59,7 @@ get_chol_r (const CHOLT& fact)
                        MatrixType (MatrixType::Upper));
 }
 
-template <class CHOLT>
+template <typename CHOLT>
 static octave_value
 get_chol_l (const CHOLT& fact)
 {

@@ -216,7 +216,7 @@ warn_convergence (void)
      "an eigenvalue so convergence is not guaranteed");
 }
 
-template <class M, class SM>
+template <typename M, typename SM>
 static octave_idx_type
 lusolve (const SM& L, const SM& U, M& m)
 {
@@ -234,7 +234,7 @@ lusolve (const SM& L, const SM& U, M& m)
   return err;
 }
 
-template <class SM, class M>
+template <typename SM, typename M>
 static M
 ltsolve (const SM& L, const ColumnVector& Q, const M& m)
 {
@@ -261,7 +261,7 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
   return retval;
 }
 
-template <class SM, class M>
+template <typename SM, typename M>
 static M
 utsolve (const SM& U, const ColumnVector& Q, const M& m)
 {
@@ -749,7 +749,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
   return true;
 }
 
-template <class M>
+template <typename M>
 octave_idx_type
 EigsRealSymmetricMatrix (const M& m, const std::string typ,
                          octave_idx_type k, octave_idx_type p,
@@ -1019,7 +1019,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   return ip(4);
 }
 
-template <class M>
+template <typename M>
 octave_idx_type
 EigsRealSymmetricMatrixShift (const M& m, double sigma,
                               octave_idx_type k, octave_idx_type p,
@@ -1543,7 +1543,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
   return ip(4);
 }
 
-template <class M>
+template <typename M>
 octave_idx_type
 EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                             octave_idx_type k, octave_idx_type p,
@@ -1861,7 +1861,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   return ip(4);
 }
 
-template <class M>
+template <typename M>
 octave_idx_type
 EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                                  octave_idx_type k, octave_idx_type p,
@@ -2488,7 +2488,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   return ip(4);
 }
 
-template <class M>
+template <typename M>
 octave_idx_type
 EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
                                octave_idx_type k, octave_idx_type p,
@@ -2760,7 +2760,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   return ip(4);
 }
 
-template <class M>
+template <typename M>
 octave_idx_type
 EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                                     octave_idx_type k, octave_idx_type p,

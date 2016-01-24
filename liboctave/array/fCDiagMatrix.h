@@ -67,7 +67,7 @@ public:
   FloatComplexDiagMatrix (const FloatComplexDiagMatrix& a)
     : MDiagArray2<FloatComplex> (a) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexDiagMatrix (const DiagArray2<U>& a)
     : MDiagArray2<FloatComplex> (a) { }
 

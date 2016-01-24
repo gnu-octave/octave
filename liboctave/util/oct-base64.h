@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-template<class T> class Array;
+template <typename T> class Array;
 
 extern OCTAVE_API bool
 octave_base64_encode (const char *inc, const size_t inlen, char **out);

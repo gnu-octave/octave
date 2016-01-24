@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "mx-inlines.cc"
 
-template <class T> class MArray;
+template <typename T> class MArray;
 
 template <typename T> MArray<T>& operator += (MArray<T>&, const T&);
 template <typename T> MArray<T>& operator -= (MArray<T>&, const T&);
@@ -53,7 +53,7 @@ template <typename T> MArray<T> quotient (const MArray<T>&, const MArray<T>&);
 template <typename T> MArray<T> product (const MArray<T>&, const MArray<T>&);
 
 //! Template for N-dimensional array classes with like-type math operators.
-template <class T>
+template <typename T>
 class
 MArray : public Array<T>
 {
@@ -75,7 +75,7 @@ public:
 
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
-  template <class U>
+  template <typename U>
   MArray (const Array<U>& a) : Array<T> (a) { }
 
   ~MArray (void) { }

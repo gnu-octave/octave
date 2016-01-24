@@ -46,7 +46,7 @@ public:
 
   iterator erase (iterator pos) { return lst.erase (pos); }
 
-  template <class P>
+  template <typename P>
   void remove_if (P pred)
   {
     lst.remove_if (pred);

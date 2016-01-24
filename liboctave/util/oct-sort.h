@@ -102,7 +102,7 @@ The Python license is
 // Enum for type of sort function
 enum sortmode { UNSORTED = 0, ASCENDING, DESCENDING };
 
-template <class T>
+template <typename T>
 class
 octave_sort
 {
@@ -231,99 +231,99 @@ private:
   MergeState *ms;
 
 
-  template <class Comp>
+  template <typename Comp>
   void binarysort (T *data, octave_idx_type nel,
                    octave_idx_type start, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   void binarysort (T *data, octave_idx_type *idx, octave_idx_type nel,
                    octave_idx_type start, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   octave_idx_type count_run (T *lo, octave_idx_type n, bool& descending,
                              Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   octave_idx_type gallop_left (T key, T *a, octave_idx_type n,
                                octave_idx_type hint, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   octave_idx_type gallop_right (T key, T *a, octave_idx_type n,
                                 octave_idx_type hint, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_lo (T *pa, octave_idx_type na,
                 T *pb, octave_idx_type nb,
                 Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
                 T *pb, octave_idx_type *ipb, octave_idx_type nb,
                 Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_hi (T *pa, octave_idx_type na,
                 T *pb, octave_idx_type nb,
                 Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
                 T *pb, octave_idx_type *ipb, octave_idx_type nb,
                 Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_at (octave_idx_type i, T *data, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_at (octave_idx_type i, T *data, octave_idx_type *idx, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_collapse (T *data, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_collapse (T *data, octave_idx_type *idx, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_force_collapse (T *data, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   int merge_force_collapse (T *data, octave_idx_type *idx, Comp comp);
 
   octave_idx_type merge_compute_minrun (octave_idx_type n);
 
-  template <class Comp>
+  template <typename Comp>
   void sort (T *data, octave_idx_type nel, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   void sort (T *data, octave_idx_type *idx, octave_idx_type nel, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   bool is_sorted (const T *data, octave_idx_type nel, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   void sort_rows (const T *data, octave_idx_type *idx,
                   octave_idx_type rows, octave_idx_type cols,
                   Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   bool is_sorted_rows (const T *data, octave_idx_type rows,
                        octave_idx_type cols, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   octave_idx_type lookup (const T *data, octave_idx_type nel,
                           const T& value, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   void lookup (const T *data, octave_idx_type nel,
                const T* values, octave_idx_type nvalues,
                octave_idx_type *idx, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   void lookup_sorted (const T *data, octave_idx_type nel,
                       const T* values, octave_idx_type nvalues,
                       octave_idx_type *idx, bool rev, Comp comp);
 
-  template <class Comp>
+  template <typename Comp>
   void nth_element (T *data, octave_idx_type nel,
                     octave_idx_type lo, octave_idx_type up,
                     Comp comp);
@@ -335,7 +335,7 @@ private:
   octave_sort& operator = (const octave_sort&);
 };
 
-template <class T>
+template <typename T>
 class
 vec_index
 {

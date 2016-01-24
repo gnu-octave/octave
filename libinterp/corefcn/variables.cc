@@ -734,7 +734,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool try_local_protect (T& var)
 {
   octave_user_code *curr_usr_code = octave_call_stack::caller_user_code ();

@@ -228,7 +228,7 @@ xpow (const SparseComplexMatrix& a, double b)
 // seem worth the effort to optimize -- how often does this case come up
 // in practice?
 
-template <class S, class SM>
+template <typename S, typename SM>
 inline octave_value
 scalar_xpow (const S& a, const SM& b)
 {

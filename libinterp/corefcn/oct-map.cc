@@ -623,7 +623,7 @@ void permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
     dest = src.orderfields (ref, perm);
 }
 
-template <class map>
+template <typename map>
 static void
 permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
                           octave_idx_type idx, const map *map_list,

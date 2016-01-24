@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-inlines.cc"
 
-template <class R, class X, class Y>
+template <typename R, typename X, typename Y>
 Array<R>
 do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
               void (*op_vv) (size_t, R *, const X *, const Y *),
@@ -134,7 +134,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
   return retval;
 }
 
-template <class R, class X>
+template <typename R, typename X>
 void
 do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
                       void (*op_vv) (size_t, R *, const X *),

@@ -1650,7 +1650,7 @@ octave_value::vector_value (bool force_string_conv,
                                            type_name (), "real vector"));
 }
 
-template <class T>
+template <typename T>
 static Array<int>
 convert_to_int_array (const Array<octave_int<T> >& A)
 {
@@ -1719,7 +1719,7 @@ octave_value::int_vector_value (bool require_int, bool force_string_conv,
                                            type_name (), "integer vector"));
 }
 
-template <class T>
+template <typename T>
 static Array<octave_idx_type>
 convert_to_octave_idx_type_array (const Array<octave_int<T> >& A)
 {

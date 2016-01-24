@@ -110,7 +110,7 @@ inline bool btyp_isarray (builtin_type_t btyp)
 extern OCTINTERP_API
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y);
 
-template <class T>
+template <typename T>
 struct class_to_btyp
 {
   static const builtin_type_t btyp = btyp_unknown;

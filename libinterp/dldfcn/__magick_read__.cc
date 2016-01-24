@@ -209,7 +209,7 @@ read_maps (Magick::Image& img)
   return maps;
 }
 
-template <class T>
+template <typename T>
 static octave_value_list
 read_indexed_images (const std::vector<Magick::Image>& imvec,
                      const Array<octave_idx_type>& frameidx,
@@ -304,7 +304,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
 // very similar to account for different image types. They are different
 // enough that trying to reduce the copy and paste would decrease its
 // readability too much.
-template <class T>
+template <typename T>
 octave_value_list
 read_images (std::vector<Magick::Image>& imvec,
              const Array<octave_idx_type>& frameidx,
@@ -860,7 +860,7 @@ Use @code{imread} instead.\n\
 
 #ifdef HAVE_MAGICK
 
-template <class T>
+template <typename T>
 static uint32NDArray
 img_float2uint (const T& img)
 {
@@ -880,7 +880,7 @@ img_float2uint (const T& img)
 
 // Gets the bitdepth to be used for an Octave class, i.e, returns 8 for
 // uint8, 16 for uint16, and 32 for uint32
-template <class T>
+template <typename T>
 static octave_idx_type
 bitdepth_from_class ()
 {
@@ -921,7 +921,7 @@ init_enconde_image (const octave_idx_type& nCols, const octave_idx_type& nRows,
   return img;
 }
 
-template <class T>
+template <typename T>
 static void
 encode_indexed_images (std::vector<Magick::Image>& imvec,
                        const T& img,
@@ -1037,7 +1037,7 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
     }
 }
 
-template <class T>
+template <typename T>
 static void
 encode_uint_image (std::vector<Magick::Image>& imvec,
                    const T& img, const T& alpha)

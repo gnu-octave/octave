@@ -448,7 +448,7 @@ private:
  *  This class defines a two-argument manipulator for gzofstream. It is used
  *  as base for the setcompression(int,int) manipulator.
 */
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 class gzomanip2
 {
 public:
@@ -481,7 +481,7 @@ setcompression (gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
 }
 
 // Manipulator constructor stores arguments
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline
 gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
                              T1 v1,
@@ -490,7 +490,7 @@ gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
 { }
 
 // Insertor applies underlying manipulator function to stream
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline gzofstream&
 operator<<(gzofstream& s, const gzomanip2<T1,T2>& m)
 { return (*m.func)(s, m.val1, m.val2); }

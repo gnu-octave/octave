@@ -116,25 +116,25 @@ The Python license is
 #include "oct-sort.h"
 #include "oct-locbuf.h"
 
-template <class T>
+template <typename T>
 octave_sort<T>::octave_sort (void) :
   compare (ascending_compare), ms (0)
 {
 }
 
-template <class T>
+template <typename T>
 octave_sort<T>::octave_sort (compare_fcn_type comp)
   : compare (comp), ms (0)
 {
 }
 
-template <class T>
+template <typename T>
 octave_sort<T>::~octave_sort ()
 {
   delete ms;
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::set_compare (sortmode mode)
 {
@@ -146,8 +146,8 @@ octave_sort<T>::set_compare (sortmode mode)
     compare = 0;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::binarysort (T *data, octave_idx_type nel,
                             octave_idx_type start, Comp comp)
@@ -191,8 +191,8 @@ octave_sort<T>::binarysort (T *data, octave_idx_type nel,
   return;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::binarysort (T *data, octave_idx_type *idx, octave_idx_type nel,
                             octave_idx_type start, Comp comp)
@@ -258,8 +258,8 @@ elements to get out of order).
 
 Returns -1 in case of error.
 */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 octave_idx_type
 octave_sort<T>::count_run (T *lo, octave_idx_type nel, bool& descending,
                            Comp comp)
@@ -318,8 +318,8 @@ key, and the last n-k should follow key.
 
 Returns -1 on error.  See listsort.txt for info on the method.
 */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 octave_idx_type
 octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n,
                              octave_idx_type hint,
@@ -413,8 +413,8 @@ The code duplication is massive, but this is enough different given that
 we're sticking to "<" comparisons that it's much harder to follow if
 written as one routine with yet another "left or right?" flag.
 */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 octave_idx_type
 octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n,
                               octave_idx_type hint,
@@ -534,7 +534,7 @@ roundupsize (octave_idx_type n)
 /* Ensure enough temp memory for 'need' array slots is available.
  * Returns 0 on success and -1 if the memory can't be gotten.
  */
-template <class T>
+template <typename T>
 void
 octave_sort<T>::MergeState::getmem (octave_idx_type need)
 {
@@ -552,7 +552,7 @@ octave_sort<T>::MergeState::getmem (octave_idx_type need)
 
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::MergeState::getmemi (octave_idx_type need)
 {
@@ -577,8 +577,8 @@ octave_sort<T>::MergeState::getmemi (octave_idx_type need)
  * merge, and should have na <= nb.  See listsort.txt for more info.
  * Return 0 if successful, -1 if error.
  */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_lo (T *pa, octave_idx_type na,
                           T *pb, octave_idx_type nb,
@@ -712,8 +712,8 @@ CopyB:
   return 0;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
                           T *pb, octave_idx_type *ipb, octave_idx_type nb,
@@ -859,8 +859,8 @@ CopyB:
  * merge, and should have na >= nb.  See listsort.txt for more info.
  * Return 0 if successful, -1 if error.
  */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_hi (T *pa, octave_idx_type na,
                           T *pb, octave_idx_type nb,
@@ -996,8 +996,8 @@ CopyA:
   return 0;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
                           T *pb, octave_idx_type *ipb, octave_idx_type nb,
@@ -1146,8 +1146,8 @@ CopyA:
 /* Merge the two runs at stack indices i and i+1.
  * Returns 0 on success, -1 on error.
  */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_at (octave_idx_type i, T *data,
                           Comp comp)
@@ -1197,8 +1197,8 @@ octave_sort<T>::merge_at (octave_idx_type i, T *data,
     return merge_hi (pa, na, pb, nb, comp);
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_at (octave_idx_type i, T *data, octave_idx_type *idx,
                           Comp comp)
@@ -1261,8 +1261,8 @@ octave_sort<T>::merge_at (octave_idx_type i, T *data, octave_idx_type *idx,
  *
  * Returns 0 on success, -1 on error.
  */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_collapse (T *data, Comp comp)
 {
@@ -1290,8 +1290,8 @@ octave_sort<T>::merge_collapse (T *data, Comp comp)
   return 0;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_collapse (T *data, octave_idx_type *idx, Comp comp)
 {
@@ -1324,8 +1324,8 @@ octave_sort<T>::merge_collapse (T *data, octave_idx_type *idx, Comp comp)
  *
  * Returns 0 on success, -1 on error.
  */
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_force_collapse (T *data, Comp comp)
 {
@@ -1343,8 +1343,8 @@ octave_sort<T>::merge_force_collapse (T *data, Comp comp)
   return 0;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 int
 octave_sort<T>::merge_force_collapse (T *data, octave_idx_type *idx, Comp comp)
 {
@@ -1372,7 +1372,7 @@ octave_sort<T>::merge_force_collapse (T *data, octave_idx_type *idx, Comp comp)
  *
  * See listsort.txt for more info.
  */
-template <class T>
+template <typename T>
 octave_idx_type
 octave_sort<T>::merge_compute_minrun (octave_idx_type n)
 {
@@ -1387,8 +1387,8 @@ octave_sort<T>::merge_compute_minrun (octave_idx_type n)
   return n + r;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
 {
@@ -1446,8 +1446,8 @@ fail:
   return;
 }
 
-template <class T>
-template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
                       Comp comp)
@@ -1509,7 +1509,7 @@ fail:
   return;
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type nel)
 {
@@ -1527,7 +1527,7 @@ octave_sort<T>::sort (T *data, octave_idx_type nel)
         sort (data, nel, compare);
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 {
@@ -1545,7 +1545,8 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
         sort (data, idx, nel, compare);
 }
 
-template <class T> template <class Comp>
+template <typename T>
+template <typename Comp>
 bool
 octave_sort<T>::is_sorted (const T *data, octave_idx_type nel, Comp comp)
 {
@@ -1565,7 +1566,7 @@ octave_sort<T>::is_sorted (const T *data, octave_idx_type nel, Comp comp)
   return data == end;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_sort<T>::is_sorted (const T *data, octave_idx_type nel)
 {
@@ -1595,7 +1596,8 @@ struct sortrows_run_t
 };
 
 
-template <class T> template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
                            octave_idx_type rows, octave_idx_type cols,
@@ -1653,7 +1655,7 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
     }
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
                            octave_idx_type rows, octave_idx_type cols)
@@ -1672,7 +1674,8 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
         sort_rows (data, idx, rows, cols, compare);
 }
 
-template <class T> template <class Comp>
+template <typename T>
+template <typename Comp>
 bool
 octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
                                 octave_idx_type cols, Comp comp)
@@ -1729,7 +1732,7 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
   return sorted;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
                                 octave_idx_type cols)
@@ -1754,7 +1757,8 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
 
 // The simple binary lookup.
 
-template <class T> template <class Comp>
+template <typename T>
+template <typename Comp>
 octave_idx_type
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T& value, Comp comp)
@@ -1774,7 +1778,7 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
   return lo;
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T& value)
@@ -1797,7 +1801,8 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
   return retval;
 }
 
-template <class T> template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T *values, octave_idx_type nvalues,
@@ -1810,7 +1815,7 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
     idx[j] = lookup (data, nel, values[j], comp);
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T* values, octave_idx_type nvalues,
@@ -1830,7 +1835,8 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
         lookup (data, nel, values, nvalues, idx, std::ptr_fun (compare));
 }
 
-template <class T> template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                                const T *values, octave_idx_type nvalues,
@@ -1884,7 +1890,7 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
     }
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                                const T* values, octave_idx_type nvalues,
@@ -1905,7 +1911,8 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                        std::ptr_fun (compare));
 }
 
-template <class T> template <class Comp>
+template <typename T>
+template <typename Comp>
 void
 octave_sort<T>::nth_element (T *data, octave_idx_type nel,
                              octave_idx_type lo, octave_idx_type up,
@@ -1931,7 +1938,7 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
     }
 }
 
-template <class T>
+template <typename T>
 void
 octave_sort<T>::nth_element (T *data, octave_idx_type nel,
                              octave_idx_type lo, octave_idx_type up)
@@ -1952,7 +1959,7 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
         nth_element (data, nel, lo, up, std::ptr_fun (compare));
 }
 
-template <class T>
+template <typename T>
 bool
 octave_sort<T>::ascending_compare (typename ref_param<T>::type x,
                                    typename ref_param<T>::type y)
@@ -1960,7 +1967,7 @@ octave_sort<T>::ascending_compare (typename ref_param<T>::type x,
   return x < y;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_sort<T>::descending_compare (typename ref_param<T>::type x,
                                     typename ref_param<T>::type y)

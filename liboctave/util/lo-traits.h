@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 template <bool cond, typename T1, typename T2>
 class if_then_else;
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 class if_then_else<true, T1, T2>
 {
 public:
@@ -40,7 +40,7 @@ public:
   typedef T1 result;
 };
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 class if_then_else<false, T1, T2>
 {
 public:
@@ -49,7 +49,7 @@ public:
 };
 
 // Determine whether two types are equal.
-template <class T1, class T2>
+template <typename T1, typename T2>
 class equal_types
 {
 public:
@@ -57,7 +57,7 @@ public:
   static const bool value = false;
 };
 
-template <class T>
+template <typename T>
 class equal_types <T, T>
 {
 public:
@@ -67,7 +67,7 @@ public:
 
 // Determine whether a type is an instance of a template.
 
-template <template <class> class Template, class T>
+template <template <typename> class Template, typename T>
 class is_instance
 {
 public:
@@ -75,7 +75,7 @@ public:
   static const bool value = false;
 };
 
-template <template <class> class Template, class T>
+template <template <typename> class Template, typename T>
 class is_instance <Template, Template<T> >
 {
 public:
@@ -85,7 +85,7 @@ public:
 
 // Determine whether a template paramter is a class type.
 
-template<typename T1>
+template <typename T1>
 class is_class_type
 {
 private:
@@ -94,10 +94,10 @@ private:
   typedef struct { char c[2]; } two;
 
   // Classes can have pointers to members.
-  template<typename T2> static one is_class_type_test (int T2::*);
+  template <typename T2> static one is_class_type_test (int T2::*);
 
   // Catch everything else.
-  template<typename T2> static two is_class_type_test (...);
+  template <typename T2> static two is_class_type_test (...);
 
 public:
 
@@ -108,7 +108,7 @@ public:
 // Define typename ref_param<T>::type as T const& if T is a class
 // type.  Otherwise, define it to be T.
 
-template<typename T>
+template <typename T>
 class ref_param
 {
 public:
@@ -119,14 +119,14 @@ public:
 // Will turn TemplatedClass<T> to T, leave T otherwise.
 // Useful for stripping wrapper classes, like octave_int.
 
-template<template<typename> class TemplatedClass, typename T>
+template <template <typename> class TemplatedClass, typename T>
 class strip_template_param
 {
 public:
   typedef T type;
 };
 
-template<template<typename> class TemplatedClass, typename T>
+template <template <typename> class TemplatedClass, typename T>
 class strip_template_param<TemplatedClass, TemplatedClass<T> >
 {
 public:
@@ -136,14 +136,14 @@ public:
 // Will turn TemplatedClass<T> to TemplatedClass<S>, T to S otherwise.
 // Useful for generic promotions.
 
-template<template<typename> class TemplatedClass, typename T, typename S>
+template <template <typename> class TemplatedClass, typename T, typename S>
 class subst_template_param
 {
 public:
   typedef S type;
 };
 
-template<template<typename> class TemplatedClass, typename T, typename S>
+template <template <typename> class TemplatedClass, typename T, typename S>
 class subst_template_param<TemplatedClass, TemplatedClass<T>, S>
 {
 public:

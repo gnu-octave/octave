@@ -39,7 +39,7 @@ class tree_walker;
 
 // Real matrix values.
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 class
 octave_base_diag : public octave_base_value
 {

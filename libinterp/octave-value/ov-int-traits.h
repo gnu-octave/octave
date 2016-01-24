@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-uint32.h"
 #include "ov-uint64.h"
 
-template <class T>
+template <typename T>
 class
 octave_value_int_traits
 {
@@ -42,7 +42,7 @@ public:
 };
 
 #define OCTAVE_VALUE_INT_TRAITS(MT, ST) \
-  template<> \
+  template <> \
   class \
   octave_value_int_traits<MT> \
   { \

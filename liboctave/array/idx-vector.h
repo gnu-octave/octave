@@ -36,8 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-inttypes.h"
 #include "oct-refcount.h"
 
-template<class T> class Array;
-template<class T> class Sparse;
+template <typename T> class Array;
+template <typename T> class Sparse;
 class Range;
 
 // Design rationale:
@@ -63,7 +63,7 @@ public:
     class_mask
   };
 
-  template<class T> friend class std::auto_ptr;
+  template <typename T> friend class std::auto_ptr;
 
 private:
 
@@ -228,7 +228,7 @@ private:
     // Zero-based constructor.
     idx_scalar_rep (octave_idx_type i);
 
-    template <class T>
+    template <typename T>
     idx_scalar_rep (T x);
 
     octave_idx_type xelem (octave_idx_type) const { return data; }
@@ -290,7 +290,7 @@ private:
     idx_vector_rep (const Array<octave_idx_type>& inda,
                     octave_idx_type _ext, direct);
 
-    template <class T>
+    template <typename T>
     idx_vector_rep (const Array<T>&);
 
     idx_vector_rep (bool);
@@ -496,7 +496,7 @@ public:
 
   // Conversion constructors (used by interpreter).
 
-  template <class T>
+  template <typename T>
   idx_vector (octave_int<T> x) : rep (new idx_scalar_rep (x)) { chkerr (); }
 
   idx_vector (double x) : rep (new idx_scalar_rep (x)) { chkerr (); }
@@ -506,7 +506,7 @@ public:
   // A scalar bool does not necessarily map to scalar index.
   idx_vector (bool x) : rep (new idx_mask_rep (x)) { chkerr (); }
 
-  template <class T>
+  template <typename T>
   idx_vector (const Array<octave_int<T> >& nda) : rep (new idx_vector_rep (nda))
   { chkerr (); }
 
@@ -616,7 +616,7 @@ public:
   //   dest[i] = src[idx(i)];
   // return i;
   //
-  template <class T>
+  template <typename T>
   octave_idx_type
   index (const T *src, octave_idx_type n, T *dest) const
   {
@@ -690,7 +690,7 @@ public:
   //   dest[idx(i)] = src[i];
   // return i;
   //
-  template <class T>
+  template <typename T>
   octave_idx_type
   assign (const T *src, octave_idx_type n, T *dest) const
   {
@@ -762,7 +762,7 @@ public:
   //   dest[idx(i)] = val;
   // return i;
   //
-  template <class T>
+  template <typename T>
   octave_idx_type
   fill (const T& val, octave_idx_type n, T *dest) const
   {
@@ -832,7 +832,7 @@ public:
   //
   // for (octave_idx_type i = 0; i < idx->length (n); i++) body (idx(i));
 
-  template <class Functor>
+  template <typename Functor>
   void
   loop (octave_idx_type n, Functor body) const
   {
@@ -900,7 +900,7 @@ public:
   // return i;
   //
 
-  template <class Functor>
+  template <typename Functor>
   octave_idx_type
   bloop (octave_idx_type n, Functor body) const
   {

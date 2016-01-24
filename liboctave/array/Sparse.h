@@ -45,7 +45,7 @@ class PermMatrix;
 // Two dimensional sparse class.  Handles the reference counting for
 // all the derived classes.
 
-template <class T>
+template <typename T>
 class
 Sparse
 {
@@ -204,7 +204,7 @@ public:
   explicit Sparse (const PermMatrix& a);
 
   // Type conversion case. Preserves capacity ().
-  template <class U>
+  template <typename U>
   Sparse (const Sparse<U>& a)
     : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols,
            a.rep->nzmx)),
@@ -599,18 +599,18 @@ public:
   Array<T> array_value (void) const;
 
   // Generic any/all test functionality with arbitrary predicate.
-  template <class F, bool zero>
+  template <typename F, bool zero>
   bool test (F fcn) const
   {
     return any_all_test<F, T, zero> (fcn, data (), nnz ());
   }
 
   // Simpler calls.
-  template <class F>
+  template <typename F>
   bool test_any (F fcn) const
   { return test<F, false> (fcn); }
 
-  template <class F>
+  template <typename F>
   bool test_all (F fcn) const
   { return test<F, true> (fcn); }
 
@@ -627,7 +627,7 @@ public:
   bool test_all (bool (&fcn) (const T&)) const
   { return test<bool (&) (const T&), true> (fcn); }
 
-  template <class U, class F>
+  template <typename U, typename F>
   Sparse<U>
   map (F fcn) const
   {
@@ -683,12 +683,12 @@ public:
   }
 
   // Overloads for function references.
-  template <class U>
+  template <typename U>
   Sparse<U>
   map (U (&fcn) (T)) const
   { return map<U, U (&) (T)> (fcn); }
 
-  template <class U>
+  template <typename U>
   Sparse<U>
   map (U (&fcn) (const T&)) const
   { return map<U, U (&) (const T&)> (fcn); }
@@ -696,7 +696,7 @@ public:
   bool indices_ok (void) const { return rep->indices_ok (); }
 };
 
-template<typename T>
+template <typename T>
 std::istream&
 read_sparse_matrix (std::istream& is, Sparse<T>& a,
                     T (*read_fcn) (std::istream&))

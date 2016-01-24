@@ -1539,12 +1539,12 @@ OV_COMP_BINOP_FN (op_mul_herm)
 extern OCTINTERP_API void install_types (void);
 
 // Templated value extractors.
-template<class Value>
+template <typename Value>
 inline Value octave_value_extract (const octave_value&)
 { assert (false); }
 
 #define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX) \
-template<> \
+template <> \
 inline VALUE octave_value_extract<VALUE> (const octave_value& v) \
   { return v.MPREFIX ## _value (); }
 
@@ -1608,7 +1608,7 @@ DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
 #undef DEF_VALUE_EXTRACTOR
 
 #define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL) \
-template<> \
+template <> \
 inline VALUE octave_value_extract<VALUE> (const octave_value&) \
   { assert (false); return DEFVAL; }
 

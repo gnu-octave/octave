@@ -461,7 +461,7 @@ hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
 
 */
 
-template<typename T, typename ET>
+template <typename T, typename ET>
 void
 map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 {
@@ -1682,7 +1682,7 @@ all_scalar_1x1 (const octave_value_list& args)
   return true;
 }
 
-template <class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Array<T>& result,
                     const octave_value_list& args,
@@ -1725,7 +1725,7 @@ single_type_concat (Array<T>& result,
     }
 }
 
-template <class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Sparse<T>& result,
                     const octave_value_list& args,
@@ -1745,7 +1745,7 @@ single_type_concat (Sparse<T>& result,
 }
 
 // Dispatcher.
-template<class TYPE>
+template <typename TYPE>
 static TYPE
 do_single_type_concat (const octave_value_list& args, int dim)
 {
@@ -1756,7 +1756,7 @@ do_single_type_concat (const octave_value_list& args, int dim)
   return result;
 }
 
-template<class MAP>
+template <typename MAP>
 static void
 single_type_concat_map (octave_map& result,
                         const octave_value_list& args,
@@ -4811,7 +4811,7 @@ values, return an array with given dimensions.\n\
   return fill_matrix (args, true, "true");
 }
 
-template <class MT>
+template <typename MT>
 octave_value
 identity_matrix (int nr, int nc)
 {
@@ -5025,7 +5025,7 @@ definitions are for compatibility with @sc{matlab}.\n\
 %!error eye (1, 2, 3)
 */
 
-template <class MT>
+template <typename MT>
 static octave_value
 do_linspace (const octave_value& base, const octave_value& limit,
              octave_idx_type n)
@@ -6929,7 +6929,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
   return retval;
 }
 
-template <class NDT>
+template <typename NDT>
 static NDT
 do_accumarray_sum (const idx_vector& idx, const NDT& vals,
                    octave_idx_type n = -1)
@@ -7014,7 +7014,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-template <class NDT>
+template <typename NDT>
 static NDT
 do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
                       octave_idx_type n, bool ismin,
@@ -7144,7 +7144,7 @@ Undocumented internal function.\n\
   return do_accumarray_minmax_fun (args, false);
 }
 
-template <class NDT>
+template <typename NDT>
 static NDT
 do_accumdim_sum (const idx_vector& idx, const NDT& vals,
                  int dim = -1, octave_idx_type n = -1)
@@ -7234,7 +7234,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-template <class NDT>
+template <typename NDT>
 static NDT
 do_merge (const Array<bool>& mask,
           const NDT& tval, const NDT& fval)
@@ -7405,7 +7405,7 @@ DEFALIAS (ifelse, merge);
 
 #undef MAKE_INT_BRANCH
 
-template <class SparseT>
+template <typename SparseT>
 static SparseT
 do_sparse_diff (const SparseT& array, octave_idx_type order,
                 int dim)
@@ -7606,7 +7606,7 @@ an empty matrix is returned.\n\
 %!error diff ([1, 2; 3, 4], -1)
 */
 
-template <class T>
+template <typename T>
 static Array<T>
 do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 {

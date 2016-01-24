@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-scalar.h"
 #include "pr-output.h"
 
-template <class ST>
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::subsref (const std::string& type,
                                  const std::list<octave_value_list>& idx)
@@ -61,7 +61,7 @@ octave_base_scalar<ST>::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
-template <class ST>
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::subsasgn (const std::string& type,
                                   const std::list<octave_value_list>& idx,
@@ -99,35 +99,35 @@ octave_base_scalar<ST>::subsasgn (const std::string& type,
   return retval;
 }
 
-template <class ST>
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::permute (const Array<int>& vec, bool inv) const
 {
   return Array<ST> (dim_vector (1, 1), scalar).permute (vec, inv);
 }
 
-template <class ST>
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::reshape (const dim_vector& new_dims) const
 {
   return Array<ST> (dim_vector (1, 1), scalar).reshape (new_dims);
 }
 
-template <class ST>
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::diag (octave_idx_type k) const
 {
   return Array<ST> (dim_vector (1, 1), scalar).diag (k);
 }
 
-template <class ST>
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::diag (octave_idx_type m, octave_idx_type n) const
 {
   return Array<ST> (dim_vector (1, 1), scalar).diag (m, n);
 }
 
-template <class ST>
+template <typename ST>
 bool
 octave_base_scalar<ST>::is_true (void) const
 {
@@ -137,7 +137,7 @@ octave_base_scalar<ST>::is_true (void) const
   return (scalar != ST ());
 }
 
-template <class ST>
+template <typename ST>
 void
 octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax)
 {
@@ -145,7 +145,7 @@ octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax)
   newline (os);
 }
 
-template <class ST>
+template <typename ST>
 void
 octave_base_scalar<ST>::print_raw (std::ostream& os,
                                    bool pr_as_read_syntax) const
@@ -154,7 +154,7 @@ octave_base_scalar<ST>::print_raw (std::ostream& os,
   octave_print_internal (os, scalar, pr_as_read_syntax);
 }
 
-template <class ST>
+template <typename ST>
 bool
 octave_base_scalar<ST>::print_name_tag (std::ostream& os,
                                         const std::string& name) const
@@ -164,7 +164,7 @@ octave_base_scalar<ST>::print_name_tag (std::ostream& os,
   return false;
 }
 
-template <class ST>
+template <typename ST>
 void
 octave_base_scalar<ST>::short_disp (std::ostream& os) const
 {
@@ -178,14 +178,14 @@ octave_base_scalar<ST>::short_disp (std::ostream& os) const
     os << tmp[0];
 }
 
-template <class ST>
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::fast_elem_extract (octave_idx_type n) const
 {
   return (n == 0) ? octave_value (scalar) : octave_value ();
 }
 
-template <class ST>
+template <typename ST>
 bool
 octave_base_scalar<ST>::fast_elem_insert_self (void *where,
                                                builtin_type_t btyp) const

@@ -83,7 +83,7 @@ stri_comp_gt (const std::string& a, const std::string& b)
 }
 #endif
 
-template <class T>
+template <typename T>
 inline sortmode
 get_sort_mode (const Array<T>& array,
                typename octave_sort<T>::compare_fcn_type desc_comp
@@ -106,7 +106,7 @@ get_sort_mode (const Array<T>& array,
                                 y.TYPE ## _array_value (), \
                                 left_inf, right_inf, \
                                 match_idx, match_bool);
-template <class ArrayT>
+template <typename ArrayT>
 static octave_value
 do_numeric_lookup (const ArrayT& array, const ArrayT& values,
                    bool left_inf, bool right_inf,

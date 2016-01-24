@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-template <class ArrayType>
+template <typename ArrayType>
 static octave_value_list
 do_minmax_red_op (const octave_value& arg,
                   int nargout, int dim, bool ismin)
@@ -138,7 +138,7 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
   return retval;
 }
 
-template <class ArrayType>
+template <typename ArrayType>
 static octave_value
 do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
                   bool ismin)
@@ -866,7 +866,7 @@ the first index of the maximum value(s).  Thus,\n\
 
 */
 
-template <class ArrayType>
+template <typename ArrayType>
 static octave_value_list
 do_cumminmax_red_op (const octave_value& arg,
                      int nargout, int dim, bool ismin)

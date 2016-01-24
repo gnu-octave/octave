@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "DiagArray2.h"
 #include "MArray.h"
 
-template <class T> class MDiagArray2;
+template <typename T> class MDiagArray2;
 
 template <typename T> MDiagArray2<T> operator + (const MDiagArray2<T>&);
 template <typename T> MDiagArray2<T> operator - (const MDiagArray2<T>&);
@@ -46,7 +46,7 @@ template <typename T> MDiagArray2<T> product (const MDiagArray2<T>&,
                                               const MDiagArray2<T>&);
 
 //! Template for two dimensional diagonal array with math operators.
-template <class T>
+template <typename T>
 class
 MDiagArray2 : public DiagArray2<T>
 {
@@ -63,7 +63,7 @@ public:
 
   MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
 
-  template <class U>
+  template <typename U>
   MDiagArray2 (const DiagArray2<U>& a) : DiagArray2<T> (a) { }
 
   explicit MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }

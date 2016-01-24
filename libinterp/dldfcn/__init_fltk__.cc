@@ -653,7 +653,7 @@ public:
       }
   }
 
-  template <class T_prop>
+  template <typename T_prop>
   void remove_from_menu (T_prop& prop)
   {
     Matrix kids;

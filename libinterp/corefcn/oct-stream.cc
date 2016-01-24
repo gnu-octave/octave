@@ -1109,7 +1109,7 @@ octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
 
 #define OCTAVE_SCAN(is, fmt, arg) octave_scan (is, fmt, arg)
 
-template <class T>
+template <typename T>
 std::istream&
 octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 {
@@ -1181,7 +1181,7 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
   return is;
 }
 
-template <class T>
+template <typename T>
 std::istream&
 octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 {
@@ -1207,7 +1207,7 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 // Note that this specialization is only used for reading characters, not
 // character strings. See BEGIN_S_CONVERSION for details.
 
-template<>
+template <>
 std::istream&
 octave_scan<> (std::istream& is, const scanf_format_elt& /* fmt */,
                char* valptr)
@@ -1215,7 +1215,7 @@ octave_scan<> (std::istream& is, const scanf_format_elt& /* fmt */,
   return is >> valptr;
 }
 
-template<>
+template <>
 std::istream&
 octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
 {
@@ -1249,7 +1249,7 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
   return is;
 }
 
-template <class T>
+template <typename T>
 void
 do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
                T valptr, Matrix& mval, double *data, octave_idx_type& idx,
@@ -2352,7 +2352,7 @@ printf_value_cache::int_value (void)
 
 // Ugh again and again.
 
-template <class T>
+template <typename T>
 int
 do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
                 int sa_2, T arg, const std::string& who)
@@ -3093,7 +3093,7 @@ octave_stream::close (void)
     rep->close ();
 }
 
-template <class SRC_T, class DST_T>
+template <typename SRC_T, typename DST_T>
 static octave_value
 convert_and_copy (std::list<void *>& input_buf_list,
                   octave_idx_type input_buf_elts,
@@ -3499,7 +3499,7 @@ octave_stream::write (const octave_value& data, octave_idx_type block_size,
   return retval;
 }
 
-template <class T, class V>
+template <typename T, typename V>
 static void
 convert_chars (const void *data, void *conv_data, octave_idx_type n_elts)
 {
@@ -3511,7 +3511,7 @@ convert_chars (const void *data, void *conv_data, octave_idx_type n_elts)
     vt_data[i] = tt_data[i];
 }
 
-template <class T, class V>
+template <typename T, typename V>
 static void
 convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
               bool swap)
@@ -3532,21 +3532,21 @@ convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
     }
 }
 
-template <class T>
+template <typename T>
 class ultimate_element_type
 {
 public:
   typedef T type;
 };
 
-template <class T>
+template <typename T>
 class ultimate_element_type<octave_int<T> >
 {
 public:
   typedef T type;
 };
 
-template <class T>
+template <typename T>
 static bool
 convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
               oct_data_conv::data_type output_type,
@@ -3710,7 +3710,7 @@ octave_stream::skip_bytes (size_t skip)
   return status;
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 octave_stream::write (const Array<T>& data, octave_idx_type block_size,
                       oct_data_conv::data_type output_type,

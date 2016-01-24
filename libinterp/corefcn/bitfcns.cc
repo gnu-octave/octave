@@ -113,7 +113,7 @@ bitopxx (const OP& op, const std::string& fname,
 // reflective information hardwired. We can't hardwire this information
 // in Fbitxxx DEFUNs below, because at that moment, we still don't have
 // information about which integer types we need to instantiate.
-template<typename T>
+template <typename T>
 octave_value
 bitopx (const std::string& fname, const Array<T>& x, const Array<T>& y)
 {

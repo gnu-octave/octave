@@ -47,7 +47,7 @@ solve_singularity_warning (double rcond)
   warn_singular_matrix (rcond);
 }
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_leftdiv_conform (const T1& a, const T2& b)
 {
@@ -81,7 +81,7 @@ INSTANTIATE_MX_LEFTDIV_CONFORM (DiagMatrix, SparseComplexMatrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexDiagMatrix, SparseMatrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexDiagMatrix, SparseComplexMatrix);
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_div_conform (const T1& a, const T2& b)
 {

@@ -53,7 +53,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
         int dim);
 #endif
 
-template <class T>
+template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
         int dim = 0)
@@ -235,7 +235,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
         MArray<FloatComplex>&, int dim);
 #endif
 
-template <class T>
+template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 {

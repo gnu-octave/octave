@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 // 2d convolution with a matrix kernel.
-template <class T, class R>
+template <typename T, typename R>
 static void
 convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
              const R *b, octave_idx_type mb, octave_idx_type nb,
@@ -73,7 +73,7 @@ FORWARD_IMPL (FloatComplex, FloatComplex, c, C)
 FORWARD_IMPL (Complex, double, zd, ZD)
 FORWARD_IMPL (FloatComplex, float, cs, CS)
 
-template <class T, class R>
+template <typename T, typename R>
 void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
                   const R *b, const dim_vector& bd, const dim_vector& bcd,
                   T *c, const dim_vector& ccd, int nd, bool inner)
@@ -107,7 +107,7 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
 
 // Arbitrary convolutor.
 // The 2nd array is assumed to be the smaller one.
-template <class T, class R>
+template <typename T, typename R>
 static MArray<T>
 convolve (const MArray<T>& a, const MArray<R>& b,
           convn_type ct)

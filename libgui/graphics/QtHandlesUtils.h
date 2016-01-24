@@ -49,7 +49,7 @@ namespace Utils
 
   Cell toCellString (const QStringList& l);
 
-  template <class T>
+  template <typename T>
   QFont computeFont (const typename T::properties& props, int height = -1);
 
   QColor fromRgb (const Matrix& rgb);
@@ -64,12 +64,12 @@ namespace Utils
   Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
   Matrix figureCurrentPoint (const graphics_object& fig);
 
-  template <class T>
+  template <typename T>
   inline typename T::properties&
   properties (graphics_object obj)
     { return dynamic_cast<typename T::properties&> (obj.get_properties ()); }
 
-  template <class T>
+  template <typename T>
   inline typename T::properties&
   properties (const graphics_handle& h)
     { return Utils::properties<T> (gh_manager::get_object (h)); }

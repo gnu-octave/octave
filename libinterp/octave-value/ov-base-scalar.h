@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Real scalar values.
 
-template <class ST>
+template <typename ST>
 class
 octave_base_scalar : public octave_base_value
 {

@@ -75,13 +75,13 @@ extern OCTAVE_API bool xisinf (double x);
 extern OCTAVE_API bool octave_is_NA (double x);
 
 // Generic xmin, xmax definitions
-template <class T>
+template <typename T>
 inline T xmin (T x, T y)
 {
   return x <= y ? x : y;
 }
 
-template <class T>
+template <typename T>
 inline T xmax (T x, T y)
 {
   return x >= y ? x : y;

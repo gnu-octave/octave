@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 
 // The bulk of the work.
-template <class T>
+template <typename T>
 static Array<T>
 do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
@@ -80,7 +80,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
     }
 }
 
-template <class T>
+template <typename T>
 static Array<T>
 do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
@@ -126,7 +126,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 // These two are by David Bateman.
 // FIXME: optimizations possible. "pack" support missing.
 
-template <class T>
+template <typename T>
 static Sparse<T>
 do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
@@ -146,7 +146,7 @@ do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
   return m;
 }
 
-template <class T>
+template <typename T>
 static Sparse<T>
 do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
@@ -166,14 +166,14 @@ do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
 }
 
 // Convenience dispatchers.
-template <class T>
+template <typename T>
 static Array<T>
 do_trilu (const Array<T>& a, octave_idx_type k, bool lower, bool pack)
 {
   return lower ? do_tril (a, k, pack) : do_triu (a, k, pack);
 }
 
-template <class T>
+template <typename T>
 static Sparse<T>
 do_trilu (const Sparse<T>& a, octave_idx_type k, bool lower, bool pack)
 {

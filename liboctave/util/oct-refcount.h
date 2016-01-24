@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 // Encapsulates a reference counter.
-template <class T>
+template <typename T>
 class octave_refcount
 {
 public:

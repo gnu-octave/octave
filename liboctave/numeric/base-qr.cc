@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "base-qr.h"
 
-template <class qr_type>
+template <typename qr_type>
 base_qr<qr_type>::base_qr (const qr_type& q_arg, const qr_type& r_arg)
   : q (q_arg), r (r_arg)
 {
@@ -44,7 +44,7 @@ base_qr<qr_type>::base_qr (const qr_type& q_arg, const qr_type& r_arg)
     }
 }
 
-template <class qr_type>
+template <typename qr_type>
 qr_type_t
 base_qr<qr_type>::get_type (void) const
 {
@@ -60,7 +60,7 @@ base_qr<qr_type>::get_type (void) const
   return retval;
 }
 
-template <class qr_type>
+template <typename qr_type>
 bool
 base_qr<qr_type>::regular (void) const
 {

@@ -40,7 +40,7 @@ public:
 
   // This is a utility class that can be used to call the enter/exit
   // functions in a manner protected from stack unwinding.
-  template<class T> class enter
+  template <typename T> class enter
   {
   private:
 

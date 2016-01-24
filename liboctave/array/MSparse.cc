@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Element by element MSparse by MSparse ops.
 
-template <class T, class OP>
+template <typename T, typename OP>
 MSparse<T>&
 plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char* op_name)
 {
@@ -112,7 +112,7 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
 
 // Element by element MSparse by scalar ops.
 
-template <class T, class OP>
+template <typename T, typename OP>
 MArray<T>
 plus_or_minus (const MSparse<T>& a, const T& s, OP op)
 {
@@ -142,7 +142,7 @@ operator - (const MSparse<T>& a, const T& s)
 }
 
 
-template <class T, class OP>
+template <typename T, typename OP>
 MSparse<T>
 times_or_divide (const MSparse<T>& a, const T& s, OP op)
 {
@@ -180,7 +180,7 @@ operator / (const MSparse<T>& a, const T& s)
 
 // Element by element scalar by MSparse ops.
 
-template <class T, class OP>
+template <typename T, typename OP>
 MArray<T>
 plus_or_minus (const T& s, const MSparse<T>& a, OP op)
 {
@@ -209,7 +209,7 @@ operator - (const T& s, const MSparse<T>& a)
   return plus_or_minus (s, a, std::minus<T> ());
 }
 
-template <class T, class OP>
+template <typename T, typename OP>
 MSparse<T>
 times_or_divides (const T& s, const MSparse<T>& a, OP op)
 {
@@ -230,14 +230,14 @@ times_or_divides (const T& s, const MSparse<T>& a, OP op)
   return r;
 }
 
-template <class T>
+template <typename T>
 MSparse<T>
 operator * (const T& s, const MSparse<T>& a)
 {
   return times_or_divides (s, a, std::multiplies<T> ());
 }
 
-template <class T>
+template <typename T>
 MSparse<T>
 operator / (const T& s, const MSparse<T>& a)
 {
@@ -247,7 +247,7 @@ operator / (const T& s, const MSparse<T>& a)
 
 // Element by element MSparse by MSparse ops.
 
-template <class T, class OP>
+template <typename T, typename OP>
 MSparse<T>
 plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
                const char* op_name, bool negate)
@@ -366,21 +366,21 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
   return r;
 }
 
-template <class T>
+template <typename T>
 MSparse<T>
 operator+ (const MSparse<T>& a, const MSparse<T>& b)
 {
   return plus_or_minus (a, b, std::plus<T> (), "operator +", false);
 }
 
-template <class T>
+template <typename T>
 MSparse<T>
 operator- (const MSparse<T>& a, const MSparse<T>& b)
 {
   return plus_or_minus (a, b, std::minus<T> (), "operator -", true);
 }
 
-template <class T>
+template <typename T>
 MSparse<T>
 product (const MSparse<T>& a, const MSparse<T>& b)
 {
@@ -477,7 +477,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
   return r;
 }
 
-template <class T>
+template <typename T>
 MSparse<T>
 quotient (const MSparse<T>& a, const MSparse<T>& b)
 {
@@ -595,14 +595,14 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
 
 // Unary MSparse ops.
 
-template <class T>
+template <typename T>
 MSparse<T>
 operator + (const MSparse<T>& a)
 {
   return a;
 }
 
-template <class T>
+template <typename T>
 MSparse<T>
 operator - (const MSparse<T>& a)
 {

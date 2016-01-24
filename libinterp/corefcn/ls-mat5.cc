@@ -252,7 +252,7 @@ read_mat5_binary_data (std::istream& is, float *data,
     }
 }
 
-template <class T>
+template <typename T>
 void
 read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
                         bool swap, mat5_data_type type)
@@ -1771,7 +1771,7 @@ write_mat5_array (std::ostream& os, const FloatNDArray& m, bool)
     }
 }
 
-template <class T>
+template <typename T>
 void
 write_mat5_integer_data (std::ostream& os, const T *m, int size,
                          octave_idx_type nel)

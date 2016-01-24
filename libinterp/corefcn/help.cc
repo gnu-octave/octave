@@ -98,7 +98,7 @@ typedef std::map<std::string, std::string> map_type;
 typedef map_type::value_type pair_type;
 typedef map_type::const_iterator map_iter;
 
-template<typename T, size_t z>
+template <typename T, size_t z>
 size_t
 size (T const (&)[z])
 {

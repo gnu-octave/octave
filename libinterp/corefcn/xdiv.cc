@@ -62,7 +62,7 @@ solve_singularity_warning (double rcond)
   warn_singular_matrix (rcond);
 }
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
 {
@@ -89,7 +89,7 @@ INSTANTIATE_MX_LEFTDIV_CONFORM (Matrix, ComplexMatrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexMatrix, Matrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexMatrix, ComplexMatrix);
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_div_conform (const T1& a, const T2& b)
 {
@@ -703,7 +703,7 @@ xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
 // Diagonal matrix division.
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 mdm_div_impl (const MT& a, const DMT& d)
 {
@@ -786,7 +786,7 @@ FloatComplexMatrix
 xdiv (const FloatComplexMatrix& a, const FloatComplexDiagMatrix& b)
 { return mdm_div_impl (a, b); }
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 dmm_leftdiv_impl (const DMT& d, const MT& a)
 {
@@ -866,7 +866,7 @@ xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexMatrix& b)
 
 // Diagonal by diagonal matrix division.
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 dmdm_div_impl (const MT& a, const DMT& d)
 {
@@ -941,7 +941,7 @@ FloatComplexDiagMatrix
 xdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 { return dmdm_div_impl (a, b); }
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 dmdm_leftdiv_impl (const DMT& d, const MT& a)
 {

@@ -95,7 +95,7 @@ typedef octave_value (*bsxfun_handler) (const octave_value&,
 // Static table of handlers.
 bsxfun_handler bsxfun_handler_table[bsxfun_num_builtin_ops][btyp_num_types];
 
-template <class NDA, NDA (bsxfun_op) (const NDA&, const NDA&)>
+template <typename NDA, NDA (bsxfun_op) (const NDA&, const NDA&)>
 static octave_value
 bsxfun_forward_op (const octave_value& x, const octave_value& y)
 {
@@ -104,7 +104,7 @@ bsxfun_forward_op (const octave_value& x, const octave_value& y)
   return octave_value (bsxfun_op (xa, ya));
 }
 
-template <class NDA, boolNDArray (bsxfun_rel) (const NDA&, const NDA&)>
+template <typename NDA, boolNDArray (bsxfun_rel) (const NDA&, const NDA&)>
 static octave_value
 bsxfun_forward_rel (const octave_value& x, const octave_value& y)
 {
@@ -115,7 +115,7 @@ bsxfun_forward_rel (const octave_value& x, const octave_value& y)
 
 // pow() needs a special handler for reals
 // because of the potentially complex result.
-template <class NDA, class CNDA>
+template <typename NDA, typename CNDA>
 static octave_value
 do_bsxfun_real_pow (const octave_value& x, const octave_value& y)
 {

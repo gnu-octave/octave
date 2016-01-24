@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Generic any/all test functionality with arbitrary predicate.
 
-template <class F, class T, bool zero>
+template <typename F, typename T, bool zero>
 bool
 any_all_test (F fcn, const T *m, octave_idx_type len)
 {

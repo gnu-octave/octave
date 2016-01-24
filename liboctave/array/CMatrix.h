@@ -59,10 +59,10 @@ public:
 
   ComplexMatrix (const ComplexMatrix& a) : ComplexNDArray (a) { }
 
-  template <class U>
+  template <typename U>
   ComplexMatrix (const MArray<U>& a) : ComplexNDArray (a.as_matrix ()) { }
 
-  template <class U>
+  template <typename U>
   ComplexMatrix (const Array<U>& a) : ComplexNDArray (a.as_matrix ()) { }
 
   ComplexMatrix (const Matrix& re, const Matrix& im);

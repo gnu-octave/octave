@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "utils.h"
 
-template <class MT>
+template <typename MT>
 static octave_value
 get_qr_r (const base_qr<MT>& fact)
 {

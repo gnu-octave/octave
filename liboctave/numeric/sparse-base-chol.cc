@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_CHOLMOD
 // Can't use CHOLMOD_NAME(drop)(0.0, S, cm). It doesn't treat complex matrices
-template <class chol_type, class chol_elt, class p_type>
+template <typename chol_type, typename chol_elt, typename p_type>
 void
 sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::drop_zeros
   (const cholmod_sparse* S)
@@ -77,7 +77,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::drop_zeros
 }
 #endif
 
-template <class chol_type, class chol_elt, class p_type>
+template <typename chol_type, typename chol_elt, typename p_type>
 octave_idx_type
 sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   (const chol_type& a, bool natural, bool force)
@@ -218,7 +218,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
 #endif
 }
 
-template <class chol_type, class chol_elt, class p_type>
+template <typename chol_type, typename chol_elt, typename p_type>
 chol_type
 sparse_base_chol<chol_type, chol_elt, p_type>::L (void) const
 {
@@ -240,7 +240,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::L (void) const
 #endif
 }
 
-template <class chol_type, class chol_elt, class p_type>
+template <typename chol_type, typename chol_elt, typename p_type>
 p_type
 sparse_base_chol<chol_type, chol_elt, p_type>::
 sparse_base_chol_rep::Q (void) const
@@ -263,7 +263,7 @@ sparse_base_chol_rep::Q (void) const
 #endif
 }
 
-template <class chol_type, class chol_elt, class p_type>
+template <typename chol_type, typename chol_elt, typename p_type>
 chol_type
 sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
 {

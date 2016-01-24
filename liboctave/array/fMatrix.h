@@ -58,10 +58,10 @@ public:
 
   FloatMatrix (const FloatMatrix& a) : FloatNDArray (a) { }
 
-  template <class U>
+  template <typename U>
   FloatMatrix (const MArray<U>& a) : FloatNDArray (a.as_matrix ()) { }
 
-  template <class U>
+  template <typename U>
   FloatMatrix (const Array<U>& a) : FloatNDArray (a.as_matrix ()) { }
 
   explicit FloatMatrix (const FloatRowVector& rv);
@@ -400,7 +400,7 @@ MM_BOOL_OP_DECLS (FloatMatrix, FloatMatrix, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArray, FloatMatrix, float)
 
-template <class T>
+template <typename T>
 void read_int (std::istream& is, bool swap_bytes, T& val);
 
 #endif

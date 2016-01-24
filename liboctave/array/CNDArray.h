@@ -44,10 +44,10 @@ public:
 
   ComplexNDArray (const ComplexNDArray& a) : MArray<Complex> (a) { }
 
-  template <class U>
+  template <typename U>
   ComplexNDArray (const MArray<U>& a) : MArray<Complex> (a) { }
 
-  template <class U>
+  template <typename U>
   ComplexNDArray (const Array<U>& a) : MArray<Complex> (a) { }
 
   ComplexNDArray (const charNDArray&);

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 // Array<T> is inherited privately so that some methods, like index, don't
 // produce unexpected results.
 
-template <class T>
+template <typename T>
 class
 DiagArray2 : protected Array<T>
 {
@@ -62,7 +62,7 @@ public:
   DiagArray2 (const DiagArray2<T>& a)
     : Array<T> (a), d1 (a.d1), d2 (a.d2) { }
 
-  template <class U>
+  template <typename U>
   DiagArray2 (const DiagArray2<U>& a)
     : Array<T> (a.extract_diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 

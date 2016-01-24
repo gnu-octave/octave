@@ -391,7 +391,7 @@ public:
 
   void accept (tree_walker& tw);
 
-  template <class T>
+  template <typename T>
   bool local_protect (T& variable)
   {
     if (curr_unwind_protect_frame)

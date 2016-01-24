@@ -58,10 +58,10 @@ public:
 
   Matrix (const Matrix& a) : NDArray (a) { }
 
-  template <class U>
+  template <typename U>
   Matrix (const MArray<U>& a) : NDArray (a.as_matrix ()) { }
 
-  template <class U>
+  template <typename U>
   Matrix (const Array<U>& a) : NDArray (a.as_matrix ()) { }
 
   explicit Matrix (const RowVector& rv);
@@ -383,7 +383,7 @@ MM_BOOL_OP_DECLS (Matrix, Matrix, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArray, Matrix, double)
 
-template <class T>
+template <typename T>
 void read_int (std::istream& is, bool swap_bytes, T& val);
 
 #endif

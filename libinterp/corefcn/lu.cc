@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-template <class MT>
+template <typename MT>
 static octave_value
 get_lu_l (const base_lu<MT>& fact)
 {
@@ -50,7 +50,7 @@ get_lu_l (const base_lu<MT>& fact)
     return L;
 }
 
-template <class MT>
+template <typename MT>
 static octave_value
 get_lu_u (const base_lu<MT>& fact)
 {

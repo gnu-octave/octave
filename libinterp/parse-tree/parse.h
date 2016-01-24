@@ -377,7 +377,7 @@ public:
   set_stmt_print_flag (tree_statement_list *, char, bool);
 
   // Finish building a statement.
-  template <class T>
+  template <typename T>
   tree_statement *make_statement (T *arg);
 
   // Create a statement list.

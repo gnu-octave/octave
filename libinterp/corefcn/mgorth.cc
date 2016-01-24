@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 
-template <class ColumnVector, class Matrix, class RowVector>
+template <typename ColumnVector, typename Matrix, typename RowVector>
 static void
 do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 {

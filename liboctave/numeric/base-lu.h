@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dColVector.h"
 #include "PermMatrix.h"
 
-template <class lu_type>
+template <typename lu_type>
 class
 base_lu
 {

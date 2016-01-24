@@ -98,7 +98,7 @@ Cell toCellString (const QStringList& l)
   return v;
 }
 
-template <class T>
+template <typename T>
 QFont
 computeFont (const typename T::properties& props, int height)
 {

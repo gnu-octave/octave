@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-array-errwarn.h"
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
                                     bool resize_ok)
@@ -103,7 +103,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::subsref (const std::string& type,
                                 const std::list<octave_value_list>& idx)
@@ -131,7 +131,7 @@ octave_base_sparse<T>::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::subsasgn (const std::string& type,
                                  const std::list<octave_value_list>& idx,
@@ -176,7 +176,7 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
   return retval;
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
 {
@@ -230,7 +230,7 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
   typ.invalidate_type ();
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
 {
@@ -282,7 +282,7 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
   typ.invalidate_type ();
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::resize (const dim_vector& dv, bool) const
 {
@@ -291,7 +291,7 @@ octave_base_sparse<T>::resize (const dim_vector& dv, bool) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::is_true (void) const
 {
@@ -312,7 +312,7 @@ octave_base_sparse<T>::is_true (void) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::print_as_scalar (void) const
 {
@@ -321,7 +321,7 @@ octave_base_sparse<T>::print_as_scalar (void) const
   return (dv.all_ones () || dv.any_zero ());
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax)
 {
@@ -329,7 +329,7 @@ octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax)
   newline (os);
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::print_info (std::ostream& os,
                                    const std::string& prefix) const
@@ -337,7 +337,7 @@ octave_base_sparse<T>::print_info (std::ostream& os,
   matrix.print_info (os, prefix);
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::print_raw (std::ostream& os,
                                   bool pr_as_read_syntax) const
@@ -419,7 +419,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
     }
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::save_ascii (std::ostream& os)
 {
@@ -437,7 +437,7 @@ octave_base_sparse<T>::save_ascii (std::ostream& os)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::load_ascii (std::istream& is)
 {
@@ -463,7 +463,7 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
 }
 
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::fast_elem_extract (octave_idx_type n) const
 {
@@ -476,7 +476,7 @@ octave_base_sparse<T>::fast_elem_extract (octave_idx_type n) const
   return (i < nr && j < nc) ? octave_value (matrix(i,j)) : octave_value ();
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
 {

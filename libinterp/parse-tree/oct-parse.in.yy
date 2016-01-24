@@ -3939,7 +3939,7 @@ octave_base_parser::set_stmt_print_flag (tree_statement_list *list,
 }
 
 // Finish building a statement.
-template <class T>
+template <typename T>
 tree_statement *
 octave_base_parser::make_statement (T *arg)
 {

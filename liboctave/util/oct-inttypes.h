@@ -42,11 +42,11 @@ inline long double xisnan (long double x)
 // FIXME: we define this by our own because some compilers, such as
 // MSVC, do not provide std::abs (int64_t) and std::abs (uint64_t).  In
 // the future, it should go away in favor of std::abs.
-template <class T>
+template <typename T>
 inline T octave_int_abs (T x) { return x >= 0 ? x : -x; }
 
 // Query for an integer type of certain sizeof, and signedness.
-template<int qsize, bool qsigned>
+template <int qsize, bool qsigned>
 struct query_integer_type
 {
 public:
@@ -83,7 +83,7 @@ REGISTER_INT_TYPE (uint64_t);
     public: \
       static const bool ltval = (0 OP 1); \
       static const bool gtval = (1 OP 0); \
-      template <class T> \
+      template <typename T> \
       static bool op (T x, T y) { return x OP y; } \
     }
 
@@ -95,7 +95,7 @@ REGISTER_INT_TYPE (uint64_t);
     public: \
       static const bool ltval = value; \
       static const bool gtval = value; \
-      template <class T> \
+      template <typename T> \
       static bool op (T, T) { return value; } \
     }
 
@@ -107,7 +107,7 @@ class octave_int_cmp_op
   // the signedness of T1 is preserved and it is widened if T2 is wider.
   // Notice that if this is applied to both types, they must end up with equal
   // size.
-  template <class T1, class T2>
+  template <typename T1, typename T2>
   class prom
   {
     // Promote to int?
@@ -126,7 +126,7 @@ class octave_int_cmp_op
 
   // Implements comparisons between two types of equal size but
   // possibly different signedness.
-  template<class xop, int size>
+  template <typename xop, int size>
   class uiop
   {
     typedef typename query_integer_type<size, false>::type utype;
@@ -153,7 +153,7 @@ public:
   REGISTER_OCTAVE_CONST_OP (cf, false);
 
   // Universal comparison operation.
-  template<class xop, class T1, class T2>
+  template <typename xop, typename T1, typename T2>
   static bool
   op (T1 x, T2 y)
   {
@@ -166,21 +166,21 @@ public:
 public:
 
   // Mixed comparisons
-  template <class xop, class T>
+  template <typename xop, typename T>
   static bool
   mop (T x, double y)
   { return xop::op (static_cast<double> (x), y); }
 
-  template <class xop, class T>
+  template <typename xop, typename T>
   static bool
   mop (double x, T y)
   { return xop::op (x, static_cast<double> (y)); }
 
 #ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
 #define DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS(T) \
-  template <class xop> static OCTAVE_API bool \
+  template <typename xop> static OCTAVE_API bool \
   external_mop (double, T); \
-  template <class xop> static OCTAVE_API bool \
+  template <typename xop> static OCTAVE_API bool \
   external_mop (T, double)
 
   DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS (int64_t);
@@ -193,13 +193,13 @@ public:
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
 #ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
 #define DEFINE_LONG_DOUBLE_CMP_OP(T) \
-  template <class xop> \
+  template <typename xop> \
   static bool \
   mop (double x, T y) \
   { \
     return external_mop<xop> (x, y); \
   } \
-  template <class xop> \
+  template <typename xop> \
   static bool \
   mop (T x, double y) \
   { \
@@ -207,14 +207,14 @@ public:
   }
 #else
 #define DEFINE_LONG_DOUBLE_CMP_OP(T) \
-  template <class xop> \
+  template <typename xop> \
   static bool \
   mop (double x, T y) \
   { \
     return xop::op (static_cast<long double> (x), \
                     static_cast<long double> (y)); \
   } \
-  template <class xop> \
+  template <typename xop> \
   static bool \
   mop (T x, double y) \
   { \
@@ -229,17 +229,17 @@ public:
   // but we can't do this because bugs in gcc (<= 4.3) prevent
   // explicit instantiations later in that case.
 #define DEFINE_LONG_DOUBLE_CMP_OP(T) \
-  template <class xop> static OCTAVE_API bool \
+  template <typename xop> static OCTAVE_API bool \
   emulate_mop (double, T); \
-  template <class xop> \
+  template <typename xop> \
   static bool \
   mop (double x, T y) \
     { \
       return emulate_mop<xop> (x, y); \
     } \
-  template <class xop> static OCTAVE_API bool \
+  template <typename xop> static OCTAVE_API bool \
   emulate_mop (T, double); \
-  template <class xop> \
+  template <typename xop> \
   static bool \
   mop (T x, double y) \
     { \
@@ -254,7 +254,7 @@ public:
 };
 
 // Base integer class. No data, just conversion methods and exception flags.
-template <class T>
+template <typename T>
 class octave_int_base
 {
 public:
@@ -263,7 +263,7 @@ public:
   static T max_val () { return std::numeric_limits<T>:: max (); }
 
   // Convert integer value.
-  template <class S>
+  template <typename S>
   static T
   truncate_int (const S& value)
   {
@@ -302,7 +302,7 @@ public:
 private:
 
   // Computes a real-valued threshold for a max/min check.
-  template <class S>
+  template <typename S>
   static S
   compute_threshold (S val, T orig_val)
   {
@@ -316,7 +316,7 @@ private:
 
 public:
   // Convert a real number (check NaN and non-int).
-  template <class S>
+  template <typename S>
   static T
   convert_real (const S& value)
   {
@@ -350,13 +350,13 @@ public:
 // and completely specialize. Arithmetics inherits from octave_int_base so that
 // it can use its exceptions and truncation functions.
 
-template <class T, bool is_signed>
+template <typename T, bool is_signed>
 class octave_int_arith_base
 { };
 
 // Unsigned arithmetics. C++ standard requires it to be modular, so the
 // overflows can be handled efficiently and reliably.
-template <class T>
+template <typename T>
 class octave_int_arith_base<T, false> : octave_int_base<T>
 {
 public:
@@ -517,7 +517,7 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t, uint64_t);
 // Otherwise, we fall back to a bullet-proof code that only uses assumptions
 // guaranteed by the standard.
 
-template <class T>
+template <typename T>
 class octave_int_arith_base<T, true> : octave_int_base<T>
 {
   // The corresponding unsigned type.
@@ -821,12 +821,12 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t, int64_t);
 #endif
 
 // This class simply selects the proper arithmetics.
-template<class T>
+template <typename T>
 class octave_int_arith
  : public octave_int_arith_base<T, std::numeric_limits<T>::is_signed>
 { };
 
-template <class T>
+template <typename T>
 class
 octave_int : public octave_int_base<T>
 {
@@ -852,10 +852,10 @@ public:
 
   octave_int (bool b) : ival (b) { }
 
-  template <class U>
+  template <typename U>
   octave_int (const U& i) : ival(octave_int_base<T>::truncate_int (i)) { }
 
-  template <class U>
+  template <typename U>
   octave_int (const octave_int<U>& i)
     : ival (octave_int_base<T>::truncate_int (i.value ())) { }
 
@@ -949,60 +949,60 @@ private:
   T ival;
 };
 
-template <class T>
+template <typename T>
 inline octave_int<T>
 rem (const octave_int<T>& x, const octave_int<T>& y)
 { return octave_int_arith<T>::rem (x.value (), y.value ()); }
 
-template <class T>
+template <typename T>
 inline octave_int<T>
 mod (const octave_int<T>& x, const octave_int<T>& y)
 { return octave_int_arith<T>::mod (x.value (), y.value ()); }
 
 // No mixed integer binary operations!
 
-template <class T>
+template <typename T>
 inline bool
 xisnan (const octave_int<T>&)
 { return false; }
 
 // FIXME: can/should any of these be inline?
 
-template <class T>
+template <typename T>
 extern OCTAVE_API octave_int<T>
 pow (const octave_int<T>&, const octave_int<T>&);
 
-template <class T>
+template <typename T>
 extern OCTAVE_API octave_int<T>
 pow (const double& a, const octave_int<T>& b);
 
-template <class T>
+template <typename T>
 extern OCTAVE_API octave_int<T>
 pow (const octave_int<T>& a, const double& b);
 
-template <class T>
+template <typename T>
 extern OCTAVE_API octave_int<T>
 pow (const float& a, const octave_int<T>& b);
 
-template <class T>
+template <typename T>
 extern OCTAVE_API octave_int<T>
 pow (const octave_int<T>& a, const float& b);
 
 // FIXME: Do we really need a differently named single-precision
 //        function integer power function here instead of an overloaded
 //        one?
-template <class T>
+template <typename T>
 extern OCTAVE_API octave_int<T>
 powf (const float& a, const octave_int<T>& b);
 
-template <class T>
+template <typename T>
 extern OCTAVE_API octave_int<T>
 powf (const octave_int<T>& a, const float& b);
 
 // Binary relations
 
 #define OCTAVE_INT_CMP_OP(OP, NAME) \
-  template<class T1, class T2> \
+  template <typename T1, typename T2> \
   inline bool \
   operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
   { return octave_int_cmp_op::op<octave_int_cmp_op::NAME, T1, T2> \
@@ -1017,7 +1017,7 @@ OCTAVE_INT_CMP_OP (!=, ne)
 
 #undef OCTAVE_INT_CMP_OP
 
-template <class T>
+template <typename T>
 inline std::ostream&
 operator << (std::ostream& os, const octave_int<T>& ival)
 {
@@ -1025,7 +1025,7 @@ operator << (std::ostream& os, const octave_int<T>& ival)
   return os;
 }
 
-template <class T>
+template <typename T>
 inline std::istream&
 operator >> (std::istream& is, octave_int<T>& ival)
 {
@@ -1082,7 +1082,7 @@ operator >> (std::istream& is, octave_int<uint8_t>& ival)
 // Bitwise operations
 
 #define OCTAVE_INT_BITCMP_OP(OP) \
-  template <class T> \
+  template <typename T> \
   octave_int<T> \
   operator OP (const octave_int<T>& x, const octave_int<T>& y) \
   { return x.value () OP y.value (); }
@@ -1094,7 +1094,7 @@ OCTAVE_INT_BITCMP_OP (^)
 #undef OCTAVE_INT_BITCMP_OP
 
 // General bit shift.
-template <class T>
+template <typename T>
 octave_int<T>
 bitshift (const octave_int<T>& a, int n,
           const octave_int<T>& mask = std::numeric_limits<T>::max ())
@@ -1137,11 +1137,11 @@ DECLARE_EXTERNAL_LONG_DOUBLE_OPS (octave_uint64);
 #endif
 
 #define OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
-  template <class T> \
+  template <typename T> \
   inline octave_int<T> \
   operator OP (const octave_int<T>& x, const double& y) \
   { return octave_int<T> (static_cast<double> (x) OP y); } \
-  template <class T> \
+  template <typename T> \
   inline octave_int<T> \
   operator OP (const double& x, const octave_int<T>& y) \
   { return octave_int<T> (x OP static_cast<double> (y)); }
@@ -1233,11 +1233,11 @@ OCTAVE_INT_DOUBLE_BIN_OP (/, div)
 #undef DECLARE_EXTERNAL_LONG_DOUBLE_OPS
 
 #define OCTAVE_INT_DOUBLE_CMP_OP(OP,NAME) \
-  template <class T> \
+  template <typename T> \
   inline bool \
   operator OP (const octave_int<T>& x, const double& y) \
   { return octave_int_cmp_op::mop<octave_int_cmp_op::NAME> (x.value (), y); } \
-  template <class T> \
+  template <typename T> \
   inline bool \
   operator OP (const double& x, const octave_int<T>& y) \
   { return octave_int_cmp_op::mop<octave_int_cmp_op::NAME> (x, y.value ()); }
@@ -1254,11 +1254,11 @@ OCTAVE_INT_DOUBLE_CMP_OP (!=, ne)
 // Floats are handled by simply converting to doubles.
 
 #define OCTAVE_INT_FLOAT_BIN_OP(OP) \
-  template <class T> \
+  template <typename T> \
   inline octave_int<T> \
   operator OP (const octave_int<T>& x, float y) \
   { return x OP static_cast<double> (y); } \
-  template <class T> \
+  template <typename T> \
   inline octave_int<T> \
   operator OP (float x, const octave_int<T>& y) \
   { return static_cast<double> (x) OP y; }
@@ -1271,11 +1271,11 @@ OCTAVE_INT_FLOAT_BIN_OP (/)
 #undef OCTAVE_INT_FLOAT_BIN_OP
 
 #define OCTAVE_INT_FLOAT_CMP_OP(OP) \
-  template <class T> \
+  template <typename T> \
   inline bool \
   operator OP (const octave_int<T>& x, const float& y) \
   { return x OP static_cast<double> (y); } \
-  template <class T> \
+  template <typename T> \
   bool \
   operator OP (const float& x, const octave_int<T>& y) \
   { return static_cast<double> (x) OP y; }
@@ -1289,7 +1289,7 @@ OCTAVE_INT_FLOAT_CMP_OP (!=)
 
 #undef OCTAVE_INT_FLOAT_CMP_OP
 
-template <class T>
+template <typename T>
 octave_int<T>
 xmax (const octave_int<T>& x, const octave_int<T>& y)
 {
@@ -1298,7 +1298,7 @@ xmax (const octave_int<T>& x, const octave_int<T>& y)
   return octave_int<T> (xv >= yv ? xv : yv);
 }
 
-template <class T>
+template <typename T>
 octave_int<T>
 xmin (const octave_int<T>& x, const octave_int<T>& y)
 {

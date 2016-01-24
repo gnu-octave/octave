@@ -351,6 +351,9 @@ tree_breakpoint::visit_statement (tree_statement& stmt)
     }
 }
 
+// Called by
+//      tree_statement_list::set_breakpoint (int line, std::string& condition)
+// with  lst  consisting of a user function in which to set a breakpoint.
 void
 tree_breakpoint::visit_statement_list (tree_statement_list& lst)
 {
@@ -451,7 +454,7 @@ tree_breakpoint::take_action (tree& tr)
 {
   if (act == set)
     {
-      tr.set_breakpoint ();
+      tr.set_breakpoint (condition);
       line = tr.line ();
       found = true;
     }
@@ -466,7 +469,10 @@ tree_breakpoint::take_action (tree& tr)
   else if (act == list)
     {
       if (tr.is_breakpoint ())
-        bp_list.append (octave_value (tr.line ()));
+        {
+          bp_list.append (octave_value (tr.line ()));
+          bp_cond_list.append (octave_value (tr.bp_cond ()));
+        }
     }
   else
     panic_impossible ();
@@ -479,7 +485,7 @@ tree_breakpoint::take_action (tree_statement& stmt)
 
   if (act == set)
     {
-      stmt.set_breakpoint ();
+      stmt.set_breakpoint (condition);
       line = lineno;
       found = true;
     }
@@ -494,7 +500,10 @@ tree_breakpoint::take_action (tree_statement& stmt)
   else if (act == list)
     {
       if (stmt.is_breakpoint ())
-        bp_list.append (octave_value (lineno));
+        {
+          bp_list.append (octave_value (lineno));
+          bp_cond_list.append (octave_value (stmt.bp_cond ()));
+        }
     }
   else
     panic_impossible ();

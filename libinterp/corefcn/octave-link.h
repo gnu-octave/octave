@@ -303,7 +303,8 @@ public:
   }
 
   static void
-  update_breakpoint (bool insert, const std::string& file, int line)
+  update_breakpoint (bool insert, const std::string& file, int line,
+                     const std::string& cond = "")
   {
     if (enabled ())
       instance->do_update_breakpoint (insert, file, line);

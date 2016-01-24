@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
+#include "debug.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -56,6 +57,10 @@ static bool Vbeep_on_error = false;
 // is encountered.  This will also inhibit printing of the normal
 // traceback message (you will only see the top-level error message).
 bool Vdebug_on_error = false;
+
+// TRUE means that Octave will try to enter the debugger when an error
+// is encountered within the 'try' section of a 'try' / 'catch' block.
+bool Vdebug_on_caught = false;
 
 // TRUE means that Octave will try to enter the debugger when a warning
 // is encountered.
@@ -103,6 +108,10 @@ int error_state = 0;
 // the 'unwind_protect' statement.
 int buffer_error_messages = 0;
 
+// The number of layers of try / catch blocks we're in.  Used to print
+// "caught error" instead of error when "dbstop if caught error" is on.
+int in_try_catch = 0;
+
 // TRUE means error messages are turned off.
 bool discard_error_messages = false;
 
@@ -113,6 +122,7 @@ void
 reset_error_handler (void)
 {
   buffer_error_messages = 0;
+  in_try_catch = 0;
   discard_error_messages = false;
 }
 
@@ -138,10 +148,10 @@ verror (bool save_last_error, std::ostream& os,
         const char *name, const char *id, const char *fmt, va_list args,
         bool with_cfn = false)
 {
-  if (discard_error_messages)
+  if (discard_error_messages && ! Vdebug_on_caught)
     return;
 
-  if (! buffer_error_messages)
+  if (! buffer_error_messages || Vdebug_on_caught)
     flush_octave_stdout ();
 
   // FIXME: we really want to capture the message before it has all the
@@ -162,7 +172,12 @@ verror (bool save_last_error, std::ostream& os,
     msg_string = "\a";
 
   if (name)
-    msg_string += std::string (name) + ": ";
+    {
+      if (in_try_catch && ! strcmp (name, "error"))
+        msg_string += "caught error: ";
+      else
+        msg_string += std::string (name) + ": ";
+    }
 
   // If with_fcn is specified, we'll attempt to prefix the message with the name
   // of the current executing function. But we'll do so only if:
@@ -207,7 +222,7 @@ verror (bool save_last_error, std::ostream& os,
         Vlast_error_stack = initialize_last_error_stack ();
     }
 
-  if (! buffer_error_messages)
+  if (! buffer_error_messages || Vdebug_on_caught)
     {
       octave_diary << msg_string;
       os << msg_string;
@@ -299,7 +314,9 @@ maybe_enter_debugger (octave_execution_exception& e,
                       bool show_stack_trace = false)
 {
   if ((interactive || forced_interactive)
-      && Vdebug_on_error && octave_call_stack::caller_user_code ())
+      && ((Vdebug_on_error && bp_table::debug_on_err (last_error_id ()))
+          || (Vdebug_on_caught && bp_table::debug_on_caught (last_error_id ())))
+      && octave_call_stack::caller_user_code ())
     {
       unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
@@ -704,7 +721,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
         pr_where (std::cerr, "warning");
 
       if ((interactive || forced_interactive)
-          && Vdebug_on_warning && in_user_code)
+          && Vdebug_on_warning && in_user_code && bp_table::debug_on_warn (id))
         {
           unwind_protect frame;
           frame.protect_var (Vdebug_on_warning);
@@ -2147,6 +2164,7 @@ interpreter_try (unwind_protect& frame)
   buffer_error_messages++;
   Vdebug_on_error = false;
   Vdebug_on_warning = false;
+  // leave Vdebug_on_caught as it was, so errors in try/catch are still caught
 }
 
 

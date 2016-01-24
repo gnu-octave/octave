@@ -132,6 +132,10 @@ extern OCTINTERP_API void initialize_default_warning_state (void);
 // traceback message (you will only see the top-level error message).
 extern OCTINTERP_API bool Vdebug_on_error;
 
+// TRUE means that Octave will try to enter the debugger when an error
+// is encountered within the 'try' section of a 'try' / 'catch' block.
+extern OCTINTERP_API bool Vdebug_on_caught;
+
 // TRUE means that Octave will try to enter the debugger when a warning
 // is encountered.
 extern OCTINTERP_API bool Vdebug_on_warning;
@@ -146,6 +150,10 @@ extern OCTINTERP_API int warning_state;
 // them for later.  Used for handling errors in eval() and
 // the 'unwind_protect' statement.
 extern OCTINTERP_API int buffer_error_messages;
+
+// The number of layers of try / catch blocks we're in.  Used to print
+// "caught error" instead of "error" when "dbstop if caught error" is on.
+extern OCTINTERP_API int in_try_catch;
 
 // TRUE means error messages are turned off.
 extern OCTINTERP_API bool discard_error_messages;

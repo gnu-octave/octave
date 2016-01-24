@@ -97,7 +97,7 @@ void
 tree_evaluator::visit_break_command (tree_break_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   if (statement_context == function || statement_context == script
       || in_loop_command)
@@ -114,7 +114,7 @@ void
 tree_evaluator::visit_continue_command (tree_continue_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   if (statement_context == function || statement_context == script
       || in_loop_command)
@@ -210,7 +210,7 @@ void
 tree_evaluator::visit_global_command (tree_global_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   do_decl_init_list (do_global_init, cmd.initializer_list ());
 }
@@ -219,7 +219,7 @@ void
 tree_evaluator::visit_persistent_command (tree_persistent_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   do_decl_init_list (do_static_init, cmd.initializer_list ());
 }
@@ -282,7 +282,7 @@ void
 tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();
@@ -397,7 +397,7 @@ void
 tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   unwind_protect frame;
 
@@ -538,7 +538,7 @@ tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
         octave_call_stack::set_location (tic->line (), tic->column ());
 
       if (debug_mode && ! tic->is_else_clause ())
-        do_breakpoint (tic->is_breakpoint ());
+        do_breakpoint (tic->is_breakpoint (true));
 
       if (tic->is_else_clause () || expr->is_logically_true ("if"))
         {
@@ -580,7 +580,7 @@ void
 tree_evaluator::visit_no_op_command (tree_no_op_command& cmd)
 {
   if (debug_mode && cmd.is_end_of_fcn_or_script ())
-    do_breakpoint (cmd.is_breakpoint (), true);
+    do_breakpoint (cmd.is_breakpoint (true), true);
 }
 
 void
@@ -623,7 +623,7 @@ void
 tree_evaluator::visit_return_command (tree_return_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   // Act like dbcont.
 
@@ -683,7 +683,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
           else
             {
               if (debug_mode)
-                do_breakpoint (expr->is_breakpoint ());
+                do_breakpoint (expr->is_breakpoint (true));
 
               // FIXME: maybe all of this should be packaged in
               // one virtual function that returns a flag saying whether
@@ -795,7 +795,7 @@ void
 tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 {
   if (debug_mode)
-    do_breakpoint (cmd.is_breakpoint ());
+    do_breakpoint (cmd.is_breakpoint (true));
 
   tree_expression *expr = cmd.switch_value ();
 
@@ -853,12 +853,15 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
     {
       try
         {
+          in_try_catch++;
           try_code->accept (*this);
+          in_try_catch--;
         }
       catch (const octave_execution_exception&)
         {
           recover_from_exception ();
 
+          in_try_catch--;          // must be restored before "catch" block
           execution_error = true;
         }
     }
@@ -886,8 +889,10 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
               err.assign ("stack", last_error_stack ());
 
               ult.assign (octave_value::op_asn_eq, err);
+
             }
 
+              // perform actual "catch" block
           if (catch_code)
             catch_code->accept (*this);
         }
@@ -1030,7 +1035,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   for (;;)
     {
       if (debug_mode)
-        do_breakpoint (cmd.is_breakpoint ());
+        do_breakpoint (cmd.is_breakpoint (true));
 
       if (expr->is_logically_true ("while"))
         {
@@ -1077,7 +1082,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
         break;
 
       if (debug_mode)
-        do_breakpoint (cmd.is_breakpoint ());
+        do_breakpoint (cmd.is_breakpoint (true));
 
       if (expr->is_logically_true ("do-until"))
         break;
@@ -1087,7 +1092,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 void
 tree_evaluator::do_breakpoint (tree_statement& stmt) const
 {
-  do_breakpoint (stmt.is_breakpoint (), stmt.is_end_of_fcn_or_script ());
+  do_breakpoint (stmt.is_breakpoint (true), stmt.is_end_of_fcn_or_script ());
 }
 
 void

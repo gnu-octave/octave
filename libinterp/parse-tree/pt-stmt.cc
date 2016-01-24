@@ -48,6 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
+#include "debug.h"
+
 // A list of commands to be executed.
 
 tree_statement::~tree_statement (void)
@@ -71,12 +73,12 @@ tree_statement::print_result (void)
 }
 
 void
-tree_statement::set_breakpoint (void)
+tree_statement::set_breakpoint (const std::string& condition)
 {
   if (cmd)
-    cmd->set_breakpoint ();
+    cmd->set_breakpoint (condition);
   else if (expr)
-    expr->set_breakpoint ();
+    expr->set_breakpoint (condition);
 }
 
 void
@@ -89,9 +91,16 @@ tree_statement::delete_breakpoint (void)
 }
 
 bool
-tree_statement::is_breakpoint (void) const
+tree_statement::is_breakpoint (bool check_active) const
 {
-  return cmd ? cmd->is_breakpoint () : (expr ? expr->is_breakpoint () : false);
+  return cmd ? cmd->is_breakpoint (check_active)
+             : (expr ? expr->is_breakpoint (check_active) : false);
+}
+
+std::string
+tree_statement::bp_cond () const
+{
+  return cmd ? cmd->bp_cond () : (expr ? expr->bp_cond () : "0");
 }
 
 int
@@ -178,10 +187,12 @@ tree_statement::accept (tree_walker& tw)
   tw.visit_statement (*this);
 }
 
+// Create a "breakpoint" tree-walker, and get it to "walk" this statement list
+// (TODO:  What does that do???)
 int
-tree_statement_list::set_breakpoint (int line)
+tree_statement_list::set_breakpoint (int line, const std::string& condition)
 {
-  tree_breakpoint tbp (line, tree_breakpoint::set);
+  tree_breakpoint tbp (line, tree_breakpoint::set, condition);
   accept (tbp);
 
   return tbp.get_line ();
@@ -218,9 +229,34 @@ tree_statement_list::list_breakpoints (void)
   return tbp.get_list ();
 }
 
+// Get list of pairs (breakpoint line, breakpoint condition)
+std::list<bp_type>
+tree_statement_list::breakpoints_and_conds (void)
+{
+  tree_breakpoint tbp (0, tree_breakpoint::list);
+  accept (tbp);
+
+  std::list<bp_type> retval;
+  octave_value_list lines = tbp.get_list ();
+  octave_value_list conds = tbp.get_cond_list ();
+
+  for (int i = 0; i < lines.length (); i++)
+    {
+      retval.push_back (bp_type (lines(i).double_value (),
+                                conds(i).string_value ()));
+    }
+
+  return retval;
+}
+
+// Add breakpoints to  file  at multiple lines (the second arguments of  line),
+// to stop only if  condition  is true.
+// Updates GUI via  octave_link::update_breakpoint.
+// TODO COME BACK TO ME
 bp_table::intmap
 tree_statement_list::add_breakpoint (const std::string& file,
-                                     const bp_table::intmap& line)
+                                     const bp_table::intmap& line,
+                                     const std::string& condition)
 {
   bp_table::intmap retval;
 
@@ -234,10 +270,10 @@ tree_statement_list::add_breakpoint (const std::string& file,
         {
           int lineno = p->second;
 
-          retval[i] = set_breakpoint (lineno);
+          retval[i] = set_breakpoint (lineno, condition);
 
           if (retval[i] != 0 && ! file.empty ())
-            octave_link::update_breakpoint (true, file, retval[i]);
+            octave_link::update_breakpoint (true, file, retval[i], condition);
         }
     }
 

@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_function;
 class tree_walker;
+class bp_table;
+bool meets_condition (std::string *);
 
 // Base class for the parse tree.
 
@@ -38,7 +40,7 @@ tree
 public:
 
   tree (int l = -1, int c = -1)
-    : line_num (l), column_num (c), bp (false) { }
+    : line_num (l), column_num (c), bp (NULL) { }
 
   virtual ~tree (void) { }
 
@@ -56,11 +58,24 @@ public:
     column_num = c;
   }
 
-  virtual void set_breakpoint (void) { bp = true; }
+  virtual void set_breakpoint (std::string condition)
+    { if (bp)
+        *bp = condition;
+      else
+        bp = new std::string(condition);
+    }
 
-  virtual void delete_breakpoint (void) { bp = false; }
+  virtual void delete_breakpoint (void) { if (bp) delete bp; bp = NULL; }
 
-  bool is_breakpoint (void) const { return bp; }
+  bool meets_bp_condition (void) const;
+
+  bool is_breakpoint (bool check_active = false) const
+    { return bp && (!check_active || meets_bp_condition ()); }
+
+  // breakpoint condition, or "0" (i.e., "false") if no breakpoint.
+  // To distinguish "0" from a disabled breakpoint, test "is_breakpoint" too.
+  const std::string bp_cond (void) const
+    { return bp ? *bp : std::string("0"); }
 
   std::string str_print_code (void);
 
@@ -73,8 +88,8 @@ private:
   int line_num;
   int column_num;
 
-  // Breakpoint flag.
-  bool bp;
+  // Breakpoint flag: NULL if no breakpoint, or the condition if there is one
+  std::string *bp;
 
   // No copying!
 

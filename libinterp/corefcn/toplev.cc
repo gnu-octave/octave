@@ -679,6 +679,14 @@ main_loop (void)
           std::cerr << "error: out of memory -- trying to return to prompt"
                     << std::endl;
         }
+
+#ifdef DBSTOP_NANINF
+      if (Vdebug_on_naninf)
+        {
+          if (setjump (naninf_jump) != 0)
+            debug_or_throw_exception (true);  // true = stack trace
+        }
+#endif
     }
   while (retval == 0);
 

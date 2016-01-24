@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 class tree;
 class tree_decl_command;
 
+static std::string pt_bp_empty_string ("");
 class
 tree_breakpoint : public tree_walker
 {
@@ -39,8 +40,8 @@ public:
 
   enum action { set = 1, clear = 2, list = 3 };
 
-  tree_breakpoint (int l, action a)
-    : line (l), act (a), found (false), bp_list () { }
+  tree_breakpoint (int l, action a, const std::string& c = pt_bp_empty_string)
+    : line (l), act (a), condition (c), found (false), bp_list () { }
 
   ~tree_breakpoint (void) { }
 
@@ -135,6 +136,7 @@ public:
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
   octave_value_list get_list (void) { return bp_list; }
+  octave_value_list get_cond_list (void) { return bp_cond_list; }
 
   int get_line (void) { return found ? line : 0; }
 
@@ -152,11 +154,17 @@ private:
   // What to do.
   action act;
 
+  // Expression which must be true to break
+  std::string condition;
+
   // Have we already found the line?
   bool found;
 
   // List of breakpoint line numbers.
   octave_value_list bp_list;
+
+  // List of breakpoint conditions.
+  octave_value_list bp_cond_list;
 
   // No copying!
 

@@ -294,14 +294,18 @@ public:
 
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
-  T range_error (const char *fcn, octave_idx_type n) const;
-  T& range_error (const char *fcn, octave_idx_type n);
+  OCTAVE_NORETURN T range_error (const char *fcn, octave_idx_type n) const;
+  OCTAVE_NORETURN T& range_error (const char *fcn, octave_idx_type n);
 
-  T range_error (const char *fcn, octave_idx_type i, octave_idx_type j) const;
-  T& range_error (const char *fcn, octave_idx_type i, octave_idx_type j);
+  OCTAVE_NORETURN T range_error (const char *fcn,
+                                 octave_idx_type i, octave_idx_type j) const;
+  OCTAVE_NORETURN T& range_error (const char *fcn,
+                                  octave_idx_type i, octave_idx_type j);
 
-  T range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const;
-  T& range_error (const char *fcn, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_NORETURN T range_error (const char *fcn,
+                                 const Array<octave_idx_type>& ra_idx) const;
+  OCTAVE_NORETURN T& range_error (const char *fcn,
+                                  const Array<octave_idx_type>& ra_idx);
 
   // No checking, even for multiple references, ever.
 
@@ -775,6 +779,8 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
       for (octave_idx_type j = jold; j < nc; j++)
         a.cidx (j+1) = ii;
     }
+
+  return is;
 }
 
 #endif

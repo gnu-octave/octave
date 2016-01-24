@@ -143,8 +143,8 @@ public:
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                      float& abserr);
+  OCTAVE_NORETURN float do_integrate (octave_idx_type& ier,
+                                      octave_idx_type& neval, float& abserr);
 
 private:
 
@@ -173,8 +173,8 @@ public:
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                      float& abserr);
+OCTAVE_NORETURN float do_integrate (octave_idx_type& ier,
+                                    octave_idx_type& neval, float& abserr);
 
 private:
 
@@ -206,8 +206,8 @@ public:
 
   ~FloatDefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                       double& abserr);
+  OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
+                                       octave_idx_type& neval, double& abserr);
 
   float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                       float& abserr);
@@ -236,8 +236,8 @@ public:
 
   ~FloatIndefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                       double& abserr);
+  OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
+                                       octave_idx_type& neval, double& abserr);
 
   float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                       float& abserr);

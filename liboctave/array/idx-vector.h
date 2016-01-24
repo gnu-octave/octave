@@ -103,7 +103,7 @@ private:
     // i/o
     virtual std::ostream& print (std::ostream& os) const = 0;
 
-    virtual Array<octave_idx_type> as_array (void);
+    OCTAVE_NORETURN virtual Array<octave_idx_type> as_array (void);
 
     octave_refcount<int> count;
 
@@ -137,7 +137,7 @@ private:
     idx_base_rep *sort_uniq_clone (bool = false)
     { count++; return this; }
 
-    idx_base_rep *sort_idx (Array<octave_idx_type>&);
+    OCTAVE_NORETURN idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type) const { return true; }
 

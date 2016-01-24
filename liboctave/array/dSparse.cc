@@ -1143,9 +1143,6 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
     }
 
   return retval;
-
-inverse_singular:
-  return SparseMatrix ();
 }
 
 SparseMatrix

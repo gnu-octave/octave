@@ -193,25 +193,29 @@ void FloatLU::update_piv (const FloatMatrix& u, const FloatMatrix& v)
 void FloatLU::update (const FloatColumnVector&, const FloatColumnVector&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void FloatLU::update (const FloatMatrix&, const FloatMatrix&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void FloatLU::update_piv (const FloatColumnVector&, const FloatColumnVector&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void FloatLU::update_piv (const FloatMatrix&, const FloatMatrix&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 #endif

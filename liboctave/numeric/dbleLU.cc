@@ -191,25 +191,29 @@ void LU::update_piv (const Matrix& u, const Matrix& v)
 void LU::update (const ColumnVector&, const ColumnVector&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void LU::update (const Matrix&, const Matrix&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void LU::update_piv (const ColumnVector&, const ColumnVector&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void LU::update_piv (const Matrix&, const Matrix&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 #endif

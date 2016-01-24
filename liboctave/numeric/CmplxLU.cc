@@ -193,26 +193,30 @@ void ComplexLU::update_piv (const ComplexMatrix& u, const ComplexMatrix& v)
 void ComplexLU::update (const ComplexColumnVector&, const ComplexColumnVector&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void ComplexLU::update (const ComplexMatrix&, const ComplexMatrix&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void ComplexLU::update_piv (const ComplexColumnVector&,
                             const ComplexColumnVector&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 void ComplexLU::update_piv (const ComplexMatrix&, const ComplexMatrix&)
 {
   (*current_liboctave_error_handler)
-    ("luupdate: not available in this version");
+    ("luupdate: support for qrupdate with LU updates "
+     "was unavailable or disabled when liboctave was built");
 }
 
 #endif

@@ -42,7 +42,7 @@ function [h, failed] = __patch__ (p, varargin)
       fvc = cell (1, 2*numfields (fvs));
       fvc(1:2:end) = fieldnames (fvs);
       fvc(2:2:end) = struct2cell (fvs);
-      args = [fvc{:}, varargin(2:end)];
+      args = [fvc(:)', varargin(2:end)];
     else
       failed = true;
     endif

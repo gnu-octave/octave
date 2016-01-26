@@ -427,7 +427,10 @@ tm_row_const::tm_row_const_rep::cellify (void)
         {
           elt_changed = true;
 
-          *p = Cell (*p);
+          if (p->is_empty ())
+            *p = Cell ();
+          else
+            *p = Cell (*p);
         }
     }
 
@@ -1382,6 +1385,8 @@ The original variable value is restored when exiting the function.\n\
 %! assert (["these"; "are"; "strings"], ["theseXX"; "areXXXX"; "strings"]);
 %! string_fill_char (orig_val);
 %! assert (string_fill_char (), orig_val);
+
+%!assert ( [ [], {1} ], {1} )
 
 %!error (string_fill_char (1, 2))
 */

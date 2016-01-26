@@ -71,7 +71,7 @@ function [c, maxsize, endian] = computer (a)
     else
       c = msg;
       if (isargout (2))
-        if (strcmp (octave_config_info ("USE_64_BIT_IDX_T"), "true"))
+        if (strcmp (octave_config_info ("ENABLE_64"), "true"))
           maxsize = 2^63-1;
         else
           maxsize = 2^31-1;

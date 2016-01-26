@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "SparseQR.h"
 #include "SparseCmplxQR.h"
 
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
 # define CXSPARSE_NAME(name) cs_dl ## name
 #else
 # define CXSPARSE_NAME(name) cs_di ## name

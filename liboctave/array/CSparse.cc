@@ -5601,7 +5601,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
           A->itype = CHOLMOD_INT;
@@ -5847,7 +5847,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
           A->itype = CHOLMOD_INT;
@@ -5871,7 +5871,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           B->packed = true;
           B->sorted = true;
           B->nz = 0;
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
           B->itype = CHOLMOD_LONG;
 #else
           B->itype = CHOLMOD_INT;
@@ -6141,7 +6141,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
           A->itype = CHOLMOD_INT;
@@ -6366,7 +6366,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
           A->itype = CHOLMOD_LONG;
 #else
           A->itype = CHOLMOD_INT;
@@ -6390,7 +6390,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           B->packed = true;
           B->sorted = true;
           B->nz = 0;
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
           B->itype = CHOLMOD_LONG;
 #else
           B->itype = CHOLMOD_INT;

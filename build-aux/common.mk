@@ -316,7 +316,6 @@ Z_LIBS = @Z_LIBS@
 
 # Miscellaneous
 
-USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
 OCTAVE_IDX_TYPE = @OCTAVE_IDX_TYPE@
 
 if AMCOND_ADDRESS_SANITIZER_ENABLED
@@ -666,7 +665,6 @@ define do_subst_config_vals
     -e "s|%OCTAVE_CONF_UMFPACK_CPPFLAGS%|\"${UMFPACK_CPPFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_UMFPACK_LDFLAGS%|\"${UMFPACK_LDFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_UMFPACK_LIBS%|\"${UMFPACK_LIBS}\"|" \
-    -e "s|%OCTAVE_CONF_USE_64_BIT_IDX_T%|\"${USE_64_BIT_IDX_T}\"|" \
     -e "s|%OCTAVE_CONF_VERSION%|\"${version}\"|" \
     -e "s|%OCTAVE_CONF_WARN_CFLAGS%|\"${WARN_CFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_WARN_CXXFLAGS%|\"${WARN_CXXFLAGS}\"|" \
@@ -841,7 +839,6 @@ define do_subst_cross_config_vals
     -e "s|%OCTAVE_CONF_UMFPACK_CPPFLAGS%|\"${UMFPACK_CPPFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_UMFPACK_LDFLAGS%|\"${UMFPACK_LDFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_UMFPACK_LIBS%|\"${UMFPACK_LIBS}\"|" \
-    -e "s|%OCTAVE_CONF_USE_64_BIT_IDX_T%|\"${USE_64_BIT_IDX_T}\"|" \
     -e "s|%OCTAVE_CONF_VERSION%|\"${version}\"|" \
     -e "s|%OCTAVE_CONF_WARN_CFLAGS%|\"${WARN_CFLAGS}\"|" \
     -e "s|%OCTAVE_CONF_WARN_CXXFLAGS%|\"${WARN_CXXFLAGS}\"|" \

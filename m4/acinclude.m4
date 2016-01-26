@@ -1230,7 +1230,7 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
           #include <assert.h>
           #include <stdint.h>
           ]], [[
-          #ifdef USE_64_BIT_IDX_T
+          #ifdef ENABLE_64
             typedef int64_t octave_idx_type;
           #else
             typedef int octave_idx_type;
@@ -2407,7 +2407,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
         #elif defined (HAVE_UMFPACK_H)
         # include <umfpack.h>
         #endif
-        #ifdef USE_64_BIT_IDX_T
+        #ifdef ENABLE_64
         typedef uint64_t idx_type;
         #define UMFPACK_NAME(name) umfpack_zl_ ## name
         #else

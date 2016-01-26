@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray.cc"
 
 template class OCTAVE_API MArray<int>;
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
 template class OCTAVE_API MArray<int64_t>;
 #endif
 
@@ -44,7 +44,7 @@ template long xmin<long> (long, long);
 template long xmax<long> (long, long);
 
 INSTANTIATE_MARRAY_FRIENDS (int, OCTAVE_API)
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
 INSTANTIATE_MARRAY_FRIENDS (int64_t, OCTAVE_API)
 #endif
 

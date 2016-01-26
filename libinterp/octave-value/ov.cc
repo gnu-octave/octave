@@ -1521,7 +1521,7 @@ octave_value::is_equal (const octave_value& test) const
 octave_idx_type
 octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 {
-#if defined (USE_64_BIT_IDX_T)
+#if defined (ENABLE_64)
   return int64_value (req_int, frc_str_conv);
 #else
   return int_value (req_int, frc_str_conv);

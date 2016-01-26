@@ -107,7 +107,7 @@ typedef unsigned long ino_t;
 #define F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION
 #endif
 
-#ifdef USE_64_BIT_IDX_T
+#if defined (ENABLE_64)
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
 #else
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT

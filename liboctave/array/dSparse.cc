@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MatrixType.h"
 #include "oct-sparse.h"
 #include "sparse-util.h"
-#include "SparsedbleCHOL.h"
+#include "sparse-chol.h"
 #include "SparseQR.h"
 
 #include "Sparse-op-defs.h"
@@ -1169,7 +1169,7 @@ SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
       if (mattype.is_hermitian ())
         {
           MatrixType tmp_typ (MatrixType::Upper);
-          SparseCHOL fact (*this, info, false);
+          sparse_chol<SparseMatrix> fact (*this, info, false);
           rcond = fact.rcond ();
           if (info == 0)
             {

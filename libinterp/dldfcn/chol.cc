@@ -31,8 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dbleCHOL.h"
 #include "fCmplxCHOL.h"
 #include "floatCHOL.h"
-#include "SparseCmplxCHOL.h"
-#include "SparsedbleCHOL.h"
+#include "sparse-chol.h"
 #include "oct-spparms.h"
 #include "sparse-util.h"
 
@@ -194,7 +193,7 @@ sparse matrices.\n\
         {
           SparseMatrix m = arg.sparse_matrix_value ();
 
-          SparseCHOL fact (m, info, natural, force);
+          sparse_chol<SparseMatrix> fact (m, info, natural, force);
 
           if (nargout == 3)
             {
@@ -219,7 +218,7 @@ sparse matrices.\n\
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-          SparseComplexCHOL fact (m, info, natural, force);
+          sparse_chol<SparseComplexMatrix> fact (m, info, natural, force);
 
           if (nargout == 3)
             {
@@ -358,7 +357,7 @@ the Cholesky@tie{}factorization.\n\
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
-              SparseCHOL chol (m, info);
+              sparse_chol<SparseMatrix> chol (m, info);
 
               if (info == 0)
                 retval = chol.inverse ();
@@ -369,7 +368,7 @@ the Cholesky@tie{}factorization.\n\
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-              SparseComplexCHOL chol (m, info);
+              sparse_chol<SparseComplexMatrix> chol (m, info);
 
               if (info == 0)
                 retval = chol.inverse ();

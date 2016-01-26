@@ -79,12 +79,10 @@ NUMERIC_INC = \
   liboctave/numeric/randgamma.h \
   liboctave/numeric/randmtzig.h \
   liboctave/numeric/randpoisson.h \
-  liboctave/numeric/sparse-base-chol.h \
+  liboctave/numeric/sparse-chol.h \
   liboctave/numeric/sparse-base-lu.h \
-  liboctave/numeric/SparseCmplxCHOL.h \
   liboctave/numeric/SparseCmplxLU.h \
   liboctave/numeric/SparseCmplxQR.h \
-  liboctave/numeric/SparsedbleCHOL.h \
   liboctave/numeric/SparsedbleLU.h \
   liboctave/numeric/SparseQR.h
 
@@ -146,12 +144,11 @@ NUMERIC_SRC = \
   liboctave/numeric/oct-spparms.cc \
   liboctave/numeric/ODES.cc \
   liboctave/numeric/Quad.cc \
-  liboctave/numeric/SparseCmplxCHOL.cc \
   liboctave/numeric/SparseCmplxLU.cc \
   liboctave/numeric/SparseCmplxQR.cc \
-  liboctave/numeric/SparsedbleCHOL.cc \
   liboctave/numeric/SparsedbleLU.cc \
   liboctave/numeric/SparseQR.cc \
+  liboctave/numeric/sparse-chol-inst.cc \
   $(NUMERIC_C_SRC)
 
 LIBOCTAVE_TEMPLATE_SRC += \
@@ -159,7 +156,7 @@ LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/numeric/base-qr.cc \
   liboctave/numeric/bsxfun-defs.cc \
   liboctave/numeric/eigs-base.cc \
-  liboctave/numeric/sparse-base-chol.cc \
+  liboctave/numeric/sparse-chol.cc \
   liboctave/numeric/sparse-base-lu.cc \
   liboctave/numeric/sparse-dmsolve.cc
 

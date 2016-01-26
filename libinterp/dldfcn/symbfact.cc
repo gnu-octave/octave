@@ -25,8 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "SparseCmplxCHOL.h"
-#include "SparsedbleCHOL.h"
+#include "sparse-chol.h"
 #include "oct-spparms.h"
 #include "sparse-util.h"
 #include "oct-locbuf.h"

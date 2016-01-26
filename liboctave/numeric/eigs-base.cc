@@ -37,8 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dSparse.h"
 #include "CSparse.h"
 #include "MatrixType.h"
-#include "SparsedbleCHOL.h"
-#include "SparseCmplxCHOL.h"
+#include "sparse-chol.h"
 #include "oct-rand.h"
 #include "dbleCHOL.h"
 #include "CmplxCHOL.h"
@@ -370,7 +369,7 @@ static bool
 make_cholb (SparseMatrix& b, SparseMatrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
-  SparseCHOL fact (b, info, false);
+  sparse_chol<SparseMatrix> fact (b, info, false);
 
   if (fact.P () != 0)
     return false;
@@ -408,7 +407,7 @@ make_cholb (SparseComplexMatrix& b, SparseComplexMatrix& bt,
             ColumnVector& permB)
 {
   octave_idx_type info;
-  SparseComplexCHOL fact (b, info, false);
+  sparse_chol<SparseComplexMatrix> fact (b, info, false);
 
   if (fact.P () != 0)
     return false;

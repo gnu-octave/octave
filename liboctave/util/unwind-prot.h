@@ -117,7 +117,7 @@ unwind_protect_safe : public unwind_protect
 {
 private:
 
-  static void err_unhandled_exception (void);
+  void warn_unhandled_exception (void) const;
 
 public:
 
@@ -133,7 +133,7 @@ public:
           }
         catch (...) // Yes, the black hole.  Remember we're in a destructor.
           {
-            err_unhandled_exception ();
+            warn_unhandled_exception ();
           }
       }
   }

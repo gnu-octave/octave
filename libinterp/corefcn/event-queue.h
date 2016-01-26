@@ -92,7 +92,7 @@ event_queue_safe : public event_queue
 {
 private:
 
-  static void gripe_exception (void);
+  void warn_unhandled_exception (void) const;
 
 public:
 
@@ -108,7 +108,7 @@ public:
           }
         catch (...) // Yes, the black hole. Remember we're in a dtor.
           {
-            gripe_exception ();
+            warn_unhandled_exception ();
           }
       }
   }

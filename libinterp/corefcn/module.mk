@@ -145,6 +145,7 @@ COREFCN_SRC = \
   libinterp/corefcn/ellipj.cc \
   libinterp/corefcn/error.cc \
   libinterp/corefcn/errwarn.cc \
+  libinterp/corefcn/event-queue.cc \
   libinterp/corefcn/fft.cc \
   libinterp/corefcn/fft2.cc \
   libinterp/corefcn/fftn.cc \

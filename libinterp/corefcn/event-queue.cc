@@ -1,7 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
-Copyright (C) 2009 VZLU Prague
+Copyright (C) 2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,14 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "lo-error.h"
-#include "unwind-prot.h"
+#include "error.h"
+#include "event-queue.h"
 
 void
-unwind_protect_safe::warn_unhandled_exception (void) const
+event_queue_safe::warn_unhandled_exception (void) const
 {
-  (*current_liboctave_warning_handler)
-    ("unhandled exception in unwind_protect_safe handler.  "
-     "It is a bug in Octave for this to happen.  "
-     "Please help improve Octave by reporting it.");
+  warning ("unhandled exception in event_queue_safe handler.  "
+           "It is a bug in Octave for this to happen.  "
+           "Please help improve Octave by reporting it.");
 }

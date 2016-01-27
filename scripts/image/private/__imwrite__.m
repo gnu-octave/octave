@@ -100,7 +100,7 @@ function __imwrite__ (img, varargin)
                             {"donotspecify", "leaveinplace", ...
                              "restorebg", "restoreprevious"});
         if (any (! matches))
-          error ("imwrite: unknow method %s for option %s",
+          error ("imwrite: unknown method %s for option %s",
                  options.disposalmethod{find (! matches, 1)},
                  param_list{idx});
         endif

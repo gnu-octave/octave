@@ -147,7 +147,7 @@ get_region_range (const octave_value& region)
       output = Range (value, value);
     }
   else
-    error ("__magick_read__: unknow datatype for Region option");
+    error ("__magick_read__: unknown datatype for Region option");
 
   return output;
 }

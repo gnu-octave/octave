@@ -1855,7 +1855,7 @@
 
 2008-02-08  Rafael Laboissiere  <rafael@debian.org>
 
-	* interpreter/octave.1: Dropped unknow LO macro
+	* interpreter/octave.1: Dropped unknown LO macro
 	* interpreter/octave-bug.1: Likewise
 
 2008-02-07  David Bateman  <dbateman@free.fr>

@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dSparse.h"
 #include "functor.h"
 #include "oct-spparms.h"
-#include "SparsedbleLU.h"
+#include "sparse-lu.h"
 #include "MatrixType.h"
 #include "oct-sparse.h"
 #include "sparse-util.h"
@@ -1194,7 +1194,7 @@ SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
             Qinit(i) = i;
 
           MatrixType tmp_typ (MatrixType::Upper);
-          SparseLU fact (*this, Qinit, Matrix (), false, false);
+          sparse_lu<SparseMatrix> fact (*this, Qinit, Matrix (), false, false);
           rcond = fact.rcond ();
           double rcond2;
           SparseMatrix InvL = fact.L ().transpose ().tinverse (tmp_typ,

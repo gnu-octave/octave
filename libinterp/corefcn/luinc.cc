@@ -32,8 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 
 #include "MatrixType.h"
-#include "SparseCmplxLU.h"
-#include "SparsedbleLU.h"
+#include "sparse-lu.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
@@ -195,7 +194,7 @@ values of @var{p} @var{q} as vector values.\n\
         case 1:
         case 2:
           {
-            SparseLU fact (sm, Qinit, thresh, false, true, droptol,
+            sparse_lu<SparseMatrix> fact (sm, Qinit, thresh, false, true, droptol,
                            milu, udiag);
 
             SparseMatrix P = fact.Pr ();
@@ -212,7 +211,7 @@ values of @var{p} @var{q} as vector values.\n\
 
         case 3:
           {
-            SparseLU fact (sm, Qinit, thresh, false, true, droptol,
+            sparse_lu<SparseMatrix> fact (sm, Qinit, thresh, false, true, droptol,
                            milu, udiag);
 
             if (vecout)
@@ -231,7 +230,7 @@ values of @var{p} @var{q} as vector values.\n\
         case 4:
         default:
           {
-            SparseLU fact (sm, Qinit, thresh, false, false, droptol,
+            sparse_lu<SparseMatrix> fact (sm, Qinit, thresh, false, false, droptol,
                            milu, udiag);
 
             if (vecout)
@@ -270,7 +269,7 @@ values of @var{p} @var{q} as vector values.\n\
         case 1:
         case 2:
           {
-            SparseComplexLU fact (sm, Qinit, thresh, false, true,
+            sparse_lu<SparseComplexMatrix> fact (sm, Qinit, thresh, false, true,
                                   droptol, milu, udiag);
 
             SparseMatrix P = fact.Pr ();
@@ -287,7 +286,7 @@ values of @var{p} @var{q} as vector values.\n\
 
         case 3:
           {
-            SparseComplexLU fact (sm, Qinit, thresh, false, true,
+            sparse_lu<SparseComplexMatrix> fact (sm, Qinit, thresh, false, true,
                                   droptol, milu, udiag);
 
             if (vecout)
@@ -306,7 +305,7 @@ values of @var{p} @var{q} as vector values.\n\
         case 4:
         default:
           {
-            SparseComplexLU fact (sm, Qinit, thresh, false, false,
+            sparse_lu<SparseComplexMatrix> fact (sm, Qinit, thresh, false, false,
                                   droptol, milu, udiag);
 
             if (vecout)

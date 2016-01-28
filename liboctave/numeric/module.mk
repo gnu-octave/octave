@@ -80,10 +80,8 @@ NUMERIC_INC = \
   liboctave/numeric/randmtzig.h \
   liboctave/numeric/randpoisson.h \
   liboctave/numeric/sparse-chol.h \
-  liboctave/numeric/sparse-base-lu.h \
-  liboctave/numeric/SparseCmplxLU.h \
+  liboctave/numeric/sparse-lu.h \
   liboctave/numeric/SparseCmplxQR.h \
-  liboctave/numeric/SparsedbleLU.h \
   liboctave/numeric/SparseQR.h
 
 NUMERIC_C_SRC = \
@@ -144,12 +142,11 @@ NUMERIC_SRC = \
   liboctave/numeric/oct-spparms.cc \
   liboctave/numeric/ODES.cc \
   liboctave/numeric/Quad.cc \
-  liboctave/numeric/SparseCmplxLU.cc \
   liboctave/numeric/SparseCmplxQR.cc \
-  liboctave/numeric/SparsedbleLU.cc \
   liboctave/numeric/SparseQR.cc \
   liboctave/numeric/sparse-chol-inst.cc \
-  $(NUMERIC_C_SRC)
+  liboctave/numeric/sparse-lu-inst.cc \
+$(NUMERIC_C_SRC)
 
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/numeric/base-lu.cc \
@@ -157,7 +154,7 @@ LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/numeric/bsxfun-defs.cc \
   liboctave/numeric/eigs-base.cc \
   liboctave/numeric/sparse-chol.cc \
-  liboctave/numeric/sparse-base-lu.cc \
+  liboctave/numeric/sparse-lu.cc \
   liboctave/numeric/sparse-dmsolve.cc
 
 ## Special rules for sources which must be built before rest of compilation.

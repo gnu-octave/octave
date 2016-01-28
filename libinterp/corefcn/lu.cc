@@ -28,8 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dbleLU.h"
 #include "fCmplxLU.h"
 #include "floatLU.h"
-#include "SparseCmplxLU.h"
-#include "SparsedbleLU.h"
+#include "sparse-lu.h"
 
 #include "defun.h"
 #include "error.h"
@@ -208,7 +207,7 @@ information.\n\
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
-              SparseLU fact (m, Qinit, thres, false, true);
+              sparse_lu<SparseMatrix> fact (m, Qinit, thres, false, true);
 
               if (nargout < 2)
                 retval(0) = fact.Y ();
@@ -242,7 +241,7 @@ information.\n\
           else
             {
               retval.resize (scale ? 5 : 4);
-              SparseLU fact (m, thres, scale);
+              sparse_lu<SparseMatrix> fact (m, thres, scale);
 
               retval(0) = octave_value (fact.L (),
                                         MatrixType (MatrixType::Lower));
@@ -273,7 +272,7 @@ information.\n\
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
-              SparseComplexLU fact (m, Qinit, thres, false, true);
+              sparse_lu<SparseComplexMatrix> fact (m, Qinit, thres, false, true);
 
               if (nargout < 2)
                 retval(0) = fact.Y ();
@@ -306,7 +305,7 @@ information.\n\
           else
             {
               retval.resize (scale ? 5 : 4);
-              SparseComplexLU fact (m, thres, scale);
+              sparse_lu<SparseComplexMatrix> fact (m, thres, scale);
 
               retval(0) = octave_value (fact.L (),
                                         MatrixType (MatrixType::Lower));

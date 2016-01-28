@@ -22,27 +22,37 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 
-#if ! defined (octave_sparse_base_lu_h)
-#define octave_sparse_base_lu_h 1
+#if ! defined (octave_sparse_lu_h)
+#define octave_sparse_lu_h 1
 
 #include "MArray.h"
 #include "dSparse.h"
 
-template <typename lu_type, typename lu_elt_type, typename p_type, typename p_elt_type>
+template <typename lu_type>
 class
-sparse_base_lu
+sparse_lu
 {
 public:
 
-  sparse_base_lu (void)
+  typedef typename lu_type::element_type lu_elt_type;
+  
+  sparse_lu (void)
     : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
 
-  sparse_base_lu (const sparse_base_lu& a)
+  sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
+             bool scale = false);
+
+  sparse_lu (const lu_type& a, const ColumnVector& Qinit,
+             const Matrix& piv_thres, bool scale = false,
+             bool FixedQ = false, double droptol = -1.0,
+             bool milu = false, bool udiag = false);
+
+  sparse_lu (const sparse_lu& a)
     : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
       P (a.P), Q (a.Q)
   { }
 
-  sparse_base_lu& operator = (const sparse_base_lu& a)
+  sparse_lu& operator = (const sparse_lu& a)
   {
     if (this != &a)
       {
@@ -52,10 +62,11 @@ public:
         P = a.P;
         Q = a.Q;
       }
+
     return *this;
   }
 
-  virtual ~sparse_base_lu (void) { }
+  virtual ~sparse_lu (void) { }
 
   lu_type L (void) const { return Lfact; }
 
@@ -65,9 +76,9 @@ public:
 
   lu_type Y (void) const;
 
-  p_type Pc (void) const;
+  SparseMatrix Pc (void) const;
 
-  p_type Pr (void) const;
+  SparseMatrix Pr (void) const;
 
   ColumnVector Pc_vec (void) const;
 

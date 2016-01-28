@@ -32,8 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "oct-locbuf.h"
 #include "quit.h"
-#include "SparsedbleLU.h"
-#include "SparseCmplxLU.h"
+#include "sparse-lu.h"
 #include "dSparse.h"
 #include "CSparse.h"
 #include "MatrixType.h"
@@ -473,7 +472,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
       AminusSigmaB -= sigmat;
     }
 
-  SparseLU fact (AminusSigmaB);
+  sparse_lu<SparseMatrix> fact (AminusSigmaB);
 
   L = fact.L ();
   U = fact.U ();
@@ -637,7 +636,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
       AminusSigmaB -= sigmat;
     }
 
-  SparseComplexLU fact (AminusSigmaB);
+  sparse_lu<SparseComplexMatrix> fact (AminusSigmaB);
 
   L = fact.L ();
   U = fact.U ();

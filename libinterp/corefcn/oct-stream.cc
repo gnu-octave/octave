@@ -1107,8 +1107,6 @@ octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
   return cnt;
 }
 
-#define OCTAVE_SCAN(is, fmt, arg) octave_scan (is, fmt, arg)
-
 template <typename T>
 std::istream&
 octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
@@ -1256,7 +1254,7 @@ do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
                octave_idx_type& conversion_count, octave_idx_type nr,
                octave_idx_type max_size, bool discard)
 {
-  OCTAVE_SCAN (is, fmt, valptr);
+  octave_scan (is, fmt, valptr);
 
   if (! is)
     return;
@@ -1970,7 +1968,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
           {
             int tmp;
 
-            if (OCTAVE_SCAN (is, *elt, &tmp))
+            if (octave_scan (is, *elt, &tmp))
               {
                 if (! discard)
                   retval = tmp;
@@ -1984,7 +1982,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
           {
             long int tmp;
 
-            if (OCTAVE_SCAN (is, *elt, &tmp))
+            if (octave_scan (is, *elt, &tmp))
               {
                 if (! discard)
                   retval = tmp;
@@ -1998,7 +1996,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
           {
             double tmp;
 
-            if (OCTAVE_SCAN (is, *elt, &tmp))
+            if (octave_scan (is, *elt, &tmp))
               {
                 if (! discard)
                   retval = tmp;

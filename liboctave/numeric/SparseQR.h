@@ -129,13 +129,13 @@ public:
 
   Matrix Q (void) const { return rep->Q (); }
 
-  friend Matrix qrsolve (const SparseMatrix &a, const Matrix &b,
+  friend Matrix qrsolve (const SparseMatrix &a, const MArray<double> &b,
                          octave_idx_type &info);
 
   friend SparseMatrix qrsolve (const SparseMatrix &a, const SparseMatrix &b,
                                octave_idx_type &info);
 
-  friend ComplexMatrix qrsolve (const SparseMatrix &a, const ComplexMatrix &b,
+  friend ComplexMatrix qrsolve (const SparseMatrix &a, const MArray<Complex> &b,
                                 octave_idx_type &info);
 
   friend SparseComplexMatrix qrsolve (const SparseMatrix &a,
@@ -153,17 +153,11 @@ protected:
 
 // Publish externally used friend functions.
 
-extern Matrix qrsolve (const SparseMatrix &a, const Matrix &b,
-                       octave_idx_type &info);
-
 extern Matrix qrsolve (const SparseMatrix &a, const MArray<double> &b,
                        octave_idx_type &info);
 
 extern SparseMatrix qrsolve (const SparseMatrix &a, const SparseMatrix &b,
                              octave_idx_type &info);
-
-extern ComplexMatrix qrsolve (const SparseMatrix &a, const ComplexMatrix &b,
-                              octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseMatrix &a, const MArray<Complex> &b,
                               octave_idx_type &info);

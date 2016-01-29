@@ -128,7 +128,8 @@ public:
 
   ComplexMatrix Q (void) const { return rep->Q (); }
 
-  friend ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
+  friend ComplexMatrix qrsolve (const SparseComplexMatrix &a,
+                                const MArray<double> &b,
                                 octave_idx_type &info);
 
   friend SparseComplexMatrix qrsolve (const SparseComplexMatrix &a,
@@ -136,7 +137,7 @@ public:
                                       octave_idx_type &info);
 
   friend ComplexMatrix qrsolve (const SparseComplexMatrix &a,
-                                const ComplexMatrix &b,
+                                const MArray<Complex> &b,
                                 octave_idx_type &info);
 
   friend SparseComplexMatrix qrsolve (const SparseComplexMatrix &a,
@@ -154,9 +155,6 @@ protected:
 
 // Publish externally used friend functions.
 
-extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
-                              octave_idx_type &info);
-
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a,
                               const MArray<double> &b,
                               octave_idx_type &info);
@@ -164,10 +162,6 @@ extern ComplexMatrix qrsolve (const SparseComplexMatrix &a,
 extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a,
                                     const SparseMatrix &b,
                                     octave_idx_type &info);
-
-extern ComplexMatrix qrsolve (const SparseComplexMatrix &a,
-                              const ComplexMatrix &b,
-                              octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a,
                               const MArray<Complex> &b,

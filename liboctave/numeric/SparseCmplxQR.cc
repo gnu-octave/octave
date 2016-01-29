@@ -253,7 +253,8 @@ SparseComplexQR::SparseComplexQR_rep::Q (void) const
 }
 
 ComplexMatrix
-qrsolve (const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
+qrsolve (const SparseComplexMatrix& a, const MArray<double>& b,
+         octave_idx_type& info)
 {
   info = -1;
 #ifdef HAVE_CXSPARSE
@@ -496,8 +497,8 @@ qrsolve (const SparseComplexMatrix&a, const SparseMatrix &b,
 }
 
 ComplexMatrix
-qrsolve (const SparseComplexMatrix&a, const ComplexMatrix &b,
-         octave_idx_type &info)
+qrsolve (const SparseComplexMatrix& a, const MArray<Complex>& b,
+         octave_idx_type& info)
 {
   info = -1;
 #ifdef HAVE_CXSPARSE
@@ -732,18 +733,4 @@ qrsolve (const SparseComplexMatrix&a, const SparseComplexMatrix &b,
 #else
   return SparseComplexMatrix ();
 #endif
-}
-
-ComplexMatrix
-qrsolve (const SparseComplexMatrix &a, const MArray<double> &b,
-         octave_idx_type &info)
-{
-  return qrsolve (a, Matrix (b), info);
-}
-
-ComplexMatrix
-qrsolve (const SparseComplexMatrix &a, const MArray<Complex> &b,
-         octave_idx_type &info)
-{
-  return qrsolve (a, ComplexMatrix (b), info);
 }

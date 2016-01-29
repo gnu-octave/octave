@@ -109,22 +109,6 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
   return B;
 }
 
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-static MSparse<double>
-dmsolve_extract (const MSparse<double> &A, const octave_idx_type *Pinv,
-                 const octave_idx_type *Q, octave_idx_type rst,
-                 octave_idx_type rend, octave_idx_type cst,
-                 octave_idx_type cend, octave_idx_type maxnz,
-                 bool lazy);
-
-static MSparse<Complex>
-dmsolve_extract (const MSparse<Complex> &A, const octave_idx_type *Pinv,
-                 const octave_idx_type *Q, octave_idx_type rst,
-                 octave_idx_type rend, octave_idx_type cst,
-                 octave_idx_type cend, octave_idx_type maxnz,
-                 bool lazy);
-#endif
-
 template <typename T>
 static MArray<T>
 dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
@@ -149,20 +133,6 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
   return result;
 }
 
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-static MArray<double>
-dmsolve_extract (const MArray<double> &m, const octave_idx_type *,
-                 const octave_idx_type *, octave_idx_type r1,
-                 octave_idx_type r2, octave_idx_type c1,
-                 octave_idx_type c2)
-
-static MArray<Complex>
-dmsolve_extract (const MArray<Complex> &m, const octave_idx_type *,
-                 const octave_idx_type *, octave_idx_type r1,
-                 octave_idx_type r2, octave_idx_type c1,
-                 octave_idx_type c2)
-#endif
-
 template <typename T>
 static void
 dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
@@ -184,16 +154,6 @@ dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
         }
     }
 }
-
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-static void
-dmsolve_insert (MArray<double> &a, const MArray<double> &b,
-                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
-
-static void
-dmsolve_insert (MArray<Complex> &a, const MArray<Complex> &b,
-                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
-#endif
 
 template <typename T>
 static void
@@ -272,16 +232,6 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
     }
 }
 
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-static void
-dmsolve_insert (MSparse<double> &a, const SparseMatrix &b,
-                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
-
-static void
-dmsolve_insert (MSparse<Complex> &a, const MSparse<Complex> &b,
-                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
-#endif
-
 template <typename T, typename RT>
 static void
 dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
@@ -301,20 +251,6 @@ dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
         }
     }
 }
-
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-static void
-dmsolve_permute (MArray<double> &a, const MArray<double>& b,
-                 const octave_idx_type *p);
-
-static void
-dmsolve_permute (MArray<Complex> &a, const MArray<double>& b,
-                 const octave_idx_type *p);
-
-static void
-dmsolve_permute (MArray<Complex> &a, const MArray<Complex>& b,
-                 const octave_idx_type *p);
-#endif
 
 template <typename T, typename RT>
 static void
@@ -347,20 +283,6 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
       a.xcidx (j+1) = nz;
     }
 }
-
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-static void
-dmsolve_permute (MSparse<double> &a, const MSparse<double>& b,
-                 const octave_idx_type *p);
-
-static void
-dmsolve_permute (MSparse<Complex> &a, const MSparse<double>& b,
-                 const octave_idx_type *p);
-
-static void
-dmsolve_permute (MSparse<Complex> &a, const MSparse<Complex>& b,
-                 const octave_idx_type *p);
-#endif
 
 static void
 solve_singularity_warning (double)
@@ -489,37 +411,3 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
     ("support for CXSparse was unavailable or disabled when liboctave was built");
 #endif
 }
-
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern Matrix
-dmsolve (const SparseMatrix &a, const Matrix &b,
-         octave_idx_type &info);
-
-extern ComplexMatrix
-dmsolve (const SparseMatrix &a, const ComplexMatrix &b,
-         octave_idx_type &info);
-
-extern ComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const Matrix &b,
-         octave_idx_type &info);
-
-extern ComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const ComplexMatrix &b,
-         octave_idx_type &info);
-
-extern SparseMatrix
-dmsolve (const SparseMatrix &a, const SparseMatrix &b,
-         octave_idx_type &info);
-
-extern SparseComplexMatrix
-dmsolve (const SparseMatrix &a, const SparseComplexMatrix &b,
-         octave_idx_type &info);
-
-extern SparseComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const SparseMatrix &b,
-         octave_idx_type &info);
-
-extern SparseComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const SparseComplexMatrix &b,
-         octave_idx_type &info);
-#endif

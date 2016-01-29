@@ -2215,9 +2215,6 @@ AC_STRUCT_TIMEZONE
 
 ### Check compiler characteristics.
 
-## Does compiler have support for new friend template declarations?
-OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
-
 ## Does reinterpret_cast fail for function pointers?
 OCTAVE_CXX_BROKEN_REINTERPRET_CAST
 

@@ -38,21 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "ovl.h"
 
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&, int dim);
-
-extern MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, int dim);
-
-extern MArray<float>
-filter (MArray<float>&, MArray<float>&, MArray<float>&, int dim);
-
-extern MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
-        int dim);
-#endif
-
 template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
@@ -216,24 +201,6 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   return y;
 }
-
-#if ! defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&,
-        MArray<double>&, int dim);
-
-extern MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
-        MArray<Complex>&, int dim);
-
-extern MArray<float>
-filter (MArray<float>&, MArray<float>&, MArray<float>&,
-        MArray<float>&, int dim);
-
-extern MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
-        MArray<FloatComplex>&, int dim);
-#endif
 
 template <typename T>
 MArray<T>

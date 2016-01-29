@@ -1460,44 +1460,6 @@ AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
   fi
 ])
 dnl
-dnl Check if C++ compiler needs the new friend template declaration
-dnl syntax.
-dnl
-AC_DEFUN([OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL], [
-  AC_REQUIRE([AC_PROG_CXX])
-  AC_MSG_CHECKING([for C++ support for new friend template declaration])
-  AC_CACHE_VAL([octave_cv_cxx_new_friend_template_decl],
-    [AC_LANG_PUSH(C++)
-    rm -f conftest.h
-    cat > conftest.h <<EOB
-       struct A {
-         friend int operator== (const A&, const A&);
-         A (int) { }
-       };
-
-       template <class T> int
-       operator== (const T&, const T&)
-       {
-         return 0;
-       }
-EOB
-    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-        #include "conftest.h"
-        ]], [[
-        A a (1);
-        return a == A(1);
-      ]])],
-      octave_cv_cxx_new_friend_template_decl=no,
-      octave_cv_cxx_new_friend_template_decl=yes)
-    AC_LANG_POP(C++)
-  ])
-  AC_MSG_RESULT([$octave_cv_cxx_new_friend_template_decl])
-  if test $octave_cv_cxx_new_friend_template_decl = yes; then
-    AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL, 1,
-      [Define to 1 if your compiler supports `<>' stuff for template friends.])
-  fi
-])
-dnl
 dnl Check if the compiler supports placement delete.
 dnl
 AC_DEFUN([OCTAVE_CXX_PLACEMENT_DELETE], [

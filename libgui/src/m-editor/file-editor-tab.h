@@ -128,7 +128,8 @@ public slots:
   void insert_debugger_pointer (const QWidget *ID, int line = -1);
   void delete_debugger_pointer (const QWidget *ID, int line = -1);
 
-  void do_breakpoint_marker (bool insert, const QWidget *ID, int line = -1);
+  void do_breakpoint_marker (bool insert, const QWidget *ID, int line = -1,
+                             const QString& cond = "");
 
   void recover_from_exit (void);
   void set_modified (bool modified = true);
@@ -142,8 +143,9 @@ public slots:
   void file_has_changed (const QString& fileName);
 
   void handle_context_menu_edit (const QString&);
+  void handle_context_menu_break_condition (int linenr);
 
-  void handle_request_add_breakpoint (int line);
+  void handle_request_add_breakpoint (int line, const QString& cond);
   void handle_request_remove_breakpoint (int line);
 
   void handle_octave_result (QObject *requester, QString& command, octave_value_list &result);
@@ -165,9 +167,9 @@ signals:
   void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
   void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
   void remove_all_breakpoints (void);
-  void find_translated_line_number (int original_linenr, int& translated_linenr);
+  void find_translated_line_number (int original_linenr, int& translated_linenr, marker*&);
   void find_linenr_just_before (int linenr, int& original_linenr, int& editor_linenr);
-  void report_editor_linenr (QIntList& int_list);
+  void report_marker_linenr (QIntList& lines, QStringList& conditions);
   void remove_position_via_debugger_linenr (int debugger_linenr);
   void remove_all_positions (void);
   // TODO: The following is similar to "process_octave_code" signal.  However,
@@ -215,12 +217,13 @@ private:
 
   struct bp_info
   {
-    bp_info (const QString& fname, int l = 0);
+    bp_info (const QString& fname, int l = 0, const QString& cond = "");
 
     int line;
     std::string file;
     std::string dir;
     std::string function_name;
+    std::string condition;
   };
 
   bool valid_file_name (const QString& file=QString ());
@@ -279,7 +282,8 @@ private:
 
   QFileSystemWatcher _file_system_watcher;
 
-  QIntList _bp_list;
+  QIntList _bp_lines;
+  QStringList _bp_conditions;
 
   find_dialog *_find_dialog;
   bool _find_dialog_is_visible;

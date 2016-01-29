@@ -404,11 +404,14 @@ file_editor::request_open_files (const QStringList& open_file_names)
     request_open_file (open_file_names.at (i), _file_encoding);
 }
 
+// Open a file, if not already open, and mark the current execution location
+// and/or a breakpoint with condition cond.
 void
 file_editor::request_open_file (const QString& openFileName,
                                 const QString& encoding,
                                 int line, bool debug_pointer,
-                                bool breakpoint_marker, bool insert)
+                                bool breakpoint_marker, bool insert,
+                                const QString& cond)
 {
   if (call_custom_editor (openFileName, line))
     return;   // custom editor called
@@ -440,7 +443,7 @@ file_editor::request_open_file (const QString& openFileName,
                 emit fetab_insert_debugger_pointer (tab, line);
 
               if (breakpoint_marker)
-                emit fetab_do_breakpoint_marker (insert, tab, line);
+                emit fetab_do_breakpoint_marker (insert, tab, line, cond);
             }
 
           if (! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
@@ -476,7 +479,7 @@ file_editor::request_open_file (const QString& openFileName,
                                                             line);
                       if (breakpoint_marker)
                         emit fetab_do_breakpoint_marker (insert, fileEditorTab,
-                                                         line);
+                                                         line, cond);
                     }
                 }
               else
@@ -758,9 +761,10 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file,
 void
 file_editor::handle_update_breakpoint_marker_request (bool insert,
                                                       const QString& file,
-                                                      int line)
+                                                      int line,
+                                                      const QString& cond)
 {
-  request_open_file (file, QString (), line, false, true, insert);
+  request_open_file (file, QString (), line, false, true, insert, cond);
 }
 
 void
@@ -887,6 +891,7 @@ file_editor::request_remove_bookmark (bool)
   emit fetab_remove_bookmark (_tab_widget->currentWidget ());
 }
 
+// FIXME What should this do with conditional breakpoints?
 void
 file_editor::request_toggle_breakpoint (bool)
 {
@@ -1858,9 +1863,6 @@ file_editor::construct (void)
   connect (_tab_widget, SIGNAL (currentChanged (int)),
            this, SLOT (active_tab_changed (int)));
 
-  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-           main_win (), SLOT (execute_command_in_terminal (const QString&)));
-
   resize (500, 400);
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
   set_title (tr ("Editor"));
@@ -1981,6 +1983,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_check_modified_file (void)),
            f, SLOT (check_modified_file (void)));
 
+  connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
+
   // Signals from the file_editor trivial operations
   connect (this, SIGNAL (fetab_recover_from_exit (void)),
            f, SLOT (recover_from_exit (void)));
@@ -2080,8 +2085,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (delete_debugger_pointer (const QWidget*, int)));
 
   connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget*,
-                                                     int)),
-           f, SLOT (do_breakpoint_marker (bool, const QWidget*, int)));
+                                                     int, const QString&)),
+           f, SLOT (do_breakpoint_marker (bool, const QWidget*, int,
+                                          const QString&)));
 
   _tab_widget->setCurrentWidget (f);
 

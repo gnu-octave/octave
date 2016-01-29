@@ -124,7 +124,8 @@ public:
   void do_execute_in_debugger_event (const std::string& file, int line);
   void do_exit_debugger_event (void);
 
-  void do_update_breakpoint (bool insert, const std::string& file, int line);
+  void do_update_breakpoint (bool insert, const std::string& file, int line,
+                             const std::string& cond);
 
   void do_set_default_prompts (std::string& ps1, std::string& ps2,
                                std::string& ps4);
@@ -191,7 +192,7 @@ signals:
   void exit_debugger_signal (void);
 
   void update_breakpoint_marker_signal (bool insert, const QString& file,
-                                        int line);
+                                        int line, const QString& cond);
 
   void insert_debugger_pointer_signal (const QString&, int);
   void delete_debugger_pointer_signal (const QString&, int);

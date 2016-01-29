@@ -54,6 +54,8 @@ signals:
   void qsci_has_focus_signal (bool);
   void status_update (bool,bool);
   void show_doc_signal (const QString&);
+  void context_menu_break_condition_signal (int);
+  void context_menu_break_once (int);
 
 private slots:
 
@@ -62,6 +64,9 @@ private slots:
   void contextmenu_help_doc (bool);
   void contextmenu_edit (bool);
   void contextmenu_run (bool);
+
+  void contextmenu_break_condition (bool);
+  void contextmenu_break_once (const QPoint&);
 
   void text_changed (void);
 

@@ -56,7 +56,7 @@ public:
 
   virtual void
   handle_update_breakpoint_marker_request (bool insert, const QString& file,
-                                           int line) = 0;
+                                           int line, const QString& cond) = 0;
 
   virtual void handle_edit_file_request (const QString& file) = 0;
 
@@ -76,7 +76,8 @@ public slots:
                                   int line = -1,
                                   bool debug_pointer = false,
                                   bool breakpoint_marker = false,
-                                  bool insert = true) = 0;
+                                  bool insert = true,
+                                  const QString& cond = "") = 0;
 //signals:
 
 //protected:

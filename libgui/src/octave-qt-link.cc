@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringList>
 #include <QDialog>
 #include <QDir>
+#include <QPushButton>
 
 #include "str-vec.h"
 #include "dialog.h"
@@ -372,6 +373,11 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
   return retval;
 }
 
+// Prompt to allow file to be run by setting cwd (or if addpath_option==true,
+// alternatively setting the path).
+// This uses a QMessageBox unlike other functions in this file,
+// because uiwidget_creator.waitcondition.wait hangs when called from
+// file_editor_tab::handle_context_menu_break_condition().  (FIXME -- why hang?)
 int
 octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
                                               const std::string& dir,
@@ -382,46 +388,30 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
   QString qdir = QString::fromStdString (dir);
   QString qfile = QString::fromStdString (file);
 
-  QString msg
-    = (addpath_option
-       ? tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
-       : tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
+  QMessageBox msgBox;
 
-  QString title = tr ("Change Directory or Add Directory to Load Path");
+  msgBox.setText ("File not in load path");
+  QPushButton *cd_btn = msgBox.addButton (tr ("Change Directory"),
+                                          QMessageBox::YesRole);
 
-  QString cd_txt = tr ("Change Directory");
-  QString addpath_txt = tr ("Add Directory to Load Path");
-  QString cancel_txt = tr ("Cancel");
-
-  QStringList btn;
-  QStringList role;
-  btn << cd_txt;
-  role << "YesRole";
+  QPushButton *addpath_btn = 0;
   if (addpath_option)
     {
-      btn << addpath_txt;
-      role << "AcceptRole";
+      msgBox.setInformativeText (tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir));
+      addpath_btn = msgBox.addButton (tr ("Add Directory to Load Path"),
+                                     QMessageBox::AcceptRole);
     }
-  btn << cancel_txt;
-  role << "RejectRole";
+    else
+    {
+      msgBox.setInformativeText (tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
+    }
+  msgBox.setStandardButtons (QMessageBox::Cancel);
 
-  // Lock mutex before signaling.
-  uiwidget_creator.mutex.lock ();
+  msgBox.exec ();
 
-  uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
-
-  // Wait while the user is responding to message box.
-  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
-
-  // The GUI has sent a signal and the thread has been awakened.
-
-  QString result = uiwidget_creator.get_dialog_button ();
-
-  uiwidget_creator.mutex.unlock ();
-
-  if (result == cd_txt)
+  if (msgBox.clickedButton () == cd_btn)
     retval = 1;
-  else if (result == addpath_txt)
+  else if (msgBox.clickedButton () == addpath_btn)
     retval = 2;
 
   return retval;
@@ -538,12 +528,15 @@ octave_qt_link::do_exit_debugger_event (void)
   emit exit_debugger_signal ();
 }
 
+// Display (if @insert true) or remove the appropriate symbol for a breakpoint
+// in @file at @line with condition @cond.
 void
 octave_qt_link::do_update_breakpoint (bool insert,
-                                      const std::string& file, int line)
+                                      const std::string& file, int line,
+                                      const std::string& cond)
 {
   emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
-                                        line);
+                                        line, QString::fromStdString (cond));
 }
 
 void

@@ -100,7 +100,7 @@ signals:
   void insert_debugger_pointer_signal (const QString& file, int line);
   void delete_debugger_pointer_signal (const QString& file, int line);
   void update_breakpoint_marker_signal (bool insert, const QString& file,
-                                        int line);
+                                        int line, const QString& cond);
 
   void copyClipboard_signal (void);
   void pasteClipboard_signal (void);
@@ -169,7 +169,8 @@ public slots:
   void handle_insert_debugger_pointer_request (const QString& file, int line);
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
-                                                const QString& file, int line);
+                                                const QString& file, int line,
+						const QString& cond);
 
   void read_settings (void);
   void init_terminal_size (void);

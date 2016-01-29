@@ -307,7 +307,7 @@ public:
                      const std::string& cond = "")
   {
     if (enabled ())
-      instance->do_update_breakpoint (insert, file, line);
+      instance->do_update_breakpoint (insert, file, line, cond);
   }
 
   static void connect_link (octave_link *);
@@ -467,7 +467,8 @@ protected:
   virtual void do_exit_debugger_event (void) = 0;
 
   virtual void do_update_breakpoint (bool insert,
-                                     const std::string& file, int line) = 0;
+                                     const std::string& file, int line,
+                                     const std::string& cond) = 0;
 
   virtual void do_set_default_prompts (std::string& ps1, std::string& ps2,
                                        std::string& ps4) = 0;

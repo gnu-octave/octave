@@ -1000,11 +1000,12 @@ main_window::handle_delete_debugger_pointer_request (const QString& file,
 void
 main_window::handle_update_breakpoint_marker_request (bool insert,
                                                       const QString& file,
-                                                      int line)
+                                                      int line,
+						      const QString& cond)
 {
   bool cmd_focus = command_window_has_focus ();
 
-  emit update_breakpoint_marker_signal (insert, file, line);
+  emit update_breakpoint_marker_signal (insert, file, line, cond);
 
   if (cmd_focus)
     focus_command_window ();
@@ -1414,11 +1415,13 @@ main_window::construct (void)
                SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
 
       connect (this,
-               SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+               SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
+	                                                int, const QString&)),
                editor_window,
                SLOT (handle_update_breakpoint_marker_request (bool,
                                                               const QString&,
-                                                              int)));
+                                                              int,
+							      const QString&)));
 #endif
 
       octave_link::post_event (this, &main_window::resize_command_window_callback);
@@ -1558,10 +1561,13 @@ main_window::construct_octave_qt_link (void)
                SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
 
       connect (_octave_qt_link,
-               SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
+               SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
+	                                                int, const QString&)),
                this,
-               SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
-                                                              int)));
+               SLOT (handle_update_breakpoint_marker_request (bool,
+	                                                      const QString&,
+                                                              int,
+							      const QString&)));
 
       connect (_octave_qt_link,
                SIGNAL (show_doc_signal (const QString &)),

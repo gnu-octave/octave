@@ -143,7 +143,7 @@ signals:
   void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_delete_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
-                                   int line = -1);
+                                   int line = -1, const QString& = "");
   void fetab_set_focus (const QWidget* ID);
   void fetab_scintilla_command (const QWidget* ID, unsigned int sci_msg);
 
@@ -235,7 +235,8 @@ public slots:
   void handle_insert_debugger_pointer_request (const QString& file, int line);
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
-                                                const QString& file, int line);
+                                                const QString& file, int line,
+                                                const QString& cond);
   void handle_edit_mfile_request (const QString& name, const QString& file,
                                   const QString& curr_dir, int line);
 
@@ -262,7 +263,8 @@ private slots:
   void request_open_file (const QString& fileName,
                           const QString& encoding = QString (),
                           int line = -1, bool debug_pointer = false,
-                          bool breakpoint_marker = false, bool insert = true);
+                          bool breakpoint_marker = false, bool insert = true,
+                          const QString& cond = "");
   void request_preferences (bool);
   void request_styles_preferences (bool);
   void restore_create_file_setting ();

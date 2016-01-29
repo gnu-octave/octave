@@ -32,16 +32,16 @@ along with Octave; see the file COPYING.  If not, see
 
 
 marker::marker (QsciScintilla *area, int original_linenr, editor_markers type,
-                int editor_linenr) : QObject ()
+                int editor_linenr, const QString& condition) : QObject ()
 {
-  construct (area, original_linenr, type, editor_linenr);
+  construct (area, original_linenr, type, editor_linenr, condition);
 }
 
 
 marker::marker (QsciScintilla *area, int original_linenr,
-                editor_markers type) : QObject ()
+                editor_markers type, const QString& condition) : QObject ()
 {
-  construct (area, original_linenr, type, original_linenr - 1);
+  construct (area, original_linenr, type, original_linenr - 1, condition);
 }
 
 
@@ -52,12 +52,14 @@ marker::~marker (void)
 
 void
 marker::construct (QsciScintilla *area, int original_linenr,
-                   editor_markers type, int editor_linenr)
+                   editor_markers type, int editor_linenr,
+                   const QString& condition)
 {
   _edit_area = area;
   _original_linenr = original_linenr;
   _marker_type = type;
   _mhandle = _edit_area->markerAdd (editor_linenr, _marker_type);
+  _condition = condition;
 }
 
 
@@ -96,10 +98,14 @@ marker::handle_remove (void)
 
 
 void
-marker::handle_find_translation (int linenr, int& translation_linenr)
+marker::handle_find_translation (int linenr, int& translation_linenr,
+                                 marker *& bp)
 {
   if (_original_linenr == linenr)
-    translation_linenr = _edit_area->markerLine (_mhandle);
+    {
+      translation_linenr = _edit_area->markerLine (_mhandle);
+      bp = this;
+    }
 }
 
 
@@ -126,9 +132,10 @@ marker::handle_find_just_after (int linenr, int& original_linenr, int& editor_li
 
 
 void
-marker::handle_report_editor_linenr (QIntList& list)
+marker::handle_report_editor_linenr (QIntList& lines, QStringList& conditions)
 {
-  list << _edit_area->markerLine (_mhandle);
+  lines << _edit_area->markerLine (_mhandle);
+  conditions << _condition;
 }
 
 

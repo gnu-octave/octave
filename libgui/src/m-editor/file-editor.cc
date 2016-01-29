@@ -201,7 +201,7 @@ file_editor::request_new_file (const QString& commands)
   // editor tab has yet to be created and there is no object to
   // pass a signal to.  Hence, functionality is here.
 
-  file_editor_tab *fileEditorTab = new file_editor_tab (ced);
+  file_editor_tab *fileEditorTab = new file_editor_tab (this, ced);
   if (fileEditorTab)
     {
       add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
@@ -451,7 +451,7 @@ file_editor::request_open_file (const QString& openFileName,
         }
       else
         {
-          file_editor_tab *fileEditorTab = new file_editor_tab ();
+          file_editor_tab *fileEditorTab = new file_editor_tab (this);
           if (fileEditorTab)
             {
               fileEditorTab->set_encoding (encoding);

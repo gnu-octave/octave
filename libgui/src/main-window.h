@@ -82,6 +82,8 @@ public:
 
   void focus_command_window (void);
 
+  octave_qt_link* get_octave_qt_link () { return _octave_qt_link; };
+
 signals:
 
   void active_dock_changed (octave_dock_widget *, octave_dock_widget *);

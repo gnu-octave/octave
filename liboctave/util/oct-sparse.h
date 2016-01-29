@@ -83,6 +83,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <cs.h>
 #endif
 
+// Yes, it would be better to use a configure script check for
+// required CXSparse features, but that seems more trouble than it is
+// worth in this case.
+
+#if (defined (HAVE_CXSPARSE)                    \
+     && (! defined (CS_VER) \
+         || CS_VER < 2 \
+         || (CS_VER == 2 && CS_SUBVER < 2)))
+#error "Octave requires CXSparse version 2.2 or later"
+#error "Upgrade CXSparse (SuiteSparse) or configure Octave with --disable-cxsparse"
+#endif
+
 #if (defined (HAVE_SUITESPARSE_CHOLMOD_H) \
      || defined (HAVE_UFSPARSE_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_CHOLMOD_H) \

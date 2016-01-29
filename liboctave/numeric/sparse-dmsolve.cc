@@ -322,15 +322,10 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       csm.p = const_cast<octave_idx_type *>(a.cidx ());
       csm.i = const_cast<octave_idx_type *>(a.ridx ());
 
-#if defined (CS_VER) && (CS_VER >= 2)
       CXSPARSE_DNAME (d) *dm = CXSPARSE_DNAME(_dmperm) (&csm, 0);
       octave_idx_type *p = dm->p;
       octave_idx_type *q = dm->q;
-#else
-      CXSPARSE_DNAME (d) *dm = CXSPARSE_DNAME(_dmperm) (&csm);
-      octave_idx_type *p = dm->P;
-      octave_idx_type *q = dm->Q;
-#endif
+
       OCTAVE_LOCAL_BUFFER (octave_idx_type, pinv, nr);
       for (octave_idx_type i = 0; i < nr; i++)
         pinv[p[i]] = i;

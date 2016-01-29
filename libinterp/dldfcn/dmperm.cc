@@ -84,11 +84,7 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 
   if (nargout <= 1 || rank)
     {
-#if defined (CS_VER) && (CS_VER >= 2)
       octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm, 0);
-#else
-      octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm);
-#endif
       if (rank)
         {
           octave_idx_type r = 0;
@@ -103,21 +99,13 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
     }
   else
     {
-#if defined (CS_VER) && (CS_VER >= 2)
       CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm, 0);
-#else
-      CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm);
-#endif
 
       //retval(5) = put_int (dm->rr, 5);
       //retval(4) = put_int (dm->cc, 5);
-#if defined (CS_VER) && (CS_VER >= 2)
       retval = ovl (put_int (dm->p, nr), put_int (dm->q, nc),
                     put_int (dm->r, dm->nb+1), put_int (dm->s, dm->nb+1));
-#else
-      retval = ovl (put_int (dm->P, nr), put_int (dm->Q, nc),
-                    put_int (dm->R, dm->nb+1), put_int (dm->S, dm->nb+1));
-#endif
+
       CXSPARSE_NAME (_dfree) (dm);
     }
 

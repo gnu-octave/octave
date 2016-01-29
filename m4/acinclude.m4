@@ -1460,27 +1460,6 @@ AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
   fi
 ])
 dnl
-dnl Check if the compiler supports placement delete.
-dnl
-AC_DEFUN([OCTAVE_CXX_PLACEMENT_DELETE], [
-  AC_CACHE_CHECK([whether <new> defines placement delete operator],
-    [octave_cv_cxx_placement_delete],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <new>
-        ]], [[
-        operator delete((void *)0, (void *)0);
-      ]])],
-      octave_cv_cxx_placement_delete=yes,
-      octave_cv_cxx_placement_delete=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_cxx_placement_delete = yes; then
-    AC_DEFINE(HAVE_PLACEMENT_DELETE, 1,
-      [Define to 1 if C++ supports operator delete(void *, void *).])
-  fi
-])
-dnl
 dnl Allow the user disable support for command line editing using GNU
 dnl readline.
 dnl

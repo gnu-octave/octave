@@ -2218,9 +2218,6 @@ AC_STRUCT_TIMEZONE
 ## Does reinterpret_cast fail for function pointers?
 OCTAVE_CXX_BROKEN_REINTERPRET_CAST
 
-## Check if C++ compiler allows placement delete.
-OCTAVE_CXX_PLACEMENT_DELETE
-
 ## Check if C++ compiler can auto allocate variable sized arrays.
 OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS
 

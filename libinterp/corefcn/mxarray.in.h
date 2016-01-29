@@ -93,6 +93,7 @@ typedef %OCTAVE_IDX_TYPE% mwSignedIndex;
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 
 #include <cstring>
+#include "error.h"
 
 class octave_value;
 
@@ -116,10 +117,10 @@ class octave_value;
       rep->METHOD_CALL; \
     }
 
-// A class to provide the default implemenation of some of the virtual
-// functions declared in the mxArray class.
-
 class mxArray;
+
+// A class to provide the default implementation of some of the
+// virtual functions declared in the mxArray class.
 
 class mxArray_base
 {
@@ -216,10 +217,11 @@ public:
 
   virtual void set_class_name (const char *name_arg) = 0;
 
+  // FIXME: Why not just have this '= 0' as the others?
+  // Could then eliminate err_invalid_type function and #include "error.h".
   virtual mxArray *get_cell (mwIndex /*idx*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   virtual void set_cell (mwIndex idx, mxArray *val) = 0;
@@ -279,12 +281,17 @@ protected:
 
   mxArray_base (const mxArray_base&) { }
 
+  // FIXME: Deprecated in 4.2, remove in 4.6
+  OCTAVE_DEPRECATED ("use 'err_invalid_type' instead")
   void invalid_type_error (void) const
   {
     error ("invalid type for operation");
   }
 
-  void error (const char *msg) const;
+  OCTAVE_NORETURN void err_invalid_type (void) const
+  {
+    error ("invalid type for operation");
+  }
 };
 
 // The main interface class.  The representation can be based on an

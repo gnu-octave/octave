@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "Cell.h"
+#include "error.h"
 // mxArray must be declared as a class before including mexproto.h.
 #include "mxarray.h"
 #include "mexproto.h"
@@ -103,13 +104,6 @@ done:
 }
 
 // ------------------------------------------------------------------
-
-void
-mxArray_base::error (const char *msg) const
-{
-  // FIXME
-  ::error ("%s", msg);
-}
 
 static mwIndex
 calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
@@ -792,109 +786,98 @@ public:
 
   mxArray *get_cell (mwIndex /*idx*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void set_cell (mwIndex /*idx*/, mxArray */*val*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   double get_scalar (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void *get_data (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void *get_imag_data (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void set_data (void */*pr*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   void set_imag_data (void */*pi*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   mwIndex *get_ir (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   mwIndex *get_jc (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   mwSize get_nzmax (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void set_ir (mwIndex */*ir*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   void set_jc (mwIndex */*jc*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   void set_nzmax (mwSize /*nzmax*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   int add_field (const char */*key*/)
   {
-    invalid_type_error ();
-    return -1;
+    err_invalid_type ();
   }
 
   void remove_field (int /*key_num*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   mxArray *get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
                             mxArray */*val*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   int get_number_of_fields (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   const char *get_field_name_by_number (int /*key_num*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   int get_field_number (const char */*key*/) const
@@ -904,14 +887,12 @@ public:
 
   int get_string (char */*buf*/, mwSize /*buflen*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   char *array_to_string (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
@@ -978,13 +959,14 @@ private:
   mwSize ndims;
   mwSize *dims;
 
-  void invalid_type_error (void) const
+  OCTAVE_NORETURN void err_invalid_type (void) const
   {
     error ("invalid type for operation");
   }
 
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
+  // No assignment!
+  // FIXME: should this be implemented?
+  //        Note that we *do* have a copy constructor.
 
   mxArray_matlab& operator = (const mxArray_matlab&);
 };
@@ -1342,27 +1324,21 @@ protected:
   octave_value
   int_to_ov (const dim_vector& dv) const
   {
-    octave_value retval;
+    if (pi)
+      error ("complex integer types are not supported");
 
     mwSize nel = get_number_of_elements ();
 
     ELT_T *ppr = static_cast<ELT_T *> (pr);
 
-    if (pi)
-      error ("complex integer types are not supported");
-    else
-      {
-        ARRAY_T val (dv);
+    ARRAY_T val (dv);
 
-        ARRAY_ELT_T *ptr = val.fortran_vec ();
+    ARRAY_ELT_T *ptr = val.fortran_vec ();
 
-        for (mwIndex i = 0; i < nel; i++)
-          ptr[i] = ppr[i];
+    for (mwIndex i = 0; i < nel; i++)
+      ptr[i] = ppr[i];
 
-        retval = val;
-      }
-
-    return retval;
+    return octave_value (val);
   }
 
   mxArray_number (const mxArray_number& val)
@@ -2064,7 +2040,6 @@ public:
     if (! ptr)
       {
         // FIXME: could use "octave_new_handler();" instead
-
         error ("%s: failed to allocate %d bytes of memory",
                function_name (), n);
       }
@@ -3078,6 +3053,8 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   // continue to have memory leaks after Ctrl-C until proper exception
   // handling is implemented.
 
+  // FIXME: Proper exception handling has been implemented (Jan. 2016).
+  //        Can this code be re-factored?
   args.resize (nargin);
 
   for (int i = 0; i < nargin; i++)

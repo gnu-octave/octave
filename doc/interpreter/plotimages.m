@@ -50,9 +50,9 @@ function plotimages (d, nm, typ)
     rand ("state", 2);
     x = 0:0.1:10;
     y = sin (x);
-    yl = 0.1 .* rand (size (x));
-    yu = 0.1 .* rand (size (x));
-    errorbar (x, sin (x), yl, yu);
+    lerr = 0.1 .* rand (size (x));
+    uerr = 0.1 .* rand (size (x));
+    errorbar (x, y, lerr, uerr);
     axis ([0, 10, -1.1, 1.1]);
     xlabel ("x");
     ylabel ("sin (x)");

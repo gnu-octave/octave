@@ -177,9 +177,9 @@ example,
 @group
 x = 0:0.1:10;
 y = sin (x);
-yp =  0.1 .* randn (size (x));
-ym = -0.1 .* randn (size (x));
-errorbar (x, sin (x), ym, yp);
+lerr = 0.1 .* rand (size (x));
+uerr = 0.1 .* rand (size (x));
+errorbar (x, y, lerr, uerr);
 @end group
 @end example
 

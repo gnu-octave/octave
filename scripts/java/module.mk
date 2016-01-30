@@ -53,7 +53,7 @@ srcdir_scripts_java_JAVA_IMAGES = $(addprefix $(srcdir)/scripts/java/, $(JAVA_IM
 
 $(scripts_java_JAVA_CLASSES) : %.class : %.java | scripts/java/$(octave_dirstamp)
 	$(AM_V_GEN)$(MKDIR_P) scripts/java/$(org_octave_dir) && \
-	( cd $(srcdir)/scripts/java; "$(JAVAC)" -source 1.3 -target 1.3 -d $(abs_top_builddir)/scripts/java $(org_octave_dir)/$(<F) )
+		( cd $(srcdir)/scripts/java; "$(JAVAC)" -source 1.3 -target 1.3 -Xlint:-options -d $(abs_top_builddir)/scripts/java $(org_octave_dir)/$(<F) )
 
 scripts/java/.images-stamp: $(srcdir_scripts_java_JAVA_IMAGES)
 	$(AM_V_GEN)if [ "x$(srcdir)" != "x." ]; then \

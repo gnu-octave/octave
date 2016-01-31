@@ -54,11 +54,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bsxfun.h"
 
-// FIXME: Why does this routine call itself?
+
 static void
-gripe_failed_diagonalization (void)
+err_failed_diagonalization (void)
 {
-  gripe_failed_diagonalization ();
+  error ("Failed to diagonalize matrix while calculating matrix exponential");
+}
+
+static void
+err_nonsquare_matrix (void)
+{
+  error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
 }
 
 static inline int
@@ -110,7 +116,7 @@ xpow (double a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   try
     {
@@ -137,7 +143,7 @@ xpow (double a, const Matrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -161,7 +167,7 @@ xpow (double a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   EIG b_eig (b);
 
@@ -184,7 +190,7 @@ xpow (double a, const ComplexMatrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -200,7 +206,7 @@ xpow (const Matrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   if (static_cast<int> (b) == b)
     {
@@ -268,7 +274,7 @@ precision, rcond = %g", rcond);
         }
       catch (const octave_execution_exception&)
         {
-          gripe_failed_diagonalization ();
+          err_failed_diagonalization ();
         }
     }
 
@@ -285,7 +291,7 @@ xpow (const DiagMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   if (static_cast<int> (b) == b)
     {
@@ -326,7 +332,7 @@ xpow (const Matrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   EIG a_eig (a);
 
@@ -344,7 +350,7 @@ xpow (const Matrix& a, const Complex& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -374,7 +380,7 @@ xpow (const Complex& a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   EIG b_eig (b);
 
@@ -397,7 +403,7 @@ xpow (const Complex& a, const Matrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -422,7 +428,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   EIG b_eig (b);
 
@@ -445,7 +451,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -461,7 +467,7 @@ xpow (const ComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   if (static_cast<int> (b) == b)
     {
@@ -529,7 +535,7 @@ precision, rcond = %g", rcond);
         }
       catch (const octave_execution_exception&)
         {
-          gripe_failed_diagonalization ();
+          err_failed_diagonalization ();
         }
     }
 
@@ -546,7 +552,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   EIG a_eig (a);
 
@@ -564,7 +570,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -580,7 +586,7 @@ xpow (const ComplexDiagMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   ComplexDiagMatrix r (nr, nc);
   for (octave_idx_type i = 0; i < nc; i++)
@@ -1518,7 +1524,7 @@ xpow (float a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   FloatEIG b_eig (b);
 
@@ -1546,7 +1552,7 @@ xpow (float a, const FloatMatrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1570,7 +1576,7 @@ xpow (float a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   FloatEIG b_eig (b);
 
@@ -1593,7 +1599,7 @@ xpow (float a, const FloatComplexMatrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1609,7 +1615,7 @@ xpow (const FloatMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   if (static_cast<int> (b) == b)
     {
@@ -1677,7 +1683,7 @@ precision, rcond = %g", rcond);
         }
       catch (const octave_execution_exception&)
         {
-          gripe_failed_diagonalization ();
+          err_failed_diagonalization ();
         }
     }
 
@@ -1694,7 +1700,7 @@ xpow (const FloatDiagMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   if (static_cast<int> (b) == b)
     {
@@ -1725,7 +1731,7 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   FloatEIG a_eig (a);
 
@@ -1743,7 +1749,7 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1773,7 +1779,7 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   FloatEIG b_eig (b);
 
@@ -1796,7 +1802,7 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1821,7 +1827,7 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   FloatEIG b_eig (b);
 
@@ -1844,7 +1850,7 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1860,7 +1866,7 @@ xpow (const FloatComplexMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   if (static_cast<int> (b) == b)
     {
@@ -1928,7 +1934,7 @@ precision, rcond = %g", rcond);
         }
       catch (const octave_execution_exception&)
         {
-          gripe_failed_diagonalization ();
+          err_failed_diagonalization ();
         }
     }
 
@@ -1945,7 +1951,7 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   FloatEIG a_eig (a);
 
@@ -1963,7 +1969,7 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
     }
   catch (const octave_execution_exception&)
     {
-      gripe_failed_diagonalization ();
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1979,7 +1985,7 @@ xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
 
   FloatComplexDiagMatrix r (nr, nc);
   for (octave_idx_type i = 0; i < nc; i++)

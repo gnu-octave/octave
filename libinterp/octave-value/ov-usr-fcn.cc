@@ -790,8 +790,9 @@ Called from within a function, return the number of arguments passed to the\n\
 function.  At the top level, return the number of command line arguments\n\
 passed to Octave.\n\
 \n\
-If called with the optional argument @var{fcn}---a function name or handle---\n\
-return the declared number of arguments that the function can accept.\n\
+If called with the optional argument @var{fcn}---a function name or\n\
+handle---return the declared number of arguments that the function can\n\
+accept.\n\
 \n\
 If the last argument to @var{fcn} is @var{varargin} the returned value is\n\
 negative.  For example, the function @code{union} for sets is declared as\n\
@@ -807,7 +808,8 @@ nargin (\"union\")\n\
 @end group\n\
 @end example\n\
 \n\
-Programming Note: @code{nargin} does not work on built-in functions.\n\
+Programming Note: @code{nargin} does not work on compiled functions\n\
+(@file{.oct} files) such as built-in or dynamically loaded functions.\n\
 @seealso{nargout, narginchk, varargin, inputname}\n\
 @end deftypefn")
 {

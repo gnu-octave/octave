@@ -1586,6 +1586,14 @@ OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [cs${CXSPARSE_TAG}sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
+## Additional check for CXSparse version >= 2.2 
+if test $octave_cv_lib_cxsparse = yes; then
+  OCTAVE_CHECK_CXSPARSE_VERSION_OK
+  if test $octave_cv_cxsparse_version_ok = no; then
+    AC_MSG_ERROR([CXSparse library is too old (< version 2.2).  Upgrade CXSparse (SuiteSparse) or configure Octave with --disable-cxsparse"])
+  fi
+fi
+  
 ### Check for UMFPACK library.
 
 save_LIBS="$LIBS"

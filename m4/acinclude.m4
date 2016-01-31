@@ -180,6 +180,45 @@ return v[3] == 207089 ? 0 : 1;
   fi
 ])
 dnl
+dnl Check whether CXSparse is version 2.2 or later
+dnl FIXME: This test uses a version number.  It potentially could
+dnl        be re-written to actually call a function, but is it worth it?
+dnl
+AC_DEFUN([OCTAVE_CHECK_CXSPARSE_VERSION_OK], [
+  AC_CACHE_CHECK([whether CXSparse is version 2.2 or later],
+    [octave_cv_cxsparse_version_ok],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
+        #if defined (HAVE_SUITESPARSE_CS_H)
+        #include <suitesparse/cs.h>
+        #elif defined (HAVE_UFSPARSE_CS_H)
+        #include <ufsparse/cs.h>
+        #elif defined (HAVE_CXSPARSE_CS_H)
+        #include <cxsparse/cs.h>
+        #elif defined (HAVE_CS_H)
+        #include <cs.h>
+        #endif
+        ]], [[
+        #if (defined (HAVE_CXSPARSE) \
+             && (! defined (CS_VER) \
+                 || CS_VER < 2 \
+                 || (CS_VER == 2 && CS_SUBVER < 2)))
+        #error "Octave requires CXSparse version 2.2 or later"
+        #endif
+        ]])],
+      octave_cv_cxsparse_version_ok=yes,
+      octave_cv_cxsparse_version_ok=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_cxsparse_version_ok = yes; then
+    AC_DEFINE(HAVE_CXSPARSE_VERSION_OK, 1,
+      [Define to 1 if CXSparse is version 2.2 or later.])
+  fi
+])
+dnl
 dnl Check whether the FFTW library supports multi-threading. This macro
 dnl should be called once per FFTW precision passing in the library
 dnl variant (e.g. "fftw3") and a function in the thread support API

@@ -2090,28 +2090,28 @@ public:
   virtual bool is_valid (void) const { return false; }
 
   virtual void redraw_figure (const graphics_object&) const
-  { gripe_invalid ("redraw_figure"); }
+  { gripe_if_tkit_invalid ("redraw_figure"); }
 
   virtual void print_figure (const graphics_object&, const std::string&,
                              const std::string&, bool,
                              const std::string& = "") const
-  { gripe_invalid ("print_figure"); }
+  { gripe_if_tkit_invalid ("print_figure"); }
 
   virtual Matrix get_canvas_size (const graphics_handle&) const
   {
-    gripe_invalid ("get_canvas_size");
+    gripe_if_tkit_invalid ("get_canvas_size");
     return Matrix (1, 2, 0.0);
   }
 
   virtual double get_screen_resolution (void) const
   {
-    gripe_invalid ("get_screen_resolution");
+    gripe_if_tkit_invalid ("get_screen_resolution");
     return 72.0;
   }
 
   virtual Matrix get_screen_size (void) const
   {
-    gripe_invalid ("get_screen_size");
+    gripe_if_tkit_invalid ("get_screen_size");
     return Matrix (1, 2, 0.0);
   }
 
@@ -2119,7 +2119,7 @@ public:
   // changes.  This allows the graphics toolkit to act on property
   // changes if needed.
   virtual void update (const graphics_object&, int)
-  { gripe_invalid ("base_graphics_toolkit::update"); }
+  { gripe_if_tkit_invalid ("base_graphics_toolkit::update"); }
 
   void update (const graphics_handle&, int);
 
@@ -2127,7 +2127,10 @@ public:
   // created.  This allows the graphics toolkit to do toolkit-specific
   // initializations for a newly created object.
   virtual bool initialize (const graphics_object&)
-  { gripe_invalid ("base_graphics_toolkit::initialize"); return false; }
+  {
+    gripe_if_tkit_invalid ("base_graphics_toolkit::initialize");
+    return false;
+  }
 
   bool initialize (const graphics_handle&);
 
@@ -2135,20 +2138,20 @@ public:
   // graphics object.  This allows the graphics toolkit to perform
   // toolkit-specific cleanup operations before an object is deleted.
   virtual void finalize (const graphics_object&)
-  { gripe_invalid ("base_graphics_toolkit::finalize"); }
+  { gripe_if_tkit_invalid ("base_graphics_toolkit::finalize"); }
 
   void finalize (const graphics_handle&);
 
   // Close the graphics toolkit.
   virtual void close (void)
-  { gripe_invalid ("base_graphics_toolkit::close"); }
+  { gripe_if_tkit_invalid ("base_graphics_toolkit::close"); }
 
 private:
   std::string name;
   octave_refcount<int> count;
 
 private:
-  void gripe_invalid (const std::string& fname) const
+  void gripe_if_tkit_invalid (const std::string& fname) const
   {
     if (! is_valid ())
       error ("%s: invalid graphics toolkit", fname.c_str ());

@@ -1415,7 +1415,7 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
           /* Identify next run. */
           n = count_run (data + lo, nremaining, descending, comp);
           if (n < 0)
-            goto fail;
+            return;
           if (descending)
             std::reverse (data + lo, data + lo + n);
           /* If short, extend to min (minrun, nremaining). */
@@ -1432,7 +1432,7 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
           ms->pending[ms->n].len = n;
           ms->n++;
           if (merge_collapse (data, comp) < 0)
-            goto fail;
+            return;
           /* Advance to find next run. */
           lo += n;
           nremaining -= n;
@@ -1441,9 +1441,6 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
 
       merge_force_collapse (data, comp);
     }
-
-fail:
-  return;
 }
 
 template <typename T>
@@ -1475,7 +1472,7 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
           /* Identify next run. */
           n = count_run (data + lo, nremaining, descending, comp);
           if (n < 0)
-            goto fail;
+            return;
           if (descending)
             {
               std::reverse (data + lo, data + lo + n);
@@ -1495,7 +1492,7 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
           ms->pending[ms->n].len = n;
           ms->n++;
           if (merge_collapse (data, idx, comp) < 0)
-            goto fail;
+            return;
           /* Advance to find next run. */
           lo += n;
           nremaining -= n;
@@ -1504,9 +1501,6 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
 
       merge_force_collapse (data, idx, comp);
     }
-
-fail:
-  return;
 }
 
 template <typename T>

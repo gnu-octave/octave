@@ -2563,13 +2563,13 @@ betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b)
 double
 gammainc (double x, double a, bool& err)
 {
-  double retval;
-
-  err = false;
-
   if (a < 0.0 || x < 0.0)
     (*current_liboctave_error_handler)
       ("gammainc: A and X must be non-negative");
+
+  err = false;
+
+  double retval;
 
   F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
 
@@ -2582,23 +2582,18 @@ gammainc (double x, const Matrix& a)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  Matrix result (nr, nc);
-  Matrix retval;
+  Matrix retval (nr, nc);
 
   bool err;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        result(i,j) = gammainc (x, a(i,j), err);
+        retval(i,j) = gammainc (x, a(i,j), err);
 
         if (err)
-          goto done;  // FIXME: why not just use return to exit?
+          return Matrix ();
       }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2609,23 +2604,18 @@ gammainc (const Matrix& x, double a)
   octave_idx_type nr = x.rows ();
   octave_idx_type nc = x.cols ();
 
-  Matrix result (nr, nc);
-  Matrix retval;
+  Matrix retval (nr, nc);
 
   bool err;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        result(i,j) = gammainc (x(i,j), a, err);
+        retval(i,j) = gammainc (x(i,j), a, err);
 
         if (err)
-          goto done;  // FIXME: why not just use return to exit?
+          return Matrix ();
       }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2633,9 +2623,6 @@ done:
 Matrix
 gammainc (const Matrix& x, const Matrix& a)
 {
-  Matrix result;
-  Matrix retval;
-
   octave_idx_type nr = x.rows ();
   octave_idx_type nc = x.cols ();
 
@@ -2647,22 +2634,18 @@ gammainc (const Matrix& x, const Matrix& a)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
 
-  result.resize (nr, nc);
+  Matrix retval (nr, nc);
 
   bool err;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        result(i,j) = gammainc (x(i,j), a(i,j), err);
+        retval(i,j) = gammainc (x(i,j), a(i,j), err);
 
         if (err)
-          goto done;  // FIXME: why not just use return to exit?
+          return Matrix ();
       }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2673,22 +2656,17 @@ gammainc (double x, const NDArray& a)
   dim_vector dv = a.dims ();
   octave_idx_type nel = dv.numel ();
 
-  NDArray retval;
-  NDArray result (dv);
+  NDArray retval (dv);
 
   bool err;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result(i) = gammainc (x, a(i), err);
+      retval(i) = gammainc (x, a(i), err);
 
       if (err)
-        goto done;  // FIXME: why not just use return to exit?
+        return NDArray ();
     }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2699,22 +2677,17 @@ gammainc (const NDArray& x, double a)
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
 
-  NDArray retval;
-  NDArray result (dv);
+  NDArray retval (dv);
 
   bool err;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result(i) = gammainc (x(i), a, err);
+      retval(i) = gammainc (x(i), a, err);
 
       if (err)
-        goto done;  // FIXME: why not just use return to exit?
+        return NDArray ();
     }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2735,22 +2708,17 @@ gammainc (const NDArray& x, const NDArray& a)
          x_str.c_str (), a_str. c_str ());
     }
 
-  NDArray retval;
-  NDArray result (dv);
+  NDArray retval (dv);
 
   bool err;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result(i) = gammainc (x(i), a(i), err);
+      retval(i) = gammainc (x(i), a(i), err);
 
       if (err)
-        goto done;  // FIXME: why not just use return to exit?
+        return NDArray ();
     }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2758,13 +2726,13 @@ done:
 float
 gammainc (float x, float a, bool& err)
 {
-  float retval;
-
-  err = false;
-
   if (a < 0.0 || x < 0.0)
     (*current_liboctave_error_handler)
       ("gammainc: A and X must be non-negative");
+
+  err = false;
+
+  float retval;
 
   F77_XFCN (xsgammainc, XSGAMMAINC, (a, x, retval));
 
@@ -2777,23 +2745,18 @@ gammainc (float x, const FloatMatrix& a)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  FloatMatrix result (nr, nc);
-  FloatMatrix retval;
+  FloatMatrix retval (nr,  nc);
 
   bool err;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        result(i,j) = gammainc (x, a(i,j), err);
+        retval(i,j) = gammainc (x, a(i,j), err);
 
         if (err)
-          goto done;  // FIXME: why not just use return to exit?
+          return FloatMatrix ();
       }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2804,23 +2767,18 @@ gammainc (const FloatMatrix& x, float a)
   octave_idx_type nr = x.rows ();
   octave_idx_type nc = x.cols ();
 
-  FloatMatrix result (nr, nc);
-  FloatMatrix retval;
+  FloatMatrix retval (nr, nc);
 
   bool err;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        result(i,j) = gammainc (x(i,j), a, err);
+        retval(i,j) = gammainc (x(i,j), a, err);
 
         if (err)
-          goto done;  // FIXME: why not just use return to exit?
+          return FloatMatrix ();
       }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2828,9 +2786,6 @@ done:
 FloatMatrix
 gammainc (const FloatMatrix& x, const FloatMatrix& a)
 {
-  FloatMatrix result;
-  FloatMatrix retval;
-
   octave_idx_type nr = x.rows ();
   octave_idx_type nc = x.cols ();
 
@@ -2842,22 +2797,18 @@ gammainc (const FloatMatrix& x, const FloatMatrix& a)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
 
-  result.resize (nr, nc);
+  FloatMatrix retval (nr, nc);
 
   bool err;
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        result(i,j) = gammainc (x(i,j), a(i,j), err);
+        retval(i,j) = gammainc (x(i,j), a(i,j), err);
 
         if (err)
-          goto done;  // FIXME: why not just use return to exit?
+          return FloatMatrix ();
       }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2868,22 +2819,17 @@ gammainc (float x, const FloatNDArray& a)
   dim_vector dv = a.dims ();
   octave_idx_type nel = dv.numel ();
 
-  FloatNDArray retval;
-  FloatNDArray result (dv);
+  FloatNDArray retval (dv);
 
   bool err;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result(i) = gammainc (x, a(i), err);
+      retval(i) = gammainc (x, a(i), err);
 
       if (err)
-        goto done;  // FIXME: why not just use return to exit?
+        return FloatNDArray ();
     }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2894,22 +2840,17 @@ gammainc (const FloatNDArray& x, float a)
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
 
-  FloatNDArray retval;
-  FloatNDArray result (dv);
+  FloatNDArray retval (dv);
 
   bool err;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result(i) = gammainc (x(i), a, err);
+      retval(i) = gammainc (x(i), a, err);
 
       if (err)
-        goto done;  // FIXME: why not just use return to exit?
+        return FloatNDArray ();
     }
-
-  retval = result;
-
-done:
 
   return retval;
 }
@@ -2919,9 +2860,6 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
 {
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
-
-  FloatNDArray retval;
-  FloatNDArray result;
 
   if (dv != a.dims ())
     {
@@ -2933,21 +2871,17 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
          x_str.c_str (), a_str.c_str ());
     }
 
-  result.resize (dv);
+  FloatNDArray retval (dv);
 
   bool err;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result(i) = gammainc (x(i), a(i), err);
+      retval(i) = gammainc (x(i), a(i), err);
 
       if (err)
-        goto done;  // FIXME: why not just use return to exit?
+        return FloatNDArray ();
     }
-
-  retval = result;
-
-done:
 
   return retval;
 }

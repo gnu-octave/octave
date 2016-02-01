@@ -350,7 +350,8 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
           p[i] = (double) k;
           continue;
         }
-      if (++k < tableidx) goto nextk;
+      if (++k < tableidx)
+        goto nextk;
 
       /* We only need high values of the table very rarely so we
        * don't automatically compute the entire table. */
@@ -401,7 +402,8 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
           p[i] = (float) k;
           continue;
         }
-      if (++k < tableidx) goto nextk;
+      if (++k < tableidx)
+        goto nextk;
 
       while (tableidx < TABLESIZE)
         {

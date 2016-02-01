@@ -1556,8 +1556,8 @@ command_editor::interrupt (bool arg)
 std::string
 command_editor::do_decode_prompt_string (const std::string& s)
 {
-  std::string result;
-  std::string temp;
+  std::string retval;
+  std::string tmpstr;
   size_t i = 0;
   size_t slen = s.length ();
   int c;
@@ -1586,37 +1586,22 @@ command_editor::do_decode_prompt_string (const std::string& s)
               {
                 int n = read_octal (s.substr (i, 3));
 
-                temp = "\\";
+                tmpstr = "\\";
 
                 if (n != -1)
                   {
-                    i += 3;
-                    temp[0] = n;
+                    tmpstr[0] = n;
+                    i += 2;   // i++ makes this += 3 later
                   }
 
-                c = 0;
-                goto add_string;
+                break;
               }
 
             case 'a':
               {
-                temp = '\a';
+                tmpstr = '\a';
 
-                goto add_string;
-              }
-
-            case 'e':
-              {
-                temp = '\033';
-
-                goto add_string;
-              }
-
-            case 'r':
-              {
-                temp = '\r';
-
-                goto add_string;
+                break;
               }
 
             case 'd':
@@ -1629,32 +1614,72 @@ command_editor::do_decode_prompt_string (const std::string& s)
                 octave_localtime now;
 
                 if (c == 'd')
-                  temp = now.strftime ("%a %b %d");
+                  tmpstr = now.strftime ("%a %b %d");
                 else if (c == 't')
-                  temp = now.strftime ("%H:%M:%S");
+                  tmpstr = now.strftime ("%H:%M:%S");
                 else if (c == 'T')
-                  temp = now.strftime ("%I:%M:%S");
+                  tmpstr = now.strftime ("%I:%M:%S");
                 else if (c == '@')
-                  temp = now.strftime ("%I:%M %p");
+                  tmpstr = now.strftime ("%I:%M %p");
                 else if (c == 'A')
-                  temp = now.strftime ("%H:%M");
+                  tmpstr = now.strftime ("%H:%M");
 
-                goto add_string;
+                break;
+              }
+
+            case 'e':
+              {
+                tmpstr = '\033';
+
+                break;
+              }
+
+            case 'h':
+              {
+                tmpstr = octave_env::get_host_name ();
+
+                size_t pos = tmpstr.find ('.');
+
+                if (pos != std::string::npos)
+                  tmpstr.resize (pos);
+
+                break;
+              }
+
+            case 'H':
+              {
+                tmpstr = octave_env::get_host_name ();
+
+                break;
               }
 
             case 'n':
               {
-                temp = newline_chars ();
+                tmpstr = newline_chars ();
 
-                goto add_string;
+                break;
+              }
+
+            case 'r':
+              {
+                tmpstr = '\r';
+
+                break;
               }
 
             case 's':
               {
-                temp = octave_env::get_program_name ();
-                temp = octave_env::base_pathname (temp);
+                tmpstr = octave_env::get_program_name ();
+                tmpstr = octave_env::base_pathname (tmpstr);
 
-                goto add_string;
+                break;
+              }
+
+            case 'u':
+              {
+                tmpstr = octave_env::get_user_name ();
+
+                break;
               }
 
             case 'w':
@@ -1662,135 +1687,102 @@ command_editor::do_decode_prompt_string (const std::string& s)
               {
                 try
                   {
-                    temp = octave_env::get_current_directory ();
+                    tmpstr = octave_env::get_current_directory ();
                   }
                 catch (const octave_execution_exception&)
                   {
-                    temp = "";
+                    tmpstr = "";
                   }
 
                 std::string home_dir = octave_env::get_home_directory ();
 
-                if (c == 'W' && (home_dir.empty () || temp != home_dir))
+                if (c == 'W' && (home_dir.empty () || tmpstr != home_dir))
                   {
-                    if (temp != "/" && temp != "//")
+                    if (tmpstr != "/" && tmpstr != "//")
                       {
-                        size_t pos = temp.rfind ('/');
+                        size_t pos = tmpstr.rfind ('/');
 
                         if (pos != std::string::npos && pos != 0)
-                          temp = temp.substr (pos + 1);
+                          tmpstr = tmpstr.substr (pos + 1);
                       }
                   }
                 else
-                  temp = octave_env::polite_directory_format (temp);
+                  tmpstr = octave_env::polite_directory_format (tmpstr);
 
-                goto add_string;
-              }
-
-            case 'u':
-              {
-                temp = octave_env::get_user_name ();
-
-                goto add_string;
-              }
-
-            case 'H':
-              {
-                temp = octave_env::get_host_name ();
-
-                goto add_string;
-              }
-
-            case 'h':
-              {
-                temp = octave_env::get_host_name ();
-
-                size_t pos = temp.find ('.');
-
-                if (pos != std::string::npos)
-                  temp.resize (pos);
-
-                goto add_string;
-              }
-
-            case '#':
-              {
-                char number_buffer[128];
-                sprintf (number_buffer, "%d", command_number);
-                temp = number_buffer;
-
-                goto add_string;
+                break;
               }
 
             case '!':
               {
-                char number_buffer[128];
+                char number_buffer[32];
                 int num = command_history::current_number ();
                 if (num > 0)
                   sprintf (number_buffer, "%d", num);
                 else
                   strcpy (number_buffer, "!");
-                temp = number_buffer;
+                tmpstr = number_buffer;
 
-                goto add_string;
+                break;
+              }
+
+            case '#':
+              {
+                char number_buffer[32];
+                sprintf (number_buffer, "%d", command_number);
+                tmpstr = number_buffer;
+
+                break;
               }
 
             case '$':
               {
 #if defined (HAVE_GETEUID)
-                temp = (::geteuid () == 0 ? "#" : "$");
+                tmpstr = (::geteuid () == 0 ? '#' : '$');
 #else
-                temp = "$";
+                tmpstr = '$';
 #endif
 
-                goto add_string;
+                break;
               }
 
 #if defined (USE_READLINE)
             case '[':
             case ']':
               {
-                temp.resize (1);
+                tmpstr.resize (1);
 
-                temp[0] = ((c == '[')
-                           ? ::octave_rl_prompt_start_ignore ()
-                           : ::octave_rl_prompt_end_ignore ());
+                tmpstr[0] = ((c == '[')
+                             ? ::octave_rl_prompt_start_ignore ()
+                             : ::octave_rl_prompt_end_ignore ());
 
-                goto add_string;
+                break;
               }
 #endif
 
             case '\\':
               {
-                temp = "\\";
+                tmpstr = "\\";
 
-                goto add_string;
+                break;
               }
 
             default:
               {
-                temp = "\\ ";
-                temp[1] = c;
-
-                goto add_string;
-              }
-
-            add_string:
-              {
-                if (c)
-                  i++;
-
-                result.append (temp);
+                tmpstr = "\\ ";
+                tmpstr[1] = c;
 
                 break;
               }
             }
+
+          retval.append (tmpstr);
+          i++;   // Move past processed escape character
         }
       else
-        result += c;
+        retval += c;
     }
 
-  return result;
+  return retval;
 }
 
 int

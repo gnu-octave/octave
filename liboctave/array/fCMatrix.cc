@@ -3465,11 +3465,9 @@ operator >> (std::istream& is, FloatComplexMatrix& a)
             if (is)
               a.elem (i, j) = tmp;
             else
-              goto done;
+              return is;
           }
     }
-
-done:
 
   return is;
 }

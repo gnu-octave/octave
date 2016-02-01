@@ -863,11 +863,9 @@ operator >> (std::istream& is, FloatNDArray& a)
           if (is)
             a.elem (i) = tmp;
           else
-            goto done;
+            return is;
         }
     }
-
-done:
 
   return is;
 }

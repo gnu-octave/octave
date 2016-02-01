@@ -369,7 +369,7 @@ ComplexCHOL::insert_sym (const ComplexColumnVector& u, octave_idx_type j)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");
-  
+
   if (singular (chol_mat))
     info = 2;
   else if (u(j).imag () != 0.0)

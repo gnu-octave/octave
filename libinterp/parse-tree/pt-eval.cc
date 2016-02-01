@@ -731,7 +731,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 void
 tree_evaluator::visit_statement_list (tree_statement_list& lst)
 {
-  // FIXME: commented out along with else clause below. 
+  // FIXME: commented out along with else clause below.
   // static octave_value_list empty_list;
 
   tree_statement_list::iterator p = lst.begin ();

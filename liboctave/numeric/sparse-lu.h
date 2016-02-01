@@ -35,7 +35,7 @@ sparse_lu
 public:
 
   typedef typename lu_type::element_type lu_elt_type;
-  
+
   sparse_lu (void)
     : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
 

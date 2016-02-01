@@ -576,12 +576,12 @@
 %!error <abc\(1\+0.5i,_\): subscripts must be real> abc(1+0.5*i,3)
 %!error <abc\(_,0-2i\): subscripts must be real>   abc(2,0-2*i)
 
-## bug #35841 
+## bug #35841
 %!test
 %! a(1,1,1).b(1) = 2;
 %! a(1,1,1).b(1) = 3;
 
-## bug #39789 
+## bug #39789
 %!test
 %! c = cell(1,1,1);
 %! c{1,1,1} = zeros(5, 2);

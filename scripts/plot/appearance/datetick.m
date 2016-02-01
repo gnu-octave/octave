@@ -147,7 +147,7 @@ function __datetick__ (varargin)
     if (keeplimits)
       limits = get (gca (), [ax "lim"]);
       xmin = limits(1);
-      xmax = limits(2);  
+      xmax = limits(2);
     else
       objs = findall (gca ());
       xmin = xmax = NaN;

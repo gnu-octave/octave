@@ -146,7 +146,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
             old_print_cmd = print_cmd;
 
           // Don't check return value of gl2psEndPage, it is not meaningful.
-          // Errors and warnings are checked after gl2psEndViewport in 
+          // Errors and warnings are checked after gl2psEndViewport in
           // gl2ps_renderer::draw_axes instead.
           gl2psEndPage ();
         }

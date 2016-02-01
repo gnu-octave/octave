@@ -69,7 +69,7 @@ protected:
       warning ("gl2ps_renderer::draw_axes: empty feedback buffer and/or nothing else to print");
     else if (state == GL2PS_ERROR)
       error ("gl2ps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
-    
+
     buffer_overflow |= (state == GL2PS_OVERFLOW);
   }
 

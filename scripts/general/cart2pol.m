@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -49,26 +49,26 @@ function [theta, r, z] = cart2pol (x, y, z = [])
   endif
 
   if (nargin == 1)
-    if (ismatrix (x) && (columns (x) == 2 || columns (x) == 3))
-      if (columns (x) == 3)
-        z = x(:,3);
-      endif
-      y = x(:,2);
-      x = x(:,1);
-    else
+    if (! (isnumeric (x) && ismatrix (x)
+           && (columns (x) == 2 || columns (x) == 3)))
       error ("cart2pol: matrix input must have 2 or 3 columns [X, Y (, Z)]");
     endif
+    if (columns (x) == 3)
+      z = x(:,3);
+    endif
+    y = x(:,2);
+    x = x(:,1);
   elseif (nargin == 2)
-    if (! ((ismatrix (x) && ismatrix (y))
+    if (! ((isnumeric (x) && isnumeric (y))
             && (size_equal (x, y) || isscalar (x) || isscalar (y))))
-      error ("cart2pol: arguments must be matrices of same size, or scalar");
+      error ("cart2pol: X, Y must be numeric arrays of the same size, or scalar");
     endif
   elseif (nargin == 3)
-    if (! ((ismatrix (x) && ismatrix (y) && ismatrix (z))
+    if (! ((isnumeric (x) && isnumeric (y) && isnumeric (z))
             && (size_equal (x, y) || isscalar (x) || isscalar (y))
             && (size_equal (x, z) || isscalar (x) || isscalar (z))
             && (size_equal (y, z) || isscalar (y) || isscalar (z))))
-      error ("cart2pol: arguments must be matrices of same size, or scalar");
+      error ("cart2pol: X, Y, Z must be numeric arrays of the same size, or scalar");
     endif
   endif
 
@@ -141,4 +141,42 @@ endfunction
 %! C = [0, 0, 0; 1, 1, 1; 2, 2, 2];
 %! P = [0, 0, 0; pi/4, sqrt(2), 1; pi/4, 2*sqrt(2), 2];
 %! assert (cart2pol (C), P, sqrt (eps));
+
+%!test
+%! x = zeros (1, 1, 1, 2);
+%! x(1, 1, 1, 2) = sqrt (2);
+%! y = x;
+%! [t, r] = cart2pol (x, y);
+%! T = zeros (1, 1, 1, 2);
+%! T(1, 1, 1, 2) = pi/4;
+%! R = zeros (1, 1, 1, 2);
+%! R(1, 1, 1, 2) = 2;
+%! assert (t, T, eps);
+%! assert (r, R, eps);
+
+%!test
+%! [x, y, Z] = meshgrid ([0, 1], [0, 1], [0, 1]);
+%! [t, r, z] = cart2pol (x, y, Z);
+%! T(:, :, 1) = [0, 0; pi/2, pi/4];
+%! T(:, :, 2) = T(:, :, 1);
+%! R = sqrt (x.^2 + y.^2);
+%! assert (t, T, eps);
+%! assert (r, R, eps);
+%! assert (z, Z);
+
+## Test input validation
+%!error cart2pol ()
+%!error cart2pol (1,2,3,4)
+%!error <matrix input must have 2 or 3 columns> cart2pol ({1,2,3})
+%!error <matrix input must have 2 or 3 columns> cart2pol (ones (3,3,2))
+%!error <matrix input must have 2 or 3 columns> cart2pol ([1])
+%!error <matrix input must have 2 or 3 columns> cart2pol ([1,2,3,4])
+%!error <numeric arrays of the same size> cart2pol ({1,2,3}, [1,2,3])
+%!error <numeric arrays of the same size> cart2pol ([1,2,3], {1,2,3})
+%!error <numeric arrays of the same size> cart2pol (ones (3,3,3), ones (3,2,3))
+%!error <numeric arrays of the same size> cart2pol ({1,2,3}, [1,2,3], [1,2,3])
+%!error <numeric arrays of the same size> cart2pol ([1,2,3], {1,2,3}, [1,2,3])
+%!error <numeric arrays of the same size> cart2pol ([1,2,3], [1,2,3], {1,2,3})
+%!error <numeric arrays of the same size> cart2pol (ones (3,3,3), 1, ones (3,2,3))
+%!error <numeric arrays of the same size> cart2pol (ones (3,3,3), ones (3,2,3), 1)
 

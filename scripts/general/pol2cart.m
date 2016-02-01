@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -49,26 +49,26 @@ function [x, y, z] = pol2cart (theta, r, z = [])
   endif
 
   if (nargin == 1)
-    if (ismatrix (theta) && (columns (theta) == 2 || columns (theta) == 3))
-      if (columns (theta) == 3)
-        z = theta(:,3);
-      endif
-      r = theta(:,2);
-      theta = theta(:,1);
-    else
+    if (! (isnumeric (theta) && ismatrix (theta)
+           && (columns (theta) == 2 || columns (theta) == 3)))
       error ("pol2cart: matrix input must have 2 or 3 columns [THETA, R (, Z)]");
     endif
+    if (columns (theta) == 3)
+      z = theta(:,3);
+    endif
+    r = theta(:,2);
+    theta = theta(:,1);
   elseif (nargin == 2)
-    if (! ((ismatrix (theta) && ismatrix (r))
+    if (! ((isnumeric (theta) && isnumeric (r))
             && (size_equal (theta, r) || isscalar (theta) || isscalar (r))))
-      error ("pol2cart: arguments must be matrices of same size, or scalar");
+      error ("pol2cart: THETA, R must be numeric arrays of the same size, or scalar");
     endif
   elseif (nargin == 3)
-    if (! ((ismatrix (theta) && ismatrix (r) && ismatrix (z))
+    if (! ((isnumeric (theta) && isnumeric (r) && isnumeric (z))
             && (size_equal (theta, r) || isscalar (theta) || isscalar (r))
             && (size_equal (theta, z) || isscalar (theta) || isscalar (z))
             && (size_equal (r, z) || isscalar (r) || isscalar (z))))
-      error ("pol2cart: arguments must be matrices of same size, or scalar");
+      error ("pol2cart: THETA, R, Z must be numeric arrays of the same size, or scalar");
     endif
   endif
 
@@ -142,3 +142,43 @@ endfunction
 %! C = [0, 0, 0; 1, 1, 1; 2, 2, 2];
 %! assert (pol2cart (P), C, sqrt (eps));
 
+%!test
+%! r = ones (1, 1, 1, 2);
+%! r(1, 1, 1, 2) = 2;
+%! t = pi/2 * r;
+%! [x, y] = pol2cart (t, r);
+%! X = zeros (1, 1, 1, 2);
+%! X(1, 1, 1, 2) = -2;
+%! Y = zeros (1, 1, 1, 2);
+%! Y(1, 1, 1, 1) = 1;
+%! assert (x, X, 2*eps);
+%! assert (y, Y, 2*eps);
+
+%!test
+%! [t, r, Z] = meshgrid ([0, pi/2], [1, 2], [0, 1]);
+%! [x, y, z] = pol2cart (t, r, Z);
+%! X = zeros(2, 2, 2);
+%! X(:, 1, 1) = [1; 2];
+%! X(:, 1, 2) = [1; 2];
+%! Y = zeros(2, 2, 2);
+%! Y(:, 2, 1) = [1; 2];
+%! Y(:, 2, 2) = [1; 2];
+%! assert (x, X, eps);
+%! assert (y, Y, eps);
+%! assert (z, Z);
+
+## Test input validation
+%!error pol2cart ()
+%!error pol2cart (1,2,3,4)
+%!error <matrix input must have 2 or 3 columns> pol2cart ({1,2,3})
+%!error <matrix input must have 2 or 3 columns> pol2cart (ones (3,3,2))
+%!error <matrix input must have 2 or 3 columns> pol2cart ([1])
+%!error <matrix input must have 2 or 3 columns> pol2cart ([1,2,3,4])
+%!error <numeric arrays of the same size> pol2cart ({1,2,3}, [1,2,3])
+%!error <numeric arrays of the same size> pol2cart ([1,2,3], {1,2,3})
+%!error <numeric arrays of the same size> pol2cart (ones (3,3,3), ones (3,2,3))
+%!error <numeric arrays of the same size> pol2cart ({1,2,3}, [1,2,3], [1,2,3])
+%!error <numeric arrays of the same size> pol2cart ([1,2,3], {1,2,3}, [1,2,3])
+%!error <numeric arrays of the same size> pol2cart ([1,2,3], [1,2,3], {1,2,3})
+%!error <numeric arrays of the same size> pol2cart (ones (3,3,3), 1, ones (3,2,3))
+%!error <numeric arrays of the same size> pol2cart (ones (3,3,3), ones (3,2,3), 1)

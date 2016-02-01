@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -105,7 +105,7 @@ function ZI = interp2 (varargin)
     method(1) = [];
   endif
   method = validatestring (method, ...
-    {"nearest", "linear", "pchip", "cubic", "spline"});
+                           {"nearest", "linear", "pchip", "cubic", "spline"});
 
   ## Read numeric input
   switch (nargs)
@@ -123,7 +123,7 @@ function ZI = interp2 (varargin)
   endswitch
 
   ## Type checking
-  if (! isnumeric (Z) || isscalar (Z) || ! ismatrix (Z) || ndims (Z) != 2)
+  if (! isnumeric (Z) || isscalar (Z) || ! ismatrix (Z))
     error ("interp2: Z must be a 2-D matrix");
   endif
   if (! isempty (n) && ! (isscalar (n) && n >= 0 && n == fix (n)))
@@ -563,8 +563,8 @@ endfunction
 %!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
 
 ## Test input validation
-%!error interp2 (1, 1, 1, 1, 1, 2)    #only 5 numeric inputs
-%!error interp2 (1, 1, 1, 1, 1, 2, 2) #only 5 numeric inputs
+%!error interp2 (1, 1, 1, 1, 1, 2)    # only 5 numeric inputs
+%!error interp2 (1, 1, 1, 1, 1, 2, 2) # only 5 numeric inputs
 %!error <Z must be a 2-D matrix> interp2 ({1})
 %!error <Z must be a 2-D matrix> interp2 (1,1,1)
 %!error <Z must be a 2-D matrix> interp2 (ones (2,2,2))

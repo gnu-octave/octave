@@ -143,17 +143,16 @@ function __datetick__ (varargin)
     ticks = get (gca (), [ax "tick"]);
   else
     ## Need to do our own axis tick position calculation as
-    ## year, etc, don't fallback on nice datenum values.
+    ## year, etc., don't fall back to nice datenum values.
     if (keeplimits)
-      limits=get (gca (), [ax "lim"]);
-      xmin=limits(1);
-      xmax=limits(2);  
+      limits = get (gca (), [ax "lim"]);
+      xmin = limits(1);
+      xmax = limits(2);  
     else
       objs = findall (gca ());
-      xmax = NaN;
-      xmin = NaN;
-      for i = 1 : length (objs)
-        fld = get (objs (i));
+      xmin = xmax = NaN;
+      for i = 1 : numel (objs)
+        fld = get (objs(i));
         if (isfield (fld, [ax "data"]))
           xdata = getfield (fld, [ax "data"])(:);
           xmin = min (xmin, min (xdata));

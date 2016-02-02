@@ -50,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "sparse-util.h"
 #include "sparse-chol.h"
-#include "SparseQR.h"
+#include "sparse-qr.h"
 
 #include "Sparse-op-defs.h"
 

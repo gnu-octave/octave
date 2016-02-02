@@ -34,8 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCmplxQRP.h"
 #include "floatQR.h"
 #include "floatQRP.h"
-#include "SparseQR.h"
-#include "SparseCmplxQR.h"
+#include "sparse-qr.h"
 
 
 #include "defun-dld.h"
@@ -239,7 +238,7 @@ x = @var{R} \\ @var{C}\n\
 
       if (is_cmplx)
         {
-          SparseComplexQR q (arg.sparse_complex_matrix_value ());
+          sparse_qr<SparseComplexMatrix> q (arg.sparse_complex_matrix_value ());
 
           if (have_b > 0)
             {
@@ -255,7 +254,7 @@ x = @var{R} \\ @var{C}\n\
         }
       else
         {
-          SparseQR q (arg.sparse_matrix_value ());
+          sparse_qr<SparseMatrix> q (arg.sparse_matrix_value ());
 
           if (have_b > 0)
             {

@@ -107,4 +107,14 @@ along with Octave; see the file COPYING.  If not, see
 # endif
 #endif
 
+#if defined (HAVE_CXSPARSE)
+# if defined (ENABLE_64)
+#  define CXSPARSE_DNAME(name) cs_dl ## name
+#  define CXSPARSE_ZNAME(name) cs_cl ## name
+# else
+#  define CXSPARSE_DNAME(name) cs_di ## name
+#  define CXSPARSE_ZNAME(name) cs_ci ## name
+# endif
+#endif
+
 #endif

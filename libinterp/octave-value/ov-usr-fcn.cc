@@ -832,7 +832,7 @@ Programming Note: @code{nargin} does not work on compiled functions\n\
             error ("nargin: invalid function name: %s", name.c_str ());
         }
 
-      octave_function *fcn_val = func.function_value ();
+      octave_function *fcn_val = func.function_value (true);
       if (! fcn_val)
         error ("nargin: FCN must be a string or function handle");
 
@@ -840,9 +840,12 @@ Programming Note: @code{nargin} does not work on compiled functions\n\
 
       if (! fcn)
         {
-          // Matlab gives up for histc,
-          // so maybe it's ok that that we give up somtimes too?
-          error ("nargin: nargin information not available for built-in functions");
+          // Matlab gives up for histc, so maybe it's ok that that we
+          // give up sometimes too?
+
+          std::string type = fcn_val->type_name ();
+          error ("nargin: number of input arguments unavailable for %s objects",
+                 type.c_str ());
         }
 
       tree_parameter_list *param_list = fcn->parameter_list ();

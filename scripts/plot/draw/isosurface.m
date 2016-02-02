@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Martin Helm
+## Copyright (C) 2009-2016 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -145,7 +145,7 @@ function varargout = isosurface (varargin)
     [n2, n1, n3] = size (val);
     [x, y, z] = meshgrid (1:n1, 1:n2, 1:n3);
     iso = varargin{2};
-    if (nargin >= 3 && ismatrix (varargin{3}))
+    if (nargin >= 3 && isnumeric (varargin{3}))
         colors = varargin{3};
         calc_colors = true;
     endif
@@ -228,6 +228,12 @@ endfunction
 
 %!test
 %! [f, v, c] = isosurface (x, y, z, val, .3, y);
+%! assert (size (f), [1 3]);
+%! assert (size (v), [3 3]);
+%! assert (size (c), [3 1]);
+
+%!test
+%! [f, v, c] = isosurface (val, .3, y);
 %! assert (size (f), [1 3]);
 %! assert (size (v), [3 3]);
 %! assert (size (c), [3 1]);

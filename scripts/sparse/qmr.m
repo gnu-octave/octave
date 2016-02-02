@@ -97,7 +97,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     elseif (isa (A, "function_handle"))
       Ax  = @(x) feval (A, x, "notransp");
       Atx = @(x) feval (A, x, "transp");
-    elseif (isnumeric (A) && ismatrix (A))
+    elseif (isnumeric (A) && issquare (A))
       Ax  = @(x) A  * x;
       Atx = @(x) A' * x;
     else
@@ -128,7 +128,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       M1m1x  = @(x) M1  \ x;
       M1tm1x = @(x) M1' \ x;
     else
-      error ("qmr: preconditioner must be a function or matrix");
+      error ("qmr: preconditioner M1 must be a function or matrix");
     endif
 
     if (nargin < 6 || isempty (M2))
@@ -145,9 +145,8 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       M2m1x  = @(x) M2  \ x;
       M2tm1x = @(x) M2' \ x;
     else
-      error ("qmr: preconditioner must be a function or matrix");
+      error ("qmr: preconditioner M2 must be a function or matrix");
     endif
-
 
     if (nargin < 7 || isempty (x0))
       x = zeros (size (b));

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -48,19 +48,18 @@ function [x, y, z] = sph2cart (theta, phi, r)
   endif
 
   if (nargin == 1)
-    if (ismatrix (theta) && columns (theta) == 3)
-      r = theta(:,3);
-      phi = theta(:,2);
-      theta = theta(:,1);
-    else
+    if (! (isnumeric (theta) && ismatrix (theta) && columns (theta) == 3))
       error ("sph2cart: matrix input must have 3 columns [THETA, PHI, R]");
     endif
-  elseif (nargin == 3)
-    if (! ((ismatrix (theta) && ismatrix (phi) && ismatrix (r))
+    r = theta(:,3);
+    phi = theta(:,2);
+    theta = theta(:,1);
+  else
+    if (! ((isnumeric (theta) && isnumeric (phi) && isnumeric (r))
             && (size_equal (theta, phi) || isscalar (theta) || isscalar (phi))
             && (size_equal (theta, r) || isscalar (theta) || isscalar (r))
             && (size_equal (phi, r) || isscalar (phi) || isscalar (r))))
-      error ("sph2cart: THETA, PHI, and R must be matrices of the same size, or scalar");
+      error ("sph2cart: THETA, PHI, R must be numeric arrays of the same size, or scalar");
     endif
   endif
 
@@ -115,4 +114,30 @@ endfunction
 %! S = [ 0, 0, 1; 0.5*pi, 0, 1; pi, 0, 1];
 %! C = [ 1, 0, 0; 0, 1, 0; -1, 0, 0];
 %! assert (sph2cart (S), C, eps);
+
+%!test
+%! [t, p, r] = meshgrid ([0, pi/2], [0, pi/2], [0, 1]);
+%! [x, y, z] = sph2cart (t, p, r);
+%! X = zeros(2, 2, 2);
+%! X(1, 1, 2) = 1;
+%! Y = zeros(2, 2, 2);
+%! Y(1, 2, 2) = 1;
+%! Z = zeros(2, 2, 2);
+%! Z(2, :, 2) = [1 1];
+%! assert (x, X, eps);
+%! assert (y, Y, eps);
+%! assert (z, Z);
+
+## Test input validation
+%!error sph2cart ()
+%!error sph2cart (1,2)
+%!error sph2cart (1,2,3,4)
+%!error <matrix input must have 3 columns> sph2cart ({1,2,3})
+%!error <matrix input must have 3 columns> sph2cart (ones (3,3,2))
+%!error <matrix input must have 3 columns> sph2cart ([1,2,3,4])
+%!error <numeric arrays of the same size> sph2cart ({1,2,3}, [1,2,3], [1,2,3])
+%!error <numeric arrays of the same size> sph2cart ([1,2,3], {1,2,3}, [1,2,3])
+%!error <numeric arrays of the same size> sph2cart ([1,2,3], [1,2,3], {1,2,3})
+%!error <numeric arrays of the same size> sph2cart (ones (3,3,3), 1, ones (3,2,3))
+%!error <numeric arrays of the same size> sph2cart (ones (3,3,3), ones (3,2,3), 1)
 

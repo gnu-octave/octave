@@ -76,7 +76,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
 
     if (ischar (A))
       A = str2func (A);
-    elseif (isnumeric(A) && ismatrix (A))
+    elseif (isnumeric(A) && issquare (A))
       Ax  = @(x) A  * x;
     elseif (isa (A, "function_handle"))
       Ax  = @(x) feval (A, x);
@@ -101,7 +101,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     elseif (isa (M1, "function_handle"))
       M1m1x = @(x) feval (M1, x);
     else
-      error ("bicgstab: preconditioner must be a function or matrix");
+      error ("bicgstab: preconditioner M1 must be a function or matrix");
     endif
 
     if (nargin < 6 || isempty (M2))
@@ -113,7 +113,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     elseif (isa (M2, "function_handle"))
       M2m1x = @(x) feval (M2, x);
     else
-      error ("bicgstab: preconditioner must be a function or matrix");
+      error ("bicgstab: preconditioner M2 must be a function or matrix");
     endif
 
     precon = @(x) M2m1x (M1m1x (x));

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -48,19 +48,18 @@ function [theta, phi, r] = cart2sph (x, y, z)
   endif
 
   if (nargin == 1)
-    if (ismatrix (x) && columns (x) == 3)
-      z = x(:,3);
-      y = x(:,2);
-      x = x(:,1);
-    else
+    if (! (isnumeric (x) && ismatrix (x) && columns (x) == 3))
       error ("cart2sph: matrix input must have 3 columns [X, Y, Z]");
     endif
-  elseif (nargin == 3)
-    if (! ((ismatrix (x) && ismatrix (y) && ismatrix (z))
+    z = x(:,3);
+    y = x(:,2);
+    x = x(:,1);
+  else
+    if (! ((isnumeric (x) && isnumeric (y) && isnumeric (z))
             && (size_equal (x, y) || isscalar (x) || isscalar (y))
             && (size_equal (x, z) || isscalar (x) || isscalar (z))
             && (size_equal (y, z) || isscalar (y) || isscalar (z))))
-      error ("cart2sph: X, Y, Z must be matrices of the same size, or scalar");
+      error ("cart2sph: X, Y, Z must be numeric arrays of the same size, or scalar");
     endif
   endif
 
@@ -116,3 +115,27 @@ endfunction
 %! S = [0, 0, 0; 0, pi/4, sqrt(2); 0, pi/4, 2*sqrt(2)];
 %! assert (cart2sph (C), S, eps);
 
+%!test
+%! [x, y, z] = meshgrid ([0, 1], [0, 1], [0, 1]);
+%! [t, p, r] = cart2sph (x, y, z);
+%! T(:, :, 1) = [0, 0; pi/2, pi/4];
+%! T(:, :, 2) = T(:, :, 1);
+%! P(:, :, 1) = zeros (2, 2);
+%! P(:, :, 2) = [pi/2, pi/4; pi/4, acos(sqrt(2/3))];
+%! R = sqrt (x .^ 2 + y .^ 2 + z .^ 2);
+%! assert (t, T, eps);
+%! assert (p, P, eps);
+%! assert (r, R, eps);
+
+## Test input validation
+%!error cart2sph ()
+%!error cart2sph (1,2)
+%!error cart2sph (1,2,3,4)
+%!error <matrix input must have 3 columns> cart2sph ({1,2,3})
+%!error <matrix input must have 3 columns> cart2sph (ones (3,3,2))
+%!error <matrix input must have 3 columns> cart2sph ([1,2,3,4])
+%!error <numeric arrays of the same size> cart2sph ({1,2,3}, [1,2,3], [1,2,3])
+%!error <numeric arrays of the same size> cart2sph ([1,2,3], {1,2,3}, [1,2,3])
+%!error <numeric arrays of the same size> cart2sph ([1,2,3], [1,2,3], {1,2,3})
+%!error <numeric arrays of the same size> cart2sph (ones (3,3,3), 1, ones (3,2,3))
+%!error <numeric arrays of the same size> cart2sph (ones (3,3,3), ones (3,2,3), 1)

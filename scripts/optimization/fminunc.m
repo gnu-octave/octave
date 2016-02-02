@@ -105,7 +105,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     return;
   endif
 
-  if (nargin < 2 || nargin > 3 || ! ismatrix (x0))
+  if (nargin < 2 || nargin > 3 || ! isnumeric (x0))
     print_usage ();
   endif
 

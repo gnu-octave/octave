@@ -30,13 +30,18 @@
 
 function s = spconvert (m)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (issparse (m))
     s = m;
   else
     sz = size (m);
-    if (nargin != 1 || ! ismatrix (m) || ! isreal (m)
+    if (! ismatrix (m) || ! isreal (m)
         || length (sz) != 2 || (sz(2) != 3 && sz(2) != 4))
-      error ("spconvert: argument must be sparse or real matrix with 3 or 4 columns");
+      error (["spconvert: argument must be sparse or real matrix" ...
+              "with 3 or 4 columns"]);
     elseif (sz(2) == 3)
       s = sparse (m(:,1), m(:,2), m(:,3));
     else

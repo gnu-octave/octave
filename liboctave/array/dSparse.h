@@ -48,6 +48,9 @@ SparseMatrix : public MSparse<double>
 {
 public:
 
+  // Corresponding dense matrix type for this sparse matrix type.
+  typedef Matrix dense_matrix_type;
+
   typedef void (*solve_singularity_handler) (double rcond);
 
   SparseMatrix (void) : MSparse<double> () { }

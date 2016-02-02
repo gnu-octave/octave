@@ -41,6 +41,9 @@ SparseBoolMatrix : public Sparse<bool>
 {
 public:
 
+  // Corresponding dense matrix type for this sparse matrix type.
+  typedef boolMatrix dense_matrix_type;
+
   SparseBoolMatrix (void) : Sparse<bool> () { }
 
   SparseBoolMatrix (octave_idx_type r, octave_idx_type c)

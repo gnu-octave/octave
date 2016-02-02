@@ -51,6 +51,9 @@ SparseComplexMatrix : public MSparse<Complex>
 {
 public:
 
+  // Corresponding dense matrix type for this sparse matrix type.
+  typedef ComplexMatrix dense_matrix_type;
+
   typedef void (*solve_singularity_handler) (double rcond);
 
   SparseComplexMatrix (void) : MSparse<Complex> () { }

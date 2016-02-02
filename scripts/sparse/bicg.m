@@ -81,15 +81,14 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       fun = str2func (A);
       Ax  = @(x) feval (fun, x, "notransp");
       Atx = @(x) feval (fun, x, "transp");
-    elseif (isnumeric (A) && ismatrix (A))
+    elseif (isnumeric (A) && issquare (A))
       Ax  = @(x) A  * x;
       Atx = @(x) A' * x;
     elseif (isa (A, "function_handle"))
       Ax  = @(x) feval (A, x, "notransp");
       Atx = @(x) feval (A, x, "transp");
     else
-      error (["bicg: first argument is expected to " ...
-              "be a function or a square matrix"]);
+      error ("bicg: A must be a function or square matrix");
     endif
 
     if (nargin < 3 || isempty (tol))
@@ -116,8 +115,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       M1m1x  = @(x) feval (M1, x, "notransp");
       M1tm1x = @(x) feval (M1, x, "transp");
     else
-      error (["bicg: preconditioner is expected to " ...
-              "be a function or matrix"]);
+      error ("bicg: preconditioner M1 must be a function or matrix");
     endif
 
     if (nargin < 6 || isempty (M2))
@@ -134,8 +132,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       M2m1x  = @(x) feval (M2, x, "notransp");
       M2tm1x = @(x) feval (M2, x, "transp");
     else
-      error (["bicg: preconditioner is expected to " ...
-              "be a function or matrix"]);
+      error ("bicg: preconditioner M2 must be a function or matrix");
     endif
 
     Pm1x  = @(x) M2m1x  (M1m1x (x));

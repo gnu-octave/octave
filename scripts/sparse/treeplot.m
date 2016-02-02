@@ -37,8 +37,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
     print_usage ();
   endif
 
-  if (! ismatrix (tree) || rows (tree) != 1 || ! isnumeric (tree)
-      || ! isvector (tree) || any (tree > length (tree)))
+  if (! isnumeric (tree) || ! isrow (tree) || any (tree > length (tree)))
     error ("treeplot: TREE must be a vector of predecessors");
   endif
 

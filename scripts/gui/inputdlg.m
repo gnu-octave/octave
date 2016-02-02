@@ -93,6 +93,10 @@ function cstr = inputdlg (prompt, title = "Input Dialog", varargin)
   ## r1  1   10   first  text field is 1x10
   ## r2  2   20   second text field is 2x20
   ## r3  3   30   third  text field is 3x30
+  if (! isnumeric (linespec))
+    error ("inputdlg: ROWSCOLS must be numeric");
+  endif
+
   if (isscalar (linespec))
     ## only scalar value in lineTo, copy from linespec and add defaults
     rowscols = zeros (numel (prompt), 2);

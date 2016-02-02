@@ -157,7 +157,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       prop = varargin{i};
       val = varargin{i + 1};
       if (strcmpi (prop, "position"))
-        if (ismatrix (val) && length (val) == 2)
+        if (isnumeric (val) && length (val) == 2)
           outargs{4} = val;
         else
           error ("uigetfile: expecting 2-element vector for position argument");

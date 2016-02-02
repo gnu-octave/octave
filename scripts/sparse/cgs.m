@@ -74,13 +74,12 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 
     if (ischar (A))
       A = str2func (A);
-    elseif (isnumeric (A) && ismatrix (A))
+    elseif (isnumeric (A) && issquare (A))
       Ax = @(x) A * x;
     elseif (isa (A, "function_handle"))
       Ax = @(x) feval (A, x);
     else
-      error (["cgs: first argument is expected to "...
-              "be a function or a square matrix"]);
+      error ("cgs: A must be a function or square matrix");
     endif
 
     if (nargin < 3 || isempty (tol))
@@ -100,7 +99,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     elseif (isa (M1, "function_handle"))
       M1m1x = @(x) feval (M1, x);
     else
-      error ("cgs: preconditioner is expected to be a function or matrix");
+      error ("cgs: preconditioner M1 must be a function or matrix");
     endif
 
     if (nargin < 6 || isempty (M2))
@@ -112,7 +111,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     elseif (isa (M2, "function_handle"))
       M2m1x = @(x) feval (M2, x);
     else
-      error ("cgs: preconditioner is expected to be a function or matrix");
+      error ("cgs: preconditioner M2 must be a function or matrix");
     endif
 
     precon = @(x) M2m1x (M1m1x (x));

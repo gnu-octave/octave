@@ -79,12 +79,12 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
 
   if (ischar (A))
     Ax = str2func (A);
-  elseif (isnumeric (A) && ismatrix (A))
+  elseif (isnumeric (A) && issquare (A))
     Ax = @(x) A*x;
   elseif (isa (A, "function_handle"))
     Ax = A;
   else
-    error ("gmres: A must be a function or matrix");
+    error ("gmres: A must be a function or square matrix");
   endif
 
   if (nargin < 3 || isempty (restart))
@@ -230,7 +230,7 @@ endfunction
 %!error gmres (1)
 %!error gmres (1,2,3,4,5,6,7,8,9)
 %!error <A must be> gmres ({1},2)
-%!error <A must be a function or matrix> gmres ({1},2)
+%!error <A must be a function or square matrix> gmres ({1},2)
 %!error <M1 must be a function or matrix> gmres (1,2,3,4,5,{6})
 %!error <M2 must be a function or matrix> gmres (1,2,3,4,5,6,{7})
 

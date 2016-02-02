@@ -79,7 +79,9 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
   endif
 
   if (nargin < 2 || nargin > 4
-      || ! (ismatrix (c) && ismatrix (d) && isstruct (options)))
+      || ! (isnumeric (c) && ismatrix (c))
+      || ! (isnumeric (d) && ismatrix (d))
+      || ! isstruct (options))
     print_usage ();
   endif
 

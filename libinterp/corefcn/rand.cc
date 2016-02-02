@@ -271,7 +271,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
       break;
     }
 
-  // No "goto gen_matrix" in code path.  Must be done.
+  // No "goto gen_matrix" in code path.  Must be done processing.
   return retval;
 
 gen_matrix:

@@ -158,13 +158,13 @@ read_binary_data (std::istream& is, bool swap,
     OCTAVE_LOCAL_BUFFER (char, name, name_len+1);
     name[name_len] = '\0';
     if (! is.read (reinterpret_cast<char *> (name), name_len))
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
     retval = name;
   }
 
   is.read (reinterpret_cast<char *> (&doc_len), 4);
   if (! is)
-    goto data_read_error;
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
   if (swap)
     swap_bytes<4> (&doc_len);
 
@@ -172,17 +172,17 @@ read_binary_data (std::istream& is, bool swap,
     OCTAVE_LOCAL_BUFFER (char, tdoc, doc_len+1);
     tdoc[doc_len] = '\0';
     if (! is.read (reinterpret_cast<char *> (tdoc), doc_len))
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
     doc = tdoc;
   }
 
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
-    goto data_read_error;
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
   global = tmp ? 1 : 0;
 
   tmp = 0;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
-    goto data_read_error;
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
 
   // All cases except 255 kept for backwards compatibility
   switch (tmp)
@@ -210,12 +210,12 @@ read_binary_data (std::istream& is, bool swap,
         // this is taking backward compatibility too far!!
         int32_t len;
         if (! is.read (reinterpret_cast<char *> (&len), 4))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         if (swap)
           swap_bytes<4> (&len);
         OCTAVE_LOCAL_BUFFER (char, s, len+1);
         if (! is.read (reinterpret_cast<char *> (s), len))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         s[len] = '\0';
         tc = s;
 
@@ -237,27 +237,24 @@ read_binary_data (std::istream& is, bool swap,
         // Read the saved variable type
         int32_t len;
         if (! is.read (reinterpret_cast<char *> (&len), 4))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         if (swap)
           swap_bytes<4> (&len);
         OCTAVE_LOCAL_BUFFER (char, s, len+1);
         if (! is.read (s, len))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         s[len] = '\0';
         std::string typ = s;
         tc = octave_value_typeinfo::lookup_type (typ);
       }
       break;
     default:
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
       break;
     }
 
   if (! tc.load_binary (is, swap, fmt))
-    {
-    data_read_error:
-      error ("load: trouble reading binary file '%s'", filename.c_str ());
-    }
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
 
   return retval;
 }

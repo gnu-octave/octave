@@ -429,7 +429,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
   int32_t temp;
 
   if (! is.read (reinterpret_cast<char *> (&temp), 4))
-    goto data_read_error;
+    return 1;
 
   if (swap)
     swap_bytes<4> (&temp);
@@ -446,7 +446,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
   else
     {
       if (! is.read (reinterpret_cast<char *> (&temp), 4))
-        goto data_read_error;
+        return 1;
       if (swap)
         swap_bytes<4> (&temp);
       bytes = temp;
@@ -454,9 +454,6 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
     }
 
   return 0;
-
-data_read_error:
-  return 1;
 }
 
 static void
@@ -1561,17 +1558,14 @@ write_mat5_tag (std::ostream& is, int type, octave_idx_type bytes)
     {
       temp = type;
       if (! is.write (reinterpret_cast<char *> (&temp), 4))
-        goto data_write_error;
+        return 1;
       temp = bytes;
     }
 
   if (! is.write (reinterpret_cast<char *> (&temp), 4))
-    goto data_write_error;
+    return 1;
 
   return 0;
-
-data_write_error:
-  return 1;
 }
 
 // Have to use copy here to avoid writing over data accessed via
@@ -2255,7 +2249,7 @@ save_mat5_binary_element (std::ostream& os,
       if (dv(i) > max_dim_val)
         {
           warn_dim_too_large (name);
-          goto skip_to_next;
+          return true;  // skip to next
         }
     }
 
@@ -2280,7 +2274,7 @@ save_mat5_binary_element (std::ostream& os,
       if (nnz > max_dim_val || nc + 1 > max_dim_val)
         {
           warn_dim_too_large (name);
-          goto skip_to_next;
+          return true;  // skip to next
         }
 
       nnz_32 = nnz;
@@ -2288,7 +2282,7 @@ save_mat5_binary_element (std::ostream& os,
   else if (dv.numel () > max_dim_val)
     {
       warn_dim_too_large (name);
-      goto skip_to_next;
+      return true;  // skip to next
     }
 
 #ifdef HAVE_ZLIB
@@ -2381,7 +2375,7 @@ save_mat5_binary_element (std::ostream& os,
     {
       // FIXME: Should this just error out rather than warn?
       warn_wrong_type_arg ("save", tc);
-      goto error_cleanup;
+      error ("save: error while writing '%s' to MAT file", name.c_str ());
     }
 
   os.write (reinterpret_cast<char *> (&flags), 4);
@@ -2561,7 +2555,7 @@ save_mat5_binary_element (std::ostream& os,
       Cell cell = tc.cell_value ();
 
       if (! write_mat5_cell_array (os, cell, mark_as_global, save_as_floats))
-        goto error_cleanup;
+        error ("save: error while writing '%s' to MAT file", name.c_str ());
     }
   else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
     {
@@ -2613,7 +2607,8 @@ save_mat5_binary_element (std::ostream& os,
             }
           catch (const octave_execution_exception&)
             {
-              goto error_cleanup;
+              error ("save: error while writing '%s' to MAT file",
+                     name.c_str ());
             }
         }
       else
@@ -2667,7 +2662,8 @@ save_mat5_binary_element (std::ostream& os,
                                                          false,
                                                          save_as_floats);
                 if (! retval2)
-                  goto error_cleanup;
+                  error ("save: error while writing '%s' to MAT file",
+                         name.c_str ());
               }
           }
       }
@@ -2676,11 +2672,5 @@ save_mat5_binary_element (std::ostream& os,
     // FIXME: Should this just error out rather than warn?
     warn_wrong_type_arg ("save", tc);
 
-skip_to_next:
   return true;
-
-// FIXME: With short-circuiting error(), no need for goto in code
-error_cleanup:
-  error ("save: error while writing '%s' to MAT file", name.c_str ());
-
 }

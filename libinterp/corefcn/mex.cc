@@ -91,14 +91,12 @@ valid_key (const char *key)
           for (int i = 1; i < nel; i++)
             {
               if (! (isalnum (key[i]) || key[i] == '_'))
-                goto done;
+                return retval;
             }
 
           retval = 1;
         }
     }
-
-done:
 
   return retval;
 }

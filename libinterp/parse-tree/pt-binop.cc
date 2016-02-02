@@ -87,8 +87,7 @@ tree_binary_expression::rvalue1 (int)
                   if (etype == octave_value::op_el_or)
                     {
                       matlab_style_short_circuit_warning ("|");
-                      result = true;
-                      goto done;
+                      return octave_value (true);
                     }
                 }
               else
@@ -96,7 +95,7 @@ tree_binary_expression::rvalue1 (int)
                   if (etype == octave_value::op_el_and)
                     {
                       matlab_style_short_circuit_warning ("&");
-                      goto done;
+                      return octave_value (false);
                     }
                 }
 
@@ -106,8 +105,6 @@ tree_binary_expression::rvalue1 (int)
 
                   result = b.is_true ();
                 }
-
-            done:
 
               return octave_value (result);
             }
@@ -205,15 +202,12 @@ tree_boolean_expression::rvalue1 (int)
       if (a_true)
         {
           if (etype == bool_or)
-            {
-              result = true;
-              goto done;
-            }
+            return octave_value (true);
         }
       else
         {
           if (etype == bool_and)
-            goto done;
+            return octave_value (false);
         }
 
       if (op_rhs)
@@ -222,8 +216,6 @@ tree_boolean_expression::rvalue1 (int)
 
           result = b.is_true ();
         }
-
-    done:
 
       retval = octave_value (result);
     }

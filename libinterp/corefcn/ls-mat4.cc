@@ -125,16 +125,16 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
     return 1;
 
   if (! is.read (reinterpret_cast<char *> (&nr), 4))
-    goto data_read_error;
+    return -1;
 
   if (! is.read (reinterpret_cast<char *> (&nc), 4))
-    goto data_read_error;
+    return -1;
 
   if (! is.read (reinterpret_cast<char *> (&imag), 4))
-    goto data_read_error;
+    return -1;
 
   if (! is.read (reinterpret_cast<char *> (&len), 4))
-    goto data_read_error;
+    return -1;
 
 // If mopt is nonzero and the byte order is swapped, mopt will be
 // bigger than we expect, so we swap bytes.
@@ -171,9 +171,6 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
     }
 
   return 0;
-
-data_read_error:
-  return -1;
 }
 
 // We don't just use a cast here, because we need to be able to detect
@@ -243,29 +240,22 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 {
   std::string retval;
 
-  // These are initialized here instead of closer to where they are
-  // first used to avoid errors from gcc about goto crossing
-  // initialization of variable.
-
-  Matrix re;
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
   bool swap = false;
-  int type = 0;
-  int prec = 0;
-  int order = 0;
-  int mach = 0;
-  int dlen = 0;
-
   int32_t mopt, nr, nc, imag, len;
 
   int err = read_mat_file_header (is, swap, mopt, nr, nc, imag, len);
   if (err)
     {
       if (err < 0)
-        goto data_read_error;
-      else
-        return retval;
+        error ("load: trouble reading binary file '%s'", filename.c_str ());
+
+      return retval;
     }
+
+  int type = 0;
+  int prec = 0;
+  int order = 0;
+  int mach = 0;
 
   type = mopt % 10;  // Full, sparse, etc.
   mopt /= 10;        // Eliminate first digit.
@@ -275,6 +265,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   mopt /= 10;        // Eliminate third digit.
   mach = mopt % 10;  // IEEE, VAX, etc.
 
+  oct_mach_info::float_format flt_fmt;
   flt_fmt = mopt_digit_to_float_format (mach);
 
   if (flt_fmt == oct_mach_info::flt_fmt_unknown)
@@ -282,6 +273,8 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
   if (imag && type == 1)
     error ("load: encountered complex matrix with string flag set!");
+
+  int dlen = 0;
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it, but apparently not all files do.  Either
@@ -291,12 +284,12 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
     OCTAVE_LOCAL_BUFFER (char, name, len+1);
     name[len] = '\0';
     if (! is.read (name, len))
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
     retval = name;
 
     dlen = nr * nc;
     if (dlen < 0)
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
 
     if (order)
       {
@@ -364,7 +357,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
       }
     else
       {
-        re.resize (nr, nc);
+        Matrix re (nr, nc);
 
         read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
 
@@ -385,7 +378,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
             for (octave_idx_type j = 0; j < nc; j++)
               for (octave_idx_type i = 0; i < nr; i++)
-                ctmp (i, j) = Complex (re (i, j), im (i, j));
+                ctmp (i,j) = Complex (re(i,j), im(i,j));
 
             tc = order ? ctmp.transpose () : ctmp;
           }
@@ -398,11 +391,6 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
     return retval;
   }
-
-// FIXME: With short-circuiting error(), no need for goto in code
-data_read_error:
-  error ("load: trouble reading binary file '%s'", filename.c_str ());
-
 }
 
 // Save the data from TC along with the corresponding NAME on stream OS

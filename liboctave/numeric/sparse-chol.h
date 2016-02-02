@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 John W. Eaton
 Copyright (C) 2005-2015 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
@@ -28,6 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "dColVector.h"
 #include "dSparse.h"
 #include "oct-sparse.h"
+
+// If the sparse matrix classes become templated on the element type
+// (i.e., sparse_matrix<double>), then it might be best to make the
+// template parameter of this class also be the element type instead
+// of the matrix type.
 
 template <typename chol_type>
 class

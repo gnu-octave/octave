@@ -24,97 +24,97 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_oct_sparse_h 1
 
 #if defined (HAVE_SUITESPARSE_AMD_H)
-#include <suitesparse/amd.h>
+#  include <suitesparse/amd.h>
 #elif defined (HAVE_UFSPARSE_AMD_H)
-#include <ufsparse/amd.h>
+#  include <ufsparse/amd.h>
 #elif defined (HAVE_AMD_AMD_H)
-#include <amd/amd.h>
+#  include <amd/amd.h>
 #elif defined (HAVE_AMD_H)
-#include <amd.h>
+#  include <amd.h>
 #endif
 
 #if defined (HAVE_SUITESPARSE_UMFPACK_H)
-#include <suitesparse/umfpack.h>
+#  include <suitesparse/umfpack.h>
 #elif defined (HAVE_UFSPARSE_UMFPACK_H)
-#include <ufsparse/umfpack.h>
+#  include <ufsparse/umfpack.h>
 #elif defined (HAVE_UMFPACK_UMFPACK_H)
-#include <umfpack/umfpack.h>
+#  include <umfpack/umfpack.h>
 #elif defined (HAVE_UMFPACK_H)
-#include <umfpack.h>
+#  include <umfpack.h>
 #endif
 
 #if defined (HAVE_SUITESPARSE_COLAMD_H)
-#include <suitesparse/colamd.h>
+#  include <suitesparse/colamd.h>
 #elif defined (HAVE_UFSPARSE_COLAMD_H)
-#include <ufsparse/colamd.h>
+#  include <ufsparse/colamd.h>
 #elif defined (HAVE_COLAMD_COLAMD_H)
-#include <colamd/colamd.h>
+#  include <colamd/colamd.h>
 #elif defined (HAVE_COLAMD_H)
-#include <colamd.h>
+#  include <colamd.h>
 #endif
 
 #if defined (HAVE_SUITESPARSE_CCOLAMD_H)
-#include <suitesparse/ccolamd.h>
+#  include <suitesparse/ccolamd.h>
 #elif defined (HAVE_UFSPARSE_CCOLAMD_H)
-#include <ufsparse/ccolamd.h>
+#  include <ufsparse/ccolamd.h>
 #elif defined (HAVE_CCOLAMD_CCOLAMD_H)
-#include <ccolamd/ccolamd.h>
+#  include <ccolamd/ccolamd.h>
 #elif defined (HAVE_CCOLAMD_H)
-#include <ccolamd.h>
+#  include <ccolamd.h>
 #endif
 
 #if defined (HAVE_SUITESPARSE_CHOLMOD_H)
-#include <suitesparse/cholmod.h>
+#  include <suitesparse/cholmod.h>
 #elif defined (HAVE_UFSPARSE_CHOLMOD_H)
-#include <ufsparse/cholmod.h>
+#  include <ufsparse/cholmod.h>
 #elif defined (HAVE_CHOLMOD_CHOLMOD_H)
-#include <cholmod/cholmod.h>
+#  include <cholmod/cholmod.h>
 #elif defined (HAVE_CHOLMOD_H)
-#include <cholmod.h>
+#  include <cholmod.h>
 #endif
 
 #if defined (HAVE_SUITESPARSE_CS_H)
-#include <suitesparse/cs.h>
+#  include <suitesparse/cs.h>
 #elif defined (HAVE_UFSPARSE_CS_H)
-#include <ufsparse/cs.h>
+#  include <ufsparse/cs.h>
 #elif defined (HAVE_CXSPARSE_CS_H)
-#include <cxsparse/cs.h>
+#  include <cxsparse/cs.h>
 #elif defined (HAVE_CS_H)
-#include <cs.h>
+#  include <cs.h>
 #endif
 
 #if (defined (HAVE_SUITESPARSE_CHOLMOD_H) \
      || defined (HAVE_UFSPARSE_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_H))
-#if defined (ENABLE_64)
-#define CHOLMOD_NAME(name) cholmod_l_ ## name
-#else
-#define CHOLMOD_NAME(name) cholmod_ ## name
-#endif
+#  if defined (ENABLE_64)
+#    define CHOLMOD_NAME(name) cholmod_l_ ## name
+#  else
+#    define CHOLMOD_NAME(name) cholmod_ ## name
+#  endif
 #endif
 
 // Cope with new SuiteSparse versions
 
 #if defined (SUITESPARSE_VERSION)
-# if SUITESPARSE_VERSION >= SUITESPARSE_VER_CODE (4, 3)
-#  define SUITESPARSE_NAME(name) SuiteSparse_ ## name
-#  define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (SuiteSparse_config.f_name = f_assign)
-#  define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (SuiteSparse_config.f_name = SUITESPARSE_NAME (f_assign))
-# else
-#  define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (f_var = f_assign)
-#  define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (f_var = CHOLMOD_NAME (f_assign))
-# endif
+#  if SUITESPARSE_VERSION >= SUITESPARSE_VER_CODE (4, 3)
+#    define SUITESPARSE_NAME(name) SuiteSparse_ ## name
+#    define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (SuiteSparse_config.f_name = f_assign)
+#    define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (SuiteSparse_config.f_name = SUITESPARSE_NAME (f_assign))
+#  else
+#    define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (f_var = f_assign)
+#    define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (f_var = CHOLMOD_NAME (f_assign))
+#  endif
 #endif
 
 #if defined (HAVE_CXSPARSE)
-# if defined (ENABLE_64)
-#  define CXSPARSE_DNAME(name) cs_dl ## name
-#  define CXSPARSE_ZNAME(name) cs_cl ## name
-# else
-#  define CXSPARSE_DNAME(name) cs_di ## name
-#  define CXSPARSE_ZNAME(name) cs_ci ## name
-# endif
+#  if defined (ENABLE_64)
+#    define CXSPARSE_DNAME(name) cs_dl ## name
+#    define CXSPARSE_ZNAME(name) cs_cl ## name
+#  else
+#    define CXSPARSE_DNAME(name) cs_di ## name
+#    define CXSPARSE_ZNAME(name) cs_ci ## name
+#  endif
 #endif
 
 #endif

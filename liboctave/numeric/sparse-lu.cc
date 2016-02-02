@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 John W. Eaton
 Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
@@ -391,6 +392,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
       tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
       if (! xisnan (tmp))
         Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+
       tmp = (piv_thres (1) > 1. ? 1. : piv_thres (1));
       if (! xisnan (tmp))
         Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -546,8 +548,10 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
     }
 
 #else
+
   (*current_liboctave_error_handler)
     ("support for UMFPACK was unavailable or disabled when liboctave was built");
+
 #endif
 }
 
@@ -560,6 +564,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
   : Lfact (), Ufact (), Rfact (), cond (0), P (), Q ()
 {
 #ifdef HAVE_UMFPACK
+
   if (milu)
     (*current_liboctave_error_handler)
       ("Modified incomplete LU not implemented");
@@ -760,8 +765,10 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
       ("Option udiag of incomplete LU not implemented");
 
 #else
+
   (*current_liboctave_error_handler)
     ("support for UMFPACK was unavailable or disabled when liboctave was built");
+
 #endif
 }
 
@@ -784,6 +791,7 @@ sparse_lu<lu_type>::Y (void) const
           Yout.xridx (ii) = Ufact.ridx (i);
           Yout.xdata (ii++) = Ufact.data (i);
         }
+
       if (j < nz)
         {
           // Note the +1 skips the 1.0 on the diagonal
@@ -794,6 +802,7 @@ sparse_lu<lu_type>::Y (void) const
               Yout.xdata (ii++) = Lfact.data (i);
             }
         }
+
       Yout.xcidx (j + 1) = ii;
     }
 
@@ -804,7 +813,6 @@ template <typename lu_type>
 SparseMatrix
 sparse_lu<lu_type>::Pr (void) const
 {
-
   octave_idx_type nr = Lfact.rows ();
 
   SparseMatrix Pout (nr, nr, nr);
@@ -815,6 +823,7 @@ sparse_lu<lu_type>::Pr (void) const
       Pout.ridx (P (i)) = i;
       Pout.data (i) = 1;
     }
+
   Pout.cidx (nr) = nr;
 
   return Pout;
@@ -824,7 +833,6 @@ template <typename lu_type>
 ColumnVector
 sparse_lu<lu_type>::Pr_vec (void) const
 {
-
   octave_idx_type nr = Lfact.rows ();
 
   ColumnVector Pout (nr);
@@ -856,6 +864,7 @@ sparse_lu<lu_type>::Pc (void) const
       Pout.ridx (i) = Q (i);
       Pout.data (i) = 1;
     }
+
   Pout.cidx (nc) = nc;
 
   return Pout;
@@ -865,7 +874,6 @@ template <typename lu_type>
 ColumnVector
 sparse_lu<lu_type>::Pc_vec (void) const
 {
-
   octave_idx_type nc = Ufact.cols ();
 
   ColumnVector Pout (nc);

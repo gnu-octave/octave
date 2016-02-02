@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 John W. Eaton
 Copyright (C) 2006-2015 David Bateman
 
 This file is part of Octave.
@@ -44,7 +45,9 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 {
   octave_idx_type nr = rend - rst;
   octave_idx_type nc = cend - cst;
+
   maxnz = (maxnz < 0 ? A.nnz () : maxnz);
+
   octave_idx_type nz;
 
   // Cast to uint64 to handle overflow in this multiplication
@@ -54,21 +57,28 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
     nz = maxnz;
 
   MSparse<T> B (nr, nc, (nz < maxnz ? nz : maxnz));
+
   // Some sparse functions can support lazy indexing (where elements
   // in the row are in no particular order), even though octave in
   // general can't. For those functions that can using it is a big
   // win here in terms of speed.
+
   if (lazy)
     {
       nz = 0;
+
       for (octave_idx_type j = cst ; j < cend ; j++)
         {
           octave_idx_type qq = (Q ? Q[j] : j);
+
           B.xcidx (j - cst) = nz;
+
           for (octave_idx_type p = A.cidx (qq) ; p < A.cidx (qq+1) ; p++)
             {
               octave_quit ();
+
               octave_idx_type r = (Pinv ? Pinv[A.ridx (p)] : A.ridx (p));
+
               if (r >= rst && r < rend)
                 {
                   B.xdata (nz) = A.data (p);
@@ -76,32 +86,43 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
                 }
             }
         }
+
       B.xcidx (cend - cst) = nz ;
     }
   else
     {
       OCTAVE_LOCAL_BUFFER (T, X, rend - rst);
+
       octave_sort<octave_idx_type> sort;
       octave_idx_type *ri = B.xridx ();
+
       nz = 0;
+
       for (octave_idx_type j = cst ; j < cend ; j++)
         {
           octave_idx_type qq = (Q ? Q[j] : j);
+
           B.xcidx (j - cst) = nz;
+
           for (octave_idx_type p = A.cidx (qq) ; p < A.cidx (qq+1) ; p++)
             {
               octave_quit ();
+
               octave_idx_type r = (Pinv ? Pinv[A.ridx (p)] : A.ridx (p));
+
               if (r >= rst && r < rend)
                 {
                   X[r-rst] = A.data (p);
                   B.xridx (nz++) = r - rst ;
                 }
             }
+
           sort.sort (ri + B.xcidx (j - cst), nz - B.xcidx (j - cst));
+
           for (octave_idx_type p = B.cidx (j - cst); p < nz; p++)
             B.xdata (p) = X[B.xridx (p)];
         }
+
       B.xcidx (cend - cst) = nz ;
     }
 
@@ -117,8 +138,12 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
 {
   r2 -= 1;
   c2 -= 1;
-  if (r1 > r2) { std::swap (r1, r2); }
-  if (c1 > c2) { std::swap (c1, c2); }
+
+  if (r1 > r2)
+    std::swap (r1, r2);
+
+  if (c1 > c2)
+    std::swap (c1, c2);
 
   octave_idx_type new_r = r2 - r1 + 1;
   octave_idx_type new_c = c2 - c1 + 1;
@@ -126,8 +151,10 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
   MArray<T> result (dim_vector (new_r, new_c));
 
   for (octave_idx_type j = 0; j < new_c; j++)
-    for (octave_idx_type i = 0; i < new_r; i++)
-      result.xelem (i, j) = m.elem (r1+i, c1+j);
+    {
+      for (octave_idx_type i = 0; i < new_r; i++)
+        result.xelem (i, j) = m.elem (r1+i, c1+j);
+    }
 
   return result;
 }
@@ -138,14 +165,19 @@ dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
                 octave_idx_type r, octave_idx_type c)
 {
   T *ax = a.fortran_vec ();
+
   const T *bx = b.fortran_vec ();
+
   octave_idx_type anr = a.rows ();
+
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
+
   for (octave_idx_type j = 0; j < nc; j++)
     {
       octave_idx_type aoff = (c + j) * anr;
       octave_idx_type boff = j * nr;
+
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
@@ -161,10 +193,12 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
 {
   octave_idx_type b_rows = b.rows ();
   octave_idx_type b_cols = b.cols ();
+
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Qinv, nr);
+
   for (octave_idx_type i = 0; i < nr; i++)
     Qinv[Q[i]] = i;
 
@@ -175,14 +209,22 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
     nel += a.xcidx (nc) - a.xcidx (c + b_cols);
 
   for (octave_idx_type i = c; i < c + b_cols; i++)
-    for (octave_idx_type j = a.xcidx (i); j < a.xcidx (i+1); j++)
-      if (Qinv[a.xridx (j)] < r || Qinv[a.xridx (j)] >= r + b_rows)
-        nel++;
+    {
+      for (octave_idx_type j = a.xcidx (i); j < a.xcidx (i+1); j++)
+        {
+          if (Qinv[a.xridx (j)] < r || Qinv[a.xridx (j)] >= r + b_rows)
+            nel++;
+        }
+    }
 
   OCTAVE_LOCAL_BUFFER (T, X, nr);
+
   octave_sort<octave_idx_type> sort;
+
   MSparse<T> tmp (a);
+
   a = MSparse<T> (nr, nc, nel);
+
   octave_idx_type *ri = a.xridx ();
 
   for (octave_idx_type i = 0; i < tmp.cidx (c); i++)
@@ -190,6 +232,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
       a.xdata (i) = tmp.xdata (i);
       a.xridx (i) = tmp.xridx (i);
     }
+
   for (octave_idx_type i = 0; i < c + 1; i++)
     a.xcidx (i) = tmp.xcidx (i);
 
@@ -200,11 +243,13 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
       octave_quit ();
 
       for (octave_idx_type j = tmp.xcidx (i); j < tmp.xcidx (i+1); j++)
-        if (Qinv[tmp.xridx (j)] < r ||  Qinv[tmp.xridx (j)] >= r + b_rows)
-          {
-            X[tmp.xridx (j)] = tmp.xdata (j);
-            a.xridx (ii++) = tmp.xridx (j);
-          }
+        {
+          if (Qinv[tmp.xridx (j)] < r ||  Qinv[tmp.xridx (j)] >= r + b_rows)
+            {
+              X[tmp.xridx (j)] = tmp.xdata (j);
+              a.xridx (ii++) = tmp.xridx (j);
+            }
+        }
 
       octave_quit ();
 
@@ -215,8 +260,10 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
         }
 
       sort.sort (ri + a.xcidx (i), ii - a.xcidx (i));
+
       for (octave_idx_type p = a.xcidx (i); p < ii; p++)
         a.xdata (p) = X[a.xridx (p)];
+
       a.xcidx (i+1) = ii;
     }
 
@@ -227,6 +274,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
           a.xdata (ii) = tmp.xdata (j);
           a.xridx (ii++) = tmp.xridx (j);
         }
+
       a.xcidx (i+1) = ii;
     }
 }
@@ -237,9 +285,13 @@ dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
 {
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
+
   const T *Bx = b.fortran_vec ();
+
   a.resize (dim_vector (b_nr, b_nc));
+
   RT *Btx = a.fortran_vec ();
+
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       octave_idx_type off = j * b_nr;
@@ -258,12 +310,17 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
   octave_idx_type b_nz = b.nnz ();
+
   octave_idx_type nz = 0;
+
   a = MSparse<RT> (b_nr, b_nc, b_nz);
   octave_sort<octave_idx_type> sort;
   octave_idx_type *ri = a.xridx ();
+
   OCTAVE_LOCAL_BUFFER (RT, X, b_nr);
+
   a.xcidx (0) = 0;
+
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
@@ -273,12 +330,15 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
           X[r] = b.data (i);
           a.xridx (nz++) = p[b.ridx (i)];
         }
+
       sort.sort (ri + a.xcidx (j), nz - a.xcidx (j));
+
       for (octave_idx_type i = a.cidx (j); i < nz; i++)
         {
           octave_quit ();
           a.xdata (i) = X[a.xridx (i)];
         }
+
       a.xcidx (j+1) = nz;
     }
 }
@@ -295,10 +355,13 @@ RT
 dmsolve (const ST &a, const T &b, octave_idx_type &info)
 {
 #ifdef HAVE_CXSPARSE
+
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
+
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
+
   RT retval;
 
   if (nr < 0 || nc < 0 || nr != b_nr)
@@ -310,12 +373,15 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
   else
     {
       octave_idx_type nnz_remaining = a.nnz ();
+
       CXSPARSE_DNAME () csm;
+
       csm.m = nr;
       csm.n = nc;
       csm.x = 0;
       csm.nz = -1;
       csm.nzmax = a.nnz ();
+
       // Cast away const on A, with full knowledge that CSparse won't touch it.
       // Prevents the methods below making a copy of the data.
       csm.p = const_cast<octave_idx_type *>(a.cidx ());
@@ -326,11 +392,14 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       octave_idx_type *q = dm->q;
 
       OCTAVE_LOCAL_BUFFER (octave_idx_type, pinv, nr);
+
       for (octave_idx_type i = 0; i < nr; i++)
         pinv[p[i]] = i;
+
       RT btmp;
       dmsolve_permute (btmp, b, pinv);
       info = 0;
+
       retval.resize (nc, b_nc);
 
       // Leading over-determined block
@@ -339,17 +408,16 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
           ST m = dmsolve_extract (a, pinv, q, dm->rr[2], nr, dm->cc[3], nc,
                                   nnz_remaining, true);
           nnz_remaining -= m.nnz ();
-          RT mtmp =
-            qrsolve (m, dmsolve_extract (btmp, 0, 0, dm->rr[2], b_nr, 0,
-                                         b_nc), info);
+          RT mtmp = qrsolve (m, dmsolve_extract (btmp, 0, 0, dm->rr[2],
+                                                 b_nr, 0, b_nc), info);
           dmsolve_insert (retval, mtmp, q, dm->cc[3], 0);
+
           if (dm->rr[2] > 0 && ! info)
             {
               m = dmsolve_extract (a, pinv, q, 0, dm->rr[2],
                                    dm->cc[3], nc, nnz_remaining, true);
               nnz_remaining -= m.nnz ();
-              RT ctmp = dmsolve_extract (btmp, 0, 0, 0,
-                                         dm->rr[2], 0, b_nc);
+              RT ctmp = dmsolve_extract (btmp, 0, 0, 0, dm->rr[2], 0, b_nc);
               btmp.insert (ctmp - m * mtmp, 0, 0);
             }
         }
@@ -379,8 +447,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
               m = dmsolve_extract (a, pinv, q, 0, dm->rr[1], dm->cc[2],
                                    dm->cc[3], nnz_remaining, true);
               nnz_remaining -= m.nnz ();
-              RT ctmp = dmsolve_extract (btmp, 0, 0, 0,
-                                         dm->rr[1], 0, b_nc);
+              RT ctmp = dmsolve_extract (btmp, 0, 0, 0, dm->rr[1], 0, b_nc);
               btmp.insert (ctmp - m * mtmp, 0, 0);
             }
         }
@@ -390,18 +457,20 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
         {
           ST m = dmsolve_extract (a, pinv, q, 0, dm->rr[1], 0,
                                   dm->cc[2], nnz_remaining, true);
-          RT mtmp =
-            qrsolve (m, dmsolve_extract (btmp, 0, 0, 0, dm->rr[1] , 0,
-                                         b_nc), info);
+          RT mtmp = qrsolve (m, dmsolve_extract (btmp, 0, 0, 0, dm->rr[1],
+                                                 0, b_nc), info);
           dmsolve_insert (retval, mtmp, q, 0, 0);
         }
 
       CXSPARSE_DNAME (_dfree) (dm);
     }
+
   return retval;
 
 #else
+
   (*current_liboctave_error_handler)
     ("support for CXSparse was unavailable or disabled when liboctave was built");
+
 #endif
 }

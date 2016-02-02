@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 John W. Eaton
 Copyright (C) 2004-2015 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
@@ -27,6 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "dSparse.h"
+
+// If the sparse matrix classes become templated on the element type
+// (i.e., sparse_matrix<double>), then it might be best to make the
+// template parameter of this class also be the element type instead
+// of the matrix type.
 
 template <typename lu_type>
 class

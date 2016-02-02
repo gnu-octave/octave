@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2015 David Bateman
 Copyright (C) 2016 John W. Eaton
+Copyright (C) 2005-2015 David Bateman
 
 This file is part of Octave.
 
@@ -43,7 +43,7 @@ class
 cxsparse_types<SparseMatrix>
 {
 public:
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   typedef CXSPARSE_DNAME (s) symbolic_type;
   typedef CXSPARSE_DNAME (n) numeric_type;
 #endif
@@ -54,7 +54,7 @@ class
 cxsparse_types<SparseComplexMatrix>
 {
 public:
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   typedef CXSPARSE_ZNAME (s) symbolic_type;
   typedef CXSPARSE_ZNAME (n) numeric_type;
 #endif
@@ -71,7 +71,7 @@ public:
 
   bool ok (void) const
   {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
     return (N && S);
 #else
     return false;
@@ -121,13 +121,19 @@ template <typename SPARSE_T>
 ColumnVector
 sparse_qr<SPARSE_T>::sparse_qr_rep::Pinv (void) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
+
   ColumnVector ret (N->L->m);
+
   for (octave_idx_type i = 0; i < N->L->m; i++)
     ret.xelem (i) = S->pinv[i];
+
   return ret;
+
 #else
+
   return ColumnVector ();
+
 #endif
 }
 
@@ -135,13 +141,19 @@ template <typename SPARSE_T>
 ColumnVector
 sparse_qr<SPARSE_T>::sparse_qr_rep::P (void) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
+
   ColumnVector ret (N->L->m);
+
   for (octave_idx_type i = 0; i < N->L->m; i++)
     ret.xelem (S->pinv[i]) = i;
+
   return ret;
+
 #else
+
   return ColumnVector ();
+
 #endif
 }
 
@@ -153,12 +165,14 @@ template <>
 sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
   (const SparseMatrix& a, int order)
     : count (1), nrows (a.rows ()), ncols (a.columns ())
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
     , S (0), N (0)
 #endif
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
+
   CXSPARSE_DNAME () A;
+
   A.nzmax = a.nnz ();
   A.m = nrows;
   A.n = ncols;
@@ -168,10 +182,12 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
   A.i = const_cast<octave_idx_type *>(a.ridx ());
   A.x = const_cast<double *>(a.data ());
   A.nz = -1;
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   S = CXSPARSE_DNAME (_sqr) (order, &A, 1);
   N = CXSPARSE_DNAME (_qr) (&A, S);
   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
   if (! N)
     (*current_liboctave_error_handler)
       ("sparse_qr: sparse matrix QR factorization filled");
@@ -179,15 +195,17 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
   count = 1;
 
 #else
+
   (*current_liboctave_error_handler)
     ("sparse_qr: support for CXSparse was unavailable or disabled when liboctave was built");
+
 #endif
 }
 
 template <>
 sparse_qr<SparseMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   CXSPARSE_DNAME (_sfree) (S);
   CXSPARSE_DNAME (_nfree) (N);
 #endif
@@ -197,9 +215,11 @@ template <>
 SparseMatrix
 sparse_qr<SparseMatrix>::sparse_qr_rep::V (void) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
+
   // Drop zeros from V and sort
   // FIXME: Is the double transpose to sort necessary?
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_DNAME (_dropzeros) (N->L);
   CXSPARSE_DNAME () *D = CXSPARSE_DNAME (_transpose) (N->L, 1);
@@ -211,16 +231,22 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::V (void) const
   octave_idx_type nc = N->L->n;
   octave_idx_type nz = N->L->nzmax;
   SparseMatrix ret (N->L->m, nc, nz);
+
   for (octave_idx_type j = 0; j < nc+1; j++)
     ret.xcidx (j) = N->L->p[j];
+
   for (octave_idx_type j = 0; j < nz; j++)
     {
       ret.xridx (j) = N->L->i[j];
       ret.xdata (j) = N->L->x[j];
     }
+
   return ret;
+
 #else
+
   return SparseMatrix ();
+
 #endif
 }
 
@@ -228,9 +254,11 @@ template <>
 SparseMatrix
 sparse_qr<SparseMatrix>::sparse_qr_rep::R (bool econ) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
+
   // Drop zeros from R and sort
   // FIXME: Is the double transpose to sort necessary?
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_DNAME (_dropzeros) (N->U);
   CXSPARSE_DNAME () *D = CXSPARSE_DNAME (_transpose) (N->U, 1);
@@ -246,14 +274,19 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::R (bool econ) const
 
   for (octave_idx_type j = 0; j < nc+1; j++)
     ret.xcidx (j) = N->U->p[j];
+
   for (octave_idx_type j = 0; j < nz; j++)
     {
       ret.xridx (j) = N->U->i[j];
       ret.xdata (j) = N->U->x[j];
     }
+
   return ret;
+
 #else
+
   return SparseMatrix ();
+
 #endif
 }
 
@@ -261,14 +294,19 @@ template <>
 Matrix
 sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix& b) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
+
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
+
   octave_idx_type nc = N->L->n;
   octave_idx_type nr = nrows;
+
   const double *bvec = b.fortran_vec ();
+
   Matrix ret (b_nr, b_nc);
   double *vec = ret.fortran_vec ();
+
   if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
 
@@ -277,29 +315,40 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix& b) const
   else
     {
       OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
+
       for (volatile octave_idx_type j = 0, idx = 0; j < b_nc; j++, idx+=b_nr)
         {
           octave_quit ();
+
           for (octave_idx_type i = nr; i < S->m2; i++)
             buf[i] = 0.;
+
           volatile octave_idx_type nm = (nr < nc ? nr : nc);
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_ipvec) (S->pinv, bvec + idx, buf, b_nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
           for (volatile octave_idx_type i = 0; i < nm; i++)
             {
               octave_quit ();
+
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, i, N->B[i], buf);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
+
           for (octave_idx_type i = 0; i < b_nr; i++)
             vec[i+idx] = buf[i];
         }
     }
+
   return ret;
+
 #else
+
   return Matrix ();
+
 #endif
 }
 
@@ -307,11 +356,12 @@ template <>
 Matrix
 sparse_qr<SparseMatrix>::sparse_qr_rep::Q (void) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   octave_idx_type nc = N->L->n;
   octave_idx_type nr = nrows;
   Matrix ret (nr, nr);
   double *vec = ret.fortran_vec ();
+
   if (nr < 0 || nc < 0)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
 
@@ -320,34 +370,48 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::Q (void) const
   else
     {
       OCTAVE_LOCAL_BUFFER (double, bvec, nr + 1);
+
       for (octave_idx_type i = 0; i < nr; i++)
         bvec[i] = 0.;
+
       OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
+
       for (volatile octave_idx_type j = 0, idx = 0; j < nr; j++, idx+=nr)
         {
           octave_quit ();
+
           bvec[j] = 1.0;
           for (octave_idx_type i = nr; i < S->m2; i++)
             buf[i] = 0.;
+
           volatile octave_idx_type nm = (nr < nc ? nr : nc);
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_ipvec) (S->pinv, bvec, buf, nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
           for (volatile octave_idx_type i = 0; i < nm; i++)
             {
               octave_quit ();
+
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, i, N->B[i], buf);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
+
           for (octave_idx_type i = 0; i < nr; i++)
             vec[i+idx] = buf[i];
+
           bvec[j] = 0.0;
         }
     }
+
   return ret.transpose ();
+
 #else
+
   return Matrix ();
+
 #endif
 }
 
@@ -359,7 +423,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -371,23 +435,30 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
 
   Matrix x (nc, b_nc);
   double *vec = x.fortran_vec ();
+
   OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
+
   for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc;
        i++, idx+=nc, bidx+=b_nr)
     {
       octave_quit ();
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_ipvec) (S->pinv, bvec + bidx, buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_usolve) (N->U, buf);
       CXSPARSE_DNAME (_ipvec) (S->q, buf, vec + idx, nc);
@@ -413,7 +484,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<double>, Matrix>
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseMatrix>::solve.
@@ -428,25 +499,33 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<double>, Matrix>
 
   Matrix x (nc, b_nc);
   double *vec = x.fortran_vec ();
+
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (double, buf, nbuf);
+
   for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc;
        i++, idx+=nc, bidx+=b_nr)
     {
       octave_quit ();
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->q, bvec + bidx, buf, nr);
       CXSPARSE_DNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->pinv, buf, vec + idx, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -471,7 +550,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseMatrix>
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -479,31 +558,38 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseMatrix>
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
+
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_ipvec) (S->pinv, Xx, buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_usolve) (N->U, buf);
       CXSPARSE_DNAME (_ipvec) (S->q, buf, Xx, nc);
@@ -512,6 +598,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseMatrix>
       for (octave_idx_type j = 0; j < nc; j++)
         {
           double tmp = Xx[j];
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -522,10 +609,12 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseMatrix>
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 
@@ -548,7 +637,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseMatrix>
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseMatrix>::solve.
@@ -559,33 +648,40 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseMatrix>
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, nbuf);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->q, Xx, buf, nr);
       CXSPARSE_DNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xx, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -593,6 +689,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseMatrix>
       for (octave_idx_type j = 0; j < nc; j++)
         {
           double tmp = Xx[j];
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -603,10 +700,12 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseMatrix>
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 
@@ -631,7 +730,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, ComplexMatri
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -641,48 +740,62 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, ComplexMatri
 
   ComplexMatrix x (nc, b_nc);
   Complex *vec = x.fortran_vec ();
+
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
           Xx[j] = std::real (c);
           Xz[j] = std::imag (c);
         }
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_ipvec) (S->pinv, Xx, buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_usolve) (N->U, buf);
       CXSPARSE_DNAME (_ipvec) (S->q, buf, Xx, nc);
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = 0.;
+
       CXSPARSE_DNAME (_ipvec) (S->pinv, Xz, buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_usolve) (N->U, buf);
       CXSPARSE_DNAME (_ipvec) (S->q, buf, Xz, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (octave_idx_type j = 0; j < nc; j++)
         vec[j+idx] = Complex (Xx[j], Xz[j]);
     }
@@ -706,7 +819,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, ComplexMatri
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseMatrix>::solve.
@@ -719,51 +832,66 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, ComplexMatri
 
   ComplexMatrix x (nc, b_nc);
   Complex *vec = x.fortran_vec ();
+
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, nbuf);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
           Xx[j] = std::real (c);
           Xz[j] = std::imag (c);
         }
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->q, Xx, buf, nr);
       CXSPARSE_DNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xx, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->q, Xz, buf, nr);
       CXSPARSE_DNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xz, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (octave_idx_type j = 0; j < nc; j++)
         vec[j+idx] = Complex (Xx[j], Xz[j]);
     }
@@ -785,12 +913,14 @@ template <>
 sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
   (const SparseComplexMatrix& a, int order)
     : count (1), nrows (a.rows ()), ncols (a.columns ())
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
     , S (0), N (0)
 #endif
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
+
   CXSPARSE_ZNAME () A;
+
   A.nzmax = a.nnz ();
   A.m = nrows;
   A.n = ncols;
@@ -800,10 +930,12 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
   A.i = const_cast<octave_idx_type *>(a.ridx ());
   A.x = const_cast<cs_complex_t *>(reinterpret_cast<const cs_complex_t *> (a.data ()));
   A.nz = -1;
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   S = CXSPARSE_ZNAME (_sqr) (order, &A, 1);
   N = CXSPARSE_ZNAME (_qr) (&A, S);
   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
   if (! N)
     (*current_liboctave_error_handler)
       ("sparse_qr: sparse matrix QR factorization filled");
@@ -811,15 +943,17 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
   count = 1;
 
 #else
+
   (*current_liboctave_error_handler)
     ("sparse_qr: support for CXSparse was unavailable or disabled when liboctave was built");
+
 #endif
 }
 
 template <>
 sparse_qr<SparseComplexMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   CXSPARSE_ZNAME (_sfree) (S);
   CXSPARSE_ZNAME (_nfree) (N);
 #endif
@@ -829,9 +963,10 @@ template <>
 SparseComplexMatrix
 sparse_qr<SparseComplexMatrix>::sparse_qr_rep::V (void) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   // Drop zeros from V and sort
   // FIXME: Is the double transpose to sort necessary?
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_ZNAME (_dropzeros) (N->L);
   CXSPARSE_ZNAME () *D = CXSPARSE_ZNAME (_transpose) (N->L, 1);
@@ -843,16 +978,22 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::V (void) const
   octave_idx_type nc = N->L->n;
   octave_idx_type nz = N->L->nzmax;
   SparseComplexMatrix ret (N->L->m, nc, nz);
+
   for (octave_idx_type j = 0; j < nc+1; j++)
     ret.xcidx (j) = N->L->p[j];
+
   for (octave_idx_type j = 0; j < nz; j++)
     {
       ret.xridx (j) = N->L->i[j];
       ret.xdata (j) = reinterpret_cast<Complex *>(N->L->x)[j];
     }
+
   return ret;
+
 #else
+
   return SparseComplexMatrix ();
+
 #endif
 }
 
@@ -860,9 +1001,10 @@ template <>
 SparseComplexMatrix
 sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   // Drop zeros from R and sort
   // FIXME: Is the double transpose to sort necessary?
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_ZNAME (_dropzeros) (N->U);
   CXSPARSE_ZNAME () *D = CXSPARSE_ZNAME (_transpose) (N->U, 1);
@@ -876,16 +1018,22 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
 
   SparseComplexMatrix ret ((econ ? (nc > nrows ? nrows : nc) : nrows), nc, nz);
 
+
   for (octave_idx_type j = 0; j < nc+1; j++)
     ret.xcidx (j) = N->U->p[j];
+
   for (octave_idx_type j = 0; j < nz; j++)
     {
       ret.xridx (j) = N->U->i[j];
       ret.xdata (j) = reinterpret_cast<Complex *>(N->U->x)[j];
     }
+
   return ret;
+
 #else
+
   return SparseComplexMatrix ();
+
 #endif
 }
 
@@ -893,7 +1041,7 @@ template <>
 ComplexMatrix
 sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C (const ComplexMatrix& b) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
   octave_idx_type nc = N->L->n;
@@ -901,35 +1049,47 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C (const ComplexMatrix& b) const
   const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>(b.fortran_vec ());
   ComplexMatrix ret (b_nr, b_nc);
   Complex *vec = ret.fortran_vec ();
+
   if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
+
 
   if (nr == 0 || nc == 0 || b_nc == 0)
     ret = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));
   else
     {
       OCTAVE_LOCAL_BUFFER (Complex, buf, S->m2);
+
       for (volatile octave_idx_type j = 0, idx = 0; j < b_nc; j++, idx+=b_nr)
         {
           octave_quit ();
+
           volatile octave_idx_type nm = (nr < nc ? nr : nc);
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec + idx, reinterpret_cast<cs_complex_t *>(buf), b_nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
           for (volatile octave_idx_type i = 0; i < nm; i++)
             {
               octave_quit ();
+
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i], reinterpret_cast<cs_complex_t *>(buf));
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
+
           for (octave_idx_type i = 0; i < b_nr; i++)
             vec[i+idx] = buf[i];
         }
     }
+
   return ret;
+
 #else
+
   return ComplexMatrix ();
+
 #endif
 }
 
@@ -937,11 +1097,12 @@ template <>
 ComplexMatrix
 sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (void) const
 {
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
   octave_idx_type nc = N->L->n;
   octave_idx_type nr = nrows;
   ComplexMatrix ret (nr, nr);
   Complex *vec = ret.fortran_vec ();
+
   if (nr < 0 || nc < 0)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
 
@@ -950,32 +1111,46 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (void) const
   else
     {
       OCTAVE_LOCAL_BUFFER (cs_complex_t, bvec, nr);
+
       for (octave_idx_type i = 0; i < nr; i++)
         bvec[i] = cs_complex_t (0.0, 0.0);
+
       OCTAVE_LOCAL_BUFFER (Complex, buf, S->m2);
+
       for (volatile octave_idx_type j = 0, idx = 0; j < nr; j++, idx+=nr)
         {
           octave_quit ();
+
           bvec[j] = cs_complex_t (1.0, 0.0);
+
           volatile octave_idx_type nm = (nr < nc ? nr : nc);
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec, reinterpret_cast<cs_complex_t *>(buf), nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
           for (volatile octave_idx_type i = 0; i < nm; i++)
             {
               octave_quit ();
+
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i], reinterpret_cast<cs_complex_t *>(buf));
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
+
           for (octave_idx_type i = 0; i < nr; i++)
             vec[i+idx] = buf[i];
+
           bvec[j] = cs_complex_t (0.0, 0.0);
         }
     }
+
   return ret.hermitian ();
+
 #else
+
   return ComplexMatrix ();
+
 #endif
 }
 
@@ -987,7 +1162,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseCo
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -995,52 +1170,64 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseCo
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseComplexMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
+
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
           Xx[j] = std::real (c);
           Xz[j] = std::imag (c);
         }
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_ipvec) (S->pinv, Xx, buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_usolve) (N->U, buf);
       CXSPARSE_DNAME (_ipvec) (S->q, buf, Xx, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_ipvec) (S->pinv, Xz, buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_usolve) (N->U, buf);
       CXSPARSE_DNAME (_ipvec) (S->q, buf, Xz, nc);
@@ -1049,6 +1236,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseCo
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp = Complex (Xx[j], Xz[j]);
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -1059,10 +1247,12 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseCo
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 
@@ -1085,7 +1275,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseCo
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseMatrix>::solve.
@@ -1096,54 +1286,66 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseCo
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseComplexMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, nbuf);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
           Xx[j] = std::real (c);
           Xz[j] = std::imag (c);
         }
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->q, Xx, buf, nr);
       CXSPARSE_DNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xx, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = 0.;
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->q, Xz, buf, nr);
       CXSPARSE_DNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xz, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -1151,6 +1353,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseCo
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp = Complex (Xx[j], Xz[j]);
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -1161,10 +1364,12 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseCo
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 
@@ -1189,7 +1394,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Comple
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -1199,25 +1404,33 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Comple
 
   ComplexMatrix x (nc, b_nc);
   cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
+
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
   OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_ipvec) (S->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_usolve) (N->U, buf);
       CXSPARSE_ZNAME (_ipvec) (S->q, buf, vec + idx, nc);
@@ -1243,7 +1456,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<double>, Comple
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseComplexMatrix>::solve.
@@ -1258,29 +1471,38 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<double>, Comple
   cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
 
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, nbuf);
   OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
   OCTAVE_LOCAL_BUFFER (double, B, nr);
+
   for (octave_idx_type i = 0; i < nr; i++)
     B[i] = N->B[i];
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
       CXSPARSE_ZNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->pinv, buf, vec + idx, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -1305,7 +1527,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseCo
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -1313,31 +1535,38 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseCo
   octave_idx_type b_nc = b.cols ();
   octave_idx_type b_nr = b.rows ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseComplexMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
+
   OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_ipvec) (S->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_usolve) (N->U, buf);
       CXSPARSE_ZNAME (_ipvec) (S->q, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
@@ -1346,6 +1575,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseCo
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp = Xx[j];
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -1356,10 +1586,12 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseCo
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 
@@ -1384,7 +1616,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseCo
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseComplexMatrix>::solve.
@@ -1395,38 +1627,44 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseCo
   octave_idx_type b_nc = b.cols ();
   octave_idx_type b_nr = b.rows ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseComplexMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, nbuf);
-
   OCTAVE_LOCAL_BUFFER (double, B, nr);
+
   for (octave_idx_type i = 0; i < nr; i++)
     B[i] = N->B[i];
 
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
       CXSPARSE_ZNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->pinv, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -1434,6 +1672,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseCo
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp = Xx[j];
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -1444,10 +1683,12 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseCo
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 
@@ -1472,7 +1713,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, Compl
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -1485,23 +1726,30 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, Compl
   ComplexMatrix x (nc, b_nc);
   cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
     (x.fortran_vec ());
+
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
+
   for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc;
        i++, idx+=nc, bidx+=b_nr)
     {
       octave_quit ();
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec + bidx, buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_usolve) (N->U, buf);
       CXSPARSE_ZNAME (_ipvec) (S->q, buf, vec + idx, nc);
@@ -1527,7 +1775,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, Compl
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseComplexMatrix>::solve.
@@ -1542,32 +1790,42 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, Compl
 
   ComplexMatrix x (nc, b_nc);
   cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
+
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, nbuf);
   OCTAVE_LOCAL_BUFFER (double, B, nr);
+
   for (octave_idx_type i = 0; i < nr; i++)
     B[i] = N->B[i];
+
   for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc;
        i++, idx+=nc, bidx+=b_nr)
     {
       octave_quit ();
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->q, bvec + bidx, buf, nr);
       CXSPARSE_ZNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->pinv, buf, vec + idx, nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
     }
+
   info = 0;
 
   return x;
@@ -1587,7 +1845,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, S
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = nrows;
   octave_idx_type nc = ncols;
@@ -1595,31 +1853,38 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, S
   octave_idx_type b_nc = b.cols ();
   octave_idx_type b_nr = b.rows ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseComplexMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
+
   OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < S->m2; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_ipvec) (S->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_usolve) (N->U, buf);
       CXSPARSE_ZNAME (_ipvec) (S->q, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
@@ -1628,6 +1893,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, S
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp = Xx[j];
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -1638,10 +1904,12 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, S
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 
@@ -1666,7 +1934,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, S
 {
   info = -1;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   // These are swapped because the original matrix was transposed in
   // sparse_qr<SparseComplexMatrix>::solve.
@@ -1677,36 +1945,44 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, S
   octave_idx_type b_nc = b.cols ();
   octave_idx_type b_nr = b.rows ();
 
-  volatile octave_idx_type ii, x_nz;
-
   SparseComplexMatrix x (nc, b_nc, b.nnz ());
   x.xcidx (0) = 0;
-  x_nz = b.nnz ();
-  ii = 0;
+
+  volatile octave_idx_type x_nz = b.nnz ();
+  volatile octave_idx_type ii = 0;
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
+
   OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, nbuf);
   OCTAVE_LOCAL_BUFFER (double, B, nr);
+
   for (octave_idx_type i = 0; i < nr; i++)
     B[i] = N->B[i];
+
   for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
     {
       octave_quit ();
+
       for (octave_idx_type j = 0; j < b_nr; j++)
         Xx[j] = b.xelem (j,i);
+
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = cs_complex_t (0.0, 0.0);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
       CXSPARSE_ZNAME (_utsolve) (N->U, buf);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       for (volatile octave_idx_type j = nr-1; j >= 0; j--)
         {
           octave_quit ();
+
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_pvec) (S->pinv, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -1714,6 +1990,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, S
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp = Xx[j];
+
           if (tmp != 0.0)
             {
               if (ii == x_nz)
@@ -1724,10 +2001,12 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, S
                   x.change_capacity (sz);
                   x_nz = sz;
                 }
+
               x.xdata (ii) = tmp;
               x.xridx (ii++) = j;
             }
         }
+
       x.xcidx (i+1) = ii;
     }
 

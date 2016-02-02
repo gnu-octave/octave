@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 John W. Eaton
 Copyright (C) 2005-2015 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
@@ -137,28 +138,26 @@ template <typename chol_type>
 void
 sparse_chol<chol_type>::sparse_chol_rep::drop_zeros (const cholmod_sparse *S)
 {
-  chol_elt sik;
-  octave_idx_type *Sp, *Si;
-  chol_elt *Sx;
-  octave_idx_type pdest, k, ncol, p, pend;
-
   if (! S)
     return;
 
-  Sp = static_cast<octave_idx_type *>(S->p);
-  Si = static_cast<octave_idx_type *>(S->i);
-  Sx = static_cast<chol_elt *>(S->x);
-  pdest = 0;
-  ncol = S->ncol;
+  octave_idx_type *Sp = static_cast<octave_idx_type *>(S->p);
+  octave_idx_type *Si = static_cast<octave_idx_type *>(S->i);
+  chol_elt *Sx = static_cast<chol_elt *>(S->x);
 
-  for (k = 0; k < ncol; k++)
+  octave_idx_type pdest = 0;
+  octave_idx_type ncol = S->ncol;
+
+  for (octave_idx_type k = 0; k < ncol; k++)
     {
-      p = Sp[k];
-      pend = Sp[k+1];
+      octave_idx_type p = Sp[k];
+      octave_idx_type pend = Sp[k+1];
       Sp[k] = pdest;
+
       for (; p < pend; p++)
         {
-          sik = Sx[p];
+          chol_elt sik = Sx[p];
+
           if (CHOLMOD_IS_NONZERO (sik))
             {
               if (p != pdest)
@@ -166,10 +165,12 @@ sparse_chol<chol_type>::sparse_chol_rep::drop_zeros (const cholmod_sparse *S)
                   Si[pdest] = Si[p];
                   Sx[pdest] = sik;
                 }
+
               pdest++;
             }
         }
     }
+
   Sp[ncol] = pdest;
 }
 
@@ -202,6 +203,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   volatile octave_idx_type info = 0;
 
 #ifdef HAVE_CHOLMOD
+
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
 
@@ -211,10 +213,12 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   cholmod_common *cm = &Common;
 
   // Setup initial parameters
+
   CHOLMOD_NAME(start) (cm);
   cm->prefer_zomplex = false;
 
   double spu = octave_sparse_params::get_key ("spumoni");
+
   if (spu == 0.)
     {
       cm->print = -1;
@@ -227,6 +231,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
     }
 
   cm->error_handler = &SparseCholError;
+
   SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
   SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
@@ -240,6 +245,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   cholmod_sparse A;
   cholmod_sparse *ac = &A;
   double dummy;
+
   ac->nrow = a_nr;
   ac->ncol = a_nc;
 
@@ -302,6 +308,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
           CHOLMOD_NAME(reallocate_sparse)
             (static_cast<octave_idx_type *>(Lsparse->p)[minor_p], Lsparse, cm);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
           Lsparse->ncol = minor_p;
         }
 
@@ -336,6 +343,7 @@ SparseMatrix
 sparse_chol<chol_type>::sparse_chol_rep::Q (void) const
 {
 #ifdef HAVE_CHOLMOD
+
   octave_idx_type n = Lsparse->nrow;
   SparseMatrix p (n, n, n);
 
@@ -345,11 +353,15 @@ sparse_chol<chol_type>::sparse_chol_rep::Q (void) const
       p.xridx (i) = static_cast<octave_idx_type>(perms (i));
       p.xdata (i) = 1;
     }
+
   p.xcidx (n) = n;
 
   return p;
+
 #else
+
   return SparseMatrix ();
+
 #endif
 }
 
@@ -420,20 +432,29 @@ chol_type
 sparse_chol<chol_type>::L (void) const
 {
 #ifdef HAVE_CHOLMOD
+
   cholmod_sparse *m = rep->L ();
+
   octave_idx_type nc = m->ncol;
   octave_idx_type nnz = m->nzmax;
+
   chol_type ret (m->nrow, nc, nnz);
+
   for (octave_idx_type j = 0; j < nc+1; j++)
     ret.xcidx (j) = static_cast<octave_idx_type *>(m->p)[j];
+
   for (octave_idx_type i = 0; i < nnz; i++)
     {
       ret.xridx (i) = static_cast<octave_idx_type *>(m->i)[i];
       ret.xdata (i) = static_cast<chol_elt *>(m->x)[i];
     }
+
   return ret;
+
 #else
+
   return chol_type ();
+
 #endif
 }
 
@@ -477,7 +498,9 @@ chol_type
 sparse_chol<chol_type>::inverse (void) const
 {
   chol_type retval;
+
 #ifdef HAVE_CHOLMOD
+
   cholmod_sparse *m = rep->L ();
   octave_idx_type n = m->ncol;
   ColumnVector perms = rep->perm ();
@@ -489,11 +512,14 @@ sparse_chol<chol_type>::inverse (void) const
   if (perms.numel () == n)
     {
       SparseMatrix Qc = Q ();
+
       retval = Qc * linv * linv.hermitian () * Qc.transpose ();
     }
   else
     retval = linv * linv.hermitian ();
+
 #endif
+
   return retval;
 }
 

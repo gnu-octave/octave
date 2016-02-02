@@ -55,6 +55,7 @@ public:
         q = a.q;
         r = a.r;
       }
+
     return *this;
   }
 
@@ -74,8 +75,8 @@ protected:
   qr_type r;
 };
 
-#ifndef HAVE_QRUPDATE
-void warn_qrupdate_once (void);
+#if ! defined (HAVE_QRUPDATE)
+extern void warn_qrupdate_once (void);
 #endif
 
 #endif

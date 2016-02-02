@@ -23,7 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 /* Original version written by Paul Kienzle distributed as free
    software in the in the public domain.  */
 
-#ifndef _RANDGAMMA_H
+#if ! defined (octave_randgamma_h)
+#define octave_radgamma_h 1
 
 #ifdef  __cplusplus
 extern "C" {
@@ -39,4 +40,5 @@ extern OCTAVE_API void oct_fill_float_randg (float a, octave_idx_type n,
 #ifdef  __cplusplus
 }
 #endif
+
 #endif

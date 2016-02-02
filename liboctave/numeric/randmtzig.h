@@ -61,8 +61,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef _RANDMTZIG_H
-#define _RANDMTZIG_H
+#if !defined (octave_randmtzig_h)
+#define octave__randmtzig_h 1
 
 #define MT_N 624
 
@@ -70,14 +70,14 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-/* === Mersenne Twister === */
+/* Mersenne Twister.  */
 extern OCTAVE_API void oct_init_by_int (uint32_t s);
-extern OCTAVE_API void oct_init_by_array (uint32_t init_key[], int key_length);
+extern OCTAVE_API void oct_init_by_array (uint32_t *init_key, int key_length);
 extern OCTAVE_API void oct_init_by_entropy (void);
-extern OCTAVE_API void oct_set_state (uint32_t save[]);
-extern OCTAVE_API void oct_get_state (uint32_t save[]);
+extern OCTAVE_API void oct_set_state (uint32_t *save);
+extern OCTAVE_API void oct_get_state (uint32_t *save);
 
-/* === Array generators === */
+/* Array generators.  */
 extern OCTAVE_API double oct_randu (void);
 extern OCTAVE_API double oct_randn (void);
 extern OCTAVE_API double oct_rande (void);
@@ -86,7 +86,7 @@ extern OCTAVE_API float oct_float_randu (void);
 extern OCTAVE_API float oct_float_randn (void);
 extern OCTAVE_API float oct_float_rande (void);
 
-/* === Array generators === */
+/* Array generators.  */
 extern OCTAVE_API void oct_fill_randu (octave_idx_type n, double *p);
 extern OCTAVE_API void oct_fill_randn (octave_idx_type n, double *p);
 extern OCTAVE_API void oct_fill_rande (octave_idx_type n, double *p);
@@ -98,4 +98,5 @@ extern OCTAVE_API void oct_fill_float_rande (octave_idx_type n, float *p);
 #ifdef  __cplusplus
 }
 #endif
+
 #endif

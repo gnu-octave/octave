@@ -37,7 +37,6 @@ GENERATED_MAKE_BUILTINS_INCS = \
   libinterp/corefcn/graphics.h \
   libinterp/corefcn/mxarray.h \
   libinterp/oct-conf-features.h \
-  libinterp/oct-conf.h \
   libinterp/parse-tree/oct-gperf.h \
   libinterp/parse-tree/oct-parse.h \
   libinterp/version.h
@@ -46,6 +45,7 @@ BUILT_SOURCES += \
   $(GENERATED_MAKE_BUILTINS_INCS) \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
+  libinterp/oct-conf.cc \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/oct-tex-lexer.cc \
   libinterp/corefcn/oct-tex-parser.cc \
@@ -80,7 +80,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   libinterp/corefcn/graphics.h \
   libinterp/builtin-defun-decls.h \
   libinterp/operators/ops.cc \
-  libinterp/oct-conf.h \
+  libinterp/oct-conf.cc \
   libinterp/oct-conf-features.h \
   libinterp/version.h \
   $(OPT_HANDLERS) \
@@ -98,7 +98,6 @@ libinterp_EXTRA_DIST += \
   libinterp/mkbuiltins \
   libinterp/mkdefs \
   libinterp/mkops \
-  libinterp/oct-conf.in.h \
   libinterp/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
 
@@ -107,6 +106,7 @@ octinclude_HEADERS += \
   libinterp/parse-tree/oct-gperf.h \
   libinterp/builtins.h \
   libinterp/builtin-defun-decls.h \
+  libinterp/oct-conf.h \
   libinterp/octave.h \
   libinterp/options-usage.h \
   $(OCTAVE_VALUE_INC) \
@@ -119,7 +119,6 @@ nodist_octinclude_HEADERS += \
   libinterp/corefcn/mxarray.h \
   libinterp/corefcn/defaults.h \
   libinterp/corefcn/graphics.h \
-  libinterp/oct-conf.h \
   libinterp/version.h
 
 DIST_SRC += \
@@ -161,7 +160,7 @@ nodist_libinterp_liboctinterp_la_SOURCES = \
   libinterp/operators/ops.cc \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
-  libinterp/oct-conf.h \
+  libinterp/oct-conf.cc \
   libinterp/oct-conf-features.h \
   libinterp/version.h
 
@@ -246,11 +245,11 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-## oct-conf.h must depend on Makefile.
+## oct-conf.cc must depend on Makefile.
 ## Calling configure may change default/config values.
 ## However, calling configure will also regenerate the Makefiles from
 ## Makefile.am and trigger the rules below.
-libinterp/oct-conf.h: libinterp/oct-conf.in.h Makefile
+libinterp/oct-conf.cc: libinterp/oct-conf.in.cc Makefile
 	$(AM_V_GEN)$(do_subst_config_vals)
 
 libinterp/oct-conf-features.h: $(top_builddir)/config.h libinterp/config-features.sh

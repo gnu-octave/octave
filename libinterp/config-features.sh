@@ -19,12 +19,12 @@ octave_config_features (void)
 EOF
 
 $AWK \
-  '/#define HAVE_/ {
-     sub (/HAVE_/, "", $2);
+  '/#define (HAVE|ENABLE)_/ {
+     sub (/(HAVE|ENABLE)_/, "", $2);
      printf ("  m.assign (\"%s\", octave_value (true));\n", $2);
    }
-   /\/\* #undef HAVE_/ {
-     sub (/HAVE_/, "", $3);
+   /\/\* #undef (HAVE|ENABLE)_/ {
+     sub (/(HAVE|ENABLE)_/, "", $3);
      printf ("  m.assign (\"%s\", octave_value (false));\n", $3);
    } {
    }' $conffile

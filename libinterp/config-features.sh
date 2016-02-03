@@ -1,5 +1,9 @@
 #! /bin/sh
 
+## Attempt to get traditional sort behavior based on byte values.
+LC_ALL="C"
+export LC_ALL
+
 set -e
 AWK=${AWK:-awk}
 
@@ -8,29 +12,46 @@ conffile=$1
 cat << EOF
 // DO NOT EDIT!  Generated automatically from $conffile by Make."
 
-#include "oct-map.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "oct-conf-features.h"
 #include "ov.h"
 
-octave_scalar_map
-octave_config_features (void)
+namespace octave
 {
-  octave_scalar_map m;
+  namespace config
+  {
+    octave_scalar_map
+    features (void)
+    {
+      static bool initialized = false;
 
+      static octave_scalar_map m;
+
+      if (! initialized)
+        {
 EOF
 
 $AWK \
   '/#define (HAVE|ENABLE)_/ {
-     sub (/(HAVE|ENABLE)_/, "", $2);
-     printf ("  m.assign (\"%s\", octave_value (true));\n", $2);
+     sub (/HAVE_/, "", $2);
+     printf ("          m.assign (\"%s\", octave_value (true));\n", $2);
    }
    /\/\* #undef (HAVE|ENABLE)_/ {
-     sub (/(HAVE|ENABLE)_/, "", $3);
-     printf ("  m.assign (\"%s\", octave_value (false));\n", $3);
+     sub (/HAVE_/, "", $3);
+     printf ("          m.assign (\"%s\", octave_value (false));\n", $3);
    } {
-   }' $conffile
+   }' $conffile | sort
 
 cat << EOF
 
-  return m;
-}
+          initialized = true;
+        }
+
+      return m;
+    }
+  };
+};
 EOF

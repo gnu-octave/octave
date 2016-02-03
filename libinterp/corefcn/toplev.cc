@@ -1456,7 +1456,7 @@ specified option.\n\
       m.assign ("words_little_endian",
                 octave_value (oct_mach_info::words_little_endian ()));
 
-      m.assign ("features", octave_value (octave_config_features ()));
+      m.assign ("features", octave_value (octave::config::features ()));
 
       int i = 0;
 

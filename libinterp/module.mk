@@ -36,7 +36,6 @@ GENERATED_MAKE_BUILTINS_INCS = \
   libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/graphics.h \
   libinterp/corefcn/mxarray.h \
-  libinterp/oct-conf-features.h \
   libinterp/parse-tree/oct-gperf.h \
   libinterp/parse-tree/oct-parse.h \
   libinterp/version.h
@@ -81,7 +80,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   libinterp/builtin-defun-decls.h \
   libinterp/operators/ops.cc \
   libinterp/oct-conf.cc \
-  libinterp/oct-conf-features.h \
+  libinterp/oct-conf-features.cc \
   libinterp/version.h \
   $(OPT_HANDLERS) \
   $(ALL_DEF_FILES) \
@@ -107,6 +106,7 @@ octinclude_HEADERS += \
   libinterp/builtins.h \
   libinterp/builtin-defun-decls.h \
   libinterp/oct-conf.h \
+  libinterp/oct-conf-features.h \
   libinterp/octave.h \
   libinterp/options-usage.h \
   $(OCTAVE_VALUE_INC) \
@@ -161,7 +161,7 @@ nodist_libinterp_liboctinterp_la_SOURCES = \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
   libinterp/oct-conf.cc \
-  libinterp/oct-conf-features.h \
+  libinterp/oct-conf-features.cc \
   libinterp/version.h
 
 libinterp_liboctinterp_la_LIBADD = \
@@ -252,7 +252,7 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 libinterp/oct-conf.cc: libinterp/oct-conf.in.cc Makefile
 	$(AM_V_GEN)$(do_subst_config_vals)
 
-libinterp/oct-conf-features.h: $(top_builddir)/config.h libinterp/config-features.sh
+libinterp/oct-conf-features.cc: $(top_builddir)/config.h libinterp/config-features.sh
 	$(AM_V_GEN)rm -f $@-t && \
 	$(srcdir)/libinterp/config-features.sh $< > $@-t && \
 	$(simple_move_if_change_rule)

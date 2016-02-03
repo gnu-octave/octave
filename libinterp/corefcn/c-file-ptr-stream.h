@@ -32,11 +32,7 @@ c_file_ptr_buf : public std::streambuf
 {
 public:
 
-#if ! defined (CXX_ISO_COMPLIANT_LIBRARY)
-  typedef int int_type;
-#else
   typedef std::streambuf::int_type int_type;
-#endif
 
   typedef int (*close_fcn) (FILE *);
 
@@ -152,11 +148,7 @@ c_zfile_ptr_buf : public std::streambuf
 {
 public:
 
-#if ! defined (CXX_ISO_COMPLIANT_LIBRARY)
-  typedef int int_type;
-#else
   typedef std::streambuf::int_type int_type;
-#endif
 
   typedef int (*close_fcn) (gzFile);
 

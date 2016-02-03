@@ -1460,45 +1460,6 @@ AC_DEFUN([OCTAVE_CXX_FLAG], [
   fi
 ])
 dnl
-dnl Check if the C++ library is ISO compliant.
-dnl FIXME: This is obviously very simplistic, and trivially fooled.
-dnl
-AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
-  AC_REQUIRE([AC_PROG_CXX])
-  AC_MSG_CHECKING([if C++ library is ISO compliant])
-  AC_CACHE_VAL([octave_cv_cxx_iso_compliant_library],
-    [AC_LANG_PUSH(C++)
-    rm -f conftest.h
-    ## Omitting cwctype for now, since it is broken with gcc-3.0.x and
-    ## possibly other versions...
-    for inc in algorithm bitset cassert cctype cerrno cfloat ciso646 \
-        climits clocale cmath complex csetjmp csignal cstdarg cstddef \
-        cstdio cstdlib cstring ctime cwchar deque exception \
-        fstream functional iomanip ios iosfwd iostream istream iterator \
-        limits list locale map memory new numeric ostream queue set \
-        sstream stack stdexcept streambuf string strstream typeinfo \
-        utility valarray vector; do
-      echo "#include <$inc>" >> conftest.h
-    done
-    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-        #include "conftest.h"
-        ]], [[
-        std::bitset<50> flags;
-        flags.set();
-        int digits = std::numeric_limits<unsigned long>::digits;
-        digits = 0;
-      ]])],
-      octave_cv_cxx_iso_compliant_library=yes,
-      octave_cv_cxx_iso_compliant_library=no)
-    AC_LANG_POP(C++)
-  ])
-  AC_MSG_RESULT([$octave_cv_cxx_iso_compliant_library])
-  if test $octave_cv_cxx_iso_compliant_library = yes; then
-    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1,
-      [Define to 1 if your C++ runtime library is ISO compliant.])
-  fi
-])
-dnl
 dnl Allow the user disable support for command line editing using GNU
 dnl readline.
 dnl

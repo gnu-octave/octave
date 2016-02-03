@@ -50,17 +50,10 @@ c_file_ptr_buf::~c_file_ptr_buf (void)
 c_file_ptr_buf::int_type
 c_file_ptr_buf::overflow (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
   if (f)
     return (c != traits_type::eof ()) ? gnulib::fputc (c, f) : flush ();
   else
     return traits_type::not_eof (c);
-#else
-  if (f)
-    return (c != EOF) ? gnulib::fputc (c, f) : flush ();
-  else
-    return EOF;
-#endif
 }
 
 c_file_ptr_buf::int_type
@@ -70,33 +63,20 @@ c_file_ptr_buf::underflow_common (bool bump)
     {
       int_type c = gnulib::fgetc (f);
 
-      if (! bump
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-          && c != traits_type::eof ())
-#else
-          && c != EOF)
-#endif
+      if (! bump && c != traits_type::eof ())
         ungetc (c, f);
 
       return c;
     }
   else
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
     return traits_type::eof ();
-#else
-    return EOF;
-#endif
 }
 
 c_file_ptr_buf::int_type
 c_file_ptr_buf::pbackfail (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? ungetc (c, f)
-                                         : traits_type::not_eof (c);
-#else
-  return (c != EOF && f) ? ungetc (c, f) : EOF;
-#endif
+  return ((c != traits_type::eof () && f)
+          ? ungetc (c, f) : traits_type::not_eof (c));
 }
 
 std::streamsize
@@ -120,10 +100,10 @@ c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 static inline int
 seekdir_to_whence (std::ios::seekdir dir)
 {
-  return ((dir == std::ios::beg) ? SEEK_SET :
-          (dir == std::ios::cur) ? SEEK_CUR :
-          (dir == std::ios::end) ? SEEK_END :
-          dir);
+  return (dir == std::ios::beg
+          ? SEEK_SET : (dir == std::ios::cur
+                        ? SEEK_CUR : (dir == std::ios::end
+                                      ? SEEK_END : dir)));
 }
 
 std::streampos
@@ -222,17 +202,10 @@ c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::overflow (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
   if (f)
     return (c != traits_type::eof ()) ? gzputc (f, c) : flush ();
   else
     return traits_type::not_eof (c);
-#else
-  if (f)
-    return (c != EOF) ? gzputc (f, c) : flush ();
-  else
-    return EOF;
-#endif
 }
 
 c_zfile_ptr_buf::int_type
@@ -242,33 +215,20 @@ c_zfile_ptr_buf::underflow_common (bool bump)
     {
       int_type c = gzgetc (f);
 
-      if (! bump
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-          && c != traits_type::eof ())
-#else
-          && c != EOF)
-#endif
+      if (! bump && c != traits_type::eof ())
         gzungetc (c, f);
 
       return c;
     }
   else
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
     return traits_type::eof ();
-#else
-    return EOF;
-#endif
 }
 
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::pbackfail (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? gzungetc (c, f)
-                                         : traits_type::not_eof (c);
-#else
-  return (c != EOF && f) ? gzungetc (c, f) : EOF;
-#endif
+  return ((c != traits_type::eof () && f)
+          ? gzungetc (c, f) : traits_type::not_eof (c));
 }
 
 std::streamsize

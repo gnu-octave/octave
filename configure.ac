@@ -2232,9 +2232,6 @@ OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS
 ## Check that C compiler and libraries support IEEE754 data format.
 OCTAVE_IEEE754_DATA_FORMAT
 
-## Is C++ runtime library ISO compliant?
-OCTAVE_CXX_ISO_COMPLIANT_LIBRARY
-
 ## Are bit_and, bit_or, and bit_xor defined as templated operators?
 OCTAVE_CXX_BITWISE_OP_TEMPLATES
 

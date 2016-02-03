@@ -42,18 +42,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
                                 oct_mach_info::float_format ff)
   : octave_base_stream (arg_md, ff), nm (nm_arg)
 {
-
-#if CXX_ISO_COMPLIANT_LIBRARY
-
   fs.open (nm.c_str (), arg_md);
-
-#else
-  // Override default protection of 0664 so that umask will appear to
-  // do the right thing.
-
-  fs.open (nm.c_str (), arg_md, 0666);
-
-#endif
 
   if (! fs)
     // Note: error is inherited from octave_base_stream, not ::error.

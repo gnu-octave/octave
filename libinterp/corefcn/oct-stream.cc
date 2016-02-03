@@ -970,7 +970,7 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 
       if (max_len != 0)
         {
-          while (is && (c = is.get ()) != EOF)
+          while (is && (c = is.get ()) != std::istream::traits_type::eof ())
             {
               char_count++;
 
@@ -982,7 +982,7 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 
                   c = is.get ();
 
-                  if (c != EOF)
+                  if (c != std::istream::traits_type::eof ())
                     {
                       if (c == '\n')
                         {
@@ -1078,7 +1078,7 @@ octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
       int lastc = -1;
       cnt = 0;
 
-      while (is && (c = is.get ()) != EOF)
+      while (is && (c = is.get ()) != std::istream::traits_type::eof ())
         {
           // Handle CRLF, CR, or LF as line ending.
           if (c == '\r' || (c == '\n' && lastc != '\r'))
@@ -1125,12 +1125,13 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 
     case 'i':
       {
-        int c1 = EOF;
+        int c1 = std::istream::traits_type::eof ();
 
-        while (is && (c1 = is.get ()) != EOF && isspace (c1))
+        while (is && (c1 = is.get ()) != std::istream::traits_type::eof ()
+               && isspace (c1))
           ; // skip whitespace
 
-        if (c1 != EOF)
+        if (c1 != std::istream::traits_type::eof ())
           {
             if (c1 == '0')
               {
@@ -1225,12 +1226,13 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
     case 'f':
     case 'g':
       {
-        int c1 = EOF;
+        int c1 = std::istream::traits_type::eof ();
 
-        while (is && (c1 = is.get ()) != EOF && isspace (c1))
+        while (is && (c1 = is.get ()) != std::istream::traits_type::eof ()
+               && isspace (c1))
           ; // skip whitespace
 
-        if (c1 != EOF)
+        if (c1 != std::istream::traits_type::eof ())
           {
             is.putback (c1);
 
@@ -1286,12 +1288,13 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 #define DO_WHITESPACE_CONVERSION() \
   do \
     { \
-      int c = EOF; \
+      int c = std::istream::traits_type::eof (); \
  \
-      while (is && (c = is.get ()) != EOF && isspace (c)) \
+      while (is && (c = is.get ()) != std::istream::traits_type::eof () \
+             && isspace (c)) \
         { /* skip whitespace */ } \
  \
-      if (c != EOF) \
+      if (c != std::istream::traits_type::eof ()) \
         is.putback (c); \
     } \
   while (0)
@@ -1299,12 +1302,12 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 #define DO_LITERAL_CONVERSION() \
   do \
     { \
-      int c = EOF; \
+      int c = std::istream::traits_type::eof (); \
  \
       int n = strlen (fmt); \
       int i = 0; \
  \
-      while (i < n && is && (c = is.get ()) != EOF) \
+      while (i < n && is && (c = is.get ()) != std::istream::traits_type::eof ()) \
         { \
           if (c == static_cast<unsigned char> (fmt[i])) \
             { \
@@ -1328,7 +1331,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
     { \
       int c = is.get (); \
  \
-      if (c != EOF) \
+      if (c != std::istream::traits_type::eof ()) \
         { \
           if (c != '%') \
             { \
@@ -1348,13 +1351,13 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
   std::string tmp (width, '\0'); \
  \
-  int c = EOF; \
+  int c = std::istream::traits_type::eof (); \
   int n = 0; \
  \
-  while (is && n < width && (c = is.get ()) != EOF) \
+  while (is && n < width && (c = is.get ()) != std::istream::traits_type::eof ()) \
     tmp[n++] = static_cast<char> (c); \
  \
-  if (n > 0 && c == EOF) \
+  if (n > 0 && c == std::istream::traits_type::eof ()) \
     is.clear (); \
  \
   tmp.resize (n)
@@ -1372,11 +1375,11 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
         { \
           tmp = std::string (width, '\0'); \
  \
-          int c = EOF; \
+          int c = std::istream::traits_type::eof (); \
  \
           int n = 0; \
  \
-          while (is && (c = is.get ()) != EOF) \
+          while (is && (c = is.get ()) != std::istream::traits_type::eof ()) \
             { \
               if (! isspace (c)) \
                 { \
@@ -1385,7 +1388,8 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
                 } \
             } \
  \
-          while (is && n < width && (c = is.get ()) != EOF) \
+          while (is && n < width \
+                 && (c = is.get ()) != std::istream::traits_type::eof ()) \
             { \
               if (isspace (c)) \
                 { \
@@ -1396,7 +1400,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
                 tmp[n++] = static_cast<char> (c); \
             } \
  \
-          if (n > 0 && c == EOF) \
+          if (n > 0 && c == std::istream::traits_type::eof ()) \
             is.clear (); \
  \
           tmp.resize (n); \
@@ -1423,31 +1427,34 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
       std::string char_class = elt->char_class; \
  \
-      int c = EOF; \
+      int c = std::istream::traits_type::eof (); \
  \
       if (elt->type == '[') \
         { \
           int chars_read = 0; \
-          while (is && chars_read++ < width && (c = is.get ()) != EOF \
+          while (is && chars_read++ < width \
+                 && (c = is.get ()) != std::istream::traits_type::eof () \
                  && char_class.find (c) != std::string::npos) \
             buf << static_cast<char> (c); \
         } \
       else \
         { \
           int chars_read = 0; \
-          while (is && chars_read++ < width && (c = is.get ()) != EOF \
+          while (is && chars_read++ < width \
+                 && (c = is.get ()) != std::istream::traits_type::eof () \
                  && char_class.find (c) == std::string::npos) \
             buf << static_cast<char> (c); \
         } \
  \
-      if (width == std::numeric_limits<int>::max () && c != EOF) \
+      if (width == std::numeric_limits<int>::max () \
+          && c != std::istream::traits_type::eof ()) \
         is.putback (c); \
  \
       tmp = buf.str (); \
  \
       if (tmp.empty ()) \
         is.setstate (std::ios::failbit); \
-      else if (c == EOF) \
+      else if (c == std::istream::traits_type::eof ()) \
         is.clear (); \
  \
     } \

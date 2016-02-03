@@ -153,7 +153,7 @@ c_file_ptr_buf::sync (void)
 int
 c_file_ptr_buf::flush (void)
 {
-  return f ? gnulib::fflush (f) : EOF;
+  return f ? gnulib::fflush (f) : traits_type::eof ();
 }
 
 int
@@ -300,7 +300,7 @@ c_zfile_ptr_buf::flush (void)
   // something other than 0 for the second argument to gzflush and
   // checking the return value, etc.?
 
-  return f ? gzflush (f, 0) : EOF;
+  return f ? gzflush (f, 0) : traits_type::eof ();
 }
 
 int

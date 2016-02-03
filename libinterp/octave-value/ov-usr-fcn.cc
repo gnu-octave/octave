@@ -951,7 +951,7 @@ returns -1 for all anonymous functions.\n\
             return ovl (-1);
         }
 
-      octave_function *fcn_val = func.function_value ();
+      octave_function *fcn_val = func.function_value (true);
       if (! fcn_val)
         error ("nargout: FCN must be a string or function handle");
 
@@ -959,11 +959,12 @@ returns -1 for all anonymous functions.\n\
 
       if (! fcn)
         {
-          // JWE said this information is not available (2011-03-10)
-          // without making intrusive changes to Octave.
-          // Matlab gives up for histc,
-          // so maybe it's ok that we give up somtimes too?
-          error ("nargout: nargout information not available for built-in functions.");
+          // Matlab gives up for histc, so maybe it's ok that that we
+          // give up sometimes too?
+
+          std::string type = fcn_val->type_name ();
+          error ("nargout: number of output arguments unavailable for %s objects",
+                 type.c_str ());
         }
 
       tree_parameter_list *ret_list = fcn->return_list ();

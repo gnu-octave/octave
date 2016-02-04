@@ -108,7 +108,7 @@ protected:
                             double z1, double z2);
   virtual void set_clipping (bool on);
   virtual void set_font (const base_properties& props);
-  virtual void set_interpreter (const caseless_str interp)
+  virtual void set_interpreter (const caseless_str& interp)
   {
     interpreter = interp;
   }

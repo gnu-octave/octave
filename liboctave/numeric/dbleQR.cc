@@ -674,9 +674,13 @@ QR::shift_cols (octave_idx_type i, octave_idx_type j)
   init (::shift_cols (q*r, i, j), get_type ());
 }
 
-void warn_qrupdate_once (void)
+#endif
+
+void
+warn_qrupdate_once (void)
 {
   static bool warned = false;
+
   if (! warned)
     {
       (*current_liboctave_warning_with_id_handler)
@@ -689,5 +693,3 @@ void warn_qrupdate_once (void)
       warned = true;
     }
 }
-
-#endif

@@ -75,8 +75,6 @@ protected:
   qr_type r;
 };
 
-#if ! defined (HAVE_QRUPDATE)
 extern void warn_qrupdate_once (void);
-#endif
 
 #endif

@@ -155,17 +155,12 @@ protected:
                                  int& wmax, int& hmax);
 
 private:
-  opengl_renderer (const opengl_renderer&)
-    : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
-    zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-    camera_pos (), camera_dir ()
-#if HAVE_FREETYPE
-    , text_renderer ()
-#endif
-  { }
 
-  opengl_renderer& operator = (const opengl_renderer&)
-  { return *this; }
+  // No copying!
+
+  opengl_renderer (const opengl_renderer&);
+
+  opengl_renderer& operator = (const opengl_renderer&);
 
   bool is_nan_or_inf (double x, double y, double z) const
   {

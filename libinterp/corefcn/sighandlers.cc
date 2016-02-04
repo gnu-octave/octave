@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-bp.h"
 #include "pt-eval.h"
 #include "sighandlers.h"
+#include "siglist.h"
 #include "sysdep.h"
 #include "syswait.h"
 #include "toplev.h"

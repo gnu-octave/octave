@@ -49,8 +49,6 @@ along with Octave; see the file COPYING.  If not, see
   #define OCTAVE_UNUSED
 #endif
 
-#define X_CAST(T, E) (T) (E)
-
 #if ! defined (HAVE_DEV_T)
 typedef short dev_t;
 #endif

@@ -2223,9 +2223,6 @@ AC_STRUCT_TIMEZONE
 
 ### Check compiler characteristics.
 
-## Does reinterpret_cast fail for function pointers?
-OCTAVE_CXX_BROKEN_REINTERPRET_CAST
-
 ## Check if C++ compiler can auto allocate variable sized arrays.
 OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS
 

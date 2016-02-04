@@ -1339,30 +1339,6 @@ AC_DEFUN([OCTAVE_CXX_BITWISE_OP_TEMPLATES], [
   fi
 ])
 dnl
-dnl Check if C++ reinterpret cast works for function pointers.
-dnl
-AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST],
-  [AC_REQUIRE([AC_PROG_CXX])
-  AC_CACHE_CHECK([for broken C++ reinterpret_cast],
-    [octave_cv_cxx_broken_reinterpret_cast],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <cmath> ]], [[
-        typedef double (*fptr) (double);
-        fptr psin = sin;
-        void *vptr = reinterpret_cast<void *> (psin);
-        psin = reinterpret_cast<fptr> (vptr);
-      ]])],
-      octave_cv_cxx_broken_reinterpret_cast=no,
-      octave_cv_cxx_broken_reinterpret_cast=yes)
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_cxx_broken_reinterpret_cast = yes; then
-    AC_DEFINE(CXX_BROKEN_REINTERPRET_CAST, 1,
-      [Define to 1 if C++ reinterpret_cast fails for function pointers.])
-  fi
-])
-dnl
 dnl Check if the C++ library has functions to access real and imaginary
 dnl parts of complex numbers independently via references.
 dnl

@@ -51,12 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #define X_CAST(T, E) (T) (E)
 
-#if defined (CXX_BROKEN_REINTERPRET_CAST)
-#define FCN_PTR_CAST(T, E) (T) (E)
-#else
-#define FCN_PTR_CAST(T, E) reinterpret_cast<T> (E)
-#endif
-
 #if ! defined (HAVE_DEV_T)
 typedef short dev_t;
 #endif

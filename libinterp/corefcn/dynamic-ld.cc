@@ -282,7 +282,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
   if (function)
     {
       octave_dld_fcn_getter f
-        = FCN_PTR_CAST (octave_dld_fcn_getter, function);
+        = reinterpret_cast<octave_dld_fcn_getter> (function);
 
       retval = f (oct_file, relative);
 

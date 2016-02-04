@@ -3000,7 +3000,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
 
   if (have_fmex)
     {
-      fmex_fptr fcn = FCN_PTR_CAST (fmex_fptr, f);
+      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (f);
 
       int tmp_nargout = nargout;
       int tmp_nargin = nargin;
@@ -3009,7 +3009,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
     }
   else
     {
-      cmex_fptr fcn = FCN_PTR_CAST (cmex_fptr, f);
+      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (f);
 
       fcn (nargout, argout, nargin, argin);
     }

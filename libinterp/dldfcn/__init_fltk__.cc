@@ -87,7 +87,7 @@ To initialize:
 #include "display.h"
 #include "file-ops.h"
 #include "gl-render.h"
-#include "gl2ps-renderer.h"
+#include "gl2ps-print.h"
 #include "graphics.h"
 #include "parse.h"
 #include "toplev.h"

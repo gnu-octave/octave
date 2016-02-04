@@ -33,7 +33,7 @@ from git://anongit.freedesktop.org/mesa/demos
 #include "defun-dld.h"
 #include "errwarn.h"
 #include "gl-render.h"
-#include "gl2ps-renderer.h"
+#include "gl2ps-print.h"
 #include "graphics.h"
 #include "oct-opengl.h"
 

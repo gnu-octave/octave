@@ -24,22 +24,118 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "error.h"
-#include "gl2ps-renderer.h"
-#include "oct-opengl.h"
-#include "txt-eng-ft.h"
+#include "errwarn.h"
+#include "gl2ps-print.h"
 
 #ifdef HAVE_GL2PS_H
 
 #include <cstdio>
+#include <unistd.h>
+
+#include <gl2ps.h>
 
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
-#include "gl2ps.h"
+#include "gl-render.h"
+#include "oct-opengl.h"
 #include "sysdep.h"
-#include "unistd.h"
+#include "txt-eng-ft.h"
+
+class
+OCTINTERP_API
+gl2ps_renderer : public opengl_renderer
+{
+public:
+
+  gl2ps_renderer (FILE *_fp, const std::string& _term)
+    : opengl_renderer () , fp (_fp), term (_term), fontsize (),
+      fontname (), buffer_overflow (false)
+  { }
+
+  ~gl2ps_renderer (void) { }
+
+  void draw (const graphics_object& go, const std::string& print_cmd);
+
+protected:
+
+  Matrix render_text (const std::string& txt,
+                      double x, double y, double z,
+                      int halign, int valign, double rotation = 0.0);
+
+  void set_font (const base_properties& props);
+
+  void draw_axes (const axes::properties& props)
+  {
+    // Initialize a sorting tree (viewport) in gl2ps for each axes
+    GLint vp[4];
+    glGetIntegerv (GL_VIEWPORT, vp);
+    gl2psBeginViewport (vp);
+
+    // Draw and finish () or there may primitives missing in the
+    // gl2ps output.
+    opengl_renderer::draw_axes (props);
+    finish ();
+
+    // Finalize viewport
+    GLint state = gl2psEndViewport ();
+    if (state == GL2PS_NO_FEEDBACK)
+      warning ("gl2ps_renderer::draw_axes: empty feedback buffer and/or nothing else to print");
+    else if (state == GL2PS_ERROR)
+      error ("gl2ps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
+
+    buffer_overflow |= (state == GL2PS_OVERFLOW);
+  }
+
+  void draw_text (const text::properties& props);
+  void draw_pixels (GLsizei w, GLsizei h, GLenum format,
+                    GLenum type, const GLvoid *data);
+
+  void set_linestyle (const std::string& s, bool use_stipple = false)
+  {
+    opengl_renderer::set_linestyle (s, use_stipple);
+
+    if (s == "-" && ! use_stipple)
+      gl2psDisable (GL2PS_LINE_STIPPLE);
+    else
+      gl2psEnable (GL2PS_LINE_STIPPLE);
+  }
+
+  void set_polygon_offset (bool on, float offset = 0.0f)
+  {
+    if (on)
+      {
+        opengl_renderer::set_polygon_offset (on, offset);
+        gl2psEnable (GL2PS_POLYGON_OFFSET_FILL);
+      }
+    else
+      {
+        gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
+        opengl_renderer::set_polygon_offset (on, offset);
+      }
+  }
+
+  void set_linewidth (float w)
+  {
+    gl2psLineWidth (w);
+  }
+
+private:
+
+  // Use xform to compute the coordinates of the ft_string list
+  // that have been parsed by freetype
+  void fix_strlist_position (double x, double y, double z,
+                             Matrix box, double rotation,
+                             std::list<ft_render::ft_string>& lst);
+
+  int alignment_to_mode (int ha, int va) const;
+  FILE *fp;
+  caseless_str term;
+  double fontsize;
+  std::string fontname;
+  bool buffer_overflow;
+};
 
 void
 gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)

@@ -38,7 +38,7 @@ COREFCN_INC = \
   libinterp/corefcn/event-queue.h \
   libinterp/corefcn/file-io.h \
   libinterp/corefcn/gl-render.h \
-  libinterp/corefcn/gl2ps-renderer.h \
+  libinterp/corefcn/gl2ps-print.h \
   libinterp/corefcn/gripes.h \
   libinterp/corefcn/help.h \
   libinterp/corefcn/hook-fcn.h \
@@ -162,7 +162,7 @@ COREFCN_SRC = \
   libinterp/corefcn/getrusage.cc \
   libinterp/corefcn/givens.cc \
   libinterp/corefcn/gl-render.cc \
-  libinterp/corefcn/gl2ps-renderer.cc \
+  libinterp/corefcn/gl2ps-print.cc \
   libinterp/corefcn/graphics.cc \
   libinterp/corefcn/gripes.cc \
   libinterp/corefcn/hash.cc \

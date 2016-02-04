@@ -828,6 +828,12 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
 }
 
 void
+opengl_renderer::finish (void)
+{
+  glFinish ();
+}
+
+void
 opengl_renderer::setup_opengl_transformation (const axes::properties& props)
 {
   // setup OpenGL transformation

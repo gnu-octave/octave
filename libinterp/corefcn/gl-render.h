@@ -63,6 +63,8 @@ public:
   virtual void set_viewport (int w, int h);
   virtual graphics_xform get_transform (void) const { return xform; }
 
+  virtual void finish (void);
+
 protected:
   virtual void draw_figure (const figure::properties& props);
   virtual void draw_axes (const axes::properties& props);

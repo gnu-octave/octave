@@ -160,10 +160,11 @@ instead.\n\
     {
       // return RGB image
       opengl_renderer rend;
-      rend.draw (fobj);
 
-      // Make sure buffered commands are finished!!!
-      glFinish ();
+      // Draw and finish () or there may primitives missing in the
+      // output.
+      rend.draw (fobj);
+      rend.finish ();
 
       dim_vector dv (4, Width, Height);
 

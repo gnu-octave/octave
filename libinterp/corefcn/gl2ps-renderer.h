@@ -58,10 +58,10 @@ protected:
     glGetIntegerv (GL_VIEWPORT, vp);
     gl2psBeginViewport (vp);
 
-    // Draw and  glFinish () or there may primitives missing in the
+    // Draw and finish () or there may primitives missing in the
     // gl2ps output.
     opengl_renderer::draw_axes (props);
-    glFinish ();
+    finish ();
 
     // Finalize viewport
     GLint state = gl2psEndViewport ();

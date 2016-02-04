@@ -44,17 +44,13 @@ from git://anongit.freedesktop.org/mesa/demos
 #endif
 
 #if defined (HAVE_OSMESA) && defined (HAVE_OPENGL)
-static void
-close_fcn (FILE *f)
-{
-  gnulib::fclose (f);
-}
 
 static void
 reset_visibility (figure::properties *fp)
 {
   fp->set_visible ("on");
 }
+
 #endif
 
 DEFUN_DLD(__osmesa_print__, args, ,
@@ -100,10 +96,6 @@ instead.\n\
     {
       if (! (args(1).is_string () && args(2).is_string ()))
         error ("__osmesa_print__: FILE and TERM must be strings");
-
-#ifndef HAVE_GL2PS_H
-      error ("__osmesa_print__: Octave has been compiled without gl2ps");
-#endif
     }
 
   octave_value_list retval;
@@ -159,45 +151,10 @@ instead.\n\
 
   if (nargin == 3)
     {
-      // use gl2ps
-#ifndef HAVE_GL2PS_H
-      err_disabled_feature ("__osmesa_print__", "gl2ps");
-#else
       std::string file = args(1).string_value ();
       std::string term = args(2).string_value ();
 
-      size_t pos_p = file.find_first_of ("|");
-      size_t pos_c = file.find_first_not_of ("| ");
-
-      if (pos_p == std::string::npos && pos_c == std::string::npos)
-        error ("__osmesa_print__: empty output ''");
-      else if (pos_c == std::string::npos)
-        error ("__osmesa_print__: empty pipe '|'");
-      else if (pos_p != std::string::npos && pos_p < pos_c)
-        {
-          // create process and pipe gl2ps output to it
-          std::string cmd = file.substr (pos_c);
-          gl2ps_print (fobj, cmd, term);
-        }
-      else
-        {
-          // write gl2ps output directly to file
-          FILE *filep = gnulib::fopen (file.substr (pos_c).c_str (), "w");
-
-          if (! filep)
-            error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
-
-          unwind_protect frame;
-
-          frame.add_fcn (close_fcn, filep);
-
-          gl2ps_renderer rend (filep, term);
-          rend.draw (fobj, "");
-
-          // Make sure buffered commands are finished!!!
-          glFinish ();
-        }
-#endif
+      gl2ps_print (fobj, file, term);
     }
   else
     {

@@ -626,6 +626,8 @@ gl2ps_renderer::draw_text (const text::properties& props)
                halign, valign, props.get_rotation ());
 }
 
+#endif
+
 static void
 safe_pclose (FILE *f)
 {
@@ -633,28 +635,66 @@ safe_pclose (FILE *f)
     octave_pclose (f);
 }
 
-#endif
+static void
+safe_fclose (FILE *f)
+{
+  if (f)
+    gnulib::fclose (f);
+}
+
+// If the name of the stream begins with '|', open a pipe to the command
+// named by the rest of the string.  Otherwise, write to the named file.
 
 void
-gl2ps_print (const graphics_object& fig, const std::string& cmd,
+gl2ps_print (const graphics_object& fig, const std::string& stream,
              const std::string& term)
 {
-#ifdef HAVE_GL2PS_H
+#if defined (HAVE_GL2PS_H)
 
-  FILE *fp = octave_popen (cmd.c_str (), "w");
+  // FIXME: should we have a way to create a file that begins with the
+  // character '|'?
 
-  if (! fp)
-    error ("print: failed to open pipe for gl2ps renderer");
+  bool have_cmd = stream.length () > 1 && stream[0] == '|';
+
+  FILE *fp = 0;
 
   unwind_protect frame;
 
-  frame.add_fcn (safe_pclose, fp);
+  if (have_cmd)
+    {
+      // Create process and pipe gl2ps output to it.
+
+      std::string cmd = stream.substr (1);
+
+      fp = octave_popen (cmd.c_str (), "w");
+
+      if (! fp)
+        error ("print: failed to open pipe \"%s\"", stream.c_str ());
+
+      frame.add_fcn (safe_pclose, fp);
+    }
+  else
+    {
+      // Write gl2ps output directly to file.
+
+      fp = gnulib::fopen (stream.c_str (), "w");
+
+      if (! fp)
+        error ("gl2ps_print: failed to create file \"%s\"", stream.c_str ());
+
+      frame.add_fcn (safe_fclose, fp);
+    }
 
   gl2ps_renderer rend (fp, term);
 
-  rend.draw (fig, cmd);
+  rend.draw (fig, "");
+
+  // Make sure buffered commands are finished!!!
+  glFinish ();
 
 #else
+
   err_disabled_feature ("gl2ps_print", "gl2ps");
+
 #endif
 }

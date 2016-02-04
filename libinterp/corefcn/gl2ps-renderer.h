@@ -125,7 +125,7 @@ private:
 #endif
 
 extern OCTINTERP_API void
-gl2ps_print (const graphics_object& fig, const std::string& cmd,
+gl2ps_print (const graphics_object& fig, const std::string& stream,
              const std::string& term);
 
 #endif

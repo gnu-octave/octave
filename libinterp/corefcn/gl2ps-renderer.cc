@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "gl2ps-renderer.h"
+#include "oct-opengl.h"
 #include "txt-eng-ft.h"
 
 #ifdef HAVE_GL2PS_H

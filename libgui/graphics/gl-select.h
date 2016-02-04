@@ -23,9 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef __QtHandles_gl_selector__
 #define __QtHandles_gl_selector__ 1
 
-#include "gl-render.h"
-
 #include <map>
+
+#include "gl-render.h"
+#include "oct-opengl.h"
 
 enum select_flags
 {

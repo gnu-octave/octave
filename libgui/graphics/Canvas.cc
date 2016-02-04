@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "annotation-dialog.h"
 
 #include "gl2ps-renderer.h"
+#include "oct-opengl.h"
 #include "octave-qt-link.h"
 
 #include "builtin-defun-decls.h"

@@ -41,12 +41,13 @@ To initialize:
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "oct-opengl.h"
 #include "ov-fcn-handle.h"
 
 #ifdef HAVE_FLTK
 
 #if defined (HAVE_X_WINDOWS)
-#include <X11/Xlib.h>
+#  include <X11/Xlib.h>
 #endif
 
 #include <map>
@@ -54,8 +55,8 @@ To initialize:
 #include <sstream>
 #include <iostream>
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
+#if defined (WIN32)
+#  define WIN32_LEAN_AND_MEAN
 #endif
 
 #include <FL/Fl.H>

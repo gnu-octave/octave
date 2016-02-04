@@ -31,15 +31,16 @@ from git://anongit.freedesktop.org/mesa/demos
 #include "unwind-prot.h"
 
 #include "defun-dld.h"
+#include "errwarn.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
 #include "graphics.h"
-#include "errwarn.h"
+#include "oct-opengl.h"
 
 #if defined (HAVE_OSMESA_H)
-#include "osmesa.h"
+#  include "osmesa.h"
 #elif defined (HAVE_GL_OSMESA_H)
-#include "GL/osmesa.h"
+#  include "GL/osmesa.h"
 #endif
 
 #if defined (HAVE_OSMESA) && defined (HAVE_OPENGL)

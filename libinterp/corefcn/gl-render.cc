@@ -28,12 +28,18 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include <lo-mappers.h>
 #include "oct-locbuf.h"
 #include "oct-refcount.h"
 
 #include "errwarn.h"
 #include "gl-render.h"
+#include "oct-opengl.h"
 #include "txt-eng.h"
 #include "txt-eng-ft.h"
 

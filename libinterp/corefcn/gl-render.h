@@ -23,30 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_gl_render_h)
 #define octave_gl_render_h 1
 
-#ifdef HAVE_WINDOWS_H
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
-#ifdef HAVE_GL_GL_H
-#include <GL/gl.h>
-#elif defined HAVE_OPENGL_GL_H || defined HAVE_FRAMEWORK_OPENGL
-#include <OpenGL/gl.h>
-#endif
-
-#ifdef HAVE_GL_GLU_H
-#include <GL/glu.h>
-#elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
-#include <OpenGL/glu.h>
-#endif
-
-#ifdef HAVE_GL_GLEXT_H
-#include <GL/glext.h>
-#elif defined HAVE_OPENGL_GLEXT_H || defined HAVE_FRAMEWORK_OPENGL
-#include <OpenGL/glext.h>
-#endif
-
 #include "graphics.h"
+#include "oct-opengl.h"
 #include "txt-eng-ft.h"
 
 #if defined (HAVE_OPENGL)

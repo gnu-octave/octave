@@ -24,9 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "gl-select.h"
-
 #include <iostream>
+
+#include "gl-select.h"
 
 void
 opengl_selector::apply_pick_matrix (void)

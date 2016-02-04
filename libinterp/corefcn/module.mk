@@ -106,6 +106,9 @@ JIT_SRC = \
 C_COREFCN_SRC = \
   libinterp/corefcn/siglist.c
 
+NOINSTALL_COREFCN_INC = \
+  libinterp/corefcn/oct-opengl.h
+
 COREFCN_SRC = \
   libinterp/corefcn/Cell.cc \
   libinterp/corefcn/__contourc__.cc \
@@ -247,7 +250,8 @@ COREFCN_SRC = \
   libinterp/corefcn/xpow.cc \
   libinterp/corefcn/zfstream.cc \
   $(JIT_SRC) \
-  $(C_COREFCN_SRC)
+  $(C_COREFCN_SRC) \
+  $(NOINSTALL_COREFCN_INC)
 
 COREFCN_FT2_DF = \
   libinterp/corefcn/graphics.df \

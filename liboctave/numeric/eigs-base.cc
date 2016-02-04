@@ -29,24 +29,23 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <iostream>
 
-#include "f77-fcn.h"
-#include "oct-locbuf.h"
-#include "quit.h"
-#include "sparse-lu.h"
-#include "dSparse.h"
 #include "CSparse.h"
-#include "MatrixType.h"
-#include "sparse-chol.h"
-#include "oct-rand.h"
-#include "dbleCHOL.h"
 #include "CmplxCHOL.h"
-#include "dbleLU.h"
 #include "CmplxLU.h"
+#include "MatrixType.h"
+#include "dSparse.h"
+#include "dbleCHOL.h"
+#include "dbleLU.h"
+#include "eigs-base.h"
+#include "f77-fcn.h"
+#include "mx-ops.h"
+#include "oct-locbuf.h"
+#include "oct-rand.h"
+#include "quit.h"
+#include "sparse-chol.h"
+#include "sparse-lu.h"
 
 #ifdef HAVE_ARPACK
-typedef ColumnVector (*EigsFunc) (const ColumnVector &x, int &eigs_error);
-typedef ComplexColumnVector (*EigsComplexFunc)
-  (const ComplexColumnVector &x, int &eigs_error);
 
 // Arpack and blas fortran functions we call.
 extern "C"
@@ -3255,45 +3254,122 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   return ip(4);
 }
 
-#ifndef _MSC_VER
-template octave_idx_type
-lusolve (const SparseMatrix&, const SparseMatrix&, Matrix&);
+// Instantiations for the types we need.
 
-template octave_idx_type
-lusolve (const SparseComplexMatrix&, const SparseComplexMatrix&,
-         ComplexMatrix&);
+// Matrix
 
-template octave_idx_type
-lusolve (const Matrix&, const Matrix&, Matrix&);
+template
+octave_idx_type
+EigsRealSymmetricMatrix<Matrix>
+  (const Matrix& m, const std::string typ, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
+   ColumnVector& eig_val, const Matrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template octave_idx_type
-lusolve (const ComplexMatrix&, const ComplexMatrix&, ComplexMatrix&);
+template
+octave_idx_type
+EigsRealSymmetricMatrixShift<Matrix>
+  (const Matrix& m, double sigma, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
+   ColumnVector& eig_val, const Matrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template ComplexMatrix
-ltsolve (const SparseComplexMatrix&, const ColumnVector&,
-         const ComplexMatrix&);
+template
+octave_idx_type
+EigsRealNonSymmetricMatrix<Matrix>
+  (const Matrix& m, const std::string typ, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const Matrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template Matrix
-ltsolve (const SparseMatrix&, const ColumnVector&, const Matrix&);
+template
+octave_idx_type
+EigsRealNonSymmetricMatrixShift<Matrix>
+  (const Matrix& m, double sigmar, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const Matrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template ComplexMatrix
-ltsolve (const ComplexMatrix&, const ColumnVector&, const ComplexMatrix&);
+// SparseMatrix
 
-template Matrix
-ltsolve (const Matrix&, const ColumnVector&, const Matrix&);
+template
+octave_idx_type
+EigsRealSymmetricMatrix<SparseMatrix>
+  (const SparseMatrix& m, const std::string typ, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
+   ColumnVector& eig_val, const SparseMatrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template ComplexMatrix
-utsolve (const SparseComplexMatrix&, const ColumnVector&,
-         const ComplexMatrix&);
+template
+octave_idx_type
+EigsRealSymmetricMatrixShift<SparseMatrix>
+  (const SparseMatrix& m, double sigma, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
+   ColumnVector& eig_val, const SparseMatrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template Matrix
-utsolve (const SparseMatrix&, const ColumnVector&, const Matrix&);
+template
+octave_idx_type
+EigsRealNonSymmetricMatrix<SparseMatrix>
+  (const SparseMatrix& m, const std::string typ, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const SparseMatrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template ComplexMatrix
-utsolve (const ComplexMatrix&, const ColumnVector&, const ComplexMatrix&);
+template
+octave_idx_type
+EigsRealNonSymmetricMatrixShift<SparseMatrix>
+  (const SparseMatrix& m, double sigmar, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const SparseMatrix& _b, ColumnVector& permB,
+   ColumnVector& resid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 
-template Matrix
-utsolve (const Matrix&, const ColumnVector&, const Matrix&);
-#endif
+// ComplexMatrix
+
+template
+octave_idx_type
+EigsComplexNonSymmetricMatrix<ComplexMatrix>
+  (const ComplexMatrix& m, const std::string typ, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const ComplexMatrix& _b, ColumnVector& permB,
+   ComplexColumnVector& cresid, std::ostream& os, double tol,
+   bool rvec, bool cholB, int disp, int maxit);
+
+template
+octave_idx_type
+EigsComplexNonSymmetricMatrixShift<ComplexMatrix>
+  (const ComplexMatrix& m, Complex sigma, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const ComplexMatrix& _b, ColumnVector& permB,
+   ComplexColumnVector& cresid, std::ostream& os, double tol,
+   bool rvec, bool cholB, int disp, int maxit);
+
+// SparseComplexMatrix
+
+template
+octave_idx_type
+EigsComplexNonSymmetricMatrix<SparseComplexMatrix>
+  (const SparseComplexMatrix& m, const std::string typ, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const SparseComplexMatrix& _b,
+   ColumnVector& permB, ComplexColumnVector& cresid, std::ostream& os,
+   double tol, bool rvec, bool cholB, int disp, int maxit);
+
+template
+octave_idx_type
+EigsComplexNonSymmetricMatrixShift<SparseComplexMatrix>
+  (const SparseComplexMatrix& m, Complex sigma, octave_idx_type k,
+   octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
+   ComplexColumnVector& eig_val, const SparseComplexMatrix& _b,
+   ColumnVector& permB, ComplexColumnVector& cresid, std::ostream& os,
+   double tol, bool rvec, bool cholB, int disp, int maxit);
 
 #endif

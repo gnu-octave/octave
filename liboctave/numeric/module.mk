@@ -8,14 +8,6 @@ LIBOCTAVE_OPT_INC = \
 LIBOCTAVE_OPT_IN = $(LIBOCTAVE_OPT_INC:.h=.in)
 
 NUMERIC_INC = \
-  liboctave/numeric/base-aepbal.h \
-  liboctave/numeric/base-dae.h \
-  liboctave/numeric/base-de.h \
-  liboctave/numeric/base-lu.h \
-  liboctave/numeric/base-min.h \
-  liboctave/numeric/base-qr.h \
-  liboctave/numeric/bsxfun-decl.h \
-  liboctave/numeric/bsxfun.h \
   liboctave/numeric/CmplxAEPBAL.h \
   liboctave/numeric/CmplxCHOL.h \
   liboctave/numeric/CmplxGEPBAL.h \
@@ -26,13 +18,29 @@ NUMERIC_INC = \
   liboctave/numeric/CmplxSCHUR.h \
   liboctave/numeric/CmplxSVD.h \
   liboctave/numeric/CollocWt.h \
-  liboctave/numeric/DAEFunc.h \
   liboctave/numeric/DAE.h \
-  liboctave/numeric/DAERTFunc.h \
+  liboctave/numeric/DAEFunc.h \
   liboctave/numeric/DAERT.h \
+  liboctave/numeric/DAERTFunc.h \
   liboctave/numeric/DASPK.h \
   liboctave/numeric/DASRT.h \
   liboctave/numeric/DASSL.h \
+  liboctave/numeric/DET.h \
+  liboctave/numeric/EIG.h \
+  liboctave/numeric/LSODE.h \
+  liboctave/numeric/ODE.h \
+  liboctave/numeric/ODEFunc.h \
+  liboctave/numeric/ODES.h \
+  liboctave/numeric/ODESFunc.h \
+  liboctave/numeric/Quad.h \
+  liboctave/numeric/base-aepbal.h \
+  liboctave/numeric/base-dae.h \
+  liboctave/numeric/base-de.h \
+  liboctave/numeric/base-lu.h \
+  liboctave/numeric/base-min.h \
+  liboctave/numeric/base-qr.h \
+  liboctave/numeric/bsxfun-decl.h \
+  liboctave/numeric/bsxfun.h \
   liboctave/numeric/dbleAEPBAL.h \
   liboctave/numeric/dbleCHOL.h \
   liboctave/numeric/dbleGEPBAL.h \
@@ -42,8 +50,7 @@ NUMERIC_INC = \
   liboctave/numeric/dbleQRP.h \
   liboctave/numeric/dbleSCHUR.h \
   liboctave/numeric/dbleSVD.h \
-  liboctave/numeric/DET.h \
-  liboctave/numeric/EIG.h \
+  liboctave/numeric/eigs-base.h \
   liboctave/numeric/fCmplxAEPBAL.h \
   liboctave/numeric/fCmplxCHOL.h \
   liboctave/numeric/fCmplxGEPBAL.h \
@@ -65,17 +72,11 @@ NUMERIC_INC = \
   liboctave/numeric/floatSVD.h \
   liboctave/numeric/lo-mappers.h \
   liboctave/numeric/lo-specfun.h \
-  liboctave/numeric/LSODE.h \
   liboctave/numeric/oct-convn.h \
   liboctave/numeric/oct-fftw.h \
   liboctave/numeric/oct-norm.h \
   liboctave/numeric/oct-rand.h \
   liboctave/numeric/oct-spparms.h \
-  liboctave/numeric/ODEFunc.h \
-  liboctave/numeric/ODE.h \
-  liboctave/numeric/ODESFunc.h \
-  liboctave/numeric/ODES.h \
-  liboctave/numeric/Quad.h \
   liboctave/numeric/randgamma.h \
   liboctave/numeric/randmtzig.h \
   liboctave/numeric/randpoisson.h \
@@ -102,19 +103,20 @@ NUMERIC_SRC = \
   liboctave/numeric/DASPK.cc \
   liboctave/numeric/DASRT.cc \
   liboctave/numeric/DASSL.cc \
+  liboctave/numeric/EIG.cc \
+  liboctave/numeric/LSODE.cc \
+  liboctave/numeric/ODES.cc \
+  liboctave/numeric/Quad.cc \
   liboctave/numeric/dbleAEPBAL.cc \
   liboctave/numeric/dbleCHOL.cc \
   liboctave/numeric/dbleGEPBAL.cc \
   liboctave/numeric/dbleHESS.cc \
   liboctave/numeric/dbleLU.cc \
-  liboctave/numeric/EIG.cc \
-  liboctave/numeric/LSODE.cc \
-  liboctave/numeric/ODES.cc \
-  liboctave/numeric/Quad.cc \
   liboctave/numeric/dbleQR.cc \
   liboctave/numeric/dbleQRP.cc \
   liboctave/numeric/dbleSCHUR.cc \
   liboctave/numeric/dbleSVD.cc \
+  liboctave/numeric/eigs-base.cc \
   liboctave/numeric/fCmplxAEPBAL.cc \
   liboctave/numeric/fCmplxCHOL.cc \
   liboctave/numeric/fCmplxGEPBAL.cc \
@@ -150,7 +152,6 @@ LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/numeric/base-lu.cc \
   liboctave/numeric/base-qr.cc \
   liboctave/numeric/bsxfun-defs.cc \
-  liboctave/numeric/eigs-base.cc \
   liboctave/numeric/sparse-dmsolve.cc
 
 ## Special rules for sources which must be built before rest of compilation.

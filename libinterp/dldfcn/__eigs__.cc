@@ -24,19 +24,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "ov.h"
 #include "defun-dld.h"
+#include "eigs-base.h"
 #include "error.h"
 #include "errwarn.h"
-#include "quit.h"
-#include "variables.h"
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
 #include "oct-map.h"
+#include "ov-cx-sparse.h"
+#include "ov-re-sparse.h"
+#include "ov.h"
 #include "pager.h"
+#include "quit.h"
 #include "unwind-prot.h"
-
-#include "eigs-base.cc"
+#include "variables.h"
 
 // Global pointer for user defined function.
 static octave_function *eigs_fcn = 0;

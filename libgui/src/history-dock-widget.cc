@@ -109,8 +109,6 @@ history_dock_widget::construct ()
   hist_layout->setMargin (2);
   widget ()->setLayout (hist_layout);
 
-  setFocusProxy (_filter->lineEdit ());
-
   // Init state of the filter
   QSettings *settings = resource_manager::get_settings ();
 

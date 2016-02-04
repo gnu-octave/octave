@@ -97,6 +97,7 @@ libinterp_EXTRA_DIST += \
   libinterp/mkbuiltins \
   libinterp/mkdefs \
   libinterp/mkops \
+  libinterp/oct-conf.in.cc \
   libinterp/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
 

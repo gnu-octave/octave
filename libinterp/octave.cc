@@ -74,6 +74,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "procstream.h"
 #include "sighandlers.h"
+#include "siglist.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"

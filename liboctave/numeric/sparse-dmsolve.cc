@@ -29,11 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "MSparse.h"
-#include "sparse-qr.h"
 #include "MatrixType.h"
-#include "oct-sort.h"
-#include "oct-locbuf.h"
 #include "oct-inttypes.h"
+#include "oct-locbuf.h"
+#include "oct-sort.h"
+#include "oct-sparse.h"
+#include "sparse-qr.h"
 
 template <typename T>
 static MSparse<T>

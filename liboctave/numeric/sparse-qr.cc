@@ -26,8 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "lo-error.h"
-#include "sparse-qr.h"
 #include "oct-locbuf.h"
+#include "oct-sparse.h"
+#include "sparse-qr.h"
 
 template <typename SPARSE_T>
 class
@@ -2252,3 +2253,9 @@ qrsolve (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 {
   return sparse_qr<SparseComplexMatrix>::solve<SparseComplexMatrix, SparseComplexMatrix> (a, b, info);
 }
+
+// Instantiations we need.
+
+template class sparse_qr<SparseMatrix>;
+
+template class sparse_qr<SparseComplexMatrix>;

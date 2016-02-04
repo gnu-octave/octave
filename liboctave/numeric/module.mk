@@ -107,11 +107,14 @@ NUMERIC_SRC = \
   liboctave/numeric/dbleGEPBAL.cc \
   liboctave/numeric/dbleHESS.cc \
   liboctave/numeric/dbleLU.cc \
+  liboctave/numeric/EIG.cc \
+  liboctave/numeric/LSODE.cc \
+  liboctave/numeric/ODES.cc \
+  liboctave/numeric/Quad.cc \
   liboctave/numeric/dbleQR.cc \
   liboctave/numeric/dbleQRP.cc \
   liboctave/numeric/dbleSCHUR.cc \
   liboctave/numeric/dbleSVD.cc \
-  liboctave/numeric/EIG.cc \
   liboctave/numeric/fCmplxAEPBAL.cc \
   liboctave/numeric/fCmplxCHOL.cc \
   liboctave/numeric/fCmplxGEPBAL.cc \
@@ -133,17 +136,14 @@ NUMERIC_SRC = \
   liboctave/numeric/floatSVD.cc \
   liboctave/numeric/lo-mappers.cc \
   liboctave/numeric/lo-specfun.cc \
-  liboctave/numeric/LSODE.cc \
   liboctave/numeric/oct-convn.cc \
   liboctave/numeric/oct-fftw.cc \
   liboctave/numeric/oct-norm.cc \
   liboctave/numeric/oct-rand.cc \
   liboctave/numeric/oct-spparms.cc \
-  liboctave/numeric/ODES.cc \
-  liboctave/numeric/Quad.cc \
-  liboctave/numeric/sparse-chol-inst.cc \
-  liboctave/numeric/sparse-lu-inst.cc \
-  liboctave/numeric/sparse-qr-inst.cc \
+  liboctave/numeric/sparse-chol.cc \
+  liboctave/numeric/sparse-lu.cc \
+  liboctave/numeric/sparse-qr.cc \
   $(NUMERIC_C_SRC)
 
 LIBOCTAVE_TEMPLATE_SRC += \
@@ -151,9 +151,6 @@ LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/numeric/base-qr.cc \
   liboctave/numeric/bsxfun-defs.cc \
   liboctave/numeric/eigs-base.cc \
-  liboctave/numeric/sparse-chol.cc \
-  liboctave/numeric/sparse-lu.cc \
-  liboctave/numeric/sparse-qr.cc \
   liboctave/numeric/sparse-dmsolve.cc
 
 ## Special rules for sources which must be built before rest of compilation.

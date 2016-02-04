@@ -566,3 +566,15 @@ sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
   : rep (new typename
          sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info, true, false))
 { }
+
+// Instantiations we need.
+
+template class sparse_chol<SparseMatrix>;
+
+template class sparse_chol<SparseComplexMatrix>;
+
+template SparseMatrix
+chol2inv<SparseMatrix> (const SparseMatrix& r);
+
+template SparseComplexMatrix
+chol2inv<SparseComplexMatrix> (const SparseComplexMatrix& r);

@@ -890,3 +890,9 @@ sparse_lu<lu_type>::Pc_mat (void) const
 {
   return PermMatrix (Q, true);
 }
+
+// Instantiations we need.
+
+template class sparse_lu<SparseMatrix>;
+
+template class sparse_lu<SparseComplexMatrix>;

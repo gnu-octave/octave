@@ -25,10 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "sparse-chol.h"
-#include "oct-spparms.h"
-#include "sparse-util.h"
 #include "oct-locbuf.h"
+#include "oct-sparse.h"
+#include "oct-spparms.h"
+#include "sparse-chol.h"
+#include "sparse-util.h"
 
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"

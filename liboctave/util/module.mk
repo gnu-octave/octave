@@ -29,7 +29,6 @@ UTIL_INC = \
   liboctave/util/oct-rl-hist.h \
   liboctave/util/oct-shlib.h \
   liboctave/util/oct-sort.h \
-  liboctave/util/oct-sparse.h \
   liboctave/util/pathsearch.h \
   liboctave/util/lo-regexp.h \
   liboctave/util/singleton-cleanup.h \
@@ -40,6 +39,9 @@ UTIL_INC = \
   liboctave/util/sun-utils.h \
   liboctave/util/unwind-prot.h \
   liboctave/util/url-transfer.h
+
+NOINSTALL_UTIL_INC = \
+  liboctave/util/oct-sparse.h
 
 UTIL_C_SRC = \
   liboctave/util/f2c-main.c \
@@ -70,7 +72,8 @@ UTIL_SRC = \
   liboctave/util/str-vec.cc \
   liboctave/util/unwind-prot.cc \
   liboctave/util/url-transfer.cc \
-  $(UTIL_C_SRC)
+  $(UTIL_C_SRC) \
+  $(NOINSTALL_UTIL_INC)
 
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/util/oct-sort.cc

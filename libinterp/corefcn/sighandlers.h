@@ -36,10 +36,8 @@ Free Software Foundation, Inc.
 // Include signal.h, not csignal since the latter might only define
 // the ANSI standard C signal interface.
 
+#include <sys/types.h>
 #include <signal.h>
-
-#include "syswait.h"
-#include "siglist.h"
 
 #include "base-list.h"
 

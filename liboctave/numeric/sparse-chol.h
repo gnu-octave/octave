@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "CSparse.h"
 #include "dColVector.h"
 #include "dSparse.h"
-#include "oct-sparse.h"
 
 // If the sparse matrix classes become templated on the element type
 // (i.e., sparse_matrix<double>), then it might be best to make the

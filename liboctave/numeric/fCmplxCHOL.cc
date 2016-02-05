@@ -318,7 +318,7 @@ FloatComplexCHOL::update (const FloatComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () != n)
+  if (u.numel () != n)
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 
   init (chol_mat.hermitian () * chol_mat
@@ -343,7 +343,7 @@ FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () != n)
+  if (u.numel () != n)
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
 
   if (singular (chol_mat))
@@ -370,7 +370,7 @@ FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u,
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (u.length () != n + 1)
+  if (u.numel () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("cholinsert: index out of range");

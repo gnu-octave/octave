@@ -6963,10 +6963,6 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
                                          const string_vector& ticklabels,
                                          const Matrix& limits)
 {
-#ifndef HAVE_FREETYPE
-  double fontsize = get ("fontsize").double_value ();
-#endif
-
   Matrix ext (1, 2, 0.0);
   double wmax, hmax;
   wmax = hmax = 0.0;
@@ -6986,9 +6982,10 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
           hmax = std::max (hmax, ext(1));
 #else
           // FIXME: find a better approximation
+          double fsize = get ("fontsize").double_value ();
           int len = label.length ();
-          wmax = std::max (wmax, 0.5*fontsize*len);
-          hmax = fontsize;
+          wmax = std::max (wmax, 0.5*fsize*len);
+          hmax = fsize;
 #endif
         }
     }

@@ -722,8 +722,6 @@ gl2ps_renderer::draw_text (const text::properties& props)
                halign, valign, props.get_rotation ());
 }
 
-#endif
-
 static void
 safe_pclose (FILE *f)
 {
@@ -737,6 +735,8 @@ safe_fclose (FILE *f)
   if (f)
     gnulib::fclose (f);
 }
+
+#endif
 
 // If the name of the stream begins with '|', open a pipe to the command
 // named by the rest of the string.  Otherwise, write to the named file.

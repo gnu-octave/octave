@@ -40,16 +40,16 @@ class sparse_chol<chol_type>::sparse_chol_rep
 public:
 
   sparse_chol_rep (void)
-    : count (1), is_pd (false), minor_p (0), perms (), cond (0),
+    : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #ifdef HAVE_CHOLMOD
-      Lsparse (0), Common ()
+      , Lsparse (0), Common ()
 #endif
   { }
 
   sparse_chol_rep (const chol_type& a, bool natural, bool force)
-    : count (1), is_pd (false), minor_p (0), perms (), cond (0),
+    : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #ifdef HAVE_CHOLMOD
-      Lsparse (0), Common ()
+      , Lsparse (0), Common ()
 #endif
   {
     init (a, natural, force);
@@ -57,9 +57,9 @@ public:
 
   sparse_chol_rep (const chol_type& a, octave_idx_type& info,
                    bool natural, bool force)
-    : count (1), is_pd (false), minor_p (0), perms (), cond (0),
+    : count (1), is_pd (false), minor_p (0), perms (), cond (0)
 #ifdef HAVE_CHOLMOD
-      Lsparse (0), Common ()
+      , Lsparse (0), Common ()
 #endif
   {
     info = init (a, natural, force);
@@ -73,14 +73,12 @@ public:
 #endif
   }
 
+#ifdef HAVE_CHOLMOD
   cholmod_sparse *L (void) const
   {
-#ifdef HAVE_CHOLMOD
     return Lsparse;
-#else
-    return 0;
-#endif
   }
+#endif
 
   octave_idx_type P (void) const
   {

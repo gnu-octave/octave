@@ -114,6 +114,8 @@ template <typename T>
 void
 umfpack_report_symbolic (void *Symbolic, const double *Control);
 
+#if defined (HAVE_UMFPACK)
+
 // SparseMatrix Specialization.
 
 template <>
@@ -368,6 +370,8 @@ umfpack_report_symbolic <Complex> (void *Symbolic, const double *Control)
 {
   UMFPACK_ZNAME (report_symbolic) (Symbolic, Control);
 }
+
+#endif
 
 template <typename lu_type>
 sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,

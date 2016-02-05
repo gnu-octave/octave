@@ -34,9 +34,6 @@ template <typename SPARSE_T>
 class
 cxsparse_types
 {
-public:
-  typedef void symbolic_type;
-  typedef void numeric_type;
 };
 
 template <>
@@ -47,6 +44,9 @@ public:
 #if defined (HAVE_CXSPARSE)
   typedef CXSPARSE_DNAME (s) symbolic_type;
   typedef CXSPARSE_DNAME (n) numeric_type;
+#else
+  typedef void symbolic_type;
+  typedef void numeric_type;
 #endif
 };
 
@@ -58,6 +58,9 @@ public:
 #if defined (HAVE_CXSPARSE)
   typedef CXSPARSE_ZNAME (s) symbolic_type;
   typedef CXSPARSE_ZNAME (n) numeric_type;
+#else
+  typedef void symbolic_type;
+  typedef void numeric_type;
 #endif
 };
 

@@ -117,4 +117,14 @@ along with Octave; see the file COPYING.  If not, see
 #  endif
 #endif
 
+#if defined (HAVE_UMFPACK)
+#  if defined (ENABLE_64)
+#    define UMFPACK_DNAME(name) umfpack_dl_ ## name
+#    define UMFPACK_ZNAME(name) umfpack_zl_ ## name
+#  else
+#    define UMFPACK_DNAME(name) umfpack_di_ ## name
+#    define UMFPACK_ZNAME(name) umfpack_zi_ ## name
+#  endif
+#endif
+
 #endif

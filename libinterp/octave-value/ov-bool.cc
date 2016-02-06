@@ -169,7 +169,7 @@ octave_bool::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -201,7 +201,7 @@ octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
 #if defined (HAVE_HDF5)
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);

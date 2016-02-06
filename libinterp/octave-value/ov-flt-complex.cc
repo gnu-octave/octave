@@ -314,7 +314,7 @@ octave_float_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Sclose (space_hid);
       return false;
     }
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -349,7 +349,7 @@ octave_float_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
 #if defined (HAVE_HDF5)
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);

@@ -297,7 +297,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
   octave_value rhs = expr->rvalue1 ();
 
-#if HAVE_LLVM
+#if defined (HAVE_LLVM)
   if (tree_jit::execute (cmd, rhs))
     return;
 #endif
@@ -1016,7 +1016,7 @@ tree_evaluator::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 void
 tree_evaluator::visit_while_command (tree_while_command& cmd)
 {
-#if HAVE_LLVM
+#if defined (HAVE_LLVM)
   if (tree_jit::execute (cmd))
     return;
 #endif
@@ -1055,7 +1055,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
 void
 tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 {
-#if HAVE_LLVM
+#if defined (HAVE_LLVM)
   if (tree_jit::execute (cmd))
     return;
 #endif

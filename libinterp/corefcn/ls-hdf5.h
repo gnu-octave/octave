@@ -110,7 +110,7 @@ hdf5_callback_data
   std::string doc;
 };
 
-#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+#if defined (HAVE_HDF5_INT2FLOAT_CONVERSIONS)
 extern OCTINTERP_API octave_hdf5_id
 save_type_to_hdf5 (save_type st)
 #endif

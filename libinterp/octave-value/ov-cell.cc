@@ -976,7 +976,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
   hid_t space_hid, data_hid, size_hid;
   space_hid = data_hid = size_hid = -1;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (loc_id, name, 0);
@@ -1002,7 +1002,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
   for (hsize_t i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -1076,7 +1076,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (empty)
     return (empty > 0);
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   hid_t group_id = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t group_id = H5Gopen (loc_id, name);
@@ -1085,7 +1085,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (group_id < 0)
     return false;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   hid_t data_hid = H5Dopen (group_id, "dims", octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (group_id, "dims");
@@ -1133,7 +1133,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   int current_item = 0;
 
   hsize_t num_obj = 0;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   group_id = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_id = H5Gopen (loc_id, name);

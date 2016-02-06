@@ -877,7 +877,7 @@ octave_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_
 
   hid_t data_hid = -1;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (loc_id, name, 0);
@@ -929,7 +929,7 @@ octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   octave_map m (dim_vector (1, 1));
   int current_item = 0;
   hsize_t num_obj = 0;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   hid_t group_id = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t group_id = H5Gopen (loc_id, name);
@@ -1474,7 +1474,7 @@ octave_scalar_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   hid_t data_hid = -1;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (loc_id, name, 0);
@@ -1526,7 +1526,7 @@ octave_scalar_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   octave_scalar_map m;
   int current_item = 0;
   hsize_t num_obj = 0;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   hid_t group_id = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t group_id = H5Gopen (loc_id, name);

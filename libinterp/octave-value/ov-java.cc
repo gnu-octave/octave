@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "fpucw.h"
 
-#if HAVE_FPU_CONTROL_H
+#if defined (HAVE_FPU_CONTROL_H)
 #  include <fpu_control.h>
 #endif
 

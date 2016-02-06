@@ -399,7 +399,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{symamd, ccolamd}\n\
 @end deftypefn")
 {
-#if HAVE_CCOLAMD
+#if defined (HAVE_CCOLAMD)
 
   int nargin = args.length ();
 

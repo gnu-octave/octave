@@ -900,6 +900,14 @@ OCTAVE_CHECK_LIB(hdf5, HDF5,
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 
+dnl Should we check for this now, or wait until some version of
+dnl HDF5 actually supports this feature?
+have_hdf5_int2float_conversions=no
+if test "$have_hdf5_int2float_conversions" = yes; then
+  AC_DEFINE(HAVE_HDF5_INT2FLOAT_CONVERSIONS, 1,
+    [Define to 1 if/when HDF5 supports automatic conversion between integer and floating-point binary data.])
+fi
+
 ### Check for FFTW library.  Default to Fortran FFTPACK if it is not available.
 
 ## Check for FFTW header and library.

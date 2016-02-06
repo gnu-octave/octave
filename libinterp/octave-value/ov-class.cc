@@ -1389,7 +1389,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_f
   octave_map m;
   octave_map::iterator i;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gcreate (loc_id, name, 0);
@@ -1406,7 +1406,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_f
   space_hid = H5Screate_simple (0 , hdims, 0);
   if (space_hid < 0)
     goto error_cleanup;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   class_hid = H5Dcreate (group_hid, "classname",  type_hid, space_hid,
                          octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -1417,7 +1417,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_f
                                  octave_H5P_DEFAULT, c_name.c_str ()) < 0)
     goto error_cleanup;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Gcreate (group_hid, "value", octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                         octave_H5P_DEFAULT);
 #else
@@ -1500,7 +1500,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   int slen = 0;
   hsize_t rank = 0;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   group_hid = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gopen (loc_id, name);
@@ -1508,7 +1508,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (group_hid < 0)
     goto error_cleanup;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dopen (group_hid, "classname", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "classname");
@@ -1561,7 +1561,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   while (0);
   reconstruct_exemplar ();
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   subgroup_hid = H5Gopen (group_hid, name, octave_H5P_DEFAULT);
 #else
   subgroup_hid = H5Gopen (group_hid, name);

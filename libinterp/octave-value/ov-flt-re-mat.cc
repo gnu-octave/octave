@@ -538,7 +538,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 
   hid_t save_type_hid = H5T_NATIVE_FLOAT;
 
-#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+#if defined (HAVE_HDF5_INT2FLOAT_CONVERSIONS)
   // hdf5 currently doesn't support float/integer conversions
   else
     {
@@ -549,7 +549,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
           = save_type_to_hdf5 (get_save_type (max_val, min_val));
     }
 #endif
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -590,7 +590,7 @@ octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (empty)
     return (empty > 0);
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);

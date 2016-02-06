@@ -51,7 +51,7 @@ put_int (octave_idx_type *p, octave_idx_type n)
   return ret;
 }
 
-#if HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 static octave_value_list
 dmperm_internal (bool rank, const octave_value arg, int nargout)
 {
@@ -136,7 +136,7 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
 @seealso{colamd, ccolamd}\n\
 @end deftypefn")
 {
-#if HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   if (args.length () != 1)
     print_usage ();
@@ -179,7 +179,7 @@ such the numerical rank of the matrix @var{S} is bounded by\n\
 @seealso{dmperm}\n\
 @end deftypefn")
 {
-#if HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   if (args.length () != 1)
     print_usage ();

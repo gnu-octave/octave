@@ -283,7 +283,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   hid_t group_hid = -1;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gcreate (loc_id, name, 0);
@@ -313,7 +313,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "args", H5T_NATIVE_CHAR, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -367,7 +367,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -391,7 +391,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "iftext",  type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
@@ -428,14 +428,14 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   hsize_t rank;
   int slen;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   group_hid = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
   if (group_hid < 0) return false;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dopen (group_hid, "args", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "args");
@@ -475,7 +475,7 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   for (size_t i = 0; i < hdims[1]; i++)
     ifargs(i) = std::string (s1 + i*hdims[0]);
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dopen (group_hid, "nm", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nm");
@@ -537,7 +537,7 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
   nm = nm_tmp;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dopen (group_hid, "iftext", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "iftext");

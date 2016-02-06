@@ -258,6 +258,7 @@ HTMLS += doc/interpreter/octave.html
 
 OCTAVE_HTML_DIR = doc/interpreter/octave.html
 OCTAVE_HTML_TMP_DIR = $(OCTAVE_HTML_DIR:.html=.htp)
+OCTAVE_HTML_CSS = $(OCTAVE_HTML_DIR)/octave.css
 OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.octave-html-stamp
 
 $(srcdir)/doc/interpreter/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
@@ -303,7 +304,9 @@ doc/interpreter/octave.html: $(OCTAVE_HTML_STAMP)
 
 $(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(OCTAVE_HTML_DIR)
-	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
+	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) \
+	 -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
+	 --css-ref=octave.css \
 	 -o $(OCTAVE_HTML_TMP_DIR) `test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi; \
 	then \
 	  rm -rf $(OCTAVE_HTML_DIR) && \
@@ -313,7 +316,7 @@ $(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/vers
 	  rm -rf $(OCTAVE_HTML_TMP_DIR); exit 1; \
 	fi
 
-$(HTMLDIR_IMAGES) : doc/interpreter/octave.html/%.png: doc/interpreter/%.png $(OCTAVE_HTML_STAMP)
+$(HTMLDIR_IMAGES) $(OCTAVE_HTML_CSS) : doc/interpreter/octave.html/%: doc/interpreter/% $(OCTAVE_HTML_STAMP)
 	$(AM_V_GEN)cp $< $@
 
 DOC_TARGETS += \
@@ -322,7 +325,8 @@ DOC_TARGETS += \
   doc/interpreter/octave.ps \
   doc/interpreter/octave.pdf \
   $(OCTAVE_HTML_STAMP) \
-  $(HTMLDIR_IMAGES)
+  $(HTMLDIR_IMAGES) \
+  $(OCTAVE_HTML_CSS)
 
 doc_EXTRA_DIST += \
   $(BUILT_OCTAVE_TEXI_SRC) \
@@ -333,7 +337,8 @@ doc_EXTRA_DIST += \
   doc/interpreter/octave.ps \
   doc/interpreter/octave.pdf \
   doc/interpreter/octave.html \
-  $(HTMLDIR_IMAGES)
+  $(HTMLDIR_IMAGES) \
+  $(OCTAVE_HTML_CSS)
 
 # Prevent packaging of distribution unless all libraries
 # necessary to create documentation are present

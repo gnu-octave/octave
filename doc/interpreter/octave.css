@@ -1,0 +1,66 @@
+/*
+Copyright (C) 2016 Oliver Heimlich
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at
+your option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/4b8b4b377e8cb358cf886d13c7bb287c/RobotoCondensedBold.ttf') format('truetype');
+	font-weight: bold; font-style: normal; }
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/9b1d05d1b332e5b95ad86e71ca8404fb/RobotoCondensedBoldItalic.ttf') format('truetype');
+    	font-weight: bold; font-style: italic; }
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/d02fffb6890e4f28023dd149916d1b8a/RobotoCondensedItalic.ttf') format('truetype');
+	font-weight: normal; font-style: italic; }
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/b0b1845ecce8ab6a503971e808a8409c/RobotoCondensedRegular.ttf') format('truetype');
+	font-weight: normal; font-style: normal; }
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/db52617ba875d08cbd8e080ca3d9f756/b145f0e884b2da8f1b112d26e7cefd3d/FantasqueSansMonoBold.ttf') format('truetype');
+	font-weight: bold; font-style: normal; }
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/db52617ba875d08cbd8e080ca3d9f756/49319cbd53210c32099631ac89b1e70a/FantasqueSansMonoBoldItalic.ttf') format('truetype');
+	font-weight: bold; font-style: italic; }
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/db52617ba875d08cbd8e080ca3d9f756/5c07fe59e84e4594ffa87ae1a72b130d/FantasqueSansMonoItalic.ttf') format('truetype');
+	font-weight: normal; font-style: italic; }
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/db52617ba875d08cbd8e080ca3d9f756/cc70dc22137e92aaef169e1de38a6ec7/FantasqueSansMonoRegular.ttf') format('truetype');
+	font-weight: normal; font-style: normal; }
+body > * { max-width: 42em; }
+div.header { max-width: 100%; }
+hr { margin-left: 0; border: none; border-top: 3px double #657b83; }
+div.header, div.float-caption { color: #657b83; }
+ul, ol { max-width: 39.5em; padding-left: 2.5em; }
+div.example, div.display, div.indentedblock, div.smalldisplay, div.lisp, div.smallindentedblock, div.smallexample, div.smalllisp { max-width: 38.8em; margin-left: 3.2em; }
+blockquote { margin-left: 3.2em; margin-right: 3.2em; max-width: 35.6em; }
+body, span.roman { font-family: 'Roboto Condensed', sans-serif; }
+body { padding-left: 7.5em; padding-right: 7.5em; }
+h1, h2, h3, h4, h5, pre.menu-comment { font-family: 'Roboto Condensed', serif; text-align: left !important; }
+div.float table, img { margin-left: auto; margin-right: auto; }
+div.float table { width: 38em; }
+div.float table, div.float th { border-collapse: collapse; border-top: 1px solid black; border-bottom: 1px solid black; }
+div.float th, div.float td { padding: 0.5em; }
+dd > p:first-child { margin-top: 0; }
+a { color: #268bd2; }
+a:visited { color: #d33682; }
+code, kbd, samp, tt { font-family: 'Fantasque Sans Mono', monospace; padding: 0 0.1em; font-style: italic; }
+pre.example, pre.smallexample, pre.verbatim { font-family: 'Fantasque Sans Mono', monospace; }
+pre.example { background-color: #fdf6e3; color: #657b83; padding: 0.5em; }
+.example { margin-bottom: 1em; }
+.example + .example { margin-top: -0.5em }

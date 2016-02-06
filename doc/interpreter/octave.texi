@@ -1,4 +1,4 @@
-% Copyright (C) 1996-2015 John W. Eaton
+% Copyright (C) 1996-2016 John W. Eaton
 %
 % This file is part of Octave.
 %
@@ -63,7 +63,7 @@ END-INFO-DIR-ENTRY
 
 @ifnottex
 
-Copyright @copyright{} 1996-2013 John W. Eaton.
+Copyright @copyright{} 1996-2016 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice

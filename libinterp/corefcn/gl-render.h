@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "graphics.h"
 #include "oct-opengl.h"
-#include "txt-eng-ft.h"
+#include "text-renderer.h"
 
 #if defined (HAVE_OPENGL)
 
@@ -37,10 +37,7 @@ public:
   opengl_renderer (void)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
     zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-    camera_pos (), camera_dir (), interpreter ("none")
-#if HAVE_FREETYPE
-    , text_renderer ()
-#endif
+    camera_pos (), camera_dir (), interpreter ("none"), txt_renderer ()
   { }
 
   virtual ~opengl_renderer (void) { }
@@ -105,7 +102,7 @@ protected:
                                double rotation = 0.0);
 
   virtual void text_to_strlist (const std::string& txt,
-                                std::list<ft_render::ft_string>& lst,
+                                std::list<text_renderer::string>& lst,
                                 Matrix& bbox,
                                 int halign = 0, int valign = 0,
                                 double rotation = 0.0);
@@ -195,10 +192,7 @@ private:
   // interpreter to be used by text_to_pixels
   caseless_str interpreter;
 
-#if HAVE_FREETYPE
-  // FreeType render, used for text rendering
-  ft_render text_renderer;
-#endif
+  text_renderer txt_renderer;
 
 private:
   class patch_tesselator;

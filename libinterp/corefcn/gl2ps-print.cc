@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl-render.h"
 #include "oct-opengl.h"
 #include "sysdep.h"
-#include "txt-eng-ft.h"
+#include "text-renderer.h"
 
 class
 OCTINTERP_API
@@ -123,11 +123,11 @@ protected:
 
 private:
 
-  // Use xform to compute the coordinates of the ft_string list
+  // Use xform to compute the coordinates of the string list
   // that have been parsed by freetype
   void fix_strlist_position (double x, double y, double z,
                              Matrix box, double rotation,
-                             std::list<ft_render::ft_string>& lst);
+                             std::list<text_renderer::string>& lst);
 
   int alignment_to_mode (int ha, int va) const;
   FILE *fp;
@@ -302,9 +302,9 @@ gl2ps_renderer::alignment_to_mode (int ha, int va) const
 void
 gl2ps_renderer::fix_strlist_position (double x, double y, double z,
                                      Matrix box, double rotation,
-                                     std::list<ft_render::ft_string>& lst)
+                                     std::list<text_renderer::string>& lst)
 {
-  for (std::list<ft_render::ft_string>::iterator p = lst.begin ();
+  for (std::list<text_renderer::string>::iterator p = lst.begin ();
        p != lst.end (); p++)
     {
       // Get pixel coordinates
@@ -552,7 +552,7 @@ gl2ps_renderer::render_text (const std::string& txt,
   // string using freetype
   Matrix bbox;
   std::string str = txt;
-  std::list<ft_render::ft_string> lst;
+  std::list<text_renderer::string> lst;
 
   text_to_strlist (str, lst, bbox, ha, va, rotation);
 
@@ -565,7 +565,7 @@ gl2ps_renderer::render_text (const std::string& txt,
       int sz = fontsize;
       if (! lst.empty () && term.find ("tex") == std::string::npos)
         {
-          ft_render::ft_string s = lst.front ();
+          text_renderer::string s = lst.front ();
           name = select_font (s.get_name (), s.get_weight () == "bold",
                               s.get_angle () == "italic");
           set_color (s.get_color ());
@@ -591,7 +591,7 @@ gl2ps_renderer::render_text (const std::string& txt,
   // Translate and rotate coordinates in order to use bottom-left alignment
   fix_strlist_position (x, y, z, bbox, rotation, lst);
 
-  for (std::list<ft_render::ft_string>::iterator p = lst.begin ();
+  for (std::list<text_renderer::string>::iterator p = lst.begin ();
        p != lst.end (); p++)
     {
       fontname = select_font ((*p).get_name (),

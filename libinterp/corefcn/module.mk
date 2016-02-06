@@ -21,6 +21,7 @@ JIT_INC = \
   libinterp/corefcn/pt-jit.h
 
 COREFCN_INC = \
+  libinterp/corefcn/base-text-renderer.h \
   libinterp/corefcn/Cell.h \
   libinterp/corefcn/c-file-ptr-stream.h \
   libinterp/corefcn/cdisplay.h \
@@ -37,6 +38,7 @@ COREFCN_INC = \
   libinterp/corefcn/errwarn.h \
   libinterp/corefcn/event-queue.h \
   libinterp/corefcn/file-io.h \
+  libinterp/corefcn/ft-text-renderer.h \
   libinterp/corefcn/gl-render.h \
   libinterp/corefcn/gl2ps-print.h \
   libinterp/corefcn/gripes.h \
@@ -85,8 +87,8 @@ COREFCN_INC = \
   libinterp/corefcn/sparse-xpow.h \
   libinterp/corefcn/symtab.h \
   libinterp/corefcn/sysdep.h \
+  libinterp/corefcn/text-renderer.h \
   libinterp/corefcn/toplev.h \
-  libinterp/corefcn/txt-eng-ft.h \
   libinterp/corefcn/txt-eng.h \
   libinterp/corefcn/utils.h \
   libinterp/corefcn/variables.h \
@@ -155,6 +157,7 @@ COREFCN_SRC = \
   libinterp/corefcn/file-io.cc \
   libinterp/corefcn/filter.cc \
   libinterp/corefcn/find.cc \
+  libinterp/corefcn/ft-text-renderer.cc \
   libinterp/corefcn/gammainc.cc \
   libinterp/corefcn/gcd.cc \
   libinterp/corefcn/getgrent.cc \
@@ -236,10 +239,10 @@ COREFCN_SRC = \
   libinterp/corefcn/syscalls.cc \
   libinterp/corefcn/sysdep.cc \
   libinterp/corefcn/time.cc \
+  libinterp/corefcn/text-renderer.cc \
   libinterp/corefcn/toplev.cc \
   libinterp/corefcn/tril.cc \
   libinterp/corefcn/tsearch.cc \
-  libinterp/corefcn/txt-eng-ft.cc \
   libinterp/corefcn/txt-eng.cc \
   libinterp/corefcn/typecast.cc \
   libinterp/corefcn/urlwrite.cc \

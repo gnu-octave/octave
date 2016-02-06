@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 John W. Eaton
 Copyright (C) 2009-2015 Michael Goffioul
 
 This file is part of Octave.
@@ -24,7 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
+#include "base-text-renderer.h"
+
 #if defined (HAVE_FREETYPE)
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #if defined (HAVE_FONTCONFIG)
 #  include <fontconfig/fontconfig.h>
@@ -40,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "pr-output.h"
-#include "txt-eng-ft.h"
+#include "text-renderer.h"
 
 // FIXME: maybe issue at most one warning per glyph/font/size/weight
 //        combination.
@@ -49,26 +55,28 @@ static void
 warn_missing_glyph (FT_ULong c)
 {
   warning_with_id ("Octave:missing-glyph",
-                   "ft_render: skipping missing glyph for character '%x'", c);
+                   "text_renderer: skipping missing glyph for character '%x'", c);
 }
 
 static void
 warn_glyph_render (FT_ULong c)
 {
   warning_with_id ("Octave:glyph-render",
-                   "ft_render: unable to render glyph for character '%x'", c);
+                   "text_renderer: unable to render glyph for character '%x'", c);
 }
 
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
+// FIXME: is this really needed?
+//
 // This is just a trick to avoid multiple symbol definitions.
 // PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
 // that will cause MSVC not to generate a new instantiation and
 // use the imported one instead.
-#include "PermMatrix.h"
+#  include "PermMatrix.h"
 #endif
 
 // Forward declaration
-static void ft_face_destroyed (void* object);
+static void ft_face_destroyed (void *object);
 
 class
 ft_manager
@@ -117,7 +125,7 @@ private:
 
   // Cache the fonts loaded by FreeType. This cache only contains
   // weak references to the fonts, strong references are only present
-  // in class ft_render.
+  // in class text_renderer.
   ft_cache cache;
 
 private:
@@ -165,7 +173,7 @@ private:
   {
     FT_Face retval = 0;
 
-#if HAVE_FT_REFERENCE_FACE
+#if defined (HAVE_FT_REFERENCE_FACE)
     // Look first into the font cache, then use fontconfig. If the font
     // is present in the cache, simply add a reference and return it.
 
@@ -244,7 +252,7 @@ private:
 
     if (file.empty ())
       {
-#ifdef __WIN32__
+#if defined (__WIN32__)
         file = "C:/WINDOWS/Fonts/verdana.ttf";
 #else
         // FIXME: find a "standard" font for UNIX platforms
@@ -255,7 +263,7 @@ private:
       {
         if (FT_New_Face (library, file.c_str (), 0, &retval))
           ::warning ("ft_manager: unable to load font: %s", file.c_str ());
-#if HAVE_FT_REFERENCE_FACE
+#if defined (HAVE_FT_REFERENCE_FACE)
         else
           {
             // Install a finalizer to notify ft_manager that the font is
@@ -279,7 +287,7 @@ private:
   {
     if (face->generic.data)
       {
-        ft_key* pkey = reinterpret_cast<ft_key*> (face->generic.data);
+        ft_key *pkey = reinterpret_cast<ft_key*> (face->generic.data);
 
         cache.erase (*pkey);
         delete pkey;
@@ -293,27 +301,201 @@ private:
   bool fontconfig_initialized;
 };
 
-ft_manager* ft_manager::instance = 0;
+ft_manager *ft_manager::instance = 0;
 
 static void
-ft_face_destroyed (void* object)
+ft_face_destroyed (void *object)
 { ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object)); }
 
 // ---------------------------------------------------------------------------
 
-ft_render::ft_render (void)
-  : text_processor (), font (), bbox (1, 4, 0.0), halign (0), xoffset (0),
-    line_yoffset (0), yoffset (0), mode (MODE_BBOX),
-    color (dim_vector (1, 3), 0)
+class
+OCTINTERP_API
+ft_text_renderer : public base_text_renderer
 {
-}
+public:
 
-ft_render::~ft_render (void)
-{
-}
+  enum
+  {
+    MODE_BBOX   = 0,
+    MODE_RENDER = 1
+  };
+
+  enum
+  {
+    ROTATION_0   = 0,
+    ROTATION_90  = 1,
+    ROTATION_180 = 2,
+    ROTATION_270 = 3
+  };
+
+public:
+
+  ft_text_renderer (void)
+    : base_text_renderer (), font (), bbox (1, 4, 0.0), halign (0),
+      xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
+      color (dim_vector (1, 3), 0)
+  { }
+
+  ~ft_text_renderer (void) { }
+
+  void visit (text_element_string& e);
+
+  void visit (text_element_list& e);
+
+  void visit (text_element_subscript& e);
+
+  void visit (text_element_superscript& e);
+
+  void visit (text_element_color& e);
+
+  void visit (text_element_fontsize& e);
+
+  void visit (text_element_fontname& e);
+
+  void visit (text_element_fontstyle& e);
+
+  void visit (text_element_symbol& e);
+
+  void visit (text_element_combined& e);
+
+  void reset (void);
+
+  uint8NDArray get_pixels (void) const { return pixels; }
+
+  Matrix get_boundingbox (void) const { return bbox; }
+
+  uint8NDArray render (text_element *elt, Matrix& box,
+                       int rotation = ROTATION_0);
+
+  Matrix get_extent (text_element *elt, double rotation = 0.0);
+  Matrix get_extent (const std::string& txt, double rotation,
+                     const caseless_str& interpreter);
+
+  void set_font (const std::string& name, const std::string& weight,
+                 const std::string& angle, double size);
+
+  void set_color (const Matrix& c);
+
+  void set_mode (int m);
+
+  void text_to_pixels (const std::string& txt,
+                       uint8NDArray& pxls, Matrix& bbox,
+                       int halign, int valign, double rotation,
+                       const caseless_str& interpreter,
+                       bool handle_rotation);
+
+private:
+
+  int rotation_to_mode (double rotation) const;
+
+  // No copying!
+
+  ft_text_renderer (const ft_text_renderer&);
+
+  ft_text_renderer& operator = (const ft_text_renderer&);
+
+  // Class to hold information about fonts and a strong
+  // reference to the font objects loaded by FreeType.
+
+  class ft_font : public text_renderer::font
+  {
+  public:
+
+    ft_font (void)
+      : text_renderer::font (), face (0) { }
+
+    ft_font (const std::string& nm, const std::string& wt,
+             const std::string& ang, double sz, FT_Face f = 0)
+      : text_renderer::font (nm, wt, ang, sz), face (f)
+    { }
+
+    ft_font (const ft_font& ft);
+
+    ~ft_font (void)
+    {
+      if (face)
+        FT_Done_Face (face);
+    }
+
+    ft_font& operator = (const ft_font& ft);
+
+    bool is_valid (void) const { return get_face (); }
+
+    FT_Face get_face (void) const;
+
+  private:
+
+    mutable FT_Face face;
+  };
+
+  void push_new_line (void);
+
+  void update_line_bbox (void);
+
+  void compute_bbox (void);
+
+  int compute_line_xoffset (const Matrix& lb) const;
+
+  FT_UInt process_character (FT_ULong code, FT_UInt previous = 0);
+
+public:
+
+  void text_to_strlist (const std::string& txt,
+                        std::list<text_renderer::string>& lst, Matrix& bbox,
+                        int halign, int valign, double rotation,
+                        const caseless_str& interp);
+
+private:
+
+  // The current font used by the renderer.
+  ft_font font;
+
+  // Used to stored the bounding box corresponding to the rendered text.
+  // The bounding box has the form [x, y, w, h] where x and y represent the
+  // coordinates of the bottom left corner relative to the anchor point of
+  // the text (== start of text on the baseline). Due to font descent or
+  // multiple lines, the value y is usually negative.
+  Matrix bbox;
+
+  // Used to stored the rendered text. It's a 3D matrix with size MxNx4
+  // where M and N are the width and height of the bounding box.
+  uint8NDArray pixels;
+
+  // Used to store the bounding box of each line. This is used to layout
+  // multiline text properly.
+  std::list<Matrix> line_bbox;
+
+  // The current horizontal alignment. This is used to align multi-line text.
+  int halign;
+
+  // The X offset for the next glyph.
+  int xoffset;
+
+  // The Y offset of the baseline for the current line.
+  int line_yoffset;
+
+  // The Y offset of the baseline for the next glyph. The offset is relative
+  // to line_yoffset. The total Y offset is computed with:
+  // line_yoffset + yoffset.
+  int yoffset;
+
+  // The current mode of the rendering process (box computing or rendering).
+  int mode;
+
+  // The base color of the rendered text.
+  uint8NDArray color;
+
+  // A list of parsed strings to be used for printing.
+  std::list<text_renderer::string> strlist;
+
+  // The X offset of the baseline for the current line.
+  int line_xoffset;
+
+};
 
 void
-ft_render::set_font (const std::string& name, const std::string& weight,
+ft_text_renderer::set_font (const std::string& name, const std::string& weight,
                      const std::string& angle, double size)
 {
   // FIXME: take "fontunits" into account
@@ -322,7 +504,7 @@ ft_render::set_font (const std::string& name, const std::string& weight,
 }
 
 void
-ft_render::push_new_line (void)
+ft_text_renderer::push_new_line (void)
 {
   switch (mode)
     {
@@ -369,7 +551,7 @@ ft_render::push_new_line (void)
 }
 
 int
-ft_render::compute_line_xoffset (const Matrix& lb) const
+ft_text_renderer::compute_line_xoffset (const Matrix& lb) const
 {
   if (! bbox.is_empty ())
     {
@@ -388,7 +570,7 @@ ft_render::compute_line_xoffset (const Matrix& lb) const
 }
 
 void
-ft_render::compute_bbox (void)
+ft_text_renderer::compute_bbox (void)
 {
   // Stack the various line bbox together and compute the final
   // bounding box for the entire text string.
@@ -399,9 +581,11 @@ ft_render::compute_bbox (void)
     {
     case 0:
       break;
+
     case 1:
       bbox = line_bbox.front ().extract (0, 0, 0, 3);
       break;
+
     default:
       for (std::list<Matrix>::const_iterator it = line_bbox.begin ();
            it != line_bbox.end (); ++it)
@@ -420,7 +604,7 @@ ft_render::compute_bbox (void)
 }
 
 void
-ft_render::update_line_bbox (void)
+ft_text_renderer::update_line_bbox (void)
 {
   // Called after a font change, when in MODE_BBOX mode, to update the
   // current line bbox with the new font metrics. This also includes the
@@ -456,7 +640,7 @@ ft_render::update_line_bbox (void)
 }
 
 void
-ft_render::set_mode (int m)
+ft_text_renderer::set_mode (int m)
 {
   mode = m;
 
@@ -468,10 +652,11 @@ ft_render::set_mode (int m)
       line_bbox.clear ();
       push_new_line ();
       break;
+
     case MODE_RENDER:
       if (bbox.numel () != 4)
         {
-          ::warning ("ft_render: invalid bounding box, cannot render");
+          ::warning ("ft_text_renderer: invalid bounding box, cannot render");
 
           xoffset = line_yoffset = yoffset = 0;
           pixels = uint8NDArray ();
@@ -485,14 +670,15 @@ ft_render::set_mode (int m)
           yoffset = 0;
         }
       break;
+
     default:
-      error ("ft_render: invalid mode '%d'", mode);
+      error ("ft_text_renderer: invalid mode '%d'", mode);
       break;
     }
 }
 
 FT_UInt
-ft_render::process_character (FT_ULong code, FT_UInt previous)
+ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
 {
   FT_Face face = font.get_face ();
   FT_UInt glyph_index = 0;
@@ -561,7 +747,7 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
                         if (x0+c < 0 || x0+c >= pixels.dim2 ()
                             || y0-r < 0 || y0-r >= pixels.dim3 ())
                           {
-                            //::warning ("ft_render: pixel out of bound (char=%d, (x,y)=(%d,%d), (w,h)=(%d,%d)",
+                            //::warning ("ft_text_renderer: pixel out of bound (char=%d, (x,y)=(%d,%d), (w,h)=(%d,%d)",
                             //           str[i], x0+c, y0-r, pixels.dim2 (), pixels.dim3 ());
                           }
                         else if (pixels(3, x0+c, y0-r).value () == 0)
@@ -622,7 +808,23 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
 }
 
 void
-ft_render::visit (text_element_string& e)
+ft_text_renderer::text_to_strlist (const std::string& txt,
+                                   std::list<text_renderer::string>& lst,
+                                   Matrix& box,
+                                   int ha, int va, double rot,
+                                   const caseless_str& interp)
+{
+  uint8NDArray pxls;
+
+  // First run text_to_pixels which will also build the string list
+
+  text_to_pixels (txt, pxls, box, ha, va, rot, interp, false);
+
+  lst = strlist;
+}
+
+void
+ft_text_renderer::visit (text_element_string& e)
 {
   if (font.is_valid ())
     {
@@ -636,8 +838,7 @@ ft_render::visit (text_element_string& e)
       memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
       wchar_t wc;
 
-      ft_string fs (str, font.get_angle (), font.get_weight (),
-                    font.get_name (), font.get_size (), xoffset, yoffset);
+      text_renderer::string fs (str, font, xoffset, yoffset);
 
       while (n > 0)
         {
@@ -671,9 +872,8 @@ ft_render::visit (text_element_string& e)
                   previous = 0;
                   // Start a new string in strlist
                   idx = curr;
-                  fs = ft_string (str.substr (idx), font.get_angle (),
-                                  font.get_weight (), font.get_name (),
-                                  font.get_size (), line_xoffset, yoffset);
+                  fs = text_renderer::string (str.substr (idx), font,
+                                             line_xoffset, yoffset);
 
                 }
               else
@@ -682,12 +882,13 @@ ft_render::visit (text_element_string& e)
           else
             {
               if (r != 0)
-                ::warning ("ft_render: failed to decode string `%s' with "
+                ::warning ("ft_text_renderer: failed to decode string `%s' with "
                            "locale `%s'", str.c_str (),
                            std::setlocale (LC_CTYPE, 0));
               break;
             }
         }
+
       if (! fs.get_string ().empty ())
         {
           fs.set_y (line_yoffset + yoffset);
@@ -698,7 +899,7 @@ ft_render::visit (text_element_string& e)
 }
 
 void
-ft_render::visit (text_element_list& e)
+ft_text_renderer::visit (text_element_list& e)
 {
   // Save and restore (after processing the list) the current font and color.
 
@@ -712,7 +913,7 @@ ft_render::visit (text_element_list& e)
 }
 
 void
-ft_render::visit (text_element_subscript& e)
+ft_text_renderer::visit (text_element_subscript& e)
 {
   ft_font saved_font (font);
   int saved_line_yoffset = line_yoffset;
@@ -743,7 +944,7 @@ ft_render::visit (text_element_subscript& e)
 }
 
 void
-ft_render::visit (text_element_superscript& e)
+ft_text_renderer::visit (text_element_superscript& e)
 {
   ft_font saved_font (font);
   int saved_line_yoffset = line_yoffset;
@@ -774,14 +975,14 @@ ft_render::visit (text_element_superscript& e)
 }
 
 void
-ft_render::visit (text_element_color& e)
+ft_text_renderer::visit (text_element_color& e)
 {
   if (mode == MODE_RENDER)
     set_color (e.get_color ());
 }
 
 void
-ft_render::visit (text_element_fontsize& e)
+ft_text_renderer::visit (text_element_fontsize& e)
 {
   double sz = e.get_fontsize ();
 
@@ -795,7 +996,7 @@ ft_render::visit (text_element_fontsize& e)
 }
 
 void
-ft_render::visit (text_element_fontname& e)
+ft_text_renderer::visit (text_element_fontname& e)
 {
   set_font (e.get_fontname (), font.get_weight (), font.get_angle (),
             font.get_size ());
@@ -805,19 +1006,22 @@ ft_render::visit (text_element_fontname& e)
 }
 
 void
-ft_render::visit (text_element_fontstyle& e)
+ft_text_renderer::visit (text_element_fontstyle& e)
 {
   switch (e.get_fontstyle ())
     {
     case text_element_fontstyle::normal:
       set_font (font.get_name (), "normal", "normal", font.get_size ());
       break;
+
     case text_element_fontstyle::bold:
       set_font (font.get_name (), "bold", "normal", font.get_size ());
       break;
+
     case text_element_fontstyle::italic:
       set_font (font.get_name (), "normal", "italic", font.get_size ());
       break;
+
     case text_element_fontstyle::oblique:
       set_font (font.get_name (), "normal", "oblique", font.get_size ());
       break;
@@ -828,12 +1032,11 @@ ft_render::visit (text_element_fontstyle& e)
 }
 
 void
-ft_render::visit (text_element_symbol& e)
+ft_text_renderer::visit (text_element_symbol& e)
 {
   uint32_t code = e.get_symbol_code ();
 
-  ft_string fs (std::string ("-"), font.get_angle (), font.get_weight (),
-                font.get_name (), font.get_size (), xoffset, yoffset);
+  text_renderer::string fs (std::string ("-"), font, xoffset, yoffset);
 
   if (code != text_element_symbol::invalid_code && font.is_valid ())
     {
@@ -852,7 +1055,7 @@ ft_render::visit (text_element_symbol& e)
 }
 
 void
-ft_render::visit (text_element_combined& e)
+ft_text_renderer::visit (text_element_combined& e)
 {
   int saved_xoffset = xoffset;
   int max_xoffset = xoffset;
@@ -868,14 +1071,14 @@ ft_render::visit (text_element_combined& e)
 }
 
 void
-ft_render::reset (void)
+ft_text_renderer::reset (void)
 {
   set_mode (MODE_BBOX);
   set_color (Matrix (1, 3, 0.0));
 }
 
 void
-ft_render::set_color (Matrix c)
+ft_text_renderer::set_color (const Matrix& c)
 {
   if (c.numel () == 3)
     {
@@ -884,11 +1087,11 @@ ft_render::set_color (Matrix c)
       color(2) = static_cast<uint8_t> (c(2)*255);
     }
   else
-    ::warning ("ft_render::set_color: invalid color");
+    ::warning ("ft_text_renderer::set_color: invalid color");
 }
 
 uint8NDArray
-ft_render::render (text_element* elt, Matrix& box, int rotation)
+ft_text_renderer::render (text_element *elt, Matrix& box, int rotation)
 {
   set_mode (MODE_BBOX);
   elt->accept (*this);
@@ -907,6 +1110,7 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
         {
         case ROTATION_0:
           break;
+
         case ROTATION_90:
           {
             Array<octave_idx_type> perm (dim_vector (3, 1));
@@ -922,6 +1126,7 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
             pixels = uint8NDArray (pixels.index (idx));
           }
           break;
+
         case ROTATION_180:
           {
             Array<idx_vector> idx (dim_vector (3, 1));
@@ -931,6 +1136,7 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
             pixels = uint8NDArray (pixels.index (idx));
           }
           break;
+
         case ROTATION_270:
           {
             Array<octave_idx_type> perm (dim_vector (3, 1));
@@ -958,7 +1164,7 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
 // Calling routines, such as ylabel, may need to account for this mismatch.
 
 Matrix
-ft_render::get_extent (text_element *elt, double rotation)
+ft_text_renderer::get_extent (text_element *elt, double rotation)
 {
   set_mode (MODE_BBOX);
   elt->accept (*this);
@@ -973,6 +1179,7 @@ ft_render::get_extent (text_element *elt, double rotation)
       extent(0) = bbox(2);
       extent(1) = bbox(3);
       break;
+
     case ROTATION_90:
     case ROTATION_270:
       extent(0) = bbox(3);
@@ -983,8 +1190,8 @@ ft_render::get_extent (text_element *elt, double rotation)
 }
 
 Matrix
-ft_render::get_extent (const std::string& txt, double rotation,
-                       const caseless_str& interpreter)
+ft_text_renderer::get_extent (const std::string& txt, double rotation,
+                              const caseless_str& interpreter)
 {
   text_element *elt = text_parser::parse (txt, interpreter);
   Matrix extent = get_extent (elt, rotation);
@@ -994,7 +1201,7 @@ ft_render::get_extent (const std::string& txt, double rotation,
 }
 
 int
-ft_render::rotation_to_mode (double rotation) const
+ft_text_renderer::rotation_to_mode (double rotation) const
 {
   // Clip rotation to range [0, 360]
   while (rotation < 0)
@@ -1015,63 +1222,88 @@ ft_render::rotation_to_mode (double rotation) const
 }
 
 void
-ft_render::text_to_pixels (const std::string& txt,
-                           uint8NDArray& pixels_, Matrix& box,
-                           int _halign, int valign, double rotation,
-                           const caseless_str& interpreter,
-                           bool handle_rotation)
+ft_text_renderer::text_to_pixels (const std::string& txt,
+                                  uint8NDArray& pxls, Matrix& box,
+                                  int _halign, int valign, double rotation,
+                                  const caseless_str& interpreter,
+                                  bool handle_rotation)
 {
   int rot_mode = rotation_to_mode (rotation);
 
   halign = _halign;
 
   text_element *elt = text_parser::parse (txt, interpreter);
-  pixels_ = render (elt, box, rot_mode);
+  pxls = render (elt, box, rot_mode);
   delete elt;
 
-  if (pixels_.is_empty ())
+  if (pxls.is_empty ())
     return;  // nothing to render
 
   switch (halign)
     {
-    default: box(0) = 0; break;
-    case 1: box(0) = -box(2)/2; break;
-    case 2: box(0) = -box(2); break;
+    case 1:
+      box(0) = -box(2)/2;
+      break;
+
+    case 2:
+      box(0) = -box(2);
+      break;
+
+    default:
+      box(0) = 0;
+      break;
     }
+
   switch (valign)
     {
-    default: box(1) = 0; break;
-    case 1: box(1) = -box(3)/2; break;
-    case 2: box(1) = -box(3); break;
-    case 3: break;
-    case 4: box(1) = -box(3)-box(1); break;
+    case 1:
+      box(1) = -box(3)/2;
+      break;
+
+    case 2:
+      box(1) = -box(3);
+      break;
+
+    case 3:
+      break;
+
+    case 4:
+      box(1) = -box(3)-box(1);
+      break;
+
+    default:
+      box(1) = 0;
+      break;
     }
 
   if (handle_rotation)
-    switch (rot_mode)
-      {
-      case ROTATION_90:
-        std::swap (box(0), box(1));
-        std::swap (box(2), box(3));
-        box(0) = -box(0)-box(2);
-        break;
-      case ROTATION_180:
-        box(0) = -box(0)-box(2);
-        box(1) = -box(1)-box(3);
-        break;
-      case ROTATION_270:
-        std::swap (box(0), box(1));
-        std::swap (box(2), box(3));
-        box(1) = -box(1)-box(3);
-        break;
-      }
+    {
+      switch (rot_mode)
+        {
+        case ROTATION_90:
+          std::swap (box(0), box(1));
+          std::swap (box(2), box(3));
+          box(0) = -box(0)-box(2);
+          break;
+
+        case ROTATION_180:
+          box(0) = -box(0)-box(2);
+          box(1) = -box(1)-box(3);
+          break;
+
+        case ROTATION_270:
+          std::swap (box(0), box(1));
+          std::swap (box(2), box(3));
+          box(1) = -box(1)-box(3);
+          break;
+        }
+    }
 }
 
-ft_render::ft_font::ft_font (const ft_font& ft)
-  : name (ft.name), weight (ft.weight), angle (ft.angle), size (ft.size),
-    face (0)
+ft_text_renderer::ft_font::ft_font (const ft_font& ft)
+  : text_renderer::font (ft), face (0)
 {
-#if HAVE_FT_REFERENCE_FACE
+#if defined (HAVE_FT_REFERENCE_FACE)
   FT_Face ft_face = ft.get_face ();
 
   if (ft_face && FT_Reference_Face (ft_face) == 0)
@@ -1079,22 +1311,20 @@ ft_render::ft_font::ft_font (const ft_font& ft)
 #endif
 }
 
-ft_render::ft_font&
-ft_render::ft_font::operator = (const ft_font& ft)
+ft_text_renderer::ft_font&
+ft_text_renderer::ft_font::operator = (const ft_font& ft)
 {
   if (&ft != this)
     {
-      name = ft.name;
-      weight = ft.weight;
-      angle = ft.angle;
-      size = ft.size;
+      text_renderer::font::operator = (ft);
+
       if (face)
         {
           FT_Done_Face (face);
           face = 0;
         }
 
-#if HAVE_FT_REFERENCE_FACE
+#if defined (HAVE_FT_REFERENCE_FACE)
       FT_Face ft_face = ft.get_face ();
 
       if (ft_face && FT_Reference_Face (ft_face) == 0)
@@ -1106,7 +1336,7 @@ ft_render::ft_font::operator = (const ft_font& ft)
 }
 
 FT_Face
-ft_render::ft_font::get_face (void) const
+ft_text_renderer::ft_font::get_face (void) const
 {
   if (! face && ! name.empty ())
     {
@@ -1115,13 +1345,23 @@ ft_render::ft_font::get_face (void) const
       if (face)
         {
           if (FT_Set_Char_Size (face, 0, size*64, 0, 0))
-            ::warning ("ft_render: unable to set font size to %g", size);
+            ::warning ("ft_text_renderer: unable to set font size to %g", size);
         }
       else
-        ::warning ("ft_render: unable to load appropriate font");
+        ::warning ("ft_text_renderer: unable to load appropriate font");
     }
 
   return face;
 }
 
 #endif
+
+base_text_renderer *
+make_ft_text_renderer (void)
+{
+#if defined (HAVE_FREETYPE)
+  return new ft_text_renderer ();
+#else
+  return 0;
+#endif
+}

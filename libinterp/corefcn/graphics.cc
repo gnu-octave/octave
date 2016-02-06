@@ -54,8 +54,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"
+#include "text-renderer.h"
 #include "toplev.h"
-#include "txt-eng-ft.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "octave-default-image.h"
@@ -6167,14 +6167,10 @@ axes::properties::update_aspectratios (void)
 void
 axes::properties::update_font (void)
 {
-#ifdef HAVE_FREETYPE
-#  ifdef HAVE_FONTCONFIG
-  text_renderer.set_font (get ("fontname").string_value (),
-                          get ("fontweight").string_value (),
-                          get ("fontangle").string_value (),
-                          get ("fontsize_points").double_value ());
-#endif
-#endif
+  txt_renderer.set_font (get ("fontname").string_value (),
+                         get ("fontweight").string_value (),
+                         get ("fontangle").string_value (),
+                         get ("fontsize_points").double_value ());
 }
 
 // The INTERNAL flag defines whether position or outerposition is used.
@@ -6975,18 +6971,24 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
           std::string label (ticklabels(i));
           label.erase (0, label.find_first_not_of (" "));
           label = label.substr (0, label.find_last_not_of (" ")+1);
-#ifdef HAVE_FREETYPE
-          ext = text_renderer.get_extent (label, 0.0,
-                                          get_ticklabelinterpreter ());
-          wmax = std::max (wmax, ext(0));
-          hmax = std::max (hmax, ext(1));
-#else
-          // FIXME: find a better approximation
-          double fsize = get ("fontsize").double_value ();
-          int len = label.length ();
-          wmax = std::max (wmax, 0.5*fsize*len);
-          hmax = fsize;
-#endif
+
+          if (txt_renderer.ok ())
+            {
+              ext = txt_renderer.get_extent (label, 0.0,
+                                             get_ticklabelinterpreter ());
+
+              wmax = std::max (wmax, ext(0));
+              hmax = std::max (hmax, ext(1));
+            }
+          else
+            {
+              // FIXME: find a better approximation
+              double fsize = get ("fontsize").double_value ();
+              int len = label.length ();
+
+              wmax = std::max (wmax, 0.5*fsize*len);
+              hmax = fsize;
+            }
         }
     }
 
@@ -7940,22 +7942,17 @@ text::properties::update_fontunits (const caseless_str& old_units)
 void
 text::properties::update_font (void)
 {
-#ifdef HAVE_FREETYPE
-#  ifdef HAVE_FONTCONFIG
-  renderer.set_font (get ("fontname").string_value (),
-                     get ("fontweight").string_value (),
-                     get ("fontangle").string_value (),
-                     get ("fontsize_points").double_value ());
-#endif
-  renderer.set_color (get_color_rgb ());
-#endif
+  txt_renderer.set_font (get ("fontname").string_value (),
+                         get ("fontweight").string_value (),
+                         get ("fontangle").string_value (),
+                         get ("fontsize_points").double_value ());
+
+  txt_renderer.set_color (get_color_rgb ());
 }
 
 void
 text::properties::update_text_extent (void)
 {
-#ifdef HAVE_FREETYPE
-
   int halign = 0;
   int valign = 0;
 
@@ -7981,16 +7978,14 @@ text::properties::update_text_extent (void)
 
   string_vector sv = string_prop.string_vector_value ();
 
-  renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
-                           halign, valign, get_rotation (),
-                           get_interpreter ());
+  txt_renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
+                               halign, valign, get_rotation (),
+                               get_interpreter ());
   // The bbox is relative to the text's position.  We'll leave it that
   // way, because get_position does not return valid results when the
   // text is first constructed.  Conversion to proper coordinates is
   // performed in get_extent.
   set_extent (bbox);
-
-#endif
 
   if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel")
       || autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
@@ -8673,23 +8668,20 @@ uicontrol::properties::get_extent (void) const
 void
 uicontrol::properties::update_text_extent (void)
 {
-#ifdef HAVE_FREETYPE
-
   text_element *elt;
-  ft_render text_renderer;
+  text_renderer txt_renderer;
   Matrix box;
 
   // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
 
   elt = text_parser::parse (get_string_string (), "none");
-#ifdef HAVE_FONTCONFIG
-  text_renderer.set_font (get_fontname (),
-                          get_fontweight (),
-                          get_fontangle (),
-                          get_fontsize ());
-#endif
-  box = text_renderer.get_extent (elt, 0);
+
+  txt_renderer.set_font (get_fontname (), get_fontweight (),
+                         get_fontangle (), get_fontsize ());
+
+  box = txt_renderer.get_extent (elt, 0);
+
   delete elt;
 
   Matrix ext (1, 4);
@@ -8701,8 +8693,6 @@ uicontrol::properties::update_text_extent (void)
   ext(3) = box(1);
 
   set_extent (ext);
-
-#endif
 }
 
 void

@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "oct-refcount.h"
 #include "ov.h"
-#include "txt-eng-ft.h"
+#include "text-renderer.h"
 
 // FIXME: maybe this should be a configure option?
 // Matlab defaults to "Helvetica", but that causes problems for many
@@ -3792,10 +3792,8 @@ public:
     bool x2Dtop, y2Dright, layer2Dtop, is2D;
     bool xySym, xyzSym, zSign, nearhoriz;
 
-#if HAVE_FREETYPE
-    // FreeType renderer, used for calculation of text (tick labels) size
-    ft_render text_renderer;
-#endif
+    // Text renderer, used for calculation of text (tick labels) size
+    text_renderer txt_renderer;
 
     void set_text_child (handle_property& h, const std::string& who,
                          const octave_value& v);
@@ -4511,10 +4509,9 @@ public:
     Matrix get_data_position (void) const;
     Matrix get_extent_matrix (void) const;
     const uint8NDArray& get_pixels (void) const { return pixels; }
-#if HAVE_FREETYPE
-    // FreeType renderer, used for calculation of text size
-    ft_render renderer;
-#endif
+
+    // Text renderer, used for calculation of text size
+    text_renderer txt_renderer;
 
   protected:
     void init (void)

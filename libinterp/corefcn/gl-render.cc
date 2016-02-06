@@ -40,8 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "gl-render.h"
 #include "oct-opengl.h"
-#include "txt-eng.h"
-#include "txt-eng-ft.h"
+#include "text-renderer.h"
 
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
@@ -2897,20 +2896,17 @@ void
 opengl_renderer::set_color (const Matrix& c)
 {
   glColor3dv (c.data ());
-#if HAVE_FREETYPE
-  text_renderer.set_color (c);
-#endif
+
+  txt_renderer.set_color (c);
 }
 
 void
 opengl_renderer::set_font (const base_properties& props)
 {
-#if HAVE_FREETYPE
-  text_renderer.set_font (props.get ("fontname").string_value (),
-                          props.get ("fontweight").string_value (),
-                          props.get ("fontangle").string_value (),
-                          props.get ("fontsize_points").double_value ());
-#endif
+  txt_renderer.set_font (props.get ("fontname").string_value (),
+                         props.get ("fontweight").string_value (),
+                         props.get ("fontangle").string_value (),
+                         props.get ("fontsize_points").double_value ());
 }
 
 void
@@ -3238,22 +3234,18 @@ opengl_renderer::text_to_pixels (const std::string& txt,
                                  Matrix& bbox,
                                  int halign, int valign, double rotation)
 {
-#if HAVE_FREETYPE
-  text_renderer.text_to_pixels (txt, pixels, bbox,
-                                halign, valign, rotation, interpreter);
-#endif
+  txt_renderer.text_to_pixels (txt, pixels, bbox, halign, valign,
+                               rotation, interpreter);
 }
 
 void
 opengl_renderer::text_to_strlist (const std::string& txt,
-                                  std::list<ft_render::ft_string>& lst,
+                                  std::list<text_renderer::string>& lst,
                                   Matrix& bbox,
                                   int halign, int valign, double rotation)
 {
-#if HAVE_FREETYPE
-  text_renderer.text_to_strlist (txt, lst, bbox,
-                                 halign, valign, rotation, interpreter);
-#endif
+  txt_renderer.text_to_strlist (txt, lst, bbox, halign, valign,
+                                rotation, interpreter);
 }
 
 Matrix
@@ -3261,32 +3253,31 @@ opengl_renderer::render_text (const std::string& txt,
                               double x, double y, double z,
                               int halign, int valign, double rotation)
 {
-#if HAVE_FREETYPE
+  Matrix bbox (1, 4, 0.0);
+
   if (txt.empty ())
-    return Matrix (1, 4, 0.0);
+    return bbox;
 
-  uint8NDArray pixels;
-  Matrix bbox;
-  text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
+  if (txt_renderer.ok ())
+    {
+      uint8NDArray pixels;
+      text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
 
-  bool blend = glIsEnabled (GL_BLEND);
+      bool blend = glIsEnabled (GL_BLEND);
 
-  glEnable (GL_BLEND);
-  glEnable (GL_ALPHA_TEST);
-  glRasterPos3d (x, y, z);
-  glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
-  glDrawPixels (bbox(2), bbox(3),
-                GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
-  glDisable (GL_ALPHA_TEST);
-  if (! blend)
-    glDisable (GL_BLEND);
+      glEnable (GL_BLEND);
+      glEnable (GL_ALPHA_TEST);
+      glRasterPos3d (x, y, z);
+      glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
+      glDrawPixels (bbox(2), bbox(3),
+                    GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
+      glDisable (GL_ALPHA_TEST);
+
+      if (! blend)
+        glDisable (GL_BLEND);
+    }
 
   return bbox;
-#else
-  warn_disabled_feature ("opengl_renderer::render_text",
-                         "rendering text (FreeType)");
-  return Matrix (1, 4, 0.0);
-#endif
 }
 
 #endif

@@ -187,19 +187,15 @@ opengl_selector::render_text (const std::string& txt,
                               double x, double y, double z,
                               int halign, int valign, double rotation)
 {
-#if HAVE_FREETYPE
   uint8NDArray pixels;
-  Matrix bbox;
+  Matrix bbox (1, 4, 0.0);
 
   // FIXME: probably more efficient to only compute bbox instead
   //        of doing full text rendering...
   text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
-  fake_text (x, y, z, bbox, false);
+  fake_text(x, y, z, bbox, false);
 
   return bbox;
-#else
-  return Matrix (1, 4, 0.0);
-#endif
 }
 
 void

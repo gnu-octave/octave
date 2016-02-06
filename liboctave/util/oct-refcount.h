@@ -24,28 +24,28 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_oct_refcount_h 1
 
 #ifndef OCTAVE_CONFIG_INCLUDED
-# error "The file <octave/config.h> must be included before oct-refcount.h."
+#  error "The file <octave/config.h> must be included before oct-refcount.h."
 #endif
 
 #if defined (ENABLE_ATOMIC_REFCOUNT) && (defined (_MSC_VER) || defined (__GNUC__))
-# if defined (_MSC_VER)
-#  include <intrin.h>
-#  define OCTREFCOUNT_ATOMIC_INCREMENT(x) _InterlockedIncrement((long*)x)
-#  define OCTREFCOUNT_ATOMIC_DECREMENT(x) _InterlockedDecrement((long*)x)
-#  define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) _InterlockedExchangeAdd((long*)x,  1)
-#  define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) _InterlockedExchangeAdd((long*)x, -1)
-# elif defined (__GNUC__)
-#  define OCTREFCOUNT_ATOMIC_INCREMENT(x) __sync_add_and_fetch(x,  1)
-#  define OCTREFCOUNT_ATOMIC_DECREMENT(x) __sync_add_and_fetch(x, -1)
-#  define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) __sync_fetch_and_add(x,  1)
-#  define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) __sync_fetch_and_add(x, -1)
-# endif
+#  if defined (_MSC_VER)
+#    include <intrin.h>
+#    define OCTREFCOUNT_ATOMIC_INCREMENT(x) _InterlockedIncrement((long*)x)
+#    define OCTREFCOUNT_ATOMIC_DECREMENT(x) _InterlockedDecrement((long*)x)
+#    define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) _InterlockedExchangeAdd((long*)x,  1)
+#    define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) _InterlockedExchangeAdd((long*)x, -1)
+#  elif defined (__GNUC__)
+#    define OCTREFCOUNT_ATOMIC_INCREMENT(x) __sync_add_and_fetch(x,  1)
+#    define OCTREFCOUNT_ATOMIC_DECREMENT(x) __sync_add_and_fetch(x, -1)
+#    define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) __sync_fetch_and_add(x,  1)
+#    define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) __sync_fetch_and_add(x, -1)
+#  endif
 #else
 // Generic non-locking versions
-# define OCTREFCOUNT_ATOMIC_INCREMENT(x) ++(*(x))
-# define OCTREFCOUNT_ATOMIC_DECREMENT(x) --(*(x))
-# define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) (*(x))++
-# define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) (*(x))--
+#  define OCTREFCOUNT_ATOMIC_INCREMENT(x) ++(*(x))
+#  define OCTREFCOUNT_ATOMIC_DECREMENT(x) --(*(x))
+#  define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) (*(x))++
+#  define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) (*(x))--
 #endif
 
 // Encapsulates a reference counter.

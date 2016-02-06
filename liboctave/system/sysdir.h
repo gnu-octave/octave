@@ -31,20 +31,20 @@ along with Octave; see the file COPYING.  If not, see
 #include <unistd.h>
 
 #if defined (HAVE_DIRENT_H) || defined (_POSIX_VERSION)
-#include <dirent.h>
-#define NLENGTH(dirent) (strlen((dirent)->d_name))
+#  include <dirent.h>
+#  define NLENGTH(dirent) (strlen((dirent)->d_name))
 #else
-#define dirent direct
-#define NLENGTH(dirent) ((dirent)->d_namlen)
-#if defined (HAVE_SYS_NDIR_H)
-#include <sys/ndir.h>
-#endif
-#if defined (HAVE_SYS_DIR_H)
-#include <sys/dir.h>
-#endif
-#if defined (HAVE_NDIR_H)
-#include <ndir.h>
-#endif
+#  define dirent direct
+#  define NLENGTH(dirent) ((dirent)->d_namlen)
+#  if defined (HAVE_SYS_NDIR_H)
+#    include <sys/ndir.h>
+#  endif
+#  if defined (HAVE_SYS_DIR_H)
+#    include <sys/dir.h>
+#  endif
+#  if defined (HAVE_NDIR_H)
+#    include <ndir.h>
+#  endif
 #endif
 
 #endif

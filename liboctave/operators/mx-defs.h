@@ -109,7 +109,7 @@ class FloatComplexQRP;
 #include "oct-cmplx.h"
 
 #ifndef MAPPER_FCN_TYPEDEFS
-#define MAPPER_FCN_TYPEDEFS 1
+#  define MAPPER_FCN_TYPEDEFS 1
 
 typedef bool (*b_d_Mapper)(double);
 typedef bool (*b_c_Mapper)(const Complex&);
@@ -138,7 +138,6 @@ get_blas_char (blas_trans_type transt)
   return static_cast<char> (transt);
 }
 
-
-#endif
+#  endif
 
 #endif

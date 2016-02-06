@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef __cplusplus
-#include <new>
+#  include <new>
 extern "C" {
 #endif
 

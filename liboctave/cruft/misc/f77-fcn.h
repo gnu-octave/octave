@@ -166,9 +166,9 @@ not returning a value from a function declared to return something.
    tagged with a "noreturn" attribute.  */
 #define F77_RETURN(retval) return retval;
 #if defined (HAVE_ATTR_NORETURN)
-#define F77_NORETURN(retval)
+#  define F77_NORETURN(retval)
 #else
-#define F77_NORETURN(retval) return retval;
+#  define F77_NORETURN(retval) return retval;
 #endif
 
 /* FIXME: These should work for SV1 or Y-MP systems but will
@@ -189,9 +189,9 @@ typedef union
 typedef void *octave_cray_ftn_ch_dsc;
 
 #ifdef __cplusplus
-#define OCTAVE_F77_FCN_INLINE inline
+#  define OCTAVE_F77_FCN_INLINE inline
 #else
-#define OCTAVE_F77_FCN_INLINE
+#  define OCTAVE_F77_FCN_INLINE
 #endif
 
 static OCTAVE_F77_FCN_INLINE octave_cray_ftn_ch_dsc
@@ -213,7 +213,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 }
 
 #ifdef __cplusplus
-#undef OCTAVE_F77_FCN_INLINE
+#  undef OCTAVE_F77_FCN_INLINE
 #endif
 
 #elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
@@ -264,9 +264,9 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #define F77_RETURN(retval) return retval;
 #if defined (HAVE_ATTR_NORETURN)
-#define F77_NORETURN(retval)
+#  define F77_NORETURN(retval)
 #else
-#define F77_NORETURN(retval) return retval;
+#  define F77_NORETURN(retval) return retval;
 #endif
 
 #endif

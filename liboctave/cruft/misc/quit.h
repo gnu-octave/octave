@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <setjmp.h>
 
 #ifdef __cplusplus
-#include <new>
-#include <string>
+#  include <new>
+#  include <string>
 extern "C" {
 #endif
 

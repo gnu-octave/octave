@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: jwe
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <fstream>
@@ -40,9 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "url-transfer.h"
 
 #ifdef HAVE_CURL
-#include <curl/curl.h>
-#include <curl/curlver.h>
-#include <curl/easy.h>
+#  include <curl/curl.h>
+#  include <curl/curlver.h>
+#  include <curl/easy.h>
 #endif
 
 void
@@ -770,9 +770,9 @@ private:
 #endif
 
 #if defined (HAVE_CURL)
-# define REP_CLASS curl_transfer
+#  define REP_CLASS curl_transfer
 #else
-# define REP_CLASS base_url_transfer
+#  define REP_CLASS base_url_transfer
 #endif
 
 url_transfer::url_transfer (void) : rep (new REP_CLASS ())

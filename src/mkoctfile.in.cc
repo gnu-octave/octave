@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <string>
@@ -42,25 +42,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 
 #if defined HAVE_SYS_WAIT_H
-#include <sys/wait.h>
+#  include <sys/wait.h>
 #endif
 
 #ifndef WIFEXITED
-#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#  define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
 #endif
 
 #ifndef WEXITSTATUS
-#define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
+#  define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
 #endif
 
 static std::map<std::string, std::string> vars;
 
 #ifndef OCTAVE_VERSION
-#define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
+#  define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
 #endif
 
 #ifndef OCTAVE_PREFIX
-#define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
+#  define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
 #endif
 
 #include "shared-fcns.h"

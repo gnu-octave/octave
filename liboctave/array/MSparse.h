@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_MSparse_h 1
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <functional>

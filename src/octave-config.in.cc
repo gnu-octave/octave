@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <string>
@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #ifndef OCTAVE_PREFIX
-#define OCTAVE_PREFIX %OCTAVE_PREFIX%
+#  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 
 #include "shared-fcns.h"

@@ -25,10 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 /* A macro to make using OpenMP easier, and easier to disable */
 #ifdef HAVE_OPENMP
-#include <omp.h>
-#define OCTAVE_OMP_PRAGMA(x) _Pragma (#x)
+#  include <omp.h>
+#  define OCTAVE_OMP_PRAGMA(x) _Pragma (#x)
 #else
-#define OCTAVE_OMP_PRAGMA(x)
+#  define OCTAVE_OMP_PRAGMA(x)
 #endif
 
 #endif

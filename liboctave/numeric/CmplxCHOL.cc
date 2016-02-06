@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <vector>
@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-norm.h"
 #ifndef HAVE_QRUPDATE
-#include "dbleQR.h"
+#  include "dbleQR.h"
 #endif
 
 extern "C"

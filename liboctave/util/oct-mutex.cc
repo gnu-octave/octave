@@ -21,16 +21,16 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "oct-mutex.h"
 #include "lo-error.h"
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-#include <windows.h>
+#  include <windows.h>
 #elif defined (HAVE_PTHREAD_H)
-#include <pthread.h>
+#  include <pthread.h>
 #endif
 
 void

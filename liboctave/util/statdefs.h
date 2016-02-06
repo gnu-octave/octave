@@ -26,13 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 
 #ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
+#  include <sys/stat.h>
 #endif
 
 #ifndef S_ISREG
-#ifndef mode_t
-#define mode_t unsigned short
-#endif
+#  ifndef mode_t
+#    define mode_t unsigned short
+#  endif
 #endif
 #if ! defined (S_ISBLK) && defined (S_IFBLK)
 #define S_ISBLK(m) (((m) & S_IFMT) == S_IFBLK)
@@ -64,7 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #ifndef S_ISLNK
-#undef HAVE_LSTAT
+#  undef HAVE_LSTAT
 #endif
 
 #endif

@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 // liboctave or libinterp.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cstdlib>
@@ -43,19 +43,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <unistd.h>
 
 #ifndef OCTAVE_VERSION
-#define OCTAVE_VERSION %OCTAVE_VERSION%
+#  define OCTAVE_VERSION %OCTAVE_VERSION%
 #endif
 
 #ifndef OCTAVE_ARCHLIBDIR
-#define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
+#  define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
 #endif
 
 #ifndef OCTAVE_BINDIR
-#define OCTAVE_BINDIR %OCTAVE_BINDIR%
+#  define OCTAVE_BINDIR %OCTAVE_BINDIR%
 #endif
 
 #ifndef OCTAVE_PREFIX
-#define OCTAVE_PREFIX %OCTAVE_PREFIX%
+#  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 
 #include "display-available.h"

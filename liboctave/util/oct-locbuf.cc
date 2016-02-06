@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <iostream>
@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: Maybe we should querying for available physical memory?
 
 #ifndef OCTAVE_LOCBUF_CHUNKSIZE_MB
-#define OCTAVE_LOCBUF_CHUNKSIZE_MB 32
+#  define OCTAVE_LOCBUF_CHUNKSIZE_MB 32
 #endif
 
 // Each chunk will be at least this big.

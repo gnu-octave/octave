@@ -22,36 +22,36 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <map>
 
 #if defined (HAVE_SHL_LOAD_API)
-#include <cerrno>
-#include <cstring>
+#  include <cerrno>
+#  include <cstring>
 #endif
 
 #if defined (HAVE_DYLD_API)
-#include <mach-o/dyld.h>
+#  include <mach-o/dyld.h>
 #endif
 
 extern "C"
 {
 #if defined (HAVE_DLOPEN_API)
-#if defined (HAVE_DLFCN_H)
-#include <dlfcn.h>
-#else
+#  if defined (HAVE_DLFCN_H)
+#    include <dlfcn.h>
+#  else
 extern void *dlopen (const char *, int);
 extern const char *dlerror (void);
 extern void *dlsym (void *, const char *);
 extern int dlclose (void *);
-#endif
+#  endif
 #elif defined (HAVE_SHL_LOAD_API)
-#include <dl.h>
+#  include <dl.h>
 #elif defined (HAVE_LOADLIBRARY_API)
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
 #endif
 }
 
@@ -191,15 +191,15 @@ octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
   // By using this option, dlopen will detect errors and Octave
   // won't exit if there are unresolved symbols in the file we are
   // loading, and we may even get a useful diagnostic.
-#if defined (RTLD_NOW)
+#  if defined (RTLD_NOW)
   flags |= RTLD_NOW;
-#endif
+#  endif
 
   // Use RTLD_GLOBAL to export symbols from loaded objects so they are
   // available to other subsequently loaded libraries.
-#if defined (RTLD_GLOBAL)
+#  if defined (RTLD_GLOBAL)
   flags |= RTLD_GLOBAL;
-#endif
+#  endif
 
   library = dlopen (file.c_str (), flags);
 

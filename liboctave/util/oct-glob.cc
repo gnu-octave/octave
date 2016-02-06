@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <algorithm>
@@ -80,7 +80,7 @@ octave_glob (const string_vector& pat)
           glob_t glob_info;
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
-          && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
+    && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
           std::replace_if (xpat.begin (), xpat.end (),
                            std::bind2nd (std::equal_to<char> (), '\\'),
                            '/');

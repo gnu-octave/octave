@@ -39,7 +39,7 @@ architecture.
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h> /* USE_BLASWRAP ? */
+#  include <config.h> /* USE_BLASWRAP ? */
 #endif
 
 #ifdef USE_BLASWRAP
@@ -53,7 +53,7 @@ architecture.
  * same name.
  */
 #ifndef VECLIB_FILE
-#define VECLIB_FILE "/System/Library/Frameworks/vecLib.framework/Versions/A/vecLib"
+#  define VECLIB_FILE "/System/Library/Frameworks/vecLib.framework/Versions/A/vecLib"
 #endif
 
 /*

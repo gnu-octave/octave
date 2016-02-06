@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cfloat>
@@ -113,7 +113,7 @@ xexp2 (double x)
 #if defined (HAVE_EXP2)
   return exp2 (x);
 #else
-#if defined (M_LN2)
+#  if defined (M_LN2)
   static double ln2 = M_LN2;
 #else
   static double ln2 = gnulib::log (2);
@@ -350,7 +350,7 @@ xexp2 (float x)
 #elif defined (HAVE_EXP2)
   return exp2 (x);
 #else
-#if defined (M_LN2)
+#  if defined (M_LN2)
   static float ln2 = M_LN2;
 #else
   static float ln2 = log2 (2);

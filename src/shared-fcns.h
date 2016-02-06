@@ -26,8 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <tlhelp32.h>
 
 #ifdef _MSC_VER
-#define popen _popen
-#define pclose _pclose
+#  define popen _popen
+#  define pclose _pclose
 #endif
 
 static std::string

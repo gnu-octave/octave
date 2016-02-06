@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #if defined (HAVE_FFTW)
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "singleton-cleanup.h"
 
 #if defined (HAVE_FFTW3_THREADS)
-#include "nproc.h"
+#  include "nproc.h"
 #endif
 
 octave_fftw_planner *octave_fftw_planner::instance = 0;

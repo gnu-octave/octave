@@ -550,9 +550,9 @@ SPARSE_SMSM_BOOL_OP_DECLS (SparseComplexMatrix, SparseComplexMatrix, OCTAVE_API)
 SPARSE_FORWARD_DEFS (MSparse, SparseComplexMatrix, ComplexMatrix, Complex)
 
 #if defined (ENABLE_64)
-#define UMFPACK_ZNAME(name) umfpack_zl_ ## name
+#  define UMFPACK_ZNAME(name) umfpack_zl_ ## name
 #else
-#define UMFPACK_ZNAME(name) umfpack_zi_ ## name
+#  define UMFPACK_ZNAME(name) umfpack_zi_ ## name
 #endif
 
 #endif

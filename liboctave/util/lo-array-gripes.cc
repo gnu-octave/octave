@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: All gripe_XXX functions deprecated in 4.2.  Remove file in 4.6
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sstream>
@@ -149,14 +149,14 @@ gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
   buf << n + 1;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
   gripe_invalid_index (buf.str (), nd, dim, var);
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 #endif
 }
 
@@ -168,14 +168,14 @@ gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
   buf << n + 1;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
   gripe_invalid_index (buf.str (), nd, dim, var);
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 #endif
 }
 

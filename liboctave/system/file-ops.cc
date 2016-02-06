@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cerrno>
@@ -55,7 +55,7 @@ extern "C" {
 #include "str-vec.h"
 
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-#include <algorithm>
+#  include <algorithm>
 #endif
 
 file_ops *file_ops::instance = 0;

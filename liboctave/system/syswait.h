@@ -32,30 +32,30 @@ extern "C" {
 #include <sys/types.h>
 
 #if defined HAVE_SYS_WAIT_H
-#include <sys/wait.h>
+#  include <sys/wait.h>
 #endif
 
 #ifndef WIFEXITED
-#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#  define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
 #endif
 
 #ifndef WEXITSTATUS
-#define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
+#  define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
 #endif
 
 #ifndef WIFSIGNALLED
-#define WIFSIGNALLED(stat_val) \
-  (((stat_val) & 0177) != 0177 && ((stat_val) & 0177) != 0)
+#  define WIFSIGNALLED(stat_val) \
+          (((stat_val) & 0177) != 0177 && ((stat_val) & 0177) != 0)
 #endif
 
 #if defined (__MINGW32__) || defined (_MSC_VER)
-#define HAVE_WAITPID 1
-#include <process.h>
-#define WAITPID(a, b, c) _cwait (b, a, c)
+#  define HAVE_WAITPID 1
+#  include <process.h>
+#  define WAITPID(a, b, c) _cwait (b, a, c)
 /* Action argument is ignored for _cwait, so arbitrary definition.  */
-#define WNOHANG 0
+#  define WNOHANG 0
 #else
-#define WAITPID(a, b, c) waitpid (a, b, c)
+#  define WAITPID(a, b, c) waitpid (a, b, c)
 #endif
 
 #ifdef __cplusplus

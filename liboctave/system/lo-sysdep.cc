@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <iostream>
@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <fcntl.h>
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
 #endif
 
 #include "file-ops.h"

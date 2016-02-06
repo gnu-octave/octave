@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cerrno>
@@ -127,7 +127,7 @@ octave_syscalls::vfork (std::string& msg)
   pid_t status = -1;
 
 #if defined (HAVE_VFORK) || defined (HAVE_FORK)
-#if defined (HAVE_VFORK)
+#  if defined (HAVE_VFORK)
   status = ::vfork ();
 #else
   status = ::fork ();

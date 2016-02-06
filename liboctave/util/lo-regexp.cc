@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <list>
@@ -32,9 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #if defined (HAVE_PCRE_H)
-#include <pcre.h>
+#  include <pcre.h>
 #elif defined (HAVE_PCRE_PCRE_H)
-#include <pcre/pcre.h>
+#  include <pcre/pcre.h>
 #endif
 
 #include "Matrix.h"

@@ -24,11 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_pathlen_h 1
 
 #ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
+#  include <sys/param.h>
 #endif
 
 #ifndef MAXPATHLEN
-#define MAXPATHLEN 1024
+#  define MAXPATHLEN 1024
 #endif
 
 #endif

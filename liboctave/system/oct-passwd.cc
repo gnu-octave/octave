@@ -21,13 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sys/types.h>
 
 #ifdef HAVE_PWD_H
-#include <pwd.h>
+#  include <pwd.h>
 #endif
 
 #include "lo-error.h"

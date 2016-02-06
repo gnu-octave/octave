@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cfloat>
@@ -67,7 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 // Mendelsohn factorization to seperate the problem into under-determined,
 // well-determined and over-determined parts and solves them seperately
 #ifndef USE_QRSOLVE
-#include "sparse-dmsolve.cc"
+#  include "sparse-dmsolve.cc"
 #endif
 
 // Fortran functions we call.

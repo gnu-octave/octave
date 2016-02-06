@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <limits>
@@ -137,7 +137,7 @@ octave_base_tm::zone (const std::string& s)
 }
 
 #if ! defined STRFTIME_BUF_INITIAL_SIZE
-#define STRFTIME_BUF_INITIAL_SIZE 128
+#  define STRFTIME_BUF_INITIAL_SIZE 128
 #endif
 
 std::string

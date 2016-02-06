@@ -177,74 +177,74 @@ public:
   { return xop::op (x, static_cast<double> (y)); }
 
 #ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
-#define DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS(T) \
-  template <typename xop> static OCTAVE_API bool \
-  external_mop (double, T); \
-  template <typename xop> static OCTAVE_API bool \
-  external_mop (T, double)
+#  define DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS(T) \
+     template <typename xop> static OCTAVE_API bool \
+     external_mop (double, T); \
+     template <typename xop> static OCTAVE_API bool \
+     external_mop (T, double)
 
-  DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS (int64_t);
-  DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS (uint64_t);
+     DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS (int64_t);
+     DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS (uint64_t);
 #endif
 
   // Typecasting to doubles won't work properly for 64-bit integers --
   // they lose precision.
   // If we have long doubles, use them...
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
-#define DEFINE_LONG_DOUBLE_CMP_OP(T) \
-  template <typename xop> \
-  static bool \
-  mop (double x, T y) \
-  { \
-    return external_mop<xop> (x, y); \
-  } \
-  template <typename xop> \
-  static bool \
-  mop (T x, double y) \
-  { \
-    return external_mop<xop> (x, y); \
-  }
-#else
-#define DEFINE_LONG_DOUBLE_CMP_OP(T) \
-  template <typename xop> \
-  static bool \
-  mop (double x, T y) \
-  { \
-    return xop::op (static_cast<long double> (x), \
-                    static_cast<long double> (y)); \
-  } \
-  template <typename xop> \
-  static bool \
-  mop (T x, double y) \
-  { \
-    return xop::op (static_cast<long double> (x), \
-                    static_cast<long double> (y)); \
-  }
-#endif
+#  ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#    define DEFINE_LONG_DOUBLE_CMP_OP(T) \
+       template <typename xop> \
+       static bool \
+       mop (double x, T y) \
+       { \
+         return external_mop<xop> (x, y); \
+       } \
+       template <typename xop> \
+       static bool \
+       mop (T x, double y) \
+       { \
+         return external_mop<xop> (x, y); \
+       }
+#  else
+#    define DEFINE_LONG_DOUBLE_CMP_OP(T) \
+       template <typename xop> \
+       static bool \
+       mop (double x, T y) \
+       { \
+         return xop::op (static_cast<long double> (x), \
+                         static_cast<long double> (y)); \
+       } \
+       template <typename xop> \
+       static bool \
+       mop (T x, double y) \
+       { \
+         return xop::op (static_cast<long double> (x), \
+                         static_cast<long double> (y)); \
+       }
+#  endif
 #else
   // ... otherwise, use external handlers
 
   // FIXME: We could declare directly the mop methods as external,
   // but we can't do this because bugs in gcc (<= 4.3) prevent
   // explicit instantiations later in that case.
-#define DEFINE_LONG_DOUBLE_CMP_OP(T) \
-  template <typename xop> static OCTAVE_API bool \
-  emulate_mop (double, T); \
-  template <typename xop> \
-  static bool \
-  mop (double x, T y) \
-    { \
-      return emulate_mop<xop> (x, y); \
-    } \
-  template <typename xop> static OCTAVE_API bool \
-  emulate_mop (T, double); \
-  template <typename xop> \
-  static bool \
-  mop (T x, double y) \
-    { \
-      return emulate_mop<xop> (x, y); \
-    }
+#  define DEFINE_LONG_DOUBLE_CMP_OP(T) \
+     template <typename xop> static OCTAVE_API bool \
+     emulate_mop (double, T); \
+     template <typename xop> \
+     static bool \
+     mop (double x, T y) \
+       { \
+         return emulate_mop<xop> (x, y); \
+       } \
+     template <typename xop> static OCTAVE_API bool \
+     emulate_mop (T, double); \
+     template <typename xop> \
+     static bool \
+     mop (T x, double y) \
+       { \
+         return emulate_mop<xop> (x, y); \
+       }
 #endif
 
   DEFINE_LONG_DOUBLE_CMP_OP(int64_t)
@@ -1149,7 +1149,7 @@ DECLARE_EXTERNAL_LONG_DOUBLE_OPS (octave_uint64);
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
 // Handle mixed op using long double
 #ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
-#define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
+#  define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
   OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <> \
   inline octave_int64 \
@@ -1176,7 +1176,7 @@ DECLARE_EXTERNAL_LONG_DOUBLE_OPS (octave_uint64);
     return external_octave_uint64_double_ ## NAME (x, y); \
   }
 #else
-#define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
+#  define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
   OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <> \
   inline octave_int64 \

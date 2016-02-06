@@ -20,16 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+  #ifdef HAVE_CONFIG_H
+#    include <config.h>
+#  endif
 
-#include <algorithm>
+#  include <algorithm>
 
-#include <base64.h>
+#  include <base64.h>
 
-#include "Array.h"
-#include "oct-base64.h"
+#  include "Array.h"
+#  include "oct-base64.h"
 
 bool
 octave_base64_encode (const char *inc, const size_t inlen, char **out)

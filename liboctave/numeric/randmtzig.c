@@ -153,14 +153,14 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdio.h>
 #include <time.h>
 
 #ifdef HAVE_GETTIMEOFDAY
-#include <sys/time.h>
+#  include <sys/time.h>
 #endif
 
 #include "lo-math.h"
@@ -168,11 +168,11 @@ along with Octave; see the file COPYING.  If not, see
 
 /* FIXME: may want to suppress X86 if sizeof(long) > 4 */
 #if ! defined (USE_X86_32)
-# if defined (i386) || defined (HAVE_X86_32)
-#  define USE_X86_32 1
-# else
-#  define USE_X86_32 0
-# endif
+#  if defined (i386) || defined (HAVE_X86_32)
+#    define USE_X86_32 1
+#  else
+#    define USE_X86_32 0
+#  endif
 #endif
 
 /* ===== Mersenne Twister 32-bit generator ===== */

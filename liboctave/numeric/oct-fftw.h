@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstddef>
 
 #if defined (HAVE_FFTW3_H)
-#include <fftw3.h>
+#  include <fftw3.h>
 #endif
 
 #include "oct-cmplx.h"

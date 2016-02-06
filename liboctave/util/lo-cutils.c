@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "lo-error.h"
@@ -63,7 +63,7 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
 }
 
 #ifdef HAVE_LOADLIBRARY_API
-#include <windows.h>
+#  include <windows.h>
 
 /* Need this since in C++ can't cast from int(*)() to void* */
 OCTAVE_API void *

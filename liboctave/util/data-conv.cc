@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cctype>
@@ -38,43 +38,43 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #if defined HAVE_LONG_LONG_INT
-#define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
-  do \
-    { \
-      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-      if (sizeof (TQ char) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## char; \
-      else if (sizeof (TQ short) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## short; \
-      else if (sizeof (TQ int) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## int; \
-      else if (sizeof (TQ long) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## long; \
-      else if (sizeof (TQ long long) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## longlong; \
-      else \
-        VAL = oct_data_conv::dt_unknown; \
-    } \
-  while (0)
+#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
+     do \
+       { \
+         int sz = BITS / std::numeric_limits<unsigned char>::digits; \
+         if (sizeof (TQ char) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## char; \
+         else if (sizeof (TQ short) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## short; \
+         else if (sizeof (TQ int) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## int; \
+         else if (sizeof (TQ long) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## long; \
+         else if (sizeof (TQ long long) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## longlong; \
+         else \
+           VAL = oct_data_conv::dt_unknown; \
+       } \
+     while (0)
 #else
-#define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
-  do \
-    { \
-      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-      if (sizeof (TQ char) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## char; \
-      else if (sizeof (TQ short) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## short; \
-      else if (sizeof (TQ int) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## int; \
-      else if (sizeof (TQ long) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## long; \
-      else \
-        VAL = oct_data_conv::dt_unknown; \
-    } \
-  while (0)
+#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
+     do \
+       { \
+         int sz = BITS / std::numeric_limits<unsigned char>::digits; \
+         if (sizeof (TQ char) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## char; \
+         else if (sizeof (TQ short) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## short; \
+         else if (sizeof (TQ int) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## int; \
+         else if (sizeof (TQ long) == sz) \
+           VAL = oct_data_conv::dt_ ## Q ## long; \
+         else \
+           VAL = oct_data_conv::dt_unknown; \
+       } \
+     while (0)
 #endif
-
+   
 #define FIND_SIZED_FLOAT_TYPE(VAL, BITS) \
   do \
     { \

@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if ! defined (octave_oct_uname_h)
-#define octave_uname_h 1
+#define octave_oct_uname_h 1
 
 #include <string>
 

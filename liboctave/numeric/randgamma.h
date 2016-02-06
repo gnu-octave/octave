@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
    software in the in the public domain.  */
 
 #if ! defined (octave_randgamma_h)
-#define octave_radgamma_h 1
+#define octave_randgamma_h 1
 
 #ifdef  __cplusplus
 extern "C" {

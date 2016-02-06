@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 #if ! defined (octave_find_files_dialog_h)
-#define octave_find_files_dialog_h
+#define octave_find_files_dialog_h 1
 
 #include <QDialog>
 #include <QModelIndex>

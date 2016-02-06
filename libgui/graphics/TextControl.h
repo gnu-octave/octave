@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_TextControl__
-#define __QtHandles_TextControl__ 1
+#if ! defined (octave_TextControl_h)
+#define octave_TextControl_h 1
 
 #include "BaseControl.h"
 

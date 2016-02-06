@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef SHORTCUT_MANAGER_H
-#define SHORTCUT_MANAGER_H
+#if ! defined (octave_shortcut_manager_h)
+#define octave_shortcut_manager_h 1
 
 #include <QWidget>
 #include <QTreeWidget>

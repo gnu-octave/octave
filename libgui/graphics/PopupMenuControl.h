@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_PopupMenuControl__
-#define __QtHandles_PopupMenuControl__ 1
+#if ! defined (octave_PopupMenuControl_h)
+#define octave_PopupMenuControl_h 1
 
 #include "BaseControl.h"
 

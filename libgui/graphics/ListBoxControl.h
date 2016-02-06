@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ListBoxControl__
-#define __QtHandles_ListBoxControl__ 1
+#if ! defined (octave_ListBoxControl_h)
+#define octave_ListBoxControl_h 1
 
 #include "BaseControl.h"
 

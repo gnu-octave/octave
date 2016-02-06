@@ -27,17 +27,17 @@ along with Octave; see the file COPYING.  If not, see
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #ifdef HAVE_QSCINTILLA
 
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
-#define HAVE_LEXER_OCTAVE
-#include <Qsci/qscilexeroctave.h>
+#  define HAVE_LEXER_OCTAVE
+#  include <Qsci/qscilexeroctave.h>
 #elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
-#define HAVE_LEXER_MATLAB
-#include <Qsci/qscilexermatlab.h>
+#  define HAVE_LEXER_MATLAB
+#  include <Qsci/qscilexermatlab.h>
 #endif
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>

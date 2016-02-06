@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "resource-manager.h"
@@ -37,23 +37,23 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTextCodec>
 
 #ifdef HAVE_QSCINTILLA
-#include "octave-qscintilla.h"
-#include "octave-txt-lexer.h"
-#include <QScrollArea>
+#  include "octave-qscintilla.h"
+#  include "octave-txt-lexer.h"
+#  include <QScrollArea>
 
-#if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
-#define HAVE_LEXER_OCTAVE
-#include <Qsci/qscilexeroctave.h>
-#elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
-#define HAVE_LEXER_MATLAB
-#include <Qsci/qscilexermatlab.h>
-#endif
+#  if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
+#    define HAVE_LEXER_OCTAVE
+#    include <Qsci/qscilexeroctave.h>
+#  elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
+#    define HAVE_LEXER_MATLAB
+#    include <Qsci/qscilexermatlab.h>
+#  endif
 
-#include <Qsci/qscilexercpp.h>
-#include <Qsci/qscilexerbash.h>
-#include <Qsci/qscilexerperl.h>
-#include <Qsci/qscilexerbatch.h>
-#include <Qsci/qscilexerdiff.h>
+#  include <Qsci/qscilexercpp.h>
+#  include <Qsci/qscilexerbash.h>
+#  include <Qsci/qscilexerperl.h>
+#  include <Qsci/qscilexerbatch.h>
+#  include <Qsci/qscilexerdiff.h>
 #endif
 
 #ifdef HAVE_QSCINTILLA
@@ -430,7 +430,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_hscroll_bar",true).toBool ());
 
 #ifdef HAVE_QSCINTILLA
-#if defined (Q_OS_WIN32)
+#  if defined (Q_OS_WIN32)
   int eol_mode = QsciScintilla::EolWindows;
 #elif defined (Q_OS_MAC)
   int eol_mode = QsciScintilla::EolMac;

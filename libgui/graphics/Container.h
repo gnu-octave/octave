@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Container__
-#define __QtHandles_Container__ 1
+#if ! defined (octave_Container_h)
+#define octave_Container_h 1
 
 #include <QWidget>
 

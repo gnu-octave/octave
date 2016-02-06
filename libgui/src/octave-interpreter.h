@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef octave_interpreter_h
-#define octave_interpreter_h 1
+#if ! defined (octave_octave_interpreter_h)
+#define octave_octave_interpreter_h 1
 
 #include <QObject>
 

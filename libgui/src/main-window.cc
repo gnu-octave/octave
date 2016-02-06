@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <QKeySequence>
@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <utility>
 
 #ifdef HAVE_QSCINTILLA
-#include "file-editor.h"
+#  include "file-editor.h"
 #endif
 #include "main-window.h"
 #include "settings-dialog.h"

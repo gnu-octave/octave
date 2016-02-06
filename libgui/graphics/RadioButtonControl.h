@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_RadioButton__
-#define __QtHandles_RadioButton__ 1
+#if ! defined (octave_RadioButton_h)
+#define octave_RadioButton_h 1
 
 #include "ButtonControl.h"
 

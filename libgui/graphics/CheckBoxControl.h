@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_CheckBoxControl__
-#define __QtHandles_CheckBoxControl__ 1
+#if ! defined (octave_CheckBoxControl_h)
+#define octave_CheckBoxControl_h 1
 
 #include "ButtonControl.h"
 

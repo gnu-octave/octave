@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 #if ! defined (octave_find_files_model_h)
-#define octave_find_files_model_h
+#define octave_find_files_model_h 1
 
 #include <QAbstractListModel>
 #include <QStringList>

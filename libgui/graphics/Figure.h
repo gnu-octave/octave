@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Figure__
-#define __QtHandles_Figure__ 1
+#if ! defined (octave_Figure_h)
+#define octave_Figure_h 1
 
 #include <QRect>
 #include <QStatusBar>

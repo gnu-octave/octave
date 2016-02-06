@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef FILESDOCKWIDGET_H
-#define FILESDOCKWIDGET_H
+#if ! defined (octave_files_dock_widget_h)
+#define octave_files_dock_widget_h 1
 
 #include <QListView>
 #include <QDate>

@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef TERMINALDOCKWIDGET_H
-#define TERMINALDOCKWIDGET_H
+#if ! defined (octave_terminal_dock_widget_h)
+#define octave_terminal_dock_widget_h 1
 
 #include <QString>
 

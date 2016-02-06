@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef WELCOMEWIZARD_H
-#define WELCOMEWIZARD_H
+#if ! defined (octave_welcome_wizard_h)
+#define octave_welcome_wizard_h 1
 
 #include <QDialog>
 #include <QCheckBox>

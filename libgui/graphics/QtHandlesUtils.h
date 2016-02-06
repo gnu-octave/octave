@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Utils__
-#define __QtHandles_Utils__ 1
+#if ! defined (octave_QtHandlesUtils_h)
+#define octave_QtHandlesUtils_h 1
 
 #include <QColor>
 #include <QFont>

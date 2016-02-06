@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_init_qt__
-#define __QtHandles_init_qt__ 1
+#if ! defined (octave__init_qt___h)
+#define octave__init_qt___h 1
 
 namespace QtHandles
 {

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef ANNOTATIONDIALOG_H
-#define ANNOTATIONDIALOG_H
+#if ! defined (octave_annotation_dialog_h)
+#define octave_annotation_dialog_h 1
 
 #include <QDialog>
 #include <QLineEdit>

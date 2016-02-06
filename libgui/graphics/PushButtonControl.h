@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_PushButtonControl__
-#define __QtHandles_PushButtonControl__ 1
+#if ! defined (octave_PushButtonControl_h)
+#define octave_PushButtonControl_h 1
 
 #include "ButtonControl.h"
 

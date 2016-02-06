@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Backend__
-#define __QtHandles_Backend__ 1
+#if ! defined (octave_Backend_h)
+#define octave_Backend_h 1
 
 #include <QObject>
 

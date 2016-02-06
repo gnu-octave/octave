@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_TextEdit__
-#define __QtHandles_TextEdit__ 1
+#if ! defined (octave_TextEdit_h)
+#define octave_TextEdit_h 1
 
 #include <QTextEdit>
 

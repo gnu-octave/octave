@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef SETTINGSDIALOG_H
-#define SETTINGSDIALOG_H
+#if ! defined (octave_settings_dialog_h)
+#define octave_settings_dialog_h 1
 
 #include <QDialog>
 #include <QSettings>

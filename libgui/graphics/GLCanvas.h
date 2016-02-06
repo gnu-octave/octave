@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_GLCanvas__
-#define __QtHandles_GLCanvas__ 1
+#if ! defined (octave_GLCanvas_h)
+#define octave_GLCanvas_h 1
 
 #include <QGLWidget>
 

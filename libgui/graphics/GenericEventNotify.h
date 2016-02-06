@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __GenericEventNotify_h__
-#define __GenericEventNotify_h__ 1
+#if ! defined (octave_GenericEventNotify_h)
+#define octave_GenericEventNotify_h 1
 
 #include <QSet>
 

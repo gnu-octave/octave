@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_FigureWindow__
-#define __QtHandles_FigureWindow__ 1
+#if ! defined (octave_FigureWindow_h)
+#define octave_FigureWindow_h 1
 
 #include <QMainWindow>
 

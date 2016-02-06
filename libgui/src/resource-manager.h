@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef RESOURCEMANAGER_H
-#define RESOURCEMANAGER_H
+#if ! defined (octave_resource_manager_h)
+#define octave_resource_manager_h 1
 
 #include <QDesktopServices>
 #include <QIcon>

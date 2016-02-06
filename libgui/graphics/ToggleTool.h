@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ToggleTool__
-#define __QtHandles_ToggleTool__ 1
+#if ! defined (octave_ToggleTool_h)
+#define octave_ToggleTool_h 1
 
 #include "ToolBarButton.h"
 

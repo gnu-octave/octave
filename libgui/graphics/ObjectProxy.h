@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ObjectProxy__
-#define __QtHandles_ObjectProxy__ 1
+#if ! defined (octave_ObjectProxy_h)
+#define octave_ObjectProxy_h 1
 
 #include <QObject>
 

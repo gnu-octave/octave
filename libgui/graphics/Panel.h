@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Panel__
-#define __QtHandles_Panel__ 1
+#if ! defined (octave_Panel_h)
+#define octave_Panel_h 1
 
 #include "Object.h"
 

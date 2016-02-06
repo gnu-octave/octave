@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_MouseModeActionGroup__
-#define __QtHandles_MouseModeActionGroup__ 1
+#if ! defined (octave_MouseModeActionGroup_h)
+#define octave_MouseModeActionGroup_h 1
 
 #include <QList>
 #include <QObject>

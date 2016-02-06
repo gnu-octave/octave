@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Menu__
-#define __QtHandles_Menu__ 1
+#if ! defined (octave_Menu_h)
+#define octave_Menu_h 1
 
 #include "MenuContainer.h"
 #include "Object.h"

@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <QApplication>
@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <fcntl.h>
 
 #if defined (HAVE_SYS_IOCTL_H)
-#include <sys/ioctl.h>
+#  include <sys/ioctl.h>
 #endif
 
 #include "lo-utils.h"

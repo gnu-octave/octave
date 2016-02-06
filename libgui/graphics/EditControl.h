@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_EditControl__
-#define __QtHandles_EditControl__ 1
+#ifndef octave_EditControl_h
+#define octave_EditControl_h 1
 
 #include "BaseControl.h"
 

@@ -36,8 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: We should not be including config.h in header files.
 // Only needed for octave_value_list type.
 #ifdef HAVE_CONFIG_H
-#include <config.h>
-#include "ovl.h"
+#  include <config.h>
+#  include "ovl.h"
 #endif
 
 #include "find-dialog.h"

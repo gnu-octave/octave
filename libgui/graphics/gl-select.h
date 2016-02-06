@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_gl_selector__
-#define __QtHandles_gl_selector__ 1
+#if ! defined (octave_gl_select_h)
+#define octave_gl_select_h 1
 
 #include <map>
 

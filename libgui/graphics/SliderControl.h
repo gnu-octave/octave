@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_SliderControl__
-#define __QtHandles_SliderControl__ 1
+#if ! defined (octave_SliderControl_h)
+#define octave_SliderControl_h 1
 
 #include "BaseControl.h"
 

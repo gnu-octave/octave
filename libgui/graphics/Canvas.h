@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Canvas__
-#define __QtHandles_Canvas__ 1
+#if ! defined (octave_Canvas_h)
+#define octave_Canvas_h 1
 
 #include <QPoint>
 

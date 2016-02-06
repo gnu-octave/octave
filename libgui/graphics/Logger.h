@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Logger__
-#define __QtHandles_Logger__ 1
+#if ! defined (octave_Logger_h)
+#define octave_Logger_h 1
 
 #include <cstdarg>
 

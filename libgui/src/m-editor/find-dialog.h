@@ -59,8 +59,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef FIND_DIALOG_H
-#define FIND_DIALOG_H
+#if ! defined (octave_find_dialog_h)
+#define octave_find_dialog_h 1
 
 #include <QDialog>
 #include <Qsci/qsciscintilla.h>

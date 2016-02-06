@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles__KeyMap__
-#define __QtHandles__KeyMap__ 1
+#if ! defined (octave_KeyMap_h)
+#define octave_KeyMap_h 1
 
 #include <string>
 

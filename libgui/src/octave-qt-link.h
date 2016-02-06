@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef OCTAVE_QT_LINK_H
-#define OCTAVE_QT_LINK_H
+#if ! defined (octave_octave_qt_link_h)
+#define octave_octave_qt_link_h 1
 
 #include <list>
 #include <string>

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef HISTORYDOCKWIDGET_H
-#define HISTORYDOCKWIDGET_H
+#if ! defined (octave_history_dock_widget_h)
+#define octave_history_dock_widget_h 1
 
 #include <QLineEdit>
 #include <QListView>

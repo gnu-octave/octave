@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_MenuContainer__
-#define __QtHandles_MenuContainer__ 1
+#if ! defined (octave_MenuContainer_h)
+#define octave_MenuContainer_h 1
 
 class QWidget;
 

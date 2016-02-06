@@ -21,13 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-#include <windows.h>
+#  include <windows.h>
 #else
-#include <pthread.h>
+#  include <pthread.h>
 #endif
 
 #include <sys/types.h>
@@ -90,13 +90,13 @@ octave_thread_manager::octave_thread_manager (void)
 // The following is a workaround for an apparent bug in GCC 4.1.2 and
 // possibly earlier versions.  See Octave bug report #30685 for details.
 #if defined (__GNUC__)
-# if ! (__GNUC__ > 4 \
-        || (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 \
-                              || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 2))))
-#  undef GNULIB_NAMESPACE
-#  define GNULIB_NAMESPACE
-#  warning "disabling GNULIB_NAMESPACE for signal functions -- consider upgrading to a current version of GCC"
-# endif
+#  if ! (__GNUC__ > 4 \
+         || (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 \
+                               || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 2))))
+#    undef GNULIB_NAMESPACE
+#    define GNULIB_NAMESPACE
+#    warning "disabling GNULIB_NAMESPACE for signal functions -- consider upgrading to a current version of GCC"
+#  endif
 #endif
 
 static void

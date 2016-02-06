@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef DOCUMENTATIONDOCKWIDGET_H
-#define DOCUMENTATIONDOCKWIDGET_H
+#if ! defined (octave_documentation_dock_widget_h)
+#define octave_documentation_dock_widget_h 1
 
 #include "octave-dock-widget.h"
 

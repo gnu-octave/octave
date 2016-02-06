@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef FILEEDITORINTERFACE_H
-#define FILEEDITORINTERFACE_H
+#if ! defined (octave_file_editor_interface_h)
+#define octave_file_editor_interface_h 1
 
 #include <QMenu>
 #include <QToolBar>

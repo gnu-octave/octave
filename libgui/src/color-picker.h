@@ -24,8 +24,8 @@
 
 // Author: Torsten <ttl@justmail.de>
 
-#ifndef COLORPICKER_H
-#define COLORPICKER_H
+#if ! defined (octave_color_picker_h)
+#define octave_color_picker_h 1
 
 #include <QPushButton>
 #include <QColorDialog>

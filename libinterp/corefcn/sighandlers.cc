@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cstdlib>
@@ -227,19 +227,19 @@ void w32_raise_sigint (void)
 
 // Signal handler return type.
 #ifndef BADSIG
-#define BADSIG (void (*)(int))-1
+#  define BADSIG (void (*)(int))-1
 #endif
 
 // The following is a workaround for an apparent bug in GCC 4.1.2 and
 // possibly earlier versions.  See Octave bug report #30685 for details.
 #if defined (__GNUC__)
-# if ! (__GNUC__ > 4 \
-        || (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 \
-                              || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 2))))
-#  undef GNULIB_NAMESPACE
-#  define GNULIB_NAMESPACE
-#  warning "disabling GNULIB_NAMESPACE for signal functions -- consider upgrading to a current version of GCC"
-# endif
+#  if ! (__GNUC__ > 4 \
+         || (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 \
+                               || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 2))))
+#    undef GNULIB_NAMESPACE
+#    define GNULIB_NAMESPACE
+#    warning "disabling GNULIB_NAMESPACE for signal functions -- consider upgrading to a current version of GCC"
+#  endif
 #endif
 
 #define BLOCK_SIGNAL(sig, nvar, ovar) \
@@ -253,7 +253,7 @@ void w32_raise_sigint (void)
   while (0)
 
 #if ! defined (SIGCHLD) && defined (SIGCLD)
-#define SIGCHLD SIGCLD
+#  define SIGCHLD SIGCLD
 #endif
 
 #define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
@@ -365,15 +365,15 @@ octave_set_signal_handler (int sig, sig_handler *handler,
 #if defined (SIGALRM)
   if (sig == SIGALRM)
     {
-#if defined (SA_INTERRUPT)
+#  if defined (SA_INTERRUPT)
       act.sa_flags |= SA_INTERRUPT;
-#endif
+#  endif
     }
 #endif
 #if defined (SA_RESTART)
-#if defined (SIGALRM)
+#  if defined (SIGALRM)
   else
-#endif
+#  endif
   // FIXME: Do we also need to explicitly disable SA_RESTART?
   if (restart_syscalls)
     act.sa_flags |= SA_RESTART;
@@ -405,8 +405,7 @@ sigchld_handler (int /* sig */)
 }
 #endif
 
-#ifdef SIGFPE
-#if defined (__alpha__)
+#if defined (SIGFPE) && defined (__alpha__)
 static void
 sigfpe_handler (int /* sig */)
 {
@@ -419,7 +418,6 @@ sigfpe_handler (int /* sig */)
       octave_interrupt_state++;
     }
 }
-#endif
 #endif
 
 #if defined (SIGHUP) || defined (SIGTERM)
@@ -455,7 +453,7 @@ sig_hup_or_term_handler (int sig)
 #endif
 
 #if 0
-#if defined (SIGWINCH)
+#  if defined (SIGWINCH)
 static void
 sigwinch_handler (int /* sig */)
 {
@@ -653,11 +651,11 @@ install_signal_handlers (void)
 #endif
 
 #ifdef SIGFPE
-#if defined (__alpha__)
+#  if defined (__alpha__)
   octave_set_signal_handler (SIGFPE, sigfpe_handler);
-#else
+#  else
   octave_set_signal_handler (SIGFPE, generic_sig_handler);
-#endif
+#  endif
 #endif
 
 #ifdef SIGHUP
@@ -734,7 +732,7 @@ install_signal_handlers (void)
 #endif
 
 #if 0
-#ifdef SIGWINCH
+#  ifdef SIGWINCH
   octave_set_signal_handler (SIGWINCH, sigwinch_handler);
 #endif
 #endif

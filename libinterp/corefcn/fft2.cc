@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "lo-mappers.h"
@@ -36,9 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 // This function should be merged with Fifft.
 
 #if defined (HAVE_FFTW)
-#define FFTSRC "@sc{fftw}"
+#  define FFTSRC "@sc{fftw}"
 #else
-#define FFTSRC "@sc{fftpack}"
+#  define FFTSRC "@sc{fftpack}"
 #endif
 
 static octave_value

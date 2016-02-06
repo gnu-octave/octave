@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 // in the help of the functions.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cstdlib>
@@ -46,11 +46,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #if defined (ENABLE_64)
-# define COLAMD_NAME(name) colamd_l ## name
-# define SYMAMD_NAME(name) symamd_l ## name
+#  define COLAMD_NAME(name) colamd_l ## name
+#  define SYMAMD_NAME(name) symamd_l ## name
 #else
-# define COLAMD_NAME(name) colamd ## name
-# define SYMAMD_NAME(name) symamd ## name
+#  define COLAMD_NAME(name) colamd ## name
+#  define SYMAMD_NAME(name) symamd ## name
 #endif
 
 // The symmetric column elimination tree code take from the Davis LDL code.

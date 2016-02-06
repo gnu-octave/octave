@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "oct-locbuf.h"
@@ -44,10 +44,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
-# include "oct-qhull.h"
-# if defined (NEED_QHULL_VERSION)
+#  include "oct-qhull.h"
+#  if defined (NEED_QHULL_VERSION)
 char qh_version[] = "convhulln.oct 2007-07-24";
-# endif
+#  endif
 #endif
 
 static void

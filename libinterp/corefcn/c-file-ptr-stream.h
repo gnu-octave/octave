@@ -140,7 +140,7 @@ typedef c_file_ptr_stream<std::iostream, FILE *, c_file_ptr_buf>
 #ifdef HAVE_ZLIB
 
 #ifdef HAVE_ZLIB_H
-#include <zlib.h>
+#  include <zlib.h>
 #endif
 
 class

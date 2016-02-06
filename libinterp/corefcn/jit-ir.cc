@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_CONSTANT_MACROS
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #ifdef HAVE_LLVM
@@ -35,11 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "jit-ir.h"
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H
-#include <llvm/IR/BasicBlock.h>
-#include <llvm/IR/Instructions.h>
+#  include <llvm/IR/BasicBlock.h>
+#  include <llvm/IR/Instructions.h>
 #else
-#include <llvm/BasicBlock.h>
-#include <llvm/Instructions.h>
+#  include <llvm/BasicBlock.h>
+#  include <llvm/Instructions.h>
 #endif
 
 #include "error.h"

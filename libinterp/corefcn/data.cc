@@ -24,14 +24,14 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sys/types.h>
 #include <sys/times.h>
 
 #ifdef HAVE_SYS_RESOURCE_H
-#include <sys/resource.h>
+#  include <sys/resource.h>
 #endif
 
 #include <cfloat>
@@ -70,16 +70,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "xnorm.h"
 
 #if ! defined (CLOCKS_PER_SEC)
-#if defined (CLK_TCK)
-#define CLOCKS_PER_SEC CLK_TCK
-#else
-#error "no definition for CLOCKS_PER_SEC!"
-#endif
+#  if defined (CLK_TCK)
+#    define CLOCKS_PER_SEC CLK_TCK
+#  else
+#    error "no definition for CLOCKS_PER_SEC!"
+#  endif
 #endif
 
 #if ! defined (HAVE_HYPOTF) && defined (HAVE__HYPOTF)
-#define hypotf _hypotf
-#define HAVE_HYPOTF 1
+#  define hypotf _hypotf
+#  define HAVE_HYPOTF 1
 #endif
 
 static void

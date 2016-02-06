@@ -25,7 +25,7 @@ Open Source Initiative (www.opensource.org)
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <istream>

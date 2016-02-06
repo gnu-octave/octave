@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cctype>
@@ -6168,7 +6168,7 @@ void
 axes::properties::update_font (void)
 {
 #ifdef HAVE_FREETYPE
-#ifdef HAVE_FONTCONFIG
+#  ifdef HAVE_FONTCONFIG
   text_renderer.set_font (get ("fontname").string_value (),
                           get ("fontweight").string_value (),
                           get ("fontangle").string_value (),
@@ -7944,7 +7944,7 @@ void
 text::properties::update_font (void)
 {
 #ifdef HAVE_FREETYPE
-#ifdef HAVE_FONTCONFIG
+#  ifdef HAVE_FONTCONFIG
   renderer.set_font (get ("fontname").string_value (),
                      get ("fontweight").string_value (),
                      get ("fontangle").string_value (),

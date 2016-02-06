@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if ! defined (octave_ls_utils_h)
-#define octave_ls_utils 1
+#  define octave_ls_utils 1
 
 extern save_type
 get_save_type (double max_val, double min_val);

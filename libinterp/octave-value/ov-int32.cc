@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <iostream>
@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 
 #if defined (HAVE_HDF5)
-#define HDF5_SAVE_TYPE H5T_NATIVE_INT32
+#  define HDF5_SAVE_TYPE H5T_NATIVE_INT32
 #endif
 
 #include "ov-base-int.h"

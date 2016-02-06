@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 // Matlab v5 support by James R. Van Zandt <jrv@vanzandt.mv.com>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cfloat>
@@ -82,14 +82,14 @@ along with Octave; see the file COPYING.  If not, see
 
 // Remove gnulib definitions, if any.
 #ifdef close
-#undef close
+#  undef close
 #endif
 #ifdef open
-#undef open
+#  undef open
 #endif
 
 #ifdef HAVE_ZLIB
-#include "zfstream.h"
+#  include "zfstream.h"
 #endif
 
 // Write octave-workspace file if Octave crashes or is killed by a signal.

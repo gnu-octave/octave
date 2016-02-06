@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #if defined (HAVE_OPENGL)
@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #ifdef HAVE_WINDOWS_H
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
 #endif
 
 #include <lo-mappers.h>
@@ -74,7 +74,7 @@ enum
 // GLU callback functions. Define it to empty on
 // other platforms.
 #ifndef CALLBACK
-#define CALLBACK
+#  define CALLBACK
 #endif
 
 class

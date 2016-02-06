@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sys/time.h>
@@ -29,11 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 
 #ifdef HAVE_SYS_RESOURCE_H
-#include <sys/resource.h>
+#  include <sys/resource.h>
 #endif
 
 #if defined (HAVE_SYS_PARAM_H)
-#include <sys/param.h>
+#  include <sys/param.h>
 #endif
 
 #include "defun.h"
@@ -44,17 +44,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 #if ! defined (HZ)
-#if defined (CLK_TCK)
-#define HZ CLK_TCK
-#elif defined (USG)
-#define HZ 100
-#else
-#define HZ 60
-#endif
+#  if defined (CLK_TCK)
+#    define HZ CLK_TCK
+#  elif defined (USG)
+#    define HZ 100
+#  else
+#    define HZ 60
+#  endif
 #endif
 
 #ifndef RUSAGE_SELF
-#define RUSAGE_SELF 0
+#  define RUSAGE_SELF 0
 #endif
 
 // System resource functions.

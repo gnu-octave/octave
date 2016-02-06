@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cerrno>
@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 #ifndef SHELL_PATH
-#define SHELL_PATH "/bin/sh"
+#  define SHELL_PATH "/bin/sh"
 #endif
 
 // This class is based on the procbuf class from libg++, written by
@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 static octave_procbuf *octave_procbuf_list = 0;
 
 #ifndef BUFSIZ
-#define BUFSIZ 1024
+#  define BUFSIZ 1024
 #endif
 
 octave_procbuf *

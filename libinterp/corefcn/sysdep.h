@@ -47,9 +47,9 @@ extern void w32_set_quiet_shutdown (void);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 extern void MINGW_signal_cleanup (void);
-#define MINGW_SIGNAL_CLEANUP() MINGW_signal_cleanup ()
+#  define MINGW_SIGNAL_CLEANUP() MINGW_signal_cleanup ()
 #else
-#define MINGW_SIGNAL_CLEANUP() do { } while (0)
+#  define MINGW_SIGNAL_CLEANUP() do { } while (0)
 #endif
 
 extern OCTINTERP_API bool same_file_internal (const std::string&,

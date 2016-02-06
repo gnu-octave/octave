@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_CONSTANT_MACROS
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #ifdef HAVE_LLVM
@@ -35,33 +35,33 @@ along with Octave; see the file COPYING.  If not, see
 #include "jit-typeinfo.h"
 
 #ifdef HAVE_LLVM_IR_VERIFIER_H
-#include <llvm/IR/Verifier.h>
+#  include <llvm/IR/Verifier.h>
 #else
-#include <llvm/Analysis/Verifier.h>
+#  include <llvm/Analysis/Verifier.h>
 #endif
 
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H
-#include <llvm/IR/GlobalVariable.h>
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Function.h>
-#include <llvm/IR/Instructions.h>
-#include <llvm/IR/Intrinsics.h>
+#  include <llvm/IR/GlobalVariable.h>
+#  include <llvm/IR/LLVMContext.h>
+#  include <llvm/IR/Function.h>
+#  include <llvm/IR/Instructions.h>
+#  include <llvm/IR/Intrinsics.h>
 #else
-#include <llvm/GlobalVariable.h>
-#include <llvm/LLVMContext.h>
-#include <llvm/Function.h>
-#include <llvm/Instructions.h>
-#include <llvm/Intrinsics.h>
+#  include <llvm/GlobalVariable.h>
+#  include <llvm/LLVMContext.h>
+#  include <llvm/Function.h>
+#  include <llvm/Instructions.h>
+#  include <llvm/Intrinsics.h>
 #endif
 
 #ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
-#include <llvm/Support/IRBuilder.h>
-#elif defined(HAVE_LLVM_IR_IRBUILDER_H)
-#include <llvm/IR/IRBuilder.h>
+#  include <llvm/Support/IRBuilder.h>
+#  elif defined(HAVE_LLVM_IR_IRBUILDER_H)
+#  include <llvm/IR/IRBuilder.h>
 #else
-#include <llvm/IRBuilder.h>
+#  include <llvm/IRBuilder.h>
 #endif
 
 #include <llvm/Support/raw_os_ostream.h>

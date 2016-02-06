@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: James R. Van Zandt <jrv@vanzandt.mv.com>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cfloat>
@@ -78,7 +78,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 
 #ifdef HAVE_ZLIB
-#include <zlib.h>
+#  include <zlib.h>
 #endif
 
 #define READ_PAD(is_small_data_element, l) ((is_small_data_element) ? 4 : (((l)+7)/8)*8)

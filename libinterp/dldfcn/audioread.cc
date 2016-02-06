@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <string>
@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 
 #ifdef HAVE_SNDFILE
-#include <sndfile.h>
+#  include <sndfile.h>
 #endif
 
 #ifdef HAVE_SNDFILE

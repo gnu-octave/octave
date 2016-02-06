@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // in the help of the functions.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cstdlib>
@@ -45,11 +45,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #if defined (ENABLE_64)
-# define CCOLAMD_NAME(name) ccolamd_l ## name
-# define CSYMAMD_NAME(name) csymamd_l ## name
+#  define CCOLAMD_NAME(name) ccolamd_l ## name
+#  define CSYMAMD_NAME(name) csymamd_l ## name
 #else
-# define CCOLAMD_NAME(name) ccolamd ## name
-# define CSYMAMD_NAME(name) csymamd ## name
+#  define CCOLAMD_NAME(name) ccolamd ## name
+#  define CSYMAMD_NAME(name) csymamd ## name
 #endif
 
 DEFUN_DLD (ccolamd, args, nargout,

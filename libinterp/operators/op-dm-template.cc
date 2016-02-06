@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 // FIXME: it might be nice to only include the declarations of the
@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include LINCLUDE
 #include RINCLUDE
 #ifdef DEFINENULLASSIGNCONV
-#include "ov-null-mat.h"
+#  include "ov-null-mat.h"
 #endif
 
 // matrix by diag matrix ops.
@@ -43,11 +43,11 @@ DEFBINOP_OP (sub, LMATRIX, RMATRIX, -)
 DEFBINOP_OP (mul, LMATRIX, RMATRIX, *)
 
 #ifndef LDMATRIX
-#define LDMATRIX LMATRIX
+#  define LDMATRIX LMATRIX
 #endif
 
 #ifndef RDMATRIX
-#define RDMATRIX RMATRIX
+#  define RDMATRIX RMATRIX
 #endif
 
 #define OCTAVE_LMATRIX CONCAT2(octave_, LMATRIX)

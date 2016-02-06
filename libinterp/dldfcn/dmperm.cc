@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "defun-dld.h"
@@ -37,9 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-qr.h"
 
 #if defined (ENABLE_64)
-# define CXSPARSE_NAME(name) cs_dl ## name
+#  define CXSPARSE_NAME(name) cs_dl ## name
 #else
-# define CXSPARSE_NAME(name) cs_di ## name
+#  define CXSPARSE_NAME(name) cs_di ## name
 #endif
 
 static RowVector

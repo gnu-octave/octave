@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 // jwe, Wed Nov  1 19:15:29 1995.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "quit.h"

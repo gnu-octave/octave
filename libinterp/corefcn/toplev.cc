@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cassert>
@@ -82,7 +82,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 
 #ifndef SHELL_PATH
-#define SHELL_PATH "/bin/sh"
+#  define SHELL_PATH "/bin/sh"
 #endif
 
 void (*octave_exit) (int) = ::exit;

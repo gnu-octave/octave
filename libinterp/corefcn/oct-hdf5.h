@@ -21,21 +21,21 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if ! defined (octave_oct_hdf5_h)
-#define octave_hdf5_h 1
+#  define octave_hdf5_h 1
 
 #if defined (HAVE_HDF5)
 
-#if defined (HAVE_HDF5_H)
-#include <hdf5.h>
-#endif
+#  if defined (HAVE_HDF5_H)
+#    include <hdf5.h>
+#  endif
 
-#include "oct-hdf5-types.h"
+#  include "oct-hdf5-types.h"
 
-#if defined (ENABLE_64)
-#define H5T_NATIVE_IDX H5T_NATIVE_INT64
-#else
-#define H5T_NATIVE_IDX H5T_NATIVE_INT
-#endif
+#  if defined (ENABLE_64)
+#    define H5T_NATIVE_IDX H5T_NATIVE_INT64
+#  else
+#    define H5T_NATIVE_IDX H5T_NATIVE_INT
+#  endif
 
 #endif
 

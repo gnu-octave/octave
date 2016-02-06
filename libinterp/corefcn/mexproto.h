@@ -49,22 +49,22 @@ SUCH DAMAGE.
 #define MEXPROTO_H
 
 #if defined (__cplusplus)
-#include <cstdlib>
+#  include <cstdlib>
 extern "C" {
 #else
-#include <stdlib.h>
+#  include <stdlib.h>
 #endif
 
 /* The definition of OCTINTERP_API is normally provided by Octave's
    config.h file.  This is provided for the case of mex.h included by
    user programs that don't use Octave's config.h.  */
 #if ! defined (OCTINTERP_API)
-#if defined (_MSC_VER)
-#define OCTINTERP_API __declspec(dllimport)
-#else
-/* All other compilers, at least for now.  */
-#define OCTINTERP_API
-#endif
+#  if defined (_MSC_VER)
+#    define OCTINTERP_API __declspec(dllimport)
+#  else
+   /* All other compilers, at least for now.  */
+#    define OCTINTERP_API
+#  endif
 #endif
 
 #define MXARRAY_TYPEDEFS_ONLY
@@ -274,31 +274,31 @@ extern OCTINTERP_API char *mxArrayToString (const mxArray *ptr);
 
 /* Miscellaneous.  */
 #ifdef NDEBUG
-#define mxAssert(expr, msg) \
-  do \
-    { \
-      if (! expr) \
-        { \
-          mexPrintf ("Assertion failed: %s, at line %d of file \"%s\".\n%s\n", \
-                     #expr, __LINE__, __FILE__, msg); \
-        } \
-    } \
-  while (0)
+#  define mxAssert(expr, msg) \
+    do \
+      { \
+        if (! expr) \
+          { \
+            mexPrintf ("Assertion failed: %s, at line %d of file \"%s\".\n%s\n", \
+                       #expr, __LINE__, __FILE__, msg); \
+          } \
+      } \
+    while (0)
 
-#define mxAssertS(expr, msg) \
-  do \
-    { \
-      if (! expr) \
-        { \
-          mexPrintf ("Assertion failed at line %d of file \"%s\".\n%s\n", \
-                     __LINE__, __FILE__, msg); \
-          abort (); \
-        } \
-    } \
-  while (0)
+#  define mxAssertS(expr, msg) \
+    do \
+      { \
+        if (! expr) \
+          { \
+            mexPrintf ("Assertion failed at line %d of file \"%s\".\n%s\n", \
+                       __LINE__, __FILE__, msg); \
+            abort (); \
+          } \
+      } \
+    while (0)
 #else
-#define mxAssert(expr, msg)
-#define mxAssertS(expr, msg)
+#  define mxAssert(expr, msg)
+#  define mxAssertS(expr, msg)
 #endif
 
 extern OCTINTERP_API mwIndex mxCalcSingleSubscript (const mxArray *ptr,

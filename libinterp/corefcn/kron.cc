@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: Paul Kienzle <pkienzle@users.sf.net>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "dMatrix.h"

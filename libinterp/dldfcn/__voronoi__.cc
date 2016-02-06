@@ -31,7 +31,7 @@ qhull command
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cstdio>
@@ -49,10 +49,10 @@ qhull command
 #include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
-# include "oct-qhull.h"
-# if defined (NEED_QHULL_VERSION)
+#  include "oct-qhull.h"
+#  if defined (NEED_QHULL_VERSION)
 char qh_version[] = "__voronoi__.oct 2007-07-24";
-# endif
+#  endif
 #endif
 
 static void

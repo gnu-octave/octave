@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <iostream>
@@ -29,15 +29,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "c-file-ptr-stream.h"
 
 #ifndef SEEK_SET
-#define SEEK_SET 0
+#  define SEEK_SET 0
 #endif
 
 #ifndef SEEK_CUR
-#define SEEK_CUR 1
+#  define SEEK_CUR 1
 #endif
 
 #ifndef SEEK_END
-#define SEEK_END 2
+#  define SEEK_END 2
 #endif
 
 c_file_ptr_buf::~c_file_ptr_buf (void)

@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #undef DEBUG_EIG
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cfloat>
@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "pager.h"
 #if defined (DEBUG) || defined (DEBUG_SORT)
-#include "pr-output.h"
+#  include "pr-output.h"
 #endif
 #include "symtab.h"
 #include "utils.h"

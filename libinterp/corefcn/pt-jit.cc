@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_CONSTANT_MACROS
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "debug.h"
@@ -53,9 +53,9 @@ static int Vjit_failcnt = 0;
 #include <llvm/Analysis/Passes.h>
 
 #ifdef HAVE_LLVM_IR_VERIFIER_H
-#include <llvm/IR/Verifier.h>
+#  include <llvm/IR/Verifier.h>
 #else
-#include <llvm/Analysis/Verifier.h>
+#  include <llvm/Analysis/Verifier.h>
 #endif
 
 #include <llvm/Bitcode/ReaderWriter.h>
@@ -63,36 +63,36 @@ static int Vjit_failcnt = 0;
 #include <llvm/ExecutionEngine/JIT.h>
 
 #ifdef LEGACY_PASSMANAGER
-#include <llvm/IR/LegacyPassManager.h>
+#  include <llvm/IR/LegacyPassManager.h>
 #else
-#include <llvm/PassManager.h>
+#  include <llvm/PassManager.h>
 #endif
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Module.h>
+#  include <llvm/IR/LLVMContext.h>
+#  include <llvm/IR/Module.h>
 #else
-#include <llvm/LLVMContext.h>
-#include <llvm/Module.h>
+#  include <llvm/LLVMContext.h>
+#  include <llvm/Module.h>
 #endif
 
 #ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
-#include <llvm/Support/IRBuilder.h>
+#  include <llvm/Support/IRBuilder.h>
 #elif defined(HAVE_LLVM_IR_IRBUILDER_H)
-#include <llvm/IR/IRBuilder.h>
+#  include <llvm/IR/IRBuilder.h>
 #else
-#include <llvm/IRBuilder.h>
+#  include <llvm/IRBuilder.h>
 #endif
 
 #include <llvm/Support/raw_os_ostream.h>
 #include <llvm/Support/TargetSelect.h>
 
 #ifdef HAVE_LLVM_IR_DATALAYOUT_H
-#include <llvm/IR/DataLayout.h>
+#  include <llvm/IR/DataLayout.h>
 #elif defined(HAVE_LLVM_DATALAYOUT_H)
-#include <llvm/DataLayout.h>
+#  include <llvm/DataLayout.h>
 #else
-#include <llvm/Target/TargetData.h>
+#  include <llvm/Target/TargetData.h>
 #endif
 
 #include <llvm/Transforms/IPO.h>
@@ -2510,9 +2510,9 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 #endif
 
 #if defined (HAVE_LLVM)
-#define UNUSED_WITHOUT_LLVM(x) x
+#  define UNUSED_WITHOUT_LLVM(x) x
 #else
-#define UNUSED_WITHOUT_LLVM(x) x OCTAVE_UNUSED
+#  define UNUSED_WITHOUT_LLVM(x) x OCTAVE_UNUSED
 #endif
 
 DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),

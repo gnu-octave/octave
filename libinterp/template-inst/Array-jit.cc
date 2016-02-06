@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: Max Brister <max@2bass.com>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #ifdef HAVE_LLVM
@@ -40,8 +40,8 @@ NO_INSTANTIATE_ARRAY_SORT (jit_function);
 INSTANTIATE_ARRAY (jit_function, OCTINTERP_API);
 
 #ifdef Cell_h
-#error Must not include Cell.h in Array-jit.h
-#error This causes problems on MSVC
+#  error Must not include Cell.h in Array-jit.h
+#  error This causes problems on MSVC
 #endif
 
 #endif

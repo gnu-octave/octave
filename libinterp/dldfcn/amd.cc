@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // in the help of the functions.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cstdlib>
@@ -46,9 +46,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #if defined (ENABLE_64)
-#define AMD_NAME(name) amd_l ## name
+#  define AMD_NAME(name) amd_l ## name
 #else
-#define AMD_NAME(name) amd ## name
+#  define AMD_NAME(name) amd ## name
 #endif
 
 DEFUN_DLD (amd, args, nargout,

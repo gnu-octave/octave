@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <deque>
@@ -199,7 +199,7 @@ get_user_code (const std::string& fname = "")
 }
 
 #ifdef DBSTOP_NANINF
-#include "sigfpe.cc"
+#  include "sigfpe.cc"
 #endif
 
 enum

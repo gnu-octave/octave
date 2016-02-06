@@ -23,14 +23,14 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <ctime>
 #if defined (HAVE_UNORDERED_MAP)
-#include <unordered_map>
+#  include <unordered_map>
 #elif defined (HAVE_TR1_UNORDERED_MAP)
-#include <tr1/unordered_map>
+#  include <tr1/unordered_map>
 #endif
 #include <string>
 

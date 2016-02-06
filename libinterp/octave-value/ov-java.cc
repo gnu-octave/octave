@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "defun.h"
@@ -29,13 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "fpucw.h"
 
 #if HAVE_FPU_CONTROL_H
-#include <fpu_control.h>
+#  include <fpu_control.h>
 #endif
 
 #if defined HAVE_JAVA
 
 #if defined (HAVE_WINDOWS_H)
-#include <windows.h>
+#  include <windows.h>
 #endif
 
 #include <algorithm>
@@ -421,11 +421,11 @@ initial_class_path (void)
 }
 
 #ifndef _FPU_DEFAULT
-#if defined __i386__ || defined __x86_64__
-#define _FPU_DEFAULT 0x037f
-#else
-#define _FPU_DEFAULT 0
-#endif
+#  if defined __i386__ || defined __x86_64__
+#    define _FPU_DEFAULT 0x037f
+#  else
+#    define _FPU_DEFAULT 0
+#  endif
 #endif
 
 static void
@@ -508,17 +508,17 @@ initialize_jvm (void)
 #else
 
   // JAVA_LDPATH determined by configure and set in config.h
-#if defined (__APPLE__)
+#  if defined (__APPLE__)
   std::string jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.dylib");
-#else
+#  else
   std::string jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.so");
-#endif
+#  endif
 
 #endif
 
   jsize nVMs = 0;
 
-# if ! defined (__APPLE__) && ! defined (__MACH__)
+#if ! defined (__APPLE__) && ! defined (__MACH__)
 
   octave_shlib lib (jvm_lib_path);
 
@@ -600,7 +600,7 @@ initialize_jvm (void)
       vm_args.read_java_opts (initial_java_dir () + file_ops::dir_sep_str () +
                               "java.opts");
 
-# if ! defined (__APPLE__) && ! defined (__MACH__)
+#if ! defined (__APPLE__) && ! defined (__MACH__)
 
       if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
         throw std::string ("unable to start Java VM in ")+jvm_lib_path;
@@ -2166,7 +2166,6 @@ Internal function used @strong{only} when debugging Java interface.\n\
 Function will directly call initialize_java to create an instance of a JVM.\n\
 @end deftypefn")
 {
-
 #ifdef HAVE_JAVA
   octave_value retval;
 
@@ -2239,9 +2238,7 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
   return ovl (octave_java::do_javaObject (current_env, classname, tmp));
 
 #else
-
   error ("javaObject: Octave was not compiled with Java interface");
-
 #endif
 }
 
@@ -2313,9 +2310,7 @@ equivalent\n\
   return retval;
 
 #else
-
   error ("javaMethod: Octave was not compiled with Java interface");
-
 #endif
 }
 
@@ -2377,9 +2372,7 @@ equivalent\n\
   return retval;
 
 #else
-
   error ("__java_get__: Octave was not compiled with Java interface");
-
 #endif
 }
 
@@ -2435,9 +2428,7 @@ equivalent\n\
   return retval;
 
 #else
-
   error ("__java_set__: Octave was not compiled with Java interface");
-
 #endif
 }
 
@@ -2469,9 +2460,7 @@ Undocumented internal function.\n\
   return retval;
 
 #else
-
   error ("java2mat: Octave was not compiled with Java interface");
-
 #endif
 }
 

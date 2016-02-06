@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 // Used when converting Inf to something that gnuplot can read.
 
 #ifndef OCT_RBV
-#define OCT_RBV (std::numeric_limits<double>::max () / 100.0)
+#  define OCT_RBV (std::numeric_limits<double>::max () / 100.0)
 #endif
 
 extern OCTINTERP_API std::string

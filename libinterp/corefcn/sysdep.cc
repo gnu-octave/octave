@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cfloat>
@@ -37,27 +37,27 @@ along with Octave; see the file COPYING.  If not, see
 #include <unistd.h>
 
 #if defined (HAVE_TERMIOS_H)
-#include <termios.h>
+#  include <termios.h>
 #elif defined (HAVE_TERMIO_H)
-#include <termio.h>
+#  include <termio.h>
 #elif defined (HAVE_SGTTY_H)
-#include <sgtty.h>
+#  include <sgtty.h>
 #endif
 
 #if defined (HAVE_CONIO_H)
-#include <conio.h>
+#  include <conio.h>
 #endif
 
 #if defined (HAVE_SYS_IOCTL_H)
-#include <sys/ioctl.h>
+#  include <sys/ioctl.h>
 #endif
 
 #if defined (HAVE_FLOATINGPOINT_H)
-#include <floatingpoint.h>
+#  include <floatingpoint.h>
 #endif
 
 #if defined (HAVE_IEEEFP_H)
-#include <ieeefp.h>
+#  include <ieeefp.h>
 #endif
 
 #include "cmd-edit.h"
@@ -86,20 +86,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 
 #ifndef STDIN_FILENO
-#define STDIN_FILENO 1
+#  define STDIN_FILENO 1
 #endif
 
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
 static void
 BSD_init (void)
 {
-#if defined (HAVE_FLOATINGPOINT_H)
+#  if defined (HAVE_FLOATINGPOINT_H)
   // Disable trapping on common exceptions.
-#ifndef FP_X_DNML
-#define FP_X_DNML 0
-#endif
+#    ifndef FP_X_DNML
+#      define FP_X_DNML 0
+#    endif
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
-#endif
+#  endif
 }
 #endif
 

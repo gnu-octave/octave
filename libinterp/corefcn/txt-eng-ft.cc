@@ -21,13 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #if defined (HAVE_FREETYPE)
 
 #if defined (HAVE_FONTCONFIG)
-#include <fontconfig/fontconfig.h>
+#  include <fontconfig/fontconfig.h>
 #endif
 
 #include <clocale>

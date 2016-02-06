@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_defun_dld_h 1
 
 #if defined (octave_defun_h)
-#error defun.h and defun-dld.h both included in same file!
+#  error defun.h and defun-dld.h both included in same file!
 #endif
 
 #include "defun-int.h"

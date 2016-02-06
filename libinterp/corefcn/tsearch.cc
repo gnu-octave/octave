@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: Andreas Stahel <Andreas.Stahel@hta-bi.bfh.ch>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "lo-ieee.h"

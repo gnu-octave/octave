@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cfloat>
@@ -42,9 +42,9 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
 #if defined (HAVE_GLPK_GLPK_H)
-#include <glpk/glpk.h>
+#  include <glpk/glpk.h>
 #else
-#include <glpk.h>
+#  include <glpk.h>
 #endif
 }
 

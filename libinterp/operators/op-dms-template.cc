@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "ops.h"
@@ -33,11 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 // matrix by diag matrix ops.
 
 #ifndef SCALARV
-#define SCALARV SCALAR
+#  define SCALARV SCALAR
 #endif
 
 #ifndef MATRIXV
-#define MATRIXV MATRIX
+#  define MATRIXV MATRIX
 #endif
 
 DEFNDBINOP_OP (sdmmul, SCALAR, MATRIX, SCALARV, MATRIXV, *)

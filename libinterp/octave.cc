@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Born February 20, 1992.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <cassert>

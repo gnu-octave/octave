@@ -58,8 +58,8 @@ typedef int bool;
 
 /* -V4 stuff */
 #if defined (V4)
-#define Matrix mxArray
-#define REAL mxREAL
+#  define Matrix mxArray
+#  define REAL mxREAL
 #endif
 
 #define mxMAXNAME 64
@@ -107,67 +107,67 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[]);
 /* Apparently these are also defined.  */
 
 #ifndef UINT64_T
-#define UINT64_T uint64_t
+#  define UINT64_T uint64_t
 #endif
 
 #ifndef uint64_T
-#define uint64_T uint64_t
+#  define uint64_T uint64_t
 #endif
 
 #ifndef INT64_T
-#define INT64_T int64_t
+#  define INT64_T int64_t
 #endif
 
 #ifndef int64_T
-#define int64_T int64_t
+#  define int64_T int64_t
 #endif
 
 #ifndef UINT32_T
-#define UINT32_T uint32_t
+#  define UINT32_T uint32_t
 #endif
 
 #ifndef uint32_T
-#define uint32_T uint32_t
+#  define uint32_T uint32_t
 #endif
 
 #ifndef INT32_T
-#define INT32_T int32_t
+#  define INT32_T int32_t
 #endif
 
 #ifndef int32_T
-#define int32_T int32_t
+#  define int32_T int32_t
 #endif
 
 #ifndef UINT16_T
-#define UINT16_T uint16_t
+#  define UINT16_T uint16_t
 #endif
 
 #ifndef uint16_T
-#define uint16_T uint16_t
+#  define uint16_T uint16_t
 #endif
 
 #ifndef INT16_T
-#define INT16_T int16_t
+#  define INT16_T int16_t
 #endif
 
 #ifndef int16_T
-#define int16_T int16_t
+#  define int16_T int16_t
 #endif
 
 #ifndef UINT8_T
-#define UINT8_T uint8_t
+#  define UINT8_T uint8_t
 #endif
 
 #ifndef uint8_T
-#define uint8_T uint8_t
+#  define uint8_T uint8_t
 #endif
 
 #ifndef INT8_T
-#define INT8_T int8_t
+#  define INT8_T int8_t
 #endif
 
 #ifndef int8_T
-#define int8_T int8_t
+#  define int8_T int8_t
 #endif
 
 #if defined (__cplusplus)

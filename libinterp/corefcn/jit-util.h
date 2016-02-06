@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stdexcept>
 
 #if defined (HAVE_LLVM_IR_DATALAYOUT_H) || defined (HAVE_LLVM_DATALAYOUT_H)
-#define HAVE_LLVM_DATALAYOUT
+#  define HAVE_LLVM_DATALAYOUT
 #endif
 
 // we don't want to include llvm headers here, as they require

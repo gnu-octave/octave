@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <iostream>
@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hdf5.h"
 #include "ov-class.h"
 #ifdef HAVE_JAVA
-#include "ov-java.h"
+#  include "ov-java.h"
 #endif
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"

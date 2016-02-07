@@ -33,12 +33,12 @@ To initialize:
 #  include <config.h>
 #endif
 
+#include "build-env.h"
 #include "builtins.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "file-stat.h"
 #include "graphics.h"
-#include "oct-conf.h"
 #include "oct-env.h"
 #include "parse.h"
 #include "utils.h"
@@ -170,7 +170,7 @@ private:
 static bool
 have_gnuplot_binary (void)
 {
-  const std::string exeext = octave::config::EXEEXT;
+  const std::string exeext = octave::build_env::EXEEXT;
   const std::string path = octave_env::getenv ("PATH");
 
   octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());

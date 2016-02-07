@@ -25,11 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include "oct-conf.h"
+#include "build-env.h"
 
 namespace octave
 {
-  namespace config
+  namespace build_env
   {
     const char *ALL_CFLAGS = %OCTAVE_CONF_ALL_CFLAGS%;
 

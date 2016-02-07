@@ -16,12 +16,12 @@ cat << EOF
 #include <config.h>
 #endif
 
-#include "oct-conf-features.h"
+#include "build-env.h"
 #include "ov.h"
 
 namespace octave
 {
-  namespace config
+  namespace build_env
   {
     octave_scalar_map
     features (void)

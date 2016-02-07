@@ -42,9 +42,9 @@ GENERATED_MAKE_BUILTINS_INCS = \
 
 BUILT_SOURCES += \
   $(GENERATED_MAKE_BUILTINS_INCS) \
+  libinterp/build-env.cc \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
-  libinterp/oct-conf.cc \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/oct-tex-lexer.cc \
   libinterp/corefcn/oct-tex-parser.cc \
@@ -73,14 +73,14 @@ LIBINTERP_BUILT_DISTFILES = \
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
 LIBINTERP_BUILT_NODISTFILES = \
+  libinterp/build-env.cc \
+  libinterp/build-env-features.cc \
   libinterp/corefcn/mxarray.h \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/defaults.h \
   libinterp/corefcn/graphics.h \
   libinterp/builtin-defun-decls.h \
   libinterp/operators/ops.cc \
-  libinterp/oct-conf.cc \
-  libinterp/oct-conf-features.cc \
   libinterp/version.h \
   $(OPT_HANDLERS) \
   $(ALL_DEF_FILES) \
@@ -88,7 +88,8 @@ LIBINTERP_BUILT_NODISTFILES = \
 
 libinterp_EXTRA_DIST += \
   libinterp/DOCSTRINGS \
-  libinterp/config-features.sh \
+  libinterp/build-env.in.cc \
+  libinterp/build-env-features.sh \
   libinterp/find-defun-files.sh \
   libinterp/gendoc.pl \
   libinterp/genprops.awk \
@@ -97,7 +98,6 @@ libinterp_EXTRA_DIST += \
   libinterp/mkbuiltins \
   libinterp/mkdefs \
   libinterp/mkops \
-  libinterp/oct-conf.in.cc \
   libinterp/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
 
@@ -106,8 +106,7 @@ octinclude_HEADERS += \
   libinterp/parse-tree/oct-gperf.h \
   libinterp/builtins.h \
   libinterp/builtin-defun-decls.h \
-  libinterp/oct-conf.h \
-  libinterp/oct-conf-features.h \
+  libinterp/build-env.h \
   libinterp/octave.h \
   libinterp/options-usage.h \
   $(OCTAVE_VALUE_INC) \
@@ -161,8 +160,8 @@ nodist_libinterp_liboctinterp_la_SOURCES = \
   libinterp/operators/ops.cc \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
-  libinterp/oct-conf.cc \
-  libinterp/oct-conf-features.cc \
+  libinterp/build-env.cc \
+  libinterp/build-env-features.cc \
   libinterp/version.h
 
 libinterp_liboctinterp_la_LIBADD = \
@@ -246,16 +245,16 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-## oct-conf.cc must depend on Makefile.
+## build-env.cc must depend on Makefile.
 ## Calling configure may change default/config values.
 ## However, calling configure will also regenerate the Makefiles from
 ## Makefile.am and trigger the rules below.
-libinterp/oct-conf.cc: libinterp/oct-conf.in.cc Makefile
+libinterp/build-env.cc: libinterp/build-env.in.cc Makefile
 	$(AM_V_GEN)$(do_subst_config_vals)
 
-libinterp/oct-conf-features.cc: $(top_builddir)/config.h libinterp/config-features.sh
+libinterp/build-env-features.cc: $(top_builddir)/config.h libinterp/build-env-features.sh
 	$(AM_V_GEN)rm -f $@-t && \
-	$(srcdir)/libinterp/config-features.sh $< > $@-t && \
+	$(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
 	$(simple_move_if_change_rule)
 
 libinterp/version.h: libinterp/version.in.h Makefile

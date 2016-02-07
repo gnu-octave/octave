@@ -20,13 +20,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_oct_conf_h)
-#define octave_oct_conf_h 1
+#if ! defined (octave_build_env_h)
+#define octave_build_env_h 1
+
+#include "oct-map.h"
 
 namespace octave
 {
-  namespace config
+  namespace build_env
   {
+    extern OCTAVE_API octave_scalar_map features (void);
+
     extern const char *ALL_CFLAGS;
     extern const char *ALL_CXXFLAGS;
     extern const char *ALL_FFLAGS;

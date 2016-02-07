@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "str-vec.h"
 
+#include "build-env.h"
 #include "builtins.h"
 #include "defaults.h"
 #include "Cell.h"
@@ -60,7 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "load-save.h"
 #include "octave.h"
-#include "oct-conf.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-mutex.h"

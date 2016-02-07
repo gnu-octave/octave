@@ -2190,7 +2190,7 @@ template <typename RHS_T, typename RET_T>
 RET_T
 sparse_qr<SPARSE_T>::tall_solve (const RHS_T& b, octave_idx_type& info) const
 {
-  return rep->tall_solve<RHS_T, RET_T> (b, info);
+  return rep->template tall_solve<RHS_T, RET_T> (b, info);
 }
 
 template <typename SPARSE_T>
@@ -2198,7 +2198,7 @@ template <typename RHS_T, typename RET_T>
 RET_T
 sparse_qr<SPARSE_T>::wide_solve (const RHS_T& b, octave_idx_type& info) const
 {
-  return rep->wide_solve<RHS_T, RET_T> (b, info);
+  return rep->template wide_solve<RHS_T, RET_T> (b, info);
 }
 
 Matrix

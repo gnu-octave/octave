@@ -34,14 +34,14 @@ UTIL_INC = \
   liboctave/util/singleton-cleanup.h \
   liboctave/util/sparse-sort.h \
   liboctave/util/sparse-util.h \
-  liboctave/util/statdefs.h \
   liboctave/util/str-vec.h \
   liboctave/util/sun-utils.h \
   liboctave/util/unwind-prot.h \
   liboctave/util/url-transfer.h
 
 NOINSTALL_UTIL_INC = \
-  liboctave/util/oct-sparse.h
+  liboctave/util/oct-sparse.h \
+  liboctave/util/statdefs.h
 
 UTIL_C_SRC = \
   liboctave/util/f2c-main.c \

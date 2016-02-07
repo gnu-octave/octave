@@ -82,7 +82,6 @@ COREFCN_INC = \
   libinterp/corefcn/procstream.h \
   libinterp/corefcn/profiler.h \
   libinterp/corefcn/sighandlers.h \
-  libinterp/corefcn/siglist.h \
   libinterp/corefcn/sparse-xdiv.h \
   libinterp/corefcn/sparse-xpow.h \
   libinterp/corefcn/symtab.h \
@@ -109,7 +108,8 @@ C_COREFCN_SRC = \
   libinterp/corefcn/siglist.c
 
 NOINSTALL_COREFCN_INC = \
-  libinterp/corefcn/oct-opengl.h
+  libinterp/corefcn/oct-opengl.h \
+  libinterp/corefcn/siglist.h
 
 COREFCN_SRC = \
   libinterp/corefcn/Cell.cc \

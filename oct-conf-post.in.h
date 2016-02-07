@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (GNULIB_NAMESPACE)
+#if ! defined (GNULIB_NAMESPACE)
 #  define GNULIB_NAMESPACE gnulib
 #endif
 
@@ -37,13 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (__GNUC__)
    /* The following attributes are used with gcc and clang compilers.  */
 #  define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
-#  define HAVE_ATTR_DEPRECATED
+#  define HAVE_ATTR_DEPRECATED 1
 
 #  define OCTAVE_NORETURN __attribute__ ((__noreturn__))
-#  define HAVE_ATTR_NORETURN
+#  define HAVE_ATTR_NORETURN 1
 
 #  define OCTAVE_UNUSED __attribute__ ((__unused__))
-#  define HAVE_ATTR_UNUSED
+#  define HAVE_ATTR_UNUSED 1
 #else
 #  define OCTAVE_DEPRECATED(msg)
 #  define OCTAVE_NORETURN
@@ -59,8 +59,8 @@ typedef unsigned long ino_t;
 #endif
 
 #if defined (_MSC_VER)
-#  define __WIN32__
-#  define WIN32
+#  define __WIN32__ 1
+#  define WIN32 1
    /* missing parameters in macros */
 #  pragma warning (disable: 4003)
    /* missing implementations in template instantiation */
@@ -89,7 +89,7 @@ typedef unsigned long ino_t;
 
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
-#  define OCTAVE_HAVE_SIG_JUMP
+#  define OCTAVE_HAVE_SIG_JUMP 1
 #endif
 
 #if defined (_UNICOS)
@@ -175,11 +175,11 @@ typedef unsigned long ino_t;
 #endif
 
 #if defined (ENABLE_64)
-#  define USE_64_BIT_IDX_T
+#  define USE_64_BIT_IDX_T 1
 #endif
 
 #if defined (ENABLE_OPENMP)
-#  define HAVE_OPENMP
+#  define HAVE_OPENMP 1
 #endif
 
 #if defined (ENABLE_FLOAT_TRUNCATE)

@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 
 #ifdef HAVE_LOADLIBRARY_API
-#  define WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
 #endif
 

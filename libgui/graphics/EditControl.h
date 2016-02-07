@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef octave_EditControl_h
+#if ! defined (octave_EditControl_h)
 #define octave_EditControl_h 1
 
 #include "BaseControl.h"

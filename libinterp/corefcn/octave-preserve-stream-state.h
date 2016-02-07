@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_preserve_stream_state_h)
-#define octave_preserve_stream_state_h 1
+#if ! defined (octave_octave_preserve_stream_state_h)
+#define octave_octave_preserve_stream_state_h 1
 
 class
 octave_preserve_stream_state

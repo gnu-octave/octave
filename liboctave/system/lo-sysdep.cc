@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <fcntl.h>
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-#  define WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
 #endif
 

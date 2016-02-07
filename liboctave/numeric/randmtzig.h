@@ -61,7 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_randmtzig_h)
+#if ! defined (octave_randmtzig_h)
 #define octave_randmtzig_h 1
 
 #define MT_N 624

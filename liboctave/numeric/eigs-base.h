@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_eigs_base_h)
+#if ! defined (octave_eigs_base_h)
 #define octave_eigs_base_h 1
 
 #include <iosfwd>

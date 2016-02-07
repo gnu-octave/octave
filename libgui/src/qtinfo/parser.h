@@ -24,6 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 // Author: P. L. Lucas
 // Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
+#if ! defined (octave_parser_h)
+#define octave_parser_h 1
+
 #include <QStringList>
 #include <QIODevice>
 #include <QFileInfoList>
@@ -120,3 +123,5 @@ private:
   QList<info_file_item>         _info_file_real_size_list;
   QHash<QString, QString>       _compressors_map;
 };
+
+#endif

@@ -129,9 +129,9 @@ octave_syscalls::vfork (std::string& msg)
 #if defined (HAVE_VFORK) || defined (HAVE_FORK)
 #  if defined (HAVE_VFORK)
   status = ::vfork ();
-#else
+#  else
   status = ::fork ();
-#endif
+#  endif
 
   if (status < 0)
     msg = gnulib::strerror (errno);

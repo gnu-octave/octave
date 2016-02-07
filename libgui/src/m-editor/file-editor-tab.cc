@@ -33,10 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_QSCINTILLA
 
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
-#  define HAVE_LEXER_OCTAVE
+#  define HAVE_LEXER_OCTAVE 1
 #  include <Qsci/qscilexeroctave.h>
 #elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
-#  define HAVE_LEXER_MATLAB
+#  define HAVE_LEXER_MATLAB 1
 #  include <Qsci/qscilexermatlab.h>
 #endif
 #include <Qsci/qscilexercpp.h>

@@ -28,8 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array.cc"
-#define INLINE_ASCENDING_SORT
-#define INLINE_DESCENDING_SORT
+#define INLINE_ASCENDING_SORT 1
+#define INLINE_DESCENDING_SORT 1
 #include "oct-sort.cc"
 
 template class OCTAVE_API octave_sort<char>;

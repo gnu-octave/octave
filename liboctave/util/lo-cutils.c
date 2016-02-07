@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
    on some systems.  */
 
 #if ! defined (_XOPEN_SOURCE)
-#define _XOPEN_SOURCE
+#  define _XOPEN_SOURCE 1
 #endif
 
 #include <sys/types.h>

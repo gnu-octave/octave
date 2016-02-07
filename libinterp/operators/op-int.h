@@ -20,6 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#if ! defined (octave_op_int_h)
+#define octave_op_int_h 1
+
 #include "quit.h"
 #include "bsxfun.h"
 
@@ -1163,3 +1166,5 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_SM_INT_CMP_OPS (T1 ## _ ## T2 ## _sm, T1 ## _, T2 ## _) \
   OCTAVE_INSTALL_MS_INT_CMP_OPS (T1 ## _ ## T2 ## _ms, T1 ## _, T2 ## _) \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (T1 ## _ ## T2 ## _mm, T1 ## _, T2 ## _)
+
+#endif

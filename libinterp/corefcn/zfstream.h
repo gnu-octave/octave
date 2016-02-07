@@ -30,8 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef ZFSTREAM_H
-#define ZFSTREAM_H
+#if ! defined (octave_zfsstream_h)
+#define octave_zfsstream_h 1
 
 #ifdef HAVE_ZLIB
 

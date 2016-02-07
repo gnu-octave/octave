@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (txt_eng_h)
-#define txt_eng_h 1
+#if ! defined (octave_txt_eng_h)
+#define octave_txt_eng_h 1
 
 #include <memory>
 #include <string>

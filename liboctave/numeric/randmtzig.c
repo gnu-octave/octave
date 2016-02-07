@@ -362,7 +362,7 @@ randi53 (void)
 {
   const uint32_t lo = randi32 ();
   const uint32_t hi = randi32 ()&0x1FFFFF;
-#if HAVE_X86_32
+#ifdef HAVE_X86_32
   uint64_t u;
   uint32_t *p = (uint32_t *)&u;
   p[0] = lo;
@@ -378,7 +378,7 @@ randi54 (void)
 {
   const uint32_t lo = randi32 ();
   const uint32_t hi = randi32 ()&0x3FFFFF;
-#if HAVE_X86_32
+#ifdef HAVE_X86_32
   uint64_t u;
   uint32_t *p = (uint32_t *)&u;
   p[0] = lo;
@@ -577,7 +577,7 @@ oct_randn (void)
        * Of course, different compilers and operating systems may
        * have something to do with this.
        */
-# if HAVE_X86_32
+# ifdef HAVE_X86_32
       /* 53-bit mantissa, 1-bit sign, x86 32-bit architecture */
       double x;
       int si,idx;

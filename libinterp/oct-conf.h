@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_conf_h)
-#define octave_conf_h 1
+#if ! defined (octave_oct_conf_h)
+#define octave_oct_conf_h 1
 
 namespace octave
 {

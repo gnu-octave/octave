@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Torsten <ttl@justmail.de>
 
-#if ! defined (octave_txt_lexer_h)
-#define octave_txt_lexer_h 1
+#if ! defined (octave_octave_txt_lexer_h)
+#define octave_octave_txt_lexer_h 1
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>

@@ -42,10 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include <QScrollArea>
 
 #  if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
-#    define HAVE_LEXER_OCTAVE
+#    define HAVE_LEXER_OCTAVE 1
 #    include <Qsci/qscilexeroctave.h>
 #  elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
-#    define HAVE_LEXER_MATLAB
+#    define HAVE_LEXER_MATLAB 1
 #    include <Qsci/qscilexermatlab.h>
 #  endif
 

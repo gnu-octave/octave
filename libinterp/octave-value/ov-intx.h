@@ -21,6 +21,11 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// FIXME: Do not uncomment these lines to have this file included only once.
+//        The build will break (2/6/2016).
+// #if ! defined (octave_ov_intx_h)
+// #define octave_ov_intx_h 1
+
 #include <cstdlib>
 
 #include <iosfwd>

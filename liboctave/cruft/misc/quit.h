@@ -36,7 +36,7 @@ extern "C" {
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
-#define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 
 CRUFT_API extern void w32_sigint_init (void);   /* setup */

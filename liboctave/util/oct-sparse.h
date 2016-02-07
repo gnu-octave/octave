@@ -97,7 +97,7 @@ along with Octave; see the file COPYING.  If not, see
 // Cope with new SuiteSparse versions
 
 #if defined (SUITESPARSE_VERSION)
-#  if SUITESPARSE_VERSION >= SUITESPARSE_VER_CODE (4, 3)
+#  if (SUITESPARSE_VERSION >= SUITESPARSE_VER_CODE (4, 3))
 #    define SUITESPARSE_NAME(name) SuiteSparse_ ## name
 #    define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (SuiteSparse_config.f_name = f_assign)
 #    define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (SuiteSparse_config.f_name = SUITESPARSE_NAME (f_assign))

@@ -24,6 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 // Author: P. L. Lucas
 // Author: 2012 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
+#if ! defined (octave_webinfo_h)
+#define octave_webinfo_h 1
+
 #include <QTextBrowser>
 #include "parser.h"
 #include <QStackedWidget>
@@ -69,3 +72,5 @@ private:
 
   QTextBrowser *addNewTab (const QString& name);
 };
+
+#endif

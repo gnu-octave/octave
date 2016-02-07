@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #warning "the octave_allocator class has been deprecated and will be removed in a future release of Octave"
 
-#define DECLARE_OCTAVE_ALLOCATOR
+#define DECLARE_OCTAVE_ALLOCATOR 1
 #define DEFINE_OCTAVE_ALLOCATOR(t)
 #define DEFINE_OCTAVE_ALLOCATOR2(t, s)
 

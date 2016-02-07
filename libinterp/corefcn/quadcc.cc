@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #define DEBUG_QUADCC 0
 
 // Define the minimum size of the interval heap.
-#define min_cquad_heapsize  200
+#define MIN_CQUAD_HEAPSIZE  200
 
 // Data of a single interval.
 typedef struct
@@ -1615,8 +1615,8 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   else
     nivals = 1 + args(4).numel ();
 
-  int cquad_heapsize = (nivals >= min_cquad_heapsize ? nivals + 1
-                                                     : min_cquad_heapsize);
+  int cquad_heapsize = (nivals >= MIN_CQUAD_HEAPSIZE ? nivals + 1
+                                                     : MIN_CQUAD_HEAPSIZE);
   // The interval heap.
   OCTAVE_LOCAL_BUFFER (cquad_ival, ivals, cquad_heapsize);
   OCTAVE_LOCAL_BUFFER (double, iivals, cquad_heapsize);

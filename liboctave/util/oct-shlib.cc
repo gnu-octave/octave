@@ -50,7 +50,7 @@ extern int dlclose (void *);
 #elif defined (HAVE_SHL_LOAD_API)
 #  include <dl.h>
 #elif defined (HAVE_LOADLIBRARY_API)
-#  define WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
 #endif
 }

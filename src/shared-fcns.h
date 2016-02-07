@@ -20,6 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#if ! defined (octave_shared_fcns_h)
+#define octave_shared_fcns_h 1
+
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
 #include <windows.h>
@@ -140,3 +143,5 @@ subst_octave_home (const std::string& s)
 
   return retval;
 }
+
+#endif

@@ -81,6 +81,7 @@ NUMERIC_INC = \
   liboctave/numeric/randmtzig.h \
   liboctave/numeric/randpoisson.h \
   liboctave/numeric/sparse-chol.h \
+  liboctave/numeric/sparse-dmsolve.h \
   liboctave/numeric/sparse-lu.h \
   liboctave/numeric/sparse-qr.h
 
@@ -144,6 +145,7 @@ NUMERIC_SRC = \
   liboctave/numeric/oct-rand.cc \
   liboctave/numeric/oct-spparms.cc \
   liboctave/numeric/sparse-chol.cc \
+  liboctave/numeric/sparse-dmsolve.cc \
   liboctave/numeric/sparse-lu.cc \
   liboctave/numeric/sparse-qr.cc \
   $(NUMERIC_C_SRC)
@@ -151,8 +153,7 @@ NUMERIC_SRC = \
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/numeric/base-lu.cc \
   liboctave/numeric/base-qr.cc \
-  liboctave/numeric/bsxfun-defs.cc \
-  liboctave/numeric/sparse-dmsolve.cc
+  liboctave/numeric/bsxfun-defs.cc
 
 ## Special rules for sources which must be built before rest of compilation.
 $(LIBOCTAVE_OPT_INC) : %.h : %.in

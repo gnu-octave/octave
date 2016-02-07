@@ -61,8 +61,8 @@ along with Octave; see the file COPYING.  If not, see
 // Define whether to use a basic QR solver or one that uses a Dulmange
 // Mendelsohn factorization to seperate the problem into under-determined,
 // well-determined and over-determined parts and solves them seperately
-#ifndef USE_QRSOLVE
-#  include "sparse-dmsolve.cc"
+#if ! defined (USE_QRSOLVE)
+#  include "sparse-dmsolve.h"
 #endif
 
 // Fortran functions we call.

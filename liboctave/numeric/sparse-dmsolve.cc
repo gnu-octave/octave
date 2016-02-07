@@ -475,3 +475,37 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 
 #endif
 }
+
+// Instantiations we need.
+
+template ComplexMatrix
+dmsolve<ComplexMatrix, SparseComplexMatrix, Matrix>
+  (const SparseComplexMatrix&, const Matrix&, octave_idx_type&);
+
+template SparseComplexMatrix
+dmsolve<SparseComplexMatrix, SparseComplexMatrix, SparseMatrix>
+  (const SparseComplexMatrix&, const SparseMatrix&, octave_idx_type&);
+
+template ComplexMatrix
+dmsolve<ComplexMatrix, SparseComplexMatrix, ComplexMatrix>
+  (const SparseComplexMatrix&, const ComplexMatrix&, octave_idx_type&);
+
+template SparseComplexMatrix
+dmsolve<SparseComplexMatrix, SparseComplexMatrix, SparseComplexMatrix>
+  (const SparseComplexMatrix&, const SparseComplexMatrix&, octave_idx_type&);
+
+template Matrix
+dmsolve<Matrix, SparseMatrix, Matrix>
+  (const SparseMatrix&, const Matrix&, octave_idx_type&);
+
+template SparseMatrix
+dmsolve<SparseMatrix, SparseMatrix, SparseMatrix>
+  (const SparseMatrix&, const SparseMatrix&, octave_idx_type&);
+
+template ComplexMatrix
+dmsolve<ComplexMatrix, SparseMatrix, ComplexMatrix>
+  (const SparseMatrix&, const ComplexMatrix&, octave_idx_type&);
+
+template SparseComplexMatrix
+dmsolve<SparseComplexMatrix, SparseMatrix, SparseComplexMatrix>
+  (const SparseMatrix&, const SparseComplexMatrix&, octave_idx_type&);

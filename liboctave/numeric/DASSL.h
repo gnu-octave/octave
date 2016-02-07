@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cfloat>
 
 #include "DASSL-opts.h"
-#include "lo-math.h"
 
 class
 OCTAVE_API

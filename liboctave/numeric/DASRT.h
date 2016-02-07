@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cfloat>
 
 #include "DASRT-opts.h"
-#include "lo-math.h"
 
 class
 DASRT_result

@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dColVector.h"
 #include "fColVector.h"
-#include "lo-math.h"
 
 typedef double (*integrand_fcn) (double x);
 typedef float (*float_integrand_fcn) (float x);

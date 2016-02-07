@@ -40,6 +40,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-time.h"
 
+octave_time::octave_time (double d)
+  : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)
+{
+  double ip;
+  ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
+}
+
 octave_time::octave_time (const octave_base_tm& tm)
   : ot_unix_time (), ot_usec ()
 {

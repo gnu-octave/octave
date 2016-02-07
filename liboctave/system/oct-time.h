@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 #include <string>
 
-#include "lo-math.h"
-
 class octave_base_tm;
 
 class
@@ -64,12 +62,7 @@ public:
     ot_unix_time += extra;
   }
 
-  octave_time (double d)
-    : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)
-  {
-    double ip;
-    ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
-  }
+  octave_time (double d);
 
   octave_time (const octave_base_tm& tm);
 

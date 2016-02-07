@@ -10763,26 +10763,17 @@ undocumented.\n\
 
           file = args(1).xstring_value ("drawnow: FILE must be a string");
 
-          size_t pos_p = file.find_first_of ("|");
-          size_t pos_c = file.find_first_not_of ("| ");
-
-          if (pos_p == std::string::npos &&
-              pos_c == std::string::npos)
+          if (file.empty ())
             error ("drawnow: empty output ''");
-          else if (pos_c == std::string::npos)
+          else if (file.length () == 1 && file[0] == '|')
             error ("drawnow: empty pipe '|'");
-          else if (pos_p != std::string::npos && pos_p < pos_c)
-            {
-              // Strip leading pipe character
-              file = file.substr (pos_c);
-            }
-          else
+          else if (file[0] != '|')
             {
               size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
 
               if (pos != std::string::npos)
                 {
-                  std::string dirname = file.substr (pos_c, pos+1);
+                  std::string dirname = file.substr (0, pos+1);
 
                   file_stat fs (dirname);
 

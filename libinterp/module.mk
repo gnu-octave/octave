@@ -24,7 +24,7 @@ libinterp_liboctinterp_la_CPPFLAGS = \
 
 libinterp_liboctinterp_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-libinterp_liboctinterp_la_CXXFLAGS = $(AM_CFLAGS) $(WARN_CXXFLAGS)
+libinterp_liboctinterp_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 octlib_LTLIBRARIES += libinterp/liboctinterp.la
 

@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #  error "The file <octave/config.h> must be included before oct-refcount.h."
 #endif
 
-#if defined (ENABLE_ATOMIC_REFCOUNT) && (defined (_MSC_VER) || defined (__GNUC__))
+#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT) && (defined (_MSC_VER) || defined (__GNUC__))
 #  if defined (_MSC_VER)
 #    include <intrin.h>
 #    define OCTREFCOUNT_ATOMIC_INCREMENT(x) _InterlockedIncrement((long*)x)

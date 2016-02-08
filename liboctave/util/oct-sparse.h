@@ -87,7 +87,7 @@ along with Octave; see the file COPYING.  If not, see
      || defined (HAVE_UFSPARSE_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_H))
-#  if defined (ENABLE_64)
+#  if defined (OCTAVE_ENABLE_64)
 #    define CHOLMOD_NAME(name) cholmod_l_ ## name
 #  else
 #    define CHOLMOD_NAME(name) cholmod_ ## name
@@ -108,7 +108,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (HAVE_CXSPARSE)
-#  if defined (ENABLE_64)
+#  if defined (OCTAVE_ENABLE_64)
 #    define CXSPARSE_DNAME(name) cs_dl ## name
 #    define CXSPARSE_ZNAME(name) cs_cl ## name
 #  else
@@ -118,7 +118,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (HAVE_UMFPACK)
-#  if defined (ENABLE_64)
+#  if defined (OCTAVE_ENABLE_64)
 #    define UMFPACK_DNAME(name) umfpack_dl_ ## name
 #    define UMFPACK_ZNAME(name) umfpack_zl_ ## name
 #  else

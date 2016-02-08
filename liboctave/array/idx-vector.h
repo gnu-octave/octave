@@ -562,7 +562,7 @@ public:
 
   octave_idx_type operator () (octave_idx_type n) const
   {
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     return rep->checkelem (n);
 #else
     return rep->xelem (n);

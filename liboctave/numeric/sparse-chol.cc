@@ -253,7 +253,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   ac->packed = true;
   ac->sorted = true;
   ac->nz = 0;
-#if defined (ENABLE_64)
+#if defined (OCTAVE_ENABLE_64)
   ac->itype = CHOLMOD_LONG;
 #else
   ac->itype = CHOLMOD_INT;

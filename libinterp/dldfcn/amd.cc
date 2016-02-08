@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "oct-locbuf.h"
 
-#if defined (ENABLE_64)
+#if defined (OCTAVE_ENABLE_64)
 #  define AMD_NAME(name) amd_l ## name
 #else
 #  define AMD_NAME(name) amd ## name

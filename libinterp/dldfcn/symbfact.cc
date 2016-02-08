@@ -131,7 +131,7 @@ factorization as determined by @var{typ}.\n\
   A->packed = true;
   A->sorted = true;
   A->nz = 0;
-#if defined (ENABLE_64)
+#if defined (OCTAVE_ENABLE_64)
   A->itype = CHOLMOD_LONG;
 #else
   A->itype = CHOLMOD_INT;

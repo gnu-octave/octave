@@ -236,7 +236,7 @@ AC_ARG_ENABLE([bounds-check],
     [enable bounds checking for indexing in internal array classes])],
   [if test "$enableval" = yes; then ENABLE_BOUNDS_CHECK=yes; fi], [])
 if test $ENABLE_BOUNDS_CHECK = yes; then
-  AC_DEFINE(ENABLE_BOUNDS_CHECK, 1, [Define to 1 to use internal bounds checking.])
+  AC_DEFINE(OCTAVE_ENABLE_BOUNDS_CHECK, 1, [Define to 1 to use internal bounds checking.])
 fi
 
 ### Use atomic operations for internal reference counting.  This is required
@@ -249,7 +249,7 @@ AC_ARG_ENABLE([atomic-refcount],
     [Do not use atomic operations for internal reference counting.  This option is required for thread-safe behavior as used in the GUI's Qt plotting toolkit.  Performance for CLI-only builds is improved by disabling this feature.])],
   [if test "$enableval" = no; then ENABLE_ATOMIC_REFCOUNT=no; fi], [])
 if test $ENABLE_ATOMIC_REFCOUNT = yes; then
-  AC_DEFINE(ENABLE_ATOMIC_REFCOUNT, 1,
+  AC_DEFINE(OCTAVE_ENABLE_ATOMIC_REFCOUNT, 1,
     [Define to 1 to use atomic operations for reference counting.])
 fi
 
@@ -290,7 +290,7 @@ AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
 if test $ENABLE_64 = yes; then
-  AC_DEFINE(ENABLE_64, 1,
+  AC_DEFINE(OCTAVE_ENABLE_64, 1,
     [Define to 1 if using 64-bit integers for array dimensions and indexing.])
 fi
 AC_SUBST(ENABLE_64)
@@ -451,7 +451,7 @@ fi
 dnl Define here since it is skipped if the first argument to
 dnl AX_OPENMP is not empty.
 if test $ENABLE_OPENMP = yes; then
-  AC_DEFINE(ENABLE_OPENMP, 1, [Define if OpenMP is enabled.])
+  AC_DEFINE(OCTAVE_ENABLE_OPENMP, 1, [Define if OpenMP is enabled.])
 fi
 ## Set these for any other tests that may require them.  They will be
 ## reset before output files are generated.
@@ -474,7 +474,7 @@ AC_ARG_ENABLE([float-truncate],
     [truncate intermediate FP results])],
   [if test "$enableval" = no; then ENABLE_FLOAT_TRUNCATE=no; fi], [])
 if test $ENABLE_FLOAT_TRUNCATE = yes; then
-  AC_DEFINE(ENABLE_FLOAT_TRUNCATE, 1,
+  AC_DEFINE(OCTAVE_ENABLE_FLOAT_TRUNCATE, 1,
     [Define to 1 if you need to truncate intermediate FP results.])
 fi
 
@@ -3060,6 +3060,9 @@ AC_OUTPUT_MAKE_DEFS
 AC_SUBST(ac_config_files)
 AC_SUBST(ac_config_headers)
 
+dnl We use a .in.h file for oct-conf-post.h simply to copy it to
+dnl the build tree and so that we don't have to add the -I$(top_srcdir)
+dnl to any CPPFLAGS variables.
 AC_CONFIG_FILES([
   oct-conf-post.h:oct-conf-post.in.h
   Makefile

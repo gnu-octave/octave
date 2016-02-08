@@ -172,7 +172,7 @@ public:
 
   std::string details (void) const
   {
-#if defined (ENABLE_64)
+#if defined (OCTAVE_ENABLE_64)
     return "subscripts must be either integers 1 to (2^63)-1 or logicals";
 #else
     return "subscripts must be either integers 1 to (2^31)-1 or logicals";

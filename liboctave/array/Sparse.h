@@ -386,7 +386,7 @@ public:
   T& elem (const Array<octave_idx_type>& ra_idx)
   { return Sparse<T>::elem (compute_index (ra_idx)); }
 
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   T& operator () (octave_idx_type n)
   {
     return checkelem (n);
@@ -453,7 +453,7 @@ public:
   T elem (const Array<octave_idx_type>& ra_idx) const
   { return Sparse<T>::elem (compute_index (ra_idx)); }
 
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   T operator () (octave_idx_type n) const { return checkelem (n); }
   T operator () (octave_idx_type i, octave_idx_type j) const
   {

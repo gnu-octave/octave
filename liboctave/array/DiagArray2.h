@@ -133,7 +133,7 @@ public:
 
   T operator () (octave_idx_type r, octave_idx_type c) const
   {
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     return checkelem (r, c);
 #else
     return elem (r, c);
@@ -148,7 +148,7 @@ public:
 
   T& operator () (octave_idx_type r, octave_idx_type c)
   {
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     return checkelem (r, c);
 #else
     return elem (r, c);

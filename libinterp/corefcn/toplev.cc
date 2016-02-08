@@ -1275,19 +1275,19 @@ specified option.\n\
     {
       { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
 
-#if defined (ENABLE_64)
+#if defined (OCTAVE_ENABLE_64)
       { false, "ENABLE_64", "yes" },
 #else
       { false, "ENABLE_64", "no" },
 #endif
 
-#if defined (ATOMIC_REFCOUNT)
+#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
       { false, "ENABLE_ATOMIC_REFCOUNT", "yes" },
 #else
       { false, "ENABLE_ATOMIC_REFCOUNT", "no" },
 #endif
 
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
       { false, "ENABLE_BOUNDS_CHECK", "yes" },
 #else
       { false, "ENABLE_BOUNDS_CHECK", "no" },
@@ -1305,7 +1305,7 @@ specified option.\n\
       { false, "ENABLE_DYNAMIC_LINKING", "no" },
 #endif
 
-#if defined (ENABLE_FLOAT_TRUNCATE)
+#if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
       { false, "ENABLE_FLOAT_TRUNCATE", "yes" },
 #else
       { false, "ENABLE_FLOAT_TRUNCATE", "no" },
@@ -1317,7 +1317,7 @@ specified option.\n\
       { false, "ENABLE_JIT", "no" },
 #endif
 
-#if defined (ENABLE_OPENMP)
+#if defined (OCTAVE_ENABLE_OPENMP)
       { false, "ENABLE_OPENMP", "yes" },
 #else
       { false, "ENABLE_OPENMP", "no" },

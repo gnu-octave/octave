@@ -165,7 +165,7 @@ not returning a value from a function declared to return something.
    to be used as the last statement of such a function that has been
    tagged with a "noreturn" attribute.  */
 #define F77_RETURN(retval) return retval;
-#if defined (HAVE_ATTR_NORETURN)
+#if defined (HAVE_OCTAVE_NORETURN_ATTR)
 #  define F77_NORETURN(retval)
 #else
 #  define F77_NORETURN(retval) return retval;
@@ -263,7 +263,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_RET_T int
 
 #define F77_RETURN(retval) return retval;
-#if defined (HAVE_ATTR_NORETURN)
+#if defined (HAVE_OCTAVE_NORETURN_ATTR)
 #  define F77_NORETURN(retval)
 #else
 #  define F77_NORETURN(retval) return retval;

@@ -47,6 +47,7 @@ EXTRA_DIST += \
   README \
   build-aux/OctJavaQry.class \
   build-aux/find-files-with-tests.sh \
+  build-aux/mk-octave-config-h.sh \
   build-aux/mk-opts.pl \
   build-aux/move-if-change \
   build-aux/stl_algo.h-fixed \
@@ -91,6 +92,7 @@ DOCSTRING_FILES =
 bin_PROGRAMS =
 archlib_PROGRAMS =
 noinst_HEADERS =
+nodist_noinst_HEADERS =
 OCTAVE_VERSION_LINKS =
 OCTAVE_CROSS_TOOLS =
 OCTAVE_INTERPRETER_TARGETS =
@@ -169,7 +171,7 @@ MAINTAINERCLEANFILES += \
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
-octinclude_HEADERS += oct-conf-post.h
+octinclude_HEADERS += octave-config.h oct-conf-post.h
 nodist_octinclude_HEADERS += config.h
 
 all-local: $(ALL_LOCAL_TARGETS) $(noinst_SCRIPTS) $(DIST_INFO_FILES) .gdbinit $(DOC_TARGETS)
@@ -184,6 +186,10 @@ all-local: $(ALL_LOCAL_TARGETS) $(noinst_SCRIPTS) $(DIST_INFO_FILES) .gdbinit $(
 run-octave: run-octave.in Makefile
 	$(AM_V_GEN)$(do_subst_script_vals) && \
 	chmod a+rx "$@"
+
+octave-config.h: config.h build-aux/mk-octave-config-h.sh
+	$(AM_V_GEN)$(top_srcdir)/build-aux/mk-octave-config-h.sh $< > $@-t && \
+	mv $@-t $@
 
 bits/stl_algo.h: build-aux/stl_algo.h-fixed
 	$(AM_V_GEN)$(MKDIR_P) bits && \

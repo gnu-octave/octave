@@ -396,7 +396,7 @@ public:
   T& elem (const Array<octave_idx_type>& ra_idx)
   { return Array<T>::elem (compute_index_unchecked (ra_idx)); }
 
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   T& operator () (octave_idx_type n) { return checkelem (n); }
   T& operator () (octave_idx_type i, octave_idx_type j)
   { return checkelem (i, j); }
@@ -430,7 +430,7 @@ public:
   crefT elem (const Array<octave_idx_type>& ra_idx) const
   { return Array<T>::xelem (compute_index_unchecked (ra_idx)); }
 
-#if defined (ENABLE_BOUNDS_CHECK)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   crefT operator () (octave_idx_type n) const { return checkelem (n); }
   crefT operator () (octave_idx_type i, octave_idx_type j) const
   { return checkelem (i, j); }
@@ -452,7 +452,7 @@ public:
 
   // Fast extractors. All of these produce shallow copies.
   // Warning: none of these do check bounds, unless
-  // ENABLE_BOUNDS_CHECK is defined!
+  // OCTAVE_ENABLE_BOUNDS_CHECK is defined!
 
   //! Extract column: A(:,k+1).
   Array<T> column (octave_idx_type k) const;

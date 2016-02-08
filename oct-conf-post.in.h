@@ -37,13 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (__GNUC__)
    /* The following attributes are used with gcc and clang compilers.  */
 #  define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
-#  define HAVE_ATTR_DEPRECATED 1
+#  define HAVE_OCTAVE_DEPRECATED_ATTR 1
 
 #  define OCTAVE_NORETURN __attribute__ ((__noreturn__))
-#  define HAVE_ATTR_NORETURN 1
+#  define HAVE_OCTAVE_NORETURN_ATTR 1
 
 #  define OCTAVE_UNUSED __attribute__ ((__unused__))
-#  define HAVE_ATTR_UNUSED 1
+#  define HAVE_OCTAVE_UNUSED_ATTR 1
 #else
 #  define OCTAVE_DEPRECATED(msg)
 #  define OCTAVE_NORETURN
@@ -100,7 +100,7 @@ typedef unsigned long ino_t;
 #  define F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION
 #endif
 
-#if defined (ENABLE_64)
+#if defined (OCTAVE_ENABLE_64)
 #  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
 #else
 #  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
@@ -161,19 +161,19 @@ typedef unsigned long ino_t;
 
 /* Backward compatibility */
 
-#if defined (ENABLE_ATOMIC_REFCOUNT)
+#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
 #  define USE_ATOMIC_REFCOUNT 1
 #endif
 
-#if defined (ENABLE_64)
+#if defined (OCTAVE_ENABLE_64)
 #  define USE_64_BIT_IDX_T 1
 #endif
 
-#if defined (ENABLE_OPENMP)
+#if defined (OCTAVE_ENABLE_OPENMP)
 #  define HAVE_OPENMP 1
 #endif
 
-#if defined (ENABLE_FLOAT_TRUNCATE)
+#if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
 #  define OCTAVE_FLOAT_TRUNCATE volatile
 #else
 #  define OCTAVE_FLOAT_TRUNCATE

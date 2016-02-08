@@ -183,9 +183,9 @@ typedef unsigned long ino_t;
 #endif
 
 #if defined (ENABLE_FLOAT_TRUNCATE)
-#  define FLOAT_TRUNCATE volatile
+#  define OCTAVE_FLOAT_TRUNCATE volatile
 #else
-#  define FLOAT_TRUNCATE
+#  define OCTAVE_FLOAT_TRUNCATE
 #endif
 
 /* oct-types.h */

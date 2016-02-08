@@ -44,12 +44,12 @@ typedef std::complex<float> FloatComplex;
 template <typename T> \
 inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
 { \
-  FLOAT_TRUNCATE const T ax = std::abs (a); \
-  FLOAT_TRUNCATE const T bx = std::abs (b); \
+  OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a); \
+  OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b); \
   if (ax == bx) \
     { \
-      FLOAT_TRUNCATE const T ay = std::arg (a); \
-      FLOAT_TRUNCATE const T by = std::arg (b); \
+      OCTAVE_FLOAT_TRUNCATE const T ay = std::arg (a); \
+      OCTAVE_FLOAT_TRUNCATE const T by = std::arg (b); \
       if (ay == static_cast<T> (-M_PI)) \
         { \
           if (by != static_cast<T> (-M_PI)) \
@@ -67,11 +67,11 @@ inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
 template <typename T> \
 inline bool operator OP (const std::complex<T>& a, T b) \
 { \
-  FLOAT_TRUNCATE const T ax = std::abs (a); \
-  FLOAT_TRUNCATE const T bx = std::abs (b); \
+  OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a); \
+  OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b); \
   if (ax == bx) \
     { \
-      FLOAT_TRUNCATE const T ay = std::arg (a); \
+      OCTAVE_FLOAT_TRUNCATE const T ay = std::arg (a); \
       if (ay == static_cast<T> (-M_PI)) \
         return static_cast<T> (M_PI) OP 0; \
       return ay OP 0; \
@@ -82,11 +82,11 @@ inline bool operator OP (const std::complex<T>& a, T b) \
 template <typename T> \
 inline bool operator OP (T a, const std::complex<T>& b) \
 { \
-  FLOAT_TRUNCATE const T ax = std::abs (a); \
-  FLOAT_TRUNCATE const T bx = std::abs (b); \
+  OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a); \
+  OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b); \
   if (ax == bx) \
     { \
-      FLOAT_TRUNCATE const T by = std::arg (b); \
+      OCTAVE_FLOAT_TRUNCATE const T by = std::arg (b); \
       if (by == static_cast<T> (-M_PI)) \
         return 0 OP static_cast<T> (M_PI); \
       return 0 OP by; \

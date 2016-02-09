@@ -103,11 +103,8 @@ xmax (double x, double y)
 }
 
 extern OCTAVE_API Complex acos (const Complex& x);
-extern OCTAVE_API Complex acosh (const Complex& x);
 extern OCTAVE_API Complex asin (const Complex& x);
-extern OCTAVE_API Complex asinh (const Complex& x);
 extern OCTAVE_API Complex atan (const Complex& x);
-extern OCTAVE_API Complex atanh (const Complex& x);
 
 extern OCTAVE_API bool octave_is_NA (const Complex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const Complex& x);
@@ -168,11 +165,8 @@ xmax (float x, float y)
 }
 
 extern OCTAVE_API FloatComplex acos (const FloatComplex& x);
-extern OCTAVE_API FloatComplex acosh (const FloatComplex& x);
 extern OCTAVE_API FloatComplex asin (const FloatComplex& x);
-extern OCTAVE_API FloatComplex asinh (const FloatComplex& x);
 extern OCTAVE_API FloatComplex atan (const FloatComplex& x);
-extern OCTAVE_API FloatComplex atanh (const FloatComplex& x);
 
 extern OCTAVE_API bool octave_is_NA (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);

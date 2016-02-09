@@ -421,15 +421,15 @@ octave_float_complex::map (unary_mapper_t umap) const
 
       SCALAR_MAPPER (abs, std::abs);
       SCALAR_MAPPER (acos, ::acos);
-      SCALAR_MAPPER (acosh, ::acosh);
+      SCALAR_MAPPER (acosh, xacosh);
       SCALAR_MAPPER (angle, std::arg);
       SCALAR_MAPPER (arg, std::arg);
       SCALAR_MAPPER (asin, ::asin);
-      SCALAR_MAPPER (asinh, ::asinh);
+      SCALAR_MAPPER (asinh, xasinh);
       SCALAR_MAPPER (atan, ::atan);
-      SCALAR_MAPPER (atanh, ::atanh);
-      SCALAR_MAPPER (erf, ::erf);
-      SCALAR_MAPPER (erfc, ::erfc);
+      SCALAR_MAPPER (atanh, xatanh);
+      SCALAR_MAPPER (erf, xerf);
+      SCALAR_MAPPER (erfc, xerfc);
       SCALAR_MAPPER (erfcx, ::erfcx);
       SCALAR_MAPPER (erfi, ::erfi);
       SCALAR_MAPPER (dawson, ::dawson);
@@ -438,14 +438,14 @@ octave_float_complex::map (unary_mapper_t umap) const
       SCALAR_MAPPER (cos, std::cos);
       SCALAR_MAPPER (cosh, std::cosh);
       SCALAR_MAPPER (exp, std::exp);
-      SCALAR_MAPPER (expm1, ::expm1);
+      SCALAR_MAPPER (expm1, xexpm1);
       SCALAR_MAPPER (fix, ::fix);
       SCALAR_MAPPER (floor, ::floor);
       SCALAR_MAPPER (imag, std::imag);
       SCALAR_MAPPER (log, std::log);
       SCALAR_MAPPER (log2, xlog2);
       SCALAR_MAPPER (log10, std::log10);
-      SCALAR_MAPPER (log1p, ::log1p);
+      SCALAR_MAPPER (log1p, xlog1p);
       SCALAR_MAPPER (real, std::real);
       SCALAR_MAPPER (round, xround);
       SCALAR_MAPPER (roundb, xroundb);

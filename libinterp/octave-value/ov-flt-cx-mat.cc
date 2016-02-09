@@ -709,15 +709,15 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
       return octave_value (matrix.map<TYPE> (FCN))
 
       ARRAY_MAPPER (acos, FloatComplex, ::acos);
-      ARRAY_MAPPER (acosh, FloatComplex, ::acosh);
+      ARRAY_MAPPER (acosh, FloatComplex, xacosh);
       ARRAY_MAPPER (angle, float, std::arg);
       ARRAY_MAPPER (arg, float, std::arg);
       ARRAY_MAPPER (asin, FloatComplex, ::asin);
-      ARRAY_MAPPER (asinh, FloatComplex, ::asinh);
+      ARRAY_MAPPER (asinh, FloatComplex, xasinh);
       ARRAY_MAPPER (atan, FloatComplex, ::atan);
-      ARRAY_MAPPER (atanh, FloatComplex, ::atanh);
-      ARRAY_MAPPER (erf, FloatComplex, ::erf);
-      ARRAY_MAPPER (erfc, FloatComplex, ::erfc);
+      ARRAY_MAPPER (atanh, FloatComplex, xatanh);
+      ARRAY_MAPPER (erf, FloatComplex, xerf);
+      ARRAY_MAPPER (erfc, FloatComplex, xerfc);
       ARRAY_MAPPER (erfcx, FloatComplex, ::erfcx);
       ARRAY_MAPPER (erfi, FloatComplex, ::erfi);
       ARRAY_MAPPER (dawson, FloatComplex, ::dawson);
@@ -725,13 +725,13 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (cos, FloatComplex, std::cos);
       ARRAY_MAPPER (cosh, FloatComplex, std::cosh);
       ARRAY_MAPPER (exp, FloatComplex, std::exp);
-      ARRAY_MAPPER (expm1, FloatComplex, ::expm1);
+      ARRAY_MAPPER (expm1, FloatComplex, xexpm1);
       ARRAY_MAPPER (fix, FloatComplex, ::fix);
       ARRAY_MAPPER (floor, FloatComplex, ::floor);
       ARRAY_MAPPER (log, FloatComplex, std::log);
       ARRAY_MAPPER (log2, FloatComplex, xlog2);
       ARRAY_MAPPER (log10, FloatComplex, std::log10);
-      ARRAY_MAPPER (log1p, FloatComplex, ::log1p);
+      ARRAY_MAPPER (log1p, FloatComplex, xlog1p);
       ARRAY_MAPPER (round, FloatComplex, xround);
       ARRAY_MAPPER (roundb, FloatComplex, xroundb);
       ARRAY_MAPPER (signum, FloatComplex, ::signum);

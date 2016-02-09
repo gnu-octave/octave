@@ -912,15 +912,15 @@ octave_sparse_complex_matrix::map (unary_mapper_t umap) const
       return octave_value (matrix.map<TYPE> (FCN))
 
       ARRAY_MAPPER (acos, Complex, ::acos);
-      ARRAY_MAPPER (acosh, Complex, ::acosh);
+      ARRAY_MAPPER (acosh, Complex, xacosh);
       ARRAY_MAPPER (angle, double, std::arg);
       ARRAY_MAPPER (arg, double, std::arg);
       ARRAY_MAPPER (asin, Complex, ::asin);
-      ARRAY_MAPPER (asinh, Complex, ::asinh);
+      ARRAY_MAPPER (asinh, Complex, xasinh);
       ARRAY_MAPPER (atan, Complex, ::atan);
-      ARRAY_MAPPER (atanh, Complex, ::atanh);
-      ARRAY_MAPPER (erf, Complex, ::erf);
-      ARRAY_MAPPER (erfc, Complex, ::erfc);
+      ARRAY_MAPPER (atanh, Complex, xatanh);
+      ARRAY_MAPPER (erf, Complex, xerf);
+      ARRAY_MAPPER (erfc, Complex, xerfc);
       ARRAY_MAPPER (erfcx, Complex, ::erfcx);
       ARRAY_MAPPER (erfi, Complex, ::erfi);
       ARRAY_MAPPER (dawson, Complex, ::dawson);
@@ -929,13 +929,13 @@ octave_sparse_complex_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (cos, Complex, std::cos);
       ARRAY_MAPPER (cosh, Complex, std::cosh);
       ARRAY_MAPPER (exp, Complex, std::exp);
-      ARRAY_MAPPER (expm1, Complex, ::expm1);
+      ARRAY_MAPPER (expm1, Complex, xexpm1);
       ARRAY_MAPPER (fix, Complex, ::fix);
       ARRAY_MAPPER (floor, Complex, ::floor);
       ARRAY_MAPPER (log, Complex, std::log);
       ARRAY_MAPPER (log2, Complex, xlog2);
       ARRAY_MAPPER (log10, Complex, std::log10);
-      ARRAY_MAPPER (log1p, Complex, ::log1p);
+      ARRAY_MAPPER (log1p, Complex, xlog1p);
       ARRAY_MAPPER (round, Complex, xround);
       ARRAY_MAPPER (roundb, Complex, xroundb);
       ARRAY_MAPPER (signum, Complex, ::signum);

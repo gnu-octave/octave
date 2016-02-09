@@ -198,128 +198,186 @@ extern "C"
                              double*, octave_idx_type*, octave_idx_type*);
 }
 
-#if ! defined (HAVE_ACOSH)
 double
-acosh (double x)
+xacosh (double x)
 {
+#if defined (HAVE_ACOSH)
+  return acosh (x);
+#else
   double retval;
   F77_XFCN (xdacosh, XDACOSH, (x, retval));
   return retval;
-}
 #endif
+}
 
-#if ! defined (HAVE_ACOSHF)
 float
-acoshf (float x)
+xacosh (float x)
 {
+#if defined (HAVE_ACOSHF)
+  return acoshf (x);
+#else
   float retval;
   F77_XFCN (xacosh, XACOSH, (x, retval));
   return retval;
-}
 #endif
+}
 
-#if ! defined (HAVE_ASINH)
-double
-asinh (double x)
+Complex
+xacosh (const Complex& x)
 {
+  return log (x + sqrt (x + 1.0) * sqrt (x - 1.0));
+}
+
+FloatComplex
+xacosh (const FloatComplex& x)
+{
+  return log (x + sqrt (x + 1.0f) * sqrt (x - 1.0f));
+}
+
+double
+xasinh (double x)
+{
+#if defined (HAVE_ASINH)
+  return asinh (x);
+#else
   double retval;
   F77_XFCN (xdasinh, XDASINH, (x, retval));
   return retval;
-}
 #endif
+}
 
-#if ! defined (HAVE_ASINHF)
 float
-asinhf (float x)
+xasinh (float x)
 {
+#if defined (HAVE_ASINHF)
+  return asinhf (x);
+#else
   float retval;
   F77_XFCN (xasinh, XASINH, (x, retval));
   return retval;
-}
 #endif
+}
 
-#if ! defined (HAVE_ATANH)
-double
-atanh (double x)
+Complex
+xasinh (const Complex& x)
 {
+  return log (x + sqrt (x*x + 1.0));
+}
+
+FloatComplex
+xasinh (const FloatComplex& x)
+{
+  return log (x + sqrt (x*x + 1.0f));
+}
+
+double
+xatanh (double x)
+{
+#if defined (HAVE_ATANH)
+  return atanh (x);
+#else
   double retval;
   F77_XFCN (xdatanh, XDATANH, (x, retval));
   return retval;
-}
 #endif
+}
 
-#if ! defined (HAVE_ATANHF)
 float
-atanhf (float x)
+xatanh (float x)
 {
+#if defined (HAVE_ATANHF)
+  return atanhf (x);
+#else
   float retval;
   F77_XFCN (xatanh, XATANH, (x, retval));
   return retval;
-}
 #endif
+}
 
-#if ! defined (HAVE_ERF)
-double
-erf (double x)
+Complex
+xatanh (const Complex& x)
 {
+  return log ((1.0 + x) / (1.0 - x)) / 2.0;
+}
+
+FloatComplex
+xatanh (const FloatComplex& x)
+{
+  return log ((1.0f + x) / (1.0f - x)) / 2.0f;
+}
+
+double
+xerf (double x)
+{
+#if defined (HAVE_ERF)
+  return erf (x);
+#else
   double retval;
   F77_XFCN (xderf, XDERF, (x, retval));
   return retval;
-}
 #endif
+}
 
-#if ! defined (HAVE_ERFF)
 float
-erff (float x)
+xerf (float x)
 {
+#if defined (HAVE_ERFF)
+  return erff (x);
+#else
   float retval;
   F77_XFCN (xerf, XERF, (x, retval));
   return retval;
-}
 #endif
-
-#if ! defined (HAVE_ERFC)
-double
-erfc (double x)
-{
-  double retval;
-  F77_XFCN (xderfc, XDERFC, (x, retval));
-  return retval;
 }
-#endif
-
-#if ! defined (HAVE_ERFCF)
-float
-erfcf (float x)
-{
-  float retval;
-  F77_XFCN (xerfc, XERFC, (x, retval));
-  return retval;
-}
-#endif
 
 // Complex error function from the Faddeeva package
 Complex
-erf (const Complex& x)
+xerf (const Complex& x)
 {
   return Faddeeva::erf (x);
 }
+
 FloatComplex
-erf (const FloatComplex& x)
+xerf (const FloatComplex& x)
 {
   Complex xd (real (x), imag (x));
   Complex ret = Faddeeva::erf (xd, std::numeric_limits<float>::epsilon ());
   return FloatComplex (real (ret), imag (ret));
 }
 
+double
+xerfc (double x)
+{
+#if defined (HAVE_ERFC)
+  return erfc (x);
+#else
+  double retval;
+  F77_XFCN (xderfc, XDERFC, (x, retval));
+  return retval;
+#endif
+}
+
+float
+xerfc (float x)
+{
+#if defined (HAVE_ERFCF)
+  return erfcf (x);
+#else
+  float retval;
+  F77_XFCN (xerfc, XERFC, (x, retval));
+  return retval;
+#endif
+}
+
 // Complex complementary error function from the Faddeeva package
 Complex
-erfc (const Complex& x)
+xerfc (const Complex& x)
 {
   return Faddeeva::erfc (x);
 }
+
 FloatComplex
-erfc (const FloatComplex& x)
+xerfc (const FloatComplex& x)
 {
   Complex xd (real (x), imag (x));
   Complex ret = Faddeeva::erfc (xd, std::numeric_limits<float>::epsilon ());
@@ -518,10 +576,12 @@ rc_lgamma (float x)
     return result;
 }
 
-#if ! defined (HAVE_EXPM1)
 double
-expm1 (double x)
+xexpm1 (double x)
 {
+#if defined (HAVE_EXPM1)
+  return expm1 (x);
+#else
   double retval;
 
   double ax = fabs (x);
@@ -551,18 +611,18 @@ expm1 (double x)
     retval = exp (x) - 1;
 
   return retval;
-}
 #endif
+}
 
 Complex
-expm1 (const Complex& x)
+xexpm1 (const Complex& x)
 {
   Complex retval;
 
   if (std:: abs (x) < 1)
     {
       double im = x.imag ();
-      double u = expm1 (x.real ());
+      double u = xexpm1 (x.real ());
       double v = sin (im/2);
       v = -2*v*v;
       retval = Complex (u*v + u + v, (u+1) * sin (im));
@@ -573,10 +633,12 @@ expm1 (const Complex& x)
   return retval;
 }
 
-#if ! defined (HAVE_EXPM1F)
 float
-expm1f (float x)
+xexpm1 (float x)
 {
+#if defined (HAVE_EXPM1F)
+  return expm1f (x);
+#else
   float retval;
 
   float ax = fabs (x);
@@ -606,18 +668,18 @@ expm1f (float x)
     retval = exp (x) - 1;
 
   return retval;
-}
 #endif
+}
 
 FloatComplex
-expm1 (const FloatComplex& x)
+xexpm1 (const FloatComplex& x)
 {
   FloatComplex retval;
 
   if (std:: abs (x) < 1)
     {
       float im = x.imag ();
-      float u = expm1 (x.real ());
+      float u = xexpm1 (x.real ());
       float v = sin (im/2);
       v = -2*v*v;
       retval = FloatComplex (u*v + u + v, (u+1) * sin (im));
@@ -628,10 +690,12 @@ expm1 (const FloatComplex& x)
   return retval;
 }
 
-#if ! defined (HAVE_LOG1P)
 double
-log1p (double x)
+xlog1p (double x)
 {
+#if defined (HAVE_LOG1P)
+  return log1p (x);
+#else
   double retval;
 
   double ax = fabs (x);
@@ -649,11 +713,11 @@ log1p (double x)
     retval = gnulib::log (1 + x);
 
   return retval;
-}
 #endif
+}
 
 Complex
-log1p (const Complex& x)
+xlog1p (const Complex& x)
 {
   Complex retval;
 
@@ -662,7 +726,7 @@ log1p (const Complex& x)
   if (fabs (r) < 0.5 && fabs (i) < 0.5)
     {
       double u = 2*r + r*r + i*i;
-      retval = Complex (log1p (u / (1+sqrt (u+1))),
+      retval = Complex (xlog1p (u / (1+sqrt (u+1))),
                         atan2 (1 + r, i));
     }
   else
@@ -671,26 +735,38 @@ log1p (const Complex& x)
   return retval;
 }
 
-#if ! defined (HAVE_CBRT)
-double cbrt (double x)
+template <typename T>
+T
+xxcbrt (T x)
 {
-  static const double one_third = 0.3333333333333333333;
+  static const T one_third = 0.3333333333333333333f;
   if (xfinite (x))
     {
       // Use pow.
-      double y = std::pow (std::abs (x), one_third) * signum (x);
+      T y = std::pow (std::abs (x), one_third) * signum (x);
       // Correct for better accuracy.
       return (x / (y*y) + y + y) / 3;
     }
   else
     return x;
 }
-#endif
 
-#if ! defined (HAVE_LOG1PF)
-float
-log1pf (float x)
+double
+xcbrt (double x)
 {
+#if defined (HAVE_CBRT)
+  return cbrt (x);
+#else
+  return xxcbrt (x);
+#endif
+}
+
+float
+xlog1p (float x)
+{
+#if defined (HAVE_LOG1PF)
+  return log1pf (x);
+#else
   float retval;
 
   float ax = fabs (x);
@@ -708,11 +784,11 @@ log1pf (float x)
     retval = gnulib::logf (1.0f + x);
 
   return retval;
-}
 #endif
+}
 
 FloatComplex
-log1p (const FloatComplex& x)
+xlog1p (const FloatComplex& x)
 {
   FloatComplex retval;
 
@@ -721,7 +797,7 @@ log1p (const FloatComplex& x)
   if (fabs (r) < 0.5 && fabs (i) < 0.5)
     {
       float u = 2*r + r*r + i*i;
-      retval = FloatComplex (log1p (u / (1+sqrt (u+1))),
+      retval = FloatComplex (xlog1p (u / (1+sqrt (u+1))),
                              atan2 (1 + r, i));
     }
   else
@@ -730,21 +806,15 @@ log1p (const FloatComplex& x)
   return retval;
 }
 
-#if ! defined (HAVE_CBRTF)
-float cbrtf (float x)
+float
+xcbrt (float x)
 {
-  static const float one_third = 0.3333333333333333333f;
-  if (xfinite (x))
-    {
-      // Use pow.
-      float y = std::pow (std::abs (x), one_third) * signum (x);
-      // Correct for better accuracy.
-      return (x / (y*y) + y + y) / 3;
-    }
-  else
-    return x;
-}
+#if defined (HAVE_CBRTF)
+  return cbrtf (x);
+#else
+  return xxcbrt (x);
 #endif
+}
 
 static inline Complex
 zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
@@ -2892,7 +2962,7 @@ Complex rc_log1p (double x)
   const double pi = 3.14159265358979323846;
   return (x < -1.0
           ? Complex (gnulib::log (-(1.0 + x)), pi)
-          : Complex (log1p (x)));
+          : Complex (xlog1p (x)));
 }
 
 FloatComplex rc_log1p (float x)
@@ -2900,7 +2970,7 @@ FloatComplex rc_log1p (float x)
   const float pi = 3.14159265358979323846f;
   return (x < -1.0f
           ? FloatComplex (gnulib::logf (-(1.0f + x)), pi)
-          : FloatComplex (log1pf (x)));
+          : FloatComplex (xlog1p (x)));
 }
 
 // This algorithm is due to P. J. Acklam.

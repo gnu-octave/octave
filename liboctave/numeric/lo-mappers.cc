@@ -195,12 +195,6 @@ acos (const Complex& x)
 }
 
 Complex
-acosh (const Complex& x)
-{
-  return log (x + sqrt (x + 1.0) * sqrt (x - 1.0));
-}
-
-Complex
 asin (const Complex& x)
 {
   static Complex i (0, 1);
@@ -222,23 +216,11 @@ asin (const Complex& x)
 }
 
 Complex
-asinh (const Complex& x)
-{
-  return log (x + sqrt (x*x + 1.0));
-}
-
-Complex
 atan (const Complex& x)
 {
   static Complex i (0, 1);
 
   return i * log ((i + x) / (i - x)) / 2.0;
-}
-
-Complex
-atanh (const Complex& x)
-{
-  return log ((1.0 + x) / (1.0 - x)) / 2.0;
 }
 
 // complex -> bool mappers.
@@ -432,12 +414,6 @@ acos (const FloatComplex& x)
 }
 
 FloatComplex
-acosh (const FloatComplex& x)
-{
-  return log (x + sqrt (x + 1.0f) * sqrt (x - 1.0f));
-}
-
-FloatComplex
 asin (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
@@ -459,23 +435,11 @@ asin (const FloatComplex& x)
 }
 
 FloatComplex
-asinh (const FloatComplex& x)
-{
-  return log (x + sqrt (x*x + 1.0f));
-}
-
-FloatComplex
 atan (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
 
   return i * log ((i + x) / (i - x)) / 2.0f;
-}
-
-FloatComplex
-atanh (const FloatComplex& x)
-{
-  return log ((1.0f + x) / (1.0f - x)) / 2.0f;
 }
 
 // complex -> bool mappers.
@@ -523,13 +487,13 @@ rc_acos (float x)
 Complex
 rc_acosh (double x)
 {
-  return x < 1.0 ? acosh (Complex (x)) : Complex (acosh (x));
+  return x < 1.0 ? xacosh (Complex (x)) : Complex (xacosh (x));
 }
 
 FloatComplex
 rc_acosh (float x)
 {
-  return x < 1.0f ? acosh (FloatComplex (x)) : FloatComplex (acoshf (x));
+  return x < 1.0f ? xacosh (FloatComplex (x)) : FloatComplex (xacosh (x));
 }
 
 Complex
@@ -547,14 +511,14 @@ rc_asin (float x)
 Complex
 rc_atanh (double x)
 {
-  return fabs (x) > 1.0 ? atanh (Complex (x)) : Complex (atanh (x));
+  return fabs (x) > 1.0 ? xatanh (Complex (x)) : Complex (xatanh (x));
 }
 
 FloatComplex
 rc_atanh (float x)
 {
-  return fabsf (x) > 1.0f ? atanh (FloatComplex (x))
-                          : FloatComplex (atanhf (x));
+  return fabsf (x) > 1.0f ? xatanh (FloatComplex (x))
+                          : FloatComplex (xatanh (x));
 }
 
 Complex

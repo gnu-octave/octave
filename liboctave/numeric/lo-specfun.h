@@ -41,77 +41,45 @@ class FloatRowVector;
 class FloatComplexColumnVector;
 class Range;
 
-#if ! defined (HAVE_ACOSH)
-extern OCTAVE_API double acosh (double);
-#endif
+extern OCTAVE_API double xacosh (double);
+extern OCTAVE_API float xacosh (float);
+extern OCTAVE_API Complex xacosh (const Complex& x);
+extern OCTAVE_API FloatComplex xacosh (const FloatComplex& x);
 
-#if ! defined (HAVE_ASINH)
-extern OCTAVE_API double asinh (double);
-#endif
+extern OCTAVE_API double xasinh (double);
+extern OCTAVE_API float xasinh (float);
+extern OCTAVE_API Complex xasinh (const Complex& x);
+extern OCTAVE_API FloatComplex xasinh (const FloatComplex& x);
 
-#if ! defined (HAVE_ATANH)
-extern OCTAVE_API double atanh (double);
-#endif
+extern OCTAVE_API double xatanh (double);
+extern OCTAVE_API float xatanh (float);
+extern OCTAVE_API Complex xatanh (const Complex& x);
+extern OCTAVE_API FloatComplex xatanh (const FloatComplex& x);
 
-#if ! defined (HAVE_ERF)
-extern OCTAVE_API double erf (double);
-#endif
-extern OCTAVE_API Complex erf (const Complex& x);
-extern OCTAVE_API FloatComplex erf (const FloatComplex& x);
+extern OCTAVE_API double xerf (double);
+extern OCTAVE_API float xerf (float);
+extern OCTAVE_API Complex xerf (const Complex& x);
+extern OCTAVE_API FloatComplex xerf (const FloatComplex& x);
 
-#if ! defined (HAVE_ERFC)
-extern OCTAVE_API double erfc (double);
-#endif
-extern OCTAVE_API Complex erfc (const Complex& x);
-extern OCTAVE_API FloatComplex erfc (const FloatComplex& x);
+extern OCTAVE_API double xerfc (double);
+extern OCTAVE_API float xerfc (float);
+extern OCTAVE_API Complex xerfc (const Complex& x);
+extern OCTAVE_API FloatComplex xerfc (const FloatComplex& x);
 
-#if ! defined (HAVE_ACOSHF)
-extern OCTAVE_API float acoshf (float);
-#endif
+extern OCTAVE_API double xexpm1 (double x);
+extern OCTAVE_API Complex xexpm1 (const Complex& x);
 
-#if ! defined (HAVE_ASINHF)
-extern OCTAVE_API float asinhf (float);
-#endif
+extern OCTAVE_API float xexpm1 (float x);
+extern OCTAVE_API FloatComplex xexpm1 (const FloatComplex& x);
 
-#if ! defined (HAVE_ATANHF)
-extern OCTAVE_API float atanhf (float);
-#endif
+extern OCTAVE_API double xlog1p (double x);
+extern OCTAVE_API Complex xlog1p (const Complex& x);
 
-#if ! defined (HAVE_ERFF)
-extern OCTAVE_API float erff (float);
-#endif
+extern OCTAVE_API float xlog1p (float x);
+extern OCTAVE_API FloatComplex xlog1p (const FloatComplex& x);
 
-#if ! defined (HAVE_ERFCF)
-extern OCTAVE_API float erfcf (float);
-#endif
-
-#if ! defined (HAVE_EXPM1)
-extern OCTAVE_API double expm1 (double x);
-#endif
-extern OCTAVE_API Complex expm1 (const Complex& x);
-
-#if ! defined (HAVE_EXPM1F)
-extern OCTAVE_API float expm1f (float x);
-#endif
-extern OCTAVE_API FloatComplex expm1 (const FloatComplex& x);
-
-#if ! defined (HAVE_LOG1P)
-extern OCTAVE_API double log1p (double x);
-#endif
-extern OCTAVE_API Complex log1p (const Complex& x);
-
-#if ! defined (HAVE_LOG1PF)
-extern OCTAVE_API float log1pf (float x);
-#endif
-extern OCTAVE_API FloatComplex log1p (const FloatComplex& x);
-
-#if ! defined (HAVE_CBRT)
-extern OCTAVE_API double cbrt (double x);
-#endif
-
-#if ! defined (HAVE_CBRTF)
-extern OCTAVE_API float cbrtf (float x);
-#endif
+extern OCTAVE_API double xcbrt (double x);
+extern OCTAVE_API float xcbrt (float x);
 
 extern OCTAVE_API double xgamma (double x);
 extern OCTAVE_API double xlgamma (double x);

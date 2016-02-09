@@ -783,7 +783,7 @@ gl2ps_print (const graphics_object& fig, const std::string& stream,
 
   gl2ps_renderer rend (fp, term);
 
-  rend.draw (fig, "");
+  rend.draw (fig, stream);
 
   // Make sure buffered commands are finished!!!
   rend.finish ();

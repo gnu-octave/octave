@@ -638,8 +638,9 @@ Return a matrix with exponentially distributed random elements.\n\
 \n\
 The arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
-By default, @code{randn} uses the @nospell{Marsaglia and Tsang}\n\
-``Ziggurat technique'' to transform from a uniform to a normal distribution.\n\
+By default, @code{rande} uses the @nospell{Marsaglia and Tsang}\n\
+``Ziggurat technique'' to transform from a uniform to an exponential\n\
+distribution.\n\
 \n\
 The class of the value returned can be controlled by a trailing\n\
 @qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\

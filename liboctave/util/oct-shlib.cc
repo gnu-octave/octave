@@ -345,17 +345,17 @@ octave_w32_shlib::octave_w32_shlib (const std::string& f)
   if (! handle)
     {
       DWORD lastError = GetLastError ();
-      char *msg;
+      const char *msg;
 
       switch (lastError)
         {
         case ERROR_MOD_NOT_FOUND:
         case ERROR_DLL_NOT_FOUND:
-          msg = "could not find library or dependents";
+          msg = "could not find library or dependencies";
           break;
 
         case ERROR_INVALID_DLL:
-          msg = "library or its dependents are damaged";
+          msg = "library or its dependencies are damaged";
           break;
 
         case ERROR_DLL_INIT_FAILED:
@@ -376,11 +376,6 @@ octave_w32_shlib::~octave_w32_shlib (void)
     FreeLibrary (handle);
 }
 
-extern "C"
-{
-  void * octave_w32_search (HINSTANCE handle, const char * name);
-}
-
 void *
 octave_w32_shlib::search (const std::string& name,
                           octave_shlib::name_mangler mangler)
@@ -396,7 +391,7 @@ octave_w32_shlib::search (const std::string& name,
   if (mangler)
     sym_name = mangler (name);
 
-  function = octave_w32_library_search (handle, sym_name.c_str ());
+  function = reinterpret_cast <void *> (GetProcAddress (handle, sym_name.c_str ()));
 
   return function;
 }

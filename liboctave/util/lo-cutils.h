@@ -25,11 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 
-#ifdef HAVE_LOADLIBRARY_API
-#  define WIN32_LEAN_AND_MEAN 1
-#  include <windows.h>
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -43,11 +38,6 @@ octave_strcasecmp (const char *s1, const char *s2);
 
 OCTAVE_API int
 octave_strncasecmp (const char *s1, const char *s2, size_t n);
-
-#ifdef HAVE_LOADLIBRARY_API
-OCTAVE_API void *
-octave_w32_library_search (HINSTANCE handle, const char *name);
-#endif
 
 OCTAVE_API pid_t
 octave_waitpid (pid_t pid, int *status, int options);

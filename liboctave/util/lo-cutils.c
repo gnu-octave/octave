@@ -62,17 +62,6 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
   return strncasecmp (s1, s2, n);
 }
 
-#ifdef HAVE_LOADLIBRARY_API
-#  include <windows.h>
-
-/* Need this since in C++ can't cast from int(*)() to void* */
-OCTAVE_API void *
-octave_w32_library_search (HINSTANCE handle, const char * name)
-{
-  return (GetProcAddress (handle, name));
-}
-#endif
-
 OCTAVE_API pid_t
 octave_waitpid (pid_t pid, int *status, int options)
 {

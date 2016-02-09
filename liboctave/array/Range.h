@@ -151,8 +151,6 @@ public:
   friend OCTAVE_API Range operator * (double x, const Range& r);
   friend OCTAVE_API Range operator * (const Range& r, double x);
 
-  void print_range (void);
-
 private:
 
   double rng_base;

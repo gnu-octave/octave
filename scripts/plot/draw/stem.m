@@ -204,15 +204,6 @@ endfunction
 %!   pause (0.2);
 %! end
 
-%!error stem ()
-%!error <can not define Z for 2-D stem plot> stem (1,2,3)
-%!error <X and Y must be numeric> stem ({1})
-%!error <X and Y must be numeric> stem (1, {1})
-%!error <inconsistent sizes for X and Y> stem (1:2, 1:3)
-%!error <inconsistent sizes for X and Y> stem (1:2, ones (3,3))
-%!error <inconsistent sizes for X and Y> stem (ones (2,2), ones (3,3))
-%!error <No value specified for property "FOO"> stem (1, "FOO")
-
 %!test
 %! ## stemseries share the same baseline and basevalue
 %! hf = figure ("visible", "off");
@@ -227,4 +218,15 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## Test input validation
+%!error stem ()
+%!error <can not define Z for 2-D stem plot> stem (1,2,3)
+%!error <Y must be a vector or 2-D array> stem (ones (2,2,2))
+%!error <X and Y must be numeric> stem ({1})
+%!error <X and Y must be numeric> stem (1, {1})
+%!error <inconsistent sizes for X and Y> stem (1:2, 1:3)
+%!error <inconsistent sizes for X and Y> stem (1:2, ones (3,3))
+%!error <inconsistent sizes for X and Y> stem (ones (2,2), ones (3,3))
+%!error <No value specified for property "FOO"> stem (1, "FOO")
 

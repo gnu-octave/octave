@@ -250,6 +250,8 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
         x = 1:length (y);
       elseif (ismatrix (y))
         x = 1:rows (y);
+      else
+        error ("stem: Y must be a vector or 2-D array");
       endif
     endif
     if (! (isnumeric (x) || islogical (x))

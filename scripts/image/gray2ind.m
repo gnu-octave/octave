@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -41,12 +41,10 @@ function [I, map] = gray2ind (I, n = 64)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (! isreal (I) || issparse (I))
+  elseif (! isreal (I) || issparse (I) || ! ismatrix(I))
     error ("gray2ind: I must be a grayscale or binary image");
   elseif (! isscalar (n) || n < 1 || n > 65536)
     error ("gray2ind: N must be a positive integer in the range [1, 65536]");
-  elseif (! ismatrix (I) || ndims (I) < 2)
-    error ("gray2ind: I must be a grayscale or binary image");
   endif
 
   ## default n is different if image is logical
@@ -110,6 +108,7 @@ endfunction
 %!error <I must be a grayscale or binary image> gray2ind ({1})
 %!error <I must be a grayscale or binary image> gray2ind ([1+i])
 %!error <I must be a grayscale or binary image> gray2ind (sparse ([1]))
+%!error <I must be a grayscale or binary image> gray2ind (ones (2,2,3))
 %!error <N must be a positive integer> gray2ind (1, ones (2,2))
 %!error <N must be a positive integer> gray2ind (1, 0)
 %!error <N must be a positive integer> gray2ind (1, 65537)

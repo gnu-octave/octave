@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Frederick (Rick) A Niles
+## Copyright (C) 2006-2016 Frederick (Rick) A Niles
 ##               and Søren Hauberg
 ##
 ## This file is part of Octave.
@@ -48,9 +48,9 @@ function [in, on] = inpolygon (x, y, xv, yv)
     print_usage ();
   endif
 
-  if (! (isreal (x) && isreal (y) && ismatrix (y) && ismatrix (y)
+  if (! (isreal (x) && isreal (y) && isnumeric (x) && isnumeric (y)
          && size_equal (x, y)))
-    error ("inpolygon: X and Y must be real matrices of the same size");
+    error ("inpolygon: X and Y must be real arrays of the same size");
   elseif (! (isreal (xv) && isreal (yv) && isvector (xv) && isvector (yv)
              && size_equal (xv, yv)))
     error ("inpolygon: XV and YV must be real vectors of the same size");
@@ -140,14 +140,31 @@ endfunction
 %! assert (in, [true, true, false]);
 %! assert (on, [true, false, false]);
 
+## 3D array input
+%!test
+%! x = zeros (2, 2, 2);
+%! x(1, 1, 1) = 1;
+%! x(2, 2, 2) = 2;
+%! y = zeros (2, 2, 2);
+%! y(1, 1, 1) = 1;
+%! y(2, 2, 2) = -1;
+%! [in, on] = inpolygon (x, y, [-1, -1, 1, 1], [-1, 1, 1, -1]);
+%! IN = true (2, 2, 2);
+%! IN(2, 2, 2) = false;
+%! ON = false (2, 2, 2);
+%! ON(1, 1, 1) = true;
+%! assert (in, IN);
+%! assert (on, ON);
+
 ## Test input validation
 %!error inpolygon ()
 %!error inpolygon (1, 2)
 %!error inpolygon (1, 2, 3)
 %!error inpolygon (1, 2, 3, 4, 5)
-%!error <X and Y must be real matrices> inpolygon (1i, 1, [3, 4], [5, 6])
-%!error <X and Y must be real matrices> inpolygon (1, {1}, [3, 4], [5, 6])
+%!error <X and Y must be real> inpolygon (1i, 1, [3, 4], [5, 6])
+%!error <X and Y must be real> inpolygon (1, {1}, [3, 4], [5, 6])
 %!error <X and Y must be .* the same size> inpolygon (1, [1,2], [3, 4], [5, 6])
+%!error <X and Y must be .* the same size> inpolygon (1, ones (1,1,2), [3, 4], [5, 6])
 %!error <XV and YV must be real vectors> inpolygon (1, 1, [3i, 4], [5, 6])
 %!error <XV and YV must be real vectors> inpolygon (1, 1, [3, 4], {5, 6})
 %!error <XV and YV must .* the same size> inpolygon ([1,2], [3, 4], [5, 6], 1)

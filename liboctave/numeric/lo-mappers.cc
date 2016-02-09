@@ -139,29 +139,35 @@ xlog2 (const Complex& x, int& exp)
 
 // double -> bool mappers.
 
-#if ! defined (HAVE_CMATH_ISNAN)
 bool
 xisnan (double x)
 {
+#if defined (HAVE_CMATH_ISNAN)
+  return std::isnan (x);
+#else
   return lo_ieee_isnan (x);
-}
 #endif
+}
 
-#if ! defined (HAVE_CMATH_ISFINITE)
 bool
 xfinite (double x)
 {
+#if defined (HAVE_CMATH_ISFINITE)
+  return std::isfinite (x);
+#else
   return lo_ieee_finite (x);
-}
 #endif
+}
 
-#if ! defined (HAVE_CMATH_ISINF)
 bool
 xisinf (double x)
 {
+#if defined (HAVE_CMATH_ISINF)
+  return std::isinf (x);
+#else
   return lo_ieee_isinf (x);
-}
 #endif
+}
 
 bool
 octave_is_NA (double x)
@@ -358,29 +364,35 @@ xlog2 (const FloatComplex& x, int& exp)
 
 // float -> bool mappers.
 
-#if ! defined (HAVE_CMATH_ISNANF)
 bool
 xisnan (float x)
 {
+#if defined (HAVE_CMATH_ISNANF)
+  return std::isnan (x);
+#else
   return lo_ieee_isnan (x);
-}
 #endif
+}
 
-#if ! defined (HAVE_CMATH_ISFINITEF)
 bool
 xfinite (float x)
 {
+#if defined (HAVE_CMATH_ISFINITEF)
+  return std::isfinite (x);
+#else
   return lo_ieee_finite (x);
-}
 #endif
+}
 
-#if ! defined (HAVE_CMATH_ISINFF)
 bool
 xisinf (float x)
 {
+#if defined (HAVE_CMATH_ISINFF)
+  return std::isinf (x);
+#else
   return lo_ieee_isinf (x);
-}
 #endif
+}
 
 bool
 octave_is_NA (float x)

@@ -53,24 +53,9 @@ extern OCTAVE_API double xexp2 (double x);
 inline bool xisnan (bool) { return false; }
 inline bool xisnan (char) { return false; }
 
-#if defined (HAVE_CMATH_ISNAN)
-inline bool xisnan (double x)
-{ return std::isnan (x); }
-#else
 extern OCTAVE_API bool xisnan (double x);
-#endif
-#if defined (HAVE_CMATH_ISFINITE)
-inline bool xfinite (double x)
-{ return std::isfinite (x); }
-#else
 extern OCTAVE_API bool xfinite (double x);
-#endif
-#if defined (HAVE_CMATH_ISINF)
-inline bool xisinf (double x)
-{ return std::isinf (x); }
-#else
 extern OCTAVE_API bool xisinf (double x);
-#endif
 
 extern OCTAVE_API bool octave_is_NA (double x);
 
@@ -131,24 +116,9 @@ extern OCTAVE_API float xlog2 (float x, int& exp);
 extern OCTAVE_API FloatComplex xlog2 (const FloatComplex& x, int& exp);
 extern OCTAVE_API float xexp2 (float x);
 
-#if defined (HAVE_CMATH_ISNANF)
-inline bool xisnan (float x)
-{ return std::isnan (x); }
-#else
 extern OCTAVE_API bool xisnan (float x);
-#endif
-#if defined (HAVE_CMATH_ISFINITEF)
-inline bool xfinite (float x)
-{ return std::isfinite (x); }
-#else
 extern OCTAVE_API bool xfinite (float x);
-#endif
-#if defined (HAVE_CMATH_ISINFF)
-inline bool xisinf (float x)
-{ return std::isinf (x); }
-#else
 extern OCTAVE_API bool xisinf (float x);
-#endif
 
 extern OCTAVE_API bool octave_is_NA (float x);
 

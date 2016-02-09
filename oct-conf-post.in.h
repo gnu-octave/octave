@@ -117,8 +117,6 @@ typedef unsigned long ino_t;
 #  endif
 #endif
 
-#define OCTAVE_EMPTY_CPP_ARG
-
 /* oct-dlldefs.h */
 
 /* FIXME: GCC supports visibility attributes as well, even using the

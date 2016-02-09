@@ -139,6 +139,8 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
 // T_ID is the type id of struct objects, set by register_type().
 // T_NAME is the type name of struct objects.
 
+#define OCTAVE_EMPTY_CPP_ARG /* empty */
+
 #define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA \
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (OCTAVE_EMPTY_CPP_ARG)
 

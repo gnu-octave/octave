@@ -110,6 +110,7 @@ is_valid_function (const std::string& fcn_name,
         ans = val.function_value (true);
     }
 
+  // FIXME: Should this be "err" and "error_for", rather than warn?
   if (! ans && warn)
     error ("%s: the symbol '%s' is not valid as a function",
            warn_for.c_str (), fcn_name.c_str ());
@@ -132,6 +133,7 @@ is_valid_function (const octave_value& arg,
       ans = is_valid_function (fcn_name, warn_for, warn);
     }
   else if (warn)
+    // FIXME: Should this be "err" and "error_for", rather than warn?
     error ("%s: argument must be a string containing function name", warn_for.c_str ());
 
   return ans;
@@ -159,20 +161,18 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
       eval_string (cmd, true, parse_status, 0);
 
-      if (parse_status == 0)
-        {
-          retval = is_valid_function (fname, warn_for, 0);
-
-          if (! retval)
-            error ("%s: '%s' is not valid as a function",
-                   warn_for.c_str (), fname.c_str ());
-
-          warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
-                   warn_for.c_str ());
-        }
-      else
+      if (parse_status != 0)
         error ("%s: '%s' is not valid as a function",
                warn_for.c_str (), fname.c_str ());
+
+      retval = is_valid_function (fname, warn_for, 0);
+
+      if (! retval)
+        error ("%s: '%s' is not valid as a function",
+               warn_for.c_str (), fname.c_str ());
+
+      warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
+               warn_for.c_str ());
     }
 
   return retval;
@@ -722,13 +722,11 @@ wants_local_change (const octave_value_list& args, int& nargin)
 
   if (nargin == 2)
     {
-      if (args(1).is_string () && args(1).string_value () == "local")
-        {
-          nargin = 1;
-          retval = true;
-        }
-      else
+      if (! args(1).is_string () || args(1).string_value () != "local")
         error_with_cfn ("second argument must be \"local\"");
+
+      nargin = 1;
+      retval = true;
     }
 
   return retval;
@@ -848,10 +846,10 @@ set_internal_variable (int& var, const octave_value_list& args,
 
       if (ival < minval)
         error ("%s: arg must be greater than %d", nm, minval);
-      else if (ival > maxval)
+      if (ival > maxval)
         error ("%s: arg must be less than or equal to %d", nm, maxval);
-      else
-        var = ival;
+
+      var = ival;
     }
 
   return retval;
@@ -884,10 +882,10 @@ set_internal_variable (double& var, const octave_value_list& args,
 
       if (dval < minval)
         error ("%s: argument must be greater than %g", minval);
-      else if (dval > maxval)
+      if (dval > maxval)
         error ("%s: argument must be less than or equal to %g", maxval);
-      else
-        var = dval;
+
+      var = dval;
     }
 
   return retval;
@@ -917,10 +915,10 @@ set_internal_variable (std::string& var, const octave_value_list& args,
     {
       std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
 
-      if (empty_ok || ! sval.empty ())
-        var = sval;
-      else
+      if (! empty_ok && sval.empty ())
         error ("%s: value must not be empty", nm);
+
+      var = sval;
     }
 
   return retval;
@@ -1465,10 +1463,10 @@ public:
             // Parse one command from whos_line_format
             cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
             pos = cmd.find (';');
-            if (pos != std::string::npos)
-              cmd = cmd.substr (0, pos+1);
-            else
+            if (pos == std::string::npos)
               error ("parameter without ; in whos_line_format");
+
+            cmd = cmd.substr (0, pos+1);
 
             idx += cmd.length ();
 
@@ -1488,20 +1486,17 @@ public:
             // Insert data into parameter
             param.first_parameter_length = 0;
             pos = param_string.find (param.command);
-            if (pos != std::string::npos)
-              {
-                param.parameter_length = param_length(pos);
-                param.text = param_names(pos);
-                param.line.assign (param_names(pos).length (), '=');
+            if (pos == std::string::npos)
+              error ("whos_line_format: '%c' is not a command", param.command);
 
-                param.parameter_length = (a > param.parameter_length
-                                          ? a : param.parameter_length);
-                if (param.command == 's' && param.modifier == 'c' && b > 0)
-                  param.first_parameter_length = b;
-              }
-            else
-              error ("whos_line_format: '%c' is not a command",
-                     param.command);
+            param.parameter_length = param_length(pos);
+            param.text = param_names(pos);
+            param.line.assign (param_names(pos).length (), '=');
+
+            param.parameter_length = (a > param.parameter_length
+                                      ? a : param.parameter_length);
+            if (param.command == 's' && param.modifier == 'c' && b > 0)
+              param.first_parameter_length = b;
 
             if (param.command == 's')
               {
@@ -1939,10 +1934,10 @@ mlock (void)
 {
   octave_function *fcn = octave_call_stack::current ();
 
-  if (fcn)
-    fcn->lock ();
-  else
+  if (! fcn)
     error ("mlock: invalid use outside a function");
+
+  fcn->lock ();
 }
 
 void

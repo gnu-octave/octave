@@ -35,11 +35,11 @@ namespace octave
 EOF
 
 $AWK \
-  '/#define (HAVE|ENABLE)_/ {
+  '/#define HAVE_/ {
      sub (/HAVE_/, "", $2);
      printf ("          m.assign (\"%s\", octave_value (true));\n", $2);
    }
-   /\/\* #undef (HAVE|ENABLE)_/ {
+   /\/\* #undef HAVE_/ {
      sub (/HAVE_/, "", $3);
      printf ("          m.assign (\"%s\", octave_value (false));\n", $3);
    } {

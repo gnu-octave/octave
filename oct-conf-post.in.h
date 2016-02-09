@@ -133,13 +133,6 @@ typedef unsigned long ino_t;
 #  define OCTAVE_IMPORT
 #endif
 
-/* API macro for libcruft */
-#if defined (CRUFT_DLL)
-#  define CRUFT_API OCTAVE_EXPORT
-#else
-#  define CRUFT_API OCTAVE_IMPORT
-#endif
-
 /* API macro for liboctave */
 #if defined (OCTAVE_DLL)
 #  define OCTAVE_API OCTAVE_EXPORT

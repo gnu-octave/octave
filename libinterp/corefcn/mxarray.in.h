@@ -44,8 +44,8 @@ SUCH DAMAGE.
 
 */
 
-#if ! defined (MXARRAY_H)
-#define MXARRAY_H
+#if ! defined (octave_mxarray_h)
+#define octave_mxarray_h 1
 
 typedef enum
 {

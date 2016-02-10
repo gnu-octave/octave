@@ -45,8 +45,8 @@ SUCH DAMAGE.
 
 /* mex.h is for use in C-programs only; do NOT include it in mex.cc */
 
-#if ! defined (MEXPROTO_H)
-#define MEXPROTO_H
+#if ! defined (octave_mexproto_h)
+#define octave_mexproto_h 1
 
 #if defined (__cplusplus)
 #  include <cstdlib>

@@ -45,8 +45,8 @@ SUCH DAMAGE.
 
 /* mex.h is for use in C-programs only; do NOT include it in mex.cc */
 
-#if ! defined (MEX_H)
-#define MEX_H
+#if ! defined (octave_mex_h)
+#define octave_mex_h 1
 
 #define HAVE_OCTAVE
 

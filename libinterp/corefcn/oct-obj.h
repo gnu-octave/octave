@@ -25,6 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 // version 4.6.
 ////////////////////////////////////////////////////////////////////////
 
+#if ! defined (octave_oct_obj_h)
+#define octave_oct_obj_h 1
+
 #warning oct-obj.h has been deprecated; use ovl.h instead
 
 #include "ovl.h"
+
+#endif

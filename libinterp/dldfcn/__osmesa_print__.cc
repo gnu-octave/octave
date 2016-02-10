@@ -28,9 +28,9 @@ from git://anongit.freedesktop.org/mesa/demos
 #endif
 
 #if defined (HAVE_OSMESA_H)
-#include "osmesa.h"
+#include <osmesa.h>
 #elif defined (HAVE_GL_OSMESA_H)
-#include "GL/osmesa.h"
+#include <GL/osmesa.h>
 #endif
 
 #include "oct-locbuf.h"

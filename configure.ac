@@ -2229,6 +2229,25 @@ AC_CHECK_MEMBERS([struct group.gr_passwd])
 
 AC_STRUCT_TIMEZONE
 
+## Check if C++ compiler allows overload of char, int8_t, and uint8_t.
+AC_CACHE_CHECK([whether ${CXX-g++} allows overload of char, int8_t, and uint8_t],
+  [octave_cv_overload_char_int8_t],
+  [AC_LANG_PUSH(C++)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+    #include <stdint.h>
+    void somefunc(char x) {};
+    void somefunc(int8_t x) {};
+    void somefunc(uint8_t x) {};
+    ]])],
+    octave_cv_overload_char_int8_t=yes,
+    octave_cv_overload_char_int8_t=no)
+  AC_LANG_POP(C++)
+  ])
+if test $octave_cv_overload_char_int8_t = yes; then
+  AC_DEFINE(HAVE_OVERLOAD_CHAR_INT8_TYPES, 1,
+    [Define to 1 if C++ allows overload of char, int8_t, and uint8_t types.])
+fi
+
 ### Check compiler characteristics.
 
 ## Check if C++ compiler can auto allocate variable sized arrays.

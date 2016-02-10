@@ -839,10 +839,12 @@ public:
 
   octave_int (T i) : ival (i) { }
 
+#if defined (HAVE_OVERLOAD_CHAR_INT8_TYPES)
   // Always treat characters as unsigned.
   octave_int (char c)
     : ival (octave_int_base<T>::truncate_int (static_cast<unsigned char> (c)))
   { }
+#endif
 
   octave_int (double d) : ival (octave_int_base<T>::convert_real (d)) { }
 

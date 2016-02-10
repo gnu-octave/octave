@@ -92,7 +92,7 @@ fi
 
 cat << EOF
 
-typedef octave_idx_type $octave_idx_type;
+typedef $octave_idx_type octave_idx_type;
 
 EOF
 

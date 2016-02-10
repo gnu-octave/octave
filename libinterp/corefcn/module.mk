@@ -72,7 +72,6 @@ COREFCN_INC = \
   libinterp/corefcn/oct-stdstrm.h \
   libinterp/corefcn/oct-stream.h \
   libinterp/corefcn/oct-strstrm.h \
-  libinterp/corefcn/oct-tex-parser.h \
   libinterp/corefcn/oct.h \
   libinterp/corefcn/octave-default-image.h \
   libinterp/corefcn/octave-link.h \
@@ -110,6 +109,9 @@ C_COREFCN_SRC = \
 NOINSTALL_COREFCN_INC = \
   libinterp/corefcn/oct-opengl.h \
   libinterp/corefcn/siglist.h
+
+## oct-tex-parser.h is in the SRC list so that it will be distributed
+## but not installed.
 
 COREFCN_SRC = \
   libinterp/corefcn/Cell.cc \
@@ -207,6 +209,7 @@ COREFCN_SRC = \
   libinterp/corefcn/oct-stream.cc \
   libinterp/corefcn/oct-strstrm.cc \
   libinterp/corefcn/oct-tex-lexer.ll \
+  libinterp/corefcn/oct-tex-parser.h \
   libinterp/corefcn/oct-tex-parser.yy \
   libinterp/corefcn/octave-link.cc \
   libinterp/corefcn/ordschur.cc \

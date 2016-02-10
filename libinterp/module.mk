@@ -60,6 +60,7 @@ ULT_PARSER_SRC := \
 
 GENERATED_PARSER_FILES := \
   libinterp/corefcn/oct-tex-lexer.ll \
+  libinterp/corefcn/oct-tex-parser.h \
   libinterp/corefcn/oct-tex-parser.yy \
   libinterp/parse-tree/oct-parse.yy
 
@@ -103,7 +104,6 @@ libinterp_EXTRA_DIST += \
 
 octinclude_HEADERS += \
   libinterp/corefcn/graphics-props.cc \
-  libinterp/parse-tree/oct-gperf.h \
   libinterp/builtins.h \
   libinterp/builtin-defun-decls.h \
   libinterp/build-env.h \

@@ -34,8 +34,13 @@ PARSE_TREE_INC = \
   libinterp/parse-tree/pt.h \
   libinterp/parse-tree/token.h
 
+## oct-gperf.h and oct-parse.h are in the SRC list so that they will
+## be distributed but not installed.
+
 PARSE_TREE_SRC = \
   libinterp/parse-tree/lex.ll \
+  libinterp/parse-tree/oct-gperf.h \
+  libinterp/parse-tree/oct-parse.h \
   libinterp/parse-tree/oct-parse.yy \
   libinterp/parse-tree/pt-arg-list.cc \
   libinterp/parse-tree/pt-array-list.cc \

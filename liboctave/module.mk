@@ -24,6 +24,8 @@ octlib_LTLIBRARIES += liboctave/liboctave.la
 
 BUILT_INCS = \
   liboctave/operators/mx-ops.h \
+  liboctave/operators/smx-ops.h \
+  liboctave/operators/vx-ops.h \
   $(LIBOCTAVE_OPT_INC) \
   $(MX_OP_INC) \
   $(VX_OP_INC) \

@@ -46,10 +46,20 @@ $(MX_OP_INC) $(MX_OP_SRC) : liboctave/operators/mk-ops.awk liboctave/operators/m
 $(SMX_OP_INC) $(SMX_OP_SRC) : liboctave/operators/sparse-mk-ops.awk liboctave/operators/smx-ops
 	$(AM_V_GEN)$(call run-mx-ops,smx,sparse-)
 
-liboctave/operators/mx-ops.h : liboctave/operators/mk-ops.awk liboctave/operators/mx-ops
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(OP_SRCDIR)/mx-ops > $@-t && \
+define run-mx-ops-inclusive
+  rm -f $@-t $@ && \
+  $(AWK) -f $(OP_SRCDIR)/$(notdir $<) prefix=$(patsubst %-ops.h,%,$(notdir $@)) make_inclusive_header=$(notdir $@) $(OP_SRCDIR)/$(basename $(notdir $@)) > $@-t && \
 	mv $@-t $@
+endef
+
+liboctave/operators/vx-ops.h : liboctave/operators/mk-ops.awk liboctave/operators/vx-ops
+	$(AM_V_GEN)$(run-mx-ops-inclusive)
+
+liboctave/operators/mx-ops.h : liboctave/operators/mk-ops.awk liboctave/operators/mx-ops
+	$(AM_V_GEN)$(run-mx-ops-inclusive)
+
+liboctave/operators/smx-ops.h : liboctave/operators/sparse-mk-ops.awk liboctave/operators/smx-ops
+	$(AM_V_GEN)$(run-mx-ops-inclusive)
 
 noinst_LTLIBRARIES += liboctave/operators/liboperators.la
 

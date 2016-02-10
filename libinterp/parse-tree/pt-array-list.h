@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pt_array_list_h)
 #define octave_pt_array_list_h 1
 
+#include "octave-config.h"
+
 #include "base-list.h"
 #include "pt-arg-list.h"
 #include "pt-exp.h"

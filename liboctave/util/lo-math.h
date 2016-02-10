@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_math_h)
 #define octave_lo_math_h 1
 
+#include "octave-config.h"
+
 #if defined (__cplusplus)
 #  include <cmath>
 // if #undef log2 is missing in cmath, undef it here

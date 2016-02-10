@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_fCmplxLU_h)
 #define octave_fCmplxLU_h 1
 
+#include "octave-config.h"
+
 #include "base-lu.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"

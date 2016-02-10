@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_base_text_renderer_h)
 #define octave_base_text_renderer_h 1
 
+#include "octave-config.h"
+
 #include <list>
 #include <string>
 

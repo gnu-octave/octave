@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_dbleQR_h)
 #define octave_dbleQR_h 1
 
+#include "octave-config.h"
+
 #include <iosfwd>
 
 #include "dMatrix.h"

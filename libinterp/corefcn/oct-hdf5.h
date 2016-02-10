@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_hdf5_h)
 #  define octave_hdf5_h 1
 
+#include "octave-config.h"
+
 #if defined (HAVE_HDF5)
 
 #  if defined (HAVE_HDF5_H)

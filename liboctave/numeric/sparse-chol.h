@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_sparse_chol_h)
 #define octave_sparse_chol_h 1
 
+#include "octave-config.h"
+
 #include "CSparse.h"
 #include "dColVector.h"
 #include "dSparse.h"

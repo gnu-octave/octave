@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pt_loop_h)
 #define octave_pt_loop_h 1
 
+#include "octave-config.h"
+
 class octave_value;
 class octave_lvalue;
 

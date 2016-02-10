@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_workspace_element_h)
 #define octave_workspace_element_h 1
 
+#include "octave-config.h"
+
 #include <string>
 
 class workspace_element

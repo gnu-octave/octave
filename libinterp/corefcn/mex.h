@@ -48,6 +48,8 @@ SUCH DAMAGE.
 #if ! defined (octave_mex_h)
 #define octave_mex_h 1
 
+#include "octave-config.h"
+
 #define HAVE_OCTAVE
 
 typedef void mxArray;

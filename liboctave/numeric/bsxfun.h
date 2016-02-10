@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_bsxfun_h)
 #define octave_bsxfun_h 1
 
+#include "octave-config.h"
+
 #include <algorithm>
 
 #include "Array.h"

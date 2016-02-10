@@ -28,6 +28,7 @@ BEGIN {
       gsub (/[\.-]/, "_", tmp);
       printf ("#if ! defined (octave_%s)\n", tmp);
       printf ("#define octave_%s 1\n", tmp);
+      print "#include \"octave-config.h\"";
     }
 }
 /^#/ {
@@ -137,6 +138,7 @@ BEGIN {
 
           printf ("#if ! defined (%s)\n", h_guard) >> h_file;
           printf ("#define %s 1\n", h_guard) >> h_file;
+          print "#include \"octave-config.h\"" >> h_file;
 
           if (result_header)
             {

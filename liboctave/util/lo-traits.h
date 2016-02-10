@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_traits_h)
 #define octave_lo_traits_h 1
 
+#include "octave-config.h"
+
 // Ideas for these classes taken from C++ Templates, The Complete
 // Guide by David Vandevoorde and Nicolai M. Josuttis, Addison-Wesley
 // (2003).

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_CMatrix_h)
 #define octave_CMatrix_h 1
 
+#include "octave-config.h"
+
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"

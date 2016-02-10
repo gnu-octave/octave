@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_sparse_xdiv_h)
 #define octave_sparse_xdiv_h 1
 
+#include "octave-config.h"
+
 #include "oct-cmplx.h"
 #include "MatrixType.h"
 

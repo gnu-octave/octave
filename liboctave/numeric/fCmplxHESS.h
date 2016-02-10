@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_fCmplxHESS_h)
 #define octave_fCmplxHESS_h 1
 
+#include "octave-config.h"
+
 #include <iosfwd>
 
 #include "fCMatrix.h"

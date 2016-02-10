@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_Matrix_h)
 #define octave_Matrix_h 1
 
+#include "octave-config.h"
+
 #include "mx-base.h"
 
 #include "mx-ext.h"

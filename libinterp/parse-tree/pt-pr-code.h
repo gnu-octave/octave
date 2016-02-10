@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pt_pr_code_h)
 #define octave_pt_pr_code_h 1
 
+#include "octave-config.h"
+
 #include <stack>
 #include <string>
 

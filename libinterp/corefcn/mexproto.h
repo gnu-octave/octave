@@ -48,6 +48,8 @@ SUCH DAMAGE.
 #if ! defined (octave_mexproto_h)
 #define octave_mexproto_h 1
 
+#include "octave-config.h"
+
 #if defined (__cplusplus)
 #  include <cstdlib>
 extern "C" {

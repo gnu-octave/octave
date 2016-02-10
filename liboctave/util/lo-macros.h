@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_macros_h)
 #define octave_lo_macros_h 1
 
+#include "octave-config.h"
+
 // Core macros. Iteration is supported up to count 10.
 
 #define OCT_ITERATE_PARAM_MACRO0(MACRO, PARAM)

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_unwind_prot_h)
 #define octave_unwind_prot_h 1
 
+#include "octave-config.h"
+
 #include <cstddef>
 
 #include <stack>

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ov_type_conv_h)
 #define octave_ov_type_conv_h 1
 
+#include "octave-config.h"
+
 static
 octave_value
 octave_type_conv_body (const octave_value &arg, const std::string& name,

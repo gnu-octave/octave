@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pr_output_h)
 #define octave_pr_output_h 1
 
+#include "octave-config.h"
+
 #include <iosfwd>
 
 #include "oct-cmplx.h"

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_dim_vector_h)
 #define octave_dim_vector_h 1
 
+#include "octave-config.h"
+
 #include <cassert>
 #include <limits>
 

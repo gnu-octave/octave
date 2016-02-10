@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_build_env_h)
 #define octave_build_env_h 1
 
+#include "octave-config.h"
+
 #include "oct-map.h"
 
 namespace octave

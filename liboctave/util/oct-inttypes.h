@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_inttypes_h)
 #define octave_oct_inttypes_h 1
 
+#include "octave-config.h"
+
 #include <cstdlib>
 
 #include <limits>

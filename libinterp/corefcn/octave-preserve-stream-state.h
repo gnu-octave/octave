@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_octave_preserve_stream_state_h)
 #define octave_octave_preserve_stream_state_h 1
 
+#include "octave-config.h"
+
 class
 octave_preserve_stream_state
 {

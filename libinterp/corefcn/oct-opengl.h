@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_opengl_h)
 #define octave_oct_opengl_h 1
 
+#include "octave-config.h"
+
 #if defined (HAVE_GL_GL_H)
 #  include <GL/gl.h>
 #elif defined (HAVE_OPENGL_GL_H) || defined (HAVE_FRAMEWORK_OPENGL)

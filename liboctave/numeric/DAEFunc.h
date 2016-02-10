@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_DAEFunc_h)
 #define octave_DAEFunc_h 1
 
+#include "octave-config.h"
+
 class Matrix;
 class ColumnVector;
 

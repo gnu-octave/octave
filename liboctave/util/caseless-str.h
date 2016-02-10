@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_caseless_str_h)
 #define octave_caseless_str_h 1
 
+#include "octave-config.h"
+
 #include <cctype>
 #include <string>
 

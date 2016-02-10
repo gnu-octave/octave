@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_rl_edit_h)
 #define octave_oct_rl_edit_h 1
 
+#include "octave-config.h"
+
 typedef int (*rl_startup_hook_fcn_ptr) (void);
 
 typedef int (*rl_pre_input_hook_fcn_ptr) (void);

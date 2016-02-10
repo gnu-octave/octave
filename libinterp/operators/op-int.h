@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_op_int_h)
 #define octave_op_int_h 1
 
+#include "octave-config.h"
+
 #include "quit.h"
 #include "bsxfun.h"
 

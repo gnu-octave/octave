@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ft_text_renderer_h)
 #define octave_ft_text_renderer_h 1
 
+#include "octave-config.h"
+
 class base_text_renderer;
 
 extern base_text_renderer *make_ft_text_renderer (void);

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pt_eval_h)
 #define octave_pt_eval_h 1
 
+#include "octave-config.h"
+
 #include <stack>
 #include <string>
 

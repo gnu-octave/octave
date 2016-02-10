@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_base_aepbal_h)
 #define octave_base_aepbal_h 1
 
+#include "octave-config.h"
+
 template <typename MatrixT, typename VectorT>
 class base_aepbal
 {

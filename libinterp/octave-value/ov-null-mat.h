@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ov_null_mat_h)
 #define octave_ov_null_mat_h 1
 
+#include "octave-config.h"
+
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-str-mat.h"

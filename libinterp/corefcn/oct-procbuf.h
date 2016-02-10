@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_procbuf_h)
 #define octave_oct_procbuf_h 1
 
+#include "octave-config.h"
+
 #include <sys/types.h>
 
 #include "c-file-ptr-stream.h"

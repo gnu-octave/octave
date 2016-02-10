@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_locbuf_h)
 #define octave_oct_locbuf_h 1
 
+#include "octave-config.h"
+
 #include <cstddef>
 #include "oct-cmplx.h"
 

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_array_errwarn_h)
 #define octave_lo_array_errwarn_h 1
 
+#include "octave-config.h"
+
 #include "dim-vector.h"
 #include "quit.h"
 

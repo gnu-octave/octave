@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pt_jump_h)
 #define octave_pt_jump_h 1
 
+#include "octave-config.h"
+
 class tree_walker;
 
 #include "pt-cmd.h"

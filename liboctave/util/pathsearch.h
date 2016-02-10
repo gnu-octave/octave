@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pathsearch_h)
 #define octave_pathsearch_h 1
 
+#include "octave-config.h"
+
 #include <string>
 
 #include "str-vec.h"

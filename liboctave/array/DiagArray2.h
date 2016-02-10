@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_DiagArray2_h)
 #define octave_DiagArray2_h 1
 
+#include "octave-config.h"
+
 #include <cassert>
 #include <cstdlib>
 

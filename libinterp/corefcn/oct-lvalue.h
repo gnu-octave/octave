@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_lvalue_h)
 #define octave_oct_lvalue_h 1
 
+#include "octave-config.h"
+
 class octave_value;
 class octave_value_list;
 

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ov_uint32_h)
 #define octave_ov_uint32_h 1
 
+#include "octave-config.h"
+
 #define OCTAVE_INT_T octave_uint32
 
 #define OCTAVE_VALUE_INT_MATRIX_T octave_uint32_matrix

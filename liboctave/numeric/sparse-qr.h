@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_sparse_qr_h)
 #define octave_sparse_qr_h 1
 
+#include "octave-config.h"
+
 #include "dMatrix.h"
 #include "CMatrix.h"
 #include "dSparse.h"

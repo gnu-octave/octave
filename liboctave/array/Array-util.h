@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_Array_util_h)
 #define octave_Array_util_h 1
 
+#include "octave-config.h"
+
 #include "Array.h"
 #include "dim-vector.h"
 #include "idx-vector.h"

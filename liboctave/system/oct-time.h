@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_time_h)
 #define octave_oct_time_h 1
 
+#include "octave-config.h"
+
 #include <ctime>
 #include <string>
 

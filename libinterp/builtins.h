@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_builtins_h)
 #define octave_builtins_h 1
 
+#include "octave-config.h"
+
 #if ! defined (MAKE_BUILTINS)
 #  include "builtin-defun-decls.h"
 #endif

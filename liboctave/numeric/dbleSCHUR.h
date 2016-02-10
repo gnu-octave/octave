@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_dbleSCHUR_h)
 #define octave_dbleSCHUR_h 1
 
+#include "octave-config.h"
+
 #include <iosfwd>
 #include <string>
 

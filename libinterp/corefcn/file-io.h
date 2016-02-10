@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_file_io_h)
 #define octave_file_io_h 1
 
+#include "octave-config.h"
+
 extern OCTINTERP_API void initialize_file_io (void);
 
 extern OCTINTERP_API void close_files (void);

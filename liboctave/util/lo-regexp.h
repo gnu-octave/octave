@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_regexp_h)
 #define octave_lo_regexp_h 1
 
+#include "octave-config.h"
+
 #include <list>
 #include <sstream>
 #include <string>

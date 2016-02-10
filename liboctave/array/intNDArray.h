@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_intNDArray_h)
 #define octave_intNDArray_h 1
 
+#include "octave-config.h"
+
 #include "MArray.h"
 #include "boolNDArray.h"
 class NDArray;

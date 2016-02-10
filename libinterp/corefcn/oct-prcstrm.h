@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_prcstrm_h)
 #define octave_oct_prcstrm_h 1
 
+#include "octave-config.h"
+
 #include "oct-stdstrm.h"
 
 // FIXME: why don't these classes use iprocstream and oprocstream,

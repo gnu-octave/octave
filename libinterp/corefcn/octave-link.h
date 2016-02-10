@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_octave_link_h)
 #define octave_octave_link_h 1
 
+#include "octave-config.h"
+
 #include <string>
 
 #include "event-queue.h"

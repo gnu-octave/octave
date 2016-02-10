@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ls_mat4_h)
 #define octave_ls_mat4_h 1
 
+#include "octave-config.h"
+
 extern oct_mach_info::float_format
 mopt_digit_to_float_format (int mach);
 

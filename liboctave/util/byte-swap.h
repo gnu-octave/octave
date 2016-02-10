@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_byte_swap_h)
 #define octave_byte_swap_h 1
 
+#include "octave-config.h"
+
 static inline void
 swap_bytes (void *ptr, unsigned int i, unsigned int j)
 {

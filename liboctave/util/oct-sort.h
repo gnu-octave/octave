@@ -83,6 +83,8 @@ The Python license is
 #if ! defined (octave_oct_sort_h)
 #define octave_oct_sort_h 1
 
+#include "octave-config.h"
+
 #include "lo-traits.h"
 
 // The maximum number of entries in a MergeState's pending-runs stack.

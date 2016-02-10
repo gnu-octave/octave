@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ls_oct_binary_h)
 #define octave_ls_oct_binary_h 1
 
+#include "octave-config.h"
+
 extern OCTINTERP_API bool
 save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,

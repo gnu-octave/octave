@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_chMatrix_h)
 #define octave_chMatrix_h 1
 
+#include "octave-config.h"
+
 #include <string>
 
 #include "Array.h"

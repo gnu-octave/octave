@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pt_walk_h)
 #define octave_pt_walk_h 1
 
+#include "octave-config.h"
+
 class tree_anon_fcn_handle;
 class tree_argument_list;
 class tree_binary_expression;

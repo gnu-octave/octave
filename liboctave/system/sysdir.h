@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_sysdir_h)
 #define octave_sysdir_h 1
 
+#include "octave-config.h"
+
 // This mess suggested by the autoconf manual.
 
 // unistd.h defines _POSIX_VERSION on POSIX.1 systems.

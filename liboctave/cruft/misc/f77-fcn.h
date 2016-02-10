@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_f77_fcn_h)
 #define octave_f77_fcn_h 1
 
+#include "octave-config.h"
+
 #include "quit.h"
 
 #ifdef __cplusplus

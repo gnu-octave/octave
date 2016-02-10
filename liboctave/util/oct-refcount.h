@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "octave-config.h"
+
 #if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT) && (defined (_MSC_VER) || defined (__GNUC__))
 #  if defined (_MSC_VER)
 #    include <intrin.h>

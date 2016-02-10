@@ -33,6 +33,8 @@ Free Software Foundation, Inc.
 #if ! defined (octave_sighandlers_h)
 #define octave_sighandlers_h 1
 
+#include "octave-config.h"
+
 // Include signal.h, not csignal since the latter might only define
 // the ANSI standard C signal interface.
 

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_cutils_h)
 #define octave_lo_cutils_h 1
 
+#include "octave-config.h"
+
 #include <sys/types.h>
 
 #ifdef __cplusplus

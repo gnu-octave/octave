@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_h)
 #define octave_oct_h 1
 
+#include "octave-config.h"
+
 // Things that are often included to create .oct files.
 
 // config.h needs to be first because it includes #defines that can

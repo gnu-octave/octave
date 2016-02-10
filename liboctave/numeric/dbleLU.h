@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_dbleLU_h)
 #define octave_dbleLU_h 1
 
+#include "octave-config.h"
+
 #include "base-lu.h"
 #include "dMatrix.h"
 

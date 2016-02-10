@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_DAE_h)
 #define octave_DAE_h 1
 
+#include "octave-config.h"
+
 #include "DAEFunc.h"
 #include "base-dae.h"
 

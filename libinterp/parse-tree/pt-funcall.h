@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_tree_funcall_h)
 #define octave_tree_funcall_h 1
 
+#include "octave-config.h"
+
 #include "ov.h"
 #include "ovl.h"
 #include "parse.h"

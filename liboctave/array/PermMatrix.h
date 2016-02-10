@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_PermMatrix_h)
 #define octave_PermMatrix_h 1
 
+#include "octave-config.h"
+
 #include "Array.h"
 #include "mx-defs.h"
 

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_sparse_util_h)
 #define octave_sparse_util_h 1
 
+#include "octave-config.h"
+
 // The next two functions don't do anything unless CHOLMOD is available
 
 // FIXME: This overload is here due to API change in SuiteSparse (3.1 -> 3.2)

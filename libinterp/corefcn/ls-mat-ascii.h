@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ls_mat_ascii_h)
 #define octave_ls_mat_ascii_h 1
 
+#include "octave-config.h"
+
 extern std::string
 read_mat_ascii_data (std::istream& is, const std::string& filename,
                      octave_value& tc);

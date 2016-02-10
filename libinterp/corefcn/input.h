@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_input_h)
 #define octave_input_h 1
 
+#include "octave-config.h"
+
 #include <cstdio>
 
 #include <string>

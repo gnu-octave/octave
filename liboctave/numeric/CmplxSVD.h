@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_CmplxSVD_h)
 #define octave_CmplxSVD_h 1
 
+#include "octave-config.h"
+
 #include <iosfwd>
 
 #include "dDiagMatrix.h"

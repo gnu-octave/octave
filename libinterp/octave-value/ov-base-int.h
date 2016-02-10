@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ov_base_int_h)
 #define octave_ov_base_int_h 1
 
+#include "octave-config.h"
+
 #include <cstdlib>
 
 #include <iosfwd>

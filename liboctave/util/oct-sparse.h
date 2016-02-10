@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_sparse_h)
 #define octave_oct_sparse_h 1
 
+#include "octave-config.h"
+
 #if defined (HAVE_SUITESPARSE_AMD_H)
 #  include <suitesparse/amd.h>
 #elif defined (HAVE_UFSPARSE_AMD_H)

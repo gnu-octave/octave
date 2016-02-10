@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_gripes_h)
 #define octave_gripes_h 1
 
+#include "octave-config.h"
+
 #include <string>
 
 #include "lo-array-gripes.h"

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_statdefs_h)
 #define octave_statdefs_h 1
 
+#include "octave-config.h"
+
 #include <sys/types.h>
 
 #ifdef HAVE_SYS_STAT_H

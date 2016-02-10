@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_sparse_dmsolve_h)
 #define octave_sparse_dmsolve_h 1
 
+#include "octave-config.h"
+
 template <typename RT, typename ST, typename T>
 RT
 dmsolve (const ST& a, const T& b, octave_idx_type& info);

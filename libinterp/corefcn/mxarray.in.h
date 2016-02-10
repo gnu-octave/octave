@@ -47,6 +47,8 @@ SUCH DAMAGE.
 #if ! defined (octave_mxarray_h)
 #define octave_mxarray_h 1
 
+#include "octave-config.h"
+
 typedef enum
 {
   mxREAL = 0,

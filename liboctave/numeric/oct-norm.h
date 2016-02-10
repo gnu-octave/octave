@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_norm_h)
 #define octave_oct_norm_h 1
 
+#include "octave-config.h"
+
 #include "oct-cmplx.h"
 
 #define DECLARE_XNORM_FUNCS(PREFIX, RTYPE) \

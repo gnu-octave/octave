@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_DASRT_h)
 #define octave_DASRT_h 1
 
+#include "octave-config.h"
+
 #include <cfloat>
 
 #include "DASRT-opts.h"

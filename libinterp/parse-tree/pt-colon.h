@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_pt_colon_h)
 #  define octave_tree_colon 1
 
+#include "octave-config.h"
+
 #  include <string>
 
 class tree_walker;

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_dbleAEPBAL_h)
 #define octave_dbleAEPBAL_h 1
 
+#include "octave-config.h"
+
 #include <iosfwd>
 #include <string>
 

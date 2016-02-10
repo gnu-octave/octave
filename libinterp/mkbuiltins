@@ -50,6 +50,8 @@ if $make_header; then
 #if ! defined (octave_builtin_defun_decls_h)
 #define octave_builtin_defun_decls_h 1
 
+#include "octave-config.h"
+
 #include "ovl.h"
 
 #define DEFUN_DECL(name) \

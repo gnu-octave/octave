@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_lo_ieee_h)
 #define octave_lo_ieee_h 1
 
+#include "octave-config.h"
+
 #ifdef  __cplusplus
 extern "C" {
 #endif

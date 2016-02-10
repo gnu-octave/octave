@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_gl_render_h)
 #define octave_gl_render_h 1
 
+#include "octave-config.h"
+
 #include "graphics.h"
 #include "oct-opengl.h"
 #include "text-renderer.h"

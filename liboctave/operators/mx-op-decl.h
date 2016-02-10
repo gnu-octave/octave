@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_mx_op_decl_h)
 #define octave_mx_op_decl_h 1
 
+#include "octave-config.h"
+
 #define BIN_OP_DECL(R, OP, X, Y, API) \
   extern API R OP (const X&, const Y&)
 

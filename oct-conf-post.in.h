@@ -185,5 +185,9 @@ typedef unsigned long ino_t;
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 
-/* Tag indicating Octave config.h has been included */
-#define OCTAVE_CONFIG_INCLUDED 1
+/* Tag indicating Octave's autoconf-generated config.h has been
+   included.  This symbol is provided because autoconf-generated
+   config.h files do not define a multiple-inclusion guard.  See also
+   the notes at the top of the generated octave-config.h file.  */
+
+#define OCTAVE_AUTOCONFIG_H_INCLUDED 1

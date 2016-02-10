@@ -23,9 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_oct_refcount_h)
 #define octave_oct_refcount_h 1
 
-#ifndef OCTAVE_CONFIG_INCLUDED
-#  error "The file <octave/config.h> must be included before oct-refcount.h."
-#endif
+#include "octave-config.h"
 
 #if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT) && (defined (_MSC_VER) || defined (__GNUC__))
 #  if defined (_MSC_VER)

@@ -27,6 +27,12 @@ from git://anongit.freedesktop.org/mesa/demos
 #include <config.h>
 #endif
 
+#if defined (HAVE_OSMESA_H)
+#include "osmesa.h"
+#elif defined (HAVE_GL_OSMESA_H)
+#include "GL/osmesa.h"
+#endif
+
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
@@ -35,12 +41,6 @@ from git://anongit.freedesktop.org/mesa/demos
 #include "gl2ps-renderer.h"
 #include "graphics.h"
 #include "gripes.h"
-
-#if defined (HAVE_OSMESA_H)
-#include "osmesa.h"
-#elif defined (HAVE_GL_OSMESA_H)
-#include "GL/osmesa.h"
-#endif
 
 #if defined (HAVE_OSMESA) && defined (HAVE_OPENGL)
 static void

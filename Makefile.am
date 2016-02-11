@@ -145,6 +145,7 @@ icons-dist-hook:
 endif
 
 BUILT_SOURCES += \
+  octave-config.h \
   run-octave \
   $(DIRSTAMP_FILES)
 

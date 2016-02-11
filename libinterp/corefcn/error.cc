@@ -1562,45 +1562,26 @@ disable escape sequence expansion use a second backslash before the sequence
               // If "all" is explicitly given as ID.
 
               octave_map tmp;
+              int is_error = (arg1 == "error");
 
-              Cell id (1, 1);
-              Cell st (1, 1);
+              Cell id (1, 1 + 2*is_error);
+              Cell st (1, 1 + 2*is_error);
 
               id(0) = arg2;
               st(0) = arg1;
 
               // Since internal Octave functions are not compatible,
-              // turning all warnings into errors should leave the state of
-              // Octave:language-extension alone.
+              // and "all"=="error" causes any "on" to throw an error,
+              // turning all warnings into errors should disable
+              // Octave:language-extension.
 
-              if (arg1 == "error" && warning_options.contains ("identifier"))
+              if (is_error)
                 {
-                  octave_idx_type n = 1;
+                  id(1) = "Octave:language-extension";
+                  st(1) = "off";
 
-                  Cell tid = warning_options.contents ("identifier");
-                  Cell tst = warning_options.contents ("state");
-
-                  for (octave_idx_type i = 0; i < tid.numel (); i++)
-                    {
-                      octave_value vid = tid(i);
-
-                      if (vid.is_string ())
-                        {
-                          std::string key = vid.string_value ();
-
-                          if (key == "Octave:language-extension"
-                              || key == "Octave:single-quote-string")
-                            {
-                              id.resize (dim_vector (1, n+1));
-                              st.resize (dim_vector (1, n+1));
-
-                              id(n) = tid(i);
-                              st(n) = tst(i);
-
-                              n++;
-                            }
-                        }
-                    }
+                  id(2) = "Octave:single-quote-string";
+                  st(2) = "off";
                 }
 
               tmp.assign ("identifier", id);

@@ -327,14 +327,13 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
 void
 file_editor_tab::handle_context_menu_break_condition (int linenr)
 {
-  QString cond;
-  bp_info info (_file_name, linenr);  // Get function name & dir from filename.
-
   // Ensure editor line numbers match Octave core's line numbers.
   // Give users the option to save modifications if necessary.
-  if (! unchanged_or_saved ()
-     || !(octave_qt_link::file_in_path (info.file, info.dir)))
+  if (! unchanged_or_saved ())
     return;
+
+  QString cond;
+  bp_info info (_file_name, linenr+1); // Get function name & dir from filename.
 
   // Search for previous condition.  FIXME -- is there a more direct way?
   if (_edit_area->markersAtLine (linenr) & (1 << marker::cond_break))
@@ -363,18 +362,15 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
 
   bool valid = false;
   std::string prompt = "dbstop if";
+  bool ok;
   while (!valid)
     {
-      bool ok;
       QString new_condition
         = QInputDialog::getText (this, tr ("Breakpoint condition"),
                                  tr (prompt.c_str ()), QLineEdit::Normal, cond,
                                  &ok);
       if (ok)     // If cancel, don't change breakpoint condition.
         {
-          bp_table::intmap line;
-          line[0] = linenr + 1;
-
           try
             {
               // Suppress error messages on the console.
@@ -382,13 +378,16 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
               frame.protect_var (buffer_error_messages);
               buffer_error_messages++;
 
-              bp_table::add_breakpoint (info.function_name, line,
-                                        new_condition.toStdString ());
+              bp_table::condition_valid (new_condition.toStdString ());
               valid = true;
             }
-          catch (const octave_interrupt_exception&) { valid = true; }
           catch (const index_exception& e) { }
           catch (const octave_execution_exception& e) { }
+          catch (const octave_interrupt_exception&)
+            {
+              ok = false;
+              valid = true;
+            }
 
           // In case we repeat, set new prompt.
           prompt = "ERROR: " + last_error_message () + "\n\ndbstop if";
@@ -396,6 +395,14 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
         }
       else
         valid = true;
+    }
+
+  if (ok)       // If the user didn't cancel, actually set the breakpoint.
+    {
+      info.condition = cond.toStdString ();
+
+      octave_link::post_event
+        (this, &file_editor_tab::add_breakpoint_callback, info);
     }
 }
 

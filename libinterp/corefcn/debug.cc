@@ -600,8 +600,8 @@ bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
 // Currently allows conditions with side-effects, like 'y+=10' and 'y++';
 // it is odd that the former is not flagged by "is_assignment_expression".
 // Throws an exception if not valid.
-static bool
-condition_valid (const std::string& cond)
+bool
+bp_table::condition_valid (const std::string& cond)
 {
   if (cond.length () > 0)
     {
@@ -649,7 +649,7 @@ bp_table::do_add_breakpoint (const std::string& fname,
   if (! dbg_fcn)
     error ("add_breakpoint: unable to find function '%s'\n", fname.c_str ());
 
-  condition_valid (condition);  // throws error if condition not valid
+  condition_valid (condition); // Throw error if condition not valid.
 
   intmap retval;
 

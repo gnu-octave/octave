@@ -148,6 +148,8 @@ public:
 
   static void dbclear_all_signals (void);
 
+  static bool condition_valid (const std::string& cond);
+
   friend void parse_dbfunction_params (const char *, const octave_value_list&,
                                        std::string&, bp_table::intmap&,
                                        std::string&);

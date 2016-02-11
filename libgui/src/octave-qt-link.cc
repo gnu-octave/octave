@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "resource-manager.h"
 
+#include <unistd.h>
 octave_qt_link::octave_qt_link (QWidget *p)
   : octave_link (), main_thread (new QThread ()),
     command_interpreter (new octave_interpreter ())
@@ -387,31 +388,46 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 
   QString qdir = QString::fromStdString (dir);
   QString qfile = QString::fromStdString (file);
+  QString msg
+    = (addpath_option
+       ? tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
+       : tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
 
-  QMessageBox msgBox;
+  QString title = tr ("Change Directory or Add Directory to Load Path");
 
-  msgBox.setText ("File not in load path");
-  QPushButton *cd_btn = msgBox.addButton (tr ("Change Directory"),
-                                          QMessageBox::YesRole);
+  QString cd_txt = tr ("Change Directory");
+  QString addpath_txt = tr ("Add Directory to Load Path");
+  QString cancel_txt = tr ("Cancel");
 
-  QPushButton *addpath_btn = 0;
+  QStringList btn;
+  QStringList role;
+  btn << cd_txt;
+  role << "YesRole";
   if (addpath_option)
     {
-      msgBox.setInformativeText (tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir));
-      addpath_btn = msgBox.addButton (tr ("Add Directory to Load Path"),
-                                     QMessageBox::AcceptRole);
-    }
-    else
-    {
-      msgBox.setInformativeText (tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
-    }
-  msgBox.setStandardButtons (QMessageBox::Cancel);
+      btn << addpath_txt;
+      role << "AcceptRole";
+     }
+  btn << cancel_txt;
+  role << "RejectRole";
 
-  msgBox.exec ();
+  // Lock mutex before signaling.
+  uiwidget_creator.mutex.lock ();
 
-  if (msgBox.clickedButton () == cd_btn)
-    retval = 1;
-  else if (msgBox.clickedButton () == addpath_btn)
+  uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
+
+  // Wait while the user is responding to message box.
+  uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
+
+  // The GUI has sent a signal and the thread has been awakened.
+
+  QString result = uiwidget_creator.get_dialog_button ();
+
+  uiwidget_creator.mutex.unlock ();
+
+  if (result == cd_txt)
+     retval = 1;
+  else if (result == addpath_txt)
     retval = 2;
 
   return retval;

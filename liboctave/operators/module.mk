@@ -91,8 +91,8 @@ liboctave_liboctave_la_LIBADD += liboctave/operators/liboperators.la
 liboctave_EXTRA_DIST += \
   liboctave/operators/config-ops.sh \
   liboctave/operators/mk-ops.awk \
-  liboctave/operators/mx-ops.cfg \
-  liboctave/operators/smx-ops.cfg \
-  liboctave/operators/vx-ops.cfg
+  liboctave/operators/mx-ops \
+  liboctave/operators/smx-ops \
+  liboctave/operators/vx-ops
 
 liboctave_DISTCLEANFILES += $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)

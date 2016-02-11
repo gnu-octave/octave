@@ -23,15 +23,12 @@ liboctave_liboctave_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 octlib_LTLIBRARIES += liboctave/liboctave.la
 
 BUILT_INCS = \
-  liboctave/operators/mx-ops.h \
-  liboctave/operators/smx-ops.h \
-  liboctave/operators/vx-ops.h \
-  $(LIBOCTAVE_OPT_INC) \
-  $(MX_OP_INC) \
-  $(VX_OP_INC) \
-  $(SMX_OP_INC)
+  $(BUILT_LIBOCTAVE_OPERATORS_INC) \
+  $(LIBOCTAVE_OPT_INC)
 
-BUILT_SOURCES += $(BUILT_INCS)
+BUILT_SOURCES += \
+  $(BUILT_INCS) \
+  $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)
 
 octinclude_HEADERS += \
   $(ARRAY_INC) \
@@ -43,8 +40,7 @@ octinclude_HEADERS += \
   $(OTHER_INC) \
   $(LIBOCTAVE_TEMPLATE_SRC)
 
-nodist_octinclude_HEADERS += \
-  $(BUILT_INCS)
+nodist_octinclude_HEADERS += $(BUILT_INCS)
 
 ## C++ files that are #included, not compiled
 OTHER_INC =

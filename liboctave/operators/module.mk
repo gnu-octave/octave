@@ -11,6 +11,33 @@ BUILT_LIBOCTAVE_OPERATORS_SOURCES = \
   $(VX_OP_SRC) \
   $(SMX_OP_SRC)
 
+BUILT_LIBOCTAVE_OPERATORS_INC = \
+  liboctave/operators/mx-ops.h \
+  liboctave/operators/smx-ops.h \
+  liboctave/operators/vx-ops.h \
+  $(MX_OP_INC) \
+  $(VX_OP_INC) \
+  $(SMX_OP_INC)
+
+BUILT_LIBOCTAVE_OPERATORS_FILES = \
+  $(BUILT_LIBOCTAVE_OPERATORS_SOURCES) \
+  $(BUILT_LIBOCTAVE_OPERATORS_INC)
+
+BUILT_FULL_MATRIX_OPERATORS_FILES = \
+  liboctave/operators/mx-ops.h \
+  $(MX_OP_INC) \
+  $(MX_OP_SRC)
+
+BUILT_SPARSE_MATRIX_OPERATORS_FILES = \
+  liboctave/operators/smx-ops.h \
+  $(SMX_OP_INC) \
+  $(SMX_OP_SRC)
+
+BUILT_VECTOR_OPERATORS_FILES = \
+  liboctave/operators/vx-ops.h \
+  $(VX_OP_INC) \
+  $(VX_OP_SRC)
+
 LIBOCTAVE_OPERATORS_INC = \
   liboctave/operators/mx-base.h \
   liboctave/operators/mx-defs.h \
@@ -28,38 +55,24 @@ LIBOCTAVE_OPERATORS_SRC =
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/operators/mx-inlines.cc
 
+## Special rules for sources which must be built before rest of compilation.
+
 OP_SRCDIR = $(abs_top_srcdir)/liboctave/operators
 
-define run-mx-ops
-  ( cd liboctave/operators; \
-    $(AWK) -f $(OP_SRCDIR)/$(2)mk-ops.awk prefix=$(1) $(OP_SRCDIR)/$(1)-ops \
-  )
-endef
-
-## Special rules for sources which must be built before rest of compilation.
-$(VX_OP_INC) $(VX_OP_SRC) : liboctave/operators/mk-ops.awk liboctave/operators/vx-ops
-	$(AM_V_GEN)$(call run-mx-ops,vx)
-
-$(MX_OP_INC) $(MX_OP_SRC) : liboctave/operators/mk-ops.awk liboctave/operators/mx-ops
-	$(AM_V_GEN)$(call run-mx-ops,mx)
-
-$(SMX_OP_INC) $(SMX_OP_SRC) : liboctave/operators/sparse-mk-ops.awk liboctave/operators/smx-ops
-	$(AM_V_GEN)$(call run-mx-ops,smx,sparse-)
-
-define run-mx-ops-inclusive
+define run-mk-ops
   rm -f $@-t $@ && \
-  $(AWK) -f $(OP_SRCDIR)/$(notdir $<) prefix=$(patsubst %-ops.h,%,$(notdir $@)) make_inclusive_header=$(notdir $@) $(OP_SRCDIR)/$(basename $(notdir $@)) > $@-t && \
-	mv $@-t $@
+  $(AWK) -f $(OP_SRCDIR)/mk-ops.awk -v build_file=$(notdir $@) $< > $@-t && \
+  mv $@-t $@
 endef
 
-liboctave/operators/vx-ops.h : liboctave/operators/mk-ops.awk liboctave/operators/vx-ops
-	$(AM_V_GEN)$(run-mx-ops-inclusive)
+$(BUILT_FULL_MATRIX_OPERATORS_FILES): liboctave/operators/mx-ops liboctave/operators/mk-ops.awk
+	$(AM_V_GEN)$(run-mk-ops)
 
-liboctave/operators/mx-ops.h : liboctave/operators/mk-ops.awk liboctave/operators/mx-ops
-	$(AM_V_GEN)$(run-mx-ops-inclusive)
+$(BUILT_SPARSE_MATRIX_OPERATORS_FILES): liboctave/operators/smx-ops liboctave/operators/mk-ops.awk
+	$(AM_V_GEN)$(run-mk-ops)
 
-liboctave/operators/smx-ops.h : liboctave/operators/sparse-mk-ops.awk liboctave/operators/smx-ops
-	$(AM_V_GEN)$(run-mx-ops-inclusive)
+$(BUILT_VECTOR_OPERATORS_FILES): liboctave/operators/vx-ops liboctave/operators/mk-ops.awk
+	$(AM_V_GEN)$(run-mk-ops)
 
 noinst_LTLIBRARIES += liboctave/operators/liboperators.la
 
@@ -78,9 +91,8 @@ liboctave_liboctave_la_LIBADD += liboctave/operators/liboperators.la
 liboctave_EXTRA_DIST += \
   liboctave/operators/config-ops.sh \
   liboctave/operators/mk-ops.awk \
-  liboctave/operators/mx-ops \
-  liboctave/operators/sparse-mk-ops.awk \
-  liboctave/operators/smx-ops \
-  liboctave/operators/vx-ops
+  liboctave/operators/mx-ops.cfg \
+  liboctave/operators/smx-ops.cfg \
+  liboctave/operators/vx-ops.cfg
 
 liboctave_DISTCLEANFILES += $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)

@@ -38,15 +38,17 @@ s double S NONE NO 0.0
 cs Complex S oct-cmplx.h NO 0.0
 m Matrix M dMatrix.h YES 0.0
 cm ComplexMatrix M CMatrix.h YES 0.0
-# ops
+#
+# sparse-matrix operators
+#
 # result_t_1 result_t_2 lhs_t rhs_t op-type lhs_conv rhs_conv headers ...
 #
 # op-type is one of
 #
-#  B: binary ops, + - * /
-#  C: comparison ops, < <= == != >= >
-#  E: == != (Only one of C or E can be used!!)
-#  L: logical ops, & |
+#   B: binary ops, + - * /
+#   C: comparison ops, < <= == != >= >
+#   E: == != (Only one of C or E can be used!!)
+#   L: logical ops, & |
 #
 cm scm sm cs BCL NONE real boolSparse.h
 cm scm cs sm BCL real NONE boolSparse.h

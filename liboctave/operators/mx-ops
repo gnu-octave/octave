@@ -74,14 +74,16 @@ ui32nda uint32NDArray ND uint32NDArray.h YES octave_uint32::zero uint32_t
 i64nda int64NDArray ND int64NDArray.h YES octave_int64::zero int64_t
 ui64nda uint64NDArray ND uint64NDArray.h YES octave_uint64::zero uint64_t
 pm PermMatrix PM PermMatrix.h YES static_cast<octave_idx_type>(0)
-# ops
+#
+# full-matrix operators
+#
 # result_t lhs_t rhs_t op-type lhs_conv rhs_conv headers ...
 #
 # op-type is one of
 #
-#  B: binary ops, + - * /
-#  C: comparison ops, < <= == != >= >
-#  L: logical ops, & |
+#   B: binary ops, + - * /
+#   C: comparison ops, < <= == != >= >
+#   L: logical ops, & |
 #
 cdm cdm dm B
 cdm dm cdm B

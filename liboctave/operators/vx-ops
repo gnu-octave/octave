@@ -20,6 +20,14 @@
 # rebuild the source file lists for Make.
 
 # types
+#
+# key typename object-type header fwd-decl-ok scalar-zero
+#
+# object-type is one of
+#
+#   S:  scalar
+#   V:  vector
+#
 ccv ComplexColumnVector V CColVector.h YES 0.0
 crv ComplexRowVector V CRowVector.h YES 0.0
 cs Complex S oct-cmplx.h NO 0.0
@@ -32,7 +40,20 @@ fcs FloatComplex S oct-cmplx.h NO 0.0
 fcv FloatColumnVector V fColVector.h YES 0.0
 frv FloatRowVector V fRowVector.h YES 0.0
 fs float S NONE NO 0.0
-# ops
+#
+# vector operators
+#
+# result_t lhs_t rhs_t op-type
+#
+# op-type is one of
+#
+#   B: binary ops, + - * /
+#   C: comparison ops, < <= == != >= >
+#   E: == != (Only one of C or E can be used!!)
+#   L: logical ops, & |
+#
+# though we are currently defining only binary ops for vectors.
+#
 ccv ccv cv B
 ccv ccv s B
 crv crv rv B

@@ -1570,6 +1570,43 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
   getCharacterPosition(ev->pos(),charLine,charColumn);
   QPoint pos = QPoint(charColumn,charLine);
 
+  // reposition cursor if mouseclick happens in the currently editable line
+  QVector<LineProperty> lineprop = _screenWindow->getLineProperties ();
+  int lineStart = _screenWindow->cursorPosition ().y ();
+  while (lineprop[lineStart-1] & LINE_WRAPPED)
+    lineStart--;
+
+  if (charLine >= lineStart)
+    {
+      int posInLineCursor = _screenWindow->cursorPosition ().x ()
+                            + qMax (0,(_screenWindow->cursorPosition ().y ()-lineStart))
+                            * _screenWindow->windowColumns ();
+      int posInLineClick = charColumn
+                           + qMax (0, (charLine - lineStart))
+                           * _screenWindow->windowColumns ();
+
+      if (posInLineCursor > posInLineClick)
+        {
+          QKeyEvent *event = new QKeyEvent (QEvent::KeyPress,Qt::Key_Left,
+                                            Qt::NoModifier,QString (""));
+
+          for (int i = 0; i < posInLineCursor - posInLineClick; i++)
+            emit keyPressedSignal (event);
+
+          delete event;
+        }
+      else if (posInLineClick > posInLineCursor)
+        {
+          QKeyEvent *event = new QKeyEvent (QEvent::KeyPress,Qt::Key_Right,
+                                            Qt::NoModifier,QString (""));
+
+          for (int i = 0; i < posInLineClick - posInLineCursor; i++)
+            emit keyPressedSignal (event);
+
+          delete event;
+        }
+    }
+
   if ( ev->button() == Qt::LeftButton)
     {
 
@@ -2418,7 +2455,56 @@ void TerminalView::keyPressEvent( QKeyEvent* event )
     }
 
   if ( emitKeyPressSignal && !_readonly )
-    emit keyPressedSignal(event);
+    {
+      // Clear selection if the cursor is moved with arrow keys
+      bool emitKey = true;
+      if ((event->modifiers() == Qt::NoModifier)
+          && (event->key() == Qt::Key_Right || event->key() == Qt::Key_Left))
+        _screenWindow->clearSelection();
+
+      // Delete selected text if printable key is pressed
+      if ( !event->text ().isEmpty () )
+        {
+          int lineStart, colStart, lineEnd, colEnd;
+          _screenWindow->getSelectionStart (colStart, lineStart);
+          _screenWindow->getSelectionEnd (colEnd, lineEnd);
+          int cursorLoc = loc (_screenWindow->cursorPosition ().x (),
+                               _screenWindow->cursorPosition ().y ());
+
+          //Check if there is a selection in the current line
+          if ((loc (colStart,lineStart) != loc (colEnd, lineEnd))
+               && (cursorLoc >=loc (colStart,lineStart))
+               && (cursorLoc-1 <= loc (colEnd,lineEnd)))
+            {
+              QKeyEvent *ev = new QKeyEvent (QEvent::KeyPress,Qt::Key_Backspace,
+                                             Qt::NoModifier,QString (""));
+
+              if (cursorLoc < loc (colEnd, lineEnd))
+                {
+                  QKeyEvent *ev_right = new QKeyEvent (QEvent::KeyPress,Qt::Key_Right,
+                                                       Qt::NoModifier,QString (""));
+                  for (int i = 0; i < loc (colEnd,lineEnd) - cursorLoc + 1; i++)
+                    emit keyPressedSignal (ev_right);
+                  delete ev_right;
+                }
+
+              for (int i = 0; i < loc (colEnd, lineEnd) - loc (colStart, lineStart) + 1; i++)
+                emit keyPressedSignal (ev);
+
+              delete ev;
+
+              // Backspace deleted the selected text and has done its duty, no need to call it again
+              if (event->key() == Qt::Key_Backspace)
+                {
+                  _screenWindow->clearSelection ();
+                  emitKey = false;
+                }
+            }
+        }
+
+      if (emitKey)
+        emit keyPressedSignal (event);
+    }
 
   if (_readonly) {
       event->ignore();
@@ -2426,6 +2512,7 @@ void TerminalView::keyPressEvent( QKeyEvent* event )
   else {
       event->accept();
     }
+
 }
 
 void TerminalView::inputMethodEvent( QInputMethodEvent* event )

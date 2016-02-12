@@ -172,8 +172,8 @@ MAINTAINERCLEANFILES += \
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
-octinclude_HEADERS += octave-config.h oct-conf-post.h
-nodist_octinclude_HEADERS += config.h
+octinclude_HEADERS += oct-conf-post.h
+nodist_octinclude_HEADERS += config.h octave-config.h
 
 all-local: $(ALL_LOCAL_TARGETS) $(noinst_SCRIPTS) $(DIST_INFO_FILES) .gdbinit $(DOC_TARGETS)
 	@echo ""

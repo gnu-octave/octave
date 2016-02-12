@@ -6,7 +6,7 @@
 //   octave_config_info ("ENABLE_DYNAMIC_LINKING")
 //
 // at the Octave prompt.  Support for dynamic linking is included if
-// this expression returns the string "yes".
+// this expression is true.
 //
 // To compile this file, type the command
 //

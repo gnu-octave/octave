@@ -1266,100 +1266,99 @@ specified option.\n\
 
   struct conf_info_struct
   {
-    bool subst_home;
     const char *key;
-    const char *val;
+    octave_value val;
   };
 
   static const conf_info_struct conf_info[] =
     {
-      { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
+      { "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
 
 #if defined (OCTAVE_ENABLE_64)
-      { false, "ENABLE_64", "yes" },
+      { "ENABLE_64", true },
 #else
-      { false, "ENABLE_64", "no" },
+      { "ENABLE_64", false },
 #endif
 
 #if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
-      { false, "ENABLE_ATOMIC_REFCOUNT", "yes" },
+      { "ENABLE_ATOMIC_REFCOUNT", true },
 #else
-      { false, "ENABLE_ATOMIC_REFCOUNT", "no" },
+      { "ENABLE_ATOMIC_REFCOUNT", false },
 #endif
 
 #if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-      { false, "ENABLE_BOUNDS_CHECK", "yes" },
+      { "ENABLE_BOUNDS_CHECK", true },
 #else
-      { false, "ENABLE_BOUNDS_CHECK", "no" },
+      { "ENABLE_BOUNDS_CHECK", false },
 #endif
 
 #if defined (ENABLE_DOCS)
-      { false, "ENABLE_DOCS", "yes" },
+      { "ENABLE_DOCS", true },
 #else
-      { false, "ENABLE_DOCS", "no" },
+      { "ENABLE_DOCS", false },
 #endif
 
 #if defined (ENABLE_DYNAMIC_LINKING)
-      { false, "ENABLE_DYNAMIC_LINKING", "yes" },
+      { "ENABLE_DYNAMIC_LINKING", true },
 #else
-      { false, "ENABLE_DYNAMIC_LINKING", "no" },
+      { "ENABLE_DYNAMIC_LINKING", false },
 #endif
 
 #if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
-      { false, "ENABLE_FLOAT_TRUNCATE", "yes" },
+      { "ENABLE_FLOAT_TRUNCATE", true },
 #else
-      { false, "ENABLE_FLOAT_TRUNCATE", "no" },
+      { "ENABLE_FLOAT_TRUNCATE", false },
 #endif
 
 #if defined (ENABLE_JIT)
-      { false, "ENABLE_JIT", "yes" },
+      { "ENABLE_JIT", true },
 #else
-      { false, "ENABLE_JIT", "no" },
+      { "ENABLE_JIT", false },
 #endif
 
 #if defined (OCTAVE_ENABLE_OPENMP)
-      { false, "ENABLE_OPENMP", "yes" },
+      { "ENABLE_OPENMP", true },
 #else
-      { false, "ENABLE_OPENMP", "no" },
+      { "ENABLE_OPENMP", false },
 #endif
 
-      { false, "api_version", OCTAVE_API_VERSION },
-      { true, "archlibdir", OCTAVE_ARCHLIBDIR },
-      { true, "bindir", OCTAVE_BINDIR },
-      { false, "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
-      { true, "datadir", OCTAVE_DATADIR },
-      { true, "datarootdir", OCTAVE_DATAROOTDIR },
-      { true, "exec_prefix", OCTAVE_EXEC_PREFIX },
-      { true, "fcnfiledir", OCTAVE_FCNFILEDIR },
-      { true, "imagedir", OCTAVE_IMAGEDIR },
-      { true, "includedir", OCTAVE_INCLUDEDIR },
-      { true, "infodir", OCTAVE_INFODIR },
-      { true, "infofile", OCTAVE_INFOFILE },
-      { true, "libdir", OCTAVE_LIBDIR },
-      { true, "libexecdir", OCTAVE_LIBEXECDIR },
-      { true, "localapiarchlibdir", OCTAVE_LOCALAPIARCHLIBDIR },
-      { true, "localapifcnfiledir", OCTAVE_LOCALAPIFCNFILEDIR },
-      { true, "localapioctfiledir", OCTAVE_LOCALAPIOCTFILEDIR },
-      { true, "localarchlibdir", OCTAVE_LOCALARCHLIBDIR },
-      { true, "localfcnfiledir", OCTAVE_LOCALFCNFILEDIR },
-      { true, "localoctfiledir", OCTAVE_LOCALOCTFILEDIR },
-      { true, "localstartupfiledir", OCTAVE_LOCALSTARTUPFILEDIR },
-      { true, "localverarchlibdir", OCTAVE_LOCALVERARCHLIBDIR },
-      { true, "localverfcnfiledir", OCTAVE_LOCALVERFCNFILEDIR },
-      { true, "localveroctfiledir", OCTAVE_LOCALVEROCTFILEDIR },
-      { true, "man1dir", OCTAVE_MAN1DIR },
-      { false, "man1ext", OCTAVE_MAN1EXT },
-      { true, "mandir", OCTAVE_MANDIR },
-      { true, "octdatadir", OCTAVE_OCTDATADIR },
-      { true, "octfiledir", OCTAVE_OCTFILEDIR },
-      { true, "octetcdir", OCTAVE_OCTETCDIR },
-      { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },
-      { true, "octlibdir", OCTAVE_OCTLIBDIR },
-      { true, "octtestsdir", OCTAVE_OCTTESTSDIR },
-      { true, "prefix", OCTAVE_PREFIX },
-      { true, "startupfiledir", OCTAVE_STARTUPFILEDIR },
-      { false, "version", OCTAVE_VERSION },
-      { false, 0, 0 }
+      { "api_version", OCTAVE_API_VERSION },
+      { "archlibdir", subst_octave_home (OCTAVE_ARCHLIBDIR) },
+      { "bindir", subst_octave_home (OCTAVE_BINDIR) },
+      { "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
+      { "datadir", subst_octave_home (OCTAVE_DATADIR) },
+      { "datarootdir", subst_octave_home (OCTAVE_DATAROOTDIR) },
+      { "exec_prefix", subst_octave_home (OCTAVE_EXEC_PREFIX) },
+      { "fcnfiledir", subst_octave_home (OCTAVE_FCNFILEDIR) },
+      { "imagedir", subst_octave_home (OCTAVE_IMAGEDIR) },
+      { "includedir", subst_octave_home (OCTAVE_INCLUDEDIR) },
+      { "infodir", subst_octave_home (OCTAVE_INFODIR) },
+      { "infofile", subst_octave_home (OCTAVE_INFOFILE) },
+      { "libdir", subst_octave_home (OCTAVE_LIBDIR) },
+      { "libexecdir", subst_octave_home (OCTAVE_LIBEXECDIR) },
+      { "localapiarchlibdir", subst_octave_home (OCTAVE_LOCALAPIARCHLIBDIR) },
+      { "localapifcnfiledir", subst_octave_home (OCTAVE_LOCALAPIFCNFILEDIR) },
+      { "localapioctfiledir", subst_octave_home (OCTAVE_LOCALAPIOCTFILEDIR) },
+      { "localarchlibdir", subst_octave_home (OCTAVE_LOCALARCHLIBDIR) },
+      { "localfcnfiledir", subst_octave_home (OCTAVE_LOCALFCNFILEDIR) },
+      { "localoctfiledir", subst_octave_home (OCTAVE_LOCALOCTFILEDIR) },
+      { "localstartupfiledir", subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR) },
+      { "localverarchlibdir", subst_octave_home (OCTAVE_LOCALVERARCHLIBDIR) },
+      { "localverfcnfiledir", subst_octave_home (OCTAVE_LOCALVERFCNFILEDIR) },
+      { "localveroctfiledir", subst_octave_home (OCTAVE_LOCALVEROCTFILEDIR) },
+      { "man1dir", subst_octave_home (OCTAVE_MAN1DIR) },
+      { "man1ext", OCTAVE_MAN1EXT },
+      { "mandir", subst_octave_home (OCTAVE_MANDIR) },
+      { "octdatadir", subst_octave_home (OCTAVE_OCTDATADIR) },
+      { "octfiledir", subst_octave_home (OCTAVE_OCTFILEDIR) },
+      { "octetcdir", subst_octave_home (OCTAVE_OCTETCDIR) },
+      { "octincludedir", subst_octave_home (OCTAVE_OCTINCLUDEDIR) },
+      { "octlibdir", subst_octave_home (OCTAVE_OCTLIBDIR) },
+      { "octtestsdir", subst_octave_home (OCTAVE_OCTTESTSDIR) },
+      { "prefix", subst_octave_home (OCTAVE_PREFIX) },
+      { "startupfiledir", subst_octave_home (OCTAVE_STARTUPFILEDIR) },
+      { "version", OCTAVE_VERSION },
+      { 0, octave_value () }
     };
 
   struct build_info_struct
@@ -1544,12 +1543,7 @@ specified option.\n\
           const char *key = elt.key;
 
           if (key)
-            {
-              if (elt.subst_home)
-                config.assign (key, subst_octave_home (elt.val));
-              else
-                config.assign (key, elt.val);
-            }
+            config.assign (key, elt.val);
           else
             break;
         }

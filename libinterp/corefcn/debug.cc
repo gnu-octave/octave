@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "file-ops.h"
 #include "help.h"
 #include "input.h"
 #include "pager.h"
@@ -580,7 +581,7 @@ bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
               // normalise to store only the file name.
               // otherwise, there can be an entry for both file>subfunction and
               // file, which causes a crash on  dbclear all
-              const char *s = strchr (fname.c_str (), '>');
+              const char *s = strchr (fname.c_str (), Vfilemarker);
               if (s)
                 bp_set.insert (fname.substr (0, s - fname.c_str ()));
               else
@@ -874,12 +875,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                   std::list<bp_type> bkpts = cmds->breakpoints_and_conds ();
 
                   if (!bkpts.empty ())
-                    {
-                      if (f->name () == *it)
-                        retval[f->name ()] = bkpts;
-                      else
-                        retval[*it + ">" + f->name ()] = bkpts;
-                    }
+                    retval[*it] = bkpts;
                 }
 
               // look for breakpoints in subfunctions
@@ -904,10 +900,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                                              = cmds->breakpoints_and_conds ();
 
                           if (!bkpts.empty ())
-                            {
-                              std::string name = f->name () + ">" + ff->name ();
-                              retval[name] = bkpts;
-                            }
+                            retval[*it + Vfilemarker + ff->name ()] = bkpts;
                         }
                     }
                 }
@@ -1429,10 +1422,11 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
            it != bp_list.end (); it++)
         {
           std::string filename = it->first;
-          const char *sub_fun = strchr (filename.c_str (), '>');
+          const char *sub_fun = strchr (filename.c_str (), Vfilemarker);
           if (sub_fun)
             filename = filename.substr(0, sub_fun - filename.c_str ());
-          octave_value path_name = do_which (filename);
+          octave_value path_name = octave_canonicalize_file_name
+	                           (do_which (filename));
 
           for (std::list<bp_type>::const_iterator j = it->second.begin ();
                j != it->second.end (); j++)
@@ -1469,6 +1463,22 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
       return retval;
     }
 }
+
+/*
+%!test
+%! dbstop @ftp/dir;
+%! dbstop @audioplayer/set 70;
+%! dbstop quantile>__quantile__;
+%! dbstop ls;
+%! a = dbstatus;
+%! assert (a(1).name, "@audioplayer/set>setproperty")
+%! assert (a(2).name, "@ftp/dir")
+%! assert (a(3).name, "ls")
+%! assert (a(4).name, "quantile>__quantile__")
+%! assert (a(2).file(end-10:end), "/@ftp/dir.m");
+%!test
+%! dbclear all  % ensure no bp left for future tests, even if the above fails
+*/
 
 DEFUN (dbwhere, , ,
        "-*- texinfo -*-\n\

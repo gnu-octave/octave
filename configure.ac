@@ -1026,6 +1026,7 @@ fi
 if test -z "$warn_sndfile"; then
   AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])
 else
+  OCTAVE_CONFIGURE_WARNING([warn_sndfile])
   SNDFILE_CPPFLAGS=
   SNDFILE_LDFLAGS=
   SNDFILE_LIBS=
@@ -1062,6 +1063,7 @@ fi
 if test -z "$warn_portaudio"; then
   AC_DEFINE(HAVE_PORTAUDIO, 1, [Define to 1 if PortAudio is available.])
 else
+  OCTAVE_CONFIGURE_WARNING([warn_portaudio])
   PORTAUDIO_CPPFLAGS=
   PORTAUDIO_LDFLAGS=
   PORTAUDIO_LIBS=
@@ -1127,6 +1129,7 @@ if test -z "$warn_magick"; then
   AC_DEFINE(HAVE_MAGICK, 1,
     [Define to 1 if Graphics/ImageMagick++ is available.])
 else
+  OCTAVE_CONFIGURE_WARNING([warn_magick])
   MAGICK_CPPFLAGS=
   MAGICK_LDFLAGS=
   MAGICK_LIBS=

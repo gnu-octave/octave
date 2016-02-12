@@ -105,7 +105,7 @@ snarf_file (const std::string& fname)
 static std::deque<size_t>
 get_line_offsets (const std::string& buf)
 {
-  // This could maybe be smarter.  Is deque the right thing to use here?
+  // FIXME: This could maybe be smarter.  Is deque the right thing to use here?
 
   std::deque<size_t> offsets;
 
@@ -222,15 +222,16 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
   symbol_name = "";
   lines = bp_table::intmap ();
 
-  if (nargin == 0 || !args(0).is_string ())
+  if (nargin == 0 || ! args(0).is_string ())
     print_usage (who);
-                                // elements already processed
+
+  // elements already processed
   bool seen_in = false, seen_at = false, seen_if = false;
   int pos = 0;
   dbstop_args token = dbstop_none;
   while (pos < nargin)
     {
-            // allow "in" and "at" to be implicit
+      // allow "in" and "at" to be implicit
       if (args(pos).is_string ())
         {
           std::string arg = args(pos).string_value ();
@@ -262,7 +263,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                ( token == dbstop_in ? "in" :
                 (token == dbstop_at ? "at" : "if")));
 
-            // process the actual arguments
+      // process the actual arguments
       switch (token)
         {
           case dbstop_in:
@@ -285,7 +286,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                 error ("%s: line number must come before 'if' clause\n");
             seen_at = true;
 
-            if (!seen_in)
+            if (! seen_in)
               {
                 // It was a line number. Get function name from debugger.
                 if (Vdebugging)
@@ -299,7 +300,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
             else if (seen_if)
               error ("%s: line number must come before 'if' clause\n");
 
-              // Read a list of line numbers (or arrays thereof)
+            // Read a list of line numbers (or arrays thereof)
             for ( ; pos < nargin; pos++)
               {
                 if (args(pos).is_string ())
@@ -341,9 +342,9 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
             else    // stop on event (error, warning, interrupt, NaN/inf)
               {
                 std::string condition = args(pos).string_value ();
-                int on_off = !strcmp(who, "dbstop");
+                int on_off = ! strcmp(who, "dbstop");
 
-                                // list of error/warning IDs to update
+                // list of error/warning IDs to update
                 std::set<std::string> *id_list = NULL;
                 bool *stop_flag = NULL;         // Vdebug_on_... flag
 
@@ -382,13 +383,13 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                   error ("%s: invalid condition %s",
                          who, condition.c_str ());
 
-                // process ID list for  "dbstop if error <error_ID>" etc
+                // process ID list for "dbstop if error <error_ID>" etc
                 if (id_list != NULL)
                   {
                     pos++;
                     if (pos < nargin)       // only affect a single error ID
                       {
-                        if (!args(pos).is_string () || nargin > pos+1)
+                        if (! args(pos).is_string () || nargin > pos+1)
                           error ("%s: ID must be a single string", who);
                         else if (on_off == 1)
                           {
@@ -402,7 +403,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                               *stop_flag = 0;
                           }
                       }
-                    else  // unqualified.  Turn all on or off
+                    else   // unqualified.  Turn all on or off
                       {
                         id_list->clear ();
                         *stop_flag = on_off;
@@ -471,7 +472,7 @@ void
 bp_table::dbstop_process_map_args (const octave_map& mv)
 {
   // process errs
-                                // why so many levels of indirection needed?
+  // why so many levels of indirection needed?
   bool fail = false;
   Cell U = mv.contents ("errs");
   if (U.numel () != 1)
@@ -481,7 +482,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
       Array<octave_value> W = U.index (0);
       if (W.numel () == 0 || W(0).length () == 0)
         Vdebug_on_error = 1;    // like "dbstop if error" with no identifier
-      else if (!W(0).is_cell ())
+      else if (! W(0).is_cell ())
         fail = true;
       else
         {
@@ -497,7 +498,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
     error ("dbstop: invalid 'errs' field");
 
   // process caught
-                                // why so many levels of indirection needed?
+  // why so many levels of indirection needed?
   fail = false;
   U = mv.contents ("caught");
   if (U.numel () != 1)
@@ -507,7 +508,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
       Array<octave_value> W = U.index (0);
       if (W.numel () == 0 || W(0).length () == 0)
         Vdebug_on_caught = 1;    // like "dbstop if caught error" with no ID
-      else if (!W(0).is_cell ())
+      else if (! W(0).is_cell ())
         fail = true;
       else
         {
@@ -523,7 +524,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
     error ("dbstop: invalid 'caught' field");
 
   // process warn
-                                // why so many levels of indirection needed?
+  // why so many levels of indirection needed?
   fail = false;
   U = mv.contents ("warn");
   if (U.numel () != 1)
@@ -533,7 +534,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
       Array<octave_value> W = U.index (0);
       if (W.numel () == 0 || W(0).length () == 0)
         Vdebug_on_warning = 1;    // like "dbstop if warning" with no identifier
-      else if (!W(0).is_cell ())
+      else if (! W(0).is_cell ())
         fail = true;
       else
         {
@@ -554,9 +555,9 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
 }
 
 
-// Insert a breakpoint in function  fcn  at  line  within file  fname,
-// to stop only when  condition  is true.
-// Record in  bp_set  that  fname  contains a breakpoint.
+// Insert a breakpoint in function fcn at line within file fname,
+// to stop only when  condition is true.
+// Record in bp_set that fname contains a breakpoint.
 bool
 bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
                                const std::string& fname,
@@ -580,7 +581,7 @@ bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
             {
               // normalise to store only the file name.
               // otherwise, there can be an entry for both file>subfunction and
-              // file, which causes a crash on  dbclear all
+              // file, which causes a crash on dbclear all
               const char *s = strchr (fname.c_str (), Vfilemarker);
               if (s)
                 bp_set.insert (fname.substr (0, s - fname.c_str ()));
@@ -612,7 +613,7 @@ condition_valid (const std::string& cond)
       else
         {
           tree_statement *stmt = 0;
-          if (!parser.stmt_list)
+          if (! parser.stmt_list)
             error ("dbstop: "
                    "condition is not empty, but has nothing to evaluate");
           else
@@ -874,7 +875,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                 {
                   std::list<bp_type> bkpts = cmds->breakpoints_and_conds ();
 
-                  if (!bkpts.empty ())
+                  if (! bkpts.empty ())
                     retval[*it] = bkpts;
                 }
 
@@ -899,7 +900,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                           std::list<bp_type> bkpts
                                              = cmds->breakpoints_and_conds ();
 
-                          if (!bkpts.empty ())
+                          if (! bkpts.empty ())
                             retval[*it + Vfilemarker + ff->name ()] = bkpts;
                         }
                     }
@@ -936,69 +937,82 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFUN (dbstop, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {} {} dbstop in @var{func}\n\
+@deftypefn  {} {} dbstop @var{func}\n\
+@deftypefnx {} {} dbstop @var{func} @var{line}\n\
+@deftypefnx {} {} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefnx {} {} dbstop @var{line1} @dots{}\n\
+@deftypefnx {} {} dbstop in @var{func}\n\
 @deftypefnx {} {} dbstop in @var{func} at @var{line}\n\
-@deftypefnx {} {} dbstop in @var{func} at @var{line} if '@var{condition}'\n\
+@deftypefnx {} {} dbstop in @var{func} at @var{line} if \"@var{condition}\"\n\
 @deftypefnx {} {} dbstop if @var{event}\n\
-@deftypefnx {} {} dbstop (@var{state})\n\
+@deftypefnx {} {} dbstop if @var{event} @var{ID}\n\
+@deftypefnx {} {} dbstop (@var{bp_struct})\n\
+@deftypefnx {} {@var{rline} =} dbstop @dots{}\n\
 \n\
-The argument @var{func} is the name of a function on the current path.\n\
-The argument @var{line} is the line number at which to break.\n\
-If @code{file.m} has a sub-function @code{func2}, then a breakpoint in\n\
-@code{func2} can be specified by specifying @var{func} either as @code{file}\n\
-or @code{file>func2}.  In either case, @var{line} is specified relative to\n\
-the start of @code{file.m}.  If @var{line} is not specified, it defaults to\n\
-the first line in @var{func}.  Multiple lines can be specified in a single\n\
-command; when function syntax is used, the lines may be passed as a single\n\
-vector argument.\n\
+Set breakpoints for the built-in debugger.\n\
 \n\
-When already in debug mode the @var{func} argument\n\
-can be omitted and the current function will be used.\n\
+@var{func} is the name of a function on the current @code{path}.  When\n\
+already in debug mode the @var{func} argument can be omitted and the current\n\
+function will be used.  Breakpoints at subfunctions are set with the scope\n\
+operator @samp{>}.  For example, If @file{file.m} has a subfunction\n\
+@code{func2}, then a breakpoint in @code{func2} can be specified by\n\
+@code{file>func2}.\n\
 \n\
-The @var{condition} is any Octave expression that will be able to be\n\
-evaluated in the context of the breakpoint.  When the breakpoint is\n\
-encountered, @var{condition} will be evaluated, and execution will break if\n\
-@var{condition} is true.  If it cannot be evaluated, for example because it\n\
-refers to an undefined variable, an error will be thrown.  Expressions with\n\
-side effects (such as @code{y++ > 1}) actually alter the variables, and \n\
-should generally be avoided.\n\
-Conditions containing quotes (\", ') or comment characters (#, %) should be\n\
+@var{line} is the line number at which to break.  If @var{line} is not\n\
+specified, it defaults to the first executable line in the file\n\
+@file{func.m}.  Multiple lines can be specified in a single command; when\n\
+function syntax is used, the lines may also be passed as a single vector\n\
+argument (@code{[@var{line1}, @var {line2}, @dots{}]}).\n\
+\n\
+@var{condition} is any Octave expression that can be evaluated in the code\n\
+context that exists at the breakpoint.  When the breakpoint is encountered,\n\
+@var{condition} will be evaluated, and execution will stop if\n\
+@var{condition} is true.  If @var{condition} cannot be evaluated, for\n\
+example because it refers to an undefined variable, an error will be thrown.\n\
+ Expressions with side effects (such as @code{y++ > 1}) will alter\n\
+variables, and should generally be avoided.  Conditions containing quotes\n\
+(@samp{\"}, @samp{'}) or comment characters (@samp{#}, @samp{%}) must be\n\
 enclosed in quotes.  (This does not apply to conditions entered from the\n\
-the editor's context menu.)\n\
-For example,\n\
+editor's context menu.)  For example: \n\
+\n\
 @example\n\
-dbstop in strread at 209 if 'any(format == \"%f\")'\n\
+dbstop in strread at 209 if 'any (format == \"%f\")'\n\
 @end example\n\
 \n\
-The form specifying @var{event} does not cause a fixed breakpoint.  Instead\n\
-it causes debug mode to be entered when specific unexpected circumstances\n\
-arise.  Possible values are\n\
+The form specifying @var{event} does not cause a specific breakpoint at a\n\
+given function and line number.  Instead it causes debug mode to be entered\n\
+when certain unexpected events are encountered.  Possible values are\n\
 \n\
-@table @asis\n\
-@item @qcode{error}\n\
-Stop whenever an error is reported.  This is equivalent to specifying\n\
-both @code{debug_on_error(1)} and @code{debug_on_interrupt(1)}.\n\
-@item @qcode{caught error}\n\
-Stop whenever an error is caught by a try-catch block\n\
-@item @qcode{interrupt}\n\
-Stop when an interrupt (ctrl-C) occurs.\n\
-@item @qcode{warning}\n\
-Stop whenever a warning is reported.  This is equivalent to specifying\n\
-@code{debug_on_warning(1)}.\n\
+@table @code\n\
+@item error\n\
+Stop when an error is reported.  This is equivalent to specifying\n\
+both @code{debug_on_error (true)} and @code{debug_on_interrupt (true)}.\n\
+\n\
+@item caught error\n\
+Stop when an error is caught by a try-catch block (not yet implemented).\n\
+\n\
+@item interrupt\n\
+Stop when an interrupt (@kbd{Ctrl-C}) occurs.\n\
+\n\
+@item naninf\n\
+Stop when code returns a non-finite value (not yet implemented).\n\
+\n\
+@item warning\n\
+Stop when a warning is reported.  This is equivalent to specifying\n\
+@code{debug_on_warning (true)}.\n\
 @end table\n\
-Error, caught error and warning can all be followed by a string specifying\n\
-an error ID or warning ID.  If that is done, only errors with the\n\
-specified ID will cause execution to stop.  To stop on one of a set of\n\
-IDs, multiple @qcode{dbstop} commands must be issued.\n\
 \n\
-Values @qcode{naninf} and @qcode{caught error} give a warning that these\n\
-are not yet implemented, and other options give an error.\n\
+The events @code{error}, @code{caught error}, and @code{warning} can all be\n\
+followed by a string specifying an error ID or warning ID@.  If that is\n\
+done, only errors with the specified ID will cause execution to stop.  To\n\
+stop on one of a set of IDs, multiple @code{dbstop} commands must be\n\
+issued.\n\
 \n\
-These settings can be undone using @qcode{dbclear} commands with the same\n\
-syntax.\n\
+Breakpoints and events can be removed using the @code{dbclear} command with\n\
+the same syntax.\n\
 \n\
 It is possible to save all breakpoints and restore them at once by issuing\n\
-the commands @code{state = dbstatus; ...  dbstop (state)}.\n\
+the commands @code{bp_state = dbstatus; @dots{}; dbstop (bp_state)}.\n\
 \n\
 The optional output @var{rline} is the real line number where the breakpoint\n\
 was set.  This can differ from the specified line if the line is not\n\
@@ -1006,19 +1020,20 @@ executable.  For example, if a breakpoint attempted on a blank line then\n\
 Octave will set the real breakpoint at the next executable line.\n\
 \n\
 When a file is re-parsed, such as when it is modified outside the GUI,\n\
-all breakpoints within that file are cleared.\n\
+all breakpoints within the file are cleared.\n\
 \n\
 @seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}\n\
 @end deftypefn")
 {
   bp_table::intmap retmap;
-  std::string symbol_name = ""; // stays empty for "dbstop if error" etc
+  std::string symbol_name = "";  // stays empty for "dbstop if error" etc
   bp_table::intmap lines;
   std::string condition = "";
   octave_value retval;
 
-  if (args.length() >= 1 && !args(0).is_map ())
-    {       // explicit function / line / condition
+  if (args.length() >= 1 && ! args(0).is_map ())
+    {
+      // explicit function / line / condition
       parse_dbfunction_params ("dbstop", args, symbol_name, lines, condition);
 
       if (lines.size () == 0)
@@ -1034,7 +1049,7 @@ all breakpoints within that file are cleared.\n\
     {
       print_usage ();
     }
-  else // structure of the form output by dbstatus
+  else  // structure of the form output by dbstatus
     {
       octave_map mv = args(0).map_value ();
       if (mv.isfield ("bkpt") || mv.isfield ("errs") || mv.isfield ("warn")
@@ -1062,7 +1077,7 @@ all breakpoints within that file are cleared.\n\
         {
           // no changes requested.  Occurs if "errs" non-empty but "bkpt" empty
         }
-      else if (!mv.isfield ("name") || !mv.isfield ("line"))
+      else if (! mv.isfield ("name") || ! mv.isfield ("line"))
         {
           error ("dbstop: Cell array must contain fields 'name' and 'line'");
           retval = octave_value (0);
@@ -1101,7 +1116,7 @@ DEFUN (dbclear, args, ,
 @deftypefnx {} {} dbclear (\"@var{func}\")\n\
 @deftypefnx {} {} dbclear (\"@var{func}\", @var{line})\n\
 @deftypefnx {} {} dbclear (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
-@deftypefnx {} {} dbclear (\"@var{func}\", [@var{line1}, @dots{}])\n\
+@deftypefnx {} {} dbclear (\"@var{func}\", @var{line1}, @dots{})\n\
 @deftypefnx {} {} dbclear (@var{line}, @dots{})\n\
 @deftypefnx {} {} dbclear (\"all\")\n\
 Delete a breakpoint at line number @var{line} in the function @var{func}.\n\
@@ -1116,8 +1131,10 @@ can be omitted and the current function will be used.\n\
 @item line\n\
 Line number from which to remove a breakpoint.  Multiple lines may be given\n\
 as separate arguments or as a vector.\n\
+\n\
 @item event\n\
-An even such as error, interrupt or warning; see dbstop for details.\n\
+An event such as @code{error}, @code{interrupt}, or @code{warning}\n\
+(@pxref{XREFdbstop,,dbstop} for details).\n\
 @end table\n\
 \n\
 When called without a line number specification all breakpoints in the named\n\
@@ -1130,9 +1147,9 @@ files.\n\
 @seealso{dbstop, dbstatus, dbwhere}\n\
 @end deftypefn")
 {
-  std::string symbol_name = ""; // stays empty for "dbclear if error" etc
+  std::string symbol_name = "";  // stays empty for "dbclear if error" etc
   bp_table::intmap lines;
-  std::string dummy;            // "if" condition -- only used for dbstop
+  std::string dummy;             // "if" condition -- only used for dbstop
 
   int nargin = args.length ();
 
@@ -1164,7 +1181,7 @@ bp_table::stop_on_err_warn_status (bool to_screen)
 {
   octave_map retval;
 
-  // print dbstop if error  information
+  // print dbstop if error information
   if (Vdebug_on_error)
     {
       if (errors_that_stop.empty ())
@@ -1193,7 +1210,7 @@ bp_table::stop_on_err_warn_status (bool to_screen)
         }
     }
 
-  // print  dbstop if caught error  information
+  // print dbstop if caught error information
   if (Vdebug_on_caught)
     {
       if (caught_that_stop.empty ())
@@ -1222,7 +1239,7 @@ bp_table::stop_on_err_warn_status (bool to_screen)
         }
     }
 
-  // print dbstop if warning  information
+  // print dbstop if warning information
   if (Vdebug_on_warning)
     {
       if (warnings_that_stop.empty ())
@@ -1251,7 +1268,7 @@ bp_table::stop_on_err_warn_status (bool to_screen)
         }
     }
 
-  // print  dbstop if interrupt  information
+  // print dbstop if interrupt information
   if (Vdebug_on_interrupt)
     {
       if (to_screen)
@@ -1265,9 +1282,9 @@ bp_table::stop_on_err_warn_status (bool to_screen)
 
 DEFUN (dbstatus, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {} {} dbstatus ()\n\
-@deftypefnx {} {@var{brk_list} =} dbstatus ()\n\
-@deftypefnx {} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
+@deftypefn  {} {} dbstatus\n\
+@deftypefnx {} {} dbstatus @var{func}\n\
+@deftypefnx {} {@var{bp_list} =} dbstatus @dots{}\n\
 Report the location of active breakpoints.\n\
 \n\
 When called with no input or output arguments, print the list of all\n\
@@ -1275,15 +1292,15 @@ functions with breakpoints and the line numbers where those breakpoints are\n\
 set.\n\
 \n\
 If a function name @var{func} is specified then only report breakpoints\n\
-for the named function, and its sub-functions.\n\
+for the named function and its subfunctions.\n\
 \n\
-The optional return argument @var{brk_list} is a struct array with the\n\
+The optional return argument @var{bp_list} is a struct array with the\n\
 following fields.\n\
 \n\
 @table @asis\n\
 @item name\n\
-The name of the function with a breakpoint.  A sub-function, say @code{func2}\n\
-within a .m file, say @code{foo/file.m}, is specified as @code{file>func2}.\n\
+The name of the function with a breakpoint.  A subfunction, say @code{func2}\n\
+within an m-file, say @file{file.m}, is specified as @code{file>func2}.\n\
 \n\
 @item file\n\
 The name of the m-file where the function code is located.\n\
@@ -1300,10 +1317,10 @@ the empty string for unconditional breakpoints.\n\
 @c the list of breakpoints is automatically trimmed to the breakpoints in the\n\
 @c current function.\n\
 If @code{dbstop if error} is true but no explicit IDs are specified, the\n\
-return value will have an empty field called \"errs\".  If IDs are specified,\n\
-the \"errs\" field will have a row per ID.  If @code{dbstop if error} is\n\
-false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
-@code{dbstop if warning}.\n\
+return value will have an empty field called @qcode{\"errs\"}.  If IDs are\n\
+specified, the @code{errs} field will have one row per ID@.  If\n\
+@code{dbstop if error} is false, there is no @qcode{\"errs\"} field.\n\
+The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
 \n\
 @seealso{dbstop, dbclear, dbwhere, dblist, dbstack}\n\
 @end deftypefn")
@@ -1354,7 +1371,7 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
 
           // print unconditional breakpoints, if any, on a single line
 
-              // first, check to see if there are any
+          // first, check to see if there are any
           int have_unconditional = 0;
           for (std::list<bp_type>::const_iterator j = m.begin ();
                j != m.end (); j++)
@@ -1362,10 +1379,10 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
               if (j->cond == "")
                 {
                   if (have_unconditional++)
-                    break;                      // stop once we know its plural
+                    break;                   // stop once we know its plural
                 }
             }
-              // If we actually have some, print line numbers only
+          // If we actually have some, print line numbers only
           if (have_unconditional)
             {
               const char *_s_ = (have_unconditional > 1) ? "s" : "";
@@ -1403,7 +1420,7 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
       octave_map retmap;
       octave_value retval;
 
-          // count how many breakpoints there are
+      // count how many breakpoints there are
       int count = 0;
       for (bp_table::const_fname_bp_map_iterator it = bp_list.begin ();
            it != bp_list.end (); it++)
@@ -1425,8 +1442,8 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
           const char *sub_fun = strchr (filename.c_str (), Vfilemarker);
           if (sub_fun)
             filename = filename.substr(0, sub_fun - filename.c_str ());
-          octave_value path_name = octave_canonicalize_file_name
-	                           (do_which (filename));
+          octave_value path_name;
+          path_name = octave_canonicalize_file_name (do_which (filename));
 
           for (std::list<bp_type>::const_iterator j = it->second.begin ();
                j != it->second.end (); j++)
@@ -1454,10 +1471,9 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
           octave_map outer (dim_vector (3,1));
           outer.assign ("bkpt", Cell (retmap));
           for (octave_map::const_iterator f = ew.begin (); f != ew.end (); f++)
-            {
-              outer.setfield (f->first, ew.contents (f));
-            }
-            retval = octave_value (outer);
+            outer.setfield (f->first, ew.contents (f));
+
+          retval = octave_value (outer);
         }
 
       return retval;
@@ -1470,14 +1486,13 @@ false, there is no \"errs\" field.  The \"warn\" field is set similarly by\n\
 %! dbstop @audioplayer/set 70;
 %! dbstop quantile>__quantile__;
 %! dbstop ls;
-%! a = dbstatus;
-%! assert (a(1).name, "@audioplayer/set>setproperty")
-%! assert (a(2).name, "@ftp/dir")
-%! assert (a(3).name, "ls")
-%! assert (a(4).name, "quantile>__quantile__")
-%! assert (a(2).file(end-10:end), "/@ftp/dir.m");
-%!test
-%! dbclear all  % ensure no bp left for future tests, even if the above fails
+%! s = dbstatus;
+%! dbclear all
+%! assert (s(1).name, "@audioplayer/set>setproperty")
+%! assert (s(2).name, "@ftp/dir")
+%! assert (s(3).name, "ls")
+%! assert (s(4).name, "quantile>__quantile__")
+%! assert (s(2).file(end-10:end), "/@ftp/dir.m");
 */
 
 DEFUN (dbwhere, , ,
@@ -1587,7 +1602,7 @@ numbers.\n\
 
   switch (args.length ())
     {
-    case 0: // dbtype
+    case 0:  // dbtype
       dbg_fcn = get_user_code ();
 
       if (! dbg_fcn)
@@ -1598,7 +1613,7 @@ numbers.\n\
 
       break;
 
-    case 1: // (dbtype start:end) || (dbtype func) || (dbtype lineno)
+    case 1:  // (dbtype start:end) || (dbtype func) || (dbtype lineno)
       {
         std::string arg = argv[1];
 
@@ -1659,7 +1674,7 @@ numbers.\n\
       }
       break;
 
-    case 2: // (dbtype func start:end) || (dbtype func start)
+    case 2:  // (dbtype func start:end) || (dbtype func start)
       {
         dbg_fcn = get_user_code (argv[1]);
 
@@ -1804,7 +1819,6 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
               std::string s_arg = arg.string_value ();
 
               // Skip "-completenames", octave returns full names anyway.
-
               if (s_arg == "-completenames")
                 continue;
 

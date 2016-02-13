@@ -107,39 +107,31 @@ seekdir_to_whence (std::ios::seekdir dir)
 }
 
 std::streampos
-c_file_ptr_buf::seekoff (std::streamoff /* offset */,
-                         std::ios::seekdir /* dir */,
+c_file_ptr_buf::seekoff (std::streamoff offset,
+                         std::ios::seekdir dir,
                          std::ios::openmode)
 {
-  // FIXME
-#if 0
   if (f)
     {
-      fseek (f, offset, seekdir_to_whence (dir));
+      gnulib::fseeko (f, offset, seekdir_to_whence (dir));
 
-      return ftell (f);
+      return gnulib::ftello (f);
     }
   else
     return 0;
-#endif
-  return -1;
 }
 
 std::streampos
-c_file_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
+c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
-  // FIXME
-#if 0
   if (f)
     {
-      fseek (f, offset, SEEK_SET);
+      gnulib::fseeko (f, offset, SEEK_SET);
 
-      return ftell (f);
+      return gnulib::ftello (f);
     }
   else
     return 0;
-#endif
-  return -1;
 }
 
 int

@@ -136,7 +136,7 @@ OV_JAVA_DF = \
 
 ## Special rules for Java .df files so that not all .df files are built with
 ## JAVA_CPPFLAGS
-$(OV_JAVA_DF) : libinterp/octave-value/%.df : libinterp/octave-value/%.cc $(GENERATED_MAKE_BUILTINS_INCS)
+$(OV_JAVA_DF) : libinterp/octave-value/%.df : libinterp/octave-value/%.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_octave_value_liboctave_value_la_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \

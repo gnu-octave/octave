@@ -273,7 +273,7 @@ COREFCN_FT2_DF = \
 
 ## Special rules for FreeType .df files so that not all .df files are built
 ## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
-$(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS)
+$(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_corefcn_libcorefcn_la_CPPFLAGS) $(CPPFLAGS) \

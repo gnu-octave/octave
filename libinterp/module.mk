@@ -216,7 +216,7 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## Rule to build a DEF file from a .cc file
 ## See also module.mk files for overrides when speciall CPPFLAGS are needed.
 ## FIXME: Shouldn't the build stop if CPP fails here?  Yes (10/31/2013)
-%.df: %.cc $(GENERATED_MAKE_BUILTINS_INCS)
+%.df: %.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_liboctinterp_la_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \

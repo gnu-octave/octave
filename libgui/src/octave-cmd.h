@@ -66,18 +66,12 @@ class octave_cmd_eval : public octave_cmd
 {
 public:
 
-  octave_cmd_eval (const QFileInfo& info,
-                   octave_qt_link* octave_qt_link) : octave_cmd ()
-    { _info = info;
-      _octave_qt_link = octave_qt_link;
-    };
-
+  octave_cmd_eval (const QFileInfo& info) : octave_cmd () { _info = info; };
   void execute ();
 
 protected:
 
   QFileInfo _info;
-  octave_qt_link *_octave_qt_link;
 };
 
 

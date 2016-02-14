@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "utils.h"
 
-#include "main-window.h"
 
 // ---------------------------------------------------------------------
 //  class octave_cmd_exec: executing a command
@@ -66,7 +65,7 @@ octave_cmd_eval::execute ()
     {
       // valid identifier: call as function with possibility to debug
       std::string path = _info.absolutePath ().toStdString ();
-      if (_octave_qt_link->file_in_path (file_path, path))
+      if (octave_qt_link::file_in_path (file_path, path))
         command_editor::replace_line (function_name.toStdString ());
     }
   else

@@ -61,13 +61,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-#include "file-ops.h"
-
 #include "resource-manager.h"
 #include "file-editor-tab.h"
 #include "file-editor.h"
 #include "octave-txt-lexer.h"
 #include "marker.h"
+
+#include "file-ops.h"
 
 #include "debug.h"
 #include "octave-qt-link.h"
@@ -87,15 +87,13 @@ bool file_editor_tab::_cancelled = false;
  */
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
-file_editor_tab::file_editor_tab (octave_dock_widget *editor,
-                                  const QString& directory_arg)
+file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   _lexer_apis = 0;
   _is_octave_file = true;
   _lines_changed = false;
 
   _ced = directory_arg;
-  _main_win = static_cast<main_window*> (editor->parent ());
 
   _file_name = "";
   _file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
@@ -335,7 +333,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
   // Ensure editor line numbers match Octave core's line numbers.
   // Give users the option to save modifications if necessary.
   if (! unchanged_or_saved ()
-     || !(_main_win->get_octave_qt_link ()->file_in_path (info.file, info.dir)))
+     || !(octave_qt_link::file_in_path (info.file, info.dir)))
     return;
 
   // Search for previous condition.  FIXME -- is there a more direct way?
@@ -929,7 +927,7 @@ file_editor_tab::add_breakpoint_callback (const bp_info& info)
   bp_table::intmap line_info;
   line_info[0] = info.line;
 
-  if (_main_win->get_octave_qt_link ()->file_in_path (info.file, info.dir))
+  if (octave_qt_link::file_in_path (info.file, info.dir))
     bp_table::add_breakpoint (info.function_name, line_info, info.condition);
 }
 
@@ -939,14 +937,14 @@ file_editor_tab::remove_breakpoint_callback (const bp_info& info)
   bp_table::intmap line_info;
   line_info[0] = info.line;
 
-  if (_main_win->get_octave_qt_link ()->file_in_path (info.file, info.dir))
+  if (octave_qt_link::file_in_path (info.file, info.dir))
     bp_table::remove_breakpoint (info.function_name, line_info);
 }
 
 void
 file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
 {
-  if (_main_win->get_octave_qt_link ()->file_in_path (info.file, info.dir))
+  if (octave_qt_link::file_in_path (info.file, info.dir))
     bp_table::remove_all_breakpoints_in_file (info.function_name, true);
 }
 

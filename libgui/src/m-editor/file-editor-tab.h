@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
 #include "builtin-defun-decls.h"
-#include "main-window.h"
 
 #include "marker.h" /* Only needed for typedef of "QIntList", which may be
                        typedefed elsewhere.  Could use common location. */
@@ -57,7 +56,7 @@ class file_editor_tab : public QWidget
 
 public:
 
-  file_editor_tab (octave_dock_widget *editor, const QString& directory = "");
+  file_editor_tab (const QString& directory = "");
 
   ~file_editor_tab (void);
 
@@ -258,7 +257,6 @@ private:
   void update_eol_indicator ();
 
   octave_qscintilla *_edit_area;
-  main_window *_main_win;
 
   QStatusBar *_status_bar;
   QLabel *_row_indicator;

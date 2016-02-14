@@ -610,7 +610,6 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
         {
         case 1:
           Fcd (ovl (dir));
-          update_directory ();
           ok = true;
           break;
 

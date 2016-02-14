@@ -338,7 +338,7 @@ main_window::run_file_in_terminal (const QFileInfo& info)
 void
 main_window::run_file_callback (const QFileInfo& info)
 {
-  octave_cmd_eval *cmd = new octave_cmd_eval (info, _octave_qt_link);
+  octave_cmd_eval *cmd = new octave_cmd_eval (info);
   _cmd_queue.add_cmd (cmd);
 }
 

@@ -1497,12 +1497,22 @@ public:
     fcn_table_const_iterator p = fcn_table.find (name);
 
     if (p != fcn_table.end ())
-      return p->second.find_method (dispatch_type);
+      {
+        octave_value fcn = p->second.find_method (dispatch_type);
+
+        if (! fcn.is_defined ())
+          fcn = find_submethod (name, dispatch_type);
+
+        return fcn;
+      }
     else
       {
         fcn_info finfo (name);
 
         octave_value fcn = finfo.find_method (dispatch_type);
+
+        if (! fcn.is_defined ())
+          fcn = find_submethod (name, dispatch_type);
 
         if (fcn.is_defined ())
           fcn_table[name] = finfo;
@@ -1510,6 +1520,9 @@ public:
         return fcn;
       }
   }
+
+  static octave_value
+  find_submethod (const std::string& name, const std::string& dispatch_type);
 
   static octave_value
   find_built_in_function (const std::string& name)

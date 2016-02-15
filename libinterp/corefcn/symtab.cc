@@ -1322,6 +1322,43 @@ symbol_table::find_function (const std::string& name,
   return retval;
 }
 
+// look for @class/method>subfunction
+octave_value
+symbol_table::find_submethod (const std::string& name,
+                              const std::string& dispatch_type)
+{
+  octave_value fcn;
+
+  std::string full_name = "@" + dispatch_type + file_ops::dir_sep_str () + name;
+  size_t pos = full_name.find_first_of (Vfilemarker);
+
+  if (pos != std::string::npos)
+    {
+      std::string fcn_scope = full_name.substr (0, pos);
+      scope_id stored_scope = xcurrent_scope;
+      xcurrent_scope = xtop_scope;
+      octave_value parent = find_function (full_name.substr (0, pos),
+                                           octave_value_list (), false);
+      if (parent.is_defined ())
+        {
+          octave_function *parent_fcn = parent.function_value ();
+
+          if (parent_fcn)
+            {
+              xcurrent_scope = parent_fcn->scope ();
+
+              if (xcurrent_scope > 1)
+                fcn = find_function (full_name.substr (pos + 1),
+                                     octave_value_list ());
+            }
+        }
+
+      xcurrent_scope = stored_scope;
+    }
+
+  return fcn;
+}
+
 void
 symbol_table::dump (std::ostream& os, scope_id scope)
 {

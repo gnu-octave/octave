@@ -959,7 +959,13 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   else if (cdata.is_bool_type ())
     CONVERT_CDATA_1 (boolNDArray, bool_, false);
   else
-    error ("unsupported type for cdata (= %s)", cdata.type_name ().c_str ());
+    {
+      // Don't throw an error; leads to an incomplete FLTK object (bug #46933).
+      warning ("unsupported type for cdata (= %s).  "
+               "Valid types are uint8, uint16, double, single, and bool.",
+               cdata.type_name ().c_str ());
+      a = NDArray (dv, 0);  // return 0 instead
+    }
 
 #undef CONVERT_CDATA_1
 

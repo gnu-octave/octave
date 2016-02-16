@@ -10,7 +10,6 @@ LIBOCTAVE_OPT_IN = $(LIBOCTAVE_OPT_INC:.h=.in)
 NUMERIC_INC = \
   liboctave/numeric/CmplxQR.h \
   liboctave/numeric/CmplxQRP.h \
-  liboctave/numeric/CmplxSVD.h \
   liboctave/numeric/CollocWt.h \
   liboctave/numeric/DAE.h \
   liboctave/numeric/DAEFunc.h \
@@ -37,15 +36,12 @@ NUMERIC_INC = \
   liboctave/numeric/chol.h \
   liboctave/numeric/dbleQR.h \
   liboctave/numeric/dbleQRP.h \
-  liboctave/numeric/dbleSVD.h \
   liboctave/numeric/eigs-base.h \
   liboctave/numeric/fCmplxQR.h \
   liboctave/numeric/fCmplxQRP.h \
-  liboctave/numeric/fCmplxSVD.h \
   liboctave/numeric/fEIG.h \
   liboctave/numeric/floatQR.h \
   liboctave/numeric/floatQRP.h \
-  liboctave/numeric/floatSVD.h \
   liboctave/numeric/gepbalance.h \
   liboctave/numeric/hess.h \
   liboctave/numeric/lo-mappers.h \
@@ -63,7 +59,8 @@ NUMERIC_INC = \
   liboctave/numeric/sparse-chol.h \
   liboctave/numeric/sparse-dmsolve.h \
   liboctave/numeric/sparse-lu.h \
-  liboctave/numeric/sparse-qr.h
+  liboctave/numeric/sparse-qr.h \
+  liboctave/numeric/svd.h
 
 NUMERIC_C_SRC = \
   liboctave/numeric/randgamma.c \
@@ -73,7 +70,6 @@ NUMERIC_C_SRC = \
 NUMERIC_SRC = \
   liboctave/numeric/CmplxQR.cc \
   liboctave/numeric/CmplxQRP.cc \
-  liboctave/numeric/CmplxSVD.cc \
   liboctave/numeric/CollocWt.cc \
   liboctave/numeric/DASPK.cc \
   liboctave/numeric/DASRT.cc \
@@ -86,15 +82,12 @@ NUMERIC_SRC = \
   liboctave/numeric/chol.cc \
   liboctave/numeric/dbleQR.cc \
   liboctave/numeric/dbleQRP.cc \
-  liboctave/numeric/dbleSVD.cc \
   liboctave/numeric/eigs-base.cc \
   liboctave/numeric/fCmplxQR.cc \
   liboctave/numeric/fCmplxQRP.cc \
-  liboctave/numeric/fCmplxSVD.cc \
   liboctave/numeric/fEIG.cc \
   liboctave/numeric/floatQR.cc \
   liboctave/numeric/floatQRP.cc \
-  liboctave/numeric/floatSVD.cc \
   liboctave/numeric/gepbalance.cc \
   liboctave/numeric/hess.cc \
   liboctave/numeric/lo-mappers.cc \
@@ -110,6 +103,7 @@ NUMERIC_SRC = \
   liboctave/numeric/sparse-dmsolve.cc \
   liboctave/numeric/sparse-lu.cc \
   liboctave/numeric/sparse-qr.cc \
+  liboctave/numeric/svd.cc \
   $(NUMERIC_C_SRC)
 
 LIBOCTAVE_TEMPLATE_SRC += \

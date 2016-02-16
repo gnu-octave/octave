@@ -51,10 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a Singular Value Decomposition.
 
-#include "dbleSVD.h"
-#include "CmplxSVD.h"
-#include "floatSVD.h"
-#include "fCmplxSVD.h"
+#include "svd.h"
 
 // Result of an Eigenvalue computation.
 

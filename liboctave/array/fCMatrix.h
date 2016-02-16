@@ -50,6 +50,9 @@ public:
   typedef FloatMatrix real_matrix_type;
   typedef FloatComplexMatrix complex_matrix_type;
 
+  typedef FloatDiagMatrix real_diag_matrix_type;
+  typedef FloatComplexDiagMatrix complex_diag_matrix_type;
+
   typedef float real_elt_type;
   typedef FloatComplex complex_elt_type;
 

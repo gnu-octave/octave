@@ -20,21 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_dbleSVD_h)
-#define octave_dbleSVD_h 1
+#if ! defined (octave_svd_h)
+#define octave_svd_h 1
 
 #include "octave-config.h"
 
 #include <iosfwd>
 
-#include "dDiagMatrix.h"
-#include "dMatrix.h"
-
+template <typename T>
 class
-OCTAVE_API
-SVD
+svd
 {
 public:
+
+  typedef typename T::real_diag_matrix_type DM_T;
 
   enum type
   {
@@ -49,60 +48,62 @@ public:
     GESDD
   };
 
-  SVD (void) : type_computed (), sigma (), left_sm (), right_sm () { }
+  svd (void)
+    : type_computed (), left_sm (), sigma (), right_sm ()
+  { }
 
-  SVD (const Matrix& a,
-       type svd_type = SVD::std, driver svd_driver = SVD::GESVD)
-    : type_computed (), sigma (), left_sm (), right_sm ()
+  svd (const T& a, type svd_type = svd::std, driver svd_driver = svd::GESVD)
+    : type_computed (), left_sm (), sigma (), right_sm ()
   {
     init (a, svd_type, svd_driver);
   }
 
-  SVD (const Matrix& a, octave_idx_type& info,
-       type svd_type = SVD::std, driver svd_driver = SVD::GESVD)
-    : type_computed (), sigma (), left_sm (), right_sm ()
+  svd (const T& a, octave_idx_type& info, type svd_type = svd::std,
+       driver svd_driver = svd::GESVD)
+    : type_computed (), left_sm (), sigma (), right_sm ()
   {
     info = init (a, svd_type, svd_driver);
   }
 
-  SVD (const SVD& a)
-    : type_computed (a.type_computed), sigma (a.sigma),
-      left_sm (a.left_sm), right_sm (a.right_sm)
+  svd (const svd& a)
+    : type_computed (a.type_computed), left_sm (a.left_sm),
+      sigma (a.sigma), right_sm (a.right_sm)
   { }
 
-  SVD& operator = (const SVD& a)
+  svd& operator = (const svd& a)
   {
     if (this != &a)
       {
         type_computed = a.type_computed;
-        sigma = a.sigma;
         left_sm = a.left_sm;
+        sigma = a.sigma;
         right_sm = a.right_sm;
       }
 
     return *this;
   }
 
-  ~SVD (void) { }
+  ~svd (void) { }
 
-  DiagMatrix singular_values (void) const { return sigma; }
+  T left_singular_matrix (void) const;
 
-  Matrix left_singular_matrix (void) const;
+  DM_T singular_values (void) const { return sigma; }
 
-  Matrix right_singular_matrix (void) const;
-
-  friend std::ostream&  operator << (std::ostream& os, const SVD& a);
+  T right_singular_matrix (void) const;
 
 private:
 
-  SVD::type type_computed;
+  svd::type type_computed;
 
-  DiagMatrix sigma;
-  Matrix left_sm;
-  Matrix right_sm;
+  T left_sm;
+  DM_T sigma;
+  T right_sm;
 
-  octave_idx_type init (const Matrix& a,
-                        type svd_type = std, driver svd_driver = GESVD);
+  octave_idx_type
+  init (const T& a, type svd_type, driver svd_driver);
+
+  octave_idx_type
+  empty_init (octave_idx_type nr, octave_idx_type nc, type svd_type);
 };
 
 #endif

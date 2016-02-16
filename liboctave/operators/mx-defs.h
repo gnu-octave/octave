@@ -70,10 +70,7 @@ template <typename T> class hess;
 
 template <typename T> class schur;
 
-class SVD;
-class ComplexSVD;
-class FloatSVD;
-class FloatComplexSVD;
+template <typename T> class svd;
 
 template <typename T> class lu;
 

@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCColVector.h"
 #include "fCRowVector.h"
 #include "schur.h"
-#include "fCmplxSVD.h"
+#include "svd.h"
 #include "functor.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
@@ -1141,7 +1141,7 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
 {
   FloatComplexMatrix retval;
 
-  FloatComplexSVD result (*this, SVD::economy);
+  svd<FloatComplexMatrix> result (*this, svd<FloatComplexMatrix>::economy);
 
   FloatDiagMatrix S = result.singular_values ();
   FloatComplexMatrix U = result.left_singular_matrix ();

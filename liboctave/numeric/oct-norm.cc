@@ -33,33 +33,32 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
-#include "oct-cmplx.h"
+#include "Array-util.h"
+#include "Array.h"
+#include "CColVector.h"
+#include "CMatrix.h"
+#include "CRowVector.h"
+#include "CSparse.h"
+#include "dColVector.h"
+#include "dDiagMatrix.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
+#include "dSparse.h"
+#include "fCColVector.h"
+#include "fCMatrix.h"
+#include "fCRowVector.h"
+#include "fColVector.h"
+#include "fDiagMatrix.h"
+#include "fMatrix.h"
+#include "fRowVector.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "mx-cm-s.h"
-#include "mx-s-cm.h"
 #include "mx-fcm-fs.h"
 #include "mx-fs-fcm.h"
-#include "Array.h"
-#include "Array-util.h"
-#include "CMatrix.h"
-#include "dMatrix.h"
-#include "fCMatrix.h"
-#include "fMatrix.h"
-#include "CColVector.h"
-#include "dColVector.h"
-#include "CRowVector.h"
-#include "dRowVector.h"
-#include "fCColVector.h"
-#include "fColVector.h"
-#include "fCRowVector.h"
-#include "fRowVector.h"
-#include "CSparse.h"
-#include "dSparse.h"
-#include "dbleSVD.h"
-#include "CmplxSVD.h"
-#include "floatSVD.h"
-#include "fCmplxSVD.h"
+#include "mx-s-cm.h"
+#include "oct-cmplx.h"
+#include "svd.h"
 
 // Theory: norm accumulator is an object that has an accum method able
 // to handle both real and complex element, and a cast operator
@@ -475,14 +474,14 @@ static const char *p_less1_gripe = "xnorm: p must be at least 1";
 static int max_norm_iter = 100;
 
 // version with SVD for dense matrices
-template <typename MatrixT, typename VectorT, typename SVDT, typename R>
-R matrix_norm (const MatrixT& m, R p, VectorT, SVDT)
+template <typename MatrixT, typename VectorT, typename R>
+R svd_matrix_norm (const MatrixT& m, R p, VectorT)
 {
   R res = 0;
   if (p == 2)
     {
-      SVDT svd (m, SVD::sigma_only);
-      res = svd.singular_values () (0,0);
+      svd<MatrixT> fact (m, svd<MatrixT>::sigma_only);
+      res = fact.singular_values () (0,0);
     }
   else if (p == 1)
     res = xcolnorms (m, 1).max ();
@@ -529,7 +528,7 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
   OCTAVE_API RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p) \
   { return vector_norm (x, p); } \
   OCTAVE_API RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p) \
-  { return matrix_norm (x, p, PREFIX##Matrix (), PREFIX##SVD ()); } \
+  { return svd_matrix_norm (x, p, PREFIX##Matrix ()); } \
   OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix& x) \
   { return vector_norm (x, static_cast<RTYPE> (2)); }
 

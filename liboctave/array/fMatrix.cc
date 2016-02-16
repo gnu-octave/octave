@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "fMatrix.h"
 #include "schur.h"
-#include "floatSVD.h"
+#include "svd.h"
 #include "functor.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
@@ -832,7 +832,7 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 FloatMatrix
 FloatMatrix::pseudo_inverse (float tol) const
 {
-  FloatSVD result (*this, SVD::economy);
+  svd<FloatMatrix> result (*this, svd<FloatMatrix>::economy);
 
   FloatDiagMatrix S = result.singular_values ();
   FloatMatrix U = result.left_singular_matrix ();

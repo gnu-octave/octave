@@ -24,10 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include "CmplxSVD.h"
-#include "dbleSVD.h"
-#include "fCmplxSVD.h"
-#include "floatSVD.h"
+#include "svd.h"
 
 #include "defun.h"
 #include "error.h"
@@ -37,7 +34,23 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-static int Vsvd_driver = SVD::GESVD;
+static std::string Vsvd_driver = "gesvd";
+
+template <typename T>
+static typename svd<T>::type
+svd_type (int nargin, int nargout)
+{
+  return ((nargout == 0 || nargout == 1)
+          ? svd<T>::sigma_only
+          : (nargin == 2) ? svd<T>::economy : svd<T>::std);
+}
+
+template <typename T>
+static typename svd<T>::driver
+svd_driver (void)
+{
+  return Vsvd_driver == "gesvd" ? svd<T>::GESVD : svd<T>::GESDD;
+}
 
 DEFUN (svd, args, nargout,
        "-*- texinfo -*-\n\
@@ -138,142 +151,93 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
   bool isfloat = arg.is_single_type ();
 
-  SVD::type type = ((nargout == 0 || nargout == 1)
-                    ? SVD::sigma_only
-                    : (nargin == 2) ? SVD::economy : SVD::std);
-
-  octave_idx_type nr = arg.rows ();
-  octave_idx_type nc = arg.columns ();
-
-  SVD::driver driver = static_cast<SVD::driver> (Vsvd_driver);
-
-  if (nr == 0 || nc == 0)
+  if (isfloat)
     {
-      if (isfloat)
+      if (arg.is_real_type ())
         {
-          switch (type)
-            {
-            case SVD::std:
-              retval = ovl (FloatDiagMatrix (nr, nr, 1.0f),
-                            FloatMatrix (nr, nc),
-                            FloatDiagMatrix (nc, nc, 1.0f));
-              break;
+          FloatMatrix tmp = arg.float_matrix_value ();
 
-            case SVD::economy:
-              retval = ovl (FloatDiagMatrix (nr, 0, 1.0f),
-                            FloatMatrix (0, 0),
-                            FloatDiagMatrix (0, nc, 1.0f));
-              break;
+          if (tmp.any_element_is_inf_or_nan ())
+            error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-            case SVD::sigma_only: default:
-              retval(0) = FloatMatrix (0, 1);
-              break;
-            }
+          svd<FloatMatrix> result (tmp,
+                                   svd_type<FloatMatrix> (nargin, nargout),
+                                   svd_driver<FloatMatrix> ());
+
+          FloatDiagMatrix sigma = result.singular_values ();
+
+          if (nargout == 0 || nargout == 1)
+            retval(0) = sigma.extract_diag ();
+          else
+            retval = ovl (result.left_singular_matrix (),
+                          sigma,
+                          result.right_singular_matrix ());
         }
-      else
+      else if (arg.is_complex_type ())
         {
-          switch (type)
-            {
-            case SVD::std:
-              retval = ovl (DiagMatrix (nr, nr, 1.0),
-                            Matrix (nr, nc),
-                            DiagMatrix (nc, nc, 1.0));
-              break;
+          FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-            case SVD::economy:
-              retval = ovl (DiagMatrix (nr, 0, 1.0),
-                            Matrix (0, 0),
-                            DiagMatrix (0, nc, 1.0));
-              break;
+          if (ctmp.any_element_is_inf_or_nan ())
+            error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-            case SVD::sigma_only: default:
-              retval(0) = Matrix (0, 1);
-              break;
-            }
+          svd<FloatComplexMatrix> result (ctmp,
+                                          svd_type<FloatComplexMatrix> (nargin, nargout),
+                                          svd_driver<FloatComplexMatrix> ());
+
+          FloatDiagMatrix sigma = result.singular_values ();
+
+          if (nargout == 0 || nargout == 1)
+            retval(0) = sigma.extract_diag ();
+          else
+            retval = ovl (result.left_singular_matrix (),
+                          sigma,
+                          result.right_singular_matrix ());
         }
     }
   else
     {
-      if (isfloat)
+      if (arg.is_real_type ())
         {
-          if (arg.is_real_type ())
-            {
-              FloatMatrix tmp = arg.float_matrix_value ();
+          Matrix tmp = arg.matrix_value ();
 
-              if (tmp.any_element_is_inf_or_nan ())
-                error ("svd: cannot take SVD of matrix containing Inf or NaN values");
+          if (tmp.any_element_is_inf_or_nan ())
+            error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-              FloatSVD result (tmp, type, driver);
+          svd<Matrix> result (tmp,
+                              svd_type<Matrix> (nargin, nargout),
+                              svd_driver<Matrix> ());
 
-              FloatDiagMatrix sigma = result.singular_values ();
+          DiagMatrix sigma = result.singular_values ();
 
-              if (nargout == 0 || nargout == 1)
-                retval(0) = sigma.extract_diag ();
-              else
-                retval = ovl (result.left_singular_matrix (),
-                              sigma,
-                              result.right_singular_matrix ());
-            }
-          else if (arg.is_complex_type ())
-            {
-              FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
+          if (nargout == 0 || nargout == 1)
+            retval(0) = sigma.extract_diag ();
+          else
+            retval = ovl (result.left_singular_matrix (),
+                          sigma,
+                          result.right_singular_matrix ());
+        }
+      else if (arg.is_complex_type ())
+        {
+          ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-              if (ctmp.any_element_is_inf_or_nan ())
-                error ("svd: cannot take SVD of matrix containing Inf or NaN values");
+          if (ctmp.any_element_is_inf_or_nan ())
+            error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-              FloatComplexSVD result (ctmp, type, driver);
+          svd<ComplexMatrix> result (ctmp,
+                                     svd_type<ComplexMatrix> (nargin, nargout),
+                                     svd_driver<ComplexMatrix> ());
 
-              FloatDiagMatrix sigma = result.singular_values ();
+          DiagMatrix sigma = result.singular_values ();
 
-              if (nargout == 0 || nargout == 1)
-                retval(0) = sigma.extract_diag ();
-              else
-                retval = ovl (result.left_singular_matrix (),
-                              sigma,
-                              result.right_singular_matrix ());
-            }
+          if (nargout == 0 || nargout == 1)
+            retval(0) = sigma.extract_diag ();
+          else
+            retval = ovl (result.left_singular_matrix (),
+                          sigma,
+                          result.right_singular_matrix ());
         }
       else
-        {
-          if (arg.is_real_type ())
-            {
-              Matrix tmp = arg.matrix_value ();
-
-              if (tmp.any_element_is_inf_or_nan ())
-                error ("svd: cannot take SVD of matrix containing Inf or NaN values");
-
-              SVD result (tmp, type, driver);
-
-              DiagMatrix sigma = result.singular_values ();
-
-              if (nargout == 0 || nargout == 1)
-                retval(0) = sigma.extract_diag ();
-              else
-                retval = ovl (result.left_singular_matrix (),
-                              sigma,
-                              result.right_singular_matrix ());
-            }
-          else if (arg.is_complex_type ())
-            {
-              ComplexMatrix ctmp = arg.complex_matrix_value ();
-
-              if (ctmp.any_element_is_inf_or_nan ())
-                error ("svd: cannot take SVD of matrix containing Inf or NaN values");
-
-              ComplexSVD result (ctmp, type, driver);
-
-              DiagMatrix sigma = result.singular_values ();
-
-              if (nargout == 0 || nargout == 1)
-                retval(0) = sigma.extract_diag ();
-              else
-                retval = ovl (result.left_singular_matrix (),
-                              sigma,
-                              result.right_singular_matrix ());
-            }
-          else
-            err_wrong_type_arg ("svd", arg);
-        }
+        err_wrong_type_arg ("svd", arg);
     }
 
   return retval;

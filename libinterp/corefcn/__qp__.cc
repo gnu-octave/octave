@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cfloat>
 
 #include "chol.h"
-#include "dbleSVD.h"
+#include "svd.h"
 #include "mx-m-dm.h"
 #include "EIG.h"
 
@@ -47,7 +47,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
   if (! A.is_empty ())
     {
-      SVD A_svd (A);
+      svd<Matrix> A_svd (A);
 
       DiagMatrix S = A_svd.singular_values ();
 

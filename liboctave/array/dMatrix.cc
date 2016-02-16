@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "PermMatrix.h"
 #include "DET.h"
 #include "schur.h"
-#include "dbleSVD.h"
+#include "svd.h"
 #include "f77-fcn.h"
 #include "functor.h"
 #include "lo-error.h"
@@ -825,7 +825,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 Matrix
 Matrix::pseudo_inverse (double tol) const
 {
-  SVD result (*this, SVD::economy);
+  svd<Matrix> result (*this, svd<Matrix>::economy);
 
   DiagMatrix S = result.singular_values ();
   Matrix U = result.left_singular_matrix ();

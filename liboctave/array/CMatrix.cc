@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CDiagMatrix.h"
 #include "dDiagMatrix.h"
 #include "schur.h"
-#include "CmplxSVD.h"
+#include "svd.h"
 #include "DET.h"
 #include "f77-fcn.h"
 #include "functor.h"
@@ -1137,7 +1137,7 @@ ComplexMatrix::pseudo_inverse (double tol) const
 {
   ComplexMatrix retval;
 
-  ComplexSVD result (*this, SVD::economy);
+  svd<ComplexMatrix> result (*this, svd<ComplexMatrix>::economy);
 
   DiagMatrix S = result.singular_values ();
   ComplexMatrix U = result.left_singular_matrix ();

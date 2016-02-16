@@ -37,9 +37,6 @@ class
 OCTAVE_API
 DiagMatrix : public MDiagArray2<double>
 {
-  friend class SVD;
-  friend class ComplexSVD;
-
 public:
 
   DiagMatrix (void) : MDiagArray2<double> () { }

@@ -37,9 +37,6 @@ class
 OCTAVE_API
 FloatDiagMatrix : public MDiagArray2<float>
 {
-  friend class FloatSVD;
-  friend class FloatComplexSVD;
-
 public:
 
   FloatDiagMatrix (void) : MDiagArray2<float> () { }

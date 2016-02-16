@@ -27,17 +27,20 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <vector>
 
-
 #include "CColVector.h"
 #include "CMatrix.h"
+#include "CRowVector.h"
 #include "chol.h"
 #include "dColVector.h"
 #include "dMatrix.h"
+#include "dRowVector.h"
 #include "f77-fcn.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
+#include "fCRowVector.h"
 #include "fColVector.h"
 #include "fMatrix.h"
+#include "fRowVector.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
 #include "oct-norm.h"
@@ -449,7 +452,7 @@ chol<T>::set (const T& R)
 
 template <typename T>
 void
-chol<T>::update (const T::VT& u)
+chol<T>::update (const VT& u)
 {
   warn_qrupdate_once ();
 
@@ -466,7 +469,7 @@ template <typename T>
 static bool
 singular (const T& a)
 {
-  static typename T::element_type zero ();
+  static typename T::element_type zero (0);
   for (octave_idx_type i = 0; i < a.rows (); i++)
     if (a(i,i) == zero) return true;
   return false;
@@ -474,7 +477,7 @@ singular (const T& a)
 
 template <typename T>
 octave_idx_type
-chol<T>::downdate (const T::VT& u)
+chol<T>::downdate (const VT& u)
 {
   warn_qrupdate_once ();
 
@@ -499,9 +502,9 @@ chol<T>::downdate (const T::VT& u)
 
 template <typename T>
 octave_idx_type
-chol<T>::insert_sym (const T::VT& u, octave_idx_type j)
+chol<T>::insert_sym (const VT& u, octave_idx_type j)
 {
-  static typename T::element_type zero ();
+  static typename T::element_type zero (0);
 
   warn_qrupdate_once ();
 
@@ -516,7 +519,7 @@ chol<T>::insert_sym (const T::VT& u, octave_idx_type j)
 
   if (singular (chol_mat))
     info = 2;
-  else if (ximag (u(j)) != zero)
+  else if (imag (u(j)) != zero)
     info = 3;
   else
     {
@@ -528,7 +531,7 @@ chol<T>::insert_sym (const T::VT& u, octave_idx_type j)
             if (l == j)
               a1(k, l) = u(k);
             else if (k == j)
-              a1(k, l) = xconj (u(l));
+              a1(k, l) = conj (u(l));
             else
               a1(k, l) = a(k < j ? k : k-1, l < j ? l : l-1);
           }

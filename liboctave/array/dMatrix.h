@@ -122,6 +122,7 @@ public:
 
   friend class ComplexMatrix;
 
+  Matrix hermitian (void) const { return MArray<double>::transpose (); }
   Matrix transpose (void) const { return MArray<double>::transpose (); }
 
   // resize is the destructive equivalent for this one

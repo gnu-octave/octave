@@ -126,6 +126,7 @@ public:
 
   friend class FloatComplexMatrix;
 
+  FloatMatrix hermitian (void) const { return MArray<float>::transpose (); }
   FloatMatrix transpose (void) const { return MArray<float>::transpose (); }
 
   // resize is the destructive equivalent for this one

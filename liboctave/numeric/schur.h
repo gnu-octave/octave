@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <iosfwd>
 #include <string>
 
 #include "dMatrix.h"
@@ -97,9 +96,5 @@ private:
 template <typename RT, typename AT>
 extern schur<RT>
 rsf2csf (const AT& s, const AT& u);
-
-template <typename T>
-extern std::ostream&
-operator << (std::ostream& os, const schur<T>& a);
 
 #endif

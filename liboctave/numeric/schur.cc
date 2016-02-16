@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include <iostream>
-
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "f77-fcn.h"
@@ -536,16 +534,6 @@ rsf2csf<FloatComplexMatrix, FloatMatrix> (const FloatMatrix& s_arg, const FloatM
   return schur<FloatComplexMatrix> (s, u);
 }
 
-template <typename T>
-std::ostream&
-operator << (std::ostream& os, const schur<T>& a)
-{
-  os << a.schur_matrix () << "\n";
-  os << a.unitary_matrix () << "\n";
-
-  return os;
-}
-
 // Instantiations we need.
 
 template class schur<ComplexMatrix>;
@@ -555,19 +543,3 @@ template class schur<FloatComplexMatrix>;
 template class schur<FloatMatrix>;
 
 template class schur<Matrix>;
-
-template <>
-std::ostream&
-operator << (std::ostream& os, const schur<Matrix>& a);
-
-template <>
-std::ostream&
-operator << (std::ostream& os, const schur<ComplexMatrix>& a);
-
-template <>
-std::ostream&
-operator << (std::ostream& os, const schur<FloatMatrix>& a);
-
-template <>
-std::ostream&
-operator << (std::ostream& os, const schur<FloatComplexMatrix>& a);

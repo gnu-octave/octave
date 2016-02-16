@@ -8,7 +8,6 @@ LIBOCTAVE_OPT_INC = \
 LIBOCTAVE_OPT_IN = $(LIBOCTAVE_OPT_INC:.h=.in)
 
 NUMERIC_INC = \
-  liboctave/numeric/CmplxLU.h \
   liboctave/numeric/CmplxQR.h \
   liboctave/numeric/CmplxQRP.h \
   liboctave/numeric/CmplxSVD.h \
@@ -31,23 +30,19 @@ NUMERIC_INC = \
   liboctave/numeric/aepbalance.h \
   liboctave/numeric/base-dae.h \
   liboctave/numeric/base-de.h \
-  liboctave/numeric/base-lu.h \
   liboctave/numeric/base-min.h \
   liboctave/numeric/base-qr.h \
   liboctave/numeric/bsxfun-decl.h \
   liboctave/numeric/bsxfun.h \
   liboctave/numeric/chol.h \
-  liboctave/numeric/dbleLU.h \
   liboctave/numeric/dbleQR.h \
   liboctave/numeric/dbleQRP.h \
   liboctave/numeric/dbleSVD.h \
   liboctave/numeric/eigs-base.h \
-  liboctave/numeric/fCmplxLU.h \
   liboctave/numeric/fCmplxQR.h \
   liboctave/numeric/fCmplxQRP.h \
   liboctave/numeric/fCmplxSVD.h \
   liboctave/numeric/fEIG.h \
-  liboctave/numeric/floatLU.h \
   liboctave/numeric/floatQR.h \
   liboctave/numeric/floatQRP.h \
   liboctave/numeric/floatSVD.h \
@@ -55,6 +50,7 @@ NUMERIC_INC = \
   liboctave/numeric/hess.h \
   liboctave/numeric/lo-mappers.h \
   liboctave/numeric/lo-specfun.h \
+  liboctave/numeric/lu.h \
   liboctave/numeric/oct-convn.h \
   liboctave/numeric/oct-fftw.h \
   liboctave/numeric/oct-norm.h \
@@ -75,7 +71,6 @@ NUMERIC_C_SRC = \
   liboctave/numeric/randpoisson.c
 
 NUMERIC_SRC = \
-  liboctave/numeric/CmplxLU.cc \
   liboctave/numeric/CmplxQR.cc \
   liboctave/numeric/CmplxQRP.cc \
   liboctave/numeric/CmplxSVD.cc \
@@ -89,17 +84,14 @@ NUMERIC_SRC = \
   liboctave/numeric/Quad.cc \
   liboctave/numeric/aepbalance.cc \
   liboctave/numeric/chol.cc \
-  liboctave/numeric/dbleLU.cc \
   liboctave/numeric/dbleQR.cc \
   liboctave/numeric/dbleQRP.cc \
   liboctave/numeric/dbleSVD.cc \
   liboctave/numeric/eigs-base.cc \
-  liboctave/numeric/fCmplxLU.cc \
   liboctave/numeric/fCmplxQR.cc \
   liboctave/numeric/fCmplxQRP.cc \
   liboctave/numeric/fCmplxSVD.cc \
   liboctave/numeric/fEIG.cc \
-  liboctave/numeric/floatLU.cc \
   liboctave/numeric/floatQR.cc \
   liboctave/numeric/floatQRP.cc \
   liboctave/numeric/floatSVD.cc \
@@ -107,6 +99,7 @@ NUMERIC_SRC = \
   liboctave/numeric/hess.cc \
   liboctave/numeric/lo-mappers.cc \
   liboctave/numeric/lo-specfun.cc \
+  liboctave/numeric/lu.cc \
   liboctave/numeric/oct-convn.cc \
   liboctave/numeric/oct-fftw.cc \
   liboctave/numeric/oct-norm.cc \
@@ -120,7 +113,6 @@ NUMERIC_SRC = \
   $(NUMERIC_C_SRC)
 
 LIBOCTAVE_TEMPLATE_SRC += \
-  liboctave/numeric/base-lu.cc \
   liboctave/numeric/base-qr.cc \
   liboctave/numeric/bsxfun-defs.cc
 

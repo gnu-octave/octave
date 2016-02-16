@@ -21,33 +21,33 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_base_lu_h)
-#define octave_base_lu_h 1
+#if ! defined (octave_lu_h)
+#define octave_lu_h 1
 
 #include "octave-config.h"
 
-#include "MArray.h"
-#include "dColVector.h"
 #include "PermMatrix.h"
 
-template <typename lu_type>
+template <typename T>
 class
-base_lu
+lu
 {
 public:
 
-  typedef typename lu_type::element_type lu_elt_type;
+  typedef typename T::column_vector_type VT;
+  typedef typename T::element_type ELT_T;
 
-  base_lu (void)
+  lu (void)
     : a_fact (), l_fact (), ipvt () { }
 
-  base_lu (const base_lu& a)
+  lu (const T& a);
+
+  lu (const lu& a)
     : a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
 
-  base_lu (const lu_type& l, const lu_type& u,
-           const PermMatrix& p);
+  lu (const T& l, const T& u, const PermMatrix& p);
 
-  base_lu& operator = (const base_lu& a)
+  lu& operator = (const lu& a)
   {
     if (this != &a)
       {
@@ -55,20 +55,21 @@ public:
         l_fact = a.l_fact;
         ipvt = a.ipvt;
       }
+
     return *this;
   }
 
-  virtual ~base_lu (void) { }
+  virtual ~lu (void) { }
 
   bool packed (void) const;
 
   void unpack (void);
 
-  lu_type L (void) const;
+  T L (void) const;
 
-  lu_type U (void) const;
+  T U (void) const;
 
-  lu_type Y (void) const;
+  T Y (void) const;
 
   PermMatrix P (void) const;
 
@@ -76,12 +77,20 @@ public:
 
   bool regular (void) const;
 
+  void update (const VT& u, const VT& v);
+
+  void update (const T& u, const T& v);
+
+  void update_piv (const VT& u, const VT& v);
+
+  void update_piv (const T& u, const T& v);
+
 protected:
 
   Array<octave_idx_type> getp (void) const;
 
-  lu_type a_fact;
-  lu_type l_fact;
+  T a_fact;
+  T l_fact;
 
   Array<octave_idx_type> ipvt;
 };

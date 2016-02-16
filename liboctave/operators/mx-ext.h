@@ -62,10 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of an LU decomposition.
 
-#include "dbleLU.h"
-#include "CmplxLU.h"
-#include "floatLU.h"
-#include "fCmplxLU.h"
+#include "lu.h"
 
 // Result of a QR decomposition.
 

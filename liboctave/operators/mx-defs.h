@@ -75,10 +75,7 @@ class ComplexSVD;
 class FloatSVD;
 class FloatComplexSVD;
 
-class LU;
-class ComplexLU;
-class FloatLU;
-class FloatComplexLU;
+template <typename T> class lu;
 
 class QR;
 class ComplexQR;

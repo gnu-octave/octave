@@ -30,11 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "CSparse.h"
-#include "CmplxLU.h"
+#include "lu.h"
 #include "MatrixType.h"
 #include "chol.h"
 #include "dSparse.h"
-#include "dbleLU.h"
 #include "eigs-base.h"
 #include "f77-fcn.h"
 #include "mx-ops.h"
@@ -510,7 +509,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
         p[i*(n+1)] -= sigma;
     }
 
-  LU fact (AminusSigmaB);
+  lu<Matrix> fact (AminusSigmaB);
 
   L = fact.P ().transpose () * fact.L ();
   U = fact.U ();
@@ -674,7 +673,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
         p[i*(n+1)] -= sigma;
     }
 
-  ComplexLU fact (AminusSigmaB);
+  lu<ComplexMatrix> fact (AminusSigmaB);
 
   L = fact.P ().transpose () * fact.L ();
   U = fact.U ();

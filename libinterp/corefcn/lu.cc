@@ -24,10 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include "CmplxLU.h"
-#include "dbleLU.h"
-#include "fCmplxLU.h"
-#include "floatLU.h"
+#include "lu.h"
 #include "sparse-lu.h"
 
 #include "defun.h"
@@ -40,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename MT>
 static octave_value
-get_lu_l (const base_lu<MT>& fact)
+get_lu_l (const lu<MT>& fact)
 {
   MT L = fact.L ();
   if (L.is_square ())
@@ -51,7 +48,7 @@ get_lu_l (const base_lu<MT>& fact)
 
 template <typename MT>
 static octave_value
-get_lu_u (const base_lu<MT>& fact)
+get_lu_u (const lu<MT>& fact)
 {
   MT U = fact.U ();
   if (U.is_square () && fact.regular ())
@@ -344,7 +341,7 @@ information.\n\
             {
               FloatMatrix m = arg.float_matrix_value ();
 
-              FloatLU fact (m);
+              lu<FloatMatrix> fact (m);
 
               switch (nargout)
                 {
@@ -378,7 +375,7 @@ information.\n\
             {
               Matrix m = arg.matrix_value ();
 
-              LU fact (m);
+              lu<Matrix> fact (m);
 
               switch (nargout)
                 {
@@ -415,7 +412,7 @@ information.\n\
             {
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-              FloatComplexLU fact (m);
+              lu<FloatComplexMatrix> fact (m);
 
               switch (nargout)
                 {
@@ -449,7 +446,7 @@ information.\n\
             {
               ComplexMatrix m = arg.complex_matrix_value ();
 
-              ComplexLU fact (m);
+              lu<ComplexMatrix> fact (m);
 
               switch (nargout)
                 {
@@ -650,7 +647,7 @@ factorization from scratch.\n\
           FloatMatrix x = argx.float_matrix_value ();
           FloatMatrix y = argy.float_matrix_value ();
 
-          FloatLU fact (L, U, P);
+          lu<FloatMatrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else
@@ -668,7 +665,7 @@ factorization from scratch.\n\
           Matrix x = argx.matrix_value ();
           Matrix y = argy.matrix_value ();
 
-          LU fact (L, U, P);
+          lu<Matrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else
@@ -691,7 +688,7 @@ factorization from scratch.\n\
           FloatComplexMatrix x = argx.float_complex_matrix_value ();
           FloatComplexMatrix y = argy.float_complex_matrix_value ();
 
-          FloatComplexLU fact (L, U, P);
+          lu<FloatComplexMatrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else
@@ -709,7 +706,7 @@ factorization from scratch.\n\
           ComplexMatrix x = argx.complex_matrix_value ();
           ComplexMatrix y = argy.complex_matrix_value ();
 
-          ComplexLU fact (L, U, P);
+          lu<ComplexMatrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else

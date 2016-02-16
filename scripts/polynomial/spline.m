@@ -128,11 +128,6 @@ function ret = spline (x, y, xi)
           3 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 2;
       b = dfs;
       a = a(1,:);
-
-      d = d(1:n-1,:);
-      c = c(1:n-1,:);
-      b = b(1:n-1,:);
-      a = a(1:n-1,:);
     else
       g(1,:) = (a(2,:) - a(1,:)) / h(1) - dfs;
       g(2:n-1,:) = (a(3:n,:) - a(2:n-1,:)) ./ h(2:n-1) - ...
@@ -140,14 +135,14 @@ function ret = spline (x, y, xi)
       g(n,:) = dfe - (a(n,:) - a(n-1,:)) / h(n-1);
       c = spdiags ([[h/6;0],[h(1)/3;(h(1:n-2)+h(2:n-1))/3;h(n-1)/3],[0;h/6]],...
                    [-1,0,1],n,n) \ (g / 2);
-      b(1:n-1,:) = diff (a) ./ h(1:n-1, idx) ...
-        - h(1:n-1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
+      b = diff (a) ./ h(1:n-1, idx) ...
+          - h(1:n-1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
 
-      d = d(1:n-1,:);
-      c = c(1:n-1,:);
-      b = b(1:n-1,:);
-      a = a(1:n-1,:);
+      d = d.'(:);
+      c = c(1:n-1,:).'(:);
+      b = b.'(:);
+      a = a(1:n-1,:).'(:);
     endif
   else
 
@@ -156,8 +151,6 @@ function ret = spline (x, y, xi)
       a = a(1,:);
       d = [];
       c = [];
-      b = b(1:n-1,:);
-      a = a(1:n-1,:);
     elseif (n == 3)
 
       n = 2;
@@ -170,10 +163,6 @@ function ret = spline (x, y, xi)
       a = a(1,:);
       d = [];
       x = [min(x), max(x)];
-
-      c = c(1:n-1,:);
-      b = b(1:n-1,:);
-      a = a(1:n-1,:);
     else
 
       g = zeros (n-2, columns (a));
@@ -213,10 +202,10 @@ function ret = spline (x, y, xi)
           - h(1:n-1, idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
 
-      d = d(1:n-1,:);d = d.'(:);
-      c = c(1:n-1,:);c = c.'(:);
-      b = b(1:n-1,:);b = b.'(:);
-      a = a(1:n-1,:);a = a.'(:);
+      d = d.'(:);
+      c = c(1:n-1,:).'(:);
+      b = b.'(:);
+      a = a(1:n-1,:).'(:);
     endif
 
   endif

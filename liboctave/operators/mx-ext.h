@@ -43,8 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a Hessenberg Decomposition
 
-#include "dbleHESS.h"
-#include "CmplxHESS.h"
+#include "hess.h"
 
 // Result of a Schur Decomposition
 

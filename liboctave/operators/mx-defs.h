@@ -75,10 +75,7 @@ class FloatComplexCHOL;
 
 class EIG;
 
-class HESS;
-class ComplexHESS;
-class FloatHESS;
-class FloatComplexHESS;
+template <typename T> class hess;
 
 template <typename T> class schur;
 

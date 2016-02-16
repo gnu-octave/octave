@@ -24,10 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include "CmplxHESS.h"
-#include "dbleHESS.h"
-#include "fCmplxHESS.h"
-#include "floatHESS.h"
+#include "hess.h"
 
 #include "defun.h"
 #include "error.h"
@@ -90,7 +87,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
-          FloatHESS result (tmp);
+          hess<FloatMatrix> result (tmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -102,7 +99,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-          FloatComplexHESS result (ctmp);
+          hess<FloatComplexMatrix> result (ctmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -117,7 +114,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
         {
           Matrix tmp = arg.matrix_value ();
 
-          HESS result (tmp);
+          hess<Matrix> result (tmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -129,7 +126,7 @@ IEEE Transactions on Automatic Control, 1979).\n\
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-          ComplexHESS result (ctmp);
+          hess<ComplexMatrix> result (ctmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());

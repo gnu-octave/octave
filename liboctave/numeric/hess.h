@@ -20,65 +20,66 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_CmplxHESS_h)
-#define octave_CmplxHESS_h 1
+#if ! defined (octave_hess_h)
+#define octave_hess_h 1
 
 #include "octave-config.h"
 
 #include <iosfwd>
 
-#include "CMatrix.h"
-
+template <typename T>
 class
-OCTAVE_API
-ComplexHESS
+hess
 {
 public:
 
-  ComplexHESS (void) : hess_mat (), unitary_hess_mat () { }
+  hess (void)
+    : hess_mat (), unitary_hess_mat ()
+  { }
 
-  ComplexHESS (const ComplexMatrix& a)
+  hess (const T& a)
     : hess_mat (), unitary_hess_mat ()
   {
     init (a);
   }
 
-  ComplexHESS (const ComplexMatrix& a, octave_idx_type& info)
+  hess (const T& a, octave_idx_type& info)
     : hess_mat (), unitary_hess_mat ()
   {
     info = init (a);
   }
 
-  ComplexHESS (const ComplexHESS& a)
-    : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }
+  hess (const hess& a)
+    : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat)
+  { }
 
-  ComplexHESS& operator = (const ComplexHESS& a)
+  hess& operator = (const hess& a)
   {
     if (this != &a)
       {
         hess_mat = a.hess_mat;
         unitary_hess_mat = a.unitary_hess_mat;
       }
+
     return *this;
   }
 
-  ~ComplexHESS (void) { }
+  ~hess (void) { }
 
-  ComplexMatrix hess_matrix (void) const { return hess_mat; }
+  T hess_matrix (void) const { return hess_mat; }
 
-  ComplexMatrix unitary_hess_matrix (void) const
-  {
-    return unitary_hess_mat;
-  }
-
-  friend std::ostream& operator << (std::ostream& os, const ComplexHESS& a);
+  T unitary_hess_matrix (void) const { return unitary_hess_mat; }
 
 private:
 
-  ComplexMatrix hess_mat;
-  ComplexMatrix unitary_hess_mat;
+  T hess_mat;
+  T unitary_hess_mat;
 
-  octave_idx_type init (const ComplexMatrix& a);
+  octave_idx_type init (const T& a);
 };
+
+template <typename T>
+extern std::ostream&
+operator << (std::ostream& os, const hess<T>& a);
 
 #endif

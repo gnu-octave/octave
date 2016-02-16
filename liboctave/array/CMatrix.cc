@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CDiagMatrix.h"
 #include "dDiagMatrix.h"
 #include "CmplxCHOL.h"
-#include "CmplxSCHUR.h"
+#include "schur.h"
 #include "CmplxSVD.h"
 #include "DET.h"
 #include "f77-fcn.h"
@@ -3487,8 +3487,8 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   // Compute Schur decompositions
 
-  ComplexSCHUR as (a, "U");
-  ComplexSCHUR bs (b, "U");
+  schur<ComplexMatrix> as (a, "U");
+  schur<ComplexMatrix> bs (b, "U");
 
   // Transform c to new coordinates.
 

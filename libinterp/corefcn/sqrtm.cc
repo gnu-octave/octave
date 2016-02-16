@@ -27,8 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <float.h>
 
-#include "CmplxSCHUR.h"
-#include "fCmplxSCHUR.h"
+#include "schur.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "oct-norm.h"
@@ -177,9 +176,9 @@ do_sqrtm (const octave_value& arg)
 
             do
               {
-                ComplexSCHUR schur (x, "", true);
-                x = schur.schur_matrix ();
-                u = schur.unitary_matrix ();
+                ComplexSCHUR schur_fact (x, "", true);
+                x = schur_fact.schur_matrix ();
+                u = schur_fact.unitary_matrix ();
               }
             while (0); // schur no longer needed.
 
@@ -236,10 +235,10 @@ Mathematics, Manchester, England, January 1999.\n\
     // sqrtm of a diagonal matrix is just sqrt.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
-    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR>
-                 (arg);
+    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix,
+                         schur<FloatComplexMatrix> > (arg);
   else if (arg.is_numeric_type ())
-    retval(0) = do_sqrtm<Matrix, ComplexMatrix, ComplexSCHUR> (arg);
+    retval(0) = do_sqrtm<Matrix, ComplexMatrix, schur<ComplexMatrix> > (arg);
 
   if (nargout > 1)
     {

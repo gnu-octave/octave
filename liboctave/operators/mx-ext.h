@@ -48,10 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a Schur Decomposition
 
-#include "dbleSCHUR.h"
-#include "CmplxSCHUR.h"
-#include "floatSCHUR.h"
-#include "fCmplxSCHUR.h"
+#include "schur.h"
 
 // Result of a Singular Value Decomposition.
 

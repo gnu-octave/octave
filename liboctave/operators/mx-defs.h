@@ -80,10 +80,7 @@ class ComplexHESS;
 class FloatHESS;
 class FloatComplexHESS;
 
-class SCHUR;
-class ComplexSCHUR;
-class FloatSCHUR;
-class FloatComplexSCHUR;
+template <typename T> class schur;
 
 class SVD;
 class ComplexSVD;

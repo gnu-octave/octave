@@ -26,10 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "CmplxSCHUR.h"
-#include "dbleSCHUR.h"
-#include "fCmplxSCHUR.h"
-#include "floatSCHUR.h"
+#include "schur.h"
 
 #include "defun.h"
 #include "error.h"
@@ -182,12 +179,12 @@ in control (see @code{are} and @code{dare}).\n\
 
           if (nargout <= 1)
             {
-              FloatSCHUR result (tmp, ord, false);
+              schur<FloatMatrix> result (tmp, ord, false);
               retval = ovl (result.schur_matrix ());
             }
           else
             {
-              FloatSCHUR result (tmp, ord, true);
+              schur<FloatMatrix> result (tmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             result.schur_matrix ());
             }
@@ -198,12 +195,12 @@ in control (see @code{are} and @code{dare}).\n\
 
           if (nargout <= 1)
             {
-              FloatComplexSCHUR result (ctmp, ord, false);
+              schur<FloatComplexMatrix> result (ctmp, ord, false);
               retval = ovl (mark_upper_triangular (result.schur_matrix ()));
             }
           else
             {
-              FloatComplexSCHUR result (ctmp, ord, true);
+              schur<FloatComplexMatrix> result (ctmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             mark_upper_triangular (result.schur_matrix ()));
             }
@@ -217,12 +214,12 @@ in control (see @code{are} and @code{dare}).\n\
 
           if (nargout <= 1)
             {
-              SCHUR result (tmp, ord, false);
+              schur<Matrix> result (tmp, ord, false);
               retval = ovl (result.schur_matrix ());
             }
           else
             {
-              SCHUR result (tmp, ord, true);
+              schur<Matrix> result (tmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             result.schur_matrix ());
             }
@@ -233,12 +230,12 @@ in control (see @code{are} and @code{dare}).\n\
 
           if (nargout <= 1)
             {
-              ComplexSCHUR result (ctmp, ord, false);
+              schur<ComplexMatrix> result (ctmp, ord, false);
               retval = ovl (mark_upper_triangular (result.schur_matrix ()));
             }
           else
             {
-              ComplexSCHUR result (ctmp, ord, true);
+              schur<ComplexMatrix> result (ctmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             mark_upper_triangular (result.schur_matrix ()));
             }
@@ -304,7 +301,8 @@ Note also that @var{U} and @var{T} are not unique.\n\
       FloatMatrix u = args(0).float_matrix_value ();
       FloatMatrix t = args(1).float_matrix_value ();
 
-      FloatComplexSCHUR cs (FloatSCHUR (t, u));
+      schur<FloatComplexMatrix> cs
+        = rsf2csf<FloatComplexMatrix, FloatMatrix> (t, u);
 
       return ovl (cs.unitary_matrix (), cs.schur_matrix ());
     }
@@ -313,7 +311,7 @@ Note also that @var{U} and @var{T} are not unique.\n\
       Matrix u = args(0).matrix_value ();
       Matrix t = args(1).matrix_value ();
 
-      ComplexSCHUR cs (SCHUR (t, u));
+      schur<ComplexMatrix> cs = rsf2csf<ComplexMatrix, Matrix> (t, u);
 
       return ovl (cs.unitary_matrix (), cs.schur_matrix ());
     }

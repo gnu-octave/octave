@@ -15,7 +15,6 @@ NUMERIC_INC = \
   liboctave/numeric/CmplxLU.h \
   liboctave/numeric/CmplxQR.h \
   liboctave/numeric/CmplxQRP.h \
-  liboctave/numeric/CmplxSCHUR.h \
   liboctave/numeric/CmplxSVD.h \
   liboctave/numeric/CollocWt.h \
   liboctave/numeric/DAE.h \
@@ -48,7 +47,6 @@ NUMERIC_INC = \
   liboctave/numeric/dbleLU.h \
   liboctave/numeric/dbleQR.h \
   liboctave/numeric/dbleQRP.h \
-  liboctave/numeric/dbleSCHUR.h \
   liboctave/numeric/dbleSVD.h \
   liboctave/numeric/eigs-base.h \
   liboctave/numeric/fCmplxAEPBAL.h \
@@ -58,7 +56,6 @@ NUMERIC_INC = \
   liboctave/numeric/fCmplxLU.h \
   liboctave/numeric/fCmplxQR.h \
   liboctave/numeric/fCmplxQRP.h \
-  liboctave/numeric/fCmplxSCHUR.h \
   liboctave/numeric/fCmplxSVD.h \
   liboctave/numeric/fEIG.h \
   liboctave/numeric/floatAEPBAL.h \
@@ -68,7 +65,6 @@ NUMERIC_INC = \
   liboctave/numeric/floatLU.h \
   liboctave/numeric/floatQR.h \
   liboctave/numeric/floatQRP.h \
-  liboctave/numeric/floatSCHUR.h \
   liboctave/numeric/floatSVD.h \
   liboctave/numeric/lo-mappers.h \
   liboctave/numeric/lo-specfun.h \
@@ -80,6 +76,7 @@ NUMERIC_INC = \
   liboctave/numeric/randgamma.h \
   liboctave/numeric/randmtzig.h \
   liboctave/numeric/randpoisson.h \
+  liboctave/numeric/schur.h \
   liboctave/numeric/sparse-chol.h \
   liboctave/numeric/sparse-dmsolve.h \
   liboctave/numeric/sparse-lu.h \
@@ -98,7 +95,6 @@ NUMERIC_SRC = \
   liboctave/numeric/CmplxLU.cc \
   liboctave/numeric/CmplxQR.cc \
   liboctave/numeric/CmplxQRP.cc \
-  liboctave/numeric/CmplxSCHUR.cc \
   liboctave/numeric/CmplxSVD.cc \
   liboctave/numeric/CollocWt.cc \
   liboctave/numeric/DASPK.cc \
@@ -115,7 +111,6 @@ NUMERIC_SRC = \
   liboctave/numeric/dbleLU.cc \
   liboctave/numeric/dbleQR.cc \
   liboctave/numeric/dbleQRP.cc \
-  liboctave/numeric/dbleSCHUR.cc \
   liboctave/numeric/dbleSVD.cc \
   liboctave/numeric/eigs-base.cc \
   liboctave/numeric/fCmplxAEPBAL.cc \
@@ -125,7 +120,6 @@ NUMERIC_SRC = \
   liboctave/numeric/fCmplxLU.cc \
   liboctave/numeric/fCmplxQR.cc \
   liboctave/numeric/fCmplxQRP.cc \
-  liboctave/numeric/fCmplxSCHUR.cc \
   liboctave/numeric/fCmplxSVD.cc \
   liboctave/numeric/fEIG.cc \
   liboctave/numeric/floatAEPBAL.cc \
@@ -135,7 +129,6 @@ NUMERIC_SRC = \
   liboctave/numeric/floatLU.cc \
   liboctave/numeric/floatQR.cc \
   liboctave/numeric/floatQRP.cc \
-  liboctave/numeric/floatSCHUR.cc \
   liboctave/numeric/floatSVD.cc \
   liboctave/numeric/lo-mappers.cc \
   liboctave/numeric/lo-specfun.cc \
@@ -144,6 +137,7 @@ NUMERIC_SRC = \
   liboctave/numeric/oct-norm.cc \
   liboctave/numeric/oct-rand.cc \
   liboctave/numeric/oct-spparms.cc \
+  liboctave/numeric/schur.cc \
   liboctave/numeric/sparse-chol.cc \
   liboctave/numeric/sparse-dmsolve.cc \
   liboctave/numeric/sparse-lu.cc \

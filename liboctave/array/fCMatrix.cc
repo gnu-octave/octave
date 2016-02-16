@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCColVector.h"
 #include "fCRowVector.h"
 #include "fCmplxCHOL.h"
-#include "fCmplxSCHUR.h"
+#include "schur.h"
 #include "fCmplxSVD.h"
 #include "functor.h"
 #include "lo-error.h"
@@ -3501,8 +3501,8 @@ Sylvester (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   // Compute Schur decompositions
 
-  FloatComplexSCHUR as (a, "U");
-  FloatComplexSCHUR bs (b, "U");
+  schur<FloatComplexMatrix> as (a, "U");
+  schur<FloatComplexMatrix> bs (b, "U");
 
   // Transform c to new coordinates.
 

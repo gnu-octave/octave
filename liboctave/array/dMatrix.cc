@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CColVector.h"
 #include "PermMatrix.h"
 #include "DET.h"
-#include "dbleSCHUR.h"
+#include "schur.h"
 #include "dbleSVD.h"
 #include "dbleCHOL.h"
 #include "f77-fcn.h"
@@ -2953,8 +2953,8 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   // Compute Schur decompositions.
 
-  SCHUR as (a, "U");
-  SCHUR bs (b, "U");
+  schur<Matrix> as (a, "U");
+  schur<Matrix> bs (b, "U");
 
   // Transform c to new coordinates.
 

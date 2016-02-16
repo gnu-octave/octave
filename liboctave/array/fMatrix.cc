@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "fMatrix.h"
 #include "floatCHOL.h"
-#include "floatSCHUR.h"
+#include "schur.h"
 #include "floatSVD.h"
 #include "functor.h"
 #include "lo-error.h"
@@ -2970,8 +2970,8 @@ Sylvester (const FloatMatrix& a, const FloatMatrix& b, const FloatMatrix& c)
 
   // Compute Schur decompositions.
 
-  FloatSCHUR as (a, "U");
-  FloatSCHUR bs (b, "U");
+  schur<FloatMatrix> as (a, "U");
+  schur<FloatMatrix> bs (b, "U");
 
   // Transform c to new coordinates.
 

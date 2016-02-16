@@ -116,6 +116,10 @@ set_internal_variable (std::string& var, const octave_value_list& args,
                        int nargout, const char *nm, bool empty_ok = true);
 
 extern OCTINTERP_API octave_value
+set_internal_variable (std::string& var, const octave_value_list& args,
+                       int nargout, const char *nm, const char **choices);
+
+extern OCTINTERP_API octave_value
 set_internal_variable (int& var, const octave_value_list& args,
                        int nargout, const char *nm, const char **choices);
 

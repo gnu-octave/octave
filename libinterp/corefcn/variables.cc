@@ -969,6 +969,49 @@ set_internal_variable (int& var, const octave_value_list& args,
   return retval;
 }
 
+octave_value
+set_internal_variable (std::string& var, const octave_value_list& args,
+                       int nargout, const char *nm, const char **choices)
+{
+  octave_value retval;
+  int nchoices = 0;
+  while (choices[nchoices] != 0)
+    nchoices++;
+
+  int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
+    retval = var;
+
+  if (wants_local_change (args, nargin))
+    {
+      if (! try_local_protect (var))
+        warning ("\"local\" has no effect outside a function");
+    }
+
+  if (nargin > 1)
+    print_usage ();
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
+
+      int i = 0;
+      for (; i < nchoices; i++)
+        {
+          if (sval == choices[i])
+            {
+              var = sval;
+              break;
+            }
+        }
+      if (i == nchoices)
+        error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
+    }
+
+  return retval;
+}
+
 struct
 whos_parameter
 {

@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "boolMatrix.h"
 #include "chMatrix.h"
+#include "chol.h"
 #include "dMatrix.h"
 #include "CMatrix.h"
 #include "CNDArray.h"
@@ -45,7 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dRowVector.h"
 #include "CDiagMatrix.h"
 #include "dDiagMatrix.h"
-#include "CmplxCHOL.h"
 #include "schur.h"
 #include "CmplxSVD.h"
 #include "DET.h"
@@ -1109,7 +1109,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     {
       if (mattype.is_hermitian ())
         {
-          ComplexCHOL chol (*this, info, true, calc_cond);
+          chol<ComplexMatrix> chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)

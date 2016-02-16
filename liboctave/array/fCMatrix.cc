@@ -40,12 +40,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "boolMatrix.h"
 #include "chMatrix.h"
+#include "chol.h"
 #include "fCMatrix.h"
 #include "fCNDArray.h"
 #include "fCDiagMatrix.h"
 #include "fCColVector.h"
 #include "fCRowVector.h"
-#include "fCmplxCHOL.h"
 #include "schur.h"
 #include "fCmplxSVD.h"
 #include "functor.h"
@@ -1112,7 +1112,7 @@ FloatComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     {
       if (mattype.is_hermitian ())
         {
-          FloatComplexCHOL chol (*this, info, true, calc_cond);
+          chol<FloatComplexMatrix> chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)

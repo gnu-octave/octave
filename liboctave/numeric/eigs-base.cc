@@ -30,11 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "CSparse.h"
-#include "CmplxCHOL.h"
 #include "CmplxLU.h"
 #include "MatrixType.h"
+#include "chol.h"
 #include "dSparse.h"
-#include "dbleCHOL.h"
 #include "dbleLU.h"
 #include "eigs-base.h"
 #include "f77-fcn.h"
@@ -305,7 +304,7 @@ static bool
 make_cholb (Matrix& b, Matrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
-  CHOL fact (b, info);
+  chol<Matrix> fact (b, info);
   octave_idx_type n = b.cols ();
 
   if (info != 0)
@@ -342,7 +341,7 @@ static bool
 make_cholb (ComplexMatrix& b, ComplexMatrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
-  ComplexCHOL fact (b, info);
+  chol<ComplexMatrix> fact (b, info);
   octave_idx_type n = b.cols ();
 
   if (info != 0)

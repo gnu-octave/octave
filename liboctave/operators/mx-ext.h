@@ -39,10 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a Cholesky Factorization
 
-#include "dbleCHOL.h"
-#include "CmplxCHOL.h"
-#include "floatCHOL.h"
-#include "fCmplxCHOL.h"
+#include "chol.h"
 
 // Result of a Hessenberg Decomposition
 

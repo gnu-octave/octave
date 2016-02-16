@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "boolMatrix.h"
 #include "chMatrix.h"
+#include "chol.h"
 #include "fMatrix.h"
 #include "fDiagMatrix.h"
 #include "fCMatrix.h"
@@ -47,7 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "f77-fcn.h"
 #include "fMatrix.h"
-#include "floatCHOL.h"
 #include "schur.h"
 #include "floatSVD.h"
 #include "functor.h"
@@ -806,7 +806,7 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
     {
       if (mattype.is_hermitian ())
         {
-          FloatCHOL chol (*this, info, true, calc_cond);
+          chol<FloatMatrix> chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)

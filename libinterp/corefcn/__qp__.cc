@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cfloat>
 
-#include "dbleCHOL.h"
+#include "chol.h"
 #include "dbleSVD.h"
 #include "mx-m-dm.h"
 #include "EIG.h"
@@ -191,7 +191,7 @@ qp (const Matrix& H, const ColumnVector& q,
               // factorization since the Hessian is positive
               // definite.
 
-              CHOL cholH (H);
+              chol<Matrix> cholH (H);
 
               R = cholH.chol_matrix ();
 
@@ -250,7 +250,7 @@ qp (const Matrix& H, const ColumnVector& q,
               // Computing the Cholesky factorization (pR = 0 means
               // that the reduced Hessian was positive definite).
 
-              CHOL cholrH (rH, pR);
+              chol<Matrix> cholrH (rH, pR);
               Matrix tR = cholrH.chol_matrix ();
               if (pR == 0)
                 R = tR;

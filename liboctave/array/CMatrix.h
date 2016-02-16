@@ -50,6 +50,9 @@ public:
   typedef Matrix real_matrix_type;
   typedef ComplexMatrix complex_matrix_type;
 
+  typedef double real_elt_type;
+  typedef Complex complex_elt_type;
+
   typedef void (*solve_singularity_handler) (double rcon);
 
   ComplexMatrix (void) : ComplexNDArray () { }

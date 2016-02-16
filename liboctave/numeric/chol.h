@@ -21,41 +21,39 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_CmplxCHOL_h)
-#define octave_CmplxCHOL_h 1
+#if ! defined (octave_chol_h)
+#define octave_chol_h 1
 
 #include "octave-config.h"
 
-#include <iosfwd>
-
-#include "CMatrix.h"
-#include "CColVector.h"
-
+template <typename T>
 class
-OCTAVE_API
-ComplexCHOL
+chol
 {
 public:
 
-  ComplexCHOL (void) : chol_mat (), xrcond (0) { }
+  typedef typename T::column_vector_type VT;
+  typedef typename T::real_elt_type COND_T;
 
-  ComplexCHOL (const ComplexMatrix& a, bool upper = true, bool calc_cond = false)
+  chol (void) : chol_mat (), xrcond (0) { }
+
+  chol (const T& a, bool upper = true, bool calc_cond = false)
     : chol_mat (), xrcond (0)
   {
     init (a, upper, calc_cond);
   }
 
-  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info, bool upper = true,
-               bool calc_cond = false)
+  chol (const T& a, octave_idx_type& info, bool upper = true,
+        bool calc_cond = false)
     : chol_mat (), xrcond (0)
   {
     info = init (a, upper, calc_cond);
   }
 
-  ComplexCHOL (const ComplexCHOL& a)
+  chol (const chol& a)
     : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
-  ComplexCHOL& operator = (const ComplexCHOL& a)
+  chol& operator = (const chol& a)
   {
     if (this != &a)
       {
@@ -66,38 +64,38 @@ public:
     return *this;
   }
 
-  ComplexMatrix chol_matrix (void) const { return chol_mat; }
+  T chol_matrix (void) const { return chol_mat; }
 
-  double rcond (void) const { return xrcond; }
+  COND_T rcond (void) const { return xrcond; }
 
-  ComplexMatrix inverse (void) const;
+  // Compute the inverse of a matrix using the Cholesky factorization.
+  T inverse (void) const;
 
-  void set (const ComplexMatrix& R);
+  void set (const T& R);
 
-  void update (const ComplexColumnVector& u);
+  void update (const VT& u);
 
-  octave_idx_type downdate (const ComplexColumnVector& u);
+  octave_idx_type downdate (const VT& u);
 
-  octave_idx_type insert_sym (const ComplexColumnVector& u, octave_idx_type j);
+  octave_idx_type insert_sym (const VT& u, octave_idx_type j);
 
   void delete_sym (octave_idx_type j);
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const ComplexCHOL& a);
-
 private:
 
-  ComplexMatrix chol_mat;
+  T chol_mat;
 
-  double xrcond;
+  COND_T xrcond;
 
   bool is_upper;
 
-  octave_idx_type init (const ComplexMatrix& a, bool upper, bool calc_cond);
+  octave_idx_type init (const T& a, bool upper, bool calc_cond);
 };
 
-ComplexMatrix OCTAVE_API chol2inv (const ComplexMatrix& r);
+template <typename T>
+T
+chol2inv (const T& r);
 
 #endif

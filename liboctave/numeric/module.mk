@@ -8,7 +8,6 @@ LIBOCTAVE_OPT_INC = \
 LIBOCTAVE_OPT_IN = $(LIBOCTAVE_OPT_INC:.h=.in)
 
 NUMERIC_INC = \
-  liboctave/numeric/CmplxCHOL.h \
   liboctave/numeric/CmplxLU.h \
   liboctave/numeric/CmplxQR.h \
   liboctave/numeric/CmplxQRP.h \
@@ -37,19 +36,17 @@ NUMERIC_INC = \
   liboctave/numeric/base-qr.h \
   liboctave/numeric/bsxfun-decl.h \
   liboctave/numeric/bsxfun.h \
-  liboctave/numeric/dbleCHOL.h \
+  liboctave/numeric/chol.h \
   liboctave/numeric/dbleLU.h \
   liboctave/numeric/dbleQR.h \
   liboctave/numeric/dbleQRP.h \
   liboctave/numeric/dbleSVD.h \
   liboctave/numeric/eigs-base.h \
-  liboctave/numeric/fCmplxCHOL.h \
   liboctave/numeric/fCmplxLU.h \
   liboctave/numeric/fCmplxQR.h \
   liboctave/numeric/fCmplxQRP.h \
   liboctave/numeric/fCmplxSVD.h \
   liboctave/numeric/fEIG.h \
-  liboctave/numeric/floatCHOL.h \
   liboctave/numeric/floatLU.h \
   liboctave/numeric/floatQR.h \
   liboctave/numeric/floatQRP.h \
@@ -78,7 +75,6 @@ NUMERIC_C_SRC = \
   liboctave/numeric/randpoisson.c
 
 NUMERIC_SRC = \
-  liboctave/numeric/CmplxCHOL.cc \
   liboctave/numeric/CmplxLU.cc \
   liboctave/numeric/CmplxQR.cc \
   liboctave/numeric/CmplxQRP.cc \
@@ -92,19 +88,17 @@ NUMERIC_SRC = \
   liboctave/numeric/ODES.cc \
   liboctave/numeric/Quad.cc \
   liboctave/numeric/aepbalance.cc \
-  liboctave/numeric/dbleCHOL.cc \
+  liboctave/numeric/chol.cc \
   liboctave/numeric/dbleLU.cc \
   liboctave/numeric/dbleQR.cc \
   liboctave/numeric/dbleQRP.cc \
   liboctave/numeric/dbleSVD.cc \
   liboctave/numeric/eigs-base.cc \
-  liboctave/numeric/fCmplxCHOL.cc \
   liboctave/numeric/fCmplxLU.cc \
   liboctave/numeric/fCmplxQR.cc \
   liboctave/numeric/fCmplxQRP.cc \
   liboctave/numeric/fCmplxSVD.cc \
   liboctave/numeric/fEIG.cc \
-  liboctave/numeric/floatCHOL.cc \
   liboctave/numeric/floatLU.cc \
   liboctave/numeric/floatQR.cc \
   liboctave/numeric/floatQRP.cc \

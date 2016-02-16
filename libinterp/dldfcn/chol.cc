@@ -27,10 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include "CmplxCHOL.h"
-#include "dbleCHOL.h"
-#include "fCmplxCHOL.h"
-#include "floatCHOL.h"
+#include "chol.h"
 #include "sparse-chol.h"
 #include "oct-spparms.h"
 #include "sparse-util.h"
@@ -250,8 +247,7 @@ sparse matrices.\n\
 
           octave_idx_type info;
 
-          FloatCHOL fact;
-          fact = FloatCHOL (m, info, LLt != true);
+          chol<FloatMatrix> fact (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -264,8 +260,7 @@ sparse matrices.\n\
 
           octave_idx_type info;
 
-          FloatComplexCHOL fact;
-          fact = FloatComplexCHOL (m, info, LLt != true);
+          chol<FloatComplexMatrix> fact (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -283,8 +278,7 @@ sparse matrices.\n\
 
           octave_idx_type info;
 
-          CHOL fact;
-          fact = CHOL (m, info, LLt != true);
+          chol<Matrix> fact (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -297,8 +291,7 @@ sparse matrices.\n\
 
           octave_idx_type info;
 
-          ComplexCHOL fact;
-          fact = ComplexCHOL (m, info, LLt != true);
+          chol<ComplexMatrix> fact (m, info, LLt != true);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -385,7 +378,7 @@ the Cholesky@tie{}factorization.\n\
               FloatMatrix m = arg.float_matrix_value ();
 
               octave_idx_type info;
-              FloatCHOL chol (m, info);
+              chol<FloatMatrix> chol (m, info);
               if (info == 0)
                 retval = chol.inverse ();
               else
@@ -396,7 +389,7 @@ the Cholesky@tie{}factorization.\n\
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
               octave_idx_type info;
-              FloatComplexCHOL chol (m, info);
+              chol<FloatComplexMatrix> chol (m, info);
               if (info == 0)
                 retval = chol.inverse ();
               else
@@ -412,7 +405,7 @@ the Cholesky@tie{}factorization.\n\
               Matrix m = arg.matrix_value ();
 
               octave_idx_type info;
-              CHOL chol (m, info);
+              chol<Matrix> chol (m, info);
               if (info == 0)
                 retval = chol.inverse ();
               else
@@ -423,7 +416,7 @@ the Cholesky@tie{}factorization.\n\
               ComplexMatrix m = arg.complex_matrix_value ();
 
               octave_idx_type info;
-              ComplexCHOL chol (m, info);
+              chol<ComplexMatrix> chol (m, info);
               if (info == 0)
                 retval = chol.inverse ();
               else
@@ -602,7 +595,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           FloatMatrix R = argr.float_matrix_value ();
           FloatColumnVector u = argu.float_column_vector_value ();
 
-          FloatCHOL fact;
+          chol<FloatMatrix> fact;
           fact.set (R);
 
           if (down)
@@ -619,7 +612,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           FloatComplexColumnVector u =
             argu.float_complex_column_vector_value ();
 
-          FloatComplexCHOL fact;
+          chol<FloatComplexMatrix> fact;
           fact.set (R);
 
           if (down)
@@ -638,7 +631,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           Matrix R = argr.matrix_value ();
           ColumnVector u = argu.column_vector_value ();
 
-          CHOL fact;
+          chol<Matrix> fact;
           fact.set (R);
 
           if (down)
@@ -654,7 +647,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           ComplexMatrix R = argr.complex_matrix_value ();
           ComplexColumnVector u = argu.complex_column_vector_value ();
 
-          ComplexCHOL fact;
+          chol<ComplexMatrix> fact;
           fact.set (R);
 
           if (down)
@@ -793,7 +786,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           FloatMatrix R = argr.float_matrix_value ();
           FloatColumnVector u = argu.float_column_vector_value ();
 
-          FloatCHOL fact;
+          chol<FloatMatrix> fact;
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
@@ -806,7 +799,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           FloatComplexColumnVector u =
             argu.float_complex_column_vector_value ();
 
-          FloatComplexCHOL fact;
+          chol<FloatComplexMatrix> fact;
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
@@ -821,7 +814,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           Matrix R = argr.matrix_value ();
           ColumnVector u = argu.column_vector_value ();
 
-          CHOL fact;
+          chol<Matrix> fact;
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
@@ -834,7 +827,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
           ComplexColumnVector u =
             argu.complex_column_vector_value ();
 
-          ComplexCHOL fact;
+          chol<ComplexMatrix> fact;
           fact.set (R);
           err = fact.insert_sym (u, j-1);
 
@@ -1028,7 +1021,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
           // real case
           FloatMatrix R = argr.float_matrix_value ();
 
-          FloatCHOL fact;
+          chol<FloatMatrix> fact;
           fact.set (R);
           fact.delete_sym (j-1);
 
@@ -1039,7 +1032,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
           // complex case
           FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-          FloatComplexCHOL fact;
+          chol<FloatComplexMatrix> fact;
           fact.set (R);
           fact.delete_sym (j-1);
 
@@ -1053,7 +1046,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
           // real case
           Matrix R = argr.matrix_value ();
 
-          CHOL fact;
+          chol<Matrix> fact;
           fact.set (R);
           fact.delete_sym (j-1);
 
@@ -1064,7 +1057,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
           // complex case
           ComplexMatrix R = argr.complex_matrix_value ();
 
-          ComplexCHOL fact;
+          chol<ComplexMatrix> fact;
           fact.set (R);
           fact.delete_sym (j-1);
 
@@ -1158,7 +1151,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
           // real case
           FloatMatrix R = argr.float_matrix_value ();
 
-          FloatCHOL fact;
+          chol<FloatMatrix> fact;
           fact.set (R);
           fact.shift_sym (i-1, j-1);
 
@@ -1169,7 +1162,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
           // complex case
           FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-          FloatComplexCHOL fact;
+          chol<FloatComplexMatrix> fact;
           fact.set (R);
           fact.shift_sym (i-1, j-1);
 
@@ -1183,7 +1176,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
           // real case
           Matrix R = argr.matrix_value ();
 
-          CHOL fact;
+          chol<Matrix> fact;
           fact.set (R);
           fact.shift_sym (i-1, j-1);
 
@@ -1194,7 +1187,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
           // complex case
           ComplexMatrix R = argr.complex_matrix_value ();
 
-          ComplexCHOL fact;
+          chol<ComplexMatrix> fact;
           fact.set (R);
           fact.shift_sym (i-1, j-1);
 

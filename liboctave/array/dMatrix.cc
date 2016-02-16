@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "boolMatrix.h"
 #include "chMatrix.h"
+#include "chol.h"
 #include "dMatrix.h"
 #include "dDiagMatrix.h"
 #include "CMatrix.h"
@@ -46,7 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "DET.h"
 #include "schur.h"
 #include "dbleSVD.h"
-#include "dbleCHOL.h"
 #include "f77-fcn.h"
 #include "functor.h"
 #include "lo-error.h"
@@ -799,7 +799,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
     {
       if (mattype.is_hermitian ())
         {
-          CHOL chol (*this, info, true, calc_cond);
+          chol<Matrix> chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)

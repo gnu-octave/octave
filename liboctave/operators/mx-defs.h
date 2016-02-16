@@ -62,10 +62,7 @@ template <typename T> class aepbalance;
 
 template <typename T> class gepbalance;
 
-class CHOL;
-class ComplexCHOL;
-class FloatCHOL;
-class FloatComplexCHOL;
+template <typename T> class chol;
 
 class EIG;
 

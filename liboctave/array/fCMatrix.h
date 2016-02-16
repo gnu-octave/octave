@@ -44,6 +44,12 @@ public:
   typedef FloatComplexColumnVector column_vector_type;
   typedef FloatComplexRowVector row_vector_type;
 
+  typedef FloatColumnVector real_column_vector_type;
+  typedef FloatRowVector real_row_vector_type;
+
+  typedef FloatMatrix real_matrix_type;
+  typedef FloatComplexMatrix complex_matrix_type;
+
   typedef void (*solve_singularity_handler) (float rcon);
 
   FloatComplexMatrix (void) : FloatComplexNDArray () { }

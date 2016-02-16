@@ -20,39 +20,37 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_CmplxGEPBAL_h)
-#define octave_CmplxGEPBAL_h 1
+#if ! defined (octave_gepbalance_h)
+#define octave_gepbalance_h 1
 
 #include "octave-config.h"
 
-#include <iosfwd>
 #include <string>
 
-#include "CMatrix.h"
-#include "dMatrix.h"
-
+template <typename T>
 class
-OCTAVE_API
-ComplexGEPBALANCE
+gepbalance
 {
 public:
 
-  ComplexGEPBALANCE (void)
+  typedef typename T::real_matrix_type RT;
+
+  gepbalance (void)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
   { }
 
-  ComplexGEPBALANCE (const ComplexMatrix& a, const ComplexMatrix& b,
-                     const std::string& balance_job)
+  gepbalance (const T& a, const T& b, const std::string& job)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
   {
-    init (a, b, balance_job);
+    init (a, b, job);
   }
 
-  ComplexGEPBALANCE (const ComplexGEPBALANCE& a)
+  gepbalance (const gepbalance& a)
     : balanced_mat (a.balanced_mat), balanced_mat2 (a.balanced_mat2),
-      balancing_mat (a.balancing_mat), balancing_mat2 (a.balancing_mat2) { }
+      balancing_mat (a.balancing_mat), balancing_mat2 (a.balancing_mat2)
+  { }
 
-  ComplexGEPBALANCE& operator = (const ComplexGEPBALANCE& a)
+  gepbalance& operator = (const gepbalance& a)
   {
     if (this != &a)
       {
@@ -61,31 +59,28 @@ public:
         balancing_mat = a.balancing_mat;
         balancing_mat2 = a.balancing_mat2;
       }
+
     return *this;
   }
 
-  ~ComplexGEPBALANCE (void) { }
+  ~gepbalance (void) { }
 
-  ComplexMatrix balanced_matrix (void) const { return balanced_mat; }
+  T balanced_matrix (void) const { return balanced_mat; }
 
-  ComplexMatrix balanced_matrix2 (void) const { return balanced_mat2; }
+  T balanced_matrix2 (void) const { return balanced_mat2; }
 
-  Matrix balancing_matrix (void) const { return balancing_mat; }
+  RT balancing_matrix (void) const { return balancing_mat; }
 
-  Matrix balancing_matrix2 (void) const { return balancing_mat2; }
-
-  friend std::ostream& operator << (std::ostream& os,
-                                    const ComplexGEPBALANCE& a);
+  RT balancing_matrix2 (void) const { return balancing_mat2; }
 
 private:
 
-  ComplexMatrix balanced_mat;
-  ComplexMatrix balanced_mat2;
-  Matrix balancing_mat;
-  Matrix balancing_mat2;
+  T balanced_mat;
+  T balanced_mat2;
+  RT balancing_mat;
+  RT balancing_mat2;
 
-  octave_idx_type init (const ComplexMatrix& a, const ComplexMatrix& b,
-                        const std::string& balance_job);
+  octave_idx_type init (const T& a, const T& b, const std::string& job);
 };
 
 #endif

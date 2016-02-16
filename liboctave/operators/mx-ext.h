@@ -27,8 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a AEP Balance operation.
 
-#include "dbleAEPBAL.h"
-#include "CmplxAEPBAL.h"
+#include "aepbalance.h"
+
+// Result of a GEP Balance operation.
+
+#include "gepbalance.h"
 
 // Result of a Determinant calculation.
 

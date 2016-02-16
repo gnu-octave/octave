@@ -29,14 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "CmplxAEPBAL.h"
-#include "fCmplxAEPBAL.h"
-#include "dbleAEPBAL.h"
-#include "floatAEPBAL.h"
-#include "CmplxGEPBAL.h"
-#include "fCmplxGEPBAL.h"
-#include "dbleGEPBAL.h"
-#include "floatGEPBAL.h"
+#include "CMatrix.h"
+#include "aepbalance.h"
+#include "dMatrix.h"
+#include "fCMatrix.h"
+#include "fMatrix.h"
+#include "gepbalance.h"
 #include "quit.h"
 
 #include "defun.h"
@@ -152,7 +150,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
         {
           if (complex_case)
             {
-              FloatComplexAEPBALANCE result (fcaa, noperm, noscal);
+              aepbalance<FloatComplexMatrix> result (fcaa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -166,7 +164,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
             }
           else
             {
-              FloatAEPBALANCE result (faa, noperm, noscal);
+              aepbalance<FloatMatrix> result (faa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -183,7 +181,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
         {
           if (complex_case)
             {
-              ComplexAEPBALANCE result (caa, noperm, noscal);
+              aepbalance<ComplexMatrix> result (caa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -197,7 +195,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
             }
           else
             {
-              AEPBALANCE result (aa, noperm, noscal);
+              aepbalance<Matrix> result (aa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -251,7 +249,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
         {
           if (complex_case)
             {
-              FloatComplexGEPBALANCE result (fcaa, fcbb, bal_job);
+              gepbalance<FloatComplexMatrix> result (fcaa, fcbb, bal_job);
 
               switch (nargout)
                 {
@@ -276,7 +274,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
             }
           else
             {
-              FloatGEPBALANCE result (faa, fbb, bal_job);
+              gepbalance<FloatMatrix> result (faa, fbb, bal_job);
 
               switch (nargout)
                 {
@@ -304,7 +302,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
         {
           if (complex_case)
             {
-              ComplexGEPBALANCE result (caa, cbb, bal_job);
+              gepbalance<ComplexMatrix> result (caa, cbb, bal_job);
 
               switch (nargout)
                 {
@@ -329,7 +327,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
             }
           else
             {
-              GEPBALANCE result (aa, bb, bal_job);
+              gepbalance<Matrix> result (aa, bb, bal_job);
 
               switch (nargout)
                 {

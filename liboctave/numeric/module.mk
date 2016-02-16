@@ -8,9 +8,7 @@ LIBOCTAVE_OPT_INC = \
 LIBOCTAVE_OPT_IN = $(LIBOCTAVE_OPT_INC:.h=.in)
 
 NUMERIC_INC = \
-  liboctave/numeric/CmplxAEPBAL.h \
   liboctave/numeric/CmplxCHOL.h \
-  liboctave/numeric/CmplxGEPBAL.h \
   liboctave/numeric/CmplxLU.h \
   liboctave/numeric/CmplxQR.h \
   liboctave/numeric/CmplxQRP.h \
@@ -31,7 +29,7 @@ NUMERIC_INC = \
   liboctave/numeric/ODES.h \
   liboctave/numeric/ODESFunc.h \
   liboctave/numeric/Quad.h \
-  liboctave/numeric/base-aepbal.h \
+  liboctave/numeric/aepbalance.h \
   liboctave/numeric/base-dae.h \
   liboctave/numeric/base-de.h \
   liboctave/numeric/base-lu.h \
@@ -39,29 +37,24 @@ NUMERIC_INC = \
   liboctave/numeric/base-qr.h \
   liboctave/numeric/bsxfun-decl.h \
   liboctave/numeric/bsxfun.h \
-  liboctave/numeric/dbleAEPBAL.h \
   liboctave/numeric/dbleCHOL.h \
-  liboctave/numeric/dbleGEPBAL.h \
   liboctave/numeric/dbleLU.h \
   liboctave/numeric/dbleQR.h \
   liboctave/numeric/dbleQRP.h \
   liboctave/numeric/dbleSVD.h \
   liboctave/numeric/eigs-base.h \
-  liboctave/numeric/fCmplxAEPBAL.h \
   liboctave/numeric/fCmplxCHOL.h \
-  liboctave/numeric/fCmplxGEPBAL.h \
   liboctave/numeric/fCmplxLU.h \
   liboctave/numeric/fCmplxQR.h \
   liboctave/numeric/fCmplxQRP.h \
   liboctave/numeric/fCmplxSVD.h \
   liboctave/numeric/fEIG.h \
-  liboctave/numeric/floatAEPBAL.h \
   liboctave/numeric/floatCHOL.h \
-  liboctave/numeric/floatGEPBAL.h \
   liboctave/numeric/floatLU.h \
   liboctave/numeric/floatQR.h \
   liboctave/numeric/floatQRP.h \
   liboctave/numeric/floatSVD.h \
+  liboctave/numeric/gepbalance.h \
   liboctave/numeric/hess.h \
   liboctave/numeric/lo-mappers.h \
   liboctave/numeric/lo-specfun.h \
@@ -85,9 +78,7 @@ NUMERIC_C_SRC = \
   liboctave/numeric/randpoisson.c
 
 NUMERIC_SRC = \
-  liboctave/numeric/CmplxAEPBAL.cc \
   liboctave/numeric/CmplxCHOL.cc \
-  liboctave/numeric/CmplxGEPBAL.cc \
   liboctave/numeric/CmplxLU.cc \
   liboctave/numeric/CmplxQR.cc \
   liboctave/numeric/CmplxQRP.cc \
@@ -100,29 +91,25 @@ NUMERIC_SRC = \
   liboctave/numeric/LSODE.cc \
   liboctave/numeric/ODES.cc \
   liboctave/numeric/Quad.cc \
-  liboctave/numeric/dbleAEPBAL.cc \
+  liboctave/numeric/aepbalance.cc \
   liboctave/numeric/dbleCHOL.cc \
-  liboctave/numeric/dbleGEPBAL.cc \
   liboctave/numeric/dbleLU.cc \
   liboctave/numeric/dbleQR.cc \
   liboctave/numeric/dbleQRP.cc \
   liboctave/numeric/dbleSVD.cc \
   liboctave/numeric/eigs-base.cc \
-  liboctave/numeric/fCmplxAEPBAL.cc \
   liboctave/numeric/fCmplxCHOL.cc \
-  liboctave/numeric/fCmplxGEPBAL.cc \
   liboctave/numeric/fCmplxLU.cc \
   liboctave/numeric/fCmplxQR.cc \
   liboctave/numeric/fCmplxQRP.cc \
   liboctave/numeric/fCmplxSVD.cc \
   liboctave/numeric/fEIG.cc \
-  liboctave/numeric/floatAEPBAL.cc \
   liboctave/numeric/floatCHOL.cc \
-  liboctave/numeric/floatGEPBAL.cc \
   liboctave/numeric/floatLU.cc \
   liboctave/numeric/floatQR.cc \
   liboctave/numeric/floatQRP.cc \
   liboctave/numeric/floatSVD.cc \
+  liboctave/numeric/gepbalance.cc \
   liboctave/numeric/hess.cc \
   liboctave/numeric/lo-mappers.cc \
   liboctave/numeric/lo-specfun.cc \

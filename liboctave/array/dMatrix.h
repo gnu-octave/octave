@@ -43,6 +43,12 @@ public:
   typedef ColumnVector column_vector_type;
   typedef RowVector row_vector_type;
 
+  typedef ColumnVector real_column_vector_type;
+  typedef RowVector real_row_vector_type;
+
+  typedef Matrix real_matrix_type;
+  typedef ComplexMatrix complex_matrix_type;
+
   typedef void (*solve_singularity_handler) (double rcon);
 
   Matrix (void) : NDArray () { }

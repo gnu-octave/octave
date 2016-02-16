@@ -58,15 +58,9 @@ class FloatComplexDiagMatrix;
 
 class PermMatrix;
 
-class AEPBALANCE;
-class ComplexAEPBALANCE;
-class FloatAEPBALANCE;
-class FloatComplexAEPBALANCE;
+template <typename T> class aepbalance;
 
-class GEPBALANCE;
-class ComplexGEPBALANCE;
-class FloatGEPBALANCE;
-class FloatComplexGEPBALANCE;
+template <typename T> class gepbalance;
 
 class CHOL;
 class ComplexCHOL;

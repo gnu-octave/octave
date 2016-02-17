@@ -432,16 +432,18 @@ main (int argc, char **argv)
 
   std::string octave_bindir = get_octave_bindir ();
   std::string octave_archlibdir = get_octave_archlibdir ();
+  std::string octave_cli
+    = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
+  std::string octave_gui = octave_archlibdir + dir_sep_char + "octave-gui";
 
 #if defined (HAVE_OCTAVE_GUI)
   // The Octave version number is already embedded in the
   // octave_archlibdir directory name so we don't need to append it to
   // the octave-gui filename.
 
-  std::string file = octave_archlibdir + dir_sep_char + "octave-gui";
+  std::string file = octave_gui;
 #else
-  std::string file
-    = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
+  std::string file = octave_cli;
 #endif
 
   char **new_argv = new char * [argc + 1];
@@ -462,7 +464,7 @@ main (int argc, char **argv)
 
           start_gui = false;
           gui_libs = false;
-          file = octave_bindir + dir_sep_char + "octave-cli";
+          file = octave_cli;
         }
       else if (! strcmp (argv[i], "--no-gui"))
         {
@@ -498,7 +500,7 @@ main (int argc, char **argv)
           start_gui = false;
           gui_libs = false;
 
-          file = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
+          file = octave_cli;
 
           if (warn_display)
             {

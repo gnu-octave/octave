@@ -46,10 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-norm.h"
 
 #if ! defined (HAVE_QRUPDATE)
-#  include "CmplxQR.h"
-#  include "dbleQR.h"
-#  include "fCmplxQR.h"
-#  include "floatQR.h"
+#  include "qr.h"
 #endif
 
 extern "C"

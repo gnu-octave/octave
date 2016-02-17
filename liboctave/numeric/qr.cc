@@ -326,7 +326,6 @@ qr<T>::regular (void) const
 
 // Replacement update methods.
 
-static
 void
 warn_qrupdate_once (void)
 {
@@ -375,7 +374,7 @@ qr<T>::update (const T& u, const T& v)
   init (q*r + u * v.hermitian (), get_type ());
 }
 
-template <typename T>
+template <typename T, typename CV_T>
 static
 T
 insert_col (const T& a, octave_idx_type i, const CV_T& x)
@@ -389,7 +388,7 @@ insert_col (const T& a, octave_idx_type i, const CV_T& x)
   return retval;
 }
 
-template <typename T>
+template <typename T, typename RV_T>
 static
 T
 insert_row (const T& a, octave_idx_type i, const RV_T& x)

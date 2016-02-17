@@ -26,12 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <functional>
-
 #include "quit.h"
 #include "lo-error.h"
 #include "Sparse.h"

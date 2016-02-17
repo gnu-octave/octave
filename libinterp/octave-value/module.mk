@@ -1,6 +1,5 @@
 OV_INTTYPE_INC = \
   libinterp/octave-value/ov-base-int.h \
-  libinterp/octave-value/ov-base-int.cc \
   libinterp/octave-value/ov-int-traits.h \
   libinterp/octave-value/ov-int16.h \
   libinterp/octave-value/ov-int32.h \
@@ -20,11 +19,8 @@ OV_SPARSE_INC = \
 
 OCTAVE_VALUE_INC = \
   libinterp/octave-value/ov-base-diag.h \
-  libinterp/octave-value/ov-base-diag.cc \
   libinterp/octave-value/ov-base-mat.h \
-  libinterp/octave-value/ov-base-mat.cc \
   libinterp/octave-value/ov-base-scalar.h \
-  libinterp/octave-value/ov-base-scalar.cc \
   libinterp/octave-value/ov-base.h \
   libinterp/octave-value/ov-bool-mat.h \
   libinterp/octave-value/ov-bool.h \
@@ -126,6 +122,16 @@ OCTAVE_VALUE_SRC = \
   libinterp/octave-value/ovl.cc \
   $(OV_INTTYPE_SRC) \
   $(OV_SPARSE_SRC)
+
+## These source files contain template definitions that are included
+## in other files.  They are not supposed to be compiled separately,
+## so they should not appear in the OCTAVE_VALUE_SRC list.
+
+libinterp_EXTRA_DIST += \
+  libinterp/octave-value/ov-base-diag.cc \
+  libinterp/octave-value/ov-base-int.cc \
+  libinterp/octave-value/ov-base-mat.cc \
+  libinterp/octave-value/ov-base-scalar.cc
 
 OV_JAVA_DF = \
   libinterp/octave-value/ov.df \

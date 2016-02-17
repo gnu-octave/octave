@@ -27,7 +27,6 @@ OCTAVE_VALUE_INC = \
   libinterp/octave-value/ov-base-scalar.cc \
   libinterp/octave-value/ov-base.h \
   libinterp/octave-value/ov-bool-mat.h \
-  libinterp/octave-value/ov-bool-mat.cc \
   libinterp/octave-value/ov-bool.h \
   libinterp/octave-value/ov-builtin.h \
   libinterp/octave-value/ov-cell.h \

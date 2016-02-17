@@ -200,17 +200,17 @@ libgui_src_libgui_src_la_CPPFLAGS = \
   -I$(srcdir)/libgui/src/m-editor \
   -I$(srcdir)/libgui/src/qtinfo \
   -I$(srcdir)/libgui/graphics \
-  -I$(top_srcdir)/liboctave/cruft/misc \
-  -I$(top_srcdir)/liboctave/array \
-  -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
-  -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
-  -I$(top_srcdir)/liboctave/system \
-  -I$(top_srcdir)/liboctave/util \
-  -I$(top_builddir)/libinterp -I$(top_srcdir)/libinterp \
-  -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
-  -I$(top_builddir)/libinterp/corefcn -I$(top_srcdir)/libinterp/corefcn \
-  -I$(top_srcdir)/libinterp/octave-value \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+  -I$(srcdir)/liboctave/cruft/misc \
+  -I$(srcdir)/liboctave/array \
+  -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
+  -Iliboctave/operators -I$(srcdir)/liboctave/operators \
+  -I$(srcdir)/liboctave/system \
+  -I$(srcdir)/liboctave/util \
+  -Ilibinterp -I$(srcdir)/libinterp \
+  -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
+  -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
+  -I$(srcdir)/libinterp/octave-value \
+  -Ilibgnu -I$(srcdir)/libgnu
 
 libgui_src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 

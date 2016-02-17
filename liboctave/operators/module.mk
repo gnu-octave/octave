@@ -57,7 +57,7 @@ LIBOCTAVE_TEMPLATE_SRC += \
 
 ## Special rules for sources which must be built before rest of compilation.
 
-OP_SRCDIR = $(abs_top_srcdir)/liboctave/operators
+OP_SRCDIR = $(srcdir)/liboctave/operators
 
 define run-mk-ops
   rm -f $@-t $@ && \

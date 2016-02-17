@@ -7,19 +7,19 @@ libinterp_MAINTAINERCLEANFILES =
 ## Search local directories before those specified by the user.
 libinterp_liboctinterp_la_CPPFLAGS = \
   @OCTINTERP_DLL_DEFS@ \
-  -I$(top_builddir)/liboctave -I$(top_srcdir)/liboctave \
-  -I$(top_srcdir)/liboctave/cruft/misc \
-  -I$(top_srcdir)/liboctave/array \
-  -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \
-  -I$(top_builddir)/liboctave/operators -I$(top_srcdir)/liboctave/operators \
-  -I$(top_srcdir)/liboctave/system \
-  -I$(top_srcdir)/liboctave/util \
+  -Iliboctave -I$(srcdir)/liboctave \
+  -I$(srcdir)/liboctave/cruft/misc \
+  -I$(srcdir)/liboctave/array \
+  -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
+  -Iliboctave/operators -I$(srcdir)/liboctave/operators \
+  -I$(srcdir)/liboctave/system \
+  -I$(srcdir)/liboctave/util \
   -I$(srcdir)/libinterp/octave-value \
   -Ilibinterp -I$(srcdir)/libinterp \
   -I$(srcdir)/libinterp/operators \
   -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu \
+  -Ilibgnu -I$(srcdir)/libgnu \
   $(HDF5_CPPFLAGS)
 
 libinterp_liboctinterp_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
@@ -136,7 +136,7 @@ include libinterp/corefcn/module.mk
 include libinterp/dldfcn/module.mk
 
 $(srcdir)/libinterp/dldfcn/module.mk: $(srcdir)/libinterp/dldfcn/config-module.sh $(srcdir)/libinterp/dldfcn/config-module.awk $(srcdir)/libinterp/dldfcn/module-files
-	$(AM_V_GEN)$(SHELL) $(srcdir)/libinterp/dldfcn/config-module.sh $(top_srcdir)
+	$(AM_V_GEN)$(SHELL) $(srcdir)/libinterp/dldfcn/config-module.sh $(srcdir)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
@@ -168,7 +168,7 @@ libinterp_liboctinterp_la_LIBADD = \
   libinterp/octave-value/liboctave-value.la \
   libinterp/parse-tree/libparse-tree.la \
   libinterp/corefcn/libcorefcn.la \
-  $(top_builddir)/liboctave/liboctave.la \
+  liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
@@ -228,7 +228,7 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 ## Rules to build test files
 
-LIBINTERP_TST_FILES_SRC := $(shell $(SHELL) $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))
+LIBINTERP_TST_FILES_SRC := $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))
 
 LIBINTERP_TST_FILES := $(addsuffix -tst,$(LIBINTERP_TST_FILES_SRC))
 
@@ -252,7 +252,7 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 libinterp/build-env.cc: libinterp/build-env.in.cc Makefile
 	$(AM_V_GEN)$(do_subst_config_vals)
 
-libinterp/build-env-features.cc: $(top_builddir)/config.h libinterp/build-env-features.sh
+libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
 	$(simple_move_if_change_rule)
@@ -303,7 +303,7 @@ libinterp/.DOCSTRINGS: $(ALL_DEF_FILES) libinterp/gendoc.pl
 	fi && \
 	$(PERL) $(srcdir)/libinterp/gendoc.pl $(ALL_DEF_FILES) > $@-t && \
 	mv $@-t $@ && \
-	$(SHELL) $(top_srcdir)/build-aux/move-if-change $@ libinterp/DOCSTRINGS && \
+	$(SHELL) $(srcdir)/build-aux/move-if-change $@ libinterp/DOCSTRINGS && \
 	touch $@
 
 OCTAVE_INTERPRETER_TARGETS += \

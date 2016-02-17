@@ -48,8 +48,8 @@ libgui_liboctgui_la_LIBADD = \
   libgui/qterminal/libqterminal.la \
   libgui/src/libgui-src.la \
   libgui/graphics/libgui-graphics.la \
-  $(top_builddir)/libinterp/liboctinterp.la \
-  $(top_builddir)/liboctave/liboctave.la \
+  libinterp/liboctinterp.la \
+  liboctave/liboctave.la \
   $(LIBOCTGUI_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:

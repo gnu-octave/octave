@@ -14,7 +14,7 @@ liboctave_liboctave_la_CPPFLAGS = \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+  -Ilibgnu -I$(srcdir)/libgnu
 
 liboctave_liboctave_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
@@ -67,7 +67,7 @@ liboctave_liboctave_la_SOURCES =
 nodist_EXTRA_liboctave_liboctave_la_SOURCES = liboctave/dummy.cc
 
 liboctave_liboctave_la_LIBADD += \
-  $(top_builddir)/libgnu/libgnu.la \
+  libgnu/libgnu.la \
   $(LIBOCTAVE_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
@@ -94,7 +94,7 @@ LIBOCTAVE_TST_SRC = \
   $(liboctave_util_libutil_la_SOURCES) \
   $(LIBOCTAVE_TEMPLATE_SRC)
 
-LIBOCTAVE_TST_FILES_SRC := $(shell $(SHELL) $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
+LIBOCTAVE_TST_FILES_SRC := $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
 
 LIBOCTAVE_TST_FILES := $(addsuffix -tst,$(LIBOCTAVE_TST_FILES_SRC))
 

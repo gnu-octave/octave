@@ -7,12 +7,12 @@ OPT_HANDLERS = \
   libinterp/corefcn/LSODE-opts.cc \
   libinterp/corefcn/Quad-opts.cc
 
-$(OPT_HANDLERS): libinterp/corefcn/%.cc : $(top_builddir)/liboctave/numeric/%.in
+$(OPT_HANDLERS): libinterp/corefcn/%.cc : liboctave/numeric/%.in
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t && \
+	$(PERL) $(srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t && \
 	mv $@-t $@
 
-$(OPT_HANDLERS): $(top_srcdir)/build-aux/mk-opts.pl
+$(OPT_HANDLERS): $(srcdir)/build-aux/mk-opts.pl
 
 JIT_INC = \
   libinterp/corefcn/jit-util.h \

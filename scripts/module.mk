@@ -117,7 +117,7 @@ scripts/.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) scripts/mkdoc.pl Makefile
 	fi && \
 	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@ && \
-	$(SHELL) $(top_srcdir)/build-aux/move-if-change $@ scripts/DOCSTRINGS && \
+	$(SHELL) $(srcdir)/build-aux/move-if-change $@ scripts/DOCSTRINGS && \
 	touch $@
 
 OCTAVE_INTERPRETER_TARGETS += \

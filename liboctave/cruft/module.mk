@@ -26,7 +26,7 @@ include liboctave/cruft/slatec-fn/module.mk
 
 define gen-cruft-def
   rm -f $@-t $@ && \
-  $(SHELL) liboctave/cruft/mkf77def $(top_srcdir) $(liboctave_cruft_libcruft_la_SOURCES) > $@-t && \
+  $(SHELL) liboctave/cruft/mkf77def $(srcdir) $(liboctave_cruft_libcruft_la_SOURCES) > $@-t && \
   mv $@-t $@
 endef
 

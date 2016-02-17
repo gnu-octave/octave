@@ -99,10 +99,10 @@ LIBOCTAVE_TEMPLATE_SRC += \
 ## Special rules for sources which must be built before rest of compilation.
 $(LIBOCTAVE_OPT_INC) : %.h : %.in
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t && \
+	$(PERL) $(srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t && \
 	mv $@-t $@
 
-$(LIBOCTAVE_OPT_INC) : $(top_srcdir)/build-aux/mk-opts.pl
+$(LIBOCTAVE_OPT_INC) : $(srcdir)/build-aux/mk-opts.pl
 
 noinst_LTLIBRARIES += liboctave/numeric/libnumeric.la
 

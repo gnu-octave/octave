@@ -7,15 +7,15 @@ src_MAINTAINERCLEANFILES =
 ## Search local directories before those specified by the user.
 
 SRC_DIR_CPPFLAGS = \
-  -I$(top_srcdir)/liboctave/array \
-  -I$(top_srcdir)/liboctave/cruft/misc \
-  -I$(top_srcdir)/liboctave/numeric \
-  -I$(top_srcdir)/liboctave/system \
-  -I$(top_srcdir)/liboctave/util \
-  -I$(top_srcdir)/libinterp \
-  -I$(top_builddir)/libinterp/corefcn -I$(top_srcdir)/libinterp/corefcn \
-  -I$(top_srcdir)/src \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+  -I$(srcdir)/liboctave/array \
+  -I$(srcdir)/liboctave/cruft/misc \
+  -I$(srcdir)/liboctave/numeric \
+  -I$(srcdir)/liboctave/system \
+  -I$(srcdir)/liboctave/util \
+  -I$(srcdir)/libinterp \
+  -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
+  -I$(srcdir)/src \
+  -Ilibgnu -I$(srcdir)/libgnu
 
 EXTRA_DIST += \
   src/main.in.cc \
@@ -51,14 +51,14 @@ if AMCOND_BUILD_GUI
 endif
 
 OCTAVE_CORE_LIBS = \
-  $(top_builddir)/libinterp/liboctinterp.la \
-  $(top_builddir)/liboctave/liboctave.la
+  libinterp/liboctinterp.la \
+  liboctave/liboctave.la
 
 nodist_src_octave_SOURCES = src/main.cc
 src_octave_SOURCES = src/display-available.c
 
 src_octave_LDADD = \
-  $(top_builddir)/libgnu/libgnu.la \
+  libgnu/libgnu.la \
   $(X11_LIBS) \
   $(CARBON_LIBS) \
   $(GNULIB_LINK_DEPS)
@@ -101,8 +101,8 @@ src_octave_cli_CXXFLAGS = \
 
 if AMCOND_BUILD_GUI
   src_octave_gui_SOURCES = src/main-gui.cc
-  OCTAVE_GUI_LIBS = $(top_builddir)/libgui/liboctgui.la
-  OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
+  OCTAVE_GUI_LIBS = libgui/liboctgui.la
+  OCTAVE_GUI_CPPFLAGS = -I$(srcdir)/libgui/src
 endif
 
 src_octave_gui_CPPFLAGS = \
@@ -127,7 +127,7 @@ src_mkoctfile_SOURCES =
 
 nodist_src_mkoctfile_SOURCES = src/mkoctfile.cc
 
-src_mkoctfile_LDADD = $(top_builddir)/libgnu/libgnu.la $(LIBS)
+src_mkoctfile_LDADD = libgnu/libgnu.la $(LIBS)
 
 src_mkoctfile_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
@@ -142,8 +142,8 @@ src_octave_config_SOURCES =
 nodist_src_octave_config_SOURCES = src/octave-config.cc
 
 src_octave_config_LDADD = \
-  $(top_builddir)/libinterp/corefcn/libcorefcn.la \
-  $(top_builddir)/libgnu/libgnu.la \
+  libinterp/corefcn/libcorefcn.la \
+  libgnu/libgnu.la \
   $(LIBS)
 
 src_octave_config_CPPFLAGS = \
@@ -166,7 +166,7 @@ if AMCOND_CROSS_TOOLS
 OCTAVE_CROSS_TOOLS += src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT)
 
 src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT): src/$(host_triplet)-mkoctfile.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(top_srcdir)/src src/$(host_triplet)-mkoctfile.cc
+	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-mkoctfile.cc
 
 src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_cross_config_vals)
@@ -176,7 +176,7 @@ src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc Makefile | src/$(octave_di
 OCTAVE_CROSS_TOOLS += src/$(host_triplet)-octave-config$(BUILD_EXEEXT)
 
 src/$(host_triplet)-octave-config$(BUILD_EXEEXT): src/$(host_triplet)-octave-config.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(top_srcdir)/src src/$(host_triplet)-octave-config.cc
+	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-octave-config.cc
 
 src/$(host_triplet)-octave-config.cc: src/octave-config.in.cc Makefile | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(do_subst_default_vals)

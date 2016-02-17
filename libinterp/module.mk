@@ -136,7 +136,7 @@ include libinterp/corefcn/module.mk
 include libinterp/dldfcn/module.mk
 
 $(srcdir)/libinterp/dldfcn/module.mk: $(srcdir)/libinterp/dldfcn/config-module.sh $(srcdir)/libinterp/dldfcn/config-module.awk $(srcdir)/libinterp/dldfcn/module-files
-	$(srcdir)/libinterp/dldfcn/config-module.sh $(top_srcdir)
+	$(SHELL) $(srcdir)/libinterp/dldfcn/config-module.sh $(top_srcdir)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
@@ -190,7 +190,7 @@ libinterp_liboctinterp_la_LDFLAGS = \
 ULT_DIST_SRC := \
   $(filter-out $(GENERATED_PARSER_FILES), $(DIST_SRC)) $(ULT_PARSER_SRC)
 
-SRC_DEF_FILES := $(shell $(srcdir)/libinterp/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
+SRC_DEF_FILES := $(shell $(SHELL) $(srcdir)/libinterp/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
 DLDFCN_DEF_FILES = $(DLDFCN_SRC:.cc=.df)
 
@@ -222,13 +222,13 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 	  $(libinterp_liboctinterp_la_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \
 	  $(libinterp_liboctinterp_la_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< > $@-t1 && \
-	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
 	rm -f $@-t1 && \
 	mv $@-t $@
 
 ## Rules to build test files
 
-LIBINTERP_TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))
+LIBINTERP_TST_FILES_SRC := $(shell $(SHELL) $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))
 
 LIBINTERP_TST_FILES := $(addsuffix -tst,$(LIBINTERP_TST_FILES_SRC))
 
@@ -254,7 +254,7 @@ libinterp/build-env.cc: libinterp/build-env.in.cc Makefile
 
 libinterp/build-env-features.cc: $(top_builddir)/config.h libinterp/build-env-features.sh
 	$(AM_V_GEN)rm -f $@-t && \
-	$(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
 	$(simple_move_if_change_rule)
 
 libinterp/version.h: libinterp/version.in.h Makefile
@@ -272,12 +272,12 @@ libinterp/version.h: libinterp/version.in.h Makefile
 
 libinterp/builtins.cc: $(DEF_FILES) libinterp/mkbuiltins
 	$(AM_V_GEN)rm -f $@-t && \
-	$(srcdir)/libinterp/mkbuiltins --source $(DEF_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkbuiltins --source $(DEF_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
 libinterp/builtin-defun-decls.h: $(SRC_DEF_FILES) libinterp/mkbuiltins
 	$(AM_V_GEN)rm -f $@-t && \
-	$(srcdir)/libinterp/mkbuiltins --header $(SRC_DEF_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkbuiltins --header $(SRC_DEF_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
@@ -285,7 +285,7 @@ DLDFCN_PKG_ADD_FILE = libinterp/dldfcn/PKG_ADD
 
 libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) libinterp/mk-pkg-add
 	$(AM_V_GEN)rm -f $@-t && \
-	$(srcdir)/libinterp/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 endif
 
@@ -303,7 +303,7 @@ libinterp/.DOCSTRINGS: $(ALL_DEF_FILES) libinterp/gendoc.pl
 	fi && \
 	$(PERL) $(srcdir)/libinterp/gendoc.pl $(ALL_DEF_FILES) > $@-t && \
 	mv $@-t $@ && \
-	$(top_srcdir)/build-aux/move-if-change $@ libinterp/DOCSTRINGS && \
+	$(SHELL) $(top_srcdir)/build-aux/move-if-change $@ libinterp/DOCSTRINGS && \
 	touch $@
 
 OCTAVE_INTERPRETER_TARGETS += \

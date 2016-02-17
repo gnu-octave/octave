@@ -189,7 +189,7 @@ run-octave: run-octave.in Makefile
 	chmod a+rx "$@"
 
 octave-config.h: config.h build-aux/mk-octave-config-h.sh
-	$(AM_V_GEN)$(top_srcdir)/build-aux/mk-octave-config-h.sh $< > $@-t && \
+	$(AM_V_GEN)$(SHELL) $(top_srcdir)/build-aux/mk-octave-config-h.sh $< > $@-t && \
 	mv $@-t $@
 
 bits/stl_algo.h: build-aux/stl_algo.h-fixed

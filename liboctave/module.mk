@@ -94,7 +94,7 @@ LIBOCTAVE_TST_SRC = \
   $(liboctave_util_libutil_la_SOURCES) \
   $(LIBOCTAVE_TEMPLATE_SRC)
 
-LIBOCTAVE_TST_FILES_SRC := $(shell $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
+LIBOCTAVE_TST_FILES_SRC := $(shell $(SHELL) $(top_srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
 
 LIBOCTAVE_TST_FILES := $(addsuffix -tst,$(LIBOCTAVE_TST_FILES_SRC))
 

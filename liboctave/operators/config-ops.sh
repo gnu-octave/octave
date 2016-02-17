@@ -3,6 +3,7 @@
 set -e
 
 AWK=${AWK:-awk}
+SHELL=${SHELL:-/bin/sh}
 
 if [ $# -lt 3 ]; then
   src_type="all"
@@ -34,7 +35,7 @@ case "$obj_type" in
       inc | all)
         VX_INC=$($AWK -f $mk_ops -v prefix=vx -v list_h_files=1 $liboctave_dir/vx-ops)
         echo "VX_OP_INC = $VX_INC" > $liboctave_dir/vx-op-inc.mk-t
-        $move_if_change $liboctave_dir/vx-op-inc.mk-t $liboctave_dir/vx-op-inc.mk
+        $SHELL $move_if_change $liboctave_dir/vx-op-inc.mk-t $liboctave_dir/vx-op-inc.mk
       ;;
     esac
   ;;
@@ -46,7 +47,7 @@ case "$obj_type" in
       src | all)
         VX_SRC=$($AWK -f $mk_ops -v prefix=vx -v list_cc_files=1 $liboctave_dir/vx-ops)
         echo "VX_OP_SRC = $VX_SRC" > $liboctave_dir/vx-op-src.mk-t
-        $move_if_change $liboctave_dir/vx-op-src.mk-t $liboctave_dir/vx-op-src.mk
+        $SHELL $move_if_change $liboctave_dir/vx-op-src.mk-t $liboctave_dir/vx-op-src.mk
       ;;
     esac
   ;;
@@ -58,7 +59,7 @@ case "$obj_type" in
       inc | all)
         MX_INC=$($AWK -f $mk_ops -v prefix=mx -v list_h_files=1 $liboctave_dir/mx-ops)
         echo "MX_OP_INC = $MX_INC" > $liboctave_dir/mx-op-inc.mk-t
-        $move_if_change $liboctave_dir/mx-op-inc.mk-t $liboctave_dir/mx-op-inc.mk
+        $SHELL $move_if_change $liboctave_dir/mx-op-inc.mk-t $liboctave_dir/mx-op-inc.mk
       ;;
     esac
   ;;
@@ -70,7 +71,7 @@ case "$obj_type" in
       src | all)
         MX_SRC=$($AWK -f $mk_ops -v prefix=mx -v list_cc_files=1 $liboctave_dir/mx-ops)
         echo "MX_OP_SRC = $MX_SRC" > $liboctave_dir/mx-op-src.mk-t
-        $move_if_change $liboctave_dir/mx-op-src.mk-t $liboctave_dir/mx-op-src.mk
+        $SHELL $move_if_change $liboctave_dir/mx-op-src.mk-t $liboctave_dir/mx-op-src.mk
       ;;
     esac
   ;;
@@ -82,7 +83,7 @@ case "$obj_type" in
       inc | all)
         SMX_INC=$($AWK -f $mk_ops -v prefix=smx -v list_h_files=1 $liboctave_dir/smx-ops)
         echo "SMX_OP_INC = $SMX_INC" > $liboctave_dir/smx-op-inc.mk-t
-        $move_if_change $liboctave_dir/smx-op-inc.mk-t $liboctave_dir/smx-op-inc.mk
+        $SHELL $move_if_change $liboctave_dir/smx-op-inc.mk-t $liboctave_dir/smx-op-inc.mk
       ;;
     esac
   ;;
@@ -94,7 +95,7 @@ case "$obj_type" in
       src | all)
         SMX_SRC=$($AWK -f $mk_ops -v prefix=smx -v list_cc_files=1 $liboctave_dir/smx-ops)
         echo "SMX_OP_SRC = $SMX_SRC" > $liboctave_dir/smx-op-src.mk-t
-        $move_if_change $liboctave_dir/smx-op-src.mk-t $liboctave_dir/smx-op-src.mk
+        $SHELL $move_if_change $liboctave_dir/smx-op-src.mk-t $liboctave_dir/smx-op-src.mk
       ;;
     esac
   ;;

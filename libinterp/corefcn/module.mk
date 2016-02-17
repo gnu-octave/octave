@@ -279,7 +279,7 @@ $(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_
 	  $(libinterp_corefcn_libcorefcn_la_CPPFLAGS) $(CPPFLAGS) \
 	  $(libinterp_corefcn_libcorefcn_la_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< > $@-t1 && \
-	$(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
 	rm -f $@-t1 && \
 	mv $@-t $@
 
@@ -304,9 +304,9 @@ libinterp/corefcn/graphics-props.cc: libinterp/corefcn/graphics.in.h libinterp/g
 libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc Makefile
 	$(AM_V_GEN)rm -f $@-t && \
 	if test -n "$(PERL)"; then \
-	  $(srcdir)/libinterp/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
+	  $(SHELL) $(srcdir)/libinterp/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
 	elif test -n "$(PYTHON)"; then \
-	  $(srcdir)/libinterp/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
+	  $(SHELL) $(srcdir)/libinterp/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
 	fi && \

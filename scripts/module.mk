@@ -90,7 +90,7 @@ endif
 define PKG_ADD_FILE_TEMPLATE
 $(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) scripts/mk-pkg-add
 	$$(AM_V_GEN)rm -f $$@-t $$@ && \
-	$$(srcdir)/scripts/mk-pkg-add $(srcdir) $$($(2)_FCN_FILES) -- $$($(2)_GEN_FCN_FILES) > $$@-t && \
+	$$(SHELL) $$(srcdir)/scripts/mk-pkg-add $(srcdir) $$($(2)_FCN_FILES) -- $$($(2)_GEN_FCN_FILES) > $$@-t && \
 	mv $$@-t $$@
 endef
 
@@ -117,7 +117,7 @@ scripts/.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) scripts/mkdoc.pl Makefile
 	fi && \
 	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t && \
 	mv $@-t $@ && \
-	$(top_srcdir)/build-aux/move-if-change $@ scripts/DOCSTRINGS && \
+	$(SHELL) $(top_srcdir)/build-aux/move-if-change $@ scripts/DOCSTRINGS && \
 	touch $@
 
 OCTAVE_INTERPRETER_TARGETS += \

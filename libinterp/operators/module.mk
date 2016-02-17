@@ -138,5 +138,5 @@ LIBINTERP_OPERATORS_INC = \
 ## Special rules for sources which must be built before rest of compilation.
 libinterp/operators/ops.cc: $(LIBINTERP_OPERATORS_SRC) libinterp/mkops
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(srcdir)/libinterp/mkops $(LIBINTERP_OPERATORS_SRC) > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkops $(LIBINTERP_OPERATORS_SRC) > $@-t && \
 	mv $@-t $@

@@ -67,20 +67,20 @@ endif
 
 test/sparse.tst: test/build-sparse-tests.sh | test/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(srcdir)/test/build-sparse-tests.sh > $@-t && \
+	$(SHELL) $(srcdir)/test/build-sparse-tests.sh > $@-t && \
 	mv $@-t $@
 
 GENERATED_BC_OVERLOADS_DIRS := \
-  $(shell $(srcdir)/test/build-bc-overload-tests.sh test --list-dirs)
+  $(shell $(SHELL) $(srcdir)/test/build-bc-overload-tests.sh test --list-dirs)
 
 GENERATED_BC_OVERLOADS_FILES := \
-  $(shell $(srcdir)/test/build-bc-overload-tests.sh test --list-files)
+  $(shell $(SHELL) $(srcdir)/test/build-bc-overload-tests.sh test --list-files)
 
 $(GENERATED_BC_OVERLOADS_FILES): test/.bc-overload-tests-stamp
 
 test/.bc-overload-tests-stamp: test/build-bc-overload-tests.sh test/bc-overloads-expected | test/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
-	$(srcdir)/test/build-bc-overload-tests.sh test $(srcdir)/test/bc-overloads-expected && \
+	$(SHELL) $(srcdir)/test/build-bc-overload-tests.sh test $(srcdir)/test/bc-overloads-expected && \
 	touch $@
 
 GENERATED_TEST_FILES = \

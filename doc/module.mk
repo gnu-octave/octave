@@ -552,7 +552,7 @@ doc/refcard/refcard-letter.ps: doc/refcard/refcard-letter.dvi
 DIRSTAMP_FILES += doc/refcard/$(octave_dirstamp)
 
 $(srcdir)/doc/interpreter/images.mk: $(srcdir)/doc/interpreter/config-images.sh $(srcdir)/doc/interpreter/images.awk $(srcdir)/doc/interpreter/images
-	$(srcdir)/doc/interpreter/config-images.sh $(top_srcdir)
+	$(SHELL) $(srcdir)/doc/interpreter/config-images.sh $(top_srcdir)
 
 $(refcard_DVI) : %.dvi : %.tex | doc/refcard/$(octave_dirstamp)
 	-$(AM_V_TEX)cd $(@D) && \

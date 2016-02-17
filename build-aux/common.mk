@@ -477,7 +477,7 @@ NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 
 define simple_move_if_change_rule
   if [ -s $@-t ]; then \
-    $(top_srcdir)/build-aux/move-if-change $@-t $@; \
+    $(SHELL) $(top_srcdir)/build-aux/move-if-change $@-t $@; \
   else \
     echo "$@-t is empty!" 1>&2; \
     rm -f $@-t; \

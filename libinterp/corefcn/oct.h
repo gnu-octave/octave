@@ -27,13 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Things that are often included to create .oct files.
 
-// config.h needs to be first because it includes #defines that can
-// affect other header files.
-
-#include <config.h>
-
 #include "Matrix.h"
-
 #include "oct-locbuf.h"
 #include "defun-dld.h"
 #include "error.h"

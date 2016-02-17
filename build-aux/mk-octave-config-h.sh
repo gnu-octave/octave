@@ -113,12 +113,16 @@ since all of Octave's header files already include it.
 #endif
 
 #if defined (_MSC_VER)
-#  define OCTAVE_API __declspec(dllimport)
-#  define OCTINTERP_API __declspec(dllimport)
+#  define OCTAVE_EXPORT __declspec(dllexport)
+#  define OCTAVE_IMPORT __declspec(dllimport)
 #else
-#  define OCTAVE_API
-#  define OCTINTERP_API
+   /* All other compilers, at least for now. */
+#  define OCTAVE_EXPORT
+#  define OCTAVE_IMPORT
 #endif
+
+#define OCTAVE_API OCTAVE_IMPORT
+#define OCTINTERP_API OCTAVE_IMPORT
 
 #include <stdint.h>
 EOF

@@ -12,6 +12,9 @@ export FIND
 SED = @SED@
 export SED
 
+SHELL = @SHELL@
+export SHELL
+
 PERL = @PERL@
 export PERL
 

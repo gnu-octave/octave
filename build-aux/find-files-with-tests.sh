@@ -14,7 +14,9 @@ do
   else
     file="$srcdir/$arg"
   fi
-  if [ "`$GREP -l '^%!' $file`" ]; then
-    echo "$file" | $SED "s,\\$srcdir/,,";
+  if [ -f "$file" ]; then
+    if [ "`$GREP -l '^%!' $file`" ]; then
+      echo "$file" | $SED "s,\\$srcdir/,,"
+    fi
   fi
 done

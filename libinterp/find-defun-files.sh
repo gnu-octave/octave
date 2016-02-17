@@ -20,7 +20,9 @@ do
   else
     file="$srcdir/$arg"
   fi
-  if [ "`$EGREP -l "$DEFUN_PATTERN" $file`" ]; then
-    echo "$file" | $SED "s,\\$srcdir/,," | $SED 's/\.cc$/.df/; s/\.ll$/.df/; s/\.in.yy$/.df/';
+  if [ -f "$file" ]; then
+    if [ "`$EGREP -l "$DEFUN_PATTERN" $file`" ]; then
+      echo "$file" | $SED "s,\\$srcdir/,," | $SED 's/\.cc$/.df/; s/\.ll$/.df/; s/\.in.yy$/.df/'
+    fi
   fi
 done

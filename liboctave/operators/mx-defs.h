@@ -76,10 +76,7 @@ template <typename T> class lu;
 
 template <typename T> class qr;
 
-class QRP;
-class ComplexQRP;
-class FloatQRP;
-class FloatComplexQRP;
+template <typename T> class qrp;
 
 // Other data types we use but that don't always need to have full
 // declarations.

@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
 
@@ -20,52 +21,48 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_CmplxQRP_h)
-#define octave_CmplxQRP_h 1
+#if ! defined (octave_qrp_h)
+#define octave_qrp_h 1
 
 #include "octave-config.h"
 
-#include <iosfwd>
-
 #include "PermMatrix.h"
-#include "CColVector.h"
-#include "CMatrix.h"
-#include "CRowVector.h"
 #include "qr.h"
 
+template <typename T>
 class
-OCTAVE_API
-ComplexQRP : public qr<ComplexMatrix>
+qrp : public qr<T>
 {
 public:
 
-  typedef qr<ComplexMatrix>::type type;
+  typedef typename T::real_row_vector_type RV_T;
 
-  ComplexQRP (void) : qr<ComplexMatrix> (), p () { }
+  typedef typename qr<T>::type type;
 
-  ComplexQRP (const ComplexMatrix&, type = qr<ComplexMatrix>::std);
+  qrp (void) : qr<T> (), p () { }
 
-  ComplexQRP (const ComplexQRP& a) : qr<ComplexMatrix> (a), p (a.p) { }
+  qrp (const T&, type = qr<T>::std);
 
-  ComplexQRP& operator = (const ComplexQRP& a)
+  qrp (const qrp& a) : qr<T> (a), p (a.p) { }
+
+  qrp& operator = (const qrp& a)
   {
     if (this != &a)
       {
-        qr<ComplexMatrix>::operator = (a);
+        qr<T>::operator = (a);
         p = a.p;
       }
+
     return *this;
   }
 
-  ~ComplexQRP (void) { }
+  ~qrp (void) { }
 
-  void init (const ComplexMatrix&, type = qr<ComplexMatrix>::std);
+  void init (const T&, type = qr<T>::std);
 
   PermMatrix P (void) const { return p; }
 
-  RowVector Pvec (void) const;
-
-  friend std::ostream&  operator << (std::ostream&, const ComplexQRP&);
+  RV_T Pvec (void) const;
 
 private:
 

@@ -26,11 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include "CmplxQRP.h"
-#include "dbleQRP.h"
-#include "fCmplxQRP.h"
-#include "floatQRP.h"
 #include "qr.h"
+#include "qrp.h"
 #include "sparse-qr.h"
 
 
@@ -304,7 +301,7 @@ x = @var{R} \\ @var{C}\n\
 
                 default:
                   {
-                    FloatQRP fact (m, type);
+                    qrp<FloatMatrix> fact (m, type);
 
                     if (type == qr<FloatMatrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
@@ -340,7 +337,7 @@ x = @var{R} \\ @var{C}\n\
 
                 default:
                   {
-                    FloatComplexQRP fact (m, type);
+                    qrp<FloatComplexMatrix> fact (m, type);
                     if (type == qr<FloatComplexMatrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
@@ -377,7 +374,7 @@ x = @var{R} \\ @var{C}\n\
 
                 default:
                   {
-                    QRP fact (m, type);
+                    qrp<Matrix> fact (m, type);
                     if (type == qr<Matrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
@@ -412,7 +409,7 @@ x = @var{R} \\ @var{C}\n\
 
                 default:
                   {
-                    ComplexQRP fact (m, type);
+                    qrp<ComplexMatrix> fact (m, type);
                     if (type == qr<ComplexMatrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else

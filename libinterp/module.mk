@@ -136,7 +136,7 @@ include libinterp/corefcn/module.mk
 include libinterp/dldfcn/module.mk
 
 $(srcdir)/libinterp/dldfcn/module.mk: $(srcdir)/libinterp/dldfcn/config-module.sh $(srcdir)/libinterp/dldfcn/config-module.awk $(srcdir)/libinterp/dldfcn/module-files
-	$(SHELL) $(srcdir)/libinterp/dldfcn/config-module.sh $(top_srcdir)
+	$(AM_V_GEN)$(SHELL) $(srcdir)/libinterp/dldfcn/config-module.sh $(top_srcdir)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)

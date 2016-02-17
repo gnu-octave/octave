@@ -179,7 +179,10 @@ public:
   template <typename U>
   void accum (U val)
   {
-    max = std::max (max, std::abs (val));
+    if (xisnan (val))
+      max = octave_NaN;
+    else
+      max = std::max (max, std::abs (val));
   }
   operator R () { return max; }
 };
@@ -194,7 +197,10 @@ public:
   template <typename U>
   void accum (U val)
   {
-    min = std::min (min, std::abs (val));
+    if (xisnan (val))
+      min = octave_NaN;
+    else
+      min = std::min (min, std::abs (val));
   }
   operator R () { return min; }
 };

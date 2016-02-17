@@ -27,27 +27,31 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
-#include "floatQR.h"
 #include "PermMatrix.h"
 #include "fColVector.h"
+#include "fMatrix.h"
+#include "fRowVector.h"
+#include "qr.h"
 
 class
 OCTAVE_API
-FloatQRP : public FloatQR
+FloatQRP : public qr<FloatMatrix>
 {
 public:
 
-  FloatQRP (void) : FloatQR (), p () { }
+  typedef qr<FloatMatrix>::type type;
 
-  FloatQRP (const FloatMatrix&, qr_type_t = qr_type_std);
+  FloatQRP (void) : qr<FloatMatrix> (), p () { }
 
-  FloatQRP (const FloatQRP& a) : FloatQR (a), p (a.p) { }
+  FloatQRP (const FloatMatrix&, type = qr<FloatMatrix>::std);
+
+  FloatQRP (const FloatQRP& a) : qr<FloatMatrix> (a), p (a.p) { }
 
   FloatQRP& operator = (const FloatQRP& a)
   {
     if (this != &a)
       {
-        FloatQR::operator = (a);
+        qr<FloatMatrix>::operator = (a);
         p = a.p;
       }
 
@@ -56,7 +60,7 @@ public:
 
   ~FloatQRP (void) { }
 
-  void init (const FloatMatrix&, qr_type_t = qr_type_std);
+  void init (const FloatMatrix&, type = qr<FloatMatrix>::std);
 
   PermMatrix P (void) const { return p; }
 

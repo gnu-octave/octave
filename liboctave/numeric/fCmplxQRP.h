@@ -27,27 +27,31 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
-#include "fCmplxQR.h"
 #include "PermMatrix.h"
-#include "fColVector.h"
+#include "fCColVector.h"
+#include "fCMatrix.h"
+#include "fCRowVector.h"
+#include "qr.h"
 
 class
 OCTAVE_API
-FloatComplexQRP : public FloatComplexQR
+FloatComplexQRP : public qr<FloatComplexMatrix>
 {
 public:
 
-  FloatComplexQRP (void) : FloatComplexQR (), p () { }
+  typedef qr<FloatComplexMatrix>::type type;
 
-  FloatComplexQRP (const FloatComplexMatrix&, qr_type_t = qr_type_std);
+  FloatComplexQRP (void) : qr<FloatComplexMatrix> (), p () { }
 
-  FloatComplexQRP (const FloatComplexQRP& a) : FloatComplexQR (a), p (a.p) { }
+  FloatComplexQRP (const FloatComplexMatrix&, type = qr<FloatComplexMatrix>::std);
+
+  FloatComplexQRP (const FloatComplexQRP& a) : qr<FloatComplexMatrix> (a), p (a.p) { }
 
   FloatComplexQRP& operator = (const FloatComplexQRP& a)
   {
     if (this != &a)
       {
-        FloatComplexQR::operator = (a);
+        qr<FloatComplexMatrix>::operator = (a);
         p = a.p;
       }
     return *this;
@@ -55,7 +59,7 @@ public:
 
   ~FloatComplexQRP (void) { }
 
-  void init (const FloatComplexMatrix&, qr_type_t = qr_type_std);
+  void init (const FloatComplexMatrix&, type = qr<FloatComplexMatrix>::std);
 
   PermMatrix P (void) const { return p; }
 

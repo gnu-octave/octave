@@ -27,27 +27,31 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
-#include "dbleQR.h"
 #include "PermMatrix.h"
 #include "dColVector.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
+#include "qr.h"
 
 class
 OCTAVE_API
-QRP : public QR
+QRP : public qr<Matrix>
 {
 public:
 
-  QRP (void) : QR (), p () { }
+  typedef qr<Matrix>::type type;
 
-  QRP (const Matrix&, qr_type_t = qr_type_std);
+  QRP (void) : qr<Matrix> (), p () { }
 
-  QRP (const QRP& a) : QR (a), p (a.p) { }
+  QRP (const Matrix&, type = qr<Matrix>::std);
+
+  QRP (const QRP& a) : qr<Matrix> (a), p (a.p) { }
 
   QRP& operator = (const QRP& a)
   {
     if (this != &a)
       {
-        QR::operator = (a);
+        qr<Matrix>::operator = (a);
         p = a.p;
       }
 
@@ -56,7 +60,7 @@ public:
 
   ~QRP (void) { }
 
-  void init (const Matrix&, qr_type_t = qr_type_std);
+  void init (const Matrix&, type = qr<Matrix>::std);
 
   PermMatrix P (void) const { return p; }
 

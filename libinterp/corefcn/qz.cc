@@ -37,11 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <iomanip>
 
-#include "CmplxQRP.h"
-#include "CmplxQR.h"
-#include "dbleQR.h"
 #include "f77-fcn.h"
 #include "lo-math.h"
+#include "qr.h"
 #include "quit.h"
 
 #include "defun.h"
@@ -616,7 +614,7 @@ compatibility with @sc{matlab}.\n\
       // Complex case.
 
       // The QR decomposition of cbb.
-      ComplexQR cbqr (cbb);
+      qr<ComplexMatrix> cbqr (cbb);
       // The R matrix of QR decomposition for cbb.
       cbb = cbqr.R ();
       // (Q*)caa for following work.
@@ -681,7 +679,7 @@ compatibility with @sc{matlab}.\n\
 #endif
 
       // Compute the QR factorization of bb.
-      QR bqr (bb);
+      qr<Matrix> bqr (bb);
 
 #ifdef DEBUG
       std::cout << "qz: qr (bb) done; now peforming qz decomposition"

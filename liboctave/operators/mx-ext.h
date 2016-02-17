@@ -63,10 +63,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a QR decomposition.
 
-#include "dbleQR.h"
-#include "CmplxQR.h"
-
-#include "dbleQRP.h"
-#include "CmplxQRP.h"
+#include "qr.h"
 
 #endif

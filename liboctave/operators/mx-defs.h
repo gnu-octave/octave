@@ -74,10 +74,7 @@ template <typename T> class svd;
 
 template <typename T> class lu;
 
-class QR;
-class ComplexQR;
-class FloatQR;
-class FloatComplexQR;
+template <typename T> class qr;
 
 class QRP;
 class ComplexQRP;

@@ -41,19 +41,18 @@ extern "C"
                              const octave_idx_type&, float*, octave_idx_type&);
 }
 
-// It would be best to share some of this code with FloatComplexQR class...
+// It would be best to share some of this code with qr<FloatComplexMatrix> class...
 
-FloatComplexQRP::FloatComplexQRP (const FloatComplexMatrix& a,
-                                  qr_type_t qr_type)
-  : FloatComplexQR (), p ()
+FloatComplexQRP::FloatComplexQRP (const FloatComplexMatrix& a, type qr_type)
+  : qr<FloatComplexMatrix> (), p ()
 {
   init (a, qr_type);
 }
 
 void
-FloatComplexQRP::init (const FloatComplexMatrix& a, qr_type_t qr_type)
+FloatComplexQRP::init (const FloatComplexMatrix& a, type qr_type)
 {
-  assert (qr_type != qr_type_raw);
+  assert (qr_type != qr<FloatComplexMatrix>::raw);
 
   octave_idx_type m = a.rows ();
   octave_idx_type n = a.cols ();
@@ -64,7 +63,7 @@ FloatComplexQRP::init (const FloatComplexMatrix& a, qr_type_t qr_type)
   octave_idx_type info = 0;
 
   FloatComplexMatrix afact = a;
-  if (m > n && qr_type == qr_type_std)
+  if (m > n && qr_type == qr<FloatComplexMatrix>::std)
     afact.resize (m, m);
 
   MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);

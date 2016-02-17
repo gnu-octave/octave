@@ -41,18 +41,18 @@ extern "C"
                              const octave_idx_type&, octave_idx_type&);
 }
 
-// It would be best to share some of this code with QR class...
+// It would be best to share some of this code with qr<Matrix> class...
 
-QRP::QRP (const Matrix& a, qr_type_t qr_type)
-  : QR (), p ()
+QRP::QRP (const Matrix& a, type qr_type)
+  : qr<Matrix> (), p ()
 {
   init (a, qr_type);
 }
 
 void
-QRP::init (const Matrix& a, qr_type_t qr_type)
+QRP::init (const Matrix& a, type qr_type)
 {
-  assert (qr_type != qr_type_raw);
+  assert (qr_type != qr<Matrix>::raw);
 
   octave_idx_type m = a.rows ();
   octave_idx_type n = a.cols ();
@@ -63,7 +63,7 @@ QRP::init (const Matrix& a, qr_type_t qr_type)
   octave_idx_type info = 0;
 
   Matrix afact = a;
-  if (m > n && qr_type == qr_type_std)
+  if (m > n && qr_type == qr<Matrix>::std)
     afact.resize (m, m);
 
   MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);

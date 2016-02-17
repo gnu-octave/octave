@@ -42,18 +42,18 @@ extern "C"
                              octave_idx_type&);
 }
 
-// It would be best to share some of this code with ComplexQR class...
+// It would be best to share some of this code with qr<ComplexMatrix> class...
 
-ComplexQRP::ComplexQRP (const ComplexMatrix& a, qr_type_t qr_type)
-  : ComplexQR (), p ()
+ComplexQRP::ComplexQRP (const ComplexMatrix& a, type qr_type)
+  : qr<ComplexMatrix> (), p ()
 {
   init (a, qr_type);
 }
 
 void
-ComplexQRP::init (const ComplexMatrix& a, qr_type_t qr_type)
+ComplexQRP::init (const ComplexMatrix& a, type qr_type)
 {
-  assert (qr_type != qr_type_raw);
+  assert (qr_type != qr<ComplexMatrix>::raw);
 
   octave_idx_type m = a.rows ();
   octave_idx_type n = a.cols ();
@@ -64,7 +64,7 @@ ComplexQRP::init (const ComplexMatrix& a, qr_type_t qr_type)
   octave_idx_type info = 0;
 
   ComplexMatrix afact = a;
-  if (m > n && qr_type == qr_type_std)
+  if (m > n && qr_type == qr<ComplexMatrix>::std)
     afact.resize (m, m);
 
   MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);

@@ -27,27 +27,31 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
-#include "CmplxQR.h"
 #include "PermMatrix.h"
-#include "dColVector.h"
+#include "CColVector.h"
+#include "CMatrix.h"
+#include "CRowVector.h"
+#include "qr.h"
 
 class
 OCTAVE_API
-ComplexQRP : public ComplexQR
+ComplexQRP : public qr<ComplexMatrix>
 {
 public:
 
-  ComplexQRP (void) : ComplexQR (), p () { }
+  typedef qr<ComplexMatrix>::type type;
 
-  ComplexQRP (const ComplexMatrix&, qr_type_t = qr_type_std);
+  ComplexQRP (void) : qr<ComplexMatrix> (), p () { }
 
-  ComplexQRP (const ComplexQRP& a) : ComplexQR (a), p (a.p) { }
+  ComplexQRP (const ComplexMatrix&, type = qr<ComplexMatrix>::std);
+
+  ComplexQRP (const ComplexQRP& a) : qr<ComplexMatrix> (a), p (a.p) { }
 
   ComplexQRP& operator = (const ComplexQRP& a)
   {
     if (this != &a)
       {
-        ComplexQR::operator = (a);
+        qr<ComplexMatrix>::operator = (a);
         p = a.p;
       }
     return *this;
@@ -55,7 +59,7 @@ public:
 
   ~ComplexQRP (void) { }
 
-  void init (const ComplexMatrix&, qr_type_t = qr_type_std);
+  void init (const ComplexMatrix&, type = qr<ComplexMatrix>::std);
 
   PermMatrix P (void) const { return p; }
 

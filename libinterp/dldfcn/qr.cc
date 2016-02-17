@@ -26,14 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
-#include "CmplxQR.h"
 #include "CmplxQRP.h"
-#include "dbleQR.h"
 #include "dbleQRP.h"
-#include "fCmplxQR.h"
 #include "fCmplxQRP.h"
-#include "floatQR.h"
 #include "floatQRP.h"
+#include "qr.h"
 #include "sparse-qr.h"
 
 
@@ -45,13 +42,22 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename MT>
 static octave_value
-get_qr_r (const base_qr<MT>& fact)
+get_qr_r (const qr<MT>& fact)
 {
   MT R = fact.R ();
   if (R.is_square () && fact.regular ())
     return octave_value (R, MatrixType (MatrixType::Upper));
   else
     return R;
+}
+
+template <typename T>
+static typename qr<T>::type
+qr_type (int nargin, int nargout)
+{
+  return ((nargout == 0 || nargout == 1)
+          ? qr<T>::raw
+          : (nargin == 2) ? qr<T>::economy : qr<T>::std);
 }
 
 // [Q, R] = qr (X):      form Q unitary and R upper triangular such
@@ -270,14 +276,13 @@ x = @var{R} \\ @var{C}\n\
     }
   else
     {
-      QR::type type = (nargout == 0 || nargout == 1) ? QR::raw
-                                                     : nargin == 2
-                                                       ? QR::economy : QR::std;
-
       if (arg.is_single_type ())
         {
           if (arg.is_real_type ())
             {
+              qr<FloatMatrix>::type type
+                = qr_type<FloatMatrix> (nargin, nargout);
+
               FloatMatrix m = arg.float_matrix_value ();
 
               switch (nargout)
@@ -285,14 +290,14 @@ x = @var{R} \\ @var{C}\n\
                 case 0:
                 case 1:
                   {
-                    FloatQR fact (m, type);
+                    qr<FloatMatrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    FloatQR fact (m, type);
+                    qr<FloatMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
@@ -301,7 +306,7 @@ x = @var{R} \\ @var{C}\n\
                   {
                     FloatQRP fact (m, type);
 
-                    if (type == QR::economy)
+                    if (type == qr<FloatMatrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -311,6 +316,9 @@ x = @var{R} \\ @var{C}\n\
             }
           else if (arg.is_complex_type ())
             {
+              qr<FloatComplexMatrix>::type type
+                = qr_type<FloatComplexMatrix> (nargin, nargout);
+
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
               switch (nargout)
@@ -318,14 +326,14 @@ x = @var{R} \\ @var{C}\n\
                 case 0:
                 case 1:
                   {
-                    FloatComplexQR fact (m, type);
+                    qr<FloatComplexMatrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    FloatComplexQR fact (m, type);
+                    qr<FloatComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
@@ -333,7 +341,7 @@ x = @var{R} \\ @var{C}\n\
                 default:
                   {
                     FloatComplexQRP fact (m, type);
-                    if (type == QR::economy)
+                    if (type == qr<FloatComplexMatrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -346,6 +354,8 @@ x = @var{R} \\ @var{C}\n\
         {
           if (arg.is_real_type ())
             {
+              qr<Matrix>::type type = qr_type<Matrix> (nargin, nargout);
+
               Matrix m = arg.matrix_value ();
 
               switch (nargout)
@@ -353,14 +363,14 @@ x = @var{R} \\ @var{C}\n\
                 case 0:
                 case 1:
                   {
-                    QR fact (m, type);
+                    qr<Matrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    QR fact (m, type);
+                    qr<Matrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
@@ -368,7 +378,7 @@ x = @var{R} \\ @var{C}\n\
                 default:
                   {
                     QRP fact (m, type);
-                    if (type == QR::economy)
+                    if (type == qr<Matrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -378,6 +388,9 @@ x = @var{R} \\ @var{C}\n\
             }
           else if (arg.is_complex_type ())
             {
+              qr<ComplexMatrix>::type type
+                = qr_type<ComplexMatrix> (nargin, nargout);
+
               ComplexMatrix m = arg.complex_matrix_value ();
 
               switch (nargout)
@@ -385,14 +398,14 @@ x = @var{R} \\ @var{C}\n\
                 case 0:
                 case 1:
                   {
-                    ComplexQR fact (m, type);
+                    qr<ComplexMatrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    ComplexQR fact (m, type);
+                    qr<ComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                   }
                   break;
@@ -400,7 +413,7 @@ x = @var{R} \\ @var{C}\n\
                 default:
                   {
                     ComplexQRP fact (m, type);
-                    if (type == QR::economy)
+                    if (type == qr<ComplexMatrix>::economy)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -763,7 +776,7 @@ economized (R is square).\n\
           FloatMatrix u = argu.float_matrix_value ();
           FloatMatrix v = argv.float_matrix_value ();
 
-          FloatQR fact (Q, R);
+          qr<FloatMatrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -775,7 +788,7 @@ economized (R is square).\n\
           Matrix u = argu.matrix_value ();
           Matrix v = argv.matrix_value ();
 
-          QR fact (Q, R);
+          qr<Matrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -792,7 +805,7 @@ economized (R is square).\n\
           FloatComplexMatrix u = argu.float_complex_matrix_value ();
           FloatComplexMatrix v = argv.float_complex_matrix_value ();
 
-          FloatComplexQR fact (Q, R);
+          qr<FloatComplexMatrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -804,7 +817,7 @@ economized (R is square).\n\
           ComplexMatrix u = argu.complex_matrix_value ();
           ComplexMatrix v = argv.complex_matrix_value ();
 
-          ComplexQR fact (Q, R);
+          qr<ComplexMatrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -947,7 +960,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           FloatMatrix R = argr.float_matrix_value ();
           FloatMatrix x = argx.float_matrix_value ();
 
-          FloatQR fact (Q, R);
+          qr<FloatMatrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -962,7 +975,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           Matrix R = argr.matrix_value ();
           Matrix x = argx.matrix_value ();
 
-          QR fact (Q, R);
+          qr<Matrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -985,7 +998,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           FloatComplexMatrix x =
             argx.float_complex_matrix_value ();
 
-          FloatComplexQR fact (Q, R);
+          qr<FloatComplexMatrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -1000,7 +1013,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           ComplexMatrix R = argr.complex_matrix_value ();
           ComplexMatrix x = argx.complex_matrix_value ();
 
-          ComplexQR fact (Q, R);
+          qr<ComplexMatrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -1138,7 +1151,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           FloatMatrix Q = argq.float_matrix_value ();
           FloatMatrix R = argr.float_matrix_value ();
 
-          FloatQR fact (Q, R);
+          qr<FloatMatrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1152,7 +1165,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           Matrix Q = argq.matrix_value ();
           Matrix R = argr.matrix_value ();
 
-          QR fact (Q, R);
+          qr<Matrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1172,7 +1185,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           FloatComplexMatrix R =
             argr.float_complex_matrix_value ();
 
-          FloatComplexQR fact (Q, R);
+          qr<FloatComplexMatrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1186,7 +1199,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
           ComplexMatrix Q = argq.complex_matrix_value ();
           ComplexMatrix R = argr.complex_matrix_value ();
 
-          ComplexQR fact (Q, R);
+          qr<ComplexMatrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1364,7 +1377,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
           FloatMatrix Q = argq.float_matrix_value ();
           FloatMatrix R = argr.float_matrix_value ();
 
-          FloatQR fact (Q, R);
+          qr<FloatMatrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -1374,7 +1387,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
           Matrix Q = argq.matrix_value ();
           Matrix R = argr.matrix_value ();
 
-          QR fact (Q, R);
+          qr<Matrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -1389,7 +1402,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
           FloatComplexMatrix Q = argq.float_complex_matrix_value ();
           FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-          FloatComplexQR fact (Q, R);
+          qr<FloatComplexMatrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -1399,7 +1412,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
           ComplexMatrix Q = argq.complex_matrix_value ();
           ComplexMatrix R = argr.complex_matrix_value ();
 
-          ComplexQR fact (Q, R);
+          qr<ComplexMatrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));

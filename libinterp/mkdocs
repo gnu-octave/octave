@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-SED=${SED:-'sed'}
+SED=${SED:-sed}
 
 $SED -n -e '/^BEGIN_DOC_STRING/{
   : loop

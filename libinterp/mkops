@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-SED=${SED:-'sed'}
+SED=${SED:-sed}
 
 cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkops.

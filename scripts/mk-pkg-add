@@ -24,10 +24,12 @@
 
 set -e
 
-SED=${SED:-'sed'}
+SED=${SED:-sed}
 
 prefix="$1/"
-shift
+if [ "$1" ]; then
+  shift
+fi
 
 for arg
 do

@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-SED=${SED:-'sed'}
+SED=${SED:-sed}
 
 if [ $# -ne 2 ]; then
   echo "usage: mkdefs srcdir file < preprocessed-file-contents" 1>&2
@@ -26,7 +26,7 @@ if [ $# -ne 2 ]; then
 fi
 
 srcdir="$1"
-file="$2";
+file="$2"
 
 echo "// DO NOT EDIT!  Generated automatically by mkdefs."
 case "$file" in

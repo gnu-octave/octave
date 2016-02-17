@@ -1,10 +1,11 @@
 #! /bin/sh
 
 ## Attempt to get traditional sort behavior based on byte values.
-LC_ALL="C"
+LC_ALL=C
 export LC_ALL
 
 set -e
+
 AWK=${AWK:-awk}
 
 conffile=$1

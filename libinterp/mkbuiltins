@@ -23,7 +23,7 @@ if test $# -lt 2; then
   exit 1
 fi
 
-SED=${SED:-'sed'}
+SED=${SED:-sed}
 
 make_header=false
 make_source=false

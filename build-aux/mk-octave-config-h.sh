@@ -136,8 +136,7 @@ typedef $octave_idx_type octave_idx_type;
 
 EOF
 
-if grep "#define OCTAVE_ENABLE_FLOAT_TRUNCATE 1" $config_h_file > /dev/null;
-then
+if grep "#define OCTAVE_ENABLE_FLOAT_TRUNCATE 1" $config_h_file > /dev/null; then
   echo "#define OCTAVE_FLOAT_TRUNCATE volatile"
 else
   echo "#define OCTAVE_FLOAT_TRUNCATE"
@@ -148,8 +147,7 @@ grep "#\(undef\|define\) OCTAVE_ENABLE_ATOMIC_REFCOUNT" $config_h_file
 grep "#\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK" $config_h_file
 grep "#\(undef\|define\) OCTAVE_ENABLE_OPENMP" $config_h_file
 
-if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null;
-then
+if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
   cat << EOF
 
 typedef short dev_t;
@@ -163,8 +161,7 @@ else
 EOF
 fi
 
-if grep "#undef HAVE_INO_T" $config_h_file > /dev/null;
-then
+if grep "#undef HAVE_INO_T" $config_h_file > /dev/null; then
     cat << EOF
 
 typedef unsigned long ino_t;
@@ -179,8 +176,7 @@ EOF
 fi
 
 have_roundl=no
-if grep "#define HAVE_ROUNDL" $config_h_file > /dev/null;
-then
+if grep "#define HAVE_ROUNDL" $config_h_file > /dev/null; then
   have_roundl=yes
 fi
 

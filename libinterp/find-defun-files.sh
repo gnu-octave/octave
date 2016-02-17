@@ -1,6 +1,7 @@
 #! /bin/sh
 
 set -e
+
 SED=${SED:-sed}
 EGREP=${EGREP:-egrep}
 
@@ -11,7 +12,9 @@ EGREP=${EGREP:-egrep}
 DEFUN_PATTERN="^[ \t]*DEF(CONSTFUN|CMD|UN|UN_DLD|UNX_DLD|UN_TEXT)[ \t]*\\("
 
 srcdir="$1"
-shift
+if [ "$1" ]; then
+  shift
+fi
 
 for arg
 do

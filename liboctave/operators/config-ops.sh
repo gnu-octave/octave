@@ -2,7 +2,7 @@
 
 set -e
 
-: ${AWK=awk}
+AWK=${AWK:-awk}
 
 if [ $# -lt 3 ]; then
   src_type="all"
@@ -99,8 +99,3 @@ case "$obj_type" in
     esac
   ;;
 esac
-
-
-
-
-

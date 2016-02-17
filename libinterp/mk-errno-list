@@ -24,7 +24,7 @@ if [ $# -ne 2 ]; then
 fi
 
 if [ $1 = "--perl" ]; then
-  PERL="$2";
+  PERL="$2"
   $PERL -e 'foreach $key (keys(%!)) {
     $x .= "#if defined ($key)\n    { \"$key\", $key, },\n#endif\n";
   }
@@ -34,7 +34,7 @@ if [ $1 = "--perl" ]; then
   }'
 
 elif [ $1 = "--python" ]; then
-  PYTHON="$2";
+  PYTHON="$2"
   $PYTHON -c '
 from errno import errorcode
 from sys import stdin

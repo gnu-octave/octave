@@ -2,10 +2,10 @@
 
 set -e
 
-: ${AWK=awk}
+AWK=${AWK:-awk}
 
 if [ $# -eq 1 ]; then
-  top_srcdir="$1";
+  top_srcdir="$1"
 else
   top_srcdir="../.."
 fi

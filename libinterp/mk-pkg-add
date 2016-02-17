@@ -20,7 +20,7 @@
 
 set -e
 
-SED=${SED:-'sed'}
+SED=${SED:-sed}
 
 for f in "$@"; do
   if [ -f $f ]; then

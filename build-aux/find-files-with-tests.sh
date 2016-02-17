@@ -1,11 +1,14 @@
 #! /bin/sh
 
 set -e
+
 GREP=${GREP:-grep}
 SED=${SED:-sed}
 
 srcdir="$1"
-shift
+if [ "$1" ]; then
+  shift
+fi
 
 for arg
 do

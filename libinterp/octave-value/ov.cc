@@ -2631,7 +2631,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
           if (type.length () > 1 && type[1] == '.')
             return octave_map ();
           else
-            return = octave_value (rhs.empty_clone ());
+            return octave_value (rhs.empty_clone ());
 
         case '{':
           return Cell ();

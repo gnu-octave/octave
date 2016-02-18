@@ -113,389 +113,289 @@ static bool Vdisable_range = false;
 std::string
 octave_value::unary_op_as_string (unary_op op)
 {
-  std::string retval;
-
   switch (op)
     {
     case op_not:
-      retval = "!";
-      break;
+      return "!";
 
     case op_uplus:
-      retval = "+";
-      break;
+      return "+";
 
     case op_uminus:
-      retval = "-";
-      break;
+      return "-";
 
     case op_transpose:
-      retval = ".'";
-      break;
+      return ".'";
 
     case op_hermitian:
-      retval = "'";
-      break;
+      return "'";
 
     case op_incr:
-      retval = "++";
-      break;
+      return "++";
 
     case op_decr:
-      retval = "--";
-      break;
+      return "--";
 
     default:
-      retval = "<unknown>";
+      return "<unknown>";
     }
-
-  return retval;
 }
 
 std::string
 octave_value::unary_op_fcn_name (unary_op op)
 {
-  std::string retval;
-
   switch (op)
     {
     case op_not:
-      retval = "not";
-      break;
+      return "not";
 
     case op_uplus:
-      retval = "uplus";
-      break;
+      return "uplus";
 
     case op_uminus:
-      retval = "uminus";
-      break;
+      return "uminus";
 
     case op_transpose:
-      retval = "transpose";
-      break;
+      return "transpose";
 
     case op_hermitian:
-      retval = "ctranspose";
-      break;
+      return "ctranspose";
 
     default:
-      break;
+      return "<unknown>";
     }
-
-  return retval;
 }
 
 std::string
 octave_value::binary_op_as_string (binary_op op)
 {
-  std::string retval;
-
   switch (op)
     {
     case op_add:
-      retval = "+";
-      break;
+      return "+";
 
     case op_sub:
-      retval = "-";
-      break;
+      return "-";
 
     case op_mul:
-      retval = "*";
-      break;
+      return "*";
 
     case op_div:
-      retval = "/";
-      break;
+      return "/";
 
     case op_pow:
-      retval = "^";
-      break;
+      return "^";
 
     case op_ldiv:
-      retval = "\\";
-      break;
+      return "\\";
 
     case op_lshift:
-      retval = "<<";
-      break;
+      return "<<";
 
     case op_rshift:
-      retval = ">>";
-      break;
+      return ">>";
 
     case op_lt:
-      retval = "<";
-      break;
+      return "<";
 
     case op_le:
-      retval = "<=";
-      break;
+      return "<=";
 
     case op_eq:
-      retval = "==";
-      break;
+      return "==";
 
     case op_ge:
-      retval = ">=";
-      break;
+      return ">=";
 
     case op_gt:
-      retval = ">";
-      break;
+      return ">";
 
     case op_ne:
-      retval = "!=";
-      break;
+      return "!=";
 
     case op_el_mul:
-      retval = ".*";
-      break;
+      return ".*";
 
     case op_el_div:
-      retval = "./";
-      break;
+      return "./";
 
     case op_el_pow:
-      retval = ".^";
-      break;
+      return ".^";
 
     case op_el_ldiv:
-      retval = ".\\";
-      break;
+      return ".\\";
 
     case op_el_and:
-      retval = "&";
-      break;
+      return "&";
 
     case op_el_or:
-      retval = "|";
-      break;
+      return "|";
 
     case op_struct_ref:
-      retval = ".";
-      break;
+      return ".";
 
     default:
-      retval = "<unknown>";
+      return "<unknown>";
     }
-
-  return retval;
 }
 
 std::string
 octave_value::binary_op_fcn_name (binary_op op)
 {
-  std::string retval;
-
   switch (op)
     {
     case op_add:
-      retval = "plus";
-      break;
+      return "plus";
 
     case op_sub:
-      retval = "minus";
-      break;
+      return "minus";
 
     case op_mul:
-      retval = "mtimes";
-      break;
+      return "mtimes";
 
     case op_div:
-      retval = "mrdivide";
-      break;
+      return "mrdivide";
 
     case op_pow:
-      retval = "mpower";
-      break;
+      return "mpower";
 
     case op_ldiv:
-      retval = "mldivide";
-      break;
+      return "mldivide";
 
     case op_lt:
-      retval = "lt";
-      break;
+      return "lt";
 
     case op_le:
-      retval = "le";
-      break;
+      return "le";
 
     case op_eq:
-      retval = "eq";
-      break;
+      return "eq";
 
     case op_ge:
-      retval = "ge";
-      break;
+      return "ge";
 
     case op_gt:
-      retval = "gt";
-      break;
+      return "gt";
 
     case op_ne:
-      retval = "ne";
-      break;
+      return "ne";
 
     case op_el_mul:
-      retval = "times";
-      break;
+      return "times";
 
     case op_el_div:
-      retval = "rdivide";
-      break;
+      return "rdivide";
 
     case op_el_pow:
-      retval = "power";
-      break;
+      return "power";
 
     case op_el_ldiv:
-      retval = "ldivide";
-      break;
+      return "ldivide";
 
     case op_el_and:
-      retval = "and";
-      break;
+      return "and";
 
     case op_el_or:
-      retval = "or";
-      break;
+      return "or";
 
     default:
-      break;
+      return "<unknown>";
     }
-
-  return retval;
 }
 
 std::string
 octave_value::binary_op_fcn_name (compound_binary_op op)
 {
-  std::string retval;
-
   switch (op)
     {
     case op_trans_mul:
-      retval = "transtimes";
-      break;
+      return "transtimes";
 
     case op_mul_trans:
-      retval = "timestrans";
-      break;
+      return "timestrans";
 
     case op_herm_mul:
-      retval = "hermtimes";
-      break;
+      return "hermtimes";
 
     case op_mul_herm:
-      retval = "timesherm";
-      break;
+      return "timesherm";
 
     case op_trans_ldiv:
-      retval = "transldiv";
-      break;
+      return "transldiv";
 
     case op_herm_ldiv:
-      retval = "hermldiv";
-      break;
+      return "hermldiv";
 
     case op_el_and_not:
-      retval = "andnot";
-      break;
+      return "andnot";
 
     case op_el_or_not:
-      retval = "ornot";
-      break;
+      return "ornot";
 
     case op_el_not_and:
-      retval = "notand";
-      break;
+      return "notand";
 
     case op_el_not_or:
-      retval = "notor";
-      break;
+      return "notor";
 
     default:
-      break;
+      return "<unknown>";
     }
-
-  return retval;
 }
 
 std::string
 octave_value::assign_op_as_string (assign_op op)
 {
-  std::string retval;
-
   switch (op)
     {
     case op_asn_eq:
-      retval = "=";
-      break;
+      return "=";
 
     case op_add_eq:
-      retval = "+=";
-      break;
+      return "+=";
 
     case op_sub_eq:
-      retval = "-=";
-      break;
+      return "-=";
 
     case op_mul_eq:
-      retval = "*=";
-      break;
+      return "*=";
 
     case op_div_eq:
-      retval = "/=";
-      break;
+      return "/=";
 
     case op_ldiv_eq:
-      retval = "\\=";
-      break;
+      return "\\=";
 
     case op_pow_eq:
-      retval = "^=";
-      break;
+      return "^=";
 
     case op_lshift_eq:
-      retval = "<<=";
-      break;
+      return "<<=";
 
     case op_rshift_eq:
-      retval = ">>=";
-      break;
+      return ">>=";
 
     case op_el_mul_eq:
-      retval = ".*=";
-      break;
+      return ".*=";
 
     case op_el_div_eq:
-      retval = "./=";
-      break;
+      return "./=";
 
     case op_el_ldiv_eq:
-      retval = ".\\=";
-      break;
+      return ".\\=";
 
     case op_el_pow_eq:
-      retval = ".^=";
-      break;
+      return ".^=";
 
     case op_el_and_eq:
-      retval = "&=";
-      break;
+      return "&=";
 
     case op_el_or_eq:
-      retval = "|=";
-      break;
+      return "|=";
 
     default:
-      retval = "<unknown>";
+      return "<unknown>";
     }
-
-  return retval;
 }
 
 octave_value::binary_op
@@ -505,74 +405,83 @@ octave_value::assign_op_to_binary_op (assign_op op)
     {
     case op_add_eq:
       return op_add;
+
     case op_sub_eq:
       return op_sub;
+
     case op_mul_eq:
       return op_mul;
+
     case op_div_eq:
       return op_div;
+
     case op_ldiv_eq:
       return op_ldiv;
+
     case op_pow_eq:
       return op_pow;
+
     case op_lshift_eq:
       return op_lshift;
+
     case op_rshift_eq:
       return op_rshift;
+
     case op_el_mul_eq:
       return op_el_mul;
+
     case op_el_div_eq:
       return op_el_div;
+
     case op_el_ldiv_eq:
       return op_el_ldiv;
+
     case op_el_pow_eq:
       return op_el_pow;
+
     case op_el_and_eq:
       return op_el_and;
+
     case op_el_or_eq:
       return op_el_or;
+
     default:
       return unknown_binary_op;
     }
-
 }
 
 octave_value::assign_op
 octave_value::binary_op_to_assign_op (binary_op op)
 {
-  assign_op retval;
-
   switch (op)
     {
     case op_add:
-      retval = op_add_eq;
-      break;
-    case op_sub:
-      retval = op_sub_eq;
-      break;
-    case op_mul:
-      retval = op_mul_eq;
-      break;
-    case op_div:
-      retval = op_div_eq;
-      break;
-    case op_el_mul:
-      retval = op_el_mul_eq;
-      break;
-    case op_el_div:
-      retval = op_el_div_eq;
-      break;
-    case op_el_and:
-      retval = op_el_and_eq;
-      break;
-    case op_el_or:
-      retval = op_el_or_eq;
-      break;
-    default:
-      retval = unknown_assign_op;
-    }
+      return op_add_eq;
 
-  return retval;
+    case op_sub:
+      return op_sub_eq;
+
+    case op_mul:
+      return op_mul_eq;
+
+    case op_div:
+      return op_div_eq;
+
+    case op_el_mul:
+      return op_el_mul_eq;
+
+    case op_el_div:
+      return op_el_div_eq;
+
+    case op_el_and:
+      return op_el_and_eq;
+
+    case op_el_or:
+      return op_el_or_eq;
+
+    default:
+      return unknown_assign_op;
+    }
 }
 
 octave_value::octave_value (short int i)
@@ -1161,6 +1070,7 @@ octave_value::octave_value (const idx_vector& idx, bool lazy)
           rep = new octave_lazy_index (idx);
           maybe_mutate ();
           return;
+
         default:
           break;
         }
@@ -1173,20 +1083,25 @@ octave_value::octave_value (const idx_vector& idx, bool lazy)
     case idx_vector::class_colon:
       rep = new octave_magic_colon ();
       break;
+
     case idx_vector::class_range:
       rep = new octave_range (range, idx);
       break;
+
     case idx_vector::class_scalar:
       rep = new octave_scalar (scalar);
       break;
+
     case idx_vector::class_vector:
       rep = new octave_matrix (array, idx);
       break;
+
     case idx_vector::class_mask:
       rep = new octave_bool_matrix (mask, idx);
       break;
+
     default:
-      assert (false);
+      panic_impossible ();
       break;
     }
 
@@ -2201,66 +2116,51 @@ static octave_value
 decompose_binary_op (octave_value::compound_binary_op op,
                      const octave_value& v1, const octave_value& v2)
 {
-  octave_value retval;
-
   switch (op)
     {
     case octave_value::op_trans_mul:
-      retval = do_binary_op (octave_value::op_mul,
-                             do_unary_op (octave_value::op_transpose, v1),
-                             v2);
-      break;
+      return do_binary_op (octave_value::op_mul,
+                           do_unary_op (octave_value::op_transpose, v1), v2);
+
     case octave_value::op_mul_trans:
-      retval = do_binary_op (octave_value::op_mul,
-                             v1,
-                             do_unary_op (octave_value::op_transpose, v2));
-      break;
+      return do_binary_op (octave_value::op_mul,
+                           v1, do_unary_op (octave_value::op_transpose, v2));
+
     case octave_value::op_herm_mul:
-      retval = do_binary_op (octave_value::op_mul,
-                             do_unary_op (octave_value::op_hermitian, v1),
-                             v2);
-      break;
+      return do_binary_op (octave_value::op_mul,
+                           do_unary_op (octave_value::op_hermitian, v1), v2);
+
     case octave_value::op_mul_herm:
-      retval = do_binary_op (octave_value::op_mul,
-                             v1,
-                             do_unary_op (octave_value::op_hermitian, v2));
-      break;
+      return do_binary_op (octave_value::op_mul,
+                           v1, do_unary_op (octave_value::op_hermitian, v2));
+
     case octave_value::op_trans_ldiv:
-      retval = do_binary_op (octave_value::op_ldiv,
-                             do_unary_op (octave_value::op_transpose, v1),
-                             v2);
-      break;
+      return do_binary_op (octave_value::op_ldiv,
+                           do_unary_op (octave_value::op_transpose, v1), v2);
+
     case octave_value::op_herm_ldiv:
-      retval = do_binary_op (octave_value::op_ldiv,
-                             do_unary_op (octave_value::op_hermitian, v1),
-                             v2);
-      break;
+      return do_binary_op (octave_value::op_ldiv,
+                           do_unary_op (octave_value::op_hermitian, v1), v2);
+
     case octave_value::op_el_not_and:
-      retval = do_binary_op (octave_value::op_el_and,
-                             do_unary_op (octave_value::op_not, v1),
-                             v2);
-      break;
+      return do_binary_op (octave_value::op_el_and,
+                           do_unary_op (octave_value::op_not, v1), v2);
+
     case octave_value::op_el_not_or:
-      retval = do_binary_op (octave_value::op_el_or,
-                             do_unary_op (octave_value::op_not, v1),
-                             v2);
-      break;
+      return do_binary_op (octave_value::op_el_or,
+                           do_unary_op (octave_value::op_not, v1), v2);
+
     case octave_value::op_el_and_not:
-      retval = do_binary_op (octave_value::op_el_and,
-                             v1,
-                             do_unary_op (octave_value::op_not, v2));
-      break;
+      return do_binary_op (octave_value::op_el_and,
+                           v1, do_unary_op (octave_value::op_not, v2));
+
     case octave_value::op_el_or_not:
-      retval = do_binary_op (octave_value::op_el_or,
-                             v1,
-                             do_unary_op (octave_value::op_not, v2));
-      break;
+      return do_binary_op (octave_value::op_el_or,
+                           v1, do_unary_op (octave_value::op_not, v2));
+
     default:
       error ("invalid compound operator");
-      break;
     }
-
-  return retval;
 }
 
 octave_value
@@ -2673,17 +2573,13 @@ octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
 octave_value::assign_op
 octave_value::unary_op_to_assign_op (unary_op op)
 {
-  assign_op binop = unknown_assign_op;
-
   switch (op)
     {
     case op_incr:
-      binop = op_add_eq;
-      break;
+      return op_add_eq;
 
     case op_decr:
-      binop = op_sub_eq;
-      break;
+      return op_sub_eq;
 
     default:
       {
@@ -2691,72 +2587,54 @@ octave_value::unary_op_to_assign_op (unary_op op)
         error ("operator %s: no assign operator found", on.c_str ());
       }
     }
-
-  return binop;
 }
 
 octave_value::binary_op
 octave_value::op_eq_to_binary_op (assign_op op)
 {
-  binary_op binop = unknown_binary_op;
-
   switch (op)
     {
     case op_add_eq:
-      binop = op_add;
-      break;
+      return op_add;
 
     case op_sub_eq:
-      binop = op_sub;
-      break;
+      return op_sub;
 
     case op_mul_eq:
-      binop = op_mul;
-      break;
+      return op_mul;
 
     case op_div_eq:
-      binop = op_div;
-      break;
+      return op_div;
 
     case op_ldiv_eq:
-      binop = op_ldiv;
-      break;
+      return op_ldiv;
 
     case op_pow_eq:
-      binop = op_pow;
-      break;
+      return op_pow;
 
     case op_lshift_eq:
-      binop = op_lshift;
-      break;
+      return op_lshift;
 
     case op_rshift_eq:
-      binop = op_rshift;
-      break;
+      return op_rshift;
 
     case op_el_mul_eq:
-      binop = op_el_mul;
-      break;
+      return op_el_mul;
 
     case op_el_div_eq:
-      binop = op_el_div;
-      break;
+      return op_el_div;
 
     case op_el_ldiv_eq:
-      binop = op_el_ldiv;
-      break;
+      return op_el_ldiv;
 
     case op_el_pow_eq:
-      binop = op_el_pow;
-      break;
+      return op_el_pow;
 
     case op_el_and_eq:
-      binop = op_el_and;
-      break;
+      return op_el_and;
 
     case op_el_or_eq:
-      binop = op_el_or;
-      break;
+      return op_el_or;
 
     default:
       {
@@ -2764,44 +2642,33 @@ octave_value::op_eq_to_binary_op (assign_op op)
         error ("operator %s: no binary operator found", on.c_str ());
       }
     }
-
-  return binop;
 }
 
 octave_value
 octave_value::empty_conv (const std::string& type, const octave_value& rhs)
 {
-  octave_value retval;
-
   if (type.length () > 0)
     {
       switch (type[0])
         {
         case '(':
-          {
-            if (type.length () > 1 && type[1] == '.')
-              retval = octave_map ();
-            else
-              retval = octave_value (rhs.empty_clone ());
-          }
-          break;
+          if (type.length () > 1 && type[1] == '.')
+            return octave_map ();
+          else
+            return = octave_value (rhs.empty_clone ());
 
         case '{':
-          retval = Cell ();
-          break;
+          return Cell ();
 
         case '.':
-          retval = octave_scalar_map ();
-          break;
+          return octave_scalar_map ();
 
         default:
           panic_impossible ();
         }
     }
   else
-    retval = octave_value (rhs.empty_clone ());
-
-  return retval;
+    return octave_value (rhs.empty_clone ());
 }
 
 void

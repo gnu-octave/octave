@@ -35,7 +35,7 @@ PROJECT_NUMBER         = @PACKAGE_VERSION@
 
 # Our logo!
 
-PROJECT_LOGO           = @top_srcdir@/doc/icons/octave-logo.png
+PROJECT_LOGO           = @abs_top_builddir@/etc/icons/octave-logo-48.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
@@ -86,7 +86,7 @@ FULL_PATH_NAMES        = YES
 
 # Remove from the full path names the absolute prefix
 
-STRIP_FROM_PATH        = @top_srcdir@
+STRIP_FROM_PATH        = @abs_top_srcdir@
 
 # Interpret the first line (until the first dot) of a JavaDoc-style
 # comment as the brief description (without needing the @brief
@@ -193,24 +193,24 @@ EXPAND_ONLY_PREDEF = NO
 # include, and macro expansion will not work.
 
 INCLUDE_PATH = \
-  @top_srcdir@/libgnu \
-  @top_srcdir@/libinterp/corefcn \
-  @top_srcdir@/libinterp/octave-value \
-  @top_srcdir@/libinterp/operators \
-  @top_srcdir@/libinterp/parse-tree \
-  @top_srcdir@/libinterp/template-inst \
-  @top_srcdir@/liboctave/array \
-  @top_srcdir@/liboctave/numeric \
-  @top_srcdir@/liboctave/operators \
-  @top_srcdir@/liboctave/system \
-  @top_srcdir@/liboctave/util \
-  @top_srcdir@/src
+  @abs_top_srcdir@/libgnu \
+  @abs_top_srcdir@/libinterp/corefcn \
+  @abs_top_srcdir@/libinterp/octave-value \
+  @abs_top_srcdir@/libinterp/operators \
+  @abs_top_srcdir@/libinterp/parse-tree \
+  @abs_top_srcdir@/libinterp/template-inst \
+  @abs_top_srcdir@/liboctave/array \
+  @abs_top_srcdir@/liboctave/numeric \
+  @abs_top_srcdir@/liboctave/operators \
+  @abs_top_srcdir@/liboctave/system \
+  @abs_top_srcdir@/liboctave/util \
+  @abs_top_srcdir@/src
 
 # So that features that are behind #ifdef HAVE_FOO macros get processed by Doxygen
 
 PREDEFINED = HAVE_ARPACK=1          \
-             HAVE_CHOLMOD=1         \
              HAVE_CCOLAMD=1         \
+             HAVE_CHOLMOD=1         \
              HAVE_CURL=1            \
              HAVE_CXSPARSE=1        \
              HAVE_FFTW=1            \
@@ -223,12 +223,14 @@ PREDEFINED = HAVE_ARPACK=1          \
              HAVE_HDF5=1            \
              HAVE_LLVM=1            \
              HAVE_MAGICK=1          \
+             HAVE_OPENGL=1          \
              HAVE_OPENMP=1          \
-             HAVE_PCRE_H=1          \
              HAVE_PCRE_COMPILE=1    \
+             HAVE_PCRE_H=1          \
              HAVE_QHULL=1           \
              HAVE_QRUPDATE=1        \
              HAVE_QRUPDATE_LUU=1    \
+             HAVE_QSCINTILLA=1      \
              HAVE_QT=1              \
              HAVE_UMFPACK=1         \
              HAVE_X_WINDOWS=1       \
@@ -240,8 +242,8 @@ PREDEFINED = HAVE_ARPACK=1          \
 
 # Which directories contain Octave source code
 
-INPUT                  = @top_srcdir@/src/ @top_srcdir@/liboctave/
-INPUT                 += @top_srcdir@/libinterp @top_srcdir@/libgui
+INPUT                  = @abs_top_srcdir@/src/ @abs_top_srcdir@/liboctave/
+INPUT                 += @abs_top_srcdir@/libinterp @abs_top_srcdir@/libgui
 
 # Search subdirectories for input.
 
@@ -249,7 +251,7 @@ RECURSIVE              = YES
 
 # Our examples.
 
-EXAMPLE_PATH           = @top_srcdir@/examples/
+EXAMPLE_PATH           = @abs_top_srcdir@/examples/
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp

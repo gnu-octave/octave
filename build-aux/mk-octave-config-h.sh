@@ -121,7 +121,7 @@ since all of Octave's header files already include it.
 #  define OCTAVE_IMPORT
 #endif
 
-#define OCTAVE_API OCTAVE_IMPORT
+n#define OCTAVE_API OCTAVE_IMPORT
 #define OCTINTERP_API OCTAVE_IMPORT
 
 #include <stdint.h>
@@ -150,6 +150,8 @@ grep "#\(undef\|define\) OCTAVE_ENABLE_64" $config_h_file
 grep "#\(undef\|define\) OCTAVE_ENABLE_ATOMIC_REFCOUNT" $config_h_file
 grep "#\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK" $config_h_file
 grep "#\(undef\|define\) OCTAVE_ENABLE_OPENMP" $config_h_file
+
+grep "#\(undef\|define\) OCTAVE_HAVE_FAST_INT_OPS" $config_h_file
 
 if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
   cat << EOF

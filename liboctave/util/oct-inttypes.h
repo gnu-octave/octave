@@ -499,25 +499,31 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t, uint64_t);
 
 #endif
 
-// Signed integer arithmetics.
-// Rationale: If HAVE_FAST_INT_OPS is defined, the following conditions
-// should hold:
-// 1. Signed numbers are represented by twos complement
-//    (see <http://en.wikipedia.org/wiki/Two%27s_complement>)
-// 2. static_cast to unsigned int counterpart works like interpreting
-//    the signed bit pattern as unsigned (and is thus zero-cost).
-// 3. Signed addition and subtraction yield the same bit results as unsigned.
-//    (We use casts to prevent optimization interference, so there is no
-//     need for things like -ftrapv).
-// 4. Bit operations on signed integers work like on unsigned integers,
-//    except for the shifts. Shifts are arithmetic.
+// Signed integer arithmetic.
+//
+// Rationale: If OCTAVE_HAVE_FAST_INT_OPS is defined, the following
+// conditions should hold:
+//
+//   1. Signed numbers are represented by twos complement (see
+//      <http://en.wikipedia.org/wiki/Two%27s_complement>)
+//
+//   2. static_cast to unsigned int counterpart works like
+//      interpreting the signed bit pattern as unsigned (and is thus
+//      zero-cost).
+//
+//   3. Signed addition and subtraction yield the same bit results as
+//      unsigned.  (We use casts to prevent optimization interference,
+//      so there is no need for things like -ftrapv).
+//
+//   4. Bit operations on signed integers work like on unsigned
+//      integers, except for the shifts. Shifts are arithmetic.
 //
 // The above conditions are satisfied by most modern platforms. If
-// HAVE_FAST_INT_OPS is defined, bit tricks and wraparound arithmetics are used
-// to avoid conditional jumps as much as possible, thus being friendly to
-// modern pipeline processor architectures.
-// Otherwise, we fall back to a bullet-proof code that only uses assumptions
-// guaranteed by the standard.
+// OCTAVE_HAVE_FAST_INT_OPS is defined, bit tricks and wraparound
+// arithmetics are used to avoid conditional jumps as much as
+// possible, thus being friendly to modern pipeline processor
+// architectures.  Otherwise, we fall back to a bullet-proof code that
+// only uses assumptions guaranteed by the standard.
 
 template <typename T>
 class octave_int_arith_base<T, true> : octave_int_base<T>
@@ -530,7 +536,7 @@ public:
   static T
   __signbit (T x)
   {
-#ifdef HAVE_FAST_INT_OPS
+#if defined (OCTAVE_HAVE_FAST_INT_OPS)
     return static_cast<UT> (x) >> std::numeric_limits<T>::digits;
 #else
     return (x < 0) ? 1 : 0;
@@ -540,7 +546,7 @@ public:
   static T
   abs (T x)
   {
-#ifdef HAVE_FAST_INT_OPS
+#if defined (OCTAVE_HAVE_FAST_INT_OPS)
     // This is close to how GCC does std::abs, but we can't just use std::abs,
     // because its behaviour for INT_MIN is undefined and the compiler could
     // discard the following test.
@@ -589,7 +595,7 @@ public:
   static T
   minus (T x)
   {
-#ifdef HAVE_FAST_INT_OPS
+#if defined (OCTAVE_HAVE_FAST_INT_OPS)
     T y = -x;
     if (y == octave_int_base<T>::min_val ())
       {
@@ -612,7 +618,7 @@ public:
   static T
   add (T x, T y)
   {
-#ifdef HAVE_FAST_INT_OPS
+#if defined (OCTAVE_HAVE_FAST_INT_OPS)
     // The typecasts do nothing, but they are here to prevent an optimizing
     // compiler from interfering. Also, the signed operations on small types
     // actually return int.
@@ -654,7 +660,7 @@ public:
   static T
   sub (T x, T y)
   {
-#ifdef HAVE_FAST_INT_OPS
+#if defined (OCTAVE_HAVE_FAST_INT_OPS)
     // The typecasts do nothing, but they are here to prevent an optimizing
     // compiler from interfering. Also, the signed operations on small types
     // actually return int.
@@ -789,9 +795,9 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
 
-  // NOTE: We could maybe do it with a single branch if HAVE_FAST_INT_OPS,
-  // but it would require one more runtime conversion, so the question is
-  // whether it would really be faster.
+  // NOTE: We could maybe do it with a single branch if
+  // OCTAVE_HAVE_FAST_INT_OPS, but it would require one more runtime
+  // conversion, so the question is whether it would really be faster.
   if (p > static_cast<long double> (octave_int_base<int64_t>::max_val ()))
     retval = octave_int_base<int64_t>::max_val ();
   else if (p < static_cast<long double> (octave_int_base<int64_t>::min_val ()))

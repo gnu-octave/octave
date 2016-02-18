@@ -1495,18 +1495,24 @@ AC_DEFUN([OCTAVE_F77_FLAG], [
   fi
 ])
 dnl
-dnl Check whether fast signed integer arithmetics using bit tricks
-dnl can be used in oct-inttypes.h.  Defines HAVE_FAST_INT_OPS if
-dnl the following conditions hold:
-dnl 1. Signed numbers are represented by twos complement
-dnl    (see <http://en.wikipedia.org/wiki/Two%27s_complement>)
-dnl 2. static_cast to unsigned int counterpart works like interpreting
-dnl    the signed bit pattern as unsigned (and is thus zero-cost).
-dnl 3. Signed addition and subtraction yield the same bit results as unsigned.
-dnl    (We use casts to prevent optimization interference, so there is no
-dnl     need for things like -ftrapv).
-dnl 4. Bit operations on signed integers work like on unsigned integers,
-dnl    except for the shifts.  Shifts are arithmetic.
+dnl Check whether fast signed integer arithmetic using bit tricks
+dnl can be used in oct-inttypes.h.
+dnl
+dnl Defines OCTAVE_HAVE_FAST_INT_OPS if the following conditions hold:
+dnl
+dnl   1. Signed numbers are represented by twos complement (see
+dnl      <http://en.wikipedia.org/wiki/Two%27s_complement>)
+dnl
+dnl   2. static_cast to unsigned int counterpart works like
+dnl      interpreting the signed bit pattern as unsigned (and is thus
+dnl      zero-cost). 
+dnl
+dnl   3. Signed addition and subtraction yield the same bit results
+dnl      as unsigned.  (We use casts to prevent optimization
+dnl      interference, so there is no need for things like -ftrapv).
+dnl
+dnl   4. Bit operations on signed integers work like on unsigned
+dnl      integers, except for the shifts.  Shifts are arithmetic.
 dnl
 AC_DEFUN([OCTAVE_FAST_INT_OPS], [
   AC_CACHE_CHECK([whether fast integer arithmetics is usable],
@@ -1563,7 +1569,7 @@ AC_DEFUN([OCTAVE_FAST_INT_OPS], [
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_fast_int_ops = yes; then
-    AC_DEFINE(HAVE_FAST_INT_OPS, 1,
+    AC_DEFINE(OCTAVE_HAVE_FAST_INT_OPS, 1,
       [Define to 1 if signed integers use two's complement.])
   fi
 ])

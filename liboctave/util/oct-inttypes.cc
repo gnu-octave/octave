@@ -333,7 +333,7 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 
   // Essentially, what we do is compute sign, multiply absolute values
   // (as above) and impose the sign.
-  // FIXME: can we do something faster if we HAVE_FAST_INT_OPS?
+  // FIXME: can we do something faster if we OCTAVE_HAVE_FAST_INT_OPS?
 
   uint64_t usx = octave_int_abs (x);
   uint64_t usy = octave_int_abs (y);

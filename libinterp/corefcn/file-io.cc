@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 // April 1996.
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include <cerrno>

@@ -14,7 +14,7 @@ cat << EOF
 // DO NOT EDIT!  Generated automatically from $conffile by Make."
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include "build-env.h"

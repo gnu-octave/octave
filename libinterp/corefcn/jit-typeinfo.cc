@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_CONSTANT_MACROS
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #ifdef HAVE_LLVM

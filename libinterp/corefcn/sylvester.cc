@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: A. S. Hodel <scotte@eng.auburn.edu>
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include "defun.h"

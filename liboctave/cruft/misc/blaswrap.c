@@ -39,7 +39,7 @@ architecture.
 */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h> /* USE_BLASWRAP ? */
+#  include "config.h" /* USE_BLASWRAP ? */
 #endif
 
 #ifdef USE_BLASWRAP

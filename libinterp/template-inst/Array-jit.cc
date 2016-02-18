@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: Max Brister <max@2bass.com>
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #ifdef HAVE_LLVM

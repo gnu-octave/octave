@@ -76,7 +76,7 @@ else
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include "defun.h"

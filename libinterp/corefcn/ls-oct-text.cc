@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: John W. Eaton.
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include <cstring>

@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 %top {
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)

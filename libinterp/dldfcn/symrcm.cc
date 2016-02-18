@@ -51,7 +51,7 @@ Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
 */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include "ov.h"

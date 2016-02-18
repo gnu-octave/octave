@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 // Adapted-By: jwe
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include <string>

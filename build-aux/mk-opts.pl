@@ -510,7 +510,7 @@ sub emit_opt_handler_fcns
 // Generated automatically from $DEFN_FILE.
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include <iomanip>

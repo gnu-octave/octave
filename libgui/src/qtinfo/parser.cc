@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include "parser.h"

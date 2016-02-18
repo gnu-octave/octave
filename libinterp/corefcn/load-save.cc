@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 // Matlab v5 support by James R. Van Zandt <jrv@vanzandt.mv.com>
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include <cfloat>

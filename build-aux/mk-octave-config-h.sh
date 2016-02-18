@@ -58,7 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 All Octave source files should begin with
 
   #if defined (HAVE_CONFIG_H)
-  #  include <config.h>
+  #  include "config.h"
   #endif
 
 All public Octave header files should have the form

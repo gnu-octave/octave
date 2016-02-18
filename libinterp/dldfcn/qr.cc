@@ -214,29 +214,33 @@ x = @var{R} \ @var{C}
   if (arg_is_empty < 0)
     return retval;
 
+  bool economy = false;
+  bool is_cmplx = false;
+  bool b_mat = false;
+  int have_b = 0;
+
+  if (arg.is_complex_type ())
+    is_cmplx = true;
+  if (nargin > 1)
+    {
+      have_b = 1;
+      if (args(nargin-1).is_scalar_type ())
+        {
+          int val = args(nargin-1).int_value ();
+          if (val == 0)
+            {
+              economy = true;
+              have_b = (nargin > 2 ? 2 : 0);
+            }
+        }
+      else if (args(nargin-1).is_matrix_type ())
+          b_mat = true;
+      if (have_b > 0 && args(have_b).is_complex_type ())
+        is_cmplx = true;
+    }
+
   if (arg.is_sparse_type ())
     {
-      bool economy = false;
-      bool is_cmplx = false;
-      int have_b = 0;
-
-      if (arg.is_complex_type ())
-        is_cmplx = true;
-      if (nargin > 1)
-        {
-          have_b = 1;
-          if (args(nargin-1).is_scalar_type ())
-            {
-              int val = args(nargin-1).int_value ();
-              if (val == 0)
-                {
-                  economy = true;
-                  have_b = (nargin > 2 ? 2 : 0);
-                }
-            }
-          if (have_b > 0 && args(have_b).is_complex_type ())
-            is_cmplx = true;
-        }
 
       if (is_cmplx)
         {
@@ -295,6 +299,15 @@ x = @var{R} \ @var{C}
                   {
                     qr<FloatMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
+                    if (b_mat)
+                      {
+                        if (is_cmplx)
+                          retval(0) = fact.Q ().transpose ()
+                                      * args(1).float_complex_matrix_value ();
+                        else
+                          retval(0) = fact.Q ().transpose ()
+                                      * args(1).float_matrix_value ();
+                      }
                   }
                   break;
 
@@ -331,6 +344,9 @@ x = @var{R} \ @var{C}
                   {
                     qr<FloatComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
+                    if (b_mat)
+                      retval (0) = conj (fact.Q ().transpose ())
+                                   * args(1).float_complex_matrix_value ();
                   }
                   break;
 
@@ -368,6 +384,15 @@ x = @var{R} \ @var{C}
                   {
                     qr<Matrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
+                    if (b_mat)
+                      {
+                        if (is_cmplx)
+                          retval(0) = fact.Q ().transpose ()
+                                      * args(1).complex_matrix_value ();
+                        else
+                          retval(0) = fact.Q ().transpose ()
+                                      * args(1).matrix_value ();
+                      }
                   }
                   break;
 
@@ -403,6 +428,9 @@ x = @var{R} \ @var{C}
                   {
                     qr<ComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
+                    if (b_mat)
+                      retval (0) = conj (fact.Q ().transpose ())
+                                   * args(1).complex_matrix_value ();
                   }
                   break;
 
@@ -438,6 +466,15 @@ x = @var{R} \ @var{C}
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
+%! [q, r] = qr (a);
+%! [qe, re] = qr (a, 0);
+%!
+%! assert (q * r, a, sqrt (eps));
+%! assert (qe * re, a, sqrt (eps));
+
+%!test
+%! a = [0, 2, 1; 2, 1, 2];
+%!
 %! [q, r, p] = qr (a);  # FIXME: not giving right dimensions.
 %! [qe, re, pe] = qr (a, 0);
 %!
@@ -461,6 +498,46 @@ x = @var{R} \ @var{C}
 %!
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
+
+%!test
+%! a = [0, 2, 1; 2, 1, 2; 3, 1, 2];
+%! b = [1, 3, 2; 1, 1, 0; 3, 0, 2];
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps));
+%! assert (q'*b, c, sqrt (eps));
+
+%!test
+%! a = [0, 2, i; 2, 1, 2; 3, 1, 2];
+%! b = [1, 3, 2; 1, i, 0; 3, 0, 2];
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps));
+%! assert (q'*b, c, sqrt (eps));
+
+%!test
+%! a = [0, 2, i; 2, 1, 2; 3, 1, 2];
+%! b = [1, 3, 2; 1, 1, 0; 3, 0, 2];
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps));
+%! assert (q'*b, c, sqrt (eps));
+
+%!test
+%! a = [0, 2, 1; 2, 1, 2; 3, 1, 2];
+%! b = [1, 3, 2; 1, i, 0; 3, 0, 2];
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps));
+%! assert (q'*b, c, sqrt (eps));
 
 %!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)
@@ -574,6 +651,46 @@ x = @var{R} \ @var{C}
 %!
 %! assert (q * r, a * p, sqrt (eps ("single")));
 %! assert (qe * re, a(:, pe), sqrt (eps ("single")));
+
+%!test
+%! a = single([0, 2, 1; 2, 1, 2; 3, 1, 2]);
+%! b = single([1, 3, 2; 1, 1, 0; 3, 0, 2]);
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps ("single")));
+%! assert (q'*b, c, sqrt (eps ("single")));
+
+%!test
+%! a = single([0, 2, i; 2, 1, 2; 3, 1, 2]);
+%! b = single([1, 3, 2; 1, i, 0; 3, 0, 2]);
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps ("single")));
+%! assert (q'*b, c, sqrt (eps ("single")));
+
+%!test
+%! a = single([0, 2, i; 2, 1, 2; 3, 1, 2]);
+%! b = single([1, 3, 2; 1, 1, 0; 3, 0, 2]);
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps));
+%! assert (q'*b, c, sqrt (eps));
+
+%!test
+%! a = single([0, 2, 1; 2, 1, 2; 3, 1, 2]);
+%! b = single([1, 3, 2; 1, i, 0; 3, 0, 2]);
+%!
+%! [q, r] = qr (a);
+%! [c, re] = qr (a, b);
+%!
+%! assert (r, re, sqrt (eps ("single")));
+%! assert (q'*b, c, sqrt (eps ("single")));
 
 %!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)

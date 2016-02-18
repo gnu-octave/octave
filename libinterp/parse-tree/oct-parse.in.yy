@@ -208,7 +208,6 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %token <tok_val> '=' ':' '-' '+' '*' '/'
 %token <tok_val> ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ
 %token <tok_val> EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ AND_EQ OR_EQ
-%token <tok_val> LSHIFT_EQ RSHIFT_EQ LSHIFT RSHIFT
 %token <tok_val> EXPR_AND_AND EXPR_OR_OR
 %token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
 %token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
@@ -305,13 +304,12 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %type <octave_user_function_type> method_decl1
 
 // Precedence and associativity.
-%right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
+%right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ OR_EQ AND_EQ
 %left EXPR_OR_OR
 %left EXPR_AND_AND
 %left EXPR_OR
 %left EXPR_AND
 %left EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
-%left LSHIFT RSHIFT
 %left ':'
 %left '-' '+' EPLUS EMINUS
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
@@ -832,10 +830,6 @@ colon_expr1     : oper_expr
 
 simple_expr     : colon_expr
                   { $$ = $1; }
-                | simple_expr LSHIFT simple_expr
-                  { $$ = parser.make_binary_op (LSHIFT, $1, $2, $3); }
-                | simple_expr RSHIFT simple_expr
-                  { $$ = parser.make_binary_op (RSHIFT, $1, $2, $3); }
                 | simple_expr EXPR_LT simple_expr
                   { $$ = parser.make_binary_op (EXPR_LT, $1, $2, $3); }
                 | simple_expr EXPR_LE simple_expr
@@ -886,10 +880,6 @@ assign_expr     : assign_lhs '=' expression
                   { $$ = parser.make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
                 | assign_lhs POW_EQ expression
                   { $$ = parser.make_assign_op (POW_EQ, $1, $2, $3); }
-                | assign_lhs LSHIFT_EQ expression
-                  { $$ = parser.make_assign_op (LSHIFT_EQ, $1, $2, $3); }
-                | assign_lhs RSHIFT_EQ expression
-                  { $$ = parser.make_assign_op (RSHIFT_EQ, $1, $2, $3); }
                 | assign_lhs EMUL_EQ expression
                   { $$ = parser.make_assign_op (EMUL_EQ, $1, $2, $3); }
                 | assign_lhs EDIV_EQ expression
@@ -2437,14 +2427,6 @@ octave_base_parser::make_binary_op (int op, tree_expression *op1,
       t = octave_value::op_el_ldiv;
       break;
 
-    case LSHIFT:
-      t = octave_value::op_lshift;
-      break;
-
-    case RSHIFT:
-      t = octave_value::op_rshift;
-      break;
-
     case EXPR_LT:
       t = octave_value::op_lt;
       break;
@@ -3001,14 +2983,6 @@ octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
 
     case POW_EQ:
       t = octave_value::op_pow_eq;
-      break;
-
-    case LSHIFT_EQ:
-      t = octave_value::op_lshift_eq;
-      break;
-
-    case RSHIFT_EQ:
-      t = octave_value::op_rshift_eq;
       break;
 
     case EMUL_EQ:

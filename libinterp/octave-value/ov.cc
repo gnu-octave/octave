@@ -189,12 +189,6 @@ octave_value::binary_op_as_string (binary_op op)
     case op_ldiv:
       return "\\";
 
-    case op_lshift:
-      return "<<";
-
-    case op_rshift:
-      return ">>";
-
     case op_lt:
       return "<";
 
@@ -369,12 +363,6 @@ octave_value::assign_op_as_string (assign_op op)
     case op_pow_eq:
       return "^=";
 
-    case op_lshift_eq:
-      return "<<=";
-
-    case op_rshift_eq:
-      return ">>=";
-
     case op_el_mul_eq:
       return ".*=";
 
@@ -420,12 +408,6 @@ octave_value::assign_op_to_binary_op (assign_op op)
 
     case op_pow_eq:
       return op_pow;
-
-    case op_lshift_eq:
-      return op_lshift;
-
-    case op_rshift_eq:
-      return op_rshift;
 
     case op_el_mul_eq:
       return op_el_mul;
@@ -2611,12 +2593,6 @@ octave_value::op_eq_to_binary_op (assign_op op)
 
     case op_pow_eq:
       return op_pow;
-
-    case op_lshift_eq:
-      return op_lshift;
-
-    case op_rshift_eq:
-      return op_rshift;
 
     case op_el_mul_eq:
       return op_el_mul;

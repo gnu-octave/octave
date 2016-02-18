@@ -94,8 +94,6 @@ public:
     op_div,            // mrdivide
     op_pow,            // mpower
     op_ldiv,           // mldivide
-    op_lshift,
-    op_rshift,
     op_lt,             // lt
     op_le,             // le
     op_eq,             // eq
@@ -139,8 +137,6 @@ public:
     op_div_eq,
     op_ldiv_eq,
     op_pow_eq,
-    op_lshift_eq,
-    op_rshift_eq,
     op_el_mul_eq,
     op_el_div_eq,
     op_el_ldiv_eq,
@@ -1507,8 +1503,6 @@ OV_BINOP_FN_OP (op_div, /)
 
 OV_BINOP_FN (op_pow)
 OV_BINOP_FN (op_ldiv)
-OV_BINOP_FN (op_lshift)
-OV_BINOP_FN (op_rshift)
 
 OV_BINOP_FN_OP (op_lt, <)
 OV_BINOP_FN_OP (op_le, <=)

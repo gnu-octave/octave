@@ -1539,8 +1539,6 @@ ANY_INCLUDING_NL (.|{NL})
 "**"  { CMD_OR_OP ("**", POW, false); }
 "&&"  { CMD_OR_OP ("&&", EXPR_AND_AND, true); }
 "||"  { CMD_OR_OP ("||", EXPR_OR_OR, true); }
-"<<"  { CMD_OR_OP ("<<", LSHIFT, false); }
-">>"  { CMD_OR_OP (">>", RSHIFT, false); }
 
 ";" {
     bool at_beginning_of_statement
@@ -1678,8 +1676,6 @@ ANY_INCLUDING_NL (.|{NL})
 ".**=" { CMD_OR_COMPUTED_ASSIGN_OP (".^=", EPOW_EQ); }
 "&="   { CMD_OR_COMPUTED_ASSIGN_OP ("&=", AND_EQ); }
 "|="   { CMD_OR_COMPUTED_ASSIGN_OP ("|=", OR_EQ); }
-"<<="  { CMD_OR_COMPUTED_ASSIGN_OP ("<<=", LSHIFT_EQ); }
-">>="  { CMD_OR_COMPUTED_ASSIGN_OP (">>=", RSHIFT_EQ); }
 
 %{
 // In Matlab, '{' may also trigger command syntax.
@@ -2185,9 +2181,8 @@ lexical_feedback::previous_token_is_binop (void) const
           || tok == EXPR_GT || tok == EXPR_LE || tok == EXPR_LT
           || tok == EXPR_NE || tok == EXPR_NOT || tok == EXPR_OR
           || tok == EXPR_OR_OR || tok == LEFTDIV || tok == LEFTDIV_EQ
-          || tok == LSHIFT || tok == LSHIFT_EQ || tok == MUL_EQ
-          || tok == OR_EQ || tok == POW || tok == POW_EQ
-          || tok == RSHIFT || tok == RSHIFT_EQ || tok == SUB_EQ);
+          || tok == MUL_EQ || tok == OR_EQ || tok == POW
+          || tok == POW_EQ || tok == SUB_EQ);
 }
 
 bool
@@ -3228,10 +3223,6 @@ octave_base_lexer::display_token (int tok)
     case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
     case AND_EQ: std::cerr << "AND_EQ\n"; break;
     case OR_EQ: std::cerr << "OR_EQ\n"; break;
-    case LSHIFT_EQ: std::cerr << "LSHIFT_EQ\n"; break;
-    case RSHIFT_EQ: std::cerr << "RSHIFT_EQ\n"; break;
-    case LSHIFT: std::cerr << "LSHIFT\n"; break;
-    case RSHIFT: std::cerr << "RSHIFT\n"; break;
     case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
     case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
     case EXPR_AND: std::cerr << "EXPR_AND\n"; break;

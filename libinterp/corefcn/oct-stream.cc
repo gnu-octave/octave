@@ -2256,7 +2256,10 @@ printf_value_cache::get_next_value (char type)
             {
               if (curr_val.is_string ())
                 {
-                  std::string sval = curr_val.string_value ();
+                  dim_vector dv (1, curr_val.numel ());
+                  octave_value tmp = curr_val.reshape (dv);
+
+                  std::string sval = tmp.string_value ();
 
                   retval = sval.substr (elt_idx);
 

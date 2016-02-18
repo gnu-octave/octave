@@ -673,3 +673,7 @@
 %!assert (sprintf ("|%X|", "Octave"), "|4F||63||74||61||76||65|");
 %!assert (sprintf ("|%o|", "Octave"), "|117||143||164||141||166||145|");
 
+## bug #47192
+%!assert (sprintf ("%s", repmat ("blah", 2, 1)), "bbllaahh")
+%!assert (sprintf ("%c", repmat ("blah", 2, 1)), "bbllaahh")
+%!assert (sprintf ("%c %c %s", repmat ("blah", 2, 1)), "b b llaahh")

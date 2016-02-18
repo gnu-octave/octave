@@ -604,12 +604,12 @@ array sizes when using the default 32-bit indexing mode:
 
 @example
 @group
-double:         16GB
-single:          8GB
-uint64, int64:  16GB
-uint32, int32:   8GB
-uint16, int16:   4GB
-uint8, int8:     2GB
+double:         16 GB
+single:          8 GB
+uint64, int64:  16 GB
+uint32, int32:   8 GB
+uint16, int16:   4 GB
+uint8, int8:     2 GB
 @end group
 @end example
 

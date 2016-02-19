@@ -1009,14 +1009,14 @@ CPPFLAGS="$save_CPPFLAGS"
 
 ### Check for sndfile
 
-warn_sndfile="sndfile library fails tests.  The audioinfo, audioread and audiowrite functions for reading and writing audio files will not be fully functional."
+warn_sndfile="sndfile library fails tests.  The audioinfo, audioread, and audiowrite functions for reading and writing audio files will not be fully functional."
 
 check_sndfile=no
 AC_ARG_WITH([sndfile],
   [AS_HELP_STRING([--without-sndfile],
     [don't use sndfile library, disable audio file I/O])],
   [if test x"$withval" = x"no"; then
-     warn_sndfile="--without-sndfile specified.  The audioinfo, audioread and audiowrite functions for reading and writing audio files will not be fully functional."
+     warn_sndfile="--without-sndfile specified.  The audioinfo, audioread, and audiowrite functions for reading and writing audio files will not be fully functional."
    else
      check_sndfile=yes
    fi],
@@ -1046,14 +1046,14 @@ AC_SUBST(SNDFILE_LIBS)
 
 ### Check for PortAudio
 
-warn_portaudio="PortAudio library fails tests.  The audioplayer, audiorecorder classes and audiodevinfo function for audio playback and recording will not be fully functional."
+warn_portaudio="PortAudio library fails tests.  The audioplayer, audiorecorder classes, and audiodevinfo function for audio playback and recording will not be fully functional."
 
 check_portaudio=no
 AC_ARG_WITH([portaudio],
   [AS_HELP_STRING([--without-portaudio],
     [don't use PortAudio library, disable audio playback and recording])],
   [if test x"$withval" = x"no"; then
-     warn_portaudio="--without-portaudio specified.  The audioplayer, audiorecorder classes and audiodevinfo function for audio playback and recording will not be fully functional."
+     warn_portaudio="--without-portaudio specified.  The audioplayer, audiorecorder classes, and audiodevinfo function for audio playback and recording will not be fully functional."
    else
      check_portaudio=yes
    fi],

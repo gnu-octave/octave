@@ -174,7 +174,7 @@ cat <<EOF
 %% segfault tests from Fabian@isas-berlin.de
 %% Note that the last four do not fail, but rather give a warning
 %% of a singular matrix, which is consistent with the full matrix
-%% behaviour.  They are therefore disabled.
+%% behavior.  They are therefore disabled.
 %!testif HAVE_UMFPACK
 %! assert (inv (sparse ([1,1;1,1+i])), sparse ([1-1i,1i;1i,-1i]), 10*eps);
 %#!error inv ( sparse ([1,1;1,1]  ) );

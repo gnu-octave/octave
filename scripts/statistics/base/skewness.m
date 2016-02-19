@@ -146,7 +146,7 @@ endfunction
 %!assert (skewness ([1:5 10; 1:5 10],  1, 2), 1.051328089232020 * [1; 1], 2*eps)
 %!assert (skewness ([1:5 10; 1:5 10], [], 2), 1.051328089232020 * [1; 1], 2*eps)
 
-## Test behaviour on single input
+## Test behavior on single input
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
 

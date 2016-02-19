@@ -207,10 +207,10 @@ Summary of important user-visible changes for version 4.0:
     change was made for Matlab compatibility.
 
  ** For compatibility with Matlab, the "ismatrix (x)" function now only
-    checks the dimension of "x".  The old behaviour of "ismatrix" is
+    checks the dimension of "x".  The old behavior of "ismatrix" is
     obtained by "isnumeric (x) || islogical (x) || ischar (x)".
 
- ** The nextpow2 function behaviour has been changed for vector inputs.
+ ** The nextpow2 function behavior has been changed for vector inputs.
     Instead of computing `nextpow2 (length (x))', it will now compute
     nextpow2 for each element of the input.  This change is Matlab
     compatible, and also prevents bugs for "vectors" of length 1.

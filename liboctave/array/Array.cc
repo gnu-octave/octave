@@ -738,7 +738,7 @@ Array<T>::index (const idx_vector& i) const
       //   b(1:2) gives ones (2,1)
       //   b(ones (2)) gives ones (2) etc.
       //
-      // As you can see, the behaviour is weird, but the tests end up pretty
+      // As you can see, the behavior is weird, but the tests end up pretty
       // simple.  Nah, I don't want to suggest that this is ad hoc :)
 
       if (ndims () == 2 && n != 1 && rd.is_vector ())
@@ -908,7 +908,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
     err_invalid_resize ();
 
   dim_vector dv;
-  // This is driven by Matlab's behaviour of giving a *row* vector
+  // This is driven by Matlab's behavior of giving a *row* vector
   // on some out-of-bounds assignments.  Specifically, Matlab
   // allows a(i) with out-of-bouds i when a is either of 0x0, 1x0,
   // 1x1, 0xN, and gives a row vector in all cases (yes, even the

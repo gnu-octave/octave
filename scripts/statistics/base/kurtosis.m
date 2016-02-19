@@ -145,7 +145,7 @@ endfunction
 %!assert (kurtosis ([1:5 10; 1:5 10],  1, 2), 2.9786509002956195 * [1; 1], 8 * eps)
 %!assert (kurtosis ([1:5 10; 1:5 10], [], 2), 2.9786509002956195 * [1; 1], 8 * eps)
 
-## Test behaviour on single input
+## Test behavior on single input
 %!assert (kurtosis (single ([1:5 10])), single (2.9786513), eps ("single"))
 %!assert (kurtosis (single ([1 2]), 0), single (NaN))
 

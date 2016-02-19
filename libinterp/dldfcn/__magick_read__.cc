@@ -138,7 +138,7 @@ get_depth (Magick::Image& img)
 
 // We need this in case one of the sides of the image being read has
 // width 1. In those cases, the type will come as scalar instead of range
-// since that's the behaviour of the colon operator (1:1:1 will be a scalar,
+// since that's the behavior of the colon operator (1:1:1 will be a scalar,
 // not a range).
 static Range
 get_region_range (const octave_value& region)

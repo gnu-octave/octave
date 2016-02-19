@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 
 // That function implements the IKJ and JKI variants of Gaussian elimination to
-// perform the ILUTP decomposition.  The behaviour is controlled by milu
+// perform the ILUTP decomposition.  The behavior is controlled by milu
 // parameter.  If milu = ['off'|'col'] the JKI version is performed taking
 // advantage of CCS format of the input matrix.  If milu = 'row' the input
 // matrix has to be transposed to obtain the equivalent CRS structure so we can
@@ -528,7 +528,7 @@ Undocumented internal function.\n\
 }
 
 // That function implements the IKJ and JKI variants of gaussian elimination
-// to perform the ILUTP decomposition.  The behaviour is controlled by milu
+// to perform the ILUTP decomposition.  The behavior is controlled by milu
 // parameter.  If milu = ['off'|'col'] the JKI version is performed taking
 // advantage of CCS format of the input matrix.  Row pivoting is performed.
 // If milu = 'row' the input matrix has to be transposed to obtain the

@@ -99,12 +99,12 @@ file_ops::instance_ok (void)
 
 // The default value of tilde_additional_prefixes.  This is set to
 // whitespace preceding a tilde so that simple programs which do not
-// perform any word separation get desired behaviour.
+// perform any word separation get desired behavior.
 static const char *default_prefixes[] = { " ~", "\t~", ":~", 0 };
 
 // The default value of tilde_additional_suffixes.  This is set to
 // whitespace or newline so that simple programs which do not perform
-// any word separation get desired behaviour.
+// any word separation get desired behavior.
 static const char *default_suffixes[] = { " ", "\n", ":", 0 };
 
 // If non-null, this contains the address of a function that the

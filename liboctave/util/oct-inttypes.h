@@ -382,7 +382,7 @@ public:
     return static_cast<T> (0);
   }
 
-  // the overflow behaviour for unsigned integers is guaranteed by C/C++,
+  // the overflow behavior for unsigned integers is guaranteed by C/C++,
   // so the following should always work.
   static T
   add (T x, T y)
@@ -548,7 +548,7 @@ public:
   {
 #if defined (OCTAVE_HAVE_FAST_INT_OPS)
     // This is close to how GCC does std::abs, but we can't just use std::abs,
-    // because its behaviour for INT_MIN is undefined and the compiler could
+    // because its behavior for INT_MIN is undefined and the compiler could
     // discard the following test.
     T m = x >> std::numeric_limits<T>::digits;
     T y = (x ^ m) - m;

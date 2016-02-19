@@ -102,7 +102,7 @@ along with Octave; see the file COPYING.  If not, see
    /dev/urandom defined.
 
    Uses implicit -Di386 or explicit -DHAVE_X86_32 to determine if CPU=x86.
-   You can force X86 behaviour with -DUSE_X86_32=1, or suppress it with
+   You can force X86 behavior with -DUSE_X86_32=1, or suppress it with
    -DUSE_X86_32=0. You should also consider -march=i686 or similar for
    extra performance. Check whether -DUSE_X86_32=0 is faster on 64-bit
    x86 architectures.

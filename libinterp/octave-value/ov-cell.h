@@ -182,7 +182,7 @@ private:
   void clear_cellstr_cache (void) const
   { cellstr_cache.reset (); }
 
-  mutable std::auto_ptr<Array<std::string> > cellstr_cache;
+  mutable std::unique_ptr<Array<std::string> > cellstr_cache;
 
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

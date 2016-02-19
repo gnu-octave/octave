@@ -448,8 +448,8 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
       return this;
     }
 
-  // This is wrapped in auto_ptr so that we don't leak on out-of-memory.
-  std::auto_ptr<idx_vector_rep> new_rep (
+  // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
+  std::unique_ptr<idx_vector_rep> new_rep (
     new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
 
   if (ext > len*xlog2 (1.0 + len))
@@ -521,8 +521,8 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
 idx_vector::idx_base_rep *
 idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
 {
-  // This is wrapped in auto_ptr so that we don't leak on out-of-memory.
-  std::auto_ptr<idx_vector_rep> new_rep (
+  // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
+  std::unique_ptr<idx_vector_rep> new_rep (
     new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
 
   if (ext > len*xlog2 (1.0 + len))

@@ -68,7 +68,7 @@ public:
     if (! empty ())
       {
         // No leak on exception!
-        std::auto_ptr<elem> ptr (lifo.top ());
+        std::unique_ptr<elem> ptr (lifo.top ());
         lifo.pop ();
         ptr->run ();
       }

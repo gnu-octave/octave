@@ -53,7 +53,7 @@ public:
     if (! empty ())
       {
         // No leak on exception!
-        std::auto_ptr<elem> ptr (fifo.front ());
+        std::unique_ptr<elem> ptr (fifo.front ());
         fifo.pop ();
         ptr->run ();
       }

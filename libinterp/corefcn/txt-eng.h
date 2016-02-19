@@ -440,7 +440,7 @@ private:
 inline text_element*
 text_parser::parse (const std::string& s, const caseless_str& interpreter)
 {
-  std::auto_ptr<text_parser> parser;
+  std::unique_ptr<text_parser> parser;
 
   if (interpreter.compare ("tex"))
     parser.reset (new text_parser_tex ());

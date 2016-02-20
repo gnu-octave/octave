@@ -81,7 +81,7 @@
 ##
 ## @itemize @bullet
 ## @item @nospell{Becker, R. A., Chambers, J. M. and Wilks, A. R.} (1988)
-## The New S Language.  Wadsworth & Brooks/Cole.
+## The New S Language.  @nospell{Wadsworth & Brooks/Cole}.
 ##
 ## @item @nospell{Hyndman, R. J. and Fan, Y.} (1996) Sample quantiles in
 ## statistical packages, American Statistician, 50, 361--365.

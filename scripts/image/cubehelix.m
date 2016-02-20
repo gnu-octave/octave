@@ -23,7 +23,7 @@
 ##
 ## This colormap varies from black to white going though blue, green, and red
 ## tones while maintaining a monotonically increasing perception of intensity.
-## This is achieved by transversing a color cube from black to white through
+## This is achieved by traversing a color cube from black to white through
 ## a helix, hence the name cubehelix, while taking into account the perceived
 ## brightness of each channel according to the NTSC specifications from 1953.
 ##

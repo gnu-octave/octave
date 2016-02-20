@@ -144,7 +144,7 @@ is what the @code{polyfit} function does.
 
 In situations where a single polynomial isn't good enough, a solution
 is to use several polynomials pieced together.  The function
-@code{splinefit} fits a peicewise polynomial (spline) to a set of
+@code{splinefit} fits a piecewise polynomial (spline) to a set of
 data.
 
 @DOCSTRING(splinefit)
@@ -349,7 +349,7 @@ robust fitting (@var{beta} = 0) is also included.}
 @end float
 @end ifnotinfo
 
-A very specific form of polynomial interpretation is the Pade' approximant.
+A very specific form of polynomial interpretation is the Pad@'e approximant.
 For control systems, a continuous-time delay can be modeled very simply with
 the approximant.
 

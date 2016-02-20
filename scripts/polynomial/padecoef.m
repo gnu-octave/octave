@@ -31,7 +31,8 @@
 ## $$ Q_n(s) = P_n(-s) $$
 ## @end tex
 ## @ifnottex
-## The Pad@'e approximant of exp (-sT) is defined by the following equation
+## The Pad@'e approximant of @nospell{@code{exp (-sT)}} is defined by the
+## following equation
 ##
 ## @example
 ## @group
@@ -41,8 +42,8 @@
 ## @end group
 ## @end example
 ##
-## Where both Pn(s) and Qn(s) are @var{N}th-order rational functions defined by
-## the following expressions
+## Where both @nospell{Pn(s) and Qn(s)} are @var{N}th-order rational functions
+## defined by the following expressions
 ##
 ## @example
 ## @group

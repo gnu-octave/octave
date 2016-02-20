@@ -94,7 +94,7 @@ constants such as the base of the natural logarithm (e) and the ratio
 of a circle's circumference to its diameter (pi) are pre-defined.
 
 @noindent
-For example, to verify Euler's Identity,
+For example, to verify @nospell{Euler's} Identity,
 @tex
 $$e^{\imath\pi} = -1$$
 @end tex
@@ -423,7 +423,7 @@ Info is provided in this manual, @pxref{Getting Help}.
 @node Conventions
 @section Conventions
 
-This section explains the notational conventions that are used in this
+This section explains the notation conventions that are used in this
 manual.  You may want to skip this section and refer back to it later.
 
 @menu

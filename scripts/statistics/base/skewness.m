@@ -92,10 +92,8 @@ function y = skewness (x, flag, dim)
 
   if (nargin < 2 || isempty (flag))
     flag = 1;  # default: do not use the "bias corrected" version
-  else
-    if (! isscalar (flag) || (flag != 0 && flag != 1))
-      error ("skewness: FLAG must be 0 or 1");
-    endif
+  elseif (! isscalar (flag) || (flag != 0 && flag != 1))
+    error ("skewness: FLAG must be 0 or 1");
   endif
 
   nd = ndims (x);
@@ -104,12 +102,12 @@ function y = skewness (x, flag, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim)) || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("skewness: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   sz(dim) = 1;
 
   x = center (x, dim);   # center also promotes integer, logical to double
@@ -136,6 +134,7 @@ endfunction
 %!assert (skewness ([-1, 0, 2]) > 0)
 %!assert (skewness ([-3, 0, 1]) == -1 * skewness ([-1, 0, 3]))
 %!assert (skewness (ones (3, 5)), NaN (1, 5))
+%!assert (skewness (1, [], 3), NaN)
 
 %!test
 %! x = [0; 0; 0; 1];
@@ -166,5 +165,4 @@ endfunction
 %!error <DIM must be an integer> skewness (1, [], ones (2,2))
 %!error <DIM must be an integer> skewness (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> skewness (1, [], 0)
-%!error <DIM must be .* a valid dimension> skewness (1, [], 3)
 

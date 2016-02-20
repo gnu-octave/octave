@@ -75,8 +75,7 @@ function retval = std (x, opt = 0, dim)
 
   if (isempty (opt))
     opt = 0;
-  endif
-  if (opt != 0 && opt != 1)
+  elseif (! isscalar (opt) || (opt != 0 && opt != 1))
     error ("std: normalization OPT must be 0 or 1");
   endif
 
@@ -86,13 +85,12 @@ function retval = std (x, opt = 0, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("std: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   if (n == 1 || isempty (x))
     if (isa (x, "single"))
       retval = zeros (sz, "single");
@@ -113,17 +111,21 @@ endfunction
 %! assert (std (y), sqrt (2), sqrt (eps));
 %! assert (std (x, 0, 2), zeros (10, 1));
 
-%!assert (std (ones (3, 1, 2), 0, 2), zeros (3, 1, 2));
-%!assert (std ([1 2], 0), sqrt (2)/2, 5*eps);
-%!assert (std ([1 2], 1), 0.5, 5*eps);
-%!assert (std (1), 0);
-%!assert (std (single (1)), single (0));
-%!assert (std ([]), []);
-%!assert (std (ones (1,3,0,2)), ones (1,3,0,2));
+%!assert (std (ones (3, 1, 2), 0, 2), zeros (3, 1, 2))
+%!assert (std ([1 2], 0), sqrt (2)/2, 5*eps)
+%!assert (std ([1 2], 1), 0.5, 5*eps)
+%!assert (std (1), 0)
+%!assert (std (single (1)), single (0))
+%!assert (std ([]), [])
+%!assert (std (ones (1,3,0,2)), ones (1,3,0,2))
+%!assert (std ([1 2 3], [], 3), [0 0 0])
 
 ## Test input validation
 %!error std ()
 %!error std (1, 2, 3, 4)
-%!error std (['A'; 'B'])
-%!error std (1, -1)
+%!error <X must be a numeric> std (['A'; 'B'])
+%!error <OPT must be 0 or 1> std (1, 2)
+%!error <DIM must be an integer> std (1, [], ones (2,2))
+%!error <DIM must be an integer> std (1, [], 1.5)
+%!error <DIM must be .* a valid dimension> std (1, [], 0)
 

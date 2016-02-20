@@ -75,8 +75,7 @@ function retval = var (x, opt = 0, dim)
 
   if (isempty (opt))
     opt = 0;
-  endif
-  if (opt != 0 && opt != 1)
+  elseif (opt != 0 && opt != 1)
     error ("var: normalization OPT must be 0 or 1");
   endif
 
@@ -86,13 +85,12 @@ function retval = var (x, opt = 0, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("var: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   if (n == 1)
     if (isa (x, "single"))
       retval = zeros (sz, "single");
@@ -113,11 +111,17 @@ endfunction
 %!assert (var ([1,2,3]), 1)
 %!assert (var ([1,2,3], 1), 2/3, eps)
 %!assert (var ([1,2,3], [], 1), [0,0,0])
+%!assert (var ([1,2,3], [], 3), [0,0,0])
 
 ## Test input validation
 %!error var ()
 %!error var (1,2,3,4)
-%!error var (['A'; 'B'])
-%!error var (1, -1)
-%!error var ([], 1)
+%!error <X must be a numeric> var (['A'; 'B'])
+%!error <OPT must be 0 or 1> var (1, -1)
+%!error <FLAG must be 0 or 1> skewness (1, 2)
+%!error <FLAG must be 0 or 1> skewness (1, [1 0])
+%!error <DIM must be an integer> var (1, [], ones (2,2))
+%!error <DIM must be an integer> var (1, [], 1.5)
+%!error <DIM must be .* a valid dimension> var (1, [], 0)
+%!error <X must not be empty> var ([], 1)
 

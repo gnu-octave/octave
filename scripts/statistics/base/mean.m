@@ -105,13 +105,12 @@ function y = mean (x, opt1, opt2)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-      || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("mean: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
 
   if (strcmp (opt, "a"))
     y = sum (x, dim) / n;
@@ -147,15 +146,16 @@ endfunction
 %!assert (mean ([4 4 2], "h"), 3)
 %!assert (mean (logical ([1 0 1 1])), 0.75)
 %!assert (mean (single ([1 0 1 1])), single (0.75))
+%!assert (mean ([1 2], 3), [1 2])
 
 ## Test input validation
 %!error mean ()
 %!error mean (1, 2, 3, 4)
-%!error mean ({1:5})
-%!error mean (1, 2, 3)
-%!error mean (1, ones (2,2))
-%!error mean (1, 1.5)
-%!error mean (1, 0)
-%!error mean (1, 3)
-%!error mean (1, "b")
+%!error <X must be a numeric> mean ({1:5})
+%!error <OPT must be a string> mean (1, 2, 3)
+%!error <DIM must be an integer> mean (1, ones (2,2))
+%!error <DIM must be an integer> mean (1, 1.5)
+%!error <DIM must be .* a valid dimension> mean (1, 0)
+%!error <X must not contain any negative values> mean ([1 -1], "g")
+%!error <option 'b' not recognized> mean (1, "b")
 

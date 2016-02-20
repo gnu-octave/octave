@@ -59,13 +59,12 @@ function retval = center (x, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("center: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
 
   if (n == 0)
     retval = x;
@@ -84,12 +83,12 @@ endfunction
 %!assert (center (ones (3,2,0,2, "single")), zeros (3,2,0,2, "single"))
 %!assert (center (magic (3)), [3,-4,1;-2,0,2;-1,4,-3])
 %!assert (center ([1 2 3; 6 5 4], 2), [-1 0 1; 1 0 -1])
+%!assert (center (1, 3), 0)
 
 ## Test input validation
 %!error center ()
 %!error center (1, 2, 3)
-%!error center (1, ones (2,2))
-%!error center (1, 1.5)
-%!error center (1, 0)
-%!error center (1, 3)
+%!error <DIM must be an integer> center (1, ones (2,2))
+%!error <DIM must be an integer> center (1, 1.5)
+%!error <DIM must be .* a valid dimension> center (1, 0)
 

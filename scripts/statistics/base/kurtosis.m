@@ -105,12 +105,12 @@ function y = kurtosis (x, flag, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (! (isscalar (dim) && dim == fix (dim)) || ! (1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("kurtosis: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   sz(dim) = 1;
 
   x = center (x, dim);   # center also promotes integer, logical to double
@@ -140,6 +140,7 @@ endfunction
 
 %!assert (kurtosis ([-3, 0, 1]) == kurtosis ([-1, 0, 3]))
 %!assert (kurtosis (ones (3, 5)), NaN (1, 5))
+%!assert (kurtosis (1, [], 3), NaN)
 
 %!assert (kurtosis ([1:5 10; 1:5 10],  0, 2), 5.4377317925288901 * [1; 1], 8 * eps)
 %!assert (kurtosis ([1:5 10; 1:5 10],  1, 2), 2.9786509002956195 * [1; 1], 8 * eps)
@@ -165,5 +166,4 @@ endfunction
 %!error <DIM must be an integer> kurtosis (1, [], ones (2,2))
 %!error <DIM must be an integer> kurtosis (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> kurtosis (1, [], 0)
-%!error <DIM must be .* a valid dimension> kurtosis (1, [], 3)
 

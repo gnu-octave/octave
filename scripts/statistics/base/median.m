@@ -70,13 +70,12 @@ function retval = median (x, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("median: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   k = floor ((n+1) / 2);
   if (mod (n, 2) == 1)
     retval = nth_element (x, k, dim);
@@ -102,6 +101,7 @@ endfunction
 
 %!assert (median (single ([1,2,3])), single (2))
 %!assert (median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN])
+%!assert (median ([1,2], 3), [1,2])
 
 ## Test multidimensional arrays (bug #35679)
 %!shared a, b, x, y
@@ -116,9 +116,9 @@ endfunction
 ## Test input validation
 %!error median ()
 %!error median (1, 2, 3)
-%!error median ({1:5})
-%!error median (['A'; 'B'])
-%!error median (1, ones (2,2))
-%!error median (1, 1.5)
-%!error median (1, 0)
+%!error <X must be a numeric> median ({1:5})
+%!error <X cannot be an empty matrix> median ([])
+%!error <DIM must be an integer> median (1, ones (2,2))
+%!error <DIM must be an integer> median (1, 1.5)
+%!error <DIM must be .* a valid dimension> median (1, 0)
 

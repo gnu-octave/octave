@@ -161,12 +161,12 @@ function m = moment (x, p, opt1, opt2)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (! (isscalar (dim) && dim == fix (dim)) || ! (1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("moment: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
 
   if (! any (type == "r"))
     x = center (x, dim);
@@ -191,6 +191,8 @@ endfunction
 
 %!assert (moment (single ([1 2 3]), 1, "r"), single (2))
 
+%!assert (moment (1, 2, 4), 0)
+
 ## Test input validation
 %!error moment ()
 %!error moment (1)
@@ -202,5 +204,4 @@ endfunction
 %!error <TYPE must be a string> moment (1, 2, 3, 4)
 %!error <DIM must be an integer and a valid dimension> moment (1, 2, ones (2,2))
 %!error <DIM must be an integer and a valid dimension> moment (1, 2, 1.5)
-%!error <DIM must be an integer and a valid dimension> moment (1, 2, 4)
 

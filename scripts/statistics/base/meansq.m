@@ -64,13 +64,12 @@ function y = meansq (x, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("mean: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  y = sumsq (x, dim) / sz(dim);
+  y = sumsq (x, dim) / size (x, dim);
 
 endfunction
 
@@ -79,13 +78,13 @@ endfunction
 %!assert (meansq (single (1:5)), single (11))
 %!assert (meansq (magic (4)), [94.5, 92.5, 92.5, 94.5])
 %!assert (meansq (magic (4), 2), [109.5; 77.5; 77.5; 109.5])
+%!assert (meansq ([1 2], 3), [1 4])
 
 ## Test input validation
 %!error meansq ()
 %!error meansq (1, 2, 3)
-%!error meansq (['A'; 'B'])
-%!error meansq (1, ones (2,2))
-%!error meansq (1, 1.5)
-%!error meansq (1, 0)
-%!error meansq (1, 3)
+%!error <X must be a numeric> meansq (['A'; 'B'])
+%!error <DIM must be an integer> meansq (1, ones (2,2))
+%!error <DIM must be an integer> meansq (1, 1.5)
+%!error <DIM must be .* a valid dimension> meansq (1, 0)
 

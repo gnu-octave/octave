@@ -962,7 +962,7 @@ operator @samp{>}.  For example, If @file{file.m} has a subfunction\n\
 specified, it defaults to the first executable line in the file\n\
 @file{func.m}.  Multiple lines can be specified in a single command; when\n\
 function syntax is used, the lines may also be passed as a single vector\n\
-argument (@code{[@var{line1}, @var {line2}, @dots{}]}).\n\
+argument (@code{[@var{line1}, @var{line2}, @dots{}]}).\n\
 \n\
 @var{condition} is any Octave expression that can be evaluated in the code\n\
 context that exists at the breakpoint.  When the breakpoint is encountered,\n\

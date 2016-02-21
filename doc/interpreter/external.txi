@@ -356,7 +356,9 @@ The typical way to extract a matrix or array from the input arguments of
 @w{@code{DEFUN_DLD}} function is as follows
 
 @example
+@group
 @EXAMPLEFILE(addtwomatrices.cc)
+@end group
 @end example
 
 To avoid segmentation faults causing Octave to abort this function

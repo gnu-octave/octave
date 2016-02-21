@@ -49,6 +49,9 @@
 ##           d =  4
 ##         @}
 ## @end group
+## @end example
+##
+## @example
 ## @group
 ## t = struct ("d", @{@}, "c", @{@}, "b", @{@}, "a", @{@});
 ## t2 = orderfields (s, t)
@@ -60,6 +63,9 @@
 ##           a =  1
 ##         @}
 ## @end group
+## @end example
+##
+## @example
 ## @group
 ## t3 = orderfields (s, [3, 2, 4, 1])
 ##      @result{} t3 =
@@ -70,6 +76,9 @@
 ##           d =  4
 ##         @}
 ## @end group
+## @end example
+##
+## @example
 ## @group
 ## [t4, p] = orderfields (s, @{"d", "c", "b", "a"@})
 ##      @result{} t4 =

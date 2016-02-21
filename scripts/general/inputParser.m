@@ -108,7 +108,10 @@
 ##   ## for example, get the tolerance input with p.Results.tolerance
 ## endfunction
 ## @end group
+## @end example
 ##
+## @example
+## @group
 ## check ("mech");           # valid, use defaults for other arguments
 ## check ();                 # error, one argument is mandatory
 ## check (1);                # error, since ! ischar
@@ -124,6 +127,7 @@
 ## ## following returns an error since not all optional arguments,
 ## ## `path' and `mat', were given before the named argument `type'.
 ## check ("mech", "~/dev", "type", "linear");
+## @end group
 ## @end example
 ##
 ## @emph{Note 1}: A function can have any mixture of the four API types but

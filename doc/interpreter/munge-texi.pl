@@ -77,7 +77,7 @@ TXI_LINE: while (<STDIN>)
       print "\n" if (eof and substr ($_, -1) ne "\n");
     }
     close (EXAMPFH);
-    print '@end verbatim',"\n\n";
+    print '@end verbatim',"\n";
 
     next TXI_LINE;
   }

@@ -51,11 +51,13 @@ $$\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
+\n\
 @example\n\
 @group\n\
 psi (z) = d (log (gamma (z))) / dx\n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 \n\
 When computing the digamma function (when @var{k} equals zero), @var{z}\n\

@@ -89,9 +89,9 @@ endfunction
 %!assert (binopdf ([x, NaN], 2, 0.5), [y, NaN], tol)
 
 ## Test Special input values
-%!assert (binopdf (0, 3, 0), 1);
-%!assert (binopdf (2, 2, 1), 1);
-%!assert (binopdf (1, 2, 1), 0);
+%!assert (binopdf (0, 3, 0), 1)
+%!assert (binopdf (2, 2, 1), 1)
+%!assert (binopdf (1, 2, 1), 0)
 
 ## Test class of input preserved
 %!assert (binopdf (single ([x, NaN]), 2, 0.5), single ([y, NaN]))

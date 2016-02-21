@@ -22,7 +22,7 @@
 
 %!shared a
 %! a = 2;
-%!assert (a(1), 2);
+%!assert (a(1), 2)
 %!error id=Octave:index-out-of-bounds a(logical ([1,1]))
 
 %!shared a

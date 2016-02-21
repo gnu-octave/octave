@@ -324,13 +324,13 @@
 %!shared x1, x2, x3
 %!test x1 = Blork ();
 %!test x2 = [x1 x1];
-%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]));
+%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]))
 %!test x2 = [x1 51];
-%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]));
+%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]))
 %!test x3 = [x2; x2];
-%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]));
+%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
 %!test x3 = [x2; [51 x1]];
-%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]));
+%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
 %!error <dimension mismatch> x4 = [x1  x3];
 %!error <dimension mismatch> x4 = [x1; x3];
 

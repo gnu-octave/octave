@@ -1123,8 +1123,8 @@ tree_matrix::accept (tree_walker& tw)
 
 /*
 ## test concatenation with all zero matrices
-%!assert ([ "" 65*ones(1,10) ], "AAAAAAAAAA");
-%!assert ([ 65*ones(1,10) "" ], "AAAAAAAAAA");
+%!assert ([ "" 65*ones(1,10) ], "AAAAAAAAAA")
+%!assert ([ 65*ones(1,10) "" ], "AAAAAAAAAA")
 
 %!test
 %! c = {"foo"; "bar"; "bazoloa"};

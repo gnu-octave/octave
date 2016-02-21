@@ -453,11 +453,11 @@ Year (1970-).\n\
 }
 
 /*
-%!assert (ischar (strftime ("%%%n%t%H%I%k%l", localtime (time ()))));
-%!assert (ischar (strftime ("%M%p%r%R%s%S%T", localtime (time ()))));
-%!assert (ischar (strftime ("%X%Z%z%a%A%b%B", localtime (time ()))));
-%!assert (ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ()))));
-%!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))));
+%!assert (ischar (strftime ("%%%n%t%H%I%k%l", localtime (time ()))))
+%!assert (ischar (strftime ("%M%p%r%R%s%S%T", localtime (time ()))))
+%!assert (ischar (strftime ("%X%Z%z%a%A%b%B", localtime (time ()))))
+%!assert (ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ()))))
+%!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))))
 
 %!error strftime ()
 %!error strftime ("foo", 1)

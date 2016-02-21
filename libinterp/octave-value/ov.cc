@@ -3034,8 +3034,8 @@ The original variable value is restored when exiting the function.\n\
 %!  [~, ~, p] = lu ([1,2;3,4]);
 %!endfunction
 
-%!assert (typeinfo (__test_dpm__ (false)), "permutation matrix");
-%!assert (typeinfo (__test_dpm__ (true)), "matrix");
+%!assert (typeinfo (__test_dpm__ (false)), "permutation matrix")
+%!assert (typeinfo (__test_dpm__ (true)), "matrix")
 */
 
 DEFUN (disable_diagonal_matrix, args, nargout,
@@ -3069,17 +3069,17 @@ The original variable value is restored when exiting the function.\n\
 
 %!shared x, xi, fx, fxi
 %!  [x, xi, fx, fxi] = __test_ddm__ (false);
-%!assert (typeinfo (x), "diagonal matrix");
-%!assert (typeinfo (xi), "complex diagonal matrix");
-%!assert (typeinfo (fx), "float diagonal matrix");
-%!assert (typeinfo (fxi), "float complex diagonal matrix");
+%!assert (typeinfo (x), "diagonal matrix")
+%!assert (typeinfo (xi), "complex diagonal matrix")
+%!assert (typeinfo (fx), "float diagonal matrix")
+%!assert (typeinfo (fxi), "float complex diagonal matrix")
 
 %!shared x, xi, fx, fxi
 %!  [x, xi, fx, fxi] = __test_ddm__ (true);
-%!assert (typeinfo (x), "matrix");
-%!assert (typeinfo (xi), "complex matrix");
-%!assert (typeinfo (fx), "float matrix");
-%!assert (typeinfo (fxi), "float complex matrix");
+%!assert (typeinfo (x), "matrix")
+%!assert (typeinfo (xi), "complex matrix")
+%!assert (typeinfo (fx), "float matrix")
+%!assert (typeinfo (fxi), "float complex matrix")
 */
 
 DEFUN (disable_range, args, nargout,
@@ -3111,7 +3111,7 @@ The original variable value is restored when exiting the function.\n\
 %!  r = base:limit;
 %!endfunction
 
-%!assert (typeinfo (__test_dr__ (false)), "range");
-%!assert (typeinfo (__test_dr__ (true)), "matrix");
+%!assert (typeinfo (__test_dr__ (false)), "range")
+%!assert (typeinfo (__test_dr__ (true)), "matrix")
 */
 

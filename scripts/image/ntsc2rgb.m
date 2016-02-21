@@ -104,7 +104,7 @@ endfunction
 %! assert (ntsc2rgb (rgb2ntsc (rgb_img)), rgb_img, 1e-3);
 
 ## test cropping of rgb output
-%!assert (ntsc2rgb ([1.5 0 0]), [1   1   1]);
+%!assert (ntsc2rgb ([1.5 0 0]), [1   1   1])
 
 ## Test scaling of output.  After conversion, cut of negative values
 ## and scaling of all the others relative to the maximum above 1.

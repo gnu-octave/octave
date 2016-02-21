@@ -1749,9 +1749,9 @@ is derived.\n\
 }
 
 /*
-%!assert (class (1.1), "double");
-%!assert (class (single (1.1)), "single");
-%!assert (class (uint8 (1)), "uint8");
+%!assert (class (1.1), "double")
+%!assert (class (single (1.1)), "single")
+%!assert (class (uint8 (1)), "uint8")
 %!testif HAVE_JAVA
 %! jobj = javaObject ("java.lang.StringBuffer");
 %! assert (class (jobj), "java.lang.StringBuffer");

@@ -2014,9 +2014,9 @@ A(1)\n\
 %! assert (struct2cell (s), vals');
 %! assert (fieldnames (s), keys');
 
-%!assert (cell2struct ({1; 2}, {"a"; "b"}), struct ("a", 1, "b", 2));
+%!assert (cell2struct ({1; 2}, {"a"; "b"}), struct ("a", 1, "b", 2))
 
-%!assert (cell2struct ({}, {"f"}, 3), struct ("f", {}));
+%!assert (cell2struct ({}, {"f"}, 3), struct ("f", {}))
 */
 
 // FIXME: we should be including builtin-defun-decls.h but doing that

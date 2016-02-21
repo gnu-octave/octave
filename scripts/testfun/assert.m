@@ -447,8 +447,8 @@ endfunction
 %!error <Abs err 4.4409e-0?16 exceeds tol> assert (3, 3+2*eps, eps)
 
 ## vectors
-%!assert ([1,2,3],[1,2,3]);
-%!assert ([1;2;3],[1;2;3]);
+%!assert ([1,2,3],[1,2,3])
+%!assert ([1;2;3],[1;2;3])
 %!error <Abs err 1 exceeds tol 0> assert ([2,2,3,3],[1,2,3,4]);
 %!error <Abs err 1 exceeds tol 0.5> assert ([2,2,3,3],[1,2,3,4],0.5);
 %!error <Rel err 1 exceeds tol 0.1> assert ([2,2,3,5],[1,2,3,4],-0.1);
@@ -460,7 +460,7 @@ endfunction
 %!error <Dimensions don't match> assert ([1;2;3],[1;2]);
 
 ## matrices
-%!assert ([1,2;3,4],[1,2;3,4]);
+%!assert ([1,2;3,4],[1,2;3,4])
 %!error <\(1,2\)\s+4\s+2> assert ([1,4;3,4],[1,2;3,4])
 %!error <Dimensions don't match> assert ([1,3;2,4;3,5],[1,2;3,4])
 %!test  # 2-D matrix

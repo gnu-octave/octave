@@ -280,7 +280,7 @@
 %!assert (.123_456, .123456)
 %!assert (123_456.123_456, 123456.123456)
 %!assert (0xAB_CD, 43981)
-%!assert (2e0_1, 20);
+%!assert (2e0_1, 20)
 
 ## Test binary constants
 %!assert (0b101, 5)

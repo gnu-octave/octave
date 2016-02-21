@@ -51,7 +51,7 @@
 %! s.a = 2;
 %! fail ("isfield (s, 'a', 3);", "Invalid call to isfield");
 
-%!assert (isfield (1, "m") == 0);
+%!assert (isfield (1, "m") == 0)
 
 %!test
 %! s.a = 2;

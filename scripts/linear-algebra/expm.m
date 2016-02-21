@@ -143,8 +143,8 @@ function r = expm (A)
 endfunction
 
 
-%!assert (norm (expm ([1 -1;0 1]) - [e -e; 0 e]) < 1e-5);
-%!assert (expm ([1 -1 -1;0 1 -1; 0 0 1]), [e -e -e/2; 0 e -e; 0 0 e], 1e-5);
+%!assert (norm (expm ([1 -1;0 1]) - [e -e; 0 e]) < 1e-5)
+%!assert (expm ([1 -1 -1;0 1 -1; 0 0 1]), [e -e -e/2; 0 e -e; 0 0 e], 1e-5)
 
 %!assert (expm (10), expm (10))
 %!assert (full (expm (eye (3))), expm (full (eye (3))))

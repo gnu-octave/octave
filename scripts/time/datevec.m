@@ -367,7 +367,7 @@ endfunction
 %! assert (d, [1 2; 3 4]);
 
 ## Other tests
-%!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]');
+%!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]')
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));

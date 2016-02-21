@@ -629,10 +629,10 @@ them.\n\
 %!assert (exist ("print_usage", "dir"), 0)
 
 ## Don't search path for rooted relative filenames
-%!assert (exist ("plot.m", "file"), 2);
-%!assert (exist ("./plot.m", "file"), 0);
-%!assert (exist ("./%nonexistentfile%", "file"), 0);
-%!assert (exist ("%nonexistentfile%", "file"), 0);
+%!assert (exist ("plot.m", "file"), 2)
+%!assert (exist ("./plot.m", "file"), 0)
+%!assert (exist ("./%nonexistentfile%", "file"), 0)
+%!assert (exist ("%nonexistentfile%", "file"), 0)
 
 ## Don't search path for absolute filenames
 %!test

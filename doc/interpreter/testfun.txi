@@ -175,9 +175,9 @@ is empty), and then uses it in several subsequent tests.
 @group
 %!shared @var{a}
 %! @var{a} = [1, 2, 3; 4, 5, 6];
-%!assert (kron ([1; 2], @var{a}), [ @var{a}; 2*@var{a} ]);
-%!assert (kron ([1, 2], @var{a}), [ @var{a}, 2*@var{a} ]);
-%!assert (kron ([1,2; 3,4], @var{a}), [ @var{a},2*@var{a}; 3*@var{a},4*@var{a} ]);
+%!assert (kron ([1; 2], @var{a}), [ @var{a}; 2*@var{a} ])
+%!assert (kron ([1, 2], @var{a}), [ @var{a}, 2*@var{a} ])
+%!assert (kron ([1,2; 3,4], @var{a}), [ @var{a},2*@var{a}; 3*@var{a},4*@var{a} ])
 @end group
 @end example
 
@@ -194,7 +194,7 @@ You can also share test functions:
 %!function @var{a} = fn (@var{b})
 %!  @var{a} = 2*@var{b};
 %!endfunction
-%!assert (fn(2), 4);
+%!assert (fn(2), 4)
 @end group
 @end example
 
@@ -211,7 +211,7 @@ The following is nearly identical to the example above, but does nothing.
 %!function @var{a} = fn (@var{b})
 %!  @var{a} = 2*@var{b};
 %!endfunction
-%! assert (fn(2), 4);
+%!assert (fn(2), 4)
 @end group
 @end example
 
@@ -302,15 +302,15 @@ function output = must_be_zero (@var{input})
   output = input;
 endfunction
 
-%!fail ("must_be_zero (1)");
-%!assert (must_be_zero (0), 0);
-%!error <Nonzero> must_be_zero (1);
-%!xtest error ("This code generates an error");
+%!fail ("must_be_zero (1)")
+%!assert (must_be_zero (0), 0)
+%!error <Nonzero> must_be_zero (1)
+%!xtest error ("This code generates an error")
 @end group
 @end example
 
 @noindent
-When putting this a file @file{must_be_zero.m}, and running the test, we see
+When putting this in a file @file{must_be_zero.m}, and running the test, we see
 
 @example
 @group
@@ -318,13 +318,13 @@ test must_be_zero verbose
 
 @result{}
 >>>>> /path/to/must_be_zero.m
-  ***** fail ("must_be_zero (1)");
-  ***** assert (must_be_zero (0), 0);
-  ***** error <Nonzero> must_be_zero (1);
-  ***** xtest error ("This code generates an error");
+***** fail ("must_be_zero (1)")
+***** assert (must_be_zero (0), 0)
+***** error <Nonzero> must_be_zero (1)
+***** xtest error ("This code generates an error")
 !!!!! known failure
 This code generates an error
-PASSES 4 out of 4 tests (1 expected failures)
+PASSES 3 out of 4 tests (1 expected failure)
 @end group
 @end example
 

@@ -67,17 +67,17 @@ function c = hanning (m, opt)
 endfunction
 
 
-%!assert (hanning (1), 1);
-%!assert (hanning (2), zeros (2,1));
-%!assert (hanning (15), flip (hanning (15)), 5*eps);
-%!assert (hanning (16), flip (hanning (16)), 5*eps);
+%!assert (hanning (1), 1)
+%!assert (hanning (2), zeros (2,1))
+%!assert (hanning (15), flip (hanning (15)), 5*eps)
+%!assert (hanning (16), flip (hanning (16)), 5*eps)
 %!test
 %! N = 15;
 %! A = hanning (N);
 %! assert (A(ceil (N/2)), 1);
 
-%!assert (hanning (15), hanning (15, "symmetric"));
-%!assert (hanning (16)(1:15), hanning (15, "periodic"));
+%!assert (hanning (15), hanning (15, "symmetric"))
+%!assert (hanning (16)(1:15), hanning (15, "periodic"))
 %!test
 %! N = 16;
 %! A = hanning (N, "periodic");

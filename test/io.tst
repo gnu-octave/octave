@@ -648,30 +648,30 @@
 %! assert (count, 4);
 %! fclose (id);
 
-%!assert (sprintf ("%1s", "foo"), "foo");
-%!assert (sprintf ("%.s", "foo"), char (zeros (1, 0)));
-%!assert (sprintf ("%1.s", "foo"), " ");
-%!assert (sprintf ("%.1s", "foo"), "f");
-%!assert (sprintf ("%1.1s", "foo"), "f");
-%!assert (sprintf ("|%4s|", "foo"), "| foo|");
-%!assert (sprintf ("|%-4s|", "foo"), "|foo |");
-%!assert (sprintf ("|%4.1s|", "foo"), "|   f|");
-%!assert (sprintf ("|%-4.1s|", "foo"), "|f   |");
+%!assert (sprintf ("%1s", "foo"), "foo")
+%!assert (sprintf ("%.s", "foo"), char (zeros (1, 0)))
+%!assert (sprintf ("%1.s", "foo"), " ")
+%!assert (sprintf ("%.1s", "foo"), "f")
+%!assert (sprintf ("%1.1s", "foo"), "f")
+%!assert (sprintf ("|%4s|", "foo"), "| foo|")
+%!assert (sprintf ("|%-4s|", "foo"), "|foo |")
+%!assert (sprintf ("|%4.1s|", "foo"), "|   f|")
+%!assert (sprintf ("|%-4.1s|", "foo"), "|f   |")
 
-%!assert (sprintf ("%c ", "foo"), "f o o ");
-%!assert (sprintf ("%s ", "foo"), "foo ");
+%!assert (sprintf ("%c ", "foo"), "f o o ")
+%!assert (sprintf ("%s ", "foo"), "foo ")
 
-%!assert (sprintf ("|%d|", "foo"), "|102||111||111|");
-%!assert (sprintf ("|%s|", [102, 111, 111]), "|foo|");
+%!assert (sprintf ("|%d|", "foo"), "|102||111||111|")
+%!assert (sprintf ("|%s|", [102, 111, 111]), "|foo|")
 
-%!assert (sprintf ("%s %d ", [102, 1e5, 111, 1e5, 111]), "f 100000 o 100000 o ");
+%!assert (sprintf ("%s %d ", [102, 1e5, 111, 1e5, 111]), "f 100000 o 100000 o ")
 
-%!assert (sprintf ("%c,%c,%c,%c", "abcd"), "a,b,c,d");
-%!assert (sprintf ("%s,%s,%s,%s", "abcd"), "abcd,");
+%!assert (sprintf ("%c,%c,%c,%c", "abcd"), "a,b,c,d")
+%!assert (sprintf ("%s,%s,%s,%s", "abcd"), "abcd,")
 
-%!assert (sprintf ("|%x|", "Octave"), "|4f||63||74||61||76||65|");
-%!assert (sprintf ("|%X|", "Octave"), "|4F||63||74||61||76||65|");
-%!assert (sprintf ("|%o|", "Octave"), "|117||143||164||141||166||145|");
+%!assert (sprintf ("|%x|", "Octave"), "|4f||63||74||61||76||65|")
+%!assert (sprintf ("|%X|", "Octave"), "|4F||63||74||61||76||65|")
+%!assert (sprintf ("|%o|", "Octave"), "|117||143||164||141||166||145|")
 
 ## bug #47192
 %!assert (sprintf ("%s", repmat ("blah", 2, 1)), "bbllaahh")

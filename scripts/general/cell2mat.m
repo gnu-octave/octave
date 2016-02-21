@@ -93,8 +93,8 @@ endfunction
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! cell2mat (C)
 
-%!assert (cell2mat ({}), []);
-%!assert (cell2mat ([]), []);
+%!assert (cell2mat ({}), [])
+%!assert (cell2mat ([]), [])
 %!test
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! D = C; D(:,:,2) = C;

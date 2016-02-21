@@ -103,7 +103,7 @@ endfunction
 %! x = sin (t);
 %! plot (t,x)
 
-%!assert (example ("example", 1), "\n example (\"example\");");
+%!assert (example ("example", 1), "\n example (\"example\");")
 
 %!test
 %! [code, idx] = example ("example");

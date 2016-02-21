@@ -76,8 +76,8 @@ endfunction
 %! A = hamming (N);
 %! assert (A(ceil (N/2)), 1);
 
-%!assert (hamming (15), hamming (15, "symmetric"));
-%!assert (hamming (16)(1:15), hamming (15, "periodic"));
+%!assert (hamming (15), hamming (15, "symmetric"))
+%!assert (hamming (16)(1:15), hamming (15, "periodic"))
 %!test
 %! N = 16;
 %! A = hamming (N, "periodic");

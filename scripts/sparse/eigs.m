@@ -1137,6 +1137,6 @@ endfunction
 %! tmp = abs (Z - ZZ);
 %! assert (max (tmp(:)) < 5e-11);
 
-%!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]);
-%!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]);
-%!assert (eigs (diag (1:5), 3, "be"), [1;4;5]);
+%!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5])
+%!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1])
+%!assert (eigs (diag (1:5), 3, "be"), [1;4;5])

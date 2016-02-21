@@ -634,8 +634,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
-%!assert (interp1 ([1 2 2 3], [1 2 3 4], 2), 3);
-%!assert (interp1 ([3 2 2 1], [4 3 2 1], 2), 2);
+%!assert (interp1 ([1 2 2 3], [1 2 3 4], 2), 3)
+%!assert (interp1 ([3 2 2 1], [4 3 2 1], 2), 2)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 

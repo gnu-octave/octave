@@ -263,7 +263,7 @@ endfunction
 %!assert (strsplit (["a,bc,,de"], ",", false, "delimitertype", "r"), {"a", "bc", "", "de"})
 %!assert (strsplit (["a,bc,de"], ",", true, "delimitertype", "r"), {"a", "bc", "de"})
 %!assert (strsplit (["a,bc,de"], "[, ]", true, "delimitertype", "r"), {"a", "bc", "de"})
-%!assert (strsplit ("hello \t world", true, "delimitertype", "r"), {"hello", "world"});
+%!assert (strsplit ("hello \t world", true, "delimitertype", "r"), {"hello", "world"})
 
 %!assert (strsplit ("foo\tbar", '\t', "delimitertype", "r"), {"foo", "bar"})
 %!assert (strsplit ("foo\tbar", '\t', "delimitertype", "s"), {"foo", "bar"})

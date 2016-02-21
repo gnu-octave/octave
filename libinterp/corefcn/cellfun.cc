@@ -980,10 +980,10 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (c, {".d", ".h"});
 
 ## Tests for bug #40467
-%!assert (cellfun (@isreal, {1 inf nan []}), [true, true, true, true]);
-%!assert (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true});
-%!assert (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false]);
-%!assert (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false});
+%!assert (cellfun (@isreal, {1 inf nan []}), [true, true, true, true])
+%!assert (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true})
+%!assert (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false])
+%!assert (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false})
 
 %!error cellfun (1)
 %!error cellfun ("isclass", 1)

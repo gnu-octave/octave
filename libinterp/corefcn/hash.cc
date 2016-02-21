@@ -184,10 +184,10 @@ hash (\"md5\", fileread (file));\n\
 
 /*
 ## MD2 test suite (RFC 1319)
-%!assert (hash ("md2", ""), "8350e5a3e24c153df2275c9f80692773");
-%!assert (hash ("md2", "a"), "32ec01ec4a6dac72c0ab96fb34c0b5d1");
-%!assert (hash ("md2", "abc"), "da853b0d3f88d99b30283a69e6ded6bb");
-%!assert (hash ("md2", "message digest"), "ab4f496bfb2a530b219ff33031fe06b0");
+%!assert (hash ("md2", ""), "8350e5a3e24c153df2275c9f80692773")
+%!assert (hash ("md2", "a"), "32ec01ec4a6dac72c0ab96fb34c0b5d1")
+%!assert (hash ("md2", "abc"), "da853b0d3f88d99b30283a69e6ded6bb")
+%!assert (hash ("md2", "message digest"), "ab4f496bfb2a530b219ff33031fe06b0")
 %!assert (hash ("md2", "abcdefghijklmnopqrstuvwxyz"),
 %!        "4e8ddff3650292ab5a4108c3aa47940b");
 %!assert (hash ("md2", ["ABCDEFGHIJKLMNOPQRSTUVWXYZ", ...
@@ -198,10 +198,10 @@ hash (\"md5\", fileread (file));\n\
 %!        "d5976f79d83d3a0dc9806c3c66f3efd8");
 
 ## MD4 test suite (RFC 1320)
-%!assert (hash ("md4", ""), "31d6cfe0d16ae931b73c59d7e0c089c0");
-%!assert (hash ("md4", "a"), "bde52cb31de33e46245e05fbdbd6fb24");
-%!assert (hash ("md4", "abc"), "a448017aaf21d8525fc10ae87aa6729d");
-%!assert (hash ("md4", "message digest"), "d9130a8164549fe818874806e1c7014b");
+%!assert (hash ("md4", ""), "31d6cfe0d16ae931b73c59d7e0c089c0")
+%!assert (hash ("md4", "a"), "bde52cb31de33e46245e05fbdbd6fb24")
+%!assert (hash ("md4", "abc"), "a448017aaf21d8525fc10ae87aa6729d")
+%!assert (hash ("md4", "message digest"), "d9130a8164549fe818874806e1c7014b")
 %!assert (hash ("md4", "abcdefghijklmnopqrstuvwxyz"),
 %!        "d79e1c308aa5bbcdeea8ed63df412da9");
 %!assert (hash ("md4", ["ABCDEFGHIJKLMNOPQRSTUVWXYZ", ...
@@ -212,10 +212,10 @@ hash (\"md5\", fileread (file));\n\
 %!        "e33b4ddc9c38f2199c3e7b164fcc0536");
 
 ## MD5 test suite (RFC 1321)
-%!assert (hash ("md5", ""), "d41d8cd98f00b204e9800998ecf8427e");
-%!assert (hash ("md5", "a"), "0cc175b9c0f1b6a831c399e269772661");
-%!assert (hash ("md5", "abc"), "900150983cd24fb0d6963f7d28e17f72");
-%!assert (hash ("md5", "message digest"), "f96b697d7cb7938d525a2f31aaf161d0");
+%!assert (hash ("md5", ""), "d41d8cd98f00b204e9800998ecf8427e")
+%!assert (hash ("md5", "a"), "0cc175b9c0f1b6a831c399e269772661")
+%!assert (hash ("md5", "abc"), "900150983cd24fb0d6963f7d28e17f72")
+%!assert (hash ("md5", "message digest"), "f96b697d7cb7938d525a2f31aaf161d0")
 %!assert (hash ("md5", "abcdefghijklmnopqrstuvwxyz"),
 %!        "c3fcd3d76192e4007dfb496cca67e13b");
 %!assert (hash ("md5", ["ABCDEFGHIJKLMNOPQRSTUVWXYZ", ...
@@ -226,9 +226,9 @@ hash (\"md5\", fileread (file));\n\
 %!        "57edf4a22be3c955ac49da2e2107b67a");
 
 ## SHA1 test suite (RFC 3174) and more
-%!assert (hash ("sha1", ""), "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-%!assert (hash ("sha1", "a"), "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8");
-%!assert (hash ("sha1", "abc"), "a9993e364706816aba3e25717850c26c9cd0d89d");
+%!assert (hash ("sha1", ""), "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+%!assert (hash ("sha1", "a"), "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8")
+%!assert (hash ("sha1", "abc"), "a9993e364706816aba3e25717850c26c9cd0d89d")
 %!assert (hash ("sha1", ["abcdbcdecdefdefgefghfghighijhi", ...
 %!              "jkijkljklmklmnlmnomnopnopq"]),
 %!        "84983e441c3bd26ebaae4aa1f95129e5e54670f1");
@@ -261,10 +261,10 @@ hash (\"md5\", fileread (file));\n\
 %!         "417a81a538327af927da3e"]);
 
 ## Test special character behavior (bug #31689)
-%!assert (hash ("md2", "abc\0"), "5a636d615002a7874ac1c9e9a43361f7");
-%!assert (hash ("md4", "abc\0"), "0ee5201897ecb206c4eaba1d2da5224d");
-%!assert (hash ("md5", "abc\0"), "147a664a2ca9410911e61986d3f0d52a");
-%!assert (hash ("sha1", "abc\0"), "686483805ac47ca14e03514f7481a7973b401762");
+%!assert (hash ("md2", "abc\0"), "5a636d615002a7874ac1c9e9a43361f7")
+%!assert (hash ("md4", "abc\0"), "0ee5201897ecb206c4eaba1d2da5224d")
+%!assert (hash ("md5", "abc\0"), "147a664a2ca9410911e61986d3f0d52a")
+%!assert (hash ("sha1", "abc\0"), "686483805ac47ca14e03514f7481a7973b401762")
 %!assert (hash ("sha224", "abc\0"),
 %!        "fbc8e47920e108bb1d0b631d18b36ae9b1549d28362aa15ebe960cfb");
 %!assert (hash ("sha256", "abc\0"),

@@ -181,15 +181,15 @@
 %! assert (typeinfo (Dslice), "diagonal matrix");
 
 ## preserve dense matrix structure when scaling
-%!assert (typeinfo (rand (8) * (3 * eye (8))), "matrix");
-%!assert (typeinfo ((3 * eye (8)) * rand (8)), "matrix");
+%!assert (typeinfo (rand (8) * (3 * eye (8))), "matrix")
+%!assert (typeinfo ((3 * eye (8)) * rand (8)), "matrix")
 
 ## preserve sparse matrix structure when scaling
-%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))), "sparse matrix");
-%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))'), "sparse matrix");
-%!assert (typeinfo (((3 + 2 * I ()) * eye (8)) * sprand (8, 8, .5)), "sparse complex matrix");
-%!assert (typeinfo (((3 + 2 * I ()) * eye (8))' * sprand (8, 8, .5)), "sparse complex matrix");
-%!assert (typeinfo (sprand (8, 8, .5) * ((3 + 2 * I ()) * eye (8)).'), "sparse complex matrix");
+%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))), "sparse matrix")
+%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))'), "sparse matrix")
+%!assert (typeinfo (((3 + 2 * I ()) * eye (8)) * sprand (8, 8, .5)), "sparse complex matrix")
+%!assert (typeinfo (((3 + 2 * I ()) * eye (8))' * sprand (8, 8, .5)), "sparse complex matrix")
+%!assert (typeinfo (sprand (8, 8, .5) * ((3 + 2 * I ()) * eye (8)).'), "sparse complex matrix")
 
 ## scaling a matrix with exceptional values does not introduce new ones.
 %!test

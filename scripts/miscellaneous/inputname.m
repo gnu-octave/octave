@@ -80,8 +80,8 @@ endfunction
 %!function r = __foo__ (x, y)
 %!  r = inputname (2);
 %!endfunction
-%!assert (__foo__ (pi, e), "e");
-%!assert (feval (@__foo__, pi, e), "e");
+%!assert (__foo__ (pi, e), "e")
+%!assert (feval (@__foo__, pi, e), "e")
 
 %!error inputname ()
 %!error inputname (1,2)

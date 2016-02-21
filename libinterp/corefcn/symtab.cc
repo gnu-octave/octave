@@ -1914,7 +1914,7 @@ This test relies on bar being a core function that is implemented in an m-file.
 If the first assert fails, this is no longer the case and the tests need to be
 updated to use some other function.
 
-%!assert (! strcmp (which ("bar"), ""));
+%!assert (! strcmp (which ("bar"), ""))
 
 %!function x = bar ()
 %!  x = 5;

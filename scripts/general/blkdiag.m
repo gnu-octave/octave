@@ -72,7 +72,7 @@ endfunction
 ## tests involving empty matrices
 %!assert (blkdiag ([],[],[]), [])
 %!assert (blkdiag ([],[1,2;3,4],[],5,[]), [1,2,0;3,4,0;0,0,5])
-%!assert (blkdiag (zeros (1,0,1),[1,2,3],1,0,5,zeros (0,1,1)), [0,0,0,0,0,0,0;1,2,3,0,0,0,0;0,0,0,1,0,0,0;0,0,0,0,0,0,0;0,0,0,0,0,5,0]);
+%!assert (blkdiag (zeros (1,0,1),[1,2,3],1,0,5,zeros (0,1,1)), [0,0,0,0,0,0,0;1,2,3,0,0,0,0;0,0,0,1,0,0,0;0,0,0,0,0,0,0;0,0,0,0,0,5,0])
 ## tests involving sparse matrices
 %!assert (blkdiag (sparse ([1,2;3,4]),[5,6;7,8]), sparse ([1,2,0,0;3,4,0,0;0,0,5,6;0,0,7,8]))
 %!assert (blkdiag (sparse ([1,2;3,4]),[5,6]), sparse ([1,2,0,0;3,4,0,0;0,0,5,6]))

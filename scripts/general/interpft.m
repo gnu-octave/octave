@@ -118,9 +118,9 @@ endfunction
 
 %!shared n,y
 %! x = [0:10]';  y = sin(x);  n = length (x);
-%!assert (interpft (y, n), y, 20*eps);
-%!assert (interpft (y', n), y', 20*eps);
-%!assert (interpft ([y,y],n), [y,y], 20*eps);
+%!assert (interpft (y, n), y, 20*eps)
+%!assert (interpft (y', n), y', 20*eps)
+%!assert (interpft ([y,y],n), [y,y], 20*eps)
 
 ## Test case with complex input from bug #39566
 %!test
@@ -129,10 +129,10 @@ endfunction
 %! assert (interpft (x, 6), y, 10*eps);
 
 ## Test for correct spectral symmetry with even/odd lengths
-%!assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps);
-%!assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps);
-%!assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps);
-%!assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps);
+%!assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps)
+%!assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps)
+%!assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps)
+%!assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps)
 
 ## Test input validation
 %!error interpft ()

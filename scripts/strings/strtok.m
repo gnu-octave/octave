@@ -211,7 +211,7 @@ endfunction
 
 ## Test 'bad' string orientations
 %!assert (strtok (" this ".'), "this".');   # delimiter at start and end
-%!assert (strtok (" this ".',"jkl "), "this".');
+%!assert (strtok (" this ".',"jkl "), "this".')
 
 ## Test with TAB, LF, VT, FF, and CR
 %!test

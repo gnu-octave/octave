@@ -571,10 +571,10 @@ gen_unaryop_tests() {
 %!assert (issparse (as'))
 %!assert (issparse (-as))
 %!assert (!as, sparse (!af))
-%!assert (as.', sparse (af.'));
-%!assert (as',  sparse (af'));
-%!assert (-as, sparse (-af));
-%!assert (!as, sparse (!af));
+%!assert (as.', sparse (af.'))
+%!assert (as',  sparse (af'))
+%!assert (-as, sparse (-af))
+%!assert (!as, sparse (!af))
 %!error [i,j] = size (af);as(i-1,j+1);
 %!error [i,j] = size (af);as(i+1,j-1);
 %!test
@@ -595,28 +595,28 @@ gen_unaryop_tests() {
 %! [i,j,v,m,n] = find (as);
 %! x = sparse (i,j,v,m,n);
 %! assert (x, as);
-%!assert (issparse (horzcat (as,as)));
-%!assert (issparse (vertcat (as,as)));
-%!assert (issparse (cat (1,as,as)));
-%!assert (issparse (cat (2,as,as)));
-%!assert (issparse ([as,as]));
-%!assert (issparse ([as;as]));
-%!assert (horzcat (as,as), sparse ([af,af]));
-%!assert (vertcat (as,as), sparse ([af;af]));
-%!assert (horzcat (as,as,as), sparse ([af,af,af]));
-%!assert (vertcat (as,as,as), sparse ([af;af;af]));
-%!assert ([as,as], sparse ([af,af]));
-%!assert ([as;as], sparse ([af;af]));
-%!assert ([as,as,as], sparse ([af,af,af]));
-%!assert ([as;as;as], sparse ([af;af;af]));
-%!assert (cat (2,as,as), sparse ([af,af]));
-%!assert (cat (1,as,as), sparse ([af;af]));
-%!assert (cat (2,as,as,as), sparse ([af,af,af]));
-%!assert (cat (1,as,as,as), sparse ([af;af;af]));
-%!assert (issparse ([as,af]));
-%!assert (issparse ([af,as]));
-%!assert ([as,af], sparse ([af,af]));
-%!assert ([as;af], sparse ([af;af]));
+%!assert (issparse (horzcat (as,as)))
+%!assert (issparse (vertcat (as,as)))
+%!assert (issparse (cat (1,as,as)))
+%!assert (issparse (cat (2,as,as)))
+%!assert (issparse ([as,as]))
+%!assert (issparse ([as;as]))
+%!assert (horzcat (as,as), sparse ([af,af]))
+%!assert (vertcat (as,as), sparse ([af;af]))
+%!assert (horzcat (as,as,as), sparse ([af,af,af]))
+%!assert (vertcat (as,as,as), sparse ([af;af;af]))
+%!assert ([as,as], sparse ([af,af]))
+%!assert ([as;as], sparse ([af;af]))
+%!assert ([as,as,as], sparse ([af,af,af]))
+%!assert ([as;as;as], sparse ([af;af;af]))
+%!assert (cat (2,as,as), sparse ([af,af]))
+%!assert (cat (1,as,as), sparse ([af;af]))
+%!assert (cat (2,as,as,as), sparse ([af,af,af]))
+%!assert (cat (1,as,as,as), sparse ([af;af;af]))
+%!assert (issparse ([as,af]))
+%!assert (issparse ([af,as]))
+%!assert ([as,af], sparse ([af,af]))
+%!assert ([as;af], sparse ([af;af]))
 
 EOF
 }
@@ -682,9 +682,9 @@ gen_square_tests() {
 %!testif HAVE_UMFPACK   # inverse
 %! assert (inv (bs)*bs, sparse (eye (rows (bs))), 1e-10);
 
-%!assert (bf\as', bf\af', 100*eps);
-%!assert (bs\af', bf\af', 100*eps);
-%!assert (bs\as', sparse (bf\af'), 100*eps);
+%!assert (bf\as', bf\af', 100*eps)
+%!assert (bs\af', bf\af', 100*eps)
+%!assert (bs\as', sparse (bf\af'), 100*eps)
 
 EOF
 }
@@ -845,8 +845,8 @@ gen_select_tests() {
 %% Point tests
 %!test idx = ridx(:) + rows (as) * (cidx (:)-1);
 %!assert (sparse (as(idx)), sparse (af(idx)))
-%!assert (as(idx), sparse (af(idx)));
-%!assert (as(idx'), sparse (af(idx')));
+%!assert (as(idx), sparse (af(idx)))
+%!assert (as(idx'), sparse (af(idx')))
 %!assert (as(flipud (idx(:))), sparse (af(flipud (idx(:)))))
 %!assert (as([idx,idx]), sparse (af([idx,idx])))
 %!assert (as(reshape ([idx;idx], [1,length(idx),2])), sparse(af(reshape ([idx;idx], [1,length(idx),2]))))
@@ -981,24 +981,24 @@ cat <<EOF
 %! tcf = tf + tf'; tcs = sparse (tcf);
 %! xf = diag (1:n) + fliplr (diag (1:n)).*beta;
 %! xs = sparse (xf);
-%!assert (ds\xf, df\xf, 1e-10);
-%!assert (ds\xs, sparse (df\xf), 1e-10);
-%!assert (pds\xf, pdf\xf, 1e-10);
-%!assert (pds\xs, sparse (pdf\xf), 1e-10);
-%!assert (ls\xf, lf\xf, 1e-10);
-%!assert (sparse (ls\xs), sparse (lf\xf), 1e-10);
+%!assert (ds\xf, df\xf, 1e-10)
+%!assert (ds\xs, sparse (df\xf), 1e-10)
+%!assert (pds\xf, pdf\xf, 1e-10)
+%!assert (pds\xs, sparse (pdf\xf), 1e-10)
+%!assert (ls\xf, lf\xf, 1e-10)
+%!assert (sparse (ls\xs), sparse (lf\xf), 1e-10)
 %!testif HAVE_UMFPACK
 %! assert (pls\xf, plf\xf, 1e-10);
 %!testif HAVE_UMFPACK
 %! assert (sparse (pls\xs), sparse (plf\xf), 1e-10);
-%!assert (us\xf, uf\xf, 1e-10);
-%!assert (sparse (us\xs), sparse (uf\xf), 1e-10);
+%!assert (us\xf, uf\xf, 1e-10)
+%!assert (sparse (us\xs), sparse (uf\xf), 1e-10)
 %!testif HAVE_UMFPACK
 %! assert (pus\xf, puf\xf, 1e-10);
 %!testif HAVE_UMFPACK
 %! assert (sparse (pus\xs), sparse (puf\xf), 1e-10);
-%!assert (bs\xf, bf\xf, 1e-10);
-%!assert (sparse (bs\xs), sparse (bf\xf), 1e-10);
+%!assert (bs\xf, bf\xf, 1e-10)
+%!assert (sparse (bs\xs), sparse (bf\xf), 1e-10)
 %!testif HAVE_UMFPACK
 %! assert (cs\xf, cf\xf, 1e-10);
 %!testif HAVE_UMFPACK
@@ -1007,10 +1007,10 @@ cat <<EOF
 %! assert (bcs\xf, bcf\xf, 1e-10);
 %!testif HAVE_UMFPACK
 %! assert (sparse (bcs\xs), sparse (bcf\xf), 1e-10);
-%!assert (ts\xf, tf\xf, 1e-10);
-%!assert (sparse (ts\xs), sparse (tf\xf), 1e-10);
-%!assert (tcs\xf, tcf\xf, 1e-10);
-%!assert (sparse (tcs\xs), sparse (tcf\xf), 1e-10);
+%!assert (ts\xf, tf\xf, 1e-10)
+%!assert (sparse (ts\xs), sparse (tf\xf), 1e-10)
+%!assert (tcs\xf, tcf\xf, 1e-10)
+%!assert (sparse (tcs\xs), sparse (tcf\xf), 1e-10)
 
 EOF
 

@@ -76,9 +76,9 @@ environment variable.\n\
 
 /*
 ## Must always report at least 1 cpu available
-%!assert (nproc () >= 1);
-%!assert (nproc ("all") >= 1);
-%!assert (nproc ("current") >= 1);
+%!assert (nproc () >= 1)
+%!assert (nproc ("all") >= 1)
+%!assert (nproc ("current") >= 1)
 
 %!test
 %! c = nproc ("current");

@@ -78,8 +78,8 @@ endfunction
 %! assert (A(ceil (N/2)), 1, 1e-6);
 %! assert ([A(1), A(length (A))], zeros (1,2), 1e-6);
 
-%!assert (blackman (15), blackman (15, "symmetric"));
-%!assert (blackman (16)(1:15), blackman (15, "periodic"));
+%!assert (blackman (15), blackman (15, "symmetric"))
+%!assert (blackman (16)(1:15), blackman (15, "periodic"))
 %!test
 %! N = 16;
 %! A = blackman (N, "periodic");

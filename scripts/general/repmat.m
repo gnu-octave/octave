@@ -151,8 +151,8 @@ endfunction
 %!assert (repmat (x, [1 3; 1 3], [1; 3]), repmat (x, [1 1 3]))
 %!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1; 4]))
 %!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1 2; 3 4]))
-%!assert (repmat (x, [1 1], 4), repmat (x, [1 1 4]));
-%!assert (repmat (x, [1 1], 4), repmat (x, 1, [1 4]));
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 1 4]))
+%!assert (repmat (x, [1 1], 4), repmat (x, 1, [1 4]))
 
 ## Test various methods of providing size parameters
 %!shared x

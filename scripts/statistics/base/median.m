@@ -110,8 +110,8 @@ endfunction
 %! b = rand (3,4,6,5);
 %! x = sort (a, 4);
 %! y = sort (b, 3);
-%!assert (median (a, 4), x(:, :, :, 3));
-%!assert (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2);
+%!assert (median (a, 4), x(:, :, :, 3))
+%!assert (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
 
 ## Test input validation
 %!error median ()

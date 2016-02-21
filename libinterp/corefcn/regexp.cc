@@ -1121,8 +1121,8 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 %! assert (a, {"oo"});
 %! assert (b, {"f", " bar"});
 
-%!assert (regexp ("\n", '\n'), 1);
-%!assert (regexp ("\n", "\n"), 1);
+%!assert (regexp ("\n", '\n'), 1)
+%!assert (regexp ("\n", "\n"), 1)
 
 %!test  # Bug #45407, escape sequences are silently converted
 %! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
@@ -1283,8 +1283,8 @@ for details on the syntax of the search pattern.\n\
 %!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
 %!assert (regexpi ('Strings', {'t', 's'}), {2, [1, 7]})
 
-%!assert (regexpi ("\n", '\n'), 1);
-%!assert (regexpi ("\n", "\n"), 1);
+%!assert (regexpi ("\n", '\n'), 1)
+%!assert (regexpi ("\n", "\n"), 1)
 */
 
 static octave_value
@@ -1484,10 +1484,10 @@ function.\n\
 %!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "once", "ignorecase"), "a_b]c{d}e-f=g")
 
 ## End conditions on replacement
-%!assert (regexprep ("abc", "(b)", ".$1"), "a.bc");
-%!assert (regexprep ("abc", "(b)", "$1"), "abc");
-%!assert (regexprep ("abc", "(b)", "$1."), "ab.c");
-%!assert (regexprep ("abc", "(b)", "$1.."), "ab..c");
+%!assert (regexprep ("abc", "(b)", ".$1"), "a.bc")
+%!assert (regexprep ("abc", "(b)", "$1"), "abc")
+%!assert (regexprep ("abc", "(b)", "$1."), "ab.c")
+%!assert (regexprep ("abc", "(b)", "$1.."), "ab..c")
 
 ## Test cell array arguments
 %!assert (regexprep ("abc", {"b","a"}, "?"), "??c")
@@ -1497,6 +1497,6 @@ function.\n\
 # Nasty lookbehind expression
 %!assert (regexprep ('x^(-1)+y(-1)+z(-1)=0', '(?<=[a-z]+)\(\-[1-9]*\)', '_minus1'),'x^(-1)+y_minus1+z_minus1=0')
 
-%!assert (regexprep ("\n", '\n', "X"), "X");
-%!assert (regexprep ("\n", "\n", "X"), "X");
+%!assert (regexprep ("\n", '\n', "X"), "X")
+%!assert (regexprep ("\n", "\n", "X"), "X")
 */

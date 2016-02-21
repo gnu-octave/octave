@@ -145,8 +145,8 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 }
 
 /*
-%!assert (char (), '');
-%!assert (char (100), "d");
+%!assert (char (), '')
+%!assert (char (100), "d")
 %!assert (char (100,100), ["d";"d"])
 %!assert (char ({100,100}), ["d";"d"])
 %!assert (char ([100,100]), ["dd"])
@@ -264,8 +264,8 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 }
 
 /*
-%!assert (strvcat (""), "");
-%!assert (strvcat (100) == "d");
+%!assert (strvcat (""), "")
+%!assert (strvcat (100) == "d")
 %!assert (strvcat (100,100), ["d";"d"])
 %!assert (strvcat ({100,100}), ["d";"d"])
 %!assert (strvcat ([100,100]), ["dd"])

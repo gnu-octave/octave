@@ -702,10 +702,10 @@ periodic, @code{mod} is a better choice.\n\
 
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2), [1, 0, 1; -1, 0, -1])
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3)),[1, 0, 1; -1, 0, -1])
-%!assert (rem ([0, 1, 2], [0, 0, 1]), [NaN, NaN, 0]);
+%!assert (rem ([0, 1, 2], [0, 0, 1]), [NaN, NaN, 0])
 %!assert (rem (uint8 ([1, 2, 3; -1, -2, -3]), uint8 (2)), uint8 ([1, 0, 1; -1, 0, -1]))
 %!assert (uint8 (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3))),uint8 ([1, 0, 1; -1, 0, -1]))
-%!assert (rem (uint8 ([0, 1, 2]), [0, 0, 1]), uint8 ([0, 0, 0]));
+%!assert (rem (uint8 ([0, 1, 2]), [0, 0, 1]), uint8 ([0, 0, 0]))
 
 ## Test sparse implementations
 %!shared xs
@@ -1441,9 +1441,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 ## Test non-square size
 %!assert (diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
-%!assert (diag (1, 2, 3), [1,0,0; 0,0,0]);
-%!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]});
-%!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]});
+%!assert (diag (1, 2, 3), [1,0,0; 0,0,0])
+%!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]})
+%!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]})
 
 ## Test out-of-range diagonals
 %!assert (diag (ones (3,3), 4), zeros (0, 1))
@@ -2146,8 +2146,8 @@ new matrices.  For example:\n\
 
 /*
 ## Test concatenation with all zero matrices
-%!assert (horzcat ("", 65*ones (1,10)), "AAAAAAAAAA");
-%!assert (horzcat (65*ones (1,10), ""), "AAAAAAAAAA");
+%!assert (horzcat ("", 65*ones (1,10)), "AAAAAAAAAA")
+%!assert (horzcat (65*ones (1,10), ""), "AAAAAAAAAA")
 
 %!assert (class (horzcat (int64 (1), int64 (1))), "int64")
 %!assert (class (horzcat (int64 (1), int32 (1))), "int64")
@@ -5713,15 +5713,15 @@ compute the norms of each column and return a row vector.\n\
 
 %!shared q
 %! q = rand (1e3, 3);
-%!assert (norm (q, 3, "rows"), sum (q.^3, 2).^(1/3), sqrt (eps));
-%!assert (norm (q, "fro", "rows"), sum (q.^2, 2).^(1/2), sqrt (eps));
-%!assert (norm (q, "fro", "rows"), sqrt (sumsq (q, 2)), sqrt (eps));
-%!assert (norm (q, "fro", "cols"), sqrt (sumsq (q, 1)), sqrt (eps));
-%!assert (norm (q, 3, "cols"), sum (q.^3, 1).^(1/3), sqrt (eps));
-%!assert (norm (q, "inf", "rows"), norm (q, Inf, "rows"));
-%!assert (norm (q, "inf", "cols"), norm (q, Inf, "cols"));
-%!assert (norm (q, [], "rows"), norm (q, 2, "rows"));
-%!assert (norm (q, [], "cols"), norm (q, 2, "cols"));
+%!assert (norm (q, 3, "rows"), sum (q.^3, 2).^(1/3), sqrt (eps))
+%!assert (norm (q, "fro", "rows"), sum (q.^2, 2).^(1/2), sqrt (eps))
+%!assert (norm (q, "fro", "rows"), sqrt (sumsq (q, 2)), sqrt (eps))
+%!assert (norm (q, "fro", "cols"), sqrt (sumsq (q, 1)), sqrt (eps))
+%!assert (norm (q, 3, "cols"), sum (q.^3, 1).^(1/3), sqrt (eps))
+%!assert (norm (q, "inf", "rows"), norm (q, Inf, "rows"))
+%!assert (norm (q, "inf", "cols"), norm (q, Inf, "cols"))
+%!assert (norm (q, [], "rows"), norm (q, 2, "rows"))
+%!assert (norm (q, [], "cols"), norm (q, 2, "cols"))
 
 %!test
 %! ## Test for norm returning NaN on sparse matrix (bug #30631)

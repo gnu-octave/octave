@@ -741,7 +741,7 @@ dimensionality as the other array.\n\
 %!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
 
 %% The test below is a very hard case to treat
-%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]));
+%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]))
 
 %!shared a, b, aa, bb
 %! a = randn (3, 1, 3);

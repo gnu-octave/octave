@@ -39,13 +39,13 @@
 %! p = foo_value_class (4, 4*12, 50e3);
 %! i = p.rate / (12 * 100);
 %! amt = (p.principle * i) / (1 - (1 + i)^(-p.term));
-%!assert (isempty (q.rate));
-%!assert (isempty (q.principle));
-%!assert (isempty (q.term));
-%!assert (class (p), "foo_value_class");
-%!assert (p.term, 48);
-%!assert (p.rate, 4.0);
-%!assert (p.principle, 50e3);
+%!assert (isempty (q.rate))
+%!assert (isempty (q.principle))
+%!assert (isempty (q.term))
+%!assert (class (p), "foo_value_class")
+%!assert (p.term, 48)
+%!assert (p.rate, 4.0)
+%!assert (p.principle, 50e3)
 %!assert (p.amount, amt, eps ())
 %!assert (amount (p), amt, eps ())
 %!xtest
@@ -56,9 +56,9 @@
 %!error <property `rate' is not constant> foo_value_class.rate
 
 %%  Static method and Constant Property
-%!assert (foo_static_method_constant_property.radians_per_cycle, 2*pi);
-%!assert (foo_static_method_constant_property().radians_per_cycle, 2*pi);
-%!assert (foo_static_method_constant_property().pie, pi);
+%!assert (foo_static_method_constant_property.radians_per_cycle, 2*pi)
+%!assert (foo_static_method_constant_property().radians_per_cycle, 2*pi)
+%!assert (foo_static_method_constant_property().pie, pi)
 %!error <property `frequency' is not constant> foo_static_method_constant_property.frequency
 %!error <method `cosine' is not static> foo_static_method_constant_property.cosine
 %!test

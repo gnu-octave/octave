@@ -5052,7 +5052,7 @@ the security considerations that the evaluation of arbitrary code does.\n\
 
 %!assert (eval ("x"), 1)
 %!assert (eval ("x;"))
-%!assert (eval ("x;"), 1);
+%!assert (eval ("x;"), 1)
 
 %!test
 %! y = eval ("x");

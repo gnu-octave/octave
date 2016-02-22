@@ -4125,7 +4125,7 @@ figure::properties::set_position (const octave_value& v,
         {
           if (! get_resizefcn ().isempty ())
             gh_manager::post_callback (__myhandle__, "resizefcn");
-          
+
           if (! get_sizechangedfcn ().isempty ())
             gh_manager::post_callback (__myhandle__, "sizechangedfcn");
 
@@ -13111,7 +13111,8 @@ is reentrant and can be called from a callback, while another @code{waitfor}
 call is pending at the top-level.
 
 In the first form, program execution is suspended until the graphics object
-@var{h} is destroyed.  If the graphics handle is invalid, the function
+@var{h} is destroyed.  If the graphics handle is invalid or if @var{h} is
+the root figure handle and no property @var{prop} was provided, the function
 returns immediately.
 
 In the second form, execution is suspended until the graphics object is
@@ -13146,6 +13147,9 @@ In all cases, typing CTRL-C stops program execution immediately.
     return ovl ();
 
   double h = args(0).xdouble_value ("waitfor: invalid handle value");
+
+  if (! is_hghandle (h) || (h == 0 && args.length () == 1))
+    return ovl ();
 
   caseless_str pname;
 

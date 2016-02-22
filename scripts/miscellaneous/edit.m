@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} edit @var{name}
 ## @deftypefnx {} {} edit @var{field} @var{value}
-## @deftypefnx {} {@var{value} =} edit get @var{field}
+## @deftypefnx {} {@var{value} =} edit ("get", @var{field})
+## @deftypefnx {} {@var{value} =} edit ("get", "all")
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as its
@@ -60,11 +61,12 @@
 ## @end itemize
 ##
 ## If @code{edit} is called with @var{field} and @var{value} variables, the
-## value of the control field @var{field} will be set to @var{value}.  If an
-## output argument is requested and the first input argument is @code{get}
+## value of the control field @var{field} will be set to @var{value}.
+##
+## If an output argument is requested and the first input argument is @code{get}
 ## then @code{edit} will return the value of the control field @var{field}.
 ## If the control field does not exist, edit will return a structure
-## containing all fields and values.  Thus, @code{edit get all} returns a
+## containing all fields and values.  Thus, @code{edit ("get", "all"} returns a
 ## complete control structure.
 ##
 ## The following control fields are used:
@@ -101,7 +103,7 @@
 ## @end table
 ##
 ## Unless you specify @samp{pd}, edit will prepend the copyright statement
-## with "Copyright (C) yyyy Function Author".
+## with "Copyright (C) YYYY Author".
 ##
 ## @item mode
 ## This value determines whether the editor should be started in async mode
@@ -121,7 +123,7 @@
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
 
-function ret = edit (varargin)
+function retval = edit (varargin)
 
   ## Pick up globals or default them.
 
@@ -198,9 +200,9 @@ function ret = edit (varargin)
         return;
       case "GET"
         if (isfield (FUNCTION, toupper (stateval)))
-          ret = FUNCTION.(toupper (stateval));
+          retval = FUNCTION.(toupper (stateval));
         else
-          ret = FUNCTION;
+          retval = FUNCTION;
         endif
         return;
       otherwise
@@ -473,8 +475,7 @@ SUCH DAMAGE.\
         body = ["#include <octave/oct.h>\n\n"             ...
                 "DEFUN_DLD(" name ", args, nargout,\n"    ...
                 "          \"-*- texinfo -*-\\n\\\n"      ...
-                "@deftypefn {} "         ...
-                "{@var{retval} =} " name                  ...
+                "@deftypefn {} {@var{retval} =} " name    ...
                 " (@var{input1}, @var{input2})\\n\\\n"    ...
                 "@seealso{}\\n\\\n@end deftypefn\")\n{\n" ...
                 "  octave_value_list retval;\n"           ...

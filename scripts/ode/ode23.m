@@ -19,11 +19,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t}, @var{y}] =} ode23 (@var{fun}, @var{trange}, @var{init})
-## @deftypefnx {Function File} {[@var{t}, @var{y}] =} ode23 (@var{fun}, @var{trange}, @var{init}, @var{ode_opt})
-## @deftypefnx {Function File} {[@var{t}, @var{y}] =} ode23 (@dots{}, @var{par1}, @var{par2}, @dots{})
-## @deftypefnx {Function File} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode23 (@dots{})
-## @deftypefnx {Function File} {@var{solution} =} ode23 (@dots{})
+## @deftypefn  {} {[@var{t}, @var{y}] =} ode23 (@var{fun}, @var{trange}, @var{init})
+## @deftypefnx {} {[@var{t}, @var{y}] =} ode23 (@var{fun}, @var{trange}, @var{init}, @var{ode_opt})
+## @deftypefnx {} {[@var{t}, @var{y}] =} ode23 (@dots{}, @var{par1}, @var{par2}, @dots{})
+## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode23 (@dots{})
+## @deftypefnx {} {@var{solution} =} ode23 (@dots{})
 ##
 ## Solve a set of non-stiff Ordinary Differential Equations (non-stiff ODEs)
 ## with the well known explicit @nospell{Bogacki-Shampine} method of order 3.

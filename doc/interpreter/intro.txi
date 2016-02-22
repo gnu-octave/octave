@@ -580,9 +580,9 @@ to related functions.
 Here is a description of an imaginary function @code{foo}:
 
 @need 4000
-@deftypefn  {Function File} {} foo (@var{x})
-@deftypefnx {Function File} {} foo (@var{x}, @var{y})
-@deftypefnx {Function File} {} foo (@var{x}, @var{y}, @dots{})
+@deftypefn  {} {} foo (@var{x})
+@deftypefnx {} {} foo (@var{x}, @var{y})
+@deftypefnx {} {} foo (@var{x}, @var{y}, @dots{})
 The function @code{foo} subtracts @var{x} from @var{y}, then adds the
 remaining arguments to the result.
 
@@ -659,10 +659,10 @@ parentheses.  For example, here is the description for Octave's
 @code{diary} command:
 
 @need 4000
-@deftypefn  {Command} {} diary
-@deftypefnx {Command} {} diary on
-@deftypefnx {Command} {} diary off
-@deftypefnx {Command} {} diary @var{filename}
+@deftypefn  {} {} diary
+@deftypefnx {} {} diary on
+@deftypefnx {} {} diary off
+@deftypefnx {} {} diary @var{filename}
 Record a list of all commands @emph{and} the output they produce, mixed
 together just as they appear on the terminal.
 

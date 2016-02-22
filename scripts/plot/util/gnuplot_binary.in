@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Loadable Function} {[@var{prog}, @var{args}] =} gnuplot_binary ()
-## @deftypefnx {Loadable Function} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog}, @var{arg1}, @dots{})
+## @deftypefn  {} {[@var{prog}, @var{args}] =} gnuplot_binary ()
+## @deftypefnx {} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog}, @var{arg1}, @dots{})
 ## Query or set the name of the program invoked by the plot command when the
-## graphics toolkit is set to "gnuplot".
+## graphics toolkit is set to @qcode{"gnuplot"}.
 ##
 ## Additional arguments to pass to the external plotting program may also be
 ## given.  The default value is @qcode{"gnuplot"} with no additional arguments.

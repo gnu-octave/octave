@@ -1220,7 +1220,7 @@ common is illustrated in the following example,
 @group
 DEFUN_DLD (do_what_i_want, args, nargout,
   "-*- texinfo -*-\n\
-@@deftypefn @{Function File@} @{@} do_what_i_say (@@var@{n@})\n\
+@@deftypefn @{@} @{@} do_what_i_say (@@var@{n@})\n\
 A function that does what the user actually wants rather\n\
 than what they requested.\n\
 @@end deftypefn")

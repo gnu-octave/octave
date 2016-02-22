@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt})
-## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options})
-## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
-## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in}, @var{t_next})
-## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_23 (@dots{})
-## @deftypefnx {Function File} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_23 (@dots{})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in}, @var{t_next})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_23 (@dots{})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_23 (@dots{})
 ##
 ## This function can be used to integrate a system of ODEs with a given initial
 ## condition @var{x} from @var{t} to @var{t+dt}, with the Bogacki-Shampine

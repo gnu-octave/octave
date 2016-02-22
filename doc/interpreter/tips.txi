@@ -341,17 +341,15 @@ Octave's own functions.  However, the effect on the appearance of printed
 or online documentation will be greatly improved.
 
 The fundamental building block of Texinfo documentation strings is the
-Texinfo-macro @code{@@deftypefn}, which takes three arguments: The class
-the function is in, its output arguments, and the function's
-signature.  Typical classes for functions include @code{Function File}
-for standard Octave functions, and @code{Loadable Function} for
-dynamically linked functions.  A skeletal Texinfo documentation string
-therefore looks like this
+Texinfo macro @code{@@deftypefn}.  The first argument to the macro is
+always blank.  The second and third arguments are the function's output
+arguments and the function signature.  A skeletal Texinfo documentation
+string looks like this
 
 @example
 @group
 -*- texinfo -*-
-@@deftypefn @{Function File@} @{@@var@{ret@} =@} fn (@dots{})
+@@deftypefn @{@} @{@@var@{ret@} =@} fn (@dots{})
 @@cindex index term
 Help text in Texinfo format.  Code samples should be marked
 like @@code@{sample of code@} and variables should be marked
@@ -370,7 +368,7 @@ functions.  The important aspects of the documentation string are
 This string signals Octave that the following text is in Texinfo format,
 and should be the first part of any help string in Texinfo format.
 
-@item @@deftypefn @{class@} @dots{} @@end deftypefn
+@item @@deftypefn @{@} @dots{} @@end deftypefn
 The entire help string should be enclosed within the block defined by
 deftypefn.
 
@@ -487,8 +485,8 @@ example
 @example
 @group
 -*- texinfo -*-
-@@deftypefn  @{Function File@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
-@@deftypefnx @{Function File@} @{@@var@{a@} =@} fn (@@var@{y@}, @dots{})
+@@deftypefn  @{@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
+@@deftypefnx @{@} @{@@var@{a@} =@} fn (@@var@{y@}, @dots{})
 Help text in Texinfo format.
 @@end deftypefn
 @end group
@@ -501,8 +499,8 @@ documentation string for @code{nchoosek} is
 
 @example
 -*- texinfo -*-
-@@deftypefn  @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{n@}, @@var@{k@})
-@@deftypefnx @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{set@}, @@var@{k@})
+@@deftypefn  @{@} @{@@var@{c@} =@} nchoosek (@@var@{n@}, @@var@{k@})
+@@deftypefnx @{@} @{@@var@{c@} =@} nchoosek (@@var@{set@}, @@var@{k@})
 
 Compute the binomial coefficient of @@var@{n@} or list all possible
 combinations of a @@var@{set@} of items.
@@ -577,13 +575,14 @@ This documentation string renders in Info format as
 @c appear with info.
 
 @example
- -- Function File: C = nchoosek (N, K)
- -- Function File: C = nchoosek (SET, K)
+ -- C = nchoosek (N, K)
+ -- C = nchoosek (SET, K)
+
      Compute the binomial coefficient of N or list all possible
      combinations of a SET of items.
 
-     If N is a scalar then calculate the binomial coefficient of N and
-     K which is defined as
+     If N is a scalar then calculate the binomial coefficient of N and K
+     which is defined as
 
            /   \
            | n |    n (n-1) (n-2) ... (n-k+1)       n!
@@ -616,16 +615,16 @@ This documentation string renders in Info format as
      Programming Note: When calculating the binomial coefficient
      `nchoosek' works only for non-negative, integer arguments.  Use
      `bincoeff' for non-integer and negative scalar arguments, or for
-     computing many binomial coefficients at once with vector inputs
-     for N or K.
+     computing many binomial coefficients at once with vector inputs for
+     N or K.
 
      See also: bincoeff, perms.
 @end example
 @noindent
 whereas in printed documentation using @TeX{} it will appear as
 
-@deftypefn  {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
-@deftypefnx {Function File} {@var{c} =} nchoosek (@var{set}, @var{k})
+@deftypefn  {} {@var{c} =} nchoosek (@var{n}, @var{k})
+@deftypefnx {} {@var{c} =} nchoosek (@var{set}, @var{k})
 
 Compute the binomial coefficient of @var{n} or list all possible
 combinations of a @var{set} of items.

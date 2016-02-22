@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} genpropdoc (@var{OBJNAME}, @var{FILENAME})
+## @deftypefn {} {@var{retval} =} genpropdoc (@var{OBJNAME}, @var{FILENAME})
 ##
 ## Print FILENAME texinfo source file associated to OBJNAME objects.  This
 ## function is meant to be run for generating octave documentation

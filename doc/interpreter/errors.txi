@@ -90,7 +90,7 @@ Consider the following function.
 @example
 @group
 ## -*- texinfo -*-
-## @@deftypefn @{Function File@} f (@@var@{arg1@})
+## @@deftypefn @{@} f (@@var@{arg1@})
 ## Function help text goes here@dots{}
 ## @@end deftypefn
 function f (arg1)
@@ -111,12 +111,12 @@ f ()
 
 @print{}  error: Invalid call to f.  Correct usage is:
 @print{}
-@print{}   -- Function File: f (ARG1)
+@print{}   -- f (ARG1)
 @print{}
 @print{}
 @print{}  Additional help for built-in functions and operators is
 @print{}  available in the online version of the manual.  Use the command
-@print{}  `doc <topic>' to search the manual index.
+@print{}  'doc <topic>' to search the manual index.
 @print{}
 @print{}  Help and information about Octave is also available on the WWW
 @print{}  at http://www.octave.org and via the help@@octave.org

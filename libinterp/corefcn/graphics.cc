@@ -9339,6 +9339,12 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
       if (fcn)
         feval (fcn, args);
+
+      if (Vdrawnow_requested)
+        {
+          Fdrawnow ();
+          Vdrawnow_requested = false;
+        }
     }
 }
 

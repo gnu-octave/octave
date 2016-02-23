@@ -95,7 +95,11 @@ since all of Octave's header files already include it.
 #include <stdint.h>
 
 #if defined (__GNUC__)
-#  define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#  else
+#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__))
+#  endif
 #  define OCTAVE_NORETURN __attribute__ ((__noreturn__))
 #  define OCTAVE_UNUSED __attribute__ ((__unused__))
 

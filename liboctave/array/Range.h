@@ -47,30 +47,14 @@ public:
     : rng_base (b), rng_limit (l), rng_inc (1),
       rng_numel (numel_internal ()), cache ()
   {
-    double tmplimit = rng_limit;
-
-    if (rng_inc > 0)
-      tmplimit = max ();
-    else
-      tmplimit = min ();
-
-    if (tmplimit != rng_limit)
-      rng_limit = tmplimit;
+    rng_limit = limit_internal ();
   }
 
   Range (double b, double l, double i)
     : rng_base (b), rng_limit (l), rng_inc (i),
       rng_numel (numel_internal ()), cache ()
   {
-    double tmplimit = rng_limit;
-
-    if (rng_inc > 0)
-      tmplimit = max ();
-    else
-      tmplimit = min ();
-
-    if (tmplimit != rng_limit)
-      rng_limit = tmplimit;
+    rng_limit = limit_internal ();
   }
 
   // For operators' usage (to preserve element count).
@@ -85,15 +69,8 @@ public:
         // Code below is only needed if the resulting range must be 100%
         // correctly constructed.  If the Range object created is only
         // a temporary one used by operators this may be unnecessary.
-        double tmplimit = rng_limit;
 
-        if (rng_inc > 0)
-          tmplimit = max ();
-        else
-          tmplimit = min ();
-
-        if (tmplimit != rng_limit)
-          rng_limit = tmplimit;
+        rng_limit = limit_internal ();
       }
   }
 
@@ -164,6 +141,10 @@ private:
   mutable Matrix cache;
 
   octave_idx_type numel_internal (void) const;
+
+  double limit_internal (void) const;
+
+  void init (void);
 
   void clear_cache (void) const { cache.resize (0, 0); }
 

@@ -309,19 +309,8 @@ Range::set_base (double b)
   if (rng_base != b)
     {
       rng_base = b;
-      rng_numel = numel_internal ();
 
-      double tmplimit = rng_limit;
-
-      if (rng_inc > 0)
-        tmplimit = max ();
-      else
-        tmplimit = min ();
-
-      if (tmplimit != rng_limit)
-        rng_limit = tmplimit;
-
-      clear_cache ();
+      init ();
     }
 }
 
@@ -331,19 +320,8 @@ Range::set_limit (double l)
   if (rng_limit != l)
     {
       rng_limit = l;
-      rng_numel = numel_internal ();
 
-      double tmplimit = rng_limit;
-
-      if (rng_inc > 0)
-        tmplimit = max ();
-      else
-        tmplimit = min ();
-
-      if (tmplimit != rng_limit)
-        rng_limit = tmplimit;
-
-      clear_cache ();
+      init ();
     }
 }
 
@@ -353,19 +331,8 @@ Range::set_inc (double i)
   if (rng_inc != i)
     {
       rng_inc = i;
-      rng_numel = numel_internal ();
 
-      double tmplimit = rng_limit;
-
-      if (rng_inc > 0)
-        tmplimit = max ();
-      else
-        tmplimit = min ();
-
-      if (tmplimit != rng_limit)
-        rng_limit = tmplimit;
-
-      clear_cache ();
+      init ();
     }
 }
 
@@ -592,4 +559,26 @@ Range::numel_internal (void) const
     }
 
   return retval;
+}
+
+double
+Range::limit_internal (void) const
+{
+  double tmp_limit = rng_limit;
+
+  if (rng_inc > 0)
+    tmp_limit = max ();
+  else
+    tmp_limit = min ();
+
+  return (tmp_limit != rng_limit) ? tmp_limit : rng_limit;
+}
+
+void
+Range::init (void)
+{
+  rng_numel = numel_internal ();
+  rng_limit = limit_internal ();
+
+  clear_cache ();
 }

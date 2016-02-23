@@ -185,58 +185,6 @@ octave_call_stack::do_current_column (void) const
   return retval;
 }
 
-int
-octave_call_stack::do_caller_user_code_line (void) const
-{
-  int retval = -1;
-
-  const_iterator p = cs.end ();
-
-  while (p != cs.begin ())
-    {
-      const stack_frame& elt = *(--p);
-
-      octave_function *f = elt.m_fcn;
-
-      if (f && f->is_user_code ())
-        {
-          if (elt.m_line > 0)
-            {
-              retval = elt.m_line;
-              break;
-            }
-        }
-    }
-
-  return retval;
-}
-
-int
-octave_call_stack::do_caller_user_code_column (void) const
-{
-  int retval = -1;
-
-  const_iterator p = cs.end ();
-
-  while (p != cs.begin ())
-    {
-      const stack_frame& elt = *(--p);
-
-      octave_function *f = elt.m_fcn;
-
-      if (f && f->is_user_code ())
-        {
-          if (elt.m_column)
-            {
-              retval = elt.m_column;
-              break;
-            }
-        }
-    }
-
-  return retval;
-}
-
 size_t
 octave_call_stack::do_num_user_code_frames
   (octave_idx_type& curr_user_frame) const
@@ -295,6 +243,148 @@ octave_call_stack::do_caller_user_code (size_t nskip) const
           else
             {
               retval = dynamic_cast<octave_user_code *> (f);
+              break;
+            }
+        }
+    }
+
+  return retval;
+}
+
+int
+octave_call_stack::do_caller_user_code_line (void) const
+{
+  int retval = -1;
+
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
+    {
+      const stack_frame& elt = *(--p);
+
+      octave_function *f = elt.m_fcn;
+
+      if (f && f->is_user_code ())
+        {
+          if (elt.m_line > 0)
+            {
+              retval = elt.m_line;
+              break;
+            }
+        }
+    }
+
+  return retval;
+}
+
+int
+octave_call_stack::do_caller_user_code_column (void) const
+{
+  int retval = -1;
+
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
+    {
+      const stack_frame& elt = *(--p);
+
+      octave_function *f = elt.m_fcn;
+
+      if (f && f->is_user_code ())
+        {
+          if (elt.m_column)
+            {
+              retval = elt.m_column;
+              break;
+            }
+        }
+    }
+
+  return retval;
+}
+
+octave_user_code *
+octave_call_stack::do_debug_user_code (void) const
+{
+  octave_user_code *retval = 0;
+
+  // This should never happen...
+  if (curr_frame == 0)
+    return retval;
+
+  // Start looking with the caller of the calling debug function.
+  size_t i = cs[curr_frame].m_prev;
+
+  while (i != 0)
+    {
+      const stack_frame& elt = cs[i];
+
+      octave_function *f = elt.m_fcn;
+
+      if (f && f->is_user_code ())
+        {
+          retval = dynamic_cast<octave_user_code *> (f);
+          break;
+        }
+    }
+
+  return retval;
+}
+
+int
+octave_call_stack::do_debug_user_code_line (void) const
+{
+  int retval = -1;
+
+  // This should never happen...
+  if (curr_frame == 0)
+    return retval;
+
+  // Start looking with the caller of the calling debug function.
+  size_t i = cs[curr_frame].m_prev;
+
+  while (i != 0)
+    {
+      const stack_frame& elt = cs[i];
+
+      octave_function *f = elt.m_fcn;
+
+      if (f && f->is_user_code ())
+        {
+          if (elt.m_line)
+            {
+              retval = elt.m_line;
+              break;
+            }
+        }
+    }
+
+  return retval;
+}
+
+int
+octave_call_stack::do_debug_user_code_column (void) const
+{
+  int retval = -1;
+
+  // This should never happen...
+  if (curr_frame == 0)
+    return retval;
+
+  // Start looking with the caller of the calling debug function.
+  size_t i = cs[curr_frame].m_prev;
+
+  while (i != 0)
+    {
+      const stack_frame& elt = cs[i];
+
+      octave_function *f = elt.m_fcn;
+
+      if (f && f->is_user_code ())
+        {
+          if (elt.m_column)
+            {
+              retval = elt.m_column;
               break;
             }
         }
@@ -431,7 +521,9 @@ octave_call_stack::do_goto_frame (size_t n, bool verbose)
         octave_stdout << "stopped in " << elt.fcn_name ()
                       << " at line " << elt.m_line
                       << " column " << elt.m_column
-                      << " (" << elt.m_scope << "[" << elt.m_context << "])"
+                      << " [" << elt.fcn_file_name () << "] "
+                      << " (scope = " << elt.m_scope
+                      << "[context = " << elt.m_context << "])"
                       << std::endl;
     }
 
@@ -483,8 +575,10 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
                   std::ostringstream buf;
 
                   if (f)
-                    buf << "stopped in " << f->name ()
-                        << " at line " << elt.m_line << std::endl;
+                    buf << "stopped in " << elt.fcn_name ()
+                        << " at line " << elt.m_line
+                        << " [" << elt.fcn_file_name () << "] "
+                        << std::endl;
                   else
                     buf << "at top level" << std::endl;
 

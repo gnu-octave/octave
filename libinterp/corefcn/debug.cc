@@ -180,7 +180,7 @@ get_user_code (const std::string& fname = "")
   octave_user_code *dbg_fcn = 0;
 
   if (fname.empty ())
-    dbg_fcn = octave_call_stack::caller_user_code ();
+    dbg_fcn = octave_call_stack::debug_user_code ();
   else
     {
       std::string name = fname;
@@ -1506,34 +1506,34 @@ is stopped.\n\
   octave_user_code *dbg_fcn = get_user_code ();
 
   if (! dbg_fcn)
-    error ("dbwhere: must be inside a user function to use dbwhere\n");
+    {
+      octave_stdout << "stopped at top level" << std::endl;
+      return ovl ();
+    }
 
   bool have_file = true;
 
-  std::string name = dbg_fcn->fcn_file_name ();
+  octave_stdout << "stopped in " << dbg_fcn->name () << " at ";
 
-  if (name.empty ())
-    {
-      have_file = false;
-
-      name = dbg_fcn->name ();
-    }
-
-  octave_stdout << "stopped in " << name << " at ";
-
-  int l = octave_call_stack::caller_user_code_line ();
+  int l = octave_call_stack::debug_user_code_line ();
 
   if (l > 0)
     {
-      octave_stdout << "line " << l << std::endl;
+      octave_stdout << "line " << l;
 
-      if (have_file)
+      std::string file_name = dbg_fcn->fcn_file_name ();
+
+      if (! file_name.empty ())
         {
-          std::string line = get_file_line (name, l);
+          octave_stdout << " [" << file_name << "]" << std::endl;
+
+          std::string line = get_file_line (file_name, l);
 
           if (! line.empty ())
             octave_stdout << l << ": " << line << std::endl;
         }
+      else
+        octave_stdout << std::endl;
     }
   else
     octave_stdout << "<unknown line>" << std::endl;
@@ -1764,7 +1764,7 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)\n\
       name = dbg_fcn->name ();
     }
 
-  int l = octave_call_stack::caller_user_code_line ();
+  int l = octave_call_stack::debug_user_code_line ();
 
   if (l > 0)
     {

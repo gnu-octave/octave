@@ -160,18 +160,6 @@ public:
     return instance_ok () ? instance->do_current_column () : -1;
   }
 
-  // Line in user code caller.
-  static int caller_user_code_line (void)
-  {
-    return instance_ok () ? instance->do_caller_user_code_line () : -1;
-  }
-
-  // Column in user code caller.
-  static int caller_user_code_column (void)
-  {
-    return instance_ok () ? instance->do_caller_user_code_column () : -1;
-  }
-
   // Caller function, may be built-in.
   static octave_function *caller (void)
   {
@@ -218,10 +206,40 @@ public:
     return instance_ok () ? instance->do_element (n) : 0;
   }
 
-  // First user-defined function on the stack.
-  static octave_user_code *caller_user_code (size_t nskip = 0)
+  // User code caller.
+  static octave_user_code *caller_user_code (void)
   {
-    return instance_ok () ? instance->do_caller_user_code (nskip) : 0;
+    return instance_ok () ? instance->do_debug_user_code () : 0;
+  }
+
+  // Line in user code caller.
+  static int caller_user_code_line (void)
+  {
+    return instance_ok () ? instance->do_caller_user_code_line () : -1;
+  }
+
+  // Column in user code caller.
+  static int caller_user_code_column (void)
+  {
+    return instance_ok () ? instance->do_caller_user_code_column () : -1;
+  }
+
+  // Current function that we are debugging.
+  static octave_user_code *debug_user_code (void)
+  {
+    return instance_ok () ? instance->do_debug_user_code () : 0;
+  }
+
+  // Line number in current function that we are debugging.
+  static int debug_user_code_line (void)
+  {
+    return instance_ok () ? instance->do_debug_user_code_line () : 0;
+  }
+
+  // Column number in current function that we are debugging.
+  static int debug_user_code_column (void)
+  {
+    return instance_ok () ? instance->do_debug_user_code_column () : 0;
   }
 
   // Return TRUE if all elements on the call stack are scripts.
@@ -357,10 +375,6 @@ private:
 
   int do_current_column (void) const;
 
-  int do_caller_user_code_line (void) const;
-
-  int do_caller_user_code_column (void) const;
-
   octave_function *do_caller (void) const
   {
     return curr_frame > 1 ? cs[curr_frame-1].m_fcn : cs[0].m_fcn;
@@ -407,6 +421,12 @@ private:
   }
 
   octave_user_code *do_caller_user_code (size_t nskip) const;
+  int do_caller_user_code_line (void) const;
+  int do_caller_user_code_column (void) const;
+
+  octave_user_code *do_debug_user_code (void) const;
+  int do_debug_user_code_line (void) const;
+  int do_debug_user_code_column (void) const;
 
   bool do_all_scripts (void) const;
 

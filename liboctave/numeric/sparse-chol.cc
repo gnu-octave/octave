@@ -561,8 +561,8 @@ chol2inv (const chol_type& r)
 template <>
 sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
                                                octave_idx_type& info)
-  : rep (new typename
-         sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info, true, false))
+  : rep (
+    new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info, true, false))
 { }
 
 // Instantiations we need.

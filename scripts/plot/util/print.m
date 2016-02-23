@@ -350,7 +350,7 @@ function print (varargin)
       props(n).h = hobj(n);
       props(n).name = "units";
       props(n).value = {get(hobj(n), "units")};
-      set (hobj(n), "units", "data")
+      set (hobj(n), "units", "data");
     endfor
 
     ## print() requires axes units = "normalized"
@@ -361,7 +361,7 @@ function print (varargin)
       props(m+n).h = hax(n);
       props(m+n).name = "units";
       props(m+n).value = {get(hax(n), "units")};
-      set (hax(n), "units", "normalized")
+      set (hax(n), "units", "normalized");
     endfor
 
     ## print() requires figure units to be "pixels"
@@ -379,14 +379,33 @@ function print (varargin)
     fpos(3:4) = opts.canvas_size;
     set (opts.figure, "position", fpos);
 
-    ## Set figure background to none.
-    ## This is done both for consistency with Matlab and to eliminate
-    ## the visible box along the figure's perimeter.
-    props(m+3).h = opts.figure;
-    props(m+3).name = "color";
-    props(m+3).value{1} = get (props(m+3).h, props(m+3).name);
-    set (props(m+3).h, "color", "none");
-    nfig = m + 3;
+    ## Implement InvertHardCopy option
+    do_hardcopy = strcmp (get (opts.figure, "inverthardcopy"), "on");
+
+    if (do_hardcopy)
+      ## Set figure background to white.
+      props(m+3).h = opts.figure;
+      props(m+3).name = "color";
+      props(m+3).value{1} = get (props(m+3).h, props(m+3).name);
+      set (props(m+3).h, "color", "white");
+      nfig = m + 3;
+    else
+      nfig = m + 2;
+    endif
+
+    if (do_hardcopy)
+      ## Set background to white for all top-level axes objects
+      hax = findall (opts.figure, "-depth", 1, "type", "axes",
+                                  "-not", "tag", "legend");
+      m = numel (props);
+      for n = 1:numel(hax)
+        props(m+n).h = hax(n);
+        props(m+n).name = "color";
+        props(m+n).value{1} = get(hax(n), "color");
+        set (hax(n), "color", "white");
+      endfor
+      nfig += n;
+    endif
 
     if (opts.force_solid != 0)
       h = findall (opts.figure, "-property", "linestyle");

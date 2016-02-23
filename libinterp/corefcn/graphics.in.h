@@ -3395,7 +3395,7 @@ public:
       string_property filename , ""
       bool_property graphicssmoothing , "on"
       bool_property integerhandle S , "on"
-      bool_property inverthardcopy , "off"
+      bool_property inverthardcopy , "on"
       callback_property keypressfcn , Matrix ()
       callback_property keyreleasefcn , Matrix ()
       radio_property menubar , "none|{figure}"

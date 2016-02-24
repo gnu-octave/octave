@@ -133,7 +133,7 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
       for (octave_idx_type j = 1; j <= ncols; j++)
         {
           octave_idx_type u = c[j];
-          for (i = i; i < u; i++)
+          for (; i < u; i++)
             if (d[i] != T ())
               {
                 d[k] = d[i];
@@ -943,7 +943,7 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
       for (octave_idx_type j = 1; j <= rep->ncols; j++)
         {
           octave_idx_type u = xcidx (j);
-          for (i = i; i < u; i++)
+          for (; i < u; i++)
             if (xridx (i) < r)
               {
                 xdata (k) = xdata (i);

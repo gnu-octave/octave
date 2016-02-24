@@ -227,13 +227,14 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
           else
             include_graph = "foobar-inc";
 
-          // GL2PS_SILENT was removed to allow gl2ps printing errors on stderr
+          // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
           GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave", 0,
                                       gl2ps_term, gl2ps_sort,
                                       (GL2PS_NO_BLENDING
                                        | GL2PS_OCCLUSION_CULL
                                        | GL2PS_BEST_ROOT
                                        | gl2ps_text
+                                       | GL2PS_DRAW_BACKGROUND
                                        | GL2PS_NO_PS3_SHADING
                                        | GL2PS_USE_CURRENT_VIEWPORT),
                                       GL_RGBA, 0, 0, 0, 0, 0,

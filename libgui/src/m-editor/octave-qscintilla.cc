@@ -216,7 +216,9 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
         global_pos = editor_rect.topLeft ();   // yes, take top left corner
     }
 
+#ifdef HAVE_QSCI_VERSION_2_6_0
   if (! in_left_margin)
+#endif
     {
       // fill context menu with editor's standard actions
       emit create_context_menu_signal (context_menu);
@@ -242,6 +244,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
             }
         }
       }
+#ifdef HAVE_QSCI_VERSION_2_6_0
     else
       {
         // remove all standard actions from scintilla
@@ -255,6 +258,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
                                      SLOT (contextmenu_break_condition (bool)));
         a->setData (local_pos);
       }
+#endif
 
   // finaly show the menu
   context_menu->exec (global_pos);
@@ -301,11 +305,11 @@ octave_qscintilla::contextmenu_run (bool)
 
 // wrappers for dbstop related context menu items
 
-#ifdef HAVE_QSCI_VERSION_2_6_0
 // FIXME Why can't the data be sent as the argument to the function???
 void
 octave_qscintilla::contextmenu_break_condition (bool)
 {
+#ifdef HAVE_QSCI_VERSION_2_6_0
   QAction *action = qobject_cast<QAction *>(sender());
   QPoint local_pos = action->data ().value<QPoint> ();
 
@@ -314,22 +318,16 @@ octave_qscintilla::contextmenu_break_condition (bool)
   local_pos = QPoint (margins + 1, local_pos.y ());
 
   emit context_menu_break_condition_signal (lineAt (local_pos));
+#endif
 }
 
 void
 octave_qscintilla::contextmenu_break_once (const QPoint& local_pos)
 {
+#ifdef HAVE_QSCI_VERSION_2_6_0
   emit context_menu_break_once (lineAt (local_pos));
+#endif
 }
-
-/*
-void
-octave_qscintilla::contextmenu_break_if_caught (bool)
-{
-  emit context_menu_break_if_caught
-}
-*/
-#endif // HAVE_QSCI_VERSION_2_6_0
 
 void
 octave_qscintilla::text_changed ()

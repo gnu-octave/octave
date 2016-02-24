@@ -111,10 +111,8 @@ link (octave_idx_type s, octave_idx_type t, octave_idx_type *pp)
 static inline octave_idx_type
 find (octave_idx_type i, octave_idx_type *pp)
 {
-  register octave_idx_type p, gp;
-
-  p = pp[i];
-  gp = pp[p];
+  octave_idx_type p = pp[i];
+  octave_idx_type gp = pp[p];
 
   while (gp != p)
     {

@@ -82,7 +82,7 @@ PARSE_TREE_SRC = \
 libinterp/parse-tree/oct-gperf.h: libinterp/parse-tree/octave.gperf
 	$(AM_V_GEN)rm -f $@-t $@t1 $@ && \
 	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1 && \
-	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t && \
+	$(SED) -e 's,lookup\[,gperf_lookup[,' -e 's,register ,,g' < $@-t1 > $@-t && \
 	mv $@-t $@ && \
 	rm -f $@-t1
 

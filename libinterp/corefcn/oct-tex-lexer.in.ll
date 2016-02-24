@@ -36,6 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
+// Define away the deprecated register storage class specifier to avoid
+// potential warnings about it.
+#if ! defined (register)
+#define register
+#endif
+
 }
 
 %option prefix = "octave_tex_"

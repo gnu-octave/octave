@@ -47,6 +47,12 @@ object) relevant global values before and after the nested call.
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
+// Define away the deprecated register storage class specifier to avoid
+// potential warnings about it.
+#if ! defined (register)
+#define register
+#endif
+
 }
 
 %option prefix = "octave_"

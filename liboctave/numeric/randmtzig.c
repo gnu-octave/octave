@@ -339,7 +339,7 @@ next_state (void)
 static uint32_t
 randmt (void)
 {
-  register uint32_t y;
+  uint32_t y;
 
   if (--left == 0)
     next_state ();
@@ -581,7 +581,7 @@ oct_randn (void)
       /* 53-bit mantissa, 1-bit sign, x86 32-bit architecture */
       double x;
       int si,idx;
-      register uint32_t lo, hi;
+      uint32_t lo, hi;
       int64_t rabs;
       uint32_t *p = (uint32_t *)&rabs;
       lo = randi32 ();

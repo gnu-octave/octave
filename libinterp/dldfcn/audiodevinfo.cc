@@ -460,7 +460,7 @@ public:
   // Overloaded base functions
   double player_value (void) const { return 0; }
   virtual double scalar_value (bool = false) const { return 0; }
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
   void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
   // Properties
@@ -832,7 +832,7 @@ audioplayer::~audioplayer (void)
 }
 
 void
-audioplayer::print (std::ostream& os, bool pr_as_read_syntax) const
+audioplayer::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -1219,7 +1219,7 @@ public:
   // Overloaded base functions
   double player_value (void) const { return 0; }
   virtual double scalar_value (bool = false) const { return 0; }
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
   void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
   // Properties
@@ -1467,7 +1467,7 @@ audiorecorder::~audiorecorder (void)
 }
 
 void
-audiorecorder::print (std::ostream& os, bool pr_as_read_syntax) const
+audiorecorder::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

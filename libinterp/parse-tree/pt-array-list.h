@@ -54,6 +54,13 @@ public:
 
   bool has_magic_end (void) const;
 
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using tree_expression::copy_base;
+
   void copy_base (const tree_array_list& array_list);
 
   void copy_base (const tree_array_list& array_list,

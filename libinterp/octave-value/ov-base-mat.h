@@ -94,6 +94,13 @@ public:
   octave_value_list do_multi_index_op (int, const octave_value_list& idx)
   { return do_index_op (idx); }
 
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using octave_base_value::assign;
+
   void assign (const octave_value_list& idx, const MT& rhs);
 
   void assign (const octave_value_list& idx, typename MT::element_type rhs);

@@ -56,6 +56,13 @@ public:
 
   ~gl2ps_renderer (void) { }
 
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using opengl_renderer::draw;
+
   void draw (const graphics_object& go, const std::string& print_cmd);
 
 protected:

@@ -60,7 +60,7 @@ public:
     column_num = c;
   }
 
-  virtual void set_breakpoint (std::string condition)
+  virtual void set_breakpoint (const std::string& condition)
     { if (bp)
         *bp = condition;
       else

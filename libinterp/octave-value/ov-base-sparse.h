@@ -97,6 +97,13 @@ public:
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using octave_base_value::assign;
+
   void assign (const octave_value_list& idx, const T& rhs);
 
   void delete_elements (const octave_value_list& idx);

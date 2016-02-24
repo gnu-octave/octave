@@ -158,8 +158,11 @@ public:
 
   bool is_black_hole (void) { return true; }
 
-  tree_black_hole *dup (void) const
-  { return new tree_black_hole; }
+  tree_black_hole *dup (symbol_table::scope_id,
+                        symbol_table::context_id) const
+  {
+    return new tree_black_hole;
+  }
 
   octave_lvalue lvalue (void)
   {

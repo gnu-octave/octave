@@ -722,7 +722,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
       // subfunctions if we are currently executing a function defined
       // from a .m file.
 
-      octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
+      octave_user_function *current_fcn = symbol_table::get_curr_fcn ();
 
       for (scope_id scope = xcurrent_scope; scope >= 0;)
         {
@@ -743,9 +743,9 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
 
       // Private function.
 
-      if (curr_fcn)
+      if (current_fcn)
         {
-          std::string dir_name = curr_fcn->dir_name ();
+          std::string dir_name = current_fcn->dir_name ();
 
           if (! dir_name.empty ())
             {
@@ -942,11 +942,11 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
 
   // Private function.
 
-  octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
+  octave_user_function *current_fcn = symbol_table::get_curr_fcn ();
 
-  if (curr_fcn)
+  if (current_fcn)
     {
-      std::string dir_name = curr_fcn->dir_name ();
+      std::string dir_name = current_fcn->dir_name ();
 
       if (! dir_name.empty ())
         {

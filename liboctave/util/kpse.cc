@@ -2186,7 +2186,7 @@ dir_links (const std::string& fn)
 
 #endif /* WIN32 */
 
-static void
+static inline void
 do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
            unsigned elt_length, const std::string& post)
 {

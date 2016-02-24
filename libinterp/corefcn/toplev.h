@@ -207,9 +207,9 @@ public:
   }
 
   // User code caller.
-  static octave_user_code *caller_user_code (void)
+  static octave_user_code *caller_user_code (size_t nskip = 0)
   {
-    return instance_ok () ? instance->do_debug_user_code () : 0;
+    return instance_ok () ? instance->do_caller_user_code (nskip) : 0;
   }
 
   // Line in user code caller.

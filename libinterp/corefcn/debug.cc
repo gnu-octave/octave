@@ -1511,8 +1511,6 @@ is stopped.\n\
       return ovl ();
     }
 
-  bool have_file = true;
-
   octave_stdout << "stopped in " << dbg_fcn->name () << " at ";
 
   int l = octave_call_stack::debug_user_code_line ();

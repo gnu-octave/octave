@@ -355,34 +355,98 @@ function update_props (h, d)
              "markerfacecolor", fc, "markeredgecolor", ec);
 endfunction
 
+## FIXME: This callback routine doesn't handle the case where N > 100.
 function update_data (h, d)
   x = get (h, "xdata");
   y = get (h, "ydata");
   z = get (h, "zdata");
-  c = get (h, "cdata");
-  if (rows (c) == 1)
-    c = repmat (c, numel (x), 1);
+  if (numel (x) > 100)
+    error ("scatter: cannot update data with more than 100 points.  Call scatter (x, y, ...) with new data instead.");
   endif
+  c = get (h, "cdata");
+  one_explicit_color = ischar (c) || isequal (size (c), [1, 3]);
+  if (! one_explicit_color)
+    if (rows (c) == 1)
+      c = repmat (c, numel (x), 1);
+    endif
+  endif
+  filled = ! strcmp (get (h, "markerfacecolor"), "none"); 
   s = get (h, "sizedata");
   if (numel (s) == 1)
     s = repmat (s, numel (x), 1);
   endif
   hlist = get (h, "children");
 
-  if (isempty (z))
-    for i = 1 : length (hlist)
-      set (hlist(i), "vertices", [x(i), y(i)],
-                     "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
-                     "facevertexcdata", c(i,:),
-                     "markersize", s(i));
-    endfor
+  if (one_explicit_color)
+    if (filled)
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", c);
+
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", c);
+        endfor
+      endif
+    else
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", "none");
+
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", "none");
+        endfor
+      endif
+    endif
   else
-    for i = 1 : length (hlist)
-      set (hlist(i), "vertices", [x(i), y(i), z(i)],
-                     "cdata", reshape (cd(i,:),[1, size(cd)(2:end)]),
-                     "facevertexcdata", cd(i,:),
-                     "markersize", s(i));
-    endfor
+    if (filled)
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "none", "markerfacecolor", "flat",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "none", "markerfacecolor", "flat",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      endif
+    else
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "flat", "markerfacecolor", "none",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "flat", "markerfacecolor", "none",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      endif
+    endif
   endif
 
 endfunction

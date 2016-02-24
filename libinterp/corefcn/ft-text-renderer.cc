@@ -29,11 +29,20 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_FREETYPE)
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 #if defined (HAVE_FONTCONFIG)
 #  include <fontconfig/fontconfig.h>
+#endif
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#pragma GCC diagnostic pop
 #endif
 
 #include <clocale>

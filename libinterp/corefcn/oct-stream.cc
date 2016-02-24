@@ -3101,6 +3101,36 @@ octave_stream::close (void)
     rep->close ();
 }
 
+// FIXME: maybe these should be defined in lo-ieee.h?
+
+template <typename T>
+static inline bool
+is_old_NA (T)
+{
+  return false;
+}
+
+template <>
+inline bool
+is_old_NA<double> (double val)
+{
+  return __lo_ieee_is_old_NA (val);
+}
+
+template <typename T>
+static inline T
+replace_old_NA (T val)
+{
+  return val;
+}
+
+template <>
+inline double
+replace_old_NA<double> (double val)
+{
+  return __lo_ieee_replace_old_NA (val);
+}
+
 template <typename SRC_T, typename DST_T>
 static octave_value
 convert_and_copy (std::list<void *>& input_buf_list,
@@ -3125,22 +3155,40 @@ convert_and_copy (std::list<void *>& input_buf_list,
 
       if (swap || do_float_fmt_conv)
         {
-          for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
-               i++, j++)
+          if (do_NA_conv)
             {
-              if (swap)
-                swap_bytes<sizeof (SRC_T)> (&data[i]);
-              else if (do_float_fmt_conv)
-                do_float_format_conversion (&data[i], sizeof (SRC_T),
-                                            1, from_flt_fmt,
-                                            oct_mach_info::native_float_format ());
+              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                   i++, j++)
+                {
+                  if (swap)
+                    swap_bytes<sizeof (SRC_T)> (&data[i]);
+                  else if (do_float_fmt_conv)
+                    do_float_format_conversion (&data[i], sizeof (SRC_T),
+                                                1, from_flt_fmt,
+                                                oct_mach_info::native_float_format ());
 
-              dst_elt_type tmp (data[i]);
+                  dst_elt_type tmp (data[i]);
 
-              if (do_NA_conv && __lo_ieee_is_old_NA (tmp))
-                tmp = __lo_ieee_replace_old_NA (tmp);
+                  if (is_old_NA (tmp))
+                    tmp = replace_old_NA (tmp);
 
-              conv_data[j] = tmp;
+                  conv_data[j] = tmp;
+                }
+            }
+          else
+            {
+              for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
+                   i++, j++)
+                {
+                  if (swap)
+                    swap_bytes<sizeof (SRC_T)> (&data[i]);
+                  else if (do_float_fmt_conv)
+                    do_float_format_conversion (&data[i], sizeof (SRC_T),
+                                                1, from_flt_fmt,
+                                                oct_mach_info::native_float_format ());
+
+                  conv_data[j] = data[i];
+                }
             }
         }
       else
@@ -3152,8 +3200,8 @@ convert_and_copy (std::list<void *>& input_buf_list,
                 {
                   dst_elt_type tmp (data[i]);
 
-                  if (__lo_ieee_is_old_NA (tmp))
-                    tmp = __lo_ieee_replace_old_NA (tmp);
+                  if (is_old_NA (tmp))
+                    tmp = replace_old_NA (tmp);
 
                   conv_data[j] = tmp;
                 }

@@ -47,8 +47,6 @@ public:
     return *this;
   }
 
-  operator std::string (void) const { return *this; }
-
   bool operator < (const std::string& s) const
   {
     const_iterator p1 = begin ();

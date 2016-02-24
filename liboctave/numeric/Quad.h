@@ -164,10 +164,10 @@ public:
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   IndefQuad (integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf), integration_error (0) { }
+    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
 
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t), integration_error (0) { }
+    : Quad (fcn), bound (b), type (t) { }
 
   ~IndefQuad (void) { }
 
@@ -181,7 +181,6 @@ private:
 
   double bound;
   IntegralType type;
-  int integration_error;
 };
 
 class
@@ -230,10 +229,10 @@ public:
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   FloatIndefQuad (float_integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf), integration_error (0) { }
+    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
 
   FloatIndefQuad (float_integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t), integration_error (0) { }
+    : Quad (fcn), bound (b), type (t) { }
 
   ~FloatIndefQuad (void) { }
 
@@ -247,7 +246,6 @@ private:
 
   float bound;
   IntegralType type;
-  int integration_error;
 };
 
 #endif

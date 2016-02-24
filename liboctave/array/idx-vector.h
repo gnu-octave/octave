@@ -65,7 +65,7 @@ public:
     class_mask
   };
 
-  template <typename T> friend class std::unique_ptr;
+  template <typename T, typename D> friend class std::unique_ptr;
 
 private:
 

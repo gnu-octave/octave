@@ -318,10 +318,10 @@ AC_DEFUN([OCTAVE_CXX_CXX11_TEST_BODY],
   std::vector<std::pair<int,char*>> v1;
 }
 {
-dnl FIXME: Octave-specific change, this feature test is modified from the
-dnl original Autoconf source. The "const" type qualifier is strictly required,
-dnl needed for this test to pass with clang for example.
   // Unicode literals
+  // FIXME: Octave-specific change, this feature test is modified from the
+  // original Autoconf source. The "const" type qualifier is strictly required,
+  // needed for this test to pass with clang for example.
   const char *utf8 = u8"UTF-8 string \u2500";
   const char16_t *utf16 = u"UTF-8 string \u2500";
   const char32_t *utf32 = U"UTF-32 string \u2500";

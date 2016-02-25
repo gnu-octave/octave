@@ -1559,7 +1559,7 @@ AC_DEFUN([OCTAVE_FAST_INT_OPS], [
         DO_TEST(short)
         DO_TEST(int)
         DO_TEST(long)
-        #if (defined(HAVE_LONG_LONG_INT) && defined(HAVE_UNSIGNED_LONG_LONG_INT))
+        #if (defined(OCTAVE_HAVE_LONG_LONG_INT) && defined(OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT))
           DO_TEST(long long)
         #endif
       ]])],

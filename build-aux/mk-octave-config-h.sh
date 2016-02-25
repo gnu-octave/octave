@@ -156,6 +156,9 @@ grep "#\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK" $config_h_file
 grep "#\(undef\|define\) OCTAVE_ENABLE_OPENMP" $config_h_file
 
 grep "#\(undef\|define\) OCTAVE_HAVE_FAST_INT_OPS" $config_h_file
+grep "#\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT" $config_h_file
+grep "#\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT" $config_h_file
+grep "#\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES" $config_h_file
 
 if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
   cat << EOF

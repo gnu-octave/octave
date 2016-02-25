@@ -496,14 +496,14 @@ octave_value::octave_value (unsigned long int i)
 {
 }
 
-#if defined (HAVE_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
 octave_value::octave_value (long long int i)
   : rep (new octave_scalar (i))
 {
 }
 #endif
 
-#if defined (HAVE_UNSIGNED_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
 octave_value::octave_value (unsigned long long int i)
   : rep (new octave_scalar (i))
 {

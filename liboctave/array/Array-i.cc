@@ -37,13 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 
 template class OCTAVE_API octave_sort<int>;
 template class OCTAVE_API octave_sort<long>;
-#if defined (HAVE_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
 template class OCTAVE_API octave_sort<long long>;
 #endif
 
 INSTANTIATE_ARRAY (int, OCTAVE_API);
 INSTANTIATE_ARRAY (long, OCTAVE_API);
-#if defined (HAVE_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
 INSTANTIATE_ARRAY (long long, OCTAVE_API);
 #endif
 

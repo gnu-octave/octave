@@ -185,10 +185,10 @@ public:
   // 64-bit ino_t, etc, and hope that those values are never actually larger
   // than can be represented exactly in a double.
 
-#if defined (HAVE_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
   octave_value (long long int i);
 #endif
-#if defined (HAVE_UNSIGNED_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
   octave_value (unsigned long long int i);
 #endif
 

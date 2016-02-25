@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
 
-#if defined HAVE_LONG_LONG_INT
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
 #  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
      do \
        { \

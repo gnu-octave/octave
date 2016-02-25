@@ -2219,8 +2219,19 @@ AC_TYPE_SSIZE_T
 AC_TYPE_UID_T
 AC_TYPE_UINT64_T
 AC_CHECK_TYPES([dev_t, ino_t])
-AC_CHECK_TYPES([long long int, unsigned long long int])
 AC_CHECK_TYPES([ptrdiff_t])
+
+AC_CHECK_TYPES([long long int])
+if test "x$ac_cv_type_long_long_int" = xyes; then
+  AC_DEFINE(OCTAVE_HAVE_LONG_LONG_INT, 1,
+    [Define to 1 if the system has the type 'long long int'.])
+fi
+
+AC_CHECK_TYPES([unsigned long long int])
+if test "x$ac_cv_type_unsigned_long_long_int" = xyes; then
+  AC_DEFINE(OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT, 1,
+    [Define to 1 if the system has the type 'unsigned long long int'.])
+fi
 
 ## How big are ints and how are they oriented?
 ## These could probably be eliminated in favor of run-time checks.
@@ -2255,7 +2266,7 @@ AC_CACHE_CHECK([whether ${CXX-g++} allows overload of char, int8_t, and uint8_t]
   AC_LANG_POP(C++)
   ])
 if test $octave_cv_overload_char_int8_t = yes; then
-  AC_DEFINE(HAVE_OVERLOAD_CHAR_INT8_TYPES, 1,
+  AC_DEFINE(OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES, 1,
     [Define to 1 if C++ allows overload of char, int8_t, and uint8_t types.])
 fi
 

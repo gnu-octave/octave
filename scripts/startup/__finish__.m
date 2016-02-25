@@ -21,7 +21,7 @@
 ## Check for the existence of the function/script, @file{finish}, in the
 ## path or current working directory and execute it.
 ##
-## This function is intended to be excecuted upon a clean exit from Octave.
+## This function is intended to be executed upon a clean exit from Octave.
 ## This is accomplished in the system script @file{startup/octaverc} by use of
 ## the built-in function @code{atexit}.
 ## @seealso{atexit}
@@ -31,8 +31,7 @@
 ## still in the base workspace with access to all user variables.
 
 if (exist ("finish", "file"))
-  ## No arg list here since finish might be a script.
-  finish;
+  finish;  # No arg list here since finish might be a script.
 endif
 
 

@@ -3,23 +3,28 @@
 ## If the environment variable OCTAVE_VERSION_INITFILE is set when Octave
 ## starts, then that file is executed instead of this file.
 ##
-## This file should contain any commands that should be executed each
-## time Octave starts for every user at this site.
+## This file contains commands that should be executed each time Octave starts
+## for every user at this site.
 
-## Configure readline using the file inputrc in the Octave startup
-## directory.
-
+## Configure readline using the file inputrc in the Octave startup directory.
 readline_read_init_file (sprintf ("%s%s%s",
                                   octave_config_info ("startupfiledir"),
                                   filesep, "inputrc"));
 
+## Configure LESS pager if present
 if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
   PAGER_FLAGS ('-e -X -P"-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$"');
 endif
 
 ## This appears here instead of in the pkg/PKG_ADD file so that --norc
 ## will also skip automatic loading of packages.
-
 pkg ("load", "auto");
 
+## For Matlab compatibility, run startup.m when starting Octave.
+if (exist ("startup", "file))
+  startup;  # No arg list here since startup might be a script.
+endif
+
+## For Matlab compatibility, schedule finish.m to run when exiting Octave.
 atexit ("__finish__");
+

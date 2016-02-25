@@ -3,5 +3,5 @@
 ## If the environment variable OCTAVE_SITE_INITFILE is set when Octave
 ## starts, then that file is executed instead of this file.
 ##
-## This file should contain any commands that should be executed each
-## time Octave starts for every user at this site.
+## This file contain commands that should be executed each time Octave starts
+## for every user at this site.

@@ -374,6 +374,11 @@ Octave searches for @file{.octaverc}.
 
 If you start Octave in your home directory, commands from the file
 @file{~/.octaverc} will only be executed once.
+
+@item startup.m
+This file is used to make personal changes to the default
+Octave environment.  It is executed for @sc{matlab} compatibility, but
+@file{~/.octaverc} is the preferred location for configuration changes.
 @end table
 
 A message will be displayed as each of the startup files is read if you

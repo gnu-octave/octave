@@ -1067,6 +1067,8 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   in_loop_command = true;
 
   tree_expression *expr = cmd.condition ();
+  int until_line = cmd.line ();
+  int until_column = cmd.column ();
 
   if (! expr)
     panic_impossible ();
@@ -1083,6 +1085,8 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 
       if (debug_mode)
         do_breakpoint (cmd.is_breakpoint (true));
+
+      octave_call_stack::set_location (until_line, until_column);
 
       if (expr->is_logically_true ("do-until"))
         break;

@@ -125,7 +125,7 @@ since all of Octave's header files already include it.
 #  define OCTAVE_IMPORT
 #endif
 
-n#define OCTAVE_API OCTAVE_IMPORT
+#define OCTAVE_API OCTAVE_IMPORT
 #define OCTINTERP_API OCTAVE_IMPORT
 
 #include <stdint.h>

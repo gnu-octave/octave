@@ -6,7 +6,6 @@ SYSTEM_INC = \
   liboctave/system/mach-info.h \
   liboctave/system/oct-env.h \
   liboctave/system/oct-group.h \
-  liboctave/system/oct-openmp.h \
   liboctave/system/oct-passwd.h \
   liboctave/system/oct-syscalls.h \
   liboctave/system/oct-time.h \

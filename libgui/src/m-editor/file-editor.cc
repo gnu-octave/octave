@@ -1963,8 +1963,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   connect (f, SIGNAL (edit_mfile_request (const QString&, const QString&,
                                           const QString&, int)),
-           this, SLOT (edit_mfile_request (const QString&, const QString&,
-                                           const QString&, int)));
+           this, SLOT (handle_edit_mfile_request (const QString&, const QString&,
+                                                  const QString&, int)));
 
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),

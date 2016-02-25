@@ -805,5 +805,15 @@ dimensionality as the other array.\n\
 %!     endfor
 %!   endfor
 %! endfor
-%!
+
+## Automatic broadcasting with zero length dimensions (bug #47085)
+%!assert ([1 2 3] .+ zeros (0, 3), zeros (0, 3))
+%!assert (rand (3, 3, 1) .+ rand (3, 3, 0), zeros (3, 3, 0))
+
+## In-place broadcasting with zero length dimensions (bug #47085)
+%!test
+%! a = zeros (0, 3);
+%! a .+= [1 2 3];
+%! assert (a, zeros (0, 3))
+
 */

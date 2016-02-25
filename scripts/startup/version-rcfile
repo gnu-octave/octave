@@ -21,7 +21,7 @@ endif
 pkg ("load", "auto");
 
 ## For Matlab compatibility, run startup.m when starting Octave.
-if (exist ("startup", "file))
+if (exist ("startup", "file"))
   startup;  # No arg list here since startup might be a script.
 endif
 

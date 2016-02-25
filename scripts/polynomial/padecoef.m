@@ -168,7 +168,6 @@ endfunction
 %% Test input validation
 %!error padecoef ()
 %!error padecoef (1,2,3)
-    error ("padecoef: T must be a non-negative scalar");
 %!error <T must be a non-negative scalar> padecoef ([1,2])
 %!error <T must be a non-negative scalar> padecoef ({1})
 %!error <T must be a non-negative scalar> padecoef (-1)

@@ -60,7 +60,6 @@ COREFCN_INC = \
   libinterp/corefcn/oct-errno.h \
   libinterp/corefcn/oct-fstrm.h \
   libinterp/corefcn/oct-handle.h \
-  libinterp/corefcn/oct-hdf5.h \
   libinterp/corefcn/oct-hdf5-types.h \
   libinterp/corefcn/oct-hist.h \
   libinterp/corefcn/oct-iostrm.h \
@@ -107,6 +106,7 @@ C_COREFCN_SRC = \
   libinterp/corefcn/siglist.c
 
 NOINSTALL_COREFCN_INC = \
+  libinterp/corefcn/oct-hdf5.h \
   libinterp/corefcn/oct-opengl.h \
   libinterp/corefcn/siglist.h
 

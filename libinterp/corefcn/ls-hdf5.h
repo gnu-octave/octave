@@ -25,8 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#if defined (HAVE_HDF5)
-
 #include "oct-hdf5-types.h"
 
 // first, we need to define our own dummy stream subclass, since
@@ -112,10 +110,8 @@ hdf5_callback_data
   std::string doc;
 };
 
-#if defined (HAVE_HDF5_INT2FLOAT_CONVERSIONS)
 extern OCTINTERP_API octave_hdf5_id
-save_type_to_hdf5 (save_type st)
-#endif
+save_type_to_hdf5 (save_type st);
 
 extern OCTINTERP_API octave_hdf5_id
 hdf5_make_complex_type (octave_hdf5_id num_type);
@@ -161,7 +157,5 @@ hdf5_add_attr (octave_hdf5_id loc_id, const char *attr_name);
 extern OCTINTERP_API octave_hdf5_err
 hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
                       const char *attr_name, void *buf);
-
-#endif
 
 #endif

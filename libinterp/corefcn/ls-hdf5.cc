@@ -75,6 +75,8 @@ along with Octave; see the file COPYING.  If not, see
 hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
   : file_id (-1), current_item (-1)
 {
+#if defined (HAVE_HDF5)
+
   if (mode & std::ios::in)
     file_id = H5Fopen (name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
   else if (mode & std::ios::out)
@@ -89,22 +91,37 @@ hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
     std::ios::setstate (std::ios::badbit);
 
   current_item = 0;
+
+#else
+  err_disabled_feature ("hdf5_fstreambase", "HDF5");
+#endif
 }
 
 void
 hdf5_fstreambase::close (void)
 {
+#if defined (HAVE_HDF5)
+
   if (file_id >= 0)
     {
       if (H5Fclose (file_id) < 0)
         std::ios::setstate (std::ios::badbit);
       file_id = -1;
     }
+
+#else
+  // This shouldn't happen because construction of hdf5_fstreambase
+  // objects is supposed to be impossible if HDF5 is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 hdf5_fstreambase::open (const char *name, int mode, int)
 {
+#if defined (HAVE_HDF5)
+
   clear ();
 
   if (mode & std::ios::in)
@@ -121,6 +138,13 @@ hdf5_fstreambase::open (const char *name, int mode, int)
     std::ios::setstate (std::ios::badbit);
 
   current_item = 0;
+
+#else
+  // This shouldn't happen because construction of hdf5_fstreambase
+  // objects is supposed to be impossible if HDF5 is not available.
+
+  panic_impossible ();
+#endif
 }
 
 static std::string
@@ -153,6 +177,8 @@ make_valid_identifier (const std::string& nm)
 bool
 hdf5_types_compatible (octave_hdf5_id t1, octave_hdf5_id t2)
 {
+#if defined (HAVE_HDF5)
+
   int n;
   if ((n = H5Tget_nmembers (t1)) != H5Tget_nmembers (t2))
     return false;
@@ -170,6 +196,10 @@ hdf5_types_compatible (octave_hdf5_id t1, octave_hdf5_id t2)
     }
 
   return true;
+
+#else
+  err_disabled_feature ("hdf5_types_compatible", "HDF5");
+#endif
 }
 
 // Return true if loc_id has the attribute named attr_name, and false
@@ -178,6 +208,8 @@ hdf5_types_compatible (octave_hdf5_id t1, octave_hdf5_id t2)
 bool
 hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name)
 {
+#if defined (HAVE_HDF5)
+
   bool retval = false;
 
   // we have to pull some shenanigans here to make sure
@@ -214,12 +246,18 @@ hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name)
   H5Eset_auto (err_func, err_func_data);
 #endif
   return retval;
+
+#else
+  err_disabled_feature ("hdf5_check_attr", "HDF5");
+#endif
 }
 
 bool
 hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
                       const char *attr_name, void *buf)
 {
+#if defined (HAVE_HDF5)
+
   bool retval = false;
 
   // we have to pull some shenanigans here to make sure
@@ -260,10 +298,11 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
   H5Eset_auto (err_func, err_func_data);
 #endif
   return retval;
+
+#else
+  err_disabled_feature ("hdf5_get_scalar_attr", "HDF5");
+#endif
 }
-
-
-
 
 // The following subroutines creates an HDF5 representations of the way
 // we will store Octave complex types (pairs of floating-point numbers).
@@ -274,12 +313,18 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 octave_hdf5_id
 hdf5_make_complex_type (octave_hdf5_id num_type)
 {
+#if defined (HAVE_HDF5)
+
   hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 2);
 
   H5Tinsert (type_id, "real", 0 * sizeof (double), num_type);
   H5Tinsert (type_id, "imag", 1 * sizeof (double), num_type);
 
   return type_id;
+
+#else
+  err_disabled_feature ("hdf5_make_complex_type", "HDF5");
+#endif
 }
 
 // This function is designed to be passed to H5Giterate, which calls it
@@ -295,6 +340,8 @@ hdf5_make_complex_type (octave_hdf5_id num_type)
 octave_hdf5_err
 hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
 {
+#if defined (HAVE_HDF5)
+
   hdf5_callback_data *d = static_cast<hdf5_callback_data *> (dv);
   hid_t type_id = -1;
   hid_t type_class_id = -1;
@@ -623,6 +670,10 @@ done:
     }
 
   return retval;
+
+#else
+  err_disabled_feature ("hdf5_read_next_data", "HDF5");
+#endif
 }
 
 // Read the next Octave variable from the stream IS, which must really be
@@ -635,6 +686,8 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
                 bool& global, octave_value& tc, std::string& doc,
                 const string_vector& argv, int argv_idx, int argc)
 {
+#if defined (HAVE_HDF5)
+
   check_hdf5_types ();
 
   std::string retval;
@@ -706,6 +759,10 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
     retval = d.name;
 
   return retval;
+
+#else
+  err_disabled_feature ("read_hdf5_data", "HDF5");
+#endif
 }
 
 // Add an attribute named attr_name to loc_id (a simple scalar
@@ -713,6 +770,8 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 octave_hdf5_err
 hdf5_add_attr (octave_hdf5_id loc_id, const char *attr_name)
 {
+#if defined (HAVE_HDF5)
+
   herr_t retval = 0;
 
   hid_t as_id = H5Screate (H5S_SCALAR);
@@ -743,12 +802,18 @@ hdf5_add_attr (octave_hdf5_id loc_id, const char *attr_name)
     retval = as_id;
 
   return retval;
+
+#else
+  err_disabled_feature ("hdf5_add_attr", "HDF5");
+#endif
 }
 
 octave_hdf5_err
 hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
                       const char *attr_name, void *buf)
 {
+#if defined (HAVE_HDF5)
+
   herr_t retval = 0;
 
   hid_t as_id = H5Screate (H5S_SCALAR);
@@ -777,6 +842,10 @@ hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
     retval = as_id;
 
   return retval;
+
+#else
+  err_disabled_feature ("hdf5_add_scalar_attr", "HDF5");
+#endif
 }
 
 // Save an empty matrix, if needed. Returns
@@ -786,6 +855,8 @@ hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 int
 save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
 {
+#if defined (HAVE_HDF5)
+
   hsize_t sz = d.length ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, sz);
   bool empty = false;
@@ -827,6 +898,10 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
     retval = hdf5_add_attr (loc_id, "OCTAVE_EMPTY_MATRIX");
 
   return (retval == 0 ? 1 : retval);
+
+#else
+  err_disabled_feature ("save_hdf5_empty", "HDF5");
+#endif
 }
 
 // Load an empty matrix, if needed. Returns
@@ -836,6 +911,8 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
 int
 load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector &d)
 {
+#if defined (HAVE_HDF5)
+
   if (! hdf5_check_attr (loc_id, "OCTAVE_EMPTY_MATRIX"))
     return 0;
 
@@ -864,18 +941,23 @@ load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector &d)
   H5Dclose (data_hid);
 
   return (retval == 0 ? hdims : retval);
+
+#else
+  err_disabled_feature ("load_hdf5_empty", "HDF5");
+#endif
 }
 
 // save_type_to_hdf5 is not currently used, since hdf5 doesn't yet support
 // automatic float<->integer conversions:
-
-#if defined (HAVE_HDF5_INT2FLOAT_CONVERSIONS)
 
 // return the HDF5 type id corresponding to the Octave save_type
 
 octave_hdf5_id
 save_type_to_hdf5 (save_type st)
 {
+#if defined (HAVE_HDF5)
+#  if defined (HAVE_HDF5_INT2FLOAT_CONVERSIONS)
+
   switch (st)
     {
     case LS_U_CHAR:
@@ -903,8 +985,14 @@ save_type_to_hdf5 (save_type st)
     default:
       return H5T_NATIVE_DOUBLE;
     }
-}
+
+#  else
+  return -1;
+#  endif
+#else
+  err_disabled_feature ("save_type_to_hdf5", "HDF5");
 #endif
+}
 
 // Add the data from TC to the HDF5 location loc_id, which could
 // be either a file or a group within a file.  Return true if
@@ -916,6 +1004,8 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                const std::string& name, const std::string& doc,
                bool mark_as_global, bool save_as_floats)
 {
+#if defined (HAVE_HDF5)
+
   hsize_t dims[3];
   hid_t type_id, space_id, data_id, data_type_id;
   type_id = space_id = data_id = data_type_id = -1;
@@ -992,6 +1082,10 @@ error_cleanup:
     error ("save: error while writing '%s' to hdf5 file", name.c_str ());
 
   return retval;
+
+#else
+  err_disabled_feature ("add_hdf5_data", "HDF5");
+#endif
 }
 
 // Write data from TC in HDF5 (binary) format to the stream OS,
@@ -1002,12 +1096,18 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
                 bool mark_as_global, bool save_as_floats)
 {
+#if defined (HAVE_HDF5)
+
   check_hdf5_types ();
 
   hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 
   return add_hdf5_data (hs.file_id, tc, name, doc,
                         mark_as_global, save_as_floats);
+
+#else
+  err_disabled_feature ("save_hdf5_data", "HDF5");
+#endif
 }
 
 #endif

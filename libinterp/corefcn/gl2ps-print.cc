@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_GL2PS_H
 
 #include <cstdio>
+
+#include <limits>
+
 #include <unistd.h>
 
 #include <gl2ps.h>
@@ -96,8 +99,10 @@ protected:
   }
 
   void draw_text (const text::properties& props);
-  void draw_pixels (GLsizei w, GLsizei h, GLenum format,
-                    GLenum type, const GLvoid *data);
+
+  void draw_pixels (int w, int h, const float *data);
+  void draw_pixels (int w, int h, const uint8_t *data);
+  void draw_pixels (int w, int h, const uint16_t *data);
 
   void set_linestyle (const std::string& s, bool use_stipple = false)
   {
@@ -663,31 +668,40 @@ gl2ps_renderer::set_font (const base_properties& props)
   fontname = select_font (fn, isbold, isitalic);
 }
 
-template <typename T>
-static void
-draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data, float maxval)
+void
+gl2ps_renderer::draw_pixels (int w, int h, const float *data)
 {
-  OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*w*h);
-
-  // Convert to GL_FLOAT as it is the only type gl2ps accepts.
-  for (int i = 0; i < 3*w*h; i++)
-    a[i] = data[i] / maxval;
-
-  gl2psDrawPixels (w, h, 0, 0, format, GL_FLOAT, a);
+  gl2psDrawPixels (w, h, 0, 0, GL_RGB, GL_FLOAT, data);
 }
 
 void
-gl2ps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
-                            GLenum type, const GLvoid *data)
+gl2ps_renderer::draw_pixels (int w, int h, const uint8_t *data)
 {
   // gl2psDrawPixels only supports the GL_FLOAT type.
-  // Other formats, such as uint8, must be converted first.
-  if (type == GL_UNSIGNED_BYTE)
-    ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data), 255.0f);
-  else if (type == GL_UNSIGNED_SHORT)
-    ::draw_pixels (w, h, format, static_cast<const GLushort *> (data), 65535.0f);
-  else
-    gl2psDrawPixels (w, h, 0, 0, format, type, data);
+
+  OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+
+  static const float maxval = std::numeric_limits<float>::max ();
+
+  for (int i = 0; i < 3*w*h; i++)
+    tmp_data[i] = data[i] / maxval;
+
+  draw_pixels (w, h, tmp_data);
+}
+
+void
+gl2ps_renderer::draw_pixels (int w, int h, const uint16_t *data)
+{
+  // gl2psDrawPixels only supports the GL_FLOAT type.
+
+  OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+
+  static const float maxval = std::numeric_limits<float>::max ();
+
+  for (int i = 0; i < 3*w*h; i++)
+    tmp_data[i] = data[i] / maxval;
+
+  draw_pixels (w, h, tmp_data);
 }
 
 void

@@ -26,21 +26,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "graphics.h"
-#include "oct-opengl.h"
 #include "text-renderer.h"
-
-#if defined (HAVE_OPENGL)
 
 class
 OCTINTERP_API
 opengl_renderer
 {
 public:
-  opengl_renderer (void)
-    : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
-    zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-    camera_pos (), camera_dir (), interpreter ("none"), txt_renderer ()
-  { }
+
+  opengl_renderer (void);
 
   virtual ~opengl_renderer (void) { }
 
@@ -113,8 +107,9 @@ protected:
                               double x, double y, double z,
                               int halign, int valign, double rotation = 0.0);
 
-  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format,
-                            GLenum type, const GLvoid *data);
+  virtual void draw_pixels (int w, int h, const float *data);
+  virtual void draw_pixels (int w, int h, const uint8_t *data);
+  virtual void draw_pixels (int w, int h, const uint16_t *data);
 
   virtual void render_grid (const std::string& gridstyle, const Matrix& ticks,
                             double lim1, double lim2,
@@ -199,7 +194,5 @@ private:
 private:
   class patch_tesselator;
 };
-
-#endif
 
 #endif

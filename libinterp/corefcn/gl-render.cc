@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#if defined (HAVE_OPENGL)
-
 #include <iostream>
 
 #ifdef HAVE_WINDOWS_H
@@ -41,6 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl-render.h"
 #include "oct-opengl.h"
 #include "text-renderer.h"
+
+#if defined (HAVE_OPENGL)
 
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
@@ -567,6 +567,42 @@ private:
   std::list<vertex_data> tmp_vdata;
 };
 
+#else
+
+class
+opengl_renderer::patch_tesselator
+{
+  // Dummy class.
+};
+
+#endif
+
+opengl_renderer::opengl_renderer (void)
+  : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
+    zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
+    camera_pos (), camera_dir (), interpreter ("none"), txt_renderer ()
+{
+  // This constructor will fail if we don't have OpenGL or if the data
+  // types we assumed in our public interface aren't compatible with the
+  // OpenGL types.
+
+#if defined (HAVE_OPENGL)
+
+  // Ensure that we can't request an image larger than OpenGL can handle.
+  // FIXME: should we check signed vs. unsigned?
+
+  static bool ok = (sizeof (int) <= sizeof (GLsizei));
+
+  if (! ok)
+    error ("the size of GLsizei is smaller than the size of int");
+
+#else
+
+  err_disabled_feature ("opengl_renderer", "OpenGL");
+
+#endif
+}
+
 void
 opengl_renderer::draw (const graphics_object& go, bool toplevel)
 {
@@ -643,6 +679,8 @@ opengl_renderer::draw_uipanel (const uipanel::properties& props,
 void
 opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
 {
+#if defined (HAVE_OPENGL)
+
   // Initialize OpenGL context
 
   glEnable (GL_DEPTH_TEST);
@@ -679,6 +717,13 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
       glClearColor (c(0), c(1), c(2), 1);
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -687,6 +732,8 @@ opengl_renderer::render_grid (const std::string& gridstyle,
                               double p1, double p1N, double p2, double p2N,
                               int xyz, bool is_3D)
 {
+#if defined (HAVE_OPENGL)
+
   set_linestyle (gridstyle, true);
   glBegin (GL_LINES);
   for (int i = 0; i < ticks.numel (); i++)
@@ -725,6 +772,13 @@ opengl_renderer::render_grid (const std::string& gridstyle,
     }
   glEnd ();
   set_linestyle ("-", true);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -735,6 +789,8 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
                                    double dx, double dy, double dz,
                                    int xyz, bool mirror)
 {
+#if defined (HAVE_OPENGL)
+
   glBegin (GL_LINES);
 
   for (int i = 0; i < ticks.numel (); i++)
@@ -777,6 +833,13 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
     }
 
   glEnd ();
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -787,6 +850,8 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
                                    int xyz, int ha, int va,
                                    int& wmax, int& hmax)
 {
+#if defined (HAVE_OPENGL)
+
   int nticks  = ticks.numel ();
   int nlabels = ticklabels.numel ();
 
@@ -824,17 +889,35 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
           hmax = std::max (hmax, static_cast<int> (b(3)));
         }
     }
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::finish (void)
 {
+#if defined (HAVE_OPENGL)
+
   glFinish ();
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::setup_opengl_transformation (const axes::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   // setup OpenGL transformation
 
   Matrix x_zlim = props.get_transform_zlim ();
@@ -868,11 +951,20 @@ opengl_renderer::setup_opengl_transformation (const axes::properties& props)
   // store axes transformation data
 
   xform = props.get_transform ();
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::draw_axes_planes (const axes::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   Matrix axe_color = props.get_color_rgb ();
   if (axe_color.is_empty () || ! props.is_visible ())
     return;
@@ -915,11 +1007,20 @@ opengl_renderer::draw_axes_planes (const axes::properties& props)
   glEnd ();
 
   set_polygon_offset (false);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::draw_axes_boxes (const axes::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   if (! props.is_visible ())
     return;
 
@@ -1026,6 +1127,13 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
     }
 
   glEnd ();
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -1391,6 +1499,8 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
 void
 opengl_renderer::draw_axes_children (const axes::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   // Children
 
   Matrix children = props.get_all_children ();
@@ -1453,11 +1563,20 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 
   // FIXME: finalize rendering (transparency processing)
   // FIXME: draw zoom box, if needed
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::draw_axes (const axes::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   static double floatmax = std::numeric_limits<float>::max ();
 
   double x_min = props.get_x_min ();
@@ -1503,11 +1622,20 @@ opengl_renderer::draw_axes (const axes::properties& props)
     glEnable (GL_LINE_SMOOTH);
 
   draw_axes_children (props);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::draw_line (const line::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
   Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
   Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
@@ -1627,11 +1755,20 @@ opengl_renderer::draw_line (const line::properties& props)
     }
 
   set_clipping (props.is_clipping ());
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::draw_surface (const surface::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   const Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
   const Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
   const Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
@@ -2224,6 +2361,13 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
       end_marker ();
     }
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 // FIXME: global optimization (rendering, data structures...),
@@ -2231,6 +2375,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
 void
 opengl_renderer::draw_patch (const patch::properties &props)
 {
+#if defined (HAVE_OPENGL)
+
   // Do not render if the patch has incoherent data
   std::string msg;
   if (props.has_bad_data (msg))
@@ -2658,6 +2804,13 @@ opengl_renderer::draw_patch (const patch::properties &props)
 
       end_marker ();
     }
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -2669,6 +2822,8 @@ opengl_renderer::draw_hggroup (const hggroup::properties &props)
 void
 opengl_renderer::draw_text (const text::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   if (props.get_string ().is_empty ())
     return;
 
@@ -2690,11 +2845,19 @@ opengl_renderer::draw_text (const text::properties& props)
   if (! blend)
     glDisable (GL_BLEND);
 
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::draw_image (const image::properties& props)
 {
+#if defined (HAVE_OPENGL)
+
   octave_value cdata = props.get_color_data ();
   dim_vector dv (cdata.dims ());
   int h = dv(0);
@@ -2810,7 +2973,7 @@ opengl_renderer::draw_image (const image::properties& props)
                 }
             }
 
-          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
+          draw_pixels (j1-j0, i1-i0, a);
 
         }
       else if (cdata.is_single_type ())
@@ -2829,7 +2992,7 @@ opengl_renderer::draw_image (const image::properties& props)
                 }
             }
 
-          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
+          draw_pixels (j1-j0, i1-i0, a);
 
         }
       else if (cdata.is_uint8_type ())
@@ -2848,7 +3011,7 @@ opengl_renderer::draw_image (const image::properties& props)
                 }
             }
 
-          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
+          draw_pixels (j1-j0, i1-i0, a);
 
         }
       else if (cdata.is_uint16_type ())
@@ -2867,7 +3030,7 @@ opengl_renderer::draw_image (const image::properties& props)
                 }
             }
 
-          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
+          draw_pixels (j1-j0, i1-i0, a);
 
         }
       else
@@ -2877,27 +3040,90 @@ opengl_renderer::draw_image (const image::properties& props)
     warning ("opengl_renderer: invalid image size (expected MxNx3 or MxN)");
 
   glPixelZoom (1, 1);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::set_viewport (int w, int h)
 {
+#if defined (HAVE_OPENGL)
+
   glViewport (0, 0, w, h);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
-opengl_renderer::draw_pixels (GLsizei width, GLsizei height, GLenum format,
-                              GLenum type, const GLvoid *data)
+opengl_renderer::draw_pixels (int width, int height, const float *data)
 {
-  glDrawPixels (width, height, format, type, data);
+#if defined (HAVE_OPENGL)
+
+  glDrawPixels (width, height, GL_RGB, GL_FLOAT, data);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
+}
+
+void
+opengl_renderer::draw_pixels (int width, int height, const uint8_t *data)
+{
+#if defined (HAVE_OPENGL)
+
+  glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
+}
+
+void
+opengl_renderer::draw_pixels (int width, int height, const uint16_t *data)
+{
+#if defined (HAVE_OPENGL)
+
+  glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_SHORT, data);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::set_color (const Matrix& c)
 {
+#if defined (HAVE_OPENGL)
+
   glColor3dv (c.data ());
 
   txt_renderer.set_color (c);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -2912,6 +3138,8 @@ opengl_renderer::set_font (const base_properties& props)
 void
 opengl_renderer::set_polygon_offset (bool on, float offset)
 {
+#if defined (HAVE_OPENGL)
+
   if (on)
     {
       glEnable (GL_POLYGON_OFFSET_FILL);
@@ -2923,17 +3151,35 @@ opengl_renderer::set_polygon_offset (bool on, float offset)
       glDisable (GL_POLYGON_OFFSET_FILL);
       glDisable (GL_POLYGON_OFFSET_LINE);
     }
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::set_linewidth (float w)
 {
+#if defined (HAVE_OPENGL)
+
   glLineWidth (w);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::set_linestyle (const std::string& s, bool use_stipple)
 {
+#if defined (HAVE_OPENGL)
+
   bool solid = false;
 
   if (s == "-")
@@ -2954,12 +3200,21 @@ opengl_renderer::set_linestyle (const std::string& s, bool use_stipple)
     glDisable (GL_LINE_STIPPLE);
   else
     glEnable (GL_LINE_STIPPLE);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::set_clipbox (double x1, double x2, double y1, double y2,
                               double z1, double z2)
 {
+#if defined (HAVE_OPENGL)
+
   double dx = (x2-x1);
   double dy = (y2-y1);
   double dz = (z2-z1);
@@ -2986,11 +3241,20 @@ opengl_renderer::set_clipbox (double x1, double x2, double y1, double y2,
   xmin = x1; xmax = x2;
   ymin = y1; ymax = y2;
   zmin = z1; zmax = z2;
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::set_clipping (bool enable)
 {
+#if defined (HAVE_OPENGL)
+
   bool has_clipping = (glIsEnabled (GL_CLIP_PLANE0) == GL_TRUE);
 
   if (enable != has_clipping)
@@ -3002,11 +3266,20 @@ opengl_renderer::set_clipping (bool enable)
         for (int i = 0; i < 6; i++)
           glDisable (GL_CLIP_PLANE0+i);
     }
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::init_marker (const std::string& m, double size, float width)
 {
+#if defined (HAVE_OPENGL)
+
 #if defined (HAVE_FRAMEWORK_OPENGL)
   GLint vw[4];
 #else
@@ -3027,11 +3300,20 @@ opengl_renderer::init_marker (const std::string& m, double size, float width)
 
   marker_id = make_marker_list (m, size, false);
   filled_marker_id = make_marker_list (m, size, true);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::end_marker (void)
 {
+#if defined (HAVE_OPENGL)
+
   glDeleteLists (marker_id, 1);
   glDeleteLists (filled_marker_id, 1);
 
@@ -3040,12 +3322,21 @@ opengl_renderer::end_marker (void)
   glMatrixMode (GL_PROJECTION);
   glPopMatrix ();
   set_linewidth (0.5f);
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 opengl_renderer::draw_marker (double x, double y, double z,
                               const Matrix& lc, const Matrix& fc)
 {
+#if defined (HAVE_OPENGL)
+
   ColumnVector tmp = xform.transform (x, y, z, false);
 
   glLoadIdentity ();
@@ -3072,12 +3363,21 @@ opengl_renderer::draw_marker (double x, double y, double z,
       glColor3dv (lc.data ());
       glCallList (marker_id);
     }
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 unsigned int
 opengl_renderer::make_marker_list (const std::string& marker, double size,
                                    bool filled) const
 {
+#if defined (HAVE_OPENGL)
+
   char c = marker[0];
 
   if (filled && (c == '+' || c == 'x' || c == '*' || c == '.'))
@@ -3226,6 +3526,13 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
   glEndList ();
 
   return ID;
+
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -3253,6 +3560,8 @@ opengl_renderer::render_text (const std::string& txt,
                               double x, double y, double z,
                               int halign, int valign, double rotation)
 {
+#if defined (HAVE_OPENGL)
+
   Matrix bbox (1, 4, 0.0);
 
   if (txt.empty ())
@@ -3278,6 +3587,11 @@ opengl_renderer::render_text (const std::string& txt,
     }
 
   return bbox;
-}
 
+#else
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
 #endif
+}

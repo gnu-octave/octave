@@ -471,6 +471,9 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
   if (args.length () != 0)
     print_usage ();
 
+  if (symbol_table::at_top_level ())
+    error ("fork: cannot be called from command line"); 
+
   std::string msg;
 
   pid_t pid = octave_syscalls::fork (msg);

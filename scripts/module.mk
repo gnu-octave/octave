@@ -152,7 +152,7 @@ check-missing-semicolon:
 	( echo "warning on Octave:missing-semicolon;"; \
 	  for m in $(addprefix $(srcdir), $(FCN_FILES)) $(GEN_FCN_FILES); do \
 	    echo "source ('$$m');"; \
-	  done ) | ../run-octave -qf
+	  done ) | $(SHELL) run-octave --norc --silent --no-history
 .PHONY: check-missing-semicolon
 
 ## Add rule to generate ctags.

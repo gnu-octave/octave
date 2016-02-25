@@ -29,7 +29,7 @@ BEGIN {
 
     for (j = 2; j <= NF; j++) {
       printf ("%s%s.%s: %s%s\n", dir, $j, ext, dir, script);
-      printf ("\t$(AM_V_GEN)$(abs_top_builddir)/run-octave -f -q -H -p $(abs_top_srcdir)/%s --eval \"%s ('%s', '%s', '%s');\"\n",
+      printf ("\t$(AM_V_GEN)$(SHELL) run-octave --norc --silent --no-history --path $(abs_top_srcdir)/%s --eval \"%s ('%s', '%s', '%s');\"\n",
               dir, basename, dir, $j, ext);
     }
   }

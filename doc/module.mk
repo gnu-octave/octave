@@ -81,7 +81,7 @@ $(GRAPH_PROP_TEXI_SRC): | $(OCTAVE_INTERPRETER_TARGETS)
 
 define gen-propdoc-texi
   rm -f $@-t $@ && \
-  $(top_builddir)/run-octave -f -q -H -p $(srcdir)/doc/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
+  $(SHELL) run-octave --norc --silent --no-history --path $(srcdir)/doc/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
   mv $@-t $@
 endef
 
@@ -355,7 +355,7 @@ octetc_DATA += \
 
 doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk_doc_cache.m | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(top_builddir)/run-octave -f -q -H $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
+	$(SHELL) run-octave --norc --silent --no-history $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)

@@ -647,7 +647,7 @@ function stringdlg (hpar, prop)
   cstr = inputdlg (prompt, prop, 1, def);
 
   if (! isempty (cstr))
-    set (hpar, prop, cstr)
+    set (hpar, prop, cstr);
   endif
 endfunction
 
@@ -826,7 +826,7 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
     htmp(ii) = uimenu (h, "label", label, "callback", fcn);
   endfor
   handle_check (hpar, {}, htmp, pname, is_numeric);
-  addlistener (hpar, pname, {@handle_check, htmp, pname, is_numeric})
+  addlistener (hpar, pname, {@handle_check, htmp, pname, is_numeric});
 endfunction
 
 function handle_check (h, dummy, hmenus, prop, is_numeric)

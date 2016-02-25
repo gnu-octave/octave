@@ -222,7 +222,7 @@ function local_drawnow (term, file, opts)
     drawnow (term, file, mono, opts.debug_file);
   endif
   if (opts.debug)
-    fprintf ("Expanded gnuplot terminal = '%s'\n", term)
+    fprintf ("Expanded gnuplot terminal = '%s'\n", term);
   endif
 endfunction
 

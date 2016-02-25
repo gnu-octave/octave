@@ -109,7 +109,7 @@ function delete_linkprop (hlist, prop)
   for i = 1 : numel (hlist)
     if (ishandle (hlist(i)))
       for j = 1 : numel (prop)
-        dellistener (hlist(i), prop{j}),
+        dellistener (hlist(i), prop{j});
       endfor
     endif
   endfor

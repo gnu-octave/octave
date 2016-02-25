@@ -980,7 +980,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                 ## This violates strict Matlab compatibility, but reliably
                 ## renders an esthetic result.
                 set (ca(i), "position",  unmodified_axes_position);
-                set (ca(i), "activepositionproperty", "outerposition")
+                set (ca(i), "activepositionproperty", "outerposition");
               else
                 ## numel (ca) > 1 for axes overlays (like plotyy)
                 set (ca(i), "position", new_pos);

@@ -149,8 +149,11 @@ check-m-sources:
 
 check-missing-semicolon:
 	@echo "checking for missing semicolons in .m files..."
-	( echo "warning on Octave:missing-semicolon;"; \
-	  for m in $(addprefix $(srcdir), $(FCN_FILES)) $(GEN_FCN_FILES); do \
+	@( echo "warning on Octave:missing-semicolon;"; \
+	  for m in $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES); do \
+	    ! $(GREP) -q -E '^classdef' $$m || continue; \
+	    ! $(GREP) -q -E '^  *\<function\>' $$m || continue; \
+	    ! (echo $$m | $(GREP) -q __splinefit__.m) || continue; \
 	    echo "source ('$$m');"; \
 	  done ) | $(SHELL) run-octave --norc --silent --no-history
 .PHONY: check-missing-semicolon

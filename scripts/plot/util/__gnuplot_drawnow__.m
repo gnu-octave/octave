@@ -340,7 +340,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       endif
     endif
     if (__gnuplot_has_feature__ ("has_termoption_dashed"))
-      fprintf (plot_stream, "set termoption dashed\n")
+      fprintf (plot_stream, "set termoption dashed\n");
     endif
   else
     ## gnuplot will pick up the GNUTERM environment variable itself

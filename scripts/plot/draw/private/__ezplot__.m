@@ -520,10 +520,10 @@ function domain = find_valid_domain (X, Y, Z);
 
     ## Handle nasty case of all NaNs
     if (isempty (rmin))
-      rmin = 1, rmax = rows (Z);
+      rmin = 1; rmax = rows (Z);
     endif
     if (isempty (cmin))
-      cmin = 1, cmax = columns (Z);
+      cmin = 1; cmax = columns (Z);
     endif
 
     if (   ! any (isnan (Z([rmin, rmax],:)(:)))

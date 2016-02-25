@@ -50,7 +50,7 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
                           rots = -1.5, hue = 1, gamma = 1)
 
   if (nargin > 5)
-    print_usage ()
+    print_usage ();
   elseif (! isscalar (n))
     error ("cubehelix: N must be a scalar");
   endif

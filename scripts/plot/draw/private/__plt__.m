@@ -78,12 +78,12 @@ function retval = __plt__ (caller, h, varargin)
         next_arg = squeeze (next_arg);
         if (! any (strcmp (caller, warned_callers)) && ndims (next_arg) < 3)
           warning (["%s: N-d inputs have been squeezed to less than " ...
-                    "three dimensions"], caller)
+                    "three dimensions"], caller);
           warned_callers(end+1) = caller;
         endif
       endif
       if (isnumeric (next_arg) && ndims (next_arg) > 2)
-        error ("%s: plot arrays must have less than 2 dimensions", caller)
+        error ("%s: plot arrays must have less than 2 dimensions", caller);
       endif
 
       nargs -= 1;

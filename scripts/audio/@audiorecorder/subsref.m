@@ -37,7 +37,7 @@ function value = subsref (recorder, idx)
     field = idx.subs;
     value = get (recorder, field);
   else
-    error ("@audiorecorder/subsref: invalid subscript type")
+    error ("@audiorecorder/subsref: invalid subscript type");
   endif
 
 endfunction

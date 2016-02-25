@@ -1600,9 +1600,9 @@ function A = kms (n, rho = 0.5)
   if (nargin < 1 || nargin > 2)
     error ("gallery: 1 to 2 arguments are required for lauchli matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
-    error ("gallery: N must be an integer for lauchli matrix.")
+    error ("gallery: N must be an integer for lauchli matrix.");
   elseif (! isscalar (rho))
-    error ("gallery: RHO must be a scalar for lauchli matrix.")
+    error ("gallery: RHO must be a scalar for lauchli matrix.");
   endif
 
   A = (1:n)'*ones (1,n);

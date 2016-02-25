@@ -36,7 +36,7 @@ function value = subsref (player, idx)
     field = idx.subs;
     value = get (player, field);
   else
-    error ("@audioplayer/subsref: invalid subscript type")
+    error ("@audioplayer/subsref: invalid subscript type");
   endif
 
 endfunction

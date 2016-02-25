@@ -68,7 +68,7 @@ function y = cplxpair (z, tol, dim)
   if (nargin < 2 || isempty (tol))
     tol = 100;
   elseif (! isscalar (tol) || tol < 0)
-    error ("cplxpair: TOL must be a positive scalar number")
+    error ("cplxpair: TOL must be a positive scalar number");
   endif
 
   nd = ndims (z);

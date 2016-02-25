@@ -417,9 +417,9 @@ function update_data (h, ~, prop = "")
 
     switch (prop)
       case "levellist"
-        set (h, "levellistmode", "manual")
+        set (h, "levellistmode", "manual");
       case "levelstep"
-        set (h, "levelstepmode", "manual")
+        set (h, "levelstepmode", "manual");
       case "fill"
         ## Switching from filled ('k' linespec) to unfilled, reset linecolor
         if (strcmp (get (h, "fill"), "off"))
@@ -503,9 +503,9 @@ function update_text (h, ~, prop = "")
 
     switch (prop)
       case "textlist"
-        set (h, "textlistmode", "manual")
+        set (h, "textlistmode", "manual");
       case "textstep"
-        set (h, "textstepmode", "manual")
+        set (h, "textstepmode", "manual");
     endswitch
 
     if (strcmp (get (h, "textlistmode"), "manual"))

@@ -82,7 +82,7 @@ function __save_as__ (caller)
                                    [pwd, filesep, "untitled.pdf"]);
   if (filename != 0)
     fname = [filedir filesep() filename];
-    set (gcbf, "filename", fname)
+    set (gcbf, "filename", fname);
     saveas (caller, fname);
   endif
 endfunction
@@ -110,7 +110,7 @@ endfunction
 
 function autoscale_cb (h, e)
   hax = __get_axes__ (h);
-  arrayfun (@(h) axis (h, "auto"), hax)
+  arrayfun (@(h) axis (h, "auto"), hax);
   drawnow ();
 endfunction
 
@@ -119,16 +119,16 @@ function guimode_cb (h, e)
   id = get (h, "tag");
   switch (id)
     case "pan_on"
-      pan (fig, "on")
+      pan (fig, "on");
     case "pan_xon"
-      pan (fig, "xon")
+      pan (fig, "xon");
     case "pan_yon"
-      pan (fig, "yon")
+      pan (fig, "yon");
     case "rotate3d"
-      rotate3d (fig, "on")
+      rotate3d (fig, "on");
     case "no_pan_rotate"
-      pan (fig, "off")
-      rotate3d (fig, "off")
+      pan (fig, "off");
+      rotate3d (fig, "off");
     case "zoom_on"
       arrayfun (@(h) set (h, "mousewheelzoom", 0.05), hax);
     case "zoom_off"

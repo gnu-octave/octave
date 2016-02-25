@@ -184,7 +184,7 @@ function updatecancelbutton (hf, dummy, hax)
                         "position", [fpos(3)-100 10 60 25],...
                         "callback", cb, "parent", hf);
     else
-      set (hbtn, "callback", cb)
+      set (hbtn, "callback", cb);
     endif
   elseif (! isempty (hbtn))
     delete (hbtn);

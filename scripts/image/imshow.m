@@ -150,13 +150,13 @@ function h = imshow (im, varargin)
         case "xdata"
           xdata = varargin{narg++};
           if (! isvector (xdata))
-            error ("imshow: xdata must be a vector")
+            error ("imshow: xdata must be a vector");
           endif
           xdata = [xdata(1) xdata(end)];
         case "ydata"
           ydata = varargin{narg++};
           if (! isvector (ydata))
-            error ("imshow: ydata must be a vector")
+            error ("imshow: ydata must be a vector");
           endif
           ydata = [ydata(1) ydata(end)];
         otherwise

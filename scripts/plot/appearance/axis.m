@@ -383,7 +383,7 @@ function __do_tight_option__ (ca)
   elseif (diff (ylim == 0))
     ylim .*= (1 + eps () * [-1, 1]);
   endif
-  set (ca, "xlim", xlim, "ylim", ylim)
+  set (ca, "xlim", xlim, "ylim", ylim);
   nd = __calc_dimensions__ (ca);
   is3dview = (get (ca, "view")(2) != 90);
   if (nd > 2 && is3dview)

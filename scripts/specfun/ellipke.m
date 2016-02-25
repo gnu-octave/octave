@@ -103,7 +103,7 @@ function [k, e] = ellipke (m, tol = [])
   if (isempty (tol))
     tol = eps (class (m));
   elseif (! (isreal (tol) && isscalar (tol) && tol > 0))
-    error ("ellipke: TOL must be a real scalar > 0")
+    error ("ellipke: TOL must be a real scalar > 0");
   endif
 
   k = e = zeros (sz);

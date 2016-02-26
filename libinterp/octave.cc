@@ -285,8 +285,6 @@ safe_source_file (const std::string& file_name,
     {
       recover_from_exception ();
 
-      octave_stdout << "\n";
-
       if (quitting_gracefully)
         clean_up_and_exit (exit_status);
     }
@@ -402,8 +400,6 @@ execute_eval_option_code (const std::string& code)
   catch (const octave_interrupt_exception&)
     {
       recover_from_exception ();
-
-      octave_stdout << "\n";
 
       if (quitting_gracefully)
         clean_up_and_exit (exit_status);

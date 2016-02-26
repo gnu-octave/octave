@@ -736,10 +736,11 @@ main_loop (void)
         {
           recover_from_exception ();
 
-          octave_stdout << "\n";
-
           if (quitting_gracefully)
             return exit_status;
+
+          // Required newline when the user does Ctrl+C at the prompt.
+          octave_stdout << "\n";
         }
       catch (const index_exception& e)
         {

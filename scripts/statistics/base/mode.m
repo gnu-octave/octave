@@ -52,10 +52,17 @@ function [m, f, c] = mode (x, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("mode: DIM must be an integer and a valid dimension");
     endif
+  endif
+
+  if (dim > nd)
+    ## Special case of mode over non-existent dimension 
+    m = x;
+    f = ones (size (x));
+    c = num2cell (x);    
+    return;
   endif
 
   sz2 = sz;
@@ -118,7 +125,7 @@ endfunction
 %! assert (f, sparse (f2));
 %! c_exp(1:length (a)) = { sp0 };
 %! assert (c ,c_exp);
-%! assert (c2,c_exp );
+%! assert (c2,c_exp);
 
 %!assert (mode ([2,3,1,2,3,4],1),[2,3,1,2,3,4])
 %!assert (mode ([2,3,1,2,3,4],2),2)
@@ -129,6 +136,13 @@ endfunction
 %!assert (mode ([2;3;1;2;3;4],1),2)
 %!assert (mode ([2;3;1;2;3;4],2),[2;3;1;2;3;4])
 %!assert (mode ([2;3;1;2;3;4]),2)
+
+%!test
+%! x = magic (3);
+%! [m, f, c] = mode (x, 3);
+%! assert (m, x);
+%! assert (f, ones (3,3));
+%! assert (c, num2cell (x));
 
 %!shared x
 %! x(:,:,1) = toeplitz (1:3);
@@ -162,10 +176,8 @@ endfunction
 ## Test input validation
 %!error mode ()
 %!error mode (1, 2, 3)
-%!error mode ({1 2 3})
-%!error mode (['A'; 'B'])
-%!error mode (1, ones (2,2))
-%!error mode (1, 1.5)
-%!error mode (1, 0)
-%!error mode (1, 3)
+%!error <X must be a numeric> mode ({1 2 3})
+%!error <DIM must be an integer> mode (1, ones (2,2))
+%!error <DIM must be an integer> mode (1, 1.5)
+%!error <DIM must be .* a valid dimension> mode (1, 0)
 

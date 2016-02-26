@@ -393,6 +393,8 @@ public:
   // Generic error messages.
   void bison_error (const std::string& s, int l = -1, int c = -1);
 
+  bool valid_id_for_assignment (const std::string& s);
+
   // Contains error message if Bison-generated parser returns non-zero
   // status.
   std::string parse_error_msg;

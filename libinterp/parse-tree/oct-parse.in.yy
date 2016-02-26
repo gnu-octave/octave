@@ -2951,8 +2951,6 @@ tree_expression *
 octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
                                     token *eq_tok, tree_expression *rhs)
 {
-  tree_expression *retval = 0;
-
   octave_value::assign_op t = octave_value::unknown_assign_op;
 
   switch (op)
@@ -3017,25 +3015,65 @@ octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
   int l = eq_tok->line ();
   int c = eq_tok->column ();
 
-  if (lhs->is_simple_assign_lhs ())
+  if (! lhs->is_simple_assign_lhs () && t != octave_value::op_asn_eq)
     {
-      tree_expression *tmp = lhs->remove_front ();
+      // Multiple assignments like [x,y] OP= rhs are only valid for
+      // '=', not '+=', etc.
 
-      retval = new tree_simple_assignment (tmp, rhs, false, l, c, t);
-
-      delete lhs;
-    }
-  else if (t == octave_value::op_asn_eq)
-    return new tree_multi_assignment (lhs, rhs, false, l, c);
-  else
-    {
       delete lhs;
       delete rhs;
 
-      bison_error ("computed multiple assignment not allowed");
+      bison_error ("computed multiple assignment not allowed", l, c);
+
+      return 0;
     }
 
-  return retval;
+  if (lhs->is_simple_assign_lhs ())
+    {
+      // We are looking at a simple assignment statement like x = rhs;
+
+      tree_expression *tmp = lhs->remove_front ();
+
+      if ((tmp->is_identifier () || tmp->is_index_expression ())
+          && ! valid_id_for_assignment (tmp->name ()))
+        {
+          std::string kw = tmp->name ();
+
+          delete tmp;
+          delete lhs;
+          delete rhs;
+
+          bison_error ("invalid assignment to keyword \"" + kw + "\"", l, c);
+
+          return 0;
+        }
+
+      delete lhs;
+
+      return new tree_simple_assignment (tmp, rhs, false, l, c, t);
+    }
+  else
+    {
+      std::list<std::string> names = lhs->variable_names ();
+
+      for (std::list<std::string>::const_iterator it = names.begin ();
+           it != names.end (); it++)
+        {
+          std::string kw = *it;
+
+          if (! valid_id_for_assignment (kw))
+            {
+              delete lhs;
+              delete rhs;
+
+              bison_error ("invalid assignment to keyword \"" + kw + "\"", l, c);
+
+              return 0;
+            }
+        }
+
+      return new tree_multi_assignment (lhs, rhs, false, l, c);
+    }
 }
 
 // Define a script.
@@ -3984,6 +4022,18 @@ octave_base_parser::bison_error (const std::string& str, int l, int c)
   output_buf << "\n";
 
   parse_error_msg = output_buf.str ();
+}
+
+bool
+octave_base_parser::valid_id_for_assignment (const std::string& s)
+{
+  // is_keyword will return true for some identfiers that are only
+  // keywords in certain contexts.
+
+  return (! is_keyword (s)
+          || (! lexer.parsing_classdef
+              && (s == "enumeration" || s == "events"
+                  || s == "methods" || s == "properties")));
 }
 
 int

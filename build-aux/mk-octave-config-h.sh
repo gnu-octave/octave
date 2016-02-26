@@ -221,6 +221,8 @@ else
 EOF
 fi
 
+grep "#\(undef\|define\) F77_FUNC" $config_h_file
+
 cat << EOF
 
 #endif

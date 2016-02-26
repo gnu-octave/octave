@@ -479,7 +479,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
     fail = (U.numel () > 1);
   else
     {
-      Array<octave_value> W = U.index (0);
+      Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
       if (W.numel () == 0 || W(0).length () == 0)
         Vdebug_on_error = 1;    // like "dbstop if error" with no identifier
       else if (! W(0).is_cell ())
@@ -505,7 +505,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
     fail = (U.numel () > 1);
   else
     {
-      Array<octave_value> W = U.index (0);
+      Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
       if (W.numel () == 0 || W(0).length () == 0)
         Vdebug_on_caught = 1;    // like "dbstop if caught error" with no ID
       else if (! W(0).is_cell ())
@@ -531,7 +531,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
     fail = (U.numel () > 1);
   else
     {
-      Array<octave_value> W = U.index (0);
+      Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
       if (W.numel () == 0 || W(0).length () == 0)
         Vdebug_on_warning = 1;    // like "dbstop if warning" with no identifier
       else if (! W(0).is_cell ())

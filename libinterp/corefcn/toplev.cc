@@ -740,7 +740,8 @@ main_loop (void)
             return exit_status;
 
           // Required newline when the user does Ctrl+C at the prompt.
-          octave_stdout << "\n";
+          if (interactive)
+            octave_stdout << "\n";
         }
       catch (const index_exception& e)
         {
@@ -784,7 +785,8 @@ main_loop (void)
     }
   while (retval == 0);
 
-  octave_stdout << "\n";
+  if (interactive)
+    octave_stdout << "\n";
 
   if (retval == EOF)
     retval = 0;

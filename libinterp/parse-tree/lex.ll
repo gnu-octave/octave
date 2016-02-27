@@ -1973,9 +1973,13 @@ is_keyword (const std::string& s)
   // "set" and "get" portions of the names using the same mechanism as
   // is used for keywords.  However, they are not really keywords in
   // the language, so omit them from the list of possible keywords.
+  // Likewise for "enumeration", "events", "methods", and
+  // "properties".
 
   return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
-          && ! (s == "set" || s == "get"));
+          && ! (s == "set" || s == "get"
+                || s == "enumeration" || s == "events"
+                || s == "methods" || s == "properties"));
 }
 
 DEFUN (iskeyword, args, ,

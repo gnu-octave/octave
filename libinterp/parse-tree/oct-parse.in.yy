@@ -3035,7 +3035,7 @@ octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
       tree_expression *tmp = lhs->remove_front ();
 
       if ((tmp->is_identifier () || tmp->is_index_expression ())
-          && ! valid_id_for_assignment (tmp->name ()))
+          && is_keyword (tmp->name ()))
         {
           std::string kw = tmp->name ();
 
@@ -3061,7 +3061,7 @@ octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
         {
           std::string kw = *it;
 
-          if (! valid_id_for_assignment (kw))
+          if (is_keyword (kw))
             {
               delete lhs;
               delete rhs;
@@ -4022,18 +4022,6 @@ octave_base_parser::bison_error (const std::string& str, int l, int c)
   output_buf << "\n";
 
   parse_error_msg = output_buf.str ();
-}
-
-bool
-octave_base_parser::valid_id_for_assignment (const std::string& s)
-{
-  // is_keyword will return true for some identfiers that are only
-  // keywords in certain contexts.
-
-  return (! is_keyword (s)
-          || (! lexer.parsing_classdef
-              && (s == "enumeration" || s == "events"
-                  || s == "methods" || s == "properties")));
 }
 
 int
@@ -5131,6 +5119,8 @@ the security considerations that the evaluation of arbitrary code does.\n\
 %! [a,] = gcd (1,2);
 %! [a,b,] = gcd (1, 2);
 
+%!error eval ("switch = 13;");
+
 */
 
 DEFUN (assignin, args, ,
@@ -5162,12 +5152,27 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
   std::string nm = args(1).xstring_value ("assignin: VARNAME must be a string");
 
   if (valid_identifier (nm))
-    symbol_table::assign (nm, args(2));
+    {
+      // Put the check here so that we don't slow down assignments
+      // generally.  Any that go through Octave's parser should have
+      // already been checked.
+
+      if (is_keyword (nm))
+        error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
+
+      symbol_table::assign (nm, args(2));
+    }
   else
     error ("assignin: invalid variable name in argument VARNAME");
 
   return retval;
 }
+
+/*
+
+%!error assignin ("base", "switch", "13");
+
+*/
 
 DEFUN (evalin, args, nargout,
   "-*- texinfo -*-\n\
@@ -5384,6 +5389,8 @@ s = evalc (\"t = 42\"), t\n\
 %!test
 %! warning ("off", "quiet", "local");
 %! assert (evalc ("error ('foo')", "warning ('bar')"), "warning: bar\n");
+
+%!error evalc ("switch = 13;");
 
 */
 

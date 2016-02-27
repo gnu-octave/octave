@@ -408,6 +408,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     g = -ce;
     d = -ci;
 
+    old_lambda = lambda;
     [p, obj_qp, INFO, lambda] = qp (x, B, c, F, g, [], [], d, C,
                                     Inf (size (d)));
 
@@ -425,6 +426,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
                  INFO.solveiter);
       case 6
         warning (id, "sqp: QP subproblem is infeasible");
+        lambda = old_lambda;  # The return value was size 0x0 in this case.
     endswitch
 
     ## Choose mu such that p is a descent direction for the chosen

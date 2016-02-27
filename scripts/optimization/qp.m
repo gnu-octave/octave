@@ -373,8 +373,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
             Atmp = [Ain, gamma];
             btmp = bin;
           endif
-          ctmp = [zeros(n-n_eq, 1); ones(n_in, 1)];
-          lb = [-Inf(n-n_eq,1); zeros(n_in,1)];
+          ctmp = [zeros(n, 1); ones(n_in, 1)];
+          lb = [-Inf(n,1); zeros(n_in,1)];
           ub = [];
           ctype = repmat ("L", n_in, 1);
           [P, dummy, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);

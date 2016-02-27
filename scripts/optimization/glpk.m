@@ -498,9 +498,13 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   if (isempty (A))
     error ("glpk: A cannot be an empty matrix");
   endif
+  if (! isreal (A))
+    error ("glpk: A must be real valued, not %s", typeinfo (A));
+  endif
   [nc, nxa] = size (A);
-  if (! isreal (A) || nxa != nx)
-    error ("glpk: A must be a real valued %d by %d matrix", nc, nx);
+  if (nxa != nx)
+    error ("glpk: A must be %d by %d, not %d by %d",
+           nc, nx, rows(A), columns(A));
   endif
 
   ## 3) RHS

@@ -1466,11 +1466,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
   endif
 
+  axis_idx = data_idx;
   if (strcmpi (axis_obj.box, "on"))
     if (nd == 3)
       fputs (plot_stream, "set border 4095;\n");
     else
-      fputs (plot_stream, "set border 431;\n");
+      axis_idx = do_border_2d (axis_obj, plot_stream, axis_idx);
     endif
   else
     if (nd == 3)
@@ -1481,52 +1482,37 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
           maybe_do_x2tick_mirror (plot_stream, axis_obj)
-          fputs (plot_stream, "set border 12;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
           maybe_do_xtick_mirror (plot_stream, axis_obj)
-          fputs (plot_stream, "set border 9;\n");
         else # xaxislocation == zero
           fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                    axis_obj.tickdir);
-          fputs (plot_stream, "set border 8;\n");
-          fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
-                   axis_obj.linewidth);
         endif
       elseif (strcmpi (axis_obj.yaxislocation, "left"))
         fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
           maybe_do_x2tick_mirror (plot_stream, axis_obj)
-          fputs (plot_stream, "set border 6;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
           maybe_do_xtick_mirror (plot_stream, axis_obj)
-          fputs (plot_stream, "set border 3;\n");
         else # xaxislocation == zero
           maybe_do_xtick_mirror (plot_stream, axis_obj)
-          fputs (plot_stream, "set border 2;\n");
-          fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
-                   axis_obj.linewidth);
         endif
       else # yaxislocation == zero
         fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
           maybe_do_x2tick_mirror (plot_stream, axis_obj)
-          fputs (plot_stream, "set border 4;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
           maybe_do_xtick_mirror (plot_stream, axis_obj)
-          fputs (plot_stream, "set border 1;\n");
         else # xaxislocation == zero
           maybe_do_xtick_mirror (plot_stream, axis_obj)
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                    axis_obj.tickdir);
           fputs (plot_stream, "unset border;\n");
-          fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
-                   axis_obj.linewidth);
         endif
-        fprintf (plot_stream, "set yzeroaxis lt -1 lw %f;\n",
-                 axis_obj.linewidth);
       endif
+      axis_idx = do_border_2d (axis_obj, plot_stream, axis_idx);
     endif
   endif
 
@@ -1784,6 +1770,46 @@ function fontspec = create_fontspec (f, s, gp_term)
   else
     fontspec = sprintf ("font \"%s,%d\"", f, s);
   endif
+endfunction
+
+function idx = do_border_2d (obj, plot_stream, idx)
+  fprintf (plot_stream, "set border 0\n");
+
+  if (strcmp (obj.box, "on") || strcmp (obj.xaxislocation, "bottom"))
+    arrow (1, obj.xcolor, obj.linewidth, [0,0,0],[1,0,0]);
+  endif
+  if (strcmp (obj.box, "on") || strcmp (obj.xaxislocation, "top"))
+    arrow (2, obj.xcolor, obj.linewidth, [0,1,0],[1,1,0]);
+  endif
+  if (strcmp (obj.box, "on") || strcmp (obj.yaxislocation, "left"))
+    arrow (3, obj.ycolor, obj.linewidth, [0,0,0],[0,1,0]);
+  endif
+  if (strcmp (obj.box, "on") || strcmp (obj.yaxislocation, "right"))
+    arrow (4, obj.ycolor, obj.linewidth, [1,0,0],[1,1,0]);
+  endif
+
+  if (strcmp (obj.xaxislocation, "zero"))
+    idx = zeroaxis (idx, obj.xcolor, "x");
+  endif
+  if (strcmp (obj.yaxislocation, "zero"))
+    idx = zeroaxis (idx, obj.ycolor, "y");
+  endif
+
+  function idx = zeroaxis (idx, lc, ax)
+    idx = idx + 1;
+    do_linestyle_command (obj, lc, idx, false, plot_stream);
+    fprintf (plot_stream, "set %szeroaxis ls %d ", ax, idx);
+    fprintf (plot_stream, "lw %.3f\n", obj.linewidth);
+  endfunction
+
+  function arrow (idx, lc, lw, from, to)
+    fprintf (plot_stream, "set arrow %d ", idx);
+    fprintf (plot_stream, "nohead nofilled front dashtype solid ");
+    fprintf (plot_stream, "lc rgb ""#%02x%02x%02x"" ", round (255 * lc));
+    fprintf (plot_stream, "linewidth %.3f ", obj.linewidth);
+    fprintf (plot_stream, "from graph %d,%d,%d ", from);
+    fprintf (plot_stream, "to graph %d,%d,%d\n", to);
+  endfunction
 endfunction
 
 function style = do_linestyle_command (obj, linecolor, idx,

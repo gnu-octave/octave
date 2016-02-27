@@ -3416,7 +3416,7 @@ public:
       array_property pointershapecdata , Matrix (16, 16, 0)
       array_property pointershapehotspot , Matrix (1, 2, 0)
       array_property position s , default_figure_position ()
-      radio_property renderer , "{painters}|zbuffer|opengl|none"
+      radio_property renderer m , "{opengl}|painters"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
       callback_property resizefcn , Matrix ()
@@ -3433,10 +3433,10 @@ public:
       callback_property windowkeyreleasefcn , Matrix ()
       callback_property windowscrollwheelfcn , Matrix ()
       radio_property windowstyle , "{normal}|modal|docked"
-      string_property wvisual , ""
+      string_property wvisual m , ""
       radio_property wvisualmode , "{auto}|manual"
       string_property xdisplay , ""
-      string_property xvisual , ""
+      string_property xvisual m , ""
       radio_property xvisualmode , "{auto}|manual"
       // Octave-specific properties
       bool_property __enhanced__ h , "on"
@@ -3839,7 +3839,7 @@ public:
       radio_property fontunits SU , "{points}|inches|centimeters|normalized|pixels"
       bool_property fontsmoothing , "on"
       radio_property fontweight u , "{normal}|bold"
-      double_property gridalpha , 0.15
+      double_property gridalpha m , 0.15
       radio_property gridalphamode , "{auto}|manual"
       color_property gridcolor , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
@@ -3850,9 +3850,9 @@ public:
       any_property linestyleorder S , "-"
       double_property linestyleorderindex , 1.0
       double_property linewidth , 0.5
-      double_property minorgridalpha , 0.25
+      double_property minorgridalpha m , 0.25
       radio_property minorgridalphamode , "{auto}|manual"
-      color_property minorgridcolor , color_property (color_values (0.1, 0.1, 0.1), radio_values ("none"))
+      color_property minorgridcolor m , color_property (color_values (0.1, 0.1, 0.1), radio_values ("none"))
       radio_property minorgridcolormode , "{auto}|manual"
       radio_property minorgridlinestyle , "{:}|-|--|-.|none"
       radio_property nextplot , "{replace}|add|replacechildren"
@@ -3876,7 +3876,7 @@ public:
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
       radio_property xaxislocation u , "{bottom}|top|zero"
-      color_property xcolor , color_values (0, 0, 0)
+      color_property xcolor m , color_values (0, 0, 0)
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
       bool_property xgrid , "off"
@@ -3893,7 +3893,7 @@ public:
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
       radio_property yaxislocation u , "{left}|right|zero"
-      color_property ycolor , color_values (0, 0, 0)
+      color_property ycolor m , color_values (0, 0, 0)
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
       bool_property ygrid , "off"
@@ -3908,7 +3908,7 @@ public:
       radio_property yticklabelmode u , "{auto}|manual"
       double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
-      color_property zcolor , color_values (0, 0, 0)
+      color_property zcolor m , color_values (0, 0, 0)
       radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"
       bool_property zgrid , "off"

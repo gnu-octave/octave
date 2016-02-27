@@ -1042,12 +1042,16 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
              endif
            endif
 
-           if (isempty (tmpwith))
-             withclause{data_idx} = sprintf ("with %s %s %s %s %s",
-                                             style, lw, pt, lt,
-                                             colorspec);
-           else
+           if (! isempty (tmpwith))
              withclause{data_idx} = tmpwith{1};
+           else
+             if (! isempty (style))
+               withclause{data_idx} = sprintf ("with %s %s %s %s %s",
+                                               style, lw, pt, lt,
+                                               colorspec);
+             else
+               withclause{data_idx} = "";
+             endif
            endif
            if (nd == 3)
              if (ischar (color))

@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __gnuplot_drawnow__ (@var{h}, @var{term}, @var{file}, @var{mono}, @var{debug_file})
+## @deftypefn {} {} __gnuplot_drawnow__ (@var{h}, @var{term}, @var{file}, @var{debug_file})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
+function __gnuplot_drawnow__ (h, term, file, debug_file)
 
   if (nargin < 1 || nargin > 5 || nargin == 2)
     print_usage ();
@@ -40,11 +40,11 @@ function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
       gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream);
       if (gnuplot_supports_term)
         enhanced = gnuplot_set_term (plot_stream(1), true, h, term, file);
-        __gnuplot_draw_figure__ (h, plot_stream(1), enhanced, mono);
+        __gnuplot_draw_figure__ (h, plot_stream(1), enhanced);
         if (nargin == 5)
           fid = fopen (debug_file, "wb");
           enhanced = gnuplot_set_term (fid, true, h, term, file);
-          __gnuplot_draw_figure__ (h, fid, enhanced, mono);
+          __gnuplot_draw_figure__ (h, fid, enhanced);
         endif
       else
         error ('__gnuplot_drawnow__: the gnuplot terminal, "%s", is not available',
@@ -83,7 +83,7 @@ function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
     else
       enhanced = gnuplot_set_term (plot_stream(1), new_stream, h, term);
     endif
-    __gnuplot_draw_figure__ (h, plot_stream(1), enhanced, mono);
+    __gnuplot_draw_figure__ (h, plot_stream(1), enhanced);
     fflush (plot_stream(1));
     if (strcmp (term, "dumb"))
       fid = -1;

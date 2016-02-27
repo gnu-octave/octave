@@ -423,8 +423,7 @@ function print (varargin)
       set (h, "linestyle", linestyle);
     endif
 
-    if (opts.use_color < 0
-        && ! strcmp (get (opts.figure, "__graphics_toolkit__"), "gnuplot"))
+    if (opts.use_color < 0)
       color_props = {"color", "facecolor", "edgecolor", "colormap"};
       for c = 1:numel (color_props)
         h = findall (opts.figure, "-property", color_props{c});

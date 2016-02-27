@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __gnuplot_draw_axes__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{mono})
+## @deftypefn {} {} __gnuplot_draw_axes__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{bg_is_set}, @var{fg_is_set}, @var{hlgnd})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
-                           bg_is_set, fg_is_set, hlgnd)
+function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
+                                fg_is_set, hlgnd)
 
   showhiddenhandles = get (0, "showhiddenhandles");
   unwind_protect
@@ -153,7 +153,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
     if (isempty (t.string))
       fputs (plot_stream, "unset title;\n");
     else
-      colorspec = get_text_colorspec (t.color, mono);
+      colorspec = get_text_colorspec (t.color);
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, "set title \"%s\" %s %s %s;\n",
@@ -165,7 +165,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.xlabel))
     t = get (axis_obj.xlabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (t.color, mono);
+    colorspec = get_text_colorspec (t.color);
     if (isempty (t.string))
       fprintf (plot_stream, "unset xlabel;\n");
       fprintf (plot_stream, "unset x2label;\n");
@@ -193,7 +193,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.ylabel))
     t = get (axis_obj.ylabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (t.color, mono);
+    colorspec = get_text_colorspec (t.color);
     if (isempty (t.string))
       fprintf (plot_stream, "unset ylabel;\n");
       fprintf (plot_stream, "unset y2label;\n");
@@ -221,7 +221,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.zlabel))
     t = get (axis_obj.zlabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (t.color, mono);
+    colorspec = get_text_colorspec (t.color);
     if (isempty (t.string))
       fputs (plot_stream, "unset zlabel;\n");
     else
@@ -387,7 +387,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
   zlim = axis_obj.zlim;
   clim = axis_obj.clim;
 
-  do_tics (axis_obj, plot_stream, ymirror, mono, gnuplot_term);
+  do_tics (axis_obj, plot_stream, ymirror, gnuplot_term);
 
   fputs (plot_stream, "unset logscale;\n");
   if (xlogscale)
@@ -601,7 +601,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                      rows (xdat), xaxisloc_using, yaxisloc_using);
         endif
 
-        style = do_linestyle_command (obj, obj.color, data_idx, mono,
+        style = do_linestyle_command (obj, obj.color, data_idx,
                                       plot_stream, errbars);
 
         withclause{data_idx} = sprintf ("with %s linestyle %d",
@@ -781,9 +781,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                                     [[xcol; xcol(end)], [ycol; ycol(end)], ...
                                     [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
              else
-               if (mono)
-                 colorspec = "";
-               elseif (__gnuplot_has_feature__ ("transparent_patches")
+               if (__gnuplot_has_feature__ ("transparent_patches")
                        && isscalar (obj.facealpha))
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
                                       round (255*color), obj.facealpha);
@@ -917,15 +915,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
              pt2 = sprintf ("pointtype %s", pt2);
            endif
 
-           if (mono)
-             colorspec = "";
+           if (ischar (color))
+             colorspec = "palette";
            else
-             if (ischar (color))
-               colorspec = "palette";
-             else
-               colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                    round (255*color));
-             endif
+             colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                  round (255*color));
            endif
 
            sidx = 1;
@@ -966,7 +960,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                                           colorspec);
                  sidx += 1;
                endif
-               if (isnumeric (obj.markerfacecolor) && ! mono)
+               if (isnumeric (obj.markerfacecolor))
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
                                       round (255*obj.markerfacecolor));
                endif
@@ -1023,14 +1017,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
                endif
 
                if (! isempty (pt))
-                 if (! mono)
-                   if (strcmp (obj.markeredgecolor, "auto"))
-                     colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                          round (255*color));
-                   elseif (isnumeric (obj.markeredgecolor) && ! mono)
-                     colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                          round (255*obj.markeredgecolor));
-                   endif
+                 if (strcmp (obj.markeredgecolor, "auto"))
+                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                        round (255*color));
+                 elseif (isnumeric (obj.markeredgecolor))
+                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                        round (255*obj.markeredgecolor));
                  endif
                  style = "points";
                  if (isfield (obj, "markersize"))
@@ -1129,7 +1121,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
           have_cdata(data_idx) = true;
           have_3d_patch(data_idx) = false;
           style = do_linestyle_command (obj, obj.edgecolor,
-                                        data_idx, mono,
+                                        data_idx,
                                         plot_stream);
 
           if (isempty (obj.displayname))
@@ -1343,7 +1335,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
         endif
 
         if (isnumeric (color))
-          colorspec = get_text_colorspec (color, mono);
+          colorspec = get_text_colorspec (color);
         endif
 
         if (ischar (obj.string))
@@ -1614,7 +1606,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
       ## color of the plot object.
       colorspec = "textcolor variable";
     else
-      colorspec = get_text_colorspec (textcolors, mono);
+      colorspec = get_text_colorspec (textcolors);
     endif
     fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s %s %s;\n",
              inout, pos, box, reverse, horzvert, fontspacespec, colorspec,
@@ -1626,7 +1618,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, mono,
 
   cmap = [cmap; addedcmap];
   cmap_sz += rows (addedcmap);
-  if (mono == false && length (cmap) > 0)
+  if (length (cmap) > 0)
     fprintf (plot_stream,
              "set palette positive color model RGB maxcolors %i;\n",
              cmap_sz);
@@ -1794,7 +1786,7 @@ function fontspec = create_fontspec (f, s, gp_term)
   endif
 endfunction
 
-function style = do_linestyle_command (obj, linecolor, idx, mono,
+function style = do_linestyle_command (obj, linecolor, idx,
                                        plot_stream, errbars = "")
   style = {};
 
@@ -1804,10 +1796,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
   found_style = false;
   if (isnumeric (linecolor))
     color = linecolor;
-    if (! mono)
-      fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-               round (255*color));
-    endif
+    fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+             round (255*color));
   else
     color = [0, 0, 0];
   endif
@@ -1886,7 +1876,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         endif
         fprintf (plot_stream, "set style line %d default;\n", idx);
         fprintf (plot_stream, "set style line %d", idx);
-        if (isnumeric (obj.markerfacecolor) && ! mono)
+        if (isnumeric (obj.markerfacecolor))
           fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
                    round (255*obj.markerfacecolor));
         endif
@@ -1929,14 +1919,12 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         endif
         fprintf (plot_stream, "set style line %d default;\n", idx);
         fprintf (plot_stream, "set style line %d", idx);
-        if (! mono)
-          if (strcmp (obj.markeredgecolor, "auto"))
-            fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-                     round (255*color));
-          elseif (isnumeric (obj.markeredgecolor) && ! mono)
-            fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-                     round (255*obj.markeredgecolor));
-          endif
+        if (strcmp (obj.markeredgecolor, "auto"))
+          fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+                   round (255*color));
+        elseif (isnumeric (obj.markeredgecolor))
+          fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+                   round (255*obj.markeredgecolor));
         endif
         if (! isempty (pt))
           style{sidx} = "points";
@@ -2050,7 +2038,7 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 
 endfunction
 
-function do_tics (obj, plot_stream, ymirror, mono, gnuplot_term)
+function do_tics (obj, plot_stream, ymirror, gnuplot_term)
 
   obj.xticklabel = ticklabel_to_cell (obj.xticklabel);
   obj.yticklabel = ticklabel_to_cell (obj.yticklabel);
@@ -2074,68 +2062,68 @@ function do_tics (obj, plot_stream, ymirror, mono, gnuplot_term)
 
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
-               obj.xticklabel, obj.xcolor, "x2", plot_stream, true, mono,
+               obj.xticklabel, obj.xcolor, "x2", plot_stream, true,
                "border", obj.tickdir, ticklength, fontname, fontspec,
                obj.ticklabelinterpreter, obj.xscale, obj.xsgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
-               obj.xcolor, "x", plot_stream, true, mono, "border",
+               obj.xcolor, "x", plot_stream, true, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.xscale, obj.xsgn, gnuplot_term);
   elseif (strcmpi (obj.xaxislocation, "zero"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
-               obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
+               obj.xticklabel, obj.xcolor, "x", plot_stream, true,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
                obj.ticklabelinterpreter, obj.xscale, obj.xsgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
-               obj.xcolor, "x2", plot_stream, true, mono, "axis",
+               obj.xcolor, "x2", plot_stream, true, "axis",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.xscale, obj.xsgn, gnuplot_term);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
-               obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
+               obj.xticklabel, obj.xcolor, "x", plot_stream, true,
                "border", obj.tickdir, ticklength, fontname, fontspec,
                obj.ticklabelinterpreter, obj.xscale, obj.xsgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
-               obj.xcolor, "x2", plot_stream, true, mono, "border",
+               obj.xcolor, "x2", plot_stream, true, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.xscale, obj.xsgn, gnuplot_term);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
-               obj.yticklabel, obj.ycolor, "y2", plot_stream, ymirror, mono,
+               obj.yticklabel, obj.ycolor, "y2", plot_stream, ymirror,
                "border", obj.tickdir, ticklength, fontname, fontspec,
                obj.ticklabelinterpreter, obj.yscale, obj.ysgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
-               obj.ycolor, "y", plot_stream, ymirror, mono, "border",
+               obj.ycolor, "y", plot_stream, ymirror, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.yscale, obj.ysgn, gnuplot_term);
   elseif (strcmpi (obj.yaxislocation, "zero"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
-               obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
+               obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
                obj.ticklabelinterpreter, obj.yscale, obj.ysgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
-               obj.ycolor, "y2", plot_stream, ymirror, mono, "axis",
+               obj.ycolor, "y2", plot_stream, ymirror, "axis",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.yscale, obj.ysgn, gnuplot_term);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
-               obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
+               obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror,
                "border", obj.tickdir, ticklength, fontname, fontspec,
                obj.ticklabelinterpreter, obj.yscale, obj.ysgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
-               obj.ycolor, "y2", plot_stream, ymirror, mono, "border",
+               obj.ycolor, "y2", plot_stream, ymirror, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.yscale, obj.ysgn, gnuplot_term);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zminortick, obj.zticklabelmode,
-             obj.zticklabel, obj.zcolor, "z", plot_stream, true, mono,
+             obj.zticklabel, obj.zcolor, "z", plot_stream, true,
              "border", obj.tickdir, ticklength, fontname, fontspec,
              obj.ticklabelinterpreter, obj.zscale, obj.zsgn, gnuplot_term);
 endfunction
 
 function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
-                    plot_stream, mirror, mono, axispos, tickdir, ticklength,
+                    plot_stream, mirror, axispos, tickdir, ticklength,
                     fontname, fontspec, interpreter, scale, sgn, gnuplot_term)
   persistent warned_latex = false;
 
@@ -2175,7 +2163,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     fmt = "%g";
     num_mtics = 5;
   endif
-  colorspec = get_text_colorspec (color, mono);
+  colorspec = get_text_colorspec (color);
   fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
   if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
@@ -2225,13 +2213,8 @@ function ticklabel = ticklabel_to_cell (ticklabel)
   endif
 endfunction
 
-function colorspec = get_text_colorspec (color, mono)
-  if (mono)
-    colorspec = "";
-  else
-    colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
-                         round (255*color));
-  endif
+function colorspec = get_text_colorspec (color)
+  colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"", round (255*color));
 endfunction
 
 function [f, s, fnt, it, bld] = get_fontname_and_size (t)

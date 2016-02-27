@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __gnuplot_draw_figure__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{mono})
+## @deftypefn {} {} __gnuplot_draw_figure__ (@var{h}, @var{plot_stream}, @var{enhanced})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __gnuplot_draw_figure__ (h, plot_stream, enhanced, mono)
+function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
 
   htype = get (h, "type");
   if (strcmp (htype, "figure"))
@@ -116,7 +116,7 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced, mono)
                   if (bg_is_set)
                     fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", round (255 * (1 - bg)));
                   endif
-                  __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced, mono,
+                  __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced,
                                     bg_is_set, false, hlgnd);
                 unwind_protect_cleanup
                   ## Return axes "units" and "position" back to
@@ -169,7 +169,7 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced, mono)
                     endif
                   endif
                 endfor
-                __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced, mono,
+                __gnuplot_draw_axes__ (kids(i), plot_stream, enhanced,
                                   bg_is_set, fg_is_set, hlegend);
               unwind_protect_cleanup
                 ## Return axes "units" and "position" back to

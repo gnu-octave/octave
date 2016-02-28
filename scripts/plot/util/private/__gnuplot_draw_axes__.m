@@ -1808,7 +1808,7 @@ function idx = do_border_2d (obj, plot_stream, idx)
 
   function arrow (idx, lc, lw, from, to)
     fprintf (plot_stream, "set arrow %d ", idx);
-    fprintf (plot_stream, "nohead nofilled front dashtype solid ");
+    fprintf (plot_stream, "nohead nofilled front ");
     fprintf (plot_stream, "lc rgb ""#%02x%02x%02x"" ", round (255 * lc));
     fprintf (plot_stream, "linewidth %.3f ", obj.linewidth);
     fprintf (plot_stream, "from graph %d,%d,%d ", from);

@@ -351,7 +351,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
       if (isempty (sz))
         sz = max (subs);
-        if (length (sz) == 1)
+        ## If subs is empty, sz will be too, and length will be 0, hence "<= 1"
+        if (length (sz) <= 1)
           sz(2) = 1;
         endif
       endif
@@ -438,6 +439,7 @@ endfunction
 %! for idx = 1:numel (funcs)
 %!   assert (accumarray (zeros (0, 1), [], [0 1] , funcs{idx}), zeros (0, 1))
 %!   assert (accumarray (zeros (0, 1), [], [1 0] , funcs{idx}), zeros (1, 0))
+%!   assert (accumarray (zeros (0, 1), [], [] , funcs{idx}), zeros (0, 1))
 %! endfor
 
 ## Matlab returns an array of doubles even though FUNC returns cells.  In

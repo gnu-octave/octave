@@ -336,7 +336,9 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       [subs, idx] = sort (subs);
       ## Identify runs.
       jdx = find (subs(1:n-1) != subs(2:n));
-      jdx = [jdx; n];
+      if (n != 0) # bug #47287
+        jdx = [jdx; n];
+      endif
       vals = mat2cell (vals(idx), diff ([0; jdx]));
       ## Optimize the case when function is @(x) {x}, i.e. we just want
       ## to collect the values to cells.
@@ -344,6 +346,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       if (! strcmp (func2str (func), simple_cell_str))
         vals = cellfun (func, vals);
       endif
+
       subs = subs(jdx);
 
       if (isempty (sz))
@@ -427,3 +430,16 @@ endfunction
 
 %!error (accumarray (1:5))
 %!error (accumarray ([1,2,3],1:2))
+
+## Handle empty arrays (bug #47287)
+%!test
+%! ## min, max, and sum are special cases within accumarray so test them.
+%! funcs = {@(x) length (x) > 1, @min, @max, @sum};
+%! for idx = 1:numel (funcs)
+%!   assert (accumarray (zeros (0, 1), [], [0 1] , funcs{idx}), zeros (0, 1))
+%!   assert (accumarray (zeros (0, 1), [], [1 0] , funcs{idx}), zeros (1, 0))
+%! endfor
+
+## Matlab returns an array of doubles even though FUNC returns cells.  In
+## Octave, we do not have that bug, at least for this case.
+%!assert (accumarray (zeros (0, 1), [], [0 1] , @(x) {x}), cell (0, 1))

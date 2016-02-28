@@ -1118,26 +1118,29 @@ void
 get_dimensions (const octave_value& a, const char *warn_for,
                 dim_vector& dim)
 {
-  if (a.is_scalar_type ())
+  // We support dimensions to be specified by any vector, even if it's a
+  // vector of dimensions 0x1, 1x0, 1x1x0, or 1x1x6.  If the vector ends
+  // up being empty, the final dimensions end up being 0x0.
+  if (! a.dims ().is_vector ())
+    error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+
+  const Array<int> v = a.int_vector_value ();
+  const octave_idx_type n = v.numel ();
+
+  dim.resize (n); // even if n < 2, resize sets it back to 2
+  if (n == 0)
     {
-      dim.resize (2);
-      dim(0) = a.idx_type_value ();
-      dim(1) = dim(0);
+      dim(0) = 0;
+      dim(1) = 0;
+    }
+  else if (n == 1)
+    {
+      dim(0) = v(0);
+      dim(1) = v(0);
     }
   else
-    {
-      octave_idx_type nr = a.rows ();
-      octave_idx_type nc = a.columns ();
-
-      if (nr != 1 && nc != 1)
-        error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
-
-      Array<double> v = a.vector_value ();
-      octave_idx_type n = v.numel ();
-      dim.resize (n);
-      for (octave_idx_type i = 0; i < n; i++)
-        dim(i) = static_cast<int> (fix (v(i)));
-    }
+    for (octave_idx_type i = 0; i < n; i++)
+      dim(i) = v(i);
 
   check_dimensions (dim, warn_for);
 }

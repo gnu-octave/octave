@@ -37,15 +37,18 @@ capability is provided by access to OpenGL@.  Which plotting system
 is used is controlled by the @code{graphics_toolkit} function.
 @xref{Graphics Toolkits}.
 
-The function call @code{graphics_toolkit ("fltk")} selects the
+The function call @code{graphics_toolkit ("qt")} selects the
+Qt/OpenGL system, @code{graphics_toolkit ("fltk")} selects the
 FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
-gnuplot system.  The two systems may be used selectively through the use
+gnuplot system.  The three systems may be used selectively through the use
 of the @code{graphics_toolkit} property of the graphics handle for each
-figure.  This is explained in @ref{Graphics Data Structures}.
-@strong{Caution:} The FLTK toolkit uses single precision variables internally
-which limits the maximum value that can be displayed to approximately
-@math{10^{38}}.  If your data contains larger values you must use the gnuplot
-toolkit which supports values up to @math{10^{308}}.
+figure.  The toolkit used for a given figure may not be changed once the
+figure is initialized.  This is explained in @ref{Graphics Data Structures}.
+@strong{Caution:} The OpenGL-based toolkits use single precision
+variables internally which limits the maximum value that can be
+displayed to approximately @math{10^{38}}.  If your data contains larger
+values you must use the gnuplot toolkit which supports values up to
+@math{10^{308}}.
 
 @node High-Level Plotting
 @section High-Level Plotting

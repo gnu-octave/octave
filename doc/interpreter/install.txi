@@ -251,7 +251,8 @@ GPLK is required for the function @code{glpk}.
 
 @item @nospell{gl2ps}
 OpenGL to PostScript printing library (@url{http://www.geuz.org/gl2ps/}).
-@nospell{gl2ps} is required for printing when using the FLTK toolkit.
+@nospell{gl2ps} is required for printing when using OpenGL-based
+graphics toolkits (currently either FLTK or Qt).
 
 @item gnuplot
 Interactive graphics program (@url{http://www.gnuplot.info}).  gnuplot
@@ -495,15 +496,10 @@ features not generally available in all versions of make.  Modifying
 Octave's makefiles to work with other make programs is probably not
 worth your time; instead, we simply recommend installing GNU Make.
 
-There are currently two options for plotting in Octave: (1) the external
-program gnuplot, or (2) the internal graphics engine using OpenGL and
-FLTK@.  Gnuplot is a command-driven interactive function plotting
-program.  Gnuplot is copyrighted, but freely distributable.  As of
-Octave release 3.4, gnuplot is the default option for plotting.  But,
-the internal graphics engine is nearly 100% compatible, certainly for
-most ordinary plots, and users are encouraged to test it.  It is
-anticipated that the internal engine will become the default option at
-the next major release of Octave.
+There are currently three options for plotting in Octave: the external
+program gnuplot, the internal graphics engine using OpenGL coupled with
+either FLTK or Qt widgets.  Gnuplot is a command-driven interactive
+function plotting program.
 
 To compile Octave, you will need a recent version of @code{g++} or other
 ANSI C++ compiler.  In addition, you will need a Fortran 77 compiler or

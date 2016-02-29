@@ -1,3 +1,5 @@
+if AMCOND_BUILD_QT_GRAPHICS
+
 OCTAVE_GUI_GRAPHICS_MOC = \
   libgui/graphics/moc-annotation-dialog.cc \
   libgui/graphics/moc-Backend.cc \
@@ -161,3 +163,5 @@ libgui_CLEANFILES += \
   $(octave_gui_graphics_MOC) \
   $(octave_gui_graphics_RC) \
   $(octave_gui_graphics_UI_H)
+
+endif

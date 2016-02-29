@@ -974,7 +974,7 @@ OCTAVE_CHECK_LIB(glpk, GLPK,
   [warn_glpk=
    OCTAVE_CHECK_LIB_GLPK_OK(
     [AC_DEFINE(HAVE_GLPK, 1, [Define to 1 if GLPK is available.])],
-    [warn_glpk="GLPK library found, but does not seem to work properly -- disabling glpk function"])])
+    [warn_glpk="GLPK library found, but does not seem to work properly; disabling glpk function"])])
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 
@@ -1159,7 +1159,7 @@ if test "$have_x" = yes; then
 
   if test -z "$x_libraries"; then
     AC_CHECK_LIB([X11], XrmInitialize, [X11_LIBS="-lX11"], [X11_LIBS=])
-  elif test $x_libraries != "NONE"; then
+  elif test "$x_libraries" != "NONE"; then
     AC_CHECK_LIB([X11], XrmInitialize,
       [X11_LIBS="-L$x_libraries -lX11"], [X11_LIBS=], "-L$x_libraries")
   fi
@@ -1170,7 +1170,7 @@ fi
 OCTAVE_HAVE_FRAMEWORK([Carbon],
   [[#include <Carbon/Carbon.h>]], [[CGMainDisplayID ()]],
   [have_framework_carbon=yes], [have_framework_carbon=no])
-if test $have_framework_carbon = yes; then
+if test "$have_framework_carbon" = yes; then
   AC_DEFINE(HAVE_FRAMEWORK_CARBON, 1,
     [Define to 1 if framework CARBON is available.])
   CARBON_LIBS="-Wl,-framework -Wl,Carbon"
@@ -1178,187 +1178,384 @@ if test $have_framework_carbon = yes; then
   AC_SUBST(CARBON_LIBS)
 fi
 
-### Check for list of libraries needed for native graphics renderer.
+### Check for list of libraries needed for OpenGL graphics renderer.
 
-native_graphics=yes
-warn_freetype=""
-
-check_opengl=no
+check_opengl=yes
 AC_ARG_WITH([opengl],
   [AS_HELP_STRING([--without-opengl],
-    [don't use OpenGL libraries, disable native graphics])],
+    [don't use OpenGL libraries, disable OpenGL graphics])],
   [if test x"$withval" = x"no"; then
-     native_graphics=no
-     warn_opengl="--without-opengl specified.  Native graphics will be disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_opengl])
-   else
-     check_opengl=yes
-   fi],
-  [check_opengl=yes])
+     check_opengl=no
+     warn_opengl="--without-opengl specified.  OpenGL graphics will be disabled."
+     OCTAVE_CONFIGURE_WARNING([warn_opengl_disabled])
+   fi])
 
 ## Check for OpenGL library
-if test $check_opengl = yes; then
+if test "$check_opengl" = yes; then
   OCTAVE_CHECK_LIB_OPENGL
+  if test -z "$OPENGL_LIBS"; then
+    warn_opengl_libs="OpenGL libs (GL and GLU) not found.  OpgnGL graphics will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_opengl_libs])
+  fi
 fi
+
+## Check for FreeType 2 library
+
+warn_freetype=""
+PKG_CHECK_MODULES([FT2], [freetype2], [
+  min_ft2_version=9.03
+  AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
+  $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
+  ac_status=$?
+  if test "$ac_status" = 0; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
+    save_LIBS="$LIBS"
+    LIBS="$FT2_LIBS $LIBS"
+    AC_CHECK_FUNCS([FT_Reference_Face])
+    LIBS="$save_LIBS"
+  else
+    AC_MSG_RESULT(no)
+    warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
+  fi])
+
+if test -n "$warn_freetype"; then
+  OCTAVE_CONFIGURE_WARNING([warn_freetype])
+else
+  FT2_CPPFLAGS="$FT2_CFLAGS"
+fi
+
+## Check for Xft library (when using X11)
+
+warn_xft=""
+if test "$have_x" = yes; then
+  PKG_CHECK_MODULES(XFT, [xft],
+    [AC_DEFINE(HAVE_XFT, 1, [Define to 1 if Xft is present.])],
+    [warn_xft="Xft library not found.  OpenGL graphics will not be fully functional."])
+fi
+
+if test -n "$warn_xft"; then
+  OCTAVE_CONFIGURE_WARNING([warn_xft])
+fi
+
+## Check for fontconfig library
+
+warn_fontconfig=""
+PKG_CHECK_MODULES(FONTCONFIG, [fontconfig],
+  [AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present.])],
+  [warn_fontconfig="Fontconfig library not found.  OpenGL graphics will not be fully functional."])
+
+if test -n "$warn_fontconfig"; then
+  OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
+else
+  FONTCONFIG_CPPFLAGS="$FONTCONFIG_CFLAGS"
+fi
+
+## Check for OSMesa which is needed for offscreen rendering with OpenGL
+## FIXME: Check for version >= 9.0.0
+OCTAVE_CHECK_LIB(OSMesa, OSMesa,
+  [OSMesa library not found.  Offscreen rendering with OpenGL will be disabled.],
+  [osmesa.h GL/osmesa.h], [OSMesaCreateContext])
+
+## Check for gl2ps which is required for printing with OpenGL graphics
+
+AC_CHECK_HEADERS([gl2ps.h],
+  [GL2PS_LIBS="-lgl2ps"],
+  [warn_gl2ps="gl2ps library not found.  Printing of OpenGL graphics will be disabled."])
+
+if test -n "$warn_gl2ps"; then
+  OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
+fi
+
+AC_SUBST(GL2PS_LIBS)
+
+### GUI/Qt related tests.
+
+QT_CPPFLAGS=
+QT_LDFLAGS=
+QT_LIBS=
+
+win32_terminal=no
+check_qt=yes
+build_qt_gui=no
+build_qt_graphics=no
+
+AC_ARG_ENABLE([qt],
+  [AS_HELP_STRING([--without-qt], [don't use Qt libraries; disable Qt GUI])],
+  [if test "$enableval" = no; then check_qt=no; fi], [])
+
+if test "$check_qt" = yes; then
+
+  warn_qt_libraries=""
+  ## Check for Qt libraries
+  QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
+  PKG_CHECK_MODULES(QT, [$QT_MODULES],
+    [],
+    [check_qt=no
+     warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
+
+  if test -n "$warn_qt_libraries"; then
+    OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
+  fi
+
+  if test "$check_qt" = yes; then
+    ## Retrieve Qt compilation and linker flags
+    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I $QT_MODULES`"
+    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L $QT_MODULES`"
+    QT_LIBS="`$PKG_CONFIG --libs-only-l $QT_MODULES`"
+
+    case $host_os in
+      *darwin*)
+        ## Qt might be installed in framework
+        if test -z "$QT_LIBS"; then
+          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
+          QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+          ## Enabling link_all_deps works around libtool's imperfect handling
+          ## of the -F flag
+          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
+                         [test "$link_all_deps" = yes || test -n "$QT_LDFLAGS"])
+        fi
+      ;;
+    esac
+
+    ## Check for Qt4
+    if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
+      check_qt=no
+      warn_qt_version="Qt >= 4.0.0 not found; disabling Qt GUI"
+      OCTAVE_CONFIGURE_WARNING([warn_qt_version])
+    fi
+  fi
+
+  if test "$check_qt" = yes; then
+    warn_qt_tools=""
+    AC_CHECK_TOOLS(MOC, [moc-qt4 moc])
+    AC_CHECK_TOOLS(UIC, [uic-qt4 uic])
+    AC_CHECK_TOOLS(RCC, [rcc-qt4 rcc])
+    AC_CHECK_TOOLS(LRELEASE, [lrelease-qt4 lrelease])
+
+    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
+      AC_DEFINE(HAVE_QT, 1,
+        [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
+    else
+      warn_qt_tools="Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
+      check_qt=no
+      OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
+    fi
+  fi
+
+  if test "$check_qt" = yes; then
+    warn_qt_setlocale=""
+    AC_CHECK_FUNCS([setlocale], [],
+      [check_qt=no
+       warn_qt_setlocale="setlocale not found; disabling Qt GUI"])
+
+    if test -n "$warn_qt_setlocale"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_setlocale])
+    fi
+  fi
+
+  if test "$check_qt" = yes; then
+    warn_qt_setvbuf=""
+    warn_qt_lib_fcns=""
+    case $host_os in
+      mingw* | msdosmsvc*)
+        AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
+          [check_qt=no
+           warn_qt_setvbuf="setvbuf not found; disabling Qt GUI"])
+
+        if test -n "$warn_qt_setvbuf"; then
+          OCTAVE_CONFIGURE_WARNING([warn_qt_setvbuf])
+        fi
+      ;;
+      *)
+        AC_CHECK_HEADERS([pty.h libutil.h util.h])
+        AC_SEARCH_LIBS([openpty], [util],
+          [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
+        AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
+          [check_qt=no
+           warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])
+
+        if test -n "$warn_qt_lib_fcns"; then
+          OCTAVE_CONFIGURE_WARNING([warn_qt_lib_fcns])
+        fi
+      ;;
+    esac
+  fi
+
+  if test "$check_qt" = yes; then
+    OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
+
+    if test "$octave_cv_func_qabstractitemmodel_beginresetmodel" = no; then
+      check_qt=no
+      warn_qt_abstract_item_model="QAbstractItemModel::beginResetModel not found; disabling Qt GUI"
+      OCTAVE_CONFIGURE_WARNING([warn_qt_abstract_item_model])
+    fi
+  fi
+
+  if test "$check_qt" = yes; then
+    ## We have what we need to build the Qt GUI.  The remaining
+    ## checks below are for optional features related to the Qt GUI.
+    build_qt_gui=yes
+  fi
+
+  if test "$check_qt" = yes; then
+    OCTAVE_CHECK_QFONT_MONOSPACE
+    OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
+    OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
+
+    if test -n "$OPENGL_LIBS"; then
+      OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],
+        [warn_qt_opengl="Qt does not work with the OpenGL libs (GL and GLU); disabling OpenGL graphics with Qt GUI"])
+
+      if test -n "$warn_qt_opengl"; then
+        OCTAVE_CONFIGURE_WARNING([warn_qt_opengl])
+      fi
+    endif
+
+      if test "$build_qt_graphics" = yes; then
+        AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
+      fi
+    fi
+
+    ## Check for Qscintilla library which is used in the Qt GUI editor.
+    AC_CACHE_CHECK([whether Qscintilla library is installed],
+      [octave_cv_lib_qscintilla],
+      [save_CPPFLAGS="$CPPFLAGS"
+      save_LDFLAGS="$LDFLAGS"
+      save_LIBS="$LIBS"
+      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+      LDFLAGS="$QT_LDFLAGS $LDFLAGS"
+      LIBS="$QT_LIBS -lqscintilla2"
+      AC_LANG_PUSH(C++)
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qsci/qscilexersql.h>
+        ]], [[
+        QsciLexerSQL sqlLexer(0);
+        ]])],
+        octave_cv_lib_qscintilla=yes,
+        octave_cv_lib_qscintilla=no)
+      CPPFLAGS="$save_CPPFLAGS"
+      LDFLAGS="$save_LDFLAGS"
+      LIBS="$save_LIBS"
+      AC_LANG_POP([C++])
+    ])
+
+    if test "$octave_cv_lib_qscintilla" = no; then
+      warn_qscintilla_editor="Qscintilla library not found; disabling built-in Qt GUI editor"
+      OCTAVE_CONFIGURE_WARNING([warn_qscintilla])
+    else
+      ## Let's assume Qscintilla library is at the same location as
+      ## other regular Qt libraries.
+      QT_LIBS="$QT_LIBS -lqscintilla2"
+      OCTAVE_CHECK_VERSION_2_6_0
+      AC_DEFINE(HAVE_QSCINTILLA, 1,
+        [Define to 1 if the QScintilla library and header files are available])
+
+      save_CPPFLAGS="$CPPFLAGS"
+      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+      AC_LANG_PUSH(C++)
+      AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
+      AC_LANG_POP(C++)
+      CPPFLAGS="$save_CPPFLAGS"
+
+      OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+      OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
+    fi
+  fi
+fi
+
+AC_SUBST(QT_CPPFLAGS)
+AC_SUBST(QT_LDFLAGS)
+AC_SUBST(QT_LIBS)
+
+AM_CONDITIONAL([AMCOND_BUILD_QT_GUI], [test "$build_qt_gui" = yes])
+AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test "$build_qt_graphics" = yes])
+AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA],
+               [test "$octave_cv_lib_qscintilla" = yes])
+AM_CONDITIONAL([WIN32_TERMINAL], [test "$win32_terminal" = yes])
+
+## Check for FLTK (www.fltk.org) library
+
+check_fltk=yes
+AC_ARG_WITH([fltk],
+  [AS_HELP_STRING([--without-fltk],
+    [don't use FLTK libraries, disable OpenGL graphics with FLTK widgets])],
+  [if test x"$withval" = x"no"; then
+     check_fltk=no
+     warn_fltk="--without-fltk specified.  FLTK widgets will be disabled."
+     OCTAVE_CONFIGURE_WARNING([warn_fltk])
+   fi])
 
 FLTK_CPPFLAGS=
 FLTK_LDFLAGS=
 FLTK_LIBS=
 
-if test -z "$OPENGL_LIBS"; then
-  if test $check_opengl = yes; then
-    native_graphics=no
-    warn_fltk_opengl="OpenGL libs (GL and GLU) not found.  Native graphics will be disabled."
-    OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
+if test $check_fltk = yes; then
+  AC_ARG_WITH([fltk-prefix],
+    [AS_HELP_STRING([--with-fltk-prefix=PFX],
+      [prefix where FLTK is installed (optional)])],
+    [fltk_prefix="$withval"],
+    [fltk_prefix=""])
+
+  AC_ARG_WITH([fltk-exec-prefix],
+    [AS_HELP_STRING([--with-fltk-exec-prefix=PFX],
+      [exec prefix where FLTK is installed (optional)])],
+    [fltk_exec_prefix="$withval"],
+    [fltk_exec_prefix=""])
+
+  if test "x$fltk_exec_prefix" != x; then
+    fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
+    if test "x${FLTK_CONFIG+set}" != xset ; then
+      FLTK_CONFIG="$fltk_exec_prefix/bin/fltk-config"
+    fi
   fi
-fi
 
-if test -n "$OPENGL_LIBS"; then
-  AC_DEFINE(HAVE_OPENGL, 1, [Define to 1 if OpenGL is available.])
+  if test "x$fltk_prefix" != x; then
+    fltk_args="$fltk_args --prefix=$fltk_prefix"
+    if test x${FLTK_CONFIG+set} != xset ; then
+      FLTK_CONFIG="$fltk_prefix/bin/fltk-config"
+    fi
+  fi
 
-  ## Check for FreeType 2 library
+  AC_PATH_PROG([FLTK_CONFIG], [fltk-config], [no])
 
-  PKG_CHECK_MODULES([FT2], [freetype2], [
-    min_ft2_version=9.03
-    AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
-    $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
-    ac_status=$?
-    if test $ac_status = 0; then
-      AC_MSG_RESULT(yes)
-      AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
-      save_LIBS="$LIBS"
-      LIBS="$FT2_LIBS $LIBS"
-      AC_CHECK_FUNCS([FT_Reference_Face])
-      LIBS="$save_LIBS"
+  warn_fltk_config=""
+  warn_fltk_opengl=""
+
+  if test "$FLTK_CONFIG" = no; then
+    warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
+  else
+    FLTK_CPPFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
+    FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
+
+    case $host_os in
+      mingw*)
+        FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | $SED -e 's/-mwindows//g'`
+      ;;
+    esac
+
+    AC_CACHE_CHECK([for OpenGL support in FLTK],
+      [octave_cv_fltk_opengl_support],
+      [save_CPPFLAGS="$CPPFLAGS"
+      CPPFLAGS="$CFLAGS $FLTK_CPPFLAGS"
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <FL/gl.h>
+        ]], [[
+        int nothing = 0;
+        ]])],
+        octave_cv_fltk_opengl_support=no,
+        octave_cv_fltk_opengl_support=yes)
+      CPPFLAGS="$save_CPPFLAGS"
+      ])
+    if test $octave_cv_fltk_opengl_support = no; then
+      warn_fltk_opengl="FLTK does not have OpenGL support.  OpenGL graphics with FLTK widgets will be disabled."
     else
-      AC_MSG_RESULT(no)
-      warn_freetype="FreeType library >= 9.03 not found.  Native graphics will be disabled."
-    fi])
-
-  if test -n "$warn_freetype"; then
-    native_graphics=no
-    OCTAVE_CONFIGURE_WARNING([warn_freetype])
-  else
-    FT2_CPPFLAGS="$FT2_CFLAGS"
-  fi
-
-  ## Check for fontconfig library
-
-  warn_fontconfig=""
-  if test $native_graphics = yes; then
-    PKG_CHECK_MODULES(FONTCONFIG, [fontconfig],
-      [have_fontconfig=yes
-       OPENGL_LIBS="$FONTCONFIG_LIBS $OPENGL_LIBS"
-       AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present.])],
-      [have_fontconfig=no
-       warn_fontconfig="Fontconfig library not found.  Native graphics will be disabled."])
-  fi
-
-  if test -n "$warn_fontconfig"; then
-    native_graphics=no
-    OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
-  else
-    FONTCONFIG_CPPFLAGS="$FONTCONFIG_CFLAGS"
-  fi
-
-  ## Check for Xft library (when using X11)
-
-  warn_xft=""
-  if test $native_graphics = yes && test "$have_x" = yes; then
-    PKG_CHECK_MODULES(XFT, [xft],
-      [AC_DEFINE(HAVE_XFT, 1, [Define to 1 if Xft is present.])],
-      [warn_xft="Xft library not found.  Native graphics will be disabled."])
-  fi
-
-  if test -n "$warn_xft"; then
-    native_graphics=no
-    OCTAVE_CONFIGURE_WARNING([warn_xft])
-  fi
-
-  ## Check for FLTK (www.fltk.org) library
-
-  check_fltk=no
-  AC_ARG_WITH([fltk],
-    [AS_HELP_STRING([--without-fltk],
-      [don't use FLTK libraries, disable native graphics])],
-    [if test x"$withval" = x"no"; then
-       native_graphics=no
-       warn_fltk="--without-fltk specified.  Native graphics will be disabled."
-       OCTAVE_CONFIGURE_WARNING([warn_fltk])
-     else
-       check_fltk=yes
-     fi],
-    [check_fltk=yes])
-
-  if test $check_fltk = yes; then
-    AC_ARG_WITH([fltk-prefix],
-      [AS_HELP_STRING([--with-fltk-prefix=PFX],
-        [prefix where FLTK is installed (optional)])],
-      [fltk_prefix="$withval"],
-      [fltk_prefix=""])
-
-    AC_ARG_WITH([fltk-exec-prefix],
-      [AS_HELP_STRING([--with-fltk-exec-prefix=PFX],
-        [exec prefix where FLTK is installed (optional)])],
-      [fltk_exec_prefix="$withval"],
-      [fltk_exec_prefix=""])
-
-    if test x"$fltk_exec_prefix" != x""; then
-      fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
-      if test "x${FLTK_CONFIG+set}" != xset ; then
-        FLTK_CONFIG="$fltk_exec_prefix/bin/fltk-config"
-      fi
+      AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
     fi
 
-    if test x"$fltk_prefix" != x""; then
-      fltk_args="$fltk_args --prefix=$fltk_prefix"
-      if test x${FLTK_CONFIG+set} != xset ; then
-        FLTK_CONFIG="$fltk_prefix/bin/fltk-config"
-      fi
-    fi
-
-    AC_PATH_PROG([FLTK_CONFIG], [fltk-config], [no])
-
-    warn_fltk_config=""
-    warn_fltk_opengl=""
-
-    if test "$FLTK_CONFIG" = no; then
-      native_graphics=no
-      warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
-      OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
-    else
-      FLTK_CPPFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
-      FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
-
-      case $host_os in
-        mingw*)
-          FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | $SED -e 's/-mwindows//g'`
-        ;;
-      esac
-
-      AC_CACHE_CHECK([for OpenGL support in FLTK],
-        [octave_cv_fltk_opengl_support],
-        [save_CPPFLAGS="$CPPFLAGS"
-        CPPFLAGS="$CFLAGS $FLTK_CPPFLAGS"
-        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-          #include <FL/gl.h>
-          ]], [[
-          int nothing = 0;
-          ]])],
-          octave_cv_fltk_opengl_support=no,
-          octave_cv_fltk_opengl_support=yes)
-        CPPFLAGS="$save_CPPFLAGS"
-        ])
-      if test $octave_cv_fltk_opengl_support = no; then
-        warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
-      else
-        AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
-      fi
-
-      if test -n "$warn_fltk_opengl"; then
-        native_graphics=no
-        OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
-      fi
+    if test -n "$warn_fltk_opengl"; then
+      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
     fi
   fi
 fi
@@ -1367,22 +1564,10 @@ AC_SUBST(FLTK_CPPFLAGS)
 AC_SUBST(FLTK_LDFLAGS)
 AC_SUBST(FLTK_LIBS)
 
-## Check for gl2ps which is required for printing with OpenGL graphics
-if test $native_graphics = yes; then
-  AC_CHECK_HEADERS([gl2ps.h],
-    [GL2PS_LIBS="-lgl2ps"],
-    [warn_gl2ps="gl2ps library not found.  OpenGL printing is disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_gl2ps])])
-fi
-
-AC_SUBST(GL2PS_LIBS)
-
-if test -n "$OPENGL_LIBS"; then
-  ## Check for OSMesa which is needed for offscreen rendering with OpenGL
-  ## FIXME: Check for version >= 9.0.0
-  OCTAVE_CHECK_LIB(OSMesa, OSMesa,
-    [OSMesa library not found.  Offscreen rendering with OpenGL will be disabled.],
-    [osmesa.h GL/osmesa.h], [OSMesaCreateContext])
+if test -n "$warn_qt_opengl" && test -n "$warn_fltk_opengl"; then
+  opengl_graphics=no
+else
+  opengl_graphics=yes
 fi
 
 ### Start determination of shared vs. static libraries
@@ -1647,7 +1832,7 @@ fi
 ## Test features of the installed UMFPACK library
 
 if test -n "$UMFPACK_LIBS"; then
-  ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time()
+  ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time
   save_CPPFLAGS="$CPPFLAGS"
   save_LIBS="$LIBS";
   CPPFLAGS="$UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CPPFLAGS"
@@ -1699,7 +1884,7 @@ OCTAVE_CHECK_LIB([arpack], ARPACK,
   [warn_arpack=
    OCTAVE_CHECK_LIB_ARPACK_OK(
      [AC_DEFINE(HAVE_ARPACK, 1, [Define to 1 if ARPACK is available.])],
-     [warn_arpack="ARPACK library found, but does not seem to work properly -- disabling eigs function"])])
+     [warn_arpack="ARPACK library found, but does not seem to work properly; disabling eigs function"])])
 LIBS="$save_LIBS"
 
 ### Check for readline library.
@@ -2290,7 +2475,7 @@ OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
 ## Check if fast integer arithmetics based on bit tricks is available.
 OCTAVE_FAST_INT_OPS
 
-## Does the C compiler handle alloca() and const correctly?
+## Does the C compiler handle alloca and const correctly?
 AC_FUNC_ALLOCA
 
 ## Does the C compiler support Automake subdir-objects option?
@@ -2456,7 +2641,7 @@ AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
 
 AC_FUNC_CLOSEDIR_VOID
 
-## Check return type of matherr()
+## Check return type of matherr
 AC_CACHE_CHECK([for struct exception in math.h],
   [octave_cv_func_matherr_type],
   [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -2471,7 +2656,7 @@ AC_CACHE_CHECK([for struct exception in math.h],
   ])
 if test $octave_cv_func_matherr_type = yes; then
   AC_DEFINE(EXCEPTION_IN_MATH, 1,
-    [Define to 1 if math.h declares struct exception for matherr().])
+    [Define to 1 if math.h declares struct exception for matherr.])
 fi
 
 ## Signal stuff.
@@ -2489,13 +2674,15 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 ### disabled with a configure option.
 
 if test $ENABLE_DOCS = yes; then
-  if test -n "$warn_gnuplot"; then
-    ENABLE_DOCS = no
-    warn_docs_gnuplot="building documentation disabled because gnuplot was not found; make dist will fail"
-    OCTAVE_CONFIGURE_WARNING([warn_docs_gnuplot])
+  if test "$opengl_graphics" = "no" || test -n "$warn_OSMesa"; then
+    if test -n "$warn_gnuplot"; then
+      ENABLE_DOCS=no
+      warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail"
+        OCTAVE_CONFIGURE_WARNING([warn_docs_graphics])
+    fi
   fi
   if test -n "$warn_makeinfo"; then
-    ENABLE_DOCS = no
+    ENABLE_DOCS=no
     warn_docs_makeinfo="building documentation disabled because makeinfo was not found; make dist will fail"
     OCTAVE_CONFIGURE_WARNING([warn_docs_makeinfo])
   fi
@@ -2888,179 +3075,8 @@ AC_SUBST(JAVA_LIBS)
 AC_DEFINE_UNQUOTED([JAVA_HOME], ["$JAVA_HOME"], [Java home (top-level installation dir)])
 AC_DEFINE_UNQUOTED([JAVA_LDPATH], ["$JAVA_LDPATH"], [Java library path (libjvm)])
 
-### GUI/Qt related tests.
+### Do we want to create cross-mkoctfile etc ?
 
-QT_CPPFLAGS=
-QT_LDFLAGS=
-QT_LIBS=
-win32_terminal=no
-build_gui=yes
-AC_ARG_ENABLE([gui],
-  [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
-  [if test "$enableval" = no; then build_gui=no; fi], [])
-
-if test -z "$OPENGL_LIBS"; then
-  build_gui=no
-  if test $check_opengl = yes; then
-    warn_gui="OpenGL libs (GL and GLU) not found -- disabling GUI"
-  else
-    warn_gui="--without-opengl was specified -- disabling GUI"
-  fi
-  OCTAVE_CONFIGURE_WARNING([warn_gui])
-fi
-
-if test $build_gui = yes; then
-
-  warn_gui=""
-  ## Check for Qt libraries
-  QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
-  PKG_CHECK_MODULES(QT, [$QT_MODULES],
-    [],
-    [warn_gui="Qt libraries not found -- disabling GUI"
-     build_gui=no])
-
-  if test $build_gui = yes; then
-    ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I $QT_MODULES`"
-    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L $QT_MODULES`"
-    QT_LIBS="`$PKG_CONFIG --libs-only-l $QT_MODULES`"
-
-    case $host_os in
-      *darwin*)
-        ## Qt might be installed in framework
-        if test -z "$QT_LIBS"; then
-          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
-          QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
-          ## Enabling link_all_deps works around libtool's imperfect handling
-          ## of the -F flag
-          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
-                         [test $link_all_deps = yes || test -n "$QT_LDFLAGS"])
-        fi
-      ;;
-    esac
-
-    ## Check for Qt4
-    if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-      warn_gui="Qt >= 4.0.0 not found -- disabling GUI"
-      build_gui=no
-    fi
-  fi
-
-  if test $build_gui = yes; then
-    AC_CHECK_TOOLS(MOC, [moc-qt4 moc])
-    AC_CHECK_TOOLS(UIC, [uic-qt4 uic])
-    AC_CHECK_TOOLS(RCC, [rcc-qt4 rcc])
-    AC_CHECK_TOOLS(LRELEASE, [lrelease-qt4 lrelease])
-    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
-      AC_DEFINE(HAVE_QT, 1,
-        [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
-    else
-      warn_gui="Qt utility programs moc, uic, rcc, and lrelease not found -- disabling GUI"
-      build_gui=no
-    fi
-  fi
-
-  if test $build_gui = yes; then
-    OCTAVE_CHECK_QT_OPENGL_OK([],
-      [warn_gui="Qt does not work with the OpenGL libs (GL and GLU) -- disabling GUI"
-       build_gui=no])
-  fi
-
-  if test $build_gui = yes; then
-    OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
-    if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
-      warn_gui="QAbstractItemModel::beginResetModel() not found -- disabling GUI"
-      build_gui=no
-    fi
-  fi
-
-  if test $build_gui = yes; then
-    OCTAVE_CHECK_QFONT_MONOSPACE
-    OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
-    OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
-    OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
-    OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
-  fi
-
-  if test $build_gui = yes; then
-    ## Check for Qscintilla library which is used in the GUI editor.
-    AC_CACHE_CHECK([whether Qscintilla library is installed],
-      [octave_cv_lib_qscintilla],
-      [save_CPPFLAGS="$CPPFLAGS"
-      save_LDFLAGS="$LDFLAGS"
-      save_LIBS="$LIBS"
-      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
-      LDFLAGS="$QT_LDFLAGS $LDFLAGS"
-      LIBS="$QT_LIBS -lqscintilla2"
-      AC_LANG_PUSH(C++)
-      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-        #include <Qsci/qscilexersql.h>
-        ]], [[
-        QsciLexerSQL sqlLexer(0);
-        ]])],
-        octave_cv_lib_qscintilla=yes,
-        octave_cv_lib_qscintilla=no)
-      CPPFLAGS="$save_CPPFLAGS"
-      LDFLAGS="$save_LDFLAGS"
-      LIBS="$save_LIBS"
-      AC_LANG_POP([C++])
-    ])
-    if test $octave_cv_lib_qscintilla = no; then
-      warn_gui_editor="Qscintilla library not found -- disabling built-in GUI editor"
-      OCTAVE_CONFIGURE_WARNING([warn_gui_editor])
-    else
-      ## Let's assume Qscintilla library is at the same location as
-      ## other regular Qt libraries.
-      QT_LIBS="$QT_LIBS -lqscintilla2"
-      OCTAVE_CHECK_VERSION_2_6_0
-      AC_DEFINE(HAVE_QSCINTILLA, 1,
-        [Define to 1 if the QScintilla library and header files are available])
-
-      save_CPPFLAGS="$CPPFLAGS"
-      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
-      AC_LANG_PUSH(C++)
-      AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
-      AC_LANG_POP(C++)
-      CPPFLAGS="$save_CPPFLAGS"
-    fi
-
-    AC_CHECK_FUNCS([setlocale], [],
-      [warn_gui="setlocale not found -- disabling GUI"
-       build_gui=no])
-
-    if test $build_gui = yes; then
-      case $host_os in
-        mingw* | msdosmsvc*)
-          AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
-            [warn_gui="setvbuf not found -- disabling GUI"
-             build_gui=no])
-        ;;
-        *)
-          AC_CHECK_HEADERS([pty.h libutil.h util.h])
-          AC_SEARCH_LIBS([openpty], [util],
-            [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
-          AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
-            [AC_MSG_ERROR([At least one of chmod, chown, ftruncate, mmap, and munmap not found -- disabling GUI])
-             build_gui=no])
-        ;;
-      esac
-    fi
-  fi
-
-  if test -n "$warn_gui"; then
-    OCTAVE_CONFIGURE_WARNING([warn_gui])
-  fi
-fi
-
-AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
-AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA],
-               [test "$octave_cv_lib_qscintilla" = yes])
-AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
-AC_SUBST(QT_CPPFLAGS)
-AC_SUBST(QT_LDFLAGS)
-AC_SUBST(QT_LIBS)
-
-# do we want to create cross-mkoctfile etc ?
 cross_tools=no
 AC_ARG_ENABLE([cross-tools],
   [AS_HELP_STRING([--enable-cross-tools],
@@ -3074,7 +3090,6 @@ if test "$cross_tools" = yes; then
   fi
 fi
 AM_CONDITIONAL([AMCOND_CROSS_TOOLS], [test $cross_tools = yes])
-
 
 ### Decide whether or not to install build logs with Octave.
 
@@ -3223,7 +3238,7 @@ Octave is now configured for $canonical_host_type
   Default pager:               $DEFAULT_PAGER
   gnuplot:                     $GNUPLOT
 
-  Build Octave GUI:                   $build_gui
+  Build Octave Qt GUI:                $build_qt_gui
   JIT compiler for loops:             $ENABLE_JIT
   Build Java interface:               $build_java
   Do internal array bounds checking:  $ENABLE_BOUNDS_CHECK
@@ -3244,6 +3259,7 @@ OCTAVE_CONFIGURE_WARNING_SUMMARY
 
 if test $ENABLE_DYNAMIC_LINKING = yes; then
   if test $SHARED_LIBS = no; then
+    AC_MSG_WARN([])
     AC_MSG_WARN([You used --enable-dl but not --enable-shared.])
     AC_MSG_WARN([Are you sure that is what you want to do?])
     warn_msg_printed=true
@@ -3263,42 +3279,14 @@ if test $ENABLE_64 = yes; then
   AC_MSG_WARN([variable on the configure command line.  You must also])
   AC_MSG_WARN([compile the ARPACK, BLAS, LAPACK, QRUPDATE, and SuiteSparse])
   AC_MSG_WARN([libraries to use 8 byte signed integers for array indexing.])
-  AC_MSG_WARN([])
   warn_msg_printed=true
 fi
 
-if test $native_graphics != yes; then
+if test "$opengl_graphics" = "no"; then
   AC_MSG_WARN([])
-  AC_MSG_WARN([I didn't find the necessary libraries to compile native])
-  AC_MSG_WARN([graphics.  It isn't necessary to have native graphics,])
-  AC_MSG_WARN([but you will need to have gnuplot installed or you won't])
-  AC_MSG_WARN([be able to use any of Octave's plotting commands])
-  AC_MSG_WARN([])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_gnuplot"; then
-  if test $native_graphics = yes; then
-    AC_MSG_WARN([])
-    AC_MSG_WARN([I didn't find gnuplot.  Plotting commands will use the])
-    AC_MSG_WARN([native graphics toolkit.])
-  else
-    AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
-    AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
-    AC_MSG_WARN([plotting commands without it.])
-  fi
-  AC_MSG_WARN([])
-  AC_MSG_WARN([If gnuplot is installed, but isn't in your path, you can])
-  AC_MSG_WARN([tell Octave where to find it by using the gnuplot_binary])
-  AC_MSG_WARN([function.  For example,])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([gnuplot_binary ("/full/path/and/name/of/gnuplot/binary")])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([at the Octave prompt.])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([Setting default value to $GNUPLOT])
-  AC_MSG_WARN([])
-
+  AC_MSG_WARN([I didn't find the libraries needed to compile Octave])
+  AC_MSG_WARN([with support for OpenGL graphics.  Creating plots is])
+  AC_MSG_WARN([still possible if you have gnpulot installed.])
   warn_msg_printed=true
 fi
 
@@ -3308,7 +3296,6 @@ if test $ENABLE_ATOMIC_REFCOUNT = no; then
   AC_MSG_WARN([This feature allows access to Octave data safely from])
   AC_MSG_WARN([another thread, and is required when using the GUI's Qt toolkit])
   AC_MSG_WARN([for plotting.])
-  AC_MSG_WARN([])
 fi
 
 if $warn_msg_printed; then

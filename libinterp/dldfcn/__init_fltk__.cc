@@ -31,7 +31,7 @@ To initialize:
 
 */
 
-// PKG_ADD: if (__have_fltk__ () && have_window_system ()) register_graphics_toolkit ("fltk"); endif
+// PKG_ADD: if (__have_feature__ ("FLTK") && __have_feature__ ("OPENGL") && have_window_system ()) register_graphics_toolkit ("fltk"); endif
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -116,8 +116,12 @@ public:
     : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), renderer (),
       in_zoom (false), zoom_box ()
   {
+#if defined (HAVE_OPENGL)
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
+#else
+  err_disabled_feature ("OpenGL_fltk", "OpenGL");
+#endif
   }
 
   ~OpenGL_fltk (void) { }
@@ -141,7 +145,16 @@ public:
 
   void resize (int xx, int yy, int ww, int hh)
   {
+#if defined (HAVE_OPENGL)
+
     Fl_Gl_Window::resize (xx, yy, ww, hh);
+
+#else
+  // This shouldn't happen because construction of Opengl_fltk
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
   }
 
   bool renumber (double new_number)
@@ -166,6 +179,8 @@ private:
 
   void draw (void)
   {
+#if defined (HAVE_OPENGL)
+
     if (! valid ())
       {
         glMatrixMode (GL_PROJECTION);
@@ -177,19 +192,37 @@ private:
 
     if (zoom ())
       overlay ();
+
+#else
+  // This shouldn't happen because construction of Opengl_fltk
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
   }
 
   void zoom_box_vertex (void)
   {
+#if defined (HAVE_OPENGL)
+
     glVertex2d (zoom_box(0), h () - zoom_box(1));
     glVertex2d (zoom_box(0), h () - zoom_box(3));
     glVertex2d (zoom_box(2), h () - zoom_box(3));
     glVertex2d (zoom_box(2), h () - zoom_box(1));
     glVertex2d (zoom_box(0), h () - zoom_box(1));
+
+#else
+  // This shouldn't happen because construction of Opengl_fltk
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
   }
 
   void overlay (void)
   {
+#if defined (HAVE_OPENGL)
+
     glPushMatrix ();
 
     glMatrixMode (GL_MODELVIEW);
@@ -215,10 +248,19 @@ private:
 
     glPopAttrib ();
     glPopMatrix ();
+
+#else
+  // This shouldn't happen because construction of Opengl_fltk
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
   }
 
   int handle (int event)
   {
+#if defined (HAVE_OPENGL)
+
     switch (event)
       {
       case FL_ENTER:
@@ -229,7 +271,15 @@ private:
         cursor (FL_CURSOR_DEFAULT);
         return 1;
       }
+
     return Fl_Gl_Window::handle (event);
+
+#else
+  // This shouldn't happen because construction of Opengl_fltk
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+#endif
   }
 };
 
@@ -2388,21 +2438,4 @@ Undocumented internal function.\n\
 #else
   err_disabled_feature ("__init_fltk__", "OpenGL and FLTK");
 #endif
-}
-
-DEFUN_DLD (__have_fltk__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {@var{FLTK_available} =} __have_fltk__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-#ifdef HAVE_FLTK
-  retval = true;
-#else
-  retval = false;
-#endif
-
-  return retval;
 }

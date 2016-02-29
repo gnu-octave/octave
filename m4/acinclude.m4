@@ -474,12 +474,12 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
   fi
 ])
 dnl
-dnl Check whether the Qt QAbstractItemModel::beginResetModel() function exists.
-dnl Also checks for QAbstractItemModel::endResetModel().  These are two of the
+dnl Check whether the Qt QAbstractItemModel::beginResetModel function exists.
+dnl Also checks for QAbstractItemModel::endResetModel.  These are two of the
 dnl newest Qt functions that the Octave GUI depends on, added in Qt 4.6.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
-  AC_CACHE_CHECK([whether Qt has the QAbstractItemModel::beginResetModel() function],
+  AC_CACHE_CHECK([whether Qt has the QAbstractItemModel::beginResetModel function],
     [octave_cv_func_qabstractitemmodel_beginresetmodel],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -517,11 +517,11 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
-dnl Check whether the Qt QTabWidget::setMovable() function exists.
+dnl Check whether the Qt QTabWidget::setMovable function exists.
 dnl This function was added in Qt 4.5.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
-  AC_CACHE_CHECK([whether Qt has the QTabWidget::setMovable() function],
+  AC_CACHE_CHECK([whether Qt has the QTabWidget::setMovable function],
     [octave_cv_func_qtabwidget_setmovable],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -544,15 +544,15 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
   ])
   if test $octave_cv_func_qtabwidget_setmovable = yes; then
     AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
-      [Define to 1 if Qt has the QTabWidget::setMovable() function.])
+      [Define to 1 if Qt has the QTabWidget::setMovable function.])
   fi
 ])
 dnl
-dnl Check whether the QsciScintilla::findFirstInSelection () function exists.
+dnl Check whether the QsciScintilla::findFirstInSelection function exists.
 dnl This function was added in QScintilla 2.7.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
-  AC_CACHE_CHECK([whether QSci has the QsciScintilla::findFirstInSelection () function],
+  AC_CACHE_CHECK([whether QSci has the QsciScintilla::findFirstInSelection function],
     [octave_cv_func_qsci_findfirstinselection],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -576,7 +576,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
   ])
   if test $octave_cv_func_qsci_findfirstinselection = yes; then
     AC_DEFINE(HAVE_QSCI_FINDSELECTION, 1,
-      [Define to 1 if Qsci has the QsciScintilla::findFirstInSelection () function.])
+      [Define to 1 if Qsci has the QsciScintilla::findFirstInSelection function.])
   fi
 ])
 dnl
@@ -1026,7 +1026,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
             ]])], [OPENGL_LIBS="-lopengl32 -lglu32"])
 
           LIBS="$save_LIBS"
-          if test "x$OPENGL_LIBS" != "x"; then
+          if test -n "$OPENGL_LIBS"; then
             AC_MSG_RESULT([yes])
           else
             AC_MSG_RESULT([no])
@@ -1040,6 +1040,9 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
     fi
   fi
   AC_SUBST(OPENGL_LIBS)
+  if test -n "$OPENGL_LIBS"; then
+    AC_DEFINE(HAVE_OPENGL, 1, [Define to 1 if OpenGL is available.])
+  fi
 ])
 dnl
 dnl Check whether Qhull works (does not crash).

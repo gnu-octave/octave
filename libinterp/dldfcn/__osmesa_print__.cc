@@ -43,7 +43,7 @@ from git://anongit.freedesktop.org/mesa/demos
 #include "graphics.h"
 #include "oct-opengl.h"
 
-#if defined (HAVE_OSMESA) && defined (HAVE_OPENGL)
+#if defined (HAVE_OSMESA)
 
 static void
 reset_visibility (figure::properties *fp)
@@ -84,9 +84,8 @@ instead.\n\
 \n\
 @end deftypefn")
 {
-#ifndef HAVE_OSMESA
-  err_disabled_feature ("__osmesa_print__", "offscreen rendering with OSMesa");
-#else
+#if defined (HAVE_OSMESA)
+
   int nargin = args.length ();
 
   if (nargin != 1 && nargin != 3)
@@ -194,6 +193,11 @@ instead.\n\
   OSMesaDestroyContext (ctx);
 
   return retval;
+
+#else
+
+  err_disabled_feature ("__osmesa_print__", "offscreen rendering with OSMesa");
+
 #endif
 }
 

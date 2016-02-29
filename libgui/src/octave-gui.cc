@@ -54,7 +54,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "thread-manager.h"
 
 #include "builtin-defun-decls.h"
-#include "__init_qt__.h"
+
+#if defined (HAVE_QT_GRAPHICS)
+#  include "__init_qt__.h"
+#endif
 
 // Allow the Octave interpreter to start as in CLI mode with a
 // QApplication context so that it can use Qt for things like plotting
@@ -110,9 +113,11 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
   if (show_gui_msgs.empty ())
     qInstallMsgHandler (message_handler);
 
+#if defined (HAVE_QT_GRAPHICS)
   install___init_qt___functions ();
 
   Fregister_graphics_toolkit (ovl ("qt"));
+#endif
 
   QApplication application (argc, argv);
   QTranslator gui_tr, qt_tr, qsci_tr;

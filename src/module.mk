@@ -43,7 +43,7 @@ noinst_HEADERS += \
 
 OCTAVE_VERSION_LINKS += src/octave-cli-$(version)$(EXEEXT)
 
-if AMCOND_BUILD_GUI
+if AMCOND_BUILD_QT_GUI
   archlib_PROGRAMS += src/octave-gui
   OCTAVE_VERSION_LINKS += src/octave-gui-$(version)$(EXEEXT)
 
@@ -68,8 +68,8 @@ src_octave_LDFLAGS = \
   $(OCTAVE_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-if AMCOND_BUILD_GUI
-  OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_GUI
+if AMCOND_BUILD_QT_GUI
+  OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_QT_GUI
 endif
 
 src_octave_CPPFLAGS = \
@@ -99,7 +99,7 @@ src_octave_cli_CXXFLAGS = \
   $(AM_CXXFLAGS) \
   $(WARN_CXXFLAGS)
 
-if AMCOND_BUILD_GUI
+if AMCOND_BUILD_QT_GUI
   src_octave_gui_SOURCES = src/main-gui.cc
   OCTAVE_GUI_LIBS = libgui/liboctgui.la
   OCTAVE_GUI_CPPFLAGS = -I$(srcdir)/libgui/src

@@ -1,4 +1,4 @@
-if AMCOND_BUILD_GUI
+if AMCOND_BUILD_QT_GUI
 
 libgui_EXTRA_DIST =
 

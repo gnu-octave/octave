@@ -63,7 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#if (defined (HAVE_OCTAVE_GUI) \
+#if (defined (HAVE_OCTAVE_QT_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
 
 #include <signal.h>
@@ -436,7 +436,7 @@ main (int argc, char **argv)
     = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
   std::string octave_gui = octave_archlibdir + dir_sep_char + "octave-gui";
 
-#if defined (HAVE_OCTAVE_GUI)
+#if defined (HAVE_OCTAVE_QT_GUI)
   // The Octave version number is already embedded in the
   // octave_archlibdir directory name so we don't need to append it to
   // the octave-gui filename.
@@ -519,7 +519,7 @@ main (int argc, char **argv)
 
   new_argv[0] = strsave (file.c_str ());
 
-#if (defined (HAVE_OCTAVE_GUI) \
+#if (defined (HAVE_OCTAVE_QT_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
 
   if (gui_libs && start_gui && have_controlling_terminal ())

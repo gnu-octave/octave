@@ -590,7 +590,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           data{data_idx} = [xdat, ydat, zdat]';
           usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)",
                                            numel (xdat));
-          hidden_removal = false;
           ## fputs (plot_stream, "set parametric;\n");
         else
           xdat = obj.xdata(:);
@@ -601,11 +600,16 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                      rows (xdat), xaxisloc_using, yaxisloc_using);
         endif
 
-        style = do_linestyle_command (obj, obj.color, data_idx,
-                                      plot_stream, errbars);
+        [style, sidx] = do_linestyle_command (obj, obj.color, data_idx,
+                                              plot_stream, errbars);
+        if (__gnuplot_has_feature__ ("linetype"))
+          scmd = "linetype";
+        else
+          scmd = "linestyle";
+        endif
 
-        withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                        style{1}, data_idx);
+        withclause{data_idx} = sprintf ("with %s %s %d",
+                                        style{1}, scmd, sidx(1));
 
         if (length (style) > 1)
           data_idx += 1;
@@ -616,8 +620,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           titlespec{data_idx} = "title \"\"";
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
-          withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                          style{2}, data_idx);
+          withclause{data_idx} = sprintf ("with %s %s %d",
+                                          style{2}, scmd, sidx(2));
         endif
         if (length (style) > 2)
           data_idx += 1;
@@ -628,8 +632,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           titlespec{data_idx} = "title \"\"";
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
-          withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                          style{3}, data_idx);
+          withclause{data_idx} = sprintf ("with %s %s %d",
+                                          style{3}, scmd, sidx(3));
         endif
 
      case "patch"
@@ -882,24 +886,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
              color = [0, 0, 0];
            endif
 
-           if (isfield (obj, "linestyle"))
-             switch (obj.linestyle)
-               case "-"
-                 lt = "lt 1";
-               case "--"
-                 lt = "lt 2";
-               case ":"
-                 lt = "lt 3";
-               case "-."
-                 lt = "lt 6";
-               case "none"
-                 lt = "";
-               otherwise
-                 lt = "";
-             endswitch
-           else
-             lt = "";
-           endif
+           lt = gnuplot_linetype (obj);
 
            if (isfield (obj, "linewidth"))
              lw = sprintf ("linewidth %f", obj.linewidth);
@@ -1124,9 +1111,14 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           parametric(data_idx) = false;
           have_cdata(data_idx) = true;
           have_3d_patch(data_idx) = false;
-          style = do_linestyle_command (obj, obj.edgecolor,
-                                        data_idx,
-                                        plot_stream);
+          [style, sidx] = do_linestyle_command (obj, obj.edgecolor,
+                                                data_idx,
+                                                plot_stream);
+          if (__gnuplot_has_feature__ ("linetype"))
+            scmd = "linetype";
+          else
+            scmd = "linestyle";
+          endif
 
           if (isempty (obj.displayname))
             titlespec{data_idx} = "title \"\"";
@@ -1136,11 +1128,15 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                   );
             titlespec{data_idx} = ['title "' tmp '"'];
           endif
-          withclause{data_idx} = sprintf ("with pm3d linestyle %d",
-                                          data_idx);
-          withpm3d = true;
-          pm3didx = data_idx;
 
+          flat_interp_face = (strcmp (obj.facecolor, "flat")
+                              || strcmp (obj.facecolor, "interp"));
+          flat_interp_edge = (strcmp (obj.edgecolor, "flat")
+                              || strcmp (obj.edgecolor, "interp"));
+
+          facecolor_none_or_white = (strcmp (obj.facecolor, "none")
+                                     || (isnumeric (obj.facecolor)
+                                         && all (obj.facecolor == 1)));
           xdat = obj.xdata;
           ydat = obj.ydata;
           zdat = obj.zdata;
@@ -1179,6 +1175,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               zz(:,kk+1) = ydat(:,k);
               zz(:,kk+2) = zdat(:,k);
               zz(:,kk+3) = cdat(:,k);
+              if (facecolor_none_or_white)
+                zz(:,kk+3) = cdat(:,k);
+              else
+                ## Convert color to 24-bit RGB
+                zz(:,kk+3) = hex2dec (sprintf ("%02x%02x%02x",
+                                               round (255*obj.facecolor)));
+               endif
               k += 1;
             endfor
             data{data_idx} = zz.';
@@ -1192,73 +1195,73 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           endif
           usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3):($4)", ylen, xlen);
 
-          flat_interp_face = (strcmp (obj.facecolor, "flat")
-                              || strcmp (obj.facecolor, "interp"));
-          flat_interp_edge = (strcmp (obj.edgecolor, "flat")
-                              || strcmp (obj.edgecolor, "interp"));
-
-          facecolor_none_or_white = (strcmp (obj.facecolor, "none")
-                                     || (isnumeric (obj.facecolor)
-                                         && all (obj.facecolor == 1)));
-          hidden_removal = false;
+          fputs (plot_stream, "unset pm3d\n");
           fputs (plot_stream, "set style increment default;\n");
           if (flat_interp_edge && facecolor_none_or_white)
-            withpm3d = false;
             withclause{data_idx} = sprintf ("with %s palette", style{1});
-            fputs (plot_stream, "unset pm3d\n");
+            if (length (style) > 1)
+              style = style{2:end};
+              sidx = sidx(2:end);
+            else
+              style = {};
+              sidx = [];
+            end
             if (all (obj.facecolor == 1))
               hidden_removal = true;
+            else
+              withclause{data_idx} = [withclause{dataidx} " nohidden3d"];
             endif
           elseif (facecolor_none_or_white)
+            fputs (plot_stream,"set style increment user;\n");
+            withclause{data_idx} = sprintf ("with %s %s %d",
+                                            style{1}, scmd, sidx(1));
+            if (length (style) > 1)
+              style = style{2:end};
+              sidx = sidx(2:end);
+            else
+              style = {};
+              sidx = [];
+            end
             if (all (obj.facecolor == 1))
               hidden_removal = true;
+            else
+              withclause{data_idx} = [withclause{dataidx} " nohidden3d"];
             endif
-            fputs (plot_stream,"unset pm3d;\n");
-            fputs (plot_stream,"set style increment user;\n");
-            withpm3d = false;
-            withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                            style{1}, data_idx);
-            fputs (plot_stream, "unset pm3d\n");
-          endif
-
-          if (doing_interp_color)
-            ## "depthorder" interferes with interpolation of colors.
-            dord = "scansautomatic";
           else
-            dord = "depthorder";
-          endif
+            hidden_removal = true;
+            withclause{data_idx} = sprintf ("with pm3d linecolor rgb variable");
 
-          if (flat_interp_face && strcmp (obj.edgecolor, "flat"))
+            if (doing_interp_color)
+              ## "depthorder" interferes with interpolation of colors.
+              dord = "scansautomatic";
+            else
+              dord = "depthorder";
+            endif
+
+            if (! (flat_interp_face && strcmp (obj.edgecolor, "flat"))
+                && ! facecolor_none_or_white)
+              if (strcmp (obj.edgecolor, "none"))
+                if (__gnuplot_has_feature__ ("transparent_surface")
+                    && isscalar (obj.facealpha))
+                  fprintf (plot_stream,
+                           "set style fill transparent solid %f;\n",
+                           obj.facealpha);
+                endif
+              else
+                if (__gnuplot_has_feature__ ("transparent_surface")
+                    && isscalar (obj.facealpha))
+                  fprintf (plot_stream,
+                           "set style fill transparent solid %f;\n",
+                           obj.facealpha);
+                endif
+              endif
+            endif
             fprintf (plot_stream,
                      "set pm3d explicit at s %s %s corners2color c3;\n",
                      interp_str, dord);
-          elseif (! facecolor_none_or_white)
-            if (strcmp (obj.edgecolor, "none"))
-              if (__gnuplot_has_feature__ ("transparent_surface")
-                  && isscalar (obj.facealpha))
-                fprintf (plot_stream,
-                         "set style fill transparent solid %f;\n",
-                         obj.facealpha);
-              endif
-              fprintf (plot_stream,
-                       "set pm3d explicit at s %s corners2color c3;\n",
-                       interp_str, dord);
-            else
-              fprintf (plot_stream,
-                       "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n",
-                       data_idx, interp_str, dord);
-
-              if (__gnuplot_has_feature__ ("transparent_surface")
-                  && isscalar (obj.facealpha))
-                fprintf (plot_stream,
-                         "set style fill transparent solid %f;\n",
-                         obj.facealpha);
-              endif
-            endif
           endif
 
-          zz = [];
-          if (length (style) > 1)
+          for i_stl = 1:length (style)
             len = 3 * xlen;
             zz = zeros (ylen, len);
             k = 1;
@@ -1278,46 +1281,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             titlespec{data_idx} = "title \"\"";
             usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
             data{data_idx} = zz;
-            withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                            style{2}, data_idx);
+            withclause{data_idx} = sprintf ("with %s %s %d",
+                                             style{i_stl}, scmd, sidx(i_stl));
+          endfor
 
-          endif
-          if (length (style) > 2)
-            data_idx += 1;
-            is_image_data(data_idx) = is_image_data(data_idx - 1);
-            parametric(data_idx) = parametric(data_idx - 1);
-            have_cdata(data_idx) = false;
-            have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-            titlespec{data_idx} = "title \"\"";
-            usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
-            data{data_idx} = zz;
-            withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                            style{3}, data_idx);
-          endif
-          if (withpm3d && strcmp (style{1}, "linespoints"))
-            if (isempty (zz))
-              len = 3 * xlen;
-              zz = zeros (ylen, len);
-              k = 1;
-              for kk = 1:3:len
-                zz(:,kk)   = xdat(:,k);
-                zz(:,kk+1) = ydat(:,k);
-                zz(:,kk+2) = zdat(:,k);
-                k += 1;
-              endfor
-              zz = zz.';
-            endif
-            data_idx += 1;
-            is_image_data(data_idx) = is_image_data(data_idx - 1);
-            parametric(data_idx) = parametric(data_idx - 1);
-            have_cdata(data_idx) = false;
-            have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-            titlespec{data_idx} = "title \"\"";
-            usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
-            data{data_idx} = zz;
-            withclause{data_idx} = sprintf ("with points linestyle %d",
-                                            pm3didx);
-          endif
         endif
 
       case "text"
@@ -1398,7 +1365,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   endwhile
 
-  ## This is need to prevent warnings for rotations in 3D plots, while
+  ## This is needed to prevent warnings for rotations in 3D plots, while
   ## allowing colorbars with contours.
   if (nd == 2 || (data_idx > 1 && ! view_map))
     fputs (plot_stream, "set pm3d implicit;\n");
@@ -1407,7 +1374,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   if (isnan (hidden_removal) || hidden_removal)
-    fputs (plot_stream, "set hidden3d;\n");
+    fputs (plot_stream, "set hidden3d front nooffset;\n");
   else
     fputs (plot_stream, "unset hidden3d;\n");
   endif
@@ -1816,12 +1783,19 @@ function idx = do_border_2d (obj, plot_stream, idx)
   endfunction
 endfunction
 
-function style = do_linestyle_command (obj, linecolor, idx,
-                                       plot_stream, errbars = "")
+function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
+                                                plot_stream, errbars = "")
+  idx = idx + 8;
   style = {};
+  ltidx = [];
 
-  fprintf (plot_stream, "set style line %d default;\n", idx);
-  fprintf (plot_stream, "set style line %d", idx);
+  if (__gnuplot_has_feature__ ("linetype"))
+    scommand = "linetype";
+  else
+    scommand = "line style";
+  endif
+  fprintf (plot_stream, "set %s %d default;\n", scommand, idx);
+  fprintf (plot_stream, "set %s %d", scommand, idx);
 
   found_style = false;
   if (isnumeric (linecolor))
@@ -1832,28 +1806,9 @@ function style = do_linestyle_command (obj, linecolor, idx,
     color = [0, 0, 0];
   endif
 
-  if (isfield (obj, "linestyle"))
-    switch (obj.linestyle)
-      case "-"
-        lt = "1";
-      case "--"
-        lt = "2";
-      case ":"
-        lt = "3";
-      case "-."
-        lt = "6";
-      case "none"
-        lt = "";
-      otherwise
-        lt = "";
-    endswitch
-
-    if (! isempty (lt))
-      fprintf (plot_stream, " linetype %s", lt);
-    endif
-
-  else
-    lt = "";
+  lt = gnuplot_linetype (obj);
+  if (! isempty (lt))
+    fprintf (plot_stream, " %s", lt);
   endif
   if (! isempty (errbars))
     found_style = true;
@@ -1877,6 +1832,7 @@ function style = do_linestyle_command (obj, linecolor, idx,
     else
       style{sidx} = "lines";
     endif
+    ltidx(sidx) = idx;
 
     facesame = true;
     if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
@@ -1904,14 +1860,15 @@ function style = do_linestyle_command (obj, linecolor, idx,
         else
           fputs (plot_stream, ";\n");
         endif
-        fprintf (plot_stream, "set style line %d default;\n", idx);
-        fprintf (plot_stream, "set style line %d", idx);
+        fprintf (plot_stream, "set %s %d default;\n", scommand, idx);
+        fprintf (plot_stream, "set %s %d", scommand, idx);
         if (isnumeric (obj.markerfacecolor))
           fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
                    round (255*obj.markerfacecolor));
         endif
         if (! isempty (pt2))
           style{sidx} = "points";
+          ltidx(sidx) = idx;
           fprintf (plot_stream, " pointtype %s", pt2);
         endif
         if (isfield (obj, "markersize"))
@@ -1947,8 +1904,8 @@ function style = do_linestyle_command (obj, linecolor, idx,
         else
           fputs (plot_stream, ";\n");
         endif
-        fprintf (plot_stream, "set style line %d default;\n", idx);
-        fprintf (plot_stream, "set style line %d", idx);
+        fprintf (plot_stream, "set %s %d default;\n", scommand, idx);
+        fprintf (plot_stream, "set %s %d", scommand, idx);
         if (strcmp (obj.markeredgecolor, "auto"))
           fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
                    round (255*color));
@@ -1958,6 +1915,7 @@ function style = do_linestyle_command (obj, linecolor, idx,
         endif
         if (! isempty (pt))
           style{sidx} = "points";
+          ltidx(sidx) = idx;
           fprintf (plot_stream, " pointtype %s", pt);
         endif
         if (isfield (obj, "markersize"))
@@ -1967,6 +1925,7 @@ function style = do_linestyle_command (obj, linecolor, idx,
     endif
   else
     style{1} = errbars;
+    ltidx(1) = idx;
     fputs (plot_stream, " pointtype 0");
   endif
 
@@ -1976,6 +1935,51 @@ function style = do_linestyle_command (obj, linecolor, idx,
 
   fputs (plot_stream, ";\n");
 
+endfunction
+
+function [lt] = gnuplot_linetype (obj)
+  if (isfield (obj, "linestyle"))
+    if (__gnuplot_has_feature__ ("dashtype"))
+      opt = "dashtype";
+      switch (obj.linestyle)
+        case "-"
+          lt = "1";
+        case "--"
+          lt = "2";
+        case ":"
+          lt = "3";
+        case "-."
+          lt = "4";
+        case "none"
+          lt = "";
+        otherwise
+          lt = "";
+      endswitch
+    elseif (__gnuplot_has_feature__ ("linetype"))
+      opt = "linetype";
+      switch (obj.linestyle)
+        case "-"
+          lt = "1";
+        case "--"
+          lt = "2";
+        case ":"
+          lt = "3";
+        case "-."
+          lt = "6";
+        case "none"
+          lt = "";
+        otherwise
+          lt = "";
+      endswitch
+    else
+      lt = "";
+    endif
+    if (! isempty (lt))
+      lt = sprintf ("%s %s", opt, lt);
+    endif
+  else
+    lt = "";
+  endif
 endfunction
 
 function [pt, pt2, obj] = gnuplot_pointtype (obj)

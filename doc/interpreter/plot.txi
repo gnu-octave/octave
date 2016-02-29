@@ -42,8 +42,7 @@ Qt/OpenGL system, @code{graphics_toolkit ("fltk")} selects the
 FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
 gnuplot system.  The three systems may be used selectively through the use
 of the @code{graphics_toolkit} property of the graphics handle for each
-figure.  The toolkit used for a given figure may not be changed once the
-figure is initialized.  This is explained in @ref{Graphics Data Structures}.
+figure.  This is explained in @ref{Graphics Data Structures}.
 @strong{Caution:} The OpenGL-based toolkits use single precision
 variables internally which limits the maximum value that can be
 displayed to approximately @math{10^{38}}.  If your data contains larger

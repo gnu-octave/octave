@@ -911,7 +911,7 @@ LIBS="$save_LIBS"
 dnl Should we check for this now, or wait until some version of
 dnl HDF5 actually supports this feature?
 have_hdf5_int2float_conversions=no
-if test "$have_hdf5_int2float_conversions" = yes; then
+if test $have_hdf5_int2float_conversions = yes; then
   AC_DEFINE(HAVE_HDF5_INT2FLOAT_CONVERSIONS, 1,
     [Define to 1 if/when HDF5 supports automatic conversion between integer and floating-point binary data.])
 fi
@@ -1170,7 +1170,7 @@ fi
 OCTAVE_HAVE_FRAMEWORK([Carbon],
   [[#include <Carbon/Carbon.h>]], [[CGMainDisplayID ()]],
   [have_framework_carbon=yes], [have_framework_carbon=no])
-if test "$have_framework_carbon" = yes; then
+if test $have_framework_carbon = yes; then
   AC_DEFINE(HAVE_FRAMEWORK_CARBON, 1,
     [Define to 1 if framework CARBON is available.])
   CARBON_LIBS="-Wl,-framework -Wl,Carbon"
@@ -1191,7 +1191,7 @@ AC_ARG_WITH([opengl],
    fi])
 
 ## Check for OpenGL library
-if test "$check_opengl" = yes; then
+if test $check_opengl = yes; then
   OCTAVE_CHECK_LIB_OPENGL
   if test -z "$OPENGL_LIBS"; then
     warn_opengl_libs="OpenGL libs (GL and GLU) not found.  OpgnGL graphics will be disabled."
@@ -1284,7 +1284,7 @@ AC_ARG_ENABLE([qt],
   [AS_HELP_STRING([--without-qt], [don't use Qt libraries; disable Qt GUI])],
   [if test "$enableval" = no; then check_qt=no; fi], [])
 
-if test "$check_qt" = yes; then
+if test $check_qt = yes; then
 
   warn_qt_libraries=""
   ## Check for Qt libraries
@@ -1298,7 +1298,7 @@ if test "$check_qt" = yes; then
     OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
   fi
 
-  if test "$check_qt" = yes; then
+  if test $check_qt = yes; then
     ## Retrieve Qt compilation and linker flags
     QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I $QT_MODULES`"
     QT_LDFLAGS="`$PKG_CONFIG --libs-only-L $QT_MODULES`"
@@ -1313,7 +1313,7 @@ if test "$check_qt" = yes; then
           ## Enabling link_all_deps works around libtool's imperfect handling
           ## of the -F flag
           AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
-                         [test "$link_all_deps" = yes || test -n "$QT_LDFLAGS"])
+                         [test $link_all_deps = yes || test -n "$QT_LDFLAGS"])
         fi
       ;;
     esac
@@ -1326,7 +1326,7 @@ if test "$check_qt" = yes; then
     fi
   fi
 
-  if test "$check_qt" = yes; then
+  if test $check_qt = yes; then
     warn_qt_tools=""
     AC_CHECK_TOOLS(MOC, [moc-qt4 moc])
     AC_CHECK_TOOLS(UIC, [uic-qt4 uic])
@@ -1343,7 +1343,7 @@ if test "$check_qt" = yes; then
     fi
   fi
 
-  if test "$check_qt" = yes; then
+  if test $check_qt = yes; then
     warn_qt_setlocale=""
     AC_CHECK_FUNCS([setlocale], [],
       [check_qt=no
@@ -1354,7 +1354,7 @@ if test "$check_qt" = yes; then
     fi
   fi
 
-  if test "$check_qt" = yes; then
+  if test $check_qt = yes; then
     warn_qt_setvbuf=""
     warn_qt_lib_fcns=""
     case $host_os in
@@ -1382,23 +1382,23 @@ if test "$check_qt" = yes; then
     esac
   fi
 
-  if test "$check_qt" = yes; then
+  if test $check_qt = yes; then
     OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
 
-    if test "$octave_cv_func_qabstractitemmodel_beginresetmodel" = no; then
+    if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
       check_qt=no
       warn_qt_abstract_item_model="QAbstractItemModel::beginResetModel not found; disabling Qt GUI"
       OCTAVE_CONFIGURE_WARNING([warn_qt_abstract_item_model])
     fi
   fi
 
-  if test "$check_qt" = yes; then
+  if test $check_qt = yes; then
     ## We have what we need to build the Qt GUI.  The remaining
     ## checks below are for optional features related to the Qt GUI.
     build_qt_gui=yes
   fi
 
-  if test "$check_qt" = yes; then
+  if test $check_qt = yes; then
     OCTAVE_CHECK_QFONT_MONOSPACE
     OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
@@ -1412,7 +1412,7 @@ if test "$check_qt" = yes; then
       fi
     endif
 
-      if test "$build_qt_graphics" = yes; then
+      if test $build_qt_graphics = yes; then
         AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
       fi
     fi
@@ -1440,7 +1440,7 @@ if test "$check_qt" = yes; then
       AC_LANG_POP([C++])
     ])
 
-    if test "$octave_cv_lib_qscintilla" = no; then
+    if test $octave_cv_lib_qscintilla = no; then
       warn_qscintilla_editor="Qscintilla library not found; disabling built-in Qt GUI editor"
       OCTAVE_CONFIGURE_WARNING([warn_qscintilla])
     else
@@ -1468,11 +1468,11 @@ AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_SUBST(QT_LIBS)
 
-AM_CONDITIONAL([AMCOND_BUILD_QT_GUI], [test "$build_qt_gui" = yes])
-AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test "$build_qt_graphics" = yes])
+AM_CONDITIONAL([AMCOND_BUILD_QT_GUI], [test $build_qt_gui = yes])
+AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test $build_qt_graphics = yes])
 AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA],
-               [test "$octave_cv_lib_qscintilla" = yes])
-AM_CONDITIONAL([WIN32_TERMINAL], [test "$win32_terminal" = yes])
+               [test $octave_cv_lib_qscintilla = yes])
+AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 
 ## Check for FLTK (www.fltk.org) library
 
@@ -1687,7 +1687,7 @@ if test $ax_blas_ok = no; then
 fi
 
 if test $ax_blas_ok = no; then
-  if test $ENABLE_64 = yes && test "$ax_blas_integer_size_ok" = no; then
+  if test $ENABLE_64 = yes && test $ax_blas_integer_size_ok = no; then
     ## Attempt to be more informative.
     AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers.  This is incompatible with --enable-64.])
   else
@@ -2407,13 +2407,13 @@ AC_CHECK_TYPES([dev_t, ino_t])
 AC_CHECK_TYPES([ptrdiff_t])
 
 AC_CHECK_TYPES([long long int])
-if test "x$ac_cv_type_long_long_int" = xyes; then
+if test $ac_cv_type_long_long_int = yes; then
   AC_DEFINE(OCTAVE_HAVE_LONG_LONG_INT, 1,
     [Define to 1 if the system has the type 'long long int'.])
 fi
 
 AC_CHECK_TYPES([unsigned long long int])
-if test "x$ac_cv_type_unsigned_long_long_int" = xyes; then
+if test $ac_cv_type_unsigned_long_long_int = yes; then
   AC_DEFINE(OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT, 1,
     [Define to 1 if the system has the type 'unsigned long long int'.])
 fi
@@ -2674,7 +2674,7 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 ### disabled with a configure option.
 
 if test $ENABLE_DOCS = yes; then
-  if test "$opengl_graphics" = "no" || test -n "$warn_OSMesa"; then
+  if test $opengl_graphics = no || test -n "$warn_OSMesa"; then
     if test -n "$warn_gnuplot"; then
       ENABLE_DOCS=no
       warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail"
@@ -3282,7 +3282,7 @@ if test $ENABLE_64 = yes; then
   warn_msg_printed=true
 fi
 
-if test "$opengl_graphics" = "no"; then
+if test $opengl_graphics = no; then
   AC_MSG_WARN([])
   AC_MSG_WARN([I didn't find the libraries needed to compile Octave])
   AC_MSG_WARN([with support for OpenGL graphics.  Creating plots is])

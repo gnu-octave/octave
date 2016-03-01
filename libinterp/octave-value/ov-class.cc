@@ -46,9 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
 #include "ov-class.h"
-#ifdef HAVE_JAVA
-#  include "ov-java.h"
-#endif
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"

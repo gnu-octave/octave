@@ -26,13 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "errwarn.h"
 #include "fpucw.h"
 
 #if defined (HAVE_FPU_CONTROL_H)
 #  include <fpu_control.h>
 #endif
-
-#if defined HAVE_JAVA
 
 #if defined (HAVE_WINDOWS_H)
 #  include <windows.h>
@@ -58,11 +57,100 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "variables.h"
 
+#if defined (HAVE_JAVA)
+#include <jni.h>
+#endif
+
+#if defined (HAVE_JAVA)
+
+#define TO_JOBJECT(obj) reinterpret_cast<jobject> (obj)
+#define TO_JCLASS(obj) reinterpret_cast<jclass> (obj)
+
+#define TO_JNIENV(env) reinterpret_cast<JNIEnv *> (env)
+
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv,
                                             void *args);
 
 typedef jint (JNICALL *JNI_GetCreatedJavaVMs_t) (JavaVM **pvm, jsize bufLen,
                                                  jsize *nVMs);
+
+template <typename T>
+class java_local_ref
+{
+public:
+
+  java_local_ref (JNIEnv *_env)
+    : jobj (0), detached (false), env (_env) { }
+
+  java_local_ref (JNIEnv *_env, T obj)
+    : jobj (obj), detached (false), env (_env) { }
+
+  ~java_local_ref (void) { release (); }
+
+  T& operator = (T obj)
+  {
+    release ();
+
+    jobj = obj;
+    detached = false;
+
+    return jobj;
+  }
+
+  operator bool () const { return (jobj != 0); }
+  operator T () { return jobj; }
+
+  void detach (void) { detached = true; }
+
+private:
+
+  void release (void)
+  {
+    if (env && jobj && ! detached)
+      env->DeleteLocalRef (jobj);
+
+    jobj = 0;
+  }
+
+  java_local_ref (void)
+    : jobj (0), detached (false), env (0)
+  { }
+
+protected:
+
+  T jobj;
+  bool detached;
+  JNIEnv *env;
+};
+
+typedef java_local_ref<jobject> jobject_ref;
+typedef java_local_ref<jclass> jclass_ref;
+typedef java_local_ref<jstring> jstring_ref;
+typedef java_local_ref<jobjectArray> jobjectArray_ref;
+typedef java_local_ref<jintArray> jintArray_ref;
+typedef java_local_ref<jbyteArray> jbyteArray_ref;
+typedef java_local_ref<jdoubleArray> jdoubleArray_ref;
+typedef java_local_ref<jthrowable> jthrowable_ref;
+
+static std::string
+jstring_to_string (JNIEnv* jni_env, jstring s);
+
+static std::string
+jstring_to_string (JNIEnv* jni_env, jobject obj);
+
+static octave_value
+box (JNIEnv* jni_env, void *jobj, void *jcls_arg = 0);
+
+static octave_value
+box_more (JNIEnv* jni_env, void *jobj_arg, void *jcls_arg = 0);
+
+static bool
+unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
+       jclass_ref& jcls);
+
+static bool
+unbox (JNIEnv* jni_env, const octave_value_list& args,
+       jobjectArray_ref& jobjs, jobjectArray_ref& jclss);
 
 extern "C"
 {
@@ -642,7 +730,7 @@ terminate_jvm (void)
     }
 }
 
-std::string
+static std::string
 jstring_to_string (JNIEnv *jni_env, jstring s)
 {
   std::string retval;
@@ -657,7 +745,7 @@ jstring_to_string (JNIEnv *jni_env, jstring s)
   return retval;
 }
 
-std::string
+static std::string
 jstring_to_string (JNIEnv *jni_env, jobject obj)
 {
   std::string retval;
@@ -676,23 +764,47 @@ jstring_to_string (JNIEnv *jni_env, jobject obj)
   return retval;
 }
 
+static inline JNIEnv *
+thread_jni_env (void)
+{
+  JNIEnv *env = 0;
+
+  if (jvm)
+    jvm->GetEnv (reinterpret_cast<void **> (&env), JNI_VERSION_1_2);
+
+  return env;
+}
+
+#endif
+
 bool
 octave_java::is_java_string (void) const
 {
+#if defined (HAVE_JAVA)
+
   JNIEnv *current_env = thread_jni_env ();
 
   if (current_env && java_object)
     {
       jclass_ref cls (current_env, current_env->FindClass ("java/lang/String"));
-      return current_env->IsInstanceOf (java_object, cls);
+      return current_env->IsInstanceOf (TO_JOBJECT (java_object), cls);
     }
 
   return false;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 bool
 octave_java::is_instance_of (const std::string& cls_name) const
 {
+#if defined (HAVE_JAVA)
+
   JNIEnv *current_env = thread_jni_env ();
 
   std::string cls_cpp = cls_name;
@@ -704,10 +816,19 @@ octave_java::is_instance_of (const std::string& cls_name) const
       if (current_env->ExceptionCheck ())
         current_env->ExceptionClear ();
       else
-        return current_env->IsInstanceOf (java_object, cls);
+        return current_env->IsInstanceOf (TO_JOBJECT (java_object), cls);
     }
   return false;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
+
+#if defined (HAVE_JAVA)
 
 static octave_value
 check_exception (JNIEnv *jni_env)
@@ -914,8 +1035,10 @@ set_array_elements (JNIEnv *jni_env, jobject jobj,
 }
 
 static string_vector
-get_invoke_list (JNIEnv *jni_env, jobject jobj)
+get_invoke_list (JNIEnv *jni_env, void *jobj_arg)
 {
+  jobject jobj = TO_JOBJECT (jobj_arg);
+
   std::list<std::string> name_list;
 
   if (jni_env)
@@ -1011,10 +1134,14 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
 
 #define TO_JAVA(obj) dynamic_cast<octave_java*> ((obj).internal_rep ())
 
-octave_value
-box (JNIEnv *jni_env, jobject jobj, jclass jcls)
+static octave_value
+box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
 {
   octave_value retval;
+
+  jobject jobj = TO_JOBJECT (jobj_arg);
+  jclass jcls = TO_JCLASS (jcls_arg);
+
   jclass_ref cls (jni_env);
 
   if (! jobj)
@@ -1176,9 +1303,12 @@ box (JNIEnv *jni_env, jobject jobj, jclass jcls)
   return retval;
 }
 
-octave_value
-box_more (JNIEnv *jni_env, jobject jobj, jclass jcls)
+static octave_value
+box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
 {
+  jobject jobj = TO_JOBJECT (jobj_arg);
+  jclass jcls = TO_JCLASS (jcls_arg);
+
   octave_value retval = box (jni_env, jobj, jcls);
 
   if (retval.is_java ())
@@ -1270,7 +1400,7 @@ box_more (JNIEnv *jni_env, jobject jobj, jclass jcls)
   return retval;
 }
 
-bool
+static bool
 unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
        jclass_ref& jcls)
 {
@@ -1279,7 +1409,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
   if (val.is_java ())
     {
       octave_java *ovj = TO_JAVA (val);
-      jobj = ovj->to_java ();
+      jobj = TO_JOBJECT (ovj->to_java ());
       jobj.detach ();
       jcls = jni_env->GetObjectClass (jobj);
     }
@@ -1485,7 +1615,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
   return found;
 }
 
-bool
+static bool
 unbox (JNIEnv *jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss)
 {
@@ -1541,7 +1671,7 @@ get_current_thread_ID (JNIEnv *jni_env)
 static int
 java_event_hook (void)
 {
-  JNIEnv *current_env = octave_java::thread_jni_env ();
+  JNIEnv *current_env = thread_jni_env ();
 
   if (current_env)
     {
@@ -1564,7 +1694,7 @@ initialize_java (void)
         {
           initialize_jvm ();
 
-          JNIEnv *current_env = octave_java::thread_jni_env ();
+          JNIEnv *current_env = thread_jni_env ();
 
           command_editor::add_event_hook (java_event_hook);
 
@@ -1665,8 +1795,33 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
   return (get_current_thread_ID (env) != octave_thread_ID);
 }
 
+#endif
+
 // octave_java class definition
 
+octave_java::octave_java (void)
+  : octave_base_value (), java_object (0), java_class (0)
+{
+#if ! defined (HAVE_JAVA)
+
+  err_disabled_feature ("Java Objects", "Java");
+
+#endif
+}
+
+octave_java::octave_java (const voidptr& jobj, void *jcls)
+  : octave_base_value (), java_object (0), java_class (0)
+{
+#if defined (HAVE_JAVA)
+
+  init (jobj, jcls);
+
+#else
+
+  err_disabled_feature ("Java Objects", "Java");
+
+#endif
+}
 
 int octave_java::t_id (-1);
 
@@ -1675,36 +1830,40 @@ const std::string octave_java::t_name ("octave_java");
 void
 octave_java::register_type (void)
 {
+#if defined (HAVE_JAVA)
+
   t_id = octave_value_typeinfo::register_type
          (octave_java::t_name, "<unknown>", octave_value (new octave_java ()));
+
+#endif
 }
 
 dim_vector
 octave_java::dims (void) const
 {
+#if defined (HAVE_JAVA)
+
   JNIEnv *current_env = thread_jni_env ();
 
   if (current_env && java_object)
-    return compute_array_dimensions (current_env, java_object);
+    return compute_array_dimensions (current_env, TO_JOBJECT (java_object));
   else
     return dim_vector (1, 1);
-}
 
-JNIEnv *
-octave_java::thread_jni_env (void)
-{
-  JNIEnv *env = 0;
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
 
-  if (jvm)
-    jvm->GetEnv (reinterpret_cast<void **> (&env), JNI_VERSION_1_2);
-
-  return env;
+  panic_impossible ();
+#endif
 }
 
 octave_value_list
 octave_java::subsref (const std::string& type,
                       const std::list<octave_value_list>& idx, int nargout)
 {
+#if defined (HAVE_JAVA)
+
   octave_value_list retval;
   int skip = 1;
 
@@ -1736,7 +1895,7 @@ octave_java::subsref (const std::string& type,
 
     case '(':
       if (current_env)
-        retval = get_array_elements (current_env, to_java (), idx.front ());
+        retval = get_array_elements (current_env, TO_JOBJECT (to_java ()), idx.front ());
       break;
 
     default:
@@ -1748,6 +1907,13 @@ octave_java::subsref (const std::string& type,
     retval = retval(0).next_subsref (nargout, type, idx, skip);
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
@@ -1755,6 +1921,8 @@ octave_java::subsasgn (const std::string& type,
                        const std::list<octave_value_list>&idx,
                        const octave_value &rhs)
 {
+#if defined (HAVE_JAVA)
+
   octave_value retval;
 
   JNIEnv *current_env = thread_jni_env ();
@@ -1809,7 +1977,7 @@ octave_java::subsasgn (const std::string& type,
     case '(':
       if (current_env)
         {
-          set_array_elements (current_env, to_java (), idx.front (), rhs);
+          set_array_elements (current_env, TO_JOBJECT (to_java ()), idx.front (), rhs);
 
           count++;
           retval = octave_value (this);
@@ -1822,28 +1990,53 @@ octave_java::subsasgn (const std::string& type,
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 string_vector
 octave_java::map_keys (void) const
 {
+#if defined (HAVE_JAVA)
+
   JNIEnv *current_env = thread_jni_env ();
 
   if (current_env)
     return get_invoke_list (current_env, to_java ());
   else
     return string_vector ();
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
 octave_java::convert_to_str_internal (bool, bool force, char type) const
 {
+#if defined (HAVE_JAVA)
+
   JNIEnv *current_env = thread_jni_env ();
 
   if (current_env)
-    return convert_to_string (current_env, to_java (), force, type);
+    return convert_to_string (current_env, TO_JOBJECT (to_java ()), force, type);
   else
     return octave_value ("");
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
@@ -1910,10 +2103,14 @@ octave_java::load_hdf5 (octave_hdf5_id /* loc_id */, const char * /* name */)
 }
 
 octave_value
-octave_java::do_javaMethod (JNIEnv *jni_env, const std::string& name,
+octave_java::do_javaMethod (void *jni_env_arg, const std::string& name,
                             const octave_value_list& args)
 {
+#if defined (HAVE_JAVA)
+
   octave_value retval;
+
+  JNIEnv *jni_env = TO_JNIENV (jni_env_arg);
 
   if (jni_env)
     {
@@ -1936,15 +2133,41 @@ octave_java::do_javaMethod (JNIEnv *jni_env, const std::string& name,
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
-octave_java:: do_javaMethod (JNIEnv *jni_env,
+octave_java::do_javaMethod (const std::string& name, const octave_value_list& args)
+{
+#if defined (HAVE_JAVA)
+
+  return do_javaMethod (thread_jni_env (), name, args);
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
+}
+
+octave_value
+octave_java:: do_javaMethod (void *jni_env_arg,
                              const std::string& class_name,
                              const std::string& name,
                              const octave_value_list& args)
 {
+#if defined (HAVE_JAVA)
+
   octave_value retval;
+
+  JNIEnv *jni_env = TO_JNIENV (jni_env_arg);
 
   if (jni_env)
     {
@@ -1968,13 +2191,40 @@ octave_java:: do_javaMethod (JNIEnv *jni_env,
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
-octave_java::do_javaObject (JNIEnv *jni_env, const std::string& name,
+octave_java::do_javaMethod (const std::string& class_name, const std::string& name,
                             const octave_value_list& args)
 {
+#if defined (HAVE_JAVA)
+
+  return do_javaMethod (thread_jni_env (), class_name, name, args);
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
+}
+
+octave_value
+octave_java::do_javaObject (void *jni_env_arg, const std::string& name,
+                            const octave_value_list& args)
+{
+#if defined (HAVE_JAVA)
+
   octave_value retval;
+
+  JNIEnv *jni_env = TO_JNIENV (jni_env_arg);
 
   if (jni_env)
     {
@@ -1999,12 +2249,38 @@ octave_java::do_javaObject (JNIEnv *jni_env, const std::string& name,
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
-octave_java::do_java_get (JNIEnv *jni_env, const std::string& name)
+octave_java::do_javaObject (const std::string& name, const octave_value_list& args)
 {
+#if defined (HAVE_JAVA)
+
+  return do_javaObject (thread_jni_env (), name, args);
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
+}
+
+octave_value
+octave_java::do_java_get (void *jni_env_arg, const std::string& name)
+{
+#if defined (HAVE_JAVA)
+
   octave_value retval;
+
+  JNIEnv *jni_env = TO_JNIENV (jni_env_arg);
 
   if (jni_env)
     {
@@ -2024,13 +2300,39 @@ octave_java::do_java_get (JNIEnv *jni_env, const std::string& name)
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
-octave_java::do_java_get (JNIEnv *jni_env, const std::string& class_name,
+octave_java::do_java_get (const std::string& name)
+{
+#if defined (HAVE_JAVA)
+
+  return do_java_get (thread_jni_env (), name);
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
+}
+
+octave_value
+octave_java::do_java_get (void *jni_env_arg, const std::string& class_name,
                           const std::string& name)
 {
+#if defined (HAVE_JAVA)
+
   octave_value retval;
+
+  JNIEnv *jni_env = TO_JNIENV (jni_env_arg);
 
   if (jni_env)
     {
@@ -2050,13 +2352,39 @@ octave_java::do_java_get (JNIEnv *jni_env, const std::string& class_name,
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
-octave_java::do_java_set (JNIEnv *jni_env, const std::string& name,
+octave_java::do_java_get (const std::string& class_name, const std::string& name)
+{
+#if defined (HAVE_JAVA)
+
+  return do_java_get (thread_jni_env (), class_name, name);
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
+}
+
+octave_value
+octave_java::do_java_set (void *jni_env_arg, const std::string& name,
                           const octave_value& val)
 {
+#if defined (HAVE_JAVA)
+
   octave_value retval;
+
+  JNIEnv *jni_env = TO_JNIENV (jni_env_arg);
 
   if (jni_env)
     {
@@ -2077,13 +2405,39 @@ octave_java::do_java_set (JNIEnv *jni_env, const std::string& name,
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 octave_value
-octave_java::do_java_set (JNIEnv *jni_env, const std::string& class_name,
+octave_java::do_java_set (const std::string& name, const octave_value& val)
+{
+#if defined (HAVE_JAVA)
+
+  return do_java_set (thread_jni_env (), name, val);
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
+}
+
+octave_value
+octave_java::do_java_set (void *jni_env_arg, const std::string& class_name,
                           const std::string& name, const octave_value& val)
 {
+#if defined (HAVE_JAVA)
+
   octave_value retval;
+
+  JNIEnv *jni_env = TO_JNIENV (jni_env_arg);
 
   if (jni_env)
     {
@@ -2105,11 +2459,39 @@ octave_java::do_java_set (JNIEnv *jni_env, const std::string& class_name,
     }
 
   return retval;
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
+}
+
+octave_value
+octave_java::do_java_set (const std::string& class_name, const std::string& name,
+                          const octave_value& val)
+{
+#if defined (HAVE_JAVA)
+
+  return do_java_set (thread_jni_env (), class_name, name, val);
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
-octave_java::init (jobject jobj, jclass jcls)
+octave_java::init (void *jobj_arg, void *jcls_arg)
 {
+#if defined (HAVE_JAVA)
+
+  jobject jobj = TO_JOBJECT (jobj_arg);
+  jclass jcls = TO_JCLASS (jcls_arg);
+
   JNIEnv *current_env = thread_jni_env ();
 
   if (current_env)
@@ -2118,42 +2500,56 @@ octave_java::init (jobject jobj, jclass jcls)
         java_object = current_env->NewGlobalRef (jobj);
 
       if (jcls)
-        java_class = reinterpret_cast<jclass> (current_env->NewGlobalRef (jcls));
+        java_class = current_env->NewGlobalRef (jcls);
       else if (java_object)
         {
-          jclass_ref ocls (current_env, current_env->GetObjectClass (java_object));
-          java_class = reinterpret_cast<jclass> (current_env->NewGlobalRef (jclass (ocls)));
+          jclass_ref ocls (current_env, current_env->GetObjectClass (TO_JOBJECT (java_object)));
+          java_class = current_env->NewGlobalRef (jclass (ocls));
         }
 
       if (java_class)
         {
-          jclass_ref clsCls (current_env, current_env->GetObjectClass (java_class));
+          jclass_ref clsCls (current_env, current_env->GetObjectClass (TO_JCLASS (java_class)));
           jmethodID mID = current_env->GetMethodID (clsCls, "getCanonicalName", "()Ljava/lang/String;");
-          jobject_ref resObj (current_env, current_env->CallObjectMethod (java_class, mID));
+          jobject_ref resObj (current_env, current_env->CallObjectMethod (TO_JCLASS (java_class), mID));
           java_classname = jstring_to_string (current_env, resObj);
         }
     }
+
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
+#endif
 }
 
 void
 octave_java::release (void)
 {
+#if defined (HAVE_JAVA)
+
   JNIEnv *current_env = thread_jni_env ();
 
   if (current_env)
     {
       if (java_object)
-        current_env->DeleteGlobalRef (java_object);
+        current_env->DeleteGlobalRef (TO_JOBJECT (java_object));
 
       if (java_class)
-        current_env->DeleteGlobalRef (java_class);
+        current_env->DeleteGlobalRef (TO_JCLASS (java_class));
 
       java_object = 0;
       java_class = 0;
     }
-}
 
+#else
+  // This shouldn't happen because construction of octave_java
+  // objects is supposed to be impossible if Java is not available.
+
+  panic_impossible ();
 #endif
+}
 
 // DEFUN blocks below must be outside of HAVE_JAVA block so that
 // documentation strings are always available, even when functions are not.
@@ -2166,7 +2562,7 @@ Internal function used @strong{only} when debugging Java interface.\n\
 Function will directly call initialize_java to create an instance of a JVM.\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
   octave_value retval;
 
   retval = 0;
@@ -2177,7 +2573,7 @@ Function will directly call initialize_java to create an instance of a JVM.\n\
 
   return retval;
 #else
-  error ("__java_init__: Octave was not compiled with Java interface");
+  err_disabled_feature ("__java_init__", "Java");
 #endif
 }
 
@@ -2190,13 +2586,13 @@ Function will directly call terminate_jvm to destroy the current JVM\n\
 instance.\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
   terminate_jvm ();
 
   return ovl ();
 
 #else
-  error ("__java_init__: Octave was not compiled with Java interface");
+  error ("__java_init__", "Java");
 #endif
 }
 
@@ -2220,7 +2616,7 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 @seealso{javaMethod, javaArray}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
 
   if (args.length () == 0)
     print_usage ();
@@ -2229,7 +2625,7 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 
   initialize_java ();
 
-  JNIEnv *current_env = octave_java::thread_jni_env ();
+  JNIEnv *current_env = thread_jni_env ();
 
   octave_value_list tmp;
   for (int i=1; i<args.length (); i++)
@@ -2238,7 +2634,9 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
   return ovl (octave_java::do_javaObject (current_env, classname, tmp));
 
 #else
-  error ("javaObject: Octave was not compiled with Java interface");
+
+  err_disabled_feature ("javaObject", "Java");
+
 #endif
 }
 
@@ -2277,7 +2675,7 @@ equivalent\n\
 @seealso{methods, javaObject}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
 
   if (args.length () < 2)
     print_usage ();
@@ -2286,7 +2684,7 @@ equivalent\n\
 
   initialize_java ();
 
-  JNIEnv *current_env = octave_java::thread_jni_env ();
+  JNIEnv *current_env = thread_jni_env ();
 
   octave_value retval;
 
@@ -2310,7 +2708,9 @@ equivalent\n\
   return retval;
 
 #else
-  error ("javaMethod: Octave was not compiled with Java interface");
+
+  err_disabled_feature ("javaMethod", "Java");
+
 #endif
 }
 
@@ -2343,7 +2743,7 @@ equivalent\n\
 @seealso{__java_set__, javaMethod, javaObject}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
 
   if (args.length () != 2)
     print_usage ();
@@ -2352,7 +2752,7 @@ equivalent\n\
 
   initialize_java ();
 
-  JNIEnv *current_env = octave_java::thread_jni_env ();
+  JNIEnv *current_env = thread_jni_env ();
 
   octave_value retval;
 
@@ -2372,7 +2772,9 @@ equivalent\n\
   return retval;
 
 #else
-  error ("__java_get__: Octave was not compiled with Java interface");
+
+  err_disabled_feature ("__java_get__", "Java");
+
 #endif
 }
 
@@ -2399,7 +2801,7 @@ equivalent\n\
 @seealso{__java_get__, javaMethod, javaObject}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
 
   if (args.length () != 3)
     print_usage ();
@@ -2408,7 +2810,7 @@ equivalent\n\
 
   initialize_java ();
 
-  JNIEnv *current_env = octave_java::thread_jni_env ();
+  JNIEnv *current_env = thread_jni_env ();
 
   octave_value retval;
 
@@ -2428,7 +2830,9 @@ equivalent\n\
   return retval;
 
 #else
-  error ("__java_set__: Octave was not compiled with Java interface");
+
+  err_disabled_feature ("__java_set__", "Java");
+
 #endif
 }
 
@@ -2438,14 +2842,14 @@ DEFUN (java2mat, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
 
   if (args.length () != 1)
     print_usage ();
 
   initialize_java ();
 
-  JNIEnv *current_env = octave_java::thread_jni_env ();
+  JNIEnv *current_env = thread_jni_env ();
 
   octave_value_list retval;
 
@@ -2460,7 +2864,9 @@ Undocumented internal function.\n\
   return retval;
 
 #else
-  error ("java2mat: Octave was not compiled with Java interface");
+
+  err_disabled_feature ("java2mat", "Java");
+
 #endif
 }
 
@@ -2480,10 +2886,10 @@ The original variable value is restored when exiting the function.\n\
 @seealso{java_unsigned_autoconversion, debug_java}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
   return SET_INTERNAL_VARIABLE (java_matrix_autoconversion);
 #else
-  error ("java_matrix_autoconversion: Octave was not compiled with Java interface");
+  err_disabled_feature ("java_matrix_autoconversion", "Java");
 #endif
 }
 
@@ -2504,10 +2910,10 @@ The original variable value is restored when exiting the function.\n\
 @seealso{java_matrix_autoconversion, debug_java}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
   return SET_INTERNAL_VARIABLE (java_unsigned_autoconversion);
 #else
-  error ("java_unsigned_autoconversion: Octave was not compiled with Java interface");
+  err_disabled_feature ("java_unsigned_autoconversion", "Java");
 #endif
 }
 
@@ -2526,15 +2932,17 @@ The original variable value is restored when exiting the function.\n\
 @seealso{java_matrix_autoconversion, java_unsigned_autoconversion}\n\
 @end deftypefn")
 {
-#ifdef HAVE_JAVA
+#if defined (HAVE_JAVA)
   return SET_INTERNAL_VARIABLE (debug_java);
 #else
-  error ("debug_java: Octave was not compiled with Java interface");
+  err_disabled_feature ("debug_java", "Java");
 #endif
 }
 
-// Outside of #ifdef HAVE_JAVA because it is desirable to be able to
-// test for the presence of a Java object without having Java installed.
+// Outside of #if defined (HAVE_JAVA) because it is desirable to be able
+// to test for the presence of a Java object without having Java
+// installed.
+
 DEFUN (isjava, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} isjava (@var{x})\n\

@@ -146,8 +146,6 @@ else
   DLD_LIBOCTINTERP_LIBADD =
 endif
 
-ALL_LOCAL_TARGETS += $(OCT_FILES)
-
 libinterp_liboctinterp_la_SOURCES = \
   libinterp/octave.cc \
   libinterp/version.cc \

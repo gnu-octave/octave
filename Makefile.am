@@ -107,6 +107,21 @@ DIST_SRC =
 
 ALL_LOCAL_TARGETS =
 
+# Subdirectories in which to run make recursively.
+# Other directories are handled directly from this Makefile,
+# but also review the included module.mk makefile fragments.
+
+SUBDIRS = libgnu
+
+# All of build depends on having libgnu.
+# Add the library to BUILT_SOURCES so it is created early in the build process
+# This is only a partial solution which works when 'make all' is used.
+# See bug #45578.
+BUILT_SOURCES += libgnu/libgnu.la
+
+libgnu/libgnu.la:
+	cd libgnu; $(MAKE) all
+
 include liboctave/module.mk
 include liboctave/link-deps.mk
 include libinterp/module.mk
@@ -121,12 +136,6 @@ include etc/module.mk
 include examples/module.mk
 include m4/module.mk
 include test/module.mk
-
-# Subdirectories in which to run make recursively.  Other
-# directories are handled directly from this Makefile (see also the
-# included makefile fragments).
-
-SUBDIRS = libgnu
 
 dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook scripts-dist-hook
 

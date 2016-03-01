@@ -500,10 +500,10 @@ initial_class_path (void)
             }
         }
       else
-        throw std::string ("octave.jar does not exist: ") + jar_file;
+        error ("octave.jar does not exist: %s", jar_file.c_str ());
     }
   else
-    throw std::string ("initial java dir is empty");
+    error ("initial java dir is empty");
 
   return retval;
 }
@@ -549,7 +549,7 @@ initialize_jvm (void)
       jvm_lib_path = get_module_filename (hMod);
 
       if (jvm_lib_path.empty ())
-        throw std::string ("unable to find Java Runtime Environment");
+        error ("unable to find Java Runtime Environment");
     }
   else
     {
@@ -566,17 +566,19 @@ initialize_jvm (void)
           std::string regval = read_registry_string (key,value);
 
           if (regval.empty ())
-            throw std::string ("unable to find Java Runtime Environment: ")
-                  + key + "::" + value;
+            error ("unable to find Java Runtime Environment: %s::%s",
+                   key.c_str (), value.c_str ());
+
           value = regval;
         }
 
       key = key + "\\" + value;
       value = "RuntimeLib";
       jvm_lib_path = read_registry_string (key, value);
+
       if (jvm_lib_path.empty ())
-        throw std::string ("unable to find Java Runtime Environment: ")
-              + key + "::" + value;
+        error ("unable to find Java Runtime Environment: %s::%s",
+               key.c_str (), value.c_str ());
 
       std::string jvm_bin_path;
 
@@ -611,8 +613,8 @@ initialize_jvm (void)
   octave_shlib lib (jvm_lib_path);
 
   if (! lib)
-    throw std::string ("unable to load Java Runtime Environment from ")
-          + jvm_lib_path;
+    error ("unable to load Java Runtime Environment from %s",
+           jvm_lib_path.c_str ());
 
 #if defined (__WIN32__)
 
@@ -629,11 +631,10 @@ initialize_jvm (void)
     reinterpret_cast<JNI_GetCreatedJavaVMs_t> (lib.search ("JNI_GetCreatedJavaVMs"));
 
   if (! create_vm)
-    throw std::string ("unable to find JNI_CreateJavaVM in ") + jvm_lib_path;
+    error ("unable to find JNI_CreateJavaVM in %s", jvm_lib_path.c_str ());
 
   if (! get_vm)
-    throw std::string ("unable to find JNI_GetCreatedJavaVMs in ")
-          + jvm_lib_path;
+    error ("unable to find JNI_GetCreatedJavaVMs in %s", jvm_lib_path.c_str ());
 
   if (get_vm (&jvm, 1, &nVMs) == 0 && nVMs > 0)
 
@@ -661,11 +662,11 @@ initialize_jvm (void)
           vm_args.group = 0;
           if (jvm->AttachCurrentThread (reinterpret_cast<void **> (&current_env),
                                         &vm_args) < 0)
-            throw std::string ("JVM internal error, unable to attach octave to existing JVM");
+            error ("JVM internal error, unable to attach octave to existing JVM");
           break;
 
         case JNI_EVERSION:
-          throw std::string ("JVM internal error, the required JNI version is not supported");
+          error ("JVM internal error, the required JNI version is not supported");
           break;
 
         case JNI_OK:
@@ -691,8 +692,7 @@ initialize_jvm (void)
 #if ! defined (__APPLE__) && ! defined (__MACH__)
 
       if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
-        throw std::string ("unable to start Java VM in ")+jvm_lib_path;
-      //printf ("JVM created\n");
+        error ("unable to start Java VM in %s", jvm_lib_path.c_str ());
     }
 
   jvm_lib = lib;
@@ -701,7 +701,7 @@ initialize_jvm (void)
 
       if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **> (&current_env),
                             vm_args.to_args ()) != JNI_OK)
-        throw std::string ("unable to start Java VM in ")+jvm_lib_path;
+        error ("unable to start Java VM in %s", jvm_lib_path.c_str ());
 
     }
 

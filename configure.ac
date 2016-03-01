@@ -1015,7 +1015,7 @@ check_sndfile=no
 AC_ARG_WITH([sndfile],
   [AS_HELP_STRING([--without-sndfile],
     [don't use sndfile library, disable audio file I/O])],
-  [if test x"$withval" = x"no"; then
+  [if test x"$withval" = xno; then
      warn_sndfile="--without-sndfile specified.  The audioinfo, audioread, and audiowrite functions for reading and writing audio files will not be fully functional."
    else
      check_sndfile=yes
@@ -1052,7 +1052,7 @@ check_portaudio=no
 AC_ARG_WITH([portaudio],
   [AS_HELP_STRING([--without-portaudio],
     [don't use PortAudio library, disable audio playback and recording])],
-  [if test x"$withval" = x"no"; then
+  [if test x"$withval" = xno; then
      warn_portaudio="--without-portaudio specified.  The audioplayer, audiorecorder classes, and audiodevinfo function for audio playback and recording will not be fully functional."
    else
      check_portaudio=yes
@@ -1082,62 +1082,74 @@ AC_SUBST(PORTAUDIO_LIBS)
 
 ### Check for either of Graphics/ImageMagick++ libraries
 
+check_magick=yes
+use_magick=no
 AC_ARG_WITH([magick],
   [AS_HELP_STRING([--with-magick=LIB],
     [select library to use for image I/O (options: GraphicsMagick(default) or ImageMagick)])],
-  [magick="$withval"],
-  [magick="GraphicsMagick"])
+  [if test x"$withval" = xno; then
+     check_magick=no
+     warn_magick_disabled="--without-magick specified.  The imread function for reading images will not be fully functional."
+     OCTAVE_CONFIGURE_WARNING([warn_magick_disabled])
+   else
+     magick="$withval"
+   fi], [magick="GraphicsMagick"])
 
-warn_magick="$magick++ library not found.  The imread function for reading image files will not be fully functional."
+if test $check_magick = yes; then
 
-MAGICK_CPPFLAGS=
-MAGICK_LDFLAGS=
-MAGICK_LIBS=
+  MAGICK_CPPFLAGS=
+  MAGICK_LDFLAGS=
+  MAGICK_LIBS=
 
-PKG_CHECK_EXISTS([$magick++], [
-  ## Make sure we only get -I, -L, and -l flags.  Some Graphics/ImageMagick++
-  ## packages add extra flags that are useful when building
-  ## Graphics/ImageMagick++ extentions.  These extra flags break the
-  ## Octave build.
-  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
-  MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
-  MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
+  PKG_CHECK_EXISTS([$magick++], [
+    ## Make sure we only get -I, -L, and -l flags.  Some Graphics/ImageMagick++
+    ## packages add extra flags that are useful when building
+    ## Graphics/ImageMagick++ extentions.  These extra flags break the
+    ## Octave build.
+    MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
+    MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
+    MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
 
-  warn_magick="$magick++ library fails tests.  The imread function for reading image files will not be fully functional."
+    warn_magick="$magick++ library fails tests.  The imread function for reading image files will not be fully functional."
 
-  save_CPPFLAGS="$CPPFLAGS"
-  save_LIBS="$LIBS"
-  CPPFLAGS="$MAGICK_CPPFLAGS $CPPFLAGS"
-  LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
-  AC_LANG_PUSH(C++)
-  AC_CHECK_HEADER([Magick++.h], [
-    AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
-      [octave_cv_func_magick_colorrgb],
-      [AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
-        #include <Magick++.h>
-        ]], [[
-        Magick::ColorRGB c;
-        ]])],
-        octave_cv_func_magick_colorrgb=yes,
-        octave_cv_func_magick_colorrgb=no)
-      ])
-    if test $octave_cv_func_magick_colorrgb = yes; then
-      warn_magick=
-    fi
+    save_CPPFLAGS="$CPPFLAGS"
+    save_LIBS="$LIBS"
+    CPPFLAGS="$MAGICK_CPPFLAGS $CPPFLAGS"
+    LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
+    AC_LANG_PUSH(C++)
+    AC_CHECK_HEADER([Magick++.h], [
+      AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
+        [octave_cv_func_magick_colorrgb],
+        [AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
+          #include <Magick++.h>
+          ]], [[
+          Magick::ColorRGB c;
+          ]])],
+          octave_cv_func_magick_colorrgb=yes,
+          octave_cv_func_magick_colorrgb=no)
+        ])
+      if test $octave_cv_func_magick_colorrgb = yes; then
+        use_magick=yes
+        warn_magick=
+      fi
+    ])
+    AC_LANG_POP(C++)
+    CPPFLAGS="$save_CPPFLAGS"
+    LIBS="$save_LIBS"
+
+    AC_CHECK_FUNCS([setlocale], [],
+      [use_magick=no
+       warn_magick="$magick++ requires setlocale function.  The imread function for reading image files will not be fully functional."])
   ])
-  AC_LANG_POP(C++)
-  CPPFLAGS="$save_CPPFLAGS"
-  LIBS="$save_LIBS"
+fi
 
-  AC_CHECK_FUNCS([setlocale], [],
-                 [warn_magick="$magick++ requires setlocale function.  The imread function for reading image files will not be fully functional."])
-])
-
-if test -z "$warn_magick"; then
+if test $use_magick = yes; then
   AC_DEFINE(HAVE_MAGICK, 1,
     [Define to 1 if Graphics/ImageMagick++ is available.])
 else
-  OCTAVE_CONFIGURE_WARNING([warn_magick])
+  if test -n "$warn_magick"; then
+    OCTAVE_CONFIGURE_WARNING([warn_magick])
+  fi
   MAGICK_CPPFLAGS=
   MAGICK_LDFLAGS=
   MAGICK_LIBS=
@@ -1184,9 +1196,9 @@ check_opengl=yes
 AC_ARG_WITH([opengl],
   [AS_HELP_STRING([--without-opengl],
     [don't use OpenGL libraries, disable OpenGL graphics])],
-  [if test x"$withval" = x"no"; then
+  [if test x"$withval" = xno; then
      check_opengl=no
-     warn_opengl="--without-opengl specified.  OpenGL graphics will be disabled."
+     warn_opengl_disabled="--without-opengl specified.  OpenGL graphics will be disabled."
      OCTAVE_CONFIGURE_WARNING([warn_opengl_disabled])
    fi])
 
@@ -1275,14 +1287,19 @@ QT_CPPFLAGS=
 QT_LDFLAGS=
 QT_LIBS=
 
-win32_terminal=no
 check_qt=yes
 build_qt_gui=no
 build_qt_graphics=no
+use_qscintilla=no
+win32_terminal=no
 
-AC_ARG_ENABLE([qt],
+AC_ARG_WITH([qt],
   [AS_HELP_STRING([--without-qt], [don't use Qt libraries; disable Qt GUI])],
-  [if test "$enableval" = no; then check_qt=no; fi], [])
+  [if test x"$withval" = xno; then
+     check_qt=no;
+     warn_qt_disabled="--without-qt specified.  The Qt GUI will be disabled."
+     OCTAVE_CONFIGURE_WARNING([warn_qt_disabled])
+   fi])
 
 if test $check_qt = yes; then
 
@@ -1460,6 +1477,7 @@ if test $check_qt = yes; then
 
       OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
       OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
+      use_qscintilla=yes
     fi
   fi
 fi
@@ -1470,8 +1488,7 @@ AC_SUBST(QT_LIBS)
 
 AM_CONDITIONAL([AMCOND_BUILD_QT_GUI], [test $build_qt_gui = yes])
 AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test $build_qt_graphics = yes])
-AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA],
-               [test $octave_cv_lib_qscintilla = yes])
+AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test $use_qscintilla = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 
 ## Check for FLTK (www.fltk.org) library
@@ -1480,7 +1497,7 @@ check_fltk=yes
 AC_ARG_WITH([fltk],
   [AS_HELP_STRING([--without-fltk],
     [don't use FLTK libraries, disable OpenGL graphics with FLTK widgets])],
-  [if test x"$withval" = x"no"; then
+  [if test x"$withval" = xno; then
      check_fltk=no
      warn_fltk="--without-fltk specified.  FLTK widgets will be disabled."
      OCTAVE_CONFIGURE_WARNING([warn_fltk])

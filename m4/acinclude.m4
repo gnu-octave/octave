@@ -622,8 +622,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     with_$1=$withval, with_$1=yes)
 
   m4_toupper([$1])_LIBS=
+  warn_$1="$3"
   case $with_$1 in
     no)
+      warn_$1="--without-$1 specified.  Functions or features that depend on $2 will be disabled."
       m4_toupper([$1])_LIBS=
     ;;
     yes | "")
@@ -636,9 +638,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
       m4_toupper([$1])_LIBS="-l$with_$1"
     ;;
   esac
-
-  warn_$1="$3"
-  m4_set_add([summary_warning_list], [warn_$1])
 
   if test -n "$m4_toupper([$1])_LIBS"; then
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -668,11 +667,13 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     LDFLAGS="$ac_octave_save_LDFLAGS"
     LIBS="$ac_octave_save_LIBS"
+  else
+    octave_cv_lib_$1=no
   fi
 
   AC_SUBST(m4_toupper([$1])_LIBS)
   if test -n "$warn_$1"; then
-    AC_MSG_WARN([$warn_$1])
+    OCTAVE_CONFIGURE_WARNING([warn_$1])
     m4_toupper([$1])_LIBS=
   fi
 ])

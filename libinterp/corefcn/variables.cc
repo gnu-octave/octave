@@ -355,6 +355,16 @@ isglobal (\"x\")\n\
   return do_isglobal (args);
 }
 
+/*
+%!test
+%! global x;
+%! assert (isglobal ("x"), true)
+
+%!error isglobal ()
+%!error isglobal ("a", "b")
+%!error isglobal (1)
+*/
+
 static octave_value
 safe_symbol_lookup (const std::string& symbol_name)
 {

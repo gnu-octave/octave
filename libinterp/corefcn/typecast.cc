@@ -256,6 +256,34 @@ typecast (@var{x}, \"uint8\")\n\
   return retval;
 }
 
+/*
+%!assert (typecast (int64 (0), "char"),   char (zeros (1, 8)))
+%!assert (typecast (int64 (0), "int8"),   zeros (1, 8, "int8"))
+%!assert (typecast (int64 (0), "uint8"),  zeros (1, 8, "uint8"))
+%!assert (typecast (int64 (0), "int16"),  zeros (1, 4, "int16"))
+%!assert (typecast (int64 (0), "uint16"), zeros (1, 4, "uint16"))
+%!assert (typecast (int64 (0), "int32"),  zeros (1, 2, "int32"))
+%!assert (typecast (int64 (0), "uint32"), zeros (1, 2, "uint32"))
+%!assert (typecast (int64 (0), "int64"),  zeros (1, 1, "int64"))
+%!assert (typecast (int64 (0), "uint64"), zeros (1, 1, "uint64"))
+%!assert (typecast (int64 (0), "single"), zeros (1, 2, "single"))
+%!assert (typecast (int64 (0), "double"), 0)
+%!assert (typecast (int64 (0), "single complex"), single (0))
+%!assert (typecast (int64 ([0 0]), "double complex"), 0)
+
+%!assert (typecast ([],   "double"), [])
+%!assert (typecast (0,    "double"), 0)
+%!assert (typecast (inf,  "double"), inf)
+%!assert (typecast (-inf, "double"), -inf)
+%!assert (typecast (nan,  "double"), nan)
+
+%!error typecast ()
+%!error typecast (1)
+%!error typecast (1, 2, 3)
+%!error typecast (1, "invalid")
+%!error typecast (int8 (0), "double")
+*/
+
 template <typename ArrayType>
 ArrayType
 do_bitpack (const boolNDArray& bitp)
@@ -376,6 +404,30 @@ column vector.\n\
   return retval;
 }
 
+/*
+%!assert (bitpack (zeros (1, 8,   "logical"), "char"),   "\0")
+%!assert (bitpack (zeros (1, 8,   "logical"), "int8"),   int8 (0))
+%!assert (bitpack (zeros (1, 8,   "logical"), "uint8"),  uint8 (0))
+%!assert (bitpack (zeros (1, 16,  "logical"), "int16"),  int16 (0))
+%!assert (bitpack (zeros (1, 16,  "logical"), "uint16"), uint16 (0))
+%!assert (bitpack (zeros (1, 32,  "logical"), "int32"),  int32 (0))
+%!assert (bitpack (zeros (1, 32,  "logical"), "uint32"), uint32 (0))
+%!assert (bitpack (zeros (1, 64,  "logical"), "int64"),  int64 (0))
+%!assert (bitpack (zeros (1, 64,  "logical"), "uint64"), uint64 (0))
+%!assert (bitpack (zeros (1, 32,  "logical"), "single"), single (0))
+%!assert (bitpack (zeros (1, 64,  "logical"), "double"), double (0))
+%!assert (bitpack (zeros (1, 64,  "logical"), "single complex"), single (0))
+%!assert (bitpack (zeros (1, 128, "logical"), "double complex"), double (0))
+
+%!error bitpack ()
+%!error bitpack (1)
+%!error bitpack (1, 2, 3)
+%!error bitpack (1, "invalid")
+%!error bitpack (1, "double")
+%!error bitpack (false, "invalid")
+%!error bitpack (false, "double")
+*/
+
 template <typename ArrayType>
 boolNDArray
 do_bitunpack (const ArrayType& array)
@@ -485,3 +537,24 @@ column vector.\n\
 
   return retval;
 }
+
+/*
+%!assert (bitunpack ("\0"),       zeros (1, 8,  "logical"))
+%!assert (bitunpack (int8 (0)),   zeros (1, 8,  "logical"))
+%!assert (bitunpack (uint8 (0)),  zeros (1, 8,  "logical"))
+%!assert (bitunpack (int16 (0)),  zeros (1, 16, "logical"))
+%!assert (bitunpack (uint16 (0)), zeros (1, 16, "logical"))
+%!assert (bitunpack (int32 (0)),  zeros (1, 32, "logical"))
+%!assert (bitunpack (uint32 (0)), zeros (1, 32, "logical"))
+%!assert (bitunpack (int64 (0)),  zeros (1, 64, "logical"))
+%!assert (bitunpack (uint64 (0)), zeros (1, 64, "logical"))
+%!assert (bitunpack (single (0)), zeros (1, 32, "logical"))
+%!assert (bitunpack (double (0)), zeros (1, 64, "logical"))
+%!assert (bitunpack (complex (single (0))), zeros (1, 64, "logical"))
+%!assert (bitunpack (complex (double (0))), zeros (1, 128, "logical"))
+
+%!error bitunpack ()
+%!error bitunpack (1, 2)
+%!error bitunpack ({})
+*/
+

@@ -83,8 +83,7 @@ protected:
     glGetIntegerv (GL_VIEWPORT, vp);
     gl2psBeginViewport (vp);
 
-    // Draw and finish () or there may primitives missing in the
-    // gl2ps output.
+    // Draw and finish () or there may primitives missing in the gl2ps output.
     opengl_renderer::draw_axes (props);
     finish ();
 
@@ -96,6 +95,12 @@ protected:
       error ("gl2ps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
 
     buffer_overflow |= (state == GL2PS_OVERFLOW);
+
+    // Don't draw background for subsequent viewports (legends, subplots, etc.)
+    GLint opts;
+    gl2psGetOptions (&opts);
+    opts &= ~GL2PS_DRAW_BACKGROUND;
+    gl2psSetOptions (opts);
   }
 
   void draw_text (const text::properties& props);

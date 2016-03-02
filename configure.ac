@@ -85,38 +85,93 @@ AC_SUBST(config_opts)
 
 ### Set default file locations
 
+## Where to install and expect libraries like liboctave.a, liboctinterp.a,
+## and other architecture-dependent data.
 OCTAVE_SET_DEFAULT([octlibdir], '$(libdir)/octave/$(version)')
+
+## Where to put executables to be run by Octave rather than
+## the user.  This path usually includes the Octave version
+## and configuration name, so that multiple configurations
+## for multiple versions of Octave may be installed at once.
 OCTAVE_SET_DEFAULT([archlibdir],
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
+
+## Where to put executables to be run by Octave rather than by the
+## user that are specific to this site.
 OCTAVE_SET_DEFAULT([localarchlibdir],
   '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
+
 OCTAVE_SET_DEFAULT([localapiarchlibdir],
   '$(libexecdir)/octave/$(api_version)/site/exec/$(canonical_host_type)')
+
 OCTAVE_SET_DEFAULT([localverarchlibdir],
   '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
+
+## Where to put object files that will by dynamically loaded.
+## This path usually includes the Octave version and configuration
+## name, so that multiple configurations for multiple versions of
+## Octave may be installed at once.
 OCTAVE_SET_DEFAULT([octfiledir],
   '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
+
+## Directories Octave should search for object files that will be
+## dynamically loaded and that are specific to this site
+## (i.e. customizations), before consulting ${octfiledir}.  This should
+## be a colon-separated list of directories.
 OCTAVE_SET_DEFAULT([localoctfiledir],
   '$(libdir)/octave/site/oct/$(canonical_host_type)')
+
 OCTAVE_SET_DEFAULT([localapioctfiledir],
   '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
+
 OCTAVE_SET_DEFAULT([localveroctfiledir],
   '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
+
+## Where to install Octave's include files.
 OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
+
+## Where to install the function file distributed with
+## Octave.  This includes the Octave version, so that the
+## function files for different versions of Octave will install
+## themselves in separate directories.
 OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
+
+## Directories Octave should search for function files specific
+## to this site (i.e. customizations), before consulting
+## ${fcnfiledir}.  This should be a colon-separated list of
+## directories.
 OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
+
 OCTAVE_SET_DEFAULT([localapifcnfiledir],
   '$(datadir)/octave/site/$(api_version)/m')
+
 OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
+
+## Where to install and expect extra files like NEWS and doc-cache.
 OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
+
+## Where to install and expect the language files for the gui.
 OCTAVE_SET_DEFAULT([octlocaledir], '$(datadir)/octave/$(version)/locale')
+
+## The full path to the default doc cache file.
 OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
+
+## Where to install test files.
 OCTAVE_SET_DEFAULT([octtestsdir], '$(octetcdir)/tests')
+
+## The full path to the default texi macros file.
 OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
+
+## Where Octave will search to find image files.
 OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')
+
+## Where Octave will search for example data files shipped with distribution.
 OCTAVE_SET_DEFAULT([octdatadir], '$(datadir)/octave/$(version)/data')
+
 OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
+
 OCTAVE_SET_DEFAULT([man1ext], '.1')
+
 OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
 
 ### Check for programs used in building, installing, and running Octave.
@@ -2204,6 +2259,7 @@ AC_SUBST(OCTGUI_DLL_DEFS)
 AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 AC_SUBST(library_path_var)
 AC_SUBST(ldpreloadsep)
+AM_SUBST_NOTMAKE(ldpreloadsep)
 
 ### More configure argument checking related to linking
 

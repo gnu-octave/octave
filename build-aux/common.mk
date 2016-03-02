@@ -1,290 +1,48 @@
-CROSS_TOOL_PREFIX = @CROSS_TOOL_PREFIX@
-
-AWK = @AWK@
 export AWK
-
-GREP = @GREP@
 export GREP
-
-FIND = @FIND@
 export FIND
-
-SED = @SED@
 export SED
-
-SHELL = @SHELL@
 export SHELL
-
-PERL = @PERL@
 export PERL
-
-PYTHON = @PYTHON@
-
-GNUPLOT = @GNUPLOT@
-
-DESKTOP_FILE_INSTALL = @DESKTOP_FILE_INSTALL@
-
-OCTAVE_VERSION = @OCTAVE_VERSION@
-OCTAVE_MAJOR_VERSION = @OCTAVE_MAJOR_VERSION@
-OCTAVE_MINOR_VERSION = @OCTAVE_MINOR_VERSION@
-OCTAVE_PATCH_VERSION = @OCTAVE_PATCH_VERSION@
-OCTAVE_API_VERSION = @OCTAVE_API_VERSION@
-OCTAVE_RELEASE_DATE = @OCTAVE_RELEASE_DATE@
-OCTAVE_COPYRIGHT = @OCTAVE_COPYRIGHT@
 
 version = $(OCTAVE_VERSION)
 api_version = $(OCTAVE_API_VERSION)
 
 ## AM_LIBTOOLFLAGS = --silent
 
-#### Start of system configuration section. ####
-
-EXEEXT = @EXEEXT@
-
-BUILD_EXEEXT = @BUILD_EXEEXT@
-
-LEX = @LEX@
 AM_LFLAGS = @LFLAGS@
-LEXLIB = @LEXLIB@
 
-YACC = @YACC@
 AM_YFLAGS = -dv
-BISON_API_PREFIX_DECL_STYLE = @BISON_API_PREFIX_DECL_STYLE@
-BISON_PUSH_PULL_DECL_STYLE = @BISON_PUSH_PULL_DECL_STYLE@
 
-GPERF = @GPERF@
-
-AR = @AR@
-ARFLAGS = @ARFLAGS@
-
-TEMPLATE_AR = @TEMPLATE_AR@
-TEMPLATE_ARFLAGS = @TEMPLATE_ARFLAGS@
-
-RANLIB = @RANLIB@
-
-LN_S = @LN_S@
-MKDIR_P = @MKDIR_P@
-
-MAKEINFO = @MAKEINFO@
-TEXI2DVI = @TEXI2DVI@
-TEXI2PDF = @TEXI2PDF@
-
-GHOSTSCRIPT = @GHOSTSCRIPT@
-
-DEFAULT_PAGER = @DEFAULT_PAGER@
-
-DEFAULT_TERMINAL_FONT = @DEFAULT_TERMINAL_FONT@
-DEFAULT_TERMINAL_FONT_SIZE = @DEFAULT_TERMINAL_FONT_SIZE@
-
-ENABLE_DYNAMIC_LINKING = @ENABLE_DYNAMIC_LINKING@
-
-SHLEXT = @SHLEXT@
-SHLEXT_VER = @SHLEXT_VER@
-SHLLIB = @SHLLIB@
-SHLLIB_VER = @SHLLIB_VER@
-SHLBIN = @SHLBIN@
-SHLBIN_VER = @SHLBIN_VER@
 SHLLINKEXT=
 
 LIBEXT = a
-LIBPRE = @LIBPRE@
-SHLPRE = @SHLPRE@
-SHLLIBPRE = @SHLLIBPRE@
-SHLBINPRE = @SHLBINPRE@
 
 # Fortran compiler flags.
 
-F77 = @F77@
 AM_FFLAGS = @FFLAGS@
-FPICFLAG = @FPICFLAG@
-F77_FLOAT_STORE_FLAG = @F77_FLOAT_STORE_FLAG@
-F77_INTEGER_8_FLAG = @F77_INTEGER_8_FLAG@
 ALL_FFLAGS = $(FFLAGS)
-
-F77_TOLOWER=@F77_TOLOWER@
-F77_APPEND_UNDERSCORE=@F77_TOLOWER@
-F77_APPEND_EXTRA_UNDERSCORE=@F77_TOLOWER@
-
-F77_ISNAN_MACRO=@F77_ISNAN_MACRO@
 
 # C compiler flags.
 
-CC = @CC@
-GCC_VERSION = @GCC_VERSION@
-CPICFLAG = @CPICFLAG@
-XTRA_CFLAGS = @XTRA_CFLAGS@
-WARN_CFLAGS = @WARN_CFLAGS@
 AM_CFLAGS = $(XTRA_CFLAGS)
 
-BUILD_CC = @BUILD_CC@
-BUILD_CFLAGS = @BUILD_CFLAGS@
-
-DEPEND_FLAGS = @DEPEND_FLAGS@
-DEPEND_EXTRA_SED_PATTERN = @DEPEND_EXTRA_SED_PATTERN@
-INCLUDE_DEPS = @INCLUDE_DEPS@
 # ifeq ($(INCLUDE_DEPS),no)
 #   omit_deps = true;
 # endif
 
-DEFS = @DEFS@
-
 # C++ compiler flags.
 
-CXX = @CXX@
-GXX_VERSION = @GXX_VERSION@
-CXXCPP = @CXXCPP@
-CXXPICFLAG = @CXXPICFLAG@
-XTRA_CXXFLAGS = @XTRA_CXXFLAGS@
-WARN_CXXFLAGS = @WARN_CXXFLAGS@
 AM_CXXFLAGS = $(XTRA_CXXFLAGS)
-
-BUILD_CXX = @BUILD_CXX@
-BUILD_CXXFLAGS = @BUILD_CXXFLAGS@
-
-# Linker and library flags
-
-LD_CXX = @LD_CXX@
-LD_STATIC_FLAG = @LD_STATIC_FLAG@
-WARN_LDFLAGS = @WARN_LDFLAGS@
-
-BUILD_LDFLAGS = @BUILD_LDFLAGS@
-
-SH_LD = @SH_LD@
-SH_LDFLAGS = @SH_LDFLAGS@
-
-DL_LD = @DL_LD@
-DL_LDFLAGS = @DL_LDFLAGS@
-
-SONAME_FLAGS = @SONAME_FLAGS@
-
-RDYNAMIC_FLAG = @RDYNAMIC_FLAG@
-
-NO_UNDEFINED_LDFLAG = @NO_UNDEFINED_LDFLAG@
-
-MKOCTFILE_AR = @MKOCTFILE_AR@
-MKOCTFILE_CC = @MKOCTFILE_CC@
-MKOCTFILE_CXX = @MKOCTFILE_CXX@
-MKOCTFILE_DL_LD = @MKOCTFILE_DL_LD@
-MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_LDFLAGS@
-MKOCTFILE_F77 = @MKOCTFILE_F77@
-MKOCTFILE_LD_CXX = @MKOCTFILE_LD_CXX@
-MKOCTFILE_RANLIB = @MKOCTFILE_RANLIB@
-
-# List of libraries and their special compilation flags
-
-LIBOCTINTERP = @LIBOCTINTERP@
-LIBOCTAVE = @LIBOCTAVE@
-
-DL_LIBS = @DL_LIBS@
-FLIBS = @FLIBS@
-LIBS = @LIBS@
-
-AMD_CPPFLAGS = @AMD_CPPFLAGS@
-AMD_LDFLAGS = @AMD_LDFLAGS@
-AMD_LIBS = @AMD_LIBS@
-
-ARPACK_CPPFLAGS = @ARPACK_CPPFLAGS@
-ARPACK_LDFLAGS = @ARPACK_LDFLAGS@
-ARPACK_LIBS = @ARPACK_LIBS@
-
-BLAS_LIBS = @BLAS_LIBS@
-
-CAMD_CPPFLAGS = @CAMD_CPPFLAGS@
-CAMD_LDFLAGS = @CAMD_LDFLAGS@
-CAMD_LIBS = @CAMD_LIBS@
-
-CARBON_LIBS = @CARBON_LIBS@
-
-COLAMD_CPPFLAGS = @COLAMD_CPPFLAGS@
-COLAMD_LDFLAGS = @COLAMD_LDFLAGS@
-COLAMD_LIBS = @COLAMD_LIBS@
-
-CCOLAMD_CPPFLAGS = @CCOLAMD_CPPFLAGS@
-CCOLAMD_LDFLAGS = @CCOLAMD_LDFLAGS@
-CCOLAMD_LIBS = @CCOLAMD_LIBS@
-
-CHOLMOD_CPPFLAGS = @CHOLMOD_CPPFLAGS@
-CHOLMOD_LDFLAGS = @CHOLMOD_LDFLAGS@
-CHOLMOD_LIBS = @CHOLMOD_LIBS@
-
-CURL_CPPFLAGS = @CURL_CPPFLAGS@
-CURL_LDFLAGS = @CURL_LDFLAGS@
-CURL_LIBS = @CURL_LIBS@
-
-CXSPARSE_CPPFLAGS = @CXSPARSE_CPPFLAGS@
-CXSPARSE_LDFLAGS = @CXSPARSE_LDFLAGS@
-CXSPARSE_LIBS = @CXSPARSE_LIBS@
-
-FFTW3_CPPFLAGS = @FFTW3_CPPFLAGS@
-FFTW3_LDFLAGS = @FFTW3_LDFLAGS@
-FFTW3_LIBS = @FFTW3_LIBS@
-
-FFTW3F_CPPFLAGS = @FFTW3F_CPPFLAGS@
-FFTW3F_LDFLAGS = @FFTW3F_LDFLAGS@
-FFTW3F_LIBS = @FFTW3F_LIBS@
 
 FFTW_XCPPFLAGS = $(FFTW3_CPPFLAGS) $(FFTW3F_CPPFLAGS)
 FFTW_XLDFLAGS = $(FFTW3_LDFLAGS) $(FFTW3F_LDFLAGS)
 FFTW_XLIBS = $(FFTW3_LIBS) $(FFTW3F_LIBS)
 
-FLTK_CPPFLAGS = @FLTK_CPPFLAGS@
-FLTK_LDFLAGS = @FLTK_LDFLAGS@
-FLTK_LIBS = @FLTK_LIBS@
-
-## Alias CPPFLAGS to CFLAGS.
+## Alias CPPFLAGS to CFLAGS for fontconfig and freetype.
 ## This is closer to the true meaning of `pkg-config --cflags` output.
-FONTCONFIG_CPPFLAGS = @FONTCONFIG_CFLAGS@
-FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
-
-## Alias CPPFLAGS to CFLAGS.
-FT2_CPPFLAGS = @FT2_CFLAGS@
-FT2_CFLAGS = @FT2_CFLAGS@
-FT2_LIBS = @FT2_LIBS@
-
-GLPK_CPPFLAGS = @GLPK_CPPFLAGS@
-GLPK_LDFLAGS = @GLPK_LDFLAGS@
-GLPK_LIBS = @GLPK_LIBS@
-
-GL2PS_LIBS = @GL2PS_LIBS@
-
-HDF5_CPPFLAGS = @HDF5_CPPFLAGS@
-HDF5_LDFLAGS = @HDF5_LDFLAGS@
-HDF5_LIBS = @HDF5_LIBS@
-
-JAVA_CPPFLAGS = @JAVA_CPPFLAGS@
-JAVA_LIBS = @JAVA_LIBS@
-
-LAPACK_LIBS = @LAPACK_LIBS@
-
-LLVM_CPPFLAGS = @LLVM_CPPFLAGS@
-LLVM_LDFLAGS = @LLVM_LDFLAGS@
-LLVM_LIBS = @LLVM_LIBS@
-
-MAGICK_CPPFLAGS = @MAGICK_CPPFLAGS@
-MAGICK_LDFLAGS = @MAGICK_LDFLAGS@
-MAGICK_LIBS = @MAGICK_LIBS@
-
-OPENGL_LIBS = @OPENGL_LIBS@
-
-OSMESA_CPPFLAGS = @OSMESA_CPPFLAGS@
-OSMESA_LDFLAGS = @OSMESA_LDFLAGS@
-OSMESA_LIBS = @OSMESA_LIBS@
-
-PCRE_CPPFLAGS = @PCRE_CPPFLAGS@
-PCRE_LIBS = @PCRE_LIBS@
-
-PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
-PTHREAD_LIBS = @PTHREAD_LIBS@
-
-QHULL_CPPFLAGS = @QHULL_CPPFLAGS@
-QHULL_LDFLAGS = @QHULL_LDFLAGS@
-QHULL_LIBS = @QHULL_LIBS@
-
-QRUPDATE_CPPFLAGS = @QRUPDATE_CPPFLAGS@
-QRUPDATE_LDFLAGS = @QRUPDATE_LDFLAGS@
-QRUPDATE_LIBS = @QRUPDATE_LIBS@
-
-READLINE_LIBS = @READLINE_LIBS@
+FONTCONFIG_CPPFLAGS = $(FONTCONFIG_CFLAGS)
+FT2_CPPFLAGS = $(FT2_CFLAGS)
 
 SPARSE_XCPPFLAGS = \
   $(CHOLMOD_CPPFLAGS) $(UMFPACK_CPPFLAGS) \
@@ -302,174 +60,22 @@ SPARSE_XLIBS = \
   $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
   $(CCOLAMD_LIBS) $(CXSPARSE_LIBS)
 
-TERM_LIBS = @TERM_LIBS@
-
-UMFPACK_CPPFLAGS = @UMFPACK_CPPFLAGS@
-UMFPACK_LDFLAGS = @UMFPACK_LDFLAGS@
-UMFPACK_LIBS = @UMFPACK_LIBS@
-
-X11_INCFLAGS = @X11_INCFLAGS@
-X11_LIBS = @X11_LIBS@
-
-Z_CPPFLAGS = @Z_CPPFLAGS@
-Z_LDFLAGS = @Z_LDFLAGS@
-Z_LIBS = @Z_LIBS@
-
 # Miscellaneous
-
-OCTAVE_IDX_TYPE = @OCTAVE_IDX_TYPE@
 
 if AMCOND_ADDRESS_SANITIZER_ENABLED
   ADDRESS_SANITIZER_OPTIONS="symbolize=1"
 endif
 
 # The arguments passed to configure.
-config_opts = @config_opts@
 
 CONFIG_SUBDIRS = @subdirs@
-
-# ==================== Where To Install Things ====================
-
-# The default location for installation.  Everything is placed in
-# subdirectories of this directory.  The default values for many of
-# the variables below are expressed in terms of this one, so you may
-# not need to change them.  This defaults to /usr/local.
-prefix = @prefix@
-
-# Like `prefix', but used for architecture-specific files.
-exec_prefix = @exec_prefix@
-
-# Where to install Octave and other binaries that people will want to
-# run directly.
-bindir = @bindir@
-
-# Normally the directory for installing executables that system
-# administrators run.  This is the same as libexecdir on Cygwin systems.
-sbindir = @sbindir@
-
-# The root of the directory tree for read-only
-# architecture-independent data files.
-datarootdir = @datarootdir@
-
-# Where to install architecture-independent data files.  ${fcnfiledir}
-# and ${localfcnfiledir} are subdirectories of this.
-datadir = @datadir@
-
-libdir = @libdir@
-
-# Where to install and expect extra files like NEWS and doc-cache.
-octetcdir = @octetcdir@
-
-# Where to install and expect the language files for the gui.
-octlocaledir = @octlocaledir@
-
-# Where to install and expect libraries like liboctave.a, liboctinterp.a,
-# and other architecture-dependent data.
-octlibdir = @octlibdir@
-
-# Where to install and expect executable programs to be run by Octave
-# rather than directly by users.
-libexecdir = @libexecdir@
-
-# The prefix for Octave's include file directory.  The default is
-# ${prefix}/include
-includedir = @includedir@
-
-# Where to install Octave's man pages, and what extension they should
-# have.  The default is ${prefix}/man/man1
-mandir = @mandir@
-man1dir = @man1dir@
-man1ext = @man1ext@
-
-# Where to install test files.
-octtestsdir = @octtestsdir@
-
-# The full path to the default doc cache file.
-doc_cache_file = @doc_cache_file@
-
-# The full path to the default texi macros file.
-texi_macros_file_file = @texi_macros_file@
-
-# Where to install and expect the info files describing Octave..
-infodir = @infodir@
-
-# The full path to the default info file.
-infofile = @infofile@
-
-# ==================== Octave-specific directories ====================
-
-# These variables hold the values specific to Octave.  They are
-# based on the values of the standard Make variables above.
-
-# What is the path separation character
-sepchar = @sepchar@
-
-# Where to install Octave's include files.  The default is
-# ${includedir}/octave-${version}/octave
-octincludedir = @octincludedir@
-
-# Where to install the function file distributed with
-# Octave.  This includes the Octave version, so that the
-# function files for different versions of Octave will install
-# themselves in separate directories.
-fcnfiledir = @fcnfiledir@
-
-# Directories Octave should search for function files specific
-# to this site (i.e. customizations), before consulting
-# ${fcnfiledir}.  This should be a colon-separated list of
-# directories.
-localfcnfiledir = @localfcnfiledir@
-localapifcnfiledir = @localapifcnfiledir@
-localverfcnfiledir = @localverfcnfiledir@
-
-# Where to put executables to be run by Octave rather than
-# the user.  This path usually includes the Octave version
-# and configuration name, so that multiple configurations
-# for multiple versions of Octave may be installed at once.
-archlibdir = @archlibdir@
-
-# Where to put executables to be run by Octave rather than by the
-# user that are specific to this site.
-localarchlibdir = @localarchlibdir@
-localapiarchlibdir = @localapiarchlibdir@
-localverarchlibdir = @localverarchlibdir@
-
-# Where to put object files that will by dynamically loaded.
-# This path usually includes the Octave version and configuration
-# name, so that multiple configurations for multiple versions of
-# Octave may be installed at once.
-octfiledir = @octfiledir@
-
-# Directories Octave should search for object files that will be
-# dynamically loaded and that are specific to this site
-# (i.e. customizations), before consulting ${octfiledir}.  This should
-# be a colon-separated list of directories.
-localoctfiledir = @localoctfiledir@
-localapioctfiledir = @localapioctfiledir@
-localveroctfiledir = @localveroctfiledir@
-
-# Where Octave will search for example data files shipped with distribution.
-octdatadir = @octdatadir@
-
-# Where Octave will search to find image files.
-imagedir = @imagedir@
-
-# The type of computer we are running on.
-canonical_host_type = @canonical_host_type@
 
 # Where Octave will look for startup files
 startupfiledir = ${fcnfiledir}/startup
 localstartupfiledir = ${localfcnfiledir}/startup
 
-# LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PATH, ...
-library_path_var = @library_path_var@
-
-# The separator used for elements of the LD_PRELOAD variable (might be
-# a space, so protect with $(null))
 null =
 ldpreloadsep = $(null)@ldpreloadsep@$(null)
-
-NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 
 # ==================== Octave-specific Makefile rules ====================
 
@@ -841,7 +447,6 @@ define do_subst_cross_config_vals
     -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|" > $@-t && \
   $(simple_move_if_change_rule)
 endef
-
 
 define do_subst_default_vals
   $(SED) < $< > $@-t \

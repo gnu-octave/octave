@@ -166,8 +166,6 @@ endif
 
 noinst_SCRIPTS = run-octave
 
-OCTAVE_INTERPRETER_TARGETS += run-octave
-
 CLEANFILES += \
   $(BUILT_SOURCES)
 
@@ -186,8 +184,6 @@ nodist_octinclude_HEADERS += config.h octave-config.h
 
 ALL_LOCAL_TARGETS += \
   $(OCTAVE_INTERPRETER_TARGETS) \
-  $(noinst_SCRIPTS) \
-  $(DIST_INFO_FILES) \
   .gdbinit \
   $(DOC_TARGETS)
 

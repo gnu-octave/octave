@@ -158,11 +158,10 @@ check-missing-semicolon:
 	  done ) | $(SHELL) run-octave --norc --silent --no-history
 .PHONY: check-missing-semicolon
 
-## Add rule to generate ctags.
-## Automake would normally generate such a rule, but only if there is a
-## xxx_SOURCES target
-ctags:
-	ctags $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES)
+## Include m-files in list of sources when building tag files.
+## Automake will not include these because there is no xxx_SOURCES target
+TAGS_DEPENDENCIES = $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES)
+TAGS_FILES = $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES)
 
 install-data-local: install-startup-files install-pkg-add
 

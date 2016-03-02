@@ -42,7 +42,7 @@ include libgui/qterminal-module.mk
 libgui_liboctgui_la_SOURCES =
 
 # Dummy C++ source to force C++ linking.
-nodist_EXTRA_libgui_liboctgui_la_SOURCES = libgui/dummy.cc
+EXTRA_libgui_liboctgui_la_SOURCES = libgui/.dummy_force_cxx_link.cc
 
 libgui_liboctgui_la_LIBADD = \
   libgui/qterminal/libqterminal.la \

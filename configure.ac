@@ -3196,7 +3196,10 @@ AC_CONFIG_FILES([
   oct-conf-post.h:oct-conf-post.in.h
   Makefile
   doc/doxyhtml/Doxyfile
-  libgnu/Makefile
+  libgnu/Makefile])
+
+OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
+  libgui/mk-default-qt-settings
   liboctave/cruft/mkf77def])
 
 AC_OUTPUT

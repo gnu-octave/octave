@@ -70,8 +70,14 @@ octetc_DATA += libgui/default-qt-settings
 
 octlocale_DATA += $(LOCALES)
 
-libgui/default-qt-settings: libgui/default-qt-settings.in | libgui/$(octave_dirstamp)
-	$(AM_V_GEN)$(do_subst_qt_settings)
+define gen-default-qt-settings
+  rm -f $@-t $@ && \
+  $(SHELL) libgui/mk-default-qt-settings < $< > $@-t && \
+  mv $@-t $@
+endef
+
+libgui/default-qt-settings: libgui/default-qt-settings.in libgui/mk-default-qt-settings | libgui/$(octave_dirstamp)
+	$(AM_V_GEN)$(gen-default_qt_settings)
 
 DIRSTAMP_FILES += \
   libgui/$(octave_dirstamp)

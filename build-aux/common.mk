@@ -508,13 +508,6 @@ define do_subst_script_vals
   $(simple_move_if_change_rule)
 endef
 
-define do_subst_qt_settings
-  $(SED) < $< \
-    -e "s|%DEFAULT_TERMINAL_FONT%|${DEFAULT_TERMINAL_FONT}|" \
-    -e "s|%DEFAULT_TERMINAL_FONT_SIZE%|${DEFAULT_TERMINAL_FONT_SIZE}|" > $@-t && \
-  $(simple_move_if_change_rule)
-endef
-
 define subst-bison-api-decls
   case "$(BISON_API_PREFIX_DECL_STYLE)" in \
     *api*) \

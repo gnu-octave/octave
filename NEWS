@@ -23,8 +23,8 @@ Summary of important user-visible changes for version 4.2:
     colormap "parula".
 
  ** When starting, Octave now looks in the function path for a file
-    startup.m and executes any commands found there.  This change was made
-    to accommodate Matlab users.  Octave has it's own configuration
+    startup.m and executes any commands found there.  This change was
+    made to accommodate Matlab users.  Octave has it's own configuration
     system based on the file .octaverc which is preferred.
 
  ** Octal ('\NNN') and hex ('\xNN') escape sequences in single quoted

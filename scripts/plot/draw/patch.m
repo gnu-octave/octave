@@ -47,7 +47,7 @@
 ## possible to present a unique list of vertices and then a list of polygon
 ## faces created from those vertices.  In this case the
 ## @qcode{"Vertices"} matrix will be an @nospell{Nx2} (2-D patch) or
-## @nospell{Nx3} (3-D path).  The @nospell{MxN} @qcode{"Faces"} matrix
+## @nospell{Nx3} (3-D patch).  The @nospell{MxN} @qcode{"Faces"} matrix
 ## describes M polygons having N vertices---each row describes a
 ## single polygon and each column entry is an index into the
 ## @qcode{"Vertices"} matrix to identify a vertex.  The patch object

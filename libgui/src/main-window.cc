@@ -401,8 +401,8 @@ main_window::display_release_notes (void)
       QRect screen_geo = m_desktop->availableGeometry (screen);
       int win_x = screen_geo.width ();        // width of the screen
       int win_y = screen_geo.height ();       // height of the screen
-      int reln_x = std::min (620, win_x-80);  // desired width of release notes
-      int reln_y = std::min (640, win_y-80);  // desired height of release notes
+      int reln_x = std::min (720, win_x-80);  // desired width of release notes
+      int reln_y = std::min (740, win_y-80);  // desired height of release notes
       release_notes_window->resize (reln_x, reln_y);  // set size
       release_notes_window->move (20, 0);     // move to the top left corner
     }

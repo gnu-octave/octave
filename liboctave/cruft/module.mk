@@ -24,19 +24,13 @@ include liboctave/cruft/ranlib/module.mk
 include liboctave/cruft/slatec-err/module.mk
 include liboctave/cruft/slatec-fn/module.mk
 
-define gen-cruft-def
-  rm -f $@-t $@ && \
-  $(SHELL) liboctave/cruft/mkf77def $(srcdir) $(liboctave_cruft_libcruft_la_SOURCES) > $@-t && \
-  mv $@-t $@
-endef
-
-## Special rules for files which must be built before compilation
-liboctave/cruft/cruft.def: $(liboctave_cruft_libcruft_la_SOURCES) liboctave/cruft/mkf77def
-	$(AM_V_GEN)$(gen-cruft-def)
+liboctave/cruft/cruft.def: $(liboctave_cruft_libcruft_la_SOURCES) build-aux/mk-f77-def.sh
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SHELL) build-aux/mk-f77-def.sh $(srcdir) $(liboctave_cruft_libcruft_la_SOURCES) > $@-t && \
+	mv $@-t $@
 
 liboctave_DISTCLEANFILES += \
   liboctave/cruft/cruft.def \
-  liboctave/cruft/mkf77def \
   liboctave/cruft/ranlib/ranlib.def \
   $(nodist_liboctave_cruft_libcruft_la_SOURCES)
 
@@ -51,5 +45,3 @@ liboctave_cruft_libcruft_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
 liboctave_cruft_libcruft_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
 liboctave_liboctave_la_LIBADD += liboctave/cruft/libcruft.la
-
-liboctave_EXTRA_DIST += liboctave/cruft/mkf77def.in

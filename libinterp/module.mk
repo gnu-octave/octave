@@ -204,7 +204,7 @@ endif
 
 ALL_DEF_FILES = $(SRC_DEF_FILES) $(DLDFCN_DEF_FILES)
 
-$(SRC_DEF_FILES): libinterp/mkdefs Makefile
+$(SRC_DEF_FILES): libinterp/mkdefs
 
 $(DEF_FILES): $(OPT_HANDLERS) $(LIBOCTAVE_OPT_INC)
 
@@ -245,37 +245,23 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-## build-env.cc must depend on Makefile.
-## Calling configure may change default/config values.
-## However, calling configure will also regenerate the Makefiles from
-## Makefile.am and trigger the rules below.
-libinterp/build-env.cc: libinterp/build-env.in.cc Makefile
-	$(AM_V_GEN)$(do_subst_config_vals)
+libinterp/build-env.cc: libinterp/build-env.in.cc build-aux/subst-config-vals.sh | libinterp/$(octave-dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
-libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh
+libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
 	$(simple_move_if_change_rule)
 
-libinterp/version.h: libinterp/version.in.h Makefile
-	$(AM_V_GEN)rm -f $@-t && \
-	$(SED) < $< \
-	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
-	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
-	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \
-          -e "s|%OCTAVE_MAJOR_VERSION%|${OCTAVE_MAJOR_VERSION}|" \
-          -e "s|%OCTAVE_MINOR_VERSION%|${OCTAVE_MINOR_VERSION}|" \
-          -e "s|%OCTAVE_PATCH_VERSION%|${OCTAVE_PATCH_VERSION}|" \
-	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
-	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t && \
-	$(simple_move_if_change_rule)
+libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave-dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
 
-libinterp/builtins.cc: $(DEF_FILES) libinterp/mkbuiltins
+libinterp/builtins.cc: $(DEF_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/mkbuiltins --source $(DEF_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
-libinterp/builtin-defun-decls.h: $(SRC_DEF_FILES) libinterp/mkbuiltins
+libinterp/builtin-defun-decls.h: $(SRC_DEF_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/mkbuiltins --header $(SRC_DEF_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
@@ -283,7 +269,7 @@ libinterp/builtin-defun-decls.h: $(SRC_DEF_FILES) libinterp/mkbuiltins
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = libinterp/dldfcn/PKG_ADD
 
-libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) libinterp/mk-pkg-add
+libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) libinterp/mk-pkg-add | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
@@ -295,7 +281,7 @@ DOCSTRING_FILES += libinterp/DOCSTRINGS
 
 libinterp/DOCSTRINGS: | libinterp/.DOCSTRINGS
 
-libinterp/.DOCSTRINGS: $(ALL_DEF_FILES) libinterp/gendoc.pl
+libinterp/.DOCSTRINGS: $(ALL_DEF_FILES) libinterp/gendoc.pl | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/libinterp/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
 		cp $(srcdir)/libinterp/DOCSTRINGS libinterp/DOCSTRINGS; \

@@ -33,10 +33,6 @@ namespace octave
   {
     extern OCTAVE_API octave_scalar_map features (void);
 
-    extern const char *ALL_CFLAGS;
-    extern const char *ALL_CXXFLAGS;
-    extern const char *ALL_FFLAGS;
-    extern const char *ALL_LDFLAGS;
     extern const char *AMD_CPPFLAGS;
     extern const char *AMD_LDFLAGS;
     extern const char *AMD_LIBS;
@@ -116,7 +112,6 @@ namespace octave
     extern const char *LEX;
     extern const char *LFLAGS;
     extern const char *LIBEXT;
-    extern const char *LIBFLAGS;
     extern const char *LIBOCTAVE;
     extern const char *LIBOCTINTERP;
     extern const char *LIBS;

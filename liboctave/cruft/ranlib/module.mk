@@ -41,17 +41,12 @@ liboctave_cruft_ranlib_libranlib_la_SOURCES = $(RANLIB_SRC)
 
 liboctave_cruft_ranlib_libranlib_la_DEPENDENCIES = liboctave/cruft/ranlib/ranlib.def
 
-define gen-ranlib-def
-  rm -f $@-t $@ && \
-  $(MKDIR_P) liboctave/cruft/ranlib && \
-  $(SHELL) liboctave/cruft/mkf77def $(srcdir) $(RANLIB_SRC) > $@-t && \
-  mv $@-t $@
-endef
-
 ## Special rules for files which must be built before compilation
 ## ranlib directory may not exist in VPATH build; create it if necessary.
-liboctave/cruft/ranlib/ranlib.def: $(RANLIB_SRC) liboctave/cruft/mkf77def
-	$(AM_V_GEN)$(gen-ranlib-def)
+liboctave/cruft/ranlib/ranlib.def: $(RANLIB_SRC) build-aux/mk-f77-def.sh | liboctave/cruft/ranlib/$(octave-dirstamp)
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SHELL) build-aux/mk-f77-def.sh $(srcdir) $(RANLIB_SRC) > $@-t && \
+	mv $@-t $@
 
 liboctave_liboctave_la_LIBADD += liboctave/cruft/ranlib/libranlib.la
 
@@ -64,3 +59,5 @@ liboctave_EXTRA_DIST += \
   liboctave/cruft/ranlib/tstbot.for \
   liboctave/cruft/ranlib/tstgmn.for \
   liboctave/cruft/ranlib/tstmid.for
+
+DIRSTAMP_FILES += liboctave/cruft/ranlib/$(octave-dirstamp)

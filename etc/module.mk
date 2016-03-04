@@ -70,13 +70,13 @@ all-local: all-icons
 
 all-icons: etc/icons/octave.appdata.xml etc/icons/octave.desktop $(BUILT_ICONS)
 
-etc/icons/octave.appdata.xml: etc/icons/octave.appdata.xml.in Makefile | etc/icons/$(octave_dirstamp)
+etc/icons/octave.appdata.xml: etc/icons/octave.appdata.xml.in | etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_DESKTOP_FILE%|${VENDOR}-octave.desktop|" && \
 	mv $@-t $@
 
-etc/icons/octave.desktop: etc/icons/octave.desktop.in Makefile | etc/icons/$(octave_dirstamp)
+etc/icons/octave.desktop: etc/icons/octave.desktop.in | etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \

@@ -1322,10 +1322,9 @@ dnl exists and hasn't changed.
 dnl
 AC_DEFUN([OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES], [
   m4_foreach_w([elt], [$1], [
-    AC_CONFIG_FILES(elt[-tmp:]elt[.in])
+    AC_CONFIG_FILES(elt[-tmp:]patsubst(elt, [.sh$], [.in.sh]))
     AC_CONFIG_COMMANDS(elt,
     [$SHELL $srcdir/build-aux/move-if-change ]elt[-tmp ]elt)])])
-
 dnl
 dnl Check if the C++ library has the bit_and, bit_or, and bit_xor
 dnl templates defined.

@@ -1466,10 +1466,6 @@ specified option.\n\
 
   static const build_info_struct build_info[] =
     {
-      { "ALL_CFLAGS", octave::build_env::ALL_CFLAGS },
-      { "ALL_CXXFLAGS", octave::build_env::ALL_CXXFLAGS },
-      { "ALL_FFLAGS", octave::build_env::ALL_FFLAGS },
-      { "ALL_LDFLAGS", octave::build_env::ALL_LDFLAGS },
       { "AMD_CPPFLAGS", octave::build_env::AMD_CPPFLAGS },
       { "AMD_LDFLAGS", octave::build_env::AMD_LDFLAGS },
       { "AMD_LIBS", octave::build_env::AMD_LIBS },
@@ -1547,7 +1543,6 @@ specified option.\n\
       { "LEXLIB", octave::build_env::LEXLIB },
       { "LFLAGS", octave::build_env::LFLAGS },
       { "LIBEXT", octave::build_env::LIBEXT },
-      { "LIBFLAGS", octave::build_env::LIBFLAGS },
       { "LIBOCTAVE", octave::build_env::LIBOCTAVE },
       { "LIBOCTINTERP", octave::build_env::LIBOCTINTERP },
       { "LIBS", octave::build_env::LIBS },

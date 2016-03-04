@@ -97,8 +97,8 @@ endef
 $(foreach d, $(FCN_FILE_DIRS), $(eval $(call PKG_ADD_FILE_TEMPLATE, $(d),$(subst /,_,$(subst -,_,$(d))))))
 
 define GEN_FCN_FILES_TEMPLATE
-$(1): $(1:.m=.in) Makefile $(dir $(1))$(octave_dirstamp)
-	$$(AM_V_GEN)$$(do_subst_config_vals)
+$(1): $(1:.m=.in) build-aux/subst-config-vals.sh $(dir $(1))$(octave_dirstamp)
+	$$(AM_V_GEN)$$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 endef
 
 $(foreach f, $(GEN_FCN_FILES), $(eval $(call GEN_FCN_FILES_TEMPLATE, $(f))))
@@ -109,7 +109,7 @@ DOCSTRING_FILES += scripts/DOCSTRINGS
 
 scripts/DOCSTRINGS: | scripts/.DOCSTRINGS
 
-scripts/.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) scripts/mkdoc.pl Makefile
+scripts/.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) scripts/mkdoc.pl | scripts/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/scripts/DOCSTRINGS ] && [ ! -f scripts/DOCSTRINGS ]; then \
 		cp $(srcdir)/scripts/DOCSTRINGS scripts/DOCSTRINGS; \

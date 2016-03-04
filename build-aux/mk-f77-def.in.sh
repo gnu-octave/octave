@@ -18,8 +18,8 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-SED=${SED:-sed}
-AWK=${AWK:-awk}
+: ${SED=@SED@}
+: ${AWK=@AWK@}
 
 F77_TOLOWER="@F77_APPEND_UNDERSCORE@"
 F77_APPEND_UNDERSCORE="@F77_APPEND_UNDERSCORE@"

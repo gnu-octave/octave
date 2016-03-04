@@ -31,14 +31,6 @@ namespace octave
 {
   namespace build_env
   {
-    const char *ALL_CFLAGS = %OCTAVE_CONF_ALL_CFLAGS%;
-
-    const char *ALL_CXXFLAGS = %OCTAVE_CONF_ALL_CXXFLAGS%;
-
-    const char *ALL_FFLAGS = %OCTAVE_CONF_ALL_FFLAGS%;
-
-    const char *ALL_LDFLAGS = %OCTAVE_CONF_ALL_LDFLAGS%;
-
     const char *AMD_CPPFLAGS = %OCTAVE_CONF_AMD_CPPFLAGS%;
 
     const char *AMD_LDFLAGS = %OCTAVE_CONF_AMD_LDFLAGS%;
@@ -196,8 +188,6 @@ namespace octave
     const char *LFLAGS = %OCTAVE_CONF_LFLAGS%;
 
     const char *LIBEXT = %OCTAVE_CONF_LIBEXT%;
-
-    const char *LIBFLAGS = %OCTAVE_CONF_LIBFLAGS%;
 
     const char *LIBOCTAVE = %OCTAVE_CONF_LIBOCTAVE%;
 

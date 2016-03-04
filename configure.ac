@@ -87,92 +87,96 @@ AC_SUBST(config_opts)
 
 ## Where to install and expect libraries like liboctave.a, liboctinterp.a,
 ## and other architecture-dependent data.
-OCTAVE_SET_DEFAULT([octlibdir], '$(libdir)/octave/$(version)')
+OCTAVE_SET_DEFAULT([octlibdir], '${libdir}/octave/${version}')
 
 ## Where to put executables to be run by Octave rather than
 ## the user.  This path usually includes the Octave version
 ## and configuration name, so that multiple configurations
 ## for multiple versions of Octave may be installed at once.
 OCTAVE_SET_DEFAULT([archlibdir],
-  '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
+  '${libexecdir}/octave/${version}/exec/${canonical_host_type}')
 
 ## Where to put executables to be run by Octave rather than by the
 ## user that are specific to this site.
 OCTAVE_SET_DEFAULT([localarchlibdir],
-  '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
+  '${libexecdir}/octave/site/exec/${canonical_host_type}')
 
 OCTAVE_SET_DEFAULT([localapiarchlibdir],
-  '$(libexecdir)/octave/$(api_version)/site/exec/$(canonical_host_type)')
+  '${libexecdir}/octave/${api_version}/site/exec/${canonical_host_type}')
 
 OCTAVE_SET_DEFAULT([localverarchlibdir],
-  '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
+  '${libexecdir}/octave/${version}/site/exec/${canonical_host_type}')
 
 ## Where to put object files that will by dynamically loaded.
 ## This path usually includes the Octave version and configuration
 ## name, so that multiple configurations for multiple versions of
 ## Octave may be installed at once.
 OCTAVE_SET_DEFAULT([octfiledir],
-  '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
+  '${libdir}/octave/${version}/oct/${canonical_host_type}')
 
 ## Directories Octave should search for object files that will be
 ## dynamically loaded and that are specific to this site
 ## (i.e. customizations), before consulting ${octfiledir}.  This should
 ## be a colon-separated list of directories.
 OCTAVE_SET_DEFAULT([localoctfiledir],
-  '$(libdir)/octave/site/oct/$(canonical_host_type)')
+  '${libdir}/octave/site/oct/${canonical_host_type}')
 
 OCTAVE_SET_DEFAULT([localapioctfiledir],
-  '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
+  '${libdir}/octave/site/oct/${api_version}/${canonical_host_type}')
 
 OCTAVE_SET_DEFAULT([localveroctfiledir],
-  '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
+  '${libdir}/octave/${version}/site/oct/${canonical_host_type}')
 
 ## Where to install Octave's include files.
-OCTAVE_SET_DEFAULT([octincludedir], '$(includedir)/octave-$(version)/octave')
+OCTAVE_SET_DEFAULT([octincludedir], '${includedir}/octave-${version}/octave')
 
 ## Where to install the function file distributed with
 ## Octave.  This includes the Octave version, so that the
 ## function files for different versions of Octave will install
 ## themselves in separate directories.
-OCTAVE_SET_DEFAULT([fcnfiledir], '$(datadir)/octave/$(version)/m')
+OCTAVE_SET_DEFAULT([fcnfiledir], '${datadir}/octave/${version}/m')
 
 ## Directories Octave should search for function files specific
 ## to this site (i.e. customizations), before consulting
 ## ${fcnfiledir}.  This should be a colon-separated list of
 ## directories.
-OCTAVE_SET_DEFAULT([localfcnfiledir], '$(datadir)/octave/site/m')
+OCTAVE_SET_DEFAULT([localfcnfiledir], '${datadir}/octave/site/m')
 
 OCTAVE_SET_DEFAULT([localapifcnfiledir],
-  '$(datadir)/octave/site/$(api_version)/m')
+  '${datadir}/octave/site/${api_version}/m')
 
-OCTAVE_SET_DEFAULT([localverfcnfiledir], '$(datadir)/octave/$(version)/site/m')
+OCTAVE_SET_DEFAULT([localverfcnfiledir], '${datadir}/octave/${version}/site/m')
 
 ## Where to install and expect extra files like NEWS and doc-cache.
-OCTAVE_SET_DEFAULT([octetcdir], '$(datadir)/octave/$(version)/etc')
+OCTAVE_SET_DEFAULT([octetcdir], '${datadir}/octave/${version}/etc')
 
 ## Where to install and expect the language files for the gui.
-OCTAVE_SET_DEFAULT([octlocaledir], '$(datadir)/octave/$(version)/locale')
+OCTAVE_SET_DEFAULT([octlocaledir], '${datadir}/octave/${version}/locale')
 
 ## The full path to the default doc cache file.
-OCTAVE_SET_DEFAULT([doc_cache_file], '$(octetcdir)/doc-cache')
+OCTAVE_SET_DEFAULT([doc_cache_file], '${octetcdir}/doc-cache')
 
 ## Where to install test files.
-OCTAVE_SET_DEFAULT([octtestsdir], '$(octetcdir)/tests')
+OCTAVE_SET_DEFAULT([octtestsdir], '${octetcdir}/tests')
 
 ## The full path to the default texi macros file.
-OCTAVE_SET_DEFAULT([texi_macros_file], '$(octetcdir)/macros.texi')
+OCTAVE_SET_DEFAULT([texi_macros_file], '${octetcdir}/macros.texi')
 
 ## Where Octave will search to find image files.
-OCTAVE_SET_DEFAULT([imagedir], '$(datadir)/octave/$(version)/imagelib')
+OCTAVE_SET_DEFAULT([imagedir], '${datadir}/octave/${version}/imagelib')
 
 ## Where Octave will search for example data files shipped with distribution.
-OCTAVE_SET_DEFAULT([octdatadir], '$(datadir)/octave/$(version)/data')
+OCTAVE_SET_DEFAULT([octdatadir], '${datadir}/octave/${version}/data')
 
-OCTAVE_SET_DEFAULT([man1dir], '$(mandir)/man1')
+## Where Octave will look for startup files
+OCTAVE_SET_DEFAULT([startupfiledir], ['${fcnfiledir}/startup'])
+OCTAVE_SET_DEFAULT([localstartupfiledir], ['${localfcnfiledir}/startup'])
+
+OCTAVE_SET_DEFAULT([man1dir], '${mandir}/man1')
 
 OCTAVE_SET_DEFAULT([man1ext], '.1')
 
-OCTAVE_SET_DEFAULT([infofile], '$(infodir)/octave.info')
+OCTAVE_SET_DEFAULT([infofile], '${infodir}/octave.info')
 
 ### Check for programs used in building, installing, and running Octave.
 
@@ -613,12 +617,12 @@ if test "$cross_compiling" = yes; then
   BUILD_LDFLAGS=""
   BUILD_EXEEXT=""
 else
-  BUILD_CC='$(CC)'
-  BUILD_CFLAGS='$(CFLAGS)'
-  BUILD_CXX='$(CXX)'
-  BUILD_CXXFLAGS='$(CXXFLAGS)'
-  BUILD_LDFLAGS='$(LDFLAGS)'
-  BUILD_EXEEXT='$(EXEEXT)'
+  BUILD_CC='${CC}'
+  BUILD_CFLAGS='${CFLAGS}'
+  BUILD_CXX='${CXX}'
+  BUILD_CXXFLAGS='${CXXFLAGS}'
+  BUILD_LDFLAGS='${LDFLAGS}'
+  BUILD_EXEEXT='${EXEEXT}'
 fi
 
 AC_ARG_VAR([BUILD_CC],
@@ -1290,6 +1294,10 @@ if test -n "$warn_freetype"; then
   OCTAVE_CONFIGURE_WARNING([warn_freetype])
 else
   FT2_CPPFLAGS="$FT2_CFLAGS"
+  ## Alias CPPFLAGS to CFLAGS.  This is closer to the true meaning
+  ## of `pkg-config --cflags` output.
+  FT2_CPPFLAGS="$FT2_CFLAGS"
+  AC_SUBST(FT2_CPPFLAGS)
 fi
 
 ## Check for Xft library (when using X11)
@@ -1316,6 +1324,10 @@ if test -n "$warn_fontconfig"; then
   OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
 else
   FONTCONFIG_CPPFLAGS="$FONTCONFIG_CFLAGS"
+  ## Alias CPPFLAGS to CFLAGS.  This is closer to the true meaning
+  ## of `pkg-config --cflags` output.
+  FONTCONFIG_CPPFLAGS="$FONTCONFIG_CFLAGS"
+  AC_SUBST(FONTCONFIG_CPPFLAGS)
 fi
 
 ## Check for OSMesa which is needed for offscreen rendering with OpenGL
@@ -1482,7 +1494,6 @@ if test $check_qt = yes; then
       if test -n "$warn_qt_opengl"; then
         OCTAVE_CONFIGURE_WARNING([warn_qt_opengl])
       fi
-    endif
 
       if test $build_qt_graphics = yes; then
         AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
@@ -1670,12 +1681,14 @@ if test $enable_shared = yes; then
 else
   SHARED_LIBS=no
 fi
+AC_SUBST(SHARED_LIBS)
 
 if test $enable_static = yes; then
   STATIC_LIBS=yes
 else
   STATIC_LIBS=no
 fi
+AC_SUBST(STATIC_LIBS)
 
 XTRA_CRUFT_SH_LDFLAGS=
 if test $have_msvc = yes; then
@@ -1986,24 +1999,24 @@ CPICFLAG=-fPIC
 CXXPICFLAG=-fPIC
 FPICFLAG=-fPIC
 SHLEXT=so
-SHLLIB='$(SHLEXT)'
+SHLLIB='${SHLEXT}'
 SHLBIN=
-SHLEXT_VER='$(SHLEXT).$(version)'
-SHLLIB_VER='$(SHLLIB).$(version)'
-SHLBIN_VER='$(SHLBIN).$(version)'
+SHLEXT_VER='${SHLEXT}.${version}'
+SHLLIB_VER='${SHLLIB}.${version}'
+SHLBIN_VER='${SHLBIN}.${version}'
 SHLLINKEXT=
 LIBPRE=lib
 SHLPRE=lib
 SHLLIBPRE=lib
 SHLBINPRE=lib
-SH_LD='$(CXX)'
+SH_LD='${CXX}'
 SH_LDFLAGS=-shared
-DL_LD='$(SH_LD)'
-DL_LDFLAGS='$(SH_LDFLAGS)'
-MKOCTFILE_DL_LDFLAGS='$(DL_LDFLAGS)'
+DL_LD='${SH_LD}'
+DL_LDFLAGS='${SH_LDFLAGS}'
+MKOCTFILE_DL_LDFLAGS='${DL_LDFLAGS}'
 SONAME_FLAGS=
 NO_OCT_FILE_STRIP=false
-TEMPLATE_AR='$(AR)'
+TEMPLATE_AR='${AR}'
 TEMPLATE_ARFLAGS="$ARFLAGS"
 CRUFT_DLL_DEFS=
 OCTAVE_DLL_DEFS=
@@ -2030,9 +2043,9 @@ case $canonical_host_type in
     SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
   ;;
   *-*-darwin*)
-    DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/libinterp/octave $(LDFLAGS)'
-    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $(bindir)/octave-$(version)$(EXEEXT)'
-    SH_LDFLAGS='-dynamiclib -single_module $(LDFLAGS)'
+    DL_LDFLAGS='-bundle -bundle_loader ${top_builddir}/libinterp/octave ${LDFLAGS}'
+    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader ${bindir}/octave-${version}${EXEEXT}'
+    SH_LDFLAGS='-dynamiclib -single_module ${LDFLAGS}'
     case $canonical_host_type in
       powerpc-*)
         CXXPICFLAG=
@@ -2041,11 +2054,11 @@ case $canonical_host_type in
       ;;
     esac
     SHLEXT=dylib
-    SHLLIB='$(SHLEXT)'
-    SHLEXT_VER='$(version).$(SHLEXT)'
-    SHLLIB_VER='$(version).$(SHLLIB)'
+    SHLLIB='${SHLEXT}'
+    SHLEXT_VER='${version}.${SHLEXT}'
+    SHLLIB_VER='${version}.${SHLLIB}'
     NO_OCT_FILE_STRIP=true
-    SONAME_FLAGS='-install_name $(octlibdir)/$@'
+    SONAME_FLAGS='-install_name ${octlibdir}/$@'
     library_path_var=DYLD_LIBRARY_PATH
   ;;
   *-*-cygwin*)
@@ -2060,7 +2073,7 @@ case $canonical_host_type in
     SHLBIN=dll
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLPRE)%,$(LIBPRE)%,$@).a'
+    SONAME_FLAGS='-Wl,--out-implib=$(patsubst ${SHLPRE}%,${LIBPRE}%,$@).a'
     ldpreloadsep=":"
   ;;
   *-*-mingw*)
@@ -2194,7 +2207,7 @@ case $canonical_host_type in
     fi
     ## Template closures in archive libraries need a different mechanism.
     if test "$GXX" != yes; then
-      TEMPLATE_AR='$(CXX)'
+      TEMPLATE_AR='${CXX}'
       TEMPLATE_ARFLAGS="-xar -o"
     fi
   ;;
@@ -2286,13 +2299,16 @@ AC_ARG_ENABLE([link-all-dependencies],
   [link_all_deps=no])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
+LIBEXT = a
+AC_SUBST(LIBEXT)
+
 ## Dynamic linking is now enabled only if we are building shared
 ## libs and some API for dynamic linking has been detected.
 
 ## FIXME: A lot of the following duplicates the functionality of
 ## code generated by the dlopen option for LT_INIT.
 
-LD_CXX='$(CXX)'
+LD_CXX='${CXX}'
 RDYNAMIC_FLAG=
 DL_API_MSG=""
 dlopen_api=no
@@ -2356,8 +2372,8 @@ if test $SHARED_LIBS = yes; then
   LIBOCTINTERP="-loctinterp$SHLLINKEXT"
   LIBOCTAVE="-loctave$SHLLINKEXT"
 else
-  LIBOCTINTERP='$(top_builddir)/libinterp/liboctinterp.$(LIBEXT)'
-  LIBOCTAVE='$(top_builddir)/liboctave/liboctave.$(LIBEXT)'
+  LIBOCTINTERP='${top_builddir}/libinterp/liboctinterp.${LIBEXT}'
+  LIBOCTAVE='${top_builddir}/liboctave/liboctave.${LIBEXT}'
 fi
 
 AC_SUBST(LD_CXX)
@@ -2369,13 +2385,13 @@ AC_SUBST(LIBOCTAVE)
 
 if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   CROSS_TOOL_PREFIX="$ac_tool_prefix"
-  MKOCTFILE_AR='$(shell echo $(AR) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_CC='$(shell echo $(CC) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_CXX='$(shell echo $(CXX) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_DL_LD='$(shell echo $(DL_LD) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_F77='$(shell echo $(F77) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_LD_CXX='$(shell echo $(LD_CXX) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_RANLIB='$(shell echo $(RANLIB) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_AR='$(shell echo ${AR} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
+  MKOCTFILE_CC='$(shell echo ${CC} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
+  MKOCTFILE_CXX='$(shell echo ${CXX} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
+  MKOCTFILE_DL_LD='$(shell echo ${DL_LD} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
+  MKOCTFILE_F77='$(shell echo ${F77} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
+  MKOCTFILE_LD_CXX='$(shell echo ${LD_CXX} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
+  MKOCTFILE_RANLIB='$(shell echo ${RANLIB} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
 else
   MKOCTFILE_AR="$AR"
   MKOCTFILE_CC="$CC"
@@ -2835,6 +2851,11 @@ AC_ARG_ENABLE([address-sanitizer-flags],
    fi],
   [])
 
+if test $try_address_sanitizer_flags = yes; then
+  ADDRESS_SANITIZER_OPTIONS="symbolize=1"
+  AC_SUBST(ADDRESS_SANITIZER_OPTIONS)
+fi
+
 AM_CONDITIONAL([AMCOND_ADDRESS_SANITIZER_ENABLED],
   [test $try_address_sanitizer_flags = yes])
 
@@ -3189,18 +3210,29 @@ AC_OUTPUT_MAKE_DEFS
 AC_SUBST(ac_config_files)
 AC_SUBST(ac_config_headers)
 
-dnl We use a .in.h file for oct-conf-post.h simply to copy it to
-dnl the build tree and so that we don't have to add the -I$(top_srcdir)
-dnl to any CPPFLAGS variables.
 AC_CONFIG_FILES([
-  oct-conf-post.h:oct-conf-post.in.h
   Makefile
   doc/doxyhtml/Doxyfile
   libgnu/Makefile])
 
+dnl We use a .in.h file for oct-conf-post.h simply to copy it to
+dnl the build tree and so that we don't have to add the -I${top_srcdir}
+dnl to any CPPFLAGS variables.
+
+AC_CONFIG_FILES([oct-conf-post.h-tmp:oct-conf-post.in.h])
+AC_CONFIG_COMMANDS([oct-conf-post.h],
+  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post.h-tmp oct-conf-post.h])
+
 OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
-  libgui/mk-default-qt-settings
-  liboctave/cruft/mkf77def])
+  build-aux/mk-mxarray-h.sh
+  build-aux/mk-version-h.sh
+  build-aux/subst-config-vals.sh
+  build-aux/subst-cross-config-vals.sh
+  build-aux/subst-default-vals.sh
+  build-aux/subst-f77-isnan-macro.sh
+  build-aux/subst-script-vals.sh
+  build-aux/mk-default-qt-settings.sh
+  build-aux/mk-f77-def.sh])
 
 AC_OUTPUT
 

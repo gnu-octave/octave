@@ -47,10 +47,19 @@ EXTRA_DIST += \
   README \
   build-aux/OctJavaQry.class \
   build-aux/find-files-with-tests.sh \
+  build-aux/mk-default-qt-settings.in.sh \
+  build-aux/mk-f77-def.in.sh \
+  build-aux/mk-mxarray-h.in.sh \
+  build-aux/mk-version-h.in.sh \
   build-aux/mk-octave-config-h.sh \
   build-aux/mk-opts.pl \
   build-aux/move-if-change \
   build-aux/stl_algo.h-fixed \
+  build-aux/subst-config-vals.in.sh \
+  build-aux/subst-cross-config-vals.in.sh \
+  build-aux/subst-default-vals.in.sh \
+  build-aux/subst-f77-isnan-macro.in.sh \
+  build-aux/subst-script-vals.in.sh \
   run-octave.in \
   $(BUILT_DISTFILES)
 
@@ -196,13 +205,13 @@ all-local: $(ALL_LOCAL_TARGETS)
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
 
-run-octave: run-octave.in Makefile
-	$(AM_V_GEN)$(do_subst_script_vals) && \
-	chmod a+rx "$@"
+run-octave: run-octave.in build-aux/subst-script-vals.sh
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-script-vals.sh) && \
+	chmod a+rx $@
 
 octave-config.h: config.h build-aux/mk-octave-config-h.sh
 	$(AM_V_GEN)$(SHELL) $(srcdir)/build-aux/mk-octave-config-h.sh $< > $@-t && \
-	mv $@-t $@
+	$(simple_move_if_change_rule)
 
 bits/stl_algo.h: build-aux/stl_algo.h-fixed
 	$(AM_V_GEN)$(MKDIR_P) bits && \

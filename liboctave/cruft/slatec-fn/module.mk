@@ -68,22 +68,14 @@ nodist_liboctave_cruft_libcruft_la_SOURCES += \
   liboctave/cruft/slatec-fn/derfc.f \
   liboctave/cruft/slatec-fn/erfc.f
 
-## slatec-fn directory may not exist in VPATH build; create it if necessary.
+liboctave/cruft/slatec-fn/erfc.f: liboctave/cruft/slatec-fn/erfc.in.f build-aux/subst-f77-isnan-macro.sh | liboctave/cruft/slatec-fn/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-f77-isnan-macro.sh)
 
-define do-subst-isnan-macro
-  rm -f $@-t $@ && \
-  $(MKDIR_P) liboctave/cruft/slatec-fn && \
-  $(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t && \
-  mv $@-t $@
-endef
-
-liboctave/cruft/slatec-fn/erfc.f: liboctave/cruft/slatec-fn/erfc.in.f Makefile
-	$(AM_V_GEN)$(do-subst-isnan-macro)
-
-liboctave/cruft/slatec-fn/derfc.f: liboctave/cruft/slatec-fn/derfc.in.f Makefile
-	$(AM_V_GEN)$(do-subst-isnan-macro)
+liboctave/cruft/slatec-fn/derfc.f: liboctave/cruft/slatec-fn/derfc.in.f build-aux/subst-f77-isnan-macro.sh | liboctave/cruft/slatec-fn/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-f77-isnan-macro.sh)
 
 liboctave_EXTRA_DIST += \
   liboctave/cruft/slatec-fn/derfc.in.f \
   liboctave/cruft/slatec-fn/erfc.in.f
 
+DIRSTAMP_FILES += liboctave/cruft/slatec-fn/$(octave_dirstamp)

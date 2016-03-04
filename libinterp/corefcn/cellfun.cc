@@ -1855,7 +1855,7 @@ mat2cell_mismatch (const dim_vector& dv,
       octave_idx_type r = i < dv.length () ? dv(i) : 1;
 
       if (s != r)
-        error ("mat2cell: mismatch on %d-th dimension (%d != %d)", i+1, r, s);
+        error ("mat2cell: mismatch on dimension %d (%d != %d)", i+1, r, s);
     }
 
   return false;

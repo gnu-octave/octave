@@ -184,7 +184,7 @@ YFLAGS='@YFLAGS@'
 Z_CPPFLAGS='@Z_CPPFLAGS@'
 Z_LDFLAGS='@Z_LDFLAGS@'
 Z_LIBS='@Z_LIBS@'
-## this on uses ' to quote individual arguments, so use " here.
+## this one uses ' to quote individual arguments, so use " here.
 config_opts="@config_opts@"
 
 ## These must use " so that embedded variables are interpolated.

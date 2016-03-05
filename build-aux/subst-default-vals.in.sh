@@ -80,7 +80,7 @@ function expand_var ()
   while echo "$tmp" | grep '\${[A-Za-z_][A-Za-z0-9_]*}' > /dev/null; do
     eval tmp="$tmp"
   done
-  eval $1="'$tmp'"
+  eval $1="\"$tmp\""
 }
 
 expand_var archlibdir

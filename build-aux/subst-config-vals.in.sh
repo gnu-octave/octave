@@ -180,7 +180,8 @@ YFLAGS='@YFLAGS@'
 Z_CPPFLAGS='@Z_CPPFLAGS@'
 Z_LDFLAGS='@Z_LDFLAGS@'
 Z_LIBS='@Z_LIBS@'
-config_opts='@config_opts@'
+## this on uses ' to quote individual arguments, so use " here.
+config_opts="@config_opts@"
 
 ## These must use " so that embedded variables are interpolated.
 
@@ -192,7 +193,7 @@ function expand_var ()
   while echo "$tmp" | grep '\${[A-Za-z_][A-Za-z0-9_]*}' > /dev/null; do
     eval tmp="$tmp"
   done
-  eval $1="'$tmp'"
+  eval $1="\"$tmp\""
 }
 
 expand_var NO_OCT_FILE_STRIP
@@ -447,14 +448,14 @@ $SED \
   -e "s|%OCTAVE_CONF_MAGICK_CPPFLAGS%|\"${MAGICK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MAGICK_LDFLAGS%|\"${MAGICK_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MAGICK_LIBS%|\"${MAGICK_LIBS}\"|" \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_AR%|\"${MKOCTFILE_AR}\"|' \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_CC%|\"${MKOCTFILE_CC}\"|' \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_CXX%|\"${MKOCTFILE_CXX}\"|' \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LD%|\"${MKOCTFILE_DL_LD}\"|' \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|' \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_F77%|\"${MKOCTFILE_F77}\"|' \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_LD_CXX%|\"${MKOCTFILE_LD_CXX}\"|' \
-  -e 's|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${MKOCTFILE_RANLIB}\"|' \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_AR%|\"${MKOCTFILE_AR}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_CC%|\"${MKOCTFILE_CC}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_CXX%|\"${MKOCTFILE_CXX}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LD%|\"${MKOCTFILE_DL_LD}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_F77%|\"${MKOCTFILE_F77}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_LD_CXX%|\"${MKOCTFILE_LD_CXX}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${MKOCTFILE_RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_DEPS%|\"${OCTAVE_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_OPTS%|\"${OCTAVE_LINK_OPTS}\"|" \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \

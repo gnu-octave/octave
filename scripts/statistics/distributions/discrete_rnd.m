@@ -85,7 +85,7 @@ endfunction
 %!assert (class (discrete_rnd (1:2, 1:2)), "double")
 %!assert (class (discrete_rnd (single (1:2), 1:2)), "single")
 ## FIXME: Maybe this should work, maybe it shouldn't.
-#%!assert(class (discrete_rnd (1:2, single(1:2))), "single");
+#%!assert(class (discrete_rnd (1:2, single(1:2))), "single")
 
 ## Test input validation
 %!error discrete_rnd ()

@@ -20,28 +20,7 @@
 
 : ${SED=@SED@}
 
-## Use two steps so that we can interpolate values without having to
-## determine the order in which to set variable values.
-
-## These must use ' so that embedded variables are not interpolated
-## (the values they reference may not be defined before they are used).
-
-OCTAVE_IDX_TYPE='@OCTAVE_IDX_TYPE@'
-
-## These must use " so that embedded variables are interpolated.
-
-## Is there a better way?
-
-function expand_var ()
-{
-  eval tmp="\$$1"
-  while echo "$tmp" | grep '\${[A-Za-z_][A-Za-z0-9_]*}' > /dev/null; do
-    eval tmp="$tmp"
-  done
-  eval $1="\"$tmp\""
-}
-
-expand_var OCTAVE_IDX_TYPE
+OCTAVE_IDX_TYPE="@OCTAVE_IDX_TYPE@"
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by mx-mxarray-h.|" \

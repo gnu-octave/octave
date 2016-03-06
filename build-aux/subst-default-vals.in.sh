@@ -20,112 +20,49 @@
 
 : ${SED=@SED@}
 
-## Use two steps so that we can interpolate values without having to
-## determine the order in which to set variable values.
-
-## These must use ' so that embedded variables are not interpolated
-## (the values they reference may not be defined before they are used).
-
-archlibdir='@archlibdir@'
-bindir='@bindir@'
-canonical_host_type='@canonical_host_type@'
-datadir='@datadir@'
-datarootdir='@datarootdir@'
-DEFAULT_PAGER='@DEFAULT_PAGER@'
-doc_cache_file='@doc_cache_file@'
-exec_prefix='@exec_prefix@'
-EXEEXT='@EXEEXT@'
-fcnfiledir='@fcnfiledir@'
-imagedir='@imagedir@'
-includedir='@includedir@'
-infodir='@infodir@'
-infofile='@infofile@'
-libdir='@libdir@'
-libexecdir='@libexecdir@'
-localapifcnfiledir='@localapifcnfiledir@'
-localapioctfiledir='@localapioctfiledir@'
-localarchlibdir='@localarchlibdir@'
-localfcnfiledir='@localfcnfiledir@'
-localoctfiledir='@localoctfiledir@'
-localstartupfiledir='@localstartupfiledir@'
-localapiarchlibdir='@localapiarchlibdir@'
-localverarchlibdir='@localverarchlibdir@'
-localverfcnfiledir='@localverfcnfiledir@'
-localveroctfiledir='@localveroctfiledir@'
-man1dir='@man1dir@'
-man1ext='@man1ext@'
-mandir='@mandir@'
-octdatadir='@octdatadir@'
-octfiledir='@octfiledir@'
-octetcdir='@octetcdir@'
-octincludedir='@octincludedir@'
-octlibdir='@octlibdir@'
-octlocaledir='@octlocaledir@'
-octtestsdir='@octtestsdir@'
-prefix='@prefix@'
-startupfiledir='@startupfiledir@'
-api_version='@OCTAVE_API_VERSION@'
-OCTAVE_RELEASE=''
-SHLEXT='@SHLEXT@'
-texi_macros_file='@texi_macros_file@'
-version='@PACKAGE_VERSION@'
-
-## These must use " so that embedded variables are interpolated.
-
-## Is there a better way?
-
-function expand_var ()
-{
-  eval tmp="\$$1"
-  while echo "$tmp" | grep '\${[A-Za-z_][A-Za-z0-9_]*}' > /dev/null; do
-    eval tmp="$tmp"
-  done
-  eval $1="\"$tmp\""
-}
-
-expand_var archlibdir
-expand_var bindir
-expand_var canonical_host_type
-expand_var datadir
-expand_var datarootdir
-expand_var DEFAULT_PAGER
-expand_var doc_cache_file
-expand_var exec_prefix
-expand_var EXEEXT
-expand_var fcnfiledir
-expand_var imagedir
-expand_var includedir
-expand_var infodir
-expand_var infofile
-expand_var libdir
-expand_var libexecdir
-expand_var localapifcnfiledir
-expand_var localapioctfiledir
-expand_var localarchlibdir
-expand_var localfcnfiledir
-expand_var localoctfiledir
-expand_var localstartupfiledir
-expand_var localapiarchlibdir
-expand_var localverarchlibdir
-expand_var localverfcnfiledir
-expand_var localveroctfiledir
-expand_var man1dir
-expand_var man1ext
-expand_var mandir
-expand_var octdatadir
-expand_var octfiledir
-expand_var octetcdir
-expand_var octincludedir
-expand_var octlibdir
-expand_var octlocaledir
-expand_var octtestsdir
-expand_var prefix
-expand_var startupfiledir
-expand_var api_version
-expand_var OCTAVE_RELEASE
-expand_var SHLEXT
-expand_var texi_macros_file
-expand_var version
+archlibdir="@archlibdir@"
+bindir="@bindir@"
+canonical_host_type="@canonical_host_type@"
+datadir="@datadir@"
+datarootdir="@datarootdir@"
+DEFAULT_PAGER="@DEFAULT_PAGER@"
+doc_cache_file="@doc_cache_file@"
+exec_prefix="@exec_prefix@"
+EXEEXT="@EXEEXT@"
+fcnfiledir="@fcnfiledir@"
+imagedir="@imagedir@"
+includedir="@includedir@"
+infodir="@infodir@"
+infofile="@infofile@"
+libdir="@libdir@"
+libexecdir="@libexecdir@"
+localapifcnfiledir="@localapifcnfiledir@"
+localapioctfiledir="@localapioctfiledir@"
+localarchlibdir="@localarchlibdir@"
+localfcnfiledir="@localfcnfiledir@"
+localoctfiledir="@localoctfiledir@"
+localstartupfiledir="@localstartupfiledir@"
+localapiarchlibdir="@localapiarchlibdir@"
+localverarchlibdir="@localverarchlibdir@"
+localverfcnfiledir="@localverfcnfiledir@"
+localveroctfiledir="@localveroctfiledir@"
+man1dir="@man1dir@"
+man1ext="@man1ext@"
+mandir="@mandir@"
+octdatadir="@octdatadir@"
+octfiledir="@octfiledir@"
+octetcdir="@octetcdir@"
+octincludedir="@octincludedir@"
+octlibdir="@octlibdir@"
+octlocaledir="@octlocaledir@"
+octtestsdir="@octtestsdir@"
+prefix="@prefix@"
+startupfiledir="@startupfiledir@"
+api_version="@OCTAVE_API_VERSION@"
+OCTAVE_RELEASE=""
+SHLEXT="@SHLEXT@"
+texi_macros_file="@texi_macros_file@"
+version="@PACKAGE_VERSION@"
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by subst-default-vals.|" \

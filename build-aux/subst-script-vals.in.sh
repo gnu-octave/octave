@@ -20,38 +20,12 @@
 
 : ${SED=@SED@}
 
-## Use two steps so that we can interpolate values without having to
-## determine the order in which to set variable values.
-
-## These must use ' so that embedded variables are not interpolated
-## (the values they reference may not be defined before they are used).
-
 AWK="@AWK@"
 FIND="@FIND@"
 SED="@SED@"
 ADDRESS_SANITIZER_OPTIONS="@ADDRESS_SANITIZER_OPTIONS@"
 abs_top_srcdir="@abs_top_srcdir@"
 abs_top_builddir="@abs_top_builddir@"
-
-## These must use " so that embedded variables are interpolated.
-
-## Is there a better way?
-
-function expand_var ()
-{
-  eval tmp="\$$1"
-  while echo "$tmp" | grep '\${[A-Za-z_][A-Za-z0-9_]*}' > /dev/null; do
-    eval tmp="$tmp"
-  done
-  eval $1="\"$tmp\""
-}
-
-expand_var AWK
-expand_var FIND
-expand_var SED
-expand_var ADDRESS_SANITIZER_OPTIONS
-expand_var abs_top_srcdir
-expand_var abs_top_builddir
 
 $SED \
   -e "s|%AWK%|${AWK}|g" \

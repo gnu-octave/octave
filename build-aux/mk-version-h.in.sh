@@ -20,40 +20,13 @@
 
 : ${SED=@SED@}
 
-## Use two steps so that we can interpolate values without having to
-## determine the order in which to set variable values.
-
-## These must use ' so that embedded variables are not interpolated
-## (the values they reference may not be defined before they are used).
-
-OCTAVE_API_VERSION='@OCTAVE_API_VERSION@'
-OCTAVE_COPYRIGHT='@OCTAVE_COPYRIGHT@'
-OCTAVE_MAJOR_VERSION='@OCTAVE_MAJOR_VERSION@'
-OCTAVE_MINOR_VERSION='@OCTAVE_MINOR_VERSION@'
-OCTAVE_PATCH_VERSION='@OCTAVE_PATCH_VERSION@'
-OCTAVE_RELEASE_DATE='@OCTAVE_RELEASE_DATE@'
-OCTAVE_VERSION='@OCTAVE_VERSION@'
-
-## These must use " so that embedded variables are interpolated.
-
-## Is there a better way?
-
-function expand_var ()
-{
-  eval tmp="\$$1"
-  while echo "$tmp" | grep '\${[A-Za-z_][A-Za-z0-9_]*}' > /dev/null; do
-    eval tmp="$tmp"
-  done
-  eval $1="\"$tmp\""
-}
-
-expand_var OCTAVE_API_VERSION
-expand_var OCTAVE_COPYRIGHT
-expand_var OCTAVE_MAJOR_VERSION
-expand_var OCTAVE_MINOR_VERSION
-expand_var OCTAVE_PATCH_VERSION
-expand_var OCTAVE_RELEASE_DATE
-expand_var OCTAVE_VERSION
+OCTAVE_API_VERSION="@OCTAVE_API_VERSION@"
+OCTAVE_COPYRIGHT="@OCTAVE_COPYRIGHT@"
+OCTAVE_MAJOR_VERSION="@OCTAVE_MAJOR_VERSION@"
+OCTAVE_MINOR_VERSION="@OCTAVE_MINOR_VERSION@"
+OCTAVE_PATCH_VERSION="@OCTAVE_PATCH_VERSION@"
+OCTAVE_RELEASE_DATE="@OCTAVE_RELEASE_DATE@"
+OCTAVE_VERSION="@OCTAVE_VERSION@"
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by mk-version-h.|" \

@@ -105,7 +105,7 @@ private:
     // i/o
     virtual std::ostream& print (std::ostream& os) const = 0;
 
-    OCTAVE_NORETURN virtual Array<octave_idx_type> as_array (void);
+    virtual Array<octave_idx_type> as_array (void);
 
     octave_refcount<int> count;
 

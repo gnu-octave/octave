@@ -59,6 +59,9 @@ idx_vector::idx_base_rep::as_array (void)
 {
   (*current_liboctave_error_handler)
     ("internal error: as_array not allowed for this index class");
+
+  // Never actually executed, but required to silence compiler warning
+  return Array<octave_idx_type> ();
 }
 
 

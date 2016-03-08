@@ -259,15 +259,12 @@ get_fcn_files (const std::string& d)
         {
           std::string fname = flist[i];
 
-          std::string ext;
-          std::string base = fname;
-
           size_t pos = fname.rfind ('.');
 
           if (pos != std::string::npos)
             {
-              base = fname.substr (0, pos);
-              ext = fname.substr (pos);
+              std::string base = fname.substr (0, pos);
+              std::string ext = fname.substr (pos);
 
               if (valid_identifier (base))
                 {
@@ -280,7 +277,8 @@ get_fcn_files (const std::string& d)
                   else if (ext == ".mex")
                     t = load_path::MEX_FILE;
 
-                  retval[base] |= t;
+                  if (t)
+                    retval[base] = t;
                 }
             }
         }

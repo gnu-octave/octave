@@ -200,6 +200,57 @@ intern_argv (int argc, char **argv)
     }
 }
 
+static void
+execute_pkg_add (const std::string& dir)
+{
+  std::string file_name = file_ops::concat (dir, "PKG_ADD");
+
+  try
+    {
+      load_path::execute_pkg_add (dir);
+    }
+  catch (const index_exception& e)
+    {
+      recover_from_exception ();
+
+      std::cerr << "error: index exception in " << file_name << ": "
+                << e.message () << std::endl;
+    }
+  catch (const octave_interrupt_exception&)
+    {
+      recover_from_exception ();
+
+      if (quitting_gracefully)
+        clean_up_and_exit (exit_status);
+    }
+  catch (const octave_execution_exception&)
+    {
+      recover_from_exception ();
+
+      std::cerr << "error: execution exception in " << file_name << std::endl;
+    }
+}
+
+static void
+initialize_load_path (void)
+{
+  // Temporarily set the execute_pkg_add function to one that catches
+  // exceptions.  This is better than wrapping load_path::initialize in
+  // a try-catch block because it will not stop executing PKG_ADD files
+  // at the first exception.  It's also better than changing the default
+  // execute_pkg_add function to use safe_source file because that will
+  // normally be evaluated from the normal intepreter loop where
+  // exceptions are already handled.
+
+  unwind_protect frame;
+
+  frame.add_fcn (load_path::set_add_hook, load_path::get_add_hook ());
+
+  load_path::set_add_hook (execute_pkg_add);
+
+  load_path::initialize (set_initial_path);
+}
+
 DEFUN (__version_info__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
@@ -257,15 +308,6 @@ initialize_version_info (void)
   F__version_info__ (args, 0);
 }
 
-static void
-gripe_safe_source_exception (const std::string& file, const std::string& msg)
-{
-  std::cerr << "error: " << msg << "\n"
-            << "error: execution of " << file << " failed\n"
-            << "error: trying to make my way to a command prompt"
-            << std::endl;
-}
-
 // Execute commands from a file and catch potential exceptions in a consistent
 // way.  This function should be called anywhere we might parse and execute
 // commands from a file before before we have entered the main loop in
@@ -281,6 +323,13 @@ safe_source_file (const std::string& file_name,
     {
       source_file (file_name, context, verbose, require_file, warn_for);
     }
+  catch (const index_exception& e)
+    {
+      recover_from_exception ();
+
+      std::cerr << "error: index exception in " << file_name << ": "
+                << e.message () << std::endl;
+    }
   catch (const octave_interrupt_exception&)
     {
       recover_from_exception ();
@@ -292,7 +341,7 @@ safe_source_file (const std::string& file_name,
     {
       recover_from_exception ();
 
-      gripe_safe_source_exception (file_name, "unhandled execution exception");
+      std::cerr << "error: execution exception in " << file_name << std::endl;
     }
 }
 
@@ -840,7 +889,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   intern_argv (argc, argv);
 
-  load_path::initialize (set_initial_path);
+  initialize_load_path ();
 
   initialize_history (read_history_file);
 }

@@ -259,9 +259,14 @@ public:
       instance->do_display (os);
   }
 
-  static void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
+  static hook_fcn_ptr get_add_hook (void) { return add_hook; }
+  static hook_fcn_ptr get_remove_hook (void) { return remove_hook; }
 
+  static void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
   static void set_remove_hook (hook_fcn_ptr f) { remove_hook = f; }
+
+  static void execute_pkg_add (const std::string& dir);
+  static void execute_pkg_del (const std::string& dir);
 
   static void set_command_line_path (const std::string& p)
   {
@@ -732,8 +737,5 @@ private:
 
 extern std::string
 genpath (const std::string& dir, const string_vector& skip = "private");
-
-extern void execute_pkg_add (const std::string& dir);
-extern void execute_pkg_del (const std::string& dir);
 
 #endif

@@ -46,8 +46,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 load_path *load_path::instance = 0;
-load_path::hook_fcn_ptr load_path::add_hook = execute_pkg_add;
-load_path::hook_fcn_ptr load_path::remove_hook = execute_pkg_del;
+load_path::hook_fcn_ptr load_path::add_hook = load_path::execute_pkg_add;
+load_path::hook_fcn_ptr load_path::remove_hook = load_path::execute_pkg_del;
 std::string load_path::command_line_path;
 std::string load_path::sys_path;
 load_path::abs_dir_cache_type load_path::abs_dir_cache;
@@ -2220,13 +2220,13 @@ execute_pkg_add_or_del (const std::string& dir,
 }
 
 void
-execute_pkg_add (const std::string& dir)
+load_path::execute_pkg_add (const std::string& dir)
 {
   execute_pkg_add_or_del (dir, "PKG_ADD");
 }
 
 void
-execute_pkg_del (const std::string& dir)
+load_path::execute_pkg_del (const std::string& dir)
 {
   execute_pkg_add_or_del (dir, "PKG_DEL");
 }

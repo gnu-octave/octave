@@ -75,6 +75,9 @@ GEN_CONFIG_SHELL = \
   build-aux/subst-f77-isnan-macro.sh \
   build-aux/subst-script-vals.sh
 
+$(GEN_CONFIG_SHELL) : %.sh : %.in.sh config.status
+	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
+
 AUTOCONF_SUBST_VARS = @AUTOCONF_SUBST_VARS@
 ALL_SUBST_VARS = \
   $(AUTOCONF_SUBST_VARS) \

@@ -257,45 +257,6 @@ initialize_version_info (void)
   F__version_info__ (args, 0);
 }
 
-static void
-gripe_safe_source_exception (const std::string& file, const std::string& msg)
-{
-  std::cerr << "error: " << msg << "\n"
-            << "error: execution of " << file << " failed\n"
-            << "error: trying to make my way to a command prompt"
-            << std::endl;
-}
-
-// Execute commands from a file and catch potential exceptions in a consistent
-// way.  This function should be called anywhere we might parse and execute
-// commands from a file before before we have entered the main loop in
-// toplev.cc.
-
-static void
-safe_source_file (const std::string& file_name,
-                  const std::string& context = "",
-                  bool verbose = false, bool require_file = true,
-                  const std::string& warn_for = "")
-{
-  try
-    {
-      source_file (file_name, context, verbose, require_file, warn_for);
-    }
-  catch (const octave_interrupt_exception&)
-    {
-      recover_from_exception ();
-
-      if (quitting_gracefully)
-        clean_up_and_exit (exit_status);
-    }
-  catch (const octave_execution_exception&)
-    {
-      recover_from_exception ();
-
-      gripe_safe_source_exception (file_name, "unhandled execution exception");
-    }
-}
-
 // Initialize by reading startup files.
 
 static void
@@ -781,6 +742,9 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   install_builtins ();
 
   install_classdef ();
+
+  // Setting the command line path just stores the directory names, it
+  // does not execute PKG_ADD scripts as we are not ready to do that yet.  
 
   for (std::list<std::string>::const_iterator it = command_line_path.begin ();
        it != command_line_path.end (); it++)

@@ -4622,6 +4622,43 @@ source_file (const std::string& file_name, const std::string& context,
     }
 }
 
+static void
+gripe_safe_source_exception (const std::string& file, const std::string& msg)
+{
+  std::cerr << "error: " << msg << "\n"
+            << "error: execution of " << file << " failed\n"
+            << "error: trying to make my way to a command prompt"
+            << std::endl;
+}
+
+// Execute commands from a file and catch potential exceptions in a consistent
+// way.  This function should be called anywhere we might parse and execute
+// commands from a file before before we have entered the main loop in
+// toplev.cc.
+
+void
+safe_source_file (const std::string& file_name, const std::string& context,
+                  bool verbose, bool require_file, const std::string& warn_for)
+{
+  try
+    {
+      source_file (file_name, context, verbose, require_file, warn_for);
+    }
+  catch (const octave_interrupt_exception&)
+    {
+      recover_from_exception ();
+
+      if (quitting_gracefully)
+        clean_up_and_exit (exit_status);
+    }
+  catch (const octave_execution_exception&)
+    {
+      recover_from_exception ();
+
+      gripe_safe_source_exception (file_name, "unhandled execution exception");
+    }
+}
+
 DEFUN (mfilename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {} {} mfilename ()\n\

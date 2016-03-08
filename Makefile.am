@@ -46,6 +46,7 @@ EXTRA_DIST += \
   NEWS \
   README \
   build-aux/OctJavaQry.class \
+  build-aux/check-subst-vars.in.sh \
   build-aux/find-files-with-tests.sh \
   build-aux/mk-default-qt-settings.in.sh \
   build-aux/mk-f77-def.in.sh \
@@ -62,6 +63,25 @@ EXTRA_DIST += \
   build-aux/subst-script-vals.in.sh \
   run-octave.in \
   $(BUILT_DISTFILES)
+
+GEN_CONFIG_SHELL = \
+  build-aux/mk-default-qt-settings.sh \
+  build-aux/mk-f77-def.sh \
+  build-aux/mk-mxarray-h.sh \
+  build-aux/mk-version-h.sh \
+  build-aux/subst-config-vals.sh \
+  build-aux/subst-cross-config-vals.sh \
+  build-aux/subst-default-vals.sh \
+  build-aux/subst-f77-isnan-macro.sh \
+  build-aux/subst-script-vals.sh
+
+AUTOCONF_SUBST_VARS = @AUTOCONF_SUBST_VARS@
+ALL_SUBST_VARS = \
+  $(AUTOCONF_SUBST_VARS) \
+  abs_top_builddir \
+  abs_top_srcdir \
+  api_version \
+  version
 
 DIRSTAMP_FILES =
 
@@ -173,7 +193,9 @@ endif
 noinst_SCRIPTS = run-octave
 
 CLEANFILES += \
-  $(BUILT_SOURCES)
+  $(BUILT_SOURCES) \
+  config-vars \
+  make-vars
 
 DISTCLEANFILES += \
   .gdbinit \
@@ -213,6 +235,23 @@ octave-config.h: config.h build-aux/mk-octave-config-h.sh
 bits/stl_algo.h: build-aux/stl_algo.h-fixed
 	$(AM_V_GEN)$(MKDIR_P) bits && \
 	$(INSTALL_HEADER) $< $@
+
+config-vars: $(GEN_CONFIG_SHELL)
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SED) -n 's/  *"$$/"/; s/^\([A-Za-z_][A-Za-z0-9_]*\)=" *\(.*\)" *$$/\1 \2/p' $^ | sort -u > $@-t && \
+	mv $@-t $@
+
+## We always have to create this file because values for Make variables
+## may be passed on the command line.
+
+make-vars:
+	$(file >$@-t) $(foreach v, $(ALL_SUBST_VARS), $(file >>$@-t,$(v) $(value $(v))))
+	$(AM_V_GEN)mv $@-t $@
+.PHONY: make-vars
+
+check-subst-vars: build-aux/check-subst-vars.sh make-vars config-vars
+	@$(SHELL) -f build-aux/check-subst-vars.sh make-vars config-vars
+.PHONY: check-subst-vars
 
 ## If we aren't trying to fix stl_algo.h, then try to ensure that
 ## there isn't a stray copy sitting in the build tree.

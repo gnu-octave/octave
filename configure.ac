@@ -3378,11 +3378,15 @@ AC_CONFIG_COMMANDS_PRE([
 ### Do the substitutions in Makefiles and other scripts that
 ### hold configuration info.
 
+AUTOCONF_SUBST_VARS="`echo $ac_subst_vars`"
+
+AC_SUBST(AUTOCONF_SUBST_VARS)
 AC_SUBST(ac_config_files)
 AC_SUBST(ac_config_headers)
 
 AC_CONFIG_FILES([
   Makefile
+  build-aux/check-subst-vars.sh:build-aux/check-subst-vars.in.sh
   doc/doxyhtml/Doxyfile
   libgnu/Makefile])
 
@@ -3395,15 +3399,15 @@ AC_CONFIG_COMMANDS([oct-conf-post.h],
   [$SHELL $srcdir/build-aux/move-if-change oct-conf-post.h-tmp oct-conf-post.h])
 
 OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
+  build-aux/mk-default-qt-settings.sh
+  build-aux/mk-f77-def.sh
   build-aux/mk-mxarray-h.sh
   build-aux/mk-version-h.sh
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
   build-aux/subst-default-vals.sh
   build-aux/subst-f77-isnan-macro.sh
-  build-aux/subst-script-vals.sh
-  build-aux/mk-default-qt-settings.sh
-  build-aux/mk-f77-def.sh])
+  build-aux/subst-script-vals.sh])
 
 AC_OUTPUT
 

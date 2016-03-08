@@ -5,8 +5,8 @@ export SED
 export SHELL
 export PERL
 
-version = ${OCTAVE_VERSION}
-api_version = ${OCTAVE_API_VERSION}
+version := ${OCTAVE_VERSION}
+api_version := ${OCTAVE_API_VERSION}
 
 ## AM_LIBTOOLFLAGS = --silent
 

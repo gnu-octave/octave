@@ -2216,7 +2216,7 @@ execute_pkg_add_or_del (const std::string& dir,
   file_stat fs (file);
 
   if (fs.exists ())
-    safe_source_file (file, "base");
+    source_file (file, "base");
 }
 
 void

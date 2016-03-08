@@ -117,12 +117,6 @@ source_file (const std::string& file_name,
              bool verbose = false, bool require_file = true,
              const std::string& warn_for = "");
 
-extern OCTINTERP_API void
-safe_source_file (const std::string& file_name,
-                  const std::string& context = "",
-                  bool verbose = false, bool require_file = true,
-                  const std::string& warn_for = "");
-
 extern OCTINTERP_API octave_value_list
 feval (const std::string& name,
        const octave_value_list& args = octave_value_list (),

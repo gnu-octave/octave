@@ -132,11 +132,8 @@ libgnu/libgnu.la:
 	cd libgnu; $(MAKE) all
 
 include liboctave/module.mk
-include liboctave/link-deps.mk
 include libinterp/module.mk
-include libinterp/link-deps.mk
 include libgui/module.mk
-include libgui/link-deps.mk
 include src/module.mk
 include scripts/module.mk
 include doc/module.mk

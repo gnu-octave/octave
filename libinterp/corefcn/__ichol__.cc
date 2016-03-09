@@ -52,7 +52,7 @@ double ichol_mult_real (double a, double b)
 bool ichol_checkpivot_complex (Complex pivot)
 {
   if (pivot.imag () != 0)
-    error ("ichol: non-real pivot encountered.  The matrix must be hermitian.");
+    error ("ichol: non-real pivot encountered.  The matrix must be Hermitian.");
   else if (pivot.real () < 0)
     error ("ichol: negative pivot encountered");
 
@@ -71,10 +71,10 @@ template <typename octave_matrix_t, typename T, T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
 void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
 {
-
   const octave_idx_type n = sm.cols ();
   octave_idx_type j1, jend, j2, jrow, jjrow, j, jw, i, k, jj, r;
   T tl;
+
   char opt;
   enum {OFF, ON};
   if (michol == "on")
@@ -102,7 +102,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
       dropsums[i] = 0;
     }
 
-  // Main loop
+  // Loop over all columns
   for (k = 0; k < n; k++)
     {
       j1 = cidx[k];
@@ -110,7 +110,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
       for (j = j1; j < j2; j++)
         iw[ridx[j]] = j;
 
-      jrow = Llist [k];
+      jrow = Llist[k];
       // Iterate over each non-zero element in the actual row.
       while (jrow != -1)
         {
@@ -148,7 +148,8 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
       if (opt == ON)
         data[j1] += dropsums[k];
 
-      if (ridx[j1] != k)
+      // Test for j1 == j2 must be first to avoid invalid ridx[j1] access
+      if (j1 == j2 || ridx[j1] != k)
         error ("ichol: encountered a pivot equal to 0");
 
       if (! ichol_checkpivot (data[j1]))
@@ -192,12 +193,12 @@ Undocumented internal function.\n\
   // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved
   // so it's structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
-  octave_value_list param_list;
+  octave_value_list arg_list;
   if (! args(0).is_complex_type ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
-      param_list.append (sm);
-      sm = feval ("tril", param_list)(0).sparse_matrix_value ();
+      arg_list.append (sm);
+      sm = feval ("tril", arg_list)(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
                ichol_checkpivot_real> (sm, michol);
 
@@ -206,8 +207,8 @@ Undocumented internal function.\n\
   else
     {
       SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
-      param_list.append (sm);
-      sm = feval ("tril", param_list)(0).sparse_complex_matrix_value ();
+      arg_list.append (sm);
+      sm = feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
 
@@ -433,19 +434,19 @@ Undocumented internal function.\n\
   if (nargin == 3)
     michol = args(2).string_value ();
 
-  octave_value_list param_list;
+  octave_value_list arg_list;
   if (! args(0).is_complex_type ())
     {
       Array <double> cols_norm;
       SparseMatrix L;
-      param_list.append (args(0).sparse_matrix_value ());
+      arg_list.append (args(0).sparse_matrix_value ());
       SparseMatrix sm_l =
-        feval ("tril", param_list)(0).sparse_matrix_value ();
-      param_list(0) = sm_l;
-      param_list(1) = 1;
-      param_list(2) = "cols";
-      cols_norm = feval ("norm", param_list)(0).vector_value ();
-      param_list.clear ();
+        feval ("tril", arg_list)(0).sparse_matrix_value ();
+      arg_list(0) = sm_l;
+      arg_list(1) = 1;
+      arg_list(2) = "cols";
+      cols_norm = feval ("norm", arg_list)(0).vector_value ();
+      arg_list.clear ();
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
                (sm_l, L, cols_norm.fortran_vec (), droptol, michol);
@@ -456,14 +457,14 @@ Undocumented internal function.\n\
     {
       Array <Complex> cols_norm;
       SparseComplexMatrix L;
-      param_list.append (args(0).sparse_complex_matrix_value ());
+      arg_list.append (args(0).sparse_complex_matrix_value ());
       SparseComplexMatrix sm_l =
-        feval ("tril", param_list)(0).sparse_complex_matrix_value ();
-      param_list(0) = sm_l;
-      param_list(1) = 1;
-      param_list(2) = "cols";
-      cols_norm = feval ("norm", param_list)(0).complex_vector_value ();
-      param_list.clear ();
+        feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+      arg_list(0) = sm_l;
+      arg_list(1) = 1;
+      arg_list(2) = "cols";
+      cols_norm = feval ("norm", arg_list)(0).complex_vector_value ();
+      arg_list.clear ();
       ichol_t <SparseComplexMatrix,
                Complex, ichol_mult_complex, ichol_checkpivot_complex>
                (sm_l, L, cols_norm.fortran_vec (),

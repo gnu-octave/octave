@@ -1584,7 +1584,6 @@ specified option.\n\
       { "SHLEXT_VER", octave::build_env::SHLEXT_VER },
       { "SH_LD", octave::build_env::SH_LD },
       { "SH_LDFLAGS", octave::build_env::SH_LDFLAGS },
-      { "SONAME_FLAGS", octave::build_env::SONAME_FLAGS },
       { "STATIC_LIBS", octave::build_env::STATIC_LIBS },
       { "TERM_LIBS", octave::build_env::TERM_LIBS },
       { "UMFPACK_CPPFLAGS", octave::build_env::UMFPACK_CPPFLAGS },

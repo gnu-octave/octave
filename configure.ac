@@ -2031,7 +2031,7 @@ case $canonical_host_type in
     SH_LDFLAGS=-Bshareable
   ;;
   *-*-openbsd*)
-    SH_LDFLAGS='-shared -fPIC'
+    SH_LDFLAGS="-shared -fPIC"
   ;;
   *-*-freebsd*)
     SH_LDFLAGS="-shared -Wl,-x"
@@ -2043,9 +2043,9 @@ case $canonical_host_type in
     SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
   ;;
   *-*-darwin*)
-    DL_LDFLAGS='-bundle -bundle_loader ${top_builddir}/libinterp/octave ${LDFLAGS}'
-    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader ${bindir}/octave-${version}${EXEEXT}'
-    SH_LDFLAGS='-dynamiclib -single_module ${LDFLAGS}'
+    DL_LDFLAGS="-bundle -bundle_loader ${top_builddir}/libinterp/octave ${LDFLAGS}"
+    MKOCTFILE_DL_LDFLAGS="-bundle -bundle_loader ${bindir}/octave-${version}${EXEEXT}"
+    SH_LDFLAGS="-dynamiclib -single_module ${LDFLAGS}"
     case $canonical_host_type in
       powerpc-*)
         CXXPICFLAG=
@@ -2385,13 +2385,13 @@ AC_SUBST(LIBOCTAVE)
 
 if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   CROSS_TOOL_PREFIX="$ac_tool_prefix"
-  MKOCTFILE_AR='$(shell echo ${AR} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
-  MKOCTFILE_CC='$(shell echo ${CC} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
-  MKOCTFILE_CXX='$(shell echo ${CXX} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
-  MKOCTFILE_DL_LD='$(shell echo ${DL_LD} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
-  MKOCTFILE_F77='$(shell echo ${F77} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
-  MKOCTFILE_LD_CXX='$(shell echo ${LD_CXX} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
-  MKOCTFILE_RANLIB='$(shell echo ${RANLIB} | ${SED} "s,${CROSS_TOOL_PREFIX},,")'
+  MKOCTFILE_AR=`echo "$AR" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_CC=`echo "$CC" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_CXX=`echo "$CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_DL_LD=`echo "$DL_LD" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_F77=`echo "$F77" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_LD_CXX=`echo "$LD_CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_RANLIB=`echo "$RANLIB" | $SED "s,$CROSS_TOOL_PREFIX,,"`
 else
   MKOCTFILE_AR="$AR"
   MKOCTFILE_CC="$CC"

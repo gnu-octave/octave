@@ -277,8 +277,6 @@ namespace octave
 
     const char *SH_LDFLAGS = %OCTAVE_CONF_SH_LDFLAGS%;
 
-    const char *SONAME_FLAGS = %OCTAVE_CONF_SONAME_FLAGS%;
-
     const char *STATIC_LIBS = %OCTAVE_CONF_STATIC_LIBS%;
 
     const char *TERM_LIBS = %OCTAVE_CONF_TERM_LIBS%;

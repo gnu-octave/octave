@@ -1943,13 +1943,13 @@ function [lt] = gnuplot_linetype (obj)
       opt = "dashtype";
       switch (obj.linestyle)
         case "-"
-          lt = "1";
+          lt = "solid";
         case "--"
-          lt = "2";
+          lt = "'_ '";
         case ":"
-          lt = "3";
+          lt = "'. '";
         case "-."
-          lt = "4";
+          lt = "'-. '";
         case "none"
           lt = "";
         otherwise

@@ -1209,7 +1209,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             if (all (obj.facecolor == 1))
               hidden_removal = true;
             else
-              withclause{data_idx} = [withclause{dataidx} " nohidden3d"];
+              withclause{data_idx} = [withclause{data_idx} " nohidden3d"];
             endif
           elseif (facecolor_none_or_white)
             fputs (plot_stream,"set style increment user;\n");
@@ -1225,7 +1225,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             if (all (obj.facecolor == 1))
               hidden_removal = true;
             else
-              withclause{data_idx} = [withclause{dataidx} " nohidden3d"];
+              withclause{data_idx} = [withclause{data_idx} " nohidden3d"];
             endif
           else
             hidden_removal = true;

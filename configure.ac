@@ -2299,7 +2299,7 @@ AC_ARG_ENABLE([link-all-dependencies],
   [link_all_deps=no])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
-LIBEXT = a
+LIBEXT=a
 AC_SUBST(LIBEXT)
 
 ## Dynamic linking is now enabled only if we are building shared

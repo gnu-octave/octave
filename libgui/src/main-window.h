@@ -206,6 +206,7 @@ public slots:
 
   void handle_show_doc (const QString &file);
 
+  void execute_octave_interpreter (void);
   void handle_octave_ready ();
 
   // find files dialog

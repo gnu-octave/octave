@@ -1583,9 +1583,17 @@ main_window::construct_octave_qt_link (void)
                _octave_qt_link, SLOT (terminal_interrupt (void)));
     }
 
-  _octave_qt_link->execute_interpreter ();
-
   octave_link::connect_link (_octave_qt_link);
+
+  // Defer initializing and executing the interpreter until after the main
+  // window and QApplication are running to prevent race conditions
+  QTimer::singleShot (0, this, SLOT (execute_octave_interpreter ()));
+}
+
+void
+main_window::execute_octave_interpreter (void)
+{
+  _octave_qt_link->execute_interpreter ();
 }
 
 void

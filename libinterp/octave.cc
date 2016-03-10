@@ -1016,6 +1016,14 @@ check_starting_gui (void)
       return false;
     }
 
+  if (! line_editing)
+    {
+      if (! (inhibit_startup_message || no_gui_option))
+        warning ("--no-line-editing option given, disabling GUI");
+
+      return false;
+    }
+
   if (force_gui_option)
     return true;
 

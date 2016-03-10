@@ -199,9 +199,9 @@ liboctinterp_la_LIBADD = \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-liboctinterp_current = 3
+liboctinterp_current = 4
 liboctinterp_revision = 0
-liboctinterp_age = 0
+liboctinterp_age = 1
 
 liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
 

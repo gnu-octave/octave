@@ -20,8 +20,9 @@
 ## @deftypefn  {Built-in Function} {} octave_config_info ()
 ## @deftypefnx {Built-in Function} {} octave_config_info (@var{option})
 ##
-## @code{octave_config_info{} is deprecated and will be removed in
-## Octave version 4.6.
+## @code{octave_config_info} is deprecated and will be removed in
+## Octave version 4.6.  Use @code{__have_feature__ (@var{option})} or
+## @code{__octave_config_info__} as a replacement.
 ##
 ## Return a structure containing configuration and installation
 ## information for Octave. 
@@ -40,7 +41,7 @@ function [retval, build_env_cell] = octave_config_info (option)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "octave_config_info is obsolete and will be removed from a future version of Octave, please use __octave_config_info__ instead.");
+             "octave_config_info is obsolete and will be removed from a future version of Octave, please use __have_feature__ or __octave_config_info__ instead.");
   endif
 
   if (nargin > 1)

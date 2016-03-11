@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QThread>
 #include <QDateTime>
 #include <QDebug>
+#include <QTimer>
 
 #include <utility>
 

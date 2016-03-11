@@ -14,7 +14,9 @@ AM_LFLAGS = @LFLAGS@
 
 AM_YFLAGS = -dv
 
-SHLLINKEXT=
+# FIXME: This seems unnecessary as of 3/10/2016.
+# Commenting out definition and re-configuring made no change to Makefile
+SHLLINKEXT =
 
 # Fortran compiler flags.
 

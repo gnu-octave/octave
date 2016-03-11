@@ -53,7 +53,7 @@ protected:
 
 public:
 
-  virtual ~octave_link (void) { }
+  virtual ~octave_link (void);
 
   static void generate_events (void)
   {

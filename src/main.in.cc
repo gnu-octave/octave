@@ -446,7 +446,9 @@ main (int argc, char **argv)
   std::string file = octave_cli;
 #endif
 
-  char **new_argv = new char * [argc + 1];
+  // Declaring new_argv static avoids leak warnings when using GCC's
+  // --address-sanitizer option.
+  static char **new_argv = new char * [argc + 1];
 
   int k = 1;
 

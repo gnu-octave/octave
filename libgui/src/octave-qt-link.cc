@@ -63,7 +63,11 @@ octave_qt_link::octave_qt_link (QWidget *p)
   main_thread->start ();
 }
 
-octave_qt_link::~octave_qt_link (void) { }
+octave_qt_link::~octave_qt_link (void)
+{
+  delete command_interpreter;
+  delete main_thread;
+}
 
 void
 octave_qt_link::execute_interpreter (void)

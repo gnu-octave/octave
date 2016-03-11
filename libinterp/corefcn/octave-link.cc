@@ -55,6 +55,11 @@ octave_link::octave_link (void)
   command_editor::add_event_hook (octave_readline_hook);
 }
 
+octave_link::~octave_link (void)
+{
+  delete event_queue_mutex;
+}
+
 void
 octave_link::set_workspace (void)
 {

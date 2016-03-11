@@ -24,7 +24,7 @@
 ## the integer values 1--@var{n} with equal probability.
 ##
 ## Warning: The underlying implementation uses the double class and will only
-## be accurate for @var{n} < @code{flintmax} (@w{@math{2^{53}}}) on
+## be accurate for @var{n} < @code{flintmax} (@w{@math{2^{53}}} on
 ## IEEE 754 compatible systems).
 ## @end deftypefn
 

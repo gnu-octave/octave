@@ -30,7 +30,7 @@
 ##
 ## @var{tol} is a weighting factor which determines the tolerance of matching.
 ## The default value is 100 and the resulting tolerance for a given complex
-## pair is @code{100 * eps (abs (@var{z}(i))}.
+## pair is @code{100 * eps (abs (@var{z}(i)))}.
 ##
 ## By default the complex pairs are sorted along the first non-singleton
 ## dimension of @var{z}.  If @var{dim} is specified, then the complex pairs are
@@ -43,7 +43,7 @@
 ## @c Set example in small font to prevent overfull line
 ##
 ## @smallexample
-## cplxpair (exp(2i*pi*[0:4]'/5)) == exp(2i*pi*[3; 2; 4; 1; 0]/5)
+## cplxpair (exp (2i*pi*[0:4]'/5)) == exp (2i*pi*[3; 2; 4; 1; 0]/5)
 ## @end smallexample
 ## @end deftypefn
 

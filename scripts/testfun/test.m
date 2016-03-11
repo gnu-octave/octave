@@ -81,7 +81,7 @@
 ## returns true if all of the tests were successful.  If called with more
 ## than one output argument then the number of successful tests (@var{n}),
 ## the total number of tests in the file (@var{nmax}), the number of xtest
-## failures (@var{nxfail}), and the number of skipped tests (@var{nskip} are
+## failures (@var{nxfail}), and the number of skipped tests (@var{nskip}) are
 ## returned.
 ##
 ## Example

@@ -66,8 +66,8 @@
 ## If an output argument is requested and the first input argument is @code{get}
 ## then @code{edit} will return the value of the control field @var{field}.
 ## If the control field does not exist, edit will return a structure
-## containing all fields and values.  Thus, @code{edit ("get", "all"} returns a
-## complete control structure.
+## containing all fields and values.  Thus, @code{edit ("get", "all")} returns
+## a complete control structure.
 ##
 ## The following control fields are used:
 ##

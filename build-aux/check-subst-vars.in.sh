@@ -66,3 +66,5 @@ EOF
 ## Execute it.
 
 $AWK -f $awk_script $config_vars 1>&2
+
+rm -f $awk_script

@@ -227,6 +227,8 @@ all-local: $(ALL_LOCAL_TARGETS)
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
 
+Makefile: check-subst-vars
+
 run-octave: run-octave.in build-aux/subst-script-vals.sh
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-script-vals.sh) && \
 	chmod a+rx $@

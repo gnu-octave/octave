@@ -28,7 +28,6 @@
 ##
 ## If the optional argument @var{fid} is given then the results are written to
 ## the file specified by file descriptor @var{fid}.
-## @seealso{octave_config_info}
 ## @end deftypefn
 
 ## Author: jwe

@@ -26,7 +26,7 @@ function display_info_file (func, package, file)
   endif
 
   if (strcmpi (package, "octave"))
-    octetcdir = octave_config_info ("octetcdir");
+    octetcdir = __octave_config_info__ ("octetcdir");
     filepath  = fullfile (octetcdir, file);
   else
     installed = pkg ("list");

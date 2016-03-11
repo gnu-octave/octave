@@ -25,7 +25,7 @@
 function retval = ismac ()
 
   if (nargin == 0)
-    retval = octave_config_info ("mac");
+    retval = __octave_config_info__ ("mac");
   else
     print_usage ();
   endif

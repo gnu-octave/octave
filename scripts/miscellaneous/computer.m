@@ -60,7 +60,7 @@ function [c, maxsize, endian] = computer (a)
   endif
 
   if (nargin == 0)
-    msg = octave_config_info ("canonical_host_type");
+    msg = __octave_config_info__ ("canonical_host_type");
 
     if (strcmp (msg, "unknown"))
       msg = "Hi Dave, I'm a HAL-9000";
@@ -71,16 +71,16 @@ function [c, maxsize, endian] = computer (a)
     else
       c = msg;
       if (isargout (2))
-        if (octave_config_info ("ENABLE_64"))
+        if (__octave_config_info__ ("ENABLE_64"))
           maxsize = 2^63-1;
         else
           maxsize = 2^31-1;
         endif
       endif
       if (isargout (3))
-        if (octave_config_info ("words_big_endian"))
+        if (__octave_config_info__ ("words_big_endian"))
           endian = "B";
-        elseif (octave_config_info ("words_little_endian"))
+        elseif (__octave_config_info__ ("words_little_endian"))
           endian = "L";
         else
           endian = "?";
@@ -89,7 +89,7 @@ function [c, maxsize, endian] = computer (a)
     endif
   else
     ## "arch" argument asked for
-    tmp = ostrsplit (octave_config_info ("canonical_host_type"), "-");
+    tmp = ostrsplit (__octave_config_info__ ("canonical_host_type"), "-");
     if (numel (tmp) == 4)
       c = sprintf ("%s-%s-%s", tmp{4}, tmp{3}, tmp{1});
     else
@@ -102,7 +102,7 @@ endfunction
 
 
 %!assert (ischar (computer ()))
-%!assert (computer (), octave_config_info ("canonical_host_type"))
+%!assert (computer (), __octave_config_info__ ("canonical_host_type"))
 %!assert (ischar (computer ("arch")))
 
 %!error computer (1,2)

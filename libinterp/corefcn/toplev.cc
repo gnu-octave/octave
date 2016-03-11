@@ -1340,10 +1340,10 @@ find_config_info (const octave_scalar_map& m, const std::string& key)
   return octave_value ();
 }
 
-DEFUN (octave_config_info, args, ,
+DEFUN (__octave_config_info__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {} {} octave_config_info ()\n\
-@deftypefnx {} {} octave_config_info (@var{option})\n\
+@deftypefn  {} {} __octave_config_info__ ()\n\
+@deftypefnx {} {} __octave_config_info__ (@var{option})\n\
 Return a structure containing configuration and installation information for\n\
 Octave.\n\
 \n\
@@ -1686,7 +1686,7 @@ specified option.\n\
 
   if (nargin == 1)
     {
-      std::string arg = args(0).xstring_value ("octave_config_info: OPTION argument must be a string");
+      std::string arg = args(0).xstring_value ("__octave_config_info__: OPTION argument must be a string");
 
       octave_value info = find_config_info (config, arg);
 
@@ -1697,7 +1697,7 @@ specified option.\n\
         info = find_config_info (build_features, arg);
 
       if (info.is_undefined ())
-        error ("octave_config_info: no info for '%s'", arg.c_str ());
+        error ("__octave_config_info__: no info for '%s'", arg.c_str ());
 
       return info;
     }
@@ -1708,13 +1708,13 @@ specified option.\n\
 }
 
 /*
-%!assert (ischar (octave_config_info ("version")))
+%!assert (ischar (__octave_config_info__ ("version")))
 %!test
-%! x = octave_config_info ();
+%! x = __octave_config_info__ ();
 %! assert (isstruct (x));
 %! assert (! isempty (x));
 
-%!error octave_config_info (1, 2)
+%!error __octave_config_info__ (1, 2)
 */
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)

@@ -390,6 +390,6 @@
 
 %!assert (isieee () == 1 || isieee () == 0)
 
-%!assert (isstruct (octave_config_info ()))
+%!assert (isstruct (__octave_config_info__ ()))
 
 %!assert (isstruct (getrusage ()))

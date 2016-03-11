@@ -26,9 +26,9 @@ function configure_make (desc, packdir, verbose)
   ## Perform ./configure, make, make install in "src".
   if (exist (fullfile (packdir, "src"), "dir"))
     src = fullfile (packdir, "src");
-    octave_bindir = octave_config_info ("bindir");
+    octave_bindir = __octave_config_info__ ("bindir");
     ver = version ();
-    ext = octave_config_info ("EXEEXT");
+    ext = __octave_config_info__ ("EXEEXT");
     mkoctfile_program = fullfile (octave_bindir, ...
                                   sprintf ("mkoctfile-%s%s", ver, ext));
     octave_config_program = fullfile (octave_bindir, ...

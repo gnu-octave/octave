@@ -25,10 +25,10 @@ function [prefix, archprefix] = default_prefix (global_install, desc)
   if (global_install)
     prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
     if (nargin == 2)
-      archprefix = fullfile (octave_config_info ("libdir"), "octave",
+      archprefix = fullfile (__octave_config_info__ ("libdir"), "octave",
                              "packages", [desc.name "-" desc.version]);
     else
-      archprefix = fullfile (octave_config_info ("libdir"), "octave",
+      archprefix = fullfile (__octave_config_info__ ("libdir"), "octave",
                              "packages");
     endif
   else

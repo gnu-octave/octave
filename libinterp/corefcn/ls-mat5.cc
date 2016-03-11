@@ -866,7 +866,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     && OCTAVE_EXEC_PREFIX != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
-                    // doesn't equal octave_config_info ("exec_prefix")
+                    // doesn't equal __octave_config_info__ ("exec_prefix")
                     // then the function points to a version of Octave
                     // or Matlab other than the running version. In that
                     // case we replace with the same function in the

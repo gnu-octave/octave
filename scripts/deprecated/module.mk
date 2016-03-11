@@ -17,6 +17,7 @@ scripts_deprecated_FCN_FILES = \
   scripts/deprecated/md5sum.m \
   scripts/deprecated/mouse_wheel_zoom.m \
   scripts/deprecated/nfields.m \
+  scripts/deprecated/octave_config_info.m \
   scripts/deprecated/octave_tmp_file_name.m \
   scripts/deprecated/playaudio.m \
   scripts/deprecated/saveaudio.m \

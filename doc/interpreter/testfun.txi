@@ -141,7 +141,7 @@ for @code{svds} begin with
 @end example
 
 @noindent
-Review @file{config.h} or @code{octave_config_info ("build_features")}
+Review @file{config.h} or @code{__octave_config_info__ ("build_features")}
 to see some of the possible values to check.
 
 Sometimes during development there is a test that should work but is

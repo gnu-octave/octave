@@ -144,8 +144,8 @@
 
 function [output, status] = mkoctfile (varargin)
 
-  bindir = octave_config_info ("bindir");
-  ext = octave_config_info ("EXEEXT");
+  bindir = __octave_config_info__ ("bindir");
+  ext = __octave_config_info__ ("EXEEXT");
 
   shell_script = fullfile (bindir,
                            sprintf ("mkoctfile-%s%s", OCTAVE_VERSION, ext));

@@ -1285,8 +1285,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %! hdld2 = hdld;
 %! hbi2 = hbi;
 %! modes = {"-text", "-binary"};
-%! if (isfield (octave_config_info, "HAVE_HDF5")
-%!     && octave_config_info ("HAVE_HDF5"))
+%! if (isfield (__octave_config_info__, "HAVE_HDF5")
+%!     && __octave_config_info__ ("HAVE_HDF5"))
 %!   modes(end+1) = "-hdf5";
 %! endif
 %! for i = 1:numel (modes)
@@ -1338,8 +1338,8 @@ Test for bug #35876
 %! hdld2 = hdld;
 %! hbi2 = hbi;
 %! modes = {"-text", "-binary"};
-%! if (isfield (octave_config_info, "HAVE_HDF5")
-%!     && octave_config_info ("HAVE_HDF5"))
+%! if (isfield (__octave_config_info__, "HAVE_HDF5")
+%!     && __octave_config_info__ ("HAVE_HDF5"))
 %!   modes(end+1) = "-hdf5";
 %! endif
 %! for i = 1:numel (modes)

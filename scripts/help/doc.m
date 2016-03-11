@@ -66,7 +66,7 @@ function retval = doc (function_name)
       endif
 
       if (isempty (ffile))
-        info_dir = octave_config_info ("infodir");
+        info_dir = __octave_config_info__ ("infodir");
       else
         info_dir = fileparts (ffile);
       endif

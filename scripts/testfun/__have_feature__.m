@@ -23,9 +23,9 @@
 
 function retval = __have_feature__ (feature)
   if (strncmp (feature, "ENABLE_", 7))
-    features = octave_config_info ();
+    features = __octave_config_info__ ();
   else
-    features = octave_config_info ("build_features");
+    features = __octave_config_info__ ("build_features");
   endif
   if (iscellstr (feature))
     retval = (all (isfield (features, feature))

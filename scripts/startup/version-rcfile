@@ -8,7 +8,7 @@
 
 ## Configure readline using the file inputrc in the Octave startup directory.
 readline_read_init_file (sprintf ("%s%s%s",
-                                  octave_config_info ("startupfiledir"),
+                                  __octave_config_info__ ("startupfiledir"),
                                   filesep, "inputrc"));
 
 ## Configure LESS pager if present

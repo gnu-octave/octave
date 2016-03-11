@@ -530,8 +530,6 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(license)
 
-@DOCSTRING(octave_config_info)
-
 @DOCSTRING(getrusage)
 
 @node Hashing Functions

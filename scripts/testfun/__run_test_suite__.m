@@ -23,11 +23,11 @@
 
 function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
 
-  testsdir = octave_config_info ("octtestsdir");
+  testsdir = __octave_config_info__ ("octtestsdir");
   libinterptestdir = fullfile (testsdir, "libinterp");
   liboctavetestdir = fullfile (testsdir, "liboctave");
   fixedtestdir = fullfile (testsdir, "fixed");
-  fcnfiledir = octave_config_info ("fcnfiledir");
+  fcnfiledir = __octave_config_info__ ("fcnfiledir");
   if (nargin == 0)
     fcndirs = { liboctavetestdir, libinterptestdir, fcnfiledir };
     fixedtestdirs = { fixedtestdir };

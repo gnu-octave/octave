@@ -182,7 +182,7 @@ endfunction
 %! assert (size (rgb), [10 10 3])
 
 %!test
-%! rgb = hsv2rgb (randi ([-128 127], 10, 10, 3, "uint16"));
+%! rgb = hsv2rgb (randi ([-128 127], 10, 10, 3, "int8"));
 %! assert (class (rgb), "double")
 %! assert (size (rgb), [10 10 3])
 

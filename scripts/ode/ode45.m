@@ -77,7 +77,7 @@
 ## @example
 ## @group
 ## fvdp = @@(@var{t},@var{y}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y}(1)];
-## [@var{t},@var{y}] = ode45 (fvdp, [0 20], [2 0]);
+## [@var{t},@var{y}] = ode45 (fvdp, [0, 20], [2, 0]);
 ## @end group
 ## @end example
 ## @seealso{odeset, odeget}
@@ -110,7 +110,7 @@ function varargout = ode45 (fun, trange, init, varargin)
     odeopts.funarguments = {};
   endif
 
-  if (! isvector (trange) || ! isnumeric (trange))
+  if (! isnumeric (trange) || ! isvector (trange))
     error ("Octave:invalid-input-arg",
            "ode45: TRANGE must be a numeric vector");
   endif
@@ -129,7 +129,7 @@ function varargout = ode45 (fun, trange, init, varargin)
   endif
   trange = trange(:);
 
-  if (! isvector (init) || ! isnumeric (init))
+  if (! isnumeric (init) || ! isvector (init))
     error ("Octave:invalid-input-arg",
            "ode45: INIT must be a numeric vector");
   endif
@@ -296,7 +296,7 @@ function varargout = ode45 (fun, trange, init, varargin)
              "ode45: option 'BDF' is ignored by this solver\n");
   endif
 
-  ## Starting the initialisation of the core solver ode45
+  ## Starting the initialization of the core solver ode45
 
   if (havemasshandle)   # Handle only the dynamic mass matrix,
     if (massdependence) # constant mass matrices have already
@@ -396,17 +396,17 @@ endfunction
 %!function ydot = fpol (t, y)  # The Van der Pol
 %! ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
-%!function ref = fref ()         # The computed reference solution
+%!function ref = fref ()       # The computed reference solution
 %! ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
-%!function jac = fjac (t, y, varargin) # its Jacobian
+%!function jac = fjac (t, y, varargin)  # its Jacobian
 %! jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
 %!endfunction
-%!function jac = fjcc (t, y, varargin) # sparse type
+%!function jac = fjcc (t, y, varargin)  # sparse type
 %! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2])
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%! val = fpol (t, y, varargin);  # We use the derivatives
+%! val = fpol (t, y, varargin);    # We use the derivatives
 %! trm = zeros (2,1);              # that's why component 2
 %! dir = ones (2,1);               # seems to not be exact
 %!endfunction
@@ -434,16 +434,6 @@ endfunction
 %! endif
 %!endfunction
 %!
-%! ## Turn off output of warning messages for all tests,
-%! ## turn them on again after the last test is called
-%!test
-%! warning ("off", "Octave:invalid-input-arg", "local");
-%!error  # first input arg is not a function
-%! [t, y] = ode45 (1, [0 25], [3 15 1]);
-%!error  # input argument number one as name of non existing function
-%! [t, y] = ode45 ("non-existing-function", [0 25], [3 15 1]);
-%!error  # input argument number two
-%! [t, y] = ode45 (@fpol, 1, [3 15 1]);
 %!test  # two output arguments
 %! [t, y] = ode45 (@fpol, [0 2], [2 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
@@ -464,9 +454,6 @@ endfunction
 %! opt = odeset;
 %! [t, y] = ode45 (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
-%!error  # strange ODEOPT structure
-%! opt = struct ("foo", 1);
-%! [t, y] = ode45 (@fpol, [0 2], [2 0], opt);
 %!test  # Solve vdp in fixed step sizes
 %! opt = odeset("TimeStepSize", 0.1);
 %! [t, y] = ode45 (@fpol, [0,2], [2 0], opt);
@@ -547,11 +534,13 @@ endfunction
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %!test  # Events option, now stop integration
+%! warning ("off", "integrate_adaptive:unexpected_termination", "local");
 %! opt = odeset ("Events", @fevn, "NormControl", "on");
 %! sol = ode45 (@fpol, [0 10], [2 0], opt);
 %! assert ([sol.ie, sol.xe, sol.ye],
 %!         [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
 %!test  # Events option, five output arguments
+%! warning ("off", "integrate_adaptive:unexpected_termination", "local");
 %! opt = odeset ("Events", @fevn, "NormControl", "on");
 %! [t, y, vxe, ye, vie] = ode45 (@fpol, [0 10], [2 0], opt);
 %! assert ([vie, vxe, ye],
@@ -576,3 +565,25 @@ endfunction
 %! opt = odeset ("Mass", @fmas, "MStateDependence", "strong");
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+
+%!error ode45 ()
+%!error ode45 (1)
+%!error ode45 (1,2)
+%!error <TRANGE must be a numeric>
+%!  ode45 (@fpol, {[0 25]}, [3 15 1]);
+%!error <TRANGE must be a .* vector>
+%!  ode45 (@fpol, [0 25; 25 0], [3 15 1]);
+%!error <TRANGE must contain at least 2 elements>
+%!  ode45 (@fpol, [1], [3 15 1]);
+%!error <invalid time span>
+%!  ode45 (@fpol, [1 1], [3 15 1]);
+%!error <INIT must be a numeric>
+%!  ode45 (@fpol, [0 25], {[3 15 1]});
+%!error <INIT must be a .* vector>
+%!  ode45 (@fpol, [0 25], [3 15 1; 3 15 1]);
+%!error <FUN must be a valid function handle>
+%!  ode45 (1, [0 25], [3 15 1]);
+%!error  # strange ODEOPT structure
+%! opt = struct ("foo", 1);
+%! [t, y] = ode45 (@fpol, [0 2], [2 0], opt);
+

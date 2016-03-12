@@ -136,7 +136,7 @@ endfunction
 %! assert (size (ntsc), [10 10 3])
 
 %!test
-%! ntsc = rgb2ntsc (randi ([-128 127], 10, 10, 3, "uint16"));
+%! ntsc = rgb2ntsc (randi ([-128 127], 10, 10, 3, "int8"));
 %! assert (class (ntsc), "double")
 %! assert (size (ntsc), [10 10 3])
 

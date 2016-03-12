@@ -86,7 +86,7 @@
 ## @example
 ## @group
 ## fvdp = @@(@var{t},@var{y}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y}(1)];
-## [@var{t},@var{y}] = ode23 (fvdp, [0 20], [2 0]);
+## [@var{t},@var{y}] = ode23 (fvdp, [0, 20], [2, 0]);
 ## @end group
 ## @end example
 ## @seealso{odeset, odeget}
@@ -127,7 +127,7 @@ function varargout = ode23 (fun, trange, init, varargin)
     odeopts.funarguments = {};
   endif
 
-  if (! isvector (trange) || ! isnumeric (trange))
+  if (! isnumeric (trange) || ! isvector (trange))
     error ("Octave:invalid-input-arg",
            "ode23: TRANGE must be a numeric vector");
   endif
@@ -146,7 +146,7 @@ function varargout = ode23 (fun, trange, init, varargin)
   endif
   trange = trange(:);
 
-  if (! isvector (init) || ! isnumeric (init))
+  if (! isnumeric (init) || ! isvector (init))
     error ("Octave:invalid-input-arg",
            "ode23: INIT must be a numeric vector");
   endif
@@ -312,7 +312,7 @@ function varargout = ode23 (fun, trange, init, varargin)
              "ode23: option \"BDF\" is ignored by this solver\n");
   endif
 
-  ## Starting the initialisation of the core solver ode23
+  ## Starting the initialization of the core solver ode23
 
   if (havemasshandle)   # Handle only the dynamic mass matrix,
     if (massdependence) # constant mass matrices have already
@@ -356,9 +356,9 @@ function varargout = ode23 (fun, trange, init, varargin)
     nsteps    = solution.cntloop-2;              # cntloop from 2..end
     nfailed   = (solution.cntcycles-1)-nsteps+1; # cntcycl from 1..end
     nfevals   = 3 * (solution.cntcycles-1);      # number of ode evaluations
-    ndecomps  = 0;                               # number of LU decompositions
-    npds      = 0;                               # number of partial derivatives
-    nlinsols  = 0;                               # no. of solutions of linear systems
+    ndecomps  = 0;  # number of LU decompositions
+    npds      = 0;  # number of partial derivatives
+    nlinsols  = 0;  # no. of solutions of linear systems
     ## Print cost statistics if no output argument is given
     if (nargout == 0)
       printf ("Number of successful steps: %d\n", nsteps);
@@ -411,13 +411,13 @@ endfunction
 %!function ydot = fpol (t, y)  # The Van der Pol
 %! ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
-%!function ref = fref ()         # The computed reference sol
+%!function ref = fref ()       # The computed reference sol
 %! ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
-%!function jac = fjac (t, y, varargin) # its Jacobian
+%!function jac = fjac (t, y, varargin)  # its Jacobian
 %! jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
 %!endfunction
-%!function jac = fjcc (t, y, varargin) # sparse type
+%!function jac = fjcc (t, y, varargin)  # sparse type
 %! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2])
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
@@ -449,140 +449,144 @@ endfunction
 %! endif
 %!endfunction
 %!
-%! ## Turn off output of warning messages for all tests,
-%! ## turn them on again after the last test is called
-%!test
-%! warning ("off", "Octave:invalid-input-arg", "local");
-%!error ## ouput argument
-%!  B = ode23 (1, [0 25], [3 15 1]);
-%!error ## input argument number one
-%!  [t, y] = ode23 (1, [0 25], [3 15 1]);
-%!error ## input argument number two
-%!  [t, y] = ode23 (@fpol, 1, [3 15 1]);
-%!test ## two output arguments
-%!  [t, y] = ode23 (@fpol, [0 2], [2 0]);
-%!  assert ([t(end), y(end,:)], [2, fref], 1e-3);
-%!test ## anonymous function instead of real function
-%!  fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%!  [t, y] = ode23 (fvdb, [0 2], [2 0]);
-%!  assert ([t(end), y(end,:)], [2, fref], 1e-3);
-%!test ## extra input arguments passed through
-%!  [t, y] = ode23 (@fpol, [0 2], [2 0], 12, 13, "KL");
-%!  assert ([t(end), y(end,:)], [2, fref], 1e-3);
-%!test ## empty OdePkg structure *but* extra input arguments
-%!  opt = odeset;
-%!  [t, y] = ode23 (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
-%!  assert ([t(end), y(end,:)], [2, fref], 1e-2);
-%!error ## strange OdePkg structure
-%!  opt = struct ("foo", 1);
-%!  [t, y] = ode23 (@fpol, [0 2], [2 0], opt);
-%!test ## Solve vdp in fixed step sizes
-%!  opt = odeset("TimeStepSize",0.1);
-%!  [t, y] = ode23 (@fpol, [0,2], [2 0], opt);
-%!  assert (t(:), [0:0.1:2]', 1e-3);
-%!test ## Solve another anonymous function below zero
-%!  ref = [0, 14.77810590694212];
-%!  [t, y] = ode23 (@(t,y) y, [-2 0], 2);
-%!  assert ([t(end), y(end,:)], ref, 1e-2);
-%!test ## InitialStep option
-%!  opt = odeset ("InitialStep", 1e-8);
-%!  [t, y] = ode23 (@fpol, [0 0.2], [2 0], opt);
-%!  assert ([t(2)-t(1)], [1e-8], 1e-9);
-%!test ## MaxStep option
-%!  opt = odeset ("MaxStep", 1e-3);
-%!  sol = ode23 (@fpol, [0 0.2], [2 0], opt);
-%!  assert ([sol.x(5)-sol.x(4)], [1e-3], 1e-4);
-%!test ## Solve in backward direction starting at t=0
-%!  ref = [-1.205364552835178, 0.951542399860817];
-%!  sol = ode23 (@fpol, [0 -2], [2 0]);
-%!  assert ([sol.x(end), sol.y(end,:)], [-2, ref], 5e-3);
-%!test ## Solve in backward direction starting at t=2
-%!  ref = [-1.205364552835178, 0.951542399860817];
-%!  sol = ode23 (@fpol, [2 0 -2], fref);
-%!  assert ([sol.x(end), sol.y(end,:)], [-2, ref], 2e-2);
-%!test ## Solve another anonymous function in backward direction
-%!  ref = [-1, 0.367879437558975];
-%!  sol = ode23 (@(t,y) y, [0 -1], 1);
-%!  assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
-%!test ## Solve another anonymous function below zero
-%!  ref = [0, 14.77810590694212];
-%!  sol = ode23 (@(t,y) y, [-2 0], 2);
-%!  assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
-%!test ## Solve in backward direction starting at t=0 with MaxStep option
-%!  ref = [-1.205364552835178, 0.951542399860817];
-%!  opt = odeset ("MaxStep", 1e-3);
-%!  sol = ode23 (@fpol, [0 -2], [2 0], opt);
-%!  assert ([abs(sol.x(8)-sol.x(7))], [1e-3], 1e-3);
-%!  assert ([sol.x(end), sol.y(end,:)], [-2, ref], 1e-3);
-%!test ## AbsTol option
-%!  opt = odeset ("AbsTol", 1e-5);
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test ## AbsTol and RelTol option
-%!  opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test ## RelTol and NormControl option -- higher accuracy
-%!  opt = odeset ("RelTol", 1e-8, "NormControl", "on");
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-4);
-%!test ## Keeps initial values while integrating
-%!  opt = odeset ("NonNegative", 2);
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, 2, 0], 1e-1);
-%!test ## Details of OutputSel and Refine can't be tested
-%!  opt = odeset ("OutputFcn", @fout, "OutputSel", 1, "Refine", 5);
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!test ## Stats must add further elements in sol
-%!  opt = odeset ("Stats", "on");
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert (isfield (sol, "stats"));
-%!  assert (isfield (sol.stats, "nsteps"));
-%!test ## Events option add further elements in sol
-%!  opt = odeset ("Events", @feve);
-%!  sol = ode23 (@fpol, [0 10], [2 0], opt);
-%!  assert (isfield (sol, "ie"));
-%!  assert (sol.ie(1), 2);
-%!  assert (isfield (sol, "xe"));
-%!  assert (isfield (sol, "ye"));
-%!test ## Events option, now stop integration
-%!  opt = odeset ("Events", @fevn, "NormControl", "on");
-%!  sol = ode23 (@fpol, [0 10], [2 0], opt);
-%!  assert ([sol.ie, sol.xe, sol.ye], ...
-%!    [2.0, 2.496110, -0.830550, -2.677589], .5e-1);
-%!test ## Events option, five output arguments
-%!  opt = odeset ("Events", @fevn, "NormControl", "on");
-%!  [t, y, vxe, ye, vie] = ode23 (@fpol, [0 10], [2 0], opt);
-%!  assert ([vie, vxe, ye], ...
-%!    [2.0, 2.496110, -0.830550, -2.677589], 1e-1);
-%!
-%!test ## Mass option as function
-%!  opt = odeset ("Mass", @fmas);
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test ## Mass option as matrix
-%!  opt = odeset ("Mass", eye (2,2));
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test ## Mass option as sparse matrix
-%!  opt = odeset ("Mass", sparse (eye (2,2)));
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test ## Mass option as function and sparse matrix
-%!  opt = odeset ("Mass", @fmsa);
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
-%!test ## Mass option as function and MStateDependence
-%!  opt = odeset ("Mass", @fmas, "MStateDependence", "strong");
-%!  sol = ode23 (@fpol, [0 2], [2 0], opt);
-%!  assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # two output arguments
+%! [t, y] = ode23 (@fpol, [0 2], [2 0]);
+%! assert ([t(end), y(end,:)], [2, fref], 1e-3);
+%!test  # anonymous function instead of real function
+%! fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%! [t, y] = ode23 (fvdb, [0 2], [2 0]);
+%! assert ([t(end), y(end,:)], [2, fref], 1e-3);
+%!test  # extra input arguments passed through
+%! [t, y] = ode23 (@fpol, [0 2], [2 0], 12, 13, "KL");
+%! assert ([t(end), y(end,:)], [2, fref], 1e-3);
+%!test  # empty OdePkg structure *but* extra input arguments
+%! opt = odeset;
+%! [t, y] = ode23 (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
+%! assert ([t(end), y(end,:)], [2, fref], 1e-2);
+%!test  # Solve vdp in fixed step sizes
+%! opt = odeset("TimeStepSize",0.1);
+%! [t, y] = ode23 (@fpol, [0,2], [2 0], opt);
+%! assert (t(:), [0:0.1:2]', 1e-3);
+%!test  # Solve another anonymous function below zero
+%! ref = [0, 14.77810590694212];
+%! [t, y] = ode23 (@(t,y) y, [-2 0], 2);
+%! assert ([t(end), y(end,:)], ref, 1e-2);
+%!test  # InitialStep option
+%! opt = odeset ("InitialStep", 1e-8);
+%! [t, y] = ode23 (@fpol, [0 0.2], [2 0], opt);
+%! assert ([t(2)-t(1)], [1e-8], 1e-9);
+%!test  # MaxStep option
+%! opt = odeset ("MaxStep", 1e-3);
+%! sol = ode23 (@fpol, [0 0.2], [2 0], opt);
+%! assert ([sol.x(5)-sol.x(4)], [1e-3], 1e-4);
+%!test  # Solve in backward direction starting at t=0
+%! ref = [-1.205364552835178, 0.951542399860817];
+%! sol = ode23 (@fpol, [0 -2], [2 0]);
+%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 5e-3);
+%!test  # Solve in backward direction starting at t=2
+%! ref = [-1.205364552835178, 0.951542399860817];
+%! sol = ode23 (@fpol, [2 0 -2], fref);
+%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 2e-2);
+%!test  # Solve another anonymous function in backward direction
+%! ref = [-1, 0.367879437558975];
+%! sol = ode23 (@(t,y) y, [0 -1], 1);
+%! assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
+%!test  # Solve another anonymous function below zero
+%! ref = [0, 14.77810590694212];
+%! sol = ode23 (@(t,y) y, [-2 0], 2);
+%! assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
+%!test  # Solve in backward direction starting at t=0 with MaxStep option
+%! ref = [-1.205364552835178, 0.951542399860817];
+%! opt = odeset ("MaxStep", 1e-3);
+%! sol = ode23 (@fpol, [0 -2], [2 0], opt);
+%! assert ([abs(sol.x(8)-sol.x(7))], [1e-3], 1e-3);
+%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 1e-3);
+%!test  # AbsTol option
+%! opt = odeset ("AbsTol", 1e-5);
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # AbsTol and RelTol option
+%! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # RelTol and NormControl option -- higher accuracy
+%! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-4);
+%!test  # Keeps initial values while integrating
+%! opt = odeset ("NonNegative", 2);
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, 2, 0], 1e-1);
+%!test  # Details of OutputSel and Refine can't be tested
+%! opt = odeset ("OutputFcn", @fout, "OutputSel", 1, "Refine", 5);
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%!test  # Stats must add further elements in sol
+%! opt = odeset ("Stats", "on");
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert (isfield (sol, "stats"));
+%! assert (isfield (sol.stats, "nsteps"));
+%!test  # Events option add further elements in sol
+%! opt = odeset ("Events", @feve);
+%! sol = ode23 (@fpol, [0 10], [2 0], opt);
+%! assert (isfield (sol, "ie"));
+%! assert (sol.ie(1), 2);
+%! assert (isfield (sol, "xe"));
+%! assert (isfield (sol, "ye"));
+%!test  # Events option, now stop integration
+%! warning ("off", "integrate_adaptive:unexpected_termination", "local");
+%! opt = odeset ("Events", @fevn, "NormControl", "on");
+%! sol = ode23 (@fpol, [0 10], [2 0], opt);
+%! assert ([sol.ie, sol.xe, sol.ye], ...
+%!   [2.0, 2.496110, -0.830550, -2.677589], .5e-1);
+%!test  # Events option, five output arguments
+%! warning ("off", "integrate_adaptive:unexpected_termination", "local");
+%! opt = odeset ("Events", @fevn, "NormControl", "on");
+%! [t, y, vxe, ye, vie] = ode23 (@fpol, [0 10], [2 0], opt);
+%! assert ([vie, vxe, ye], [2.0, 2.496110, -0.830550, -2.677589], 1e-1);
+%!test  # Mass option as function
+%! opt = odeset ("Mass", @fmas);
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # Mass option as matrix
+%! opt = odeset ("Mass", eye (2,2));
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # Mass option as sparse matrix
+%! opt = odeset ("Mass", sparse (eye (2,2)));
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # Mass option as function and sparse matrix
+%! opt = odeset ("Mass", @fmsa);
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # Mass option as function and MStateDependence
+%! opt = odeset ("Mass", @fmas, "MStateDependence", "strong");
+%! sol = ode23 (@fpol, [0 2], [2 0], opt);
+%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
 %!
 %! ## test for MvPattern option is missing
 %! ## test for InitialSlope option is missing
 %! ## test for MaxOrder option is missing
-%!
-%!  warning ("on", "Octave:InvalidArgument");
 
-## Local Variables: ***
-## mode: octave ***
-## End: ***
+## Test input validation
+%!error ode23 ()
+%!error ode23 (1)
+%!error ode23 (1,2)
+%!error <TRANGE must be a numeric>
+%!  ode23 (@fpol, {[0 25]}, [3 15 1]);
+%!error <TRANGE must be a .* vector>
+%!  ode23 (@fpol, [0 25; 25 0], [3 15 1]);
+%!error <TRANGE must contain at least 2 elements>
+%!  ode23 (@fpol, [1], [3 15 1]);
+%!error <invalid time span>
+%!  ode23 (@fpol, [1 1], [3 15 1]);
+%!error <INIT must be a numeric>
+%!  ode23 (@fpol, [0 25], {[3 15 1]});
+%!error <INIT must be a .* vector>
+%!  ode23 (@fpol, [0 25], [3 15 1; 3 15 1]);
+%!error <FUN must be a valid function handle>
+%!  ode23 (1, [0 25], [3 15 1]);
+%!error  # strange ODEOPT structure
+%!  opt = struct ("foo", 1);
+%!  [t, y] = ode23 (@fpol, [0 2], [2 0], opt);
+

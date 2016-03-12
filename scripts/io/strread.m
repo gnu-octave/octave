@@ -870,23 +870,23 @@ endfunction
 %! assert (b, {"2"});
 
 %!test
-%! assert (strread ("Hello World! // this is comment", "%s",...
-%! "commentstyle", "c++"), ...
-%! {"Hello"; "World!"});
+%! assert (strread ("Hello World! // this is comment", "%s",
+%!                  "commentstyle", "c++"),
+%!         {"Hello"; "World!"});
 %! assert (strread ("Hello World! % this is comment", "%s",...
-%! "commentstyle", "matlab"), ...
-%! {"Hello"; "World!"});
+%!                  "commentstyle", "matlab"), ...
+%!         {"Hello"; "World!"});
 %! assert (strread ("Hello World! # this is comment", "%s",...
-%! "commentstyle", "shell"), ...
-%! {"Hello"; "World!"});
+%!                  "commentstyle", "shell"), ...
+%!         {"Hello"; "World!"});
 
 %!test
 %! str = sprintf ("Tom 100 miles/hr\nDick 90 miles/hr\nHarry 80 miles/hr");
 %! fmt = "%s %f miles/hr";
 %! c = cell (1, 2);
 %! [c{:}] = strread (str, fmt);
-%! assert (c{1}, {"Tom"; "Dick"; "Harry"})
-%! assert (c{2}, [100; 90; 80])
+%! assert (c{1}, {"Tom"; "Dick"; "Harry"});
+%! assert (c{2}, [100; 90; 80]);
 
 %!test
 %! a = strread ("a b c, d e, , f", "%s", "delimiter", ",");
@@ -904,15 +904,15 @@ endfunction
 %! assert (a, int32 (10));
 %! assert (b, {"a"});
 
+## Bug #33536
 %!test
-%! ## Bug #33536
 %! [a, b, c] = strread ("1,,2", "%s%s%s", "delimiter", ",");
 %! assert (a{1}, "1");
 %! assert (b{1}, "");
 %! assert (c{1}, "2");
 
+## Bug #33536
 %!test
-%! ## Bug #33536
 %! a = strread ("[SomeText]", "[%s", "delimiter", "]");
 %! assert (a{1}, "SomeText");
 
@@ -932,8 +932,8 @@ endfunction
 %! assert (c, [3; NaN]);
 %! assert (d, int32 ([0; 0]));
 
+## Default format (= %f)
 %!test
-%! ## Default format (= %f)
 %! [a, b, c] = strread ("0.12 0.234 0.3567");
 %! assert (a, 0.12);
 %! assert (b, 0.234);
@@ -943,14 +943,14 @@ endfunction
 %! [a, b] = strread ("0.41 8.24 3.57 6.24 9.27", "%f%f", 2, "delimiter", " ");
 %! assert (a, [0.41; 3.57]);
 
+## TreatAsEmpty
 %!test
-%! ## TreatAsEmpty
 %! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", "delimiter", ",", "TreatAsEmpty", "NN");
 %! assert (c, int32 ([3; 0]));
 %! assert (d, [NaN; NaN]);
 
+## No delimiters at all besides EOL.  Plain reading numbers & strings
 %!test
-%! ## No delimiters at all besides EOL.  Plain reading numbers & strings
 %! str = "Text1Text2Text\nText398Text4Text\nText57Text";
 %! [a, b] = strread (str, "Text%dText%1sText");
 %! assert (a, int32 ([1; 398; 57]));
@@ -967,55 +967,52 @@ endfunction
 %! assert (d', [15, 25, 35]);
 
 ## Bug #44750
-%!test
-%! assert (strread ('/home/foo/','%s','delimiter','/','MultipleDelimsAsOne',1), ...
-%!         {"home"; "foo"});
+%!assert (strread ('/home/foo/','%s','delimiter','/','MultipleDelimsAsOne',1),
+%!        {"home"; "foo"})
 
 ## delimiter as sq_string and dq_string
-%!test
-%! assert (strread ("1\n2\n3", "%d", "delimiter", "\n"),
-%!         strread ("1\n2\n3", "%d", "delimiter", '\n'))
+%!assert (strread ("1\n2\n3", "%d", "delimiter", "\n"),
+%!        strread ("1\n2\n3", "%d", "delimiter", '\n'))
 
 ## whitespace as sq_string and dq_string
-%!test
-%! assert (strread ("1\b2\r3\b4\t5", "%d", "whitespace", "\b\r\n\t"),
-%!         strread ("1\b2\r3\b4\t5", "%d", "whitespace", '\b\r\n\t'))
+%!assert (strread ("1\b2\r3\b4\t5", "%d", "whitespace", "\b\r\n\t"),
+%!        strread ("1\b2\r3\b4\t5", "%d", "whitespace", '\b\r\n\t'))
 
 %!test
 %! str =  "0.31 0.86 0.94\n 0.60 0.72 0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", " ", "endofline", "\n", "whitespace", " "};
 %! [a, b, c] = strread (str, fmt, args{:});
-%! assert (a, [0.31; 0.60], 0.01)
-%! assert (b, [0.86; 0.72], 0.01)
-%! assert (c, [0.94; 0.87], 0.01)
+%! assert (a, [0.31; 0.60], 0.01);
+%! assert (b, [0.86; 0.72], 0.01);
+%! assert (c, [0.94; 0.87], 0.01);
 
 %!test
 %! str =  "0.31,0.86,0.94\n0.60,0.72,0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
 %! [a, b, c] = strread (str, fmt, args{:});
-%! assert (a, [0.31; 0.60], 0.01)
-%! assert (b, [0.86; 0.72], 0.01)
-%! assert (c, [0.94; 0.87], 0.01)
+%! assert (a, [0.31; 0.60], 0.01);
+%! assert (b, [0.86; 0.72], 0.01);
+%! assert (c, [0.94; 0.87], 0.01);
 
 %!test
 %! str =  "0.31 0.86 0.94\n 0.60 0.72 0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
 %! [a, b, c] = strread (str, fmt, args{:});
-%! assert (a, [0.31; 0.60], 0.01)
-%! assert (b, [0.86; 0.72], 0.01)
-%! assert (c, [0.94; 0.87], 0.01)
+%! assert (a, [0.31; 0.60], 0.01);
+%! assert (b, [0.86; 0.72], 0.01);
+%! assert (c, [0.94; 0.87], 0.01);
 
 %!test
 %! str =  "0.31, 0.86, 0.94\n 0.60, 0.72, 0.87";
 %! fmt = "%f %f %f";
 %! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
 %! [a, b, c] = strread (str, fmt, args{:});
-%! assert (a, [0.31; 0.60], 0.01)
-%! assert (b, [0.86; 0.72], 0.01)
-%! assert (c, [0.94; 0.87], 0.01)
+%! assert (a, [0.31; 0.60], 0.01);
+%! assert (b, [0.86; 0.72], 0.01);
+%! assert (c, [0.94; 0.87], 0.01);
 
 %!test
 %! [a, b] = strread (["Empty 1" char(10)], "Empty%s %f");
@@ -1027,22 +1024,22 @@ endfunction
 %! assert (a, NaN);
 %! assert (b, NaN);
 
+## Bug #35999
 %!test
-%! ## Bug #35999
 %! [a, b, c] = strread ("", "%f");
 %! assert (isempty (a));
 %! assert (isempty (b));
 %! assert (isempty (c));
 
+## Bug #37023
 %!test
-%! ## bug #37023
 %! [a, b] = strread (" 1. 1 \n  2 3 \n", "%f %f", "endofline", "\n");
 %! assert (a, [1; 2], 1e-15);
 %! assert (b, [1; 3], 1e-15);
 
 ## Test for no output arg (interactive use)
-%!test
-%! assert (strread (",2,,4\n5,,7,", "", "delimiter", ","), [NaN; 2; NaN; 4; 5; NaN; 7]);
+%!assert (strread (",2,,4\n5,,7,", "", "delimiter", ","),
+%!        [NaN; 2; NaN; 4; 5; NaN; 7])
 
 ## Test #1 bug #42609
 %!test
@@ -1073,7 +1070,6 @@ endfunction
 %! assert (c, [3; 6; 9]);
 
 ## Unsupported format specifiers
-%!test
 %!error <format specifiers are not supported> strread ("a", "%c")
 %!error <format specifiers are not supported> strread ("a", "%*c %d")
 %!error <format specifiers are not supported> strread ("a", "%q")
@@ -1090,12 +1086,10 @@ endfunction
 %!error <format specifiers are not supported> strread ("a", "%*u32 %d")
 
 ## Illegal format specifiers
-%!test
-%!error <no valid format conversion specifiers> strread ("1.0", "%z");
+%!error <no valid format conversion specifiers> strread ("1.0", "%z")
 
 ## Test for false positives in check for non-supported format specifiers
-%!test
-%! assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5);
+%!assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5)
 
 ## Test various forms of string format specifiers (bug #45712)
 %!test
@@ -1103,8 +1097,8 @@ endfunction
 %! [a, b, c, d] = strread (str, "%f %s %*s %3s %*3s %f", "delimiter", ":");
 %! assert ({a, b, c, d}, {14, {"1 z"}, {"3 z"}, 11});
 
-## Allow cuddling %sliteral but warn it is ambiguous
-%!test
+## Allow cuddling %sliteral but warn that it is ambiguous
+%!warning <Ambiguous '%s' specifier immediately before literal in column 1>
 %! [a, b] = strread ("abcxyz51\nxyz83\n##xyz101", "%s xyz %d");
 %! assert (a([1 3]), {"abc"; "##"});
 %! assert (isempty (a{2}), true);

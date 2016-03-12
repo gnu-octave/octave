@@ -158,7 +158,7 @@ endfunction
 %! assert (size (hsv), [10 10 3])
 
 %!test
-%! hsv = rgb2hsv (randi ([-128 127], 10, 10, 3, "uint16"));
+%! hsv = rgb2hsv (randi ([-128 127], 10, 10, 3, "int8"));
 %! assert (class (hsv), "double")
 %! assert (size (hsv), [10 10 3])
 
@@ -172,3 +172,4 @@ endfunction
 %! assert (rgb2hsv (rgb_double), expected)
 %! assert (rgb2hsv (rgb_uint8), expected, 0.005)
 %! assert (rgb2hsv (single (rgb_double)), single (expected))
+

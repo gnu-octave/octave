@@ -494,8 +494,8 @@ endfunction
 
 %!test
 %! ## solve small indefinite diagonal system
-%! ## despite A is indefinite, the iteration continues and converges
-%! ## indefiniteness of A is detected
+%! ## Despite A being indefinite, the iteration continues and converges.
+%! ## The indefiniteness of A is detected.
 %!
 %! N = 10;
 %! A = diag([1:N] .* (-ones(1, N) .^ 2)); b = rand (N, 1);
@@ -519,10 +519,9 @@ endfunction
 %! assert (relres > 1.0);
 %! assert (iter, 20); # should perform max allowable default number of iterations
 
-%!test
-%! ## solve tridiagonal system with 'perfect' preconditioner
-%! ## which converges in one iteration, so the eigest does not
-%! ## work and issues a warning
+%!warning <iteration converged too fast>
+%! ## solve tridiagonal system with "perfect" preconditioner which converges
+%! ## in one iteration, so the eigest does not work and issues a warning.
 %!
 %! N = 100;
 %! A = zeros (N, N);

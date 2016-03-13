@@ -97,6 +97,9 @@ octave_putenv (const std::string& name, const std::string& value)
 {
   int new_len = name.length () + value.length () + 2;
 
+  // FIXME: This leaks memory, but so would a call to setenv.
+  // Short of extreme measures to track memory, altering the environment
+  // always leaks memory, but the saving grace is that the leaks are small.
   char *new_item = static_cast<char*> (gnulib::malloc (new_len));
 
   sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());

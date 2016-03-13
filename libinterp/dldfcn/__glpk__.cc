@@ -285,6 +285,11 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     }
 
   glp_delete_prob (lp);
+  // Request that GLPK free all memory resources.
+  // This prevents reported memory leaks, but isn't strictly necessary.
+  // The memory blocks use are allocated once and don't grow with further
+  // calls to glpk so they would be reclaimed anyways when Octave exits. 
+  glp_free_env ();
 
   return errnum;
 }

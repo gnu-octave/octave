@@ -314,7 +314,10 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
   if (pos_fct > -1)
     { // reg expr. found: it is an internal function
       _edit_area->setCursorPosition (line, pos_fct);
-      _edit_area->SendScintilla (2613, line); // SCI_SETFIRSTVISIBLELINE
+      _edit_area->SendScintilla (2232, line);     // SCI_ENSUREVISIBLE
+                                                  // SCI_VISIBLEFROMDOCLINE
+      int vis_line = _edit_area->SendScintilla(2220, line);
+      _edit_area->SendScintilla (2613, vis_line); // SCI_SETFIRSTVISIBLELINE
       return;
     }
 
@@ -2474,13 +2477,20 @@ file_editor_tab::center_current_line (bool always)
     {
       int line, index;
       _edit_area->getCursorPosition (&line, &index);
+      // compensate for "folding":
+      // step 1: expand the current line, if it was folded
+      _edit_area->SendScintilla (2232, line);   // SCI_ENSUREVISIBLE
+
+      // step 2: map file line num to "visible" one // SCI_VISIBLEFROMDOCLINE
+      int vis_line = _edit_area->SendScintilla (2220, line);
 
       int first_line = _edit_area->firstVisibleLine ();
 
-      if (always || line == first_line || line > first_line + visible_lines - 2)
+      if (always || vis_line == first_line
+          || vis_line > first_line + visible_lines - 2)
         {
-          first_line = first_line + (line - first_line - (visible_lines-1)/2);
-          _edit_area->SendScintilla (2613,first_line); // SCI_SETFIRSTVISIBLELINE
+          first_line += (vis_line - first_line - (visible_lines - 1) / 2);
+          _edit_area->SendScintilla (2613, first_line); // SCI_SETFIRSTVISIBLELINE
         }
     }
 }

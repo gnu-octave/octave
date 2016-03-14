@@ -32,6 +32,7 @@
 AC_DEFUN([OCTAVE_PROG_CC_C11],
 [_OCTAVE_C_STD_TRY([c11],
 [_OCTAVE_C_C99_TEST_HEADER[
+#include <stddef.h>
 // Check _Alignas.
 char _Alignas (double) aligned_as_double;
 char _Alignas (0) no_special_alignment;
@@ -81,7 +82,12 @@ struct anonymous
 [_OCTAVE_C_C99_TEST_BODY[
   v1.i = 2;
   v1.w.k = 5;
-  _Static_assert (&v1.i == &v1.w.k, "Anonymous union alignment botch");
+  // FIXME: Octave-specific change, this feature test is modified from the
+  // original Autoconf source. The address-of operator is not an integral
+  // constant expression and cannot be used with _Static_assert.
+  _Static_assert (offsetof(struct anonymous, i)
+                  == offsetof(struct anonymous, w.k),
+                  "Anonymous union alignment botch");
 ]],
 dnl Try
 dnl GCC		-std=gnu11 (unused restrictive mode: -std=c11)

@@ -1512,6 +1512,7 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
   // Start with the last element of the array of child objects to
   // display them in the order they were added to the array.
 
+  has_light = false;
   for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
     {
       graphics_object go = gh_manager::get_object (children(i));
@@ -1519,7 +1520,10 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
       if (go.get_properties ().is_visible ())
         {
           if (go.isa ("light"))
-            draw (go);
+            {
+              draw (go);
+              has_light = true;
+            }
           else
             obj_list.push_back (go);
         }
@@ -1877,7 +1881,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                 }
             }
 
-          if (fl_mode > 0)
+          if ((fl_mode > 0) && has_light)
             glEnable (GL_LIGHTING);
           glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD) ? GL_SMOOTH
                                                                   : GL_FLAT);
@@ -2052,7 +2056,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
           if (fc_mode == TEXTURE)
             glDisable (GL_TEXTURE_2D);
 
-          if (fl_mode > 0)
+          if ((fl_mode > 0) && has_light)
             glDisable (GL_LIGHTING);
         }
       else
@@ -2080,7 +2084,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                 }
             }
 
-          if (el_mode > 0)
+          if ((el_mode > 0) && has_light)
             glEnable (GL_LIGHTING);
           glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD) ? GL_SMOOTH
                                                                   : GL_FLAT);
@@ -2285,7 +2289,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
           set_linestyle ("-");
           set_linewidth (0.5);
 
-          if (el_mode > 0)
+          if ((el_mode > 0) && has_light)
             glDisable (GL_LIGHTING);
         }
       else
@@ -2546,7 +2550,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
                 }
             }
 
-          if (fl_mode > 0)
+          if ((fl_mode > 0) && has_light)
             glEnable (GL_LIGHTING);
 
           // NOTE: Push filled part of patch backwards to avoid Z-fighting with
@@ -2605,7 +2609,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
               tess.end_polygon ();
             }
 
-          if (fl_mode > 0)
+          if ((fl_mode > 0) && has_light)
             glDisable (GL_LIGHTING);
         }
       else
@@ -2636,7 +2640,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
                 }
             }
 
-          if (el_mode > 0)
+          if ((el_mode > 0) && has_light)
             glEnable (GL_LIGHTING);
 
           set_linestyle (props.get_linestyle (), false);
@@ -2728,7 +2732,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
           set_linestyle ("-");
           set_linewidth (0.5);
 
-          if (el_mode > 0)
+          if ((el_mode > 0) && has_light)
             glDisable (GL_LIGHTING);
         }
       else

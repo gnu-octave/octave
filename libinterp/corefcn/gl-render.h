@@ -191,6 +191,9 @@ private:
 
   text_renderer txt_renderer;
 
+  // light object present and visible
+  bool has_light;
+
 private:
   class patch_tesselator;
 };

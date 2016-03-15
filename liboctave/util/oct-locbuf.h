@@ -42,7 +42,9 @@ public:
     if (size)
       data = new T [size];
   }
+
   ~octave_local_buffer (void) { delete [] data; }
+
   operator T *() const { return data; }
 
 private:

@@ -26,6 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 
+#if defined (HAVE_FFTW3_H)
+#  include <fftw3.h>
+#endif
+
 #include "oct-fftw.h"
 
 #include "defun-dld.h"

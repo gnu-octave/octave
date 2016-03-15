@@ -303,13 +303,12 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
 {
   if (len != 0)
     {
-      octave_idx_type *d = new octave_idx_type [len];
+      std::unique_ptr<octave_idx_type []> d (new octave_idx_type [len]);
+
       for (octave_idx_type i = 0; i < len; i++)
         d[i] = convert_index (nda.xelem (i), err, ext);
-      data = d;
 
-      if (err)
-        delete [] data;
+      data = d.release ();
     }
 }
 

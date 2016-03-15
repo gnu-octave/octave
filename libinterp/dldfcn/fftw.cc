@@ -228,24 +228,22 @@ used per default.\n\
           std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftw_export_wisdom_to_string ();
+          std::string wisdom_str (str);
+          free (str);
 
           if (arg1.length () < 1)
             fftw_forget_wisdom ();
           else if (! fftw_import_wisdom_from_string (arg1.c_str ()))
             error ("fftw: could not import supplied WISDOM");
 
-          retval = octave_value (std::string (str));
-
-          // FIXME: need to free string even if there is an exception.
-          free (str);
+          retval = octave_value (wisdom_str);
         }
       else //dwisdom getter
         {
           char *str = fftw_export_wisdom_to_string ();
-          retval = octave_value (std::string (str));
-
-          // FIXME: need to free string even if there is an exception.
+          std::string wisdom_str (str);
           free (str);
+          retval = octave_value (wisdom_str);
         }
     }
   else if (arg0 == "swisdom")
@@ -260,24 +258,22 @@ used per default.\n\
           std::string arg1 = args(1).xstring_value ("fftw: WISDOM must be a string");
 
           char *str = fftwf_export_wisdom_to_string ();
+          std::string wisdom_str (str);
+          free (str);
 
           if (arg1.length () < 1)
             fftwf_forget_wisdom ();
           else if (! fftwf_import_wisdom_from_string (arg1.c_str ()))
             error ("fftw: could not import supplied WISDOM");
 
-          retval = octave_value (std::string (str));
-
-          // FIXME: need to free string even if there is an exception.
-          free (str);
+          retval = octave_value (wisdom_str);
         }
       else //swisdom getter
         {
           char *str = fftwf_export_wisdom_to_string ();
-          retval = octave_value (std::string (str));
-
-          // FIXME: need to free string even if there is an exception.
+          std::string wisdom_str (str);
           free (str);
+          retval = octave_value (wisdom_str);
         }
     }
   else if (arg0 == "threads")

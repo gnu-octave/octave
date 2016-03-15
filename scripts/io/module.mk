@@ -9,7 +9,6 @@ scripts_io_FCN_FILES = \
   scripts/io/importdata.m \
   scripts/io/is_valid_file_id.m \
   scripts/io/strread.m \
-  scripts/io/textscan.m \
   scripts/io/textread.m
 
 scripts_iodir = $(fcnfiledir)/io

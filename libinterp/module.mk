@@ -112,8 +112,10 @@ octinclude_HEADERS += \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
   $(PARSER_INC) \
-  $(LIBINTERP_OPERATORS_INC) \
   $(COREFCN_INC)
+
+noinst_HEADERS += \
+  $(LIBINTERP_OPERATORS_INC)
 
 nodist_octinclude_HEADERS += \
   libinterp/corefcn/mxarray.h \

@@ -1702,16 +1702,21 @@ see @code{tmpfile}.\n\
 %! endif
 %! envdir = getenv (envname);
 %! unsetenv (envname);
+%! ## Strip trailing file separators from P_tmpdir
+%! def_tmpdir = P_tmpdir;
+%! while (length (def_tmpdir) > 2 && strfind (filesep ("all"), def_tmpdir(end)))
+%!   def_tmpdir(end) = [];
+%! endwhile
 %! unwind_protect
 %!   ## Test 0-argument form
 %!   fname = tempname ();
 %!   [tmpdir, tmpfname] = fileparts (fname);
-%!   assert (tmpdir, P_tmpdir);
+%!   assert (tmpdir, def_tmpdir);
 %!   assert (tmpfname (1:4), "oct-");
 %!   ## Test 1-argument form
-%!   tmp_tmpdir = [P_tmpdir filesep() substr(tmpfname, -5)];
+%!   tmp_tmpdir = [def_tmpdir filesep() substr(tmpfname, -5)];
 %!   mkdir (tmp_tmpdir) || error ("Unable to create tmp dir");
-%!   setenv (envname, P_tmpdir);
+%!   setenv (envname, def_tmpdir);
 %!   fname = tempname (tmp_tmpdir);
 %!   [tmpdir, tmpfname] = fileparts (fname);
 %!   assert (tmpdir, tmp_tmpdir);
@@ -1719,7 +1724,7 @@ see @code{tmpfile}.\n\
 %!   ## Test 1-argument form w/null tmpdir
 %!   fname = tempname ("");
 %!   [tmpdir, tmpfname] = fileparts (fname);
-%!   assert (tmpdir, P_tmpdir);
+%!   assert (tmpdir, def_tmpdir);
 %!   assert (tmpfname (1:4), "oct-");
 %!   ## Test 2-argument form
 %!   fname = tempname (tmp_tmpdir, "pfx-");

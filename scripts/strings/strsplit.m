@@ -196,7 +196,7 @@ function [cstr, matches] = strsplit (str, del, varargin)
       del = do_string_escapes (del);
     endif
     ## Escape characters which have a special meaning in regexp.
-    del = regexprep (del, '([{}()[\]^$.*?|\\])', '\\$1');
+    del = regexprep (del, '([{}()[\]^$.*?+|\\])', '\\$1');
   endif
 
   if (isempty (str))
@@ -300,6 +300,9 @@ endfunction
 ## Bug #44641
 %!assert (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"})
 %!assert (strsplit ('xxx\yyy', '\'), {"xxx", "yyy"})
+
+## Bug #47403
+%!assert (strsplit ('xxx+yyy', '+'), {"xxx", "yyy"})
 
 ## Test input validation
 %!error strsplit ()

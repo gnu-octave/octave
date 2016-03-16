@@ -187,7 +187,9 @@
 %!   if (exist ("/dev/initctl"))
 %!     assert (S_ISFIFO (stat ("/dev/initctl").mode));
 %!   endif
-%!   assert (S_ISLNK (lstat ("/dev/core").mode));
+%!   if (exist ("/dev/core"))
+%!     assert (S_ISLNK (lstat ("/dev/core").mode));
+%!   endif
 %! endif
 %! nm = tempname ();
 %! fid = fopen (nm, "wb");

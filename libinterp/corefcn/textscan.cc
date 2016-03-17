@@ -1058,7 +1058,6 @@ textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
   is.field_done ();
 }
 
-#include "builtin-defun-decls.h"
 /**
  *  Read data corresponding to the entire format string once,
  *  placing the values in row  row of retval.

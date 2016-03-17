@@ -1747,50 +1747,51 @@ textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
 // values in row ROW of retval. 
 
 int
-textscan::read_format_once (dstr& is,
-                            textscan_format_list& fmt_list,
+textscan::read_format_once (dstr& is, textscan_format_list& fmt_list,
                             std::list<octave_value> & retval,
                             Array<octave_idx_type> row, int& done_after)
 {
   const textscan_format_elt *elem = fmt_list.first ();
-  std::list<octave_value>::iterator out=retval.begin ();
+  std::list<octave_value>::iterator out = retval.begin ();
   bool no_conversions = true;
   bool done = false;
-  int i;
   bool conversion_failed = false;       // Record for ReturnOnError
-  bool this_conversion_failed;          // Record for ReturnOnError
 
-  octave_quit (); 		        // Allow ctrl-C
+  octave_quit ();
 
-  for (i = 0; i < fmt_list.numel (); i++)
+  for (int i = 0; i < fmt_list.numel (); i++)
     {
-      this_conversion_failed = false;
-      is.clear ();           // clear fail of previous numeric conversions
+      bool this_conversion_failed = false;
+
+      // Clear fail of previous numeric conversions.
+      is.clear ();
+
       switch (elem->type)
         {
-          case 'C':
-          case 'D':
-            std::cerr << "textscan: Conversion %" << elem->type
-                      << " not yet implemented\n";
-            break;
+        case 'C':
+        case 'D':
+          std::cerr << "textscan: Conversion %" << elem->type
+                    << " not yet implemented\n";
+          break;
 
-          case 'u':
-          case 'd':
-          case 'f':
-          case 'n':
-          case 's':
-          case '[':
-          case '^':
-          case 'q':
-          case 'c':
-            scan_one (is, *elem, *out, row);
-            break;
+        case 'u':
+        case 'd':
+        case 'f':
+        case 'n':
+        case 's':
+        case '[':
+        case '^':
+        case 'q':
+        case 'c':
+          scan_one (is, *elem, *out, row);
+          break;
 
-          case textscan_format_elt::literal_conversion :
-            match_literal (is, *elem);
-            break;
-          default:
-            error ("Unknown format element '%c'", elem->type);
+        case textscan_format_elt::literal_conversion :
+          match_literal (is, *elem);
+          break;
+
+        default:
+          error ("Unknown format element '%c'", elem->type);
         }
 
       if (!is.fail ())
@@ -1802,6 +1803,7 @@ textscan::read_format_once (dstr& is,
         {
           if (return_on_error < 2)
             this_conversion_failed = true;
+
           is.clear (is.rdstate () & ~std::ios::failbit);
         }
 
@@ -1810,12 +1812,14 @@ textscan::read_format_once (dstr& is,
 
       elem = fmt_list.next ();
       char *pos = is.tellg ();
+
       // FIXME -- these conversions "ignore delimiters".  Should they include
       // delimiters at the start of the conversion, or can those be skipped?
       if (elem->type != textscan_format_elt::literal_conversion
           // && elem->type != '[' && elem->type != '^' && elem->type != 'c'
          )
         skip_delim (is);
+
       if (this_conversion_failed)
         {
           if (is.tellg () == pos && ! conversion_failed)
@@ -1831,13 +1835,16 @@ textscan::read_format_once (dstr& is,
         {
           if (!done)
             done_after = i+1;
-          done = true;        // note EOF, but process others to get empty_val
+
+          // note EOF, but process others to get empty_val.
+          done = true;
         }
     }
+
   if (done)
     is.setstate (std::ios::eofbit);
 
-    // returning -3 means "error, and no columns read this row
+  // Returning -3 means "error, and no columns read this row".
   if (is.eof ())
     return (2 + no_conversions);
 

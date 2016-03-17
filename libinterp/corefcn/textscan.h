@@ -26,9 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_textscan_h)
 #define octave_textscan_h 1
 
-// For Inf and NaN
-#include "lo-ieee.h"
-
 // Delimited stream, optimised to read strings of characters separated
 // by single-character delimiters.
 //
@@ -52,9 +49,9 @@ public:
 
   dstr (std::istream& is, const dstr& ds);
 
-  ~dstr ();
+  ~dstr (void);
 
-  // Called when optimised sequence of get() is finished.  Ensures that
+  // Called when optimised sequence of get is finished.  Ensures that
   // there is a remaining delimiter in buf, or loads more data in.
   void field_done (void)
   {
@@ -66,17 +63,17 @@ public:
   // Return EOF at end of file, 0 otherwise.
   int refresh_buf (void);
 
-  // get a character, relying on caller to call field_done () if
+  // Get a character, relying on caller to call field_done if
   // a delimiter has been reached.
   int get (void)   { return delimited ? *idx++ : get_undelim (); }
 
-  // get a character, checking for underrun of the buffer
+  // Get a character, checking for underrun of the buffer.
   int get_undelim (void);
 
-  // Read character that will be got by the next get().
+  // Read character that will be got by the next get.
   int peek (void)   { return *idx; }
 
-  // Read character that will be got by the next get().
+  // Read character that will be got by the next get.
   int peek_undelim (void);
 
   // Undo a 'get' or 'get_undelim'.  It is the caller's responsibility
@@ -86,54 +83,85 @@ public:
   void putback (char /*ch*/ = 0)  { --idx; }
 
   int getline  (std::string& dest, char delim);
-  //int skipline (char delim);
+
+  // int skipline (char delim);
+
   char *read (char *buffer, int size, char* &new_start);
 
-  // return a position suitable to "seekg", valid only within this
-  // block between calls to field_done ().
+  // Return a position suitable to "seekg", valid only within this
+  // block between calls to field_done.
   char *tellg (void) { return idx; }
+
   void seekg (char *old_idx) { idx = old_idx; }
 
   bool eof (void)
-    {
-      return (eob == buf && i_stream.eof ()) || (flags & std::ios_base::eofbit);
-    }
+  {
+    return (eob == buf && i_stream.eof ()) || (flags & std::ios_base::eofbit);
+  }
+
   operator const void* (void) { return (!eof () && !flags) ? this : 0; }
 
   bool fail (void) { return flags & std::ios_base::failbit; }
+
   std::ios_base::iostate rdstate (void) { return flags; }
+
   void setstate (std::ios_base::iostate m) { flags = flags | m; }
+
   void clear (std::ios_base::iostate m
-                        = (std::ios_base::eofbit & ~std::ios_base::eofbit))
-    { flags = flags & m; }
+              = (std::ios_base::eofbit & ~std::ios_base::eofbit))
+  {
+    flags = flags & m;
+  }
 
   // Report if any characters have been consumed.
   // (get, read etc. not cancelled by putback or seekg)
+
   void progress_benchmark (void) { progress_marker = idx; }
+
   bool no_progress (void) { return progress_marker == idx; }
 
 private:
 
-  int bufsize;         // number of characters to read from the file at once
-  std::istream& i_stream;   // stream to read from
-  char *buf;           // temporary storage for a "chunk" of data
-  char *idx;           // Current read pointer
-  char *last;          // location of last delimiter in the buffer at buf
-                       //        (undefined if delimited is false)
-  char *eob;           // Position after last character in buffer
-  bool delimited;      // True if there is delimiter in the bufer after idx
-  int longest;         // longest lookahead required
-  const std::string delims; // sequence of single-character delimiters
+  // Number of characters to read from the file at once.
+  int bufsize;
 
-  std::streampos buf_in_file;  // Position of start of buf in original stream
+  // Stream to read from.
+  std::istream& i_stream;
 
-  char *progress_marker; // Marker to see if a read consumes any characters
+  // Temporary storage for a "chunk" of data.
+  char *buf;
+
+  // Current read pointer.
+  char *idx;
+
+  // Location of last delimiter in the buffer at buf (undefined if
+  // delimited is false).
+  char *last;
+
+  // Position after last character in buffer.
+  char *eob;
+
+  // True if there is delimiter in the bufer after idx.
+  bool delimited;
+
+  // Longest lookahead required.
+  int longest;
+
+  // Sequence of single-character delimiters.
+  const std::string delims;
+
+  // Position of start of buf in original stream.
+  std::streampos buf_in_file;
+
+  // Marker to see if a read consumes any characters.
+  char *progress_marker;
 
   std::ios_base::iostate flags; 
 
   // No copying!
 
   dstr (const dstr&);
+
   dstr& operator = (const dstr&);
 };
 
@@ -146,10 +174,10 @@ textscan_format_elt
 public:
 
   enum special_conversion
-    {
-      whitespace_conversion = 1,
-      literal_conversion = 2
-    };
+  {
+    whitespace_conversion = 1,
+    literal_conversion = 2
+  };
 
   textscan_format_elt (const char *txt = 0, int w = 0, int p = -1,
                        int bw = 0, bool dis = false, char typ = '\0',
@@ -157,30 +185,30 @@ public:
     : text (strsave (txt)), width (w), prec (p), bitwidth (bw),
       char_class (ch_class), type (typ), discard (dis),
       numeric(typ == 'd' || typ == 'u' || type == 'f' || type == 'n')
-      { }
+  { }
 
   textscan_format_elt (const textscan_format_elt& e)
     : text (strsave (e.text)), width (e.width), prec (e.prec),
       bitwidth (e.bitwidth), char_class (e.char_class), type (e.type),
       discard (e.discard), numeric (e.numeric)
-      { }
+  { }
 
   textscan_format_elt& operator = (const textscan_format_elt& e)
-    {
-      if (this != &e)
-        {
-          text = strsave (e.text);
-          width = e.width;
-          prec = e.prec;
-          bitwidth = e.bitwidth;
-          discard = e.discard;
-          type = e.type;
-          numeric = e.numeric;
-          char_class = e.char_class;
-        }
+  {
+    if (this != &e)
+      {
+        text = strsave (e.text);
+        width = e.width;
+        prec = e.prec;
+        bitwidth = e.bitwidth;
+        discard = e.discard;
+        type = e.type;
+        numeric = e.numeric;
+        char_class = e.char_class;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~textscan_format_elt (void) { delete [] text; }
 
@@ -236,27 +264,30 @@ public:
   octave_idx_type numel (void) const { return list.numel (); }
 
   const textscan_format_elt *first (void)
-    {
-      curr_idx = 0;
-      return current ();
-    }
+  {
+    curr_idx = 0;
+    return current ();
+  }
 
   const textscan_format_elt *current (void) const
-    { return list.numel () > 0 ? list.elem (curr_idx) : 0; }
+  {
+    return list.numel () > 0 ? list.elem (curr_idx) : 0;
+  }
 
   const textscan_format_elt *next (bool cycle = true)
-    {
-      curr_idx++;
+  {
+    curr_idx++;
 
-      if (curr_idx >= list.numel ())
-        {
-          if (cycle)
-            curr_idx = 0;
-          else
-            return 0;
-        }
-      return current ();
-    }
+    if (curr_idx >= list.numel ())
+      {
+        if (cycle)
+          curr_idx = 0;
+        else
+          return 0;
+      }
+
+    return current ();
+  }
 
   void printme (void) const;
 
@@ -264,8 +295,12 @@ public:
 
   operator const void* (void) const { return ok () ? this : 0; }
 
-  bool set_from_first;  // true if number of %f to be set from data file
-  bool has_string;      // at least one conversion specifier is s,q,c, or [...]
+  // True if number of %f to be set from data file.
+  bool set_from_first;
+
+  // At least one conversion specifier is s,q,c, or [...].
+  bool has_string;
+
   int read_first_row (dstr& is, textscan& ts);
 
   std::list<octave_value> out_buf (void) const { return (output_container); }
@@ -338,48 +373,72 @@ public:
       inf_nan(1) = Cell (octave_value ("nan"));
     };
 
+  ~textscan (void) { }
+
   octave_value scan (std::istream* isp, textscan_format_list& fmt_list,
                      octave_idx_type ntimes);
+
   void parse_options (const octave_value_list& args, int first_param,
-                         textscan_format_list& formats);
+                      textscan_format_list& formats);
 
 private:
 
   friend class textscan_format_list;
 
   std::string buf;
+
   // Three cases for delim_table and delim_list
   // 1. delim_table empty, delim_list empty:  whitespace delimiters
   // 2. delim_table = look-up table of delim chars, delim_list empty.
   // 3. delim_table non-empty, delim_list = Cell array of delim strings
-  std::string  whitespace_table;
-  std::string  delim_table;  // delim_table[i]=='\0' if i is not a delimiter,
-  std::string  delims;       // string of delimiter characters
-  Cell         comment_style;
-  int          comment_len;  // How far ahead to look to detect an open comment
-  int          comment_char; // first character of open comment
+
+  std::string whitespace_table;
+
+  // delim_table[i] == '\0' if i is not a delimiter.
+  std::string delim_table;
+
+  // String of delimiter characters.
+  std::string delims;
+
+  Cell comment_style;
+
+  // How far ahead to look to detect an open comment.
+  int comment_len;
+
+  // First character of open comment.
+  int comment_char;
+
   octave_idx_type buffer_size;
 
-  std::string  date_locale;
+  std::string date_locale;
 
-  Cell         inf_nan;      // 'inf' and 'nan' for formatted_double
-  Cell         delim_list;   // Array of strings of delimiters
-  int          delim_len;    // Longest delimiter
+  // 'inf' and 'nan' for formatted_double.
+  Cell inf_nan;
+
+  // Array of strings of delimiters.
+  Cell delim_list;
+
+  // Longest delimiter.
+  int delim_len;
 
   octave_value empty_value;
-  std::string  exp_chars;
-  int          header_lines;
-  Cell         treat_as_empty;
-  int          treat_as_empty_len;      // longest string to treat as "N/A"
-  std::string  whitespace;
-  short        eol1, eol2;
-  short        return_on_error;
+  std::string exp_chars;
+  int header_lines;
+  Cell treat_as_empty;
 
-  bool         collect_output;
-  bool         multiple_delims_as_one;
+  // Longest string to treat as "N/A".
+  int treat_as_empty_len;
 
-  bool         default_exp;
-  bool         numeric_delim;
+  std::string whitespace;
+
+  short eol1;
+  short eol2;
+  short return_on_error;
+
+  bool collect_output;
+  bool multiple_delims_as_one;
+  bool default_exp;
+  bool numeric_delim;
 
   octave_idx_type lines;
 
@@ -390,39 +449,57 @@ private:
   void scan_one (dstr& is, const textscan_format_elt& fmt,
                           octave_value& ov, Array<octave_idx_type> row);
 
-  // Methods to process a particular conversion specifier
+  // Methods to process a particular conversion specifier.
   double read_double (dstr& is, const textscan_format_elt& fmt) const;
+
   void scan_complex (dstr& is, const textscan_format_elt& fmt,
                      Complex& val) const;
 
   int scan_bracket (dstr& is, const char *pattern, std::string& val) const;
-  int scan_caret (dstr& is, const char *, std::string& val) const;
-  void scan_string (dstr& is, const textscan_format_elt& fmt,
-                             std::string& val) const;
-  void scan_cstring (dstr& is, const textscan_format_elt& fmt,
-                              std::string& val) const;
-  void scan_qstring (dstr& is, const textscan_format_elt& fmt,
-                              std::string& val);
 
-  // helper methods
+  int scan_caret (dstr& is, const char *, std::string& val) const;
+
+  void scan_string (dstr& is, const textscan_format_elt& fmt,
+                    std::string& val) const;
+
+  void scan_cstring (dstr& is, const textscan_format_elt& fmt,
+                     std::string& val) const;
+
+  void scan_qstring (dstr& is, const textscan_format_elt& fmt,
+                     std::string& val);
+
+  // Helper methods.
   std::string read_until (dstr& is, const Cell& delimiters,
                           const std::string& ends) const;
+
   int lookahead (dstr& is, const Cell& targets, int max_len,
                  bool case_sensitive = true) const;
 
-  char *get_field    (dstr& isp, unsigned int width) const;
+  char *get_field (dstr& isp, unsigned int width) const;
+
   bool match_literal (dstr& isp, const textscan_format_elt& elem);
+
   int  skip_whitespace (dstr& is, bool EOLstop = false);
-  int  skip_delim      (dstr& is);
+
+  int  skip_delim (dstr& is);
+
   bool is_delim (unsigned char ch) const
-    {
-      return (delim_table.length () == 0
-              && (isspace (ch) || ch == eol1 || ch == eol2))
-             || delim_table[ch] != '\0';
-    }
+  {
+    return ((delim_table.length () == 0
+             && (isspace (ch) || ch == eol1 || ch == eol2))
+            || delim_table[ch] != '\0');
+  }
+
   bool isspace (unsigned int ch) const { return whitespace_table[ch & 0xff]; }
-        // true if the only delimiter is whitespace
+
+  // True if the only delimiter is whitespace.
   bool whitespace_delim (void) const { return delim_table.length () == 0; }
+
+  // No copying!
+
+  textscan (const textscan&);
+
+  textscan& operator = (const textscan&);
 };
 
 #endif

@@ -1385,8 +1385,10 @@ textscan::parse_options (const octave_value_list& args, int first_param,
 
   // Create look-up table of delimiters, based on 'delimiter'
   delim_table = std::string (256, '\0');
-  delim_table[eol1] = '1';        // EOL is always a delimiter
-  delim_table[eol2] = '1';        // EOL is always a delimiter
+  if (eol1 >= 0 && eol1 < 256)
+    delim_table[eol1] = '1';        // EOL is always a delimiter
+  if (eol2 >= 0 && eol2 < 256)
+    delim_table[eol2] = '1';        // EOL is always a delimiter
   if (!have_delims)
     for (unsigned int i = 0; i < 256; i++)
       {

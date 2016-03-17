@@ -35,13 +35,18 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   [local_packages, global_packages] = installed_packages (local_list,
                                                           global_list);
   if (global_install)
-    installed_pkgs_lst = {local_packages{:}, global_packages{:}};
+    installed_pkgs_lst = [local_packages, global_packages];
   else
     installed_pkgs_lst = local_packages;
   endif
 
-  num_packages = length (installed_pkgs_lst);
+  all_pkgs_list = [local_packages, global_packages];
+  all_installed_pkgs_lst = cellfun (@(x) x.name, all_pkgs_list, ...
+                                    "uniformoutput", false);
+  num_packages = numel (installed_pkgs_lst);
   delete_idx = [];
+  available_packages = intersect (all_installed_pkgs_lst, pkgnames);
+
   for i = 1:num_packages
     cur_name = installed_pkgs_lst{i}.name;
     if (any (strcmp (cur_name, pkgnames)))
@@ -50,27 +55,21 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   endfor
 
   ## Are all the packages that should be uninstalled already installed?
-  if (length (delete_idx) != length (pkgnames))
-    if (global_install)
-      ## Try again for a locally installed package.
-      installed_pkgs_lst = local_packages;
+  if (numel (available_packages) != numel (pkgnames))
+    pkgs_not_installed = setxor (available_packages, pkgnames);
+    for idx = 1:numel (pkgs_not_installed)
+      warning ("package %s is not installed\n", pkgs_not_installed{idx});
+    endfor
+  endif
 
-      num_packages = length (installed_pkgs_lst);
-      delete_idx = [];
-      for i = 1:num_packages
-        cur_name = installed_pkgs_lst{i}.name;
-        if (any (strcmp (cur_name, pkgnames)))
-          delete_idx(end+1) = i;
-        endif
-      endfor
-      if (length (delete_idx) != length (pkgnames))
-        ## FIXME: We should have a better error message.
-        warning ("some of the packages you want to uninstall are not installed");
+  ## inform user if any global packages can't be uninstalled
+  if (! global_install)
+    for i = 1:numel (global_packages)
+      if (any (strcmp (global_packages{i}.name, pkgnames)))
+        warning ("%s is a global package and cannot be removed locally\n", ...
+          global_packages{i}.name);
       endif
-    else
-      ## FIXME: We should have a better error message.
-      warning ("some of the packages you want to uninstall are not installed");
-    endif
+    endfor
   endif
 
   if (isempty (delete_idx))
@@ -79,19 +78,19 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
 
     ## Compute the packages that will remain installed.
     idx = setdiff (1:num_packages, delete_idx);
-    remaining_packages = {installed_pkgs_lst{idx}};
-    to_delete_packages = {installed_pkgs_lst{delete_idx}};
+    remaining_packages = installed_pkgs_lst(idx);
+    to_delete_packages = installed_pkgs_lst(delete_idx);
 
     ## Check dependencies.
     if (handle_deps)
       error_text = "";
-      for i = 1:length (remaining_packages)
+      for i = 1:numel (remaining_packages)
         desc = remaining_packages{i};
         bad_deps = get_unsatisfied_deps (desc, to_delete_packages, true);
 
         ## Will the uninstallation break any dependencies?
         if (! isempty (bad_deps))
-          for i = 1:length (bad_deps)
+          for i = 1:numel (bad_deps)
             dep = bad_deps{i};
             error_text = [error_text " " desc.name " needs " ...
                           dep.package " " dep.operator " " dep.version "\n"];

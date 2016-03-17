@@ -7819,7 +7819,15 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 }
 
 /*
-%!assert (base64_encode (single (pi)), "2w9JQA==")
+%!test
+%! ## FIXME: better test for endianness?
+%! if (bitunpack (uint16 (1))(1) == 1)
+%!   expected = "2w9JQA==";
+%! else
+%!   expected = "QEkP2w==";
+%! endif
+%! assert (base64_encode (single (pi)), expected);
+
 %!assert (base64_encode (uint8 ([0 0 0])), "AAAA")
 %!assert (base64_encode (uint16 ([0 0 0])), "AAAAAAAA")
 %!assert (base64_encode (uint32 ([0 0 0])), "AAAAAAAAAAAAAAAA")

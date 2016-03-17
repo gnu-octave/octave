@@ -575,6 +575,8 @@
 
 %!test
 %! id = tmpfile ();
+%! ## FIXME: better test for endianness?
+%! big_endian = (bitunpack (uint16 (1))(1) == 0);
 %! fwrite (id, "abcdefg");
 %! frewind (id);
 %! [data, count] = fread (id);
@@ -582,15 +584,23 @@
 %! assert (count, 7);
 %! frewind (id);
 %! [data, count] = fread (id, 'int16');
-%! assert (data, [25185; 25699; 26213]);
+%! expected = [25185; 25699; 26213];
+%! if (big_endian)
+%!   expected = double (swapbytes (int16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 3);
 %! frewind (id);
 %! [data, count] = fread (id, [10, 2], 'int16');
-%! assert (data, [25185; 25699; 26213]);
+%! assert (data, expected);
 %! assert (count, 3);
 %! frewind (id);
 %! [data, count] = fread (id, [2, 10], 'int16');
-%! assert (data, [25185, 26213; 25699, 0]);
+%! expected = [25185, 26213; 25699, 0];
+%! if (big_endian)
+%!   expected = double (swapbytes (int16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 3);
 %! fclose (id);
 
@@ -623,19 +633,31 @@
 
 %!test
 %! id = tmpfile ();
+%! ## FIXME: better test for endianness?
+%! big_endian = (bitunpack (uint16 (1))(1) == 0);
 %! fwrite (id, char (0:15));
 %! frewind (id);
 %! [data, count] = fread (id, [1, Inf], "4*uint16", 3);
-%! assert (data, [256, 770, 1284, 1798, 3083, 3597]);
+%! expected = [256, 770, 1284, 1798, 3083, 3597];
+%! if (big_endian)
+%!   expected = double (swapbytes (uint16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 6);
 %! fclose (id);
 
 %!test
 %! id = tmpfile ();
+%! ## FIXME: better test for endianness?
+%! big_endian = (bitunpack (uint16 (1))(1) == 0);
 %! fwrite (id, char (0:15));
 %! frewind (id);
 %! [data, count] = fread (id, [3, Inf], "4*uint16", 3);
-%! assert (data, [256, 1798; 770, 3083; 1284, 3597]);
+%! expected = [256, 1798; 770, 3083; 1284, 3597];
+%! if (big_endian)
+%!   expected = double (swapbytes (uint16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 6);
 %! fclose (id);
 

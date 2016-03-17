@@ -68,7 +68,12 @@ function p = powerset (a, byrows_arg)
     endif
 
     ## Logical rep
-    b = reshape (bitunpack (uint32 (0:2^n-1)), 32, 2^n)(1:n,:);
+    m = uint32 (0:2^n-1);
+    ## FIXME: better test for endianness?
+    if (bitunpack (uint16 (1))(1) == 0)
+      m = swapbytes (m);
+    endif
+    b = reshape (bitunpack (m), 32, 2^n)(1:n,:);
     ## Convert to indices and lengths.
     [i, k] = find (b);
     k = sum (b, 1);

@@ -19,28 +19,28 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-/** @file
- * Implementation of textscan, a versatile text parser.
- */
+// @file
+// Implementation of textscan, a versatile text parser.
 
-#if !defined (octave_textscan_h)
+#if ! defined (octave_textscan_h)
 #define octave_textscan_h 1
 
 // For Inf and NaN
 #include "lo-ieee.h"
 
-/** Delimited stream, optimised to read strings of characters separated
- * by single-character delimiters.
- *
- * The reason behind this class is that octstream doesn't provide seek/tell,
- * but the opportunity has been taken to optimise for the textscan workload.
- *
- * The function reads chunks into a 4kiB buffer, and marks where the last
- * delimiter occurs.  Reads up to this delimiter can be fast.  After that
- * last delimiter, the remaining text is moved to the front of the buffer
- * and the buffer is refilled.  This also allows cheap seek and tell
- * operations within a "fast read" block.
- */
+// Delimited stream, optimised to read strings of characters separated
+// by single-character delimiters.
+//
+// The reason behind this class is that octstream doesn't provide
+// seek/tell, but the opportunity has been taken to optimise for the
+// textscan workload.
+//
+// The function reads chunks into a 4kiB buffer, and marks where the
+// last delimiter occurs.  Reads up to this delimiter can be fast.
+// After that last delimiter, the remaining text is moved to the front
+// of the buffer and the buffer is refilled.  This also allows cheap
+// seek and tell operations within a "fast read" block.
+
 class
 dstr
 {
@@ -210,9 +210,8 @@ public:
 
 class textscan;
 
-/**
- * The (parsed) sequence of format specifiers.
- */
+// The (parsed) sequence of format specifiers.
+
 class
 OCTINTERP_API
 textscan_format_list
@@ -306,14 +305,16 @@ private:
   textscan_format_list& operator = (const textscan_format_list&);
 };
 
-/**
- * Main class to implement textscan.
- * Reads data and parses it according to a textscan_format_list.
- * The calling sequence is
- *   textscan ();
- *   parse_options (...);
- *   scan (...);
- */
+
+// Main class to implement textscan.  Read data and parse it
+// according to a textscan_format_list.
+//
+// The calling sequence is
+//
+//   textscan ();
+//   parse_options (...);
+//   scan (...);
+
 class
 textscan
 {

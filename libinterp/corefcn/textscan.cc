@@ -19,28 +19,22 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-/** @file libinterp/corefcn/textscan
- *  Implement the 'textscan' octave command
- */
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-//#ifdef HAVE_CONFIG_H
-#include <config.h>
-//#endif
-
-#include "list"
+#include <list>
 
 #include "Array.cc"
 
 #include "Cell.h"
-#include "textscan.h"
-#include "oct-stream.h"
-#include "ovl.h"
-#include "utils.h"
 #include "defun.h"
-#include "ov-re-mat.h"
+#include "oct-stream.h"
+#include "ov.h"
+#include "ovl.h"
+#include "textscan.h"
+#include "utils.h"
 
-// Note: this info string tries to start new sentences on new lines
-// to minimize the number of lines changed when making changes to it.
 DEFUN (textscan, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})\n\
@@ -392,9 +386,10 @@ from the beginning of the file or string, at which the processing stopped.\n\
   return retval;
 }
 
-/********************/
-/* Calculate x^n */
-/* Used for ...e+nn  so that, for example, 1e2 is exactly 100 and 5e-1 is 1/2 */
+
+// Calculate x^n.  Used for ...e+nn  so that, for example, 1e2 is
+// exactly 100 and 5e-1 is 1/2
+
 double pown (double x, unsigned int n)
 {
   double retval = 1;
@@ -409,9 +404,9 @@ double pown (double x, unsigned int n)
   return retval;
 }
 
-/********************/
-/* Read a double considering the "precision" field of  fmt  and the */
-/* exp_chars  option of  options. */
+// Read a double considering the "precision" field of  fmt  and the
+// exp_chars  option of  options.
+
 double
 textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
 {
@@ -484,7 +479,7 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
       // skip remainder after '.', to field width, to look for exponent
       if (i == precision)
         while (width_left-- && is && (ch = is.get ()) >= '0' && ch <= '9')
-          ;  /* discard */
+          ;  // discard
       width_left++;
     }
 
@@ -575,11 +570,10 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
   return retval * sign;
 }
 
-/********************/
-// Read a single number: real, complex, inf, NaN,
-// possibly with limited precision.
-// Calls to this should be preceded by skip_whitespace.
+// Read a single number: real, complex, inf, NaN, possibly with limited
+// precision.  Calls to this should be preceded by skip_whitespace.
 // Calling that inside scan_complex would violate its const declaration.
+
 void
 textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
                         Complex& val) const
@@ -720,8 +714,8 @@ textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
     val = Complex (re, im);
 }
 
-/********************/
-// Return in  val  the run of characters from  is  NOT contained in  pattern.
+// Return in VAL the run of characters from IS NOT contained in PATTERN. 
+
 int
 textscan::scan_caret (dstr& is, const char *pattern, std::string& val)
           const
@@ -741,9 +735,9 @@ textscan::scan_caret (dstr& is, const char *pattern, std::string& val)
   return c1;
 }
 
-/********************/
-// Read until one of the strings in  delimiters  is found.
-// For efficiency,  ends  is a list of the last character of each delimiter
+// Read until one of the strings in DELIMITERS is found.  For
+// efficiency, ENDS is a list of the last character of each delimiter.
+
 std::string
 textscan::read_until (dstr& is, const Cell& delimiters,
                      const std::string& ends) const
@@ -782,12 +776,13 @@ textscan::read_until (dstr& is, const Cell& delimiters,
 }
 
 
-/********************/
-// Read stream until either fmt.width chars have been read, or options.delimiter
-// has been found
-// Does *not* rely on fmt being 's' -- used by formats like %6f to limit to 6
+// Read stream until either fmt.width chars have been read, or
+// options.delimiter has been found.  Does *not* rely on fmt being 's'.
+// Used by formats like %6f to limit to 6.
+
 void
-textscan::scan_string (dstr& is, const textscan_format_elt& fmt, std::string& val) const
+textscan::scan_string (dstr& is, const textscan_format_elt& fmt,
+                       std::string& val) const
 {
   if (delim_list.numel () == 0)
     {
@@ -821,8 +816,8 @@ textscan::scan_string (dstr& is, const textscan_format_elt& fmt, std::string& va
     }
 }
 
-/********************/
-// Return in  val  the run of characters from  is  contained in  pattern.
+// Return in VAL the run of characters from IS contained in PATTERN.
+
 int
 textscan::scan_bracket (dstr& is, const char *pattern, std::string& val)
           const
@@ -839,10 +834,10 @@ textscan::scan_bracket (dstr& is, const char *pattern, std::string& val)
   return c1;
 }
 
-/********************/
-// Return in  val  a string, either delimited by whitespace/delimiters, or
-// enclosed in a pair of double quotes ("...").  Enclosing quotes are removed.
-// A consecutive pair "" is inserted into  val  as a single ".
+// Return in VAL a string, either delimited by whitespace/delimiters, or
+// enclosed in a pair of double quotes ("...").  Enclosing quotes are
+// removed.  A consecutive pair "" is inserted into VAL as a single ".
+
 void
 textscan::scan_qstring (dstr& is, const textscan_format_elt& fmt,
                         std::string& val)
@@ -868,9 +863,9 @@ textscan::scan_qstring (dstr& is, const textscan_format_elt& fmt,
     }
 }
 
-/********************/
-// Read from  is  into  val  a string of the next  fmt.width  characters,
+// Read from IS into VAL a string of the next fmt.width characters,
 // including any whitespace or delimiters.
+
 void
 textscan::scan_cstring (dstr& is, const textscan_format_elt& fmt,
                         std::string& val) const
@@ -888,9 +883,8 @@ textscan::scan_cstring (dstr& is, const textscan_format_elt& fmt,
 }
 
 
-/**
- *  Read a single '%...' conversion and place it in position  row  of  ov.
- */
+//  Read a single '%...' conversion and place it in position ROW of OV.
+
 void
 textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
                     octave_value& ov, Array<octave_idx_type> row)
@@ -1058,10 +1052,9 @@ textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
   is.field_done ();
 }
 
-/**
- *  Read data corresponding to the entire format string once,
- *  placing the values in row  row of retval.
- */
+// Read data corresponding to the entire format string once, placing the
+// values in row ROW of retval. 
+
 int
 textscan::read_format_once (dstr& is,
                             textscan_format_list& fmt_list,
@@ -1163,7 +1156,6 @@ textscan::read_format_once (dstr& is,
   return 0;
 }
 
-/********************/
 void
 textscan::parse_options (const octave_value_list& args, int first_param,
                          textscan_format_list& fmt_list)
@@ -1399,9 +1391,9 @@ textscan::parse_options (const octave_value_list& args, int first_param,
       delim_table[delims[i]] = '1';
 }
 
-/********************/
-// skip comments, and characters specified by the "Whitespace" option
-// If EOLstop==true, doesn't skip end of line
+// Skip comments, and characters specified by the "Whitespace" option.
+// If EOLstop == true, don't skip end of line.
+
 int
 textscan::skip_whitespace (dstr& is, bool EOLstop)
 {
@@ -1481,10 +1473,10 @@ textscan::skip_whitespace (dstr& is, bool EOLstop)
   return c1;
 }
 
-/********************/
 // See if the next few characters match one of the strings in target.
-// For efficiency,  max_len  is the cached longest length of any target.
-// Returns -1 if none is found, or the inde of the match.
+// For efficiency, MAX_LEN is the cached longest length of any target.
+// Return -1 if none is found, or the index of the match.
+
 int
 textscan::lookahead (dstr& is, const Cell& targets, int max_len,
                      bool case_sensitive) const
@@ -1524,8 +1516,7 @@ textscan::lookahead (dstr& is, const Cell& targets, int max_len,
   return i;
 }
 
-/********************/
-// Skip delimiters -- multiple if  MultipleDelimsAsOne specified.
+// Skip delimiters -- multiple if MultipleDelimsAsOne specified.
 int
 textscan::skip_delim (dstr& is)
 {
@@ -1594,10 +1585,10 @@ textscan::skip_delim (dstr& is)
   return c1;
 }
 
-/********************/
-// Read in as much of the input as coincides with the literal in
-// the format string.
-// Return "true" if the entire literal is matched, else false (and set failbit)
+// Read in as much of the input as coincides with the literal in the
+// format string.  Return "true" if the entire literal is matched, else
+// false (and set failbit).
+
 bool
 textscan::match_literal (dstr& is, const textscan_format_elt& fmt)
 {
@@ -1620,7 +1611,6 @@ textscan::match_literal (dstr& is, const textscan_format_elt& fmt)
 }
 
 
-/********************/
 textscan_format_list::textscan_format_list (const std::string& s)
   : set_from_first (false), has_string (false), nconv (0), curr_idx (0),
     list (dim_vector (16, 1)), buf (0)
@@ -1715,7 +1705,6 @@ textscan_format_list::textscan_format_list (const std::string& s)
   delete buf;
 }
 
-/********************/
 textscan_format_list::~textscan_format_list (void)
 {
   octave_idx_type n = list.numel ();
@@ -1727,7 +1716,6 @@ textscan_format_list::~textscan_format_list (void)
     }
 }
 
-/********************/
 void
 textscan_format_list::add_elt_to_list (unsigned int width, int prec,
                                        int bitwidth, octave_value val_type,
@@ -1762,7 +1750,6 @@ textscan_format_list::add_elt_to_list (unsigned int width, int prec,
     }
 }
 
-/********************/
 void
 textscan_format_list::process_conversion (const std::string& s, size_t& i,
                                           size_t n, octave_idx_type& num_elts)
@@ -1946,17 +1933,18 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
   nconv = -1;
 }
 
-/**
- * Parse [...] and [^...]
- * Matlab does not expand expressions like A-Z, but they are useful, and so
- * we parse them "carefully".  We treat '-' as a usual character unless
- * both start and end characters are from the same class (upper case, lower
- * case, numeric), or this is not the first '-' in the pattern.
- *
- * Keeps both a running list of characters and a mask of which chars have
- * occurred.  The first is efficient for patterns with few characters.  The
- * latter is efficient for [^...] patterns.
- */
+// Parse [...] and [^...]
+//
+// Matlab does not expand expressions like A-Z, but they are useful, and
+// so we parse them "carefully".  We treat '-' as a usual character
+// unless both start and end characters are from the same class (upper
+// case, lower case, numeric), or this is not the first '-' in the
+// pattern.
+//
+// Keep both a running list of characters and a mask of which chars have
+// occurred.  The first is efficient for patterns with few characters.
+// The latter is efficient for [^...] patterns.
+
 static std::string
 textscan_char_class (const std::string& pattern)
 {
@@ -2039,7 +2027,6 @@ textscan_char_class (const std::string& pattern)
   return retval;
 }
 
-/********************/
 int
 textscan_format_list::finish_conversion (const std::string& s, size_t& i,
                                          size_t n, unsigned int& width,
@@ -2107,7 +2094,6 @@ textscan_format_list::finish_conversion (const std::string& s, size_t& i,
   return retval;
 }
 
-/********************
 void
 textscan_format_list::printme (void) const
 {
@@ -2136,11 +2122,10 @@ textscan_format_list::printme (void) const
         << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
-* */
 
-/********************/
-// If FORMAT is explicitly "", it is assumed to be "%f" repeated enough times
-// to read the first row of the file.  Set it now.
+// If FORMAT is explicitly "", it is assumed to be "%f" repeated enough
+// times to read the first row of the file.  Set it now.
+
 int
 textscan_format_list::read_first_row (dstr& is, textscan& ts)
 {
@@ -2227,12 +2212,11 @@ textscan_format_list::read_first_row (dstr& is, textscan& ts)
   return retval;             // May have returned 4 above.
 }
 
-/**
- * Perform actual textscan: read data from stream, and create cell array
- */
+// Perform actual textscan: read data from stream, and create cell array.
+
 octave_value
 textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
-             octave_idx_type ntimes)
+                octave_idx_type ntimes)
 {
   octave_value retval;
 
@@ -2423,12 +2407,10 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
   return retval;
 }
 
-/********************/
-/**
- * Create a delimited stream, reading from is, with delimiters delims,
- * and allowing reading of up to tellg() + longest_lookeahead.
- * When is is at EOF, lookahead may be padded by ASCII nuls.
- */
+// Create a delimited stream, reading from is, with delimiters delims,
+// and allowing reading of up to tellg + longest_lookeahead.  When is
+// is at EOF, lookahead may be padded by ASCII nuls.
+
 dstr::dstr (std::istream& is, const std::string& delimiters,
             int longest_lookahead, octave_idx_type bsize)
     : bufsize (bsize), i_stream (is), longest (longest_lookahead),
@@ -2469,9 +2451,9 @@ dstr::~dstr ()
   delete [] buf;
 }
 
-/** Read a character from the buffer, refilling the buffer from the
- * file if necessary.
- */
+// Read a character from the buffer, refilling the buffer from the file
+// if necessary.
+
 int
 dstr::get_undelim ()
 {
@@ -2500,9 +2482,9 @@ dstr::get_undelim ()
   return retval;
 }
 
-/** Return the next character to be read without incrementing the pointer,
- * refilling the buffer from the file if necessary.
- */
+// Return the next character to be read without incrementing the
+// pointer, refilling the buffer from the file if necessary.
+
 int
 dstr::peek_undelim ()
 {
@@ -2512,12 +2494,11 @@ dstr::peek_undelim ()
   return retval;
 }
 
-/**
- * Copy remaining unprocessed data to the start of the buffer and load
- * new data to fill it.
- * Returns EOF if the file is at EOF before reading any data and all of the
- * data that has been read has been processed.
- */
+// Copy remaining unprocessed data to the start of the buffer and load
+// new data to fill it.  Return EOF if the file is at EOF before
+// reading any data and all of the data that has been read has been
+// processed.
+
 int
 dstr::refresh_buf (void)
 {
@@ -2582,12 +2563,12 @@ dstr::refresh_buf (void)
   return retval;
 }
 
-/** Return a pointer to a block of data of size size, assuming that a
- * sufficiently large buffer is available in buffer, if required.
- * If called when delimited==true, and size is no greater than
- * longest_lookahead then this will not call refresh_buf(), so seekg()
- * still works.  Otherwise, seekg may be invalidated.
- */
+// Return a pointer to a block of data of size size, assuming that a
+// sufficiently large buffer is available in buffer, if required.
+// If called when delimited == true, and size is no greater than
+// longest_lookahead then this will not call refresh_buf, so seekg
+// still works.  Otherwise, seekg may be invalidated.
+
 char *
 dstr::read (char *buffer, int size, char* &prior_tell)
 {
@@ -2648,10 +2629,9 @@ dstr::read (char *buffer, int size, char* &prior_tell)
   return retval;
 }
 
-/**
- * Return in out an entire line, terminated by delim.
- * On input, out must have length at least 1.
- */
+// Return in OUT an entire line, terminated by delim.  On input, OUT
+// must have length at least 1.
+
 int
 dstr::getline (std::string& out, char delim)
 {

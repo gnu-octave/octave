@@ -153,11 +153,15 @@ endfunction
 
 
 %!test
+%! def_tmpdir = P_tmpdir ();
+%! while (length (def_tmpdir) > 2 && strfind (filesep ("all"), def_tmpdir(end)))
+%!   def_tmpdir(end) = [];
+%! endwhile
 %! [status, attr] = fileattrib (P_tmpdir ());
 %! assert (status);
 %! assert (isstruct (attr));
 %! assert (numfields (attr), 14);
-%! assert (attr.Name, P_tmpdir ());
+%! assert (attr.Name, def_tmpdir);
 %! assert (attr.directory);
 %! if (ispc ())
 %!   assert (! isnan (attr.archive));

@@ -3774,7 +3774,7 @@ psi (const T& z)
       for (octave_idx_type k = z; k > 0; k--)
         p += 1.0 / (2 * k - 1);
 
-      p = - euler_mascheroni - 2 * log (2) + 2 * (p);
+      p = - euler_mascheroni - 2 * gnulib::log (2) + 2 * (p);
     }
   else
     {

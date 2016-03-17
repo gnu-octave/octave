@@ -98,6 +98,7 @@ dstr::get_undelim ()
   else
     {
       refresh_buf ();
+
       if (eof ())
         {
           setstate (std::ios_base::eofbit);
@@ -106,8 +107,10 @@ dstr::get_undelim ()
       else
         retval = *idx++;
     }
+
   if (idx >= last)
     delimited = false;
+
   return retval;
 }
 
@@ -152,7 +155,7 @@ dstr::refresh_buf (void)
   idx = buf;
 
   int gcount;   // chars read
-  if (!i_stream.eof ())
+  if (! i_stream.eof ())
     {
       buf_in_file = i_stream.tellg ();   // record for destructor
       i_stream.read (buf + old_remaining, bufsize - old_remaining);
@@ -166,6 +169,7 @@ dstr::refresh_buf (void)
   if (gcount == 0)
     {
       delimited = false;
+
       if (eob != buf)              // no more data in file, but still some to go
         retval = 0;
       else
@@ -180,6 +184,7 @@ dstr::refresh_buf (void)
           if (strchr (delims.c_str (), *last))
             break;
         }
+
       if (last - buf < 0)
         delimited = false;
 
@@ -202,6 +207,7 @@ char *
 dstr::read (char *buffer, int size, char* &prior_tell)
 {
   char *retval;
+
   if (eob  - idx > size)
     {
       retval = idx;
@@ -215,6 +221,7 @@ dstr::read (char *buffer, int size, char* &prior_tell)
       // read position, try to keep it in the active buffer.
       // In the current code, prior_tell==idx for each call,
       // so this is not necessary, just a precaution.
+
       if (eob - prior_tell + size < bufsize)
         {
           octave_idx_type gap = idx - prior_tell;
@@ -226,6 +233,7 @@ dstr::read (char *buffer, int size, char* &prior_tell)
         {
           refresh_buf ();
         }
+
       prior_tell = buf;
 
       if (eob - idx > size)
@@ -248,13 +256,14 @@ dstr::read (char *buffer, int size, char* &prior_tell)
               retval = buffer;
               // FIXME -- read bufsize at a time
               int i;
-              for (i = 0; i < size && !eof (); i++)
+              for (i = 0; i < size && ! eof (); i++)
                 *buffer++ = get_undelim ();
               if (eof ())
                 memset (buffer, 0, size - i);
             }
         }
     }
+
   return retval;
 }
 
@@ -313,6 +322,7 @@ textscan_format_list::textscan_format_list (const std::string& s)
   else
     {
       set_from_first = false;
+
       while (i < n)
         {
           have_more = true;
@@ -368,7 +378,8 @@ textscan_format_list::textscan_format_list (const std::string& s)
     }
 
   if (have_more)
-    add_elt_to_list (width, prec, bitwidth, octave_value (), discard, type, num_elts);
+    add_elt_to_list (width, prec, bitwidth, octave_value (), discard,
+                     type, num_elts);
 
   list.resize (dim_vector (num_elts, 1));
 
@@ -408,7 +419,7 @@ textscan_format_list::add_elt_to_list (unsigned int width, int prec,
               list.resize (dim_vector (2 * num_elts, 1));
             }
 
-          if (!discard)
+          if (! discard)
             {
               output_container.push_back (val_type);
             }
@@ -527,7 +538,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
             else
               done = false;
 
-            if (!done)
+            if (! done)
               {
                 bitwidth = 32;
                 if (type == 'd')
@@ -570,7 +581,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
           goto fini;
 
         case 's': case 'q': case '[': case 'c':
-          if (!discard)
+          if (! discard)
             val_type = octave_value (Cell ());
           *buf << (type = s[i++]);
           has_string = true;
@@ -578,7 +589,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
 
         fini:
           {
-            if (!have_width)
+            if (! have_width)
               {
                 if (type == 'c')        // %c defaults to one character
                   width = 1;
@@ -669,13 +680,14 @@ textscan_char_class (const std::string& pattern)
                 }
             }
         }
-      if (!was_range)
+      if (! was_range)
         {
           if (mask[ch]++ == 0)
             retval[out++] = ch;
           else if (ch != '-')
             warning_with_id ("octave:textscan-pattern",
                              "textscan: [...] contains two '%c's", ch);
+
           if (prev == '-' && mask['-'] >= 2)
             warning_with_id ("octave:textscan-pattern",
                              "textscan: [...] contains two '-'s "
@@ -685,13 +697,15 @@ textscan_char_class (const std::string& pattern)
       prev_prev_was_range = prev_was_range;
       prev_was_range = was_range;
     }
+
   if (flip)                             // [^...]
     {
       out = 0;
       for (int i = 0; i < 256; i++)
-        if (!mask[i])
+        if (! mask[i])
           retval[out++] = i;
     }
+
   retval.resize (out);
 
   return retval;
@@ -801,7 +815,9 @@ textscan_format_list::read_first_row (dstr& is, textscan& ts)
 {
   // Read first line and strip end-of-line, which may be two characters
   std::string first_line (20, ' ');
+
   is.getline (first_line, static_cast<char> (ts.eol2));
+
   if (first_line.length () > 0
       && first_line[first_line.length () - 1] == ts.eol1)
     first_line.resize (first_line.length () - 1);
@@ -817,7 +833,7 @@ textscan_format_list::read_first_row (dstr& is, textscan& ts)
   int retval = 0;
 
   // read line, creating output_container as we go
-  while (!ds.eof ())
+  while (! ds.eof ())
     {
       bool already_skipped_delim = false;
       ts.skip_whitespace (ds);
@@ -858,20 +874,27 @@ textscan_format_list::read_first_row (dstr& is, textscan& ts)
             }
 
           val = ts.empty_value.scalar_value ();
-          if (!--max_empty)
+
+          if (! --max_empty)
             break;
         }
+
       if (val.imag () == 0)
         val_type = octave_value (NDArray (dv, val.real ()));
       else
         val_type = octave_value (ComplexNDArray (dv, val));
+
       output_container.push_back (val_type);
+
       if (! already_skipped_delim)
         ts.skip_delim (ds);
+
       if (! progress && ds.no_progress ())
         break;
+
       nconv++;
     }
+
   output_container.pop_front (); // discard empty element from constructor
 
   //Create  fmt  now that the size is known
@@ -890,10 +913,12 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
 {
   octave_value retval;
 
-  if (!isp)
+  if (! isp)
     error ("internal error: textscan called with invalid istream");
+
   if (fmt_list.num_conversions () == -1)
     error ("textscan: invalid format specified");
+
   if (fmt_list.num_conversions () == 0)
     error ("textscan: no valid format conversion specifiers\n");
 
@@ -945,7 +970,7 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
       lines = 1;
 
       done_after = fmt_list.numel () + 1;
-      if (!err)
+      if (! err)
         row = 1;  // the above puts the first line into fmt_list.out_buf ()
     }
   else
@@ -972,6 +997,7 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
             merge_with_prev [conv++] = true;
           else
             merge_with_prev [conv++] = false;
+
           prev_type = col->type_id ();
         }
     }
@@ -981,25 +1007,28 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
   if (fmt_list.num_conversions () == 0)
     error ("textscan: No conversions specified");
 
-
   // Read the data.  This is the main loop.
-  if (!err)
-    for (/* row set ~30 lines above */; row < ntimes || ntimes == -1; row++)
-      {
-        if (row == 0 || row >= size)
-          {
-            size += size+1;
-            for (std::list<octave_value>::iterator col = out.begin ();
-                 col != out.end (); col++)
-              *col = (*col).resize (dim_vector (size, 1), 0);
-          }
-        row_idx(0) = row;
-        err = read_format_once (is, fmt_list, out, row_idx, done_after);
-        if (err > 0 || !is || (lines >= ntimes && ntimes > -1))
-          break;
-      }
+  if (! err)
+    {
+      for (/* row set ~30 lines above */; row < ntimes || ntimes == -1; row++)
+        {
+          if (row == 0 || row >= size)
+            {
+              size += size+1;
+              for (std::list<octave_value>::iterator col = out.begin ();
+                   col != out.end (); col++)
+                *col = (*col).resize (dim_vector (size, 1), 0);
+            }
 
-  if ((err & 4) && !return_on_error)
+          row_idx(0) = row;
+          err = read_format_once (is, fmt_list, out, row_idx, done_after);
+
+          if (err > 0 || ! is || (lines >= ntimes && ntimes > -1))
+            break;
+        }
+    }
+
+  if ((err & 4) && ! return_on_error)
     error ("textscan: Read error in field %d of row %d",
            done_after + 1, row + 1);
 
@@ -1017,16 +1046,17 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
   // convert return value to Cell array
   Array<octave_idx_type> ra_idx (dim_vector (1,2));
 
-          // (err & 1) means "error, and no columns read this row
-          // FIXME -- This may redundant now that done_after=0 says the same
+  // (err & 1) means "error, and no columns read this row
+  // FIXME -- This may redundant now that done_after=0 says the same
   if (err & 1)
     done_after = out.size () + 1;
+
   int valid_rows = (row == ntimes) ? ntimes : ((err & 1) ? row : row+1);
   dim_vector dv (valid_rows, 1);
 
   ra_idx(0) = 0;
   int i = 0;
-  if (!collect_output)
+  if (! collect_output)
     {
       retval = Cell (dim_vector (1, out.size ()));
       for (std::list<octave_value>::iterator col = out.begin ();
@@ -1052,7 +1082,7 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
       for (std::list<octave_value>::iterator col = out.begin ();
            col != out.end (); col++)
         {
-          if (!merge_with_prev [conv++])  // including first time
+          if (! merge_with_prev [conv++])  // including first time
             {
               if (prev_type != -1)
                 {
@@ -1074,6 +1104,7 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
       ra_idx(1) = i;
       retval = do_cat_op (retval, octave_value (Cell (cur)), ra_idx);
     }
+
   return retval;
 }
 
@@ -1101,12 +1132,12 @@ pown (double x, unsigned int n)
 double
 textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
 {
-  int    sign = 1;
-  unsigned int    width_left = fmt.width;
-  double retval  = 0;
-  bool   valid = false;         // syntactically correct double?
+  int sign = 1;
+  unsigned int width_left = fmt.width;
+  double retval = 0;
+  bool valid = false;         // syntactically correct double?
 
-  int    ch = is.peek ();
+  int ch = is.peek ();
 
   if (ch == '+')
     {
@@ -1133,6 +1164,7 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
         retval = retval * 10 + (ch - '0');
       width_left++;
     }
+
   // Read fractional part, up to specified precision
   if (ch == '.' && width_left)
     {
@@ -1145,7 +1177,8 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
 
       if (precision == -1)
         precision = 1<<30;           // FIXME Should be MAXINT
-      if (!valid)                    // if there was nothing before '.'...
+
+      if (! valid)                    // if there was nothing before '.'...
         is.get ();                   // ...ch was a "peek", not "get".
 
       for (i = 0; i < precision; i++)
@@ -1160,8 +1193,8 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
         }
 
       // round up if we truncated and the next digit is >= 5
-      if ((i == precision || !width_left) && (ch = is.get ()) >= '5'
-                                              && ch <= '9')
+      if ((i == precision || ! width_left) && (ch = is.get ()) >= '5'
+          && ch <= '9')
         retval += multiplier;
 
       if (i > 0)
@@ -1171,6 +1204,7 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
       if (i == precision)
         while (width_left-- && is && (ch = is.get ()) >= '0' && ch <= '9')
           ;  // discard
+
       width_left++;
     }
 
@@ -1218,11 +1252,11 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
         }
     }
   is.clear ();
-  if (!used_exp && ch != EOF && width_left)
+  if (! used_exp && ch != EOF && width_left)
     is.putback (ch);
 
   // Check for +/- inf and NaN
-  if (!valid && width_left >= 3)
+  if (! valid && width_left >= 3)
     {
       int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
       if (i == 0)
@@ -1238,7 +1272,7 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
     }
 
   // Check for +/- inf and NaN
-  if (!valid && width_left >= 3)
+  if (! valid && width_left >= 3)
     {
       int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
       if (i == 0)
@@ -1253,7 +1287,7 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
         }
     }
 
-  if (!valid)
+  if (! valid)
     is.setstate (std::ios::failbit);
   else
     is.setstate (is.rdstate () & ~std::ios::failbit);
@@ -1310,7 +1344,7 @@ textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
         is.putback (ch);
     }
 
-  if (!im && !inf)        // if not [+-][ij] or [+-]inf, read real normally
+  if (! im && ! inf)        // if not [+-][ij] or [+-]inf, read real normally
     {
       char *pos = is.tellg ();
       std::ios::iostate state = is.rdstate ();
@@ -1342,7 +1376,7 @@ textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
               // Read ahead longest, put it all back, then re-read the string
               // that matches.
               char *look, look_buf [treat_as_empty_len + 1];
-                // prefill, in case EOF means part-filled.
+              // prefill, in case EOF means part-filled.
               memset (look_buf, '\0', treat_as_empty_len);
               look = is.read (look_buf, treat_as_empty_len, pos);
 
@@ -1353,7 +1387,7 @@ textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
               for (int i = 0; i < treat_as_empty.numel (); i++)
                 {
                   std::string s = treat_as_empty (i).string_value ();
-                  if (!strncmp (s.c_str (), look, s.size ()))
+                  if (! strncmp (s.c_str (), look, s.size ()))
                     {
                       as_empty = true;
                                      // read just the right amount
@@ -1364,7 +1398,7 @@ textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
             }
         }
 
-      if (!is.eof () && !as_empty)
+      if (! is.eof () && ! as_empty)
         {
           state = is.rdstate ();        // before tellg, since that fails at EOF
           pos = is.tellg ();
@@ -1408,14 +1442,13 @@ textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
 // Return in VAL the run of characters from IS NOT contained in PATTERN. 
 
 int
-textscan::scan_caret (dstr& is, const char *pattern, std::string& val)
-          const
+textscan::scan_caret (dstr& is, const char *pattern, std::string& val) const
 {
   int c1 = EOF;
   std::ostringstream obuf;              // Is this optimised for growing?
 
-  while (is && (c1 = (is && !is.eof ()) ? is.get_undelim () : EOF) != EOF
-         && !strchr (pattern, c1))
+  while (is && (c1 = (is && ! is.eof ()) ? is.get_undelim () : EOF) != EOF
+         && ! strchr (pattern, c1))
     obuf << static_cast<char> (c1);
 
   val = obuf.str ();
@@ -1441,7 +1474,7 @@ textscan::read_until (dstr& is, const Cell& delimiters,
       scan_caret (is, ends.c_str (), next);
       retval = retval + next;   // FIXME -- could use repeated doubling of size
 
-      int last = (!is.eof ()) ? is.get_undelim () : EOF;
+      int last = (! is.eof ()) ? is.get_undelim () : EOF;
       if (last != EOF)
         {
           retval = retval + static_cast<char> (last);
@@ -1461,7 +1494,7 @@ textscan::read_until (dstr& is, const Cell& delimiters,
             }
         }
     }
-  while (!done && is && !is.eof ());
+  while (! done && is && ! is.eof ());
 
   return retval;
 }
@@ -1561,16 +1594,19 @@ void
 textscan::scan_cstring (dstr& is, const textscan_format_elt& fmt,
                         std::string& val) const
 {
-  int ch;
   val.resize (fmt.width);
+
   for (unsigned int i = 0; is && i < fmt.width; i++)
-    if ((ch = is.get_undelim ()) != EOF)
-      val[i] = ch;
-    else
-      {
-        val.resize (i);
-        break;
-      }
+    {
+      int ch = is.get_undelim ();
+      if (ch != EOF)
+        val[i] = ch;
+      else
+        {
+          val.resize (i);
+          break;
+        }
+    }
 }
 
 
@@ -1593,7 +1629,7 @@ textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
           skip_whitespace (is);
           scan_complex (is, fmt, v);
 
-          if (!fmt.discard && !is.fail ())
+          if (! fmt.discard && ! is.fail ())
             {
               if (fmt.bitwidth == 64)
                 {
@@ -1630,72 +1666,78 @@ textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
                        // Some loss of precision for d64 and u64.
           skip_whitespace (is);
           v = read_double (is, fmt);
-          if (!fmt.discard && !is.fail ())
+          if (! fmt.discard && ! is.fail ())
             switch (fmt.bitwidth)
               {
-                case 64:
-                  switch (fmt.type)
+              case 64:
+                switch (fmt.type)
+                  {
+                  case 'd':
                     {
-                      case 'd':
-                        {
-                          octave_int64 vv = v;
-                          ov.internal_rep ()->fast_elem_insert (row(0), vv);
-                        }
-                        break;
-                      case 'u':
-                        {
-                          octave_uint64 vv = v;
-                          ov.internal_rep ()->fast_elem_insert (row(0), vv);
-                        }
-                        break;
-                    }
-                  break;
-                case 32:
-                  switch (fmt.type)
-                    {
-                      case 'd':
-                        {
-                          octave_int32 vv = v;
-                          ov.internal_rep ()->fast_elem_insert (row(0), vv);
-                        }
-                        break;
-                      case 'u':
-                        {
-                          octave_uint32 vv = v;
-                          ov.internal_rep ()->fast_elem_insert (row(0), vv);
-                        }
-                        break;
-                    }
-                  break;
-                case 16:
-                  if (fmt.type == 'd')
-                    {
-                      octave_int16 vv = v;
+                      octave_int64 vv = v;
                       ov.internal_rep ()->fast_elem_insert (row(0), vv);
                     }
-                  else
+                    break;
+
+                  case 'u':
                     {
-                      octave_uint16 vv = v;
+                      octave_uint64 vv = v;
                       ov.internal_rep ()->fast_elem_insert (row(0), vv);
                     }
-                  break;
-                case 8:
-                  if (fmt.type == 'd')
+                    break;
+                  }
+                break;
+
+              case 32:
+                switch (fmt.type)
+                  {
+                  case 'd':
                     {
-                      octave_int8 vv = v;
+                      octave_int32 vv = v;
                       ov.internal_rep ()->fast_elem_insert (row(0), vv);
                     }
-                  else
+                    break;
+
+                  case 'u':
                     {
-                      octave_uint8 vv = v;
+                      octave_uint32 vv = v;
                       ov.internal_rep ()->fast_elem_insert (row(0), vv);
                     }
-                  break;
+                    break;
+                  }
+                break;
+
+              case 16:
+                if (fmt.type == 'd')
+                  {
+                    octave_int16 vv = v;
+                    ov.internal_rep ()->fast_elem_insert (row(0), vv);
+                  }
+                else
+                  {
+                    octave_uint16 vv = v;
+                    ov.internal_rep ()->fast_elem_insert (row(0), vv);
+                  }
+                break;
+
+              case 8:
+                if (fmt.type == 'd')
+                  {
+                    octave_int8 vv = v;
+                    ov.internal_rep ()->fast_elem_insert (row(0), vv);
+                  }
+                else
+                  {
+                    octave_uint8 vv = v;
+                    ov.internal_rep ()->fast_elem_insert (row(0), vv);
+                  }
+                break;
               }
         }
+
       if (is.fail ())
         {
-          if (!fmt.discard)
+          if (! fmt.discard)
             ov = do_cat_op (ov, empty_value, row);
 
           // If we are continuing after errors, skip over this field
@@ -1717,29 +1759,36 @@ textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
       std::string vv ("        ");      // initial buffer.  Grows as needed
       switch (fmt.type)
         {
-          case 's':
-            scan_string (is, fmt, vv);
-            break;
-          case 'q':
-            scan_qstring (is, fmt, vv);
-            break;
-          case 'c':
-            scan_cstring (is, fmt, vv);
-            break;
-          case '[':
-            scan_bracket (is, fmt.char_class.c_str (), vv);
-            break;
-          case '^':
-            scan_caret   (is, fmt.char_class.c_str (), vv);
-            break;
+        case 's':
+          scan_string (is, fmt, vv);
+          break;
+
+        case 'q':
+          scan_qstring (is, fmt, vv);
+          break;
+
+        case 'c':
+          scan_cstring (is, fmt, vv);
+          break;
+
+        case '[':
+          scan_bracket (is, fmt.char_class.c_str (), vv);
+          break;
+
+        case '^':
+          scan_caret   (is, fmt.char_class.c_str (), vv);
+          break;
         }
-      if (!fmt.discard)
+
+      if (! fmt.discard)
         ov.internal_rep ()->fast_elem_insert (row (0),
                                               Cell (octave_value (vv)));
-        // FIXME -- why does failbit get set at EOF, instead of eofbit?
+
+      // FIXME -- why does failbit get set at EOF, instead of eofbit?
       if (vv.length () != 0)
         is.clear (is.rdstate () & ~std::ios_base::failbit);
     }
+
   is.field_done ();
 }
 
@@ -1794,9 +1843,9 @@ textscan::read_format_once (dstr& is, textscan_format_list& fmt_list,
           error ("Unknown format element '%c'", elem->type);
         }
 
-      if (!is.fail ())
+      if (! is.fail ())
         {
-          if (!elem->discard)
+          if (! elem->discard)
             no_conversions = false;
         }
       else
@@ -1807,7 +1856,7 @@ textscan::read_format_once (dstr& is, textscan_format_list& fmt_list,
           is.clear (is.rdstate () & ~std::ios::failbit);
         }
 
-      if (!elem->discard)
+      if (! elem->discard)
         out++;
 
       elem = fmt_list.next ();
@@ -1833,7 +1882,7 @@ textscan::read_format_once (dstr& is, textscan_format_list& fmt_list,
 
       if (is.eof ())
         {
-          if (!done)
+          if (! done)
             done_after = i+1;
 
           // note EOF, but process others to get empty_val.
@@ -1868,7 +1917,7 @@ textscan::parse_options (const octave_value_list& args, int first_param,
   bool have_delims = false;
   for (int i = first_param; i < last; i += 2)
     {
-      if (!args(i).is_string ())
+      if (! args(i).is_string ())
         error ("textscan: Invalid paramter type <%s> for parameter %d",
                args(i).type_name ().c_str (), (i-first_param)/2 + 1);
 
@@ -1893,7 +1942,7 @@ textscan::parse_options (const octave_value_list& args, int first_param,
               // Check that all elements are strings, and find max length
               for (int j = 0; j < delim_list.numel (); j++)
                 {
-                  if (!delim_list(j).is_string ())
+                  if (! delim_list(j).is_string ())
                     invalid = true;
                   else
                     {
@@ -1917,8 +1966,8 @@ textscan::parse_options (const octave_value_list& args, int first_param,
             {
               comment_style = args(i+1).cell_value ();
               int len = comment_style.numel ();
-              if ((len >= 1 && !comment_style (0).is_string ())
-                  || (len >= 2 && !comment_style (1).is_string ())
+              if ((len >= 1 && ! comment_style (0).is_string ())
+                  || (len >= 2 && ! comment_style (1).is_string ())
                   || (len >= 3))
                 error ("textscan: CommentStyle must be either a string or "
                        "cell array of one or two strings");
@@ -1948,7 +1997,7 @@ textscan::parse_options (const octave_value_list& args, int first_param,
             {
               treat_as_empty = args(i+1).cell_value ();
               for (int j = 0; j < treat_as_empty.numel (); j++)
-                if (!treat_as_empty (j).is_string ())
+                if (! treat_as_empty (j).is_string ())
                   invalid = true;
                 else
                   {
@@ -2055,7 +2104,7 @@ textscan::parse_options (const octave_value_list& args, int first_param,
             }
           else
             valid = false;
-          if (!valid)
+          if (! valid)
             error ("textscan: EndOfLine must be at most one character "
                    "or '\\r\\n'");
         }
@@ -2078,7 +2127,7 @@ textscan::parse_options (const octave_value_list& args, int first_param,
     delim_table[eol1] = '1';        // EOL is always a delimiter
   if (eol2 >= 0 && eol2 < 256)
     delim_table[eol2] = '1';        // EOL is always a delimiter
-  if (!have_delims)
+  if (! have_delims)
     for (unsigned int i = 0; i < 256; i++)
       {
         if (isspace (i))
@@ -2103,7 +2152,7 @@ textscan::skip_whitespace (dstr& is, bool EOLstop)
       found_comment = false;
       int prev = -1;
       while (is && (c1 = is.get_undelim ()) != EOF
-             && ( ( (c1 == eol1 || c1 == eol2) && ++lines && !EOLstop)
+             && ( ( (c1 == eol1 || c1 == eol2) && ++lines && ! EOLstop)
                   || isspace (c1)))
         {
           if (prev == eol1 && eol1 != eol2 && c1 == eol2)
@@ -2119,8 +2168,8 @@ textscan::skip_whitespace (dstr& is, bool EOLstop)
 
           char *look, tmp [comment_len];
           look = is.read (tmp, comment_len-1, pos);   // already read first char
-          if (is && !strncmp (comment_style(0).string_value ().substr (1)
-                              .c_str (), look, comment_len-1))
+          if (is && ! strncmp (comment_style(0).string_value ().substr (1)
+                               .c_str (), look, comment_len-1))
             {
               found_comment = true;
 
@@ -2154,7 +2203,7 @@ textscan::skip_whitespace (dstr& is, bool EOLstop)
                         start = 0;
                       may_match = may_match.substr (start);
                     }
-                  while (may_match != end_c && is && !is.eof ());
+                  while (may_match != end_c && is && ! is.eof ());
                 }
             }
           else  // wasn't really a comment; restore state
@@ -2201,7 +2250,7 @@ textscan::lookahead (dstr& is, const Cell& targets, int max_len,
   for (i = 0; i < targets.numel (); i++)
     {
       std::string s = targets (i).string_value ();
-      if (!(*compare) (s.c_str (), look, s.size ()))
+      if (! (*compare) (s.c_str (), look, s.size ()))
         {
           is.read (tmp, s.size (), pos); // read just the right amount
           break;
@@ -2606,8 +2655,10 @@ from the beginning of the file or string, at which the processing stopped.\n\
   else if (args(1).is_string ())
     {
       format = args(1).string_value ();
+
       if (args(1).is_sq_string ())
         format = do_string_escapes (format);
+
       params++;
     }
   else
@@ -2622,9 +2673,11 @@ from the beginning of the file or string, at which the processing stopped.\n\
       if (args(2).is_numeric_type ())
         {
           ntimes = args(2).idx_type_value ();
+
           if (ntimes < args(2).double_value ())
             error ("textscan: REPEAT = %g is too large",
                    args(2).double_value ());
+
           params = 3;
         }
     }

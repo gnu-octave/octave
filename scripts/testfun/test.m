@@ -587,7 +587,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
           endif
         catch
           if (strcmp (__type, "xtest"))
-            __msg = [__signal_fail "known failure\n" lasterr()];
+            __msg = [__signal_fail "known failure\n"];
             __xfail += 1;
             __success = false;
           else
@@ -610,7 +610,9 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
         endif
         fprintf (__fid, "%s\n", __msg);
         ## Show the variable context.
-        if (! strcmp (__type, "error") && ! strcmp (__type, "testif")
+        if (! strcmp (__type, "error")
+            && ! strcmp (__type, "testif")
+            && ! strcmp (__type, "xtest")
             && ! all (__shared == " "))
           fputs (__fid, "shared variables ");
           eval (sprintf ("fdisp(__fid,var2struct(%s));", __shared));

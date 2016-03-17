@@ -1,4 +1,5 @@
 /*
+
 Copyright (C) 2015-2016 Lachlan Andrew, Monash University
 
 This file is part of Octave.
@@ -35,362 +36,1052 @@ along with Octave; see the file COPYING.  If not, see
 #include "textscan.h"
 #include "utils.h"
 
-DEFUN (textscan, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat}, @var{param}, @var{value}, @dots{})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{str}, @dots{})\n\
-@deftypefnx {} {[@var{C}, @var{position}] =} textscan (@dots{})\n\
-Read data from a text file or string.\n\
-\n\
-The string @var{str} or file associated with @var{fid} is read from and\n\
-parsed according to @var{format}.\n\
-The function is an extension of @code{strread} and @code{textread}.\n\
-Differences include: the ability to read from either a file or a string,\n\
-additional options, and additional format specifiers.\n\
-\n\
-The input is interpreted as a sequence of \"words\", delimiters\n\
-(such as whitespace) and literals.\n\
-The characters that form delimiters and whitespace are determined\n\
-by the options.\n\
-The format consists of format specifiers interspersed between literals.\n\
-In the format, whitespace forms a delimiter between consecutive literals,\n\
-but is otherwise ignored.\n\
-\n\
-The output @var{C} is a cell array whose second dimension is determined\n\
-by the number of format specifiers.\n\
-\n\
-The first word of the input is matched to the first specifier of the\n\
-format and placed in the first column of the output;\n\
-the second is matched to the second specifier and placed in the second column\n\
-and so forth.\n\
-If there are more words than specifiers, the process is repeated until all\n\
-words have been processed or the limit imposed by @var{repeat} has been met\n\
-(see below).\n\
-\n\
-The string @var{format} describes how the words in @var{str} should be\n\
-parsed.\n\
-As in @var{fscanf}, any (non-whitespace) text in the format that is\n\
-not one of these specifiers is considered a literal;\n\
-if there is a literal between two format specifiers then that same literal\n\
-must appear in the input stream between the matching words.\n\
-\n\
-The following specifiers are valid:\n\
-\n\
-@table @code\n\
-@item  %f\n\
-@itemx %f64\n\
-@itemx %n\n\
-The word is parsed as a number and converted to double.\n\
-\n\
-@item  %f32\n\
-The word is parsed as a number and converted to single (float).\n\
-\n\
-@item  %d\n\
-@itemx %d8\n\
-@itemx %d16\n\
-@itemx %d32\n\
-@itemx %d64\n\
-The word is parsed as a number and converted to int8, int16, int32 or int64.\n\
-If not size is specified, int32 is used.\n\
-\n\
-@item  %u\n\
-@itemx %u8\n\
-@itemx %u16\n\
-@itemx %u32\n\
-@itemx %u64\n\
-The word is parsed as a number and converted to uint8, uint16, uint32 or\n\
-uint64. If not size is specified, uint32 is used.\n\
-\n\
-@item %s\n\
-The word is parsed as a string, ending at the last character before\n\
-whitespace, an end-of-line or a delimiter specified in the options.\n\
-\n\
-@item %q\n\
-The word is parsed as a \"quoted string\".\n\
-If the first character of the string is a double quote (\") then the string\n\
-includes everything until a matching double quote, including whitespace,\n\
-delimiters and end of line characters.\n\
-If a pair of consecutive double quotes appears in the input,\n\
-it is replaced in the output by a single double quote.\n\
-That is, the input \"He said \"\"Hello\"\"\" would return the value\n\
-'He said \"Hello\"'.\n\
-\n\
-@item  %c\n\
-The next character of the input is read.\n\
-This includes delimiters, whitespace and end of line characters.\n\
-\n\
-@item  %[...]\n\
-@itemx %[^...]\n\
-In the first form, the word consists of the longest run consisting of only\n\
-characters between the brackets.\n\
-Ranges of characters can be specified by a hyphen;\n\
-for example, %[0-9a-zA-Z] matches all alphanumeric characters\n\
-(if the underlying character set is ASCII).\n\
-Since Matlab treats hyphens literally, this expansion only applies to\n\
-alphanumeric characters.\n\
-To include '-' in the set, it should appear first or last in the brackets;\n\
-to include ']', it should be the first character.\n\
-If the first character is '^' then the word consists of characters\n\
-NOT listed.\n\
-\n\
-@item %N...\n\
-For %s, %c %d, %f, %n, %u, an optional width can be specified as %Ns etc.\n\
-where N is an integer > 1.\n\
-For %c, this causes exactly the next N characters to be read instead of\n\
-a single character.\n\
-For the other specifiers, it is an upper bound on the\n\
-number of characters read;\n\
-normal delimiters can cause fewer characters to be read.\n\
-For complex numbers, this limit applies to the real and imaginary\n\
-components individually.\n\
-For %f and %n, format specifiers like %N.Mf are allowed, where M is an upper\n\
-bound on number of characters after the decimal point to be considered;\n\
-subsequent digits are skipped.\n\
-For example, the specifier %8.2f would read 12.345e6 as 1.234e7.\n\
-\n\
-@item %*...\n\
-The word specified by the remainder of the conversion specifier is skipped.\n\
-\n\
-@item literals\n\
-In addition the format may contain literal character strings;\n\
-these will be skipped during reading.\n\
-If the input string does not match this literal, the processing terminates,\n\
-unless \"ReturnOnError\" is set to \"continue\".\n\
-@end table\n\
-\n\
-Parsed words corresponding to the first specifier are returned in the first\n\
-output argument and likewise for the rest of the specifiers.\n\
-\n\
-By default, if there is only one input argument, @var{format} is @t{\"%f\"}.\n\
-This means that numbers are read from @var{str} into a single column vector.\n\
-If @var{format} is explicitly empty, \"\", then textscan will return data\n\
-in a number of columns matching the number of fields on the first data\n\
-line of the input.\n\
-Either of these is suitable only if @var{str} contains only numeric fields.\n\
-\n\
-For example, the string\n\
-\n\
-@example\n\
-@group\n\
-@var{str} = \"\\\n\
-Bunny Bugs   5.5\\n\\\n\
-Duck Daffy  -7.5e-5\\n\\\n\
-Penguin Tux   6\"\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-can be read using\n\
-\n\
-@example\n\
-@var{a} = textscan (@var{str}, \"%s %s %f\");\n\
-@end example\n\
-\n\
-The optional numeric argument @var{repeat} can be used for limiting the\n\
-number of items read:\n\
-\n\
-@table @asis\n\
-@item -1\n\
-(default) read all of the string or file until the end.\n\
-\n\
-@item N\n\
-Read until the first of two conditions occurs: the format has been processed\n\
-N times, or N lines of the input have been processed.\n\
-Zero (0) is an acceptable value for @var{repeat}.\n\
-Currently, end-of-line characters inside %q, %c, and %[...]$ conversions\n\
-do not contribute to the line count.\n\
-This is incompatible with Matlab and may change in future.\n\
-@end table\n\
-\n\
-The behavior of @code{textscan} can be changed via property-value pairs.\n\
-The following properties are recognized:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"BufSize\"}\n\
-This specifies the number of bytes to use for the internal buffer.\n\
-A modest speed improvement is obtained by setting this to a large value\n\
-when reading a large file, especially the input contains long strings.\n\
-The default is 4096, or a value dependent on @var{n} is that is specified.\n\
-\n\
-@item @qcode{\"CollectOutput\"}\n\
-A value of 1 or true instructs textscan to concatenate consecutive columns\n\
-of the same class in the output cell array.\n\
-A value of 0 or false (default) leaves output in distinct columns.\n\
-\n\
-@item @qcode{\"CommentStyle\"}\n\
-Parts of @var{str} are considered comments and will be skipped.\n\
-@var{value} is the comment style and can be either\n\
-(1) One string, or 1x1 cell string, to skip everything to the right of it;\n\
-(2) A cell array of two strings, to skip everything between the first and\n\
-second strings.\n\
-Comments are only parsed where whitespace is accepted, and do not act as\n\
-delimiters.\n\
-\n\
-@item @qcode{\"Delimiter\"}\n\
-If @var{value} is a string, any character in @var{value} will be used to\n\
-split @var{str} into words.\n\
-If @var{value} is a cell array of strings,\n\
-any string in the array will be used to split @var{str} into words.\n\
-(default value = any whitespace.)\n\
-\n\
-@item @qcode{\"EmptyValue\"}\n\
-Value to return for empty numeric values in non-whitespace delimited data.\n\
-The default is NaN@.\n\
-When the data type does not support NaN (int32 for example),\n\
-then default is zero.\n\
-\n\
-@item @qcode{\"EndOfLine\"}\n\
-@var{value} can be either a emtpy or one character specifying the\n\
-end of line character, or the pair\n\
-@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} (CRLF).\n\
-In the latter case, any of\n\
-@qcode{\"@xbackslashchar{}r\"}, @qcode{\"@xbackslashchar{}n\"} or\n\
-@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is counted as a (single)\n\
-newline.\n\
-If no value is given, @qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is\n\
-used.\n\
-@c If set to \"\" (empty string) EOLs are ignored as delimiters and added\n\
-@c to whitespace.\n\
-\n\
-@c When reading from a character string, optional input argument @var{n}\n\
-@c specifies the number of times @var{format} should be used (i.e., to limit\n\
-@c the amount of data read).\n\
-@c When reading from file, @var{n} specifies the number of data lines to read;\n\
-@c in this sense it differs slightly from the format repeat count in strread.\n\
-\n\
-@item @qcode{\"HeaderLines\"}\n\
-The first @var{value} number of lines of @var{fid} are skipped.\n\
-Note that this does not refer to the first non-comment lines, but the first\n\
-lines of any type.\n\
-\n\
-@item @qcode{\"MultipleDelimsAsOne\"}\n\
-If @var{value} is non-zero,\n\
-treat a series of consecutive delimiters, without whitespace in between,\n\
-as a single delimiter.\n\
-Consecutive delimiter series need not be vertically @qcode{\"aligned\"}.\n\
-Without this option, a single delimiter before the end of the line does\n\
-not cause the line to be considered to end with an empty value,\n\
-but a single delimiter at the start of a line causes the line\n\
-to be considered to start with an empty value.\n\
-\n\
-@item @qcode{\"TreatAsEmpty\"}\n\
-Treat single occurrences (surrounded by delimiters or whitespace) of the\n\
-string(s) in @var{value} as missing values.\n\
-\n\
-@item @qcode{\"ReturnOnError\"}\n\
-If set to numerical 1 or true, return normally as soon as an error\n\
-is encountered, such as trying to read a string using @qcode{%f}.\n\
-If set to 0 or false, return an error and no data.\n\
-If set to \"continue\" (default), textscan attempts to continue reading\n\
-beyond the location; however, this may cause the parsing to get out of sync.\n\
-\n\
-@item @qcode{\"Whitespace\"}\n\
-Any character in @var{value} will be interpreted as whitespace and trimmed;\n\
-The default value for whitespace is\n\
-@c Note: the next line specifically has a newline which generates a space\n\
-@c       in the output of qcode, but keeps the next line < 80 characters.\n\
-@qcode{\"\n\
-@xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t\"}\n\
-(note the space).  Unless whitespace is set to @qcode{\"\"} (empty) AND at\n\
-least one @qcode{\"%s\"} format conversion specifier is supplied, a space is\n\
-always part of whitespace.\n\
-\n\
-@end table\n\
-\n\
-When the number of words in @var{str} or @var{fid} doesn't match an exact\n\
-multiple of the number of format conversion specifiers,\n\
-textscan's behavior depends on\n\
-whether the last character of the string or file is\n\
-an end-of-line as specified by the EndOfLine option:\n\
-\n\
-@table @asis\n\
-@item last character = end-of-line\n\
-Data columns are padded with empty fields, NaN or 0 (for integer fields)\n\
-so that all columns have equal length\n\
-\n\
-@item last character is not end-of-line\n\
-Data columns are not padded; textscan returns columns of unequal length\n\
-@end table\n\
-\n\
-\n\
-The second output, @var{position}, provides the position, in characters\n\
-from the beginning of the file or string, at which the processing stopped.\n\
-\n\
-@seealso{dlmread, fscanf, load, strread, textread}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-  std::string format;
-  int params = 1;
+// Create a delimited stream, reading from is, with delimiters delims,
+// and allowing reading of up to tellg + longest_lookeahead.  When is
+// is at EOF, lookahead may be padded by ASCII nuls.
 
-  if (args.length () < 1)
-    print_usage ();
-  else if (args.length () == 1)
-    format = "%f";      // ommited format = %f.  explicit "" = width from file
-  else if (args(1).is_string ())
+dstr::dstr (std::istream& is, const std::string& delimiters,
+            int longest_lookahead, octave_idx_type bsize)
+    : bufsize (bsize), i_stream (is), longest (longest_lookahead),
+      delims (delimiters),
+      flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
+{
+  buf = new char[bufsize];
+  eob = buf + bufsize;
+  idx = eob;                    // refresh_buf shouldn't try to copy old data
+  progress_marker = idx;
+  refresh_buf ();               // load the first batch of data
+}
+
+// Used to create a stream from a strstream from data read from a dstr.
+// FIXME: Find a more efficient approach.  Perhaps derived dstrstream
+dstr::dstr (std::istream& is, const dstr& ds)
+  : bufsize (ds.bufsize), i_stream (is), longest (ds.longest),
+    delims (ds.delims),
+    flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
+{
+  buf = new char[bufsize];
+  eob = buf + bufsize;
+  idx = eob;                    // refresh_buf shouldn't try to copy old data
+  progress_marker = idx;
+  refresh_buf ();               // load the first batch of data
+}
+
+dstr::~dstr ()
+{
+  // Seek to the correct position in i_stream.
+  if (!eof ())
     {
-      format = args(1).string_value ();
-      if (args(1).is_sq_string ())
-        format = do_string_escapes (format);
-      params++;
+      i_stream.clear ();
+      i_stream.seekg (buf_in_file);
+      i_stream.read (buf, idx - buf);
+    }
+
+  delete [] buf;
+}
+
+// Read a character from the buffer, refilling the buffer from the file
+// if necessary.
+
+int
+dstr::get_undelim ()
+{
+  int retval;
+  if (eof ())
+    {
+      setstate (std::ios_base::failbit);
+      return EOF;
+    }
+
+  if (idx < eob)
+    retval = *idx++;
+  else
+    {
+      refresh_buf ();
+      if (eof ())
+        {
+          setstate (std::ios_base::eofbit);
+          retval = EOF;
+        }
+      else
+        retval = *idx++;
+    }
+  if (idx >= last)
+    delimited = false;
+  return retval;
+}
+
+// Return the next character to be read without incrementing the
+// pointer, refilling the buffer from the file if necessary.
+
+int
+dstr::peek_undelim ()
+{
+  int retval = get_undelim ();
+  putback ();
+
+  return retval;
+}
+
+// Copy remaining unprocessed data to the start of the buffer and load
+// new data to fill it.  Return EOF if the file is at EOF before
+// reading any data and all of the data that has been read has been
+// processed.
+
+int
+dstr::refresh_buf (void)
+{
+  if (eof ())
+    return EOF;
+
+  int retval;
+  int old_remaining = eob - idx;
+
+  if (old_remaining < 0)
+    {
+      idx = eob;
+      old_remaining = 0;
+    }
+
+  octave_quit ();                       // allow ctrl-C
+
+  if (old_remaining > 0)
+    memmove (buf, idx, old_remaining);
+
+  progress_marker -= idx - buf;         // where original idx would have been
+  idx = buf;
+
+  int gcount;   // chars read
+  if (!i_stream.eof ())
+    {
+      buf_in_file = i_stream.tellg ();   // record for destructor
+      i_stream.read (buf + old_remaining, bufsize - old_remaining);
+      gcount = i_stream.gcount ();
     }
   else
-    error ("textscan: FORMAT must be a string, not <%s>",
-           args(1).class_name ().c_str ());
+    gcount = 0;
 
-  octave_idx_type ntimes = -1;
-  textscan tscanner;
-
-  if (args.length () >= 3)
+  eob = buf + old_remaining + gcount;
+  last = eob;
+  if (gcount == 0)
     {
-      if (args(2).is_numeric_type ())
+      delimited = false;
+      if (eob != buf)              // no more data in file, but still some to go
+        retval = 0;
+      else
+        retval = EOF;              // file and buffer are both done.
+    }
+  else
+    {
+      delimited = true;
+
+      for (last = eob - longest; last - buf >= 0; last--)
         {
-          ntimes = args(2).idx_type_value ();
-          if (ntimes < args(2).double_value ())
-            error ("textscan: REPEAT = %g is too large",
-                   args(2).double_value ());
-          params = 3;
+          if (strchr (delims.c_str (), *last))
+            break;
+        }
+      if (last - buf < 0)
+        delimited = false;
+
+      retval = 0;
+    }
+
+  if (retval == EOF)  // Ensure fast peek doesn't give valid char
+    *idx = '\0';      // FIXME - check that no TreatAsEmpty etc starts w. \0?
+
+  return retval;
+}
+
+// Return a pointer to a block of data of size size, assuming that a
+// sufficiently large buffer is available in buffer, if required.
+// If called when delimited == true, and size is no greater than
+// longest_lookahead then this will not call refresh_buf, so seekg
+// still works.  Otherwise, seekg may be invalidated.
+
+char *
+dstr::read (char *buffer, int size, char* &prior_tell)
+{
+  char *retval;
+  if (eob  - idx > size)
+    {
+      retval = idx;
+      idx += size;
+      if (idx > last)
+        delimited = false;
+    }
+  else
+    {
+      // If there was a tellg pointing to an earlier point than the current
+      // read position, try to keep it in the active buffer.
+      // In the current code, prior_tell==idx for each call,
+      // so this is not necessary, just a precaution.
+      if (eob - prior_tell + size < bufsize)
+        {
+          octave_idx_type gap = idx - prior_tell;
+          idx = prior_tell;
+          refresh_buf ();
+          idx += gap;
+        }
+      else      // can't keep the tellg in range.  May skip some data.
+        {
+          refresh_buf ();
+        }
+      prior_tell = buf;
+
+      if (eob - idx > size)
+        {
+          retval = idx;
+          idx += size;
+          if (idx > last)
+            delimited = false;
+        }
+      else
+        {
+          if (size <= bufsize)          // small read, but reached EOF
+            {
+              retval = idx;
+              memset (eob, 0, size + (idx - buf));
+              idx += size;
+            }
+          else  // Reading more than the whole buf; return it in buffer
+            {
+              retval = buffer;
+              // FIXME -- read bufsize at a time
+              int i;
+              for (i = 0; i < size && !eof (); i++)
+                *buffer++ = get_undelim ();
+              if (eof ())
+                memset (buffer, 0, size - i);
+            }
         }
     }
-  textscan_format_list fmt_list (format);
+  return retval;
+}
 
-  tscanner.parse_options (args, params, fmt_list);
+// Return in OUT an entire line, terminated by delim.  On input, OUT
+// must have length at least 1.
 
-  if (args(0).is_string ())
+int
+dstr::getline (std::string& out, char delim)
+{
+  int len = out.length (), used = 0;
+  int ch;
+  while ((ch = get_undelim ()) != delim && ch != EOF)
     {
-      std::istringstream is (args(0).string_value ());
-      octave_value tmp = tscanner.scan (&is, fmt_list, ntimes);
-      retval(0) = tmp;
+      out[used++] = ch;
+      if (used == len)
+        {
+          len <<= 1;
+          out.resize (len);
+        }
+    }
+  out.resize (used);
+  field_done ();
 
-      std::ios::iostate state = is.rdstate ();
-      is.clear ();
-      retval(1) = octave_value (static_cast<long>(is.tellg ()));
-      is.setstate (state);
+  return ch;
+}
+
+textscan_format_list::textscan_format_list (const std::string& s)
+  : set_from_first (false), has_string (false), nconv (0), curr_idx (0),
+    list (dim_vector (16, 1)), buf (0)
+{
+  octave_idx_type num_elts = 0;
+
+  size_t n = s.length ();
+
+  size_t i = 0;
+
+  unsigned int width = -1;              // Unspecified width = max (except %c)
+  int prec = -1;
+  int bitwidth = 0;
+  bool discard = false;
+  char type = '\0';
+
+  bool have_more = true;
+
+  if (s.length () == 0)
+    {
+      buf = new std::ostringstream ("%f");
+      bitwidth = 64;
+      type = 'f';
+      add_elt_to_list (width, prec, bitwidth, octave_value (NDArray ()),
+                       discard, type, num_elts);
+      have_more = false;
+      set_from_first = true;
+      nconv = 1;
     }
   else
     {
-      octave_stream os = octave_stream_list::lookup (args(0), "textscan");
-      octave_value tmp = tscanner.scan (os.input_stream (), fmt_list, ntimes);
+      set_from_first = false;
+      while (i < n)
+        {
+          have_more = true;
 
-      retval(0) = tmp;
-      // FIXME -- warn if stream is not opened in binary mode?
-      std::ios::iostate state = os.input_stream ()->rdstate ();
-      os.input_stream ()->clear ();
-      retval(1) = os.tell ();
-      os.input_stream ()->setstate (state);
+          if (! buf)
+            buf = new std::ostringstream ();
+
+          if (s[i] == '%' && (i+1 == n || s[i+1] != '%'))
+            {
+              // Process percent-escape conversion type.
+
+              process_conversion (s, i, n, num_elts);
+
+              have_more = (buf != 0);
+            }
+          else if (isspace (s[i]))
+            {
+              while (++i < n && isspace (s[i]))
+                /* skip whitespace */;
+
+              have_more = false;
+            }
+          else
+            {
+              type = textscan_format_elt::literal_conversion;
+
+              width = 0;
+              prec = -1;
+              bitwidth = 0;
+              discard = true;
+
+              while (i < n && ! isspace (s[i])
+                     && (s[i] != '%' || (i+1 < n && s[i+1] == '%')))
+                {
+                  if (s[i] == '%')      // if double %, skip one
+                    i++;
+                  *buf << s[i++];
+                  width++;
+                }
+
+              add_elt_to_list (width, prec, bitwidth, octave_value (), discard,
+                               type, num_elts);
+
+              have_more = false;
+            }
+
+          if (nconv < 0)
+            {
+              have_more = false;
+              break;
+            }
+        }
+    }
+
+  if (have_more)
+    add_elt_to_list (width, prec, bitwidth, octave_value (), discard, type, num_elts);
+
+  list.resize (dim_vector (num_elts, 1));
+
+  delete buf;
+}
+
+textscan_format_list::~textscan_format_list (void)
+{
+  octave_idx_type n = list.numel ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      textscan_format_elt *elt = list(i);
+      delete elt;
+    }
+}
+
+void
+textscan_format_list::add_elt_to_list (unsigned int width, int prec,
+                                       int bitwidth, octave_value val_type,
+                                       bool discard, char type,
+                                       octave_idx_type& num_elts,
+                                       const std::string& char_class)
+{
+  if (buf)
+    {
+      std::string text = buf->str ();
+
+      if (! text.empty ())
+        {
+          textscan_format_elt *elt
+            = new textscan_format_elt (text.c_str (), width, prec, bitwidth,
+                                       discard, type, char_class);
+
+          if (num_elts == list.numel ())
+            {
+              list.resize (dim_vector (2 * num_elts, 1));
+            }
+
+          if (!discard)
+            {
+              output_container.push_back (val_type);
+            }
+          list(num_elts++) = elt;
+        }
+
+      delete buf;
+      buf = 0;
+    }
+}
+
+void
+textscan_format_list::process_conversion (const std::string& s, size_t& i,
+                                          size_t n, octave_idx_type& num_elts)
+{
+  unsigned width = 0;
+  int prec = -1;
+  int bitwidth = 0;
+  bool discard = false;
+  octave_value val_type;
+  char type = '\0';
+
+  *buf << s[i++];
+
+  bool have_width = false;
+
+  while (i < n)
+    {
+      switch (s[i])
+        {
+        case '*':
+          if (discard)
+            nconv = -1;
+          else
+            {
+              discard = true;
+              *buf << s[i++];
+            }
+          break;
+
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+          if (have_width)
+            nconv = -1;
+          else
+            {
+              char c = s[i++];
+              width = width * 10 + c - '0';
+              have_width = true;
+              *buf << c;
+              while (i < n && isdigit (s[i]))
+                {
+                  c = s[i++];
+                  width = width * 10 + c - '0';
+                  *buf << c;
+                }
+
+              if (i < n && s[i] == '.')
+                {
+                  *buf << s[i++];
+                  prec = 0;
+                  while (i < n && isdigit (s[i]))
+                    {
+                      c = s[i++];
+                      prec = prec * 10 + c - '0';
+                      *buf << c;
+                    }
+                }
+            }
+          break;
+
+        case 'd': case 'u':
+          {
+            bool done = true;
+            *buf << (type = s[i++]);
+            if (i < n)
+              {
+                if (s[i] == '8')
+                  {
+                    bitwidth = 8;
+                    if (type == 'd')
+                      val_type = octave_value (int8NDArray ());
+                    else
+                      val_type = octave_value (uint8NDArray ());
+                    *buf << s[i++];
+                  }
+                else if (s[i] == '1' && i+1 < n && s[i+1] == '6')
+                  {
+                    bitwidth = 16;
+                    if (type == 'd')
+                      val_type = octave_value (int16NDArray ());
+                    else
+                      val_type = octave_value (uint16NDArray ());
+                    *buf << s[i++];
+                    *buf << s[i++];
+                  }
+                else if (s[i] == '3' && i+1 < n && s[i+1] == '2')
+                  {
+                    done = false;       // use default size below
+                    *buf << s[i++];
+                    *buf << s[i++];
+                  }
+                else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
+                  {
+                    bitwidth = 64;
+                    if (type == 'd')
+                      val_type = octave_value (int64NDArray ());
+                    else
+                      val_type = octave_value (uint64NDArray ());
+                    *buf << s[i++];
+                    *buf << s[i++];
+                  }
+                else
+                  done = false;
+              }
+            else
+              done = false;
+
+            if (!done)
+              {
+                bitwidth = 32;
+                if (type == 'd')
+                  val_type = octave_value (int32NDArray ());
+                else
+                  val_type = octave_value (uint32NDArray ());
+              }
+            goto fini;
+          }
+
+        case 'f':
+          *buf << (type = s[i++]);
+          bitwidth = 64;
+          if (i < n)
+            {
+              if (s[i] == '3' && i+1 < n && s[i+1] == '2')
+                {
+                  bitwidth = 32;
+                  val_type = octave_value (FloatNDArray ());
+                  *buf << s[i++];
+                  *buf << s[i++];
+                }
+              else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
+                {
+                  val_type = octave_value (NDArray ());
+                  *buf << s[i++];
+                  *buf << s[i++];
+                }
+              else
+                val_type = octave_value (NDArray ());
+            }
+          else
+            val_type = octave_value (NDArray ());
+          goto fini;
+
+        case 'n':
+          *buf << (type = s[i++]);
+          bitwidth = 64;
+          val_type = octave_value (NDArray ());
+          goto fini;
+
+        case 's': case 'q': case '[': case 'c':
+          if (!discard)
+            val_type = octave_value (Cell ());
+          *buf << (type = s[i++]);
+          has_string = true;
+          goto fini;
+
+        fini:
+          {
+            if (!have_width)
+              {
+                if (type == 'c')        // %c defaults to one character
+                  width = 1;
+                else
+                  width = static_cast<unsigned int> (-1); // others: unlimited
+              }
+
+            if (finish_conversion (s, i, n, width, prec, bitwidth, val_type,
+                                   discard, type, num_elts) == 0)
+              return;
+          }
+          break;
+
+        default:
+          error ("textscan: '%%%c' is not a valid format specifier", s[i]);
+        }
+
+      if (nconv < 0)
+        break;
+    }
+
+  nconv = -1;
+}
+
+// Parse [...] and [^...]
+//
+// Matlab does not expand expressions like A-Z, but they are useful, and
+// so we parse them "carefully".  We treat '-' as a usual character
+// unless both start and end characters are from the same class (upper
+// case, lower case, numeric), or this is not the first '-' in the
+// pattern.
+//
+// Keep both a running list of characters and a mask of which chars have
+// occurred.  The first is efficient for patterns with few characters.
+// The latter is efficient for [^...] patterns.
+
+static std::string
+textscan_char_class (const std::string& pattern)
+{
+  int len = pattern.length ();
+  if (len == 0)
+    return "";
+
+  std::string retval (256, '\0');
+  std::string mask   (256, '\0');       // number of times chr has been seen
+
+  int in = 0, out = 0;
+  unsigned char ch, prev = 0;
+  bool flip = false;
+
+  ch = pattern[in];
+  if (ch == '^')
+    {
+      in++;
+      flip = true;
+    }
+  mask[pattern[in]] = '\1';
+  retval[out++] = pattern[in++];        // even copy ']' if it is first
+
+  bool prev_was_range = false;          // disallow "a-m-z" as a pattern
+  bool prev_prev_was_range = false;
+  for (; in < len; in++)
+    {
+      bool was_range = false;
+      ch = pattern[in];
+      if (ch == ']')
+        break;
+
+      if (prev == '-' && in > 1 && isalnum (ch) && ! prev_prev_was_range)
+        {
+          unsigned char start_of_range = pattern[in-2];
+          if (start_of_range < ch
+              && ((isupper (ch) && isupper (start_of_range))
+                  || (islower (ch) && islower (start_of_range))
+                  || (isdigit (ch) && isdigit (start_of_range))
+                  || mask['-'] > 1))    // not the first '-'
+            {
+              was_range = true;
+              out--;
+              mask['-']--;
+              for (int i = start_of_range; i <= ch; i++)
+                {
+                  if (mask[i] == '\0')
+                    {
+                      mask[i] = '\1';
+                      retval[out++] = i;
+                    }
+                }
+            }
+        }
+      if (!was_range)
+        {
+          if (mask[ch]++ == 0)
+            retval[out++] = ch;
+          else if (ch != '-')
+            warning_with_id ("octave:textscan-pattern",
+                             "textscan: [...] contains two '%c's", ch);
+          if (prev == '-' && mask['-'] >= 2)
+            warning_with_id ("octave:textscan-pattern",
+                             "textscan: [...] contains two '-'s "
+                             "outside range expressions");
+        }
+      prev = ch;
+      prev_prev_was_range = prev_was_range;
+      prev_was_range = was_range;
+    }
+  if (flip)                             // [^...]
+    {
+      out = 0;
+      for (int i = 0; i < 256; i++)
+        if (!mask[i])
+          retval[out++] = i;
+    }
+  retval.resize (out);
+
+  return retval;
+}
+
+int
+textscan_format_list::finish_conversion (const std::string& s, size_t& i,
+                                         size_t n, unsigned int& width,
+                                         int& prec, int& bitwidth,
+                                         octave_value& val_type, bool discard,
+                                         char& type, octave_idx_type& num_elts)
+{
+  int retval = 0;
+
+  std::string char_class;
+
+  size_t beg_idx = std::string::npos;
+  size_t end_idx = std::string::npos;
+
+  if (type != '%')
+    {
+      nconv++;
+      if (type == '[')
+        {
+          if (i < n)
+            {
+              beg_idx = i;
+
+              if (s[i] == '^')
+                {
+                  type = '^';
+                  *buf << s[i++];
+
+                  if (i < n)
+                    {
+                      beg_idx = i;
+
+                      if (s[i] == ']')
+                        *buf << s[i++];
+                    }
+                }
+              else if (s[i] == ']')
+                *buf << s[i++];
+            }
+
+          while (i < n && s[i] != ']')
+            *buf << s[i++];
+
+          if (i < n && s[i] == ']')
+            {
+              end_idx = i-1;
+              *buf << s[i++];
+            }
+
+          if (s[i-1] != ']')
+            retval = nconv = -1;
+        }
+    }
+
+  if (nconv >= 0)
+    {
+      if (beg_idx != std::string::npos && end_idx != std::string::npos)
+        char_class = textscan_char_class (s.substr (beg_idx,
+                                                    end_idx - beg_idx + 1));
+
+      add_elt_to_list (width, prec, bitwidth, val_type, discard, type,
+                       num_elts, char_class);
     }
 
   return retval;
 }
 
+void
+textscan_format_list::printme (void) const
+{
+  octave_idx_type n = list.numel ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      textscan_format_elt *elt = list(i);
+
+      std::cerr
+        << "width:      " << elt->width << "\n"
+        << "digits      " << elt->prec << "\n"
+        << "bitwidth:   " << elt->bitwidth << "\n"
+        << "discard:    " << elt->discard << "\n"
+        << "type:       ";
+
+      if (elt->type == textscan_format_elt::literal_conversion)
+        std::cerr << "literal text\n";
+      else if (elt->type == textscan_format_elt::whitespace_conversion)
+        std::cerr << "whitespace\n";
+      else
+        std::cerr << elt->type << "\n";
+
+      std::cerr
+        << "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
+        << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
+    }
+}
+
+// If FORMAT is explicitly "", it is assumed to be "%f" repeated enough
+// times to read the first row of the file.  Set it now.
+
+int
+textscan_format_list::read_first_row (dstr& is, textscan& ts)
+{
+  // Read first line and strip end-of-line, which may be two characters
+  std::string first_line (20, ' ');
+  is.getline (first_line, static_cast<char> (ts.eol2));
+  if (first_line.length () > 0
+      && first_line[first_line.length () - 1] == ts.eol1)
+    first_line.resize (first_line.length () - 1);
+
+  std::istringstream strstr (first_line);
+  dstr ds (strstr, is);
+
+  dim_vector dv (1,1);      // initial size of each output_container
+  Complex val;
+  octave_value val_type;
+  nconv = 0;
+  int max_empty = 1000;     // failsafe, if ds fails but not with eof
+  int retval = 0;
+
+  // read line, creating output_container as we go
+  while (!ds.eof ())
+    {
+      bool already_skipped_delim = false;
+      ts.skip_whitespace (ds);
+      ds.progress_benchmark ();
+      bool progress = false;
+      ts.scan_complex (ds, *list(0), val);
+      if (ds.fail ())
+        {
+          ds.clear (ds.rdstate () & ~std::ios::failbit);
+
+          if (ds.eof ())
+            break;
+
+          // If we don't continue after a conversion error, then
+          // unless this was a missing value (i.e., followed by a delimiter),
+          // return with an error status.
+          if (ts.return_on_error < 2)
+            {
+              ts.skip_delim (ds);
+              if (ds.no_progress ())
+                {
+                  retval = 4;
+                  break;
+                }
+              already_skipped_delim = true;
+            }
+          else  // skip offending field
+            {
+              std::ios::iostate state = ds.rdstate ();
+              ds.clear ();          // clear to allow read pointer to advance
+
+              std::string dummy;
+              textscan_format_elt fe ("", first_line.length ());
+              ts.scan_string (ds, fe, dummy);
+
+              progress = (dummy.length ());
+              ds.setstate (state);
+            }
+
+          val = ts.empty_value.scalar_value ();
+          if (!--max_empty)
+            break;
+        }
+      if (val.imag () == 0)
+        val_type = octave_value (NDArray (dv, val.real ()));
+      else
+        val_type = octave_value (ComplexNDArray (dv, val));
+      output_container.push_back (val_type);
+      if (! already_skipped_delim)
+        ts.skip_delim (ds);
+      if (! progress && ds.no_progress ())
+        break;
+      nconv++;
+    }
+  output_container.pop_front (); // discard empty element from constructor
+
+  //Create  fmt  now that the size is known
+  list.resize (dim_vector (nconv, 1));
+  for (octave_idx_type i = 1; i < nconv; i++)
+    list(i) = new textscan_format_elt (*list(0));
+
+  return retval;             // May have returned 4 above.
+}
+
+// Perform actual textscan: read data from stream, and create cell array.
+
+octave_value
+textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
+                octave_idx_type ntimes)
+{
+  octave_value retval;
+
+  if (!isp)
+    error ("internal error: textscan called with invalid istream");
+  if (fmt_list.num_conversions () == -1)
+    error ("textscan: invalid format specified");
+  if (fmt_list.num_conversions () == 0)
+    error ("textscan: no valid format conversion specifiers\n");
+
+  // skip the first  header_lines
+  std::string dummy;
+  for (int i = 0; i < header_lines && *isp; i++)
+    getline (*isp, dummy, static_cast<char> (eol2));
+
+  // Create our own buffered stream, for fast get/putback/tell/seek.
+
+        // First, see how far ahead it should let us look.
+  int max_lookahead = std::max (std::max (comment_len, treat_as_empty_len),
+                                std::max (delim_len, 3)); // 3 for NaN and Inf
+
+        // Next, choose a buffer size to avoid reading too much, or too often.
+  octave_idx_type buf_size;
+  if (buffer_size)
+    buf_size = buffer_size;
+  else if (ntimes > 0)
+    {
+      buf_size = 80 * ntimes;
+      if (buf_size < ntimes)    // if overflow...
+        buf_size = ntimes;
+      buf_size = std::max (ntimes, std::min (buf_size, 4096));
+    }
+  else
+    buf_size = 4096;
+        // Finally, create the stream.
+  dstr is (*isp, whitespace + delims, max_lookahead, buf_size);
+
+  // Grow retval dynamically.  "size" is half the initial size
+  // (FIXME -- Should we start smaller if ntimes is large?)
+  octave_idx_type size = ((ntimes < 8 && ntimes >= 0) ? ntimes : 1);
+  Array<octave_idx_type> row_idx (dim_vector (1,2));
+  row_idx(1) = 0;
+
+  int err = 0;
+  octave_idx_type row = 0;
+
+  if (multiple_delims_as_one)           // bug #44750?
+    skip_delim (is);
+
+  int done_after;  // Number of columns read when EOF seen.
+
+  // If FORMAT explicitly "", read first line and see how many "%f" match
+  if (fmt_list.set_from_first)
+    {
+      err = fmt_list.read_first_row (is, *this);
+      lines = 1;
+
+      done_after = fmt_list.numel () + 1;
+      if (!err)
+        row = 1;  // the above puts the first line into fmt_list.out_buf ()
+    }
+  else
+    done_after = fmt_list.out_buf ().size () + 1;
+
+  std::list<octave_value> out = fmt_list.out_buf ();
+
+  // We will later merge adjacent columns of the same type.
+  // Check now which columns to merge.
+  // Reals may become complex, and so we can't trust types
+  // after reading in data.
+  // If the format was "", that conversion may already have happened,
+  // so force all to be merged (as all are %f).
+  bool merge_with_prev[fmt_list.numel ()];
+  int conv = 0;
+  if (collect_output)
+    {
+      int prev_type = -1;
+      for (std::list<octave_value>::iterator col = out.begin ();
+           col != out.end (); col++)
+        {
+          if (col->type_id () == prev_type
+              || (fmt_list.set_from_first && prev_type != -1))
+            merge_with_prev [conv++] = true;
+          else
+            merge_with_prev [conv++] = false;
+          prev_type = col->type_id ();
+        }
+    }
+
+  // This should be caught by earlier code, but this avoids a possible
+  // infinite loop below.
+  if (fmt_list.num_conversions () == 0)
+    error ("textscan: No conversions specified");
+
+
+  // Read the data.  This is the main loop.
+  if (!err)
+    for (/* row set ~30 lines above */; row < ntimes || ntimes == -1; row++)
+      {
+        if (row == 0 || row >= size)
+          {
+            size += size+1;
+            for (std::list<octave_value>::iterator col = out.begin ();
+                 col != out.end (); col++)
+              *col = (*col).resize (dim_vector (size, 1), 0);
+          }
+        row_idx(0) = row;
+        err = read_format_once (is, fmt_list, out, row_idx, done_after);
+        if (err > 0 || !is || (lines >= ntimes && ntimes > -1))
+          break;
+      }
+
+  if ((err & 4) && !return_on_error)
+    error ("textscan: Read error in field %d of row %d",
+           done_after + 1, row + 1);
+
+  // If file does not end in EOL, do not pad columns with NaN.
+  bool uneven_columns = false;
+  if (isp->eof () || (err & 4))
+    {
+      isp->clear ();
+      isp->seekg (-1, std::ios_base::end);
+      int last_char = isp->get ();
+      isp->setstate (isp->eofbit);
+      uneven_columns = (last_char != eol1 && last_char != eol2);
+    }
+
+  // convert return value to Cell array
+  Array<octave_idx_type> ra_idx (dim_vector (1,2));
+
+          // (err & 1) means "error, and no columns read this row
+          // FIXME -- This may redundant now that done_after=0 says the same
+  if (err & 1)
+    done_after = out.size () + 1;
+  int valid_rows = (row == ntimes) ? ntimes : ((err & 1) ? row : row+1);
+  dim_vector dv (valid_rows, 1);
+
+  ra_idx(0) = 0;
+  int i = 0;
+  if (!collect_output)
+    {
+      retval = Cell (dim_vector (1, out.size ()));
+      for (std::list<octave_value>::iterator col = out.begin ();
+           col != out.end (); col++, i++)
+        {
+          // trim last columns if that was requested
+          if (i == done_after && uneven_columns)
+            dv = dim_vector (std::max (valid_rows - 1, 0), 1);
+
+          ra_idx(1) = i;
+          retval = do_cat_op (retval, octave_value (Cell (col->resize (dv,0))),
+                              ra_idx);
+        }
+    }
+  else  // group adjacent cells of the same type into a single cell
+    {
+      octave_value    cur;                // current cell, accumulating columns
+      octave_idx_type group_size = 0;     // columns in this cell
+      int prev_type = -1;
+
+      conv = 0;
+      retval = Cell ();
+      for (std::list<octave_value>::iterator col = out.begin ();
+           col != out.end (); col++)
+        {
+          if (!merge_with_prev [conv++])  // including first time
+            {
+              if (prev_type != -1)
+                {
+                  ra_idx(1) = i++;
+                  retval = do_cat_op (retval, octave_value (Cell(cur)),
+                                      ra_idx);
+                }
+              cur = octave_value (col->resize (dv,0));
+              group_size = 1;
+              prev_type = col->type_id ();
+            }
+          else
+            {
+              ra_idx(1) = group_size++;
+              cur = do_cat_op (cur, octave_value (col->resize (dv,0)),
+                               ra_idx);
+            }
+        }
+      ra_idx(1) = i;
+      retval = do_cat_op (retval, octave_value (Cell (cur)), ra_idx);
+    }
+  return retval;
+}
 
 // Calculate x^n.  Used for ...e+nn  so that, for example, 1e2 is
 // exactly 100 and 5e-1 is 1/2
 
-double pown (double x, unsigned int n)
+static double
+pown (double x, unsigned int n)
 {
   double retval = 1;
 
@@ -1610,1046 +2301,355 @@ textscan::match_literal (dstr& is, const textscan_format_elt& fmt)
   return true;
 }
 
-
-textscan_format_list::textscan_format_list (const std::string& s)
-  : set_from_first (false), has_string (false), nconv (0), curr_idx (0),
-    list (dim_vector (16, 1)), buf (0)
+DEFUN (textscan, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat}, @var{param}, @var{value}, @dots{})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{str}, @dots{})\n\
+@deftypefnx {} {[@var{C}, @var{position}] =} textscan (@dots{})\n\
+Read data from a text file or string.\n\
+\n\
+The string @var{str} or file associated with @var{fid} is read from and\n\
+parsed according to @var{format}.\n\
+The function is an extension of @code{strread} and @code{textread}.\n\
+Differences include: the ability to read from either a file or a string,\n\
+additional options, and additional format specifiers.\n\
+\n\
+The input is interpreted as a sequence of \"words\", delimiters\n\
+(such as whitespace) and literals.\n\
+The characters that form delimiters and whitespace are determined\n\
+by the options.\n\
+The format consists of format specifiers interspersed between literals.\n\
+In the format, whitespace forms a delimiter between consecutive literals,\n\
+but is otherwise ignored.\n\
+\n\
+The output @var{C} is a cell array whose second dimension is determined\n\
+by the number of format specifiers.\n\
+\n\
+The first word of the input is matched to the first specifier of the\n\
+format and placed in the first column of the output;\n\
+the second is matched to the second specifier and placed in the second column\n\
+and so forth.\n\
+If there are more words than specifiers, the process is repeated until all\n\
+words have been processed or the limit imposed by @var{repeat} has been met\n\
+(see below).\n\
+\n\
+The string @var{format} describes how the words in @var{str} should be\n\
+parsed.\n\
+As in @var{fscanf}, any (non-whitespace) text in the format that is\n\
+not one of these specifiers is considered a literal;\n\
+if there is a literal between two format specifiers then that same literal\n\
+must appear in the input stream between the matching words.\n\
+\n\
+The following specifiers are valid:\n\
+\n\
+@table @code\n\
+@item  %f\n\
+@itemx %f64\n\
+@itemx %n\n\
+The word is parsed as a number and converted to double.\n\
+\n\
+@item  %f32\n\
+The word is parsed as a number and converted to single (float).\n\
+\n\
+@item  %d\n\
+@itemx %d8\n\
+@itemx %d16\n\
+@itemx %d32\n\
+@itemx %d64\n\
+The word is parsed as a number and converted to int8, int16, int32 or int64.\n\
+If not size is specified, int32 is used.\n\
+\n\
+@item  %u\n\
+@itemx %u8\n\
+@itemx %u16\n\
+@itemx %u32\n\
+@itemx %u64\n\
+The word is parsed as a number and converted to uint8, uint16, uint32 or\n\
+uint64. If not size is specified, uint32 is used.\n\
+\n\
+@item %s\n\
+The word is parsed as a string, ending at the last character before\n\
+whitespace, an end-of-line or a delimiter specified in the options.\n\
+\n\
+@item %q\n\
+The word is parsed as a \"quoted string\".\n\
+If the first character of the string is a double quote (\") then the string\n\
+includes everything until a matching double quote, including whitespace,\n\
+delimiters and end of line characters.\n\
+If a pair of consecutive double quotes appears in the input,\n\
+it is replaced in the output by a single double quote.\n\
+That is, the input \"He said \"\"Hello\"\"\" would return the value\n\
+'He said \"Hello\"'.\n\
+\n\
+@item  %c\n\
+The next character of the input is read.\n\
+This includes delimiters, whitespace and end of line characters.\n\
+\n\
+@item  %[...]\n\
+@itemx %[^...]\n\
+In the first form, the word consists of the longest run consisting of only\n\
+characters between the brackets.\n\
+Ranges of characters can be specified by a hyphen;\n\
+for example, %[0-9a-zA-Z] matches all alphanumeric characters\n\
+(if the underlying character set is ASCII).\n\
+Since Matlab treats hyphens literally, this expansion only applies to\n\
+alphanumeric characters.\n\
+To include '-' in the set, it should appear first or last in the brackets;\n\
+to include ']', it should be the first character.\n\
+If the first character is '^' then the word consists of characters\n\
+NOT listed.\n\
+\n\
+@item %N...\n\
+For %s, %c %d, %f, %n, %u, an optional width can be specified as %Ns etc.\n\
+where N is an integer > 1.\n\
+For %c, this causes exactly the next N characters to be read instead of\n\
+a single character.\n\
+For the other specifiers, it is an upper bound on the\n\
+number of characters read;\n\
+normal delimiters can cause fewer characters to be read.\n\
+For complex numbers, this limit applies to the real and imaginary\n\
+components individually.\n\
+For %f and %n, format specifiers like %N.Mf are allowed, where M is an upper\n\
+bound on number of characters after the decimal point to be considered;\n\
+subsequent digits are skipped.\n\
+For example, the specifier %8.2f would read 12.345e6 as 1.234e7.\n\
+\n\
+@item %*...\n\
+The word specified by the remainder of the conversion specifier is skipped.\n\
+\n\
+@item literals\n\
+In addition the format may contain literal character strings;\n\
+these will be skipped during reading.\n\
+If the input string does not match this literal, the processing terminates,\n\
+unless \"ReturnOnError\" is set to \"continue\".\n\
+@end table\n\
+\n\
+Parsed words corresponding to the first specifier are returned in the first\n\
+output argument and likewise for the rest of the specifiers.\n\
+\n\
+By default, if there is only one input argument, @var{format} is @t{\"%f\"}.\n\
+This means that numbers are read from @var{str} into a single column vector.\n\
+If @var{format} is explicitly empty, \"\", then textscan will return data\n\
+in a number of columns matching the number of fields on the first data\n\
+line of the input.\n\
+Either of these is suitable only if @var{str} contains only numeric fields.\n\
+\n\
+For example, the string\n\
+\n\
+@example\n\
+@group\n\
+@var{str} = \"\\\n\
+Bunny Bugs   5.5\\n\\\n\
+Duck Daffy  -7.5e-5\\n\\\n\
+Penguin Tux   6\"\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+can be read using\n\
+\n\
+@example\n\
+@var{a} = textscan (@var{str}, \"%s %s %f\");\n\
+@end example\n\
+\n\
+The optional numeric argument @var{repeat} can be used for limiting the\n\
+number of items read:\n\
+\n\
+@table @asis\n\
+@item -1\n\
+(default) read all of the string or file until the end.\n\
+\n\
+@item N\n\
+Read until the first of two conditions occurs: the format has been processed\n\
+N times, or N lines of the input have been processed.\n\
+Zero (0) is an acceptable value for @var{repeat}.\n\
+Currently, end-of-line characters inside %q, %c, and %[...]$ conversions\n\
+do not contribute to the line count.\n\
+This is incompatible with Matlab and may change in future.\n\
+@end table\n\
+\n\
+The behavior of @code{textscan} can be changed via property-value pairs.\n\
+The following properties are recognized:\n\
+\n\
+@table @asis\n\
+@item @qcode{\"BufSize\"}\n\
+This specifies the number of bytes to use for the internal buffer.\n\
+A modest speed improvement is obtained by setting this to a large value\n\
+when reading a large file, especially the input contains long strings.\n\
+The default is 4096, or a value dependent on @var{n} is that is specified.\n\
+\n\
+@item @qcode{\"CollectOutput\"}\n\
+A value of 1 or true instructs textscan to concatenate consecutive columns\n\
+of the same class in the output cell array.\n\
+A value of 0 or false (default) leaves output in distinct columns.\n\
+\n\
+@item @qcode{\"CommentStyle\"}\n\
+Parts of @var{str} are considered comments and will be skipped.\n\
+@var{value} is the comment style and can be either\n\
+(1) One string, or 1x1 cell string, to skip everything to the right of it;\n\
+(2) A cell array of two strings, to skip everything between the first and\n\
+second strings.\n\
+Comments are only parsed where whitespace is accepted, and do not act as\n\
+delimiters.\n\
+\n\
+@item @qcode{\"Delimiter\"}\n\
+If @var{value} is a string, any character in @var{value} will be used to\n\
+split @var{str} into words.\n\
+If @var{value} is a cell array of strings,\n\
+any string in the array will be used to split @var{str} into words.\n\
+(default value = any whitespace.)\n\
+\n\
+@item @qcode{\"EmptyValue\"}\n\
+Value to return for empty numeric values in non-whitespace delimited data.\n\
+The default is NaN@.\n\
+When the data type does not support NaN (int32 for example),\n\
+then default is zero.\n\
+\n\
+@item @qcode{\"EndOfLine\"}\n\
+@var{value} can be either a emtpy or one character specifying the\n\
+end of line character, or the pair\n\
+@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} (CRLF).\n\
+In the latter case, any of\n\
+@qcode{\"@xbackslashchar{}r\"}, @qcode{\"@xbackslashchar{}n\"} or\n\
+@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is counted as a (single)\n\
+newline.\n\
+If no value is given, @qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is\n\
+used.\n\
+@c If set to \"\" (empty string) EOLs are ignored as delimiters and added\n\
+@c to whitespace.\n\
+\n\
+@c When reading from a character string, optional input argument @var{n}\n\
+@c specifies the number of times @var{format} should be used (i.e., to limit\n\
+@c the amount of data read).\n\
+@c When reading from file, @var{n} specifies the number of data lines to read;\n\
+@c in this sense it differs slightly from the format repeat count in strread.\n\
+\n\
+@item @qcode{\"HeaderLines\"}\n\
+The first @var{value} number of lines of @var{fid} are skipped.\n\
+Note that this does not refer to the first non-comment lines, but the first\n\
+lines of any type.\n\
+\n\
+@item @qcode{\"MultipleDelimsAsOne\"}\n\
+If @var{value} is non-zero,\n\
+treat a series of consecutive delimiters, without whitespace in between,\n\
+as a single delimiter.\n\
+Consecutive delimiter series need not be vertically @qcode{\"aligned\"}.\n\
+Without this option, a single delimiter before the end of the line does\n\
+not cause the line to be considered to end with an empty value,\n\
+but a single delimiter at the start of a line causes the line\n\
+to be considered to start with an empty value.\n\
+\n\
+@item @qcode{\"TreatAsEmpty\"}\n\
+Treat single occurrences (surrounded by delimiters or whitespace) of the\n\
+string(s) in @var{value} as missing values.\n\
+\n\
+@item @qcode{\"ReturnOnError\"}\n\
+If set to numerical 1 or true, return normally as soon as an error\n\
+is encountered, such as trying to read a string using @qcode{%f}.\n\
+If set to 0 or false, return an error and no data.\n\
+If set to \"continue\" (default), textscan attempts to continue reading\n\
+beyond the location; however, this may cause the parsing to get out of sync.\n\
+\n\
+@item @qcode{\"Whitespace\"}\n\
+Any character in @var{value} will be interpreted as whitespace and trimmed;\n\
+The default value for whitespace is\n\
+@c Note: the next line specifically has a newline which generates a space\n\
+@c       in the output of qcode, but keeps the next line < 80 characters.\n\
+@qcode{\"\n\
+@xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t\"}\n\
+(note the space).  Unless whitespace is set to @qcode{\"\"} (empty) AND at\n\
+least one @qcode{\"%s\"} format conversion specifier is supplied, a space is\n\
+always part of whitespace.\n\
+\n\
+@end table\n\
+\n\
+When the number of words in @var{str} or @var{fid} doesn't match an exact\n\
+multiple of the number of format conversion specifiers,\n\
+textscan's behavior depends on\n\
+whether the last character of the string or file is\n\
+an end-of-line as specified by the EndOfLine option:\n\
+\n\
+@table @asis\n\
+@item last character = end-of-line\n\
+Data columns are padded with empty fields, NaN or 0 (for integer fields)\n\
+so that all columns have equal length\n\
+\n\
+@item last character is not end-of-line\n\
+Data columns are not padded; textscan returns columns of unequal length\n\
+@end table\n\
+\n\
+\n\
+The second output, @var{position}, provides the position, in characters\n\
+from the beginning of the file or string, at which the processing stopped.\n\
+\n\
+@seealso{dlmread, fscanf, load, strread, textread}\n\
+@end deftypefn")
 {
-  octave_idx_type num_elts = 0;
+  octave_value_list retval;
+  std::string format;
+  int params = 1;
 
-  size_t n = s.length ();
-
-  size_t i = 0;
-
-  unsigned int width = -1;              // Unspecified width = max (except %c)
-  int prec = -1;
-  int bitwidth = 0;
-  bool discard = false;
-  char type = '\0';
-
-  bool have_more = true;
-
-  if (s.length () == 0)
+  if (args.length () < 1)
+    print_usage ();
+  else if (args.length () == 1)
+    format = "%f";      // ommited format = %f.  explicit "" = width from file
+  else if (args(1).is_string ())
     {
-      buf = new std::ostringstream ("%f");
-      bitwidth = 64;
-      type = 'f';
-      add_elt_to_list (width, prec, bitwidth, octave_value (NDArray ()),
-                       discard, type, num_elts);
-      have_more = false;
-      set_from_first = true;
-      nconv = 1;
+      format = args(1).string_value ();
+      if (args(1).is_sq_string ())
+        format = do_string_escapes (format);
+      params++;
+    }
+  else
+    error ("textscan: FORMAT must be a string, not <%s>",
+           args(1).class_name ().c_str ());
+
+  octave_idx_type ntimes = -1;
+  textscan tscanner;
+
+  if (args.length () >= 3)
+    {
+      if (args(2).is_numeric_type ())
+        {
+          ntimes = args(2).idx_type_value ();
+          if (ntimes < args(2).double_value ())
+            error ("textscan: REPEAT = %g is too large",
+                   args(2).double_value ());
+          params = 3;
+        }
+    }
+  textscan_format_list fmt_list (format);
+
+  tscanner.parse_options (args, params, fmt_list);
+
+  if (args(0).is_string ())
+    {
+      std::istringstream is (args(0).string_value ());
+      octave_value tmp = tscanner.scan (&is, fmt_list, ntimes);
+      retval(0) = tmp;
+
+      std::ios::iostate state = is.rdstate ();
+      is.clear ();
+      retval(1) = octave_value (static_cast<long>(is.tellg ()));
+      is.setstate (state);
     }
   else
     {
-      set_from_first = false;
-      while (i < n)
-        {
-          have_more = true;
+      octave_stream os = octave_stream_list::lookup (args(0), "textscan");
+      octave_value tmp = tscanner.scan (os.input_stream (), fmt_list, ntimes);
 
-          if (! buf)
-            buf = new std::ostringstream ();
-
-          if (s[i] == '%' && (i+1 == n || s[i+1] != '%'))
-            {
-              // Process percent-escape conversion type.
-
-              process_conversion (s, i, n, num_elts);
-
-              have_more = (buf != 0);
-            }
-          else if (isspace (s[i]))
-            {
-              while (++i < n && isspace (s[i]))
-                /* skip whitespace */;
-
-              have_more = false;
-            }
-          else
-            {
-              type = textscan_format_elt::literal_conversion;
-
-              width = 0;
-              prec = -1;
-              bitwidth = 0;
-              discard = true;
-
-              while (i < n && ! isspace (s[i])
-                     && (s[i] != '%' || (i+1 < n && s[i+1] == '%')))
-                {
-                  if (s[i] == '%')      // if double %, skip one
-                    i++;
-                  *buf << s[i++];
-                  width++;
-                }
-
-              add_elt_to_list (width, prec, bitwidth, octave_value (), discard,
-                               type, num_elts);
-
-              have_more = false;
-            }
-
-          if (nconv < 0)
-            {
-              have_more = false;
-              break;
-            }
-        }
-    }
-
-  if (have_more)
-    add_elt_to_list (width, prec, bitwidth, octave_value (), discard, type, num_elts);
-
-  list.resize (dim_vector (num_elts, 1));
-
-  delete buf;
-}
-
-textscan_format_list::~textscan_format_list (void)
-{
-  octave_idx_type n = list.numel ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      textscan_format_elt *elt = list(i);
-      delete elt;
-    }
-}
-
-void
-textscan_format_list::add_elt_to_list (unsigned int width, int prec,
-                                       int bitwidth, octave_value val_type,
-                                       bool discard, char type,
-                                       octave_idx_type& num_elts,
-                                       const std::string& char_class)
-{
-  if (buf)
-    {
-      std::string text = buf->str ();
-
-      if (! text.empty ())
-        {
-          textscan_format_elt *elt
-            = new textscan_format_elt (text.c_str (), width, prec, bitwidth,
-                                       discard, type, char_class);
-
-          if (num_elts == list.numel ())
-            {
-              list.resize (dim_vector (2 * num_elts, 1));
-            }
-
-          if (!discard)
-            {
-              output_container.push_back (val_type);
-            }
-          list(num_elts++) = elt;
-        }
-
-      delete buf;
-      buf = 0;
-    }
-}
-
-void
-textscan_format_list::process_conversion (const std::string& s, size_t& i,
-                                          size_t n, octave_idx_type& num_elts)
-{
-  unsigned width = 0;
-  int prec = -1;
-  int bitwidth = 0;
-  bool discard = false;
-  octave_value val_type;
-  char type = '\0';
-
-  *buf << s[i++];
-
-  bool have_width = false;
-
-  while (i < n)
-    {
-      switch (s[i])
-        {
-        case '*':
-          if (discard)
-            nconv = -1;
-          else
-            {
-              discard = true;
-              *buf << s[i++];
-            }
-          break;
-
-        case '0': case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
-          if (have_width)
-            nconv = -1;
-          else
-            {
-              char c = s[i++];
-              width = width * 10 + c - '0';
-              have_width = true;
-              *buf << c;
-              while (i < n && isdigit (s[i]))
-                {
-                  c = s[i++];
-                  width = width * 10 + c - '0';
-                  *buf << c;
-                }
-
-              if (i < n && s[i] == '.')
-                {
-                  *buf << s[i++];
-                  prec = 0;
-                  while (i < n && isdigit (s[i]))
-                    {
-                      c = s[i++];
-                      prec = prec * 10 + c - '0';
-                      *buf << c;
-                    }
-                }
-            }
-          break;
-
-        case 'd': case 'u':
-          {
-            bool done = true;
-            *buf << (type = s[i++]);
-            if (i < n)
-              {
-                if (s[i] == '8')
-                  {
-                    bitwidth = 8;
-                    if (type == 'd')
-                      val_type = octave_value (int8NDArray ());
-                    else
-                      val_type = octave_value (uint8NDArray ());
-                    *buf << s[i++];
-                  }
-                else if (s[i] == '1' && i+1 < n && s[i+1] == '6')
-                  {
-                    bitwidth = 16;
-                    if (type == 'd')
-                      val_type = octave_value (int16NDArray ());
-                    else
-                      val_type = octave_value (uint16NDArray ());
-                    *buf << s[i++];
-                    *buf << s[i++];
-                  }
-                else if (s[i] == '3' && i+1 < n && s[i+1] == '2')
-                  {
-                    done = false;       // use default size below
-                    *buf << s[i++];
-                    *buf << s[i++];
-                  }
-                else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
-                  {
-                    bitwidth = 64;
-                    if (type == 'd')
-                      val_type = octave_value (int64NDArray ());
-                    else
-                      val_type = octave_value (uint64NDArray ());
-                    *buf << s[i++];
-                    *buf << s[i++];
-                  }
-                else
-                  done = false;
-              }
-            else
-              done = false;
-
-            if (!done)
-              {
-                bitwidth = 32;
-                if (type == 'd')
-                  val_type = octave_value (int32NDArray ());
-                else
-                  val_type = octave_value (uint32NDArray ());
-              }
-            goto fini;
-          }
-
-        case 'f':
-          *buf << (type = s[i++]);
-          bitwidth = 64;
-          if (i < n)
-            {
-              if (s[i] == '3' && i+1 < n && s[i+1] == '2')
-                {
-                  bitwidth = 32;
-                  val_type = octave_value (FloatNDArray ());
-                  *buf << s[i++];
-                  *buf << s[i++];
-                }
-              else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
-                {
-                  val_type = octave_value (NDArray ());
-                  *buf << s[i++];
-                  *buf << s[i++];
-                }
-              else
-                val_type = octave_value (NDArray ());
-            }
-          else
-            val_type = octave_value (NDArray ());
-          goto fini;
-
-        case 'n':
-          *buf << (type = s[i++]);
-          bitwidth = 64;
-          val_type = octave_value (NDArray ());
-          goto fini;
-
-        case 's': case 'q': case '[': case 'c':
-          if (!discard)
-            val_type = octave_value (Cell ());
-          *buf << (type = s[i++]);
-          has_string = true;
-          goto fini;
-
-        fini:
-          {
-            if (!have_width)
-              {
-                if (type == 'c')        // %c defaults to one character
-                  width = 1;
-                else
-                  width = static_cast<unsigned int> (-1); // others: unlimited
-              }
-
-            if (finish_conversion (s, i, n, width, prec, bitwidth, val_type,
-                                   discard, type, num_elts) == 0)
-              return;
-          }
-          break;
-
-        default:
-          error ("textscan: '%%%c' is not a valid format specifier", s[i]);
-        }
-
-      if (nconv < 0)
-        break;
-    }
-
-  nconv = -1;
-}
-
-// Parse [...] and [^...]
-//
-// Matlab does not expand expressions like A-Z, but they are useful, and
-// so we parse them "carefully".  We treat '-' as a usual character
-// unless both start and end characters are from the same class (upper
-// case, lower case, numeric), or this is not the first '-' in the
-// pattern.
-//
-// Keep both a running list of characters and a mask of which chars have
-// occurred.  The first is efficient for patterns with few characters.
-// The latter is efficient for [^...] patterns.
-
-static std::string
-textscan_char_class (const std::string& pattern)
-{
-  int len = pattern.length ();
-  if (len == 0)
-    return "";
-
-  std::string retval (256, '\0');
-  std::string mask   (256, '\0');       // number of times chr has been seen
-
-  int in = 0, out = 0;
-  unsigned char ch, prev = 0;
-  bool flip = false;
-
-  ch = pattern[in];
-  if (ch == '^')
-    {
-      in++;
-      flip = true;
-    }
-  mask[pattern[in]] = '\1';
-  retval[out++] = pattern[in++];        // even copy ']' if it is first
-
-  bool prev_was_range = false;          // disallow "a-m-z" as a pattern
-  bool prev_prev_was_range = false;
-  for (; in < len; in++)
-    {
-      bool was_range = false;
-      ch = pattern[in];
-      if (ch == ']')
-        break;
-
-      if (prev == '-' && in > 1 && isalnum (ch) && ! prev_prev_was_range)
-        {
-          unsigned char start_of_range = pattern[in-2];
-          if (start_of_range < ch
-              && ((isupper (ch) && isupper (start_of_range))
-                  || (islower (ch) && islower (start_of_range))
-                  || (isdigit (ch) && isdigit (start_of_range))
-                  || mask['-'] > 1))    // not the first '-'
-            {
-              was_range = true;
-              out--;
-              mask['-']--;
-              for (int i = start_of_range; i <= ch; i++)
-                {
-                  if (mask[i] == '\0')
-                    {
-                      mask[i] = '\1';
-                      retval[out++] = i;
-                    }
-                }
-            }
-        }
-      if (!was_range)
-        {
-          if (mask[ch]++ == 0)
-            retval[out++] = ch;
-          else if (ch != '-')
-            warning_with_id ("octave:textscan-pattern",
-                             "textscan: [...] contains two '%c's", ch);
-          if (prev == '-' && mask['-'] >= 2)
-            warning_with_id ("octave:textscan-pattern",
-                             "textscan: [...] contains two '-'s "
-                             "outside range expressions");
-        }
-      prev = ch;
-      prev_prev_was_range = prev_was_range;
-      prev_was_range = was_range;
-    }
-  if (flip)                             // [^...]
-    {
-      out = 0;
-      for (int i = 0; i < 256; i++)
-        if (!mask[i])
-          retval[out++] = i;
-    }
-  retval.resize (out);
-
-  return retval;
-}
-
-int
-textscan_format_list::finish_conversion (const std::string& s, size_t& i,
-                                         size_t n, unsigned int& width,
-                                         int& prec, int& bitwidth,
-                                         octave_value& val_type, bool discard,
-                                         char& type, octave_idx_type& num_elts)
-{
-  int retval = 0;
-
-  std::string char_class;
-
-  size_t beg_idx = std::string::npos;
-  size_t end_idx = std::string::npos;
-
-  if (type != '%')
-    {
-      nconv++;
-      if (type == '[')
-        {
-          if (i < n)
-            {
-              beg_idx = i;
-
-              if (s[i] == '^')
-                {
-                  type = '^';
-                  *buf << s[i++];
-
-                  if (i < n)
-                    {
-                      beg_idx = i;
-
-                      if (s[i] == ']')
-                        *buf << s[i++];
-                    }
-                }
-              else if (s[i] == ']')
-                *buf << s[i++];
-            }
-
-          while (i < n && s[i] != ']')
-            *buf << s[i++];
-
-          if (i < n && s[i] == ']')
-            {
-              end_idx = i-1;
-              *buf << s[i++];
-            }
-
-          if (s[i-1] != ']')
-            retval = nconv = -1;
-        }
-    }
-
-  if (nconv >= 0)
-    {
-      if (beg_idx != std::string::npos && end_idx != std::string::npos)
-        char_class = textscan_char_class (s.substr (beg_idx,
-                                                    end_idx - beg_idx + 1));
-
-      add_elt_to_list (width, prec, bitwidth, val_type, discard, type,
-                       num_elts, char_class);
+      retval(0) = tmp;
+      // FIXME -- warn if stream is not opened in binary mode?
+      std::ios::iostate state = os.input_stream ()->rdstate ();
+      os.input_stream ()->clear ();
+      retval(1) = os.tell ();
+      os.input_stream ()->setstate (state);
     }
 
   return retval;
-}
-
-void
-textscan_format_list::printme (void) const
-{
-  octave_idx_type n = list.numel ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      textscan_format_elt *elt = list(i);
-
-      std::cerr
-        << "width:      " << elt->width << "\n"
-        << "digits      " << elt->prec << "\n"
-        << "bitwidth:   " << elt->bitwidth << "\n"
-        << "discard:    " << elt->discard << "\n"
-        << "type:       ";
-
-      if (elt->type == textscan_format_elt::literal_conversion)
-        std::cerr << "literal text\n";
-      else if (elt->type == textscan_format_elt::whitespace_conversion)
-        std::cerr << "whitespace\n";
-      else
-        std::cerr << elt->type << "\n";
-
-      std::cerr
-        << "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
-        << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
-    }
-}
-
-// If FORMAT is explicitly "", it is assumed to be "%f" repeated enough
-// times to read the first row of the file.  Set it now.
-
-int
-textscan_format_list::read_first_row (dstr& is, textscan& ts)
-{
-  // Read first line and strip end-of-line, which may be two characters
-  std::string first_line (20, ' ');
-  is.getline (first_line, static_cast<char> (ts.eol2));
-  if (first_line.length () > 0
-      && first_line[first_line.length () - 1] == ts.eol1)
-    first_line.resize (first_line.length () - 1);
-
-  std::istringstream strstr (first_line);
-  dstr ds (strstr, is);
-
-  dim_vector dv (1,1);      // initial size of each output_container
-  Complex val;
-  octave_value val_type;
-  nconv = 0;
-  int max_empty = 1000;     // failsafe, if ds fails but not with eof
-  int retval = 0;
-
-  // read line, creating output_container as we go
-  while (!ds.eof ())
-    {
-      bool already_skipped_delim = false;
-      ts.skip_whitespace (ds);
-      ds.progress_benchmark ();
-      bool progress = false;
-      ts.scan_complex (ds, *list(0), val);
-      if (ds.fail ())
-        {
-          ds.clear (ds.rdstate () & ~std::ios::failbit);
-
-          if (ds.eof ())
-            break;
-
-          // If we don't continue after a conversion error, then
-          // unless this was a missing value (i.e., followed by a delimiter),
-          // return with an error status.
-          if (ts.return_on_error < 2)
-            {
-              ts.skip_delim (ds);
-              if (ds.no_progress ())
-                {
-                  retval = 4;
-                  break;
-                }
-              already_skipped_delim = true;
-            }
-          else  // skip offending field
-            {
-              std::ios::iostate state = ds.rdstate ();
-              ds.clear ();          // clear to allow read pointer to advance
-
-              std::string dummy;
-              textscan_format_elt fe ("", first_line.length ());
-              ts.scan_string (ds, fe, dummy);
-
-              progress = (dummy.length ());
-              ds.setstate (state);
-            }
-
-          val = ts.empty_value.scalar_value ();
-          if (!--max_empty)
-            break;
-        }
-      if (val.imag () == 0)
-        val_type = octave_value (NDArray (dv, val.real ()));
-      else
-        val_type = octave_value (ComplexNDArray (dv, val));
-      output_container.push_back (val_type);
-      if (! already_skipped_delim)
-        ts.skip_delim (ds);
-      if (! progress && ds.no_progress ())
-        break;
-      nconv++;
-    }
-  output_container.pop_front (); // discard empty element from constructor
-
-  //Create  fmt  now that the size is known
-  list.resize (dim_vector (nconv, 1));
-  for (octave_idx_type i = 1; i < nconv; i++)
-    list(i) = new textscan_format_elt (*list(0));
-
-  return retval;             // May have returned 4 above.
-}
-
-// Perform actual textscan: read data from stream, and create cell array.
-
-octave_value
-textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
-                octave_idx_type ntimes)
-{
-  octave_value retval;
-
-  if (!isp)
-    error ("internal error: textscan called with invalid istream");
-  if (fmt_list.num_conversions () == -1)
-    error ("textscan: invalid format specified");
-  if (fmt_list.num_conversions () == 0)
-    error ("textscan: no valid format conversion specifiers\n");
-
-  // skip the first  header_lines
-  std::string dummy;
-  for (int i = 0; i < header_lines && *isp; i++)
-    getline (*isp, dummy, static_cast<char> (eol2));
-
-  // Create our own buffered stream, for fast get/putback/tell/seek.
-
-        // First, see how far ahead it should let us look.
-  int max_lookahead = std::max (std::max (comment_len, treat_as_empty_len),
-                                std::max (delim_len, 3)); // 3 for NaN and Inf
-
-        // Next, choose a buffer size to avoid reading too much, or too often.
-  octave_idx_type buf_size;
-  if (buffer_size)
-    buf_size = buffer_size;
-  else if (ntimes > 0)
-    {
-      buf_size = 80 * ntimes;
-      if (buf_size < ntimes)    // if overflow...
-        buf_size = ntimes;
-      buf_size = std::max (ntimes, std::min (buf_size, 4096));
-    }
-  else
-    buf_size = 4096;
-        // Finally, create the stream.
-  dstr is (*isp, whitespace + delims, max_lookahead, buf_size);
-
-  // Grow retval dynamically.  "size" is half the initial size
-  // (FIXME -- Should we start smaller if ntimes is large?)
-  octave_idx_type size = ((ntimes < 8 && ntimes >= 0) ? ntimes : 1);
-  Array<octave_idx_type> row_idx (dim_vector (1,2));
-  row_idx(1) = 0;
-
-  int err = 0;
-  octave_idx_type row = 0;
-
-  if (multiple_delims_as_one)           // bug #44750?
-    skip_delim (is);
-
-  int done_after;  // Number of columns read when EOF seen.
-
-  // If FORMAT explicitly "", read first line and see how many "%f" match
-  if (fmt_list.set_from_first)
-    {
-      err = fmt_list.read_first_row (is, *this);
-      lines = 1;
-
-      done_after = fmt_list.numel () + 1;
-      if (!err)
-        row = 1;  // the above puts the first line into fmt_list.out_buf ()
-    }
-  else
-    done_after = fmt_list.out_buf ().size () + 1;
-
-  std::list<octave_value> out = fmt_list.out_buf ();
-
-  // We will later merge adjacent columns of the same type.
-  // Check now which columns to merge.
-  // Reals may become complex, and so we can't trust types
-  // after reading in data.
-  // If the format was "", that conversion may already have happened,
-  // so force all to be merged (as all are %f).
-  bool merge_with_prev[fmt_list.numel ()];
-  int conv = 0;
-  if (collect_output)
-    {
-      int prev_type = -1;
-      for (std::list<octave_value>::iterator col = out.begin ();
-           col != out.end (); col++)
-        {
-          if (col->type_id () == prev_type
-              || (fmt_list.set_from_first && prev_type != -1))
-            merge_with_prev [conv++] = true;
-          else
-            merge_with_prev [conv++] = false;
-          prev_type = col->type_id ();
-        }
-    }
-
-  // This should be caught by earlier code, but this avoids a possible
-  // infinite loop below.
-  if (fmt_list.num_conversions () == 0)
-    error ("textscan: No conversions specified");
-
-
-  // Read the data.  This is the main loop.
-  if (!err)
-    for (/* row set ~30 lines above */; row < ntimes || ntimes == -1; row++)
-      {
-        if (row == 0 || row >= size)
-          {
-            size += size+1;
-            for (std::list<octave_value>::iterator col = out.begin ();
-                 col != out.end (); col++)
-              *col = (*col).resize (dim_vector (size, 1), 0);
-          }
-        row_idx(0) = row;
-        err = read_format_once (is, fmt_list, out, row_idx, done_after);
-        if (err > 0 || !is || (lines >= ntimes && ntimes > -1))
-          break;
-      }
-
-  if ((err & 4) && !return_on_error)
-    error ("textscan: Read error in field %d of row %d",
-           done_after + 1, row + 1);
-
-  // If file does not end in EOL, do not pad columns with NaN.
-  bool uneven_columns = false;
-  if (isp->eof () || (err & 4))
-    {
-      isp->clear ();
-      isp->seekg (-1, std::ios_base::end);
-      int last_char = isp->get ();
-      isp->setstate (isp->eofbit);
-      uneven_columns = (last_char != eol1 && last_char != eol2);
-    }
-
-  // convert return value to Cell array
-  Array<octave_idx_type> ra_idx (dim_vector (1,2));
-
-          // (err & 1) means "error, and no columns read this row
-          // FIXME -- This may redundant now that done_after=0 says the same
-  if (err & 1)
-    done_after = out.size () + 1;
-  int valid_rows = (row == ntimes) ? ntimes : ((err & 1) ? row : row+1);
-  dim_vector dv (valid_rows, 1);
-
-  ra_idx(0) = 0;
-  int i = 0;
-  if (!collect_output)
-    {
-      retval = Cell (dim_vector (1, out.size ()));
-      for (std::list<octave_value>::iterator col = out.begin ();
-           col != out.end (); col++, i++)
-        {
-          // trim last columns if that was requested
-          if (i == done_after && uneven_columns)
-            dv = dim_vector (std::max (valid_rows - 1, 0), 1);
-
-          ra_idx(1) = i;
-          retval = do_cat_op (retval, octave_value (Cell (col->resize (dv,0))),
-                              ra_idx);
-        }
-    }
-  else  // group adjacent cells of the same type into a single cell
-    {
-      octave_value    cur;                // current cell, accumulating columns
-      octave_idx_type group_size = 0;     // columns in this cell
-      int prev_type = -1;
-
-      conv = 0;
-      retval = Cell ();
-      for (std::list<octave_value>::iterator col = out.begin ();
-           col != out.end (); col++)
-        {
-          if (!merge_with_prev [conv++])  // including first time
-            {
-              if (prev_type != -1)
-                {
-                  ra_idx(1) = i++;
-                  retval = do_cat_op (retval, octave_value (Cell(cur)),
-                                      ra_idx);
-                }
-              cur = octave_value (col->resize (dv,0));
-              group_size = 1;
-              prev_type = col->type_id ();
-            }
-          else
-            {
-              ra_idx(1) = group_size++;
-              cur = do_cat_op (cur, octave_value (col->resize (dv,0)),
-                               ra_idx);
-            }
-        }
-      ra_idx(1) = i;
-      retval = do_cat_op (retval, octave_value (Cell (cur)), ra_idx);
-    }
-  return retval;
-}
-
-// Create a delimited stream, reading from is, with delimiters delims,
-// and allowing reading of up to tellg + longest_lookeahead.  When is
-// is at EOF, lookahead may be padded by ASCII nuls.
-
-dstr::dstr (std::istream& is, const std::string& delimiters,
-            int longest_lookahead, octave_idx_type bsize)
-    : bufsize (bsize), i_stream (is), longest (longest_lookahead),
-      delims (delimiters),
-      flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
-{
-  buf = new char[bufsize];
-  eob = buf + bufsize;
-  idx = eob;                    // refresh_buf shouldn't try to copy old data
-  progress_marker = idx;
-  refresh_buf ();               // load the first batch of data
-}
-
-// Used to create a stream from a strstream from data read from a dstr.
-// FIXME: Find a more efficient approach.  Perhaps derived dstrstream
-dstr::dstr (std::istream& is, const dstr& ds)
-  : bufsize (ds.bufsize), i_stream (is), longest (ds.longest),
-    delims (ds.delims),
-    flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
-{
-  buf = new char[bufsize];
-  eob = buf + bufsize;
-  idx = eob;                    // refresh_buf shouldn't try to copy old data
-  progress_marker = idx;
-  refresh_buf ();               // load the first batch of data
-}
-
-dstr::~dstr ()
-{
-  // Seek to the correct position in i_stream.
-  if (!eof ())
-    {
-      i_stream.clear ();
-      i_stream.seekg (buf_in_file);
-      i_stream.read (buf, idx - buf);
-    }
-
-  delete [] buf;
-}
-
-// Read a character from the buffer, refilling the buffer from the file
-// if necessary.
-
-int
-dstr::get_undelim ()
-{
-  int retval;
-  if (eof ())
-    {
-      setstate (std::ios_base::failbit);
-      return EOF;
-    }
-
-  if (idx < eob)
-    retval = *idx++;
-  else
-    {
-      refresh_buf ();
-      if (eof ())
-        {
-          setstate (std::ios_base::eofbit);
-          retval = EOF;
-        }
-      else
-        retval = *idx++;
-    }
-  if (idx >= last)
-    delimited = false;
-  return retval;
-}
-
-// Return the next character to be read without incrementing the
-// pointer, refilling the buffer from the file if necessary.
-
-int
-dstr::peek_undelim ()
-{
-  int retval = get_undelim ();
-  putback ();
-
-  return retval;
-}
-
-// Copy remaining unprocessed data to the start of the buffer and load
-// new data to fill it.  Return EOF if the file is at EOF before
-// reading any data and all of the data that has been read has been
-// processed.
-
-int
-dstr::refresh_buf (void)
-{
-  if (eof ())
-    return EOF;
-
-  int retval;
-  int old_remaining = eob - idx;
-
-  if (old_remaining < 0)
-    {
-      idx = eob;
-      old_remaining = 0;
-    }
-
-  octave_quit ();                       // allow ctrl-C
-
-  if (old_remaining > 0)
-    memmove (buf, idx, old_remaining);
-
-  progress_marker -= idx - buf;         // where original idx would have been
-  idx = buf;
-
-  int gcount;   // chars read
-  if (!i_stream.eof ())
-    {
-      buf_in_file = i_stream.tellg ();   // record for destructor
-      i_stream.read (buf + old_remaining, bufsize - old_remaining);
-      gcount = i_stream.gcount ();
-    }
-  else
-    gcount = 0;
-
-  eob = buf + old_remaining + gcount;
-  last = eob;
-  if (gcount == 0)
-    {
-      delimited = false;
-      if (eob != buf)              // no more data in file, but still some to go
-        retval = 0;
-      else
-        retval = EOF;              // file and buffer are both done.
-    }
-  else
-    {
-      delimited = true;
-
-      for (last = eob - longest; last - buf >= 0; last--)
-        {
-          if (strchr (delims.c_str (), *last))
-            break;
-        }
-      if (last - buf < 0)
-        delimited = false;
-
-      retval = 0;
-    }
-
-  if (retval == EOF)  // Ensure fast peek doesn't give valid char
-    *idx = '\0';      // FIXME - check that no TreatAsEmpty etc starts w. \0?
-
-  return retval;
-}
-
-// Return a pointer to a block of data of size size, assuming that a
-// sufficiently large buffer is available in buffer, if required.
-// If called when delimited == true, and size is no greater than
-// longest_lookahead then this will not call refresh_buf, so seekg
-// still works.  Otherwise, seekg may be invalidated.
-
-char *
-dstr::read (char *buffer, int size, char* &prior_tell)
-{
-  char *retval;
-  if (eob  - idx > size)
-    {
-      retval = idx;
-      idx += size;
-      if (idx > last)
-        delimited = false;
-    }
-  else
-    {
-      // If there was a tellg pointing to an earlier point than the current
-      // read position, try to keep it in the active buffer.
-      // In the current code, prior_tell==idx for each call,
-      // so this is not necessary, just a precaution.
-      if (eob - prior_tell + size < bufsize)
-        {
-          octave_idx_type gap = idx - prior_tell;
-          idx = prior_tell;
-          refresh_buf ();
-          idx += gap;
-        }
-      else      // can't keep the tellg in range.  May skip some data.
-        {
-          refresh_buf ();
-        }
-      prior_tell = buf;
-
-      if (eob - idx > size)
-        {
-          retval = idx;
-          idx += size;
-          if (idx > last)
-            delimited = false;
-        }
-      else
-        {
-          if (size <= bufsize)          // small read, but reached EOF
-            {
-              retval = idx;
-              memset (eob, 0, size + (idx - buf));
-              idx += size;
-            }
-          else  // Reading more than the whole buf; return it in buffer
-            {
-              retval = buffer;
-              // FIXME -- read bufsize at a time
-              int i;
-              for (i = 0; i < size && !eof (); i++)
-                *buffer++ = get_undelim ();
-              if (eof ())
-                memset (buffer, 0, size - i);
-            }
-        }
-    }
-  return retval;
-}
-
-// Return in OUT an entire line, terminated by delim.  On input, OUT
-// must have length at least 1.
-
-int
-dstr::getline (std::string& out, char delim)
-{
-  int len = out.length (), used = 0;
-  int ch;
-  while ((ch = get_undelim ()) != delim && ch != EOF)
-    {
-      out[used++] = ch;
-      if (used == len)
-        {
-          len <<= 1;
-          out.resize (len);
-        }
-    }
-  out.resize (used);
-  field_done ();
-
-  return ch;
 }
 
 /*

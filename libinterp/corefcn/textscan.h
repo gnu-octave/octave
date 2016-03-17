@@ -1,4 +1,5 @@
 /*
+
 Copyright (C) 2015-2016 Lachlan Andrew, Monash University
 
 This file is part of Octave.
@@ -44,22 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 class
 dstr
 {
-  int bufsize;         // number of characters to read from the file at once
-  std::istream& i_stream;   // stream to read from
-  char *buf;           // temporary storage for a "chunk" of data
-  char *idx;           // Current read pointer
-  char *last;          // location of last delimiter in the buffer at buf
-                       //        (undefined if delimited is false)
-  char *eob;           // Position after last character in buffer
-  bool delimited;      // True if there is delimiter in the bufer after idx
-  int longest;         // longest lookahead required
-  const std::string delims; // sequence of single-character delimiters
-
-  std::streampos buf_in_file;  // Position of start of buf in original stream
-
-  char *progress_marker; // Marker to see if a read consumes any characters
-
 public:
+
   dstr (std::istream& is, const std::string& delimiters,
         int longest_lookahead, octave_idx_type bsize = 4096);
 
@@ -124,17 +111,34 @@ public:
   // (get, read etc. not cancelled by putback or seekg)
   void progress_benchmark (void) { progress_marker = idx; }
   bool no_progress (void) { return progress_marker == idx; }
+
 private:
+
+  int bufsize;         // number of characters to read from the file at once
+  std::istream& i_stream;   // stream to read from
+  char *buf;           // temporary storage for a "chunk" of data
+  char *idx;           // Current read pointer
+  char *last;          // location of last delimiter in the buffer at buf
+                       //        (undefined if delimited is false)
+  char *eob;           // Position after last character in buffer
+  bool delimited;      // True if there is delimiter in the bufer after idx
+  int longest;         // longest lookahead required
+  const std::string delims; // sequence of single-character delimiters
+
+  std::streampos buf_in_file;  // Position of start of buf in original stream
+
+  char *progress_marker; // Marker to see if a read consumes any characters
+
   std::ios_base::iostate flags; 
 
-  // No copying
+  // No copying!
+
   dstr (const dstr&);
   dstr& operator = (const dstr&);
 };
 
-/**
- * A single conversion specifier, such as %f or %c
- */
+// A single conversion specifier, such as %f or %c.
+
 class
 OCTINTERP_API
 textscan_format_elt
@@ -318,6 +322,29 @@ private:
 class
 textscan
 {
+public:
+
+  textscan (void)
+    : buf (""), delim_table (""), delims (), comment_len (0), comment_char(-2),
+      buffer_size (0),
+      empty_value (octave_NaN), exp_chars ("edED"), header_lines (0),
+      treat_as_empty_len (0), whitespace (" \b\t"), eol1('\r'), eol2('\n'),
+      return_on_error (2), collect_output (false),
+      multiple_delims_as_one (false), default_exp (true),
+      numeric_delim (false), lines (0)
+    {
+      inf_nan = Cell (dim_vector (1,2));
+      inf_nan(0) = Cell (octave_value ("inf"));
+      inf_nan(1) = Cell (octave_value ("nan"));
+    };
+
+  octave_value scan (std::istream* isp, textscan_format_list& fmt_list,
+                     octave_idx_type ntimes);
+  void parse_options (const octave_value_list& args, int first_param,
+                         textscan_format_list& formats);
+
+private:
+
   friend class textscan_format_list;
 
   std::string buf;
@@ -396,27 +423,6 @@ textscan
   bool isspace (unsigned int ch) const { return whitespace_table[ch & 0xff]; }
         // true if the only delimiter is whitespace
   bool whitespace_delim (void) const { return delim_table.length () == 0; }
-
-  public:
-
-  textscan (void)
-    : buf (""), delim_table (""), delims (), comment_len (0), comment_char(-2),
-      buffer_size (0),
-      empty_value (octave_NaN), exp_chars ("edED"), header_lines (0),
-      treat_as_empty_len (0), whitespace (" \b\t"), eol1('\r'), eol2('\n'),
-      return_on_error (2), collect_output (false),
-      multiple_delims_as_one (false), default_exp (true),
-      numeric_delim (false), lines (0)
-    {
-      inf_nan = Cell (dim_vector (1,2));
-      inf_nan(0) = Cell (octave_value ("inf"));
-      inf_nan(1) = Cell (octave_value ("nan"));
-    };
-
-  octave_value scan (std::istream* isp, textscan_format_list& fmt_list,
-                     octave_idx_type ntimes);
-  void parse_options (const octave_value_list& args, int first_param,
-                         textscan_format_list& formats);
 };
 
 #endif

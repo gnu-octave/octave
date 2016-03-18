@@ -2903,7 +2903,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! fseek (fid, 0, "bof");
 %! fclose (fid);
 %! unlink (f);
-%! assert (c, {[1;4], [2;NaN], [3;NaN]})
+%! assert (c, {[1;4], 2, 3})
 
 %!error <Read error in field 2 of row 2> textscan ("1 2 3\n4 s 6", "%f %f %f", "ReturnOnError", 0);
 
@@ -3141,7 +3141,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 
 ## Bug #42343-2, test padding with supplied emptyvalue
 %!test
-%! a = textscan (",1,,4\nInf,  ,NaN", "", "delimiter", ",", "emptyvalue", -10);
+%! a = textscan (",1,,4\nInf,  ,NaN\n", "", "delimiter", ",", "emptyvalue", -10);
 %! assert (cell2mat (a), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
 
 ## Bug #42528
@@ -3157,7 +3157,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 
 ## MultipleDelimsAsOne
 %!test
-%! str = "11, 12, 13,, 15\n21,, 23, 24, 25\n,, 33, 34, 35";
+%! str = "11, 12, 13,, 15\n21,, 23, 24, 25\n,, 33, 34, 35\n";
 %! C = textscan (str, "%f %f %f %f", "delimiter", ",", "multipledelimsasone", 1, "endofline", "\n");
 %! assert (C{1}', [11, 21, 33]);
 %! assert (C{2}', [12, 23, 34]);

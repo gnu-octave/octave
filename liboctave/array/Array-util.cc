@@ -272,7 +272,7 @@ freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
   static const char *tag[3] = { "row", "column", 0 };
 
   for (int i = 0; i < n; i++)
-    retval(i) = ra_idx(i).freeze (dimensions(i), tag[i < 2 ? i : 3],
+    retval(i) = ra_idx(i).freeze (dimensions(i), tag[i < 2 ? i : 2],
                                   resize_ok);
 
   return retval;

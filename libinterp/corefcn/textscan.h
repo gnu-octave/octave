@@ -26,6 +26,15 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_textscan_h)
 #define octave_textscan_h 1
 
+#include "octave-config.h"
+
+#include <iosfwd>
+#include <list>
+#include <string>
+
+#include "Cell.h"
+#include "ov.h"
+
 // Delimited stream, optimised to read strings of characters separated
 // by single-character delimiters.
 //

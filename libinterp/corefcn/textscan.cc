@@ -36,6 +36,145 @@ along with Octave; see the file COPYING.  If not, see
 #include "textscan.h"
 #include "utils.h"
 
+// Delimited stream, optimised to read strings of characters separated
+// by single-character delimiters.
+//
+// The reason behind this class is that octstream doesn't provide
+// seek/tell, but the opportunity has been taken to optimise for the
+// textscan workload.
+//
+// The function reads chunks into a 4kiB buffer, and marks where the
+// last delimiter occurs.  Reads up to this delimiter can be fast.
+// After that last delimiter, the remaining text is moved to the front
+// of the buffer and the buffer is refilled.  This also allows cheap
+// seek and tell operations within a "fast read" block.
+
+class
+delimited_stream
+{
+public:
+
+  delimited_stream (std::istream& is, const std::string& delimiters,
+        int longest_lookahead, octave_idx_type bsize = 4096);
+
+  delimited_stream (std::istream& is, const delimited_stream& ds);
+
+  ~delimited_stream (void);
+
+  // Called when optimised sequence of get is finished.  Ensures that
+  // there is a remaining delimiter in buf, or loads more data in.
+  void field_done (void)
+  {
+    if (idx >= last)
+      refresh_buf ();
+  }
+
+  // Load new data into buffer, and set eob, last, idx.
+  // Return EOF at end of file, 0 otherwise.
+  int refresh_buf (void);
+
+  // Get a character, relying on caller to call field_done if
+  // a delimiter has been reached.
+  int get (void)   { return delimited ? *idx++ : get_undelim (); }
+
+  // Get a character, checking for underrun of the buffer.
+  int get_undelim (void);
+
+  // Read character that will be got by the next get.
+  int peek (void)   { return *idx; }
+
+  // Read character that will be got by the next get.
+  int peek_undelim (void);
+
+  // Undo a 'get' or 'get_undelim'.  It is the caller's responsibility
+  // to avoid overflow by calling putbacks only for a character got by
+  // get() or get_undelim(), with no intervening
+  // get, get_delim, field_done, refresh_buf, getline, read or seekg.
+  void putback (char /*ch*/ = 0)  { --idx; }
+
+  int getline  (std::string& dest, char delim);
+
+  // int skipline (char delim);
+
+  char *read (char *buffer, int size, char* &new_start);
+
+  // Return a position suitable to "seekg", valid only within this
+  // block between calls to field_done.
+  char *tellg (void) { return idx; }
+
+  void seekg (char *old_idx) { idx = old_idx; }
+
+  bool eof (void)
+  {
+    return (eob == buf && i_stream.eof ()) || (flags & std::ios_base::eofbit);
+  }
+
+  operator const void* (void) { return (!eof () && !flags) ? this : 0; }
+
+  bool fail (void) { return flags & std::ios_base::failbit; }
+
+  std::ios_base::iostate rdstate (void) { return flags; }
+
+  void setstate (std::ios_base::iostate m) { flags = flags | m; }
+
+  void clear (std::ios_base::iostate m
+              = (std::ios_base::eofbit & ~std::ios_base::eofbit))
+  {
+    flags = flags & m;
+  }
+
+  // Report if any characters have been consumed.
+  // (get, read etc. not cancelled by putback or seekg)
+
+  void progress_benchmark (void) { progress_marker = idx; }
+
+  bool no_progress (void) { return progress_marker == idx; }
+
+private:
+
+  // Number of characters to read from the file at once.
+  int bufsize;
+
+  // Stream to read from.
+  std::istream& i_stream;
+
+  // Temporary storage for a "chunk" of data.
+  char *buf;
+
+  // Current read pointer.
+  char *idx;
+
+  // Location of last delimiter in the buffer at buf (undefined if
+  // delimited is false).
+  char *last;
+
+  // Position after last character in buffer.
+  char *eob;
+
+  // True if there is delimiter in the bufer after idx.
+  bool delimited;
+
+  // Longest lookahead required.
+  int longest;
+
+  // Sequence of single-character delimiters.
+  const std::string delims;
+
+  // Position of start of buf in original stream.
+  std::streampos buf_in_file;
+
+  // Marker to see if a read consumes any characters.
+  char *progress_marker;
+
+  std::ios_base::iostate flags;
+
+  // No copying!
+
+  delimited_stream (const delimited_stream&);
+
+  delimited_stream& operator = (const delimited_stream&);
+};
+
 // Create a delimited stream, reading from is, with delimiters delims,
 // and allowing reading of up to tellg + longest_lookeahead.  When is
 // is at EOF, lookahead may be padded by ASCII nuls.
@@ -292,6 +431,184 @@ delimited_stream::getline (std::string& out, char delim)
 
   return ch;
 }
+
+// A single conversion specifier, such as %f or %c.
+
+class
+textscan_format_elt
+{
+public:
+
+  enum special_conversion
+  {
+    whitespace_conversion = 1,
+    literal_conversion = 2
+  };
+
+  textscan_format_elt (const char *txt = 0, int w = 0, int p = -1,
+                       int bw = 0, bool dis = false, char typ = '\0',
+                       const std::string& ch_class = std::string ())
+    : text (strsave (txt)), width (w), prec (p), bitwidth (bw),
+      char_class (ch_class), type (typ), discard (dis),
+      numeric(typ == 'd' || typ == 'u' || type == 'f' || type == 'n')
+  { }
+
+  textscan_format_elt (const textscan_format_elt& e)
+    : text (strsave (e.text)), width (e.width), prec (e.prec),
+      bitwidth (e.bitwidth), char_class (e.char_class), type (e.type),
+      discard (e.discard), numeric (e.numeric)
+  { }
+
+  textscan_format_elt& operator = (const textscan_format_elt& e)
+  {
+    if (this != &e)
+      {
+        text = strsave (e.text);
+        width = e.width;
+        prec = e.prec;
+        bitwidth = e.bitwidth;
+        discard = e.discard;
+        type = e.type;
+        numeric = e.numeric;
+        char_class = e.char_class;
+      }
+
+    return *this;
+  }
+
+  ~textscan_format_elt (void) { delete [] text; }
+
+  // The C-style format string.
+  const char *text;
+
+  // The maximum field width.
+  unsigned int width;
+
+  // The maximum number of digits to read after the decimal in a
+  // floating point conversion.
+  int prec;
+
+  // The size of the result.  For integers, bitwidth may be 8, 16, 34,
+  // or 64.  For floating point values, bitwidth may be 32 or 64.
+  int bitwidth;
+
+  // The class of characters in a `[' or `^' format.
+  std::string char_class;
+
+  // Type of conversion
+  //  -- `d', `u', `f', `n', `s', `q', `c', `%', `C', `D', `[' or `^'.
+  char type;
+
+  // TRUE if we are not storing the result of this conversion.
+  bool discard;
+
+  // TRUE if the type is 'd', 'u', 'f', 'n'
+  bool numeric;
+};
+
+class textscan;
+
+// The (parsed) sequence of format specifiers.
+
+class
+textscan_format_list
+{
+public:
+
+  textscan_format_list (const std::string& fmt = std::string ());
+
+  ~textscan_format_list (void);
+
+  octave_idx_type num_conversions (void) const { return nconv; }
+
+  // The length can be different than the number of conversions.
+  // For example, "x %d y %d z" has 2 conversions but the length of
+  // the list is 3 because of the characters that appear after the
+  // last conversion.
+
+  octave_idx_type numel (void) const { return list.numel (); }
+
+  const textscan_format_elt *first (void)
+  {
+    curr_idx = 0;
+    return current ();
+  }
+
+  const textscan_format_elt *current (void) const
+  {
+    return list.numel () > 0 ? list.elem (curr_idx) : 0;
+  }
+
+  const textscan_format_elt *next (bool cycle = true)
+  {
+    curr_idx++;
+
+    if (curr_idx >= list.numel ())
+      {
+        if (cycle)
+          curr_idx = 0;
+        else
+          return 0;
+      }
+
+    return current ();
+  }
+
+  void printme (void) const;
+
+  bool ok (void) const { return (nconv >= 0); }
+
+  operator const void* (void) const { return ok () ? this : 0; }
+
+  // True if number of %f to be set from data file.
+  bool set_from_first;
+
+  // At least one conversion specifier is s,q,c, or [...].
+  bool has_string;
+
+  int read_first_row (delimited_stream& is, textscan& ts);
+
+  std::list<octave_value> out_buf (void) const { return (output_container); }
+
+private:
+
+  // Number of conversions specified by this format string, or -1 if
+  // invalid conversions have been found.
+  octave_idx_type nconv;
+
+  // Index to current element;
+  octave_idx_type curr_idx;
+
+  // FIXME -- maybe LIST should be a std::list object?
+  // List of format elements.
+  Array<textscan_format_elt*> list;
+
+  // list holding column arrays of types specified by conversions
+  std::list<octave_value > output_container;
+
+  // Temporary buffer.
+  std::ostringstream *buf;
+
+  void add_elt_to_list (unsigned int width, int prec, int bitwidth,
+                        octave_value val_type, bool discard,
+                        char type, octave_idx_type& num_elts,
+                        const std::string& char_class = std::string ());
+
+  void process_conversion (const std::string& s, size_t& i, size_t n,
+                           octave_idx_type& num_elts);
+
+  int finish_conversion (const std::string& s, size_t& i, size_t n,
+                         unsigned int& width, int& prec, int& bitwidth,
+                         octave_value& val_type,
+                         bool discard, char& type,
+                         octave_idx_type& num_elts);
+  // No copying!
+
+  textscan_format_list (const textscan_format_list&);
+
+  textscan_format_list& operator = (const textscan_format_list&);
+};
+
 
 textscan_format_list::textscan_format_list (const std::string& s)
   : set_from_first (false), has_string (false), nconv (0), curr_idx (0),
@@ -911,8 +1228,54 @@ textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
 // Perform actual textscan: read data from stream, and create cell array.
 
 octave_value
-textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
-                octave_idx_type ntimes)
+textscan::scan (std::istream *isp, const octave_value_list& args)
+{
+  std::string format;
+  int params = 0;
+
+  if (args.length () == 0)
+    format = "%f";      // ommited format = %f.  explicit "" = width from file
+  else if (args(0).is_string ())
+    {
+      format = args(0).string_value ();
+
+      if (args(0).is_sq_string ())
+        format = do_string_escapes (format);
+
+      params++;
+    }
+  else
+    error ("textscan: FORMAT must be a string, not <%s>",
+           args(0).class_name ().c_str ());
+
+  octave_idx_type ntimes = -1;
+
+  if (args.length () > 1)
+    {
+      if (args(1).is_numeric_type ())
+        {
+          ntimes = args(1).idx_type_value ();
+
+          if (ntimes < args(1).double_value ())
+            error ("textscan: REPEAT = %g is too large",
+                   args(1).double_value ());
+
+          params++;
+        }
+    }
+
+  octave_value_list tmp_args = args.splice (0, params);
+
+  textscan_format_list fmt_list (format);
+
+  parse_options (tmp_args, fmt_list);
+
+  return do_scan (isp, fmt_list, ntimes);
+}
+
+octave_value
+textscan::do_scan (std::istream *isp, textscan_format_list& fmt_list,
+                   octave_idx_type ntimes)
 {
   octave_value retval;
 
@@ -1440,7 +1803,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
     val = Complex (re, im);
 }
 
-// Return in VAL the run of characters from IS NOT contained in PATTERN. 
+// Return in VAL the run of characters from IS NOT contained in PATTERN.
 
 int
 textscan::scan_caret (delimited_stream& is, const char *pattern,
@@ -1795,7 +2158,7 @@ textscan::scan_one (delimited_stream& is, const textscan_format_elt& fmt,
 }
 
 // Read data corresponding to the entire format string once, placing the
-// values in row ROW of retval. 
+// values in row ROW of retval.
 
 int
 textscan::read_format_once (delimited_stream& is,
@@ -1907,22 +2270,22 @@ textscan::read_format_once (delimited_stream& is,
 }
 
 void
-textscan::parse_options (const octave_value_list& args, int first_param,
+textscan::parse_options (const octave_value_list& args,
                          textscan_format_list& fmt_list)
 {
   int last = args.length ();
-  int n = last - first_param;
+  int n = last;
 
   if (n & 1)
     error ("textscan: %d parameters given, but only %d values", n-n/2, n/2);
 
   delim_len = 1;
   bool have_delims = false;
-  for (int i = first_param; i < last; i += 2)
+  for (int i = 0; i < last; i += 2)
     {
       if (! args(i).is_string ())
         error ("textscan: Invalid paramter type <%s> for parameter %d",
-               args(i).type_name ().c_str (), (i-first_param)/2 + 1);
+               args(i).type_name ().c_str (), i/2 + 1);
 
       std::string param = args(i).string_value ();
       std::transform (param.begin (), param.end (),
@@ -2648,51 +3011,19 @@ from the beginning of the file or string, at which the processing stopped.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  std::string format;
-  int params = 1;
 
   if (args.length () < 1)
     print_usage ();
-  else if (args.length () == 1)
-    format = "%f";      // ommited format = %f.  explicit "" = width from file
-  else if (args(1).is_string ())
-    {
-      format = args(1).string_value ();
 
-      if (args(1).is_sq_string ())
-        format = do_string_escapes (format);
+  octave_value_list tmp_args = args.splice (0, 1);
 
-      params++;
-    }
-  else
-    error ("textscan: FORMAT must be a string, not <%s>",
-           args(1).class_name ().c_str ());
-
-  octave_idx_type ntimes = -1;
   textscan tscanner;
-
-  if (args.length () >= 3)
-    {
-      if (args(2).is_numeric_type ())
-        {
-          ntimes = args(2).idx_type_value ();
-
-          if (ntimes < args(2).double_value ())
-            error ("textscan: REPEAT = %g is too large",
-                   args(2).double_value ());
-
-          params = 3;
-        }
-    }
-  textscan_format_list fmt_list (format);
-
-  tscanner.parse_options (args, params, fmt_list);
 
   if (args(0).is_string ())
     {
       std::istringstream is (args(0).string_value ());
-      octave_value tmp = tscanner.scan (&is, fmt_list, ntimes);
-      retval(0) = tmp;
+
+      retval(0) = tscanner.scan (&is, tmp_args);
 
       std::ios::iostate state = is.rdstate ();
       is.clear ();
@@ -2702,9 +3033,9 @@ from the beginning of the file or string, at which the processing stopped.\n\
   else
     {
       octave_stream os = octave_stream_list::lookup (args(0), "textscan");
-      octave_value tmp = tscanner.scan (os.input_stream (), fmt_list, ntimes);
 
-      retval(0) = tmp;
+      retval(0) = tscanner.scan (os.input_stream (), tmp_args);
+
       // FIXME -- warn if stream is not opened in binary mode?
       std::ios::iostate state = os.input_stream ()->rdstate ();
       os.input_stream ()->clear ();

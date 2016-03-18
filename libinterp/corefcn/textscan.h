@@ -130,8 +130,8 @@ private:
   void parse_options (const octave_value_list& args,
                       textscan_format_list& fmt_list);
 
-  int read_format_once (delimited_stream &isp, textscan_format_list& fmt_list,
-                        std::list<octave_value> & retval,
+  int read_format_once (delimited_stream& isp, textscan_format_list& fmt_list,
+                        std::list<octave_value>& retval,
                         Array<octave_idx_type> row, int& done_after);
 
   void scan_one (delimited_stream& is, const textscan_format_elt& fmt,

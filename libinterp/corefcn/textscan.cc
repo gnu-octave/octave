@@ -211,7 +211,7 @@ delimited_stream::delimited_stream (std::istream& is,
 delimited_stream::~delimited_stream (void)
 {
   // Seek to the correct position in i_stream.
-  if (!eof ())
+  if (! eof ())
     {
       i_stream.clear ();
       i_stream.seekg (buf_in_file);
@@ -452,7 +452,7 @@ public:
                        const std::string& ch_class = std::string ())
     : text (strsave (txt)), width (w), prec (p), bitwidth (bw),
       char_class (ch_class), type (typ), discard (dis),
-      numeric(typ == 'd' || typ == 'u' || type == 'f' || type == 'n')
+      numeric (typ == 'd' || typ == 'u' || type == 'f' || type == 'n')
   { }
 
   textscan_format_elt (const textscan_format_elt& e)
@@ -585,7 +585,7 @@ private:
   std::deque<textscan_format_elt*> fmt_elts;
 
   // list holding column arrays of types specified by conversions
-  std::list<octave_value > output_container;
+  std::list<octave_value> output_container;
 
   // Temporary buffer.
   std::ostringstream *buf;
@@ -1456,7 +1456,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
               if (prev_type != -1)
                 {
                   ra_idx(1) = i++;
-                  retval = do_cat_op (retval, octave_value (Cell(cur)),
+                  retval = do_cat_op (retval, octave_value (Cell (cur)),
                                       ra_idx);
                 }
               cur = octave_value (col->resize (dv,0));
@@ -2174,7 +2174,7 @@ textscan::scan_one (delimited_stream& is, const textscan_format_elt& fmt,
 int
 textscan::read_format_once (delimited_stream& is,
                             textscan_format_list& fmt_list,
-                            std::list<octave_value> & retval,
+                            std::list<octave_value>& retval,
                             Array<octave_idx_type> row, int& done_after)
 {
   const textscan_format_elt *elem = fmt_list.first ();
@@ -2325,7 +2325,7 @@ textscan::parse_options (const octave_value_list& args,
                     {
                       octave_idx_type len = delim_list(j).string_value ()
                                                          .length ();
-                      delim_len = std::max (static_cast<int>(len), delim_len);
+                      delim_len = std::max (static_cast<int> (len), delim_len);
                     }
                 }
             }
@@ -3040,7 +3040,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 
       std::ios::iostate state = is.rdstate ();
       is.clear ();
-      retval(1) = octave_value (static_cast<long>(is.tellg ()));
+      retval(1) = octave_value (static_cast<long> (is.tellg ()));
       is.setstate (state);
     }
   else
@@ -3181,7 +3181,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! ## Multi-character delimiter
 %! str = "99end2 space88gap 4564";
 %! c = textscan (str, "%d %s", "delimiter", {"end", "gap", "space"});
-%! assert (c{1}, int32([99; 88]));
+%! assert (c{1}, int32 ([99; 88]));
 %! assert (c{2}, {"2 "; "4564"});
 
 ### Delimiters as part of literals, and following literals
@@ -3307,7 +3307,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 
 ## bug #37023
 %!test
-%! data = textscan("   1. 1 \n 2 3\n", '%f %f');
+%! data = textscan ("   1. 1 \n 2 3\n", '%f %f');
 %! assert (data{1}, [1; 2], 1e-15);
 %! assert (data{2}, [1; 3], 1e-15);
 
@@ -3527,7 +3527,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 #%! C = textscan ("abcxyz51\nxyz83\n##xyz101", "%s xyz %d");
 #%! assert (C{1}([1 3]), {"abc"; "##"});
 #%! assert (isempty (C{1}{2}), true);
-#%! assert (C{2}, int32([51; 83; 101]));
+#%! assert (C{2}, int32 ([51; 83; 101]));
 ### Literals are not delimiters.
 
 ## Test for false positives in check for non-supported format specifiers
@@ -3654,13 +3654,13 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! fmt = "%d8 %d16 %d32 %d64 %u8 %u16 %u32 %u64 ";
 %! C = textscan ([a a a a a a a a b b b b b b b b], fmt);
 %! assert (C{1}, int8 ([-128; 127]));
-%! assert (C{2}, int16([-32768; 32767]));
-%! assert (C{3}, int32([-2147483648; 2147483647]));
-%! assert (C{4}, int64([-9223372036854775808; 9223372036854775807]));
+%! assert (C{2}, int16 ([-32768; 32767]));
+%! assert (C{3}, int32 ([-2147483648; 2147483647]));
+%! assert (C{4}, int64 ([-9223372036854775808; 9223372036854775807]));
 %! assert (C{5}, uint8 ([0; 255]));
-%! assert (C{6}, uint16([0; 65535]));
-%! assert (C{7}, uint32([0; 4294967295]));
-%! assert (C{8}, uint64([0; 18446744073709551615]));
+%! assert (C{6}, uint16 ([0; 65535]));
+%! assert (C{7}, uint32 ([0; 4294967295]));
+%! assert (C{8}, uint64 ([0; 18446744073709551615]));
 
 %% Tests from Matlab (does The MathWorks have any copyright over the input?)
 %!test
@@ -3670,7 +3670,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! fprintf (fid,"10/12/2005 Level2 23.54 60 9e19 -inf  0.001 No 2.2-.5i\n");
 %! fprintf (fid,"11/12/2005 Level3 34.90 12 2e5   10  100   No 3.1+.1i\n");
 %! fseek (fid, 0, "bof");
-%! C = textscan(fid,"%s %s %f32 %d8 %u %f %f %s %f");
+%! C = textscan (fid,"%s %s %f32 %d8 %u %f %f %s %f");
 %! %assert (C{1}, {"09/12/2005";"10/12/2005";"11/12/2005"});
 %! assert (C{2}, {"Level1";"Level2";"Level3"});
 %! assert (C{3}, [single(12.34);single(23.54);single(34.90)]);
@@ -3681,11 +3681,11 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! assert (C{8}, {"Yes";"No";"No"});
 %! assert (C{9}, [5.1+3i;2.2-0.5i;3.1+0.1i]);
 %! fseek (fid, 0, "bof");
-%! C = textscan(fid,"%s Level%d %f32 %d8 %u %f %f %s %f");
+%! C = textscan (fid,"%s Level%d %f32 %d8 %u %f %f %s %f");
 %! assert (C{2}, [int32(1);int32(2);int32(3)]);
 %! assert (C{3}, [single(12.34);single(23.54);single(34.90)]);
 %! fseek (fid, 0, "bof");
-%! C = textscan(fid,'%s %*[^\n]');
+%! C = textscan (fid,'%s %*[^\n]');
 %! fclose (fid);
 %! unlink (f);
 %! assert (C, {{"09/12/2005";"10/12/2005";"11/12/2005"}});
@@ -3696,7 +3696,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! fprintf (fid,"1,  2,  3,  4,   ,  6\n");
 %! fprintf (fid,"7,  8,  9,   , 11, 12\n");
 %! fseek (fid, 0, "bof");
-%! C = textscan(fid,"%f %f %f %f %u8 %f", "Delimiter",",","EmptyValue",-Inf);
+%! C = textscan (fid,"%f %f %f %f %u8 %f", "Delimiter",",","EmptyValue",-Inf);
 %! fclose (fid);
 %! unlink (f);
 %! assert (C{4}, [4; -Inf]);
@@ -3709,7 +3709,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! fprintf (fid,"// Comment Here\n");
 %! fprintf (fid,"def, na, 5, 6, 7\n");
 %! fseek (fid, 0, "bof");
-%! C = textscan(fid,"%s %n %n %n %n","Delimiter",",","TreatAsEmpty",{"NA","na"},"CommentStyle","//");
+%! C = textscan (fid,"%s %n %n %n %n","Delimiter",",","TreatAsEmpty",{"NA","na"},"CommentStyle","//");
 %! fclose (fid);
 %! unlink (f);
 %! assert (C{1}, {"abc";"def"});

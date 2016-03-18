@@ -68,6 +68,9 @@ Summary of important user-visible changes for version 4.2:
     function has also been extended to return a second output with the
     total number of function evaluations.
 
+ ** The textscan function is now built-in and is much faster and much
+    more Matlab-compatible than the previous m-file version.
+
  ** Other new functions added in 4.2:
 
       deg2rad

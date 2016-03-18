@@ -61,7 +61,7 @@ public:
 
   ~textscan (void) { }
 
-  octave_value scan (std::istream *isp, const octave_value_list& args);
+  octave_value scan (std::istream& isp, const octave_value_list& args);
 
 private:
 
@@ -124,7 +124,7 @@ private:
 
   octave_idx_type lines;
 
-  octave_value do_scan (std::istream *isp, textscan_format_list& fmt_list,
+  octave_value do_scan (std::istream& isp, textscan_format_list& fmt_list,
                         octave_idx_type ntimes);
 
   void parse_options (const octave_value_list& args,

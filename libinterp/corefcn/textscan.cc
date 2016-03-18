@@ -1237,7 +1237,7 @@ textscan::textscan (void)
 { }
 
 octave_value
-textscan::scan (std::istream *isp, const octave_value_list& args)
+textscan::scan (std::istream& isp, const octave_value_list& args)
 {
   std::string format;
   int params = 0;
@@ -1283,13 +1283,10 @@ textscan::scan (std::istream *isp, const octave_value_list& args)
 }
 
 octave_value
-textscan::do_scan (std::istream *isp, textscan_format_list& fmt_list,
+textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
                    octave_idx_type ntimes)
 {
   octave_value retval;
-
-  if (! isp)
-    error ("internal error: textscan called with invalid istream");
 
   if (fmt_list.num_conversions () == -1)
     error ("textscan: invalid format specified");
@@ -1299,8 +1296,8 @@ textscan::do_scan (std::istream *isp, textscan_format_list& fmt_list,
 
   // skip the first  header_lines
   std::string dummy;
-  for (int i = 0; i < header_lines && *isp; i++)
-    getline (*isp, dummy, static_cast<char> (eol2));
+  for (int i = 0; i < header_lines && isp; i++)
+    getline (isp, dummy, static_cast<char> (eol2));
 
   // Create our own buffered stream, for fast get/putback/tell/seek.
 
@@ -1319,7 +1316,7 @@ textscan::do_scan (std::istream *isp, textscan_format_list& fmt_list,
       buf_size = std::max (buf_size, ntimes);
     }
   // Finally, create the stream.
-  delimited_stream is (*isp, whitespace + delims, max_lookahead, buf_size);
+  delimited_stream is (isp, whitespace + delims, max_lookahead, buf_size);
 
   // Grow retval dynamically.  "size" is half the initial size
   // (FIXME -- Should we start smaller if ntimes is large?)
@@ -1406,12 +1403,12 @@ textscan::do_scan (std::istream *isp, textscan_format_list& fmt_list,
 
   // If file does not end in EOL, do not pad columns with NaN.
   bool uneven_columns = false;
-  if (isp->eof () || (err & 4))
+  if (isp.eof () || (err & 4))
     {
-      isp->clear ();
-      isp->seekg (-1, std::ios_base::end);
-      int last_char = isp->get ();
-      isp->setstate (isp->eofbit);
+      isp.clear ();
+      isp.seekg (-1, std::ios_base::end);
+      int last_char = isp.get ();
+      isp.setstate (isp.eofbit);
       uneven_columns = (last_char != eol1 && last_char != eol2);
     }
 
@@ -3039,7 +3036,7 @@ from the beginning of the file or string, at which the processing stopped.\n\
     {
       std::istringstream is (args(0).string_value ());
 
-      retval(0) = tscanner.scan (&is, tmp_args);
+      retval(0) = tscanner.scan (is, tmp_args);
 
       std::ios::iostate state = is.rdstate ();
       is.clear ();
@@ -3049,8 +3046,11 @@ from the beginning of the file or string, at which the processing stopped.\n\
   else
     {
       octave_stream os = octave_stream_list::lookup (args(0), "textscan");
+      std::istream *isp = os.input_stream ();
+      if (! isp)
+        error ("internal error: textscan called with invalid istream");
 
-      retval(0) = tscanner.scan (os.input_stream (), tmp_args);
+      retval(0) = tscanner.scan (*isp, tmp_args);
 
       // FIXME -- warn if stream is not opened in binary mode?
       std::ios::iostate state = os.input_stream ()->rdstate ();

@@ -929,24 +929,21 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
 
   // Create our own buffered stream, for fast get/putback/tell/seek.
 
-        // First, see how far ahead it should let us look.
+  // First, see how far ahead it should let us look.
   int max_lookahead = std::max (std::max (comment_len, treat_as_empty_len),
                                 std::max (delim_len, 3)); // 3 for NaN and Inf
 
-        // Next, choose a buffer size to avoid reading too much, or too often.
-  octave_idx_type buf_size;
+  // Next, choose a buffer size to avoid reading too much, or too often.
+  octave_idx_type buf_size = 4096;
   if (buffer_size)
     buf_size = buffer_size;
   else if (ntimes > 0)
     {
-      buf_size = 80 * ntimes;
-      if (buf_size < ntimes)    // if overflow...
-        buf_size = ntimes;
-      buf_size = std::max (ntimes, std::min (buf_size, 4096));
+      // Avoid overflow of 80*ntimes...
+      buf_size = std::min (buf_size, std::max (ntimes, 80 * ntimes));
+      buf_size = std::max (buf_size, ntimes);
     }
-  else
-    buf_size = 4096;
-        // Finally, create the stream.
+  // Finally, create the stream.
   dstr is (*isp, whitespace + delims, max_lookahead, buf_size);
 
   // Grow retval dynamically.  "size" is half the initial size

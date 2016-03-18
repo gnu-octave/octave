@@ -231,7 +231,7 @@ delimited_stream::get_undelim (void)
   if (eof ())
     {
       setstate (std::ios_base::failbit);
-      return EOF;
+      return std::istream::traits_type::eof ();
     }
 
   if (idx < eob)
@@ -243,7 +243,7 @@ delimited_stream::get_undelim (void)
       if (eof ())
         {
           setstate (std::ios_base::eofbit);
-          retval = EOF;
+          retval = std::istream::traits_type::eof ();
         }
       else
         retval = *idx++;
@@ -276,7 +276,7 @@ int
 delimited_stream::refresh_buf (void)
 {
   if (eof ())
-    return EOF;
+    return std::istream::traits_type::eof ();
 
   int retval;
   int old_remaining = eob - idx;
@@ -314,7 +314,8 @@ delimited_stream::refresh_buf (void)
       if (eob != buf)              // no more data in file, but still some to go
         retval = 0;
       else
-        retval = EOF;              // file and buffer are both done.
+        // file and buffer are both done.
+        retval = std::istream::traits_type::eof ();
     }
   else
     {
@@ -332,7 +333,8 @@ delimited_stream::refresh_buf (void)
       retval = 0;
     }
 
-  if (retval == EOF)  // Ensure fast peek doesn't give valid char
+  // Ensure fast peek doesn't give valid char
+  if (retval == std::istream::traits_type::eof ())
     *idx = '\0';      // FIXME - check that no TreatAsEmpty etc starts w. \0?
 
   return retval;
@@ -416,7 +418,8 @@ delimited_stream::getline (std::string& out, char delim)
 {
   int len = out.length (), used = 0;
   int ch;
-  while ((ch = get_undelim ()) != delim && ch != EOF)
+  while ((ch = get_undelim ()) != delim
+         && ch != std::istream::traits_type::eof ())
     {
       out[used++] = ch;
       if (used == len)
@@ -1586,7 +1589,7 @@ textscan::read_double (delimited_stream& is,
               valid = true;
             }
           width_left++;
-          if (ch != EOF && width_left)
+          if (ch != std::istream::traits_type::eof () && width_left)
             is.putback (ch);
 
           double multiplier = pown (10, exp);
@@ -1599,7 +1602,7 @@ textscan::read_double (delimited_stream& is,
         }
     }
   is.clear ();
-  if (! used_exp && ch != EOF && width_left)
+  if (! used_exp && ch != std::istream::traits_type::eof () && width_left)
     is.putback (ch);
 
   // Check for +/- inf and NaN
@@ -1792,16 +1795,19 @@ int
 textscan::scan_caret (delimited_stream& is, const char *pattern,
                       std::string& val) const
 {
-  int c1 = EOF;
+  int c1 = std::istream::traits_type::eof ();
   std::ostringstream obuf;              // Is this optimised for growing?
 
-  while (is && (c1 = (is && ! is.eof ()) ? is.get_undelim () : EOF) != EOF
+  while (is && ((c1 = (is && ! is.eof ())
+                 ? is.get_undelim ()
+                 : std::istream::traits_type::eof ())
+                != std::istream::traits_type::eof ())
          && ! strchr (pattern, c1))
     obuf << static_cast<char> (c1);
 
   val = obuf.str ();
 
-  if (c1 != EOF)
+  if (c1 != std::istream::traits_type::eof ())
     is.putback (c1);
 
   return c1;
@@ -1822,8 +1828,10 @@ textscan::read_until (delimited_stream& is, const Cell& delimiters,
       scan_caret (is, ends.c_str (), next);
       retval = retval + next;   // FIXME -- could use repeated doubling of size
 
-      int last = (! is.eof ()) ? is.get_undelim () : EOF;
-      if (last != EOF)
+      int last = (! is.eof ()
+                  ? is.get_undelim () : std::istream::traits_type::eof ());
+
+      if (last != std::istream::traits_type::eof ())
         {
           retval = retval + static_cast<char> (last);
           for (int i = 0; i < delimiters.numel (); i++)
@@ -1866,7 +1874,7 @@ textscan::scan_string (delimited_stream& is, const textscan_format_elt& fmt,
           if (i+1 > val.length ())
             val = val + val + ' ';      // grow even if empty
           int ch = is.get ();
-          if (is_delim (ch) || ch == EOF)
+          if (is_delim (ch) || ch == std::istream::traits_type::eof ())
             {
               is.putback (ch);
               break;
@@ -1894,14 +1902,14 @@ int
 textscan::scan_bracket (delimited_stream& is, const char *pattern,
                         std::string& val) const
 {
-  int c1 = EOF;
+  int c1 = std::istream::traits_type::eof ();
   std::ostringstream obuf;              // Is this optimised for growing?
 
   while (is && strchr (pattern, (c1 = is.get_undelim ())))
     obuf << static_cast<char> (c1);
 
   val = obuf.str ();
-  if (c1 != EOF)
+  if (c1 != std::istream::traits_type::eof ())
     is.putback (c1);
   return c1;
 }
@@ -1947,7 +1955,7 @@ textscan::scan_cstring (delimited_stream& is, const textscan_format_elt& fmt,
   for (unsigned int i = 0; is && i < fmt.width; i++)
     {
       int ch = is.get_undelim ();
-      if (ch != EOF)
+      if (ch != std::istream::traits_type::eof ())
         val[i] = ch;
       else
         {
@@ -2493,14 +2501,14 @@ textscan::parse_options (const octave_value_list& args,
 int
 textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
 {
-  int c1 = EOF;
+  int c1 = std::istream::traits_type::eof ();
   bool found_comment = false;
 
   do
     {
       found_comment = false;
       int prev = -1;
-      while (is && (c1 = is.get_undelim ()) != EOF
+      while (is && (c1 = is.get_undelim ()) != std::istream::traits_type::eof ()
              && ( ( (c1 == eol1 || c1 == eol2) && ++lines && ! EOLstop)
                   || isspace (c1)))
         {
@@ -2564,7 +2572,7 @@ textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
     }
   while (found_comment);
 
-  if (c1 != EOF)
+  if (c1 != std::istream::traits_type::eof ())
     is.putback (c1);
   return c1;
 }
@@ -2630,7 +2638,8 @@ textscan::skip_delim (delimited_stream& is)
               int prev = -1;
               // skip multiple delims.
               // Increment lines for each end-of-line seen; for \r\n, decrement
-              while (is && (c1 = is.get_undelim ()) != EOF
+              while (is && ((c1 = is.get_undelim ())
+                            != std::istream::traits_type::eof ())
                      && (((c1 == eol1 || c1 == eol2) && ++lines)
                          || isspace (c1) || is_delim (c1)))
                 {
@@ -2638,7 +2647,7 @@ textscan::skip_delim (delimited_stream& is)
                     lines--;
                   prev = c1;
                 }
-              if (c1 != EOF)
+              if (c1 != std::istream::traits_type::eof ())
                 is.putback (c1);
             }
         }
@@ -2666,7 +2675,8 @@ textscan::skip_delim (delimited_stream& is)
               int prev = -1;
               // skip multiple delims.
               // Increment lines for each end-of-line seen; for \r\n, decrement
-              while (is && (c1 = skip_whitespace (is, true)) != EOF
+              while (is && ((c1 = skip_whitespace (is, true))
+                            != std::istream::traits_type::eof ())
                      && (((c1 == eol1 || c1 == eol2) && ++lines)
                          || -1 != lookahead (is, delim_list, delim_len)))
                 {
@@ -2697,7 +2707,7 @@ textscan::match_literal (delimited_stream& is, const textscan_format_elt& fmt)
       int ch = is.get_undelim ();
       if (ch != fmt.text[i])
         {
-          if (ch != EOF)
+          if (ch != std::istream::traits_type::eof ())
             is.putback (ch);
           is.setstate (std::ios::failbit);
           return false;

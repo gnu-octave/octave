@@ -170,10 +170,8 @@ get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc,
 }
 
 scanf_format_list::scanf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), list (dim_vector (16, 1)), buf (0)
+  : nconv (0), curr_idx (0), fmt_elts (), buf (0)
 {
-  octave_idx_type num_elts = 0;
-
   size_t n = s.length ();
 
   size_t i = 0;
@@ -196,8 +194,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
         {
           // Process percent-escape conversion type.
 
-          process_conversion (s, i, n, width, discard, type, modifier,
-                              num_elts);
+          process_conversion (s, i, n, width, discard, type, modifier);
 
           have_more = (buf != 0);
         }
@@ -213,7 +210,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
           while (++i < n && isspace (s[i]))
             ; // skip whitespace
 
-          add_elt_to_list (width, discard, type, modifier, num_elts);
+          add_elt_to_list (width, discard, type, modifier);
 
           have_more = false;
         }
@@ -228,7 +225,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
           while (i < n && ! isspace (s[i]) && s[i] != '%')
             *buf << s[i++];
 
-          add_elt_to_list (width, discard, type, modifier, num_elts);
+          add_elt_to_list (width, discard, type, modifier);
 
           have_more = false;
         }
@@ -241,27 +238,25 @@ scanf_format_list::scanf_format_list (const std::string& s)
     }
 
   if (have_more)
-    add_elt_to_list (width, discard, type, modifier, num_elts);
-
-  list.resize (dim_vector (num_elts, 1));
+    add_elt_to_list (width, discard, type, modifier);
 
   delete buf;
 }
 
 scanf_format_list::~scanf_format_list (void)
 {
-  octave_idx_type n = list.numel ();
+  size_t n = fmt_elts.size ();
 
-  for (octave_idx_type i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     {
-      scanf_format_elt *elt = list(i);
+      scanf_format_elt *elt = fmt_elts[i];
       delete elt;
     }
 }
 
 void
 scanf_format_list::add_elt_to_list (int width, bool discard, char type,
-                                    char modifier, octave_idx_type& num_elts,
+                                    char modifier,
                                     const std::string& char_class)
 {
   if (buf)
@@ -274,10 +269,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
             = new scanf_format_elt (text.c_str (), width, discard, type,
                                     modifier, char_class);
 
-          if (num_elts == list.numel ())
-            list.resize (dim_vector (2 * num_elts, 1));
-
-          list(num_elts++) = elt;
+          fmt_elts.push_back (elt);
         }
 
       delete buf;
@@ -324,8 +316,7 @@ expand_char_class (const std::string& s)
 void
 scanf_format_list::process_conversion (const std::string& s, size_t& i,
                                        size_t n, int& width, bool& discard,
-                                       char& type, char& modifier,
-                                       octave_idx_type& num_elts)
+                                       char& type, char& modifier)
 {
   width = 0;
   discard = false;
@@ -406,8 +397,8 @@ scanf_format_list::process_conversion (const std::string& s, size_t& i,
 
         fini:
           {
-            if (finish_conversion (s, i, n, width, discard, type,
-                                   modifier, num_elts) == 0)
+            if (finish_conversion (s, i, n, width, discard,
+                                   type, modifier) == 0)
               return;
           }
           break;
@@ -427,8 +418,7 @@ scanf_format_list::process_conversion (const std::string& s, size_t& i,
 int
 scanf_format_list::finish_conversion (const std::string& s, size_t& i,
                                       size_t n, int& width, bool discard,
-                                      char& type, char modifier,
-                                      octave_idx_type& num_elts)
+                                      char& type, char modifier)
 {
   int retval = 0;
 
@@ -495,7 +485,7 @@ scanf_format_list::finish_conversion (const std::string& s, size_t& i,
         char_class = expand_char_class (s.substr (beg_idx,
                                         end_idx - beg_idx + 1));
 
-      add_elt_to_list (width, discard, type, modifier, num_elts, char_class);
+      add_elt_to_list (width, discard, type, modifier, char_class);
     }
 
   return retval;
@@ -504,11 +494,11 @@ scanf_format_list::finish_conversion (const std::string& s, size_t& i,
 void
 scanf_format_list::printme (void) const
 {
-  octave_idx_type n = list.numel ();
+  size_t n = fmt_elts.size ();
 
-  for (octave_idx_type i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     {
-      scanf_format_elt *elt = list(i);
+      scanf_format_elt *elt = fmt_elts[i];
 
       std::cerr
         << "width:      " << elt->width << "\n"
@@ -532,13 +522,13 @@ scanf_format_list::printme (void) const
 bool
 scanf_format_list::all_character_conversions (void)
 {
-  octave_idx_type n = list.numel ();
+  size_t n = fmt_elts.size ();
 
   if (n > 0)
     {
-      for (octave_idx_type i = 0; i < n; i++)
+      for (size_t i = 0; i < n; i++)
         {
-          scanf_format_elt *elt = list(i);
+          scanf_format_elt *elt = fmt_elts[i];
 
           switch (elt->type)
             {
@@ -562,13 +552,13 @@ scanf_format_list::all_character_conversions (void)
 bool
 scanf_format_list::all_numeric_conversions (void)
 {
-  octave_idx_type n = list.numel ();
+  size_t n = fmt_elts.size ();
 
   if (n > 0)
     {
-      for (octave_idx_type i = 0; i < n; i++)
+      for (size_t i = 0; i < n; i++)
         {
-          scanf_format_elt *elt = list(i);
+          scanf_format_elt *elt = fmt_elts[i];
 
           switch (elt->type)
             {
@@ -591,10 +581,8 @@ scanf_format_list::all_numeric_conversions (void)
 // Ugh again.
 
 printf_format_list::printf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), list (dim_vector (16, 1)), buf (0)
+  : nconv (0), curr_idx (0), fmt_elts (), buf (0)
 {
-  octave_idx_type num_elts = 0;
-
   size_t n = s.length ();
 
   size_t i = 0;
@@ -614,9 +602,7 @@ printf_format_list::printf_format_list (const std::string& s)
       printf_format_elt *elt
         = new printf_format_elt ("", args, fw, prec, flags, type, modifier);
 
-      list(num_elts++) = elt;
-
-      list.resize (dim_vector (num_elts, 1));
+      fmt_elts.push_back (elt);
     }
   else
     {
@@ -637,13 +623,12 @@ printf_format_list::printf_format_list (const std::string& s)
                 if (empty_buf)
                   {
                     process_conversion (s, i, n, args, flags, fw, prec,
-                                        type, modifier, num_elts);
+                                        type, modifier);
 
                     have_more = (buf != 0);
                   }
                 else
-                  add_elt_to_list (args, flags, fw, prec, type, modifier,
-                                   num_elts);
+                  add_elt_to_list (args, flags, fw, prec, type, modifier);
               }
               break;
 
@@ -669,9 +654,7 @@ printf_format_list::printf_format_list (const std::string& s)
         }
 
       if (have_more)
-        add_elt_to_list (args, flags, fw, prec, type, modifier, num_elts);
-
-      list.resize (dim_vector (num_elts, 1));
+        add_elt_to_list (args, flags, fw, prec, type, modifier);
 
       delete buf;
     }
@@ -679,11 +662,11 @@ printf_format_list::printf_format_list (const std::string& s)
 
 printf_format_list::~printf_format_list (void)
 {
-  octave_idx_type n = list.numel ();
+  size_t n = fmt_elts.size ();
 
-  for (octave_idx_type i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     {
-      printf_format_elt *elt = list(i);
+      printf_format_elt *elt = fmt_elts[i];
       delete elt;
     }
 }
@@ -691,7 +674,7 @@ printf_format_list::~printf_format_list (void)
 void
 printf_format_list::add_elt_to_list (int args, const std::string& flags,
                                      int fw, int prec, char type,
-                                     char modifier, octave_idx_type& num_elts)
+                                     char modifier)
 {
   if (buf)
     {
@@ -703,10 +686,7 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
             = new printf_format_elt (text.c_str (), args, fw, prec, flags,
                                      type, modifier);
 
-          if (num_elts == list.numel ())
-            list.resize (dim_vector (2 * num_elts, 1));
-
-          list(num_elts++) = elt;
+          fmt_elts.push_back (elt);
         }
 
       delete buf;
@@ -716,9 +696,10 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
 
 void
 printf_format_list::process_conversion (const std::string& s, size_t& i,
-                                        size_t n, int& args, std::string& flags,
-                                        int& fw, int& prec, char& modifier,
-                                        char& type, octave_idx_type& num_elts)
+                                        size_t n, int& args,
+                                        std::string& flags, int& fw,
+                                        int& prec, char& modifier,
+                                        char& type)
 {
   args = 0;
   flags = "";
@@ -823,7 +804,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
     }
 
   if (i < n)
-    finish_conversion (s, i, args, flags, fw, prec, modifier, type, num_elts);
+    finish_conversion (s, i, args, flags, fw, prec, modifier, type);
   else
     nconv = -1;
 }
@@ -832,7 +813,7 @@ void
 printf_format_list::finish_conversion (const std::string& s, size_t& i,
                                        int args, const std::string& flags,
                                        int fw, int prec, char modifier,
-                                       char& type, octave_idx_type& num_elts)
+                                       char& type)
 {
   switch (s[i])
     {
@@ -873,7 +854,7 @@ printf_format_list::finish_conversion (const std::string& s, size_t& i,
       if (type != '%')
         args++;
 
-      add_elt_to_list (args, flags, fw, prec, type, modifier, num_elts);
+      add_elt_to_list (args, flags, fw, prec, type, modifier);
 
       break;
 
@@ -886,11 +867,11 @@ printf_format_list::finish_conversion (const std::string& s, size_t& i,
 void
 printf_format_list::printme (void) const
 {
-  int n = list.numel ();
+  size_t n = fmt_elts.size ();
 
-  for (int i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     {
-      printf_format_elt *elt = list(i);
+      printf_format_elt *elt = fmt_elts[i];
 
       std::cerr
         << "args:     " << elt->args << "\n"

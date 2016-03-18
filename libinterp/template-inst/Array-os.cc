@@ -34,14 +34,5 @@ extern template class OCTAVE_API Array<octave_idx_type>;
 
 #include "oct-stream.h"
 
-typedef scanf_format_elt* scanf_format_elt_ptr;
-typedef printf_format_elt* printf_format_elt_ptr;
-
-NO_INSTANTIATE_ARRAY_SORT (scanf_format_elt_ptr);
-INSTANTIATE_ARRAY (scanf_format_elt_ptr, OCTINTERP_API);
-
-NO_INSTANTIATE_ARRAY_SORT (printf_format_elt_ptr);
-INSTANTIATE_ARRAY (printf_format_elt_ptr, OCTINTERP_API);
-
 NO_INSTANTIATE_ARRAY_SORT (octave_stream);
 INSTANTIATE_ARRAY (octave_stream, OCTINTERP_API);

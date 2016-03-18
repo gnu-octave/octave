@@ -30,11 +30,12 @@ class string_vector;
 class octave_value;
 class octave_value_list;
 
+#include <deque>
 #include <iosfwd>
-#include <sstream>
-#include <string>
 #include <list>
 #include <map>
+#include <sstream>
+#include <string>
 
 #include "Array.h"
 #include "data-conv.h"
@@ -119,7 +120,7 @@ public:
   // the list is 3 because of the characters that appear after the
   // last conversion.
 
-  octave_idx_type length (void) { return list.numel (); }
+  size_t length (void) const { return fmt_elts.size (); }
 
   const scanf_format_elt *first (void)
   {
@@ -128,7 +129,9 @@ public:
   }
 
   const scanf_format_elt *current (void) const
-  { return list.numel () > 0 ? list.elem (curr_idx) : 0; }
+  {
+    return length () > 0 ? fmt_elts[curr_idx] : 0;
+  }
 
   const scanf_format_elt *next (bool cycle = true)
   {
@@ -137,7 +140,7 @@ public:
 
     curr_idx++;
 
-    if (curr_idx >= list.numel ())
+    if (curr_idx >= length ())
       {
         if (cycle)
           curr_idx = 0;
@@ -165,26 +168,24 @@ private:
   octave_idx_type nconv;
 
   // Index to current element;
-  octave_idx_type curr_idx;
+  size_t curr_idx;
 
-  // FIXME: maybe LIST should be a std::list object?
   // List of format elements.
-  Array<scanf_format_elt*> list;
+  std::deque<scanf_format_elt*> fmt_elts;
 
   // Temporary buffer.
   std::ostringstream *buf;
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
-                        octave_idx_type& num_elts,
                         const std::string& char_class = "");
 
   void process_conversion (const std::string& s, size_t& i, size_t n,
                            int& width, bool& discard, char& type,
-                           char& modifier, octave_idx_type& num_elts);
+                           char& modifier);
 
   int finish_conversion (const std::string& s, size_t& i, size_t n,
                          int& width, bool discard, char& type,
-                         char modifier, octave_idx_type& num_elts);
+                         char modifier);
   // No copying!
 
   scanf_format_list (const scanf_format_list&);
@@ -267,13 +268,17 @@ public:
   }
 
   const printf_format_elt *current (void) const
-  { return list.numel () > 0 ? list.elem (curr_idx) : 0; }
+  {
+    return length () > 0 ? fmt_elts[curr_idx] : 0;
+  }
+
+  size_t length (void) const { return fmt_elts.size (); }
 
   const printf_format_elt *next (bool cycle = true)
   {
     curr_idx++;
 
-    if (curr_idx >= list.numel ())
+    if (curr_idx >= length ())
       {
         if (cycle)
           curr_idx = 0;
@@ -284,7 +289,7 @@ public:
     return current ();
   }
 
-  bool last_elt_p (void) { return (curr_idx + 1 == list.numel ()); }
+  bool last_elt_p (void) { return (curr_idx + 1 == length ()); }
 
   void printme (void) const;
 
@@ -299,28 +304,24 @@ private:
   octave_idx_type nconv;
 
   // Index to current element;
-  octave_idx_type curr_idx;
+  size_t curr_idx;
 
-  // FIXME: maybe LIST should be a std::list object?
   // List of format elements.
-  Array<printf_format_elt*> list;
+  std::deque<printf_format_elt*> fmt_elts;
 
   // Temporary buffer.
   std::ostringstream *buf;
 
   void add_elt_to_list (int args, const std::string& flags, int fw,
-                        int prec, char type, char modifier,
-                        octave_idx_type& num_elts);
+                        int prec, char type, char modifier);
 
   void process_conversion (const std::string& s, size_t& i, size_t n,
                            int& args, std::string& flags, int& fw,
-                           int& prec, char& modifier, char& type,
-                           octave_idx_type& num_elts);
+                           int& prec, char& modifier, char& type);
 
   void finish_conversion (const std::string& s, size_t& i, int args,
                           const std::string& flags, int fw, int prec,
-                          char modifier, char& type,
-                          octave_idx_type& num_elts);
+                          char modifier, char& type);
 
   // No copying!
 

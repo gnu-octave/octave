@@ -40,11 +40,13 @@ along with Octave; see the file COPYING.  If not, see
 // and allowing reading of up to tellg + longest_lookeahead.  When is
 // is at EOF, lookahead may be padded by ASCII nuls.
 
-dstr::dstr (std::istream& is, const std::string& delimiters,
-            int longest_lookahead, octave_idx_type bsize)
-    : bufsize (bsize), i_stream (is), longest (longest_lookahead),
-      delims (delimiters),
-      flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
+delimited_stream::delimited_stream (std::istream& is,
+                                    const std::string& delimiters,
+                                    int longest_lookahead,
+                                    octave_idx_type bsize)
+  : bufsize (bsize), i_stream (is), longest (longest_lookahead),
+    delims (delimiters),
+    flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
 {
   buf = new char[bufsize];
   eob = buf + bufsize;
@@ -54,8 +56,9 @@ dstr::dstr (std::istream& is, const std::string& delimiters,
 }
 
 // Used to create a stream from a strstream from data read from a dstr.
-// FIXME: Find a more efficient approach.  Perhaps derived dstrstream
-dstr::dstr (std::istream& is, const dstr& ds)
+// FIXME: Find a more efficient approach.  Perhaps derived dstr
+delimited_stream::delimited_stream (std::istream& is,
+                                    const delimited_stream& ds)
   : bufsize (ds.bufsize), i_stream (is), longest (ds.longest),
     delims (ds.delims),
     flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
@@ -67,7 +70,7 @@ dstr::dstr (std::istream& is, const dstr& ds)
   refresh_buf ();               // load the first batch of data
 }
 
-dstr::~dstr ()
+delimited_stream::~delimited_stream (void)
 {
   // Seek to the correct position in i_stream.
   if (!eof ())
@@ -84,7 +87,7 @@ dstr::~dstr ()
 // if necessary.
 
 int
-dstr::get_undelim ()
+delimited_stream::get_undelim (void)
 {
   int retval;
   if (eof ())
@@ -118,7 +121,7 @@ dstr::get_undelim ()
 // pointer, refilling the buffer from the file if necessary.
 
 int
-dstr::peek_undelim ()
+delimited_stream::peek_undelim (void)
 {
   int retval = get_undelim ();
   putback ();
@@ -132,7 +135,7 @@ dstr::peek_undelim ()
 // processed.
 
 int
-dstr::refresh_buf (void)
+delimited_stream::refresh_buf (void)
 {
   if (eof ())
     return EOF;
@@ -204,7 +207,7 @@ dstr::refresh_buf (void)
 // still works.  Otherwise, seekg may be invalidated.
 
 char *
-dstr::read (char *buffer, int size, char* &prior_tell)
+delimited_stream::read (char *buffer, int size, char* &prior_tell)
 {
   char *retval;
 
@@ -271,7 +274,7 @@ dstr::read (char *buffer, int size, char* &prior_tell)
 // must have length at least 1.
 
 int
-dstr::getline (std::string& out, char delim)
+delimited_stream::getline (std::string& out, char delim)
 {
   int len = out.length (), used = 0;
   int ch;
@@ -811,7 +814,7 @@ textscan_format_list::printme (void) const
 // times to read the first row of the file.  Set it now.
 
 int
-textscan_format_list::read_first_row (dstr& is, textscan& ts)
+textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
 {
   // Read first line and strip end-of-line, which may be two characters
   std::string first_line (20, ' ');
@@ -823,7 +826,7 @@ textscan_format_list::read_first_row (dstr& is, textscan& ts)
     first_line.resize (first_line.length () - 1);
 
   std::istringstream strstr (first_line);
-  dstr ds (strstr, is);
+  delimited_stream ds (strstr, is);
 
   dim_vector dv (1,1);      // initial size of each output_container
   Complex val;
@@ -944,7 +947,7 @@ textscan::scan (std::istream *isp, textscan_format_list& fmt_list,
       buf_size = std::max (buf_size, ntimes);
     }
   // Finally, create the stream.
-  dstr is (*isp, whitespace + delims, max_lookahead, buf_size);
+  delimited_stream is (*isp, whitespace + delims, max_lookahead, buf_size);
 
   // Grow retval dynamically.  "size" is half the initial size
   // (FIXME -- Should we start smaller if ntimes is large?)
@@ -1127,7 +1130,8 @@ pown (double x, unsigned int n)
 // exp_chars  option of  options.
 
 double
-textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
+textscan::read_double (delimited_stream& is,
+                       const textscan_format_elt& fmt) const
 {
   int sign = 1;
   unsigned int width_left = fmt.width;
@@ -1297,7 +1301,7 @@ textscan::read_double (dstr& is, const textscan_format_elt& fmt) const
 // Calling that inside scan_complex would violate its const declaration.
 
 void
-textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
+textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
                         Complex& val) const
 {
   double im = 0;
@@ -1439,7 +1443,8 @@ textscan::scan_complex (dstr& is, const textscan_format_elt& fmt,
 // Return in VAL the run of characters from IS NOT contained in PATTERN. 
 
 int
-textscan::scan_caret (dstr& is, const char *pattern, std::string& val) const
+textscan::scan_caret (delimited_stream& is, const char *pattern,
+                      std::string& val) const
 {
   int c1 = EOF;
   std::ostringstream obuf;              // Is this optimised for growing?
@@ -1460,7 +1465,7 @@ textscan::scan_caret (dstr& is, const char *pattern, std::string& val) const
 // efficiency, ENDS is a list of the last character of each delimiter.
 
 std::string
-textscan::read_until (dstr& is, const Cell& delimiters,
+textscan::read_until (delimited_stream& is, const Cell& delimiters,
                      const std::string& ends) const
 {
   std::string retval ("");
@@ -1502,7 +1507,7 @@ textscan::read_until (dstr& is, const Cell& delimiters,
 // Used by formats like %6f to limit to 6.
 
 void
-textscan::scan_string (dstr& is, const textscan_format_elt& fmt,
+textscan::scan_string (delimited_stream& is, const textscan_format_elt& fmt,
                        std::string& val) const
 {
   if (delim_list.numel () == 0)
@@ -1540,8 +1545,8 @@ textscan::scan_string (dstr& is, const textscan_format_elt& fmt,
 // Return in VAL the run of characters from IS contained in PATTERN.
 
 int
-textscan::scan_bracket (dstr& is, const char *pattern, std::string& val)
-          const
+textscan::scan_bracket (delimited_stream& is, const char *pattern,
+                        std::string& val) const
 {
   int c1 = EOF;
   std::ostringstream obuf;              // Is this optimised for growing?
@@ -1560,7 +1565,7 @@ textscan::scan_bracket (dstr& is, const char *pattern, std::string& val)
 // removed.  A consecutive pair "" is inserted into VAL as a single ".
 
 void
-textscan::scan_qstring (dstr& is, const textscan_format_elt& fmt,
+textscan::scan_qstring (delimited_stream& is, const textscan_format_elt& fmt,
                         std::string& val)
 {
   skip_whitespace (is);
@@ -1588,7 +1593,7 @@ textscan::scan_qstring (dstr& is, const textscan_format_elt& fmt,
 // including any whitespace or delimiters.
 
 void
-textscan::scan_cstring (dstr& is, const textscan_format_elt& fmt,
+textscan::scan_cstring (delimited_stream& is, const textscan_format_elt& fmt,
                         std::string& val) const
 {
   val.resize (fmt.width);
@@ -1610,7 +1615,7 @@ textscan::scan_cstring (dstr& is, const textscan_format_elt& fmt,
 //  Read a single '%...' conversion and place it in position ROW of OV.
 
 void
-textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
+textscan::scan_one (delimited_stream& is, const textscan_format_elt& fmt,
                     octave_value& ov, Array<octave_idx_type> row)
 {
   skip_whitespace (is);
@@ -1793,7 +1798,8 @@ textscan::scan_one (dstr& is, const textscan_format_elt& fmt,
 // values in row ROW of retval. 
 
 int
-textscan::read_format_once (dstr& is, textscan_format_list& fmt_list,
+textscan::read_format_once (delimited_stream& is,
+                            textscan_format_list& fmt_list,
                             std::list<octave_value> & retval,
                             Array<octave_idx_type> row, int& done_after)
 {
@@ -2139,7 +2145,7 @@ textscan::parse_options (const octave_value_list& args, int first_param,
 // If EOLstop == true, don't skip end of line.
 
 int
-textscan::skip_whitespace (dstr& is, bool EOLstop)
+textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
 {
   int c1 = EOF;
   bool found_comment = false;
@@ -2222,7 +2228,7 @@ textscan::skip_whitespace (dstr& is, bool EOLstop)
 // Return -1 if none is found, or the index of the match.
 
 int
-textscan::lookahead (dstr& is, const Cell& targets, int max_len,
+textscan::lookahead (delimited_stream& is, const Cell& targets, int max_len,
                      bool case_sensitive) const
 {
   // target strings may be different sizes.
@@ -2262,7 +2268,7 @@ textscan::lookahead (dstr& is, const Cell& targets, int max_len,
 
 // Skip delimiters -- multiple if MultipleDelimsAsOne specified.
 int
-textscan::skip_delim (dstr& is)
+textscan::skip_delim (delimited_stream& is)
 {
   int c1 = skip_whitespace (is, true);  // 'true': stop once EOL is read
   if (delim_list.numel () == 0)         // single character delimiter
@@ -2334,7 +2340,7 @@ textscan::skip_delim (dstr& is)
 // false (and set failbit).
 
 bool
-textscan::match_literal (dstr& is, const textscan_format_elt& fmt)
+textscan::match_literal (delimited_stream& is, const textscan_format_elt& fmt)
 {
      // "false" -> treat EOL as normal space
      // since a delimiter at the start of a line is a mismatch, not empty field

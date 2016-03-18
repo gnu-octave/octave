@@ -40,16 +40,16 @@ along with Octave; see the file COPYING.  If not, see
 // seek and tell operations within a "fast read" block.
 
 class
-dstr
+delimited_stream
 {
 public:
 
-  dstr (std::istream& is, const std::string& delimiters,
+  delimited_stream (std::istream& is, const std::string& delimiters,
         int longest_lookahead, octave_idx_type bsize = 4096);
 
-  dstr (std::istream& is, const dstr& ds);
+  delimited_stream (std::istream& is, const delimited_stream& ds);
 
-  ~dstr (void);
+  ~delimited_stream (void);
 
   // Called when optimised sequence of get is finished.  Ensures that
   // there is a remaining delimiter in buf, or loads more data in.
@@ -160,9 +160,9 @@ private:
 
   // No copying!
 
-  dstr (const dstr&);
+  delimited_stream (const delimited_stream&);
 
-  dstr& operator = (const dstr&);
+  delimited_stream& operator = (const delimited_stream&);
 };
 
 // A single conversion specifier, such as %f or %c.
@@ -301,7 +301,7 @@ public:
   // At least one conversion specifier is s,q,c, or [...].
   bool has_string;
 
-  int read_first_row (dstr& is, textscan& ts);
+  int read_first_row (delimited_stream& is, textscan& ts);
 
   std::list<octave_value> out_buf (void) const { return (output_container); }
 
@@ -442,46 +442,48 @@ private:
 
   octave_idx_type lines;
 
-  int read_format_once (dstr &isp, textscan_format_list& fmt_list,
+  int read_format_once (delimited_stream &isp, textscan_format_list& fmt_list,
                         std::list<octave_value> & retval,
                         Array<octave_idx_type> row, int& done_after);
 
-  void scan_one (dstr& is, const textscan_format_elt& fmt,
-                          octave_value& ov, Array<octave_idx_type> row);
+  void scan_one (delimited_stream& is, const textscan_format_elt& fmt,
+                 octave_value& ov, Array<octave_idx_type> row);
 
   // Methods to process a particular conversion specifier.
-  double read_double (dstr& is, const textscan_format_elt& fmt) const;
+  double read_double (delimited_stream& is,
+                      const textscan_format_elt& fmt) const;
 
-  void scan_complex (dstr& is, const textscan_format_elt& fmt,
+  void scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
                      Complex& val) const;
 
-  int scan_bracket (dstr& is, const char *pattern, std::string& val) const;
-
-  int scan_caret (dstr& is, const char *, std::string& val) const;
-
-  void scan_string (dstr& is, const textscan_format_elt& fmt,
+  int scan_bracket (delimited_stream& is, const char *pattern,
                     std::string& val) const;
 
-  void scan_cstring (dstr& is, const textscan_format_elt& fmt,
+  int scan_caret (delimited_stream& is, const char *, std::string& val) const;
+
+  void scan_string (delimited_stream& is, const textscan_format_elt& fmt,
+                    std::string& val) const;
+
+  void scan_cstring (delimited_stream& is, const textscan_format_elt& fmt,
                      std::string& val) const;
 
-  void scan_qstring (dstr& is, const textscan_format_elt& fmt,
+  void scan_qstring (delimited_stream& is, const textscan_format_elt& fmt,
                      std::string& val);
 
   // Helper methods.
-  std::string read_until (dstr& is, const Cell& delimiters,
+  std::string read_until (delimited_stream& is, const Cell& delimiters,
                           const std::string& ends) const;
 
-  int lookahead (dstr& is, const Cell& targets, int max_len,
+  int lookahead (delimited_stream& is, const Cell& targets, int max_len,
                  bool case_sensitive = true) const;
 
-  char *get_field (dstr& isp, unsigned int width) const;
+  char *get_field (delimited_stream& isp, unsigned int width) const;
 
-  bool match_literal (dstr& isp, const textscan_format_elt& elem);
+  bool match_literal (delimited_stream& isp, const textscan_format_elt& elem);
 
-  int  skip_whitespace (dstr& is, bool EOLstop = false);
+  int  skip_whitespace (delimited_stream& is, bool EOLstop = false);
 
-  int  skip_delim (dstr& is);
+  int  skip_delim (delimited_stream& is);
 
   bool is_delim (unsigned char ch) const
   {

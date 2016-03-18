@@ -576,7 +576,7 @@ private:
   octave_idx_type nconv;
 
   // Index to current element;
-  octave_idx_type curr_idx;
+  size_t curr_idx;
 
   // List of format elements.
   std::deque<textscan_format_elt*> fmt_elts;
@@ -2157,7 +2157,7 @@ textscan::read_format_once (delimited_stream& is,
 
   octave_quit ();
 
-  for (int i = 0; i < fmt_list.numel (); i++)
+  for (size_t i = 0; i < fmt_list.numel (); i++)
     {
       bool this_conversion_failed = false;
 

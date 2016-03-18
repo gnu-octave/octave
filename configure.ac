@@ -364,20 +364,12 @@ AC_DEFINE(__NO_MATH_INLINES, 1,
 
 ### Determine which C++ compiler to use (we expect to find g++).
 
-## Note that OCTAVE_PROG_CXX_CXX11 must come before AC_PROG_CXXCPP since
-## the later uses the value of CXX which may be modified by the first.
-
 AC_PROG_CXX
-OCTAVE_PROG_CXX_CXX11
 AC_PROG_CXXCPP
 
 ### Determine which C compiler to use (we expect to find gcc).
 
-## Note that OCTAVE_PROG_CC_C11 must come before AC_PROG_CPP since
-## the later uses the value of CC which may be modified by the first.
-
 AC_PROG_CC
-OCTAVE_PROG_CC_C11
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 

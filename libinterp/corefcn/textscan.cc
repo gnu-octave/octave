@@ -24,9 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include <config.h>
 #endif
 
+#include <deque>
 #include <list>
-
-#include "Array.cc"
 
 #include "Cell.h"
 #include "defun.h"
@@ -526,7 +525,7 @@ public:
   // the list is 3 because of the characters that appear after the
   // last conversion.
 
-  octave_idx_type numel (void) const { return list.numel (); }
+  size_t numel (void) const { return fmt_elts.size (); }
 
   const textscan_format_elt *first (void)
   {
@@ -536,14 +535,14 @@ public:
 
   const textscan_format_elt *current (void) const
   {
-    return list.numel () > 0 ? list.elem (curr_idx) : 0;
+    return numel () > 0 ? fmt_elts[curr_idx] : 0;
   }
 
   const textscan_format_elt *next (bool cycle = true)
   {
     curr_idx++;
 
-    if (curr_idx >= list.numel ())
+    if (curr_idx >= numel ())
       {
         if (cycle)
           curr_idx = 0;
@@ -579,9 +578,8 @@ private:
   // Index to current element;
   octave_idx_type curr_idx;
 
-  // FIXME -- maybe LIST should be a std::list object?
   // List of format elements.
-  Array<textscan_format_elt*> list;
+  std::deque<textscan_format_elt*> fmt_elts;
 
   // list holding column arrays of types specified by conversions
   std::list<octave_value > output_container;
@@ -591,17 +589,15 @@ private:
 
   void add_elt_to_list (unsigned int width, int prec, int bitwidth,
                         octave_value val_type, bool discard,
-                        char type, octave_idx_type& num_elts,
+                        char type,
                         const std::string& char_class = std::string ());
 
-  void process_conversion (const std::string& s, size_t& i, size_t n,
-                           octave_idx_type& num_elts);
+  void process_conversion (const std::string& s, size_t& i, size_t n);
 
   int finish_conversion (const std::string& s, size_t& i, size_t n,
                          unsigned int& width, int& prec, int& bitwidth,
                          octave_value& val_type,
-                         bool discard, char& type,
-                         octave_idx_type& num_elts);
+                         bool discard, char& type);
   // No copying!
 
   textscan_format_list (const textscan_format_list&);
@@ -612,10 +608,8 @@ private:
 
 textscan_format_list::textscan_format_list (const std::string& s)
   : set_from_first (false), has_string (false), nconv (0), curr_idx (0),
-    list (dim_vector (16, 1)), buf (0)
+    fmt_elts (), buf (0)
 {
-  octave_idx_type num_elts = 0;
-
   size_t n = s.length ();
 
   size_t i = 0;
@@ -634,7 +628,7 @@ textscan_format_list::textscan_format_list (const std::string& s)
       bitwidth = 64;
       type = 'f';
       add_elt_to_list (width, prec, bitwidth, octave_value (NDArray ()),
-                       discard, type, num_elts);
+                       discard, type);
       have_more = false;
       set_from_first = true;
       nconv = 1;
@@ -654,7 +648,7 @@ textscan_format_list::textscan_format_list (const std::string& s)
             {
               // Process percent-escape conversion type.
 
-              process_conversion (s, i, n, num_elts);
+              process_conversion (s, i, n);
 
               have_more = (buf != 0);
             }
@@ -683,8 +677,8 @@ textscan_format_list::textscan_format_list (const std::string& s)
                   width++;
                 }
 
-              add_elt_to_list (width, prec, bitwidth, octave_value (), discard,
-                               type, num_elts);
+              add_elt_to_list (width, prec, bitwidth, octave_value (),
+                               discard, type);
 
               have_more = false;
             }
@@ -698,21 +692,18 @@ textscan_format_list::textscan_format_list (const std::string& s)
     }
 
   if (have_more)
-    add_elt_to_list (width, prec, bitwidth, octave_value (), discard,
-                     type, num_elts);
-
-  list.resize (dim_vector (num_elts, 1));
+    add_elt_to_list (width, prec, bitwidth, octave_value (), discard, type);
 
   delete buf;
 }
 
 textscan_format_list::~textscan_format_list (void)
 {
-  octave_idx_type n = list.numel ();
+  size_t n = numel ();
 
-  for (octave_idx_type i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     {
-      textscan_format_elt *elt = list(i);
+      textscan_format_elt *elt = fmt_elts[i];
       delete elt;
     }
 }
@@ -721,7 +712,6 @@ void
 textscan_format_list::add_elt_to_list (unsigned int width, int prec,
                                        int bitwidth, octave_value val_type,
                                        bool discard, char type,
-                                       octave_idx_type& num_elts,
                                        const std::string& char_class)
 {
   if (buf)
@@ -734,16 +724,10 @@ textscan_format_list::add_elt_to_list (unsigned int width, int prec,
             = new textscan_format_elt (text.c_str (), width, prec, bitwidth,
                                        discard, type, char_class);
 
-          if (num_elts == list.numel ())
-            {
-              list.resize (dim_vector (2 * num_elts, 1));
-            }
-
           if (! discard)
-            {
-              output_container.push_back (val_type);
-            }
-          list(num_elts++) = elt;
+            output_container.push_back (val_type);
+
+          fmt_elts.push_back (elt);
         }
 
       delete buf;
@@ -753,7 +737,7 @@ textscan_format_list::add_elt_to_list (unsigned int width, int prec,
 
 void
 textscan_format_list::process_conversion (const std::string& s, size_t& i,
-                                          size_t n, octave_idx_type& num_elts)
+                                          size_t n)
 {
   unsigned width = 0;
   int prec = -1;
@@ -918,7 +902,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
               }
 
             if (finish_conversion (s, i, n, width, prec, bitwidth, val_type,
-                                   discard, type, num_elts) == 0)
+                                   discard, type) == 0)
               return;
           }
           break;
@@ -1036,7 +1020,7 @@ textscan_format_list::finish_conversion (const std::string& s, size_t& i,
                                          size_t n, unsigned int& width,
                                          int& prec, int& bitwidth,
                                          octave_value& val_type, bool discard,
-                                         char& type, octave_idx_type& num_elts)
+                                         char& type)
 {
   int retval = 0;
 
@@ -1092,7 +1076,7 @@ textscan_format_list::finish_conversion (const std::string& s, size_t& i,
                                                     end_idx - beg_idx + 1));
 
       add_elt_to_list (width, prec, bitwidth, val_type, discard, type,
-                       num_elts, char_class);
+                       char_class);
     }
 
   return retval;
@@ -1101,11 +1085,11 @@ textscan_format_list::finish_conversion (const std::string& s, size_t& i,
 void
 textscan_format_list::printme (void) const
 {
-  octave_idx_type n = list.numel ();
+  size_t n = numel ();
 
-  for (octave_idx_type i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     {
-      textscan_format_elt *elt = list(i);
+      textscan_format_elt *elt = fmt_elts[i];
 
       std::cerr
         << "width:      " << elt->width << "\n"
@@ -1159,7 +1143,7 @@ textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
       ts.skip_whitespace (ds);
       ds.progress_benchmark ();
       bool progress = false;
-      ts.scan_complex (ds, *list(0), val);
+      ts.scan_complex (ds, *fmt_elts[0], val);
       if (ds.fail ())
         {
           ds.clear (ds.rdstate () & ~std::ios::failbit);
@@ -1217,10 +1201,9 @@ textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
 
   output_container.pop_front (); // discard empty element from constructor
 
-  //Create  fmt  now that the size is known
-  list.resize (dim_vector (nconv, 1));
+  // Create fmt_list now that the size is known
   for (octave_idx_type i = 1; i < nconv; i++)
-    list(i) = new textscan_format_elt (*list(0));
+    fmt_elts.push_back (new textscan_format_elt (*fmt_elts[0]));
 
   return retval;             // May have returned 4 above.
 }

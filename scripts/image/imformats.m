@@ -315,6 +315,20 @@ function pretty_print_formats (formats)
 
 endfunction
 
+## This must work, even without support for image IO
+%!test
+%! formats = imformats ();
+%! assert (isstruct (formats))
+%!
+%! min_fields = {"ext", "read", "isa", "write", "info", "alpha", "description"};
+%! assert (all (ismember (min_fields, fieldnames (formats))))
+%!
+%! if (__have_feature__ ("MAGICK"))
+%!   assert (numel (formats) > 0)
+%! else
+%!   assert (numel (formats), 0)
+%! endif
+
 ## When imread or imfinfo are called, the file must exist or the
 ## function defined by imformats will never be called.  Because
 ## of this, we must create a file for the tests to work.

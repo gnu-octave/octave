@@ -2226,13 +2226,13 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-#ifdef HAVE_MAGICK
-  maybe_initialize_magick ();
-
   if (args.length () != 1 || ! args(0).is_map ())
     print_usage ();
 
   octave_map formats = args(0).map_value ();
+
+#ifdef HAVE_MAGICK
+  maybe_initialize_magick ();
 
   for (octave_idx_type idx = 0; idx < formats.numel (); idx++)
     {
@@ -2260,11 +2260,11 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
         }
     }
 
-  return ovl (formats);
-
 #else
-  err_disabled_feature ("imformats", "Image IO");
+  formats = octave_map (dim_vector (1, 0), formats.fieldnames ());
 #endif
+
+  return ovl (formats);
 }
 
 /*

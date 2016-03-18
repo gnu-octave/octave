@@ -1213,6 +1213,29 @@ textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
 
 // Perform actual textscan: read data from stream, and create cell array.
 
+static Cell
+init_inf_nan (void)
+{
+  Cell retval (dim_vector (1, 2));
+
+  retval(0) = Cell (octave_value ("inf"));
+  retval(1) = Cell (octave_value ("nan"));
+
+  return retval;
+}
+
+textscan::textscan (void)
+  : buf (), whitespace_table (), delim_table (), delims (),
+    comment_style (), comment_len (0), comment_char (-2),
+    buffer_size (0), date_locale (), inf_nan (init_inf_nan ()),
+    empty_value (octave_NaN), exp_chars ("edED"),
+    header_lines (0), treat_as_empty (), treat_as_empty_len (0),
+    whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
+    return_on_error (2), collect_output (false),
+    multiple_delims_as_one (false), default_exp (true),
+    numeric_delim (false), lines (0)
+{ }
+
 octave_value
 textscan::scan (std::istream *isp, const octave_value_list& args)
 {

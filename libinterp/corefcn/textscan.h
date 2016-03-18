@@ -57,19 +57,7 @@ textscan
 {
 public:
 
-  textscan (void)
-    : buf (""), delim_table (""), delims (), comment_len (0), comment_char(-2),
-      buffer_size (0),
-      empty_value (octave_NaN), exp_chars ("edED"), header_lines (0),
-      treat_as_empty_len (0), whitespace (" \b\t"), eol1('\r'), eol2('\n'),
-      return_on_error (2), collect_output (false),
-      multiple_delims_as_one (false), default_exp (true),
-      numeric_delim (false), lines (0)
-    {
-      inf_nan = Cell (dim_vector (1,2));
-      inf_nan(0) = Cell (octave_value ("inf"));
-      inf_nan(1) = Cell (octave_value ("nan"));
-    };
+  textscan (void);
 
   ~textscan (void) { }
 

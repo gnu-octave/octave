@@ -2364,20 +2364,20 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
       elseif (strncmp (f, "rm", 2))
         bld = false;
         it = false;
-        str = [str(1:s(i) - 1) '/' fnt ' ' str(s(i) + 3:end)];
+        str = [str(1:s(i) - 1) '{/' fnt ' ' str(s(i) + 3:end) '}'];
       elseif (strncmp (f, "it", 2) || strncmp (f, "sl", 2))
         it = true;
         if (bld)
-          str = [str(1:s(i) - 1) '/' fnt '-bolditalic ' str(s(i) + 3:end)];
+          str = [str(1:s(i) - 1) '{/' fnt '-bolditalic ' str(s(i) + 3:end) '}'];
         else
-          str = [str(1:s(i) - 1) '/' fnt '-italic ' str(s(i) + 3:end)];
+          str = [str(1:s(i) - 1) '{/' fnt '-italic ' str(s(i) + 3:end) '}'];
         endif
       elseif (strncmp (f, "bf", 2))
         bld = true;
         if (it)
-          str = [str(1:s(i) - 1) '/' fnt '-bolditalic ' str(s(i) + 3:end)];
+          str = [str(1:s(i) - 1) '{/' fnt '-bolditalic ' str(s(i) + 3:end) '}'];
         else
-          str = [str(1:s(i) - 1) '/' fnt '-bold ' str(s(i) + 3:end)];
+          str = [str(1:s(i) - 1) '{/' fnt '-bold ' str(s(i) + 3:end) '}'];
         endif
       elseif (strcmpi (f, "color"))
         ## FIXME: Ignore \color but remove trailing {} block as well

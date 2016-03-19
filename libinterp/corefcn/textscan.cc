@@ -96,7 +96,7 @@ public:
   // to avoid overflow by calling putbacks only for a character got by
   // get() or get_undelim(), with no intervening
   // get, get_delim, field_done, refresh_buf, getline, read or seekg.
-  void putback (char /*ch*/ = 0)  { if (! eof ()) --idx; }
+  void putback (char /*ch*/ = 0) { if (! eof ()) --idx; }
 
   int getline  (std::string& dest, char delim);
 
@@ -115,7 +115,7 @@ public:
     return (eob == buf && i_stream.eof ()) || (flags & std::ios_base::eofbit);
   }
 
-  operator const void* (void) { return (!eof () && !flags) ? this : 0; }
+  operator const void* (void) { return (! eof () && ! flags) ? this : 0; }
 
   bool fail (void) { return flags & std::ios_base::failbit; }
 
@@ -1316,7 +1316,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   if (fmt_list.num_conversions () == 0)
     error ("textscan: no valid format conversion specifiers\n");
 
-  // skip the first  header_lines
+  // skip the first header_lines
   std::string dummy;
   for (int i = 0; i < header_lines && isp; i++)
     getline (isp, dummy, static_cast<char> (eol2));
@@ -1466,8 +1466,8 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
     }
   else  // group adjacent cells of the same type into a single cell
     {
-      octave_value    cur;                // current cell, accumulating columns
-      octave_idx_type group_size = 0;     // columns in this cell
+      octave_value cur;                // current cell, accumulating columns
+      octave_idx_type group_size = 0;  // columns in this cell
       int prev_type = -1;
 
       conv = 0;
@@ -1501,7 +1501,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   return retval;
 }
 
-// Calculate x^n.  Used for ...e+nn  so that, for example, 1e2 is
+// Calculate x^n.  Used for ...e+nn so that, for example, 1e2 is
 // exactly 100 and 5e-1 is 1/2
 
 static double
@@ -1519,8 +1519,8 @@ pown (double x, unsigned int n)
   return retval;
 }
 
-// Read a double considering the "precision" field of  fmt  and the
-// exp_chars  option of  options.
+// Read a double considering the "precision" field of FMT and the
+// EXP_CHARS option of OPTIONS.
 
 double
 textscan::read_double (delimited_stream& is,
@@ -2593,7 +2593,7 @@ textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
                   do
                     {           // find sequence ending with last char
                       scan_caret (is, last, dummy);
-                      is.get_undelim ();        // (read   last  itself)
+                      is.get_undelim ();        // (read LAST itself)
 
                       may_match = may_match + dummy + last;
                       if (may_match.length () > end_c.length ())

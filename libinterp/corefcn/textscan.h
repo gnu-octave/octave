@@ -171,9 +171,9 @@ private:
 
   bool match_literal (delimited_stream& isp, const textscan_format_elt& elem);
 
-  int  skip_whitespace (delimited_stream& is, bool EOLstop = false);
+  int skip_whitespace (delimited_stream& is, bool EOLstop = false);
 
-  int  skip_delim (delimited_stream& is);
+  int skip_delim (delimited_stream& is);
 
   bool is_delim (unsigned char ch) const
   {

@@ -74,13 +74,19 @@ public:
 
   // Get a character, relying on caller to call field_done if
   // a delimiter has been reached.
-  int get (void)   { return delimited ? *idx++ : get_undelim (); }
+  int get (void)
+  {
+    if (delimited)
+      return eof () ? std::istream::traits_type::eof () : *idx++;
+    else
+      return get_undelim ();
+  }
 
   // Get a character, checking for underrun of the buffer.
   int get_undelim (void);
 
   // Read character that will be got by the next get.
-  int peek (void)   { return *idx; }
+  int peek (void) { return eof () ? std::istream::traits_type::eof () : *idx; }
 
   // Read character that will be got by the next get.
   int peek_undelim (void);
@@ -89,7 +95,7 @@ public:
   // to avoid overflow by calling putbacks only for a character got by
   // get() or get_undelim(), with no intervening
   // get, get_delim, field_done, refresh_buf, getline, read or seekg.
-  void putback (char /*ch*/ = 0)  { --idx; }
+  void putback (char /*ch*/ = 0)  { if (! eof ()) --idx; }
 
   int getline  (std::string& dest, char delim);
 

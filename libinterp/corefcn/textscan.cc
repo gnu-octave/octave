@@ -1409,7 +1409,9 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
 
   // If file does not end in EOL, do not pad columns with NaN.
   bool uneven_columns = false;
-  if (isp.eof () || (err & 4))
+  if (err & 4)
+    uneven_columns = true;
+  else if (isp.eof ())
     {
       isp.clear ();
       isp.seekg (-1, std::ios_base::end);
@@ -3241,7 +3243,8 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! ## Check ReturnOnError
 %! f = tempname ();
 %! fid = fopen (f, "w+");
-%! fprintf (fid, "1 2 3\n4 s 6");
+%! str = "1 2 3\n4 s 6";
+%! fprintf (fid, str);
 %! fseek (fid, 0, "bof");
 %! c = textscan (fid, "%f %f %f");
 %! fseek (fid, 0, "bof");
@@ -3249,20 +3252,27 @@ from the beginning of the file or string, at which the processing stopped.\n\
 %! fseek (fid, 0, "bof");
 %! fclose (fid);
 %! unlink (f);
+%! u = textscan (str, "%f %f %f");
+%! v = textscan (str, "%f %f %f", "ReturnOnError", 1);
 %! assert (c, {[1;4], [2;NaN], [3;6]})
 %! assert (d, {[1;4], [2], [3]})
+%! assert (u, {[1;4], [2;NaN], [3;6]})
+%! assert (v, {[1;4], [2], [3]})
 
 %!test
 %! ## Check ReturnOnError
 %! f = tempname ();
 %! fid = fopen (f, "w+");
-%! fprintf (fid, "1 2 3\n4 s 6\n");
+%! str = "1 2 3\n4 s 6\n";
+%! fprintf (fid, str);
 %! fseek (fid, 0, "bof");
 %! c = textscan (fid, "%f %f %f", "ReturnOnError", 1);
 %! fseek (fid, 0, "bof");
 %! fclose (fid);
 %! unlink (f);
+%! u = textscan (str, "%f %f %f", "ReturnOnError", 1);
 %! assert (c, {[1;4], 2, 3})
+%! assert (u, {[1;4], 2, 3})
 
 %!error <Read error in field 2 of row 2> textscan ("1 2 3\n4 s 6", "%f %f %f", "ReturnOnError", 0);
 

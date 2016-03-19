@@ -1064,12 +1064,12 @@ complete description of the syntax of the template string.\n\
 }
 
 static std::string
-get_sscanf_data (const octave_value& val)
+get_scan_string_data (const octave_value& val, const std::string& who)
 {
   std::string retval;
 
   if (! val.is_string ())
-    error ("sscanf: argument STRING must be a string");
+    error ("%s: argument STRING must be a string", who.c_str ());
 
   octave_value tmp = val.reshape (dim_vector (1, val.numel ()));
 
@@ -1100,7 +1100,7 @@ character to be read is returned in @var{pos}.\n\
 
   octave_value_list retval;
 
-  std::string data = get_sscanf_data (args(0));
+  std::string data = get_scan_string_data (args(0), who);
 
   octave_stream os = octave_istrstream::create (data);
 
@@ -1163,19 +1163,19 @@ textscan_internal (const std::string& who, const octave_value_list& args)
   if (args.length () < 1)
     print_usage (who);
 
-  std::string data;
+  octave_stream os;
 
-  bool first_arg_is_string = args(0).is_string ();
+  if (args(0).is_string ())
+    {
+      std::string data = get_scan_string_data (args(0), who);
 
-  if (first_arg_is_string)
-    data = args(0).string_value ();
+      os = octave_istrstream::create (data);
 
-  octave_stream os = (first_arg_is_string
-                      ? octave_istrstream::create (data)
-                      : octave_stream_list::lookup (args(0), who));
-
-  if (first_arg_is_string && ! os.is_valid ())
-    error ("%s: unable to create temporary input buffer", who.c_str ());
+      if (! os.is_valid ())
+        error ("%s: unable to create temporary input buffer", who.c_str ());
+    }
+  else
+    os =octave_stream_list::lookup (args(0), who);
 
   int nskip = 1;
 
@@ -2198,6 +2198,8 @@ as the name of the function when reporting errors.\n\
 %!## Test start of comment as string
 %! c = textscan ("1 / 2 // 3", "%n %s %u8", "CommentStyle", {"//"});
 %! assert (c, {1, "/", 2});
+
+%!assert (textscan (["1 2 3 4"; "5 6 7 8"], "%f"), {[15; 26; 37; 48]})
 */
 
 // These tests have end-comment sequences, so can't just be in a comment

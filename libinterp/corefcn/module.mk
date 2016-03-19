@@ -85,7 +85,6 @@ COREFCN_INC = \
   libinterp/corefcn/symtab.h \
   libinterp/corefcn/sysdep.h \
   libinterp/corefcn/text-renderer.h \
-  libinterp/corefcn/textscan.h \
   libinterp/corefcn/toplev.h \
   libinterp/corefcn/txt-eng.h \
   libinterp/corefcn/utils.h \
@@ -244,7 +243,6 @@ COREFCN_SRC = \
   libinterp/corefcn/sysdep.cc \
   libinterp/corefcn/time.cc \
   libinterp/corefcn/text-renderer.cc \
-  libinterp/corefcn/textscan.cc \
   libinterp/corefcn/toplev.cc \
   libinterp/corefcn/tril.cc \
   libinterp/corefcn/tsearch.cc \

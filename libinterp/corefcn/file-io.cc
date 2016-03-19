@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <limits>
 #include <stack>
+#include <string>
 #include <vector>
 
 #include <fcntl.h>
@@ -68,10 +69,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"
 #include "oct-map.h"
-#include "ovl.h"
 #include "oct-prcstrm.h"
 #include "oct-stream.h"
 #include "oct-strstrm.h"
+#include "ov.h"
+#include "ovl.h"
 #include "pager.h"
 #include "sysdep.h"
 #include "utils.h"
@@ -1165,6 +1167,1035 @@ It is currently not useful to call @code{scanf} in interactive programs.\n\
 
   return Ffscanf (tmp_args, nargout);
 }
+
+DEFUN (textscan, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat}, @var{param}, @var{value}, @dots{})\n\
+@deftypefnx {} {@var{C} =} textscan (@var{str}, @dots{})\n\
+@deftypefnx {} {[@var{C}, @var{position}, @var{errmsg}] =} textscan (@dots{})\n\
+Read data from a text file or string.\n\
+\n\
+The string @var{str} or file associated with @var{fid} is read from and\n\
+parsed according to @var{format}.\n\
+The function is an extension of @code{strread} and @code{textread}.\n\
+Differences include: the ability to read from either a file or a string,\n\
+additional options, and additional format specifiers.\n\
+\n\
+The input is interpreted as a sequence of \"words\", delimiters\n\
+(such as whitespace) and literals.\n\
+The characters that form delimiters and whitespace are determined\n\
+by the options.\n\
+The format consists of format specifiers interspersed between literals.\n\
+In the format, whitespace forms a delimiter between consecutive literals,\n\
+but is otherwise ignored.\n\
+\n\
+The output @var{C} is a cell array whose second dimension is determined\n\
+by the number of format specifiers.\n\
+\n\
+The first word of the input is matched to the first specifier of the\n\
+format and placed in the first column of the output;\n\
+the second is matched to the second specifier and placed in the second column\n\
+and so forth.\n\
+If there are more words than specifiers, the process is repeated until all\n\
+words have been processed or the limit imposed by @var{repeat} has been met\n\
+(see below).\n\
+\n\
+The string @var{format} describes how the words in @var{str} should be\n\
+parsed.\n\
+As in @var{fscanf}, any (non-whitespace) text in the format that is\n\
+not one of these specifiers is considered a literal;\n\
+if there is a literal between two format specifiers then that same literal\n\
+must appear in the input stream between the matching words.\n\
+\n\
+The following specifiers are valid:\n\
+\n\
+@table @code\n\
+@item  %f\n\
+@itemx %f64\n\
+@itemx %n\n\
+The word is parsed as a number and converted to double.\n\
+\n\
+@item  %f32\n\
+The word is parsed as a number and converted to single (float).\n\
+\n\
+@item  %d\n\
+@itemx %d8\n\
+@itemx %d16\n\
+@itemx %d32\n\
+@itemx %d64\n\
+The word is parsed as a number and converted to int8, int16, int32 or int64.\n\
+If not size is specified, int32 is used.\n\
+\n\
+@item  %u\n\
+@itemx %u8\n\
+@itemx %u16\n\
+@itemx %u32\n\
+@itemx %u64\n\
+The word is parsed as a number and converted to uint8, uint16, uint32 or\n\
+uint64. If not size is specified, uint32 is used.\n\
+\n\
+@item %s\n\
+The word is parsed as a string, ending at the last character before\n\
+whitespace, an end-of-line or a delimiter specified in the options.\n\
+\n\
+@item %q\n\
+The word is parsed as a \"quoted string\".\n\
+If the first character of the string is a double quote (\") then the string\n\
+includes everything until a matching double quote, including whitespace,\n\
+delimiters and end of line characters.\n\
+If a pair of consecutive double quotes appears in the input,\n\
+it is replaced in the output by a single double quote.\n\
+That is, the input \"He said \"\"Hello\"\"\" would return the value\n\
+'He said \"Hello\"'.\n\
+\n\
+@item  %c\n\
+The next character of the input is read.\n\
+This includes delimiters, whitespace and end of line characters.\n\
+\n\
+@item  %[...]\n\
+@itemx %[^...]\n\
+In the first form, the word consists of the longest run consisting of only\n\
+characters between the brackets.\n\
+Ranges of characters can be specified by a hyphen;\n\
+for example, %[0-9a-zA-Z] matches all alphanumeric characters\n\
+(if the underlying character set is ASCII).\n\
+Since Matlab treats hyphens literally, this expansion only applies to\n\
+alphanumeric characters.\n\
+To include '-' in the set, it should appear first or last in the brackets;\n\
+to include ']', it should be the first character.\n\
+If the first character is '^' then the word consists of characters\n\
+NOT listed.\n\
+\n\
+@item %N...\n\
+For %s, %c %d, %f, %n, %u, an optional width can be specified as %Ns etc.\n\
+where N is an integer > 1.\n\
+For %c, this causes exactly the next N characters to be read instead of\n\
+a single character.\n\
+For the other specifiers, it is an upper bound on the\n\
+number of characters read;\n\
+normal delimiters can cause fewer characters to be read.\n\
+For complex numbers, this limit applies to the real and imaginary\n\
+components individually.\n\
+For %f and %n, format specifiers like %N.Mf are allowed, where M is an upper\n\
+bound on number of characters after the decimal point to be considered;\n\
+subsequent digits are skipped.\n\
+For example, the specifier %8.2f would read 12.345e6 as 1.234e7.\n\
+\n\
+@item %*...\n\
+The word specified by the remainder of the conversion specifier is skipped.\n\
+\n\
+@item literals\n\
+In addition the format may contain literal character strings;\n\
+these will be skipped during reading.\n\
+If the input string does not match this literal, the processing terminates,\n\
+unless \"ReturnOnError\" is set to \"continue\".\n\
+@end table\n\
+\n\
+Parsed words corresponding to the first specifier are returned in the first\n\
+output argument and likewise for the rest of the specifiers.\n\
+\n\
+By default, if there is only one input argument, @var{format} is @t{\"%f\"}.\n\
+This means that numbers are read from @var{str} into a single column vector.\n\
+If @var{format} is explicitly empty, \"\", then textscan will return data\n\
+in a number of columns matching the number of fields on the first data\n\
+line of the input.\n\
+Either of these is suitable only if @var{str} contains only numeric fields.\n\
+\n\
+For example, the string\n\
+\n\
+@example\n\
+@group\n\
+@var{str} = \"\\\n\
+Bunny Bugs   5.5\\n\\\n\
+Duck Daffy  -7.5e-5\\n\\\n\
+Penguin Tux   6\"\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+can be read using\n\
+\n\
+@example\n\
+@var{a} = textscan (@var{str}, \"%s %s %f\");\n\
+@end example\n\
+\n\
+The optional numeric argument @var{repeat} can be used for limiting the\n\
+number of items read:\n\
+\n\
+@table @asis\n\
+@item -1\n\
+(default) read all of the string or file until the end.\n\
+\n\
+@item N\n\
+Read until the first of two conditions occurs: the format has been processed\n\
+N times, or N lines of the input have been processed.\n\
+Zero (0) is an acceptable value for @var{repeat}.\n\
+Currently, end-of-line characters inside %q, %c, and %[...]$ conversions\n\
+do not contribute to the line count.\n\
+This is incompatible with Matlab and may change in future.\n\
+@end table\n\
+\n\
+The behavior of @code{textscan} can be changed via property-value pairs.\n\
+The following properties are recognized:\n\
+\n\
+@table @asis\n\
+@item @qcode{\"BufSize\"}\n\
+This specifies the number of bytes to use for the internal buffer.\n\
+A modest speed improvement is obtained by setting this to a large value\n\
+when reading a large file, especially the input contains long strings.\n\
+The default is 4096, or a value dependent on @var{n} is that is specified.\n\
+\n\
+@item @qcode{\"CollectOutput\"}\n\
+A value of 1 or true instructs textscan to concatenate consecutive columns\n\
+of the same class in the output cell array.\n\
+A value of 0 or false (default) leaves output in distinct columns.\n\
+\n\
+@item @qcode{\"CommentStyle\"}\n\
+Parts of @var{str} are considered comments and will be skipped.\n\
+@var{value} is the comment style and can be either\n\
+(1) One string, or 1x1 cell string, to skip everything to the right of it;\n\
+(2) A cell array of two strings, to skip everything between the first and\n\
+second strings.\n\
+Comments are only parsed where whitespace is accepted, and do not act as\n\
+delimiters.\n\
+\n\
+@item @qcode{\"Delimiter\"}\n\
+If @var{value} is a string, any character in @var{value} will be used to\n\
+split @var{str} into words.\n\
+If @var{value} is a cell array of strings,\n\
+any string in the array will be used to split @var{str} into words.\n\
+(default value = any whitespace.)\n\
+\n\
+@item @qcode{\"EmptyValue\"}\n\
+Value to return for empty numeric values in non-whitespace delimited data.\n\
+The default is NaN@.\n\
+When the data type does not support NaN (int32 for example),\n\
+then default is zero.\n\
+\n\
+@item @qcode{\"EndOfLine\"}\n\
+@var{value} can be either a emtpy or one character specifying the\n\
+end of line character, or the pair\n\
+@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} (CRLF).\n\
+In the latter case, any of\n\
+@qcode{\"@xbackslashchar{}r\"}, @qcode{\"@xbackslashchar{}n\"} or\n\
+@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is counted as a (single)\n\
+newline.\n\
+If no value is given, @qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is\n\
+used.\n\
+@c If set to \"\" (empty string) EOLs are ignored as delimiters and added\n\
+@c to whitespace.\n\
+\n\
+@c When reading from a character string, optional input argument @var{n}\n\
+@c specifies the number of times @var{format} should be used (i.e., to limit\n\
+@c the amount of data read).\n\
+@c When reading from file, @var{n} specifies the number of data lines to read;\n\
+@c in this sense it differs slightly from the format repeat count in strread.\n\
+\n\
+@item @qcode{\"HeaderLines\"}\n\
+The first @var{value} number of lines of @var{fid} are skipped.\n\
+Note that this does not refer to the first non-comment lines, but the first\n\
+lines of any type.\n\
+\n\
+@item @qcode{\"MultipleDelimsAsOne\"}\n\
+If @var{value} is non-zero,\n\
+treat a series of consecutive delimiters, without whitespace in between,\n\
+as a single delimiter.\n\
+Consecutive delimiter series need not be vertically @qcode{\"aligned\"}.\n\
+Without this option, a single delimiter before the end of the line does\n\
+not cause the line to be considered to end with an empty value,\n\
+but a single delimiter at the start of a line causes the line\n\
+to be considered to start with an empty value.\n\
+\n\
+@item @qcode{\"TreatAsEmpty\"}\n\
+Treat single occurrences (surrounded by delimiters or whitespace) of the\n\
+string(s) in @var{value} as missing values.\n\
+\n\
+@item @qcode{\"ReturnOnError\"}\n\
+If set to numerical 1 or true, return normally as soon as an error\n\
+is encountered, such as trying to read a string using @qcode{%f}.\n\
+If set to 0 or false, return an error and no data.\n\
+If set to \"continue\" (default), textscan attempts to continue reading\n\
+beyond the location; however, this may cause the parsing to get out of sync.\n\
+\n\
+@item @qcode{\"Whitespace\"}\n\
+Any character in @var{value} will be interpreted as whitespace and trimmed;\n\
+The default value for whitespace is\n\
+@c Note: the next line specifically has a newline which generates a space\n\
+@c       in the output of qcode, but keeps the next line < 80 characters.\n\
+@qcode{\"\n\
+@xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t\"}\n\
+(note the space).  Unless whitespace is set to @qcode{\"\"} (empty) AND at\n\
+least one @qcode{\"%s\"} format conversion specifier is supplied, a space is\n\
+always part of whitespace.\n\
+\n\
+@end table\n\
+\n\
+When the number of words in @var{str} or @var{fid} doesn't match an exact\n\
+multiple of the number of format conversion specifiers,\n\
+textscan's behavior depends on\n\
+whether the last character of the string or file is\n\
+an end-of-line as specified by the EndOfLine option:\n\
+\n\
+@table @asis\n\
+@item last character = end-of-line\n\
+Data columns are padded with empty fields, NaN or 0 (for integer fields)\n\
+so that all columns have equal length\n\
+\n\
+@item last character is not end-of-line\n\
+Data columns are not padded; textscan returns columns of unequal length\n\
+@end table\n\
+\n\
+\n\
+The second output, @var{position}, provides the position, in characters\n\
+from the beginning of the file or string, at which the processing stopped.\n\
+\n\
+@seealso{dlmread, fscanf, load, strread, textread}\n\
+@end deftypefn")
+{
+  static std::string who = "textscan";
+
+  octave_value_list retval;
+
+  if (args.length () < 1)
+    print_usage ();
+
+  octave_value_list tmp_args = args.splice (0, 1);
+
+  octave_idx_type count = 0;
+
+  textscan tscanner;
+
+  if (args(0).is_string ())
+    {
+      std::string data = args(0).string_value ();
+
+      octave_stream os = octave_istrstream::create (data);
+
+      if (! os.is_valid ())
+        error ("%s: unable to create temporary input buffer", who.c_str ());
+
+      std::istream *isp = os.input_stream ();
+
+      octave_value result = tscanner.scan (*isp, tmp_args, count);
+
+      std::string errmsg = os.error ();
+
+      return ovl (result, count, errmsg);
+    }
+  else
+    {
+      octave_stream os = octave_stream_list::lookup (args(0), who);
+
+      std::istream *isp = os.input_stream ();
+
+      if (! isp)
+        error ("internal error: textscan called with invalid istream");
+
+      octave_value result = tscanner.scan (*isp, tmp_args, count);
+
+      std::string errmsg = os.error ();
+
+      return ovl (result, count, errmsg);
+    }
+
+  return retval;
+}
+
+/*
+%!test
+%! str = "1,  2,  3,  4\n 5,  ,  ,  8\n 9, 10, 11, 12";
+%! fmtstr = "%f %d %f %s";
+%! c = textscan (str, fmtstr, 2, "delimiter", ",", "emptyvalue", -Inf);
+%! assert (isequal (c{1}, [1;5]));
+%! assert (length (c{1}), 2);
+%! assert (iscellstr (c{4}));
+%! assert (isequal (c{3}, [3; -Inf]));
+
+%!test
+%! b = [10:10:100];
+%! b = [b; 8*b/5];
+%! str = sprintf ("%g miles/hr = %g kilometers/hr\n", b);
+%! fmt = "%f miles/hr = %f kilometers/hr";
+%! c = textscan (str, fmt);
+%! assert (c{1}, b(1,:)', 1e-5);
+%! assert (c{2}, b(2,:)', 1e-5);
+
+%!test
+%! str = "13, -, NA, str1, -25\r\n// Middle line\r\n36, na, 05, str3, 6";
+%! a = textscan (str, "%d %n %f %s %n", "delimiter", ",",
+%!                "treatAsEmpty", {"NA", "na", "-"},"commentStyle", "//");
+%! assert (a{1}, int32 ([13; 36]));
+%! assert (a{2}, [NaN; NaN]);
+%! assert (a{3}, [NaN; 5]);
+%! assert (a{4}, {"str1"; "str3"});
+%! assert (a{5}, [-25; 6]);
+
+%!test
+%! str = "Km:10 = hhhBjjj miles16hour\r\n";
+%! str = [str "Km:15 = hhhJjjj miles241hour\r\n"];
+%! str = [str "Km:2 = hhhRjjj miles3hour\r\n"];
+%! str = [str "Km:25 = hhhZ\r\n"];
+%! fmt = "Km:%d = hhh%1sjjj miles%dhour";
+%! a = textscan (str, fmt, "delimiter", " ");
+%! assert (a{1}', int32 ([10 15 2 25]));
+%! assert (a{2}', {'B' 'J' 'R' 'Z'});
+%! assert (a{3}', int32 ([16 241 3 0]));
+
+## Test with default endofline parameter
+%!test
+%! c = textscan ("L1\nL2", "%s");
+%! assert (c{:}, {"L1"; "L2"});
+
+## Test with endofline parameter set to "" (empty) - newline should be in word
+%!test
+%! c = textscan ("L1\nL2", "%s", "endofline", "");
+%! assert (int8 ([c{:}{:}]), int8 ([ 76,  49,  10,  76,  50 ]));
+
+###  Matlab fails this test.  A literal after a conversion is not a delimiter
+#%!test
+#%! ## No delimiters at all besides EOL.  Skip fields, even empty fields
+#%! str = "Text1Text2Text\nTextText4Text\nText57Text";
+#%! c = textscan (str, "Text%*dText%dText");
+#%! assert (c{1}, int32 ([2; 4; 0]));
+
+## CollectOutput test
+%!test
+%! b = [10:10:100];
+%! b = [b; 8*b/5; 8*b*1000/5];
+%! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
+%! fmt = "%f miles%s %s %f (%f) kilometers %*s";
+%! c = textscan (str, fmt, "collectoutput", 1);
+%! assert (size (c{3}), [10, 2]);
+%! assert (size (c{2}), [10, 2]);
+
+## CollectOutput test with uneven column length files
+%!test
+%! b = [10:10:100];
+%! b = [b; 8*b/5; 8*b*1000/5];
+%! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
+%! str = [str "110 miles/hr"];
+%! fmt = "%f miles%s %s %f (%f) kilometers %*s";
+%! c = textscan (str, fmt, "collectoutput", 1);
+%! assert (size (c{1}), [11, 1]);
+%! assert (size (c{3}), [11, 2]);
+%! assert (size (c{2}), [11, 2]);
+%! assert (c{3}(end), NaN);
+%! assert (c{2}{11, 1}, "/hr");
+%! assert (isempty (c{2}{11, 2}), true);
+
+## Double quoted string
+%!test
+%! str = 'First    "the second called ""the middle""" third';
+%! fmt = "%q";
+%! c = textscan (str, fmt);
+%! assert (c{1}, {"First"; 'the second called "the middle"'; "third"});
+
+## Arbitrary character
+%!test
+%! c = textscan ("a first, \n second, third", "%s %c %11c", 'delimiter', ' ,');
+%! assert (c{1}, {"a"; "ond"});
+%! assert (c{2}, {"f"; "t"});
+%! assert (c{3}, {"irst, \n sec"; "hird"});
+
+## Field width and non-standard delimiters
+%!test
+%! str = "12;34;123456789;7";
+%! c = textscan (str, "%4d %4d", "delimiter", ";", "collectOutput", 1);
+%! assert (c, {[12 34; 1234 5678; 9 7]});
+
+## Field width and non-standard delimiters
+%!test
+%! str = "12;34;123456789;7";
+%! c = textscan (str, "%4f %f", "delimiter", ";", "collectOutput", 1);
+%! assert (c, {[12 34; 1234 56789; 7 NaN]});
+
+## Ignore trailing delimiter, but use leading one
+%!test
+%! str = "12.234e+2,34, \n12345.789-9876j,78\n,10|3";
+%! c = textscan (str, "%10.2f %f", "delimiter", ",", "collectOutput", 1,
+%!                "expChars", "e|");
+%! assert (c, {[1223 34; 12345.79-9876j 78; NaN 10000]}, 1e-6);
+
+%!test
+%! ## Multi-character delimiter
+%! str = "99end2 space88gap 4564";
+%! c = textscan (str, "%d %s", "delimiter", {"end", "gap", "space"});
+%! assert (c{1}, int32 ([99; 88]));
+%! assert (c{2}, {"2 "; "4564"});
+
+### Delimiters as part of literals, and following literals
+#%!test
+#%! str = "12 R&D & 7";
+#%! c = textscan (str, "%f R&D %f", "delimiter", "&", "collectOutput", 1, "EmptyValue", -99);
+#%! assert (c, {[12 -99; 7 -99]});
+#
+### Delimiters as part of literals, and before literals
+#%!test
+#%! str = "12 & R&D 7";
+#%! c = textscan (str, "%f R&D %f", "delimiter", "&", "collectOutput", 1);
+#%! assert (c, {[12 7]});
+
+%!test
+%! ## Check number of lines read, not number of passes through format string
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, "1\n2\n3\n4\n5\n6");
+%! fseek (fid, 0, "bof");
+%! c = textscan (fid, "%f %f", 2);
+%! E = feof (fid);
+%! fclose (fid);
+%! unlink (f);
+%! assert (c, {1, 2});
+%! assert (!E);
+
+%!test
+%! ## Check number of lines read, not number of passes through format string
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, "1\r\n2\r3\n4\r\n5\n6");
+%! fseek (fid, 0, "bof");
+%! c = textscan (fid, "%f %f", 4);
+%! fclose (fid);
+%! unlink (f);
+%! assert (c, {[1;3], [2;4]})
+
+%!test
+%! ## Check number of lines read, with multiple delimiters
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, "1-\r\n-2\r3-\n-4\r\n5\n6");
+%! fseek (fid, 0, "bof");
+%! c = textscan (fid, "%f %f", 4, "delimiter", "-", "multipleDelimsAsOne", 1);
+%! fclose (fid);
+%! unlink (f);
+%! assert (c, {[1;3], [2;4]})
+
+%!test
+%! ## Check ReturnOnError
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! str = "1 2 3\n4 s 6";
+%! fprintf (fid, str);
+%! fseek (fid, 0, "bof");
+%! c = textscan (fid, "%f %f %f");
+%! fseek (fid, 0, "bof");
+%! d = textscan (fid, "%f %f %f", "ReturnOnError", 1);
+%! fseek (fid, 0, "bof");
+%! fclose (fid);
+%! unlink (f);
+%! u = textscan (str, "%f %f %f");
+%! v = textscan (str, "%f %f %f", "ReturnOnError", 1);
+%! assert (c, {[1;4], [2;NaN], [3;6]})
+%! assert (d, {[1;4], [2], [3]})
+%! assert (u, {[1;4], [2;NaN], [3;6]})
+%! assert (v, {[1;4], [2], [3]})
+
+%!test
+%! ## Check ReturnOnError
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! str = "1 2 3\n4 s 6\n";
+%! fprintf (fid, str);
+%! fseek (fid, 0, "bof");
+%! c = textscan (fid, "%f %f %f", "ReturnOnError", 1);
+%! fseek (fid, 0, "bof");
+%! fclose (fid);
+%! unlink (f);
+%! u = textscan (str, "%f %f %f", "ReturnOnError", 1);
+%! assert (c, {[1;4], 2, 3})
+%! assert (u, {[1;4], 2, 3})
+
+%!error <Read error in field 2 of row 2> textscan ("1 2 3\n4 s 6", "%f %f %f", "ReturnOnError", 0);
+
+%!test
+%! ## Check ReturnOnError
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, "1 s 3\n4 5 6");
+%! fseek (fid, 0, "bof");
+%! c = textscan (fid, "");
+%! fseek (fid, 0, "bof");
+%! d = textscan (fid, "", "ReturnOnError", 1);
+%! fseek (fid, 0, "bof");
+%! fclose (fid);
+%! unlink (f);
+%! assert (c, {[1;4], [NaN;5], [3;6]})
+%! assert (d, {1})
+
+%!test
+%! ## Check ReturnOnError with empty fields
+%! c = textscan ("1,,3\n4,5,6", "", "Delimiter", ",", "ReturnOnError", 1);
+%! assert (c, {[1;4], [NaN;5], [3;6]})
+
+%!test
+%! ## Check ReturnOnError with empty fields
+%! c = textscan ("1,,3\n4,5,6", "%f %f %f", "Delimiter", ",", "ReturnOnError", 1);
+%! assert (c, {[1;4], [NaN;5], [3;6]})
+
+%!test
+%! ## Check ReturnOnError in first column
+%! c = textscan ("1 2 3\ns 5 6", "", "ReturnOnError", 1);
+%! assert (c, {1, 2, 3})
+
+## Test input validation
+%!error textscan ()
+%!error textscan (single (40))
+%!error textscan ({40})
+%!error <must be a string> textscan ("Hello World", 2)
+#%!error <cannot provide position information> [C, pos] = textscan ("Hello World")
+%!error <at most one character or> textscan ("Hello World", '%s', 'EndOfLine', 3)
+%!error <'%z' is not a valid format specifier> textscan ("1.0", "%z");
+%!error <no valid format conversion specifiers> textscan ("1.0", "foo");
+
+## Test incomplete first data line
+%! R = textscan (['Empty1' char(10)], 'Empty%d %f');
+%! assert (R{1}, int32 (1));
+%! assert (isempty (R{2}), true);
+
+## bug #37023
+%!test
+%! data = textscan ("   1. 1 \n 2 3\n", '%f %f');
+%! assert (data{1}, [1; 2], 1e-15);
+%! assert (data{2}, [1; 3], 1e-15);
+
+## Whitespace test (bug #37333) using delimiter ";"
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = "C:/code/meas;";
+%! tc{1, end+1} = " C:/code/sim;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";");
+%! for k = 1:max (numel (c{1}), numel (tc))
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end
+
+## Whitespace test (bug #37333), adding multipleDelimsAsOne true arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "multipleDelimsAsOne", 1);
+%! for k = 1:max (numel (c{1}), numel (tc))
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end
+
+## Whitespace test (bug #37333), adding multipleDelimsAsOne false arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;;";
+%! tc{1, end+1} = "";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "multipleDelimsAsOne", 0);
+%! for k = 1:max (numel (c{1}), numel (tc))
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end
+
+## Whitespace test (bug #37333) whitespace "" arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "whitespace", "");
+%! for k = 1:max (numel (c{1}), numel (tc))
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   assert (strcmp (lh, rh));
+%! end
+
+## Whitespace test (bug #37333), whitespace " " arg
+%!test
+%! tc = [];
+%! tc{1, 1} = "C:/code;";
+%! tc{1, end+1} = " C:/code/meas;";
+%! tc{1, end+1} = "C:/code/sim;";
+%! tc{1, end+1} = "C:/code/utils;";
+%! string = [tc{:}];
+%! c = textscan (string, "%s", "delimiter", ";", "whitespace", " ");
+%! for k = 1:max (numel (c{1}), numel (tc))
+%!   lh = c{1}{k};
+%!   rh = tc{k};
+%!   rh(rh == ";") = "";
+%!   rh = strtrim (rh);
+%!   assert (strcmp (lh, rh));
+%! end
+
+## Tests reading with empty format, should return proper nr of columns
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, " 1 2 3 4\n5 6 7 8");
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "");
+%! E = feof (fid);
+%! fclose (fid);
+%! unlink (f);
+%! assert (A{1}, [1 ; 5], 1e-6);
+%! assert (A{2}, [2 ; 6], 1e-6);
+%! assert (A{3}, [3 ; 7], 1e-6);
+%! assert (A{4}, [4 ; 8], 1e-6);
+%! assert (E);
+
+## Tests reading with empty format; empty fields & incomplete lower row
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, " ,2,,4\n5,6");
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "", "delimiter", ",", "EmptyValue", 999, "CollectOutput" , 1);
+%! fclose (fid);
+%! unlink (f);
+%! assert (A{1}, [999, 2, 999, 4; 5, 6, 999, 999], 1e-6);
+
+## Error message tests
+
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! msg1 = "textscan: 1 parameters given, but only 0 values";
+%! try
+%! A = textscan (fid, "", "headerlines");
+%! end_try_catch;
+%! assert (!feof (fid));
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);
+
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! msg1 = "textscan: HeaderLines must be numeric";
+%! try
+%! A = textscan (fid, "", "headerlines", "hh");
+%! end_try_catch;
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);
+
+%!test
+%! ## Skip headerlines
+%! A = textscan ("field 1  field2\n 1 2\n3 4", "", "headerlines", 1, "collectOutput", 1);
+%! assert (A, {[1 2; 3 4]});
+
+%!test
+%! ## Skip headerlines with non-default EOL
+%! A = textscan ("field 1  field2\r 1 2\r3 4", "", "headerlines", 2, "collectOutput", 1, "EndOfLine", '\r');
+%! assert (A, {[3 4]});
+
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid,"some_string");
+%! fseek (fid, 0, "bof");
+%! msg1 = "textscan: EndOfLine must be at most one character or '\\r\\n'";
+%! try
+%! A = textscan (fid, "%f", "EndOfLine", "\n\r");
+%! end_try_catch;
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);
+
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid,"some_string");
+%! fseek (fid, 0, "bof");
+%! msg1 = "textscan: EndOfLine must be at most one character or '\\r\\n'";
+%! try
+%! A = textscan (fid, "%f", "EndOfLine", 33);
+%! end_try_catch;
+%! fclose (fid);
+%! unlink (f);
+%! assert (msg1, lasterr);
+
+## Bug #41824
+%!test
+%! assert (textscan ("123", "", "whitespace", " "){:}, 123);
+
+## Bug #42343-1, just test supplied emptyvalue
+%!test
+%! assert (textscan (",NaN", "", "delimiter", "," ,"emptyValue" ,Inf), {Inf, NaN});
+
+## Bug #42343-2, test padding with supplied emptyvalue
+%!test
+%! a = textscan (",1,,4\nInf,  ,NaN\n", "", "delimiter", ",", "emptyvalue", -10);
+%! assert (cell2mat (a), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
+
+## Bug #42528
+%!test
+%! assert (textscan ("1i", ""){1},  0+1i);
+%! assert (cell2mat (textscan ("3, 2-4i, NaN\n -i, 1, 23.4+2.2i\n 1+1 1+1j", "", "delimiter", ",")), [3+0i, 2-4i, NaN+0i; 0-i,  1+0i, 23.4+2.2i; 1 1 1+1i]);
+
+%!test
+%! ## TreatAsEmpty
+%! C = textscan ("1,2,3,NN,5,6\n", "%d%d%d%f", "delimiter", ",", "TreatAsEmpty", "NN");
+%! assert (C{3}(1), int32 (3));
+%! assert (C{4}(1), NaN);
+
+## MultipleDelimsAsOne
+%!test
+%! str = "11, 12, 13,, 15\n21,, 23, 24, 25\n,, 33, 34, 35\n";
+%! C = textscan (str, "%f %f %f %f", "delimiter", ",", "multipledelimsasone", 1, "endofline", "\n");
+%! assert (C{1}', [11, 21, 33]);
+%! assert (C{2}', [12, 23, 34]);
+%! assert (C{3}', [13, 24, 35]);
+%! assert (C{4}', [15, 25, NaN]);
+
+## Bug #44750
+%!test
+%! assert (textscan ("/home/foo/", "%s", "delimiter", "/", "MultipleDelimsAsOne", 1){1}, ...
+%!         {"home"; "foo"});
+
+### Allow cuddling %sliteral but warn it is ambiguous
+#%!test
+#%! C = textscan ("abcxyz51\nxyz83\n##xyz101", "%s xyz %d");
+#%! assert (C{1}([1 3]), {"abc"; "##"});
+#%! assert (isempty (C{1}{2}), true);
+#%! assert (C{2}, int32 ([51; 83; 101]));
+### Literals are not delimiters.
+
+## Test for false positives in check for non-supported format specifiers
+%!test
+%! assert (textscan ("Total: 32.5 % (of cm values)", "Total: %f %% (of cm values)"){1}, 32.5, 1e-5);
+
+## Test various forms of string format specifiers (bug #45712)
+%!test
+%! str = "14 :1 z:2 z:3 z:5 z:11";
+%! C = textscan (str, "%f %s %*s %3s %*3s %f", "delimiter", ":");
+%! assert (C, {14, {"1 z"}, {"3 z"}, 11});
+
+%% Bit width, fixed width conv. specifiers
+%!test
+%! str2 = "123456789012345 ";
+%! str2 = [str2 str2 str2 str2 str2 str2 str2 str2];
+%! str2 = [str2 "123456789.01234 1234567890.1234 12345.678901234 12345.678901234"];
+%! pttrn = "%3u8%*s %5u16%*s %10u32%*s %15u64 %3d8%*s %5d16%*s %10d32%*s %15d64 %9f32%*s %14f64%*s %10.2f32%*s %12.2f64%*s";
+%! C = textscan (str2, pttrn, "delimiter", " ");
+%! assert (C{1}, uint8 (123));
+%! assert (C{2}, uint16 (12345));
+%! assert (C{3}, uint32 (1234567890));
+%! assert (C{4}, uint64 (123456789012345));
+%! assert (C{5}, int8 (123));
+%! assert (C{6}, int16 (12345));
+%! assert (C{7}, int32 (1234567890));
+%! assert (C{8}, int64 (123456789012345));
+%! assert (C{9}, single (123456789), 1e-12);
+%! assert (C{10}, double (1234567890.123), 1e-15);
+%! assert (C{11}, single (12345.68), 1e-5);
+%! assert (C{12}, double (12345.68), 1e-11);
+
+%% Bit width, fixed width conv. specifiers -- check the right amount is left
+%!test
+%! str2 = "123456789012345 ";
+%! str2 = [str2 str2 "123456789.01234"];
+%! pttrn = "%3u8 %5u16 %10u32 %3d8 %5d16 %10d32 %9f32 %9f";
+%! C = textscan (str2, pttrn, "delimiter", " ");
+%! assert (C{1}, uint8 (123));
+%! assert (C{2}, uint16 (45678));
+%! assert (C{3}, uint32 (9012345));
+%! assert (C{4}, int8 (123));
+%! assert (C{5}, int16 (45678));
+%! assert (C{6}, int32 (9012345));
+%! assert (C{7}, single (123456789), 1e-12);
+%! assert (C{8}, double (0.01234), 1e-12);
+
+%!test
+%! C = textscan ("123.123", "%2f %3f %3f");
+%! assert (C{1}, 12);
+%! assert (C{2}, 3.1, 1e-11);
+%! assert (C{3}, 23);
+
+%!test
+%! C = textscan ("123.123", "%3f %3f %3f");
+%! assert (C{1}, 123);
+%! assert (C{2}, 0.12, 1e-11);
+%! assert (C{3}, 3);
+
+%!test
+%! C = textscan ("123.123", "%4f %3f");
+%! assert (C{1}, 123);
+%! assert (C{2}, 123);
+
+%% field width interrupts exponent.  (Matlab incorrectly gives [12, 2e12])
+%!test
+%! assert (textscan ("12e12",  "%4f"), {[120;  2]});
+%! assert (textscan ("12e+12", "%5f"), {[120;  2]});
+%! assert (textscan ("125e-12","%6f"), {[12.5; 2]});
+
+%% %[] tests
+%% Plain [..] and *[..]
+%!test
+%! ar = "abcdefguvwxAny\nacegxyzTrailing\nJunk";
+%! C = textscan (ar, "%[abcdefg] %*[uvwxyz] %s");
+%! assert (C{1}, {"abcdefg"; "aceg"; ""});
+%! assert (C{2}, {"Any"; "Trailing"; "Junk"});
+
+%!test
+%! assert (textscan ("A2 B2 C3", "%*[ABC]%d", 3), {int32([2; 2; 3])});
+
+%% [^..] and *[^..]
+%!test
+%! br = "abcdefguvwx1Any\nacegxyz2Trailing\n3Junk";
+%! C = textscan (br, "%[abcdefg] %*[^0123456789] %s");
+%! assert (C{1}, {"abcdefg"; "aceg"; ""});
+%! assert (C{2}, {"1Any"; "2Trailing"; "3Junk"});
+
+%% [..] and [^..] containing delimiters
+%!test
+%! cr = "ab cd efguv wx1Any\na ce gx yz2Trailing\n   3Junk";
+%! C = textscan (cr, "%[ abcdefg] %*[^0123456789] %s", "delimiter", " \n", "whitespace", "");
+%! assert (C{1}, {"ab cd efg"; "a ce g"; "   "});
+%! assert (C{2}, {"1Any"; "2Trailing"; "3Junk"});
+
+%% Bug #36464
+%!test
+%! assert (textscan ('1 2 3 4 5 6', "%*n%n%*[^\n]"){1}, 2);
+
+%% test %[]] and %[^]]
+%!test
+%! assert (textscan ('345]', "%*[123456]%[]]"){1}{1}, "]");
+%! assert (textscan ('345]', "%*[^]]%s"){1}{1}, "]");
+
+%% Test that "-i" checks the next two characters
+%!test
+%! C = textscan ("-i -in -inf -infinity", "%f %f%s %f %f %s");
+%! assert (C, {-i, -i, {"n"}, -Inf, -Inf, {"inity"}});
+
+%% Again for "+i", this time with custom parser
+%!test
+%! C = textscan ("+i +in +inf +infinity", "%f %f%s %f %f %s", "ExpChars", "eE");
+%! assert (C, {i, i, {"n"}, Inf, Inf, {"inity"}});
+
+%% Check single quoted format interprets control sequences
+%!test
+%! C = textscan ("1 2\t3 4", '%f %[^\t] %f %f');
+%! assert (C, {1, {"2"}, 3, 4});
+
+%% Check overflow and underflow of integer types
+%!test
+%! a = "-1e90 ";
+%! b = "1e90 ";
+%! fmt = "%d8 %d16 %d32 %d64 %u8 %u16 %u32 %u64 ";
+%! C = textscan ([a a a a a a a a b b b b b b b b], fmt);
+%! assert (C{1}, int8 ([-128; 127]));
+%! assert (C{2}, int16 ([-32768; 32767]));
+%! assert (C{3}, int32 ([-2147483648; 2147483647]));
+%! assert (C{4}, int64 ([-9223372036854775808; 9223372036854775807]));
+%! assert (C{5}, uint8 ([0; 255]));
+%! assert (C{6}, uint16 ([0; 65535]));
+%! assert (C{7}, uint32 ([0; 4294967295]));
+%! assert (C{8}, uint64 ([0; 18446744073709551615]));
+
+%% Tests from Matlab (does The MathWorks have any copyright over the input?)
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid,"09/12/2005 Level1 12.34 45 1.23e10 inf Nan Yes 5.1+3i\n");
+%! fprintf (fid,"10/12/2005 Level2 23.54 60 9e19 -inf  0.001 No 2.2-.5i\n");
+%! fprintf (fid,"11/12/2005 Level3 34.90 12 2e5   10  100   No 3.1+.1i\n");
+%! fseek (fid, 0, "bof");
+%! C = textscan (fid,"%s %s %f32 %d8 %u %f %f %s %f");
+%! %assert (C{1}, {"09/12/2005";"10/12/2005";"11/12/2005"});
+%! assert (C{2}, {"Level1";"Level2";"Level3"});
+%! assert (C{3}, [single(12.34);single(23.54);single(34.90)]);
+%! assert (C{4}, [int8(45);int8(60);int8(12)]);
+%! assert (C{5}, [uint32(4294967295);uint32(4294967295);uint32(200000)]);
+%! assert (C{6}, [inf;-inf;10]);
+%! assert (C{7}, [NaN;0.001;100], eps);
+%! assert (C{8}, {"Yes";"No";"No"});
+%! assert (C{9}, [5.1+3i;2.2-0.5i;3.1+0.1i]);
+%! fseek (fid, 0, "bof");
+%! C = textscan (fid,"%s Level%d %f32 %d8 %u %f %f %s %f");
+%! assert (C{2}, [int32(1);int32(2);int32(3)]);
+%! assert (C{3}, [single(12.34);single(23.54);single(34.90)]);
+%! fseek (fid, 0, "bof");
+%! C = textscan (fid,'%s %*[^\n]');
+%! fclose (fid);
+%! unlink (f);
+%! assert (C, {{"09/12/2005";"10/12/2005";"11/12/2005"}});
+
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid,"1,  2,  3,  4,   ,  6\n");
+%! fprintf (fid,"7,  8,  9,   , 11, 12\n");
+%! fseek (fid, 0, "bof");
+%! C = textscan (fid,"%f %f %f %f %u8 %f", "Delimiter",",","EmptyValue",-Inf);
+%! fclose (fid);
+%! unlink (f);
+%! assert (C{4}, [4; -Inf]);
+%! assert (C{5}, uint8 ([0; 11]));
+
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid,"abc, 2, NA, 3, 4\n");
+%! fprintf (fid,"// Comment Here\n");
+%! fprintf (fid,"def, na, 5, 6, 7\n");
+%! fseek (fid, 0, "bof");
+%! C = textscan (fid,"%s %n %n %n %n","Delimiter",",","TreatAsEmpty",{"NA","na"},"CommentStyle","//");
+%! fclose (fid);
+%! unlink (f);
+%! assert (C{1}, {"abc";"def"});
+%! assert (C{2}, [2; NaN]);
+%! assert (C{3}, [NaN; 5]);
+%! assert (C{4}, [3; 6]);
+%! assert (C{5}, [4; 7]);
+
+%!test
+%!## Test start of comment as string
+%! c = textscan ("1 / 2 // 3", "%n %s %u8", "CommentStyle", {"//"});
+%! assert (c, {1, "/", 2});
+*/
+
+// These tests have end-comment sequences, so can't just be in a comment
+#if 0
+%!test
+%!## Test unfinished comment
+%! c = textscan ("1 2 /* half comment", "%n %u8", "CommentStyle", {"/*", "*/"});
+%! assert (c, {1, 2});
+
+## Test reading from a real file
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! d = rand (1, 4);
+%! fprintf (fid, "  %f %f /* comment */  %f  %f ", d);
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "%f %f", "CommentStyle", {"/*", "*/"});
+%! E = feof (fid);
+%! fclose (fid);
+%! unlink (f);
+%! assert (A{1}, [d(1); d(3)], 1e-6);
+%! assert (A{2}, [d(2); d(4)], 1e-6);
+%! assert (E);
+#endif
 
 static octave_value
 do_fread (octave_stream& os, const octave_value& size_arg,

@@ -938,8 +938,12 @@ expanded even when the template string is defined with single quotes.\n\
   if (nargin == 0)
     print_usage ();
 
+  // We don't use octave_ostrstream::create here because need direct
+  // access to the OSTR object so that we can extract a string object
+  // from it to return.
   octave_ostrstream *ostr = new octave_ostrstream ();
 
+  // The octave_stream destructor will delete OSTR for us.
   octave_stream os (ostr);
 
   if (! os.is_valid ())
@@ -1033,22 +1037,17 @@ complete description of the syntax of the template string.\n\
 
   octave_value_list retval;
 
+  octave_stream os = octave_stream_list::lookup (args(0), who);
+
+  if (! args(1).is_string ())
+    error ("%s: format TEMPLATE must be a string", who.c_str ());
+
   if (nargin == 3 && args(2).is_string ())
     {
-      octave_stream os = octave_stream_list::lookup (args(0), who);
-
-      if (! args(1).is_string ())
-        error ("%s: format TEMPLATE must be a string", who.c_str ());
-
       retval = ovl (os.oscanf (args(1), who));
     }
   else
     {
-      octave_stream os = octave_stream_list::lookup (args(0), who);
-
-      if (! args(1).is_string ())
-        error ("%s: format must be a string", who.c_str ());
-
       octave_idx_type count = 0;
 
       Array<double> size = (nargin == 3)
@@ -1101,32 +1100,22 @@ character to be read is returned in @var{pos}.\n\
 
   octave_value_list retval;
 
+  std::string data = get_sscanf_data (args(0));
+
+  octave_stream os = octave_istrstream::create (data);
+
+  if (! os.is_valid ())
+    error ("%s: unable to create temporary input buffer", who.c_str ());
+
+  if (! args(1).is_string ())
+    error ("%s: format TEMPLATE must be a string", who.c_str ());
+
   if (nargin == 3 && args(2).is_string ())
     {
-      std::string data = get_sscanf_data (args(0));
-
-      octave_stream os = octave_istrstream::create (data);
-
-      if (! os.is_valid ())
-        error ("%s: unable to create temporary input buffer", who.c_str ());
-
-      if (! args(1).is_string ())
-        error ("%s: format TEMPLATE must be a string", who.c_str ());
-
       retval = ovl (os.oscanf (args(1), who));
     }
   else
     {
-      std::string data = get_sscanf_data (args(0));
-
-      octave_stream os = octave_istrstream::create (data);
-
-      if (! os.is_valid ())
-        error ("%s: unable to create temporary input buffer", who.c_str ());
-
-      if (! args(1).is_string ())
-        error ("%s: format TEMPLATE must be a string", who.c_str ());
-
       octave_idx_type count = 0;
 
       Array<double> size = (nargin == 3) ? args(2).vector_value ()

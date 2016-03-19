@@ -1168,6 +1168,74 @@ It is currently not useful to call @code{scanf} in interactive programs.\n\
   return Ffscanf (tmp_args, nargout);
 }
 
+static octave_value_list
+textscan_internal (const std::string& who, const octave_value_list& args)
+{
+  if (args.length () < 1)
+    print_usage (who);
+
+  std::string data;
+
+  bool first_arg_is_string = args(0).is_string ();
+
+  if (first_arg_is_string)
+    data = args(0).string_value ();
+
+  octave_stream os = (first_arg_is_string
+                      ? octave_istrstream::create (data)
+                      : octave_stream_list::lookup (args(0), who));
+
+  if (first_arg_is_string && ! os.is_valid ())
+    error ("%s: unable to create temporary input buffer", who.c_str ());
+
+  int nskip = 1;
+
+  std::string fmt;
+
+  if (args.length () == 1)
+    {
+      // ommited format = %f.  explicit "" = width from file
+      fmt = "%f";
+    }
+  else if (args(1).is_string ())
+    {
+      fmt = args(1).string_value ();
+
+      if (args(1).is_sq_string ())
+        fmt = do_string_escapes (fmt);
+
+      nskip++;
+    }
+  else
+    error ("%s: FORMAT must be a string", who.c_str ());
+
+  octave_idx_type ntimes = -1;
+
+  if (args.length () > 2)
+    {
+      if (args(2).is_numeric_type ())
+        {
+          ntimes = args(2).idx_type_value ();
+
+          if (ntimes < args(2).double_value ())
+            error ("%s: REPEAT = %g is too large",
+                   who.c_str (), args(2).double_value ());
+
+          nskip++;
+        }
+    }
+
+  octave_value_list options = args.splice (0, nskip);
+
+  octave_idx_type count = 0;
+
+  octave_value result = os.textscan (fmt, ntimes, options, who, count);
+
+  std::string errmsg = os.error ();
+
+  return ovl (result, count, errmsg);
+}
+
 DEFUN (textscan, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})\n\
@@ -1457,78 +1525,20 @@ from the beginning of the file or string, at which the processing stopped.\n\
 {
   static std::string who = "textscan";
 
-  if (args.length () < 1)
+  return textscan_internal (who, args);
+}
+
+DEFUN (__textscan__, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {} {@var{C} =} __textscan__ (@var{who}, @dots{})\n\
+Like @code{textscan} but accept additional argument @var{who} to use\n\
+as the name of the function when reporting errors.\n\
+@end deftypefn")
+{
+  if (args.length () == 0)
     print_usage ();
 
-  std::string fmt;
-
-  // First argument must be FID or a character string.
-  int nskip = 1;
-
-  if (args.length () == 1)
-    {
-      // ommited format = %f.  explicit "" = width from file
-      fmt = "%f";
-    }
-  else if (args(1).is_string ())
-    {
-      fmt = args(1).string_value ();
-
-      if (args(1).is_sq_string ())
-        fmt = do_string_escapes (fmt);
-
-      nskip++;
-    }
-  else
-    error ("%s: FORMAT must be a string", who.c_str ());
-
-  octave_idx_type ntimes = -1;
-
-  if (args.length () > 2)
-    {
-      if (args(2).is_numeric_type ())
-        {
-          ntimes = args(2).idx_type_value ();
-
-          if (ntimes < args(2).double_value ())
-            error ("textscan: REPEAT = %g is too large",
-                   args(2).double_value ());
-
-          nskip++;
-        }
-    }
-
-  octave_value_list options = args.splice (0, nskip);
-
-  octave_idx_type count = 0;
-
-  if (args(0).is_string ())
-    {
-      std::string data = args(0).string_value ();
-
-      octave_stream os = octave_istrstream::create (data);
-
-      if (! os.is_valid ())
-        error ("%s: unable to create temporary input buffer", who.c_str ());
-
-      octave_value result = os.textscan (fmt, ntimes, options, "textscan",
-                                         count);
-
-      std::string errmsg = os.error ();
-
-      return ovl (result, count, errmsg);
-    }
-  else
-    {
-      octave_stream os = octave_stream_list::lookup (args(0), who);
-
-      octave_value result = os.textscan (fmt, ntimes, options, "textscan",
-                                         count);
-
-      std::string errmsg = os.error ();
-
-      return ovl (result, count, errmsg);
-    }
+  return textscan_internal (args(0).string_value (), args.splice (0, 1));
 }
 
 /*

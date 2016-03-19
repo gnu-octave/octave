@@ -166,8 +166,6 @@ private:
   int lookahead (delimited_stream& is, const Cell& targets, int max_len,
                  bool case_sensitive = true) const;
 
-  char *get_field (delimited_stream& isp, unsigned int width) const;
-
   bool match_literal (delimited_stream& isp, const textscan_format_elt& elem);
 
   int  skip_whitespace (delimited_stream& is, bool EOLstop = false);

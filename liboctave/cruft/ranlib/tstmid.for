@@ -54,7 +54,7 @@ C     ..
 C     .. Local Scalars ..
       REAL av,avtr,var,vartr,xmin,xmax,pevt,psum,rtry
       INTEGER i,is1,is2,itmp,iwhich,j,mxint,nperm,nrep,ntot,ntry,ncat
-      CHARACTER type*4,phrase*100
+      CHARACTER ctype*4,phrase*100
 C     ..
 C     .. Local Arrays ..
       REAL array(1000),param(3),prob(mxncat)
@@ -126,14 +126,14 @@ C
 C
 C     Chi-square deviates
 C
-      type = 'chis'
+      ctype = 'chis'
       WRITE (*,*) ' Enter (real) df for the chi-square generation'
       READ (*,*) param(1)
       DO 30,i = 1,1000
           array(i) = genchi(param(1))
    30 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
 
  9020 FORMAT (' Mean Generated: ',T30,G15.7,5X,'True:',T60,
@@ -147,7 +147,7 @@ C
 C
 C     Noncentral Chi-square deviates
 C
-      type = 'ncch'
+      ctype = 'ncch'
       WRITE (*,*) ' Enter (real) df'
       WRITE (*,*) '       (real) noncentrality parameter'
       READ (*,*) param(1),param(2)
@@ -155,7 +155,7 @@ C
           array(i) = gennch(param(1),param(2))
    50 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -164,7 +164,7 @@ C
 C
 C     F deviates
 C
-      type = 'f'
+      ctype = 'f'
       WRITE (*,*) ' Enter (real) df of the numerator'
       WRITE (*,*) '       (real) df of the denominator'
       READ (*,*) param(1),param(2)
@@ -172,7 +172,7 @@ C
           array(i) = genf(param(1),param(2))
    70 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -181,7 +181,7 @@ C
 C
 C     Noncentral F deviates
 C
-      type = 'ncf'
+      ctype = 'ncf'
       WRITE (*,*) ' Enter (real) df of the numerator'
       WRITE (*,*) '       (real) df of the denominator'
       WRITE (*,*) '       (real) noncentrality parameter'
@@ -190,7 +190,7 @@ C
           array(i) = gennf(param(1),param(2),param(3))
    90 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -241,14 +241,14 @@ C
 C
 C     Uniform real
 C
-      type = 'unif'
+      ctype = 'unif'
       WRITE (*,*) ' Enter Low then High bound for uniforms'
       READ (*,*) param(1),param(2)
       DO 180,i = 1,1000
           array(i) = genunf(param(1),param(2))
   180 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -257,14 +257,14 @@ C
 C
 C     Beta deviate
 C
-      type = 'beta'
+      ctype = 'beta'
       WRITE (*,*) ' Enter A, B for Beta deviate'
       READ (*,*) param(1),param(2)
       DO 200,i = 1,1000
           array(i) = genbet(param(1),param(2))
   200 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -273,7 +273,7 @@ C
 C
 C     Binomial outcomes
 C
-      type = 'bin'
+      ctype = 'bin'
       WRITE (*,*) ' Enter number of trials, Prob event for ',
      +  'binomial outcomes'
       READ (*,*) ntry,pevt
@@ -286,7 +286,7 @@ C
       CALL stat(array,1000,av,var,xmin,xmax)
       param(1) = ntry
       param(2) = pevt
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -295,7 +295,7 @@ C
 C
 C     Poisson outcomes
 C
-      type = 'pois'
+      ctype = 'pois'
       WRITE (*,*) ' Enter mean for Poisson generation'
       READ (*,*) param(1)
       DO 250,i = 1,1000
@@ -305,7 +305,7 @@ C
           array(i) = iarray(i)
   260 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -314,14 +314,14 @@ C
 C
 C     Exponential deviates
 C
-      type = 'expo'
+      ctype = 'expo'
       WRITE (*,*) ' Enter (real) AV for Exponential'
       READ (*,*) param(1)
       DO 280,i = 1,1000
           array(i) = genexp(param(1))
  280   CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
 
       GO TO 420
@@ -331,14 +331,14 @@ C
 C
 C     Gamma deviates
 C
-      type = 'gamm'
+      ctype = 'gamm'
       WRITE (*,*) ' Enter (real) A, (real) R for Gamma deviate'
       READ (*,*) param(1),param(2)
       DO 300,i = 1,1000
           array(i) = gengam(param(1),param(2))
   300 CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -392,14 +392,14 @@ C
 C
 C     Normal deviates
 C
-      type = 'norm'
+      ctype = 'norm'
       WRITE (*,*) ' Enter (real) AV, (real) SD for Normal'
       READ (*,*) param(1),param(2)
       DO 370,i = 1,1000
          array(i) = gennor(param(1),param(2))
  370  CONTINUE
       CALL stat(array,1000,av,var,xmin,xmax)
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -408,7 +408,7 @@ C
 C
 C     Negative Binomial outcomes
 C
-      type = 'nbin'
+      ctype = 'nbin'
       WRITE (*,*) ' Enter required (int) Number of events then '
       WRITE (*,*) ' (real) Prob of an event for negative binomial'
       READ (*,*) ntry,pevt
@@ -421,7 +421,7 @@ C
       CALL stat(array,1000,av,var,xmin,xmax)
       param(1) = ntry
       param(2) = pevt
-      CALL trstat(type,param,avtr,vartr)
+      CALL trstat(ctype,param,avtr,vartr)
       WRITE (*,9020) av,avtr,var,vartr,xmin,xmax
       GO TO 420
 
@@ -429,7 +429,7 @@ C
  420  GO TO 10
 
       END
-      SUBROUTINE trstat(type,parin,av,var)
+      SUBROUTINE trstat(ctype,parin,av,var)
       IMPLICIT INTEGER (i-n),REAL (a-h,o-p,r-z),LOGICAL (q)
 C**********************************************************************
 C
@@ -443,7 +443,7 @@ C
 C                              Arguments
 C
 C
-C     TYPE --> Character string indicating type of distribution
+C     CTYPE --> Character string indicating type of distribution
 C             'chis' chisquare
 C             'ncch' noncentral chisquare
 C             'f'    F (variance ratio)
@@ -510,7 +510,7 @@ C
 C**********************************************************************
 C     .. Scalar Arguments ..
       REAL av,var
-      CHARACTER type* (4)
+      CHARACTER ctype* (4)
 C     ..
 C     .. Array Arguments ..
       REAL parin(*)
@@ -519,19 +519,19 @@ C     .. Local Scalars ..
       REAL a,b,range
 C     ..
 C     .. Executable Statements ..
-      IF (('chis').NE. (type)) GO TO 10
+      IF (('chis').NE. (ctype)) GO TO 10
       av = parin(1)
       var = 2.0*parin(1)
       GO TO 210
 
-   10 IF (('ncch').NE. (type)) GO TO 20
+   10 IF (('ncch').NE. (ctype)) GO TO 20
       a = parin(1) + parin(2)
       b = parin(2)/a
       av = a
       var = 2.0*a* (1.0+b)
       GO TO 210
 
-   20 IF (('f').NE. (type)) GO TO 70
+   20 IF (('f').NE. (ctype)) GO TO 70
       IF (.NOT. (parin(2).LE.2.0001)) GO TO 30
       av = -1.0
       GO TO 40
@@ -545,7 +545,7 @@ C     .. Executable Statements ..
      +      (parin(1)* (parin(2)-2.0)**2* (parin(2)-4.0))
    60 GO TO 210
 
-   70 IF (('ncf').NE. (type)) GO TO 120
+   70 IF (('ncf').NE. (ctype)) GO TO 120
       IF (.NOT. (parin(2).LE.2.0001)) GO TO 80
       av = -1.0
       GO TO 90
@@ -561,49 +561,49 @@ C     .. Executable Statements ..
       var = 2.0* (parin(2)/parin(1))**2* (a/b)
   110 GO TO 210
 
-  120 IF (('unif').NE. (type)) GO TO 130
+  120 IF (('unif').NE. (ctype)) GO TO 130
       range = parin(2) - parin(1)
       av = parin(1) + range/2.0
       var = range**2/12.0
       GO TO 210
 
-  130 IF (('beta').NE. (type)) GO TO 140
+  130 IF (('beta').NE. (ctype)) GO TO 140
       av = parin(1)/ (parin(1)+parin(2))
       var = (av*parin(2))/ ((parin(1)+parin(2))*
      +      (parin(1)+parin(2)+1.0))
       GO TO 210
 
-  140 IF (('bin').NE. (type)) GO TO 150
+  140 IF (('bin').NE. (ctype)) GO TO 150
       av = parin(1)*parin(2)
       var = av* (1.0-parin(2))
       GO TO 210
 
-  150 IF (('pois').NE. (type)) GO TO 160
+  150 IF (('pois').NE. (ctype)) GO TO 160
       av = parin(1)
       var = parin(1)
       GO TO 210
 
- 160  IF (('expo').NE. (type)) GO TO 170
+ 160  IF (('expo').NE. (ctype)) GO TO 170
       av = parin(1)
       var = parin(1)**2
       GO TO 210
 
- 170  IF (('gamm').NE. (type)) GO TO 180
+ 170  IF (('gamm').NE. (ctype)) GO TO 180
       av = parin(2) / parin(1)
       var = av / parin(1)
       GO TO 210
 
- 180  IF (('norm').NE. (type)) GO TO 190
+ 180  IF (('norm').NE. (ctype)) GO TO 190
       av = parin(1)
       var = parin(2)**2
       GO TO 210
 
- 190  IF (('nbin').NE. (type)) GO TO 200
+ 190  IF (('nbin').NE. (ctype)) GO TO 200
       av = parin(1) * (1.0 - parin(2)) / parin(2)
       var = av / parin(2)
       GO TO 210
 
-  200 WRITE (*,*) 'Unimplemented type ',type
+  200 WRITE (*,*) 'Unimplemented type ',ctype
       STOP 'Unimplemented type in TRSTAT'
 
   210 RETURN

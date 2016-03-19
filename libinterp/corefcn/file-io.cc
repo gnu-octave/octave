@@ -1457,16 +1457,50 @@ from the beginning of the file or string, at which the processing stopped.\n\
 {
   static std::string who = "textscan";
 
-  octave_value_list retval;
-
   if (args.length () < 1)
     print_usage ();
 
-  octave_value_list tmp_args = args.splice (0, 1);
+  std::string fmt;
+
+  // First argument must be FID or a character string.
+  int nskip = 1;
+
+  if (args.length () == 1)
+    {
+      // ommited format = %f.  explicit "" = width from file
+      fmt = "%f";
+    }
+  else if (args(1).is_string ())
+    {
+      fmt = args(1).string_value ();
+
+      if (args(1).is_sq_string ())
+        fmt = do_string_escapes (fmt);
+
+      nskip++;
+    }
+  else
+    error ("%s: FORMAT must be a string", who.c_str ());
+
+  octave_idx_type ntimes = -1;
+
+  if (args.length () > 2)
+    {
+      if (args(2).is_numeric_type ())
+        {
+          ntimes = args(2).idx_type_value ();
+
+          if (ntimes < args(2).double_value ())
+            error ("textscan: REPEAT = %g is too large",
+                   args(2).double_value ());
+
+          nskip++;
+        }
+    }
+
+  octave_value_list options = args.splice (0, nskip);
 
   octave_idx_type count = 0;
-
-  textscan tscanner;
 
   if (args(0).is_string ())
     {
@@ -1477,9 +1511,8 @@ from the beginning of the file or string, at which the processing stopped.\n\
       if (! os.is_valid ())
         error ("%s: unable to create temporary input buffer", who.c_str ());
 
-      std::istream *isp = os.input_stream ();
-
-      octave_value result = tscanner.scan (*isp, tmp_args, count);
+      octave_value result = os.textscan (fmt, ntimes, options, "textscan",
+                                         count);
 
       std::string errmsg = os.error ();
 
@@ -1489,19 +1522,13 @@ from the beginning of the file or string, at which the processing stopped.\n\
     {
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
-      std::istream *isp = os.input_stream ();
-
-      if (! isp)
-        error ("internal error: textscan called with invalid istream");
-
-      octave_value result = tscanner.scan (*isp, tmp_args, count);
+      octave_value result = os.textscan (fmt, ntimes, options, "textscan",
+                                         count);
 
       std::string errmsg = os.error ();
 
       return ovl (result, count, errmsg);
     }
-
-  return retval;
 }
 
 /*

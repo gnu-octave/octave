@@ -1649,16 +1649,17 @@ public:
   bool numeric;
 };
 
-class textscan;
-
 // The (parsed) sequence of format specifiers.
+
+class textscan;
 
 class
 textscan_format_list
 {
 public:
 
-  textscan_format_list (const std::string& fmt = std::string ());
+  textscan_format_list (const std::string& fmt = std::string (),
+                        const std::string& who = "textscan");
 
   ~textscan_format_list (void);
 
@@ -1703,6 +1704,9 @@ public:
 
   operator const void* (void) const { return ok () ? this : 0; }
 
+  // What function name should be shown when reporting errors.
+  std::string who;
+
   // True if number of %f to be set from data file.
   bool set_from_first;
 
@@ -1738,6 +1742,8 @@ private:
 
   void process_conversion (const std::string& s, size_t& i, size_t n);
 
+  std::string parse_char_class (const std::string& pattern) const;
+
   int finish_conversion (const std::string& s, size_t& i, size_t n,
                          unsigned int& width, int& prec, int& bitwidth,
                          octave_value& val_type,
@@ -1749,10 +1755,163 @@ private:
   textscan_format_list& operator = (const textscan_format_list&);
 };
 
+// Main class to implement textscan.  Read data and parse it
+// according to a format.
+//
+// The calling sequence is
+//
+//   textscan scanner ();
+//   scanner.scan (...);
 
-textscan_format_list::textscan_format_list (const std::string& s)
-  : set_from_first (false), has_string (false), nconv (0), curr_idx (0),
-    fmt_elts (), buf (0)
+class
+OCTINTERP_API
+textscan
+{
+public:
+
+  textscan (const std::string& who_arg = "textscan");
+
+  ~textscan (void) { }
+
+  octave_value scan (std::istream& isp, const std::string& fmt,
+                     octave_idx_type ntimes,
+                     const octave_value_list& options,
+                     octave_idx_type& read_count);
+
+private:
+
+  friend class textscan_format_list;
+
+  // What function name should be shown when reporting errors.
+  std::string who;
+
+  std::string buf;
+
+  // Three cases for delim_table and delim_list
+  // 1. delim_table empty, delim_list empty:  whitespace delimiters
+  // 2. delim_table = look-up table of delim chars, delim_list empty.
+  // 3. delim_table non-empty, delim_list = Cell array of delim strings
+
+  std::string whitespace_table;
+
+  // delim_table[i] == '\0' if i is not a delimiter.
+  std::string delim_table;
+
+  // String of delimiter characters.
+  std::string delims;
+
+  Cell comment_style;
+
+  // How far ahead to look to detect an open comment.
+  int comment_len;
+
+  // First character of open comment.
+  int comment_char;
+
+  octave_idx_type buffer_size;
+
+  std::string date_locale;
+
+  // 'inf' and 'nan' for formatted_double.
+  Cell inf_nan;
+
+  // Array of strings of delimiters.
+  Cell delim_list;
+
+  // Longest delimiter.
+  int delim_len;
+
+  octave_value empty_value;
+  std::string exp_chars;
+  int header_lines;
+  Cell treat_as_empty;
+
+  // Longest string to treat as "N/A".
+  int treat_as_empty_len;
+
+  std::string whitespace;
+
+  short eol1;
+  short eol2;
+  short return_on_error;
+
+  bool collect_output;
+  bool multiple_delims_as_one;
+  bool default_exp;
+  bool numeric_delim;
+
+  octave_idx_type lines;
+
+  octave_value do_scan (std::istream& isp, textscan_format_list& fmt_list,
+                        octave_idx_type ntimes);
+
+  void parse_options (const octave_value_list& args,
+                      textscan_format_list& fmt_list);
+
+  int read_format_once (delimited_stream& isp, textscan_format_list& fmt_list,
+                        std::list<octave_value>& retval,
+                        Array<octave_idx_type> row, int& done_after);
+
+  void scan_one (delimited_stream& is, const textscan_format_elt& fmt,
+                 octave_value& ov, Array<octave_idx_type> row);
+
+  // Methods to process a particular conversion specifier.
+  double read_double (delimited_stream& is,
+                      const textscan_format_elt& fmt) const;
+
+  void scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
+                     Complex& val) const;
+
+  int scan_bracket (delimited_stream& is, const std::string& pattern,
+                    std::string& val) const;
+
+  int scan_caret (delimited_stream& is, const std::string& pattern,
+                  std::string& val) const;
+
+  void scan_string (delimited_stream& is, const textscan_format_elt& fmt,
+                    std::string& val) const;
+
+  void scan_cstring (delimited_stream& is, const textscan_format_elt& fmt,
+                     std::string& val) const;
+
+  void scan_qstring (delimited_stream& is, const textscan_format_elt& fmt,
+                     std::string& val);
+
+  // Helper methods.
+  std::string read_until (delimited_stream& is, const Cell& delimiters,
+                          const std::string& ends) const;
+
+  int lookahead (delimited_stream& is, const Cell& targets, int max_len,
+                 bool case_sensitive = true) const;
+
+  bool match_literal (delimited_stream& isp, const textscan_format_elt& elem);
+
+  int skip_whitespace (delimited_stream& is, bool EOLstop = false);
+
+  int skip_delim (delimited_stream& is);
+
+  bool is_delim (unsigned char ch) const
+  {
+    return ((delim_table.empty () && (isspace (ch) || ch == eol1 || ch == eol2))
+            || delim_table[ch] != '\0');
+  }
+
+  bool isspace (unsigned int ch) const { return whitespace_table[ch & 0xff]; }
+
+  // True if the only delimiter is whitespace.
+  bool whitespace_delim (void) const { return delim_table.empty (); }
+
+  // No copying!
+
+  textscan (const textscan&);
+
+  textscan& operator = (const textscan&);
+};
+
+textscan_format_list::textscan_format_list (const std::string& s,
+                                            const std::string& who_arg)
+  : who (who_arg), set_from_first (false), has_string (false),
+    nconv (0), curr_idx (0), fmt_elts (), buf (0)
 {
   size_t n = s.length ();
 
@@ -2051,7 +2210,8 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
           break;
 
         default:
-          error ("textscan: '%%%c' is not a valid format specifier", s[i]);
+          error ("%s: '%%%c' is not a valid format specifier",
+                 who.c_str (), s[i]);
         }
 
       if (nconv < 0)
@@ -2073,8 +2233,8 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
 // occurred.  The first is efficient for patterns with few characters.
 // The latter is efficient for [^...] patterns.
 
-static std::string
-textscan_char_class (const std::string& pattern)
+std::string
+textscan_format_list::parse_char_class (const std::string& pattern) const
 {
   int len = pattern.length ();
   if (len == 0)
@@ -2133,12 +2293,14 @@ textscan_char_class (const std::string& pattern)
             retval[out++] = ch;
           else if (ch != '-')
             warning_with_id ("octave:textscan-pattern",
-                             "textscan: [...] contains two '%c's", ch);
+                             "%s: [...] contains two '%c's",
+                             who.c_str (), ch);
 
           if (prev == '-' && mask['-'] >= 2)
-            warning_with_id ("octave:textscan-pattern",
-                             "textscan: [...] contains two '-'s "
-                             "outside range expressions");
+            warning_with_id
+              ("octave:textscan-pattern",
+               "%s: [...] contains two '-'s outside range expressions",
+               who.c_str ());
         }
       prev = ch;
       prev_prev_was_range = prev_was_range;
@@ -2215,8 +2377,8 @@ textscan_format_list::finish_conversion (const std::string& s, size_t& i,
   if (nconv >= 0)
     {
       if (beg_idx != std::string::npos && end_idx != std::string::npos)
-        char_class = textscan_char_class (s.substr (beg_idx,
-                                                    end_idx - beg_idx + 1));
+        char_class = parse_char_class (s.substr (beg_idx,
+                                                 end_idx - beg_idx + 1));
 
       add_elt_to_list (width, prec, bitwidth, val_type, discard, type,
                        char_class);
@@ -2351,8 +2513,6 @@ textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
   return retval;             // May have returned 4 above.
 }
 
-// Perform actual textscan: read data from stream, and create cell array.
-
 static Cell
 init_inf_nan (void)
 {
@@ -2364,9 +2524,9 @@ init_inf_nan (void)
   return retval;
 }
 
-textscan::textscan (void)
-  : buf (), whitespace_table (), delim_table (), delims (),
-    comment_style (), comment_len (0), comment_char (-2),
+textscan::textscan (const std::string& who_arg)
+  : who (who_arg), buf (), whitespace_table (), delim_table (),
+    delims (), comment_style (), comment_len (0), comment_char (-2),
     buffer_size (0), date_locale (), inf_nan (init_inf_nan ()),
     empty_value (octave_NaN), exp_chars ("edED"),
     header_lines (0), treat_as_empty (), treat_as_empty_len (0),
@@ -2377,56 +2537,13 @@ textscan::textscan (void)
 { }
 
 octave_value
-textscan::scan (std::istream& isp, const octave_value_list& args)
-{
-  octave_idx_type count = 0;
-
-  return scan (isp, args, count);
-}
-
-octave_value
-textscan::scan (std::istream& isp, const octave_value_list& args,
+textscan::scan (std::istream& isp, const std::string& fmt,
+                octave_idx_type ntimes, const octave_value_list& options,
                 octave_idx_type& count)
 {
-  std::string format;
-  int params = 0;
+  textscan_format_list fmt_list (fmt);
 
-  if (args.length () == 0)
-    format = "%f";      // ommited format = %f.  explicit "" = width from file
-  else if (args(0).is_string ())
-    {
-      format = args(0).string_value ();
-
-      if (args(0).is_sq_string ())
-        format = do_string_escapes (format);
-
-      params++;
-    }
-  else
-    error ("textscan: FORMAT must be a string, not <%s>",
-           args(0).class_name ().c_str ());
-
-  octave_idx_type ntimes = -1;
-
-  if (args.length () > 1)
-    {
-      if (args(1).is_numeric_type ())
-        {
-          ntimes = args(1).idx_type_value ();
-
-          if (ntimes < args(1).double_value ())
-            error ("textscan: REPEAT = %g is too large",
-                   args(1).double_value ());
-
-          params++;
-        }
-    }
-
-  octave_value_list tmp_args = args.splice (0, params);
-
-  textscan_format_list fmt_list (format);
-
-  parse_options (tmp_args, fmt_list);
+  parse_options (options, fmt_list);
 
   octave_value result = do_scan (isp, fmt_list, ntimes);
 
@@ -2449,10 +2566,10 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   octave_value retval;
 
   if (fmt_list.num_conversions () == -1)
-    error ("textscan: invalid format specified");
+    error ("%s: invalid format specified", who.c_str ());
 
   if (fmt_list.num_conversions () == 0)
-    error ("textscan: no valid format conversion specifiers\n");
+    error ("%s: no valid format conversion specifiers", who.c_str ());
 
   // skip the first header_lines
   std::string dummy;
@@ -2534,7 +2651,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   // This should be caught by earlier code, but this avoids a possible
   // infinite loop below.
   if (fmt_list.num_conversions () == 0)
-    error ("textscan: No conversions specified");
+    error ("%s: No conversions specified", who.c_str ());
 
   // Read the data.  This is the main loop.
   if (! err)
@@ -2558,7 +2675,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
     }
 
   if ((err & 4) && ! return_on_error)
-    error ("textscan: Read error in field %d of row %d",
+    error ("%s: Read error in field %d of row %d", who.c_str (),
            done_after + 1, row + 1);
 
   // If file does not end in EOL, do not pad columns with NaN.
@@ -3355,8 +3472,8 @@ textscan::read_format_once (delimited_stream& is,
         {
         case 'C':
         case 'D':
-          std::cerr << "textscan: Conversion %" << elem->type
-                    << " not yet implemented\n";
+          warning ("%s: conversion %c not yet implemented",
+                   who.c_str (), elem->type);
           break;
 
         case 'u':
@@ -3447,15 +3564,16 @@ textscan::parse_options (const octave_value_list& args,
   int n = last;
 
   if (n & 1)
-    error ("textscan: %d parameters given, but only %d values", n-n/2, n/2);
+    error ("%s: %d parameters given, but only %d values",
+           who.c_str (), n-n/2, n/2);
 
   delim_len = 1;
   bool have_delims = false;
   for (int i = 0; i < last; i += 2)
     {
       if (! args(i).is_string ())
-        error ("textscan: Invalid paramter type <%s> for parameter %d",
-               args(i).type_name ().c_str (), i/2 + 1);
+        error ("%s: Invalid paramter type <%s> for parameter %d",
+               who.c_str (), args(i).type_name ().c_str (), i/2 + 1);
 
       std::string param = args(i).string_value ();
       std::transform (param.begin (), param.end (),
@@ -3489,8 +3607,8 @@ textscan::parse_options (const octave_value_list& args,
                 }
             }
           if (invalid)
-            error ("textscan:  Delimiters must be either a string or "
-                   "cell array of strings");
+            error ("%s: Delimiters must be either a string or cell array of strings",
+                   who.c_str ());
         }
       else if (param == "commentstyle")
         {
@@ -3505,13 +3623,12 @@ textscan::parse_options (const octave_value_list& args,
               if ((len >= 1 && ! comment_style (0).is_string ())
                   || (len >= 2 && ! comment_style (1).is_string ())
                   || (len >= 3))
-                error ("textscan: CommentStyle must be either a string or "
-                       "cell array of one or two strings");
+                error ("%s: CommentStyle must be either a string or cell array of one or two strings",
+                       who.c_str ());
             }
           else
-            error ("textscan:  CommentStyle must be either a string"
-                   " or cell array of one or two strings, not <%s>",
-                   args(i+1).class_name ().c_str ());
+            error ("%s: CommentStyle must be either a string or cell array of one or two strings",
+                   who.c_str ());
 
           // How far ahead do we need to look to detect an open comment
           // and which character do we look for?
@@ -3543,8 +3660,8 @@ textscan::parse_options (const octave_value_list& args,
                   }
             }
           if (invalid)
-            error ("textscan:  TreatAsEmpty must be either a string or "
-                   "cell array of one or two strings");
+            error ("%s: TreatAsEmpty must be either a string or cell array of one or two strings",
+                   who.c_str ());
 
           // FIXME Ensure none is a prefix of a later one. Sort by length?
         }
@@ -3553,29 +3670,29 @@ textscan::parse_options (const octave_value_list& args,
           if (args(i+1).is_numeric_type ())
             collect_output = args(i+1).bool_value ();
           else
-            error ("textscan:  CollectOutput must be logical or numeric");
+            error ("%s: CollectOutput must be logical or numeric",
+                   who.c_str ());
         }
       else if (param == "emptyvalue")
         {
           if (args(i+1).is_numeric_type ())
             empty_value = args(i+1).scalar_value ();
           else
-            error ("textscan: EmptyValue must be numeric, not <%s>",
-                   args(i+1).class_name ().c_str ());
+            error ("%s: EmptyValue must be numeric", who.c_str ());
         }
       else if (param == "headerlines")
         {
           if (args(i+1).is_numeric_type ())
             header_lines = args(i+1).scalar_value ();
           else
-            error ("textscan: HeaderLines must be numeric");
+            error ("%s: HeaderLines must be numeric", who.c_str ());
         }
       else if (param == "bufsize")
         {
           if (args(i+1).is_numeric_type ())
             buffer_size = args(i+1).scalar_value ();
           else
-            error ("textscan: BufSize must be numeric");
+            error ("%s: BufSize must be numeric", who.c_str ());
         }
       else if (param == "multipledelimsasone")
         {
@@ -3585,7 +3702,8 @@ textscan::parse_options (const octave_value_list& args,
                 multiple_delims_as_one = true;
             }
           else
-            error ("textscan: MultipleDimsAsOne must be logical or numeric");
+            error ("%s: MultipleDimsAsOne must be logical or numeric",
+                   who.c_str ());
         }
       else if (param == "returnonerror")
         {
@@ -3595,15 +3713,15 @@ textscan::parse_options (const octave_value_list& args,
                    && args(i+1).string_value () == "continue")
             return_on_error = 2;
           else
-            error ("textscan: ReturnOnError must be logical or "
-                   "numeric, or 'continue'");
+            error ("%s: ReturnOnError must be logical or numeric, or 'continue'",
+                   who.c_str ());
         }
       else if (param == "whitespace")
         {
           if (args(i+1).is_string ())
             whitespace = args(i+1).string_value ();
           else
-            error ("textscan: Whitespace must be a character string");
+            error ("%s: Whitespace must be a character string", who.c_str ());
         }
       else if (param == "expchars")
         {
@@ -3613,7 +3731,7 @@ textscan::parse_options (const octave_value_list& args,
               default_exp = false;
             }
           else
-            error ("textscan: ExpChars must be a character string");
+            error ("%s: ExpChars must be a character string", who.c_str ());
         }
       else if (param == "endofline")
         {
@@ -3641,11 +3759,11 @@ textscan::parse_options (const octave_value_list& args,
           else
             valid = false;
           if (! valid)
-            error ("textscan: EndOfLine must be at most one character "
-                   "or '\\r\\n'");
+            error ("%s: EndOfLine must be at most one character or '\\r\\n'",
+                   who.c_str ());
         }
       else
-        error ("textscan: Unrecognised option '%s'", param.c_str ());
+        error ("%s: unrecognised option '%s'", who.c_str (), param.c_str ());
     }
 
   whitespace_table = std::string (256, '\0');
@@ -5139,6 +5257,33 @@ octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
               do_oscanf (elt, tmp, who);
             }
         }
+    }
+
+  return retval;
+}
+
+octave_value
+octave_base_stream::do_textscan (const std::string& fmt,
+                                 octave_idx_type ntimes,
+                                 const octave_value_list& options,
+                                 const std::string& who,
+                                 octave_idx_type& read_count)
+{
+  if (interactive && file_number () == 0)
+    ::error ("%s: unable to read from stdin while running interactively",
+             who.c_str ());
+
+  octave_value retval = Cell (dim_vector (1, 1), Matrix (0, 1));
+
+  std::istream *isp = input_stream ();
+
+  if (! isp)
+    invalid_operation (who, "reading");
+  else
+    {
+      textscan scanner (who);
+
+      retval = scanner.scan (*isp, fmt, ntimes, options, read_count);
     }
 
   return retval;
@@ -6925,6 +7070,16 @@ octave_stream::oscanf (const octave_value& fmt, const std::string& who)
     }
 
   return retval;
+}
+
+octave_value
+octave_stream::textscan (const std::string& fmt, octave_idx_type ntimes,
+                         const octave_value_list& options,
+                         const std::string& who, octave_idx_type& count)
+{
+  return (stream_ok ()
+          ? rep->do_textscan (fmt, ntimes, options, who, count)
+          : octave_value ());
 }
 
 int

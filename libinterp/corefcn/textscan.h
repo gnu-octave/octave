@@ -174,15 +174,14 @@ private:
 
   bool is_delim (unsigned char ch) const
   {
-    return ((delim_table.length () == 0
-             && (isspace (ch) || ch == eol1 || ch == eol2))
+    return ((delim_table.empty () && (isspace (ch) || ch == eol1 || ch == eol2))
             || delim_table[ch] != '\0');
   }
 
   bool isspace (unsigned int ch) const { return whitespace_table[ch & 0xff]; }
 
   // True if the only delimiter is whitespace.
-  bool whitespace_delim (void) const { return delim_table.length () == 0; }
+  bool whitespace_delim (void) const { return delim_table.empty (); }
 
   // No copying!
 

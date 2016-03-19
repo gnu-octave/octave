@@ -629,7 +629,7 @@ textscan_format_list::textscan_format_list (const std::string& s)
 
   bool have_more = true;
 
-  if (s.length () == 0)
+  if (s.empty ())
     {
       buf = new std::ostringstream ("%f");
       bitwidth = 64;
@@ -1128,7 +1128,7 @@ textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
 
   is.getline (first_line, static_cast<char> (ts.eol2));
 
-  if (first_line.length () > 0
+  if (! first_line.empty ()
       && first_line[first_line.length () - 1] == ts.eol1)
     first_line.resize (first_line.length () - 1);
 
@@ -2163,7 +2163,7 @@ textscan::scan_one (delimited_stream& is, const textscan_format_elt& fmt,
                                               Cell (octave_value (vv)));
 
       // FIXME -- why does failbit get set at EOF, instead of eofbit?
-      if (vv.length () != 0)
+      if (! vv.empty ())
         is.clear (is.rdstate () & ~std::ios_base::failbit);
     }
 
@@ -2497,7 +2497,7 @@ textscan::parse_options (const octave_value_list& args,
 
   // For Matlab compatibility, add 0x20 to whitespace, unless
   // whitespace is explicitly ignored.
-  if (! (whitespace.length () == 0 && fmt_list.has_string))
+  if (! (whitespace.empty () && fmt_list.has_string))
     whitespace_table[' '] = '1';
 
   // Create look-up table of delimiters, based on 'delimiter'

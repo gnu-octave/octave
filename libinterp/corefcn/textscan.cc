@@ -329,7 +329,7 @@ delimited_stream::refresh_buf (void)
 
       for (last = eob - longest; last - buf >= 0; last--)
         {
-          if (strchr (delims.c_str (), *last))
+          if (delims.find (*last) != std::string::npos)
             break;
         }
 
@@ -453,16 +453,16 @@ public:
     literal_conversion = 2
   };
 
-  textscan_format_elt (const char *txt = 0, int w = 0, int p = -1,
+  textscan_format_elt (const std::string& txt, int w = 0, int p = -1,
                        int bw = 0, bool dis = false, char typ = '\0',
                        const std::string& ch_class = std::string ())
-    : text (strsave (txt)), width (w), prec (p), bitwidth (bw),
+    : text (txt), width (w), prec (p), bitwidth (bw),
       char_class (ch_class), type (typ), discard (dis),
       numeric (typ == 'd' || typ == 'u' || type == 'f' || type == 'n')
   { }
 
   textscan_format_elt (const textscan_format_elt& e)
-    : text (strsave (e.text)), width (e.width), prec (e.prec),
+    : text (e.text), width (e.width), prec (e.prec),
       bitwidth (e.bitwidth), char_class (e.char_class), type (e.type),
       discard (e.discard), numeric (e.numeric)
   { }
@@ -471,7 +471,7 @@ public:
   {
     if (this != &e)
       {
-        text = strsave (e.text);
+        text = e.text;
         width = e.width;
         prec = e.prec;
         bitwidth = e.bitwidth;
@@ -484,10 +484,8 @@ public:
     return *this;
   }
 
-  ~textscan_format_elt (void) { delete [] text; }
-
   // The C-style format string.
-  const char *text;
+  std::string text;
 
   // The maximum field width.
   unsigned int width;
@@ -730,8 +728,7 @@ textscan_format_list::add_elt_to_list (unsigned int width, int prec,
       if (! text.empty ())
         {
           textscan_format_elt *elt
-            = new textscan_format_elt (text.c_str (), width, prec, bitwidth,
-                                       discard, type, char_class);
+            = new textscan_format_elt (text, width, prec, bitwidth, discard, type, char_class);
 
           if (! discard)
             output_container.push_back (val_type);
@@ -1587,9 +1584,8 @@ textscan::read_double (delimited_stream& is,
     }
 
   // look for exponent part in, e.g.,  6.023E+23
-  const char *ec = exp_chars.c_str ();
   bool used_exp = false;
-  if (valid && width_left > 1 && strchr (ec, ch))
+  if (valid && width_left > 1 && exp_chars.find (ch) != std::string::npos)
     {
       int ch1 = is.peek ();
       if (ch1 == '-' || ch1 == '+' || (ch1 >= '0' && ch1 <= '9'))
@@ -1820,7 +1816,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
 // Return in VAL the run of characters from IS NOT contained in PATTERN.
 
 int
-textscan::scan_caret (delimited_stream& is, const char *pattern,
+textscan::scan_caret (delimited_stream& is, const std::string& pattern,
                       std::string& val) const
 {
   int c1 = std::istream::traits_type::eof ();
@@ -1830,7 +1826,7 @@ textscan::scan_caret (delimited_stream& is, const char *pattern,
                  ? is.get_undelim ()
                  : std::istream::traits_type::eof ())
                 != std::istream::traits_type::eof ())
-         && ! strchr (pattern, c1))
+         && pattern.find (c1) == std::string::npos)
     obuf << static_cast<char> (c1);
 
   val = obuf.str ();
@@ -1927,13 +1923,13 @@ textscan::scan_string (delimited_stream& is, const textscan_format_elt& fmt,
 // Return in VAL the run of characters from IS contained in PATTERN.
 
 int
-textscan::scan_bracket (delimited_stream& is, const char *pattern,
+textscan::scan_bracket (delimited_stream& is, const std::string& pattern,
                         std::string& val) const
 {
   int c1 = std::istream::traits_type::eof ();
   std::ostringstream obuf;              // Is this optimised for growing?
 
-  while (is && strchr (pattern, (c1 = is.get_undelim ())))
+  while (is && pattern.find (c1 = is.get_undelim ()) != std::string::npos)
     obuf << static_cast<char> (c1);
 
   val = obuf.str ();

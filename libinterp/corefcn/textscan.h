@@ -144,10 +144,11 @@ private:
   void scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
                      Complex& val) const;
 
-  int scan_bracket (delimited_stream& is, const char *pattern,
+  int scan_bracket (delimited_stream& is, const std::string& pattern,
                     std::string& val) const;
 
-  int scan_caret (delimited_stream& is, const char *, std::string& val) const;
+  int scan_caret (delimited_stream& is, const std::string& pattern,
+                  std::string& val) const;
 
   void scan_string (delimited_stream& is, const textscan_format_elt& fmt,
                     std::string& val) const;

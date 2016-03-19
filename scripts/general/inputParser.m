@@ -590,9 +590,9 @@ endclassdef
 %! assert (p.Results.positive, -1)
 
 ## FIXME: This somehow works in Matlab
-#%!test
-#%! p = inputParser;
-#%! p.addOptional ("op1", "val");
-#%! p.addParamValue ("line", "tree");
-#%! p.parse ("line", "circle");
-#%! assert (p.Results, struct ("op1", "val", "line", "circle"));
+%!xtest
+%! p = inputParser;
+%! p.addOptional ("op1", "val");
+%! p.addParamValue ("line", "tree");
+%! p.parse ("line", "circle");
+%! assert (p.Results, struct ("op1", "val", "line", "circle"));

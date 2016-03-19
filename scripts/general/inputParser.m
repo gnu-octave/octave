@@ -589,6 +589,16 @@ endclassdef
 %! p.parse ();
 %! assert (p.Results.positive, -1)
 
+%!function r = foobar (varargin)
+%!  p = inputParser ();
+%!  p.addParamValue ("foo", "bar", @ischar);
+%!  p.parse (varargin{2:end});
+%!  r = p.Results
+%!endfunction
+
+%!xtest assert (foobar (), struct ("foo", "bar"))
+%!xtest assert (foobar ([], "foo", "qux"), struct ("foo", "qux"))
+
 ## FIXME: This somehow works in Matlab
 %!xtest
 %! p = inputParser;

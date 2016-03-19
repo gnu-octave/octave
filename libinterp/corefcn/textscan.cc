@@ -1749,10 +1749,8 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
               // treat_as_empty strings may be different sizes.
               // Read ahead longest, put it all back, then re-read the string
               // that matches.
-              char *look, look_buf [treat_as_empty_len + 1];
-              // prefill, in case EOF means part-filled.
-              memset (look_buf, '\0', treat_as_empty_len);
-              look = is.read (look_buf, treat_as_empty_len, pos);
+              std::string look_buf (treat_as_empty_len, '\0');
+              char *look = is.read (&look_buf[0], look_buf.size (), pos);
 
               is.clear (state);
               is.seekg (pos);        // reset to position before look-ahead
@@ -1765,7 +1763,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
                     {
                       as_empty = true;
                                      // read just the right amount
-                      is.read (look_buf, s.size (), pos);
+                      is.read (&look_buf[0], s.size (), pos);
                       break;
                     }
                 }
@@ -2547,19 +2545,20 @@ textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
           char *pos   = is.tellg ();
           std::ios::iostate state = is.rdstate ();
 
-          char *look, tmp [comment_len];
-          look = is.read (tmp, comment_len-1, pos);   // already read first char
+          std::string tmp (comment_len, '\0');
+          char *look = is.read (&tmp[0], comment_len-1, pos); // already read first char
           if (is && ! strncmp (comment_style(0).string_value ().substr (1)
                                .c_str (), look, comment_len-1))
             {
               found_comment = true;
 
               std::string dummy;
-              char eol [3] = {static_cast<char> (eol1),
-                              static_cast<char> (eol2),
-                              '\0'};
               if (comment_style.numel () == 1)  // skip to end of line
                 {
+                  std::string eol (3, '\0');
+                  eol[0] = eol1;
+                  eol[1] = eol2;
+
                   scan_caret (is, eol, dummy);
                   c1 = is.get_undelim ();
                   if (c1 == eol1 && eol1 != eol2 && is.peek_undelim () == eol2)
@@ -2569,16 +2568,15 @@ textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
               else      // matching pair
                 {
                   std::string end_c = comment_style(1).string_value ();
-                        // last char of end-comment sequence
-                  char last[2] = {*(end_c.substr (end_c.length ()-1).c_str ()),
-                                  '\0'};
+                  // last char of end-comment sequence
+                  std::string last = end_c.substr (end_c.size () - 1);
                   std::string may_match ("");
                   do
                     {           // find sequence ending with last char
                       scan_caret (is, last, dummy);
                       is.get_undelim ();        // (read   last  itself)
 
-                      may_match = may_match + dummy + *last;
+                      may_match = may_match + dummy + last;
                       int start = may_match.length () - end_c.length ();
                       if (start < 0)
                         start = 0;
@@ -2615,10 +2613,8 @@ textscan::lookahead (delimited_stream& is, const Cell& targets, int max_len,
 
   char *pos = is.tellg ();
 
-  char *look, tmp [max_len + 1];
-
-  memset (tmp, '\0', max_len); // prefill, in case EOF means part-filled.
-  look = is.read (tmp, max_len, pos);
+  std::string tmp (max_len, '\0');
+  char *look = is.read (&tmp[0], tmp.size (), pos);
 
   is.clear ();
   is.seekg (pos);              // reset to position before look-ahead
@@ -2633,7 +2629,7 @@ textscan::lookahead (delimited_stream& is, const Cell& targets, int max_len,
       std::string s = targets (i).string_value ();
       if (! (*compare) (s.c_str (), look, s.size ()))
         {
-          is.read (tmp, s.size (), pos); // read just the right amount
+          is.read (&tmp[0], s.size (), pos); // read just the right amount
           break;
         }
     }

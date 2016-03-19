@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "oct-stream.h"
+#include "oct-strstrm.h"
 #include "ov.h"
 #include "ovl.h"
 #include "textscan.h"
@@ -1240,6 +1241,15 @@ textscan::textscan (void)
 octave_value
 textscan::scan (std::istream& isp, const octave_value_list& args)
 {
+  octave_idx_type count = 0;
+
+  return scan (isp, args, count);
+}
+
+octave_value
+textscan::scan (std::istream& isp, const octave_value_list& args,
+                octave_idx_type& count)
+{
   std::string format;
   int params = 0;
 
@@ -1280,7 +1290,18 @@ textscan::scan (std::istream& isp, const octave_value_list& args)
 
   parse_options (tmp_args, fmt_list);
 
-  return do_scan (isp, fmt_list, ntimes);
+  octave_value result = do_scan (isp, fmt_list, ntimes);
+
+  // FIXME: this is probably not the best way to get count.  The
+  // position could easily be larger than octave_idx_type when using
+  // 32-bit indexing.
+
+  std::ios::iostate state = isp.rdstate ();
+  isp.clear ();
+  count = static_cast<octave_idx_type> (isp.tellg ());
+  isp.setstate (state);
+
+  return result;
 }
 
 octave_value
@@ -2742,7 +2763,7 @@ DEFUN (textscan, args, ,
 @deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})\n\
 @deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat}, @var{param}, @var{value}, @dots{})\n\
 @deftypefnx {} {@var{C} =} textscan (@var{str}, @dots{})\n\
-@deftypefnx {} {[@var{C}, @var{position}] =} textscan (@dots{})\n\
+@deftypefnx {} {[@var{C}, @var{position}, @var{errmsg}] =} textscan (@dots{})\n\
 Read data from a text file or string.\n\
 \n\
 The string @var{str} or file associated with @var{fid} is read from and\n\
@@ -3022,6 +3043,8 @@ from the beginning of the file or string, at which the processing stopped.\n\
 @seealso{dlmread, fscanf, load, strread, textread}\n\
 @end deftypefn")
 {
+  static std::string who = "textscan";
+
   octave_value_list retval;
 
   if (args.length () < 1)
@@ -3029,33 +3052,41 @@ from the beginning of the file or string, at which the processing stopped.\n\
 
   octave_value_list tmp_args = args.splice (0, 1);
 
+  octave_idx_type count = 0;
+
   textscan tscanner;
 
   if (args(0).is_string ())
     {
-      std::istringstream is (args(0).string_value ());
+      std::string data = args(0).string_value ();
 
-      retval(0) = tscanner.scan (is, tmp_args);
+      octave_stream os = octave_istrstream::create (data);
 
-      std::ios::iostate state = is.rdstate ();
-      is.clear ();
-      retval(1) = octave_value (static_cast<long> (is.tellg ()));
-      is.setstate (state);
+      if (! os.is_valid ())
+        error ("%s: unable to create temporary input buffer", who.c_str ());
+
+      std::istream *isp = os.input_stream ();
+
+      octave_value result = tscanner.scan (*isp, tmp_args, count);
+
+      std::string errmsg = os.error ();
+
+      return ovl (result, count, errmsg);
     }
   else
     {
-      octave_stream os = octave_stream_list::lookup (args(0), "textscan");
+      octave_stream os = octave_stream_list::lookup (args(0), who);
+
       std::istream *isp = os.input_stream ();
+
       if (! isp)
         error ("internal error: textscan called with invalid istream");
 
-      retval(0) = tscanner.scan (*isp, tmp_args);
+      octave_value result = tscanner.scan (*isp, tmp_args, count);
 
-      // FIXME -- warn if stream is not opened in binary mode?
-      std::ios::iostate state = os.input_stream ()->rdstate ();
-      os.input_stream ()->clear ();
-      retval(1) = os.tell ();
-      os.input_stream ()->setstate (state);
+      std::string errmsg = os.error ();
+
+      return ovl (result, count, errmsg);
     }
 
   return retval;

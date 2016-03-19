@@ -63,6 +63,9 @@ public:
 
   octave_value scan (std::istream& isp, const octave_value_list& args);
 
+  octave_value scan (std::istream& isp, const octave_value_list& args,
+                     octave_idx_type& count);
+
 private:
 
   friend class textscan_format_list;

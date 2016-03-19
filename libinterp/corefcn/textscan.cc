@@ -285,13 +285,11 @@ delimited_stream::refresh_buf (void)
     return std::istream::traits_type::eof ();
 
   int retval;
-  int old_remaining = eob - idx;
 
-  if (old_remaining < 0)
-    {
-      idx = eob;
-      old_remaining = 0;
-    }
+  if (eob < idx)
+    idx = eob;
+
+  size_t old_remaining = eob - idx;
 
   octave_quit ();                       // allow ctrl-C
 
@@ -333,7 +331,7 @@ delimited_stream::refresh_buf (void)
             break;
         }
 
-      if (last - buf < 0)
+      if (last < buf)
         delimited = false;
 
       retval = 0;
@@ -1859,9 +1857,9 @@ textscan::read_until (delimited_stream& is, const Cell& delimiters,
           for (int i = 0; i < delimiters.numel (); i++)
             {
               std::string delim = delimiters(i).string_value ();
-              int start = retval.length () - delim.length ();
-              if (start < 0)
-                start = 0;
+              size_t start = (retval.length () > delim.length ()
+                              ? retval.length () - delim.length ()
+                              : 0);
               std::string may_match = retval.substr (start);
               if (may_match == delim)
                 {
@@ -2577,10 +2575,11 @@ textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
                       is.get_undelim ();        // (read   last  itself)
 
                       may_match = may_match + dummy + last;
-                      int start = may_match.length () - end_c.length ();
-                      if (start < 0)
-                        start = 0;
-                      may_match = may_match.substr (start);
+                      if (may_match.length () > end_c.length ())
+                        {
+                          size_t start = may_match.length () - end_c.length ();
+                          may_match = may_match.substr (start);
+                        }
                     }
                   while (may_match != end_c && is && ! is.eof ());
                 }

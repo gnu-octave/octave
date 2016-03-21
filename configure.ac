@@ -3561,7 +3561,7 @@ if test $opengl_graphics = no; then
   AC_MSG_WARN([])
   AC_MSG_WARN([I didn't find the libraries needed to compile Octave])
   AC_MSG_WARN([with support for OpenGL graphics.  Creating plots is])
-  AC_MSG_WARN([still possible if you have gnpulot installed.])
+  AC_MSG_WARN([still possible if you have gnuplot installed.])
   warn_msg_printed=true
 fi
 

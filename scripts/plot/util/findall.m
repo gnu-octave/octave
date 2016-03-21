@@ -50,7 +50,7 @@ function h = findall (varargin)
 endfunction
 
 
-%!testif HAVE_FLTK
+%!testif HAVE_OPENGL, HAVE_FLTK
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect

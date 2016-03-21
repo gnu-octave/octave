@@ -206,7 +206,7 @@ instead.\n\
 ##        This is not critical, since this facility will mostly be used in
 ##        the future for generating the images in Octave's own documentation.
 ##        For the moment, disable these tests on PC's and Macs.
-%!testif HAVE_OSMESA, HAVE_GL2PS_H
+%!testif HAVE_OPENGL, HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
 %!   h = figure ("visible", "off");
 %!   fn = tempname ();
@@ -221,7 +221,7 @@ instead.\n\
 %!   assert (img_fp, [52942515; 54167797; 56158178], -0.05);
 %! endif
 
-%!testif HAVE_OSMESA, HAVE_GL2PS_H
+%!testif HAVE_OPENGL, HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
 %!   h = figure ("visible", "off");
 %!   fn = tempname ();

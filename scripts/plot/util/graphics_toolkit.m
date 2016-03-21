@@ -105,7 +105,7 @@ function retval = graphics_toolkit (name, hlist = [])
 endfunction
 
 
-%!testif HAVE_FLTK
+%!testif HAVE_OPENGL, HAVE_FLTK
 %! unwind_protect
 %!   hf = figure ("visible", "off");
 %!   toolkit = graphics_toolkit ();
@@ -116,7 +116,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_FLTK
+%!testif HAVE_OPENGL, HAVE_FLTK
 %! old_toolkit = graphics_toolkit ();
 %! switch (old_toolkit)
 %!   case {"gnuplot"}

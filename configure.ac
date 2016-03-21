@@ -1552,6 +1552,8 @@ AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 ## Check for FLTK (www.fltk.org) library
 
 check_fltk=yes
+build_fltk_graphics=no
+
 AC_ARG_WITH([fltk],
   [AS_HELP_STRING([--without-fltk],
     [don't use FLTK libraries, disable OpenGL graphics with FLTK widgets])],
@@ -1626,6 +1628,7 @@ if test $check_fltk = yes; then
     if test $octave_cv_fltk_opengl_support = no; then
       warn_fltk_opengl="FLTK does not have OpenGL support.  OpenGL graphics with FLTK widgets will be disabled."
     else
+      build_fltk_graphics=yes
       AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
     fi
 
@@ -1639,7 +1642,7 @@ AC_SUBST(FLTK_CPPFLAGS)
 AC_SUBST(FLTK_LDFLAGS)
 AC_SUBST(FLTK_LIBS)
 
-if test -n "$warn_qt_opengl" && test -n "$warn_fltk_opengl"; then
+if test $build_qt_graphics = no && test $build_fltk_graphics = no; then
   opengl_graphics=no
 else
   opengl_graphics=yes

@@ -190,6 +190,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
       pdir = packdirs{i};
       prepare_installation (desc, pdir);
       configure_make (desc, pdir, verbose);
+      copy_built_files (desc, pdir, verbose);
     endfor
   catch
     ## Something went wrong, delete tmpdirs.

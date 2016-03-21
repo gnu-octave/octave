@@ -527,7 +527,7 @@ function [local_packages, global_packages] = pkg (varargin)
       if (numel (files) < 2)
         error ("pkg: build action requires build directory and at least one filename");
       endif
-      build (files, deps, auto, verbose);
+      build (files{1}, files(2:end), verbose);
 
     case "describe"
       if (isempty (files))

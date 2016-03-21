@@ -18,15 +18,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} build (@var{files}, @var{handle_deps}, @var{autoload}, @var{verbose})
-## Undocumented internal function.
+## @deftypefn {} {} build (@var{builddir}, @var{tarballs}, @var{verbose})
+## Prepare binary packages from Octave source packages.
+##
+## Boils down to (for each in @var{tarballs}):
+##
+## @enumerate
+## @item untar the tarball in @var{builddir};
+## @item build anything necessary (configure and make);
+## @item repackage specifying the build arch in the tarball filename.
+## @end enumerate
+##
 ## @end deftypefn
 
-function build (files, handle_deps, autoload, verbose)
-  if (length (files) < 1)
-    error ("insufficient number of files");
+function build (builddir, tarballs, verbose)
+  if (nargin != 3)
+    print_usage ();
   endif
-  builddir = files{1};
+
   if (! exist (builddir, "dir"))
     warning ("creating build directory %s", builddir);
     [status, msg] = mkdir (builddir);
@@ -34,31 +43,42 @@ function build (files, handle_deps, autoload, verbose)
       error ("could not create installation directory: %s", msg);
     endif
   endif
-  [builddir, status] = canonicalize_file_name (builddir);
-  if (status != 0)
-    error ("cannot find directory %s", builddir);
-  endif
-  installdir = fullfile (builddir, "install");
-  if (! exist (installdir, "dir"))
-    [status, msg] = mkdir (installdir);
-    if (status != 1)
-      error ("could not create installation directory: %s", msg);
-    endif
-  endif
-  files(1) = [];
-  buildlist = fullfile (builddir, "octave_packages");
-  install (files, handle_deps, autoload, installdir, installdir, verbose,
-           buildlist, "", false);
-  unwind_protect
-    repackage (builddir, buildlist);
-  unwind_protect_cleanup
-    unload_packages ({"all"}, handle_deps, buildlist, "");
-    if (exist (installdir, "dir"))
-      rmdir (installdir, "s");
-    endif
-    if (exist (buildlist, "file"))
-      unlink (buildlist);
-    endif
-  end_unwind_protect
-endfunction
 
+  for i = 1:numel(tarballs)
+    filelist = unpack (tarballs{i}, builddir);
+    [~, root_idx] = min (cellfun ("numel", filelist));
+    package_root = filelist{root_idx};
+    build_root = fullfile (builddir, filelist{root_idx});
+
+    desc = get_description (fullfile (build_root, "DESCRIPTION"));
+
+    ## If there is no configure or Makefile within src/, there is nothing
+    ## to do to prepare a "binary" package.  We only repackage to add more
+    ## info on the filename (version and arch).
+    if (! exist (fullfile (build_root, "src", "configure"), "file")
+        && ! exist (fullfile (build_root, "src", "Makefile"), "file"))
+      arch_abi = "any-none";
+    else
+      arch_abi = getarch ();
+      configure_make (desc, build_root, verbose);
+      unlink (fullfile (build_root, "src", "configure"));
+      unlink (fullfile (build_root, "src", "Makefile"));
+    endif
+    tfile = [desc.name "-" desc.version "-" arch_abi ".tar"];
+
+    init_wd = pwd ();
+    unwind_protect
+      chdir (builddir);
+      try
+        tar (tfile, package_root);
+        rmdir (package_root, "s");
+        gzip (tfile);
+        unlink (tfile);
+      catch
+        warning ("failed to create and compress %s", tfile);
+      end_try_catch
+    unwind_protect_cleanup
+      chdir (init_wd);
+    end_unwind_protect
+  endfor
+endfunction

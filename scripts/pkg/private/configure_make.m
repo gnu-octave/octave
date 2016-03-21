@@ -51,8 +51,7 @@ function configure_make (desc, packdir, verbose)
 
     cenv = {"MKOCTFILE"; mkoctfile_program;
             "OCTAVE_CONFIG"; octave_config_program;
-            "OCTAVE"; octave_binary;
-            "INSTALLDIR"; desc.dir};
+            "OCTAVE"; octave_binary};
     scenv = sprintf ("%s='%s' ", cenv{:});
 
     ## Configure.
@@ -70,8 +69,7 @@ function configure_make (desc, packdir, verbose)
       if (isempty (getenv ("RANLIB")))
         flags = [flags ' RANLIB="' mkoctfile("-p", "RANLIB") '"'];
       endif
-      cmd = ["cd '" src "'; " ...
-             scenv "./configure --prefix=\"" desc.dir "\"" flags];
+      cmd = ["cd '" src "'; " scenv "./configure " flags];
       [status, output] = shell (cmd, verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
@@ -96,5 +94,6 @@ function configure_make (desc, packdir, verbose)
         error ("pkg: error running `make' for the %s package.", desc.name);
       endif
     endif
+
   endif
 endfunction

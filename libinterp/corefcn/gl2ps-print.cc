@@ -25,14 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "errwarn.h"
-#include "gl2ps-print.h"
 
 #ifdef HAVE_GL2PS_H
 
 #include <cstdio>
-
 #include <limits>
-
 #include <unistd.h>
 
 #include <gl2ps.h>
@@ -41,8 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
+#include "gl2ps-print.h"
 #include "gl-render.h"
 #include "oct-opengl.h"
+#include "sighandlers.h"
 #include "sysdep.h"
 #include "text-renderer.h"
 
@@ -269,12 +268,20 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       // Copy temporary file to pipe
       gnulib::fseek (tmpf, 0, SEEK_SET);
       char str[256];
-      int nread = 1;
+      size_t nread, nwrite;
+      nread = 1;
       while (! feof (tmpf) && nread)
         {
           nread = gnulib::fread (str, 1, 256, tmpf);
           if (nread)
-            gnulib::fwrite (str, 1, nread, fp);
+            {
+              nwrite = gnulib::fwrite (str, 1, nread, fp);
+              if (nwrite != nread)
+                {
+                  octave_signal_handler ();   // Clear SIGPIPE signal
+                  error ("gl2ps_renderer::draw: internal pipe error");
+                }
+            }
         }
     }
   else

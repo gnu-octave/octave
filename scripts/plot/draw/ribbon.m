@@ -24,9 +24,13 @@
 ## @deftypefnx {} {@var{h} =} ribbon (@dots{})
 ## Draw a ribbon plot for the columns of @var{y} vs. @var{x}.
 ##
+## If @var{x} is omitted, a vector containing the row numbers is assumed
+## (@code{1:rows (Y)}).  Alternatively, @var{x} can also be a vector with
+## same number of elements as rows of @var{y} in which case the same
+## @var{x} is used for each column of @var{y}.
+##
 ## The optional parameter @var{width} specifies the width of a single ribbon
-## (default is 0.75).  If @var{x} is omitted, a vector containing the
-## row numbers is assumed (@code{1:rows (Y)}).
+## (default is 0.75).
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
@@ -51,8 +55,7 @@ function h = ribbon (varargin)
     if (isvector (y))
       y = y(:);
     endif
-    [nr, nc] = size (y);
-    x = repmat ((1:nr)', 1, nc);
+    x = 1:rows(y);
     width = 0.75;
   elseif (nargin == 2)
     x = varargin{1};
@@ -64,16 +67,12 @@ function h = ribbon (varargin)
     width = varargin{3};
   endif
 
-  if (isvector (x) && isvector (y))
-    if (length (x) != length (y))
-      error ("ribbon: vectors X and Y must have the same length");
+  if (! size_equal (x, y))
+    if (! isvector (x) || rows (y) != numel (x))
+      error (["ribbon: X must have the same dimensions as Y or be a "  ...
+              "vector with the same number of rows as Y"]);
     endif
-    x = x(:);
-    y = y(:);
-  else
-    if (! size_equal (x, y))
-      error ("ribbon: matrices X and Y must have the same size");
-    endif
+    x = repmat (x(:), 1, columns (y));
   endif
 
   oldfig = [];

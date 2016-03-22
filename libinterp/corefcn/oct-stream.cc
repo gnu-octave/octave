@@ -2699,7 +2699,8 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   if (err & 1)
     done_after = out.size () + 1;
 
-  int valid_rows = (row == ntimes) ? ntimes : ((err & 1) ? row : row+1);
+  int valid_rows = (row == ntimes) ? ntimes
+                   : (((err & 1) && (err & 8)) ? row : row+1);
   dim_vector dv (valid_rows, 1);
 
   ra_idx(0) = 0;
@@ -3458,6 +3459,7 @@ textscan::read_format_once (delimited_stream& is,
   bool no_conversions = true;
   bool done = false;
   bool conversion_failed = false;       // Record for ReturnOnError
+  bool nothing_worked = true;
 
   octave_quit ();
 
@@ -3522,6 +3524,15 @@ textscan::read_format_once (delimited_stream& is,
          )
         skip_delim (is);
 
+      if (is.eof ())
+        {
+          if (! done)
+            done_after = i+1;
+
+          // note EOF, but process others to get empty_val.
+          done = true;
+        }
+
       if (this_conversion_failed)
         {
           if (is.tellg () == pos && ! conversion_failed)
@@ -3532,28 +3543,17 @@ textscan::read_format_once (delimited_stream& is,
           else
             this_conversion_failed = false;
         }
-
-      if (is.eof ())
-        {
-          if (! done)
-            done_after = i+1;
-
-          // note EOF, but process others to get empty_val.
-          done = true;
-        }
+      else if (! done && !conversion_failed)
+        nothing_worked = false;
     }
 
   if (done)
     is.setstate (std::ios::eofbit);
 
-  // Returning -3 means "error, and no columns read this row".
-  if (is.eof ())
-    return (2 + no_conversions);
+  return no_conversions + (is.eof () ? 2 : 0)
+                        + (conversion_failed ? 4 : 0)
+                        + (nothing_worked ? 8 : 0);
 
-  if (conversion_failed)
-    return (4 + no_conversions);
-
-  return 0;
 }
 
 void

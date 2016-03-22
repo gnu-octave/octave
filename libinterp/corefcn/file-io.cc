@@ -2123,6 +2123,11 @@ as the name of the function when reporting errors.\n\
 %! C = textscan ("1 2\t3 4", '%f %[^\t] %f %f');
 %! assert (C, {1, {"2"}, 3, 4});
 
+%% Check a non-empty line with no valid conversion registers empytValue
+%!test
+%! C = textscan ("Empty\n", "Empty%f %f");
+%! assert (C, { NaN, NaN })
+
 %% Check overflow and underflow of integer types
 %!test
 %! a = "-1e90 ";

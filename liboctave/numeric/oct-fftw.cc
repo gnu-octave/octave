@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "singleton-cleanup.h"
 
-#if defined (HAVE_FFTW3_THREADS)
+#if defined (HAVE_FFTW3_THREADS) || defined (HAVE_FFTW3F_THREADS)
 #  include "nproc.h"
 #endif
 
@@ -128,7 +128,7 @@ octave_fftw_planner::instance_ok (void)
 void
 octave_fftw_planner::threads (int nt)
 {
-#if defined (HAVE_FFTW3F_THREADS)
+#if defined (HAVE_FFTW3_THREADS)
   if (instance_ok () && nt != threads ())
     {
       instance->nthreads = nt;

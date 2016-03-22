@@ -67,9 +67,9 @@ function h = ribbon (varargin)
   if (isvector (x) && isvector (y))
     if (length (x) != length (y))
       error ("ribbon: vectors X and Y must have the same length");
-    else
-      [x, y] = meshgrid (x, y);
     endif
+    x = x(:);
+    y = y(:);
   else
     if (! size_equal (x, y))
       error ("ribbon: matrices X and Y must have the same size");

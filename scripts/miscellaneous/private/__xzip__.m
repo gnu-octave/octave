@@ -70,7 +70,7 @@ function filelist = __xzip__ (commandname, extension, commandtemplate,
 
     cd (outdir);
 
-    cmd = sprintf (commandtemplate, sprintf (" %s", fnames{:}));
+    cmd = sprintf (commandtemplate, sprintf (' "%s"', fnames{:}));
 
     [status, output] = system (cmd);
     if (status)

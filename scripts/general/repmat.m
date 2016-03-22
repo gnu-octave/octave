@@ -24,6 +24,8 @@
 ## @deftypefnx {} {} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
 ## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n}])
 ## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
+## Repeat matrix or N-D array.
+##
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
 ## @var{A} as each element.
 ##
@@ -31,7 +33,8 @@
 ## copying along more than two dimensions, specify the number of times to copy
 ## across each dimension @var{m}, @var{n}, @var{p}, @dots{}, in a vector in the
 ## second argument.
-## @seealso{repelems}
+##
+## @seealso{bsxfun, kron, repelems}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

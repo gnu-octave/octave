@@ -74,7 +74,11 @@ find_data_file_in_load_path  (const std::string& fcn,
 extern OCTINTERP_API std::string contents_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string fcn_file_in_path (const std::string&);
+
+OCTAVE_DEPRECATED ("use 'load_path::find_oct_file' instead")
 extern OCTINTERP_API std::string oct_file_in_path (const std::string&);
+
+OCTAVE_DEPRECATED ("use 'load_path::find_mex_file' instead")
 extern OCTINTERP_API std::string mex_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string do_string_escapes (const std::string& s);

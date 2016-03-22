@@ -528,6 +528,7 @@ contents_file_in_path (const std::string& dir)
   return retval;
 }
 
+// Deprecated in 4.2, remove in 4.6.
 // See if there is a .oct file in the path.
 // If so, return the full path to the file.
 
@@ -556,6 +557,7 @@ oct_file_in_path (const std::string& name)
   return retval;
 }
 
+// Deprecated in 4.2, remove in 4.6.
 // See if there is a .mex file in the path.
 // If so, return the full path to the file.
 

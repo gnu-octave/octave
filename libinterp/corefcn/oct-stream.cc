@@ -304,7 +304,7 @@ private:
   std::deque<scanf_format_elt*> fmt_elts;
 
   // Temporary buffer.
-  std::ostringstream *buf;
+  std::ostringstream buf;
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
                         const std::string& char_class = "");
@@ -324,7 +324,7 @@ private:
 };
 
 scanf_format_list::scanf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), fmt_elts (), buf (0)
+  : nconv (0), curr_idx (0), fmt_elts (), buf ()
 {
   size_t n = s.length ();
 
@@ -341,16 +341,13 @@ scanf_format_list::scanf_format_list (const std::string& s)
     {
       have_more = true;
 
-      if (! buf)
-        buf = new std::ostringstream ();
-
       if (s[i] == '%')
         {
           // Process percent-escape conversion type.
 
           process_conversion (s, i, n, width, discard, type, modifier);
 
-          have_more = (buf != 0);
+          have_more = (buf.tellp () != 0);
         }
       else if (isspace (s[i]))
         {
@@ -359,7 +356,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
           width = 0;
           discard = false;
           modifier = '\0';
-          *buf << " ";
+          buf << " ";
 
           while (++i < n && isspace (s[i]))
             ; // skip whitespace
@@ -377,7 +374,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
           modifier = '\0';
 
           while (i < n && ! isspace (s[i]) && s[i] != '%')
-            *buf << s[i++];
+            buf << s[i++];
 
           add_elt_to_list (width, discard, type, modifier);
 
@@ -394,7 +391,8 @@ scanf_format_list::scanf_format_list (const std::string& s)
   if (have_more)
     add_elt_to_list (width, discard, type, modifier);
 
-  delete buf;
+  buf.clear ();
+  buf.str ("");
 }
 
 scanf_format_list::~scanf_format_list (void)
@@ -413,22 +411,19 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
                                     char modifier,
                                     const std::string& char_class)
 {
-  if (buf)
+  std::string text = buf.str ();
+
+  if (! text.empty ())
     {
-      std::string text = buf->str ();
+      scanf_format_elt *elt
+        = new scanf_format_elt (text.c_str (), width, discard, type,
+                                modifier, char_class);
 
-      if (! text.empty ())
-        {
-          scanf_format_elt *elt
-            = new scanf_format_elt (text.c_str (), width, discard, type,
-                                    modifier, char_class);
-
-          fmt_elts.push_back (elt);
-        }
-
-      delete buf;
-      buf = 0;
+      fmt_elts.push_back (elt);
     }
+
+  buf.clear ();
+  buf.str ("");
 }
 
 static std::string
@@ -477,7 +472,7 @@ scanf_format_list::process_conversion (const std::string& s, size_t& i,
   modifier = '\0';
   type = '\0';
 
-  *buf << s[i++];
+  buf << s[i++];
 
   bool have_width = false;
 
@@ -491,7 +486,7 @@ scanf_format_list::process_conversion (const std::string& s, size_t& i,
           else
             {
               discard = true;
-              *buf << s[i++];
+              buf << s[i++];
             }
           break;
 
@@ -504,12 +499,12 @@ scanf_format_list::process_conversion (const std::string& s, size_t& i,
               char c = s[i++];
               width = 10 * width + c - '0';
               have_width = true;
-              *buf << c;
+              buf << c;
               while (i < n && isdigit (s[i]))
                 {
                   c = s[i++];
                   width = 10 * width + c - '0';
-                  *buf << c;
+                  buf << c;
                 }
             }
           break;
@@ -537,7 +532,7 @@ scanf_format_list::process_conversion (const std::string& s, size_t& i,
             }
 
           // No float or long double conversions, thanks.
-          *buf << 'l';
+          buf << 'l';
 
           goto fini;
 
@@ -584,7 +579,7 @@ scanf_format_list::finish_conversion (const std::string& s, size_t& i,
   if (s[i] == '%')
     {
       type = '%';
-      *buf << s[i++];
+      buf << s[i++];
     }
   else
     {
@@ -592,7 +587,7 @@ scanf_format_list::finish_conversion (const std::string& s, size_t& i,
 
       if (s[i] == '[')
         {
-          *buf << s[i++];
+          buf << s[i++];
 
           if (i < n)
             {
@@ -601,34 +596,34 @@ scanf_format_list::finish_conversion (const std::string& s, size_t& i,
               if (s[i] == '^')
                 {
                   type = '^';
-                  *buf << s[i++];
+                  buf << s[i++];
 
                   if (i < n)
                     {
                       beg_idx = i;
 
                       if (s[i] == ']')
-                        *buf << s[i++];
+                        buf << s[i++];
                     }
                 }
               else if (s[i] == ']')
-                *buf << s[i++];
+                buf << s[i++];
             }
 
           while (i < n && s[i] != ']')
-            *buf << s[i++];
+            buf << s[i++];
 
           if (i < n && s[i] == ']')
             {
               end_idx = i-1;
-              *buf << s[i++];
+              buf << s[i++];
             }
 
           if (s[i-1] != ']')
             retval = nconv = -1;
         }
       else
-        *buf << s[i++];
+        buf << s[i++];
 
       nconv++;
     }
@@ -850,7 +845,7 @@ private:
   std::deque<printf_format_elt*> fmt_elts;
 
   // Temporary buffer.
-  std::ostringstream *buf;
+  std::ostringstream buf;
 
   void add_elt_to_list (int args, const std::string& flags, int fw,
                         int prec, char type, char modifier);
@@ -871,7 +866,7 @@ private:
 };
 
 printf_format_list::printf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), fmt_elts (), buf (0)
+  : nconv (0), curr_idx (0), fmt_elts (), buf ()
 {
   size_t n = s.length ();
 
@@ -900,11 +895,7 @@ printf_format_list::printf_format_list (const std::string& s)
         {
           have_more = true;
 
-          if (! buf)
-            {
-              buf = new std::ostringstream ();
-              empty_buf = true;
-            }
+          empty_buf = (buf.tellp () == 0);
 
           switch (s[i])
             {
@@ -915,7 +906,13 @@ printf_format_list::printf_format_list (const std::string& s)
                     process_conversion (s, i, n, args, flags, fw, prec,
                                         type, modifier);
 
-                    have_more = (buf != 0);
+                    // If there is nothing in the buffer, then
+                    // add_elt_to_list must have just been called, so we
+                    // are already done with the current element and we
+                    // don't need to call add_elt_to_list if this is our
+                    // last trip through the loop.
+
+                    have_more = (buf.tellp () != 0);
                   }
                 else
                   add_elt_to_list (args, flags, fw, prec, type, modifier);
@@ -930,7 +927,7 @@ printf_format_list::printf_format_list (const std::string& s)
                 prec = -1;
                 modifier = '\0';
                 type = '\0';
-                *buf << s[i++];
+                buf << s[i++];
                 empty_buf = false;
               }
               break;
@@ -946,7 +943,8 @@ printf_format_list::printf_format_list (const std::string& s)
       if (have_more)
         add_elt_to_list (args, flags, fw, prec, type, modifier);
 
-      delete buf;
+      buf.clear ();
+      buf.str ("");
     }
 }
 
@@ -966,22 +964,19 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
                                      int fw, int prec, char type,
                                      char modifier)
 {
-  if (buf)
+  std::string text = buf.str ();
+
+  if (! text.empty ())
     {
-      std::string text = buf->str ();
+      printf_format_elt *elt
+        = new printf_format_elt (text.c_str (), args, fw, prec, flags,
+                                 type, modifier);
 
-      if (! text.empty ())
-        {
-          printf_format_elt *elt
-            = new printf_format_elt (text.c_str (), args, fw, prec, flags,
-                                     type, modifier);
-
-          fmt_elts.push_back (elt);
-        }
-
-      delete buf;
-      buf = 0;
+      fmt_elts.push_back (elt);
     }
+
+  buf.clear ();
+  buf.str ("");
 }
 
 void
@@ -998,7 +993,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
   modifier = '\0';
   type = '\0';
 
-  *buf << s[i++];
+  buf << s[i++];
 
   bool nxt = false;
 
@@ -1008,7 +1003,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
         {
         case '-': case '+': case ' ': case '0': case '#':
           flags += s[i];
-          *buf << s[i++];
+          buf << s[i++];
           break;
 
         default:
@@ -1026,7 +1021,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
         {
           fw = -2;
           args++;
-          *buf << s[i++];
+          buf << s[i++];
         }
       else
         {
@@ -1038,7 +1033,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
             }
 
           while (i < n && isdigit (s[i]))
-            *buf << s[i++];
+            buf << s[i++];
         }
     }
 
@@ -1051,7 +1046,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
       // . followed by nothing is 0.
       prec = 0;
 
-      *buf << s[i++];
+      buf << s[i++];
 
       if (i < n)
         {
@@ -1059,7 +1054,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
             {
               prec = -2;
               args++;
-              *buf << s[i++];
+              buf << s[i++];
             }
           else
             {
@@ -1071,7 +1066,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
                 }
 
               while (i < n && isdigit (s[i]))
-                *buf << s[i++];
+                buf << s[i++];
             }
         }
     }
@@ -1136,7 +1131,7 @@ printf_format_list::finish_conversion (const std::string& s, size_t& i,
 
       type = s[i];
 
-      *buf << s[i++];
+      buf << s[i++];
 
       if (type != '%' || args != 0)
         nconv++;
@@ -1733,7 +1728,7 @@ private:
   std::list<octave_value> output_container;
 
   // Temporary buffer.
-  std::ostringstream *buf;
+  std::ostringstream buf;
 
   void add_elt_to_list (unsigned int width, int prec, int bitwidth,
                         octave_value val_type, bool discard,
@@ -1911,7 +1906,7 @@ private:
 textscan_format_list::textscan_format_list (const std::string& s,
                                             const std::string& who_arg)
   : who (who_arg), set_from_first (false), has_string (false),
-    nconv (0), curr_idx (0), fmt_elts (), buf (0)
+    nconv (0), curr_idx (0), fmt_elts (), buf ()
 {
   size_t n = s.length ();
 
@@ -1927,7 +1922,11 @@ textscan_format_list::textscan_format_list (const std::string& s,
 
   if (s.empty ())
     {
-      buf = new std::ostringstream ("%f");
+      buf.clear ();
+      buf.str ("");
+
+      buf << "%f";
+
       bitwidth = 64;
       type = 'f';
       add_elt_to_list (width, prec, bitwidth, octave_value (NDArray ()),
@@ -1944,16 +1943,19 @@ textscan_format_list::textscan_format_list (const std::string& s,
         {
           have_more = true;
 
-          if (! buf)
-            buf = new std::ostringstream ();
-
           if (s[i] == '%' && (i+1 == n || s[i+1] != '%'))
             {
               // Process percent-escape conversion type.
 
               process_conversion (s, i, n);
 
-              have_more = (buf != 0);
+              // If there is nothing in the buffer, then add_elt_to_list
+              // must have just been called, so we are already done with
+              // the current element and we don't need to call
+              // add_elt_to_list if this is our last trip through the
+              // loop.
+
+              have_more = (buf.tellp () != 0);
             }
           else if (isspace (s[i]))
             {
@@ -1976,7 +1978,7 @@ textscan_format_list::textscan_format_list (const std::string& s,
                 {
                   if (s[i] == '%')      // if double %, skip one
                     i++;
-                  *buf << s[i++];
+                  buf << s[i++];
                   width++;
                 }
 
@@ -1997,7 +1999,8 @@ textscan_format_list::textscan_format_list (const std::string& s,
   if (have_more)
     add_elt_to_list (width, prec, bitwidth, octave_value (), discard, type);
 
-  delete buf;
+  buf.clear ();
+  buf.str ("");
 }
 
 textscan_format_list::~textscan_format_list (void)
@@ -2017,24 +2020,21 @@ textscan_format_list::add_elt_to_list (unsigned int width, int prec,
                                        bool discard, char type,
                                        const std::string& char_class)
 {
-  if (buf)
+  std::string text = buf.str ();
+
+  if (! text.empty ())
     {
-      std::string text = buf->str ();
+      textscan_format_elt *elt
+        = new textscan_format_elt (text, width, prec, bitwidth, discard, type, char_class);
 
-      if (! text.empty ())
-        {
-          textscan_format_elt *elt
-            = new textscan_format_elt (text, width, prec, bitwidth, discard, type, char_class);
+      if (! discard)
+        output_container.push_back (val_type);
 
-          if (! discard)
-            output_container.push_back (val_type);
-
-          fmt_elts.push_back (elt);
-        }
-
-      delete buf;
-      buf = 0;
+      fmt_elts.push_back (elt);
     }
+
+  buf.clear ();
+  buf.str ("");
 }
 
 void
@@ -2048,7 +2048,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
   octave_value val_type;
   char type = '\0';
 
-  *buf << s[i++];
+  buf << s[i++];
 
   bool have_width = false;
 
@@ -2062,7 +2062,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
           else
             {
               discard = true;
-              *buf << s[i++];
+              buf << s[i++];
             }
           break;
 
@@ -2075,23 +2075,23 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
               char c = s[i++];
               width = width * 10 + c - '0';
               have_width = true;
-              *buf << c;
+              buf << c;
               while (i < n && isdigit (s[i]))
                 {
                   c = s[i++];
                   width = width * 10 + c - '0';
-                  *buf << c;
+                  buf << c;
                 }
 
               if (i < n && s[i] == '.')
                 {
-                  *buf << s[i++];
+                  buf << s[i++];
                   prec = 0;
                   while (i < n && isdigit (s[i]))
                     {
                       c = s[i++];
                       prec = prec * 10 + c - '0';
-                      *buf << c;
+                      buf << c;
                     }
                 }
             }
@@ -2100,7 +2100,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
         case 'd': case 'u':
           {
             bool done = true;
-            *buf << (type = s[i++]);
+            buf << (type = s[i++]);
             if (i < n)
               {
                 if (s[i] == '8')
@@ -2110,7 +2110,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
                       val_type = octave_value (int8NDArray ());
                     else
                       val_type = octave_value (uint8NDArray ());
-                    *buf << s[i++];
+                    buf << s[i++];
                   }
                 else if (s[i] == '1' && i+1 < n && s[i+1] == '6')
                   {
@@ -2119,14 +2119,14 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
                       val_type = octave_value (int16NDArray ());
                     else
                       val_type = octave_value (uint16NDArray ());
-                    *buf << s[i++];
-                    *buf << s[i++];
+                    buf << s[i++];
+                    buf << s[i++];
                   }
                 else if (s[i] == '3' && i+1 < n && s[i+1] == '2')
                   {
                     done = false;       // use default size below
-                    *buf << s[i++];
-                    *buf << s[i++];
+                    buf << s[i++];
+                    buf << s[i++];
                   }
                 else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
                   {
@@ -2135,8 +2135,8 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
                       val_type = octave_value (int64NDArray ());
                     else
                       val_type = octave_value (uint64NDArray ());
-                    *buf << s[i++];
-                    *buf << s[i++];
+                    buf << s[i++];
+                    buf << s[i++];
                   }
                 else
                   done = false;
@@ -2156,7 +2156,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
           }
 
         case 'f':
-          *buf << (type = s[i++]);
+          buf << (type = s[i++]);
           bitwidth = 64;
           if (i < n)
             {
@@ -2164,14 +2164,14 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
                 {
                   bitwidth = 32;
                   val_type = octave_value (FloatNDArray ());
-                  *buf << s[i++];
-                  *buf << s[i++];
+                  buf << s[i++];
+                  buf << s[i++];
                 }
               else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
                 {
                   val_type = octave_value (NDArray ());
-                  *buf << s[i++];
-                  *buf << s[i++];
+                  buf << s[i++];
+                  buf << s[i++];
                 }
               else
                 val_type = octave_value (NDArray ());
@@ -2181,7 +2181,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
           goto fini;
 
         case 'n':
-          *buf << (type = s[i++]);
+          buf << (type = s[i++]);
           bitwidth = 64;
           val_type = octave_value (NDArray ());
           goto fini;
@@ -2189,7 +2189,7 @@ textscan_format_list::process_conversion (const std::string& s, size_t& i,
         case 's': case 'q': case '[': case 'c':
           if (! discard)
             val_type = octave_value (Cell ());
-          *buf << (type = s[i++]);
+          buf << (type = s[i++]);
           has_string = true;
           goto fini;
 
@@ -2346,27 +2346,27 @@ textscan_format_list::finish_conversion (const std::string& s, size_t& i,
               if (s[i] == '^')
                 {
                   type = '^';
-                  *buf << s[i++];
+                  buf << s[i++];
 
                   if (i < n)
                     {
                       beg_idx = i;
 
                       if (s[i] == ']')
-                        *buf << s[i++];
+                        buf << s[i++];
                     }
                 }
               else if (s[i] == ']')
-                *buf << s[i++];
+                buf << s[i++];
             }
 
           while (i < n && s[i] != ']')
-            *buf << s[i++];
+            buf << s[i++];
 
           if (i < n && s[i] == ']')
             {
               end_idx = i-1;
-              *buf << s[i++];
+              buf << s[i++];
             }
 
           if (s[i-1] != ']')

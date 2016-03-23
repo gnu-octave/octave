@@ -157,18 +157,19 @@
 
 #ifdef __cplusplus
 
+#  include "lo-ieee.h"
+
 #  include "Faddeeva.hh"
 
 #  include <cfloat>
 #  include <cmath>
 #  include <limits>
-using namespace std;
 
 // use std::numeric_limits, since 1./0. and 0./0. fail with some compilers (MS)
-#  define Inf numeric_limits<double>::infinity()
-#  define NaN numeric_limits<double>::quiet_NaN()
+#  define Inf octave_Inf
+#  define NaN octave_NaN
 
-typedef complex<double> cmplx;
+typedef std::complex<double> cmplx;
 
 // Use C-like complex syntax, since the C syntax is more restrictive
 #  define cexp(z) exp(z)
@@ -182,7 +183,10 @@ typedef complex<double> cmplx;
 #  define FADDEEVA_RE(name) Faddeeva::name
 
 // isnan/isinf were introduced in C++11
-#  if (__cplusplus < 201103L) && (!defined(HAVE_ISNAN) || !defined(HAVE_ISINF))
+#  if defined (lo_ieee_isnan) && defined (lo_ieee_isinf)
+#    define isnan lo_ieee_isnan
+#    define isinf lo_ieee_isinf
+#  elif (__cplusplus < 201103L) && (!defined(HAVE_ISNAN) || !defined(HAVE_ISINF))
 static inline bool my_isnan(double x) { return x != x; }
 #    define isnan my_isnan
 static inline bool my_isinf(double x) { return 1/x == 0.; }

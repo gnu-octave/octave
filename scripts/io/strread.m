@@ -50,7 +50,7 @@
 ## The word is skipped.
 ##
 ## For %s and %d, %f, %n, %u and the associated %*s @dots{} specifiers an
-## optional width can be specified as %Ns, etc. where N is an integer > 1.
+## optional width can be specified as %Ns, etc.@: where N is an integer > 1.
 ## For %f, format specifiers like %N.Mf are allowed.
 ##
 ## @item literals

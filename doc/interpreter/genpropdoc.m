@@ -618,7 +618,7 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
 
       case "layer"
         s.doc = "Control whether the axes is drawn below child graphics \
-objects (ticks, labels, etc. covered by plotted objects) or above.";
+objects (ticks, labels, etc.@: covered by plotted objects) or above.";
 
       case "linestyleorder"
         s.doc = doc_unused;

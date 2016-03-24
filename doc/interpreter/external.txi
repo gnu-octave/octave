@@ -140,7 +140,7 @@ API into a dynamically loadable object.  They take their name from the file
 which contains the object which has the extension @file{.oct}.
 
 Finding a C++ compiler, using the correct switches, adding the right include
-paths for header files, etc. is a difficult task.  Octave automates this by
+paths for header files, etc.@: is a difficult task.  Octave automates this by
 providing the @code{mkoctfile} command with which to build oct-files.  The
 command is available from within Octave or at the shell command line.
 

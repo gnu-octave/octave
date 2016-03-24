@@ -72,7 +72,7 @@ where
 $a_0$, $a_1$, etc. are elements of $\Re$.
 @end tex
 @ifnottex
-a0, a1, etc. are real scalars.
+a0, a1, etc.@: are real scalars.
 @end ifnottex
 Thus the polynomial can be represented by a vector
 

@@ -30,7 +30,7 @@
 ## @file{doc-cache} if not given.
 ##
 ## If no directory is given (or it is the empty matrix), a cache for built-in
-## operators, etc. is generated.
+## functions, operators, and keywords is generated.
 ##
 ## @seealso{doc_cache_file, lookfor, path}
 ## @end deftypefn
@@ -67,8 +67,8 @@ endfunction
 
 function [text, first_sentence, status] = handle_function (f, text, format)
   first_sentence = "";
-  ## Skip functions that start with __ as these shouldn't be searched by lookfor
-  if (length (f) > 2 && all (f (1:2) == "_"))
+  ## Skip internal functions starting with "__"
+  if (strncmp (f, "__", 2))
     status = 1;
     return;
   endif
@@ -142,7 +142,7 @@ function cache = gen_doc_cache_in_dir (directory)
   ## concatenate results
   cache = [cache{:}];
 
-  ## remove dirs form path
+  ## remove dirs from path
   if (! isempty (dirs_notpath))
     rmpath (dirs_notpath{:});
   endif

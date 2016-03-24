@@ -41,6 +41,9 @@
 ## @end example
 ##
 ## @end ifnottex
+## If @var{x} is of a discrete type such as integer or logical, then
+## the case of even N rounds up (or toward @qcode{true}).
+##
 ## If @var{x} is a matrix, compute the median value for each column and
 ## return them in a row vector.
 ##
@@ -80,10 +83,15 @@ function retval = median (x, dim)
   if (mod (n, 2) == 1)
     retval = nth_element (x, k, dim);
   else
-    retval = mean (nth_element (x, k:k+1, dim), dim);
+    retval = sum (nth_element (x, k:k+1, dim), dim, "native") / 2;
+    if (islogical (x))
+      retval = logical (retval);
+    endif
   endif
   ## Inject NaNs where needed, to be consistent with Matlab.
-  retval(any (isnan (x), dim)) = NaN;
+  if (isfloat (x))
+    retval(any (isnan (x), dim)) = NaN;
+  endif
 
 endfunction
 
@@ -112,6 +120,13 @@ endfunction
 %! y = sort (b, 3);
 %!assert (median (a, 4), x(:, :, :, 3))
 %!assert (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
+
+## Test non-floating point types
+%!assert (median ([true, false]), true);
+%!assert (median (uint8 ([1, 3])), uint8 (2));
+%!assert (median (int8 ([1, 3, 4])), int8 (3));
+%!assert (median (single ([1, 3, 4])), single (3));
+%!assert (median (single ([1, 3, NaN])), single (NaN));
 
 ## Test input validation
 %!error median ()

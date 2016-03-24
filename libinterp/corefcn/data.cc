@@ -6929,6 +6929,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
           MAKE_INT_BRANCH (uint16);
           MAKE_INT_BRANCH (uint32);
           MAKE_INT_BRANCH (uint64);
+          MAKE_INT_BRANCH (bool);
 #undef MAKE_INT_BRANCH
         default:
           if (argx.is_cellstr ())

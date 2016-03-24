@@ -2173,16 +2173,22 @@ graphics_object::set (const octave_value_list& args)
   if (nargin == 0)
     error ("graphics_object::set: Nothing to set");
 
-  if (nargin % 2 != 0)
-    error ("set: invalid number of arguments");
-
-  for (int i = 0; i < nargin; i += 2)
+  for (int i = 0; i < nargin; )
     {
-      caseless_str pname = args(i).xstring_value ("set: argument %d must be a property name", i);
-
-      octave_value val = args(i+1);
-
-      set_value_or_default (pname, val);
+      if (args(i).is_map () )
+        {
+          set (args(i).map_value ());
+          i++;
+        }
+      else if (i < nargin - 1)
+        {
+          caseless_str pname = args(i).xstring_value ("set: argument %d must be a property name", i);
+          octave_value val = args(i+1);
+          set_value_or_default (pname, val);
+          i += 2;
+        }
+      else
+        error ("set: invalid number of arguments");
     }
 }
 

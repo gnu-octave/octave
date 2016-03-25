@@ -3571,13 +3571,12 @@ textscan::parse_options (const octave_value_list& args,
   bool have_delims = false;
   for (int i = 0; i < last; i += 2)
     {
-      if (! args(i).is_string ())
-        error ("%s: Invalid paramter type <%s> for parameter %d",
-               who.c_str (), args(i).type_name ().c_str (), i/2 + 1);
+      std::string param = args(i).xstring_value ("%s: Invalid paramter type <%s> for parameter %d",
+                                                 who.c_str (),
+                                                 args(i).type_name ().c_str (),
+                                                 i/2 + 1);
+      std::transform (param.begin (), param.end (), param.begin (), ::tolower);
 
-      std::string param = args(i).string_value ();
-      std::transform (param.begin (), param.end (),
-                      param.begin (), ::tolower);
       if (param == "delimiter")
         {
           bool invalid = true;
@@ -3667,97 +3666,61 @@ textscan::parse_options (const octave_value_list& args,
         }
       else if (param == "collectoutput")
         {
-          if (args(i+1).is_numeric_type ())
-            collect_output = args(i+1).bool_value ();
-          else
-            error ("%s: CollectOutput must be logical or numeric",
-                   who.c_str ());
+          collect_output = args(i+1).xbool_value ("%s: CollectOutput must be logical or numeric", who.c_str ());
         }
       else if (param == "emptyvalue")
         {
-          if (args(i+1).is_numeric_type ())
-            empty_value = args(i+1).scalar_value ();
-          else
-            error ("%s: EmptyValue must be numeric", who.c_str ());
+          empty_value = args(i+1).xscalar_value ("%s: EmptyValue must be numeric", who.c_str ());
         }
       else if (param == "headerlines")
         {
-          if (args(i+1).is_numeric_type ())
-            header_lines = args(i+1).scalar_value ();
-          else
-            error ("%s: HeaderLines must be numeric", who.c_str ());
+          header_lines = args(i+1).xscalar_value ("%s: HeaderLines must be numeric", who.c_str ());
         }
       else if (param == "bufsize")
         {
-          if (args(i+1).is_numeric_type ())
-            buffer_size = args(i+1).scalar_value ();
-          else
-            error ("%s: BufSize must be numeric", who.c_str ());
+          buffer_size = args(i+1).xscalar_value ("%s: BufSize must be numeric", who.c_str ());
         }
       else if (param == "multipledelimsasone")
         {
-          if (args(i+1).is_numeric_type ())
-            {
-              if (args(i+1).bool_value ())
-                multiple_delims_as_one = true;
-            }
-          else
-            error ("%s: MultipleDimsAsOne must be logical or numeric",
-                   who.c_str ());
+          multiple_delims_as_one = args(i+1).xbool_value ("%s: MultipleDelimsAsOne must be logical or numeric", who.c_str ());
         }
       else if (param == "returnonerror")
         {
-          if (args(i+1).is_numeric_type ())
-            return_on_error = args(i+1).bool_value ();
-          else if (args(i+1).is_string ()
-                   && args(i+1).string_value () == "continue")
+          if (args(i+1).is_string () && args(i+1).string_value () == "continue")
             return_on_error = 2;
           else
-            error ("%s: ReturnOnError must be logical or numeric, or 'continue'",
-                   who.c_str ());
+            return_on_error = args(i+1).xbool_value ("%s: ReturnOnError must be logical, numeric, or the string \"continue\"", who.c_str ());
         }
       else if (param == "whitespace")
         {
-          if (args(i+1).is_string ())
-            whitespace = args(i+1).string_value ();
-          else
-            error ("%s: Whitespace must be a character string", who.c_str ());
+          whitespace = args(i+1).xstring_value ("%s: Whitespace must be a character string", who.c_str ());
         }
       else if (param == "expchars")
         {
-          if (args(i+1).is_string ())
-            {
-              exp_chars = args(i+1).string_value ();
-              default_exp = false;
-            }
-          else
-            error ("%s: ExpChars must be a character string", who.c_str ());
+          exp_chars = args(i+1).xstring_value ("%s: ExpChars must be a character string", who.c_str ());
+          default_exp = false;
         }
       else if (param == "endofline")
         {
           bool valid = true;
-          if (args(i+1).is_string ())
+          std::string s = args(i+1).xstring_value ("%s: EndOfLine must be at most one character or '\\r\\n'", who.c_str ());
+          if (args(i+1).is_sq_string ())
+            s = do_string_escapes (s);
+          int l = s.length ();
+          if (l == 0)
+            eol1 = eol2 = -2;
+          else if (l == 1)
+            eol1 = eol2 = s.c_str ()[0];
+          else if (l == 2)
             {
-              std::string s = args(i+1).string_value ();
-              if (args(i+1).is_sq_string ())
-                s = do_string_escapes (s);
-              int l = s.length ();
-              if (l == 0)
-                eol1 = eol2 = -2;
-              else if (l == 1)
-                eol1 = eol2 = s.c_str ()[0];
-              else if (l == 2)
-                {
-                  eol1 = s.c_str ()[0];
-                  eol2 = s.c_str ()[1];
-                  if (eol1 != '\r' || eol2 != '\n')    // Why limit it?
-                    valid = false;
-                }
-              else
+              eol1 = s.c_str ()[0];
+              eol2 = s.c_str ()[1];
+              if (eol1 != '\r' || eol2 != '\n')    // Why limit it?
                 valid = false;
             }
           else
             valid = false;
+
           if (! valid)
             error ("%s: EndOfLine must be at most one character or '\\r\\n'",
                    who.c_str ());

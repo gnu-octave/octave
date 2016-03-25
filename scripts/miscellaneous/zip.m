@@ -55,11 +55,13 @@ function filelist = zip (zipfile, files, rootdir = ".")
 
   zipfile = make_absolute_filename (zipfile);
 
-  files = glob (files);                   # expand wildcards
-  files = regexprep (files, '"', '\\"');  # escape double quotes
-  files = sprintf (' "%s"', files{:});    # convert to space separated list
-  zipfile = regexprep (zipfile, '"', '\\"');  # escape double quotes
-  cmd = sprintf ('zip -r "%s" %s', zipfile, files);
+  ## FIXME: This is a lot of processing that could be done by the shell
+  ##        if Octave had a way to call system without passing a single string.
+  ## Escape bad shell characters
+  files = regexprep (files, "([|&;<>()$`\\'\" ])", '\\$1');
+  files = sprintf (' %s', files{:});   # convert to space separated list
+  zipfile = regexprep (zipfile, "'", "\\'");  # escape single quotes
+  cmd = sprintf ("zip -r '%s' %s", zipfile, files);
 
   origdir = pwd ();
   cd (rootdir);

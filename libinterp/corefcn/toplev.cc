@@ -1178,7 +1178,7 @@ command shell that is started to run the command.\n\
         {
           // FIXME: should probably replace this call with something portable.
           execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
-                 static_cast<void *> (0));
+                 static_cast<char *> (0));
 
           panic_impossible ();
         }

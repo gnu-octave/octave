@@ -543,14 +543,6 @@ error: fieldnames: Invalid input argument
 Functions and commands are described in this manual in a
 uniform format.  The first line of a description contains the name of
 the item followed by its arguments, if any.
-@ifnottex
-The category---function, command, or whatever---appears at the
-beginning of the line.
-@end ifnottex
-@iftex
-The category---function, command, or whatever---is printed next to the
-right margin.
-@end iftex
 If there are multiple ways to invoke the function then each allowable
 form is listed.
 
@@ -620,9 +612,7 @@ specifically in the description of the function.  In some sections,
 features common to parameters of several functions are described at the
 beginning.
 
-Functions in Octave may be defined in several different ways.  The
-category name for functions may include a tag that indicates the
-way that the function is defined.  These additional tags include
+Functions in Octave may be defined in several different ways:
 
 @table @asis
 @item Function File
@@ -648,15 +638,17 @@ The function described works element-by-element for matrix and vector
 arguments.
 @end table
 
+Use @code{which} or @code{exist} to determine the category of a function
+and where it resides.
+
 @node A Sample Command Description
 @subsubsection A Sample Command Description
 @cindex command descriptions
 
-Command descriptions have a format similar to function descriptions,
-except that the word `Function' is replaced by `Command'.  Commands are
-functions that may be called without surrounding their arguments in
-parentheses.  For example, here is the description for Octave's
-@code{diary} command:
+Commands are functions that may be called without surrounding their arguments
+in parentheses.  Command descriptions have a format similar to function
+descriptions.  For example, here is the description for Octave's @code{diary}
+command:
 
 @need 4000
 @deftypefn  {} {} diary

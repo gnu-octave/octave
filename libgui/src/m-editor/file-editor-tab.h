@@ -114,7 +114,9 @@ public slots:
   void zoom_out (const QWidget *ID);
   void zoom_normal (const QWidget *ID);
 
-  void find (const QWidget *ID);
+  void find (const QWidget *ID, QList<QAction *>);
+  void find_next (const QWidget *ID);
+  void find_previous (const QWidget *ID);
   void goto_line (const QWidget *ID, int line = -1);
   void move_match_brace (const QWidget *ID, bool select);
   void show_auto_completion (const QWidget *ID);
@@ -158,6 +160,9 @@ signals:
   void request_open_file (const QString&);
   void edit_mfile_request (const QString&, const QString&,
                            const QString&, int);
+
+  void request_find_next (void);
+  void request_find_previous (void);
 
   void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
   void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
@@ -293,6 +298,7 @@ private:
   int _line;
   int _col;
   bool _lines_changed;
+
 };
 
 #endif

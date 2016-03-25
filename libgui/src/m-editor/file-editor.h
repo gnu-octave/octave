@@ -136,7 +136,9 @@ signals:
   void fetab_indent_selected_text (const QWidget* ID);
   void fetab_unindent_selected_text (const QWidget* ID);
   void fetab_convert_eol (const QWidget* ID, QsciScintilla::EolMode eol_mode);
-  void fetab_find (const QWidget* ID);
+  void fetab_find (const QWidget* ID, QList<QAction *>);
+  void fetab_find_next (const QWidget* ID);
+  void fetab_find_previous (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
   void fetab_move_match_brace (const QWidget* ID, bool select);
   void fetab_completion (const QWidget*);
@@ -217,6 +219,8 @@ public slots:
   void request_conv_eol_mac (bool);
 
   void request_find (bool);
+  void request_find_next (bool);
+  void request_find_previous (bool);
 
   void request_goto_line (bool);
   void request_completion (bool);
@@ -372,6 +376,8 @@ private:
   QAction *_transpose_line_action;
 
   QAction *_find_action;
+  QAction *_find_next_action;
+  QAction *_find_previous_action;
   QAction *_find_files_action;
   QAction *_goto_line_action;
   QAction *_completion_action;
@@ -417,6 +423,8 @@ private:
   QMenu *_edit_nav_menu;
   QMenu *_fileMenu;
   QMenu *_view_editor_menu;
+
+  QList<QAction*> _fetab_actions;
 
   tab_widget *_tab_widget;
 

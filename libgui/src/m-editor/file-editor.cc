@@ -64,6 +64,10 @@ file_editor::file_editor (QWidget *p)
 
   construct ();
 
+  // actions that should also be available in the find dialog
+  _fetab_actions << _find_next_action;
+  _fetab_actions << _find_previous_action;
+
   setVisible (false);
   setAcceptDrops(true);
 
@@ -1045,7 +1049,19 @@ file_editor::request_conv_eol_mac (bool)
 void
 file_editor::request_find (bool)
 {
-  emit fetab_find (_tab_widget->currentWidget ());
+  emit fetab_find (_tab_widget->currentWidget (), _fetab_actions);
+}
+
+void
+file_editor::request_find_next (bool)
+{
+  emit fetab_find_next (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::request_find_previous (bool)
+{
+  emit fetab_find_previous (_tab_widget->currentWidget ());
 }
 
 void
@@ -1612,6 +1628,12 @@ file_editor::construct (void)
   _find_action = add_action (_edit_menu, resource_manager::icon ("edit-find-replace"),
           tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
+  _find_next_action = add_action (_edit_menu, QIcon (),
+          tr ("Find &Next..."), SLOT (request_find_next (bool)));
+
+  _find_previous_action = add_action (_edit_menu, QIcon (),
+          tr ("Find &Previous..."), SLOT (request_find_previous (bool)));
+
   _edit_menu->addSeparator ();
 
   _edit_cmd_menu = _edit_menu->addMenu (tr ("&Commands"));
@@ -1832,6 +1854,8 @@ file_editor::construct (void)
   _tool_bar->addAction (_cut_action);
   // _paste_action: later via the main window
   _tool_bar->addAction (_find_action);
+  //_tool_bar->addAction (_find_next_action);
+  //_tool_bar->addAction (_find_previous_action);
   _tool_bar->addSeparator ();
   _tool_bar->addAction (_run_action);
   _tool_bar->addSeparator ();
@@ -1981,7 +2005,7 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
-           f, SLOT (notice_settings (const QSettings *)));
+           f, SLOT (settings_changed (const QSettings *)));
 
   connect (this, SIGNAL (fetab_change_request (const QWidget*)),
            f, SLOT (change_editor_state (const QWidget*)));
@@ -2076,8 +2100,14 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
            f, SLOT (convert_eol (const QWidget*, QsciScintilla::EolMode)));
 
-  connect (this, SIGNAL (fetab_find (const QWidget*)),
-           f, SLOT (find (const QWidget*)));
+  connect (this, SIGNAL (fetab_find (const QWidget*, QList<QAction *>)),
+           f, SLOT (find (const QWidget*, QList<QAction *>)));
+
+  connect (this, SIGNAL (fetab_find_next (const QWidget*)),
+           f, SLOT (find_next (const QWidget*)));
+
+  connect (this, SIGNAL (fetab_find_previous (const QWidget*)),
+           f, SLOT (find_previous (const QWidget*)));
 
   connect (this, SIGNAL (fetab_goto_line (const QWidget*, int)),
            f, SLOT (goto_line (const QWidget*, int)));
@@ -2135,6 +2165,8 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_redo_action, "editor_edit:redo");
   shortcut_manager::set_shortcut (_cut_action, "editor_edit:cut");
   shortcut_manager::set_shortcut (_find_action, "editor_edit:find_replace");
+  shortcut_manager::set_shortcut (_find_next_action, "editor_edit:find_next");
+  shortcut_manager::set_shortcut (_find_previous_action, "editor_edit:find_previous");
 
   shortcut_manager::set_shortcut (_delete_start_word_action, "editor_edit:delete_start_word");
   shortcut_manager::set_shortcut (_delete_end_word_action, "editor_edit:delete_end_word");
@@ -2225,6 +2257,8 @@ file_editor::check_actions ()
   _zoom_normal_action->setEnabled (have_tabs);
 
   _find_action->setEnabled (have_tabs);
+  _find_next_action->setEnabled (have_tabs);
+  _find_previous_action->setEnabled (have_tabs);
   _print_action->setEnabled (have_tabs);
   _run_action->setEnabled (have_tabs);
 

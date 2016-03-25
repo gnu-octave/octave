@@ -205,6 +205,10 @@ shortcut_manager::do_init_data ()
   init (tr ("Cut"), "editor_edit:cut", QKeySequence::Cut);
   init (tr ("Find and Replace"), "editor_edit:find_replace",
         QKeySequence::Find);
+  init (tr ("Find Next"), "editor_edit:find_next",
+        QKeySequence::FindNext);
+  init (tr ("Find Previous"), "editor_edit:find_previous",
+        QKeySequence::FindPrevious);
   init (tr ("Delete to Start of Word"), "editor_edit:delete_start_word",
         QKeySequence::DeleteStartOfWord);
   init (tr ("Delete to End of Word"), "editor_edit:delete_end_word",
@@ -255,7 +259,7 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
 
   init (tr ("Goto Line"), "editor_edit:goto_line",
-        QKeySequence (ctrl + Qt::Key_G));
+        QKeySequence (ctrl + Qt::Key_L));
   init (tr ("Move to Matching Brace"), "editor_edit:move_to_brace",
         QKeySequence (ctrl + Qt::Key_M));
   init (tr ("Select to Matching Brace"), "editor_edit:select_to_brace",

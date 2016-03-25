@@ -1178,7 +1178,7 @@ file_editor_tab::handle_find_dialog_finished (int)
 }
 
 void
-file_editor_tab::find (const QWidget *ID)
+file_editor_tab::find (const QWidget *ID, QList<QAction *> fetab_actions)
 {
   if (ID != this)
     return;
@@ -1193,9 +1193,17 @@ file_editor_tab::find (const QWidget *ID)
   if (! _find_dialog)
     {
       _find_dialog = new find_dialog (_edit_area,
+                                      fetab_actions.mid (0,2),
                                       qobject_cast<QWidget *> (sender ()));
       connect (_find_dialog, SIGNAL (finished (int)),
                this, SLOT (handle_find_dialog_finished (int)));
+
+      connect (this, SIGNAL (request_find_next ()),
+               _find_dialog, SLOT (find_next ()));
+
+      connect (this, SIGNAL (request_find_previous ()),
+               _find_dialog, SLOT (find_prev ()));
+
       _find_dialog->setWindowModality (Qt::NonModal);
       _find_dialog_geometry = _find_dialog->geometry ();
     }
@@ -1211,6 +1219,20 @@ file_editor_tab::find (const QWidget *ID)
   _find_dialog->activateWindow ();
   _find_dialog->init_search_text ();
 
+}
+
+void
+file_editor_tab::find_next (const QWidget *ID)
+{
+  if (ID == this)
+    emit request_find_next ();
+}
+
+void
+file_editor_tab::find_previous (const QWidget *ID)
+{
+  if (ID == this)
+    emit request_find_previous ();
 }
 
 void

@@ -69,7 +69,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QIcon>
 #include "find-dialog.h"
 
-find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
+find_dialog::find_dialog (QsciScintilla* edit_area,
+                          QList<QAction *> find_actions, QWidget *p)
   : QDialog (p)
 {
   setWindowTitle (tr ("Find and Replace"));
@@ -174,6 +175,9 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _find_result_available = false;
   _rep_all = 0;
   _rep_active = false;
+
+  // set the actions
+  addActions (find_actions);
 
   // move dialog to side of the parent if there is room on the desktop to do so.
   int xp = p->x () +20;

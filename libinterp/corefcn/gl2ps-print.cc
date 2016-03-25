@@ -24,7 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+// Both header files are required outside of HAVE_GLP2S_H
 #include "errwarn.h"
+#include "gl2ps-print.h"
 
 #ifdef HAVE_GL2PS_H
 
@@ -38,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
-#include "gl2ps-print.h"
 #include "gl-render.h"
 #include "oct-opengl.h"
 #include "sighandlers.h"
@@ -823,8 +824,6 @@ gl2ps_print (const graphics_object& fig, const std::string& stream,
   rend.finish ();
 
 #else
-
   err_disabled_feature ("gl2ps_print", "gl2ps");
-
 #endif
 }

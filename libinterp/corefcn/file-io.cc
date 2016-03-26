@@ -1977,6 +1977,14 @@ as the name of the function when reporting errors.\n\
 %! assert (C{3}', [13, 24, 35]);
 %! assert (C{4}', [15, 25, NaN]);
 
+## Single-quoted escape sequences
+%!test
+%! str = "11\t12\t13\r21\t22\t23";
+%! c = textscan (str, "", "delimiter", '\t', "EndOfLine", '\r');
+%! assert (c{1}', [11, 21]);
+%! assert (c{2}', [12, 22]);
+%! assert (c{3}', [13, 23]);
+
 ## Bug #44750
 %!test
 %! assert (textscan ("/home/foo/", "%s", "delimiter", "/", "MultipleDelimsAsOne", 1){1}, ...

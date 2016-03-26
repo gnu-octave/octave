@@ -3585,6 +3585,8 @@ textscan::parse_options (const octave_value_list& args,
               invalid = false;
               have_delims = true;
               delims = args(i+1).string_value ();
+              if (args(i+1).is_sq_string ())
+                delims = do_string_escapes (delims);
             }
           else if (args(i+1).is_cell ())
             {
@@ -3599,6 +3601,9 @@ textscan::parse_options (const octave_value_list& args,
                     invalid = true;
                   else
                     {
+                      if (delim_list(j).is_sq_string ())
+                        delim_list(j) = do_string_escapes (delim_list(j)
+                                                           .string_value ());
                       octave_idx_type len = delim_list(j).string_value ()
                                                          .length ();
                       delim_len = std::max (static_cast<int> (len), delim_len);

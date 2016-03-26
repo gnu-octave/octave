@@ -326,7 +326,8 @@ file_editor::find_tab_widget (const QString& file) const
     {
       QString tab_file = p->first;
 
-      if (same_file (file.toStdString (), tab_file.toStdString ()))
+      if (same_file (file.toStdString (), tab_file.toStdString ())
+          || file == tab_file)     // needed as same_file ("","") is false.
         {
           retval = p->second.fet_ID;
           break;
@@ -454,7 +455,20 @@ file_editor::request_open_file (const QString& openFileName,
         }
       else
         {
-          file_editor_tab *fileEditorTab = new file_editor_tab ();
+          file_editor_tab *fileEditorTab = 0;
+          // Reuse <unnamed> tab if it hasn't yet been modified.
+          tab = find_tab_widget ("");
+          if (tab)
+            {
+              fileEditorTab = static_cast<file_editor_tab *>(tab);
+              if (fileEditorTab->qsci_edit_area ()->isModified ())
+                fileEditorTab = 0;
+            }
+
+          // If <unnamed> was absent or modified, create a new tab.
+          if (!fileEditorTab)
+            fileEditorTab = new file_editor_tab ();
+
           if (fileEditorTab)
             {
               fileEditorTab->set_encoding (encoding);

@@ -1362,7 +1362,7 @@ set_warning_option (const std::string& state, const std::string& ident)
           // for "all" is same as arg1, we can simply remove the item
           // from the list.
 
-          if (state == all_state)
+          if (state == all_state && ident != "all")
             {
               for (i = i + 1; i < nel; i++)
                 {

@@ -69,8 +69,8 @@ DEFUN (lu, args, nargout,
 @cindex LU decomposition\n\
 Compute the LU@tie{}decomposition of @var{A}.\n\
 \n\
-If @var{A} is full subroutines from @sc{lapack} are used and if @var{A} is\n\
-sparse then @sc{umfpack} is used.\n\
+If @var{A} is full then subroutines from @sc{lapack} are used, and if\n\
+@var{A} is sparse then @sc{umfpack} is used.\n\
 \n\
 The result is returned in a permuted form, according to the optional return\n\
 value @var{P}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
@@ -103,7 +103,7 @@ p =\n\
 \n\
 The matrix is not required to be square.\n\
 \n\
-When called with two or three output arguments and a spare input matrix,\n\
+When called with two or three output arguments and a sparse input matrix,\n\
 @code{lu} does not attempt to perform sparsity preserving column\n\
 permutations.  Called with a fourth output argument, the sparsity\n\
 preserving column transformation @var{Q} is returned, such that\n\
@@ -125,8 +125,8 @@ the values defined by @code{spparms} are used ([0.1, 0.001]).\n\
 \n\
 Given the string argument @qcode{\"vector\"}, @code{lu} returns the values\n\
 of @var{P} and @var{Q} as vector values, such that for full matrix,\n\
-@code{@var{A} (@var{P},:) = @var{L} * @var{U}}, and @code{@var{R}(@var{P},:)\n\
-* @var{A} (:, @var{Q}) = @var{L} * @var{U}}.\n\
+@code{@var{A}(@var{P},:) = @var{L} * @var{U}}, and @code{@var{R}(@var{P},:)\n\
+* @var{A}(:,@var{Q}) = @var{L} * @var{U}}.\n\
 \n\
 With two output arguments, returns the permuted forms of the upper and\n\
 lower triangular matrices, such that @code{@var{A} = @var{L} * @var{U}}.\n\

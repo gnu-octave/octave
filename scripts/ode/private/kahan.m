@@ -38,7 +38,8 @@
 ## as the second output argument so that it can be reused in future calls of
 ## the same summation.
 ##
-## The third input argument @var{term} is the variable to be added to @var{sum}.
+## The third input argument @var{term} is the variable to be added to
+## @var{sum}.
 ## @end deftypefn
 
 function [sum, comp] = kahan (sum, comp, term)

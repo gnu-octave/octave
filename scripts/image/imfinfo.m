@@ -73,8 +73,8 @@
 ## Number of iterations to loop an animation.
 ##
 ## @item ByteOrder
-## Endian option for formats that support it.  Value is @qcode{"little-endian"},
-## @qcode{"big-endian"}, or @qcode{"undefined"}.
+## Endian option for formats that support it.  Value is
+## @qcode{"little-endian"}, @qcode{"big-endian"}, or @qcode{"undefined"}.
 ##
 ## @item Gamma
 ## Gamma level of the image.  The same color image displayed on two different

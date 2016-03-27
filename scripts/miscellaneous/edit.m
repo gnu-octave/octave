@@ -44,9 +44,9 @@
 ## @item
 ## If @code{@var{name}.cc} is specified, then it will search for
 ## @code{@var{name}.cc} in the path and try to modify it, otherwise it will
-## create a new @file{.cc} file in the current directory.  If @var{name} happens
-## to be an m-file or interpreter defined function, then the text of that
-## function will be inserted into the .cc file as a comment.
+## create a new @file{.cc} file in the current directory.  If @var{name}
+## happens to be an m-file or interpreter defined function, then the text of
+## that function will be inserted into the .cc file as a comment.
 ##
 ## @item
 ## If @file{@var{name}.ext} is on your path then it will be edited, otherwise
@@ -63,11 +63,11 @@
 ## If @code{edit} is called with @var{field} and @var{value} variables, the
 ## value of the control field @var{field} will be set to @var{value}.
 ##
-## If an output argument is requested and the first input argument is @code{get}
-## then @code{edit} will return the value of the control field @var{field}.
-## If the control field does not exist, edit will return a structure
-## containing all fields and values.  Thus, @code{edit ("get", "all")} returns
-## a complete control structure.
+## If an output argument is requested and the first input argument is
+## @code{get} then @code{edit} will return the value of the control field
+## @var{field}.  If the control field does not exist, edit will return a
+## structure containing all fields and values.  Thus, @code{edit ("get",
+## "all")} returns a complete control structure.
 ##
 ## The following control fields are used:
 ##

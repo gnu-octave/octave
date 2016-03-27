@@ -120,7 +120,8 @@
 ## paths to function files.  This usually happens when using autoload()
 ## calls in PKG_ADD files, when the PKG_ADD file is not in the same
 ## directory as the .oct file referred to by the autoload() command.
-## By default, the @code{Octave:autoload-relative-file-name} warning is enabled.
+## By default, the @code{Octave:autoload-relative-file-name} warning is
+## enabled.
 ##
 ## @item Octave:built-in-variable-assignment
 ## By default, the @code{Octave:built-in-variable-assignment} warning is

@@ -65,8 +65,8 @@
 ## The output can also be returned as a structure @var{solution} which
 ## has field @var{x} containing the time where the solution was evaluated and
 ## field @var{y} containing the solution matrix for the times in @var{x}.
-## Use @code{fieldnames (@var{solution})} to see the other fields and additional
-## information returned.
+## Use @code{fieldnames (@var{solution})} to see the other fields and
+## additional information returned.
 ##
 ## If using the @qcode{"Events"} option then three additional outputs may
 ## be returned.  @var{te} holds the time when an Event function returned a
@@ -76,10 +76,10 @@
 ##
 ## This function can be called with two output arguments: @var{t} and @var{y}.
 ## Variable @var{t} is a column vector and contains the time stamps, instead
-## @var{y} is a matrix in which each column refers to a different unknown of the
-## problem and the rows number is the same of @var{t} rows number so that each
-## row of @var{y} contains the values of all unknowns at the time value
-## contained in the corresponding row in @var{t}.
+## @var{y} is a matrix in which each column refers to a different unknown of
+## the problem and the rows number is the same of @var{t} rows number so
+## that each row of @var{y} contains the values of all unknowns at the time
+## value contained in the corresponding row in @var{t}.
 ##
 ## Example: Solve the @nospell{Van der Pol} equation
 ##

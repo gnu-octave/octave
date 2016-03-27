@@ -41,9 +41,9 @@
 ## @strong{Warning:} The alternative mode @qcode{"light"} mode which creates a
 ## light object to illuminate the surface is not implemented (yet).
 ##
-## The light source location can be specified using @var{lsrc}.  It can be given
-## as a 2-element vector [azimuth, elevation] in degrees, or as a 3-element
-## vector [lx, ly, lz].  The default value is rotated 45 degrees
+## The light source location can be specified using @var{lsrc}.  It can be
+## given as a 2-element vector [azimuth, elevation] in degrees, or as a
+## 3-element vector [lx, ly, lz].  The default value is rotated 45 degrees
 ## counterclockwise to the current view.
 ##
 ## The material properties of the surface can specified using a 4-element

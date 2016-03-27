@@ -148,8 +148,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} addOptional (@var{argname}, @var{default})
 ## @deftypefnx {} {} addOptional (@var{argname}, @var{default}, @var{validator})
-## Add new optional argument to the object @var{parser} of the class inputParser
-## to implement an ordered arguments type of API
+## Add new optional argument to the object @var{parser} of the class
+## inputParser to implement an ordered arguments type of API
 ##
 ## @var{argname} must be a string with the name of the new argument.  The order
 ## in which new arguments are added with @command{addOptional}, represents the

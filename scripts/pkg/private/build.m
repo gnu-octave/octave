@@ -25,7 +25,9 @@
 ##
 ## @enumerate
 ## @item untar the tarball in @var{builddir};
+##
 ## @item build anything necessary (configure and make);
+##
 ## @item repackage specifying the build arch in the tarball filename.
 ## @end enumerate
 ##

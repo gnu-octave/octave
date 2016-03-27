@@ -24,7 +24,8 @@
 ##
 ## If the last element of @var{c} is not the same as the first element of
 ## @var{r}, the last element of @var{c} is used.  If the second argument is
-## omitted, it is assumed to be a vector of zeros with the same size as @var{c}.
+## omitted, it is assumed to be a vector of zeros with the same size as
+## @var{c}.
 ##
 ## A Hankel matrix formed from an m-vector @var{c}, and an n-vector @var{r},
 ## has the elements

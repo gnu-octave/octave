@@ -41,7 +41,8 @@
 ## @math{t} by @math{p} matrix.
 ## @end ifnottex
 ##
-## Each row of @var{y} and @var{x} is an observation and each column a variable.
+## Each row of @var{y} and @var{x} is an observation and each column a
+## variable.
 ##
 ## The return values @var{beta}, @var{sigma}, and @var{r} are defined as
 ## follows.

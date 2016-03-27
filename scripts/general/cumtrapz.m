@@ -31,7 +31,8 @@
 ## When the argument @var{x} is omitted an equally spaced @var{x} vector with
 ## unit spacing (1) is assumed.  @code{cumtrapz (@var{x}, @var{y})} evaluates
 ## the integral with respect to the spacing in @var{x} and the values in
-## @var{y}.  This is useful if the points in @var{y} have been sampled unevenly.
+## @var{y}.  This is useful if the points in @var{y} have been sampled
+## unevenly.
 ##
 ## If the optional @var{dim} argument is given, operate along this dimension.
 ##

@@ -44,12 +44,12 @@
 ## not important.
 ##
 ## If called with a single reference data matrix @var{v} and a refinement
-## value @var{n}, then perform interpolation over a 3-D grid where each original
-## interval has been recursively subdivided @var{n} times.  This results in
-## @code{2^@var{n}-1} additional points for every interval in the original
-## grid.  If @var{n} is omitted a value of 1 is used.  As an example, the
-## interval [0,1] with @code{@var{n}==2} results in a refined interval with
-## points at [0, 1/4, 1/2, 3/4, 1].
+## value @var{n}, then perform interpolation over a 3-D grid where each
+## original interval has been recursively subdivided @var{n} times.  This
+## results in @code{2^@var{n}-1} additional points for every interval in the
+## original grid.  If @var{n} is omitted a value of 1 is used.  As an
+## example, the interval [0,1] with @code{@var{n}==2} results in a refined
+## interval with points at [0, 1/4, 1/2, 3/4, 1].
 ##
 ## The interpolation @var{method} is one of:
 ##

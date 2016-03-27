@@ -63,8 +63,8 @@
 ## The output can also be returned as a structure @var{solution} which
 ## has field @var{x} containing the time where the solution was evaluated and
 ## field @var{y} containing the solution matrix for the times in @var{x}.
-## Use @code{fieldnames (@var{solution})} to see the other fields and additional
-## information returned.
+## Use @code{fieldnames (@var{solution})} to see the other fields and
+## additional information returned.
 ##
 ## If using the @qcode{"Events"} option then three additional outputs may
 ## be returned.  @var{te} holds the time when an Event function returned a

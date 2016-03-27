@@ -20,7 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} fpdf (@var{x}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the probability density function (PDF)
-## at @var{x} of the F distribution with @var{m} and @var{n} degrees of freedom.
+## at @var{x} of the F distribution with @var{m} and @var{n} degrees of
+## freedom.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

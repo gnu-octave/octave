@@ -42,9 +42,9 @@
 ## and text objects generating the plot.
 ##
 ## Note: If @code{sum (@var{x}) @leq{} 1} then the elements of @var{x} are
-## interpreted as percentages directly and are not normalized by @code{sum (x)}.
-## Furthermore, if the sum is less than 1 then there will be a missing slice
-## in the pie plot to represent the missing, unspecified percentage.
+## interpreted as percentages directly and are not normalized by @code{sum
+## (x)}.  Furthermore, if the sum is less than 1 then there will be a missing
+## slice in the pie plot to represent the missing, unspecified percentage.
 ##
 ## @seealso{pie3, bar, hist, rose}
 ## @end deftypefn

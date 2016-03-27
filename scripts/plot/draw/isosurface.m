@@ -42,8 +42,8 @@
 ##
 ## The string input argument @qcode{"noshare"} is only for compatibility and
 ## has no effect.  If given the string input argument
-## @qcode{"verbose"} then print messages to the command line interface about the
-## current progress.
+## @qcode{"verbose"} then print messages to the command line interface about
+## the current progress.
 ##
 ## If called with the input argument @var{col} which is a
 ## three-dimensional array of the same size than @var{val} then take

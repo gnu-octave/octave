@@ -168,7 +168,8 @@
 ##
 ## @item describe
 ## Show a short description of the named installed packages, with the option
-## @qcode{"-verbose"} also list functions provided by the package.  For example,
+## @qcode{"-verbose"} also list functions provided by the package.  For
+## example,
 ##
 ## @example
 ## pkg describe -verbose all
@@ -270,8 +271,8 @@
 ## @item rebuild
 ## Rebuild the package database from the installed directories.  This can
 ## be used in cases where the package database has been corrupted.
-## It can also take the @option{-auto} and @option{-noauto} options to allow the
-## autoloading state of a package to be changed.  For example,
+## It can also take the @option{-auto} and @option{-noauto} options to allow
+## the autoloading state of a package to be changed.  For example,
 ##
 ## @example
 ## pkg rebuild -noauto image

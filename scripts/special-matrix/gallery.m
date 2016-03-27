@@ -154,8 +154,8 @@
 ## If @var{imin} is given then the integers are in the range
 ## [@var{imin}, @var{imax}].
 ##
-## The second input is a matrix of dimensions describing the size of the output.
-## The dimensions can also be input as comma-separated arguments.
+## The second input is a matrix of dimensions describing the size of the
+## output.  The dimensions can also be input as comma-separated arguments.
 ##
 ## The input @var{j} is an integer index in the range [0, 2^32-1].  The values
 ## of the output matrix are always exactly the same (reproducibility) for a

@@ -26,7 +26,8 @@
 ## Return the unique elements of @var{x} sorted in ascending order.
 ##
 ## If the input @var{x} is a column vector then return a column vector;
-## Otherwise, return a row vector.  @var{x} may also be a cell array of strings.
+## Otherwise, return a row vector.  @var{x} may also be a cell array of
+## strings.
 ##
 ## If the optional argument @qcode{"rows"} is given then return the unique
 ## rows of @var{x} sorted in ascending order.  The input must be a 2-D matrix
@@ -35,10 +36,11 @@
 ## If requested, return index vectors @var{i} and @var{j} such that
 ## @code{@var{y} = @var{x}(@var{i})} and @code{@var{x} = @var{y}(@var{j})}.
 ##
-## Additionally, if @var{i} is a requested output then one of @qcode{"first"} or
-## @qcode{"last"} may be given as an input.  If @qcode{"last"} is specified,
-## return the highest possible indices in @var{i}, otherwise, if @qcode{"first"}
-## is specified, return the lowest.  The default is @qcode{"last"}.
+## Additionally, if @var{i} is a requested output then one of
+## @qcode{"first"} or @qcode{"last"} may be given as an input.  If
+## @qcode{"last"} is specified, return the highest possible indices in
+## @var{i}, otherwise, if @qcode{"first"} is specified, return the lowest. 
+## The default is @qcode{"last"}.
 ## @seealso{union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 

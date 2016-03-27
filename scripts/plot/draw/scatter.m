@@ -38,8 +38,8 @@
 ## The color of the markers is determined by @var{c}, which can be a string
 ## defining a fixed color; a 3-element vector giving the red, green, and blue
 ## components of the color; a vector of the same length as @var{x} that gives
-## a scaled index into the current colormap; or an @nospell{Nx3} matrix defining
-## the RGB color of each marker individually.
+## a scaled index into the current colormap; or an @nospell{Nx3} matrix
+## defining the RGB color of each marker individually.
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
 ## string defining a marker in the same manner as the @code{plot} command.

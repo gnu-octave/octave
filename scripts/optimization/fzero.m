@@ -76,10 +76,12 @@
 ##  Number of function evaluations.
 ##
 ## @item bracketx
-##  A two-element vector with the final bracketing of the zero along the x-axis.
+##  A two-element vector with the final bracketing of the zero along the
+## x-axis.
 ##
 ## @item brackety
-##  A two-element vector with the final bracketing of the zero along the y-axis.
+##  A two-element vector with the final bracketing of the zero along the
+## y-axis.
 ## @end itemize
 ## @seealso{optimset, fsolve}
 ## @end deftypefn

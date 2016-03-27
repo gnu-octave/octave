@@ -31,8 +31,8 @@
 ## @url{http://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods}.
 ##
 ## @var{@fun} is a function handle that defines the ODE: @code{y' = f(tau,y)}.
-## The function must accept two inputs where the first is time @var{tau} and the
-## second is a column vector of unknowns @var{y}.
+## The function must accept two inputs where the first is time @var{tau} and
+## the second is a column vector of unknowns @var{y}.
 ##
 ## @var{t} is the first extreme of integration interval.
 ##

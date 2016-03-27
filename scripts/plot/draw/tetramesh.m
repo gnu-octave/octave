@@ -21,7 +21,8 @@
 ## @deftypefnx {} {} tetramesh (@var{T}, @var{X}, @var{C})
 ## @deftypefnx {} {} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
 ## @deftypefnx {} {@var{h} =} tetramesh (@dots{})
-## Display the tetrahedrons defined in the m-by-4 matrix @var{T} as 3-D patches.
+## Display the tetrahedrons defined in the m-by-4 matrix @var{T} as 3-D
+## patches.
 ##
 ## @var{T} is typically the output of a Delaunay triangulation of a 3-D set
 ## of points.  Every row of @var{T} contains four indices into the n-by-3

@@ -154,7 +154,8 @@
 ## @end example
 ##
 ## This example uses ILU as preconditioner for a random FEM-Matrix, which has a
-## large condition number.  Without @var{L} and @var{U} BICG would not converge.
+## large condition number.  Without @var{L} and @var{U} BICG would not
+## converge.
 ##
 ## @seealso{lu, ichol, bicg, gmres}
 ## @end deftypefn

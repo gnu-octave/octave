@@ -55,7 +55,8 @@
 ## are taken as times at which the solution is required.
 ##
 ## The fifth argument represents the initial conditions for the ODEs and the
-## last input argument contains some options that may be needed for the stepper.
+## last input argument contains some options that may be needed for the
+## stepper.
 ##
 ## @end deftypefn
 ##

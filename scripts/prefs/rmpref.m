@@ -20,7 +20,8 @@
 ## @deftypefn  {} {} rmpref ("@var{group}", "@var{pref}")
 ## @deftypefnx {} {} rmpref ("@var{group}", @{"@var{pref1}", "@var{pref2}", @dots{}@})
 ## @deftypefnx {} {} rmpref ("@var{group}")
-## Remove the named preference @var{pref} from the preference group @var{group}.
+## Remove the named preference @var{pref} from the preference group
+## @var{group}.
 ##
 ## The named preference group must be a string.
 ##

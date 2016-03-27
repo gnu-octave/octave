@@ -42,7 +42,8 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional output @var{c} are the contour levels in @code{contourc} format.
+## The optional output @var{c} are the contour levels in @code{contourc}
+## format.
 ##
 ## The optional return value @var{h} is a graphics handle to the hggroup
 ## comprising the contour lines.

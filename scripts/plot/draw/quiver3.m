@@ -42,8 +42,8 @@
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.
 ## If a marker is specified then markers at the grid points of the vectors are
-## drawn rather than arrows.  If the argument @qcode{"filled"} is given then the
-## markers are filled.
+## drawn rather than arrows.  If the argument @qcode{"filled"} is given then
+## the markers are filled.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.

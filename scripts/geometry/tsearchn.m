@@ -25,8 +25,8 @@
 ## containing the points @var{xi}.  For points outside the convex hull,
 ## @var{idx} is NaN.
 ##
-## If requested @code{tsearchn} also returns the Barycentric coordinates @var{p}
-## of the enclosing triangles.
+## If requested @code{tsearchn} also returns the Barycentric coordinates
+## @var{p} of the enclosing triangles.
 ## @seealso{delaunay, delaunayn}
 ## @end deftypefn
 

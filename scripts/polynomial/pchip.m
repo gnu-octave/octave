@@ -51,7 +51,8 @@
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
 ## and each row of this matrix is then treated separately.  Note that this is
-## exactly opposite to @code{interp1} but is done for @sc{matlab} compatibility.
+## exactly opposite to @code{interp1} but is done for @sc{matlab}
+## compatibility.
 ##
 ## @seealso{spline, ppval, mkpp, unmkpp}
 ## @end deftypefn

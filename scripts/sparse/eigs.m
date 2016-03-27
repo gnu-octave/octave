@@ -107,7 +107,8 @@
 ## @table @code
 ## @item issym
 ## If @var{af} is given, then flags whether the function @var{af} defines a
-## symmetric problem.  It is ignored if @var{A} is given.  The default is false.
+## symmetric problem.  It is ignored if @var{A} is given.  The default is
+## false.
 ##
 ## @item isreal
 ## If @var{af} is given, then flags whether the function @var{af} defines a
@@ -173,13 +174,13 @@
 ## @end table
 ##
 ## The return arguments of @code{eigs} depend on the number of return arguments
-## requested.  With a single return argument, a vector @var{d} of length @var{k}
-## is returned containing the @var{k} eigenvalues that have been found.  With
-## two return arguments, @var{V} is a @var{n}-by-@var{k} matrix whose columns
-## are the @var{k} eigenvectors corresponding to the returned eigenvalues.  The
-## eigenvalues themselves are returned in @var{d} in the form of a
-## @var{n}-by-@var{k} matrix, where the elements on the diagonal are the
-## eigenvalues.
+## requested.  With a single return argument, a vector @var{d} of length
+## @var{k} is returned containing the @var{k} eigenvalues that have been
+## found.  With two return arguments, @var{V} is a @var{n}-by-@var{k} matrix
+## whose columns are the @var{k} eigenvectors corresponding to the returned
+## eigenvalues.  The eigenvalues themselves are returned in @var{d} in the
+## form of a @var{n}-by-@var{k} matrix, where the elements on the diagonal
+## are the eigenvalues.
 ##
 ## Given a third return argument @var{flag}, @code{eigs} returns the status
 ## of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.

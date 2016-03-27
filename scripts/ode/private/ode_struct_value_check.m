@@ -22,7 +22,8 @@
 ## @deftypefnx {} {} ode_struct_value_check (@var{"caller"), @var{ode_struct}, @var{"solver"})
 ## @deftypefnx {} {@var{ode_struct} =} ode_struct_value_check (@dots{})
 ##
-## Validate the fields and values in the ODE options structure @var{ode_struct}.
+## Validate the fields and values in the ODE options structure
+## @var{ode_struct}.
 ##
 ## The first argument @var{caller} is a string with the name of the calling
 ## function so that warning and error messages properly display the source

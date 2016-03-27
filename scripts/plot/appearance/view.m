@@ -39,7 +39,8 @@
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
 ##
-## If no inputs are given, return the current @var{azimuth} and @var{elevation}.
+## If no inputs are given, return the current @var{azimuth} and
+## @var{elevation}.
 ## @end deftypefn
 
 ## Author: jwe

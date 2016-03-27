@@ -75,8 +75,8 @@
 ## be supplied and @code{interp1} returns a piecewise polynomial object.  This
 ## object can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
-## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x}, @var{y},
-## @var{xi}, @var{method}, @qcode{"extrap"})}.
+## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x},
+## @var{y}, @var{xi}, @var{method}, @qcode{"extrap"})}.
 ##
 ## Duplicate points in @var{x} specify a discontinuous interpolant.  There
 ## may be at most 2 consecutive points with the same value.

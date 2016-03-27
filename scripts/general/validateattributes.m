@@ -55,7 +55,8 @@
 ##
 ## @table @asis
 ## @item @qcode{"<="}
-## All values are less than or equal to the following value in @var{attributes}.
+## All values are less than or equal to the following value in
+## @var{attributes}.
 ##
 ## @item @qcode{"<"}
 ## All values are less than the following value in @var{attributes}.

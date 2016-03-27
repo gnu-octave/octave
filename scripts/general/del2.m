@@ -45,8 +45,8 @@
 ## @end example
 ##
 ## @end ifnottex
-## For N-dimensional arrays the sum in parentheses is expanded to include second
-## derivatives over the additional higher dimensions.
+## For N-dimensional arrays the sum in parentheses is expanded to include
+## second derivatives over the additional higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
 ## scalar defining the equidistant spacing in all dimensions.  Alternatively,

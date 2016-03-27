@@ -35,9 +35,9 @@
 ## @var{x}, @var{y}, @var{z} for the location of the j-th vertex of the i-th
 ## tetrahedron.
 ##
-## An optional fourth argument, which must be a string or cell array of strings,
-## contains options passed to the underlying qhull command.
-## See the documentation for the Qhull library for details
+## An optional fourth argument, which must be a string or cell array of
+## strings, contains options passed to the underlying qhull command.  See the
+## documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
 ## The default options are @code{@{"Qt", "Qbb", "Qc", "Qz"@}}.
 ##

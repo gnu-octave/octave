@@ -50,12 +50,14 @@
 ## @item @qcode{"xdata"}
 ## If @var{value1} is a two element vector, it must contain horizontal axis
 ## limits in the form [xmin xmax]; Otherwise @var{value1} must be a vector and
-## only the first and last elements will be used for xmin and xmax respectively.
+## only the first and last elements will be used for xmin and xmax
+## respectively.
 ##
 ## @item @qcode{"ydata"}
 ## If @var{value1} is a two element vector, it must contain vertical axis
 ## limits in the form [ymin ymax]; Otherwise @var{value1} must be a vector and
-## only the first and last elements will be used for ymin and ymax respectively.
+## only the first and last elements will be used for ymin and ymax
+## respectively.
 ##
 ## @end table
 ##

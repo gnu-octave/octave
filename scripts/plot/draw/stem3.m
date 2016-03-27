@@ -27,7 +27,8 @@
 ##
 ## Stems are drawn from the height @var{z} to the location in the x-y plane
 ## determined by @var{x} and @var{y}.  The default color is @qcode{"b"} (blue),
-## the default line style is @qcode{"-"}, and the default marker is @qcode{"o"}.
+## the default line style is @qcode{"-"}, and the default marker is
+## @qcode{"o"}.
 ##
 ## The line style can be altered by the @code{linespec} argument in the same
 ## manner as the @code{plot} command.  If the @qcode{"filled"} argument is

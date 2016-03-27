@@ -40,7 +40,8 @@
 ##
 ## @table @asis
 ## @item @qcode{"grouped"} (default)
-## Side-by-side bars with a gap between bars and centered over the Y-coordinate.
+## Side-by-side bars with a gap between bars and centered over the
+## Y-coordinate.
 ##
 ## @item  @qcode{"stacked"}
 ## Bars are stacked so that each Y value has a single bar composed of

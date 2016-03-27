@@ -53,9 +53,9 @@
 ##
 ## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
 ## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
-## amount of Jacobian calculations.  If your user function always calculates the
-## Jacobian (regardless of number of output arguments) then this option provides
-## no advantage and should be set to false.
+## amount of Jacobian calculations.  If your user function always calculates
+## the Jacobian (regardless of number of output arguments) then this option
+## provides no advantage and should be set to false.
 ##
 ## @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations possess

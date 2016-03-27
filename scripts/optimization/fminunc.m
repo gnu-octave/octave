@@ -41,11 +41,11 @@
 ## @qcode{"AutoScaling"}.
 ##
 ## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn}, when
-## called with two output arguments, also returns the Jacobian matrix of partial
-## first derivatives at the requested point.  @code{TolX} specifies the
-## termination tolerance for the unknown variables @var{x}, while @code{TolFun}
-## is a tolerance for the objective function value @var{fval}.  The default is
-## @code{1e-7} for both options.
+## called with two output arguments, also returns the Jacobian matrix of
+## partial first derivatives at the requested point.  @code{TolX} specifies
+## the termination tolerance for the unknown variables @var{x}, while
+## @code{TolFun} is a tolerance for the objective function value @var{fval}.
+##  The default is @code{1e-7} for both options.
 ##
 ## For a description of the other options, see @code{optimset}.
 ##
@@ -76,9 +76,10 @@
 ## The trust region radius became excessively small.
 ## @end table
 ##
-## Optionally, @code{fminunc} can return a structure with convergence statistics
-## (@var{output}), the output gradient (@var{grad}) at the solution @var{x},
-## and approximate Hessian (@var{hess}) at the solution @var{x}.
+## Optionally, @code{fminunc} can return a structure with convergence
+## statistics (@var{output}), the output gradient (@var{grad}) at the
+## solution @var{x}, and approximate Hessian (@var{hess}) at the solution
+## @var{x}.
 ##
 ## Application Notes: If the objective function is a single nonlinear equation
 ## of one variable then using @code{fminbnd} is usually a better choice.

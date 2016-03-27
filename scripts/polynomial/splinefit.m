@@ -31,9 +31,9 @@
 ## @var{x} is a vector, and @var{y} is a vector or N-D array.  If @var{y} is an
 ## N-D array, then @var{x}(j) is matched to @var{y}(:,@dots{},:,j).
 ##
-## @var{p} is a positive integer defining the number of intervals along @var{x},
-## and @var{p}+1 is the number of breaks.  The number of points in each interval
-## differ by no more than 1.
+## @var{p} is a positive integer defining the number of intervals along
+## @var{x}, and @var{p}+1 is the number of breaks.  The number of points in
+## each interval differ by no more than 1.
 ##
 ## The optional property @var{periodic} is a logical value which specifies
 ## whether a periodic boundary condition is applied to the spline.  The

@@ -28,8 +28,8 @@
 ## given as 2-element vectors [azimuth, elevation] in degrees or as 3-element
 ## vectors [x, y, z].
 ##
-## An optional sixth argument specifies the specular exponent (spread) @var{se}.
-## If not given, @var{se} defaults to 10.
+## An optional sixth argument specifies the specular exponent (spread)
+## @var{se}.  If not given, @var{se} defaults to 10.
 ## @seealso{diffuse, surfl}
 ## @end deftypefn
 

@@ -33,10 +33,10 @@
 ## The optional argument @var{nbits} specifies the bit depth to play to the
 ## audio device and defaults to 8 bits.
 ##
-## By default, @var{y} is automatically normalized to the range [-1, 1].  If the
-## range [@var{ymin}, @var{ymax}] is given, then elements of @var{y} that fall
-## within the range @var{ymin} @leq{} @var{y} @leq{} @var{ymax} are scaled to
-## the range [-1, 1] instead.
+## By default, @var{y} is automatically normalized to the range [-1, 1].  If
+## the range [@var{ymin}, @var{ymax}] is given, then elements of @var{y}
+## that fall within the range @var{ymin} @leq{} @var{y} @leq{} @var{ymax}
+## are scaled to the range [-1, 1] instead.
 ##
 ## For more control over audio playback, use the @code{audioplayer} class.
 ## @seealso{sound, record}

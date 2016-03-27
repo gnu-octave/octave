@@ -41,9 +41,9 @@
 ## statistics are added to the existing ones.
 ##
 ## @item @var{S} = profile ("status")
-## Return a structure with information about the current status of the profiler.
-## At the moment, the only field is @code{ProfilerStatus} which is either
-## @qcode{"on"} or @qcode{"off"}.
+## Return a structure with information about the current status of the
+## profiler.  At the moment, the only field is @code{ProfilerStatus} which is
+## either @qcode{"on"} or @qcode{"off"}.
 ##
 ## @item @var{T} = profile ("info")
 ## Return the collected profiling statistics in the structure @var{T}.  The

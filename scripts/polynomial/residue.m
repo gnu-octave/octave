@@ -87,8 +87,8 @@
 ## polynomial specified by @var{r}, @var{p} and @var{k}, and the pole
 ## multiplicity @var{e}.
 ##
-## If the multiplicity, @var{e}, is not explicitly specified the multiplicity is
-## determined by the function @code{mpoles}.
+## If the multiplicity, @var{e}, is not explicitly specified the
+## multiplicity is determined by the function @code{mpoles}.
 ##
 ## For example:
 ##

@@ -71,7 +71,8 @@
 ## @code{@var{xs} = sort (@var{x})} before calling @code{stemleaf (@var{xs})}.
 ##
 ## The stem and leaf plot and associated displays are described in:
-## Ch. 3, @cite{Exploratory Data Analysis} by J. W. Tukey, Addison-Wesley, 1977.
+## Chapter 3, @cite{Exploratory Data Analysis} by J. W. Tukey, Addison-Wesley,
+## 1977.
 ## @seealso{hist, printd}
 ## @end deftypefn
 

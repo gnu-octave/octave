@@ -59,10 +59,10 @@
 ##
 ## The inputs @var{T} and @var{N} must be non-negative numeric scalars.  If
 ## @var{N} is unspecified it defaults to 1.
-## 
+##
 ## The output row vectors @var{num} and @var{den} contain the numerator and
 ## denominator coefficients in descending powers of s.  Both are
-## @var{N}th-order polynomials.  
+## @var{N}th-order polynomials.
 ##
 ## For example:
 ##

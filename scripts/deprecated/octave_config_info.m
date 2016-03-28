@@ -25,7 +25,7 @@
 ## @code{__octave_config_info__} as a replacement.
 ##
 ## Return a structure containing configuration and installation
-## information for Octave. 
+## information for Octave.
 ##
 ## If @var{option} is a string, return the configuration information for
 ## the specified option.

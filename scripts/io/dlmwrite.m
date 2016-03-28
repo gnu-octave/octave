@@ -22,7 +22,7 @@
 ## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
 ## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
 ## @deftypefnx {} {} dlmwrite (@var{fid}, @dots{})
-## Write the numeric matrix @var{M} to the text file @var{file} using a 
+## Write the numeric matrix @var{M} to the text file @var{file} using a
 ## delimiter.
 ##
 ## @var{file} should be a filename or a writable file ID given by @code{fopen}.

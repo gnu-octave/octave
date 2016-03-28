@@ -1238,36 +1238,32 @@ DEFUN (textscan, args, ,
 Read data from a text file or string.\n\
 \n\
 The string @var{str} or file associated with @var{fid} is read from and\n\
-parsed according to @var{format}.\n\
-The function is an extension of @code{strread} and @code{textread}.\n\
-Differences include: the ability to read from either a file or a string,\n\
-additional options, and additional format specifiers.\n\
+parsed according to @var{format}.  The function is an extension of\n\
+@code{strread} and @code{textread}.  Differences include: the ability to\n\
+read from either a file or a string, additional options, and additional\n\
+format specifiers.\n\
 \n\
-The input is interpreted as a sequence of \"words\", delimiters\n\
-(such as whitespace) and literals.\n\
-The characters that form delimiters and whitespace are determined\n\
-by the options.\n\
-The format consists of format specifiers interspersed between literals.\n\
-In the format, whitespace forms a delimiter between consecutive literals,\n\
-but is otherwise ignored.\n\
+The input is interpreted as a sequence of words, delimiters (such as\n\
+whitespace), and literals.  The characters that form delimiters and\n\
+whitespace are determined by the options.  The format consists of format\n\
+specifiers interspersed between literals.  In the format, whitespace forms\n\
+a delimiter between consecutive literals, but is otherwise ignored.\n\
 \n\
-The output @var{C} is a cell array whose second dimension is determined\n\
+The output @var{C} is a cell array where the number of columns is determined\n\
 by the number of format specifiers.\n\
 \n\
-The first word of the input is matched to the first specifier of the\n\
-format and placed in the first column of the output;\n\
-the second is matched to the second specifier and placed in the second column\n\
-and so forth.\n\
-If there are more words than specifiers, the process is repeated until all\n\
-words have been processed or the limit imposed by @var{repeat} has been met\n\
-(see below).\n\
+The first word of the input is matched to the first specifier of the format\n\
+and placed in the first column of the output; the second is matched to the\n\
+second specifier and placed in the second column and so forth.  If there\n\
+are more words than specifiers then the process is repeated until all words\n\
+have been processed or the limit imposed by @var{repeat} has been met (see\n\
+below).\n\
 \n\
 The string @var{format} describes how the words in @var{str} should be\n\
-parsed.\n\
-As in @var{fscanf}, any (non-whitespace) text in the format that is\n\
-not one of these specifiers is considered a literal;\n\
-if there is a literal between two format specifiers then that same literal\n\
-must appear in the input stream between the matching words.\n\
+parsed.  As in @var{fscanf}, any (non-whitespace) text in the format that is\n\
+not one of these specifiers is considered a literal.  If there is a literal\n\
+between two format specifiers then that same literal must appear in the\n\
+input stream between the matching words.\n\
 \n\
 The following specifiers are valid:\n\
 \n\
@@ -1285,94 +1281,86 @@ The word is parsed as a number and converted to single (float).\n\
 @itemx %d16\n\
 @itemx %d32\n\
 @itemx %d64\n\
-The word is parsed as a number and converted to int8, int16, int32 or int64.\n\
-If not size is specified, int32 is used.\n\
+The word is parsed as a number and converted to int8, int16, int32, or\n\
+int64.  If no size is specified then int32 is used.\n\
 \n\
 @item  %u\n\
 @itemx %u8\n\
 @itemx %u16\n\
 @itemx %u32\n\
 @itemx %u64\n\
-The word is parsed as a number and converted to uint8, uint16, uint32 or\n\
-uint64. If not size is specified, uint32 is used.\n\
+The word is parsed as a number and converted to uint8, uint16, uint32, or\n\
+uint64.  If no size is specified then uint32 is used.\n\
 \n\
 @item %s\n\
-The word is parsed as a string, ending at the last character before\n\
-whitespace, an end-of-line or a delimiter specified in the options.\n\
+The word is parsed as a string ending at the last character before\n\
+whitespace, an end-of-line, or a delimiter specified in the options.\n\
 \n\
 @item %q\n\
 The word is parsed as a \"quoted string\".\n\
 If the first character of the string is a double quote (\") then the string\n\
-includes everything until a matching double quote, including whitespace,\n\
-delimiters and end of line characters.\n\
-If a pair of consecutive double quotes appears in the input,\n\
-it is replaced in the output by a single double quote.\n\
-That is, the input \"He said \"\"Hello\"\"\" would return the value\n\
-'He said \"Hello\"'.\n\
+includes everything until a matching double quote---including whitespace,\n\
+delimiters, and end-of-line characters.  If a pair of consecutive double\n\
+quotes appears in the input, it is replaced in the output by a single\n\
+double quote.  For examples, the input \"He said \"\"Hello\"\"\" would\n\
+return the value 'He said \"Hello\"'.\n\
 \n\
 @item  %c\n\
 The next character of the input is read.\n\
-This includes delimiters, whitespace and end of line characters.\n\
+This includes delimiters, whitespace, and end-of-line characters.\n\
 \n\
-@item  %[...]\n\
-@itemx %[^...]\n\
+@item  %[@dots{}]\n\
+@itemx %[^@dots{}]\n\
 In the first form, the word consists of the longest run consisting of only\n\
-characters between the brackets.\n\
-Ranges of characters can be specified by a hyphen;\n\
-for example, %[0-9a-zA-Z] matches all alphanumeric characters\n\
-(if the underlying character set is ASCII).\n\
-Since Matlab treats hyphens literally, this expansion only applies to\n\
-alphanumeric characters.\n\
-To include '-' in the set, it should appear first or last in the brackets;\n\
-to include ']', it should be the first character.\n\
-If the first character is '^' then the word consists of characters\n\
-NOT listed.\n\
+characters between the brackets.  Ranges of characters can be specified by\n\
+a hyphen; for example, %[0-9a-zA-Z] matches all alphanumeric characters (if\n\
+the underlying character set is ASCII).  Since @sc{matlab} treats hyphens\n\
+literally, this expansion only applies to alphanumeric characters.  To\n\
+include '-' in the set, it should appear first or last in the brackets; to\n\
+include ']', it should be the first character.  If the first character is\n\
+'^' then the word consists of characters @strong{not} listed.\n\
 \n\
-@item %N...\n\
-For %s, %c %d, %f, %n, %u, an optional width can be specified as %Ns etc.\n\
-where N is an integer > 1.\n\
-For %c, this causes exactly the next N characters to be read instead of\n\
-a single character.\n\
-For the other specifiers, it is an upper bound on the\n\
-number of characters read;\n\
-normal delimiters can cause fewer characters to be read.\n\
-For complex numbers, this limit applies to the real and imaginary\n\
-components individually.\n\
-For %f and %n, format specifiers like %N.Mf are allowed, where M is an upper\n\
-bound on number of characters after the decimal point to be considered;\n\
-subsequent digits are skipped.\n\
-For example, the specifier %8.2f would read 12.345e6 as 1.234e7.\n\
+@item %N@dots{}\n\
+For %s, %c %d, %f, %n, %u, an optional width can be specified as %Ns, etc.\n\
+where N is an integer > 1.  For %c, this causes exactly N characters to be\n\
+read instead of a single character.  For the other specifiers, it is an\n\
+upper bound on the number of characters read; normal delimiters can cause\n\
+fewer characters to be read.  For complex numbers, this limit applies to\n\
+the real and imaginary components individually.  For %f and %n, format\n\
+specifiers like %N.Mf are allowed, where M is an upper bound on number of\n\
+characters after the decimal point to be considered; subsequent digits are\n\
+skipped.  For example, the specifier %8.2f would read 12.345e6 as 1.234e7.\n\
 \n\
-@item %*...\n\
+@item %*@dots{}\n\
 The word specified by the remainder of the conversion specifier is skipped.\n\
 \n\
 @item literals\n\
-In addition the format may contain literal character strings;\n\
-these will be skipped during reading.\n\
-If the input string does not match this literal, the processing terminates,\n\
-unless \"ReturnOnError\" is set to \"continue\".\n\
+In addition the format may contain literal character strings; these will be\n\
+skipped during reading.  If the input string does not match this literal,\n\
+the processing terminates, unless @qcode{\"ReturnOnError\"} is set to\n\
+@qcode{\"continue\"}.\n\
 @end table\n\
 \n\
 Parsed words corresponding to the first specifier are returned in the first\n\
 output argument and likewise for the rest of the specifiers.\n\
 \n\
 By default, if there is only one input argument, @var{format} is @t{\"%f\"}.\n\
-This means that numbers are read from @var{str} into a single column vector.\n\
-If @var{format} is explicitly empty, \"\", then textscan will return data\n\
-in a number of columns matching the number of fields on the first data\n\
-line of the input.\n\
-Either of these is suitable only if @var{str} contains only numeric fields.\n\
+This means that numbers are read from the input into a single column vector.\n\
+If @var{format} is explicitly empty (@qcode{\"\"}) then textscan will\n\
+return data in a number of columns matching the number of fields on the\n\
+first data line of the input.  Either of these is suitable only when the\n\
+input is exclusively numeric.\n\
 \n\
 For example, the string\n\
 \n\
-@example\n\
+@smallexample\n\
 @group\n\
 @var{str} = \"\\\n\
 Bunny Bugs   5.5\\n\\\n\
 Duck Daffy  -7.5e-5\\n\\\n\
 Penguin Tux   6\"\n\
 @end group\n\
-@end example\n\
+@end smallexample\n\
 \n\
 @noindent\n\
 can be read using\n\
@@ -1386,64 +1374,60 @@ number of items read:\n\
 \n\
 @table @asis\n\
 @item -1\n\
-(default) read all of the string or file until the end.\n\
+Read all of the string or file until the end (default).\n\
 \n\
 @item N\n\
-Read until the first of two conditions occurs: the format has been processed\n\
-N times, or N lines of the input have been processed.\n\
-Zero (0) is an acceptable value for @var{repeat}.\n\
-Currently, end-of-line characters inside %q, %c, and %[...]$ conversions\n\
-do not contribute to the line count.\n\
-This is incompatible with Matlab and may change in future.\n\
+Read until the first of two conditions occurs: 1) the format has been\n\
+processed N times, or 2) N lines of the input have been processed.  Zero\n\
+(0) is an acceptable value for @var{repeat}.  Currently, end-of-line\n\
+characters inside %q, %c, and %[@dots{}]$ conversions do not contribute to\n\
+the line count.  This is incompatible with @sc{matlab} and may change in\n\
+future.\n\
 @end table\n\
 \n\
-The behavior of @code{textscan} can be changed via property-value pairs.\n\
+The behavior of @code{textscan} can be changed via property/value pairs.\n\
 The following properties are recognized:\n\
 \n\
 @table @asis\n\
 @item @qcode{\"BufSize\"}\n\
 This specifies the number of bytes to use for the internal buffer.\n\
-A modest speed improvement is obtained by setting this to a large value\n\
-when reading a large file, especially the input contains long strings.\n\
-The default is 4096, or a value dependent on @var{n} is that is specified.\n\
+A modest speed improvement may be obtained by setting this to a large value\n\
+when reading a large file, especially if the input contains long strings.\n\
+The default is 4096, or a value dependent on @var{n} if that is specified.\n\
 \n\
 @item @qcode{\"CollectOutput\"}\n\
-A value of 1 or true instructs textscan to concatenate consecutive columns\n\
-of the same class in the output cell array.\n\
-A value of 0 or false (default) leaves output in distinct columns.\n\
+A value of 1 or true instructs @code{textscan} to concatenate consecutive\n\
+columns of the same class in the output cell array.  A value of 0 or false\n\
+(default) leaves output in distinct columns.\n\
 \n\
 @item @qcode{\"CommentStyle\"}\n\
-Parts of @var{str} are considered comments and will be skipped.\n\
-@var{value} is the comment style and can be either\n\
-(1) One string, or 1x1 cell string, to skip everything to the right of it;\n\
-(2) A cell array of two strings, to skip everything between the first and\n\
-second strings.\n\
-Comments are only parsed where whitespace is accepted, and do not act as\n\
+Specify parts of the input which are considered comments and will be\n\
+skipped.  @var{value} is the comment style and can be either (1) A string\n\
+or 1x1 cell string, to skip everything to the right of it; (2) A cell array\n\
+of two strings, to skip everything between the first and second strings.  \n\
+Comments are only parsed where whitespace is accepted and do not act as\n\
 delimiters.\n\
 \n\
 @item @qcode{\"Delimiter\"}\n\
 If @var{value} is a string, any character in @var{value} will be used to\n\
-split @var{str} into words.\n\
-If @var{value} is a cell array of strings,\n\
-any string in the array will be used to split @var{str} into words.\n\
+split the input into words.  If @var{value} is a cell array of strings,\n\
+any string in the array will be used to split the input into words.\n\
 (default value = any whitespace.)\n\
 \n\
 @item @qcode{\"EmptyValue\"}\n\
 Value to return for empty numeric values in non-whitespace delimited data.\n\
-The default is NaN@.\n\
-When the data type does not support NaN (int32 for example),\n\
-then default is zero.\n\
+The default is NaN@.  When the data type does not support NaN (int32 for\n\
+example), then the default is zero.\n\
 \n\
 @item @qcode{\"EndOfLine\"}\n\
-@var{value} can be either a emtpy or one character specifying the\n\
-end of line character, or the pair\n\
+@var{value} can be either an emtpy or one character specifying the\n\
+end-of-line character, or the pair\n\
 @qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} (CRLF).\n\
 In the latter case, any of\n\
 @qcode{\"@xbackslashchar{}r\"}, @qcode{\"@xbackslashchar{}n\"} or\n\
 @qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is counted as a (single)\n\
-newline.\n\
-If no value is given, @qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is\n\
-used.\n\
+newline.  If no value is given,\n\
+@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is used.\n\
 @c If set to \"\" (empty string) EOLs are ignored as delimiters and added\n\
 @c to whitespace.\n\
 \n\
@@ -1454,30 +1438,28 @@ used.\n\
 @c in this sense it differs slightly from the format repeat count in strread.\n\
 \n\
 @item @qcode{\"HeaderLines\"}\n\
-The first @var{value} number of lines of @var{fid} are skipped.\n\
-Note that this does not refer to the first non-comment lines, but the first\n\
-lines of any type.\n\
+The first @var{value} number of lines of @var{fid} are skipped.  Note that\n\
+this does not refer to the first non-comment lines, but the first lines of\n\
+any type.\n\
 \n\
 @item @qcode{\"MultipleDelimsAsOne\"}\n\
-If @var{value} is non-zero,\n\
-treat a series of consecutive delimiters, without whitespace in between,\n\
-as a single delimiter.\n\
-Consecutive delimiter series need not be vertically @qcode{\"aligned\"}.\n\
-Without this option, a single delimiter before the end of the line does\n\
-not cause the line to be considered to end with an empty value,\n\
-but a single delimiter at the start of a line causes the line\n\
-to be considered to start with an empty value.\n\
+If @var{value} is nonzero, treat a series of consecutive delimiters,\n\
+without whitespace in between, as a single delimiter.  Consecutive\n\
+delimiter series need not be vertically aligned.  Without this option, a\n\
+single delimiter before the end of the line does not cause the line to be\n\
+considered to end with an empty value, but a single delimiter at the start\n\
+of a line causes the line to be considered to start with an empty value.\n\
 \n\
 @item @qcode{\"TreatAsEmpty\"}\n\
 Treat single occurrences (surrounded by delimiters or whitespace) of the\n\
 string(s) in @var{value} as missing values.\n\
 \n\
 @item @qcode{\"ReturnOnError\"}\n\
-If set to numerical 1 or true, return normally as soon as an error\n\
-is encountered, such as trying to read a string using @qcode{%f}.\n\
-If set to 0 or false, return an error and no data.\n\
-If set to \"continue\" (default), textscan attempts to continue reading\n\
-beyond the location; however, this may cause the parsing to get out of sync.\n\
+If set to numerical 1 or true, return normally as soon as an error is\n\
+encountered, such as trying to read a string using @qcode{%f}.  If set to 0\n\
+or false, return an error and no data.  If set to @qcode{\"continue\"}\n\
+(default), textscan attempts to continue reading beyond the location;\n\
+however, this may cause the parsing to get out of sync.\n\
 \n\
 @item @qcode{\"Whitespace\"}\n\
 Any character in @var{value} will be interpreted as whitespace and trimmed;\n\
@@ -1493,23 +1475,23 @@ always part of whitespace.\n\
 @end table\n\
 \n\
 When the number of words in @var{str} or @var{fid} doesn't match an exact\n\
-multiple of the number of format conversion specifiers,\n\
-textscan's behavior depends on\n\
-whether the last character of the string or file is\n\
-an end-of-line as specified by the EndOfLine option:\n\
+multiple of the number of format conversion specifiers, @code{textscan}'s\n\
+behavior depends on whether the last character of the string or file is an\n\
+end-of-line as specified by the @code{EndOfLine} option:\n\
 \n\
 @table @asis\n\
 @item last character = end-of-line\n\
-Data columns are padded with empty fields, NaN or 0 (for integer fields)\n\
-so that all columns have equal length\n\
+Data columns are padded with empty fields, NaN or 0 (for integer fields) so\n\
+that all columns have equal length\n\
 \n\
 @item last character is not end-of-line\n\
-Data columns are not padded; textscan returns columns of unequal length\n\
+Data columns are not padded; @code{textscan} returns columns of unequal\n\
+length\n\
 @end table\n\
 \n\
 \n\
-The second output, @var{position}, provides the position, in characters\n\
-from the beginning of the file or string, at which the processing stopped.\n\
+The second output @var{position} provides the location, in characters\n\
+from the beginning of the file or string, where processing stopped.\n\
 \n\
 @seealso{dlmread, fscanf, load, strread, textread}\n\
 @end deftypefn")

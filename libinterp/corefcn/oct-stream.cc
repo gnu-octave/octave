@@ -2593,7 +2593,9 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
       buf_size = std::max (buf_size, ntimes);
     }
   // Finally, create the stream.
-  delimited_stream is (isp, whitespace + delims, max_lookahead, buf_size);
+  delimited_stream is (isp,
+                       (delim_table.empty () ? whitespace + "\r\n" : delims),
+                       max_lookahead, buf_size);
 
   // Grow retval dynamically.  "size" is half the initial size
   // (FIXME -- Should we start smaller if ntimes is large?)

@@ -1140,8 +1140,8 @@ error: nargin != 1\n\
 \n\
 A null string (\"\") input to @code{error} will be ignored and the code\n\
 will continue running as if the statement were a NOP@.  This is for\n\
-compatibility with @sc{matlab}.  It also makes it possible to write code such\n\
-as\n\
+compatibility with @sc{matlab}.  It also makes it possible to write code\n\
+such as\n\
 \n\
 @example\n\
 @group\n\
@@ -1405,7 +1405,8 @@ DEFUN (warning, args, nargout,
 @deftypefnx {} {} warning (\"error\", @var{id})\n\
 @deftypefnx {} {} warning (@var{state}, \"backtrace\")\n\
 @deftypefnx {} {} warning (@var{state}, @var{id}, \"local\")\n\
-Display a warning message or control the behavior of Octave's warning system.\n\
+Display a warning message or control the behavior of Octave's warning\n\
+system.\n\
 \n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
@@ -1418,9 +1419,9 @@ to go on.\n\
 \n\
 The optional message identifier allows users to enable or disable\n\
 warnings tagged by @var{id}.  A message identifier is of the form\n\
-\"NAMESPACE:WARNING-NAME\".  Octave's own warnings use the @qcode{\"Octave\"}\n\
-namespace (@pxref{XREFwarning_ids}).  The special identifier @qcode{\"all\"}\n\
-may be used to set the state of all warnings.\n\
+\"NAMESPACE:WARNING-NAME\".  Octave's own warnings use the\n\
+@qcode{\"Octave\"} namespace (@pxref{XREFwarning_ids}).  The special\n\
+identifier @qcode{\"all\"} may be used to set the state of all warnings.\n\
 \n\
 If the first argument is @qcode{\"on\"} or @qcode{\"off\"},\n\
 set the state of a particular warning using the identifier @var{id}.  If the\n\
@@ -1831,9 +1832,9 @@ An optional field with the column number at which the error occurred\n\
 @end table\n\
 @end table\n\
 \n\
-The last error structure may be set by passing a scalar structure, @var{err},\n\
-as input.  Any fields of @var{err} that match those above are set while any\n\
-unspecified fields are initialized with default values.\n\
+The last error structure may be set by passing a scalar structure,\n\
+@var{err}, as input.  Any fields of @var{err} that match those above are\n\
+set while any unspecified fields are initialized with default values.\n\
 \n\
 If @code{lasterror} is called with the argument @qcode{\"reset\"}, all\n\
 fields are set to their default values.\n\

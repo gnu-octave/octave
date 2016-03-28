@@ -80,9 +80,9 @@ DEFUN_DLD (audiodevinfo, args, ,
 Return a structure describing the available audio input and output devices.\n\
 \n\
 The @var{devinfo} structure has two fields @qcode{\"input\"} and\n\
-@qcode{\"output\"}.  The value of each field is a structure array with fields\n\
-@qcode{\"Name\"}, @nospell{\"DriverVersion\"} and @qcode{\"ID\"} describing\n\
-an audio device.\n\
+@qcode{\"output\"}.  The value of each field is a structure array with\n\
+fields @qcode{\"Name\"}, @nospell{\"DriverVersion\"} and @qcode{\"ID\"}\n\
+describing an audio device.\n\
 \n\
 If the optional argument @var{io} is 1, return information about input\n\
 devices only.  If it is 0, return information about output devices only.\n\

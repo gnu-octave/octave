@@ -871,9 +871,9 @@ DEFUN (nargout, args, ,
 @deftypefnx {} {} nargout (@var{fcn})\n\
 Report the number of output arguments from a function.\n\
 \n\
-Called from within a function, return the number of values the caller expects\n\
-to receive.  At the top level, @code{nargout} with no argument is undefined\n\
-and will produce an error.\n\
+Called from within a function, return the number of values the caller\n\
+expects to receive.  At the top level, @code{nargout} with no argument is\n\
+undefined and will produce an error.\n\
 \n\
 If called with the optional argument @var{fcn}---a function name or\n\
 handle---return the number of declared output values that the function can\n\

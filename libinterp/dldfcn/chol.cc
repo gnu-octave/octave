@@ -72,8 +72,8 @@ DEFUN_DLD (chol, args, nargout,
 @deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, \"lower\")\n\
 @deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, \"upper\")\n\
 @cindex Cholesky factorization\n\
-Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive definite\n\
-matrix @var{A}.\n\
+Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive\n\
+definite matrix @var{A}.\n\
 \n\
 The Cholesky@tie{}factor is defined by\n\
 @tex\n\

@@ -130,11 +130,11 @@ of @var{P} and @var{Q} as vector values, such that for full matrix,\n\
 \n\
 With two output arguments, returns the permuted forms of the upper and\n\
 lower triangular matrices, such that @code{@var{A} = @var{L} * @var{U}}.\n\
-With one output argument @var{y}, then the matrix returned by the @sc{lapack}\n\
-routines is returned.  If the input matrix is sparse then the matrix @var{L}\n\
-is embedded into @var{U} to give a return value similar to the full case.\n\
-For both full and sparse matrices, @code{lu} loses the permutation\n\
-information.\n\
+With one output argument @var{y}, then the matrix returned by the\n\
+@sc{lapack} routines is returned.  If the input matrix is sparse then the\n\
+matrix @var{L} is embedded into @var{U} to give a return value similar to\n\
+the full case.  For both full and sparse matrices, @code{lu} loses the\n\
+permutation information.\n\
 @seealso{luupdate, ilu, chol, hess, qr, qz, schur, svd}\n\
 @end deftypefn")
 {

@@ -973,7 +973,7 @@ example because it refers to an undefined variable, an error will be thrown.\n\
 variables, and should generally be avoided.  Conditions containing quotes\n\
 (@samp{\"}, @samp{'}) or comment characters (@samp{#}, @samp{%}) must be\n\
 enclosed in quotes.  (This does not apply to conditions entered from the\n\
-editor's context menu.)  For example: \n\
+editor's context menu.)  For example:\n\
 \n\
 @example\n\
 dbstop in strread at 209 if 'any (format == \"%f\")'\n\
@@ -1125,8 +1125,8 @@ Arguments are\n\
 \n\
 @table @var\n\
 @item func\n\
-Function name as a string variable.  When already in debug mode this argument\n\
-can be omitted and the current function will be used.\n\
+Function name as a string variable.  When already in debug mode this\n\
+argument can be omitted and the current function will be used.\n\
 \n\
 @item line\n\
 Line number from which to remove a breakpoint.  Multiple lines may be given\n\

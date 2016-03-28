@@ -82,7 +82,8 @@ The output variables are\n\
 \n\
 @table @var\n\
 @item count\n\
-The row counts of the Cholesky@tie{}factorization as determined by @var{typ}.\n\
+The row counts of the Cholesky@tie{}factorization as determined by\n\
+@var{typ}.\n\
 \n\
 @item h\n\
 The height of the elimination tree.\n\

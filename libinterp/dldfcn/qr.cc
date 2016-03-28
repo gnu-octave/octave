@@ -137,9 +137,9 @@ $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 @var{R} is upper triangular.\n\
 @end ifnottex\n\
 \n\
-If given a second argument of @qcode{'0'}, @code{qr} returns an economy-sized\n\
-QR@tie{}factorization, omitting zero rows of @var{R} and the corresponding\n\
-columns of @var{Q}.\n\
+If given a second argument of @qcode{'0'}, @code{qr} returns an\n\
+economy-sized QR@tie{}factorization, omitting zero rows of @var{R} and the\n\
+corresponding columns of @var{Q}.\n\
 \n\
 If the matrix @var{A} is full, the permuted QR@tie{}factorization\n\
 @code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} forms the\n\
@@ -734,9 +734,9 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
 @w{@var{A} + @var{u}*@var{v}'}, where @var{u} and @var{v} are column vectors\n\
 (rank-1 update) or matrices with equal number of columns\n\
-(rank-k update).  Notice that the latter case is done as a sequence of rank-1\n\
-updates; thus, for k large enough, it will be both faster and more accurate\n\
-to recompute the factorization from scratch.\n\
+(rank-k update).  Notice that the latter case is done as a sequence of\n\
+rank-1 updates; thus, for k large enough, it will be both faster and more\n\
+accurate to recompute the factorization from scratch.\n\
 \n\
 The QR@tie{}factorization supplied may be either full (Q is square) or\n\
 economized (R is square).\n\

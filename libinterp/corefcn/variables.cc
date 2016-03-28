@@ -2594,12 +2594,12 @@ The @code{width} parameter is a positive integer specifying the minimum\n\
 number of columns used for printing.  No maximum is needed as the field will\n\
 auto-expand as required.\n\
 \n\
-The parameters @code{left-min} and @code{balance} are only available when the\n\
-column-aligned modifier is used with the command @samp{%s}.\n\
-@code{balance} specifies the column number within the field width which will\n\
-be aligned between entries.  Numbering starts from 0 which indicates the\n\
-leftmost column.  @code{left-min} specifies the minimum field width to the\n\
-left of the specified balance column.\n\
+The parameters @code{left-min} and @code{balance} are only available when\n\
+the column-aligned modifier is used with the command @samp{%s}.\n\
+@code{balance} specifies the column number within the field width which\n\
+will be aligned between entries.  Numbering starts from 0 which indicates\n\
+the leftmost column.  @code{left-min} specifies the minimum field width to\n\
+the left of the specified balance column.\n\
 \n\
 The default format is:\n\
 \n\

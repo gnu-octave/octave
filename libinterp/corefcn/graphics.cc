@@ -9775,10 +9775,10 @@ the first row of @var{values} and so on.\n\
 \n\
 @item as a structure array @var{pv}\n\
 \n\
-Here, the field names of @var{pv} represent the property names, and the field\n\
-values give the property values.  In contrast to the previous case, all\n\
-elements of @var{pv} will be set in all handles in @var{h} independent of\n\
-the dimensions of @var{pv}.\n\
+Here, the field names of @var{pv} represent the property names, and the\n\
+field values give the property values.  In contrast to the previous case,\n\
+all elements of @var{pv} will be set in all handles in @var{h} independent\n\
+of the dimensions of @var{pv}.\n\
 @end itemize\n\
 \n\
 @code{set} is also used to query the list of values a named property will\n\

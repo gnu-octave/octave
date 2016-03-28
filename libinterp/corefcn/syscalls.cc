@@ -233,8 +233,8 @@ waitpid (pid);\n\
    @print{} are\n\
 @end example\n\
 \n\
-Note that @code{popen2}, unlike @code{popen}, will not @nospell{\"reap\"} the\n\
-child process.  If you don't use @code{waitpid} to check the child's\n\
+Note that @code{popen2}, unlike @code{popen}, will not @nospell{\"reap\"}\n\
+the child process.  If you don't use @code{waitpid} to check the child's\n\
 exit status, it will linger until Octave exits.\n\
 @seealso{popen, waitpid}\n\
 @end deftypefn")
@@ -873,7 +873,8 @@ DEFUNX ("S_ISREG", FS_ISREG, args, ,
 @deftypefn {} {} S_ISREG (@var{mode})\n\
 Return true if @var{mode} corresponds to a regular file.\n\
 \n\
-The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+The value of @var{mode} is assumed to be returned from a call to\n\
+@code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -890,7 +891,8 @@ DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
 @deftypefn {} {} S_ISDIR (@var{mode})\n\
 Return true if @var{mode} corresponds to a directory.\n\
 \n\
-The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+The value of @var{mode} is assumed to be returned from a call to\n\
+@code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -907,7 +909,8 @@ DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
 @deftypefn {} {} S_ISCHR (@var{mode})\n\
 Return true if @var{mode} corresponds to a character device.\n\
 \n\
-The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+The value of @var{mode} is assumed to be returned from a call to\n\
+@code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -924,7 +927,8 @@ DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
 @deftypefn {} {} S_ISBLK (@var{mode})\n\
 Return true if @var{mode} corresponds to a block device.\n\
 \n\
-The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+The value of @var{mode} is assumed to be returned from a call to\n\
+@code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -941,7 +945,8 @@ DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
 @deftypefn {} {} S_ISFIFO (@var{mode})\n\
 Return true if @var{mode} corresponds to a fifo.\n\
 \n\
-The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+The value of @var{mode} is assumed to be returned from a call to\n\
+@code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -958,7 +963,8 @@ DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
 @deftypefn {} {} S_ISLNK (@var{mode})\n\
 Return true if @var{mode} corresponds to a symbolic link.\n\
 \n\
-The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+The value of @var{mode} is assumed to be returned from a call to\n\
+@code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -975,7 +981,8 @@ DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
 @deftypefn {} {} S_ISSOCK (@var{mode})\n\
 Return true if @var{mode} corresponds to a socket.\n\
 \n\
-The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
+The value of @var{mode} is assumed to be returned from a call to\n\
+@code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {
@@ -1493,7 +1500,8 @@ DEFUNX ("O_SYNC", FO_SYNC, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_SYNC ()\n\
 Return the numerical value of the file status flag that may be\n\
-returned by @code{fcntl} to indicate that a file is open for synchronous I/O.\n\
+returned by @code{fcntl} to indicate that a file is open for synchronous\n\
+I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {

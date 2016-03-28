@@ -363,8 +363,8 @@ The optional argument @qcode{\"overlaps\"} determines whether the pattern\n\
 can match at every position in @var{str} (true), or only for unique\n\
 occurrences of the complete pattern (false).  The default is true.\n\
 \n\
-@var{s} may also be a cell array of strings, in which case the replacement is\n\
-done for each element and a cell array is returned.\n\
+@var{s} may also be a cell array of strings, in which case the replacement\n\
+is done for each element and a cell array is returned.\n\
 \n\
 Example:\n\
 \n\

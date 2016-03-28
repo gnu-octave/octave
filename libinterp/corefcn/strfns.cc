@@ -630,8 +630,8 @@ strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 DEFUN (strncmp, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
-Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are\n\
-the same, and 0 otherwise.\n\
+Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2}\n\
+are the same, and 0 otherwise.\n\
 \n\
 @example\n\
 @group\n\

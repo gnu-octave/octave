@@ -268,8 +268,8 @@ in control (see @code{are} and @code{dare}).\n\
 DEFUN (rsf2csf, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
-Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a complex,\n\
-upper triangular Schur@tie{}form @var{T}.\n\
+Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a\n\
+complex, upper triangular Schur@tie{}form @var{T}.\n\
 \n\
 Note that the following relations hold:\n\
 \n\

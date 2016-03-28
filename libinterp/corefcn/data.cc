@@ -586,8 +586,8 @@ x - y .* fix (x ./ y)\n\
 An error message is printed if the dimensions of the arguments do not agree,\n\
 or if either argument is complex.\n\
 \n\
-Programming Notes: Floating point numbers within a few eps of an integer will\n\
-be rounded to an integer before computation for compatibility with\n\
+Programming Notes: Floating point numbers within a few eps of an integer\n\
+will be rounded to an integer before computation for compatibility with\n\
 @sc{matlab}.\n\
 \n\
 By convention,\n\
@@ -769,8 +769,8 @@ This function handles negative values correctly.  That is,\n\
 An error results if the dimensions of the arguments do not agree, or if\n\
 either of the arguments is complex.\n\
 \n\
-Programming Notes: Floating point numbers within a few eps of an integer will\n\
-be rounded to an integer before computation for compatibility with\n\
+Programming Notes: Floating point numbers within a few eps of an integer\n\
+will be rounded to an integer before computation for compatibility with\n\
 @sc{matlab}.\n\
 \n\
 By convention,\n\
@@ -4324,8 +4324,8 @@ infinity are division by zero and overflow.\n\
 \n\
 When called with no arguments, return a scalar with the value @samp{Inf}.\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -4372,8 +4372,9 @@ DEFUN (NaN, args, ,
 Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
 to the IEEE symbol NaN (Not a Number).\n\
 \n\
-NaN is the result of operations which do not produce a well defined numerical\n\
-result.  Common operations which produce a NaN are arithmetic with infinity\n\
+NaN is the result of operations which do not produce a well defined\n\
+numerical result.  Common operations which produce a NaN are arithmetic\n\
+with infinity\n\
 @tex\n\
 ($\\infty - \\infty$), zero divided by zero ($0/0$),\n\
 @end tex\n\
@@ -4388,8 +4389,8 @@ NaN values, use the @code{isnan} function.\n\
 \n\
 When called with no arguments, return a scalar with the value @samp{NaN}.\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -4444,8 +4445,8 @@ $e$ satisfies the equation $\\log (e) = 1$.\n\
 \n\
 When called with no arguments, return a scalar with the value @math{e}.\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -4612,8 +4613,8 @@ $\\pi$.\n\
 pi.\n\
 @end ifnottex\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -4656,8 +4657,8 @@ for single precision.\n\
 When called with no arguments, return a scalar with the value\n\
 @code{realmax (@qcode{\"double\"})}.\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -4695,8 +4696,8 @@ for single precision.\n\
 When called with no arguments, return a scalar with the value\n\
 @code{realmin (@qcode{\"double\"})}.\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -4737,8 +4738,8 @@ be reused for other purposes (such as i for a counter variable).\n\
 \n\
 When called with no arguments, return a scalar with the value @math{i}.\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -4771,8 +4772,8 @@ To find NA values, use the @code{isna} function.\n\
 \n\
 When called with no arguments, return a scalar with the value @samp{NA}.\n\
 \n\
-When called with a single argument, return a square matrix with the dimension\n\
-specified.\n\
+When called with a single argument, return a square matrix with the\n\
+dimension specified.\n\
 \n\
 When called with more than one scalar argument the first two arguments are\n\
 taken as the number of rows and columns and any further arguments specify\n\
@@ -7661,12 +7662,13 @@ DEFUN (repelems, args, ,
 @deftypefn {} {} repelems (@var{x}, @var{r})\n\
 Construct a vector of repeated elements from @var{x}.\n\
 \n\
-@var{r} is a 2x@var{N} integer matrix specifying which elements to repeat and\n\
-how often to repeat each element.  Entries in the first row, @var{r}(1,j),\n\
-select an element to repeat.  The corresponding entry in the second row,\n\
-@var{r}(2,j), specifies the repeat count.  If @var{x} is a matrix then the\n\
-columns of @var{x} are imagined to be stacked on top of each other for\n\
-purposes of the selection index.  A row vector is always returned.\n\
+@var{r} is a 2x@var{N} integer matrix specifying which elements to repeat\n\
+and how often to repeat each element.  Entries in the first row,\n\
+@var{r}(1,j), select an element to repeat.  The corresponding entry in the\n\
+second row, @var{r}(2,j), specifies the repeat count.  If @var{x} is a\n\
+matrix then the columns of @var{x} are imagined to be stacked on top of\n\
+each other for purposes of the selection index.  A row vector is always\n\
+returned.\n\
 \n\
 Conceptually the result is calculated as follows:\n\
 \n\

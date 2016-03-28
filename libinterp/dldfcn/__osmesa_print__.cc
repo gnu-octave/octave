@@ -73,7 +73,8 @@ Valid options for @var{term}, which can be concatenated in one string, are:\n\
 Select output format.\n\
 \n\
 @item @qcode{is2D}\n\
-Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting algorithm.\n\
+Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting\n\
+algorithm.\n\
 \n\
 @item @qcode{notext}\n\
 Don't render text.\n\

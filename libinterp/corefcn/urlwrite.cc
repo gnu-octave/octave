@@ -303,7 +303,7 @@ otherwise it is 0 in which case @var{message} contains an error message.\n\
 If no output argument is specified and an error occurs, then the error is\n\
 signaled through Octave's error handling mechanism.\n\
 \n\
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP and\n\
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and\n\
 FILE protocols.  Username and password may be specified in the URL, for\n\
 example:\n\
 \n\
@@ -420,7 +420,7 @@ message.\n\
 If no output argument is specified and an error occurs, then the error is\n\
 signaled through Octave's error handling mechanism.\n\
 \n\
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP and\n\
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and\n\
 FILE protocols.  Username and password may be specified in the URL@.  For\n\
 example:\n\
 \n\

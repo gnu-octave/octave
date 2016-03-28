@@ -224,8 +224,8 @@ sparser LU@tie{}factors than @var{S}.  The Cholesky@tie{}factorization of\n\
 @code{@var{S}(:,@var{p})' * @var{S}(:,@var{p})} also tends to be sparser\n\
 than that of @code{@var{S}' * @var{S}}.\n\
 \n\
-@var{knobs} is an optional one- to three-element input vector.  If @var{S} is\n\
-m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))}\n\
+@var{knobs} is an optional one- to three-element input vector.  If @var{S}\n\
+is m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))}\n\
 entries are ignored.  Columns with more than\n\
 @code{max (16,@var{knobs}(2)*sqrt(min(m,n)))} entries are removed prior to\n\
 ordering, and ordered last in the output permutation @var{p}.  Only\n\
@@ -250,11 +250,12 @@ in each column, with a non-negative number of entries in each column (!)\n\
 and so on.  If a matrix is invalid, then @sc{colamd} may or may not be able\n\
 to continue.  If there are duplicate entries (a row index appears two or\n\
 more times in the same column) or if the row indices in a column are out\n\
-of order, then @sc{colamd} can correct these errors by ignoring the duplicate\n\
-entries and sorting each column of its internal copy of the matrix\n\
-@var{S} (the input matrix @var{S} is not repaired, however).  If a matrix\n\
-is invalid in other ways then @sc{colamd} cannot continue, an error message\n\
-is printed, and no output arguments (@var{p} or @var{stats}) are returned.\n\
+of order, then @sc{colamd} can correct these errors by ignoring the\n\
+duplicate entries and sorting each column of its internal copy of the\n\
+matrix @var{S} (the input matrix @var{S} is not repaired, however).  If a\n\
+matrix is invalid in other ways then @sc{colamd} cannot continue, an error\n\
+message is printed, and no output arguments (@var{p} or @var{stats}) are\n\
+returned.\n\
 @sc{colamd} is thus a simple way to check a sparse matrix to see if it's\n\
 valid.\n\
 \n\
@@ -455,18 +456,18 @@ For a symmetric positive definite matrix @var{S}, returns the permutation\n\
 vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a\n\
 sparser Cholesky@tie{}factor than @var{S}.\n\
 \n\
-Sometimes @code{symamd} works well for symmetric indefinite matrices too. \n\
+Sometimes @code{symamd} works well for symmetric indefinite matrices too.\n\
 The matrix @var{S} is assumed to be symmetric; only the strictly lower\n\
 triangular part is referenced.  @var{S} must be square.\n\
 \n\
 @var{knobs} is an optional one- to two-element input vector.  If @var{S} is\n\
 n-by-n, then rows and columns with more than\n\
-@code{max (16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,\n\
-and ordered last in the output permutation @var{p}.  No rows/columns are\n\
-removed if @code{@var{knobs}(1) < 0}.  If @code{@var{knobs} (2)} is nonzero,\n\
-@code{stats} and @var{knobs} are printed.  The default is\n\
-@code{@var{knobs} = [10 0]}.  Note that @var{knobs} differs from earlier\n\
-versions of @code{symamd}.\n\
+@code{max (16,@var{knobs}(1)*sqrt(n))} entries are removed prior to\n\
+ordering, and ordered last in the output permutation @var{p}.  No\n\
+rows/columns are removed if @code{@var{knobs}(1) < 0}.  If\n\
+@code{@var{knobs} (2)} is nonzero, @code{stats} and @var{knobs} are\n\
+printed.  The default is @code{@var{knobs} = [10 0]}.  Note that\n\
+@var{knobs} differs from earlier versions of @code{symamd}.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
 about the ordering and the validity of the input matrix @var{S}.  Ordering\n\

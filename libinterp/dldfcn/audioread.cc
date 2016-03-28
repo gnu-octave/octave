@@ -237,7 +237,8 @@ following options:\n\
 \n\
 @table @samp\n\
 @item BitsPerSample\n\
-Number of bits per sample, valid values are 8, 16, 24 and 32.  Default is 16.\n\
+Number of bits per sample.  Valid values are 8, 16, 24, and 32.  Default is\n\
+16.\n\
 \n\
 @item BitRate\n\
 Valid argument name, but ignored.  Left for compatibility with @sc{matlab}.\n\

@@ -832,8 +832,8 @@ used in pattern matching.  (default)\n\
 Alternatively, use (?-x) in the pattern.\n\
 \n\
 @item freespacing\n\
-The pattern may include arbitrary whitespace and also comments beginning with\n\
-the character @samp{#}.\n\
+The pattern may include arbitrary whitespace and also comments beginning\n\
+with the character @samp{#}.\n\
 \n\
 Alternatively, use (?x) in the pattern.\n\
 \n\

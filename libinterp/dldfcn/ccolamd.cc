@@ -62,9 +62,9 @@ DEFUN_DLD (ccolamd, args, nargout,
 Constrained column approximate minimum degree permutation.\n\
 \n\
 @code{@var{p} = ccolamd (@var{S})} returns the column approximate minimum\n\
-degree permutation vector for the sparse matrix @var{S}.  For a non-symmetric\n\
-matrix @var{S}, @code{@var{S}(:, @var{p})} tends to have sparser\n\
-LU@tie{}factors than @var{S}.\n\
+degree permutation vector for the sparse matrix @var{S}.  For a\n\
+non-symmetric matrix @var{S}, @code{@var{S}(:, @var{p})} tends to have\n\
+sparser LU@tie{}factors than @var{S}.\n\
 @code{chol (@var{S}(:, @var{p})' * @var{S}(:, @var{p}))} also tends to be\n\
 sparser than @code{chol (@var{S}' * @var{S})}.\n\
 @code{@var{p} = ccolamd (@var{S}, 1)} optimizes the ordering for\n\
@@ -345,7 +345,7 @@ For a symmetric positive definite matrix @var{S}, return the permutation\n\
 vector @var{p} such that @code{@var{S}(@var{p},@var{p})} tends to have a\n\
 sparser Cholesky@tie{}factor than @var{S}.\n\
 \n\
-Sometimes @code{csymamd} works well for symmetric indefinite matrices too. \n\
+Sometimes @code{csymamd} works well for symmetric indefinite matrices too.\n\
 The matrix @var{S} is assumed to be symmetric; only the strictly lower\n\
 triangular part is referenced.  @var{S} must be square.  The ordering is\n\
 followed by an elimination tree post-ordering.\n\
@@ -373,7 +373,8 @@ on the ordering.  If @code{@var{cmember}(j) = @var{S}}, then row/column j is\n\
 in constraint set @var{c} (@var{c} must be in the range 1 to n).  In the\n\
 output permutation @var{p}, rows/columns in set 1 appear first, followed\n\
 by all rows/columns in set 2, and so on.  @code{@var{cmember} = ones (1,n)}\n\
-if not present or empty.  @code{csymamd (@var{S},[],1:n)} returns @code{1:n}.\n\
+if not present or empty.  @code{csymamd (@var{S},[],1:n)} returns\n\
+@code{1:n}.\n\
 \n\
 @code{@var{p} = csymamd (@var{S})} is about the same as\n\
 @code{@var{p} = symamd (@var{S})}.  @var{knobs} and its default values\n\

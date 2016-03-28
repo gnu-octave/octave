@@ -1469,8 +1469,8 @@ DEFUN (filemarker, args, nargout,
 @deftypefn  {} {@var{val} =} filemarker ()\n\
 @deftypefnx {} {@var{old_val} =} filemarker (@var{new_val})\n\
 @deftypefnx {} {} filemarker (@var{new_val}, \"local\")\n\
-Query or set the character used to separate the filename from the subfunction\n\
-names contained within the file.\n\
+Query or set the character used to separate the filename from the\n\
+subfunction names contained within the file.\n\
 \n\
 By default this is the character @samp{>}.\n\
 This can be used in a generic manner to interact with subfunctions.\n\

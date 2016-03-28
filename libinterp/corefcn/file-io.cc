@@ -322,7 +322,8 @@ or @var{len} characters have been read.\n\
 The characters read, excluding the possible trailing newline, are returned\n\
 as a string.\n\
 \n\
-If @var{len} is omitted, @code{fgetl} reads until the next newline character.\n\
+If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
+character.\n\
 \n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 \n\
@@ -361,7 +362,8 @@ or @var{len} characters have been read.\n\
 The characters read, including the possible trailing newline, are returned\n\
 as a string.\n\
 \n\
-If @var{len} is omitted, @code{fgets} reads until the next newline character.\n\
+If @var{len} is omitted, @code{fgets} reads until the next newline\n\
+character.\n\
 \n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 \n\
@@ -398,8 +400,8 @@ DEFUN (fskipl, args, ,
 Read and skip @var{count} lines from the file specified by the file\n\
 descriptor @var{fid}.\n\
 \n\
-@code{fskipl} discards characters until an end-of-line is encountered exactly\n\
-@var{count}-times, or until the end-of-file marker is found.\n\
+@code{fskipl} discards characters until an end-of-line is encountered\n\
+exactly @var{count}-times, or until the end-of-file marker is found.\n\
 \n\
 If @var{count} is omitted, it defaults to 1.  @var{count} may also be\n\
 @code{Inf}, in which case lines are skipped until the end of the file.\n\
@@ -574,10 +576,10 @@ file.\n\
 @end table\n\
 \n\
 Append a @qcode{\"t\"} to the mode string to open the file in text mode or a\n\
-@qcode{\"b\"} to open in binary mode.  On Windows and Macintosh systems, text\n\
-mode reading and writing automatically converts linefeeds to the\n\
-appropriate line end character for the system (carriage-return linefeed\n\
-on Windows, carriage-return on Macintosh).  The default when no mode is\n\
+@qcode{\"b\"} to open in binary mode.  On Windows and Macintosh systems,\n\
+text mode reading and writing automatically converts linefeeds to the\n\
+appropriate line end character for the system (carriage-return linefeed on\n\
+Windows, carriage-return on Macintosh).  The default when no mode is\n\
 specified is binary mode.\n\
 \n\
 Additionally, you may append a @qcode{\"z\"} to the mode string to open a\n\
@@ -2863,8 +2865,8 @@ with a unique name created from @var{template}.\n\
 The last six characters of @var{template} must be @qcode{\"XXXXXX\"} and\n\
 these are replaced with a string that makes the filename unique.  The file\n\
 is then created with mode read/write and permissions that are system\n\
-dependent (on GNU/Linux systems, the permissions will be 0600 for versions of\n\
-glibc 2.0.7 and later).  The file is opened in binary mode and with the\n\
+dependent (on GNU/Linux systems, the permissions will be 0600 for versions\n\
+of glibc 2.0.7 and later).  The file is opened in binary mode and with the\n\
 @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true, the file will\n\
@@ -2872,7 +2874,8 @@ be deleted automatically when Octave exits.\n\
 \n\
 If successful, @var{fid} is a valid file ID, @var{name} is the name of the\n\
 file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
-@var{name} is empty, and @var{msg} contains a system-dependent error message.\n\
+@var{name} is empty, and @var{msg} contains a system-dependent error\n\
+message.\n\
 @seealso{tempname, tempdir, P_tmpdir, tmpfile, fopen}\n\
 @end deftypefn")
 {

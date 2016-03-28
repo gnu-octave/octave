@@ -1519,7 +1519,8 @@ The result of the integration is returned in @var{q}.\n\
 \n\
 @var{err} is an estimate of the absolute integration error.\n\
 \n\
-@var{nr_points} is the number of points at which the integrand was evaluated.\n\
+@var{nr_points} is the number of points at which the integrand was\n\
+evaluated.\n\
 \n\
 If the adaptive integration did not converge, the value of @var{err} will be\n\
 larger than the requested tolerance.  Therefore, it is recommended to verify\n\

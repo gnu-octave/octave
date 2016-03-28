@@ -3894,10 +3894,10 @@ current format.\n\
 \n\
 @item  short e\n\
 @itemx long e\n\
-Exponential format.  The number to be represented is split between a mantissa\n\
-and an exponent (power of 10).  The mantissa has 5 significant digits in the\n\
-short format and 15 digits in the long format.\n\
-For example, with the @samp{short e} format, @code{pi} is displayed as\n\
+Exponential format.  The number to be represented is split between a\n\
+mantissa and an exponent (power of 10).  The mantissa has 5 significant\n\
+digits in the short format and 15 digits in the long format.  For example,\n\
+with the @samp{short e} format, @code{pi} is displayed as\n\
 @code{3.1416e+00}.\n\
 \n\
 @item  short E\n\
@@ -4000,8 +4000,8 @@ For example, the value of @code{pi} is\n\
 @end example\n\
 \n\
 (shown here in two 32 bit sections for typesetting purposes) when\n\
-printed in native-bit format on a workstation which stores 8 byte real values\n\
-in IEEE format with the least significant byte first.\n\
+printed in native-bit format on a workstation which stores 8 byte real\n\
+values in IEEE format with the least significant byte first.\n\
 \n\
 @item bit\n\
 The same as @code{native-bit}, but always print the most significant\n\

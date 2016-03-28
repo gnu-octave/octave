@@ -83,9 +83,9 @@ dimension dim.\n\
 The hull @var{h} is an index vector into the set of points and specifies\n\
 which points form the enclosing hull.\n\
 \n\
-An optional second argument, which must be a string or cell array of strings,\n\
-contains options passed to the underlying qhull command.\n\
-See the documentation for the Qhull library for details\n\
+An optional second argument, which must be a string or cell array of\n\
+strings, contains options passed to the underlying qhull command.  See the\n\
+documentation for the Qhull library for details\n\
 @url{http://www.qhull.org/html/qh-quick.htm#options}.\n\
 The default options depend on the dimension of the input:\n\
 \n\

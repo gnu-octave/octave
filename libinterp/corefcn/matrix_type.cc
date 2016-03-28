@@ -59,8 +59,8 @@ If the option @qcode{\"nocompute\"} is given, the function will not attempt\n\
 to guess the type if it is still unknown.  This is useful for debugging\n\
 purposes.\n\
 \n\
-The possible matrix types depend on whether the matrix is full or sparse, and\n\
-can be one of the following\n\
+The possible matrix types depend on whether the matrix is full or sparse,\n\
+and can be one of the following\n\
 \n\
 @table @asis\n\
 @item @qcode{\"unknown\"}\n\
@@ -93,8 +93,8 @@ defined by the vector @var{perm}.\n\
 @item  @qcode{\"banded\"}\n\
 @itemx @qcode{\"banded positive definite\"}\n\
 Banded matrix with the band size of @var{nl} below the diagonal and @var{nu}\n\
-above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal and\n\
-treated with specialized code.  In addition the matrix can be marked as\n\
+above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal\n\
+and treated with specialized code.  In addition the matrix can be marked as\n\
 probably a positive definite.  (Sparse matrices only)\n\
 \n\
 @item @qcode{\"singular\"}\n\

@@ -320,9 +320,9 @@ cellfun (\"atan2\", @{1, 0@}, @{0, 1@})\n\
 @end group\n\
 @end example\n\
 \n\
-The number of output arguments of @code{cellfun} matches the number of output\n\
-arguments of the function.  The outputs of the function will be collected\n\
-into the output arguments of @code{cellfun} like this:\n\
+The number of output arguments of @code{cellfun} matches the number of\n\
+output arguments of the function.  The outputs of the function will be\n\
+collected into the output arguments of @code{cellfun} like this:\n\
 \n\
 @example\n\
 @group\n\
@@ -367,7 +367,7 @@ function [@dots{}] = errfunc (@var{s}, @dots{})\n\
 @noindent\n\
 where there is an additional input argument to @var{errfunc} relative to\n\
 @var{func}, given by @var{s}.  This is a structure with the elements\n\
-@qcode{\"identifier\"}, @qcode{\"message\"} and @qcode{\"index\"}, giving\n\
+@qcode{\"identifier\"}, @qcode{\"message\"}, and @qcode{\"index\"} giving\n\
 respectively the error identifier, the error message, and the index into the\n\
 input arguments of the element that caused the error.  For example:\n\
 \n\

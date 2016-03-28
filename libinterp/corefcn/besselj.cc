@@ -314,8 +314,8 @@ Bessel functions of the first kind.  If the argument @var{opt} is 1 or true,\n\
 the result is multiplied by @w{@code{exp (-abs (imag (@var{x})))}}.\n\
 \n\
 @item bessely\n\
-Bessel functions of the second kind.  If the argument @var{opt} is 1 or true,\n\
-the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
+Bessel functions of the second kind.  If the argument @var{opt} is 1 or\n\
+true, the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
 \n\
 @item besseli\n\
 \n\
@@ -324,8 +324,8 @@ or true, the result is multiplied by @code{exp (-abs (real (@var{x})))}.\n\
 \n\
 @item besselk\n\
 \n\
-Modified Bessel functions of the second kind.  If the argument @var{opt} is 1\n\
-or true, the result is multiplied by @code{exp (@var{x})}.\n\
+Modified Bessel functions of the second kind.  If the argument @var{opt} is\n\
+1 or true, the result is multiplied by @code{exp (@var{x})}.\n\
 \n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\

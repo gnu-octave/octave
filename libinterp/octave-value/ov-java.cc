@@ -2726,8 +2726,8 @@ DEFUN (__java_get__, args, ,
 @deftypefn {} {@var{val} =} __java_get__ (@var{obj}, @var{name})\n\
 Get the value of the field @var{name} of the Java object @var{obj}.\n\
 \n\
-For static fields, @var{obj} can be a string representing the fully qualified\n\
-name of the corresponding class.\n\
+For static fields, @var{obj} can be a string representing the fully\n\
+qualified name of the corresponding class.\n\
 \n\
 When @var{obj} is a regular Java object, structure-like indexing can be used\n\
 as a shortcut syntax.  For instance, the two following statements are\n\

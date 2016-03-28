@@ -1628,7 +1628,7 @@ can be of any type.\n\
 \n\
 If the values are cell arrays, create a structure array and initialize its\n\
 values.  The dimensions of each cell array of values must match.  Singleton\n\
-cells and non-cell values are repeated so that they fill the entire array. \n\
+cells and non-cell values are repeated so that they fill the entire array.\n\
 If the cells are empty, create an empty structure array with the specified\n\
 field names.\n\
 \n\

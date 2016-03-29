@@ -248,6 +248,10 @@ find_dialog::init_search_text ()
   // set focus to "Find what" and select all text
   _search_line_edit->setFocus();
   _search_line_edit->selectAll();
+
+  // Default to "find" next time.
+  // Otherwise, it defaults to the last action, which may be "replace all".
+  _find_next_button->setDefault (true);
 }
 
 void

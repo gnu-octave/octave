@@ -511,6 +511,9 @@ dnl Define here since it is skipped if the first argument to
 dnl AX_OPENMP is not empty.
 if test $ENABLE_OPENMP = yes; then
   AC_DEFINE(OCTAVE_ENABLE_OPENMP, 1, [Define if OpenMP is enabled.])
+  if test "$GCC" = yes; then
+    WARN_LDFLAGS="$WARN_LDFLAGS -Wl,--no-as-needed,-lgomp,--as-needed";
+  fi
 fi
 ## Set these for any other tests that may require them.  They will be
 ## reset before output files are generated.

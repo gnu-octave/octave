@@ -487,7 +487,7 @@ rc_lgamma (double x)
   int sgngam;
   result = lgamma_r (x, &sgngam);
 #else
-  double sgngam;
+  double sgngam = 0.0;
 
   if (xisnan (x))
     result = x;
@@ -559,7 +559,7 @@ rc_lgamma (float x)
   int sgngam;
   result = lgammaf_r (x, &sgngam);
 #else
-  float sgngam;
+  float sgngam = 0.0f;
 
   if (xisnan (x))
     result = x;

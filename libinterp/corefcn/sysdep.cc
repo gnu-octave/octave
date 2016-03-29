@@ -60,6 +60,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include <ieeefp.h>
 #endif
 
+#if defined (HAVE_OMP_H)
+#  include <omp.h>
+#endif
+
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "lo-mappers.h"
@@ -309,6 +313,10 @@ same_file_internal (const std::string& file1, const std::string& file2)
 void
 sysdep_init (void)
 {
+#if defined (HAVE_OMP_GET_NUM_THREADS)
+  omp_get_num_threads ();
+#endif
+
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
   BSD_init ();
 #elif defined (__MINGW32__)

@@ -507,15 +507,19 @@ if test $check_for_openmp = yes; then
   AX_OPENMP([XTRA_CXXFLAGS="$XTRA_CXXFLAGS $OPENMP_CXXFLAGS"; ENABLE_OPENMP=yes], [])
   AC_LANG_POP(C++)
 fi
-dnl Define here since it is skipped if the first argument to
-dnl AX_OPENMP is not empty.
-if test $ENABLE_OPENMP = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_OPENMP, 1, [Define if OpenMP is enabled.])
-fi
+
 ## Set these for any other tests that may require them.  They will be
 ## reset before output files are generated.
 CFLAGS="$CFLAGS $OPENMP_CFLAGS"
 CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+
+dnl Define here since it is skipped if the first argument to
+dnl AX_OPENMP is not empty.
+if test $ENABLE_OPENMP = yes; then
+  AC_CHECK_HEADERS([omp.h])
+  AC_CHECK_FUNCS([omp_get_num_threads])
+  AC_DEFINE(OCTAVE_ENABLE_OPENMP, 1, [Define if OpenMP is enabled])
+fi
 
 ### When compiling math for x87, problems may arise in some code comparing
 ### floating-point intermediate results.  The root cause is the extra precision

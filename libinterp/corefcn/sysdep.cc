@@ -313,6 +313,9 @@ same_file_internal (const std::string& file1, const std::string& file2)
 void
 sysdep_init (void)
 {
+  // Use a function from libgomp to force loading of OpenMP library.
+  // Otherwise, a dynamically loaded library making use of OpenMP such
+  // as GraphicsMagick will segfault on exit (bug #41699).
 #if defined (HAVE_OMP_GET_NUM_THREADS)
   omp_get_num_threads ();
 #endif

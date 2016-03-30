@@ -79,7 +79,6 @@ etc/icons/octave.appdata.xml: etc/icons/octave.appdata.xml.in | etc/icons/$(octa
 etc/icons/octave.desktop: etc/icons/octave.desktop.in | etc/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
-	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|" && \
 	mv $@-t $@
 

@@ -250,14 +250,14 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       circ = true;
     elseif (ischar (arg) && strcmp (arg, "animate"))
       animate = true;
-    elseif (isscalar (arg))
+    elseif (isscalar (arg) && (n == 60 || n == 500))
       n = arg;
-    elseif (numel (arg) == 2)
+    elseif (numel (arg) == 2 && isempty (domain))
       domain = [arg(1) arg(2) arg(1) arg(2)];
-    elseif (numel (arg) == 4)
+    elseif (numel (arg) == 4 && isempty (domain))
       domain = arg(:).';
     else
-      error ("%s: expecting scalar N or 2-, 4-element vector DOM", ezfunc);
+      error ("%s: expecting scalar N, or 2-/4-element vector DOM", ezfunc);
     endif
   endwhile
 

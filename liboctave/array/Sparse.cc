@@ -815,7 +815,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
 
           octave_idx_type kk = 0;
           retval.xcidx (0) = 0;
-          // quotient and remainder of  i * old_nr divided by new_nr
+          // Quotient and remainder of i * old_nr divided by new_nr.
           // Track them individually to avoid overflow (bug #42850).
           octave_idx_type i_old_qu = 0;
           octave_idx_type i_old_rm = static_cast<octave_idx_type> (-old_nr);
@@ -1780,7 +1780,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
     }
   else if (idx_j.is_colon ())
     {
-      // This requires  uncompressing columns, which is generally costly,
+      // This requires uncompressing columns, which is generally costly,
       // so we rely on the efficient transpose to handle this.
       // It may still make sense to optimize some cases here.
       retval = transpose ();

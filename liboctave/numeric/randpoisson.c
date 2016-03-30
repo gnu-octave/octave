@@ -100,7 +100,7 @@ flogfak (double k)
     64.55753862700633106,  67.88974313718153498,  71.25703896716800901
   };
 
-  double  r, rr;
+  double r, rr;
 
   if (k >= 30.0)
     {
@@ -115,12 +115,12 @@ flogfak (double k)
 
 /******************************************************************
  *                                                                *
- * Poisson Distribution - Patchwork Rejection/Inversion  *
+ * Poisson Distribution - Patchwork Rejection/Inversion           *
  *                                                                *
  ******************************************************************
  *                                                                *
- * For parameter  my < 10  Tabulated Inversion is applied.        *
- * For my >= 10  Patchwork Rejection is employed:                 *
+ * For parameter my < 10, Tabulated Inversion is applied.         *
+ * For my >= 10, Patchwork Rejection is employed:                 *
  * The area below the histogram function f(x) is rearranged in    *
  * its body by certain point reflections. Within a large center   *
  * interval variates are sampled efficiently by rejection from    *

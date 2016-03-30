@@ -25,7 +25,7 @@
 function create_pkgadddel (desc, packdir, nm, global_install)
   instpkg = fullfile (desc.dir, nm);
   instfid = fopen (instpkg, "at"); # append to support PKG_ADD at inst/
-  ## If it is exists, most of the  PKG_* file should go into the
+  ## If it is exists, most of the PKG_* file should go into the
   ## architecture dependent directory so that the autoload/mfilename
   ## commands work as expected. The only part that doesn't is the
   ## part in the main directory.

@@ -424,7 +424,7 @@
 %!   m = sin (m);
 %!   break;
 %! endfor
-%! assert (m == sin ([1  2 3]));
+%! assert (m == sin ([1 2 3]));
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM

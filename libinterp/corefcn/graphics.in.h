@@ -4771,7 +4771,7 @@ public:
     }
 
   public:
-    float  pixel_xsize (void)
+    float pixel_xsize (void)
     {
       return pixel_size ((get_cdata ().dims ())(1), xdata.get_limits ());
     }

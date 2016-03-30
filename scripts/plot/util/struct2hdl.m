@@ -575,7 +575,7 @@ function setprops (s, h, p, hilev)
       ## set all properties but special handles
       set (h, s.properties);
 
-      ## find  props with val == (one of special handles)
+      ## find props with val == (one of special handles)
       nf = length (idx);
       fields = fields(idx);
       vals = vals(idx);
@@ -590,8 +590,8 @@ function setprops (s, h, p, hilev)
         nf -= 1;
       endwhile
 
-      ## If hggroup children  were created by high level functions,
-      ## copy only usefull properties.
+      ## If hggroup children were created by high level functions,
+      ## copy only useful properties.
       if (hilev)
         if (strcmp (s.type, "hggroup"))
           nold = numel (s.children);

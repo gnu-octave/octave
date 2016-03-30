@@ -77,5 +77,5 @@ endfunction
 %!error discrete_cdf (1, ones (2,1), ones (1,1))
 %!error discrete_cdf (1, ones (2,1), [1 -1])
 %!error discrete_cdf (1, ones (2,1), [1 NaN])
-%!error discrete_cdf (1, ones (2,1), [0  0])
+%!error discrete_cdf (1, ones (2,1), [0 0])
 

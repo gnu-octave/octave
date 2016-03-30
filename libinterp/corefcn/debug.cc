@@ -71,7 +71,7 @@ std::set<std::string> bp_table::errors_that_stop;
 std::set<std::string> bp_table::caught_that_stop;
 std::set<std::string> bp_table::warnings_that_stop;
 
-// Read entire file called  fname  and return the contents as a string
+// Read entire file called fname and return the contents as a string
 static std::string
 snarf_file (const std::string& fname)
 {
@@ -208,10 +208,10 @@ dbstop_args {dbstop_in, dbstop_at, dbstop_if, dbstop_none};
 
 // Parse parameters (args) of dbstop and dbclear commands.
 // For dbstop, who=="dbstop"; for dbclear, who=="dbclear".
-// The syntax is  dbstop [[in] symbol] [[at] line [line [...]]] [if condition]
+// The syntax is: dbstop [[in] symbol] [[at] line [line [...]]] [if condition]
 // where the form of condition depends on whether or not a file or line has
 // been seen.
-// Also execute "if [error|warning|interrupt|naninf]" clauses
+// Also execute "if [error|warning|interrupt|naninf]" clauses.
 void
 parse_dbfunction_params (const char *who, const octave_value_list& args,
                          std::string& symbol_name, bp_table::intmap& lines,
@@ -437,8 +437,8 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
 %! assert (s.errs, {"Octave:undefined-function"});
 */
 
-// Return  true  if there is a valid breakpoint table, false otherwise.
-// If not table exists, one is created; false is only returned if this fails
+// Return true if there is a valid breakpoint table, false otherwise.
+// If no table exists, one is created; false is only returned if this fails.
 bool
 bp_table::instance_ok (void)
 {
@@ -556,7 +556,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
 
 
 // Insert a breakpoint in function fcn at line within file fname,
-// to stop only when  condition is true.
+// to stop only when condition is true.
 // Record in bp_set that fname contains a breakpoint.
 bool
 bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
@@ -596,7 +596,7 @@ bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
   return found;
 }
 
-// Cursory check that  cond  is a valid condition to use for a breakpoint
+// Cursory check that cond is a valid condition to use for a breakpoint.
 // Currently allows conditions with side-effects, like 'y+=10' and 'y++';
 // it is odd that the former is not flagged by "is_assignment_expression".
 // Throws an exception if not valid.
@@ -635,9 +635,9 @@ bp_table::condition_valid (const std::string& cond)
   return true;
 }
 
-// Given file name  fname,  find the subfunction at line  line  and create
+// Given file name fname, find the subfunction at line and create
 // a breakpoint there.  Put the system into debug_mode.
-// (FIXME: If  line  is multiple lines, what happens if they are in different
+// (FIXME: If line is multiple lines, what happens if they are in different
 //         functions?)
 bp_table::intmap
 bp_table::do_add_breakpoint (const std::string& fname,
@@ -1170,7 +1170,7 @@ files.\n\
 }
 
 // Report the status of "dbstop if error ..." and "dbstop if warning ..."
-// If to_screen is true, the output goes to  octave_stdout; otherwise it is
+// If to_screen is true, the output goes to octave_stdout; otherwise it is
 // returned.
 // If dbstop if error is true but no explicit IDs are specified, the return
 // value will have an empty field called "errs".  If IDs are specified, the

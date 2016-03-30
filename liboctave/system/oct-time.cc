@@ -100,12 +100,12 @@ octave_time::stamp (void)
 
 // From the mktime() manual page:
 //
-//     The  mktime()  function converts a broken-down time structure,
+//     The mktime() function converts a broken-down time structure,
 //     expressed as local time, to calendar time representation.
 //
 //     <snip>
 //
-//     If structure members are outside  their  legal interval, they
+//     If structure members are outside their legal interval, they
 //     will be normalized (so that, e.g., 40 October is changed into
 //     9 November).
 //

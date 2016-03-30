@@ -771,12 +771,12 @@ atan2 (const SparseMatrix& x, const SparseMatrix& y)
   r.cidx (0) = 0;
   for (octave_idx_type i = 0 ; i < x_nc ; i++)
     {
-      octave_idx_type  ja = x.cidx (i);
-      octave_idx_type  ja_max = x.cidx (i+1);
-      bool ja_lt_max= ja < ja_max;
+      octave_idx_type ja = x.cidx (i);
+      octave_idx_type ja_max = x.cidx (i+1);
+      bool ja_lt_max = ja < ja_max;
 
-      octave_idx_type  jb = y.cidx (i);
-      octave_idx_type  jb_max = y.cidx (i+1);
+      octave_idx_type jb = y.cidx (i);
+      octave_idx_type jb_max = y.cidx (i+1);
       bool jb_lt_max = jb < jb_max;
 
       while (ja_lt_max || jb_lt_max)
@@ -7710,12 +7710,12 @@ min (const SparseMatrix& a, const SparseMatrix& b)
       r.cidx (0) = 0;
       for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          octave_idx_type  ja = a.cidx (i);
-          octave_idx_type  ja_max = a.cidx (i+1);
-          bool ja_lt_max= ja < ja_max;
+          octave_idx_type ja = a.cidx (i);
+          octave_idx_type ja_max = a.cidx (i+1);
+          bool ja_lt_max = ja < ja_max;
 
-          octave_idx_type  jb = b.cidx (i);
-          octave_idx_type  jb_max = b.cidx (i+1);
+          octave_idx_type jb = b.cidx (i);
+          octave_idx_type jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
           while (ja_lt_max || jb_lt_max)
@@ -7860,12 +7860,12 @@ max (const SparseMatrix& a, const SparseMatrix& b)
       r.cidx (0) = 0;
       for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          octave_idx_type  ja = a.cidx (i);
-          octave_idx_type  ja_max = a.cidx (i+1);
-          bool ja_lt_max= ja < ja_max;
+          octave_idx_type ja = a.cidx (i);
+          octave_idx_type ja_max = a.cidx (i+1);
+          bool ja_lt_max = ja < ja_max;
 
-          octave_idx_type  jb = b.cidx (i);
-          octave_idx_type  jb_max = b.cidx (i+1);
+          octave_idx_type jb = b.cidx (i);
+          octave_idx_type jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
           while (ja_lt_max || jb_lt_max)

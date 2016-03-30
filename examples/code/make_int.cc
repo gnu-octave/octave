@@ -88,7 +88,7 @@ public:
   Complex complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return  ComplexMatrix (1, 1, Complex (scalar)); }
+  { return ComplexMatrix (1, 1, Complex (scalar)); }
 
   octave_value gnot (void) const { return octave_value ((double) ! scalar); }
 

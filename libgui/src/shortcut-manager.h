@@ -38,7 +38,7 @@ public:
   enter_shortcut (QWidget *p = 0);
   ~enter_shortcut ();
 
-  virtual void  keyPressEvent (QKeyEvent *e);
+  virtual void keyPressEvent (QKeyEvent *e);
 
 public slots:
   void handle_direct_shortcut (int);

@@ -45,12 +45,12 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char* op_name)
   octave_idx_type jx = 0;
   for (octave_idx_type i = 0 ; i < a_nc ; i++)
     {
-      octave_idx_type  ja = a.cidx (i);
-      octave_idx_type  ja_max = a.cidx (i+1);
-      bool ja_lt_max= ja < ja_max;
+      octave_idx_type ja = a.cidx (i);
+      octave_idx_type ja_max = a.cidx (i+1);
+      bool ja_lt_max = ja < ja_max;
 
-      octave_idx_type  jb = b.cidx (i);
-      octave_idx_type  jb_max = b.cidx (i+1);
+      octave_idx_type jb = b.cidx (i);
+      octave_idx_type jb_max = b.cidx (i+1);
       bool jb_lt_max = jb < jb_max;
 
       while (ja_lt_max || jb_lt_max)
@@ -315,12 +315,12 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
       r.cidx (0) = 0;
       for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          octave_idx_type  ja = a.cidx (i);
-          octave_idx_type  ja_max = a.cidx (i+1);
-          bool ja_lt_max= ja < ja_max;
+          octave_idx_type ja = a.cidx (i);
+          octave_idx_type ja_max = a.cidx (i+1);
+          bool ja_lt_max = ja < ja_max;
 
-          octave_idx_type  jb = b.cidx (i);
-          octave_idx_type  jb_max = b.cidx (i+1);
+          octave_idx_type jb = b.cidx (i);
+          octave_idx_type jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
           while (ja_lt_max || jb_lt_max)
@@ -436,12 +436,12 @@ product (const MSparse<T>& a, const MSparse<T>& b)
       r.cidx (0) = 0;
       for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          octave_idx_type  ja = a.cidx (i);
-          octave_idx_type  ja_max = a.cidx (i+1);
-          bool ja_lt_max= ja < ja_max;
+          octave_idx_type ja = a.cidx (i);
+          octave_idx_type ja_max = a.cidx (i+1);
+          bool ja_lt_max = ja < ja_max;
 
-          octave_idx_type  jb = b.cidx (i);
-          octave_idx_type  jb_max = b.cidx (i+1);
+          octave_idx_type jb = b.cidx (i);
+          octave_idx_type jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
           while (ja_lt_max || jb_lt_max)
@@ -554,12 +554,12 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
 
       for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          octave_idx_type  ja = a.cidx (i);
-          octave_idx_type  ja_max = a.cidx (i+1);
-          bool ja_lt_max= ja < ja_max;
+          octave_idx_type ja = a.cidx (i);
+          octave_idx_type ja_max = a.cidx (i+1);
+          bool ja_lt_max = ja < ja_max;
 
-          octave_idx_type  jb = b.cidx (i);
-          octave_idx_type  jb_max = b.cidx (i+1);
+          octave_idx_type jb = b.cidx (i);
+          octave_idx_type jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
           while (ja_lt_max || jb_lt_max)

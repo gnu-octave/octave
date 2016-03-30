@@ -193,7 +193,7 @@ endfunction
 %!assert (num2str (123), "123")
 %!assert (num2str (1.23), "1.23")
 %!assert (num2str (123.456, 4), "123.5")
-%!assert (num2str ([1, 1.34; 3, 3.56], "%5.1f"),  ["1.0  1.3"; "3.0  3.6"])
+%!assert (num2str ([1, 1.34; 3, 3.56], "%5.1f"), ["1.0  1.3"; "3.0  3.6"])
 %!assert (num2str (1.234 + 27.3i), "1.234+27.3i")
 %!assert (num2str ([true false true]), "1  0  1")
 

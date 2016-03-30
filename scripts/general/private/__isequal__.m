@@ -44,7 +44,7 @@
 ##    b. object     convert to struct, and then compare as stated above
 ##    c. cell       compare each member by order (recursive)
 ##    d. char       compare each member with strcmp
-##    e  fcn_handle compare using overloade 'eq' operator
+##    e  fcn_handle compare using overloaded 'eq' operator
 ##    f. <other>    compare each nonzero member, and assume NaN == NaN
 ##                  if nans_compare_equal is nonzero.
 

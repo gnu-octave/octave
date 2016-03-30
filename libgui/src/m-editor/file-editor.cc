@@ -2192,7 +2192,7 @@ file_editor::set_shortcuts ()
 void
 file_editor::check_actions ()
 {
-  bool  have_tabs = _tab_widget->count () > 0;
+  bool have_tabs = _tab_widget->count () > 0;
 
   _edit_cmd_menu->setEnabled (have_tabs);
   _edit_fmt_menu->setEnabled (have_tabs);

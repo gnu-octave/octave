@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #define DEBUG_QUADCC 0
 
 // Define the minimum size of the interval heap.
-#define MIN_CQUAD_HEAPSIZE  200
+#define MIN_CQUAD_HEAPSIZE 200
 
 // Data of a single interval.
 typedef struct

@@ -231,12 +231,12 @@ extern "C"
 }
 
 // fcrhp, fin, fout, folhp:
-// routines for ordering of generalized eigenvalues
-// return 1 if  test is passed, 0 otherwise
-//    fin: |lambda| < 1
-//    fout: |lambda| >= 1
-//    fcrhp: real(lambda) >= 0
-//    folhp: real(lambda) < 0
+// Routines for ordering of generalized eigenvalues.
+// Return 1 if test is passed, 0 otherwise.
+//   fin:  |lambda| < 1
+//   fout: |lambda| >= 1
+//   fcrhp: real(lambda) >= 0
+//   folhp: real(lambda) < 0
 
 static octave_idx_type
 fcrhp (const octave_idx_type& lsize, const double& alpha,
@@ -714,7 +714,7 @@ compatibility with @sc{matlab}.\n\
                 << std::endl;
 #endif
 
-      // Reduce  to generalized hessenberg form.
+      // Reduce to generalized Hessenberg form.
       F77_XFCN (dgghrd, DGGHRD,
                 (F77_CONST_CHAR_ARG2 (&compq, 1),
                  F77_CONST_CHAR_ARG2 (&compz, 1),
@@ -1062,7 +1062,7 @@ compatibility with @sc{matlab}.\n\
       else
         {
 #ifdef DEBUG
-          std::cout << "qz: computing  generalized eigenvectors" << std::endl;
+          std::cout << "qz: computing generalized eigenvectors" << std::endl;
 #endif
 
           VL = QQ;

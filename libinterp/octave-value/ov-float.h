@@ -177,10 +177,10 @@ public:
   FloatComplex float_complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return  ComplexMatrix (1, 1, Complex (scalar)); }
+  { return ComplexMatrix (1, 1, Complex (scalar)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return  FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
+  { return FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }

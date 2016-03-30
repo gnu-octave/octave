@@ -57,7 +57,7 @@ function shading (varargin)
   endif
 
   ## Find all patch and surface objects that are descendants of hax
-  ## and  which are not part of a contour plot hggroup.
+  ## and which are not part of a contour plot hggroup.
   hlist = [];
   kids = get (hax, "children");
   while (! isempty (kids))

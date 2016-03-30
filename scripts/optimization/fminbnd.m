@@ -180,7 +180,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     iter(niter).x = u;
     iter(niter).fx = fu;
 
-    ## update  a, b, v, w, and x
+    ## update a, b, v, w, and x
 
     if (fu < fval)
       if (u < x)

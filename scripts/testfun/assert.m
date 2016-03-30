@@ -480,10 +480,10 @@ endfunction
 %!error <Rel err .* exceeds tol> assert (100, 100+300*eps, -2*eps)
 
 ## test relative vs. absolute tolerances
-%!test  assert (0.1+eps, 0.1,  2*eps);
+%!test  assert (0.1+eps, 0.1, 2*eps);
 %!error <Rel err 2.2204e-0?15 exceeds tol> assert (0.1+eps, 0.1, -2*eps);
 %!test  assert (100+100*eps, 100, -2*eps);
-%!error <Abs err 2.8422e-0?14 exceeds tol> assert (100+100*eps, 100,  2*eps);
+%!error <Abs err 2.8422e-0?14 exceeds tol> assert (100+100*eps, 100, 2*eps);
 
 ## Corner case of relative tolerance with 0 divider
 %!error <Abs err 2 exceeds tol 0.1> assert (2, 0, -0.1)

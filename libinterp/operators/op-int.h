@@ -538,7 +538,7 @@ along with Octave; see the file COPYING.  If not, see
   DEFNDASSIGNOP_OP (PFX ## _assign_div, TM ## matrix, TM ## scalar, TM ## scalar, /=)
 
 #define OCTAVE_MS_POW_OPS(T1, T2) \
-octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
+octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2 b) \
 { \
   T1 ## NDArray result (a.dims ()); \
   for (int i = 0; i < a.numel (); i++) \
@@ -549,7 +549,7 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   return octave_value (result); \
 } \
 \
-octave_value elem_xpow (T1 ## NDArray a, double  b) \
+octave_value elem_xpow (T1 ## NDArray a, double b) \
 { \
   T1 ## NDArray result (a.dims ()); \
   for (int i = 0; i < a.numel (); i++) \
@@ -560,7 +560,7 @@ octave_value elem_xpow (T1 ## NDArray a, double  b) \
   return octave_value (result); \
 } \
 \
-octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
+octave_value elem_xpow (NDArray a, octave_ ## T2 b) \
 { \
   T2 ## NDArray result (a.dims ()); \
   for (int i = 0; i < a.numel (); i++) \
@@ -571,7 +571,7 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   return octave_value (result); \
 } \
 \
-octave_value elem_xpow (T1 ## NDArray a, float  b) \
+octave_value elem_xpow (T1 ## NDArray a, float b) \
 { \
   T1 ## NDArray result (a.dims ()); \
   for (int i = 0; i < a.numel (); i++) \
@@ -582,7 +582,7 @@ octave_value elem_xpow (T1 ## NDArray a, float  b) \
   return octave_value (result); \
 } \
 \
-octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
+octave_value elem_xpow (FloatNDArray a, octave_ ## T2 b) \
 { \
   T2 ## NDArray result (a.dims ()); \
   for (int i = 0; i < a.numel (); i++) \

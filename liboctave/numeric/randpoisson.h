@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -44,7 +44,7 @@ oct_float_randp (float L);
 extern OCTAVE_API void
 oct_fill_float_randp (float L, octave_idx_type n, float *p);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

@@ -1301,7 +1301,7 @@ kpse_expand_kpse_dot (const std::string& path)
       std::string elt = *pi;
 
       /* We assume that the !! magic is only used on absolute components.
-         Single "." get special treatment, as does "./" or its  equivalent.  */
+         Single "." get special treatment, as does "./" or its equivalent.  */
 
       size_t elt_len = elt.length ();
 

@@ -140,28 +140,28 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
   else if (name == "islogical")
     {
       BNDA result (f_args.dims ());
-      for (octave_idx_type  count= 0; count < k; count++)
+      for (octave_idx_type count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_bool_type ();
       retval(0) = result;
     }
   else if (name == "isnumeric")
     {
       BNDA result (f_args.dims ());
-      for (octave_idx_type  count= 0; count < k; count++)
+      for (octave_idx_type count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_numeric_type ();
       retval(0) = result;
     }
   else if (name == "isreal")
     {
       BNDA result (f_args.dims ());
-      for (octave_idx_type  count= 0; count < k; count++)
+      for (octave_idx_type count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_real_type ();
       retval(0) = result;
     }
   else if (name == "length")
     {
       NDA result (f_args.dims ());
-      for (octave_idx_type  count= 0; count < k; count++)
+      for (octave_idx_type count= 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem (count).length ());
       retval(0) = result;
     }

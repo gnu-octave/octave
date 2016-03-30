@@ -331,7 +331,7 @@
 %!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
 %!test x3 = [x2; [51 x1]];
 %!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
-%!error <dimension mismatch> x4 = [x1  x3];
+%!error <dimension mismatch> x4 = [x1, x3];
 %!error <dimension mismatch> x4 = [x1; x3];
 
 %%%%%%%%%%%%%%%%%%%%%%%%

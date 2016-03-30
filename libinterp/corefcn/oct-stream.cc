@@ -3864,7 +3864,7 @@ textscan::lookahead (delimited_stream& is, const Cell& targets, int max_len,
 
   is.clear ();
   is.seekg (pos);              // reset to position before look-ahead
-                               // FIXME  pos may be corrupted by is.read
+                               // FIXME: pos may be corrupted by is.read
 
   int i;
   int (*compare)(const char *, const char *, size_t);

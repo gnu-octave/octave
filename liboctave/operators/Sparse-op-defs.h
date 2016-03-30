@@ -380,12 +380,12 @@ along with Octave; see the file COPYING.  If not, see
         r.cidx (0) = 0; \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            octave_idx_type  ja = m1.cidx (i); \
-            octave_idx_type  ja_max = m1.cidx (i+1); \
-            bool ja_lt_max= ja < ja_max; \
+            octave_idx_type ja = m1.cidx (i); \
+            octave_idx_type ja_max = m1.cidx (i+1); \
+            bool ja_lt_max = ja < ja_max; \
             \
-            octave_idx_type  jb = m2.cidx (i); \
-            octave_idx_type  jb_max = m2.cidx (i+1); \
+            octave_idx_type jb = m2.cidx (i); \
+            octave_idx_type jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max) \
@@ -488,12 +488,12 @@ along with Octave; see the file COPYING.  If not, see
         r.cidx (0) = 0; \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            octave_idx_type  ja = m1.cidx (i); \
-            octave_idx_type  ja_max = m1.cidx (i+1); \
-            bool ja_lt_max= ja < ja_max; \
+            octave_idx_type ja = m1.cidx (i); \
+            octave_idx_type ja_max = m1.cidx (i+1); \
+            bool ja_lt_max = ja < ja_max; \
             \
-            octave_idx_type  jb = m2.cidx (i); \
-            octave_idx_type  jb_max = m2.cidx (i+1); \
+            octave_idx_type jb = m2.cidx (i); \
+            octave_idx_type jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max) \
@@ -604,12 +604,12 @@ along with Octave; see the file COPYING.  If not, see
         \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            octave_idx_type  ja = m1.cidx (i); \
-            octave_idx_type  ja_max = m1.cidx (i+1); \
-            bool ja_lt_max= ja < ja_max; \
+            octave_idx_type ja = m1.cidx (i); \
+            octave_idx_type ja_max = m1.cidx (i+1); \
+            bool ja_lt_max = ja < ja_max; \
             \
-            octave_idx_type  jb = m2.cidx (i); \
-            octave_idx_type  jb_max = m2.cidx (i+1); \
+            octave_idx_type jb = m2.cidx (i); \
+            octave_idx_type jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max) \
@@ -1758,7 +1758,7 @@ along with Octave; see the file COPYING.  If not, see
         { \
           for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++) \
             { \
-              octave_idx_type  col = a.ridx (j); \
+              octave_idx_type col = a.ridx (j); \
               for (octave_idx_type k = m.cidx (col) ; k < m.cidx (col+1); k++) \
                 { \
                   if (w[m.ridx (k)] < i + 1) \

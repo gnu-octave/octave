@@ -77,7 +77,7 @@ function [fcn, help1str] = lookfor (str, arg2)
   ## ditto for path.
   new_path = ostrsplit (path (), pathsep ());
 
-  ## remove  directories already covered by orig_path.
+  ## remove directories already covered by orig_path.
   if (had_core_cache)
     new_path = setdiff (new_path, orig_path);
   endif

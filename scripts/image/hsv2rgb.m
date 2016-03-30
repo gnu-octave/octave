@@ -109,7 +109,7 @@ endfunction
 %!assert (hsv2rgb ([0 0.5 0.5]), hsv2rgb ([1 0.5 0.5]))
 
 ## Not Matlab compatible (Matlab would return [1/2  1/12  1/12]) but
-## it's also invalid input.  This is, however, the same output as python
+## it's also invalid input.  This is, however, the same output as Python
 ## colorsys module.
 %!assert (hsv2rgb ([0.5 -0.5 0.5]), [0.75 0.5 0.5])
 

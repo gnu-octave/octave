@@ -1,4 +1,4 @@
-// N-D Array  manipulations.
+// N-D Array manipulations.
 /*
 
 Copyright (C) 1996-2015 John W. Eaton

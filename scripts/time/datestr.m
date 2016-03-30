@@ -108,7 +108,7 @@
 ## @end deftypefn
 
 ## FIXME: parse arbitrary code strings.
-## e.g., for  Wednesday 2001-03-05 09:04:06 AM, use
+## e.g., for Wednesday 2001-03-05 09:04:06 AM, use
 ##     yy    01
 ##     yyyy  2001
 ##     m     M

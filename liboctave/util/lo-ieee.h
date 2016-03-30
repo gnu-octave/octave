@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -96,7 +96,7 @@ extern OCTAVE_API float lo_ieee_float_nan_value (void);
 
 extern OCTAVE_API int __lo_ieee_float_signbit (float);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

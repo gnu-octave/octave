@@ -135,7 +135,7 @@ err_wrong_type_arg (octave_execution_exception& e, const std::string& s);
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const octave_value& tc);
 
-OCTAVE_NORETURN OCTINTERP_API extern  void
+OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (octave_execution_exception& e, const octave_value& tc);
 
 OCTAVE_NORETURN OCTINTERP_API extern void

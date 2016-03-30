@@ -1114,8 +1114,8 @@ octave_class::reconstruct_parents (void)
   // First, check to see if there might be an issue with inheritance.
   for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
     {
-      std::string  key = map.key (p);
-      Cell         val = map.contents (p);
+      std::string key = map.key (p);
+      Cell        val = map.contents (p);
       if (val(0).is_object ())
         {
           dbgstr = "blork";

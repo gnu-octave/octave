@@ -147,7 +147,8 @@ public slots:
   void handle_request_add_breakpoint (int line, const QString& cond);
   void handle_request_remove_breakpoint (int line);
 
-  void handle_octave_result (QObject *requester, QString& command, octave_value_list &result);
+  void handle_octave_result (QObject *requester, QString& command,
+                             octave_value_list &result);
 
 signals:
 
@@ -160,14 +161,16 @@ signals:
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
   void request_open_file (const QString&);
-  void  edit_mfile_request (const QString&, const QString&,
-                            const QString&, int);
+  void edit_mfile_request (const QString&, const QString&,
+                           const QString&, int);
 
   void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
   void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
   void remove_all_breakpoints (void);
-  void find_translated_line_number (int original_linenr, int& translated_linenr, marker*&);
-  void find_linenr_just_before (int linenr, int& original_linenr, int& editor_linenr);
+  void find_translated_line_number (int original_linenr,
+                                    int& translated_linenr, marker*&);
+  void find_linenr_just_before (int linenr, int& original_linenr,
+                                int& editor_linenr);
   void report_marker_linenr (QIntList& lines, QStringList& conditions);
   void remove_position_via_debugger_linenr (int debugger_linenr);
   void remove_all_positions (void);

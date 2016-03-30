@@ -2349,7 +2349,7 @@ public:
     // FLTK doesn't give this info.
     return 72.0;
 
-    // FIXME: FLTK >= 1.3.0 could do this with  Fl::screen_dpi (h, v, n)
+    // FIXME: FLTK >= 1.3.0 could do this with Fl::screen_dpi (h, v, n)
     // but do we need it?
   }
 */

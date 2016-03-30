@@ -74,7 +74,7 @@ JIT_VISIT_IR_NOTEMPLATE
 
 #undef JIT_METH
 
-// ABCs which aren't included in  JIT_VISIT_IR_ALL
+// ABCs which aren't included in JIT_VISIT_IR_ALL
 class jit_instruction;
 class jit_terminator;
 
@@ -809,8 +809,8 @@ public:
 
   const std::string &name (void) const { return mname; }
 
-  // manipulate the value_stack, for use during SSA construction. The top of
-  // the  value stack represents the current value for this variable
+  // manipulate the value_stack, for use during SSA construction.  The top of
+  // the value stack represents the current value for this variable
   bool has_top (void) const
   {
     return ! value_stack.empty ();

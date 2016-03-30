@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 // Exception thrown by err_invalid_index
 // This is thrown when the invalid index is detected, at which point nd and dim
 // are usually not known.  It is caught at the place they are known, where a
-// new  err_invalid_index  is called.
+// new err_invalid_index  is called.
 //
 // Typically, this should be caught after any call to
 // octave_value_list::index_vector()

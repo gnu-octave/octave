@@ -1117,7 +1117,7 @@ symbol_table::fcn_info::fcn_info_rep::find_package (void)
 
 // Insert INF_CLASS in the set of class names that are considered
 // inferior to SUP_CLASS.  Return FALSE if INF_CLASS is currently
-// marked as superior to  SUP_CLASS.
+// marked as superior to SUP_CLASS.
 
 bool
 symbol_table::set_class_relationship (const std::string& sup_class,

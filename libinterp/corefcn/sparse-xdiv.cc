@@ -398,7 +398,7 @@ x_el_div (double a, const SparseComplexMatrix& b)
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
 
-  ComplexMatrix  result (nr, nc, Complex (octave_NaN, octave_NaN));
+  ComplexMatrix result (nr, nc, Complex (octave_NaN, octave_NaN));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)

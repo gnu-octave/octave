@@ -499,15 +499,6 @@ function domain = find_valid_domain (X, Y, Z);
       domain(3:4) = [XX(1), XX(end)];
     endif
 
-    #{
-    ## FIXME: Old algorithm for removing singularities
-    ## Deprecated in 3.8.  Can be removed if no problems appear in ezplot.
-    idx = 2 : length (Z);
-    idx = find (((Z(idx) > yrange(2) / 2) & (Z(idx-1) < yrange(1) / 2)) |
-                ((Z(idx) < yrange(1) / 2) & (Z(idx-1) > yrange(2) / 2)));
-    Z(idx) = NaN;
-    #}
-
   else
     ## 3-D data such as mesh, surf
     Zfinite = ! isnan (Z);

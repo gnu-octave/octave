@@ -31,7 +31,7 @@
 
 %!test
 %! tic ();
-%! sleep (2);
+%! pause (2);
 %! assert (toc () > 0);
 
 %!test
@@ -40,22 +40,6 @@
 %! assert (__prog_output_assert__ ("ok"));
 
 %!error <Invalid call to pause> pause (1, 2)
-
-%!test
-%! sleep (0);
-%! __printf_assert__ ("ok\n");
-%! assert (__prog_output_assert__ ("ok"));
-
-%!error <Invalid call to sleep> sleep ()
-%!error <Invalid call to sleep> sleep (1, 2)
-
-%!test
-%! usleep (0);
-%! __printf_assert__ ("ok\n");
-%! assert (__prog_output_assert__ ("ok"));
-
-%!error <Invalid call to usleep> usleep ()
-%!error <Invalid call to usleep> usleep (1, 2)
 
 %!test
 %! from = tempname ();

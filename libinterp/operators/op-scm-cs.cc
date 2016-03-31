@@ -112,7 +112,7 @@ DEFBINOP (el_div, sparse_complex_matrix, complex)
   if (d == 0.0)
     warn_divide_by_zero ();
 
-  retval =  octave_value (v1.sparse_complex_matrix_value () / d);
+  retval = octave_value (v1.sparse_complex_matrix_value () / d);
 
   return retval;
 }

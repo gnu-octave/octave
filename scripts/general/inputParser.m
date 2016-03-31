@@ -246,9 +246,9 @@
 classdef inputParser < handle
   properties
     ## TODO set input checking for this properties
-    CaseSensitive     = false;
-    FunctionName      = "";
-    KeepUnmatched     = false;
+    CaseSensitive = false;
+    FunctionName  = "";
+    KeepUnmatched = false;
     # PartialMatching = true;   # TODO unimplemented
     # StructExpand    = true;   # TODO unimplemented
   endproperties
@@ -277,7 +277,7 @@ classdef inputParser < handle
     ## When checking for fieldnames in a Case Insensitive way, this variable
     ## holds the correct identifier for the last searched named using the
     ## is_argname method.
-    last_name  = "";
+    last_name = "";
   endproperties
 
   properties (Access = protected, Constant = true)

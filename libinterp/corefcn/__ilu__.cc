@@ -116,7 +116,7 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
 
       if (opt != ROW)
         for (jj = uptr[k] + 1; jj < cidx[k+1]; jj++)
-          data[jj] /=  data[uptr[k]];
+          data[jj] /= data[uptr[k]];
 
       if (k != jrow)
         error ("ilu: A has a zero on the diagonal");

@@ -1698,8 +1698,8 @@ private:
                   Matrix zoom_box (1,4,0);
                   zoom_box (0) = pos_x;
                   zoom_box (1) = pos_y;
-                  zoom_box (2) =  Fl::event_x ();
-                  zoom_box (3) =  Fl::event_y () - menu_dy ();
+                  zoom_box (2) = Fl::event_x ();
+                  zoom_box (3) = Fl::event_y () - menu_dy ();
                   canvas->set_zoom_box (zoom_box);
                   canvas->zoom (true);
                   mark_modified ();

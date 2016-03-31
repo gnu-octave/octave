@@ -93,8 +93,8 @@ function filelist = __xzip__ (commandname, extension, commandtemplate,
       movefile (cellfun (@(x) sprintf ("%s.%s", x, extension),
                          fnames, "uniformoutput", false), cwd);
       if (nargout > 0)
-        filelist  = cellfun (@(x) sprintf ("%s.%s", x, extension),
-                             files, "uniformoutput", false);
+        filelist = cellfun (@(x) sprintf ("%s.%s", x, extension),
+                            files, "uniformoutput", false);
       endif
     endif
 

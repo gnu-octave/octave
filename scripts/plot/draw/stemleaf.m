@@ -248,7 +248,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
 
   ## Vectorized version provided by Rik Wehbring (rik@octave.org)
   ## Determine leaves for each stem:
-  new_line  = 1;
+  new_line = 1;
   for kx = 2: numel (stems)
 
     stem_sign = signbit (stems(kx));

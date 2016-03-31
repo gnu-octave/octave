@@ -123,7 +123,7 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
           m(i) = num.dval;
         }
 
-      retval =  m;
+      retval = m;
     }
   else
     {
@@ -161,7 +161,7 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
           m(i) = num.dval;
         }
 
-      retval =  m;
+      retval = m;
     }
 
   return retval;

@@ -947,7 +947,7 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
 
           if (print_eng)
             {
-              i_fw =  3 + prec + ex;
+              i_fw = 3 + prec + ex;
               r_fw = i_fw + 1;
               if (inf_or_nan && i_fw < 5)
                 {
@@ -3608,7 +3608,7 @@ init_format_state (void)
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  Voutput_precision =  prec;
+  Voutput_precision = prec;
   Voutput_max_field_width = fw;
 }
 

@@ -123,7 +123,7 @@ function [status, msg, msgid] = fileattrib (file = ".")
         r(i).GroupRead = (modestr(5) == "r");
         r(i).GroupWrite = (modestr(6) == "w");
         r(i).GroupExecute = (modestr(7) == "x");
-        r(i).OtherRead  = (modestr(8) == "r");
+        r(i).OtherRead = (modestr(8) == "r");
         r(i).OtherWrite = (modestr(9) == "w");
         r(i).OtherExecute = (modestr(10) == "x");
       else

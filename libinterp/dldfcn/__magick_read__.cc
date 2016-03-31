@@ -164,12 +164,12 @@ calculate_region (const octave_scalar_map& options)
   const Cell pixel_region = options.getfield ("region").cell_value ();
 
   // Subtract 1 to account for 0 indexing.
-  const Range rows     = get_region_range (pixel_region (0));
-  const Range cols     = get_region_range (pixel_region (1));
-  region["row_start"]  = rows.base () -1;
-  region["col_start"]  = cols.base () -1;
-  region["row_end"]    = rows.max ()  -1;
-  region["col_end"]    = cols.max ()  -1;
+  const Range rows    = get_region_range (pixel_region (0));
+  const Range cols    = get_region_range (pixel_region (1));
+  region["row_start"] = rows.base () -1;
+  region["col_start"] = cols.base () -1;
+  region["row_end"]   = rows.max ()  -1;
+  region["col_end"]   = cols.max ()  -1;
 
   // Length of the area to load into the Image Pixel Cache.  We use max and
   // min to account for cases where last element of range is the range limit.
@@ -471,8 +471,8 @@ read_images (std::vector<Magick::Image>& imvec,
 
     case Magick::GrayscaleMatteType:    // Grayscale image with opacity
       {
-        img   = T (dim_vector (nRows, nCols, 1, nFrames));
-        T alpha   (dim_vector (nRows, nCols, 1, nFrames));
+        img = T (dim_vector (nRows, nCols, 1, nFrames));
+        T alpha (dim_vector (nRows, nCols, 1, nFrames));
         P *img_fvec = img.fortran_vec ();
         P *a_fvec   = alpha.fortran_vec ();
 
@@ -515,9 +515,9 @@ read_images (std::vector<Magick::Image>& imvec,
                                                        col_cache, row_cache);
 
             octave_idx_type idx = 0;
-            P *rbuf   = img_fvec;
-            P *gbuf   = img_fvec + color_stride;
-            P *bbuf   = img_fvec + color_stride * 2;
+            P *rbuf = img_fvec;
+            P *gbuf = img_fvec + color_stride;
+            P *bbuf = img_fvec + color_stride * 2;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -539,8 +539,8 @@ read_images (std::vector<Magick::Image>& imvec,
     case Magick::PaletteMatteType:    // Indexed color image with opacity
     case Magick::TrueColorMatteType:  // Truecolor image with opacity
       {
-        img   = T (dim_vector (nRows, nCols, 3, nFrames));
-        T alpha   (dim_vector (nRows, nCols, 1, nFrames));
+        img = T (dim_vector (nRows, nCols, 3, nFrames));
+        T alpha (dim_vector (nRows, nCols, 1, nFrames));
         P *img_fvec = img.fortran_vec ();
         P *a_fvec   = alpha.fortran_vec ();
 
@@ -557,9 +557,9 @@ read_images (std::vector<Magick::Image>& imvec,
                                                        col_cache, row_cache);
 
             octave_idx_type idx = 0;
-            P *rbuf   = img_fvec;
-            P *gbuf   = img_fvec + color_stride;
-            P *bbuf   = img_fvec + color_stride * 2;
+            P *rbuf = img_fvec;
+            P *gbuf = img_fvec + color_stride;
+            P *bbuf = img_fvec + color_stride * 2;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -582,7 +582,7 @@ read_images (std::vector<Magick::Image>& imvec,
 
     case Magick::ColorSeparationType:  // Cyan/Magenta/Yellow/Black (CMYK) image
       {
-        img   = T (dim_vector (nRows, nCols, 4, nFrames));
+        img = T (dim_vector (nRows, nCols, 4, nFrames));
         P *img_fvec = img.fortran_vec ();
 
         const octave_idx_type frame_stride = color_stride * 4;
@@ -594,10 +594,10 @@ read_images (std::vector<Magick::Image>& imvec,
                                                        col_cache, row_cache);
 
             octave_idx_type idx = 0;
-            P *cbuf   = img_fvec;
-            P *mbuf   = img_fvec + color_stride;
-            P *ybuf   = img_fvec + color_stride * 2;
-            P *kbuf   = img_fvec + color_stride * 3;
+            P *cbuf = img_fvec;
+            P *mbuf = img_fvec + color_stride;
+            P *ybuf = img_fvec + color_stride * 2;
+            P *kbuf = img_fvec + color_stride * 3;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -620,8 +620,8 @@ read_images (std::vector<Magick::Image>& imvec,
     // Cyan, magenta, yellow, and black with alpha (opacity) channel
     case Magick::ColorSeparationMatteType:
       {
-        img   = T (dim_vector (nRows, nCols, 4, nFrames));
-        T alpha   (dim_vector (nRows, nCols, 1, nFrames));
+        img = T (dim_vector (nRows, nCols, 4, nFrames));
+        T alpha (dim_vector (nRows, nCols, 1, nFrames));
         P *img_fvec = img.fortran_vec ();
         P *a_fvec   = alpha.fortran_vec ();
 
@@ -642,10 +642,10 @@ read_images (std::vector<Magick::Image>& imvec,
               = imvec[frameidx(frame)].getConstIndexes ();
 
             octave_idx_type idx = 0;
-            P *cbuf   = img_fvec;
-            P *mbuf   = img_fvec + color_stride;
-            P *ybuf   = img_fvec + color_stride * 2;
-            P *kbuf   = img_fvec + color_stride * 3;
+            P *cbuf = img_fvec;
+            P *mbuf = img_fvec + color_stride;
+            P *ybuf = img_fvec + color_stride * 2;
+            P *kbuf = img_fvec + color_stride * 3;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -994,9 +994,9 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
 static void
 encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
 {
-  const octave_idx_type nFrames   = img.ndims () < 4 ? 1 : img.dims ()(3);
-  const octave_idx_type nRows     = img.rows ();
-  const octave_idx_type nCols     = img.columns ();
+  const octave_idx_type nFrames = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type nRows   = img.rows ();
+  const octave_idx_type nCols   = img.columns ();
 
   // The initialized image will be black, this is for the other pixels
   const Magick::Color white ("white");

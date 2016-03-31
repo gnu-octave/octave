@@ -384,8 +384,8 @@ workspace_view::handle_contextmenu_rename (void)
       bool ok = false;
 
       QString new_name
-        =  inputDialog->getText (0, "Rename Variable", "New name:",
-                                 QLineEdit::Normal, var_name, &ok);
+        = inputDialog->getText (0, "Rename Variable", "New name:",
+                                QLineEdit::Normal, var_name, &ok);
 
       if (ok && ! new_name.isEmpty ())
         {
@@ -440,7 +440,7 @@ workspace_view::handle_model_changed (void)
   // Just modify those rows that have been added rather than go through
   // the whole list.  For-loop test will handle when number of rows reduced.
   QFontMetrics fm = view->fontMetrics ();
-  int row_height =  fm.height ();
+  int row_height = fm.height ();
   int new_row_count = _filter_model.rowCount ();
   for (int i = view_previous_row_count; i < new_row_count; i++)
     view->setRowHeight (i, row_height);

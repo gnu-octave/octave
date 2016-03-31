@@ -266,7 +266,7 @@ tree_multi_assignment::rvalue (int)
                 error ("some elements undefined in return list");
 
               // This won't do a copy.
-              octave_value_list ovl  = rhs_val.slice (k, nel);
+              octave_value_list ovl = rhs_val.slice (k, nel);
 
               ult.assign (octave_value::op_asn_eq,
                           octave_value (ovl, true));

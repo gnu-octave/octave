@@ -265,7 +265,7 @@ bitop (const std::string& fname, const octave_value_list& args)
               int16NDArray x (dx);
               int16NDArray y = args(q).int16_array_value ();
 
-              retval  = bitopx (fname, x, y);
+              retval = bitopx (fname, x, y);
             }
           else if (args(q).type_id () == octave_int8_matrix::static_type_id ()
                    || args(q).type_id () == octave_int8_scalar::static_type_id ())

@@ -169,7 +169,7 @@ function updatecancelbutton (hf, dummy, hax)
   cb = get (hf, "createcancelbtn");
   if (! isempty (cb))
     if (isempty (hbtn))
-      units =  get (hax, "units");
+      units = get (hax, "units");
       fpos = get (hf, "position");
       set (hax, "units", "pixels");
       apos = get (hax, "position");
@@ -188,7 +188,7 @@ function updatecancelbutton (hf, dummy, hax)
     endif
   elseif (! isempty (hbtn))
     delete (hbtn);
-    units =  get (hax, "units");
+    units = get (hax, "units");
     fpos = get (hf, "position");
     set (hax, "units", "pixels");
     apos = get (hax, "position");

@@ -326,7 +326,7 @@ history_dock_widget::pasteClipboard ()
   if (_filter->lineEdit ()->hasFocus ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
-      QString str =  clipboard->text ();
+      QString str = clipboard->text ();
       if (str.length () > 0)
         _filter->lineEdit ()->insert (str);
     }

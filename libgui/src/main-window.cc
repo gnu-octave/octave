@@ -793,7 +793,7 @@ main_window::confirm_shutdown_octave (void)
                                            tr ("Are you sure you want to exit Octave?"),
                                            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
 
-          if (ans !=  QMessageBox::Ok)
+          if (ans != QMessageBox::Ok)
             closenow = false;
         }
 
@@ -1172,7 +1172,7 @@ main_window::pasteClipboard (void)
     {
       QLineEdit * edit = _current_directory_combo_box->lineEdit ();
       QClipboard *clipboard = QApplication::clipboard ();
-      QString str =  clipboard->text ();
+      QString str = clipboard->text ();
       if (edit && str.length () > 0)
         {
           edit->insert (str);
@@ -1967,7 +1967,7 @@ main_window::construct_help_menu (QMenuBar *p)
   _report_bug_action = add_action (help_menu, QIcon (),
             tr ("Report Bug"), SLOT (open_bug_tracker_page ()));
 
-  _octave_packages_action =  add_action (help_menu, QIcon (),
+  _octave_packages_action = add_action (help_menu, QIcon (),
             tr ("Octave Packages"), SLOT (open_octave_packages_page ()));
 
   _agora_action = add_action (help_menu, QIcon (),

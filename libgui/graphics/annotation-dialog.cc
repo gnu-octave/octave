@@ -147,7 +147,7 @@ void
 annotation_dialog::set_gui_props ()
 {
   // set the gui to the values from the props
-  octave_idx_type len  = props.length ();
+  octave_idx_type len = props.length ();
 
   for (int i=0; i<len/2; i++)
     {

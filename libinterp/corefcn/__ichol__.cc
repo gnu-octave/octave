@@ -301,7 +301,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
                   vec[ind] = j;
                   ind++;
                 }
-              w_data[j] -=  ichol_mult (data_l[jj], data_l[jjrow]);
+              w_data[j] -= ichol_mult (data_l[jj], data_l[jjrow]);
             }
           // Update the actual column first element and
           // update the linked list of the jrow row.
@@ -378,7 +378,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
       // scale the elements by the pivot.
       data_l[total_len] = std::sqrt (data_l[total_len]);
       for (jj = total_len + 1; jj < (total_len + w_len); jj++)
-        data_l[jj] /=  data_l[total_len];
+        data_l[jj] /= data_l[total_len];
       total_len += w_len;
       // Check if there are too many elements to be indexed with
       // octave_idx_type type due to fill-in during the process.

@@ -41,13 +41,13 @@ enum MouseMode
   // NOTE: These values must match the order of the buttons in the
   // MouseModeActionGroup object.
 
-  NoMode        = 0,
-  RotateMode    = 1,
-  ZoomInMode    = 2,
-  ZoomOutMode   = 3,
-  PanMode       = 4,
-  TextMode      = 5,
-  SelectMode    = 6
+  NoMode      = 0,
+  RotateMode  = 1,
+  ZoomInMode  = 2,
+  ZoomOutMode = 3,
+  PanMode     = 4,
+  TextMode    = 5,
+  SelectMode  = 6
 };
 
 class Container;

@@ -307,7 +307,7 @@ webinfo::pasteClipboard ()
   if (_search_line_edit->hasFocus ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
-      QString str =  clipboard->text ();
+      QString str = clipboard->text ();
       if (str.length () > 0)
         _search_line_edit->insert (str);
     }

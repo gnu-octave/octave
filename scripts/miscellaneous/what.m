@@ -147,7 +147,7 @@ function __display_filenames__ (msg, p, f)
 
     nrows = ceil (length (f) / ncols);
     for i = 1 : nrows
-      args  = f(i:nrows:end);
+      args = f(i:nrows:end);
       if (length (args) < ncols)
         args(end+1 : ncols) = {""};
       endif

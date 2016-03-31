@@ -1098,7 +1098,7 @@ parse_save_options (const string_vector &argv,
 #ifdef HAVE_ZLIB
       else if (argv[i] == "-zip" || argv[i] == "-z")
         {
-          use_zlib  = true;
+          use_zlib = true;
         }
 #endif
       else if (argv[i] == "-struct")

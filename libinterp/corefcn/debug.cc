@@ -460,9 +460,9 @@ bp_table::instance_ok (void)
 void
 bp_table::dbclear_all_signals (void)
 {
-  Vdebug_on_error   = false;  bp_table::errors_that_stop.clear ();
-  Vdebug_on_caught  = false;  bp_table::caught_that_stop.clear ();
-  Vdebug_on_warning = false;  bp_table::warnings_that_stop.clear ();
+  Vdebug_on_error     = false;  bp_table::errors_that_stop.clear ();
+  Vdebug_on_caught    = false;  bp_table::caught_that_stop.clear ();
+  Vdebug_on_warning   = false;  bp_table::warnings_that_stop.clear ();
   Vdebug_on_interrupt = false;
 }
 

@@ -142,7 +142,7 @@ function varargout = textread (filename, format = "%f", varargin)
   headerlines = find (strcmpi (varargin, "headerlines"), 1);
   if (! isempty (headerlines))
     ## Beware of missing or wrong headerline value
-    if (headerlines  == numel (varargin)
+    if (headerlines == numel (varargin)
        || ! isnumeric (varargin{headerlines + 1}))
       error ("textread: missing or invalid value for 'headerlines'" );
     endif

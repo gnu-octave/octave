@@ -350,7 +350,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 
       for (octave_idx_type j = 0; j < nt; j++)
         {
-          double x  = root[j];
+          double x = root[j];
 
           double ax = x * (1.0 - x);
 

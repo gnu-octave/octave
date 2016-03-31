@@ -559,7 +559,7 @@ endfunction
 %! c_opt = [a0, b0];
 %! tol = 1e-5;
 %!
-%! [c, fval, info, output] =  fsolve (@(c) (exp(-c(1)*x) + c(2) - y), [0, 0]);
+%! [c, fval, info, output] = fsolve (@(c) (exp(-c(1)*x) + c(2) - y), [0, 0]);
 %! assert (info > 0);
 %! assert (norm (c - c_opt, Inf) < tol);
 %! assert (norm (fval) < norm (noise));

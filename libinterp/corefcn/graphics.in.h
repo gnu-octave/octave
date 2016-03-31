@@ -1749,7 +1749,7 @@ private:
   Matrix do_get_all_children (void) const
   {
     Matrix retval (children_list.size (), 1);
-    octave_idx_type i  = 0;
+    octave_idx_type i = 0;
 
     for (const_children_list_iterator p = children_list.begin ();
          p != children_list.end (); p++)
@@ -2386,7 +2386,7 @@ private:
 
     octave_idx_type i = 0;
     for (const_available_toolkits_iterator p = available_toolkits.begin ();
-         p !=  available_toolkits.end (); p++)
+         p != available_toolkits.end (); p++)
       m(i++) = *p;
 
     return m;
@@ -2398,7 +2398,7 @@ private:
 
     octave_idx_type i = 0;
     for (const_loaded_toolkits_iterator p = loaded_toolkits.begin ();
-         p !=  loaded_toolkits.end (); p++)
+         p != loaded_toolkits.end (); p++)
       m(i++) = p->first;
 
     return m;

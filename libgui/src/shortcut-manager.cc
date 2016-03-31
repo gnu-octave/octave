@@ -90,7 +90,7 @@ shortcut_manager::do_init_data ()
   int prefix;
 #if defined (Q_OS_MAC)
   // Use CMD key as an equivalent of Ctrl key on other platforms
-  ctrl =  Qt::MetaModifier;
+  ctrl = Qt::MetaModifier;
   // Some of octave default shortcuts on windows/linux are already defined
   // as system wide shortcuts on Mac Os X (almost all Function keys).
   // Prefix those with Option (Alt) modifier to avoid conflicts.
@@ -689,7 +689,7 @@ shortcut_manager::do_import_export (int action)
       QString file;
 
       if (action == OSC_IMPORT)
-        file  = QFileDialog::getOpenFileName (this,
+        file = QFileDialog::getOpenFileName (this,
                     tr ("Import shortcuts from file ..."), QString (),
                     tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
                     0,QFileDialog::DontUseNativeDialog);

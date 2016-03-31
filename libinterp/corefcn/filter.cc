@@ -45,8 +45,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 {
   MArray<T> y;
 
-  octave_idx_type a_len  = a.numel ();
-  octave_idx_type b_len  = b.numel ();
+  octave_idx_type a_len = a.numel ();
+  octave_idx_type b_len = b.numel ();
 
   octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 

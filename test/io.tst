@@ -241,7 +241,7 @@
 %!
 %! save ("-binary", struct_dat,
 %!       "-struct", "STR", "matrix_fld", "str*_fld");
-%! STR =  load (struct_dat);
+%! STR = load (struct_dat);
 %!
 %! assert (!isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...

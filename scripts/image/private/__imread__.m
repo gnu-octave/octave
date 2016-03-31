@@ -42,7 +42,7 @@ function varargout = __imread__ (filename, varargin)
   endif
 
   ## keep track of the varargin offset we're looking at each moment
-  offset    = 1;
+  offset = 1;
 
   ## It is possible for an file with multiple pages to have very different
   ## images on each page. Specifically, they may have different sizes. Because

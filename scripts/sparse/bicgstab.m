@@ -77,9 +77,9 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     if (ischar (A))
       A = str2func (A);
     elseif (isnumeric(A) && issquare (A))
-      Ax  = @(x) A  * x;
+      Ax = @(x) A  * x;
     elseif (isa (A, "function_handle"))
-      Ax  = @(x) feval (A, x);
+      Ax = @(x) feval (A, x);
     else
       error ("bicgstab: A must be a square matrix or function");
     endif

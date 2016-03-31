@@ -237,7 +237,7 @@ function L = ichol (A, opts = struct ())
   ## Delegate to specialized ICHOL
   switch (opts.type)
     case "nofill"
-      L  = __ichol0__ (A_in, opts.michol);
+      L = __ichol0__ (A_in, opts.michol);
     case "ict"
       L = __icholt__ (A_in, opts.droptol, opts.michol);
   endswitch

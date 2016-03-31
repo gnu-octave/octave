@@ -241,7 +241,7 @@ resource_manager::do_set_settings (const QString& file)
   if (! (settings
          && QFile::exists (settings->fileName ())
          && settings->isWritable ()
-         && settings->status () ==  QSettings::NoError))
+         && settings->status () == QSettings::NoError))
     {
       QString msg = QString (QT_TR_NOOP (
         "The settings file\n%1\n"

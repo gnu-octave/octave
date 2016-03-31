@@ -3787,7 +3787,7 @@ textscan::skip_whitespace (delimited_stream& is, bool EOLstop)
       if (c1 == comment_char)           // see if we match an open comment
         {
           // save stream state in case we have to restore it
-          char *pos   = is.tellg ();
+          char *pos = is.tellg ();
           std::ios::iostate state = is.rdstate ();
 
           std::string tmp (comment_len, '\0');
@@ -6721,7 +6721,7 @@ convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
         && flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian)
        || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 
-  bool do_float_conversion =  flt_fmt != oct_mach_info::float_format ();
+  bool do_float_conversion = flt_fmt != oct_mach_info::float_format ();
 
   typedef typename ultimate_element_type<T>::type ult_elt_type;
 

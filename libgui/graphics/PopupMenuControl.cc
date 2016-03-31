@@ -105,10 +105,8 @@ void PopupMenuControl::update (int pId)
 
           if (value.numel () > 0)
             {
-              if (value(0) !=  static_cast<int>(value(0)))
-                {
+              if (value(0) != static_cast<int>(value(0)))
                 warning ("popupmenu value should be integer");
-                }
               else
                 {
                   int newIndex = int (value(0)) - 1;

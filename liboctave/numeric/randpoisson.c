@@ -474,7 +474,7 @@ poisson_rejection_float (double lambda, float *p, size_t n)
  * the normal approximation is based on:
  *   > L=1e8; x=floor(linspace(0,2*L,1000));
  *   > max(abs(normal_pdf(x,L,L)-poisson_pdf(x,L)))
- *   ans =  1.1376e-28
+ *   ans = 1.1376e-28
  * For L=1e7, the max is around 1e-9, which is within the step size of RUNI.
  * For L>1e10 the pprsc function breaks down, as I saw from the histogram
  * of a large sample, so 1e8 is both small enough and large enough. */

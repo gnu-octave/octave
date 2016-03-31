@@ -195,7 +195,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
   for (int i = 0; i < n; i++)
     {
       y[i] = Y[i].data ();
-      size[i] =  V.dims ()(i);
+      size[i] = V.dims ()(i);
     }
 
   OCTAVE_LOCAL_BUFFER (const T *, x, n);
@@ -227,7 +227,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
           M tmp = M (dim_vector (size[i], 1));
 
           for (octave_idx_type j = 0; j < size[i]; j++)
-            tmp(j) =  X[i](scale[i]*j);
+            tmp(j) = X[i](scale[i]*j);
 
           X[i] = tmp;
         }

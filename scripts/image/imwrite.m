@@ -142,8 +142,8 @@ endfunction
 
 ## typical usage with grayscale uint8 images
 %!testif HAVE_MAGICK
-%! gray  = randi (255, 10, 10, 1, "uint8");
-%! r  = write_and_read (".tif", gray);
+%! gray = randi (255, 10, 10, 1, "uint8");
+%! r = write_and_read (".tif", gray);
 %! assert (r, gray)
 
 ## grayscale uint8 images with alpha channel
@@ -156,8 +156,8 @@ endfunction
 
 ## multipage grayscale uint8 images
 %!testif HAVE_MAGICK
-%! gray  = randi (255, 10, 10, 1, 5, "uint8");
-%! r     = write_and_read (".tif", gray);
+%! gray = randi (255, 10, 10, 1, 5, "uint8");
+%! r    = write_and_read (".tif", gray);
 %! assert (r, gray)
 
 ## multipage RGB uint8 images with alpha channel

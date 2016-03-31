@@ -1985,7 +1985,7 @@ A(1)\n\
     }
   else
     {
-      for (int i =  dim + 1; i < nd; i++)
+      for (int i = dim + 1; i < nd; i++)
         rdv(i-1) = rdv(i);
 
       rdv.resize (nd-1);

@@ -139,11 +139,11 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _status_bar = new QStatusBar;
   _status_bar->showMessage (tr ("Idle."));
 
-  _find_button =  new QPushButton (tr ("Find"));
+  _find_button = new QPushButton (tr ("Find"));
   _find_button->setToolTip (tr ("Start search for matching files"));
   connect (_find_button, SIGNAL (clicked ()), this, SLOT (start_find ()));
 
-  _stop_button =  new QPushButton (tr ("Stop"));
+  _stop_button = new QPushButton (tr ("Stop"));
   _stop_button->setToolTip (tr ("Stop searching"));
   _stop_button->setEnabled (false);
   connect (_stop_button, SIGNAL (clicked ()), this, SLOT (stop_find ()));
@@ -257,7 +257,7 @@ find_files_dialog::start_find ()
 
   QDir::Filters filters = QDir::Dirs|QDir::NoDotAndDotDot|QDir::Files;
   if (! _name_case_check->isChecked ())
-    filters |=  QDir::CaseSensitive;
+    filters |= QDir::CaseSensitive;
 
   QStringList nameFilters;
   nameFilters.append (_file_name_edit->text ());

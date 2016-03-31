@@ -525,7 +525,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       OCTAVE_LOCAL_BUFFER (unsigned int, tmp, 2);
       if (uncompress (reinterpret_cast<Bytef *> (tmp), &destLen,
                       reinterpret_cast<Bytef *> (inbuf), element_length)
-          ==  Z_MEM_ERROR)
+          == Z_MEM_ERROR)
         error ("load: error probing size of compressed data element");
 
       // Why should I have to initialize outbuf as I'll just overwrite!!
@@ -1908,7 +1908,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
 
       // double max_val = val[0];
       // double min_val = val[0];
-      // bool all_integers =  true;
+      // bool all_integers = true;
       //
       // for (int i = 0; i < nel; i++)
       //   {
@@ -1963,7 +1963,7 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
 
       // float max_val = val[0];
       // float min_val = val[0];
-      // bool all_integers =  true;
+      // bool all_integers = true;
       //
       // for (int i = 0; i < nel; i++)
       //   {

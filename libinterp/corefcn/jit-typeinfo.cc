@@ -818,7 +818,7 @@ const jit_function&
 jit_operation::overload (const std::vector<jit_type*>& types) const
 {
   static jit_function null_overload;
-  for (size_t i  =0; i < types.size (); ++i)
+  for (size_t i = 0; i < types.size (); ++i)
     if (! types[i])
       return null_overload;
 

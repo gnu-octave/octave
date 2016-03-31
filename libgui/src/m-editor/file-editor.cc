@@ -221,8 +221,8 @@ file_editor::request_new_function (bool)
 {
   bool ok;
   // get the name of the new function
-  QString new_name  = QInputDialog::getText (this, tr ("New Function"),
-                      tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
+  QString new_name = QInputDialog::getText (this, tr ("New Function"),
+                     tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
   if (ok && new_name.length () > 0)
     {
       // append suffix if it not already exists
@@ -1687,18 +1687,18 @@ file_editor::construct (void)
 
   _edit_cmd_menu->addSeparator ();
 
-  _move_to_matching_brace  = add_action (_edit_nav_menu, QIcon (),
+  _move_to_matching_brace = add_action (_edit_nav_menu, QIcon (),
           tr ("Move to Matching Brace"), SLOT (request_move_match_brace (bool)));
-  _sel_to_matching_brace  = add_action (_edit_nav_menu, QIcon (),
+  _sel_to_matching_brace = add_action (_edit_nav_menu, QIcon (),
           tr ("Select to Matching Brace"), SLOT (request_sel_match_brace (bool)));
 
   _edit_nav_menu->addSeparator ();
 
-  _previous_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
+  _previous_bookmark_action = add_action (_edit_nav_menu, QIcon (),
           tr ("Pre&vious Bookmark"), SLOT (request_previous_bookmark (bool)));
-  _next_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
+  _next_bookmark_action = add_action (_edit_nav_menu, QIcon (),
           tr ("&Next Bookmark"), SLOT (request_next_bookmark (bool)));
-  _toggle_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
+  _toggle_bookmark_action = add_action (_edit_nav_menu, QIcon (),
           tr ("Toggle &Bookmark"), SLOT (request_toggle_bookmark (bool)));
   _remove_bookmark_action = add_action (_edit_nav_menu, QIcon (),
           tr ("&Remove All Bookmarks"), SLOT (request_remove_bookmark (bool)));

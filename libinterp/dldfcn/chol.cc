@@ -918,7 +918,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! assert (cu, cl', eps);
 
 %!test
-%! cca  = chol (Ac);
+%! cca   = chol (Ac);
 %!
 %! ccal  = chol (Ac, "lower");
 %! ccal2 = chol (tril (Ac), "lower");
@@ -936,7 +936,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! assert (cca, ccau2,  eps);
 
 %!test
-%! cca  = chol (single (Ac));
+%! cca   = chol (single (Ac));
 %!
 %! ccal  = chol (single (Ac), "lower");
 %! ccal2 = chol (tril (single (Ac)), "lower");
@@ -966,7 +966,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!
 %! ca = a + i*b;
 %!
-%! cca  = chol (ca);
+%! cca   = chol (ca);
 %!
 %! ccal  = chol (ca, "lower");
 %! ccal2 = chol (tril (ca), "lower");

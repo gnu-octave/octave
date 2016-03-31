@@ -53,7 +53,7 @@ function deps_cell = fix_depends (depends)
       else
         package = tolower (strtrim (dep));
         operator = ">=";
-        version  = "0.0.0";
+        version = "0.0.0";
       endif
       deps_cell{i} = struct ("package", package,
                              "operator", operator,

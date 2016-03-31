@@ -2219,7 +2219,7 @@ graphics_object::set (const Array<std::string>& pnames,
   for (octave_idx_type column = 0; column < k; column++)
     {
       caseless_str pname = pnames(column);
-      octave_value val  = values(row, column);
+      octave_value val = values(row, column);
 
       set_value_or_default (pname, val);
     }

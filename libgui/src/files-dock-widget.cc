@@ -926,7 +926,7 @@ files_dock_widget::pasteClipboard ()
   if (_current_directory->hasFocus ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
-      QString str =  clipboard->text ();
+      QString str = clipboard->text ();
       QLineEdit * edit = _current_directory->lineEdit ();
       if (edit && str.length () > 0)
         edit->insert (str);

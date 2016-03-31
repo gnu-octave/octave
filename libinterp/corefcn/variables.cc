@@ -1685,7 +1685,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
           std::string newmsg = std::string ("Variables in the file ")
             + nm + ":\n\n";
 
-          retval =  do_who (i, argv, return_list, verbose, newmsg);
+          retval = do_who (i, argv, return_list, verbose, newmsg);
 
           return retval;
         }

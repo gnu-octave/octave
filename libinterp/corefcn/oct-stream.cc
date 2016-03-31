@@ -2884,7 +2884,7 @@ textscan::read_double (delimited_stream& is,
                 width_left--;
             }
           valid = false;
-          while (width_left-- && is && (ch = is.get ()) >= '0' && ch1 <= '9')
+          while (width_left-- && is && (ch = is.get ()) >= '0' && ch <= '9')
             {
               exp = exp*10 + ch - '0';
               valid = true;

@@ -2197,6 +2197,9 @@ as the name of the function when reporting errors.\n\
 %! assert (c, {1, "/", 2});
 
 %!assert (textscan (["1 2 3 4"; "5 6 7 8"], "%f"), {[15; 26; 37; 48]})
+
+%% Check for delimiter after exponent
+%!assert (textscan ("1e-3|42", "%f", "delimiter", "|"), {[1e-3; 42]})
 */
 
 // These tests have end-comment sequences, so can't just be in a comment

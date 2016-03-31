@@ -439,7 +439,7 @@ read_images (std::vector<Magick::Image>& imvec,
         }
     }
 
-  const octave_idx_type colour_stride = nRows * nCols;
+  const octave_idx_type color_stride = nRows * nCols;
   switch (type)
     {
     case Magick::BilevelType:           // Monochrome bi-level image
@@ -506,7 +506,7 @@ read_images (std::vector<Magick::Image>& imvec,
         img = T (dim_vector (nRows, nCols, 3, nFrames));
         P *img_fvec = img.fortran_vec ();
 
-        const octave_idx_type frame_stride  = colour_stride * 3;
+        const octave_idx_type frame_stride = color_stride * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             OCTAVE_QUIT;
@@ -516,8 +516,8 @@ read_images (std::vector<Magick::Image>& imvec,
 
             octave_idx_type idx = 0;
             P *rbuf   = img_fvec;
-            P *gbuf   = img_fvec + colour_stride;
-            P *bbuf   = img_fvec + colour_stride * 2;
+            P *gbuf   = img_fvec + color_stride;
+            P *bbuf   = img_fvec + color_stride * 2;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -544,7 +544,7 @@ read_images (std::vector<Magick::Image>& imvec,
         P *img_fvec = img.fortran_vec ();
         P *a_fvec   = alpha.fortran_vec ();
 
-        const octave_idx_type frame_stride  = colour_stride * 3;
+        const octave_idx_type frame_stride = color_stride * 3;
 
         // Unlike the index for the other channels, this one won't need
         // to be reset on each frame since it's a separate matrix.
@@ -558,8 +558,8 @@ read_images (std::vector<Magick::Image>& imvec,
 
             octave_idx_type idx = 0;
             P *rbuf   = img_fvec;
-            P *gbuf   = img_fvec + colour_stride;
-            P *bbuf   = img_fvec + colour_stride * 2;
+            P *gbuf   = img_fvec + color_stride;
+            P *bbuf   = img_fvec + color_stride * 2;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -585,7 +585,7 @@ read_images (std::vector<Magick::Image>& imvec,
         img   = T (dim_vector (nRows, nCols, 4, nFrames));
         P *img_fvec = img.fortran_vec ();
 
-        const octave_idx_type frame_stride  = colour_stride * 4;
+        const octave_idx_type frame_stride = color_stride * 4;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             OCTAVE_QUIT;
@@ -595,9 +595,9 @@ read_images (std::vector<Magick::Image>& imvec,
 
             octave_idx_type idx = 0;
             P *cbuf   = img_fvec;
-            P *mbuf   = img_fvec + colour_stride;
-            P *ybuf   = img_fvec + colour_stride * 2;
-            P *kbuf   = img_fvec + colour_stride * 3;
+            P *mbuf   = img_fvec + color_stride;
+            P *ybuf   = img_fvec + color_stride * 2;
+            P *kbuf   = img_fvec + color_stride * 3;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -625,7 +625,7 @@ read_images (std::vector<Magick::Image>& imvec,
         P *img_fvec = img.fortran_vec ();
         P *a_fvec   = alpha.fortran_vec ();
 
-        const octave_idx_type frame_stride  = colour_stride * 4;
+        const octave_idx_type frame_stride = color_stride * 4;
 
         // Unlike the index for the other channels, this one won't need
         // to be reset on each frame since it's a separate matrix.
@@ -643,9 +643,9 @@ read_images (std::vector<Magick::Image>& imvec,
 
             octave_idx_type idx = 0;
             P *cbuf   = img_fvec;
-            P *mbuf   = img_fvec + colour_stride;
-            P *ybuf   = img_fvec + colour_stride * 2;
-            P *kbuf   = img_fvec + colour_stride * 3;
+            P *mbuf   = img_fvec + color_stride;
+            P *ybuf   = img_fvec + color_stride * 2;
+            P *kbuf   = img_fvec + color_stride * 3;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -1401,7 +1401,7 @@ Use @code{imwrite} instead.\n\
 
   const octave_scalar_map options = args(4).xscalar_map_value ("__magick_write__: OPTIONS must be a struct");
 
-  const octave_value img  = args(2);
+  const octave_value img = args(2);
   const Matrix cmap = args(3).xmatrix_value ("__magick_write__: invalid MAP");
 
   std::vector<Magick::Image> imvec;

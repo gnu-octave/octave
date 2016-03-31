@@ -661,7 +661,7 @@ public:
   cat (int dim, octave_idx_type n, const Array<T> *array_list);
 
   //! Apply function fcn to each element of the Array<T>. This function
-  //! is optimised with a manually unrolled loop.
+  //! is optimized with a manually unrolled loop.
   template <typename U, typename F>
   Array<U>
   map (F fcn) const

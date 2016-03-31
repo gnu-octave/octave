@@ -244,7 +244,7 @@ function add_patch_children (hg)
 
     ## Handle for each level the case where we have (a) hole(s) in a patch.
     ## Those are to be filled with the color of level below or with the
-    ## background colour.
+    ## background color.
     for k = 1:numel (lev)
       lvl_idx = find (abs (cont_lev - lev(k)) < lvl_eps);
       len = numel (lvl_idx);
@@ -268,7 +268,7 @@ function add_patch_children (hg)
         endwhile
         if (numel (mark) > 0)
           ## All marked contours describe a hole in a larger contour of
-          ## the same level and must be filled with colour of level below.
+          ## the same level and must be filled with color of level below.
           ma_idx = lvl_idx(mark);
           if (k > 1)
             ## Find color of level below.

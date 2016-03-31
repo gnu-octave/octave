@@ -54,7 +54,7 @@ endfunction
 
 %!demo
 %! ## Show the 'prism' colormap profile and as an image
-%! cmap = prism (18); # 6 colours, therefore cycle 3 times
+%! cmap = prism (18); # 6 colors, therefore cycle 3 times
 %! subplot (2, 1, 1);
 %! rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);

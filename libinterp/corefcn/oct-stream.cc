@@ -1169,7 +1169,7 @@ printf_format_list::printme (void) const
     }
 }
 
-// Delimited stream, optimised to read strings of characters separated
+// Delimited stream, optimized to read strings of characters separated
 // by single-character delimiters.
 //
 // The reason behind this class is that octstream doesn't provide
@@ -1194,7 +1194,7 @@ public:
 
   ~delimited_stream (void);
 
-  // Called when optimised sequence of get is finished.  Ensures that
+  // Called when optimized sequence of get is finished.  Ensures that
   // there is a remaining delimiter in buf, or loads more data in.
   void field_done (void)
   {
@@ -3095,7 +3095,7 @@ textscan::scan_caret (delimited_stream& is, const std::string& pattern,
                       std::string& val) const
 {
   int c1 = std::istream::traits_type::eof ();
-  std::ostringstream obuf;              // Is this optimised for growing?
+  std::ostringstream obuf;              // Is this optimized for growing?
 
   while (is && ((c1 = (is && ! is.eof ())
                  ? is.get_undelim ()
@@ -3202,7 +3202,7 @@ textscan::scan_bracket (delimited_stream& is, const std::string& pattern,
                         std::string& val) const
 {
   int c1 = std::istream::traits_type::eof ();
-  std::ostringstream obuf;              // Is this optimised for growing?
+  std::ostringstream obuf;              // Is this optimized for growing?
 
   while (is && pattern.find (c1 = is.get_undelim ()) != std::string::npos)
     obuf << static_cast<char> (c1);
@@ -3573,7 +3573,7 @@ textscan::parse_options (const octave_value_list& args,
   bool have_delims = false;
   for (int i = 0; i < last; i += 2)
     {
-      std::string param = args(i).xstring_value ("%s: Invalid paramter type <%s> for parameter %d",
+      std::string param = args(i).xstring_value ("%s: Invalid parameter type <%s> for parameter %d",
                                                  who.c_str (),
                                                  args(i).type_name ().c_str (),
                                                  i/2 + 1);
@@ -3733,7 +3733,7 @@ textscan::parse_options (const octave_value_list& args,
                    who.c_str ());
         }
       else
-        error ("%s: unrecognised option '%s'", who.c_str (), param.c_str ());
+        error ("%s: unrecognized option '%s'", who.c_str (), param.c_str ());
     }
 
   whitespace_table = std::string (256, '\0');

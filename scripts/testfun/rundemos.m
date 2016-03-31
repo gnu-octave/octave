@@ -38,7 +38,7 @@ function rundemos (directory)
     do_class_dirs = true;
   elseif (nargin == 1)
     dirs = {canonicalize_file_name(directory)};
-    if (isempty (dirs{1}))
+    if (isempty (dirs{1}) || ! isdir (dirs{1}))
       ## Search for directory name in path
       if (directory(end) == '/' || directory(end) == '\')
         directory(end) = [];

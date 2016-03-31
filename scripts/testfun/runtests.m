@@ -38,7 +38,7 @@ function runtests (directory)
     do_class_dirs = true;
   elseif (nargin == 1)
     dirs = {canonicalize_file_name(directory)};
-    if (isempty (dirs{1}))
+    if (isempty (dirs{1}) || ! isdir (dirs{1}))
       ## Search for directory name in path
       if (directory(end) == '/' || directory(end) == '\')
         directory(end) = [];
@@ -75,7 +75,7 @@ function run_all_tests (directory, do_class_dirs)
       if (has_tests (ff))
         print_test_file_name (f);
         [p, n, xf, sk] = test (ff, "quiet");
-        print_pass_fail (n, p);
+        print_pass_fail (n, p, xf);
         fflush (stdout);
       elseif (has_functions (ff))
         no_tests(end+1) = f;
@@ -132,12 +132,16 @@ function retval = has_tests (f)
   endif
 endfunction
 
-function print_pass_fail (n, p)
+function print_pass_fail (n, p, xf)
   if (n > 0)
     printf (" PASS %4d/%-4d", p, n);
     nfail = n - p;
     if (nfail > 0)
-      printf (" FAIL %d", nfail);
+      if (nfail != xf)
+        printf (" FAIL %d", nfail - xf);
+      else
+        printf (" XFAIL %d", xf);
+      endif
     endif
   endif
   puts ("\n");

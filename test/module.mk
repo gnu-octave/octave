@@ -72,7 +72,7 @@ define run-octave-tests
     if [ -f test/fntests.log ]; then \
       echo "Contents of test/fntests.log:"; \
       echo ""; \
-      cat test/fntests.log; \
+      $(AWK) -f $(srcdir)/build-aux/show-failures.awk test/fntests.log; \
     else \
       echo "test/fntests.log is missing!"; \
     fi; \
@@ -175,6 +175,7 @@ test_EXTRA_DIST += \
   test/build-bc-overload-tests.sh \
   test/bc-overloads-expected \
   test/build_bc_overloads_expected.m \
+  test/show-failures.awk \
   $(TEST_FILES)
 
 EXTRA_DIST += $(test_EXTRA_DIST)

@@ -39,62 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: Deprecated in 4.0 and should be removed in 4.4.
 DEFUN (__luinc__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')\n\
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})\n\
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})\n\
-@cindex LU decomposition\n\
-Produce the incomplete LU@tie{}factorization of the sparse matrix @var{A}.\n\
+@deftypefn  {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, '0')\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, @var{droptol})\n\
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, @var{opts})\n\
+Internal implementation of @code{luinc}.\n\
 \n\
-Two types of incomplete factorization are possible, and the type\n\
-is determined by the second argument to @code{luinc}.\n\
-\n\
-Called with a second argument of @qcode{'0'}, the zero-level incomplete\n\
-LU@tie{}factorization is produced.  This creates a factorization of @var{A}\n\
-where the position of the nonzero arguments correspond to the same\n\
-positions as in the matrix @var{A}.\n\
-\n\
-Alternatively, the fill-in of the incomplete LU@tie{}factorization can\n\
-be controlled through the variable @var{droptol} or the structure\n\
-@var{opts}.  The @sc{umfpack} multifrontal factorization code by Tim A.\n\
-Davis is used for the incomplete LU@tie{}factorization, (availability\n\
-@url{http://www.cise.ufl.edu/research/sparse/umfpack/})\n\
-\n\
-@var{droptol} determines the values below which the values in the\n\
-LU@tie{} factorization are dropped and replaced by zero.  It must be a\n\
-positive scalar, and any values in the factorization whose absolute value\n\
-are less than this value are dropped, expect if leaving them increase the\n\
-sparsity of the matrix.  Setting @var{droptol} to zero results in a complete\n\
-LU@tie{}factorization which is the default.\n\
-\n\
-@var{opts} is a structure containing one or more of the fields\n\
-\n\
-@table @code\n\
-@item droptol\n\
-The drop tolerance as above.  If @var{opts} only contains @code{droptol}\n\
-then this is equivalent to using the variable @var{droptol}.\n\
-\n\
-@item milu\n\
-A logical variable flagging whether to use the modified incomplete\n\
-LU@tie{} factorization.  In the case that @code{milu} is true, the dropped\n\
-values are subtracted from the diagonal of the matrix @var{U} of the\n\
-factorization.  The default is @code{false}.\n\
-\n\
-@item udiag\n\
-A logical variable that flags whether zero elements on the diagonal of\n\
-@var{U} should be replaced with @var{droptol} to attempt to avoid singular\n\
-factors.  The default is @code{false}.\n\
-\n\
-@item thresh\n\
-Defines the pivot threshold in the interval [0,1].  Values outside that\n\
-range are ignored.\n\
-@end table\n\
-\n\
-All other fields in @var{opts} are ignored.  The outputs from @code{luinc}\n\
-are the same as for @code{lu}.\n\
-\n\
-Given the string argument @qcode{\"vector\"}, @code{luinc} returns the\n\
-values of @var{p} @var{q} as vector values.\n\
-@seealso{sparse, lu, ilu, ichol}\n\
+See documentation for @code{luinc}.\n\
+@seealso{luinc}\n\
 @end deftypefn")
 {
   int nargin = args.length ();

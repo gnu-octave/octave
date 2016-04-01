@@ -121,6 +121,7 @@ COREFCN_SRC = \
   libinterp/corefcn/__ichol__.cc \
   libinterp/corefcn/__ilu__.cc \
   libinterp/corefcn/__lin_interpn__.cc \
+  libinterp/corefcn/__luinc__.cc \
   libinterp/corefcn/__pchip_deriv__.cc \
   libinterp/corefcn/__qp__.cc \
   libinterp/corefcn/balance.cc \
@@ -191,7 +192,6 @@ COREFCN_SRC = \
   libinterp/corefcn/ls-utils.cc \
   libinterp/corefcn/lsode.cc \
   libinterp/corefcn/lu.cc \
-  libinterp/corefcn/luinc.cc \
   libinterp/corefcn/mappers.cc \
   libinterp/corefcn/matrix_type.cc \
   libinterp/corefcn/max.cc \

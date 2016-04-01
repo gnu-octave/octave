@@ -167,9 +167,8 @@ public:
   enum magic_colon { magic_colon_t };
 
   octave_value (void)
+    : rep (nil_rep ())
   {
-    static octave_base_value nil_rep;
-    rep = &nil_rep;
     rep->count++;
   }
 
@@ -1424,6 +1423,8 @@ protected:
   octave_base_value *rep;
 
 private:
+
+  static octave_base_value *nil_rep (void);
 
   assign_op unary_op_to_assign_op (unary_op op);
 

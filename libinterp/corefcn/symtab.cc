@@ -49,6 +49,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 
+octave_value symbol_table::dummy_octave_value;
+
 symbol_table *symbol_table::instance = 0;
 
 symbol_table::scope_id_cache *symbol_table::scope_id_cache::instance = 0;
@@ -150,6 +152,8 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
 
   return retval;
 }
+
+symbol_table::symbol_record symbol_table::dummy_symbol_record;
 
 static void
 split_name_with_package (const std::string& name, std::string& fname,

@@ -276,11 +276,7 @@ public:
 
 private:
 
-  static octave_idx_type *nil_rep (void)
-  {
-    static dim_vector zv (0, 0);
-    return zv.rep;
-  }
+  static octave_idx_type *nil_rep (void);
 
 public:
 

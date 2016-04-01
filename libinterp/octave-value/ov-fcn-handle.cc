@@ -226,6 +226,13 @@ octave_fcn_handle::do_multi_index_op (int nargout,
   return retval;
 }
 
+dim_vector
+octave_fcn_handle::dims (void) const
+{
+  static dim_vector dv (1, 1);
+  return dv;
+}
+
 bool
 octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
 {

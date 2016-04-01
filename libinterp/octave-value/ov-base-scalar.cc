@@ -100,6 +100,14 @@ octave_base_scalar<ST>::subsasgn (const std::string& type,
 }
 
 template <typename ST>
+dim_vector
+octave_base_scalar<ST>::dims (void) const
+{
+  static dim_vector dv (1, 1);
+  return dv;
+}
+
+template <typename ST>
 octave_value
 octave_base_scalar<ST>::permute (const Array<int>& vec, bool inv) const
 {

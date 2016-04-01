@@ -53,6 +53,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "PermMatrix.h"
 
 template <typename T>
+typename Sparse<T>::SparseRep *
+Sparse<T>::nil_rep (void)
+{
+  static typename Sparse<T>::SparseRep nr;
+  return &nr;
+}
+
+template <typename T>
 Sparse<T>::Sparse (const PermMatrix& a)
   : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
     dimensions (dim_vector (a.rows (), a.cols ()))

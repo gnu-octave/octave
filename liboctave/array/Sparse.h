@@ -169,11 +169,7 @@ public:
 
 private:
 
-  typename Sparse<T>::SparseRep *nil_rep (void) const
-  {
-    static typename Sparse<T>::SparseRep nr;
-    return &nr;
-  }
+  static typename Sparse<T>::SparseRep *nil_rep (void);
 
 public:
 

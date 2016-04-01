@@ -89,6 +89,22 @@ DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 // A two-dimensional array with diagonal elements only.
 
 template <typename T>
+T&
+DiagArray2<T>::elem (octave_idx_type r, octave_idx_type c)
+{
+  static T zero (0);
+  return (r == c) ? Array<T>::elem (r) : zero;
+}
+
+template <typename T>
+T&
+DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c)
+{
+  static T zero (0);
+  return check_idx (r, c) ? elem (r, c) : zero;
+}
+
+template <typename T>
 void
 DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
                        const T& rfv)

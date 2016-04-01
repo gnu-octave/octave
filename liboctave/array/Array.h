@@ -151,15 +151,7 @@ protected:
 
 private:
 
-  typename Array<T>::ArrayRep *nil_rep (void) const
-  {
-    // NR was originally allocated with new, but that does not seem
-    // to be necessary since it will never be deleted.  So just use
-    // a static object instead.
-
-    static typename Array<T>::ArrayRep nr;
-    return &nr;
-  }
+  static typename Array<T>::ArrayRep *nil_rep (void);
 
 protected:
 

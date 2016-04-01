@@ -156,7 +156,7 @@ endfunction
 
 %!test
 %! a = 0:3;
-%! assert (dec2base (! a, 2, 1), ["1"; "0"; "0"; "0"])
+%! assert (dec2base (! a, 2, 1), ["1"; "0"; "0"; "0"]);
 
 ## Test input validation
 %!error dec2base ()

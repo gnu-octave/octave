@@ -429,10 +429,10 @@ recording using those parameters.\n\
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
 %! for i = 1:nout,
-%!   assert (devinfo.output(i).Name, audiodevinfo (0, devinfo.output(i).ID))
+%!   assert (devinfo.output(i).Name, audiodevinfo (0, devinfo.output(i).ID));
 %! endfor
 %! for i=1:nin,
-%!   assert (devinfo.input(i).Name, audiodevinfo (1, devinfo.input(i).ID))
+%!   assert (devinfo.input(i).Name, audiodevinfo (1, devinfo.input(i).ID));
 %! endfor
 
 %!testif HAVE_PORTAUDIO
@@ -440,10 +440,10 @@ recording using those parameters.\n\
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
 %! for i = 1:nout,
-%!   assert (devinfo.output(i).ID, audiodevinfo (0, devinfo.output(i).Name))
+%!   assert (devinfo.output(i).ID, audiodevinfo (0, devinfo.output(i).Name));
 %! endfor
 %! for i = 1:nin,
-%!   assert (devinfo.input(i).ID, audiodevinfo (1, devinfo.input(i).Name))
+%!   assert (devinfo.input(i).ID, audiodevinfo (1, devinfo.input(i).Name));
 %! endfor
 */
 

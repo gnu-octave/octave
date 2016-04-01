@@ -205,6 +205,6 @@ endfunction
 
 %!demo
 %! for s = 1:6
-%!   splineimages (sprintf ("splinefit##d", s), "pdf")
+%!   splineimages (sprintf ("splinefit##d", s), "pdf");
 %! endfor
 

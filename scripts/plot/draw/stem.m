@@ -199,7 +199,7 @@ endfunction
 %! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
 %! title ('stem plot data modified through hggroup handle');
 %! for k=2:N
-%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k))
+%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
 %!   drawnow ();
 %!   pause (0.2);
 %! end
@@ -209,12 +209,12 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h = stem ([1 2; 1.5 2.5], [1 1;2 2]);
-%!   assert (get (h(1), "baseline"), get (h(2), "baseline"))
+%!   assert (get (h(1), "baseline"), get (h(2), "baseline"));
 %!   bv = 0.3;
-%!   set (h(1), "basevalue", bv)
-%!   assert (get (get (h(1), "baseline"), "basevalue"), bv)
-%!   assert (get (h(1), "basevalue"), bv)
-%!   assert (get (h(2), "basevalue"), bv)
+%!   set (h(1), "basevalue", bv);
+%!   assert (get (get (h(1), "baseline"), "basevalue"), bv);
+%!   assert (get (h(1), "basevalue"), bv);
+%!   assert (get (h(2), "basevalue"), bv);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -270,7 +270,7 @@ endfunction
 %!   fail ('imshow ([1,1], "parent", -1)', "must be an axes handle");
 %!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector");
 %!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector");
-%!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar")
+%!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar");
 %!   fail ("imshow ([1,1], {1})", "argument number 2 is invalid");
 %!   fail ("imshow ([1+i,1-i])", "warning", "only showing real part of complex image");
 %! unwind_protect_cleanup

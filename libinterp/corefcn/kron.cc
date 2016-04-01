@@ -321,5 +321,5 @@ Since the Kronecker product is associative, this is well-defined.\n\
 %! expected (2, 12) = 4;
 %! expected (5, 15) = 6;
 %! expected (6, 16) = 8;
-%! assert (kron (diag ([1, 2], 2), diag ([3, 4], 2)), expected)
+%! assert (kron (diag ([1, 2], 2), diag ([3, 4], 2)), expected);
 */

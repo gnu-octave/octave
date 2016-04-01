@@ -256,5 +256,5 @@ endfunction
 %! z2 = interp2 (fliplr (xx), flipud (yy), fliplr (flipud(z)),
 %!               fliplr (xx2), flipud (yy2), "spline");
 %! z2 = fliplr (flipud (z2));
-%! assert (z1, z2, 100 * eps ())
+%! assert (z1, z2, 100 * eps ());
 

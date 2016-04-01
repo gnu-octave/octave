@@ -3,9 +3,9 @@
 %! b = a;
 %! c = a ();
 %! a.child = 100;
-%! assert (a.child, b.child)
-%! assert (a.child, c.child)
+%! assert (a.child, b.child);
+%! assert (a.child, c.child);
 %! c.child = 500;
-%! assert (a.child, b.child)
-%! assert (a.child, c.child)
+%! assert (a.child, b.child);
+%! assert (a.child, c.child);
 

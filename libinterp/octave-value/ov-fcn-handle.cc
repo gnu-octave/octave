@@ -1325,7 +1325,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!endfunction
 %!function [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n, nm)
 %!  if (n == 0)
-%!    load (nm)
+%!    load (nm);
 %!  else
 %!    [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n - 1, nm);
 %!  endif

@@ -84,8 +84,8 @@
 %! warnstat = warning ("query", warnoffId);
 %! warnoff = warnstat;
 %! warnoff.state = "off";
-%! warning (warnoff); %update warning status
-%! warning (warnstat); %reset warning status
+%! warning (warnoff);  # update warning status
+%! warning (warnstat); # reset warning status
 %! w = warning;
 %! assert (w, w0);
 

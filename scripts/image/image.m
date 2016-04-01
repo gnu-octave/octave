@@ -237,24 +237,24 @@ endfunction
 %!   nx = 64; ny = 64;
 %!   cdata = rand (ny, nx)*127;
 %!   hi = image (cdata);             # x/ydatamode is auto
-%!   assert (get (hi, "xdata"), [1 nx])
-%!   assert (get (hi, "ydata"), [1 ny])
-%!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
-%!   assert (get (hi, "xdata"), [1 nx/2])
-%!   assert (get (hi, "ydata"), [1 ny/2])
+%!   assert (get (hi, "xdata"), [1 nx]);
+%!   assert (get (hi, "ydata"), [1 ny]);
+%!   set (hi, "cdata", cdata(1:2:end, 1:2:end));
+%!   assert (get (hi, "xdata"), [1 nx/2]);
+%!   assert (get (hi, "ydata"), [1 ny/2]);
 %!
-%!   set (hi, "xdata", [10 100])     # xdatamode is now manual
-%!   set (hi, "ydata", [10 1000])    # ydatamode is now manual
-%!   set (hi, "cdata", cdata)
-%!   assert (get (hi, "xdata"), [10 100])
-%!   assert (get (hi, "ydata"), [10 1000])
+%!   set (hi, "xdata", [10 100]);    # xdatamode is now manual
+%!   set (hi, "ydata", [10 1000]);   # ydatamode is now manual
+%!   set (hi, "cdata", cdata);
+%!   assert (get (hi, "xdata"), [10 100]);
+%!   assert (get (hi, "ydata"), [10 1000]);
 %!
-%!   set (hi, "ydata", [])           # ydatamode is now auto
-%!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
-%!   assert (get (hi, "xdata"), [10 100])
-%!   assert (get (hi, "ydata"), [1 ny/2])
+%!   set (hi, "ydata", []);          # ydatamode is now auto
+%!   set (hi, "cdata", cdata(1:2:end, 1:2:end));
+%!   assert (get (hi, "xdata"), [10 100]);
+%!   assert (get (hi, "ydata"), [1 ny/2]);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
 ## FIXME: Need %!tests for linear

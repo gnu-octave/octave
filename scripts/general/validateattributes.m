@@ -393,51 +393,51 @@ endfunction
 %!error <diag> validateattributes (repmat (eye (3), [1 1 3]), {}, {"diag"})
 
 %!test
-%! validateattributes (rand (5), {"numeric"}, {})
-%! validateattributes (rand (5), {"float"}, {})
-%! validateattributes (rand (5), {"double"}, {})
-%! validateattributes ("text", {"char"}, {})
-%! validateattributes (rand (5), {}, {"2d"})
-%! validateattributes (rand (5), {}, {"3d"})
-%! validateattributes (rand (5, 5, 5), {}, {"3d"})
-%! validateattributes (rand (5, 1), {}, {"column"})
-%! validateattributes (rand (1, 5), {}, {"row"})
-%! validateattributes ("a", {}, {"scalar"})
-%! validateattributes (5, {}, {"scalar"})
-%! validateattributes (rand (1, 5), {}, {"vector"})
-%! validateattributes (rand (5, 1), {}, {"vector"})
-%! validateattributes (rand (5), {}, {"square"})
-%! validateattributes (rand (5), {}, {"nonempty"})
-%! validateattributes (rand (5), {}, {"nonsparse"})
-%! validateattributes ([0 1 0 1 0], {}, {"binary"})
-%! validateattributes (rand (5) > 0.5, {}, {"binary"})
-%! validateattributes ([8 4 0 6], {}, {"even"})
-%! validateattributes ([-1 3 5], {}, {"odd"})
-%! validateattributes ([8 4 0 6], {}, {"real"})
-%! validateattributes ([8 4i 0 6], {}, {"finite"})
-%! validateattributes (uint8 ([8 4]), {}, {"finite"})
-%! validateattributes ([8 Inf], {}, {"nonnan"})
-%! validateattributes ([0 7 4], {}, {"nonnegative"})
-%! validateattributes ([-8 7 4], {}, {"nonzero"})
-%! validateattributes ([8 7 4], {}, {"positive"})
-%! validateattributes ([8 7 4 -5], {}, {"decreasing"})
-%! validateattributes ([-8 -7 4 5], {}, {"increasing"})
-%! validateattributes ([8 4 4 -5], {}, {"nonincreasing"})
-%! validateattributes ([-8 -8 4 5], {}, {"nondecreasing"})
-%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 7 2]})
-%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 NaN 7 2]})
-%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 NaN 2 NaN]})
-%! validateattributes (rand (6, 2), {}, {"numel", 12})
-%! validateattributes (rand (6, 2), {}, {"ncols", 2})
-%! validateattributes (rand (6, 2), {}, {"nrows", 6})
-%! validateattributes (rand (6, 2, 4, 5), {}, {"ndims", 4})
-%! validateattributes ([4 5 6 7], {}, {">", 3})
-%! validateattributes ([4 5 6 7], {}, {">=", 4})
-%! validateattributes ([4 5 6 7], {}, {"<", 8})
-%! validateattributes ([4 5 6 7], {}, {"<=", 7})
-%! validateattributes (eye (3), {}, {"diag"})
-%! validateattributes ([1 0 0; 0 1 0; 0 0 1], {}, {"diag"})
-%! validateattributes (zeros (3), {}, {"diag"})
+%! validateattributes (rand (5), {"numeric"}, {});
+%! validateattributes (rand (5), {"float"}, {});
+%! validateattributes (rand (5), {"double"}, {});
+%! validateattributes ("text", {"char"}, {});
+%! validateattributes (rand (5), {}, {"2d"});
+%! validateattributes (rand (5), {}, {"3d"});
+%! validateattributes (rand (5, 5, 5), {}, {"3d"});
+%! validateattributes (rand (5, 1), {}, {"column"});
+%! validateattributes (rand (1, 5), {}, {"row"});
+%! validateattributes ("a", {}, {"scalar"});
+%! validateattributes (5, {}, {"scalar"});
+%! validateattributes (rand (1, 5), {}, {"vector"});
+%! validateattributes (rand (5, 1), {}, {"vector"});
+%! validateattributes (rand (5), {}, {"square"});
+%! validateattributes (rand (5), {}, {"nonempty"});
+%! validateattributes (rand (5), {}, {"nonsparse"});
+%! validateattributes ([0 1 0 1 0], {}, {"binary"});
+%! validateattributes (rand (5) > 0.5, {}, {"binary"});
+%! validateattributes ([8 4 0 6], {}, {"even"});
+%! validateattributes ([-1 3 5], {}, {"odd"});
+%! validateattributes ([8 4 0 6], {}, {"real"});
+%! validateattributes ([8 4i 0 6], {}, {"finite"});
+%! validateattributes (uint8 ([8 4]), {}, {"finite"});
+%! validateattributes ([8 Inf], {}, {"nonnan"});
+%! validateattributes ([0 7 4], {}, {"nonnegative"});
+%! validateattributes ([-8 7 4], {}, {"nonzero"});
+%! validateattributes ([8 7 4], {}, {"positive"});
+%! validateattributes ([8 7 4 -5], {}, {"decreasing"});
+%! validateattributes ([-8 -7 4 5], {}, {"increasing"});
+%! validateattributes ([8 4 4 -5], {}, {"nonincreasing"});
+%! validateattributes ([-8 -8 4 5], {}, {"nondecreasing"});
+%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 7 2]});
+%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 NaN 7 2]});
+%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 NaN 2 NaN]});
+%! validateattributes (rand (6, 2), {}, {"numel", 12});
+%! validateattributes (rand (6, 2), {}, {"ncols", 2});
+%! validateattributes (rand (6, 2), {}, {"nrows", 6});
+%! validateattributes (rand (6, 2, 4, 5), {}, {"ndims", 4});
+%! validateattributes ([4 5 6 7], {}, {">", 3});
+%! validateattributes ([4 5 6 7], {}, {">=", 4});
+%! validateattributes ([4 5 6 7], {}, {"<", 8});
+%! validateattributes ([4 5 6 7], {}, {"<=", 7});
+%! validateattributes (eye (3), {}, {"diag"});
+%! validateattributes ([1 0 0; 0 1 0; 0 0 1], {}, {"diag"});
+%! validateattributes (zeros (3), {}, {"diag"});
 
 %!test
-%! validateattributes ([0 1 0 1], {"double", "uint8"}, {"binary", "size", [NaN 4], "nonnan"})
+%! validateattributes ([0 1 0 1], {"double", "uint8"}, {"binary", "size", [NaN 4], "nonnan"});

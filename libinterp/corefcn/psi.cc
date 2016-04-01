@@ -160,7 +160,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
 ## Abramowitz and Stegun, page 258, eq 6.3.5
 %!test
 %! z = [-100:-1 1:200] ./ 10; # drop the 0
-%! assert (psi (z + 1), psi (z) + 1 ./ z, eps*1000)
+%! assert (psi (z + 1), psi (z) + 1 ./ z, eps*1000);
 
 ## Abramowitz and Stegun, page 258, eq 6.3.2
 %!assert (psi (1), -em)
@@ -204,15 +204,18 @@ can have any value real or complex value.  However, for polygamma functions\n\
 ## Abramowitz and Stegun, page 260 eq 6.4.5
 %!test
 %! for z = 0:20
-%!   assert (psi (1, z + 0.5), 0.5 * (pi^2) - 4 * sum ((2*(1:z) -1) .^(-2)), eps*10)
+%!   assert (psi (1, z + 0.5),
+%!           0.5 * (pi^2) - 4 * sum ((2*(1:z) -1) .^(-2)),
+%!           eps*10);
 %! endfor
 
 ## Abramowitz and Stegun, page 260 eq 6.4.6
 %!test
 %! z = 0.1:0.1:20;
 %! for n = 0:8
-%!   ## our precision goes down really quick when computing n is too high,
-%!   assert (psi (n, z+1), psi (n, z) + ((-1)^n) * factorial (n) * (z.^(-n-1)), 0.1)
+%!   ## our precision goes down really quick when computing n is too high.
+%!   assert (psi (n, z+1),
+%!           psi (n, z) + ((-1)^n) * factorial (n) * (z.^(-n-1)), 0.1);
 %! endfor
 
 ## Test input validation

@@ -90,8 +90,8 @@ endfunction
 ## this properties still must be true.
 %!test
 %! m = magic (2);
-%! assert (size (m), [2 2])
-%! assert (unique (m), [1; 2; 3; 4])
+%! assert (size (m), [2 2]);
+%! assert (unique (m), [1; 2; 3; 4]);
 
 %!assert (magic (2), [4 3; 1 2])
 %!assert (isempty (magic (-1)))

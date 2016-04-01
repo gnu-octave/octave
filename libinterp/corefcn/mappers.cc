@@ -1553,7 +1553,7 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 %!test
 %! x = [.5, 1, 1.5, 2, 3, 4, 5];
 %! v = [sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24];
-%! assert (gammaln (x), log (v), sqrt (eps))
+%! assert (gammaln (x), log (v), sqrt (eps));
 
 %!test
 %! a = single (-1i*sqrt (-1/(6.4187*6.4187)));
@@ -1562,7 +1562,7 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 %!test
 %! x = single ([.5, 1, 1.5, 2, 3, 4, 5]);
 %! v = single ([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
-%! assert (gammaln (x), log (v), sqrt (eps ("single")))
+%! assert (gammaln (x), log (v), sqrt (eps ("single")));
 
 %!test
 %! x = [-1, 0, 1, Inf];

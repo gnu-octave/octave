@@ -5101,7 +5101,7 @@ the security considerations that the evaluation of arbitrary code does.\n\
 %! assert (y, 1);
 
 %!test
-%! eval ("x = 1;")
+%! eval ("x = 1;");
 %! assert (x,1);
 
 %!test
@@ -5369,7 +5369,7 @@ s = evalc (\"t = 42\"), t\n\
 %!function [a, b] = __f_evalc ()
 %!  printf ("foo");
 %!  fprintf (stdout, "bar");
-%!  disp (pi)
+%!  disp (pi);
 %!  a = 1;
 %!  b = 2;
 %!endfunction

@@ -343,9 +343,9 @@ endfunction
 %!
 %!   ## Test special keyword processing
 %!   h = text (0.5, 0.5, "default");
-%!   assert (get (h, "string"), "default")
+%!   assert (get (h, "string"), "default");
 %!   h = text (0.5, 0.5, "factory");
-%!   assert (get (h, "string"), "factory")
+%!   assert (get (h, "string"), "factory");
 %!
 %! unwind_protect_cleanup
 %!   close (hf);

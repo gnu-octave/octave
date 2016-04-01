@@ -172,7 +172,7 @@ endfunction
 
 %!test
 %! for idx = 1: numel (list)
-%!   assert (license ("test", list{idx}.name), true)
+%!   assert (license ("test", list{idx}.name), true);
 %! endfor
 
 %!assert (license ("checkout", "octave"), true)

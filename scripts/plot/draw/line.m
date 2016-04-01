@@ -63,7 +63,7 @@ endfunction
 
 
 %!demo
-%! clf
+%! clf;
 %! line ([0 1], [0.8 0.8], 'linestyle', '-', 'color', 'b');
 %! line ([0 1], [0.6 0.6], 'linestyle', '--', 'color', 'g');
 %! line ([0 1], [0.4 0.4], 'linestyle', ':', 'color', 'r');
@@ -73,7 +73,7 @@ endfunction
 %! legend ('"-"', '"--"', '":"', '"-."', 'location', 'eastoutside');
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:0.3:10;
 %! y1 = cos (x);
 %! y2 = sin (x);

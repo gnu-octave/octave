@@ -163,37 +163,37 @@ endfunction
 
 %!test
 %! [result, s_idx] = ismember ([1, 2], []);
-%! assert (result, [false false])
+%! assert (result, [false false]);
 %! assert (s_idx, [0, 0]);
 
 %!test
 %! [result, s_idx] = ismember ([], [1, 2]);
-%! assert (result, logical ([]))
+%! assert (result, logical ([]));
 %! assert (s_idx, []);
 
 %!test
 %! [result, s_idx] = ismember ({"a", "b"}, "");
-%! assert (result, [false false])
+%! assert (result, [false false]);
 %! assert (s_idx, [0, 0]);
 
 %!test
 %! [result, s_idx] = ismember ({"a", "b"}, {});
-%! assert (result, [false false])
+%! assert (result, [false false]);
 %! assert (s_idx, [0, 0]);
 
 %!test
 %! [result, s_idx] = ismember ("", {"a", "b"});
-%! assert (result, false)
+%! assert (result, false);
 %! assert (s_idx, 0);
 
 %!test
 %! [result, s_idx] = ismember ({}, {"a", "b"});
-%! assert (result, logical ([]))
+%! assert (result, logical ([]));
 %! assert (s_idx, []);
 
 %!test
 %! [result, s_idx] = ismember ([1 2 3 4 5], [3]);
-%! assert (result, logical ([0 0 1 0 0]))
+%! assert (result, logical ([0 0 1 0 0]));
 %! assert (s_idx , [0 0 1 0 0]);
 
 %!test

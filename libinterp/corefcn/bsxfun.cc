@@ -819,6 +819,6 @@ dimensionality as the other array.\n\
 %!test
 %! a = zeros (0, 3);
 %! a .+= [1 2 3];
-%! assert (a, zeros (0, 3))
+%! assert (a, zeros (0, 3));
 
 */

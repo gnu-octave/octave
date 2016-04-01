@@ -17,17 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 %!test
-%! a = 1:3; a(:) = []; assert (size (a), [0, 0])
+%! a = 1:3; a(:) = []; assert (size (a), [0, 0]);
 %!test
-%! a = 1:3; a(1:3) = []; assert (size (a), [1, 0])
+%! a = 1:3; a(1:3) = []; assert (size (a), [1, 0]);
 %!test
-%! a = (1:3).'; a(1:3) = []; assert (size (a), [0, 1])
+%! a = (1:3).'; a(1:3) = []; assert (size (a), [0, 1]);
 %!test
-%! a = ones (3); a(:,:) = []; assert (size (a), [0, 3])
+%! a = ones (3); a(:,:) = []; assert (size (a), [0, 3]);
 %!test
-%! a = ones (3); a(1:3,:) = []; assert (size (a), [0, 3])
+%! a = ones (3); a(1:3,:) = []; assert (size (a), [0, 3]);
 %!test
-%! a = ones (3); a(:,1:3) = []; assert (size (a), [3, 0])
+%! a = ones (3); a(:,1:3) = []; assert (size (a), [3, 0]);
 %!test
 %! a = ones (3); fail ("a(1:2,1:2) = []", ".*");
 %!test
@@ -35,31 +35,31 @@
 
 ## null strings should delete. [,] and [;] should delete.
 %!test
-%! a = ones (3); a(1:2,:) = [,]; assert (size (a), [1,3])
+%! a = ones (3); a(1:2,:) = [,]; assert (size (a), [1,3]);
 %!test
-%! a = ones (3); a(1:2,:) = [;]; assert (size (a), [1,3])
+%! a = ones (3); a(1:2,:) = [;]; assert (size (a), [1,3]);
 %!test
-%! a = ones (3); a(1:2,:) = ''; assert (size (a), [1,3])
+%! a = ones (3); a(1:2,:) = ''; assert (size (a), [1,3]);
 %!test
-%! a = ones (3); a(1:2,:) = ""; assert (size (a), [1,3])
+%! a = ones (3); a(1:2,:) = ""; assert (size (a), [1,3]);
 
 ## null matrix stored anywhere should lose its special status
 %!test
-%! a = ones (3); b = []; fail ("a(:,1:3) = b", ".")
+%! a = ones (3); b = []; fail ("a(:,1:3) = b", ".");
 %!test
-%! a = ones (3); b{1} = []; fail ("a(:,1:3) = b{1}", ".")
+%! a = ones (3); b{1} = []; fail ("a(:,1:3) = b{1}", ".");
 %!test
-%! a = ones (3); b.x = []; fail ("a(:,1:3) = b.x", ".")
+%! a = ones (3); b.x = []; fail ("a(:,1:3) = b.x", ".");
 
 ## filtering a null matrix through a function should not delete
 %!test
-%! a = ones (3); fail ("a(:,1:3) = double ([])")
+%! a = ones (3); fail ("a(:,1:3) = double ([])");
 
 ## subsasgn should work the same way
 %!test
-%! a = ones (3); a = subsasgn (a, substruct ('()', {':',1:2}), []); assert (size (a), [3,1])
+%! a = ones (3); a = subsasgn (a, substruct ('()', {':',1:2}), []); assert (size (a), [3,1]);
 %!test
-%! a = ones (3); b = []; fail ("subsasgn (a, substruct ('()', {':',1:2}), b)", ".")
+%! a = ones (3); b = []; fail ("subsasgn (a, substruct ('()', {':',1:2}), b)", ".");
 
 %!test
 %! classes = {@int8, @int16, @int32, @int64, ...

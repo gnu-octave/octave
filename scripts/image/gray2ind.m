@@ -98,9 +98,9 @@ endfunction
 %!        uint8 ([0 0 1 254 255 255]))
 
 %!test
-%! assert (class (gray2ind ([0.0 0.5 1.0], 255)), "uint8")
-%! assert (class (gray2ind ([0.0 0.5 1.0], 256)), "uint8")
-%! assert (class (gray2ind ([0.0 0.5 1.0], 257)), "uint16")
+%! assert (class (gray2ind ([0.0 0.5 1.0], 255)), "uint8");
+%! assert (class (gray2ind ([0.0 0.5 1.0], 256)), "uint8");
+%! assert (class (gray2ind ([0.0 0.5 1.0], 257)), "uint16");
 
 ## Test input validation
 %!error gray2ind ()

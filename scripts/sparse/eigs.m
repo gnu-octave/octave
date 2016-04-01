@@ -497,7 +497,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -624,7 +624,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -755,7 +755,7 @@ endfunction
 %! d2 = sort (d0);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-11);
@@ -866,7 +866,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -992,7 +992,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -1117,7 +1117,7 @@ endfunction
 %! B = diag (ones (10, 1));
 %! reseig = eig (A, B);
 %! [~, idx] = sort (abs (reseig), "ascend");
-%! assert (eigs (A, B, 10, 0), reseig (idx))
+%! assert (eigs (A, B, 10, 0), reseig (idx));
 
 %!test
 %! X = [70 47 42 39 50 73 79 23;

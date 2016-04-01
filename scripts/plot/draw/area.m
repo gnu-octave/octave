@@ -268,7 +268,7 @@ endfunction
 %! x = 0:10;
 %! y = rand (size (x));
 %! h = area (x, y);
-%! set (h, 'ydata', sort (get (h, 'ydata')))
+%! set (h, 'ydata', sort (get (h, 'ydata')));
 %! title ('area() plot of sorted data');
 
 ## Test input validation

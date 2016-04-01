@@ -144,67 +144,67 @@ endfunction
 %!testif HAVE_MAGICK
 %! gray = randi (255, 10, 10, 1, "uint8");
 %! r = write_and_read (".tif", gray);
-%! assert (r, gray)
+%! assert (r, gray);
 
 ## grayscale uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! gray  = randi (255, 10, 10, 1, "uint8");
 %! alpha = randi (255, 10, 10, 1, "uint8");
 %! [r, ~, a] = write_and_read (".tif", gray, "Alpha", alpha);
-%! assert (r, gray)
-%! assert (a, alpha)
+%! assert (r, gray);
+%! assert (a, alpha);
 
 ## multipage grayscale uint8 images
 %!testif HAVE_MAGICK
 %! gray = randi (255, 10, 10, 1, 5, "uint8");
 %! r    = write_and_read (".tif", gray);
-%! assert (r, gray)
+%! assert (r, gray);
 
 ## multipage RGB uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! gray  = randi (255, 10, 10, 3, 5, "uint8");
 %! alpha = randi (255, 10, 10, 1, 5, "uint8");
 %! [r, ~, a] = write_and_read (".tif", gray, "Alpha", alpha);
-%! assert (r, gray)
-%! assert (a, alpha)
+%! assert (r, gray);
+%! assert (a, alpha);
 
 ## typical usage with RGB uint8 images
 %!testif HAVE_MAGICK
 %! rgb = randi (255, 10, 10, 3, "uint8");
 %! r = write_and_read (".tif", rgb);
-%! assert (r, rgb)
+%! assert (r, rgb);
 
 ## RGB uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! rgb   = randi (255, 10, 10, 3, "uint8");
 %! alpha = randi (255, 10, 10, 1, "uint8");
 %! [r, ~, a] = write_and_read (".tif", rgb, "Alpha", alpha);
-%! assert (r, rgb)
-%! assert (a, alpha)
+%! assert (r, rgb);
+%! assert (a, alpha);
 
 ## multipage RGB uint8 images
 %!testif HAVE_MAGICK
 %! rgb = randi (255, 10, 10, 3, 5, "uint8");
 %! r = write_and_read (".tif", rgb);
-%! assert (r, rgb)
+%! assert (r, rgb);
 
 ## multipage RGB uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! rgb   = randi (255, 10, 10, 3, 5, "uint8");
 %! alpha = randi (255, 10, 10, 1, 5, "uint8");
 %! [r, ~, a] = write_and_read (".tif", rgb, "Alpha", alpha);
-%! assert (r, rgb)
-%! assert (a, alpha)
+%! assert (r, rgb);
+%! assert (a, alpha);
 
 %!testif HAVE_MAGICK
 %! gray = repmat (uint8 (0:255), 100, 1);
 %! [g] = write_and_read (".jpeg", gray);
-%! assert (g, gray, 2)
+%! assert (g, gray, 2);
 
 %!testif HAVE_MAGICK
 %! gray = repmat (uint8 (0:255), 100, 1);
 %! [g] = write_and_read (".jpeg", gray, "quality", 100);
-%! assert (g, gray)
+%! assert (g, gray);
 
 %!function [compression] = get_bmp_compression (ext, cmap = [], varargin)
 %!  gray = repmat (uint8 (0:255), 100, 1);
@@ -228,10 +228,10 @@ endfunction
 
 ## BMP images must be saved uncompressed by default (bug #45565)
 %!testif HAVE_MAGICK
-%! assert (get_bmp_compression ("", [], "BMP"), 0)
-%! assert (get_bmp_compression ("", [], "bmp"), 0)
-%! assert (get_bmp_compression (".BMP"), 0)
-%! assert (get_bmp_compression (".bmp"), 0)
-%! assert (get_bmp_compression (".bmp", [], "bmp"), 0)
-%! assert (get_bmp_compression ("", gray (256), "bmp"), 0)
-%! assert (get_bmp_compression (".bmp", gray (256), "Compression", "rle"), 1)
+%! assert (get_bmp_compression ("", [], "BMP"), 0);
+%! assert (get_bmp_compression ("", [], "bmp"), 0);
+%! assert (get_bmp_compression (".BMP"), 0);
+%! assert (get_bmp_compression (".bmp"), 0);
+%! assert (get_bmp_compression (".bmp", [], "bmp"), 0);
+%! assert (get_bmp_compression ("", gray (256), "bmp"), 0);
+%! assert (get_bmp_compression (".bmp", gray (256), "Compression", "rle"), 1);

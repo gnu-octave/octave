@@ -298,7 +298,7 @@ endfunction
 %! axis square;
 
 %!demo
-%! clf
+%! clf;
 %! hold on
 %! t = (0:0.1:9);
 %! x = sin (t);

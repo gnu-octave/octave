@@ -127,13 +127,13 @@ endfunction
 
 %!test
 %! orient portrait;
-%! assert (orient, "portrait")   # default
+%! assert (orient, "portrait");  # default
 %! assert (get (hfig, "papersize"), papersize);
 %! assert (get (hfig, "paperposition"), paperposition);
 
 %!test
 %! orient landscape;
-%! assert (orient,"landscape")   # change to landscape
+%! assert (orient,"landscape");  # change to landscape
 %! assert (get (hfig, "papersize"), papersize([2, 1]));
 %! assert (get (hfig, "paperposition"), fullpaperposition([1, 2, 4, 3]));
 

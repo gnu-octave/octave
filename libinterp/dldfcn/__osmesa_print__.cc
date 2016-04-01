@@ -216,7 +216,7 @@ instead.\n\
 %!   assert (stat (fn).size, 2692270, -0.1);
 %!   unlink (fn);
 %!   img = __osmesa_print__ (h);
-%!   assert (size (img), [get(h, "position")([4, 3]), 3])
+%!   assert (size (img), [get(h, "position")([4, 3]), 3]);
 %!   ## Use pixel sum per RGB channel as fingerprint
 %!   img_fp = squeeze (sum (sum (img), 2));
 %!   assert (img_fp, [52942515; 54167797; 56158178], -0.05);
@@ -231,7 +231,7 @@ instead.\n\
 %!   assert (stat (fn).size, 7438, -0.1);
 %!   unlink (fn);
 %!   img = __osmesa_print__ (h);
-%!   assert (size (img), [get(h, "position")([4, 3]), 3])
+%!   assert (size (img), [get(h, "position")([4, 3]), 3]);
 %!   ## Use pixel sum per RGB channel as fingerprint
 %!   img_fp = squeeze (sum (sum (img), 2));
 %!   assert (img_fp, [59281711; 59281711; 59482179], -0.05);

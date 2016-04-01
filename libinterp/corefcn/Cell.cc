@@ -220,7 +220,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 /*
 %!test
 %! a = {"foo", "bar"};
-%! assert (a(), a)
+%! assert (a(), a);
 */
 
 void

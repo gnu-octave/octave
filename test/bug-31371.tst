@@ -36,6 +36,6 @@
 %! Factorial = Ycomb(@(f) @(n) C(C2(Iszero(n), ...
 %!                   @(d) One, @(d) Mult(n, f(Dec(n)))),0));
 %!
-%! assert (Render (Factorial (Two)), 2)
-%! assert (Render (Factorial (Three)), 6)
-%! assert (Render (Factorial (Four)), 24)
+%! assert (Render (Factorial (Two)), 2);
+%! assert (Render (Factorial (Three)), 6);
+%! assert (Render (Factorial (Four)), 24);

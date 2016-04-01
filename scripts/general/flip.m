@@ -88,7 +88,7 @@ endfunction
 %! a(1:2,1:2,2) = [5 6; 7 8];
 %! b(1:2,1:2,1) = [5 6; 7 8];
 %! b(1:2,1:2,2) = [1 2; 3 4];
-%! assert (flip (a, 3), b)
+%! assert (flip (a, 3), b);
 
 %!test
 %! a = b = zeros (2, 2, 1, 2);
@@ -96,9 +96,9 @@ endfunction
 %! a(1:2,1:2,:,2) = [5 6; 7 8];
 %! b(1:2,1:2,:,1) = [5 6; 7 8];
 %! b(1:2,1:2,:,2) = [1 2; 3 4];
-%! assert (flip (a, 3), a)
-%! assert (flip (a, 4), b)
-%! assert (flip (a, 5), a)
+%! assert (flip (a, 3), a);
+%! assert (flip (a, 4), b);
+%! assert (flip (a, 5), a);
 
 %!error flip ()
 %!error flip (1, 2, 3)

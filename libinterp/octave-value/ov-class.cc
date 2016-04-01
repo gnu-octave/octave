@@ -1857,9 +1857,9 @@ belongs to.\n\
 %! ## the middle with an invalid class name will cause the java code to
 %! ## throw exceptions which we then must clear properly (or all other calls
 %! ## will fail).  So we test this too.
-%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"))
-%! assert (isa (javaObject ("java.lang.Double", 10), "not_a_class"), false)
-%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"))
+%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"));
+%! assert (isa (javaObject ("java.lang.Double", 10), "not_a_class"), false);
+%! assert (isa (javaObject ("java.lang.Double", 10), "java.lang.Number"));
 
 %!test
 %! a.b = 1;

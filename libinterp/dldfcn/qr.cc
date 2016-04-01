@@ -640,7 +640,7 @@ x = @var{R} \\ @var{C}\n\
 %! n = 20;  d = 0.2;
 %! a = sprandn (n,n,d) + speye (n,n);
 %! r = qr (a);
-%! assert (r'*r, a'*a, 1e-10)
+%! assert (r'*r, a'*a, 1e-10);
 
 %!testif HAVE_COLAMD
 %! n = 20;  d = 0.2;
@@ -648,20 +648,20 @@ x = @var{R} \\ @var{C}\n\
 %! q = symamd (a);
 %! a = a(q,q);
 %! r = qr (a);
-%! assert (r'*r, a'*a, 1e-10)
+%! assert (r'*r, a'*a, 1e-10);
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = sprandn (n,n,d) + speye (n,n);
 %! [c,r] = qr (a, ones (n,1));
-%! assert (r\c, full (a)\ones (n,1), 10e-10)
+%! assert (r\c, full (a)\ones (n,1), 10e-10);
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = sprandn (n,n,d) + speye (n,n);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);
-%! assert (r\c, full (a)\b, 10e-10)
+%! assert (r\c, full (a)\b, 10e-10);
 
 %% Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
@@ -669,13 +669,13 @@ x = @var{R} \\ @var{C}\n\
 %! a = sprandn (n,n+1,d) + speye (n,n+1);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);
-%! assert (r\c, full (a)\b, 10e-10)
+%! assert (r\c, full (a)\b, 10e-10);
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = 1i*sprandn (n,n,d) + speye (n,n);
 %! r = qr (a);
-%! assert (r'*r,a'*a,1e-10)
+%! assert (r'*r,a'*a,1e-10);
 
 %!testif HAVE_COLAMD
 %! n = 20;  d = 0.2;
@@ -683,20 +683,20 @@ x = @var{R} \\ @var{C}\n\
 %! q = symamd (a);
 %! a = a(q,q);
 %! r = qr (a);
-%! assert (r'*r, a'*a, 1e-10)
+%! assert (r'*r, a'*a, 1e-10);
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = 1i*sprandn (n,n,d) + speye (n,n);
 %! [c,r] = qr (a, ones (n,1));
-%! assert (r\c, full (a)\ones (n,1), 10e-10)
+%! assert (r\c, full (a)\ones (n,1), 10e-10);
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = 1i*sprandn (n,n,d) + speye (n,n);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);
-%! assert (r\c, full (a)\b, 10e-10)
+%! assert (r\c, full (a)\b, 10e-10);
 
 %% Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
@@ -704,7 +704,7 @@ x = @var{R} \\ @var{C}\n\
 %! a = 1i*sprandn (n,n+1,d) + speye (n,n+1);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);
-%! assert (r\c, full (a)\b, 10e-10)
+%! assert (r\c, full (a)\b, 10e-10);
 
 */
 

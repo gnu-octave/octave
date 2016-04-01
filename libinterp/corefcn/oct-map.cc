@@ -1194,7 +1194,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
 %!test
 %! rhs.b = 1;
 %! a(3) = rhs;
-%! assert ({a.b}, {[], [], 1})
+%! assert ({a.b}, {[], [], 1});
 */
 
 void

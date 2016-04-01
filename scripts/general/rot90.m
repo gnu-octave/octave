@@ -108,9 +108,9 @@ endfunction
 %! a(1:2,1:2,2) = [5 6; 7 8];
 %! b(1:2,1:2,1) = [2 4; 1 3];
 %! b(1:2,1:2,2) = [6 8; 5 7];
-%! assert (rot90 (a, 1), b)
-%! assert (rot90 (a, 2), rot90 (b, 1))
-%! assert (rot90 (a, 3), rot90 (b, 2))
+%! assert (rot90 (a, 1), b);
+%! assert (rot90 (a, 2), rot90 (b, 1));
+%! assert (rot90 (a, 3), rot90 (b, 2));
 
 %!test
 %! a = b = zeros (2, 2, 1, 2);
@@ -118,9 +118,9 @@ endfunction
 %! a(1:2,1:2,:,2) = [5 6; 7 8];
 %! b(1:2,1:2,:,1) = [2 4; 1 3];
 %! b(1:2,1:2,:,2) = [6 8; 5 7];
-%! assert (rot90 (a, 1), b)
-%! assert (rot90 (a, 2), rot90 (b, 1))
-%! assert (rot90 (a, 3), rot90 (b, 2))
+%! assert (rot90 (a, 1), b);
+%! assert (rot90 (a, 2), rot90 (b, 1));
+%! assert (rot90 (a, 3), rot90 (b, 2));
 
 ## With non-square matrices
 %!test
@@ -130,9 +130,9 @@ endfunction
 %! a(1:2,1:3,:,2) = [ 7  8  9; 10 11 12];
 %! b(1:3,1:2,:,1) = [ 3  6;  2  5;  1  4];
 %! b(1:3,1:2,:,2) = [ 9 12;  8 11;  7 10];
-%! assert (rot90 (a, 1), b)
-%! assert (rot90 (a, 2), rot90 (b, 1))
-%! assert (rot90 (a, 3), rot90 (b, 2))
+%! assert (rot90 (a, 1), b);
+%! assert (rot90 (a, 2), rot90 (b, 1));
+%! assert (rot90 (a, 3), rot90 (b, 2));
 
 ## Test input validation
 %!error rot90 ()

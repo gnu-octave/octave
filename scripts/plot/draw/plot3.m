@@ -377,7 +377,7 @@ endfunction
 %!demo
 %! clf;
 %! z = [0:0.05:5];
-%! plot3 (cos (2*pi*z), sin (2*pi*z), z)
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
 %! legend ('helix');
 %! title ('plot3() of a helix');
 

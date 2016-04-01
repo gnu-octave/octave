@@ -154,12 +154,12 @@ endfunction
 %! breaks = [0:5, 2*pi];
 %! % Fit a spline of order 5
 %! pp = splinefit (x, y, breaks, "order", 4);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
 %! title ("Fit a piece-wise polynomial of order 4");
-%! legend ({"data", "fit", "breaks"})
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 
@@ -171,12 +171,12 @@ endfunction
 %! breaks = [0:5, 2*pi];
 %! % Fit a spline of order 3 with periodic boundary conditions
 %! pp = splinefit (x, y, breaks, "order", 2, "periodic", true);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
 %! title ("Fit a periodic piece-wise polynomial of order 2");
-%! legend ({"data", "fit", "breaks"})
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 
@@ -193,12 +193,12 @@ endfunction
 %! con = struct ("xc", xc, "yc", yc, "cc", cc);
 %! % Fit a cubic spline with 8 pieces and constraints
 %! pp = splinefit (x, y, 8, "constraints", con);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
-%! title ("Fit a cubic spline with constraints")
-%! legend ({"data", "fit", "breaks"})
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
+%! title ("Fit a cubic spline with constraints");
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 
@@ -214,12 +214,12 @@ endfunction
 %! con = struct ("xc", xc, "yc", yc, "cc", cc);
 %! % Fit a spline of order 6 with constraints and periodicity
 %! pp = splinefit (x, y, breaks, "constraints", con, "order", 5, "periodic", true);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
-%! title ("Fit a 5th order piece-wise periodic polynomial with constraints")
-%! legend ({"data", "fit", "breaks"})
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
+%! title ("Fit a 5th order piece-wise periodic polynomial with constraints");
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 

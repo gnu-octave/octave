@@ -109,7 +109,7 @@ endfunction
 %!  for n = 1:12
 %!    out(:,:,n) = im2double (in(:,:,n));
 %!  endfor
-%!  assert (im2double (in), out)
+%!  assert (im2double (in), out);
 %!endfunction
 
 %!test

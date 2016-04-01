@@ -129,38 +129,38 @@
 
 %!test
 %! [s, err, msg] = stat (filesep);
-%! assert ((err == 0
-%! && isstruct (s)
-%! && isfield (s, "dev")
-%! && isfield (s, "ino")
-%! && isfield (s, "modestr")
-%! && isfield (s, "nlink")
-%! && isfield (s, "uid")
-%! && isfield (s, "gid")
-%! && isfield (s, "size")
-%! && isfield (s, "atime")
-%! && isfield (s, "mtime")
-%! && isfield (s, "ctime")
-%! && ischar (msg)));
+%! assert (err == 0
+%!         && isstruct (s)
+%!         && isfield (s, "dev")
+%!         && isfield (s, "ino")
+%!         && isfield (s, "modestr")
+%!         && isfield (s, "nlink")
+%!         && isfield (s, "uid")
+%!         && isfield (s, "gid")
+%!         && isfield (s, "size")
+%!         && isfield (s, "atime")
+%!         && isfield (s, "mtime")
+%!         && isfield (s, "ctime")
+%!         && ischar (msg));
 
 %!error <Invalid call to stat> stat ()
 %!error <Invalid call to stat> stat ("foo", 1)
 
 %!test
 %! [s, err, msg] = lstat (filesep);
-%! assert ((err == 0
-%! && isstruct (s)
-%! && isfield (s, "dev")
-%! && isfield (s, "ino")
-%! && isfield (s, "modestr")
-%! && isfield (s, "nlink")
-%! && isfield (s, "uid")
-%! && isfield (s, "gid")
-%! && isfield (s, "size")
-%! && isfield (s, "atime")
-%! && isfield (s, "mtime")
-%! && isfield (s, "ctime")
-%! && ischar (msg)));
+%! assert (err == 0
+%!         && isstruct (s)
+%!         && isfield (s, "dev")
+%!         && isfield (s, "ino")
+%!         && isfield (s, "modestr")
+%!         && isfield (s, "nlink")
+%!         && isfield (s, "uid")
+%!         && isfield (s, "gid")
+%!         && isfield (s, "size")
+%!         && isfield (s, "atime")
+%!         && isfield (s, "mtime")
+%!         && isfield (s, "ctime")
+%!         && ischar (msg));
 
 %!error <Invalid call to lstat> lstat ()
 %!error <Invalid call to lstat> lstat ("foo", 1)
@@ -296,14 +296,14 @@
 %!testif HAVE_GETPWENT
 %! s = getpwent ();
 %! endpwent ();
-%! assert ((isstruct (s)
-%! && isfield (s, "name")
-%! && isfield (s, "passwd")
-%! && isfield (s, "uid")
-%! && isfield (s, "gid")
-%! && isfield (s, "gecos")
-%! && isfield (s, "dir")
-%! && isfield (s, "shell")));
+%! assert (isstruct (s)
+%!         && isfield (s, "name")
+%!         && isfield (s, "passwd")
+%!         && isfield (s, "uid")
+%!         && isfield (s, "gid")
+%!         && isfield (s, "gecos")
+%!         && isfield (s, "dir")
+%!         && isfield (s, "shell"));
 
 %!error <Invalid call to getpwent> getpwent (1)
 
@@ -338,11 +338,11 @@
 %!testif HAVE_GETGRENT
 %! x = getgrent ();
 %! endgrent ();
-%! assert ((isstruct (x)
-%! && isfield (x, "name")
-%! && isfield (x, "passwd")
-%! && isfield (x, "gid")
-%! && isfield (x, "mem")));
+%! assert (isstruct (x)
+%!         && isfield (x, "name")
+%!         && isfield (x, "passwd")
+%!         && isfield (x, "gid")
+%!         && isfield (x, "mem"));
 
 %!error <Invalid call to getgrent> getgrent (1)
 

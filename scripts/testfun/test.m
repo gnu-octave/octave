@@ -884,7 +884,7 @@ endfunction
 %!xtest
 %! assert (0, 1);      # Test fails
 
-## Test comment block. it can contain anything.
+## Test comment block.  It can contain anything.
 %!##
 %! it is the "#" as the block type that makes it a comment
 %! and it stays as a comment even through continuation lines

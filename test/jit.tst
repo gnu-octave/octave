@@ -27,7 +27,7 @@
 
 ## Test some simple cases that compile.
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! for i=1:1e6
 %!   if (i < 5)
 %!     break;
@@ -39,7 +39,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! while (1)
 %!   if (1)
 %!     break;
@@ -50,14 +50,14 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! do
 %!   break;
 %! until (0)
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! do
 %!   if (1)
 %!     break;
@@ -66,7 +66,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! i=1;
 %! do
 %!   continue;
@@ -76,7 +76,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! for i=1:1e6
 %!   if (i == 100)
 %!     break;
@@ -87,7 +87,7 @@
 
 ## Also test parfor keyword
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! parfor i=1:1e6
 %!   if (i == 100)
 %!     break;
@@ -97,7 +97,7 @@
 %! assert (jit_failcnt, 0);
 ## Test some switch statements
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! do
 %!   switch (1)
 %!   end;
@@ -105,7 +105,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! do
 %!   switch (1)
 %!   case 1
@@ -115,7 +115,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! do
 %!   switch (1)
 %!   otherwise
@@ -125,7 +125,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! do
 %!   switch (1)
 %!   case 1
@@ -137,7 +137,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! i=0;
 %! a=0;
 %! b=0;
@@ -163,7 +163,7 @@
 
 ## Some more complex calculations
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! inc = 1e-5;
 %! result = 0;
 %! for ii = 0:inc:1
@@ -173,7 +173,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! inc = 1e-5;
 %! result = 0;
 %! for ii = 0:inc:1
@@ -184,7 +184,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! temp = 1+1i;
 %! nan = NaN;
 %! while (1)
@@ -196,7 +196,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! temp = 1+1i;
 %! nan = NaN+1i;
 %! while (1)
@@ -209,7 +209,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! temp = 1+1i;
 %! while (1)
 %!   temp = temp * 5;
@@ -219,7 +219,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! nr = 1001;
 %! mat = zeros (1, nr);
 %! for i = 1:nr
@@ -229,7 +229,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! nr = 1001;
 %! mat = 1:nr;
 %! mat(end) = 0; # force mat to a matrix
@@ -241,7 +241,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! nr = 1001;
 %! mat = [3 1 5];
 %! try
@@ -291,13 +291,13 @@
 %!endfunction
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! test_set = gen_test (10000);
 %! assert (all (vectorized (test_set, 3) == loopy (test_set, 3)));
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! niter = 1001;
 %! i = 0;
 %! while (i < niter)
@@ -307,7 +307,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! niter = 1001;
 %! result = 0;
 %! m = [5 10];
@@ -318,7 +318,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! ndim = 100;
 %! result = 0;
 %! m = zeros (ndim);
@@ -334,7 +334,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! ndim = 100;
 %! m = zeros (ndim);
 %! i = 1;
@@ -350,7 +350,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! ndim = 2;
 %! m = zeros (ndim, ndim, ndim, ndim);
 %! result = 0;
@@ -386,7 +386,7 @@
 %!endfunction
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! lasterr ("");
 %! try
 %!   test_divide ();
@@ -395,7 +395,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! while (1)
 %!   a = 0;
 %!   result = a / 1;
@@ -405,7 +405,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! m = zeros (2, 1001);
 %! for i=1:1001
 %!   m(end, i) = i;
@@ -418,7 +418,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! m = [1 2 3];
 %! for i=1:1001
 %!   m = sin (m);
@@ -428,7 +428,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! i = 0;
 %! while i < 10
 %!   i += 1;
@@ -437,7 +437,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! i = 0;
 %! while i < 10
 %!   a = ++i;
@@ -447,7 +447,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! i = 0;
 %! while i < 10
 %!   a = i++;
@@ -457,7 +457,7 @@
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! num = 2;
 %! a = zeros (1, num);
 %! i = 1;
@@ -481,7 +481,7 @@
 %! endwhile
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! lasterr ("");
 %! try
 %!   test_compute_idom ();
@@ -497,7 +497,7 @@
 %!endfunction
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! assert (test_overload (1), 1);
 %! assert (test_overload ([1 2]), [1 2]);
 %! assert (jit_failcnt, 0);
@@ -519,12 +519,12 @@
 %!endfunction
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! assert (bubble (), [1 2 3]);
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! a = 0;
 %! b = 1;
 %! for i=1:1e3
@@ -539,7 +539,7 @@
 %!xtest
 %! ## FIXME: No support for functions with complex input prototypes
 %! ## testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! a = [1+1i 1+2i];
 %! b = 0;
 %! while (1)
@@ -556,7 +556,7 @@
 %!endfunction
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! lasterr ("");
 %! try
 %!   test_undef ();
@@ -570,14 +570,14 @@
 %!xtest
 %! ## FIXME: No support for functions with complex input prototypes
 %! ## testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! assert (id (1), 1);
 %! assert (id (1+1i), 1+1i);
 %! assert (id (1, 2), 1);
 %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
-%! jit_failcnt (0)
+%! jit_failcnt (0);
 %! lasterr ("");
 %! try
 %!   id ();

@@ -272,30 +272,30 @@ endfunction
 %!test
 %! [a, m] = strsplit ("a\t \nb", '\s', "delimitertype", "regularexpression",
 %!   "collapsedelimiters", false);
-%! assert (a, {"a", "", "", "b"})
-%! assert (m, {"\t", " ", "\n"})
+%! assert (a, {"a", "", "", "b"});
+%! assert (m, {"\t", " ", "\n"});
 %!test
 %! [a, m] = strsplit ("a\t \nb", '\s', false, "delimitertype", "regularexpression");
-%! assert (a, {"a", "", "", "b"})
-%! assert (m, {"\t", " ", "\n"})
+%! assert (a, {"a", "", "", "b"});
+%! assert (m, {"\t", " ", "\n"});
 %!test
 %! [a, m] = strsplit ("a\t \nb", '\s', "delimitertype", "regularexpression");
-%! assert (a, {"a", "b"})
-%! assert (m, {"\t \n"})
+%! assert (a, {"a", "b"});
+%! assert (m, {"\t \n"});
 %!test
 %! [a, m] = strsplit ("a\t \nb", {"\t", " ", "\n"}, "delimitertype", "simple");
-%! assert (a, {"a", "b"})
-%! assert (m, {"\t \n"})
+%! assert (a, {"a", "b"});
+%! assert (m, {"\t \n"});
 %!test
 %! [s, m] = strsplit ("hello \t world", true);
 %! assert (s, {"hello", "world"});
 %! assert (m, {" \t "});
 
 ## Compatibility
-%! assert (strsplit ("", "a"), {""})
-%! assert (strsplit ("a", "a"), {"", ""})
-%! assert (strsplit ("aa", "a"), {"", ""})
-%! assert (strsplit ("aaa", "a"), {"", ""})
+%! assert (strsplit ("", "a"), {""});
+%! assert (strsplit ("a", "a"), {"", ""});
+%! assert (strsplit ("aa", "a"), {"", ""});
+%! assert (strsplit ("aaa", "a"), {"", ""});
 
 ## Bug #44641
 %!assert (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"})

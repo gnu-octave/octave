@@ -403,7 +403,7 @@ endfunction
 %! jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
 %!endfunction
 %!function jac = fjcc (t, y, varargin)  # sparse type
-%! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2])
+%! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
 %! val = fpol (t, y, varargin);    # We use the derivatives

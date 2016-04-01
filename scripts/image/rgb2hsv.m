@@ -120,47 +120,47 @@ endfunction
 %! for i = 1:5
 %!   hsv(:,:,:,i) = rgb2hsv (rgb(:,:,:,i));
 %! endfor
-%! assert (rgb2hsv (rgb), hsv)
+%! assert (rgb2hsv (rgb), hsv);
 
 ## Test output class and size for input images.
 ## Most of the tests only test for colormap input.
 
 %!test
 %! hsv = rgb2hsv (rand (10, 10, 3));
-%! assert (class (hsv), "double")
-%! assert (size (hsv), [10 10 3])
+%! assert (class (hsv), "double");
+%! assert (size (hsv), [10 10 3]);
 
 %!test
 %! hsv = rgb2hsv (rand (10, 10, 3, "single"));
-%! assert (class (hsv), "single")
-%! assert (size (hsv), [10 10 3])
+%! assert (class (hsv), "single");
+%! assert (size (hsv), [10 10 3]);
 
 %!test
 %! rgb = (rand (10, 10, 3) * 3 ) - 0.5; # values outside range [0 1]
 %! hsv = rgb2hsv (rgb);
-%! assert (class (hsv), "double")
-%! assert (size (hsv), [10 10 3])
+%! assert (class (hsv), "double");
+%! assert (size (hsv), [10 10 3]);
 
 %!test
 %! rgb = (rand (10, 10, 3, "single") * 3 ) - 0.5; # values outside range [0 1]
 %! hsv = rgb2hsv (rgb);
-%! assert (class (hsv), "single")
-%! assert (size (hsv), [10 10 3])
+%! assert (class (hsv), "single");
+%! assert (size (hsv), [10 10 3]);
 
 %!test
 %! hsv = rgb2hsv (randi ([0 255], 10, 10, 3, "uint8"));
-%! assert (class (hsv), "double")
-%! assert (size (hsv), [10 10 3])
+%! assert (class (hsv), "double");
+%! assert (size (hsv), [10 10 3]);
 
 %!test
 %! hsv = rgb2hsv (randi ([0 65535], 10, 10, 3, "uint16"));
-%! assert (class (hsv), "double")
-%! assert (size (hsv), [10 10 3])
+%! assert (class (hsv), "double");
+%! assert (size (hsv), [10 10 3]);
 
 %!test
 %! hsv = rgb2hsv (randi ([-128 127], 10, 10, 3, "int8"));
-%! assert (class (hsv), "double")
-%! assert (size (hsv), [10 10 3])
+%! assert (class (hsv), "double");
+%! assert (size (hsv), [10 10 3]);
 
 %!test
 %! rgb_double = reshape ([1 0 1 .5 1 1 0 .5 0 1 1 .5], [2 2 3]);
@@ -169,7 +169,7 @@ endfunction
 %! rgb_int16 = int16 (double (rgb_double * uint16 (65535)) -32768);
 %! expected = reshape ([1/6 1/2 5/6 0 1 1 1 0 1 1 1 .5], [2 2 3]);
 %!
-%! assert (rgb2hsv (rgb_double), expected)
-%! assert (rgb2hsv (rgb_uint8), expected, 0.005)
-%! assert (rgb2hsv (single (rgb_double)), single (expected))
+%! assert (rgb2hsv (rgb_double), expected);
+%! assert (rgb2hsv (rgb_uint8), expected, 0.005);
+%! assert (rgb2hsv (single (rgb_double)), single (expected));
 

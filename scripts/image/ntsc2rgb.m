@@ -114,7 +114,7 @@ endfunction
 %! rgb(1) /= rgb(3); # scaled based on the maximum
 %! rgb(2) = 0; # cut to 0
 %! rgb(3) = 1; # cut to 1
-%! assert (ntsc2rgb (ntsc), rgb)
+%! assert (ntsc2rgb (ntsc), rgb);
 
 ## test scaling when conversion has more than one value above 1
 ## (check that it does pick the maximum)
@@ -122,18 +122,18 @@ endfunction
 %! ntsc = [0.8229  0.3336  0.7184];
 %! rgb = ntsc * trans;    # [1.58831   0.26726   1.67642]
 %! rgb /= rgb(3);
-%! assert (ntsc2rgb (ntsc), rgb)
+%! assert (ntsc2rgb (ntsc), rgb);
 
 ## check scaling for more than 1 row
 %!test
 %! ntsc = [0.4229  0.0336  0.7184
 %!         0.8229  0.3336  0.7184];
-%! rgb = ntsc * trans; # [0.9014  -0.0509  1.6075;  1.58831  0.26726  1.67642]
+%! rgb = ntsc * trans;  # [0.9014  -0.0509  1.6075;  1.58831  0.26726  1.67642]
 %! rgb(1,1) /= rgb(1,3);
 %! rgb(1,2) = 0;
 %! rgb(1,3) = 1;
 %! rgb(2,:) /= rgb(2,3);
-%! assert (ntsc2rgb (ntsc), rgb)
+%! assert (ntsc2rgb (ntsc), rgb);
 
 ## Test input validation
 %!error ntsc2rgb ()
@@ -151,37 +151,37 @@ endfunction
 %! for i = 1:5
 %!   rgb(:,:,:,i) = ntsc2rgb (yiq(:,:,:,i));
 %! endfor
-%! assert (ntsc2rgb (yiq), rgb)
+%! assert (ntsc2rgb (yiq), rgb);
 
 ## Test output class and size for input images.
 ## Most of the tests only test for colormap input.
 
 %!test
 %! rgb = ntsc2rgb (rand (10, 10, 3));
-%! assert (class (rgb), "double")
-%! assert (size (rgb), [10 10 3])
+%! assert (class (rgb), "double");
+%! assert (size (rgb), [10 10 3]);
 
 %!test
 %! rgb = ntsc2rgb (rand (10, 10, 3, "single"));
-%! assert (class (rgb), "single")
-%! assert (size (rgb), [10 10 3])
+%! assert (class (rgb), "single");
+%! assert (size (rgb), [10 10 3]);
 
 %!test
 %! ntsc = (rand (10, 10, 3) * 3 ) - 0.5; # values outside range [0 1]
 %! rgb = ntsc2rgb (ntsc);
-%! assert (class (rgb), "double")
-%! assert (size (rgb), [10 10 3])
+%! assert (class (rgb), "double");
+%! assert (size (rgb), [10 10 3]);
 
 %!test
 %! ntsc = (rand (10, 10, 3, "single") * 3 ) - 0.5; # values outside range [0 1]
 %! rgb = ntsc2rgb (ntsc);
-%! assert (class (rgb), "single")
-%! assert (size (rgb), [10 10 3])
+%! assert (class (rgb), "single");
+%! assert (size (rgb), [10 10 3]);
 
 %!test
 %! ntsc_double = reshape ([.299 .587 .114 0 .596 -.274 -.322 0 .211 -.523 .312 0],
 %!                        [2 2 3]);
 %! expected = reshape ([1 0 0 0 0 1 0 0 0 0 1 0], [2 2 3]);
 %!
-%! assert (ntsc2rgb (ntsc_double), expected, 1e-5)
-%! assert (ntsc2rgb (single (ntsc_double)), single (expected), 1e-5)
+%! assert (ntsc2rgb (ntsc_double), expected, 1e-5);
+%! assert (ntsc2rgb (single (ntsc_double)), single (expected), 1e-5);

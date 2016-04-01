@@ -361,7 +361,7 @@ endfunction
 %!   h3 = subplot (2,2,3, "tag", "3");
 %!   h4 = subplot (2,2,4, "tag", "4");
 %!   h = findobj (hf, "type", "axes", "-not", "tag", "1");
-%!   assert (h, [h4; h3; h2])
+%!   assert (h, [h4; h3; h2]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -382,7 +382,7 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-%! assert (h, [h4; h3; h2])
+%! assert (h, [h4; h3; h2]);
 
 %!test
 %! hf = figure ("visible", "off");
@@ -393,9 +393,9 @@ endfunction
 %!                "-or", "parent", hf,
 %!                "-and", "type", "axes");
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
-%! assert (h, [hf; ha])
+%! assert (h, [hf; ha]);
 
 %!test
 %! hf = figure ("visible", "off");

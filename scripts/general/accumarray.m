@@ -401,26 +401,26 @@ endfunction
 
 %!test
 %! A = accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [2,4], @(x) {x});
-%! assert (A{2},[102; 104])
+%! assert (A{2},[102; 104]);
 
 %!test
 %! subs = ceil (rand (2000, 3)*10);
 %! vals = rand (2000, 1);
 %! assert (accumarray (subs, vals, [], @max),
-%!         accumarray (subs, vals, [], @(x) max (x)))
+%!         accumarray (subs, vals, [], @(x) max (x)));
 
 %!test
 %! subs = ceil (rand (2000, 1)*100);
 %! vals = rand (2000, 1);
 %! assert (accumarray (subs, vals, [100, 1], @min, NaN),
-%!         accumarray (subs, vals, [100, 1], @(x) min (x), NaN))
+%!         accumarray (subs, vals, [100, 1], @(x) min (x), NaN));
 
 %!test
 %! subs = ceil (rand (2000, 2)*30);
 %! subsc = num2cell (subs, 1);
 %! vals = rand (2000, 1);
 %! assert (accumarray (subsc, vals, [], [], 0, true),
-%!         accumarray (subs, vals, [], [], 0, true))
+%!         accumarray (subs, vals, [], [], 0, true));
 
 %!test
 %! subs = ceil (rand (2000, 3)*10);
@@ -437,9 +437,9 @@ endfunction
 %! ## min, max, and sum are special cases within accumarray so test them.
 %! funcs = {@(x) length (x) > 1, @min, @max, @sum};
 %! for idx = 1:numel (funcs)
-%!   assert (accumarray (zeros (0, 1), [], [0 1] , funcs{idx}), zeros (0, 1))
-%!   assert (accumarray (zeros (0, 1), [], [1 0] , funcs{idx}), zeros (1, 0))
-%!   assert (accumarray (zeros (0, 1), [], [] , funcs{idx}), zeros (0, 1))
+%!   assert (accumarray (zeros (0, 1), [], [0 1] , funcs{idx}), zeros (0, 1));
+%!   assert (accumarray (zeros (0, 1), [], [1 0] , funcs{idx}), zeros (1, 0));
+%!   assert (accumarray (zeros (0, 1), [], [] , funcs{idx}), zeros (0, 1));
 %! endfor
 
 ## Matlab returns an array of doubles even though FUNC returns cells.  In

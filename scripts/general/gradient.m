@@ -300,6 +300,6 @@ endfunction
 %! df_dx = @(x, y) cos (x) .* cos (y);
 %! df_dy = @(x, y) -sin (x) .* sin (y);
 %! [dx, dy] = gradient (f, xy);
-%! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1)
-%! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1)
+%! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1);
+%! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1);
 

@@ -1247,7 +1247,7 @@ endfunction
 %!             {'Right Click on annotation objects', ...
 %!              'to customize their appearance'}, ...
 %!             'horizontalalignment', 'center', 'fitboxtotext', 'off');
-%! annotation ('ellipse', [.2 .2 .6 .6], 'linewidth', 4)
+%! annotation ('ellipse', [.2 .2 .6 .6], 'linewidth', 4);
 %! ang = pi/2:-pi/2:-pi;
 %! lab = {'N', 'W', 'S', 'E'};
 %! x0 = 0.5;
@@ -1267,9 +1267,9 @@ endfunction
 %!demo
 %! clf; axes ('visible', 'off');
 %! plot (1:10);
-%! xlabel ('X-LABEL')
-%! ylabel ('LARGE Y-LABEL', 'fontsize', 20)
-%! title ('FIGURE LAYOUT', 'fontsize', 24)
+%! xlabel ('X-LABEL');
+%! ylabel ('LARGE Y-LABEL', 'fontsize', 20);
+%! title ('FIGURE LAYOUT', 'fontsize', 24);
 %!
 %! ti = get (gca, 'tightinset');
 %! pos = get (gca, 'position');
@@ -1300,7 +1300,7 @@ endfunction
 %!
 %! %% Get allowed headstyles
 %! styles = set (h, 'headstyle');
-%! delete (h)
+%! delete (h);
 %!
 %! %% Textbox for the title
 %! annotation ('textbox', [0.1 0 0.8 1], 'string', ...
@@ -1329,7 +1329,7 @@ endfunction
 %!   end
 %!   y = y - dy;
 %! end
-%! annotation ('line', [0.5 0.5], [dy/2 1-dy/2], 'linestyle', '-.')
+%! annotation ('line', [0.5 0.5], [dy/2 1-dy/2], 'linestyle', '-.');
 
 %!demo
 %! clf; axes ('visible', 'off');
@@ -1375,7 +1375,7 @@ endfunction
 %!
 %! x = 0:0.01:2*pi;
 %! y = sin (x);
-%! plot (x, y)
+%! plot (x, y);
 %!
 %! %% Extrema
 %! x0 = [pi/2 3*pi/2];
@@ -1402,7 +1402,7 @@ endfunction
 %!   h = annotation ('textarrow', [0.5 x0(ii)], [.85 y0(ii)], ...
 %!                   'linestyle', '--', 'headstyle', 'none');
 %! end
-%! set (h, 'string', 'Extrema', 'fontsize', 15)
+%! set (h, 'string', 'Extrema', 'fontsize', 15);
 
 ## test line properties
 %!test
@@ -1417,7 +1417,7 @@ endfunction
 %!   assert (get (hli, "color"), [1 0 0]);
 %!   assert (gca (), hax);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
 ## test textarrow properties
@@ -1433,7 +1433,7 @@ endfunction
 %!   assert (get (hte, "rotation"), 90);
 %!   assert (get (hte, "color"), [1 0 0]);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
 ## test textbox properties
@@ -1451,7 +1451,7 @@ endfunction
 %!   assert (get (hte, "horizontalalignment"), "left");
 %!   assert (get (hpa, "facecolor"), [1 0 0]);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
 ## test units conversion
@@ -1468,7 +1468,7 @@ endfunction
 %!   assert (get (h, "x"), x * 2.54, 20*eps);
 %!   assert (get (h, "y"), y * 2.54, 20*eps);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
 ## test annotated figure
@@ -1480,8 +1480,8 @@ endfunction
 %!   assert (ancestor (h, "figure"), hf1);
 %!   assert (gcf (), hf2);
 %! unwind_protect_cleanup
-%!   close (hf1)
-%!   close (hf2)
+%!   close (hf1);
+%!   close (hf2);
 %! end_unwind_protect
 
 ## Test input validation

@@ -612,9 +612,9 @@ endfunction
 %! param.lpsolver = 1;
 %! [xmin, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, ...
 %!   sense, param);
-%! assert (fmin, c' * xmin)
+%! assert (fmin, c' * xmin);
 %! for i = 1:3
-%!   assert (A(i,:) * xmin <= b(i))
+%!   assert (A(i,:) * xmin <= b(i));
 %! endfor
 
 %!testif HAVE_GLPK
@@ -629,9 +629,9 @@ endfunction
 %! param.msglev = 0;
 %! [xmin, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, ...
 %!   sense, param);
-%! assert (fmin, c' * xmin)
+%! assert (fmin, c' * xmin);
 %! for i = 1:2
-%!   assert (A(i,:) * xmin <= b(i))
+%!   assert (A(i,:) * xmin <= b(i));
 %! endfor
 
 
@@ -647,5 +647,5 @@ endfunction
 %! param.msglev = 0;
 %! [xmin, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, ...
 %!   sense, param);
-%! assert (fmin, c' * xmin)
-%! assert (A * xmin, b)
+%! assert (fmin, c' * xmin);
+%! assert (A * xmin, b);

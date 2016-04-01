@@ -369,8 +369,8 @@
 
 %!shared st
 %!test st = SizeTester ([1 1]);
-%! assert (isequal (size (st), [1 1]))
-%! assert (isequal (numel (st), 1))
+%! assert (isequal (size (st), [1 1]));
+%! assert (isequal (numel (st), 1));
 %!assert (isequal (ndims (st), 2))
 %!assert (isequal (rows (st), 1))
 %!assert (isequal (columns (st), 1))
@@ -379,8 +379,8 @@
 %!assert (isvector (st))
 
 %!test st = SizeTester ([1 2]);
-%! assert (isequal (size (st), [1 2]))
-%! assert (isequal (numel (st), 2))
+%! assert (isequal (size (st), [1 2]));
+%! assert (isequal (numel (st), 2));
 %!assert (isequal (ndims (st), 2))
 %!assert (isequal (rows (st), 1))
 %!xtest assert (isequal (columns (st), 2))
@@ -389,8 +389,8 @@
 %!assert (isvector (st))
 
 %!test st = SizeTester ([2 3]);
-%! assert (isequal (size (st), [2 3]))
-%! assert (isequal (numel (st), 6))
+%! assert (isequal (size (st), [2 3]));
+%! assert (isequal (numel (st), 6));
 %!assert (isequal (ndims (st), 2))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))
@@ -399,8 +399,8 @@
 %!xtest assert (not (isvector (st)))       # bug #44498
 
 %!test st = SizeTester ([2 3 4]);
-%! assert (isequal (size (st), [2 3 4]))
-%! assert (isequal (numel (st), 24))
+%! assert (isequal (size (st), [2 3 4]));
+%! assert (isequal (numel (st), 24));
 %!xtest assert (isequal (ndims (st), 3))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))

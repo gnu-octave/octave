@@ -115,7 +115,7 @@ endfunction
 ## *nix specific - double backslash
 %!test
 %! if (isunix || ismac)
-%!   assert (fullfile (fs, fs), fs)
+%!   assert (fullfile (fs, fs), fs);
 %! endif
 
 ## Windows specific - drive letters and file sep type, cell array

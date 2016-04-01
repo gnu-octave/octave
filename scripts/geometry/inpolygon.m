@@ -103,7 +103,7 @@ endfunction
 %! clf;
 %! plot (xv, yv);
 %! hold on;
-%! plot (x(inside), y(inside), "@g")
+%! plot (x(inside), y(inside), "@g");
 %! plot (x(! in), y(! in), "@m");
 %! plot (x(on), y(on), "@b");
 %! hold off;

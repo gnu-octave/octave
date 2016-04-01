@@ -139,7 +139,7 @@ endfunction
 
 %!demo
 %! strtok ("this is the life")
-%! % split at the first space, returning "this"
+%! # split at the first space, returning "this"
 
 %!demo
 %! s = "14*27+31"

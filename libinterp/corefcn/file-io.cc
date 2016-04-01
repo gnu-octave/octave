@@ -1670,7 +1670,7 @@ as the name of the function when reporting errors.\n\
 %! c = textscan (fid, "%f %f", 4);
 %! fclose (fid);
 %! unlink (f);
-%! assert (c, {[1;3], [2;4]})
+%! assert (c, {[1;3], [2;4]});
 
 %!test
 %! ## Check number of lines read, with multiple delimiters
@@ -1681,7 +1681,7 @@ as the name of the function when reporting errors.\n\
 %! c = textscan (fid, "%f %f", 4, "delimiter", "-", "multipleDelimsAsOne", 1);
 %! fclose (fid);
 %! unlink (f);
-%! assert (c, {[1;3], [2;4]})
+%! assert (c, {[1;3], [2;4]});
 
 %!test
 %! ## Check ReturnOnError
@@ -1698,10 +1698,10 @@ as the name of the function when reporting errors.\n\
 %! unlink (f);
 %! u = textscan (str, "%f %f %f");
 %! v = textscan (str, "%f %f %f", "ReturnOnError", 1);
-%! assert (c, {[1;4], [2;NaN], [3;6]})
-%! assert (d, {[1;4], [2], [3]})
-%! assert (u, {[1;4], [2;NaN], [3;6]})
-%! assert (v, {[1;4], [2], [3]})
+%! assert (c, {[1;4], [2;NaN], [3;6]});
+%! assert (d, {[1;4], [2], [3]});
+%! assert (u, {[1;4], [2;NaN], [3;6]});
+%! assert (v, {[1;4], [2], [3]});
 
 %!test
 %! ## Check ReturnOnError
@@ -1715,8 +1715,8 @@ as the name of the function when reporting errors.\n\
 %! fclose (fid);
 %! unlink (f);
 %! u = textscan (str, "%f %f %f", "ReturnOnError", 1);
-%! assert (c, {[1;4], 2, 3})
-%! assert (u, {[1;4], 2, 3})
+%! assert (c, {[1;4], 2, 3});
+%! assert (u, {[1;4], 2, 3});
 
 %!error <Read error in field 2 of row 2> textscan ("1 2 3\n4 s 6", "%f %f %f", "ReturnOnError", 0);
 
@@ -1732,23 +1732,23 @@ as the name of the function when reporting errors.\n\
 %! fseek (fid, 0, "bof");
 %! fclose (fid);
 %! unlink (f);
-%! assert (c, {[1;4], [NaN;5], [3;6]})
-%! assert (d, {1})
+%! assert (c, {[1;4], [NaN;5], [3;6]});
+%! assert (d, {1});
 
 %!test
 %! ## Check ReturnOnError with empty fields
 %! c = textscan ("1,,3\n4,5,6", "", "Delimiter", ",", "ReturnOnError", 1);
-%! assert (c, {[1;4], [NaN;5], [3;6]})
+%! assert (c, {[1;4], [NaN;5], [3;6]});
 
 %!test
 %! ## Check ReturnOnError with empty fields
 %! c = textscan ("1,,3\n4,5,6", "%f %f %f", "Delimiter", ",", "ReturnOnError", 1);
-%! assert (c, {[1;4], [NaN;5], [3;6]})
+%! assert (c, {[1;4], [NaN;5], [3;6]});
 
 %!test
 %! ## Check ReturnOnError in first column
 %! c = textscan ("1 2 3\ns 5 6", "", "ReturnOnError", 1);
-%! assert (c, {1, 2, 3})
+%! assert (c, {1, 2, 3});
 
 ## Test input validation
 %!error textscan ()
@@ -2118,7 +2118,7 @@ as the name of the function when reporting errors.\n\
 %% Check a non-empty line with no valid conversion registers empytValue
 %!test
 %! C = textscan ("Empty\n", "Empty%f %f");
-%! assert (C, { NaN, NaN })
+%! assert (C, { NaN, NaN });
 
 %% Check overflow and underflow of integer types
 %!test

@@ -129,7 +129,7 @@ endfunction
 %! ret = zeros (2, 4, 2);
 %! ret(:,:,1) = ppval (pp, breaks');
 %! ret(:,:,2) = ppval (pp, breaks');
-%! assert (ppval (pp, [breaks',breaks']), ret)
+%! assert (ppval (pp, [breaks',breaks']), ret);
 
 ## Test input validation
 %!error ppval ()

@@ -753,7 +753,7 @@ classes.\n\
 
 /*
 %!test
-%! randg ("state", 12)
+%! randg ("state", 12);
 %! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]); # *** Please report
 
 %!test
@@ -983,28 +983,28 @@ classes.\n\
 %!test
 %! ## Test fixed state
 %! randp ("state", 1);
-%! assert (randp (5, 1, 6), [5 5 3 7 7 3])
+%! assert (randp (5, 1, 6), [5 5 3 7 7 3]);
 %!test
 %! ## Test fixed state
 %! randp ("state", 1);
-%! assert (randp (15, 1, 6), [13 15 8 18 18 15])
+%! assert (randp (15, 1, 6), [13 15 8 18 18 15]);
 %!test
 %! ## Test fixed state
 %! randp ("state", 1);
-%! assert (randp (1e9, 1, 6), [999915677 999976657 1000047684 1000019035 999985749 999977692], -1e-6)
+%! assert (randp (1e9, 1, 6), [999915677 999976657 1000047684 1000019035 999985749 999977692], -1e-6);
 %!test
 %! ## Test fixed state
 %! randp ("seed", 1);
 %! %%assert (randp (5, 1, 6), [8 2 3 6 6 8])
-%! assert (randp (5, 1, 5), [8 2 3 6 6])
+%! assert (randp (5, 1, 5), [8 2 3 6 6]);
 %!test
 %! ## Test fixed state
 %! randp ("seed", 1);
-%! assert (randp (15, 1, 6), [15 16 12 10 10 12])
+%! assert (randp (15, 1, 6), [15 16 12 10 10 12]);
 %!test
 %! ## Test fixed state
 %! randp ("seed", 1);
-%! assert (randp (1e9, 1, 6), [1000006208 1000012224 999981120 999963520 999963072 999981440], -1e-6)
+%! assert (randp (1e9, 1, 6), [1000006208 1000012224 999981120 999963520 999963072 999981440], -1e-6);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.

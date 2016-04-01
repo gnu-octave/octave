@@ -57,7 +57,7 @@ endfunction
 %! a(:,:,2) = [ 7  8  9; 10 11 12];
 %! b(:,:,1) = [ 4  5  6;  1  2  3];
 %! b(:,:,2) = [10 11 12;  7  8  9];
-%! assert (flipud (a), b)
+%! assert (flipud (a), b);
 
 ## Test NDArray with singleton dimensions
 %!test
@@ -65,13 +65,13 @@ endfunction
 %! a(:,:,:,2) = [ 7  8  9; 10 11 12];
 %! b(:,:,:,1) = [ 4  5  6;  1  2  3];
 %! b(:,:,:,2) = [10 11 12;  7  8  9];
-%! assert (flipud (a), b)
+%! assert (flipud (a), b);
 
 ## Test for 1 row, i.e., returns the same
 %!test
 %! a(1,:,:,1) = [ 1  2  3  4];
 %! a(1,:,:,2) = [ 5  6  7  8];
-%! assert (flipud (a), a)
+%! assert (flipud (a), a);
 
 %!error flipud ()
 %!error flipud (1, 2)

@@ -533,6 +533,6 @@ endfunction
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], A, [], b);
 %! assert (norm (x - X) / norm (X), 0, 1e-6);
 %! assert (flag, 0);
-%! assert (iter, 1); # should converge in one iteration
+%! assert (iter, 1);  # should converge in one iteration
 %! assert (isnan (eigest), isnan ([NaN, NaN]));
 

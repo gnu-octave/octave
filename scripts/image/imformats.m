@@ -318,15 +318,15 @@ endfunction
 ## This must work, even without support for image IO
 %!test
 %! formats = imformats ();
-%! assert (isstruct (formats))
+%! assert (isstruct (formats));
 %!
 %! min_fields = {"ext", "read", "isa", "write", "info", "alpha", "description"};
-%! assert (all (ismember (min_fields, fieldnames (formats))))
+%! assert (all (ismember (min_fields, fieldnames (formats))));
 %!
 %! if (__have_feature__ ("MAGICK"))
-%!   assert (numel (formats) > 0)
+%!   assert (numel (formats) > 0);
 %! else
-%!   assert (numel (formats), 0)
+%!   assert (numel (formats), 0);
 %! endif
 
 ## When imread or imfinfo are called, the file must exist or the

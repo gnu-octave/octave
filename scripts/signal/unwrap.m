@@ -125,9 +125,9 @@ endfunction
 
 %!test
 %! A = [pi*(-4), pi*(-2+1/6), pi/4, pi*(2+1/3), pi*(4+1/2), pi*(8+2/3), pi*(16+1), pi*(32+3/2), pi*64];
-%! assert (unwrap (A), unwrap (A, pi))
-%! assert (unwrap (A, pi), unwrap (A, pi, 2))
-%! assert (unwrap (A', pi), unwrap (A', pi, 1))
+%! assert (unwrap (A), unwrap (A, pi));
+%! assert (unwrap (A, pi), unwrap (A, pi, 2));
+%! assert (unwrap (A', pi), unwrap (A', pi, 1));
 
 %!test
 %! A = [pi*(-4); pi*(2+1/3); pi*(16+1)];
@@ -138,13 +138,13 @@ endfunction
 %! E(:, :, 2) = [A+B, B+C, C+D, D+A];
 %! F(:, :, 1) = [unwrap(A), unwrap(B), unwrap(C), unwrap(D)];
 %! F(:, :, 2) = [unwrap(A+B), unwrap(B+C), unwrap(C+D), unwrap(D+A)];
-%! assert (unwrap (E), F)
+%! assert (unwrap (E), F);
 
 %!test
 %! A = [0, 2*pi, 4*pi, 8*pi, 16*pi, 65536*pi];
 %! B = [pi*(-2+1/6), pi/4, pi*(2+1/3), pi*(4+1/2), pi*(8+2/3), pi*(16+1), pi*(32+3/2), pi*64];
-%! assert (unwrap (A), zeros (1, length (A)))
-%! assert (diff (unwrap (B), 1) < 2*pi, true (1, length (B)-1))
+%! assert (unwrap (A), zeros (1, length (A)));
+%! assert (diff (unwrap (B), 1) < 2*pi, true (1, length (B)-1));
 
 ## Test input validation
 %!error unwrap ()

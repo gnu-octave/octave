@@ -35,14 +35,14 @@
 %!           'end parent/parent';
 %!           'end derived/parent';
 %!           'end parent/method'};
-%! __trace__ (); %% clear call trace info
+%! __trace__ ();  # clear call trace info
 %! method (d);
 %! assert (__trace__ (), ctrace);
 
 %!test
 %! ctrace = {'begin other/parent';
 %!           'end other/parent'};
-%! __trace__ (); %% clear call trace info
+%! __trace__ ();  # clear call trace info
 %! parent (o);
 %! assert (__trace__ (), ctrace);
 
@@ -51,6 +51,6 @@
 %!           'begin parent/parent';
 %!           'end parent/parent';
 %!           'end derived/parent'};
-%! __trace__ (); %% clear call trace info
+%! __trace__ ();  # clear call trace info
 %! parent (d);
 %! assert (__trace__ (), ctrace);

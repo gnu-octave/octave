@@ -193,9 +193,9 @@ such the numerical rank of the matrix @var{S} is bounded by\n\
 
 /*
 %!testif HAVE_CXSPARSE
-%! assert (sprank (speye (20)), 20)
+%! assert (sprank (speye (20)), 20);
 %!testif HAVE_CXSPARSE
-%! assert (sprank ([1,0,2,0;2,0,4,0]), 2)
+%! assert (sprank ([1,0,2,0;2,0,4,0]), 2);
 
 %!error sprank (1,2)
 */

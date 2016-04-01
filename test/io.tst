@@ -254,7 +254,7 @@
 %!test
 %! matrix1 = rand (100, 2);
 %! matrix_ascii = fullfile (P_tmpdir, "matrix.ascii");
-%! save ("-ascii", matrix_ascii, "matrix1")
+%! save ("-ascii", matrix_ascii, "matrix1");
 %! matrix2 = load (matrix_ascii);
 %! assert (matrix1, matrix2, 1e-9);
 %!
@@ -311,8 +311,8 @@
 %! [v2, c2, m2] = sscanf ("1 2 bar 3 4 5 6", "%d");
 %!
 %! assert ((a == 1.2 && b == 3 && c == "foo"
-%! && v1 == [1; 2; 3; 4; 5; 6] && c1 == 6 && ischar (m1)
-%! && v2 == [1; 2] && c2 == 2 && ischar (m2)));
+%!          && v1 == [1; 2; 3; 4; 5; 6] && c1 == 6 && ischar (m1)
+%!          && v2 == [1; 2] && c2 == 2 && ischar (m2)));
 
 %!error <Invalid call to sscanf> sscanf ()
 %!error sscanf (1, 2)

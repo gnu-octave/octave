@@ -269,8 +269,8 @@ endfunction
 %! v = v(:, idx);
 %! rand_state = rand ("state");
 %! rand ("state", 42);
-%! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
-%!                         % to guarantee reproducible results
+%! opts.v0 = rand (2*n,1);  # Initialize eigs ARPACK starting vector
+%!                          # to guarantee reproducible results
 %!
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds (A,k);

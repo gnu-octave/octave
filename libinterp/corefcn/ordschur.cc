@@ -215,28 +215,28 @@ is in the upper left corner, by doing:\n\
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4 ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (U, T, [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps))
+%! assert (US*TS*US', A, sqrt (eps));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps));
 
 %!test
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4 ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (single (U), single (T), [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps ("single")))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")))
+%! assert (US*TS*US', A, sqrt (eps ("single")));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")));
 
 %!test
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4+3i ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (U, T, [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps))
+%! assert (US*TS*US', A, sqrt (eps));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps));
 
 %!test
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4+3i ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (single (U), single (T), [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps ("single")))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")))
+%! assert (US*TS*US', A, sqrt (eps ("single")));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")));
 
 */

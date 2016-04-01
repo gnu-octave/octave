@@ -154,9 +154,9 @@ endfunction
 %!testif HAVE_MAGICK
 %! w = randi (255, 100, 100, "uint8");
 %! [r, cmap, a] = write_and_read (w, "tif", "PixelRegion", {[50 70] [20 40]});
-%! assert (r, w(50:70, 20:40))
+%! assert (r, w(50:70, 20:40));
 %! [r, cmap, a] = write_and_read (w, "tif", "PixelRegion", {[50 2 70] [20 3 40]});
-%! assert (r, w(50:2:70, 20:3:40))
+%! assert (r, w(50:2:70, 20:3:40));
 
 ## If a file does not exist, it's the job of imread to check the file
 ## exists before sending it over to __imread__ or whatever function
@@ -210,5 +210,5 @@ endfunction
 %! im(:,:,3) = repmat (0:16:255, [16 1]);
 %! [r, cmap, a] = write_and_read (im, "png");
 %! assert (class (r), "uint8");
-%! assert (isempty (cmap))
-%! assert (isempty (a))
+%! assert (isempty (cmap));
+%! assert (isempty (a));

@@ -208,7 +208,7 @@ endfunction
 %! [h,w] = freqz (b,a,32);
 %! assert (h(1),1,10*eps);
 %! assert (abs (h(17)).^2,0.5,10*eps);
-%! assert (h,freqz (b,a,w),10*eps); # fft should be consistent with polyval
+%! assert (h,freqz (b,a,w),10*eps);  # fft should be consistent with polyval
 
 %!test # whole-half consistency
 %! b = [1 1 1]/3; # 3-sample average

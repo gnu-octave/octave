@@ -49,9 +49,9 @@
 %!assert (p.amount, amt, eps ())
 %!assert (amount (p), amt, eps ())
 %!xtest
-%! assert (properties (p), {'rate'; 'term'; 'principle'})
+%! assert (properties (p), {'rate'; 'term'; 'principle'});
 %!xtest
-%! assert (methods (p), {'amount'; 'foo_value_class'})
+%! assert (methods (p), {'amount'; 'foo_value_class'});
 %!assert (isempty (foo_value_class().rate))
 %!error <property `rate' is not constant> foo_value_class.rate
 
@@ -64,10 +64,10 @@
 %!test
 %! obj = foo_static_method_constant_property;
 %! obj.frequency = 10;
-%! assert (obj.cosine (0.1), cos (2 * pi * 10 * 0.1), eps ())
-%! assert (obj.sine (0.1), sin (2 * pi * 10 * 0.1), eps ())
+%! assert (obj.cosine (0.1), cos (2 * pi * 10 * 0.1), eps ());
+%! assert (obj.sine (0.1), sin (2 * pi * 10 * 0.1), eps ());
 
 %!test
 %! obj = foo_method_changes_property_size (3);
 %! obj = obj.move_element_to_end (2);
-%! assert (obj.element, [1 3 2])
+%! assert (obj.element, [1 3 2]);

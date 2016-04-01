@@ -281,7 +281,7 @@ endfunction
 %!test
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
-%! rand ('state', 42);  % Initialize to guarantee reproducible results
+%! rand ("state", 42);  # Initialize to guarantee reproducible results
 %! N = 100;
 %! A = rand (N);
 %! [nm1, v1, w1] = onenormest (A);

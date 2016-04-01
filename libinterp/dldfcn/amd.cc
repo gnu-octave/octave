@@ -188,11 +188,11 @@ The author of the code itself is Timothy A. Davis\n\
 %! A2 = ones (30, 30);
 %!
 %!testif HAVE_AMD
-%! assert(amd (A2), [1:30])
+%! assert(amd (A2), [1:30]);
 %! opts.dense = 25;
-%! assert(amd (A2, opts), [1:30])
+%! assert(amd (A2, opts), [1:30]);
 %! opts.aggressive = 1;
-%! assert(amd (A2, opts), [1:30])
+%! assert(amd (A2, opts), [1:30]);
 
 %!error <S must be a square matrix|was unavailable or disabled> amd (A)
 %!error amd (A2, 2)

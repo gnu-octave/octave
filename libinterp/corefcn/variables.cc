@@ -358,7 +358,7 @@ isglobal (\"x\")\n\
 /*
 %!test
 %! global x;
-%! assert (isglobal ("x"), true)
+%! assert (isglobal ("x"), true);
 
 %!error isglobal ()
 %!error isglobal ("a", "b")

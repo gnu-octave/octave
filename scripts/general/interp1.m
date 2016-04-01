@@ -467,7 +467,7 @@ endfunction
 %! h = plot (x, interp1 (x1, y1, x), 'b', x1, y1, 'sb');
 %! hold on
 %! g = plot (x, interp1 (x2, y2, x), 'r', x2, y2, '*r');
-%! axis ([0.5 3.5 -0.5 1.5])
+%! axis ([0.5 3.5 -0.5 1.5]);
 %! legend ([h(1), g(1)], {'left-continuous', 'right-continuous'}, ...
 %!         'location', 'northwest')
 %! legend boxoff

@@ -122,11 +122,11 @@ endfunction
 %!assert (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
 
 ## Test non-floating point types
-%!assert (median ([true, false]), true);
-%!assert (median (uint8 ([1, 3])), uint8 (2));
-%!assert (median (int8 ([1, 3, 4])), int8 (3));
-%!assert (median (single ([1, 3, 4])), single (3));
-%!assert (median (single ([1, 3, NaN])), single (NaN));
+%!assert (median ([true, false]), true)
+%!assert (median (uint8 ([1, 3])), uint8 (2))
+%!assert (median (int8 ([1, 3, 4])), int8 (3))
+%!assert (median (single ([1, 3, 4])), single (3))
+%!assert (median (single ([1, 3, NaN])), single (NaN))
 
 ## Test input validation
 %!error median ()

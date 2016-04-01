@@ -515,10 +515,10 @@ gcd ([15, 9], [20, 18])\n\
 %! u = [953 + i*971, 967 + i*977];
 %! [d, k(1), k(2)] = gcd (p(1), p(2));
 %! [z, w(1), w(2)] = gcd (u(1), u(2));
-%! assert (d, 1)
-%! assert (sum (p.*k), d)
-%! assert (abs (z), sqrt (2))
-%! assert (abs (sum (u.*w)), sqrt (2))
+%! assert (d, 1);
+%! assert (sum (p.*k), d);
+%! assert (abs (z), sqrt (2));
+%! assert (abs (sum (u.*w)), sqrt (2));
 
 %!error <all values must be integers> gcd (1/2, 2);
 %!error <all complex parts must be integers> gcd (e + i*pi, 1);

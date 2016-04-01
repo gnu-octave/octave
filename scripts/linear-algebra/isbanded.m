@@ -70,9 +70,9 @@ endfunction
 %!assert (isbanded (logical (eye (10)),1,1))
 
 %! A = [2 3 0 0 0; 1 2 3 0 0; 0 1 2 3 0; 0 0 1 2 3; 0 0 0 1 2];
-%! assert (isbanded (A,1,1))
-%! assert (! isbanded (A,0,1))
-%! assert (! isbanded (A,1,0))
+%! assert (isbanded (A,1,1));
+%! assert (! isbanded (A,0,1));
+%! assert (! isbanded (A,1,0));
 
 ## Test input validation
 %!error isbanded ()

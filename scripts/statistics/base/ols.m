@@ -141,7 +141,7 @@ endfunction
 %! x = [1:5]';
 %! y = 3*x + 2;
 %! x = [x, ones(5,1)];
-%! assert (ols (y,x), [3; 2], 50*eps)
+%! assert (ols (y,x), [3; 2], 50*eps);
 
 %!test
 %! x = [1, 2; 3, 4];

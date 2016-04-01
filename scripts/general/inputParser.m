@@ -495,7 +495,7 @@ endclassdef
 %! assert (r.req1, "file");
 %! assert (sort (p.UsingDefaults), sort ({"op1", "op2", "verbose", "line"}));
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
-%!        {"file", "val", 78,    false,     "tree"});
+%!         {"file", "val", 78,    false,     "tree"});
 
 ## check normal use, but give values different than defaults
 %!test
@@ -527,7 +527,7 @@ endclassdef
 %! p = create_p ();
 %! p.KeepUnmatched = true;
 %! p.parse ("file", "foo", 80, "line", "circle", "verbose", "extra", 50);
-%! assert (p.Unmatched.extra, 50)
+%! assert (p.Unmatched.extra, 50);
 
 ## check error when missing required
 %!error <not enough input arguments>
@@ -581,19 +581,19 @@ endclassdef
 %! p = inputParser;
 %! p.addParamValue ("Dir", [], @ischar);
 %! p.parse ();
-%! assert (p.Results.Dir, [])
+%! assert (p.Results.Dir, []);
 
 %!test
 %! p = inputParser;
 %! p.addParamValue ("positive", -1, @(x) x > 5);
 %! p.parse ();
-%! assert (p.Results.positive, -1)
+%! assert (p.Results.positive, -1);
 
 %!function r = foobar (varargin)
 %!  p = inputParser ();
 %!  p.addParamValue ("foo", "bar", @ischar);
 %!  p.parse (varargin{2:end});
-%!  r = p.Results
+%!  r = p.Results;
 %!endfunction
 
 %!xtest assert (foobar (), struct ("foo", "bar"))

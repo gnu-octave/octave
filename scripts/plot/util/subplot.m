@@ -491,23 +491,23 @@ endfunction
 %! x = 0:10;
 %! ax(1) = subplot (221);
 %! set (ax(1), 'tag', '1');
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! title ('x & y labels & ticklabels');
 %! xlabel xlabel
 %! ylabel ylabel
 %! ax(2) = subplot (222);
 %! set (ax(2), 'tag', '2');
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! title ('no labels');
-%! axis ('nolabel','tic')
+%! axis ('nolabel','tic');
 %! ax(3) = subplot (223);
 %! set (ax(3), 'tag', '3');
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! title ('no labels');
-%! axis ('nolabel','tic')
+%! axis ('nolabel','tic');
 %! ax(4) = subplot (224);
 %! set (ax(4), 'tag', '4');
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! title ('x & y labels & ticklabels');
 %! xlabel xlabel
 %! ylabel ylabel
@@ -515,7 +515,7 @@ endfunction
 %!demo
 %! x = 0:10;
 %! subplot (221);
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! ylim ([0, 1]);
 %! text (0.5, 0.5, '{x,y}labels & {x,y}ticklabels', ...
 %!       'horizontalalignment', 'center', ...
@@ -524,14 +524,14 @@ endfunction
 %! ylabel ylabel
 %! title title
 %! subplot (222);
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! axis ('labely');
 %! ylabel ylabel
 %! text (0.5, 0.5, 'no xlabels, xticklabels', ...
 %!       'horizontalalignment', 'center', ...
 %!       'units', 'normalized');
 %! subplot (223);
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! axis ('labelx');
 %! text (0.5, 0.5, 'no ylabels, yticklabels', ...
 %!       'horizontalalignment', 'center', ...
@@ -539,7 +539,7 @@ endfunction
 %! xlabel xlabel
 %! title title
 %! subplot (224);
-%! plot (x, rand (3, 11))
+%! plot (x, rand (3, 11));
 %! axis ('nolabel','tic');
 %! text (0.5, 0.5, 'no {x,y}labels, {x,y}ticklabels', ...
 %!       'horizontalalignment', 'center', ...

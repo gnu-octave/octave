@@ -174,11 +174,11 @@ endfunction
 %!   hf = figure ("visible", "off");
 %!   hax = axes ("tag", tag);
 %!   hpa = patch ();
-%!   set (hpa, "facecolor", [.5 .5 .5], "tag", tag)
+%!   set (hpa, "facecolor", [.5 .5 .5], "tag", tag);
 %!   hax2 = copyobj (hax, hf);
-%!   assert (get (hax2, "tag"), tag)
+%!   assert (get (hax2, "tag"), tag);
 %!   hpa2 = get (hax2, "children");
-%!   assert (get (hpa2, "facecolor"), [.5 .5 .5])
+%!   assert (get (hpa2, "facecolor"), [.5 .5 .5]);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect

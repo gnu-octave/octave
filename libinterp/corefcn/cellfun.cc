@@ -1422,9 +1422,9 @@ arrayfun (@@str2num, [1234],\n\
 %% First input argument can be a string, an inline function, a
 %% function_handle or an anonymous function
 %!test
-%! arrayfun (@isequal, [false, true], [true, true]); %% No output argument
+%! arrayfun (@isequal, [false, true], [true, true]);  # No output argument
 %!error
-%! arrayfun (@isequal); %% One or less input arguments
+%! arrayfun (@isequal);  # One or less input arguments
 %!test
 %! A = arrayfun ("isequal", [false, true], [true, true]);
 %! assert (A, [false, true]);

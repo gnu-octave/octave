@@ -1488,10 +1488,10 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
 %! dbstop ls;
 %! s = dbstatus;
 %! dbclear all
-%! assert (s(1).name, "@audioplayer/set>setproperty")
-%! assert (s(2).name, "@ftp/dir")
-%! assert (s(3).name, "ls")
-%! assert (s(4).name, "quantile>__quantile__")
+%! assert (s(1).name, "@audioplayer/set>setproperty");
+%! assert (s(2).name, "@ftp/dir");
+%! assert (s(3).name, "ls");
+%! assert (s(4).name, "quantile>__quantile__");
 %! assert (s(2).file(end-10:end), "/@ftp/dir.m");
 */
 

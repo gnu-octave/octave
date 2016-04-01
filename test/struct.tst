@@ -138,8 +138,7 @@
 %! c(1, 2, 3, 4).value = 2;
 %! c(3, 3, 3, 3).value = 1;
 %! d = reshape ({c.value}, size (c));
-%! assert ([d{4, 4, 4, 4}, d{1, 2, 3, 4}, d{3, 3, 3, 3}],
-%!         [3, 2, 1]);
+%! assert ([d{4, 4, 4, 4}, d{1, 2, 3, 4}, d{3, 3, 3, 3}], [3, 2, 1]);
 
 ## test assignment to mixed cs-list of field element subranges
 %!test

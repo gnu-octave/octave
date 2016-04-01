@@ -35,33 +35,33 @@
 
 %!test
 %! p = fhdr_parent (7);
-%! assert (numel (p), 7)
+%! assert (numel (p), 7);
 
 %!test
 %! d = fhdr_derived (13);
-%! assert (numel (d), 13)
+%! assert (numel (d), 13);
 
 %!test
 %! p = fhdr_parent (11);
 %! f = @numel;
-%! assert (f (p), 11)
+%! assert (f (p), 11);
 
 %!test
 %! d = fhdr_parent (21);
 %! f = @numel;
-%! assert (f (d), 21)
+%! assert (f (d), 21);
 
 %!test
 %! o(1) = fhdr_other (13);
 %! o(2) = fhdr_other (42);
-%! assert (getsize_loop (o), [13, 42])
+%! assert (getsize_loop (o), [13, 42]);
 
 %!test
 %! o(1) = fhdr_other (13);
 %! o(2) = fhdr_other (42);
-%! assert (getsize_cellfun (o), [13, 42])
+%! assert (getsize_cellfun (o), [13, 42]);
 
 %!test
 %! o(1) = fhdr_other (13);
 %! o(2) = fhdr_other (42);
-%! assert (getsize_arrayfun (o), [13, 42])
+%! assert (getsize_arrayfun (o), [13, 42]);

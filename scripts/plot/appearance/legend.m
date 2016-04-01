@@ -1313,7 +1313,7 @@ endfunction
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('Legend is hidden')
+%! title ('Legend is hidden');
 %! legend ({'I am blue', 'I am green'}, 'location', 'east');
 %! legend hide
 
@@ -1395,7 +1395,7 @@ endfunction
 %! clf;
 %! colormap (cool (64));
 %! surf (peaks ());
-%! legend ('peaks()')
+%! legend ('peaks()');
 %! title ('legend() works for surface objects too');
 
 %!demo
@@ -1649,10 +1649,10 @@ endfunction
 %!   hax2 = subplot (1,2,2);
 %!   plot (1:10);
 %!   hleg1 = legend (hax1, "foo");
-%!   assert (get (hleg1, "userdata").handle, hax1)
+%!   assert (get (hleg1, "userdata").handle, hax1);
 %!   assert (gca (), hax2);
 %!   hleg2 = legend ("bar");
-%!   assert (get (hleg2, "userdata").handle, gca ())
+%!   assert (get (hleg2, "userdata").handle, gca ());
 %! unwind_protect_cleanup
 %!   close (h);
 %! end_unwind_protect

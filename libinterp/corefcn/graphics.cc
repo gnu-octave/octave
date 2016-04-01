@@ -3026,8 +3026,8 @@ base_properties::set_parent (const octave_value& val)
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = gca ();
-%!   set (hax, "parent", gcf ())
-%!   assert (gca (), hax)
+%!   set (hax, "parent", gcf ());
+%!   assert (gca (), hax);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -3993,7 +3993,7 @@ figure::properties::get_auto_paperposition (void)
 %!   fsz = in_pos(3:4) * 2.54;
 %!   pos = [(psz/2 .- fsz/2) fsz];
 %!   set (hf, "paperpositionmode", "auto");
-%!   assert (get (hf, "paperposition"), pos, tol)
+%!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -4010,7 +4010,7 @@ figure::properties::get_auto_paperposition (void)
 %!   set (hf, "paperunits", "normalized");
 %!   fsz = in_pos(3:4) ./ psz;
 %!   pos = [([0.5 0.5] .- fsz/2) fsz];
-%!   assert (get (hf, "paperposition"), pos, tol)
+%!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -4027,7 +4027,7 @@ figure::properties::get_auto_paperposition (void)
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4);
 %!   pos = [(psz/2 .- fsz/2) fsz];
-%!   assert (get (hf, "paperposition"), pos, tol)
+%!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -4044,7 +4044,7 @@ figure::properties::get_auto_paperposition (void)
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4);
 %!   pos = [(psz/2 .- fsz/2) fsz];
-%!   assert (get (hf, "paperposition"), pos, tol)
+%!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -4054,9 +4054,9 @@ figure::properties::get_auto_paperposition (void)
 %! in_pos = [0 0 4 5];
 %! unwind_protect
 %!   ## back to manual mode
-%!   set (hf, "paperposition", in_pos * 1.1)
-%!   assert (get (hf, "paperpositionmode"), "manual")
-%!   assert (get (hf, "paperposition"), in_pos * 1.1)
+%!   set (hf, "paperposition", in_pos * 1.1);
+%!   assert (get (hf, "paperpositionmode"), "manual");
+%!   assert (get (hf, "paperposition"), in_pos * 1.1);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -4617,17 +4617,17 @@ axes::properties::sync_positions (void)
 %! graphics_toolkit (hf, "fltk");
 %! fpos = get (hf, "position");
 %! unwind_protect
-%!   plot (rand (3))
+%!   plot (rand (3));
 %!   position = get (gca, "position");
 %!   outerposition = get (gca, "outerposition");
 %!   looseinset = get (gca, "looseinset");
 %!   tightinset = get (gca, "tightinset");
-%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)])
+%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)]);
 %!   set (hf, "position", fpos);
-%!   assert (get (gca, "outerposition"), outerposition, 0.001)
-%!   assert (get (gca, "position"), position, 0.001)
-%!   assert (get (gca, "looseinset"), looseinset, 0.001)
-%!   assert (get (gca, "tightinset"), tightinset, 0.001)
+%!   assert (get (gca, "outerposition"), outerposition, 0.001);
+%!   assert (get (gca, "position"), position, 0.001);
+%!   assert (get (gca, "looseinset"), looseinset, 0.001);
+%!   assert (get (gca, "tightinset"), tightinset, 0.001);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -4635,19 +4635,19 @@ axes::properties::sync_positions (void)
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "fltk");
 %! fpos = get (hf, "position");
-%! set (gca, "activepositionproperty", "position")
+%! set (gca, "activepositionproperty", "position");
 %! unwind_protect
-%!   plot (rand (3))
+%!   plot (rand (3));
 %!   position = get (gca, "position");
 %!   outerposition = get (gca, "outerposition");
 %!   looseinset = get (gca, "looseinset");
 %!   tightinset = get (gca, "tightinset");
-%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)])
+%!   set (hf, "position", [fpos(1:2), 2*fpos(3:4)]);
 %!   set (hf, "position", fpos);
-%!   assert (get (gca, "position"), position, 0.001)
-%!   assert (get (gca, "outerposition"), outerposition, 0.001)
-%!   assert (get (gca, "looseinset"), looseinset, 0.001)
-%!   assert (get (gca, "tightinset"), tightinset, 0.001)
+%!   assert (get (gca, "position"), position, 0.001);
+%!   assert (get (gca, "outerposition"), outerposition, 0.001);
+%!   assert (get (gca, "looseinset"), looseinset, 0.001);
+%!   assert (get (gca, "tightinset"), tightinset, 0.001);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -9636,8 +9636,7 @@ each individual object will be reset.\n\
 %!   assert (get (hli, "marker"), get (0, "defaultlinemarker"));
 %!   assert (get (hli, "markerfacecolor"),
 %!           get (0, "defaultlinemarkerfacecolor"));
-%!   assert (get (hli, "linestyle"),
-%!           get (0, "defaultlinelinestyle"));
+%!   assert (get (hli, "linestyle"), get (0, "defaultlinelinestyle"));
 %!   assert (get (hli, "linewidth"), 3, tol);  # parent axes defaults
 %!
 %! unwind_protect_cleanup
@@ -9677,8 +9676,7 @@ each individual object will be reset.\n\
 %!   assert (get (hsu, "xdata"), get (0, "defaultsurfacexdata"), tol);
 %!   assert (get (hsu, "ydata"), get (0, "defaultsurfaceydata"), tol);
 %!   assert (get (hsu, "zdata"), get (0, "defaultsurfacezdata"), tol);
-%!   assert (get (hsu, "edgecolor"),
-%!           get (0, "defaultsurfaceedgecolor"), tol);
+%!   assert (get (hsu, "edgecolor"), get (0, "defaultsurfaceedgecolor"), tol);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -9721,8 +9719,8 @@ each individual object will be reset.\n\
 %!
 %!   reset (hax);
 %!   assert (get (hax, "linewidth"), get (0, "defaultaxeslinewidth"), tol);
-%!   assert (get (hax, "position"), pos, tol); # axes position is unchanged
-%!   assert (get (hax, "default"), struct ()); # no more axes' defaults
+%!   assert (get (hax, "position"), pos, tol);  # axes position is unchanged
+%!   assert (get (hax, "default"), struct ());  # no more axes' defaults
 %!   assert (get (get (hax, "title"), "string"), "");
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -9735,7 +9733,7 @@ each individual object will be reset.\n\
 %! unwind_protect
 %!   reset (hf);
 %!   assert (get (hf, "papertype"), get (0, "defaultfigurepapertype"));
-%!   assert (get (hf, "paperunits"), "centimeters"); # paperunits is unchanged
+%!   assert (get (hf, "paperunits"), "centimeters");  # paperunits is unchanged
 %!   assert (get (hf, "visible"), get (0, "defaultfigurevisible"));
 %! unwind_protect_cleanup
 %!   close (hf);

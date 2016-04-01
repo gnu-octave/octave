@@ -255,16 +255,16 @@ endfunction
 %! yy = [0 0];
 %! hli = plot (xx, yy);
 %!
-%! disp ("Push the cancel to stop the process.")
+%! disp ("Push the cancel to stop the process.");
 %! hf = waitbar(0,"0","Name","Building Koch curve ...",...
 %!              "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
 %! for ii = 1:niter
 %!   ## Check cancel request
 %!   if (! ishandle (hf))
-%!     break
+%!     break;
 %!   elseif (getappdata (hf, "interrupt"))
-%!     delete (hf)
-%!     break
+%!     delete (hf);
+%!     break;
 %!   else
 %!     waitbar (ii/niter, hf, sprintf ("Step %d/%d", ii, niter));
 %!   endif
@@ -283,13 +283,13 @@ endfunction
 %!   tmp = cell2mat (tmp);
 %!   xx = [tmp(1,:) xx(end)];
 %!   yy = [tmp(2,:) yy(end)];
-%!   set (hli, "xdata", xx, "ydata", yy)
+%!   set (hli, "xdata", xx, "ydata", yy);
 %!   drawnow ();
-%!   pause (0.5)
+%!   pause (0.5);
 %! endfor
 %!
 %! if (ishandle (hf))
-%!   delete (hf)
+%!   delete (hf);
 %! endif
 
 ## Test input validation

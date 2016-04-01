@@ -418,7 +418,7 @@ endfunction
 %! jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
 %!endfunction
 %!function jac = fjcc (t, y, varargin)  # sparse type
-%! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2])
+%! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
 %! val = fpol (t, y, varargin);    # We use the derivatives
@@ -536,8 +536,8 @@ endfunction
 %! warning ("off", "integrate_adaptive:unexpected_termination", "local");
 %! opt = odeset ("Events", @fevn, "NormControl", "on");
 %! sol = ode23 (@fpol, [0 10], [2 0], opt);
-%! assert ([sol.ie, sol.xe, sol.ye], ...
-%!   [2.0, 2.496110, -0.830550, -2.677589], .5e-1);
+%! assert ([sol.ie, sol.xe, sol.ye],
+%!         [2.0, 2.496110, -0.830550, -2.677589], .5e-1);
 %!test  # Events option, five output arguments
 %! warning ("off", "integrate_adaptive:unexpected_termination", "local");
 %! opt = odeset ("Events", @fevn, "NormControl", "on");

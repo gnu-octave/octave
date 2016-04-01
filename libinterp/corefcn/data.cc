@@ -4272,11 +4272,11 @@ val = ones (m,n, \"uint8\")\n\
 %! funcs = {@zeros, @ones, @inf, @nan, @NA, @i, @pi, @e};
 %! for idx = 1:numel (funcs)
 %!   func = funcs{idx};
-%!   assert (func (zeros (1, 0)), zeros (0, 0))
-%!   assert (func (zeros (0, 1)), zeros (0, 0))
-%!   assert (func (zeros (0, 1, 1)), zeros (0, 0))
-%!   fail ([func2str(func) " ([])"])
-%!   fail ([func2str(func) " (zeros (0, 0, 1))"])
+%!   assert (func (zeros (1, 0)), zeros (0, 0));
+%!   assert (func (zeros (0, 1)), zeros (0, 0));
+%!   assert (func (zeros (0, 1, 1)), zeros (0, 0));
+%!   fail ([func2str(func) " ([])"]);
+%!   fail ([func2str(func) " (zeros (0, 0, 1))"]);
 %! endfor
 */
 

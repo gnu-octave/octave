@@ -209,25 +209,25 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 %!test
 %! r = getrusage ();
 %! assert (isstruct (r));
-%! assert (isfield (r, "idrss"))
-%! assert (isfield (r, "inblock"))
-%! assert (isfield (r, "isrss"))
-%! assert (isfield (r, "ixrss"))
-%! assert (isfield (r, "majflt"))
-%! assert (isfield (r, "maxrss"))
-%! assert (isfield (r, "minflt"))
-%! assert (isfield (r, "msgrcv"))
-%! assert (isfield (r, "msgsnd"))
-%! assert (isfield (r, "nivcsw"))
-%! assert (isfield (r, "nsignals"))
-%! assert (isfield (r, "nswap"))
-%! assert (isfield (r, "nvcsw"))
-%! assert (isfield (r, "oublock"))
-%! assert (isfield (r, "stime"))
-%! assert (isfield (r, "utime"))
-%! assert (isfield (r.stime, "sec"))
-%! assert (isfield (r.stime, "usec"))
-%! assert (isfield (r.utime, "sec"))
-%! assert (isfield (r.utime, "usec"))
+%! assert (isfield (r, "idrss"));
+%! assert (isfield (r, "inblock"));
+%! assert (isfield (r, "isrss"));
+%! assert (isfield (r, "ixrss"));
+%! assert (isfield (r, "majflt"));
+%! assert (isfield (r, "maxrss"));
+%! assert (isfield (r, "minflt"));
+%! assert (isfield (r, "msgrcv"));
+%! assert (isfield (r, "msgsnd"));
+%! assert (isfield (r, "nivcsw"));
+%! assert (isfield (r, "nsignals"));
+%! assert (isfield (r, "nswap"));
+%! assert (isfield (r, "nvcsw"));
+%! assert (isfield (r, "oublock"));
+%! assert (isfield (r, "stime"));
+%! assert (isfield (r, "utime"));
+%! assert (isfield (r.stime, "sec"));
+%! assert (isfield (r.stime, "usec"));
+%! assert (isfield (r.utime, "sec"));
+%! assert (isfield (r.utime, "usec"));
 */
 

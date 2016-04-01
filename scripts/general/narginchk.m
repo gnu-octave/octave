@@ -66,7 +66,7 @@ endfunction
 %!error <not enough input arguments> f([3, 3], 1)
 
 %!test
-%! f([1,1])
+%! f([1,1]);
 %!test
-%! f([1,5], 2, 3, 4, 5)
+%! f([1,5], 2, 3, 4, 5);
 

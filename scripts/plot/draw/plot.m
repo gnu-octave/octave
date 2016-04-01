@@ -253,35 +253,35 @@ endfunction
 
 %!demo
 %! x = 0:10;
-%! plot (x, rand (numel (x), 3))
-%! axis ([0 10 0 1])
-%! title ({'Three random variables', 'x[1x11], y[11x3]'})
+%! plot (x, rand (numel (x), 3));
+%! axis ([0 10 0 1]);
+%! title ({'Three random variables', 'x[1x11], y[11x3]'});
 
 %!demo
 %! x = 0:10;
-%! plot (x, rand (3, numel (x)))
-%! axis ([0 10 0 1])
-%! title ({'Three random variables', 'x[1x11], y[3x11]'})
+%! plot (x, rand (3, numel (x)));
+%! axis ([0 10 0 1]);
+%! title ({'Three random variables', 'x[1x11], y[3x11]'});
 
 %!demo
 %! x = 0:10;
-%! plot (repmat (x, 2, 1), rand (2, numel (x)), '-s')
-%! axis ([0 10 0 1])
+%! plot (repmat (x, 2, 1), rand (2, numel (x)), '-s');
+%! axis ([0 10 0 1]);
 %! title ({'Vertical lines with random height and lengths', ...
 %!         'x[2x11], y[2,11]'})
 
 %!demo
 %! x = 0:10;
-%! plot (repmat (x(:), 1, 2), rand (numel (x), 2))
-%! axis ([0 10 0 1])
-%! title ({'Two random variables', 'x[11x2], y[11x2]'})
+%! plot (repmat (x(:), 1, 2), rand (numel (x), 2));
+%! axis ([0 10 0 1]);
+%! title ({'Two random variables', 'x[11x2], y[11x2]'});
 
 %!demo
 %! x = 0:10;
 %! shape = [1, 1, numel(x), 2];
 %! x = reshape (repmat (x(:), 1, 2), shape);
 %! y = rand (shape);
-%! plot (x, y)
-%! axis ([0 10 0 1])
-%! title ({'Two random variables', 'squeezed from 4-d arrays'})
+%! plot (x, y);
+%! axis ([0 10 0 1]);
+%! title ({'Two random variables', 'squeezed from 4-d arrays'});
 

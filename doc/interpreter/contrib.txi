@@ -361,8 +361,12 @@ endfor
 @end example
 
 The Octave operator @samp{!} should be used for logical negation, rather than
-@samp{~}.  Comments should begin with the @samp{#} character, rather than
-@samp{%}.
+@samp{~}.  The negation operator is written with a space between the operator
+and its target, e.g., @code{! A}.  Comments should begin with the @samp{#}
+character, rather than @samp{%}.
+
+Any Built-In Self Tests or demos using the @code{%!test} or @code{%!demo}
+syntax should begin two lines after the @code{endfunction} keyword.
 
 @node C++ Sources
 @section C++ Sources
@@ -427,6 +431,9 @@ SVD::type type = ((nargout == 0 || nargout == 1)
 Consider putting extra braces around a multi-line expression to make it
 more readable, even if they are not necessary.  Also, do not hesitate to
 put extra braces anywhere if it improves clarity.
+
+The negation operator is written with a space between the operator
+and its target, e.g., @code{! A}.
 
 Declare variables just before they are needed.  Use variables local to
 blocks---it helps optimization.  Don't write a multi-line variable

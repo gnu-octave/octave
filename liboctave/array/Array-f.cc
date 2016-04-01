@@ -36,6 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #define INLINE_DESCENDING_SORT
 #include "oct-sort.cc"
 
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
+
+extern template class OCTAVE_API Array<idx_vector>;
+extern template class OCTAVE_API Array<octave_idx_type>;
+
 template <>
 inline bool
 sort_isnan<float> (float x)

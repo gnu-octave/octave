@@ -110,6 +110,13 @@ static bool Vdisable_range = false;
 
 // Octave's value type.
 
+octave_base_value *
+octave_value::nil_rep (void)
+{
+  static octave_base_value nr;
+  return &nr;
+}
+
 std::string
 octave_value::unary_op_as_string (unary_op op)
 {

@@ -104,7 +104,7 @@ public:
 
   bool is_overloaded (void) const { return has_overloads; }
 
-  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
+  dim_vector dims (void) const;
 
   octave_function *function_value (bool = false)
   { return fcn.function_value (); }

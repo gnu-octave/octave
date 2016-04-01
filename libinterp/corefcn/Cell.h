@@ -109,11 +109,7 @@ public:
   bool any_element_is_nan (void) const { return false; }
   bool is_true (void) const { return false; }
 
-  octave_value resize_fill_value (void) const
-  {
-    static Matrix rfv;
-    return rfv;
-  }
+  octave_value resize_fill_value (void) const;
 
   Cell diag (octave_idx_type k = 0) const;
 

@@ -56,6 +56,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
+
+extern template class OCTINTERP_API octave_base_scalar<double>;
+
+
 template class octave_base_matrix<uint32NDArray>;
 
 template class octave_base_int_matrix<uint32NDArray>;

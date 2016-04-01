@@ -35,6 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 #define INLINE_DESCENDING_SORT
 #include "oct-sort.cc"
 
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
+
+extern template class OCTAVE_API Array<idx_vector>;
+
 template class OCTAVE_API octave_sort<int>;
 template class OCTAVE_API octave_sort<long>;
 #if defined (HAVE_LONG_LONG_INT)

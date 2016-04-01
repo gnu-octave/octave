@@ -43,8 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "toplev.h"
 
-#include "Array.cc"
-
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
 

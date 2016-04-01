@@ -77,7 +77,7 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
+  dim_vector dims (void) const;
 
   octave_idx_type numel (void) const { return 1; }
 

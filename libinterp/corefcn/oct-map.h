@@ -51,11 +51,7 @@ octave_fields
 
   fields_rep *rep;
 
-  static fields_rep *nil_rep (void)
-  {
-    static fields_rep nr;
-    return &nr;
-  }
+  static fields_rep *nil_rep (void);
 
 public:
 

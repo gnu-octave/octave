@@ -47,6 +47,8 @@ symbol_table
 {
 public:
 
+  static octave_value dummy_octave_value;
+
   typedef int scope_id;
   typedef size_t context_id;
 
@@ -266,12 +268,10 @@ public:
           }
         else if (is_persistent ())
           {
-            static octave_value foobar;
-
             symbol_table *inst
               = symbol_table::get_instance (symbol_table::current_scope ());
 
-            return inst ? inst->do_persistent_varref (name) : foobar;
+            return inst ? inst->do_persistent_varref (name) : dummy_octave_value;
           }
         else
           {
@@ -657,6 +657,8 @@ public:
 
     symbol_record (symbol_record_rep *new_rep) : rep (new_rep) { }
   };
+
+  static symbol_record dummy_symbol_record;
 
   // Always access a symbol from the current scope.
   // Useful for scripts, as they may be executed in more than one scope.
@@ -1315,11 +1317,9 @@ public:
   static symbol_record& insert (const std::string& name,
                                 scope_id scope = xcurrent_scope)
   {
-    static symbol_record foobar;
-
     symbol_table *inst = get_instance (scope);
 
-    return inst ? inst->do_insert (name) : foobar;
+    return inst ? inst->do_insert (name) : symbol_table::dummy_symbol_record;
   }
 
   static void rename (const std::string& old_name,
@@ -1338,8 +1338,6 @@ public:
                       context_id context = xdefault_context,
                       bool force_add = false)
   {
-    static octave_value foobar;
-
     symbol_table *inst = get_instance (scope);
 
     if (inst)
@@ -1352,11 +1350,9 @@ public:
           context_id context = xdefault_context, bool force_add = false)
           GCC_ATTR_DEPRECATED
   {
-    static octave_value foobar;
-
     symbol_table *inst = get_instance (scope);
 
-    return inst ? inst->do_varref (name, context, force_add) : foobar;
+    return inst ? inst->do_varref (name, context, force_add) : dummy_octave_value;
   }
 
   // Convenience function to simplify
@@ -1375,11 +1371,9 @@ public:
   force_varref (const std::string& name, scope_id scope = xcurrent_scope,
                 context_id context = xdefault_context) GCC_ATTR_DEPRECATED
   {
-    static octave_value foobar;
-
     symbol_table *inst = get_instance (scope);
 
-    return inst ? inst->do_varref (name, context, true) : foobar;
+    return inst ? inst->do_varref (name, context, true) : dummy_octave_value;
   }
 
   static octave_value varval (const std::string& name,
@@ -1433,11 +1427,9 @@ public:
   static octave_value&
   top_level_varref (const std::string& name) GCC_ATTR_DEPRECATED
   {
-    static octave_value foobar;
-
     symbol_table *inst = get_instance (top_scope ());
 
-    return inst ? inst->do_varref (name, 0, true) : foobar;
+    return inst ? inst->do_varref (name, 0, true) : dummy_octave_value;
   }
 
   static octave_value
@@ -1460,11 +1452,9 @@ public:
   static octave_value& persistent_varref (const std::string& name)
   GCC_ATTR_DEPRECATED
   {
-    static octave_value foobar;
-
     symbol_table *inst = get_instance (xcurrent_scope);
 
-    return inst ? inst->do_persistent_varref (name) : foobar;
+    return inst ? inst->do_persistent_varref (name) : dummy_octave_value;
   }
 
   static octave_value persistent_varval (const std::string& name)

@@ -54,6 +54,21 @@ gripe_index_out_of_range (void)
     ("internal error: idx_vector index out of range");
 }
 
+idx_vector::idx_vector_rep *
+idx_vector::nil_rep (void)
+{
+  static idx_vector_rep ivr;
+  return &ivr;
+}
+
+idx_vector::idx_vector_rep *
+idx_vector::err_rep (void)
+{
+  static idx_vector_rep ivr;
+  ivr.err = true;
+  return &ivr;
+}
+
 Array<octave_idx_type>
 idx_vector::idx_base_rep::as_array (void)
 {

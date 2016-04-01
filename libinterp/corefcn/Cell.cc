@@ -319,6 +319,13 @@ Cell::map (ctype_mapper fcn) const
   return retval;
 }
 
+octave_value
+Cell::resize_fill_value (void) const
+{
+  static octave_value rfv = octave_value (Matrix ());
+  return rfv;
+}
+
 Cell
 Cell::diag (octave_idx_type k) const
 {

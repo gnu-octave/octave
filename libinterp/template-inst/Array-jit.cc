@@ -31,9 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 
-extern template class OCTAVE_API Array<octave_idx_type>;
-
 #include "jit-ir.h"
+
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
+
+extern template class OCTAVE_API Array<idx_vector>;
+extern template class OCTAVE_API Array<octave_idx_type>;
 
 NO_INSTANTIATE_ARRAY_SORT (jit_function);
 

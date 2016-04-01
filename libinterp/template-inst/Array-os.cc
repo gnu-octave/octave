@@ -29,10 +29,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 
-extern template class OCTAVE_API Array<bool>;
-extern template class OCTAVE_API Array<octave_idx_type>;
-
 #include "oct-stream.h"
+
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
+
+extern template class OCTAVE_API Array<bool>;
+extern template class OCTAVE_API Array<idx_vector>;
+extern template class OCTAVE_API Array<octave_idx_type>;
 
 typedef scanf_format_elt* scanf_format_elt_ptr;
 typedef printf_format_elt* printf_format_elt_ptr;

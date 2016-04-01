@@ -45,6 +45,14 @@ along with Octave; see the file COPYING.  If not, see
 // all the derived classes.
 
 template <class T>
+typename Array<T>::ArrayRep *
+Array<T>::nil_rep (void)
+{
+  static ArrayRep nr;
+  return &nr;
+}
+
+template <class T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   : dimensions (dv), rep (a.rep),
     slice_data (a.slice_data), slice_len (a.slice_len)

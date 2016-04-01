@@ -30,9 +30,25 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.cc"
 
 #include "ov.h"
+#include "ov-classdef.h"
 
 #include "oct-sort.cc"
 
-NO_INSTANTIATE_ARRAY_SORT (octave_value);
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
 
+extern template class OCTAVE_API Array<Complex>;
+extern template class OCTAVE_API Array<FloatComplex>;
+extern template class OCTAVE_API Array<bool>;
+extern template class OCTAVE_API Array<char>;
+extern template class OCTAVE_API Array<double>;
+extern template class OCTAVE_API Array<float>;
+extern template class OCTAVE_API Array<idx_vector>;
+extern template class OCTAVE_API Array<octave_idx_type>;
+extern template class OCTAVE_API Array<std::string>;
+
+NO_INSTANTIATE_ARRAY_SORT (octave_value);
 INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
+
+NO_INSTANTIATE_ARRAY_SORT (cdef_object);
+INSTANTIATE_ARRAY (cdef_object, OCTINTERP_API);

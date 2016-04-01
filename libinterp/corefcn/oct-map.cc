@@ -33,6 +33,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "utils.h"
 
+octave_fields::fields_rep *
+octave_fields::nil_rep (void)
+{
+  static fields_rep nr;
+  return &nr;
+}
+
 octave_fields::octave_fields (const string_vector& fields)
   : rep (new fields_rep)
 {

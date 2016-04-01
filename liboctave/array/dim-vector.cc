@@ -29,6 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 
+octave_idx_type *
+dim_vector::nil_rep (void)
+{
+  static dim_vector zv (0, 0);
+  return zv.rep;
+}
+
 // The maximum allowed value for a dimension extent. This will normally be a
 // tiny bit off the maximum value of octave_idx_type.
 // Currently 1 is subtracted to allow safe conversion of any 2D Array into

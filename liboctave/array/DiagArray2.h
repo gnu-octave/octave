@@ -112,11 +112,7 @@ public:
     return (r == c) ? Array<T>::elem (r) : T (0);
   }
 
-  T& elem (octave_idx_type r, octave_idx_type c)
-  {
-    static T zero (0);
-    return (r == c) ? Array<T>::elem (r) : zero;
-  }
+  T& elem (octave_idx_type r, octave_idx_type c);
 
   T dgelem (octave_idx_type i) const
   { return Array<T>::elem (i); }
@@ -138,11 +134,7 @@ public:
 #endif
   }
 
-  T& checkelem (octave_idx_type r, octave_idx_type c)
-  {
-    static T zero (0);
-    return check_idx (r, c) ? elem (r, c) : zero;
-  }
+  T& checkelem (octave_idx_type r, octave_idx_type c);
 
   T& operator () (octave_idx_type r, octave_idx_type c)
   {

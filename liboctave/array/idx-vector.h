@@ -431,19 +431,10 @@ private:
 
   // The shared empty vector representation (for fast default
   // constructor).
-  static idx_vector_rep *nil_rep (void)
-  {
-    static idx_vector_rep ivr;
-    return &ivr;
-  }
+  static idx_vector_rep *nil_rep (void);
 
   // The shared empty vector representation with the error flag set.
-  static idx_vector_rep *err_rep (void)
-  {
-    static idx_vector_rep ivr;
-    ivr.err = true;
-    return &ivr;
-  }
+  static idx_vector_rep *err_rep (void);
 
   // If there was an error in constructing the rep, replace it with
   // empty vector for safety.

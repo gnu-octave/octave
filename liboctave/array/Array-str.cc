@@ -30,7 +30,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array.cc"
+
 #include "oct-sort.cc"
+
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
+
+extern template class OCTAVE_API Array<idx_vector>;
+extern template class OCTAVE_API Array<octave_idx_type>;
 
 template class OCTAVE_API octave_sort<std::string>;
 

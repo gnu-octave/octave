@@ -2146,8 +2146,10 @@ new matrices.  For example:\n\
 
 /*
 ## Test concatenation with all zero matrices
-%!assert (horzcat ("", 65*ones (1,10)), "AAAAAAAAAA")
-%!assert (horzcat (65*ones (1,10), ""), "AAAAAAAAAA")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (horzcat ("", 65*ones (1,10)), "AAAAAAAAAA");
+%! assert (horzcat (65*ones (1,10), ""), "AAAAAAAAAA");
 
 %!assert (class (horzcat (int64 (1), int64 (1))), "int64")
 %!assert (class (horzcat (int64 (1), int32 (1))), "int64")
@@ -2161,7 +2163,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (int64 (1), double (1))), "int64")
 %!assert (class (horzcat (int64 (1), cell (1))), "cell")
 %!assert (class (horzcat (int64 (1), true)), "int64")
-%!assert (class (horzcat (int64 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (int64 (1), "a")), "char");
 
 %!assert (class (horzcat (int32 (1), int64 (1))), "int32")
 %!assert (class (horzcat (int32 (1), int32 (1))), "int32")
@@ -2175,7 +2179,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (int32 (1), double (1))), "int32")
 %!assert (class (horzcat (int32 (1), cell (1))), "cell")
 %!assert (class (horzcat (int32 (1), true)), "int32")
-%!assert (class (horzcat (int32 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (int32 (1), "a")), "char");
 
 %!assert (class (horzcat (int16 (1), int64 (1))), "int16")
 %!assert (class (horzcat (int16 (1), int32 (1))), "int16")
@@ -2189,7 +2195,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (int16 (1), double (1))), "int16")
 %!assert (class (horzcat (int16 (1), cell (1))), "cell")
 %!assert (class (horzcat (int16 (1), true)), "int16")
-%!assert (class (horzcat (int16 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (int16 (1), "a")), "char");
 
 %!assert (class (horzcat (int8 (1), int64 (1))), "int8")
 %!assert (class (horzcat (int8 (1), int32 (1))), "int8")
@@ -2203,7 +2211,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (int8 (1), double (1))), "int8")
 %!assert (class (horzcat (int8 (1), cell (1))), "cell")
 %!assert (class (horzcat (int8 (1), true)), "int8")
-%!assert (class (horzcat (int8 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (int8 (1), "a")), "char");
 
 %!assert (class (horzcat (uint64 (1), int64 (1))), "uint64")
 %!assert (class (horzcat (uint64 (1), int32 (1))), "uint64")
@@ -2217,7 +2227,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (uint64 (1), double (1))), "uint64")
 %!assert (class (horzcat (uint64 (1), cell (1))), "cell")
 %!assert (class (horzcat (uint64 (1), true)), "uint64")
-%!assert (class (horzcat (uint64 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (uint64 (1), "a")), "char");
 
 %!assert (class (horzcat (uint32 (1), int64 (1))), "uint32")
 %!assert (class (horzcat (uint32 (1), int32 (1))), "uint32")
@@ -2231,7 +2243,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (uint32 (1), double (1))), "uint32")
 %!assert (class (horzcat (uint32 (1), cell (1))), "cell")
 %!assert (class (horzcat (uint32 (1), true)), "uint32")
-%!assert (class (horzcat (uint32 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (uint32 (1), "a")), "char");
 
 %!assert (class (horzcat (uint16 (1), int64 (1))), "uint16")
 %!assert (class (horzcat (uint16 (1), int32 (1))), "uint16")
@@ -2245,7 +2259,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (uint16 (1), double (1))), "uint16")
 %!assert (class (horzcat (uint16 (1), cell (1))), "cell")
 %!assert (class (horzcat (uint16 (1), true)), "uint16")
-%!assert (class (horzcat (uint16 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (uint16 (1), "a")), "char");
 
 %!assert (class (horzcat (uint8 (1), int64 (1))), "uint8")
 %!assert (class (horzcat (uint8 (1), int32 (1))), "uint8")
@@ -2259,7 +2275,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (uint8 (1), double (1))), "uint8")
 %!assert (class (horzcat (uint8 (1), cell (1))), "cell")
 %!assert (class (horzcat (uint8 (1), true)), "uint8")
-%!assert (class (horzcat (uint8 (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (uint8 (1), "a")), "char");
 
 %!assert (class (horzcat (single (1), int64 (1))), "int64")
 %!assert (class (horzcat (single (1), int32 (1))), "int32")
@@ -2273,7 +2291,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (single (1), double (1))), "single")
 %!assert (class (horzcat (single (1), cell (1))), "cell")
 %!assert (class (horzcat (single (1), true)), "single")
-%!assert (class (horzcat (single (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (single (1), "a")), "char");
 
 %!assert (class (horzcat (double (1), int64 (1))), "int64")
 %!assert (class (horzcat (double (1), int32 (1))), "int32")
@@ -2287,7 +2307,9 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (double (1), double (1))), "double")
 %!assert (class (horzcat (double (1), cell (1))), "cell")
 %!assert (class (horzcat (double (1), true)), "double")
-%!assert (class (horzcat (double (1), "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (double (1), "a")), "char");
 
 %!assert (class (horzcat (cell (1), int64 (1))), "cell")
 %!assert (class (horzcat (cell (1), int32 (1))), "cell")
@@ -2315,21 +2337,25 @@ new matrices.  For example:\n\
 %!assert (class (horzcat (true, double (1))), "double")
 %!assert (class (horzcat (true, cell (1))), "cell")
 %!assert (class (horzcat (true, true)), "logical")
-%!assert (class (horzcat (true, "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat (true, "a")), "char");
 
-%!assert (class (horzcat ("a", int64 (1))), "char")
-%!assert (class (horzcat ("a", int32 (1))), "char")
-%!assert (class (horzcat ("a", int16 (1))), "char")
-%!assert (class (horzcat ("a", int8 (1))), "char")
-%!assert (class (horzcat ("a", int64 (1))), "char")
-%!assert (class (horzcat ("a", int32 (1))), "char")
-%!assert (class (horzcat ("a", int16 (1))), "char")
-%!assert (class (horzcat ("a", int8 (1))), "char")
-%!assert (class (horzcat ("a", single (1))), "char")
-%!assert (class (horzcat ("a", double (1))), "char")
-%!assert (class (horzcat ("a", cell (1))), "cell")
-%!assert (class (horzcat ("a", true)), "char")
-%!assert (class (horzcat ("a", "a")), "char")
+%!test
+%! warning ("off", "Octave:num-to-str", "local");
+%! assert (class (horzcat ("a", int64 (1))), "char");
+%! assert (class (horzcat ("a", int32 (1))), "char");
+%! assert (class (horzcat ("a", int16 (1))), "char");
+%! assert (class (horzcat ("a", int8 (1))), "char");
+%! assert (class (horzcat ("a", int64 (1))), "char");
+%! assert (class (horzcat ("a", int32 (1))), "char");
+%! assert (class (horzcat ("a", int16 (1))), "char");
+%! assert (class (horzcat ("a", int8 (1))), "char");
+%! assert (class (horzcat ("a", single (1))), "char");
+%! assert (class (horzcat ("a", double (1))), "char");
+%! assert (class (horzcat ("a", cell (1))), "cell");
+%! assert (class (horzcat ("a", true)), "char");
+%! assert (class (horzcat ("a", "a")), "char");
 
 %!assert (class (horzcat (cell (1), struct ("foo", "bar"))), "cell")
 

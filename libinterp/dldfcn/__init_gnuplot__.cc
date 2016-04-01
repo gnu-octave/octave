@@ -1,4 +1,4 @@
-/*
+/*, , 
 
 Copyright (C) 2007-2015 John W. Eaton
 
@@ -227,3 +227,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
+/*
+## No test needed for internal helper function.
+%!assert (1)
+*/

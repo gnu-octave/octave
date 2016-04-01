@@ -726,6 +726,7 @@ The original variable value is restored when exiting the function.\n\
 /*
 %!test
 %! x = 0:10;
+%! warning ("off", "Octave:deprecated-function", "local");
 %! save = allow_noninteger_range_as_index ();
 %! warn_state = warning ("query", "Octave:noninteger-range-as-index");
 %! unwind_protect

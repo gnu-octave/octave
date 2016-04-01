@@ -258,6 +258,7 @@ Mathematics, Manchester, England, January 1999.\n\
 
 ## The following two tests are from the reference in the docstring above.
 %!test
+%! warning ("off", "Octave:sqrtm:SingularMatrix", "local");
 %! x = [0 1; 0 0];
 %! assert (any (isnan (sqrtm (x))(:)));
 

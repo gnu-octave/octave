@@ -1,6 +1,5 @@
 /*
 
-
 Copyright (C) 2007-2015 Shai Ayal
 Copyright (C) 2014-2015 Andreas Weber
 
@@ -2439,3 +2438,8 @@ Undocumented internal function.\n\
   err_disabled_feature ("__init_fltk__", "OpenGL and FLTK");
 #endif
 }
+
+/*
+## No test needed for internal helper function.
+%!assert (1)
+*/

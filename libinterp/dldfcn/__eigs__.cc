@@ -561,3 +561,8 @@ Undocumented internal function.\n\
   err_disabled_feature ("eigs", "ARPACK");
 #endif
 }
+
+/*
+## No test needed for internal helper function.
+%!assert (1)
+*/

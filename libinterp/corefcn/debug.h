@@ -56,7 +56,7 @@ private:
 
 public:
 
-  // mapping from (arbitrary index?? FIXME) to line number of breakpoint
+  // mapping from (FIXME: arbitrary index??) to line number of breakpoint
   typedef std::map<int, int> intmap;
 
   typedef intmap::const_iterator const_intmap_iterator;

@@ -380,7 +380,7 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
       // the first working element of each row (Ufirst) are updated.  Also the
       // arrays working as lists cols_list and rows_list are filled with
       // indices pointing to Ufirst and Lfirst respectively.
-      // TODO: Maybe the -1 indicating in Ufirst and Lfirst, that no elements
+      // FIXME: Maybe the -1 indicating in Ufirst and Lfirst, that no elements
       // have to be considered in a certain column or row in next iteration,
       // can be removed.  It feels safer to me using such an indicator.
       if (k < (n - 1))

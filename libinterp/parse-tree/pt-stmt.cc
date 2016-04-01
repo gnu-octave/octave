@@ -188,7 +188,7 @@ tree_statement::accept (tree_walker& tw)
 }
 
 // Create a "breakpoint" tree-walker, and get it to "walk" this statement list
-// (TODO:  What does that do???)
+// (FIXME: What does that do???)
 int
 tree_statement_list::set_breakpoint (int line, const std::string& condition)
 {
@@ -252,7 +252,7 @@ tree_statement_list::breakpoints_and_conds (void)
 // Add breakpoints to  file  at multiple lines (the second arguments of  line),
 // to stop only if  condition  is true.
 // Updates GUI via  octave_link::update_breakpoint.
-// TODO COME BACK TO ME
+// FIXME: COME BACK TO ME.
 bp_table::intmap
 tree_statement_list::add_breakpoint (const std::string& file,
                                      const bp_table::intmap& line,

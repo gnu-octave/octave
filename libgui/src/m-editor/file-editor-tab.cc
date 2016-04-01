@@ -335,7 +335,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
   QString cond;
   bp_info info (_file_name, linenr+1); // Get function name & dir from filename.
 
-  // Search for previous condition.  FIXME -- is there a more direct way?
+  // Search for previous condition.  FIXME: is there a more direct way?
   if (_edit_area->markersAtLine (linenr) & (1 << marker::cond_break))
     {
       emit report_marker_linenr (_bp_lines, _bp_conditions);
@@ -350,8 +350,8 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
 
   // If text selected by the mouse, default to that instead
   // If both present, use the OR of them, to avoid accidental overwriting
-  // FIXME If both are present, show old condition unselected and
-  //       the selection (in edit area) selected (in the dialog).
+  // FIXME: If both are present, show old condition unselected and
+  //        the selection (in edit area) selected (in the dialog).
   if (_edit_area->hasSelectedText ())
     {
       if (cond == "")
@@ -1277,7 +1277,7 @@ file_editor_tab::show_auto_completion (const QWidget *ID)
 void
 file_editor_tab::do_indent_selected_text (bool indent)
 {
-  // TODO
+  // FIXME:
   _edit_area->beginUndoAction ();
 
   if (_edit_area->hasSelectedText ())
@@ -1555,7 +1555,7 @@ file_editor_tab::load_file (const QString& fileName)
 
   update_eol_indicator ();
 
-  // TODO: (BREAKPOINTS) At this point it would be nice to put any set
+  // FIXME: (BREAKPOINTS) At this point it would be nice to put any set
   // breakpoints on the margin.  In order to do this, somehow the
   // "dbstatus" command needs to be accessed.  All it would require is a
   // routine that does "res = feval("dbstatus") and signals that result
@@ -1640,7 +1640,7 @@ file_editor_tab::update_eol_indicator ()
     }
 }
 
-// TODO: See patch #8016 for a general way to get Octave results from
+// FIXME: See patch #8016 for a general way to get Octave results from
 // commands processed in the background, e.g., dbstatus.
 void
 file_editor_tab::handle_octave_result (QObject *requester, QString& command,

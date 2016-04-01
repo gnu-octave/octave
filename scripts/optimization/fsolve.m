@@ -583,8 +583,8 @@ endfunction
 ## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
 ## x being a convex combination of the gauss-newton and scaled gradient.
 
-## TODO: error checks
-## TODO: handle singularity, or leave it up to mldivide?
+## FIXME: error checks
+## FIXME: handle singularity, or leave it up to mldivide?
 
 function x = __dogleg__ (r, b, d, delta)
   ## Get Gauss-Newton direction.

@@ -1473,7 +1473,7 @@ delimited_stream::refresh_buf (void)
 
   // Ensure fast peek doesn't give valid char
   if (retval == std::istream::traits_type::eof ())
-    *idx = '\0';      // FIXME - check that no TreatAsEmpty etc starts w. \0?
+    *idx = '\0';    // FIXME: check that no TreatAsEmpty etc starts w. \0?
 
   return retval;
 }
@@ -1535,7 +1535,7 @@ delimited_stream::read (char *buffer, int size, char* &prior_tell)
           else  // Reading more than the whole buf; return it in buffer
             {
               retval = buffer;
-              // FIXME -- read bufsize at a time
+              // FIXME: read bufsize at a time
               int i;
               for (i = 0; i < size && ! eof (); i++)
                 *buffer++ = get_undelim ();
@@ -2598,7 +2598,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
                        max_lookahead, buf_size);
 
   // Grow retval dynamically.  "size" is half the initial size
-  // (FIXME -- Should we start smaller if ntimes is large?)
+  // (FIXME: Should we start smaller if ntimes is large?)
   octave_idx_type size = ((ntimes < 8 && ntimes >= 0) ? ntimes : 1);
   Array<octave_idx_type> row_idx (dim_vector (1,2));
   row_idx(1) = 0;
@@ -2697,7 +2697,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   Array<octave_idx_type> ra_idx (dim_vector (1,2));
 
   // (err & 1) means "error, and no columns read this row
-  // FIXME -- This may redundant now that done_after=0 says the same
+  // FIXME: This may redundant now that done_after=0 says the same
   if (err & 1)
     done_after = out.size () + 1;
 
@@ -2825,12 +2825,12 @@ textscan::read_double (delimited_stream& is,
       int i;
 
       if (width_left)
-        width_left--;                  // Consider width of '.'
+        width_left--;                // Consider width of '.'
 
       if (precision == -1)
-        precision = 1<<30;           // FIXME Should be MAXINT
+        precision = 1<<30;           // FIXME: Should be MAXINT
 
-      if (! valid)                    // if there was nothing before '.'...
+      if (! valid)                   // if there was nothing before '.'...
         is.get ();                   // ...ch was a "peek", not "get".
 
       for (i = 0; i < precision; i++)
@@ -3031,7 +3031,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
 
               is.clear (state);
               is.seekg (pos);        // reset to position before look-ahead
-                                     // FIXME -- is.read could invalidate pos
+                                     // FIXME: is.read could invalidate pos
 
               for (int i = 0; i < treat_as_empty.numel (); i++)
                 {
@@ -3125,7 +3125,7 @@ textscan::read_until (delimited_stream& is, const Cell& delimiters,
     {                               // find sequence ending with an ending char
       std::string next;
       scan_caret (is, ends.c_str (), next);
-      retval = retval + next;   // FIXME -- could use repeated doubling of size
+      retval = retval + next;   // FIXME: could use repeated doubling of size
 
       int last = (! is.eof ()
                   ? is.get_undelim () : std::istream::traits_type::eof ());
@@ -3439,7 +3439,7 @@ textscan::scan_one (delimited_stream& is, const textscan_format_elt& fmt,
         ov.internal_rep ()->fast_elem_insert (row (0),
                                               Cell (octave_value (vv)));
 
-      // FIXME -- why does failbit get set at EOF, instead of eofbit?
+      // FIXME: why does failbit get set at EOF, instead of eofbit?
       if (! vv.empty ())
         is.clear (is.rdstate () & ~std::ios_base::failbit);
     }
@@ -3519,7 +3519,7 @@ textscan::read_format_once (delimited_stream& is,
       elem = fmt_list.next ();
       char *pos = is.tellg ();
 
-      // FIXME -- these conversions "ignore delimiters".  Should they include
+      // FIXME: these conversions "ignore delimiters".  Should they include
       // delimiters at the start of the conversion, or can those be skipped?
       if (elem->type != textscan_format_elt::literal_conversion
           // && elem->type != '[' && elem->type != '^' && elem->type != 'c'
@@ -3669,7 +3669,7 @@ textscan::parse_options (const octave_value_list& args,
             error ("%s: TreatAsEmpty must be either a string or cell array of one or two strings",
                    who.c_str ());
 
-          // FIXME Ensure none is a prefix of a later one. Sort by length?
+          // FIXME: Ensure none is a prefix of a later one.  Sort by length?
         }
       else if (param == "collectoutput")
         {

@@ -2739,7 +2739,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
           // Look for all external methods visible on octave path at the
           // time of loading of the class.
           //
-          // TODO: This is an "extension" to Matlab behavior, which only
+          // FIXME: This is an "extension" to Matlab behavior, which only
           // looks in the @-folder containing the original classdef
           // file. However, this is easier to implement it that way at
           // the moment.
@@ -2752,7 +2752,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                it != external_methods.end ();
                ++it)
             {
-              // TODO: should we issue a warning if the method is already
+              // FIXME: should we issue a warning if the method is already
               // defined in the classdef file?
 
               if (*it != class_name

@@ -382,7 +382,7 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
 // alternatively setting the path).
 // This uses a QMessageBox unlike other functions in this file,
 // because uiwidget_creator.waitcondition.wait hangs when called from
-// file_editor_tab::handle_context_menu_break_condition().  (FIXME -- why hang?)
+// file_editor_tab::handle_context_menu_break_condition().  (FIXME: why hang?)
 int
 octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
                                               const std::string& dir,

@@ -1803,7 +1803,7 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         octave_idx_type *idx, Comp comp)
 {
   // Use a sequence of binary lookups.
-  // TODO: Can this be sped up generally? The sorted merge case is dealt with
+  // FIXME: Can this be sped up generally?  The sorted merge case is dealt with
   // elsewhere.
   for (octave_idx_type j = 0; j < nvalues; j++)
     idx[j] = lookup (data, nel, values[j], comp);

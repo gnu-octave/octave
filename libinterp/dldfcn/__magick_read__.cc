@@ -349,8 +349,8 @@ read_images (std::vector<Magick::Image>& imvec,
   // the divisor is of type double.
   // uint64_t is used in expression because default 32-bit value overflows
   // when depth() is 32.
-  // TODO in the next release of GraphicsMagick, MaxRGB should be replaced
-  //      with QuantumRange since MaxRGB is already deprecated in ImageMagick.
+  // FIXME: in the next release of GraphicsMagick, MaxRGB should be replaced
+  //        with QuantumRange since MaxRGB is already deprecated in ImageMagick.
   double divisor;
   if (imvec[def_elem].depth () == 32)
     divisor = std::numeric_limits<uint32_t>::max ();

@@ -251,8 +251,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   container->setLayout (vbox_layout);
 
-  // TODO: Add right-click contextual menus for copying, pasting,
-  //       deleting files (and others).
+  // FIXME: Add right-click contextual menus for copying, pasting,
+  //        deleting files (and others).
 
   connect (_current_directory->lineEdit (), SIGNAL (returnPressed ()),
            this, SLOT (accept_directory_line_edit ()));

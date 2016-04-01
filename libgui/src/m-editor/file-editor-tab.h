@@ -174,7 +174,7 @@ signals:
   void report_marker_linenr (QIntList& lines, QStringList& conditions);
   void remove_position_via_debugger_linenr (int debugger_linenr);
   void remove_all_positions (void);
-  // TODO: The following is similar to "process_octave_code" signal.  However,
+  // FIXME: The following is similar to "process_octave_code" signal.  However,
   // currently that signal is connected to something that simply focuses a
   // window and not actually communicate with Octave.
   // void evaluate_octave_command (const QString& command);

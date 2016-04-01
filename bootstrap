@@ -944,8 +944,9 @@ AUTORECONFFLAGS="--verbose --install --force -I $m4_base $ACLOCAL_FLAGS"
 
 # Some systems (RHEL 5) are using ancient autotools, for which the
 # --no-recursive option had not been invented.  Detect that lack and
-# omit the option when it's not supported.  FIXME in 2017: remove this
-# hack when RHEL 5 autotools are updated, or when they become irrelevant.
+# omit the option when it's not supported.
+# FIXME: in 2017, remove this hack when RHEL 5 autotools are updated,
+# or when they become irrelevant.
 case $($AUTORECONF --help) in
   *--no-recursive*) AUTORECONFFLAGS="$AUTORECONFFLAGS --no-recursive";;
 esac

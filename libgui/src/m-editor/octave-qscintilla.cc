@@ -305,7 +305,7 @@ octave_qscintilla::contextmenu_run (bool)
 
 // wrappers for dbstop related context menu items
 
-// FIXME Why can't the data be sent as the argument to the function???
+// FIXME: Why can't the data be sent as the argument to the function???
 void
 octave_qscintilla::contextmenu_break_condition (bool)
 {

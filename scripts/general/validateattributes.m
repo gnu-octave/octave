@@ -242,7 +242,7 @@ function validateattributes (A, cls, attr, varargin)
   idx = 1;
   problem = false; # becomes true when one of the tests fails
   while (idx <= numel (attr))
-    ## TODO: once we use this in Octave core, it might be worthy to find
+    ## FIXME: once we use this in Octave core, it might be worthy to find
     ## which attributes are checked more often, and place them in that
     ## order inside the switch block.
     switch (tolower (attr{idx++}))

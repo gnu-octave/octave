@@ -245,12 +245,12 @@
 
 classdef inputParser < handle
   properties
-    ## TODO set input checking for this properties
+    ## FIXME: set input checking for these properties
     CaseSensitive = false;
     FunctionName  = "";
     KeepUnmatched = false;
-    # PartialMatching = true;   # TODO unimplemented
-    # StructExpand    = true;   # TODO unimplemented
+    # PartialMatching = true;   # FIXME: unimplemented
+    # StructExpand    = true;   # FIXME: unimplemented
   endproperties
 
   properties (SetAccess = protected)

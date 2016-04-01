@@ -118,7 +118,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     fun = str2func (fun, "global");
   endif
 
-  ## TODO
+  ## FIXME:
   ## displev = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");

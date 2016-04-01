@@ -743,7 +743,7 @@ function latex_standalone (opts)
       error ("print:errorclosingfile",
              "print.m: error closing file '%s'", latexfile);
     endif
-    ## TODO - should this be fixed in GL2PS?
+    ## FIXME: should this be fixed in GL2PS?
     latex = strrep (latex, "\\includegraphics{}",
                     sprintf ("\\includegraphics{%s}", graphicsfile));
   else

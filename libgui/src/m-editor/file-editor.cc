@@ -905,7 +905,7 @@ file_editor::request_remove_bookmark (bool)
   emit fetab_remove_bookmark (_tab_widget->currentWidget ());
 }
 
-// FIXME What should this do with conditional breakpoints?
+// FIXME: What should this do with conditional breakpoints?
 void
 file_editor::request_toggle_breakpoint (bool)
 {

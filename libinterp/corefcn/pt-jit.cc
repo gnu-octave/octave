@@ -2327,7 +2327,7 @@ jit_function_info::execute (const octave_value_list& ov_args,
   if (! function)
     return false;
 
-  // TODO figure out a way to delete ov_args so we avoid duplicating refcount
+  // FIXME: figure out a way to delete ov_args so we avoid duplicating refcount
   size_t nargs = ov_args.length ();
   std::vector<octave_base_value *> args (nargs);
   for (size_t i = 0; i < nargs; ++i)

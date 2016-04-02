@@ -2598,7 +2598,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 void
 octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
 {
-  octave_print_internal (os, double (d), pr_as_read_syntax);
+  octave_print_internal (os, octave_uint8 (d), pr_as_read_syntax);
 }
 
 // FIXME: write single precision versions of the printing functions.
@@ -2781,7 +2781,7 @@ octave_print_internal (std::ostream& os, const boolMatrix& bm,
                        bool pr_as_read_syntax,
                        int extra_indent)
 {
-  Matrix tmp (bm);
+  uint8NDArray tmp (bm);
   octave_print_internal (os, tmp, pr_as_read_syntax, extra_indent);
 }
 

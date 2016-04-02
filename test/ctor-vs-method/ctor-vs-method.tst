@@ -26,7 +26,7 @@
 %! d = derived ();
 %! o = other ();
 %!
-%!error method (o);
+%!error method (o)
 
 %!test
 %! ctrace = {'begin parent/method';

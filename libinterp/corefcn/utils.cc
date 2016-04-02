@@ -124,7 +124,7 @@ Return true if @var{name} is a valid variable name.\n\
 %!assert (isvarname ("foo+bar"), false)
 
 %!error isvarname ()
-%!error isvarname ("foo", "bar");
+%!error isvarname ("foo", "bar")
 */
 
 // Return TRUE if F and G are both names for the same file.

@@ -5119,7 +5119,7 @@ the security considerations that the evaluation of arbitrary code does.\n\
 %! [a,] = gcd (1,2);
 %! [a,b,] = gcd (1, 2);
 
-%!error eval ("switch = 13;");
+%!error eval ("switch = 13;")
 
 */
 
@@ -5170,7 +5170,7 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 
 /*
 
-%!error assignin ("base", "switch", "13");
+%!error assignin ("base", "switch", "13")
 
 */
 
@@ -5390,7 +5390,7 @@ s = evalc (\"t = 42\"), t\n\
 %! warning ("off", "quiet", "local");
 %! assert (evalc ("error ('foo')", "warning ('bar')"), "warning: bar\n");
 
-%!error evalc ("switch = 13;");
+%!error evalc ("switch = 13;")
 
 */
 

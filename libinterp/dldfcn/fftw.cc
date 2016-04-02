@@ -368,14 +368,14 @@ used per default.\n\
 %!   fftw ("threads", n);
 %! end_unwind_protect
 
-%!error <Invalid call to fftw> fftw ();
-%!error <Invalid call to fftw> fftw ("planner", "estimate", "measure");
-%!error fftw (3);
-%!error fftw ("invalid");
-%!error fftw ("planner", "invalid");
-%!error fftw ("planner", 2);
-%!error fftw ("dwisdom", "invalid");
-%!error fftw ("swisdom", "invalid");
-%!error fftw ("threads", "invalid");
-%!error fftw ("threads", -3);
+%!error <Invalid call to fftw> fftw ()
+%!error <Invalid call to fftw> fftw ("planner", "estimate", "measure")
+%!error fftw (3)
+%!error fftw ("invalid")
+%!error fftw ("planner", "invalid")
+%!error fftw ("planner", 2)
+%!error fftw ("dwisdom", "invalid")
+%!error fftw ("swisdom", "invalid")
+%!error fftw ("threads", "invalid")
+%!error fftw ("threads", -3)
  */

@@ -125,5 +125,5 @@ endfunction
 %!error wavread ("foo.wav", 2, 3, 4)
 %!error wavread ("foo.wav", "foo")
 %!error wavread ("foo.wav", -1)
-%!error wavread ("foo.wav", [1, Inf], "foo");
+%!error wavread ("foo.wav", [1, Inf], "foo")
 

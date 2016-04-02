@@ -87,5 +87,5 @@ endfunction
 %!error hanning (0.5)
 %!error hanning (-1)
 %!error hanning (ones (1,4))
-%!error hanning (1, "invalid");
+%!error hanning (1, "invalid")
 

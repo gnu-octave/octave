@@ -156,9 +156,9 @@ endfunction
 ## Test tolerance
 %!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]), ...
 %!        [(2000 - 4j); (2000 + 4j)], 100*eps(200))
-%!error <could not pair> cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j], 0);
+%!error <could not pair> cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j], 0)
 
-%!error <could not pair> cplxpair ([2e6 + j; 2e6 - j; 1e-9 * (1 + j); 1e-9 * (1 - 2j)]);
+%!error <could not pair> cplxpair ([2e6 + j; 2e6 - j; 1e-9 * (1 + j); 1e-9 * (1 - 2j)])
 
 ## Test input validation
 %!error cplxpair ()

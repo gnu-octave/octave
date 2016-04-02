@@ -831,7 +831,7 @@ and 16.15), Dover, 1965.\n\
 %!error ellipj (1)
 %!error ellipj (1,2,3,4)
 %!warning <required value 0 <= M <= 1> ellipj (1,2);
-## FIXME: errors commented out untill lasterr() truly returns the last error.
+## FIXME: errors commented out until lasterr() truly returns the last error.
 %!#error <M must be a scalar or matrix> ellipj (1, "1")
 %!#error <U must be a scalar or matrix> ellipj ("1", 1)
 %!#error <U must be a scalar or matrix> ellipj ({1}, 1)

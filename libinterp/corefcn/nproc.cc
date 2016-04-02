@@ -95,5 +95,5 @@ same as @code{current}, but overridable through the\n\
 %!   endif
 %! end_unwind_protect
 
-%!error nproc ("no_valid_option");
+%!error nproc ("no_valid_option")
 */

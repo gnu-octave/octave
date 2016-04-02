@@ -50,8 +50,8 @@ For example:
 
 @example
 @group
-%!test error ("this test fails!");
-%!test "test doesn't fail. it doesn't generate an error";
+%!test error ("this test fails!")
+%!test "test doesn't fail.  it doesn't generate an error"
 @end group
 @end example
 
@@ -99,8 +99,8 @@ absolutely or relatively.  For example, the following all succeed:
 
 @example
 @group
-%!test assert (1+eps, 1, 2*eps)          # absolute error
-%!test assert (100+100*eps, 100, -2*eps) # relative error
+%!test assert (1+eps, 1, 2*eps)           # absolute error
+%!test assert (100+100*eps, 100, -2*eps)  # relative error
 @end group
 @end example
 
@@ -225,13 +225,13 @@ is correct using an optional regular expression @code{<pattern>}.
 For example:
 
 @example
-%!error <passes!> error ("this test passes!");
+%!error <passes!> error ("this test passes!")
 @end example
 
 If the code doesn't generate an error, the test fails.  For example:
 
 @example
-%!error "this is an error because it succeeds.";
+%!error "this is an error because it succeeds."
 @end example
 
 @noindent
@@ -239,7 +239,7 @@ produces
 
 @example
 @group
-  ***** error "this is an error because it succeeds.";
+  ***** error "this is an error because it succeeds."
 !!!!! test failed: no error
 @end group
 @end example
@@ -291,7 +291,7 @@ in the log file but not executed.  For example:
 
 @noindent
 The following trivial code snippet provides examples for the use of
-fail, assert, error and xtest:
+fail, assert, error, and xtest:
 
 @example
 @group
@@ -363,7 +363,34 @@ close a function definition
 
 @item %!assert (x, y, tol)
 shorthand for @code{%!test assert (x, y, tol)}
+
+@item %!fail (CODE, PATTERN)
+shorthand for @code{%!test fail (CODE, PATTERN)}
+
 @end table
+
+When coding tests the Octave convention is that lines that begin with a block
+type do not have a semicolon at the end.  Any code that is within a block,
+however, is normal Octave code and usually will have a trailing semicolon.
+For example,
+
+@example
+@group
+## bare block instantiation
+%!assert (sin (0), 0)
+@end group
+@end example
+
+@noindent
+but
+
+@example
+@group
+## test block with normal Octave code 
+%!test
+%! assert (sin (0), 0);
+@end group
+@end example
 
 You can also create test scripts for built-in functions and your own C++
 functions.  To do so, put a file with the bare function name (no .m

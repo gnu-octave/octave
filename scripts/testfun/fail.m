@@ -142,9 +142,8 @@ endfunction
 %!fail ("[1,2]*[2,3]", "nonconformant")
 %!fail ("fail ('[1,2]*[2;3]', 'nonconformant')", "expected error <nonconformant> but got none")
 %!fail ("fail ('[1,2]*[2,3]', 'usage:')", "expected error <usage:>\nbut got.*nonconformant")
-%!fail ("warning ('test warning')", "warning", "test warning");
-
-#%!fail ("warning ('next test')",'warning','next test');  # only allowed one warning test?!?
+%!fail ("warning ('test warning')", "warning", "test warning")
+%!fail ("warning ('next test')", 'warning', 'next test')
 
 ## Test that fail() itself will generate an error
 %!error <expected error> fail ("1")

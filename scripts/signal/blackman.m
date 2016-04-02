@@ -89,5 +89,5 @@ endfunction
 %!error blackman (0.5)
 %!error blackman (-1)
 %!error blackman (ones (1,4))
-%!error blackman (1, "invalid");
+%!error blackman (1, "invalid")
 

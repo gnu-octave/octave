@@ -520,8 +520,8 @@ gcd ([15, 9], [20, 18])\n\
 %! assert (abs (z), sqrt (2));
 %! assert (abs (sum (u.*w)), sqrt (2));
 
-%!error <all values must be integers> gcd (1/2, 2);
-%!error <all complex parts must be integers> gcd (e + i*pi, 1);
+%!error <all values must be integers> gcd (1/2, 2)
+%!error <all complex parts must be integers> gcd (e + i*pi, 1)
 
 %!error gcd ()
 

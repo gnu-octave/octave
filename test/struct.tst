@@ -26,13 +26,13 @@
 %! c = fieldnames (s.a);
 %! assert (iscell (c) && strcmp (c{1}, "b"));
 
-%!error <Invalid call to fieldnames> fieldnames ();
+%!error <Invalid call to fieldnames> fieldnames ()
 
 %!test
 %! s.a = 1;
 %! fail ("fieldnames (s, 1)", "Invalid call to fieldnames");
 
-%!error fieldnames (1);
+%!error fieldnames (1)
 
 %!test
 %! s.aaa = 1;
@@ -44,7 +44,7 @@
 %! s.a = 2;
 %! assert (!(isfield (s, "b")));
 
-%!error <Invalid call to isfield> isfield ();
+%!error <Invalid call to isfield> isfield ()
 
 %!test
 %! s.aaa = 1;
@@ -74,7 +74,7 @@
 %! s.a.b = 1;
 %! assert (isstruct (s.a));
 
-%!error <Invalid call to isstruct> isstruct ();
+%!error <Invalid call to isstruct> isstruct ()
 
 %!test
 %! s.a = 1;

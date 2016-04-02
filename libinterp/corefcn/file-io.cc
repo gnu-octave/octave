@@ -1718,7 +1718,7 @@ as the name of the function when reporting errors.\n\
 %! assert (c, {[1;4], 2, 3});
 %! assert (u, {[1;4], 2, 3});
 
-%!error <Read error in field 2 of row 2> textscan ("1 2 3\n4 s 6", "%f %f %f", "ReturnOnError", 0);
+%!error <Read error in field 2 of row 2> textscan ("1 2 3\n4 s 6", "%f %f %f", "ReturnOnError", 0)
 
 %!test
 %! ## Check ReturnOnError
@@ -1757,8 +1757,8 @@ as the name of the function when reporting errors.\n\
 %!error <must be a string> textscan ("Hello World", 2)
 #%!error <cannot provide position information> [C, pos] = textscan ("Hello World")
 %!error <at most one character or> textscan ("Hello World", '%s', 'EndOfLine', 3)
-%!error <'%z' is not a valid format specifier> textscan ("1.0", "%z");
-%!error <no valid format conversion specifiers> textscan ("1.0", "foo");
+%!error <'%z' is not a valid format specifier> textscan ("1.0", "%z")
+%!error <no valid format conversion specifiers> textscan ("1.0", "foo")
 
 ## Test incomplete first data line
 %! R = textscan (['Empty1' char(10)], 'Empty%d %f');

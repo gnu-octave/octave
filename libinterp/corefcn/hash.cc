@@ -287,14 +287,14 @@ hash (\"md5\", fileread (file));\n\
 %! unlink (tfile);
 
 ## Test bad function calls
-%!error hash ();
-%!error hash ("");
-%!error hash ("", "");
-%!error hash ("", "", "");
-%!error hash (1, "");
-%!error hash ([1, 0; 0, 1], "");
-%!error hash ("unknown", "");
-%!error hash ("md5");
-%!error hash ("sha1");
-%!error hash ("sha512");
+%!error hash ()
+%!error hash ("")
+%!error hash ("", "")
+%!error hash ("", "", "")
+%!error hash (1, "")
+%!error hash ([1, 0; 0, 1], "")
+%!error hash ("unknown", "")
+%!error hash ("md5")
+%!error hash ("sha1")
+%!error hash ("sha512")
 */

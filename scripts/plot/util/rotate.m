@@ -175,14 +175,14 @@ endfunction
 %! o3 = text (0, 0, "foobar");
 %!error rotate ()
 %!error rotate (o1)
-%!error rotate (o1, [0,0,0]);
-%!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90);
-%!error <invalid direction> rotate (o1, "foo", 90);
-%!error <invalid rotation angle> rotate (o1, [0,0,0], "foo");
-%!error <invalid origin> rotate (o1, [0,0,0], 90, "foo");
-%!error rotate (o1, [0,0,0], 90, [0,0,0], 1);
-%!error <H must be an array of one or more graphics handles> rotate (NaN, [0,0,0], 90);
-%!error <expecting image, line, patch, or surface objects> rotate (o3, [0,0,0], 90);
+%!error rotate (o1, [0,0,0])
+%!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90)
+%!error <invalid direction> rotate (o1, "foo", 90)
+%!error <invalid rotation angle> rotate (o1, [0,0,0], "foo")
+%!error <invalid origin> rotate (o1, [0,0,0], 90, "foo")
+%!error rotate (o1, [0,0,0], 90, [0,0,0], 1)
+%!error <H must be an array of one or more graphics handles> rotate (NaN, [0,0,0], 90)
+%!error <expecting image, line, patch, or surface objects> rotate (o3, [0,0,0], 90)
 %!test
 %! close (h1);
 %! close (h2);

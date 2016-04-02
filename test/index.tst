@@ -216,10 +216,10 @@
 %!assert (d(2), 0)
 %!assert (dd(2), 0)
 %!assert (dd(6,1), 0)
-%!error d(6,6);
-%!error dd(6,6);
-%!error d(3,6);
-%!error dd(3,6);
+%!error d(6,6)
+%!error dd(6,6)
+%!error d(3,6)
+%!error dd(3,6)
 
 ## bug 31287
 %!test
@@ -410,7 +410,7 @@
 %!shared x, y
 %! y = ones (2, 2);
 %! x = ones (2, 2);
-%!error x(1, 1, []) = [];
+%!error x(1, 1, []) = []
 
 %!shared x, y
 %! y = ones (2, 2);

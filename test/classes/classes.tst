@@ -240,13 +240,13 @@
 
 %% Test overloaded mpower (^) for the Snork class
 %!test  s = s1 ^ 3;   assert (isa (s, 'Snork') && isequal (s.gick, x1 ^ 3));
-%!error <mpower Snork!!!>  s = s1 ^ s1;
-%!error <mpower Snork!!!>  s = 20 ^ s1;
+%!error <mpower Snork!!!>  s = s1 ^ s1
+%!error <mpower Snork!!!>  s = 20 ^ s1
 
 %% Test overloaded power (.^) for the Snork class
 %!test  s = s1 .^ 2;   assert (isa (s, 'Snork') && isequal (s.gick, x1 .^ 2));
-%!error <power Snork!!!>  s = s1 .^ s1;
-%!error <power Snork!!!>  s = 20 .^ s1;
+%!error <power Snork!!!>  s = s1 .^ s1
+%!error <power Snork!!!>  s = 20 .^ s1
 
 %% Test overloaded rdivide (./) for the Snork class
 %!test  s = s1 ./ s2;  assert (isa (s, 'Snork') && isequal (s.gick, x1 ./ x2));
@@ -331,8 +331,8 @@
 %!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
 %!test x3 = [x2; [51 x1]];
 %!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
-%!error <dimension mismatch> x4 = [x1, x3];
-%!error <dimension mismatch> x4 = [x1; x3];
+%!error <dimension mismatch> x4 = [x1, x3]
+%!error <dimension mismatch> x4 = [x1; x3]
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %% Testing precedence %%
@@ -351,7 +351,7 @@
 %!assert (isequal (tattack (A, B), 'CPrecedenceTester2'))
 %!assert (isequal (tattack (B, A), 'CPrecedenceTester2'))
 %% Trying to change to CPrecendenceTester < Snork
-%!error D = CPrecedenceTester2 (2);
+%!error D = CPrecedenceTester2 (2)
 
 %!shared A, B
 %!test A = Snork (rand (2));
@@ -359,7 +359,7 @@
 %!assert (isequal (tattack (A, B), 'Snork'))
 %!assert (isequal (tattack (B, A), 'Snork'))
 %% Trying to change to CPrecendenceTester3 > Snork
-%!error D = CPrecedenceTester3 (1);
+%!error D = CPrecedenceTester3 (1)
 
 ##############################################
 ## Testing overridden size+numel method     ##

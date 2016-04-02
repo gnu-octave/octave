@@ -1107,7 +1107,7 @@ element-by-element and a logical array is returned.  At the top level,\n\
 %! [~, y] = try_isargout ();
 %! assert (y, -2);
 %!
-%!error [~, ~] = try_isargout ();
+%!error [~, ~] = try_isargout ()
 %!
 %% Check to see that isargout isn't sticky:
 %!test

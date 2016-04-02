@@ -583,8 +583,8 @@ gen_unaryop_tests() {
 %! assert (Is, If);
 %! assert (Js, Jf);
 %! assert (Vs, Vf);
-%!error as(0,1);
-%!error as(1,0);
+%!error as(0,1)
+%!error as(1,0)
 %!assert (find (as), find (af))
 %!test
 %! [i,j,v] = find (as);

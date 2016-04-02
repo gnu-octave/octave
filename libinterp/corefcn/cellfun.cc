@@ -706,7 +706,7 @@ v = cellfun (@@det, a); # faster\n\
 %! cellfun (@__f01, {1});
 %! assert (__cellfun_test_num_outputs__, 0);
 
-%!error x = cellfun (@__f01, {1, 2});
+%!error x = cellfun (@__f01, {1, 2})
 
 %!test
 %! assert (cellfun (@__f11, {1, 2}), [1, 2]);
@@ -1405,7 +1405,7 @@ arrayfun (@@str2num, [1234],\n\
 %! arrayfun (@__f01, {1});
 %! assert (__arrayfun_test_num_outputs__, 0);
 
-%!error x = arrayfun (@__f01, [1, 2]);
+%!error x = arrayfun (@__f01, [1, 2])
 
 %!test
 %! assert (arrayfun (@__f11, [1, 2]), [1, 2]);

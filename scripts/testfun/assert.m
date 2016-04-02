@@ -449,15 +449,15 @@ endfunction
 ## vectors
 %!assert ([1,2,3],[1,2,3])
 %!assert ([1;2;3],[1;2;3])
-%!error <Abs err 1 exceeds tol 0> assert ([2,2,3,3],[1,2,3,4]);
-%!error <Abs err 1 exceeds tol 0.5> assert ([2,2,3,3],[1,2,3,4],0.5);
-%!error <Rel err 1 exceeds tol 0.1> assert ([2,2,3,5],[1,2,3,4],-0.1);
-%!error <Abs err 1 exceeds tol 0> assert ([6;6;7;7],[5;6;7;8]);
-%!error <Abs err 1 exceeds tol 0.5> assert ([6;6;7;7],[5;6;7;8],0.5);
-%!error <Rel err .* exceeds tol 0.1> assert ([6;6;7;7],[5;6;7;8],-0.1);
-%!error <Dimensions don't match> assert ([1,2,3],[1;2;3]);
-%!error <Dimensions don't match> assert ([1,2],[1,2,3]);
-%!error <Dimensions don't match> assert ([1;2;3],[1;2]);
+%!error <Abs err 1 exceeds tol 0> assert ([2,2,3,3],[1,2,3,4])
+%!error <Abs err 1 exceeds tol 0.5> assert ([2,2,3,3],[1,2,3,4],0.5)
+%!error <Rel err 1 exceeds tol 0.1> assert ([2,2,3,5],[1,2,3,4],-0.1)
+%!error <Abs err 1 exceeds tol 0> assert ([6;6;7;7],[5;6;7;8])
+%!error <Abs err 1 exceeds tol 0.5> assert ([6;6;7;7],[5;6;7;8],0.5)
+%!error <Rel err .* exceeds tol 0.1> assert ([6;6;7;7],[5;6;7;8],-0.1)
+%!error <Dimensions don't match> assert ([1,2,3],[1;2;3])
+%!error <Dimensions don't match> assert ([1,2],[1,2,3])
+%!error <Dimensions don't match> assert ([1;2;3],[1;2])
 
 ## matrices
 %!assert ([1,2;3,4],[1,2;3,4])
@@ -481,9 +481,9 @@ endfunction
 
 ## test relative vs. absolute tolerances
 %!test  assert (0.1+eps, 0.1, 2*eps);
-%!error <Rel err 2.2204e-0?15 exceeds tol> assert (0.1+eps, 0.1, -2*eps);
+%!error <Rel err 2.2204e-0?15 exceeds tol> assert (0.1+eps, 0.1, -2*eps)
 %!test  assert (100+100*eps, 100, -2*eps);
-%!error <Abs err 2.8422e-0?14 exceeds tol> assert (100+100*eps, 100, 2*eps);
+%!error <Abs err 2.8422e-0?14 exceeds tol> assert (100+100*eps, 100, 2*eps)
 
 ## Corner case of relative tolerance with 0 divider
 %!error <Abs err 2 exceeds tol 0.1> assert (2, 0, -0.1)

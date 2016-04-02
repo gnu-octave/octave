@@ -126,6 +126,6 @@ endfunction
 %!assert (im2double ([0 -1.5 -2i], "indexed"), [0 -1.5 -2i])
 %!assert (im2double ([false true], "indexed"), [0 1])
 
-%!error <unsigned integer class> im2double (int16 ([17 8]), "indexed");
-%!error <unsigned integer class> im2double (int16 ([-7 8]), "indexed");
-%!error <must be the string "indexed"> im2double ([1 2 3], "non-indexed");
+%!error <unsigned integer class> im2double (int16 ([17 8]), "indexed")
+%!error <unsigned integer class> im2double (int16 ([-7 8]), "indexed")
+%!error <must be the string "indexed"> im2double ([1 2 3], "non-indexed")

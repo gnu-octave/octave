@@ -87,7 +87,7 @@ endfunction
 %!error <X, Y, and Z must be numeric> stem3 ({1}, 1, 1)
 %!error <X, Y, and Z must be numeric> stem3 (1, {1}, 1)
 %!error <X, Y, and Z must be numeric> stem3 (1, 1, {1})
-%!error <inconsistent sizes for X, Y, and Z> stem3 (ones (2,2), 1, 1);
-%!error <inconsistent sizes for X, Y, and Z> stem3 (1, ones (2,2), 1);
-%!error <inconsistent sizes for X, Y, and Z> stem3 (1, 1, ones (2,2));
+%!error <inconsistent sizes for X, Y, and Z> stem3 (ones (2,2), 1, 1)
+%!error <inconsistent sizes for X, Y, and Z> stem3 (1, ones (2,2), 1)
+%!error <inconsistent sizes for X, Y, and Z> stem3 (1, 1, ones (2,2))
 %!error <No value specified for property "FOO"> stem3 (1, "FOO")

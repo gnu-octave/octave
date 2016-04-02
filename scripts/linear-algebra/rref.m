@@ -126,5 +126,5 @@ endfunction
 %! [r k] = rref (a, tol);
 %! assert (rank (a, tol), rank (r, tol), 2e-8);
 
-%!error rref ();
+%!error rref ()
 

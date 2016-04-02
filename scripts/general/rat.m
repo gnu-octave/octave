@@ -162,6 +162,6 @@ endfunction
 ## bug #43374
 %!assert (eval (rat (0.75)), [0.75])
 
-%!error rat ();
-%!error rat (1, 2, 3);
+%!error rat ()
+%!error rat (1, 2, 3)
 

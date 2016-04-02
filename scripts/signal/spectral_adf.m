@@ -70,8 +70,8 @@ endfunction
 
 
 ## Test input validation
-%!error spectral_adf ();
-%!error spectral_adf (1, 2, 3, 4);
-%!error spectral_adf (1, 2);
-%!error spectral_adf (1, "invalid");
+%!error spectral_adf ()
+%!error spectral_adf (1, 2, 3, 4)
+%!error spectral_adf (1, 2)
+%!error spectral_adf (1, "invalid")
 

@@ -428,8 +428,8 @@
 
 %!assert (ischar (tempname ()))
 
-%!error <DIR must be a string> tempname (1);
-%!error <PREFIX must be a string> tempname ("foo", 1);
+%!error <DIR must be a string> tempname (1)
+%!error <PREFIX must be a string> tempname ("foo", 1)
 
 %!error <Invalid call to tempname> tempname (1, 2, 3)
 

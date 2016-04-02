@@ -87,5 +87,5 @@ endfunction
 %!error hamming (0.5)
 %!error hamming (-1)
 %!error hamming (ones (1,4))
-%!error hamming (1, "invalid");
+%!error hamming (1, "invalid")
 

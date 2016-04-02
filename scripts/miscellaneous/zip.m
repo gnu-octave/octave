@@ -73,7 +73,7 @@ function filelist = zip (zipfile, files, rootdir = ".")
   endif
 
   if (nargout > 0)
-    cmd = ["unzip -Z -1 " zipfile];
+    cmd = sprintf ("unzip -Z -1 '%s'", zipfile);
     [status, filelist] = system (cmd);
     if (status)
       error ("zip: zipinfo failed with exit status = %d", status);

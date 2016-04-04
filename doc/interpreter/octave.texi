@@ -18,6 +18,8 @@
 
 \input texinfo
 
+@documentencoding UTF-8
+
 @setfilename octave.info
 
 @include macros.texi

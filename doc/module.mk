@@ -329,6 +329,9 @@ DOC_TARGETS += \
   $(HTMLDIR_IMAGES) \
   $(HTMLDIR_CSS)
 
+## Distribute both OCTAVE_CSS and HTMLDIR_CSS so that the rules for
+## building HTMLDIR_CSS work properly.
+
 doc_EXTRA_DIST += \
   $(BUILT_OCTAVE_TEXI_SRC) \
   $(srcdir)/doc/interpreter/octave.info \
@@ -339,7 +342,8 @@ doc_EXTRA_DIST += \
   doc/interpreter/octave.pdf \
   doc/interpreter/octave.html \
   $(HTMLDIR_IMAGES) \
-  $(OCTAVE_CSS)
+  $(OCTAVE_CSS) \
+  $(HTMLDIR_CSS)
 
 # Prevent packaging of distribution unless all libraries
 # necessary to create documentation are present

@@ -68,8 +68,10 @@ public:
   ~sparse_chol_rep (void)
   {
 #ifdef HAVE_CHOLMOD
-    if (is_pd)
+    if (Lsparse)
       CHOLMOD_NAME (free_sparse) (&Lsparse, &Common);
+
+    CHOLMOD_NAME(finish) (&Common);
 #endif
   }
 
@@ -318,15 +320,15 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
           for (octave_idx_type i = 0; i < a_nr; i++)
             perms(i) = static_cast<octave_idx_type *>(Lfactor->Perm)[i];
         }
-
-      static char tmp[] = " ";
-
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      CHOLMOD_NAME(free_factor) (&Lfactor, cm);
-      CHOLMOD_NAME(finish) (cm);
-      CHOLMOD_NAME(print_common) (tmp, cm);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
     }
+
+  // NAME used to prefix statistics report from print_common
+  static char blank_name[] = " ";
+
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+  CHOLMOD_NAME(print_common) (blank_name, cm);
+  CHOLMOD_NAME(free_factor) (&Lfactor, cm);
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   return info;
 

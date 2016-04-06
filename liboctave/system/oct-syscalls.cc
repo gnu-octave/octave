@@ -233,14 +233,10 @@ octave_syscalls::pipe (int *fildes, std::string& msg)
 
   int status = -1;
 
-#if defined (HAVE_PIPE)
-  status = ::pipe (fildes);
+  status = gnulib::pipe (fildes);
 
   if (status < 0)
     msg = gnulib::strerror (errno);
-#else
-  msg = NOT_SUPPORTED ("pipe");
-#endif
 
   return status;
 }

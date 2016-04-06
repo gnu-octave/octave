@@ -4201,6 +4201,10 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
               fcn_ptr =
                 parser.classdef_object->make_meta_class (is_at_folder);
+
+              delete (parser.classdef_object);
+
+              parser.classdef_object = 0;
             }
           else if (fcn_ptr)
             {

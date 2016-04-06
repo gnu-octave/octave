@@ -121,7 +121,7 @@ public:
     return *this;
   }
 
-  ~octave_base_list (void) { }
+  virtual ~octave_base_list (void) { }
 
 private:
 

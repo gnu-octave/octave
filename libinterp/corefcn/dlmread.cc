@@ -215,7 +215,7 @@ such as text, are also replaced by the @qcode{\"emptyvalue\"}.\n\
 
       std::string tname = file_ops::tilde_expand (fname);
 
-      tname = find_data_file_in_load_path ("dlmread", fname);
+      tname = find_data_file_in_load_path ("dlmread", tname);
 
       input_file.open (tname.c_str (), std::ios::in);
 

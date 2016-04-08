@@ -3399,6 +3399,7 @@ OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
   build-aux/mk-f77-def.sh
   build-aux/mk-mxarray-h.sh
   build-aux/mk-version-h.sh
+  build-aux/mk-build-info-cc.sh
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
   build-aux/subst-default-vals.sh

@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "build-env.h"
+#include "build-info.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
@@ -1422,11 +1423,14 @@ specified option.\n\
       { "api_version", OCTAVE_API_VERSION },
       { "archlibdir", subst_octave_home (OCTAVE_ARCHLIBDIR) },
       { "bindir", subst_octave_home (OCTAVE_BINDIR) },
+      { "builddate", oct_build_date () },
+      { "buildtime", oct_build_time () },
       { "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
       { "datadir", subst_octave_home (OCTAVE_DATADIR) },
       { "datarootdir", subst_octave_home (OCTAVE_DATAROOTDIR) },
       { "exec_prefix", subst_octave_home (OCTAVE_EXEC_PREFIX) },
       { "fcnfiledir", subst_octave_home (OCTAVE_FCNFILEDIR) },
+      { "hgid", oct_hg_id () },
       { "imagedir", subst_octave_home (OCTAVE_IMAGEDIR) },
       { "includedir", subst_octave_home (OCTAVE_INCLUDEDIR) },
       { "infodir", subst_octave_home (OCTAVE_INFODIR) },
@@ -1453,6 +1457,7 @@ specified option.\n\
       { "octlibdir", subst_octave_home (OCTAVE_OCTLIBDIR) },
       { "octtestsdir", subst_octave_home (OCTAVE_OCTTESTSDIR) },
       { "prefix", subst_octave_home (OCTAVE_PREFIX) },
+      { "releasedate", OCTAVE_RELEASE_DATE },
       { "startupfiledir", subst_octave_home (OCTAVE_STARTUPFILEDIR) },
       { "version", OCTAVE_VERSION },
       { 0, octave_value () }

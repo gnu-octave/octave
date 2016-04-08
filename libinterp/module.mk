@@ -43,6 +43,8 @@ GENERATED_MAKE_BUILTINS_INCS = \
 BUILT_SOURCES += \
   $(GENERATED_MAKE_BUILTINS_INCS) \
   libinterp/build-env.cc \
+  update_hg_id \
+  libinterp/build-info.cc \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
   libinterp/corefcn/oct-errno.cc \
@@ -76,6 +78,7 @@ LIBINTERP_BUILT_DISTFILES = \
 LIBINTERP_BUILT_NODISTFILES = \
   libinterp/build-env.cc \
   libinterp/build-env-features.cc \
+  libinterp/build-info.cc \
   libinterp/corefcn/mxarray.h \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/defaults.h \
@@ -91,6 +94,7 @@ libinterp_EXTRA_DIST += \
   libinterp/DOCSTRINGS \
   libinterp/build-env.in.cc \
   libinterp/build-env-features.sh \
+  libinterp/build-info.in.cc \
   libinterp/find-defun-files.sh \
   libinterp/gendoc.pl \
   libinterp/genprops.awk \
@@ -164,6 +168,7 @@ nodist_libinterp_liboctinterp_la_SOURCES = \
   libinterp/builtins.cc \
   libinterp/build-env.cc \
   libinterp/build-env-features.cc \
+  libinterp/build-info.cc \
   libinterp/version.h
 
 libinterp_liboctinterp_la_LIBADD = \
@@ -257,6 +262,15 @@ libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libi
 
 libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
+
+update_hg_id:
+	@if [ "x$(shell cat libinterp/hg.id)" != "x$(shell hg identify --id)" ]; then \
+		hg identify --id > libinterp/hg.id; \
+	fi
+.PHONY: update_hg_id
+
+libinterp/build-info.cc: libinterp/build-info.in.cc build-aux/mk-build-info-cc.sh libinterp/hg.id | libinterp/$(octave-dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-build-info.sh)
 
 libinterp/builtins.cc: $(DEF_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \

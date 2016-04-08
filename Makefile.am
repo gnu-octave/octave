@@ -52,6 +52,7 @@ EXTRA_DIST += \
   build-aux/mk-f77-def.in.sh \
   build-aux/mk-mxarray-h.in.sh \
   build-aux/mk-version-h.in.sh \
+  build-aux/mk-build-info-cc.in.sh \
   build-aux/mk-octave-config-h.sh \
   build-aux/mk-opts.pl \
   build-aux/move-if-change \
@@ -69,6 +70,7 @@ GEN_CONFIG_SHELL = \
   build-aux/mk-f77-def.sh \
   build-aux/mk-mxarray-h.sh \
   build-aux/mk-version-h.sh \
+  build-aux/mk-build-info-cc.sh \
   build-aux/subst-config-vals.sh \
   build-aux/subst-cross-config-vals.sh \
   build-aux/subst-default-vals.sh \

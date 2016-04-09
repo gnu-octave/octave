@@ -37,6 +37,7 @@ BUILT_DISTFILES += \
   AUTHORS \
   BUGS \
   ChangeLog \
+  HG-ID \
   INSTALL.OCTAVE
 
 EXTRA_DIST += \
@@ -52,7 +53,6 @@ EXTRA_DIST += \
   build-aux/mk-f77-def.in.sh \
   build-aux/mk-mxarray-h.in.sh \
   build-aux/mk-version-h.in.sh \
-  build-aux/mk-build-info-cc.in.sh \
   build-aux/mk-octave-config-h.sh \
   build-aux/mk-opts.pl \
   build-aux/move-if-change \
@@ -70,7 +70,6 @@ GEN_CONFIG_SHELL = \
   build-aux/mk-f77-def.sh \
   build-aux/mk-mxarray-h.sh \
   build-aux/mk-version-h.sh \
-  build-aux/mk-build-info-cc.sh \
   build-aux/subst-config-vals.sh \
   build-aux/subst-cross-config-vals.sh \
   build-aux/subst-default-vals.sh \
@@ -286,6 +285,20 @@ endef
 ChangeLog:
 	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
+
+HG-ID:
+	$(AM_V_GEN)rm -f $@-t && \
+	if [ -d $(srcdir)/.hg ]; then \
+	  ( cd $(srcdir) && hg identify --id ) > $@-t && \
+	  $(simple_move_if_change_rule); \
+	elif [ ! -f $(srcdir)/HG-ID ]; then \
+	  echo "$(srcdir)/HG-ID is missing!" 1>&2; \
+	  echo "unknown" >& $@-t && mv $@-t $@; \
+	else \
+	  echo "preserving existing HG-ID file" 1>&2; \
+	  $(cp_update_rule); \
+	fi
+.PHONY: HG-ID
 
 octetc_DATA += \
   CITATION \

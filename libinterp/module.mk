@@ -43,7 +43,6 @@ GENERATED_MAKE_BUILTINS_INCS = \
 BUILT_SOURCES += \
   $(GENERATED_MAKE_BUILTINS_INCS) \
   libinterp/build-env.cc \
-  update_hg_id \
   libinterp/build-info.cc \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
@@ -111,6 +110,7 @@ octinclude_HEADERS += \
   libinterp/builtins.h \
   libinterp/builtin-defun-decls.h \
   libinterp/build-env.h \
+  libinterp/build-info.h \
   libinterp/octave.h \
   libinterp/options-usage.h \
   $(OCTAVE_VALUE_INC) \
@@ -263,14 +263,12 @@ libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libi
 libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
 
-update_hg_id:
-	@if [ "x$(shell cat libinterp/hg.id)" != "x$(shell hg identify --id)" ]; then \
-		hg identify --id > libinterp/hg.id; \
-	fi
-.PHONY: update_hg_id
-
-libinterp/build-info.cc: libinterp/build-info.in.cc build-aux/mk-build-info-cc.sh libinterp/hg.id | libinterp/$(octave-dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-build-info.sh)
+libinterp/build-info.cc: libinterp/build-info.in.cc HG-ID | libinterp/$(octave-dirstamp)
+	$(AM_V_GEN)rm -f $@-t && \
+	$(SED) \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
+	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
+	$(simple_move_if_change_rule)
 
 libinterp/builtins.cc: $(DEF_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \

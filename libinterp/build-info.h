@@ -21,14 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
-
 #include <string>
 
-OCTAVE_API std::string oct_hg_id (void);
+extern OCTAVE_API std::string octave_hg_id (void);
 
-OCTAVE_API std::string oct_build_date (void);
+extern OCTAVE_API std::string octave_build_date (void);
 
-OCTAVE_API std::string oct_build_time (void);
+extern OCTAVE_API std::string octave_build_time (void);

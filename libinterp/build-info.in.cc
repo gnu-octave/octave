@@ -21,19 +21,26 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include "build-info.h"
 
-std::string oct_hg_id (void)
+std::string
+octave_hg_id (void)
 {
   return "%OCTAVE_HG_ID%";
 }
 
-std::string oct_build_date (void)
+std::string
+octave_build_date (void)
 {
   return __DATE__;
 }
 
-std::string oct_build_time (void)
+std::string
+octave_build_time (void)
 {
   return __TIME__;
 }

@@ -1337,8 +1337,7 @@ The word specified by the remainder of the conversion specifier is skipped.\n\
 @item literals\n\
 In addition the format may contain literal character strings; these will be\n\
 skipped during reading.  If the input string does not match this literal,\n\
-the processing terminates, unless @qcode{\"ReturnOnError\"} is set to\n\
-@qcode{\"continue\"}.\n\
+the processing terminates.\n\
 @end table\n\
 \n\
 Parsed words corresponding to the first specifier are returned in the first\n\
@@ -1456,10 +1455,8 @@ string(s) in @var{value} as missing values.\n\
 \n\
 @item @qcode{\"ReturnOnError\"}\n\
 If set to numerical 1 or true, return normally as soon as an error is\n\
-encountered, such as trying to read a string using @qcode{%f}.  If set to 0\n\
-or false, return an error and no data.  If set to @qcode{\"continue\"}\n\
-(default), textscan attempts to continue reading beyond the location;\n\
-however, this may cause the parsing to get out of sync.\n\
+encountered, such as trying to read a string using @qcode{%f}.\n\
+If set to 0 or false, return an error and no data.\n\
 \n\
 @item @qcode{\"Whitespace\"}\n\
 Any character in @var{value} will be interpreted as whitespace and trimmed;\n\
@@ -1690,18 +1687,13 @@ as the name of the function when reporting errors.\n\
 %! str = "1 2 3\n4 s 6";
 %! fprintf (fid, str);
 %! fseek (fid, 0, "bof");
-%! c = textscan (fid, "%f %f %f");
-%! fseek (fid, 0, "bof");
-%! d = textscan (fid, "%f %f %f", "ReturnOnError", 1);
+%! c = textscan (fid, "%f %f %f", "ReturnOnError", 1);
 %! fseek (fid, 0, "bof");
 %! fclose (fid);
 %! unlink (f);
-%! u = textscan (str, "%f %f %f");
-%! v = textscan (str, "%f %f %f", "ReturnOnError", 1);
-%! assert (c, {[1;4], [2;NaN], [3;6]});
-%! assert (d, {[1;4], [2], [3]});
-%! assert (u, {[1;4], [2;NaN], [3;6]});
-%! assert (v, {[1;4], [2], [3]});
+%! u = textscan (str, "%f %f %f", "ReturnOnError", 1);
+%! assert (c, {[1;4], [2], [3]});
+%! assert (u, {[1;4], [2], [3]});
 
 %!test
 %! ## Check ReturnOnError
@@ -1726,14 +1718,11 @@ as the name of the function when reporting errors.\n\
 %! fid = fopen (f, "w+");
 %! fprintf (fid, "1 s 3\n4 5 6");
 %! fseek (fid, 0, "bof");
-%! c = textscan (fid, "");
-%! fseek (fid, 0, "bof");
-%! d = textscan (fid, "", "ReturnOnError", 1);
+%! c = textscan (fid, "", "ReturnOnError", 1);
 %! fseek (fid, 0, "bof");
 %! fclose (fid);
 %! unlink (f);
-%! assert (c, {[1;4], [NaN;5], [3;6]});
-%! assert (d, {1});
+%! assert (c, {1});
 
 %!test
 %! ## Check ReturnOnError with empty fields

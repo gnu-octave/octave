@@ -2459,31 +2459,15 @@ textscan_format_list::read_first_row (delimited_stream& is, textscan& ts)
           if (ds.eof ())
             break;
 
-          // If we don't continue after a conversion error, then
-          // unless this was a missing value (i.e., followed by a delimiter),
+          // Unless this was a missing value (i.e., followed by a delimiter),
           // return with an error status.
-          if (ts.return_on_error < 2)
+          ts.skip_delim (ds);
+          if (ds.no_progress ())
             {
-              ts.skip_delim (ds);
-              if (ds.no_progress ())
-                {
-                  retval = 4;
-                  break;
-                }
-              already_skipped_delim = true;
+              retval = 4;
+              break;
             }
-          else  // skip offending field
-            {
-              std::ios::iostate state = ds.rdstate ();
-              ds.clear ();          // clear to allow read pointer to advance
-
-              std::string dummy;
-              textscan_format_elt fe ("", first_line.length ());
-              ts.scan_string (ds, fe, dummy);
-
-              progress = (dummy.length ());
-              ds.setstate (state);
-            }
+          already_skipped_delim = true;
 
           val = ts.empty_value.scalar_value ();
 
@@ -2534,7 +2518,7 @@ textscan::textscan (const std::string& who_arg)
     empty_value (octave_NaN), exp_chars ("edED"),
     header_lines (0), treat_as_empty (), treat_as_empty_len (0),
     whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
-    return_on_error (2), collect_output (false),
+    return_on_error (1), collect_output (false),
     multiple_delims_as_one (false), default_exp (true),
     numeric_delim (false), lines (0)
 { }
@@ -2674,7 +2658,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
           row_idx(0) = row;
           err = read_format_once (is, fmt_list, out, row_idx, done_after);
 
-          if (err > 0 || ! is || (lines >= ntimes && ntimes > -1))
+          if ((err & ~1) > 0 || ! is || (lines >= ntimes && ntimes > -1))
             break;
         }
     }
@@ -3393,24 +3377,8 @@ textscan::scan_one (delimited_stream& is, const textscan_format_elt& fmt,
               }
         }
 
-      if (is.fail ())
-        {
-          if (! fmt.discard)
-            ov = do_cat_op (ov, empty_value, row);
-
-          // If we are continuing after errors, skip over this field
-          if (return_on_error == 2)
-            {
-              std::ios::iostate state = is.rdstate ();
-              is.clear ();          // clear to allow read pointer to advance
-
-              std::string dummy;
-              scan_string (is, fmt, dummy);
-
-              is.setstate (state);
-            }
-        }
-
+      if (is.fail () & ! fmt.discard)
+        ov = do_cat_op (ov, empty_value, row);
     }
   else
     {
@@ -3510,10 +3478,10 @@ textscan::read_format_once (delimited_stream& is,
         }
       else
         {
-          if (return_on_error < 2)
-            this_conversion_failed = true;
-
           is.clear (is.rdstate () & ~std::ios::failbit);
+
+          if (!is.eof () && ~is_delim (is.peek ()))
+            this_conversion_failed = true;
         }
 
       if (! elem->discard)
@@ -3696,10 +3664,7 @@ textscan::parse_options (const octave_value_list& args,
         }
       else if (param == "returnonerror")
         {
-          if (args(i+1).is_string () && args(i+1).string_value () == "continue")
-            return_on_error = 2;
-          else
-            return_on_error = args(i+1).xbool_value ("%s: ReturnOnError must be logical, numeric, or the string \"continue\"", who.c_str ());
+          return_on_error = args(i+1).xbool_value ("%s: ReturnOnError must be logical or numeric", who.c_str ());
         }
       else if (param == "whitespace")
         {

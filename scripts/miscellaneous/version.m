@@ -40,6 +40,9 @@
 ## @item @qcode{"-java"}
 ## for version information of the Java VM,
 ##
+## @item @qcode{"-fftw"}
+## for version information for the linked FFTW,
+##
 ## @item @qcode{"-blas"}
 ## for version information for the linked BLAS (not implemented),
 ##
@@ -64,12 +67,12 @@ function [vs, d] = version (feature)
     vs = OCTAVE_VERSION;
 
     if (nargout > 1)
-      d = __octave_config_info__.releasedate;
+      d = __octave_config_info__ ("release_date");
     end
   else
     switch (feature)
       case "-date"
-        vs = __octave_config_info__.releasedate;
+        vs = __octave_config_info__ ("release_date");
       case "-description"
         vs = "";
       case "-release"
@@ -88,6 +91,8 @@ function [vs, d] = version (feature)
         catch
           vs = "no java available";
         end_try_catch
+      case "-fftw"
+        vs = __octave_config_info__ ("fftw_version");
       case "-blas"
         vs = "";
         warning(["version: option '" feature "' not implemented"])
@@ -99,18 +104,15 @@ function [vs, d] = version (feature)
     endswitch
   endif
 
-
 endfunction
-
 
 %!assert (ischar (version ()))
 
 %!test
 %! [v, d] = version ();
 %! assert (v, OCTAVE_VERSION)
-%! assert (d, __octave_config_info__.releasedate)
+%! assert (d, __octave_config_info__ ("release_date"))
 
-%!assert (version ("-date"), __octave_config_info__.releasedate)
+%!assert (version ("-date"), __octave_config_info__ ("release_date"))
 
 %!error version (1);
-

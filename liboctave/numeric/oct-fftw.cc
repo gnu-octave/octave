@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "oct-locbuf.h"
 #include "singleton-cleanup.h"
+#include "libinterp/build-info.h"
 
 #if defined (HAVE_FFTW3_THREADS) || defined (HAVE_FFTW3F_THREADS)
 #  include "nproc.h"
@@ -1132,3 +1133,13 @@ octave_fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
 }
 
 #endif
+
+std::string
+octave_fftw_version (void)
+{
+#if defined (HAVE_FFTW)
+  return fftw_version;
+#else
+  return "none";
+#endif
+}

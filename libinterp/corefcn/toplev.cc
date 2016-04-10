@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-mappers.h"
 #include "oct-env.h"
+#include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "quit.h"
 #include "singleton-cleanup.h"
@@ -1423,13 +1424,13 @@ specified option.\n\
       { "api_version", OCTAVE_API_VERSION },
       { "archlibdir", subst_octave_home (OCTAVE_ARCHLIBDIR) },
       { "bindir", subst_octave_home (OCTAVE_BINDIR) },
-      { "build_date", octave_build_date () },
       { "build_time", octave_build_time () },
       { "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
       { "datadir", subst_octave_home (OCTAVE_DATADIR) },
       { "datarootdir", subst_octave_home (OCTAVE_DATAROOTDIR) },
       { "exec_prefix", subst_octave_home (OCTAVE_EXEC_PREFIX) },
       { "fcnfiledir", subst_octave_home (OCTAVE_FCNFILEDIR) },
+      { "fftw_version", octave_fftw_version () },
       { "hg_id", octave_hg_id () },
       { "imagedir", subst_octave_home (OCTAVE_IMAGEDIR) },
       { "includedir", subst_octave_home (OCTAVE_INCLUDEDIR) },

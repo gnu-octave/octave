@@ -33,14 +33,8 @@ octave_hg_id (void)
   return "%OCTAVE_HG_ID%";
 }
 
-std::string
-octave_build_date (void)
-{
-  return __DATE__;
-}
-
-std::string
+time_t
 octave_build_time (void)
 {
-  return __TIME__;
+  return %OCTAVE_BUILD_TIME%;
 }

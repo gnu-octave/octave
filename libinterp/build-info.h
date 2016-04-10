@@ -1,4 +1,3 @@
-// %NO_EDIT_WARNING%
 /*
 
 Copyright (C) 2016 M. Muetzel
@@ -21,10 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#include <ctime>
+
 #include <string>
 
 extern OCTAVE_API std::string octave_hg_id (void);
 
-extern OCTAVE_API std::string octave_build_date (void);
-
-extern OCTAVE_API std::string octave_build_time (void);
+extern OCTAVE_API time_t octave_build_time (void);

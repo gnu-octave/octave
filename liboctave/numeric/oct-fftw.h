@@ -364,4 +364,6 @@ private:
   octave_fftw& operator = (const octave_fftw&);
 };
 
+extern OCTAVE_API std::string octave_fftw_version (void);
+
 #endif

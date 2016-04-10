@@ -404,6 +404,33 @@ function varargout = ode23 (fun, trange, init, varargin)
 endfunction
 
 
+%!demo
+%!
+%! ## Demonstrate convergence order for ode23
+%! tol = 1e-5 ./ 10.^[0:8];
+%! for i = 1 : numel (tol)
+%!   opt = odeset ("RelTol", tol(i), "AbsTol", realmin);
+%!   [t, y] = ode23 (@(t, y) -y, [0, 1], 1, opt);
+%!   h(i) = 1 / (numel (t) - 1);
+%!   err(i) = norm (y .* exp (t) - 1, Inf);
+%! endfor
+%!
+%! ## Estimate order numerically
+%! p = diff (log (err)) ./ diff (log (h))
+%!
+%! ## Estimate order visually
+%! figure ();
+%! loglog (h, tol, "-ob",
+%!         h, err, "-b",
+%!         h, (h/h(end)) .^ 2 .* tol(end), "k--",
+%!         h, (h/h(end)) .^ 3 .* tol(end), "k-");
+%! axis tight
+%! xlabel ("h");
+%! ylabel ("err(h)");
+%! title ("Convergence plot for ode23");
+%! legend ("imposed tolerance", "ode23 (relative) error",
+%!         "order 2", "order 3", "location", "northwest");
+
 ## We are using the "Van der Pol" implementation for all tests that are done
 ## for this function.
 ## For further tests we also define a reference solution (computed at high
@@ -590,28 +617,3 @@ endfunction
 %!  opt = struct ("foo", 1);
 %!  [t, y] = ode23 (@fpol, [0 2], [2 0], opt);
 
-%!demo
-%!
-%! # Demonstrate convergence order for ode23
-%! tol = 1e-5 ./ 10.^[0:8];
-%! for ii = 1 : numel (tol)
-%!   opt = odeset ("RelTol", tol(ii), "AbsTol", realmin);
-%!   [t, y] = ode23 (@(t, y) -y, [0, 1], 1, opt);
-%!   h(ii) = 1 / (numel (t) - 1);
-%!   err(ii) = norm (y .* exp (t) - 1, inf);
-%! endfor
-%!
-%! # Estimate order numerically
-%! p = diff (log (err)) ./ diff (log (h))
-%!
-%! %! # Estimate order visually
-%! figure;
-%! loglog (h, tol, '-ob', h, err,
-%!         h, (h/h(end)) .^ 2 .* tol(end), "k--",
-%!         h, (h/h(end)) .^ 3 .* tol(end), "k-")
-%! axis tight
-%! xlabel ("h");
-%! ylabel ("err(h)");
-%! title ("Convergence plot for ode23");
-%! legend ("imposed tolerance", "ode23 (relative) error",
-%!         "order 2", "order 3");

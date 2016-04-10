@@ -48,14 +48,6 @@
 ## is possible to install a package even when it depends on another package
 ## which is not installed on the system.  @strong{Use this option with care.}
 ##
-## @item -noauto
-## The package manager will not automatically load the installed package
-## when starting Octave.  This overrides any setting within the package.
-##
-## @item -auto
-## The package manager will automatically load the installed package when
-## starting Octave.  This overrides any setting within the package.
-##
 ## @item -local
 ## A local installation (package available only to current user) is forced,
 ## even if the user has system privileges.
@@ -271,15 +263,6 @@
 ## @item rebuild
 ## Rebuild the package database from the installed directories.  This can
 ## be used in cases where the package database has been corrupted.
-## It can also take the @option{-auto} and @option{-noauto} options to allow
-## the autoloading state of a package to be changed.  For example,
-##
-## @example
-## pkg rebuild -noauto image
-## @end example
-##
-## @noindent
-## will remove the autoloading status of the image package.
 ##
 ## @end table
 ## @seealso{ver, news}
@@ -320,7 +303,6 @@ function [local_packages, global_packages] = pkg (varargin)
   endif
   files = {};
   deps = true;
-  auto = 0;
   action = "none";
   verbose = false;
   octave_forge = false;
@@ -328,10 +310,15 @@ function [local_packages, global_packages] = pkg (varargin)
     switch (varargin{i})
       case "-nodeps"
         deps = false;
+      ## TODO completely remove these warnings after some releases.
       case "-noauto"
-        auto = -1;
+        warning ("Octave:deprecated-option",
+                 ["pkg: autoload is no longer supported.  The -noauto "...
+                  "option is no longer required."]);
       case "-auto"
-        auto = 1;
+        warning ("Octave:deprecated-option",
+                 ["pkg: autoload is no longer supported.  Add a "...
+                  "'pkg load ...' command to octaverc instead."]);
       case "-verbose"
         verbose = true;
         ## Send verbose output to pager immediately.  Change setting locally.
@@ -407,7 +394,7 @@ function [local_packages, global_packages] = pkg (varargin)
           endif
         endif
 
-        install (files, deps, auto, prefix, archprefix, verbose, local_list,
+        install (files, deps, prefix, archprefix, verbose, local_list,
                  global_list, global_install);
 
       unwind_protect_cleanup
@@ -422,7 +409,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "load"
       if (isempty (files))
-        error ("pkg: load action requires at least one package, 'all', or 'auto'");
+        error ("pkg: load action requires at least one package or 'all'");
       endif
       load_packages (files, deps, local_list, global_list);
 
@@ -508,7 +495,7 @@ function [local_packages, global_packages] = pkg (varargin)
     case "rebuild"
       if (global_install)
         global_packages = rebuild (prefix, archprefix, global_list, files,
-                                   auto, verbose);
+                                   verbose);
         global_packages = save_order (global_packages);
         save (global_list, "global_packages");
         if (nargout)
@@ -516,7 +503,7 @@ function [local_packages, global_packages] = pkg (varargin)
         endif
       else
         local_packages = rebuild (prefix, archprefix, local_list, files,
-                                  auto, verbose);
+                                  verbose);
         local_packages = save_order (local_packages);
         save (local_list, "local_packages");
         if (! nargout)
@@ -571,4 +558,3 @@ function [local_packages, global_packages] = pkg (varargin)
   endswitch
 
 endfunction
-

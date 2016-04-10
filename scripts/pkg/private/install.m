@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} install (@var{files}, @var{handle_deps}, @var{autoload}, @var{prefix}, @var{archprefix}, @var{verbose}, @var{local_list}, @var{global_list}, @var{global_install})
+## @deftypefn {} {} install (@var{files}, @var{handle_deps}, @var{prefix}, @var{archprefix}, @var{verbose}, @var{local_list}, @var{global_list}, @var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function install (files, handle_deps, autoload, prefix, archprefix, verbose,
+function install (files, handle_deps, prefix, archprefix, verbose,
                   local_list, global_list, global_install)
 
   ## Check that the directory in prefix exist. If it doesn't: create it!
@@ -254,29 +254,6 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     endif
   endfor
 
-  ## If the package requested that it is autoloaded, or the installer
-  ## requested that it is, then mark the package as autoloaded.
-  str_true = {"true", "on", "yes", "1"};
-  for i = length (descriptions):-1:1
-
-    desc_autoload = false;
-    if (isfield (descriptions{i}, "autoload"))
-      a = descriptions{i}.autoload;
-      desc_autoload = ((isnumeric (a) && a > 0)
-                       || (ischar (a)
-                           && any (strcmpi (a, str_true))));
-    endif
-
-    if (autoload > 0 || (autoload == 0 && desc_autoload))
-      fclose (fopen (fullfile (descriptions{i}.dir, "packinfo",
-                               ".autoload"), "wt"));
-      descriptions{i}.autoload = 1;
-    else
-      descriptions{i}.autoload = 0;
-    endif
-
-  endfor
-
   ## Add the packages to the package list.
   try
     if (global_install)
@@ -313,25 +290,6 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
       warning ("couldn't clean up after my self: %s\n", msg);
     endif
   endfor
-
-  ## Add the newly installed packages to the path, so the user
-  ## can begin using them. Only load them if they are marked autoload.
-  if (length (descriptions) > 0)
-    idx = [];
-    for i = 1:length (descriptions)
-      if (descriptions{i}.autoload > 0)
-        nm = descriptions{i}.name;
-        for j = 1:length (installed_pkgs_lst)
-          if (strcmp (nm, installed_pkgs_lst{j}.name))
-            idx(end + 1) = j;
-            break;
-          endif
-        endfor
-      endif
-    endfor
-    load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
-                                    global_install);
-  endif
 
   ## If there is a NEWS file, mention it.
   ## Check if desc exists too because it's possible to get to this point

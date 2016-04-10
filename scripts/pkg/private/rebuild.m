@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{descriptions} =} rebuild (@var{prefix}, @var{archprefix}, @var{list}, @var{files}, @var{auto}, @var{verbose})
+## @deftypefn {} {@var{descriptions} =} rebuild (@var{prefix}, @var{archprefix}, @var{list}, @var{files}, @var{verbose})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
+function descriptions = rebuild (prefix, archprefix, list, files, verbose)
   if (isempty (files))
     [dirlist, err, msg] = readdir (prefix);
     if (err)
@@ -50,23 +50,6 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
       desc = get_description (descfile);
       desc.dir = fullfile (prefix, dirlist{k});
       desc.archprefix = fullfile (archprefix, [desc.name "-" desc.version]);
-      if (auto != 0)
-        if (exist (fullfile (desc.dir, "packinfo", ".autoload"), "file"))
-          unlink (fullfile (desc.dir, "packinfo", ".autoload"));
-        endif
-        if (auto < 0)
-          desc.autoload = 0;
-        elseif (auto > 0)
-          desc.autoload = 1;
-          fclose (fopen (fullfile (desc.dir, "packinfo", ".autoload"), "wt"));
-        endif
-      else
-        if (exist (fullfile (desc.dir, "packinfo", ".autoload"), "file"))
-          desc.autoload = 1;
-        else
-          desc.autoload = 0;
-        endif
-      endif
       descriptions{end + 1} = desc;
     elseif (verbose)
       warning ("directory %s is not a valid package", dirlist{k});

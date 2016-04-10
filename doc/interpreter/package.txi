@@ -386,13 +386,6 @@ Optional list of known problems.
 @item Url
 Optional list of homepages related to the package.
 
-@item Autoload
-Optional field that sets the default loading behavior for the package.
-If set to @code{yes}, @code{true} or @code{on}, then Octave will
-automatically load the package when starting.  Otherwise the package
-must be manually loaded with the pkg load command.  This default
-behavior can be overridden when the package is installed.
-
 @item Depends
 A list of other Octave packages that this package depends on.  This can
 include dependencies on particular versions, with a format

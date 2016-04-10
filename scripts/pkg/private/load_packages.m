@@ -36,15 +36,6 @@ function load_packages (files, handle_deps, local_list, global_list)
   ## Load all.
   if (length (files) == 1 && strcmp (files{1}, "all"))
     idx = [1:length(installed_pkgs_lst)];
-  ## Load auto.
-  elseif (length (files) == 1 && strcmp (files{1}, "auto"))
-    idx = [];
-    for i = 1:length (installed_pkgs_lst)
-      if (exist (fullfile (pdirs{i}, "packinfo", ".autoload"), "file"))
-        idx(end + 1) = i;
-      endif
-    endfor
-  ## Load package_name1 ...
   else
     idx = [];
     for i = 1:length (files)

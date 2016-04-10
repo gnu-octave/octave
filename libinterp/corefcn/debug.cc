@@ -185,6 +185,14 @@ get_user_code (const std::string& fname = "")
     {
       std::string name = fname;
 
+      if (file_ops::dir_sep_char () != '/' && name[0] == '@')
+        {
+          int len = name.length () - 1;         // -1: can't have trailing '/'
+          for (int i = 2; i < len; i++)         //  2: can't have @/method
+            if (name[i] == '/')
+              name[i] = file_ops::dir_sep_char ();
+        }
+
       size_t name_len = name.length ();
 
       if (! name.empty () && name_len > 2 && name.substr (name_len-2) == ".m")

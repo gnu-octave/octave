@@ -86,7 +86,7 @@ function [num, den] = padecoef (T, N = 1)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif 
+  endif
 
   if (! (isscalar (T) && isnumeric (T) && T >= 0))
     error ("padecoef: T must be a non-negative scalar");

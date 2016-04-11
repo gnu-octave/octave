@@ -243,7 +243,7 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
 
   T zero = T (0);
 
-  // Initialize working arrays 
+  // Initialize working arrays
   cidx_u[0] = cidx_in_u[0];
   cidx_l[0] = cidx_in_l[0];
   for (i = 0; i < n; i++)
@@ -609,7 +609,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   octave_idx_type* perm = perm_vec.fortran_vec ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, uptr, n);
 
-  // Initialize working and permutation arrays 
+  // Initialize working and permutation arrays
   cidx_l[0] = cidx_in[0];
   cidx_u[0] = cidx_in[0];
   for (i = 0; i < n; i++)

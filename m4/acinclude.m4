@@ -1518,7 +1518,7 @@ dnl      <http://en.wikipedia.org/wiki/Two%27s_complement>)
 dnl
 dnl   2. static_cast to unsigned int counterpart works like
 dnl      interpreting the signed bit pattern as unsigned (and is thus
-dnl      zero-cost). 
+dnl      zero-cost).
 dnl
 dnl   3. Signed addition and subtraction yield the same bit results
 dnl      as unsigned.  (We use casts to prevent optimization

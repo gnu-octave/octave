@@ -1,4 +1,4 @@
-/*, , 
+/*
 
 Copyright (C) 2007-2015 John W. Eaton
 

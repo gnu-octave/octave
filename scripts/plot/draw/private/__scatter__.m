@@ -370,7 +370,7 @@ function update_data (h, d)
       c = repmat (c, numel (x), 1);
     endif
   endif
-  filled = ! strcmp (get (h, "markerfacecolor"), "none"); 
+  filled = ! strcmp (get (h, "markerfacecolor"), "none");
   s = get (h, "sizedata");
   if (numel (s) == 1)
     s = repmat (s, numel (x), 1);

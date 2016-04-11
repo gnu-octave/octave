@@ -74,7 +74,7 @@ along with Octave; see the file COPYING.  If not, see
        } \
      while (0)
 #endif
-   
+
 #define FIND_SIZED_FLOAT_TYPE(VAL, BITS) \
   do \
     { \

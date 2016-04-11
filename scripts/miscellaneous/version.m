@@ -121,7 +121,7 @@ endfunction
 %!error version ("-date", "-release")
 %!error [v, d] = version ("-date")
 %!error version (1)
-%!warning <option '-blas' not implemented> version ("-blas"); 
-%!warning <option '-lapack' not implemented> version ("-lapack"); 
+%!warning <option '-blas' not implemented> version ("-blas");
+%!warning <option '-lapack' not implemented> version ("-lapack");
 %!error <invalid FEATURE> version ("-foobar")
 

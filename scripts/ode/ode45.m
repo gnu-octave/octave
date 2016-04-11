@@ -408,7 +408,7 @@ endfunction
 %! loglog (h, tol, "-ob",
 %!         h, err, "-b"
 %!         h, (h/h(end)) .^ 4 .* tol(end), "k--",
-%!         h, (h/h(end)) .^ 5 .* tol(end), "k-") 
+%!         h, (h/h(end)) .^ 5 .* tol(end), "k-")
 %! axis tight
 %! xlabel ("h");
 %! ylabel ("err(h)");

@@ -308,7 +308,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
   retval(0) = out_perm;
 
-  // print stats if spumoni > 0  
+  // print stats if spumoni > 0
   if (spumoni > 0)
     CCOLAMD_NAME (_report) (stats);
 

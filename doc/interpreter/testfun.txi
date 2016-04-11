@@ -386,7 +386,7 @@ but
 
 @example
 @group
-## test block with normal Octave code 
+## test block with normal Octave code
 %!test
 %! assert (sin (0), 0);
 @end group

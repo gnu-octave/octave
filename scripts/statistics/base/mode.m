@@ -58,10 +58,10 @@ function [m, f, c] = mode (x, dim)
   endif
 
   if (dim > nd)
-    ## Special case of mode over non-existent dimension 
+    ## Special case of mode over non-existent dimension.
     m = x;
     f = ones (size (x));
-    c = num2cell (x);    
+    c = num2cell (x);
     return;
   endif
 

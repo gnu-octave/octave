@@ -139,7 +139,7 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
     }
   else
     {
-      // Sparse: Don't use any/all trick, as full matrix could exceed memory. 
+      // Sparse: Don't use any/all trick, as full matrix could exceed memory.
       // Instead, convert to double.
       retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim, ismin);
 

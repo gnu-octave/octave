@@ -110,7 +110,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.\n\
     print_usage ();
 
   octave_value_list retval;
- 
+
   double dummy;
   cholmod_sparse Astore;
   cholmod_sparse *A = &Astore;
@@ -397,7 +397,7 @@ cleanup:
 %! assert (l, sparse (tril (true (3))));
 
 %!testif HAVE_CHOLMOD
-%! ## Bug #42587, singular matrix 
+%! ## Bug #42587, singular matrix
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);
 %! [count, h, parent, post, r] = symbfact (A);
 
@@ -407,9 +407,9 @@ cleanup:
 %! fail ("symbfact (1,2,3,4)");
 %! fail ("symbfact ({1})", "wrong type argument 'cell'");
 %! fail ("symbfact (sparse (1), {1})", "TYP must be a string");
-%! fail ("symbfact (sparse (1), 'foobar')", 'unrecognized TYP "foobar"'); 
+%! fail ("symbfact (sparse (1), 'foobar')", 'unrecognized TYP "foobar"');
 %! fail ("symbfact (sparse (1), 'sym', {'L'})", "MODE must be a string");
-%! fail ('symbfact (sparse (1), "sym", "foobar")', 'unrecognized MODE "foobar"'); 
+%! fail ('symbfact (sparse (1), "sym", "foobar")', 'unrecognized MODE "foobar"');
 %! fail ("symbfact (sparse ([1, 2; 3, 4; 5, 6]))", "S must be a square matrix");
 
 */

@@ -1431,6 +1431,7 @@ specified option.\n\
       { "exec_prefix", subst_octave_home (OCTAVE_EXEC_PREFIX) },
       { "fcnfiledir", subst_octave_home (OCTAVE_FCNFILEDIR) },
       { "fftw_version", octave_fftw_version () },
+      { "fftwf_version", octave_fftwf_version () },
       { "hg_id", octave_hg_id () },
       { "imagedir", subst_octave_home (OCTAVE_IMAGEDIR) },
       { "includedir", subst_octave_home (OCTAVE_INCLUDEDIR) },
@@ -1719,6 +1720,8 @@ specified option.\n\
 %! x = __octave_config_info__ ();
 %! assert (isstruct (x));
 %! assert (! isempty (x));
+
+%!assert (__octave_config_info__ ("fftw_version"), __octave_config_info__ ("fftwf_version"))
 
 %!error __octave_config_info__ (1, 2)
 */

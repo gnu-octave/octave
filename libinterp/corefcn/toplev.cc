@@ -52,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "build-env.h"
-#include "liboctave-build-info.h"
 #include "liboctinterp-build-info.h"
 #include "defaults.h"
 #include "defun.h"
@@ -1438,12 +1437,10 @@ specified option.\n\
       { "infofile", subst_octave_home (OCTAVE_INFOFILE) },
       { "libdir", subst_octave_home (OCTAVE_LIBDIR) },
       { "libexecdir", subst_octave_home (OCTAVE_LIBEXECDIR) },
-      // The liboctave and liboctinterp hg ids should always be the
-      // same, but it is possible for someone to accidentally have a
-      // mismatched pair so we record both separately so that we can
-      // ensure that they are consistent.
-      { "liboctave_hg_id", liboctave_hg_id () },
-      { "liboctinterp_hg_id", liboctinterp_hg_id () },
+      // Each library and executable has its own definition of the hg
+      // id.  We check for consistency when Octave starts so we just
+      // store and report one of them here.
+      { "hg_id", liboctinterp_hg_id () },
       { "localapiarchlibdir", subst_octave_home (OCTAVE_LOCALAPIARCHLIBDIR) },
       { "localapifcnfiledir", subst_octave_home (OCTAVE_LOCALAPIFCNFILEDIR) },
       { "localapioctfiledir", subst_octave_home (OCTAVE_LOCALAPIOCTFILEDIR) },

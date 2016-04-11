@@ -130,6 +130,7 @@ noinst_HEADERS += \
   libgui/src/documentation-dock-widget.h \
   libgui/src/files-dock-widget.h \
   libgui/src/history-dock-widget.h \
+  libgui/src/liboctgui-build-info.h \
   libgui/src/m-editor/file-editor-interface.h \
   libgui/src/m-editor/file-editor-tab.h \
   libgui/src/m-editor/file-editor.h \
@@ -187,7 +188,10 @@ libgui_src_libgui_src_la_SOURCES = \
   libgui/src/workspace-model.cc \
   libgui/src/workspace-view.cc
 
-nodist_libgui_src_libgui_src_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
+nodist_libgui_src_libgui_src_la_SOURCES = \
+  libgui/src/liboctgui-build-info.cc \
+  $(octave_gui_MOC) \
+  $(octave_gui_RC)
 
 libgui_src_libgui_src_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
@@ -219,12 +223,22 @@ libgui_src_libgui_src_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 noinst_LTLIBRARIES += libgui/src/libgui-src.la
 
 libgui_EXTRA_DIST += \
+  libgui/src/liboctgui-build-info.in.cc \
   libgui/src/resource.qrc \
   $(octave_gui_UI) \
   $(octave_gui_ICONS)
+
+libgui_DISTCLEANFILES += \
+  libgui/src/liboctgui-build-info.cc
 
 libgui_CLEANFILES += \
   $(octave_gui_MOC) \
   $(octave_gui_UI_H) \
   $(octave_gui_RC)
 
+libgui/src/liboctgui-build-info.cc: libgui/src/liboctgui-build-info.in.cc HG-ID | libgui/src/$(octave-dirstamp)
+	$(AM_V_GEN)rm -f $@-t && \
+	$(SED) \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
+	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
+	$(simple_move_if_change_rule)

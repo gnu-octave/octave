@@ -7,12 +7,13 @@ src_MAINTAINERCLEANFILES =
 ## Search local directories before those specified by the user.
 
 SRC_DIR_CPPFLAGS = \
+  -Iliboctave -I$(srcdir)/liboctave \
   -I$(srcdir)/liboctave/array \
   -I$(srcdir)/liboctave/cruft/misc \
   -I$(srcdir)/liboctave/numeric \
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
-  -I$(srcdir)/libinterp \
+  -Ilibinterp -I$(srcdir)/libinterp \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/src \
   -Ilibgnu -I$(srcdir)/libgnu
@@ -20,6 +21,7 @@ SRC_DIR_CPPFLAGS = \
 EXTRA_DIST += \
   src/main.in.cc \
   src/mkoctfile.in.cc \
+  src/octave-build-info.in.cc \
   src/octave-config.in.cc
 
 DISTCLEANFILES += \
@@ -37,8 +39,11 @@ OCTAVE_INTERPRETER_TARGETS += \
   $(bin_PROGRAMS) \
   $(OCTAVE_VERSION_LINKS)
 
+octinclude_HEADERS += \
+  src/octave-build-info.h
+
 noinst_HEADERS += \
-  src/display-available.h	\
+  src/display-available.h \
   src/shared-fcns.h
 
 OCTAVE_VERSION_LINKS += src/octave-cli-$(version)$(EXEEXT)
@@ -55,6 +60,7 @@ OCTAVE_CORE_LIBS = \
   liboctave/liboctave.la
 
 nodist_src_octave_SOURCES = src/main.cc
+
 src_octave_SOURCES = src/display-available.c
 
 src_octave_LDADD = \
@@ -81,6 +87,7 @@ src_octave_CXXFLAGS = \
   $(WARN_CXXFLAGS)
 
 src_octave_cli_SOURCES = src/main-cli.cc
+nodist_src_octave_cli_SOURCES = src/octave-build-info.cc
 
 src_octave_cli_LDADD = \
   $(OCTAVE_CORE_LIBS) \
@@ -101,8 +108,9 @@ src_octave_cli_CXXFLAGS = \
 
 if AMCOND_BUILD_QT_GUI
   src_octave_gui_SOURCES = src/main-gui.cc
+  nodist_src_octave_gui_SOURCES = src/octave-build-info.cc
   OCTAVE_GUI_LIBS = libgui/liboctgui.la
-  OCTAVE_GUI_CPPFLAGS = -I$(srcdir)/libgui/src
+  OCTAVE_GUI_CPPFLAGS = -Ilibgui/src -I$(srcdir)/libgui/src
 endif
 
 src_octave_gui_CPPFLAGS = \
@@ -199,6 +207,13 @@ src/mkoctfile.cc: src/mkoctfile.in.cc build-aux/subst-config-vals.sh | src/$(oct
 src/main.cc: src/main.in.cc build-aux/subst-default-vals.sh | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
+src/octave-build-info.cc: src/octave-build-info.in.cc HG-ID | src/$(octave-dirstamp)
+	$(AM_V_GEN)rm -f $@-t && \
+	$(SED) \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
+	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
+	$(simple_move_if_change_rule)
+
 ALL_LOCAL_TARGETS += $(OCTAVE_VERSION_LINKS) $(OCTAVE_CROSS_TOOLS)
 
 install-exec-hook: make-version-links
@@ -231,6 +246,7 @@ src/octave-gui-$(version)$(EXEEXT): src/octave-gui$(EXEEXT)
 	cd $(@D) && $(LN_S) $(<F) $(@F)
 
 src_CLEANFILES += $(OCTAVE_VERSION_LINKS)
+src_DISTCLEANFILES += src/octave-build-info.cc
 
 CLEANFILES += $(src_CLEANFILES)
 DISTCLEANFILES += $(src_DISTCLEANFILES)

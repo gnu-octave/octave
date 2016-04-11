@@ -2934,7 +2934,7 @@ opengl_renderer::draw_image (const image::properties& props)
       if (im_xmin < xmin)
         j0 += (xmin - im_xmin)/nor_dx + 1;
       if (im_xmax > xmax)
-        j1 -= (im_xmax - xmax)/nor_dx ;
+        j1 -= (im_xmax - xmax)/nor_dx;
 
       if (im_ymin < ymin)
         i0 += (ymin - im_ymin)/nor_dy + 1;

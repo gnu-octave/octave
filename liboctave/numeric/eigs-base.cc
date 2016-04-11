@@ -746,7 +746,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k < 1 || k > n - 2)
@@ -1024,7 +1024,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (p <= k || p >= n)
@@ -1294,7 +1294,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -1541,7 +1541,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -1863,7 +1863,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -2192,7 +2192,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -2490,7 +2490,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -2766,7 +2766,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -3053,7 +3053,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
         p = 20;
 
       if (p > n - 1)
-        p = n - 1 ;
+        p = n - 1;
     }
 
   if (k <= 0 || k >= n - 1)

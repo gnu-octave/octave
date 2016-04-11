@@ -64,7 +64,7 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
   if (P)
     // If P is present then compute Pinv, the inverse of P
     for (octave_idx_type k = 0 ; k < n ; k++)
-      Pinv[P[k]] = k ;
+      Pinv[P[k]] = k;
 
   for (octave_idx_type k = 0 ; k < n ; k++)
     {
@@ -72,12 +72,12 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
       Parent[k] = n ;                // parent of k is not yet known
       Flag[k] = k ;                  // mark node k as visited
       octave_idx_type kk = (P) ? P[k]  // kth original, or permuted, column
-                               : (k) ;
-      octave_idx_type p2 = cidx[kk+1] ;
+                               : (k);
+      octave_idx_type p2 = cidx[kk+1];
       for (octave_idx_type p = cidx[kk] ; p < p2 ; p++)
         {
           // A (i,k) is nonzero (original or permuted A)
-          octave_idx_type i = (Pinv) ? (Pinv[ridx[p]]) : (ridx[p]) ;
+          octave_idx_type i = (Pinv) ? (Pinv[ridx[p]]) : (ridx[p]);
           if (i < k)
             {
               // follow path from i to root of etree, stop at flagged node
@@ -85,7 +85,7 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
                 {
                   // find parent of i if not yet determined
                   if (Parent[i] == n)
-                    Parent[i] = k ;
+                    Parent[i] = k;
                   Flag[i] = k ;        // mark i as visited
                 }
             }
@@ -300,7 +300,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
       if (nel_User_knobs > 0)
         knobs[COLAMD_DENSE_ROW] = User_knobs(0);
       if (nel_User_knobs > 1)
-        knobs[COLAMD_DENSE_COL] = User_knobs(1) ;
+        knobs[COLAMD_DENSE_COL] = User_knobs(1);
       if (nel_User_knobs > 2)
         spumoni = static_cast<int> (User_knobs(2));
 
@@ -391,7 +391,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
     {
-      COLAMD_NAME (_report) (stats) ;
+      COLAMD_NAME (_report)(stats);
 
       error ("colamd: internal error!");
     }
@@ -421,21 +421,21 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 
   // print stats if spumoni > 0
   if (spumoni > 0)
-    COLAMD_NAME (_report) (stats) ;
+    COLAMD_NAME (_report)(stats);
 
   // Return the stats vector
   if (nargout == 2)
     {
       NDArray out_stats (dim_vector (1, COLAMD_STATS));
       for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
-        out_stats(i) = stats[i] ;
+        out_stats(i) = stats[i];
       retval(1) = out_stats;
 
       // fix stats (5) and (6), for 1-based information on
       // jumbled matrix.  note that this correction doesn't
       // occur if symamd returns FALSE
-      out_stats (COLAMD_INFO1) ++ ;
-      out_stats (COLAMD_INFO2) ++ ;
+      out_stats(COLAMD_INFO1)++;
+      out_stats(COLAMD_INFO2)++;
     }
 
   return retval;
@@ -587,9 +587,9 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   if (! SYMAMD_NAME () (n_col, ridx, cidx, perm,
                        knobs, stats, &calloc, &free))
     {
-      SYMAMD_NAME (_report) (stats) ;
+      SYMAMD_NAME (_report)(stats);
 
-      error ("symamd: internal error!") ;
+      error ("symamd: internal error!");
     }
 
   // column elimination tree post-ordering
@@ -609,21 +609,21 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 
   // print stats if spumoni > 0
   if (spumoni > 0)
-    SYMAMD_NAME (_report) (stats) ;
+    SYMAMD_NAME (_report)(stats);
 
   // Return the stats vector
   if (nargout == 2)
     {
       NDArray out_stats (dim_vector (1, COLAMD_STATS));
       for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
-        out_stats(i) = stats[i] ;
+        out_stats(i) = stats[i];
       retval(1) = out_stats;
 
       // fix stats (5) and (6), for 1-based information on
       // jumbled matrix.  note that this correction doesn't
       // occur if symamd returns FALSE
-      out_stats (COLAMD_INFO1) ++ ;
-      out_stats (COLAMD_INFO2) ++ ;
+      out_stats(COLAMD_INFO1)++;
+      out_stats(COLAMD_INFO2)++;
     }
 
   return retval;

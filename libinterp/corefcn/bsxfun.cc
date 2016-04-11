@@ -438,7 +438,7 @@ dimensionality as the other array.\n\
           BSXDEF(uint32NDArray);
           BSXDEF(uint64NDArray);
 
-          octave_value Ac ;
+          octave_value Ac;
           octave_value_list idxA;
           octave_value Bc;
           octave_value_list idxB;

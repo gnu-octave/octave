@@ -1552,7 +1552,7 @@ along with Octave; see the file COPYING.  If not, see
           octave_idx_type nel = 0; \
           for (octave_idx_type i = 0; i < nr; i++) \
             if (tmp[i] != EL_TYPE ())  \
-              nel++ ; \
+              nel++; \
           retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nel); \
           retval.cidx (0) = 0; \
           retval.cidx (1) = nel; \
@@ -1579,7 +1579,7 @@ along with Octave; see the file COPYING.  If not, see
           octave_idx_type nel = 0; \
           for (octave_idx_type i = 0; i < nc; i++) \
             if (tmp[i] != EL_TYPE ())  \
-              nel++ ; \
+              nel++; \
           retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nel); \
           retval.cidx (0) = 0; \
           nel = 0; \

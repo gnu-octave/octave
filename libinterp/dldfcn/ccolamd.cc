@@ -285,7 +285,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       // Order the columns (destroys A)
       if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, cmember))
         {
-          CCOLAMD_NAME (_report) (stats) ;
+          CCOLAMD_NAME (_report) (stats);
 
           error ("ccolamd: internal error!");
         }
@@ -295,7 +295,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       // Order the columns (destroys A)
       if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, 0))
         {
-          CCOLAMD_NAME (_report) (stats) ;
+          CCOLAMD_NAME (_report) (stats);
 
           error ("ccolamd: internal error!");
         }
@@ -308,23 +308,23 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
   retval(0) = out_perm;
 
-  // print stats if spumoni > 0
+  // print stats if spumoni > 0  
   if (spumoni > 0)
-    CCOLAMD_NAME (_report) (stats) ;
+    CCOLAMD_NAME (_report) (stats);
 
   // Return the stats vector
   if (nargout == 2)
     {
       NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
       for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-        out_stats(i) = stats[i] ;
+        out_stats(i) = stats[i];
       retval(1) = out_stats;
 
       // fix stats (5) and (6), for 1-based information on
       // jumbled matrix.  note that this correction doesn't
       // occur if symamd returns FALSE
-      out_stats (CCOLAMD_INFO1) ++ ;
-      out_stats (CCOLAMD_INFO2) ++ ;
+      out_stats(CCOLAMD_INFO1)++;
+      out_stats(CCOLAMD_INFO2)++;
     }
 
   return retval;
@@ -516,9 +516,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
                              &calloc, &free, cmember, -1))
         {
-          CSYMAMD_NAME (_report) (stats) ;
+          CSYMAMD_NAME (_report)(stats);
 
-          error ("csymamd: internal error!") ;
+          error ("csymamd: internal error!");
         }
     }
   else
@@ -526,9 +526,9 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
       if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
                             &calloc, &free, 0, -1))
         {
-          CSYMAMD_NAME (_report) (stats) ;
+          CSYMAMD_NAME (_report)(stats);
 
-          error ("csymamd: internal error!") ;
+          error ("csymamd: internal error!");
         }
     }
 
@@ -541,21 +541,21 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
   // print stats if spumoni > 0
   if (spumoni > 0)
-    CSYMAMD_NAME (_report) (stats) ;
+    CSYMAMD_NAME (_report)(stats);
 
   // Return the stats vector
   if (nargout == 2)
     {
       NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
       for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-        out_stats(i) = stats[i] ;
+        out_stats(i) = stats[i];
       retval(1) = out_stats;
 
       // fix stats (5) and (6), for 1-based information on
       // jumbled matrix.  note that this correction doesn't
       // occur if symamd returns FALSE
-      out_stats (CCOLAMD_INFO1) ++ ;
-      out_stats (CCOLAMD_INFO2) ++ ;
+      out_stats(CCOLAMD_INFO1)++;
+      out_stats(CCOLAMD_INFO2)++;
     }
 
   return retval;

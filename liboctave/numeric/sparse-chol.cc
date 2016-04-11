@@ -272,9 +272,9 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   // use natural ordering if no q output parameter
   if (natural)
     {
-      cm->nmethods = 1 ;
-      cm->method[0].ordering = CHOLMOD_NATURAL ;
-      cm->postorder = false ;
+      cm->nmethods = 1;
+      cm->method[0].ordering = CHOLMOD_NATURAL;
+      cm->postorder = false;
     }
 
   cholmod_factor *Lfactor;

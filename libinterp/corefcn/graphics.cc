@@ -3803,7 +3803,7 @@ papersize_from_type (const caseless_str punits, const caseless_str ptype)
       if (punits.compare ("inches"))
         {
           in2units = 1.0;
-          mm2units = 1 / 25.4 ;
+          mm2units = 1 / 25.4;
         }
       else if (punits.compare ("centimeters"))
         {
@@ -7147,7 +7147,7 @@ axes::update_axis_limits (const std::string& axis_type,
       if (xproperties.xlimmode_is ("auto"))
         {
           limits = xproperties.get_xlim ().matrix_value ();
-          FIX_LIMITS ;
+          FIX_LIMITS;
 
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
 
@@ -7165,7 +7165,7 @@ axes::update_axis_limits (const std::string& axis_type,
       if (xproperties.ylimmode_is ("auto"))
         {
           limits = xproperties.get_ylim ().matrix_value ();
-          FIX_LIMITS ;
+          FIX_LIMITS;
 
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
 
@@ -7183,7 +7183,7 @@ axes::update_axis_limits (const std::string& axis_type,
       if (xproperties.zlimmode_is ("auto"))
         {
           limits = xproperties.get_zlim ().matrix_value ();
-          FIX_LIMITS ;
+          FIX_LIMITS;
 
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
@@ -7201,7 +7201,7 @@ axes::update_axis_limits (const std::string& axis_type,
       if (xproperties.climmode_is ("auto"))
         {
           limits = xproperties.get_clim ().matrix_value ();
-          FIX_LIMITS ;
+          FIX_LIMITS;
 
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'c');
 
@@ -7232,7 +7232,7 @@ axes::update_axis_limits (const std::string& axis_type,
       if (xproperties.alimmode_is ("auto"))
         {
           limits = xproperties.get_alim ().matrix_value ();
-          FIX_LIMITS ;
+          FIX_LIMITS;
 
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'a');
 

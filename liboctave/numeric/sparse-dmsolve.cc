@@ -83,12 +83,12 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
               if (r >= rst && r < rend)
                 {
                   B.xdata (nz) = A.data (p);
-                  B.xridx (nz++) = r - rst ;
+                  B.xridx (nz++) = r - rst;
                 }
             }
         }
 
-      B.xcidx (cend - cst) = nz ;
+      B.xcidx (cend - cst) = nz;
     }
   else
     {
@@ -114,7 +114,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
               if (r >= rst && r < rend)
                 {
                   X[r-rst] = A.data (p);
-                  B.xridx (nz++) = r - rst ;
+                  B.xridx (nz++) = r - rst;
                 }
             }
 
@@ -124,7 +124,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
             B.xdata (p) = X[B.xridx (p)];
         }
 
-      B.xcidx (cend - cst) = nz ;
+      B.xcidx (cend - cst) = nz;
     }
 
   return B;

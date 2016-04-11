@@ -88,7 +88,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     z = x;
     [rz, cz] = size (z);
   elseif (nargin == 5 || nargin == 6)
-    [rz, cz] = size (z) ;
+    [rz, cz] = size (z);
     if (isvector (x) && isvector (y))
       if (rz != length (y) || cz != length (x))
         error ("bicubic: length of X and Y must match the size of Z");
@@ -187,7 +187,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
   p(:,1) =    (6*(1-a))*p(:,2)    - 3*p(:,3)  + (6*a-2)*p(:,4);
   p(:,cz+2) = (6*(1-a))*p(:,cz+1) - 3*p(:,cz) + (6*a-2)*p(:,cz-1);
 
-  ## Calculte the C1(t) C2(t) C3(t) C4(t) and C1(s) C2(s) C3(s) C4(s).
+  ## Calculate the C1(t) C2(t) C3(t) C4(t) and C1(s) C2(s) C3(s) C4(s).
   t2 = t.*t;
   t3 = t2.*t;
 

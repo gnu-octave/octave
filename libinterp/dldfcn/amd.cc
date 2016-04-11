@@ -132,7 +132,7 @@ The author of the code itself is Timothy A. Davis\n\
     err_square_matrix_required ("amd", "S");
 
   OCTAVE_LOCAL_BUFFER (double, Control, AMD_CONTROL);
-  AMD_NAME (_defaults) (Control) ;
+  AMD_NAME (_defaults) (Control);
   if (nargin > 1)
     {
       octave_scalar_map arg1 = args(1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");

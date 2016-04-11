@@ -42,6 +42,6 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
 extern bool
 save_mat_binary_data (std::ostream& os, const octave_value& tc,
-                      const std::string& name) ;
+                      const std::string& name);
 
 #endif

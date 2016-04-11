@@ -308,7 +308,7 @@ Comment.\n\
 
   SF_INFO info;
 
-  memset (&info, 0, sizeof (info)) ;
+  memset (&info, 0, sizeof (info));
 
   sf_count_t chunk_size = 0;
 
@@ -361,7 +361,6 @@ Comment.\n\
       else if (args(i).string_value () == "BitRate")
         ;
       // Quality is currently unused?
-      //
       // else if (args(i).string_value () == "Quality")
       //   quality = args(i + 1).int_value () * 0.01;
       else if (args(i).string_value () == "Title")

@@ -1,4 +1,5 @@
-liboctave_EXTRA_DIST =
+liboctave_EXTRA_DIST = \
+  liboctave/liboctave-build-info.in.cc
 
 liboctave_CLEANFILES =
 liboctave_DISTCLEANFILES =
@@ -8,6 +9,7 @@ liboctave_MAINTAINERCLEANFILES =
 liboctave_liboctave_la_CPPFLAGS = \
   @OCTAVE_DLL_DEFS@ \
   @CRUFT_DLL_DEFS@ \
+  -Iliboctave -I$(srcdir)/liboctave \
   -I$(srcdir)/liboctave/array \
   -I$(srcdir)/liboctave/cruft/misc \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
@@ -28,9 +30,14 @@ BUILT_INCS = \
 
 BUILT_SOURCES += \
   $(BUILT_INCS) \
-  $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)
+  $(BUILT_LIBOCTAVE_OPERATORS_SOURCES) \
+  liboctave/liboctave-build-info.cc
+
+LIBOCTAVE_BUILT_NODISTFILES = \
+  liboctave/liboctave-build-info.cc
 
 octinclude_HEADERS += \
+  liboctave/liboctave-build-info.h \
   $(ARRAY_INC) \
   $(CRUFT_INC) \
   $(NUMERIC_INC) \
@@ -61,7 +68,8 @@ include liboctave/util/module.mk
 
 ## liboctave merely collects a bunch of compiled convenience libraries.
 ## It has no source code itself.
-liboctave_liboctave_la_SOURCES =
+liboctave_liboctave_la_SOURCES = \
+  liboctave/liboctave-build-info.cc
 
 # Dummy C++ source to force C++ linking.
 EXTRA_liboctave_liboctave_la_SOURCES = liboctave/.dummy_force_cxx_link.cc
@@ -102,11 +110,21 @@ liboctavetestsdir := $(octtestsdir)
 
 nobase_liboctavetests_DATA = $(LIBOCTAVE_TST_FILES)
 
+liboctave/liboctave-build-info.cc: liboctave/liboctave-build-info.in.cc HG-ID | liboctave/$(octave-dirstamp)
+	$(AM_V_GEN)rm -f $@-t && \
+	$(SED) \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
+	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
+	$(simple_move_if_change_rule)
+
 EXTRA_DIST += $(liboctave_EXTRA_DIST)
 
 liboctave_DISTCLEANFILES += \
+  $(LIBOCTAVE_BUILT_NODISTFILES) \
   $(BUILT_INCS) \
   $(LIBOCTAVE_TST_FILES)
+
+BUILT_NODISTFILES += $(LIBOCTAVE_BUILT_NODISTFILES)
 
 CLEANFILES += $(liboctave_CLEANFILES)
 DISTCLEANFILES += $(liboctave_DISTCLEANFILES)

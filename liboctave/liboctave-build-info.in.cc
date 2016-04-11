@@ -25,10 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "build-info.h"
+#include "liboctave-build-info.h"
 
 std::string
-octave_hg_id (void)
+liboctave_hg_id (void)
 {
   return "%OCTAVE_HG_ID%";
 }

@@ -43,9 +43,9 @@ GENERATED_MAKE_BUILTINS_INCS = \
 BUILT_SOURCES += \
   $(GENERATED_MAKE_BUILTINS_INCS) \
   libinterp/build-env.cc \
-  libinterp/build-info.cc \
   libinterp/builtin-defun-decls.h \
   libinterp/builtins.cc \
+  libinterp/liboctinterp-build-info.cc \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/oct-tex-lexer.cc \
   libinterp/corefcn/oct-tex-parser.cc \
@@ -77,7 +77,7 @@ LIBINTERP_BUILT_DISTFILES = \
 LIBINTERP_BUILT_NODISTFILES = \
   libinterp/build-env.cc \
   libinterp/build-env-features.cc \
-  libinterp/build-info.cc \
+  libinterp/liboctinterp-build-info.cc \
   libinterp/corefcn/mxarray.h \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/defaults.h \
@@ -93,10 +93,10 @@ libinterp_EXTRA_DIST += \
   libinterp/DOCSTRINGS \
   libinterp/build-env.in.cc \
   libinterp/build-env-features.sh \
-  libinterp/build-info.in.cc \
   libinterp/find-defun-files.sh \
   libinterp/gendoc.pl \
   libinterp/genprops.awk \
+  libinterp/liboctinterp-build-info.in.cc \
   libinterp/mk-errno-list \
   libinterp/mk-pkg-add \
   libinterp/mkbuiltins \
@@ -110,7 +110,7 @@ octinclude_HEADERS += \
   libinterp/builtins.h \
   libinterp/builtin-defun-decls.h \
   libinterp/build-env.h \
-  libinterp/build-info.h \
+  libinterp/liboctinterp-build-info.h \
   libinterp/octave.h \
   libinterp/options-usage.h \
   $(OCTAVE_VALUE_INC) \
@@ -168,7 +168,7 @@ nodist_libinterp_liboctinterp_la_SOURCES = \
   libinterp/builtins.cc \
   libinterp/build-env.cc \
   libinterp/build-env-features.cc \
-  libinterp/build-info.cc \
+  libinterp/liboctinterp-build-info.cc \
   libinterp/version.h
 
 libinterp_liboctinterp_la_LIBADD = \
@@ -263,7 +263,7 @@ libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libi
 libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
 
-libinterp/build-info.cc: libinterp/build-info.in.cc HG-ID | libinterp/$(octave-dirstamp)
+libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc HG-ID | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \

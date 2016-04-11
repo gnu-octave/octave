@@ -47,368 +47,378 @@ along with Octave; see the file COPYING.  If not, see
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
 
-int
-octave_syscalls::dup2 (int old_fd, int new_fd)
+namespace octave
 {
-  std::string msg;
-  return dup2 (old_fd, new_fd, msg);
-}
+  namespace
+  syscalls
+  {
+    int
+    dup2 (int old_fd, int new_fd)
+    {
+      std::string msg;
+      return octave::syscalls::dup2 (old_fd, new_fd, msg);
+    }
 
-int
-octave_syscalls::dup2 (int old_fd, int new_fd, std::string& msg)
-{
-  msg = "";
+    int
+    dup2 (int old_fd, int new_fd, std::string& msg)
+    {
+      msg = "";
 
-  int status = -1;
+      int status = -1;
 
 #if defined (HAVE_DUP2)
-  status = gnulib::dup2 (old_fd, new_fd);
+      status = gnulib::dup2 (old_fd, new_fd);
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 #else
-  msg = NOT_SUPPORTED ("dup2");
+      msg = NOT_SUPPORTED ("dup2");
 #endif
 
-  return status;
-}
+      return status;
+    }
 
-int
-octave_syscalls::execvp (const std::string& file, const string_vector& argv)
-{
-  std::string msg;
-  return execvp (file, argv, msg);
-}
+    int
+    execvp (const std::string& file, const string_vector& argv)
+    {
+      std::string msg;
+      return octave::syscalls::execvp (file, argv, msg);
+    }
 
-int
-octave_syscalls::execvp (const std::string& file, const string_vector& args,
-                         std::string& msg)
-{
-  msg = "";
+    int
+    execvp (const std::string& file, const string_vector& args,
+            std::string& msg)
+    {
+      msg = "";
 
-  int status = -1;
+      int status = -1;
 
 #if defined (HAVE_EXECVP)
-  char **argv = args.c_str_vec ();
+      char **argv = args.c_str_vec ();
 
-  status = ::execvp (file.c_str (), argv);
+      status = ::execvp (file.c_str (), argv);
 
-  string_vector::delete_c_str_vec (argv);
+      string_vector::delete_c_str_vec (argv);
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 #else
-  msg = NOT_SUPPORTED ("execvp");
+      msg = NOT_SUPPORTED ("execvp");
 #endif
 
-  return status;
-}
+      return status;
+    }
 
-pid_t
-octave_syscalls::fork (std::string& msg)
-{
-  pid_t status = -1;
+    pid_t
+    fork (std::string& msg)
+    {
+      pid_t status = -1;
 
 #if defined (HAVE_FORK)
-  status = ::fork ();
+      status = ::fork ();
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 #else
-  msg = NOT_SUPPORTED ("fork");
+      msg = NOT_SUPPORTED ("fork");
 #endif
 
-  return status;
-}
+      return status;
+    }
 
-pid_t
-octave_syscalls::vfork (std::string& msg)
-{
-  pid_t status = -1;
+    pid_t
+    vfork (std::string& msg)
+    {
+      pid_t status = -1;
 
 #if defined (HAVE_VFORK) || defined (HAVE_FORK)
 #  if defined (HAVE_VFORK)
-  status = ::vfork ();
+      status = ::vfork ();
 #  else
-  status = ::fork ();
+      status = ::fork ();
 #  endif
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 #else
-  msg = NOT_SUPPORTED ("vfork");
+      msg = NOT_SUPPORTED ("vfork");
 #endif
 
-  return status;
-}
+      return status;
+    }
 
-pid_t
-octave_syscalls::getpgrp (std::string& msg)
-{
-  pid_t status = -1;
+    pid_t
+    getpgrp (std::string& msg)
+    {
+      pid_t status = -1;
 
 #if defined (HAVE_GETPGRP)
-  status = ::getpgrp ();
+      status = ::getpgrp ();
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 #else
-  msg = NOT_SUPPORTED ("getpgrp");
+      msg = NOT_SUPPORTED ("getpgrp");
 #endif
 
-  return status;
-}
+      return status;
+    }
 
-pid_t
-octave_syscalls::getpid (void)
-{
+    pid_t
+    getpid (void)
+    {
 #if defined (HAVE_GETPID)
-  return ::getpid ();
+      return ::getpid ();
 #else
-  return 0;
+      return 0;
 #endif
-}
+    }
 
-pid_t
-octave_syscalls::getppid (void)
-{
+    pid_t
+    getppid (void)
+    {
 #if defined (HAVE_GETPPID)
-  return ::getppid ();
+      return ::getppid ();
 #else
-  return 0;
+      return 0;
 #endif
-}
+    }
 
-gid_t
-octave_syscalls::getgid (void)
-{
+    gid_t
+    getgid (void)
+    {
 #if defined (HAVE_GETGID)
-  return ::getgid ();
+      return ::getgid ();
 #else
-  return 0;
+      return 0;
 #endif
-}
+    }
 
-gid_t
-octave_syscalls::getegid (void)
-{
+    gid_t
+    getegid (void)
+    {
 #if defined (HAVE_GETEGID)
-  return ::getegid ();
+      return ::getegid ();
 #else
-  return 0;
+      return 0;
 #endif
-}
+    }
 
-uid_t
-octave_syscalls::getuid (void)
-{
+    uid_t
+    getuid (void)
+    {
 #if defined (HAVE_GETUID)
-  return ::getuid ();
+      return ::getuid ();
 #else
-  return 0;
+      return 0;
 #endif
-}
+    }
 
-uid_t
-octave_syscalls::geteuid (void)
-{
+    uid_t
+    geteuid (void)
+    {
 #if defined (HAVE_GETEUID)
-  return ::geteuid ();
+      return ::geteuid ();
 #else
-  return 0;
+      return 0;
 #endif
-}
+    }
 
-int
-octave_syscalls::pipe (int *fildes)
-{
-  std::string msg;
-  return pipe (fildes, msg);
-}
+    int
+    pipe (int *fildes)
+    {
+      std::string msg;
+      return octave::syscalls::pipe (fildes, msg);
+    }
 
-int
-octave_syscalls::pipe (int *fildes, std::string& msg)
-{
-  msg = "";
+    int
+    pipe (int *fildes, std::string& msg)
+    {
+      msg = "";
 
-  int status = -1;
+      int status = -1;
 
-  status = gnulib::pipe (fildes);
+      status = gnulib::pipe (fildes);
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 
-  return status;
-}
+      return status;
+    }
 
-pid_t
-octave_syscalls::waitpid (pid_t pid, int *status, int options)
-{
-  std::string msg;
-  return waitpid (pid, status, options, msg);
-}
+    pid_t
+    waitpid (pid_t pid, int *status, int options)
+    {
+      std::string msg;
+      return octave::syscalls::waitpid (pid, status, options, msg);
+    }
 
-pid_t
-octave_syscalls::waitpid (pid_t pid, int *status, int options,
-                          std::string& msg)
-{
-  pid_t retval = -1;
-  msg = "";
+    pid_t
+    waitpid (pid_t pid, int *status, int options,
+             std::string& msg)
+    {
+      pid_t retval = -1;
+      msg = "";
 
 #if defined (HAVE_WAITPID)
-  retval = ::octave_waitpid (pid, status, options);
+      retval = ::octave_waitpid (pid, status, options);
 
-  if (retval < 0)
-    msg = gnulib::strerror (errno);
+      if (retval < 0)
+        msg = gnulib::strerror (errno);
 #else
-  msg = NOT_SUPPORTED ("waitpid");
+      msg = NOT_SUPPORTED ("waitpid");
 #endif
 
-  return retval;
-}
+      return retval;
+    }
 
-int
-octave_syscalls::kill (pid_t pid, int sig)
-{
-  std::string msg;
-  return kill (pid, sig, msg);
-}
+    int
+    kill (pid_t pid, int sig)
+    {
+      std::string msg;
+      return octave::syscalls::kill (pid, sig, msg);
+    }
 
-int
-octave_syscalls::kill (pid_t pid, int sig, std::string& msg)
-{
-  msg = "";
+    int
+    kill (pid_t pid, int sig, std::string& msg)
+    {
+      msg = "";
 
-  int status = -1;
+      int status = -1;
 
 #if defined (HAVE_KILL)
-  status = ::kill (pid, sig);
+      status = ::kill (pid, sig);
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 #else
-  msg = NOT_SUPPORTED ("kill");
+      msg = NOT_SUPPORTED ("kill");
 #endif
 
-  return status;
-}
+      return status;
+    }
 
-pid_t
-octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
-                         bool sync_mode, int *fildes)
-{
-  std::string msg;
-  bool interactive = false;
-  return popen2 (cmd, args, sync_mode, fildes, msg, interactive);
-}
-
-pid_t
-octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
-                         bool sync_mode, int *fildes, std::string& msg)
-{
-  bool interactive = false;
-  return popen2 (cmd, args, sync_mode, fildes, msg, interactive);
-}
-
-pid_t
-octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
-                         bool sync_mode, int *fildes, std::string& msg,
-                         bool &interactive)
-{
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-  return ::octave_popen2 (cmd, args, sync_mode, fildes, msg);
-#else
-  pid_t pid;
-  int child_stdin[2], child_stdout[2];
-
-  if (pipe (child_stdin, msg) == 0)
+    pid_t
+    popen2 (const std::string& cmd, const string_vector& args,
+            bool sync_mode, int *fildes)
     {
-      if (pipe (child_stdout, msg) == 0)
+      std::string msg;
+      bool interactive = false;
+      return octave::syscalls::popen2 (cmd, args, sync_mode, fildes, msg,
+                                       interactive);
+    }
+
+    pid_t
+    popen2 (const std::string& cmd, const string_vector& args,
+            bool sync_mode, int *fildes, std::string& msg)
+    {
+      bool interactive = false;
+      return octave::syscalls::popen2 (cmd, args, sync_mode, fildes, msg,
+                                       interactive);
+    }
+
+    pid_t
+    popen2 (const std::string& cmd, const string_vector& args,
+            bool sync_mode, int *fildes, std::string& msg,
+            bool &interactive)
+    {
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+      return ::octave_popen2 (cmd, args, sync_mode, fildes, msg);
+#else
+      pid_t pid;
+      int child_stdin[2], child_stdout[2];
+
+      if (pipe (child_stdin, msg) == 0)
         {
-          pid = fork (msg);
-          if (pid < 0)
-            msg = "popen2: process creation failed -- " + msg;
-          else if (pid == 0)
+          if (pipe (child_stdout, msg) == 0)
             {
-              std::string child_msg;
-
-              interactive = false;
-
-              // Child process
-              gnulib::close (child_stdin[1]);
-              gnulib::close (child_stdout[0]);
-
-              if (dup2 (child_stdin[0], STDIN_FILENO) >= 0)
+              pid = fork (msg);
+              if (pid < 0)
+                msg = "popen2: process creation failed -- " + msg;
+              else if (pid == 0)
                 {
-                  gnulib::close (child_stdin[0]);
-                  if (dup2 (child_stdout[1], STDOUT_FILENO) >= 0)
+                  std::string child_msg;
+
+                  interactive = false;
+
+                  // Child process
+                  gnulib::close (child_stdin[1]);
+                  gnulib::close (child_stdout[0]);
+
+                  if (dup2 (child_stdin[0], STDIN_FILENO) >= 0)
                     {
-                      gnulib::close (child_stdout[1]);
-                      if (execvp (cmd, args, child_msg) < 0)
-                        child_msg = "popen2 (child): unable to start process -- " + child_msg;
+                      gnulib::close (child_stdin[0]);
+                      if (dup2 (child_stdout[1], STDOUT_FILENO) >= 0)
+                        {
+                          gnulib::close (child_stdout[1]);
+                          if (execvp (cmd, args, child_msg) < 0)
+                            child_msg = "popen2 (child): unable to start process -- " + child_msg;
+                        }
+                      else
+                        child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
                     }
                   else
                     child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
+
+                  (*current_liboctave_error_handler) (child_msg.c_str ());
+
+                  exit (0);
                 }
               else
-                child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
-
-              (*current_liboctave_error_handler) (child_msg.c_str ());
-
-              exit (0);
-            }
-          else
-            {
-              // Parent process
-              gnulib::close (child_stdin[0]);
-              gnulib::close (child_stdout[1]);
+                {
+                  // Parent process
+                  gnulib::close (child_stdin[0]);
+                  gnulib::close (child_stdout[1]);
 
 #if defined (F_SETFL) && defined (O_NONBLOCK)
-              if (! sync_mode && octave_fcntl (child_stdout[0], F_SETFL,
-                                               O_NONBLOCK, msg) < 0)
-                msg = "popen2: error setting file mode -- " + msg;
-              else
+                  if (! sync_mode
+                      && octave::syscalls::fcntl (child_stdout[0], F_SETFL,
+                                                  O_NONBLOCK, msg) < 0)
+                    msg = "popen2: error setting file mode -- " + msg;
+                  else
 #endif
-                {
-                  fildes[0] = child_stdin[1];
-                  fildes[1] = child_stdout[0];
-                  return pid;
+                    {
+                      fildes[0] = child_stdin[1];
+                      fildes[1] = child_stdout[0];
+                      return pid;
+                    }
                 }
+              gnulib::close (child_stdout[0]);
+              gnulib::close (child_stdout[1]);
             }
-          gnulib::close (child_stdout[0]);
-          gnulib::close (child_stdout[1]);
+          else
+            msg = "popen2: pipe creation failed -- " + msg;
+
+          gnulib::close (child_stdin[0]);
+          gnulib::close (child_stdin[1]);
         }
       else
         msg = "popen2: pipe creation failed -- " + msg;
 
-      gnulib::close (child_stdin[0]);
-      gnulib::close (child_stdin[1]);
-    }
-  else
-    msg = "popen2: pipe creation failed -- " + msg;
-
-  return -1;
+      return -1;
 #endif
-}
+    }
 
-int
-octave_fcntl (int fd, int cmd, long arg)
-{
-  std::string msg;
-  return octave_fcntl (fd, cmd, arg, msg);
-}
+    int
+    fcntl (int fd, int cmd, long arg)
+    {
+      std::string msg;
+      return octave::syscalls::fcntl (fd, cmd, arg, msg);
+    }
 
-int
-octave_fcntl (int fd, int cmd, long arg, std::string& msg)
-{
-  msg = "";
+    int
+    fcntl (int fd, int cmd, long arg, std::string& msg)
+    {
+      msg = "";
 
-  int status = -1;
+      int status = -1;
 
-  status = gnulib::fcntl (fd, cmd, arg);
+      status = gnulib::fcntl (fd, cmd, arg);
 
-  if (status < 0)
-    msg = gnulib::strerror (errno);
+      if (status < 0)
+        msg = gnulib::strerror (errno);
 
-  return status;
+      return status;
+    }
+  }
 }

@@ -122,7 +122,7 @@ error message.\n\
     {
       std::string msg;
 
-      int status = octave_syscalls::dup2 (i_old, i_new, msg);
+      int status = octave::syscalls::dup2 (i_old, i_new, msg);
 
       return ovl (status, msg);
     }
@@ -187,7 +187,7 @@ error message.\n\
 
   std::string msg;
 
-  int status = octave_syscalls::execvp (exec_file, exec_args, msg);
+  int status = octave::syscalls::execvp (exec_file, exec_args, msg);
 
   return ovl (status, msg);
 }
@@ -274,7 +274,7 @@ exit status, it will linger until Octave exits.\n\
   std::string msg;
   pid_t pid;
 
-  pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
+  pid = octave::syscalls::popen2 (exec_file, arg_list, sync_mode,
                                  filedesc, msg, interactive);
   if (pid < 0)
     error (msg.c_str ());
@@ -440,7 +440,7 @@ message.\n\
 
   std::string msg;
 
-  int status = octave_fcntl (fid, req, arg, msg);
+  int status = octave::syscalls::fcntl (fid, req, arg, msg);
 
   return ovl (status, msg);
 }
@@ -476,7 +476,7 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 
   std::string msg;
 
-  pid_t pid = octave_syscalls::fork (msg);
+  pid_t pid = octave::syscalls::fork (msg);
 
   return ovl (pid, msg);
 }
@@ -492,7 +492,7 @@ Return the process group id of the current process.\n\
 
   std::string msg;
 
-  pid_t pid = octave_syscalls::getpgrp (msg);
+  pid_t pid = octave::syscalls::getpgrp (msg);
 
   return ovl (pid, msg);
 }
@@ -507,7 +507,7 @@ Return the process id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_syscalls::getpid ());
+  return ovl (octave::syscalls::getpid ());
 }
 
 DEFUNX ("getppid", Fgetppid, args, ,
@@ -520,7 +520,7 @@ Return the process id of the parent process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_syscalls::getppid ());
+  return ovl (octave::syscalls::getppid ());
 }
 
 DEFUNX ("getegid", Fgetegid, args, ,
@@ -533,7 +533,7 @@ Return the effective group id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_syscalls::getegid ());
+  return ovl (octave::syscalls::getegid ());
 }
 
 DEFUNX ("getgid", Fgetgid, args, ,
@@ -546,7 +546,7 @@ Return the real group id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_syscalls::getgid ());
+  return ovl (octave::syscalls::getgid ());
 }
 
 DEFUNX ("geteuid", Fgeteuid, args, ,
@@ -559,7 +559,7 @@ Return the effective user id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_syscalls::geteuid ());
+  return ovl (octave::syscalls::geteuid ());
 }
 
 DEFUNX ("getuid", Fgetuid, args, ,
@@ -572,7 +572,7 @@ Return the real user id of the current process.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_syscalls::getuid ());
+  return ovl (octave::syscalls::getuid ());
 }
 
 DEFUNX ("kill", Fkill, args, ,
@@ -606,7 +606,7 @@ Return 0 if successful, otherwise return -1.\n\
 
   std::string msg;
 
-  int status = octave_syscalls::kill (pid, sig, msg);
+  int status = octave::syscalls::kill (pid, sig, msg);
 
   return ovl (status, msg);
 }
@@ -725,7 +725,7 @@ error message.\n\
   int fid[2];
   std::string msg;
 
-  int status = octave_syscalls::pipe (fid, msg);
+  int status = octave::syscalls::pipe (fid, msg);
 
   if (status < 0)
     return ovl (-1, -1, -1, msg);
@@ -1132,7 +1132,7 @@ about the subprocess that exited.\n\
   std::string msg;
   int status;
 
-  pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
+  pid_t result = octave::syscalls::waitpid (pid, &status, options, msg);
 
   return ovl (result, status, msg);
 }

@@ -90,7 +90,7 @@ octave_procbuf::open (const char *command, int mode)
   if (is_open ())
     return 0;
 
-  if (pipe (pipe_fds) < 0)
+  if (octave::syscalls::pipe (pipe_fds) < 0)
     return 0;
 
   if (mode & std::ios::in)
@@ -202,7 +202,7 @@ octave_procbuf::close (void)
 
           do
             {
-              wait_pid = octave_syscalls::waitpid (proc_pid, &wstatus, 0);
+              wait_pid = octave::syscalls::waitpid (proc_pid, &wstatus, 0);
             }
           while (wait_pid == -1 && errno == EINTR);
         }

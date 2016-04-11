@@ -32,9 +32,3 @@ octave_hg_id (void)
 {
   return "%OCTAVE_HG_ID%";
 }
-
-time_t
-octave_build_time (void)
-{
-  return %OCTAVE_BUILD_TIME%;
-}

@@ -1424,7 +1424,6 @@ specified option.\n\
       { "api_version", OCTAVE_API_VERSION },
       { "archlibdir", subst_octave_home (OCTAVE_ARCHLIBDIR) },
       { "bindir", subst_octave_home (OCTAVE_BINDIR) },
-      { "build_time", octave_build_time () },
       { "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
       { "datadir", subst_octave_home (OCTAVE_DATADIR) },
       { "datarootdir", subst_octave_home (OCTAVE_DATAROOTDIR) },

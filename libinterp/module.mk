@@ -267,8 +267,7 @@ libinterp/build-info.cc: libinterp/build-info.in.cc HG-ID | libinterp/$(octave-d
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
-	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" \
-	  -e "s|%OCTAVE_BUILD_TIME%|`date +%s`|" $< > $@-t && \
+	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
 	$(simple_move_if_change_rule)
 
 libinterp/builtins.cc: $(DEF_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)

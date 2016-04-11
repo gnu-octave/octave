@@ -20,8 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#if ! defined (octave_build_info_h)
+#define octave_build_info_h 1
+
+#include "octave-config.h"
+
 #include <ctime>
 
 #include <string>
 
 extern OCTAVE_API std::string octave_hg_id (void);
+
+#endif

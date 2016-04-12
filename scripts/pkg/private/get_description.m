@@ -69,29 +69,17 @@ function desc = get_description (filename)
       error ("description is missing needed field %s", f{1});
     endif
   endfor
-  desc.version = fix_version (desc.version);
+
+  if (! is_valid_pkg_version_string (desc.version))
+    error ("invalid version string '%s'", desc.version);
+  endif
+
   if (isfield (desc, "depends"))
     desc.depends = fix_depends (desc.depends);
   else
     desc.depends = "";
   endif
   desc.name = tolower (desc.name);
-endfunction
-
-
-## Make sure the version string v is a valid x.y.z version string
-## Examples: "0.1" => "0.1.0", "monkey" => error(...).
-function out = fix_version (v)
-  if (regexp (v, '^\d+(\.\d+){1,2}$') == 1)
-    parts = ostrsplit (v, '.', true);
-    if (numel (parts) == 2)
-      out = [v ".0"];
-    else
-      out = v;
-    endif
-  else
-    error ("bad version string: %s", v);
-  endif
 endfunction
 
 
@@ -119,21 +107,33 @@ function deps_cell = fix_depends (depends)
         if (! any (strcmp (operator, {">", ">=", "<=", "<", "=="})))
           error ("unsupported operator: %s", operator);
         endif
-        version = fix_version (nm.ver);
+        if (! is_valid_pkg_version_string (nm.ver))
+          error ("invalid dependency version string '%s'", nm.ver);
+        endif
+      else
         ## If no version is specified for the dependency
         ## we say that the version should be greater than
         ## or equal to "0.0.0".
-      else
         package = tolower (strtrim (dep));
         operator = ">=";
-        version = "0.0.0";
+        nm.ver  = "0.0.0";
       endif
       deps_cell{i} = struct ("package", package,
                              "operator", operator,
-                             "version", version);
+                             "version", nm.ver);
     else
       error ("incorrect syntax for dependency '%s' in the DESCRIPTION file\n",
              dep);
     endif
   endfor
+endfunction
+
+function [valid] = is_valid_pkg_version_string (str)
+  ## We are limiting ourselves to this set of characters because the
+  ## version will appear on the filepath.  The portable character, according
+  ## to http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_278
+  ## is [A-Za-z0-9\.\_\-].  However, this is very limited.  We expand this
+  ## set with the characters supported by Debian with the exception of ":"
+  ## (we do not support ":" (colon) because that's the Octave path separator.
+  valid = numel (regexp (str, '[^0-9a-zA-Z\.\+\-\~]')) == 0;
 endfunction

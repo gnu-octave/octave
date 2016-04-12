@@ -261,18 +261,29 @@ octave_env::chdir (const std::string& newdir)
 void
 octave_env::do_set_program_name (const std::string& s) const
 {
-  // For gnulib.
-  ::set_program_name (s.c_str ());
+  bool initialized = false;
 
-  // Let gnulib strip off things like the "lt-" prefix from libtool.
-  prog_invocation_name = program_name;
+  if (! initialized)
+    {
+      // The string passed to gnulib's ::set_program_name function must
+      // exist for the duration of the program so allocate a copy here
+      // instead of passing S.c_str () which only exists as long as the
+      // string object S.
 
-  size_t pos
-    = prog_invocation_name.find_last_of (file_ops::dir_sep_chars ());
+      // For gnulib.
+      ::set_program_name (strsave (s.c_str ()));
 
-  // Also keep a shortened version of the program name.
-  prog_name = (pos == std::string::npos)
-              ? prog_invocation_name : prog_invocation_name.substr (pos+1);
+      // Let gnulib strip off things like the "lt-" prefix from libtool.
+      prog_invocation_name = program_name;
+
+      size_t pos
+        = prog_invocation_name.find_last_of (file_ops::dir_sep_chars ());
+
+      // Also keep a shortened version of the program name.
+      prog_name = (pos == std::string::npos
+                   ? prog_invocation_name
+                   : prog_invocation_name.substr (pos+1));
+    }
 }
 
 // Return a pretty pathname.  If the first part of the pathname is the

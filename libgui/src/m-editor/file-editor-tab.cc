@@ -346,6 +346,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
             break;
           }
       _bp_lines.clear ();
+      _bp_conditions.clear ();
     }
 
   // If text selected by the mouse, default to that instead
@@ -1518,8 +1519,9 @@ file_editor_tab::check_restore_breakpoints ()
         handle_request_add_breakpoint (_bp_lines.value (i) + 1,
                                        _bp_conditions.value (i));
 
-     // reset the list of breakpoints
+     // Keep the list of breakpoints empty, except after explicit requests.
       _bp_lines.clear ();
+      _bp_conditions.clear ();
     }
 }
 
@@ -2408,31 +2410,33 @@ file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line,
             }
 
           if (bp == 0)
-            bp = new marker (_edit_area, line,
-                             cond == "" ? marker::breakpoint
-                                        : marker::cond_break, cond);
+            {
+              bp = new marker (_edit_area, line,
+                               cond == "" ? marker::breakpoint
+                                          : marker::cond_break, cond);
 
-          connect (this, SIGNAL (remove_breakpoint_via_debugger_linenr
-                                 (int)),
-                   bp,   SLOT (handle_remove_via_original_linenr (int)));
-          connect (this, SIGNAL (request_remove_breakpoint_via_editor_linenr
-                                 (int)),
-                   bp,   SLOT (handle_request_remove_via_editor_linenr
-                                 (int)));
-          connect (this, SIGNAL (remove_all_breakpoints (void)),
-                   bp,   SLOT (handle_remove (void)));
-          connect (this, SIGNAL (find_translated_line_number (int, int&,
-                                                              marker*&)),
-                   bp,   SLOT (handle_find_translation (int, int&,
-                                                        marker*&)));
-          connect (this, SIGNAL (find_linenr_just_before (int, int&, int&)),
-                   bp,   SLOT (handle_find_just_before (int, int&, int&)));
-          connect (this, SIGNAL (report_marker_linenr (QIntList&,
-                                                       QStringList&)),
-                   bp,   SLOT (handle_report_editor_linenr (QIntList&,
-                                                            QStringList&)));
-          connect (bp,   SIGNAL (request_remove (int)),
-                   this, SLOT (handle_request_remove_breakpoint (int)));
+              connect (this, SIGNAL (remove_breakpoint_via_debugger_linenr
+                                     (int)),
+                       bp,   SLOT (handle_remove_via_original_linenr (int)));
+              connect (this, SIGNAL (request_remove_breakpoint_via_editor_linenr
+                                     (int)),
+                       bp,   SLOT (handle_request_remove_via_editor_linenr
+                                     (int)));
+              connect (this, SIGNAL (remove_all_breakpoints (void)),
+                       bp,   SLOT (handle_remove (void)));
+              connect (this, SIGNAL (find_translated_line_number (int, int&,
+                                                                  marker*&)),
+                       bp,   SLOT (handle_find_translation (int, int&,
+                                                            marker*&)));
+              connect (this, SIGNAL (find_linenr_just_before (int, int&, int&)),
+                       bp,   SLOT (handle_find_just_before (int, int&, int&)));
+              connect (this, SIGNAL (report_marker_linenr (QIntList&,
+                                                           QStringList&)),
+                       bp,   SLOT (handle_report_editor_linenr (QIntList&,
+                                                                QStringList&)));
+              connect (bp,   SIGNAL (request_remove (int)),
+                       this, SLOT (handle_request_remove_breakpoint (int)));
+            }
         }
       else
         emit remove_breakpoint_via_debugger_linenr (line);

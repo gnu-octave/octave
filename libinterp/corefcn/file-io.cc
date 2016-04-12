@@ -1872,6 +1872,18 @@ as the name of the function when reporting errors.\n\
 %! assert (A{4}, [4 ; 8], 1e-6);
 %! assert (E);
 
+## Test leaving the file at the correct position on exit
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+");
+%! fprintf (fid, "1,2\n3,4\n");
+%! fseek (fid, 0, "bof");
+%! A = textscan (fid, "%s %f", 2, "Delimiter", ",");
+%! E = ftell (fid);
+%! fclose (fid);
+%! unlink (f);
+%! assert (E, 8);
+
 ## Tests reading with empty format; empty fields & incomplete lower row
 %!test
 %! f = tempname ();

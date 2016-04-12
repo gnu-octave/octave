@@ -1428,7 +1428,10 @@ delimited_stream::refresh_buf (void)
   octave_quit ();                       // allow ctrl-C
 
   if (old_remaining > 0)
-    memmove (buf, idx, old_remaining);
+    {
+      buf_in_file += (idx - buf);
+      memmove (buf, idx, old_remaining);
+    }
 
   progress_marker -= idx - buf;         // where original idx would have been
   idx = buf;

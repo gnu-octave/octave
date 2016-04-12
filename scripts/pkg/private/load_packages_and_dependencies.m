@@ -53,3 +53,37 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
   endif
 endfunction
 
+
+function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
+  for i = lidx
+    if (isfield (installed_pkgs_lst{i}, "loaded")
+        && installed_pkgs_lst{i}.loaded)
+      continue;
+    else
+      ## Insert this package at the front before recursing over dependencies.
+      if (! any (idx == i))
+        idx = [i, idx];
+      endif
+
+      if (handle_deps)
+        deps = installed_pkgs_lst{i}.depends;
+        if ((length (deps) > 1)
+            || (length (deps) == 1 && ! strcmp (deps{1}.package, "octave")))
+          tmplidx = [];
+          for k = 1 : length (deps)
+            for j = 1 : length (installed_pkgs_lst)
+              if (strcmp (installed_pkgs_lst{j}.name, deps{k}.package))
+                if (! any (idx == j))
+                  tmplidx(end + 1) = j;
+                  break;
+                endif
+              endif
+            endfor
+          endfor
+          idx = load_package_dirs (tmplidx, idx, handle_deps,
+                                 installed_pkgs_lst);
+        endif
+      endif
+    endif
+  endfor
+endfunction

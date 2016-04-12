@@ -82,6 +82,77 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
                                  flag{i}, verbose);
     endfor
   endif
-
 endfunction
 
+
+## Read an INDEX file.
+function pkg_idx_struct = parse_pkg_idx (packdir)
+
+  index_file = fullfile (packdir, "packinfo", "INDEX");
+
+  if (! exist (index_file, "file"))
+    error ("could not find any INDEX file in directory %s, try 'pkg rebuild all' to generate missing INDEX files", packdir);
+  endif
+
+
+  [fid, msg] = fopen (index_file, "r");
+  if (fid == -1)
+    error ("the INDEX file %s could not be read: %s",
+           index_file, msg);
+  endif
+
+  cat_num = 1;
+  pkg_idx_struct{1}.category = "Uncategorized";
+  pkg_idx_struct{1}.functions = {};
+
+  line = fgetl (fid);
+  while (isempty (strfind (line, ">>")) && ! feof (fid))
+    line = fgetl (fid);
+  endwhile
+
+  while (! feof (fid) || line != -1)
+    if (! any (! isspace (line)) || line(1) == "#" || any (line == "="))
+      ## Comments,  blank lines or comments about unimplemented
+      ## functions: do nothing
+      ## FIXME: probably comments and pointers to external functions
+      ## could be treated better when printing to screen?
+    elseif (! isempty (strfind (line, ">>")))
+      ## Skip package name and description as they are in DESCRIPTION
+      ## already.
+    elseif (! isspace (line(1)))
+      ## Category.
+      if (! isempty (pkg_idx_struct{cat_num}.functions))
+        pkg_idx_struct{++cat_num}.functions = {};
+      endif
+      pkg_idx_struct{cat_num}.category = deblank (line);
+    else
+      ## Function names.
+      while (any (! isspace (line)))
+        [fun_name, line] = strtok (line);
+        pkg_idx_struct{cat_num}.functions{end+1} = deblank (fun_name);
+      endwhile
+    endif
+    line = fgetl (fid);
+  endwhile
+  fclose (fid);
+endfunction
+
+
+function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
+                                    pkg_desc, status, verbose)
+  printf ("---\nPackage name:\n\t%s\n", pkg_name);
+  printf ("Version:\n\t%s\n", pkg_ver);
+  printf ("Short description:\n\t%s\n", pkg_desc);
+  printf ("Status:\n\t%s\n", status);
+  if (verbose)
+    printf ("---\nProvides:\n");
+    for i = 1:length (pkg_idx_struct)
+      if (! isempty (pkg_idx_struct{i}.functions))
+        printf ("%s\n", pkg_idx_struct{i}.category);
+        for j = 1:length (pkg_idx_struct{i}.functions)
+          printf ("\t%s\n", pkg_idx_struct{i}.functions{j});
+        endfor
+      endif
+    endfor
+  endif
+endfunction

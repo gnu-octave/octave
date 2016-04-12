@@ -341,6 +341,478 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     printf ("For information about changes from previous versions of the %s package, run 'news %s'.\n",
             desc.name, desc.name);
   endif
-
 endfunction
 
+
+function pkg = extract_pkg (nm, pat)
+  fid = fopen (nm, "rt");
+  pkg = "";
+  if (fid >= 0)
+    while (! feof (fid))
+      ln = fgetl (fid);
+      if (ln > 0)
+        t = regexp (ln, pat, "tokens");
+        if (! isempty (t))
+          pkg = [pkg "\n" t{1}{1}];
+        endif
+      endif
+    endwhile
+    if (! isempty (pkg))
+      pkg = [pkg "\n"];
+    endif
+    fclose (fid);
+  endif
+endfunction
+
+
+## Make sure the package contains the essential files.
+function verify_directory (dir)
+  needed_files = {"COPYING", "DESCRIPTION"};
+  for f = needed_files
+    if (! exist (fullfile (dir, f{1}), "file"))
+      error ("package is missing file: %s", f{1});
+    endif
+  endfor
+endfunction
+
+
+function prepare_installation (desc, packdir)
+  ## Is there a pre_install to call?
+  if (exist (fullfile (packdir, "pre_install.m"), "file"))
+    wd = pwd ();
+    try
+      cd (packdir);
+      pre_install (desc);
+      cd (wd);
+    catch
+      cd (wd);
+      rethrow (lasterror ());
+    end_try_catch
+  endif
+
+  ## If the directory "inst" doesn't exist, we create it.
+  inst_dir = fullfile (packdir, "inst");
+  if (! exist (inst_dir, "dir"))
+    [status, msg] = mkdir (inst_dir);
+    if (status != 1)
+      rmdir (desc.dir, "s");
+      error ("the 'inst' directory did not exist and could not be created: %s",
+             msg);
+    endif
+  endif
+endfunction
+
+
+function copy_built_files (desc, packdir, verbose)
+  src = fullfile (packdir, "src");
+  if (! exist (src, "dir"))
+    return
+  endif
+
+  ## Copy files to "inst" and "inst/arch" (this is instead of 'make install').
+  files = fullfile (src, "FILES");
+  instdir = fullfile (packdir, "inst");
+  archdir = fullfile (packdir, "inst", getarch ());
+
+  ## Get filenames.
+  if (exist (files, "file"))
+    [fid, msg] = fopen (files, "r");
+    if (fid < 0)
+      error ("couldn't open %s: %s", files, msg);
+    endif
+    filenames = char (fread (fid))';
+    fclose (fid);
+    if (filenames(end) == "\n")
+      filenames(end) = [];
+    endif
+    filenames = strtrim (ostrsplit (filenames, "\n"));
+    delete_idx = [];
+    for i = 1:length (filenames)
+      if (! all (isspace (filenames{i})))
+        filenames{i} = fullfile (src, filenames{i});
+      else
+        delete_idx(end+1) = i;
+      endif
+    endfor
+    filenames(delete_idx) = [];
+  else
+    m = dir (fullfile (src, "*.m"));
+    oct = dir (fullfile (src, "*.oct"));
+    mex = dir (fullfile (src, "*.mex"));
+
+    filenames = cellfun (@(x) fullfile (src, x),
+                         {m.name, oct.name, mex.name},
+                         "uniformoutput", false);
+  endif
+
+  ## Split into architecture dependent and independent files.
+  if (isempty (filenames))
+    idx = [];
+  else
+    idx = cellfun ("is_architecture_dependent", filenames);
+  endif
+  archdependent = filenames(idx);
+  archindependent = filenames(! idx);
+
+  ## Copy the files.
+  if (! all (isspace ([filenames{:}])))
+      if (! exist (instdir, "dir"))
+        mkdir (instdir);
+      endif
+      if (! all (isspace ([archindependent{:}])))
+        if (verbose)
+          printf ("copyfile");
+          printf (" %s", archindependent{:});
+          printf ("%s\n", instdir);
+        endif
+        [status, output] = copyfile (archindependent, instdir);
+        if (status != 1)
+          rmdir (desc.dir, "s");
+          error ("Couldn't copy files from 'src' to 'inst': %s", output);
+        endif
+      endif
+      if (! all (isspace ([archdependent{:}])))
+        if (verbose)
+          printf ("copyfile");
+          printf (" %s", archdependent{:});
+          printf (" %s\n", archdir);
+        endif
+        if (! exist (archdir, "dir"))
+          mkdir (archdir);
+        endif
+        [status, output] = copyfile (archdependent, archdir);
+        if (status != 1)
+          rmdir (desc.dir, "s");
+          error ("Couldn't copy files from 'src' to 'inst': %s", output);
+        endif
+      endif
+  endif
+endfunction
+
+
+function dep = is_architecture_dependent (nm)
+  persistent archdepsuffix = {".oct",".mex",".a",".lib",".so",".so.*",".dll","dylib"};
+
+  dep = false;
+  for i = 1 : length (archdepsuffix)
+    ext = archdepsuffix{i};
+    if (ext(end) == "*")
+      isglob = true;
+      ext(end) = [];
+    else
+      isglob = false;
+    endif
+    pos = strfind (nm, ext);
+    if (pos)
+      if (! isglob && (length (nm) - pos(end) != length (ext) - 1))
+        continue;
+      endif
+      dep = true;
+      break;
+    endif
+  endfor
+endfunction
+
+
+function copy_files (desc, packdir, global_install)
+  ## Create the installation directory.
+  if (! exist (desc.dir, "dir"))
+    [status, output] = mkdir (desc.dir);
+    if (status != 1)
+      error ("couldn't create installation directory %s : %s",
+      desc.dir, output);
+    endif
+  endif
+
+  octfiledir = getarchdir (desc);
+
+  ## Copy the files from "inst" to installdir.
+  instdir = fullfile (packdir, "inst");
+  if (! dirempty (instdir))
+    [status, output] = copyfile (fullfile (instdir, "*"), desc.dir);
+    if (status != 1)
+      rmdir (desc.dir, "s");
+      error ("couldn't copy files to the installation directory");
+    endif
+    if (exist (fullfile (desc.dir, getarch ()), "dir")
+        && ! strcmp (fullfile (desc.dir, getarch ()), octfiledir))
+      if (! exist (octfiledir, "dir"))
+        ## Can be required to create upto three levels of dirs.
+        octm1 = fileparts (octfiledir);
+        if (! exist (octm1, "dir"))
+          octm2 = fileparts (octm1);
+          if (! exist (octm2, "dir"))
+            octm3 = fileparts (octm2);
+            if (! exist (octm3, "dir"))
+              [status, output] = mkdir (octm3);
+              if (status != 1)
+                rmdir (desc.dir, "s");
+                error ("couldn't create installation directory %s : %s",
+                       octm3, output);
+              endif
+            endif
+            [status, output] = mkdir (octm2);
+            if (status != 1)
+              rmdir (desc.dir, "s");
+              error ("couldn't create installation directory %s : %s",
+                     octm2, output);
+            endif
+          endif
+          [status, output] = mkdir (octm1);
+          if (status != 1)
+            rmdir (desc.dir, "s");
+            error ("couldn't create installation directory %s : %s",
+                   octm1, output);
+          endif
+        endif
+        [status, output] = mkdir (octfiledir);
+        if (status != 1)
+          rmdir (desc.dir, "s");
+          error ("couldn't create installation directory %s : %s",
+          octfiledir, output);
+        endif
+      endif
+      [status, output] = movefile (fullfile (desc.dir, getarch (), "*"),
+                                   octfiledir);
+      rmdir (fullfile (desc.dir, getarch ()), "s");
+
+      if (status != 1)
+        rmdir (desc.dir, "s");
+        rmdir (octfiledir, "s");
+        error ("couldn't copy files to the installation directory");
+      endif
+    endif
+
+  endif
+
+  ## Create the "packinfo" directory.
+  packinfo = fullfile (desc.dir, "packinfo");
+  [status, msg] = mkdir (packinfo);
+  if (status != 1)
+    rmdir (desc.dir, "s");
+    rmdir (octfiledir, "s");
+    error ("couldn't create packinfo directory: %s", msg);
+  endif
+
+  packinfo_copy_file ("DESCRIPTION", "required", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("COPYING", "required", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("CITATION", "optional", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("NEWS", "optional", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("ONEWS", "optional", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("ChangeLog", "optional", packdir, packinfo, desc, octfiledir);
+
+  ## Is there an INDEX file to copy or should we generate one?
+  index_file = fullfile (packdir, "INDEX");
+  if (exist (index_file, "file"))
+    packinfo_copy_file ("INDEX", "required", packdir, packinfo, desc, octfiledir);
+  else
+    try
+      write_index (desc, fullfile (packdir, "inst"),
+                   fullfile (packinfo, "INDEX"), global_install);
+    catch
+      rmdir (desc.dir, "s");
+      rmdir (octfiledir, "s");
+      rethrow (lasterror ());
+    end_try_catch
+  endif
+
+  ## Is there an 'on_uninstall.m' to install?
+  packinfo_copy_file ("on_uninstall.m", "optional", packdir, packinfo, desc, octfiledir);
+
+  ## Is there a doc/ directory that needs to be installed?
+  docdir = fullfile (packdir, "doc");
+  if (exist (docdir, "dir") && ! dirempty (docdir))
+    [status, output] = copyfile (docdir, desc.dir);
+  endif
+
+  ## Is there a bin/ directory that needs to be installed?
+  ## FIXME: Need to treat architecture dependent files in bin/
+  bindir = fullfile (packdir, "bin");
+  if (exist (bindir, "dir") && ! dirempty (bindir))
+    [status, output] = copyfile (bindir, desc.dir);
+  endif
+endfunction
+
+
+function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, octfiledir)
+  filepath = fullfile (packdir, filename);
+  if (! exist (filepath, "file") && strcmpi (requirement, "optional"))
+    ## do nothing, it's still OK
+  else
+    [status, output] = copyfile (filepath, packinfo);
+    if (status != 1)
+      rmdir (desc.dir, "s");
+      rmdir (octfiledir, "s");
+      error ("Couldn't copy %s file: %s", filename, output);
+    endif
+  endif
+endfunction
+
+
+## Create an INDEX file for a package that doesn't provide one.
+##   'desc'  describes the package.
+##   'dir'   is the 'inst' directory in temporary directory.
+##   'index_file' is the name (including path) of resulting INDEX file.
+function write_index (desc, dir, index_file, global_install)
+  ## Get names of functions in dir
+  [files, err, msg] = readdir (dir);
+  if (err)
+    error ("couldn't read directory %s: %s", dir, msg);
+  endif
+
+  ## Get classes in dir
+  class_idx = find (strncmp (files, '@', 1));
+  for k = 1:length (class_idx)
+    class_name = files {class_idx(k)};
+    class_dir = fullfile (dir, class_name);
+    if (exist (class_dir, "dir"))
+      [files2, err, msg] = readdir (class_dir);
+      if (err)
+        error ("couldn't read directory %s: %s", class_dir, msg);
+      endif
+      files2 = strcat (class_name, filesep (), files2);
+      files = [files; files2];
+    endif
+  endfor
+
+  ## Check for architecture dependent files.
+  tmpdir = getarchdir (desc);
+  if (exist (tmpdir, "dir"))
+    [files2, err, msg] = readdir (tmpdir);
+    if (err)
+      error ("couldn't read directory %s: %s", tmpdir, msg);
+    endif
+    files = [files; files2];
+  endif
+
+  functions = {};
+  for i = 1:length (files)
+    file = files{i};
+    lf = length (file);
+    if (lf > 2 && strcmp (file(end-1:end), ".m"))
+      functions{end+1} = file(1:end-2);
+    elseif (lf > 4 && strcmp (file(end-3:end), ".oct"))
+      functions{end+1} = file(1:end-4);
+    endif
+  endfor
+
+  ## Does desc have a categories field?
+  if (! isfield (desc, "categories"))
+    error ("the DESCRIPTION file must have a Categories field, when no INDEX file is given");
+  endif
+  categories = strtrim (strsplit (desc.categories, ","));
+  if (length (categories) < 1)
+    error ("the Category field is empty");
+  endif
+
+  ## Write INDEX.
+  fid = fopen (index_file, "w");
+  if (fid == -1)
+    error ("couldn't open %s for writing", index_file);
+  endif
+  fprintf (fid, "%s >> %s\n", desc.name, desc.title);
+  fprintf (fid, "%s\n", categories{1});
+  fprintf (fid, "  %s\n", functions{:});
+  fclose (fid);
+endfunction
+
+
+function create_pkgadddel (desc, packdir, nm, global_install)
+  instpkg = fullfile (desc.dir, nm);
+  instfid = fopen (instpkg, "at"); # append to support PKG_ADD at inst/
+  ## If it is exists, most of the PKG_* file should go into the
+  ## architecture dependent directory so that the autoload/mfilename
+  ## commands work as expected. The only part that doesn't is the
+  ## part in the main directory.
+  archdir = fullfile (getarchprefix (desc, global_install),
+                      [desc.name "-" desc.version], getarch ());
+  if (exist (getarchdir (desc, global_install), "dir"))
+    archpkg = fullfile (getarchdir (desc, global_install), nm);
+    archfid = fopen (archpkg, "at");
+  else
+    archpkg = instpkg;
+    archfid = instfid;
+  endif
+
+  if (archfid >= 0 && instfid >= 0)
+    ## Search all dot-m files for PKG commands.
+    lst = dir (fullfile (packdir, "inst", "*.m"));
+    for i = 1:length (lst)
+      nam = fullfile (packdir, "inst", lst(i).name);
+      fwrite (instfid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
+    endfor
+
+    ## Search all C++ source files for PKG commands.
+    lst = dir (fullfile (packdir, "src", "*.cc"));
+    for i = 1:length (lst)
+      nam = fullfile (packdir, "src", lst(i).name);
+      fwrite (archfid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
+      fwrite (archfid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
+    endfor
+
+    ## Add developer included PKG commands.
+    packdirnm = fullfile (packdir, nm);
+    if (exist (packdirnm, "file"))
+      fid = fopen (packdirnm, "rt");
+      if (fid >= 0)
+        while (! feof (fid))
+          ln = fgets (fid);
+          if (ln > 0)
+            fwrite (archfid, ln);
+          endif
+        endwhile
+        fclose (fid);
+      endif
+    endif
+
+    ## If the files is empty remove it.
+    fclose (instfid);
+    t = dir (instpkg);
+    if (t.bytes <= 0)
+      unlink (instpkg);
+    endif
+
+    if (instfid != archfid)
+      fclose (archfid);
+      t = dir (archpkg);
+      if (t.bytes <= 0)
+        unlink (archpkg);
+      endif
+    endif
+  endif
+endfunction
+
+
+function archprefix = getarchprefix (desc, global_install)
+  if (global_install)
+    [~, archprefix] = default_prefix (global_install, desc);
+  else
+    archprefix = desc.dir;
+  endif
+endfunction
+
+
+function finish_installation (desc, packdir, global_install)
+  ## Is there a post-install to call?
+  if (exist (fullfile (packdir, "post_install.m"), "file"))
+    wd = pwd ();
+    try
+      cd (packdir);
+      post_install (desc);
+      cd (wd);
+    catch
+      cd (wd);
+      rmdir (desc.dir, "s");
+      rmdir (getarchdir (desc), "s");
+      rethrow (lasterror ());
+    end_try_catch
+  endif
+endfunction
+
+
+function generate_lookfor_cache (desc)
+  dirs = strtrim (ostrsplit (genpath (desc.dir), pathsep ()));
+  for i = 1 : length (dirs)
+    doc_cache_create (fullfile (dirs{i}, "doc-cache"), dirs{i});
+  endfor
+endfunction

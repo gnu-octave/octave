@@ -78,3 +78,62 @@ function desc = get_description (filename)
   desc.name = tolower (desc.name);
 endfunction
 
+
+## Make sure the version string v is a valid x.y.z version string
+## Examples: "0.1" => "0.1.0", "monkey" => error(...).
+function out = fix_version (v)
+  if (regexp (v, '^\d+(\.\d+){1,2}$') == 1)
+    parts = ostrsplit (v, '.', true);
+    if (numel (parts) == 2)
+      out = [v ".0"];
+    else
+      out = v;
+    endif
+  else
+    error ("bad version string: %s", v);
+  endif
+endfunction
+
+
+## Make sure the depends field is of the right format.
+## This function returns a cell of structures with the following fields:
+##   package, version, operator
+function deps_cell = fix_depends (depends)
+  deps = strtrim (ostrsplit (tolower (depends), ","));
+  deps_cell = cell (1, length (deps));
+  dep_pat = ...
+  '\s*(?<name>[-\w]+)\s*(\(\s*(?<op>[<>=]+)\s*(?<ver>\d+\.\d+(\.\d+)*)\s*\))*\s*';
+
+  ## For each dependency.
+  for i = 1:length (deps)
+    dep = deps{i};
+    [start, nm] = regexp (dep, dep_pat, 'start', 'names');
+    ## Is the dependency specified
+    ## in the correct format?
+    if (! isempty (start))
+      package = tolower (strtrim (nm.name));
+      ## Does the dependency specify a version
+      ## Example: package(>= version).
+      if (! isempty (nm.ver))
+        operator = nm.op;
+        if (! any (strcmp (operator, {">", ">=", "<=", "<", "=="})))
+          error ("unsupported operator: %s", operator);
+        endif
+        version = fix_version (nm.ver);
+        ## If no version is specified for the dependency
+        ## we say that the version should be greater than
+        ## or equal to "0.0.0".
+      else
+        package = tolower (strtrim (dep));
+        operator = ">=";
+        version = "0.0.0";
+      endif
+      deps_cell{i} = struct ("package", package,
+                             "operator", operator,
+                             "version", version);
+    else
+      error ("incorrect syntax for dependency '%s' in the DESCRIPTION file\n",
+             dep);
+    endif
+  endfor
+endfunction

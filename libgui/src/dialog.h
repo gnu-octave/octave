@@ -199,6 +199,8 @@ public:
                        const QString& name, const QStringList& prompt,
                        const QString& ok_string, const QString& cancel_string);
 
+  ~ListDialog (void);
+
 signals:
 
   void finish_selection (const QIntList&, int);
@@ -212,6 +214,10 @@ public slots:
   void reject (void);
 
   void item_double_clicked (const QModelIndex&);
+
+private:
+
+  QAbstractItemModel *model;
 };
 
 

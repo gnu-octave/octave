@@ -205,12 +205,8 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
                         int wd, int ht, const QList<int>& initial,
                         const QString& title, const QStringList& prompt,
                         const QString& ok_string, const QString& cancel_string)
-  : QDialog ()
+  : QDialog (), model (new QStringListModel (list))
 {
-  // Put the list of items into a model.  Keep this off of the stack
-  // because this conceivably could be a very large list.
-  QAbstractItemModel *model = new QStringListModel (list);
-
   QListView *view = new QListView;
   view->setModel (model);
 
@@ -306,6 +302,10 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
            this, SLOT (item_double_clicked (const QModelIndex&)));
 }
 
+ListDialog::~ListDialog (void)
+{
+  delete model;
+}
 
 void
 ListDialog::buttonOk_clicked (void)

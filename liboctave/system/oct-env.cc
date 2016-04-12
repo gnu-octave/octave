@@ -261,7 +261,7 @@ octave_env::chdir (const std::string& newdir)
 void
 octave_env::do_set_program_name (const std::string& s) const
 {
-  bool initialized = false;
+  static bool initialized = false;
 
   if (! initialized)
     {
@@ -283,6 +283,8 @@ octave_env::do_set_program_name (const std::string& s) const
       prog_name = (pos == std::string::npos
                    ? prog_invocation_name
                    : prog_invocation_name.substr (pos+1));
+
+      initialized = true;
     }
 }
 

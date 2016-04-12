@@ -822,7 +822,7 @@ array elements but not delete the space for them:
 @example
 @group
 x = @{"1", "2"; "3", "4"@};
-x@{1, :@} = []
+x(1, :) = @{[]@}
 @result{} x =
       @{
         [1,1] = [](0x0)

@@ -319,7 +319,7 @@ octave_call_stack::do_debug_user_code (void) const
 
   while (i != 0)
     {
-      const stack_frame& elt = cs[i];
+      const stack_frame& elt = cs[i--];
 
       octave_function *f = elt.m_fcn;
 
@@ -347,7 +347,7 @@ octave_call_stack::do_debug_user_code_line (void) const
 
   while (i != 0)
     {
-      const stack_frame& elt = cs[i];
+      const stack_frame& elt = cs[i--];
 
       octave_function *f = elt.m_fcn;
 
@@ -378,7 +378,7 @@ octave_call_stack::do_debug_user_code_column (void) const
 
   while (i != 0)
     {
-      const stack_frame& elt = cs[i];
+      const stack_frame& elt = cs[i--];
 
       octave_function *f = elt.m_fcn;
 

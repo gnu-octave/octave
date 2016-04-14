@@ -101,22 +101,11 @@
 ## @end example
 ##
 ## @noindent
-## adds the @code{image} package to the path.  It is possible to load all
-## installed packages at once with the keyword @samp{all}.  Usage:
-##
-## @example
-## pkg load all
-## @end example
+## adds the @code{image} package to the path.
 ##
 ## @item unload
 ## Remove named packages from the path.  After unloading a package it is
-## no longer possible to use the functions provided by the package.  It is
-## possible to unload all installed packages at once with the keyword
-## @samp{all}.  Usage:
-##
-## @example
-## pkg unload all
-## @end example
+## no longer possible to use the functions provided by the package.
 ##
 ## @item list
 ## Show the list of currently installed packages.  For example,
@@ -159,16 +148,22 @@
 ## @end example
 ##
 ## @item describe
-## Show a short description of the named installed packages, with the option
+## Show a short description of installed packages.  With the option
 ## @qcode{"-verbose"} also list functions provided by the package.  For
 ## example,
 ##
 ## @example
-## pkg describe -verbose all
+## pkg describe -verbose
 ## @end example
 ##
 ## @noindent
 ## will describe all installed packages and the functions they provide.
+## Display can be limited to a set of packages:
+##
+## @example
+## pkg describe control signal # describe control and signal packages
+## @end example
+##
 ## If one output is requested a cell of structure containing the
 ## description and list of functions of each package is returned as
 ## output rather than printed on screen:
@@ -409,13 +404,13 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "load"
       if (isempty (files))
-        error ("pkg: load action requires at least one package or 'all'");
+        error ("pkg: load action requires at least one package name");
       endif
       load_packages (files, deps, local_list, global_list);
 
     case "unload"
       if (isempty (files))
-        error ("pkg: unload action requires at least one package or 'all'");
+        error ("pkg: unload action requires at least one package name");
       endif
       unload_packages (files, deps, local_list, global_list);
 
@@ -518,9 +513,6 @@ function [local_packages, global_packages] = pkg (varargin)
       build (files{1}, files(2:end), verbose);
 
     case "describe"
-      if (isempty (files))
-        error ("pkg: describe action requires at least one package or 'all'");
-      endif
       ## FIXME: name of the output variables is inconsistent with their content
       if (nargout)
         [local_packages, global_packages] = describe (files, verbose,

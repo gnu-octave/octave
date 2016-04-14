@@ -34,22 +34,16 @@ function load_packages (files, handle_deps, local_list, global_list)
     pdirs{i} = installed_pkgs_lst{i}.dir;
   endfor
 
-  ## Load all.
-  if (length (files) == 1 && strcmp (files{1}, "all"))
-    idx = [1:length(installed_pkgs_lst)];
-  else
-    idx = [];
-    for i = 1:length (files)
-      idx2 = find (strcmp (pnames, files{i}));
-      if (! any (idx2))
-          error ("package %s is not installed", files{i});
-      endif
-      idx(end + 1) = idx2;
-    endfor
-  endif
+  idx = [];
+  for i = 1:length (files)
+    idx2 = find (strcmp (pnames, files{i}));
+    if (! any (idx2))
+      error ("package %s is not installed", files{i});
+    endif
+    idx(end + 1) = idx2;
+  endfor
 
   ## Load the packages, but take care of the ordering of dependencies.
   load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst, true);
 
 endfunction
-

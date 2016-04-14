@@ -29,12 +29,12 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
   installed_pkgs_lst = installed_packages(local_list, global_list);
   num_packages = length (installed_pkgs_lst);
 
-  describe_all = false;
-  if (any (strcmp ("all", pkgnames)))
+  if (isempty (pkgnames))
     describe_all = true;
     flag(1:num_packages) = {"Not Loaded"};
     num_pkgnames = num_packages;
   else
+    describe_all = false;
     num_pkgnames = length (pkgnames);
     flag(1:num_pkgnames) = {"Not installed"};
   endif

@@ -457,12 +457,15 @@ file_editor::request_open_file (const QString& openFileName,
         {
           file_editor_tab *fileEditorTab = 0;
           // Reuse <unnamed> tab if it hasn't yet been modified.
+          bool reusing = false;
           tab = find_tab_widget ("");
           if (tab)
             {
               fileEditorTab = static_cast<file_editor_tab *>(tab);
               if (fileEditorTab->qsci_edit_area ()->isModified ())
                 fileEditorTab = 0;
+              else
+                reusing = true;
             }
 
           // If <unnamed> was absent or modified, create a new tab.
@@ -477,7 +480,8 @@ file_editor::request_open_file (const QString& openFileName,
                 {
                   // Supply empty title then have the file_editor_tab update
                   // with full or short name.
-                  add_file_editor_tab (fileEditorTab, "");
+                  if (!reusing)
+                    add_file_editor_tab (fileEditorTab, "");
                   fileEditorTab->update_window_title (false);
                   // file already loaded, add file to mru list here
                   QFileInfo file_info = QFileInfo (openFileName);

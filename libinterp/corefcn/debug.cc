@@ -290,8 +290,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
               {
                 // It was a line number. Get function name from debugger.
                 if (Vdebugging)
-                  //symbol_name = get_user_code ()->name ();
-                  symbol_name = get_user_code ()->fcn_file_name ();
+                  symbol_name = get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);

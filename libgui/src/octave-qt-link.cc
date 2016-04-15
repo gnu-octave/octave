@@ -597,7 +597,11 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
     {
       bool dir_in_load_path = load_path::contains_canonical (dir);
 
-      std::string base_file = octave_env::base_pathname (file);
+      // get base name, allowing "@class/method.m" (bug #41514)
+      std::string base_file = (file.length () > dir.length ())
+                              ? file.substr (dir.length () + 1)
+                              : octave_env::base_pathname (file);
+
       std::string lp_file = load_path::find_file (base_file);
 
       if (dir_in_load_path)

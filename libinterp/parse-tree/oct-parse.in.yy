@@ -4595,35 +4595,79 @@ source_file (const std::string& file_name, const std::string& context,
     }
 
   octave_function *fcn = 0;
+  // Don't delete a function already in symbol_table
+  bool delete_fcn = false;
 
-  try
-    {
-      fcn = parse_fcn_file (file_full_name, file_name, "", "",
-                            require_file, true, false, false, warn_for);
-    }
-  catch (octave_execution_exception& e)
-    {
-      error (e, "source: error sourcing file '%s'", file_full_name.c_str ());
-    }
+  // Find symbol name that would be in symbol_table, if it were loaded.
+  size_t dir_end = file_name.find_last_of (file_ops::dir_sep_chars ());
+  dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
 
-  if (fcn && fcn->is_user_script ())
-    {
-      octave_value_list args;
+  size_t extension = file_name.find_last_of ('.');
+  if (extension == std::string::npos)
+    extension = file_name.length ();
 
-      if (verbose)
+  std::string symbol = file_name.substr (dir_end, extension - dir_end);
+  std::string full_name = octave_canonicalize_file_name (file_name);
+
+  // Check if this file is already loaded (or in the path)
+  octave_value loaded_sym = symbol_table::find (symbol);
+  if (loaded_sym.is_function ())
+    {
+      fcn = loaded_sym.function_value ();
+      if (fcn)
         {
-          std::cout << "executing commands from " << file_full_name << " ... ";
-          reading_startup_message_printed = true;
-          std::cout.flush ();
+          if (octave_canonicalize_file_name (fcn->fcn_file_name ())
+              == full_name)
+            delete_fcn = true;
+          else
+            fcn = 0;             // wrong file, so load it below
         }
-
-      fcn->do_multi_index_op (0, args);
-
-      if (verbose)
-        std::cout << "done." << std::endl;
-
-      delete fcn;
     }
+
+  // If no symbol of this name, or the symbol is for a different file, load
+  if (! fcn)
+    {
+      try
+        {
+          fcn = parse_fcn_file (file_full_name, file_name, "", "",
+                                require_file, true, false, false, warn_for);
+        }
+      catch (octave_execution_exception& e)
+        {
+          error (e, "source: error sourcing file '%s'",
+                 file_full_name.c_str ());
+        }
+    }
+
+  // Return or error if we don't have a valid script
+  if (! fcn)
+    return;
+
+  if (! fcn->is_user_code ())
+    {
+      if (delete_fcn)
+        delete fcn;
+      error ("source: %s is not a script", full_name.c_str ());
+    }
+
+  // Parameter checking is over.  Now run.
+  octave_value_list args;
+
+  if (verbose)
+    {
+      std::cout << "executing commands from " << full_name << " ... ";
+      reading_startup_message_printed = true;
+      std::cout.flush ();
+    }
+
+  fcn->do_multi_index_op (0, args);
+
+  if (verbose)
+    std::cout << "done." << std::endl;
+
+  // Delete scripts not on the path, so they don't shadow ones that are.
+  if (delete_fcn)
+    delete fcn;
 }
 
 DEFUN (mfilename, args, ,
@@ -4689,11 +4733,17 @@ the filename and the extension.\n\
 
 DEFUN (source, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {} {} source (@var{file})\n\
+@deftypefn  {} {} source (@var{file})\n\
+@deftypefnx {} {} source (@var{file}, @var{context})\n\
 Parse and execute the contents of @var{file}.\n\
 \n\
-This is equivalent to executing commands from a script file, but without\n\
-requiring the file to be named @file{@var{file}.m}.\n\
+Without specifying @var{context}, this is equivalent to executing commands\n\
+from a script file, but without requiring the file to be named\n\
+@file{@var{file}.m} or to be on the execution path.\n\
+\n\
+Instead of the current context, the script may be executed in either the\n\
+context of the function that called the present function\n\
+(@qcode{\"caller\"}), or the top-level context (@qcode{\"base\"}).\n\
 @seealso{run}\n\
 @end deftypefn")
 {

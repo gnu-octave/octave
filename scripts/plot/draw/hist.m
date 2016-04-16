@@ -96,6 +96,11 @@ function [nn, xx] = hist (varargin)
 
   max_val = max (y(:));
   min_val = min (y(:));
+  ## Do not convert if input is of class single (or if already is double).
+  if (! isfloat (y))
+    max_val = double (max_val);
+    min_val = double (min_val);
+  endif
 
   iarg = 1;
   if (nargin == 1 || ischar (varargin{iarg}))
@@ -105,6 +110,11 @@ function [nn, xx] = hist (varargin)
   else
     ## nargin is either 2 or 3
     x = varargin{iarg++};
+    ## Do not convert if input is of class single (or if already is double).
+    if (! isfloat (x))
+      x = double (x);
+    endif
+
     if (isscalar (x))
       n = x;
       if (n <= 0)
@@ -126,11 +136,11 @@ function [nn, xx] = hist (varargin)
     endif
   endif
 
-  ## Avoid issues with integer types for x and y
-  x = double (x);
-  y = double (y);
-
   cutoff = (x(1:end-1,:) + x(2:end,:)) / 2;
+  if (isinteger (y))
+    cutoff = floor (cutoff);
+  endif
+
   n = rows (x);
   y_nc = columns (y);
   if (n < 30 && columns (x) == 1)
@@ -144,11 +154,10 @@ function [nn, xx] = hist (varargin)
     ## The following algorithm works fastest for n greater than about 30.
     ## Put cutoff elements between boundaries, integrate over all
     ## elements, keep totals at boundaries.
-    [s, idx] = sort ([y; repmat(cutoff, 1, y_nc)]);
-    len = rows (y);
-    chist = cumsum (idx <= len);
+    m = (nthargout (2, @sort, [y; repmat(cutoff, 1, y_nc)]) <= rows (y));
+    chist = cumsum (m);
     chist = [(zeros (1, y_nc));
-             (reshape (chist(idx > len), rows (cutoff), y_nc));
+             (reshape (chist(! m), rows (cutoff), y_nc));
              (chist(end,:) - sum (isnan (y)))];
   endif
 
@@ -212,3 +221,62 @@ endfunction
 ## Test bug #42394
 %!assert (isempty (hist (rand (10,2), 0:5, 1)), false)
 %!assert (isempty (hist (rand (10,2), 0:5, [1 1])), false)
+
+## Test bug #47707
+%!test
+%! y = [1  9  2  2  9  3  8  9  1  7  1  1  3  2  4  4  8  2  1  9  4  1 ...
+%!      2  3  1  1  6  5  5  3  9  9  1  1  8  7  7  2  4  1];
+%! [n, x] = hist (y, 10);
+%! [nn, xx] = hist (uint8 (y), 10);
+%! assert (nn, n)
+%! assert (xx, x)
+%!
+%! ## test again with N > 30 because there's a special case for it
+%! [n, x] = hist (y, 35);
+%! [nn, xx] = hist (uint8 (y), 35);
+%! assert (nn, n)
+%! assert (xx, x)
+
+## Test logical input
+%!test
+%! y = [0  1  0  0  1  0  1  1  0  1  0  0  0  0  0  0  1  0];
+%! [n, x] = hist (y, 10);
+%! [nn, xx] = hist (logical (y), 10);
+%! assert (nn, n)
+%! assert (xx, x)
+%!
+%! ## test again with N > 30 because there's a special case for it
+%! [n, x] = hist (y, 35);
+%! [nn, xx] = hist (logical (y), 35);
+%! assert (nn, n)
+%! assert (xx, x)
+
+## Second output argument must be of class single if data is class single.
+%!assert (class (nthargout (2, @hist, rand (10, 1, "single"))), "single")
+
+## Handle second argument correctly, even when it's class integer
+%!test
+%! y = [2.4 2.5 2.6 5.4 5.5 5.6]
+%! n = [2  3  1];
+%! x = [1  4  7];
+%! [nn, xx] = hist (y, uint8 ([1 4 7]));
+%! assert (nn, n)
+%! assert (xx, x)
+
+%!test
+%! y = [2.4 2.5 2.6 5.4 5.5 5.6];
+%! s = (5.6 - 2.4) / 6;
+%! x = [2.4+s 4.0 5.6-s];
+%! n = [3 0 3];
+%!
+%! [nn, xx] = hist (y, 3);
+%! assert (nn, n)
+%! assert (xx, x)
+%!
+%! [nn, xx] = hist (y, uint8 (3));
+%! assert (nn, n)
+%! assert (xx, x)
+%!
+%! [nn, xx] = hist (y, single (3));
+%! assert (nn, n)
+%! assert (xx, single (x))

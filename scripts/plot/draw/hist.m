@@ -256,7 +256,7 @@ endfunction
 
 ## Handle second argument correctly, even when it's class integer
 %!test
-%! y = [2.4 2.5 2.6 5.4 5.5 5.6]
+%! y = [2.4 2.5 2.6 5.4 5.5 5.6];
 %! n = [2  3  1];
 %! x = [1  4  7];
 %! [nn, xx] = hist (y, uint8 ([1 4 7]));

@@ -289,11 +289,11 @@ ChangeLog:
 HG-ID:
 	$(AM_V_GEN)rm -f $@-t && \
 	if [ -d $(srcdir)/.hg ]; then \
-	  ( cd $(srcdir) && hg identify --id ) > $@-t && \
+	  ( cd $(srcdir) && hg identify --id || echo "unknown" ) > $@-t && \
 	  $(simple_move_if_change_rule); \
 	elif [ ! -f $(srcdir)/HG-ID ]; then \
 	  echo "$(srcdir)/HG-ID is missing!" 1>&2; \
-	  echo "unknown" >& $@-t && mv $@-t $@; \
+	  echo "unknown" > $@-t && mv $@-t $@; \
 	else \
 	  echo "preserving existing HG-ID file" 1>&2; \
 	  $(cp_update_rule); \

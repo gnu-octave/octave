@@ -185,7 +185,6 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Object Oriented Programming::
 * GUI Development::
 * System Utilities::
-* Java Interface::
 * Packages::
 * External Code Interface::
 * Test and Demo Functions::
@@ -803,20 +802,6 @@ Networking Utilities
 * URL Manipulation::
 * Base64 and Binary Data Transmission::
 
-Java Interface
-
-* Java Interface Functions::
-* Dialog Box Functions::
-* FAQ - Frequently asked Questions::
-
-FAQ - Frequently asked Questions
-
-* How to distinguish between Octave and Matlab?::
-* How to make Java classes available?::
-* How to create an instance of a Java class?::
-* How can I handle memory limitations?::
-* Which @TeX{} symbols are implemented in dialog functions?::
-
 Packages
 
 * Installing and Removing Packages::
@@ -836,6 +821,7 @@ External Code Interface
 * Oct-Files::
 * Mex-Files::
 * Standalone Programs::
+* Java Interface::
 
 Oct-Files
 
@@ -869,6 +855,13 @@ Mex-Files
 * Sparse Matrices with Mex-Files::
 * Calling Other Functions in Mex-Files::
 
+Java Interface
+
+* Java Interface Functions::
+* Making Java classes available::
+* Creating an instance of a Java class::
+* Handling Java memory limitations::
+
 Test and Demo Functions
 
 * Test Functions::
@@ -895,7 +888,8 @@ Trouble
 
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::
-* Service::
+* How To Get Help with Octave::
+* How to distinguish between Octave and Matlab::
 
 Reporting Bugs
 
@@ -970,7 +964,6 @@ Grammar and Parser
 @include oop.texi
 @include gui.texi
 @include system.texi
-@include java.texi
 @include package.texi
 
 @c maybe add again later, if anyone every writes any really interesting

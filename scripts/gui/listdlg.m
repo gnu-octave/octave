@@ -65,12 +65,16 @@
 ##
 ## @example
 ## @group
-## [sel, ok] = listdlg ("ListString", @{"An item", "another", "yet another"@},
+## my_options = @{"An item", "another", "yet another"@};
+## [sel, ok] = listdlg ("ListString", my_options,
 ##                      "SelectionMode", "Multiple");
 ## if (ok == 1)
+##   disp ("You selected:");
 ##   for i = 1:numel (sel)
-##     disp (sel(i));
+##     disp (sprintf ("\t%s", my_options@{sel(i)@}));
 ##   endfor
+## else
+##   disp ("You cancelled.");
 ## endif
 ## @end group
 ## @end example
@@ -135,30 +139,6 @@ function [sel, ok] = listdlg (varargin)
     [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
                                              initialvalue, name, prompt,
                                              okstring, cancelstring);
-  elseif (__have_feature__ ("JAVA"))
-    ## transform matrices to cell arrays of strings
-    ## swap width and height to correct calling format for JDialogBox
-    listsize = {num2str(listsize(2)), num2str(listsize(1))};
-    initialvalue = arrayfun (@num2str, initialvalue, "UniformOutput", false);
-    if (isempty (prompt))
-      prompt = {""};
-    endif
-
-    ret = javaMethod ("listdlg", "org.octave.JDialogBox", listcell,
-                      selmode, listsize, initialvalue, name, prompt,
-                      okstring, cancelstring);
-
-    if (numel (ret) > 0)
-      sel = zeros (1, numel (ret));
-      ## for loop needed to convert Java array ret into Octave double sel
-      for i = 1:numel (ret)
-        sel(i) = ret(i);
-      endfor
-      ok = 1;
-    else
-      sel = [];
-      ok = 0;
-    endif
   else
     error ("listdlg is not available in this version of Octave");
   endif

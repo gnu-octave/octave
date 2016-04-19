@@ -36,27 +36,90 @@
 ## The return value is always 1.
 ##
 ## Compatibility Note: The optional argument @var{createmode} is accepted for
-## @sc{matlab} compatibility, but is not implemented.
+## @sc{matlab} compatibility, but is not implemented.  A valid @var{createmode}
+## is either one of the character strings @qcode{"nonmodal"}, @qcode{"modal"},
+## or @qcode{"replace"}, or a structure containing a field
+## @qcode{"WindowStyle"} with one of the three character strings.
+##
+## Examples:
+##
+## @example
+## @group
+## msgbox ("Some message for the user.");
+## msgbox ("Some message\nwith two lines.");
+## msgbox (@{"Some message", "with two lines."@});
+## msgbox ("Some message for the user.", "Fancy caption");
+##
+## % A message dialog box with error icon
+## msgbox ("Some message for the user.", "Fancy caption", "error");
+## @end group
+## @end example
 ##
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = msgbox (msg, title = "", varargin)
+function retval = msgbox (msg, varargin)
 
-  if (nargin < 1 || nargin > 4)
-    print_usage ();
+  narginchk (1, 4);
+
+  if (! ischar (msg))
+    if (iscell (msg))
+      msg = sprintf ("%s\n", msg{:});
+      msg(end) = "";
+    else
+      error ("MSG must be a character string or cellstr array");
+    endif
   endif
 
-  retval = message_dialog ("msgbox", msg, title, varargin{:});
+  box_title = "";
+  box_icon = "none";
+
+  if (nargin > 1)
+    ## check last element to be a structure CREATEMODE
+    if (isstruct (varargin{end}) && isfield (varargin{end}, "WindowStyle"))
+      varargin{end} = varargin{end}.WindowStyle;
+    endif
+    ## print warning for unsupported CREATEMODE
+    if ((ischar (varargin{end}))
+        && (ismember (varargin{end}, {"nonmodal", "modal", "replace"})))
+      warning ("CREATEMODE %s is not yet supported", varargin{end});
+      nargin = nargin - 1;
+    elseif (nargin == 4)
+      error ("CREATEMODE is not a valid type");
+    endif
+
+    if ((nargin > 1) && (! ischar (varargin{1})))
+      error ("TITLE must be a character string");
+    else
+      box_title = varargin{1};
+    endif
+
+    if (nargin > 2)
+      box_icon = varargin{2};
+      switch (box_icon)
+        case {"error", "help", "warn", "none"}
+          ## do nothing, all valid
+        case "custom"
+          warning ("custom icons are not yet supported");
+        otherwise
+          error ("ICON is not a valid type")
+      endswitch
+    endif
+  endif
+
+  ## make a GUI element or print to console
+  if (__octave_link_enabled__ ())
+    retval = __octave_link_message_dialog__ (box_icon, msg, box_title);
+  else
+    disp (sprintf ("\n%s:\t%s\n\t%s\n", upper (box_icon), box_title,
+      strrep (msg, "\n", "\n\t")));
+    retval = 1;
+  endif
 
 endfunction
 
-
-%!demo
-%! disp('- test msgbox message only.');
-%! msgbox("Below, you should see 3 lines:\nline #1\nline #2, and\nline #3.");
-
-%!demo
-%! disp('- test msgbox message and caption.');
-%! msgbox('You should see a single line.','A msgbox');
-
+%!error<narginchk> msgbox (1, 2, 3, 4, 5)
+%!error<MSG must be a character string> msgbox (1)
+%!error<TITLE must be a character string> msgbox ("msg", 1)
+%!error<ICON is not a valid type> msgbox ("msg", "title", 1)
+%!error<CREATEMODE is not a valid> msgbox ("msg", "title", "help", "wrong")

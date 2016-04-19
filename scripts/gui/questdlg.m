@@ -43,7 +43,18 @@
 ## If only two button captions, @var{btn1} and @var{btn2}, are specified the
 ## dialog will have only these two buttons.
 ##
-## @seealso{errordlg, helpdlg, inputdlg, listdlg, warndlg}
+## Examples:
+##
+## @example
+## @group
+## btn = questdlg ("Close Octave?", "Some fancy title", "Yes", "No", "No");
+## if (strcmp (btn, "Yes"))
+##   exit ();
+## endif
+## @end group
+## @end example
+##
+## @seealso{errordlg, helpdlg, inputdlg, listdlg, msgbox, warndlg}
 ## @end deftypefn
 
 function btn = questdlg (msg, title = "Question Dialog", varargin)
@@ -111,9 +122,6 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
   if (__octave_link_enabled__ ())
     btn = __octave_link_question_dialog__ (msg, title, options{1}, options{2},
                                            options{3}, options{4});
-  elseif (__have_feature__ ("JAVA"))
-    btn = javaMethod ("questdlg", "org.octave.JDialogBox", msg,
-                      title, options);
   else
     error ("questdlg is not available in this version of Octave");
   endif
@@ -172,4 +180,3 @@ endfunction
 %!     endif
 %!   endif
 %! endif
-

@@ -10,8 +10,7 @@ scripts_gui_PRIVATE_FCN_FILES = \
   scripts/gui/private/__uigetdir_fltk__.m \
   scripts/gui/private/__uigetfile_fltk__.m \
   scripts/gui/private/__uiobject_split_args__.m \
-  scripts/gui/private/__uiputfile_fltk__.m \
-  scripts/gui/private/message_dialog.m
+  scripts/gui/private/__uiputfile_fltk__.m
 
 scripts_gui_FCN_FILES = \
   scripts/gui/errordlg.m \

@@ -136,17 +136,6 @@ dist_man_MANS = \
   doc/interpreter/octave-config.1 \
   doc/interpreter/octave.1
 
-DOC_JAVA_IMAGES = \
-  doc/interpreter/java-images/image001.png \
-  doc/interpreter/java-images/image002.png \
-  doc/interpreter/java-images/image003.png \
-  doc/interpreter/java-images/image004.png \
-  doc/interpreter/java-images/image005.png \
-  doc/interpreter/java-images/image006.png \
-  doc/interpreter/java-images/image007.png \
-  doc/interpreter/java-images/image008.png \
-  doc/interpreter/java-images/image009.png
-
 BUILT_DOC_IMAGES += \
   $(BUILT_DOC_IMAGES_EPS) \
   $(BUILT_DOC_IMAGES_PDF) \
@@ -159,14 +148,9 @@ DOC_IMAGES_PNG += $(BUILT_DOC_IMAGES_PNG)
 DOC_IMAGES_TXT += $(BUILT_DOC_IMAGES_TXT)
 
 DOC_IMAGES += \
-  $(BUILT_DOC_IMAGES) \
-  $(DOC_JAVA_IMAGES)
+  $(BUILT_DOC_IMAGES)
 
 $(BUILT_DOC_IMAGES): | $(OCTAVE_INTERPRETER_TARGETS)
-
-## FIXME: DOC_JAVA_IMAGES will eventually need to be added to the HTML build.
-##        It will require a different Makefile rule later because
-##        DOC_JAVA_IMAGES live in a subdir rather than in the current directory.
 
 HTMLDIR_IMAGES = $(patsubst doc/interpreter/%.png, doc/interpreter/octave.html/%.png, $(DOC_IMAGES_PNG))
 
@@ -205,7 +189,6 @@ MUNGED_TEXI_SRC = \
   doc/interpreter/interp.texi \
   doc/interpreter/intro.texi \
   doc/interpreter/io.texi \
-  doc/interpreter/java.texi \
   doc/interpreter/linalg.texi \
   doc/interpreter/matrix.texi \
   doc/interpreter/nonlin.texi \

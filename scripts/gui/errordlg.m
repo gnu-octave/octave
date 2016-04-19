@@ -17,41 +17,60 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{h} =} errordlg (@var{msg})
+## @deftypefn  {} {@var{h} =} errordlg ()
+## @deftypefnx {} {@var{h} =} errordlg (@var{msg})
 ## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title})
 ## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title}, @var{createmode})
-## Display @var{msg} using an error dialog box.
+## Display an error message @var{msg} using an error dialog box with caption
+## @var{title} (character string).  The default error message is
+## @qcode{"This is the default error string."} and the default caption is
+## @qcode{"Error Dialog"}.
 ##
-## The message may have multiple lines separated by newline characters ("\n"),
-## or it may be a cellstr array with one element for each line.
+## The error message may have multiple lines separated by newline characters
+## ("\n"), or it may be a cellstr array with one element for each line.
 ##
-## The optional input @var{title} (character string) can be used to set the
-## dialog caption.  The default title is @qcode{"Error Dialog"}.
-##
-## The return value is always 1.
+## The return value @var{h} is always 1.
 ##
 ## Compatibility Note: The optional argument @var{createmode} is accepted for
-## @sc{matlab} compatibility, but is not implemented.
+## @sc{matlab} compatibility, but is not implemented.  See @code{msgbox} for
+## details.
+##
+## Examples:
+##
+## @example
+## @group
+## errordlg ("Some fancy error occured.");
+## errordlg ("Some fancy error\nwith two lines.");
+## errordlg (@{"Some fancy error", "with two lines."@});
+## errordlg ("Some fancy error occured.", "Fancy caption");
+## @end group
+## @end example
 ##
 ## @seealso{helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = errordlg (msg, title = "Error Dialog", varargin)
+function retval = errordlg (varargin)
 
-  if (nargin < 1 || nargin > 3)
-    print_usage ();
+  narginchk (0, 3);
+
+  box_msg = "This is the default error string.";
+  box_title = "Error Dialog";
+
+  if (nargin > 0)
+    box_msg = varargin{1};
+  endif
+  if (nargin > 1)
+    box_title = varargin{2};
   endif
 
-  retval = message_dialog ("errordlg", msg, title, "error", varargin{:});
+  if (nargin < 3)
+    retval = msgbox (box_msg, box_title, "error");
+  else
+    retval = msgbox (box_msg, box_title, "error", varargin{3});
+  endif
 
 endfunction
 
-
-%!demo
-%! disp ('- test errordlg with prompt only.');
-%! errordlg ('Oops, an expected error occurred');
-
-%!demo
-%! disp ('- test errordlg with prompt and caption.');
-%! errordlg ('Oops another error','This is a very long and informative caption');
-
+%!error<narginchk> errordlg (1, 2, 3, 4)
+%!error<MSG must be a character string> errordlg (1)
+%!error<TITLE must be a character string> errordlg ("msg", 1)

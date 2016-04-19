@@ -1,4 +1,4 @@
-@c Copyright (C) 2012-2015 Rik Wehbring
+@c Copyright (C) 2012-2016 Rik Wehbring
 @c
 @c This file is part of Octave.
 @c
@@ -52,11 +52,38 @@ Simple dialog menus are available for choosing directories or files.  They
 return a string variable which can then be used with any command requiring
 a filename.
 
+@cindex dialog, displaying a dialog for selecting directories
 @DOCSTRING(uigetdir)
 
+@cindex dialog, displaying a dialog for selecting files
 @DOCSTRING(uigetfile)
 
+@cindex dialog, displaying a dialog for storing files
 @DOCSTRING(uiputfile)
+
+Additionally, there are dialog boxes for printing further help, warnings or
+errors and to get textual input from the user.
+
+@cindex dialog, displaying an error dialog
+@DOCSTRING(errordlg)
+
+@cindex dialog, displaying a help dialog
+@DOCSTRING(helpdlg)
+
+@cindex dialog, displaying an input dialog
+@DOCSTRING(inputdlg)
+
+@cindex dialog, displaying a list dialog
+@DOCSTRING(listdlg)
+
+@cindex dialog, displaying a message dialog
+@DOCSTRING(msgbox)
+
+@cindex dialog, displaying a question dialog
+@DOCSTRING(questdlg)
+
+@cindex dialog, displaying a warning dialog
+@DOCSTRING(warndlg)
 
 @node Progress Bar
 @section Progress Bar

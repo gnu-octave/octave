@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -22,9 +22,9 @@
 ## Display a menu with heading @var{title} and options @var{opt1}, @dots{},
 ## and wait for user input.
 ##
-## If the GUI is running, or Java is available, the menu is displayed
-## graphically using @code{listdlg}.  Otherwise, the title and menu options
-## are printed on the console.
+## If the GUI is running, the menu is displayed graphically using
+## @code{listdlg}.  Otherwise, the title and menu options are printed on the
+## console.
 ##
 ## @var{title} is a string and the options may be input as individual strings
 ## or as a cell array of strings.
@@ -55,7 +55,7 @@ function choice = menu (title, varargin)
     error ("menu: OPTIONS must be string or cell array of strings");
   endif
 
-  if (isguirunning () || usejava ("awt"))
+  if (__octave_link_enabled__ ())
     [choice, ok] = listdlg ("Name", "menu", "PromptString", title,
                             "ListString", varargin, "SelectionMode", "Single");
     if (! ok)
@@ -98,4 +98,3 @@ endfunction
 %!error <TITLE must be a string> menu (1, "opt1")
 %!error <All OPTIONS must be strings> menu ("title", "opt1", 1)
 %!error <OPTIONS must be string or cell array of strings> menu ("title", 1)
-

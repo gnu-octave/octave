@@ -17,41 +17,60 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{h} =} warndlg (@var{msg})
+## @deftypefn  {} {@var{h} =} warndlg ()
+## @deftypefnx {} {@var{h} =} warndlg (@var{msg})
 ## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title})
 ## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title}, @var{createmode})
-## Display @var{msg} using a warning dialog box.
+## Display warning message @var{msg} using a warning dialog box with caption
+## @var{title} (character string).  The default warning message is
+## @qcode{"This is the default warning string."} and the default caption is
+## @qcode{"Warning Dialog"}.
 ##
-## The message may have multiple lines separated by newline characters ("\n"),
-## or it may be a cellstr array with one element for each line.
+## The warning message may have multiple lines separated by newline characters
+## ("\n"), or it may be a cellstr array with one element for each line.
 ##
-## The optional input @var{title} (character string) can be used to set the
-## dialog caption.  The default title is @qcode{"Warning Dialog"}.
-##
-## The return value is always 1.
+## The return value @var{h} is always 1.
 ##
 ## Compatibility Note: The optional argument @var{createmode} is accepted for
-## @sc{matlab} compatibility, but is not implemented.
+## @sc{matlab} compatibility, but is not implemented.  See @code{msgbox} for
+## details.
 ##
-## @seealso{helpdlg, inputdlg, listdlg, questdlg}
+## Examples:
+##
+## @example
+## @group
+## warndlg ("Some warning text for the user.");
+## warndlg ("Some warning text\nwith two lines.");
+## warndlg (@{"Some warning text", "with two lines."@});
+## warndlg ("Some warning text for the user.", "Fancy caption");
+## @end group
+## @end example
+##
+## @seealso{errordlg, helpdlg, inputdlg, listdlg, msgbox, questdlg}
 ## @end deftypefn
 
-function retval = warndlg (msg, title = "Warning Dialog", varargin)
+function retval = warndlg (varargin)
 
-  if (nargin < 1 || nargin > 3)
-    print_usage ();
+  narginchk (0, 3);
+
+  box_msg = "This is the default warning string.";
+  box_title = "Warning Dialog";
+
+  if (nargin > 0)
+    box_msg = varargin{1};
+  endif
+  if (nargin > 1)
+    box_title = varargin{2};
   endif
 
-  retval = message_dialog ("warndlg", msg, title, "warn", varargin{:});
+  if (nargin < 3)
+    retval = msgbox (box_msg, box_title, "warn");
+  else
+    retval = msgbox (box_msg, box_title, "warn", varargin{3});
+  endif
 
 endfunction
 
-
-%!demo
-%! disp ('- test warndlg with prompt only.');
-%! warndlg ('Oh, a warning occurred');
-
-%!demo
-%! disp ('- test warndlg with prompt and caption.');
-%! warndlg ('Oh, No...','This is the last Warning');
-
+%!error<narginchk> warndlg (1, 2, 3, 4)
+%!error<MSG must be a character string> warndlg (1)
+%!error<TITLE must be a character string> warndlg ("msg", 1)

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -53,7 +53,8 @@ where people's opinions differ as to what is best.
 @menu
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::
-* Service::
+* How To Get Help with Octave::
+* How to distinguish between Octave and Matlab::
 @end menu
 
 @node Actual Bugs
@@ -381,7 +382,7 @@ If you would like your name to appear in the header line for who made
 the change, send us the header line.
 @end itemize
 
-@node Service
+@node How To Get Help with Octave
 @appendixsec How To Get Help with Octave
 @cindex help, where to find
 
@@ -399,3 +400,33 @@ the Octave bug tracker at @url{http://bugs.octave.org}.
 But before you submit a bug report, please read
 @url{http://www.octave.org/bugs.html} to learn how to submit a useful
 bug report.
+
+@node How to distinguish between Octave and Matlab
+@appendixsec How to distinguish between Octave and Matlab
+@cindex Octave and @sc{matlab}, how to distinguish between
+
+Octave and @sc{matlab} are very similar, but handle Java slightly different.
+Therefore it may be necessary to detect the environment and use the appropriate
+functions.  The following function can be used to detect the environment.  Due
+to the persistent variable it can be called repeatedly without a heavy
+performance hit.
+
+Example:
+
+@example
+@group
+%%
+%% Return: true if the environment is Octave.
+%%
+function retval = isOctave
+  persistent cacheval;  % speeds up repeated calls
+
+  if isempty (cacheval)
+    cacheval = (exist ("OCTAVE_VERSION", "builtin") > 0);
+  end
+
+  retval = cacheval;
+end
+@end group
+@end example
+

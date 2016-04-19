@@ -71,6 +71,10 @@ Summary of important user-visible changes for version 4.2:
  ** The textscan function is now built-in and is much faster and much
     more Matlab-compatible than the previous m-file version.
 
+ ** Dialog boxes, errordlg, helpdlg, inputdlg, errordlg, listdlg,
+    msgbox, questdlg, and warndlg, now exclusively use QT.  Java based
+    versions are removed.
+
  ** Other new functions added in 4.2:
 
       deg2rad

@@ -98,7 +98,7 @@ liboctave_la_LIBADD += \
 
 # Increment these as needed and according to the rules in the libtool manual:
 liboctave_current = 3
-liboctave_revision = 1
+liboctave_revision = 2
 liboctave_age = 0
 
 liboctave_version_info = $(liboctave_current):$(liboctave_revision):$(liboctave_age)

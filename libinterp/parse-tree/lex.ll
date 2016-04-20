@@ -2780,23 +2780,24 @@ octave_base_lexer::handle_number (void)
 
   if (looks_like_hex (tmptxt, strlen (tmptxt)))
     {
-      unsigned long ival;
+      uintmax_t long_int_value;
 
-      nread = sscanf (tmptxt, "%lx", &ival);
+      nread = sscanf (tmptxt, "%jx", &long_int_value);
 
-      value = static_cast<double> (ival);
+      value = static_cast<double> (long_int_value);
     }
   else if (looks_like_bin (tmptxt, strlen (tmptxt)))
     {
-      uint64_t ivalue = 0;
+      uintmax_t long_int_value = 0;
 
       for (size_t i = 0; i < strlen (tmptxt); i++)
         {
-          ivalue <<= 1;
-          ivalue += static_cast<uint64_t> (tmptxt[i] == '1');
+          long_int_value <<= 1;
+          long_int_value += static_cast<uintmax_t> (tmptxt[i] == '1');
         }
 
-      value = static_cast<double> (ivalue);
+      value = static_cast<double> (long_int_value);
+
       nread = 1;  // Just to pass the assert stmt below
     }
   else

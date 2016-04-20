@@ -312,7 +312,7 @@ endfunction
 %! A = diag (linspace (-3.1,3,N)); b = rand (N,1);
 %! y = A \ b;  # y is the true solution
 %! x = pcr (A,b);
-%! fprintf ("The solution relative error is %g\n", norm (x-y) / norm (y));
+%! printf ("The solution relative error is %g\n", norm (x-y) / norm (y));
 %!
 %! ## You shouldn't be afraid if PCR issues some warning messages in this
 %! ## example: watch out in the second example, why it takes N iterations
@@ -326,7 +326,7 @@ endfunction
 %! A = diag (linspace (-3.1,30,N)); b = rand (N,1);
 %! X = A \ b;  # X is the true solution
 %! [x, flag, relres, iter, resvec] = pcr (A,b);
-%! fprintf ("The solution relative error is %g\n", norm (x-X) / norm (X));
+%! printf ("The solution relative error is %g\n", norm (x-X) / norm (X));
 %! clf;
 %! title ("Convergence history");
 %! xlabel ("Iteration"); ylabel ("log(||b-Ax||/||b||)");
@@ -342,10 +342,10 @@ endfunction
 %! N = 10;
 %! A = hilb (N); A(1,1) = -A(1,1); b = rand (N,1);
 %! X = A \ b;  # X is the true solution
-%! fprintf ("Condition number of A is   %g\n", cond (A));
+%! printf ("Condition number of A is   %g\n", cond (A));
 %! [x, flag, relres, iter, resvec] = pcr (A,b,[],200);
 %! if (flag == 3)
-%!   fprintf ("PCR breakdown.  System matrix is [close to] singular\n");
+%!   printf ("PCR breakdown.  System matrix is [close to] singular\n");
 %! end
 %! clf;
 %! title ("Convergence history");
@@ -371,7 +371,7 @@ endfunction
 %! b = rand (2*N,1);
 %! X = A \ b;  # X is the true solution
 %! maxit = 80;
-%! fprintf ("System condition number is %g\n", cond (A));
+%! printf ("System condition number is %g\n", cond (A));
 %! ## No preconditioner: the convergence is very slow!
 %!
 %! [x, flag, relres, iter, resvec] = pcr (A,b,[],maxit);

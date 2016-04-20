@@ -54,7 +54,7 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
       endif
       test ("", "explain", fid);
       dp = dn = dxf = dsk = 0;
-      fputs ("\nIntegrated test scripts:\n\n");
+      puts ("\nIntegrated test scripts:\n\n");
       for i = 1:length (fcndirs)
         [p, n, xf, sk] = run_test_script (fid, fcndirs{i});
         dp += p;
@@ -62,7 +62,7 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
         dxf += xf;
         dsk += sk;
       endfor
-      fputs ("\nFixed test scripts:\n\n");
+      puts ("\nFixed test scripts:\n\n");
       for i = 1:length (fixedtestdirs)
         [p, n, xf, sk] = run_test_dir (fid, fixedtestdirs{i});
         dp += p;
@@ -70,30 +70,30 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
         dxf += xf;
         dsk += sk;
       endfor
-      fputs ("\nSummary:\n\n");
+      puts ("\nSummary:\n\n");
       nfail = dn - dp - dxf;
-      fprintf ("  PASS    %6d\n", dp);
-      fprintf ("  FAIL    %6d\n", nfail);
+      printf ("  PASS    %6d\n", dp);
+      printf ("  FAIL    %6d\n", nfail);
       if (dxf > 0)
-        fprintf ("  XFAIL   %6d\n", dxf);
+        printf ("  XFAIL   %6d\n", dxf);
       endif
       if (dsk > 0)
-        fprintf ("  SKIPPED %6d\n", dsk);
+        printf ("  SKIPPED %6d\n", dsk);
       endif
-      fputs ("\n");
-      fprintf ("See the file %s for additional details.\n", logfile);
+      puts ("\n");
+      printf ("See the file %s for additional details.\n", logfile);
       if (dxf > 0)
-        fputs ("\n");
-        fputs ("Expected failures (listed as XFAIL above) are known bugs.\n");
-        fputs ("Please help improve Octave by contributing fixes for them.\n");
+        puts ("\n");
+        puts ("Expected failures (listed as XFAIL above) are known bugs.\n");
+        puts ("Please help improve Octave by contributing fixes for them.\n");
       endif
       if (dsk > 0)
-        fputs ("\n");
-        fputs ("Tests are most often skipped because the features they require\n");
-        fputs ("have been disabled.  Features are most often disabled because\n");
-        fputs ("they require dependencies that were not present when Octave\n");
-        fputs ("was built.  The configure script should have printed a summary\n");
-        fputs ("at the end of its run indicating which dependencies were not found.\n");
+        puts ("\n");
+        puts ("Tests are most often skipped because the features they require\n");
+        puts ("have been disabled.  Features are most often disabled because\n");
+        puts ("they require dependencies that were not present when Octave\n");
+        puts ("was built.  The configure script should have printed a summary\n");
+        puts ("at the end of its run indicating which dependencies were not found.\n");
       endif
 
       ## Weed out deprecated and private functions
@@ -104,8 +104,8 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
 
       report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
 
-      fputs ("\nPlease help improve Octave by contributing tests for these files\n");
-      fprintf ("(see the list in the file %s).\n\n", logfile);
+      puts ("\nPlease help improve Octave by contributing tests for these files\n");
+      printf ("(see the list in the file %s).\n\n", logfile);
 
       fprintf (fid, "\nFiles with no tests:\n\n%s",
                     list_in_columns (files_with_no_tests, 80));
@@ -130,24 +130,24 @@ endfunction
 
 function print_test_file_name (nm)
   filler = repmat (".", 1, 60-length (nm));
-  fprintf ("  %s %s", nm, filler);
+  printf ("  %s %s", nm, filler);
 endfunction
 
 function print_pass_fail (p, n, xf, sk)
   if ((n + sk) > 0)
-    fprintf (" PASS   %4d/%-4d", p, n);
+    printf (" PASS   %4d/%-4d", p, n);
     nfail = n - p - xf;
     if (nfail > 0)
-      fprintf ("\n%71s %3d", "FAIL ", nfail);
+      printf ("\n%71s %3d", "FAIL ", nfail);
     endif
     if (sk > 0)
-      fprintf ("\n%71s %3d", "SKIP ", sk);
+      printf ("\n%71s %3d", "SKIP ", sk);
     endif
     if (xf > 0)
-      fprintf ("\n%71s %3d", "XFAIL", xf);
+      printf ("\n%71s %3d", "XFAIL", xf);
     endif
   endif
-  fputs ("\n");
+  puts ("\n");
 endfunction
 
 function retval = has_functions (f)
@@ -273,7 +273,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
       endif
     endif
   endfor
-  ##  fprintf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
+  ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
 endfunction
 
 function n = num_elts_matching_pattern (lst, pat)
@@ -285,9 +285,10 @@ function report_files_with_no_tests (with, without, typ)
   n_with = num_elts_matching_pattern (with, pat);
   n_without = num_elts_matching_pattern (without, pat);
   n_tot = n_with + n_without;
-  fprintf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
+  printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
 endfunction
 
 
 ## No test coverage for internal function.  It is tested through calling fcn.
 %!assert (1)
+

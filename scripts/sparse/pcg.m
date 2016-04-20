@@ -395,7 +395,7 @@ endfunction
 %! A = diag ([1:N]); b = rand (N, 1);
 %! y = A \ b;  # y is the true solution
 %! x = pcg (A, b);
-%! fprintf ("The solution relative error is %g\n", norm (x - y) / norm (y));
+%! printf ("The solution relative error is %g\n", norm (x - y) / norm (y));
 %!
 %! ## You shouldn't be afraid if pcg issues some warning messages in this
 %! ## example: watch out in the second example, why it takes N iterations
@@ -409,7 +409,7 @@ endfunction
 %! A = diag ([1:N]); b = rand (N, 1);
 %! X = A \ b;  # X is the true solution
 %! [x, flag, relres, iter, resvec] = pcg (A, b);
-%! fprintf ("The solution relative error is %g\n", norm (x - X) / norm (X));
+%! printf ("The solution relative error is %g\n", norm (x - X) / norm (X));
 %! title ("Convergence history");
 %! semilogy ([0:iter], resvec / resvec(1), "o-g");
 %! xlabel ("Iteration"); ylabel ("log(||b-Ax||/||b||)");
@@ -423,9 +423,9 @@ endfunction
 %! A = hilb (N); b = rand (N, 1);
 %! X = A \ b;  # X is the true solution
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], 200);
-%! fprintf ("The solution relative error is %g\n", norm (x - X) / norm (X));
-%! fprintf ("Condition number estimate is %g\n", eigest(2) / eigest(1));
-%! fprintf ("Actual condition number is   %g\n", cond (A));
+%! printf ("The solution relative error is %g\n", norm (x - X) / norm (X));
+%! printf ("Condition number estimate is %g\n", eigest(2) / eigest(1));
+%! printf ("Actual condition number is   %g\n", cond (A));
 %! title ("Convergence history");
 %! semilogy ([0:iter], resvec, ["o-g";"+-r"]);
 %! xlabel ("Iteration"); ylabel ("log(||b-Ax||)");
@@ -446,11 +446,11 @@ endfunction
 %! b = rand (N, 1);
 %! X = A \ b;  # X is the true solution
 %! maxit = 80;
-%! fprintf ("System condition number is %g\n", cond (A));
+%! printf ("System condition number is %g\n", cond (A));
 %! ## No preconditioner: the convergence is very slow!
 %!
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], maxit);
-%! fprintf ("System condition number estimate is %g\n", eigest(2) / eigest(1));
+%! printf ("System condition number estimate is %g\n", eigest(2) / eigest(1));
 %! title ("Convergence history");
 %! semilogy ([0:iter], resvec(:,1), "o-g");
 %! xlabel ("Iteration"); ylabel ("log(||b-Ax||)");
@@ -461,7 +461,7 @@ endfunction
 %!
 %! M = diag (diag (A)); # Jacobi preconditioner
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], maxit, M);
-%! fprintf ("JACOBI preconditioned system condition number estimate is %g\n", eigest(2) / eigest(1));
+%! printf ("JACOBI preconditioned system condition number estimate is %g\n", eigest(2) / eigest(1));
 %! hold on;
 %! semilogy ([0:iter], resvec(:,1), "o-r");
 %! legend ("NO preconditioning: absolute residual", ...
@@ -475,7 +475,7 @@ endfunction
 %!   M(i:i+k-1, i:i+k-1) = A(i:i+k-1, i:i+k-1);
 %! endfor
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], maxit, M);
-%! fprintf ("BLOCK JACOBI preconditioned system condition number estimate is %g\n", eigest(2) / eigest(1));
+%! printf ("BLOCK JACOBI preconditioned system condition number estimate is %g\n", eigest(2) / eigest(1));
 %! semilogy ([0:iter], resvec(:,1), "o-b");
 %! legend ("NO preconditioning: absolute residual", ...
 %!         "JACOBI preconditioner: absolute residual", ...

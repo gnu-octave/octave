@@ -23,7 +23,7 @@
 ## This function sends the alarm character @qcode{"@xbackslashchar{}a"} to
 ## the terminal.  Depending on the user's configuration this may produce an
 ## audible beep, a visual bell, or nothing at all.
-## @seealso{fputs, fprintf}
+## @seealso{puts, fputs, printf, fprintf}
 ## @end deftypefn
 
 ## Author: jwe
@@ -34,9 +34,10 @@ function beep ()
     print_usage ();
   endif
 
-  fputs ("\a");
+  puts ("\a");
 
 endfunction
 
 
 %!error (beep (1))
+

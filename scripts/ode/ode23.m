@@ -361,9 +361,9 @@ function varargout = ode23 (fun, trange, init, varargin)
     nlinsols  = 0;  # no. of solutions of linear systems
     ## Print cost statistics if no output argument is given
     if (nargout == 0)
-      fprintf ("Number of successful steps: %d\n", nsteps);
-      fprintf ("Number of failed attempts:  %d\n", nfailed);
-      fprintf ("Number of function calls:   %d\n", nfevals);
+      printf ("Number of successful steps: %d\n", nsteps);
+      printf ("Number of failed attempts:  %d\n", nfailed);
+      printf ("Number of function calls:   %d\n", nfevals);
     endif
   else
     havestats = false;

@@ -44,7 +44,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, verbose)
   for k = 1:length (dirlist)
     descfile = fullfile (prefix, dirlist{k}, "packinfo", "DESCRIPTION");
     if (verbose)
-      fprintf ("recreating package description from %s\n", dirlist{k});
+      printf ("recreating package description from %s\n", dirlist{k});
     endif
     if (exist (descfile, "file"))
       desc = get_description (descfile);

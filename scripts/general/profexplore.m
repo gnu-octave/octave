@@ -68,16 +68,16 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
 
   while (true)
 
-    fprintf ("\n%s", parents);
+    printf ("\n%s", parents);
     strings = cell (length (tree), 1);
     for i = 1 : length (tree)
       strings{i} = sprintf ("%s: %d calls, %.3f total, %.3f self", ...
                             fcn_table(tree(i).Index).FunctionName, ...
                             tree(i).NumCalls, ...
                             tree(i).TotalTime, tree(i).SelfTime);
-      fprintf ("%s%d) %s\n", prefix, i, strings{i});
+      printf ("%s%d) %s\n", prefix, i, strings{i});
     endfor
-    fprintf ("\n");
+    printf ("\n");
 
     cmd = input ("profexplore> ", "s");
     option = fix (str2double (cmd));
@@ -86,15 +86,15 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
       rv = 0;
       return;
     elseif (strcmp (cmd, "help"))
-      fprintf ("\nCommands for profile explorer:\n\n");
-      fprintf ("exit   Return to Octave prompt.\n");
-      fprintf ("quit   Return to Octave prompt.\n");
-      fprintf ("help   Display this help message.\n");
-      fprintf ("up [N] Go up N levels, where N is an integer.  Default is 1.\n");
-      fprintf ("N      Go down a level into option N.\n");
+      printf ("\nCommands for profile explorer:\n\n");
+      printf ("exit   Return to Octave prompt.\n");
+      printf ("quit   Return to Octave prompt.\n");
+      printf ("help   Display this help message.\n");
+      printf ("up [N] Go up N levels, where N is an integer.  Default is 1.\n");
+      printf ("N      Go down a level into option N.\n");
     elseif (! isnan (option))
       if (option < 1 || option > length (tree))
-        fprintf ("The chosen option is out of range!\n");
+        printf ("The chosen option is out of range!\n");
       else
         newParents = sprintf ("%s%s%s\n", parents, prefix, strings{option});
         newPrefix = sprintf ("%s  ", prefix);
@@ -126,11 +126,11 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
         endif
       endif
 
-      fprintf ("Invalid 'up' command.  Type 'help' for further");
-      fprintf (" information.\n");
+      printf ("Invalid 'up' command.  Type 'help' for further");
+      printf (" information.\n");
     else
-      fprintf ("Unrecognized input.  Type 'help' to get a list of possible");
-      fprintf (" commands.\n");
+      printf ("Unrecognized input.  Type 'help' to get a list of possible");
+      printf (" commands.\n");
     endif
 
   endwhile

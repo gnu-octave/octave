@@ -73,16 +73,16 @@ function jmem = javamem ()
   jvmem{3} = rt.freeMemory ();
 
   if (nargout == 0)
-    fprintf ("\nJava virtual machine (JVM) memory info:\n");
-    fprintf ("Maximum available memory:        %5d MiB;\n",
+    printf ("\nJava virtual machine (JVM) memory info:\n");
+    printf ("Maximum available memory:        %5d MiB;\n",
             jvmem{1} / 1024 / 1024);
-    fprintf ("   (...running garbage collector...)\n");
-    fprintf ("OK, current status:\n");
-    fprintf ("Total memory in virtual machine: %5d MiB;\n",
+    printf ("   (...running garbage collector...)\n");
+    printf ("OK, current status:\n");
+    printf ("Total memory in virtual machine: %5d MiB;\n",
             jvmem{2} / 1024 / 1024);
-    fprintf ("Free memory in virtual machine:  %5d MiB;\n",
+    printf ("Free memory in virtual machine:  %5d MiB;\n",
             jvmem{3} / 1024 / 1024);
-    fprintf ("%d CPUs available.\n", rt.availableProcessors ());
+    printf ("%d CPUs available.\n", rt.availableProcessors ());
   else
     jmem = jvmem;
   endif

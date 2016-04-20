@@ -62,7 +62,7 @@ function mtds = methods (obj)
 
   if (nargout == 0)
     classname = ifelse (ischar (obj), obj, class (obj));
-    fprintf ("Methods for class %s:\n", classname);
+    printf ("Methods for class %s:\n", classname);
     disp (list_in_columns (mtds_list));
   else
     mtds = mtds_list;

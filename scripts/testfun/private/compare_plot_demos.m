@@ -98,7 +98,7 @@ function compare_plot_demos (varargin)
         try
           eval (fcn_name);
         catch
-          fprintf ("Error running plot demos for ""%s"" toolkit\n",
+          printf ("Error running plot demos for ""%s"" toolkit\n",
                   arg.toolkits{n});
           disp (lasterror);
         end_try_catch
@@ -113,8 +113,8 @@ function compare_plot_demos (varargin)
     html_compare_plot_demos (arg.toolkits);
   else
     ## We need to run matlab manually before the html page can be created
-    fprintf ('\nNow run %s in Matlab.\nAfter this run html_compare_plot_demos,\n', arg.fcn_file);
-    fprintf ('for example html_compare_plot_demos ({"fltk", "gnuplot", "matlab"}), to create the html page.\n');
+    printf ('\nNow run %s in Matlab.\nAfter this run html_compare_plot_demos,\n', arg.fcn_file);
+    printf ('for example html_compare_plot_demos ({"fltk", "gnuplot", "matlab"}), to create the html page.\n');
   endif
 endfunction
 

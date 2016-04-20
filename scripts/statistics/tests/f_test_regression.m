@@ -71,7 +71,7 @@ function [pval, f, df_num, df_den] = f_test_regression (y, x, rr, r)
   pval   = 1 - fcdf (f, df_num, df_den);
 
   if (nargout == 0)
-    fprintf ("  pval: %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

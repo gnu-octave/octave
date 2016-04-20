@@ -780,7 +780,7 @@ The optional output returns the number of bytes written to the file.\n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
 the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
 expanded even when the template string is defined with single quotes.\n\
-@seealso{fputs, fdisp, fwrite, fscanf, sprintf, fopen}\n\
+@seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fprintf";
@@ -824,6 +824,99 @@ expanded even when the template string is defined with single quotes.\n\
     return ovl ();
 }
 
+DEFUN (printf, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn {} {} printf (@var{template}, @dots{})\n\
+Print optional arguments under the control of the template string\n\
+@var{template} to the stream @code{stdout} and return the number of\n\
+characters printed.\n\
+@ifclear OCTAVE_MANUAL\n\
+\n\
+See the Formatted Output section of the GNU Octave manual for a\n\
+complete description of the syntax of the template string.\n\
+@end ifclear\n\
+\n\
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
+the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
+expanded even when the template string is defined with single quotes.\n\
+@seealso{fprintf, sprintf, scanf}\n\
+@end deftypefn")
+{
+  static std::string who = "printf";
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
+
+  int result;
+
+  if (! args(0).is_string ())
+    error ("%s: format TEMPLATE must be a string", who.c_str ());
+
+  octave_value_list tmp_args;
+
+  if (nargin > 1)
+    {
+      tmp_args.resize (nargin-1, octave_value ());
+
+      for (int i = 1; i < nargin; i++)
+        tmp_args(i-1) = args(i);
+    }
+
+  result = stdout_stream.printf (args(0), tmp_args, who);
+
+  if (nargout > 0)
+    return ovl (result);
+  else
+    return ovl ();
+}
+
+DEFUN (fputs, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {} {} fputs (@var{fid}, @var{string})\n\
+@deftypefnx {} {@var{status} =} fputs (@var{fid}, @var{string})\n\
+Write the string @var{string} to the file with file descriptor @var{fid}.\n\
+\n\
+The string is written to the file with no additional formatting.  Use\n\
+@code{fdisp} instead to automatically append a newline character appropriate\n\
+for the local machine.\n\
+\n\
+Return a non-negative number on success or EOF on error.\n\
+@seealso{fdisp, fprintf, fwrite, fopen}\n\
+@end deftypefn")
+{
+  static std::string who = "fputs";
+
+  if (args.length () != 2)
+    print_usage ();
+
+  octave_stream os = octave_stream_list::lookup (args(0), who);
+
+  return ovl (os.puts (args(1), who));
+}
+
+DEFUN (puts, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {} {} puts (@var{string})\n\
+@deftypefnx {} {@var{status} =} puts (@var{string})\n\
+Write a string to the standard output with no formatting.\n\
+\n\
+The string is written verbatim to the standard output.  Use @code{disp} to\n\
+automatically append a newline character appropriate for the local machine.\n\
+\n\
+Return a non-negative number on success and EOF on error.\n\
+@seealso{fputs, disp}\n\
+@end deftypefn")
+{
+  static std::string who = "puts";
+
+  if (args.length () != 1)
+    print_usage ();
+
+  return ovl (stdout_stream.puts (args(0), who));
+}
+
 DEFUN (sprintf, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {} {} sprintf (@var{template}, @dots{})\n\
@@ -837,7 +930,7 @@ string, automatically sized to hold all of the items converted.\n\
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
 the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
 expanded even when the template string is defined with single quotes.\n\
-@seealso{fprintf, sscanf}\n\
+@seealso{printf, fprintf, sscanf}\n\
 @end deftypefn")
 {
   static std::string who = "sprintf";
@@ -934,7 +1027,7 @@ conversions is returned in @var{count}\n\
 See the Formatted Input section of the GNU Octave manual for a\n\
 complete description of the syntax of the template string.\n\
 @end ifclear\n\
-@seealso{fgets, fgetl, fread, sscanf, fopen}\n\
+@seealso{fgets, fgetl, fread, scanf, sscanf, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fscanf";
@@ -997,7 +1090,7 @@ string @var{string} instead of from a stream.\n\
 Reaching the end of the string is treated as an end-of-file condition.  In\n\
 addition to the values returned by @code{fscanf}, the index of the next\n\
 character to be read is returned in @var{pos}.\n\
-@seealso{fscanf, sprintf}\n\
+@seealso{fscanf, scanf, sprintf}\n\
 @end deftypefn")
 {
   static std::string who = "sscanf";
@@ -1043,6 +1136,27 @@ character to be read is returned in @var{pos}.\n\
     }
 
   return retval;
+}
+
+DEFUN (scanf, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})\n\
+@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, \"C\")\n\
+This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
+\n\
+It is currently not useful to call @code{scanf} in interactive programs.\n\
+@seealso{fscanf, sscanf, printf}\n\
+@end deftypefn")
+{
+  int nargin = args.length ();
+
+  octave_value_list tmp_args (nargin+1, octave_value ());
+
+  tmp_args (0) = 0.0;
+  for (int i = 0; i < nargin; i++)
+    tmp_args(i+1) = args(i);
+
+  return Ffscanf (tmp_args, nargout);
 }
 
 static octave_value_list

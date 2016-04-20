@@ -138,11 +138,11 @@ function demo (name, n = 0)
       ## Use an environment without variables
       eval (["function __demo__ ()\n" block "\nendfunction"]);
       ## Display the code that will be executed before executing it
-      fprintf ("%s example %d:%s\n\n", name, doidx(i), block);
+      printf ("%s example %d:%s\n\n", name, doidx(i), block);
       __demo__;
     catch
       ## Let the programmer know which demo failed.
-      fprintf ("%s example %d: failed\n%s\n", name, doidx(i), lasterr ());
+      printf ("%s example %d: failed\n%s\n", name, doidx(i), lasterr ());
     end_try_catch
     clear __demo__;
   endfor

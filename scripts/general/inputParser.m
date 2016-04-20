@@ -410,15 +410,15 @@ classdef inputParser < handle
       if (nargin > 1)
         print_usage ();
       endif
-      fprintf ("inputParser object with properties:\n\n");
+      printf ("inputParser object with properties:\n\n");
       b2s = @(x) ifelse (any (x), "true", "false");
-      fprintf (["   CaseSensitive   : %s\n   FunctionName    : %s\n" ...
+      printf (["   CaseSensitive   : %s\n   FunctionName    : %s\n" ...
                "   KeepUnmatched   : %s\n   PartialMatching : %s\n" ...
                "   StructExpand    : %s\n\n"],
                b2s (this.CaseSensitive), b2s (this.FunctionName),
                b2s (this.KeepUnmatched), b2s (this.PartialMatching),
                b2s (this.StructExpand));
-      fprintf ("Defined parameters:\n\n   {%s}\n",
+      printf ("Defined parameters:\n\n   {%s}\n",
               strjoin (this.Parameters, ", "));
     endfunction
   endmethods

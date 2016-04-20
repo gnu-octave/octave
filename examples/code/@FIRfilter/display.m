@@ -1,4 +1,4 @@
 function display (f)
-  fprintf ("%s.polynomial", inputname (1));
+  printf ("%s.polynomial", inputname (1));
   display (f.polynomial);
 endfunction

@@ -98,7 +98,7 @@ function retval = ls (varargin)
     if (status != 0)
       error ("ls: command exited abnormally with status %d\n", status);
     elseif (nargout == 0)
-      fputs (output);
+      puts (output);
     else
       retval = strvcat (regexp (output, "[\r\n]+", "split"){:});
     endif
@@ -131,3 +131,4 @@ endfunction
 %!error <all arguments must be character strings> ls (1)
 ## Test below is valid, but produces confusing output on screen
 %!#error <command exited abnormally> ls ("-!")
+

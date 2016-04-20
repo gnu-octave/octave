@@ -262,7 +262,7 @@ function truth = fact ()
     truth = w;
   else
     w = wordwrap (w);
-    fprintf ("%s", w);
+    printf ("%s", w);
   endif
 
 endfunction

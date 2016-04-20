@@ -20,10 +20,7 @@ scripts_deprecated_FCN_FILES = \
   scripts/deprecated/octave_config_info.m \
   scripts/deprecated/octave_tmp_file_name.m \
   scripts/deprecated/playaudio.m \
-  scripts/deprecated/printf.m \
-  scripts/deprecated/puts.m \
   scripts/deprecated/saveaudio.m \
-  scripts/deprecated/scanf.m \
   scripts/deprecated/setaudio.m \
   scripts/deprecated/sleep.m \
   scripts/deprecated/syl.m \

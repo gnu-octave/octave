@@ -89,7 +89,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
   pval = 1 - chi2cdf (k, df);
 
   if (nargout == 0)
-    fprintf ("pval: %g\n", pval);
+    printf ("pval: %g\n", pval);
   endif
 
 endfunction

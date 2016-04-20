@@ -651,19 +651,19 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
   if (nargout == 0)
     if (__tests || __xfail || __xskip)
       if (__xfail)
-        fprintf ("PASSES %d out of %d test%s (%d expected failure%s)\n",
+        printf ("PASSES %d out of %d test%s (%d expected failure%s)\n",
                 __successes, __tests, ifelse (__tests > 1, "s", ""),
                 __xfail, ifelse (__xfail > 1, "s", ""));
       else
-        fprintf ("PASSES %d out of %d test%s\n", __successes, __tests,
+        printf ("PASSES %d out of %d test%s\n", __successes, __tests,
                ifelse (__tests > 1, "s", ""));
       endif
       if (__xskip)
-        fprintf ("Skipped %d test%s due to missing features\n", __xskip,
+        printf ("Skipped %d test%s due to missing features\n", __xskip,
                 ifelse (__xskip > 1, "s", ""));
       endif
     else
-      fprintf ("%s%s has no tests available\n", __signal_empty, __file);
+      printf ("%s%s has no tests available\n", __signal_empty, __file);
     endif
   elseif (__grabdemo)
     __n    = __demo_code;

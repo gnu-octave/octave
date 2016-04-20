@@ -106,7 +106,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
   endif
 
   if (nargout == 0)
-    fprintf ("pval: %g\n", pval);
+    printf ("pval: %g\n", pval);
   endif
 
 endfunction

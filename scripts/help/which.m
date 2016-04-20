@@ -46,18 +46,18 @@ function varargout = which (varargin)
   if (nargout == 0)
     for i = 1:nargin
       if (m(i).is_variable)
-        fprintf ("'%s' is a variable\n", m(i).name);
+        printf ("'%s' is a variable\n", m(i).name);
       elseif (isempty (m(i).file))
         if (! isempty (m(i).type))
-          fprintf ("'%s' is a %s\n",
+          printf ("'%s' is a %s\n",
                   m(i).name, m(i).type);
         endif
       else
         if (isempty (m(i).type))
-          fprintf ("'%s' is the file %s\n",
+          printf ("'%s' is the file %s\n",
                   m(i).name, m(i).file);
         else
-          fprintf ("'%s' is a %s from the file %s\n",
+          printf ("'%s' is a %s from the file %s\n",
                   m(i).name, m(i).type, m(i).file);
         endif
       endif

@@ -93,19 +93,19 @@ function [pval, f, df_b, df_w] = anova (y, g)
 
   if (nargout == 0)
     ## This eventually needs to be done more cleanly ...
-    fprintf ("\n");
-    fprintf ("One-way ANOVA Table:\n");
-    fprintf ("\n");
-    fprintf ("Source of Variation   Sum of Squares    df  Empirical Var\n");
-    fprintf ("*********************************************************\n");
-    fprintf ("Between Groups       %15.4f  %4d  %13.4f\n", SSB, df_b, v_b);
-    fprintf ("Within Groups        %15.4f  %4d  %13.4f\n", SSW, df_w, v_w);
-    fprintf ("---------------------------------------------------------\n");
-    fprintf ("Total                %15.4f  %4d\n", SST, n - 1);
-    fprintf ("\n");
-    fprintf ("Test Statistic f     %15.4f\n", f);
-    fprintf ("p-value              %15.4f\n", pval);
-    fprintf ("\n");
+    printf ("\n");
+    printf ("One-way ANOVA Table:\n");
+    printf ("\n");
+    printf ("Source of Variation   Sum of Squares    df  Empirical Var\n");
+    printf ("*********************************************************\n");
+    printf ("Between Groups       %15.4f  %4d  %13.4f\n", SSB, df_b, v_b);
+    printf ("Within Groups        %15.4f  %4d  %13.4f\n", SSW, df_w, v_w);
+    printf ("---------------------------------------------------------\n");
+    printf ("Total                %15.4f  %4d\n", SST, n - 1);
+    printf ("\n");
+    printf ("Test Statistic f     %15.4f\n", f);
+    printf ("p-value              %15.4f\n", pval);
+    printf ("\n");
   endif
 
 endfunction

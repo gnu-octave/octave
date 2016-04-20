@@ -48,8 +48,9 @@ function display_info_file (func, package, file)
 
   fid = fopen (filepath, "r");
   while (ischar (line = fgets (fid)))
-    fputs (line);
+    puts (line);
   endwhile
   fclose (fid);
 
 endfunction
+

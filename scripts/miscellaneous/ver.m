@@ -75,7 +75,7 @@ function retval = ver (package = "")
             ["Operating System: " os_string]
             hbar};
 
-    fprintf ("%s\n", desc{:});
+    printf ("%s\n", desc{:});
 
     if (isempty (package))
       pkg ("list");

@@ -58,7 +58,7 @@ function [pval, chisq, df] = mcnemar_test (x)
   pval = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)
-    fprintf ("  pval: %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

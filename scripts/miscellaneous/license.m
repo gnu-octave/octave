@@ -88,7 +88,7 @@ function [retval, errmsg] = license (cmd, feature, toogle)
         features = features(strcmp (features, feature));
       endif
       if (nargout == 0)
-        fprintf ("%s\n", features{:});
+        printf ("%s\n", features{:});
       else
         retval = struct ("feature", features, "user", get_username ());
       endif

@@ -78,7 +78,7 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   endif
 
   if (nargout == 0)
-    fprintf ("  pval: %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

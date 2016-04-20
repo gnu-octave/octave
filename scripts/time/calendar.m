@@ -80,9 +80,9 @@ function varargout = calendar (varargin)
     ## Display the calendar.
     s.year = y - 1900;
     s.mon = m - 1;
-    fputs (strftime ("                    %b %Y\n", s));
-    fputs ("     S     M    Tu     W    Th     F     S\n");
-    fputs (str);
+    puts (strftime ("                    %b %Y\n", s));
+    puts ("     S     M    Tu     W    Th     F     S\n");
+    puts (str);
   endif
 
 endfunction
@@ -101,3 +101,4 @@ endfunction
 
 ## Test input validation
 %!error calendar (1,2,3)
+

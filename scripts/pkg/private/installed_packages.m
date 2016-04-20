@@ -93,9 +93,9 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
     num_packages = numel (installed_pkgs_lst);
     if (num_packages == 0)
       if (isempty (pkgname))
-        fprintf ("no packages installed.\n");
+        printf ("no packages installed.\n");
       else
-        fprintf ("package %s is not installed.\n", pkgname{1});
+        printf ("package %s is not installed.\n", pkgname{1});
       endif
       return;
     endif
@@ -118,11 +118,11 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
 
     ## Print a header.
     header = sprintf ("%s | %s | %s\n", h1, h2, h3);
-    fprintf (header);
+    printf (header);
     tmp = sprintf (repmat ("-", 1, length (header) - 1));
     tmp(length(h1)+2) = "+";
     tmp(length(h1)+length(h2)+5) = "+";
-    fprintf ("%s\n", tmp);
+    printf ("%s\n", tmp);
 
     ## Print the packages.
     format = sprintf ("%%%ds %%1s| %%%ds | %%s\n",
@@ -145,7 +145,7 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
       else
         cur_loaded = " ";
       endif
-      fprintf (format, cur_name, cur_loaded, cur_version, cur_dir);
+      printf (format, cur_name, cur_loaded, cur_version, cur_dir);
     endfor
   endif
 endfunction

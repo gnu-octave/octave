@@ -87,7 +87,7 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   endif
 
   if (nargout == 0)
-    fprintf ("  pval: %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

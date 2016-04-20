@@ -71,10 +71,6 @@ Summary of important user-visible changes for version 4.2:
  ** The textscan function is now built-in and is much faster and much
     more Matlab-compatible than the previous m-file version.
 
- ** The fputs function now allows to ommit the file descriptor to
-    print the string to stdout and returns the number of bytes written
-    to the file descriptor or stdout, respectively.
-
  ** Dialog boxes, errordlg, helpdlg, inputdlg, errordlg, listdlg,
     msgbox, questdlg, and warndlg, now exclusively use QT.  Java based
     versions are removed.
@@ -104,9 +100,6 @@ Summary of important user-visible changes for version 4.2:
       mahalanobis          | mahal in Octave-Forge statistics pkg
       md5sum               | hash
       octve_config_info    | __octave_config_info__
-      printf               | fprintf
-      puts                 | fputs
-      scanf                | fscanf
       sleep                | pause
       usleep               | pause
       wavread              | audioread

@@ -127,7 +127,7 @@ function varargout = textread (filename, format = "%f", varargin)
     nlines = Inf;
   endif
   if (nlines < 1)
-    fprintf ("textread: N = 0, no data read\n");
+    printf ("textread: N = 0, no data read\n");
     varargout = cell (1, nargout);
     return;
   endif

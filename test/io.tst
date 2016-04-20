@@ -262,6 +262,17 @@
 
 %!error <unable to find file> load ("")
 
+%% FIXME: This test is disabled as it writes to stdout and there is no easy
+%% way to recover output.  Need to spawn new octave process and pipe stdout
+%% somewhere to treat this case.
+%!#test
+%! puts ("foo\n");
+
+%!assert (puts (1),-1)
+
+%!error <Invalid call to puts> puts ()
+%!error <Invalid call to puts> puts (1, 2)
+
 %!assert (sscanf ('123456', '%10c'), '123456')
 %!assert (sscanf ('123456', '%10s'), '123456')
 
@@ -324,8 +335,8 @@
 %! assert (x, 8);
 %! assert (str, "test:1");
 
-%!error fprintf (1)
-%!error <Invalid call to fprintf> fprintf ()
+%!error printf (1)
+%!error <Invalid call to printf> printf ()
 
 %!test
 %! [s, msg, status] = sprintf ("%s: %d\n", "test", 1);
@@ -504,6 +515,11 @@
 %!   endif
 %! endif
 %! unlink (nm);
+
+%!assert (fputs (1, 1),-1)
+
+%!error <Invalid call to fputs> fputs ()
+%!error <Invalid call to fputs> fputs (1, "foo", 1)
 
 %!error fgetl ("foo", 1)
 

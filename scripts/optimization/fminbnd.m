@@ -260,32 +260,32 @@ endfunction
 
 ## A hack for printing a formatted table
 function print_formatted_table (table)
-  fprintf ("\n Func-count     x          f(x)         Procedure\n");
+  printf ("\n Func-count     x          f(x)         Procedure\n");
   for row=table
-    fprintf("%5.5s        %7.7s    %8.8s\t%s\n",
+    printf("%5.5s        %7.7s    %8.8s\t%s\n",
            int2str (row.funccount), num2str (row.x,"%.5f"),
            num2str (row.fx,"%.6f"), row.procedure);
   endfor
-  fprintf ("\n");
+  printf ("\n");
 endfunction
 
 ## Print either a success termination message or bad news
 function print_exit_msg (info, opt=struct())
-  fprintf ("");
+  printf ("");
   switch (info)
     case 1
-      fprintf ("Optimization terminated:\n");
-      fprintf (" the current x satisfies the termination criteria using OPTIONS.TolX of %e\n", opt.TolX);
+      printf ("Optimization terminated:\n");
+      printf (" the current x satisfies the termination criteria using OPTIONS.TolX of %e\n", opt.TolX);
     case 0
-      fprintf ("Exiting: Maximum number of iterations has been exceeded\n");
-      fprintf ("         - increase MaxIter option.\n");
-      fprintf ("         Current function value: %.6f\n", opt.fx);
+      printf ("Exiting: Maximum number of iterations has been exceeded\n");
+      printf ("         - increase MaxIter option.\n");
+      printf ("         Current function value: %.6f\n", opt.fx);
     case -1
       "FIXME"; # FIXME: what's the message MATLAB prints for this case?
     otherwise
       error ("fminbnd: internal error, info return code was %d", info);
   endswitch
-  fprintf ("\n");
+  printf ("\n");
 endfunction
 
 

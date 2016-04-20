@@ -75,7 +75,7 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   endif
 
   if (nargout == 0)
-    fprintf ("  pval: %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

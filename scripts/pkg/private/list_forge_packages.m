@@ -31,14 +31,15 @@ function list = list_forge_packages ()
   endif
   if (nargout == 0)
     page_screen_output (false, "local");
-    fputs ("OctaveForge provides these packages:\n");
+    puts ("OctaveForge provides these packages:\n");
     for i = 1:length (list)
       try
         ver = get_forge_pkg (list{i});
       catch
         ver = "unknown";
       end_try_catch
-      fprintf ("  %s %s\n", list{i}, ver);
+      printf ("  %s %s\n", list{i}, ver);
     endfor
   endif
 endfunction
+

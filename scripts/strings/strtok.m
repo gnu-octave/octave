@@ -145,13 +145,13 @@ endfunction
 %! s = "14*27+31"
 %! while (1)
 %!   [t, s] = strtok (s, "+-*/");
-%!   fprintf ("<%s>", t);
+%!   printf ("<%s>", t);
 %!   if (isempty (s))
 %!     break;
 %!   endif
-%!   fprintf ("<%s>", s(1));
+%!   printf ("<%s>", s(1));
 %! endwhile
-%! fprintf ("\n");
+%! printf ("\n");
 %! % ----------------------------------------------------
 %! % Demonstrates processing of an entire string split on
 %! % a variety of delimiters.  Tokens and delimiters are

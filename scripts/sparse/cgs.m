@@ -165,15 +165,15 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 
     if (nargout < 1)
       if (flag == 0)
-        fprintf ("cgs converged at iteration %i to a solution with relative residual %e\n",
+        printf ("cgs converged at iteration %i to a solution with relative residual %e\n",
                 iter, relres);
       elseif (flag == 3)
-        fprintf (["cgs stopped at iteration %i without converging to the desired tolerance %e\n",
+        printf (["cgs stopped at iteration %i without converging to the desired tolerance %e\n",
                  "because the method stagnated.\n",
                  "The iterate returned (number %i) has relative residual %e\n"],
                 iter, tol, iter, relres);
       else
-        fprintf (["cgs stopped at iteration %i without converging to the desired tolerance %e\n",
+        printf (["cgs stopped at iteration %i without converging to the desired tolerance %e\n",
                  "because the maximum number of iterations was reached.\n",
                  "The iterate returned (number %i) has relative residual %e\n"],
                 iter, tol, iter, relres);

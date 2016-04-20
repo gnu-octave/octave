@@ -122,9 +122,9 @@ function retval = optimset (varargin)
   if (nargs == 0)
     if (nargout == 0)
       ## Display possibilities.
-      fputs ("\nAll possible optimization options:\n\n");
-      fprintf ("  %s\n", opts{:});
-      fputs ("\n");
+      puts ("\nAll possible optimization options:\n\n");
+      printf ("  %s\n", opts{:});
+      puts ("\n");
     else
       ## Return struct with all options initialized to []
       retval = cell2struct (repmat ({[]}, size (opts)), opts, 2);
@@ -189,3 +189,4 @@ endfunction
 %!error <no defaults for function> optimset ("%NOT_A_REAL_FUNCTION_NAME%")
 %!warning <unrecognized option: foobar> optimset ("foobar", 13);
 %!warning <ambiguous option: Max> optimset ("Max", 10);
+

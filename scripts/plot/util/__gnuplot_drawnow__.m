@@ -98,7 +98,7 @@ function __gnuplot_drawnow__ (h, term, file, debug_file)
         if (a(1) == 12)
           a = a(2:end);  # avoid ^L at the beginning
         endif
-        fputs (a);
+        puts (a);
       endif
       unlink (dumb_tmp_file);
     endif
@@ -414,3 +414,4 @@ endfunction
 
 ## No test needed for internal helper function.
 %!assert (1)
+

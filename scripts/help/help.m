@@ -64,7 +64,7 @@ function retval = help (name)
   For more information visit http://www.octave.org.\n\n";
 
     if (nargout == 0)
-      fputs (text);
+      puts (text);
     else
       retval = text;
     endif
@@ -74,7 +74,7 @@ function retval = help (name)
     if (strcmp (name, "--list"))
       list = do_list_functions ();
       if (nargout == 0)
-        fprintf ("%s", list);
+        printf ("%s", list);
       else
         retval = list;
       endif
@@ -84,7 +84,7 @@ function retval = help (name)
     if (strcmp (name, "."))
       list = do_list_operators ();
       if (nargout == 0)
-        fprintf ("%s", list);
+        printf ("%s", list);
       else
         retval = list;
       endif
@@ -118,7 +118,7 @@ function retval = help (name)
 
     if (nargout == 0)
       which (name);
-      fprintf ("\n%s\n%s", text, __additional_help_message__ ());
+      printf ("\n%s\n%s", text, __additional_help_message__ ());
     else
       retval = text;
     endif
@@ -189,13 +189,13 @@ function do_contents (name)
       if (status != 0)
         warning ("help: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
       endif
-      fprintf ("%s:\n\n%s\n", fname, text);
+      printf ("%s:\n\n%s\n", fname, text);
     endif
 
   endfor
 
   if (found)
-    fputs (__additional_help_message__ ());
+    puts (__additional_help_message__ ());
   else
     msg = feval (missing_function_hook, name);
 
@@ -216,3 +216,4 @@ endfunction
 %!error <invalid input> help (42)
 %!error <invalid input> help ("abc", "def")
 %!error <'_! UNLIKELY_FCN! _' not found> help ("_! UNLIKELY_FCN! _")
+

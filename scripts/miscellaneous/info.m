@@ -23,7 +23,7 @@
 
 function info ()
 
-  fprintf ("\n\
+  printf ("\n\
   Additional information about GNU Octave is available at\n\
   http://www.octave.org\n\
 \n\

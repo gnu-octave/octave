@@ -115,16 +115,16 @@ Here is an example:
 @example
 @group
 if (rem (x, 2) == 0)
-  fprintf ("x is even\n");
+  printf ("x is even\n");
 else
-  fprintf ("x is odd\n");
+  printf ("x is odd\n");
 endif
 @end group
 @end example
 
 In this example, if the expression @code{rem (x, 2) == 0} is true (that
 is, the value of @code{x} is divisible by 2), then the first
-@code{fprintf} statement is evaluated, otherwise the second @code{fprintf}
+@code{printf} statement is evaluated, otherwise the second @code{printf}
 statement is evaluated.
 
 The third and most general form of the @code{if} statement allows
@@ -152,20 +152,20 @@ tested in turn, and if one is found to be true, its corresponding
 statement.
 
 In the following example, if the first condition is true (that is, the
-value of @code{x} is divisible by 2), then the first @code{fprintf}
+value of @code{x} is divisible by 2), then the first @code{printf}
 statement is executed.  If it is false, then the second condition is
 tested, and if it is true (that is, the value of @code{x} is divisible
-by 3), then the second @code{fprintf} statement is executed.  Otherwise,
-the third @code{fprintf} statement is performed.
+by 3), then the second @code{printf} statement is executed.  Otherwise,
+the third @code{printf} statement is performed.
 
 @example
 @group
 if (rem (x, 2) == 0)
-  fprintf ("x is even\n");
+  printf ("x is even\n");
 elseif (rem (x, 3) == 0)
-  fprintf ("x is odd and divisible by 3\n");
+  printf ("x is odd and divisible by 3\n");
 else
-  fprintf ("x is odd\n");
+  printf ("x is odd\n");
 endif
 @end group
 @end example
@@ -296,9 +296,9 @@ is executed if @emph{any} of the elements of the cell array match
 A = 7;
 switch (A)
   case @{ 6, 7 @}
-    fprintf ("variable is either 6 or 7\n");
+    printf ("variable is either 6 or 7\n");
   otherwise
-    fprintf ("variable is neither 6 nor 7\n");
+    printf ("variable is neither 6 nor 7\n");
 endswitch
 @end group
 @end example
@@ -684,9 +684,9 @@ while (div*div <= num)
   div++;
 endwhile
 if (rem (num, div) == 0)
-  fprintf ("Smallest divisor of %d is %d\n", num, div)
+  printf ("Smallest divisor of %d is %d\n", num, div)
 else
-  fprintf ("%d is prime\n", num);
+  printf ("%d is prime\n", num);
 endif
 @end group
 @end example
@@ -707,12 +707,12 @@ num = 103;
 div = 2;
 while (1)
   if (rem (num, div) == 0)
-    fprintf ("Smallest divisor of %d is %d\n", num, div);
+    printf ("Smallest divisor of %d is %d\n", num, div);
     break;
   endif
   div++;
   if (div*div > num)
-    fprintf ("%d is prime\n", num);
+    printf ("%d is prime\n", num);
     break;
   endif
 endwhile
@@ -746,7 +746,7 @@ for x = vec
   if (rem (x, 2) != 0)
     continue;
   endif
-  fprintf ("%d\n", x);
+  printf ("%d\n", x);
 endfor
 @end group
 @end example
@@ -763,7 +763,7 @@ would probably write the loop like this:
 @group
 for x = vec
   if (rem (x, 2) == 0)
-    fprintf ("%d\n", x);
+    printf ("%d\n", x);
   endif
 endfor
 @end group

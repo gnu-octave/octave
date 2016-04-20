@@ -42,7 +42,7 @@ function [status, text] = dos (command, echo_arg)
   elseif (! isunix ())
     [status, text] = system (command);
     if (nargin > 1 || nargout == 0)
-      fprintf ("%s\n", text);
+      printf ("%s\n", text);
     endif
   endif
 

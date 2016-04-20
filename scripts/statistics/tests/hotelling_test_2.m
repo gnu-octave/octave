@@ -80,7 +80,7 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
                     p, n_x + n_y - p - 1);
 
   if (nargout == 0)
-    fprintf ("  pval: %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction

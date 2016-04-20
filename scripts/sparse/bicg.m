@@ -178,19 +178,19 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
         if (res1 < tol)
           flag = 0;
           if (nargout < 2)
-            fprintf ("bicg converged at iteration %i ", k);
-            fprintf ("to a solution with relative residual %e\n", res1);
+            printf ("bicg converged at iteration %i ", k);
+            printf ("to a solution with relative residual %e\n", res1);
           endif
           break;
         endif
 
         if (res0 <= res1)
           flag = 3;
-          fprintf ("bicg stopped at iteration %i ", k);
-          fprintf ("without converging to the desired tolerance %e\n", tol);
-          fprintf ("because the method stagnated.\n");
-          fprintf ("The iterate returned (number %i) ", k-1);
-          fprintf ("has relative residual %e\n", res0);
+          printf ("bicg stopped at iteration %i ", k);
+          printf ("without converging to the desired tolerance %e\n", tol);
+          printf ("because the method stagnated.\n");
+          printf ("The iterate returned (number %i) ", k-1);
+          printf ("has relative residual %e\n", res0);
           break
         endif
         res0 = res1;
@@ -201,17 +201,17 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
 
       if (k == maxit)
         flag = 1;
-        fprintf ("bicg stopped at iteration %i ", maxit);
-        fprintf ("without converging to the desired tolerance %e\n", tol);
-        fprintf ("because the maximum number of iterations was reached. ");
-        fprintf ("The iterate returned (number %i) has ", maxit);
-        fprintf ("relative residual %e\n", res1);
+        printf ("bicg stopped at iteration %i ", maxit);
+        printf ("without converging to the desired tolerance %e\n", tol);
+        printf ("because the maximum number of iterations was reached. ");
+        printf ("The iterate returned (number %i) has ", maxit);
+        printf ("relative residual %e\n", res1);
       endif
 
     else
       flag = 0;
       if (nargout < 2)
-        fprintf ("bicg converged after 0 interations\n");
+        printf ("bicg converged after 0 interations\n");
       endif
     endif
 

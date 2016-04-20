@@ -6,7 +6,6 @@ scripts_io_FCN_FILES = \
   scripts/io/csvwrite.m \
   scripts/io/dlmwrite.m \
   scripts/io/fileread.m \
-  scripts/io/fputs.m \
   scripts/io/importdata.m \
   scripts/io/is_valid_file_id.m \
   scripts/io/strread.m \

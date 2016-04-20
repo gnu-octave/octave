@@ -140,17 +140,17 @@ endfunction
 
 function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
                                     pkg_desc, status, verbose)
-  fprintf ("---\nPackage name:\n\t%s\n", pkg_name);
-  fprintf ("Version:\n\t%s\n", pkg_ver);
-  fprintf ("Short description:\n\t%s\n", pkg_desc);
-  fprintf ("Status:\n\t%s\n", status);
+  printf ("---\nPackage name:\n\t%s\n", pkg_name);
+  printf ("Version:\n\t%s\n", pkg_ver);
+  printf ("Short description:\n\t%s\n", pkg_desc);
+  printf ("Status:\n\t%s\n", status);
   if (verbose)
-    fprintf ("---\nProvides:\n");
+    printf ("---\nProvides:\n");
     for i = 1:length (pkg_idx_struct)
       if (! isempty (pkg_idx_struct{i}.functions))
-        fprintf ("%s\n", pkg_idx_struct{i}.category);
+        printf ("%s\n", pkg_idx_struct{i}.category);
         for j = 1:length (pkg_idx_struct{i}.functions)
-          fprintf ("\t%s\n", pkg_idx_struct{i}.functions{j});
+          printf ("\t%s\n", pkg_idx_struct{i}.functions{j});
         endfor
       endif
     endfor

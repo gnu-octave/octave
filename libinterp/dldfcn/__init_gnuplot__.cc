@@ -151,7 +151,7 @@ private:
         octave_value_list args;
         Matrix fids = pstream.matrix_value ();
 
-        Ffputs (ovl (fids(0), "\nquit;\n"));
+        Ffprintf (ovl (fids(0), "%s", "\nquit;\n"));
 
         Ffflush (ovl (fids(0)));
         Fpclose (ovl (fids(0)));

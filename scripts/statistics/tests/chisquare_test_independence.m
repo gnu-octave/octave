@@ -48,7 +48,7 @@ function [pval, chisq, df] = chisquare_test_independence (x)
   pval = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)
-    printf ("  pval: %g\n", pval);
+    fprintf ("  pval: %g\n", pval);
   endif
 
 endfunction

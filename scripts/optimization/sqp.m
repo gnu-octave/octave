@@ -721,9 +721,9 @@ endfunction
 function report (iter, qp_iter, alpha, nfun, obj)
 
   if (nargin == 0)
-    printf ("  Itn ItQP     Step  Nfun     Objective\n");
+    fprintf ("  Itn ItQP     Step  Nfun     Objective\n");
   else
-    printf ("%5d %4d %8.1g %5d %13.6e\n", iter, qp_iter, alpha, nfun, obj);
+    fprintf ("%5d %4d %8.1g %5d %13.6e\n", iter, qp_iter, alpha, nfun, obj);
   endif
 
 endfunction

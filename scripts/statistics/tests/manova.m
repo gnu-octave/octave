@@ -136,30 +136,30 @@ function manova (x, g)
     df_den = theta * (2 * v + theta + 1);
     PB_pval = 1 - fcdf (PB * df_den / df_num, df_num, df_den);
 
-    printf ("\n");
-    printf ("One-way MANOVA Table:\n");
-    printf ("\n");
-    printf ("Test             Test Statistic      Approximate p\n");
-    printf ("**************************************************\n");
-    printf ("Wilks            %10.4f           %10.9f \n", Lambda, W_pval_1);
-    printf ("                                      %10.9f \n", W_pval_2);
-    printf ("Hotelling-Lawley %10.4f           %10.9f \n", HL, HL_pval);
-    printf ("Pillai-Bartlett  %10.4f           %10.9f \n", PB, PB_pval);
-    printf ("\n");
+    fprintf ("\n");
+    fprintf ("One-way MANOVA Table:\n");
+    fprintf ("\n");
+    fprintf ("Test             Test Statistic      Approximate p\n");
+    fprintf ("**************************************************\n");
+    fprintf ("Wilks            %10.4f           %10.9f \n", Lambda, W_pval_1);
+    fprintf ("                                      %10.9f \n", W_pval_2);
+    fprintf ("Hotelling-Lawley %10.4f           %10.9f \n", HL, HL_pval);
+    fprintf ("Pillai-Bartlett  %10.4f           %10.9f \n", PB, PB_pval);
+    fprintf ("\n");
 
   endif
 
-  printf ("\n");
-  printf ("MANOVA Results:\n");
-  printf ("\n");
-  printf ("# of groups:    %d\n", k);
-  printf ("# of samples:   %d\n", n);
-  printf ("# of variables: %d\n", p);
-  printf ("\n");
-  printf ("Wilks' Lambda:  %5.4f\n", Lambda);
-  printf ("Approximate p:  %10.9f (chisquare approximation)\n", W_pval_1);
-  printf ("                 %10.9f (F approximation)\n", W_pval_2);
-  printf ("\n");
+  fprintf ("\n");
+  fprintf ("MANOVA Results:\n");
+  fprintf ("\n");
+  fprintf ("# of groups:    %d\n", k);
+  fprintf ("# of samples:   %d\n", n);
+  fprintf ("# of variables: %d\n", p);
+  fprintf ("\n");
+  fprintf ("Wilks' Lambda:  %5.4f\n", Lambda);
+  fprintf ("Approximate p:  %10.9f (chisquare approximation)\n", W_pval_1);
+  fprintf ("                 %10.9f (F approximation)\n", W_pval_2);
+  fprintf ("\n");
 
 endfunction
 

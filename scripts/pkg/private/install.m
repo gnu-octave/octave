@@ -67,7 +67,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
         tmpdir = tempname ();
         tmpdirs{end+1} = tmpdir;
         if (verbose)
-          printf ("mkdir (%s)\n", tmpdir);
+          fprintf ("mkdir (%s)\n", tmpdir);
         endif
         [status, msg] = mkdir (tmpdir);
         if (status != 1)
@@ -76,7 +76,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
 
         ## Uncompress the package.
         if (verbose)
-          printf ("untar (%s, %s)\n", tgz, tmpdir);
+          fprintf ("untar (%s, %s)\n", tgz, tmpdir);
         endif
         untar (tgz, tmpdir);
 
@@ -276,9 +276,9 @@ function install (files, handle_deps, prefix, archprefix, verbose,
       rmdir (descriptions{i}.dir, "s");
     endfor
     if (global_install)
-      printf ("error: couldn't append to %s\n", global_list);
+      fprintf ("error: couldn't append to %s\n", global_list);
     else
-      printf ("error: couldn't append to %s\n", local_list);
+      fprintf ("error: couldn't append to %s\n", local_list);
     endif
     rethrow (lasterror ());
   end_try_catch
@@ -296,7 +296,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
   ## without creating it such as giving an invalid filename for the package
   if (exist ("desc", "var")
       && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
-    printf ("For information about changes from previous versions of the %s package, run 'news %s'.\n",
+    fprintf ("For information about changes from previous versions of the %s package, run 'news %s'.\n",
             desc.name, desc.name);
   endif
 endfunction
@@ -419,9 +419,9 @@ function copy_built_files (desc, packdir, verbose)
       endif
       if (! all (isspace ([archindependent{:}])))
         if (verbose)
-          printf ("copyfile");
-          printf (" %s", archindependent{:});
-          printf ("%s\n", instdir);
+          fprintf ("copyfile");
+          fprintf (" %s", archindependent{:});
+          fprintf ("%s\n", instdir);
         endif
         [status, output] = copyfile (archindependent, instdir);
         if (status != 1)
@@ -431,9 +431,9 @@ function copy_built_files (desc, packdir, verbose)
       endif
       if (! all (isspace ([archdependent{:}])))
         if (verbose)
-          printf ("copyfile");
-          printf (" %s", archdependent{:});
-          printf (" %s\n", archdir);
+          fprintf ("copyfile");
+          fprintf (" %s", archdependent{:});
+          fprintf (" %s\n", archdir);
         endif
         if (! exist (archdir, "dir"))
           mkdir (archdir);

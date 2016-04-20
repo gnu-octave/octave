@@ -70,19 +70,19 @@ function choice = menu (title, varargin)
     page_screen_output (0, "local");
 
     if (! isempty (title))
-      printf ("%s\n", title);
+      fprintf ("%s\n", title);
     endif
 
     nopt = numel (varargin);
     while (1)
       for i = 1:nopt
-        printf ("  [%2d] %s\n", i, varargin{i});
+        fprintf ("  [%2d] %s\n", i, varargin{i});
       endfor
-      printf ("\n");
+      fprintf ("\n");
       s = input ("Select a number: ", "s");
       choice = sscanf (s, "%d");
       if (! isscalar (choice) || choice < 1 || choice > nopt)
-        printf ("\nerror: input invalid or out of range\n\n");
+        fprintf ("\nerror: input invalid or out of range\n\n");
         choice = 0;
       else
         break;

@@ -310,12 +310,12 @@ line which invoked Octave.
 
 @example
 @group
-printf ("%s", program_name ());
+fprintf ("%s", program_name ());
 arg_list = argv ();
 for i = 1:nargin
-  printf (" %s", arg_list@{i@});
+  fprintf (" %s", arg_list@{i@});
 endfor
-printf ("\n");
+fprintf ("\n");
 @end group
 @end example
 
@@ -1038,7 +1038,7 @@ was used to execute the script, not @samp{-qf}.
 printf ("%s", program_name ());
 arg_list = argv ();
 for i = 1:nargin
-  printf (" %s", arg_list@{i@});
+  fprintf (" %s", arg_list@{i@});
 endfor
 printf ("\n");
 @end group

@@ -83,7 +83,7 @@ function [pval, z] = z_test (x, m, v, alt)
     s = ["Z-test of mean(x) == %g against mean(x) %s %g,\n", ...
          "with known var(x) == %g:\n",                       ...
          "  pval = %g\n"];
-    printf (s, m, alt, m, v, pval);
+    fprintf (s, m, alt, m, v, pval);
   endif
 
 endfunction

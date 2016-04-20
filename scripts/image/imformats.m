@@ -311,7 +311,7 @@ function pretty_print_formats (formats)
 
   descriptions = {formats.description};
   table = cat (2, extensions(:), yes_no_cols, descriptions(:));
-  printf ([template "\n"], table'{:});
+  fprintf ([template "\n"], table'{:});
 
 endfunction
 

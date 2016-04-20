@@ -129,7 +129,7 @@ function t = cor_test (x, y, alt, method)
   t.alternative = alt;
 
   if (nargout == 0)
-    printf ("pval: %g\n", t.pval);
+    fprintf ("pval: %g\n", t.pval);
   endif
 
 endfunction

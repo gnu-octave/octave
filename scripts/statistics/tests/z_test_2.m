@@ -84,7 +84,7 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
          "mean(x) %s mean(y),\n",                            ...
          "with known var(x) == %g and var(y) == %g:\n",      ...
          "  pval = %g\n"];
-    printf (s, alt, v_x, v_y, pval);
+    fprintf (s, alt, v_x, v_y, pval);
   endif
 
 endfunction

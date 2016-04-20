@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 function display (obj)
-  printf ("FTP Object\n");
-  printf (" host: %s\n", obj.host);
-  printf (" user: %s\n", obj.username);
-  printf ("  dir: %s\n", __ftp_pwd__ (obj.curlhandle));
-  printf (" mode: %s\n", __ftp_mode__ (obj.curlhandle));
+  fprintf ("FTP Object\n");
+  fprintf (" host: %s\n", obj.host);
+  fprintf (" user: %s\n", obj.username);
+  fprintf ("  dir: %s\n", __ftp_pwd__ (obj.curlhandle));
+  fprintf (" mode: %s\n", __ftp_mode__ (obj.curlhandle));
 endfunction
 
 

@@ -137,7 +137,7 @@ endfunction
 function __display_filenames__ (msg, p, f)
 
   if (length (f) > 0)
-    printf ("%s %s:\n\n", msg, p);
+    fprintf ("%s %s:\n\n", msg, p);
 
     maxlen = max (cellfun ("length", f));
     ncols = max (1, floor (terminal_size ()(2) / (maxlen + 3)));
@@ -151,7 +151,7 @@ function __display_filenames__ (msg, p, f)
       if (length (args) < ncols)
         args(end+1 : ncols) = {""};
       endif
-      printf (fmt, args{:});
+      fprintf (fmt, args{:});
     endfor
   endif
 

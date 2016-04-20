@@ -164,14 +164,14 @@ function [fcn, help1str] = lookfor (str, arg2)
     for k = 1:length (fcnlist)
       f = fcnlist{k};
       f(end+1:indent-1) = " ";
-      puts ([f " "]);
+      fputs ([f " "]);
       lf = length (f);
       desc = strtrim (strrep (help_text{k}, "\n", " "));
       ldesc = length (desc);
-      printf ("%s\n", desc(1:min (ldesc, desc_width - (lf - indent))));
+      fprintf ("%s\n", desc(1:min (ldesc, desc_width - (lf - indent))));
       for start = (desc_width - (lf - indent) + 1):desc_width:ldesc
         stop = min (start + desc_width, ldesc);
-        printf ("%s%s\n", indent_space, strtrim (desc (start:stop)));
+        fprintf ("%s%s\n", indent_space, strtrim (desc (start:stop)));
       endfor
     endfor
   else
@@ -194,4 +194,3 @@ function [fcns, help_texts] = search_cache (str, cache_file, search_type)
     fcns = help_texts = {};
   endif
 endfunction
-

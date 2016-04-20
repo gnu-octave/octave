@@ -54,7 +54,7 @@ function [pval, chisq] = run_test (x)
   pval  = chi2cdf (chisq, 6);
 
   if (nargout == 0)
-    printf ("pval: %g\n", pval);
+    fprintf ("pval: %g\n", pval);
   endif
 
 endfunction

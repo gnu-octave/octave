@@ -74,7 +74,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   endif
 
   if (nargout == 0)
-    printf ("pval: %g\n", pval);
+    fprintf ("pval: %g\n", pval);
   endif
 
 endfunction

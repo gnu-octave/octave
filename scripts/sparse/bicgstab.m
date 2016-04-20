@@ -180,20 +180,20 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
 
     if (nargout < 2)
       if (flag == 0)
-        printf ("bicgstab converged at iteration %i ", iter);
-        printf ("to a solution with relative residual %e\n", relres);
+        fprintf ("bicgstab converged at iteration %i ", iter);
+        fprintf ("to a solution with relative residual %e\n", relres);
       elseif (flag == 3)
-        printf ("bicgstab stopped at iteration %i ", iter);
-        printf ("without converging to the desired tolerance %e\n", tol);
-        printf ("because the method stagnated.\n");
-        printf ("The iterate returned (number %i) ", iter);
-        printf ("has relative residual %e\n", relres);
+        fprintf ("bicgstab stopped at iteration %i ", iter);
+        fprintf ("without converging to the desired tolerance %e\n", tol);
+        fprintf ("because the method stagnated.\n");
+        fprintf ("The iterate returned (number %i) ", iter);
+        fprintf ("has relative residual %e\n", relres);
       else
-        printf ("bicgstab stopped at iteration %i ", iter);
-        printf ("without converging to the desired toleranc %e\n", tol);
-        printf ("because the maximum number of iterations was reached.\n");
-        printf ("The iterate returned (number %i) ", iter);
-        printf ("has relative residual %e\n", relres);
+        fprintf ("bicgstab stopped at iteration %i ", iter);
+        fprintf ("without converging to the desired toleranc %e\n", tol);
+        fprintf ("because the maximum number of iterations was reached.\n");
+        fprintf ("The iterate returned (number %i) ", iter);
+        fprintf ("has relative residual %e\n", relres);
       endif
     endif
 

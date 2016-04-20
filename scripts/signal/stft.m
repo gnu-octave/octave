@@ -85,7 +85,7 @@ function [y, c] = stft (x, win_size = 80, inc = 24, num_coef = 64, win_type = 1)
   ncoef = 2 * num_coef;
   if (win_size > ncoef)
     win_size = ncoef;
-    printf ("stft: window size adjusted to %f\n", win_size);
+    fprintf ("stft: window size adjusted to %f\n", win_size);
   endif
   num_win = fix ((rows (x) - win_size) / inc);
 

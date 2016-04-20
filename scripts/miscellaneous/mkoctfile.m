@@ -164,7 +164,7 @@ function [output, status] = mkoctfile (varargin)
   if (nargout > 0)
     [output, status] = deal (out, sys);
   else
-    printf ("%s", out);
+    fprintf ("%s", out);
   endif
 
   if (sys != 0)

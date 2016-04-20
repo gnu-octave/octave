@@ -1,6 +1,6 @@
 function display (p)
 
-  printf ("%s =", inputname (1));
+  fprintf ("%s =", inputname (1));
 
   a = p.poly;
   first = true;
@@ -9,28 +9,28 @@ function display (p)
       if (first)
         first = false;
       elseif (a(i) > 0 || isnan (a(i)))
-        printf (" +");
+        fprintf (" +");
       endif
       if (a(i) < 0)
-        printf (" -");
+        fprintf (" -");
       endif
       if (i == 1)
-        printf (" %.5g", abs (a(i)));
+        fprintf (" %.5g", abs (a(i)));
       elseif (abs (a(i)) != 1)
-        printf (" %.5g *", abs (a(i)));
+        fprintf (" %.5g *", abs (a(i)));
       endif
       if (i > 1)
-        printf (" X");
+        fprintf (" X");
       endif
       if (i > 2)
-        printf (" ^ %d", i - 1);
+        fprintf (" ^ %d", i - 1);
       endif
     endif
   endfor
 
   if (first)
-    printf (" 0");
+    fprintf (" 0");
   endif
-  printf ("\n");
+  fprintf ("\n");
 
 endfunction

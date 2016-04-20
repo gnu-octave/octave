@@ -421,8 +421,8 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "prefix"
       if (isempty (files) && ! nargout)
-        printf ("Installation prefix:             %s\n", prefix);
-        printf ("Architecture dependent prefix:   %s\n", archprefix);
+        fprintf ("Installation prefix:             %s\n", prefix);
+        fprintf ("Architecture dependent prefix:   %s\n", archprefix);
       elseif (isempty (files) && nargout)
         local_packages = prefix;
         global_packages = archprefix;

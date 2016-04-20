@@ -81,7 +81,7 @@ function [pval, z] = u_test (x, y, alt)
   endif
 
   if (nargout == 0)
-    printf ("  pval: %g\n", pval);
+    fprintf ("  pval: %g\n", pval);
   endif
 
 endfunction

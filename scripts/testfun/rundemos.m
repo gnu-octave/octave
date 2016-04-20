@@ -73,7 +73,7 @@ function run_all_demos (directory, do_class_dirs)
         try
           demo (f);
         catch
-          printf ("error: %s\n\n", lasterror ().message);
+          fprintf ("error: %s\n\n", lasterror ().message);
         end_try_catch
         if (i != numel (flist))
           input ("Press <enter> to continue: ", "s");

@@ -76,9 +76,9 @@ function profshow (data, n = 20)
   headerFormat = sprintf ("%%4s %%%ds %%4s %%12s %%10s %%12s\n", nameLen);
   rowFormat = sprintf ("%%4d %%%ds %%4s %%12.3f %%10.2f %%12d\n", nameLen);
 
-  printf (headerFormat, ...
+  fprintf (headerFormat, ...
           "#", "Function", "Attr", "Time (s)", "Time (%)", "Calls");
-  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 5 + 11 + 2 * 13));
+  fprintf ("%s\n", repmat ("-", 1, nameLen + 2 * 5 + 11 + 2 * 13));
 
   for i = 1 : n
     row = data.FunctionTable(p(i));
@@ -87,7 +87,7 @@ function profshow (data, n = 20)
     if (row.IsRecursive)
       attr = "R";
     endif
-    printf (rowFormat, p(i), row.FunctionName, attr,
+    fprintf (rowFormat, p(i), row.FunctionName, attr,
             row.TotalTime, timePercent, row.NumCalls);
   endfor
 

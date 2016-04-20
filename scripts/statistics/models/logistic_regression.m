@@ -161,21 +161,21 @@ function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, thet
   beta  = tb((nz + 1) : (nz + nx), 1);
 
   if (print >= 1)
-    printf ("\n");
-    printf ("Logistic Regression Results:\n");
-    printf ("\n");
-    printf ("Number of Iterations: %d\n", iter);
-    printf ("Deviance:             %f\n", dev);
-    printf ("Parameter Estimates:\n");
-    printf ("     Theta         S.E.\n");
+    fprintf ("\n");
+    fprintf ("Logistic Regression Results:\n");
+    fprintf ("\n");
+    fprintf ("Number of Iterations: %d\n", iter);
+    fprintf ("Deviance:             %f\n", dev);
+    fprintf ("Parameter Estimates:\n");
+    fprintf ("     Theta         S.E.\n");
     se = sqrt (diag (inv (-d2l)));
     for i = 1 : nz
-      printf ("   %8.4f     %8.4f\n", tb (i), se (i));
+      fprintf ("   %8.4f     %8.4f\n", tb (i), se (i));
     endfor
     if (nx > 0)
-      printf ("      Beta         S.E.\n");
+      fprintf ("      Beta         S.E.\n");
       for i = (nz + 1) : (nz + nx)
-        printf ("   %8.4f     %8.4f\n", tb (i), se (i));
+        fprintf ("   %8.4f     %8.4f\n", tb (i), se (i));
       endfor
     endif
   endif

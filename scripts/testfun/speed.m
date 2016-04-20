@@ -211,7 +211,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
     eval (__init);
 
     if (do_display)
-      printf ("n%i = %i  ", k, n);
+      fprintf ("n%i = %i  ", k, n);
       fflush (stdout);
     endif
 
@@ -301,7 +301,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
     ylabel ("best execution time (ms)");
 
     ratio = mean (__torig ./ __tnew);
-    printf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n",
+    fprintf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n",
             ratio, __f2, __f1);
 
   endif
@@ -337,9 +337,9 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
     endif
 
     ## Display nicely formatted complexity.
-    printf ("\nFor %s:\n", __f1);
-    printf ("  asymptotic power: %s\n", order);
-    printf ("  approximate time per operation: %s\n", time);
+    fprintf ("\nFor %s:\n", __f1);
+    fprintf ("  asymptotic power: %s\n", order);
+    fprintf ("  approximate time per operation: %s\n", time);
 
   endif
 

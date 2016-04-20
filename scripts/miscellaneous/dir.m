@@ -148,7 +148,7 @@ function retval = dir (directory)
     retval = info;
   elseif (numel (info) > 0)
     ## Print the structure to the screen.
-    printf ("%s", list_in_columns ({info.name}));
+    fprintf ("%s", list_in_columns ({info.name}));
   else
     warning ("dir: nonexistent directory '%s'", directory);
   endif

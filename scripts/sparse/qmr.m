@@ -242,23 +242,23 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     relres = res1;
     if (flag == 1)
       if (nargout < 2)
-        printf ("qmr stopped at iteration %i ", iter);
-        printf ("without converging to the desired tolerance %e\n", tol);
-        printf ("because the maximum number of iterations was reached. ");
-        printf ("The iterate returned (number %i) has ", maxit);
-        printf ("relative residual %e\n", res1);
+        fprintf ("qmr stopped at iteration %i ", iter);
+        fprintf ("without converging to the desired tolerance %e\n", tol);
+        fprintf ("because the maximum number of iterations was reached. ");
+        fprintf ("The iterate returned (number %i) has ", maxit);
+        fprintf ("relative residual %e\n", res1);
       endif
     elseif (flag == 3)
       if (nargout < 2)
-        printf ("qmr stopped at iteration %i ", iter);
-        printf (" without converging to the desired tolerance %e\n", tol);
-        printf ("because the method stagnated.\n");
-        printf ("The iterate returned (number %i) ", iter);
-        printf ("has relative residual %e\n", res1);
+        fprintf ("qmr stopped at iteration %i ", iter);
+        fprintf (" without converging to the desired tolerance %e\n", tol);
+        fprintf ("because the method stagnated.\n");
+        fprintf ("The iterate returned (number %i) ", iter);
+        fprintf ("has relative residual %e\n", res1);
       endif
     elseif (nargout < 2)
-      printf ("qmr converged at iteration %i ", iter);
-      printf ("to a solution with relative residual %e\n", res1);
+      fprintf ("qmr converged at iteration %i ", iter);
+      fprintf ("to a solution with relative residual %e\n", res1);
     endif
   else
     print usage();

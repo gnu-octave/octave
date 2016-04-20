@@ -108,12 +108,12 @@ on your terminal (assuming that it is possible to do so):
 @example
 @group
 function wakeup
-  printf ("\a");
+  fprintf ("\a");
 endfunction
 @end group
 @end example
 
-The @code{printf} statement (@pxref{Input and Output}) simply tells
+The @code{fprintf} statement (@pxref{Input and Output}) simply tells
 Octave to print the string @qcode{"@xbackslashchar{}a"}.  The special character
 @samp{\a} stands for the alert character (ASCII 7).  @xref{Strings}.
 
@@ -143,7 +143,7 @@ To print a message along with ringing the bell, you might modify the
 @example
 @group
 function wakeup (message)
-  printf ("\a%s\n", message);
+  fprintf ("\a%s\n", message);
 endfunction
 @end group
 @end example
@@ -157,7 +157,7 @@ wakeup ("Rise and shine!");
 @noindent
 will cause Octave to ring your terminal's bell and print the message
 @samp{Rise and shine!}, followed by a newline character (the @samp{\n}
-in the first argument to the @code{printf} statement).
+in the first argument to the @code{fprintf} statement).
 
 In most cases, you will also want to get some information back from the
 functions you define.  Here is the syntax for writing a function that
@@ -488,7 +488,7 @@ can be defined like this
 @group
 function print_arguments (varargin)
   for i = 1:length (varargin)
-    printf ("Input argument %d: ", i);
+    fprintf ("Input argument %d: ", i);
     disp (varargin@{i@});
   endfor
 endfunction
@@ -620,7 +620,7 @@ function retval = any_nonzero (v)
       return;
     endif
   endfor
-  printf ("no nonzero elements found\n");
+  fprintf ("no nonzero elements found\n");
 endfunction
 @end group
 @end example
@@ -664,7 +664,7 @@ As an example, the following function implements a variant of the classic
 @example
 @group
 function hello (who = "World")
-  printf ("Hello, %s!\n", who);
+  fprintf ("Hello, %s!\n", who);
 endfunction
 @end group
 @end example
@@ -825,15 +825,15 @@ other functions in the same function file.  For example, a file
 @example
 @group
 function f ()
-  printf ("in f, calling g\n");
+  fprintf ("in f, calling g\n");
   g ()
 endfunction
 function g ()
-  printf ("in g, calling h\n");
+  fprintf ("in g, calling h\n");
   h ()
 endfunction
 function h ()
-  printf ("in h\n")
+  fprintf ("in h\n")
 endfunction
 @end group
 @end example
@@ -1096,8 +1096,8 @@ being removed from memory, as the following example shows:
 function count_calls ()
   mlock ();
   persistent calls = 0;
-  printf ("'count_calls' has been called %d times\n",
-          ++calls);
+  fprintf ("'count_calls' has been called %d times\n",
+           ++calls);
 endfunction
 
 count_calls ();

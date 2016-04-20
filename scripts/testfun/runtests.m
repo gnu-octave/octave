@@ -65,7 +65,7 @@ function run_all_tests (directory, do_class_dirs)
   flist = readdir (directory);
   dirs = {};
   no_tests = {};
-  printf ("Processing files in %s:\n\n", directory);
+  fprintf ("Processing files in %s:\n\n", directory);
   fflush (stdout);
   for i = 1:numel (flist)
     f = flist{i};
@@ -88,8 +88,8 @@ function run_all_tests (directory, do_class_dirs)
     endif
   endfor
   if (! isempty (no_tests))
-    printf ("\nThe following files in %s have no tests:\n\n", directory);
-    printf ("%s", list_in_columns (no_tests));
+    fprintf ("\nThe following files in %s have no tests:\n\n", directory);
+    fprintf ("%s", list_in_columns (no_tests));
   endif
 
   ## Recurse into class directories since they are implied in the path
@@ -134,25 +134,24 @@ endfunction
 
 function print_pass_fail (n, p, xf)
   if (n > 0)
-    printf (" PASS %4d/%-4d", p, n);
+    fprintf (" PASS %4d/%-4d", p, n);
     nfail = n - p;
     if (nfail > 0)
       if (nfail != xf)
-        printf (" FAIL %d", nfail - xf);
+        fprintf (" FAIL %d", nfail - xf);
       else
-        printf (" XFAIL %d", xf);
+        fprintf (" XFAIL %d", xf);
       endif
     endif
   endif
-  puts ("\n");
+  fputs ("\n");
 endfunction
 
 function print_test_file_name (nm)
   filler = repmat (".", 1, 55-length (nm));
-  printf ("  %s %s", nm, filler);
+  fprintf ("  %s %s", nm, filler);
 endfunction
 
 
 %!error runtests ("foo", 1)
 %!error <DIRECTORY argument> runtests ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
-

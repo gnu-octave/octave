@@ -66,7 +66,7 @@ function [pval, Tsq] = hotelling_test (x, m)
   pval = 1 - fcdf ((n-p) * Tsq / (p * (n-1)), p, n-p);
 
   if (nargout == 0)
-    printf ("  pval: %g\n", pval);
+    fprintf ("  pval: %g\n", pval);
   endif
 
 endfunction

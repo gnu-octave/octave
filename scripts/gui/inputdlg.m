@@ -75,15 +75,15 @@ function cstr = inputdlg (prompt, varargin)
   elseif (ischar (prompt))
     prompt = {prompt};
   else
-    error ("PROMPT must be a character string or cellstr array");
+    error ("inputdlg: PROMPT must be a character string or cellstr array");
   endif
 
-  dlg_title = "Input Dialog";
+  title = "Input Dialog";
   if (nargin > 1)
-    dlg_title = varargin{1};
-    if (! ischar (dlg_title))
-      error ("TITLE must be a character string");
+    if (! ischar (varargin{1}))
+      error ("inputdlg: TITLE must be a character string");
     endif
+    title = varargin{1};
   endif
 
   linespec = 1;
@@ -104,7 +104,7 @@ function cstr = inputdlg (prompt, varargin)
   ## r2  2   20   second text field is 2x20
   ## r3  3   30   third  text field is 3x30
   if (! isnumeric (linespec))
-    error ("ROWSCOLS must be numeric");
+    error ("inputdlg: ROWSCOLS must be numeric");
   endif
 
   if (isscalar (linespec))
@@ -121,18 +121,18 @@ function cstr = inputdlg (prompt, varargin)
       rowscols(:,2) = 25;
       rowscols(:,1) = linespec(:);
     else
-      error ("ROWSCOLS vector does not match size of PROMPT");
+      error ("inputdlg: ROWSCOLS vector does not match size of PROMPT");
     endif
   elseif (ismatrix (linespec))
     if (rows (linespec) == columns (prompt) && columns (linespec) == 2)
       ## (rows x columns) match, copy array linespec
       rowscols = linespec;
     else
-      error ("ROWSCOLS matrix does not match size of PROMPT");
+      error ("inputdlg: ROWSCOLS matrix does not match size of PROMPT");
     endif
   else
     ## dunno
-    error ("unknown form of ROWSCOLS argument");
+    error ("inputdlg: unknown form of ROWSCOLS argument");
   endif
   rowscols = ceil (rowscols);
 
@@ -140,7 +140,7 @@ function cstr = inputdlg (prompt, varargin)
   defs = cellfun (@num2str, defaults, "UniformOutput", false);
 
   if (__octave_link_enabled__ ())
-    cstr = __octave_link_input_dialog__ (prompt, dlg_title, rowscols, defs);
+    cstr = __octave_link_input_dialog__ (prompt, title, rowscols, defs);
   else
     error ("inputdlg is not available in this version of Octave");
   endif
@@ -150,7 +150,7 @@ endfunction
 
 %!demo
 %! disp ('- test inputdlg with prompt and caption only.');
-%! prompt = {'Width','Height','Depth'};
+%! prompt = {'Width', 'Height', 'Depth'};
 %! dims = inputdlg (prompt, 'Enter Box Dimensions');
 %! if (isempty (dims))
 %!   helpdlg ('Canceled by user', 'Information');
@@ -159,15 +159,16 @@ endfunction
 %!   surface = 2 * (str2num (dims{1}) * str2num (dims{2}) + ...
 %!                  str2num (dims{2}) * str2num (dims{3}) + ...
 %!                  str2num (dims{1}) * str2num (dims{3}));
-%!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
+%!                     volume, surface), 'Box Dimensions');
 %! end
 
 %!demo
 %! disp ('- test inputdlg with prescribed scalar (2 lines per text field) and defaults.');
-%! prompt = {'Width','Height','Depth'};
-%! default = {'1.1','2.2','3.3'};
+%! prompt = {'Width', 'Height', 'Depth'};
+%! default = {'1.1', '2.2', '3.3'};
 %! rc = 2;
-%! dims = inputdlg (prompt, 'Enter Box Dimensions',rc,default);
+%! dims = inputdlg (prompt, 'Enter Box Dimensions', rc, default);
 %! if (isempty (dims))
 %!   helpdlg ('Canceled by user', 'Information');
 %! else
@@ -175,15 +176,16 @@ endfunction
 %!   surface = 2 * (str2num (dims{1}) * str2num (dims{2}) + ...
 %!                  str2num (dims{2}) * str2num (dims{3}) + ...
 %!                  str2num (dims{1}) * str2num (dims{3}));
-%!    helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!    helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
+%!                      volume, surface), 'Box Dimensions');
 %! end
 
 %!demo
 %! disp ('- test inputdlg with prescribed vector [1,2,3] for # of lines per text field and defaults.');
-%! prompt = {'Width','Height','Depth'};
+%! prompt = {'Width', 'Height', 'Depth'};
 %! default = {'1.10', '2.10', '3.10'};
 %! rc = [1,2,3];  % NOTE: must be an array
-%! dims = inputdlg (prompt, 'Enter Box Dimensions',rc,default);
+%! dims = inputdlg (prompt, 'Enter Box Dimensions', rc, default);
 %! if (isempty (dims))
 %!   helpdlg ('Canceled by user', 'Information');
 %! else
@@ -191,15 +193,16 @@ endfunction
 %!   surface = 2 * (str2num (dims{1}) * str2num (dims{2}) + ...
 %!                  str2num (dims{2}) * str2num (dims{3}) + ...
 %!                  str2num (dims{1}) * str2num (dims{3}));
-%!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
+%!                     volume, surface), 'Box Dimensions');
 %! end
 
 %!demo
 %! disp ('- test inputdlg with prescribed row by column sizes and defaults.');
-%! prompt = {'Width','Height','Depth'};
+%! prompt = {'Width', 'Height', 'Depth'};
 %! default = {'1.10', '2.20', '3.30'};
 %! rc = [1,10; 2,20; 3,30];  % NOTE: must be an array
-%! dims = inputdlg (prompt, 'Enter Box Dimensions',rc,default);
+%! dims = inputdlg (prompt, 'Enter Box Dimensions', rc, default);
 %! if (isempty (dims))
 %!   helpdlg ('Canceled by user', 'Information');
 %! else
@@ -207,12 +210,14 @@ endfunction
 %!   surface = 2 * (str2num (dims{1}) * str2num (dims{2}) + ...
 %!                  str2num (dims{2}) * str2num (dims{3}) + ...
 %!                  str2num (dims{1}) * str2num (dims{3}));
-%!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', volume, surface), 'Box Dimensions');
+%!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
+%!                     volume, surface), 'Box Dimensions');
 %! end
 
-%!error<narginchk> inputdlg (1, 2, 3, 4, 5)
-%!error<PROMPT must be a character string> inputdlg (1)
-%!error<TITLE must be a character string> inputdlg ("msg", 1)
-%!error<ROWSCOLS must be numeric> inputdlg ("msg", "title", "1")
-%!error<ROWSCOLS vector does not match size>
-%! inputdlg ({"a1", "a2"}, "title", [1, 2, 3])
+%!error inputdlg (1, 2, 3, 4, 5)
+%!error <PROMPT must be a character string> inputdlg (1)
+%!error <TITLE must be a character string> inputdlg ("msg", 1)
+%!error <ROWSCOLS must be numeric> inputdlg ("msg", "title", "1")
+%!error <ROWSCOLS vector does not match size>
+%! inputdlg ({"a1", "a2"}, "title", [1, 2, 3]);
+

@@ -21,10 +21,11 @@
 ## @deftypefnx {} {@var{h} =} warndlg (@var{msg})
 ## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title})
 ## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title}, @var{createmode})
-## Display warning message @var{msg} using a warning dialog box with caption
-## @var{title} (character string).  The default warning message is
-## @qcode{"This is the default warning string."} and the default caption is
-## @qcode{"Warning Dialog"}.
+## Display a warning dialog box with warning message @var{msg} and caption
+## @var{title}.
+##
+## The default warning message is @qcode{"This is the default warning string."}
+## and the default caption is @qcode{"Warning Dialog"}.
 ##
 ## The warning message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.
@@ -53,24 +54,26 @@ function retval = warndlg (varargin)
 
   narginchk (0, 3);
 
-  box_msg = "This is the default warning string.";
-  box_title = "Warning Dialog";
+  msg = "This is the default warning string.";
+  title = "Warning Dialog";
 
   if (nargin > 0)
-    box_msg = varargin{1};
+    msg = varargin{1};
   endif
   if (nargin > 1)
-    box_title = varargin{2};
+    title = varargin{2};
   endif
 
   if (nargin < 3)
-    retval = msgbox (box_msg, box_title, "warn");
+    retval = msgbox (msg, title, "warn");
   else
-    retval = msgbox (box_msg, box_title, "warn", varargin{3});
+    retval = msgbox (msg, title, "warn", varargin{3});
   endif
 
 endfunction
 
-%!error<narginchk> warndlg (1, 2, 3, 4)
-%!error<MSG must be a character string> warndlg (1)
-%!error<TITLE must be a character string> warndlg ("msg", 1)
+
+%!error warndlg (1, 2, 3, 4)
+%!error <MSG must be a character string> warndlg (1)
+%!error <TITLE must be a character string> warndlg ("msg", 1)
+

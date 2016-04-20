@@ -20,10 +20,11 @@
 ## @deftypefn  {} {@var{h} =} helpdlg ()
 ## @deftypefnx {} {@var{h} =} helpdlg (@var{msg})
 ## @deftypefnx {} {@var{h} =} helpdlg (@var{msg}, @var{title})
-## Display help message @var{msg} using a help dialog box with caption
-## @var{title} (character string).  The default help message is
-## @qcode{"This is the default help string."} and the default caption is
-## @qcode{"Help Dialog"}.
+## Display a help dialog box with help message @var{msg} and caption
+## @var{title}.
+##
+## The default help message is @qcode{"This is the default help string."} and
+## the default caption is @qcode{"Help Dialog"}.
 ##
 ## The help message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.
@@ -48,20 +49,22 @@ function retval = helpdlg (varargin)
 
   narginchk (0, 2);
 
-  box_msg = "This is the default help string.";
-  box_title = "Help Dialog";
+  msg = "This is the default help string.";
+  title = "Help Dialog";
 
   if (nargin > 0)
-    box_msg = varargin{1};
+    msg = varargin{1};
   endif
   if (nargin > 1)
-    box_title = varargin{2};
+    title = varargin{2};
   endif
 
-  retval = msgbox (box_msg, box_title, "help");
+  retval = msgbox (msg, title, "help");
 
 endfunction
 
-%!error<narginchk> helpdlg (1, 2, 3)
-%!error<MSG must be a character string> helpdlg (1)
-%!error<TITLE must be a character string> helpdlg ("msg", 1)
+
+%!error helpdlg (1, 2, 3)
+%!error <MSG must be a character string> helpdlg (1)
+%!error <TITLE must be a character string> helpdlg ("msg", 1)
+

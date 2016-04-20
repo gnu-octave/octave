@@ -21,10 +21,11 @@
 ## @deftypefnx {} {@var{h} =} errordlg (@var{msg})
 ## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title})
 ## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title}, @var{createmode})
-## Display an error message @var{msg} using an error dialog box with caption
-## @var{title} (character string).  The default error message is
-## @qcode{"This is the default error string."} and the default caption is
-## @qcode{"Error Dialog"}.
+## Display an error dialog box with error message @var{msg} and caption
+## @var{title}.
+##
+## The default error message is @qcode{"This is the default error string."} and
+## the default caption is @qcode{"Error Dialog"}.
 ##
 ## The error message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.
@@ -39,10 +40,10 @@
 ##
 ## @example
 ## @group
-## errordlg ("Some fancy error occured.");
+## errordlg ("Some fancy error occurred.");
 ## errordlg ("Some fancy error\nwith two lines.");
 ## errordlg (@{"Some fancy error", "with two lines."@});
-## errordlg ("Some fancy error occured.", "Fancy caption");
+## errordlg ("Some fancy error occurred.", "Fancy caption");
 ## @end group
 ## @end example
 ##
@@ -53,24 +54,26 @@ function retval = errordlg (varargin)
 
   narginchk (0, 3);
 
-  box_msg = "This is the default error string.";
-  box_title = "Error Dialog";
+  msg = "This is the default error string.";
+  title = "Error Dialog";
 
   if (nargin > 0)
-    box_msg = varargin{1};
+    msg = varargin{1};
   endif
   if (nargin > 1)
-    box_title = varargin{2};
+    title = varargin{2};
   endif
 
   if (nargin < 3)
-    retval = msgbox (box_msg, box_title, "error");
+    retval = msgbox (msg, title, "error");
   else
-    retval = msgbox (box_msg, box_title, "error", varargin{3});
+    retval = msgbox (msg, title, "error", varargin{3});
   endif
 
 endfunction
 
-%!error<narginchk> errordlg (1, 2, 3, 4)
-%!error<MSG must be a character string> errordlg (1)
-%!error<TITLE must be a character string> errordlg ("msg", 1)
+
+%!error errordlg (1, 2, 3, 4)
+%!error <MSG must be a character string> errordlg (1)
+%!error <TITLE must be a character string> errordlg ("msg", 1)
+

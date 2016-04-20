@@ -19,22 +19,22 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
 ## Return user inputs from a list dialog box in a vector of selection indices
-## @var{sel} and a flag @var{ok} indicating how the user closed the dialog
-## box.
+## (@var{sel}) and a flag indicating how the user closed the dialog box
+## (@var{ok}).
+##
+## The indices in @var{sel} are 1-based.
 ##
 ## The value of @var{ok} is 1 if the user closed the box with the OK button,
 ## otherwise it is 0 and @var{sel} is empty.
 ##
-## The indices in @var{sel} are 1-based.
-##
-## The arguments are specified in form of @var{key}, @var{value} pairs.
+## Input arguments are specified in form of @var{key}, @var{value} pairs.
 ## The @qcode{"ListString"} argument pair must be specified.
 ##
 ## Valid @var{key} and @var{value} pairs are:
 ##
 ## @table @asis
 ## @item @qcode{"ListString"}
-## a cell array of strings comprising the content of the list.
+## a cell array of strings with the contents of the list.
 ##
 ## @item @qcode{"SelectionMode"}
 ## can be either @qcode{"Single"} or @qcode{"Multiple"} (default).
@@ -88,6 +88,10 @@ function [sel, ok] = listdlg (varargin)
     print_usage ();
   endif
 
+  if (mod (nargin, 2) != 0)
+    error ("listdlg: KEY/VALUE inputs must occur in pairs");
+  endif
+
   listcell = {""};
   selmode = "multiple";
   listsize = [160, 300];
@@ -115,12 +119,13 @@ function [sel, ok] = listdlg (varargin)
       okstring = varargin{i+1};
     elseif (strcmpi (varargin{i}, "CancelString"))
       cancelstring = varargin{i+1};
+    else
+      error ("listdlg: invalid KEY <%s>", varargin{i});
     endif
   endfor
 
-  ## make sure prompt strings are a cell array
-  if (! iscell (prompt))
-    prompt = {prompt};
+  if (isempty (listcell))
+    error ("listdlg: ListString must not be empty");
   endif
 
   ## make sure listcell strings are a cell array
@@ -130,7 +135,12 @@ function [sel, ok] = listdlg (varargin)
     listcell = listcell{1};
   endif
 
-  ## make sure valid selection mode
+  ## make sure prompt strings are a cell array
+  if (! iscell (prompt))
+    prompt = {prompt};
+  endif
+
+  ## validate selection mode
   if (! strcmp (selmode, "multiple") && ! strcmp (selmode, "single"))
     error ("listdlg: invalid SelectionMode");
   endif
@@ -178,3 +188,13 @@ endfunction
 %! for i=1:1:imax
 %!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
 %! end
+
+## Test input validation
+%!error listdlg ()
+%!error listdlg ("SelectionMode")
+%!error <must occur in pairs> listdlg ("SelectionMode", "multiple", "Name")
+%!error <invalid KEY .FooBar.> listdlg ("FooBar", 1)
+%!error <ListString must not be empty> listdlg ("ListString", {})
+%!error <invalid SelectionMode>
+%! listdlg ("ListString", {"A"}, "SelectionMode", "foobar");
+

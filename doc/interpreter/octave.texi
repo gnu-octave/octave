@@ -76,8 +76,8 @@ Permission is granted to process this file through Tex and print the
 results, provided the printed document carries copying permission
 notice identical to this one except for the removal of this paragraph
 (this paragraph not being relevant to the printed manual).
-
 @end ignore
+
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided that
 the entire resulting derived work is distributed under the terms of
@@ -966,11 +966,6 @@ Grammar and Parser
 @include system.texi
 @include package.texi
 
-@c maybe add again later, if anyone every writes any really interesting
-@c fun stuff for Octave.
-@c
-@c @include amuse.texi
-
 @c ------------------------------------------------------------------------
 @c Appendices start here.
 
@@ -989,7 +984,6 @@ Grammar and Parser
 @c Indices start here.
 
 @include cp-idx.texi
-@c @include vr-idx.texi
 @include fn-idx.texi
 @include op-idx.texi
 

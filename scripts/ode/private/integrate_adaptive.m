@@ -151,7 +151,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           iout = max (t_caught);
           x(:, t_caught) = ...
             runge_kutta_interpolate (order, [t_old t_new], [x_old x_new],
-                                     tspan(t_caught), new_k_vals, dt, func,
+                                     t(t_caught), new_k_vals, dt, func,
                                      options.funarguments);
 
           istep += 1;

@@ -1642,7 +1642,7 @@ private:
                         (ax_obj.get_properties ());
 
                       // Don't pan or rotate legend
-                      if (ap.get_tag () == "legend")
+                      if (ap.get_tag () != "legend")
                         {
                           if (rotate_enabled ())
                             view2status (ax_obj);

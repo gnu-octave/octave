@@ -127,7 +127,7 @@ octave_popen2 (const std::string& cmd, const string_vector& args,
   si.hStdOutput = childWrite;
 
   // Ignore first arg as it is the command
-  for (int k=1; k<args.length (); k++)
+  for (int k=1; k<args.numel (); k++)
     command += " \"" + args[k] + "\"";
   OCTAVE_LOCAL_BUFFER (char, c_command, command.length () + 1);
   strcpy (c_command, command.c_str ());

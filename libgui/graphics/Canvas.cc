@@ -599,7 +599,9 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
 
       if (axesObj)
         {
-          if (axesObj.get_properties ().handlevisibility_is ("on"))
+              if (axesObj.get_properties ().handlevisibility_is ("on")
+                  && axesObj.get_properties ().get_tag () != "legend"
+                  && axesObj.get_properties ().get_tag () != "colorbar")
             Utils::properties<figure> (figObj)
               .set_currentaxes (axesObj.get_handle ().as_octave_value ());
           if (! currentObj)

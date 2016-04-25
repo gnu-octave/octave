@@ -1036,7 +1036,9 @@ private:
   void set_on_ax_obj (const std::string& name, const std::string& value)
   {
     // ax_obj is the last clicked axes object
-    if (ax_obj && ax_obj.isa ("axes"))
+    if (ax_obj && ax_obj.isa ("axes")
+        && ax_obj.get_properties ().get_tag () != "legend"
+        && ax_obj.get_properties ().get_tag () != "colorbar")
       {
         axes::properties& ap =
           dynamic_cast<axes::properties&>(ax_obj.get_properties ());
@@ -1216,7 +1218,8 @@ private:
         pos(1,2) = tmp(2);
 
         ap.set_currentpoint (pos);
-        fp.set_currentaxes (ap.get___myhandle__ ().value ());
+        if (ap.get_tag () != "legend" && ap.get_tag () != "colorbar")
+          fp.set_currentaxes (ap.get___myhandle__ ().value ());
       }
   }
 

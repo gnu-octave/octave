@@ -409,10 +409,4 @@ extern void install_ops (void);
     return octave_value (tc1 (v1.CONCAT2(e1, _value) ()) . f (tc2 (v2.CONCAT2(e2, _value) ()), ra_idx)); \
   }
 
-#define CATOP_NONCONFORMANT(msg) \
-  err_nonconformant (msg, \
-                     a1.rows (), a1.columns (), \
-                     a2.rows (), a2.columns ()); \
-  return octave_value ()
-
 #endif

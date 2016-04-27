@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (transpose, cell)
 {
-  CAST_UNOP_ARG (const octave_cell&);
+  const octave_cell& v = dynamic_cast<const octave_cell&> (a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");

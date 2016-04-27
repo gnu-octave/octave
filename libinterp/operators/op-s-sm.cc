@@ -45,7 +45,8 @@ DEFBINOP_OP (mul, scalar, sparse_matrix, *)
 
 DEFBINOP (div, scalar, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     {
@@ -69,13 +70,15 @@ DEFBINOP (div, scalar, sparse_matrix)
 
 DEFBINOP (pow, scalar, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
   return xpow (v1.scalar_value (), v2.matrix_value ());
 }
 
 DEFBINOP (ldiv, scalar, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   double d = v1.double_value ();
   octave_value retval;
@@ -101,7 +104,8 @@ DEFBINOP_FN (el_pow, scalar, sparse_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   double d = v1.double_value ();
   octave_value retval;
@@ -119,14 +123,15 @@ DEFBINOP_FN (el_or,  scalar, sparse_matrix, mx_el_or)
 
 DEFCATOP (s_sm, scalar, sparse_matrix)
 {
-  CAST_BINOP_ARGS (octave_scalar&, const octave_sparse_matrix&);
+  octave_scalar& v1 = dynamic_cast<octave_scalar&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
   return octave_value (tmp.concat (v2.sparse_matrix_value (), ra_idx));
 }
 
 DEFCONV (sparse_matrix_conv, scalar, sparse_matrix)
 {
-  CAST_CONV_ARG (const octave_scalar&);
+  const octave_scalar& v = dynamic_cast<const octave_scalar&> (a);
 
   return new octave_sparse_matrix (SparseMatrix (v.matrix_value ()));
 }

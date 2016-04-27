@@ -124,9 +124,10 @@ octave_integer::print (std::ostream& os, bool pr_as_read_syntax)
 #endif
 
 #define DEFUNOP_OP(name, t, op) \
-  UNOPDECL (name, a) \
+  static octave_value \
+  CONCAT2(oct_unop_, name) (const octave_base_value& a) \
   { \
-    CAST_UNOP_ARG (const octave_ ## t&); \
+    const octave_ ## t& v = dynamic_cast<const octave_ ## t&> (a); \
     return octave_value (new octave_integer (op v.t ## _value ())); \
   }
 
@@ -143,9 +144,11 @@ DEFNCUNOP_METHOD (decr, integer, decrement)
 #endif
 
 #define DEFBINOP_OP(name, t1, t2, op) \
-  BINOPDECL (name, a1, a2) \
+  static octave_value \
+  CONCAT2(oct_binop_, name) (const octave_base_value& a1, const octave_base_value& a2) \
   { \
-    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1); \
+    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2); \
     return octave_value \
       (new octave_integer (v1.t1 ## _value () op v2.t2 ## _value ())); \
   }
@@ -158,7 +161,8 @@ DEFBINOP_OP (mul, integer, integer, *)
 
 DEFBINOP (div, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v2.integer_value ();
 
@@ -171,7 +175,8 @@ DEFBINOP (div, integer, integer)
 
 DEFBINOP (i_s_div, integer, scalar)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_scalar&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
 
@@ -183,7 +188,8 @@ DEFBINOP (i_s_div, integer, scalar)
 
 DEFBINOP (ldiv, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v1.integer_value ();
 
@@ -204,7 +210,8 @@ DEFBINOP_OP (el_mul, integer, integer, !=)
 
 DEFBINOP (el_div, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v2.integer_value ();
 
@@ -216,7 +223,8 @@ DEFBINOP (el_div, integer, integer)
 
 DEFBINOP (el_ldiv, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v1.integer_value ();
 

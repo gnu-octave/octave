@@ -35,7 +35,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_lazy_index, "lazy_index", "double");
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_lazy_index&);
+  const octave_lazy_index& v = dynamic_cast<const octave_lazy_index&> (a);
 
   return v.full_value ().clone ();
 }

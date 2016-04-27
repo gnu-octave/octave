@@ -42,7 +42,7 @@ DEFUNOP_OP (uminus, diag_matrix, -)
 
 DEFUNOP (transpose, diag_matrix)
 {
-  CAST_UNOP_ARG (const octave_diag_matrix&);
+  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
   return octave_value (v.diag_matrix_value ().transpose ());
 }
 
@@ -54,7 +54,8 @@ DEFBINOP_OP (mul, diag_matrix, diag_matrix, *)
 
 DEFBINOP (div, diag_matrix, diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_diag_matrix&);
+  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
+  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
 
   return xdiv (v1.diag_matrix_value (),
                v2.diag_matrix_value ());
@@ -62,7 +63,8 @@ DEFBINOP (div, diag_matrix, diag_matrix)
 
 DEFBINOP (ldiv, diag_matrix, diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_diag_matrix&);
+  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
+  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
 
   return xleftdiv (v1.diag_matrix_value (),
                    v2.diag_matrix_value ());
@@ -70,14 +72,14 @@ DEFBINOP (ldiv, diag_matrix, diag_matrix)
 
 CONVDECL (diag_matrix_to_matrix)
 {
-  CAST_CONV_ARG (const octave_diag_matrix&);
+  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
 
   return new octave_matrix (v.matrix_value ());
 }
 
 CONVDECL (diag_matrix_to_float_diag_matrix)
 {
-  CAST_CONV_ARG (const octave_diag_matrix&);
+  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
 
   return new octave_float_diag_matrix (v.float_diag_matrix_value ());
 }

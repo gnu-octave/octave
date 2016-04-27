@@ -43,7 +43,8 @@ DEFNDBINOP_OP (mul, float_matrix, float_scalar, float_array, float_scalar, *)
 
 DEFBINOP (div, float_matrix, float)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_scalar&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
@@ -57,7 +58,8 @@ DEFBINOP_FN (pow, float_matrix, float_scalar, xpow)
 
 DEFBINOP (ldiv, float_matrix, float)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_scalar&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   FloatMatrix m1 = v1.float_matrix_value ();
   FloatMatrix m2 = v2.float_matrix_value ();
@@ -86,7 +88,8 @@ DEFNDBINOP_OP (el_mul, float_matrix, float_scalar, float_array, float_scalar, *)
 
 DEFBINOP (el_div, float_matrix, float)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_scalar&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
@@ -101,7 +104,8 @@ DEFNDBINOP_FN (el_pow, float_matrix, float_scalar, float_array,
 
 DEFBINOP (el_ldiv, float_matrix, float)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_scalar&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   return x_el_div (v2.float_value (), v1.float_array_value ());
 }

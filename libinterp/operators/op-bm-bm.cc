@@ -58,7 +58,7 @@ DEFNCUNOP_METHOD (invert, bool_matrix, invert)
 
 DEFUNOP (transpose, bool_matrix)
 {
-  CAST_UNOP_ARG (const octave_bool_matrix&);
+  const octave_bool_matrix& v = dynamic_cast<const octave_bool_matrix&> (a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");

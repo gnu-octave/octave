@@ -48,7 +48,8 @@ DEFBINOP_OP (mul, complex, sparse_matrix, *)
 
 DEFBINOP (div, complex, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_sparse_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     {
@@ -72,13 +73,15 @@ DEFBINOP (div, complex, sparse_matrix)
 
 DEFBINOP (pow, complex, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_sparse_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
   return xpow (v1.complex_value (), v2.matrix_value ());
 }
 
 DEFBINOP (ldiv, complex, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_sparse_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   Complex d = v1.complex_value ();
   octave_value retval;
@@ -104,7 +107,8 @@ DEFBINOP_FN (el_pow, complex, sparse_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, complex, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_sparse_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   Complex d = v1.complex_value ();
   octave_value retval;
@@ -122,14 +126,15 @@ DEFBINOP_FN (el_or,  complex, sparse_matrix, mx_el_or)
 
 DEFCATOP (cs_sm, sparse_matrix, complex)
 {
-  CAST_BINOP_ARGS (octave_complex&, const octave_sparse_matrix&);
+  octave_complex& v1 = dynamic_cast<octave_complex&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
   SparseComplexMatrix tmp (1, 1, v1.complex_value ());
   return octave_value (tmp. concat (v2.sparse_matrix_value (), ra_idx));
 }
 
 DEFCONV (sparse_matrix_conv, complex, sparse_matrix)
 {
-  CAST_CONV_ARG (const octave_complex&);
+  const octave_complex& v = dynamic_cast<const octave_complex&> (a);
 
   return new octave_sparse_matrix
          (SparseMatrix (v.matrix_value ()));

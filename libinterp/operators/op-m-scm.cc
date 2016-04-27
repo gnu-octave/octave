@@ -49,7 +49,8 @@ DEFBINOP_OP (mul, matrix, sparse_complex_matrix, *)
 
 DEFBINOP (div, matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_sparse_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_sparse_complex_matrix& v2 = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     {
@@ -79,8 +80,8 @@ DEFBINOPX (pow, matrix, sparse_complex_matrix)
 
 DEFBINOP (ldiv, matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&,
-                   const octave_sparse_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_sparse_complex_matrix& v2 = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
   ComplexMatrix ret = xleftdiv (v1.matrix_value (),
@@ -102,8 +103,8 @@ DEFBINOP_FN (el_div, matrix, sparse_complex_matrix, quotient)
 
 DEFBINOP (el_pow, matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&,
-                   const octave_sparse_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_sparse_complex_matrix& v2 = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   return octave_value
          (elem_xpow (SparseMatrix (v1.matrix_value ()),
@@ -112,8 +113,8 @@ DEFBINOP (el_pow, matrix, sparse_complex_matrix)
 
 DEFBINOP (el_ldiv, matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&,
-                   const octave_sparse_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_sparse_complex_matrix& v2 = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
   return octave_value
          (quotient (v2.sparse_complex_matrix_value (), v1.matrix_value ()));
 }
@@ -123,7 +124,8 @@ DEFBINOP_FN (el_or,  matrix, sparse_complex_matrix, mx_el_or)
 
 DEFCATOP (m_scm, matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (octave_matrix&, const octave_sparse_complex_matrix&);
+  octave_matrix& v1 = dynamic_cast<octave_matrix&> (a1);
+  const octave_sparse_complex_matrix& v2 = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
   SparseMatrix tmp (v1.matrix_value ());
   return octave_value (tmp. concat (v2.sparse_complex_matrix_value (),
                                     ra_idx));
@@ -131,7 +133,7 @@ DEFCATOP (m_scm, matrix, sparse_complex_matrix)
 
 DEFCONV (sparse_complex_matrix_conv, matrix, sparse_complex_matrix)
 {
-  CAST_CONV_ARG (const octave_matrix&);
+  const octave_matrix& v = dynamic_cast<const octave_matrix&> (a);
   return new octave_sparse_complex_matrix
          (SparseComplexMatrix (v.complex_matrix_value ()));
 }

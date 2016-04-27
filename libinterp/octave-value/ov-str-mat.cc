@@ -64,7 +64,7 @@ default_numeric_conversion_function (const octave_base_value& a)
 {
   octave_base_value *retval = 0;
 
-  CAST_CONV_ARG (const octave_char_matrix_str&);
+  const octave_char_matrix_str& v = dynamic_cast<const octave_char_matrix_str&> (a);
 
   NDArray nda = v.array_value (true);
 

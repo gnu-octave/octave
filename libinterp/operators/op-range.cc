@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (not, range)
 {
-  CAST_UNOP_ARG (const octave_range&);
+  const octave_range& v = dynamic_cast<const octave_range&> (a);
 
   return octave_value (! v.matrix_value ());
 }
@@ -55,7 +55,7 @@ DEFUNOP_OP (uminus, range, -)
 
 DEFUNOP (transpose, range)
 {
-  CAST_UNOP_ARG (const octave_range&);
+  const octave_range& v = dynamic_cast<const octave_range&> (a);
 
   return octave_value (v.matrix_value ().transpose ());
 }
@@ -88,7 +88,7 @@ DEFNDCATOP_FN (chm_r, char_matrix, range, char_array, array, concat)
 
 CONVDECL (range_to_matrix)
 {
-  CAST_CONV_ARG (const octave_range&);
+  const octave_range& v = dynamic_cast<const octave_range&> (a);
 
   return new octave_matrix (v.array_value ());
 }

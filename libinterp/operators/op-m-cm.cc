@@ -50,7 +50,8 @@ DEFBINOP_OP (mul, matrix, complex_matrix, *)
 
 DEFBINOP (trans_mul, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
 
   Matrix m1 = v1.matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
@@ -61,7 +62,8 @@ DEFBINOP (trans_mul, matrix, complex_matrix)
 
 DEFBINOP (div, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
   MatrixType typ = v2.matrix_type ();
 
   ComplexMatrix ret = xdiv (v1.matrix_value (),
@@ -78,7 +80,8 @@ DEFBINOPX (pow, matrix, complex_matrix)
 
 DEFBINOP (ldiv, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
   ComplexMatrix ret = xleftdiv (v1.matrix_value (),
@@ -90,7 +93,8 @@ DEFBINOP (ldiv, matrix, complex_matrix)
 
 DEFBINOP (trans_ldiv, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
   ComplexMatrix ret = xleftdiv (v1.matrix_value (),
@@ -113,7 +117,8 @@ DEFNDBINOP_FN (el_pow, matrix, complex_matrix, array, complex_array, elem_xpow)
 
 DEFBINOP (el_ldiv, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
 
   return quotient (v2.complex_array_value (), v1.array_value ());
 }
@@ -125,7 +130,7 @@ DEFNDCATOP_FN (m_cm, matrix, complex_matrix, array, complex_array, concat)
 
 DEFCONV (complex_matrix_conv, matrix, complex_matrix)
 {
-  CAST_CONV_ARG (const octave_matrix&);
+  const octave_matrix& v = dynamic_cast<const octave_matrix&> (a);
 
   return new octave_complex_matrix (ComplexNDArray (v.array_value ()));
 }

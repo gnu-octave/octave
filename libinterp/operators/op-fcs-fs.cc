@@ -46,7 +46,8 @@ DEFBINOP_OP (mul, float_complex, float_scalar, *)
 
 DEFBINOP (div, float_complex, float)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
@@ -60,7 +61,8 @@ DEFBINOP_FN (pow, float_complex, float_scalar, xpow)
 
 DEFBINOP (ldiv, float_complex, float)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   FloatComplex d = v1.float_complex_value ();
 
@@ -81,7 +83,8 @@ DEFBINOP_OP (el_mul, float_complex, float_scalar, *)
 
 DEFBINOP (el_div, float_complex, float)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
@@ -95,7 +98,8 @@ DEFBINOP_FN (el_pow, float_complex, float_scalar, xpow)
 
 DEFBINOP (el_ldiv, float_complex, float)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   FloatComplex d = v1.float_complex_value ();
 
@@ -107,14 +111,16 @@ DEFBINOP (el_ldiv, float_complex, float)
 
 DEFBINOP (el_and, float_complex, float)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   return (v1.float_complex_value () != 0.0f && v2.float_value ());
 }
 
 DEFBINOP (el_or, float_complex, float)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_scalar&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   return (v1.float_complex_value () != 0.0f || v2.float_value ());
 }

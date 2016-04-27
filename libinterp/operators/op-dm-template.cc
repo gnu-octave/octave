@@ -61,7 +61,8 @@ DEFBINOP_OP (mul, LMATRIX, RMATRIX, *)
 #ifdef DEFINEDIV
 DEFBINOP (div, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return xdiv (v1.LDMATRIX_VALUE (), v2.RMATRIX_VALUE ());
 }
@@ -70,7 +71,8 @@ DEFBINOP (div, LMATRIX, RMATRIX)
 #ifdef DEFINELDIV
 DEFBINOP (ldiv, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return xleftdiv (v1.LMATRIX_VALUE (), v2.RDMATRIX_VALUE ());
 }

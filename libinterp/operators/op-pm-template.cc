@@ -52,7 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFBINOP (mul, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return v1.LMATRIX_VALUE () * v2.RMATRIX_VALUE ();
 }
@@ -60,14 +61,16 @@ DEFBINOP (mul, LMATRIX, RMATRIX)
 #ifdef LEFT
 DEFBINOP (ldiv, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return v1.perm_matrix_value ().inverse () * v2.RMATRIX_VALUE ();
 }
 #else
 DEFBINOP (div, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return v1.LMATRIX_VALUE () * v2.perm_matrix_value ().inverse ();
 }

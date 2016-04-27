@@ -89,7 +89,7 @@ public:
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_complex&);
+  const octave_complex& v = dynamic_cast<const octave_complex&> (a);
 
   return new octave_float_complex (v.float_complex_value ());
 }

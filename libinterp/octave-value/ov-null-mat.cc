@@ -37,7 +37,7 @@ static octave_base_value *
 default_null_matrix_numeric_conversion_function (const octave_base_value& a)
 {
   // The cast is not necessary?
-  // CAST_CONV_ARG (const octave_null_matrix&);
+  // const octave_null_matrix& v = dynamic_cast<const octave_null_matrix&> (a);
 
   return a.empty_clone ();
 }
@@ -58,7 +58,7 @@ static octave_base_value *
 default_null_str_numeric_conversion_function (const octave_base_value& a)
 {
   // The cast is not necessary?
-  // CAST_CONV_ARG (const octave_null_str&);
+  // const octave_null_str& v = dynamic_cast<const octave_null_str&> (a);
 
   return a.empty_clone ();
 }
@@ -80,7 +80,7 @@ static octave_base_value *
 default_null_sq_str_numeric_conversion_function (const octave_base_value& a)
 {
   // The cast is not necessary?
-  // CAST_CONV_ARG (const octave_null_sq_str&);
+  // const octave_null_sq_str& v = dynamic_cast<const octave_null_sq_str&> (a);
 
   return a.empty_clone ();
 }

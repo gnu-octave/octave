@@ -77,7 +77,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix", "double");
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_matrix&);
+  const octave_matrix& v = dynamic_cast<const octave_matrix&> (a);
 
   return new octave_float_matrix (v.float_array_value ());
 }

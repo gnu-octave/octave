@@ -43,7 +43,8 @@ DEFBINOP_OP (mul, complex, scalar, *)
 
 DEFBINOP (div, complex, scalar)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
 
@@ -57,7 +58,8 @@ DEFBINOP_FN (pow, complex, scalar, xpow)
 
 DEFBINOP (ldiv, complex, scalar)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   Complex d = v1.complex_value ();
 
@@ -78,7 +80,8 @@ DEFBINOP_OP (el_mul, complex, scalar, *)
 
 DEFBINOP (el_div, complex, scalar)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
 
@@ -92,7 +95,8 @@ DEFBINOP_FN (el_pow, complex, scalar, xpow)
 
 DEFBINOP (el_ldiv, complex, scalar)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   Complex d = v1.complex_value ();
 
@@ -104,14 +108,16 @@ DEFBINOP (el_ldiv, complex, scalar)
 
 DEFBINOP (el_and, complex, scalar)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   return v1.complex_value () != 0.0 && v2.double_value ();
 }
 
 DEFBINOP (el_or, complex, scalar)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   return v1.complex_value () != 0.0 || v2.double_value ();
 }

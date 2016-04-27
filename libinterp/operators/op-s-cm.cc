@@ -50,7 +50,8 @@ DEFNDBINOP_OP (mul, scalar, complex_matrix, scalar, complex_array, *)
 
 DEFBINOP (div, scalar, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
 
   Matrix m1 = v1.matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
@@ -66,7 +67,8 @@ DEFBINOP_FN (pow, scalar, complex_matrix, xpow)
 
 DEFBINOP (ldiv, scalar, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
 
   double d = v1.double_value ();
 
@@ -89,7 +91,8 @@ DEFNDBINOP_FN (el_pow, scalar, complex_matrix, scalar, complex_array, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex_matrix& v2 = dynamic_cast<const octave_complex_matrix&> (a2);
 
   double d = v1.double_value ();
 
@@ -106,7 +109,7 @@ DEFNDCATOP_FN (s_cm, scalar, complex_matrix, array, complex_array, concat)
 
 DEFCONV (complex_matrix_conv, scalar, complex_matrix)
 {
-  CAST_CONV_ARG (const octave_scalar&);
+  const octave_scalar& v = dynamic_cast<const octave_scalar&> (a);
 
   return new octave_complex_matrix (ComplexMatrix (v.matrix_value ()));
 }

@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFINTCONVFN(name, tfrom, tto) \
   CONVDECL (name) \
   { \
-    CAST_CONV_ARG (const octave_ ## tfrom&); \
+    const octave_ ## tfrom& v = dynamic_cast<const octave_ ## tfrom&> (a); \
  \
     octave_ ## tto ## _matrix v2 = v.tto ## _array_value (); \
     return new octave_ ## tto ## _matrix (v2); \

@@ -60,21 +60,24 @@ gripe_if_zero (T x)
 
 DEFBINOP (dmsdiv, MATRIX, SCALAR)
 {
-  CAST_BINOP_ARGS (const OCTAVE_MATRIX&, const OCTAVE_SCALAR&);
+  const OCTAVE_MATRIX& v1 = dynamic_cast<const OCTAVE_MATRIX&> (a1);
+  const OCTAVE_SCALAR& v2 = dynamic_cast<const OCTAVE_SCALAR&> (a2);
 
   return v1.MATRIX_VALUE () / gripe_if_zero (v2.SCALAR_VALUE ());
 }
 
 DEFBINOP (sdmldiv, SCALAR, MATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_SCALAR&, const OCTAVE_MATRIX&);
+  const OCTAVE_SCALAR& v1 = dynamic_cast<const OCTAVE_SCALAR&> (a1);
+  const OCTAVE_MATRIX& v2 = dynamic_cast<const OCTAVE_MATRIX&> (a2);
 
   return v2.MATRIX_VALUE () / gripe_if_zero (v1.SCALAR_VALUE ());
 }
 
 DEFBINOP (dmspow, MATRIX, SCALAR)
 {
-  CAST_BINOP_ARGS (const OCTAVE_MATRIX&, const OCTAVE_SCALAR&);
+  const OCTAVE_MATRIX& v1 = dynamic_cast<const OCTAVE_MATRIX&> (a1);
+  const OCTAVE_SCALAR& v2 = dynamic_cast<const OCTAVE_SCALAR&> (a2);
 
   return xpow (v1.MATRIX_VALUE (), v2.SCALAR_VALUE ());
 }

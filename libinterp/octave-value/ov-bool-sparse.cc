@@ -58,7 +58,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_sparse_bool_matrix&);
+  const octave_sparse_bool_matrix& v = dynamic_cast<const octave_sparse_bool_matrix&> (a);
 
   return
     new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));

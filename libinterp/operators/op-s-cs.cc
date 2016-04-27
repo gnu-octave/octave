@@ -45,7 +45,8 @@ DEFBINOP_OP (mul, scalar, complex, *)
 
 DEFBINOP (div, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
@@ -59,7 +60,8 @@ DEFBINOP_FN (pow, scalar, complex, xpow)
 
 DEFBINOP (ldiv, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   double d = v1.double_value ();
 
@@ -80,7 +82,8 @@ DEFBINOP_OP (el_mul, scalar, complex, *)
 
 DEFBINOP (el_div, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
@@ -94,7 +97,8 @@ DEFBINOP_FN (el_pow, scalar, complex, xpow)
 
 DEFBINOP (el_ldiv, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   double d = v1.double_value ();
 
@@ -106,14 +110,16 @@ DEFBINOP (el_ldiv, scalar, complex)
 
 DEFBINOP (el_and, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   return octave_value (v1.double_value () && (v2.complex_value () != 0.0));
 }
 
 DEFBINOP (el_or, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   return octave_value (v1.double_value () || (v2.complex_value () != 0.0));
 }

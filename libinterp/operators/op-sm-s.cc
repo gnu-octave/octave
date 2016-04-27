@@ -45,7 +45,8 @@ DEFBINOP_OP (mul, sparse_matrix, scalar, *)
 
 DEFBINOP (div, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
   octave_value retval;
@@ -60,7 +61,8 @@ DEFBINOP (div, sparse_matrix, scalar)
 
 DEFBINOP (pow, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double tmp = v2.scalar_value ();
   if (static_cast<int> (tmp) == tmp)
@@ -71,7 +73,8 @@ DEFBINOP (pow, sparse_matrix, scalar)
 
 DEFBINOP (ldiv, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     {
@@ -104,7 +107,8 @@ DEFBINOP_OP (el_mul, sparse_matrix, scalar, *)
 
 DEFBINOP (el_div, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
   octave_value retval;
@@ -121,7 +125,8 @@ DEFBINOP_FN (el_pow, sparse_matrix, scalar, elem_xpow)
 
 DEFBINOP (el_ldiv, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   return octave_value
          (x_el_div (v2.complex_value (), v1.sparse_matrix_value ()));
@@ -132,14 +137,16 @@ DEFBINOP_FN (el_or, sparse_matrix, scalar, mx_el_or)
 
 DEFCATOP (sm_s, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_scalar&);
+  octave_sparse_matrix& v1 = dynamic_cast<octave_sparse_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
   SparseMatrix tmp (1, 1, v2.scalar_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
 }
 
 DEFASSIGNOP (assign, sparse_matrix, scalar)
 {
-  CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_scalar&);
+  octave_sparse_matrix& v1 = dynamic_cast<octave_sparse_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   SparseMatrix tmp (1, 1, v2.scalar_value ());
   v1.assign (idx, tmp);

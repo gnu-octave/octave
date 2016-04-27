@@ -37,7 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFBINOP (mul_pm_sm, perm_matrix, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_sparse_matrix&);
+  const octave_perm_matrix& v1 = dynamic_cast<const octave_perm_matrix&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     {
@@ -53,7 +54,8 @@ DEFBINOP (mul_pm_sm, perm_matrix, sparse_matrix)
 
 DEFBINOP (ldiv_pm_sm, perm_matrix, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_sparse_matrix&);
+  const octave_perm_matrix& v1 = dynamic_cast<const octave_perm_matrix&> (a1);
+  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   return v1.perm_matrix_value ().inverse () * v2.sparse_matrix_value ();
 }
@@ -62,7 +64,8 @@ DEFBINOP (ldiv_pm_sm, perm_matrix, sparse_matrix)
 
 DEFBINOP (mul_sm_pm, sparse_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_perm_matrix&);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_perm_matrix& v2 = dynamic_cast<const octave_perm_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     {
@@ -78,7 +81,8 @@ DEFBINOP (mul_sm_pm, sparse_matrix, perm_matrix)
 
 DEFBINOP (div_sm_pm, sparse_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_perm_matrix&);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_perm_matrix& v2 = dynamic_cast<const octave_perm_matrix&> (a2);
 
   return v1.sparse_matrix_value () * v2.perm_matrix_value ().inverse ();
 }

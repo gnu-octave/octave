@@ -34,7 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFASSIGNOP (assign, char_matrix_str, octave_scalar)
 {
-  CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_scalar&);
+  octave_char_matrix_str& v1 = dynamic_cast<octave_char_matrix_str&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   octave_value tmp
     = v2.convert_to_str_internal (false, false,

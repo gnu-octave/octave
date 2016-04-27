@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (not, float_scalar)
 {
-  CAST_UNOP_ARG (const octave_float_scalar&);
+  const octave_float_scalar& v = dynamic_cast<const octave_float_scalar&> (a);
   float x = v.float_value ();
   if (xisnan (x))
     err_nan_to_logical_conversion ();
@@ -66,7 +66,8 @@ DEFBINOP_OP (mul, float_scalar, float_scalar, *)
 
 DEFBINOP (div, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
@@ -80,7 +81,8 @@ DEFBINOP_FN (pow, float_scalar, float_scalar, xpow)
 
 DEFBINOP (ldiv, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v1.float_value ();
 
@@ -101,7 +103,8 @@ DEFBINOP_OP (el_mul, float_scalar, float_scalar, *)
 
 DEFBINOP (el_div, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
@@ -115,7 +118,8 @@ DEFBINOP_FN (el_pow, float_scalar, float_scalar, xpow)
 
 DEFBINOP (el_ldiv, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v1.float_value ();
 
@@ -135,7 +139,7 @@ DEFNDCATOP_FN (fs_s, float_scalar, scalar, float_array, float_array, concat)
 
 CONVDECL (float_to_scalar)
 {
-  CAST_CONV_ARG (const octave_float_scalar&);
+  const octave_float_scalar& v = dynamic_cast<const octave_float_scalar&> (a);
 
   return new octave_matrix (Matrix (1, 1,
                                     static_cast<double>(v.float_value ())));

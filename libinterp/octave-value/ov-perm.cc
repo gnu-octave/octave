@@ -413,7 +413,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_perm_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_perm_matrix&);
+  const octave_perm_matrix& v = dynamic_cast<const octave_perm_matrix&> (a);
 
   return new octave_matrix (v.matrix_value ());
 }

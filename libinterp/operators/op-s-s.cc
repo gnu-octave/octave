@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (not, scalar)
 {
-  CAST_UNOP_ARG (const octave_scalar&);
+  const octave_scalar& v = dynamic_cast<const octave_scalar&> (a);
   double x = v.scalar_value ();
   if (xisnan (x))
     err_nan_to_logical_conversion ();
@@ -67,7 +67,8 @@ DEFBINOP_OP (mul, scalar, scalar, *)
 
 DEFBINOP (div, scalar, scalar)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
 
@@ -81,7 +82,8 @@ DEFBINOP_FN (pow, scalar, scalar, xpow)
 
 DEFBINOP (ldiv, scalar, scalar)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v1.double_value ();
 
@@ -102,7 +104,8 @@ DEFBINOP_OP (el_mul, scalar, scalar, *)
 
 DEFBINOP (el_div, scalar, scalar)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
 
@@ -116,7 +119,8 @@ DEFBINOP_FN (el_pow, scalar, scalar, xpow)
 
 DEFBINOP (el_ldiv, scalar, scalar)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v1.double_value ();
 

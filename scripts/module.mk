@@ -83,10 +83,6 @@ ALL_LOCAL_TARGETS += \
   $(PKG_ADD_FILES) \
   $(JAR_FILES)
 
-if AMCOND_BUILD_DOCS
-ALL_LOCAL_TARGETS += scripts/.DOCSTRINGS
-endif
-
 define PKG_ADD_FILE_TEMPLATE
 $(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) scripts/mk-pkg-add
 	$$(AM_V_GEN)rm -f $$@-t $$@ && \
@@ -105,23 +101,12 @@ $(foreach f, $(GEN_FCN_FILES), $(eval $(call GEN_FCN_FILES_TEMPLATE, $(f))))
 
 if AMCOND_BUILD_DOCS
 
-DOCSTRING_FILES += scripts/DOCSTRINGS
+DOCSTRING_FILES += $(srcdir)/scripts/DOCSTRINGS
 
-scripts/DOCSTRINGS: | scripts/.DOCSTRINGS
-
-scripts/.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) scripts/mkdoc.pl | scripts/$(octave-dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/scripts/DOCSTRINGS ] && [ ! -f scripts/DOCSTRINGS ]; then \
-		cp $(srcdir)/scripts/DOCSTRINGS scripts/DOCSTRINGS; \
-		touch -r $(srcdir)/scripts/DOCSTRINGS scripts/DOCSTRINGS; \
-	fi && \
+$(srcdir)/scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) | scripts/$(octave-dirstamp)
+	$(AM_V_GEN)rm -f $@-t && \
 	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t && \
-	mv $@-t $@ && \
-	$(SHELL) $(srcdir)/build-aux/move-if-change $@ scripts/DOCSTRINGS && \
-	touch $@
-
-OCTAVE_INTERPRETER_TARGETS += \
-  scripts/.DOCSTRINGS
+	$(SHELL) $(srcdir)/build-aux/move-if-change $@-t $@
 
 endif
 
@@ -195,7 +180,7 @@ scripts_EXTRA_DIST += \
   $(SCRIPTS_IMAGES) \
   $(FCN_FILES) \
   $(GEN_FCN_FILES_IN) \
-  scripts/DOCSTRINGS \
+  $(srcdir)/scripts/DOCSTRINGS \
   scripts/mkdoc.pl \
   scripts/mk-pkg-add
 
@@ -207,8 +192,7 @@ scripts_DISTCLEANFILES += \
   $(GEN_FCN_FILES)
 
 scripts_MAINTAINERCLEANFILES += \
-  scripts/.DOCSTRINGS \
-  scripts/DOCSTRINGS
+  $(srcdir)/scripts/DOCSTRINGS
 
 CLEANFILES += $(scripts_CLEANFILES)
 DISTCLEANFILES += $(scripts_DISTCLEANFILES)

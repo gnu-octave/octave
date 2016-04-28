@@ -90,7 +90,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   libinterp/builtins.cc
 
 libinterp_EXTRA_DIST += \
-  libinterp/DOCSTRINGS \
+  $(srcdir)/libinterp/DOCSTRINGS \
   libinterp/build-env.in.cc \
   libinterp/build-env-features.sh \
   libinterp/find-defun-files.sh \
@@ -291,23 +291,12 @@ endif
 
 if AMCOND_BUILD_DOCS
 
-DOCSTRING_FILES += libinterp/DOCSTRINGS
+DOCSTRING_FILES += $(srcdir)/libinterp/DOCSTRINGS
 
-libinterp/DOCSTRINGS: | libinterp/.DOCSTRINGS
-
-libinterp/.DOCSTRINGS: $(ALL_DEF_FILES) libinterp/gendoc.pl | libinterp/$(octave-dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/libinterp/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
-		cp $(srcdir)/libinterp/DOCSTRINGS libinterp/DOCSTRINGS; \
-		touch -r $(srcdir)/libinterp/DOCSTRINGS libinterp/DOCSTRINGS; \
-	fi && \
+$(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEF_FILES) | libinterp/$(octave-dirstamp)
+	$(AM_V_GEN)rm -f $@-t && \
 	$(PERL) $(srcdir)/libinterp/gendoc.pl $(ALL_DEF_FILES) > $@-t && \
-	mv $@-t $@ && \
-	$(SHELL) $(srcdir)/build-aux/move-if-change $@ libinterp/DOCSTRINGS && \
-	touch $@
-
-OCTAVE_INTERPRETER_TARGETS += \
-  libinterp/.DOCSTRINGS
+	$(SHELL) $(srcdir)/build-aux/move-if-change $@-t $@
 
 endif
 
@@ -356,7 +345,7 @@ endif
 if AMCOND_BUILD_DOCS
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
-	$(INSTALL_DATA) libinterp/DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+	$(INSTALL_DATA) $(srcdir)/libinterp/DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
 
 uninstall-built-in-docstrings:
 	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
@@ -377,8 +366,7 @@ libinterp_DISTCLEANFILES += \
   $(LIBINTERP_TST_FILES)
 
 libinterp_MAINTAINERCLEANFILES += \
-  libinterp/.DOCSTRINGS \
-  libinterp/DOCSTRINGS \
+  $(srcdir)/libinterp/DOCSTRINGS \
   $(LIBINTERP_BUILT_DISTFILES)
 
 BUILT_DISTFILES += $(LIBINTERP_BUILT_DISTFILES)

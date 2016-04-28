@@ -8293,9 +8293,9 @@ cross_product (double x1, double y1, double z1,
 }
 
 void
-surface::properties::update_normals (void)
+surface::properties::update_vertex_normals (void)
 {
-  if (normalmode_is ("auto"))
+  if (vertexnormalsmode_is ("auto"))
     {
       Matrix x = get_xdata ().matrix_value ();
       Matrix y = get_ydata ().matrix_value ();

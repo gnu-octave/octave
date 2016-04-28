@@ -127,11 +127,23 @@
 ## By default, the @code{Octave:built-in-variable-assignment} warning is
 ## enabled.
 ##
+## @item Octave:deprecated-function
+## If the @code{Octave:deprecated-function} warning is enabled, a
+## warning is issued when Octave encounters a function that is obsolete and
+## scheduled for removal from Octave.
+## By default, the @code{Octave:deprecated-function} warning is enabled.
+##
 ## @item Octave:deprecated-keyword
 ## If the @code{Octave:deprecated-keyword} warning is enabled, a
 ## warning is issued when Octave encounters a keyword that is obsolete and
 ## scheduled for removal from Octave.
 ## By default, the @code{Octave:deprecated-keyword} warning is enabled.
+##
+## @item Octave:deprecated-property
+## If the @code{Octave:deprecated-property} warning is enabled, a
+## warning is issued when Octave encounters a graphics property that
+## is obsolete and scheduled for removal from Octave.
+## By default, the @code{Octave:deprecated-property} warning is enabled.
 ##
 ## @item Octave:divide-by-zero
 ## If the @code{Octave:divide-by-zero} warning is enabled, a

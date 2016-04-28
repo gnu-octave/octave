@@ -4856,6 +4856,8 @@ public:
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property facelighting , "{none}|flat|gouraud|phong"
+      array_property facenormals m , Matrix ()
+      radio_property facenormalsmode , "{auto}|manual"
       array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata u , Matrix ()
@@ -4868,11 +4870,12 @@ public:
       color_property markeredgecolor , color_property (radio_values ("none|{auto}|flat"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
-      radio_property normalmode , "{auto}|manual"
+      radio_property normalmode hsg , "{auto}|manual"
       double_property specularcolorreflectance , 1.0
       double_property specularexponent , 10.0
       double_property specularstrength , 0.9
-      array_property vertexnormals , Matrix ()
+      array_property vertexnormals m , Matrix ()
+      radio_property vertexnormalsmode , "{auto}|manual"
       array_property vertices u , default_patch_vertices ()
       array_property xdata u , default_patch_xdata ()
       array_property ydata u , default_patch_ydata ()
@@ -4905,7 +4908,10 @@ public:
       facevertexcdata.add_constraint (dim_vector (-1, 1));
       facevertexcdata.add_constraint (dim_vector (-1, 3));
       facevertexalphadata.add_constraint (dim_vector (-1, 1));
-      vertexnormals.add_constraint (dim_vector (-1, -1));
+      facenormals.add_constraint (dim_vector (-1, 3));
+      facenormals.add_constraint (dim_vector (0, 0));
+      vertexnormals.add_constraint (dim_vector (-1, 3));
+      vertexnormals.add_constraint (dim_vector (0, 0));
     }
 
   private:
@@ -4913,7 +4919,7 @@ public:
 
     void update_faces (void) { update_data ();}
 
-    void update_vertices (void)  {  update_data ();}
+    void update_vertices (void)  { update_data ();}
 
     void update_facevertexcdata (void) { update_data ();}
 
@@ -4968,8 +4974,23 @@ public:
         clim = cdata.get_limits ();
     }
 
-
     void update_data (void);
+
+    void set_normalmode (const octave_value& val)
+    {
+      warning_with_id ("Octave:deprecated-property",
+        "patch: Property 'normalmode' is deprecated and will be removed "
+        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+      set_vertexnormalsmode (val);
+    }
+
+    std::string get_normalmode (void) const
+    {
+      warning_with_id ("Octave:deprecated-property",
+        "patch: Property 'normalmode' is deprecated and will be removed "
+        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+      return vertexnormalsmode.current_value ();
+    }
   };
 
 private:
@@ -5038,6 +5059,8 @@ public:
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
       color_property facecolor , color_property (radio_values ("none|{flat}|interp|texturemap"), color_values (0, 0, 0))
       radio_property facelighting , "{none}|flat|gouraud|phong"
+      array_property facenormals m , Matrix ()
+      radio_property facenormalsmode , "{auto}|manual"
       // FIXME: interpreter is not a Matlab surface property
       //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
@@ -5048,11 +5071,12 @@ public:
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
       radio_property meshstyle , "{both}|row|column"
-      radio_property normalmode u , "{auto}|manual"
+      radio_property normalmode hsg , "{auto}|manual"
       double_property specularcolorreflectance , 1
       double_property specularexponent , 10
       double_property specularstrength , 0.9
-      array_property vertexnormals u , Matrix ()
+      array_property vertexnormals m , Matrix ()
+      radio_property vertexnormalsmode u , "{auto}|manual"
       array_property xdata u , default_surface_xdata ()
       string_property xdatasource , ""
       array_property ydata u , default_surface_ydata ()
@@ -5086,6 +5110,8 @@ public:
       alphadata.add_constraint ("double");
       alphadata.add_constraint ("uint8");
       alphadata.add_constraint (dim_vector (-1, -1));
+      facenormals.add_constraint (dim_vector (-1, -1, 3));
+      facenormals.add_constraint (dim_vector (0, 0));
       vertexnormals.add_constraint (dim_vector (-1, -1, 3));
       vertexnormals.add_constraint (dim_vector (0, 0));
     }
@@ -5109,29 +5135,42 @@ public:
 
     void update_xdata (void)
     {
-      update_normals ();
+      update_vertex_normals ();
       set_xlim (xdata.get_limits ());
     }
 
     void update_ydata (void)
     {
-      update_normals ();
+      update_vertex_normals ();
       set_ylim (ydata.get_limits ());
     }
 
     void update_zdata (void)
     {
-      update_normals ();
+      update_vertex_normals ();
       set_zlim (zdata.get_limits ());
     }
 
-    void update_normals (void);
+    void update_vertex_normals (void);
 
-    void update_normalmode (void)
-    { update_normals (); }
+    void update_vertexnormalsmode (void)
+    { update_vertex_normals (); }
 
-    void update_vertexnormals (void)
-    { set_normalmode ("manual"); }
+    void set_normalmode (const octave_value& val)
+    {
+      warning_with_id ("Octave:deprecated-property", 
+        "surface: Property 'normalmode' is deprecated and will be removed "
+        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+      set_vertexnormalsmode (val);
+    }
+
+    std::string get_normalmode (void) const
+    {
+      warning_with_id ("Octave:deprecated-property", 
+        "surface: Property 'normalmode' is deprecated and will be removed "
+        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+      return vertexnormalsmode.current_value ();
+    }
   };
 
 private:

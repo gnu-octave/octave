@@ -1148,11 +1148,11 @@ function hideshowlegend (h, ~, ca, pos1, pos2)
   endfor
 endfunction
 
-function deletelegend1 (h, ~, ca)
-  if (isaxes (ca)
+function deletelegend1 (h, ~, hlegend)
+  if (isaxes (hlegend)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
-      && strcmp (get (ca, "beingdeleted"), "off"))
-    delete (ca);
+      && strcmp (get (hlegend, "beingdeleted"), "off"))
+    delete (hlegend);
   endif
 endfunction
 
@@ -1172,8 +1172,10 @@ function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
       endif
     endif
   endfor
-  set (t1, "deletefcn", "");
-  delete (t1);
+  if (ishandle (t1))
+    set (t1, "deletefcn", "");
+    delete (t1);
+  endif
   for i = 1 : numel (hplots)
     if (ishandle (hplots(i)) && strcmp (get (hplots(i), "type"), "line"))
       dellistener (hplots(i), "color");

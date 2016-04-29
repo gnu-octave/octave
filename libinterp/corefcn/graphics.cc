@@ -10527,19 +10527,24 @@ Undocumented internal function.\n\
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  double val = args(0).xdouble_value ("__go_execute_callback__: invalid graphics object");
-
-  graphics_handle h = gh_manager::lookup (val);
-
-  if (! h.ok ())
-    error ("__go_execute_callback__: invalid graphics object (= %g)", val);
+  const NDArray vals = args(0).xarray_value ("__go_execute_callback__: invalid graphics object");
 
   std::string name = args(1).xstring_value ("__go_execute_callback__: invalid callback name");
 
-  if (nargin == 2)
-    gh_manager::execute_callback (h, name);
-  else
-    gh_manager::execute_callback (h, name, args(2));
+  for (octave_idx_type i = 0; i < vals.numel (); i++)
+    {
+      double val = vals(i);
+
+      graphics_handle h = gh_manager::lookup (val);
+
+      if (! h.ok ())
+        error ("__go_execute_callback__: invalid graphics object (= %g)", val);
+
+      if (nargin == 2)
+        gh_manager::execute_callback (h, name);
+      else
+        gh_manager::execute_callback (h, name, args(2));
+    }
 
   return ovl ();
 }

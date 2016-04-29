@@ -92,9 +92,7 @@ function retval = close (arg1, arg2)
     error ('close: second argument must be "hidden" or "force"');
   endif
 
-  for h = figs
-    __go_execute_callback__ (h, "closerequestfcn");
-  endfor
+  __go_execute_callback__ (figs, "closerequestfcn");
 
   if (nargout > 0)
     retval = 1;

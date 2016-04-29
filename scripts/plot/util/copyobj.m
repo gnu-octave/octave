@@ -67,11 +67,11 @@ function hnew = copyobj (horig, hparent = 0)
 
   ## compatibility of input handles
   for i = 1:numel (horig)
-    kididx(i) = find (strcmp (alltypes, get (horig(i), "type"))); 
+    kididx(i) = find (strcmp (alltypes, get (horig(i), "type")));
   endfor
 
   for i = 1:numel (hparent)
-    paridx(i) = find (strcmp (alltypes, get (hparent(i), "type"))); 
+    paridx(i) = find (strcmp (alltypes, get (hparent(i), "type")));
   endfor
 
   if (kididx <= paridx)

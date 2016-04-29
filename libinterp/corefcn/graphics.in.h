@@ -5158,7 +5158,7 @@ public:
 
     void set_normalmode (const octave_value& val)
     {
-      warning_with_id ("Octave:deprecated-property", 
+      warning_with_id ("Octave:deprecated-property",
         "surface: Property 'normalmode' is deprecated and will be removed "
         "from a future version of Octave. Use 'vertexnormalsmode' instead.");
       set_vertexnormalsmode (val);
@@ -5166,7 +5166,7 @@ public:
 
     std::string get_normalmode (void) const
     {
-      warning_with_id ("Octave:deprecated-property", 
+      warning_with_id ("Octave:deprecated-property",
         "surface: Property 'normalmode' is deprecated and will be removed "
         "from a future version of Octave. Use 'vertexnormalsmode' instead.");
       return vertexnormalsmode.current_value ();

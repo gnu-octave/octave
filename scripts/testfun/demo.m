@@ -126,10 +126,12 @@ function demo (name, n = 0)
   else
     doidx = 1:(length (idx) - 1);
   endif
+  clear_figures ();
   for i = 1:length (doidx)
     ## Pause between demos
     if (i > 1)
       input ("Press <enter> to continue: ", "s");
+      clear_figures ();
     endif
 
     ## Process each demo without failing
@@ -149,6 +151,19 @@ function demo (name, n = 0)
 
 endfunction
 
+function clear_figures ()
+  ## Prevent proliferation of figure windows.  If any figure windows
+  ## exist, close all but one and clear the one remaining.
+  figs = __go_figure_handles__ ();
+  if (! isempty (figs))
+    if (numel (figs) > 1)
+      figs = sort (figs);
+      figs(1) = [];
+      close (figs);
+    endif
+    clf ("reset");
+  endif
+endfunction
 
 %!demo
 %! t = 0:0.01:2*pi;

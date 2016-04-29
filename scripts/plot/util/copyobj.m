@@ -116,7 +116,8 @@ endfunction
 ## with FLTK backend which is not respecting the set ('position') call.
 
 %!demo
-%! hobj = figure ('name', 'Original', 'numbertitle', 'off');
+%! hobj = clf;
+%! set (hobj, 'name', 'Original', 'numbertitle', 'off');
 %! hold on;
 %! x = 1:10;
 %! y = x.^2;
@@ -139,7 +140,8 @@ endfunction
 %! drawnow ();
 
 %!demo
-%! hobj = figure ('name', 'Original', 'numbertitle', 'off');
+%! hobj = clf;
+%! set (hobj, 'name', 'Original', 'numbertitle', 'off');
 %! subplot (2,2,1);
 %! hold on;
 %! contourf (rand (10, 10));

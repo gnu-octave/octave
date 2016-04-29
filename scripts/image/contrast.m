@@ -49,7 +49,7 @@ endfunction
 
 
 %!demo
-%! figure;
+%! clf;
 %! img = reshape (1:100, 10, 10);
 %! imagesc (img);
 %! colormap (gray (64));

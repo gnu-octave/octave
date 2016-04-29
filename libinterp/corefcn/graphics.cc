@@ -2659,9 +2659,17 @@ delete_graphics_object (double val)
   delete_graphics_object (gh_manager::lookup (val));
 }
 
+// Flag to stop redraws due to callbacks while deletion is in progress.
+static bool delete_executing = false;
+
 static void
 delete_graphics_objects (const NDArray vals)
 {
+  // Prevent redraw of partially deleted objects.
+  unwind_protect frame;
+  frame.protect_var (delete_executing);
+  delete_executing = true;
+
   for (octave_idx_type i = 0; i < vals.numel (); i++)
     delete_graphics_object (vals.elem (i));
 }
@@ -2722,7 +2730,8 @@ gh_manager::do_close_all_figures (void)
 
   hlist = do_figure_handle_list (true);
 
-  assert (hlist.numel () == 0);
+  if (hlist.numel () != 0)
+    warning ("gh_manager::do_close_all_figures: some graphics elements failed to close.");
 
   // Clear all callback objects from our list.
 
@@ -10715,7 +10724,8 @@ undocumented.\n\
   frame.protect_var (Vdrawnow_requested, false);
   frame.protect_var (drawnow_executing);
 
-  if (++drawnow_executing <= 1)
+  // Redraw, unless we are in the middle of an existing redraw or deletion.
+  if (++drawnow_executing <= 1 && ! delete_executing)
     {
       gh_manager::auto_lock guard;
 

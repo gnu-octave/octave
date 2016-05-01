@@ -45,6 +45,7 @@ scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/menu.m \
   scripts/miscellaneous/mex.m \
   scripts/miscellaneous/mexext.m \
+  scripts/miscellaneous/mkdir.m \
   scripts/miscellaneous/mkoctfile.m \
   scripts/miscellaneous/movefile.m \
   scripts/miscellaneous/namelengthmax.m \

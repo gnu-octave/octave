@@ -199,30 +199,17 @@ error message.\n\
 // FIXME: should maybe also allow second arg to specify mode?
 //        OTOH, that might cause trouble with compatibility later...
 
-DEFUNX ("mkdir", Fmkdir, args, ,
+DEFUN (__mkdir__, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {} {} mkdir @var{dir}\n\
-@deftypefnx {} {} mkdir (@var{parent}, @var{dir})\n\
-@deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@dots{})\n\
-Create a directory named @var{dir} in the directory @var{parent}.\n\
-\n\
-If no @var{parent} directory is specified the present working directory is\n\
-used.\n\
-\n\
-If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
-character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-system-dependent error message, and @var{msgid} contains a unique message\n\
-identifier.\n\
-\n\
-When creating a directory permissions will be set to\n\
-@code{0777 - @var{umask}}.\n\
-@seealso{rmdir, pwd, cd, umask}\n\
+@deftypefn {} {} __mkdir__ (@var{parent}, @var{dir})\n\
+Internal function called by mkdir.m.\n\
+@seealso{mkdir, rmdir, pwd, cd, umask}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
-    print_usage ();
+    print_usage ("mkdir");
 
   std::string dirname;
 

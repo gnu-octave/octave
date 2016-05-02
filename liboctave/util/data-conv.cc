@@ -821,7 +821,7 @@ read_doubles (std::istream& is, double *data, save_type type,
       break;
 
     default:
-      is.clear (std::ios::failbit|is.rdstate ());
+      is.clear (std::ios::failbit | is.rdstate ());
       break;
     }
 }
@@ -877,7 +877,7 @@ read_floats (std::istream& is, float *data, save_type type,
       break;
 
     default:
-      is.clear (std::ios::failbit|is.rdstate ());
+      is.clear (std::ios::failbit | is.rdstate ());
       break;
     }
 }
@@ -921,7 +921,7 @@ write_doubles (std::ostream& os, const double *data, save_type type,
         char tmp_type = static_cast<char> (type);
         os.write (&tmp_type, 1);
         std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
-        os.write (reinterpret_cast <const char *> (data), n_bytes);
+        os.write (reinterpret_cast<const char *> (data), n_bytes);
       }
       break;
 
@@ -967,7 +967,7 @@ write_floats (std::ostream& os, const float *data, save_type type,
         char tmp_type = static_cast<char> (type);
         os.write (&tmp_type, 1);
         std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
-        os.write (reinterpret_cast <const char *> (data), n_bytes);
+        os.write (reinterpret_cast<const char *> (data), n_bytes);
       }
       break;
 

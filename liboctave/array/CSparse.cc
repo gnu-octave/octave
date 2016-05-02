@@ -7498,7 +7498,7 @@ operator + (const SparseComplexMatrix& a, const DiagMatrix& d)
   return do_add_sm_dm<SparseComplexMatrix> (a, d);
 }
 SparseComplexMatrix
-operator + (const SparseComplexMatrix&a, const ComplexDiagMatrix& d)
+operator + (const SparseComplexMatrix& a, const ComplexDiagMatrix& d)
 {
   return do_add_sm_dm<SparseComplexMatrix> (a, d);
 }
@@ -7529,7 +7529,7 @@ operator - (const SparseComplexMatrix& a, const DiagMatrix& d)
   return do_sub_sm_dm<SparseComplexMatrix> (a, d);
 }
 SparseComplexMatrix
-operator - (const SparseComplexMatrix&a, const ComplexDiagMatrix& d)
+operator - (const SparseComplexMatrix& a, const ComplexDiagMatrix& d)
 {
   return do_sub_sm_dm<SparseComplexMatrix> (a, d);
 }

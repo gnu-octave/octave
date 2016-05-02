@@ -10746,7 +10746,7 @@ undocumented.\n\
                 {
                   graphics_object go = gh_manager::get_object (h);
                   figure::properties& fprops
-                    = dynamic_cast <figure::properties&> (go.get_properties ());
+                    = dynamic_cast<figure::properties&> (go.get_properties ());
 
                   if (fprops.is_modified ())
                     {

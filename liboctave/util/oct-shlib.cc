@@ -391,7 +391,8 @@ octave_w32_shlib::search (const std::string& name,
   if (mangler)
     sym_name = mangler (name);
 
-  function = reinterpret_cast <void *> (GetProcAddress (handle, sym_name.c_str ()));
+  function = reinterpret_cast<void *> (GetProcAddress (handle,
+                                                       sym_name.c_str ()));
 
   return function;
 }

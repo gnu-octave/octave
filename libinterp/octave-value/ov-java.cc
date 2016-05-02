@@ -1570,7 +1570,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           int8NDArray m = val.int8_array_value ();
           jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.numel ()));
           jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.numel (),
-                                       reinterpret_cast <jbyte *> (m.fortran_vec ()));
+                                       reinterpret_cast<jbyte *> (m.fortran_vec ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
           jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
@@ -1918,8 +1918,8 @@ octave_java::subsref (const std::string& type,
 
 octave_value
 octave_java::subsasgn (const std::string& type,
-                       const std::list<octave_value_list>&idx,
-                       const octave_value &rhs)
+                       const std::list<octave_value_list>& idx,
+                       const octave_value& rhs)
 {
 #if defined (HAVE_JAVA)
 

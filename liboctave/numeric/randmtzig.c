@@ -361,7 +361,7 @@ static uint64_t
 randi53 (void)
 {
   const uint32_t lo = randi32 ();
-  const uint32_t hi = randi32 ()&0x1FFFFF;
+  const uint32_t hi = randi32 () & 0x1FFFFF;
 #ifdef HAVE_X86_32
   uint64_t u;
   uint32_t *p = (uint32_t *)&u;
@@ -369,7 +369,7 @@ randi53 (void)
   p[1] = hi;
   return u;
 #else
-  return (((uint64_t)hi<<32)|lo);
+  return (( (uint64_t)hi << 32) | lo);
 #endif
 }
 
@@ -377,7 +377,7 @@ static uint64_t
 randi54 (void)
 {
   const uint32_t lo = randi32 ();
-  const uint32_t hi = randi32 ()&0x3FFFFF;
+  const uint32_t hi = randi32 () & 0x3FFFFF;
 #ifdef HAVE_X86_32
   uint64_t u;
   uint32_t *p = (uint32_t *)&u;
@@ -385,7 +385,7 @@ randi54 (void)
   p[1] = hi;
   return u;
 #else
-  return (((uint64_t)hi<<32)|lo);
+  return (( (uint64_t)hi << 32 ) | lo);
 #endif
 }
 
@@ -401,8 +401,8 @@ randu32 (void)
 static double
 randu53 (void)
 {
-  const uint32_t a = randi32 ()>>5;
-  const uint32_t b = randi32 ()>>6;
+  const uint32_t a = randi32 () >> 5;
+  const uint32_t b = randi32 () >> 6;
   return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
 }
 
@@ -585,18 +585,18 @@ oct_randn (void)
       int64_t rabs;
       uint32_t *p = (uint32_t *)&rabs;
       lo = randi32 ();
-      idx = lo&0xFF;
+      idx = lo & 0xFF;
       hi = randi32 ();
-      si = hi&UMASK;
+      si = hi & UMASK;
       p[0] = lo;
-      p[1] = hi&0x1FFFFF;
+      p[1] = hi & 0x1FFFFF;
       x = ( si ? -rabs : rabs ) * wi[idx];
 # else /* ! HAVE_X86_32 */
       /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
       const uint64_t r = NRANDI;
-      const int64_t rabs = r>>1;
-      const int idx = (int)(rabs&0xFF);
-      const double x = ( r&1 ? -rabs : rabs) * wi[idx];
+      const int64_t rabs = r >> 1;
+      const int idx = (int)(rabs & 0xFF);
+      const double x = ( (r & 1) ? -rabs : rabs) * wi[idx];
 # endif /* ! HAVE_X86_32 */
       if (rabs < (int64_t)ki[idx])
         return x;        /* 99.3% of the time we return here 1st try */
@@ -619,7 +619,7 @@ oct_randn (void)
               yy = - log (RANDU);
             }
           while ( yy+yy <= xx*xx);
-          return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
+          return ((rabs & 0x100) ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
         }
       else if ((fi[idx-1] - fi[idx]) * RANDU + fi[idx] < exp (-0.5*x*x))
         return x;
@@ -762,8 +762,8 @@ oct_float_randn (void)
     {
       /* 32-bit mantissa */
       const uint32_t r = randi32 ();
-      const uint32_t rabs = r&LMASK;
-      const int idx = (int)(r&0xFF);
+      const uint32_t rabs = r & LMASK;
+      const int idx = (int)(r & 0xFF);
       const float x = ((int32_t)r) * fwi[idx];
       if (rabs < fki[idx])
         return x;        /* 99.3% of the time we return here 1st try */
@@ -786,7 +786,7 @@ oct_float_randn (void)
               yy = - log (RANDU);
             }
           while ( yy+yy <= xx*xx);
-          return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
+          return ((rabs & 0x100) ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
         }
       else if ((ffi[idx-1] - ffi[idx]) * RANDU + ffi[idx] < exp (-0.5*x*x))
         return x;

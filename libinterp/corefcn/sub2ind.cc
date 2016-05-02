@@ -185,7 +185,7 @@ moving from one column to next, filling up all rows in each column.\n\
     {
       idx_vector idx = args(1).index_vector ();
 
-      if (nargout > dv.length ())
+      if (nargout > dv.ndims ())
         dv = dv.redim (nargout);
 
       retval = Array<octave_value> (ind2sub (dv, idx));

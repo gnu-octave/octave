@@ -318,7 +318,7 @@ class rec_permute_helper
 public:
   rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
 
-    : n (dv.length ()), top (0), dim (new octave_idx_type [2*n]),
+    : n (dv.ndims ()), top (0), dim (new octave_idx_type [2*n]),
       stride (dim + n), use_blk (false)
   {
     assert (n == perm.numel ());
@@ -456,7 +456,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 
   int perm_vec_len = perm_vec_arg.numel ();
 
-  if (perm_vec_len < dv.length ())
+  if (perm_vec_len < dv.ndims ())
     (*current_liboctave_error_handler)
       ("%s: invalid permutation vector", inv ? "ipermute" : "permute");
 
@@ -535,7 +535,7 @@ public:
     : n (ia.numel ()), top (0), dim (new octave_idx_type [2*n]),
       cdim (dim + n), idx (new idx_vector [n])
   {
-    assert (n > 0 && (dv.length () == std::max (n, 2)));
+    assert (n > 0 && (dv.ndims () == std::max (n, 2)));
 
     dim[0] = dv(0);
     cdim[0] = 1;
@@ -651,8 +651,8 @@ public:
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
     : cext (0), sext (0), dext (0), n (0)
   {
-    int l = ndv.length ();
-    assert (odv.length () == l);
+    int l = ndv.ndims ();
+    assert (odv.ndims () == l);
     octave_idx_type ld = 1;
     int i = 0;
     for (; i < l-1 && ndv(i) == odv(i); i++) ld *= ndv(i);
@@ -1025,12 +1025,12 @@ template <typename T>
 void
 Array<T>::resize (const dim_vector& dv, const T& rfv)
 {
-  int dvl = dv.length ();
+  int dvl = dv.ndims ();
   if (dvl == 2)
     resize2 (dv(0), dv(1), rfv);
   else if (dimensions != dv)
     {
-      if (dimensions.length () > dvl || dv.any_neg ())
+      if (dimensions.ndims () > dvl || dv.any_neg ())
         err_invalid_resize ();
 
       Array<T> tmp (dv);
@@ -1206,7 +1206,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
   octave_idx_type jl = j.length (rdv(1));
   rhdv.chop_all_singletons ();
   bool match = (isfill
-                || (rhdv.length () == 2 && il == rhdv(0) && jl == rhdv(1)));
+                || (rhdv.ndims () == 2 && il == rhdv(0) && jl == rhdv(1)));
   match = match || (il == 1 && jl == rhdv(0) && rhdv(1) == 1);
 
   if (match)
@@ -1322,7 +1322,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
 
       rhdv.chop_all_singletons ();
       int j = 0;
-      int rhdvl = rhdv.length ();
+      int rhdvl = rhdv.ndims ();
       for (int i = 0; i < ial; i++)
         {
           all_colons = all_colons && ia(i).is_colon_equiv (rdv(i));
@@ -1784,7 +1784,7 @@ Array<T>::sort (int dim, sortmode mode) const
   if (m.numel () < 1)
     return m;
 
-  if (dim >= dv.length ())
+  if (dim >= dv.ndims ())
     dv.resize (dim+1, 1);
 
   octave_idx_type ns = dv(dim);
@@ -2331,7 +2331,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
     (*current_liboctave_error_handler) ("nth_element: invalid dimension");
 
   dim_vector dv = dims ();
-  if (dim >= dv.length ())
+  if (dim >= dv.ndims ())
     dv.resize (dim+1, 1);
 
   octave_idx_type ns = dv(dim);
@@ -2340,7 +2340,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
 
   dv(dim) = std::min (nn, ns);
   dv.chop_trailing_singletons ();
-  dim = std::min (dv.length (), dim);
+  dim = std::min (dv.ndims (), dim);
 
   Array<T> m (dv);
 
@@ -2516,7 +2516,7 @@ Array<T>
 Array<T>::diag (octave_idx_type k) const
 {
   dim_vector dv = dims ();
-  octave_idx_type nd = dv.length ();
+  octave_idx_type nd = dv.ndims ();
   Array<T> d;
 
   if (nd > 2)
@@ -2683,7 +2683,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
   if (retval.is_empty ())
     return retval;
 
-  int nidx = std::max (dv.length (), dim + 1);
+  int nidx = std::max (dv.ndims (), dim + 1);
   Array<idx_vector> idxa (dim_vector (nidx, 1), idx_vector::colon);
   octave_idx_type l = 0;
 
@@ -2763,7 +2763,7 @@ operator << (std::ostream& os, const Array<T>& a)
 {
   dim_vector a_dims = a.dims ();
 
-  int n_dims = a_dims.length ();
+  int n_dims = a_dims.ndims ();
 
   os << n_dims << "-dimensional array";
 

@@ -39,7 +39,7 @@ bool
 isvector (const T& array)
 {
   const dim_vector dv = array.dims ();
-  return dv.length () == 2 && (dv(0) == 1 || dv(1) == 1);
+  return dv.ndims () == 2 && (dv(0) == 1 || dv(1) == 1);
 }
 
 // lookup a value in a sorted table (lookup.m)

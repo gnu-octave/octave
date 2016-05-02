@@ -224,7 +224,7 @@ template <typename T>
 Sparse<T>::Sparse (const dim_vector& dv)
   : rep (0), dimensions (dv)
 {
-  if (dv.length () != 2)
+  if (dv.ndims () != 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const dim_vector&): dimension mismatch");
 
@@ -637,7 +637,7 @@ template <typename T>
 Sparse<T>::Sparse (const Array<T>& a)
   : rep (0), dimensions (a.dims ())
 {
-  if (dimensions.length () > 2)
+  if (dimensions.ndims () > 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const Array<T>&): dimension mismatch");
 
@@ -696,7 +696,7 @@ template <typename T>
 octave_idx_type
 Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
-  octave_idx_type n = dimensions.length ();
+  octave_idx_type n = dimensions.ndims ();
 
   if (n <= 0 || n != ra_idx.numel ())
     (*current_liboctave_error_handler)
@@ -798,13 +798,13 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
   Sparse<T> retval;
   dim_vector dims2 = new_dims;
 
-  if (dims2.length () > 2)
+  if (dims2.ndims () > 2)
     {
       (*current_liboctave_warning_with_id_handler)
         ("Octave:reshape-smashes-dims",
          "reshape: sparse reshape to N-D array smashes dims");
 
-      for (octave_idx_type i = 2; i < dims2.length (); i++)
+      for (octave_idx_type i = 2; i < dims2.ndims (); i++)
         dims2(1) *= dims2(i);
 
       dims2.resize (2);
@@ -922,7 +922,7 @@ template <typename T>
 void
 Sparse<T>::resize (const dim_vector& dv)
 {
-  octave_idx_type n = dv.length ();
+  octave_idx_type n = dv.ndims ();
 
   if (n != 2)
     (*current_liboctave_error_handler) ("sparse array must be 2-D");

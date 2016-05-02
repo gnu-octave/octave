@@ -52,7 +52,7 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
 
-  for (int i = 0; i < dims.length (); i++)
+  for (int i = 0; i < dims.ndims (); i++)
     if (dims(i) < 0)
       return retval;
 
@@ -63,10 +63,10 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
       if (val.rows () > val.columns ())
         val = val.transpose ();
 
-      if (val.columns () != dims.length () || val.rows () != 1)
+      if (val.columns () != dims.ndims () || val.rows () != 1)
         error ("%s: SIZE must be a vector of length dim", fcn);
 
-      for (int i = 0; i < dims.length (); i++)
+      for (int i = 0; i < dims.ndims (); i++)
         {
           if (xisnan (val(i,0)))
             error ("%s: SIZE has invalid NaN entries", fcn);

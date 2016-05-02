@@ -145,7 +145,7 @@ public:
   {
     Matrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
 
     retval = Matrix (dv(0), dv(1));
@@ -162,7 +162,7 @@ public:
   {
     FloatMatrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
 
     retval = FloatMatrix (dv(0), dv(1));
@@ -179,7 +179,7 @@ public:
   {
     ComplexMatrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
 
     retval = ComplexMatrix (dv(0), dv(1));
@@ -196,7 +196,7 @@ public:
   {
     FloatComplexMatrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
 
     retval = FloatComplexMatrix (dv(0), dv(1));

@@ -704,18 +704,18 @@ octave_cell::short_disp (std::ostream& os) const
 bool
 octave_cell::save_ascii (std::ostream& os)
 {
-  dim_vector d = dims ();
-  if (d.length () > 2)
+  dim_vector dv = dims ();
+  if (dv.ndims () > 2)
     {
-      os << "# ndims: " << d.length () << "\n";
+      os << "# ndims: " << dv.ndims () << "\n";
 
-      for (int i = 0; i < d.length (); i++)
-        os << " " << d(i);
+      for (int i = 0; i < dv.ndims (); i++)
+        os << " " << dv(i);
       os << "\n";
 
       Cell tmp = cell_value ();
 
-      for (octave_idx_type i = 0; i < d.numel (); i++)
+      for (octave_idx_type i = 0; i < dv.numel (); i++)
         {
           octave_value o_val = tmp.elem (i);
 
@@ -857,22 +857,22 @@ octave_cell::load_ascii (std::istream& is)
 bool
 octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
 {
-  dim_vector d = dims ();
-  if (d.length () < 1)
+  dim_vector dv = dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims
-  int32_t di = - d.length ();
+  int32_t di = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&di), 4);
-  for (int i = 0; i < d.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     {
-      di = d(i);
+      di = dv(i);
       os.write (reinterpret_cast<char *> (&di), 4);
     }
 
   Cell tmp = cell_value ();
 
-  for (octave_idx_type i = 0; i < d.numel (); i++)
+  for (octave_idx_type i = 0; i < dv.numel (); i++)
     {
       octave_value o_val = tmp.elem (i);
 
@@ -972,7 +972,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
   if (empty)
     return (empty > 0);
 
-  hsize_t rank = dv.length ();
+  hsize_t rank = dv.ndims ();
   hid_t space_hid, data_hid, size_hid;
   space_hid = data_hid = size_hid = -1;
 
@@ -1328,14 +1328,14 @@ c(2,1,:)(:)\n\
   // except if the struct is a column vector.
 
   dim_vector result_dv;
-  if (m_dv(m_dv.length () - 1) == 1)
-    result_dv.resize (m_dv.length ());
+  if (m_dv(m_dv.ndims () - 1) == 1)
+    result_dv.resize (m_dv.ndims ());
   else
-    result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
+    result_dv.resize (m_dv.ndims () + 1); // Add 1 for the fields.
 
   result_dv(0) = num_fields;
 
-  for (int i = 1; i < result_dv.length (); i++)
+  for (int i = 1; i < result_dv.ndims (); i++)
     result_dv(i) = m_dv(i-1);
 
   NoAlias<Cell> c (result_dv);

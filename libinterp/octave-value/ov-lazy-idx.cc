@@ -105,7 +105,7 @@ octave_lazy_index::sort (octave_idx_type dim, sortmode mode) const
 {
   const dim_vector odims = index.orig_dimensions ();
   // index_vector can employ a more efficient sorting algorithm.
-  if (mode == ASCENDING && odims.length () == 2
+  if (mode == ASCENDING && odims.ndims () == 2
       && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted ();
   else
@@ -119,7 +119,7 @@ octave_lazy_index::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 {
   const dim_vector odims = index.orig_dimensions ();
   // index_vector can employ a more efficient sorting algorithm.
-  if (mode == ASCENDING && odims.length () == 2
+  if (mode == ASCENDING && odims.ndims () == 2
       && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted (sidx);
   else

@@ -262,7 +262,7 @@ octave_value
 octave_base_diag<DMT, MT>::resize (const dim_vector& dv, bool fill) const
 {
   octave_value retval;
-  if (dv.length () == 2)
+  if (dv.ndims () == 2)
     {
       DMT rm (matrix);
       rm.resize (dv(0), dv(1));

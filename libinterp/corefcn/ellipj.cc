@@ -190,7 +190,7 @@ and 16.15), Dover, 1965.\n\
 
               dim_vector sz_u = u.dims ();
 
-              if (sz_u.length () == 2 && sz_m.length () == 2
+              if (sz_u.ndims () == 2 && sz_m.ndims () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)
                 {
                   // u is real column vector, m is row vector
@@ -239,7 +239,7 @@ and 16.15), Dover, 1965.\n\
 
               dim_vector sz_u = u.dims ();
 
-              if (sz_u.length () == 2 && sz_m.length () == 2
+              if (sz_u.ndims () == 2 && sz_m.ndims () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)
                 {
                   // u is complex column vector, m is row vector

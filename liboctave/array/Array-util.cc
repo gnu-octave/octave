@@ -38,7 +38,7 @@ index_in_bounds (const Array<octave_idx_type>& ra_idx,
 
   int n = ra_idx.numel ();
 
-  if (n == dimensions.length ())
+  if (n == dimensions.ndims ())
     {
       for (int i = 0; i < n; i++)
         {
@@ -62,7 +62,7 @@ increment_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions,
   ra_idx(start_dimension)++;
 
   int n = ra_idx.numel () - 1;
-  int nda = dimensions.length ();
+  int nda = dimensions.ndims ();
 
   for (int i = start_dimension; i < n; i++)
     {
@@ -116,12 +116,10 @@ is_scalar (const dim_vector& dim)
 {
   bool retval = true;
 
-  int n = dim.length ();
+  int n = dim.ndims ();
 
   if (n == 0)
-    {
-      retval = false;
-    }
+    retval = false;
   else
     {
       for (int i = 0; i < n; i++)
@@ -141,7 +139,7 @@ bool
 is_vector (const dim_vector& dim)
 {
   int m = 0;
-  int n = dim.length ();
+  int n = dim.ndims ();
 
   if (n == 0)
     m = 2;
@@ -265,7 +263,7 @@ freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
 
   int n = ra_idx.numel ();
 
-  assert (n == dimensions.length ());
+  assert (n == dimensions.ndims ());
 
   retval.resize (n);
 
@@ -281,7 +279,7 @@ freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
 bool
 vector_equivalent (const dim_vector& dv)
 {
-  int n = dv.length ();
+  int n = dv.ndims ();
 
   bool found_first = false;
 
@@ -345,7 +343,7 @@ all_colon_equiv (const Array<idx_vector>& ra_idx,
 
   octave_idx_type idx_n = ra_idx.numel ();
 
-  int n = frozen_lengths.length ();
+  int n = frozen_lengths.ndims ();
 
   assert (idx_n == n);
 
@@ -397,7 +395,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
 {
   Array<octave_idx_type> retval;
 
-  int n_dims = dims.length ();
+  int n_dims = dims.ndims ();
 
   retval.resize (dim_vector (n_dims, 1));
 
@@ -430,7 +428,7 @@ dim_vector
 zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
 {
   int ial = ia.numel ();
-  int rhdvl = rhdv.length ();
+  int rhdvl = rhdv.ndims ();
   dim_vector rdv = dim_vector::alloc (ial);
   bool *scalar = new bool [ial];
   bool *colon = new bool [ial];
@@ -468,7 +466,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
     {
       dim_vector rhdv0 = rhdv;
       rhdv0.chop_all_singletons ();
-      int rhdv0l = rhdv0.length ();
+      int rhdv0l = rhdv0.ndims ();
       for (int i = 0, j = 0; i < ial; i++)
         {
           if (scalar[i]) continue;
@@ -490,12 +488,12 @@ zero_dims_inquire (const idx_vector& i, const idx_vector& j,
   bool icol = i.is_colon ();
   bool jcol = j.is_colon ();
   dim_vector rdv;
-  if (icol && jcol && rhdv.length () == 2)
+  if (icol && jcol && rhdv.ndims () == 2)
     {
       rdv(0) = rhdv(0);
       rdv(1) = rhdv(1);
     }
-  else if (rhdv.length () == 2
+  else if (rhdv.ndims () == 2
            && ! i.is_scalar () && ! j.is_scalar ())
     {
       rdv(0) = icol ? rhdv(0) : i.extent (0);
@@ -621,7 +619,7 @@ Array<idx_vector>
 ind2sub (const dim_vector& dv, const idx_vector& idx)
 {
   octave_idx_type len = idx.length (0);
-  octave_idx_type n = dv.length ();
+  octave_idx_type n = dv.ndims ();
   Array<idx_vector> retval (dim_vector (n, 1));
   octave_idx_type numel = dv.numel ();
 

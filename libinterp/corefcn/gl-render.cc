@@ -175,7 +175,7 @@ opengl_texture::create (const octave_value& data)
   dim_vector dv (data.dims ());
 
   // Expect RGB data
-  if (dv.length () == 3 && dv(2) == 3)
+  if (dv.ndims () == 3 && dv(2) == 3)
     {
       // FIXME: dim_vectors hold octave_idx_type values.
       //        Should we check for dimensions larger than intmax?
@@ -2959,7 +2959,7 @@ opengl_renderer::draw_image (const image::properties& props)
   glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
   // Expect RGB data
-  if (dv.length () == 3 && dv(2) == 3)
+  if (dv.ndims () == 3 && dv(2) == 3)
     {
       if (cdata.is_double_type ())
         {

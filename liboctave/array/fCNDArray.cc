@@ -59,7 +59,7 @@ FloatComplexNDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -90,7 +90,7 @@ FloatComplexNDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -120,7 +120,7 @@ FloatComplexNDArray
 FloatComplexNDArray::fourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return FloatComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
@@ -140,7 +140,7 @@ FloatComplexNDArray
 FloatComplexNDArray::ifourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return FloatComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
@@ -160,7 +160,7 @@ FloatComplexNDArray
 FloatComplexNDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   const FloatComplex *in (fortran_vec ());
   FloatComplexNDArray retval (dv);
@@ -175,7 +175,7 @@ FloatComplexNDArray
 FloatComplexNDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   const FloatComplex *in (fortran_vec ());
   FloatComplexNDArray retval (dv);
@@ -207,7 +207,7 @@ FloatComplexNDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   FloatComplexNDArray retval (dv);
@@ -254,7 +254,7 @@ FloatComplexNDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   FloatComplexNDArray retval (dv);
@@ -398,7 +398,7 @@ FloatComplexNDArray
 FloatComplexNDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   FloatComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 
@@ -445,7 +445,7 @@ FloatComplexNDArray
 FloatComplexNDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   FloatComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 
@@ -764,11 +764,11 @@ FloatComplexNDArray::insert (const NDArray& a,
 {
   dim_vector a_dv = a.dims ();
 
-  int n = a_dv.length ();
+  int n = a_dv.ndims ();
 
-  if (n == dimensions.length ())
+  if (n == dimensions.ndims ())
     {
-      Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.length (), 1), 0);
+      Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.ndims (), 1), 0);
 
       a_ra_idx.elem (0) = r;
       a_ra_idx.elem (1) = c;

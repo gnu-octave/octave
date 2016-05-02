@@ -648,7 +648,7 @@ octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
 static bool
 scalar (const dim_vector& dims)
 {
-  return dims.length () == 2 && dims(0) == 1 && dims(1) == 1;
+  return dims.ndims () == 2 && dims(0) == 1 && dims(1) == 1;
 }
 
 
@@ -661,9 +661,9 @@ octave_struct::save_ascii (std::ostream& os)
 
   const dim_vector dv = dims ();
 
-  os << "# ndims: " << dv.length () << "\n";
+  os << "# ndims: " << dv.ndims () << "\n";
 
-  for (int i = 0; i < dv.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     os << " " << dv(i);
   os << "\n";
 
@@ -764,16 +764,16 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
 
   octave_idx_type nf = m.nfields ();
 
-  dim_vector d = dims ();
-  if (d.length () < 1)
+  dim_vector dv = dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims
-  int32_t di = - d.length ();
+  int32_t di = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&di), 4);
-  for (int i = 0; i < d.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     {
-      di = d(i);
+      di = dv(i);
       os.write (reinterpret_cast<char *> (&di), 4);
     }
 
@@ -1326,9 +1326,9 @@ octave_scalar_struct::save_ascii (std::ostream& os)
 
   const dim_vector dv = dims ();
 
-  os << "# ndims: " << dv.length () << "\n";
+  os << "# ndims: " << dv.ndims () << "\n";
 
-  for (int i = 0; i < dv.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     os << " " << dv(i);
   os << "\n";
 

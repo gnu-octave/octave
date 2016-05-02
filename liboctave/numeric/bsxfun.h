@@ -38,7 +38,7 @@ bool
 is_valid_bsxfun (const std::string& name, const dim_vector& dx,
                  const dim_vector& dy)
 {
-  for (int i = 0; i < std::min (dx.length (), dy.length ()); i++)
+  for (int i = 0; i < std::min (dx.ndims (), dy.ndims ()); i++)
     {
       octave_idx_type xk = dx(i);
       octave_idx_type yk = dy(i);
@@ -62,8 +62,8 @@ bool
 is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
                          const dim_vector& dx)
 {
-  octave_idx_type drl = dr.length ();
-  octave_idx_type dxl = dx.length ();
+  octave_idx_type drl = dr.ndims ();
+  octave_idx_type dxl = dx.ndims ();
   if (drl < dxl)
     return false;
 

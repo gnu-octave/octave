@@ -194,7 +194,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
       for (octave_idx_type count = 0; count < k; count++)
         {
           dim_vector dv = f_args.elem (count).dims ();
-          if (d < dv.length ())
+          if (d < dv.ndims ())
             result(count) = static_cast<double> (dv(d));
           else
             result(count) = 1.0;
@@ -1604,11 +1604,11 @@ do_num2cell_helper (const dim_vector& dv,
                     Array<int>& perm)
 {
   int dvl = dimv.numel ();
-  int maxd = dv.length ();
+  int maxd = dv.ndims ();
   celldv = dv;
   for (int i = 0; i < dvl; i++)
     maxd = std::max (maxd, dimv(i));
-  if (maxd > dv.length ())
+  if (maxd > dv.ndims ())
     celldv.resize (maxd, 1);
   arraydv = celldv;
 
@@ -1852,7 +1852,7 @@ mat2cell_mismatch (const dim_vector& dv,
       for (octave_idx_type j = 0; j < d[i].numel (); j++)
         s += d[i](j);
 
-      octave_idx_type r = i < dv.length () ? dv(i) : 1;
+      octave_idx_type r = i < dv.ndims () ? dv(i) : 1;
 
       if (s != r)
         error ("mat2cell: mismatch on dimension %d (%d != %d)", i+1, r, s);
@@ -2209,7 +2209,7 @@ do_cellslices_nda (const NDA& array,
   else
     {
       const dim_vector dv = array.dims ();
-      int ndims = dv.length ();
+      int ndims = dv.ndims ();
       if (dim < 0)
         dim = dv.first_non_singleton ();
       ndims = std::max (ndims, dim + 1);
@@ -2331,7 +2331,7 @@ slicing is done along the first non-singleton dimension.\n\
       octave_idx_type n = lb.numel ();
       retcell = Cell (1, n);
       const dim_vector dv = x.dims ();
-      int ndims = dv.length ();
+      int ndims = dv.ndims ();
       if (dim < 0)
         dim = dv.first_non_singleton ();
       ndims = std::max (ndims, dim + 1);

@@ -632,7 +632,7 @@ protected:
 
   mxArray_matlab (mxClassID id_arg, const dim_vector& dv)
     : mxArray_base (), class_name (0), id (id_arg),
-      ndims (dv.length ()),
+      ndims (dv.ndims ()),
       dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
     for (mwIndex i = 0; i < ndims; i++)

@@ -195,7 +195,7 @@ public:
   {
     std::string expl;
 
-    if (nd >= size.length ())   // if not an index slice
+    if (nd >= size.ndims ())   // if not an index slice
       {
         if (var != "")
           expl = "but " + var + " has size ";

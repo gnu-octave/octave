@@ -391,7 +391,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
   const dim_vector dv = bnda.dims ();
 
   if (! dv.all_zero ())
-    orig_dims = ((dv.length () == 2 && dv(0) == 1)
+    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
                  ? dim_vector (1, len) : dim_vector (len, 1));
 
   if (len != 0)
@@ -417,7 +417,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
   const dim_vector dv = bnda.dims ();
 
   if (! dv.all_zero ())
-    orig_dims = ((dv.length () == 2 && dv(0) == 1)
+    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
                  ? dim_vector (1, len) : dim_vector (len, 1));
 
   if (len != 0)
@@ -485,7 +485,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
           octave_idx_type new_len = std::unique (new_data, new_data + len)
                                     - new_data;
           new_rep->len = new_len;
-          if (new_rep->orig_dims.length () == 2 && new_rep->orig_dims(0) == 1)
+          if (new_rep->orig_dims.ndims () == 2 && new_rep->orig_dims(0) == 1)
             new_rep->orig_dims = dim_vector (1, new_len);
           else
             new_rep->orig_dims = dim_vector (new_len, 1);
@@ -503,7 +503,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
         new_len += has[i];
 
       new_rep->len = new_len;
-      if (new_rep->orig_dims.length () == 2 && new_rep->orig_dims(0) == 1)
+      if (new_rep->orig_dims.ndims () == 2 && new_rep->orig_dims(0) == 1)
         new_rep->orig_dims = dim_vector (1, new_len);
       else
         new_rep->orig_dims = dim_vector (new_len, 1);
@@ -661,7 +661,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
   const dim_vector dv = bnda.dims ();
 
   if (! dv.all_zero ())
-    orig_dims = ((dv.length () == 2 && dv(0) == 1)
+    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
                  ? dim_vector (1, len) : dim_vector (len, 1));
 
   aowner = new Array<bool> (bnda);

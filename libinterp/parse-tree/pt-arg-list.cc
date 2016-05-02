@@ -170,7 +170,7 @@ Example:\n\
     }
 
   dim_vector dv = indexed_object->dims ();
-  int ndims = dv.length ();
+  int ndims = dv.ndims ();
 
   if (num_indices < ndims)
     {

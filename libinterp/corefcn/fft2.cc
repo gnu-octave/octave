@@ -77,7 +77,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
         error ("%s: number of columns (M) must be greater than zero", fcn);
     }
 
-  for (int i = 0; i < dims.length (); i++)
+  for (int i = 0; i < dims.ndims (); i++)
     if (dims(i) < 0)
       return retval;
 

@@ -64,7 +64,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
     error ("filter: the first element of A must be nonzero");
 
   dim_vector x_dims = x.dims ();
-  if (dim < 0 || dim > x_dims.length ())
+  if (dim < 0 || dim > x_dims.ndims ())
     error ("filter: DIM must be a valid dimension");
 
   octave_idx_type x_len = x_dims(dim);
@@ -75,7 +75,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   if (si_len != ab_len - 1)
     error ("filter: first dimension of SI must be of length max (length (a), length (b)) - 1");
 
-  if (si_dims.length () != x_dims.length ())
+  if (si_dims.ndims () != x_dims.ndims ())
     error ("filter: dimensionality of SI and X must agree");
 
   for (octave_idx_type i = 1; i < dim; i++)
@@ -83,7 +83,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
       if (si_dims(i) != x_dims(i-1))
         error ("filter: dimensionality of SI and X must agree");
     }
-  for (octave_idx_type i = dim+1; i < x_dims.length (); i++)
+  for (octave_idx_type i = dim+1; i < x_dims.ndims (); i++)
     {
       if (si_dims(i) != x_dims(i))
         error ("filter: dimensionality of SI and X must agree");
@@ -210,7 +210,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 
   if (dim < 0)
     dim = x_dims.first_non_singleton ();
-  else if (dim > x_dims.length ())
+  else if (dim > x_dims.ndims ())
     error ("filter: DIM must be a valid dimension");
 
   octave_idx_type a_len = a.numel ();
@@ -341,7 +341,7 @@ H(z) = ---------------------\n\
   if (nargin == 5)
     {
       dim = args(4).nint_value () - 1;
-      if (dim < 0 || dim >= x_dims.length ())
+      if (dim < 0 || dim >= x_dims.ndims ())
         error ("filter: DIM must be a valid dimension");
     }
   else

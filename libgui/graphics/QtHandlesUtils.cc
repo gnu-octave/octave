@@ -277,7 +277,7 @@ makeImageFromCData (const octave_value& v, int width, int height)
 {
   dim_vector dv (v.dims ());
 
-  if (dv.length () == 3 && dv(2) == 3)
+  if (dv.ndims () == 3 && dv(2) == 3)
     {
       int w = qMin (dv(1), static_cast<octave_idx_type> (width));
       int h = qMin (dv(0), static_cast<octave_idx_type> (height));

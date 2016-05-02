@@ -1555,7 +1555,7 @@ symbol_table::do_workspace_info (void) const
               octave_value tmp = val;
               Matrix sz = tmp.size ();
               dim_vector dv = dim_vector::alloc (sz.numel ());
-              for (octave_idx_type i = 0; i < dv.length (); i++)
+              for (octave_idx_type i = 0; i < dv.ndims (); i++)
                 dv(i) = sz(i);
 
               char storage = ' ';

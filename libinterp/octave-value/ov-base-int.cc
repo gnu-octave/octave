@@ -188,12 +188,12 @@ template <typename T>
 bool
 octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 {
-  dim_vector d = this->dims ();
+  dim_vector dv = this->dims ();
 
-  os << "# ndims: " << d.length () << "\n";
+  os << "# ndims: " << dv.ndims () << "\n";
 
-  for (int i = 0; i < d.length (); i++)
-    os << " " << d(i);
+  for (int i = 0; i < dv.ndims (); i++)
+    os << " " << dv(i);
 
   os << "\n" << this->matrix;
 
@@ -234,16 +234,16 @@ template <typename T>
 bool
 octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 {
-  dim_vector d = this->dims ();
-  if (d.length () < 1)
+  dim_vector dv = this->dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length ();
+  int32_t tmp = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i=0; i < d.length (); i++)
+  for (int i=0; i < dv.ndims (); i++)
     {
-      tmp = d(i);
+      tmp = dv(i);
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
@@ -337,7 +337,7 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   if (empty)
     return (empty > 0);
 
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);

@@ -71,11 +71,11 @@ dim_vector::str (char sep) const
 {
   std::ostringstream buf;
 
-  for (int i = 0; i < length (); i++)
+  for (int i = 0; i < ndims (); i++)
     {
       buf << elem (i);
 
-      if (i < length () - 1)
+      if (i < ndims () - 1)
         buf << sep;
     }
 
@@ -89,7 +89,7 @@ dim_vector::num_ones (void) const
 {
   int retval = 0;
 
-  for (int i = 0; i < length (); i++)
+  for (int i = 0; i < ndims (); i++)
     if (elem (i) == 1)
       retval++;
 
@@ -101,7 +101,7 @@ dim_vector::safe_numel (void) const
 {
   octave_idx_type idx_max = dim_max ();
   octave_idx_type n = 1;
-  int n_dims = length ();
+  int n_dims = ndims ();
 
   for (int i = 0; i < n_dims; i++)
     {
@@ -124,7 +124,7 @@ dim_vector::squeeze (void) const
 
   int k = 0;
 
-  for (int i = 0; i < length (); i++)
+  for (int i = 0; i < ndims (); i++)
     {
       if (elem (i) == 1)
         dims_changed = true;
@@ -249,7 +249,7 @@ dim_vector::hvcat (const dim_vector& dvb, int dim)
 {
   if (concat (dvb, dim))
     return true;
-  else if (length () == 2 && dvb.length () == 2)
+  else if (ndims () == 2 && dvb.ndims () == 2)
     {
       bool e2dv = rep[0] + rep[1] == 1;
       bool e2dvb = dvb(0) + dvb(1) == 1;
@@ -272,7 +272,7 @@ dim_vector::hvcat (const dim_vector& dvb, int dim)
 dim_vector
 dim_vector::redim (int n) const
 {
-  int n_dims = length ();
+  int n_dims = ndims ();
 
   if (n_dims == n)
     return *this;

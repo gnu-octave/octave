@@ -798,7 +798,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
 {
   size_t nc = dv(0);
   size_t nr = dv(1);
-  size_t np = (dv.length () > 2 ? dv.numel () / nc / nr : 1);
+  size_t np = (dv.ndims () > 2 ? dv.numel () / nc / nr : 1);
   size_t nrp = nr * np;
   T *ptr1, *ptr2;
 
@@ -836,7 +836,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
   size_t kstep = dv(0);
   size_t nel = dv.numel ();
 
-  for (int inner = 2; inner < dv.length (); inner++)
+  for (int inner = 2; inner < dv.ndims (); inner++)
     {
       size_t jmax = jstart * dv(inner);
       for (size_t i = 0; i < nel; i+=jmax)

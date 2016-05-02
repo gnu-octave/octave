@@ -278,7 +278,7 @@ public:
   Array<T> as_column (void) const
   {
     Array<T> retval (*this);
-    if (dimensions.length () != 2 || dimensions(1) != 1)
+    if (dimensions.ndims () != 2 || dimensions(1) != 1)
       retval.dimensions = dim_vector (numel (), 1);
 
     return retval;
@@ -288,7 +288,7 @@ public:
   Array<T> as_row (void) const
   {
     Array<T> retval (*this);
-    if (dimensions.length () != 2 || dimensions(0) != 1)
+    if (dimensions.ndims () != 2 || dimensions(0) != 1)
       retval.dimensions = dim_vector (1, numel ());
 
     return retval;
@@ -298,7 +298,7 @@ public:
   Array<T> as_matrix (void) const
   {
     Array<T> retval (*this);
-    if (dimensions.length () != 2)
+    if (dimensions.ndims () != 2)
       retval.dimensions = dimensions.redim (2);
 
     return retval;
@@ -484,7 +484,7 @@ public:
 
   bool is_shared (void) { return rep->count > 1; }
 
-  int ndims (void) const { return dimensions.length (); }
+  int ndims (void) const { return dimensions.ndims (); }
 
   //@{
   //! Indexing without resizing.

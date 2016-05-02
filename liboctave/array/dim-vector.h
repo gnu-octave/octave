@@ -339,7 +339,7 @@ public:
 
   void resize (int n, int fill_value = 0)
   {
-    int len = length ();
+    int len = ndims ();
 
     if (n != len)
       {
@@ -358,7 +358,7 @@ public:
   {
     bool retval = true;
 
-    for (int i = 0; i < length (); i++)
+    for (int i = 0; i < ndims (); i++)
       {
         if (elem (i) != 0)
           {
@@ -372,20 +372,20 @@ public:
 
   bool empty_2d (void) const
   {
-    return length () == 2 && (elem (0) == 0 || elem (1) == 0);
+    return ndims () == 2 && (elem (0) == 0 || elem (1) == 0);
   }
 
 
   bool zero_by_zero (void) const
   {
-    return length () == 2 && elem (0) == 0 && elem (1) == 0;
+    return ndims () == 2 && elem (0) == 0 && elem (1) == 0;
   }
 
   bool any_zero (void) const
   {
     bool retval = false;
 
-    for (int i = 0; i < length (); i++)
+    for (int i = 0; i < ndims (); i++)
       {
         if (elem (i) == 0)
           {
@@ -401,7 +401,7 @@ public:
 
   bool all_ones (void) const
   {
-    return (num_ones () == length ());
+    return (num_ones () == ndims ());
   }
 
   //! Number of elements that a matrix with this dimensions would have.
@@ -413,7 +413,7 @@ public:
 
   octave_idx_type numel (int n = 0) const
   {
-    int n_dims = length ();
+    int n_dims = ndims ();
 
     octave_idx_type retval = 1;
 
@@ -437,7 +437,7 @@ public:
 
   bool any_neg (void) const
   {
-    int n_dims = length ();
+    int n_dims = ndims ();
     int i;
 
     for (i = 0; i < n_dims; i++)
@@ -466,7 +466,7 @@ public:
 
   dim_vector as_column (void) const
   {
-    if (length () == 2 && elem (1) == 1)
+    if (ndims () == 2 && elem (1) == 1)
       return *this;
     else
       return dim_vector (numel (), 1);
@@ -474,7 +474,7 @@ public:
 
   dim_vector as_row (void) const
   {
-    if (length () == 2 && elem (0) == 1)
+    if (ndims () == 2 && elem (0) == 1)
       return *this;
     else
       return dim_vector (1, numel ());
@@ -482,12 +482,12 @@ public:
 
   bool is_vector (void) const
   {
-    return (length () == 2 && (elem (0) == 1 || elem (1) == 1));
+    return (ndims () == 2 && (elem (0) == 1 || elem (1) == 1));
   }
 
   int first_non_singleton (int def = 0) const
   {
-    for (int i = 0; i < length (); i++)
+    for (int i = 0; i < ndims (); i++)
       {
         if (elem (i) != 1)
           return i;
@@ -501,7 +501,7 @@ public:
   octave_idx_type compute_index (const octave_idx_type *idx) const
   {
     octave_idx_type k = 0;
-    for (int i = length () - 1; i >= 0; i--)
+    for (int i = ndims () - 1; i >= 0; i--)
       k = rep[i] * k + idx[i];
 
     return k;
@@ -527,7 +527,7 @@ public:
   int increment_index (octave_idx_type *idx, int start = 0) const
   {
     int i;
-    for (i = start; i < length (); i++)
+    for (i = start; i < ndims (); i++)
       {
         if (++(*idx) == rep[i])
           *idx++ = 0;
@@ -541,7 +541,7 @@ public:
 
   dim_vector cumulative (void) const
   {
-    int nd = length ();
+    int nd = ndims ();
     dim_vector retval = alloc (nd);
 
     octave_idx_type k = 1;
@@ -558,7 +558,7 @@ public:
   {
     octave_idx_type k = idx[0];
 
-    for (int i = 1; i < length (); i++)
+    for (int i = 1; i < ndims (); i++)
       k += rep[i-1] * idx[i];
 
     return k;
@@ -577,8 +577,8 @@ operator == (const dim_vector& a, const dim_vector& b)
 
   bool retval = true;
 
-  int a_len = a.length ();
-  int b_len = b.length ();
+  int a_len = a.ndims ();
+  int b_len = b.ndims ();
 
   if (a_len != b_len)
     retval = false;

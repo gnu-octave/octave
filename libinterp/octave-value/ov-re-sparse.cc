@@ -247,17 +247,17 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 }
 
 bool
-octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
+octave_sparse_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
-  dim_vector d = this->dims ();
-  if (d.length () < 1)
+  dim_vector dv = this->dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 
-  int nr = d(0);
-  int nc = d(1);
+  int nr = dv(0);
+  int nc = dv(1);
   int nz = nnz ();
 
   int32_t itmp;

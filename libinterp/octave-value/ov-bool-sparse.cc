@@ -209,15 +209,15 @@ octave_sparse_bool_matrix::sparse_complex_matrix_value (bool) const
 bool
 octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
 {
-  dim_vector d = this->dims ();
-  if (d.length () < 1)
+  dim_vector dv = this->dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 
-  int nr = d(0);
-  int nc = d(1);
+  int nr = dv(0);
+  int nc = dv(1);
   int nz = nnz ();
 
   int32_t itmp;

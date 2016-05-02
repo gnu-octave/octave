@@ -551,7 +551,7 @@ public:
   // FIXME: shouldn't this be returning const octave_idx_type*?
   octave_idx_type* cidx (void) const { return rep->c; }
 
-  octave_idx_type ndims (void) const { return dimensions.length (); }
+  octave_idx_type ndims (void) const { return dimensions.ndims (); }
 
   void delete_elements (const idx_vector& i);
 

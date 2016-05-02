@@ -59,7 +59,7 @@ ComplexNDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -90,7 +90,7 @@ ComplexNDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -120,7 +120,7 @@ ComplexNDArray
 ComplexNDArray::fourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return ComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
@@ -140,7 +140,7 @@ ComplexNDArray
 ComplexNDArray::ifourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return ComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
@@ -160,7 +160,7 @@ ComplexNDArray
 ComplexNDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   const Complex *in (fortran_vec ());
   ComplexNDArray retval (dv);
@@ -175,7 +175,7 @@ ComplexNDArray
 ComplexNDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   const Complex *in (fortran_vec ());
   ComplexNDArray retval (dv);
@@ -210,7 +210,7 @@ ComplexNDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   ComplexNDArray retval (dv);
@@ -257,7 +257,7 @@ ComplexNDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   ComplexNDArray retval (dv);
@@ -401,7 +401,7 @@ ComplexNDArray
 ComplexNDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   ComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 
@@ -448,7 +448,7 @@ ComplexNDArray
 ComplexNDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   ComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 
@@ -753,13 +753,13 @@ ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
 {
   dim_vector a_dv = a.dims ();
 
-  int n = a_dv.length ();
+  int n = a_dv.ndims ();
 
-  if (n != dimensions.length ())
+  if (n != dimensions.ndims ())
     (*current_liboctave_error_handler)
       ("Array<T>::insert: invalid indexing operation");
 
-  Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.length (), 1), 0);
+  Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.ndims (), 1), 0);
 
   a_ra_idx.elem (0) = r;
   a_ra_idx.elem (1) = c;

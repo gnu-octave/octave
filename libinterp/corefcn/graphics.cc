@@ -888,7 +888,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   dim_vector dv (cdata.dims ());
 
   // TrueColor data doesn't require conversion
-  if (dv.length () == cdim && dv(cdim-1) == 3)
+  if (dv.ndims () == cdim && dv(cdim-1) == 3)
     return cdata;
 
   Matrix cmap (1, 3, 0.0);
@@ -1411,7 +1411,7 @@ array_property::validate (const octave_value& v)
         return true;
 
       dim_vector vdims = v.dims ();
-      int vlen = vdims.length ();
+      int vlen = vdims.ndims ();
 
       xok = false;
 
@@ -1421,7 +1421,7 @@ array_property::validate (const octave_value& v)
         {
           dim_vector itdims = (*it);
 
-          if (itdims.length () == vlen)
+          if (itdims.ndims () == vlen)
             {
               xok = true;
 

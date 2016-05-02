@@ -38,9 +38,9 @@ along with Octave; see the file COPYING.  If not, see
 static dim_vector
 get_vec_dims (const dim_vector& old_dims, octave_idx_type n)
 {
-  if (old_dims.length () == 2 && old_dims(0) == 1)
+  if (old_dims.ndims () == 2 && old_dims(0) == 1)
     return dim_vector (1, n);
-  else if (old_dims.length () == 2 && old_dims(0) == 0 && old_dims(1) == 0)
+  else if (old_dims.ndims () == 2 && old_dims(0) == 0 && old_dims(1) == 0)
     return dim_vector ();
   else
     return dim_vector (n, 1);

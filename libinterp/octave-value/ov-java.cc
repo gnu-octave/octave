@@ -937,7 +937,7 @@ compute_array_dimensions (JNIEnv *jni_env, jobject obj)
   while (jcls && jni_env->CallBooleanMethod (jcls, isArray_ID))
     {
       int len = (jobj ? jni_env->GetArrayLength (jobj) : 0);
-      if (idx >= dv.length ())
+      if (idx >= dv.ndims ())
         dv.resize (idx+1);
       dv(idx) = len;
       jcls = reinterpret_cast<jclass> (jni_env->CallObjectMethod (jcls, getComponentType_ID));
@@ -1219,7 +1219,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
               dim_vector dims;
               dims.resize (jni_env->GetArrayLength (jintArray (iv)));
 
-              for (int i = 0; i < dims.length (); i++)
+              for (int i = 0; i < dims.ndims (); i++)
                 dims(i) = iv_data[i];
 
               jni_env->ReleaseIntArrayElements (jintArray (iv), iv_data, 0);
@@ -1546,10 +1546,10 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
     {
       jclass_ref mcls (jni_env, find_octave_class (jni_env, "org/octave/Matrix"));
       dim_vector dims = val.dims ();
-      jintArray_ref iv (jni_env, jni_env->NewIntArray (dims.length ()));
+      jintArray_ref iv (jni_env, jni_env->NewIntArray (dims.ndims ()));
       jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), 0);
 
-      for (int i = 0; i < dims.length (); i++)
+      for (int i = 0; i < dims.ndims (); i++)
         iv_data[i] = dims(i);
 
       jni_env->ReleaseIntArrayElements (jintArray (iv), iv_data, 0);

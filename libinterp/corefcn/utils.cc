@@ -1101,7 +1101,7 @@ check_dimensions (dim_vector& dim, const char *warnfor)
 {
   bool neg = false;
 
-  for (int i = 0; i < dim.length (); i++)
+  for (int i = 0; i < dim.ndims (); i++)
     {
       if (dim(i) < 0)
         {

@@ -397,7 +397,7 @@ public:
 
   dim_vector dims (void) const { return dimensions; }
 
-  int ndims (void) const { return dimensions.length (); }
+  int ndims (void) const { return dimensions.ndims (); }
 
   octave_map transpose (void) const;
 

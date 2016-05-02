@@ -283,15 +283,15 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
 bool
 octave_char_matrix_str::save_ascii (std::ostream& os)
 {
-  dim_vector d = dims ();
-  if (d.length () > 2)
+  dim_vector dv = dims ();
+  if (dv.ndims () > 2)
     {
       charNDArray tmp = char_array_value ();
-      os << "# ndims: " << d.length () << "\n";
-      for (int i=0; i < d.length (); i++)
-        os << " " << d(i);
+      os << "# ndims: " << dv.ndims () << "\n";
+      for (int i=0; i < dv.ndims (); i++)
+        os << " " << dv(i);
       os << "\n";
-      os.write (tmp.fortran_vec (), d.numel ());
+      os.write (tmp.fortran_vec (), dv.numel ());
       os << "\n";
     }
   else
@@ -435,21 +435,21 @@ bool
 octave_char_matrix_str::save_binary (std::ostream& os,
                                      bool& /* save_as_floats */)
 {
-  dim_vector d = dims ();
-  if (d.length () < 1)
+  dim_vector dv = dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length ();
+  int32_t tmp = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i=0; i < d.length (); i++)
+  for (int i=0; i < dv.ndims (); i++)
     {
-      tmp = d(i);
+      tmp = dv(i);
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
   charNDArray m = char_array_value ();
-  os.write (m.fortran_vec (), d.numel ());
+  os.write (m.fortran_vec (), dv.numel ());
   return true;
 }
 
@@ -540,7 +540,7 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (empty)
     return (empty > 0);
 
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
   charNDArray m = char_array_value ();

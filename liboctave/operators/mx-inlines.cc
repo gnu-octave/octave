@@ -1158,7 +1158,7 @@ get_extent_triplet (const dim_vector& dims, int& dim,
                     octave_idx_type& l, octave_idx_type& n,
                     octave_idx_type& u)
 {
-  octave_idx_type ndims = dims.length ();
+  octave_idx_type ndims = dims.ndims ();
   if (dim >= ndims)
     {
       l = dims.numel ();
@@ -1192,13 +1192,13 @@ do_mx_red_op (const Array<T>& src, int dim,
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
   // M*b inconsistency: sum ([]) = 0 etc.
-  if (dims.length () == 2 && dims(0) == 0 && dims(1) == 0)
+  if (dims.ndims () == 2 && dims(0) == 0 && dims(1) == 0)
     dims(1) = 1;
 
   get_extent_triplet (dims, dim, l, n, u);
 
   // Reduction operation reduces the array size.
-  if (dim < dims.length ()) dims(dim) = 1;
+  if (dim < dims.ndims ()) dims(dim) = 1;
   dims.chop_trailing_singletons ();
 
   Array<R> ret (dims);
@@ -1235,7 +1235,7 @@ do_mx_minmax_op (const Array<R>& src, int dim,
   get_extent_triplet (dims, dim, l, n, u);
 
   // If the dimension is zero, we don't do anything.
-  if (dim < dims.length () && dims(dim) != 0) dims(dim) = 1;
+  if (dim < dims.ndims () && dims(dim) != 0) dims(dim) = 1;
   dims.chop_trailing_singletons ();
 
   Array<R> ret (dims);
@@ -1255,7 +1255,7 @@ do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
   get_extent_triplet (dims, dim, l, n, u);
 
   // If the dimension is zero, we don't do anything.
-  if (dim < dims.length () && dims(dim) != 0) dims(dim) = 1;
+  if (dim < dims.ndims () && dims(dim) != 0) dims(dim) = 1;
   dims.chop_trailing_singletons ();
 
   Array<R> ret (dims);
@@ -1316,7 +1316,7 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
   dim_vector dims = src.dims ();
 
   get_extent_triplet (dims, dim, l, n, u);
-  if (dim >= dims.length ())
+  if (dim >= dims.ndims ())
     dims.resize (dim+1, 1);
 
   if (dims(dim) <= order)

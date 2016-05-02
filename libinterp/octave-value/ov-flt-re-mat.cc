@@ -310,16 +310,16 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 bool
 octave_float_matrix::save_ascii (std::ostream& os)
 {
-  dim_vector d = dims ();
+  dim_vector dv = dims ();
 
-  if (d.length () > 2)
+  if (dv.ndims () > 2)
     {
       FloatNDArray tmp = float_array_value ();
 
-      os << "# ndims: " << d.length () << "\n";
+      os << "# ndims: " << dv.ndims () << "\n";
 
-      for (int i=0; i < d.length (); i++)
-        os << " " << d(i);
+      for (int i=0; i < dv.ndims (); i++)
+        os << " " << dv(i);
 
       os << "\n" << tmp;
     }
@@ -406,23 +406,22 @@ octave_float_matrix::load_ascii (std::istream& is)
 bool
 octave_float_matrix::save_binary (std::ostream& os, bool&)
 {
-
-  dim_vector d = dims ();
-  if (d.length () < 1)
+  dim_vector dv = dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length ();
+  int32_t tmp = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i = 0; i < d.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     {
-      tmp = d(i);
+      tmp = dv(i);
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
   FloatNDArray m = float_array_value ();
   save_type st = LS_FLOAT;
-  if (d.numel () > 8192) // FIXME: make this configurable.
+  if (dv.numel () > 8192) // FIXME: make this configurable.
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -430,7 +429,7 @@ octave_float_matrix::save_binary (std::ostream& os, bool&)
     }
 
   const float *mtmp = m.data ();
-  write_floats (os, mtmp, st, d.numel ());
+  write_floats (os, mtmp, st, dv.numel ());
 
   return true;
 }
@@ -521,7 +520,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
   if (empty)
     return (empty > 0);
 
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
   FloatNDArray m = array_value ();

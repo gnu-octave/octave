@@ -140,8 +140,8 @@ Matrix
 octave_base_value::size (void)
 {
   const dim_vector dv = dims ();
-  Matrix mdv (1, dv.length ());
-  for (octave_idx_type i = 0; i < dv.length (); i++)
+  Matrix mdv (1, dv.ndims ());
+  for (octave_idx_type i = 0; i < dv.ndims (); i++)
     mdv(i) = dv(i);
   return mdv;
 }

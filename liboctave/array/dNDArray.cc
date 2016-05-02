@@ -101,7 +101,7 @@ NDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -132,7 +132,7 @@ NDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -161,7 +161,7 @@ ComplexNDArray
 NDArray::fourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return ComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
@@ -181,7 +181,7 @@ ComplexNDArray
 NDArray::ifourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return ComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
@@ -200,7 +200,7 @@ ComplexNDArray
 NDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   const double *in (fortran_vec ());
   ComplexNDArray retval (dv);
@@ -215,7 +215,7 @@ ComplexNDArray
 NDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   ComplexNDArray tmp (*this);
   Complex *in (tmp.fortran_vec ());
@@ -251,7 +251,7 @@ NDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   ComplexNDArray retval (dv);
@@ -298,7 +298,7 @@ NDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
 
   ComplexNDArray retval (dv);
@@ -442,7 +442,7 @@ ComplexNDArray
 NDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   ComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 
@@ -489,7 +489,7 @@ ComplexNDArray
 NDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   ComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 

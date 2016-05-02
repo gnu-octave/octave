@@ -72,7 +72,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       double dval = args(2).double_value ();
       if (xisnan (dval))
         error ("%s: DIM cannot be NaN", fcn);
-      else if (dval < 1 || dval > dims.length ())
+      else if (dval < 1 || dval > dims.ndims ())
         error ("%s: DIM must be a valid dimension along which to perform FFT",
                fcn);
       else
@@ -80,13 +80,13 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         dim = NINT (dval) - 1;
     }
 
-  for (octave_idx_type i = 0; i < dims.length (); i++)
+  for (octave_idx_type i = 0; i < dims.ndims (); i++)
     if (dims(i) < 0)
       return retval;
 
   if (dim < 0)
     {
-      for (octave_idx_type i = 0; i < dims.length (); i++)
+      for (octave_idx_type i = 0; i < dims.ndims (); i++)
         if (dims(i) > 1)
           {
             dim = i;

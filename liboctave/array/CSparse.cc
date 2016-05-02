@@ -270,7 +270,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
   octave_idx_type nc = dv(1);
 
 
-  if (dim >= dv.length ())
+  if (dim >= dv.ndims ())
     {
       idx_arg.resize (dim_vector (nr, nc), 0);
       return *this;
@@ -283,7 +283,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
     {
       idx_arg.resize (dim_vector (nr == 0 ? 0 : 1, nc), 0);
 
-      if (nr == 0 || nc == 0 || dim >= dv.length ())
+      if (nr == 0 || nc == 0 || dim >= dv.ndims ())
         return SparseComplexMatrix (nr == 0 ? 0 : 1, nc);
 
       octave_idx_type nel = 0;
@@ -347,7 +347,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
     {
       idx_arg.resize (dim_vector (nr, nc == 0 ? 0 : 1), 0);
 
-      if (nr == 0 || nc == 0 || dim >= dv.length ())
+      if (nr == 0 || nc == 0 || dim >= dv.ndims ())
         return SparseComplexMatrix (nr, nc == 0 ? 0 : 1);
 
       OCTAVE_LOCAL_BUFFER (octave_idx_type, found, nr);
@@ -427,7 +427,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
-  if (dim >= dv.length ())
+  if (dim >= dv.ndims ())
     {
       idx_arg.resize (dim_vector (nr, nc), 0);
       return *this;
@@ -440,7 +440,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
     {
       idx_arg.resize (dim_vector (nr == 0 ? 0 : 1, nc), 0);
 
-      if (nr == 0 || nc == 0 || dim >= dv.length ())
+      if (nr == 0 || nc == 0 || dim >= dv.ndims ())
         return SparseComplexMatrix (nr == 0 ? 0 : 1, nc);
 
       octave_idx_type nel = 0;
@@ -504,7 +504,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
     {
       idx_arg.resize (dim_vector (nr, nc == 0 ? 0 : 1), 0);
 
-      if (nr == 0 || nc == 0 || dim >= dv.length ())
+      if (nr == 0 || nc == 0 || dim >= dv.ndims ())
         return SparseComplexMatrix (nr, nc == 0 ? 0 : 1);
 
       OCTAVE_LOCAL_BUFFER (octave_idx_type, found, nr);

@@ -2095,7 +2095,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           octave_value tmp = args(0);
           tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
-          int dv_len = dv.length ();
+          int dv_len = dv.ndims ();
           Array<octave_idx_type> ra_idx (dim_vector (dv_len, 1), 0);
 
           for (int j = 0; j < n_args; j++)
@@ -2115,7 +2115,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
                   break;
                 }
               else
-                ra_idx(dim) += (dim < dv_tmp.length () ? dv_tmp(dim) : 1);
+                ra_idx(dim) += (dim < dv_tmp.ndims () ? dv_tmp(dim) : 1);
             }
           retval = tmp;
         }
@@ -2812,7 +2812,7 @@ returns the number of columns in the given matrix.\n\
         }
       else
         {
-          int ndims = dimensions.length ();
+          int ndims = dimensions.ndims ();
 
           NoAlias<Matrix> m (1, ndims);
 
@@ -2831,7 +2831,7 @@ returns the number of columns in the given matrix.\n\
       if (nd < 1)
         error ("size: requested dimension DIM (= %d) out of range", nd);
 
-      if (nd <= dv.length ())
+      if (nd <= dv.ndims ())
         retval(0) = dv(nd-1);
       else
         retval(0) = 1;
@@ -3676,7 +3676,7 @@ consequence a 1x1 array, or scalar, is also a vector.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return ovl (sz.length () == 2 && (sz(0) == 1 || sz(1) == 1));
+  return ovl (sz.ndims () == 2 && (sz(0) == 1 || sz(1) == 1));
 }
 
 /*
@@ -3711,7 +3711,7 @@ Return true if @var{x} is a row vector 1xN with non-negative N.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return ovl (sz.length () == 2 && sz(0) == 1);
+  return ovl (sz.ndims () == 2 && sz(0) == 1);
 }
 
 /*
@@ -3756,7 +3756,7 @@ Return true if @var{x} is a column vector Nx1 with non-negative N.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return ovl (sz.length () == 2 && sz(1) == 1);
+  return ovl (sz.ndims () == 2 && sz(1) == 1);
 }
 
 /*
@@ -3800,7 +3800,7 @@ Return true if @var{a} is a 2-D array.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return ovl (sz.length () == 2 && sz(0) >= 0 && sz(1) >= 0);
+  return ovl (sz.ndims () == 2 && sz(0) >= 0 && sz(1) >= 0);
 }
 
 /*
@@ -3843,7 +3843,7 @@ Return true if @var{x} is a square matrix.\n\
 
   dim_vector sz = args(0).dims ();
 
-  return ovl (sz.length () == 2 && sz(0) == sz(1));
+  return ovl (sz.ndims () == 2 && sz(0) == sz(1));
 }
 
 /*
@@ -3957,7 +3957,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
     case oct_data_conv::dt_double:
       {
-        if (val == 1 && dims.length () == 2 && dims(0) == 1)
+        if (val == 1 && dims.ndims () == 2 && dims(0) == 1)
           retval = Range (1.0, 0.0, dims(1));  // packed form
         else
           retval = NDArray (dims, val);
@@ -5161,9 +5161,9 @@ if fewer than two values are requested.\n\
   octave_value arg_2 = args(1);
 
   dim_vector sz1 = arg_1.dims ();
-  bool isvector1 = sz1.length () == 2 && (sz1(0) == 1 || sz1(1) == 1);
+  bool isvector1 = sz1.ndims () == 2 && (sz1(0) == 1 || sz1(1) == 1);
   dim_vector sz2 = arg_2.dims ();
-  bool isvector2 = sz2.length () == 2 && (sz2(0) == 1 || sz2(1) == 1);
+  bool isvector2 = sz2.ndims () == 2 && (sz2(0) == 1 || sz2(1) == 1);
 
   if (! isvector1 || ! isvector2)
     error ("linspace: A, B must be scalars or vectors");
@@ -7205,7 +7205,7 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
 
   if (dim < 0)
     dim = vals.dims ().first_non_singleton ();
-  else if (dim >= rdv.length ())
+  else if (dim >= rdv.ndims ())
     rdv.resize (dim+1, 1);
 
   rdv(dim) = n;
@@ -7507,7 +7507,7 @@ do_diff (const octave_value& array, octave_idx_type order,
               retval = array;
               while (order > 0)
                 {
-                  if (dim == dv.length ())
+                  if (dim == dv.ndims ())
                     {
                       retval = do_diff (array, order, dim - 1);
                       order = 0;

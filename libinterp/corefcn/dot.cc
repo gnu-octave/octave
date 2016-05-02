@@ -79,8 +79,8 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
               dim_vector& z, octave_idx_type& m, octave_idx_type& n,
               octave_idx_type& k)
 {
-  int nd = x.length ();
-  assert (nd == y.length ());
+  int nd = x.ndims ();
+  assert (nd == y.ndims ());
   z = dim_vector::alloc (nd);
   m = 1, n = 1, k = 1;
   for (int i = 0; i < nd; i++)
@@ -298,12 +298,12 @@ endfor\n\
 
   const dim_vector dimx = argx.dims ();
   const dim_vector dimy = argy.dims ();
-  int nd = dimx.length ();
+  int nd = dimx.ndims ();
   octave_idx_type m = dimx(0);
   octave_idx_type k = dimx(1);
   octave_idx_type n = dimy(1);
   octave_idx_type np = 1;
-  bool match = dimy(0) == k && nd == dimy.length ();
+  bool match = dimy(0) == k && nd == dimy.ndims ();
   dim_vector dimz = dim_vector::alloc (nd);
   dimz(0) = m;
   dimz(1) = n;

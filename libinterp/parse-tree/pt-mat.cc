@@ -634,8 +634,8 @@ tm_const::init (const tree_matrix& tm)
 
           dv = this_elt_dv;
         }
-      else if (all_str && dv.length () == 2
-               && this_elt_dv.length () == 2)
+      else if (all_str && dv.ndims () == 2
+               && this_elt_dv.ndims () == 2)
         {
           // FIXME: this is Octave's specialty. Character matrices allow
           // rows of unequal length.
@@ -1064,7 +1064,7 @@ tree_matrix::rvalue1 (int)
           // Now, extract the values from the individual elements and
           // insert them in the result matrix.
 
-          int dv_len = dv.length ();
+          int dv_len = dv.ndims ();
           octave_idx_type ntmp = dv_len > 1 ? dv_len : 2;
           Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
 

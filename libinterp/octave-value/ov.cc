@@ -1383,7 +1383,7 @@ octave_value::length (void) const
 
   const dim_vector dv = dims ();
 
-  for (int i = 0; i < dv.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     {
       if (dv(i) == 0)
         {
@@ -1498,7 +1498,7 @@ make_vector_dims (const dim_vector& dv, bool force_vector_conversion,
   retval.chop_trailing_singletons ();
   octave_idx_type nel = dv.numel ();
 
-  if (retval.length () > 2 || (retval(0) != 1 && retval(1) != 1))
+  if (retval.ndims () > 2 || (retval(0) != 1 && retval(1) != 1))
     {
       if (! force_vector_conversion)
         warn_implicit_conversion ("Octave:array-to-vector",

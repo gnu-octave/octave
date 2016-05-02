@@ -232,7 +232,7 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
                      const dim_vector& dva, const dim_vector& dvc,
                      octave_idx_type i, octave_value_list &idx)
 {
-  octave_idx_type nd = dva.length ();
+  octave_idx_type nd = dva.ndims ();
 
   if (i == 0)
     {
@@ -284,7 +284,7 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
 static void
 update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
 {
-  octave_idx_type nd = dv.length ();
+  octave_idx_type nd = dv.ndims ();
 
   if (i == 0)
     {
@@ -306,7 +306,7 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
 static void
 update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 {
-  octave_idx_type nd = dv.length ();
+  octave_idx_type nd = dv.ndims ();
 
   idx(0) = 0;
   for (octave_idx_type j = 1; j < nd; j++)
@@ -373,9 +373,9 @@ dimensionality as the other array.\n\
   if (retval.empty ())
     {
       dim_vector dva = A.dims ();
-      octave_idx_type nda = dva.length ();
+      octave_idx_type nda = dva.ndims ();
       dim_vector dvb = B.dims ();
-      octave_idx_type ndb = dvb.length ();
+      octave_idx_type ndb = dvb.ndims ();
       octave_idx_type nd = nda;
 
       if (nda > ndb)
@@ -444,7 +444,7 @@ dimensionality as the other array.\n\
           octave_value_list idxB;
           octave_value C;
           octave_value_list inputs (2);
-          Array<int> ra_idx (dim_vector (dvc.length (), 1), 0);
+          Array<int> ra_idx (dim_vector (dvc.ndims (), 1), 0);
 
 
           for (octave_idx_type i = 0; i < ncount; i++)

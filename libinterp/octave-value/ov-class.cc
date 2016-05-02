@@ -308,7 +308,7 @@ octave_class::size (void)
     {
       dim_vector dv = dims ();
 
-      int nd = dv.length ();
+      int nd = dv.ndims ();
 
       retval.resize (1, nd);
 

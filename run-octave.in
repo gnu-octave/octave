@@ -51,7 +51,7 @@ octave_executable="$builddir/src/octave"
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
-BUILT_IN_DOCSTRINGS_FILE="$builddir/libinterp/DOCSTRINGS"
+BUILT_IN_DOCSTRINGS_FILE="$top_srcdir/libinterp/DOCSTRINGS"
 TEXIMACROSFILE="$top_srcdir/doc/interpreter/macros.texi"
 INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 

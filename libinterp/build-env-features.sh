@@ -33,16 +33,19 @@ namespace octave
 
       if (! initialized)
         {
+          static octave_value ov_true = (true);
+          static octave_value ov_false = (false);
+
 EOF
 
 $AWK \
   '/#define (OCTAVE_|)HAVE_/ {
      sub (/(OCTAVE_|)HAVE_/, "", $2);
-     printf ("          m.assign (\"%s\", octave_value (true));\n", $2);
+     printf ("          m.assign (\"%s\", ov_true);\n", $2);
    }
    /\/\* #undef (OCTAVE_|)HAVE_/ {
      sub (/(OCTAVE_|)HAVE_/, "", $3);
-     printf ("          m.assign (\"%s\", octave_value (false));\n", $3);
+     printf ("          m.assign (\"%s\", ov_false);\n", $3);
    } {
    }' $conffile | sort
 

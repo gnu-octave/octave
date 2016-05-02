@@ -160,7 +160,7 @@ DASPK::do_integrate (double tout)
 
   ColumnVector retval;
 
-  if (! initialized || restart || DAEFunc::reset|| DASPK_options::reset)
+  if (! initialized || restart || DAEFunc::reset || DASPK_options::reset)
     {
       integration_error = false;
 

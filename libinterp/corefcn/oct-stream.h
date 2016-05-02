@@ -62,7 +62,7 @@ octave_base_stream
 
 public:
 
-  octave_base_stream (std::ios::openmode arg_md = std::ios::in|std::ios::out,
+  octave_base_stream (std::ios::openmode arg_md = std::ios::in | std::ios::out,
                       oct_mach_info::float_format ff
                         = oct_mach_info::native_float_format ())
     : count (0), md (arg_md), flt_fmt (ff), fail (false), open_state (true),

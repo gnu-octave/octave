@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-unop.h"
 #include "pt-walk.h"
 
+typedef tree_expression* tree_expression_ptr_t;
+
 octave_value_list
 tree_compound_binary_expression::rvalue (int nargout)
 {
@@ -71,7 +73,7 @@ tree_compound_binary_expression::rvalue1 (int)
 // the argument and corresponding operator.
 
 static octave_value::unary_op
-strip_trans_herm (tree_expression *&exp)
+strip_trans_herm (tree_expression_ptr_t& exp)
 {
   if (exp->is_unary_expression ())
     {
@@ -93,7 +95,7 @@ strip_trans_herm (tree_expression *&exp)
 }
 
 static octave_value::unary_op
-strip_not (tree_expression *&exp)
+strip_not (tree_expression_ptr_t& exp)
 {
   if (exp->is_unary_expression ())
     {
@@ -117,7 +119,7 @@ strip_not (tree_expression *&exp)
 // or mul_herm.
 
 static octave_value::compound_binary_op
-simplify_mul_op (tree_expression *&a, tree_expression *&b)
+simplify_mul_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b)
 {
   octave_value::compound_binary_op retop
     = octave_value::unknown_compound_binary_op;
@@ -144,7 +146,7 @@ simplify_mul_op (tree_expression *&a, tree_expression *&b)
 // Possibly convert left division to trans_ldiv or herm_ldiv.
 
 static octave_value::compound_binary_op
-simplify_ldiv_op (tree_expression *&a, tree_expression *&)
+simplify_ldiv_op (tree_expression_ptr_t& a, tree_expression_ptr_t&)
 {
   octave_value::compound_binary_op retop
     = octave_value::unknown_compound_binary_op;
@@ -162,7 +164,7 @@ simplify_ldiv_op (tree_expression *&a, tree_expression *&)
 // Possibly contract and/or with negation.
 
 static octave_value::compound_binary_op
-simplify_and_or_op (tree_expression *&a, tree_expression *&b,
+simplify_and_or_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b,
                     octave_value::binary_op op)
 {
   octave_value::compound_binary_op retop

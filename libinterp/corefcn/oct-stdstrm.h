@@ -35,7 +35,7 @@ octave_tstdiostream : public octave_base_stream
 public:
 
   octave_tstdiostream (const std::string& n, FILE_T f = 0, int fid = 0,
-                       std::ios::openmode m = std::ios::in|std::ios::out,
+                       std::ios::openmode m = std::ios::in | std::ios::out,
                        oct_mach_info::float_format ff
                          = oct_mach_info::native_float_format (),
                        typename BUF_T::close_fcn cf = BUF_T::file_close)
@@ -105,7 +105,7 @@ octave_stdiostream
 public:
 
   octave_stdiostream (const std::string& n, FILE *f = 0,
-                      std::ios::openmode m = std::ios::in|std::ios::out,
+                      std::ios::openmode m = std::ios::in | std::ios::out,
                       oct_mach_info::float_format ff
                         = oct_mach_info::native_float_format (),
                       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
@@ -114,7 +114,7 @@ public:
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
-          std::ios::openmode m = std::ios::in|std::ios::out,
+          std::ios::openmode m = std::ios::in | std::ios::out,
           oct_mach_info::float_format ff
             = oct_mach_info::native_float_format (),
           c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
@@ -144,7 +144,7 @@ octave_zstdiostream
 public:
 
   octave_zstdiostream (const std::string& n, gzFile f = 0, int fid = 0,
-                       std::ios::openmode m = std::ios::in|std::ios::out,
+                       std::ios::openmode m = std::ios::in | std::ios::out,
                        oct_mach_info::float_format ff
                          = oct_mach_info::native_float_format (),
                        c_zfile_ptr_buf::close_fcn cf
@@ -154,7 +154,7 @@ public:
 
   static octave_stream
   create (const std::string& n, gzFile f = 0, int fid = 0,
-          std::ios::openmode m = std::ios::in|std::ios::out,
+          std::ios::openmode m = std::ios::in | std::ios::out,
           oct_mach_info::float_format ff
             = oct_mach_info::native_float_format (),
           c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)

@@ -178,7 +178,7 @@ figureSelectionType (QMouseEvent* event, bool isDoubleClick)
           else if (buttons == Qt::RightButton)
             return std::string ("alt");
 #if defined (Q_WS_WIN)
-          else if (buttons == (Qt::LeftButton|Qt::RightButton))
+          else if (buttons == (Qt::LeftButton | Qt::RightButton))
             return std::string ("extend");
 #elif defined (Q_WS_X11)
           else if (buttons == Qt::MidButton)

@@ -382,8 +382,8 @@ raw_mode (bool on, bool wait)
 
         // Set the modes to the way we want them.
 
-        s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-        s.c_oflag |=  (OPOST|ONLCR);
+        s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
+        s.c_oflag |=  (OPOST | ONLCR);
 #if defined (OCRNL)
         s.c_oflag &= ~(OCRNL);
 #endif
@@ -425,8 +425,8 @@ raw_mode (bool on, bool wait)
 
         // Set the modes to the way we want them.
 
-        s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-        s.c_oflag |=  (OPOST|ONLCR);
+        s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
+        s.c_oflag |=  (OPOST | ONLCR);
 #if defined (OCRNL)
         s.c_oflag &= ~(OCRNL);
 #endif

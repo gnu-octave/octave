@@ -324,12 +324,12 @@ Figure::createFigureToolBarAndMenuBar (void)
   fileMenu->addAction (tr ("Save &As"), this, SLOT (fileSaveFigureAs (void)));
   fileMenu->addSeparator ();
   fileMenu->addAction (tr ("&Close Figure"), this,
-                       SLOT (fileCloseFigure (void)), Qt::CTRL|Qt::Key_W);
+                       SLOT (fileCloseFigure (void)), Qt::CTRL | Qt::Key_W);
 
   QMenu* editMenu = m_menuBar->addMenu (tr ("&Edit"));
   editMenu->menuAction ()->setObjectName ("builtinMenu");
   editMenu->addAction (tr ("Cop&y"), this, SLOT (editCopy (bool)),
-                       Qt::CTRL|Qt::Key_C);
+                       Qt::CTRL | Qt::Key_C);
   editMenu->addSeparator ();
   editMenu->addActions (m_mouseModeGroup->actions ());
 

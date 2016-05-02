@@ -139,7 +139,7 @@ gnu_history::do_process_histcontrol (const std::string& control_arg)
           if (tmp == "erasedups")
             history_control |= HC_ERASEDUPS;
           else if (tmp == "ignoreboth")
-            history_control |= HC_IGNDUPS|HC_IGNSPACE;
+            history_control |= (HC_IGNDUPS | HC_IGNSPACE);
           else if (tmp == "ignoredups")
             history_control |= HC_IGNDUPS;
           else if (tmp == "ignorespace")

@@ -255,7 +255,7 @@ find_files_dialog::start_find ()
   if (_recurse_dirs_check->isChecked ())
     flags |= QDirIterator::Subdirectories;
 
-  QDir::Filters filters = QDir::Dirs|QDir::NoDotAndDotDot|QDir::Files;
+  QDir::Filters filters = QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files;
   if (! _name_case_check->isChecked ())
     filters |= QDir::CaseSensitive;
 

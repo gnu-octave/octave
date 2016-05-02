@@ -83,7 +83,7 @@ snarf_file (const std::string& fname)
     {
       size_t sz = fs.size ();
 
-      std::ifstream file (fname.c_str (), std::ios::in|std::ios::binary);
+      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
 
       if (file)
         {

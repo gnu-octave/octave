@@ -1662,7 +1662,7 @@ pr_scale_header (std::ostream& os, double scale)
 
       os << "  "
          << std::setw (8) << std::setprecision (1)
-         << std::setiosflags (std::ios::scientific|std::ios::left)
+         << std::setiosflags (std::ios::scientific | std::ios::left)
          << scale
          << " *\n";
 

@@ -63,11 +63,11 @@ public:
 
   hdf5_ifstream () : hdf5_fstreambase (), std::istream (0) { }
 
-  hdf5_ifstream (const char *name, int mode = std::ios::in|std::ios::binary,
+  hdf5_ifstream (const char *name, int mode = std::ios::in | std::ios::binary,
                  int prot = 0)
     : hdf5_fstreambase (name, mode, prot), std::istream (0) { }
 
-  void open (const char *name, int mode = std::ios::in|std::ios::binary,
+  void open (const char *name, int mode = std::ios::in | std::ios::binary,
              int prot = 0)
   { hdf5_fstreambase::open (name, mode, prot); }
 };
@@ -78,11 +78,11 @@ public:
 
   hdf5_ofstream () : hdf5_fstreambase (), std::ostream (0) { }
 
-  hdf5_ofstream (const char *name, int mode = std::ios::out|std::ios::binary,
+  hdf5_ofstream (const char *name, int mode = std::ios::out | std::ios::binary,
                  int prot = 0)
     : hdf5_fstreambase (name, mode, prot), std::ostream (0) { }
 
-  void open (const char *name, int mode = std::ios::out|std::ios::binary,
+  void open (const char *name, int mode = std::ios::out | std::ios::binary,
              int prot = 0)
   { hdf5_fstreambase::open (name, mode, prot); }
 };

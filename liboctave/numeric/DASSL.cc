@@ -131,7 +131,7 @@ DASSL::do_integrate (double tout)
 {
   ColumnVector retval;
 
-  if (! initialized || restart || DAEFunc::reset|| DASSL_options::reset)
+  if (! initialized || restart || DAEFunc::reset || DASSL_options::reset)
     {
       integration_error = false;
 

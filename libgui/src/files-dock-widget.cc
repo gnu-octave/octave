@@ -678,7 +678,7 @@ files_dock_widget::contextmenu_delete (bool)
       if (QMessageBox::question (this, tr ("Delete file/directory"),
                                  tr ("Are you sure you want to delete\n")
                                  + info.filePath (),
-                                 QMessageBox::Yes|QMessageBox::No)
+                                 QMessageBox::Yes | QMessageBox::No)
           == QMessageBox::Yes)
         {
           if (info.isDir ())

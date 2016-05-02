@@ -156,7 +156,7 @@ not returning a value from a function declared to return something.
 #define F77_CONST_CHAR_ARG_DEF(s, len) octave_cray_ftn_ch_dsc s
 #define F77_CHAR_ARG_LEN_DEF(len)
 #define F77_CHAR_ARG_USE(s) s.ptr
-#define F77_CHAR_ARG_LEN_USE(s, len) (s.mask.len>>3)
+#define F77_CHAR_ARG_LEN_USE(s, len) (s.mask.len >> 3)
 
 /* Use this macro to declare the return type of a C-language function
    that is supposed to act like a Fortran subroutine.  */

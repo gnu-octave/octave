@@ -173,13 +173,11 @@ schur<Matrix>::init (const Matrix& a, const std::string& ord, bool calc_unitary)
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  double_selector selector = 0;
+  volatile double_selector selector = 0;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana<double>;
   else if (ord_char == 'D' || ord_char == 'd')
     selector = select_dig<double>;
-  else
-    selector = 0;
 
   octave_idx_type n = a_nc;
   octave_idx_type lwork = 8 * n;
@@ -262,13 +260,11 @@ schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  float_selector selector = 0;
+  volatile float_selector selector = 0;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana<float>;
   else if (ord_char == 'D' || ord_char == 'd')
     selector = select_dig<float>;
-  else
-    selector = 0;
 
   octave_idx_type n = a_nc;
   octave_idx_type lwork = 8 * n;
@@ -351,13 +347,11 @@ schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  complex_selector selector = 0;
+  volatile complex_selector selector = 0;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana<Complex>;
   else if (ord_char == 'D' || ord_char == 'd')
     selector = select_dig<Complex>;
-  else
-    selector = 0;
 
   octave_idx_type n = a_nc;
   octave_idx_type lwork = 8 * n;
@@ -460,13 +454,11 @@ schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  float_complex_selector selector = 0;
+  volatile float_complex_selector selector = 0;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana<FloatComplex>;
   else if (ord_char == 'D' || ord_char == 'd')
     selector = select_dig<FloatComplex>;
-  else
-    selector = 0;
 
   octave_idx_type n = a_nc;
   octave_idx_type lwork = 8 * n;

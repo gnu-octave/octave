@@ -76,7 +76,7 @@
 ## @end deftypefn
 ## @deftypefn {} {} inputParser.StructExpand = @var{boolean}
 ## Set whether a structure can be passed to the function instead of
-## parameter/value pairs.  Defaults to true.  Not implemented yet.
+## parameter/value pairs.  Defaults to true.
 ##
 ## The following example shows how to use this class:
 ##
@@ -250,7 +250,7 @@ classdef inputParser < handle
     FunctionName  = "";
     KeepUnmatched = false;
     # PartialMatching = true;   # FIXME: unimplemented
-    # StructExpand    = true;   # FIXME: unimplemented
+    StructExpand    = true;
   endproperties
 
   properties (SetAccess = protected)
@@ -364,7 +364,9 @@ classdef inputParser < handle
           ##    1) input is actually wrong and we should error;
           ##    2) it's a ParamValue or Switch name and we should use the
           ##       the default for the rest.
-          if (ischar (in))
+          ##    3) it's a struct with the ParamValue pairs.
+          if (ischar (in) || (this.StructExpand && isstruct (in)
+                              && isscalar (in)))
             idx -= 1;
             vidx -= 1;
             break
@@ -386,6 +388,16 @@ classdef inputParser < handle
       ## Search unordered Options (Switch and ParamValue)
       while (vidx++ < pnargin)
         name = varargin{vidx};
+
+        if (this.StructExpand && isstruct (name) && isscalar (name))
+          expanded_options = [fieldnames(name) struct2cell(name)]'(:);
+          n_new_args = numel (expanded_options) -1;
+          pnargin += n_new_args;
+          varargin(vidx+n_new_args+1:pnargin) = varargin(vidx+1:end);
+          varargin(vidx:vidx+n_new_args) = expanded_options;
+          name = varargin{vidx};
+        endif
+
         if (this.is_argname ("ParamValue", name))
           if (vidx++ > pnargin)
             this.error (sprintf ("no matching value for option '%s'",
@@ -603,6 +615,49 @@ endclassdef
 %! p.parse ("not_err", "qux");
 %! assert (p.Results.err, "foo")
 %! assert (p.Results.not_err, "qux")
+
+
+## With more ParamValues to test StructExpand
+%!function p3 = create_p3 ();
+%!  p3 = inputParser;
+%!  addOptional (p3, "op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
+%!  addOptional (p3, "op2", 78, @(x) x > 50);
+%!  addSwitch (p3, "verbose");
+%!  addParamValue (p3, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
+%!  addParamValue (p3, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
+%!  addParamValue (p3, "style", "tt", @(x) any (strcmp (x, {"tt", "f", "i"})));
+%!endfunction
+
+## Test StructExpand
+%!test
+%! p3 = create_p3 ();
+%! p3.parse (struct ("line", "circle", "color", "green"));
+%! assert (p3.Results, struct ("op1", "val", "op2", 78, "verbose", false,
+%!                             "line", "circle", "color", "green",
+%!                             "style", "tt"))
+
+%!test
+%! p3 = create_p3 ();
+%! p3.parse (struct ("line", "circle", "color", "green"), "line", "tree");
+%! assert (p3.Results.line, "tree")
+%! p3.parse ("line", "tree", struct ("line", "circle", "color", "green"));
+%! assert (p3.Results.line, "circle")
+
+%!test # unmatched parameters with StructExpand
+%! p3 = create_p3 ();
+%! p3.KeepUnmatched = true;
+%! p3.parse (struct ("line", "circle", "color", "green", "bar", "baz"));
+%! assert (p3.Unmatched.bar, "baz")
+
+## The validation for the second optional argument throws an error with
+## a struct so check that we can handle it.
+%!test
+%! p3 = create_p3 ();
+%! p3.parse ("foo", struct ("color", "green"), "line", "tree");
+%! assert (p3.Results.op1, "foo")
+%! assert (p3.Results.line, "tree")
+%! assert (p3.Results.color, "green")
+%! assert (p3.Results.verbose, false)
 
 
 %!function r = foobar (varargin)

@@ -40,3 +40,6 @@ syntax: regexp
 ^liboctave/operators/\w+-op-\w+\.mk$
 
 ^libinterp/dldfcn/module\.mk$
+
+# DOCSTRINGS files are built in the source tree
+^(libinterp|scripts)/DOCSTRINGS$

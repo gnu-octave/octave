@@ -172,7 +172,7 @@ current Octave process and replace it with the program named by @var{file}.\n\
 For example,\n\
 \n\
 @example\n\
-exec (\"ls\" \"-l\")\n\
+exec (\"ls\", \"-l\")\n\
 @end example\n\
 \n\
 @noindent\n\

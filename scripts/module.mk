@@ -104,9 +104,9 @@ if AMCOND_BUILD_DOCS
 DOCSTRING_FILES += $(srcdir)/scripts/DOCSTRINGS
 
 $(srcdir)/scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) | scripts/$(octave-dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@-t && \
-	$(SHELL) $(srcdir)/build-aux/move-if-change $@-t $@
+	$(AM_V_GEN)rm -f scripts/DOCSTRINGS-t && \
+	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > scripts/DOCSTRINGS-t && \
+	$(SHELL) $(srcdir)/build-aux/move-if-change scripts/DOCSTRINGS-t $@
 
 endif
 

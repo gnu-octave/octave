@@ -294,9 +294,9 @@ if AMCOND_BUILD_DOCS
 DOCSTRING_FILES += $(srcdir)/libinterp/DOCSTRINGS
 
 $(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEF_FILES) | libinterp/$(octave-dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(PERL) $(srcdir)/libinterp/gendoc.pl $(ALL_DEF_FILES) > $@-t && \
-	$(SHELL) $(srcdir)/build-aux/move-if-change $@-t $@
+	$(AM_V_GEN)rm -f libinterp/DOCSTRINGS-t && \
+	$(PERL) $(srcdir)/libinterp/gendoc.pl $(ALL_DEF_FILES) > libinterp/DOCSTRINGS-t && \
+	$(SHELL) $(srcdir)/build-aux/move-if-change libinterp/DOCSTRINGS-t $@
 
 endif
 

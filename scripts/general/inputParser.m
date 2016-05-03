@@ -354,7 +354,12 @@ classdef inputParser < handle
       while (vidx < pnargin && idx < nOpt)
         opt = this.Optional{++idx};
         in  = varargin{++vidx};
-        if (! opt.val (in))
+        try
+          valid_option = opt.val (in);
+        catch
+          valid_option = false;
+        end_try_catch
+        if (! valid_option)
           ## If it does not match there's two options:
           ##    1) input is actually wrong and we should error;
           ##    2) it's a ParamValue or Switch name and we should use the
@@ -588,6 +593,17 @@ endclassdef
 %! p.addParamValue ("positive", -1, @(x) x > 5);
 %! p.parse ();
 %! assert (p.Results.positive, -1);
+
+## Throw an error on validation of optional argument to check that it
+## is caught without preventing continuation into param/value pairs.
+%!test
+%! p = inputParser ();
+%! p.addOptional ("err", "foo", @error);
+%! p.addParamValue ("not_err", "bar", @ischar);
+%! p.parse ("not_err", "qux");
+%! assert (p.Results.err, "foo")
+%! assert (p.Results.not_err, "qux")
+
 
 %!function r = foobar (varargin)
 %!  p = inputParser ();

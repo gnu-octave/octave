@@ -249,7 +249,7 @@ classdef inputParser < handle
     CaseSensitive = false;
     FunctionName  = "";
     KeepUnmatched = false;
-    # PartialMatching = true;   # FIXME: unimplemented
+    PartialMatching = false; # FIXME: unimplemented (and default should be true) 
     StructExpand    = true;
   endproperties
 
@@ -286,6 +286,12 @@ classdef inputParser < handle
   endproperties
 
   methods
+    function set.PartialMatching (this, val)
+      if (val)
+        error ("inputParser: PartialMatching is not yet implemented");
+      endif
+    endfunction
+
     function addRequired (this, name, val = inputParser.def_val)
       if (nargin < 2 || nargin > 3)
         print_usage ();

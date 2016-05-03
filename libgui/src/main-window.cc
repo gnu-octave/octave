@@ -352,7 +352,8 @@ main_window::handle_new_figure_request (void)
 void
 main_window::open_online_documentation_page (void)
 {
-  QDesktopServices::openUrl (QUrl ("http://octave.org/doc/interpreter"));
+  QDesktopServices::openUrl (
+    QUrl ("http://octave.org/doc/interpreter/index.html"));
 }
 
 void

@@ -1071,7 +1071,8 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                                 {
                                   pfx = name.substr (0, 13);
 
-                                  if (pfx.compare ("uicontextmenu"))
+                                  if (pfx.compare ("uicontextmenu") ||
+                                      pfx.compare ("uibuttongroup"))
                                     offset = 13;
                                 }
                             }
@@ -1123,6 +1124,8 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new uicontrol (h, p);
   else if (type.compare ("uipanel"))
     go = new uipanel (h, p);
+  else if (type.compare ("uibuttongroup"))
+    go = new uibuttongroup (h, p);
   else if (type.compare ("uicontextmenu"))
     go = new uicontextmenu (h, p);
   else if (type.compare ("uitoolbar"))
@@ -1985,7 +1988,8 @@ property_list::set (const caseless_str& name, const octave_value& val)
                                 {
                                   pfx = name.substr (0, 13);
 
-                                  if (pfx.compare ("uicontextmenu"))
+                                  if (pfx.compare ("uicontextmenu")
+                                      || pfx.compare ("uibuttongroup"))
                                     offset = 13;
                                 }
                             }
@@ -2026,6 +2030,8 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = uimenu::properties::has_core_property (pname);
           else if (pfx == "uicontrol")
             has_property = uicontrol::properties::has_core_property (pname);
+          else if (pfx == "uibuttongroup")
+            has_property = uibuttongroup::properties::has_core_property (pname);
           else if (pfx == "uipanel")
             has_property = uipanel::properties::has_core_property (pname);
           else if (pfx == "uicontextmenu")
@@ -2122,7 +2128,8 @@ property_list::lookup (const caseless_str& name) const
                                 {
                                   pfx = name.substr (0, 13);
 
-                                  if (pfx.compare ("uicontextmenu"))
+                                  if (pfx.compare ("uicontextmenu")
+                                      || pfx.compare ("uibuttongroup"))
                                     offset = 13;
                                 }
                             }
@@ -8820,6 +8827,176 @@ uicontrol::properties::get_fontsize_points (double box_pix_height) const
 // ---------------------------------------------------------------------
 
 Matrix
+uibuttongroup::properties::get_boundingbox (bool internal,
+                                            const Matrix& parent_pix_size) const
+{
+  Matrix pos = get_position ().matrix_value ();
+  Matrix parent_size (parent_pix_size);
+
+  if (parent_size.is_empty ())
+    {
+      graphics_object go = gh_manager::get_object (get_parent ());
+
+      parent_size =
+        go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+    }
+
+  pos = convert_position (pos, get_units (), "pixels", parent_size);
+
+  pos(0)--;
+  pos(1)--;
+  pos(1) = parent_size(1) - pos(1) - pos(3);
+
+  if (internal)
+    {
+      double outer_height = pos(3);
+
+      pos(0) = pos(1) = 0;
+
+      if (! bordertype_is ("none"))
+        {
+          double bw = get_borderwidth ();
+          double mul = 1.0;
+
+          if (bordertype_is ("etchedin") || bordertype_is ("etchedout"))
+            mul = 2.0;
+
+          pos(0) += mul * bw;
+          pos(1) += mul * bw;
+          pos(2) -= 2 * mul * bw;
+          pos(3) -= 2 * mul * bw;
+        }
+
+      if (! get_title ().empty ())
+        {
+          double fontsz = get_fontsize ();
+
+          if (! fontunits_is ("pixels"))
+            {
+              double res = xget (0, "screenpixelsperinch").double_value ();
+
+              if (fontunits_is ("points"))
+                fontsz *= (res / 72.0);
+              else if (fontunits_is ("inches"))
+                fontsz *= res;
+              else if (fontunits_is ("centimeters"))
+                fontsz *= (res / 2.54);
+              else if (fontunits_is ("normalized"))
+                fontsz *= outer_height;
+            }
+
+          if (titleposition_is ("lefttop") || titleposition_is ("centertop")
+              || titleposition_is ("righttop"))
+            pos(1) += (fontsz / 2);
+          pos(3) -= (fontsz / 2);
+        }
+    }
+
+  return pos;
+}
+
+void
+uibuttongroup::properties::set_units (const octave_value& val)
+{
+  caseless_str old_units = get_units ();
+
+  if (units.set (val, true))
+    {
+      update_units (old_units);
+      mark_modified ();
+    }
+}
+
+void
+uibuttongroup::properties::update_units (const caseless_str& old_units)
+{
+  Matrix pos = get_position ().matrix_value ();
+
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+  Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+
+  pos = convert_position (pos, old_units, get_units (), parent_size);
+  set_position (pos);
+}
+
+void
+uibuttongroup::properties::set_fontunits (const octave_value& val)
+{
+  caseless_str old_fontunits = get_fontunits ();
+
+  if (fontunits.set (val, true))
+    {
+      update_fontunits (old_fontunits);
+      mark_modified ();
+    }
+}
+
+void
+uibuttongroup::properties::update_fontunits (const caseless_str& old_units)
+{
+  caseless_str new_units = get_fontunits ();
+  double parent_height = get_boundingbox (false).elem (3);
+  double fontsz = get_fontsize ();
+
+  fontsz = convert_font_size (fontsz, old_units, new_units, parent_height);
+
+  set_fontsize (octave_value (fontsz));
+}
+
+double
+uibuttongroup::properties::get_fontsize_points (double box_pix_height) const
+{
+  double fontsz = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (false).elem (3);
+
+  return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
+}
+
+void
+uibuttongroup::properties::set_selectedobject (const octave_value& v)
+{
+  graphics_handle current_selectedobject = get_selectedobject();
+  selectedobject = current_selectedobject;
+  if (v.is_empty ())
+    {
+      if (current_selectedobject.ok ())
+        {
+          selectedobject = graphics_handle ();
+          mark_modified ();
+        }
+      return;
+    }
+
+  graphics_handle val (v);
+  if (val.ok ())
+    {
+      graphics_object go (gh_manager::get_object (val));
+      base_properties& gop = go.get_properties ();
+
+      if (go.valid_object ()
+          && gop.get_parent () == get___myhandle__ ()
+          && go.isa ("uicontrol"))
+        {
+          uicontrol::properties& cop = dynamic_cast<uicontrol::properties&> (go.get_properties ());
+          const caseless_str& style = cop.get_style ();
+          if (style.compare ("radiobutton") || style.compare ("togglebutton"))
+            {
+              selectedobject = val;
+              mark_modified ();
+              return;
+            }
+        }
+    }
+  err_set_invalid ("selectedobject");
+}
+
+// ---------------------------------------------------------------------
+
+Matrix
 uipanel::properties::get_boundingbox (bool internal,
                                       const Matrix& parent_pix_size) const
 {
@@ -9539,6 +9716,7 @@ root_figure::init_factory_properties (void)
   plist_map["hggroup"] = hggroup::properties::factory_defaults ();
   plist_map["uimenu"] = uimenu::properties::factory_defaults ();
   plist_map["uicontrol"] = uicontrol::properties::factory_defaults ();
+  plist_map["uibuttongroup"] = uibuttongroup::properties::factory_defaults ();
   plist_map["uipanel"] = uipanel::properties::factory_defaults ();
   plist_map["uicontextmenu"] = uicontextmenu::properties::factory_defaults ();
   plist_map["uitoolbar"] = uitoolbar::properties::factory_defaults ();
@@ -10393,6 +10571,15 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (uicontrol);
+}
+
+DEFUN (__go_uibuttongroup__, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {} {} __go_uibuttongroup__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uibuttongroup);
 }
 
 DEFUN (__go_uipanel__, args, ,
@@ -11526,4 +11713,3 @@ Undocumented internal function.\n\
 
   return ovl ();
 }
-

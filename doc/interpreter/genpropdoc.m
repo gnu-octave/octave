@@ -31,7 +31,7 @@
 function genpropdoc (objname, fname)
   objnames = {"root", "figure", "axes", "line", ...
               "text", "image", "patch", "surface", "light", ...
-              "uimenu", "uicontextmenu", "uipanel", ...
+              "uimenu", "uibuttongroup", "uicontextmenu", "uipanel", ...
               "uicontrol", "uitoolbar", "uipushtool", "uitoggletool"};
 
   ## Base properties
@@ -1371,6 +1371,33 @@ is supported.";
       case "title"
       case "titleposition"
       case "units"
+
+    endswitch
+
+  ## uibuttongroup properties
+  elseif (strcmp (objname, "uibuttongroup"))
+    switch (field)
+      ## Overridden shared properties
+
+      ## Specific properties
+        case "backgroundcolor"
+        case "bordertype"
+        case "borderwidth"
+        case "fontangle"
+        case "fontname"
+        case "fontsize"
+        case "fontunits"
+        case "fontweight"
+        case "foregroundcolor"
+        case "highlightcolor"
+        case "position"
+        case "resizefcn"
+        case "selectedobject"
+        case "selectionchangedfcn"
+        case "shadowcolor"
+        case "title"
+        case "titleposition"
+        case "units"
 
     endswitch
 

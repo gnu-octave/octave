@@ -70,7 +70,8 @@ protected:
   virtual void draw_image (const image::properties& props);
   virtual void draw_uipanel (const uipanel::properties& props,
                              const graphics_object& go);
-
+  virtual void draw_uibuttongroup (const uibuttongroup::properties& props,
+                                   const graphics_object& go);
   virtual void init_gl_context (bool enhanced, const Matrix& backgroundColor);
   virtual void setup_opengl_transformation (const axes::properties& props);
 

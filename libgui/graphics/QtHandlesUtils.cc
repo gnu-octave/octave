@@ -135,6 +135,8 @@ template QFont computeFont<uicontrol> (const uicontrol::properties& props,
 template QFont computeFont<uipanel> (const uipanel::properties& props,
                                      int height);
 
+template QFont computeFont<uibuttongroup> (const uibuttongroup::properties& props,
+                                           int height);
 QColor
 fromRgb (const Matrix& rgb)
 {

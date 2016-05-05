@@ -371,12 +371,14 @@ Figure::redraw (void)
     }
 
   foreach (QFrame* frame,
-           qWidget<QWidget> ()->findChildren<QFrame*> ("UIPanel"))
+           qWidget<QWidget> ()->findChildren<QFrame*> ())
     {
-      Object* obj = Object::fromQObject (frame);
+      if (frame->objectName () == "UIPanel" || frame->objectName () == "UIButtonGroup") {
+        Object* obj = Object::fromQObject (frame);
 
-      if (obj)
-        obj->slotRedraw ();
+        if (obj)
+          obj->slotRedraw ();
+      }
     }
 
   updateFigureToolBarAndMenuBar ();

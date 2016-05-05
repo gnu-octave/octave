@@ -1388,6 +1388,7 @@ struct2hdl (fig_struct);
 * Surface Properties::
 * Light Properties::
 * Uimenu Properties::
+* Uibuttongroup Properties::
 * Uicontextmenu Properties::
 * Uipanel Properties::
 * Uicontrol Properties::
@@ -1495,6 +1496,14 @@ The @code{light} properties are:
 The @code{uimenu} properties are:
 
 @include plot-uimenuproperties.texi
+
+@node Uibuttongroup Properties
+@subsubsection Uibuttongroup Properties
+@cindex uibuttongroup properties
+
+The @code{uibuttongroup} properties are:
+
+@include plot-uibuttongroupproperties.texi
 
 @node Uicontextmenu Properties
 @subsubsection Uicontextmenu Properties

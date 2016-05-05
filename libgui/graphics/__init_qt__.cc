@@ -83,6 +83,15 @@ __init__ (void)
                     octave_value (Utils::toRgb (p.color (QPalette::Light))));
           root.set ("defaultuipanelshadowcolor",
                     octave_value (Utils::toRgb (p.color (QPalette::Dark))));
+          root.set ("defaultuibuttongroupbackgroundcolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
+          root.set ("defaultuibuttongroupforegroundcolor",
+                    octave_value (Utils::toRgb
+                                  (p.color (QPalette::WindowText))));
+          root.set ("defaultuibuttongrouphighlightcolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Light))));
+          root.set ("defaultuibuttongroupshadowcolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Dark))));
 
           qtHandlesInitialized = true;
 

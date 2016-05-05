@@ -21,6 +21,7 @@ scripts_gui_FCN_FILES = \
   scripts/gui/listdlg.m \
   scripts/gui/msgbox.m \
   scripts/gui/questdlg.m \
+  scripts/gui/uibuttongroup.m \
   scripts/gui/uicontextmenu.m \
   scripts/gui/uicontrol.m \
   scripts/gui/uigetdir.m \

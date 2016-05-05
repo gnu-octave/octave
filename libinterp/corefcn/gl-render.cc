@@ -651,6 +651,11 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
       if (toplevel)
         draw_uipanel (dynamic_cast<const uipanel::properties&> (props), go);
     }
+  else if (go.isa ("uibuttongroup"))
+    {
+      if (toplevel)
+        draw_uibuttongroup (dynamic_cast<const uibuttongroup::properties&> (props), go);
+    }
   else
     {
       warning ("opengl_renderer: cannot render object of type '%s'",
@@ -698,6 +703,24 @@ opengl_renderer::draw_figure (const figure::properties& props)
 void
 opengl_renderer::draw_uipanel (const uipanel::properties& props,
                                const graphics_object& go)
+{
+  graphics_object fig = go.get_ancestor ("figure");
+  const figure::properties& figProps =
+    dynamic_cast<const figure::properties&> (fig.get_properties ());
+
+  // Initialize OpenGL context
+
+  init_gl_context (figProps.is___enhanced__ (),
+                   props.get_backgroundcolor_rgb ());
+
+  // Draw children
+
+  draw (props.get_all_children (), false);
+}
+
+void
+opengl_renderer::draw_uibuttongroup (const uibuttongroup::properties& props,
+                                     const graphics_object& go)
 {
   graphics_object fig = go.get_ancestor ("figure");
   const figure::properties& figProps =

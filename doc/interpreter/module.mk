@@ -11,6 +11,7 @@ GRAPH_PROP_TEXI_SRC = \
   doc/interpreter/plot-surfaceproperties.texi \
   doc/interpreter/plot-textproperties.texi \
   doc/interpreter/plot-uimenuproperties.texi \
+  doc/interpreter/plot-uibuttongroupproperties.texi \
   doc/interpreter/plot-uicontextmenuproperties.texi \
   doc/interpreter/plot-uipanelproperties.texi \
   doc/interpreter/plot-uicontrolproperties.texi \
@@ -55,6 +56,9 @@ doc/interpreter/plot-textproperties.texi: doc/interpreter/genpropdoc.m
 
 doc/interpreter/plot-uimenuproperties.texi: doc/interpreter/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uimenu)
+
+doc/interpreter/plot-uibuttongroupproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,uibuttongroup)
 
 doc/interpreter/plot-uicontextmenuproperties.texi: doc/interpreter/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontextmenu)

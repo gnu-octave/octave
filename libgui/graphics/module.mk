@@ -4,6 +4,7 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   libgui/graphics/moc-annotation-dialog.cc \
   libgui/graphics/moc-Backend.cc \
   libgui/graphics/moc-ButtonControl.cc \
+  libgui/graphics/moc-ButtonGroup.cc \
   libgui/graphics/moc-ContextMenu.cc \
   libgui/graphics/moc-EditControl.cc \
   libgui/graphics/moc-Figure.cc \
@@ -48,6 +49,7 @@ noinst_HEADERS += \
   libgui/graphics/Backend.h \
   libgui/graphics/BaseControl.h \
   libgui/graphics/ButtonControl.h \
+  libgui/graphics/ButtonGroup.h \
   libgui/graphics/Canvas.h \
   libgui/graphics/CheckBoxControl.h \
   libgui/graphics/Container.h \
@@ -88,6 +90,7 @@ libgui_graphics_libgui_graphics_la_SOURCES = \
   libgui/graphics/Backend.cc \
   libgui/graphics/BaseControl.cc \
   libgui/graphics/ButtonControl.cc \
+  libgui/graphics/ButtonGroup.cc \
   libgui/graphics/Canvas.cc \
   libgui/graphics/CheckBoxControl.cc \
   libgui/graphics/Container.cc \

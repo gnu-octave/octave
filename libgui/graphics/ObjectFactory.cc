@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 
 #include "Backend.h"
+#include "ButtonGroup.h"
 #include "CheckBoxControl.h"
 #include "ContextMenu.h"
 #include "EditControl.h"
@@ -119,6 +120,8 @@ ObjectFactory::createObject (double handle)
                   else if (up.style_is ("listbox"))
                     obj = ListBoxControl::create (go);
                 }
+              else if (go.isa ("uibuttongroup"))
+                obj = ButtonGroup::create (go);
               else if (go.isa ("uipanel"))
                 obj = Panel::create (go);
               else if (go.isa ("uimenu"))

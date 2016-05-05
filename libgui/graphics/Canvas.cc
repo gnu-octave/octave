@@ -386,7 +386,8 @@ Canvas::select_object (graphics_object obj, QMouseEvent* event,
 
       if (childObj.isa ("axes"))
         axesList.append (childObj);
-      else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel"))
+      else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel")
+               || childObj.isa ("uibuttongroup"))
         {
           Matrix bb = childObj.get_properties ().get_boundingbox (false);
           QRectF r (bb(0), bb(1), bb(2), bb(3));

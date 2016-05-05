@@ -55,6 +55,7 @@ toolkitObjectProperty (const graphics_object& go)
     return std::string ("__plot_stream__");
   else if (go.isa ("uicontrol")
            || go.isa ("uipanel")
+           || go.isa ("uibuttongroup")
            || go.isa ("uimenu")
            || go.isa ("uicontextmenu")
            || go.isa ("uitoolbar")
@@ -87,6 +88,7 @@ Backend::initialize (const graphics_object& go)
   if (go.isa ("figure")
       || go.isa ("uicontrol")
       || go.isa ("uipanel")
+      || go.isa ("uibuttongroup")
       || go.isa ("uimenu")
       || go.isa ("uicontextmenu")
       || go.isa ("uitoolbar")
@@ -117,6 +119,7 @@ Backend::update (const graphics_object& go, int pId)
   if (pId == figure::properties::ID___PLOT_STREAM__
       || pId == uicontrol::properties::ID___OBJECT__
       || pId == uipanel::properties::ID___OBJECT__
+      || pId == uibuttongroup::properties::ID___OBJECT__
       || pId == uimenu::properties::ID___OBJECT__
       || pId == uicontextmenu::properties::ID___OBJECT__
       || pId == uitoolbar::properties::ID___OBJECT__

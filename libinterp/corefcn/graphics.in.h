@@ -5568,6 +5568,91 @@ public:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API uibuttongroup : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
+
+    double get_fontsize_points (double box_pix_height = 0) const;
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
+
+    BEGIN_PROPERTIES (uibuttongroup)
+      any_property __object__ h , Matrix ()
+      color_property backgroundcolor , color_values (1, 1, 1)
+      radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
+      double_property borderwidth , 1
+      bool_property clipping , "on"
+      radio_property fontangle , "{normal}|italic|oblique"
+      string_property fontname , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize , 10
+      radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontweight , "light|{normal}|demi|bold"
+      color_property foregroundcolor , color_values (0, 0, 0)
+      color_property highlightcolor , color_values (1, 1, 1)
+      array_property position , default_panel_position ()
+      callback_property resizefcn , Matrix ()
+      handle_property selectedobject S , graphics_handle()
+      callback_property selectionchangedfcn , Matrix()
+      color_property shadowcolor , color_values (0, 0, 0)
+      callback_property sizechangedfcn , Matrix ()
+      radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"
+      string_property title , ""
+      radio_property titleposition , "{lefttop}|centertop|righttop|leftbottom|centerbottom|rightbottom"
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+    {
+      position.add_constraint (dim_vector (1, 4));
+    }
+
+    // void update_text_extent (void);
+    // void update_string (void) { update_text_extent (); }
+    // void update_fontname (void) { update_text_extent (); }
+    // void update_fontsize (void) { update_text_extent (); }
+    // void update_fontangle (void) { update_text_extent (); }
+    // void update_fontweight (void) { update_text_extent (); }
+
+    void update_units (const caseless_str& old_units);
+    void update_fontunits (const caseless_str& old_units);
+
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uibuttongroup (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  { }
+
+  ~uibuttongroup (void) { }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+
+};
+
+// ---------------------------------------------------------------------
+
 class OCTINTERP_API uipanel : public base_graphics_object
 {
 public:

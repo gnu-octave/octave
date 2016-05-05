@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QAbstractButton>
 
 #include "ButtonControl.h"
+#include "ButtonGroup.h"
 #include "Container.h"
 #include "QtHandlesUtils.h"
 
@@ -82,7 +83,16 @@ ButtonControl::update (int pId)
               if (dValue != 0.0 && dValue != 1.0)
                 warning ("button value not within valid display range");
               else if (dValue == up.get_min () && btn->isChecked ())
-                btn->setChecked (false);
+                {
+                  btn->setChecked (false);
+                  if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
+                    {
+                      Object* parent = Object::parentObject (gh_manager::get_object (up.get___myhandle__ ()));
+                      ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
+                      if (btnGroup)
+                        btnGroup->selectNothing ();
+                    }
+                }
               else if (dValue == up.get_max () && ! btn->isChecked ())
                 btn->setChecked (true);
             }

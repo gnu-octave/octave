@@ -100,6 +100,8 @@ There is no support for the @code{gnuplot} toolkit.
 
 @DOCSTRING(uimenu)
 
+@DOCSTRING(uibuttongroup)
+
 @DOCSTRING(uicontextmenu)
 
 @DOCSTRING(uicontrol)
@@ -149,4 +151,3 @@ programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 @DOCSTRING(ispref)
 
 @DOCSTRING(preferences)
-

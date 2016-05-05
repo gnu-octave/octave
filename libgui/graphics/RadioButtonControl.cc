@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QRadioButton>
 
+#include "ButtonGroup.h"
 #include "RadioButtonControl.h"
 #include "Container.h"
 #include "QtHandlesUtils.h"
@@ -53,6 +54,11 @@ RadioButtonControl::RadioButtonControl (const graphics_object& go,
                                         QRadioButton* radio)
   : ButtonControl (go, radio)
 {
+  Object* parent = Object::parentObject (go);
+  ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
+  if (btnGroup)
+    btnGroup->addButton (radio);
+
   radio->setAutoFillBackground (true);
   radio->setAutoExclusive (false);
 }

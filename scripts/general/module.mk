@@ -60,9 +60,6 @@ scripts_general_FCN_FILES = \
   scripts/general/polyarea.m \
   scripts/general/postpad.m \
   scripts/general/prepad.m \
-  scripts/general/profexplore.m \
-  scripts/general/profile.m \
-  scripts/general/profshow.m \
   scripts/general/quadgk.m \
   scripts/general/quadl.m \
   scripts/general/quadv.m \

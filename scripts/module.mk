@@ -25,6 +25,7 @@ include scripts/plot/draw/module.mk
 include scripts/plot/util/module.mk
 include scripts/polynomial/module.mk
 include scripts/prefs/module.mk
+include scripts/profiler/module.mk
 include scripts/set/module.mk
 include scripts/signal/module.mk
 include scripts/sparse/module.mk

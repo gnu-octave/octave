@@ -142,6 +142,7 @@ COREFCN_SRC = \
   corefcn/__ichol__.cc \
   corefcn/__ilu__.cc \
   corefcn/__lin_interpn__.cc \
+  corefcn/__magick_read__.cc \
   corefcn/__pchip_deriv__.cc \
   corefcn/__qp__.cc \
   corefcn/balance.cc \

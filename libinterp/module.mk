@@ -20,7 +20,8 @@ libinterp_liboctinterp_la_CPPFLAGS = \
   -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -Ilibgnu -I$(srcdir)/libgnu \
-  $(HDF5_CPPFLAGS)
+  $(HDF5_CPPFLAGS) \
+  $(MAGICK_CPPFLAGS)
 
 libinterp_liboctinterp_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 

@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-time.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "ov-struct.h"
 
@@ -742,8 +742,8 @@ maybe_initialize_magick (void)
 }
 #endif
 
-DEFUN_DLD (__magick_read__, args, nargout,
-           "-*- texinfo -*-\n\
+DEFUN (__magick_read__, args, nargout,
+       "-*- texinfo -*-\n\
 @deftypefn {} {[@var{img}, @var{map}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{options})\n\
 Read image with GraphicsMagick or ImageMagick.\n\
 \n\
@@ -1379,8 +1379,8 @@ write_file (const std::string& filename,
 
 #endif
 
-DEFUN_DLD (__magick_write__, args, ,
-           "-*- texinfo -*-\n\
+DEFUN (__magick_write__, args, ,
+       "-*- texinfo -*-\n\
 @deftypefn {} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map}, @var{options})\n\
 Write image with GraphicsMagick or ImageMagick.\n\
 \n\
@@ -1553,8 +1553,8 @@ Use @code{imwrite} instead.\n\
 // faster than using imfinfo, which slows down a lot since. Note than without
 // this, we need to read the image once for imfinfo to set defaults (which is
 // done in Octave language), and then again for the actual reading.
-DEFUN_DLD (__magick_ping__, args, ,
-           "-*- texinfo -*-\n\
+DEFUN (__magick_ping__, args, ,
+       "-*- texinfo -*-\n\
 @deftypefn {} {} __magick_ping__ (@var{fname}, @var{idx})\n\
 Ping image information with GraphicsMagick or ImageMagick.\n\
 \n\
@@ -1772,8 +1772,8 @@ fill_exif_floats (octave_scalar_map& map, Magick::Image& img,
 
 #endif
 
-DEFUN_DLD (__magick_finfo__, args, ,
-           "-*- texinfo -*-\n\
+DEFUN (__magick_finfo__, args, ,
+       "-*- texinfo -*-\n\
 @deftypefn {} {} __magick_finfo__ (@var{fname})\n\
 Read image information with GraphicsMagick or ImageMagick.\n\
 \n\
@@ -2218,8 +2218,8 @@ Use @code{imfinfo} instead.\n\
 %!assert (1)
 */
 
-DEFUN_DLD (__magick_formats__, args, ,
-           "-*- texinfo -*-\n\
+DEFUN (__magick_formats__, args, ,
+       "-*- texinfo -*-\n\
 @deftypefn {} {} __magick_imformats__ (@var{formats})\n\
 Fill formats info with GraphicsMagick CoderInfo.\n\
 \n\

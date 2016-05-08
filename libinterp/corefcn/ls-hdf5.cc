@@ -987,6 +987,7 @@ save_type_to_hdf5 (save_type st)
     }
 
 #  else
+  (void) st; //silence compiler warning
   return -1;
 #  endif
 #else

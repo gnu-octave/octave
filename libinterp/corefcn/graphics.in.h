@@ -3440,6 +3440,10 @@ public:
       radio_property xvisualmode , "{auto}|manual"
       // Octave-specific properties
       bool_property __enhanced__ h , "on"
+      mutable string_property __gl_extensions__ hr , ""
+      mutable string_property __gl_renderer__ hr , ""
+      mutable string_property __gl_vendor__ hr , ""
+      mutable string_property __gl_version__ hr , ""
       string_property __graphics_toolkit__ hs , gtk_manager::default_toolkit ()
       any_property __guidata__ h , Matrix ()
       radio_property __mouse_mode__ hS , "{none}|pan|rotate|select|text|zoom"

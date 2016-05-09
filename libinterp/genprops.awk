@@ -364,7 +364,16 @@ function emit_declarations ()
   {
     if (emit_set[i])
     {
-      printf ("  void set_%s (const octave_value& val)", name[i], type[i]);
+      ## Allow mutable properties to be set from const methods by
+      ## declaring the corresponding set method const.  The idea here is
+      ## to allow "constant" properties to be set after initialization.
+      ## For example, info about the OpenGL context for a figure can
+      ## only be set once the context is established, and that happens
+      ## after the figure object is created.  Properties handled this
+      ## way should probably also be declared read only.
+
+      printf ("  void set_%s (const octave_value& val)%s",
+              name[i], mutable[i] ? " const" : "");
 
       if (emit_set[i] == "definition")
       {
@@ -383,7 +392,8 @@ function emit_declarations ()
           printf ("            update_axis_limits (\"%s\");\n", name[i]);
         if (has_builtin_listeners)
           printf ("            %s.run_listeners (POSTSET);\n", name[i]);
-        printf ("            mark_modified ();\n");
+        if (! mutable[i])
+          printf ("            mark_modified ();\n");
         printf ("          }\n");
         if (mode[i])
           printf ("        else\n          set_%smode (\"manual\");\n", name[i]);

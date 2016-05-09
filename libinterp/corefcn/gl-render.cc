@@ -646,12 +646,29 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
     }
 }
 
+static std::string
+gl_get_string (GLenum id)
+{
+  // This is kind of ugly, but glGetString returns a pointer to GLubyte
+  // and there is no std::string constructor that matches.  Is there a
+  // better way?
+
+  std::ostringstream buf;
+  buf << glGetString (id);
+  return std::string (buf.str ());
+}
+
 void
 opengl_renderer::draw_figure (const figure::properties& props)
 {
   // Initialize OpenGL context
 
   init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
+
+  props.set___gl_extensions__ (gl_get_string (GL_EXTENSIONS));
+  props.set___gl_renderer__ (gl_get_string (GL_RENDERER));
+  props.set___gl_vendor__ (gl_get_string (GL_VENDOR));
+  props.set___gl_version__ (gl_get_string (GL_VERSION));
 
   // Draw children
 

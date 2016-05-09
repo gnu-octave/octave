@@ -67,15 +67,16 @@ DEFUN_DLD (chol, args, nargout,
            "-*- texinfo -*-\n\
 @deftypefn  {} {@var{R} =} chol (@var{A})\n\
 @deftypefnx {} {[@var{R}, @var{p}] =} chol (@var{A})\n\
-@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S})\n\
-@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, \"vector\")\n\
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A})\n\
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A}, \"vector\")\n\
 @deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, \"lower\")\n\
-@deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, \"upper\")\n\
+@deftypefnx {} {[@var{R}, @dots{}] =} chol (@dots{}, \"upper\")\n\
 @cindex Cholesky factorization\n\
-Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive\n\
-definite matrix @var{A}.\n\
+Compute the upper Cholesky@tie{}factor, @var{R}, of the real symmetric\n\
+or complex Hermitian positive definite matrix @var{A}.\n\
 \n\
-The Cholesky@tie{}factor is defined by\n\
+The upper Cholesky@tie{}factor @var{R} is computed by using the upper\n\
+triangular part of matrix @var{A} and is defined by\n\
 @tex\n\
 $ R^T R = A $.\n\
 @end tex\n\
@@ -87,15 +88,36 @@ $ R^T R = A $.\n\
 \n\
 @end ifnottex\n\
 \n\
-Called with one output argument @code{chol} fails if @var{A} or @var{S} is\n\
-not positive definite.  With two or more output arguments @var{p} flags\n\
-whether the matrix was positive definite and @code{chol} does not fail.  A\n\
-zero value indicated that the matrix was positive definite and the @var{R}\n\
-gives the factorization, and @var{p} will have a positive value otherwise.\n\
+Calling @code{chol} using the optional @qcode{\"upper\"} flag has the\n\
+same behavior.  In contrast, using the optional @qcode{\"lower\"} flag,\n\
+@code{chol} returns the lower triangular factorization, computed by using\n\
+the lower triangular part of matrix @var{A}, such that\n\
+@tex\n\
+$ L L^T = A $.\n\
+@end tex\n\
+@ifnottex\n\
 \n\
-If called with 3 outputs then a sparsity preserving row/column permutation\n\
-is applied to @var{A} prior to the factorization.  That is @var{R} is the\n\
-factorization of @code{@var{A}(@var{Q},@var{Q})} such that\n\
+@example\n\
+@var{L} * @var{L}' = @var{A}.\n\
+@end example\n\
+\n\
+@end ifnottex\n\
+\n\
+Called with one output argument @code{chol} fails if matrix @var{A} is\n\
+not positive definite.  Note that if matrix @var{A} is not real symmetric\n\
+or complex Hermitian then the lower triangular part is considered to be\n\
+the (complex conjugate) transpose of the upper triangular part, or vice\n\
+versa, given the @qcode{\"lower\"} flag.\n\
+\n\
+Called with two or more output arguments @var{p} flags whether the matrix\n\
+@var{A} was positive definite and @code{chol} does not fail.  A zero value\n\
+of @var{p} indicates that matrix @var{A} is positive definite and @var{R}\n\
+gives the factorization.  Otherwise, @var{p} will have a positive value.\n\
+\n\
+If called with three output arguments matrix @var{A} must be sparse and\n\
+a sparsity preserving row/column permutation is applied to matrix @var{A}\n\
+prior to the factorization.  That is @var{R} is the factorization of\n\
+@code{@var{A}(@var{Q},@var{Q})} such that\n\
 @tex\n\
 $ R^T R = Q^T A Q$.\n\
 @end tex\n\
@@ -108,8 +130,8 @@ $ R^T R = Q^T A Q$.\n\
 @end ifnottex\n\
 \n\
 The sparsity preserving permutation is generally returned as a matrix.\n\
-However, given the flag @qcode{\"vector\"}, @var{Q} will be returned as a\n\
-vector such that\n\
+However, given the optional flag @qcode{\"vector\"}, @var{Q} will be\n\
+returned as a vector such that\n\
 @tex\n\
 $ R^T R = A (Q, Q)$.\n\
 @end tex\n\
@@ -121,23 +143,6 @@ $ R^T R = A (Q, Q)$.\n\
 \n\
 @end ifnottex\n\
 \n\
-Called with either a sparse or full matrix and using the @qcode{\"lower\"}\n\
-flag, @code{chol} returns the lower triangular factorization such that\n\
-@tex\n\
-$ L L^T = A $.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{L} * @var{L}' = @var{A}.\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-For full matrices, if the @qcode{\"lower\"} flag is set only the lower\n\
-triangular part of the matrix is used for the factorization, otherwise the\n\
-upper triangular part is used.\n\
-\n\
 In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\
 @seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
@@ -145,9 +150,10 @@ sparse matrices.\n\
 {
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 3 || nargout > 3
-      || (! args(0).is_sparse_type () && nargout > 2))
+  if (nargin < 1 || nargin > 3 || nargout > 3)
     print_usage ();
+  if (nargout > 2 && ! args(0).is_sparse_type ())
+    error ("chol: using three output arguments, matrix A must be sparse");
 
   bool LLt = false;
   bool vecout = false;
@@ -319,6 +325,7 @@ sparse matrices.\n\
 %!error <requires square matrix> chol ([1, 2; 3, 4; 5, 6])
 %!error <optional arguments must be strings> chol (1, 2)
 %!error <optional argument must be one of "vector", "lower"> chol (1, "foobar")
+%!error <matrix A must be sparse> [L,p,Q] = chol ([1, 2; 3, 4])
 */
 
 DEFUN_DLD (cholinv, args, ,

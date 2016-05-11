@@ -117,7 +117,7 @@ function retval = help (name)
     endif
 
     if (nargout == 0)
-      which (name);
+      evalin ("caller", ["which (\"" name "\")"]);
       printf ("\n%s\n%s", text, __additional_help_message__ ());
     else
       retval = text;

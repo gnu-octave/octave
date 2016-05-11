@@ -4158,16 +4158,16 @@ template <typename T>
 std::istream&
 octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 {
-  T& ref = *valptr;
+  T value = T ();
 
   switch (fmt.type)
     {
     case 'o':
-      is >> std::oct >> ref >> std::dec;
+      is >> std::oct >> value >> std::dec;
       break;
 
     case 'x':
-      is >> std::hex >> ref >> std::dec;
+      is >> std::hex >> value >> std::dec;
       break;
 
     case 'i':
@@ -4188,41 +4188,54 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
                   {
                     is.ignore ();
                     if (std::isxdigit (is.peek ()))
-                      is >> std::hex >> ref >> std::dec;
+                      is >> std::hex >> value >> std::dec;
                     else
-                      ref = 0;
+                      value = 0;
                   }
                 else
                   {
                     if (c2 == '0' || c2 == '1' || c2 == '2'
                         || c2 == '3' || c2 == '4' || c2 == '5'
                         || c2 == '6' || c2 == '7')
-                      is >> std::oct >> ref >> std::dec;
+                      is >> std::oct >> value >> std::dec;
                     else if (c2 == '8' || c2 == '9')
                     {
                       // FIXME: Would like to set error state on octave stream.
                       // See bug #46493.  But only std::istream is input to fcn
                       // error ("internal failure to match octal format");
-                      ref = 0;
+                      value = 0;
                     }
                     else
-                      ref = 0;
+                      value = 0;
                   }
               }
             else
               {
                 is.putback (c1);
 
-                is >> ref;
+                is >> value;
               }
           }
       }
       break;
 
     default:
-      is >> ref;
+      is >> value;
       break;
     }
+
+  // If conversion produces an integer that overflows, failbit is set but
+  // value is non-zero. We want to treat this case as success, so clear
+  // failbit from the stream state to keep going.
+  // FIXME: Maybe set error state on octave stream as above? Matlab does
+  // *not* indicate an error message on overflow.
+  if ((is.rdstate () & std::ios::failbit) && value != T ())
+    is.clear (is.rdstate () & ~std::ios::failbit);
+
+  // Only copy the converted value if the stream is in a state where we
+  // want to continue reading.
+  if (! (is.rdstate () & std::ios::failbit))
+    *valptr = value;
 
   return is;
 }

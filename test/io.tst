@@ -298,6 +298,20 @@
 %!assert (sscanf ('7777777777777777', '%lo'), 281474976710655)
 %!assert (sscanf ('ffffffffffff', '%lx'), 281474976710655)
 
+## bug #47759
+%!assert (sscanf ('999999999999999', '%d'), double (intmax ("int32")))
+%!assert (sscanf ('999999999999999', '%i'), double (intmax ("int32")))
+%!assert (sscanf ('999999999999999', '%u'), double (intmax ("uint32")))
+%!assert (sscanf ('777777777777777', '%o'), double (intmax ("uint32")))
+%!assert (sscanf ('fffffffffffffff', '%x'), double (intmax ("uint32")))
+## FIXME: scanf should return int64/uint64 if all conversions are %l[dioux].
+## Until then cast to a double (and lose precision) for comparison.
+%!assert (sscanf ('9999999999999999999999', '%ld'), double (intmax ("int64")))
+%!assert (sscanf ('9999999999999999999999', '%li'), double (intmax ("int64")))
+%!assert (sscanf ('9999999999999999999999', '%lu'), double (intmax ("uint64")))
+%!assert (sscanf ('7777777777777777777777', '%lo'), double (intmax ("uint64")))
+%!assert (sscanf ('ffffffffffffffffffffff', '%lx'), double (intmax ("uint64")))
+
 %!test
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);

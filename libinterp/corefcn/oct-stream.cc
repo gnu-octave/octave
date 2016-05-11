@@ -4729,7 +4729,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
                       {
                       case 'h':
                         {
-                          short int tmp;
+                          int16_t tmp;
                           do_scanf_conv (is, *elt, &tmp, mval, data,
                                          data_index, conversion_count,
                                          nr, max_size, discard);
@@ -4738,7 +4738,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
                       case 'l':
                         {
-                          long int tmp;
+                          int64_t tmp;
                           do_scanf_conv (is, *elt, &tmp, mval, data,
                                          data_index, conversion_count,
                                          nr, max_size, discard);
@@ -4747,7 +4747,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
                       default:
                         {
-                          int tmp;
+                          int32_t tmp;
                           do_scanf_conv (is, *elt, &tmp, mval, data,
                                          data_index, conversion_count,
                                          nr, max_size, discard);
@@ -4763,7 +4763,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
                       {
                       case 'h':
                         {
-                          unsigned short int tmp;
+                          uint16_t tmp;
                           do_scanf_conv (is, *elt, &tmp, mval, data,
                                          data_index, conversion_count,
                                          nr, max_size, discard);
@@ -4772,7 +4772,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
                       case 'l':
                         {
-                          unsigned long int tmp;
+                          uint64_t tmp;
                           do_scanf_conv (is, *elt, &tmp, mval, data,
                                          data_index, conversion_count,
                                          nr, max_size, discard);
@@ -4781,7 +4781,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
                       default:
                         {
-                          unsigned int tmp;
+                          uint32_t tmp;
                           do_scanf_conv (is, *elt, &tmp, mval, data,
                                          data_index, conversion_count,
                                          nr, max_size, discard);

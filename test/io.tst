@@ -284,6 +284,20 @@
 %!assert (sscanf ('0177 08', '%i'), [127; 0; 8])
 %!assert (sscanf ('0177 08', '%d'), [177; 8])
 
+## bug #47741
+%!assert (sscanf ('2147483647', '%d'), 2147483647)
+%!assert (sscanf ('2147483647', '%i'), 2147483647)
+%!assert (sscanf ('4294967295', '%u'), 4294967295)
+%!assert (sscanf ('37777777777', '%o'), 4294967295)
+%!assert (sscanf ('ffffffff', '%x'), 4294967295)
+## FIXME: scanf should return int64/uint64 if all conversions are %l[dioux].
+## Until then only test values that are within precision range of a double.
+%!assert (sscanf ('281474976710655', '%ld'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%li'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%lu'), 281474976710655)
+%!assert (sscanf ('7777777777777777', '%lo'), 281474976710655)
+%!assert (sscanf ('ffffffffffff', '%lx'), 281474976710655)
+
 %!test
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);

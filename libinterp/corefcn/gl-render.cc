@@ -646,6 +646,7 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
     }
 }
 
+#if defined (HAVE_OPENGL)
 static std::string
 gl_get_string (GLenum id)
 {
@@ -657,6 +658,7 @@ gl_get_string (GLenum id)
   buf << glGetString (id);
   return std::string (buf.str ());
 }
+#endif
 
 void
 opengl_renderer::draw_figure (const figure::properties& props)
@@ -665,10 +667,12 @@ opengl_renderer::draw_figure (const figure::properties& props)
 
   init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
 
+#if defined (HAVE_OPENGL)
   props.set___gl_extensions__ (gl_get_string (GL_EXTENSIONS));
   props.set___gl_renderer__ (gl_get_string (GL_RENDERER));
   props.set___gl_vendor__ (gl_get_string (GL_VENDOR));
   props.set___gl_version__ (gl_get_string (GL_VERSION));
+#endif
 
   // Draw children
 

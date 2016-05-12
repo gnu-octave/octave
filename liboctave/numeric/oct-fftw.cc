@@ -24,9 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#if defined (HAVE_FFTW)
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 #if defined (HAVE_FFTW3_H)
@@ -42,6 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_FFTW3_THREADS) || defined (HAVE_FFTW3F_THREADS)
 #  include "nproc.h"
 #endif
+
+#if defined (HAVE_FFTW)
 
 octave_fftw_planner *octave_fftw_planner::instance = 0;
 

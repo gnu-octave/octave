@@ -75,7 +75,6 @@ OV_INTTYPE_SRC = \
   libinterp/octave-value/ov-uint8.cc
 
 OV_SPARSE_SRC = \
-  libinterp/octave-value/ov-base-sparse.cc \
   libinterp/octave-value/ov-bool-sparse.cc \
   libinterp/octave-value/ov-cx-sparse.cc \
   libinterp/octave-value/ov-re-sparse.cc
@@ -131,7 +130,8 @@ libinterp_EXTRA_DIST += \
   libinterp/octave-value/ov-base-diag.cc \
   libinterp/octave-value/ov-base-int.cc \
   libinterp/octave-value/ov-base-mat.cc \
-  libinterp/octave-value/ov-base-scalar.cc
+  libinterp/octave-value/ov-base-scalar.cc \
+  libinterp/octave-value/ov-base-sparse.cc
 
 OV_JAVA_DF = \
   libinterp/octave-value/ov.df \

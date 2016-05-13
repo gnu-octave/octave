@@ -375,8 +375,6 @@ sub emit_opt_class_header
 #if ! defined (octave_${CLASS_NAME}_h)
 #define octave_${CLASS_NAME}_h 1
 
-#include "octave-config.h"
-
 #include <cfloat>
 #include <cmath>
 
@@ -509,9 +507,9 @@ sub emit_opt_handler_fcns
 // DO NOT EDIT!
 // Generated automatically from $DEFN_FILE.
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include <iomanip>
 #include <iostream>

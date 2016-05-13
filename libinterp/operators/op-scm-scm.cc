@@ -37,10 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
-
 #include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"

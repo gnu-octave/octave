@@ -20,9 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 // FIXME: it might be nice to only include the declarations of the
 // operators that are actually needed instead of including all of them.

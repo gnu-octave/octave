@@ -20,6 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #define LINCLUDE "ov-re-diag.h"
 #define RINCLUDE "ov-cx-mat.h"
 

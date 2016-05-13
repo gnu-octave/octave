@@ -24,6 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_bsxfun_defs_h)
 #define octave_bsxfun_defs_h 1
 
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
+
 #include <algorithm>
 #include <iostream>
 

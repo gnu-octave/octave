@@ -33,13 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QComboBox>
 
-// FIXME: We should not be including config.h in header files.
-// Only needed for octave_value_list type.
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#  include "ovl.h"
-#endif
-
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
 #include "builtin-defun-decls.h"
@@ -47,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "marker.h" /* Only needed for typedef of "QIntList", which may be
                        typedefed elsewhere.  Could use common location. */
 
+
+class octave_value_list;
 
 class file_editor;
 

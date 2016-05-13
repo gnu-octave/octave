@@ -384,10 +384,16 @@ Comment.\n\
   // float quality = 0.75;
   for (int i = 3; i < nargin; i += 2)
     {
-      if (args(i).string_value () == "BitsPerSample")
+      if (i >= nargin - 1)
+        error ("audiowrite: invalid number of arguments");
+
+      std::string keyword = args(i).string_value ();
+      octave_value value_arg = args(i+1);
+
+      if (keyword == "BitsPerSample")
         {
           info.format &= ~SF_FORMAT_SUBMASK;
-          int bits = args(i + 1).int_value ();
+          int bits = value_arg.int_value ();
           if (bits == 8)
             {
               if ((info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV)
@@ -407,18 +413,18 @@ Comment.\n\
               return retval;
             }
         }
-      else if (args(i).string_value () == "BitRate")
+      else if (keyword == "BitRate")
         ;
       // Quality is currently unused?
       //
-      // else if (args(i).string_value () == "Quality")
-      //   quality = args(i + 1).int_value () * 0.01;
-      else if (args(i).string_value () == "Title")
-        title = args(i + 1).string_value ();
-      else if (args(i).string_value () == "Artist")
-        artist = args(i + 1).string_value ();
-      else if (args(i).string_value () == "Comment")
-        comment = args(i + 1).string_value ();
+      // else if (keyword == "Quality")
+      //   quality = value_arg.int_value () * 0.01;
+      else if (keyword == "Title")
+        title = value_arg.string_value ();
+      else if (keyword == "Artist")
+        artist = value_arg.string_value ();
+      else if (keyword == "Comment")
+        comment = value_arg.string_value ();
       else
         {
           error ("audiowrite: wrong argument name");

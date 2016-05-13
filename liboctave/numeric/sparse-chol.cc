@@ -333,8 +333,16 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   return info;
 
 #else
+
+  octave_unused_parameter (a);
+  octave_unused_parameter (natural);
+  octave_unused_parameter (force);
+
   (*current_liboctave_error_handler)
     ("support for CHOLMOD was unavailable or disabled when liboctave was built");
+
+  return info;
+
 #endif
 }
 

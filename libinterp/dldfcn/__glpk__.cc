@@ -619,7 +619,11 @@ Undocumented internal function.\n\
   return ovl (xmin, fmin, errnum, extra);
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("glpk", "GNU Linear Programming Kit");
+
 #endif
 }
 

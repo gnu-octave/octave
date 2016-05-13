@@ -793,10 +793,12 @@ octave_java::is_java_string (void) const
   return false;
 
 #else
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -821,10 +823,14 @@ octave_java::is_instance_of (const std::string& cls_name) const
   return false;
 
 #else
+
+  octave_unused_parameter (cls_name);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1818,6 +1824,9 @@ octave_java::octave_java (const voidptr& jobj, void *jcls)
 
 #else
 
+  octave_unused_parameter (jobj);
+  octave_unused_parameter (jcls);
+
   err_disabled_feature ("Java Objects", "Java");
 
 #endif
@@ -1851,10 +1860,12 @@ octave_java::dims (void) const
     return dim_vector (1, 1);
 
 #else
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1909,10 +1920,16 @@ octave_java::subsref (const std::string& type,
   return retval;
 
 #else
+
+  octave_unused_parameter (type);
+  octave_unused_parameter (idx);
+  octave_unused_parameter (nargout);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1992,10 +2009,16 @@ octave_java::subsasgn (const std::string& type,
   return retval;
 
 #else
+
+  octave_unused_parameter (type);
+  octave_unused_parameter (idx);
+  octave_unused_parameter (rhs);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2012,10 +2035,12 @@ octave_java::map_keys (void) const
     return string_vector ();
 
 #else
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2032,10 +2057,15 @@ octave_java::convert_to_str_internal (bool, bool force, char type) const
     return octave_value ("");
 
 #else
+
+  octave_unused_parameter (force);
+  octave_unused_parameter (type);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2135,10 +2165,16 @@ octave_java::do_javaMethod (void *jni_env_arg, const std::string& name,
   return retval;
 
 #else
+
+  octave_unused_parameter (jni_env_arg);
+  octave_unused_parameter (name);
+  octave_unused_parameter (args);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2150,10 +2186,15 @@ octave_java::do_javaMethod (const std::string& name, const octave_value_list& ar
   return do_javaMethod (thread_jni_env (), name, args);
 
 #else
+
+  octave_unused_parameter (name);
+  octave_unused_parameter (args);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2193,15 +2234,23 @@ octave_java:: do_javaMethod (void *jni_env_arg,
   return retval;
 
 #else
+
+  octave_unused_parameter (jni_env_arg);
+  octave_unused_parameter (class_name);
+  octave_unused_parameter (name);
+  octave_unused_parameter (args);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
 octave_value
-octave_java::do_javaMethod (const std::string& class_name, const std::string& name,
+octave_java::do_javaMethod (const std::string& class_name,
+                            const std::string& name,
                             const octave_value_list& args)
 {
 #if defined (HAVE_JAVA)
@@ -2209,10 +2258,16 @@ octave_java::do_javaMethod (const std::string& class_name, const std::string& na
   return do_javaMethod (thread_jni_env (), class_name, name, args);
 
 #else
+
+  octave_unused_parameter (class_name);
+  octave_unused_parameter (name);
+  octave_unused_parameter (args);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2251,10 +2306,16 @@ octave_java::do_javaObject (void *jni_env_arg, const std::string& name,
   return retval;
 
 #else
+
+  octave_unused_parameter (jni_env_arg);
+  octave_unused_parameter (name);
+  octave_unused_parameter (args);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2266,10 +2327,15 @@ octave_java::do_javaObject (const std::string& name, const octave_value_list& ar
   return do_javaObject (thread_jni_env (), name, args);
 
 #else
+
+  octave_unused_parameter (name);
+  octave_unused_parameter (args);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2302,10 +2368,15 @@ octave_java::do_java_get (void *jni_env_arg, const std::string& name)
   return retval;
 
 #else
+
+  octave_unused_parameter (jni_env_arg);
+  octave_unused_parameter (name);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2317,10 +2388,14 @@ octave_java::do_java_get (const std::string& name)
   return do_java_get (thread_jni_env (), name);
 
 #else
+
+  octave_unused_parameter (name);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2354,10 +2429,16 @@ octave_java::do_java_get (void *jni_env_arg, const std::string& class_name,
   return retval;
 
 #else
+
+  octave_unused_parameter (jni_env_arg);
+  octave_unused_parameter (class_name);
+  octave_unused_parameter (name);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2369,10 +2450,15 @@ octave_java::do_java_get (const std::string& class_name, const std::string& name
   return do_java_get (thread_jni_env (), class_name, name);
 
 #else
+
+  octave_unused_parameter (class_name);
+  octave_unused_parameter (name);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2407,10 +2493,16 @@ octave_java::do_java_set (void *jni_env_arg, const std::string& name,
   return retval;
 
 #else
+
+  octave_unused_parameter (jni_env_arg);
+  octave_unused_parameter (name);
+  octave_unused_parameter (val);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2422,10 +2514,15 @@ octave_java::do_java_set (const std::string& name, const octave_value& val)
   return do_java_set (thread_jni_env (), name, val);
 
 #else
+
+  octave_unused_parameter (name);
+  octave_unused_parameter (val);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2461,10 +2558,17 @@ octave_java::do_java_set (void *jni_env_arg, const std::string& class_name,
   return retval;
 
 #else
+
+  octave_unused_parameter (jni_env_arg);
+  octave_unused_parameter (class_name);
+  octave_unused_parameter (name);
+  octave_unused_parameter (val);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2477,10 +2581,16 @@ octave_java::do_java_set (const std::string& class_name, const std::string& name
   return do_java_set (thread_jni_env (), class_name, name, val);
 
 #else
+
+  octave_unused_parameter (class_name);
+  octave_unused_parameter (name);
+  octave_unused_parameter (val);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2517,10 +2627,15 @@ octave_java::init (void *jobj_arg, void *jcls_arg)
     }
 
 #else
+
+  octave_unused_parameter (jobj_arg);
+  octave_unused_parameter (jcls_arg);
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2544,10 +2659,12 @@ octave_java::release (void)
     }
 
 #else
+
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2563,6 +2680,7 @@ Function will directly call initialize_java to create an instance of a JVM.\n\
 @end deftypefn")
 {
 #if defined (HAVE_JAVA)
+
   octave_value retval;
 
   retval = 0;
@@ -2572,8 +2690,11 @@ Function will directly call initialize_java to create an instance of a JVM.\n\
   retval = 1;
 
   return retval;
+
 #else
+
   err_disabled_feature ("__java_init__", "Java");
+
 #endif
 }
 
@@ -2587,12 +2708,15 @@ instance.\n\
 @end deftypefn")
 {
 #if defined (HAVE_JAVA)
+
   terminate_jvm ();
 
   return ovl ();
 
 #else
-  error ("__java_init__", "Java");
+
+  err_disabled_feature ("__java_exit__", "Java");
+
 #endif
 }
 
@@ -2634,6 +2758,8 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
   return ovl (octave_java::do_javaObject (current_env, classname, tmp));
 
 #else
+
+  octave_unused_parameter (args);
 
   err_disabled_feature ("javaObject", "Java");
 
@@ -2709,6 +2835,8 @@ equivalent\n\
 
 #else
 
+  octave_unused_parameter (args);
+
   err_disabled_feature ("javaMethod", "Java");
 
 #endif
@@ -2773,6 +2901,8 @@ equivalent\n\
 
 #else
 
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__java_get__", "Java");
 
 #endif
@@ -2831,6 +2961,8 @@ equivalent\n\
 
 #else
 
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__java_set__", "Java");
 
 #endif
@@ -2865,6 +2997,8 @@ Undocumented internal function.\n\
 
 #else
 
+  octave_unused_parameter (args);
+
   err_disabled_feature ("java2mat", "Java");
 
 #endif
@@ -2887,9 +3021,16 @@ The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
 #if defined (HAVE_JAVA)
+
   return SET_INTERNAL_VARIABLE (java_matrix_autoconversion);
+
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("java_matrix_autoconversion", "Java");
+
 #endif
 }
 
@@ -2911,9 +3052,16 @@ The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
 #if defined (HAVE_JAVA)
+
   return SET_INTERNAL_VARIABLE (java_unsigned_autoconversion);
+
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("java_unsigned_autoconversion", "Java");
+
 #endif
 }
 
@@ -2933,9 +3081,16 @@ The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
 #if defined (HAVE_JAVA)
+
   return SET_INTERNAL_VARIABLE (debug_java);
+
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("debug_java", "Java");
+
 #endif
 }
 

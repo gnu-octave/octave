@@ -987,11 +987,19 @@ save_type_to_hdf5 (save_type st)
     }
 
 #  else
-  (void) st; //silence compiler warning
+
+  octave_unused_parameter (st);
+
   return -1;
+
 #  endif
+
 #else
+
+  octave_unused_parameter (st);
+
   err_disabled_feature ("save_type_to_hdf5", "HDF5");
+
 #endif
 }
 

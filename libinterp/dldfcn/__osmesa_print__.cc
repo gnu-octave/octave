@@ -197,6 +197,8 @@ instead.\n\
 
 #else
 
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__osmesa_print__", "offscreen rendering with OSMesa");
 
 #endif

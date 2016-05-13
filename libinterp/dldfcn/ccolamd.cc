@@ -330,7 +330,12 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("ccolamd", "CCOLAMD");
+
 #endif
 }
 
@@ -561,6 +566,11 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("csymamd", "CCOLAMD");
+
 #endif
 }

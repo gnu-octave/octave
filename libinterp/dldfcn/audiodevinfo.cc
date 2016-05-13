@@ -406,6 +406,8 @@ recording using those parameters.\n\
   return retval;
 
 #else
+  octave_unused_parameter (args);
+
   err_disabled_feature ("audiodevinfo",
                         "audio playback and recording through PortAudio");
 #endif
@@ -1811,6 +1813,8 @@ Undocumented internal function.\n\
   octave_value retval;
 
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_audiorecorder__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1874,6 +1878,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_getaudiodata__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1890,6 +1896,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_channels__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1906,6 +1914,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_fs__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1922,6 +1932,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_id__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1938,6 +1950,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_nbits__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1954,6 +1968,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_sample_number__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1970,6 +1986,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_tag__",
                         "audio playback and recording through PortAudio");
 #else
@@ -1986,6 +2004,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_total_samples__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2002,6 +2022,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_get_userdata__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2018,6 +2040,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_isrecording__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2033,6 +2057,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_pause__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2048,6 +2074,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_recordblocking__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2065,6 +2093,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_record__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2085,6 +2115,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_resume__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2101,6 +2133,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_set_fs__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2117,6 +2151,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_set_tag__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2133,6 +2169,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_set_userdata__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2149,6 +2187,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__recorder_stop__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2168,6 +2208,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_audioplayer__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2236,6 +2278,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_channels__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2253,6 +2297,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_fs__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2270,6 +2316,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_id__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2287,6 +2335,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_nbits__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2304,6 +2354,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_sample_number__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2321,6 +2373,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_tag__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2338,6 +2392,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_total_samples__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2355,6 +2411,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_get_userdata__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2372,6 +2430,8 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_isplaying__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2388,6 +2448,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_pause__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2406,6 +2468,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_playblocking__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2458,6 +2522,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_play__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2508,6 +2574,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_resume__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2524,6 +2592,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_set_fs__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2540,6 +2610,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_set_tag__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2556,6 +2628,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_set_userdata__",
                         "audio playback and recording through PortAudio");
 #else
@@ -2572,6 +2646,8 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifndef HAVE_PORTAUDIO
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__player_stop__",
                         "audio playback and recording through PortAudio");
 #else

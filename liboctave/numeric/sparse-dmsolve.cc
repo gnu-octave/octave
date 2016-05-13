@@ -344,6 +344,8 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
     }
 }
 
+#ifdef HAVE_CXSPARSE
+
 static void
 solve_singularity_warning (double)
 {
@@ -351,10 +353,14 @@ solve_singularity_warning (double)
   // an error for numerically rank defficient matrices
 }
 
+#endif
+
 template <typename RT, typename ST, typename T>
 RT
 dmsolve (const ST &a, const T &b, octave_idx_type &info)
 {
+  RT retval;
+
 #ifdef HAVE_CXSPARSE
 
   octave_idx_type nr = a.rows ();
@@ -362,8 +368,6 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
-
-  RT retval;
 
   if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -466,14 +470,18 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       CXSPARSE_DNAME (_dfree) (dm);
     }
 
-  return retval;
-
 #else
+
+  octave_unused_parameter (a);
+  octave_unused_parameter (b);
+  octave_unused_parameter (info);
 
   (*current_liboctave_error_handler)
     ("support for CXSparse was unavailable or disabled when liboctave was built");
 
 #endif
+
+  return retval;
 }
 
 // Instantiations we need.

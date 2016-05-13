@@ -49,11 +49,12 @@ qhull command
 #include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
+
 #  include "oct-qhull.h"
+
 #  if defined (NEED_QHULL_VERSION)
 char qh_version[] = "__voronoi__.oct 2007-07-24";
 #  endif
-#endif
 
 static void
 close_fcn (FILE *f)
@@ -75,6 +76,8 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
   return true;
 }
 
+#endif
+
 DEFUN_DLD (__voronoi__, args, ,
            "-*- texinfo -*-\n\
 @deftypefn  {} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts})\n\
@@ -84,6 +87,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #if defined (HAVE_QHULL)
+
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
@@ -328,12 +332,16 @@ Undocumented internal function.\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  
   std::string caller
     = (args.length () > 0
        ? args(0).xstring_value ("__voronoi__: CALLER must be a string")
        : std::string ("__voronoi__"));
 
   err_disabled_feature (caller, "Qhull");
+
 #endif
 }
 

@@ -42,11 +42,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #ifdef HAVE_SNDFILE
+
 static void
 safe_close (SNDFILE *file)
 {
   sf_close (file);
 }
+
 #endif
 
 DEFUN_DLD (audioread, args, ,
@@ -172,8 +174,12 @@ is stored in the audio file.\n\
   return ovl (ret_audio, info.samplerate);
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("audioread",
                         "reading and writing sound files through libsndfile");
+
 #endif
 }
 
@@ -417,8 +423,12 @@ Comment.\n\
   return ovl ();
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("audiowrite",
                         "reading and writing sound files through libsndfile");
+
 #endif
 }
 
@@ -429,6 +439,7 @@ Return information about an audio file specified by @var{filename}.\n\
 @end deftypefn")
 {
 #ifdef HAVE_SNDFILE
+
   if (args.length () != 1)
     print_usage ();
 
@@ -489,7 +500,11 @@ Return information about an audio file specified by @var{filename}.\n\
   return ovl (result);
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("audioinfo",
                         "reading and writing sound files through libsndfile");
+
 #endif
 }

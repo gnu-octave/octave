@@ -86,6 +86,7 @@ The author of the code itself is Timothy A. Davis\n\
 @end deftypefn")
 {
 #ifdef HAVE_AMD
+
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -178,7 +179,12 @@ The author of the code itself is Timothy A. Davis\n\
     return ovl (Pout);
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("amd", "AMD");
+
 #endif
 }
 

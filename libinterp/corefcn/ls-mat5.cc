@@ -591,6 +591,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         }
 
       return retval;
+
 #else
       err_disabled_feature ("load", "compressed data elements (zlib)");
 #endif
@@ -2286,6 +2287,7 @@ save_mat5_binary_element (std::ostream& os,
     }
 
 #ifdef HAVE_ZLIB
+
   if (mat7_format && ! compressing)
     {
       bool ret = false;
@@ -2320,6 +2322,11 @@ save_mat5_binary_element (std::ostream& os,
 
       return ret;
     }
+
+#else
+
+  octave_unused_parameter (compressing);
+
 #endif
 
   write_mat5_tag (os, miMATRIX, save_mat5_element_length

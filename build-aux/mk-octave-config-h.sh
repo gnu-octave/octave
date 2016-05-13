@@ -116,6 +116,15 @@ since all of Octave's header files already include it.
 /* #  undef HAVE_OCTAVE_UNUSED_ATTR */
 #endif
 
+#if defined (__cplusplus)
+template <typename T>
+static inline void
+octave_unused_parameter (const T&)
+{ }
+#else
+#  define octave_unused_parameter(param) (void) param;
+#endif
+
 #if defined (_MSC_VER)
 #  define OCTAVE_EXPORT __declspec(dllexport)
 #  define OCTAVE_IMPORT __declspec(dllimport)

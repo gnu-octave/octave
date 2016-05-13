@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif
 
 #include <stdlib.h>
@@ -166,6 +166,12 @@ octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
     msg = "X11 DISPLAY environment variable not set";
 
 #else
+
+  octave_unused_parameter (ht);
+  octave_unused_parameter (wd);
+  octave_unused_parameter (dp);
+  octave_unused_parameter (rx);
+  octave_unused_parameter (ry);
 
   msg = "no graphical display found";
 

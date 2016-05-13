@@ -553,6 +553,10 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
 
 #else
 
+  octave_unused_parameter (a);
+  octave_unused_parameter (piv_thres);
+  octave_unused_parameter (scale);
+
   (*current_liboctave_error_handler)
     ("support for UMFPACK was unavailable or disabled when liboctave was built");
 
@@ -769,6 +773,15 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
       ("Option udiag of incomplete LU not implemented");
 
 #else
+
+  octave_unused_parameter (a);
+  octave_unused_parameter (Qinit);
+  octave_unused_parameter (piv_thres);
+  octave_unused_parameter (scale);
+  octave_unused_parameter (FixedQ);
+  octave_unused_parameter (droptol);
+  octave_unused_parameter (milu);
+  octave_unused_parameter (udiag);
 
   (*current_liboctave_error_handler)
     ("support for UMFPACK was unavailable or disabled when liboctave was built");

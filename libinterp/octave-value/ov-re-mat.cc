@@ -693,6 +693,10 @@ octave_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_
   H5Sclose (space_hid);
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
   warn_save ("hdf5");
 #endif
 
@@ -761,6 +765,9 @@ octave_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
   warn_load ("hdf5");
 #endif
 

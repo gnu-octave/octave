@@ -1055,7 +1055,12 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
   return true;
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
   warn_save ("hdf5");
+
   return false;
 #endif
 }
@@ -1165,6 +1170,9 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
   warn_load ("hdf5");
 #endif
 

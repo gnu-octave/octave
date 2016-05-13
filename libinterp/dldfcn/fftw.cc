@@ -315,7 +315,11 @@ used per default.\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("fftw", "the FFTW3 planner");
+
 #endif
 }
 

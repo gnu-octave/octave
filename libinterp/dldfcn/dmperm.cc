@@ -42,6 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 #  define CXSPARSE_NAME(name) cs_di ## name
 #endif
 
+#if defined (HAVE_CXSPARSE)
+
 static RowVector
 put_int (octave_idx_type *p, octave_idx_type n)
 {
@@ -51,7 +53,6 @@ put_int (octave_idx_type *p, octave_idx_type n)
   return ret;
 }
 
-#if defined (HAVE_CXSPARSE)
 static octave_value_list
 dmperm_internal (bool rank, const octave_value arg, int nargout)
 {
@@ -110,6 +111,7 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 
   return retval;
 }
+
 #endif
 
 DEFUN_DLD (dmperm, args, nargout,
@@ -144,7 +146,12 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
   return ovl (dmperm_internal (false, args(0), nargout));
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("dmperm", "CXSparse");
+
 #endif
 }
 
@@ -187,7 +194,12 @@ such the numerical rank of the matrix @var{S} is bounded by\n\
   return ovl (dmperm_internal (true, args(0), nargout));
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("sprank", "CXSparse");
+
 #endif
 }
 

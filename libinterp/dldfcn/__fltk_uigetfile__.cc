@@ -52,6 +52,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifdef HAVE_FLTK
+
   // Expected argument list:
   //
   //   args(0) ... FileFilter in fltk format
@@ -139,7 +140,11 @@ Undocumented internal function.\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__fltk_uigetfile__", "OpenGL and FLTK");
+
 #endif
 }
 

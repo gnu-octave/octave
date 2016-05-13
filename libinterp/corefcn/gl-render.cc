@@ -647,6 +647,7 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
 }
 
 #if defined (HAVE_OPENGL)
+
 static std::string
 gl_get_string (GLenum id)
 {
@@ -658,6 +659,7 @@ gl_get_string (GLenum id)
   buf << glGetString (id);
   return std::string (buf.str ());
 }
+
 #endif
 
 void
@@ -668,10 +670,12 @@ opengl_renderer::draw_figure (const figure::properties& props)
   init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
 
 #if defined (HAVE_OPENGL)
+
   props.set___gl_extensions__ (gl_get_string (GL_EXTENSIONS));
   props.set___gl_renderer__ (gl_get_string (GL_RENDERER));
   props.set___gl_vendor__ (gl_get_string (GL_VENDOR));
   props.set___gl_version__ (gl_get_string (GL_VERSION));
+
 #endif
 
   // Draw children
@@ -740,10 +744,15 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
     }
 
 #else
+
+  octave_unused_parameter (enhanced);
+  octave_unused_parameter (c);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -795,10 +804,23 @@ opengl_renderer::render_grid (const std::string& gridstyle,
   set_linestyle ("-", true);
 
 #else
+
+  octave_unused_parameter (gridstyle);
+  octave_unused_parameter (ticks);
+  octave_unused_parameter (lim1);
+  octave_unused_parameter (lim2);
+  octave_unused_parameter (p1);
+  octave_unused_parameter (p1N);
+  octave_unused_parameter (p2);
+  octave_unused_parameter (p2N);
+  octave_unused_parameter (xyz);
+  octave_unused_parameter (is_3D);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -856,10 +878,25 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
   glEnd ();
 
 #else
+
+  octave_unused_parameter (ticks);
+  octave_unused_parameter (lim1);
+  octave_unused_parameter (lim2);
+  octave_unused_parameter (p1);
+  octave_unused_parameter (p1N);
+  octave_unused_parameter (p2);
+  octave_unused_parameter (p2N);
+  octave_unused_parameter (dx);
+  octave_unused_parameter (dy);
+  octave_unused_parameter (dz);
+  octave_unused_parameter (xyz);
+  octave_unused_parameter (mirror);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -912,10 +949,24 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
     }
 
 #else
+
+  octave_unused_parameter (ticks);
+  octave_unused_parameter (ticklabels);
+  octave_unused_parameter (lim1);
+  octave_unused_parameter (lim2);
+  octave_unused_parameter (p1);
+  octave_unused_parameter (p2);
+  octave_unused_parameter (xyz);
+  octave_unused_parameter (ha);
+  octave_unused_parameter (va);
+  octave_unused_parameter (wmax);
+  octave_unused_parameter (hmax);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -927,10 +978,12 @@ opengl_renderer::finish (void)
   glFinish ();
 
 #else
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -974,10 +1027,14 @@ opengl_renderer::setup_opengl_transformation (const axes::properties& props)
   xform = props.get_transform ();
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1030,10 +1087,14 @@ opengl_renderer::draw_axes_planes (const axes::properties& props)
   set_polygon_offset (false);
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1150,10 +1211,14 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
   glEnd ();
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1590,10 +1655,14 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
   // FIXME: draw zoom box, if needed
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1649,10 +1718,14 @@ opengl_renderer::draw_axes (const axes::properties& props)
   draw_axes_children (props);
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -1782,10 +1855,14 @@ opengl_renderer::draw_line (const line::properties& props)
   set_clipping (props.is_clipping ());
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2388,10 +2465,14 @@ opengl_renderer::draw_surface (const surface::properties& props)
     }
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2831,10 +2912,14 @@ opengl_renderer::draw_patch (const patch::properties &props)
     }
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -2871,10 +2956,14 @@ opengl_renderer::draw_text (const text::properties& props)
     glDisable (GL_BLEND);
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3067,10 +3156,14 @@ opengl_renderer::draw_image (const image::properties& props)
   glPixelZoom (1, 1);
 
 #else
+
+  octave_unused_parameter (props);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3082,10 +3175,15 @@ opengl_renderer::set_viewport (int w, int h)
   glViewport (0, 0, w, h);
 
 #else
+
+  octave_unused_parameter (w);
+  octave_unused_parameter (h);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3097,10 +3195,16 @@ opengl_renderer::draw_pixels (int width, int height, const float *data)
   glDrawPixels (width, height, GL_RGB, GL_FLOAT, data);
 
 #else
+
+  octave_unused_parameter (width);
+  octave_unused_parameter (height);
+  octave_unused_parameter (data);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3112,10 +3216,16 @@ opengl_renderer::draw_pixels (int width, int height, const uint8_t *data)
   glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 #else
+
+  octave_unused_parameter (width);
+  octave_unused_parameter (height);
+  octave_unused_parameter (data);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3127,10 +3237,16 @@ opengl_renderer::draw_pixels (int width, int height, const uint16_t *data)
   glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_SHORT, data);
 
 #else
+
+  octave_unused_parameter (width);
+  octave_unused_parameter (height);
+  octave_unused_parameter (data);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3144,10 +3260,14 @@ opengl_renderer::set_color (const Matrix& c)
   txt_renderer.set_color (c);
 
 #else
+
+  octave_unused_parameter (c);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3178,10 +3298,15 @@ opengl_renderer::set_polygon_offset (bool on, float offset)
     }
 
 #else
+
+  octave_unused_parameter (on);
+  octave_unused_parameter (offset);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3193,10 +3318,14 @@ opengl_renderer::set_linewidth (float w)
   glLineWidth (w);
 
 #else
+
+  octave_unused_parameter (w);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3227,10 +3356,15 @@ opengl_renderer::set_linestyle (const std::string& s, bool use_stipple)
     glEnable (GL_LINE_STIPPLE);
 
 #else
+
+  octave_unused_parameter (s);
+  octave_unused_parameter (use_stipple);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3268,10 +3402,19 @@ opengl_renderer::set_clipbox (double x1, double x2, double y1, double y2,
   zmin = z1; zmax = z2;
 
 #else
+
+  octave_unused_parameter (x1);
+  octave_unused_parameter (x2);
+  octave_unused_parameter (y1);
+  octave_unused_parameter (y2);
+  octave_unused_parameter (z1);
+  octave_unused_parameter (z2);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3293,10 +3436,14 @@ opengl_renderer::set_clipping (bool enable)
     }
 
 #else
+
+  octave_unused_parameter (enable);
+  
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3305,11 +3452,11 @@ opengl_renderer::init_marker (const std::string& m, double size, float width)
 {
 #if defined (HAVE_OPENGL)
 
-#if defined (HAVE_FRAMEWORK_OPENGL)
+#  if defined (HAVE_FRAMEWORK_OPENGL)
   GLint vw[4];
-#else
+#  else
   int vw[4];
-#endif
+#  endif
 
   glGetIntegerv (GL_VIEWPORT, vw);
 
@@ -3327,10 +3474,16 @@ opengl_renderer::init_marker (const std::string& m, double size, float width)
   filled_marker_id = make_marker_list (m, size, true);
 
 #else
+
+  octave_unused_parameter (m);
+  octave_unused_parameter (size);
+  octave_unused_parameter (width);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3349,10 +3502,12 @@ opengl_renderer::end_marker (void)
   set_linewidth (0.5f);
 
 #else
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3390,10 +3545,18 @@ opengl_renderer::draw_marker (double x, double y, double z,
     }
 
 #else
+
+  octave_unused_parameter (x);
+  octave_unused_parameter (y);
+  octave_unused_parameter (z);
+  octave_unused_parameter (lc);
+  octave_unused_parameter (fc);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3553,10 +3716,16 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
   return ID;
 
 #else
+
+  octave_unused_parameter (marker);
+  octave_unused_parameter (size);
+  octave_unused_parameter (filled);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }
 
@@ -3614,9 +3783,19 @@ opengl_renderer::render_text (const std::string& txt,
   return bbox;
 
 #else
+
+  octave_unused_parameter (txt);
+  octave_unused_parameter (x);
+  octave_unused_parameter (y);
+  octave_unused_parameter (z);
+  octave_unused_parameter (halign);
+  octave_unused_parameter (valign);
+  octave_unused_parameter (rotation);
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
   panic_impossible ();
+
 #endif
 }

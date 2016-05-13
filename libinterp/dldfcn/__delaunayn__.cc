@@ -55,11 +55,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
+
 #  include "oct-qhull.h"
+
 #  if defined (NEED_QHULL_VERSION)
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
 #  endif
-#endif
 
 static void
 close_fcn (FILE *f)
@@ -80,6 +81,8 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 
   return true;
 }
+
+#endif
 
 DEFUN_DLD (__delaunayn__, args, ,
            "-*- texinfo -*-\n\
@@ -226,7 +229,11 @@ Undocumented internal function.\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("__delaunayn__", "Qhull");
+
 #endif
 }
 

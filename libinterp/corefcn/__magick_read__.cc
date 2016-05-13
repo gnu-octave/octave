@@ -740,6 +740,7 @@ maybe_initialize_magick (void)
       initialized = true;
     }
 }
+
 #endif
 
 DEFUN (__magick_read__, args, nargout,
@@ -754,6 +755,7 @@ Use @code{imread} instead.\n\
 @end deftypefn")
 {
 #ifdef HAVE_MAGICK
+
   if (args.length () != 2 || ! args(0).is_string ())
     print_usage ();
 
@@ -849,7 +851,12 @@ Use @code{imread} instead.\n\
   return output;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("imread", "Image IO");
+
 #endif
 }
 
@@ -1391,6 +1398,7 @@ Use @code{imwrite} instead.\n\
 @end deftypefn")
 {
 #ifdef HAVE_MAGICK
+
   if (args.length () != 5 || ! args(0).is_string () || ! args(1).is_string ())
     print_usage ();
 
@@ -1540,7 +1548,11 @@ Use @code{imwrite} instead.\n\
   return ovl ();
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("imwrite", "Image IO");
+
 #endif
 }
 
@@ -1564,6 +1576,7 @@ This is a private internal function not intended for direct use.\n\
 @end deftypefn")
 {
 #ifdef HAVE_MAGICK
+
   if (args.length () < 1 || ! args(0).is_string ())
     print_usage ();
 
@@ -1602,11 +1615,16 @@ This is a private internal function not intended for direct use.\n\
   return ovl (ping);
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("imfinfo", "Image IO");
+
 #endif
 }
 
 #ifdef HAVE_MAGICK
+
 static octave_value
 magick_to_octave_value (const Magick::CompressionType& magick)
 {
@@ -1784,6 +1802,7 @@ Use @code{imfinfo} instead.\n\
 @end deftypefn")
 {
 #ifdef HAVE_MAGICK
+
   if (args.length () < 1 || ! args(0).is_string ())
     print_usage ();
 
@@ -2209,7 +2228,11 @@ Use @code{imfinfo} instead.\n\
   return ovl (info);
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("imfinfo", "Image IO");
+
 #endif
 }
 
@@ -2232,6 +2255,7 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
   octave_map formats = args(0).map_value ();
 
 #ifdef HAVE_MAGICK
+
   maybe_initialize_magick ();
 
   for (octave_idx_type idx = 0; idx < formats.numel (); idx++)
@@ -2261,7 +2285,9 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
     }
 
 #else
+
   formats = octave_map (dim_vector (1, 0), formats.fieldnames ());
+
 #endif
 
   return ovl (formats);

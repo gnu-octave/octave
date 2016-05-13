@@ -342,6 +342,9 @@ octave_float_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   H5Sclose (space_hid);
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
   warn_save ("hdf5");
 #endif
 
@@ -396,6 +399,9 @@ octave_float_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
   warn_load ("hdf5");
 #endif
 

@@ -37,6 +37,7 @@ check_hdf5_types (bool warn)
   if (! checked)
     {
 #if defined (HAVE_HDF5)
+
       ok = sizeof (octave_hdf5_id) >= sizeof (hid_t);
 
       if (warn && ! ok)
@@ -51,7 +52,11 @@ check_hdf5_types (bool warn)
           ("Octave:internal",
            "the size of octave_hdf5_err is smaller than the size of HDF5 herr_t");
 #else
+
+      octave_unused_parameter (warn);
+
       warn_disabled_feature ("check_hdf5_id_type", "HDF5");
+
 #endif
 
       checked = true;

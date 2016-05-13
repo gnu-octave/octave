@@ -542,6 +542,9 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   H5Gclose (group_hid);
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
   warn_save ("hdf5");
 #endif
 
@@ -781,6 +784,9 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Gclose (group_hid);
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
   warn_load ("hdf5");
 #endif
 

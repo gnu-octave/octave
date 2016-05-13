@@ -377,7 +377,12 @@ cleanup:
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+  
   err_disabled_feature ("symbfact", "CHOLMOD");
+
 #endif
 }
 

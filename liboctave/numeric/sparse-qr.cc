@@ -200,6 +200,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
 
 #else
 
+  octave_unused_parameter (order);
+
   (*current_liboctave_error_handler)
     ("sparse_qr: support for CXSparse was unavailable or disabled when liboctave was built");
 
@@ -289,6 +291,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::R (bool econ) const
 
 #else
 
+  octave_unused_parameter (econ);
+
   return SparseMatrix ();
 
 #endif
@@ -350,6 +354,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix& b) const
   return ret;
 
 #else
+
+  octave_unused_parameter (b);
 
   return Matrix ();
 
@@ -475,6 +481,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
 
 #else
 
+  octave_unused_parameter (b);
+
   return Matrix ();
 
 #endif
@@ -540,6 +548,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<double>, Matrix>
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return Matrix ();
 
@@ -627,6 +637,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseMatrix>
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return SparseMatrix ();
 
@@ -721,6 +733,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseMatrix>
 
 #else
 
+  octave_unused_parameter (b);
+
   return SparseMatrix ();
 
 #endif
@@ -809,6 +823,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, ComplexMatri
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return ComplexMatrix ();
 
@@ -906,6 +922,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, ComplexMatri
 
 #else
 
+  octave_unused_parameter (b);
+
   return ComplexMatrix ();
 
 #endif
@@ -947,6 +965,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
   count = 1;
 
 #else
+
+  octave_unused_parameter (order);
 
   (*current_liboctave_error_handler)
     ("sparse_qr: support for CXSparse was unavailable or disabled when liboctave was built");
@@ -1036,6 +1056,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
 
 #else
 
+  octave_unused_parameter (econ);
+
   return SparseComplexMatrix ();
 
 #endif
@@ -1091,6 +1113,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C (const ComplexMatrix& b) const
   return ret;
 
 #else
+
+  octave_unused_parameter (b);
 
   return ComplexMatrix ();
 
@@ -1266,6 +1290,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseCo
 
 #else
 
+  octave_unused_parameter (b);
+
   return SparseComplexMatrix ();
 
 #endif
@@ -1385,6 +1411,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseCo
 
 #else
 
+  octave_unused_parameter (b);
+
   return SparseComplexMatrix ();
 
 #endif
@@ -1446,6 +1474,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Comple
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return ComplexMatrix ();
 
@@ -1517,6 +1547,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<double>, Comple
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return ComplexMatrix ();
 
@@ -1606,6 +1638,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseCo
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return SparseComplexMatrix ();
 
@@ -1704,6 +1738,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseCo
 
 #else
 
+  octave_unused_parameter (b);
+
   return SparseComplexMatrix ();
 
 #endif
@@ -1765,6 +1801,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, Compl
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return ComplexMatrix ();
 
@@ -1835,6 +1873,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, Compl
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return ComplexMatrix ();
 
@@ -1924,6 +1964,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, S
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return SparseComplexMatrix ();
 
@@ -2021,6 +2063,8 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, S
   return x;
 
 #else
+
+  octave_unused_parameter (b);
 
   return SparseComplexMatrix ();
 

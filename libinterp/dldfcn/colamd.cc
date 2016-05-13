@@ -279,6 +279,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @end deftypefn")
 {
 #ifdef HAVE_COLAMD
+
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
@@ -441,7 +442,12 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("colamd", "COLAMD");
+
 #endif
 }
 
@@ -629,7 +635,12 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("symamd", "COLAMD");
+
 #endif
 }
 

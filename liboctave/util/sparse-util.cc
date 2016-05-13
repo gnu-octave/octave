@@ -36,12 +36,21 @@ sparse_chol_error_internal (int status, const char *file,
                             int line, const char *message)
 {
 #ifdef HAVE_CHOLMOD
+
   // Ignore CHOLMOD_NOT_POSDEF, since we handle that in Fchol as an
   // error or exit status.
   if (status != CHOLMOD_NOT_POSDEF)
     (*current_liboctave_warning_with_id_handler)
       ("Octave:cholmod-message", "warning %i, at line %i in file %s: %s",
        status, line, file, message);
+
+#else
+
+  octave_unused_parameter (status);
+  octave_unused_parameter (file);
+  octave_unused_parameter (line);
+  octave_unused_parameter (message);
+
 #endif
 }
 

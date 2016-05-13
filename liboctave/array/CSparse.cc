@@ -1141,6 +1141,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
                                   int) const
 {
   ComplexDET retval;
+
 #ifdef HAVE_UMFPACK
 
   octave_idx_type nr = rows ();
@@ -1252,12 +1253,18 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
             }
         }
     }
-  return retval;
 
 #else
+
+  octave_unused_parameter (err);
+  octave_unused_parameter (rcond);
+
   (*current_liboctave_error_handler)
     ("support for UMFPACK was unavailable or disabled when liboctave was built");
+
 #endif
+
+  return retval;
 }
 
 ComplexMatrix
@@ -5431,6 +5438,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   err = 0;
 
 #ifdef HAVE_UMFPACK
+
   // Setup the control parameters
   Control = Matrix (UMFPACK_CONTROL, 1);
   double *control = Control.fortran_vec ();
@@ -5529,12 +5537,20 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   if (err != 0)
     UMFPACK_ZNAME (free_numeric) (&Numeric);
 
-  return Numeric;
-
 #else
+
+  octave_unused_parameter (rcond);
+  octave_unused_parameter (Control);
+  octave_unused_parameter (Info);
+  octave_unused_parameter (sing_handler);
+  octave_unused_parameter (calc_cond);
+
   (*current_liboctave_error_handler)
     ("support for UMFPACK was unavailable or disabled when liboctave was built");
+
 #endif
+
+  return Numeric;
 }
 
 ComplexMatrix
@@ -5771,6 +5787,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
             mattype.mark_as_rectangular ();
 
 #else
+          octave_unused_parameter (rcond);
+          octave_unused_parameter (sing_handler);
+          octave_unused_parameter (calc_cond);
+
           (*current_liboctave_error_handler)
             ("support for UMFPACK was unavailable or disabled "
              "when liboctave was built");
@@ -6065,6 +6085,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
             mattype.mark_as_rectangular ();
 
 #else
+          octave_unused_parameter (rcond);
+          octave_unused_parameter (sing_handler);
+          octave_unused_parameter (calc_cond);
+
           (*current_liboctave_error_handler)
             ("support for UMFPACK was unavailable or disabled "
              "when liboctave was built");
@@ -6290,6 +6314,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
             mattype.mark_as_rectangular ();
 
 #else
+          octave_unused_parameter (rcond);
+          octave_unused_parameter (sing_handler);
+          octave_unused_parameter (calc_cond);
+
           (*current_liboctave_error_handler)
             ("support for UMFPACK was unavailable or disabled "
              "when liboctave was built");
@@ -6576,6 +6604,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
             mattype.mark_as_rectangular ();
 
 #else
+          octave_unused_parameter (rcond);
+          octave_unused_parameter (sing_handler);
+          octave_unused_parameter (calc_cond);
+
           (*current_liboctave_error_handler)
             ("support for UMFPACK was unavailable or disabled "
              "when liboctave was built");

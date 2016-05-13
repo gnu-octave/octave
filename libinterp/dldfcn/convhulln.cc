@@ -44,11 +44,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
+
 #  include "oct-qhull.h"
+
 #  if defined (NEED_QHULL_VERSION)
 char qh_version[] = "convhulln.oct 2007-07-24";
 #  endif
-#endif
 
 static void
 close_fcn (FILE *f)
@@ -69,6 +70,8 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 
   return true;
 }
+
+#endif
 
 DEFUN_DLD (convhulln, args, nargout,
            "-*- texinfo -*-\n\
@@ -290,7 +293,12 @@ convex hull is calculated.\n\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("convhulln", "Qhull");
+
 #endif
 }
 

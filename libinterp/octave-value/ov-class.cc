@@ -1468,7 +1468,12 @@ error_cleanup:
   return true;
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
   warn_save ("hdf5");
+
   return false;
 #endif
 }
@@ -1603,6 +1608,9 @@ error_cleanup:
     H5Gclose (group_hid);
 
 #else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
   warn_load ("hdf5");
 #endif
 

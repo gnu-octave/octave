@@ -54,6 +54,15 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_UNUSED
 #endif
 
+#if defined (__cplusplus)
+template <typename T>
+static inline void
+octave_unused_parameter (const T&)
+{ }
+#else
+#  define octave_unused_parameter(param) (void) param;
+#endif
+
 #if ! defined (HAVE_DEV_T)
 typedef short dev_t;
 #endif

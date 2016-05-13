@@ -37,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "variables.h"
 
+#if defined (HAVE_ARPACK)
+
 // Global pointer for user defined function.
 static octave_function *eigs_fcn = 0;
 
@@ -120,6 +122,8 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
   return retval;
 }
 
+#endif
+
 DEFUN_DLD (__eigs__, args, nargout,
            "-*- texinfo -*-\n\
 @deftypefn  {} {@var{d} =} __eigs__ (@var{A})\n\
@@ -146,6 +150,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifdef HAVE_ARPACK
+
   int nargin = args.length ();
 
   if (nargin == 0)
@@ -558,7 +563,12 @@ Undocumented internal function.\n\
   return retval;
 
 #else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("eigs", "ARPACK");
+
 #endif
 }
 

@@ -1023,6 +1023,10 @@ parse_save_options (const string_vector &argv,
                     load_save_format &format, bool &append,
                     bool &save_as_floats, bool &use_zlib)
 {
+#if ! defined (HAVE_ZLIB)
+  octave_unused_parameter (use_zlib);
+#endif
+
   string_vector retval;
   int argc = argv.numel ();
 

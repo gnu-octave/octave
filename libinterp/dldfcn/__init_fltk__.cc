@@ -2334,7 +2334,7 @@ public:
 
   void print_figure (const graphics_object& go,
                      const std::string& term,
-                     const std::string& file_cmd, bool /*mono*/,
+                     const std::string& file_cmd,
                      const std::string& /*debug_file*/) const
   {
     figure_manager::print (go.get_handle (), file_cmd, term);

@@ -210,16 +210,11 @@ function eps_drawnow (opts, epsfile, gp_opts)
 endfunction
 
 function local_drawnow (term, file, opts)
-  if (opts.use_color < 0)
-    mono = true;
-  else
-    mono = false;
-  endif
   set (0, "currentfigure", opts.figure);
   if (isempty (opts.debug_file) || ! opts.debug)
-    drawnow (term, file, mono);
+    drawnow (term, file);
   else
-    drawnow (term, file, mono, opts.debug_file);
+    drawnow (term, file, opts.debug_file);
   endif
   if (opts.debug)
     fprintf ("Expanded gnuplot terminal = '%s'\n", term);

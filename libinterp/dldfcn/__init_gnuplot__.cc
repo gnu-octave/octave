@@ -105,13 +105,12 @@ public:
   }
 
   void print_figure (const graphics_object& go, const std::string& term,
-                     const std::string& file, bool mono,
+                     const std::string& file,
                      const std::string& debug_file) const
   {
     octave_value_list args;
     if (! debug_file.empty ())
-      args(4) = debug_file;
-    args(3) = mono;
+      args(3) = debug_file;
     args(2) = file;
     args(1) = term;
     args(0) = go.get_handle ().as_octave_value ();

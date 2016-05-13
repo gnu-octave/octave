@@ -10706,7 +10706,7 @@ DEFUN (drawnow, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {} {} drawnow ()\n\
 @deftypefnx {} {} drawnow (\"expose\")\n\
-@deftypefnx {} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
+@deftypefnx {} {} drawnow (@var{term}, @var{file}, @var{debug_file})\n\
 Update figure windows and their children.\n\
 \n\
 The event queue is flushed and any callbacks generated are executed.\n\
@@ -10721,7 +10721,7 @@ undocumented.\n\
 {
   static int drawnow_executing = 0;
 
-  if (args.length () > 4)
+  if (args.length () > 3)
     print_usage ();
 
   unwind_protect frame;
@@ -10785,10 +10785,9 @@ undocumented.\n\
               gh_manager::lock ();
             }
         }
-      else if (args.length () >= 2 && args.length () <= 4)
+      else if (args.length () >= 2 && args.length () <= 3)
         {
           std::string term, file, debug_file;
-          bool mono;
 
           term = args(0).xstring_value ("drawnow: TERM must be a string");
 
@@ -10815,9 +10814,7 @@ undocumented.\n\
                 }
             }
 
-          mono = (args.length () >= 3 ? args(2).xbool_value ("drawnow: MONO colormode must be a boolean value") : false);
-
-          debug_file = (args.length () > 3 ? args(3).xstring_value ("drawnow: DEBUG_FILE must be a string") : "");
+          debug_file = (args.length () > 2 ? args(2).xstring_value ("drawnow: DEBUG_FILE must be a string") : "");
 
           graphics_handle h = gcf ();
 
@@ -10834,8 +10831,7 @@ undocumented.\n\
 
           gh_manager::unlock ();
 
-          go.get_toolkit ().print_figure (go, term, file, mono,
-                                          debug_file);
+          go.get_toolkit ().print_figure (go, term, file, debug_file);
 
           octave_sleep (0.05); // FIXME: really needed?
 

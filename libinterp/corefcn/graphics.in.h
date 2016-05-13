@@ -2091,7 +2091,7 @@ public:
   { gripe_if_tkit_invalid ("redraw_figure"); }
 
   virtual void print_figure (const graphics_object&, const std::string&,
-                             const std::string&, bool,
+                             const std::string&,
                              const std::string& = "") const
   { gripe_if_tkit_invalid ("print_figure"); }
 
@@ -2205,9 +2205,9 @@ public:
   { rep->redraw_figure (go); }
 
   void print_figure (const graphics_object& go, const std::string& term,
-                     const std::string& file, bool mono,
+                     const std::string& file,
                      const std::string& debug_file = "") const
-  { rep->print_figure (go, term, file, mono, debug_file); }
+  { rep->print_figure (go, term, file, debug_file); }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
   { return rep->get_canvas_size (fh); }

@@ -25,11 +25,11 @@
 
 function __gnuplot_drawnow__ (h, term, file, debug_file)
 
-  if (nargin < 1 || nargin > 5 || nargin == 2)
+  if (nargin < 1 || nargin > 4 || nargin == 2)
     print_usage ();
   endif
 
-  if (nargin >= 3 && nargin <= 5)
+  if (nargin >= 3 && nargin <= 4)
     ## Produce various output formats, or redirect gnuplot stream to a
     ## debug file.
     plot_stream = [];
@@ -41,7 +41,7 @@ function __gnuplot_drawnow__ (h, term, file, debug_file)
       if (gnuplot_supports_term)
         enhanced = gnuplot_set_term (plot_stream(1), true, h, term, file);
         __gnuplot_draw_figure__ (h, plot_stream(1), enhanced);
-        if (nargin == 5)
+        if (nargin == 4)
           fid = fopen (debug_file, "wb");
           enhanced = gnuplot_set_term (fid, true, h, term, file);
           __gnuplot_draw_figure__ (h, fid, enhanced);

@@ -180,7 +180,7 @@ Backend::redraw_figure (const graphics_object& go) const
 void
 Backend::print_figure (const graphics_object& go,
                             const std::string& term,
-                            const std::string& file_cmd, bool /*mono*/,
+                            const std::string& file_cmd,
                             const std::string& /*debug_file*/) const
 {
   if (go.get_properties ().is_visible ())

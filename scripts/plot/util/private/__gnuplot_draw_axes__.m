@@ -1174,14 +1174,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               zz(:,kk)   = xdat(:,k);
               zz(:,kk+1) = ydat(:,k);
               zz(:,kk+2) = zdat(:,k);
-              zz(:,kk+3) = cdat(:,k);
-              if (facecolor_none_or_white)
+              if (flat_interp_face || facecolor_none_or_white)
                 zz(:,kk+3) = cdat(:,k);
               else
                 ## Convert color to 24-bit RGB
                 zz(:,kk+3) = hex2dec (sprintf ("%02x%02x%02x",
                                                round (255*obj.facecolor)));
-               endif
+              endif
               k += 1;
             endfor
             data{data_idx} = zz.';
@@ -1229,7 +1228,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             endif
           else
             hidden_removal = true;
-            withclause{data_idx} = sprintf ("with pm3d linecolor rgb variable");
+            if (flat_interp_face)
+              color_source = "";
+            else
+              color_source = " linecolor rgb variable";
+            endif
+            withclause{data_idx} = sprintf ("with pm3d%s", color_source);
 
             if (doing_interp_color)
               ## "depthorder" interferes with interpolation of colors.

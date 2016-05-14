@@ -103,7 +103,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   y.resize (x_dims, 0.0);
 
-  int x_stride = 1;
+  octave_idx_type x_stride = 1;
   for (int i = 0; i < dim; i++)
     x_stride *= x_dims(i);
 

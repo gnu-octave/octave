@@ -22,7 +22,6 @@ scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/dir.m \
   scripts/miscellaneous/dos.m \
   scripts/miscellaneous/edit.m \
-  scripts/miscellaneous/error_ids.m \
   scripts/miscellaneous/fact.m \
   scripts/miscellaneous/fileattrib.m \
   scripts/miscellaneous/fileparts.m \
@@ -53,7 +52,6 @@ scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/open.m \
   scripts/miscellaneous/orderfields.m \
   scripts/miscellaneous/pack.m \
-  scripts/miscellaneous/paren.m \
   scripts/miscellaneous/parseparams.m \
   scripts/miscellaneous/perl.m \
   scripts/miscellaneous/python.m \
@@ -74,7 +72,6 @@ scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/unzip.m \
   scripts/miscellaneous/ver.m \
   scripts/miscellaneous/version.m \
-  scripts/miscellaneous/warning_ids.m \
   scripts/miscellaneous/what.m \
   scripts/miscellaneous/xor.m \
   scripts/miscellaneous/zip.m

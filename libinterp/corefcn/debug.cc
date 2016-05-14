@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <set>
 #include <string>
 
@@ -437,9 +438,9 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
 %! dbstop help at 100;
 %! dbstop in ls 100;
 %! dbstop help 200 if a==5;
-%! dbstop if error Octave:undefined-function
+%! dbstop if error Octave:undefined-function;
 %! s = dbstatus;
-%! dbclear all
+%! dbclear all;
 %! assert ({s.bkpt(:).name}, {"help", "help", "help>do_contents", "ls", "ls"});
 %! assert ([s.bkpt(:).line], [48, 100, 200, 58, 100]);
 %! assert (s.errs, {"Octave:undefined-function"});
@@ -652,41 +653,84 @@ bp_table::do_add_breakpoint (const std::string& fname,
                              const bp_table::intmap& line,
                              const std::string& condition)
 {
-  octave_user_code *dbg_fcn = get_user_code (fname);
+  octave_user_code *main_fcn = get_user_code (fname);
 
-  if (! dbg_fcn)
+  if (! main_fcn)
     error ("add_breakpoint: unable to find function '%s'\n", fname.c_str ());
 
-  condition_valid (condition); // Throw error if condition not valid.
+  condition_valid (condition);  // Throw error if condition not valid.
 
   intmap retval;
 
-  if (! do_add_breakpoint_1 (dbg_fcn, fname, line, condition, retval))
+  const std::list<std::string> subfcn_names   = main_fcn->subfunction_names ();
+  std::map<std::string, octave_value> subfcns = main_fcn->subfunctions ();
+
+  octave_idx_type len = line.size ();
+
+  for (int i = 0; i < len; i++)
     {
-      // Search subfunctions in the order they appear in the file.
+      const_intmap_iterator m = line.find (i);
 
-      const std::list<std::string> subfcn_names
-        = dbg_fcn->subfunction_names ();
-
-      std::map<std::string, octave_value> subfcns
-        = dbg_fcn->subfunctions ();
-
-      for (std::list<std::string>::const_iterator p = subfcn_names.begin ();
-           p != subfcn_names.end (); p++)
+      if (m != line.end ())
         {
-          std::map<std::string, octave_value>::const_iterator
-            q = subfcns.find (*p);
+          int lineno = m->second;
 
-          if (q != subfcns.end ())
+          octave_user_code *dbg_fcn = 0;
+          octave_user_code *next_fcn = 0;  // 1st function starting after line
+
+          // Find innermost nested (or parent) function containing line.
+          int earliest_end = std::numeric_limits<int>::max ();
+
+          for (std::list<std::string>::const_iterator p
+                                                      = subfcn_names.begin ();
+               p != subfcn_names.end (); p++)
             {
-              octave_user_code *dbg_subfcn = q->second.user_code_value ();
+              std::map<std::string, octave_value>::const_iterator
+                q = subfcns.find (*p);
 
-              if (do_add_breakpoint_1 (dbg_subfcn, fname, line, condition,
-                                       retval))
-              break;
+              if (q != subfcns.end () && q->second.is_user_function ())
+                {
+                  octave_user_function *dbg_subfcn
+                                        = q->second.user_function_value ();
+
+                  if (dbg_subfcn->ending_line () < earliest_end
+                      && dbg_subfcn->ending_line () >= lineno
+                      && dbg_subfcn->beginning_line () <= lineno)
+                    {
+                      earliest_end = dbg_subfcn->ending_line ();
+                      dbg_fcn = dbg_subfcn;
+                    }
+
+                  // First fcn starting after line.
+                  // This is used if line is not inside any function.
+                  if (dbg_subfcn->beginning_line () >= lineno && ! next_fcn)
+                    next_fcn = dbg_subfcn;
+                }
             }
+
+          // The breakpoint is either in the subfunction found above,
+          // or in the main function, which we check now.
+          if (main_fcn->is_user_function ())
+            {
+              int e = dynamic_cast<octave_user_function*> (main_fcn)
+                      ->ending_line ();
+              if (e >= lineno && e < earliest_end)
+                dbg_fcn = main_fcn;
+            }
+
+          if (! dbg_fcn)
+            dbg_fcn = next_fcn;
+
+          // We've found the right (sub)function.  Now insert the breakpoint.
+          // We insert all breakpoints.
+          // If multiple are in the same function, we insert multiple times.
+          intmap ret_one;
+          if (dbg_fcn
+              && do_add_breakpoint_1 (dbg_fcn, fname, line, condition, ret_one))
+            retval.insert (std::pair<int,int> (i, ret_one.find (i)->second));
         }
     }
+
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
@@ -1496,7 +1540,7 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
 %! dbstop quantile>__quantile__;
 %! dbstop ls;
 %! s = dbstatus;
-%! dbclear all
+%! dbclear all;
 %! assert (s(1).name, "@audioplayer/set>setproperty");
 %! assert (s(2).name, "@ftp/dir");
 %! assert (s(3).name, "ls");

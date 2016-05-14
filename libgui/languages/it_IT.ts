@@ -2351,7 +2351,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+3"/>
         <source>col:</source>
-        <translation>riga:</translation>
+        <translation>col:</translation>
     </message>
     <message>
         <location line="+156"/>

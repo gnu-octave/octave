@@ -1073,7 +1073,7 @@ maybe_extract_message_id (const std::string& caller,
             }
           else
             nargs(0) = "call to " + caller
-              + " with message identifier requires message";
+              + " with message identifier '" + arg1 + "' requires message";
         }
     }
 

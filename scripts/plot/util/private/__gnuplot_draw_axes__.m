@@ -479,10 +479,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       obj.zdata(obj.zdata<=0) = NaN;
     endif
 
-    ## Check for facecolor interpolation for surfaces.
-    doing_interp_color = ...
-       isfield (obj, "facecolor") && strcmp (obj.facecolor, "interp");
-
     switch (obj.type)
       case "image"
         img_data = obj.cdata;
@@ -1104,67 +1100,56 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
       case "surface"
         view_map = true;
-        if (! (strcmp (obj.edgecolor, "none")
-               && strcmp (obj.facecolor, "none")))
+        if (isempty (obj.displayname))
+          tspec = "title \"\"";
+        else
+          tmp = undo_string_escapes (
+                  __maybe_munge_text__ (enhanced, obj, "displayname")
+                );
+          tspec = ['title "' tmp '"'];
+        endif
+
+        xdat = obj.xdata;
+        ydat = obj.ydata;
+        zdat = obj.zdata;
+        cdat = obj.cdata;
+        err = false;
+        if (! size_equal (zdat, cdat))
+          err = true;
+        endif
+        if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
+          if (rows (zdat) == length (ydat)
+              && columns (zdat) == length (xdat))
+            [xdat, ydat] = meshgrid (xdat, ydat);
+          else
+            err = true;
+          endif
+        elseif (ismatrix (xdat) && ismatrix (ydat) && ismatrix (zdat))
+          if (! size_equal (xdat, ydat, zdat))
+            err = true;
+          endif
+        else
+          err = true;
+        endif
+        if (err)
+          error ("__gnuplot_draw_axes__: invalid grid data");
+        endif
+        xlen = columns (zdat);
+        ylen = rows (zdat);
+
+        if (! strcmp (obj.facecolor, "none"))
           data_idx += 1;
           is_image_data(data_idx) = false;
           parametric(data_idx) = false;
           have_cdata(data_idx) = true;
           have_3d_patch(data_idx) = false;
-          [style, sidx] = do_linestyle_command (obj, obj.edgecolor,
-                                                data_idx,
-                                                plot_stream);
-          if (__gnuplot_has_feature__ ("linetype"))
-            scmd = "linetype";
-          else
-            scmd = "linestyle";
-          endif
 
-          if (isempty (obj.displayname))
-            titlespec{data_idx} = "title \"\"";
-          else
-            tmp = undo_string_escapes (
-                    __maybe_munge_text__ (enhanced, obj, "displayname")
-                  );
-            titlespec{data_idx} = ['title "' tmp '"'];
-          endif
+          titlespec{data_idx} = tspec;
+          tspec = "title \"\"";
 
           flat_interp_face = (strcmp (obj.facecolor, "flat")
                               || strcmp (obj.facecolor, "interp"));
-          flat_interp_edge = (strcmp (obj.edgecolor, "flat")
-                              || strcmp (obj.edgecolor, "interp"));
 
-          facecolor_none_or_white = (strcmp (obj.facecolor, "none")
-                                     || (isnumeric (obj.facecolor)
-                                         && all (obj.facecolor == 1)));
-          xdat = obj.xdata;
-          ydat = obj.ydata;
-          zdat = obj.zdata;
-          cdat = obj.cdata;
-
-          err = false;
-          if (! size_equal (zdat, cdat))
-            err = true;
-          endif
-          if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
-            if (rows (zdat) == length (ydat)
-                && columns (zdat) == length (xdat))
-              [xdat, ydat] = meshgrid (xdat, ydat);
-            else
-              err = true;
-            endif
-          elseif (ismatrix (xdat) && ismatrix (ydat) && ismatrix (zdat))
-            if (! size_equal (xdat, ydat, zdat))
-              err = true;
-            endif
-          else
-            err = true;
-          endif
-          if (err)
-            error ("__gnuplot_draw_axes__: invalid grid data");
-          endif
-          xlen = columns (zdat);
-          ylen = rows (zdat);
           if (xlen == columns (xdat) && xlen == columns (ydat)
               && ylen == rows (xdat) && ylen == rows (ydat))
             len = 4 * xlen;
@@ -1174,7 +1159,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               zz(:,kk)   = xdat(:,k);
               zz(:,kk+1) = ydat(:,k);
               zz(:,kk+2) = zdat(:,k);
-              if (flat_interp_face || facecolor_none_or_white)
+              if (flat_interp_face)
                 zz(:,kk+3) = cdat(:,k);
               else
                 ## Convert color to 24-bit RGB
@@ -1186,6 +1171,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             data{data_idx} = zz.';
           endif
 
+          doing_interp_color = strcmp (obj.facecolor, "interp");
           if (doing_interp_color)
             interp_str = "interpolate 0, 0";
           else
@@ -1196,97 +1182,97 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
           fputs (plot_stream, "unset pm3d\n");
           fputs (plot_stream, "set style increment default;\n");
-          if (flat_interp_edge && facecolor_none_or_white)
-            withclause{data_idx} = sprintf ("with %s palette", style{1});
-            if (length (style) > 1)
-              style = style{2:end};
-              sidx = sidx(2:end);
-            else
-              style = {};
-              sidx = [];
-            end
-            if (all (obj.facecolor == 1))
-              hidden_removal = true;
-            else
-              withclause{data_idx} = [withclause{data_idx} " nohidden3d"];
-            endif
-          elseif (facecolor_none_or_white)
-            fputs (plot_stream,"set style increment user;\n");
-            withclause{data_idx} = sprintf ("with %s %s %d",
-                                            style{1}, scmd, sidx(1));
-            if (length (style) > 1)
-              style = style{2:end};
-              sidx = sidx(2:end);
-            else
-              style = {};
-              sidx = [];
-            end
-            if (all (obj.facecolor == 1))
-              hidden_removal = true;
-            else
-              withclause{data_idx} = [withclause{data_idx} " nohidden3d"];
-            endif
+          hidden_removal = true;
+          if (flat_interp_face)
+            color_source = "";
           else
-            hidden_removal = true;
-            if (flat_interp_face)
-              color_source = "";
-            else
-              color_source = " linecolor rgb variable";
-            endif
-            withclause{data_idx} = sprintf ("with pm3d%s", color_source);
+            color_source = " linecolor rgb variable";
+          endif
+          withclause{data_idx} = sprintf ("with pm3d%s", color_source);
 
-            if (doing_interp_color)
-              ## "depthorder" interferes with interpolation of colors.
-              dord = "scansautomatic";
-            else
-              dord = "depthorder";
-            endif
+          if (doing_interp_color)
+            ## "depthorder" interferes with interpolation of colors.
+            dord = "scansautomatic";
+          else
+            dord = "depthorder";
+          endif
 
-            if (! (flat_interp_face && strcmp (obj.edgecolor, "flat"))
-                && ! facecolor_none_or_white)
-              if (strcmp (obj.edgecolor, "none"))
-                if (__gnuplot_has_feature__ ("transparent_surface")
-                    && isscalar (obj.facealpha))
-                  fprintf (plot_stream,
-                           "set style fill transparent solid %f;\n",
-                           obj.facealpha);
-                endif
-              else
-                if (__gnuplot_has_feature__ ("transparent_surface")
-                    && isscalar (obj.facealpha))
-                  fprintf (plot_stream,
-                           "set style fill transparent solid %f;\n",
-                           obj.facealpha);
-                endif
-              endif
-            endif
+          if (__gnuplot_has_feature__ ("transparent_surface")
+              && isscalar (obj.facealpha))
             fprintf (plot_stream,
-                     "set pm3d explicit at s %s %s corners2color c3;\n",
-                     interp_str, dord);
+                     "set style fill transparent solid %f;\n",
+                     obj.facealpha);
+          endif
+          fprintf (plot_stream,
+                   "set pm3d explicit at s %s %s corners2color c3;\n",
+                   interp_str, dord);
+        endif
+
+        if (! strcmp (obj.edgecolor, "none"))
+          flat_interp_edge = (strcmp (obj.edgecolor, "flat")
+                              || strcmp (obj.edgecolor, "interp"));
+          if (flat_interp_edge)
+            scmd = "palette";
+            ccol = ":($4)";
+          else
+            if (__gnuplot_has_feature__ ("linetype"))
+              scmd = "linetype";
+            else
+              scmd = "linestyle";
+            endif
+            ccol = "";
+          endif
+
+          [style, sidx] = do_linestyle_command (obj, obj.edgecolor,
+                                                data_idx,
+                                                plot_stream);
+          if (flat_interp_edge)
+            N_tup = 4;
+          else
+            N_tup = 3;
+          endif
+          len = N_tup * xlen;
+          zz = zeros (ylen, len);
+          k = 1;
+          for kk = 1:N_tup:len
+            zz(:,kk)   = xdat(:,k);
+            zz(:,kk+1) = ydat(:,k);
+            zz(:,kk+2) = zdat(:,k);
+            if (flat_interp_edge)
+              zz(:,kk+3) = cdat(:,k);
+            endif
+            k += 1;
+          endfor
+
+          zz = zz.';
+
+          if (strcmp (obj.facecolor, "none"))
+            hopt = " nohidden3d";
+            hidden_removal = false;
+          else
+            hopt = "";
           endif
 
           for i_stl = 1:length (style)
-            len = 3 * xlen;
-            zz = zeros (ylen, len);
-            k = 1;
-            for kk = 1:3:len
-              zz(:,kk)   = xdat(:,k);
-              zz(:,kk+1) = ydat(:,k);
-              zz(:,kk+2) = zdat(:,k);
-              k += 1;
-            endfor
-            zz = zz.';
-
+            if (flat_interp_edge)
+              sopt = "";
+            else
+              sopt = sprintf("%d", sidx(i_stl));
+            endif
             data_idx += 1;
-            is_image_data(data_idx) = is_image_data(data_idx - 1);
-            parametric(data_idx) = parametric(data_idx - 1);
-            have_cdata(data_idx) = false;
-            have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-            titlespec{data_idx} = "title \"\"";
-            usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
+            is_image_data(data_idx) = false;
+            parametric(data_idx) = false;
+            if (flat_interp_edge)
+              have_cdata(data_idx) = true;
+            else
+              have_cdata(data_idx) = false;
+            end
+            have_3d_patch(data_idx) = false;
+            titlespec{data_idx} = tspec;
+            usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)%s", ylen, xlen, ccol);
             data{data_idx} = zz;
-            withclause{data_idx} = sprintf ("with %s %s %d",
-                                             style{i_stl}, scmd, sidx(i_stl));
+            withclause{data_idx} = sprintf ("with %s %s %s%s",
+                                             style{i_stl}, scmd, sopt, hopt);
           endfor
 
         endif

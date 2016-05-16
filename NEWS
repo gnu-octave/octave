@@ -77,6 +77,7 @@ Summary of important user-visible changes for version 4.2:
 
  ** Other new functions added in 4.2:
 
+      audioformats
       deg2rad
       evalc
       hash

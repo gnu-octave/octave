@@ -42,6 +42,8 @@ wav, flac and ogg vorbis.
 
 @DOCSTRING(audiowrite)
 
+@DOCSTRING(audioformats)
+
 @node Audio Device Information
 @section Audio Device Information
 

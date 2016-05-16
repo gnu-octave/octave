@@ -317,7 +317,10 @@ object) relevant global values before and after the nested call.
           else \
             { \
               if (get_set) \
-                curr_lexer->maybe_classdef_get_set_method = false; \
+                { \
+                  yyless (3); \
+                  curr_lexer->maybe_classdef_get_set_method = false; \
+                } \
  \
               int id_tok = curr_lexer->handle_identifier (); \
  \
@@ -1254,7 +1257,7 @@ ANY_INCLUDING_NL (.|{NL})
 // followed by "(".
 %}
 
-(set|get)/{S}*\( {
+(set|get){S}*\( {
     HANDLE_IDENTIFIER ("(set|get)/{S}*\\(", true);
   }
 

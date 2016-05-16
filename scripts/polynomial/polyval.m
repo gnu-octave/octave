@@ -50,7 +50,7 @@ function [y, dy] = polyval (p, x, s = [], mu)
   endif
 
   if (isempty (x))
-    y = [];
+    y = x;
     return;
   elseif (isempty (p))
     y = zeros (size (x));
@@ -154,4 +154,4 @@ endfunction
 %!assert (zeros (1, 10), polyval ([], 1:10))
 %!assert ([], polyval (1, []))
 %!assert ([], polyval ([], []))
-
+%!assert (zeros (0, 1), polyval (1, zeros (0,1)))

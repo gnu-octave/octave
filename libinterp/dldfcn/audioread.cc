@@ -519,6 +519,8 @@ Return information about an audio file specified by @var{filename}.\n\
 #endif
 }
 
+#ifdef HAVE_SNDFILE
+
 static void
 audio_sub_formats (int format)
 {
@@ -540,6 +542,8 @@ audio_sub_formats (int format)
         octave_stdout << "  " << info.name << std::endl;
     }
 }
+
+#endif
 
 DEFUN_DLD (audioformats, args, ,
 "-*- texinfo -*-\n\

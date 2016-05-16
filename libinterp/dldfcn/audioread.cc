@@ -519,108 +519,82 @@ Return information about an audio file specified by @var{filename}.\n\
 #endif
 }
 
-DEFUN_DLD (__aud_sub_formats__, args, ,
-"-*- texinfo -*-\n\
-@deftypefn {} {} __aud_sub_formats__ (@var{integer})\n\
-Returns all supported audio subformats, given the ID of the major format\n\
-\n\
-@end deftypefn")
+static void
+audio_sub_formats (int format)
 {
-#ifdef HAVE_SNDFILE
-  if (args.length () != 1)
-    print_usage ();
-
-  int count, format = args(0).int_value ();
-  octave_value_list empty;
-  SF_FORMAT_INFO info;
-  SF_INFO sfinfo;
-
-  memset (&sfinfo, 0, sizeof (sfinfo));
+  int count;
   sf_command (NULL, SFC_GET_FORMAT_SUBTYPE_COUNT, &count, sizeof (int));
-  sfinfo.channels = 1;
 
   for (int i = 0; i < count; i++)
     {
+      SF_FORMAT_INFO info;
       info.format = i;
       sf_command (NULL, SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info));
-      format = (format & SF_FORMAT_TYPEMASK) | info.format;
-      sfinfo.format = format;
+
+      SF_INFO sfinfo;
+      memset (&sfinfo, 0, sizeof (sfinfo));
+      sfinfo.channels = 1;
+      sfinfo.format = (format & SF_FORMAT_TYPEMASK) | info.format;
 
       if (sf_format_check (&sfinfo))
-        {
-          octave_stdout << "  " << info.name << "\n";
-        };
-    };
-
-  return empty;
-
-#else
-  err_disabled_feature ("__aud_sub_formats__",
-                        "getting sound subformats through libsndfile");
-#endif
+        octave_stdout << "  " << info.name << std::endl;
+    }
 }
 
 DEFUN_DLD (audioformats, args, ,
 "-*- texinfo -*-\n\
-@deftypefn {} {} audioformats ()\n\
-@deftypefn {} {} audioformats (@var{format})\n\
-Returns information about all supported audio formats\n\
+@deftypefn  {} {} audioformats ()\n\
+@deftypefnx {} {} audioformats (@var{format})\n\
+Display information about all supported audio formats.\n\
 \n\
-if optional argument @var{format} is given, then audioformats will\n\
-return only the formats with names that start with the argument string\n\
-\n\
+If the optional argument @var{format} is given, then display only formats\n\
+with names that start with @var{format}.\n\
 @end deftypefn")
 {
 #ifdef HAVE_SNDFILE
+
   if (args.length () > 1)
     print_usage ();
 
-  octave_value_list empty;
-  SF_FORMAT_INFO info;
-  SF_INFO sfinfo;
-  std::string searchStr = "";
-  bool search = 0;
-  int count;
-
-  memset (&sfinfo, 0, sizeof (sfinfo));
-  sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
-  sfinfo.channels = 1;
-
-  if (args.length () == 1)
+  std::string search = "";
+  if (args.length () > 0)
     {
-      search = 1;
-      searchStr = args(0).string_value ();
-    };
+      search = args(0).string_value ();
+      std::transform (search.begin (), search.end (), search.begin (), tolower);
+    }
+
+  int count;
+  sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
 
   for (int i = 0; i < count; i++)
     {
+      SF_FORMAT_INFO info;
       info.format = i;
       sf_command (NULL, SFC_GET_FORMAT_MAJOR, &info, sizeof (info));
-      bool match = 1;
+      bool match = true;
 
-      if (search == 1)
-        for (int j = 0; j < searchStr.length () && match == 1; j++)
-          {
-            if (searchStr[j] != info.name[j]
-                  && toupper (searchStr[j]) != (int) info.name[j])
-              match = 0;
-          };
-
-      if (match == 1)
+      if (! search.empty ())
         {
-          octave_stdout << "name: " << info.name << "\n";
-          octave_stdout << "extension: " << info.extension << "\n";
-          octave_stdout << "id: " << info.format << "\n";
-          octave_stdout << "subformats:\n";
+          std::string nm = info.name;
+          std::transform (nm.begin (), nm.end (), nm.begin (), tolower);
+          match = nm.compare (0, search.length (), search) == 0;
+        }
 
-          F__aud_sub_formats__ (ovl (info.format), info.format);
-        };
-    };
+      if (match)
+        {
+          octave_stdout << "name: " << info.name << std::endl;
+          octave_stdout << "extension: " << info.extension << std::endl;
+          octave_stdout << "id: " << info.format << std::endl;
+          octave_stdout << "subformats:" << std::endl;
 
-  return empty;
+          audio_sub_formats (info.format);
+        }
+    }
 
 #else
   err_disabled_feature ("audioformats",
                         "getting sound formats through libsndfile");
 #endif
+
+  return octave_value ();
 }

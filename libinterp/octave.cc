@@ -706,7 +706,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case LINE_EDITING_OPTION:
-          forced_line_editing = true;
+          forced_line_editing = line_editing = true;
           break;
 
         case NO_GUI_OPTION:

@@ -23,8 +23,9 @@
 ## @end deftypefn
 
 function retval = isdir (f)
+
   if (nargin != 1)
-    print_usage ("isdir");
+    print_usage ();
   endif
 
   ## Exist returns an integer but isdir should return a logical.

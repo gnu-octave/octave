@@ -668,8 +668,8 @@ concat (NDArray& ra, ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx)
   return retval;
 }
 
-static const Complex Complex_NaN_result (octave_numeric_limits<double>::NaN (),
-                                         octave_numeric_limits<double>::NaN ());
+static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (),
+                                         octave::numeric_limits<double>::NaN ());
 
 ComplexNDArray
 ComplexNDArray::max (int dim) const

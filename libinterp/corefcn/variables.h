@@ -108,8 +108,8 @@ set_internal_variable (int& var, const octave_value_list& args,
 extern OCTINTERP_API octave_value
 set_internal_variable (double& var, const octave_value_list& args,
                        int nargout, const char *nm,
-                       double minval = -octave_numeric_limits<double>::Inf (),
-                       double maxval = octave_numeric_limits<double>::Inf ());
+                       double minval = -octave::numeric_limits<double>::Inf (),
+                       double maxval = octave::numeric_limits<double>::Inf ());
 
 extern OCTINTERP_API octave_value
 set_internal_variable (std::string& var, const octave_value_list& args,

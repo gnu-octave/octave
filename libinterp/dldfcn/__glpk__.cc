@@ -422,7 +422,7 @@ Undocumented internal function.\n\
       if (xisinf (lb[i]))
         {
           freeLB(i) = 1;
-          lb[i] = -octave_numeric_limits<double>::Inf ();
+          lb[i] = -octave::numeric_limits<double>::Inf ();
         }
       else
         freeLB(i) = 0;
@@ -443,7 +443,7 @@ Undocumented internal function.\n\
       if (xisinf (ub[i]))
         {
           freeUB(i) = 1;
-          ub[i] = octave_numeric_limits<double>::Inf ();
+          ub[i] = octave::numeric_limits<double>::Inf ();
         }
       else
         freeUB(i) = 0;

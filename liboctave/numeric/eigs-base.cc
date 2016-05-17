@@ -441,8 +441,8 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
     }
 
   // Test condition number of LU decomposition
-  double minU = octave_numeric_limits<double>::NaN ();
-  double maxU = octave_numeric_limits<double>::NaN ();
+  double minU = octave::numeric_limits<double>::NaN ();
+  double maxU = octave::numeric_limits<double>::NaN ();
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = 0.;
@@ -517,8 +517,8 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
     P[j] = Q[j] = j;
 
   // Test condition number of LU decomposition
-  double minU = octave_numeric_limits<double>::NaN ();
-  double maxU = octave_numeric_limits<double>::NaN ();
+  double minU = octave::numeric_limits<double>::NaN ();
+  double maxU = octave::numeric_limits<double>::NaN ();
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = std::abs (U.xelem (j,j));
@@ -605,8 +605,8 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
     }
 
   // Test condition number of LU decomposition
-  double minU = octave_numeric_limits<double>::NaN ();
-  double maxU = octave_numeric_limits<double>::NaN ();
+  double minU = octave::numeric_limits<double>::NaN ();
+  double maxU = octave::numeric_limits<double>::NaN ();
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = 0.;
@@ -681,8 +681,8 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
     P[j] = Q[j] = j;
 
   // Test condition number of LU decomposition
-  double minU = octave_numeric_limits<double>::NaN ();
-  double maxU = octave_numeric_limits<double>::NaN ();
+  double minU = octave::numeric_limits<double>::NaN ();
+  double maxU = octave::numeric_limits<double>::NaN ();
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = std::abs (U.xelem (j,j));
@@ -864,7 +864,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -1117,7 +1117,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -1390,7 +1390,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
 
@@ -1659,7 +1659,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -1961,7 +1961,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -2289,7 +2289,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -2609,7 +2609,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -2865,7 +2865,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -3150,7 +3150,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave_numeric_limits<double>::NaN ();
+            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)

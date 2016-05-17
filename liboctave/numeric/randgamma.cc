@@ -103,7 +103,7 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
   if (a <= 0 || INFINITE(a))
     {
       for (i=0; i < n; i++)
-        r[i] = octave_numeric_limits<double>::NaN ();
+        r[i] = octave::numeric_limits<double>::NaN ();
       return;
     }
 
@@ -158,7 +158,7 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
   if (a <= 0 || INFINITE(a))
     {
       for (i=0; i < n; i++)
-        r[i] = octave_numeric_limits<float>::NaN ();
+        r[i] = octave::numeric_limits<float>::NaN ();
       return;
     }
 

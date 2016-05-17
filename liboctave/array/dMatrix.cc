@@ -816,7 +816,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
-        ret = Matrix (rows (), columns (), octave_numeric_limits<double>::Inf ());
+        ret = Matrix (rows (), columns (), octave::numeric_limits<double>::Inf ());
     }
 
   return ret;
@@ -1352,7 +1352,7 @@ Matrix::rcond (void) const
 double
 Matrix::rcond (MatrixType &mattype) const
 {
-  double rcon = octave_numeric_limits<double>::NaN ();
+  double rcon = octave::numeric_limits<double>::NaN ();
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1360,7 +1360,7 @@ Matrix::rcond (MatrixType &mattype) const
     (*current_liboctave_error_handler) ("matrix must be square");
 
   if (nr == 0 || nc == 0)
-    rcon = octave_numeric_limits<double>::Inf ();
+    rcon = octave::numeric_limits<double>::Inf ();
   else
     {
       volatile int typ = mattype.type ();
@@ -2693,7 +2693,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_j;
 
-          double tmp_min = octave_numeric_limits<double>::NaN ();
+          double tmp_min = octave::numeric_limits<double>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -2748,7 +2748,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_j;
 
-          double tmp_max = octave_numeric_limits<double>::NaN ();
+          double tmp_max = octave::numeric_limits<double>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -2803,7 +2803,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_i;
 
-          double tmp_min = octave_numeric_limits<double>::NaN ();
+          double tmp_min = octave::numeric_limits<double>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {
@@ -2858,7 +2858,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_i;
 
-          double tmp_max = octave_numeric_limits<double>::NaN ();
+          double tmp_max = octave::numeric_limits<double>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {

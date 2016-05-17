@@ -252,7 +252,7 @@ SparseComplexMatrix::is_hermitian (void) const
   return false;
 }
 
-static const Complex Complex_NaN_result (octave_numeric_limits<double>::NaN (), octave_numeric_limits<double>::NaN ());
+static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (), octave::numeric_limits<double>::NaN ());
 
 SparseComplexMatrix
 SparseComplexMatrix::max (int dim) const
@@ -290,7 +290,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp_max;
-          double abs_max = octave_numeric_limits<double>::NaN ();
+          double abs_max = octave::numeric_limits<double>::NaN ();
           octave_idx_type idx_j = 0;
           for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
             {
@@ -447,7 +447,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
       for (octave_idx_type j = 0; j < nc; j++)
         {
           Complex tmp_min;
-          double abs_min = octave_numeric_limits<double>::NaN ();
+          double abs_min = octave::numeric_limits<double>::NaN ();
           octave_idx_type idx_j = 0;
           for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
             {
@@ -785,7 +785,7 @@ SparseComplexMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
   if (calccond)
     {
       double dmax = 0.;
-      double dmin = octave_numeric_limits<double>::Inf ();
+      double dmin = octave::numeric_limits<double>::Inf ();
       for (octave_idx_type i = 0; i < nr; i++)
         {
           double tmp = std::abs (v[i]);
@@ -1308,7 +1308,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_numeric_limits<double>::Inf ();
+          double dmin = octave::numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nm; i++)
             {
               double tmp = std::abs (data (i));
@@ -1398,7 +1398,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_numeric_limits<double>::Inf ();
+          double dmin = octave::numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nm; i++)
             {
               double tmp = std::abs (data (i));
@@ -1458,7 +1458,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_numeric_limits<double>::Inf ();
+          double dmin = octave::numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nr; i++)
             {
               double tmp = std::abs (data (i));
@@ -1548,7 +1548,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_numeric_limits<double>::Inf ();
+          double dmin = octave::numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nm; i++)
             {
               double tmp = std::abs (data (i));

@@ -1503,8 +1503,8 @@ array_property::is_equal (const octave_value& v) const
 void
 array_property::get_data_limits (void)
 {
-  xmin = xminp = octave_numeric_limits<double>::Inf ();
-  xmax = xmaxp = -octave_numeric_limits<double>::Inf ();
+  xmin = xminp = octave::numeric_limits<double>::Inf ();
+  xmax = xmaxp = -octave::numeric_limits<double>::Inf ();
 
   if (! data.is_empty ())
     {
@@ -1722,7 +1722,7 @@ property::create (const std::string& name, const graphics_handle& h,
     }
   else if (type.compare ("handle"))
     {
-      double hv = (args.length () > 0 ? args(0).double_value () : octave_numeric_limits<double>::NaN ());
+      double hv = (args.length () > 0 ? args(0).double_value () : octave::numeric_limits<double>::NaN ());
 
       graphics_handle gh (hv);
 
@@ -2579,7 +2579,7 @@ reparent (const octave_value& ov, const std::string& who,
           const std::string& pname, const graphics_handle& new_parent,
           bool adopt = true)
 {
-  graphics_handle h = octave_numeric_limits<double>::NaN ();
+  graphics_handle h = octave::numeric_limits<double>::NaN ();
 
   double hv = ov.xdouble_value ("%s: %s must be a graphics handle",
                                who.c_str (), pname.c_str ());
@@ -2612,7 +2612,7 @@ gcf (void)
 {
   octave_value val = xget (0, "currentfigure");
 
-  return val.is_empty () ? octave_numeric_limits<double>::NaN () : val.double_value ();
+  return val.is_empty () ? octave::numeric_limits<double>::NaN () : val.double_value ();
 }
 
 // This function is NOT equivalent to the scripting language function gca.
@@ -2621,7 +2621,7 @@ gca (void)
 {
   octave_value val = xget (gcf (), "currentaxes");
 
-  return val.is_empty () ? octave_numeric_limits<double>::NaN () : val.double_value ();
+  return val.is_empty () ? octave::numeric_limits<double>::NaN () : val.double_value ();
 }
 
 static void
@@ -2997,7 +2997,7 @@ base_properties::set_parent (const octave_value& val)
 {
   double hp = val.xdouble_value ("set: parent must be a graphics handle");
 
-  graphics_handle new_parent = octave_numeric_limits<double>::NaN ();
+  graphics_handle new_parent = octave::numeric_limits<double>::NaN ();
 
   if (hp == __myhandle__)
     error ("set: can not set object parent to be object itself");
@@ -6055,10 +6055,10 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
 {
   if (tight)
     {
-      double minval = octave_numeric_limits<double>::Inf ();
-      double maxval = -octave_numeric_limits<double>::Inf ();
-      double min_pos = octave_numeric_limits<double>::Inf ();
-      double max_neg = -octave_numeric_limits<double>::Inf ();
+      double minval = octave::numeric_limits<double>::Inf ();
+      double maxval = -octave::numeric_limits<double>::Inf ();
+      double min_pos = octave::numeric_limits<double>::Inf ();
+      double max_neg = -octave::numeric_limits<double>::Inf ();
       get_children_limits (minval, maxval, min_pos, max_neg, kids, limit_type);
       if (xfinite (minval) && xfinite (maxval))
         {
@@ -6109,7 +6109,7 @@ axes::properties::update_aspectratios (void)
     }
   else
     {
-      double s = -octave_numeric_limits<double>::Inf ();
+      double s = -octave::numeric_limits<double>::Inf ();
       bool modified_limits = false;
       Matrix kids;
 
@@ -6230,8 +6230,8 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
   graphics_xform xform = get_transform ();
 
   Matrix ext (1, 4, 0.0);
-  ext(0) = ext(1) = octave_numeric_limits<double>::Inf ();
-  ext(2) = ext(3) = -octave_numeric_limits<double>::Inf ();
+  ext(0) = ext(1) = octave::numeric_limits<double>::Inf ();
+  ext(2) = ext(3) = -octave::numeric_limits<double>::Inf ();
   for (int i = 0; i <= 1; i++)
     for (int j = 0; j <= 1; j++)
       for (int k = 0; k <= 1; k++)
@@ -7114,10 +7114,10 @@ axes::update_axis_limits (const std::string& axis_type,
 
   Matrix kids = Matrix (1, 1, h.value ());
 
-  double min_val = octave_numeric_limits<double>::Inf ();
-  double max_val = -octave_numeric_limits<double>::Inf ();
-  double min_pos = octave_numeric_limits<double>::Inf ();
-  double max_neg = -octave_numeric_limits<double>::Inf ();
+  double min_val = octave::numeric_limits<double>::Inf ();
+  double max_val = -octave::numeric_limits<double>::Inf ();
+  double min_pos = octave::numeric_limits<double>::Inf ();
+  double max_neg = -octave::numeric_limits<double>::Inf ();
 
   char update_type = 0;
 
@@ -7318,10 +7318,10 @@ axes::update_axis_limits (const std::string& axis_type)
 
   Matrix kids = xproperties.get_children ();
 
-  double min_val = octave_numeric_limits<double>::Inf ();
-  double max_val = -octave_numeric_limits<double>::Inf ();
-  double min_pos = octave_numeric_limits<double>::Inf ();
-  double max_neg = -octave_numeric_limits<double>::Inf ();
+  double min_val = octave::numeric_limits<double>::Inf ();
+  double max_val = -octave::numeric_limits<double>::Inf ();
+  double min_pos = octave::numeric_limits<double>::Inf ();
+  double max_neg = -octave::numeric_limits<double>::Inf ();
 
   char update_type = 0;
 
@@ -7542,16 +7542,16 @@ axes::properties::zoom_about_point (const std::string& mode,
 
   // Get children axes limits
   Matrix kids = get_children ();
-  double minx = octave_numeric_limits<double>::Inf ();
-  double maxx = -octave_numeric_limits<double>::Inf ();
-  double min_pos_x = octave_numeric_limits<double>::Inf ();
-  double max_neg_x = -octave_numeric_limits<double>::Inf ();
+  double minx = octave::numeric_limits<double>::Inf ();
+  double maxx = -octave::numeric_limits<double>::Inf ();
+  double min_pos_x = octave::numeric_limits<double>::Inf ();
+  double max_neg_x = -octave::numeric_limits<double>::Inf ();
   get_children_limits (minx, maxx, min_pos_x, max_neg_x, kids, 'x');
 
-  double miny = octave_numeric_limits<double>::Inf ();
-  double maxy = -octave_numeric_limits<double>::Inf ();
-  double min_pos_y = octave_numeric_limits<double>::Inf ();
-  double max_neg_y = -octave_numeric_limits<double>::Inf ();
+  double miny = octave::numeric_limits<double>::Inf ();
+  double maxy = -octave::numeric_limits<double>::Inf ();
+  double min_pos_y = octave::numeric_limits<double>::Inf ();
+  double max_neg_y = -octave::numeric_limits<double>::Inf ();
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
   xlims = do_zoom (x, factor, xlims, xscale_is ("log"));
@@ -7689,16 +7689,16 @@ axes::properties::translate_view (const std::string& mode,
 
   // Get children axes limits
   Matrix kids = get_children ();
-  double minx = octave_numeric_limits<double>::Inf ();
-  double maxx = -octave_numeric_limits<double>::Inf ();
-  double min_pos_x = octave_numeric_limits<double>::Inf ();
-  double max_neg_x = -octave_numeric_limits<double>::Inf ();
+  double minx = octave::numeric_limits<double>::Inf ();
+  double maxx = -octave::numeric_limits<double>::Inf ();
+  double min_pos_x = octave::numeric_limits<double>::Inf ();
+  double max_neg_x = -octave::numeric_limits<double>::Inf ();
   get_children_limits (minx, maxx, min_pos_x, max_neg_x, kids, 'x');
 
-  double miny = octave_numeric_limits<double>::Inf ();
-  double maxy = -octave_numeric_limits<double>::Inf ();
-  double min_pos_y = octave_numeric_limits<double>::Inf ();
-  double max_neg_y = -octave_numeric_limits<double>::Inf ();
+  double miny = octave::numeric_limits<double>::Inf ();
+  double maxy = -octave::numeric_limits<double>::Inf ();
+  double min_pos_y = octave::numeric_limits<double>::Inf ();
+  double max_neg_y = -octave::numeric_limits<double>::Inf ();
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
   xlims = do_translate (x0, x1, xlims, xscale_is ("log"));
@@ -8435,10 +8435,10 @@ hggroup::update_axis_limits (const std::string& axis_type,
 
   Matrix kids = Matrix (1, 1, h.value ());
 
-  double min_val = octave_numeric_limits<double>::Inf ();
-  double max_val = -octave_numeric_limits<double>::Inf ();
-  double min_pos = octave_numeric_limits<double>::Inf ();
-  double max_neg = -octave_numeric_limits<double>::Inf ();
+  double min_val = octave::numeric_limits<double>::Inf ();
+  double max_val = -octave::numeric_limits<double>::Inf ();
+  double min_pos = octave::numeric_limits<double>::Inf ();
+  double max_neg = -octave::numeric_limits<double>::Inf ();
 
   Matrix limits;
   double val;
@@ -8548,10 +8548,10 @@ hggroup::update_axis_limits (const std::string& axis_type)
 
   Matrix kids = xproperties.get_children ();
 
-  double min_val = octave_numeric_limits<double>::Inf ();
-  double max_val = -octave_numeric_limits<double>::Inf ();
-  double min_pos = octave_numeric_limits<double>::Inf ();
-  double max_neg = -octave_numeric_limits<double>::Inf ();
+  double min_val = octave::numeric_limits<double>::Inf ();
+  double max_val = -octave::numeric_limits<double>::Inf ();
+  double min_pos = octave::numeric_limits<double>::Inf ();
+  double max_neg = -octave::numeric_limits<double>::Inf ();
 
   char update_type = 0;
 
@@ -10088,7 +10088,7 @@ make_graphics_object (const std::string& go_name,
 {
   octave_value retval;
 
-  double val = octave_numeric_limits<double>::NaN ();
+  double val = octave::numeric_limits<double>::NaN ();
 
   octave_value_list xargs = args.splice (0, 1);
 
@@ -10173,7 +10173,7 @@ Undocumented internal function.\n\
 
       octave_value_list xargs = args.splice (0, 1);
 
-      graphics_handle h = octave_numeric_limits<double>::NaN ();
+      graphics_handle h = octave::numeric_limits<double>::NaN ();
 
       if (xisnan (val))
         {
@@ -10427,7 +10427,7 @@ Undocumented internal function.\n\
   if (args.length () != 1)
     print_usage ();
 
-  graphics_handle h = octave_numeric_limits<double>::NaN ();
+  graphics_handle h = octave::numeric_limits<double>::NaN ();
 
   const NDArray vals = args(0).xarray_value ("delete: invalid graphics object");
 
@@ -10463,7 +10463,7 @@ Undocumented internal function.\n\
   if (nargin == 2)
     mode = args(1).string_value ();
 
-  graphics_handle h = octave_numeric_limits<double>::NaN ();
+  graphics_handle h = octave::numeric_limits<double>::NaN ();
 
   double val = args(0).xdouble_value ("__go_axes_init__: invalid graphics object");
 

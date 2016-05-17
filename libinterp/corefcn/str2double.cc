@@ -64,7 +64,7 @@ single_num (std::istringstream& is)
       char c2 = is.get ();
       if (std::tolower (c1) == 'n' && std::tolower (c2) == 'f')
         {
-          num = octave_numeric_limits<double>::Inf ();
+          num = octave::numeric_limits<double>::Inf ();
           is.peek (); // May set EOF bit.
         }
       else
@@ -85,7 +85,7 @@ single_num (std::istringstream& is)
           char c2 = is.get ();
           if (c1 == 'a' && c2 == 'N')
             {
-              num = octave_numeric_limits<double>::NaN ();
+              num = octave::numeric_limits<double>::NaN ();
               is.peek (); // May set EOF bit.
             }
           else
@@ -275,9 +275,9 @@ str2double1 (const std::string& str_arg)
   bool i1, i2, s1, s2;
 
   if (is.eof ())
-    val = octave_numeric_limits<double>::NaN ();
+    val = octave::numeric_limits<double>::NaN ();
   else if (! extract_num (is, num, i1, s1))
-    val = octave_numeric_limits<double>::NaN ();
+    val = octave::numeric_limits<double>::NaN ();
   else
     {
       set_component (val, num, i1);
@@ -285,7 +285,7 @@ str2double1 (const std::string& str_arg)
       if (! is.eof ())
         {
           if (! extract_num (is, num, i2, s2) || i1 == i2 || ! s2)
-            val = octave_numeric_limits<double>::NaN ();
+            val = octave::numeric_limits<double>::NaN ();
           else
             set_component (val, num, i2);
         }
@@ -349,7 +349,7 @@ risk of using @code{eval} on unknown data.\n\
   if (args(0).is_string ())
     {
       if (args(0).rows () == 0 || args(0).columns () == 0)
-        retval = Matrix (1, 1, octave_numeric_limits<double>::NaN ());
+        retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
       else if (args(0).rows () == 1 && args(0).ndims () == 2)
         retval = str2double1 (args(0).string_value ());
       else
@@ -363,7 +363,7 @@ risk of using @code{eval} on unknown data.\n\
     {
       const Cell cell = args(0).cell_value ();
 
-      ComplexNDArray output (cell.dims (), octave_numeric_limits<double>::NaN ());
+      ComplexNDArray output (cell.dims (), octave::numeric_limits<double>::NaN ());
 
       for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
@@ -373,7 +373,7 @@ risk of using @code{eval} on unknown data.\n\
       retval = output;
     }
   else
-    retval = Matrix (1, 1, octave_numeric_limits<double>::NaN ());
+    retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
 
   return retval;
 }

@@ -263,7 +263,7 @@ extern "C"
                                F77_CHAR_ARG_LEN_DECL);
 }
 
-static const Complex Complex_NaN_result (octave_numeric_limits<double>::NaN (), octave_numeric_limits<double>::NaN ());
+static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (), octave::numeric_limits<double>::NaN ());
 
 // Complex Matrix class
 
@@ -1126,7 +1126,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
-        ret = ComplexMatrix (rows (), columns (), Complex (octave_numeric_limits<double>::Inf (), 0.));
+        ret = ComplexMatrix (rows (), columns (), Complex (octave::numeric_limits<double>::Inf (), 0.));
     }
 
   return ret;
@@ -1675,7 +1675,7 @@ ComplexMatrix::rcond (void) const
 double
 ComplexMatrix::rcond (MatrixType &mattype) const
 {
-  double rcon = octave_numeric_limits<double>::NaN ();
+  double rcon = octave::numeric_limits<double>::NaN ();
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1683,7 +1683,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
     (*current_liboctave_error_handler) ("matrix must be square");
 
   if (nr == 0 || nc == 0)
-    rcon = octave_numeric_limits<double>::Inf ();
+    rcon = octave::numeric_limits<double>::Inf ();
   else
     {
       volatile int typ = mattype.type ();
@@ -3147,7 +3147,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 
           Complex tmp_min;
 
-          double abs_min = octave_numeric_limits<double>::NaN ();
+          double abs_min = octave::numeric_limits<double>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -3222,7 +3222,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 
           Complex tmp_max;
 
-          double abs_max = octave_numeric_limits<double>::NaN ();
+          double abs_max = octave::numeric_limits<double>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -3297,7 +3297,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 
           Complex tmp_min;
 
-          double abs_min = octave_numeric_limits<double>::NaN ();
+          double abs_min = octave::numeric_limits<double>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {
@@ -3372,7 +3372,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
           Complex tmp_max;
 
-          double abs_max = octave_numeric_limits<double>::NaN ();
+          double abs_max = octave::numeric_limits<double>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {

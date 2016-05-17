@@ -5669,7 +5669,7 @@ compute the norms of each column and return a row vector.\n\
       if (str == "fro")
         p_arg = octave_value (2);
       else if (str == "inf")
-        p_arg = octave_numeric_limits<double>::Inf ();
+        p_arg = octave::numeric_limits<double>::Inf ();
       else
         error ("norm: unrecognized option: %s", str.c_str ());
     }
@@ -5697,7 +5697,7 @@ compute the norms of each column and return a row vector.\n\
       break;
 
     case sfinf:
-      retval = xnorm (x_arg, octave_numeric_limits<double>::Inf ());
+      retval = xnorm (x_arg, octave::numeric_limits<double>::Inf ());
       break;
     }
 

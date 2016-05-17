@@ -241,7 +241,7 @@ read_inf_nan_na (std::istream& is, char c0)
               val = std::numeric_limits<T>::quiet_NaN ();
             else
               {
-                val = octave_numeric_limits<T>::NA ();
+                val = octave::numeric_limits<T>::NA ();
                 if (c2 != std::istream::traits_type::eof ())
                   is.putback (c2);
               }

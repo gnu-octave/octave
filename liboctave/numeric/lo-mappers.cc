@@ -86,7 +86,7 @@ signum (double x)
   else if (x > 0.0)
     tmp = 1.0;
 
-  return xisnan (x) ? octave_numeric_limits<double>::NaN () : tmp;
+  return xisnan (x) ? octave::numeric_limits<double>::NaN () : tmp;
 }
 
 double
@@ -309,7 +309,7 @@ signum (float x)
   else if (x > 0.0)
     tmp = 1.0;
 
-  return xisnan (x) ? octave_numeric_limits<float>::NaN () : tmp;
+  return xisnan (x) ? octave::numeric_limits<float>::NaN () : tmp;
 }
 
 float

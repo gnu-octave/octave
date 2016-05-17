@@ -180,7 +180,7 @@ public:
   void accum (U val)
   {
     if (xisnan (val))
-      max = octave_numeric_limits<R>::NaN ();
+      max = octave::numeric_limits<R>::NaN ();
     else
       max = std::max (max, std::abs (val));
   }
@@ -193,12 +193,12 @@ class norm_accumulator_minf
 {
   R min;
 public:
-  norm_accumulator_minf () : min (octave_numeric_limits<R>::Inf ()) {}
+  norm_accumulator_minf () : min (octave::numeric_limits<R>::Inf ()) {}
   template <typename U>
   void accum (U val)
   {
     if (xisnan (val))
-      min = octave_numeric_limits<R>::NaN ();
+      min = octave::numeric_limits<R>::NaN ();
     else
       min = std::min (min, std::abs (val));
   }

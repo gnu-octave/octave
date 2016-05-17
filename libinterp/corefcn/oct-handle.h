@@ -35,10 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 class octave_handle
 {
 public:
-  octave_handle (void) : val (octave_numeric_limits<double>::NaN ()) { }
+  octave_handle (void) : val (octave::numeric_limits<double>::NaN ()) { }
 
   octave_handle (const octave_value& a)
-    : val (octave_numeric_limits<double>::NaN ())
+    : val (octave::numeric_limits<double>::NaN ())
   {
     if (a.is_empty ())
       ; // do nothing

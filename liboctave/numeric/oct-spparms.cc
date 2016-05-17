@@ -94,7 +94,7 @@ octave_sparse_params::set_key (const std::string& key, const double& val)
 double
 octave_sparse_params::get_key (const std::string& key)
 {
-  return instance_ok () ? instance->do_get_key (key) : octave_numeric_limits<double>::NaN ();
+  return instance_ok () ? instance->do_get_key (key) : octave::numeric_limits<double>::NaN ();
 }
 
 double
@@ -209,7 +209,7 @@ octave_sparse_params::do_get_key (const std::string& key)
         return params(i);
     }
 
-  return octave_numeric_limits<double>::NaN ();
+  return octave::numeric_limits<double>::NaN ();
 }
 
 void

@@ -42,8 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "randmtzig.h"
 #include "randpoisson.h"
 
-#undef NAN
-#define NAN octave_NaN
 #undef INFINITE
 #define INFINITE lo_ieee_isinf
 #define RUNI oct_randu()
@@ -485,7 +483,7 @@ oct_fill_randp (double L, octave_idx_type n, double *p)
   if (L < 0.0 || INFINITE(L))
     {
       for (i=0; i<n; i++)
-        p[i] = NAN;
+        p[i] = octave_numeric_limits<double>::NaN ();
     }
   else if (L <= 10.0)
     {
@@ -514,7 +512,7 @@ double
 oct_randp (double L)
 {
   double ret;
-  if (L < 0.0) ret = NAN;
+  if (L < 0.0) ret = octave_numeric_limits<double>::NaN ();
   else if (L <= 12.0)
     {
       /* From Press, et al. Numerical recipes */
@@ -537,7 +535,7 @@ oct_randp (double L)
     {
       /* FIXME: R uses NaN, but the normal approximation suggests that
        * limit should be Inf.  Which is correct? */
-      ret = NAN;
+      ret = octave_numeric_limits<double>::NaN ();
     }
   else
     {
@@ -557,7 +555,7 @@ oct_fill_float_randp (float FL, octave_idx_type n, float *p)
   if (L < 0.0 || INFINITE(L))
     {
       for (i=0; i<n; i++)
-        p[i] = NAN;
+        p[i] = octave_numeric_limits<double>::NaN ();
     }
   else if (L <= 10.0)
     {
@@ -587,7 +585,7 @@ oct_float_randp (float FL)
 {
   double L = FL;
   float ret;
-  if (L < 0.0) ret = NAN;
+  if (L < 0.0) ret = octave_numeric_limits<float>::NaN ();
   else if (L <= 12.0)
     {
       /* From Press, et al. Numerical recipes */
@@ -610,7 +608,7 @@ oct_float_randp (float FL)
     {
       /* FIXME: R uses NaN, but the normal approximation suggests that
        * limit should be Inf. Which is correct? */
-      ret = NAN;
+      ret = octave_numeric_limits<float>::NaN ();
     }
   else
     {

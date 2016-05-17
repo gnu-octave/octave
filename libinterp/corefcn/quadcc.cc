@@ -1702,7 +1702,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       Vinvfx (iv->fx, &(iv->c[idx[2]]), 2);
       Vinvfx (iv->fx, &(iv->c[0]), 0);
       for (i = 0; i < nnans; i++)
-        iv->fx[nans[i]] = octave_NaN;
+        iv->fx[nans[i]] = octave_numeric_limits<double>::NaN ();
       iv->a = iivals[j];
       iv->b = iivals[j + 1];
       iv->depth = 3;
@@ -1822,7 +1822,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (&(iv->c[idx[d]]), n[d], d, nans, nnans);
               for (i = 0; i < nnans; i++)
-                iv->fx[nans[i]] = octave_NaN;
+                iv->fx[nans[i]] = octave_numeric_limits<double>::NaN ();
             }
 
           // Compute the error estimate.
@@ -1956,7 +1956,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (ivl->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivl->fx[nans[i]] = octave_NaN;
+                ivl->fx[nans[i]] = octave_numeric_limits<double>::NaN ();
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -1982,7 +1982,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                                   && ivl->c[0] / iv->c[0] > 2);
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
             {
-              igral = gnulib::copysign (octave_Inf, igral);
+              igral = gnulib::copysign (octave_numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }
@@ -2047,7 +2047,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (ivr->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivr->fx[nans[i]] = octave_NaN;
+                ivr->fx[nans[i]] = octave_numeric_limits<double>::NaN ();
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -2073,7 +2073,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                                   && ivr->c[0] / iv->c[0] > 2);
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
             {
-              igral = gnulib::copysign (octave_Inf, igral);
+              igral = gnulib::copysign (octave_numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }

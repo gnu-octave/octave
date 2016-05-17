@@ -37,7 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 static double
 xabs (const Complex& x)
 {
-  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+  return ((xisinf (x.real ()) || xisinf (x.imag ()))
+          ? octave_numeric_limits<double>::Inf () : abs (x));
 }
 
 

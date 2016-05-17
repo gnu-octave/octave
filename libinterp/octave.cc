@@ -809,9 +809,12 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   // The idea here is to force xerbla to be referenced so that we will link to
   // our own version instead of the one provided by the BLAS library.  But
-  // octave_NaN should never be -1, so we should never actually call xerbla.
+  // octave_numeric_limits<double>::NaN () should never be -1, so we
+  // should never actually call xerbla.  FIXME (again!):  If this
+  // becomes a constant expression the test might be optimized away and
+  // then the reference to the function might also disappear.
 
-  if (octave_NaN == -1)
+  if (octave_numeric_limits<double>::NaN () == -1)
     F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
 
   initialize_error_handlers ();

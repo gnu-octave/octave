@@ -615,7 +615,7 @@ Canvas::canvasMousePressEvent (QMouseEvent* event)
         Utils::properties<figure> (figObj)
           .set_currentobject (currentObj.get_handle ().as_octave_value ());
       else
-        Utils::properties<figure> (figObj).set_currentobject (octave_NaN);
+        Utils::properties<figure> (figObj).set_currentobject (octave_numeric_limits<double>::NaN ());
 
       Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
 

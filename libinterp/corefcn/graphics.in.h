@@ -1537,7 +1537,7 @@ public:
     return *this;
   }
 
-  void invalidate (void) { current_val = octave_NaN; }
+  void invalidate (void) { current_val = octave_numeric_limits<double>::NaN (); }
 
   base_property* clone (void) const { return new handle_property (*this); }
 
@@ -4530,17 +4530,17 @@ public:
       Matrix lim;
 
       lim = Matrix (1, 3, pos(0));
-      lim(2) = (lim(2) <= 0 ? octave_Inf : lim(2));
+      lim(2) = (lim(2) <= 0 ? octave_numeric_limits<double>::Inf () : lim(2));
       set_xlim (lim);
 
       lim = Matrix (1, 3, pos(1));
-      lim(2) = (lim(2) <= 0 ? octave_Inf : lim(2));
+      lim(2) = (lim(2) <= 0 ? octave_numeric_limits<double>::Inf () : lim(2));
       set_ylim (lim);
 
       if (pos.numel () == 3)
         {
           lim = Matrix (1, 3, pos(2));
-          lim(2) = (lim(2) <= 0 ? octave_Inf : lim(2));
+          lim(2) = (lim(2) <= 0 ? octave_numeric_limits<double>::Inf () : lim(2));
           set_zliminclude ("on");
           set_zlim (lim);
         }

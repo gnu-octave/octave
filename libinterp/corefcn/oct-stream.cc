@@ -2515,7 +2515,7 @@ textscan::textscan (const std::string& who_arg)
   : who (who_arg), buf (), whitespace_table (), delim_table (),
     delims (), comment_style (), comment_len (0), comment_char (-2),
     buffer_size (0), date_locale (), inf_nan (init_inf_nan ()),
-    empty_value (octave_NaN), exp_chars ("edED"),
+    empty_value (octave_numeric_limits<double>::NaN ()), exp_chars ("edED"),
     header_lines (0), treat_as_empty (), treat_as_empty_len (0),
     whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
     return_on_error (1), collect_output (false),
@@ -2899,12 +2899,12 @@ textscan::read_double (delimited_stream& is,
       int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
       if (i == 0)
         {
-          retval = octave_Inf;
+          retval = octave_numeric_limits<double>::Inf ();
           valid = true;
         }
       else if (i == 1)
         {
-          retval = octave_NaN;
+          retval = octave_numeric_limits<double>::NaN ();
           valid = true;
         }
     }
@@ -2915,12 +2915,12 @@ textscan::read_double (delimited_stream& is,
       int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
       if (i == 0)
         {
-          retval = octave_Inf;
+          retval = octave_numeric_limits<double>::Inf ();
           valid = true;
         }
       else if (i == 1)
         {
-          retval = octave_NaN;
+          retval = octave_numeric_limits<double>::NaN ();
           valid = true;
         }
     }
@@ -2966,7 +2966,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
               if (ch2 == 'f')
                 {
                   inf = true;
-                  re = (ch == '+') ? octave_Inf : -octave_Inf;
+                  re = (ch == '+') ? octave_numeric_limits<double>::Inf () : -octave_numeric_limits<double>::Inf ();
                   value = 0;
                 }
               else
@@ -2992,7 +2992,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
       // check for "treat as empty" string
       if (treat_as_empty.numel ()
           && (is.fail () || octave_is_NaN_or_NA (Complex (re))
-              || re == octave_Inf))
+              || re == octave_numeric_limits<double>::Inf ()))
         {
 
           for (int i = 0; i < treat_as_empty.numel (); i++)

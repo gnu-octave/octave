@@ -675,8 +675,8 @@ concat (NDArray& ra, FloatComplexNDArray& rb,
   return retval;
 }
 
-static const FloatComplex FloatComplex_NaN_result (octave_Float_NaN,
-                                                   octave_Float_NaN);
+static const FloatComplex FloatComplex_NaN_result (octave_numeric_limits<float>::NaN (),
+                                                   octave_numeric_limits<float>::NaN ());
 
 FloatComplexNDArray
 FloatComplexNDArray::max (int dim) const

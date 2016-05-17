@@ -314,7 +314,7 @@ xrem (T x, T y)
   T retval;
 
   if (y == 0)
-    retval = octave_NaN;
+    retval = octave_numeric_limits<T>::NaN ();
   else
     {
       T q = x / y;

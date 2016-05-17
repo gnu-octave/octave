@@ -823,7 +823,7 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
-        ret = FloatMatrix (rows (), columns (), octave_Float_Inf);
+        ret = FloatMatrix (rows (), columns (), octave_numeric_limits<float>::Inf ());
     }
 
   return ret;
@@ -1363,7 +1363,7 @@ FloatMatrix::rcond (void) const
 float
 FloatMatrix::rcond (MatrixType &mattype) const
 {
-  float rcon = octave_NaN;
+  float rcon = octave_numeric_limits<float>::NaN ();
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1371,7 +1371,7 @@ FloatMatrix::rcond (MatrixType &mattype) const
     (*current_liboctave_error_handler) ("matrix must be square");
 
   if (nr == 0 || nc == 0)
-    rcon = octave_Inf;
+    rcon = octave_numeric_limits<float>::Inf ();
   else
     {
       volatile int typ = mattype.type ();
@@ -2710,7 +2710,7 @@ FloatMatrix::row_min (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_j;
 
-          float tmp_min = octave_Float_NaN;
+          float tmp_min = octave_numeric_limits<float>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -2765,7 +2765,7 @@ FloatMatrix::row_max (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_j;
 
-          float tmp_max = octave_Float_NaN;
+          float tmp_max = octave_numeric_limits<float>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -2820,7 +2820,7 @@ FloatMatrix::column_min (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_i;
 
-          float tmp_min = octave_Float_NaN;
+          float tmp_min = octave_numeric_limits<float>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {
@@ -2875,7 +2875,7 @@ FloatMatrix::column_max (Array<octave_idx_type>& idx_arg) const
         {
           octave_idx_type idx_i;
 
-          float tmp_max = octave_Float_NaN;
+          float tmp_max = octave_numeric_limits<float>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {

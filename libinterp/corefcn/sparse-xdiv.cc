@@ -375,11 +375,11 @@ x_el_div (double a, const SparseMatrix& b)
 
   Matrix result;
   if (a == 0.)
-    result = Matrix (nr, nc, octave_NaN);
+    result = Matrix (nr, nc, octave_numeric_limits<double>::NaN ());
   else if (a > 0.)
-    result = Matrix (nr, nc, octave_Inf);
+    result = Matrix (nr, nc, octave_numeric_limits<double>::Inf ());
   else
-    result = Matrix (nr, nc, -octave_Inf);
+    result = Matrix (nr, nc, -octave_numeric_limits<double>::Inf ());
 
 
   for (octave_idx_type j = 0; j < nc; j++)
@@ -398,7 +398,7 @@ x_el_div (double a, const SparseComplexMatrix& b)
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
 
-  ComplexMatrix result (nr, nc, Complex (octave_NaN, octave_NaN));
+  ComplexMatrix result (nr, nc, Complex (octave_numeric_limits<double>::NaN (), octave_numeric_limits<double>::NaN ()));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)

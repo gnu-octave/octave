@@ -263,8 +263,8 @@ extern "C"
                                F77_CHAR_ARG_LEN_DECL);
 }
 
-static const FloatComplex FloatComplex_NaN_result (octave_Float_NaN,
-                                                   octave_Float_NaN);
+static const FloatComplex FloatComplex_NaN_result (octave_numeric_limits<float>::NaN (),
+                                                   octave_numeric_limits<float>::NaN ());
 
 // FloatComplex Matrix class
 
@@ -1130,7 +1130,7 @@ FloatComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
         ret = FloatComplexMatrix (rows (), columns (),
-                                  FloatComplex (octave_Float_Inf, 0.));
+                                  FloatComplex (octave_numeric_limits<float>::Inf (), 0.));
     }
 
   return ret;
@@ -1671,7 +1671,7 @@ FloatComplexMatrix::rcond (void) const
 float
 FloatComplexMatrix::rcond (MatrixType &mattype) const
 {
-  float rcon = octave_NaN;
+  float rcon = octave_numeric_limits<float>::NaN ();
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1679,7 +1679,7 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
     (*current_liboctave_error_handler) ("matrix must be square");
 
   if (nr == 0 || nc == 0)
-    rcon = octave_Inf;
+    rcon = octave_numeric_limits<float>::Inf ();
   else
     {
       volatile int typ = mattype.type ();
@@ -3160,7 +3160,7 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 
           FloatComplex tmp_min;
 
-          float abs_min = octave_Float_NaN;
+          float abs_min = octave_numeric_limits<float>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -3235,7 +3235,7 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 
           FloatComplex tmp_max;
 
-          float abs_max = octave_Float_NaN;
+          float abs_max = octave_numeric_limits<float>::NaN ();
 
           for (idx_j = 0; idx_j < nc; idx_j++)
             {
@@ -3310,7 +3310,7 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 
           FloatComplex tmp_min;
 
-          float abs_min = octave_Float_NaN;
+          float abs_min = octave_numeric_limits<float>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {
@@ -3385,7 +3385,7 @@ FloatComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
           FloatComplex tmp_max;
 
-          float abs_max = octave_Float_NaN;
+          float abs_max = octave_numeric_limits<float>::NaN ();
 
           for (idx_i = 0; idx_i < nr; idx_i++)
             {

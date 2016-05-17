@@ -441,11 +441,13 @@ xgamma (double x)
   // tgamma.  Matlab does not have -0.
 
   if (x == 0)
-    result = xnegative_sign (x) ? -octave_Inf : octave_Inf;
+    result = (xnegative_sign (x)
+              ? -octave_numeric_limits<double>::Inf ()
+              : octave_numeric_limits<double>::Inf ());
   else if ((x < 0 && D_NINT (x) == x) || xisinf (x))
-    result = octave_Inf;
+    result = octave_numeric_limits<double>::Inf ();
   else if (xisnan (x))
-    result = octave_NaN;
+    result = octave_numeric_limits<double>::NaN ();
   else
     {
 #if defined (HAVE_TGAMMA)
@@ -470,7 +472,7 @@ xlgamma (double x)
   if (xisnan (x))
     result = x;
   else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
-    result = octave_Inf;
+    result = octave_numeric_limits<double>::Inf ();
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
 
@@ -492,7 +494,7 @@ rc_lgamma (double x)
   if (xisnan (x))
     result = x;
   else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
-    result = octave_Inf;
+    result = octave_numeric_limits<double>::Inf ();
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
 
@@ -513,11 +515,13 @@ xgamma (float x)
   // tgamma.  Matlab does not have -0.
 
   if (x == 0)
-    result = xnegative_sign (x) ? -octave_Float_Inf : octave_Float_Inf;
+    result = (xnegative_sign (x)
+              ? -octave_numeric_limits<float>::Inf ()
+              : octave_numeric_limits<float>::Inf ());
   else if ((x < 0 && D_NINT (x) == x) || xisinf (x))
-    result = octave_Float_Inf;
+    result = octave_numeric_limits<float>::Inf ();
   else if (xisnan (x))
-    result = octave_Float_NaN;
+    result = octave_numeric_limits<float>::NaN ();
   else
     {
 #if defined (HAVE_TGAMMA)
@@ -542,7 +546,7 @@ xlgamma (float x)
   if (xisnan (x))
     result = x;
   else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
-    result = octave_Float_Inf;
+    result = octave_numeric_limits<float>::Inf ();
   else
     F77_XFCN (algams, ALGAMS, (x, result, sgngam));
 
@@ -564,7 +568,7 @@ rc_lgamma (float x)
   if (xisnan (x))
     result = x;
   else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
-    result = octave_Float_Inf;
+    result = octave_numeric_limits<float>::Inf ();
   else
     F77_XFCN (algams, ALGAMS, (x, result, sgngam));
 
@@ -837,8 +841,13 @@ zbesh2 (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 static inline Complex
 bessel_return_value (const Complex& val, octave_idx_type ierr)
 {
-  static const Complex inf_val = Complex (octave_Inf, octave_Inf);
-  static const Complex nan_val = Complex (octave_NaN, octave_NaN);
+  static const Complex inf_val
+    = Complex (octave_numeric_limits<double>::Inf (),
+               octave_numeric_limits<double>::Inf ());
+
+  static const Complex nan_val
+    = Complex (octave_numeric_limits<double>::NaN (),
+               octave_numeric_limits<double>::NaN ());
 
   Complex retval;
 
@@ -918,7 +927,8 @@ zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
           retval = bessel_return_value (tmp, ierr);
         }
       else
-        retval = Complex (octave_NaN, octave_NaN);
+        retval = Complex (octave_numeric_limits<double>::NaN (),
+                          octave_numeric_limits<double>::NaN ());
     }
 
   return retval;
@@ -945,7 +955,7 @@ zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       if (zr == 0.0 && zi == 0.0)
         {
-          yr = -octave_Inf;
+          yr = -octave_numeric_limits<double>::Inf ();
           yi = 0.0;
         }
       else
@@ -988,7 +998,8 @@ zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
           retval = bessel_return_value (tmp, ierr);
         }
       else
-        retval = Complex (octave_NaN, octave_NaN);
+        retval = Complex (octave_numeric_limits<double>::NaN (),
+                          octave_numeric_limits<double>::NaN ());
     }
 
   return retval;
@@ -1052,7 +1063,8 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
           retval = bessel_return_value (tmp, ierr);
         }
       else
-        retval = Complex (octave_NaN, octave_NaN);
+        retval = Complex (octave_numeric_limits<double>::NaN (),
+                          octave_numeric_limits<double>::NaN ());
     }
 
   return retval;
@@ -1077,7 +1089,7 @@ zbesk (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       if (zr == 0.0 && zi == 0.0)
         {
-          yr = octave_Inf;
+          yr = octave_numeric_limits<double>::Inf ();
           yi = 0.0;
         }
       else
@@ -1468,10 +1480,13 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr);
 static inline FloatComplex
 bessel_return_value (const FloatComplex& val, octave_idx_type ierr)
 {
-  static const FloatComplex inf_val = FloatComplex (octave_Float_Inf,
-                                                    octave_Float_Inf);
-  static const FloatComplex nan_val = FloatComplex (octave_Float_NaN,
-                                                    octave_Float_NaN);
+  static const FloatComplex inf_val
+    = FloatComplex (octave_numeric_limits<float>::Inf (),
+                    octave_numeric_limits<float>::Inf ());
+
+  static const FloatComplex nan_val
+    = FloatComplex (octave_numeric_limits<float>::NaN (),
+                    octave_numeric_limits<float>::NaN ());
 
   FloatComplex retval;
 
@@ -1548,7 +1563,8 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
           retval = bessel_return_value (tmp, ierr);
         }
       else
-        retval = FloatComplex (octave_Float_NaN, octave_Float_NaN);
+        retval = FloatComplex (octave_numeric_limits<float>::NaN (),
+                               octave_numeric_limits<float>::NaN ());
     }
 
   return retval;
@@ -1571,7 +1587,7 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       if (real (z) == 0.0 && imag (z) == 0.0)
         {
-          y = FloatComplex (-octave_Float_Inf, 0.0);
+          y = FloatComplex (-octave_numeric_limits<float>::Inf (), 0.0);
         }
       else
         {
@@ -1613,7 +1629,8 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
           retval = bessel_return_value (tmp, ierr);
         }
       else
-        retval = FloatComplex (octave_Float_NaN, octave_Float_NaN);
+        retval = FloatComplex (octave_numeric_limits<float>::NaN (),
+                               octave_numeric_limits<float>::NaN ());
     }
 
   return retval;
@@ -1666,7 +1683,8 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
           retval = bessel_return_value (tmp, ierr);
         }
       else
-        retval = FloatComplex (octave_Float_NaN, octave_Float_NaN);
+        retval = FloatComplex (octave_numeric_limits<float>::NaN (),
+                               octave_numeric_limits<float>::NaN ());
     }
 
   return retval;
@@ -1687,7 +1705,7 @@ cbesk (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       if (real (z) == 0.0 && imag (z) == 0.0)
         {
-          y = FloatComplex (octave_Float_Inf, 0.0);
+          y = FloatComplex (octave_numeric_limits<float>::Inf (), 0.0);
         }
       else
         {
@@ -3031,9 +3049,9 @@ static double do_erfinv (double x, bool refine)
       y = yn / yd * signum (-x);
     }
   else if (ax == 1.0)
-    return octave_Inf * signum (x);
+    return octave_numeric_limits<double>::Inf () * signum (x);
   else
-    return octave_NaN;
+    return octave_numeric_limits<double>::NaN ();
 
   if (refine)
     {
@@ -3118,11 +3136,11 @@ static double do_erfcinv (double x, bool refine)
         y = -y;
     }
   else if (x == 0.0)
-    return octave_Inf;
+    return octave_numeric_limits<double>::Inf ();
   else if (x == 2.0)
-    return -octave_Inf;
+    return -octave_numeric_limits<double>::Inf ();
   else
-    return octave_NaN;
+    return octave_numeric_limits<double>::NaN ();
 
   if (refine)
     {
@@ -3756,7 +3774,7 @@ psi (const T& z)
     {
       // limits - zeros of the gamma function
       if (is_int)
-        p = -octave_Inf; // Matlab returns -Inf for psi (0)
+        p = -octave_numeric_limits<T>::Inf (); // Matlab returns -Inf for psi (0)
       else
         // Abramowitz and Stegun, page 259, eq 6.3.7
         p = psi (1 - z) - (pi / tan (pi * z));
@@ -3892,9 +3910,9 @@ psi (const octave_idx_type n, const T z)
         ans = -ans;
     }
   else if (ierr == 2)
-    ans = - octave_Inf;
+    ans = - octave_numeric_limits<T>::Inf ();
   else // we probably never get here
-    ans = octave_NaN;
+    ans = octave_numeric_limits<T>::NaN ();
 
   return ans;
 }

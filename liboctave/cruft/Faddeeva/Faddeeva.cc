@@ -166,8 +166,8 @@
 #  include <limits>
 
 // use std::numeric_limits, since 1./0. and 0./0. fail with some compilers (MS)
-#  define Inf octave_Inf
-#  define NaN octave_NaN
+#  define Inf octave_numeric_limits<double>::Inf ()
+#  define NaN octave_numeric_limits<double>::NaN ()
 
 typedef std::complex<double> cmplx;
 

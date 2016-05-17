@@ -86,8 +86,6 @@ Dirichlet(a1,...,ak) for ai > 0
 #include "randmtzig.h"
 #include "randgamma.h"
 
-#undef NAN
-#define NAN octave_NaN
 #define INFINITE lo_ieee_isinf
 #define RUNI oct_randu()
 #define RNOR oct_randn()
@@ -105,7 +103,7 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
   if (a <= 0 || INFINITE(a))
     {
       for (i=0; i < n; i++)
-        r[i] = NAN;
+        r[i] = octave_numeric_limits<double>::NaN ();
       return;
     }
 
@@ -141,11 +139,9 @@ oct_randg (double a)
   return ret;
 }
 
-#undef NAN
 #undef RUNI
 #undef RNOR
 #undef REXP
-#define NAN octave_Float_NaN
 #define RUNI oct_float_randu()
 #define RNOR oct_float_randn()
 #define REXP oct_float_rande()
@@ -162,7 +158,7 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
   if (a <= 0 || INFINITE(a))
     {
       for (i=0; i < n; i++)
-        r[i] = NAN;
+        r[i] = octave_numeric_limits<float>::NaN ();
       return;
     }
 

@@ -244,7 +244,7 @@ Undocumented internal function.\n\
   Matrix F (num_voronoi_vertices+1, dim);
 
   for (octave_idx_type d = 0; d < dim; d++)
-    F(0,d) = octave_Inf;
+    F(0,d) = octave_numeric_limits<double>::Inf ();
 
   // The cell array of vectors of indices into F that represent the
   // vertices of the Voronoi regions (cells).

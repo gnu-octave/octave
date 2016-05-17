@@ -302,7 +302,7 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          double tmp_max = octave_NaN;
+          double tmp_max = octave_numeric_limits<double>::NaN ();
           octave_idx_type idx_j = 0;
           for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
             {
@@ -401,7 +401,7 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
           if (idx_arg(j) == -1)
             {
               idx_arg(j) = 0;
-              result.xdata (ii) = octave_NaN;
+              result.xdata (ii) = octave_numeric_limits<double>::NaN ();
               result.xridx (ii++) = j;
             }
           else
@@ -453,7 +453,7 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          double tmp_min = octave_NaN;
+          double tmp_min = octave_numeric_limits<double>::NaN ();
           octave_idx_type idx_j = 0;
           for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
             {
@@ -552,7 +552,7 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
           if (idx_arg(j) == -1)
             {
               idx_arg(j) = 0;
-              result.xdata (ii) = octave_NaN;
+              result.xdata (ii) = octave_numeric_limits<double>::NaN ();
               result.xridx (ii++) = j;
             }
           else
@@ -876,7 +876,7 @@ SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
   if (calccond)
     {
       double dmax = 0.;
-      double dmin = octave_Inf;
+      double dmin = octave_numeric_limits<double>::Inf ();
       for (octave_idx_type i = 0; i < nr; i++)
         {
           double tmp = fabs (v[i]);
@@ -1390,7 +1390,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_Inf;
+          double dmin = octave_numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nm; i++)
             {
               double tmp = fabs (data (i));
@@ -1479,7 +1479,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_Inf;
+          double dmin = octave_numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nm; i++)
             {
               double tmp = fabs (data (i));
@@ -1538,7 +1538,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_Inf;
+          double dmin = octave_numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nm; i++)
             {
               double tmp = fabs (data (i));
@@ -1627,7 +1627,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       if (calc_cond)
         {
           double dmax = 0.;
-          double dmin = octave_Inf;
+          double dmin = octave_numeric_limits<double>::Inf ();
           for (octave_idx_type i = 0; i < nm; i++)
             {
               double tmp = fabs (data (i));

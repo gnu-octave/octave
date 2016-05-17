@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // This is the octave interface to colamd, which bore the copyright given
 // in the help of the functions.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -278,7 +278,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @seealso{colperm, symamd, ccolamd}\n\
 @end deftypefn")
 {
-#ifdef HAVE_COLAMD
+#if defined (HAVE_COLAMD)
 
   int nargin = args.length ();
 
@@ -516,7 +516,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @seealso{colperm, colamd}\n\
 @end deftypefn")
 {
-#ifdef HAVE_COLAMD
+#if defined (HAVE_COLAMD)
 
   int nargin = args.length ();
 

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "gl2ps-print.h"
 
-#ifdef HAVE_GL2PS_H
+#if defined (HAVE_GL2PS_H)
 
 #include <cstdio>
 #include <limits>

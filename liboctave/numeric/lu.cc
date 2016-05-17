@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -45,7 +45,7 @@ extern "C"
                              double*, const octave_idx_type&,
                              octave_idx_type*, octave_idx_type&);
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
   F77_RET_T
   F77_FUNC (dlu1up, DLU1UP) (const octave_idx_type&, const octave_idx_type&,
                              double *, const octave_idx_type&,
@@ -65,7 +65,7 @@ extern "C"
                              float*, const octave_idx_type&, octave_idx_type*,
                              octave_idx_type&);
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
   F77_RET_T
   F77_FUNC (slu1up, SLU1UP) (const octave_idx_type&, const octave_idx_type&,
                              float *, const octave_idx_type&,
@@ -85,7 +85,7 @@ extern "C"
                              Complex*, const octave_idx_type&,
                              octave_idx_type*, octave_idx_type&);
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
   F77_RET_T
   F77_FUNC (zlu1up, ZLU1UP) (const octave_idx_type&, const octave_idx_type&,
                              Complex *, const octave_idx_type&,
@@ -105,7 +105,7 @@ extern "C"
                              FloatComplex*, const octave_idx_type&,
                              octave_idx_type*, octave_idx_type&);
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
   F77_RET_T
   F77_FUNC (clu1up, CLU1UP) (const octave_idx_type&, const octave_idx_type&,
                              FloatComplex *, const octave_idx_type&,
@@ -348,7 +348,7 @@ lu<Matrix>::lu (const Matrix& a)
     pipvt[i] -= 1;
 }
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
 
 template <>
 void
@@ -482,7 +482,7 @@ lu<FloatMatrix>::lu (const FloatMatrix& a)
     pipvt[i] -= 1;
 }
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
 
 template <>
 void
@@ -618,7 +618,7 @@ lu<ComplexMatrix>::lu (const ComplexMatrix& a)
     pipvt[i] -= 1;
 }
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
 
 template <>
 void
@@ -754,7 +754,7 @@ lu<FloatComplexMatrix>::lu (const FloatComplexMatrix& a)
     pipvt[i] -= 1;
 }
 
-#ifdef HAVE_QRUPDATE_LUU
+#if defined (HAVE_QRUPDATE_LUU)
 
 template <>
 void

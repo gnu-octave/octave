@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 #include "jit-ir.h"
 #include "pt-walk.h"
@@ -388,7 +388,7 @@ private:
   size_t trip_count (const octave_value& bounds) const;
 
   llvm::Module *module;
-#ifdef LEGACY_PASSMANAGER
+#if defined (LEGACY_PASSMANAGER)
   llvm::legacy::PassManager *module_pass_manager;
   llvm::legacy::FunctionPassManager *pass_manager;
 #else

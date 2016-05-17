@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -31,18 +31,18 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-perm.h"
 #include MINCLUDE
 #include "ops.h"
-#ifdef DEFINENULLASSIGNCONV
+#if defined (DEFINENULLASSIGNCONV)
 #  include "ov-null-mat.h"
 #endif
 
-#ifndef LDMATRIX
+#if ! defined (LDMATRIX)
 #  define LDMATRIX LMATRIX
 #endif
 
 #define OCTAVE_LMATRIX CONCAT2(octave_, LMATRIX)
 #define OCTAVE_LDMATRIX CONCAT2(octave_, LDMATRIX)
 #define OCTAVE_RMATRIX CONCAT2(octave_, RMATRIX)
-#ifdef LEFT
+#if defined (LEFT)
 #  define LMATRIX_VALUE perm_matrix_value
 #  define RMATRIX_VALUE CONCAT2(RMATRIX, _value)
 #else
@@ -58,7 +58,7 @@ DEFBINOP (mul, LMATRIX, RMATRIX)
   return v1.LMATRIX_VALUE () * v2.RMATRIX_VALUE ();
 }
 
-#ifdef LEFT
+#if defined (LEFT)
 DEFBINOP (ldiv, LMATRIX, RMATRIX)
 {
   const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
@@ -84,12 +84,12 @@ void
 INST_NAME (void)
 {
   INSTALL_BINOP (op_mul, OCTAVE_LMATRIX, OCTAVE_RMATRIX, mul);
-#ifdef LEFT
+#if defined (LEFT)
   INSTALL_BINOP (op_ldiv, OCTAVE_LMATRIX, OCTAVE_RMATRIX, ldiv);
 #else
   INSTALL_BINOP (op_div, OCTAVE_LMATRIX, OCTAVE_RMATRIX, div);
 #endif
-#ifdef DEFINENULLASSIGNCONV
+#if defined (DEFINENULLASSIGNCONV)
   INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_matrix, OCTAVE_LDMATRIX);
   INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_str, OCTAVE_LDMATRIX);
   INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_sq_str, OCTAVE_LDMATRIX);

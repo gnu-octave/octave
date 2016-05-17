@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHash>
 #include <QTextCodec>
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 #  include "octave-qscintilla.h"
 #  include "octave-txt-lexer.h"
 #  include <QScrollArea>
@@ -56,7 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <Qsci/qscilexerdiff.h>
 #endif
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 
 static const int MaxLexerStyles = 64;
 static const int MaxStyleNumber = 128;
@@ -429,7 +429,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->cb_show_hscrollbar->setChecked (
     settings->value ("editor/show_hscroll_bar",true).toBool ());
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 #  if defined (Q_OS_WIN32)
   int eol_mode = QsciScintilla::EolWindows;
 #elif defined (Q_OS_MAC)
@@ -563,7 +563,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            this, SLOT (default_shortcut_set ()));
 
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   // editor styles: create lexer, read settings, and create dialog elements
   QsciLexer *lexer;
 #if defined (HAVE_LEXER_OCTAVE)
@@ -877,7 +877,7 @@ settings_dialog::write_changed_settings (bool closing)
     }
   settings->setValue ("terminal/cursorType", cursorType);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   // editor styles: create lexer, get dialog contents, and write settings
   QsciLexer *lexer;
 #if defined (HAVE_LEXER_OCTAVE)

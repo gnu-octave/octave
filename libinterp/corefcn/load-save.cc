@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // HDF5 support by Steven G. Johnson <stevenj@alum.mit.edu>
 // Matlab v5 support by James R. Van Zandt <jrv@vanzandt.mv.com>
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -81,14 +81,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-binary.h"
 
 // Remove gnulib definitions, if any.
-#ifdef close
+#if defined (close)
 #  undef close
 #endif
-#ifdef open
+#if defined (open)
 #  undef open
 #endif
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 #  include "zfstream.h"
 #endif
 
@@ -210,7 +210,7 @@ read_binary_file_header (std::istream& is, bool& swap,
   return 0;
 }
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 static bool
 check_gzip_magic (const std::string& fname)
 {
@@ -300,13 +300,13 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 {
   load_save_format retval = LS_UNKNOWN;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
   // check this before we open the file
   if (H5Fis_hdf5 (fname.c_str ()) > 0)
     return LS_HDF5;
 #endif
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
   use_zlib = check_gzip_magic (fname);
 #else
   use_zlib = false;
@@ -323,7 +323,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
       else if (! quiet)
         err_file_open ("load", orig_fname);
     }
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
   else
     {
       gzifstream gzfile (fname.c_str ());
@@ -382,7 +382,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
           name = read_mat_binary_data (stream, orig_fname, tc);
           break;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
         case LS_HDF5:
           name = read_hdf5_data (stream, orig_fname, global, tc, doc,
                                  argv, argv_idx, argc);
@@ -692,7 +692,7 @@ Force Octave to assume the file is in Octave's text format.\n\
         }
       else if (argv[i] == "-hdf5" || argv[i] == "-h")
         {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           format = LS_HDF5;
 #else
           err_disabled_feature ("load", "HDF5");
@@ -728,7 +728,7 @@ Force Octave to assume the file is in Octave's text format.\n\
     {
       i++;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         error ("load: cannot read HDF5 format from stdin");
       else
@@ -758,7 +758,7 @@ Force Octave to assume the file is in Octave's text format.\n\
       if (format == LS_UNKNOWN)
         format = get_file_format (fname, orig_fname, use_zlib);
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         {
           i++;
@@ -786,7 +786,7 @@ Force Octave to assume the file is in Octave's text format.\n\
           // line-endings explicitly.
           std::ios::openmode mode = std::ios::in | std::ios::binary;
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
           if (use_zlib)
             {
               gzifstream file (fname.c_str (), mode);
@@ -928,7 +928,7 @@ do_save (std::ostream& os, const octave_value& tc,
       save_mat_binary_data (os, tc, name);
       break;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
     case LS_HDF5:
       save_hdf5_data (os, tc, name, help, global, save_as_floats);
       break;
@@ -1061,7 +1061,7 @@ parse_save_options (const string_vector &argv,
         }
       else if (argv[i] == "-hdf5" || argv[i] == "-h")
         {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           format = LS_HDF5;
 #else
           err_disabled_feature ("save", "HDF5");
@@ -1073,7 +1073,7 @@ parse_save_options (const string_vector &argv,
         {
           format = LS_MAT5_BINARY;
         }
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
       else if (argv[i] == "-mat7-binary" || argv[i] == "-7"
                || argv[i] == "-v7" || argv[i] == "-V7")
         {
@@ -1092,14 +1092,14 @@ parse_save_options (const string_vector &argv,
         }
       else if (argv[i] == "-float-hdf5")
         {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           format = LS_HDF5;
           save_as_floats = true;
 #else
           err_disabled_feature ("save", "HDF5");
 #endif
         }
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
       else if (argv[i] == "-zip" || argv[i] == "-z")
         {
           use_zlib = true;
@@ -1207,7 +1207,7 @@ write_header (std::ostream& os, load_save_format format)
 
       break;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
     case LS_HDF5:
 #endif
     case LS_TEXT:
@@ -1218,7 +1218,7 @@ write_header (std::ostream& os, load_save_format format)
 
         if (! comment_string.empty ())
           {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
             if (format == LS_HDF5)
               {
                 hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
@@ -1239,7 +1239,7 @@ write_header (std::ostream& os, load_save_format format)
 void
 octave_prepare_hdf5 (void)
 {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
   H5dont_atexit ();
 #endif
 }
@@ -1247,7 +1247,7 @@ octave_prepare_hdf5 (void)
 void
 octave_finalize_hdf5 (void)
 {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
   H5close ();
 #endif
 }
@@ -1380,7 +1380,7 @@ dump_octave_core (void)
         use_zlib = false;
 
       if (format == LS_BINARY
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           || format == LS_HDF5
 #endif
           || format == LS_MAT_BINARY
@@ -1390,7 +1390,7 @@ dump_octave_core (void)
 
       mode |= append ? std::ios::ate : std::ios::trunc;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         {
           hdf5_ofstream file (fname, mode);
@@ -1410,7 +1410,7 @@ dump_octave_core (void)
         // don't insert any commands here!  The open brace below must
         // go with the else above!
         {
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
           if (use_zlib)
             {
               gzofstream file (fname, mode);
@@ -1606,7 +1606,7 @@ the file @file{data} in Octave's binary format.\n\
     {
       i++;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         error ("save: cannot write HDF5 format to stdout");
       else
@@ -1646,7 +1646,7 @@ the file @file{data} in Octave's binary format.\n\
         = append ? (std::ios::app | std::ios::ate) : std::ios::out;
 
       if (format == LS_BINARY
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           || format == LS_HDF5
 #endif
           || format == LS_MAT_BINARY
@@ -1654,7 +1654,7 @@ the file @file{data} in Octave's binary format.\n\
           || format == LS_MAT7_BINARY)
         mode |= std::ios::binary;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         {
           // FIXME: It should be possible to append to HDF5 files.
@@ -1679,7 +1679,7 @@ the file @file{data} in Octave's binary format.\n\
         // don't insert any statements here!  The brace below must go
         // with the "else" above!
         {
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
           if (use_zlib)
             {
               gzofstream file (fname.c_str (), mode);

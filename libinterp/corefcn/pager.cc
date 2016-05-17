@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -62,7 +62,7 @@ default_pager (void)
 {
   std::string pager_binary = octave_env::getenv ("PAGER");
 
-#ifdef OCTAVE_DEFAULT_PAGER
+#if defined (OCTAVE_DEFAULT_PAGER)
   if (pager_binary.empty ())
     pager_binary = OCTAVE_DEFAULT_PAGER;
 #endif

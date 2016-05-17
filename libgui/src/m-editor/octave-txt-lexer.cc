@@ -22,11 +22,11 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Torsten <ttl@justmail.de>
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 
 #include <Qsci/qscilexer.h>
 

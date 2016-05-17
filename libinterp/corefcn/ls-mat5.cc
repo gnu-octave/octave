@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: James R. Van Zandt <jrv@vanzandt.mv.com>
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -77,7 +77,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "defaults.h"
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 #  include <zlib.h>
 #endif
 
@@ -510,7 +510,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   if (type == miCOMPRESSED)
     {
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
       // If C++ allowed us direct access to the file descriptor of an
       // ifstream in a uniform way, the code below could be vastly
       // simplified, and additional copies of the data in memory
@@ -2286,7 +2286,7 @@ save_mat5_binary_element (std::ostream& os,
       return true;  // skip to next
     }
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
   if (mat7_format && ! compressing)
     {

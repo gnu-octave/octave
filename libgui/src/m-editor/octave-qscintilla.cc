@@ -22,11 +22,11 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Torsten <ttl@justmail.de>
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 
 #include <Qsci/qscilexer.h>
 #include <Qsci/qscicommandset.h>
@@ -45,7 +45,7 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
   // clear scintilla edit shortcuts that are handled by the editor
   QsciCommandSet *cmd_set = standardCommands ();
 
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
   // find () was added in QScintilla 2.6
   cmd_set->find (QsciCommand::SelectionCopy)->setKey (0);
   cmd_set->find (QsciCommand::SelectionCut)->setKey (0);
@@ -190,7 +190,7 @@ octave_qscintilla::context_run ()
 void
 octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 {
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
   QPoint global_pos, local_pos;                         // the menu's position
   QMenu *context_menu = createStandardContextMenu ();  // standard menu
 
@@ -216,7 +216,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
         global_pos = editor_rect.topLeft ();   // yes, take top left corner
     }
 
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
   if (! in_left_margin)
 #endif
     {
@@ -244,7 +244,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
             }
         }
       }
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
     else
       {
         // remove all standard actions from scintilla
@@ -309,7 +309,7 @@ octave_qscintilla::contextmenu_run (bool)
 void
 octave_qscintilla::contextmenu_break_condition (bool)
 {
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
   QAction *action = qobject_cast<QAction *>(sender());
   QPoint local_pos = action->data ().value<QPoint> ();
 
@@ -324,7 +324,7 @@ octave_qscintilla::contextmenu_break_condition (bool)
 void
 octave_qscintilla::contextmenu_break_once (const QPoint& local_pos)
 {
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
   emit context_menu_break_once (lineAt (local_pos));
 #endif
 }

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -126,7 +126,7 @@ private:
 
   static void octave_jump_to_enclosing_context_sync (void)
   {
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
     _fpreset ();
 #endif
     ::octave_jump_to_enclosing_context ();
@@ -226,7 +226,7 @@ void w32_raise_sigint (void)
 #endif
 
 // Signal handler return type.
-#ifndef BADSIG
+#if ! defined (BADSIG)
 #  define BADSIG (void (*)(int))-1
 #endif
 
@@ -276,7 +276,7 @@ octave_signal_handler (void)
 
           switch (i)
             {
-#ifdef SIGCHLD
+#if defined (SIGCHLD)
             case SIGCHLD:
               {
                 volatile octave_interrupt_handler saved_interrupt_handler
@@ -301,7 +301,7 @@ octave_signal_handler (void)
               std::cerr << "warning: floating point exception" << std::endl;
               break;
 
-#ifdef SIGPIPE
+#if defined (SIGPIPE)
             case SIGPIPE:
               std::cerr << "warning: broken pipe" << std::endl;
               break;
@@ -395,7 +395,7 @@ generic_sig_handler (int sig)
 
 // Handle SIGCHLD.
 
-#ifdef SIGCHLD
+#if defined (SIGCHLD)
 static void
 sigchld_handler (int /* sig */)
 {
@@ -539,7 +539,7 @@ sigint_handler (int sig)
 #endif
 }
 
-#ifdef SIGPIPE
+#if defined (SIGPIPE)
 static void
 sigpipe_handler (int /* sig */)
 {
@@ -563,11 +563,11 @@ octave_catch_interrupts (void)
   w32_interrupt_manager::init ();
 #endif
 
-#ifdef SIGINT
+#if defined (SIGINT)
   retval.int_handler = octave_set_signal_handler (SIGINT, sigint_handler);
 #endif
 
-#ifdef SIGBREAK
+#if defined (SIGBREAK)
   retval.brk_handler = octave_set_signal_handler (SIGBREAK, sigint_handler);
 #endif
 
@@ -583,11 +583,11 @@ octave_ignore_interrupts (void)
   w32_interrupt_manager::init ();
 #endif
 
-#ifdef SIGINT
+#if defined (SIGINT)
   retval.int_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
 #endif
 
-#ifdef SIGBREAK
+#if defined (SIGBREAK)
   retval.brk_handler = octave_set_signal_handler (SIGBREAK, SIG_IGN);
 #endif
 
@@ -604,12 +604,12 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h,
   w32_interrupt_manager::init ();
 #endif
 
-#ifdef SIGINT
+#if defined (SIGINT)
   retval.int_handler = octave_set_signal_handler (SIGINT, h.int_handler,
                                                   restart_syscalls);
 #endif
 
-#ifdef SIGBREAK
+#if defined (SIGBREAK)
   retval.brk_handler = octave_set_signal_handler (SIGBREAK, h.brk_handler,
                                                   restart_syscalls);
 #endif
@@ -627,30 +627,30 @@ install_signal_handlers (void)
 
   octave_catch_interrupts ();
 
-#ifdef SIGABRT
+#if defined (SIGABRT)
   octave_set_signal_handler (SIGABRT, generic_sig_handler);
 #endif
 
-#ifdef SIGALRM
+#if defined (SIGALRM)
   octave_set_signal_handler (SIGALRM, generic_sig_handler);
 #endif
 
-#ifdef SIGBUS
+#if defined (SIGBUS)
   octave_set_signal_handler (SIGBUS, generic_sig_handler);
 #endif
 
-#ifdef SIGCHLD
+#if defined (SIGCHLD)
   octave_set_signal_handler (SIGCHLD, sigchld_handler);
 #endif
 
   // SIGCLD
   // SIGCONT
 
-#ifdef SIGEMT
+#if defined (SIGEMT)
   octave_set_signal_handler (SIGEMT, generic_sig_handler);
 #endif
 
-#ifdef SIGFPE
+#if defined (SIGFPE)
 #  if defined (__alpha__)
   octave_set_signal_handler (SIGFPE, sigfpe_handler);
 #  else
@@ -658,55 +658,55 @@ install_signal_handlers (void)
 #  endif
 #endif
 
-#ifdef SIGHUP
+#if defined (SIGHUP)
   octave_set_signal_handler (SIGHUP, sig_hup_or_term_handler);
 #endif
 
-#ifdef SIGILL
+#if defined (SIGILL)
   octave_set_signal_handler (SIGILL, generic_sig_handler);
 #endif
 
   // SIGINFO
   // SIGINT
 
-#ifdef SIGIOT
+#if defined (SIGIOT)
   octave_set_signal_handler (SIGIOT, generic_sig_handler);
 #endif
 
-#ifdef SIGLOST
+#if defined (SIGLOST)
   octave_set_signal_handler (SIGLOST, generic_sig_handler);
 #endif
 
-#ifdef SIGPIPE
+#if defined (SIGPIPE)
   octave_set_signal_handler (SIGPIPE, sigpipe_handler);
 #endif
 
-#ifdef SIGPOLL
+#if defined (SIGPOLL)
   octave_set_signal_handler (SIGPOLL, SIG_IGN);
 #endif
 
   // SIGPROF
   // SIGPWR
 
-#ifdef SIGQUIT
+#if defined (SIGQUIT)
   octave_set_signal_handler (SIGQUIT, generic_sig_handler);
 #endif
 
-#ifdef SIGSEGV
+#if defined (SIGSEGV)
   octave_set_signal_handler (SIGSEGV, generic_sig_handler);
 #endif
 
   // SIGSTOP
 
-#ifdef SIGSYS
+#if defined (SIGSYS)
   octave_set_signal_handler (SIGSYS, generic_sig_handler);
 #endif
 
-#ifdef SIGTERM
+#if defined (SIGTERM)
   octave_set_signal_handler (SIGTERM, sig_hup_or_term_handler);
 #endif
 
-#ifdef SIGTRAP
+#if defined (SIGTRAP)
   octave_set_signal_handler (SIGTRAP, generic_sig_handler);
 #endif
 
@@ -715,33 +715,33 @@ install_signal_handlers (void)
   // SIGTTOU
   // SIGURG
 
-#ifdef SIGUSR1
+#if defined (SIGUSR1)
   octave_set_signal_handler (SIGUSR1, generic_sig_handler);
 #endif
 
-#ifdef SIGUSR2
+#if defined (SIGUSR2)
   octave_set_signal_handler (SIGUSR2, generic_sig_handler);
 #endif
 
-#ifdef SIGVTALRM
+#if defined (SIGVTALRM)
   octave_set_signal_handler (SIGVTALRM, generic_sig_handler);
 #endif
 
-#ifdef SIGIO
+#if defined (SIGIO)
   octave_set_signal_handler (SIGIO, SIG_IGN);
 #endif
 
 #if 0
-#  ifdef SIGWINCH
+#  if defined (SIGWINCH)
   octave_set_signal_handler (SIGWINCH, sigwinch_handler);
 #endif
 #endif
 
-#ifdef SIGXCPU
+#if defined (SIGXCPU)
   octave_set_signal_handler (SIGXCPU, generic_sig_handler);
 #endif
 
-#ifdef SIGXFSZ
+#if defined (SIGXFSZ)
   octave_set_signal_handler (SIGXFSZ, generic_sig_handler);
 #endif
 
@@ -752,155 +752,155 @@ make_sig_struct (void)
 {
   octave_scalar_map m;
 
-#ifdef SIGABRT
+#if defined (SIGABRT)
   m.assign ("ABRT", SIGABRT);
 #endif
 
-#ifdef SIGALRM
+#if defined (SIGALRM)
   m.assign ("ALRM", SIGALRM);
 #endif
 
-#ifdef SIGBUS
+#if defined (SIGBUS)
   m.assign ("BUS", SIGBUS);
 #endif
 
-#ifdef SIGCHLD
+#if defined (SIGCHLD)
   m.assign ("CHLD", SIGCHLD);
 #endif
 
-#ifdef SIGCLD
+#if defined (SIGCLD)
   m.assign ("CLD", SIGCLD);
 #endif
 
-#ifdef SIGCONT
+#if defined (SIGCONT)
   m.assign ("CONT", SIGCONT);
 #endif
 
-#ifdef SIGEMT
+#if defined (SIGEMT)
   m.assign ("EMT", SIGEMT);
 #endif
 
-#ifdef SIGFPE
+#if defined (SIGFPE)
   m.assign ("FPE", SIGFPE);
 #endif
 
-#ifdef SIGHUP
+#if defined (SIGHUP)
   m.assign ("HUP", SIGHUP);
 #endif
 
-#ifdef SIGILL
+#if defined (SIGILL)
   m.assign ("ILL", SIGILL);
 #endif
 
-#ifdef SIGINFO
+#if defined (SIGINFO)
   m.assign ("INFO", SIGINFO);
 #endif
 
-#ifdef SIGINT
+#if defined (SIGINT)
   m.assign ("INT", SIGINT);
 #endif
 
-#ifdef SIGIO
+#if defined (SIGIO)
   m.assign ("IO", SIGIO);
 #endif
 
-#ifdef SIGIOT
+#if defined (SIGIOT)
   m.assign ("IOT", SIGIOT);
 #endif
 
-#ifdef SIGKILL
+#if defined (SIGKILL)
   m.assign ("KILL", SIGKILL);
 #endif
 
-#ifdef SIGLOST
+#if defined (SIGLOST)
   m.assign ("LOST", SIGLOST);
 #endif
 
-#ifdef SIGPIPE
+#if defined (SIGPIPE)
   m.assign ("PIPE", SIGPIPE);
 #endif
 
-#ifdef SIGPOLL
+#if defined (SIGPOLL)
   m.assign ("POLL", SIGPOLL);
 #endif
 
-#ifdef SIGPROF
+#if defined (SIGPROF)
   m.assign ("PROF", SIGPROF);
 #endif
 
-#ifdef SIGPWR
+#if defined (SIGPWR)
   m.assign ("PWR", SIGPWR);
 #endif
 
-#ifdef SIGQUIT
+#if defined (SIGQUIT)
   m.assign ("QUIT", SIGQUIT);
 #endif
 
-#ifdef SIGSEGV
+#if defined (SIGSEGV)
   m.assign ("SEGV", SIGSEGV);
 #endif
 
-#ifdef SIGSTKFLT
+#if defined (SIGSTKFLT)
   m.assign ("STKFLT", SIGSTKFLT);
 #endif
 
-#ifdef SIGSTOP
+#if defined (SIGSTOP)
   m.assign ("STOP", SIGSTOP);
 #endif
 
-#ifdef SIGSYS
+#if defined (SIGSYS)
   m.assign ("SYS", SIGSYS);
 #endif
 
-#ifdef SIGTERM
+#if defined (SIGTERM)
   m.assign ("TERM", SIGTERM);
 #endif
 
-#ifdef SIGTRAP
+#if defined (SIGTRAP)
   m.assign ("TRAP", SIGTRAP);
 #endif
 
-#ifdef SIGTSTP
+#if defined (SIGTSTP)
   m.assign ("TSTP", SIGTSTP);
 #endif
 
-#ifdef SIGTTIN
+#if defined (SIGTTIN)
   m.assign ("TTIN", SIGTTIN);
 #endif
 
-#ifdef SIGTTOU
+#if defined (SIGTTOU)
   m.assign ("TTOU", SIGTTOU);
 #endif
 
-#ifdef SIGUNUSED
+#if defined (SIGUNUSED)
   m.assign ("UNUSED", SIGUNUSED);
 #endif
 
-#ifdef SIGURG
+#if defined (SIGURG)
   m.assign ("URG", SIGURG);
 #endif
 
-#ifdef SIGUSR1
+#if defined (SIGUSR1)
   m.assign ("USR1", SIGUSR1);
 #endif
 
-#ifdef SIGUSR2
+#if defined (SIGUSR2)
   m.assign ("USR2", SIGUSR2);
 #endif
 
-#ifdef SIGVTALRM
+#if defined (SIGVTALRM)
   m.assign ("VTALRM", SIGVTALRM);
 #endif
 
-#ifdef SIGWINCH
+#if defined (SIGWINCH)
   m.assign ("WINCH", SIGWINCH);
 #endif
 
-#ifdef SIGXCPU
+#if defined (SIGXCPU)
   m.assign ("XCPU", SIGXCPU);
 #endif
 
-#ifdef SIGXFSZ
+#if defined (SIGXFSZ)
   m.assign ("XFSZ", SIGXFSZ);
 #endif
 

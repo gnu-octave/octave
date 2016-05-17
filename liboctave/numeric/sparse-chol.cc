@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -41,14 +41,14 @@ public:
 
   sparse_chol_rep (void)
     : count (1), is_pd (false), minor_p (0), perms (), cond (0)
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
       , Lsparse (0), Common ()
 #endif
   { }
 
   sparse_chol_rep (const chol_type& a, bool natural, bool force)
     : count (1), is_pd (false), minor_p (0), perms (), cond (0)
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
       , Lsparse (0), Common ()
 #endif
   {
@@ -58,7 +58,7 @@ public:
   sparse_chol_rep (const chol_type& a, octave_idx_type& info,
                    bool natural, bool force)
     : count (1), is_pd (false), minor_p (0), perms (), cond (0)
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
       , Lsparse (0), Common ()
 #endif
   {
@@ -67,7 +67,7 @@ public:
 
   ~sparse_chol_rep (void)
   {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
     if (Lsparse)
       CHOLMOD_NAME (free_sparse) (&Lsparse, &Common);
 
@@ -75,7 +75,7 @@ public:
 #endif
   }
 
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
   cholmod_sparse *L (void) const
   {
     return Lsparse;
@@ -84,7 +84,7 @@ public:
 
   octave_idx_type P (void) const
   {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
     return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ?
             0 : minor_p + 1);
 #else
@@ -112,7 +112,7 @@ private:
 
   double cond;
 
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
   cholmod_sparse *Lsparse;
 
   cholmod_common Common;
@@ -129,7 +129,7 @@ private:
   sparse_chol_rep& operator = (const sparse_chol_rep&);
 };
 
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
 
 // Can't use CHOLMOD_NAME(drop)(0.0, S, cm) because it doesn't treat
 // complex matrices.
@@ -202,7 +202,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
 {
   volatile octave_idx_type info = 0;
 
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -350,7 +350,7 @@ template <typename chol_type>
 SparseMatrix
 sparse_chol<chol_type>::sparse_chol_rep::Q (void) const
 {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
 
   octave_idx_type n = Lsparse->nrow;
   SparseMatrix p (n, n, n);
@@ -439,7 +439,7 @@ template <typename chol_type>
 chol_type
 sparse_chol<chol_type>::L (void) const
 {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
 
   cholmod_sparse *m = rep->L ();
 
@@ -507,7 +507,7 @@ sparse_chol<chol_type>::inverse (void) const
 {
   chol_type retval;
 
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
 
   cholmod_sparse *m = rep->L ();
   octave_idx_type n = m->ncol;

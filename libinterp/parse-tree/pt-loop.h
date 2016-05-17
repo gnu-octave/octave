@@ -50,7 +50,7 @@ public:
   tree_while_command (int l = -1, int c = -1)
     : tree_command (l, c), expr (0), list (0), lead_comm (0),
       trail_comm (0)
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
       , compiled (0)
 #endif
   { }
@@ -61,7 +61,7 @@ public:
                       int l = -1, int c = -1)
     : tree_command (l, c), expr (e), list (0), lead_comm (lc),
       trail_comm (tc)
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
       , compiled (0)
 #endif
   { }
@@ -72,7 +72,7 @@ public:
                       int l = -1, int c = -1)
     : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
       trail_comm (tc)
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
       , compiled (0)
 #endif
   { }
@@ -92,7 +92,7 @@ public:
 
   void accept (tree_walker& tw);
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   // some functions use by tree_jit
   jit_info *get_info (void) const
   {
@@ -121,7 +121,7 @@ protected:
 
 private:
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   // compiled version of the loop
   jit_info *compiled;
 #endif
@@ -181,7 +181,7 @@ public:
   tree_simple_for_command (int l = -1, int c = -1)
     : tree_command (l, c), parallel (false), lhs (0), expr (0),
       maxproc (0), list (0), lead_comm (0), trail_comm (0)
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
       , compiled (0)
 #endif
   { }
@@ -196,7 +196,7 @@ public:
     : tree_command (l, c), parallel (parallel_arg), lhs (le),
       expr (re), maxproc (maxproc_arg), list (lst),
       lead_comm (lc), trail_comm (tc)
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
       , compiled (0)
 #endif
   { }
@@ -222,7 +222,7 @@ public:
 
   void accept (tree_walker& tw);
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   // some functions use by tree_jit
   jit_info *get_info (void) const
   {

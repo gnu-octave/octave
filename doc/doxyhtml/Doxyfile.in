@@ -206,7 +206,8 @@ INCLUDE_PATH = \
   @abs_top_srcdir@/liboctave/util \
   @abs_top_srcdir@/src
 
-# So that features that are behind #ifdef HAVE_FOO macros get processed by Doxygen
+# So that features that are behind #if defined (HAVE_FOO) macros
+# get processed by Doxygen
 
 PREDEFINED = HAVE_ARPACK=1          \
              HAVE_CCOLAMD=1         \

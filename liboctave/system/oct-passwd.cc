@@ -20,13 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 #include <sys/types.h>
 
-#ifdef HAVE_PWD_H
+#if defined (HAVE_PWD_H)
 #  include <pwd.h>
 #endif
 

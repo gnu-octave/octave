@@ -28,7 +28,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

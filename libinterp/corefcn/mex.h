@@ -108,67 +108,67 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[]);
 
 /* Apparently these are also defined.  */
 
-#ifndef UINT64_T
+#if ! defined (UINT64_T)
 #  define UINT64_T uint64_t
 #endif
 
-#ifndef uint64_T
+#if ! defined (uint64_T)
 #  define uint64_T uint64_t
 #endif
 
-#ifndef INT64_T
+#if ! defined (INT64_T)
 #  define INT64_T int64_t
 #endif
 
-#ifndef int64_T
+#if ! defined (int64_T)
 #  define int64_T int64_t
 #endif
 
-#ifndef UINT32_T
+#if ! defined (UINT32_T)
 #  define UINT32_T uint32_t
 #endif
 
-#ifndef uint32_T
+#if ! defined (uint32_T)
 #  define uint32_T uint32_t
 #endif
 
-#ifndef INT32_T
+#if ! defined (INT32_T)
 #  define INT32_T int32_t
 #endif
 
-#ifndef int32_T
+#if ! defined (int32_T)
 #  define int32_T int32_t
 #endif
 
-#ifndef UINT16_T
+#if ! defined (UINT16_T)
 #  define UINT16_T uint16_t
 #endif
 
-#ifndef uint16_T
+#if ! defined (uint16_T)
 #  define uint16_T uint16_t
 #endif
 
-#ifndef INT16_T
+#if ! defined (INT16_T)
 #  define INT16_T int16_t
 #endif
 
-#ifndef int16_T
+#if ! defined (int16_T)
 #  define int16_T int16_t
 #endif
 
-#ifndef UINT8_T
+#if ! defined (UINT8_T)
 #  define UINT8_T uint8_t
 #endif
 
-#ifndef uint8_T
+#if ! defined (uint8_T)
 #  define uint8_T uint8_t
 #endif
 
-#ifndef INT8_T
+#if ! defined (INT8_T)
 #  define INT8_T int8_t
 #endif
 
-#ifndef int8_T
+#if ! defined (int8_T)
 #  define int8_T int8_t
 #endif
 

@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Originally written by A. S. Hodel <scotte@eng.auburn.edu>
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

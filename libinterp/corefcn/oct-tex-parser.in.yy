@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define YYDEBUG 1
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "config.h"
 #endif
 
@@ -38,9 +38,9 @@ static void yyerror (text_parser_tex& parser, const char *s);
 // Calls to the following functions appear in the generated output
 // from Bison without the namespace tag.  Redefine them so we will use
 // them via the gnulib namespace.
-#define fclose GNULIB_NAMESPACE::fclose
-#define fprintf GNULIB_NAMESPACE::fprintf
-#define malloc GNULIB_NAMESPACE::malloc
+#  define fclose GNULIB_NAMESPACE::fclose
+#  define fprintf GNULIB_NAMESPACE::fprintf
+#  define malloc GNULIB_NAMESPACE::malloc
 #endif
 
 #define scanner parser.get_scanner ()

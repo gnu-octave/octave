@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 #include <list>
 #include <stack>

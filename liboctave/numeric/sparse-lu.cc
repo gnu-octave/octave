@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -378,7 +378,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
                                bool scale)
   : Lfact (), Ufact (), Rfact (), cond (0), P (), Q ()
 {
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
@@ -571,7 +571,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
                                bool milu, bool udiag)
   : Lfact (), Ufact (), Rfact (), cond (0), P (), Q ()
 {
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
 
   if (milu)
     (*current_liboctave_error_handler)

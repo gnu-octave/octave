@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate Arrays of octave_values.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

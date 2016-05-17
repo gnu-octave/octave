@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -344,7 +344,7 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
     }
 }
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
 static void
 solve_singularity_warning (double)
@@ -361,7 +361,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 {
   RT retval;
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE)
 
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();

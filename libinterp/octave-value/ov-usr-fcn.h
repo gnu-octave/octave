@@ -46,7 +46,7 @@ class tree_va_return_list;
 class tree_expression;
 class tree_walker;
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 class jit_function_info;
 #endif
 
@@ -405,7 +405,7 @@ public:
       return false;
   }
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   jit_function_info *get_info (void) { return jit_info; }
 
   void stash_info (jit_function_info *info) { jit_info = info; }
@@ -500,7 +500,7 @@ private:
   // pointer to the current unwind_protect frame of this function.
   unwind_protect *curr_unwind_protect_frame;
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   jit_function_info *jit_info;
 #endif
 

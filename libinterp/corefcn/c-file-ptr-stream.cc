@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -28,15 +28,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "c-file-ptr-stream.h"
 
-#ifndef SEEK_SET
+#if ! defined (SEEK_SET)
 #  define SEEK_SET 0
 #endif
 
-#ifndef SEEK_CUR
+#if ! defined (SEEK_CUR)
 #  define SEEK_CUR 1
 #endif
 
-#ifndef SEEK_END
+#if ! defined (SEEK_END)
 #  define SEEK_END 2
 #endif
 
@@ -182,7 +182,7 @@ c_file_ptr_buf::file_close (FILE *f)
   return gnulib::fclose (f);
 }
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
 c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
 {

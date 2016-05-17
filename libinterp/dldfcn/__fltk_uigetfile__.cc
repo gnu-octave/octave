@@ -20,13 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
 
-#ifdef WIN32
+#if defined (WIN32)
 #  define WIN32_LEAN_AND_MEAN
 #endif
 
@@ -51,7 +51,7 @@ DEFUN_DLD (__fltk_uigetfile__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
 
   // Expected argument list:
   //

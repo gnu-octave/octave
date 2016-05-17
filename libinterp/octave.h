@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef  __cplusplus
+#if defined  (__cplusplus)
 extern "C" {
 #endif
 
@@ -45,7 +45,7 @@ extern OCTINTERP_API int octave_embedded;
 extern OCTINTERP_API int octave_starting_gui (void);
 extern OCTINTERP_API int octave_fork_gui (void);
 
-#ifdef  __cplusplus
+#if defined  (__cplusplus)
 }
 #endif
 

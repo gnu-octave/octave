@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <windows.h>
 #include <tlhelp32.h>
 
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
 #  define popen _popen
 #  define pclose _pclose
 #endif
@@ -41,7 +41,7 @@ w32_get_octave_home (void)
   std::string bin_dir;
 
   HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
-#ifdef TH32CS_SNAPMODULE32
+#if defined (TH32CS_SNAPMODULE32)
                                        | TH32CS_SNAPMODULE32
 #endif
                                        , 0);

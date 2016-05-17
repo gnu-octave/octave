@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 %top {
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "config.h"
 #endif
 
@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 // Define away the deprecated register storage class specifier to avoid
 // potential warnings about it.
 #if ! defined (register)
-#define register
+#  define register
 #endif
 
 }
@@ -76,20 +76,20 @@ along with Octave; see the file COPYING.  If not, see
 // of YYSTYPE in the generated oct-parse.h file.
 
 #if defined (OCTAVE_TEX_STYPE_IS_DECLARED) && ! defined YYSTYPE
-#define YYSTYPE OCTAVE_TEX_STYPE
+#  define YYSTYPE OCTAVE_TEX_STYPE
 #endif
 
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output
 // from flex without the namespace tag.  Redefine them so we will use
 // them via the gnulib namespace.
-#define fprintf GNULIB_NAMESPACE::fprintf
-#define fread GNULIB_NAMESPACE::fread
-#define fwrite GNULIB_NAMESPACE::fwrite
-#define getc GNULIB_NAMESPACE::getc
-#define isatty GNULIB_NAMESPACE::isatty
-#define malloc GNULIB_NAMESPACE::malloc
-#define realloc GNULIB_NAMESPACE::realloc
+#  define fprintf GNULIB_NAMESPACE::fprintf
+#  define fread GNULIB_NAMESPACE::fread
+#  define fwrite GNULIB_NAMESPACE::fwrite
+#  define getc GNULIB_NAMESPACE::getc
+#  define isatty GNULIB_NAMESPACE::isatty
+#  define malloc GNULIB_NAMESPACE::malloc
+#  define realloc GNULIB_NAMESPACE::realloc
 #endif
 
 %}

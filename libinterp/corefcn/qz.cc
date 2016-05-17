@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #undef DEBUG_SORT
 #undef DEBUG_EIG
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -259,7 +259,7 @@ fin (const octave_idx_type& lsize, const double& alpha,
   else
     retval = (fabs (p) < 1 ? 1 : -1);
 
-#ifdef DEBUG
+#if defined (DEBUG)
   std::cout << "qz: fin: retval=" << retval << std::endl;
 #endif
 
@@ -374,7 +374,7 @@ compatibility with @sc{matlab}.\n\
 {
   int nargin = args.length ();
 
-#ifdef DEBUG
+#if defined (DEBUG)
   std::cout << "qz: nargin = " << nargin
             << ", nargout = " << nargout << std::endl;
 #endif
@@ -385,7 +385,7 @@ compatibility with @sc{matlab}.\n\
   if (nargin == 3 && (nargout < 3 || nargout > 4))
     error ("qz: invalid number of output arguments for form [3] call");
 
-#ifdef DEBUG
+#if defined (DEBUG)
   std::cout << "qz: determine ordering option" << std::endl;
 #endif
 
@@ -413,7 +413,7 @@ compatibility with @sc{matlab}.\n\
                                    safmin
                                    F77_CHAR_ARG_LEN (1));
 
-#ifdef DEBUG_EIG
+#if defined (DEBUG_EIG)
       std::cout << "qz: initial value of safmin="
                 << setiosflags (std::ios::scientific)
                 << safmin << std::endl;
@@ -423,7 +423,7 @@ compatibility with @sc{matlab}.\n\
       // for these, use eps instead to avoid problems in dlag2.
       if (safmin == 0)
         {
-#ifdef DEBUG_EIG
+#if defined (DEBUG_EIG)
           std::cout << "qz: DANGER WILL ROBINSON: safmin is 0!" << std::endl;
 #endif
 
@@ -431,7 +431,7 @@ compatibility with @sc{matlab}.\n\
                                        safmin
                                        F77_CHAR_ARG_LEN (1));
 
-#ifdef DEBUG_EIG
+#if defined (DEBUG_EIG)
           std::cout << "qz: safmin set to "
                     << setiosflags (std::ios::scientific)
                     << safmin << std::endl;
@@ -439,14 +439,14 @@ compatibility with @sc{matlab}.\n\
         }
     }
 
-#ifdef DEBUG
+#if defined (DEBUG)
   std::cout << "qz: check argument 1" << std::endl;
 #endif
 
   // Argument 1: check if it's o.k. dimensioned.
   octave_idx_type nn = args(0).rows ();
 
-#ifdef DEBUG
+#if defined (DEBUG)
   std::cout << "argument 1 dimensions: ("
             << nn << "," << args(0).columns () << ")"
             << std::endl;
@@ -478,7 +478,7 @@ compatibility with @sc{matlab}.\n\
   else
     aa = args(0).matrix_value ();
 
-#ifdef DEBUG
+#if defined (DEBUG)
   std::cout << "qz: check argument 2" << std::endl;
 #endif
 
@@ -528,7 +528,7 @@ compatibility with @sc{matlab}.\n\
 
   if (complex_case)
     {
-#ifdef DEBUG
+#if defined (DEBUG)
       if (compq == 'V')
         std::cout << "qz: performing balancing; CQ=" << std::endl
                   << CQ << std::endl;
@@ -554,7 +554,7 @@ compatibility with @sc{matlab}.\n\
     }
   else
     {
-#ifdef DEBUG
+#if defined (DEBUG)
       if (compq == 'V')
         std::cout << "qz: performing balancing; QQ=" << std::endl
                   << QQ << std::endl;
@@ -582,7 +582,7 @@ compatibility with @sc{matlab}.\n\
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
-#ifdef DEBUG
+#if defined (DEBUG)
       if (compq == 'V')
         std::cout << "qz: balancing done; QQ=" << std::endl << QQ << std::endl;
 #endif
@@ -599,7 +599,7 @@ compatibility with @sc{matlab}.\n\
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
-#ifdef DEBUG
+#if defined (DEBUG)
       if (compz == 'V')
         std::cout << "qz: balancing done; ZZ=" << std::endl << ZZ << std::endl;
 #endif
@@ -674,27 +674,27 @@ compatibility with @sc{matlab}.\n\
     }
   else
     {
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: peforming qr decomposition of bb" << std::endl;
 #endif
 
       // Compute the QR factorization of bb.
       qr<Matrix> bqr (bb);
 
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: qr (bb) done; now peforming qz decomposition"
                 << std::endl;
 #endif
 
       bb = bqr.R ();
 
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: extracted bb" << std::endl;
 #endif
 
       aa = (bqr.Q ()).transpose () * aa;
 
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: updated aa " << std::endl;
       std::cout << "bqr.Q () = " << std::endl << bqr.Q () << std::endl;
 
@@ -705,11 +705,11 @@ compatibility with @sc{matlab}.\n\
       if (compq == 'V')
         QQ = QQ * bqr.Q ();
 
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: precursors done..." << std::endl;
 #endif
 
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: compq = " << compq << ", compz = " << compz
                 << std::endl;
 #endif
@@ -750,7 +750,7 @@ compatibility with @sc{matlab}.\n\
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
 
-#ifdef DEBUG
+#if defined (DEBUG)
           if (compq == 'V')
             std::cout << "qz: balancing done; QQ=" << std::endl
                       << QQ << std::endl;
@@ -768,7 +768,7 @@ compatibility with @sc{matlab}.\n\
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
 
-#ifdef DEBUG
+#if defined (DEBUG)
           if (compz == 'V')
             std::cout << "qz: balancing done; ZZ=" << std::endl
                       << ZZ << std::endl;
@@ -784,7 +784,7 @@ compatibility with @sc{matlab}.\n\
         // Probably not needed, but better be safe.
         error ("qz: cannot re-order complex qz decomposition");
 
-#ifdef DEBUG_SORT
+#if defined (DEBUG_SORT)
       std::cout << "qz: ordering eigenvalues: ord_job = "
                 << ord_job << std::endl;
 #endif
@@ -830,7 +830,7 @@ compatibility with @sc{matlab}.\n\
 
       double eps = std::numeric_limits<double>::epsilon () * inf_norm * nn;
 
-#ifdef DEBUG_SORT
+#if defined (DEBUG_SORT)
       std::cout << "qz: calling dsubsp: aa=" << std::endl;
       octave_print_internal (std::cout, aa, 0);
       std::cout << std::endl << "bb="  << std::endl;
@@ -857,7 +857,7 @@ compatibility with @sc{matlab}.\n\
                  ZZ.fortran_vec (), sort_test, eps, ndim, fail,
                  ind.fortran_vec ()));
 
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: back from dsubsp: aa=" << std::endl;
       octave_print_internal (std::cout, aa, 0);
       std::cout << std::endl << "bb="  << std::endl;
@@ -876,7 +876,7 @@ compatibility with @sc{matlab}.\n\
       jj = 0;
       while (jj < nn)
         {
-#ifdef DEBUG_EIG
+#if defined (DEBUG_EIG)
           std::cout << "computing gen eig #" << jj << std::endl;
 #endif
 
@@ -892,7 +892,7 @@ compatibility with @sc{matlab}.\n\
           if (zcnt == 1)
             {
               // Real zero.
-#ifdef DEBUG_EIG
+#if defined (DEBUG_EIG)
               std::cout << "  single gen eig:" << std::endl;
               std::cout << "  alphar(" << jj << ") = " << aa(jj,jj)
                         << std::endl;
@@ -908,7 +908,7 @@ compatibility with @sc{matlab}.\n\
           else
             {
               // Complex conjugate pair.
-#ifdef DEBUG_EIG
+#if defined (DEBUG_EIG)
               std::cout << "qz: calling dlag2:" << std::endl;
               std::cout << "safmin="
                         << setiosflags (std::ios::scientific)
@@ -936,7 +936,7 @@ compatibility with @sc{matlab}.\n\
                         (aa_ptr, nn, bb_ptr, nn, safmin,
                          scale1, scale2, wr1, wr2, wi));
 
-#ifdef DEBUG_EIG
+#if defined (DEBUG_EIG)
               std::cout << "dlag2 returns: scale1=" << scale1
                         << "\tscale2=" << scale2 << std::endl
                         << "\twr1=" << wr1 << "\twr2=" << wr2
@@ -965,7 +965,7 @@ compatibility with @sc{matlab}.\n\
           jj += zcnt;
         }
 
-#ifdef DEBUG_SORT
+#if defined (DEBUG_SORT)
       std::cout << "qz: back from dsubsp: aa=" << std::endl;
       octave_print_internal (std::cout, aa, 0);
       std::cout << std::endl << "bb="  << std::endl;
@@ -1010,7 +1010,7 @@ compatibility with @sc{matlab}.\n\
         }
       else
         {
-#ifdef DEBUG
+#if defined (DEBUG)
           std::cout << "qz: computing generalized eigenvalues" << std::endl;
 #endif
 
@@ -1061,7 +1061,7 @@ compatibility with @sc{matlab}.\n\
         }
       else
         {
-#ifdef DEBUG
+#if defined (DEBUG)
           std::cout << "qz: computing generalized eigenvectors" << std::endl;
 #endif
 
@@ -1146,7 +1146,7 @@ compatibility with @sc{matlab}.\n\
     case 4:
       if (nargin == 3)
         {
-#ifdef DEBUG
+#if defined (DEBUG)
           std::cout << "qz: sort: retval(3) = gev = " << std::endl;
           octave_print_internal (std::cout, gev);
           std::cout << std::endl;
@@ -1181,7 +1181,7 @@ compatibility with @sc{matlab}.\n\
       {
         if (complex_case)
           {
-#ifdef DEBUG
+#if defined (DEBUG)
             std::cout << "qz: retval(1) = cbb = " << std::endl;
             octave_print_internal (std::cout, cbb, 0);
             std::cout << std::endl << "qz: retval(0) = caa = " <<std::endl;
@@ -1193,7 +1193,7 @@ compatibility with @sc{matlab}.\n\
           }
         else
           {
-#ifdef DEBUG
+#if defined (DEBUG)
             std::cout << "qz: retval(1) = bb = " << std::endl;
             octave_print_internal (std::cout, bb, 0);
             std::cout << std::endl << "qz: retval(0) = aa = " <<std::endl;
@@ -1208,7 +1208,7 @@ compatibility with @sc{matlab}.\n\
 
     case 1:
     case 0:
-#ifdef DEBUG
+#if defined (DEBUG)
       std::cout << "qz: retval(0) = gev = " << gev << std::endl;
 #endif
       retval(0) = gev;
@@ -1219,7 +1219,7 @@ compatibility with @sc{matlab}.\n\
       break;
   }
 
-#ifdef DEBUG
+#if defined (DEBUG)
   std::cout << "qz: exiting (at long last)" << std::endl;
 #endif
 

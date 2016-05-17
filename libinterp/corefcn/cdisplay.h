@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -33,7 +33,7 @@ OCTINTERP_API extern const char *
 octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
                          int *dpy_avail);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

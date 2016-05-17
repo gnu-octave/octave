@@ -20,13 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 #include <iostream>
 
-#ifdef HAVE_WINDOWS_H
+#if defined (HAVE_WINDOWS_H)
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 #endif
@@ -72,7 +72,7 @@ enum
 // Win32 API requires the CALLBACK attributes for
 // GLU callback functions. Define it to empty on
 // other platforms.
-#ifndef CALLBACK
+#if ! defined (CALLBACK)
 #  define CALLBACK
 #endif
 

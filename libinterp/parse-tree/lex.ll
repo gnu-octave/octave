@@ -32,7 +32,7 @@ object) relevant global values before and after the nested call.
 */
 
 %top {
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "config.h"
 #endif
 
@@ -50,7 +50,7 @@ object) relevant global values before and after the nested call.
 // Define away the deprecated register storage class specifier to avoid
 // potential warnings about it.
 #if ! defined (register)
-#define register
+#  define register
 #endif
 
 }
@@ -128,18 +128,18 @@ object) relevant global values before and after the nested call.
 // in the generated oct-parse.h file.
 
 #if defined (OCTAVE_STYPE_IS_DECLARED) && ! defined YYSTYPE
-#define YYSTYPE OCTAVE_STYPE
+#  define YYSTYPE OCTAVE_STYPE
 #endif
 
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from
 // flex without the namespace tag.  Redefine them so we will use them
 // via the gnulib namespace.
-#define fprintf GNULIB_NAMESPACE::fprintf
-#define fwrite GNULIB_NAMESPACE::fwrite
-#define isatty GNULIB_NAMESPACE::isatty
-#define malloc GNULIB_NAMESPACE::malloc
-#define realloc GNULIB_NAMESPACE::realloc
+#  define fprintf GNULIB_NAMESPACE::fprintf
+#  define fwrite GNULIB_NAMESPACE::fwrite
+#  define isatty GNULIB_NAMESPACE::isatty
+#  define malloc GNULIB_NAMESPACE::malloc
+#  define realloc GNULIB_NAMESPACE::realloc
 #endif
 
 #if ! (defined (FLEX_SCANNER) \
@@ -153,16 +153,16 @@ object) relevant global values before and after the nested call.
 
 // Arrange to get input via readline.
 
-#ifdef YY_INPUT
-#undef YY_INPUT
+#if defined (YY_INPUT)
+#  undef YY_INPUT
 #endif
 #define YY_INPUT(buf, result, max_size) \
   result = curr_lexer->fill_flex_buffer (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
 
-#ifdef YY_FATAL_ERROR
-#undef YY_FATAL_ERROR
+#if defined (YY_FATAL_ERROR)
+#  undef YY_FATAL_ERROR
 #endif
 #define YY_FATAL_ERROR(msg) \
   (yyget_extra (yyscanner))->fatal_error (msg)

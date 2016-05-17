@@ -75,7 +75,7 @@ else
   cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "config.h"
 #endif
 
@@ -86,22 +86,22 @@ else
 #include "builtins.h"
 
 #if defined (quad)
-#undef quad
+#  undef quad
 #endif
 
 #if defined (ENABLE_DYNAMIC_LINKING)
 
-#define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc)
+#  define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc)
 
-#define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc)
+#  define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc)
 
 #else
 
-#define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc) \
-  XDEFUN_INTERNAL(name, args_name, nargout_name, doc)
+#  define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc) \
+     XDEFUN_INTERNAL(name, args_name, nargout_name, doc)
 
-#define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc)
+#  define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc) \
+     XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc)
 
 #endif
 

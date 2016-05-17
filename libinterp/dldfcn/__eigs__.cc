@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -149,7 +149,7 @@ DEFUN_DLD (__eigs__, args, nargout,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifdef HAVE_ARPACK
+#if defined (HAVE_ARPACK)
 
   int nargin = args.length ();
 

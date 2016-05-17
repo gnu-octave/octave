@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 // This function only needs to be defined for C++.
 extern bool check_hdf5_types (bool warn = true);
 #endif
@@ -35,7 +35,7 @@ extern bool check_hdf5_types (bool warn = true);
 typedef int octave_hdf5_id;
 typedef int octave_hdf5_err;
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -46,7 +46,7 @@ extern const octave_hdf5_id octave_H5E_DEFAULT;
 extern const octave_hdf5_id octave_H5P_DEFAULT;
 extern const octave_hdf5_id octave_H5S_ALL;
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

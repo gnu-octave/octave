@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -89,7 +89,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "file-stat.h"
 
-#ifndef STDIN_FILENO
+#if ! defined (STDIN_FILENO)
 #  define STDIN_FILENO 1
 #endif
 
@@ -99,7 +99,7 @@ BSD_init (void)
 {
 #  if defined (HAVE_FLOATINGPOINT_H)
   // Disable trapping on common exceptions.
-#    ifndef FP_X_DNML
+#    if ! defined (FP_X_DNML)
 #      define FP_X_DNML 0
 #    endif
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
@@ -119,7 +119,7 @@ w32_set_octave_home (void)
   std::string bin_dir;
 
   HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
-#ifdef TH32CS_SNAPMODULE32
+#if defined (TH32CS_SNAPMODULE32)
                                        | TH32CS_SNAPMODULE32
 #endif
                                        , 0);
@@ -250,7 +250,7 @@ MSVC_init (void)
 bool
 same_file_internal (const std::string& file1, const std::string& file2)
 {
-#ifdef OCTAVE_USE_WINDOWS_API
+#if defined (OCTAVE_USE_WINDOWS_API)
 
   bool retval = false;
 

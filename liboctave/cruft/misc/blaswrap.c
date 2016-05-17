@@ -38,11 +38,11 @@ architecture.
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h" /* USE_BLASWRAP ? */
 #endif
 
-#ifdef USE_BLASWRAP
+#if defined (USE_BLASWRAP)
 
 /*
  * vecLib is an Apple framework (collection of libraries) containing
@@ -52,7 +52,7 @@ architecture.
  * get the Apple versions, rather than some other blas/lapack with the
  * same name.
  */
-#ifndef VECLIB_FILE
+#if ! defined (VECLIB_FILE)
 #  define VECLIB_FILE "/System/Library/Frameworks/vecLib.framework/Versions/A/vecLib"
 #endif
 

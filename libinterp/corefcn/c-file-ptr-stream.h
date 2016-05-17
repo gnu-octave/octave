@@ -139,9 +139,9 @@ typedef c_file_ptr_stream<std::ostream, FILE *, c_file_ptr_buf>
 typedef c_file_ptr_stream<std::iostream, FILE *, c_file_ptr_buf>
   io_c_file_ptr_stream;
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
-#ifdef HAVE_ZLIB_H
+#if defined (HAVE_ZLIB_H)
 #  include <zlib.h>
 #endif
 

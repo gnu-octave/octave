@@ -148,14 +148,14 @@
    (with various "HAVE_*" #defines to indicate features)
    if HAVE_CONFIG_H is #defined (in GNU autotools style). */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 /////////////////////////////////////////////////////////////////////////
 // macros to allow us to use either C++ or C (with C99 features)
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 
 #  include "lo-ieee.h"
 
@@ -213,7 +213,7 @@ static inline double my_copysign(double x, double y) { return y<0 ? -x : x; }
 // gnulib::floor and the system ::floor (and only on ancient OSF systems)
 // has to do with floor(-0), which doesn't occur in the usage below, but
 // the Octave developers prefer that we silence the warning.
-#  ifdef GNULIB_NAMESPACE
+#  if defined (GNULIB_NAMESPACE)
 #    define floor GNULIB_NAMESPACE::floor
 #    define log GNULIB_NAMESPACE::log
 #  endif
@@ -247,10 +247,10 @@ typedef double complex cmplx;
 #    define CMPLX(a,b) __builtin_complex((double) (a), (double) (b))
 #  endif
 
-#  ifdef CMPLX // C11
+#  if defined (CMPLX) // C11
 #    define C(a,b) CMPLX(a,b)
 #    define Inf INFINITY // C99 infinity
-#    ifdef NAN // GNU libc extension
+#    if defined (NAN) // GNU libc extension
 #      define NaN NAN
 #    else
 #      define NaN (0./0.) // NaN
@@ -1894,9 +1894,9 @@ double FADDEEVA(w_im)(double x)
 /////////////////////////////////////////////////////////////////////////
 
 // Compile with -DTEST_FADDEEVA to compile a little test program
-#ifdef TEST_FADDEEVA
+#if defined (TEST_FADDEEVA)
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 #  include <cstdio>
 #else
 #  include <stdio.h>

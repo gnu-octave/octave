@@ -45,21 +45,21 @@ along with Octave; see the file COPYING.  If not, see
 #  include <sys/wait.h>
 #endif
 
-#ifndef WIFEXITED
+#if ! defined (WIFEXITED)
 #  define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
 #endif
 
-#ifndef WEXITSTATUS
+#if ! defined (WEXITSTATUS)
 #  define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
 #endif
 
 static std::map<std::string, std::string> vars;
 
-#ifndef OCTAVE_VERSION
+#if ! defined (OCTAVE_VERSION)
 #  define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
 #endif
 
-#ifndef OCTAVE_PREFIX
+#if ! defined (OCTAVE_PREFIX)
 #  define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
 #endif
 
@@ -314,7 +314,7 @@ static std::string help_msg =
 "                            .F90  Fortran source (free form)\n"
 "                            .o    object file\n"
 "                            .a    library file\n"
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
 "                            .lib  library file\n"
 #endif
 "\n";
@@ -541,7 +541,7 @@ main (int argc, char **argv)
       else if (arg == "-mex" || arg == "--mex")
         {
           incflags += " -I.";
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
           ldflags += " -Wl,-export:mexFunction";
 #endif
           output_ext = ".mex";

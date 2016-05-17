@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -362,14 +362,14 @@ makeKeyEventStruct (QKeyEvent* event)
   if (mods & Qt::ShiftModifier)
     modList.push_back ("shift");
   if (mods & Qt::ControlModifier)
-#ifdef Q_OS_MAC
+#if defined (Q_OS_MAC)
     modList.push_back ("command");
 #else
     modList.push_back ("control");
 #endif
   if (mods & Qt::AltModifier)
     modList.push_back ("alt");
-#ifdef Q_OS_MAC
+#if defined (Q_OS_MAC)
   if (mods & Qt::MetaModifier)
     modList.push_back ("control");
 #endif

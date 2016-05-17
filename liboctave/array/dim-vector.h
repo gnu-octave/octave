@@ -238,7 +238,7 @@ public:
 
   octave_idx_type& elem (int i)
   {
-#ifdef OCTAVE_ENABLE_BOUNDS_CHECK
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     assert (i >= 0 && i < ndims ());
 #endif
     make_unique ();
@@ -247,7 +247,7 @@ public:
 
   octave_idx_type elem (int i) const
   {
-#ifdef OCTAVE_ENABLE_BOUNDS_CHECK
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     assert (i >= 0 && i < ndims ());
 #endif
     return rep[i];

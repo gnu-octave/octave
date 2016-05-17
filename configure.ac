@@ -391,7 +391,7 @@ case $host_os in
   mingw*)
     AC_MSG_CHECKING([for MSVC compiler])
     AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
-        #ifndef _MSC_VER
+        #if ! defined (_MSC_VER)
         #error "Not MSVC compiler"
         #endif
         ]])],

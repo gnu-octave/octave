@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: P. L. Lucas
 // Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

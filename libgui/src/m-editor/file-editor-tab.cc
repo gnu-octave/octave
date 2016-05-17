@@ -26,11 +26,11 @@ along with Octave; see the file COPYING.  If not, see
  This interfaces QSciScintilla with the rest of Octave.
  */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #  define HAVE_LEXER_OCTAVE 1

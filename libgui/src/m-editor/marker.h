@@ -19,7 +19,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef MARKER_H
+#if ! defined (MARKER_H)
 #define MARKER_H
 
 #include <Qsci/qsciscintilla.h>

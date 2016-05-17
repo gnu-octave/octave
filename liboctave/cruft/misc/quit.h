@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <signal.h>
 #include <setjmp.h>
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 #  include <new>
 #  include <string>
 extern "C" {
@@ -74,7 +74,7 @@ OCTAVE_API extern void octave_save_signal_mask (void);
 
 OCTAVE_API extern void octave_restore_signal_mask (void);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 class
 octave_execution_exception
 {
@@ -151,7 +151,7 @@ OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
 
 OCTAVE_API extern void octave_rethrow_exception (void);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 inline void octave_quit (void)
 {
   if (octave_signal_caught)
@@ -222,7 +222,7 @@ inline void octave_quit (void)
     } \
   while (0)
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 
 #define BEGIN_INTERRUPT_WITH_EXCEPTIONS \
   sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
@@ -254,7 +254,7 @@ inline void octave_quit (void)
   octave_interrupt_immediately = saved_octave_interrupt_immediately
 #endif
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 
 /* These should only be declared for C++ code, and should also be

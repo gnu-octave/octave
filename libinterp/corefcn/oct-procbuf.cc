@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "utils.h"
 
-#ifndef SHELL_PATH
+#if ! defined (SHELL_PATH)
 #  define SHELL_PATH "/bin/sh"
 #endif
 
@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 
 static octave_procbuf *octave_procbuf_list = 0;
 
-#ifndef BUFSIZ
+#if ! defined (BUFSIZ)
 #  define BUFSIZ 1024
 #endif
 

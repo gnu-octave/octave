@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 // that it remains small, it should NOT depend on or be linked with
 // liboctave or libinterp.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -42,19 +42,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifndef OCTAVE_VERSION
+#if ! defined (OCTAVE_VERSION)
 #  define OCTAVE_VERSION %OCTAVE_VERSION%
 #endif
 
-#ifndef OCTAVE_ARCHLIBDIR
+#if ! defined (OCTAVE_ARCHLIBDIR)
 #  define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
 #endif
 
-#ifndef OCTAVE_BINDIR
+#if ! defined (OCTAVE_BINDIR)
 #  define OCTAVE_BINDIR %OCTAVE_BINDIR%
 #endif
 
-#ifndef OCTAVE_PREFIX
+#if ! defined (OCTAVE_PREFIX)
 #  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 
@@ -108,23 +108,23 @@ static void
 install_signal_handlers (void)
 {
 
-#ifdef SIGINT
+#if defined (SIGINT)
   octave_set_signal_handler (SIGINT, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGBREAK
+#if defined (SIGBREAK)
   octave_set_signal_handler (SIGBREAK, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGABRT
+#if defined (SIGABRT)
   octave_set_signal_handler (SIGABRT, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGALRM
+#if defined (SIGALRM)
   octave_set_signal_handler (SIGALRM, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGBUS
+#if defined (SIGBUS)
   octave_set_signal_handler (SIGBUS, gui_driver_sig_handler);
 #endif
 
@@ -132,63 +132,63 @@ install_signal_handlers (void)
   // SIGCLD
   // SIGCONT
 
-#ifdef SIGEMT
+#if defined (SIGEMT)
   octave_set_signal_handler (SIGEMT, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGFPE
+#if defined (SIGFPE)
   octave_set_signal_handler (SIGFPE, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGHUP
+#if defined (SIGHUP)
   octave_set_signal_handler (SIGHUP, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGILL
+#if defined (SIGILL)
   octave_set_signal_handler (SIGILL, gui_driver_sig_handler);
 #endif
 
   // SIGINFO
   // SIGINT
 
-#ifdef SIGIOT
+#if defined (SIGIOT)
   octave_set_signal_handler (SIGIOT, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGLOST
+#if defined (SIGLOST)
   octave_set_signal_handler (SIGLOST, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGPIPE
+#if defined (SIGPIPE)
   octave_set_signal_handler (SIGPIPE, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGPOLL
+#if defined (SIGPOLL)
   octave_set_signal_handler (SIGPOLL, gui_driver_sig_handler);
 #endif
 
   // SIGPROF
   // SIGPWR
 
-#ifdef SIGQUIT
+#if defined (SIGQUIT)
   octave_set_signal_handler (SIGQUIT, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGSEGV
+#if defined (SIGSEGV)
   octave_set_signal_handler (SIGSEGV, gui_driver_sig_handler);
 #endif
 
   // SIGSTOP
 
-#ifdef SIGSYS
+#if defined (SIGSYS)
   octave_set_signal_handler (SIGSYS, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGTERM
+#if defined (SIGTERM)
   octave_set_signal_handler (SIGTERM, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGTRAP
+#if defined (SIGTRAP)
   octave_set_signal_handler (SIGTRAP, gui_driver_sig_handler);
 #endif
 
@@ -197,29 +197,29 @@ install_signal_handlers (void)
   // SIGTTOU
   // SIGURG
 
-#ifdef SIGUSR1
+#if defined (SIGUSR1)
   octave_set_signal_handler (SIGUSR1, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGUSR2
+#if defined (SIGUSR2)
   octave_set_signal_handler (SIGUSR2, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGVTALRM
+#if defined (SIGVTALRM)
   octave_set_signal_handler (SIGVTALRM, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGIO
+#if defined (SIGIO)
   octave_set_signal_handler (SIGIO, gui_driver_sig_handler);
 #endif
 
   // SIGWINCH
 
-#ifdef SIGXCPU
+#if defined (SIGXCPU)
   octave_set_signal_handler (SIGXCPU, gui_driver_sig_handler);
 #endif
 
-#ifdef SIGXFSZ
+#if defined (SIGXFSZ)
   octave_set_signal_handler (SIGXFSZ, gui_driver_sig_handler);
 #endif
 

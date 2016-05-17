@@ -53,13 +53,13 @@ extern "C" {
 #include <fcntl.h>
 #include <dirent.h>
 #elif defined (WIN32)
-#ifndef _MSC_VER
+#if ! defined (_MSC_VER)
 #define __STDC__ 1
 #include "win32lib.h"
 #endif
 #endif /* not WIN32 */
 
-#ifdef __DJGPP__
+#if defined (__DJGPP__)
 #include <fcntl.h>      /* for long filenames' stuff */
 #include <dir.h>        /* for 'getdisk' */
 #include <io.h>         /* for 'setmode' */
@@ -67,7 +67,7 @@ extern "C" {
 }
 
 /* Some drivers have partially integrated kpathsea changes.  */
-#ifndef KPATHSEA
+#if ! defined (KPATHSEA)
 #define KPATHSEA 32
 #endif
 
@@ -85,7 +85,7 @@ extern "C" {
 #define ST_NLINK_TRICK
 #endif /* either not DOSISH or __DJGPP__ */
 
-#ifdef OS2
+#if defined (OS2)
 #define access ln_access
 #define fopen ln_fopen
 #define rename ln_rename
@@ -96,8 +96,8 @@ extern "C" {
    filenames and environment variable paths.  */
 
 /* What separates filename components?  */
-#ifndef DIR_SEP
-#ifdef DOSISH
+#if ! defined (DIR_SEP)
+#if defined (DOSISH)
 /* Either \'s or 's work.  Wayne Sullivan's web2pc prefers /, so we'll
    go with that.  */
 #define DIR_SEP '/'
@@ -112,13 +112,14 @@ extern "C" {
 #endif /* not DOSISH */
 #endif /* not DIR_SEP */
 
-#ifndef IS_DIR_SEP
+#if ! defined (IS_DIR_SEP)
 #define IS_DIR_SEP(ch) ((ch) == DIR_SEP)
 #endif
-#ifndef IS_DEVICE_SEP /* No 'devices' on, e.g., Unix.  */
+#if ! defined (IS_DEVICE_SEP)
+/* No 'devices' on, e.g., Unix.  */
 #define IS_DEVICE_SEP(ch) 0
 #endif
-#ifndef NAME_BEGINS_WITH_DEVICE
+#if ! defined (NAME_BEGINS_WITH_DEVICE)
 #define NAME_BEGINS_WITH_DEVICE(name) 0
 #endif
 
@@ -148,18 +149,18 @@ extern "C" {
 
 /* Most likely the system will truncate filenames if it is not POSIX,
    and so we can use the BSD value here.  */
-#ifndef _POSIX_NAME_MAX
+#if ! defined (_POSIX_NAME_MAX)
 #define _POSIX_NAME_MAX 255
 #endif
 
-#ifndef NAME_MAX
+#if ! defined (NAME_MAX)
 #define NAME_MAX _POSIX_NAME_MAX
 #endif
 
 #include <cctype>
 
 /* What separates elements in environment variable path lists?  */
-#ifndef ENV_SEP
+#if ! defined (ENV_SEP)
 #if defined (SEPCHAR) && defined (SEPCHAR_STR)
 #define ENV_SEP SEPCHAR
 #define ENV_SEP_STRING SEPCHAR_STR
@@ -172,7 +173,7 @@ extern "C" {
 #endif /* not DOS */
 #endif /* not ENV_SEP */
 
-#ifndef IS_ENV_SEP
+#if ! defined (IS_ENV_SEP)
 #define IS_ENV_SEP(ch) ((ch) == ENV_SEP)
 #endif
 
@@ -183,12 +184,12 @@ extern "C" {
 /* Cheat and define this as a manifest constant no matter what, instead
    of using pathconf.  I forget why we want to do this.  */
 
-#ifndef _POSIX_PATH_MAX
+#if ! defined (_POSIX_PATH_MAX)
 #define _POSIX_PATH_MAX 255
 #endif
 
-#ifndef PATH_MAX
-#ifdef MAXPATHLEN
+#if ! defined (PATH_MAX)
+#if defined (MAXPATHLEN)
 #define PATH_MAX MAXPATHLEN
 #else
 #define PATH_MAX _POSIX_PATH_MAX
@@ -196,7 +197,7 @@ extern "C" {
 #endif /* not PATH_MAX */
 
 /* If NO_DEBUG is defined (not recommended), skip all this.  */
-#ifndef NO_DEBUG
+#if ! defined (NO_DEBUG)
 
 /* OK, we'll have tracing support.  */
 #define KPSE_DEBUG
@@ -230,7 +231,7 @@ extern "C" {
 
 #endif /* not NO_DEBUG */
 
-#ifdef KPSE_DEBUG
+#if defined (KPSE_DEBUG)
 static unsigned int kpathsea_debug = 0;
 #endif
 
@@ -243,11 +244,11 @@ static unsigned int kpathsea_debug = 0;
  *      Define all the symbols that apply correctly.
  */
 
-#ifndef DOSISH
+#if ! defined (DOSISH)
 #define DOSISH
 #endif
 
-#ifndef MAXPATHLEN
+#if ! defined (MAXPATHLEN)
 #define MAXPATHLEN      _MAX_PATH
 #endif
 
@@ -300,7 +301,7 @@ static unsigned int kpathsea_debug = 0;
     } \
   while (0)
 
-#ifndef WIN32
+#if ! defined (WIN32)
 static void xclosedir (DIR *d);
 #endif
 
@@ -419,7 +420,7 @@ hash_lookup (hash_table_type table, const std::string& key)
     if (key == p->key)
       ret.append (p->value);
 
-#ifdef KPSE_DEBUG
+#if defined (KPSE_DEBUG)
   if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
     {
       DEBUGF1 ("hash_lookup (%s) =>", key.c_str ());
@@ -520,7 +521,7 @@ kpse_var_value (const std::string& var)
   if (! tmp.empty ())
     ret = kpse_var_expand (tmp);
 
-#ifdef KPSE_DEBUG
+#if defined (KPSE_DEBUG)
   if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
     DEBUGF2 ("variable: %s = %s\n", var.c_str (),
              tmp.empty () ? "(nil)" :  tmp.c_str ());
@@ -570,7 +571,7 @@ kpse_truncate_filename (const std::string& name)
    regular file, as it is potentially useful to read fifo's or some
    kinds of devices.  */
 
-#ifdef WIN32
+#if defined (WIN32)
 static inline bool
 READABLE (const std::string& fn, struct stat&)
 {
@@ -604,7 +605,7 @@ kpse_readable_file (const std::string& name)
     {
       ret = name;
 
-#ifdef ENAMETOOLONG
+#if defined (ENAMETOOLONG)
     }
   else if (errno == ENAMETOOLONG)
     {
@@ -645,11 +646,11 @@ kpse_absolute_p (const std::string& filename, int relative_ok)
   size_t len = filename.length ();
 
   int absolute = (len > 0 && IS_DIR_SEP (filename[0]))
-#ifdef DOSISH
+#if defined (DOSISH)
                  /* Novell allows non-alphanumeric drive letters. */
                  || (len > 0 && IS_DEVICE_SEP (filename[1]))
 #endif /* DOSISH */
-#ifdef WIN32
+#if defined (WIN32)
                  /* UNC names */
                  || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
 #endif
@@ -1231,7 +1232,7 @@ kpse_tilde_expand (const std::string& name)
          OS/2 doesn't have this concept.  */
     }
   else
-#ifdef HAVE_PWD_H
+#if defined (HAVE_PWD_H)
     {
       unsigned c = 2;
 
@@ -1920,7 +1921,7 @@ kpse_db_search (const std::string& name_arg,
           std::string db_file = db_dirs[j] + atry;
           bool matched = match (db_file, path_elt);
 
-#ifdef KPSE_DEBUG
+#if defined (KPSE_DEBUG)
           if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
             DEBUGF3 ("db:match (%s,%s) = %d\n",
                      db_file.c_str (), path_elt.c_str (), matched);
@@ -2056,7 +2057,7 @@ dir_list_add (str_llist_type *l, const std::string& dir)
 static bool
 dir_p (const std::string& fn)
 {
-#ifdef WIN32
+#if defined (WIN32)
   unsigned int fa = GetFileAttributes (fn.c_str ());
   return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
 #else
@@ -2146,7 +2147,7 @@ static void expand_elt (str_llist_type *, const std::string&, unsigned);
    subdirectories of ELT (up to ELT_LENGTH, which must be a /) to
    STR_LIST_PTR.  */
 
-#ifdef WIN32
+#if defined (WIN32)
 
 /* Shared across recursive calls, it acts like a stack. */
 static std::string dirname;
@@ -2175,7 +2176,7 @@ dir_links (const std::string& fn)
 
       link_table[fn] = ret;
 
-#ifdef KPSE_DEBUG
+#if defined (KPSE_DEBUG)
       if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
         DEBUGF2 ("dir_links (%s) => %ld\n", fn.c_str (), ret);
 #endif
@@ -2190,7 +2191,7 @@ static inline void
 do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
            unsigned elt_length, const std::string& post)
 {
-#ifdef WIN32
+#if defined (WIN32)
   WIN32_FIND_DATA find_file_data;
   HANDLE hnd;
   int proceed;
@@ -2300,16 +2301,16 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
                  the only alternative I know of is to stat every entry
                  in the directory, and that is unacceptably slow.
 
-                 The #ifdef here makes all this configurable at
+                 The #if here makes all this configurable at
                  compile-time, so that if we're using VMS directories or
                  some such, we can still find subdirectories, even if it
                  is much slower.  */
-#ifdef ST_NLINK_TRICK
+#if defined (ST_NLINK_TRICK)
               if (links != 2)
 #endif /* not ST_NLINK_TRICK */
                 /* All criteria are met; find subdirectories.  */
                 do_subdir (str_list_ptr, name, potential_len, post);
-#ifdef ST_NLINK_TRICK
+#if defined (ST_NLINK_TRICK)
               else if (post.empty ())
                 /* Nothing to match, no recursive subdirectories to
                    look for: we're done with this branch.  Add it.  */
@@ -2407,7 +2408,7 @@ kpse_element_dirs (const std::string& elt)
      made with the same ELT.  */
   cache (elt, ret);
 
-#ifdef KPSE_DEBUG
+#if defined (KPSE_DEBUG)
   if (KPSE_DEBUG_P (KPSE_DEBUG_EXPAND))
     {
       DEBUGF1 ("path element %s =>", elt.c_str ());
@@ -2425,7 +2426,7 @@ kpse_element_dirs (const std::string& elt)
   return ret;
 }
 
-#ifndef WIN32
+#if ! defined (WIN32)
 void
 xclosedir (DIR *d)
 {
@@ -2566,16 +2567,19 @@ expand (std::string &expansion, const std::string& var)
 
 /* Can't think of when it would be useful to change these (and the
    diagnostic messages assume them), but ... */
-#ifndef IS_VAR_START /* starts all variable references */
+#if ! defined (IS_VAR_START)
+/* starts all variable references */
 #define IS_VAR_START(c) ((c) == '$')
 #endif
-#ifndef IS_VAR_CHAR  /* variable name constituent */
+#if ! defined (IS_VAR_CHAR)
+/* variable name constituent */
 #define IS_VAR_CHAR(c) (isalnum (c) || (c) == '_')
 #endif
-#ifndef IS_VAR_BEGIN_DELIMITER /* start delimited variable name (after $) */
+#if ! defined (IS_VAR_BEGIN_DELIMITER)
+/* start delimited variable name (after $) */
 #define IS_VAR_BEGIN_DELIMITER(c) ((c) == '{')
 #endif
-#ifndef IS_VAR_END_DELIMITER
+#if ! defined (IS_VAR_END_DELIMITER)
 #define IS_VAR_END_DELIMITER(c) ((c) == '}')
 #endif
 

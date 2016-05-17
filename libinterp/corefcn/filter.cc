@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 // Rewritten to use templates to handle both real and complex cases by
 // jwe, Wed Nov  1 19:15:29 1995.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

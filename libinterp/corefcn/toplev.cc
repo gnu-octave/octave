@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -82,7 +82,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "version.h"
 
-#ifndef SHELL_PATH
+#if ! defined (SHELL_PATH)
 #  define SHELL_PATH "/bin/sh"
 #endif
 
@@ -777,7 +777,7 @@ main_loop (void)
                     << std::endl;
         }
 
-#ifdef DBSTOP_NANINF
+#if defined (DBSTOP_NANINF)
       if (Vdebug_on_naninf)
         {
           if (setjump (naninf_jump) != 0)
@@ -1171,7 +1171,7 @@ command shell that is started to run the command.\n\
   if (type == et_async)
     {
       // FIXME: maybe this should go in sysdep.cc?
-#ifdef HAVE_FORK
+#if defined (HAVE_FORK)
       pid_t pid = fork ();
 
       if (pid < 0)

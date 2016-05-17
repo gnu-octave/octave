@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -102,7 +102,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.\n\
 @seealso{chol, etree, treelayout}\n\
 @end deftypefn")
 {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
 
   int nargin = args.length ();
 

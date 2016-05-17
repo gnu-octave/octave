@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "lo-mappers.h"
 
-#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 inline long double xround (long double x) { return roundl (x); }
 inline long double xisnan (long double x)
 { return xisnan (static_cast<double> (x)); }
@@ -178,7 +178,7 @@ public:
   mop (double x, T y)
   { return xop::op (x, static_cast<double> (y)); }
 
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 #  define DECLARE_EXTERNAL_LONG_DOUBLE_CMP_OPS(T) \
      template <typename xop> static OCTAVE_API bool \
      external_mop (double, T); \
@@ -192,8 +192,8 @@ public:
   // Typecasting to doubles won't work properly for 64-bit integers --
   // they lose precision.
   // If we have long doubles, use them...
-#ifdef OCTAVE_INT_USE_LONG_DOUBLE
-#  ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_INT_USE_LONG_DOUBLE)
+#  if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 #    define DEFINE_LONG_DOUBLE_CMP_OP(T) \
        template <typename xop> \
        static bool \
@@ -429,11 +429,11 @@ public:
   }
 };
 
-#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
 // Handle 64-bit multiply using long double
 
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 
 extern OCTAVE_API uint64_t
 octave_external_uint64_uint64_mul (uint64_t, uint64_t);
@@ -460,7 +460,7 @@ template <>
 inline uint64_t
 octave_int_arith_base<uint64_t, false>::mul (uint64_t x, uint64_t y)
 {
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
   return octave_external_uint64_uint64_mul (x, y);
 #else
   return mul_internal (x, y);
@@ -753,11 +753,11 @@ public:
   }
 };
 
-#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
 // Handle 64-bit multiply using long double
 
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 
 extern OCTAVE_API int64_t
 octave_external_int64_int64_mul (int64_t, int64_t);
@@ -789,7 +789,7 @@ template <>
 inline int64_t
 octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
 {
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
   return octave_external_int64_int64_mul (x, y);
 #else
   return mul_internal (x, y);
@@ -833,7 +833,7 @@ public:
 
   octave_int (float d) : ival (octave_int_base<T>::convert_real (d)) { }
 
-#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#if defined (OCTAVE_INT_USE_LONG_DOUBLE)
   octave_int (long double d) : ival (octave_int_base<T>::convert_real (d)) { }
 #endif
 
@@ -1104,7 +1104,7 @@ typedef octave_int<uint16_t> octave_uint16;
 typedef octave_int<uint32_t> octave_uint32;
 typedef octave_int<uint64_t> octave_uint64;
 
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 
 #define DECLARE_EXTERNAL_LONG_DOUBLE_OP(T, OP) \
   extern OCTAVE_API T \
@@ -1133,9 +1133,9 @@ DECLARE_EXTERNAL_LONG_DOUBLE_OPS (octave_uint64);
   operator OP (const double& x, const octave_int<T>& y) \
   { return octave_int<T> (x OP static_cast<double> (y)); }
 
-#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 // Handle mixed op using long double
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 #  define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
   OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <> \

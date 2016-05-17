@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-chol.h"
 #include "sparse-lu.h"
 
-#ifdef HAVE_ARPACK
+#if defined (HAVE_ARPACK)
 
 // Arpack and blas fortran functions we call.
 extern "C"

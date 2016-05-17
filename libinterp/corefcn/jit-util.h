@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 #include <stdexcept>
 
@@ -44,7 +44,7 @@ namespace llvm
 {
   class Value;
   class Module;
-#ifdef LEGACY_PASSMANAGER
+#if defined (LEGACY_PASSMANAGER)
   namespace legacy {
     class FunctionPassManager;
     class PassManager;

@@ -20,11 +20,11 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 
 #include "file-editor.h"
 #include "resource-manager.h"
@@ -1538,7 +1538,7 @@ file_editor::construct (void)
   _tool_bar->setMovable (true);
   _tab_widget = new tab_widget (editor_widget);
   _tab_widget->setTabsClosable (true);
-#ifdef HAVE_QTABWIDGET_SETMOVABLE
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
   _tab_widget->setMovable (true);
 #endif
 
@@ -2343,14 +2343,14 @@ file_editor::switch_right_tab ()
 void
 file_editor::move_tab_left ()
 {
-#ifdef HAVE_QTABWIDGET_SETMOVABLE
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
   switch_tab (-1, true);
 #endif
 }
 void
 file_editor::move_tab_right ()
 {
-#ifdef HAVE_QTABWIDGET_SETMOVABLE
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
   switch_tab (1, true);
 #endif
 }
@@ -2370,7 +2370,7 @@ file_editor::switch_tab (int direction, bool movetab)
 
   if (movetab)
     {
-#ifdef HAVE_QTABWIDGET_SETMOVABLE
+#if defined (HAVE_QTABWIDGET_SETMOVABLE)
       _tab_widget->tabBar ()->moveTab (old_pos, new_pos);
       _tab_widget->setCurrentIndex (old_pos);
       _tab_widget->setCurrentIndex (new_pos);

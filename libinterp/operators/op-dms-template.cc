@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -32,11 +32,11 @@ along with Octave; see the file COPYING.  If not, see
 
 // matrix by diag matrix ops.
 
-#ifndef SCALARV
+#if ! defined (SCALARV)
 #  define SCALARV SCALAR
 #endif
 
-#ifndef MATRIXV
+#if ! defined (MATRIXV)
 #  define MATRIXV MATRIX
 #endif
 

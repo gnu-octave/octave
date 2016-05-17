@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -192,7 +192,7 @@ octave_user_function::octave_user_function
     class_constructor (none), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
     , jit_info (0)
 #endif
 {
@@ -214,7 +214,7 @@ octave_user_function::~octave_user_function (void)
   delete lead_comm;
   delete trail_comm;
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   delete jit_info;
 #endif
 
@@ -485,7 +485,7 @@ octave_user_function::do_multi_index_op (int nargout,
         panic_impossible ();
     }
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   if (is_special_expr ()
       && tree_jit::execute (*this, args, retval))
     return retval;

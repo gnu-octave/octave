@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/times.h>
 #include <sys/types.h>
 
-#ifdef HAVE_SYS_RESOURCE_H
+#if defined (HAVE_SYS_RESOURCE_H)
 #  include <sys/resource.h>
 #endif
 
@@ -53,7 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #  endif
 #endif
 
-#ifndef RUSAGE_SELF
+#if ! defined (RUSAGE_SELF)
 #  define RUSAGE_SELF 0
 #endif
 

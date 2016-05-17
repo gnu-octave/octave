@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#ifdef __WIN32__
+#if defined (__WIN32__)
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
 #endif
@@ -289,7 +289,7 @@ welcome_wizard::welcome_wizard (QWidget *p)
 
   show_page ();
 
-#ifdef __WIN32__
+#if defined (__WIN32__)
   // HACK to forceshow of dialog if started minimized
   ShowWindow((HWND)winId(), SW_SHOWNORMAL);
 #endif

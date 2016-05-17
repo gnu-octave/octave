@@ -32,7 +32,7 @@ To initialize:
 
 // PKG_ADD: if (__have_feature__ ("FLTK") && __have_feature__ ("OPENGL") && have_window_system ()) register_graphics_toolkit ("fltk"); endif
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -43,7 +43,7 @@ To initialize:
 #include "oct-opengl.h"
 #include "ov-fcn-handle.h"
 
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
 
 #if defined (HAVE_X_WINDOWS)
 #  include <X11/Xlib.h>
@@ -2396,7 +2396,7 @@ DEFUN_DLD (__fltk_check__, , ,
 Undocumented internal function.  Calls Fl::check ()\n\
 @end deftypefn")
 {
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
   Fl::check ();
 
   if (Vdrawnow_requested)
@@ -2416,7 +2416,7 @@ DEFUN_DLD (__init_fltk__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
   if (! display_info::display_available ())
     error ("__init_fltk__: no graphics DISPLAY available");
   else if (! toolkit_loaded)

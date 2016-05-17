@@ -23,14 +23,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 #include <sys/types.h>
 #include <sys/times.h>
 
-#ifdef HAVE_SYS_RESOURCE_H
+#if defined (HAVE_SYS_RESOURCE_H)
 #  include <sys/resource.h>
 #endif
 

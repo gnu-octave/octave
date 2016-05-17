@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -101,7 +101,7 @@ If also given a device ID, return true if the device supports playback or\n\
 recording using those parameters.\n\
 @end deftypefn")
 {
-#ifdef HAVE_PORTAUDIO
+#if defined (HAVE_PORTAUDIO)
 
   int nargin = args.length ();
 
@@ -449,7 +449,7 @@ recording using those parameters.\n\
 %! endfor
 */
 
-#ifdef HAVE_PORTAUDIO
+#if defined (HAVE_PORTAUDIO)
 
 enum audio_type { TYPE_INT8, TYPE_UINT8, TYPE_UINT16, TYPE_DOUBLE };
 
@@ -1812,7 +1812,7 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_audiorecorder__",
@@ -1852,7 +1852,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-#ifdef HAVE_PORTAUDIO
+#if defined (HAVE_PORTAUDIO)
 
 static audiorecorder *
 get_recorder (const octave_value& ov)
@@ -1877,7 +1877,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_getaudiodata__",
@@ -1895,7 +1895,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_channels__",
@@ -1913,7 +1913,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_fs__",
@@ -1931,7 +1931,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_id__",
@@ -1949,7 +1949,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_nbits__",
@@ -1967,7 +1967,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_sample_number__",
@@ -1985,7 +1985,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_tag__",
@@ -2003,7 +2003,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_total_samples__",
@@ -2021,7 +2021,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_userdata__",
@@ -2039,7 +2039,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_isrecording__",
@@ -2056,7 +2056,7 @@ DEFUN_DLD (__recorder_pause__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_pause__",
@@ -2073,7 +2073,7 @@ DEFUN_DLD (__recorder_recordblocking__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_recordblocking__",
@@ -2092,7 +2092,7 @@ DEFUN_DLD (__recorder_record__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_record__",
@@ -2114,7 +2114,7 @@ DEFUN_DLD (__recorder_resume__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_resume__",
@@ -2132,7 +2132,7 @@ DEFUN_DLD (__recorder_set_fs__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_set_fs__",
@@ -2150,7 +2150,7 @@ DEFUN_DLD (__recorder_set_tag__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_set_tag__",
@@ -2168,7 +2168,7 @@ DEFUN_DLD (__recorder_set_userdata__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_set_userdata__",
@@ -2186,7 +2186,7 @@ DEFUN_DLD (__recorder_stop__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_stop__",
@@ -2207,7 +2207,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_audioplayer__",
@@ -2252,7 +2252,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-#ifdef HAVE_PORTAUDIO
+#if defined (HAVE_PORTAUDIO)
 
 static audioplayer *
 get_player (const octave_value& ov)
@@ -2277,7 +2277,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_channels__",
@@ -2296,7 +2296,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_fs__",
@@ -2315,7 +2315,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_id__",
@@ -2334,7 +2334,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_nbits__",
@@ -2353,7 +2353,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_sample_number__",
@@ -2372,7 +2372,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_tag__",
@@ -2391,7 +2391,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_total_samples__",
@@ -2410,7 +2410,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_userdata__",
@@ -2429,7 +2429,7 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_isplaying__",
@@ -2447,7 +2447,7 @@ DEFUN_DLD (__player_pause__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_pause__",
@@ -2467,7 +2467,7 @@ DEFUN_DLD (__player_playblocking__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_playblocking__",
@@ -2521,7 +2521,7 @@ DEFUN_DLD (__player_play__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_play__",
@@ -2573,7 +2573,7 @@ DEFUN_DLD (__player_resume__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_resume__",
@@ -2591,7 +2591,7 @@ DEFUN_DLD (__player_set_fs__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_set_fs__",
@@ -2609,7 +2609,7 @@ DEFUN_DLD (__player_set_tag__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_set_tag__",
@@ -2627,7 +2627,7 @@ DEFUN_DLD (__player_set_userdata__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_set_userdata__",
@@ -2645,7 +2645,7 @@ DEFUN_DLD (__player_stop__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-#ifndef HAVE_PORTAUDIO
+#if ! defined (HAVE_PORTAUDIO)
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_stop__",

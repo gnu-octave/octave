@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // This is the octave interface to ccolamd, which bore the copyright given
 // in the help of the functions.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -144,7 +144,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{colamd, csymamd}\n\
 @end deftypefn")
 {
-#ifdef HAVE_CCOLAMD
+#if defined (HAVE_CCOLAMD)
 
   int nargin = args.length ();
 

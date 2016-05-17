@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 // Adapted from previous version of dlmread.occ as authored by Kai
 // Habel, but core code has been completely re-written.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

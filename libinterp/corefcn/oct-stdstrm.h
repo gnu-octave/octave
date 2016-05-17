@@ -135,7 +135,7 @@ private:
   octave_stdiostream& operator = (const octave_stdiostream&);
 };
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
 class
 octave_zstdiostream

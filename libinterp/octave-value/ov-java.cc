@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -280,7 +280,7 @@ private:
   std::list<std::string> java_opts;
 };
 
-#ifdef __WIN32__
+#if defined (__WIN32__)
 
 static std::string
 read_registry_string (const std::string& key, const std::string& value)
@@ -508,7 +508,7 @@ initial_class_path (void)
   return retval;
 }
 
-#ifndef _FPU_DEFAULT
+#if ! defined (_FPU_DEFAULT)
 #  if defined __i386__ || defined __x86_64__
 #    define _FPU_DEFAULT 0x037f
 #  else

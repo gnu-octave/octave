@@ -78,7 +78,7 @@ DIRSTAMP_FILES += \
 
 define moc-command
   rm -f $@-t $@ && \
-  ( echo "#ifdef HAVE_CONFIG_H"; \
+  ( echo "#if defined (HAVE_CONFIG_H)"; \
     echo '#include "config.h"'; \
     echo "#endif"; \
     $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(libgui_liboctgui_la_CPPFLAGS) $< ) > $@-t && \
@@ -87,7 +87,7 @@ endef
 
 define rcc-command
   rm -f $@-t $@ && \
-  ( echo "#ifdef HAVE_CONFIG_H"; \
+  ( echo "#if defined (HAVE_CONFIG_H)"; \
     echo '#include "config.h"'; \
     echo "#endif"; \
     echo "// Ignore unused variable warnings in generated code."; \

@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "errwarn.h"
 
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
 #include <Magick++.h>
 #include <clocale>
@@ -754,7 +754,7 @@ Use @code{imread} instead.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
   if (args.length () != 2 || ! args(0).is_string ())
     print_usage ();
@@ -865,7 +865,7 @@ Use @code{imread} instead.\n\
 %!assert (1)
 */
 
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
 template <typename T>
 static uint32NDArray
@@ -1397,7 +1397,7 @@ Use @code{imwrite} instead.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
   if (args.length () != 5 || ! args(0).is_string () || ! args(1).is_string ())
     print_usage ();
@@ -1575,7 +1575,7 @@ This is a private internal function not intended for direct use.\n\
 @seealso{imfinfo}\n\
 @end deftypefn")
 {
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
   if (args.length () < 1 || ! args(0).is_string ())
     print_usage ();
@@ -1623,7 +1623,7 @@ This is a private internal function not intended for direct use.\n\
 #endif
 }
 
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
 static octave_value
 magick_to_octave_value (const Magick::CompressionType& magick)
@@ -1801,7 +1801,7 @@ Use @code{imfinfo} instead.\n\
 @seealso{imfinfo, imformats, imread, imwrite}\n\
 @end deftypefn")
 {
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
   if (args.length () < 1 || ! args(0).is_string ())
     print_usage ();
@@ -2254,7 +2254,7 @@ Fill formats info with GraphicsMagick CoderInfo.\n\
 
   octave_map formats = args(0).map_value ();
 
-#ifdef HAVE_MAGICK
+#if defined (HAVE_MAGICK)
 
   maybe_initialize_magick ();
 

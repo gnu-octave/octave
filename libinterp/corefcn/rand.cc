@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -1078,7 +1078,7 @@ likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {
-#ifdef USE_UNORDERED_MAP_WITH_TR1
+#if defined (USE_UNORDERED_MAP_WITH_TR1)
 using std::tr1::unordered_map;
 #else
 using std::unordered_map;

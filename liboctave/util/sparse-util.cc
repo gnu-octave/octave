@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -35,7 +35,7 @@ static inline void
 sparse_chol_error_internal (int status, const char *file,
                             int line, const char *message)
 {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
 
   // Ignore CHOLMOD_NOT_POSDEF, since we handle that in Fchol as an
   // error or exit status.

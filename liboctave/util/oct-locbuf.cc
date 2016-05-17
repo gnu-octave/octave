@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // FIXME: Maybe we should querying for available physical memory?
 
-#ifndef OCTAVE_LOCBUF_CHUNKSIZE_MB
+#if ! defined (OCTAVE_LOCBUF_CHUNKSIZE_MB)
 #  define OCTAVE_LOCBUF_CHUNKSIZE_MB 32
 #endif
 

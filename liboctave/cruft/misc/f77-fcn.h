@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -190,7 +190,7 @@ typedef union
 
 typedef void *octave_cray_ftn_ch_dsc;
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 #  define OCTAVE_F77_FCN_INLINE inline
 #else
 #  define OCTAVE_F77_FCN_INLINE
@@ -214,7 +214,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
   return *((octave_cray_ftn_ch_dsc *) &desc);
 }
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 #  undef OCTAVE_F77_FCN_INLINE
 #endif
 
@@ -290,7 +290,7 @@ F77_RET_T
 F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
                            F77_CHAR_ARG_LEN_DECL);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

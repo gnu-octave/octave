@@ -55,7 +55,7 @@ static double
 xlgamma (double x)
 {
   double result;
-#ifdef HAVE_LGAMMA
+#if defined (HAVE_LGAMMA)
   result = lgamma (x);
 #else
   double sgngam;

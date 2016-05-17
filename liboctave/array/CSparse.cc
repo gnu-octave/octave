@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -1142,7 +1142,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
 {
   ComplexDET retval;
 
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -5437,7 +5437,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   void *Numeric = 0;
   err = 0;
 
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
 
   // Setup the control parameters
   Control = Matrix (UMFPACK_CONTROL, 1);
@@ -5579,7 +5579,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 
       if (typ == MatrixType::Hermitian)
         {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
           cholmod_common Common;
           cholmod_common *cm = &Common;
 
@@ -5714,7 +5714,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 
       if (typ == MatrixType::Full)
         {
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
           Matrix Control, Info;
           void *Numeric = factorize (err, rcond, Control, Info,
                                      sing_handler, calc_cond);
@@ -5729,7 +5729,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
               const octave_idx_type *Ap = cidx ();
               const octave_idx_type *Ai = ridx ();
               const Complex *Ax = data ();
-#ifdef UMFPACK_SEPARATE_SPLIT
+#if defined (UMFPACK_SEPARATE_SPLIT)
               const double *Bx = b.fortran_vec ();
               OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
               for (octave_idx_type i = 0; i < b_nr; i++)
@@ -5742,7 +5742,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 
               for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
                 {
-#ifdef UMFPACK_SEPARATE_SPLIT
+#if defined (UMFPACK_SEPARATE_SPLIT)
                   status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
                                                   Ai,
                                                   reinterpret_cast<const double *> (Ax),
@@ -5829,7 +5829,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 
       if (typ == MatrixType::Hermitian)
         {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
           cholmod_common Common;
           cholmod_common *cm = &Common;
 
@@ -5980,7 +5980,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 
       if (typ == MatrixType::Full)
         {
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
           Matrix Control, Info;
           void *Numeric = factorize (err, rcond, Control, Info,
                                      sing_handler, calc_cond);
@@ -5996,7 +5996,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
               const octave_idx_type *Ai = ridx ();
               const Complex *Ax = data ();
 
-#ifdef UMFPACK_SEPARATE_SPLIT
+#if defined (UMFPACK_SEPARATE_SPLIT)
               OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
               OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
               for (octave_idx_type i = 0; i < b_nr; i++)
@@ -6017,7 +6017,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
               for (octave_idx_type j = 0; j < b_nc; j++)
                 {
 
-#ifdef UMFPACK_SEPARATE_SPLIT
+#if defined (UMFPACK_SEPARATE_SPLIT)
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     Bx[i] = b.elem (i, j);
 
@@ -6127,7 +6127,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
       if (typ == MatrixType::Hermitian)
         {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
           cholmod_common Common;
           cholmod_common *cm = &Common;
 
@@ -6262,7 +6262,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
       if (typ == MatrixType::Full)
         {
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
           Matrix Control, Info;
           void *Numeric = factorize (err, rcond, Control, Info,
                                      sing_handler, calc_cond);
@@ -6356,7 +6356,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
       if (typ == MatrixType::Hermitian)
         {
-#ifdef HAVE_CHOLMOD
+#if defined (HAVE_CHOLMOD)
           cholmod_common Common;
           cholmod_common *cm = &Common;
 
@@ -6507,7 +6507,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
       if (typ == MatrixType::Full)
         {
-#ifdef HAVE_UMFPACK
+#if defined (HAVE_UMFPACK)
           Matrix Control, Info;
           void *Numeric = factorize (err, rcond, Control, Info,
                                      sing_handler, calc_cond);
@@ -6674,7 +6674,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#ifdef USE_QRSOLVE
+#if defined (USE_QRSOLVE)
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<ComplexMatrix, SparseComplexMatrix, Matrix>
@@ -6739,7 +6739,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#ifdef USE_QRSOLVE
+#if defined (USE_QRSOLVE)
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<SparseComplexMatrix, SparseComplexMatrix, SparseMatrix>
@@ -6804,7 +6804,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#ifdef USE_QRSOLVE
+#if defined (USE_QRSOLVE)
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<ComplexMatrix, SparseComplexMatrix, ComplexMatrix>
@@ -6870,7 +6870,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#ifdef USE_QRSOLVE
+#if defined (USE_QRSOLVE)
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<SparseComplexMatrix, SparseComplexMatrix,

@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -208,7 +208,7 @@ get_user_code (const std::string& fname = "")
   return dbg_fcn;
 }
 
-#ifdef DBSTOP_NANINF
+#if defined (DBSTOP_NANINF)
 #  include "sigfpe.cc"
 #endif
 
@@ -378,7 +378,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                     Vdebug_on_interrupt = on_off;
                   }
                 else if (condition == "naninf")
-#ifdef DBSTOP_NANINF
+#if defined (DBSTOP_NANINF)
                   {
                     Vdebug_on_naninf = on_off;
                     enable_fpe (on_off);

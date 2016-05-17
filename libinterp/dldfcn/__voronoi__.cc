@@ -30,7 +30,7 @@ Added optional second argument to pass options to the underlying
 qhull command
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

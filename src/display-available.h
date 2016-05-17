@@ -23,14 +23,14 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_display_available_h)
 #define octave_display_available_h 1
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 #  include <new>
 extern "C" {
 #endif
 
 extern const char *display_available (int *dpy_avail);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <utility>
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
 #endif
 #include "main-window.h"
@@ -67,7 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 static file_editor_interface *
 create_default_editor (QWidget *p)
 {
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   return new file_editor (p);
 #else
   return 0;
@@ -174,7 +174,7 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       if (dock)
         break; // it is a QDockWidget ==> exit loop
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
       if (qobject_cast<octave_qscintilla *> (w_new))
         {
           dock = static_cast<octave_dock_widget *> (editor_window);
@@ -798,7 +798,7 @@ main_window::confirm_shutdown_octave (void)
             closenow = false;
         }
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
       if (closenow)
         closenow = editor_window->check_closing ();
 #endif
@@ -919,7 +919,7 @@ main_window::handle_enter_debugger (void)
   _debug_step_out->setEnabled (true);
   _debug_quit->setEnabled (true);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   editor_window->handle_enter_debug_mode ();
 #endif
 }
@@ -935,7 +935,7 @@ main_window::handle_exit_debugger (void)
   _debug_step_out->setEnabled (false);
   _debug_quit->setEnabled (false);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   editor_window->handle_exit_debug_mode ();
 #endif
 }
@@ -1145,7 +1145,7 @@ main_window::connect_visibility_changed (void)
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   editor_window->enable_menu_shortcuts (false);
 #endif
 }
@@ -1383,7 +1383,7 @@ main_window::construct (void)
       addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
       tabifyDockWidget (command_window, doc_browser_window);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
       addDockWidget (Qt::RightDockWidgetArea, editor_window);
       tabifyDockWidget (command_window, editor_window);
 #endif
@@ -1405,7 +1405,7 @@ main_window::construct (void)
 
       setStatusBar (status_bar);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
       connect (this,
                SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
                editor_window,
@@ -1467,7 +1467,7 @@ main_window::handle_octave_ready ()
 
   if (editor_window)
     {
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
       // Octave ready, determine whether to create an empty script.
       // This can not be done when the editor is created because all functions
       // must be known for the lexer's auto completion informations
@@ -1545,7 +1545,7 @@ main_window::construct_octave_qt_link (void)
                SIGNAL (show_preferences_signal (void)),
                this, SLOT (process_settings_dialog_request ()));
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
       connect (_octave_qt_link,
                SIGNAL (edit_file_signal (const QString&)),
                editor_window,
@@ -1615,7 +1615,7 @@ main_window::construct_menu_bar (void)
 
   construct_news_menu (menu_bar);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   // call the editor to add actions which should also be available in the
   // editor's menu and tool bar
   QList<QAction*> shared_actions;
@@ -1692,7 +1692,7 @@ main_window::construct_file_menu (QMenuBar *p)
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
   _open_action->setToolTip (tr ("Open an existing file in editor"));
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   file_menu->addMenu (editor_window->get_mru_menu ());
 #endif
 
@@ -1709,7 +1709,7 @@ main_window::construct_file_menu (QMenuBar *p)
   _exit_action = file_menu->addAction (tr ("Exit"));
   _exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   connect (_open_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_open_file ()));
 #endif
@@ -1741,7 +1741,7 @@ main_window::construct_new_menu (QMenu *p)
   _new_figure_action = new_menu->addAction (tr ("New Figure"));
   _new_figure_action->setEnabled (true);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   connect (_new_script_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_script ()));
 
@@ -1837,7 +1837,7 @@ main_window::construct_debug_menu_item (const char *icon, const QString& item,
 
   action->setEnabled (false);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   editor_window->debug_menu ()->addAction (action);
   editor_window->toolbar ()->addAction (action);
 #endif
@@ -1867,7 +1867,7 @@ main_window::construct_debug_menu (QMenuBar *p)
                        SLOT (debug_continue ()));
 
   _debug_menu->addSeparator ();
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   editor_window->debug_menu ()->addSeparator ();
 #endif
 
@@ -2320,7 +2320,7 @@ main_window::dock_widget_list ()
   list.append (static_cast<octave_dock_widget *> (history_window));
   list.append (static_cast<octave_dock_widget *> (file_browser_window));
   list.append (static_cast<octave_dock_widget *> (doc_browser_window));
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   list.append (static_cast<octave_dock_widget *> (editor_window));
 #endif
   list.append (static_cast<octave_dock_widget *> (workspace_window));

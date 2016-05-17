@@ -2131,7 +2131,7 @@ public:
 
             if (p != foreign_memlist.end ())
               foreign_memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
             else
               warning ("mxFree: skipping memory not allocated by mxMalloc, mxCalloc, or mxRealloc");
 #endif
@@ -2142,7 +2142,7 @@ public:
   // Mark a pointer to be freed on exit.
   void mark (void *ptr)
   {
-#ifdef DEBUG
+#if defined (DEBUG)
     if (memlist.find (ptr) != memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -2158,7 +2158,7 @@ public:
 
     if (p != memlist.end ())
       memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif
@@ -2181,7 +2181,7 @@ public:
   // Mark a pointer as one we allocated.
   void mark_foreign (void *ptr)
   {
-#ifdef DEBUG
+#if defined (DEBUG)
     if (foreign_memlist.find (ptr) != foreign_memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -2196,7 +2196,7 @@ public:
 
     if (p != foreign_memlist.end ())
       foreign_memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif
@@ -2223,7 +2223,7 @@ public:
         arraylist.erase (p);
         delete ptr;
       }
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("mex::free_value: skipping memory not allocated by mex::make_value");
 #endif
@@ -2263,7 +2263,7 @@ private:
   // Mark a pointer as one we allocated.
   void global_mark (void *ptr)
   {
-#ifdef DEBUG
+#if defined (DEBUG)
     if (global_memlist.find (ptr) != global_memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -2278,7 +2278,7 @@ private:
 
     if (p != global_memlist.end ())
       global_memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif

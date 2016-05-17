@@ -275,7 +275,7 @@ extern OCTINTERP_API int mxGetString (const mxArray *ptr, char *buf,
 extern OCTINTERP_API char *mxArrayToString (const mxArray *ptr);
 
 /* Miscellaneous.  */
-#ifdef NDEBUG
+#if defined (NDEBUG)
 #  define mxAssert(expr, msg) \
     do \
       { \

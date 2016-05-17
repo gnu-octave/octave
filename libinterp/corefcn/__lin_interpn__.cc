@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -56,7 +56,7 @@ lookup (const T *x, octave_idx_type n, T y)
       if (y > x[n-1] || y < x[0])
         return -1;
 
-#ifdef EXHAUSTIF
+#if defined (EXHAUSTIF)
       for (j = 0; j < n - 1; j++)
         {
           if (x[j] <= y && y <= x[j+1])
@@ -91,7 +91,7 @@ lookup (const T *x, octave_idx_type n, T y)
       if (y > x[0] || y < x[n-1])
         return -1;
 
-#ifdef EXHAUSTIF
+#if defined (EXHAUSTIF)
       for (j = 0; j < n - 1; j++)
         {
           if (x[j+1] <= y && y <= x[j])

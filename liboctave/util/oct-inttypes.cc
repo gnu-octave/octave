@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -103,9 +103,9 @@ INSTANTIATE_CONVERT_REAL (float);
 INSTANTIATE_CONVERT_REAL (long double);
 #endif
 
-#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
-#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 
 #define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T) \
   template <typename xop> \

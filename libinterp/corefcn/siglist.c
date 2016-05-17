@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "config.h"
 #endif
 
@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 static char *my_sys_siglist[NSIG];
 
-#ifdef sys_siglist
+#if defined (sys_siglist)
 #undef sys_siglist
 #endif
 #define sys_siglist my_sys_siglist
@@ -52,166 +52,166 @@ init_signals (void)
     {
       initialized = 1;
 
-# ifdef SIGABRT
+# if defined (SIGABRT)
       sys_siglist[SIGABRT] = "Aborted";
 # endif
-# ifdef SIGAIO
+# if defined (SIGAIO)
       sys_siglist[SIGAIO] = "LAN I/O interrupt";
 # endif
-# ifdef SIGALRM
+# if defined (SIGALRM)
       sys_siglist[SIGALRM] = "Alarm clock";
 # endif
-# ifdef SIGBUS
+# if defined (SIGBUS)
       sys_siglist[SIGBUS] = "Bus error";
 # endif
-# ifdef SIGCLD
+# if defined (SIGCLD)
       sys_siglist[SIGCLD] = "Child status changed";
 # endif
-# ifdef SIGCHLD
+# if defined (SIGCHLD)
       sys_siglist[SIGCHLD] = "Child status changed";
 # endif
-# ifdef SIGCONT
+# if defined (SIGCONT)
       sys_siglist[SIGCONT] = "Continued";
 # endif
-# ifdef SIGDANGER
+# if defined (SIGDANGER)
       sys_siglist[SIGDANGER] = "Swap space dangerously low";
 # endif
-# ifdef SIGDGNOTIFY
+# if defined (SIGDGNOTIFY)
       sys_siglist[SIGDGNOTIFY] = "Notification message in queue";
 # endif
-# ifdef SIGEMT
+# if defined (SIGEMT)
       sys_siglist[SIGEMT] = "Emulation trap";
 # endif
-# ifdef SIGFPE
+# if defined (SIGFPE)
       sys_siglist[SIGFPE] = "Arithmetic exception";
 # endif
-# ifdef SIGFREEZE
+# if defined (SIGFREEZE)
       sys_siglist[SIGFREEZE] = "SIGFREEZE";
 # endif
-# ifdef SIGGRANT
+# if defined (SIGGRANT)
       sys_siglist[SIGGRANT] = "Monitor mode granted";
 # endif
-# ifdef SIGHUP
+# if defined (SIGHUP)
       sys_siglist[SIGHUP] = "Hangup";
 # endif
-# ifdef SIGILL
+# if defined (SIGILL)
       sys_siglist[SIGILL] = "Illegal instruction";
 # endif
-# ifdef SIGINT
+# if defined (SIGINT)
       sys_siglist[SIGINT] = "Interrupt";
 # endif
-# ifdef SIGIO
+# if defined (SIGIO)
       sys_siglist[SIGIO] = "I/O possible";
 # endif
-# ifdef SIGIOINT
+# if defined (SIGIOINT)
       sys_siglist[SIGIOINT] = "I/O intervention required";
 # endif
-# ifdef SIGIOT
+# if defined (SIGIOT)
       sys_siglist[SIGIOT] = "IOT trap";
 # endif
-# ifdef SIGKILL
+# if defined (SIGKILL)
       sys_siglist[SIGKILL] = "Killed";
 # endif
-# ifdef SIGLOST
+# if defined (SIGLOST)
       sys_siglist[SIGLOST] = "Resource lost";
 # endif
-# ifdef SIGLWP
+# if defined (SIGLWP)
       sys_siglist[SIGLWP] = "SIGLWP";
 # endif
-# ifdef SIGMSG
+# if defined (SIGMSG)
       sys_siglist[SIGMSG] = "Monitor mode data available";
 # endif
-# ifdef SIGPHONE
+# if defined (SIGPHONE)
       sys_siglist[SIGPHONE] = "SIGPHONE";
 # endif
-# ifdef SIGPIPE
+# if defined (SIGPIPE)
       sys_siglist[SIGPIPE] = "Broken pipe";
 # endif
-# ifdef SIGPOLL
+# if defined (SIGPOLL)
       sys_siglist[SIGPOLL] = "Pollable event occurred";
 # endif
-# ifdef SIGPROF
+# if defined (SIGPROF)
       sys_siglist[SIGPROF] = "Profiling timer expired";
 # endif
-# ifdef SIGPTY
+# if defined (SIGPTY)
       sys_siglist[SIGPTY] = "PTY I/O interrupt";
 # endif
-# ifdef SIGPWR
+# if defined (SIGPWR)
       sys_siglist[SIGPWR] = "Power-fail restart";
 # endif
-# ifdef SIGQUIT
+# if defined (SIGQUIT)
       sys_siglist[SIGQUIT] = "Quit";
 # endif
-# ifdef SIGRETRACT
+# if defined (SIGRETRACT)
       sys_siglist[SIGRETRACT] = "Need to relinguish monitor mode";
 # endif
-# ifdef SIGSAK
+# if defined (SIGSAK)
       sys_siglist[SIGSAK] = "Secure attention";
 # endif
-# ifdef SIGSEGV
+# if defined (SIGSEGV)
       sys_siglist[SIGSEGV] = "Segmentation violation";
 # endif
-# ifdef SIGSOUND
+# if defined (SIGSOUND)
       sys_siglist[SIGSOUND] = "Sound completed";
 # endif
-# ifdef SIGSTKFLT
+# if defined (SIGSTKFLT)
       sys_siglist[SIGSTKFLT] = "Stack fault";
 # endif
-# ifdef SIGSTOP
+# if defined (SIGSTOP)
       sys_siglist[SIGSTOP] = "Stopped (signal)";
 # endif
-# ifdef SIGSTP
+# if defined (SIGSTP)
       sys_siglist[SIGSTP] = "Stopped (user)";
 # endif
-# ifdef SIGSYS
+# if defined (SIGSYS)
       sys_siglist[SIGSYS] = "Bad argument to system call";
 # endif
-# ifdef SIGTERM
+# if defined (SIGTERM)
       sys_siglist[SIGTERM] = "Terminated";
 # endif
-# ifdef SIGTHAW
+# if defined (SIGTHAW)
       sys_siglist[SIGTHAW] = "SIGTHAW";
 # endif
-# ifdef SIGTRAP
+# if defined (SIGTRAP)
       sys_siglist[SIGTRAP] = "Trace/breakpoint trap";
 # endif
-# ifdef SIGTSTP
+# if defined (SIGTSTP)
       sys_siglist[SIGTSTP] = "Stopped (user)";
 # endif
-# ifdef SIGTTIN
+# if defined (SIGTTIN)
       sys_siglist[SIGTTIN] = "Stopped (tty input)";
 # endif
-# ifdef SIGTTOU
+# if defined (SIGTTOU)
       sys_siglist[SIGTTOU] = "Stopped (tty output)";
 # endif
-# ifdef SIGUNUSED
+# if defined (SIGUNUSED)
       sys_siglist[SIGUNUSED] = "SIGUNUSED";
 # endif
-# ifdef SIGURG
+# if defined (SIGURG)
       sys_siglist[SIGURG] = "Urgent I/O condition";
 # endif
-# ifdef SIGUSR1
+# if defined (SIGUSR1)
       sys_siglist[SIGUSR1] = "User defined signal 1";
 # endif
-# ifdef SIGUSR2
+# if defined (SIGUSR2)
       sys_siglist[SIGUSR2] = "User defined signal 2";
 # endif
-# ifdef SIGVTALRM
+# if defined (SIGVTALRM)
       sys_siglist[SIGVTALRM] = "Virtual timer expired";
 # endif
-# ifdef SIGWAITING
+# if defined (SIGWAITING)
       sys_siglist[SIGWAITING] = "Process's LWPs are blocked";
 # endif
-# ifdef SIGWINCH
+# if defined (SIGWINCH)
       sys_siglist[SIGWINCH] = "Window size changed";
 # endif
-# ifdef SIGWIND
+# if defined (SIGWIND)
       sys_siglist[SIGWIND] = "SIGWIND";
 # endif
-# ifdef SIGXCPU
+# if defined (SIGXCPU)
       sys_siglist[SIGXCPU] = "CPU time limit exceeded";
 # endif
-# ifdef SIGXFSZ
+# if defined (SIGXFSZ)
       sys_siglist[SIGXFSZ] = "File size limit exceeded";
 # endif
     }

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 // Extensively revised by John W. Eaton <jwe@octave.org>,
 // April 1996.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifdef HAVE_ZLIB_H
+#if defined (HAVE_ZLIB_H)
 #  include <zlib.h>
 #endif
 

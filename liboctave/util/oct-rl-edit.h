@@ -45,7 +45,7 @@ typedef int (*rl_char_is_quoted_fcn_ptr) (char *, int);
 
 typedef int (*rl_command_fcn_ptr) (int, int);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 extern "C"
 {
 #endif
@@ -170,7 +170,7 @@ extern int octave_rl_ctrl (char);
 
 extern int octave_rl_meta (char);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

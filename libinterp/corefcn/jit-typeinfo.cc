@@ -26,15 +26,15 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 #include "jit-typeinfo.h"
 
-#ifdef HAVE_LLVM_IR_VERIFIER_H
+#if defined (HAVE_LLVM_IR_VERIFIER_H)
 #  include <llvm/IR/Verifier.h>
 #else
 #  include <llvm/Analysis/Verifier.h>
@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
-#ifdef HAVE_LLVM_IR_FUNCTION_H
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
 #  include <llvm/IR/GlobalVariable.h>
 #  include <llvm/IR/LLVMContext.h>
 #  include <llvm/IR/Function.h>
@@ -56,7 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <llvm/Intrinsics.h>
 #endif
 
-#ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
+#if defined (HAVE_LLVM_SUPPORT_IRBUILDER_H)
 #  include <llvm/Support/IRBuilder.h>
 #  elif defined(HAVE_LLVM_IR_IRBUILDER_H)
 #  include <llvm/IR/IRBuilder.h>
@@ -568,7 +568,7 @@ jit_function::jit_function (llvm::Module *amodule,
 
   if (sret ())
     {
-#ifdef FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
+#if defined (FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES)
       llvm::AttrBuilder attr_builder;
       attr_builder.addAttribute (llvm::Attributes::StructRet);
       llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder);
@@ -579,7 +579,7 @@ jit_function::jit_function (llvm::Module *amodule,
     }
 
   if (call_conv == jit_convention::internal)
-#ifdef FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES
+#if defined (FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES)
     llvm_function->addFnAttr (llvm::Attributes::AlwaysInline);
 #else
     llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
@@ -686,7 +686,7 @@ jit_function::call (llvm::IRBuilderD& builder,
 
   if (sret ())
     {
-#ifdef CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
+#if defined (CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES)
       llvm::AttrBuilder attr_builder;
       attr_builder.addAttribute(llvm::Attributes::StructRet);
       llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder);

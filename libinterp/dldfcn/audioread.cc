@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -40,11 +40,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 
 
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 #  include <sndfile.h>
 #endif
 
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
 static void
 safe_close (SNDFILE *file)
@@ -75,7 +75,7 @@ If it is @qcode{\"native\"}, then the type of data depends on how the data\n\
 is stored in the audio file.\n\
 @end deftypefn")
 {
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
   int nargin = args.length ();
 
@@ -186,7 +186,7 @@ is stored in the audio file.\n\
 #endif
 }
 
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
 static int
 extension_to_format (const std::string& ext)
@@ -267,7 +267,7 @@ Comment.\n\
 @end table\n\
 @end deftypefn")
 {
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
   int nargin = args.length ();
 
@@ -448,7 +448,7 @@ DEFUN_DLD (audioinfo, args, ,
 Return information about an audio file specified by @var{filename}.\n\
 @end deftypefn")
 {
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
   if (args.length () != 1)
     print_usage ();
@@ -519,7 +519,7 @@ Return information about an audio file specified by @var{filename}.\n\
 #endif
 }
 
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
 static void
 audio_sub_formats (int format)
@@ -555,7 +555,7 @@ If the optional argument @var{format} is given, then display only formats\n\
 with names that start with @var{format}.\n\
 @end deftypefn")
 {
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
   if (args.length () > 1)
     print_usage ();

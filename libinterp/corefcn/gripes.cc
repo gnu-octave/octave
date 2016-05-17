@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // FIXME: All gripe_XXX functions deprecated in 4.2.  Remove file in 4.6
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 

@@ -83,7 +83,7 @@ template <typename T> class qrp;
 
 #include "oct-cmplx.h"
 
-#ifndef MAPPER_FCN_TYPEDEFS
+#if ! defined (MAPPER_FCN_TYPEDEFS)
 #  define MAPPER_FCN_TYPEDEFS 1
 
 typedef bool (*b_d_Mapper)(double);

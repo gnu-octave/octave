@@ -25,11 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef HAVE_SYS_PARAM_H
+#if defined (HAVE_SYS_PARAM_H)
 #  include <sys/param.h>
 #endif
 
-#ifndef MAXPATHLEN
+#if ! defined (MAXPATHLEN)
 #  define MAXPATHLEN 1024
 #endif
 

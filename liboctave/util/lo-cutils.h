@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -53,7 +53,7 @@ OCTAVE_API int octave_wifstopped (int status);
 OCTAVE_API int octave_wstopsig (int status);
 OCTAVE_API int octave_wifcontinued (int status);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

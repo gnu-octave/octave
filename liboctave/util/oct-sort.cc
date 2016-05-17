@@ -1507,12 +1507,12 @@ template <typename T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type nel)
 {
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     sort (data, nel, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       sort (data, nel, std::greater<T> ());
     else
@@ -1525,12 +1525,12 @@ template <typename T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 {
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     sort (data, idx, nel, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       sort (data, idx, nel, std::greater<T> ());
     else
@@ -1565,12 +1565,12 @@ bool
 octave_sort<T>::is_sorted (const T *data, octave_idx_type nel)
 {
   bool retval = false;
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     retval = is_sorted (data, nel, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       retval = is_sorted (data, nel, std::greater<T> ());
     else
@@ -1654,12 +1654,12 @@ void
 octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
                            octave_idx_type rows, octave_idx_type cols)
 {
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     sort_rows (data, idx, rows, cols, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       sort_rows (data, idx, rows, cols, std::greater<T> ());
     else
@@ -1733,12 +1733,12 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
 {
   bool retval = false;
 
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     retval = is_sorted_rows (data, rows, cols, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       retval = is_sorted_rows (data, rows, cols, std::greater<T> ());
     else
@@ -1779,12 +1779,12 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
 {
   octave_idx_type retval = 0;
 
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     retval = lookup (data, nel, value, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       retval = lookup (data, nel, value, std::greater<T> ());
     else
@@ -1815,12 +1815,12 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T* values, octave_idx_type nvalues,
                         octave_idx_type *idx)
 {
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     lookup (data, nel, values, nvalues, idx, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       lookup (data, nel, values, nvalues, idx, std::greater<T> ());
     else
@@ -1890,12 +1890,12 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                                const T* values, octave_idx_type nvalues,
                                octave_idx_type *idx, bool rev)
 {
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     lookup_sorted (data, nel, values, nvalues, idx, rev, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       lookup_sorted (data, nel, values, nvalues, idx, rev, std::greater<T> ());
     else
@@ -1939,12 +1939,12 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
 {
   if (up < 0)
     up = lo + 1;
-#ifdef INLINE_ASCENDING_SORT
+#if defined (INLINE_ASCENDING_SORT)
   if (compare == ascending_compare)
     nth_element (data, nel, lo, up, std::less<T> ());
   else
 #endif
-#ifdef INLINE_DESCENDING_SORT
+#if defined (INLINE_DESCENDING_SORT)
     if (compare == descending_compare)
       nth_element (data, nel, lo, up, std::greater<T> ());
     else

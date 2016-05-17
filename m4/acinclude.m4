@@ -379,7 +379,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
     [octave_cv_func_glutesscallback_threedots],
     [AC_LANG_PUSH(C++)
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #ifdef HAVE_GL_GLU_H
+        #if defined (HAVE_GL_GLU_H)
         # include <GL/glu.h>
         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
         # include <OpenGL/glu.h>
@@ -986,20 +986,20 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
     AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h],
       [AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h],
         [have_opengl_incs=yes; break], [], [
-#ifdef HAVE_WINDOWS_H
+#if defined (HAVE_WINDOWS_H)
 #include <windows.h>
 #endif
       ])
       break
       ], [], [
-#ifdef HAVE_WINDOWS_H
+#if defined (HAVE_WINDOWS_H)
 # include <windows.h>
 #endif
     ])
 
     if test $have_opengl_incs = yes; then
       AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [
-#ifdef HAVE_WINDOWS_H
+#if defined (HAVE_WINDOWS_H)
 # include <windows.h>
 #endif
 #if defined (HAVE_GL_GL_H)
@@ -1080,7 +1080,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
         # include <poly.h>
         # include <io.h>
         #endif
-        #ifdef NEED_QHULL_VERSION
+        #if defined (NEED_QHULL_VERSION)
           char *qh_version = "version";
         #endif
         ]], [[
@@ -1218,7 +1218,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
          #elif defined (HAVE_OPENGL_GL_H)
          # include <OpenGL/gl.h>
          #endif
-         #ifdef HAVE_GL_GLU_H
+         #if defined (HAVE_GL_GLU_H)
          # include <GL/glu.h>
          #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
          # include <OpenGL/glu.h>
@@ -1273,7 +1273,7 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
           #include <assert.h>
           #include <stdint.h>
           ]], [[
-          #ifdef OCTAVE_ENABLE_64
+          #if defined (OCTAVE_ENABLE_64)
             typedef int64_t octave_idx_type;
           #else
             typedef int octave_idx_type;
@@ -1693,7 +1693,7 @@ AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
         [AC_LANG_PROGRAM([[
-#ifdef HAVE_LLVM_IR_FUNCTION_H
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
           #include <llvm/IR/Instructions.h>
           #include <llvm/IR/Attributes.h>
 #else
@@ -1725,7 +1725,7 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API], [
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
         [AC_LANG_PROGRAM([[
-#ifdef HAVE_LLVM_IR_FUNCTION_H
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
           #include <llvm/IR/Function.h>
           #include <llvm/IR/Attributes.h>
           #include <llvm/IR/LLVMContext.h>
@@ -1759,7 +1759,7 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
         [AC_LANG_PROGRAM([[
-#ifdef HAVE_LLVM_IR_FUNCTION_H
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
           #include <llvm/IR/Function.h>
           #include <llvm/IR/Attributes.h>
 #else
@@ -2343,7 +2343,7 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
         #elif defined (HAVE_UMFPACK_H)
         # include <umfpack.h>
         #endif
-        #ifdef OCTAVE_ENABLE_64
+        #if defined (OCTAVE_ENABLE_64)
         typedef uint64_t idx_type;
         #define UMFPACK_NAME(name) umfpack_zl_ ## name
         #else

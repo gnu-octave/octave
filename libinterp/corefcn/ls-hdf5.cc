@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Steven G. Johnson <stevenj@alum.mit.edu>
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -492,7 +492,7 @@ hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
         {
           // What integer type do we really have..
           std::string int_typ;
-#ifdef HAVE_H5T_GET_NATIVE_TYPE
+#if defined (HAVE_H5T_GET_NATIVE_TYPE)
           // FIXME: test this code and activated with an autoconf
           // test!! It is also incorrect for 64-bit indexing!!
 

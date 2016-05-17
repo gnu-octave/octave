@@ -59,11 +59,11 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 
 #include <QtGui>
 #include <QIcon>
@@ -108,7 +108,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _regex_check_box = new QCheckBox (tr ("Regular E&xpressions"));
   _backward_check_box = new QCheckBox (tr ("Search &backward"));
   _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
   _search_selection_check_box->setCheckable (true);
   _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
 #else
@@ -134,7 +134,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   connect (_search_line_edit,   SIGNAL (textChanged (QString)),
            this,                SLOT (handle_search_text_changed (QString)));
 
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
   connect (_edit_area, SIGNAL (copyAvailable (bool)),
            this,       SLOT (handle_selection_changed (bool)));
   connect (_search_selection_check_box, SIGNAL (stateChanged (int)),
@@ -204,7 +204,7 @@ find_dialog::handle_search_text_changed (QString)
     _find_result_available = false;
 }
 
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
 void
 find_dialog::handle_sel_search_changed (int selected)
 {
@@ -216,7 +216,7 @@ void
 find_dialog::handle_sel_search_changed (int /* selected */) { }
 #endif
 
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
 void
 find_dialog::handle_selection_changed (bool has_selected)
 {
@@ -326,7 +326,7 @@ find_dialog::find (bool forward)
       if (_edit_area->hasSelectedText ()
           && _search_selection_check_box->isChecked ())
         {
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
            if (_find_result_available)
              _find_result_available = _edit_area->findNext ();
            else
@@ -338,7 +338,7 @@ find_dialog::find (bool forward)
                                       _whole_words_check_box->isChecked (),
                                       do_forward,
                                       true
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
                                       , true
 #endif
                                       );
@@ -355,7 +355,7 @@ find_dialog::find (bool forward)
                                     do_forward,
                                     line,col,
                                     true
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
                                     , true
 #endif
                                     );

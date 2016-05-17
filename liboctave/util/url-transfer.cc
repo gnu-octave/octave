@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 // Author: Alexander Barth <abarth@marine.usf.edu>
 // Author: jwe
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "url-transfer.h"
 
-#ifdef HAVE_CURL
+#if defined (HAVE_CURL)
 #  include <curl/curl.h>
 #  include <curl/curlver.h>
 #  include <curl/easy.h>

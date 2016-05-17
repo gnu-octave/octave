@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -183,7 +183,7 @@ octave_char_matrix::as_mxArray (void) const
 // functions are int (*) (int), even in C++.  Wicked!
 static inline int xisascii (int c)
 {
-#ifdef HAVE_ISASCII
+#if defined (HAVE_ISASCII)
   return isascii (c);
 #else
   return (c >= 0x00 && c <= 0x7f);
@@ -192,7 +192,7 @@ static inline int xisascii (int c)
 
 static inline int xtoascii (int c)
 {
-#ifdef HAVE_TOASCII
+#if defined (HAVE_TOASCII)
   return toascii (c);
 #else
   return (c & 0x7F);

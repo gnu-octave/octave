@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 #include <cstdlib>
 
-#ifndef OCTAVE_PREFIX
+#if ! defined (OCTAVE_PREFIX)
 #  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 

@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -225,7 +225,7 @@ extern "C"
                              FloatComplex*, const octave_idx_type&,
                              octave_idx_type&);
 
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
   F77_RET_T
   F77_FUNC (cqr1up, CQR1UP) (const octave_idx_type&, const octave_idx_type&,
@@ -1051,7 +1051,7 @@ qr<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
   form (n, afact, tau, qr_type);
 }
 
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
 template <>
 void
@@ -1777,7 +1777,7 @@ qr<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
   form (n, afact, tau, qr_type);
 }
 
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
 template <>
 void

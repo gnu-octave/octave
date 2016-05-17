@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "variables.h"
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 static bool Vdebug_jit = false;
 
@@ -52,7 +52,7 @@ static int Vjit_failcnt = 0;
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
 
-#ifdef HAVE_LLVM_IR_VERIFIER_H
+#if defined (HAVE_LLVM_IR_VERIFIER_H)
 #  include <llvm/IR/Verifier.h>
 #else
 #  include <llvm/Analysis/Verifier.h>
@@ -62,13 +62,13 @@ static int Vjit_failcnt = 0;
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
 
-#ifdef LEGACY_PASSMANAGER
+#if defined (LEGACY_PASSMANAGER)
 #  include <llvm/IR/LegacyPassManager.h>
 #else
 #  include <llvm/PassManager.h>
 #endif
 
-#ifdef HAVE_LLVM_IR_FUNCTION_H
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
 #  include <llvm/IR/LLVMContext.h>
 #  include <llvm/IR/Module.h>
 #else
@@ -76,7 +76,7 @@ static int Vjit_failcnt = 0;
 #  include <llvm/Module.h>
 #endif
 
-#ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
+#if defined (HAVE_LLVM_SUPPORT_IRBUILDER_H)
 #  include <llvm/Support/IRBuilder.h>
 #elif defined(HAVE_LLVM_IR_IRBUILDER_H)
 #  include <llvm/IR/IRBuilder.h>
@@ -87,7 +87,7 @@ static int Vjit_failcnt = 0;
 #include <llvm/Support/raw_os_ostream.h>
 #include <llvm/Support/TargetSelect.h>
 
-#ifdef HAVE_LLVM_IR_DATALAYOUT_H
+#if defined (HAVE_LLVM_IR_DATALAYOUT_H)
 #  include <llvm/IR/DataLayout.h>
 #elif defined(HAVE_LLVM_DATALAYOUT_H)
 #  include <llvm/DataLayout.h>
@@ -2068,7 +2068,7 @@ tree_jit::initialize (void)
   if (! engine)
     return false;
 
-#ifdef LEGACY_PASSMANAGER
+#if defined (LEGACY_PASSMANAGER)
   module_pass_manager = new llvm::legacy::PassManager ();
   pass_manager = new llvm::legacy::FunctionPassManager (module);
 #else
@@ -2077,7 +2077,7 @@ tree_jit::initialize (void)
 #endif
   module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 
-#ifdef HAVE_LLVM_DATALAYOUT
+#if defined (HAVE_LLVM_DATALAYOUT)
   pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
 #else
   pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));
@@ -2191,7 +2191,7 @@ tree_jit::optimize (llvm::Function *fn)
   if (Vdebug_jit)
     {
       std::string error;
-#ifdef RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS
+#if defined (RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS)
       llvm::raw_fd_ostream fout ("test.bc", error,
                                  llvm::sys::fs::F_Binary);
 #else

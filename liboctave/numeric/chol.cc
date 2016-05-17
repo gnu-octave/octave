@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -70,7 +70,7 @@ extern "C"
                              double&, double*, octave_idx_type*,
                              octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
   F77_RET_T
   F77_FUNC (dch1up, DCH1UP) (const octave_idx_type&, double*,
@@ -116,7 +116,7 @@ extern "C"
                              float&, float*, octave_idx_type*,
                              octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
   F77_RET_T
   F77_FUNC (sch1up, SCH1UP) (const octave_idx_type&, float*,
@@ -160,7 +160,7 @@ extern "C"
                              const octave_idx_type&, const double&,
                              double&, Complex*, double*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
   F77_RET_T
   F77_FUNC (zch1up, ZCH1UP) (const octave_idx_type&, Complex*,
@@ -204,7 +204,7 @@ extern "C"
                              const octave_idx_type&, const float&,
                              float&, FloatComplex*, float*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
   F77_RET_T
   F77_FUNC (cch1up, CCH1UP) (const octave_idx_type&, FloatComplex*,
@@ -835,7 +835,7 @@ chol<FloatMatrix>::init (const FloatMatrix& a, bool upper, bool calc_cond)
   return info;
 }
 
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
 template <>
 void
@@ -1003,7 +1003,7 @@ chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
   return info;
 }
 
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
 template <>
 void
@@ -1174,7 +1174,7 @@ chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
   return info;
 }
 
-#ifdef HAVE_QRUPDATE
+#if defined (HAVE_QRUPDATE)
 
 template <>
 void

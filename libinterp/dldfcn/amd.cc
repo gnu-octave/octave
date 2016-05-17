@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 // This is the octave interface to amd, which bore the copyright given
 // in the help of the functions.
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -85,7 +85,7 @@ The author of the code itself is Timothy A. Davis\n\
 @seealso{symamd, colamd}\n\
 @end deftypefn")
 {
-#ifdef HAVE_AMD
+#if defined (HAVE_AMD)
 
   int nargin = args.length ();
 

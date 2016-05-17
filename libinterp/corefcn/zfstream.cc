@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "zfstream.h"
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
 // For strcpy, strcat, strlen (mode strings).
 #include <cstring>

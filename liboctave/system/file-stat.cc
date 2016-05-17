@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
@@ -85,7 +85,7 @@ base_file_stat::is_sock (void) const
 bool
 base_file_stat::is_blk (mode_t mode)
 {
-#ifdef S_ISBLK
+#if defined (S_ISBLK)
   return S_ISBLK (mode);
 #else
   return false;
@@ -95,7 +95,7 @@ base_file_stat::is_blk (mode_t mode)
 bool
 base_file_stat::is_chr (mode_t mode)
 {
-#ifdef S_ISCHR
+#if defined (S_ISCHR)
   return S_ISCHR (mode);
 #else
   return false;
@@ -105,7 +105,7 @@ base_file_stat::is_chr (mode_t mode)
 bool
 base_file_stat::is_dir (mode_t mode)
 {
-#ifdef S_ISDIR
+#if defined (S_ISDIR)
   return S_ISDIR (mode);
 #else
   return false;
@@ -115,7 +115,7 @@ base_file_stat::is_dir (mode_t mode)
 bool
 base_file_stat::is_fifo (mode_t mode)
 {
-#ifdef S_ISFIFO
+#if defined (S_ISFIFO)
   return S_ISFIFO (mode);
 #else
   return false;
@@ -125,7 +125,7 @@ base_file_stat::is_fifo (mode_t mode)
 bool
 base_file_stat::is_lnk (mode_t mode)
 {
-#ifdef S_ISLNK
+#if defined (S_ISLNK)
   return S_ISLNK (mode);
 #else
   return false;
@@ -135,7 +135,7 @@ base_file_stat::is_lnk (mode_t mode)
 bool
 base_file_stat::is_reg (mode_t mode)
 {
-#ifdef S_ISREG
+#if defined (S_ISREG)
   return S_ISREG (mode);
 #else
   return false;
@@ -145,7 +145,7 @@ base_file_stat::is_reg (mode_t mode)
 bool
 base_file_stat::is_sock (mode_t mode)
 {
-#ifdef S_ISSOCK
+#if defined (S_ISSOCK)
   return S_ISSOCK (mode);
 #else
   return false;

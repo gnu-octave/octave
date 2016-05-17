@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define YYDEBUG 1
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "config.h"
 #endif
 
@@ -93,9 +93,9 @@ octave_base_lexer *LEXER = 0;
 // Calls to the following functions appear in the generated output from
 // Bison without the namespace tag.  Redefine them so we will use them
 // via the gnulib namespace.
-#define fclose GNULIB_NAMESPACE::fclose
-#define fprintf GNULIB_NAMESPACE::fprintf
-#define malloc GNULIB_NAMESPACE::malloc
+#  define fclose GNULIB_NAMESPACE::fclose
+#  define fprintf GNULIB_NAMESPACE::fprintf
+#  define malloc GNULIB_NAMESPACE::malloc
 #endif
 
 // TRUE means we printed messages about reading startup files.

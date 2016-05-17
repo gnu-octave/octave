@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -37,15 +37,15 @@ extern "C" {
 #  include <sys/wait.h>
 #endif
 
-#ifndef WIFEXITED
+#if ! defined (WIFEXITED)
 #  define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
 #endif
 
-#ifndef WEXITSTATUS
+#if ! defined (WEXITSTATUS)
 #  define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
 #endif
 
-#ifndef WIFSIGNALLED
+#if ! defined (WIFSIGNALLED)
 #  define WIFSIGNALLED(stat_val) \
           (((stat_val) & 0177) != 0177 && ((stat_val) & 0177) != 0)
 #endif
@@ -60,7 +60,7 @@ extern "C" {
 #  define WAITPID(a, b, c) waitpid (a, b, c)
 #endif
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

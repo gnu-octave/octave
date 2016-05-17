@@ -119,7 +119,7 @@ octave_integer::print (std::ostream& os, bool pr_as_read_syntax)
   newline (os);
 }
 
-#ifdef DEFUNOP_OP
+#if defined (DEFUNOP_OP)
 #undef DEFUNOP_OP
 #endif
 
@@ -139,7 +139,7 @@ DEFUNOP_OP (hermitian, integer, /* no-op */)
 DEFNCUNOP_METHOD (incr, integer, increment)
 DEFNCUNOP_METHOD (decr, integer, decrement)
 
-#ifdef DEFBINOP_OP
+#if defined (DEFBINOP_OP)
 #undef DEFBINOP_OP
 #endif
 

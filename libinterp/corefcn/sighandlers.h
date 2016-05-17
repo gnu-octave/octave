@@ -50,11 +50,11 @@ typedef void sig_handler (int);
 struct
 octave_interrupt_handler
 {
-#ifdef SIGINT
+#if defined (SIGINT)
   sig_handler *int_handler;
 #endif
 
-#ifdef SIGBREAK
+#if defined (SIGBREAK)
   sig_handler *brk_handler;
 #endif
 };

@@ -55,11 +55,6 @@ NUMERIC_INC = \
   liboctave/numeric/sparse-qr.h \
   liboctave/numeric/svd.h
 
-NUMERIC_C_SRC = \
-  liboctave/numeric/randgamma.c \
-  liboctave/numeric/randmtzig.c \
-  liboctave/numeric/randpoisson.c
-
 NUMERIC_SRC = \
   liboctave/numeric/CollocWt.cc \
   liboctave/numeric/DASPK.cc \
@@ -85,13 +80,15 @@ NUMERIC_SRC = \
   liboctave/numeric/oct-spparms.cc \
   liboctave/numeric/qr.cc \
   liboctave/numeric/qrp.cc \
+  liboctave/numeric/randgamma.cc \
+  liboctave/numeric/randmtzig.cc \
+  liboctave/numeric/randpoisson.cc \
   liboctave/numeric/schur.cc \
   liboctave/numeric/sparse-chol.cc \
   liboctave/numeric/sparse-dmsolve.cc \
   liboctave/numeric/sparse-lu.cc \
   liboctave/numeric/sparse-qr.cc \
-  liboctave/numeric/svd.cc \
-  $(NUMERIC_C_SRC)
+  liboctave/numeric/svd.cc
 
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/numeric/bsxfun-defs.cc

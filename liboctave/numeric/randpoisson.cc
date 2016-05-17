@@ -35,8 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <stdio.h>
-
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
@@ -109,7 +107,7 @@ flogfak (double k)
       return ((k + 0.5)*log (k) - k + C0 + r*(C1 + rr*(C3 + rr*(C5 + rr*C7))));
     }
   else
-    return (logfak[(int)k]);
+    return (logfak[static_cast<int> (k)]);
 }
 
 
@@ -317,7 +315,7 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
 
   /* Precompute the table for the u up to and including 0.458.
    * We will almost certainly need it. */
-  int intlambda = (int)floor (lambda);
+  int intlambda = static_cast<int> (floor (lambda));
   double P;
   int tableidx;
   size_t i = n;
@@ -325,7 +323,7 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
   t[0] = P = exp (-lambda);
   for (tableidx = 1; tableidx <= intlambda; tableidx++)
     {
-      P = P*lambda/(double)tableidx;
+      P = P*lambda/static_cast<double> (tableidx);
       t[tableidx] = t[tableidx-1] + P;
     }
 
@@ -347,7 +345,7 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
     nextk:
       if (u <= t[k])
         {
-          p[i] = (double) k;
+          p[i] = static_cast<double> (k);
           continue;
         }
       if (++k < tableidx)
@@ -357,7 +355,7 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
        * don't automatically compute the entire table. */
       while (tableidx < TABLESIZE)
         {
-          P = P*lambda/(double)tableidx;
+          P = P*lambda/static_cast<double> (tableidx);
           t[tableidx] = t[tableidx-1] + P;
           /* Make sure we converge to 1.0 just in case u is uniform
            * on [0,1] rather than [0,1). */
@@ -369,7 +367,7 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
       /* We are assuming that the table size is big enough here.
        * This should be true even if RUNI is returning values in
        * the range [0,1] rather than [0,1). */
-      p[i] = (double)(tableidx-1);
+      p[i] = static_cast<double> (tableidx-1);
     }
 }
 
@@ -380,7 +378,7 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
 
   /* Precompute the table for the u up to and including 0.458.
    * We will almost certainly need it. */
-  int intlambda = (int)floor (lambda);
+  int intlambda = static_cast<int> (floor (lambda));
   double P;
   int tableidx;
   size_t i = n;
@@ -388,7 +386,7 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
   t[0] = P = exp (-lambda);
   for (tableidx = 1; tableidx <= intlambda; tableidx++)
     {
-      P = P*lambda/(double)tableidx;
+      P = P*lambda/static_cast<double> (tableidx);
       t[tableidx] = t[tableidx-1] + P;
     }
 
@@ -399,7 +397,7 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
     nextk:
       if (u <= t[k])
         {
-          p[i] = (float) k;
+          p[i] = static_cast<float> (k);
           continue;
         }
       if (++k < tableidx)
@@ -407,14 +405,14 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
 
       while (tableidx < TABLESIZE)
         {
-          P = P*lambda/(double)tableidx;
+          P = P*lambda/static_cast<double> (tableidx);
           t[tableidx] = t[tableidx-1] + P;
           if (t[tableidx] == t[tableidx-1]) t[tableidx] = 1.0;
           tableidx++;
           if (u <= t[tableidx-1]) break;
         }
 
-      p[i] = (float)(tableidx-1);
+      p[i] = static_cast<float> (tableidx-1);
     }
 }
 

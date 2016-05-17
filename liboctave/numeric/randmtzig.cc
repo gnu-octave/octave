@@ -156,8 +156,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <stdio.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 
 #ifdef HAVE_GETTIMEOFDAY
 #  include <sys/time.h>
@@ -269,21 +269,21 @@ oct_init_by_entropy (void)
           unsigned char word[4];
           if (fread (word, 4, 1, urandom) != 1)
             break;
-          entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+((uint32_t)word[3]<<24);
+          entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(static_cast<uint32_t>(word[3])<<24);
         }
       fclose (urandom);
     }
 
   /* If there isn't enough entropy, gather some from various sources */
   if (n < MT_N)
-    entropy[n++] = time (NULL); /* Current time in seconds */
+    entropy[n++] = time (0); /* Current time in seconds */
   if (n < MT_N)
     entropy[n++] = clock ();    /* CPU time used (usec) */
 #ifdef HAVE_GETTIMEOFDAY
   if (n < MT_N)
     {
       struct timeval tv;
-      if (gettimeofday (&tv, NULL) != -1)
+      if (gettimeofday (&tv, 0) != -1)
         entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
     }
 #endif
@@ -369,7 +369,7 @@ randi53 (void)
   p[1] = hi;
   return u;
 #else
-  return (( (uint64_t)hi << 32) | lo);
+  return ((static_cast<uint64_t> (hi) << 32) | lo);
 #endif
 }
 
@@ -380,12 +380,12 @@ randi54 (void)
   const uint32_t hi = randi32 () & 0x3FFFFF;
 #ifdef HAVE_X86_32
   uint64_t u;
-  uint32_t *p = (uint32_t *)&u;
+  uint32_t *p = static_cast<uint32_t *> (&u);
   p[0] = lo;
   p[1] = hi;
   return u;
 #else
-  return (( (uint64_t)hi << 32 ) | lo);
+  return ((static_cast<uint64_t> (hi) << 32) | lo);
 #endif
 }
 
@@ -393,7 +393,7 @@ randi54 (void)
 static float
 randu32 (void)
 {
-  return ((float)randi32 () + 0.5) * (1.0/4294967296.0);
+  return (static_cast<float> (randi32 ()) + 0.5) * (1.0/4294967296.0);
   /* divided by 2^32 */
 }
 
@@ -498,7 +498,7 @@ create_ziggurat_tables (void)
    * k_0 = 2^31 * r * f(r) / v, w_0 = 0.5^31 * v / f(r), f_0 = 1,
    * where v is the area of each strip of the ziggurat.
    */
-  ki[0] = (ZIGINT) (x1 * fi[255] / NOR_SECTION_AREA * NMANTISSA);
+  ki[0] = static_cast<ZIGINT> (x1 * fi[255] / NOR_SECTION_AREA * NMANTISSA);
   wi[0] = NOR_SECTION_AREA / fi[255] / NMANTISSA;
   fi[0] = 1.;
 
@@ -508,7 +508,7 @@ create_ziggurat_tables (void)
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
       x = sqrt (-2. * log (NOR_SECTION_AREA / x1 + fi[i+1]));
-      ki[i+1] = (ZIGINT)(x / x1 * NMANTISSA);
+      ki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       wi[i] = x / NMANTISSA;
       fi[i] = exp (-0.5 * x * x);
       x1 = x;
@@ -526,7 +526,7 @@ create_ziggurat_tables (void)
    * k_0 = 2^32 * r * f(r) / v, w_0 = 0.5^32 * v / f(r), f_0 = 1,
    * where v is the area of each strip of the ziggurat.
    */
-  ke[0] = (ZIGINT) (x1 * fe[255] / EXP_SECTION_AREA * EMANTISSA);
+  ke[0] = static_cast<ZIGINT> (x1 * fe[255] / EXP_SECTION_AREA * EMANTISSA);
   we[0] = EXP_SECTION_AREA / fe[255] / EMANTISSA;
   fe[0] = 1.;
 
@@ -536,7 +536,7 @@ create_ziggurat_tables (void)
        * need inverse operator of y = exp(-x) -> x = -ln(y)
        */
       x = - log (EXP_SECTION_AREA / x1 + fe[i+1]);
-      ke[i+1] = (ZIGINT)(x / x1 * EMANTISSA);
+      ke[i+1] = static_cast<ZIGINT> (x / x1 * EMANTISSA);
       we[i] = x / EMANTISSA;
       fe[i] = exp (-x);
       x1 = x;
@@ -595,10 +595,10 @@ oct_randn (void)
       /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
       const uint64_t r = NRANDI;
       const int64_t rabs = r >> 1;
-      const int idx = (int)(rabs & 0xFF);
+      const int idx = static_cast<int> (rabs & 0xFF);
       const double x = ( (r & 1) ? -rabs : rabs) * wi[idx];
 # endif /* ! HAVE_X86_32 */
-      if (rabs < (int64_t)ki[idx])
+      if (rabs < static_cast<int64_t> (ki[idx]))
         return x;        /* 99.3% of the time we return here 1st try */
       else if (idx == 0)
         {
@@ -635,7 +635,7 @@ oct_rande (void)
   while (1)
     {
       ZIGINT ri = ERANDI;
-      const int idx = (int)(ri & 0xFF);
+      const int idx = static_cast<int> (ri & 0xFF);
       const double x = ri * we[idx];
       if (ri < ke[idx])
         return x;               /* 98.9% of the time we return here 1st try */
@@ -689,7 +689,7 @@ create_ziggurat_float_tables (void)
    * k_0 = 2^31 * r * f(r) / v, w_0 = 0.5^31 * v / f(r), f_0 = 1,
    * where v is the area of each strip of the ziggurat.
    */
-  fki[0] = (ZIGINT) (x1 * ffi[255] / NOR_SECTION_AREA * NMANTISSA);
+  fki[0] = static_cast<ZIGINT> (x1 * ffi[255] / NOR_SECTION_AREA * NMANTISSA);
   fwi[0] = NOR_SECTION_AREA / ffi[255] / NMANTISSA;
   ffi[0] = 1.;
 
@@ -699,7 +699,7 @@ create_ziggurat_float_tables (void)
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
       x = sqrt (-2. * log (NOR_SECTION_AREA / x1 + ffi[i+1]));
-      fki[i+1] = (ZIGINT)(x / x1 * NMANTISSA);
+      fki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       fwi[i] = x / NMANTISSA;
       ffi[i] = exp (-0.5 * x * x);
       x1 = x;
@@ -717,7 +717,7 @@ create_ziggurat_float_tables (void)
    * k_0 = 2^32 * r * f(r) / v, w_0 = 0.5^32 * v / f(r), f_0 = 1,
    * where v is the area of each strip of the ziggurat.
    */
-  fke[0] = (ZIGINT) (x1 * ffe[255] / EXP_SECTION_AREA * EMANTISSA);
+  fke[0] = static_cast<ZIGINT> (x1 * ffe[255] / EXP_SECTION_AREA * EMANTISSA);
   fwe[0] = EXP_SECTION_AREA / ffe[255] / EMANTISSA;
   ffe[0] = 1.;
 
@@ -727,7 +727,7 @@ create_ziggurat_float_tables (void)
        * need inverse operator of y = exp(-x) -> x = -ln(y)
        */
       x = - log (EXP_SECTION_AREA / x1 + ffe[i+1]);
-      fke[i+1] = (ZIGINT)(x / x1 * EMANTISSA);
+      fke[i+1] = static_cast<ZIGINT> (x / x1 * EMANTISSA);
       fwe[i] = x / EMANTISSA;
       ffe[i] = exp (-x);
       x1 = x;
@@ -763,8 +763,8 @@ oct_float_randn (void)
       /* 32-bit mantissa */
       const uint32_t r = randi32 ();
       const uint32_t rabs = r & LMASK;
-      const int idx = (int)(r & 0xFF);
-      const float x = ((int32_t)r) * fwi[idx];
+      const int idx = static_cast<int> (r & 0xFF);
+      const float x = static_cast<int32_t> (r) * fwi[idx];
       if (rabs < fki[idx])
         return x;        /* 99.3% of the time we return here 1st try */
       else if (idx == 0)
@@ -802,7 +802,7 @@ oct_float_rande (void)
   while (1)
     {
       ZIGINT ri = ERANDI;
-      const int idx = (int)(ri & 0xFF);
+      const int idx = static_cast<int> (ri & 0xFF);
       const float x = ri * fwe[idx];
       if (ri < fke[idx])
         return x;               /* 98.9% of the time we return here 1st try */

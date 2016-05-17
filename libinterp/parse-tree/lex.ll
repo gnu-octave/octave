@@ -1258,7 +1258,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 (set|get){S}*\( {
-    HANDLE_IDENTIFIER ("(set|get)/{S}*\\(", true);
+    HANDLE_IDENTIFIER ("(set|get){S}*\\(", true);
   }
 
 {IDENT} {

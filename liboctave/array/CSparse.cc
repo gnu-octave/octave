@@ -1057,7 +1057,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 
 SparseComplexMatrix
 SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
-                              double& rcond, int, int calc_cond) const
+                              double& rcond, bool, bool calc_cond) const
 {
   int typ = mattype.type (false);
   SparseComplexMatrix ret;
@@ -1138,7 +1138,7 @@ SparseComplexMatrix::determinant (octave_idx_type& info) const
 
 ComplexDET
 SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
-                                  int) const
+                                  bool) const
 {
   ComplexDET retval;
 

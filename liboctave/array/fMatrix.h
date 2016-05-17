@@ -153,21 +153,21 @@ public:
 
 private:
   FloatMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
-                        float& rcon, int force, int calc_cond) const;
+                        float& rcon, bool force, bool calc_cond) const;
 
   FloatMatrix finverse (MatrixType &mattype, octave_idx_type& info,
-                        float& rcon, int force, int calc_cond) const;
+                        float& rcon, bool force, bool calc_cond) const;
 
 public:
   FloatMatrix inverse (void) const;
   FloatMatrix inverse (octave_idx_type& info) const;
-  FloatMatrix inverse (octave_idx_type& info, float& rcon, int force = 0,
-                       int calc_cond = 1) const;
+  FloatMatrix inverse (octave_idx_type& info, float& rcon, bool force = false,
+                       bool calc_cond = true) const;
 
   FloatMatrix inverse (MatrixType &mattype) const;
   FloatMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   FloatMatrix inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
-                       int force = 0, int calc_cond = 1) const;
+                       bool force = false, bool calc_cond = true) const;
 
   FloatMatrix pseudo_inverse (float tol = 0.0) const;
 
@@ -180,9 +180,9 @@ public:
   FloatDET determinant (void) const;
   FloatDET determinant (octave_idx_type& info) const;
   FloatDET determinant (octave_idx_type& info, float& rcon,
-                        int calc_cond = 1) const;
+                        bool calc_cond = true) const;
   FloatDET determinant (MatrixType &mattype, octave_idx_type& info,
-                        float& rcon, int calc_cond = 1) const;
+                        float& rcon, bool calc_cond = true) const;
 
   float rcond (void) const;
   float rcond (MatrixType &mattype) const;

@@ -164,12 +164,13 @@ public:
   SparseMatrix inverse (MatrixType& mattype) const;
   SparseMatrix inverse (MatrixType& mattype, octave_idx_type& info) const;
   SparseMatrix inverse (MatrixType& mattype, octave_idx_type& info,
-                        double& rcond, int force = 0, int calc_cond = 1) const;
+                        double& rcond, bool force = false,
+                        bool calc_cond = true) const;
 
   DET determinant (void) const;
   DET determinant (octave_idx_type& info) const;
   DET determinant (octave_idx_type& info, double& rcond,
-                   int calc_cond = 1) const;
+                   bool calc_cond = true) const;
 
 private:
   // Diagonal matrix solvers

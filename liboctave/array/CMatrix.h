@@ -189,22 +189,22 @@ public:
 
 private:
   ComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
-                          double& rcon, int force, int calc_cond) const;
+                          double& rcon, bool force, bool calc_cond) const;
 
   ComplexMatrix finverse (MatrixType &mattype, octave_idx_type& info,
-                          double& rcon, int force, int calc_cond) const;
+                          double& rcon, bool force, bool calc_cond) const;
 
 public:
   ComplexMatrix inverse (void) const;
   ComplexMatrix inverse (octave_idx_type& info) const;
-  ComplexMatrix inverse (octave_idx_type& info, double& rcon, int force = 0,
-                         int calc_cond = 1) const;
+  ComplexMatrix inverse (octave_idx_type& info, double& rcon,
+                         bool force = false, bool calc_cond = true) const;
 
   ComplexMatrix inverse (MatrixType &mattype) const;
   ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,
-                         double& rcon, int force = 0,
-                         int calc_cond = 1) const;
+                         double& rcon, bool force = false,
+                         bool calc_cond = true) const;
 
   ComplexMatrix pseudo_inverse (double tol = 0.0) const;
 
@@ -217,9 +217,9 @@ public:
   ComplexDET determinant (void) const;
   ComplexDET determinant (octave_idx_type& info) const;
   ComplexDET determinant (octave_idx_type& info, double& rcon,
-                          int calc_cond = 1) const;
+                          bool calc_cond = true) const;
   ComplexDET determinant (MatrixType &mattype, octave_idx_type& info,
-                          double& rcon, int calc_cond = 1) const;
+                          double& rcon, bool calc_cond = true) const;
 
   double rcond (void) const;
   double rcond (MatrixType &mattype) const;

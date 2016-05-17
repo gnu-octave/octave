@@ -939,8 +939,8 @@ FloatComplexMatrix::inverse (octave_idx_type& info) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::inverse (octave_idx_type& info, float& rcon, int force,
-                             int calc_cond) const
+FloatComplexMatrix::inverse (octave_idx_type& info, float& rcon, bool force,
+                             bool calc_cond) const
 {
   MatrixType mattype (*this);
   return inverse (mattype, info, rcon, force, calc_cond);
@@ -963,7 +963,7 @@ FloatComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 
 FloatComplexMatrix
 FloatComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
-                              float& rcon, int force, int calc_cond) const
+                              float& rcon, bool force, bool calc_cond) const
 {
   FloatComplexMatrix retval;
 
@@ -1018,7 +1018,7 @@ FloatComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 
 FloatComplexMatrix
 FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
-                              float& rcon, int force, int calc_cond) const
+                              float& rcon, bool force, bool calc_cond) const
 {
   FloatComplexMatrix retval;
 
@@ -1098,7 +1098,7 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
 FloatComplexMatrix
 FloatComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
-                             float& rcon, int force, int calc_cond) const
+                             float& rcon, bool force, bool calc_cond) const
 {
   int typ = mattype.type (false);
   FloatComplexMatrix ret;
@@ -1520,7 +1520,7 @@ FloatComplexMatrix::determinant (octave_idx_type& info) const
 
 FloatComplexDET
 FloatComplexMatrix::determinant (octave_idx_type& info, float& rcon,
-                                 int calc_cond) const
+                                 bool calc_cond) const
 {
   MatrixType mattype (*this);
   return determinant (mattype, info, rcon, calc_cond);
@@ -1529,7 +1529,7 @@ FloatComplexMatrix::determinant (octave_idx_type& info, float& rcon,
 FloatComplexDET
 FloatComplexMatrix::determinant (MatrixType& mattype,
                                  octave_idx_type& info, float& rcon,
-                                 int calc_cond) const
+                                 bool calc_cond) const
 {
   FloatComplexDET retval (1.0);
 
@@ -3778,13 +3778,13 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      int columns_are_real_only = 1;
+      bool columns_are_real_only = true;
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
           if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
-              columns_are_real_only = 0;
+              columns_are_real_only = false;
               break;
             }
         }
@@ -3863,13 +3863,13 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      int columns_are_real_only = 1;
+      bool columns_are_real_only = true;
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
           if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
-              columns_are_real_only = 0;
+              columns_are_real_only = false;
               break;
             }
         }

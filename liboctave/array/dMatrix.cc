@@ -625,8 +625,8 @@ Matrix::inverse (octave_idx_type& info) const
 }
 
 Matrix
-Matrix::inverse (octave_idx_type& info, double& rcon, int force,
-                 int calc_cond) const
+Matrix::inverse (octave_idx_type& info, double& rcon, bool force,
+                 bool calc_cond) const
 {
   MatrixType mattype (*this);
   return inverse (mattype, info, rcon, force, calc_cond);
@@ -649,7 +649,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 
 Matrix
 Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                  int force, int calc_cond) const
+                  bool force, bool calc_cond) const
 {
   Matrix retval;
 
@@ -705,7 +705,7 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 
 Matrix
 Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                  int force, int calc_cond) const
+                  bool force, bool calc_cond) const
 {
   Matrix retval;
 
@@ -785,7 +785,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 
 Matrix
 Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                 int force, int calc_cond) const
+                 bool force, bool calc_cond) const
 {
   int typ = mattype.type (false);
   Matrix ret;
@@ -1202,7 +1202,7 @@ Matrix::determinant (octave_idx_type& info) const
 }
 
 DET
-Matrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) const
+Matrix::determinant (octave_idx_type& info, double& rcon, bool calc_cond) const
 {
   MatrixType mattype (*this);
   return determinant (mattype, info, rcon, calc_cond);
@@ -1210,7 +1210,7 @@ Matrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) const
 
 DET
 Matrix::determinant (MatrixType& mattype,
-                     octave_idx_type& info, double& rcon, int calc_cond) const
+                     octave_idx_type& info, double& rcon, bool calc_cond) const
 {
   DET retval (1.0);
 

@@ -1147,7 +1147,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 
 SparseMatrix
 SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
-                       double& rcond, int, int calc_cond) const
+                       double& rcond, bool, bool calc_cond) const
 {
   int typ = mattype.type (false);
   SparseMatrix ret;
@@ -1224,7 +1224,7 @@ SparseMatrix::determinant (octave_idx_type& info) const
 }
 
 DET
-SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
+SparseMatrix::determinant (octave_idx_type& err, double& rcond, bool) const
 {
   DET retval;
 

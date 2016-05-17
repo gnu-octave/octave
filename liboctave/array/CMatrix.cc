@@ -933,8 +933,8 @@ ComplexMatrix::inverse (octave_idx_type& info) const
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (octave_idx_type& info, double& rcon, int force,
-                        int calc_cond) const
+ComplexMatrix::inverse (octave_idx_type& info, double& rcon, bool force,
+                        bool calc_cond) const
 {
   MatrixType mattype (*this);
   return inverse (mattype, info, rcon, force, calc_cond);
@@ -957,7 +957,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 
 ComplexMatrix
 ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
-                         double& rcon, int force, int calc_cond) const
+                         double& rcon, bool force, bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1012,7 +1012,7 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 
 ComplexMatrix
 ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
-                         double& rcon, int force, int calc_cond) const
+                         double& rcon, bool force, bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1095,7 +1095,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
 ComplexMatrix
 ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
-                        double& rcon, int force, int calc_cond) const
+                        double& rcon, bool force, bool calc_cond) const
 {
   int typ = mattype.type (false);
   ComplexMatrix ret;
@@ -1519,7 +1519,7 @@ ComplexMatrix::determinant (octave_idx_type& info) const
 
 ComplexDET
 ComplexMatrix::determinant (octave_idx_type& info, double& rcon,
-                            int calc_cond) const
+                            bool calc_cond) const
 {
   MatrixType mattype (*this);
   return determinant (mattype, info, rcon, calc_cond);
@@ -1528,7 +1528,7 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcon,
 ComplexDET
 ComplexMatrix::determinant (MatrixType& mattype,
                             octave_idx_type& info, double& rcon,
-                            int calc_cond) const
+                            bool calc_cond) const
 {
   ComplexDET retval (1.0);
 
@@ -3762,13 +3762,13 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      int columns_are_real_only = 1;
+      bool columns_are_real_only = true;
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
           if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
-              columns_are_real_only = 0;
+              columns_are_real_only = false;
               break;
             }
         }
@@ -3847,13 +3847,13 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      int columns_are_real_only = 1;
+      bool columns_are_real_only = true;
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
           if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
-              columns_are_real_only = 0;
+              columns_are_real_only = false;
               break;
             }
         }

@@ -149,21 +149,21 @@ public:
 
 private:
   Matrix tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                   int force, int calc_cond) const;
+                   bool force, bool calc_cond) const;
 
   Matrix finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                   int force, int calc_cond) const;
+                   bool force, bool calc_cond) const;
 
 public:
   Matrix inverse (void) const;
   Matrix inverse (octave_idx_type& info) const;
-  Matrix inverse (octave_idx_type& info, double& rcon, int force = 0,
-                  int calc_cond = 1) const;
+  Matrix inverse (octave_idx_type& info, double& rcon, bool force = false,
+                  bool calc_cond = true) const;
 
   Matrix inverse (MatrixType &mattype) const;
   Matrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   Matrix inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                  int force = 0, int calc_cond = 1) const;
+                  bool force = false, bool calc_cond = true) const;
 
   Matrix pseudo_inverse (double tol = 0.0) const;
 
@@ -176,9 +176,9 @@ public:
   DET determinant (void) const;
   DET determinant (octave_idx_type& info) const;
   DET determinant (octave_idx_type& info, double& rcon,
-                   int calc_cond = 1) const;
+                   bool calc_cond = true) const;
   DET determinant (MatrixType &mattype, octave_idx_type& info,
-                   double& rcon, int calc_cond = 1) const;
+                   double& rcon, bool calc_cond = true) const;
 
   double rcond (void) const;
   double rcond (MatrixType &mattype) const;

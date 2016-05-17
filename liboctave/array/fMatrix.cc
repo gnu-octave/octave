@@ -632,8 +632,8 @@ FloatMatrix::inverse (octave_idx_type& info) const
 }
 
 FloatMatrix
-FloatMatrix::inverse (octave_idx_type& info, float& rcon, int force,
-                      int calc_cond) const
+FloatMatrix::inverse (octave_idx_type& info, float& rcon, bool force,
+                      bool calc_cond) const
 {
   MatrixType mattype (*this);
   return inverse (mattype, info, rcon, force, calc_cond);
@@ -656,7 +656,7 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 
 FloatMatrix
 FloatMatrix::tinverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
-                       int force, int calc_cond) const
+                       bool force, bool calc_cond) const
 {
   FloatMatrix retval;
 
@@ -712,7 +712,7 @@ FloatMatrix::tinverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 
 FloatMatrix
 FloatMatrix::finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
-                       int force, int calc_cond) const
+                       bool force, bool calc_cond) const
 {
   FloatMatrix retval;
 
@@ -792,7 +792,7 @@ FloatMatrix::finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 
 FloatMatrix
 FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
-                      int force, int calc_cond) const
+                      bool force, bool calc_cond) const
 {
   int typ = mattype.type (false);
   FloatMatrix ret;
@@ -1212,7 +1212,7 @@ FloatMatrix::determinant (octave_idx_type& info) const
 
 FloatDET
 FloatMatrix::determinant (octave_idx_type& info, float& rcon,
-                          int calc_cond) const
+                          bool calc_cond) const
 {
   MatrixType mattype (*this);
   return determinant (mattype, info, rcon, calc_cond);
@@ -1221,7 +1221,7 @@ FloatMatrix::determinant (octave_idx_type& info, float& rcon,
 FloatDET
 FloatMatrix::determinant (MatrixType& mattype,
                           octave_idx_type& info, float& rcon,
-                          int calc_cond) const
+                          bool calc_cond) const
 {
   FloatDET retval (1.0);
 

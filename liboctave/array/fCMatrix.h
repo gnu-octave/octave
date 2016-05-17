@@ -194,22 +194,22 @@ public:
 
 private:
   FloatComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
-                               float& rcon, int force, int calc_cond) const;
+                               float& rcon, bool force, bool calc_cond) const;
 
   FloatComplexMatrix finverse (MatrixType &mattype, octave_idx_type& info,
-                               float& rcon, int force, int calc_cond) const;
+                               float& rcon, bool force, bool calc_cond) const;
 
 public:
   FloatComplexMatrix inverse (void) const;
   FloatComplexMatrix inverse (octave_idx_type& info) const;
   FloatComplexMatrix inverse (octave_idx_type& info, float& rcon,
-                              int force = 0, int calc_cond = 1) const;
+                              bool force = false, bool calc_cond = true) const;
 
   FloatComplexMatrix inverse (MatrixType &mattype) const;
   FloatComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   FloatComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,
-                              float& rcon, int force = 0,
-                              int calc_cond = 1) const;
+                              float& rcon, bool force = false,
+                              bool calc_cond = true) const;
 
   FloatComplexMatrix pseudo_inverse (float tol = 0.0) const;
 
@@ -222,9 +222,9 @@ public:
   FloatComplexDET determinant (void) const;
   FloatComplexDET determinant (octave_idx_type& info) const;
   FloatComplexDET determinant (octave_idx_type& info, float& rcon,
-                               int calc_cond = 1) const;
+                               bool calc_cond = true) const;
   FloatComplexDET determinant (MatrixType &mattype, octave_idx_type& info,
-                               float& rcon, int calc_cond = 1) const;
+                               float& rcon, bool calc_cond = true) const;
 
   float rcond (void) const;
   float rcond (MatrixType &mattype) const;

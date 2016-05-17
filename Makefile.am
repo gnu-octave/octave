@@ -79,6 +79,12 @@ GEN_CONFIG_SHELL = \
 $(GEN_CONFIG_SHELL) : %.sh : %.in.sh config.status
 	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
 
+GEN_CONFIG_INC = \
+  oct-conf-post.h
+
+$(GEN_CONFIG_INC) : %.h : %.in.h config.status
+	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
+
 AUTOCONF_SUBST_VARS = @AUTOCONF_SUBST_VARS@
 ALL_SUBST_VARS = \
   $(AUTOCONF_SUBST_VARS) \
@@ -184,6 +190,7 @@ icons-dist-hook:
 endif
 
 BUILT_SOURCES += \
+  oct-conf-post.h \
   octave-config.h \
   run-octave \
   $(DIRSTAMP_FILES)

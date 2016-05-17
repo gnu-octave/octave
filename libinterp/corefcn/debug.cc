@@ -716,10 +716,15 @@ bp_table::do_add_breakpoint (const std::string& fname,
                       ->ending_line ();
               if (e >= lineno && e < earliest_end)
                 dbg_fcn = main_fcn;
-            }
 
-          if (! dbg_fcn)
-            dbg_fcn = next_fcn;
+              if (! dbg_fcn)
+                dbg_fcn = next_fcn;
+            }
+          else
+            {
+              if (! dbg_fcn)
+                dbg_fcn = main_fcn;
+            }
 
           // We've found the right (sub)function.  Now insert the breakpoint.
           // We insert all breakpoints.

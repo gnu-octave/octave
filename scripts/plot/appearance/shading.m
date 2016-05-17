@@ -114,7 +114,7 @@ endfunction
 %! facecolor = get (h, 'facecolor');
 %! edgecolor = get (h, 'edgecolor');
 %! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
-%! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" revesed'});
+%! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
@@ -132,7 +132,7 @@ endfunction
 %! facecolor = get (h, 'facecolor');
 %! edgecolor = get (h, 'edgecolor');
 %! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
-%! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" revesed'});
+%! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
@@ -150,7 +150,7 @@ endfunction
 %! facecolor = get (h, 'facecolor');
 %! edgecolor = get (h, 'edgecolor');
 %! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
-%! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" revesed'});
+%! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf
@@ -177,7 +177,7 @@ endfunction
 %! facecolor = get (h, 'facecolor');
 %! edgecolor = get (h, 'edgecolor');
 %! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
-%! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" revesed'});
+%! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
@@ -195,7 +195,7 @@ endfunction
 %! facecolor = get (h, 'facecolor');
 %! edgecolor = get (h, 'edgecolor');
 %! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
-%! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" revesed'});
+%! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
@@ -213,5 +213,5 @@ endfunction
 %! facecolor = get (h, 'facecolor');
 %! edgecolor = get (h, 'edgecolor');
 %! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
-%! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" revesed'});
+%! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" reversed'});
 

@@ -31,21 +31,29 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-uname.h"
 
-void
-octave_uname::init (void)
+namespace
+octave
 {
-  struct utsname unm;
-
-  err = ::uname (&unm);
-
-  if (err < 0)
-    msg = gnulib::strerror (errno);
-  else
+  namespace
+  sys
+  {
+    void
+    uname::init (void)
     {
-      utsname_sysname = unm.sysname;
-      utsname_nodename = unm.nodename;
-      utsname_release = unm.release;
-      utsname_version = unm.version;
-      utsname_machine = unm.machine;
+      struct utsname unm;
+
+      err = ::uname (&unm);
+
+      if (err < 0)
+        msg = gnulib::strerror (errno);
+      else
+        {
+          m_sysname = unm.sysname;
+          m_nodename = unm.nodename;
+          m_release = unm.release;
+          m_version = unm.version;
+          m_machine = unm.machine;
+        }
     }
+  }
 }

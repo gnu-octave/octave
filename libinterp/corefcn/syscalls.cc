@@ -1034,7 +1034,7 @@ system-dependent error message.\n\
   if (args.length () != 0)
     print_usage ();
 
-  octave_uname sysinfo;
+  octave::sys::uname sysinfo;
 
   octave_scalar_map m;
 

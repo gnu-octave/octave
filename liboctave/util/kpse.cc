@@ -1244,7 +1244,7 @@ kpse_tilde_expand (const std::string& name)
 
       /* We only need the cast here for (deficient) systems
          which do not declare 'getpwnam' in <pwd.h>.  */
-      octave_passwd p = octave_passwd::getpwnam (user);
+      octave::sys::password p = octave::sys::password::getpwnam (user);
 
       /* If no such user, just use '.'.  */
       std::string home = p ? p.dir () : std::string (".");

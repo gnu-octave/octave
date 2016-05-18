@@ -29,104 +29,119 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 
-class
-OCTAVE_API
-octave_passwd
+namespace
+octave
 {
-public:
-
-  octave_passwd (void)
-    : pw_name (), pw_passwd (), pw_uid (0), pw_gid (0), pw_gecos (),
-      pw_dir (), pw_shell (), valid (false)
-  { }
-
-  octave_passwd (const octave_passwd& pw)
-    : pw_name (pw.pw_name), pw_passwd (pw.pw_passwd),
-      pw_uid (pw.pw_uid), pw_gid (pw.pw_gid), pw_gecos (pw.pw_gecos),
-      pw_dir (pw.pw_dir), pw_shell (pw.pw_shell), valid (pw.valid)
-  { }
-
-  octave_passwd& operator = (const octave_passwd& pw)
+  namespace
+  sys
   {
-    if (this != &pw)
-      {
-        pw_name = pw.pw_name;
-        pw_passwd = pw.pw_passwd;
-        pw_uid = pw.pw_uid;
-        pw_gid = pw.pw_gid;
-        pw_gecos = pw.pw_gecos;
-        pw_dir = pw.pw_dir;
-        pw_shell = pw.pw_shell;
-        valid = pw.valid;
-      }
+    class
+    OCTAVE_API
+    password
+    {
+    public:
 
-    return *this;
+      password (void)
+        : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
+          m_dir (), m_shell (), valid (false)
+        { }
+
+      password (const password& pw)
+        : m_name (pw.m_name), m_passwd (pw.m_passwd),
+          m_uid (pw.m_uid), m_gid (pw.m_gid), m_gecos (pw.m_gecos),
+          m_dir (pw.m_dir), m_shell (pw.m_shell), valid (pw.valid)
+        { }
+
+      password& operator = (const password& pw)
+        {
+          if (this != &pw)
+            {
+              m_name = pw.m_name;
+              m_passwd = pw.m_passwd;
+              m_uid = pw.m_uid;
+              m_gid = pw.m_gid;
+              m_gecos = pw.m_gecos;
+              m_dir = pw.m_dir;
+              m_shell = pw.m_shell;
+              valid = pw.valid;
+            }
+
+          return *this;
+        }
+
+      ~password (void) { }
+
+      std::string name (void) const;
+
+      std::string passwd (void) const;
+
+      uid_t uid (void) const;
+
+      gid_t gid (void) const;
+
+      std::string gecos (void) const;
+
+      std::string dir (void) const;
+
+      std::string shell (void) const;
+
+      bool ok (void) const { return valid; }
+
+      operator bool () const { return ok (); }
+
+      static password getpwent (void);
+      static password getpwent (std::string& msg);
+
+      static password getpwuid (uid_t uid);
+      static password getpwuid (uid_t uid, std::string& msg);
+
+      static password getpwnam (const std::string& nm);
+      static password getpwnam (const std::string& nm, std::string& msg);
+
+      static int setpwent (void);
+      static int setpwent (std::string& msg);
+
+      static int endpwent (void);
+      static int endpwent (std::string& msg);
+
+    private:
+
+      // User name.
+      std::string m_name;
+
+      // Encrypted password.
+      std::string m_passwd;
+
+      // Numeric user id.
+      uid_t m_uid;
+
+      // Numeric group id.
+      gid_t m_gid;
+
+      // Miscellaneous junk.
+      std::string m_gecos;
+
+      // Home directory.
+      std::string m_dir;
+
+      // Login shell.
+      std::string m_shell;
+
+      // Flag that says whether we have been properly initialized.
+      bool valid;
+
+      // This is how we will create a password object from a pointer
+      // to a struct passwd.
+      password (void *p, std::string& msg);
+    };
   }
+}
 
-  ~octave_passwd (void) { }
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  std::string name (void) const;
+OCTAVE_DEPRECATED ("use octave::sys::password instead")
+typedef octave::sys::password octave_passwd;
 
-  std::string passwd (void) const;
-
-  uid_t uid (void) const;
-
-  gid_t gid (void) const;
-
-  std::string gecos (void) const;
-
-  std::string dir (void) const;
-
-  std::string shell (void) const;
-
-  bool ok (void) const { return valid; }
-
-  operator bool () const { return ok (); }
-
-  static octave_passwd getpwent (void);
-  static octave_passwd getpwent (std::string& msg);
-
-  static octave_passwd getpwuid (uid_t uid);
-  static octave_passwd getpwuid (uid_t uid, std::string& msg);
-
-  static octave_passwd getpwnam (const std::string& nm);
-  static octave_passwd getpwnam (const std::string& nm, std::string& msg);
-
-  static int setpwent (void);
-  static int setpwent (std::string& msg);
-
-  static int endpwent (void);
-  static int endpwent (std::string& msg);
-
-private:
-
-  // User name.
-  std::string pw_name;
-
-  // Encrypted password.
-  std::string pw_passwd;
-
-  // Numeric user id.
-  uid_t pw_uid;
-
-  // Numeric group id.
-  gid_t pw_gid;
-
-  // Miscellaneous junk.
-  std::string pw_gecos;
-
-  // Home directory.
-  std::string pw_dir;
-
-  // Login shell.
-  std::string pw_shell;
-
-  // Flag that says whether we have been properly initialized.
-  bool valid;
-
-  // This is how we will create an octave_passwd object from a pointer
-  // to a struct passwd.
-  octave_passwd (void *p, std::string& msg);
-};
+#endif
 
 #endif

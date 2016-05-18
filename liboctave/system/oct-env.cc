@@ -479,7 +479,7 @@ octave_env::do_get_home_directory (void) const
 
   if (hd.empty ())
     {
-      octave_passwd pw = octave_passwd::getpwuid (octave::sys::getuid ());
+      octave::sys::password pw = octave::sys::password::getpwuid (octave::sys::getuid ());
 
       hd = pw ? pw.dir () : std::string (file_ops::dir_sep_str ());
     }
@@ -492,7 +492,7 @@ octave_env::do_get_user_name (void) const
 {
   if (user_name.empty ())
     {
-      octave_passwd pw = octave_passwd::getpwuid (octave::sys::getuid ());
+      octave::sys::password pw = octave::sys::password::getpwuid (octave::sys::getuid ());
 
       user_name = pw ? pw.name () : std::string ("unknown");
     }

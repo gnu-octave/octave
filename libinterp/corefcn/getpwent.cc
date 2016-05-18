@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 // Password file functions.  (Why not?)
 
 static octave_value
-mk_pw_map (const octave_passwd& pw)
+mk_pw_map (const octave::sys::password& pw)
 {
   octave_value retval;
 
@@ -80,8 +80,8 @@ Once the end of the data has been reached, @code{getpwent} returns 0.\n\
 
   std::string msg;
 
-  // octave_passwd::getpwent may set msg.
-  octave_value val = mk_pw_map (octave_passwd::getpwent (msg));
+  // octave::sys::password::getpwent may set msg.
+  octave_value val = mk_pw_map (octave::sys::password::getpwent (msg));
 
   return ovl (val, msg);
 }
@@ -108,8 +108,8 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
 
   std::string msg;
 
-  // octave_passwd::getpwuid may set msg.
-  octave_value val = mk_pw_map (octave_passwd::getpwuid (uid, msg));
+  // octave::sys::password::getpwuid may set msg.
+  octave_value val = mk_pw_map (octave::sys::password::getpwuid (uid, msg));
 
   return ovl (val, msg);
 }
@@ -131,8 +131,8 @@ If the user name does not exist in the database, @code{getpwname} returns 0.\n\
 
   std::string msg;
 
-  // octave_passwd::getpwnam may set msg.
-  octave_value val = mk_pw_map (octave_passwd::getpwnam (s, msg));
+  // octave::sys::password::getpwnam may set msg.
+  octave_value val = mk_pw_map (octave::sys::password::getpwnam (s, msg));
 
   return ovl (val, msg);
 }
@@ -149,8 +149,8 @@ Return the internal pointer to the beginning of the password database.\n\
 
   std::string msg;
 
-  // octave_passwd::setpwent may set msg.
-  int status = octave_passwd::setpwent (msg);
+  // octave::sys::password::setpwent may set msg.
+  int status = octave::sys::password::setpwent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }
@@ -167,8 +167,8 @@ Close the password database.\n\
 
   std::string msg;
 
-  // octave_passwd::endpwent may set msg.
-  int status = octave_passwd::endpwent (msg);
+  // octave::sys::password::endpwent may set msg.
+  int status = octave::sys::password::endpwent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }

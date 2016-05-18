@@ -43,189 +43,196 @@ err_invalid (void)
   (*current_liboctave_error_handler) ("invalid password object");
 }
 
-std::string
-octave_passwd::name (void) const
+namespace
+octave
 {
-  if (! ok ())
-    err_invalid ();
-
-  return pw_name;
-}
-
-std::string
-octave_passwd::passwd (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return pw_passwd;
-}
-
-uid_t
-octave_passwd::uid (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return pw_uid;
-}
-
-gid_t
-octave_passwd::gid (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return pw_gid;
-}
-
-std::string
-octave_passwd::gecos (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return pw_gecos;
-}
-
-std::string
-octave_passwd::dir (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return pw_dir;
-}
-
-std::string
-octave_passwd::shell (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return pw_shell;
-}
-
-octave_passwd
-octave_passwd::getpwent (void)
-{
-  std::string msg;
-  return getpwent (msg);
-}
-
-octave_passwd
-octave_passwd::getpwent (std::string& msg)
-{
-#if defined HAVE_GETPWENT
-  msg = "";
-  return octave_passwd (::getpwent (), msg);
-#else
-  msg = NOT_SUPPORTED ("getpwent");
-  return octave_passwd ();
-#endif
-}
-
-octave_passwd
-octave_passwd::getpwuid (uid_t uid)
-{
-  std::string msg;
-  return getpwuid (uid, msg);
-}
-
-octave_passwd
-octave_passwd::getpwuid (uid_t uid, std::string& msg)
-{
-#if defined (HAVE_GETPWUID)
-  msg = "";
-  return octave_passwd (::getpwuid (uid), msg);
-#else
-  msg = NOT_SUPPORTED ("getpwuid");
-  return octave_passwd ();
-#endif
-}
-
-octave_passwd
-octave_passwd::getpwnam (const std::string& nm)
-{
-  std::string msg;
-  return getpwnam (nm, msg);
-}
-
-octave_passwd
-octave_passwd::getpwnam (const std::string& nm, std::string& msg)
-{
-#if defined (HAVE_GETPWNAM)
-  msg = "";
-  return octave_passwd (::getpwnam (nm.c_str ()), msg);
-#else
-  msg = NOT_SUPPORTED ("getpwnam");
-  return octave_passwd ();
-#endif
-}
-
-int
-octave_passwd::setpwent (void)
-{
-  std::string msg;
-  return setpwent (msg);
-}
-
-int
-octave_passwd::setpwent (std::string& msg)
-{
-#if defined (HAVE_SETPWENT)
-  msg = "";
-  ::setpwent ();
-  return 0;
-#else
-  msg = NOT_SUPPORTED ("setpwent");
-  return -1;
-#endif
-}
-
-int
-octave_passwd::endpwent (void)
-{
-  std::string msg;
-  return endpwent (msg);
-}
-
-int
-octave_passwd::endpwent (std::string& msg)
-{
-#if defined (HAVE_ENDPWENT)
-  msg = "";
-  ::endpwent ();
-  return 0;
-#else
-  msg = NOT_SUPPORTED ("endpwent");
-  return -1;
-#endif
-}
-
-octave_passwd::octave_passwd (void *p, std::string& msg)
-  : pw_name (), pw_passwd (), pw_uid (0), pw_gid (0), pw_gecos (),
-    pw_dir (), pw_shell (), valid (false)
-{
-#if defined (HAVE_PWD_H)
-  msg = "";
-
-  if (p)
+  namespace
+  sys
+  {
+    std::string
+    password::name (void) const
     {
-      struct passwd *pw = static_cast<struct passwd *> (p);
+      if (! ok ())
+        err_invalid ();
 
-      pw_name = pw->pw_name;
-      pw_passwd = pw->pw_passwd;
-      pw_uid = pw->pw_uid;
-      pw_gid = pw->pw_gid;
-      pw_gecos = pw->pw_gecos;
-      pw_dir = pw->pw_dir;
-      pw_shell = pw->pw_shell;
-
-      valid = true;
+      return m_name;
     }
-#else
-  msg = NOT_SUPPORTED ("password functions");
-#endif
-}
 
+    std::string
+    password::passwd (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_passwd;
+    }
+
+    uid_t
+    password::uid (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_uid;
+    }
+
+    gid_t
+    password::gid (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_gid;
+    }
+
+    std::string
+    password::gecos (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_gecos;
+    }
+
+    std::string
+    password::dir (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_dir;
+    }
+
+    std::string
+    password::shell (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_shell;
+    }
+
+    password
+    password::getpwent (void)
+    {
+      std::string msg;
+      return getpwent (msg);
+    }
+
+    password
+    password::getpwent (std::string& msg)
+    {
+#if defined HAVE_GETPWENT
+      msg = "";
+      return password (::getpwent (), msg);
+#else
+      msg = NOT_SUPPORTED ("getpwent");
+      return password ();
+#endif
+    }
+
+    password
+    password::getpwuid (uid_t uid)
+    {
+      std::string msg;
+      return getpwuid (uid, msg);
+    }
+
+    password
+    password::getpwuid (uid_t uid, std::string& msg)
+    {
+#if defined (HAVE_GETPWUID)
+      msg = "";
+      return password (::getpwuid (uid), msg);
+#else
+      msg = NOT_SUPPORTED ("getpwuid");
+      return password ();
+#endif
+    }
+
+    password
+    password::getpwnam (const std::string& nm)
+    {
+      std::string msg;
+      return getpwnam (nm, msg);
+    }
+
+    password
+    password::getpwnam (const std::string& nm, std::string& msg)
+    {
+#if defined (HAVE_GETPWNAM)
+      msg = "";
+      return password (::getpwnam (nm.c_str ()), msg);
+#else
+      msg = NOT_SUPPORTED ("getpwnam");
+      return password ();
+#endif
+    }
+
+    int
+    password::setpwent (void)
+    {
+      std::string msg;
+      return setpwent (msg);
+    }
+
+    int
+    password::setpwent (std::string& msg)
+    {
+#if defined (HAVE_SETPWENT)
+      msg = "";
+      ::setpwent ();
+      return 0;
+#else
+      msg = NOT_SUPPORTED ("setpwent");
+      return -1;
+#endif
+    }
+
+    int
+    password::endpwent (void)
+    {
+      std::string msg;
+      return endpwent (msg);
+    }
+
+    int
+    password::endpwent (std::string& msg)
+    {
+#if defined (HAVE_ENDPWENT)
+      msg = "";
+      ::endpwent ();
+      return 0;
+#else
+      msg = NOT_SUPPORTED ("endpwent");
+      return -1;
+#endif
+    }
+
+    password::password (void *p, std::string& msg)
+      : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
+        m_dir (), m_shell (), valid (false)
+    {
+#if defined (HAVE_PWD_H)
+      msg = "";
+
+      if (p)
+        {
+          struct ::passwd *pw = static_cast<struct ::passwd *> (p);
+
+          m_name = pw->pw_name;
+          m_passwd = pw->pw_passwd;
+          m_uid = pw->pw_uid;
+          m_gid = pw->pw_gid;
+          m_gecos = pw->pw_gecos;
+          m_dir = pw->pw_dir;
+          m_shell = pw->pw_shell;
+
+          valid = true;
+        }
+#else
+      msg = NOT_SUPPORTED ("password functions");
+#endif
+    }
+  }
+}

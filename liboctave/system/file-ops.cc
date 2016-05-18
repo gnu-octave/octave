@@ -251,7 +251,7 @@ tilde_expand_word (const std::string& filename)
   // No preexpansion hook, or the preexpansion hook failed.  Look in the
   // password database.
 
-  octave_passwd pw = octave_passwd::getpwnam (username);
+  octave::sys::password pw = octave::sys::password::getpwnam (username);
 
   if (! pw)
     {

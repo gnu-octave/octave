@@ -31,82 +31,97 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
-class
-OCTAVE_API
-octave_group
+namespace
+octave
 {
-public:
-
-  octave_group (void)
-    : gr_name (), gr_passwd (), gr_gid (0), gr_mem (), valid (false)
-  { }
-
-  octave_group (const octave_group& gr)
-    : gr_name (gr.gr_name), gr_passwd (gr.gr_passwd),
-      gr_gid (gr.gr_gid), gr_mem (gr.gr_mem), valid (gr.valid)
-  { }
-
-  octave_group& operator = (const octave_group& gr)
+  namespace
+  sys
   {
-    if (this != &gr)
-      {
-        gr_name = gr.gr_name;
-        gr_passwd = gr.gr_passwd;
-        gr_gid = gr.gr_gid;
-        gr_mem = gr.gr_mem;
-        valid = gr.valid;
-      }
+    class
+    OCTAVE_API
+    group
+    {
+    public:
 
-    return *this;
+      group (void)
+        : m_name (), m_passwd (), m_gid (0), m_mem (), valid (false)
+        { }
+
+      group (const group& gr)
+        : m_name (gr.m_name), m_passwd (gr.m_passwd),
+        m_gid (gr.m_gid), m_mem (gr.m_mem), valid (gr.valid)
+        { }
+
+      group& operator = (const group& gr)
+        {
+          if (this != &gr)
+            {
+              m_name = gr.m_name;
+              m_passwd = gr.m_passwd;
+              m_gid = gr.m_gid;
+              m_mem = gr.m_mem;
+              valid = gr.valid;
+            }
+
+          return *this;
+        }
+
+      std::string name (void) const;
+
+      std::string passwd (void) const;
+
+      gid_t gid (void) const;
+
+      string_vector mem (void) const;
+
+      bool ok (void) const { return valid; }
+
+      operator bool () const { return ok (); }
+
+      static group getgrent (void);
+      static group getgrent (std::string& msg);
+
+      static group getgrgid (gid_t gid);
+      static group getgrgid (gid_t gid, std::string& msg);
+
+      static group getgrnam (const std::string& nm);
+      static group getgrnam (const std::string& nm, std::string& msg);
+
+      static int setgrent (void);
+      static int setgrent (std::string& msg);
+
+      static int endgrent (void);
+      static int endgrent (std::string& msg);
+
+    private:
+
+      // The group name.
+      std::string m_name;
+
+      // The group password.
+      std::string m_passwd;
+
+      // The numeric group id.
+      gid_t m_gid;
+
+      // The members of the group;
+      string_vector m_mem;
+
+      // Flag that says whether we have been properly initialized.
+      bool valid;
+
+      // This is how we will create an group object from a pointer
+      // to a struct group.
+      group (void *p, std::string& msg);
+    };
   }
+}
 
-  std::string name (void) const;
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  std::string passwd (void) const;
+OCTAVE_DEPRECATED ("use octave::sys::group instead")
+typedef octave::sys::group octave_group;
 
-  gid_t gid (void) const;
-
-  string_vector mem (void) const;
-
-  bool ok (void) const { return valid; }
-
-  operator bool () const { return ok (); }
-
-  static octave_group getgrent (void);
-  static octave_group getgrent (std::string& msg);
-
-  static octave_group getgrgid (gid_t gid);
-  static octave_group getgrgid (gid_t gid, std::string& msg);
-
-  static octave_group getgrnam (const std::string& nm);
-  static octave_group getgrnam (const std::string& nm, std::string& msg);
-
-  static int setgrent (void);
-  static int setgrent (std::string& msg);
-
-  static int endgrent (void);
-  static int endgrent (std::string& msg);
-
-private:
-
-  // The group name.
-  std::string gr_name;
-
-  // The group password.
-  std::string gr_passwd;
-
-  // The numeric group id.
-  gid_t gr_gid;
-
-  // The members of the group;
-  string_vector gr_mem;
-
-  // Flag that says whether we have been properly initialized.
-  bool valid;
-
-  // This is how we will create an octave_group object from a pointer
-  // to a struct group.
-  octave_group (void *p, std::string& msg);
-};
+#endif
 
 #endif

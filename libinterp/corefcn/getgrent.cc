@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 // Group file functions.  (Why not?)
 
 static octave_value
-mk_gr_map (const octave_group& gr)
+mk_gr_map (const octave::sys::group& gr)
 {
   octave_value retval;
 
@@ -76,8 +76,8 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
 
   std::string msg;
 
-  // octave_group::getgrent may set msg.
-  octave_value val = mk_gr_map (octave_group::getgrent (msg));
+  // octave::sys::group::getgrent may set msg.
+  octave_value val = mk_gr_map (octave::sys::group::getgrent (msg));
 
   return ovl (val, msg);
 }
@@ -104,8 +104,8 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
 
   std::string msg;
 
-  // octave_group::getgrgid may set msg.
-  octave_value val = mk_gr_map (octave_group::getgrgid (gid, msg));
+  // octave::sys::group::getgrgid may set msg.
+  octave_value val = mk_gr_map (octave::sys::group::getgrgid (gid, msg));
 
   return ovl (val, msg);
 }
@@ -127,8 +127,8 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
 
   std::string msg;
 
-  // octave_group::getgrnam may set msg.
-  octave_value val = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
+  // octave::sys::group::getgrnam may set msg.
+  octave_value val = mk_gr_map (octave::sys::group::getgrnam (s.c_str (), msg));
 
   return ovl (val, msg);
 }
@@ -145,8 +145,8 @@ Return the internal pointer to the beginning of the group database.\n\
 
   std::string msg;
 
-  // octave_group::setgrent may set msg.
-  int status = octave_group::setgrent (msg);
+  // octave::sys::group::setgrent may set msg.
+  int status = octave::sys::group::setgrent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }
@@ -163,8 +163,8 @@ Close the group database.\n\
 
   std::string msg;
 
-  // octave_group::endgrent may set msg.
-  int status = octave_group::endgrent (msg);
+  // octave::sys::group::endgrent may set msg.
+  int status = octave::sys::group::endgrent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }

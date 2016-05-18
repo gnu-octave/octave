@@ -44,180 +44,187 @@ err_invalid (void)
   (*current_liboctave_error_handler) ("invalid group object");
 }
 
-std::string
-octave_group::name (void) const
+namespace
+octave
 {
-  if (! ok ())
-    err_invalid ();
-
-  return gr_name;
-}
-
-std::string
-octave_group::passwd (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return gr_passwd;
-}
-
-gid_t
-octave_group::gid (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return gr_gid;
-}
-
-string_vector
-octave_group::mem (void) const
-{
-  if (! ok ())
-    err_invalid ();
-
-  return gr_mem;
-}
-
-octave_group
-octave_group::getgrent (void)
-{
-  std::string msg;
-  return getgrent (msg);
-}
-
-octave_group
-octave_group::getgrent (std::string& msg)
-{
-#if defined (HAVE_GETGRENT)
-  msg = "";
-  return octave_group (::getgrent (), msg);
-#else
-  msg = NOT_SUPPORTED ("getgrent");
-  return octave_group ();
-#endif
-}
-
-octave_group
-octave_group::getgrgid (gid_t gid)
-{
-  std::string msg;
-  return getgrgid (gid, msg);
-}
-
-octave_group
-octave_group::getgrgid (gid_t gid, std::string& msg)
-{
-#if defined (HAVE_GETGRGID)
-  msg = "";
-  return octave_group (::getgrgid (gid), msg);
-#else
-  msg = NOT_SUPPORTED ("getgruid");
-  return octave_group ();
-#endif
-}
-
-octave_group
-octave_group::getgrnam (const std::string& nm)
-{
-  std::string msg;
-  return getgrnam (nm, msg);
-}
-
-octave_group
-octave_group::getgrnam (const std::string& nm, std::string& msg)
-{
-#if defined (HAVE_GETGRNAM)
-  msg = "";
-  return octave_group (::getgrnam (nm.c_str ()), msg);
-#else
-  msg = NOT_SUPPORTED ("getgrnam");
-  return octave_group ();
-#endif
-}
-
-int
-octave_group::setgrent (void)
-{
-  std::string msg;
-  return setgrent (msg);
-}
-
-int
-octave_group::setgrent (std::string& msg)
-{
-#if defined (HAVE_SETGRENT)
-  msg = "";
-  ::setgrent ();
-  return 0;
-#else
-  msg = NOT_SUPPORTED ("setgrent");
-  return -1;
-#endif
-}
-
-int
-octave_group::endgrent (void)
-{
-  std::string msg;
-  return endgrent (msg);
-}
-
-int
-octave_group::endgrent (std::string& msg)
-{
-#if defined (HAVE_ENDGRENT)
-  msg = "";
-  ::endgrent ();
-  return 0;
-#else
-  msg = NOT_SUPPORTED ("endgrent");
-  return -1;
-#endif
-}
-
-octave_group::octave_group (void *p, std::string& msg)
-  : gr_name (), gr_passwd (), gr_gid (0), gr_mem (), valid (false)
-{
-#if defined (HAVE_GRP_H)
-  msg = "";
-
-  if (p)
+  namespace
+  sys
+  {
+    std::string
+    group::name (void) const
     {
-      struct group *gr = static_cast<struct group *> (p);
+      if (! ok ())
+        err_invalid ();
 
-      gr_name = gr->gr_name;
+      return m_name;
+    }
+
+    std::string
+    group::passwd (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_passwd;
+    }
+
+    gid_t
+    group::gid (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_gid;
+    }
+
+    string_vector
+    group::mem (void) const
+    {
+      if (! ok ())
+        err_invalid ();
+
+      return m_mem;
+    }
+
+    group
+    group::getgrent (void)
+    {
+      std::string msg;
+      return getgrent (msg);
+    }
+
+    group
+    group::getgrent (std::string& msg)
+    {
+#if defined (HAVE_GETGRENT)
+      msg = "";
+      return group (::getgrent (), msg);
+#else
+      msg = NOT_SUPPORTED ("getgrent");
+      return group ();
+#endif
+    }
+
+    group
+    group::getgrgid (gid_t gid)
+    {
+      std::string msg;
+      return getgrgid (gid, msg);
+    }
+
+    group
+    group::getgrgid (gid_t gid, std::string& msg)
+    {
+#if defined (HAVE_GETGRGID)
+      msg = "";
+      return group (::getgrgid (gid), msg);
+#else
+      msg = NOT_SUPPORTED ("getgruid");
+      return group ();
+#endif
+    }
+
+    group
+    group::getgrnam (const std::string& nm)
+    {
+      std::string msg;
+      return getgrnam (nm, msg);
+    }
+
+    group
+    group::getgrnam (const std::string& nm, std::string& msg)
+    {
+#if defined (HAVE_GETGRNAM)
+      msg = "";
+      return group (::getgrnam (nm.c_str ()), msg);
+#else
+      msg = NOT_SUPPORTED ("getgrnam");
+      return group ();
+#endif
+    }
+
+    int
+    group::setgrent (void)
+    {
+      std::string msg;
+      return setgrent (msg);
+    }
+
+    int
+    group::setgrent (std::string& msg)
+    {
+#if defined (HAVE_SETGRENT)
+      msg = "";
+      ::setgrent ();
+      return 0;
+#else
+      msg = NOT_SUPPORTED ("setgrent");
+      return -1;
+#endif
+    }
+
+    int
+    group::endgrent (void)
+    {
+      std::string msg;
+      return endgrent (msg);
+    }
+
+    int
+    group::endgrent (std::string& msg)
+    {
+#if defined (HAVE_ENDGRENT)
+      msg = "";
+      ::endgrent ();
+      return 0;
+#else
+      msg = NOT_SUPPORTED ("endgrent");
+      return -1;
+#endif
+    }
+
+    group::group (void *p, std::string& msg)
+      : m_name (), m_passwd (), m_gid (0), m_mem (), valid (false)
+    {
+#if defined (HAVE_GRP_H)
+      msg = "";
+
+      if (p)
+        {
+          struct ::group *gr = static_cast<struct ::group *> (p);
+
+          m_name = gr->gr_name;
 
 #if defined (HAVE_GR_PASSWD)
-      gr_passwd = gr->gr_passwd;
+          m_passwd = gr->gr_passwd;
 #endif
 
-      gr_gid = gr->gr_gid;
+          m_gid = gr->gr_gid;
 
-      // FIXME: Maybe there should be a string_vector constructor
-      //        that takes a NUL terminated list of C strings?
+          // FIXME: Maybe there should be a string_vector constructor
+          //        that takes a NUL terminated list of C strings?
 
-      const char * const *tmp = gr->gr_mem;
+          const char * const *tmp = gr->gr_mem;
 
-      int k = 0;
-      while (*tmp++)
-        k++;
+          int k = 0;
+          while (*tmp++)
+            k++;
 
-      if (k > 0)
-        {
-          tmp = gr->gr_mem;
+          if (k > 0)
+            {
+              tmp = gr->gr_mem;
 
-          gr_mem.resize (k);
+              m_mem.resize (k);
 
-          for (int i = 0; i < k; i++)
-            gr_mem[i] = tmp[i];
+              for (int i = 0; i < k; i++)
+                m_mem[i] = tmp[i];
+            }
+
+          valid = true;
         }
-
-      valid = true;
-    }
 #else
-  msg = NOT_SUPPORTED ("group functions");
+      msg = NOT_SUPPORTED ("group functions");
 #endif
+    }
+  }
 }
-

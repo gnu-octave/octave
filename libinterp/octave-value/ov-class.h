@@ -154,6 +154,8 @@ public:
 
   bool is_object (void) const { return true; }
 
+  bool is_true (void) const;
+
   octave_map map_value (void) const { return map; }
 
   string_vector map_keys (void) const;

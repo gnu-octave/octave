@@ -836,6 +836,24 @@ octave_class::byte_size (void) const
   return retval;
 }
 
+bool
+octave_class::is_true (void) const
+{
+  bool retval = false;
+
+  octave_value meth = symbol_table::find_method ("logical", class_name ());
+
+  if (meth.is_defined ())
+    {
+      octave_value in = new octave_class (*this);
+
+      octave_value_list tmp = feval (meth.function_value (), in, 1);
+      retval = tmp(0).is_true ();
+    }
+
+  return retval;
+}
+
 string_vector
 octave_class::map_keys (void) const
 {

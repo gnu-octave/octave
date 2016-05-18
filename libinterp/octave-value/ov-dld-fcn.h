@@ -56,13 +56,13 @@ public:
 
   ~octave_dld_function (void);
 
-  void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
   std::string fcn_file_name (void) const;
 
-  octave_time time_parsed (void) const;
+  octave::sys::time time_parsed (void) const;
 
-  octave_time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return t_checked; }
 
   bool is_system_fcn_file (void) const { return system_fcn_file; }
 
@@ -84,7 +84,7 @@ private:
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  mutable octave_time t_checked;
+  mutable octave::sys::time t_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp

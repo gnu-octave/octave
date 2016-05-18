@@ -191,7 +191,7 @@ public:
   octave_value (unsigned long long int i);
 #endif
 
-  octave_value (octave_time t);
+  octave_value (octave::sys::time t);
   octave_value (double d);
   octave_value (float d);
   octave_value (const Array<octave_value>& a, bool is_cs_list = false);

@@ -135,7 +135,7 @@ load_path::dir_info::initialize (void)
 {
   is_relative = ! octave_env::absolute_pathname (dir_name);
 
-  dir_time_last_checked = octave_time (static_cast<time_t> (0));
+  dir_time_last_checked = octave::sys::time (static_cast<time_t> (0));
 
   file_stat fs (dir_name);
 
@@ -145,7 +145,7 @@ load_path::dir_info::initialize (void)
       package_dir_map.clear ();
 
       dir_mtime = fs.mtime ();
-      dir_time_last_checked = octave_time ();
+      dir_time_last_checked = octave::sys::time ();
 
       get_file_list (dir_name);
 

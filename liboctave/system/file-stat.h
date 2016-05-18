@@ -79,9 +79,9 @@ public:
   // The minimum difference in file time stamp values.
   // FIXME: This value should come from the filesystem itself.
   //        How can we get that info?
-  octave_time time_resolution (void) const
+  octave::sys::time time_resolution (void) const
   {
-    static octave_time resolution (1.0);
+    static octave::sys::time resolution (1.0);
     return resolution;
   }
 
@@ -116,9 +116,9 @@ public:
 
   off_t size (void) const { return fs_size; }
 
-  octave_time atime (void) const { return fs_atime; }
-  octave_time mtime (void) const { return fs_mtime; }
-  octave_time ctime (void) const { return fs_ctime; }
+  octave::sys::time atime (void) const { return fs_atime; }
+  octave::sys::time mtime (void) const { return fs_mtime; }
+  octave::sys::time ctime (void) const { return fs_ctime; }
 
   dev_t rdev (void) const { return fs_rdev; }
 
@@ -138,11 +138,11 @@ public:
   std::string error (void) const { return ok () ? "" : errmsg; }
 
   // Has the file referenced by this object been modified since TIME?
-  bool is_newer (const octave_time& time) const { return fs_mtime > time; }
+  bool is_newer (const octave::sys::time& time) const { return fs_mtime > time; }
 
   // It's nice to be able to hide the file_stat object if we don't
   // really care about it.
-  static int is_newer (const std::string&, const octave_time&);
+  static int is_newer (const std::string&, const octave::sys::time&);
 
 protected:
 
@@ -179,13 +179,13 @@ protected:
   off_t fs_size;
 
   // time of last access
-  octave_time fs_atime;
+  octave::sys::time fs_atime;
 
   // time of last modification
-  octave_time fs_mtime;
+  octave::sys::time fs_mtime;
 
   // time of last file status change
-  octave_time fs_ctime;
+  octave::sys::time fs_ctime;
 
   // device number for special files
   dev_t fs_rdev;

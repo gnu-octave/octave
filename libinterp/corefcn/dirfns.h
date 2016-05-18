@@ -32,6 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 
 // The time we last time we changed directories.
-extern octave_time Vlast_chdir_time;
+extern octave::sys::time Vlast_chdir_time;
 
 #endif

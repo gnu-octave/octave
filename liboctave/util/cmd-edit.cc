@@ -1611,7 +1611,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
             case 'A':
               // Make the current time/date into a string.
               {
-                octave_localtime now;
+                octave::sys::localtime now;
 
                 if (c == 'd')
                   tmpstr = now.strftime ("%a %b %d");

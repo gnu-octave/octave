@@ -6250,7 +6250,7 @@ doing nothing at all.\n\
     warning ("tic: ignoring extra arguments");
 
   octave_value retval;
-  octave_time now;
+  octave::sys::time now;
   double tmp = now.double_value ();
 
   if (nargout > 0)
@@ -6300,7 +6300,7 @@ DEFUN (toc, args, nargout,
   if (start_time < 0)
     error ("toc called before timer set");
 
-  octave_time now;
+  octave::sys::time now;
 
   double etime = now.double_value () - start_time;
 

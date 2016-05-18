@@ -228,7 +228,7 @@ out_of_date_check (octave_value& function,
 
           if (! ff.empty ())
             {
-              octave_time tc = fcn->time_checked ();
+              octave::sys::time tc = fcn->time_checked ();
 
               bool relative = check_relative && fcn->is_relative ();
 
@@ -326,10 +326,10 @@ out_of_date_check (octave_value& function,
                     {
                       // Same file.  If it is out of date, then reload it.
 
-                      octave_time ottp = fcn->time_parsed ();
+                      octave::sys::time ottp = fcn->time_parsed ();
                       time_t tp = ottp.unix_time ();
 
-                      fcn->mark_fcn_file_up_to_date (octave_time ());
+                      fcn->mark_fcn_file_up_to_date (octave::sys::time ());
 
                       if (! (Vignore_function_time_stamp == 2
                              || (Vignore_function_time_stamp

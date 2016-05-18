@@ -94,7 +94,7 @@ std::string VPS4 = "+ ";
 int Vecho_executing_commands = ECHO_OFF;
 
 // The time we last printed a prompt.
-octave_time Vlast_prompt_time = 0.0;
+octave::sys::time Vlast_prompt_time = 0.0;
 
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';

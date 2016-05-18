@@ -394,8 +394,8 @@ private:
     std::string dir_name;
     std::string abs_dir_name;
     bool is_relative;
-    octave_time dir_mtime;
-    octave_time dir_time_last_checked;
+    octave::sys::time dir_mtime;
+    octave::sys::time dir_time_last_checked;
     string_vector all_files;
     string_vector fcn_files;
     fcn_file_map_type private_file_map;

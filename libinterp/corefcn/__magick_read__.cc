@@ -1902,7 +1902,7 @@ Use @code{imfinfo} instead.\n\
     error ("imfinfo: error reading '%s': %s", filename.c_str (),
            fs.error ().c_str ());
 
-  const octave_localtime mtime (fs.mtime ());
+  const octave::sys::localtime mtime (fs.mtime ());
   const std::string filetime = mtime.strftime ("%e-%b-%Y %H:%M:%S");
   template_info.setfield ("Filename",    octave_value (filename));
   template_info.setfield ("FileModDate", octave_value (filetime));

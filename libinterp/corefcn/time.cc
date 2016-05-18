@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 // Date and time functions.
 
 static octave_scalar_map
-mk_tm_map (const octave_base_tm& t)
+mk_tm_map (const octave::sys::base_tm& t)
 {
   octave_scalar_map m;
 
@@ -82,10 +82,10 @@ stringfield (const octave_scalar_map& m, const std::string& k, const char *who)
   return retval;
 }
 
-static octave_base_tm
+static octave::sys::base_tm
 extract_tm (const octave_scalar_map& m, const char *who)
 {
-  octave_base_tm tm;
+  octave::sys::base_tm tm;
 
   tm.usec (intfield (m, "usec", who));
   tm.sec (intfield (m, "sec", who));
@@ -117,7 +117,7 @@ returned by @code{time} was 856163706.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_time ());
+  return ovl (octave::sys::time ());
 }
 
 /*
@@ -161,7 +161,7 @@ gmtime (time ())\n\
 
   double tmp = args(0).double_value ();
 
-  return ovl (mk_tm_map (octave_gmtime (tmp)));
+  return ovl (mk_tm_map (octave::sys::gmtime (tmp)));
 }
 
 /*
@@ -216,7 +216,7 @@ localtime (time ())\n\
 
   double tmp = args(0).double_value ();
 
-  return ovl (mk_tm_map (octave_localtime (tmp)));
+  return ovl (mk_tm_map (octave::sys::localtime (tmp)));
 }
 
 /*
@@ -260,9 +260,9 @@ mktime (localtime (time ()))\n\
 
   octave_scalar_map map = args(0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
 
-  octave_base_tm tm = extract_tm (map, "mktime");
+  octave::sys::base_tm tm = extract_tm (map, "mktime");
 
-  return ovl (octave_time (tm));
+  return ovl (octave::sys::time (tm));
 }
 
 /*
@@ -447,7 +447,7 @@ Year (1970-).\n\
 
   octave_scalar_map map = args(1).xscalar_map_value ("strftime: TM_STRUCT must be a structure");
 
-  octave_base_tm tm = extract_tm (map, "strftime");
+  octave::sys::base_tm tm = extract_tm (map, "strftime");
 
   return ovl (tm.strftime (fmt));
 }
@@ -484,7 +484,7 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   std::string fmt = args(1).xstring_value ("strptime: FMT must be a string");
 
-  octave_strptime t (str, fmt);
+  octave::sys::strptime t (str, fmt);
 
   return ovl (mk_tm_map (t), t.characters_converted ());
 }

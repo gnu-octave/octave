@@ -72,7 +72,7 @@ public: // FIXME: make this class private?
 
     static shlib_rep *get_instance (const std::string& f, bool fake);
 
-    octave_time time_loaded (void) const
+    octave::sys::time time_loaded (void) const
     { return tm_loaded; }
 
     std::string file_name (void) const
@@ -95,7 +95,7 @@ public: // FIXME: make this class private?
     void fake_reload (void);
 
     std::string file;
-    octave_time tm_loaded;
+    octave::sys::time tm_loaded;
 
     // Set of hooked function names.
     typedef std::map<std::string, size_t>::iterator fcn_names_iterator;
@@ -183,7 +183,7 @@ public:
   std::string file_name (void) const
   { return rep->file_name (); }
 
-  octave_time time_loaded (void) const
+  octave::sys::time time_loaded (void) const
   { return rep->time_loaded (); }
 
 private:

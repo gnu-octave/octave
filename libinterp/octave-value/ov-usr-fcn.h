@@ -111,9 +111,9 @@ public:
 
   void stash_fcn_file_name (const std::string& nm) { file_name = nm; }
 
-  void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
-  void stash_fcn_file_time (const octave_time& t)
+  void stash_fcn_file_time (const octave::sys::time& t)
   {
     t_parsed = t;
     mark_fcn_file_up_to_date (t);
@@ -121,9 +121,9 @@ public:
 
   std::string fcn_file_name (void) const { return file_name; }
 
-  octave_time time_parsed (void) const { return t_parsed; }
+  octave::sys::time time_parsed (void) const { return t_parsed; }
 
-  octave_time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return t_checked; }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -152,11 +152,11 @@ private:
   std::string file_name;
 
   // The time the file was parsed.
-  octave_time t_parsed;
+  octave::sys::time t_parsed;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  octave_time t_checked;
+  octave::sys::time t_checked;
 
   // Used to keep track of recursion depth.
   int call_depth;
@@ -231,9 +231,9 @@ public:
 
   void stash_trailing_comment (octave_comment_list *tc) { trail_comm = tc; }
 
-  void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
-  void stash_fcn_file_time (const octave_time& t)
+  void stash_fcn_file_time (const octave::sys::time& t)
   {
     t_parsed = t;
     mark_fcn_file_up_to_date (t);
@@ -249,9 +249,9 @@ public:
 
   symbol_table::scope_id scope (void) { return local_scope; }
 
-  octave_time time_parsed (void) const { return t_parsed; }
+  octave::sys::time time_parsed (void) const { return t_parsed; }
 
-  octave_time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return t_checked; }
 
   void mark_as_system_fcn_file (void);
 
@@ -457,11 +457,11 @@ private:
   std::list<std::string> subfcn_names;
 
   // The time the file was parsed.
-  octave_time t_parsed;
+  octave::sys::time t_parsed;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  octave_time t_checked;
+  octave::sys::time t_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp

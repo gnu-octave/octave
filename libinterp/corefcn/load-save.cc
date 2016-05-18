@@ -1178,7 +1178,7 @@ write_header (std::ostream& os, load_save_format format)
         char const * versionmagic;
         int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
         char headertext[128];
-        octave_gmtime now;
+        octave::sys::gmtime now;
 
         // ISO 8601 format date
         const char *matlab_format = "MATLAB 5.0 MAT-file, written by Octave "
@@ -1212,7 +1212,7 @@ write_header (std::ostream& os, load_save_format format)
 #endif
     case LS_TEXT:
       {
-        octave_localtime now;
+        octave::sys::localtime now;
 
         std::string comment_string = now.strftime (Vsave_header_format_string);
 

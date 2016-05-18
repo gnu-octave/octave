@@ -66,7 +66,7 @@ along with Octave; see the file COPYING.  If not, see
 static bool Vconfirm_recursive_rmdir = true;
 
 // The time we last time we changed directories.
-octave_time Vlast_chdir_time = 0.0;
+octave::sys::time Vlast_chdir_time = 0.0;
 
 static int
 octave_change_to_directory (const std::string& newdir)

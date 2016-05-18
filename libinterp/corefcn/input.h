@@ -82,7 +82,7 @@ enum echo_state
 
 extern int Vecho_executing_commands;
 
-extern octave_time Vlast_prompt_time;
+extern octave::sys::time Vlast_prompt_time;
 
 class
 octave_base_reader

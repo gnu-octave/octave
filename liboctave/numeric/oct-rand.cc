@@ -572,7 +572,7 @@ octave_rand::do_float_nd_array (const dim_vector& dims, float a)
 void
 octave_rand::initialize_ranlib_generators (void)
 {
-  octave_localtime tm;
+  octave::sys::localtime tm;
   int stored_distribution = current_distribution;
   F77_FUNC (setcgn, SETCGN) (uniform_dist);
 

@@ -3094,7 +3094,7 @@ octave_base_parser::make_script (tree_statement_list *cmds,
 
   lexer.help_text = "";
 
-  octave_time now;
+  octave::sys::time now;
 
   script->stash_fcn_file_time (now);
 
@@ -3176,7 +3176,7 @@ octave_base_parser::frob_function (const std::string& fname,
 
   if (lexer.reading_fcn_file || lexer.reading_classdef_file || autoloading)
     {
-      octave_time now;
+      octave::sys::time now;
 
       fcn->stash_fcn_file_name (lexer.fcn_file_full_name);
       fcn->stash_fcn_file_time (now);

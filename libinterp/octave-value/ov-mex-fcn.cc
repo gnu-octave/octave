@@ -70,7 +70,7 @@ octave_mex_function::fcn_file_name (void) const
   return sh_lib.file_name ();
 }
 
-octave_time
+octave::sys::time
 octave_mex_function::time_parsed (void) const
 {
   return sh_lib.time_loaded ();

@@ -370,7 +370,7 @@ profile_data_accumulator::get_hierarchical (void) const
 double
 profile_data_accumulator::query_time (void) const
 {
-  octave_time now;
+  octave::sys::time now;
 
   // FIXME: is this volatile declaration really needed?
   // See bug #34210 for additional details.

@@ -166,7 +166,7 @@ base_file_stat::mode_as_string (void) const
 // and -1 for any error.
 
 int
-base_file_stat::is_newer (const std::string& file, const octave_time& time)
+base_file_stat::is_newer (const std::string& file, const octave::sys::time& time)
 {
   file_stat fs (file);
 

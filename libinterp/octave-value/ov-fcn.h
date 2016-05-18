@@ -72,15 +72,15 @@ public:
 
   virtual symbol_table::scope_id parent_fcn_scope (void) const { return -1; }
 
-  virtual void mark_fcn_file_up_to_date (const octave_time&) { }
+  virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
   virtual symbol_table::scope_id scope (void) { return -1; }
 
-  virtual octave_time time_parsed (void) const
-  { return octave_time (static_cast<time_t> (0)); }
+  virtual octave::sys::time time_parsed (void) const
+  { return octave::sys::time (static_cast<time_t> (0)); }
 
-  virtual octave_time time_checked (void) const
-  { return octave_time (static_cast<time_t> (0)); }
+  virtual octave::sys::time time_checked (void) const
+  { return octave::sys::time (static_cast<time_t> (0)); }
 
   virtual bool is_subfunction (void) const { return false; }
 

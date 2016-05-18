@@ -544,7 +544,7 @@ initialize_history (bool read_history_file)
 void
 octave_history_write_timestamp (void)
 {
-  octave_localtime now;
+  octave::sys::localtime now;
 
   std::string timestamp = now.strftime (Vhistory_timestamp_format_string);
 

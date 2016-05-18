@@ -27,11 +27,29 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
-extern bool
-octave_fnmatch (const string_vector& pat, const std::string& str,
-                int fnmatch_flags);
+namespace
+octave
+{
+  namespace
+  sys
+  {
+    extern bool
+    fnmatch (const string_vector& pat, const std::string& str,
+             int fnmatch_flags);
 
-extern string_vector
-octave_glob (const string_vector&);
+    extern string_vector
+    glob (const string_vector&);
+  }
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use octave::sys::fnmatch instead")
+const auto octave_fnmatch = octave::sys::fnmatch;
+
+OCTAVE_DEPRECATED ("use octave::sys::glob instead")
+const auto octave_glob = octave::sys::glob;
+
+#endif
 
 #endif

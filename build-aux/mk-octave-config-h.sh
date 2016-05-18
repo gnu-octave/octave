@@ -116,6 +116,8 @@ since all of Octave's header files already include it.
 /* #  undef HAVE_OCTAVE_UNUSED_ATTR */
 #endif
 
+#define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
+
 #if defined (__cplusplus)
 template <typename T>
 static inline void

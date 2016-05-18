@@ -294,7 +294,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           dir_path p (load_path::system_path ());
 
-          str = octave_env::make_absolute (p.find_first_of (names));
+          str = octave::sys::env::make_absolute (p.find_first_of (names));
 
           size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
 

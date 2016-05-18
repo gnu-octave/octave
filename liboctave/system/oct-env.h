@@ -27,122 +27,137 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class
-OCTAVE_API
-octave_env
+namespace
+octave
 {
-protected:
+  namespace
+  sys
+  {
+    class
+    OCTAVE_API
+    env
+    {
+    protected:
 
-  octave_env (void);
+      env (void);
 
-public:
+    public:
 
-  static std::string polite_directory_format (const std::string& name);
+      static std::string polite_directory_format (const std::string& name);
 
-  static bool absolute_pathname (const std::string& s);
+      static bool absolute_pathname (const std::string& s);
 
-  static bool rooted_relative_pathname (const std::string& s);
+      static bool rooted_relative_pathname (const std::string& s);
 
-  static std::string base_pathname (const std::string& s);
+      static std::string base_pathname (const std::string& s);
 
-  static std::string
-  make_absolute (const std::string& s,
-                 const std::string& dot_path = get_current_directory ());
+      static std::string
+        make_absolute (const std::string& s,
+                       const std::string& dot_path = get_current_directory ());
 
-  static std::string get_current_directory (void);
+      static std::string get_current_directory (void);
 
-  static std::string get_home_directory (void);
+      static std::string get_home_directory (void);
 
-  static std::string get_temp_directory (void);
+      static std::string get_temp_directory (void);
 
-  static std::string get_program_name (void);
+      static std::string get_program_name (void);
 
-  static std::string get_program_invocation_name (void);
+      static std::string get_program_invocation_name (void);
 
-  static std::string get_user_name (void);
+      static std::string get_user_name (void);
 
-  static std::string get_host_name (void);
+      static std::string get_host_name (void);
 
-  static std::string getenv (const std::string& name);
+      static std::string getenv (const std::string& name);
 
-  static void putenv (const std::string& name, const std::string& value);
+      static void putenv (const std::string& name, const std::string& value);
 
-  static bool have_x11_display (void);
+      static bool have_x11_display (void);
 
-  static bool chdir (const std::string& newdir);
+      static bool chdir (const std::string& newdir);
 
-  static void set_program_name (const std::string& s);
+      static void set_program_name (const std::string& s);
 
-private:
+    private:
 
-  static bool instance_ok (void);
+      static bool instance_ok (void);
 
-  std::string do_polite_directory_format (const std::string& name) const;
+      std::string do_polite_directory_format (const std::string& name) const;
 
-  bool do_absolute_pathname (const std::string& s) const;
+      bool do_absolute_pathname (const std::string& s) const;
 
-  bool do_rooted_relative_pathname (const std::string& s) const;
+      bool do_rooted_relative_pathname (const std::string& s) const;
 
-  std::string do_base_pathname (const std::string& s) const;
+      std::string do_base_pathname (const std::string& s) const;
 
-  std::string do_make_absolute (const std::string& s,
-                                const std::string& dot_path) const;
+      std::string do_make_absolute (const std::string& s,
+                                    const std::string& dot_path) const;
 
-  std::string do_getcwd (void) const;
+      std::string do_getcwd (void) const;
 
-  std::string do_get_home_directory (void) const;
+      std::string do_get_home_directory (void) const;
 
-  std::string do_get_temp_directory (void) const;
+      std::string do_get_temp_directory (void) const;
 
-  std::string do_get_user_name (void) const;
+      std::string do_get_user_name (void) const;
 
-  std::string do_get_host_name (void) const;
+      std::string do_get_host_name (void) const;
 
-  std::string do_getenv (const std::string& name) const;
+      std::string do_getenv (const std::string& name) const;
 
-  void do_putenv (const std::string& name, const std::string& value) const;
+      void do_putenv (const std::string& name, const std::string& value) const;
 
-  bool do_chdir (const std::string& newdir);
+      bool do_chdir (const std::string& newdir);
 
-  void do_set_program_name (const std::string& s) const;
+      void do_set_program_name (const std::string& s) const;
 
-  void pathname_backup (std::string& path, int n) const;
+      void pathname_backup (std::string& path, int n) const;
 
-  void error (int) const;
+      void error (int) const;
 
-  void error (const std::string&) const;
+      void error (const std::string&) const;
 
-  // No copying!
+      // No copying!
 
-  octave_env (const octave_env&);
+      env (const env&);
 
-  octave_env& operator = (const octave_env&);
+      env& operator = (const env&);
 
-  // The real thing.
-  static octave_env *instance;
+      // The real thing.
+      static env *instance;
 
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+      static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  // TRUE means follow symbolic links that point to directories just
-  // as if they are real directories.
-  bool follow_symbolic_links;
+      // TRUE means follow symbolic links that point to directories just
+      // as if they are real directories.
+      bool follow_symbolic_links;
 
-  // TRUE means that pwd always give verbatim directory, regardless
-  // of symbolic link following.
-  bool verbatim_pwd;
+      // TRUE means that pwd always give verbatim directory, regardless
+      // of symbolic link following.
+      bool verbatim_pwd;
 
-  // Where are we?
-  mutable std::string current_directory;
+      // Where are we?
+      mutable std::string current_directory;
 
-  // Etc.
-  mutable std::string prog_name;
+      // Etc.
+      mutable std::string prog_name;
 
-  mutable std::string prog_invocation_name;
+      mutable std::string prog_invocation_name;
 
-  mutable std::string user_name;
+      mutable std::string user_name;
 
-  mutable std::string host_name;
-};
+      mutable std::string host_name;
+    };
+  }
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use octave::sys::env instead")
+typedef octave::sys::env octave_env;
+
+#endif
 
 #endif

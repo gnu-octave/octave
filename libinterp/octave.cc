@@ -379,14 +379,14 @@ execute_startup_files (void)
 
       bool home_rc_already_executed = false;
 
-      std::string initfile = octave_env::getenv ("OCTAVE_INITFILE");
+      std::string initfile = octave::sys::env::getenv ("OCTAVE_INITFILE");
 
       if (initfile.empty ())
         initfile = ".octaverc";
 
-      std::string home_dir = octave_env::get_home_directory ();
+      std::string home_dir = octave::sys::env::get_home_directory ();
 
-      std::string home_rc = octave_env::make_absolute (initfile, home_dir);
+      std::string home_rc = octave::sys::env::make_absolute (initfile, home_dir);
 
       std::string local_rc;
 
@@ -403,7 +403,7 @@ execute_startup_files (void)
               // We want to check for curr_dir after executing home_rc
               // because doing that may change the working directory.
 
-              local_rc = octave_env::make_absolute (initfile);
+              local_rc = octave::sys::env::make_absolute (initfile);
 
               home_rc_already_executed = same_file (home_rc, local_rc);
             }
@@ -412,7 +412,7 @@ execute_startup_files (void)
       if (! home_rc_already_executed)
         {
           if (local_rc.empty ())
-            local_rc = octave_env::make_absolute (initfile);
+            local_rc = octave::sys::env::make_absolute (initfile);
 
           safe_source_file (local_rc, context, verbose, require_file);
         }
@@ -781,15 +781,15 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
   setlocale (LC_NUMERIC, "C");
   setlocale (LC_TIME, "C");
-  octave_env::putenv ("LC_NUMERIC", "C");
-  octave_env::putenv ("LC_TIME", "C");
+  octave::sys::env::putenv ("LC_NUMERIC", "C");
+  octave::sys::env::putenv ("LC_TIME", "C");
 
   octave_embedded = embedded;
 
-  octave_env::set_program_name (argv[0]);
+  octave::sys::env::set_program_name (argv[0]);
 
-  octave_program_invocation_name = octave_env::get_program_invocation_name ();
-  octave_program_name = octave_env::get_program_name ();
+  octave_program_invocation_name = octave::sys::env::get_program_invocation_name ();
+  octave_program_name = octave::sys::env::get_program_name ();
 
   octave_thread::init ();
 

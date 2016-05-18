@@ -235,7 +235,7 @@ gnu_readline::gnu_readline ()
   // FIXME: need interface to rl_add_defun, rl_initialize, and
   // a function to set rl_terminal_name
 
-  std::string term = octave_env::getenv ("TERM");
+  std::string term = octave::sys::env::getenv ("TERM");
 
   octave_rl_set_terminal_name (term.c_str ());
 
@@ -1636,7 +1636,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
             case 'h':
               {
-                tmpstr = octave_env::get_host_name ();
+                tmpstr = octave::sys::env::get_host_name ();
 
                 size_t pos = tmpstr.find ('.');
 
@@ -1648,7 +1648,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
             case 'H':
               {
-                tmpstr = octave_env::get_host_name ();
+                tmpstr = octave::sys::env::get_host_name ();
 
                 break;
               }
@@ -1669,15 +1669,15 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
             case 's':
               {
-                tmpstr = octave_env::get_program_name ();
-                tmpstr = octave_env::base_pathname (tmpstr);
+                tmpstr = octave::sys::env::get_program_name ();
+                tmpstr = octave::sys::env::base_pathname (tmpstr);
 
                 break;
               }
 
             case 'u':
               {
-                tmpstr = octave_env::get_user_name ();
+                tmpstr = octave::sys::env::get_user_name ();
 
                 break;
               }
@@ -1687,14 +1687,14 @@ command_editor::do_decode_prompt_string (const std::string& s)
               {
                 try
                   {
-                    tmpstr = octave_env::get_current_directory ();
+                    tmpstr = octave::sys::env::get_current_directory ();
                   }
                 catch (const octave_execution_exception&)
                   {
                     tmpstr = "";
                   }
 
-                std::string home_dir = octave_env::get_home_directory ();
+                std::string home_dir = octave::sys::env::get_home_directory ();
 
                 if (c == 'W' && (home_dir.empty () || tmpstr != home_dir))
                   {
@@ -1707,7 +1707,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
                       }
                   }
                 else
-                  tmpstr = octave_env::polite_directory_format (tmpstr);
+                  tmpstr = octave::sys::env::polite_directory_format (tmpstr);
 
                 break;
               }

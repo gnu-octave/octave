@@ -107,7 +107,7 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 {
   octave_thread_manager::block_interrupt_signal ();
 
-  std::string show_gui_msgs = octave_env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+  std::string show_gui_msgs = octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
   // Installing our handler suppresses the messages.
   if (show_gui_msgs.empty ())
@@ -163,9 +163,9 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       // We provide specific terminal capabilities, so ensure that TERM is
       // always set appropriately
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-      octave_env::putenv ("TERM", "cygwin");
+      octave::sys::env::putenv ("TERM", "cygwin");
 #else
-      octave_env::putenv ("TERM", "xterm");
+      octave::sys::env::putenv ("TERM", "xterm");
 #endif
 
       // shortcut manager

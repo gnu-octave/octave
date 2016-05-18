@@ -115,9 +115,9 @@ default_save_header_format (void)
   return
     std::string ("# Created by Octave " OCTAVE_VERSION
                  ", %a %b %d %H:%M:%S %Y %Z <")
-    + octave_env::get_user_name ()
+    + octave::sys::env::get_user_name ()
     + std::string ("@")
-    + octave_env::get_host_name ()
+    + octave::sys::env::get_host_name ()
     + std::string (">");
 }
 

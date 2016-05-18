@@ -63,7 +63,7 @@ load_path::dir_info::update (void)
         {
           try
             {
-              std::string abs_name = octave_env::make_absolute (dir_name);
+              std::string abs_name = octave::sys::env::make_absolute (dir_name);
 
               abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
@@ -133,7 +133,7 @@ load_path::dir_info::is_package (const std::string& name) const
 void
 load_path::dir_info::initialize (void)
 {
-  is_relative = ! octave_env::absolute_pathname (dir_name);
+  is_relative = ! octave::sys::env::absolute_pathname (dir_name);
 
   dir_time_last_checked = octave::sys::time (static_cast<time_t> (0));
 
@@ -151,7 +151,7 @@ load_path::dir_info::initialize (void)
 
       try
         {
-          std::string abs_name = octave_env::make_absolute (dir_name);
+          std::string abs_name = octave::sys::env::make_absolute (dir_name);
 
           // FIXME: nothing is ever removed from this cache of
           // directory information, so there could be some resource
@@ -593,7 +593,7 @@ load_path::do_initialize (bool set_initial_path)
   std::string tpath = load_path::command_line_path;
 
   if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_PATH");
+    tpath = octave::sys::env::getenv ("OCTAVE_PATH");
 
   std::string xpath;
 
@@ -1325,8 +1325,8 @@ load_path::do_find_file (const std::string& file) const
 {
   std::string retval;
 
-  if (octave_env::absolute_pathname (file)
-      || octave_env::rooted_relative_pathname (file))
+  if (octave::sys::env::absolute_pathname (file)
+      || octave::sys::env::rooted_relative_pathname (file))
     {
       file_stat fs (file);
 
@@ -1386,8 +1386,8 @@ load_path::do_find_dir (const std::string& dir) const
   std::string retval;
 
   if (dir.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos
-      && (octave_env::absolute_pathname (dir)
-          || octave_env::rooted_relative_pathname (dir)))
+      && (octave::sys::env::absolute_pathname (dir)
+          || octave::sys::env::rooted_relative_pathname (dir)))
     {
       file_stat fs (dir);
 
@@ -1400,7 +1400,7 @@ load_path::do_find_dir (const std::string& dir) const
            p != dir_info_list.end ();
            p++)
         {
-          std::string dname = octave_env::make_absolute (p->dir_name);
+          std::string dname = octave::sys::env::make_absolute (p->dir_name);
 
           size_t dname_len = dname.length ();
 
@@ -1433,8 +1433,8 @@ load_path::do_find_matching_dirs (const std::string& dir) const
   std::list<std::string> retlist;
 
   if (dir.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos
-      && (octave_env::absolute_pathname (dir)
-          || octave_env::rooted_relative_pathname (dir)))
+      && (octave::sys::env::absolute_pathname (dir)
+          || octave::sys::env::rooted_relative_pathname (dir)))
     {
       file_stat fs (dir);
 
@@ -1447,7 +1447,7 @@ load_path::do_find_matching_dirs (const std::string& dir) const
            p != dir_info_list.end ();
            p++)
         {
-          std::string dname = octave_env::make_absolute (p->dir_name);
+          std::string dname = octave::sys::env::make_absolute (p->dir_name);
 
           size_t dname_len = dname.length ();
 
@@ -1493,8 +1493,8 @@ load_path::do_find_first_of (const string_vector& flist) const
 
       if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
         {
-          if (octave_env::absolute_pathname (file)
-              || octave_env::rooted_relative_pathname (file))
+          if (octave::sys::env::absolute_pathname (file)
+              || octave::sys::env::rooted_relative_pathname (file))
             {
               file_stat fs (file);
 
@@ -1572,8 +1572,8 @@ load_path::do_find_all_first_of (const string_vector& flist) const
 
       if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
         {
-          if (octave_env::absolute_pathname (file)
-              || octave_env::rooted_relative_pathname (file))
+          if (octave::sys::env::absolute_pathname (file)
+              || octave::sys::env::rooted_relative_pathname (file))
             {
               file_stat fs (file);
 

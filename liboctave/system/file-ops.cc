@@ -231,7 +231,7 @@ tilde_expand_word (const std::string& filename)
   // any preexpansion hook.
 
   if (f_len == 1 || file_ops::is_dir_sep (filename[1]))
-    return octave_env::get_home_directory () + filename.substr (1);
+    return octave::sys::env::get_home_directory () + filename.substr (1);
 
   std::string username = isolate_tilde_prefix (filename);
 
@@ -685,9 +685,9 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
   // get dir path to use for template
   std::string templatename;
   if (dir.empty ())
-    templatename = octave_env::get_temp_directory ();
+    templatename = octave::sys::env::get_temp_directory ();
   else if (! file_stat (dir, false).is_dir ())
-    templatename = octave_env::get_temp_directory ();
+    templatename = octave::sys::env::get_temp_directory ();
   else
     templatename = dir;
 

@@ -387,7 +387,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   if (nargout > 0)
     {
       if (curl.good ())
-        retval = ovl (octave_env::make_absolute (filename), true, "");
+        retval = ovl (octave::sys::env::make_absolute (filename), true, "");
       else
         retval = ovl ("", false, curl.lasterror ());
     }

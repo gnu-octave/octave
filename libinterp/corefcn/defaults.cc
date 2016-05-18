@@ -124,7 +124,7 @@ subst_octave_home (const std::string& s)
 static void
 set_octave_home (void)
 {
-  std::string oh = octave_env::getenv ("OCTAVE_HOME");
+  std::string oh = octave::sys::env::getenv ("OCTAVE_HOME");
 
   Voctave_home = oh.empty () ? std::string (OCTAVE_PREFIX) : oh;
 }
@@ -255,7 +255,7 @@ set_exec_path (const std::string& path_arg)
   std::string tpath = path_arg;
 
   if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_EXEC_PATH");
+    tpath = octave::sys::env::getenv ("OCTAVE_EXEC_PATH");
 
   if (tpath.empty ())
     tpath = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
@@ -280,12 +280,12 @@ set_exec_path (const std::string& path_arg)
   // This is static so that even if set_exec_path is called more than
   // once, shell_path is the original PATH from the environment,
   // before we start modifying it.
-  static std::string shell_path = octave_env::getenv ("PATH");
+  static std::string shell_path = octave::sys::env::getenv ("PATH");
 
   if (! shell_path.empty ())
     tpath = shell_path + dir_path::path_sep_str () + tpath;
 
-  octave_env::putenv ("PATH", tpath);
+  octave::sys::env::putenv ("PATH", tpath);
 }
 
 void
@@ -296,7 +296,7 @@ set_image_path (const std::string& path)
   std::string tpath = path;
 
   if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_IMAGE_PATH");
+    tpath = octave::sys::env::getenv ("OCTAVE_IMAGE_PATH");
 
   if (! tpath.empty ())
     VIMAGE_PATH += dir_path::path_sep_str () + tpath;
@@ -314,7 +314,7 @@ set_default_doc_cache_file (void)
     {
       std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
 
-      std::string env_file = octave_env::getenv ("OCTAVE_DOC_CACHE_FILE");
+      std::string env_file = octave::sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
       Vdoc_cache_file = env_file.empty () ? def_file : env_file;
     }
@@ -327,7 +327,7 @@ set_default_texi_macros_file (void)
     {
       std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
 
-      std::string env_file = octave_env::getenv ("OCTAVE_TEXI_MACROS_FILE");
+      std::string env_file = octave::sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 
       Vtexi_macros_file = env_file.empty () ? def_file : env_file;
     }
@@ -340,7 +340,7 @@ set_default_info_file (void)
     {
       std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
 
-      std::string oct_info_file = octave_env::getenv ("OCTAVE_INFO_FILE");
+      std::string oct_info_file = octave::sys::env::getenv ("OCTAVE_INFO_FILE");
 
       Vinfo_file = oct_info_file.empty () ? std_info_file : oct_info_file;
     }
@@ -351,7 +351,7 @@ set_default_info_prog (void)
 {
   if (Vinfo_program.empty ())
     {
-      std::string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
+      std::string oct_info_prog = octave::sys::env::getenv ("OCTAVE_INFO_PROGRAM");
 
       if (oct_info_prog.empty ())
         Vinfo_program = "info";
@@ -365,7 +365,7 @@ set_default_editor (void)
 {
   VEDITOR = "emacs";
 
-  std::string env_editor = octave_env::getenv ("EDITOR");
+  std::string env_editor = octave::sys::env::getenv ("EDITOR");
 
   if (! env_editor.empty ())
     VEDITOR = env_editor;
@@ -374,7 +374,7 @@ set_default_editor (void)
 static void
 set_local_site_defaults_file (void)
 {
-  std::string lsf = octave_env::getenv ("OCTAVE_SITE_INITFILE");
+  std::string lsf = octave::sys::env::getenv ("OCTAVE_SITE_INITFILE");
 
   if (lsf.empty ())
     {
@@ -389,7 +389,7 @@ set_local_site_defaults_file (void)
 static void
 set_site_defaults_file (void)
 {
-  std::string sf = octave_env::getenv ("OCTAVE_VERSION_INITFILE");
+  std::string sf = octave::sys::env::getenv ("OCTAVE_VERSION_INITFILE");
 
   if (sf.empty ())
     {
@@ -405,7 +405,7 @@ set_built_in_docstrings_file (void)
 {
   if (Vbuilt_in_docstrings_file.empty ())
     {
-      std::string df = octave_env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
+      std::string df = octave::sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
 
       if (df.empty ())
         Vbuilt_in_docstrings_file

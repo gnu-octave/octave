@@ -516,7 +516,7 @@ kpse_var_value (const std::string& var)
 {
   std::string ret;
 
-  std::string tmp = octave_env::getenv (var);
+  std::string tmp = octave::sys::env::getenv (var);
 
   if (! tmp.empty ())
     ret = kpse_var_expand (tmp);
@@ -1200,7 +1200,7 @@ kpse_tilde_expand (const std::string& name)
     }
   else if (name.length () == 1)
     {
-      expansion = octave_env::get_home_directory ();
+      expansion = octave::sys::env::get_home_directory ();
 
       if (expansion.empty ())
         expansion = ".";
@@ -1211,7 +1211,7 @@ kpse_tilde_expand (const std::string& name)
   else if (IS_DIR_SEP (name[1]))
     {
       unsigned c = 1;
-      std::string home = octave_env::get_home_directory ();
+      std::string home = octave::sys::env::get_home_directory ();
 
       if (home.empty ())
         home = ".";
@@ -1292,7 +1292,7 @@ static std::string
 kpse_expand_kpse_dot (const std::string& path)
 {
   std::string ret;
-  std::string kpse_dot = octave_env::getenv ("KPSE_DOT");
+  std::string kpse_dot = octave::sys::env::getenv ("KPSE_DOT");
 
   if (kpse_dot.empty ())
     return path;
@@ -2553,7 +2553,7 @@ expand (std::string &expansion, const std::string& var)
   else
     {
       /* Check for an environment variable.  */
-      std::string value = octave_env::getenv (var);
+      std::string value = octave::sys::env::getenv (var);
 
       if (! value.empty ())
         {

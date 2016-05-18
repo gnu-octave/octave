@@ -707,7 +707,7 @@ maybe_initialize_magick (void)
       const std::string locale (static_locale);
 
       const std::string program_name
-        = octave_env::get_program_invocation_name ();
+        = octave::sys::env::get_program_invocation_name ();
       Magick::InitializeMagick (program_name.c_str ());
 
       // Restore locale from before GraphicsMagick initialisation

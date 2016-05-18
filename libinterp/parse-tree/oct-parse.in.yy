@@ -4247,7 +4247,7 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
       || (file_len > 4 && file.substr (file_len-4) == ".mex")
       || (file_len > 2 && file.substr (file_len-2) == ".m"))
     {
-      file = octave_env::base_pathname (file);
+      file = octave::sys::env::base_pathname (file);
       file = file.substr (0, file.find_last_of ('.'));
 
       size_t pos = file.find_last_of (file_ops::dir_sep_str ());
@@ -4346,7 +4346,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
       || (nm_len > 2 && nm.substr (nm_len-2) == ".m"))
     {
-      nm = octave_env::base_pathname (file);
+      nm = octave::sys::env::base_pathname (file);
       nm = nm.substr (0, nm.find_last_of ('.'));
 
       size_t pos = nm.find_last_of (file_ops::dir_sep_str ());
@@ -4354,9 +4354,9 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
         nm = nm.substr (pos+1);
     }
 
-  relative_lookup = ! octave_env::absolute_pathname (file);
+  relative_lookup = ! octave::sys::env::absolute_pathname (file);
 
-  file = octave_env::make_absolute (file);
+  file = octave::sys::env::make_absolute (file);
 
   int len = file.length ();
 
@@ -4481,7 +4481,7 @@ not loaded anymore during the current Octave session.\n\
 
       std::string nm = argv[2];
 
-      if (! octave_env::absolute_pathname (nm))
+      if (! octave::sys::env::absolute_pathname (nm))
         {
           octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
@@ -4493,7 +4493,7 @@ not loaded anymore during the current Octave session.\n\
 
               if (! fname.empty ())
                 {
-                  fname = octave_env::make_absolute (fname);
+                  fname = octave::sys::env::make_absolute (fname);
                   fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
 
                   file_stat fs (fname + nm);
@@ -4568,7 +4568,7 @@ source_file (const std::string& file_name, const std::string& context,
 
   std::string file_full_name = file_ops::tilde_expand (file_name);
 
-  file_full_name = octave_env::make_absolute (file_full_name);
+  file_full_name = octave::sys::env::make_absolute (file_full_name);
 
   unwind_protect frame;
 
@@ -5484,7 +5484,7 @@ Undocumented internal function.\n\
 
   std::string file = args(0).xstring_value ("__parse_file__: expecting filename as argument");
 
-  std::string full_file = octave_env::make_absolute (file);
+  std::string full_file = octave::sys::env::make_absolute (file);
 
   size_t file_len = file.length ();
 
@@ -5492,7 +5492,7 @@ Undocumented internal function.\n\
       || (file_len > 4 && file.substr (file_len-4) == ".mex")
       || (file_len > 2 && file.substr (file_len-2) == ".m"))
     {
-      file = octave_env::base_pathname (file);
+      file = octave::sys::env::base_pathname (file);
       file = file.substr (0, file.find_last_of ('.'));
 
       size_t pos = file.find_last_of (file_ops::dir_sep_str ());

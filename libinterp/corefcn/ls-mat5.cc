@@ -907,7 +907,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         dir_path p (load_path::system_path ());
 
                         str =
-                          octave_env::make_absolute (p.find_first_of (names));
+                          octave::sys::env::make_absolute (p.find_first_of (names));
 
                         size_t xpos
                           = str.find_last_of (file_ops::dir_sep_chars ());

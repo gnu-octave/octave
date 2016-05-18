@@ -589,7 +589,7 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
   bool ok = false;
   bool addpath_option = true;
 
-  std::string curr_dir = octave_env::get_current_directory ();
+  std::string curr_dir = octave::sys::env::get_current_directory ();
 
   if (same_file (curr_dir, dir))
     ok = true;
@@ -600,7 +600,7 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
       // get base name, allowing "@class/method.m" (bug #41514)
       std::string base_file = (file.length () > dir.length ())
                               ? file.substr (dir.length () + 1)
-                              : octave_env::base_pathname (file);
+                              : octave::sys::env::base_pathname (file);
 
       std::string lp_file = load_path::find_file (base_file);
 

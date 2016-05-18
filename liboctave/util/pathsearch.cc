@@ -145,7 +145,7 @@ dir_path::init (void)
 
   if (! octave_kpathsea_initialized)
     {
-      std::string val = octave_env::getenv ("KPATHSEA_DEBUG");
+      std::string val = octave::sys::env::getenv ("KPATHSEA_DEBUG");
 
       if (! val.empty ())
         kpathsea_debug |= atoi (val.c_str ());

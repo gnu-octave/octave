@@ -77,13 +77,13 @@ default_history_file (void)
 {
   std::string file;
 
-  std::string env_file = octave_env::getenv ("OCTAVE_HISTFILE");
+  std::string env_file = octave::sys::env::getenv ("OCTAVE_HISTFILE");
 
   if (! env_file.empty ())
     file = env_file;
 
   if (file.empty ())
-    file = file_ops::concat (octave_env::get_home_directory (),
+    file = file_ops::concat (octave::sys::env::get_home_directory (),
                              ".octave_hist");
 
   return file;
@@ -94,7 +94,7 @@ default_history_size (void)
 {
   int size = 1000;
 
-  std::string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
+  std::string env_size = octave::sys::env::getenv ("OCTAVE_HISTSIZE");
 
   if (! env_size.empty ())
     {
@@ -112,9 +112,9 @@ default_history_timestamp_format (void)
 {
   return
     std::string ("# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <")
-    + octave_env::get_user_name ()
+    + octave::sys::env::get_user_name ()
     + std::string ("@")
-    + octave_env::get_host_name ()
+    + octave::sys::env::get_host_name ()
     + std::string (">");
 }
 
@@ -536,7 +536,7 @@ initialize_history (bool read_history_file)
   command_history::initialize (read_history_file,
                                default_history_file (),
                                default_history_size (),
-                               octave_env::getenv ("OCTAVE_HISTCONTROL"));
+                               octave::sys::env::getenv ("OCTAVE_HISTCONTROL"));
 
   octave_link::set_history (command_history::list ());
 }

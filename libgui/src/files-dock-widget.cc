@@ -823,7 +823,7 @@ files_dock_widget::notice_settings (const QSettings *settings)
 void
 files_dock_widget::popdownmenu_home (bool)
 {
-  QString dir = QString::fromStdString (octave_env::get_home_directory ());
+  QString dir = QString::fromStdString (octave::sys::env::get_home_directory ());
 
   if (dir.isEmpty ())
     dir = QDir::homePath ();

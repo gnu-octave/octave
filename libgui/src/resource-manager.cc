@@ -50,7 +50,7 @@ resource_manager *resource_manager::instance = 0;
 static QString
 default_qt_settings_file (void)
 {
-  std::string dsf = octave_env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
+  std::string dsf = octave::sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
   if (dsf.empty ())
     dsf = Voct_etc_dir + file_ops::dir_sep_str () + "default-qt-settings";
@@ -85,7 +85,7 @@ QString
 resource_manager::get_gui_translation_dir (void)
 {
   // get environment variable for the locale dir (e.g. from run-octave)
-  std::string dldir = octave_env::getenv ("OCTAVE_LOCALE_DIR");
+  std::string dldir = octave::sys::env::getenv ("OCTAVE_LOCALE_DIR");
   if (dldir.empty ())
     dldir = Voct_locale_dir; // env-var empty, load the default location
   return QString::fromStdString (dldir);

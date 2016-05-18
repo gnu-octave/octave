@@ -255,7 +255,7 @@ search_path_for_file (const std::string& path, const string_vector& names)
 {
   dir_path p (path);
 
-  return octave_env::make_absolute (p.find_first_of (names));
+  return octave::sys::env::make_absolute (p.find_first_of (names));
 }
 
 // Find all locations of the given file in the path.
@@ -270,7 +270,7 @@ search_path_for_all_files (const std::string& path, const string_vector& names)
   octave_idx_type len = sv.numel ();
 
   for (octave_idx_type i = 0; i < len; i++)
-    sv[i] = octave_env::make_absolute (sv[i]);
+    sv[i] = octave::sys::env::make_absolute (sv[i]);
 
   return sv;
 }
@@ -283,7 +283,7 @@ make_absolute (const string_vector& sv)
   string_vector retval (len);
 
   for (octave_idx_type i = 0; i < len; i++)
-    retval[i] = octave_env::make_absolute (sv[i]);
+    retval[i] = octave::sys::env::make_absolute (sv[i]);
 
   return retval;
 }
@@ -319,7 +319,7 @@ If no files are found, return an empty cell array.\n\
     error ("file_in_loadpath: FILE argument must not be empty");
 
   if (nargin == 1)
-    return ovl (octave_env::make_absolute (load_path::find_first_of (names)));
+    return ovl (octave::sys::env::make_absolute (load_path::find_first_of (names)));
   else
     {
       std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
@@ -432,7 +432,7 @@ file_in_path (const std::string& name, const std::string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return octave_env::make_absolute (load_path::find_file (nm));
+  return octave::sys::env::make_absolute (load_path::find_file (nm));
 }
 
 std::string
@@ -442,8 +442,8 @@ find_data_file_in_load_path  (const std::string& fcn,
 {
   std::string fname = file;
 
-  if (! (octave_env::absolute_pathname (fname)
-         || octave_env::rooted_relative_pathname (fname)))
+  if (! (octave::sys::env::absolute_pathname (fname)
+         || octave::sys::env::rooted_relative_pathname (fname)))
     {
       // Load path will also search "." first, but we don't want to
       // issue a warning if the file is found in the current directory,
@@ -457,7 +457,7 @@ find_data_file_in_load_path  (const std::string& fcn,
         {
           // Not directly found; search load path.
           std::string tmp
-            = octave_env::make_absolute (load_path::find_file (fname));
+            = octave::sys::env::make_absolute (load_path::find_file (fname));
 
           if (! tmp.empty ())
             {
@@ -483,7 +483,7 @@ fcn_file_in_path (const std::string& name)
 
   if (len > 0)
     {
-      if (octave_env::absolute_pathname (name))
+      if (octave::sys::env::absolute_pathname (name))
         {
           file_stat fs (name);
 
@@ -522,7 +522,7 @@ contents_file_in_path (const std::string& dir)
       file_stat fs (tcontents);
 
       if (fs.exists ())
-        retval = octave_env::make_absolute (tcontents);
+        retval = octave::sys::env::make_absolute (tcontents);
     }
 
   return retval;
@@ -541,7 +541,7 @@ oct_file_in_path (const std::string& name)
 
   if (len > 0)
     {
-      if (octave_env::absolute_pathname (name))
+      if (octave::sys::env::absolute_pathname (name))
         {
           file_stat fs (name);
 
@@ -570,7 +570,7 @@ mex_file_in_path (const std::string& name)
 
   if (len > 0)
     {
-      if (octave_env::absolute_pathname (name))
+      if (octave::sys::env::absolute_pathname (name))
         {
           file_stat fs (name);
 
@@ -903,7 +903,7 @@ Return true if @var{file} is an absolute filename.\n\
     print_usage ();
 
   return ovl (args(0).is_string ()
-              && octave_env::absolute_pathname (args(0).string_value ()));
+              && octave::sys::env::absolute_pathname (args(0).string_value ()));
 }
 
 /*
@@ -924,7 +924,7 @@ Return true if @var{file} is a rooted-relative filename.\n\
     print_usage ();
 
   return ovl (args(0).is_string ()
-              && octave_env::rooted_relative_pathname (args(0).string_value ()));
+              && octave::sys::env::rooted_relative_pathname (args(0).string_value ()));
 }
 
 /*
@@ -949,7 +949,7 @@ No check is done for the existence of @var{file}.\n\
 
   std::string nm = args(0).xstring_value ("make_absolute_filename: FILE argument must be a filename");
 
-  return ovl (octave_env::make_absolute (nm));
+  return ovl (octave::sys::env::make_absolute (nm));
 }
 
 /*

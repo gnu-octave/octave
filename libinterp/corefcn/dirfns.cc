@@ -73,7 +73,7 @@ octave_change_to_directory (const std::string& newdir)
 {
   std::string xdir = file_ops::tilde_expand (newdir);
 
-  int cd_ok = octave_env::chdir (xdir);
+  int cd_ok = octave::sys::env::chdir (xdir);
 
   if (! cd_ok)
     error ("%s: %s", newdir.c_str (), gnulib::strerror (errno));
@@ -85,7 +85,7 @@ octave_change_to_directory (const std::string& newdir)
 
   load_path::update ();
 
-  octave_link::change_directory (octave_env::get_current_directory ());
+  octave_link::change_directory (octave::sys::env::get_current_directory ());
 
   return cd_ok;
 }
@@ -128,7 +128,7 @@ present working directory rather than changing to the user's home directory.\n\
   octave_value_list retval;
 
   if (nargout > 0)
-    retval = octave_value (octave_env::get_current_directory ());
+    retval = octave_value (octave::sys::env::get_current_directory ());
 
   if (nargin == 1)
     {
@@ -139,7 +139,7 @@ present working directory rather than changing to the user's home directory.\n\
     }
   else
     {
-      std::string home_dir = octave_env::get_home_directory ();
+      std::string home_dir = octave::sys::env::get_home_directory ();
 
       if (! home_dir.empty ())
         octave_change_to_directory (home_dir);
@@ -158,7 +158,7 @@ Return the current working directory.\n\
 @seealso{cd, dir, ls, mkdir, rmdir}\n\
 @end deftypefn")
 {
-  return ovl (octave_env::get_current_directory ());
+  return ovl (octave::sys::env::get_current_directory ());
 }
 
 DEFUN (readdir, args, ,

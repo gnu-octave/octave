@@ -1247,7 +1247,7 @@ do_which (const std::string& name, std::string& type)
       else
         file = load_path::find_file (name);
 
-      file = octave_env::make_absolute (file);
+      file = octave::sys::env::make_absolute (file);
     }
 
 

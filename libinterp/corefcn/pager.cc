@@ -60,7 +60,7 @@ static std::ofstream external_diary_file;
 static std::string
 default_pager (void)
 {
-  std::string pager_binary = octave_env::getenv ("PAGER");
+  std::string pager_binary = octave::sys::env::getenv ("PAGER");
 
 #if defined (OCTAVE_DEFAULT_PAGER)
   if (pager_binary.empty ())

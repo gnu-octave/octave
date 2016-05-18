@@ -156,7 +156,7 @@ w32_set_octave_home (void)
       size_t pos = bin_dir.rfind ("\\bin\\");
 
       if (pos != std::string::npos)
-        octave_env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
+        octave::sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
     }
 }
 
@@ -576,10 +576,10 @@ get_P_tmpdir (void)
 
   if (retval.empty () || retval == "\\")
     {
-      retval = octave_env::getenv ("TEMP");
+      retval = octave::sys::env::getenv ("TEMP");
 
       if (retval.empty ())
-        retval = octave_env::getenv ("TMP");
+        retval = octave::sys::env::getenv ("TMP");
 
       if (retval.empty ())
         retval = "c:\\temp";
@@ -635,7 +635,7 @@ returns a string containing the value of your path.\n\
 
   std::string name = args(0).string_value ();
 
-  return ovl (octave_env::getenv (name));
+  return ovl (octave::sys::env::getenv (name));
 }
 
 /*
@@ -665,7 +665,7 @@ string.\n\
                      ? args(1).xstring_value ("setenv: VALUE must be a string")
                      : "");
 
-  octave_env::putenv (var, val);
+  octave::sys::env::putenv (var, val);
 
   return ovl ();
 }
@@ -927,7 +927,7 @@ equivalent to\n\
 @seealso{getenv}\n\
 @end deftypefn")
 {
-  return ovl (octave_env::get_home_directory ());
+  return ovl (octave::sys::env::get_home_directory ());
 }
 
 /*

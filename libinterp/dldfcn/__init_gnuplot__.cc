@@ -170,7 +170,7 @@ static bool
 have_gnuplot_binary (void)
 {
   const std::string exeext = octave::build_env::EXEEXT;
-  const std::string path = octave_env::getenv ("PATH");
+  const std::string path = octave::sys::env::getenv ("PATH");
 
   octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
   std::string gnuplot_binary = tmp(0).string_value ();

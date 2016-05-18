@@ -363,7 +363,7 @@ initial_java_dir (void)
 
   if (java_dir.empty ())
     {
-      java_dir = octave_env::getenv ("OCTAVE_JAVA_DIR");
+      java_dir = octave::sys::env::getenv ("OCTAVE_JAVA_DIR");
 
       if (java_dir.empty ())
         java_dir = Vfcn_file_dir + file_ops::dir_sep_str () + "java";
@@ -446,8 +446,8 @@ initial_class_path (void)
           // 2) User's home directory
           // 3) Octave installation directory where octave.jar resides
 
-          std::string cwd = octave_env::get_current_directory ();
-          std::string home_dir = octave_env::get_home_directory ();
+          std::string cwd = octave::sys::env::get_current_directory ();
+          std::string home_dir = octave::sys::env::get_home_directory ();
 
           // The filename is "javaclasspath.txt", but historically
           // has been "classpath.txt" so both are supported.
@@ -559,7 +559,7 @@ initialize_jvm (void)
 
       key = "software\\javasoft\\java runtime environment";
 
-      value = octave_env::getenv ("JAVA_VERSION");
+      value = octave::sys::env::getenv ("JAVA_VERSION");
       if (value.empty ())
         {
           value = "Currentversion";
@@ -588,10 +588,10 @@ initialize_jvm (void)
         {
           jvm_bin_path = (jvm_bin_path + std::string ("\\bin"));
 
-          old_cwd = octave_env::get_current_directory ();
+          old_cwd = octave::sys::env::get_current_directory ();
 
           set_dll_directory (jvm_bin_path);
-          octave_env::chdir (jvm_bin_path);
+          octave::sys::env::chdir (jvm_bin_path);
         }
     }
 
@@ -621,7 +621,7 @@ initialize_jvm (void)
   set_dll_directory ();
 
   if (! old_cwd.empty ())
-    octave_env::chdir (old_cwd);
+    octave::sys::env::chdir (old_cwd);
 
 #endif
 

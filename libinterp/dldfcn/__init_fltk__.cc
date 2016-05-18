@@ -841,7 +841,7 @@ public:
 
 #if defined (HAVE_X_WINDOWS)
         std::string show_gui_msgs
-          = octave_env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+          = octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
         // Installing our handler suppresses the messages.
         if (show_gui_msgs.empty ())

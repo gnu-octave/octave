@@ -1003,7 +1003,7 @@ Return the hostname of the system where Octave is running.\n\
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_env::get_host_name ());
+  return ovl (octave::sys::env::get_host_name ());
 }
 
 DEFUN (uname, args, ,

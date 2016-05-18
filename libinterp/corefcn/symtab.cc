@@ -249,7 +249,7 @@ out_of_date_check (octave_value& function,
                     {
                       int nm_len = nm.length ();
 
-                      if (octave_env::absolute_pathname (nm)
+                      if (octave::sys::env::absolute_pathname (nm)
                           && ((nm_len > 4
                                && (nm.substr (nm_len-4) == ".oct"
                                    || nm.substr (nm_len-4) == ".mex"))

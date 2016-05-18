@@ -35,7 +35,7 @@ namespace
 octave
 {
   namespace
-  syscalls
+  sys
   {
     extern OCTAVE_API int dup2 (int, int);
     extern OCTAVE_API int dup2 (int, int, std::string&);

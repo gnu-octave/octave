@@ -50,13 +50,13 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   namespace
-  syscalls
+  sys
   {
     int
     dup2 (int old_fd, int new_fd)
     {
       std::string msg;
-      return octave::syscalls::dup2 (old_fd, new_fd, msg);
+      return octave::sys::dup2 (old_fd, new_fd, msg);
     }
 
     int
@@ -82,7 +82,7 @@ namespace octave
     execvp (const std::string& file, const string_vector& argv)
     {
       std::string msg;
-      return octave::syscalls::execvp (file, argv, msg);
+      return octave::sys::execvp (file, argv, msg);
     }
 
     int
@@ -228,7 +228,7 @@ namespace octave
     pipe (int *fildes)
     {
       std::string msg;
-      return octave::syscalls::pipe (fildes, msg);
+      return octave::sys::pipe (fildes, msg);
     }
 
     int
@@ -250,7 +250,7 @@ namespace octave
     waitpid (pid_t pid, int *status, int options)
     {
       std::string msg;
-      return octave::syscalls::waitpid (pid, status, options, msg);
+      return octave::sys::waitpid (pid, status, options, msg);
     }
 
     pid_t
@@ -276,7 +276,7 @@ namespace octave
     kill (pid_t pid, int sig)
     {
       std::string msg;
-      return octave::syscalls::kill (pid, sig, msg);
+      return octave::sys::kill (pid, sig, msg);
     }
 
     int
@@ -304,7 +304,7 @@ namespace octave
     {
       std::string msg;
       bool interactive = false;
-      return octave::syscalls::popen2 (cmd, args, sync_mode, fildes, msg,
+      return octave::sys::popen2 (cmd, args, sync_mode, fildes, msg,
                                        interactive);
     }
 
@@ -313,7 +313,7 @@ namespace octave
             bool sync_mode, int *fildes, std::string& msg)
     {
       bool interactive = false;
-      return octave::syscalls::popen2 (cmd, args, sync_mode, fildes, msg,
+      return octave::sys::popen2 (cmd, args, sync_mode, fildes, msg,
                                        interactive);
     }
 
@@ -372,7 +372,7 @@ namespace octave
 
 #if defined (F_SETFL) && defined (O_NONBLOCK)
                   if (! sync_mode
-                      && octave::syscalls::fcntl (child_stdout[0], F_SETFL,
+                      && octave::sys::fcntl (child_stdout[0], F_SETFL,
                                                   O_NONBLOCK, msg) < 0)
                     msg = "popen2: error setting file mode -- " + msg;
                   else
@@ -403,7 +403,7 @@ namespace octave
     fcntl (int fd, int cmd, long arg)
     {
       std::string msg;
-      return octave::syscalls::fcntl (fd, cmd, arg, msg);
+      return octave::sys::fcntl (fd, cmd, arg, msg);
     }
 
     int

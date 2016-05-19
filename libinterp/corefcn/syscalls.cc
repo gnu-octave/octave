@@ -60,7 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 
 static octave_scalar_map
-mk_stat_map (const base_octave::sys::file_stat& fs)
+mk_stat_map (const octave::sys::base_file_stat& fs)
 {
   octave_scalar_map m;
 
@@ -89,7 +89,7 @@ mk_stat_map (const base_octave::sys::file_stat& fs)
 }
 
 static octave_value_list
-mk_stat_result (const base_octave::sys::file_stat& fs)
+mk_stat_result (const octave::sys::base_file_stat& fs)
 {
   if (fs)
     return ovl (octave_value (mk_stat_map (fs)), 0, "");
@@ -852,7 +852,7 @@ For example:\n\
     {
       int fid = octave_stream_list::get_file_number (args(0));
 
-      file_fstat fs (fid);
+      octave::sys::file_fstat fs (fid);
 
       retval = mk_stat_result (fs);
     }

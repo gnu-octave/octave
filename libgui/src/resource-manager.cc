@@ -53,7 +53,7 @@ default_qt_settings_file (void)
   std::string dsf = octave::sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
   if (dsf.empty ())
-    dsf = Voct_etc_dir + file_ops::dir_sep_str () + "default-qt-settings";
+    dsf = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () + "default-qt-settings";
 
   return QString::fromStdString (dsf);
 }

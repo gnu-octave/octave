@@ -83,7 +83,7 @@ default_history_file (void)
     file = env_file;
 
   if (file.empty ())
-    file = file_ops::concat (octave::sys::env::get_home_directory (),
+    file = octave::sys::file_ops::concat (octave::sys::env::get_home_directory (),
                              ".octave_hist");
 
   return file;
@@ -411,7 +411,7 @@ mk_tmp_hist_file (const octave_value_list& args,
       reverse = true;
     }
 
-  std::string name = octave_tempnam ("", "oct-");
+  std::string name = octave::sys::tempnam ("", "oct-");
 
   std::fstream file (name.c_str (), std::ios::out);
 

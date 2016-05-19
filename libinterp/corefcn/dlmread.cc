@@ -213,7 +213,7 @@ such as text, are also replaced by the @qcode{\"emptyvalue\"}.\n\
       // Filename.
       std::string fname (args(0).string_value ());
 
-      std::string tname = file_ops::tilde_expand (fname);
+      std::string tname = octave::sys::file_ops::tilde_expand (fname);
 
       tname = find_data_file_in_load_path ("dlmread", tname);
 

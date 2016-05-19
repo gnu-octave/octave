@@ -516,7 +516,7 @@ contents_file_in_path (const std::string& dir)
 
   if (dir.length () > 0)
     {
-      std::string tcontents = file_ops::concat (load_path::find_dir (dir),
+      std::string tcontents = octave::sys::file_ops::concat (load_path::find_dir (dir),
                                                 std::string ("Contents.m"));
 
       file_stat fs (tcontents);

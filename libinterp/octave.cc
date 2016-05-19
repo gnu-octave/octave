@@ -203,7 +203,7 @@ intern_argv (int argc, char **argv)
 static void
 execute_pkg_add (const std::string& dir)
 {
-  std::string file_name = file_ops::concat (dir, "PKG_ADD");
+  std::string file_name = octave::sys::file_ops::concat (dir, "PKG_ADD");
 
   try
     {
@@ -490,7 +490,7 @@ execute_command_line_file (const std::string& fname)
 
   octave_program_invocation_name = fname;
 
-  size_t pos = fname.find_last_of (file_ops::dir_sep_chars ());
+  size_t pos = fname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
   octave_program_name
     = (pos != std::string::npos) ? fname.substr (pos+1) : fname;

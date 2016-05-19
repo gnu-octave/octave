@@ -293,7 +293,7 @@ looks_like_struct (const std::string& text)
 {
   bool retval = (! text.empty ()
                  && text != "."
-                 && text.find_first_of (file_ops::dir_sep_chars ()) == std::string::npos
+                 && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
                  && text.find ("..") == std::string::npos
                  && text.rfind ('.') != std::string::npos);
 

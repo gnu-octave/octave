@@ -48,20 +48,20 @@ along with Octave; see the file COPYING.  If not, see
 void
 base_url_transfer::delete_file (const std::string& file)
 {
-  octave_unlink (file);
+  octave::sys::unlink (file);
 }
 
 void
 base_url_transfer::mget_directory (const std::string& directory,
                                    const std::string& target)
 {
-  std::string sep = file_ops::dir_sep_str ();
+  std::string sep = octave::sys::file_ops::dir_sep_str ();
   file_stat fs (directory);
 
   if (! fs || ! fs.is_dir ())
     {
       std::string msg;
-      int status = octave_mkdir (directory, 0777, msg);
+      int status = octave::sys::mkdir (directory, 0777, msg);
 
       if (status < 0)
         {
@@ -132,7 +132,7 @@ base_url_transfer::mput_directory (const std::string& base,
 
   std::string realdir
     = (base.length () == 0
-       ? directory : base + file_ops::dir_sep_str () + directory);
+       ? directory : base + octave::sys::file_ops::dir_sep_str () + directory);
 
   mkdir (directory);
 
@@ -160,7 +160,7 @@ base_url_transfer::mput_directory (const std::string& base,
               if (file == "." || file == "..")
                 continue;
 
-              std::string realfile = realdir + file_ops::dir_sep_str () + file;
+              std::string realfile = realdir + octave::sys::file_ops::dir_sep_str () + file;
               file_stat fs (realfile);
 
               if (! fs.exists ())

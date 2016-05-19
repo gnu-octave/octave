@@ -494,7 +494,7 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
   std::string fname = find_data_file_in_load_path ("load", name, true);
 
   size_t dot_pos = fname.rfind (".");
-  size_t sep_pos = fname.find_last_of (file_ops::dir_sep_chars ());
+  size_t sep_pos = fname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
   if (dot_pos == std::string::npos
       || (sep_pos != std::string::npos && dot_pos < sep_pos))
@@ -749,7 +749,7 @@ Force Octave to assume the file is in Octave's text format.\n\
     }
   else
     {
-      std::string fname = file_ops::tilde_expand (orig_fname);
+      std::string fname = octave::sys::file_ops::tilde_expand (orig_fname);
 
       fname = find_file_to_load (fname, orig_fname);
 
@@ -1634,7 +1634,7 @@ the file @file{data} in Octave's binary format.\n\
     print_usage ();
   else
     {
-      std::string fname = file_ops::tilde_expand (argv[i]);
+      std::string fname = octave::sys::file_ops::tilde_expand (argv[i]);
 
       i++;
 

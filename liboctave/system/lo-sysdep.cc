@@ -68,7 +68,7 @@ octave_getcwd (void)
 int
 octave_chdir (const std::string& path_arg)
 {
-  std::string path = file_ops::tilde_expand (path_arg);
+  std::string path = octave::sys::file_ops::tilde_expand (path_arg);
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
   if (path.length () == 2 && path[1] == ':')

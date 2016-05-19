@@ -366,7 +366,7 @@ initial_java_dir (void)
       java_dir = octave::sys::env::getenv ("OCTAVE_JAVA_DIR");
 
       if (java_dir.empty ())
-        java_dir = Vfcn_file_dir + file_ops::dir_sep_str () + "java";
+        java_dir = Vfcn_file_dir + octave::sys::file_ops::dir_sep_str () + "java";
     }
 
   return java_dir;
@@ -410,7 +410,7 @@ read_classpath_txt (const std::string& filepath)
                   // append content of line without whitespace
                   int last = line.find_last_not_of (" \t\f\v\r\n");
 
-                  classpath.append (file_ops::tilde_expand (line.substr (0, last+1)));
+                  classpath.append (octave::sys::file_ops::tilde_expand (line.substr (0, last+1)));
                 }
             }
         }
@@ -429,7 +429,7 @@ initial_class_path (void)
   // find octave.jar file
   if (! retval.empty ())
     {
-      std::string sep = file_ops::dir_sep_str ();
+      std::string sep = octave::sys::file_ops::dir_sep_str ();
 
       std::string jar_file = java_dir + sep + "octave.jar";
 
@@ -474,7 +474,7 @@ initial_class_path (void)
               if (cwd != home_dir)
                 {
                   cp_file = "~" + sep + filename;
-                  cp_file = file_ops::tilde_expand (cp_file);
+                  cp_file = octave::sys::file_ops::tilde_expand (cp_file);
                   cp_exists = file_stat (cp_file);
                   if (cp_exists)
                     {
@@ -686,7 +686,7 @@ initialize_jvm (void)
       vm_args.add ("-Djava.class.path=" + initial_class_path ());
       vm_args.add ("-Xrs");
       vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
-      vm_args.read_java_opts (initial_java_dir () + file_ops::dir_sep_str () +
+      vm_args.read_java_opts (initial_java_dir () + octave::sys::file_ops::dir_sep_str () +
                               "java.opts");
 
 #if ! defined (__APPLE__) && ! defined (__MACH__)

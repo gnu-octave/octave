@@ -71,7 +71,7 @@ octave::sys::time Vlast_chdir_time = 0.0;
 static int
 octave_change_to_directory (const std::string& newdir)
 {
-  std::string xdir = file_ops::tilde_expand (newdir);
+  std::string xdir = octave::sys::file_ops::tilde_expand (newdir);
 
   int cd_ok = octave::sys::env::chdir (xdir);
 
@@ -218,12 +218,12 @@ Internal function called by mkdir.m.\n\
       std::string parent = args(0).xstring_value ("mkdir: PARENT must be a string");
       std::string dir = args(1).xstring_value ("mkdir: DIR must be a string");
 
-      dirname = file_ops::concat (parent, dir);
+      dirname = octave::sys::file_ops::concat (parent, dir);
     }
   else if (nargin == 1)
     dirname = args(0).xstring_value ("mkdir: DIR must be a string");
 
-  dirname = file_ops::tilde_expand (dirname);
+  dirname = octave::sys::file_ops::tilde_expand (dirname);
 
   file_stat fs (dirname);
 
@@ -236,7 +236,7 @@ Internal function called by mkdir.m.\n\
     {
       std::string msg;
 
-      int status = octave_mkdir (dirname, 0777, msg);
+      int status = octave::sys::mkdir (dirname, 0777, msg);
 
       if (status < 0)
         return ovl (false, msg, "mkdir");
@@ -270,7 +270,7 @@ identifier.\n\
 
   std::string dirname = args(0).xstring_value ("rmdir: DIR must be a string");
 
-  std::string fulldir = file_ops::tilde_expand (dirname);
+  std::string fulldir = octave::sys::file_ops::tilde_expand (dirname);
   int status = -1;
   std::string msg;
 
@@ -289,10 +289,10 @@ identifier.\n\
         }
 
       if (doit)
-        status = octave_recursive_rmdir (fulldir, msg);
+        status = octave::sys::recursive_rmdir (fulldir, msg);
     }
   else
-    status = octave_rmdir (fulldir, msg);
+    status = octave::sys::rmdir (fulldir, msg);
 
   if (status < 0)
     return ovl (false, msg, "rmdir");
@@ -320,7 +320,7 @@ error message.\n\
 
   std::string msg;
 
-  int status = octave_link (from, to, msg);
+  int status = octave::sys::link (from, to, msg);
 
   if (status < 0)
     return ovl (-1.0, msg);
@@ -348,7 +348,7 @@ error message.\n\
 
   std::string msg;
 
-  int status = octave_symlink (from, to, msg);
+  int status = octave::sys::symlink (from, to, msg);
 
   if (status < 0)
     return ovl (-1.0, msg);
@@ -376,7 +376,7 @@ error message.\n\
 
   std::string result, msg;
 
-  int status = octave_readlink (symlink, result, msg);
+  int status = octave::sys::readlink (symlink, result, msg);
 
   if (status < 0)
     return ovl ("", -1.0, msg);
@@ -404,7 +404,7 @@ error message.\n\
 
   std::string msg;
 
-  int status = octave_rename (from, to, msg);
+  int status = octave::sys::rename (from, to, msg);
 
   if (status < 0)
     return ovl (-1.0, msg);
@@ -468,7 +468,7 @@ glob (\"file[12]\")\n\
 
   string_vector pat = args(0).xstring_vector_value ("glob: PATTERN must be a string");
 
-  glob_match pattern (file_ops::tilde_expand (pat));
+  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
 
   return ovl (Cell (pattern.glob ()));
 }
@@ -529,7 +529,7 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
   string_vector pat = args(0).string_vector_value ();
   string_vector str = args(1).string_vector_value ();
 
-  glob_match pattern (file_ops::tilde_expand (pat));
+  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
 
   return ovl (pattern.match (str));
 }
@@ -555,14 +555,14 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
   octave_value retval;
 
   if (nargin == 0)
-    retval = file_ops::dir_sep_str ();
+    retval = octave::sys::file_ops::dir_sep_str ();
   else
     {
       std::string s = args(0).xstring_value ("filesep: argument must be a string");
       if (s != "all")
         error ("filesep: argument must be \"all\"");
 
-      retval = file_ops::dir_sep_chars ();
+      retval = octave::sys::file_ops::dir_sep_chars ();
     }
 
   return retval;

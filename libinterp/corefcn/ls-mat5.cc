@@ -881,7 +881,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     if (fs.exists ())
                       {
                         size_t xpos
-                          = str.find_last_of (file_ops::dir_sep_chars ());
+                          = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                         std::string dir_name = str.substr (0, xpos);
 
@@ -910,7 +910,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                           octave::sys::env::make_absolute (p.find_first_of (names));
 
                         size_t xpos
-                          = str.find_last_of (file_ops::dir_sep_chars ());
+                          = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                         std::string dir_name = str.substr (0, xpos);
 
@@ -935,7 +935,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 else
                   {
                     size_t xpos
-                      = fpath.find_last_of (file_ops::dir_sep_chars ());
+                      = fpath.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                     std::string dir_name = fpath.substr (0, xpos);
 

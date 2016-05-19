@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 delete_file (const std::string& file)
 {
-  octave_unlink (file);
+  octave::sys::unlink (file);
 }
 
 typedef octave_handle curl_handle;
@@ -809,7 +809,7 @@ Undocumented internal function\n\
 
   string_vector file_list;
 
-  glob_match pattern (file_ops::tilde_expand (pat));
+  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
   string_vector files = pattern.glob ();
 
   for (octave_idx_type i = 0; i < files.numel (); i++)
@@ -870,7 +870,7 @@ Undocumented internal function\n\
   std::string target;
 
   if (nargin == 3 && ! args(2).is_empty ())
-    target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string") + file_ops::dir_sep_str ();
+    target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string") + octave::sys::file_ops::dir_sep_str ();
 
   url_transfer curl = ch_manager::get_object (args(0));
 

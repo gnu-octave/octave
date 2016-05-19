@@ -274,8 +274,8 @@ exit status, it will linger until Octave exits.\n\
   std::string msg;
   pid_t pid;
 
-  pid = octave::sys::popen2 (exec_file, arg_list, sync_mode,
-                                 filedesc, msg, interactive);
+  pid = octave::sys::popen2 (exec_file, arg_list, sync_mode, filedesc,
+                             msg, interactive);
   if (pid < 0)
     error (msg.c_str ());
 
@@ -689,7 +689,7 @@ error message.\n\
 
   std::string msg;
 
-  int status = octave_mkfifo (name, mode, msg);
+  int status = octave::sys::mkfifo (name, mode, msg);
 
   return ovl (status, msg);
 }
@@ -1065,7 +1065,7 @@ error message.\n\
 
   std::string msg;
 
-  int status = octave_unlink (name, msg);
+  int status = octave::sys::unlink (name, msg);
 
   return ovl (status, msg);
 }
@@ -1294,7 +1294,7 @@ If the file does not exist the empty string (\"\") is returned.\n\
 
   std::string msg;
 
-  std::string result = octave_canonicalize_file_name (name, msg);
+  std::string result = octave::sys::canonicalize_file_name (name, msg);
 
   return ovl (result, msg.empty () ? 0 : -1, msg);
 }

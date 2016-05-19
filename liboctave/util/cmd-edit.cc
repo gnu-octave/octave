@@ -1473,7 +1473,7 @@ command_editor::read_init_file (const std::string& file_arg)
 {
   if (instance_ok ())
     {
-      std::string file = file_ops::tilde_expand (file_arg);
+      std::string file = octave::sys::file_ops::tilde_expand (file_arg);
 
       instance->do_read_init_file (file);
     }

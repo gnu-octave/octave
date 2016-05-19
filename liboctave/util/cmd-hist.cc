@@ -550,7 +550,7 @@ command_history::set_file (const std::string& f_arg)
 {
   if (instance_ok ())
     {
-      std::string f = file_ops::tilde_expand (f_arg);
+      std::string f = octave::sys::file_ops::tilde_expand (f_arg);
 
       instance->do_set_file (f);
     }

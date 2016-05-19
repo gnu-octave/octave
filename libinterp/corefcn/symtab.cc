@@ -397,7 +397,7 @@ symbol_table::fcn_info::fcn_info_rep::load_private_function
         {
           std::string class_name;
 
-          size_t pos = dir_name.find_last_of (file_ops::dir_sep_chars ());
+          size_t pos = dir_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           if (pos != std::string::npos)
             {
@@ -1057,7 +1057,7 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 
       if (! file_name.empty ())
         {
-          size_t pos = file_name.find_last_of (file_ops::dir_sep_chars ());
+          size_t pos = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           std::string dir_name = file_name.substr (0, pos);
 
@@ -1283,10 +1283,10 @@ symbol_table::find_function (const std::string& name,
     {
       // Look for a class specific function.
       std::string dispatch_type =
-        name.substr (1, name.find_first_of (file_ops::dir_sep_str ()) - 1);
+        name.substr (1, name.find_first_of (octave::sys::file_ops::dir_sep_str ()) - 1);
 
       std::string method;
-      size_t pos = name.find_last_of (file_ops::dir_sep_str ());
+      size_t pos = name.find_last_of (octave::sys::file_ops::dir_sep_str ());
       if (pos != std::string::npos)
         method = name.substr (pos + 1);
 
@@ -1333,7 +1333,7 @@ symbol_table::find_submethod (const std::string& name,
 {
   octave_value fcn;
 
-  std::string full_name = "@" + dispatch_type + file_ops::dir_sep_str () + name;
+  std::string full_name = "@" + dispatch_type + octave::sys::file_ops::dir_sep_str () + name;
   size_t pos = full_name.find_first_of (Vfilemarker);
 
   if (pos != std::string::npos)

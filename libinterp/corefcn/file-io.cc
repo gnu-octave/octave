@@ -450,7 +450,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
   oct_mach_info::float_format flt_fmt =
     oct_mach_info::string_to_float_format (arch);
 
-  std::string fname = file_ops::tilde_expand (name);
+  std::string fname = octave::sys::file_ops::tilde_expand (name);
 
   file_stat fs (fname);
 
@@ -2765,7 +2765,7 @@ see @code{tmpfile}.\n\
   if (nargin > 1)
     pfx = args(1).xstring_value ("tempname: PREFIX must be a string");
 
-  return ovl (octave_tempnam (dir, pfx));
+  return ovl (octave::sys::tempnam (dir, pfx));
 }
 
 /*
@@ -2996,7 +2996,7 @@ for the new object are @code{@var{mode} - @var{mask}}.\n\
 
   int oct_mask = convert (mask, 8, 10);
 
-  int status = convert (octave_umask (oct_mask), 10, 8);
+  int status = convert (octave::sys::umask (oct_mask), 10, 8);
 
   if (status >= 0)
     return ovl (status);

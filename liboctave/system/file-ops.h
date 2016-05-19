@@ -31,165 +31,344 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
-struct
-OCTAVE_API
-file_ops
+namespace
+octave
 {
-public:
-
-  // Use a singleton class for dir_sep data members instead of just
-  // making them static members of the dir_path class so that we can
-  // ensure proper initialization.
-
-  file_ops (char dir_sep_char_arg = 0,
-            const std::string& dir_sep_str_arg = std::string ("/"),
-            const std::string& dir_sep_chars_arg = std::string ("/"))
-    : xdir_sep_char (dir_sep_char_arg), xdir_sep_str (dir_sep_str_arg),
-      xdir_sep_chars (dir_sep_chars_arg) { }
-
-  typedef std::string (*tilde_expansion_hook) (const std::string&);
-
-  static tilde_expansion_hook tilde_expansion_preexpansion_hook;
-
-  static tilde_expansion_hook tilde_expansion_failure_hook;
-
-  static string_vector tilde_additional_prefixes;
-
-  static string_vector tilde_additional_suffixes;
-
-  static char dir_sep_char (void)
+  namespace
+  sys
   {
-    return instance_ok () ? instance->xdir_sep_char : 0;
+    struct
+    OCTAVE_API
+    file_ops
+    {
+    public:
+
+      // Use a singleton class for dir_sep data members instead of just
+      // making them static members of the dir_path class so that we can
+      // ensure proper initialization.
+
+      file_ops (char dir_sep_char_arg = 0,
+                const std::string& dir_sep_str_arg = std::string ("/"),
+                const std::string& dir_sep_chars_arg = std::string ("/"))
+        : m_dir_sep_char (dir_sep_char_arg), m_dir_sep_str (dir_sep_str_arg),
+          m_dir_sep_chars (dir_sep_chars_arg) { }
+
+      typedef std::string (*tilde_expansion_hook) (const std::string&);
+
+      static tilde_expansion_hook tilde_expansion_preexpansion_hook;
+
+      static tilde_expansion_hook tilde_expansion_failure_hook;
+
+      static string_vector tilde_additional_prefixes;
+
+      static string_vector tilde_additional_suffixes;
+
+      static char dir_sep_char (void)
+      {
+        return instance_ok () ? instance->m_dir_sep_char : 0;
+      }
+
+      static std::string dir_sep_str (void)
+      {
+        return instance_ok () ? instance->m_dir_sep_str : "";
+      }
+
+      static std::string dir_sep_chars (void)
+      {
+        return instance_ok () ? instance->m_dir_sep_chars : "";
+      }
+
+      static bool is_dir_sep (char c)
+      {
+        std::string tmp = dir_sep_chars ();
+        return tmp.find (c) != std::string::npos;
+      }
+
+      static std::string tilde_expand (const std::string&);
+
+      static string_vector tilde_expand (const string_vector&);
+
+      static std::string concat (const std::string&, const std::string&);
+
+      // Return the tail member of a filename.
+      static std::string tail (const std::string& path)
+      {
+        size_t ipos = path.find_last_of (dir_sep_chars ());
+
+        if (ipos != std::string::npos)
+          ipos++;
+        else
+          ipos = 0;
+
+        return path.substr (ipos);
+      }
+
+      // convert path from UNIX type separators to whatever is the system separators
+      static std::string native_separator_path (const std::string& path);
+
+    private:
+
+      static file_ops *instance;
+
+      static void cleanup_instance (void) { delete instance; instance = 0; }
+
+      // No copying!
+
+      file_ops (const file_ops&);
+
+      file_ops& operator = (const file_ops&);
+
+      static bool instance_ok (void);
+
+      char m_dir_sep_char;
+      std::string m_dir_sep_str;
+      std::string m_dir_sep_chars;
+    };
+
+    // We don't have these in the file_ops class with their simple names
+    // (i.e., mkdir instead of octave_mdir) because function names in
+    // standard headers may be #defined.
+
+    extern OCTAVE_API int
+    mkdir (const std::string&, mode_t);
+
+    extern OCTAVE_API int
+    mkdir (const std::string&, mode_t, std::string&);
+
+    extern OCTAVE_API int
+    mkfifo (const std::string&, mode_t);
+
+    extern OCTAVE_API int
+    mkfifo (const std::string&, mode_t, std::string&);
+
+    extern OCTAVE_API int
+    link (const std::string&, const std::string&);
+
+    extern OCTAVE_API int
+    link (const std::string&, const std::string&, std::string&);
+
+    extern OCTAVE_API int
+    symlink (const std::string&, const std::string&);
+
+    extern OCTAVE_API int
+    symlink (const std::string&, const std::string&, std::string&);
+
+    extern OCTAVE_API int
+    readlink (const std::string&, std::string&);
+
+    extern OCTAVE_API int
+    readlink (const std::string&, std::string&, std::string&);
+
+    extern OCTAVE_API int
+    rename (const std::string&, const std::string&);
+
+    extern OCTAVE_API int
+    rename (const std::string&, const std::string&, std::string&);
+
+    extern OCTAVE_API int
+    rmdir (const std::string&);
+
+    extern OCTAVE_API int
+    rmdir (const std::string&, std::string&);
+
+    extern OCTAVE_API int
+    recursive_rmdir (const std::string&);
+
+    extern OCTAVE_API int
+    recursive_rmdir (const std::string&, std::string&);
+
+    extern OCTAVE_API int
+    umask (mode_t);
+
+    extern OCTAVE_API int
+    unlink (const std::string&);
+
+    extern OCTAVE_API int
+    unlink (const std::string&, std::string&);
+
+    extern OCTAVE_API std::string
+    tempnam (const std::string&, const std::string&);
+
+    extern OCTAVE_API std::string
+    tempnam (const std::string&, const std::string&, std::string&);
+
+    extern OCTAVE_API std::string
+    canonicalize_file_name (const std::string&);
+
+    extern OCTAVE_API std::string
+    canonicalize_file_name (const std::string&, std::string&);
   }
+}
 
-  static std::string dir_sep_str (void)
-  {
-    return instance_ok () ? instance->xdir_sep_str : "";
-  }
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  static std::string dir_sep_chars (void)
-  {
-    return instance_ok () ? instance->xdir_sep_chars : "";
-  }
+OCTAVE_DEPRECATED ("use octave::sys::file_ops instead")
+  typedef octave::sys::file_ops file_ops;
 
-  static bool is_dir_sep (char c)
-  {
-    std::string tmp = dir_sep_chars ();
-    return tmp.find (c) != std::string::npos;
-  }
+OCTAVE_DEPRECATED ("use octave::sys::mkdir instead")
+inline int
+octave_mkdir (const std::string& nm, mode_t md)
+{
+  return octave::sys::mkdir (nm, md);
+}
 
-  static std::string tilde_expand (const std::string&);
+OCTAVE_DEPRECATED ("use octave::sys::mkdir instead")
+inline int
+octave_mkdir (const std::string& nm, mode_t md, std::string& msg)
+{
+  return octave::sys::mkdir (nm, md, msg);
+}
 
-  static string_vector tilde_expand (const string_vector&);
+OCTAVE_DEPRECATED ("use octave::sys::mkfifo instead")
+inline int
+octave_mkfifo (const std::string& nm, mode_t md)
+{
+  return octave::sys::mkfifo (nm, md);
+}
 
-  static std::string concat (const std::string&, const std::string&);
+OCTAVE_DEPRECATED ("use octave::sys::mkfifo instead")
+inline int
+octave_mkfifo (const std::string& nm, mode_t md, std::string& msg)
+{
+  return octave::sys::mkfifo (nm, md, msg);
+}
 
-  // Return the tail member of a filename.
-  static std::string tail (const std::string& path)
-  {
-    size_t ipos = path.find_last_of (dir_sep_chars ());
+OCTAVE_DEPRECATED ("use octave::sys::link instead")
+inline int
+octave_link (const std::string& old_name, const std::string& new_name)
+{
+  return octave::sys::link (old_name, new_name);
+}
 
-    if (ipos != std::string::npos)
-      ipos++;
-    else
-      ipos = 0;
+OCTAVE_DEPRECATED ("use octave::sys::link instead")
+inline int
+octave_link (const std::string& old_name, const std::string& new_name,
+             std::string& msg)
+{
+  return octave::sys::link (old_name, new_name, msg);
+}
 
-    return path.substr (ipos);
-  }
+OCTAVE_DEPRECATED ("use octave::sys::symlink instead")
+inline int
+octave_symlink (const std::string& old_name, const std::string& new_name)
+{
+  return octave::sys::symlink (old_name, new_name);
+}
 
-  // convert path from UNIX type separators to whatever is the system separators
-  static std::string native_separator_path (const std::string& path);
+OCTAVE_DEPRECATED ("use octave::sys::symlink instead")
+inline int
+octave_symlink (const std::string& old_name, const std::string& new_name,
+                std::string& msg)
+{
+  return octave::sys::symlink (old_name, new_name, msg);
+}
 
-private:
+OCTAVE_DEPRECATED ("use octave::sys::readlink instead")
+inline int
+octave_readlink (const std::string& path, std::string& result)
+{
+  return octave::sys::readlink (path, result);
+}
 
-  static file_ops *instance;
+OCTAVE_DEPRECATED ("use octave::sys::readlink instead")
+inline int
+octave_readlink (const std::string& path, std::string& result, std::string& msg)
+{
+  return octave::sys::readlink (path, result, msg);
+}
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+OCTAVE_DEPRECATED ("use octave::sys::rename instead")
+inline int
+octave_rename (const std::string& from, const std::string& to)
+{
+  return octave::sys::rename (from, to);
+}
 
-  // No copying!
+OCTAVE_DEPRECATED ("use octave::sys::rename instead")
+inline int
+octave_rename (const std::string& from, const std::string& to, std::string& msg)
+{
+  return octave::sys::rename (from, to, msg);
+}
 
-  file_ops (const file_ops&);
+OCTAVE_DEPRECATED ("use octave::sys::rmdir instead")
+inline int
+octave_rmdir (const std::string& nm)
+{
+  return octave::sys::rmdir (nm);
+}
 
-  file_ops& operator = (const file_ops&);
+OCTAVE_DEPRECATED ("use octave::sys::rmdir instead")
+inline int
+octave_rmdir (const std::string& nm, std::string& msg)
+{
+  return octave::sys::rmdir (nm, msg);
+}
 
-  static bool instance_ok (void);
+OCTAVE_DEPRECATED ("use octave::sys::recursive_rmdir instead")
+inline int
+octave_recursive_rmdir (const std::string& nm)
+{
+  return octave::sys::recursive_rmdir (nm);
+}
 
-  char xdir_sep_char;
-  std::string xdir_sep_str;
-  std::string xdir_sep_chars;
-};
+OCTAVE_DEPRECATED ("use octave::sys::recursive_rmdir instead")
+inline int
+octave_recursive_rmdir (const std::string& nm, std::string& msg)
+{
+  return octave::sys::recursive_rmdir (nm, msg);
+}
 
-// We don't have these in the file_ops class with their simple names
-// (i.e., mkdir instead of octave_mdir) because function names in
-// standard headers may be #defined.
+OCTAVE_DEPRECATED ("use octave::sys::umask instead")
+inline int
+octave_umask (mode_t md)
+{
+  return octave::sys::umask (md);
+}
 
-extern OCTAVE_API int
-octave_mkdir (const std::string& nm, mode_t md);
+OCTAVE_DEPRECATED ("use octave::sys::unlink instead")
+inline int
+octave_unlink (const std::string& nm)
+{
+  return octave::sys::unlink (nm);
+}
 
-extern OCTAVE_API int
-octave_mkdir (const std::string& nm, mode_t md, std::string& msg);
+OCTAVE_DEPRECATED ("use octave::sys::unlink instead")
+inline int
+octave_unlink (const std::string& nm, std::string& msg)
+{
+  return octave::sys::unlink (nm, msg);
+}
 
-extern OCTAVE_API int
-octave_mkfifo (const std::string& nm, mode_t md);
+OCTAVE_DEPRECATED ("use octave::sys::tempnam instead")
+inline std::string
+octave_tempnam (const std::string& dir, const std::string& pfx)
+{
+  return octave::sys::tempnam (dir, pfx);
+}
 
-extern OCTAVE_API int
-octave_mkfifo (const std::string& nm, mode_t md, std::string& msg);
+OCTAVE_DEPRECATED ("use octave::sys::tempnam instead")
+inline std::string
+octave_tempnam (const std::string& dir, const std::string& pfx,
+                std::string& msg)
+{
+  return octave::sys::tempnam (dir, pfx, msg);
+}
 
-extern OCTAVE_API int
-octave_link (const std::string&, const std::string&);
+OCTAVE_DEPRECATED ("use octave::sys::canonicalize_file_name instead")
+inline std::string
+octave_canonicalize_file_name (const std::string& nm)
+{
+  return octave::sys::canonicalize_file_name (nm);
+}
 
-extern OCTAVE_API int
-octave_link (const std::string&, const std::string&, std::string&);
+OCTAVE_DEPRECATED ("use octave::sys::canonicalize_file_name instead")
+inline std::string
+octave_canonicalize_file_name (const std::string& nm, std::string& msg)
+{
+  return octave::sys::canonicalize_file_name (nm, msg);
+}
 
-extern OCTAVE_API int
-octave_symlink (const std::string&, const std::string&);
-
-extern OCTAVE_API int
-octave_symlink (const std::string&, const std::string&, std::string&);
-
-extern OCTAVE_API int
-octave_readlink (const std::string&, std::string&);
-
-extern OCTAVE_API int
-octave_readlink (const std::string&, std::string&, std::string&);
-
-extern OCTAVE_API int
-octave_rename (const std::string&, const std::string&);
-
-extern OCTAVE_API int
-octave_rename (const std::string&, const std::string&, std::string&);
-
-extern OCTAVE_API int
-octave_rmdir (const std::string&);
-
-extern OCTAVE_API int
-octave_rmdir (const std::string&, std::string&);
-
-extern OCTAVE_API int
-octave_recursive_rmdir (const std::string&);
-
-extern OCTAVE_API int
-octave_recursive_rmdir (const std::string&, std::string&);
-
-extern OCTAVE_API int
-octave_umask (mode_t);
-
-extern OCTAVE_API int
-octave_unlink (const std::string&);
-
-extern OCTAVE_API int
-octave_unlink (const std::string&, std::string&);
-
-extern OCTAVE_API std::string
-octave_tempnam (const std::string&, const std::string&);
-
-extern OCTAVE_API std::string
-octave_tempnam (const std::string&, const std::string&, std::string&);
-
-extern OCTAVE_API std::string
-octave_canonicalize_file_name (const std::string&);
-
-extern OCTAVE_API std::string
-octave_canonicalize_file_name (const std::string&, std::string&);
+#endif
 
 #endif

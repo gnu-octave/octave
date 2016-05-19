@@ -10799,7 +10799,7 @@ undocumented.\n\
             error ("drawnow: empty pipe '|'");
           else if (file[0] != '|')
             {
-              size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
+              size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
               if (pos != std::string::npos)
                 {

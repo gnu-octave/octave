@@ -114,9 +114,9 @@ subst_octave_home (const std::string& s)
         retval.replace (0, len, Voctave_home);
     }
 
-  if (file_ops::dir_sep_char () != '/')
+  if (octave::sys::file_ops::dir_sep_char () != '/')
     std::replace (retval.begin (), retval.end (), '/',
-                  file_ops::dir_sep_char ());
+                  octave::sys::file_ops::dir_sep_char ());
 
   return retval;
 }
@@ -409,7 +409,7 @@ set_built_in_docstrings_file (void)
 
       if (df.empty ())
         Vbuilt_in_docstrings_file
-          = Voct_etc_dir + file_ops::dir_sep_str () + "built-in-docstrings";
+          = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () + "built-in-docstrings";
       else
         Vbuilt_in_docstrings_file = df;
     }

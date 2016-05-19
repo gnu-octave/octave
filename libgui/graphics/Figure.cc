@@ -845,7 +845,7 @@ Figure::copy_figure_callback (const std::string& format)
 {
   std::string msg;
 
-  std::string file = octave_tempnam ("", "oct-", msg) + "." + format;
+  std::string file = octave::sys::tempnam ("", "oct-", msg) + "." + format;
 
   if (file.empty ())
     {

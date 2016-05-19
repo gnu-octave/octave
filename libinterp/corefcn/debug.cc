@@ -186,12 +186,12 @@ get_user_code (const std::string& fname = "")
     {
       std::string name = fname;
 
-      if (file_ops::dir_sep_char () != '/' && name[0] == '@')
+      if (octave::sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
         {
           int len = name.length () - 1;         // -1: can't have trailing '/'
           for (int i = 2; i < len; i++)         //  2: can't have @/method
             if (name[i] == '/')
-              name[i] = file_ops::dir_sep_char ();
+              name[i] = octave::sys::file_ops::dir_sep_char ();
         }
 
       size_t name_len = name.length ();
@@ -1495,7 +1495,7 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
           if (sub_fun)
             filename = filename.substr(0, sub_fun - filename.c_str ());
           octave_value path_name;
-          path_name = octave_canonicalize_file_name (do_which (filename));
+          path_name = octave::sys::canonicalize_file_name (do_which (filename));
 
           for (std::list<bp_type>::const_iterator j = it->second.begin ();
                j != it->second.end (); j++)

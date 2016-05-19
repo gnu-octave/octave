@@ -899,7 +899,7 @@ tilde_expand (\"~/bin\")\n\
 
   string_vector sv = arg.xstring_vector_value ("tilde_expand: argument must be char or cellstr object");
 
-  sv = file_ops::tilde_expand (sv);
+  sv = octave::sys::file_ops::tilde_expand (sv);
 
   if (arg.is_cellstr ())
     return ovl (Cell (arg.dims (), sv));

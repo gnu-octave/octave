@@ -51,7 +51,7 @@ dir_entry::open (const std::string& n)
     {
       close ();
 
-      std::string fullname = file_ops::tilde_expand (name);
+      std::string fullname = octave::sys::file_ops::tilde_expand (name);
 
       dir = static_cast<void *> (gnulib::opendir (fullname.c_str ()));
 

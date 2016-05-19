@@ -974,13 +974,13 @@ file_editor_tab::bp_info::bp_info (const QString& fname, int l,
   // Is the last component of DIR @foo?  If so, strip it and prepend it
   // to the name of the function.
 
-  size_t pos = dir.rfind (file_ops::dir_sep_chars ());
+  size_t pos = dir.rfind (octave::sys::file_ops::dir_sep_chars ());
 
   if (pos != std::string::npos && pos < dir.length () - 1)
     {
       if (dir[pos+1] == '@')
         {
-          function_name = file_ops::concat (dir.substr (pos+1), function_name);
+          function_name = octave::sys::file_ops::concat (dir.substr (pos+1), function_name);
 
           dir = dir.substr (0, pos);
         }

@@ -270,7 +270,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
       if (fs.exists ())
         {
-          size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
+          size_t xpos = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           std::string dir_name = str.substr (0, xpos);
 
@@ -296,7 +296,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           str = octave::sys::env::make_absolute (p.find_first_of (names));
 
-          size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
+          size_t xpos = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           std::string dir_name = str.substr (0, xpos);
 
@@ -314,7 +314,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
     {
       if (fpath.length () > 0)
         {
-          size_t xpos = fpath.find_last_of (file_ops::dir_sep_chars ());
+          size_t xpos = fpath.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           std::string dir_name = fpath.substr (0, xpos);
 

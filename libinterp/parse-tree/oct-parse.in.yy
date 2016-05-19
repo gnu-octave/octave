@@ -3158,7 +3158,7 @@ octave_base_parser::frob_function (const std::string& fname,
 
     std::string nm = lexer.fcn_file_name;
 
-    size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
+    size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
       nm = lexer.fcn_file_name.substr (pos+1);
@@ -3374,7 +3374,7 @@ octave_base_parser::make_classdef (token *tok_val,
 
   std::string nm = lexer.fcn_file_name;
 
-  size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
+  size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
   if (pos != std::string::npos)
     nm = lexer.fcn_file_name.substr (pos+1);
@@ -4250,7 +4250,7 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
       file = octave::sys::env::base_pathname (file);
       file = file.substr (0, file.find_last_of ('.'));
 
-      size_t pos = file.find_last_of (file_ops::dir_sep_str ());
+      size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
       if (pos != std::string::npos)
         file = file.substr (pos+1);
     }
@@ -4349,7 +4349,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       nm = octave::sys::env::base_pathname (file);
       nm = nm.substr (0, nm.find_last_of ('.'));
 
-      size_t pos = nm.find_last_of (file_ops::dir_sep_str ());
+      size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_str ());
       if (pos != std::string::npos)
         nm = nm.substr (pos+1);
     }
@@ -4494,7 +4494,7 @@ not loaded anymore during the current Octave session.\n\
               if (! fname.empty ())
                 {
                   fname = octave::sys::env::make_absolute (fname);
-                  fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
+                  fname = fname.substr (0, fname.find_last_of (octave::sys::file_ops::dir_sep_str ()) + 1);
 
                   file_stat fs (fname + nm);
 
@@ -4566,7 +4566,7 @@ source_file (const std::string& file_name, const std::string& context,
 
   static std::map<std::string, int> source_call_depth;
 
-  std::string file_full_name = file_ops::tilde_expand (file_name);
+  std::string file_full_name = octave::sys::file_ops::tilde_expand (file_name);
 
   file_full_name = octave::sys::env::make_absolute (file_full_name);
 
@@ -4599,7 +4599,7 @@ source_file (const std::string& file_name, const std::string& context,
   bool delete_fcn = false;
 
   // Find symbol name that would be in symbol_table, if it were loaded.
-  size_t dir_end = file_name.find_last_of (file_ops::dir_sep_chars ());
+  size_t dir_end = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
   dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
 
   size_t extension = file_name.find_last_of ('.');
@@ -4607,7 +4607,7 @@ source_file (const std::string& file_name, const std::string& context,
     extension = file_name.length ();
 
   std::string symbol = file_name.substr (dir_end, extension - dir_end);
-  std::string full_name = octave_canonicalize_file_name (file_name);
+  std::string full_name = octave::sys::canonicalize_file_name (file_name);
 
   // Check if this file is already loaded (or in the path)
   octave_value loaded_sym = symbol_table::find (symbol);
@@ -4616,7 +4616,7 @@ source_file (const std::string& file_name, const std::string& context,
       fcn = loaded_sym.function_value ();
       if (fcn)
         {
-          if (octave_canonicalize_file_name (fcn->fcn_file_name ())
+          if (octave::sys::canonicalize_file_name (fcn->fcn_file_name ())
               == full_name)
             delete_fcn = true;
           else
@@ -4714,7 +4714,7 @@ the filename and the extension.\n\
     retval = fname;
   else
     {
-      size_t dpos = fname.rfind (file_ops::dir_sep_char ());
+      size_t dpos = fname.rfind (octave::sys::file_ops::dir_sep_char ());
       size_t epos = fname.rfind ('.');
 
       if (epos <= dpos)
@@ -5495,7 +5495,7 @@ Undocumented internal function.\n\
       file = octave::sys::env::base_pathname (file);
       file = file.substr (0, file.find_last_of ('.'));
 
-      size_t pos = file.find_last_of (file_ops::dir_sep_str ());
+      size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
       if (pos != std::string::npos)
         file = file.substr (pos+1);
     }

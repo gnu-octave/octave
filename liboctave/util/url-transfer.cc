@@ -147,7 +147,7 @@ base_url_transfer::mput_directory (const std::string& base,
 
       frame.add_fcn (reset_path, this);
 
-      dir_entry dirlist (realdir);
+      octave::sys::dir_entry dirlist (realdir);
 
       if (dirlist)
         {

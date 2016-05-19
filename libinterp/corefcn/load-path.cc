@@ -177,7 +177,7 @@ load_path::dir_info::initialize (void)
 void
 load_path::dir_info::get_file_list (const std::string& d)
 {
-  dir_entry dir (d);
+  octave::sys::dir_entry dir (d);
 
   if (dir)
     {
@@ -247,7 +247,7 @@ get_fcn_files (const std::string& d)
 {
   load_path::dir_info::fcn_file_map_type retval;
 
-  dir_entry dir (d);
+  octave::sys::dir_entry dir (d);
 
   if (dir)
     {
@@ -2143,7 +2143,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 {
   std::string retval;
 
-  dir_entry dir (dirname);
+  octave::sys::dir_entry dir (dirname);
 
   if (dir)
     {

@@ -182,7 +182,7 @@ error message.\n\
 
   octave_value_list retval = ovl (Cell (), -1.0, "");
 
-  dir_entry dir (dirname);
+  octave::sys::dir_entry dir (dirname);
 
   if (dir)
     {

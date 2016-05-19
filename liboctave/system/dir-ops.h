@@ -29,64 +29,77 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
-class
-OCTAVE_API
-dir_entry
+namespace octave
 {
-public:
-
-  dir_entry (const std::string& n = "")
-    : name (n), dir (0), fail (false), errmsg ()
+  namespace sys
   {
-    if (! name.empty ())
-      open ();
+    class
+    OCTAVE_API
+    dir_entry
+    {
+    public:
+
+      dir_entry (const std::string& n = "")
+        : name (n), dir (0), fail (false), errmsg ()
+        {
+          if (! name.empty ())
+            open ();
+        }
+
+      dir_entry (const dir_entry& d)
+        : name (d.name), dir (d.dir), fail (d.fail), errmsg (d.errmsg) { }
+
+      dir_entry& operator = (const dir_entry& d)
+        {
+          if (this != &d)
+            {
+              name = d.name;
+              dir = d.dir;
+              fail = d.fail;
+              errmsg = d.errmsg;
+            }
+
+          return *this;
+        }
+
+      ~dir_entry (void) { close (); }
+
+      bool open (const std::string& = "");
+
+      string_vector read (void);
+
+      void close (void);
+
+      bool ok (void) const { return dir && ! fail; }
+
+      operator bool () const { return ok (); }
+
+      std::string error (void) const { return ok () ? "" : errmsg; }
+
+    private:
+
+      // Name of the directory.
+      std::string name;
+
+      // A pointer to the contents of the directory.  We use void here to
+      // avoid possible conflicts with the way some systems declare the
+      // type DIR.
+      void *dir;
+
+      // TRUE means the open for this directory failed.
+      bool fail;
+
+      // If a failure occurs, this contains the system error text.
+      std::string errmsg;
+    };
   }
+}
 
-  dir_entry (const dir_entry& d)
-    : name (d.name), dir (d.dir), fail (d.fail), errmsg (d.errmsg) { }
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  dir_entry& operator = (const dir_entry& d)
-  {
-    if (this != &d)
-      {
-        name = d.name;
-        dir = d.dir;
-        fail = d.fail;
-        errmsg = d.errmsg;
-      }
+OCTAVE_DEPRECATED ("use octave::sys::dir_entry instead")
+typedef octave::sys::dir_entry dir_entry;
 
-    return *this;
-  }
-
-  ~dir_entry (void) { close (); }
-
-  bool open (const std::string& = "");
-
-  string_vector read (void);
-
-  void close (void);
-
-  bool ok (void) const { return dir && ! fail; }
-
-  operator bool () const { return ok (); }
-
-  std::string error (void) const { return ok () ? "" : errmsg; }
-
-private:
-
-  // Name of the directory.
-  std::string name;
-
-  // A pointer to the contents of the directory.  We use void here to
-  // avoid possible conflicts with the way some systems declare the
-  // type DIR.
-  void *dir;
-
-  // TRUE means the open for this directory failed.
-  bool fail;
-
-  // If a failure occurs, this contains the system error text.
-  std::string errmsg;
-};
+#endif
 
 #endif

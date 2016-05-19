@@ -576,7 +576,7 @@ namespace octave
 
       int status = 0;
 
-      dir_entry dir (name);
+      octave::sys::dir_entry dir (name);
 
       if (dir)
         {

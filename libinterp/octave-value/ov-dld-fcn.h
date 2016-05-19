@@ -33,8 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-builtin.h"
 #include "ov-typeinfo.h"
 
-class octave_shlib;
-
 class octave_value;
 class octave_value_list;
 
@@ -50,7 +48,7 @@ public:
     : sh_lib (), t_checked (), system_fcn_file ()
   { }
 
-  octave_dld_function (octave_builtin::fcn ff, const octave_shlib& shl,
+  octave_dld_function (octave_builtin::fcn ff, const octave::dynamic_library& shl,
                        const std::string& nm = "",
                        const std::string& ds = "");
 
@@ -71,16 +69,16 @@ public:
   bool is_dld_function (void) const { return true; }
 
   static octave_dld_function* create (octave_builtin::fcn ff,
-                                      const octave_shlib& shl,
+                                      const octave::dynamic_library& shl,
                                       const std::string& nm = "",
                                       const std::string& ds = "");
 
-  octave_shlib get_shlib (void) const
+  octave::dynamic_library get_shlib (void) const
   { return sh_lib; }
 
 private:
 
-  octave_shlib sh_lib;
+  octave::dynamic_library sh_lib;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.

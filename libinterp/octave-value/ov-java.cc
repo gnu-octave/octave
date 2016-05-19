@@ -175,7 +175,7 @@ static JavaVM *jvm = 0;
 static bool jvm_attached = false;
 
 // Need to keep hold of the shared library handle until exit.
-static octave_shlib jvm_lib;
+static octave::dynamic_library jvm_lib;
 
 static std::map<int,octave_value> listener_map;
 static std::map<int,octave_value> octave_ref_map;
@@ -610,7 +610,7 @@ initialize_jvm (void)
 
 #if ! defined (__APPLE__) && ! defined (__MACH__)
 
-  octave_shlib lib (jvm_lib_path);
+  octave::dynamic_library lib (jvm_lib_path);
 
   if (! lib)
     error ("unable to load Java Runtime Environment from %s",
@@ -641,7 +641,7 @@ initialize_jvm (void)
 #else
 
   // FIXME: There exists a problem on the Mac platform that
-  //   octave_shlib lib (jvm_lib_path)
+  //   octave::dynamic_library lib (jvm_lib_path)
   // doesn't work with 'not-bundled' *.oct files.
 
   if (JNI_GetCreatedJavaVMs (&jvm, 1, &nVMs) == 0 && nVMs > 0)

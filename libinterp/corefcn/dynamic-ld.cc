@@ -52,14 +52,14 @@ octave_shlib_list
 {
 public:
 
-  typedef std::list<octave_shlib>::iterator iterator;
-  typedef std::list<octave_shlib>::const_iterator const_iterator;
+  typedef std::list<octave::dynamic_library>::iterator iterator;
+  typedef std::list<octave::dynamic_library>::const_iterator const_iterator;
 
-  static void append (const octave_shlib& shl);
+  static void append (const octave::dynamic_library& shl);
 
-  static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
+  static void remove (octave::dynamic_library& shl, octave::dynamic_library::close_hook cl_hook = 0);
 
-  static octave_shlib find_file (const std::string& file_name);
+  static octave::dynamic_library find_file (const std::string& file_name);
 
   static void display (void);
 
@@ -69,11 +69,11 @@ private:
 
   ~octave_shlib_list (void) { }
 
-  void do_append (const octave_shlib& shl);
+  void do_append (const octave::dynamic_library& shl);
 
-  void do_remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
+  void do_remove (octave::dynamic_library& shl, octave::dynamic_library::close_hook cl_hook = 0);
 
-  octave_shlib do_find_file (const std::string& file_name) const;
+  octave::dynamic_library do_find_file (const std::string& file_name) const;
 
   void do_display (void) const;
 
@@ -84,7 +84,7 @@ private:
   static bool instance_ok (void);
 
   // List of libraries we have loaded.
-  std::list<octave_shlib> lib_list;
+  std::list<octave::dynamic_library> lib_list;
 
   // No copying!
 
@@ -96,14 +96,14 @@ private:
 octave_shlib_list *octave_shlib_list::instance = 0;
 
 void
-octave_shlib_list::do_append (const octave_shlib& shl)
+octave_shlib_list::do_append (const octave::dynamic_library& shl)
 {
   lib_list.push_back (shl);
 }
 
 void
-octave_shlib_list::do_remove (octave_shlib& shl,
-                              octave_shlib::close_hook cl_hook)
+octave_shlib_list::do_remove (octave::dynamic_library& shl,
+                              octave::dynamic_library::close_hook cl_hook)
 {
   for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
@@ -120,10 +120,10 @@ octave_shlib_list::do_remove (octave_shlib& shl,
     }
 }
 
-octave_shlib
+octave::dynamic_library
 octave_shlib_list::do_find_file (const std::string& file_name) const
 {
-  octave_shlib retval;
+  octave::dynamic_library retval;
 
   for (const_iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
@@ -165,25 +165,25 @@ octave_shlib_list::instance_ok (void)
 }
 
 void
-octave_shlib_list::append (const octave_shlib& shl)
+octave_shlib_list::append (const octave::dynamic_library& shl)
 {
   if (instance_ok ())
     instance->do_append (shl);
 }
 
 void
-octave_shlib_list::remove (octave_shlib& shl,
-                           octave_shlib::close_hook cl_hook)
+octave_shlib_list::remove (octave::dynamic_library& shl,
+                           octave::dynamic_library::close_hook cl_hook)
 {
   if (instance_ok ())
     instance->do_remove (shl, cl_hook);
 }
 
-octave_shlib
+octave::dynamic_library
 octave_shlib_list::find_file (const std::string& file_name)
 {
   return (instance_ok ())
-         ? instance->do_find_file (file_name) : octave_shlib ();
+         ? instance->do_find_file (file_name) : octave::dynamic_library ();
 }
 
 void
@@ -226,7 +226,7 @@ do_clear_function (const std::string& fcn_name)
 }
 
 static void
-clear (octave_shlib& oct_file)
+clear (octave::dynamic_library& oct_file)
 {
   if (oct_file.number_of_functions_loaded () > 1)
     {
@@ -253,7 +253,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 
   doing_load = true;
 
-  octave_shlib oct_file = octave_shlib_list::find_file (file_name);
+  octave::dynamic_library oct_file = octave_shlib_list::find_file (file_name);
 
   if (oct_file && oct_file.is_out_of_date ())
     clear (oct_file);
@@ -307,7 +307,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
   doing_load = true;
 
-  octave_shlib mex_file = octave_shlib_list::find_file (file_name);
+  octave::dynamic_library mex_file = octave_shlib_list::find_file (file_name);
 
   if (mex_file && mex_file.is_out_of_date ())
     clear (mex_file);
@@ -355,7 +355,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
 bool
 octave_dynamic_loader::do_remove_oct (const std::string& fcn_name,
-                                      octave_shlib& shl)
+                                      octave::dynamic_library& shl)
 {
   bool retval = false;
 
@@ -375,7 +375,7 @@ octave_dynamic_loader::do_remove_oct (const std::string& fcn_name,
 
 bool
 octave_dynamic_loader::do_remove_mex (const std::string& fcn_name,
-                                      octave_shlib& shl)
+                                      octave::dynamic_library& shl)
 {
   bool retval = false;
 
@@ -413,14 +413,14 @@ octave_dynamic_loader::load_mex (const std::string& fcn_name,
 
 bool
 octave_dynamic_loader::remove_oct (const std::string& fcn_name,
-                                   octave_shlib& shl)
+                                   octave::dynamic_library& shl)
 {
   return (instance_ok ()) ? instance->do_remove_oct (fcn_name, shl) : false;
 }
 
 bool
 octave_dynamic_loader::remove_mex (const std::string& fcn_name,
-                                   octave_shlib& shl)
+                                   octave::dynamic_library& shl)
 {
   return (instance_ok ()) ? instance->do_remove_mex (fcn_name, shl) : false;
 }

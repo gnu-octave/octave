@@ -90,7 +90,7 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 
 void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-                      const octave_shlib& shl, const std::string& doc,
+                      const octave::dynamic_library& shl, const std::string& doc,
                       bool relative)
 {
   octave_dld_function *fcn = new octave_dld_function (f, shl, name, doc);
@@ -105,7 +105,7 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 
 void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-                      const octave_shlib& shl, bool relative)
+                      const octave::dynamic_library& shl, bool relative)
 {
   octave_mex_function *fcn = new octave_mex_function (fptr, fmex, shl, name);
 
@@ -123,10 +123,10 @@ alias_builtin (const std::string& alias, const std::string& name)
   symbol_table::alias_built_in_function (alias, name);
 }
 
-octave_shlib
+octave::dynamic_library
 get_current_shlib (void)
 {
-  octave_shlib retval;
+  octave::dynamic_library retval;
 
   octave_function *curr_fcn = octave_call_stack::current ();
   if (curr_fcn)

@@ -33,8 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-builtin.h"
 #include "ov-typeinfo.h"
 
-class octave_shlib;
-
 class octave_value;
 class octave_value_list;
 
@@ -49,7 +47,7 @@ public:
     : mex_fcn_ptr (), exit_fcn_ptr (), have_fmex (), sh_lib (),
       t_checked (), system_fcn_file () { }
 
-  octave_mex_function (void *fptr, bool fmex, const octave_shlib& shl,
+  octave_mex_function (void *fptr, bool fmex, const octave::dynamic_library& shl,
                        const std::string& nm = "");
 
   ~octave_mex_function (void);
@@ -88,7 +86,7 @@ public:
 
   void atexit (void (*fcn) (void)) { exit_fcn_ptr = fcn; }
 
-  octave_shlib get_shlib (void) const
+  octave::dynamic_library get_shlib (void) const
   { return sh_lib; }
 
 private:
@@ -99,7 +97,7 @@ private:
 
   bool have_fmex;
 
-  octave_shlib sh_lib;
+  octave::dynamic_library sh_lib;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.

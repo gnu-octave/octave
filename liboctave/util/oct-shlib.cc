@@ -60,456 +60,459 @@ extern int dlclose (void *);
 #include "oct-shlib.h"
 #include "str-vec.h"
 
-octave_shlib::shlib_rep::shlib_rep (const std::string& f)
-  : count (1), file (f), tm_loaded (), fcn_names ()
+namespace octave
 {
-  instances[f] = this;
+  dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
+    : count (1), file (f), tm_loaded (), fcn_names ()
+  {
+    instances[f] = this;
 
-  if (is_out_of_date ())
-    (*current_liboctave_warning_with_id_handler)
-      ("Octave:warn-future-time-stamp",
-       "timestamp on file %s is in the future", file.c_str ());
-}
-
-bool
-octave_shlib::shlib_rep::is_out_of_date (void) const
-{
-  octave::sys::file_stat fs (file);
-  return (fs && fs.is_newer (tm_loaded));
-}
-
-void
-octave_shlib::shlib_rep::fake_reload (void)
-{
-  // We can't actually reload the library, but we'll pretend we did.
-  octave::sys::file_stat fs (file);
-  if (fs && fs.is_newer (tm_loaded))
-    {
-      tm_loaded = fs.mtime ();
-
+    if (is_out_of_date ())
       (*current_liboctave_warning_with_id_handler)
-        ("Octave:library-reload",
-         "library %s not reloaded due to existing references", file.c_str ());
-    }
-}
+        ("Octave:warn-future-time-stamp",
+         "timestamp on file %s is in the future", file.c_str ());
+  }
 
-octave_shlib::shlib_rep *
-octave_shlib::shlib_rep::get_instance (const std::string& f, bool fake)
-{
-  shlib_rep *retval = 0;
-  std::map<std::string, shlib_rep *>::iterator p = instances.find (f);
-  if (p != instances.end ())
-    {
-      retval = p->second;
-      retval->count++;
-      if (fake)
-        retval->fake_reload ();
-    }
-  else
-    retval = new_instance (f);
+  bool
+  dynamic_library::dynlib_rep::is_out_of_date (void) const
+  {
+    octave::sys::file_stat fs (file);
+    return (fs && fs.is_newer (tm_loaded));
+  }
 
-  return retval;
-}
+  void
+  dynamic_library::dynlib_rep::fake_reload (void)
+  {
+    // We can't actually reload the library, but we'll pretend we did.
+    octave::sys::file_stat fs (file);
+    if (fs && fs.is_newer (tm_loaded))
+      {
+        tm_loaded = fs.mtime ();
 
-void
-octave_shlib::shlib_rep::add_fcn_name (const std::string& name)
-{
-  fcn_names_iterator p = fcn_names.find (name);
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:library-reload",
+           "library %s not reloaded due to existing references", file.c_str ());
+      }
+  }
 
-  if (p == fcn_names.end ())
-    fcn_names[name] = 1;
-  else
-    ++(p->second);
-}
+  dynamic_library::dynlib_rep *
+  dynamic_library::dynlib_rep::get_instance (const std::string& f, bool fake)
+  {
+    dynlib_rep *retval = 0;
+    std::map<std::string, dynlib_rep *>::iterator p = instances.find (f);
+    if (p != instances.end ())
+      {
+        retval = p->second;
+        retval->count++;
+        if (fake)
+          retval->fake_reload ();
+      }
+    else
+      retval = new_instance (f);
 
-bool
-octave_shlib::shlib_rep::remove_fcn_name (const std::string& fcn_name)
-{
-  bool retval = false;
+    return retval;
+  }
 
-  fcn_names_iterator p = fcn_names.find (fcn_name);
+  void
+  dynamic_library::dynlib_rep::add_fcn_name (const std::string& name)
+  {
+    fcn_names_iterator p = fcn_names.find (name);
 
-  if (p != fcn_names.end () && --(p->second) == 0)
-    {
-      fcn_names.erase (fcn_name);
-      retval = true;
-    }
+    if (p == fcn_names.end ())
+      fcn_names[name] = 1;
+    else
+      ++(p->second);
+  }
 
-  return retval;
-}
+  bool
+  dynamic_library::dynlib_rep::remove_fcn_name (const std::string& fcn_name)
+  {
+    bool retval = false;
 
-void
-octave_shlib::shlib_rep::do_close_hook (octave_shlib::close_hook cl_hook)
-{
-  for (fcn_names_iterator p = fcn_names.begin (); p != fcn_names.end (); p++)
-    cl_hook (p->first);
+    fcn_names_iterator p = fcn_names.find (fcn_name);
 
-  fcn_names.clear ();
-}
+    if (p != fcn_names.end () && --(p->second) == 0)
+      {
+        fcn_names.erase (fcn_name);
+        retval = true;
+      }
 
-std::map<std::string, octave_shlib::shlib_rep *> octave_shlib::shlib_rep::instances;
+    return retval;
+  }
 
-octave_shlib::shlib_rep octave_shlib::nil_rep;
+  void
+  dynamic_library::dynlib_rep::do_close_hook (dynamic_library::close_hook cl_hook)
+  {
+    for (fcn_names_iterator p = fcn_names.begin (); p != fcn_names.end (); p++)
+      cl_hook (p->first);
+
+    fcn_names.clear ();
+  }
+
+  std::map<std::string, dynamic_library::dynlib_rep *> dynamic_library::dynlib_rep::instances;
+
+  dynamic_library::dynlib_rep dynamic_library::nil_rep;
 
 #if defined (HAVE_DLOPEN_API)
 
-class
-octave_dlopen_shlib : public octave_shlib::shlib_rep
-{
-public:
+  class
+  octave_dlopen_shlib : public dynamic_library::dynlib_rep
+  {
+  public:
 
-  octave_dlopen_shlib (const std::string& f);
+    octave_dlopen_shlib (const std::string& f);
 
-  ~octave_dlopen_shlib (void);
+    ~octave_dlopen_shlib (void);
 
-  void *search (const std::string& name,
-                octave_shlib::name_mangler mangler = 0);
+    void *search (const std::string& name,
+                  dynamic_library::name_mangler mangler = 0);
 
-  // FIXME: this is possibly redundant because failure to open a library will
-  // normally throw an exception, avoiding the construction of an invalid
-  // library. Leave it here for possible future use.
+    // FIXME: this is possibly redundant because failure to open a library will
+    // normally throw an exception, avoiding the construction of an invalid
+    // library. Leave it here for possible future use.
 
-  bool is_open (void) const { return (library != 0); }
+    bool is_open (void) const { return (library != 0); }
 
-private:
+  private:
 
-  // No copying!
+    // No copying!
 
-  octave_dlopen_shlib (const octave_dlopen_shlib&);
+    octave_dlopen_shlib (const octave_dlopen_shlib&);
 
-  octave_dlopen_shlib& operator = (const octave_dlopen_shlib&);
+    octave_dlopen_shlib& operator = (const octave_dlopen_shlib&);
 
-  void *library;
-};
+    void *library;
+  };
 
-octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
-  : octave_shlib::shlib_rep (f), library (0)
-{
-  int flags = 0;
+  octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
+    : dynamic_library::dynlib_rep (f), library (0)
+  {
+    int flags = 0;
 
-  // Use RTLD_NOW to resolve all symbols before dlopen returns.
-  // By using this option, dlopen will detect errors and Octave
-  // won't exit if there are unresolved symbols in the file we are
-  // loading, and we may even get a useful diagnostic.
+    // Use RTLD_NOW to resolve all symbols before dlopen returns.
+    // By using this option, dlopen will detect errors and Octave
+    // won't exit if there are unresolved symbols in the file we are
+    // loading, and we may even get a useful diagnostic.
 #  if defined (RTLD_NOW)
-  flags |= RTLD_NOW;
+    flags |= RTLD_NOW;
 #  endif
 
-  // Use RTLD_GLOBAL to export symbols from loaded objects so they are
-  // available to other subsequently loaded libraries.
+    // Use RTLD_GLOBAL to export symbols from loaded objects so they are
+    // available to other subsequently loaded libraries.
 #  if defined (RTLD_GLOBAL)
-  flags |= RTLD_GLOBAL;
+    flags |= RTLD_GLOBAL;
 #  endif
 
-  library = dlopen (file.c_str (), flags);
-
-  if (! library)
-    {
-      const char *msg = dlerror ();
-
-      if (msg)
-        (*current_liboctave_error_handler) ("%s: failed to load: %s",
-                                            file.c_str (), msg);
-      else
-        (*current_liboctave_error_handler) ("%s: failed to load",
-                                            file.c_str ());
-    }
-}
-
-octave_dlopen_shlib::~octave_dlopen_shlib (void)
-{
-  if (library)
-    dlclose (library);
-}
-
-void *
-octave_dlopen_shlib::search (const std::string& name,
-                             octave_shlib::name_mangler mangler)
-{
-  void *function = 0;
-
-  if (! is_open ())
-    (*current_liboctave_error_handler)
-      ("shared library %s is not open", file.c_str ());
-
-  std::string sym_name = name;
-
-  if (mangler)
-    sym_name = mangler (name);
-
-  function = dlsym (library, sym_name.c_str ());
-
-  return function;
-}
-
-#elif defined (HAVE_SHL_LOAD_API)
-
-class
-octave_shl_load_shlib : public octave_shlib::shlib_rep
-{
-public:
-
-  octave_shl_load_shlib (const std::string& f);
-
-  ~octave_shl_load_shlib (void);
-
-  void *search (const std::string& name,
-                octave_shlib::name_mangler mangler = 0);
-
-  bool is_open (void) const { return (library != 0); }
-
-private:
-
-  // No copying!
-
-  octave_shl_load_shlib (const octave_shl_load_shlib&);
-
-  octave_shl_load_shlib& operator = (const octave_shl_load_shlib&);
-
-  shl_t library;
-};
-
-octave_shl_load_shlib::octave_shl_load_shlib (const std::string& f)
-  : octave_shlib::shlib_rep (f), library (0)
-{
-  file = f;
-
-  library = shl_load (file.c_str (), BIND_IMMEDIATE, 0L);
-
-  if (! library)
-    {
-      using namespace std;  // FIXME: Why have this line?
-      (*current_liboctave_error_handler) ("%s", gnulib::strerror (errno));
-    }
-}
-
-octave_shl_load_shlib::~octave_shl_load_shlib (void)
-{
-  if (library)
-    shl_unload (library);
-}
-
-void *
-octave_shl_load_shlib::search (const std::string& name,
-                               octave_shlib::name_mangler mangler)
-{
-  void *function = 0;
-
-  if (! is_open ())
-    (*current_liboctave_error_handler)
-      ("shared library %s is not open", file.c_str ());
-
-  std::string sym_name = name;
-
-  if (mangler)
-    sym_name = mangler (name);
-
-  int status = shl_findsym (&library, sym_name.c_str (),
-                            TYPE_UNDEFINED, &function);
-
-  return function;
-}
-
-#elif defined (HAVE_LOADLIBRARY_API)
-
-class
-octave_w32_shlib: public octave_shlib::shlib_rep
-{
-public:
-
-  octave_w32_shlib (const std::string& f);
-
-  ~octave_w32_shlib (void);
-
-  void *search (const std::string& name,
-                octave_shlib::name_mangler mangler = 0);
-
-  bool is_open (void) const { return (handle != 0); }
-
-private:
-
-  // No copying!
-
-  octave_w32_shlib (const octave_w32_shlib&);
-
-  octave_w32_shlib& operator = (const octave_w32_shlib&);
-
-  HINSTANCE handle;
-};
-
-octave_w32_shlib::octave_w32_shlib (const std::string& f)
-  : octave_shlib::shlib_rep (f), handle (0)
-{
-  handle = LoadLibrary (file.c_str ());
-
-  if (! handle)
-    {
-      DWORD lastError = GetLastError ();
-      const char *msg;
-
-      switch (lastError)
-        {
-        case ERROR_MOD_NOT_FOUND:
-        case ERROR_DLL_NOT_FOUND:
-          msg = "could not find library or dependencies";
-          break;
-
-        case ERROR_INVALID_DLL:
-          msg = "library or its dependencies are damaged";
-          break;
-
-        case ERROR_DLL_INIT_FAILED:
-          msg = "library initialization routine failed";
-          break;
-
-        default:
-          msg = "library open failed";
-        }
-
-      (*current_liboctave_error_handler) ("%s: %s", msg, file.c_str ());
-    }
-}
-
-octave_w32_shlib::~octave_w32_shlib (void)
-{
-  if (handle)
-    FreeLibrary (handle);
-}
-
-void *
-octave_w32_shlib::search (const std::string& name,
-                          octave_shlib::name_mangler mangler)
-{
-  void *function = 0;
-
-  if (! is_open ())
-    (*current_liboctave_error_handler)
-      ("shared library %s is not open", file.c_str ());
-
-  std::string sym_name = name;
-
-  if (mangler)
-    sym_name = mangler (name);
-
-  function = reinterpret_cast<void *> (GetProcAddress (handle,
-                                                       sym_name.c_str ()));
-
-  return function;
-}
-
-#elif defined (HAVE_DYLD_API)
-
-class
-octave_dyld_shlib : public octave_shlib::shlib_rep
-{
-public:
-
-  octave_dyld_shlib (void);
-
-  ~octave_dyld_shlib (void);
-
-  void open (const std::string& f);
-
-  void *search (const std::string& name,
-                octave_shlib::name_mangler mangler = 0);
-
-  void close (octave_shlib::close_hook cl_hook = 0);
-
-  bool is_open (void) const {return (handle != 0); }
-
-private:
-
-  // No copying!
-
-  octave_dyld_shlib (const octave_dyld_shlib&);
-
-  octave_dyld_shlib& operator = (const octave_dyld_shlib&);
-
-  NSObjectFileImage img;
-  NSModule handle;
-};
-
-octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
-  : octave_shlib::shlib_rep (f), handle (0)
-{
-  int returnCode = NSCreateObjectFileImageFromFile (file.c_str (), &img);
-
-  if (NSObjectFileImageSuccess != returnCode)
-    {
+    library = dlopen (file.c_str (), flags);
+
+    if (! library)
+      {
+        const char *msg = dlerror ();
+
+        if (msg)
+          (*current_liboctave_error_handler) ("%s: failed to load: %s",
+                                              file.c_str (), msg);
+        else
+          (*current_liboctave_error_handler) ("%s: failed to load",
+                                              file.c_str ());
+      }
+  }
+
+  octave_dlopen_shlib::~octave_dlopen_shlib (void)
+  {
+    if (library)
+      dlclose (library);
+  }
+
+  void *
+  octave_dlopen_shlib::search (const std::string& name,
+                               dynamic_library::name_mangler mangler)
+  {
+    void *function = 0;
+
+    if (! is_open ())
       (*current_liboctave_error_handler)
-        ("got NSObjectFileImageReturnCode %d", returnCode);
+        ("shared library %s is not open", file.c_str ());
 
-      // FIXME: should use NSLinkEditError () to get
-      //        more info on what went wrong.
-    }
+    std::string sym_name = name;
 
-  handle = NSLinkModule (img, file.c_str (),
-                         (NSLINKMODULE_OPTION_RETURN_ON_ERROR
-                          | NSLINKMODULE_OPTION_PRIVATE));
-  if (! handle)
-    {
-      NSLinkEditErrors ler;
-      int lerno;
-      const char *file2;
-      const char *errstr = 0;
+    if (mangler)
+      sym_name = mangler (name);
 
-      NSLinkEditError (&ler, &lerno, &file2, &errstr);
+    function = dlsym (library, sym_name.c_str ());
 
-      if (! errstr)
-        errstr = "unspecified error";
+    return function;
+  }
 
-      (*current_liboctave_error_handler) ("%s: %s", file.c_str (), errstr);
-    }
-}
-
-octave_dyld_shlib::~octave_dyld_shlib (void)
-{
-  if (handle)
-    NSUnLinkModule (handle, NSUNLINKMODULE_OPTION_RESET_LAZY_REFERENCES);
-
-  NSDestroyObjectFileImage (img);
-}
-
-void *
-octave_dyld_shlib::search (const std::string& name,
-                           octave_shlib::name_mangler mangler)
-{
-  void *function = 0;
-
-  if (! is_open ())
-    (*current_liboctave_error_handler)
-      ("bundle %s is not open", file.c_str ());
-
-  std::string sym_name = name;
-
-  if (mangler)
-    sym_name = mangler (name);
-
-  NSSymbol symbol = NSLookupSymbolInModule (handle, sym_name.c_str ());
-
-  if (symbol)
-    {
-      function = NSAddressOfSymbol (symbol);
-    }
-
-  return function;
-}
-
-#endif
-
-octave_shlib::shlib_rep *
-octave_shlib::shlib_rep::new_instance (const std::string& f)
-{
-#if defined (HAVE_DLOPEN_API)
-  return new octave_dlopen_shlib (f);
 #elif defined (HAVE_SHL_LOAD_API)
-  return new octave_shl_load_shlib (f);
+
+  class
+  octave_shl_load_shlib : public dynamic_library::dynlib_rep
+  {
+  public:
+
+    octave_shl_load_shlib (const std::string& f);
+
+    ~octave_shl_load_shlib (void);
+
+    void *search (const std::string& name,
+                  dynamic_library::name_mangler mangler = 0);
+
+    bool is_open (void) const { return (library != 0); }
+
+  private:
+
+    // No copying!
+
+    octave_shl_load_shlib (const octave_shl_load_shlib&);
+
+    octave_shl_load_shlib& operator = (const octave_shl_load_shlib&);
+
+    shl_t library;
+  };
+
+  octave_shl_load_shlib::octave_shl_load_shlib (const std::string& f)
+    : dynamic_library::dynlib_rep (f), library (0)
+  {
+    file = f;
+
+    library = shl_load (file.c_str (), BIND_IMMEDIATE, 0L);
+
+    if (! library)
+      {
+        using namespace std;  // FIXME: Why have this line?
+        (*current_liboctave_error_handler) ("%s", gnulib::strerror (errno));
+      }
+  }
+
+  octave_shl_load_shlib::~octave_shl_load_shlib (void)
+  {
+    if (library)
+      shl_unload (library);
+  }
+
+  void *
+  octave_shl_load_shlib::search (const std::string& name,
+                                 dynamic_library::name_mangler mangler)
+  {
+    void *function = 0;
+
+    if (! is_open ())
+      (*current_liboctave_error_handler)
+        ("shared library %s is not open", file.c_str ());
+
+    std::string sym_name = name;
+
+    if (mangler)
+      sym_name = mangler (name);
+
+    int status = shl_findsym (&library, sym_name.c_str (),
+                              TYPE_UNDEFINED, &function);
+
+    return function;
+  }
+
 #elif defined (HAVE_LOADLIBRARY_API)
-  return new octave_w32_shlib (f);
+
+  class
+  octave_w32_shlib: public dynamic_library::dynlib_rep
+  {
+  public:
+
+    octave_w32_shlib (const std::string& f);
+
+    ~octave_w32_shlib (void);
+
+    void *search (const std::string& name,
+                  dynamic_library::name_mangler mangler = 0);
+
+    bool is_open (void) const { return (handle != 0); }
+
+  private:
+
+    // No copying!
+
+    octave_w32_shlib (const octave_w32_shlib&);
+
+    octave_w32_shlib& operator = (const octave_w32_shlib&);
+
+    HINSTANCE handle;
+  };
+
+  octave_w32_shlib::octave_w32_shlib (const std::string& f)
+    : dynamic_library::dynlib_rep (f), handle (0)
+  {
+    handle = LoadLibrary (file.c_str ());
+
+    if (! handle)
+      {
+        DWORD lastError = GetLastError ();
+        const char *msg;
+
+        switch (lastError)
+          {
+          case ERROR_MOD_NOT_FOUND:
+          case ERROR_DLL_NOT_FOUND:
+            msg = "could not find library or dependencies";
+            break;
+
+          case ERROR_INVALID_DLL:
+            msg = "library or its dependencies are damaged";
+            break;
+
+          case ERROR_DLL_INIT_FAILED:
+            msg = "library initialization routine failed";
+            break;
+
+          default:
+            msg = "library open failed";
+          }
+
+        (*current_liboctave_error_handler) ("%s: %s", msg, file.c_str ());
+      }
+  }
+
+  octave_w32_shlib::~octave_w32_shlib (void)
+  {
+    if (handle)
+      FreeLibrary (handle);
+  }
+
+  void *
+  octave_w32_shlib::search (const std::string& name,
+                            dynamic_library::name_mangler mangler)
+  {
+    void *function = 0;
+
+    if (! is_open ())
+      (*current_liboctave_error_handler)
+        ("shared library %s is not open", file.c_str ());
+
+    std::string sym_name = name;
+
+    if (mangler)
+      sym_name = mangler (name);
+
+    function = reinterpret_cast<void *> (GetProcAddress (handle,
+                                                         sym_name.c_str ()));
+
+    return function;
+  }
+
 #elif defined (HAVE_DYLD_API)
-  return new octave_dyld_shlib (f);
-#else
-  (*current_liboctave_error_handler)
-    ("support for dynamically loaded libraries was unavailable or disabled when liboctave was built");
+
+  class
+  octave_dyld_shlib : public dynamic_library::dynlib_rep
+  {
+  public:
+
+    octave_dyld_shlib (void);
+
+    ~octave_dyld_shlib (void);
+
+    void open (const std::string& f);
+
+    void *search (const std::string& name,
+                  dynamic_library::name_mangler mangler = 0);
+
+    void close (dynamic_library::close_hook cl_hook = 0);
+
+    bool is_open (void) const {return (handle != 0); }
+
+  private:
+
+    // No copying!
+
+    octave_dyld_shlib (const octave_dyld_shlib&);
+
+    octave_dyld_shlib& operator = (const octave_dyld_shlib&);
+
+    NSObjectFileImage img;
+    NSModule handle;
+  };
+
+  octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
+    : dynamic_library::dynlib_rep (f), handle (0)
+  {
+    int returnCode = NSCreateObjectFileImageFromFile (file.c_str (), &img);
+
+    if (NSObjectFileImageSuccess != returnCode)
+      {
+        (*current_liboctave_error_handler)
+          ("got NSObjectFileImageReturnCode %d", returnCode);
+
+        // FIXME: should use NSLinkEditError () to get
+        //        more info on what went wrong.
+      }
+
+    handle = NSLinkModule (img, file.c_str (),
+                           (NSLINKMODULE_OPTION_RETURN_ON_ERROR
+                            | NSLINKMODULE_OPTION_PRIVATE));
+    if (! handle)
+      {
+        NSLinkEditErrors ler;
+        int lerno;
+        const char *file2;
+        const char *errstr = 0;
+
+        NSLinkEditError (&ler, &lerno, &file2, &errstr);
+
+        if (! errstr)
+          errstr = "unspecified error";
+
+        (*current_liboctave_error_handler) ("%s: %s", file.c_str (), errstr);
+      }
+  }
+
+  octave_dyld_shlib::~octave_dyld_shlib (void)
+  {
+    if (handle)
+      NSUnLinkModule (handle, NSUNLINKMODULE_OPTION_RESET_LAZY_REFERENCES);
+
+    NSDestroyObjectFileImage (img);
+  }
+
+  void *
+  octave_dyld_shlib::search (const std::string& name,
+                             dynamic_library::name_mangler mangler)
+  {
+    void *function = 0;
+
+    if (! is_open ())
+      (*current_liboctave_error_handler)
+        ("bundle %s is not open", file.c_str ());
+
+    std::string sym_name = name;
+
+    if (mangler)
+      sym_name = mangler (name);
+
+    NSSymbol symbol = NSLookupSymbolInModule (handle, sym_name.c_str ());
+
+    if (symbol)
+      {
+        function = NSAddressOfSymbol (symbol);
+      }
+
+    return function;
+  }
+
 #endif
+
+  dynamic_library::dynlib_rep *
+  dynamic_library::dynlib_rep::new_instance (const std::string& f)
+  {
+#if defined (HAVE_DLOPEN_API)
+    return new octave_dlopen_shlib (f);
+#elif defined (HAVE_SHL_LOAD_API)
+    return new octave_shl_load_shlib (f);
+#elif defined (HAVE_LOADLIBRARY_API)
+    return new octave_w32_shlib (f);
+#elif defined (HAVE_DYLD_API)
+    return new octave_dyld_shlib (f);
+#else
+    (*current_liboctave_error_handler)
+      ("support for dynamically loaded libraries was unavailable or disabled when liboctave was built");
+#endif
+  }
 }

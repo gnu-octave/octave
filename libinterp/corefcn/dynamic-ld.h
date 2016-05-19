@@ -52,9 +52,9 @@ public:
             const std::string& file_name = "",
             bool relative = false);
 
-  static bool remove_oct (const std::string& fcn_name, octave_shlib& shl);
+  static bool remove_oct (const std::string& fcn_name, octave::dynamic_library& shl);
 
-  static bool remove_mex (const std::string& fcn_name, octave_shlib& shl);
+  static bool remove_mex (const std::string& fcn_name, octave::dynamic_library& shl);
 
 private:
 
@@ -80,9 +80,9 @@ private:
                const std::string& file_name = "",
                bool relative = false);
 
-  bool do_remove_oct (const std::string& fcn_name, octave_shlib& shl);
+  bool do_remove_oct (const std::string& fcn_name, octave::dynamic_library& shl);
 
-  bool do_remove_mex (const std::string& fcn_name, octave_shlib& shl);
+  bool do_remove_mex (const std::string& fcn_name, octave::dynamic_library& shl);
 
   static bool doing_load;
 

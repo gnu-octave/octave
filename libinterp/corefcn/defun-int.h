@@ -47,31 +47,31 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-                      const octave_shlib& shl, const std::string& doc,
+                      const octave::dynamic_library& shl, const std::string& doc,
                       bool relative = false);
 
 extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-                      const octave_shlib& shl, bool relative = false);
+                      const octave::dynamic_library& shl, bool relative = false);
 
 extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
 
 // Gets the shlib of the currently executing DLD function, if any.
-extern OCTINTERP_API octave_shlib
+extern OCTINTERP_API octave::dynamic_library
 get_current_shlib (void);
 
 // This is a convenience class that calls the above function automatically at
 // construction time. When deriving new classes, you can either use it as a
 // field or as a parent (with multiple inheritance).
 
-class octave_auto_shlib : public octave_shlib
+class octave_auto_shlib : public octave::dynamic_library
 {
 public:
   octave_auto_shlib (void)
-    : octave_shlib (get_current_shlib ()) { }
-  octave_auto_shlib (const octave_shlib& shl)
-    : octave_shlib (shl) { }
+    : octave::dynamic_library (get_current_shlib ()) { }
+  octave_auto_shlib (const octave::dynamic_library& shl)
+    : octave::dynamic_library (shl) { }
 };
 
 extern OCTINTERP_API bool
@@ -91,10 +91,10 @@ defun_isargout (int, int, bool *);
 // the symbol table.  We look for this name instead of the actual
 // function so that we can easily install the doc std::string too.
 
-typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
+typedef bool (*octave_dld_fcn_installer) (const octave::dynamic_library&, bool relative);
 
 typedef octave_function *
-  (*octave_dld_fcn_getter) (const octave_shlib&, bool relative);
+  (*octave_dld_fcn_getter) (const octave::dynamic_library&, bool relative);
 
 #define DEFINE_FUN_INSTALLER_FUN(name, doc) \
   DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)
@@ -103,7 +103,7 @@ typedef octave_function *
   extern "C" \
   OCTAVE_EXPORT \
   octave_function * \
-  gname (const octave_shlib& shl, bool relative) \
+  gname (const octave::dynamic_library& shl, bool relative) \
   { \
     check_version (OCTAVE_API_VERSION, name); \
  \

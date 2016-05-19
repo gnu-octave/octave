@@ -42,7 +42,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
                                      "mex function", "mex function");
 
 octave_mex_function::octave_mex_function
-  (void *fptr, bool fmex, const octave_shlib& shl,
+  (void *fptr, bool fmex, const octave::dynamic_library& shl,
    const std::string& nm)
   : octave_function (nm), mex_fcn_ptr (fptr), exit_fcn_ptr (0),
     have_fmex (fmex), sh_lib (shl)

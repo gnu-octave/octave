@@ -202,9 +202,9 @@ more_than_a_screenful (const char *s, int len)
 {
   if (s)
     {
-      int available_rows = command_editor::terminal_rows () - 2;
+      int available_rows = octave::command_editor::terminal_rows () - 2;
 
-      int cols = command_editor::terminal_cols ();
+      int cols = octave::command_editor::terminal_cols ();
 
       int count = 0;
 
@@ -632,8 +632,8 @@ window in characters (rows and columns).\n\
 {
   RowVector size (2, 0.0);
 
-  size(0) = command_editor::terminal_rows ();
-  size(1) = command_editor::terminal_cols ();
+  size(0) = octave::command_editor::terminal_rows ();
+  size(1) = octave::command_editor::terminal_cols ();
 
   return ovl (size);
 }

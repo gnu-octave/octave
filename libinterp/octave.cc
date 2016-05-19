@@ -875,7 +875,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   // Force default line editor if we don't want readline editing.
   if (! line_editing)
-    command_editor::force_default_editor ();
+    octave::command_editor::force_default_editor ();
 
   // These can come after command line args since none of them set any
   // defaults that might be changed by command line options.
@@ -970,7 +970,7 @@ octave_execute_interpreter (void)
 
   // Avoid counting commands executed from startup files.
 
-  command_editor::reset_current_command_number (1);
+  octave::command_editor::reset_current_command_number (1);
 
   // Now argv should have the full set of args.
   intern_argv (octave_cmdline_argc, octave_cmdline_argv);
@@ -980,7 +980,7 @@ octave_execute_interpreter (void)
 
   if (forced_interactive)
     {
-      command_editor::blink_matching_paren (false);
+      octave::command_editor::blink_matching_paren (false);
 
       // FIXME: is this the right thing to do?
       Fecho_executing_commands (octave_value (ECHO_CMD_LINE));

@@ -1702,7 +1702,7 @@ initialize_java (void)
 
           JNIEnv *current_env = thread_jni_env ();
 
-          command_editor::add_event_hook (java_event_hook);
+          octave::command_editor::add_event_hook (java_event_hook);
 
           octave_thread_ID = get_current_thread_ID (current_env);
           //printf ("octave thread ID=%ld\n", octave_thread_ID);

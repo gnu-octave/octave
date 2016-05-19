@@ -182,8 +182,8 @@ error message.\n\
 
   octave_history_write_timestamp ();
 
-  if (! command_history::ignoring_entries ())
-    command_history::clean_up_and_save ();
+  if (! octave::command_history::ignoring_entries ())
+    octave::command_history::clean_up_and_save ();
 
   std::string msg;
 

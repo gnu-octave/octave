@@ -138,7 +138,8 @@ do_history (const octave_value_list& args, int nargout)
 
   string_vector hlist;
 
-  frame.add_fcn (command_history::set_file, command_history::file ());
+  frame.add_fcn (octave::command_history::set_file,
+                 octave::command_history::file ());
 
   int nargin = args.length ();
 
@@ -172,31 +173,31 @@ do_history (const octave_value_list& args, int nargout)
                 = args(++i).xstring_value ("history: filename must be a string for %s option",
                                            option.c_str ());
 
-              command_history::set_file (fname);
+              octave::command_history::set_file (fname);
             }
           else
-            command_history::set_file (default_history_file ());
+            octave::command_history::set_file (default_history_file ());
 
           if (option == "-a")
             // Append 'new' lines to file.
-            command_history::append ();
+            octave::command_history::append ();
 
           else if (option == "-w")
             // Write entire history.
-            command_history::write ();
+            octave::command_history::write ();
 
           else if (option == "-r")
             {
               // Read entire file.
-              command_history::read ();
-              octave_link::set_history (command_history::list ());
+              octave::command_history::read ();
+              octave_link::set_history (octave::command_history::list ());
             }
 
           else if (option == "-n")
             {
               // Read 'new' history from file.
-              command_history::read_range ();
-              octave_link::set_history (command_history::list ());
+              octave::command_history::read_range ();
+              octave_link::set_history (octave::command_history::list ());
             }
 
           else
@@ -206,7 +207,7 @@ do_history (const octave_value_list& args, int nargout)
         }
       else if (option == "-c")
         {
-          command_history::clear ();
+          octave::command_history::clear ();
           octave_link::clear_history ();
         }
       else if (option == "-q")
@@ -240,7 +241,7 @@ do_history (const octave_value_list& args, int nargout)
         }
     }
 
-  hlist = command_history::list (limit, numbered_output);
+  hlist = octave::command_history::list (limit, numbered_output);
 
   int len = hlist.numel ();
 
@@ -320,7 +321,7 @@ edit_history_add_hist (const std::string& line)
         tmp.resize (len - 1);
 
       if (! tmp.empty ())
-        if (command_history::add (tmp))
+        if (octave::command_history::add (tmp))
           octave_link::append_history (tmp);
     }
 }
@@ -348,7 +349,7 @@ static std::string
 mk_tmp_hist_file (const octave_value_list& args,
                   bool insert_curr, const char *warn_for)
 {
-  string_vector hlist = command_history::list ();
+  string_vector hlist = octave::command_history::list ();
 
   int hist_count = hlist.numel () - 1;  // switch to zero-based indexing
 
@@ -358,7 +359,7 @@ mk_tmp_hist_file (const octave_value_list& args,
   // but the actual commands performed will.
 
   if (! insert_curr)
-    command_history::remove (hist_count);
+    octave::command_history::remove (hist_count);
 
   hist_count--;  // skip last entry in history list
 
@@ -533,12 +534,12 @@ do_run_history (const octave_value_list& args)
 void
 initialize_history (bool read_history_file)
 {
-  command_history::initialize (read_history_file,
-                               default_history_file (),
-                               default_history_size (),
-                               octave::sys::env::getenv ("OCTAVE_HISTCONTROL"));
+  octave::command_history::initialize (read_history_file,
+                                       default_history_file (),
+                                       default_history_size (),
+                                       octave::sys::env::getenv ("OCTAVE_HISTCONTROL"));
 
-  octave_link::set_history (command_history::list ());
+  octave_link::set_history (octave::command_history::list ());
 }
 
 void
@@ -549,7 +550,7 @@ octave_history_write_timestamp (void)
   std::string timestamp = now.strftime (Vhistory_timestamp_format_string);
 
   if (! timestamp.empty ())
-    if (command_history::add (timestamp))
+    if (octave::command_history::add (timestamp))
       octave_link::append_history (timestamp);
 }
 
@@ -731,14 +732,14 @@ the history list, subject to the value of @code{history_save}.\n\
 {
   octave_value retval;
 
-  std::string old_history_control = command_history::histcontrol ();
+  std::string old_history_control = octave::command_history::histcontrol ();
 
   std::string tmp = old_history_control;
 
   retval = set_internal_variable (tmp, args, nargout, "history_control");
 
   if (tmp != old_history_control)
-    command_history::process_histcontrol (tmp);
+    octave::command_history::process_histcontrol (tmp);
 
   return retval;
 }
@@ -757,7 +758,7 @@ variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 {
   octave_value retval;
 
-  int old_history_size = command_history::size ();
+  int old_history_size = octave::command_history::size ();
 
   int tmp = old_history_size;
 
@@ -766,7 +767,7 @@ variable @w{@env{OCTAVE_HISTSIZE}}.\n\
                                   std::numeric_limits<int>::max ());
 
   if (tmp != old_history_size)
-    command_history::set_size (tmp);
+    octave::command_history::set_size (tmp);
 
   return retval;
 }
@@ -785,14 +786,14 @@ environment variable @w{@env{OCTAVE_HISTFILE}}.\n\
 {
   octave_value retval;
 
-  std::string old_history_file = command_history::file ();
+  std::string old_history_file = octave::command_history::file ();
 
   std::string tmp = old_history_file;
 
   retval = set_internal_variable (tmp, args, nargout, "history_file");
 
   if (tmp != old_history_file)
-    command_history::set_file (tmp);
+    octave::command_history::set_file (tmp);
 
   return retval;
 }
@@ -837,14 +838,14 @@ The original variable value is restored when exiting the function.\n\
 {
   octave_value retval;
 
-  bool old_history_save = ! command_history::ignoring_entries ();
+  bool old_history_save = ! octave::command_history::ignoring_entries ();
 
   bool tmp = old_history_save;
 
   retval = set_internal_variable (tmp, args, nargout, "history_save");
 
   if (tmp != old_history_save)
-    command_history::ignore_entries (! tmp);
+    octave::command_history::ignore_entries (! tmp);
 
   return retval;
 }

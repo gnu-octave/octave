@@ -4146,14 +4146,14 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
   // Open function file and parse.
 
-  FILE *in_stream = command_editor::get_input_stream ();
+  FILE *in_stream = octave::command_editor::get_input_stream ();
 
-  frame.add_fcn (command_editor::set_input_stream, in_stream);
+  frame.add_fcn (octave::command_editor::set_input_stream, in_stream);
 
-  frame.add_fcn (command_history::ignore_entries,
-                 command_history::ignoring_entries ());
+  frame.add_fcn (octave::command_history::ignore_entries,
+                 octave::command_history::ignoring_entries ());
 
-  command_history::ignore_entries ();
+  octave::command_history::ignore_entries ();
 
   FILE *ffile = 0;
 

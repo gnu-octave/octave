@@ -160,12 +160,12 @@ octave_base_reader::do_input_echo (const std::string& input_string) const
       if (forced_interactive)
         {
           if (pflag > 0)
-            octave_stdout << command_editor::decode_prompt_string (VPS1);
+            octave_stdout << octave::command_editor::decode_prompt_string (VPS1);
           else
-            octave_stdout << command_editor::decode_prompt_string (VPS2);
+            octave_stdout << octave::command_editor::decode_prompt_string (VPS2);
         }
       else
-        octave_stdout << command_editor::decode_prompt_string (VPS4);
+        octave_stdout << octave::command_editor::decode_prompt_string (VPS4);
 
       if (! input_string.empty ())
         {
@@ -184,7 +184,7 @@ gnu_readline (const std::string& s, bool& eof)
 
   eof = false;
 
-  std::string retval = command_editor::readline (s, eof);
+  std::string retval = octave::command_editor::readline (s, eof);
 
   if (! eof && retval.empty ())
     retval = "\n";
@@ -258,7 +258,7 @@ octave_base_reader::octave_gets (bool& eof)
 
   std::string ps = (pflag > 0) ? VPS1 : VPS2;
 
-  std::string prompt = command_editor::decode_prompt_string (ps);
+  std::string prompt = octave::command_editor::decode_prompt_string (ps);
 
   pipe_handler_error_count = 0;
 
@@ -293,7 +293,7 @@ octave_base_reader::octave_gets (bool& eof)
     {
       if (! history_skip_auto_repeated_debugging_command)
         {
-          if (command_history::add (retval))
+          if (octave::command_history::add (retval))
             octave_link::append_history (retval);
         }
 
@@ -341,8 +341,8 @@ octave_base_reader::reading_script_file (void) const
 FILE *
 get_input_from_stdin (void)
 {
-  command_editor::set_input_stream (stdin);
-  return command_editor::get_input_stream ();
+  octave::command_editor::set_input_stream (stdin);
+  return octave::command_editor::get_input_stream ();
 }
 
 // FIXME: make this generate filenames when appropriate.
@@ -375,7 +375,7 @@ is_completing_dirfns (void)
 
   bool retval = false;
 
-  std::string line = command_editor::get_line_buffer ();
+  std::string line = octave::command_editor::get_line_buffer ();
 
   for (size_t i = 0; i < dirfns_commands_length; i++)
     {
@@ -427,7 +427,7 @@ generate_completion (const std::string& text, int state)
 
       name_list_len = name_list.numel ();
 
-      file_name_list = command_editor::generate_filename_completions (text);
+      file_name_list = octave::command_editor::generate_filename_completions (text);
 
       name_list.append (file_name_list);
 
@@ -465,10 +465,10 @@ generate_completion (const std::string& text, int state)
                   // Don't append anything, since we don't know
                   // whether it should be '(' or '.'.
 
-                  command_editor::set_completion_append_character ('\0');
+                  octave::command_editor::set_completion_append_character ('\0');
                 }
               else
-                command_editor::set_completion_append_character
+                octave::command_editor::set_completion_append_character
                   (Vcompletion_append_char);
 
               break;
@@ -494,25 +494,25 @@ initialize_command_input (void)
   // If we are using readline, this allows conditional parsing of the
   // .inputrc file.
 
-  command_editor::set_name ("Octave");
+  octave::command_editor::set_name ("Octave");
 
   // FIXME: this needs to include a comma too, but that
   // causes trouble for the new struct element completion code.
 
   static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
 
-  command_editor::set_basic_word_break_characters (s);
+  octave::command_editor::set_basic_word_break_characters (s);
 
-  command_editor::set_completer_word_break_characters (s);
+  octave::command_editor::set_completer_word_break_characters (s);
 
-  command_editor::set_basic_quote_characters ("\"");
+  octave::command_editor::set_basic_quote_characters ("\"");
 
-  command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
-  command_editor::set_completer_quote_characters ("'\"");
+  octave::command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
+  octave::command_editor::set_completer_quote_characters ("'\"");
 
-  command_editor::set_completion_function (generate_completion);
+  octave::command_editor::set_completion_function (generate_completion);
 
-  command_editor::set_quoting_function (quoting_filename);
+  octave::command_editor::set_quoting_function (quoting_filename);
 }
 
 static void
@@ -595,7 +595,7 @@ get_debug_input (const std::string& prompt)
     }
 
   if (silent)
-    command_editor::erase_empty_line (true);
+    octave::command_editor::erase_empty_line (true);
 
   std::string msg = buf.str ();
 
@@ -625,7 +625,7 @@ get_debug_input (const std::string& prompt)
 
           int retval = curr_parser.run ();
 
-          if (command_editor::interrupt (false))
+          if (octave::command_editor::interrupt (false))
             break;
           else
             {
@@ -866,10 +866,10 @@ do_keyboard (const octave_value_list& args)
 
   octave::unwind_protect frame;
 
-  frame.add_fcn (command_history::ignore_entries,
-                 command_history::ignoring_entries ());
+  frame.add_fcn (octave::command_history::ignore_entries,
+                 octave::command_history::ignoring_entries ());
 
-  command_history::ignore_entries (false);
+  octave::command_history::ignore_entries (false);
 
   frame.protect_var (Vdebugging);
 
@@ -1173,12 +1173,12 @@ for details.\n\
     print_usage ();
 
   if (nargin == 0)
-    command_editor::read_init_file ();
+    octave::command_editor::read_init_file ();
   else
     {
       std::string file = args(0).string_value ();
 
-      command_editor::read_init_file (file);
+      octave::command_editor::read_init_file (file);
     }
 
   return ovl ();
@@ -1197,7 +1197,7 @@ for details.\n\
   if (args.length () != 0)
     print_usage ();
 
-  command_editor::re_read_init_file ();
+  octave::command_editor::re_read_init_file ();
 
   return ovl ();
 }
@@ -1208,7 +1208,7 @@ internal_input_event_hook_fcn (void)
   input_event_hook_functions.run ();
 
   if (input_event_hook_functions.empty ())
-    command_editor::remove_event_hook (internal_input_event_hook_fcn);
+    octave::command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
   return 0;
 }
@@ -1246,7 +1246,7 @@ list of input hook functions.\n\
   hook_function hook_fcn (args(0), user_data);
 
   if (input_event_hook_functions.empty ())
-    command_editor::add_event_hook (internal_input_event_hook_fcn);
+    octave::command_editor::add_event_hook (internal_input_event_hook_fcn);
 
   input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 
@@ -1282,7 +1282,7 @@ for input.\n\
              hook_fcn_id.c_str ());
 
   if (input_event_hook_functions.empty ())
-    command_editor::remove_event_hook (internal_input_event_hook_fcn);
+    octave::command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
   return ovl ();
 }

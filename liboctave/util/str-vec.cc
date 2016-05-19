@@ -242,7 +242,7 @@ string_vector::list_in_columns (std::ostream& os, int width,
   // Calculate the maximum number of columns that will fit.
 
   octave_idx_type line_length
-    = ((width <= 0 ? command_editor::terminal_cols () : width)
+    = ((width <= 0 ? octave::command_editor::terminal_cols () : width)
        - prefix.length ());
 
   octave_idx_type nc = line_length / max_name_length;

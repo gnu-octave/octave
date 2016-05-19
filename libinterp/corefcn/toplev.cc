@@ -728,7 +728,7 @@ main_loop (void)
                   if (octave_completion_matches_called)
                     octave_completion_matches_called = false;
                   else
-                    command_editor::increment_current_command_number ();
+                    octave::command_editor::increment_current_command_number ();
                 }
               else if (parser.lexer.end_of_input)
                 break;
@@ -834,15 +834,15 @@ do_octave_atexit (void)
       // called.
       OCTAVE_SAFE_CALL (clear_mex_functions, ());
 
-      OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
+      OCTAVE_SAFE_CALL (octave::command_editor::restore_terminal_state, ());
 
       // FIXME: is this needed?  Can it cause any trouble?
       OCTAVE_SAFE_CALL (raw_mode, (0));
 
       OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
 
-      if (! command_history::ignoring_entries ())
-        OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
+      if (! octave::command_history::ignoring_entries ())
+        OCTAVE_SAFE_CALL (octave::command_history::clean_up_and_save, ());
 
       OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
 

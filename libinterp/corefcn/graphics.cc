@@ -9362,7 +9362,7 @@ gh_manager::do_post_event (const graphics_event& e)
 {
   event_queue.push_back (e);
 
-  command_editor::add_event_hook (gh_manager::process_events);
+  octave::command_editor::add_event_hook (gh_manager::process_events);
 }
 
 void
@@ -9473,7 +9473,7 @@ gh_manager::do_process_events (bool force)
     gh_manager::auto_lock guard;
 
     if (event_queue.empty () && event_processing == 0)
-      command_editor::remove_event_hook (gh_manager::process_events);
+      octave::command_editor::remove_event_hook (gh_manager::process_events);
   }
 
   if (events_executed)
@@ -9498,14 +9498,14 @@ gh_manager::do_enable_event_processing (bool enable)
     {
       event_processing++;
 
-      command_editor::add_event_hook (gh_manager::process_events);
+      octave::command_editor::add_event_hook (gh_manager::process_events);
     }
   else
     {
       event_processing--;
 
       if (event_queue.empty () && event_processing == 0)
-        command_editor::remove_event_hook (gh_manager::process_events);
+        octave::command_editor::remove_event_hook (gh_manager::process_events);
     }
 }
 
@@ -11437,7 +11437,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
       OCTAVE_QUIT;
 
-      command_editor::run_event_hooks ();
+      octave::command_editor::run_event_hooks ();
 
       if (timeout > 0)
         {

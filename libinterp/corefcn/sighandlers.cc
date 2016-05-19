@@ -457,7 +457,7 @@ sig_hup_or_term_handler (int sig)
 static void
 sigwinch_handler (int /* sig */)
 {
-  command_editor::resize_terminal ();
+  octave::command_editor::resize_terminal ();
 }
 #endif
 #endif

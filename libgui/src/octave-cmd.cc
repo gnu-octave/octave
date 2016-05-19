@@ -40,12 +40,12 @@ along with Octave; see the file COPYING.  If not, see
 void
 octave_cmd_exec::execute ()
 {
-  std::string pending_input = command_editor::get_current_line ();
+  std::string pending_input = octave::command_editor::get_current_line ();
 
-  command_editor::set_initial_input (pending_input);
-  command_editor::replace_line (_cmd.toStdString ());
-  command_editor::redisplay ();
-  command_editor::accept_line ();
+  octave::command_editor::set_initial_input (pending_input);
+  octave::command_editor::replace_line (_cmd.toStdString ());
+  octave::command_editor::redisplay ();
+  octave::command_editor::accept_line ();
 }
 
 
@@ -59,26 +59,26 @@ octave_cmd_eval::execute ()
   function_name.chop (_info.suffix ().length () + 1);
   std::string file_path = _info.absoluteFilePath ().toStdString ();
 
-  std::string pending_input = command_editor::get_current_line ();
+  std::string pending_input = octave::command_editor::get_current_line ();
 
   if (valid_identifier (function_name.toStdString ()))
     {
       // valid identifier: call as function with possibility to debug
       std::string path = _info.absolutePath ().toStdString ();
       if (octave_qt_link::file_in_path (file_path, path))
-        command_editor::replace_line (function_name.toStdString ());
+        octave::command_editor::replace_line (function_name.toStdString ());
     }
   else
     {
       // no valid identifier: use Fsource (), no debug possible
       Fsource (ovl (file_path));
-      command_editor::replace_line ("");
+      octave::command_editor::replace_line ("");
     }
 
-  command_editor::set_initial_input (pending_input);
-  command_editor::redisplay ();
+  octave::command_editor::set_initial_input (pending_input);
+  octave::command_editor::redisplay ();
 
-  command_editor::accept_line ();
+  octave::command_editor::accept_line ();
 }
 
 
@@ -106,7 +106,7 @@ octave_cmd_debug::execute ()
       Fdbstep (ovl (_cmd.toStdString ()));
     }
 
-  command_editor::interrupt (true);
+  octave::command_editor::interrupt (true);
 }
 
 

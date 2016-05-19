@@ -52,7 +52,7 @@ octave_link::octave_link (void)
   : event_queue_mutex (new octave_mutex ()), gui_event_queue (),
     debugging (false), link_enabled (true)
 {
-  command_editor::add_event_hook (octave_readline_hook);
+  octave::command_editor::add_event_hook (octave_readline_hook);
 }
 
 octave_link::~octave_link (void)

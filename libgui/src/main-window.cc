@@ -2100,27 +2100,27 @@ main_window::rename_variable_callback (const main_window::name_pair& names)
 void
 main_window::command_window_undo_callback (void)
 {
-  command_editor::undo ();
-  command_editor::redisplay ();
+  octave::command_editor::undo ();
+  octave::command_editor::redisplay ();
 }
 
 void
 main_window::clear_command_window_callback (void)
 {
-  command_editor::kill_full_line ();
-  command_editor::clear_screen ();
+  octave::command_editor::kill_full_line ();
+  octave::command_editor::clear_screen ();
 }
 
 void
 main_window::resize_command_window_callback (void)
 {
-  command_editor::resize_terminal ();
+  octave::command_editor::resize_terminal ();
 }
 
 void
 main_window::set_screen_size_callback (const int_pair& sz)
 {
-  command_editor::set_screen_size (sz.first, sz.second);
+  octave::command_editor::set_screen_size (sz.first, sz.second);
 }
 
 void

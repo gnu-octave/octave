@@ -1770,7 +1770,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
       set_format (m, fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -1906,7 +1906,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
       set_format (Matrix (m.diag ()), fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -2188,7 +2188,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
       column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -2326,7 +2326,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
       column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -2471,7 +2471,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
       int fw = 2;
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -2714,7 +2714,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 
           int column_width = fw + 2;
           octave_idx_type total_width = num_elem * column_width;
-          octave_idx_type max_width = command_editor::terminal_cols ();
+          octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
           if (free_format)
             {
@@ -3276,7 +3276,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
       int column_width = fw + (rat_format ?  0 : (bank_format ? 5 : 2));
       octave_idx_type total_width = nc * column_width;
-      int max_width = command_editor::terminal_cols () - extra_indent;
+      int max_width = octave::command_editor::terminal_cols () - extra_indent;
       octave_idx_type inc = nc;
       if (total_width > max_width && Vsplit_long_rows)
         {

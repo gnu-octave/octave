@@ -181,7 +181,7 @@ w32_init (void)
 {
   w32_set_octave_home ();
 
-  command_editor::prefer_env_winsize (true);
+  octave::command_editor::prefer_env_winsize (true);
 }
 
 static bool
@@ -607,7 +607,7 @@ Clear the terminal screen and move the cursor to the upper left corner.\n\
 {
   bool skip_redisplay = true;
 
-  command_editor::clear_screen (skip_redisplay);
+  octave::command_editor::clear_screen (skip_redisplay);
 
   return ovl ();
 }

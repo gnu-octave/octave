@@ -29,11 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     class
     OCTAVE_API

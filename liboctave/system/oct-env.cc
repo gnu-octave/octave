@@ -60,11 +60,9 @@ Free Software Foundation, Inc.
 #include "oct-syscalls.h"
 #include "singleton-cleanup.h"
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     env::env (void)
       : follow_symbolic_links (true), verbatim_pwd (true),

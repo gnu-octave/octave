@@ -43,11 +43,9 @@ err_invalid (void)
   (*current_liboctave_error_handler) ("invalid password object");
 }
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     std::string
     password::name (void) const

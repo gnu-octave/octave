@@ -47,11 +47,9 @@ single_match_exists (const std::string& file)
   return s.exists ();
 }
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     bool
     fnmatch (const string_vector& pat, const std::string& str, int fnm_flags)

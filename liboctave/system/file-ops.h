@@ -31,11 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     struct
     OCTAVE_API

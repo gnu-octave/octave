@@ -27,11 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     extern bool
     fnmatch (const string_vector& pat, const std::string& str,

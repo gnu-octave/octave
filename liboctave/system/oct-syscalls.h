@@ -31,11 +31,9 @@ class string_vector;
 
 #include <sys/types.h>
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     extern OCTAVE_API int dup2 (int, int);
     extern OCTAVE_API int dup2 (int, int, std::string&);

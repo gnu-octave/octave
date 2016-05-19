@@ -49,8 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     int
     dup2 (int old_fd, int new_fd)

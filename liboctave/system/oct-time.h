@@ -28,11 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 #include <string>
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     class base_tm;
 

@@ -40,11 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-time.h"
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     time::time (double d)
       : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)

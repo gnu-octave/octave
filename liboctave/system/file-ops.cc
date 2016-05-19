@@ -58,11 +58,9 @@ extern "C" {
 #  include <algorithm>
 #endif
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     file_ops *octave::sys::file_ops::instance = 0;
 

@@ -110,8 +110,7 @@ typedef jit_array<NDArray, double> jit_matrix;
 std::ostream& operator << (std::ostream& os, const jit_matrix& mat);
 
 // calling convention
-namespace
-jit_convention
+namespace jit_convention
 {
   enum
   type

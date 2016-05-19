@@ -44,11 +44,9 @@ err_invalid (void)
   (*current_liboctave_error_handler) ("invalid group object");
 }
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     std::string
     group::name (void) const

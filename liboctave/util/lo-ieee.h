@@ -117,8 +117,7 @@ extern OCTAVE_API int __lo_ieee_float_signbit (float);
 
 #if defined (__cplusplus)
 
-namespace
-octave
+namespace octave
 {
   template <typename T>
   struct numeric_limits

@@ -31,11 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-uname.h"
 
-namespace
-octave
+namespace octave
 {
-  namespace
-  sys
+  namespace sys
   {
     void
     uname::init (void)

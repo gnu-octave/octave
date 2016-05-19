@@ -261,17 +261,17 @@ oct_init_by_entropy (void)
   int n = 0;
 
   /* Look for entropy in /dev/urandom */
-  FILE* urandom = fopen ("/dev/urandom", "rb");
+  FILE* urandom = gnulib::fopen ("/dev/urandom", "rb");
   if (urandom)
     {
       while (n < MT_N)
         {
           unsigned char word[4];
-          if (fread (word, 4, 1, urandom) != 1)
+          if (gnulib::fread (word, 4, 1, urandom) != 1)
             break;
           entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(static_cast<uint32_t>(word[3])<<24);
         }
-      fclose (urandom);
+      gnulib::fclose (urandom);
     }
 
   /* If there isn't enough entropy, gather some from various sources */
@@ -283,7 +283,7 @@ oct_init_by_entropy (void)
   if (n < MT_N)
     {
       struct timeval tv;
-      if (gettimeofday (&tv, 0) != -1)
+      if (gnulib::gettimeofday (&tv, 0) != -1)
         entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
     }
 #endif
@@ -507,7 +507,7 @@ create_ziggurat_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt (-2. * log (NOR_SECTION_AREA / x1 + fi[i+1]));
+      x = sqrt (-2. * gnulib::log (NOR_SECTION_AREA / x1 + fi[i+1]));
       ki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       wi[i] = x / NMANTISSA;
       fi[i] = exp (-0.5 * x * x);
@@ -535,7 +535,7 @@ create_ziggurat_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-x) -> x = -ln(y)
        */
-      x = - log (EXP_SECTION_AREA / x1 + fe[i+1]);
+      x = - gnulib::log (EXP_SECTION_AREA / x1 + fe[i+1]);
       ke[i+1] = static_cast<ZIGINT> (x / x1 * EMANTISSA);
       we[i] = x / EMANTISSA;
       fe[i] = exp (-x);
@@ -615,8 +615,8 @@ oct_randn (void)
           double xx, yy;
           do
             {
-              xx = - ZIGGURAT_NOR_INV_R * log (RANDU);
-              yy = - log (RANDU);
+              xx = - ZIGGURAT_NOR_INV_R * gnulib::log (RANDU);
+              yy = - gnulib::log (RANDU);
             }
           while ( yy+yy <= xx*xx);
           return ((rabs & 0x100) ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
@@ -646,7 +646,7 @@ oct_rande (void)
            * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
            */
-          return ZIGGURAT_EXP_R - log (RANDU);
+          return ZIGGURAT_EXP_R - gnulib::log (RANDU);
         }
       else if ((fe[idx-1] - fe[idx]) * RANDU + fe[idx] < exp (-x))
         return x;
@@ -698,7 +698,7 @@ create_ziggurat_float_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt (-2. * log (NOR_SECTION_AREA / x1 + ffi[i+1]));
+      x = sqrt (-2. * gnulib::log (NOR_SECTION_AREA / x1 + ffi[i+1]));
       fki[i+1] = static_cast<ZIGINT> (x / x1 * NMANTISSA);
       fwi[i] = x / NMANTISSA;
       ffi[i] = exp (-0.5 * x * x);
@@ -726,7 +726,7 @@ create_ziggurat_float_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-x) -> x = -ln(y)
        */
-      x = - log (EXP_SECTION_AREA / x1 + ffe[i+1]);
+      x = - gnulib::log (EXP_SECTION_AREA / x1 + ffe[i+1]);
       fke[i+1] = static_cast<ZIGINT> (x / x1 * EMANTISSA);
       fwe[i] = x / EMANTISSA;
       ffe[i] = exp (-x);
@@ -782,8 +782,8 @@ oct_float_randn (void)
           float xx, yy;
           do
             {
-              xx = - ZIGGURAT_NOR_INV_R * log (RANDU);
-              yy = - log (RANDU);
+              xx = - ZIGGURAT_NOR_INV_R * gnulib::log (RANDU);
+              yy = - gnulib::log (RANDU);
             }
           while ( yy+yy <= xx*xx);
           return ((rabs & 0x100) ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
@@ -813,7 +813,7 @@ oct_float_rande (void)
            * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
            */
-          return ZIGGURAT_EXP_R - log (RANDU);
+          return ZIGGURAT_EXP_R - gnulib::log (RANDU);
         }
       else if ((ffe[idx-1] - ffe[idx]) * RANDU + ffe[idx] < exp (-x))
         return x;

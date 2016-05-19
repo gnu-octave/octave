@@ -359,7 +359,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   // create it, and the download fails.  We use unwind_protect to do
   // it so that the deletion happens no matter how we exit the function.
 
-  file_stat fs (filename);
+  octave::sys::file_stat fs (filename);
 
   std::ofstream ofile (filename.c_str (), std::ios::out | std::ios::binary);
 
@@ -816,7 +816,7 @@ Undocumented internal function\n\
     {
       std::string file = files(i);
 
-      file_stat fs (file);
+      octave::sys::file_stat fs (file);
 
       if (! fs.exists ())
         error ("__ftp__mput: file does not exist");

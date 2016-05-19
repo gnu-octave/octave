@@ -55,7 +55,7 @@ load_path::abs_dir_cache_type load_path::abs_dir_cache;
 void
 load_path::dir_info::update (void)
 {
-  file_stat fs (dir_name);
+  octave::sys::file_stat fs (dir_name);
 
   if (fs)
     {
@@ -137,7 +137,7 @@ load_path::dir_info::initialize (void)
 
   dir_time_last_checked = octave::sys::time (static_cast<time_t> (0));
 
-  file_stat fs (dir_name);
+  octave::sys::file_stat fs (dir_name);
 
   if (fs)
     {
@@ -197,7 +197,7 @@ load_path::dir_info::get_file_list (const std::string& d)
 
           std::string full_name = octave::sys::file_ops::concat (d, fname);
 
-          file_stat fs (full_name);
+          octave::sys::file_stat fs (full_name);
 
           if (fs)
             {
@@ -306,7 +306,7 @@ load_path::dir_info::get_method_file_map (const std::string& d,
 
   std::string pd = octave::sys::file_ops::concat (d, "private");
 
-  file_stat fs (pd);
+  octave::sys::file_stat fs (pd);
 
   if (fs && fs.is_dir ())
     method_file_map[class_name].private_file_map = get_fcn_files (pd);
@@ -757,7 +757,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
     do_move (i, at_end);
   else
     {
-      file_stat fs (dir);
+      octave::sys::file_stat fs (dir);
 
       if (fs)
         {
@@ -1310,7 +1310,7 @@ find_private_file (const std::string& fname)
           std::string pfname = dir_name + octave::sys::file_ops::dir_sep_str ()
                                + "private" + octave::sys::file_ops::dir_sep_str () + fname;
 
-          file_stat fs (pfname);
+          octave::sys::file_stat fs (pfname);
 
           if (fs.exists () && fs.is_reg ())
             retval = pfname;
@@ -1328,7 +1328,7 @@ load_path::do_find_file (const std::string& file) const
   if (octave::sys::env::absolute_pathname (file)
       || octave::sys::env::rooted_relative_pathname (file))
     {
-      file_stat fs (file);
+      octave::sys::file_stat fs (file);
 
       return fs.exists () ? file : retval;
     }
@@ -1351,7 +1351,7 @@ load_path::do_find_file (const std::string& file) const
         {
           std::string tfile = octave::sys::file_ops::concat (p->dir_name, file);
 
-          file_stat fs (tfile);
+          octave::sys::file_stat fs (tfile);
 
           if (fs.exists ())
             return tfile;
@@ -1389,7 +1389,7 @@ load_path::do_find_dir (const std::string& dir) const
       && (octave::sys::env::absolute_pathname (dir)
           || octave::sys::env::rooted_relative_pathname (dir)))
     {
-      file_stat fs (dir);
+      octave::sys::file_stat fs (dir);
 
       if (fs.exists () && fs.is_dir ())
         return dir;
@@ -1416,7 +1416,7 @@ load_path::do_find_dir (const std::string& dir) const
               && octave::sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
               && dir == dname.substr (dname_len - dir_len))
             {
-              file_stat fs (p->dir_name);
+              octave::sys::file_stat fs (p->dir_name);
 
               if (fs.exists () && fs.is_dir ())
                 return p->dir_name;
@@ -1436,7 +1436,7 @@ load_path::do_find_matching_dirs (const std::string& dir) const
       && (octave::sys::env::absolute_pathname (dir)
           || octave::sys::env::rooted_relative_pathname (dir)))
     {
-      file_stat fs (dir);
+      octave::sys::file_stat fs (dir);
 
       if (fs.exists () && fs.is_dir ())
         retlist.push_back (dir);
@@ -1463,7 +1463,7 @@ load_path::do_find_matching_dirs (const std::string& dir) const
               && octave::sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
               && dir == dname.substr (dname_len - dir_len))
             {
-              file_stat fs (p->dir_name);
+              octave::sys::file_stat fs (p->dir_name);
 
               if (fs.exists () && fs.is_dir ())
                 retlist.push_back (p->dir_name);
@@ -1496,7 +1496,7 @@ load_path::do_find_first_of (const string_vector& flist) const
           if (octave::sys::env::absolute_pathname (file)
               || octave::sys::env::rooted_relative_pathname (file))
             {
-              file_stat fs (file);
+              octave::sys::file_stat fs (file);
 
               if (fs.exists ())
                 return file;
@@ -1509,7 +1509,7 @@ load_path::do_find_first_of (const string_vector& flist) const
                 {
                   std::string tfile = octave::sys::file_ops::concat (p->dir_name, file);
 
-                  file_stat fs (tfile);
+                  octave::sys::file_stat fs (tfile);
 
                   if (fs.exists ())
                     return tfile;
@@ -1575,7 +1575,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
           if (octave::sys::env::absolute_pathname (file)
               || octave::sys::env::rooted_relative_pathname (file))
             {
-              file_stat fs (file);
+              octave::sys::file_stat fs (file);
 
               if (fs.exists ())
                 retlist.push_back (file);
@@ -1588,7 +1588,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
                 {
                   std::string tfile = octave::sys::file_ops::concat (p->dir_name, file);
 
-                  file_stat fs (tfile);
+                  octave::sys::file_stat fs (tfile);
 
                   if (fs.exists ())
                     retlist.push_back (tfile);
@@ -2173,7 +2173,7 @@ genpath (const std::string& dirname, const string_vector& skip)
                 {
                   std::string nm = octave::sys::file_ops::concat (dirname, elt);
 
-                  file_stat fs (nm);
+                  octave::sys::file_stat fs (nm);
 
                   if (fs && fs.is_dir ())
                     retval += dir_path::path_sep_str () + genpath (nm, skip);
@@ -2211,7 +2211,7 @@ execute_pkg_add_or_del (const std::string& dir,
 
   std::string file = octave::sys::file_ops::concat (dir, script_file);
 
-  file_stat fs (file);
+  octave::sys::file_stat fs (file);
 
   if (fs.exists ())
     source_file (file, "base");

@@ -78,7 +78,7 @@ snarf_file (const std::string& fname)
 {
   std::string retval;
 
-  file_stat fs (fname);
+  octave::sys::file_stat fs (fname);
 
   if (fs)
     {

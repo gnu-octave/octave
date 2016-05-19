@@ -394,7 +394,7 @@ gnu_history::do_append (const std::string& f_arg)
 
               if (! f.empty ())
                 {
-                  file_stat fs (f);
+                  octave::sys::file_stat fs (f);
 
                   if (! fs)
                     {

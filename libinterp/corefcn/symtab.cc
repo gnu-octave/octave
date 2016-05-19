@@ -335,7 +335,7 @@ out_of_date_check (octave_value& function,
                              || (Vignore_function_time_stamp
                                  && fcn->is_system_fcn_file ())))
                         {
-                          file_stat fs (ff);
+                          octave::sys::file_stat fs (ff);
 
                           if (fs)
                             {

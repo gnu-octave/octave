@@ -396,7 +396,7 @@ execute_startup_files (void)
 
           // Names alone are not enough.
 
-          file_stat fs_home_rc (home_rc);
+          octave::sys::file_stat fs_home_rc (home_rc);
 
           if (fs_home_rc)
             {

@@ -595,7 +595,7 @@ namespace octave
               std::string fullnm = name + octave::sys::file_ops::dir_sep_str () + nm;
 
               // Get info about the file.  Don't follow links.
-              file_stat fs (fullnm, false);
+              octave::sys::file_stat fs (fullnm, false);
 
               if (fs)
                 {
@@ -688,7 +688,7 @@ namespace octave
       std::string templatename;
       if (dir.empty ())
         templatename = octave::sys::env::get_temp_directory ();
-      else if (! file_stat (dir, false).is_dir ())
+      else if (! octave::sys::file_stat (dir, false).is_dir ())
         templatename = octave::sys::env::get_temp_directory ();
       else
         templatename = dir;

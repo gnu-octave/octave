@@ -300,8 +300,8 @@ same_file_internal (const std::string& file1, const std::string& file2)
 
   // POSIX Code
 
-  file_stat fs_file1 (file1);
-  file_stat fs_file2 (file2);
+  octave::sys::file_stat fs_file1 (file1);
+  octave::sys::file_stat fs_file2 (file2);
 
   return (fs_file1 && fs_file2
           && fs_file1.ino () == fs_file2.ino ()

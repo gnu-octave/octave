@@ -433,7 +433,7 @@ initial_class_path (void)
 
       std::string jar_file = java_dir + sep + "octave.jar";
 
-      file_stat jar_exists (jar_file);
+      octave::sys::file_stat jar_exists (jar_file);
 
       if (jar_exists)
         {
@@ -457,11 +457,11 @@ initial_class_path (void)
             {
               std::string filename = cp_list[i];
               std::string cp_file = filename;
-              file_stat   cp_exists;
+              octave::sys::file_stat   cp_exists;
 
               // Try to find classpath file in the current directory.
 
-              cp_exists = file_stat (cp_file);
+              cp_exists = octave::sys::file_stat (cp_file);
               if (cp_exists)
                 {
                   // File found.  Add its contents to the static classpath.
@@ -475,7 +475,7 @@ initial_class_path (void)
                 {
                   cp_file = "~" + sep + filename;
                   cp_file = octave::sys::file_ops::tilde_expand (cp_file);
-                  cp_exists = file_stat (cp_file);
+                  cp_exists = octave::sys::file_stat (cp_file);
                   if (cp_exists)
                     {
                       // File found.  Add its contents to the static classpath.
@@ -489,7 +489,7 @@ initial_class_path (void)
               if (cwd != java_dir)
                 {
                   cp_file = java_dir + sep + filename;
-                  cp_exists = file_stat (cp_file);
+                  cp_exists = octave::sys::file_stat (cp_file);
                   if (cp_exists)
                     {
                       // File found.  Add its contents to the static classpath.

@@ -462,7 +462,7 @@ symbol_exist (const std::string& name, const std::string& type)
       if (file_name.empty ())
         file_name = name;
 
-      file_stat fs (file_name);
+      octave::sys::file_stat fs (file_name);
 
       if (fs)
         {

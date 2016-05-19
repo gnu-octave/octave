@@ -1488,7 +1488,7 @@ Use @code{imwrite} instead.\n\
   // If writemode is set to append, read the image and append to it. Even
   // if set to append, make sure that something was read at all.
   const std::string writemode = options.getfield ("writemode").string_value ();
-  if (writemode == "append" && file_stat (filename).exists ())
+  if (writemode == "append" && octave::sys::file_stat (filename).exists ())
     {
       std::vector<Magick::Image> ini_imvec;
       read_file (filename, ini_imvec);
@@ -1897,7 +1897,7 @@ Use @code{imfinfo} instead.\n\
   // We can't actually get FormatVersion but even Matlab sometimes can't.
   template_info.setfield ("FormatVersion", octave_value (""));
 
-  const file_stat fs (filename);
+  const octave::sys::file_stat fs (filename);
   if (! fs)
     error ("imfinfo: error reading '%s': %s", filename.c_str (),
            fs.error ().c_str ());

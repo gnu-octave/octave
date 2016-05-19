@@ -448,7 +448,7 @@ find_data_file_in_load_path  (const std::string& fcn,
       // Load path will also search "." first, but we don't want to
       // issue a warning if the file is found in the current directory,
       // so do an explicit check for that.
-      file_stat fs (fname);
+      octave::sys::file_stat fs (fname);
 
       bool local_file_ok
         = fs.exists () && (fs.is_reg () || ! require_regular_file);
@@ -485,7 +485,7 @@ fcn_file_in_path (const std::string& name)
     {
       if (octave::sys::env::absolute_pathname (name))
         {
-          file_stat fs (name);
+          octave::sys::file_stat fs (name);
 
           if (fs.exists () && ! fs.is_dir ())
             retval = name;
@@ -519,7 +519,7 @@ contents_file_in_path (const std::string& dir)
       std::string tcontents = octave::sys::file_ops::concat (load_path::find_dir (dir),
                                                 std::string ("Contents.m"));
 
-      file_stat fs (tcontents);
+      octave::sys::file_stat fs (tcontents);
 
       if (fs.exists ())
         retval = octave::sys::env::make_absolute (tcontents);
@@ -543,7 +543,7 @@ oct_file_in_path (const std::string& name)
     {
       if (octave::sys::env::absolute_pathname (name))
         {
-          file_stat fs (name);
+          octave::sys::file_stat fs (name);
 
           if (fs.exists ())
             retval = name;
@@ -572,7 +572,7 @@ mex_file_in_path (const std::string& name)
     {
       if (octave::sys::env::absolute_pathname (name))
         {
-          file_stat fs (name);
+          octave::sys::file_stat fs (name);
 
           if (fs.exists ())
             retval = name;

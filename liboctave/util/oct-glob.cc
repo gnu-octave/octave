@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 static bool
 single_match_exists (const std::string& file)
 {
-  file_stat s (file);
+  octave::sys::file_stat s (file);
 
   return s.exists ();
 }

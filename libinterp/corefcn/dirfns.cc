@@ -225,7 +225,7 @@ Internal function called by mkdir.m.\n\
 
   dirname = octave::sys::file_ops::tilde_expand (dirname);
 
-  file_stat fs (dirname);
+  octave::sys::file_stat fs (dirname);
 
   if (fs && fs.is_dir ())
     {

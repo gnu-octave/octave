@@ -60,7 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 
 static octave_scalar_map
-mk_stat_map (const base_file_stat& fs)
+mk_stat_map (const base_octave::sys::file_stat& fs)
 {
   octave_scalar_map m;
 
@@ -89,7 +89,7 @@ mk_stat_map (const base_file_stat& fs)
 }
 
 static octave_value_list
-mk_stat_result (const base_file_stat& fs)
+mk_stat_result (const base_octave::sys::file_stat& fs)
 {
   if (fs)
     return ovl (octave_value (mk_stat_map (fs)), 0, "");
@@ -627,7 +627,7 @@ The function outputs are described in the documentation for @code{stat}.\n\
 
   std::string fname = args(0).xstring_value ("lstat: NAME must be a string");
 
-  file_stat fs (fname, false);
+  octave::sys::file_stat fs (fname, false);
 
   return mk_stat_result (fs);
 }
@@ -860,7 +860,7 @@ For example:\n\
     {
       std::string fname = args(0).xstring_value ("stat: NAME must be a string");
 
-      file_stat fs (fname);
+      octave::sys::file_stat fs (fname);
 
       retval = mk_stat_result (fs);
     }
@@ -883,7 +883,7 @@ The value of @var{mode} is assumed to be returned from a call to\n\
 
   double mode = args(0).xdouble_value ("S_ISREG: invalid MODE value");
 
-  return ovl (file_stat::is_reg (static_cast<mode_t> (mode)));
+  return ovl (octave::sys::file_stat::is_reg (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
@@ -901,7 +901,7 @@ The value of @var{mode} is assumed to be returned from a call to\n\
 
   double mode = args(0).xdouble_value ("S_ISDIR: invalid MODE value");
 
-  return ovl (file_stat::is_dir (static_cast<mode_t> (mode)));
+  return ovl (octave::sys::file_stat::is_dir (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
@@ -919,7 +919,7 @@ The value of @var{mode} is assumed to be returned from a call to\n\
 
   double mode = args(0).xdouble_value ("S_ISCHR: invalid MODE value");
 
-  return ovl (file_stat::is_chr (static_cast<mode_t> (mode)));
+  return ovl (octave::sys::file_stat::is_chr (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
@@ -937,7 +937,7 @@ The value of @var{mode} is assumed to be returned from a call to\n\
 
   double mode = args(0).xdouble_value ("S_ISBLK: invalid MODE value");
 
-  return ovl (file_stat::is_blk (static_cast<mode_t> (mode)));
+  return ovl (octave::sys::file_stat::is_blk (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
@@ -955,7 +955,7 @@ The value of @var{mode} is assumed to be returned from a call to\n\
 
   double mode = args(0).xdouble_value ("S_ISFIFO: invalid MODE value");
 
-  return ovl (file_stat::is_fifo (static_cast<mode_t> (mode)));
+  return ovl (octave::sys::file_stat::is_fifo (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
@@ -973,7 +973,7 @@ The value of @var{mode} is assumed to be returned from a call to\n\
 
   double mode = args(0).xdouble_value ("S_ISLNK: invalid MODE value");
 
-  return ovl (file_stat::is_lnk (static_cast<mode_t> (mode)));
+  return ovl (octave::sys::file_stat::is_lnk (static_cast<mode_t> (mode)));
 }
 
 DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
@@ -991,7 +991,7 @@ The value of @var{mode} is assumed to be returned from a call to\n\
 
   double mode = args(0).xdouble_value ("S_ISSOCK: invalid MODE value");
 
-  return ovl (file_stat::is_sock (static_cast<mode_t> (mode)));
+  return ovl (octave::sys::file_stat::is_sock (static_cast<mode_t> (mode)));
 }
 
 DEFUN (gethostname, args, ,

@@ -266,7 +266,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
       // First check if just replacing matlabroot is enough
       std::string str = OCTAVE_EXEC_PREFIX +
                         fpath.substr (octaveroot.length ());
-      file_stat fs (str);
+      octave::sys::file_stat fs (str);
 
       if (fs.exists ())
         {

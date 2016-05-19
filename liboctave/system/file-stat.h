@@ -31,286 +31,305 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 
-class
-OCTAVE_API
-base_file_stat
+namespace octave
 {
-public:
-
-  base_file_stat (void)
-    : initialized (false), fail (false), errmsg (), fs_mode (),
-      fs_ino (), fs_dev (), fs_nlink (), fs_uid (), fs_gid (),
-      fs_size (), fs_atime (), fs_mtime (), fs_ctime (), fs_rdev (),
-      fs_blksize (), fs_blocks () { }
-
-  base_file_stat (const base_file_stat& fs)
-    : initialized (fs.initialized), fail (fs.fail), errmsg (fs.errmsg),
-      fs_mode (fs.fs_mode), fs_ino (fs.fs_ino), fs_dev (fs.fs_dev),
-      fs_nlink (fs.fs_nlink), fs_uid (fs.fs_uid), fs_gid (fs.fs_gid),
-      fs_size (fs.fs_size), fs_atime (fs.fs_atime), fs_mtime (fs.fs_mtime),
-      fs_ctime (fs.fs_ctime), fs_rdev (fs.fs_rdev),
-      fs_blksize (fs.fs_blksize), fs_blocks (fs.fs_blocks) { }
-
-  base_file_stat& operator = (const base_file_stat& fs)
+  namespace sys
   {
-    if (this != &fs)
+    class
+    OCTAVE_API
+    base_file_stat
+    {
+    public:
+
+      base_file_stat (void)
+        : initialized (false), fail (false), errmsg (), m_mode (),
+          m_ino (), m_dev (), m_nlink (), m_uid (), m_gid (),
+          m_size (), m_atime (), m_mtime (), m_ctime (), m_rdev (),
+          m_blksize (), m_blocks () { }
+
+      base_file_stat (const base_file_stat& fs)
+        : initialized (fs.initialized), fail (fs.fail), errmsg (fs.errmsg),
+          m_mode (fs.m_mode), m_ino (fs.m_ino), m_dev (fs.m_dev),
+          m_nlink (fs.m_nlink), m_uid (fs.m_uid), m_gid (fs.m_gid),
+          m_size (fs.m_size), m_atime (fs.m_atime), m_mtime (fs.m_mtime),
+          m_ctime (fs.m_ctime), m_rdev (fs.m_rdev),
+          m_blksize (fs.m_blksize), m_blocks (fs.m_blocks) { }
+
+      base_file_stat& operator = (const base_file_stat& fs)
+        {
+          if (this != &fs)
+            {
+              initialized = fs.initialized;
+              fail = fs.fail;
+              errmsg = fs.errmsg;
+              m_mode = fs.m_mode;
+              m_ino = fs.m_ino;
+              m_dev = fs.m_dev;
+              m_nlink = fs.m_nlink;
+              m_uid = fs.m_uid;
+              m_gid = fs.m_gid;
+              m_size = fs.m_size;
+              m_atime = fs.m_atime;
+              m_mtime = fs.m_mtime;
+              m_ctime = fs.m_ctime;
+              m_rdev = fs.m_rdev;
+              m_blksize = fs.m_blksize;
+              m_blocks = fs.m_blocks;
+            }
+
+          return *this;
+        }
+
+      // The minimum difference in file time stamp values.
+      // FIXME: This value should come from the filesystem itself.
+      //        How can we get that info?
+      octave::sys::time time_resolution (void) const
       {
-        initialized = fs.initialized;
-        fail = fs.fail;
-        errmsg = fs.errmsg;
-        fs_mode = fs.fs_mode;
-        fs_ino = fs.fs_ino;
-        fs_dev = fs.fs_dev;
-        fs_nlink = fs.fs_nlink;
-        fs_uid = fs.fs_uid;
-        fs_gid = fs.fs_gid;
-        fs_size = fs.fs_size;
-        fs_atime = fs.fs_atime;
-        fs_mtime = fs.fs_mtime;
-        fs_ctime = fs.fs_ctime;
-        fs_rdev = fs.fs_rdev;
-        fs_blksize = fs.fs_blksize;
-        fs_blocks = fs.fs_blocks;
+        static octave::sys::time resolution (1.0);
+        return resolution;
       }
 
-    return *this;
-  }
+      // File status and info.  The is_XXX functions will return false for
+      // file_stat objects that are not properly initialized.  The others
+      // should all return 0 (or the equivalent, for the given object)
+      // which is likely not meaningful.
 
-  // The minimum difference in file time stamp values.
-  // FIXME: This value should come from the filesystem itself.
-  //        How can we get that info?
-  octave::sys::time time_resolution (void) const
-  {
-    static octave::sys::time resolution (1.0);
-    return resolution;
-  }
+      bool is_blk (void) const;
+      bool is_chr (void) const;
+      bool is_dir (void) const;
+      bool is_fifo (void) const;
+      bool is_lnk (void) const;
+      bool is_reg (void) const;
+      bool is_sock (void) const;
 
-  // File status and info.  The is_XXX functions will return false for
-  // file_stat objects that are not properly initialized.  The others
-  // should all return 0 (or the equivalent, for the given object)
-  // which is likely not meaningful.
+      static bool is_blk (mode_t mode);
+      static bool is_chr (mode_t mode);
+      static bool is_dir (mode_t mode);
+      static bool is_fifo (mode_t mode);
+      static bool is_lnk (mode_t mode);
+      static bool is_reg (mode_t mode);
+      static bool is_sock (mode_t mode);
 
-  bool is_blk (void) const;
-  bool is_chr (void) const;
-  bool is_dir (void) const;
-  bool is_fifo (void) const;
-  bool is_lnk (void) const;
-  bool is_reg (void) const;
-  bool is_sock (void) const;
+      ino_t ino (void) const { return m_ino; }
+      dev_t dev (void) const { return m_dev; }
 
-  static bool is_blk (mode_t mode);
-  static bool is_chr (mode_t mode);
-  static bool is_dir (mode_t mode);
-  static bool is_fifo (mode_t mode);
-  static bool is_lnk (mode_t mode);
-  static bool is_reg (mode_t mode);
-  static bool is_sock (mode_t mode);
+      nlink_t nlink (void) const { return m_nlink; }
 
-  ino_t ino (void) const { return fs_ino; }
-  dev_t dev (void) const { return fs_dev; }
+      uid_t uid (void) const { return m_uid; }
+      gid_t gid (void) const { return m_gid; }
 
-  nlink_t nlink (void) const { return fs_nlink; }
+      off_t size (void) const { return m_size; }
 
-  uid_t uid (void) const { return fs_uid; }
-  gid_t gid (void) const { return fs_gid; }
+      octave::sys::time atime (void) const { return m_atime; }
+      octave::sys::time mtime (void) const { return m_mtime; }
+      octave::sys::time ctime (void) const { return m_ctime; }
 
-  off_t size (void) const { return fs_size; }
+      dev_t rdev (void) const { return m_rdev; }
 
-  octave::sys::time atime (void) const { return fs_atime; }
-  octave::sys::time mtime (void) const { return fs_mtime; }
-  octave::sys::time ctime (void) const { return fs_ctime; }
+      long blksize (void) const { return m_blksize; }
+      long blocks (void) const { return m_blocks; }
 
-  dev_t rdev (void) const { return fs_rdev; }
+      mode_t mode (void) const { return m_mode; }
 
-  long blksize (void) const { return fs_blksize; }
-  long blocks (void) const { return fs_blocks; }
+      std::string mode_as_string (void) const;
 
-  mode_t mode (void) const { return fs_mode; }
+      bool ok (void) const { return initialized && ! fail; }
 
-  std::string mode_as_string (void) const;
+      operator bool () const { return ok (); }
 
-  bool ok (void) const { return initialized && ! fail; }
+      bool exists (void) const { return ok (); }
 
-  operator bool () const { return ok (); }
+      std::string error (void) const { return ok () ? "" : errmsg; }
 
-  bool exists (void) const { return ok (); }
+      // Has the file referenced by this object been modified since TIME?
+      bool is_newer (const octave::sys::time& time) const { return m_mtime > time; }
 
-  std::string error (void) const { return ok () ? "" : errmsg; }
+      // It's nice to be able to hide the file_stat object if we don't
+      // really care about it.
+      static int is_newer (const std::string&, const octave::sys::time&);
 
-  // Has the file referenced by this object been modified since TIME?
-  bool is_newer (const octave::sys::time& time) const { return fs_mtime > time; }
+    protected:
 
-  // It's nice to be able to hide the file_stat object if we don't
-  // really care about it.
-  static int is_newer (const std::string&, const octave::sys::time&);
+      virtual ~base_file_stat (void) { }
 
-protected:
+      // TRUE means we have already called stat.
+      bool initialized;
 
-  virtual ~base_file_stat (void) { }
+      // TRUE means the stat for this file failed.
+      bool fail;
 
-  // TRUE means we have already called stat.
-  bool initialized;
+      // If a failure occurs, this contains the system error text.
+      std::string errmsg;
 
-  // TRUE means the stat for this file failed.
-  bool fail;
+      // file type and permissions
+      mode_t m_mode;
 
-  // If a failure occurs, this contains the system error text.
-  std::string errmsg;
+      // serial number
+      ino_t m_ino;
 
-  // file type and permissions
-  mode_t fs_mode;
+      // device number
+      dev_t m_dev;
 
-  // serial number
-  ino_t fs_ino;
+      // number of links
+      nlink_t m_nlink;
 
-  // device number
-  dev_t fs_dev;
+      // user ID of owner
+      uid_t m_uid;
 
-  // number of links
-  nlink_t fs_nlink;
+      // group ID of owner
+      gid_t m_gid;
 
-  // user ID of owner
-  uid_t fs_uid;
+      // size in bytes, for regular files
+      off_t m_size;
 
-  // group ID of owner
-  gid_t fs_gid;
+      // time of last access
+      octave::sys::time m_atime;
 
-  // size in bytes, for regular files
-  off_t fs_size;
+      // time of last modification
+      octave::sys::time m_mtime;
 
-  // time of last access
-  octave::sys::time fs_atime;
+      // time of last file status change
+      octave::sys::time m_ctime;
 
-  // time of last modification
-  octave::sys::time fs_mtime;
+      // device number for special files
+      dev_t m_rdev;
 
-  // time of last file status change
-  octave::sys::time fs_ctime;
+      // best I/O block size
+      long m_blksize;
 
-  // device number for special files
-  dev_t fs_rdev;
+      // number of 512-byte blocks allocated
+      long m_blocks;
+    };
 
-  // best I/O block size
-  long fs_blksize;
+    class
+    OCTAVE_API
+    file_stat : public base_file_stat
+    {
+    public:
 
-  // number of 512-byte blocks allocated
-  long fs_blocks;
-};
-
-class
-OCTAVE_API
-file_stat : public base_file_stat
-{
-public:
-
-  file_stat (const std::string& n = "", bool fl = true)
-    : base_file_stat (), file_name (n), follow_links (fl)
-  {
-    if (! file_name.empty ())
-      update_internal ();
-  }
-
-  file_stat (const file_stat& fs)
-    : base_file_stat (fs), file_name (fs.file_name),
-      follow_links (fs.follow_links) { }
-
-  file_stat& operator = (const file_stat& fs)
-  {
-    if (this != &fs)
+      file_stat (const std::string& n = "", bool fl = true)
+        : base_file_stat (), file_name (n), follow_links (fl)
       {
-        base_file_stat::operator = (fs);
-
-        file_name = fs.file_name;
-        follow_links = fs.follow_links;
+        if (! file_name.empty ())
+          update_internal ();
       }
 
-    return *this;
-  }
+      file_stat (const file_stat& fs)
+        : base_file_stat (fs), file_name (fs.file_name),
+        follow_links (fs.follow_links) { }
 
-  ~file_stat (void) { }
+      file_stat& operator = (const file_stat& fs)
+        {
+          if (this != &fs)
+            {
+              base_file_stat::operator = (fs);
 
-  void get_stats (bool force = false)
-  {
-    if (! initialized || force)
-      update_internal (force);
-  }
+              file_name = fs.file_name;
+              follow_links = fs.follow_links;
+            }
 
-  void get_stats (const std::string& n, bool force = false)
-  {
-    if (n != file_name || ! initialized || force)
+          return *this;
+        }
+
+      ~file_stat (void) { }
+
+      void get_stats (bool force = false)
       {
-        initialized = false;
-
-        file_name = n;
-
-        update_internal (force);
-      }
-  }
-
-private:
-
-  // Name of the file.
-  std::string file_name;
-
-  // TRUE means follow symbolic links to the ultimate file (stat).
-  // FALSE means get information about the link itself (lstat).
-  bool follow_links;
-
-  void update_internal (bool force = false);
-};
-
-class
-OCTAVE_API
-file_fstat : public base_file_stat
-{
-public:
-
-  file_fstat (int n) : base_file_stat (), fid (n)
-  {
-    update_internal ();
-  }
-
-  file_fstat (const file_fstat& fs)
-    : base_file_stat (fs), fid (fs.fid) { }
-
-  file_fstat& operator = (const file_fstat& fs)
-  {
-    if (this != &fs)
-      {
-        base_file_stat::operator = (fs);
-
-        fid = fs.fid;
+        if (! initialized || force)
+          update_internal (force);
       }
 
-    return *this;
-  }
-
-  ~file_fstat (void) { }
-
-  void get_stats (bool force = false)
-  {
-    if (! initialized || force)
-      update_internal (force);
-  }
-
-  void get_stats (int n, bool force = false)
-  {
-    if (n != fid || ! initialized || force)
+      void get_stats (const std::string& n, bool force = false)
       {
-        initialized = false;
+        if (n != file_name || ! initialized || force)
+          {
+            initialized = false;
 
-        fid = n;
+            file_name = n;
 
-        update_internal (force);
+            update_internal (force);
+          }
       }
+
+    private:
+
+      // Name of the file.
+      std::string file_name;
+
+      // TRUE means follow symbolic links to the ultimate file (stat).
+      // FALSE means get information about the link itself (lstat).
+      bool follow_links;
+
+      void update_internal (bool force = false);
+    };
+
+    class
+    OCTAVE_API
+    file_fstat : public base_file_stat
+    {
+    public:
+
+      file_fstat (int n) : base_file_stat (), fid (n)
+      {
+        update_internal ();
+      }
+
+      file_fstat (const file_fstat& fs)
+        : base_file_stat (fs), fid (fs.fid) { }
+
+      file_fstat& operator = (const file_fstat& fs)
+        {
+          if (this != &fs)
+            {
+              base_file_stat::operator = (fs);
+
+              fid = fs.fid;
+            }
+
+          return *this;
+        }
+
+      ~file_fstat (void) { }
+
+      void get_stats (bool force = false)
+      {
+        if (! initialized || force)
+          update_internal (force);
+      }
+
+      void get_stats (int n, bool force = false)
+      {
+        if (n != fid || ! initialized || force)
+          {
+            initialized = false;
+
+            fid = n;
+
+            update_internal (force);
+          }
+      }
+
+    private:
+
+      // Open file descriptor.
+      int fid;
+
+      void update_internal (bool force = false);
+    };
   }
+}
 
-private:
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  // Open file descriptor.
-  int fid;
+OCTAVE_DEPRECATED ("use octave::sys::base_file_stat instead")
+typedef octave::sys::base_file_stat base_file_stat;
 
-  void update_internal (bool force = false);
-};
+OCTAVE_DEPRECATED ("use octave::sys::file_stat instead")
+typedef octave::sys::file_stat file_stat;
+
+OCTAVE_DEPRECATED ("use octave::sys::file_fstat instead")
+typedef octave::sys::file_fstat file_fstat;
+
+#endif
 
 #endif

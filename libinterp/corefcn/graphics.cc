@@ -10805,7 +10805,7 @@ undocumented.\n\
                 {
                   std::string dirname = file.substr (0, pos+1);
 
-                  file_stat fs (dirname);
+                  octave::sys::file_stat fs (dirname);
 
                   if (! fs || ! fs.is_dir ())
                     error ("drawnow: nonexistent directory '%s'",

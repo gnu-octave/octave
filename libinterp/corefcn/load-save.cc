@@ -502,14 +502,14 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
       // Either no '.' in name or no '.' appears after last directory
       // separator.
 
-      file_stat fs (fname);
+      octave::sys::file_stat fs (fname);
 
       if (! (fs.exists () && fs.is_reg ()))
         fname = find_file_to_load (fname + ".mat", orig_name);
     }
   else
     {
-      file_stat fs (fname);
+      octave::sys::file_stat fs (fname);
 
       if (! (fs.exists () && fs.is_reg ()))
         {

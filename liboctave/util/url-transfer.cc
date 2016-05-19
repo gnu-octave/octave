@@ -56,7 +56,7 @@ base_url_transfer::mget_directory (const std::string& directory,
                                    const std::string& target)
 {
   std::string sep = octave::sys::file_ops::dir_sep_str ();
-  file_stat fs (directory);
+  octave::sys::file_stat fs (directory);
 
   if (! fs || ! fs.is_dir ())
     {
@@ -161,7 +161,7 @@ base_url_transfer::mput_directory (const std::string& base,
                 continue;
 
               std::string realfile = realdir + octave::sys::file_ops::dir_sep_str () + file;
-              file_stat fs (realfile);
+              octave::sys::file_stat fs (realfile);
 
               if (! fs.exists ())
                 {

@@ -876,7 +876,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     // First check if just replacing matlabroot is enough
                     std::string str = OCTAVE_EXEC_PREFIX +
                                       fpath.substr (mroot.length ());
-                    file_stat fs (str);
+                    octave::sys::file_stat fs (str);
 
                     if (fs.exists ())
                       {

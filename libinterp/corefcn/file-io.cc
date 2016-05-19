@@ -452,7 +452,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
   std::string fname = octave::sys::file_ops::tilde_expand (name);
 
-  file_stat fs (fname);
+  octave::sys::file_stat fs (fname);
 
   if (! (md & std::ios::out))
     fname = find_data_file_in_load_path ("fopen", fname);

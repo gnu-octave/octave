@@ -3207,7 +3207,7 @@ octave_base_parser::frob_function (const std::string& fname,
 
       std::string nm = fcn->fcn_file_name ();
 
-      file_stat fs (nm);
+      octave::sys::file_stat fs (nm);
 
       if (fs && fs.is_newer (now))
         warning_with_id ("Octave:future-time-stamp",
@@ -4496,7 +4496,7 @@ not loaded anymore during the current Octave session.\n\
                   fname = octave::sys::env::make_absolute (fname);
                   fname = fname.substr (0, fname.find_last_of (octave::sys::file_ops::dir_sep_str ()) + 1);
 
-                  file_stat fs (fname + nm);
+                  octave::sys::file_stat fs (fname + nm);
 
                   if (fs.exists ())
                     {

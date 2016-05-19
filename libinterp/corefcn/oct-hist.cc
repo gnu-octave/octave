@@ -134,7 +134,7 @@ do_history (const octave_value_list& args, int nargout)
 {
   bool numbered_output = nargout == 0;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   string_vector hlist;
 
@@ -496,7 +496,7 @@ do_edit_history (const octave_value_list& args)
   // Turn on command echo, so the output from this will make better
   // sense.
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (unlink_cleanup, name.c_str ());
   frame.protect_var (Vecho_executing_commands);
@@ -518,7 +518,7 @@ do_run_history (const octave_value_list& args)
 
   // Turn on command echo so the output from this will make better sense.
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (unlink_cleanup, name.c_str ());
   frame.protect_var (Vecho_executing_commands);

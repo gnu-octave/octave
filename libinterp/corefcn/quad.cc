@@ -182,7 +182,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
   warned_imaginary = false;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (call_depth);
   call_depth++;

@@ -52,7 +52,7 @@ get_data_and_bytesize (const ArrayType& array,
                        const void *& data,
                        octave_idx_type& byte_size,
                        dim_vector& old_dims,
-                       unwind_protect& frame)
+                       octave::unwind_protect& frame)
 {
   // The array given may be a temporary, constructed from a scalar or sparse
   // array. This will ensure the data will be deallocated after we exit.
@@ -143,7 +143,7 @@ typecast (@var{x}, \"uint8\")\n\
 
   octave_value retval;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   const void *data = 0;
   octave_idx_type byte_size = 0;

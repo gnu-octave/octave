@@ -66,7 +66,7 @@ octave_oncleanup::~octave_oncleanup (void)
   if (fcn.is_undefined ())
     return;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   // Clear interrupts.
   frame.protect_var (octave_interrupt_state);

@@ -65,7 +65,7 @@ tree::meets_bp_condition () const
     {
       int parse_status = 0;
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
       frame.protect_var (buffer_error_messages);
       frame.protect_var (Vdebug_on_error);
       frame.protect_var (Vdebug_on_warning);

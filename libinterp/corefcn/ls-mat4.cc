@@ -449,7 +449,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   if (tc.is_string ())
     {
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       charMatrix chm = tc.char_matrix_value ();
 

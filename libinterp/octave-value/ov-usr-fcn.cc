@@ -124,7 +124,7 @@ octave_user_script::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   if (args.length () != 0 || nargout != 0)
     error ("invalid call to script %s", file_name.c_str ());
@@ -491,7 +491,7 @@ octave_user_function::do_multi_index_op (int nargout,
     return retval;
 #endif
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (call_depth);
   call_depth++;

@@ -1658,7 +1658,7 @@ static bool executing_callback = false;
 void
 callback_property::execute (const octave_value& data) const
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   // We are executing the callback function associated with this
   // callback property.  When set to true, we avoid recursive calls to
@@ -2666,7 +2666,7 @@ static void
 delete_graphics_objects (const NDArray vals)
 {
   // Prevent redraw of partially deleted objects.
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (delete_executing);
   delete_executing = true;
 
@@ -3197,7 +3197,7 @@ base_graphics_object::remove_all_listeners (void)
       // ask whether it is OK to delete the listener for the given
       // property.  How can we know in advance that it will be OK?
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       frame.protect_var (discard_error_messages);
       frame.protect_var (Vdebug_on_error);
@@ -5506,7 +5506,7 @@ axes::properties::update_axes_layout (void)
   zPlaneN = (zPlane == z_min ? z_max : z_min);
   fz = (z_max - z_min) / sqrt (dir(0)*dir(0) + dir(1)*dir(1));
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_axes_layout);
   updating_axes_layout = true;
 
@@ -5652,7 +5652,7 @@ axes::properties::update_xlabel_position (void)
 
   bool is_empty = xlabel_props.get_string ().is_empty ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_xlabel_position);
   updating_xlabel_position = true;
 
@@ -5753,7 +5753,7 @@ axes::properties::update_ylabel_position (void)
 
   bool is_empty = ylabel_props.get_string ().is_empty ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_ylabel_position);
   updating_ylabel_position = true;
 
@@ -5864,7 +5864,7 @@ axes::properties::update_zlabel_position (void)
   bool camAuto = cameraupvectormode_is ("auto");
   bool is_empty = zlabel_props.get_string ().is_empty ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_zlabel_position);
   updating_zlabel_position = true;
 
@@ -5985,7 +5985,7 @@ axes::properties::update_title_position (void)
   text::properties& title_props
     = reinterpret_cast<text::properties&> (go.get_properties ());
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_title_position);
   updating_title_position = true;
 
@@ -6139,7 +6139,7 @@ axes::properties::update_aspectratios (void)
 
       if (modified_limits)
         {
-          unwind_protect frame;
+          octave::unwind_protect frame;
           frame.protect_var (updating_aspectratios);
 
           updating_aspectratios.insert (get___myhandle__ ().value ());
@@ -7265,7 +7265,7 @@ axes::update_axis_limits (const std::string& axis_type,
 
 #undef FIX_LIMITS
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_axis_limits);
 
   updating_axis_limits.insert (get_handle ().value ());
@@ -7426,7 +7426,7 @@ axes::update_axis_limits (const std::string& axis_type)
 
     }
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_axis_limits);
 
   updating_axis_limits.insert (get_handle ().value ());
@@ -8169,7 +8169,7 @@ patch::properties::update_fvc (void)
 
   // FIXME: shouldn't we update facevertexalphadata here ?
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_patch_data);
   updating_patch_data = true;
 
@@ -8273,7 +8273,7 @@ patch::properties::update_data (void)
     }
 
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_patch_data);
   updating_patch_data = true;
 
@@ -8497,7 +8497,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
 
   get_children_limits (min_val, max_val, min_pos, max_neg, kids, update_type);
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_hggroup_limits);
 
   updating_hggroup_limits = true;
@@ -8586,7 +8586,7 @@ hggroup::update_axis_limits (const std::string& axis_type)
       update_type = 'a';
     }
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (updating_hggroup_limits);
 
   updating_hggroup_limits = true;
@@ -9303,7 +9303,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       else
         args(1) = Matrix ();
 
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
       frame.add_fcn (gh_manager::restore_gcbo);
 
       if (true)
@@ -10724,7 +10724,7 @@ undocumented.\n\
   if (args.length () > 3)
     print_usage ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (Vdrawnow_requested, false);
   frame.protect_var (drawnow_executing);
@@ -11263,7 +11263,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 
   caseless_str pname;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   static uint32_t id_counter = 0;
   uint32_t id = 0;

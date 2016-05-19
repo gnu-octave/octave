@@ -2986,7 +2986,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
   for (int i = 0; i < nout; i++)
     argout[i] = 0;
 
-  unwind_protect_safe frame;
+  octave::unwind_protect_safe frame;
 
   // Save old mex pointer.
   frame.protect_var (mex_context);
@@ -3218,7 +3218,7 @@ mexGetVariable (const char *space, const char *name)
     {
       // FIXME: should this be in variables.cc?
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
@@ -3278,7 +3278,7 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
     {
       // FIXME: should this be in variables.cc?
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");

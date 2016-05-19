@@ -375,7 +375,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
           try
             {
               // Suppress error messages on the console.
-              unwind_protect frame;
+              octave::unwind_protect frame;
               frame.protect_var (buffer_error_messages);
               buffer_error_messages++;
 

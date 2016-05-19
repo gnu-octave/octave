@@ -680,7 +680,7 @@ load_path::do_set (const std::string& p, bool warn, bool is_init)
 
   // Temporarily disable add hook.
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (add_hook);
 
   add_hook = 0;
@@ -2207,7 +2207,7 @@ execute_pkg_add_or_del (const std::string& dir,
   if (! octave_interpreter_ready)
     return;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   std::string file = octave::sys::file_ops::concat (dir, script_file);
 

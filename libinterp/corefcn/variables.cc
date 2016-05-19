@@ -258,7 +258,7 @@ generate_struct_completions (const std::string& text,
         {
           int parse_status;
 
-          unwind_protect frame;
+          octave::unwind_protect frame;
 
           frame.protect_var (discard_error_messages);
           frame.protect_var (discard_warning_messages);
@@ -304,7 +304,7 @@ looks_like_struct (const std::string& text)
     {
       int parse_status;
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       frame.protect_var (discard_error_messages);
 
@@ -370,7 +370,7 @@ safe_symbol_lookup (const std::string& symbol_name)
 {
   octave_value retval;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   interpreter_try (frame);
 
   try
@@ -1666,7 +1666,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
           std::string nm = argv[i + 1];
 
-          unwind_protect frame;
+          octave::unwind_protect frame;
 
           // Set up temporary scope.
 
@@ -2643,7 +2643,7 @@ void maybe_missing_function_hook (const std::string& name)
       if (val.is_defined ())
         {
           // Ensure auto-restoration.
-          unwind_protect frame;
+          octave::unwind_protect frame;
           frame.protect_var (Vmissing_function_hook);
 
           // Clear the variable prior to calling the function.

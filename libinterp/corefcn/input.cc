@@ -524,7 +524,7 @@ execute_in_debugger_handler (const std::pair<std::string, int>& arg)
 static void
 get_debug_input (const std::string& prompt)
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   bool silent = tree_evaluator::quiet_breakpoint_flag;
   tree_evaluator::quiet_breakpoint_flag = false;
@@ -864,7 +864,7 @@ do_keyboard (const octave_value_list& args)
 
   assert (nargin == 0 || nargin == 1);
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (command_history::ignore_entries,
                  command_history::ignoring_entries ());
@@ -914,7 +914,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
   if (args.length () > 1)
     print_usage ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (octave_call_stack::restore_frame,
                  octave_call_stack::current_frame ());

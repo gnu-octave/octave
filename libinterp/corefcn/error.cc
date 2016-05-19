@@ -318,7 +318,7 @@ maybe_enter_debugger (octave_execution_exception& e,
           || (Vdebug_on_caught && bp_table::debug_on_caught (last_error_id ())))
       && octave_call_stack::caller_user_code ())
     {
-      unwind_protect frame;
+      octave::unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
       Vdebug_on_error = false;
 
@@ -723,7 +723,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
       if ((interactive || forced_interactive)
           && Vdebug_on_warning && in_user_code && bp_table::debug_on_warn (id))
         {
-          unwind_protect frame;
+          octave::unwind_protect frame;
           frame.protect_var (Vdebug_on_warning);
           Vdebug_on_warning = false;
 
@@ -2156,7 +2156,7 @@ last_warning_id (void)
 }
 
 void
-interpreter_try (unwind_protect& frame)
+interpreter_try (octave::unwind_protect& frame)
 {
   frame.protect_var (buffer_error_messages);
   frame.protect_var (Vdebug_on_error);

@@ -265,7 +265,7 @@ parameters for @code{lsode}.\n\
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (call_depth);
   call_depth++;

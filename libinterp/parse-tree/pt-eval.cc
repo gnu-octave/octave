@@ -287,7 +287,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (in_loop_command);
 
@@ -399,7 +399,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint (true));
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (in_loop_command);
 
@@ -830,7 +830,7 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 void
 tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (buffer_error_messages);
   frame.protect_var (Vdebug_on_error);
@@ -902,7 +902,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 void
 tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (octave_interrupt_state);
   octave_interrupt_state = 0;
@@ -1021,7 +1021,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
     return;
 #endif
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (in_loop_command);
 
@@ -1060,7 +1060,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
     return;
 #endif
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (in_loop_command);
 

@@ -23,7 +23,7 @@ DEFUN_DLD (unwinddemo, args, nargout, "Unwind Demo")
 
   // Declare unwind_protect frame which lasts as long as
   // the variable frame has scope.
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.add_fcn (set_liboctave_warning_handler,
                  current_liboctave_warning_handler);
 

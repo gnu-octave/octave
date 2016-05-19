@@ -424,7 +424,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       pos = is.tellg ();
 
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -608,7 +608,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       is.read (ctmp2, tmp);
       ctmp2[tmp] = 0;
 
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -1115,7 +1115,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       H5Eset_auto (err_func, err_func_data);
 #endif
 
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -2037,7 +2037,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                           else
                             {
                               // Simulate try/catch.
-                              unwind_protect frame;
+                              octave::unwind_protect frame;
                               interpreter_try (frame);
 
                               try

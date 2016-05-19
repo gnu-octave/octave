@@ -540,7 +540,7 @@ v = cellfun (@@det, a); # faster\n\
         }
     }
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (buffer_error_messages);
 
   if (error_handler.is_defined ())
@@ -1222,7 +1222,7 @@ arrayfun (@@str2num, [1234],\n\
             }
         }
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
       frame.protect_var (buffer_error_messages);
 
       if (error_handler.is_defined ())

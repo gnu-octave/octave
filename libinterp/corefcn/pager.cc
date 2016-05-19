@@ -451,7 +451,7 @@ flush_octave_stdout (void)
 {
   if (! flushing_output_to_pager)
     {
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       frame.protect_var (really_flush_to_pager);
       frame.protect_var (flushing_output_to_pager);

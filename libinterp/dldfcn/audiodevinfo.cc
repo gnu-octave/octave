@@ -1103,7 +1103,7 @@ audioplayer::playblocking (void)
   start = get_sample_number ();
   end = get_end_sample ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_audioplayer_stop, this);
 
@@ -1723,7 +1723,7 @@ audiorecorder::recordblocking (float seconds)
 
   unsigned int frames = seconds * get_fs ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_audiorecorder_stop, this);
 

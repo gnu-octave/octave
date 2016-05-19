@@ -135,7 +135,7 @@ octave_mex_function::do_multi_index_op (int nargout,
   if (args.has_magic_colon ())
     error ("invalid use of colon in function argument list");
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   octave_call_stack::push (this);
 

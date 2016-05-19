@@ -1366,7 +1366,7 @@ character @nospell{\"@xbackslashchar{}0\"}, it will always be a valid index.\n\
 
   octave_value retval;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (discard_error_messages);
   discard_error_messages = true;

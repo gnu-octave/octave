@@ -91,7 +91,7 @@ is stored in the audio file.\n\
   if (! file)
     error ("audioread: failed to open input file %s", filename.c_str ());
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
 
@@ -394,7 +394,7 @@ Comment.\n\
   if (! file)
     error ("audiowrite: failed to open output file %s", filename.c_str ());
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
 
@@ -462,7 +462,7 @@ Return information about an audio file specified by @var{filename}.\n\
   if (! file)
     error ("audioinfo: failed to open file %s", filename.c_str ());
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
 

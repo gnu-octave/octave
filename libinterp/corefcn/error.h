@@ -28,9 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdarg>
 #include <string>
 
+#include "unwind-prot.h"
+
 class octave_map;
 class octave_value_list;
-class unwind_protect;
 class octave_execution_exception;
 
 #define panic_impossible() \
@@ -170,6 +171,6 @@ extern OCTINTERP_API octave_map last_error_stack (void);
 extern OCTINTERP_API std::string last_warning_message (void);
 extern OCTINTERP_API std::string last_warning_id (void);
 
-extern OCTINTERP_API void interpreter_try (unwind_protect&);
+extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
 #endif

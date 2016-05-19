@@ -209,7 +209,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
                        && ! (object->is_function ()
                              || object->is_function_handle ()));
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   if (stash_object)
     {

@@ -3439,7 +3439,7 @@ If the length of the smallest possible rational approximation exceeds\n\
   if (! arg.is_numeric_type ())
     error ("rats: X must be numeric");
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (rat_string_len);
 

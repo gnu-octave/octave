@@ -974,7 +974,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);
             m2 = tc2.scalar_map_value ();
 
-            unwind_protect_safe frame;
+            octave::unwind_protect_safe frame;
 
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.

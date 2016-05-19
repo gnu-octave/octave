@@ -1020,7 +1020,7 @@ static octave_value_list
 run_command_and_return_output (const std::string& cmd_str)
 {
   octave_value_list retval;
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
@@ -1141,7 +1141,7 @@ command shell that is started to run the command.\n\
   octave_value_list retval;
 
   // FIXME: Is this unwind_protect frame needed anymore (12/16/15)?
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   bool return_output = (nargin == 1 && nargout > 1);
 

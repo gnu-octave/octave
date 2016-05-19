@@ -242,7 +242,7 @@ initialize_load_path (void)
   // normally be evaluated from the normal intepreter loop where
   // exceptions are already handled.
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (load_path::set_add_hook, load_path::get_add_hook ());
 
@@ -350,7 +350,7 @@ safe_source_file (const std::string& file_name,
 static void
 execute_startup_files (void)
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   std::string context;
 
@@ -422,7 +422,7 @@ execute_startup_files (void)
 static int
 execute_eval_option_code (const std::string& code)
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   octave_save_signal_mask ();
 
@@ -467,7 +467,7 @@ execute_eval_option_code (const std::string& code)
 static void
 execute_command_line_file (const std::string& fname)
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   octave_save_signal_mask ();
 

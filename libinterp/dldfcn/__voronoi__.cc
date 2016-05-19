@@ -137,7 +137,7 @@ Undocumented internal function.\n\
 
   boolT ismalloc = false;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   // Replace the outfile pointer with stdout for debugging information.
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)

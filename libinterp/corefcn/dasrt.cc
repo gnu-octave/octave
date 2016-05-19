@@ -342,7 +342,7 @@ parameters for @code{dasrt}.\n\
 
   octave_value_list retval (5);
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (call_depth);
   call_depth++;

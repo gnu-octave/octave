@@ -528,7 +528,7 @@ private:
     { \
       try \
         { \
-          unwind_protect frame; \
+          octave::unwind_protect frame; \
  \
           frame.protect_var (Vdebug_on_error); \
           frame.protect_var (Vdebug_on_warning); \

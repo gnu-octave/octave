@@ -130,7 +130,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
   octave_value retval;
 
   // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (Vsparse_auto_mutate);
   Vsparse_auto_mutate = false;
 

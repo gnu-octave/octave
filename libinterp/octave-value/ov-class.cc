@@ -557,7 +557,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           if (obsolete_copies == 0 && meth.is_user_function ()
               && meth.user_function_value ()->subsasgn_optimization_ok ())
             {
-              unwind_protect frame;
+              octave::unwind_protect frame;
               frame.protect_var (obsolete_copies);
               obsolete_copies = 2;
 
@@ -994,7 +994,7 @@ octave_class::print (std::ostream& os, bool)
 void
 octave_class::print_raw (std::ostream& os, bool) const
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   indent (os);
   os << "  <class " << class_name () << ">";
@@ -1078,7 +1078,7 @@ octave_class::reconstruct_exemplar (void)
 
       if (have_ctor)
         {
-          unwind_protect frame;
+          octave::unwind_protect frame;
 
           // Simulate try/catch.
 

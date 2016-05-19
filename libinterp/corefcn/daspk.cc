@@ -264,7 +264,7 @@ parameters for @code{daspk}.\n\
 
   octave_value_list retval (4);
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (call_depth);
   call_depth++;

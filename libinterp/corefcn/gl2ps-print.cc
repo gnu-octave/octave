@@ -162,7 +162,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
 
   if (! in_draw)
     {
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       frame.protect_var (in_draw);
 
@@ -789,7 +789,7 @@ gl2ps_print (const graphics_object& fig, const std::string& stream,
 
   FILE *fp = 0;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   if (have_cmd)
     {

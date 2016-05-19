@@ -247,7 +247,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (octave_dynamic_loader::doing_load);
 
@@ -301,7 +301,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (octave_dynamic_loader::doing_load);
 

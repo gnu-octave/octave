@@ -498,7 +498,7 @@ private:
   symbol_table::scope_id local_scope;
 
   // pointer to the current unwind_protect frame of this function.
-  unwind_protect *curr_unwind_protect_frame;
+  octave::unwind_protect *curr_unwind_protect_frame;
 
 #if defined (HAVE_LLVM)
   jit_function_info *jit_info;

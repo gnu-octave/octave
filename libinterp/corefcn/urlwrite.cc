@@ -366,7 +366,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
   if (! ofile.is_open ())
     error ("urlwrite: unable to open file");
 
-  unwind_protect_safe frame;
+  octave::unwind_protect_safe frame;
 
   frame.add_fcn (delete_file, filename);
 
@@ -904,7 +904,7 @@ Undocumented internal function\n\
               if (! ofile.is_open ())
                 error ("__ftp_mget__: unable to open file");
 
-              unwind_protect_safe frame;
+              octave::unwind_protect_safe frame;
 
               frame.add_fcn (delete_file, target + sv(i));
 

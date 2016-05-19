@@ -2214,7 +2214,7 @@ octave_base_parser::finish_colon_expression (tree_colon_expression *e)
 {
   tree_expression *retval = e;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (discard_error_messages);
   frame.protect_var (discard_warning_messages);
@@ -3839,7 +3839,7 @@ octave_base_parser::finish_array_list (tree_array_list *array_list)
 {
   tree_expression *retval = array_list;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (discard_error_messages);
   frame.protect_var (discard_warning_messages);
@@ -4140,7 +4140,7 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
                 bool require_file, bool force_script, bool autoload,
                 bool relative_lookup, const std::string& warn_for)
 {
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   octave_function *fcn_ptr = 0;
 
@@ -4330,7 +4330,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   std::string nm = file_name;
 
@@ -4570,7 +4570,7 @@ source_file (const std::string& file_name, const std::string& context,
 
   file_full_name = octave::sys::env::make_absolute (file_full_name);
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   if (source_call_depth.find (file_full_name) == source_call_depth.end ())
     source_call_depth[file_full_name] = -1;
@@ -5087,7 +5087,7 @@ the security considerations that the evaluation of arbitrary code does.\n\
   if (nargin == 0)
     print_usage ();
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   if (nargin > 1)
     {
@@ -5193,7 +5193,7 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 
   std::string context = args(0).xstring_value ("assignin: CONTEXT must be a string");
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   if (context == "caller")
     octave_call_stack::goto_caller_frame ();
@@ -5247,7 +5247,7 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
 
   std::string context = args(0).xstring_value ("evalin: CONTEXT must be a string");
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   if (context == "caller")
     octave_call_stack::goto_caller_frame ();

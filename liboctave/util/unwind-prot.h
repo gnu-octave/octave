@@ -33,120 +33,133 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "action-container.h"
 
-class
-OCTAVE_API
-unwind_protect : public action_container
+namespace octave
 {
-public:
-
-  unwind_protect (void) : lifo () { }
-
-  // Destructor should not raise an exception, so all actions
-  // registered should be exception-safe.  If you're not sure, see
-  // unwind_protect_safe.
-
-  ~unwind_protect (void) { run (); }
-
-  virtual void add (elem *new_elem)
+  class
+  OCTAVE_API
+  unwind_protect : public action_container
   {
-    lifo.push (new_elem);
-  }
+  public:
 
-  OCTAVE_DEPRECATED ("use 'add (new fcn_arg_elem<void *> (fcn, ptr))' instead")
-  void add (void (*fcn) (void *), void *ptr = 0)
+    unwind_protect (void) : lifo () { }
+
+    // Destructor should not raise an exception, so all actions
+    // registered should be exception-safe.  If you're not sure, see
+    // unwind_protect_safe.
+
+    ~unwind_protect (void) { run (); }
+
+    virtual void add (elem *new_elem)
+    {
+      lifo.push (new_elem);
+    }
+
+    OCTAVE_DEPRECATED ("use 'add (new fcn_arg_elem<void *> (fcn, ptr))' instead")
+    void add (void (*fcn) (void *), void *ptr = 0)
+    {
+      add (new fcn_arg_elem<void *> (fcn, ptr));
+    }
+
+    operator bool (void) const { return ! empty (); }
+
+    OCTAVE_DEPRECATED ("use 'run_first' instead")
+    void run_top (void) { run_first (); }
+
+    void run_first (void)
+    {
+      if (! empty ())
+        {
+          // No leak on exception!
+          std::unique_ptr<elem> ptr (lifo.top ());
+          lifo.pop ();
+          ptr->run ();
+        }
+    }
+
+    OCTAVE_DEPRECATED ("use 'run' instead")
+    void run_top (int num) { run (num); }
+
+    OCTAVE_DEPRECATED ("use 'discard_first' instead")
+    void discard_top (void) { discard_first (); }
+
+    void discard_first (void)
+    {
+      if (! empty ())
+        {
+          elem *ptr = lifo.top ();
+          lifo.pop ();
+          delete ptr;
+        }
+    }
+
+    OCTAVE_DEPRECATED ("use 'discard' instead")
+    void discard_top (int num) { discard (num); }
+
+    size_t size (void) const { return lifo.size (); }
+
+  protected:
+
+    std::stack<elem *> lifo;
+
+  private:
+
+    // No copying!
+
+    unwind_protect (const unwind_protect&);
+
+    unwind_protect& operator = (const unwind_protect&);
+  };
+
+  // Like unwind_protect, but this one will guard against the
+  // possibility of seeing an exception (or interrupt) in the cleanup
+  // actions. Not that we can do much about it, but at least we won't
+  // crash.
+
+  class
+  OCTAVE_API
+  unwind_protect_safe : public unwind_protect
   {
-    add (new fcn_arg_elem<void *> (fcn, ptr));
-  }
+  private:
 
-  operator bool (void) const { return ! empty (); }
+    void warn_unhandled_exception (void) const;
 
-  OCTAVE_DEPRECATED ("use 'run_first' instead")
-  void run_top (void) { run_first (); }
+  public:
 
-  void run_first (void)
-  {
-    if (! empty ())
+    unwind_protect_safe (void) : unwind_protect () { }
+
+    ~unwind_protect_safe (void)
       {
-        // No leak on exception!
-        std::unique_ptr<elem> ptr (lifo.top ());
-        lifo.pop ();
-        ptr->run ();
-      }
-  }
-
-  OCTAVE_DEPRECATED ("use 'run' instead")
-  void run_top (int num) { run (num); }
-
-  OCTAVE_DEPRECATED ("use 'discard_first' instead")
-  void discard_top (void) { discard_first (); }
-
-  void discard_first (void)
-  {
-    if (! empty ())
-      {
-        elem *ptr = lifo.top ();
-        lifo.pop ();
-        delete ptr;
-      }
-  }
-
-  OCTAVE_DEPRECATED ("use 'discard' instead")
-  void discard_top (int num) { discard (num); }
-
-  size_t size (void) const { return lifo.size (); }
-
-protected:
-
-  std::stack<elem *> lifo;
-
-private:
-
-  // No copying!
-
-  unwind_protect (const unwind_protect&);
-
-  unwind_protect& operator = (const unwind_protect&);
-};
-
-// Like unwind_protect, but this one will guard against the
-// possibility of seeing an exception (or interrupt) in the cleanup
-// actions. Not that we can do much about it, but at least we won't
-// crash.
-
-class
-OCTAVE_API
-unwind_protect_safe : public unwind_protect
-{
-private:
-
-  void warn_unhandled_exception (void) const;
-
-public:
-
-  unwind_protect_safe (void) : unwind_protect () { }
-
-  ~unwind_protect_safe (void)
-  {
-    while (! empty ())
-      {
-        try
+        while (! empty ())
           {
-            run_first ();
-          }
-        catch (...) // Yes, the black hole.  Remember we're in a destructor.
-          {
-            warn_unhandled_exception ();
+            try
+              {
+                run_first ();
+              }
+            catch (...) // Yes, the black hole.  Remember we're in a destructor.
+              {
+                warn_unhandled_exception ();
+              }
           }
       }
-  }
 
-private:
+  private:
 
-  // No copying!
+    // No copying!
 
-  unwind_protect_safe (const unwind_protect_safe&);
+    unwind_protect_safe (const unwind_protect_safe&);
 
-  unwind_protect_safe& operator = (const unwind_protect_safe&);
-};
+    unwind_protect_safe& operator = (const unwind_protect_safe&);
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use octave::unwind_protect instead")
+typedef octave::unwind_protect unwind_protect;
+
+OCTAVE_DEPRECATED ("use octave::unwind_protect_safe instead")
+typedef octave::unwind_protect_safe unwind_protect_safe;
+
+#endif
 
 #endif

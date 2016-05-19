@@ -1851,7 +1851,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
   octave_value_list retval;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   octave_idx_type curr_frame = -1;
 

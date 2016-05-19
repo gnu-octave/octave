@@ -76,7 +76,7 @@ base_url_transfer::mget_directory (const std::string& directory,
 
   if (good ())
     {
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       frame.add_fcn (reset_path, this);
 
@@ -106,7 +106,7 @@ base_url_transfer::mget_directory (const std::string& directory,
                   break;
                 }
 
-              unwind_protect_safe frame2;
+              octave::unwind_protect_safe frame2;
 
               frame2.add_fcn (delete_file, realfile);
 
@@ -143,7 +143,7 @@ base_url_transfer::mput_directory (const std::string& base,
 
   if (good ())
     {
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       frame.add_fcn (reset_path, this);
 
@@ -408,7 +408,7 @@ public:
   {
     struct curl_slist *slist = 0;
 
-    unwind_protect frame;
+    octave::unwind_protect frame;
     frame.add_fcn (curl_slist_free_all, slist);
 
     std::string cmd = "rnfr " + oldname;
@@ -576,7 +576,7 @@ public:
 
     struct curl_slist *slist = 0;
 
-    unwind_protect frame;
+    octave::unwind_protect frame;
     frame.add_fcn (curl_slist_free_all, slist);
 
     slist = curl_slist_append (slist, "pwd");
@@ -746,7 +746,7 @@ private:
   {
     struct curl_slist *slist = 0;
 
-    unwind_protect frame;
+    octave::unwind_protect frame;
 
     frame.add_fcn (curl_slist_free_all, slist);
 

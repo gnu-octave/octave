@@ -138,7 +138,7 @@ instead.\n\
     error ("__osmesa_print__: Depth and stencil doesn't match,"
            " are you sure you are using OSMesa >= 9.0?");
 
-  unwind_protect outer_frame;
+  octave::unwind_protect outer_frame;
 
   bool v = fp.is_visible ();
 

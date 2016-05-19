@@ -380,9 +380,9 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   // and used only inside the for loop (e.g. the index variable)
 
   // If we are a nested for loop we need to store the previous breaks
-  unwind_protect prot;
-  prot.protect_var (breaks);
-  prot.protect_var (continues);
+  octave::unwind_protect frame;
+  frame.protect_var (breaks);
+  frame.protect_var (continues);
   breaks.clear ();
   continues.clear ();
 
@@ -955,9 +955,9 @@ jit_convert::visit_unwind_protect_command (tree_unwind_protect_command&)
 void
 jit_convert::visit_while_command (tree_while_command& wc)
 {
-  unwind_protect prot;
-  prot.protect_var (breaks);
-  prot.protect_var (continues);
+  octave::unwind_protect frame;
+  frame.protect_var (breaks);
+  frame.protect_var (continues);
   breaks.clear ();
   continues.clear ();
 
@@ -1017,9 +1017,9 @@ jit_convert::visit_while_command (tree_while_command& wc)
 void
 jit_convert::visit_do_until_command (tree_do_until_command& duc)
 {
-  unwind_protect prot;
-  prot.protect_var (breaks);
-  prot.protect_var (continues);
+  octave::unwind_protect frame;
+  frame.protect_var (breaks);
+  frame.protect_var (continues);
   breaks.clear ();
   continues.clear ();
 
@@ -1216,8 +1216,8 @@ jit_convert::resolve (tree_index_expression& exp, jit_value *extra_arg,
 
   for (size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
     {
-      unwind_protect prot;
-      prot.add_method (&end_context,
+      octave::unwind_protect frame;
+      frame.add_method (&end_context,
                        &std::vector<jit_magic_end::context>::pop_back);
 
       jit_magic_end::context ctx (factory, object, idx, narg);
@@ -1278,8 +1278,8 @@ jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
 jit_value *
 jit_convert::visit (tree& tee)
 {
-  unwind_protect prot;
-  prot.protect_var (result);
+  octave::unwind_protect frame;
+  frame.protect_var (result);
 
   tee.accept (*this);
   return result;

@@ -21,9 +21,9 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This function does all the work of imread. It exists here as private
+## This function does all the work of imread.  It exists here as private
 ## function so that imread can use other functions if imformats is
-## configured to. It is also needed so that imformats can create a
+## configured to.  It is also needed so that imformats can create a
 ## function handle for it.
 
 ## Author: Carnë Draug <carandraug@octave.org>
@@ -35,70 +35,64 @@
 
 function varargout = __imread__ (filename, varargin)
 
-  if (nargin < 1)
-    print_usage ("imread");
-  elseif (! ischar (filename))
-    error ("imread: FILENAME must be a string");
-  endif
-
   ## keep track of the varargin offset we're looking at each moment
   offset = 1;
 
-  ## It is possible for an file with multiple pages to have very different
-  ## images on each page. Specifically, they may have different sizes. Because
-  ## of this, we need to first find out the index of the images to read so
-  ## we can set up defaults for things such as PixelRegion later on.
+  ## It is possible for a file with multiple pages to have very different
+  ## images on each page.  Specifically, they may have different sizes.
+  ## Because of this, we need to first find out the index of the images to read
+  ## so we can set up defaults for things such as PixelRegion later on.
   options = struct ("index", 1);  # default image index
 
   ## Index is the only option that can be defined without the parameter/value
-  ## pair style. When defining it here, the string "all" is invalid though.
-  ## Also, for matlab compatibility, if index is defined both as an option here
+  ## pair style.  When defined here, the string "all" is invalid.
+  ## Also, for Matlab compatibility, if index is defined both as an option here
   ## and parameter/value pair, silently ignore the first.
-  if (nargin >= offset + 1 && ! ischar (varargin{offset}))
+  if (nargin >= 2 && ! ischar (varargin{1}))
+    options.index = varargin{1};
     if (! is_valid_index_option (options.index))
       error ("imread: IDX must be a numeric vector");
     endif
-    options.index = varargin{offset};
-    offset += 1;
+    offset = 2;
   endif
 
   if (rem (numel (varargin) - offset + 1, 2) != 0)
-    error ("imread: no pair for all arguments (odd number left over)");
+    error ("imread: PARAM/VALUE arguments must occur in pairs");
   endif
 
-  ## Check key/value options.
-  indexes = cellfun ("isclass", varargin, "char");
-  indexes(indexes) &= ismember (tolower (varargin(indexes)),
-                                {"frames", "index"});
-  indexes = find (indexes);
-  if (indexes)
-    options.index = varargin{indexes+1};
-    if (! is_valid_index_option (options.index)
-        && ! (ischar (options.index) && strcmpi (options.index, "all")))
-      error ("imread: value for %s must be a vector or the string `all'");
+  ## Check for Index/Frames argument
+  idx = strcmpi ("index", varargin) | strcmpi ("frames", varargin);
+  if (any (idx))
+    if (sum (idx) > 1)
+      error ("imread: Index or Frames may only be specified once");
     endif
+    val = varargin{shift (idx, 1)};
+    if (! is_valid_index_option (val) && ! strcmpi (val, "all"))
+      error ("imread: %s must be a vector or the string `all'", varargin{idx});
+    endif
+    options.index = val;
   endif
 
   ## Use information from the first image to be read to set defaults.
-  if (ischar (options.index) && strcmpi (options.index, "all"))
+  if (strcmpi (options.index, "all"))
     info = __magick_ping__ (filename, 1);
   else
     info = __magick_ping__ (filename, options.index(1));
   endif
 
   ## Set default for options.
-  options.region = {1:1:info.rows 1:1:info.columns};
+  options.region = {1:1:info.rows, 1:1:info.columns};
 
   for idx = offset:2:(numel (varargin) - offset + 1)
     switch (tolower (varargin{idx}))
 
       case {"frames", "index"}
-        ## Do nothing. This options were already processed before the loop.
+        ## Do nothing.  This option was already processed before the loop.
 
-      case "pixelregion",
+      case "pixelregion"
         options.region = varargin{idx+1};
         if (! iscell (options.region) || numel (options.region) != 2)
-          error ("imread: value for %s must be a 2 element cell array",
+          error ("imread: %s must be a 2-element cell array",
                  varargin{idx});
         endif
         for reg_idx = 1:2
@@ -121,8 +115,8 @@ function varargout = __imread__ (filename, varargin)
           error ("imread: end COLS for PixelRegions option is larger than image width");
         endif
 
-      case "info",
-        ## We ignore this option. This parameter exists in Matlab to
+      case "info"
+        ## We ignore this option.  This parameter exists in Matlab to
         ## speed up the reading of multipage TIFF by passing a structure
         ## that contains information about the start on the file of each
         ## page.  We can't control it through GraphicsMagic but at least
@@ -138,7 +132,7 @@ function varargout = __imread__ (filename, varargin)
 
 endfunction
 
-## Tests if the value passed to the Index or Frames is valid. This option
+## Test if the value passed to the Index or Frames is valid.  This option
 ## can be defined in two places, but only in one place can it also be the
 ## string "all"
 function bool = is_valid_index_option (arg)

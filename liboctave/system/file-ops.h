@@ -42,8 +42,8 @@ namespace octave
     public:
 
       // Use a singleton class for dir_sep data members instead of just
-      // making them static members of the dir_path class so that we can
-      // ensure proper initialization.
+      // making them static members of the file_ops class so that we
+      // can ensure proper initialization.
 
       file_ops (char dir_sep_char_arg = 0,
                 const std::string& dir_sep_str_arg = std::string ("/"),

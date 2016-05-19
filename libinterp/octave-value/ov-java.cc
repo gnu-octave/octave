@@ -405,7 +405,7 @@ read_classpath_txt (const std::string& filepath)
               else
                 {
                   // prepend separator character
-                  classpath.append (dir_path::path_sep_str ());
+                  classpath.append (octave::directory_path::path_sep_str ());
 
                   // append content of line without whitespace
                   int last = line.find_last_not_of (" \t\f\v\r\n");

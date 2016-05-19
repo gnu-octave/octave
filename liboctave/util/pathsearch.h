@@ -29,146 +29,155 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
-class
-OCTAVE_API
-dir_path
+namespace octave
 {
-public:
-
-  dir_path (const std::string& s = "",
-            const std::string& d = "")
-    : p_orig (s), p_default (d), initialized (false), p (), pv ()
-  {
-    if (! p_orig.empty ())
-      init ();
-  }
-
-  dir_path (const dir_path& dp)
-    : p_orig (dp.p_orig), p_default (dp.p_default),
-      initialized (dp.initialized), p (dp.p), pv (dp.pv)
-  { }
-
-  dir_path& operator = (const dir_path& dp)
-  {
-    p_orig = dp.p_orig;
-    p_default = dp.p_default;
-    initialized = dp.initialized;
-    p = dp.p;
-    pv = dp.pv;
-    return *this;
-  }
-
-  ~dir_path (void) { }
-
-  void set (const std::string& s)
-  {
-    initialized = false;
-    p_orig = s;
-    init ();
-  }
-
-  string_vector elements (void);
-  string_vector all_directories (void);
-
-  std::string find_first (const std::string&);
-  std::string find (const std::string& nm) { return find_first (nm); }
-
-  string_vector find_all (const std::string&);
-
-  std::string find_first_of (const string_vector& names);
-  string_vector find_all_first_of (const string_vector& names);
-
-  void rehash (void)
-  {
-    initialized = false;
-    init ();
-  }
-
-  static char path_sep_char (void)
-  {
-    return static_members::path_sep_char ();
-  }
-
-  static void path_sep_char (char c)
-  {
-    static_members::path_sep_char (c);
-  }
-
-  static std::string path_sep_str (void)
-  {
-    return static_members::path_sep_str ();
-  }
-
-  static bool is_path_sep (char c) { return c == path_sep_char (); }
-
-private:
-
-  // The colon separated list that we were given.
-  std::string p_orig;
-
-  // The default path.  If specified, replaces leading, trailing, or
-  // doubled colons in p_orig.
-  std::string p_default;
-
-  // TRUE means we've unpacked p.
-  bool initialized;
-
-  // A version of the colon separate list on which we have performed
-  // tilde, variable, and possibly default path expansion.
-  std::string p;
-
-  // The elements of the list.
-  string_vector pv;
-
-  void init (void);
-
-  // Use a singleton class for these data members instead of just
-  // making them static members of the dir_path class so that we can
-  // ensure proper initialization.
-
-  class OCTAVE_API static_members
+  class
+  OCTAVE_API
+  directory_path
   {
   public:
 
-    static_members (void);
+    directory_path (const std::string& s = "", const std::string& d = "")
+      : p_orig (s), p_default (d), initialized (false), p (), pv ()
+      {
+        if (! p_orig.empty ())
+          init ();
+      }
+
+    directory_path (const directory_path& dp)
+      : p_orig (dp.p_orig), p_default (dp.p_default),
+        initialized (dp.initialized), p (dp.p), pv (dp.pv)
+      { }
+
+    directory_path& operator = (const directory_path& dp)
+      {
+        p_orig = dp.p_orig;
+        p_default = dp.p_default;
+        initialized = dp.initialized;
+        p = dp.p;
+        pv = dp.pv;
+        return *this;
+      }
+
+    ~directory_path (void) { }
+
+    void set (const std::string& s)
+    {
+      initialized = false;
+      p_orig = s;
+      init ();
+    }
+
+    string_vector elements (void);
+    string_vector all_directories (void);
+
+    std::string find_first (const std::string&);
+    std::string find (const std::string& nm) { return find_first (nm); }
+
+    string_vector find_all (const std::string&);
+
+    std::string find_first_of (const string_vector& names);
+    string_vector find_all_first_of (const string_vector& names);
+
+    void rehash (void)
+    {
+      initialized = false;
+      init ();
+    }
 
     static char path_sep_char (void)
     {
-      return instance_ok () ? instance->xpath_sep_char : 0;
+      return static_members::path_sep_char ();
     }
 
     static void path_sep_char (char c)
     {
-      if (instance_ok ())
-        {
-          instance->xpath_sep_char = c;
-          instance->xpath_sep_str = std::string (1, c);
-        }
+      static_members::path_sep_char (c);
     }
 
     static std::string path_sep_str (void)
     {
-      return instance_ok () ? instance->xpath_sep_str : "";
+      return static_members::path_sep_str ();
     }
+
+    static bool is_path_sep (char c) { return c == path_sep_char (); }
 
   private:
 
-    static static_members *instance;
+    // The colon separated list that we were given.
+    std::string p_orig;
 
-    static void cleanup_instance (void) { delete instance; instance = 0; }
+    // The default path.  If specified, replaces leading, trailing, or
+    // doubled colons in p_orig.
+    std::string p_default;
 
-    static bool instance_ok (void);
+    // TRUE means we've unpacked p.
+    bool initialized;
 
-    // No copying!
+    // A version of the colon separate list on which we have performed
+    // tilde, variable, and possibly default path expansion.
+    std::string p;
 
-    static_members (const static_members&);
+    // The elements of the list.
+    string_vector pv;
 
-    static_members& operator = (const static_members&);
+    void init (void);
 
-    char xpath_sep_char;
+    // Use a singleton class for these data members instead of just
+    // making them static members of the directory_path class so that
+    // we can ensure proper initialization.
 
-    std::string xpath_sep_str;
+    class OCTAVE_API static_members
+    {
+    public:
+
+      static_members (void);
+
+      static char path_sep_char (void)
+      {
+        return instance_ok () ? instance->xpath_sep_char : 0;
+      }
+
+      static void path_sep_char (char c)
+      {
+        if (instance_ok ())
+          {
+            instance->xpath_sep_char = c;
+            instance->xpath_sep_str = std::string (1, c);
+          }
+      }
+
+      static std::string path_sep_str (void)
+      {
+        return instance_ok () ? instance->xpath_sep_str : "";
+      }
+
+    private:
+
+      static static_members *instance;
+
+      static void cleanup_instance (void) { delete instance; instance = 0; }
+
+      static bool instance_ok (void);
+
+      // No copying!
+
+      static_members (const static_members&);
+
+      static_members& operator = (const static_members&);
+
+      char xpath_sep_char;
+
+      std::string xpath_sep_str;
+    };
   };
-};
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use octave::directory_path instead")
+typedef octave::directory_path dir_path;
+
+#endif
 
 #endif

@@ -253,7 +253,7 @@ empty_arg (const char * /* name */, octave_idx_type nr, octave_idx_type nc)
 std::string
 search_path_for_file (const std::string& path, const string_vector& names)
 {
-  dir_path p (path);
+  octave::directory_path p (path);
 
   return octave::sys::env::make_absolute (p.find_first_of (names));
 }
@@ -263,7 +263,7 @@ search_path_for_file (const std::string& path, const string_vector& names)
 string_vector
 search_path_for_all_files (const std::string& path, const string_vector& names)
 {
-  dir_path p (path);
+  octave::directory_path p (path);
 
   string_vector sv = p.find_all_first_of (names);
 

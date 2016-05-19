@@ -258,10 +258,10 @@ set_exec_path (const std::string& path_arg)
     tpath = octave::sys::env::getenv ("OCTAVE_EXEC_PATH");
 
   if (tpath.empty ())
-    tpath = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
-            + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
-            + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
-            + Varch_lib_dir + dir_path::path_sep_str ()
+    tpath = Vlocal_ver_arch_lib_dir + octave::directory_path::path_sep_str ()
+            + Vlocal_api_arch_lib_dir + octave::directory_path::path_sep_str ()
+            + Vlocal_arch_lib_dir + octave::directory_path::path_sep_str ()
+            + Varch_lib_dir + octave::directory_path::path_sep_str ()
             + Vbin_dir;
 
   VEXEC_PATH = tpath;
@@ -283,7 +283,7 @@ set_exec_path (const std::string& path_arg)
   static std::string shell_path = octave::sys::env::getenv ("PATH");
 
   if (! shell_path.empty ())
-    tpath = shell_path + dir_path::path_sep_str () + tpath;
+    tpath = shell_path + octave::directory_path::path_sep_str () + tpath;
 
   octave::sys::env::putenv ("PATH", tpath);
 }
@@ -299,12 +299,12 @@ set_image_path (const std::string& path)
     tpath = octave::sys::env::getenv ("OCTAVE_IMAGE_PATH");
 
   if (! tpath.empty ())
-    VIMAGE_PATH += dir_path::path_sep_str () + tpath;
+    VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;
 
   tpath = genpath (Vimage_dir, "");
 
   if (! tpath.empty ())
-    VIMAGE_PATH += dir_path::path_sep_str () + tpath;
+    VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;
 }
 
 static void

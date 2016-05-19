@@ -584,7 +584,7 @@ Query or set the character used to separate directories in a path.\n\
   octave_value retval;
 
   if (nargout > 0 || nargin == 0)
-    retval = dir_path::path_sep_str ();
+    retval = octave::directory_path::path_sep_str ();
 
   if (nargin == 1)
     {
@@ -593,11 +593,11 @@ Query or set the character used to separate directories in a path.\n\
       switch (sval.length ())
         {
         case 1:
-          dir_path::path_sep_char (sval[0]);
+          octave::directory_path::path_sep_char (sval[0]);
           break;
 
         case 0:
-          dir_path::path_sep_char ('\0');
+          octave::directory_path::path_sep_char ('\0');
           break;
 
         default:

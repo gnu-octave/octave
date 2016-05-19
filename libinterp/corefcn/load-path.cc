@@ -568,7 +568,7 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
       if (path.empty ())
         path = tpath;
       else
-        path += dir_path::path_sep_str () + tpath;
+        path += octave::directory_path::path_sep_str () + tpath;
     }
 }
 
@@ -602,7 +602,7 @@ load_path::do_initialize (bool set_initial_path)
       xpath = tpath;
 
       if (! sys_path.empty ())
-        xpath += dir_path::path_sep_str () + sys_path;
+        xpath += octave::directory_path::path_sep_str () + sys_path;
     }
   else
     xpath = sys_path;
@@ -626,7 +626,7 @@ split_path (const std::string& p)
   std::list<std::string> retval;
 
   size_t beg = 0;
-  size_t end = p.find (dir_path::path_sep_char ());
+  size_t end = p.find (octave::directory_path::path_sep_char ());
 
   size_t len = p.length ();
 
@@ -642,7 +642,7 @@ split_path (const std::string& p)
       if (beg == len)
         break;
 
-      end = p.find (dir_path::path_sep_char (), beg);
+      end = p.find (octave::directory_path::path_sep_char (), beg);
     }
 
   std::string elt = p.substr (beg);
@@ -1716,7 +1716,7 @@ load_path::do_path (void) const
     xpath = xdirs[0];
 
   for (octave_idx_type i = 1; i < len; i++)
-    xpath += dir_path::path_sep_str () + xdirs[i];
+    xpath += octave::directory_path::path_sep_str () + xdirs[i];
 
   return xpath;
 }
@@ -1845,7 +1845,7 @@ in_path_list (const std::string& path_list, const std::string& path)
   size_t ps = path.size ();
   size_t pls = path_list.size ();
   size_t pos = path_list.find (path);
-  char psc = dir_path::path_sep_char ();
+  char psc = octave::directory_path::path_sep_char ();
   while (pos != std::string::npos)
     {
       if ((pos == 0 || path_list[pos-1] == psc)
@@ -2176,7 +2176,7 @@ genpath (const std::string& dirname, const string_vector& skip)
                   octave::sys::file_stat fs (nm);
 
                   if (fs && fs.is_dir ())
-                    retval += dir_path::path_sep_str () + genpath (nm, skip);
+                    retval += octave::directory_path::path_sep_str () + genpath (nm, skip);
                 }
             }
         }
@@ -2358,7 +2358,7 @@ No checks are made for duplicate elements.\n\
       std::string path = argv[1];
 
       for (int i = 2; i <= nargin; i++)
-        path += dir_path::path_sep_str () + argv[i];
+        path += octave::directory_path::path_sep_str () + argv[i];
 
       load_path::set (path, true);
 

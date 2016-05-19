@@ -904,7 +904,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         names(1) = fname + ".mex";
                         names(2) = fname + ".m";
 
-                        dir_path p (load_path::system_path ());
+                        octave::directory_path p (load_path::system_path ());
 
                         str =
                           octave::sys::env::make_absolute (p.find_first_of (names));

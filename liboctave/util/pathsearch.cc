@@ -36,136 +36,139 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "kpse.cc"
 
-dir_path::static_members *dir_path::static_members::instance = 0;
-
-dir_path::static_members::static_members (void)
-  : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }
-
-bool
-dir_path::static_members::instance_ok (void)
+namespace octave
 {
-  bool retval = true;
+  directory_path::static_members *directory_path::static_members::instance = 0;
 
-  if (! instance)
-    {
-      instance = new static_members ();
+  directory_path::static_members::static_members (void)
+    : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }
 
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
+  bool
+  directory_path::static_members::instance_ok (void)
+  {
+    bool retval = true;
 
-  if (! instance)
-    (*current_liboctave_error_handler)
-      ("unable to create dir_path::static_members object!");
+    if (! instance)
+      {
+        instance = new static_members ();
 
-  return retval;
-}
+        if (instance)
+          singleton_cleanup_list::add (cleanup_instance);
+      }
 
-string_vector
-dir_path::elements (void)
-{
-  return initialized ? pv : string_vector ();
-}
+    if (! instance)
+      (*current_liboctave_error_handler)
+        ("unable to create directory_path::static_members object!");
 
-string_vector
-dir_path::all_directories (void)
-{
-  int count = 0;
-  string_vector retval;
+    return retval;
+  }
 
-  if (initialized)
-    {
-      int len = pv.numel ();
+  string_vector
+  directory_path::elements (void)
+  {
+    return initialized ? pv : string_vector ();
+  }
 
-      int nmax = len > 32 ? len : 32;
+  string_vector
+  directory_path::all_directories (void)
+  {
+    int count = 0;
+    string_vector retval;
 
-      retval.resize (len);
+    if (initialized)
+      {
+        int len = pv.numel ();
 
-      for (int i = 0; i < len; i++)
-        {
-          str_llist_type *elt_dirs = kpse_element_dirs (pv[i]);
+        int nmax = len > 32 ? len : 32;
 
-          if (elt_dirs)
-            {
-              str_llist_elt_type *dir;
+        retval.resize (len);
 
-              for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
-                {
-                  const std::string elt_dir = STR_LLIST (*dir);
+        for (int i = 0; i < len; i++)
+          {
+            str_llist_type *elt_dirs = kpse_element_dirs (pv[i]);
 
-                  if (! elt_dir.empty ())
-                    {
-                      if (count == nmax)
-                        nmax *= 2;
+            if (elt_dirs)
+              {
+                str_llist_elt_type *dir;
 
-                      retval.resize (nmax);
+                for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
+                  {
+                    const std::string elt_dir = STR_LLIST (*dir);
 
-                      retval[count++] = elt_dir;
-                    }
-                }
-            }
-        }
+                    if (! elt_dir.empty ())
+                      {
+                        if (count == nmax)
+                          nmax *= 2;
 
-      retval.resize (count);
-    }
+                        retval.resize (nmax);
 
-  return retval;
-}
+                        retval[count++] = elt_dir;
+                      }
+                  }
+              }
+          }
 
-std::string
-dir_path::find_first (const std::string& nm)
-{
-  return initialized ? kpse_path_search (p, nm, true) : "";
-}
+        retval.resize (count);
+      }
 
-string_vector
-dir_path::find_all (const std::string& nm)
-{
-  return initialized ? kpse_all_path_search (p, nm) : string_vector ();
-}
+    return retval;
+  }
 
-std::string
-dir_path::find_first_of (const string_vector& names)
-{
-  return initialized
-         ? kpse_path_find_first_of (p, names, true) : "";
-}
+  std::string
+  directory_path::find_first (const std::string& nm)
+  {
+    return initialized ? kpse_path_search (p, nm, true) : "";
+  }
 
-string_vector
-dir_path::find_all_first_of (const string_vector& names)
-{
-  return initialized
-         ? kpse_all_path_find_first_of (p, names) : string_vector ();
-}
+  string_vector
+  directory_path::find_all (const std::string& nm)
+  {
+    return initialized ? kpse_all_path_search (p, nm) : string_vector ();
+  }
 
-void
-dir_path::init (void)
-{
-  static bool octave_kpathsea_initialized = false;
+  std::string
+  directory_path::find_first_of (const string_vector& names)
+  {
+    return initialized
+      ? kpse_path_find_first_of (p, names, true) : "";
+  }
 
-  if (! octave_kpathsea_initialized)
-    {
-      std::string val = octave::sys::env::getenv ("KPATHSEA_DEBUG");
+  string_vector
+  directory_path::find_all_first_of (const string_vector& names)
+  {
+    return initialized
+      ? kpse_all_path_find_first_of (p, names) : string_vector ();
+  }
 
-      if (! val.empty ())
-        kpathsea_debug |= atoi (val.c_str ());
+  void
+  directory_path::init (void)
+  {
+    static bool octave_kpathsea_initialized = false;
 
-      octave_kpathsea_initialized = true;
-    }
+    if (! octave_kpathsea_initialized)
+      {
+        std::string val = octave::sys::env::getenv ("KPATHSEA_DEBUG");
 
-  p = kpse_path_expand (p_default.empty ()
-                        ? p_orig : kpse_expand_default (p_orig, p_default));
+        if (! val.empty ())
+          kpathsea_debug |= atoi (val.c_str ());
 
-  int count = 0;
-  for (kpse_path_iterator pi (p); pi != std::string::npos; pi++)
-    count++;
+        octave_kpathsea_initialized = true;
+      }
 
-  pv.resize (count);
+    p = kpse_path_expand (p_default.empty ()
+                          ? p_orig : kpse_expand_default (p_orig, p_default));
 
-  kpse_path_iterator pi (p);
+    int count = 0;
+    for (kpse_path_iterator pi (p); pi != std::string::npos; pi++)
+      count++;
 
-  for (int i = 0; i < count; i++)
-    pv[i] = *pi++;
+    pv.resize (count);
 
-  initialized = true;
+    kpse_path_iterator pi (p);
+
+    for (int i = 0; i < count; i++)
+      pv[i] = *pi++;
+
+    initialized = true;
+  }
 }

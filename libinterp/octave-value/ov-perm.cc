@@ -314,7 +314,7 @@ octave_perm_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_perm_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format)
+                                 octave::mach_info::float_format)
 {
   int32_t sz;
   bool colp;
@@ -384,7 +384,7 @@ octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax)
 int
 octave_perm_matrix::write (octave_stream& os, int block_size,
                            oct_data_conv::data_type output_type, int skip,
-                           oct_mach_info::float_format flt_fmt) const
+                           octave::mach_info::float_format flt_fmt) const
 {
   return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
 }

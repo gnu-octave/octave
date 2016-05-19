@@ -75,7 +75,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 read_mat_binary_data (std::istream& is, double *data, int precision,
                       int len, bool swap,
-                      oct_mach_info::float_format flt_fmt)
+                      octave::mach_info::float_format flt_fmt)
 {
   switch (precision)
     {
@@ -145,7 +145,7 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
 //
 // Gag me.
 
-  if (oct_mach_info::words_big_endian () && mopt == 0)
+  if (octave::mach_info::words_big_endian () && mopt == 0)
     swap = true;
 
   // mopt is signed, therefore byte swap may result in negative value.
@@ -176,26 +176,26 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
 // We don't just use a cast here, because we need to be able to detect
 // possible errors.
 
-oct_mach_info::float_format
+octave::mach_info::float_format
 mopt_digit_to_float_format (int mach)
 {
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
 
   switch (mach)
     {
     case 0:
-      flt_fmt = oct_mach_info::flt_fmt_ieee_little_endian;
+      flt_fmt = octave::mach_info::flt_fmt_ieee_little_endian;
       break;
 
     case 1:
-      flt_fmt = oct_mach_info::flt_fmt_ieee_big_endian;
+      flt_fmt = octave::mach_info::flt_fmt_ieee_big_endian;
       break;
 
     case 2:
     case 3:
     case 4:
     default:
-      flt_fmt = oct_mach_info::flt_fmt_unknown;
+      flt_fmt = octave::mach_info::flt_fmt_unknown;
       break;
     }
 
@@ -203,17 +203,17 @@ mopt_digit_to_float_format (int mach)
 }
 
 int
-float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
+float_format_to_mopt_digit (octave::mach_info::float_format flt_fmt)
 {
   int retval = -1;
 
   switch (flt_fmt)
     {
-    case oct_mach_info::flt_fmt_ieee_little_endian:
+    case octave::mach_info::flt_fmt_ieee_little_endian:
       retval = 0;
       break;
 
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       retval = 1;
       break;
 
@@ -265,10 +265,10 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   mopt /= 10;        // Eliminate third digit.
   mach = mopt % 10;  // IEEE, VAX, etc.
 
-  oct_mach_info::float_format flt_fmt;
+  octave::mach_info::float_format flt_fmt;
   flt_fmt = mopt_digit_to_float_format (mach);
 
-  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
+  if (flt_fmt == octave::mach_info::flt_fmt_unknown)
     error ("load: unrecognized binary format!");
 
   if (imag && type == 1)
@@ -404,8 +404,8 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   mopt += tc.is_sparse_type () ? 2 : tc.is_string () ? 1 : 0;
 
-  oct_mach_info::float_format flt_fmt =
-    oct_mach_info::native_float_format ();;
+  octave::mach_info::float_format flt_fmt =
+    octave::mach_info::native_float_format ();;
 
   mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 

@@ -317,7 +317,7 @@ octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool
 octave_bool_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format /* fmt */)
+                                 octave::mach_info::float_format /* fmt */)
 {
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))

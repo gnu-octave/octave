@@ -256,7 +256,7 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 template <typename T>
 bool
 octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format)
+                                        octave::mach_info::float_format)
 {
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
@@ -520,7 +520,7 @@ octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
 template <typename T>
 bool
 octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format)
+                                        octave::mach_info::float_format)
 {
   T tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), this->byte_size ()))

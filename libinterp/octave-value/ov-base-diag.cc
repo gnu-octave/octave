@@ -552,7 +552,7 @@ int
 octave_base_diag<DMT, MT>::write (octave_stream& os, int block_size,
                                   oct_data_conv::data_type output_type,
                                   int skip,
-                                  oct_mach_info::float_format flt_fmt) const
+                                  octave::mach_info::float_format flt_fmt) const
 {
   return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
 }

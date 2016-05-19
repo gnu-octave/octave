@@ -447,8 +447,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
   std::ios::openmode md = fopen_mode_to_ios_mode (mode);
 
-  oct_mach_info::float_format flt_fmt =
-    oct_mach_info::string_to_float_format (arch);
+  octave::mach_info::float_format flt_fmt =
+    octave::mach_info::string_to_float_format (arch);
 
   std::string fname = octave::sys::file_ops::tilde_expand (name);
 
@@ -2279,8 +2279,8 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   std::string arch = arch_arg.xstring_value ("fread: ARCH architecture type must be a string");
 
-  oct_mach_info::float_format flt_fmt
-    = oct_mach_info::string_to_float_format (arch);
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::string_to_float_format (arch);
 
   return os.read (size, block_size, input_type, output_type, skip,
                   flt_fmt, count);
@@ -2527,8 +2527,8 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
   std::string arch = arch_arg.xstring_value ("fwrite: ARCH architecture type must be a string");
 
-  oct_mach_info::float_format flt_fmt
-    = oct_mach_info::string_to_float_format (arch);
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::string_to_float_format (arch);
 
   return os.write (data, block_size, output_type, skip, flt_fmt);
 }

@@ -839,10 +839,10 @@ for floating point calculations.\n\
 No actual tests are performed.\n\
 @end deftypefn")
 {
-  oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt = octave::mach_info::native_float_format ();
 
-  return ovl (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
-              || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+  return ovl (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian
+              || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
 }
 
 /*
@@ -855,9 +855,9 @@ DEFUN (native_float_format, , ,
 Return the native floating point format as a string.\n\
 @end deftypefn")
 {
-  oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt = octave::mach_info::native_float_format ();
 
-  return ovl (oct_mach_info::float_format_as_string (flt_fmt));
+  return ovl (octave::mach_info::float_format_as_string (flt_fmt));
 }
 
 /*

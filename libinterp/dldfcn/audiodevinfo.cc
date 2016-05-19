@@ -597,7 +597,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
       {
         static double scale_factor = std::pow (2.0, 23) - 1.0;
 
-        static int big_endian = oct_mach_info::words_big_endian ();
+        static int big_endian = octave::mach_info::words_big_endian ();
 
         uint8_t *buffer = static_cast<uint8_t *> (output);
 
@@ -709,7 +709,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           {
             static double scale_factor = std::pow (2.0, 23) - 1.0;
 
-            static int big_endian = oct_mach_info::words_big_endian ();
+            static int big_endian = octave::mach_info::words_big_endian ();
 
             uint8_t *buffer = static_cast<uint8_t *> (output);
 

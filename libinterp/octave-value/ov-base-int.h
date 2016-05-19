@@ -78,7 +78,7 @@ public:
   bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format);
+                    octave::mach_info::float_format);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
 
@@ -123,7 +123,7 @@ public:
   bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format);
+                    octave::mach_info::float_format);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
 

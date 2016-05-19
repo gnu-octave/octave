@@ -652,18 +652,18 @@ IEEE_little_float_to_IEEE_big_float (void *d, octave_idx_type len)
 
 void
 do_double_format_conversion (void *data, octave_idx_type len,
-                             oct_mach_info::float_format from_fmt,
-                             oct_mach_info::float_format to_fmt)
+                             octave::mach_info::float_format from_fmt,
+                             octave::mach_info::float_format to_fmt)
 {
   switch (to_fmt)
     {
-    case oct_mach_info::flt_fmt_ieee_little_endian:
+    case octave::mach_info::flt_fmt_ieee_little_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           IEEE_big_double_to_IEEE_little_double (data, len);
           break;
 
@@ -673,14 +673,14 @@ do_double_format_conversion (void *data, octave_idx_type len,
         }
       break;
 
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           IEEE_little_double_to_IEEE_big_double (data, len);
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           break;
 
         default:
@@ -699,18 +699,18 @@ do_double_format_conversion (void *data, octave_idx_type len,
 
 void
 do_float_format_conversion (void *data, octave_idx_type len,
-                            oct_mach_info::float_format from_fmt,
-                            oct_mach_info::float_format to_fmt)
+                            octave::mach_info::float_format from_fmt,
+                            octave::mach_info::float_format to_fmt)
 {
   switch (to_fmt)
     {
-    case oct_mach_info::flt_fmt_ieee_little_endian:
+    case octave::mach_info::flt_fmt_ieee_little_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           IEEE_big_float_to_IEEE_little_float (data, len);
           break;
 
@@ -720,14 +720,14 @@ do_float_format_conversion (void *data, octave_idx_type len,
         }
       break;
 
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           IEEE_little_float_to_IEEE_big_float (data, len);
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           break;
 
         default:
@@ -746,8 +746,8 @@ do_float_format_conversion (void *data, octave_idx_type len,
 
 void
 do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
-                            oct_mach_info::float_format from_fmt,
-                            oct_mach_info::float_format to_fmt)
+                            octave::mach_info::float_format from_fmt,
+                            octave::mach_info::float_format to_fmt)
 {
   switch (sz)
     {
@@ -770,7 +770,7 @@ do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
 void
 read_doubles (std::istream& is, double *data, save_type type,
               octave_idx_type len, bool swap,
-              oct_mach_info::float_format fmt)
+              octave::mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -829,7 +829,7 @@ read_doubles (std::istream& is, double *data, save_type type,
 void
 read_floats (std::istream& is, float *data, save_type type,
              octave_idx_type len, bool swap,
-             oct_mach_info::float_format fmt)
+             octave::mach_info::float_format fmt)
 {
   switch (type)
     {

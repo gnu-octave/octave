@@ -36,8 +36,8 @@ public:
 
   octave_tstdiostream (const std::string& n, FILE_T f = 0, int fid = 0,
                        std::ios::openmode m = std::ios::in | std::ios::out,
-                       oct_mach_info::float_format ff
-                         = oct_mach_info::native_float_format (),
+                       octave::mach_info::float_format ff
+                         = octave::mach_info::native_float_format (),
                        typename BUF_T::close_fcn cf = BUF_T::file_close)
     : octave_base_stream (m, ff), nm (n), md (m),
       s (f ? new STREAM_T (f, cf) : 0), fnum (fid)
@@ -106,8 +106,8 @@ public:
 
   octave_stdiostream (const std::string& n, FILE *f = 0,
                       std::ios::openmode m = std::ios::in | std::ios::out,
-                      oct_mach_info::float_format ff
-                        = oct_mach_info::native_float_format (),
+                      octave::mach_info::float_format ff
+                        = octave::mach_info::native_float_format (),
                       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
     : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
        (n, f, f ? fileno (f) : -1, m, ff, cf) { }
@@ -115,8 +115,8 @@ public:
   static octave_stream
   create (const std::string& n, FILE *f = 0,
           std::ios::openmode m = std::ios::in | std::ios::out,
-          oct_mach_info::float_format ff
-            = oct_mach_info::native_float_format (),
+          octave::mach_info::float_format ff
+            = octave::mach_info::native_float_format (),
           c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
   {
     return octave_stream (new octave_stdiostream (n, f, m, ff, cf));
@@ -145,8 +145,8 @@ public:
 
   octave_zstdiostream (const std::string& n, gzFile f = 0, int fid = 0,
                        std::ios::openmode m = std::ios::in | std::ios::out,
-                       oct_mach_info::float_format ff
-                         = oct_mach_info::native_float_format (),
+                       octave::mach_info::float_format ff
+                         = octave::mach_info::native_float_format (),
                        c_zfile_ptr_buf::close_fcn cf
                          = c_zfile_ptr_buf::file_close)
     : octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
@@ -155,8 +155,8 @@ public:
   static octave_stream
   create (const std::string& n, gzFile f = 0, int fid = 0,
           std::ios::openmode m = std::ios::in | std::ios::out,
-          oct_mach_info::float_format ff
-            = oct_mach_info::native_float_format (),
+          octave::mach_info::float_format ff
+            = octave::mach_info::native_float_format (),
           c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
   {
     return octave_stream (new octave_zstdiostream (n, f, fid, m, ff, cf));

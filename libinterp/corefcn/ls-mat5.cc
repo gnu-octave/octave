@@ -125,7 +125,7 @@ enum arrayclasstype
 static void
 read_mat5_binary_data (std::istream& is, double *data,
                        octave_idx_type  count, bool swap, mat5_data_type type,
-                       oct_mach_info::float_format flt_fmt)
+                       octave::mach_info::float_format flt_fmt)
 {
 
   switch (type)
@@ -190,7 +190,7 @@ read_mat5_binary_data (std::istream& is, double *data,
 static void
 read_mat5_binary_data (std::istream& is, float *data,
                        octave_idx_type  count, bool swap, mat5_data_type type,
-                       oct_mach_info::float_format flt_fmt)
+                       octave::mach_info::float_format flt_fmt)
 {
 
   switch (type)
@@ -495,11 +495,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   std::string classname;
 
   // MAT files always use IEEE floating point
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
   if ((number == 1) ^ swap)
-    flt_fmt = oct_mach_info::flt_fmt_ieee_big_endian;
+    flt_fmt = octave::mach_info::flt_fmt_ieee_big_endian;
   else
-    flt_fmt = oct_mach_info::flt_fmt_ieee_little_endian;
+    flt_fmt = octave::mach_info::flt_fmt_ieee_little_endian;
 
   // element type, length and small data element flag
   int32_t type = 0;

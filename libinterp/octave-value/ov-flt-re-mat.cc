@@ -436,7 +436,7 @@ octave_float_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_float_matrix::load_binary (std::istream& is, bool swap,
-                                  oct_mach_info::float_format fmt)
+                                  octave::mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;

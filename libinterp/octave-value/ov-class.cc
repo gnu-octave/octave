@@ -1312,7 +1312,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_class::load_binary (std::istream& is, bool swap,
-                           oct_mach_info::float_format fmt)
+                           octave::mach_info::float_format fmt)
 {
   bool success = true;
 

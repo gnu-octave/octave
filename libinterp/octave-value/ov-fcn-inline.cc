@@ -214,7 +214,7 @@ octave_fcn_inline::save_binary (std::ostream& os, bool&)
 
 bool
 octave_fcn_inline::load_binary (std::istream& is, bool swap,
-                                oct_mach_info::float_format)
+                                octave::mach_info::float_format)
 {
   int32_t nargs;
   if (! is.read (reinterpret_cast<char *> (&nargs), 4))

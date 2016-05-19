@@ -164,7 +164,7 @@ octave_float_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool
 octave_float_scalar::load_binary (std::istream& is, bool swap,
-                                  oct_mach_info::float_format fmt)
+                                  octave::mach_info::float_format fmt)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))

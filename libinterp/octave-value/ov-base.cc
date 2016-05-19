@@ -939,7 +939,7 @@ octave_base_value::save_binary (std::ostream&, bool&)
 
 bool
 octave_base_value::load_binary (std::istream&, bool,
-                                oct_mach_info::float_format)
+                                octave::mach_info::float_format)
 {
   err_wrong_type_arg ("octave_base_value::load_binary()", type_name ());
 }
@@ -958,7 +958,7 @@ octave_base_value::load_hdf5 (octave_hdf5_id, const char *)
 
 int
 octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
-                          int, oct_mach_info::float_format) const
+                          int, octave::mach_info::float_format) const
 {
   err_wrong_type_arg ("octave_base_value::write()", type_name ());
 }

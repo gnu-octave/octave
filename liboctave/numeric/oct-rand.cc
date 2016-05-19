@@ -110,11 +110,11 @@ octave_rand::do_seed (void)
   union d2i { double d; int32_t i[2]; };
   union d2i u;
 
-  oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+  octave::mach_info::float_format ff = octave::mach_info::native_float_format ();
 
   switch (ff)
     {
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       F77_FUNC (getsd, GETSD) (u.i[1], u.i[0]);
       break;
     default:
@@ -150,11 +150,11 @@ octave_rand::do_seed (double s)
   union d2i u;
   u.d = s;
 
-  oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+  octave::mach_info::float_format ff = octave::mach_info::native_float_format ();
 
   switch (ff)
     {
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       i1 = force_to_fit_range (u.i[0], 1, 2147483563);
       i0 = force_to_fit_range (u.i[1], 1, 2147483399);
       break;

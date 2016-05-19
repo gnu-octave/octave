@@ -1271,7 +1271,7 @@ public:
   { return rep->save_binary (os, save_as_floats); }
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt)
+                    octave::mach_info::float_format fmt)
   { return rep->load_binary (is, swap, fmt); }
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
@@ -1283,7 +1283,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const;
+             octave::mach_info::float_format flt_fmt) const;
 
   octave_base_value *internal_rep (void) const { return rep; }
 

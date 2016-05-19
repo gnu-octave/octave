@@ -27,52 +27,62 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class
-OCTAVE_API
-oct_mach_info
+namespace octave
 {
-protected:
-
-  oct_mach_info (void);
-
-public:
-
-  enum float_format
+  class
+  OCTAVE_API
+  mach_info
   {
-    flt_fmt_unknown,
-    flt_fmt_ieee_little_endian,
-    flt_fmt_ieee_big_endian,
+  protected:
+
+    mach_info (void);
+
+  public:
+
+    enum float_format
+    {
+      flt_fmt_unknown,
+      flt_fmt_ieee_little_endian,
+      flt_fmt_ieee_big_endian,
+    };
+
+    static bool instance_ok (void);
+
+    static float_format native_float_format (void);
+
+    static bool words_big_endian (void);
+
+    static bool words_little_endian (void);
+
+    static float_format string_to_float_format (const std::string&);
+
+    static std::string float_format_as_string (float_format);
+
+  private:
+
+    static mach_info *instance;
+
+    static void cleanup_instance (void) { delete instance; instance = 0; }
+
+    // The floating point format for the current machine.
+    mutable float_format native_float_fmt;
+
+    // TRUE if the byte order on this system is big endian.
+    mutable bool big_chief;
+
+    // No copying!
+
+    mach_info (const mach_info&);
+
+    mach_info& operator = (const mach_info&);
   };
+}
 
-  static bool instance_ok (void);
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  static float_format native_float_format (void);
+OCTAVE_DEPRECATED ("use octave::mach_info instead")
+typedef octave::mach_info oct_mach_info;
 
-  static bool words_big_endian (void);
-
-  static bool words_little_endian (void);
-
-  static float_format string_to_float_format (const std::string&);
-
-  static std::string float_format_as_string (float_format);
-
-private:
-
-  static oct_mach_info *instance;
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
-  // The floating point format for the current machine.
-  mutable float_format native_float_fmt;
-
-  // TRUE if the byte order on this system is big endian.
-  mutable bool big_chief;
-
-  // No copying!
-
-  oct_mach_info (const oct_mach_info&);
-
-  oct_mach_info& operator = (const oct_mach_info&);
-};
+#endif
 
 #endif

@@ -6225,7 +6225,7 @@ convert_and_copy (std::list<void *>& input_buf_list,
                   octave_idx_type elts_read,
                   octave_idx_type nr, octave_idx_type nc, bool swap,
                   bool do_float_fmt_conv, bool do_NA_conv,
-                  oct_mach_info::float_format from_flt_fmt)
+                  octave::mach_info::float_format from_flt_fmt)
 {
   typedef typename DST_T::element_type dst_elt_type;
 
@@ -6252,7 +6252,7 @@ convert_and_copy (std::list<void *>& input_buf_list,
                   else if (do_float_fmt_conv)
                     do_float_format_conversion (&data[i], sizeof (SRC_T),
                                                 1, from_flt_fmt,
-                                                oct_mach_info::native_float_format ());
+                                                octave::mach_info::native_float_format ());
 
                   dst_elt_type tmp (data[i]);
 
@@ -6272,7 +6272,7 @@ convert_and_copy (std::list<void *>& input_buf_list,
                   else if (do_float_fmt_conv)
                     do_float_format_conversion (&data[i], sizeof (SRC_T),
                                                 1, from_flt_fmt,
-                                                oct_mach_info::native_float_format ());
+                                                octave::mach_info::native_float_format ());
 
                   conv_data[j] = data[i];
                 }
@@ -6316,7 +6316,7 @@ typedef octave_value (*conv_fptr)
   (std::list<void *>& input_buf_list, octave_idx_type input_buf_elts,
    octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
    bool swap, bool do_float_fmt_conv, bool do_NA_conv,
-   oct_mach_info::float_format from_flt_fmt);
+   octave::mach_info::float_format from_flt_fmt);
 
 #define TABLE_ELT(T, U, V, W) \
   conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
@@ -6344,7 +6344,7 @@ octave_stream::finalize_read (std::list<void *>& input_buf_list,
                               octave_idx_type nr, octave_idx_type nc,
                               oct_data_conv::data_type input_type,
                               oct_data_conv::data_type output_type,
-                              oct_mach_info::float_format ffmt)
+                              octave::mach_info::float_format ffmt)
 {
   octave_value retval;
 
@@ -6380,13 +6380,13 @@ octave_stream::finalize_read (std::list<void *>& input_buf_list,
 
   bool swap = false;
 
-  if (ffmt == oct_mach_info::flt_fmt_unknown)
+  if (ffmt == octave::mach_info::flt_fmt_unknown)
     ffmt = float_format ();
 
-  if (oct_mach_info::words_big_endian ())
-    swap = (ffmt == oct_mach_info::flt_fmt_ieee_little_endian);
+  if (octave::mach_info::words_big_endian ())
+    swap = (ffmt == octave::mach_info::flt_fmt_ieee_little_endian);
   else
-    swap = (ffmt == oct_mach_info::flt_fmt_ieee_big_endian);
+    swap = (ffmt == octave::mach_info::flt_fmt_ieee_big_endian);
 
   bool do_float_fmt_conv = ((input_type == oct_data_conv::dt_double
                              || input_type == oct_data_conv::dt_single)
@@ -6429,7 +6429,7 @@ octave_value
 octave_stream::read (const Array<double>& size, octave_idx_type block_size,
                      oct_data_conv::data_type input_type,
                      oct_data_conv::data_type output_type,
-                     octave_idx_type skip, oct_mach_info::float_format ffmt,
+                     octave_idx_type skip, octave::mach_info::float_format ffmt,
                      octave_idx_type& count)
 {
   octave_value retval;
@@ -6619,7 +6619,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 octave_idx_type
 octave_stream::write (const octave_value& data, octave_idx_type block_size,
                       oct_data_conv::data_type output_type,
-                      octave_idx_type skip, oct_mach_info::float_format flt_fmt)
+                      octave_idx_type skip, octave::mach_info::float_format flt_fmt)
 {
   octave_idx_type retval = -1;
 
@@ -6627,7 +6627,7 @@ octave_stream::write (const octave_value& data, octave_idx_type block_size,
     invalid_operation ("fwrite", "writing");
   else
     {
-      if (flt_fmt == oct_mach_info::flt_fmt_unknown)
+      if (flt_fmt == octave::mach_info::flt_fmt_unknown)
         flt_fmt = float_format ();
 
       octave_idx_type status = data.write (*this, block_size, output_type,
@@ -6693,16 +6693,16 @@ template <typename T>
 static bool
 convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
               oct_data_conv::data_type output_type,
-              oct_mach_info::float_format flt_fmt)
+              octave::mach_info::float_format flt_fmt)
 {
   bool retval = true;
 
   bool swap
-    = ((oct_mach_info::words_big_endian ()
-        && flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian)
-       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+    = ((octave::mach_info::words_big_endian ()
+        && flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian)
+       || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
 
-  bool do_float_conversion = flt_fmt != oct_mach_info::float_format ();
+  bool do_float_conversion = flt_fmt != octave::mach_info::float_format ();
 
   typedef typename ultimate_element_type<T>::type ult_elt_type;
 
@@ -6858,14 +6858,14 @@ octave_idx_type
 octave_stream::write (const Array<T>& data, octave_idx_type block_size,
                       oct_data_conv::data_type output_type,
                       octave_idx_type skip,
-                      oct_mach_info::float_format flt_fmt)
+                      octave::mach_info::float_format flt_fmt)
 {
-  bool swap = ((oct_mach_info::words_big_endian ()
-                && flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian)
-               || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+  bool swap = ((octave::mach_info::words_big_endian ()
+                && flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian)
+               || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
 
   bool do_data_conversion = (swap || ! is_equivalent_type<T> (output_type)
-                             || flt_fmt != oct_mach_info::float_format ());
+                             || flt_fmt != octave::mach_info::float_format ());
 
   octave_idx_type nel = data.numel ();
 
@@ -6928,7 +6928,7 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
   octave_stream::write (const Array<T>& data, octave_idx_type block_size, \
                         oct_data_conv::data_type output_type, \
                         octave_idx_type skip, \
-                        oct_mach_info::float_format flt_fmt)
+                        octave::mach_info::float_format flt_fmt)
 
 INSTANTIATE_WRITE (octave_int8);
 INSTANTIATE_WRITE (octave_uint8);
@@ -7145,10 +7145,10 @@ octave_stream::mode (void) const
   return retval;
 }
 
-oct_mach_info::float_format
+octave::mach_info::float_format
 octave_stream::float_format (void) const
 {
-  oct_mach_info::float_format retval = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format retval = octave::mach_info::flt_fmt_unknown;
 
   if (stream_ok ())
     retval = rep->float_format ();
@@ -7457,7 +7457,7 @@ octave_stream_list::do_get_info (int fid) const
 
   retval(0) = os.name ();
   retval(1) = octave_stream::mode_as_string (os.mode ());
-  retval(2) = oct_mach_info::float_format_as_string (os.float_format ());
+  retval(2) = octave::mach_info::float_format_as_string (os.float_format ());
 
   return retval;
 }
@@ -7498,7 +7498,7 @@ octave_stream_list::do_list_open_files (void) const
           << octave_stream::mode_as_string (os.mode ())
           << "  "
           << std::setw (9)
-          << oct_mach_info::float_format_as_string (os.float_format ())
+          << octave::mach_info::float_format_as_string (os.float_format ())
           << "  "
           << os.name () << "\n";
     }

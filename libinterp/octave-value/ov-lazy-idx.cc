@@ -185,7 +185,7 @@ bool octave_lazy_index::save_binary (std::ostream& os, bool& save_as_floats)
 }
 
 bool octave_lazy_index::load_binary (std::istream& is, bool swap,
-                                     oct_mach_info::float_format fmt)
+                                     octave::mach_info::float_format fmt)
 {
   bool dummy;
   std::string doc;

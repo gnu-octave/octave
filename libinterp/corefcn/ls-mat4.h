@@ -25,11 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-extern oct_mach_info::float_format
+extern octave::mach_info::float_format
 mopt_digit_to_float_format (int mach);
 
 extern int
-float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt);
+float_format_to_mopt_digit (octave::mach_info::float_format flt_fmt);
 
 extern int
 read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,

@@ -224,12 +224,12 @@ octave_ieee_init (void)
 
   if (! initialized)
     {
-      oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+      octave::mach_info::float_format ff = octave::mach_info::native_float_format ();
 
       switch (ff)
         {
-        case oct_mach_info::flt_fmt_ieee_big_endian:
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           {
             lo_nan = std::numeric_limits<double>::quiet_NaN ();
             lo_inf = std::numeric_limits<double>::infinity ();
@@ -239,7 +239,7 @@ octave_ieee_init (void)
 
             // The following is patterned after code in R.
 
-            if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
+            if (ff == octave::mach_info::flt_fmt_ieee_big_endian)
               {
                 lo_ieee_hw = 0;
                 lo_ieee_lw = 1;

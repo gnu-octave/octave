@@ -1669,15 +1669,15 @@ specified option.\n\
 
       config.assign ("dld", octave_value (octave_supports_dynamic_linking));
 
-      oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+      octave::mach_info::float_format ff = octave::mach_info::native_float_format ();
       config.assign ("float_format",
-                     octave_value (oct_mach_info::float_format_as_string (ff)));
+                     octave_value (octave::mach_info::float_format_as_string (ff)));
 
       config.assign ("words_big_endian",
-                     octave_value (oct_mach_info::words_big_endian ()));
+                     octave_value (octave::mach_info::words_big_endian ()));
 
       config.assign ("words_little_endian",
-                     octave_value (oct_mach_info::words_little_endian ()));
+                     octave_value (octave::mach_info::words_little_endian ()));
 
       config.assign ("build_environment", octave_value (build_env));
 

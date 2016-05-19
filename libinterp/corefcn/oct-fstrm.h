@@ -37,14 +37,14 @@ public:
 
   octave_fstream (const std::string& nm_arg,
                   std::ios::openmode arg_md = std::ios::in | std::ios::out,
-                  oct_mach_info::float_format flt_fmt
-                    = oct_mach_info::native_float_format ());
+                  octave::mach_info::float_format flt_fmt
+                    = octave::mach_info::native_float_format ());
 
   static octave_stream
   create (const std::string& nm_arg,
           std::ios::openmode arg_md = std::ios::in | std::ios::out,
-          oct_mach_info::float_format flt_fmt
-            = oct_mach_info::native_float_format ());
+          octave::mach_info::float_format flt_fmt
+            = octave::mach_info::native_float_format ());
 
   // Position a stream at OFFSET relative to ORIGIN.
 

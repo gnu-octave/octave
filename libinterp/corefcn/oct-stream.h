@@ -63,8 +63,8 @@ octave_base_stream
 public:
 
   octave_base_stream (std::ios::openmode arg_md = std::ios::in | std::ios::out,
-                      oct_mach_info::float_format ff
-                        = oct_mach_info::native_float_format ())
+                      octave::mach_info::float_format ff
+                        = octave::mach_info::native_float_format ())
     : count (0), md (arg_md), flt_fmt (ff), fail (false), open_state (true),
       errmsg ()
   { }
@@ -141,7 +141,7 @@ protected:
 
   int mode (void) const { return md; }
 
-  oct_mach_info::float_format float_format (void) const { return flt_fmt; }
+  octave::mach_info::float_format float_format (void) const { return flt_fmt; }
 
   // Set current error state and set fail to TRUE.
 
@@ -166,7 +166,7 @@ private:
   int md;
 
   // Data format.
-  oct_mach_info::float_format flt_fmt;
+  octave::mach_info::float_format flt_fmt;
 
   // TRUE if an error has occurred.
   bool fail;
@@ -281,13 +281,13 @@ public:
   octave_value read (const Array<double>& size, octave_idx_type block_size,
                      oct_data_conv::data_type input_type,
                      oct_data_conv::data_type output_type,
-                     octave_idx_type skip, oct_mach_info::float_format flt_fmt,
+                     octave_idx_type skip, octave::mach_info::float_format flt_fmt,
                      octave_idx_type& count);
 
   octave_idx_type write (const octave_value& data, octave_idx_type block_size,
                          oct_data_conv::data_type output_type,
                          octave_idx_type skip,
-                         oct_mach_info::float_format flt_fmt);
+                         octave::mach_info::float_format flt_fmt);
 
   bool write_bytes (const void *data, size_t n_elts);
 
@@ -297,7 +297,7 @@ public:
   octave_idx_type write (const Array<T>& data, octave_idx_type block_size,
                          oct_data_conv::data_type output_type,
                          octave_idx_type skip,
-                         oct_mach_info::float_format flt_fmt);
+                         octave::mach_info::float_format flt_fmt);
 
   octave_value scanf (const std::string& fmt, const Array<double>& size,
                       octave_idx_type& count, const std::string& who /* = "scanf" */);
@@ -356,7 +356,7 @@ public:
 
   int mode (void) const;
 
-  oct_mach_info::float_format float_format (void) const;
+  octave::mach_info::float_format float_format (void) const;
 
   static std::string mode_as_string (int mode);
 
@@ -405,7 +405,7 @@ private:
                  octave_idx_type nr, octave_idx_type nc,
                  oct_data_conv::data_type input_type,
                  oct_data_conv::data_type output_type,
-                 oct_mach_info::float_format ffmt);
+                 octave::mach_info::float_format ffmt);
 };
 
 class

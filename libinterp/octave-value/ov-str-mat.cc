@@ -455,7 +455,7 @@ octave_char_matrix_str::save_binary (std::ostream& os,
 
 bool
 octave_char_matrix_str::load_binary (std::istream& is, bool swap,
-                                     oct_mach_info::float_format /* fmt */)
+                                     octave::mach_info::float_format /* fmt */)
 {
   int32_t elements;
   if (! is.read (reinterpret_cast<char *> (&elements), 4))

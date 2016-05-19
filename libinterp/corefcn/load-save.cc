@@ -175,7 +175,7 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 
 int
 read_binary_file_header (std::istream& is, bool& swap,
-                         oct_mach_info::float_format& flt_fmt, bool quiet)
+                         octave::mach_info::float_format& flt_fmt, bool quiet)
 {
   const int magic_len = 10;
   char magic[magic_len+1];
@@ -183,9 +183,9 @@ read_binary_file_header (std::istream& is, bool& swap,
   magic[magic_len] = '\0';
 
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
-    swap = oct_mach_info::words_big_endian ();
+    swap = octave::mach_info::words_big_endian ();
   else if (strncmp (magic, "Octave-1-B", magic_len) == 0)
-    swap = ! oct_mach_info::words_big_endian ();
+    swap = ! octave::mach_info::words_big_endian ();
   else
     {
       if (! quiet)
@@ -199,7 +199,7 @@ read_binary_file_header (std::istream& is, bool& swap,
 
   flt_fmt = mopt_digit_to_float_format (tmp);
 
-  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
+  if (flt_fmt == octave::mach_info::flt_fmt_unknown)
     {
       if (! quiet)
         error ("load: unrecognized binary format!");
@@ -232,7 +232,7 @@ get_file_format (std::istream& file, const std::string& filename)
 {
   load_save_format retval = LS_UNKNOWN;
 
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
 
   bool swap = false;
 
@@ -342,7 +342,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
 octave_value
 do_load (std::istream& stream, const std::string& orig_fname,
-         load_save_format format, oct_mach_info::float_format flt_fmt,
+         load_save_format format, octave::mach_info::float_format flt_fmt,
          bool list_only, bool swap, bool verbose,
          const string_vector& argv, int argv_idx, int argc, int nargout)
 {
@@ -720,7 +720,7 @@ Force Octave to assume the file is in Octave's text format.\n\
   else
     i--;
 
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
 
   bool swap = false;
 
@@ -1160,11 +1160,11 @@ write_header (std::ostream& os, load_save_format format)
     {
     case LS_BINARY:
       {
-        os << (oct_mach_info::words_big_endian ()
+        os << (octave::mach_info::words_big_endian ()
                ? "Octave-1-B" : "Octave-1-L");
 
-        oct_mach_info::float_format flt_fmt =
-          oct_mach_info::native_float_format ();
+        octave::mach_info::float_format flt_fmt =
+          octave::mach_info::native_float_format ();
 
         char tmp = static_cast<char> (float_format_to_mopt_digit (flt_fmt));
 

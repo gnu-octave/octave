@@ -32,14 +32,14 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_stream
 octave_fstream::create (const std::string& nm_arg, std::ios::openmode arg_md,
-                        oct_mach_info::float_format ff)
+                        octave::mach_info::float_format ff)
 {
   return octave_stream (new octave_fstream (nm_arg, arg_md, ff));
 }
 
 octave_fstream::octave_fstream (const std::string& nm_arg,
                                 std::ios::openmode arg_md,
-                                oct_mach_info::float_format ff)
+                                octave::mach_info::float_format ff)
   : octave_base_stream (arg_md, ff), nm (nm_arg)
 {
   fs.open (nm.c_str (), arg_md);

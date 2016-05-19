@@ -889,7 +889,7 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_cell::load_binary (std::istream& is, bool swap,
-                          oct_mach_info::float_format fmt)
+                          octave::mach_info::float_format fmt)
 {
   clear_cellstr_cache ();
 

@@ -1477,14 +1477,14 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           // interrupted before resetting the format flags and fill
           // character?
 
-          oct_mach_info::float_format flt_fmt =
-            oct_mach_info::native_float_format ();
+          octave::mach_info::float_format flt_fmt =
+            octave::mach_info::native_float_format ();
 
           os.fill ('0');
           os.flags (std::ios::right | std::ios::hex);
 
           if (hex_format > 1
-              || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian)
+              || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
             {
               for (size_t i = 0; i < sizeof (double); i++)
                 os << std::setw (2) << static_cast<int> (tmp.i[i]);
@@ -1500,10 +1500,10 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           equiv tmp;
           tmp.d = d;
 
-          oct_mach_info::float_format flt_fmt =
-            oct_mach_info::native_float_format ();
+          octave::mach_info::float_format flt_fmt =
+            octave::mach_info::native_float_format ();
 
-          if (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian)
+          if (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
             {
               for (size_t i = 0; i < sizeof (double); i++)
                 PRINT_CHAR_BITS (os, tmp.i[i]);
@@ -3011,7 +3011,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 
       os.flags (std::ios::right | std::ios::hex);
 
-      if (hex_format > 1 || oct_mach_info::words_big_endian ())
+      if (hex_format > 1 || octave::mach_info::words_big_endian ())
         {
           for (size_t i = 0; i < sz; i++)
             os << std::setw (2) << static_cast<int> (tmpi[i]);
@@ -3024,7 +3024,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     }
   else if (bit_format)
     {
-      if (oct_mach_info::words_big_endian ())
+      if (octave::mach_info::words_big_endian ())
         {
           for (size_t i = 0; i < sz; i++)
             PRINT_CHAR_BITS (os, tmpi[i]);

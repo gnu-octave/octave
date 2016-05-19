@@ -641,7 +641,7 @@ namespace octave
     umask (mode_t mode)
     {
 #if defined (HAVE_UMASK)
-      return umask (mode);
+      return ::umask (mode);
 #else
       return 0;
 #endif

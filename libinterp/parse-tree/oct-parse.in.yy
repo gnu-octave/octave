@@ -4617,10 +4617,11 @@ source_file (const std::string& file_name, const std::string& context,
       if (fcn)
         {
           if (octave::sys::canonicalize_file_name (fcn->fcn_file_name ())
-              == full_name)
-            delete_fcn = true;
-          else
-            fcn = 0;             // wrong file, so load it below
+              != full_name)
+            {
+              fcn = 0;             // wrong file, so load it below
+              delete_fcn = true;   // and delete it when done.
+            }
         }
     }
 

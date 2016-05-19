@@ -389,7 +389,7 @@ rational_approx (double val, int len)
           double nextd = d;
 
           // Have we converged to 1/intmax ?
-          if (fabs (frac) < 1 / static_cast<double> (std::numeric_limits<int>::max ()))
+          if (std::abs (flip) > static_cast<double> (std::numeric_limits<int>::max ()))
             {
               lastn = n;
               lastd = d;
@@ -417,8 +417,8 @@ rational_approx (double val, int len)
           else if (buf.str ().length () > static_cast<unsigned int>(len))
             break;
 
-          if (fabs (n) > std::numeric_limits<int>::max ()
-              || fabs (d) > std::numeric_limits<int>::max ())
+          if (std::abs (n) > std::numeric_limits<int>::max ()
+              || std::abs (d) > std::numeric_limits<int>::max ())
             break;
 
           s = buf.str ();

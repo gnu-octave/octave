@@ -456,7 +456,7 @@ namespace octave
         current_directory = "";
 
       if (verbatim_pwd || current_directory.empty ())
-        current_directory = ::octave_getcwd ();
+        current_directory = octave::sys::getcwd ();
 
       return current_directory;
     }
@@ -557,14 +557,14 @@ namespace octave
                 tmp.resize (len);
             }
 
-          if (! ::octave_chdir (tmp))
+          if (! octave::sys::chdir (tmp))
             {
               current_directory = tmp;
               retval = true;
             }
         }
       else
-        retval = (! ::octave_chdir (newdir));
+        retval = (! octave::sys::chdir (newdir));
 
       return retval;
     }

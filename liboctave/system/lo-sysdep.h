@@ -28,15 +28,37 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "lo-ieee.h"
+
 class string_vector;
 
-extern std::string octave_getcwd (void);
+namespace octave
+{
+  namespace sys
+  {
+    extern std::string getcwd (void);
 
-extern int octave_chdir (const std::string&);
+    extern int chdir (const std::string&);
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-extern pid_t octave_popen2 (const std::string&, const string_vector&,
-                            bool, int *, std::string&);
+    extern pid_t popen2 (const std::string&, const string_vector&,
+                         bool, int *, std::string&);
+#endif
+  }
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use octave::sys::getcwd instead")
+const auto octave_getcwd = octave::sys::getcwd;
+
+OCTAVE_DEPRECATED ("use octave::sys::chdir instead")
+const auto octave_chdir = octave::sys::chdir;
+
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+OCTAVE_DEPRECATED ("use octave::sys:: instead")
+const auto octave_popen2 = octave::sys::popen2;
+#endif
+
 #endif
 
 #endif

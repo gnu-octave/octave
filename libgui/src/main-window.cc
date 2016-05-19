@@ -433,7 +433,7 @@ news_reader::process (void)
 
       QString url = base_url + "/" + page;
       std::ostringstream buf;
-      url_transfer octave_dot_org (url.toStdString (), buf);
+      octave::url_transfer octave_dot_org (url.toStdString (), buf);
 
       if (octave_dot_org.is_valid ())
         {

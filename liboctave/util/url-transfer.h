@@ -33,257 +33,270 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
-class
-OCTAVE_API
-base_url_transfer
+namespace octave
 {
-private:
-
-  static void delete_file (const std::string& file);
-
-  static void reset_path (base_url_transfer *curl_xfer)
+  class
+  OCTAVE_API
+  base_url_transfer
   {
-    curl_xfer->cwd ("..");
-  }
+  private:
 
-public:
+    static void delete_file (const std::string& file);
 
-  friend class url_transfer;
+    static void reset_path (base_url_transfer *curl_xfer)
+    {
+      curl_xfer->cwd ("..");
+    }
 
-  base_url_transfer (void)
-    : count (1), host_or_url (), valid (false), ftp (false),
+  public:
+
+    friend class url_transfer;
+
+    base_url_transfer (void)
+      : count (1), host_or_url (), valid (false), ftp (false),
       ascii_mode (false), ok (true), errmsg (),
       curr_istream (&std::cin), curr_ostream (&std::cout)
-  { }
+      { }
 
-  base_url_transfer (const std::string& host,
-                     const std::string& /* user_arg */,
-                     const std::string& /* passwd */,
-                     std::ostream& os)
-    : count (1), host_or_url (host), valid (false), ftp (true),
+    base_url_transfer (const std::string& host,
+                       const std::string& /* user_arg */,
+                       const std::string& /* passwd */,
+                       std::ostream& os)
+      : count (1), host_or_url (host), valid (false), ftp (true),
       ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
       curr_ostream (&os) { }
 
-  base_url_transfer (const std::string& url, std::ostream& os)
-    : count (1), host_or_url (url), valid (false), ftp (false),
+    base_url_transfer (const std::string& url, std::ostream& os)
+      : count (1), host_or_url (url), valid (false), ftp (false),
       ascii_mode (false), ok (true), errmsg (),
       curr_istream (&std::cin), curr_ostream (&os) { }
 
-  virtual ~base_url_transfer (void) { }
+    virtual ~base_url_transfer (void) { }
 
-  bool is_valid (void) const { return valid; }
+    bool is_valid (void) const { return valid; }
 
-  bool good (void) const { return valid && ok; }
+    bool good (void) const { return valid && ok; }
 
-  virtual void perform (void) { }
+    virtual void perform (void) { }
 
-  virtual std::string lasterror (void) const { return errmsg; }
+    virtual std::string lasterror (void) const { return errmsg; }
 
-  virtual std::ostream& set_ostream (std::ostream& /* os */)
+    virtual std::ostream& set_ostream (std::ostream& /* os */)
+    {
+      return *curr_ostream;
+    }
+
+    virtual std::istream& set_istream (std::istream& /* is */)
+    {
+      return *curr_istream;
+    }
+
+    virtual void ascii (void) { }
+
+    virtual void binary (void) { }
+
+    bool is_ascii (void) const { return ascii_mode; }
+
+    bool is_binary (void) const { return ! ascii_mode; }
+
+    virtual void cwd (const std::string& /* path */) { }
+
+    virtual void del (const std::string& /* file */) { }
+
+    virtual void rmdir (const std::string& /* path */) { }
+
+    virtual void mkdir (const std::string& /* path */) { }
+
+    virtual void rename (const std::string& /* oldname */,
+                         const std::string& /* newname */) { }
+
+    virtual void put (const std::string& /* file */,
+                      std::istream& /* is */) { }
+
+    virtual void get (const std::string& /* file */,
+                      std::ostream& /* os */) { }
+
+    void mget_directory (const std::string& directory,
+                         const std::string& target);
+
+    string_vector mput_directory (const std::string& base,
+                                  const std::string& directory);
+
+    virtual void dir (void) { }
+
+    virtual string_vector list (void) { return string_vector (); }
+
+    virtual void get_fileinfo (const std::string& /* filename */,
+                               double& /* filesize */,
+                               time_t& /* filetime */,
+                               bool& /* fileisdir */) { }
+
+    virtual std::string pwd (void) { return ""; }
+
+    virtual void http_get (const Array<std::string>& /* param */) { }
+
+    virtual void http_post (const Array<std::string>& /* param */) { }
+
+    virtual void http_action (const Array<std::string>& /* param */,
+                              const std::string& /* action */) { }
+
+  protected:
+
+    // Reference count.
+    octave_refcount<size_t> count;
+
+    // Host for ftp transfers or full URL for http requests.
+    std::string host_or_url;
+    bool valid;
+    bool ftp;
+    bool ascii_mode;
+    bool ok;
+    std::string errmsg;
+    std::istream *curr_istream;
+    std::ostream *curr_ostream;
+
+  private:
+
+    // No copying!
+
+    base_url_transfer (const base_url_transfer&);
+
+    base_url_transfer& operator = (const base_url_transfer&);
+  };
+
+  class
+  OCTAVE_API
+  url_transfer
   {
-    return *curr_ostream;
-  }
+  public:
 
-  virtual std::istream& set_istream (std::istream& /* is */)
-  {
-    return *curr_istream;
-  }
+    url_transfer (void);
 
-  virtual void ascii (void) { }
+    url_transfer (const std::string& host, const std::string& user,
+                  const std::string& passwd, std::ostream& os);
 
-  virtual void binary (void) { }
+    url_transfer (const std::string& url, std::ostream& os);
 
-  bool is_ascii (void) const { return ascii_mode; }
-
-  bool is_binary (void) const { return ! ascii_mode; }
-
-  virtual void cwd (const std::string& /* path */) { }
-
-  virtual void del (const std::string& /* file */) { }
-
-  virtual void rmdir (const std::string& /* path */) { }
-
-  virtual void mkdir (const std::string& /* path */) { }
-
-  virtual void rename (const std::string& /* oldname */,
-                       const std::string& /* newname */) { }
-
-  virtual void put (const std::string& /* file */,
-                    std::istream& /* is */) { }
-
-  virtual void get (const std::string& /* file */,
-                    std::ostream& /* os */) { }
-
-  void mget_directory (const std::string& directory,
-                       const std::string& target);
-
-  string_vector mput_directory (const std::string& base,
-                                const std::string& directory);
-
-  virtual void dir (void) { }
-
-  virtual string_vector list (void) { return string_vector (); }
-
-  virtual void get_fileinfo (const std::string& /* filename */,
-                             double& /* filesize */,
-                             time_t& /* filetime */,
-                             bool& /* fileisdir */) { }
-
-  virtual std::string pwd (void) { return ""; }
-
-  virtual void http_get (const Array<std::string>& /* param */) { }
-
-  virtual void http_post (const Array<std::string>& /* param */) { }
-
-  virtual void http_action (const Array<std::string>& /* param */,
-                            const std::string& /* action */) { }
-
-protected:
-
-  // Reference count.
-  octave_refcount<size_t> count;
-
-  // Host for ftp transfers or full URL for http requests.
-  std::string host_or_url;
-  bool valid;
-  bool ftp;
-  bool ascii_mode;
-  bool ok;
-  std::string errmsg;
-  std::istream *curr_istream;
-  std::ostream *curr_ostream;
-
-private:
-
-  // No copying!
-
-  base_url_transfer (const base_url_transfer&);
-
-  base_url_transfer& operator = (const base_url_transfer&);
-};
-
-class
-OCTAVE_API
-url_transfer
-{
-public:
-
-  url_transfer (void);
-
-  url_transfer (const std::string& host, const std::string& user,
-                const std::string& passwd, std::ostream& os);
-
-  url_transfer (const std::string& url, std::ostream& os);
-
-  url_transfer (const url_transfer& h) : rep (h.rep)
-  {
-    rep->count++;
-  }
-
-  ~url_transfer (void)
-  {
-    if (--rep->count == 0)
-      delete rep;
-  }
-
-  url_transfer& operator = (const url_transfer& h)
-  {
-    if (this != &h)
+    url_transfer (const url_transfer& h) : rep (h.rep)
       {
-        if (--rep->count == 0)
-          delete rep;
-
-        rep = h.rep;
         rep->count++;
       }
 
-    return *this;
-  }
+    ~url_transfer (void)
+      {
+        if (--rep->count == 0)
+          delete rep;
+      }
 
-  bool is_valid (void) const { return rep->is_valid (); }
+    url_transfer& operator = (const url_transfer& h)
+      {
+        if (this != &h)
+          {
+            if (--rep->count == 0)
+              delete rep;
 
-  bool good (void) const { return rep->good (); }
+            rep = h.rep;
+            rep->count++;
+          }
 
-  std::string lasterror (void) const { return rep->lasterror (); }
+        return *this;
+      }
 
-  std::ostream& set_ostream (std::ostream& os)
-  {
-    return rep->set_ostream (os);
-  }
+    bool is_valid (void) const { return rep->is_valid (); }
 
-  std::istream& set_istream (std::istream& is)
-  {
-    return rep->set_istream (is);
-  }
+    bool good (void) const { return rep->good (); }
 
-  void ascii (void) { rep->ascii (); }
+    std::string lasterror (void) const { return rep->lasterror (); }
 
-  void binary (void) { rep->binary (); }
+    std::ostream& set_ostream (std::ostream& os)
+    {
+      return rep->set_ostream (os);
+    }
 
-  bool is_ascii (void) const { return rep->is_ascii (); }
+    std::istream& set_istream (std::istream& is)
+    {
+      return rep->set_istream (is);
+    }
 
-  bool is_binary (void) const { return rep->is_binary (); }
+    void ascii (void) { rep->ascii (); }
 
-  void cwd (const std::string& path) { rep->cwd (path); }
+    void binary (void) { rep->binary (); }
 
-  void del (const std::string& file) { rep->del (file); }
+    bool is_ascii (void) const { return rep->is_ascii (); }
 
-  void rmdir (const std::string& path) { rep->rmdir (path); }
+    bool is_binary (void) const { return rep->is_binary (); }
 
-  void mkdir (const std::string& path) { rep->mkdir (path); }
+    void cwd (const std::string& path) { rep->cwd (path); }
 
-  void rename (const std::string& oldname, const std::string& newname)
-  {
-    rep->rename (oldname, newname);
-  }
+    void del (const std::string& file) { rep->del (file); }
 
-  void put (const std::string& file, std::istream& is)
-  {
-    rep->put (file, is);
-  }
+    void rmdir (const std::string& path) { rep->rmdir (path); }
 
-  void get (const std::string& file, std::ostream& os)
-  {
-    rep->get (file, os);
-  }
+    void mkdir (const std::string& path) { rep->mkdir (path); }
 
-  void mget_directory (const std::string& directory,
-                       const std::string& target)
-  {
-    rep->mget_directory (directory, target);
-  }
+    void rename (const std::string& oldname, const std::string& newname)
+    {
+      rep->rename (oldname, newname);
+    }
 
-  string_vector mput_directory (const std::string& base,
-                                const std::string& directory)
-  {
-    return rep->mput_directory (base, directory);
-  }
+    void put (const std::string& file, std::istream& is)
+    {
+      rep->put (file, is);
+    }
 
-  void dir (void) { rep->dir (); }
+    void get (const std::string& file, std::ostream& os)
+    {
+      rep->get (file, os);
+    }
 
-  string_vector list (void) { return rep->list (); }
+    void mget_directory (const std::string& directory,
+                         const std::string& target)
+    {
+      rep->mget_directory (directory, target);
+    }
 
-  void get_fileinfo (const std::string& filename, double& filesize,
-                     time_t& filetime, bool& fileisdir)
-  {
-    rep->get_fileinfo (filename, filesize, filetime, fileisdir);
-  }
+    string_vector mput_directory (const std::string& base,
+                                  const std::string& directory)
+    {
+      return rep->mput_directory (base, directory);
+    }
 
-  std::string pwd (void) { return rep->pwd (); }
+    void dir (void) { rep->dir (); }
 
-  void http_get (const Array<std::string>& param) { rep->http_get (param); }
+    string_vector list (void) { return rep->list (); }
 
-  void http_post (const Array<std::string>& param) { rep->http_post (param); }
+    void get_fileinfo (const std::string& filename, double& filesize,
+                       time_t& filetime, bool& fileisdir)
+    {
+      rep->get_fileinfo (filename, filesize, filetime, fileisdir);
+    }
 
-  void http_action (const Array<std::string>& param,
-                    const std::string& action)
-  {
-    rep->http_action (param, action);
-  }
+    std::string pwd (void) { return rep->pwd (); }
 
-private:
+    void http_get (const Array<std::string>& param) { rep->http_get (param); }
 
-  base_url_transfer *rep;
-};
+    void http_post (const Array<std::string>& param) { rep->http_post (param); }
+
+    void http_action (const Array<std::string>& param,
+                      const std::string& action)
+    {
+      rep->http_action (param, action);
+    }
+
+  private:
+
+    base_url_transfer *rep;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use octave::base_url_transfer instead")
+typedef octave::base_url_transfer base_url_transfer;
+
+OCTAVE_DEPRECATED ("use octave::url_transfer instead")
+typedef octave::url_transfer url_transfer;
+
+#endif
 
 #endif

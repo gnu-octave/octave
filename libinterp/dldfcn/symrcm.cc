@@ -79,7 +79,7 @@ struct CMK_Node
 
 // A simple queue.
 // Queues Q have a fixed maximum size N (rows,cols of the matrix) and are
-// stored in an array. qh and qt point to queue head and tail.
+// stored in an array.  qh and qt point to queue head and tail.
 
 // Enqueue operation (adds a node "o" at the tail)
 
@@ -112,7 +112,7 @@ Q_deq (CMK_Node * Q, octave_idx_type N, octave_idx_type& qh)
 // the parent of entry i
 #define PARENT(i)       (((i) - 1) >> 1)        // = floor(((i)-1)/2)
 
-// Builds a min-heap (the root contains the smallest element). A is an array
+// Builds a min-heap (the root contains the smallest element).  A is an array
 // with the graph's nodes, i is a starting position, size is the length of A.
 
 static void
@@ -143,7 +143,7 @@ H_heapify_min (CMK_Node *A, octave_idx_type i, octave_idx_type size)
     }
 }
 
-// Heap operation insert. Running time is O(log(n))
+// Heap operation insert.  Running time is O(log(n))
 
 static void
 H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
@@ -169,7 +169,7 @@ H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
   while (i > 0);
 }
 
-// Heap operation remove-min. Removes the smalles element in O(1) and
+// Heap operation remove-min.  Removes the smalles element in O(1) and
 // reorganizes the heap optionally in O(log(n))
 
 inline static CMK_Node
@@ -185,7 +185,7 @@ H_remove_min (CMK_Node *H, octave_idx_type& h, int reorg/*=1*/)
 // Predicate (heap empty)
 #define H_empty(H, h)   ((h) == 0)
 
-// Helper function for the Cuthill-McKee algorithm. Tries to determine a
+// Helper function for the Cuthill-McKee algorithm.  Tries to determine a
 // pseudo-peripheral node of the graph as starting node.
 
 static octave_idx_type
@@ -322,8 +322,8 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
   return x.id;
 }
 
-// Calculates the node's degrees. This means counting the nonzero elements
-// in the symmetric matrix' rows. This works for non-symmetric matrices
+// Calculates the node's degrees.  This means counting the nonzero elements
+// in the symmetric matrix' rows.  This works for non-symmetric matrices
 // as well.
 
 static octave_idx_type
@@ -503,11 +503,11 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       return ovl (P);
     }
 
-  // a heap for the a node's neighbors. The number of neighbors is
+  // a heap for the a node's neighbors.  The number of neighbors is
   // limited by the maximum degree max_deg:
   OCTAVE_LOCAL_BUFFER (CMK_Node, S, max_deg);
 
-  // a queue for the BFS. The array is always one element larger than
+  // a queue for the BFS.  The array is always one element larger than
   // the number of entries that are stored.
   OCTAVE_LOCAL_BUFFER (CMK_Node, Q, N+1);
 
@@ -515,7 +515,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   octave_idx_type c = -1;
 
   // upper bound for the bandwidth (=quality of solution)
-  // initialize the bandwidth of the graph with 0. B contains the
+  // initialize the bandwidth of the graph with 0.  B contains the
   // the maximum of the theoretical lower limits of the subgraphs
   // bandwidths.
   octave_idx_type B = 0;
@@ -538,7 +538,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       v.id = find_starting_node (N, ridx, cidx, ridx2, cidx2, D, i);
 
       // mark the node as visited and enqueue it (a starting node
-      // for the BFS). Since the node will be a root of a spanning
+      // for the BFS).  Since the node will be a root of a spanning
       // tree, its dist is 0.
       v.deg = D[v.id];
       v.dist = 0;
@@ -674,9 +674,9 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
           if (Bsub < level_N)
             Bsub = level_N;
         }
-      // finish of BFS. If there are still unvisited nodes in the graph
-      // then it is split into CCs. The computed bandwidth is the maximum
-      // of all subgraphs. Update:
+      // finish of BFS.  If there are still unvisited nodes in the graph
+      // then it is split into CCs.  The computed bandwidth is the maximum
+      // of all subgraphs.  Update:
       if (Bsub > B)
         B = Bsub;
     }

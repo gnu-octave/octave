@@ -197,7 +197,7 @@ PermMatrix::pos_power (octave_idx_type m) const
           for (j = 0, ic = ics; j != mm; j++, ic = p[ic]) ;
         }
 
-      // now ic = p^m[ics]. Loop through the whole cycle.
+      // now ic = p^m[ics].  Loop through the whole cycle.
       octave_idx_type jcs = ics;
       do
         {

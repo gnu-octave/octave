@@ -31,10 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bsxfun.h"
 
-// This source file implements a general binary maping function for
-// arrays. The syntax is binmap<type> (a, b, f,[name]). type denotes
-// the expected return type of the operation. a, b, should be one of
-// the 6 combinations:
+// This source file implements a general binary maping function for arrays.
+// The syntax is binmap<type> (a, b, f,[name]).
+// type denotes the expected return type of the operation.
+// a, b, should be one of the 6 combinations:
 //
 // Array-Array
 // Array-scalar
@@ -43,11 +43,11 @@ along with Octave; see the file COPYING.  If not, see
 // Sparse-scalar
 // scalar-Sparse
 //
-// If both operands are nonscalar, name must be supplied. It is used
+// If both operands are nonscalar, name must be supplied.  It is used
 // as the base for error message when operands are nonconforming.
 //
-// The operation needs not be homogeneous, i.e. a, b and the result
-// may be of distinct types. f can have any of the four signatures:
+// The operation needs not be homogeneous, i.e., a, b and the result
+// may be of distinct types.  f can have any of the four signatures:
 //
 // U f (T, R)
 // U f (const T&, R)

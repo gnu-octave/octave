@@ -94,8 +94,8 @@
 ## sequentially calling building blocks subprograms we implement here a
 ## FSM version using one interior point determination and one bracketing
 ## per iteration, thus reducing the number of temporary variables and
-## simplifying the algorithm structure. Further, this approach reduces
-## the need for external functions and error handling. The algorithm has
+## simplifying the algorithm structure.  Further, this approach reduces
+## the need for external functions and error handling.  The algorithm has
 ## also been slightly modified.
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.

@@ -443,7 +443,7 @@ compatibility with @sc{matlab}.\n\
   std::cout << "qz: check argument 1" << std::endl;
 #endif
 
-  // Argument 1: check if it's o.k. dimensioned.
+  // Argument 1: check if it's okay dimensioned.
   octave_idx_type nn = args(0).rows ();
 
 #if defined (DEBUG)

@@ -35,7 +35,7 @@
    Given w(z), the error functions are mostly straightforward
    to compute, except for certain regions where we have to
    switch to Taylor expansions to avoid cancellation errors
-   [e.g. near the origin for erf(z)].
+   [e.g., near the origin for erf(z)].
 
    To compute the Faddeeva function, we use a combination of two
    algorithms:
@@ -61,7 +61,7 @@
     significantly slower than the continued-fraction expansion for
     larger |z|.  On the other hand, it is competitive for smaller |z|, 
     and is significantly more accurate than the Poppe & Wijers code
-    in some regions, e.g. in the vicinity of z=1+1i.)
+    in some regions, e.g., in the vicinity of z=1+1i.)
 
    Note that this is an INDEPENDENT RE-IMPLEMENTATION of these algorithms,
    based on the description in the papers ONLY.  In particular, I did
@@ -88,9 +88,9 @@
    the test function, compile with -DTEST_FADDEEVA (that is,
    #define TEST_FADDEEVA).
 
-   If HAVE_CONFIG_H is #defined (e.g. by compiling with -DHAVE_CONFIG_H),
+   If HAVE_CONFIG_H is #defined (e.g., by compiling with -DHAVE_CONFIG_H),
    then we #include "config.h", which is assumed to be a GNU autoconf-style
-   header defining HAVE_* macros to indicate the presence of features. In
+   header defining HAVE_* macros to indicate the presence of features.  In
    particular, if HAVE_ISNAN and HAVE_ISINF are #defined, we use those
    functions in math.h instead of defining our own, and if HAVE_ERF and/or
    HAVE_ERFC are defined we use those functions from <cmath> for erf and
@@ -207,7 +207,7 @@ static inline double my_copysign(double x, double y) { return y<0 ? -x : x; }
 #    define copysign my_copysign
 #  endif
 
-// If we are using the gnulib <cmath> (e.g. in the GNU Octave sources),
+// If we are using the gnulib <cmath> (e.g., in the GNU Octave sources),
 // gnulib generates a link warning if we use ::floor instead of gnulib::floor.
 // This warning is completely innocuous because the only difference between
 // gnulib::floor and the system ::floor (and only on ancient OSF systems)
@@ -218,7 +218,7 @@ static inline double my_copysign(double x, double y) { return y<0 ? -x : x; }
 #    define log GNULIB_NAMESPACE::log
 #  endif
 
-#else // !__cplusplus, i.e. pure C (requires C99 features)
+#else // !__cplusplus, i.e., pure C (requires C99 features)
 
 #  include "Faddeeva.h"
 
@@ -269,7 +269,7 @@ static inline cmplx cpolar(double r, double t)
     return C(r * cos(t), r * sin(t));
 }
 
-#endif // !__cplusplus, i.e. pure C (requires C99 features)
+#endif // !__cplusplus, i.e., pure C (requires C99 features)
 
 /////////////////////////////////////////////////////////////////////////
 // Auxiliary routines to compute other special functions based on w(z)
@@ -996,7 +996,7 @@ cmplx FADDEEVA(w)(cmplx z, double relerr)
       b) Instead of using a single Chebyshev polynomial for the entire
          [0,1] y interval, we break the interval up into 100 equal
          subintervals, with a switch/lookup table, and use much lower
-         degree Chebyshev polynomials in each subinterval. This greatly
+         degree Chebyshev polynomials in each subinterval.  This greatly
          improves performance in my tests.
 
    For x < 0, we use the relationship erfcx(-x) = 2 exp(x^2) - erfc(x),

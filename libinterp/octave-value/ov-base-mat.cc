@@ -346,7 +346,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
             if (scalar_opt)
               {
-                // optimize all scalar indices. Don't construct
+                // optimize all scalar indices.  Don't construct
                 // an index array, but rather calc a scalar index directly.
                 octave_idx_type n = 1;
                 octave_idx_type j = 0;

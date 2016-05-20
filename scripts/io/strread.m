@@ -412,7 +412,7 @@ function varargout = strread (str, format = "%f", varargin)
   if (! isempty (eol_char))
     ## Add eol_char to delimiter collection
     delimiter_str = unique ([delimiter_str eol_char]);
-    ## .. and remove it from whitespace collection
+    ## and remove it from whitespace collection
     white_spaces = strrep (white_spaces, eol_char, '');
   endif
 
@@ -451,8 +451,8 @@ function varargout = strread (str, format = "%f", varargin)
     endif
     ## Wipe leading and trailing whitespace on each line (it may be
     ## delimiter too)
-    ## FIXME: Double strrep on str is enormously expensive of CPU time.
-    ## Can this be eliminated
+    ## FIXME: Double strrep on str is enormously expensive in CPU time.
+    ## Can this be eliminated?
     if (! isempty (eol_char))
       str = strrep (str, [eol_char " "], eol_char);
       str = strrep (str, [" " eol_char], eol_char);
@@ -462,8 +462,8 @@ function varargout = strread (str, format = "%f", varargin)
   ## Split 'str' into words
   words = split_by (str, delimiter_str, mult_dlms_s1, eol_char);
   if (! isempty (white_spaces))
-    ## Trim leading and trailing 'white_spaces'. All whitespace has
-    ## been converted to space above
+    ## Trim leading and trailing 'white_spaces'.
+    ## All whitespace has been converted to space above
     words = strtrim (words);
   endif
   num_words = numel (words);
@@ -479,7 +479,7 @@ function varargout = strread (str, format = "%f", varargin)
   endif
 
   ## fmt_words has been split properly now, but words{} has only been split on
-  ## delimiter positions. As numeric fields can also be separated by
+  ## delimiter positions.  As numeric fields can also be separated by
   ## whitespace, more splits may be needed.
   ## We also don't know the number of lines (as EndOfLine may have been set to
   ## "" (empty) by the caller).
@@ -490,7 +490,7 @@ function varargout = strread (str, format = "%f", varargin)
   ## C. Skipping leftover parts of specified skip fields (%*N )
   ## Some words columns may have to be split further to fix these.
   ## To find out, we'll match fmt_words to the words array to see what
-  ## needs to be done. fwptr tracks which {fmt_words}# starts in what {words}#
+  ## needs to be done.  fwptr tracks which {fmt_words} starts in what {words}
 
   ## Find indices and pointers to possible literals in fmt_words
   idf = cellfun ("isempty", strfind (fmt_words, "%"));
@@ -532,10 +532,10 @@ function varargout = strread (str, format = "%f", varargin)
               ## Parse error.  Literal extends beyond delimiter (word boundary)
               warning ("strread: literal '%s' (fmt spec # %d) does not match data", ...
                 fmt_words{ii}, ii);
-              ## Word assumed to be completely "used up". Next word
+              ## Word assumed to be completely "used up".  Next word
               nxt_wrd = 1;
             elseif (iwrdp == iwrdl)
-              ## Word completely "used up". Next word
+              ## Word completely "used up".  Next word
               nxt_wrd = 1;
             endif
           endif
@@ -546,7 +546,7 @@ function varargout = strread (str, format = "%f", varargin)
           ew = regexp (fmt_words{ii}, '[nfuds]') - 1;
           iwrdp += floor (str2double (fmt_words{ii}(sw:ew)));
           if (iwrdp > iwrdl)
-            ## Match error. Field extends beyond word boundary.
+            ## Match error.  Field extends beyond word boundary.
             warning  ...
             ("strread: field width '%s' (fmt spec # %d) extends beyond actual word limit", ...
                fmt_words{ii}, ii);
@@ -558,7 +558,7 @@ function varargout = strread (str, format = "%f", varargin)
           endif
 
         else
-          ## A simple format conv. specifier. Either (1) uses rest of word, or
+          ## A simple format conv. specifier.  Either (1) uses rest of word, or
           ## (2) is squeezed between current iwrdp and next literal, or (3) uses
           ## next word. (3) is already taken care of.  So just check (1) & (2)
           if (ii < numel (fmt_words) && idf(ii+1))
@@ -638,7 +638,8 @@ function varargout = strread (str, format = "%f", varargin)
 
             else
               if (idg(ii))
-                ## Current field = fixed width. Strip into icol, rest in icol+1
+                ## Current field = fixed width.
+                ## Strip into icol, rest in icol+1
                 sw = regexp (fmt_words{ii}, '\d', "once");
                 ew = regexp (fmt_words{ii}, '[nfuds]') - 1;
                 wdth = floor (str2double (fmt_words{ii}(sw:ew)));
@@ -654,7 +655,8 @@ function varargout = strread (str, format = "%f", varargin)
                 endif
               else
                 if (! isempty (strfind (fmt_words{ii-1}, "%s")))
-                  ## Trailing literal. Could be ambiguous if preceding format == '%s'
+                  ## Trailing literal.
+                  ## Could be ambiguous if preceding format == '%s'
                   warning ("strread.m:\n  Ambiguous '%%s' specifier immediately before literal in column %d", icol);
                 endif
                 ## FIXME: this assumes char(254)/char(255) won't occur in input!
@@ -789,8 +791,9 @@ function varargout = strread (str, format = "%f", varargin)
       endswitch
     catch
       ## As strread processes columnwise, ML-compatible error processing
-      ## (row after row) is not feasible. In addition Octave sets unrecognizable
-      ## numbers to NaN w/o error.  But maybe Octave is better in this respect.
+      ## (row after row) is not feasible.  In addition Octave sets
+      ## unrecognizable numbers to NaN w/o error.  But maybe Octave is better
+      ## in this respect.
       if (err_action)
         ## Just try the next column where ML bails out
       else

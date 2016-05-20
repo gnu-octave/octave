@@ -307,7 +307,7 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
           if (overlaps)
             {
               retsiz = 0;
-              // OMG. Is this the "right answer" MW always looks for, or
+              // OMG.  Is this the "right answer" MW always looks for, or
               // someone was just lazy?
               octave_idx_type k = 0;
               for (octave_idx_type i = 0; i < nidx; i++)

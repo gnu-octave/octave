@@ -127,7 +127,7 @@ function [n, idx] = histc (x, edges, dim)
 
     ## Look-up indices.
     idx = lookup (edges, x);
-    ## Zero invalid ones (including NaNs). x < edges(1) are already zero.
+    ## Zero invalid ones (including NaNs).  x < edges(1) are already zero.
     idx(! (x <= edges(end))) = 0;
 
     iidx = idx;

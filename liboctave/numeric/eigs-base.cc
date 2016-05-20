@@ -859,7 +859,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -898,9 +898,9 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -1112,7 +1112,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -1195,9 +1195,9 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -1385,7 +1385,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -1425,9 +1425,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -1654,7 +1654,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -1693,9 +1693,9 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -1956,7 +1956,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -2039,9 +2039,9 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -2284,7 +2284,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -2323,9 +2323,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -2604,7 +2604,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -2642,9 +2642,9 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -2860,7 +2860,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -2944,9 +2944,9 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
@@ -3145,7 +3145,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer. But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr(5)-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
@@ -3184,9 +3184,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   octave_idx_type info2;
 
   // We have a problem in that the size of the C++ bool
-  // type relative to the fortran logical type. It appears
+  // type relative to the fortran logical type.  It appears
   // that fortran uses 4- or 8-bytes per logical and C++ 1-byte
-  // per bool, though this might be system dependent. As
+  // per bool, though this might be system dependent.  As
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.

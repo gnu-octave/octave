@@ -158,7 +158,7 @@ function varargout = textread (filename, format = "%f", varargin)
   endif
   st_pos = ftell (fid);
 
-  ## Read a first file chunk. Rest follows after endofline processing
+  ## Read a first file chunk.  Rest follows after endofline processing
   [str, count] = fscanf (fid, "%c", BUFLENGTH);
   if (isempty (str) || count < 1)
     warning ("textread: empty file");
@@ -226,7 +226,7 @@ function varargout = textread (filename, format = "%f", varargin)
       eoi = [ eoi (length (str)) ];
       ++n_eoi;
     endif
-    ## Found EOL delimiting last requested line. Compute ptr (incl. EOL)
+    ## Found EOL delimiting last requested line.  Compute ptr (incl. EOL)
     if (isempty (eoi))
       eoi_pos = nblks * BUFLENGTH + count;
     else

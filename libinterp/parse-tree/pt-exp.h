@@ -145,7 +145,7 @@ protected:
   //                  ==> 0 for expression e2
   int num_parens;
 
-  // The first index type associated with this expression. This field
+  // The first index type associated with this expression.  This field
   // is 0 (character '\0') if the expression has no associated index.
   // See the code in tree_identifier::rvalue for the rationale.
   char postfix_index_type;

@@ -1263,7 +1263,7 @@ public:
   }
 
   // Report if any characters have been consumed.
-  // (get, read etc. not cancelled by putback or seekg)
+  // (get, read, etc. not cancelled by putback or seekg)
 
   void progress_benchmark (void) { progress_marker = idx; }
 
@@ -4225,7 +4225,7 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
     }
 
   // If conversion produces an integer that overflows, failbit is set but
-  // value is non-zero. We want to treat this case as success, so clear
+  // value is non-zero.  We want to treat this case as success, so clear
   // failbit from the stream state to keep going.
   // FIXME: Maybe set error state on octave stream as above? Matlab does
   // *not* indicate an error message on overflow.
@@ -4264,7 +4264,7 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 }
 
 // Note that this specialization is only used for reading characters, not
-// character strings. See BEGIN_S_CONVERSION for details.
+// character strings.  See BEGIN_S_CONVERSION for details.
 
 template <>
 std::istream&

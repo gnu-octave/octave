@@ -61,7 +61,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 
   // Some sparse functions can support lazy indexing (where elements
   // in the row are in no particular order), even though octave in
-  // general can't. For those functions that can using it is a big
+  // general can't.  For those functions that can using it is a big
   // win here in terms of speed.
 
   if (lazy)

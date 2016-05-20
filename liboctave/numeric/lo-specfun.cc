@@ -2793,7 +2793,7 @@ gammainc (const NDArray& x, const NDArray& a)
 
       (*current_liboctave_error_handler)
         ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
-         x_str.c_str (), a_str. c_str ());
+         x_str.c_str (), a_str.c_str ());
     }
 
   NDArray retval (dv);

@@ -215,7 +215,7 @@ public:
 
   virtual ~octave_base_value (void) { }
 
-  // Unconditional clone. Always clones.
+  // Unconditional clone.  Always clones.
   virtual octave_base_value *
   clone (void) const { return new octave_base_value (*this); }
 
@@ -223,7 +223,7 @@ public:
   virtual octave_base_value *
   empty_clone (void) const;
 
-  // Unique clone. Usually clones, but may be overridden to fake the
+  // Unique clone.  Usually clones, but may be overridden to fake the
   // cloning when sharing copies is to be controlled from within an
   // instance (see octave_class).
   virtual octave_base_value *
@@ -691,7 +691,7 @@ public:
 
   virtual void dump (std::ostream& os) const;
 
-  // Standard mappers. Register new ones here.
+  // Standard mappers.  Register new ones here.
   enum unary_mapper_t
   {
     umap_abs,
@@ -764,12 +764,12 @@ public:
   // These are fast indexing & assignment shortcuts for extracting
   // or inserting a single scalar from/to an array.
 
-  // Extract the n-th element, aka val(n). Result is undefined if val is not an
-  // array type or n is out of range. Never error.
+  // Extract the n-th element, aka val(n).  Result is undefined if val is not
+  // an array type or n is out of range.  Never error.
   virtual octave_value
   fast_elem_extract (octave_idx_type n) const;
 
-  // Assign the n-th element, aka val(n) = x. Returns false if val is not an
+  // Assign the n-th element, aka val(n) = x.  Returns false if val is not an
   // array type, x is not a matching scalar type, or n is out of range.
   // Never error.
   virtual bool
@@ -781,14 +781,14 @@ public:
   virtual bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
-  // Grab the reference count. For use by jit.
+  // Grab the reference count.  For use by jit.
   void
   grab (void)
   {
     ++count;
   }
 
-  // Release the reference count. For use by jit.
+  // Release the reference count.  For use by jit.
   void
   release (void)
   {

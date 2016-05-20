@@ -55,7 +55,7 @@ get_data_and_bytesize (const ArrayType& array,
                        octave::unwind_protect& frame)
 {
   // The array given may be a temporary, constructed from a scalar or sparse
-  // array. This will ensure the data will be deallocated after we exit.
+  // array.  This will ensure the data will be deallocated after we exit.
   frame.add_delete (new ArrayType (array));
 
   data = reinterpret_cast<const void *> (array.data ());

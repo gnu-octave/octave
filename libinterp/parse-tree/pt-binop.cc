@@ -125,7 +125,7 @@ tree_binary_expression::rvalue1 (int)
 
               // Note: The profiler does not catch the braindead
               // short-circuit evaluation code above, but that should be
-              // ok. The evaluation of operands and the operator itself
+              // ok.  The evaluation of operands and the operator itself
               // is entangled and it's not clear where to start/stop
               // timing the operator to make it reasonable.
 
@@ -189,7 +189,7 @@ tree_boolean_expression::rvalue1 (int)
   bool result = false;
 
   // This evaluation is not caught by the profiler, since we can't find
-  // a reasonable place where to time. Note that we don't want to
+  // a reasonable place where to time.  Note that we don't want to
   // include evaluation of LHS or RHS into the timing, but this is
   // entangled together with short-circuit evaluation here.
 

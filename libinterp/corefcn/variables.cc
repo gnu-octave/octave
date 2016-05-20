@@ -1091,7 +1091,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
                 {
                   a = param.first_parameter_length - param.balance;
                   a = (a < 0 ? 0 : a);
-                  b = param.parameter_length - a - param.text . length ();
+                  b = param.parameter_length - a - param.text.length ();
                   b = (b < 0 ? 0 : b);
                   os << std::setiosflags (std::ios::left) << std::setw (a)
                      << "" << std::resetiosflags (std::ios::left) << param.text
@@ -1556,7 +1556,7 @@ public:
                 // Have to calculate space needed for printing
                 // matrix dimensions Space needed for Size column is
                 // hard to determine in prior, because it depends on
-                // dimensions to be shown. That is why it is
+                // dimensions to be shown.  That is why it is
                 // recalculated for each Size-command int first,
                 // rest = 0, total;
                 int rest = 0;

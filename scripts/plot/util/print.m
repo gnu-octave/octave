@@ -531,7 +531,7 @@ endfunction
 
 function cmd = epstool (opts, filein, fileout)
   ## As epstool does not work with pipes, a subshell is used to
-  ## permit piping. Since this solution does not work with the DOS
+  ## permit piping.  Since this solution does not work with the DOS
   ## command shell, the -tight and -preview options are disabled if
   ## output must be piped.
 

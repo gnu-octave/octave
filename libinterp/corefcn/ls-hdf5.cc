@@ -307,7 +307,7 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 // The following subroutines creates an HDF5 representations of the way
 // we will store Octave complex types (pairs of floating-point numbers).
 // NUM_TYPE is the HDF5 numeric type to use for storage (e.g.
-// H5T_NATIVE_DOUBLE to save as 'double'). Note that any necessary
+// H5T_NATIVE_DOUBLE to save as 'double').  Note that any necessary
 // conversions are handled automatically by HDF5.
 
 octave_hdf5_id
@@ -335,7 +335,7 @@ hdf5_make_complex_type (octave_hdf5_id num_type)
 //
 // It returns 1 on success (in which case H5Giterate stops and returns),
 // -1 on error, and 0 to tell H5Giterate to continue on to the next item
-// (e.g. if NAME was a data type we don't recognize).
+// (e.g., if NAME was a data type we don't recognize).
 
 octave_hdf5_err
 hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
@@ -613,8 +613,8 @@ hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
               H5Sclose (space_id);
             }
           else
-            // Assume that if its not complex its a range. If its not
-            // it'll be rejected later in the range code
+            // Assume that if its not complex its a range.
+            // If its not, it'll be rejected later in the range code.
             d->tc = octave_value_typeinfo::lookup_type ("range");
 
           H5Tclose (complex_type);
@@ -848,7 +848,7 @@ hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 #endif
 }
 
-// Save an empty matrix, if needed. Returns
+// Save an empty matrix, if needed.  Returns
 //    > 0  Saved empty matrix
 //    = 0  Not an empty matrix; did nothing
 //    < 0  Error condition
@@ -904,7 +904,7 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
 #endif
 }
 
-// Load an empty matrix, if needed. Returns
+// Load an empty matrix, if needed.  Returns
 //    > 0  loaded empty matrix, dimensions returned
 //    = 0  Not an empty matrix; did nothing
 //    < 0  Error condition

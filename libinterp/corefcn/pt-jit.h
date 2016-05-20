@@ -198,21 +198,21 @@ private:
 
   jit_call *create_checked_impl (jit_call *ret);
 
-  // get an existing vairable. If the variable does not exist, it will not be
+  // get an existing vairable.  If the variable does not exist, it will not be
   // created
   jit_variable *find_variable (const std::string& vname) const;
 
-  // get a variable, create it if it does not exist. The type will default to
+  // get a variable, create it if it does not exist.  The type will default to
   // the variable's current type in the symbol table.
   jit_variable *get_variable (const std::string& vname);
 
-  // create a variable of the given name and given type. Will also insert an
+  // create a variable of the given name and given type.  Will also insert an
   // extract statement
   jit_variable *create_variable (const std::string& vname, jit_type *type,
                                  bool isarg = true);
 
-  // The name of the next for loop iterator. If inc is false, then the iterator
-  // counter will not be incremented.
+  // The name of the next for loop iterator.  If inc is false, then the
+  // iterator counter will not be incremented.
   std::string next_iterator (bool inc = true)
   { return next_name ("#iter", iterator_count, inc); }
 

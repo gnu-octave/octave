@@ -250,7 +250,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
 
 // Perform @var{n}-dimensional interpolation.  Each element of then
 // @var{n}-dimensional array @var{v} represents a value at a location
-// given by the parameters @var{x1}, @var{x2},...,@var{xn}. The parameters
+// given by the parameters @var{x1}, @var{x2},...,@var{xn}.  The parameters
 // @var{x1}, @var{x2}, @dots{}, @var{xn} are either @var{n}-dimensional
 // arrays of the same size as the array @var{v} in the \"ndgrid\" format
 // or vectors.  The parameters @var{y1}, @var{y2}, @dots{}, @var{yn} are

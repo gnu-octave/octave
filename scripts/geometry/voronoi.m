@@ -114,8 +114,8 @@ function [vx, vy] = voronoi (varargin)
     error ("voronoi: minimum of 2 points needed");
   endif
 
-  ## Add box to approximate rays to infinity. For Voronoi diagrams the
-  ## box can (and should) be close to the points themselves. To make the
+  ## Add box to approximate rays to infinity.  For Voronoi diagrams the
+  ## box can (and should) be close to the points themselves.  To make the
   ## job of finding the exterior edges it should be at least two times the
   ## delta below however
   xmax = max (x(:));

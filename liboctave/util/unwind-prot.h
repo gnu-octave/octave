@@ -110,10 +110,9 @@ namespace octave
     unwind_protect& operator = (const unwind_protect&);
   };
 
-  // Like unwind_protect, but this one will guard against the
-  // possibility of seeing an exception (or interrupt) in the cleanup
-  // actions. Not that we can do much about it, but at least we won't
-  // crash.
+  // Like unwind_protect, but this one will guard against the possibility
+  // of seeing an exception (or interrupt) in the cleanup actions.
+  // Not that we can do much about it, but at least we won't crash.
 
   class
   OCTAVE_API

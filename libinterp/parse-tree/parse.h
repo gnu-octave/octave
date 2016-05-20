@@ -407,7 +407,7 @@ public:
   // element.
   bool fcn_file_from_relative_lookup;
 
-  // FALSE if we are still at the primary function. Subfunctions can
+  // FALSE if we are still at the primary function.  Subfunctions can
   // only be declared inside function files.
   bool parsing_subfunctions;
 
@@ -418,11 +418,11 @@ public:
   // = 0 currently outside any function.
   // = 1 inside the primary function or a subfunction.
   // > 1 means we are looking at a function definition that seems to be
-  //     inside a function. Note that the function still might not be a
+  //     inside a function.  Note that the function still might not be a
   //     nested function.
   int curr_fcn_depth;
 
-  // Scope where we install all subfunctions and nested functions. Only
+  // Scope where we install all subfunctions and nested functions.  Only
   // used while reading function files.
   symbol_table::scope_id primary_fcn_scope;
 
@@ -435,7 +435,7 @@ public:
   std::string curr_package_name;
 
   // A stack holding the nested function scopes being parsed.
-  // We don't use std::stack, because we want the clear method. Also, we
+  // We don't use std::stack, because we want the clear method.  Also, we
   // must access one from the top
   std::vector<symbol_table::scope_id> function_scopes;
 

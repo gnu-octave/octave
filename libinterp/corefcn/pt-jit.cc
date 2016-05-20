@@ -105,7 +105,8 @@ static llvm::LLVMContext& context = llvm::getGlobalContext ();
 // -------------------- jit_break_exception --------------------
 
 // jit_break is thrown whenever a branch we are converting has only breaks or
-// continues. This is because all code that follows a break or continue is dead.
+// continues.  This is because all code that follows a break or continue
+// is dead.
 class jit_break_exception : public std::exception {};
 
 // -------------------- jit_convert --------------------
@@ -377,7 +378,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
 {
   // Note we do an initial check to see if the loop will run atleast once.
   // This allows us to get better type inference bounds on variables defined
-  // and used only inside the for loop (e.g. the index variable)
+  // and used only inside the for loop (e.g., the index variable)
 
   // If we are a nested for loop we need to store the previous breaks
   octave::unwind_protect frame;
@@ -550,12 +551,12 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   size_t last_else = static_cast<size_t> (last->is_else_clause ());
 
   // entry_blocks represents the block you need to enter in order to execute
-  // the condition check for the ith clause. For the else, it is simple the
-  // else body. If there is no else body, then it is padded with the tail
+  // the condition check for the ith clause.  For the else, it is simple the
+  // else body.  If there is no else body, then it is padded with the tail.
   std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
   entry_blocks[0] = block;
 
-  // we need to construct blocks first, because they have jumps to eachother
+  // we need to construct blocks first, because they have jumps to each other.
   tree_if_command_list::iterator iter = lst.begin ();
   ++iter;
   for (size_t i = 1; iter != lst.end (); ++iter, ++i)
@@ -758,8 +759,8 @@ jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
 
   if (op != octave_value::op_asn_eq)
     {
-      // do the equivlent binary operation, then assign. This is always correct,
-      // but isn't always optimal.
+      // Do the equivalent binary operation, then assign.
+      // This is always correct, but it isn't always optimal.
       tree_expression *lhs = tsa.left_hand_side ();
       jit_value *lhsv = visit (lhs);
       octave_value::binary_op bop = octave_value::assign_op_to_binary_op (op);
@@ -857,7 +858,7 @@ jit_convert::visit_switch_command (tree_switch_command& cmd)
 
   std::vector<jit_block *> entry_blocks (case_blocks_num + 1 - has_otherwise);
 
-  // the first entry point is always the actual block. afterward new blocks
+  // the first entry point is always the actual block.  Afterward, new blocks
   // are created for every case and the otherwise branch
   entry_blocks[0] = block;
   for (size_t i = 1; i < case_blocks_num; ++i)
@@ -2158,9 +2159,9 @@ tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
 bool
 tree_jit::enabled (void)
 {
-  // Ideally, we should only disable JIT if there is a breakpoint in the code we
-  // are about to run. However, we can't figure this out in O(1) time, so we
-  // conservatively check for the existence of any breakpoints.
+  // Ideally, we should only disable JIT if there is a breakpoint in the code
+  // we are about to run. However, we can't figure this out in O(1) time, so
+  // we conservatively check for the existence of any breakpoints.
   return Vjit_enable && ! bp_table::have_breakpoints ()
          && ! Vdebug_on_interrupt && ! Vdebug_on_error;
 }

@@ -93,7 +93,7 @@ function [path1, path2] = javaclasspath (which)
   else
     if (! nargin)
       ## This is to allow retrieval of both paths in separate variables with
-      ## a single call to javaclasspath(). Matlab returns only the -dynamic
+      ## a single call to javaclasspath().  Matlab returns only the -dynamic
       ## path in this case but this won't break compatibility.
       path1 = cellstr (dynamic_path_list);
       path2 = cellstr (static_path_list);

@@ -346,7 +346,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
     {
       if (args(0).is_complex_type ())
         {
-          scm = args(0). sparse_complex_matrix_value ();
+          scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
           n_col = scm.cols ();
           nnz = scm.nnz ();

@@ -162,7 +162,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
       ## Default to golden section step.
 
       ## WARNING: This is also the "initial" procedure following
-      ## MATLAB nomenclature. After the loop we'll fix the string
+      ## MATLAB nomenclature.  After the loop we'll fix the string
       ## for the first step.
       iter(niter+1).procedure = "golden";
 

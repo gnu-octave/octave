@@ -1907,7 +1907,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 
   if (ivec >= 0)
     {
-      // Vector split. Use 1D indexing.
+      // Vector split.  Use 1D indexing.
       octave_idx_type l = 0;
       octave_idx_type nidx = (ivec == 0 ? nridx : ncidx);
       for (octave_idx_type i = 0; i < nidx; i++)
@@ -1919,7 +1919,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
     }
   else
     {
-      // General 2D case. Use 2D indexing.
+      // General 2D case.  Use 2D indexing.
       OCTAVE_LOCAL_BUFFER (idx_vector, ridx, nridx);
       prepare_idx (ridx, 0, nd, d);
 
@@ -1938,7 +1938,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
   return retval;
 }
 
-// Nd case. Works for Arrays and octave_map.
+// Nd case.  Works for Arrays and octave_map.
 // Uses Nd indexing.
 
 template <typename ArrayND>
@@ -2003,7 +2003,7 @@ do_mat2cell (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     return do_mat2cell_nd (a, d, nd);
 }
 
-// General case. Works for any class supporting do_index_op.
+// General case.  Works for any class supporting do_index_op.
 // Uses Nd indexing.
 
 Cell

@@ -159,7 +159,7 @@ function [r, p, k, e] = residue (b, a, varargin)
     else
       e = [];
     endif
-    ## The inputs are the residue, pole, and direct part. Solve for the
+    ## The inputs are the residue, pole, and direct part.  Solve for the
     ## corresponding numerator and denominator polynomials
     [r, p] = rresidue (b, a, varargin{1}, toler, e);
     return;
@@ -198,7 +198,7 @@ function [r, p, k, e] = residue (b, a, varargin)
   p = p(indx);
 
   ## For each group of pole multiplicity, set the value of each
-  ## pole to the average of the group. This reduces the error in
+  ## pole to the average of the group.  This reduces the error in
   ## the resulting poles.
 
   p_group = cumsum (e == 1);

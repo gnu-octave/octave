@@ -1781,7 +1781,7 @@ public:
     //   error ("clear: no such function '%s'", name.c_str ());
   }
 
-  // This clears oct and mex files, incl. autoloads.
+  // This clears oct and mex files, including autoloads.
   static void clear_dld_function (const std::string& name)
   {
     fcn_table_iterator p = fcn_table.find (name);
@@ -2292,7 +2292,7 @@ public:
     symbol_table *inst = get_instance (scope);
     // FIXME: normally, functions should not usurp each other's scope.
     // If for any incredible reason this is needed, call
-    // set_user_function (0, scope) first. This may cause problems with
+    // set_user_function (0, scope) first.  This may cause problems with
     // nested functions, as the curr_fcn of symbol_records must be updated.
     assert (inst->curr_fcn == 0 || curr_fcn == 0);
     inst->curr_fcn = curr_fcn;

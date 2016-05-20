@@ -914,6 +914,6 @@ endfunction
 ## %!error
 ## %! test ('/etc/passwd');
 ## %! test ("nonexistent file");
-## %! ## These don't signal an error, so the test for an error fails. Note
+## %! ## These don't signal an error, so the test for an error fails.  Note
 ## %! ## that the call doesn't reference the current fid (it is unavailable),
 ## %! ## so of course the informational message is not printed in the log.

@@ -860,7 +860,7 @@ FloatMatrix::pseudo_inverse (float tol) const
   else
     {
       FloatMatrix Ur = U.extract (0, 0, nr-1, r);
-      FloatDiagMatrix D = FloatDiagMatrix (sigma.extract (0, r)) . inverse ();
+      FloatDiagMatrix D = FloatDiagMatrix (sigma.extract (0, r)).inverse ();
       FloatMatrix Vr = V.extract (0, 0, nc-1, r);
       return Vr * D * Ur.transpose ();
     }

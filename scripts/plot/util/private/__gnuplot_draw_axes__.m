@@ -820,7 +820,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
            if (isfield (obj, "edgecolor"))
              ## FIXME: This is the wrong thing to do as edgecolor,
              ## markeredgecolor and markerfacecolor can have different values
-             ## and we should treat them seperately. However, the code below
+             ## and we should treat them seperately.  However, the code below
              ## allows the scatter functions to work as expected, where only
              ## one of these values is set.
              if (strcmp (obj.edgecolor, "none"))
@@ -1306,7 +1306,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           num_lines = numel (obj.string);
         endif
         switch (valign)
-          ## Text offset in characters. Relies on gnuplot for font metrics.
+          ## Text offset in characters.  Relies on gnuplot for font metrics.
           case "top"
             dy = -0.5;
           case "cap"
@@ -1319,9 +1319,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             dy = 0.5 + (num_lines - 1);
         endswitch
         ## Gnuplot's Character units are different for x/y and vary with
-        ## fontsize. The aspect ratio of 1:1.7 was determined by experiment
-        ## to work for eps/ps/etc. For the MacOS aqua terminal a value of 2.5
-        ## is needed. However, the difference is barely noticable.
+        ## fontsize.  The aspect ratio of 1:1.7 was determined by experiment
+        ## to work for eps/ps/etc.  For the MacOS aqua terminal a value of 2.5
+        ## is needed.  However, the difference is barely noticeable.
         dx_and_dy = [(-dy * sind (angle)), (dy * cosd (angle))] .* [1.7 1];
 
         ## FIXME: Multiline text produced the gnuplot
@@ -2396,7 +2396,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
                  '{}', str(e(i) + b2(1) + 1:end)];
         endif
       else
-        ## Last desperate attempt to treat the symbol. Look for things
+        ## Last desperate attempt to treat the symbol.  Look for things
         ## like \pix, that should be translated to the symbol Pi and x
         for j = 1 : length (flds)
           if (strncmp (flds{j}, f, length (flds{j})))
@@ -2425,7 +2425,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   ## shortest..  Don't have to worry about things like ^\theta as they
   ## are already converted to ^{/Symbol q}.
 
-  ## FIXME: This is a mess... Is it worth it just for a "@" character?
+  ## FIXME: This is a mess.  Is it worth it just for a "@" character?
 
   [s, m] = regexp (str,'[_\^]','start','matches');
   i = 1;

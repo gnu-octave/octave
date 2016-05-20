@@ -730,12 +730,12 @@ private:
     // The number of members in this class (methods, properties...)
     octave_idx_type member_count;
 
-    // TRUE if this class is a handle class. A class is a handle
+    // TRUE if this class is a handle class.  A class is a handle
     // class when the abstract "handle" class is one of its superclasses.
     bool handle_class;
 
     // The list of super-class constructors that are called implicitly by the
-    // the classdef engine when creating an object. These constructors are not
+    // the classdef engine when creating an object.  These constructors are not
     // called explicitly by the class constructor.
     std::list<cdef_class> implicit_ctor_list;
 

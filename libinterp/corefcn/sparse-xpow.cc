@@ -52,7 +52,7 @@ xisint (double x)
 }
 
 
-// Safer pow functions. Only two make sense for sparse matrices, the
+// Safer pow functions.  Only two make sense for sparse matrices, the
 // others should all promote to full matrices.
 
 octave_value
@@ -64,7 +64,7 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
 
   if (static_cast<int> (b) != b)
     error ("use full(a) ^ full(b)");
@@ -133,7 +133,7 @@ xpow (const SparseComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
 
   if (static_cast<int> (b) != b)
     error ("use full(a) ^ full(b)");
@@ -319,7 +319,7 @@ elem_xpow (const SparseMatrix& a, double b)
 {
   // FIXME: What should a .^ 0 give?  Matlab gives a
   // sparse matrix with same structure as a, which is strictly
-  // incorrect. Keep compatibility.
+  // incorrect.  Keep compatibility.
 
   octave_value retval;
 
@@ -439,9 +439,9 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
 done:
 
   // This is a dumb operator for sparse matrices anyway, and there is
-  // no sensible way to handle the 0.^0 versus the 0.^x cases. Therefore
+  // no sensible way to handle the 0.^0 versus the 0.^x cases.  Therefore
   // allocate a full matrix filled for the 0.^0 case and shrink it later
-  // as needed
+  // as needed.
 
   if (convert_to_complex)
     {

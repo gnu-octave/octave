@@ -314,8 +314,8 @@ inline void F (size_t n, R *r, X x, const Y *y) throw () \
 using std::pow;
 DEFMXMAPPER2X (mx_inline_pow, pow)
 
-// Arbitrary function appliers. The function is a template parameter to enable
-// inlining.
+// Arbitrary function appliers.
+// The function is a template parameter to enable inlining.
 template <typename R, typename X, R fun (X x)>
 inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
 { for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
@@ -324,7 +324,7 @@ template <typename R, typename X, R fun (const X& x)>
 inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
 { for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
 
-// Appliers. Since these call the operation just once, we pass it as
+// Appliers.  Since these call the operation just once, we pass it as
 // a pointer, to allow the compiler reduce number of instances.
 
 template <typename R, typename X>
@@ -458,7 +458,7 @@ template <typename T>
 inline T cabsq (const std::complex<T>& c)
 { return c.real () * c.real () + c.imag () * c.imag (); }
 
-// default. works for integers and bool.
+// default.  works for integers and bool.
 template <typename T>
 inline bool xis_true (T x) { return x; }
 template <typename T>
@@ -558,8 +558,9 @@ OP_RED_FCN2 (mx_inline_any_r, T, bool, OP_RED_ANYR, false)
 OP_RED_FCN2 (mx_inline_all_r, T, bool, OP_RED_ALLR, true)
 
 // Using the general code for any/all would sacrifice short-circuiting.
-// OTOH, going by rows would sacrifice cache-coherence. The following algorithm
-// will achieve both, at the cost of a temporary octave_idx_type array.
+// OTOH, going by rows would sacrifice cache-coherence.  The following
+// algorithm will achieve both, at the cost of a temporary octave_idx_type
+// array.
 
 #define OP_ROW_SHORT_CIRCUIT(F, PRED, ZERO) \
 template <typename T> \
@@ -1339,7 +1340,7 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
   return ret;
 }
 
-// Fast extra-precise summation. According to
+// Fast extra-precise summation.  According to
 // T. Ogita, S. M. Rump, S. Oishi:
 // Accurate Sum And Dot Product,
 // SIAM J. Sci. Computing, Vol. 26, 2005

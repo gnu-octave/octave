@@ -40,7 +40,7 @@ bool
 Range::all_elements_are_ints (void) const
 {
   // If the base and increment are ints, the final value in the range
-  // will also be an integer, even if the limit is not. If there is one
+  // will also be an integer, even if the limit is not.  If there is one
   // or fewer elements only the base needs to be an integer
 
   return (! (xisnan (rng_base) || xisnan (rng_inc))

@@ -16,8 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## news() and citation() are very much alike. They both do the same thing, just
-## for different files. This function does all the work.
+## news() and citation() are very much alike.  They both do the same thing,
+## just for different files.  This function does all the work.
 
 function display_info_file (func, package, file)
 

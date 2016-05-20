@@ -19,7 +19,7 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 Code stolen in large part from Python's, listobject.c, which itself had
-no license header. However, thanks to Tim Peters for the parts of the
+no license header.  However, thanks to Tim Peters for the parts of the
 code I ripped-off.
 
 As required in the Python license the short description of the changes
@@ -150,7 +150,7 @@ public:
                const T* values, octave_idx_type nvalues,
                octave_idx_type *idx);
 
-  // A linear merge of two sorted tables. rev indicates the second table is
+  // A linear merge of two sorted tables.  rev indicates the second table is
   // in reverse order.
   void lookup_sorted (const T *data, octave_idx_type nel,
                       const T* values, octave_idx_type nvalues,

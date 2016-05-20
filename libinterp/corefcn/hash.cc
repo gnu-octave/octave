@@ -29,7 +29,7 @@ The GNULIB, contains even more HMAC based algorithms, c.f.
 https://www.gnu.org/software/gnulib/MODULES.html#module=crypto/hmac-md5
 so a future project might be including these algorithms as well, adding
 a third key input parameter.  There is also a GNULIB "high-level"
-interface to Libcrypt. It might be easier to use, but it introduces
+interface to Libcrypt.  It might be easier to use, but it introduces
 a new build dependency, so better stick to the "low-level" functions
 for now.
 */

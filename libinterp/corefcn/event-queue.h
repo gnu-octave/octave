@@ -85,9 +85,8 @@ private:
 };
 
 // Like event_queue, but this one will guard against the
-// possibility of seeing an exception (or interrupt) in the cleanup
-// actions. Not that we can do much about it, but at least we won't
-// crash.
+// possibility of seeing an exception (or interrupt) in the cleanup actions.
+// Not that we can do much about it, but at least we won't crash.
 
 class
 event_queue_safe : public event_queue
@@ -108,7 +107,7 @@ public:
           {
             run_first ();
           }
-        catch (...) // Yes, the black hole. Remember we're in a dtor.
+        catch (...) // Yes, the black hole.  Remember we're in a dtor.
           {
             warn_unhandled_exception ();
           }

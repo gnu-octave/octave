@@ -17,9 +17,9 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This function does all the work of imwrite. It exists here as private
+## This function does all the work of imwrite.  It exists here as private
 ## function so that imwrite can use other functions if imformats is
-## configured to. It is also needed so that imformats can create a
+## configured to.  It is also needed so that imformats can create a
 ## function handle for it.
 
 function __imwrite__ (img, varargin)
@@ -134,14 +134,14 @@ function __imwrite__ (img, varargin)
           error ("imwrite: value for %s must be Inf or between 0 and 65535",
                  param_list{idx});
         endif
-        ## Graphics Magick is a bit weird here. A value of 0 will be an
+        ## Graphics Magick is a bit weird here.  A value of 0 will be an
         ## infinite loop, a value of 1, will really be no loop, while a
         ## value of 2 or more will be that number of loops (checked
-        ## with GNOME image viewer). This means that there is no way
-        ## to make it loop only once. See
+        ## with GNOME image viewer).  This means that there is no way
+        ## to make it loop only once.  See
         ## https://sourceforge.net/p/graphicsmagick/bugs/249/
         ## There is also the problem of setting this when there is only
-        ## a single frame. See
+        ## a single frame.  See
         ## https://sourceforge.net/p/graphicsmagick/bugs/248/
         if (isinf (options.loopcount))
           options.loopcount = 0;
@@ -189,12 +189,12 @@ function __imwrite__ (img, varargin)
       required_colors = max (img(:));
     endif
     if (nColors < required_colors)
-      warning ("imwrite: MAP has not enough colors. Filling with black");
+      warning ("imwrite: MAP has not enough colors.  Filling with black");
       map(nColors+1:required_colors,:) = 0;
     endif
 
     ## If the image is floating point, then we convert it to integer (makes
-    ## it easier in __magick_write__ since it only handles integers. Also,
+    ## it easier in __magick_write__ since it only handles integers.  Also,
     ## if it's floating point, it has an offset of 1
     if (isfloat (img))
       if (rows (map) <= 256)

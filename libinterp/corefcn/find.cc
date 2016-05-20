@@ -431,7 +431,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
       else if (nargout <= 1 && n_to_find == -1 && direction == 1)
         {
           // This case is equivalent to extracting indices from a logical
-          // matrix. Try to reuse the possibly cached index vector.
+          // matrix.  Try to reuse the possibly cached index vector.
 
           // No need to catch index_exception, since arg is bool.
           // Out-of-range errors have already set pos, and will be caught later.

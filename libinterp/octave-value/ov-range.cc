@@ -272,8 +272,7 @@ octave_range::is_true (void) const
   if (! range.is_empty ())
     {
       // FIXME: this is a potential waste of memory.
-
-      Matrix m ((range.matrix_value () . all ()) . all ());
+      Matrix m ((range.matrix_value ().all ()).all ());
 
       retval = (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
     }
@@ -527,7 +526,7 @@ octave_range::load_binary (std::istream& is, bool swap,
 // The following subroutines creates an HDF5 representation of the way
 // we will store Octave range types (triplets of floating-point numbers).
 // NUM_TYPE is the HDF5 numeric type to use for storage (e.g.
-// H5T_NATIVE_DOUBLE to save as 'double'). Note that any necessary
+// H5T_NATIVE_DOUBLE to save as 'double').  Note that any necessary
 // conversions are handled automatically by HDF5.
 
 static hid_t

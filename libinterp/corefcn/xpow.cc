@@ -64,7 +64,7 @@ err_failed_diagonalization (void)
 static void
 err_nonsquare_matrix (void)
 {
-  error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
+  error ("for x^A, A must be a square matrix.  Use .^ for elementwise power.");
 }
 
 static inline int

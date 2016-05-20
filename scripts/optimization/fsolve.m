@@ -167,7 +167,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   updating = strcmpi (optimget (options, "Updating", "on"), "on");
   complexeqn = strcmpi (optimget (options, "ComplexEqn", "off"), "on");
 
-  ## Get scaling matrix using the TypicalX option. If set to "auto", the
+  ## Get scaling matrix using the TypicalX option.  If set to "auto", the
   ## scaling matrix is estimated using the Jacobian.
   typicalx = optimget (options, "TypicalX");
   if (isempty (typicalx))
@@ -248,15 +248,15 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
     ## For square and overdetermined systems, we update a QR
     ## factorization of the Jacobian to avoid solving a full system in each
-    ## step. In this case, we pass a triangular matrix to __dogleg__.
+    ## step.  In this case, we pass a triangular matrix to __dogleg__.
     useqr = updating && m >= n && n > 10;
 
     if (useqr)
       ## FIXME: Currently, pivoting is mostly useless because the \ operator
       ## cannot exploit the resulting props of the triangular factor.
       ## Unpivoted QR is significantly faster so it doesn't seem right to pivot
-      ## just to get invariance. Original MINPACK didn't pivot either, at least
-      ## when qr updating was used.
+      ## just to get invariance.  Original MINPACK didn't pivot either, 
+      ## at least when qr updating was used.
       [q, r] = qr (fjac, 0);
     endif
 
@@ -272,7 +272,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         ##   dg = max (dg, jcn);
         ## but it seems not good if we start with a bad guess yielding Jacobian
         ## columns with large norms that later decrease, because the
-        ## corresponding variable will still be overscaled. So instead, we only
+        ## corresponding variable will still be overscaled.  Instead, we only
         ## give the old scaling a small momentum, but do not honor it.
 
         dg = max (0.1*dg, jcn);
@@ -287,7 +287,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
     ## It also seems that in the case of fast (and inhomogeneously) changing
     ## Jacobian, the Broyden updates are of little use, so maybe we could
-    ## skip them if a big disproportional change is expected. The question is,
+    ## skip them if a big disproportional change is expected.  The question is,
     ## of course, how to define the above terms :)
 
     lastratio = 0;
@@ -382,27 +382,27 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         endif
       endif
 
-      ## Tests for termination conditions. A mysterious place, anything
+      ## Tests for termination conditions.  A mysterious place, anything
       ## can happen if you change something here...
 
       ## The rule of thumb (which I'm not sure M*b is quite following)
       ## is that for a tolerance that depends on scaling, only 0 makes
-      ## sense as a default value. But 0 usually means uselessly long
+      ## sense as a default value.  But 0 usually means uselessly long
       ## iterations, so we need scaling-independent tolerances wherever
       ## possible.
 
       ## FIXME: Why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
-      ## of perturbations of x, then norm (fjac*e) <= eps*n*xn, i.e. by
+      ## of perturbations of x, then norm (fjac*e) <= eps*n*xn, i.e., by
       ## tolf ~ eps we demand as much accuracy as we can expect.
       if (fn <= tolf*n*xn)
         info = 1;
         ## The following tests done only after successful step.
       elseif (ratio >= 1e-4)
-        ## This one is classic. Note that we use scaled variables again,
+        ## This one is classic.  Note that we use scaled variables again,
         ## but compare to scaled step, so nothing bad.
         if (sn <= tolx*xn)
           info = 2;
-          ## Again a classic one. It seems weird to use the same tolf
+          ## Again a classic one.  It seems weird to use the same tolf
           ## for two different tests, but that's what M*b manual appears
           ## to say.
         elseif (actred < tolf)

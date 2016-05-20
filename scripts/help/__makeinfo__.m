@@ -25,19 +25,19 @@
 ## Run @code{makeinfo} on a given text.
 ##
 ## The string @var{text} is run through the @code{__makeinfo__} program
-## to generate output in various formats. This string must contain valid
+## to generate output in various formats.  This string must contain valid
 ## Texinfo formatted text.
 ##
-## The @var{output_type} selects the format of the output. This can be either
-## @t{"html"}, @t{"texinfo"}, or @t{"plain text"}. By default this is
-## @t{"plain text"}. If @var{output_type} is @t{"texinfo"}, the @t{@@seealso}
+## The @var{output_type} selects the format of the output.  This can be either
+## @t{"html"}, @t{"texinfo"}, or @t{"plain text"}.  By default this is
+## @t{"plain text"}.  If @var{output_type} is @t{"texinfo"}, the @t{@@seealso}
 ## macro is expanded, but otherwise the text is unaltered.
 ##
 ## If the optional argument @var{see_also} is present, it is used to expand the
-## Octave specific @t{@@seealso} macro. This argument must be a function handle,
+## Octave specific @t{@@seealso} macro.  This argument must be a function handle,
 ## that accepts a cell array of strings as input argument (each elements of the
 ## array corresponds to the arguments to the @t{@@seealso} macro), and return
-## the expanded string. If this argument is not given, the @t{@@seealso} macro
+## the expanded string.  If this argument is not given, the @t{@@seealso} macro
 ## will be expanded to the text
 ##
 ## @example

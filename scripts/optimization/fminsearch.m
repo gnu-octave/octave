@@ -100,7 +100,7 @@ endfunction
 ##           STOPIT(4) = 0: regular simplex (sides of equal length, the default)
 ##           STOPIT(4) = 1: right-angled simplex.
 ##        Progress of the iteration is not shown if STOPIT(5) = 0 (default 1).
-##           STOPIT(6) indicates the direction (ie. minimization or
+##           STOPIT(6) indicates the direction (i.e., minimization or
 ##                   maximization.) Default is 1, maximization.
 ##                   set STOPIT(6)=-1 for minimization
 ##        If a non-empty fourth parameter string SAVIT is present, then

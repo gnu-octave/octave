@@ -853,7 +853,7 @@ Matrix::pseudo_inverse (double tol) const
   else
     {
       Matrix Ur = U.extract (0, 0, nr-1, r);
-      DiagMatrix D = DiagMatrix (sigma.extract (0, r)) . inverse ();
+      DiagMatrix D = DiagMatrix (sigma.extract (0, r)).inverse ();
       Matrix Vr = V.extract (0, 0, nc-1, r);
       return Vr * D * Ur.transpose ();
     }

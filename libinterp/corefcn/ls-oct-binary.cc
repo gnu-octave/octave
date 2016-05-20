@@ -110,7 +110,7 @@ along with Octave; see the file COPYING.  If not, see
 //   type                 string    type_length
 //
 // The string "type" is then used with octave_value_typeinfo::lookup_type
-// to create an octave_value of the correct type. The specific load/save
+// to create an octave_value of the correct type.  The specific load/save
 // function is then called.
 //
 // For backward compatibility "data type" can also be a value between 1
@@ -128,7 +128,7 @@ along with Octave; see the file COPYING.  If not, see
 //
 // Except for "data type" equal 5 that requires special treatment, these
 // old style "data type" value also cause the specific load/save functions
-// to be called. FILENAME is used for error messages.
+// to be called.  FILENAME is used for error messages.
 
 std::string
 read_binary_data (std::istream& is, bool swap,
@@ -206,8 +206,8 @@ read_binary_data (std::istream& is, bool swap,
     case 5:
       {
         // FIXME:
-        // This is cruft, since its for a save type that is old. Maybe
-        // this is taking backward compatibility too far!!
+        // This is cruft, since its for a save type that is old.
+        // Maybe this is taking backward compatibility too far!
         int32_t len;
         if (! is.read (reinterpret_cast<char *> (&len), 4))
           error ("load: trouble reading binary file '%s'", filename.c_str ());
@@ -294,7 +294,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
   const char *btmp = typ.data ();
   os.write (btmp, len);
 
-  // The octave_value of tc is const. Make a copy...
+  // The octave_value of tc is const.  Make a copy...
   octave_value val = tc;
 
   // Call specific save function

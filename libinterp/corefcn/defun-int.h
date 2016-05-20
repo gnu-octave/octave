@@ -62,7 +62,7 @@ extern OCTINTERP_API octave::dynamic_library
 get_current_shlib (void);
 
 // This is a convenience class that calls the above function automatically at
-// construction time. When deriving new classes, you can either use it as a
+// construction time.  When deriving new classes, you can either use it as a
 // field or as a parent (with multiple inheritance).
 
 class octave_auto_shlib : public octave::dynamic_library

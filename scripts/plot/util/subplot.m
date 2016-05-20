@@ -370,8 +370,8 @@ function subplot_align (h, d, rmupdate = false)
   persistent updating = false;
   if (! updating)
     if (rmupdate)
-      ## The "position" property has been changed from outside this
-      ## routine. Don't update anymore.
+      ## The "position" property has been changed from outside this routine.
+      ## Don't update anymore.
       if (isappdata (h, "__subplotposition__"))
         rmappdata (h, "__subplotposition__");
         rmappdata (h, "__subplotouterposition__");
@@ -396,8 +396,8 @@ function subplot_align (h, d, rmupdate = false)
       hsubplots = children(do_align);
 
 
-      ## There may be mixed subplot series (e.g. 2-by-6 and 1-by-6) in
-      ## the same figure. Only subplots that have the same width and
+      ## There may be mixed subplot series (e.g., 2-by-6 and 1-by-6) in
+      ## the same figure.  Only subplots that have the same width and
       ## height as this one are updated.
       if (any (h == hsubplots))
         width = pos(h == hsubplots, 3);

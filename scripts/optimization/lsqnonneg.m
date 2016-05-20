@@ -178,7 +178,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
                "a non-unique solution may be returned due to equal gradients");
       idx = idx(1);
     endif
-    ## move the index from Z to P. Keep P sorted.
+    ## move the index from Z to P.  Keep P sorted.
     z = [1:n]; z(p) = [];
     zidx = z(idx);
     jdx = 1 + lookup (p, zidx);

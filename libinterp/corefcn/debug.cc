@@ -297,7 +297,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
 
             if (! seen_in)
               {
-                // It was a line number. Get function name from debugger.
+                // It was a line number.  Get function name from debugger.
                 if (Vdebugging)
                   symbol_name = get_user_code ()->profiler_name ();
                 else

@@ -653,7 +653,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
   if (nnz < 0)
     len = bnda.nnz ();
 
-  // We truncate the extent as much as possible. For Matlab
+  // We truncate the extent as much as possible.  For Matlab
   // compatibility, but maybe it's not a bad idea anyway.
   while (ext > 0 && ! bnda(ext-1))
     ext--;

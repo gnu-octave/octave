@@ -338,9 +338,9 @@ tree_index_expression::rvalue (int nargout,
         {
           tree_argument_list *al = *p_args;
 
-          // In Matlab, () can only be followed by . In Octave, we do not
+          // In Matlab, () can only be followed by '.'.  In Octave, we do not
           // enforce this for rvalue expressions, but we'll split the
-          // evaluation at this point. This will, hopefully, allow Octave's
+          // evaluation at this point.  This will, hopefully, allow Octave's
           // looser rules apply smoothly for Matlab overloaded subsref
           // codes.
           bool force_split = type[i-1] == '(' && type[i] != '.';

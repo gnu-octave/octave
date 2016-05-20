@@ -2253,7 +2253,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
   if (n < 0 || n >= nel)
     {
       // We want all elements, which means we'll almost surely need
-      // to resize. So count first, then allocate array of exact size.
+      // to resize.  So count first, then allocate array of exact size.
       octave_idx_type cnt = 0;
       for (octave_idx_type i = 0; i < nel; i++)
         cnt += src[i] != zero;
@@ -2265,7 +2265,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
     }
   else
     {
-      // We want a fixed max number of elements, usually small. So be
+      // We want a fixed max number of elements, usually small.  So be
       // optimistic, alloc the array in advance, and then resize if
       // needed.
       retval.clear (n, 1);
@@ -2694,7 +2694,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
       // the result dimensions are already determined, and there is no way
       // an empty array may contribute a nonzero piece along the dimension
       // at this point, unless an empty array can be promoted to a non-empty
-      // one (which makes no sense). I repeat, *no way*, think about it.
+      // one (which makes no sense).  I repeat, *no way*, think about it.
       if (array_list[i].is_empty ())
         continue;
 

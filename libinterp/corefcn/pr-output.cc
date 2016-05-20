@@ -1982,7 +1982,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
           pr_scale_header (os, scale);
 
-          // kluge. Get the true width of a number.
+          // kluge.  Get the true width of a number.
           int zero_fw;
 
           {
@@ -2402,7 +2402,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
           pr_scale_header (os, scale);
 
-          // kluge. Get the true width of a number.
+          // kluge.  Get the true width of a number.
           int zero_fw;
 
           {
@@ -2886,7 +2886,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
                        bool pr_as_read_syntax, int /* extra_indent */)
 {
   // FIXME: this mostly duplicates the code in the print_nd_array<>
-  // function. Can fix this with std::is_same from C++11.
+  // function.  Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
@@ -3155,7 +3155,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                                 bool pr_as_read_syntax, int extra_indent)
 {
   // FIXME: this mostly duplicates the code in the print_nd_array<>
-  // function. Can fix this with std::is_same from C++11.
+  // function.  Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
@@ -3929,7 +3929,7 @@ ans =\n\
 @item  short eng\n\
 @itemx long eng\n\
 Identical to @samp{short e} or @samp{long e} but displays the value\n\
-using an engineering format, where the exponent is divisible by 3. For\n\
+using an engineering format, where the exponent is divisible by 3.  For\n\
 example, with the @samp{short eng} format, @code{10 * pi} is displayed as\n\
 @code{31.4159e+00}.\n\
 \n\

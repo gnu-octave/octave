@@ -74,7 +74,7 @@ inline T xmax (T x, T y)
   return x >= y ? x : y;
 }
 
-// This form is favorable. GCC will translate (x <= y ? x : y) without a
+// This form is favorable.  GCC will translate (x <= y ? x : y) without a
 // jump, hence the only conditional jump involved will be the first
 // (xisnan), infrequent and hence friendly to branch prediction.
 inline double

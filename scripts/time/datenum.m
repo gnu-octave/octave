@@ -154,7 +154,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     day += reshape (monthstart (mod (month-1,12) + 1), size (day)) + 60;
   endif
 
-  ## Add number of days to the start of the current year. Correct
+  ## Add number of days to the start of the current year.  Correct
   ## for leap year every 4 years except centuries not divisible by 400.
   day += 365*year + floor (year/4) - floor (year/100) + floor (year/400);
 

@@ -62,7 +62,7 @@
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function [retval, errmsg] = license (cmd, feature, toogle)
+function [retval, errmsg] = license (cmd, feature, toggle)
 
   if (nargin > 3)
     print_usage ();
@@ -99,13 +99,13 @@ function [retval, errmsg] = license (cmd, feature, toogle)
       endif
 
       if (nargin > 2)
-        ## We ignore the toogle argument because... what's the point?  We
+        ## We ignore the toggle argument because... what's the point?  We
         ## don't need a license management system on Octave.  This function
-        ## will return true, even if anyone tries to disabled a license.
-        switch (tolower (toogle))
+        ## will return true, even if anyone tries to disable a license.
+        switch (tolower (toggle))
           case "enable"   # do nothing
           case "disable"  # do nothing
-          otherwise       error ("license: TOOGLE must be enable or disable");
+          otherwise       error ("license: TOGGLE must be enable or disable");
         endswitch
       endif
 
@@ -184,5 +184,5 @@ endfunction
 ## Test input validation
 %!error license ("not_inuse")
 %!error license ("not_test", "octave", "enable")
-%!error <TOOGLE must be enable or disable> license ("test", "octave", "invalid_toogle")
+%!error <TOGGLE must be enable or disable> license ("test", "octave", "invalid_toggle")
 

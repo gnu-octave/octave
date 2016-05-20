@@ -50,12 +50,12 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
         switch (type)
           case "axes"
             if (strcmpi (get (kids (i), "tag"), "legend"))
-              ## This is so ugly. If there was a way of getting
+              ## This is so ugly.  If there was a way of getting
               ## gnuplot to give us the text extents of strings
               ## then we could get rid of this mess.
               lh = getfield (get (kids(i), "userdata"), "handle");
               if (isscalar (lh))
-                ## We have a legend with a single parent. It'll be handled
+                ## We have a legend with a single parent.  It'll be handled
                 ## below as a gnuplot key to the axis it corresponds to
                 continue;
               else

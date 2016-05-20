@@ -472,7 +472,7 @@ Convert the string @var{str} to the time structure @var{tm_struct} under\n\
 the control of the format string @var{fmt}.\n\
 \n\
 If @var{fmt} fails to match, @var{nchars} is 0; otherwise, it is set to the\n\
-position of last matched character plus 1. Always check for this unless\n\
+position of last matched character plus 1.  Always check for this unless\n\
 you're absolutely sure the date string will be parsed correctly.\n\
 @seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
 @end deftypefn")

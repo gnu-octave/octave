@@ -77,7 +77,7 @@ REGISTER_INT_TYPE (int64_t);
 REGISTER_INT_TYPE (uint64_t);
 
 // Rationale: Comparators have a single static method, rel(), that returns the
-// result of the binary relation. They also have two static boolean fields:
+// result of the binary relation.  They also have two static boolean fields:
 // ltval, gtval determine the value of x OP y if x < y, x > y, respectively.
 #define REGISTER_OCTAVE_CMP_OP(NM,OP) \
   class NM \
@@ -101,12 +101,13 @@ REGISTER_INT_TYPE (uint64_t);
       static bool op (T, T) { return value; } \
     }
 
-// Handles non-homogeneous integer comparisons. Avoids doing useless tests.
+// Handles non-homogeneous integer comparisons.  Avoids doing useless tests.
 class octave_int_cmp_op
 {
   // This determines a suitable promotion type for T1 when meeting T2 in a
-  // binary relation. If promotion to int or T2 is safe, it is used. Otherwise,
-  // the signedness of T1 is preserved and it is widened if T2 is wider.
+  // binary relation.  If promotion to int or T2 is safe, it is used.
+  // Otherwise, the signedness of T1 is preserved and it is widened if T2 is
+  // wider.
   // Notice that if this is applied to both types, they must end up with equal
   // size.
   template <typename T1, typename T2>
@@ -255,7 +256,7 @@ public:
 #undef DEFINE_LONG_DOUBLE_CMP_OP
 };
 
-// Base integer class. No data, just conversion methods and exception flags.
+// Base integer class.  No data, just conversion methods and exception flags.
 template <typename T>
 class octave_int_base
 {
@@ -324,16 +325,16 @@ public:
   convert_real (const S& value);
 };
 
-// Saturated (homogeneous) integer arithmetics. The signed and unsigned
+// Saturated (homogeneous) integer arithmetics.  The signed and unsigned
 // implementations are significantly different, so we implement another layer
-// and completely specialize. Arithmetics inherits from octave_int_base so that
-// it can use its exceptions and truncation functions.
+// and completely specialize.  Arithmetics inherits from octave_int_base so
+// that it can use its exceptions and truncation functions.
 
 template <typename T, bool is_signed>
 class octave_int_arith_base
 { };
 
-// Unsigned arithmetics. C++ standard requires it to be modular, so the
+// Unsigned arithmetics.  C++ standard requires it to be modular, so the
 // overflows can be handled efficiently and reliably.
 template <typename T>
 class octave_int_arith_base<T, false> : octave_int_base<T>
@@ -383,7 +384,7 @@ public:
     return u;
   }
 
-  // Multiplication is done using promotion to wider integer type. If there is
+  // Multiplication is done using promotion to wider integer type.  If there is
   // no suitable promotion type, this operation *MUST* be specialized.
   static T mul (T x, T y) { return mul_internal (x, y); }
 
@@ -396,7 +397,7 @@ public:
            * static_cast<mptype> (y));
   }
 
-  // Division with rounding to nearest. Note that / and % are probably
+  // Division with rounding to nearest.  Note that / and % are probably
   // computed by a single instruction.
   static T
   div (T x, T y)
@@ -421,7 +422,7 @@ public:
     return y != 0 ? x % y : 0;
   }
 
-  // Modulus. Note the weird y = 0 case for Matlab compatibility.
+  // Modulus.  Note the weird y = 0 case for Matlab compatibility.
   static T
   mod (T x, T y)
   {
@@ -493,9 +494,9 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t, uint64_t);
 //      so there is no need for things like -ftrapv).
 //
 //   4. Bit operations on signed integers work like on unsigned
-//      integers, except for the shifts. Shifts are arithmetic.
+//      integers, except for the shifts.  Shifts are arithmetic.
 //
-// The above conditions are satisfied by most modern platforms. If
+// The above conditions are satisfied by most modern platforms.  If
 // OCTAVE_HAVE_FAST_INT_OPS is defined, bit tricks and wraparound
 // arithmetics are used to avoid conditional jumps as much as
 // possible, thus being friendly to modern pipeline processor
@@ -559,7 +560,7 @@ public:
   }
 
   // FIXME: we do not have an authority what signed shifts should
-  // exactly do, so we define them the easy way. Note that Matlab does
+  // exactly do, so we define them the easy way.  Note that Matlab does
   // not define signed shifts.
 
   static T
@@ -597,7 +598,7 @@ public:
   {
 #if defined (OCTAVE_HAVE_FAST_INT_OPS)
     // The typecasts do nothing, but they are here to prevent an optimizing
-    // compiler from interfering. Also, the signed operations on small types
+    // compiler from interfering.  Also, the signed operations on small types
     // actually return int.
     T u = static_cast<UT> (x) + static_cast<UT> (y);
     T ux = u ^ x;
@@ -639,7 +640,7 @@ public:
   {
 #if defined (OCTAVE_HAVE_FAST_INT_OPS)
     // The typecasts do nothing, but they are here to prevent an optimizing
-    // compiler from interfering. Also, the signed operations on small types
+    // compiler from interfering.  Also, the signed operations on small types
     // actually return int.
     T u = static_cast<UT> (x) - static_cast<UT> (y);
     T ux = u ^ x;
@@ -675,7 +676,7 @@ public:
 #endif
   }
 
-  // Multiplication is done using promotion to wider integer type. If there is
+  // Multiplication is done using promotion to wider integer type.  If there is
   // no suitable promotion type, this operation *MUST* be specialized.
   static T mul (T x, T y) { return mul_internal (x, y); }
 
@@ -739,7 +740,7 @@ public:
     return y != 0 ? x % y : 0;
   }
 
-  // Modulus. Note the weird y = 0 case for Matlab compatibility.
+  // Modulus.  Note the weird y = 0 case for Matlab compatibility.
   static T
   mod (T x, T y)
   {
@@ -1025,7 +1026,7 @@ operator >> (std::istream& is, octave_int<T>& ival)
 // We need to specialise for char and unsigned char because
 // std::operator<< and std::operator>> are overloaded to input and
 // output the ASCII character values instead of a representation of
-// their numerical value (e.g. os << char(10) outputs a space instead
+// their numerical value (e.g., os << char(10) outputs a space instead
 // of outputting the characters '1' and '0')
 
 template <>

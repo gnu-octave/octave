@@ -77,7 +77,7 @@ octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
   octave_value retval;
   if (matrix.rows () == 1 || matrix.cols () == 1)
     {
-      // Rather odd special case. This is a row or column vector
+      // Rather odd special case.  This is a row or column vector
       // represented as a diagonal matrix with a single nonzero entry, but
       // Fdiag semantics are to product a diagonal matrix for vector
       // inputs.
@@ -503,13 +503,13 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
     error ("load: failed to load diagonal matrix constant");
 
   // This is a little tricky, as we have the Matrix type, but
-  // not ColumnVector type. We need to help the compiler get
+  // not ColumnVector type.  We need to help the compiler get
   // through the inheritance tree.
   typedef typename DMT::element_type el_type;
   matrix = DMT (MDiagArray2<el_type> (MArray<el_type> (tmp)));
   matrix.resize (r, c);
 
-  // Invalidate cache. Probably not necessary, but safe.
+  // Invalidate cache.  Probably not necessary, but safe.
   dense_cache = octave_value ();
 
   return true;

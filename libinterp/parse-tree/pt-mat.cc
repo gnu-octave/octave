@@ -637,8 +637,8 @@ tm_const::init (const tree_matrix& tm)
       else if (all_str && dv.ndims () == 2
                && this_elt_dv.ndims () == 2)
         {
-          // FIXME: this is Octave's specialty. Character matrices allow
-          // rows of unequal length.
+          // FIXME: this is Octave's specialty.
+          // Character matrices allow rows of unequal length.
           if (this_elt_nc > cols ())
             dv(1) = this_elt_nc;
           dv(0) += this_elt_nr;
@@ -1005,7 +1005,7 @@ tree_matrix::rvalue1 (int)
         {
           // The line below might seem crazy, since we take a copy of
           // the first argument, resize it to be empty and then resize
-          // it to be full. This is done since it means that there is
+          // it to be full.  This is done since it means that there is
           // no recopying of data, as would happen if we used a single
           // resize.  It should be noted that resize operation is also
           // significantly slower than the do_cat_op function, so it
@@ -1016,7 +1016,7 @@ tree_matrix::rvalue1 (int)
           //    ctmp = octave_value_typeinfo::lookup_type
           //          (tmp.begin() -> begin() -> type_name());
           //
-          // and then directly resize. However, for some types there
+          // and then directly resize.  However, for some types there
           // might be some additional setup needed, and so this should
           // be avoided.
 

@@ -440,7 +440,7 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
       if (uf)
         {
           // At this point, the method is executing, but we still need to
-          // check the context object for which the method is executing. For
+          // check the context object for which the method is executing.  For
           // methods, it's the first argument of the function; for ctors, it
           // is the first return value.
 
@@ -873,7 +873,7 @@ octave_classdef::subsref (const std::string& type,
   octave_value_list retval;
 
   // This variant of subsref is used to create temporary values when doing
-  // assignment with multi-level indexing. AFAIK this is only used for internal
+  // assignment with multi-level indexing.  AFAIK this is only used for internal
   // purpose (not sure we should even implement this) and any overload subsref
   // should not be called.
 
@@ -1690,7 +1690,7 @@ cdef_object_array::subsasgn (const std::string& type,
           if (! obj.ok ())
             obj = get_class ().construct_object (octave_value_list ());
           else
-            // Optimize the subsasgn call to come. There are 2 copies
+            // Optimize the subsasgn call to come.  There are 2 copies
             // that we can safely ignore:
             // - 1 in "array"
             // - 1 in "a"
@@ -2657,7 +2657,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
   if (b)
     {
-      // Keep track of the get/set accessor methods. They will be used
+      // Keep track of the get/set accessor methods.  They will be used
       // later on when creating properties.
 
       std::map<std::string, octave_value> get_methods;
@@ -2741,7 +2741,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
           //
           // FIXME: This is an "extension" to Matlab behavior, which only
           // looks in the @-folder containing the original classdef
-          // file. However, this is easier to implement it that way at
+          // file.  However, this is easier to implement it that way at
           // the moment.
 
           std::list<std::string> external_methods =
@@ -2776,7 +2776,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
       // Property blocks
 
       // FIXME: default property expression should be able to call static
-      //        methods of the class being constructed. A restricted CLASSNAME
+      //        methods of the class being constructed.  A restricted CLASSNAME
       //        symbol should be added to the scope before evaluating default
       //        value expressions.
 
@@ -2857,7 +2857,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                        ait != amap.end (); ++ait)
                     prop.put (ait->first, ait->second);
 
-                  // Install property access methods, if any. Remove the
+                  // Install property access methods, if any.  Remove the
                   // accessor methods from the temporary storage map, so we can
                   // detect which ones are invalid and do not correspond to a
                   // defined property.

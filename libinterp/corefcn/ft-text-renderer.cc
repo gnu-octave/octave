@@ -132,7 +132,7 @@ private:
   typedef std::pair<std::string, double> ft_key;
   typedef std::map<ft_key, FT_Face> ft_cache;
 
-  // Cache the fonts loaded by FreeType. This cache only contains
+  // Cache the fonts loaded by FreeType.  This cache only contains
   // weak references to the fonts, strong references are only present
   // in class text_renderer.
   ft_cache cache;
@@ -183,7 +183,7 @@ private:
     FT_Face retval = 0;
 
 #if defined (HAVE_FT_REFERENCE_FACE)
-    // Look first into the font cache, then use fontconfig. If the font
+    // Look first into the font cache, then use fontconfig.  If the font
     // is present in the cache, simply add a reference and return it.
 
     ft_key key (name + ":" + weight + ":" + angle, size);
@@ -276,7 +276,7 @@ private:
         else
           {
             // Install a finalizer to notify ft_manager that the font is
-            // being destroyed. The class ft_manager only keeps weak
+            // being destroyed.  The class ft_manager only keeps weak
             // references to font objects.
 
             retval->generic.data = new ft_key (key);
@@ -463,19 +463,19 @@ private:
   // Used to stored the bounding box corresponding to the rendered text.
   // The bounding box has the form [x, y, w, h] where x and y represent the
   // coordinates of the bottom left corner relative to the anchor point of
-  // the text (== start of text on the baseline). Due to font descent or
+  // the text (== start of text on the baseline).  Due to font descent or
   // multiple lines, the value y is usually negative.
   Matrix bbox;
 
-  // Used to stored the rendered text. It's a 3D matrix with size MxNx4
+  // Used to stored the rendered text.  It's a 3D matrix with size MxNx4
   // where M and N are the width and height of the bounding box.
   uint8NDArray pixels;
 
-  // Used to store the bounding box of each line. This is used to layout
+  // Used to store the bounding box of each line.  This is used to layout
   // multiline text properly.
   std::list<Matrix> line_bbox;
 
-  // The current horizontal alignment. This is used to align multi-line text.
+  // The current horizontal alignment.  This is used to align multi-line text.
   int halign;
 
   // The X offset for the next glyph.
@@ -484,8 +484,8 @@ private:
   // The Y offset of the baseline for the current line.
   int line_yoffset;
 
-  // The Y offset of the baseline for the next glyph. The offset is relative
-  // to line_yoffset. The total Y offset is computed with:
+  // The Y offset of the baseline for the next glyph.  The offset is relative
+  // to line_yoffset.  The total Y offset is computed with:
   // line_yoffset + yoffset.
   int yoffset;
 
@@ -616,7 +616,7 @@ void
 ft_text_renderer::update_line_bbox (void)
 {
   // Called after a font change, when in MODE_BBOX mode, to update the
-  // current line bbox with the new font metrics. This also includes the
+  // current line bbox with the new font metrics.  This also includes the
   // current yoffset, that is the offset of the current glyph's baseline
   // the line's baseline.
 
@@ -791,7 +791,7 @@ ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
 
                   // If we have a previous glyph, use kerning information.
                   // This usually means moving a bit backward before adding
-                  // the next glyph. That is, "delta.x" is usually < 0.
+                  // the next glyph.  That is, "delta.x" is usually < 0.
                   if (previous)
                     {
                       FT_Vector delta;
@@ -803,7 +803,7 @@ ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
                     }
 
                   // Extend current X offset box by the width of the current
-                  // glyph. Then extend the line bounding box if necessary.
+                  // glyph.  Then extend the line bounding box if necessary.
 
                   xoffset += (face->glyph->advance.x >> 6);
                   bb(2) = xmax (bb(2), xoffset);

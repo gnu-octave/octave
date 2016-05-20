@@ -44,9 +44,9 @@ along with Octave; see the file COPYING.  If not, see
 /**
  *  @brief  Gzipped file stream buffer class.
  *
- *  This class implements basic_filebuf for gzipped files. It doesn't yet
+ *  This class implements basic_filebuf for gzipped files.  It doesn't yet
  *  support seeking (allowed by zlib but slow/limited), putback and read/write
- *  access *  (tricky). Otherwise, it attempts to be a drop-in replacement for
+ *  access *  (tricky).  Otherwise, it attempts to be a drop-in replacement for
  *  the standard file streambuf.
 */
 class gzfilebuf : public std::streambuf
@@ -66,7 +66,7 @@ public:
    *  @return  Z_OK on success, Z_STREAM_ERROR otherwise.
    *
    *  Unfortunately, these parameters cannot be modified separately, as the
-   *  previous zfstream version assumed. Since the strategy is seldom changed,
+   *  previous zfstream version assumed.  Since the strategy is seldom changed,
    *  it can default and setcompression(level) then becomes like the old
    *  setcompressionlevel(level).
   */
@@ -132,7 +132,7 @@ protected:
    *  @return  First character in get area on success, EOF on error.
    *
    *  This actually reads characters from gzipped file to stream
-   *  buffer. Always buffered.
+   *  buffer.  Always buffered.
   */
   virtual int_type
   underflow ();
@@ -143,7 +143,7 @@ protected:
    *  @return  Non-EOF on success, EOF on error.
    *
    *  This actually writes characters in stream buffer to
-   *  gzipped file. With unbuffered output this is done one
+   *  gzipped file.  With unbuffered output this is done one
    *  character at a time.
   */
   virtual int_type
@@ -209,8 +209,8 @@ private:
   /**
    *  @brief  Allocate internal buffer.
    *
-   *  This function is safe to call multiple times. It will ensure
-   *  that a proper internal buffer exists if it is required. If the
+   *  This function is safe to call multiple times.  It will ensure
+   *  that a proper internal buffer exists if it is required.  If the
    *  buffer already exists or is external, the buffer pointers will be
    *  reset to their original state.
   */
@@ -220,8 +220,8 @@ private:
   /**
    *  @brief  Destroy internal buffer.
    *
-   *  This function is safe to call multiple times. It will ensure
-   *  that the internal buffer is deallocated if it exists. In any
+   *  This function is safe to call multiple times.  It will ensure
+   *  that the internal buffer is deallocated if it exists.  In any
    *  case, it will also reset the buffer pointers.
   */
   void
@@ -273,7 +273,7 @@ private:
 /**
  *  @brief  Gzipped file input stream class.
  *
- *  This class implements ifstream for gzipped files. Seeking and putback
+ *  This class implements ifstream for gzipped files.  Seeking and putback
  *  is not supported yet.
 */
 class gzifstream : public std::istream
@@ -320,10 +320,10 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::in).
    *
    *  Stream will be in state good() if file opens successfully;
-   *  otherwise in state fail(). This differs from the behavior of
+   *  otherwise in state fail().  This differs from the behavior of
    *  ifstream, which never sets the state to good() and therefore
    *  won't allow you to reuse the stream for a second file unless
-   *  you manually clear() the state. The choice is a matter of
+   *  you manually clear() the state.  The choice is a matter of
    *  convenience.
   */
   void
@@ -360,7 +360,7 @@ private:
 /**
  *  @brief  Gzipped file output stream class.
  *
- *  This class implements ofstream for gzipped files. Seeking and putback
+ *  This class implements ofstream for gzipped files.  Seeking and putback
  *  is not supported yet.
 */
 class gzofstream : public std::ostream
@@ -407,10 +407,10 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::out).
    *
    *  Stream will be in state good() if file opens successfully;
-   *  otherwise in state fail(). This differs from the behavior of
+   *  otherwise in state fail().  This differs from the behavior of
    *  ofstream, which never sets the state to good() and therefore
    *  won't allow you to reuse the stream for a second file unless
-   *  you manually clear() the state. The choice is a matter of
+   *  you manually clear() the state.  The choice is a matter of
    *  convenience.
   */
   void
@@ -447,7 +447,7 @@ private:
 /**
  *  @brief  Gzipped file output stream manipulator class.
  *
- *  This class defines a two-argument manipulator for gzofstream. It is used
+ *  This class defines a two-argument manipulator for gzofstream.  It is used
  *  as base for the setcompression(int,int) manipulator.
 */
 template <typename T1, typename T2>

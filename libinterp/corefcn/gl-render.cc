@@ -70,7 +70,7 @@ enum
 };
 
 // Win32 API requires the CALLBACK attributes for
-// GLU callback functions. Define it to empty on
+// GLU callback functions.  Define it to empty on
 // other platforms.
 #if ! defined (CALLBACK)
 #  define CALLBACK
@@ -2487,7 +2487,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
   std::string msg;
   if (props.has_bad_data (msg))
     {
-      warning ("opengl_renderer: %s. Not rendering.", msg.c_str ());
+      warning ("opengl_renderer: %s.  Not rendering.", msg.c_str ());
       return;
     }
 

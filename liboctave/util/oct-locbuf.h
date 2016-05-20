@@ -167,7 +167,7 @@ public:
 };
 
 // If the compiler supports dynamic stack arrays, we can use the
-// attached hack to place small buffer arrays on the stack. It may be
+// attached hack to place small buffer arrays on the stack.  It may be
 // even faster than our obstack-like optimization, but is dangerous
 // because stack is a very limited resource, so we disable it.
 

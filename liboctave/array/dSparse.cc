@@ -5850,7 +5850,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 
           if (rcond == 0.0)
             {
-              // Either its indefinite or singular. Try UMFPACK
+              // Either its indefinite or singular.  Try UMFPACK
               mattype.mark_as_unsymmetric ();
               typ = MatrixType::Full;
             }
@@ -6083,7 +6083,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 
           if (rcond == 0.0)
             {
-              // Either its indefinite or singular. Try UMFPACK
+              // Either its indefinite or singular.  Try UMFPACK
               mattype.mark_as_unsymmetric ();
               typ = MatrixType::Full;
             }
@@ -6342,7 +6342,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           if (rcond == 0.0)
             {
-              // Either its indefinite or singular. Try UMFPACK
+              // Either its indefinite or singular.  Try UMFPACK
               mattype.mark_as_unsymmetric ();
               typ = MatrixType::Full;
             }
@@ -6593,7 +6593,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
           if (rcond == 0.0)
             {
-              // Either its indefinite or singular. Try UMFPACK
+              // Either its indefinite or singular.  Try UMFPACK
               mattype.mark_as_unsymmetric ();
               typ = MatrixType::Full;
             }
@@ -7460,7 +7460,7 @@ SparseMatrix
 SparseMatrix::prod (int dim) const
 {
   if ((rows () == 1 && dim == -1) || dim == 1)
-    return transpose (). prod (0). transpose ();
+    return transpose ().prod (0).transpose ();
   else
     {
       SPARSE_REDUCTION_OP (SparseMatrix, double, *=,

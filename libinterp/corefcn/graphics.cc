@@ -5320,7 +5320,7 @@ axes::properties::update_camera (void)
       double af;
 
       // FIXME: was this really needed?  When compared to Matlab, it
-      // does not seem to be required. Need investigation with concrete
+      // does not seem to be required.  Need investigation with concrete
       // graphics toolkit to see results visually.
       if (false && dowarp)
         af = 1.0 / (xM > yM ? xM : yM);
@@ -6804,7 +6804,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   double hi = (lims.get ().matrix_value ())(1);
   bool is_negative = lo < 0 && hi < 0;
   double tmp;
-  // FIXME: should this be checked for somewhere else? (i.e. set{x,y,z}lim)
+  // FIXME: should this be checked for somewhere else? (i.e., set{x,y,z}lim)
   if (hi < lo)
     std::swap (hi, lo);
 
@@ -11245,7 +11245,7 @@ set to @var{value}, the function returns immediately.\n\
 \n\
 An optional timeout can be specified using the property @code{timeout}.\n\
 This timeout value is the number of seconds to wait for the condition to be\n\
-true.  @var{timeout} must be at least 1. If a smaller value is specified, a\n\
+true.  @var{timeout} must be at least 1.  If a smaller value is specified, a\n\
 warning is issued and a value of 1 is used instead.  If the timeout value is\n\
 not an integer, it is truncated towards 0.\n\
 \n\
@@ -11396,7 +11396,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
         }
     }
 
-  // FIXME: There is still a "hole" in the following loop. The code
+  // FIXME: There is still a "hole" in the following loop.  The code
   //        assumes that an object handle is unique, which is a fair
   //        assumption, except for figures.  If a figure is destroyed
   //        then recreated with the same figure ID, within the same

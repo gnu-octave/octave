@@ -238,7 +238,7 @@ function f = font_spec (opts, varargin)
     case {"eps", "eps2", "epsc", "epsc2"}
       ## Gnuplot renders fonts as half their specification, which
       ## results in a tight spacing for the axes-labels and tick-labels.
-      ## Compensate for the half scale. This will produce the proper
+      ## Compensate for the half scale.  This will produce the proper
       ## spacing for the requested fontsize.
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
         f = sprintf ('font "%s,%d"', opts.font, 2 * opts.fontsize);

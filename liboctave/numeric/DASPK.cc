@@ -483,7 +483,7 @@ DASPK::do_integrate (double tout)
   switch (istate)
     {
     case 1: // A step was successfully taken in intermediate-output
-            // mode. The code has not yet reached TOUT.
+            // mode.  The code has not yet reached TOUT.
     case 2: // The integration to TSTOP was successfully completed
             // (T=TSTOP) by stepping exactly to TSTOP.
     case 3: // The integration to TOUT was successfully completed
@@ -522,7 +522,7 @@ DASPK::do_integrate (double tout)
               // achieve convergence.
     case -33: // The code has encountered trouble from which it cannot
               // recover. A message is printed explaining the trouble
-              // and control is returned to the calling program. For
+              // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
       integration_error = true;
       break;

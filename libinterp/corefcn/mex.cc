@@ -2077,9 +2077,9 @@ public:
     return ptr;
   }
 
-  // Reallocate a pointer obtained from malloc or calloc. If the
-  // pointer is NULL, allocate using malloc.  We don't need an
-  // "unmarked" version of this.
+  // Reallocate a pointer obtained from malloc or calloc.
+  // If the pointer is NULL, allocate using malloc.
+  // We don't need an "unmarked" version of this.
   void *realloc (void *ptr, size_t n)
   {
     void *v;

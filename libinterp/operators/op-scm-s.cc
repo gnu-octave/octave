@@ -145,7 +145,7 @@ DEFCATOP (scm_s, sparse_complex_matrix, scalar)
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
   SparseComplexMatrix tmp (1, 1, v2.complex_value ());
   return octave_value
-         (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
+         (v1.sparse_complex_matrix_value ().concat (tmp, ra_idx));
 }
 
 DEFASSIGNOP (assign, sparse_complex_matrix, scalar)

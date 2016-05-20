@@ -17,9 +17,9 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This function does all the work of imfinfo. It exists here as private
+## This function does all the work of imfinfo.  It exists here as private
 ## function so that imfinfo can use other functions if imformats is
-## configured to. It is also needed so that imformats can create a
+## configured to.  It is also needed so that imformats can create a
 ## function handle for it.
 
 ## Author: Soren Hauberg <hauberg@gmail.com>

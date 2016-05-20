@@ -712,9 +712,9 @@ jit_function::argument (llvm::IRBuilderD& builder, size_t idx) const
 {
   assert (idx < args.size ());
 
-  // FIXME: We should be treating arguments like a list, not a vector. Shouldn't
-  // matter much for now, as the number of arguments shouldn't be much bigger
-  // than 4
+  // FIXME: We should be treating arguments like a list, not a vector.
+  // Shouldn't matter much for now, as the number of arguments shouldn't
+  // be much bigger than 4
   llvm::Function::arg_iterator iter = llvm_function->arg_begin ();
   if (sret ())
     ++iter;
@@ -1267,9 +1267,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   binary_ops[octave_value::op_ldiv].add_overload (fn);
   binary_ops[octave_value::op_el_ldiv].add_overload (fn);
 
-  // In general, the result of scalar ^ scalar is a complex number. We might be
-  // able to improve on this if we keep track of the range of values varaibles
-  // can take on.
+  // In general, the result of scalar ^ scalar is a complex number.  We might
+  // be able to improve on this if we keep track of the range of values
+  // variables can take on.
   fn = create_external (JIT_FN (octave_jit_pow_scalar_scalar), complex, scalar,
                         scalar);
   binary_ops[octave_value::op_pow].add_overload (fn);
@@ -2237,7 +2237,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
       Complex cv = ov.complex_value ();
 
       // We don't really represent complex values, instead we represent
-      // complex_or_scalar. If the imag value is zero, we assume a scalar.
+      // complex_or_scalar.  If the imag value is zero, we assume a scalar.
       if (cv.imag () != 0)
         return get_complex ();
     }

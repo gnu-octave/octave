@@ -91,9 +91,9 @@ symbol_table::symbol_record::symbol_record_rep::active_context (void) const
   octave_user_function *fcn = curr_fcn;
 
   // FIXME: If active_context () == -1, then it does not make much
-  // sense to use this symbol_record. This means an attempt at accessing
+  // sense to use this symbol_record.  This means an attempt at accessing
   // a variable from a function that has not been called yet is
-  // happening. This should be cleared up when an implementing closures.
+  // happening.  This should be cleared up when an implementing closures.
 
   return fcn && fcn->active_context () != static_cast<context_id> (-1)
          ? fcn->active_context () : xcurrent_context;
@@ -444,7 +444,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
   else
     {
       // Classdef constructors can be defined anywhere in the path, not
-      // necessarily in @-folders. Look for a normal function and load it.
+      // necessarily in @-folders.  Look for a normal function and load it.
       // If the loaded function is a classdef constructor, store it as such
       // and restore function_on_path to its previous value.
 
@@ -586,8 +586,8 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
 }
 
 // :-) JWE, can you parse this? Returns a 2D array with second dimension equal
-// to btyp_num_types (static constant). Only the leftmost dimension can be
-// variable in C/C++. Typedefs are boring.
+// to btyp_num_types (static constant).  Only the leftmost dimension can be
+// variable in C/C++.  Typedefs are boring.
 
 static builtin_type_t (*build_sup_table (void))[btyp_num_types]
 {
@@ -1633,7 +1633,7 @@ void symbol_table::cleanup (void)
       symbol_table *inst = iter->second;
       iter->second = 0;
 
-      // Now delete the scope. Note that there may be side effects, such as
+      // Now delete the scope.  Note that there may be side effects, such as
       // deleting other scopes.
       delete inst;
     }

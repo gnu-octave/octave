@@ -461,7 +461,7 @@ octave_map::permute (const Array<int>& vec, bool inv) const
   // FIXME:
   // There is no dim_vector::permute for technical reasons.
   // We pick the dim vector from results if possible, otherwise use a dummy
-  // array to get it. Need (?) a better solution to this problem.
+  // array to get it.  Need (?) a better solution to this problem.
   if (nf > 0)
     retval.dimensions = retval.xvals[0].dims ();
   else
@@ -829,7 +829,7 @@ octave_map::index (const idx_vector& i, bool resize_ok) const
     retval.dimensions = retval.xvals[0].dims ();
   else
     {
-      // Use dummy array. FIXME: Need(?) a better solution.
+      // Use dummy array.  FIXME: Need(?) a better solution.
       Array<char> dummy (dimensions);
       dummy = dummy.index (i, resize_ok);
       retval.dimensions = dummy.dims ();
@@ -854,7 +854,7 @@ octave_map::index (const idx_vector& i, const idx_vector& j,
     retval.dimensions = retval.xvals[0].dims ();
   else
     {
-      // Use dummy array. FIXME: Need(?) a better solution.
+      // Use dummy array.  FIXME: Need(?) a better solution.
       Array<char> dummy (dimensions);
       dummy = dummy.index (i, j, resize_ok);
       retval.dimensions = dummy.dims ();
@@ -878,7 +878,7 @@ octave_map::index (const Array<idx_vector>& ia, bool resize_ok) const
     retval.dimensions = retval.xvals[0].dims ();
   else
     {
-      // Use dummy array. FIXME: Need(?) a better solution.
+      // Use dummy array.  FIXME: Need(?) a better solution.
       Array<char> dummy (dimensions);
       dummy = dummy.index (ia, resize_ok);
       retval.dimensions = dummy.dims ();
@@ -946,7 +946,7 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
   return retval;
 }
 
-// Perhaps one day these will be optimized. Right now, they just call index.
+// Perhaps one day these will be optimized.  Right now, they just call index.
 octave_map
 octave_map::column (octave_idx_type k) const
 {
@@ -976,7 +976,7 @@ octave_map::assign (const idx_vector& i, const octave_map& rhs)
         dimensions = xvals[0].dims ();
       else
         {
-          // Use dummy array. FIXME: Need(?) a better solution.
+          // Use dummy array.  FIXME: Need(?) a better solution.
           Array<char> dummy (dimensions), rhs_dummy (rhs.dimensions);
           dummy.assign (i, rhs_dummy);;
           dimensions = dummy.dims ();
@@ -1024,7 +1024,7 @@ octave_map::assign (const idx_vector& i, const idx_vector& j,
         dimensions = xvals[0].dims ();
       else
         {
-          // Use dummy array. FIXME: Need(?) a better solution.
+          // Use dummy array.  FIXME: Need(?) a better solution.
           Array<char> dummy (dimensions), rhs_dummy (rhs.dimensions);
           dummy.assign (i, j, rhs_dummy);;
           dimensions = dummy.dims ();
@@ -1072,7 +1072,7 @@ octave_map::assign (const Array<idx_vector>& ia,
         dimensions = xvals[0].dims ();
       else
         {
-          // Use dummy array. FIXME: Need(?) a better solution.
+          // Use dummy array.  FIXME: Need(?) a better solution.
           Array<char> dummy (dimensions), rhs_dummy (rhs.dimensions);
           dummy.assign (ia, rhs_dummy);;
           dimensions = dummy.dims ();
@@ -1208,7 +1208,7 @@ octave_map::delete_elements (const idx_vector& i)
     dimensions = xvals[0].dims ();
   else
     {
-      // Use dummy array. FIXME: Need(?) a better solution.
+      // Use dummy array.  FIXME: Need(?) a better solution.
       Array<char> dummy (dimensions);
       dummy.delete_elements (i);
       dimensions = dummy.dims ();
@@ -1228,7 +1228,7 @@ octave_map::delete_elements (int dim, const idx_vector& i)
     dimensions = xvals[0].dims ();
   else
     {
-      // Use dummy array. FIXME: Need(?) a better solution.
+      // Use dummy array.  FIXME: Need(?) a better solution.
       Array<char> dummy (dimensions);
       dummy.delete_elements (dim, i);
       dimensions = dummy.dims ();
@@ -1248,7 +1248,7 @@ octave_map::delete_elements (const Array<idx_vector>& ia)
     dimensions = xvals[0].dims ();
   else
     {
-      // Use dummy array. FIXME: Need(?) a better solution.
+      // Use dummy array.  FIXME: Need(?) a better solution.
       Array<char> dummy (dimensions);
       dummy.delete_elements (ia);
       dimensions = dummy.dims ();

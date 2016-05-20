@@ -732,8 +732,8 @@ public:
   // used to prevent visiting the same node twice in the graph
   size_t visit_count (void) const { return mvisit_count; }
 
-  // check if this node has been visited yet at the given visit count. If we
-  // have not been visited yet, mark us as visited.
+  // check if this node has been visited yet at the given visit count.
+  // If we have not been visited yet, mark us as visited.
   bool visited (size_t avisit_count)
   {
     if (mvisit_count <= avisit_count)
@@ -919,7 +919,7 @@ public:
   }
 
   // variables don't get modified in an SSA, but COW requires we modify
-  // variables. An artificial assign is for when a variable gets modified. We
+  // variables.  An artificial assign is for when a variable gets modified.  We
   // need an assign in the SSA, but the reference counts shouldn't be updated.
   bool artificial (void) const { return martificial; }
 

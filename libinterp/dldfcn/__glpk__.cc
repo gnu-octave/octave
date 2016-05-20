@@ -116,7 +116,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
         }
 
       // -- Set the objective coefficient of the corresponding
-      // -- structural variable. No constant term is assumed.
+      // -- structural variable.  No constant term is assumed.
       glp_set_obj_coef(lp,i+1,c[i]);
 
       if (isMIP)
@@ -400,14 +400,14 @@ Undocumented internal function.\n\
 
     }
 
-  // 3rd Input. A column array containing the right-hand side value
-  //               for each constraint in the constraint matrix.
+  // 3rd Input.  A column array containing the right-hand side value
+  //             for each constraint in the constraint matrix.
   Matrix B = args(2).xmatrix_value ("__glpk__: invalid value of B");
 
   double *b = B.fortran_vec ();
 
-  // 4th Input. An array of length mrowsc containing the lower
-  //            bound on each of the variables.
+  // 4th Input.  An array of length mrowsc containing the lower
+  //             bound on each of the variables.
   Matrix LB = args(3).xmatrix_value ("__glpk__: invalid value of LB");
 
   if (LB.numel () < mrowsc)
@@ -428,8 +428,8 @@ Undocumented internal function.\n\
         freeLB(i) = 0;
     }
 
-  // 5th Input. An array of at least length numcols containing the upper
-  //            bound on each of the variables.
+  // 5th Input.  An array of at least length numcols containing the upper
+  //             bound on each of the variables.
   Matrix UB = args(4).xmatrix_value ("__glpk__: invalid value of UB");
 
   if (UB.numel () < mrowsc)
@@ -449,13 +449,13 @@ Undocumented internal function.\n\
         freeUB(i) = 0;
     }
 
-  // 6th Input. A column array containing the sense of each constraint
-  //            in the constraint matrix.
+  // 6th Input.  A column array containing the sense of each constraint
+  //             in the constraint matrix.
   charMatrix CTYPE = args(5).xchar_matrix_value ("__glpk__: invalid value of CTYPE");
 
   char *ctype = CTYPE.fortran_vec ();
 
-  // 7th Input. A column array containing the types of the variables.
+  // 7th Input.  A column array containing the types of the variables.
   charMatrix VTYPE = args(6).xchar_matrix_value ("__glpk__: invalid value of VARTYPE");
 
   Array<int> vartype (dim_vector (mrowsc, 1));
@@ -471,7 +471,7 @@ Undocumented internal function.\n\
         vartype(i) = GLP_CV;
     }
 
-  // 8th Input. Sense of optimization.
+  // 8th Input.  Sense of optimization.
   int sense;
   double SENSE = args(7).xscalar_value ("__glpk__: invalid value of SENSE");
 
@@ -480,7 +480,7 @@ Undocumented internal function.\n\
   else
     sense = -1;
 
-  // 9th Input. A structure containing the control parameters.
+  // 9th Input.  A structure containing the control parameters.
   octave_scalar_map PARAM = args(8).xscalar_map_value ("__glpk__: invalid value of PARAM");
 
   control_params par;

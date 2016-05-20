@@ -164,8 +164,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
   if (issparse)
 
-    ## Sparse case. Avoid linearizing the subscripts, because it could
-    ## overflow.
+    ## Sparse case.
+    ## Avoid linearizing the subscripts, because it could overflow.
 
     if (fillval != 0)
       error ("accumarray: FILLVAL must be zero in the sparse case");
@@ -191,7 +191,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     if (! (isempty (func) || func == @sum))
 
-      ## Reduce values. This is not needed if we're about to sum them,
+      ## Reduce values.  This is not needed if we're about to sum them,
       ## because "sparse" can do that.
 
       ## Sort indices.
@@ -324,7 +324,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       endif
     else
 
-      ## The general case. Reduce values.
+      ## The general case.  Reduce values.
       n = rows (subs);
       if (numel (vals) == 1)
         vals = vals(ones (1, n), 1);
@@ -340,7 +340,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
         jdx = [jdx; n];
       endif
       vals = mat2cell (vals(idx), diff ([0; jdx]));
-      ## Optimize the case when function is @(x) {x}, i.e. we just want
+      ## Optimize the case when function is @(x) {x}, i.e., we just want
       ## to collect the values to cells.
       persistent simple_cell_str = func2str (@(x) {x});
       if (! strcmp (func2str (func), simple_cell_str))

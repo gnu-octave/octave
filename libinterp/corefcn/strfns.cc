@@ -604,7 +604,7 @@ This is just the opposite of the corresponding C library function.\n\
 %!error strcmp ("foo", "bar", 3)
 */
 
-// Apparently, Matlab ignores the dims with strncmp. It also
+// Apparently, Matlab ignores the dims with strncmp.
 static bool
 strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
                   octave_idx_type n)
@@ -615,7 +615,7 @@ strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
 
-// Otherwise, just use strings. Note that we neither extract substrings (which
+// Otherwise, just use strings.  Note that we neither extract substrings (which
 // would mean a copy, at least in GCC), nor use string::compare (which is a
 // 3-way compare).
 static bool

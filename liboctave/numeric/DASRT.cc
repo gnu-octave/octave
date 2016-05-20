@@ -335,7 +335,7 @@ DASRT::integrate (double tout)
   switch (istate)
     {
     case 1: // A step was successfully taken in intermediate-output
-            // mode. The code has not yet reached TOUT.
+            // mode.  The code has not yet reached TOUT.
     case 2: // The integration to TOUT was successfully completed
             // (T=TOUT) by stepping exactly to TOUT.
     case 3: // The integration to TOUT was successfully completed
@@ -367,8 +367,8 @@ DASRT::integrate (double tout)
               // returned to the calling program.
     case -12: // DASSL failed to compute the initial YPRIME.
     case -33: // The code has encountered trouble from which it cannot
-              // recover. A message is printed explaining the trouble
-              // and control is returned to the calling program. For
+              // recover.  A message is printed explaining the trouble
+              // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
       integration_error = true;
       break;

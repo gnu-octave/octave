@@ -132,10 +132,10 @@ protected:
 
   // Rationale:
   // slice_data is a pointer to rep->data, denoting together with slice_len the
-  // actual portion of the data referenced by this Array<T> object. This allows
-  // to make shallow copies not only of a whole array, but also of contiguous
-  // subranges. Every time rep is directly manipulated, slice_data and slice_len
-  // need to be properly updated.
+  // actual portion of the data referenced by this Array<T> object.  This
+  // allows to make shallow copies not only of a whole array, but also of
+  // contiguous subranges.  Every time rep is directly manipulated, slice_data
+  // and slice_len need to be properly updated.
 
   T* slice_data;
   octave_idx_type slice_len;
@@ -243,7 +243,7 @@ public:
   void clear (octave_idx_type r, octave_idx_type c)
   { clear (dim_vector (r, c)); }
 
-  // Number of elements in the array. These are all synonyms.
+  // Number of elements in the array.  These are all synonyms.
   //@{
   //! Number of elements in the array.
   //! Synonymous with numel().
@@ -444,7 +444,7 @@ public:
   { return elem (ra_idx); }
 #endif
 
-  // Fast extractors. All of these produce shallow copies.
+  // Fast extractors.  All of these produce shallow copies.
   // Warning: none of these do check bounds, unless
   // OCTAVE_ENABLE_BOUNDS_CHECK is defined!
 
@@ -454,7 +454,7 @@ public:
   Array<T> page (octave_idx_type k) const;
 
   //! Extract a slice from this array as a column vector: A(:)(lo+1:up).
-  //! Must be 0 <= lo && up <= numel. May be up < lo.
+  //! Must be 0 <= lo && up <= numel.  May be up < lo.
   Array<T> linear_slice (octave_idx_type lo, octave_idx_type up) const;
 
   Array<T> reshape (octave_idx_type nr, octave_idx_type nc) const
@@ -577,7 +577,7 @@ public:
   void delete_elements (const Array<idx_vector>& ia);
   //@}
 
-  //! Insert an array into another at a specified position. If
+  //! Insert an array into another at a specified position.  If
   //! size (a) is [d1 d2 ... dN] and idx is [i1 i2 ... iN], this
   //! method is equivalent to x(i1:i1+d1-1, i2:i2+d2-1, ... ,
   //! iN:iN+dN-1) = a.
@@ -599,8 +599,8 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
-  //! Give a pointer to the data in mex format. Unsafe. This function
-  //! exists to support the MEX interface. You should not use it
+  //! Give a pointer to the data in mex format.  Unsafe.  This function
+  //! exists to support the MEX interface.  You should not use it
   //! anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (data ()); }
 
@@ -617,42 +617,42 @@ public:
   //! Ordering is auto-detected or can be specified.
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
-  //! @brief Do a binary lookup in a sorted array. Must not contain NaNs.
+  //! @brief Do a binary lookup in a sorted array.  Must not contain NaNs.
   //! Mode can be specified or is auto-detected by comparing 1st and last element.
   octave_idx_type lookup (const T& value, sortmode mode = UNSORTED) const;
 
   //! Ditto, but for an array of values, specializing on the case when values
-  //! are sorted. NaNs get the value N.
+  //! are sorted.  NaNs get the value N.
   Array<octave_idx_type> lookup (const Array<T>& values,
                                  sortmode mode = UNSORTED) const;
 
   //! Count nonzero elements.
   octave_idx_type nnz (void) const;
 
-  //! Find indices of (at most n) nonzero elements. If n is specified,
+  //! Find indices of (at most n) nonzero elements.  If n is specified,
   //! backward specifies search from backward.
   Array<octave_idx_type> find (octave_idx_type n = -1,
                                bool backward = false) const;
 
   //! Returns the n-th element in increasing order, using the same
-  //! ordering as used for sort. n can either be a scalar index or a
+  //! ordering as used for sort.  n can either be a scalar index or a
   //! contiguous range.
   Array<T> nth_element (const idx_vector& n, int dim = 0) const;
 
-  //! Get the kth super or subdiagonal. The zeroth diagonal is the
+  //! Get the kth super or subdiagonal.  The zeroth diagonal is the
   //! ordinary diagonal.
   Array<T> diag (octave_idx_type k = 0) const;
 
   Array<T> diag (octave_idx_type m, octave_idx_type n) const;
 
   //! Concatenation along a specified (0-based) dimension, equivalent
-  //! to cat(). dim = -1 corresponds to dim = 0 and dim = -2
+  //! to cat().  dim = -1 corresponds to dim = 0 and dim = -2
   //! corresponds to dim = 1, but apply the looser matching rules of
   //! vertcat/horzcat.
   static Array<T>
   cat (int dim, octave_idx_type n, const Array<T> *array_list);
 
-  //! Apply function fcn to each element of the Array<T>. This function
+  //! Apply function fcn to each element of the Array<T>.  This function
   //! is optimized with a manually unrolled loop.
   template <typename U, typename F>
   Array<U>
@@ -733,8 +733,8 @@ public:
   template <typename U> friend class Array;
 
   //! Returns true if this->dims () == dv, and if so, replaces this->dimensions
-  //! by a shallow copy of dv. This is useful for maintaining several arrays with
-  //! supposedly equal dimensions (e.g. structs in the interpreter).
+  //! by a shallow copy of dv.  This is useful for maintaining several arrays
+  //! with supposedly equal dimensions (e.g. structs in the interpreter).
   bool optimize_dimensions (const dim_vector& dv);
 
   //@{
@@ -755,7 +755,7 @@ private:
 
 //! This is a simple wrapper template that will subclass an Array<T>
 //! type or any later type derived from it and override the default
-//! non-const operator() to not check for the array's uniqueness. It
+//! non-const operator() to not check for the array's uniqueness.  It
 //! is, however, the user's responsibility to ensure the array is
 //! actually unaliased whenever elements are accessed.
 template <typename ArrayClass>

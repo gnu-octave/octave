@@ -54,7 +54,7 @@ function I = ind2gray (x, map)
   ## will produce output of the same type as the input.
   cls = class (x);
   if (isinteger (x))
-    ## if we later add support for int16 images, this will not work. Look into
+    ## if we later add support for int16 images, this will not work.  Look into
     ## im2int16 from image package for such case
     map *= intmax (cls);
   elseif (strcmp (cls, "single"))

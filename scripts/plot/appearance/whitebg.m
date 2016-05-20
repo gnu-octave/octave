@@ -70,8 +70,8 @@ function whitebg (varargin)
 
   axes = findall (fig, "type", "axes");
   if (isnan (color))
-    ## Root figure. Set the default axes and figure properties so that
-    ## subsequent plots have the new color scheme
+    ## Root figure.  Set the default axes and figure properties so that
+    ## subsequent plots have the new color scheme.
     if (isroot)
       fac = get (0, "factory");
       fields = fieldnames (fac);

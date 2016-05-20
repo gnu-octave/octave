@@ -177,7 +177,7 @@ protected:
   // Whether the function is overloaded at all.
   bool has_overloads;
 
-  // Overloads for builtin types. We use array to make lookup faster.
+  // Overloads for builtin types.  We use array to make lookup faster.
   octave_value builtin_overloads[btyp_num_types];
 
   // Overloads for other classes.

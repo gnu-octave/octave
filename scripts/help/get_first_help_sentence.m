@@ -92,7 +92,7 @@ function [text, status] = first_sentence_plain_text (help_text, max_len)
 endfunction
 
 ## This function extracts the first sentence from a Texinfo help text.
-## The function works by removing @def* from the texinfo text. After this, we
+## The function works by removing @def* from the texinfo text.  After this, we
 ## render the text to plain text using makeinfo, and then extract the first
 ## line.
 function [text, status] = first_sentence_texinfo (help_text, max_len)
@@ -100,7 +100,7 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
 
-  ## Find, and remove, lines that start with @def. This should remove things
+  ## Find, and remove, lines that start with @def.  This should remove things
   ## such as @deftypefn, @deftypefnx, @defvar, etc.
   keep = true (size (help_text));
   def_idx = strfind (help_text, "@def");

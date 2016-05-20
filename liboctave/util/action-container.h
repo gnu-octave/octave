@@ -37,7 +37,7 @@ action_container
 {
 public:
 
-  // A generic unwind_protect element. Knows how to run itself and
+  // A generic unwind_protect element.  Knows how to run itself and
   // discard itself.  Also, contains a pointer to the next element.
   class elem
   {

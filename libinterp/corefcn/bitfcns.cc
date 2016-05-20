@@ -110,7 +110,7 @@ bitopxx (const OP& op, const std::string& fname,
 }
 
 // Trampoline function, instantiates the proper template above, with
-// reflective information hardwired. We can't hardwire this information
+// reflective information hardwired.  We can't hardwire this information
 // in Fbitxxx DEFUNs below, because at that moment, we still don't have
 // information about which integer types we need to instantiate.
 template <typename T>

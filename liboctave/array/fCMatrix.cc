@@ -1169,7 +1169,7 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
   else
     {
       FloatComplexMatrix Ur = U.extract (0, 0, nr-1, r);
-      FloatDiagMatrix D = FloatDiagMatrix (sigma.extract (0, r)) . inverse ();
+      FloatDiagMatrix D = FloatDiagMatrix (sigma.extract (0, r)).inverse ();
       FloatComplexMatrix Vr = V.extract (0, 0, nc-1, r);
       retval = Vr * D * Ur.hermitian ();
     }

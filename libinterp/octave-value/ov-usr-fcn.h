@@ -317,7 +317,7 @@ public:
   }
 
   // If we are a special expression, then the function body consists of exactly
-  // one expression. The expression's result is the return value of the
+  // one expression.  The expression's result is the return value of the
   // function.
   bool is_special_expr (void) const
   {
@@ -386,7 +386,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
-  // body. May be null (even if is_special_expr is true).
+  // body.  May be null (even if is_special_expr is true).
   tree_expression *special_expr (void);
 
   bool subsasgn_optimization_ok (void);

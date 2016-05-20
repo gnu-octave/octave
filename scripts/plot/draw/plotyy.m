@@ -181,7 +181,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   elseif (ishandle (ax(1)))
     set (ax(1), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen. File a bug report.");
+    error ("plotyy.m: This shouldn't happen.  File a bug report.");
   endif
   if (ishandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(2), "data");
@@ -189,7 +189,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   elseif (ishandle (ax(2)))
     set (ax(2), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen. File a bug report.");
+    error ("plotyy.m: This shouldn't happen.  File a bug report.");
   endif
 endfunction
 

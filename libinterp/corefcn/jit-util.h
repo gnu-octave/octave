@@ -103,8 +103,8 @@ template <typename HOLDER_T, typename SUB_T>
 class jit_internal_node;
 
 // jit_internal_list and jit_internal_node implement generic embedded doubly
-// linked lists. List items extend from jit_internal_list, and can be placed
-// in nodes of type jit_internal_node. We use CRTP twice.
+// linked lists.  List items extend from jit_internal_list, and can be placed
+// in nodes of type jit_internal_node.  We use CRTP twice.
 template <typename LIST_T, typename NODE_T>
 class
 jit_internal_list

@@ -89,7 +89,7 @@ octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
 
 #else
 
-      /* FIXME: This will only work for MacOS > 10.5. For earlier versions
+      /* FIXME: This will only work for MacOS > 10.5.  For earlier versions
          this code is not needed (use CGDisplayBitsPerPixel instead).  */
 
       CGDisplayModeRef mode = CGDisplayCopyDisplayMode (display);

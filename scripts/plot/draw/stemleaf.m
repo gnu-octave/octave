@@ -2,22 +2,19 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public
-## License as published by the Free Software Foundation;
-## either version 3 of the License, or (at your option) any
-## later version.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied
-## warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-## PURPOSE. See the GNU General Public License for more
-## details.
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
-## You should have received a copy of the GNU General Public
-## License along with Octave; see the file COPYING. If not,
-## see <http://www.gnu.org/licenses/>.
-
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} stemleaf (@var{x}, @var{caption})
@@ -115,7 +112,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   ##
   ## Note that the code has some added complexity due to the need to
   ## distinguish both + and - 0 stems.  The +- stem values are essential
-  ## for all plots which span 0. After dealing with +-0 stems, the added
+  ## for all plots which span 0.  After dealing with +-0 stems, the added
   ## complexity of putting +- data values in the correct stem is minor,
   ## but the sign of 0 leaves must be checked.  And, the cases where the
   ## stems start or end at +- 0 must also be considered.
@@ -166,7 +163,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
     endif
   endif
 
-  ## Note that IEEE 754 states that -+ 0 should compare equal. This has
+  ## Note that IEEE 754 states that -+ 0 should compare equal.  This has
   ## led to C sort (and therefore Octave) treating them as equal.  Thus,
   ## sort([-1 0 -0 1]) yields [-1 0 -0 1], and sort([-1 -0 0 1])
   ## yields: [-1 -0 0 1].  This means that stem-and-leaf plotting cannot

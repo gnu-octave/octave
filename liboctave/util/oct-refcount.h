@@ -57,7 +57,7 @@ public:
 
   octave_refcount(count_type initial_count) : count(initial_count) { }
 
-  // Increment/Decrement. int is postfix.
+  // Increment/Decrement.  int is postfix.
   count_type operator++(void)
   {
     return OCTREFCOUNT_ATOMIC_INCREMENT (&count);

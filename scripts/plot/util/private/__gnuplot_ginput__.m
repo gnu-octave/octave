@@ -77,7 +77,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
       k += 1;
 
       ## Notes: MOUSE_* can be undefined if user closes gnuplot by "q"
-      ## or Alt-F4. Further, this abrupt close also requires the leading
+      ## or Alt-F4.  Further, this abrupt close also requires the leading
       ## "\n" on the next line.
       if (use_mkfifo)
         fprintf (ostream, "set print \"%s\";\n", gpin_name);

@@ -569,8 +569,8 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
             (e.err_id (), msg.c_str ());
         }
     }
-  // idxa known to be valid. Shouldn't need to catch index_exception below here.
-
+  // idxa known to be valid.
+  // Shouldn't need to catch index_exception below here.
 
   if (len == 1)
     retval = idxa(0);

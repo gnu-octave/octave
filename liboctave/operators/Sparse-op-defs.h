@@ -1785,7 +1785,7 @@ along with Octave; see the file COPYING.  If not, see
           /* The optimal break-point as estimated from simulations */ \
           /* Note that Mergesort is O(nz log(nz)) while searching all */ \
           /* values is O(nr), where nz here is nonzero per row of */ \
-          /* length nr. The test itself was then derived from the */ \
+          /* length nr.  The test itself was then derived from the */ \
           /* simulation with random square matrices and the observation */ \
           /* of the number of nonzero elements in the output matrix */ \
           /* it was found that the breakpoints were */ \

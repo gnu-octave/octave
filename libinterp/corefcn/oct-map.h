@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class string_vector;
 
-// A class holding a map field->index. Supports reference-counting.
+// A class holding a map field->index.  Supports reference-counting.
 class OCTINTERP_API
 octave_fields
 {
@@ -115,15 +115,15 @@ public:
   // check whether a field exists.
   bool isfield (const std::string& name) const;
 
-  // get index of field. return -1 if not exist
+  // get index of field.  return -1 if not exist
   octave_idx_type getfield (const std::string& name) const;
-  // get index of field. add if not exist
+  // get index of field.  add if not exist
   octave_idx_type getfield (const std::string& name);
   // remove field and return the index. -1 if didn't exist.
   octave_idx_type rmfield (const std::string& name);
 
-  // order the fields of this map. creates a permutation
-  // used to order the fields.
+  // order the fields of this map.
+  // creates a permutation used to order the fields.
   void orderfields (Array<octave_idx_type>& perm);
 
   // compares two instances for equality up to order of fields.
@@ -172,8 +172,9 @@ public:
     return *this;
   }
 
-  // iteration support. note that both const and non-const iterators are the
-  // same. The const/non-const distinction is made by the key & contents method.
+  // iteration support.
+  // note that both const and non-const iterators are the same.
+  // The const/non-const distinction is made by the key & contents method.
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
@@ -215,15 +216,15 @@ public:
   string_vector keys (void) const
   { return fieldnames (); }
 
-  // get contents of a given field. empty value if not exist.
+  // get contents of a given field.  empty value if not exist.
   octave_value getfield (const std::string& key) const;
 
-  // set contents of a given field. add if not exist.
+  // set contents of a given field.  add if not exist.
   void setfield (const std::string& key, const octave_value& val);
   void assign (const std::string& k, const octave_value& val)
   { setfield (k, val); }
 
-  // remove a given field. do nothing if not exist.
+  // remove a given field.  do nothing if not exist.
   void rmfield (const std::string& key);
   void del (const std::string& k) { rmfield (k); }
 
@@ -294,8 +295,9 @@ public:
     return *this;
   }
 
-  // iteration support. note that both const and non-const iterators are the
-  // same. The const/non-const distinction is made by the key & contents method.
+  // iteration support.
+  // note that both const and non-const iterators are the same.
+  // The const/non-const distinction is made by the key & contents method.
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
@@ -337,10 +339,10 @@ public:
   string_vector keys (void) const
   { return fieldnames (); }
 
-  // get contents of a given field. empty value if not exist.
+  // get contents of a given field.  empty value if not exist.
   Cell getfield (const std::string& key) const;
 
-  // set contents of a given field. add if not exist. checks for
+  // set contents of a given field.  add if not exist.  checks for
   // correct dimensions.
   void setfield (const std::string& key, const Cell& val);
   void assign (const std::string& k, const Cell& val)

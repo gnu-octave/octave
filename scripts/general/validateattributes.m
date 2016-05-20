@@ -9,7 +9,7 @@
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
@@ -169,6 +169,7 @@
 ## @end deftypefn
 
 function validateattributes (A, cls, attr, varargin)
+
   if (nargin < 3 || nargin > 6)
     print_usage ();
   elseif (! iscellstr (cls))
@@ -228,16 +229,16 @@ function validateattributes (A, cls, attr, varargin)
   endif
 
   ## We use a while loop because some attributes require the following value
-  ## in the cell array. Also, we can't just get the boolean value for the
+  ## in the cell array.  Also, we can't just get the boolean value for the
   ## test and check at the end the error message since some of the tests
   ## require some more complex error message.
 
   ## It may look like that we don't perform enough input check in this
   ## function (e.g., we don't check if there's a value after the size
-  ## attribute). The reasoning is that this will be a function mostly used
+  ## attribute).  The reasoning is that this will be a function mostly used
   ## by developers with fairly static input so any problem would be caught
-  ## immediately during that functino development, it's no dependent on the
-  ## final user input. In addition, it can be called so many times at the
+  ## immediately during that function development, it's no dependent on the
+  ## final user input.  In addition, it can be called so many times at the
   ## start of every function, we want it to run specially fast.
   idx = 1;
   problem = false; # becomes true when one of the tests fails
@@ -302,7 +303,7 @@ function validateattributes (A, cls, attr, varargin)
         endif
       case "ndims",
         ## Note that a [4 5 1] matrix is not considered to have ndims == 3
-        ## but is ok for "3d". This is not a bug.
+        ## but is ok for "3d".  This is not a bug.
         if (ndims (A) != attr{idx++})
           error ("%s must have %d dimensions", err_ini, attr{idx-1});
         endif

@@ -87,9 +87,9 @@ function h = feather (varargin)
     endif
   endif
 
-  ## Matlab draws feather plots, with the arrow head as one continous
-  ## line, and each arrow separately. This is completely different from
-  ## quiver and quite ugly.
+  ## Matlab draws feather plots, with the arrow head as one continuous line,
+  ## and each arrow separately.  This is completely different from quiver and
+  ## quite ugly.
   n = length (u);
   xend = [1 : n] + u;
   xtmp = [1 : n] + u .* (1 - arrowsize);

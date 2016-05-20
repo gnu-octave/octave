@@ -426,7 +426,7 @@ public:
   /*!
      The following function will throw a std::bad_alloc ()
      exception if the requested size is larger than can be indexed by
-     octave_idx_type. This may be smaller than the actual amount of
+     octave_idx_type.  This may be smaller than the actual amount of
      memory that can be safely allocated on a system.  However, if we
      don't fail here, we can end up with a mysterious crash inside a
      function that is iterating over an array using octave_idx_type

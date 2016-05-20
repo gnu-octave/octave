@@ -136,8 +136,8 @@ function [p, s, mu] = polyfit (x, y, n)
 
     ## r.'*r is positive definite if X(:, polymask) is of full rank.
     ## Invert it by cholinv to avoid taking the square root of squared
-    ## quantities. If cholinv fails, then X(:, polymask) is rank
-    ## deficient and not invertible.
+    ## quantities.  If cholinv fails, then X(:, polymask) is rank deficient
+    ## and not invertible.
     try
       C = cholinv (r.'*r)(k, k);
     catch
@@ -170,7 +170,7 @@ endfunction
 %!fail ("polyfit (x, x.^2+x+1)")
 %!fail ("polyfit (x, x.^2+x+1, [])")
 
-## Test difficult case where scaling is really needed. This example
+## Test difficult case where scaling is really needed.  This example
 ## demonstrates the rather poor result which occurs when the dependent
 ## variable is not normalized properly.
 ## Also check the usage of 2nd & 3rd output arguments.

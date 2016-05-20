@@ -90,8 +90,8 @@ tree_funcall::rvalue (int nargout)
 
   if (retval.length () == 1 && retval(0).is_function ())
     {
-      // The return object is a function. We may need to re-index it using the
-      // same logic as for identifier. This is primarily used for superclass
+      // The return object is a function.  We may need to re-index it using the
+      // same logic as for identifier.  This is primarily used for superclass
       // references in classdef.
 
       octave_value val = retval(0);

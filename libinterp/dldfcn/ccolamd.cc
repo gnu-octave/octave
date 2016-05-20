@@ -226,7 +226,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
     {
       if (args(0).is_complex_type ())
         {
-          scm = args(0). sparse_complex_matrix_value ();
+          scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
           n_col = scm.cols ();
           nnz = scm.nnz ();
@@ -373,7 +373,7 @@ If nonzero, statistics and knobs are printed.\n\
 \n\
 @end table\n\
 \n\
-@var{cmember} is an optional vector of length n. It defines the constraints\n\
+@var{cmember} is an optional vector of length n.  It defines the constraints\n\
 on the ordering.  If @code{@var{cmember}(j) = @var{S}}, then row/column j is\n\
 in constraint set @var{c} (@var{c} must be in the range 1 to n).  In the\n\
 output permutation @var{p}, rows/columns in set 1 appear first, followed\n\

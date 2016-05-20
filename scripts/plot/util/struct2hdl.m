@@ -257,8 +257,8 @@ function [h, sout] = createaxes (s, p, par)
       legend ("hide");
     endif
 
-    ## remove all properties such as "textposition" that redefines
-    ## the entire legend. Also remove chidren
+    ## remove all properties such as "textposition" that redefine
+    ## the entire legend.  Also remove chidren.
     s.properties = rmfield (s.properties, ...
                               {"userdata", "xlabel",...
                                "ylabel", "zlabel", "location", ...
@@ -542,7 +542,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
                               {"xdata", "ydata", ...
                                "xdatasource", "ydatasource"});
   else
-    warning ("struct2hdl: could not infer the hggroup type. Will build objects but listener/callback functions will be lost");
+    warning ("struct2hdl: could not infer the hggroup type.  Will build objects but listener/callback functions will be lost");
     h = hggroup ("parent", par);
     addmissingprops (h, s.properties);
     s.special = [];           # children will be treated as normal children
@@ -565,7 +565,7 @@ function setprops (s, h, p, hilev)
       set (h, s.properties);
     else
       ## Specials are objects that where automatically constructed with
-      ## current object. Among them are "x(yz)labels", "title", high
+      ## current object.  Among them are "x(yz)labels", "title", high
       ## level hggroup children
       fields = fieldnames (s.properties);
       vals = struct2cell (s.properties);

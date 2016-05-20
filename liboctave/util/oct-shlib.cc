@@ -169,7 +169,7 @@ namespace octave
 
     // FIXME: this is possibly redundant because failure to open a library will
     // normally throw an exception, avoiding the construction of an invalid
-    // library. Leave it here for possible future use.
+  // library.  Leave it here for possible future use.
 
     bool is_open (void) const { return (library != 0); }
 

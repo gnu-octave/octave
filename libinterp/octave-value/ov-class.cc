@@ -203,7 +203,7 @@ octave_class::unique_clone (void)
 {
   if (count == obsolete_copies)
     {
-      // All remaining copies are obsolete. We don't actually need to clone.
+      // All remaining copies are obsolete.  We don't actually need to clone.
       count++;
       return this;
     }
@@ -539,7 +539,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           args(1) = make_idx_args (type, idx, "subsasgn");
           args(0) = obj;
 
-          // Now comes the magic. Count copies with me:
+          // Now comes the magic.  Count copies with me:
           // 1. myself (obsolete)
           // 2. the copy inside args (obsolete)
           // 3. the copy in method's symbol table (working)
@@ -549,7 +549,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           // But prior to doing that, check whether the routine is amenable
           // to the optimization.
           // It is essential that the handling function doesn't store extra
-          // copies anywhere. If it does, things will not break but the
+          // copies anywhere.  If it does, things will not break but the
           // optimization won't work.
 
           octave_value_list tmp;

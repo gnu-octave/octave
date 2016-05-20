@@ -125,10 +125,10 @@ namespace jit_convention
   };
 }
 
-// Used to keep track of estimated (infered) types during JIT. This is a
+// Used to keep track of estimated (infered) types during JIT.  This is a
 // hierarchical type system which includes both concrete and abstract types.
 //
-// The types form a lattice. Currently we only allow for one parent type, but
+// The types form a lattice.  Currently we only allow for one parent type, but
 // eventually we may allow for multiple predecessors.
 class
 jit_type
@@ -162,7 +162,7 @@ public:
 
   // A function declared like: mytype foo (int arg0, int arg1);
   // Will be converted to: void foo (mytype *retval, int arg0, int arg1)
-  // if mytype is sret. The caller is responsible for allocating space for
+  // if mytype is sret.  The caller is responsible for allocating space for
   // retval. (on the stack)
   bool sret (jit_convention::type cc) const { return msret[cc]; }
 
@@ -177,7 +177,7 @@ public:
   void mark_pointer_arg (jit_convention::type cc)
   { mpointer_arg[cc] = true; }
 
-  // Convert into an equivalent form before calling. For example, complex is
+  // Convert into an equivalent form before calling.  For example, complex is
   // represented as two values llvm vector, but we need to pass it as a two
   // valued llvm structure to C functions.
   convert_fn pack (jit_convention::type cc) { return mpack[cc]; }
@@ -232,14 +232,14 @@ public:
                 const llvm::Twine& aname, jit_type *aresult,
                 const std::vector<jit_type *>& aargs);
 
-  // Use an existing function, but change the argument types. The new argument
+  // Use an existing function, but change the argument types.  The new argument
   // types must behave the same for the current calling convention.
   jit_function (const jit_function& fn, jit_type *aresult,
                 const std::vector<jit_type *>& aargs);
 
   jit_function (const jit_function& fn);
 
-  // erase the interal LLVM function (if it exists). Will become invalid.
+  // erase the interal LLVM function (if it exists).  Will become invalid.
   void erase (void);
 
   template <typename T>

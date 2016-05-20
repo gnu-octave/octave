@@ -84,11 +84,11 @@ regexp::compile_internal (void)
                || pattern.at (new_pos + 3) == '!'))
         {
           // The syntax of named tokens in pcre is "(?P<name>...)" while
-          // we need a syntax "(?<name>...)", so fix that here. Also an
+          // we need a syntax "(?<name>...)", so fix that here.  Also an
           // expression like
           // "(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)"
           // should be perfectly legal, while pcre does not allow the same
-          // named token name on both sides of the alternative. Also fix
+          // named token name on both sides of the alternative.  Also fix
           // that here by replacing name tokens by dummy names, and dealing
           // with the dummy names later.
 
@@ -138,7 +138,7 @@ regexp::compile_internal (void)
           // Find lookbehind operators of arbitrary length (ie like
           // "(?<=[a-z]*)") and replace with a maximum length operator
           // as PCRE can not yet handle arbitrary length lookahead
-          // operators. Use the string length as the maximum length to
+          // operators.  Use the string length as the maximum length to
           // avoid issues.
 
           int brackets = 1;

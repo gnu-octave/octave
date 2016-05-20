@@ -110,7 +110,7 @@ function imwrite (varargin)
       error ("imwrite: no extension found for %s to identify the image format",
              filename);
     endif
-    warning ("imwrite: unlisted image format %s (see imformats). Trying to save anyway.",
+    warning ("imwrite: unlisted image format %s (see imformats).  Trying to save anyway.",
              ext);
     __imwrite__ (varargin{:});
   else

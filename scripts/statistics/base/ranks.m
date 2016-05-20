@@ -29,8 +29,8 @@
 ## Description: Compute ranks
 
 ## This code was rather ugly, since it didn't use sort due to the
-## fact of how to deal with ties. Now it does use sort and its
-## even uglier!!! At least it handles NDArrays..
+## fact of how to deal with ties.  Now it does use sort and its
+## even uglier!  At least it handles NDArrays.
 
 function y = ranks (x, dim)
 

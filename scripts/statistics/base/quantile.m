@@ -340,7 +340,7 @@ endfunction
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
 ## The optional input, @var{method}, refers to nine methods available in R
-## (http://www.r-project.org/). The default is @var{method} = 7.
+## (http://www.r-project.org/).  The default is @var{method} = 7.
 ## @seealso{prctile, quantile, statistics}
 
 ## Author: Ben Abbott <bpabbott@mac.com>

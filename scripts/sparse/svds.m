@@ -171,7 +171,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       ## As we are only interested in the positive eigenvalues, we have to
       ## double k and then throw out the k negative eigenvalues.
       ## Separately, if sigma is nonzero, but smaller than the smallest
-      ## singular value, ARPACK may not return k eigenvalues. However, as
+      ## singular value, ARPACK may not return k eigenvalues.  However, as
       ## computation scales with k we'd like to avoid doubling k for all
       ## scalar values of sigma.
       b_k = 2 * k;
@@ -193,10 +193,10 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       norma = normest (A);
     endif
     ## We wish to exclude all eigenvalues that are less than zero as these
-    ## are artifacts of the way the matrix passed to eigs is formed. There
+    ## are artifacts of the way the matrix passed to eigs is formed.  There
     ## is also the possibility that the value of sigma chosen is exactly
     ## a singular value, and in that case we're dead!! So have to rely on
-    ## the warning from eigs. We exclude the singular values which are
+    ## the warning from eigs.  We exclude the singular values which are
     ## less than or equal to zero to within some tolerance scaled by the
     ## norm since if we don't we might end up with too many singular
     ## values.

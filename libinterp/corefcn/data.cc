@@ -2080,7 +2080,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
 
           // The lines below might seem crazy, since we take a copy
           // of the first argument, resize it to be empty and then resize
-          // it to be full. This is done since it means that there is no
+          // it to be full.  This is done since it means that there is no
           // recopying of data, as would happen if we used a single resize.
           // It should be noted that resize operation is also significantly
           // slower than the do_cat_op function, so it makes sense to have
@@ -2089,7 +2089,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           // We might also start with a empty octave_value using
           //   tmp = octave_value_typeinfo::lookup_type
           //                                (args(1).type_name());
-          // and then directly resize. However, for some types there might
+          // and then directly resize.  However, for some types there might
           // be some additional setup needed, and so this should be avoided.
 
           octave_value tmp = args(0);
@@ -7497,7 +7497,7 @@ do_diff (const octave_value& array, octave_idx_type order,
     {
       dim = array.dims ().first_non_singleton ();
 
-      // Bother Matlab. This behavior is really wicked.
+      // Bother Matlab.  This behavior is really wicked.
       if (dv(dim) <= order)
         {
           if (dv(dim) == 1)

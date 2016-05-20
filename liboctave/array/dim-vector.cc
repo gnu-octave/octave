@@ -36,7 +36,7 @@ dim_vector::nil_rep (void)
   return zv.rep;
 }
 
-// The maximum allowed value for a dimension extent. This will normally be a
+// The maximum allowed value for a dimension extent.  This will normally be a
 // tiny bit off the maximum value of octave_idx_type.
 // Currently 1 is subtracted to allow safe conversion of any 2D Array into
 // Sparse, but this offset may change in the future.
@@ -170,7 +170,7 @@ dim_vector::squeeze (void) const
   return new_dims;
 }
 
-// This is the rule for cat(). cat (dim, A, B) works if one
+// This is the rule for cat().  cat (dim, A, B) works if one
 // of the following holds, in this order:
 //
 // 1. size (A, k) == size (B, k) for all k != dim.
@@ -217,8 +217,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
     rep[dim] += (dim < ndb ? dvb(dim) : 1);
   else
     {
-      // Dimensions don't match. The only allowed fix is
-      // to omit 0x0.
+      // Dimensions don't match.  The only allowed fix is to omit 0x0.
       if (ndb == 2 && dvb(0) == 0 && dvb(1) == 0)
         match = true;
       else if (orig_nd == 2 && rep[0] == 0 && rep[1] == 0)

@@ -427,7 +427,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
 
                       output_buf
                         << std::setiosflags (std::ios::left)
-                        << std::setw (16) << tc.type_name () . c_str ()
+                        << std::setw (16) << tc.type_name ().c_str ()
                         << std::setiosflags (std::ios::right)
                         << std::setw (7) << tc.rows ()
                         << std::setw (7) << tc.columns ()

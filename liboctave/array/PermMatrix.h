@@ -102,7 +102,7 @@ public:
   PermMatrix transpose (void) const;
   PermMatrix inverse (void) const;
 
-  // Determinant, i.e. the sign of permutation.
+  // Determinant, i.e., the sign of permutation.
   octave_idx_type determinant (void) const;
 
   // Efficient integer power of a permutation.

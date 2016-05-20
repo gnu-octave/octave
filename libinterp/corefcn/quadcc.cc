@@ -1396,7 +1396,7 @@ static const double Tright[33 * 33] =
 
 // Allocates a workspace for the given maximum number of intervals.
 // Note that if the workspace gets filled, the intervals with the lowest
-// error estimates are dropped. The maximum number of intervals is
+// error estimates are dropped.  The maximum number of intervals is
 // therefore not the maximum number of intervals that will be computed,
 // but merely the size of the buffer.
 

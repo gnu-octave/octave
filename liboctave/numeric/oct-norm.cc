@@ -62,7 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Theory: norm accumulator is an object that has an accum method able
 // to handle both real and complex element, and a cast operator
-// returning the intermediate norm. Reference: Higham, N. "Estimating
+// returning the intermediate norm.  Reference: Higham, N. "Estimating
 // the Matrix p-Norm." Numer. Math. 62, 539-555, 1992.
 
 // norm accumulator for the p-norm
@@ -324,9 +324,9 @@ DEFINE_DISPATCHER (row_norms, MArray<T>, MArray<R>)
 DEFINE_DISPATCHER (column_norms, MSparse<T>, MArray<R>)
 DEFINE_DISPATCHER (row_norms, MSparse<T>, MArray<R>)
 
-// The approximate subproblem in Higham's method. Find lambda and mu such that
+// The approximate subproblem in Higham's method.  Find lambda and mu such that
 // norm ([lambda, mu], p) == 1 and norm (y*lambda + col*mu, p) is maximized.
-// Real version. As in Higham's paper.
+// Real version.  As in Higham's paper.
 template <typename ColVectorT, typename R>
 static void
 higham_subp (const ColVectorT& y, const ColVectorT& col,
@@ -352,9 +352,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
     }
 }
 
-// Complex version. Higham's paper does not deal with complex case, so we use a
-// simple extension. First, guess the magnitudes as in real version, then try
-// to rotate lambda to improve further.
+// Complex version.  Higham's paper does not deal with complex case, so we use
+// a simple extension.  First, guess the magnitudes as in real version, then
+// try to rotate lambda to improve further.
 template <typename ColVectorT, typename R>
 static void
 higham_subp (const ColVectorT& y, const ColVectorT& col,
@@ -407,7 +407,7 @@ inline T elem_dual_p (T x, R p)
 }
 
 // the VectorT is used for vectors, but actually it has to be
-// a Matrix type to allow all the operations. For instance SparseMatrix
+// a Matrix type to allow all the operations.  For instance SparseMatrix
 // does not support multiplication with column/row vectors.
 // the dual vector
 template <typename VectorT, typename R>

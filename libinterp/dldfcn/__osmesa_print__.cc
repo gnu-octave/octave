@@ -188,7 +188,7 @@ instead.\n\
 
       // Remove alpha channel
       idx(2) = idx_vector (0, 3);
-      retval = octave_value (img.permute (perm). index(idx));
+      retval = octave_value (img.permute (perm).index(idx));
     }
 
   OSMesaDestroyContext (ctx);

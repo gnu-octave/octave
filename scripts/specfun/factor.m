@@ -64,7 +64,7 @@ function [pf, n] = factor (q)
   ## There is at most one prime greater than sqrt(q), and if it exists,
   ## it has multiplicity 1, so no need to consider any factors greater
   ## than sqrt(q) directly.  [If there were two factors p1, p2 > sqrt(q),
-  ## then q >= p1*p2 > sqrt(q)*sqrt(q) == q. Contradiction.]
+  ## then q >= p1*p2 > sqrt(q)*sqrt(q) == q.  Contradiction.]
   p = primes (sqrt (q));
   while (q > 1)
     ## Find prime factors in remaining q.

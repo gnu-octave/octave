@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 Code stolen in large part from Python's, listobject.c, which itself had
-no license header. However, thanks to Tim Peters for the parts of the
+no license header.  However, thanks to Tim Peters for the parts of the
 code I ripped-off.
 
 As required in the Python license the short description of the changes
@@ -31,7 +31,7 @@ made are
   replacing PyObject* with the type of the class T.
 
 * replaced usages of malloc, free, memcpy and memmove by standard C++
-  new [], delete [] and std::copy and std::copy_backward. Note that replacing
+  new [], delete [] and std::copy and std::copy_backward.  Note that replacing
   memmove by std::copy is possible if the destination starts before the source.
   If not, std::copy_backward needs to be used.
 
@@ -46,7 +46,7 @@ made are
 * binary lookup and sequential binary lookup optimized for dense downsampling.
 
 * NOTE: the memory management routines rely on the fact that delete [] silently
-  ignores null pointers. Don't gripe about the missing checks - they're there.
+  ignores null pointers.  Don't gripe about the missing checks - they're there.
 
 
 The Python license is

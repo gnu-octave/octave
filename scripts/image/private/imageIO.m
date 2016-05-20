@@ -34,7 +34,7 @@
 ## fieldname - Name of the field in the struct returned by imformats that
 ##             has the function to use.
 ## filename  - Most likely the first input argument from the function that
-##             called this. May be missing the file extension which can be
+##             called this.  May be missing the file extension which can be
 ##             on varargin.
 ## varargin  - Followed by all the OTHER arguments passed to imread and
 ##             imfinfo.

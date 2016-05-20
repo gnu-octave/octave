@@ -2233,8 +2233,8 @@ public:
   { return rep->initialize (h); }
 
   // Notifies graphics toolkit that object was destroyed.
-  // This is called only for explicitly deleted object. Children are
-  // deleted implicitly and graphics toolkit isn't notified.
+  // This is called only for explicitly deleted object.
+  // Children are deleted implicitly and graphics toolkit isn't notified.
   void finalize (const graphics_object& go)
   { rep->finalize (go); }
 
@@ -4984,7 +4984,7 @@ public:
     {
       warning_with_id ("Octave:deprecated-property",
         "patch: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
       set_vertexnormalsmode (val);
     }
 
@@ -4992,7 +4992,7 @@ public:
     {
       warning_with_id ("Octave:deprecated-property",
         "patch: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
       return vertexnormalsmode.current_value ();
     }
   };
@@ -5164,7 +5164,7 @@ public:
     {
       warning_with_id ("Octave:deprecated-property",
         "surface: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
       set_vertexnormalsmode (val);
     }
 
@@ -5172,7 +5172,7 @@ public:
     {
       warning_with_id ("Octave:deprecated-property",
         "surface: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave. Use 'vertexnormalsmode' instead.");
+        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
       return vertexnormalsmode.current_value ();
     }
   };

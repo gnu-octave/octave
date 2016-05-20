@@ -47,7 +47,7 @@ size_t octave_chunk_buffer::active = 0;
 
 octave_chunk_buffer::octave_chunk_buffer (size_t size) : cnk (0), dat (0)
 {
-  // Alignment mask. The size of double or long int, whichever is
+  // Alignment mask.  The size of double or long int, whichever is
   // greater.  All data will be aligned to this size.  If it's not
   // enough for a type, that type should not be declared as POD.
 
@@ -60,7 +60,7 @@ octave_chunk_buffer::octave_chunk_buffer (size_t size) : cnk (0), dat (0)
   if (! size)
     return;
 
-  // Align size. Note that size_t is unsigned, so size-1 must correctly
+  // Align size.  Note that size_t is unsigned, so size-1 must correctly
   // wrap around.
 
   size = ((size - 1) | align_mask) + 1;

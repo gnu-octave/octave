@@ -98,11 +98,11 @@ function configure_make (desc, packdir, verbose)
   endif
 endfunction
 
-## Executes a shell command. In the end it calls system() but in case of
+## Executes a shell command.  In the end it calls system() but in case of
 ## windows will first check if sh.exe works.
 ##
 ## If VERBOSE is true, it will prints the output to STDOUT in real time and
-## the second output argument will be an empty string. Otherwise, it will
+## the second output argument will be an empty string.  Otherwise, it will
 ## contain the output of the execeuted command.
 function [status, output] = shell (cmd, verbose)
   persistent have_sh;
@@ -122,9 +122,9 @@ function [status, output] = shell (cmd, verbose)
       error ("pkg: unable to find the command shell.");
     endif
   endif
-  ## if verbose, we want to display the output in real time. To do this, we
-  ## must call system with 1 output argument. But then the variable `output'
-  ## won't exist. So we initialize it empty. If an error does occur, and we
+  ## if verbose, we want to display the output in real time.  To do this, we
+  ## must call system with 1 output argument.  But then the variable `output'
+  ## won't exist.  So we initialize it empty.  If an error does occur, and we
   ## are verbose we will return an empty string but it's all fine since
   ## the error message has already been displayed.
   output = "";

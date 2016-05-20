@@ -88,7 +88,7 @@ namespace octave
     std::string
     time::ctime (void) const
     {
-      return localtime (*this) . asctime ();
+      return localtime (*this).asctime ();
     }
 
     void

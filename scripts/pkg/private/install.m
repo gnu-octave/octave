@@ -25,7 +25,7 @@
 function install (files, handle_deps, prefix, archprefix, verbose,
                   local_list, global_list, global_install)
 
-  ## Check that the directory in prefix exist. If it doesn't: create it!
+  ## Check that the directory in prefix exist.  If it doesn't: create it!
   if (! exist (prefix, "dir"))
     warning ("creating installation directory %s", prefix);
     [status, msg] = mkdir (prefix);
@@ -242,7 +242,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
     rethrow (lasterror ());
   end_try_catch
 
-  ## Check if the installed directory is empty. If it is remove it
+  ## Check if the installed directory is empty.  If it is remove it
   ## from the list.
   for i = length (descriptions):-1:1
     if (dirempty (descriptions{i}.dir, {"packinfo", "doc"})
@@ -680,7 +680,7 @@ function create_pkgadddel (desc, packdir, nm, global_install)
   instfid = fopen (instpkg, "at"); # append to support PKG_ADD at inst/
   ## If it is exists, most of the PKG_* file should go into the
   ## architecture dependent directory so that the autoload/mfilename
-  ## commands work as expected. The only part that doesn't is the
+  ## commands work as expected.  The only part that doesn't is the
   ## part in the main directory.
   archdir = fullfile (getarchprefix (desc, global_install),
                       [desc.name "-" desc.version], getarch ());

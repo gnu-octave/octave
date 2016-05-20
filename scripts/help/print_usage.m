@@ -104,7 +104,7 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
 
-  ## Find, and keep, lines that start with @def or @end def. This should
+  ## Find, and keep, lines that start with @def or @end def.  This should
   ## include things such as @deftypefn, @deftypefnx, @defvar, etc. and their
   ## corresponding @end's.
   def_idx = strfind (help_text, "@def");

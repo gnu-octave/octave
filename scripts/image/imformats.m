@@ -100,7 +100,7 @@ function varargout = imformats (arg1, arg2, arg3)
           if (! ischar (arg2))
             error ("imformats: EXT to %s must be a string.", arg1);
           endif
-          ## FIXME: suppose a format with multiple extensions. If one of
+          ## FIXME: suppose a format with multiple extensions.  If one of
           ##        them is requested to be removed, should we remove the
           ##        whole format, or just that extension from the format?
           match = find_ext_idx (formats, arg2);
@@ -125,7 +125,7 @@ function varargout = imformats (arg1, arg2, arg3)
           ## then we look for a format with that extension.
           match = find_ext_idx (formats, arg1);
           ## For matlab compatibility, if we don't find any format we must
-          ## return an empty struct with NO fields. We can't use match as mask
+          ## return an empty struct with NO fields.  We can't use match as mask
           if (any (match))
             varargout{1} = formats(match);
           else
@@ -143,7 +143,7 @@ endfunction
 function formats = default_formats ()
 
   ## The available formats are dependent on what the user has installed at
-  ## a given time, and how GraphicsMagick was built. Checking for
+  ## a given time, and how GraphicsMagick was built.  Checking for
   ## GraphicsMagick features when building Octave is not enough since it
   ## delegates some of them to external programs which can be removed or
   ## installed at any time.
@@ -154,7 +154,7 @@ function formats = default_formats ()
   ## writable because some RW coders are not of image formats (NULL, 8BIM,
   ## or EXIF for example).
   ## So we'd need a blacklist (unacceptable because a `bad' coder may be
-  ## added later) or a whitelist. A whitelist means that even with a
+  ## added later) or a whitelist.  A whitelist means that even with a
   ## super-fancy recent build of GraphicsMagick, some formats won't be listed
   ## by imformats but in truth, we will still be able to read and write them
   ## since imread() and imwrite() will give it a try anyway.
@@ -181,34 +181,34 @@ function formats = default_formats ()
 
   ##      Building the formats info
   ##
-  ## As mentioned above we start with a whitelist of coders. Since the
+  ## As mentioned above we start with a whitelist of coders.  Since the
   ## GraphicsMagick build may be missing some coders, we will remove those
-  ## from the list. Some info can be obtained directly from GraphicsMagick
-  ## through the CoderInfo object. However, some will need to be hardcoded.
+  ## from the list.  Some info can be obtained directly from GraphicsMagick
+  ## through the CoderInfo object.  However, some will need to be hardcoded.
   ##
   ## The association between file extensions and coders needs to be done
   ## with a manually coded list (file extensions do not define the image
   ## format and GraphicsMagick will not be fooled by changing the extension).
   ##
   ## We can get the read, write, description and multipage fields from
-  ## CoderInfo in C++. We should do the same for alpha (GraphicsMagick
-  ## calls it matte) but it's not available from CoderInfo. The only way to
+  ## CoderInfo in C++.  We should do the same for alpha (GraphicsMagick
+  ## calls it matte) but it's not available from CoderInfo.  The only way to
   ## check it is to create a sample image with each coder, then try to read
   ## it back with GraphicsMagick and use the matte method on the Image class.
   ## But making such test for each Octave session... meh! While technically
   ## it may be possible that the same coder has different support for alpha
   ## channel in different versions and builds, this doesn't seem to happen.
-  ## So we also hardcode those. In the future, maybe the CoderInfo class will
+  ## So we also hardcode those.  In the future, maybe the CoderInfo class will
   ## have a matte method like it does for multipage.
   ##
-  ## Other notes: some formats have more than one coder that do the same. For
-  ## example, for jpeg images there is both the JPG and JPEG coders. However,
+  ## Other notes: some formats have more than one coder that do the same.  For
+  ## example, for jpeg images there is both the JPG and JPEG coders.  However,
   ## it seems that when reading images, GraphicsMagick only uses one of them
   ## and that's the one we list (it's the one reported by imfinfo and that we
-  ## can use for isa). However, in some cases GraphicsMagick seems to rely
-  ## uniquely on the file extension ((JBIG and JBG at least. Create an image
+  ## can use for isa).  However, in some cases GraphicsMagick seems to rely
+  ## uniquely on the file extension (JBIG and JBG at least.  Create an image
   ## with each of those coders, swap their extension and it will report the
-  ## other coder). We don't have such cases on the whitelist but if we did, we
+  ## other coder).  We don't have such cases on the whitelist but if we did, we
   ## would need two entries for such cases.
 
   ## each row: 1st => Coder, 2nd=> file extensions, 3rd=> alpha
@@ -225,8 +225,8 @@ function formats = default_formats ()
             "PGM",  {"pgm"},          false;
             "PNG",  {"png"},          true;
             ## PNM is a family of formats supporting portable bitmaps (PBM),
-            ## graymaps (PGM), and pixmaps (PPM). There is no file format
-            ## associated with pnm itself. If PNM is used as the output format
+            ## graymaps (PGM), and pixmaps (PPM).  There is no file format
+            ## associated with pnm itself.  If PNM is used as the output format
             ## specifier, then GraphicsMagick automatically selects the most
             ## appropriate format to represent the image.
             "PNM",  {"pnm"},          true;
@@ -257,7 +257,7 @@ function formats = default_formats ()
 endfunction
 
 function is_valid_format (format)
-  ## the minimal list of fields required in the structure. We don't
+  ## the minimal list of fields required in the structure.  We don't
   ## require multipage because it doesn't exist in matlab
   min_fields  = {"ext", "read", "isa", "write", "info", "alpha", "description"};
   fields_mask = isfield (format, min_fields);

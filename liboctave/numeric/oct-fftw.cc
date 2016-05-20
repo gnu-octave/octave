@@ -48,12 +48,12 @@ along with Octave; see the file COPYING.  If not, see
 octave_fftw_planner *octave_fftw_planner::instance = 0;
 
 // Helper class to create and cache FFTW plans for both 1D and
-// 2D. This implementation defaults to using FFTW_ESTIMATE to create
+// 2D.  This implementation defaults to using FFTW_ESTIMATE to create
 // the plans, which in theory is suboptimal, but provides quite
 // reasonable performance in practice.
 
 // Also note that if FFTW_ESTIMATE is not used then the planner in FFTW3
-// will destroy the input and output arrays. We must, therefore, create a
+// will destroy the input and output arrays.  We must, therefore, create a
 // temporary input array with the same size and 16-byte alignment as
 // the original array when using a different planner strategy.
 // Note that we also use any wisdom that is available, either in a

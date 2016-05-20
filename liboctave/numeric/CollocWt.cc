@@ -101,7 +101,7 @@ dif (octave_idx_type nt, double *root, double *dif1, double *dif2,
 //
 //   nd     : the dimension of the vectors dif1, dif2, dif3, and root
 //
-//   n      : the degree of the jacobi polynomial, (i.e. the number
+//   n      : the degree of the jacobi polynomial, (i.e., the number
 //            of interior interpolation points)
 //
 //   n0     : determines whether x = 0 is included as an
@@ -264,7 +264,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 //
 //   nd     : the dimension of the vectors dif1, dif2, dif3, and root
 //
-//   n      : the degree of the jacobi polynomial, (i.e. the number
+//   n      : the degree of the jacobi polynomial, (i.e., the number
 //            of interior interpolation points)
 //
 //   n0     : determines whether x = 0 is included as an

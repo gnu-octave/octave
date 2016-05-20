@@ -1179,7 +1179,7 @@ public:
 
   octave_value storable_value (void) const;
 
-  // Ditto, but in place, i.e. equivalent to *this = this->storable_value (),
+  // Ditto, but in place, i.e., equivalent to *this = this->storable_value (),
   // but possibly more efficient.
 
   void make_storable_value (void);

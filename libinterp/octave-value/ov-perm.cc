@@ -291,7 +291,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
   for (octave_idx_type i = 0; i < n; i++) pvec(i) = tmp(i) - 1;
   matrix = PermMatrix (pvec, colp);
 
-  // Invalidate cache. Probably not necessary, but safe.
+  // Invalidate cache.  Probably not necessary, but safe.
   dense_cache = octave_value ();
 
   return true;

@@ -37,7 +37,7 @@ template class OCTAVE_API MArray<int64_t>;
 #endif
 
 // Explicit instantiation, as this seems to be required by weird compilers
-// like MSVC. This should be harmless on other compilers.
+// like MSVC.  This should be harmless on other compilers.
 template int xmin<int> (int, int);
 template int xmax<int> (int, int);
 template long xmin<long> (long, long);

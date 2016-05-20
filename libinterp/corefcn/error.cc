@@ -180,7 +180,7 @@ verror (bool save_last_error, std::ostream& os,
     }
 
   // If with_fcn is specified, we'll attempt to prefix the message with the name
-  // of the current executing function. But we'll do so only if:
+  // of the current executing function.  But we'll do so only if:
   // 1. the name is not empty (anonymous function)
   // 2. it is not already there (including the following colon)
   if (with_cfn)

@@ -64,7 +64,7 @@ gzfilebuf::gzfilebuf ()
 gzfilebuf::~gzfilebuf ()
 {
   // Sync output buffer and close only if responsible for file
-  // (i.e. attached streams should be left open at this stage)
+  // (i.e., attached streams should be left open at this stage)
   this->sync ();
   if (own_fd)
     this->close ();
@@ -210,9 +210,9 @@ gzfilebuf::showmanyc ()
     return 0;
 }
 
-// Puts back a character to the stream in two cases. Firstly, when there
+// Puts back a character to the stream in two cases.  Firstly, when there
 // is no putback position available, and secondly when the character putback
-// differs from the one in the file. We can only support the first case
+// differs from the one in the file.  We can only support the first case
 // with gzipped files.
 gzfilebuf::int_type
 gzfilebuf::pbackfail (gzfilebuf::int_type c)
@@ -379,7 +379,7 @@ gzfilebuf::setbuf (char_type* p, std::streamsize n)
   return this;
 }
 
-// Write put area to gzipped file (i.e. ensures that put area is empty)
+// Write put area to gzipped file (i.e., ensures that put area is empty)
 int
 gzfilebuf::sync ()
 {

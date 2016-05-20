@@ -236,7 +236,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     endif
 
     ## FIXME: why tolf*n*xn?  If abs (e) ~ abs(x) * eps is a vector
-    ## of perturbations of x, then norm (hesr*e) <= eps*xn, i.e. by
+    ## of perturbations of x, then norm (hesr*e) <= eps*xn, i.e., by
     ## tolf ~ eps we demand as much accuracy as we can expect.
     if (norm (grad) <= tolf*n*xn)
       info = 1;

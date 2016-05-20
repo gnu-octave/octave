@@ -538,7 +538,7 @@ namespace octave
 
       // FIXME
       // The MDTM command fails for a directory on the servers I tested
-      // so this is a means of testing for directories. It also means
+      // so this is a means of testing for directories.  It also means
       // I can't get the date of directories!
 
       perform ();
@@ -566,7 +566,7 @@ namespace octave
       SETOPT (CURLOPT_URL, url.c_str ());
 
       // The MDTM command seems to reset the path to the root with the
-      // servers I tested with, so cd again into the correct path. Make
+      // servers I tested with, so cd again into the correct path.  Make
       // the path absolute so that this will work even with servers that
       // don't end up in the root after an MDTM command.
       cwd ("/" + path);
@@ -653,7 +653,7 @@ namespace octave
     CURLcode errnum;
 
     // The cURL library changed the curl_easy_setopt call to make an
-    // internal copy of string parameters in version 7.17.0. Prior
+    // internal copy of string parameters in version 7.17.0.  Prior
     // versions only held a pointer to a string provided by the caller
     // that must persist for the lifetime of the CURL handle.
     //
@@ -662,7 +662,7 @@ namespace octave
     //
     // To be compatible with any version of cURL, the caller must keep a
     // copy of all string parameters associated with a CURL handle until
-    // the handle is released. The curl_handle::curl_handle_rep class
+    // the handle is released.  The curl_handle::curl_handle_rep class
     // contains the pointer to the CURL handle and so is the best
     // candidate for storing the strings as well. (bug #36717)
     std::string url;

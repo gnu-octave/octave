@@ -40,7 +40,7 @@ function [in_arg, sz, is_im, is_nd] ...
     is_im = true;
 
     ## For floating point values, R, G and B should be in the [0 1] range,
-    ## otherwise they don't make any sense. We accept those values
+    ## otherwise they don't make any sense.  We accept those values
     ## anyways because we must return something for Matlab compatibility.
     ## User case is when a function returns an RGB image just slightly outside
     ## the range due to floating point rounding errors.

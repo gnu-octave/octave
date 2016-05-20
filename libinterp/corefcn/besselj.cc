@@ -853,27 +853,27 @@ Tests are based on the properties and tables in A&S:
  Abramowitz and Stegun, "Handbook of Mathematical Functions",
  1972.
 
-For regular Bessel functions, there are 3 tests. These compare octave
+For regular Bessel functions, there are 3 tests.  These compare octave
 results against Tables 9.1, 9.2, and 9.4 in A&S. Tables 9.1 and 9.2
 are good to only a few decimal places, so any failures should be
-considered a broken implementation. Table 9.4 is an extended table
-for larger orders and arguments. There are some differences between
+considered a broken implementation.  Table 9.4 is an extended table
+for larger orders and arguments.  There are some differences between
 Octave and Table 9.4, mostly in the last decimal place but in a very
-few instances the errors are in the last two places. The comparison
+few instances the errors are in the last two places.  The comparison
 tolerance has been changed to reflect this.
 
-Similarly for modifed Bessel functions, there are 3 tests. These
+Similarly for modified Bessel functions, there are 3 tests.  These
 compare octave results against Tables 9.8, 9.9, and 9.11 in A&S.
 Tables 9.8 and 9.9 are good to only a few decimal places, so any
-failures should be considered a broken implementation. Table 9.11 is
-an extended table for larger orders and arguments. There are some
+failures should be considered a broken implementation.  Table 9.11 is
+an extended table for larger orders and arguments.  There are some
 differences between octave and Table 9.11, mostly in the last decimal
 place but in a very few instances the errors are in the last two
-places. The comparison tolerance has been changed to reflect this.
+places.  The comparison tolerance has been changed to reflect this.
 
 For spherical Bessel functions, there are also three tests, comparing
-octave results to Tables 10.1, 10.2, and 10.4 in A&S. Very similar
-comments may be made here as in the previous lines. At this time,
+octave results to Tables 10.1, 10.2, and 10.4 in A&S.  Very similar
+comments may be made here as in the previous lines.  At this time,
 modified spherical Bessel function tests are not included.
 
 % Table 9.1 - J and Y for integer orders 0, 1, 2.

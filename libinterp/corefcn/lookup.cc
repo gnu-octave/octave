@@ -98,7 +98,7 @@ get_sort_mode (const Array<T>& array,
 
 // FIXME: perhaps there should be octave_value::lookup?
 // The question is, how should it behave w.r.t. the second argument's type.
-// We'd need a dispatch on two arguments. Hmmm...
+// We'd need a dispatch on two arguments.  Hmmm...
 
 #define INT_ARRAY_LOOKUP(TYPE) \
   (table.is_ ## TYPE ## _type () && y.is_ ## TYPE ## _type ()) \
@@ -146,7 +146,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
         }
       else if (left_inf && right_inf)
         {
-          // Results in valid indices. Optimize using lazy index.
+          // Results in valid indices.  Optimize using lazy index.
           octave_idx_type zero = 0;
           for (octave_idx_type i = 0; i < nval; i++)
             {
@@ -158,7 +158,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
         }
       else if (left_inf)
         {
-          // Results in valid indices. Optimize using lazy index.
+          // Results in valid indices.  Optimize using lazy index.
           octave_idx_type zero = 0;
           for (octave_idx_type i = 0; i < nval; i++)
             {

@@ -1572,7 +1572,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
     }
   else
     {
-      // Globally visible (or no match yet). Query overloads.
+      // Globally visible (or no match yet).  Query overloads.
       std::list<std::string> classes = load_path::overloads (tnm);
       bool any_match = fptr != 0 || classes.size () > 0;
       if (! any_match)

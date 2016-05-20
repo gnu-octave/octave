@@ -843,7 +843,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           goto data_read_error;
 
         // Octave can handle both "/" and "\" as a directory seperator
-        // and so can ignore the separator field of m0. I think the
+        // and so can ignore the separator field of m0.  I think the
         // sentinel field is also save to ignore.
         octave_scalar_map m0 = tc2.scalar_map_value ();
         octave_scalar_map m1
@@ -869,7 +869,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     // If fpath starts with matlabroot, and matlabroot
                     // doesn't equal __octave_config_info__ ("exec_prefix")
                     // then the function points to a version of Octave
-                    // or Matlab other than the running version. In that
+                    // or Matlab other than the running version.  In that
                     // case we replace with the same function in the
                     // running version of Octave?
 
@@ -1185,7 +1185,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             if (classname == "inline")
               {
                 // inline is not an object in Octave but rather an
-                // overload of a function handle. Special case.
+                // overload of a function handle.  Special case.
                 tc =
                   new octave_fcn_inline (m.contents ("expr")(0).string_value (),
                                          m.contents ("args")(0).string_value ());
@@ -1421,7 +1421,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 else if (type == miUTF8)
                   {
                     // Search for multi-byte encoded UTF8 characters and
-                    // replace with 0x3F for '?'... Give the user a warning
+                    // replace with 0x3F for '?'...  Give the user a warning
 
                     bool utf8_multi_byte = false;
                     for (octave_idx_type i = 0; i < n; i++)
@@ -1997,10 +1997,10 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
       //       size = 2;
       //     else if (max_val <= 2147483647L && min_val >= -2147483647L)
       //       size = 4;
-      //   }
+      //   
 
-      // Round nel up to nearest even number of elements. Take into account
-      // Short tags for 4 byte elements.
+      // Round nel up to nearest even number of elements.
+      // Take into account short tags for 4 byte elements.
       return PAD ((nel > 0 && nel * size <= 4 ? 4 : 8) + nel * size);
     }
   else
@@ -2174,7 +2174,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         ret += 8 + PAD (6 > max_namelen ? max_namelen : 6);
       else if (tc.is_object ())
         {
-          size_t classlen = tc.class_name (). length ();
+          size_t classlen = tc.class_name ().length ();
 
           ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
         }
@@ -2294,15 +2294,15 @@ save_mat5_binary_element (std::ostream& os,
 
       std::ostringstream buf;
 
-      // The code seeks backwards in the stream to fix the header. Can't
-      // do this with zlib, so use a stringstream.
+      // The code seeks backwards in the stream to fix the header.
+      // Can't do this with zlib, so use a stringstream.
       ret = save_mat5_binary_element (buf, tc, name, mark_as_global, true,
                                       save_as_floats, true);
 
       if (ret)
         {
           // destLen must be at least 0.1% larger than source buffer
-          // + 12 bytes. Reality is it must be larger again than that.
+          // + 12 bytes.  Reality is it must be larger again than that.
           std::string buf_str = buf.str ();
           uLongf srcLen = buf_str.length ();
           uLongf destLen = srcLen * 101 / 100 + 12;

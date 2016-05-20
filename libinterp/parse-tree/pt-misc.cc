@@ -239,7 +239,7 @@ tree_parameter_list::convert_to_const_vector (int nargout,
   octave_idx_type vlen = varargout.numel ();
   int len = length ();
 
-  // Special case. Will do a shallow copy.
+  // Special case.  Will do a shallow copy.
   if (len == 0)
     return varargout;
   else if (nargout <= len)

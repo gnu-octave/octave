@@ -42,7 +42,7 @@ function [ver, url] = get_forge_pkg (name)
   if (succ)
     ## Remove blanks for simpler matching.
     html(isspace(html)) = [];
-    ## Good. Let's grep for the version.
+    ## Good.  Let's grep for the version.
     pat = "<tdclass=""package_table"">PackageVersion:</td><td>([\\d.]*)</td>";
     t = regexp (html, pat, "tokens");
     if (isempty (t) || isempty (t{1}))

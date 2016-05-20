@@ -85,7 +85,7 @@ function [x, map] = rgb2ind (R, G, B)
       error ("rgb2ind: unsupported image class %s", im_class);
   endswitch
 
-  ## we convert to the smallest class necessary to encode the image. Matlab
+  ## we convert to the smallest class necessary to encode the image.  Matlab
   ## documentation does not mention what it does when uint16 is not enough...
   ## When an indexed image is of integer class, there's a -1 offset to the
   ## colormap, hence the adjustment
@@ -105,7 +105,7 @@ endfunction
 %!error <RGB> rgb2ind (rand (10, 10, 4))
 
 ## FIXME: the following tests simply make sure that rgb2ind and ind2rgb
-##        reverse each other. We should have better tests for this.
+##        reverse each other.  We should have better tests for this.
 
 ## Typical usage
 %!test

@@ -201,7 +201,7 @@ public:
   // is their only common ancestor.
   explicit Sparse (const PermMatrix& a);
 
-  // Type conversion case. Preserves capacity ().
+  // Type conversion case.  Preserves capacity ().
   template <typename U>
   Sparse (const Sparse<U>& a)
     : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols,

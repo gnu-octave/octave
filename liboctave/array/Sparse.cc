@@ -94,8 +94,8 @@ Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
     else if (r[i] > _r)
       break;
 
-  // Ok, If we've gotten here, we're in trouble.. Have to create a
-  // new element in the sparse array. This' gonna be slow!!!
+  // Ok, If we've gotten here, we're in trouble.  Have to create a
+  // new element in the sparse array.  This' gonna be slow!!!
   if (c[ncols] == nzmx)
     (*current_liboctave_error_handler)
       ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
@@ -335,7 +335,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
         }
       else if (cl == 1)
         {
-          // Sparse column vector. Sort row indices.
+          // Sparse column vector.  Sort row indices.
           idx_vector rs = r.sorted ();
 
           octave_quit ();
@@ -416,7 +416,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
             else
               sidx[ci[cd[i]+1]++] = rd[i];
 
-          // Subsorts. We don't need a stable sort, all values are equal.
+          // Subsorts.  We don't need a stable sort, all values are equal.
           xcidx (0) = 0;
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -481,7 +481,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     }
   else if (cl == 1)
     {
-      // Sparse column vector. Sort row indices.
+      // Sparse column vector.  Sort row indices.
       Array<octave_idx_type> rsi;
       idx_vector rs = r.sorted (rsi);
 
@@ -567,7 +567,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           p.second = i;
         }
 
-      // Subsorts. We don't need a stable sort, the second index stabilizes it.
+      // Subsorts.  We don't need a stable sort, the second index stabilizes it.
       xcidx (0) = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -941,7 +941,7 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
     return;
 
   // This wouldn't be necessary for r >= rows () if nrows wasn't part of the
-  // Sparse rep. It is not good for anything in there.
+  // Sparse rep.  It is not good for anything in there.
   make_unique ();
 
   if (r < rows ())
@@ -1109,9 +1109,9 @@ Sparse<T>::transpose (void) const
   return retval;
 }
 
-// Lower bound lookup. Could also use octave_sort, but that has upper bound
-// semantics, so requires some manipulation to set right. Uses a plain loop for
-// small columns.
+// Lower bound lookup.  Could also use octave_sort, but that has upper bound
+// semantics, so requires some manipulation to set right.  Uses a plain loop
+// for small columns.
 static octave_idx_type
 lblookup (const octave_idx_type *ridx, octave_idx_type nr,
           octave_idx_type ri)
@@ -1413,9 +1413,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
     {
       // You have to be pretty sick to get to this bit of code,
       // since you have a scalar stored as a sparse matrix, and
-      // then want to make a dense matrix with sparse
-      // representation. Ok, we'll do it, but you deserve what
-      // you get!!
+      // then want to make a dense matrix with sparse representation.
+      // Ok, we'll do it, but you deserve what you get!!
       retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ());
     }
   else if (nc == 1)
@@ -1604,7 +1603,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
     }
   else if (idx_i.is_colon ())
     {
-      // Great, we're just manipulating columns. This is going to be quite
+      // Great, we're just manipulating columns.  This is going to be quite
       // efficient, because the columns can stay compressed as they are.
       if (idx_j.is_colon ())
         retval = *this; // Shallow copy.
@@ -1645,7 +1644,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
     }
   else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
     {
-      // It's actually vector indexing. The 1D index is specialized for that.
+      // It's actually vector indexing.  The 1D index is specialized for that.
       retval = index (idx_i);
 
       // If nr == 1 then the vector indexing will return a column vector!!
@@ -1737,7 +1736,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
 
       if (idx_i.is_range () && idx_i.increment () == -1)
         {
-          // It's nr:-1:1. Just flip all columns.
+          // It's nr:-1:1.  Just flip all columns.
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_quit ();
@@ -1898,7 +1897,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
             }
           else if (idx.is_range () && idx.increment () == -1)
             {
-              // It's s(u:-1:l) = r. Reverse the assignment.
+              // It's s(u:-1:l) = r.  Reverse the assignment.
               assign (idx.sorted (), rhs.index (idx_vector (rhl - 1, 0, -1)));
             }
           else if (idx.is_permutation (n))
@@ -2026,7 +2025,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
       if (idx_i.is_colon ())
         {
           octave_idx_type lb, ub;
-          // Great, we're just manipulating columns. This is going to be quite
+          // Great, we're just manipulating columns.  This is going to be quite
           // efficient, because the columns can stay compressed as they are.
           if (idx_j.is_colon ())
             *this = rhs; // Shallow copy.
@@ -2091,7 +2090,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
             }
           else if (idx_j.is_range () && idx_j.increment () == -1)
             {
-              // It's s(:,u:-1:l) = r. Reverse the assignment.
+              // It's s(:,u:-1:l) = r.  Reverse the assignment.
               assign (idx_i, idx_j.sorted (),
                       rhs.index (idx_i, idx_vector (m - 1, 0, -1)));
             }
@@ -2165,7 +2164,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
             {
               // FIXME: optimize more special cases?
               // In general this requires unpacking the columns, which is slow,
-              // especially for many small columns. OTOH, transpose is an
+              // especially for many small columns.  OTOH, transpose is an
               // efficient O(nr+nc+nnz) operation.
               *this = transpose ();
               assign (idx_vector::colon, idx_i, rhs.transpose ());
@@ -2611,7 +2610,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
             for (octave_idx_type i = 0; i < n; i++)
               {
                 const Sparse<T>& spi = sparse_list[i];
-                // Skipping empty matrices. See the comment in Array.cc.
+                // Skipping empty matrices.  See the comment in Array.cc.
                 if (spi.is_empty ())
                   continue;
 
@@ -2638,7 +2637,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
           {
             octave_quit ();
 
-            // Skipping empty matrices. See the comment in Array.cc.
+            // Skipping empty matrices.  See the comment in Array.cc.
             if (sparse_list[i].is_empty ())
               continue;
 

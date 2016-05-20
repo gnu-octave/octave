@@ -46,7 +46,7 @@ class Range;
 // idx_vector is a reference-counting, polymorphic pointer, that can contain
 // 4 types of index objects: a magic colon, a range, a scalar, or an index vector.
 // Polymorphic methods for single element access are provided, as well as
-// templates implementing "early dispatch", i.e. hoisting the checks for index
+// templates implementing "early dispatch", i.e., hoisting the checks for index
 // type out of loops.
 
 class
@@ -85,7 +85,7 @@ private:
     // Length of the index vector.
     virtual octave_idx_type length (octave_idx_type n) const = 0;
 
-    // The maximum index + 1. The actual dimension is passed in.
+    // The maximum index + 1.  The actual dimension is passed in.
     virtual octave_idx_type extent (octave_idx_type n) const = 0;
 
     // Index class.
@@ -412,7 +412,7 @@ private:
     octave_idx_type len;
     octave_idx_type ext;
 
-    // FIXME: I'm not sure if this is a good design. Maybe it would be
+    // FIXME: I'm not sure if this is a good design.  Maybe it would be
     // better to employ some sort of generalized iteration scheme.
     mutable octave_idx_type lsti;
     mutable octave_idx_type lste;
@@ -601,7 +601,7 @@ public:
   friend std::ostream& operator << (std::ostream& os, const idx_vector& a)
   { return a.print (os); }
 
-  // Slice with specializations. No checking of bounds!
+  // Slice with specializations.  No checking of bounds!
   //
   // This is equivalent to the following loop (but much faster):
   //
@@ -675,7 +675,7 @@ public:
     return len;
   }
 
-  // Slice assignment with specializations. No checking of bounds!
+  // Slice assignment with specializations.  No checking of bounds!
   //
   // This is equivalent to the following loop (but much faster):
   //
@@ -747,7 +747,7 @@ public:
     return len;
   }
 
-  // Slice fill with specializations. No checking of bounds!
+  // Slice fill with specializations.  No checking of bounds!
   //
   // This is equivalent to the following loop (but much faster):
   //
@@ -819,7 +819,7 @@ public:
     return len;
   }
 
-  // Generic non-breakable indexed loop. The loop body should be
+  // Generic non-breakable indexed loop.  The loop body should be
   // encapsulated in a single functor body.  This is equivalent to the
   // following loop (but faster, at least for simple inlined bodies):
   //
@@ -884,7 +884,7 @@ public:
 
   }
 
-  // Generic breakable indexed loop. The loop body should be
+  // Generic breakable indexed loop.  The loop body should be
   // encapsulated in a single functor body.  This is equivalent to the
   // following loop (but faster, at least for simple inlined bodies):
   //
@@ -972,7 +972,7 @@ public:
   }
 
   // Rationale:
-  // This method is the key to "smart indexing". When indexing cartesian
+  // This method is the key to "smart indexing".  When indexing cartesian
   // arrays, sometimes consecutive index vectors can be reduced into a
   // single index.  If rows (A) = k and i.maybe_reduce (j) gives k, then
   // A(i,j)(:) is equal to A(k)(:).
@@ -993,11 +993,11 @@ public:
 
   bool is_permutation (octave_idx_type n) const;
 
-  // Returns the inverse permutation. If this is not a permutation on 1:n, the
+  // Returns the inverse permutation.  If this is not a permutation on 1:n, the
   // result is undefined (but no error unless extent () != n).
   idx_vector inverse_permutation (octave_idx_type n) const;
 
-  // Copies all the indices to a given array. Not allowed for colons.
+  // Copies all the indices to a given array.  Not allowed for colons.
   void copy_data (octave_idx_type *data) const;
 
   // If the index is a mask, convert it to index vector.

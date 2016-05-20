@@ -508,7 +508,7 @@ public:
   void update_seperator (const uimenu::properties& uimenup)
   {
     // Matlab places the separator before the current
-    // menu entry, while fltk places it after. So we need to find
+    // menu entry, while fltk places it after.  So we need to find
     // the previous item in this menu/submenu. (Kai)
     std::string fltk_label = uimenup.get_fltk_label ();
     if (! fltk_label.empty ())
@@ -970,7 +970,7 @@ public:
 
   // Move the toolbar at the bottom of the plot_window.
   // The only reason for moving the toolbar is hiding and
-  // showing the menubar. All other resizing is done by fltk.
+  // showing the menubar.  All other resizing is done by fltk.
 
   void update_toolbar_position ()
   {

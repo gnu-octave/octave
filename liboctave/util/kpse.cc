@@ -1,5 +1,5 @@
-// This file is not compiled to a separate object file.  It is
-// included in pathsearch.cc.
+// This file is not compiled to a separate object file.
+// It is included in pathsearch.cc.
 
 /* Look up a filename in a path.
 
@@ -927,7 +927,7 @@ search (const std::string& path, const std::string& original_name,
    MUST_EXIST is false, and NAME isn't found in the db, do *not* look on
    the filesystem.)
 
-   The caller must expand PATH. This is because it makes more sense to
+   The caller must expand PATH.  This is because it makes more sense to
    do this once, in advance, instead of for every search using it.
 
    In any case, return the complete filename if found, otherwise NULL.  */
@@ -1478,7 +1478,7 @@ kpse_path_expand (const std::string& path)
   return ret;
 }
 
-/* braces.c -- code for doing word expansion in curly braces. Taken from
+/* braces.c -- code for doing word expansion in curly braces.  Taken from
    bash 1.14.5.  [And subsequently modified for kpatshea.]
 
    Copyright (C) 1987,1991 Free Software Foundation, Inc.  */
@@ -1605,7 +1605,7 @@ expand_amble (const std::string& text)
   return result;
 }
 
-/* Start at INDEX, and skip characters in TEXT. Set INDEX to the
+/* Start at INDEX, and skip characters in TEXT.  Set INDEX to the
    index of the character matching SATISFY.  This understands about
    quoting.  Return the character that caused us to stop searching;
    this is either the same as SATISFY, or 0. */
@@ -1680,8 +1680,8 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
 
 /* For each file format, we record the following information.  The main
    thing that is not part of this structure is the environment variable
-   lists. They are used directly in tex-file.c. We could incorporate
-   them here, but it would complicate the code a bit. We could also do
+   lists.  They are used directly in tex-file.c.  We could incorporate
+   them here, but it would complicate the code a bit.  We could also do
    it via variable expansion, but not now, maybe not ever:
    ${PKFONTS-${TEXFONTS-/usr/local/lib/texmf/fonts//}}.  */
 
@@ -1755,7 +1755,7 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
 
           if (*path_elt == 0)
             {
-              /* Trailing //, matches anything. We could make this
+              /* Trailing //, matches anything.  We could make this
                  part of the other case, but it seems pointless to do
                  the extra work.  */
               matched = true;
@@ -1806,7 +1806,7 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
 
 /* If DB_DIR is a prefix of PATH_ELT, return true; otherwise false.
    That is, the question is whether to try the db for a file looked up
-   in PATH_ELT.  If PATH_ELT == ".", for example, the answer is no. If
+   in PATH_ELT.  If PATH_ELT == ".", for example, the answer is no.  If
    PATH_ELT == "/usr/local/lib/texmf/fonts//tfm", the answer is yes.
 
    In practice, ls-R is only needed for lengthy subdirectory
@@ -2462,7 +2462,7 @@ str_llist_add (str_llist_type *l, const std::string& str)
     STR_LLIST_NEXT (*e) = new_elt;
 }
 
-/* Move an element towards the top. The idea is that when a file is
+/* Move an element towards the top.  The idea is that when a file is
    found in a given directory, later files will likely be in that same
    directory, and looking for the file in all the directories in between
    is thus a waste.  */

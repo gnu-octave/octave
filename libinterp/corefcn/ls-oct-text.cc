@@ -191,8 +191,8 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 //  <string info> : # elements: <integer>
 //                : # length: <integer> (once before each string)
 //
-//  For backward compatibility the type "string array" is treated as a
-// "string" type. Also "string" can have a single element with no elements
+// For backward compatibility the type "string array" is treated as a
+// "string" type.  Also "string" can have a single element with no elements
 // line such that
 //
 //  <string info> : # length: <integer>

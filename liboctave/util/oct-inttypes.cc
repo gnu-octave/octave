@@ -245,7 +245,7 @@ bool
 octave_int_cmp_op::emulate_mop (uint64_t x, double y)
 {
   static const double xxup = std::numeric_limits<uint64_t>::max ();
-  // This converts to the nearest double. Unless there's an equality, the
+  // This converts to the nearest double.  Unless there's an equality, the
   // result is clear.
   double xx = x;
   if (xx != y)
@@ -266,7 +266,7 @@ octave_int_cmp_op::emulate_mop (int64_t x, double y)
 {
   static const double xxup = std::numeric_limits<int64_t>::max ();
   static const double xxlo = std::numeric_limits<int64_t>::min ();
-  // This converts to the nearest double. Unless there's an equality, the
+  // This converts to the nearest double.  Unless there's an equality, the
   // result is clear.
   double xx = x;
   if (xx != y)
@@ -378,9 +378,9 @@ template <>
 int64_t
 octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 {
-  // The signed case is far worse. The problem is that
+  // The signed case is far worse.  The problem is that
   // even if neither integer fits into signed 32-bit range, the result may
-  // still be OK. Uh oh.
+  // still be OK.  Uh oh.
 
   // Essentially, what we do is compute sign, multiply absolute values
   // (as above) and impose the sign.
@@ -482,13 +482,13 @@ INT_DOUBLE_BINOP_DECL (+, int64)
   else
     {
       // If the number is within the int64 range (the most common case,
-      // probably), the above will work as expected. If not, it's more
+      // probably), the above will work as expected.  If not, it's more
       // complicated - as long as y is within _twice_ the signed range, the
-      // result may still be an integer. An instance of such an operation is
-      // 3*2**62 + (1+intmin ('int64')) that should yield int64 (2**62) + 1.  So
-      // what we do is to try to convert y/2 and add it twice. Note that if y/2
-      // overflows, the result must overflow as well, and that y/2 cannot be a
-      // fractional number.
+      // result may still be an integer.  An instance of such an operation is
+      // 3*2**62 + (1+intmin ('int64')) that should yield int64 (2**62) + 1.
+      // So what we do is to try to convert y/2 and add it twice.  Note that
+      // if y/2 overflows, the result must overflow as well, and that y/2
+      // cannot be a fractional number.
       octave_int64 y2 (y / 2);
       return (x + y2) + y2;
     }
@@ -510,7 +510,7 @@ DOUBLE_INT_BINOP_DECL (-, uint64)
     return octave_uint64 (x) - y;
   else
     {
-      // Again a trick to get the corner cases right. Things like
+      // Again a trick to get the corner cases right.  Things like
       // 3**2**63 - intmax ('uint64') should produce the correct result, i.e.
       // int64 (2**63) + 1.
       const double p2_64 = std::pow (2.0, 64);
@@ -549,9 +549,9 @@ DOUBLE_INT_BINOP_DECL (-, int64)
 // of converting the double number into the form sign * 64-bit integer *
 // 2**exponent, multiply the 64-bit integers to get a 128-bit number, split that
 // number into 32-bit words and form 4 double-valued summands (none of which
-// loses precision), then convert these into integers and sum them. Though it is
-// not immediately obvious, this should work even w.r.t. rounding (none of the
-// summands lose precision).
+// loses precision), then convert these into integers and sum them.  Though it
+// is not immediately obvious, this should work even w.r.t. rounding (none of
+// the summands lose precision).
 
 // Multiplies two unsigned 64-bit ints to get a 128-bit number represented
 // as four 32-bit words.

@@ -45,8 +45,10 @@ function usleep (microseconds)
 
 endfunction
 
+
 %!test
 %! usleep (1000);
 
 %!error (usleep ())
 %!error (usleep (1, 2))
+

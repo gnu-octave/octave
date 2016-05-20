@@ -393,6 +393,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
 endfunction
 
+
 ## Test blocks are not allowed (and not needed) for private functions
 #%!test
 %! opts = __print_parse_opts__ ();

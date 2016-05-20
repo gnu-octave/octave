@@ -246,8 +246,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
 
 endfunction
 
-## An assistant function that evaluates a function handle and checks for
-## bad results.
+## A helper function that evaluates a function and checks for bad results.
 function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);

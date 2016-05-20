@@ -128,3 +128,4 @@ function x_out = hermite_cubic_interpolation (t, x, der, t_out)
           ((s-1) .* s.^2   * dt ) .* der(:,2);
 
 endfunction
+

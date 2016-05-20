@@ -69,6 +69,7 @@ function yiq = rgb2ntsc (rgb)
 
 endfunction
 
+
 ## Test pure RED, GREEN, BLUE colors
 %!assert (rgb2ntsc ([1 0 0]), [.299  .596  .211])
 %!assert (rgb2ntsc ([0 1 0]), [.587 -.274 -.523])

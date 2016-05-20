@@ -82,6 +82,7 @@ function hsv = rgb2hsv (rgb)
 
 endfunction
 
+
 ## Test pure colors and gray
 %!assert (rgb2hsv ([1 0 0]), [0 1 1])
 %!assert (rgb2hsv ([0 1 0]), [1/3 1 1])

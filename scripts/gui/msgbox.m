@@ -118,8 +118,11 @@ function retval = msgbox (msg, varargin)
 
 endfunction
 
-%!error<narginchk> msgbox (1, 2, 3, 4, 5)
-%!error<MSG must be a character string> msgbox (1)
-%!error<TITLE must be a character string> msgbox ("msg", 1)
-%!error<ICON is not a valid type> msgbox ("msg", "title", 1)
-%!error<CREATEMODE is not a valid> msgbox ("msg", "title", "help", "wrong")
+
+## Test input validation
+%!error <narginchk> msgbox (1, 2, 3, 4, 5)
+%!error <MSG must be a character string> msgbox (1)
+%!error <TITLE must be a character string> msgbox ("msg", 1)
+%!error <ICON is not a valid type> msgbox ("msg", "title", 1)
+%!error <CREATEMODE is not a valid> msgbox ("msg", "title", "help", "wrong")
+

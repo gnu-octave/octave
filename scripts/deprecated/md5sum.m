@@ -61,6 +61,7 @@ function r = md5sum (str, opt)
 
 endfunction
 
+
 %!assert (md5sum ("abc\0", true), "147a664a2ca9410911e61986d3f0d52a")
 
 %!test
@@ -72,3 +73,4 @@ endfunction
 %! unlink (tfile);
 
 %!error md5sum ()
+

@@ -744,20 +744,19 @@ function latex_standalone (opts)
   postpend = {"\\end{document}"};
 
   fid = fopen (latexfile, "r");
-  if (fid >= 0)
-    latex = fscanf (fid, "%c", Inf);
-    status = fclose (fid);
-    if (status != 0)
-      error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile);
-    endif
-    ## FIXME: should this be fixed in GL2PS?
-    latex = strrep (latex, "\\includegraphics{}",
-                    sprintf ("\\includegraphics{%s}", graphicsfile));
-  else
+  if (fid < 0)
     error ("print:erroropeningfile",
            "print.m: error opening file '%s'", latexfile);
   endif
+  latex = fscanf (fid, "%c", Inf);
+  status = fclose (fid);
+  if (status != 0)
+    error ("print:errorclosingfile",
+           "print.m: error closing file '%s'", latexfile);
+  endif
+  ## FIXME: should this be fixed in GL2PS?
+  latex = strrep (latex, "\\includegraphics{}",
+                  sprintf ("\\includegraphics{%s}", graphicsfile));
 
   fid = fopen (latexfile, "w");
   if (fid >= 0)

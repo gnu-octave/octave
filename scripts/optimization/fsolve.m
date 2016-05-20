@@ -442,8 +442,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
 endfunction
 
-## An assistant function that evaluates a function handle and checks for
-## bad results.
+## A helper function that evaluates a function and checks for bad results.
 function [fx, jx] = guarded_eval (fun, x, complexeqn)
 
   if (nargout > 1)

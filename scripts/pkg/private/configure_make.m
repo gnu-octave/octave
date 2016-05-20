@@ -99,8 +99,9 @@ function configure_make (desc, packdir, verbose)
 
 endfunction
 
-## Executes a shell command.  In the end it calls system() but in case of
-## windows will first check if sh.exe works.
+## Executes a shell command.
+## In the end it calls system(), but in the case of MS Windows it will first
+## check if sh.exe works.
 ##
 ## If VERBOSE is true, it will prints the output to STDOUT in real time and
 ## the second output argument will be an empty string.  Otherwise, it will

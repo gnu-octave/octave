@@ -75,6 +75,7 @@ function dists = rectint (a, b)
 
 endfunction
 
+
 ## Exactly overlapping
 %!assert (rectint ([0 0 1 1], [0 0 1 1]), 1)
 ## rect2 completely enclosed by rect1

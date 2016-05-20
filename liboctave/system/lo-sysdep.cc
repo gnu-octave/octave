@@ -127,6 +127,7 @@ octave_popen2 (const std::string& cmd, const string_vector& args,
   si.dwFlags |= STARTF_USESTDHANDLES;
   si.hStdInput = childRead;
   si.hStdOutput = childWrite;
+  si.hStdError = GetStdHandle (STD_ERROR_HANDLE);
 
   // Ignore first arg as it is the command
   for (int k=1; k<args.length (); k++)

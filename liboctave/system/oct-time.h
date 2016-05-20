@@ -368,19 +368,19 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::sys::time instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::time' instead")
 typedef octave::sys::time octave_time;
 
-OCTAVE_DEPRECATED ("use octave::sys::base_tm instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::base_tm' instead")
 typedef octave::sys::base_tm octave_base_tm;
 
-OCTAVE_DEPRECATED ("use octave::sys::localtime instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::localtime' instead")
 typedef octave::sys::localtime octave_localtime;
 
-OCTAVE_DEPRECATED ("use octave::sys::gmtime instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::gmtime' instead")
 typedef octave::sys::gmtime octave_gmtime;
 
-OCTAVE_DEPRECATED ("use octave::sys::strptime instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::strptime' instead")
 typedef octave::sys::strptime octave_strptime;
 
 #endif

@@ -196,7 +196,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::dynamic_library instead")
+OCTAVE_DEPRECATED ("use 'octave::dynamic_library' instead")
 typedef octave::dynamic_library octave_shlib;
 
 #endif

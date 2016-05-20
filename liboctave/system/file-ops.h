@@ -200,45 +200,45 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::sys::file_ops instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::file_ops' instead")
   typedef octave::sys::file_ops file_ops;
 
-OCTAVE_DEPRECATED ("use octave::sys::mkdir instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::mkdir' instead")
 inline int
 octave_mkdir (const std::string& nm, mode_t md)
 {
   return octave::sys::mkdir (nm, md);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::mkdir instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::mkdir' instead")
 inline int
 octave_mkdir (const std::string& nm, mode_t md, std::string& msg)
 {
   return octave::sys::mkdir (nm, md, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::mkfifo instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::mkfifo' instead")
 inline int
 octave_mkfifo (const std::string& nm, mode_t md)
 {
   return octave::sys::mkfifo (nm, md);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::mkfifo instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::mkfifo' instead")
 inline int
 octave_mkfifo (const std::string& nm, mode_t md, std::string& msg)
 {
   return octave::sys::mkfifo (nm, md, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::link instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::link' instead")
 inline int
 octave_link (const std::string& old_name, const std::string& new_name)
 {
   return octave::sys::link (old_name, new_name);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::link instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::link' instead")
 inline int
 octave_link (const std::string& old_name, const std::string& new_name,
              std::string& msg)
@@ -246,14 +246,14 @@ octave_link (const std::string& old_name, const std::string& new_name,
   return octave::sys::link (old_name, new_name, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::symlink instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::symlink' instead")
 inline int
 octave_symlink (const std::string& old_name, const std::string& new_name)
 {
   return octave::sys::symlink (old_name, new_name);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::symlink instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::symlink' instead")
 inline int
 octave_symlink (const std::string& old_name, const std::string& new_name,
                 std::string& msg)
@@ -261,91 +261,91 @@ octave_symlink (const std::string& old_name, const std::string& new_name,
   return octave::sys::symlink (old_name, new_name, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::readlink instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::readlink' instead")
 inline int
 octave_readlink (const std::string& path, std::string& result)
 {
   return octave::sys::readlink (path, result);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::readlink instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::readlink' instead")
 inline int
 octave_readlink (const std::string& path, std::string& result, std::string& msg)
 {
   return octave::sys::readlink (path, result, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::rename instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::rename' instead")
 inline int
 octave_rename (const std::string& from, const std::string& to)
 {
   return octave::sys::rename (from, to);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::rename instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::rename' instead")
 inline int
 octave_rename (const std::string& from, const std::string& to, std::string& msg)
 {
   return octave::sys::rename (from, to, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::rmdir instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::rmdir' instead")
 inline int
 octave_rmdir (const std::string& nm)
 {
   return octave::sys::rmdir (nm);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::rmdir instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::rmdir' instead")
 inline int
 octave_rmdir (const std::string& nm, std::string& msg)
 {
   return octave::sys::rmdir (nm, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::recursive_rmdir instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::recursive_rmdir' instead")
 inline int
 octave_recursive_rmdir (const std::string& nm)
 {
   return octave::sys::recursive_rmdir (nm);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::recursive_rmdir instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::recursive_rmdir' instead")
 inline int
 octave_recursive_rmdir (const std::string& nm, std::string& msg)
 {
   return octave::sys::recursive_rmdir (nm, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::umask instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::umask' instead")
 inline int
 octave_umask (mode_t md)
 {
   return octave::sys::umask (md);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::unlink instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::unlink' instead")
 inline int
 octave_unlink (const std::string& nm)
 {
   return octave::sys::unlink (nm);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::unlink instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::unlink' instead")
 inline int
 octave_unlink (const std::string& nm, std::string& msg)
 {
   return octave::sys::unlink (nm, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::tempnam instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::tempnam' instead")
 inline std::string
 octave_tempnam (const std::string& dir, const std::string& pfx)
 {
   return octave::sys::tempnam (dir, pfx);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::tempnam instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::tempnam' instead")
 inline std::string
 octave_tempnam (const std::string& dir, const std::string& pfx,
                 std::string& msg)
@@ -353,14 +353,14 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
   return octave::sys::tempnam (dir, pfx, msg);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::canonicalize_file_name instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::canonicalize_file_name' instead")
 inline std::string
 octave_canonicalize_file_name (const std::string& nm)
 {
   return octave::sys::canonicalize_file_name (nm);
 }
 
-OCTAVE_DEPRECATED ("use octave::sys::canonicalize_file_name instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::canonicalize_file_name' instead")
 inline std::string
 octave_canonicalize_file_name (const std::string& nm, std::string& msg)
 {

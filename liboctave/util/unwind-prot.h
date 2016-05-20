@@ -153,10 +153,10 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::unwind_protect instead")
+OCTAVE_DEPRECATED ("use 'octave::unwind_protect' instead")
 typedef octave::unwind_protect unwind_protect;
 
-OCTAVE_DEPRECATED ("use octave::unwind_protect_safe instead")
+OCTAVE_DEPRECATED ("use 'octave::unwind_protect_safe' instead")
 typedef octave::unwind_protect_safe unwind_protect_safe;
 
 #endif

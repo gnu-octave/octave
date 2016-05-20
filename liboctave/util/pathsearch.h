@@ -175,7 +175,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::directory_path instead")
+OCTAVE_DEPRECATED ("use 'octave::directory_path' instead")
 typedef octave::directory_path dir_path;
 
 #endif

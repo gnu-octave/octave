@@ -370,7 +370,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::command_editor instead")
+OCTAVE_DEPRECATED ("use 'octave::command_editor' instead")
 typedef octave::command_editor command_editor;
 
 #endif

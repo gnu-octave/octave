@@ -153,7 +153,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::sys::env instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::env' instead")
 typedef octave::sys::env octave_env;
 
 #endif

@@ -48,14 +48,14 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use octave::sys::getcwd instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::getcwd' instead")
 const auto octave_getcwd = octave::sys::getcwd;
 
-OCTAVE_DEPRECATED ("use octave::sys::chdir instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::chdir' instead")
 const auto octave_chdir = octave::sys::chdir;
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-OCTAVE_DEPRECATED ("use octave::sys:: instead")
+OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
 const auto octave_popen2 = octave::sys::popen2;
 #endif
 

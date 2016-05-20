@@ -128,6 +128,7 @@ namespace octave
       si.dwFlags |= STARTF_USESTDHANDLES;
       si.hStdInput = childRead;
       si.hStdOutput = childWrite;
+      si.hStdError = GetStdHandle (STD_ERROR_HANDLE);
 
       // Ignore first arg as it is the command
       for (int k=1; k<args.numel (); k++)

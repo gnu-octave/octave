@@ -62,6 +62,7 @@ function runtests (directory)
 endfunction
 
 function run_all_tests (directory, do_class_dirs)
+
   flist = readdir (directory);
   dirs = {};
   no_tests = {};
@@ -99,40 +100,45 @@ function run_all_tests (directory, do_class_dirs)
       run_all_tests (d, false);
     endfor
   endif
+
 endfunction
 
 function retval = has_functions (f)
+
   n = length (f);
   if (n > 3 && strcmpi (f((end-2):end), ".cc"))
     fid = fopen (f);
-    if (fid >= 0)
-      str = fread (fid, "*char")';
-      fclose (fid);
-      retval = ! isempty (regexp (str,'^(?:DEFUN|DEFUN_DLD|DEFUNX)\>',
-                                      'lineanchors', 'once'));
-    else
+    if (fid < 0)
       error ("runtests: fopen failed: %s", f);
     endif
+    str = fread (fid, "*char")';
+    fclose (fid);
+    retval = ! isempty (regexp (str,'^(?:DEFUN|DEFUN_DLD|DEFUNX)\>',
+                                    'lineanchors', 'once'));
   elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
     retval = true;
   else
     retval = false;
   endif
+
 endfunction
 
 function retval = has_tests (f)
+
   fid = fopen (f);
-  if (fid >= 0)
-    str = fread (fid, "*char").';
-    fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
-                                     'lineanchors', 'once'));
-  else
+  if (fid < 0)
     error ("runtests: fopen failed: %s", f);
   endif
+
+  str = fread (fid, "*char").';
+  fclose (fid);
+  retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
+                                   'lineanchors', 'once'));
+
 endfunction
 
 function print_pass_fail (n, p, xf)
+
   if (n > 0)
     printf (" PASS %4d/%-4d", p, n);
     nfail = n - p;
@@ -145,6 +151,7 @@ function print_pass_fail (n, p, xf)
     endif
   endif
   puts ("\n");
+
 endfunction
 
 function print_test_file_name (nm)

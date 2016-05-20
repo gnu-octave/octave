@@ -89,6 +89,7 @@ function y = polyout (c, x)
 endfunction
 
 function str = coeff (c)
+
   if (imag (c))
     if (real (c))
       str = sprintf ("(%s)", num2str (c, 5));
@@ -98,6 +99,7 @@ function str = coeff (c)
   else
     str = num2str (c, 5);
   endif
+
 endfunction
 
 

@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function b = loadobj (a)
+
   b = a;
   if (isfield (b, "jobject"))
     b = rmfield (b, "jobject");
@@ -32,6 +33,7 @@ function b = loadobj (a)
     warning ("@ftp/loadobj: can not change remote directory in loaded FTP object");
     b = rmfield (b, "remotePwd");
   endif
+
 endfunction
 
 

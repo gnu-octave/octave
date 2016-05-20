@@ -452,6 +452,7 @@ endfunction
 %! assert (opts.figure, 5);
 
 function cmd = __quote_path__ (cmd)
+
   if (! isempty (cmd))
     is_quoted = all (cmd([1, end]) == "'");
     if (! is_quoted)
@@ -464,7 +465,9 @@ function cmd = __quote_path__ (cmd)
       endif
     endif
   endif
+
 endfunction
+
 
 function gs = __ghostscript_binary__ ()
 
@@ -609,6 +612,7 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
 endfunction
 
 function value = convert2points (value, units)
+
   switch (units)
     case "inches"
       value *= 72;
@@ -618,6 +622,7 @@ function value = convert2points (value, units)
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");
   endswitch
+
 endfunction
 
 function device_list = gs_device_list ();

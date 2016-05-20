@@ -1104,6 +1104,7 @@ function updatelegend (h, ~)
 endfunction
 
 function updatelegendtext (h, ~)
+
   kids = get (h, "children");
   htext = [];
   for i = 1:numel (kids)
@@ -1118,9 +1119,11 @@ function updatelegendtext (h, ~)
 
   ec = get (h, "edgecolor");
   set (h, "xcolor", ec, "ycolor", ec);
+
 endfunction
 
 function hideshowlegend (h, ~, ca, pos1, pos2)
+
   isvisible = strcmp (get (h, "visible"), "off");
   if (! isvisible)
     kids = get (h, "children");
@@ -1146,6 +1149,7 @@ function hideshowlegend (h, ~, ca, pos1, pos2)
       end_unwind_protect
     endif
   endfor
+
 endfunction
 
 function deletelegend1 (h, ~, hlegend)
@@ -1157,6 +1161,7 @@ function deletelegend1 (h, ~, hlegend)
 endfunction
 
 function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
+
   for i = 1 : numel (ca)
     if (isaxes (ca(i))
         && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off"))
@@ -1172,10 +1177,12 @@ function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
       endif
     endif
   endfor
+
   if (ishandle (t1))
     set (t1, "deletefcn", "");
     delete (t1);
   endif
+
   for i = 1 : numel (hplots)
     if (ishandle (hplots(i)) && strcmp (get (hplots(i), "type"), "line"))
       dellistener (hplots(i), "color");
@@ -1188,6 +1195,7 @@ function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
       dellistener (hplots(i), "displayname");
     endif
   endfor
+
 endfunction
 
 function updateline (h, ~, hlegend, linelength, update_name)
@@ -1245,6 +1253,7 @@ function updateline (h, ~, hlegend, linelength, update_name)
             "userdata", h, "parent", hlegend);
     endif
   endif
+
 endfunction
 
 

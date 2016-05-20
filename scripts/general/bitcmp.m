@@ -71,6 +71,7 @@ function C = bitcmp (A, k)
     mask = bitshift (bmax, k - amax);
     C = bitxor (bitand (A, mask), mask);
   endif
+
 endfunction
 
 

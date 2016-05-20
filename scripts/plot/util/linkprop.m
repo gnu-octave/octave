@@ -102,6 +102,7 @@ function update_prop (h, ~, hlist, prop)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function delete_linkprop (hlist, prop)

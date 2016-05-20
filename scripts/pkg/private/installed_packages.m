@@ -148,4 +148,5 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
       printf (format, cur_name, cur_loaded, cur_version, cur_dir);
     endfor
   endif
+
 endfunction

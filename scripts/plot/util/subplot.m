@@ -368,6 +368,7 @@ endfunction
 
 function subplot_align (h, d, rmupdate = false)
   persistent updating = false;
+
   if (! updating)
     if (rmupdate)
       ## The "position" property has been changed from outside this routine.

@@ -134,6 +134,7 @@ function print_test_file_name (nm)
 endfunction
 
 function print_pass_fail (p, n, xf, sk)
+
   if ((n + sk) > 0)
     printf (" PASS   %4d/%-4d", p, n);
     nfail = n - p - xf;
@@ -148,43 +149,48 @@ function print_pass_fail (p, n, xf, sk)
     endif
   endif
   puts ("\n");
+
 endfunction
 
 function retval = has_functions (f)
+
   n = length (f);
   if (n > 3 && strcmpi (f((end-2):end), ".cc"))
     fid = fopen (f);
-    if (fid >= 0)
-      str = fread (fid, "*char")';
-      fclose (fid);
-      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
-                                      'lineanchors', 'once'));
-    else
+    if (fid < 0)
       error ("__run_test_suite__: fopen failed: %s", f);
     endif
+    str = fread (fid, "*char")';
+    fclose (fid);
+    retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
+                                    'lineanchors', 'once'));
   elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
     retval = true;
   else
     retval = false;
   endif
+
 endfunction
 
 function retval = has_tests (f)
+
   fid = fopen (f);
-  if (fid >= 0)
-    str = fread (fid, "*char")';
-    fclose (fid);
-    retval = ! isempty (regexp (str,
-                                '^%!(assert|error|fail|test|xtest|warning)',
-                                'lineanchors', 'once'));
-  else
+  if (fid < 0)
     error ("__run_test_suite__: fopen failed: %s", f);
   endif
+
+  str = fread (fid, "*char")';
+  fclose (fid);
+  retval = ! isempty (regexp (str,
+                              '^%!(assert|error|fail|test|xtest|warning)',
+                              'lineanchors', 'once'));
+
 endfunction
 
 function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   global files_with_tests;
   global files_with_no_tests;
+
   lst = dir (d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
@@ -198,6 +204,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
       dsk += sk;
     endif
   endfor
+
   saved_dir = pwd ();
   unwind_protect
     cd (d);
@@ -223,6 +230,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   unwind_protect_cleanup
     cd (saved_dir);
   end_unwind_protect
+
 endfunction
 
 function [dp, dn, dxf, dsk] = run_test_script (fid, d);
@@ -230,6 +238,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   global files_with_no_tests;
   global topsrcdir;
   global topbuilddir;
+
   lst = dir (d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
@@ -242,6 +251,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
       dsk += sk;
     endif
   endfor
+
   for i = 1:length (lst)
     nm = lst(i).name;
     ## Ignore hidden files
@@ -274,6 +284,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
     endif
   endfor
   ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
+
 endfunction
 
 function n = num_elts_matching_pattern (lst, pat)

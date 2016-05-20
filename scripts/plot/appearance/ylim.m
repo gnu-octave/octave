@@ -43,11 +43,13 @@
 ## @end deftypefn
 
 function retval = ylim (varargin)
+
   ret = __axis_limits__ ("ylim", varargin{:});
 
   if (! isempty (ret))
     retval = ret;
   endif
+
 endfunction
 
 

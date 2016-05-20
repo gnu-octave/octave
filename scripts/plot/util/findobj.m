@@ -284,6 +284,7 @@ function h = findobj (varargin)
 
   h = h(match);
   h = h(:);
+
 endfunction
 
 

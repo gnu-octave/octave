@@ -114,6 +114,7 @@ endfunction
 
 
 function plotmatrixdelete (h, d, ax)
+
   for i = 1 : numel (ax)
     hc = ax(i);
     if (isaxes (hc) && strcmpi (get (hc, "beingdeleted"), "off"))
@@ -124,9 +125,11 @@ function plotmatrixdelete (h, d, ax)
       endif
     endif
   endfor
+
 endfunction
 
 function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
+
   have_line_spec = false;
   have_hist = false;
   parent = get (bigax, "parent");
@@ -198,5 +201,6 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
       endif
     endfor
   endfor
+
 endfunction
 

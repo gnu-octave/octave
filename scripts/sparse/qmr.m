@@ -263,6 +263,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
   else
     print usage();
   endif
+
 endfunction
 
 

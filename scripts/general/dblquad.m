@@ -65,6 +65,7 @@ function q = dblquad (f, xa, xb, ya, yb, tol = 1e-6, quadf = @quadcc, varargin)
 
   q = feval (quadf, @(y) inner (y, f, xa, xb, tol, quadf,
                                 varargin{:}), ya, yb, tol);
+
 endfunction
 
 function q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)

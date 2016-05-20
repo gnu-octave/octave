@@ -26,6 +26,7 @@
 ## @end deftypefn
 
 function ppi = ppint (pp, c)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif

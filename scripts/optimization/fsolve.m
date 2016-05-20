@@ -445,6 +445,7 @@ endfunction
 ## An assistant function that evaluates a function handle and checks for
 ## bad results.
 function [fx, jx] = guarded_eval (fun, x, complexeqn)
+
   if (nargout > 1)
     [fx, jx] = fun (x);
   else
@@ -461,13 +462,16 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
   elseif (any (isinf (fx(:))))
     error ("fsolve:isinf", "fsolve: Inf value encountered");
   endif
+
 endfunction
 
 function [fx, jx] = make_fcn_jac (x, fcn, fjac)
+
   fx = fcn (x);
   if (nargout == 2)
     jx = fjac (x);
   endif
+
 endfunction
 
 
@@ -587,6 +591,7 @@ endfunction
 ## FIXME: handle singularity, or leave it up to mldivide?
 
 function x = __dogleg__ (r, b, d, delta)
+
   ## Get Gauss-Newton direction.
   x = r \ b;
   xn = norm (d .* x);
@@ -617,5 +622,6 @@ function x = __dogleg__ (r, b, d, delta)
     ## Form the appropriate convex combination.
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
+
 endfunction
 

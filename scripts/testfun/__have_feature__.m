@@ -22,11 +22,13 @@
 ## @end deftypefn
 
 function retval = __have_feature__ (feature)
+
   if (strncmp (feature, "ENABLE_", 7))
     features = __octave_config_info__ ();
   else
     features = __octave_config_info__ ("build_features");
   endif
+
   if (iscellstr (feature))
     retval = (all (isfield (features, feature))
               && cellfun (@(x) features.(x), feature));
@@ -35,6 +37,7 @@ function retval = __have_feature__ (feature)
   else
     retval = false;
   endif
+
 endfunction
 
 

@@ -82,6 +82,7 @@ function pos = __actual_axis_position__ (h)
   else
     pos = axis_obj.position;
   endif
+
 endfunction
 
 

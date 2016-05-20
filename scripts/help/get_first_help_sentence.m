@@ -42,7 +42,7 @@
 ## @end deftypefn
 
 function [text, status] = get_first_help_sentence (name, max_len = 80)
-  ## Check input
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
@@ -77,6 +77,7 @@ function [text, status] = get_first_help_sentence (name, max_len = 80)
   if (nargout <= 1 && status != 0)
     warning ("get_first_help_sentence: couldn't run makeinfo on '%s'", name);
   endif
+
 endfunction
 
 ## This function extracts the first sentence from a plain text help text
@@ -140,6 +141,7 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
 
   ## Extract first line with plain text method.
   text = first_sentence_plain_text (help_text, max_len);
+
 endfunction
 
 ## This function extracts the first sentence from a html help text.

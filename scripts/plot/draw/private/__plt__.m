@@ -157,7 +157,8 @@ function retval = __plt__ (caller, h, varargin)
 
 endfunction
 
-function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options, hlgnd, tlgnd, setlgnd)
+function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options,
+                                                hlgnd, tlgnd, setlgnd)
   n = numel (h);
   if (numel (options) == 1)
     options = repmat (options(:), n, 1);
@@ -171,6 +172,7 @@ function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options, hlgnd, tlgnd, setlgn
       setlgnd = true;
     endif
   endfor
+
 endfunction
 
 function retval = __plt1__ (h, x1, options, properties = {})

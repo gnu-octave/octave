@@ -54,8 +54,8 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
   elseif (! isscalar (n))
     error ("cubehelix: N must be a scalar");
   endif
-  n = double (n);
 
+  n = double (n);
   if (n > 1)
     coeff = [ -0.14861  -0.29227   1.97294
                1.78277  -0.90649   0.00000];
@@ -69,7 +69,6 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
     ## Clip values (only in case users have changed values of hue or gamma)
     map(map < 0) = 0;
     map(map > 1) = 1;
-
   elseif (n > 0)
     map = [0, 0, 0];
   else
@@ -79,8 +78,8 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
 endfunction
 
 
-## A better demo of this colormap would be a 3d plot in ntsc instead of
-## rgb values.  That would really show what this colormap is about.
+## A better demo of this colormap would be a 3D plot in NTSC instead of
+## RGB values.  That would really show what this colormap is about.
 %!demo
 %! ## Show the 'cubehelix' colormap profile and as an image
 %! cmap = cubehelix (256);
@@ -88,3 +87,4 @@ endfunction
 %! rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %! rgbplot (cmap);
+

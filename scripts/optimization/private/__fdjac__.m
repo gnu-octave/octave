@@ -22,6 +22,7 @@
 ## @end deftypefn
 
 function fjac = __fdjac__ (fcn, x, fvec, typicalx, cdif, err = 0)
+
   if (cdif)
     err = (max (eps, err)) ^ (1/3);
     h = typicalx*err;
@@ -42,7 +43,6 @@ function fjac = __fdjac__ (fcn, x, fvec, typicalx, cdif, err = 0)
       fjac(:,i) = (fcn (x1)(:) - fvec) / (x1(i) - x(i));
     endfor
   endif
+
 endfunction
-
-
 

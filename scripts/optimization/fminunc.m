@@ -387,6 +387,7 @@ endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
 function [fx, gx] = guarded_eval (fun, x)
+
   if (nargout > 1)
     [fx, gx] = fun (x);
   else
@@ -401,6 +402,7 @@ function [fx, gx] = guarded_eval (fun, x)
   elseif (any (isinf (fx(:))))
     error ("fminunc:isinf", "fminunc: Inf value encountered");
   endif
+
 endfunction
 
 
@@ -437,6 +439,7 @@ endfunction
 ## FIXME: handle singularity, or leave it up to mldivide?
 
 function x = __doglegm__ (r, g, d, delta)
+
   ## Get Gauss-Newton direction.
   b = r' \ g;
   x = r \ b;
@@ -468,5 +471,6 @@ function x = __doglegm__ (r, g, d, delta)
     ## Form the appropriate convex combination.
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
+
 endfunction
 

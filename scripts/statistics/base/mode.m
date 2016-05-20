@@ -103,6 +103,7 @@ function [m, f, c] = mode (x, dim)
     c{i} = xs(t2(:, i) == f(i), i);
     m(i) = c{i}(1);
   endfor
+
 endfunction
 
 

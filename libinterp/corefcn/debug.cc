@@ -437,12 +437,12 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
 %! dbstop in ls;
 %! dbstop help at 100;
 %! dbstop in ls 100;
-%! dbstop help 200 if a==5;
+%! dbstop help 201 if a==5;
 %! dbstop if error Octave:undefined-function;
 %! s = dbstatus;
 %! dbclear all;
 %! assert ({s.bkpt(:).name}, {"help", "help", "help>do_contents", "ls", "ls"});
-%! assert ([s.bkpt(:).line], [48, 100, 200, 58, 100]);
+%! assert ([s.bkpt(:).line], [48, 100, 201, 58, 100]);
 %! assert (s.errs, {"Octave:undefined-function"});
 */
 

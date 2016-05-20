@@ -133,6 +133,7 @@ endfunction
 ##   LOG(EYE(SIZE(A))+A) using a partial fraction expansion.
 
 function s = logm_pade_pf (A, m)
+
   [nodes, wts] = gauss_legendre (m);
   ## Convert from [-1,1] to [0,1].
   nodes = (nodes+1)/2;
@@ -143,6 +144,7 @@ function s = logm_pade_pf (A, m)
   for j = 1:m
     s += wts(j)*(A/(eye (n) + nodes(j)*A));
   endfor
+
 endfunction
 
 ######################################################################
@@ -155,11 +157,13 @@ endfunction
 ## rules, Math. Comp., 23(106):221-230, 1969.
 
 function [x, w] = gauss_legendre (n)
+
   i = 1:n-1;
   v = i./sqrt ((2*i).^2-1);
   [V, D] = eig (diag (v, -1) + diag (v, 1));
   x = diag (D);
   w = 2*(V(1,:)'.^2);
+
 endfunction
 
 

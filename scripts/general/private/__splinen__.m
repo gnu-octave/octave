@@ -26,6 +26,7 @@
 ## FIXME: Allow arbitrary grids..
 
 function yi = __splinen__ (x, y, xi, extrapval, f)
+
   ## ND isvector function.
   isvec = @(x) numel (x) == length (x);
   if (! iscell (x) || length (x) < ndims (y) || any (! cellfun (isvec, x))
@@ -46,5 +47,6 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
     endfor
     yi(idx) = extrapval;
   endif
+
 endfunction
 

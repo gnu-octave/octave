@@ -529,6 +529,7 @@ function h = buildannot (hax, objtype, pos)
 endfunction
 
 function props = lineprops (varargin)
+
   ## FIXME: Use "axesx(y)lim" instead of "linex(y)data"
   props = {"color", "color", [0 0 0], ...
            "linestyle",  "linelinestyle", "-", ...
@@ -538,6 +539,7 @@ function props = lineprops (varargin)
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
+
 endfunction
 
 function col = basecolors ()
@@ -546,12 +548,12 @@ function col = basecolors ()
 endfunction
 
 function linemenu (hui, hpar)
+
   hm = uimenu ("parent", hui, "label", "Line");
 
   ## Color
   vals = basecolors ();
   addbasemenu (hm, hpar, "Color", vals);
-
 
   ## Linestyle
   vals = set (hpar, "linestyle");
@@ -560,18 +562,22 @@ function linemenu (hui, hpar)
   ## Linewidth
   vals = [0.5 1 1.5 2];
   addbasemenu (hm, hpar, "Linewidth", vals);
+
 endfunction
 
 function props = arrowprops (varargin)
+
   props = {"headlength", "data", 10, ...
            "headstyle",  "radio", "diamond|ellipse|none|plain|rectangle|vback1|{vback2}|vback3", ...
            "headwidth",  "data", 10};
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
+
 endfunction
 
 function arrowmenu (hui, hpar)
+
   hm = uimenu ("parent", hui, "label", "Arrowhead");
 
   ## Headlength/width
@@ -582,9 +588,11 @@ function arrowmenu (hui, hpar)
   ## Headstyle
   vals = set (hpar, "headstyle");
   addbasemenu (hm, hpar, "Headstyle", vals);
+
 endfunction
 
 function props = dblarrowprops (varargin)
+
   props = {"head1length", "data", 10, ...
            "head1style",  "radio", "diamond|ellipse|none|plain|rectangle|vback1|{vback2}|vback3", ...
            "head1width",  "data", 10, ...
@@ -594,9 +602,11 @@ function props = dblarrowprops (varargin)
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
+
 endfunction
 
 function dblarrowmenu (hui, hpar)
+
   hm1 = uimenu ("parent", hui, "label", "Arrowhead #1");
   hm2 = uimenu ("parent", hui, "label", "Arrowhead #2");
 
@@ -611,9 +621,11 @@ function dblarrowmenu (hui, hpar)
   vals = set (hpar, "head1style");
   addbasemenu (hm1, hpar, "head1style", vals, "Headstyle");
   addbasemenu (hm2, hpar, "head2style", vals, "Headstyle");
+
 endfunction
 
 function props = textprops (varargin)
+
   props = {"fontangle", "textfontangle", "normal", ...
            "fontname",  "textfontname", "Helvetica", ...
            "fontsize", "textfontsize", 10, ...
@@ -632,9 +644,11 @@ function props = textprops (varargin)
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
+
 endfunction
 
 function stringdlg (hpar, prop)
+
   def = get (hpar, prop);
   if (iscell (def))
     prompt = arrayfun (@(n) sprintf ("Line #%d:", n), 1:numel (def),
@@ -649,9 +663,11 @@ function stringdlg (hpar, prop)
   if (! isempty (cstr))
     set (hpar, prop, cstr);
   endif
+
 endfunction
 
 function textmenu (hui, hpar)
+
   hm = uimenu ("parent", hui, "label", "Text");
 
   ## String;
@@ -694,6 +710,7 @@ function textmenu (hui, hpar)
 endfunction
 
 function props = textboxprops (varargin)
+
   props = {"backgroundcolor", "patchfacecolor", "none", ...
            "color", "textcolor", [0 0 0], ...
            "edgecolor", "patchedgecolor", [0 0 0], ...
@@ -714,9 +731,11 @@ function props = textboxprops (varargin)
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
+
 endfunction
 
 function textboxmenu (hui, hpar)
+
   ## Text properties
   hm1 = uimenu ("parent", hui, "label", "Text");
 
@@ -771,9 +790,11 @@ function textboxmenu (hui, hpar)
   prop = "linewidth";
   vals = 0.5:.5:2;
   addbasemenu (hm2, hpar, prop, vals, "Line Width");
+
 endfunction
 
 function props = rectprops (varargin)
+
   props = {"edgecolor", "patchedgecolor", "k", ...
            "facealpha", "patchfacealpha", 1, ...
            "facecolor", "patchfacecolor", "none", ...
@@ -782,9 +803,11 @@ function props = rectprops (varargin)
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
+
 endfunction
 
 function rectmenu (hui, hpar)
+
   prop = "facecolor";
   vals = basecolors ();
   addbasemenu (hui, hpar, prop, vals, "Face Color");
@@ -797,6 +820,7 @@ function rectmenu (hui, hpar)
   prop = "linewidth";
   vals = 0.5:.5:2;
   addbasemenu (hui, hpar, prop, vals, "Line Width");
+
 endfunction
 
 function addbaseprops (h, proptable)
@@ -805,6 +829,7 @@ function addbaseprops (h, proptable)
 endfunction
 
 function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
+
   if (isempty (mainlabel))
     mainlabel = pname;
   endif
@@ -825,11 +850,14 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
     fcn = @() set (hpar, pname, val);
     htmp(ii) = uimenu (h, "label", label, "callback", fcn);
   endfor
+
   handle_check (hpar, {}, htmp, pname, is_numeric);
   addlistener (hpar, pname, {@handle_check, htmp, pname, is_numeric});
+
 endfunction
 
 function handle_check (h, dummy, hmenus, prop, is_numeric)
+
   vals = get (hmenus, "label");
   current = get (h, prop);
   if (is_numeric)
@@ -839,9 +867,11 @@ function handle_check (h, dummy, hmenus, prop, is_numeric)
   idx = strcmp (vals, current);
   set (hmenus(idx), "checked", "on");
   set (hmenus(! idx), "checked", "off");
+
 endfunction
 
 function update_position (h1, dummy, h, force = false)
+
   if (! force)
     pos = convertposition (h, getappdata (h, "__former_units__"),
                            get (h, "units"));
@@ -852,11 +882,12 @@ function update_position (h1, dummy, h, force = false)
     set (h, "position", [0 0 .5 .5],
          "position", get (h, "position"));
   endif
-endfunction
 
+endfunction
 
 function update_line (h, dummy, prop, hli)
   persistent recursive = false;
+
   if (! recursive)
     switch (prop)
       case "color"
@@ -914,9 +945,11 @@ function update_line (h, dummy, prop, hli)
 
     endswitch
   endif
+
 endfunction
 
 function [x, y] = arrowcoordinates (h, nar = [])
+
   pos = getnormpos (h);
   ppos = norm2pts (h, pos(3:4).');
   ang = angle (complex (ppos(1), ppos(2)));
@@ -979,6 +1012,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
 
   x = XY(1,:).';
   y = XY(2,:).';
+
 endfunction
 
 function update_arrow (h, dummy, prop, hpa = [])
@@ -1000,6 +1034,7 @@ function update_arrow (h, dummy, prop, hpa = [])
       endswitch
     endif
   endfor
+
 endfunction
 
 function update_text (h, dummy, prop, hte)
@@ -1024,6 +1059,7 @@ function update_text (h, dummy, prop, hte)
         endif
     endswitch
   endif
+
 endfunction
 
 function update_textbox (h, dummy, prop, htb)
@@ -1204,11 +1240,11 @@ function [x, y] = pos2rect (pos)
 endfunction
 
 function [x, y] = pos2ell (pos)
+
   a = pos(3)/2;
   b = pos(4)/2;
 
-  ## Arbitrarily use 100 points
-  ## when it is spread over
+  ## Arbitrarily use 100 points when it is spread over
   ang = linspace (0, 2*pi, 100);
 
   x = a * cos (ang);
@@ -1216,6 +1252,7 @@ function [x, y] = pos2ell (pos)
 
   x += pos(1) + a;
   y += pos(2) + b;
+
 endfunction
 
 function update_rect (h, dummy, prop, hre, typ)
@@ -1236,10 +1273,11 @@ function update_rect (h, dummy, prop, hre, typ)
         set (hre, prop, get (h, prop));
     endswitch
   endif
+
 endfunction
 
 
-## FIXME: the additionnal regular axes is necessary for fltk to draw the
+## FIXME: the additional regular axes is necessary for fltk to draw the
 ##        annotation axes.
 %!demo
 %! clf; axes ('visible', 'off');

@@ -38,6 +38,7 @@
 ## @end deftypefn
 
 function whitebg (varargin)
+
   h = 0;
   color = NaN;
 
@@ -133,8 +134,7 @@ function whitebg (varargin)
       endif
     endfor
   else
-    ## FIXME
-    ## Is this the right thing to do in this case?
+    ## FIXME: Is this the right thing to do in this case?
     set (findall (fig, "type", "axes"), "color", color);
     if (isroot)
       defs = get (0, "default");
@@ -144,6 +144,7 @@ function whitebg (varargin)
       endif
     endif
   endif
+
 endfunction
 
 

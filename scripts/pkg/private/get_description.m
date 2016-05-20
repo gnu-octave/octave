@@ -24,6 +24,7 @@
 
 ## Parse the DESCRIPTION file.
 function desc = get_description (filename)
+
   [fid, msg] = fopen (filename, "r");
   if (fid == -1)
     error ("the DESCRIPTION file %s could not be read: %s", filename, msg);
@@ -80,6 +81,7 @@ function desc = get_description (filename)
     desc.depends = "";
   endif
   desc.name = tolower (desc.name);
+
 endfunction
 
 
@@ -87,6 +89,7 @@ endfunction
 ## This function returns a cell of structures with the following fields:
 ##   package, version, operator
 function deps_cell = fix_depends (depends)
+
   deps = strtrim (ostrsplit (tolower (depends), ","));
   deps_cell = cell (1, length (deps));
   dep_pat = ...
@@ -126,12 +129,13 @@ function deps_cell = fix_depends (depends)
              dep);
     endif
   endfor
+
 endfunction
 
 function [valid] = is_valid_pkg_version_string (str)
   ## We are limiting ourselves to this set of characters because the
-  ## version will appear on the filepath.  The portable character, according
-  ## to http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_278
+  ## version will appear on the filepath.  The portable character, according to
+  ## http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_278
   ## is [A-Za-z0-9\.\_\-].  However, this is very limited.  We specially
   ## want to support a "+" so we can support "pkgname-2.1.0+" during
   ## development.  So we use Debian's character set for version strings

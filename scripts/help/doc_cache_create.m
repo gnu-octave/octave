@@ -66,6 +66,7 @@ function doc_cache_create (out_file = "doc-cache", directory = [])
 endfunction
 
 function [text, first_sentence, status] = handle_function (f, text, format)
+
   first_sentence = "";
   ## Skip internal functions starting with "__"
   if (strncmp (f, "__", 2))
@@ -93,9 +94,11 @@ function [text, first_sentence, status] = handle_function (f, text, format)
 
   ## Get first sentence of help text
   first_sentence = get_first_help_sentence (f);
+
 endfunction
 
 function cache = create_cache (list)
+
   cache = {};
 
   ## For each function:
@@ -117,6 +120,7 @@ function cache = create_cache (list)
     cache(2, end) = text;
     cache(3, end) = first_sentence;
   endfor
+
 endfunction
 
 function cache = gen_doc_cache_in_dir (directory)
@@ -150,12 +154,14 @@ function cache = gen_doc_cache_in_dir (directory)
 endfunction
 
 function cache = gen_builtin_cache ()
+
   operators = __operators__ ();
   keywords = __keywords__ ();
   builtins = __builtins__ ();
   list = {operators{:}, keywords{:}, builtins{:}};
 
   cache = create_cache (list);
+
 endfunction
 
 

@@ -84,6 +84,7 @@ function varargout = gradient (m, varargin)
 endfunction
 
 function varargout = matrix_gradient (m, varargin)
+
   transposed = false;
   if (isvector (m))
     ## make a row vector.
@@ -168,9 +169,11 @@ function varargout = matrix_gradient (m, varargin)
   if (transposed)
     varargout{1} = varargout{1}.';
   endif
+
 endfunction
 
 function varargout = handle_gradient (f, p0, varargin)
+
   ## Input checking
   p0_size = size (p0);
 
@@ -218,6 +221,7 @@ function varargout = handle_gradient (f, p0, varargin)
       varargout{d} = df_dx;
     endif
   endfor
+
 endfunction
 
 

@@ -40,6 +40,7 @@
 ## @end deftypefn
 
 function vars = symvar (str)
+
   vars = argnames (inline (str));
   ## Correct for auto-generated 'x' variable when no symvar was found.
   if (numel (vars) == 1 && strcmp (vars{1}, "x") && ! any (str == "x"))

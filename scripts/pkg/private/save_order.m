@@ -23,6 +23,7 @@
 ## @end deftypefn
 
 function newdesc = save_order (desc)
+
   newdesc = {};
   for i = 1 : length (desc)
     deps = desc{i}.depends;
@@ -46,6 +47,7 @@ function newdesc = save_order (desc)
       endif
     endif
   endfor
+
   ## Eliminate the duplicates.
   idx = [];
   for i = 1 : length (newdesc)
@@ -56,5 +58,6 @@ function newdesc = save_order (desc)
     endfor
   endfor
   newdesc(idx) = [];
+
 endfunction
 

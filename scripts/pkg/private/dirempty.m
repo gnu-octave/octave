@@ -23,6 +23,7 @@
 ## @end deftypefn
 
 function emp = dirempty (nm, ign)
+
   if (exist (nm, "dir"))
     if (nargin < 2)
       ign = {".", ".."};
@@ -47,5 +48,6 @@ function emp = dirempty (nm, ign)
   else
     emp = true;
   endif
+
 endfunction
 

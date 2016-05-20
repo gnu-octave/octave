@@ -80,6 +80,7 @@ function h = rectangle (varargin)
   if (nargout > 0)
     h = htmp;
   endif
+
 endfunction
 
 function hg = __rectangle__ (hax, varargin)
@@ -175,6 +176,7 @@ function hg = __rectangle__ (hax, varargin)
   addlistener (hg, "linewidth", @update_props);
   addlistener (hg, "linestyle", @update_props);
   addlistener (hg, "facecolor", @update_props);
+
 endfunction
 
 function update_data (h, ~)
@@ -221,13 +223,13 @@ function update_data (h, ~)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_props (h, ~)
   kids = get (h, "children");
   set (kids, {"edgecolor", "linewidth", "linestyle", "facecolor"},
      get (h, {"edgecolor", "linewidth", "linestyle", "facecolor"}));
-
 endfunction
 
 

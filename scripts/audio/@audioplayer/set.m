@@ -62,6 +62,7 @@ function settable = set (varargin)
 endfunction
 
 function setproperty (player, property, value)
+
   switch (property)
     case "SampleRate"
       __player_set_fs__ (player, value);
@@ -72,4 +73,6 @@ function setproperty (player, property, value)
     otherwise
       error ("audioplayer: no such property or the property specified is read-only");
   endswitch
+
 endfunction
+

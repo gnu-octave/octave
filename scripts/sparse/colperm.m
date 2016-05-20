@@ -35,6 +35,7 @@ function p = colperm (s)
 
   [i, j] = find (s);
   idx = find (diff ([j; Inf]) != 0);
-  [dummy, p] = sort (idx - [0; idx(1:(end-1))]);
+  [~, p] = sort (idx - [0; idx(1:(end-1))]);
+
 endfunction
 

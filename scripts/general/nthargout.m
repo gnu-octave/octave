@@ -67,6 +67,7 @@
 ## Author: Jordi Gutiérrez Hermoso
 
 function out = nthargout (n, varargin)
+
   if (nargin < 2)
     print_usage ();
   endif

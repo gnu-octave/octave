@@ -115,7 +115,7 @@
 
 function retval = optimset (varargin)
 
-  nargs = nargin ();
+  nargs = nargin;
 
   opts = __all_opts__ ();
 

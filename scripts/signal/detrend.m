@@ -38,7 +38,7 @@
 ## Adapted-By: jwe
 
 function y = detrend (x, p = 1)
-  ## Check input
+
   if (nargin > 0 && isreal (x) && ndims (x) <= 2)
     ## Check p
     if (ischar (p) && strcmpi (p, "constant"))

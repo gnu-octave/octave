@@ -342,6 +342,7 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
 endfunction
 
 function update_xlim (h, ~)
+
   kids = get (h, "children");
   xlim = get (h, "xlim");
 
@@ -353,9 +354,11 @@ function update_xlim (h, ~)
       endif
     endif
   endfor
+
 endfunction
 
 function update_baseline (h, ~)
+
   visible = get (h, "visible");
   ydata = get (h, "ydata")(1);
 
@@ -369,6 +372,7 @@ function update_baseline (h, ~)
       break;
     endif
   endfor
+
 endfunction
 
 function show_baseline (h, ~, prop = "")
@@ -394,6 +398,7 @@ function show_baseline (h, ~, prop = "")
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function move_baseline (h, ~)
@@ -414,6 +419,7 @@ function move_baseline (h, ~)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_props (h, ~)
@@ -459,6 +465,7 @@ function update_data (h, ~)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_group (h, ~)
@@ -481,5 +488,6 @@ function update_group (h, ~)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 

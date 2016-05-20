@@ -271,12 +271,13 @@ function __datetick__ (varargin)
                    [ax "lim"], [min(ticks), max(ticks)]);
     endif
   endif
+
 endfunction
 
 function [a, b] = __magform__ (x)
+
   if (x == 0)
-    a = 0;
-    b = 0;
+    a = b = 0;
   else
     l = log10 (abs (x));
     r = rem (l, 1);
@@ -290,6 +291,7 @@ function [a, b] = __magform__ (x)
       a = -a;
     endif
   endif
+
 endfunction
 
 ## A translation from Tom Holoryd's python code at
@@ -317,6 +319,8 @@ function sep = __calc_tick_sep__ (lo, hi)
   else
     x = 10;
   endif
+
   sep = x * 10 .^ b;
+
 endfunction
 

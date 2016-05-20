@@ -254,8 +254,8 @@ function h = colorbar (varargin)
 endfunction
 
 function deletecolorbar (h, d, hc, orig_props)
-  ## Don't delete the colorbar and reset the axis size if the
-  ## parent figure is being deleted.
+  ## Don't delete the colorbar and reset the axis size
+  ## if the parent figure is being deleted.
   if (isaxes (hc)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
     if (strcmp (get (hc, "beingdeleted"), "off"))
@@ -272,9 +272,11 @@ function deletecolorbar (h, d, hc, orig_props)
       set (ax, "units", units);
     endif
   endif
+
 endfunction
 
 function resetaxis (cax, d, ax, orig_props)
+
   if (isaxes (ax))
     ## FIXME: Probably don't want to delete everyone's listeners on colormap.
     dellistener (ancestor (ax, "figure"), "colormap");
@@ -292,9 +294,11 @@ function resetaxis (cax, d, ax, orig_props)
              "activepositionproperty", orig_props.activepositionproperty);
     set (ax, "units", units);
   endif
+
 endfunction
 
 function update_colorbar_clim (hax, d, hi, vert)
+
   if (isaxes (hax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
     clen = rows (get (ancestor (hax, "figure"), "colormap"));
@@ -312,6 +316,7 @@ function update_colorbar_clim (hax, d, hi, vert)
       set (hiax, "xlim", cext);
     endif
   endif
+  
 endfunction
 
 function update_colorbar_cmap (hf, d, hi, vert, init_sz)
@@ -331,9 +336,11 @@ function update_colorbar_cmap (hf, d, hi, vert, init_sz)
       update_colorbar_clim (get (hi, "parent"), d, hi, vert);
     endif
   endif
+
 endfunction
 
 function update_colorbar_axis (h, d, cax, orig_props)
+
   if (isaxes (cax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))
     loc = get (cax, "location");
@@ -363,6 +370,7 @@ function update_colorbar_axis (h, d, cax, orig_props)
     endif
 
   endif
+
 endfunction
 
 function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)

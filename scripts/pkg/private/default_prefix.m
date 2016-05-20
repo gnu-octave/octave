@@ -22,6 +22,7 @@
 ## @end deftypefn
 
 function [prefix, archprefix] = default_prefix (global_install, desc)
+
   if (global_install)
     prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
     if (nargin == 2)
@@ -35,5 +36,6 @@ function [prefix, archprefix] = default_prefix (global_install, desc)
     prefix = tilde_expand (fullfile ("~", "octave"));
     archprefix = prefix;
   endif
+
 endfunction
 

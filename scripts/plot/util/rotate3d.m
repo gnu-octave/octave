@@ -95,6 +95,7 @@ function rotate3d (varargin)
 endfunction
 
 function update_mouse_mode (hfig, arg)
+
   if (strcmp (arg, "off"))
     set (hfig, "__mouse_mode__", "none");
   else
@@ -105,4 +106,6 @@ function update_mouse_mode (hfig, arg)
     zoom ("off");
     set (hfig, "__mouse_mode__", "rotate");
   endif
+
 endfunction
+

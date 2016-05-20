@@ -24,6 +24,7 @@
 
 function uninstall (pkgnames, handle_deps, verbose, local_list,
                     global_list, global_install)
+
   ## Get the list of installed packages.
   [local_packages, global_packages] = installed_packages(local_list,
                                                          global_list);

@@ -71,6 +71,7 @@
 ## Author: Carnë Draug <carandraug@octave.org>
 
 function varargout = imformats (arg1, arg2, arg3)
+
   if (nargin > 3)
     print_usage ();
   endif
@@ -138,6 +139,7 @@ function varargout = imformats (arg1, arg2, arg3)
   else
     varargout{1} = formats;
   endif
+
 endfunction
 
 function formats = default_formats ()
@@ -254,6 +256,7 @@ function formats = default_formats ()
 
   ## fills rest of format information by checking with GraphicsMagick
   formats = __magick_formats__ (formats);
+
 endfunction
 
 function is_valid_format (format)
@@ -264,21 +267,24 @@ function is_valid_format (format)
   if (! all (fields_mask))
     error ("imformats: structure has missing field `%s'.", min_fields(! fields_mask){1});
   endif
+
 endfunction
 
 function match = find_ext_idx (formats, ext)
-  ## XXX: what should we do if there's more than one hit?
-  ##      Should this function prevent the addition of
-  ##      duplicated extensions?
+  ## FIXME: what should we do if there's more than one hit?
+  ##        Should this function prevent the addition of
+  ##        duplicated extensions?
   match = cellfun (@(x) any (strcmpi (x, ext)), {formats.ext});
 endfunction
 
 function bool = isa_magick (coder, filename)
+
   bool = false;
   try
     info = __magick_ping__ (filename, 1);
     bool = strcmp (coder, info.Format);
   end_try_catch
+
 endfunction
 
 function pretty_print_formats (formats)
@@ -314,6 +320,7 @@ function pretty_print_formats (formats)
   printf ([template "\n"], table'{:});
 
 endfunction
+
 
 ## This must work, even without support for image IO
 %!test

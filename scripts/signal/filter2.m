@@ -55,5 +55,6 @@ function y = filter2 (b, x, shape)
 
   [nr, nc] = size (b);
   y = conv2 (x, b(nr:-1:1, nc:-1:1), shape);
+
 endfunction
 

@@ -688,12 +688,15 @@ function cmd = epstool (opts, filein, fileout)
   if (opts.debug)
     fprintf ("epstool command: '%s'\n", cmd);
   endif
+
 endfunction
 
 function cmd = fig2dev (opts, devopt)
+
   if (nargin < 2)
     devopt = opts.devopt;
   endif
+
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.fig2dev_binary))
     if (dos_shell)
@@ -708,14 +711,17 @@ function cmd = fig2dev (opts, devopt)
   if (opts.debug)
     fprintf ("fig2dev command: '%s'\n", cmd);
   endif
+
 endfunction
 
 function latex_standalone (opts)
+
   n = find (opts.name == ".", 1, "last");
   if (! isempty (n))
     opts.name = opts.name(1:n-1);
   endif
   latexfile = [opts.name ".tex"];
+
   switch (opts.devopt)
     case {"pdflatexstandalone"}
       packages = "\\usepackage{graphicx,color}";
@@ -727,6 +733,7 @@ function latex_standalone (opts)
       packages = "\\usepackage{epsfig,color}";
       graphicsfile = [opts.name "-inc.eps"];
   endswitch
+
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
                        fix (opts.canvas_size), fix (opts.canvas_size));
   prepend = {"\\documentclass{minimal}";
@@ -735,6 +742,7 @@ function latex_standalone (opts)
              "\\begin{document}";
              "\\centering"};
   postpend = {"\\end{document}"};
+
   fid = fopen (latexfile, "r");
   if (fid >= 0)
     latex = fscanf (fid, "%c", Inf);
@@ -750,6 +758,7 @@ function latex_standalone (opts)
     error ("print:erroropeningfile",
            "print.m: error opening file '%s'", latexfile);
   endif
+
   fid = fopen (latexfile, "w");
   if (fid >= 0)
     fprintf (fid, "%s\n", prepend{:});
@@ -764,12 +773,15 @@ function latex_standalone (opts)
     error ("print:erroropeningfile",
            "print.m: error opening file '%s'", latexfile);
   endif
+
 endfunction
 
 function cmd = lpr (opts)
+
   if (nargin < 2)
     devopt = opts.devopt;
   endif
+
   if (! isempty (opts.lpr_binary))
     cmd = opts.lpr_binary;
     if (! isempty (opts.lpr_options))
@@ -784,12 +796,15 @@ function cmd = lpr (opts)
   if (opts.debug)
     fprintf ("lpr command: '%s'\n", cmd);
   endif
+
 endfunction
 
 function cmd = pstoedit (opts, devopt)
+
   if (nargin < 2)
     devopt = opts.devopt;
   endif
+
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.pstoedit_binary))
     if (dos_shell)
@@ -804,5 +819,6 @@ function cmd = pstoedit (opts, devopt)
   if (opts.debug)
     fprintf ("pstoedit command: '%s'\n", cmd);
   endif
+
 endfunction
 

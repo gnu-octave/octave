@@ -122,6 +122,7 @@ function z = trapz (x, y, dim)
       z = 0.5 * sum (diff (x, 1, dim) .* (y(idx1{:}) + y(idx2{:})), dim);
     endif
   endif
+
 endfunction
 
 

@@ -83,6 +83,7 @@ endfunction
 ## Compute CDF in batches of doubling size until CDF > x, or answer > 500.
 ## Return the locations of unfinished cases in k.
 function [m, k] = scalar_nbininv (x, n, p)
+
   k = 1:length (x);
   m = zeros (size (x));
   prev_limit = 0;
@@ -107,6 +108,7 @@ endfunction
 ## but care must be taken to handle both scalar and vector n,p.  Bookkeeping
 ## may cost more than the extra computations.
 function m = bin_search_nbininv (x, n, p)
+
   k = 1:length (x);
   lower = zeros (size (x));
   limit = 1;

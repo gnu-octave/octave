@@ -106,14 +106,16 @@ function pan (varargin)
 endfunction
 
 function update_mouse_mode (hfig, arg)
+
   if (strcmp (arg, "off"))
     set (hfig, "__mouse_mode__", "none");
   else
-    ## FIXME: Is there a better way other than calling these
-    ## functions to set the other mouse mode Enable fields to
-    ## "off"?
+    ## FIXME: Is there a better way other than calling these functions
+    ##        to set the other mouse mode Enable fields to "off"?
     rotate3d ("off");
     zoom ("off");
     set (hfig, "__mouse_mode__", "pan");
   endif
+
 endfunction
+

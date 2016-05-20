@@ -80,6 +80,7 @@ function pr_out = printd (obj, filename)
   fclose (pf);
   delete (tempf);
   pr_out = sprintf ("%s file %s written\n", opt, filename);
+
 endfunction
 
 

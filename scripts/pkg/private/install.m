@@ -299,10 +299,12 @@ function install (files, handle_deps, prefix, archprefix, verbose,
     printf ("For information about changes from previous versions of the %s package, run 'news %s'.\n",
             desc.name, desc.name);
   endif
+
 endfunction
 
 
 function pkg = extract_pkg (nm, pat)
+
   fid = fopen (nm, "rt");
   pkg = "";
   if (fid >= 0)
@@ -320,21 +322,25 @@ function pkg = extract_pkg (nm, pat)
     endif
     fclose (fid);
   endif
+
 endfunction
 
 
 ## Make sure the package contains the essential files.
 function verify_directory (dir)
+
   needed_files = {"COPYING", "DESCRIPTION"};
   for f = needed_files
     if (! exist (fullfile (dir, f{1}), "file"))
       error ("package is missing file: %s", f{1});
     endif
   endfor
+
 endfunction
 
 
 function prepare_installation (desc, packdir)
+
   ## Is there a pre_install to call?
   if (exist (fullfile (packdir, "pre_install.m"), "file"))
     wd = pwd ();
@@ -358,10 +364,12 @@ function prepare_installation (desc, packdir)
              msg);
     endif
   endif
+
 endfunction
 
 
 function copy_built_files (desc, packdir, verbose)
+
   src = fullfile (packdir, "src");
   if (! exist (src, "dir"))
     return
@@ -445,6 +453,7 @@ function copy_built_files (desc, packdir, verbose)
         endif
       endif
   endif
+
 endfunction
 
 
@@ -469,10 +478,12 @@ function dep = is_architecture_dependent (nm)
       break;
     endif
   endfor
+
 endfunction
 
 
 function copy_files (desc, packdir, global_install)
+
   ## Create the installation directory.
   if (! exist (desc.dir, "dir"))
     [status, output] = mkdir (desc.dir);
@@ -589,10 +600,12 @@ function copy_files (desc, packdir, global_install)
   if (exist (bindir, "dir") && ! dirempty (bindir))
     [status, output] = copyfile (bindir, desc.dir);
   endif
+
 endfunction
 
 
 function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, octfiledir)
+
   filepath = fullfile (packdir, filename);
   if (! exist (filepath, "file") && strcmpi (requirement, "optional"))
     ## do nothing, it's still OK
@@ -604,6 +617,7 @@ function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, oct
       error ("Couldn't copy %s file: %s", filename, output);
     endif
   endif
+
 endfunction
 
 
@@ -612,6 +626,7 @@ endfunction
 ##   'dir'   is the 'inst' directory in temporary directory.
 ##   'index_file' is the name (including path) of resulting INDEX file.
 function write_index (desc, dir, index_file, global_install)
+
   ## Get names of functions in dir
   [files, err, msg] = readdir (dir);
   if (err)
@@ -672,10 +687,12 @@ function write_index (desc, dir, index_file, global_install)
   fprintf (fid, "%s\n", categories{1});
   fprintf (fid, "  %s\n", functions{:});
   fclose (fid);
+
 endfunction
 
 
 function create_pkgadddel (desc, packdir, nm, global_install)
+
   instpkg = fullfile (desc.dir, nm);
   instfid = fopen (instpkg, "at"); # append to support PKG_ADD at inst/
   ## If it is exists, most of the PKG_* file should go into the
@@ -738,19 +755,23 @@ function create_pkgadddel (desc, packdir, nm, global_install)
       endif
     endif
   endif
+
 endfunction
 
 
 function archprefix = getarchprefix (desc, global_install)
+
   if (global_install)
     [~, archprefix] = default_prefix (global_install, desc);
   else
     archprefix = desc.dir;
   endif
+
 endfunction
 
 
 function finish_installation (desc, packdir, global_install)
+
   ## Is there a post-install to call?
   if (exist (fullfile (packdir, "post_install.m"), "file"))
     wd = pwd ();
@@ -765,12 +786,16 @@ function finish_installation (desc, packdir, global_install)
       rethrow (lasterror ());
     end_try_catch
   endif
+
 endfunction
 
 
 function generate_lookfor_cache (desc)
+
   dirs = strtrim (ostrsplit (genpath (desc.dir), pathsep ()));
   for i = 1 : length (dirs)
     doc_cache_create (fullfile (dirs{i}, "doc-cache"), dirs{i});
   endfor
+
 endfunction
+

@@ -191,6 +191,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   else
     error ("plotyy.m: This shouldn't happen.  File a bug report.");
   endif
+
 endfunction
 
 function deleteplotyy (h, ~, ax2, t2)
@@ -204,6 +205,7 @@ endfunction
 
 function update_nextplot (h, ~, ax2)
   persistent recursion = false;
+
   if (! recursion)
     unwind_protect
       recursion = true;
@@ -212,6 +214,7 @@ function update_nextplot (h, ~, ax2)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_position (h, ~, ax2)
@@ -252,9 +255,11 @@ function update_position (h, ~, ax2)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function color = getcolor (ax)
+
   obj = get (ax);
   if (isfield (obj, "color"))
     color = obj.color;
@@ -265,6 +270,7 @@ function color = getcolor (ax)
   else
     color = [0, 0, 0];
   endif
+
 endfunction
 
 

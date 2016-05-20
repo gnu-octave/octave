@@ -69,9 +69,11 @@ function celldisp (c, name)
       disp ("");
     endif
   endfor
+
 endfunction
 
 function s = indices (dv, i)
+
   if (sum (dv != 1) > 1)
     c = cell (size (dv));
     [c{:}] = ind2sub (dv, i);
@@ -80,6 +82,7 @@ function s = indices (dv, i)
   else
     s = sprintf ("%i", i);
   endif
+
 endfunction
 
 

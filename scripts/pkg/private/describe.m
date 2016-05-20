@@ -82,6 +82,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
                                  flag{i}, verbose);
     endfor
   endif
+
 endfunction
 
 
@@ -135,11 +136,13 @@ function pkg_idx_struct = parse_pkg_idx (packdir)
     line = fgetl (fid);
   endwhile
   fclose (fid);
+
 endfunction
 
 
 function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
                                     pkg_desc, status, verbose)
+
   printf ("---\nPackage name:\n\t%s\n", pkg_name);
   printf ("Version:\n\t%s\n", pkg_ver);
   printf ("Short description:\n\t%s\n", pkg_desc);
@@ -155,4 +158,5 @@ function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
       endif
     endfor
   endif
+
 endfunction

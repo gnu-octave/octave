@@ -62,6 +62,7 @@ function rundemos (directory)
 endfunction
 
 function run_all_demos (directory, do_class_dirs)
+
   flist = readdir (directory);
   dirs = {};
   for i = 1:numel (flist)
@@ -94,17 +95,20 @@ function run_all_demos (directory, do_class_dirs)
       run_all_demos (d, false);
     endfor
   endif
+
 endfunction
 
 function retval = has_demos (f)
+
   fid = fopen (f);
   if (f < 0)
     error ("rundemos: fopen failed: %s", f);
-  else
-    str = fread (fid, "*char").';
-    fclose (fid);
-    retval = ! isempty (regexp (str, '^%!demo', 'lineanchors', 'once'));
   endif
+
+  str = fread (fid, "*char").';
+  fclose (fid);
+  retval = ! isempty (regexp (str, '^%!demo', 'lineanchors', 'once'));
+
 endfunction
 
 

@@ -75,6 +75,7 @@
 ## @end deftypefn
 
 function s = spaugment (A, c)
+
   if (nargin < 2)
     if (issparse (A))
       c = max (max (abs (A))) / 1000;
@@ -91,6 +92,7 @@ function s = spaugment (A, c)
 
   [m, n] = size (A);
   s = [ c * speye(m, m), A; A', sparse(n, n)];
+
 endfunction
 
 

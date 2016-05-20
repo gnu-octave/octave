@@ -284,6 +284,7 @@ function hg = __scatter__ (varargin)
 endfunction
 
 function render_size_color (hg, vert, s, c, marker, filled, isflat)
+
   if (isscalar (s))
     x = vert(:,1);
     y = vert(:,2);
@@ -342,9 +343,11 @@ function render_size_color (hg, vert, s, c, marker, filled, isflat)
                              marker, filled, isflat);
     endfor
   endif
+
 endfunction
 
 function update_props (h, d)
+
   lw = get (h, "linewidth");
   m  = get (h, "marker");
   fc = get (h, "markerfacecolor");
@@ -353,10 +356,12 @@ function update_props (h, d)
 
   set (kids, "linewidth", lw, "marker", m,
              "markerfacecolor", fc, "markeredgecolor", ec);
+
 endfunction
 
 ## FIXME: This callback routine doesn't handle the case where N > 100.
 function update_data (h, d)
+
   x = get (h, "xdata");
   y = get (h, "ydata");
   z = get (h, "zdata");

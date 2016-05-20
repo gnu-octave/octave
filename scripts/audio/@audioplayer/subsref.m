@@ -24,6 +24,7 @@
 ## @end deftypefn
 
 function value = subsref (player, idx)
+
   if (nargin != 2)
     print_usage ();
   endif
@@ -40,3 +41,4 @@ function value = subsref (player, idx)
   endif
 
 endfunction
+

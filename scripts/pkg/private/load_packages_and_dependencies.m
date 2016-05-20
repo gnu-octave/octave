@@ -24,6 +24,7 @@
 
 function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
                                          global_install)
+
   idx = load_package_dirs (idx, [], handle_deps, installed_pkgs_lst);
   dirs = {};
   execpath = EXEC_PATH ();
@@ -51,10 +52,12 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
   if (! strcmp (EXEC_PATH, execpath))
     EXEC_PATH (execpath);
   endif
+
 endfunction
 
 
 function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
+
   for i = lidx
     if (isfield (installed_pkgs_lst{i}, "loaded")
         && installed_pkgs_lst{i}.loaded)
@@ -86,4 +89,6 @@ function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
       endif
     endif
   endfor
+
 endfunction
+

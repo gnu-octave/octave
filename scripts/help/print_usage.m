@@ -27,6 +27,7 @@
 ## @end deftypefn
 
 function print_usage (name)
+
   x = dbstack ();
   ## Handle input
   if (nargin == 0)
@@ -100,6 +101,7 @@ function [retval, status] = get_usage_plain_text (help_text, max_len)
 endfunction
 
 function [retval, status] = get_usage_texinfo (help_text, max_len)
+
   ## Lines ending with "@\n" are continuation lines, so they should be
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
@@ -127,6 +129,7 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
 
   ## Run makeinfo to generate plain text
   [retval, status] = __makeinfo__ (buffer, "plain text");
+
 endfunction
 
 function [retval, status] = get_usage_html (help_text, max_len)

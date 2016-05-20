@@ -31,6 +31,7 @@
 ## @end deftypefn
 
 function [idx, p] = tsearchn (x, t, xi)
+
   if (nargin != 3)
     print_usage ();
   endif
@@ -56,6 +57,7 @@ function [idx, p] = tsearchn (x, t, xi)
     p(ni(intri),:) = b(intri, :);
     ni(intri) = [];
   endfor
+
 endfunction
 
 function Beta = cart2bary (T, P)
@@ -84,6 +86,7 @@ function Beta = cart2bary (T, P)
   [M, N] = size (P);
   Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:));
   Beta (:,end+1) = 1 - sum (Beta, 2);
+
 endfunction
 
 

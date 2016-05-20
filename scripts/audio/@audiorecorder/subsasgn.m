@@ -24,6 +24,7 @@
 ## @end deftypefn
 
 function value = subsasgn (recorder, idx, rhs)
+
   if (nargin != 3)
     print_usage ();
   endif
@@ -41,3 +42,4 @@ function value = subsasgn (recorder, idx, rhs)
   endif
 
 endfunction
+

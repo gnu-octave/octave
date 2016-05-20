@@ -146,6 +146,7 @@ function iargs = __find_patches__ (varargin)
 endfunction
 
 function retval = iscolorspec (arg)
+
   retval = false;
   if (ischar (arg))
     persistent colors = {"y", "yellow", "r", "red", "m", "magenta", ...
@@ -159,6 +160,7 @@ function retval = iscolorspec (arg)
     ## Let patch worry about the multple different input formats.
     retval = true;
   endif
+
 endfunction
 
 

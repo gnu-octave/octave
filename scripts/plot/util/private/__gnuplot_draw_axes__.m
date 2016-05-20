@@ -1701,6 +1701,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 endfunction
 
 function x = flip (x)
+
   if (rows (x) == 1)
     x = fliplr (x);
   elseif (columns (x) == 1 || ischar (x))
@@ -1708,6 +1709,7 @@ function x = flip (x)
   else
     x = flipud (fliplr (x));
   endif
+
 endfunction
 
 function spacing_spec = create_spacingspec (f, s, gp_term)
@@ -1726,14 +1728,17 @@ function spacing_spec = create_spacingspec (f, s, gp_term)
 endfunction
 
 function fontspec = create_fontspec (f, s, gp_term)
+
   if (isempty (f) || strcmp (f, "*") || strcmp (gp_term, "tikz"))
     fontspec = sprintf ("font \",%d\"", s);
   else
     fontspec = sprintf ("font \"%s,%d\"", f, s);
   endif
+
 endfunction
 
 function idx = do_border_2d (obj, plot_stream, idx)
+
   fprintf (plot_stream, "set border 0\n");
 
   if (strcmp (obj.box, "on") || strcmp (obj.xaxislocation, "bottom"))
@@ -1771,6 +1776,7 @@ function idx = do_border_2d (obj, plot_stream, idx)
     fprintf (plot_stream, "from graph %d,%d,%d ", from);
     fprintf (plot_stream, "to graph %d,%d,%d\n", to);
   endfunction
+
 endfunction
 
 function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
@@ -1928,6 +1934,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
 endfunction
 
 function [lt] = gnuplot_linetype (obj)
+
   if (isfield (obj, "linestyle"))
     if (__gnuplot_has_feature__ ("dashtype"))
       opt = "dashtype";
@@ -1970,9 +1977,11 @@ function [lt] = gnuplot_linetype (obj)
   else
     lt = "";
   endif
+
 endfunction
 
 function [pt, pt2, obj] = gnuplot_pointtype (obj)
+
   if (isfield (obj, "marker"))
     switch (obj.marker)
       case "+"
@@ -2031,10 +2040,10 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
   else
     pt = pt2 = "";
   endif
+
 endfunction
 
 function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
-
   ## DATA is already transposed.
 
   ## Convert NA elements to normal NaN values because fprintf writes
@@ -2144,6 +2153,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
              obj.zticklabel, obj.zcolor, "z", plot_stream, true,
              "border", obj.tickdir, ticklength, fontname, fontspec,
              obj.ticklabelinterpreter, obj.zscale, obj.zsgn, gnuplot_term);
+
 endfunction
 
 function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
@@ -2225,9 +2235,11 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   else
     fprintf (plot_stream, "unset m%stics;\n", ax);
   endif
+
 endfunction
 
 function ticklabel = ticklabel_to_cell (ticklabel)
+
   if (ischar (ticklabel))
     ticklabel = cellstr (ticklabel);
   elseif (iscellstr (ticklabel))
@@ -2235,6 +2247,7 @@ function ticklabel = ticklabel_to_cell (ticklabel)
   else
     error ("__gnuplot_draw_axes__: unsupported type of ticklabel");
   endif
+
 endfunction
 
 function colorspec = get_text_colorspec (color)
@@ -2242,11 +2255,13 @@ function colorspec = get_text_colorspec (color)
 endfunction
 
 function [f, s, fnt, it, bld] = get_fontname_and_size (t)
+
   if (isempty (t.fontname) || strcmp (t.fontname, "*"))
     fnt = "";
   else
     fnt = t.fontname;
   endif
+
   f = fnt;
   it = false;
   bld = false;
@@ -2267,15 +2282,16 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
     f = [f "-italic"];
     it = true;
   endif
+
   if (isempty (t.fontsize))
     s = 10;
   else
     s = t.fontsize;
   endif
+
 endfunction
 
 function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
-
   persistent warned_latex = false;
 
   if (strcmp (fld, "string"))
@@ -2324,6 +2340,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
       endif
     endif
   endif
+
 endfunction
 
 function str = __tex2enhanced__ (str, fnt, it, bld)
@@ -2502,11 +2519,13 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
 endfunction
 
 function l = length_string (s)
+
   l = length (s) - length (strfind (s,'{')) - length (strfind (s,'}'));
   m = regexp (s, '/([\w-]+|[\w-]+=\d+)', 'matches');
   if (! isempty (m))
     l -= sum (cellfun ("length", m));
   endif
+
 endfunction
 
 function sym = __setup_sym_table__ ()
@@ -2625,6 +2644,7 @@ function sym = __setup_sym_table__ ()
 endfunction
 
 function retval = __do_enhanced_option__ (enhanced, obj)
+
   retval = "";
   if (enhanced)
     if (strcmpi (obj.interpreter, "none"))
@@ -2633,18 +2653,24 @@ function retval = __do_enhanced_option__ (enhanced, obj)
       retval = "enhanced";
     endif
   endif
+
 endfunction
 
 function maybe_do_xtick_mirror (plot_stream, axis_obj)
+
   if (! isempty(axis_obj.xtick))
     fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                           axis_obj.tickdir);
   endif
+
 endfunction
 
 function maybe_do_x2tick_mirror (plot_stream, axis_obj)
+
   if (! isempty(axis_obj.xtick))
     fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
                           axis_obj.tickdir);
   endif
+
 endfunction
+

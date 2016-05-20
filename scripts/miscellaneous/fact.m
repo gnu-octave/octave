@@ -268,6 +268,7 @@ function truth = fact ()
 endfunction
 
 function out = wordwrap (w)
+
   ncol = terminal_size ()(2);
   wc = ostrsplit (w, " ");
   out = "\n";
@@ -284,6 +285,7 @@ function out = wordwrap (w)
     i += 1;
   endwhile
   out = [out, "\n"];
+
 endfunction
 
 

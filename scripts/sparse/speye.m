@@ -32,6 +32,7 @@
 ## @end deftypefn
 
 function s = speye (m, n)
+
   if (nargin == 1)
     if (isvector (m) && length (m) == 2)
       n = m(2);
@@ -49,6 +50,7 @@ function s = speye (m, n)
 
   lo = min ([m, n]);
   s = sparse (1:lo, 1:lo, 1, m, n);
+
 endfunction
 
 

@@ -198,7 +198,9 @@ function opts = __gnuplot_print__ (opts)
 
 endfunction
 
+
 function eps_drawnow (opts, epsfile, gp_opts)
+
   [h, fontsize] = get_figure_text_objs (opts);
   unwind_protect
     fontsize_2x = cellfun (@times, {2}, fontsize, "uniformoutput", false);
@@ -207,9 +209,12 @@ function eps_drawnow (opts, epsfile, gp_opts)
   unwind_protect_cleanup
     set (h, {"fontsize"}, fontsize);
   end_unwind_protect
+
 endfunction
 
+
 function local_drawnow (term, file, opts)
+
   set (0, "currentfigure", opts.figure);
   if (isempty (opts.debug_file) || ! opts.debug)
     drawnow (term, file);
@@ -219,7 +224,9 @@ function local_drawnow (term, file, opts)
   if (opts.debug)
     fprintf ("Expanded gnuplot terminal = '%s'\n", term);
   endif
+
 endfunction
+
 
 function f = font_spec (opts, varargin)
   for n = 1:2:numel (varargin)
@@ -326,9 +333,12 @@ function f = font_spec (opts, varargin)
         f = sprintf ("fontsize %d", opts.fontsize);
       endif
   endswitch
+
 endfunction
 
+
 function [h, fontsize] = get_figure_text_objs (opts)
+
   h = findall (opts.figure, "-property", "fontsize");
   hp = get (h, "parent");
   if (iscell (hp))
@@ -348,5 +358,6 @@ function [h, fontsize] = get_figure_text_objs (opts)
     case 1
       fontsize = {fontsize};
   endswitch
+
 endfunction
 

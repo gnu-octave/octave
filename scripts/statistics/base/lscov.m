@@ -111,6 +111,7 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
       endfor
     endif
   endif
+
 endfunction
 
 

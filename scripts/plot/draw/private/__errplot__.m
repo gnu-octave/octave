@@ -283,6 +283,7 @@ endfunction
 function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
                                          xldata, xudata, ifmt,
                                          xscale, yscale)
+
   if (strcmp (xscale, "linear"))
     dx = 0.01 * (max (xdata(:)) - min (xdata(:)));
     if (dx == 0)
@@ -317,6 +318,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     ylo = ydata/ry;
     yhi = ydata*ry;
   endif
+
   nans = NaN + xdata(:);  # fast way to do NaN (size (xdata(:)))
   if (strcmp (ifmt, "yerr"))
     xdata = [xdata, xdata, nans, ...
@@ -365,6 +367,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
 endfunction
 
 function update_props (hg, ~, hl)
+
   set (hl, "color", get (hg, "color"),
            "linewidth", get (hg, "linewidth"));
   set (hl(2), "linestyle", get (hg, "linestyle"),
@@ -372,6 +375,7 @@ function update_props (hg, ~, hl)
               "markeredgecolor", get (hg, "markeredgecolor"),
               "markerfacecolor", get (hg, "markerfacecolor"),
               "markersize", get (hg, "markersize"));
+
 endfunction
 
 function update_data (hg, ~, hl)

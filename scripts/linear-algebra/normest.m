@@ -76,6 +76,7 @@ function [n, c] = normest (A, tol = 1e-6)
   until (abs (n - n0) <= tol * n)
 
   rand ("state", v);    # restore state of random number generator
+
 endfunction
 
 

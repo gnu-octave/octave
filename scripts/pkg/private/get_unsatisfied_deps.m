@@ -23,6 +23,7 @@
 ## @end deftypefn
 
 function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
+
   bad_deps = {};
 
   ## For each dependency.
@@ -51,5 +52,6 @@ function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
       endif
     endif
   endfor
+
 endfunction
 

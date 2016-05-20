@@ -131,6 +131,7 @@ function t = isprime (x)
 endfunction
 
 function t = isgaussianprime (z)
+
   ## Assume prime unless proven otherwise
   t = true (size (z));
 
@@ -149,6 +150,7 @@ function t = isgaussianprime (z)
   zidx = ! (xidx | yidx);          # Skip entries that were already evaluated
   zabs = x(zidx).^2 + y(zidx).^2;
   t(zidx) &= isprime (zabs);
+
 endfunction
 
 

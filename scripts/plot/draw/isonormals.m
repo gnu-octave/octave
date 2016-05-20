@@ -98,6 +98,7 @@
 ## Author: Martin Helm <martin@mhelm.de>
 
 function varargout = isonormals (varargin)
+
   na = nargin;
   negate = false;
   if (ischar (varargin{nargin}))
@@ -108,6 +109,7 @@ function varargout = isonormals (varargin)
       error ("isonormals: Unknown option '%s'", varargin{nargin});
     endif
   endif
+
   switch (na)
     case 2
       c = varargin{1};
@@ -124,6 +126,7 @@ function varargout = isonormals (varargin)
     otherwise
       print_usage ();
   endswitch
+
   if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
@@ -133,11 +136,13 @@ function varargout = isonormals (varargin)
   else
     error ("isonormals: Last argument is not a vertex list or a patch handle");
   endif
+
   if (negate)
     normals = -__interp_cube__ (x, y, z, c, v, "normals");
   else
     normals = __interp_cube__ (x, y, z, c, v, "normals");
   endif
+
   switch (nargout)
     case 0
       if (! isempty (pa))
@@ -148,6 +153,7 @@ function varargout = isonormals (varargin)
     otherwise
       print_usage ();
   endswitch
+
 endfunction
 
 

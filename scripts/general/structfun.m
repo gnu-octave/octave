@@ -107,6 +107,7 @@ function varargout = structfun (func, S, varargin);
     varargout = cellfun ("cell2struct", varargout, {fieldnames(S)}, {1}, ...
                          uo_str, false);
   endif
+
 endfunction
 
 

@@ -385,6 +385,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
       warning ("pcg: matrix not positive definite?\n");
     endif
   endif
+
 endfunction
 
 

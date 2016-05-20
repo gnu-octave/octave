@@ -96,6 +96,7 @@ function h = axes (varargin)
 endfunction
 
 function restack_axes (h, cf)
+
   show = get (0, "showhiddenhandles");
   set (0, "showhiddenhandles", "on");
   unwind_protect
@@ -106,4 +107,6 @@ function restack_axes (h, cf)
   unwind_protect_cleanup
     set (0, "showhiddenhandles", show);
   end_unwind_protect
+
 endfunction
+

@@ -124,6 +124,7 @@ function text = type (varargin)
       text{n} = txt;
     endif
   endfor
+
 endfunction
 
 

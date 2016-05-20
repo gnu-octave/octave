@@ -134,5 +134,6 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
     endif
 
   endwhile
+
 endfunction
 

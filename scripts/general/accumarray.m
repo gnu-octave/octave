@@ -370,6 +370,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       A(subs) = vals;
     endif
   endif
+
 endfunction
 
 

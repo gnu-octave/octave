@@ -181,4 +181,6 @@ function [h, failed] = __patch__ (p, varargin)
   if (! failed)
     h = __go_patch__ (p, args{:});
   endif
+
 endfunction
+

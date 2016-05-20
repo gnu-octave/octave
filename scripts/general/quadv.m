@@ -114,6 +114,7 @@ endfunction
 
 function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, nfun, hmin,
                                        tol, trace, varargin)
+
   if (nfun > 10_000)
     q = q0;
   else

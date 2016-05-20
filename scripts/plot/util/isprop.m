@@ -49,6 +49,7 @@ function res = isprop (h, prop)
       res(i) = true;
     end_try_catch
   endfor
+
 endfunction
 
 

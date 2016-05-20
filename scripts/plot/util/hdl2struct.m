@@ -117,14 +117,13 @@ function s = hdl2struct (h)
 endfunction
 
 function hdlist = getspecial (h)
-  obj = get (h);
+
   ## return handles to special children
-  fields = fieldnames (obj);
   hdlist = [];
 
-  regkids = get ( h, "children");
+  regkids = get (h, "children");
   set (0, "showhiddenhandles", "on");
-  allkids = get ( h, "children");
+  allkids = get (h, "children");
   set (0, "showhiddenhandles", "off");
   speckids = arrayfun (@(x) ! any (x == regkids), allkids);
   hdlist = allkids (find (speckids));
@@ -133,8 +132,9 @@ function hdlist = getspecial (h)
 endfunction
 
 function prpstr = getprops (h)
+
   obj = get (h);
-  ## get usefull properties rejecting readonly, children, handles ...
+  ## get useful properties rejecting readonly, children, handles ...
   fields = fieldnames (obj);
   hdlist = [];
 

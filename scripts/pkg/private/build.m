@@ -34,6 +34,7 @@
 ## @end deftypefn
 
 function build (builddir, tarballs, verbose)
+
   if (nargin != 3)
     print_usage ();
   endif
@@ -83,4 +84,5 @@ function build (builddir, tarballs, verbose)
       chdir (init_wd);
     end_unwind_protect
   endfor
+
 endfunction

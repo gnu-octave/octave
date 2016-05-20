@@ -25,6 +25,7 @@
 ## function.
 
 function [text, status] = __strip_html_tags__ (html_text)
+
   start = find (html_text == "<");
   stop  = find (html_text == ">");
   if (length (start) == length (stop))
@@ -40,10 +41,12 @@ function [text, status] = __strip_html_tags__ (html_text)
     text = "";
     status = 1;
   endif
+
 endfunction
 
 ## This function removes end-lines (\n) that makes printing look bad
 function text = strip_superfluous_endlines (text)
+
   ## Find groups of end-lines
   els = find (text == "\n");
   dels = diff (els);
@@ -78,5 +81,6 @@ function text = strip_superfluous_endlines (text)
 
   ## Actually remove the elements
   text = text(keep);
+
 endfunction
 

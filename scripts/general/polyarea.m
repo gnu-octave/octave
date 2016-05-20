@@ -49,17 +49,19 @@
 ##    * optimization saving half the sums and multiplies
 
 function a = polyarea (x, y, dim)
+
   if (nargin != 2 && nargin != 3)
     print_usage ();
-  elseif (size_equal (x, y))
-    if (nargin == 2)
-      a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
-    else
-      a = abs (sum (x .* (shift (y, -1, dim) - shift (y, 1, dim)), dim)) / 2;
-    endif
-  else
+  elseif (! size_equal (x, y))
     error ("polyarea: X and Y must have the same shape");
   endif
+
+  if (nargin == 2)
+    a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
+  else
+    a = abs (sum (x .* (shift (y, -1, dim) - shift (y, 1, dim)), dim)) / 2;
+  endif
+
 endfunction
 
 

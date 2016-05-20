@@ -78,6 +78,7 @@ function [errorcode, varargout] = common_size (varargin)
       endif
     endif
   endif
+
 endfunction
 
 

@@ -23,6 +23,7 @@
 ## @end deftypefn
 
 function descriptions = rebuild (prefix, archprefix, list, files, verbose)
+
   if (isempty (files))
     [dirlist, err, msg] = readdir (prefix);
     if (err)
@@ -40,6 +41,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, verbose)
       cd (wd);
     end_unwind_protect
   endif
+
   descriptions = {};
   for k = 1:length (dirlist)
     descfile = fullfile (prefix, dirlist{k}, "packinfo", "DESCRIPTION");
@@ -79,5 +81,6 @@ function descriptions = rebuild (prefix, archprefix, list, files, verbose)
       descriptions(dup) = [];
     endif
   endif
+
 endfunction
 

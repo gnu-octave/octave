@@ -351,6 +351,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
 endfunction
 
 function term = gnuplot_default_term (plot_stream)
+
   term = lower (getenv ("GNUTERM"));
   ## If not specified, guess the terminal type.
   if (isempty (term) || ! __gnuplot_has_terminal__ (term, plot_stream))
@@ -366,6 +367,7 @@ function term = gnuplot_default_term (plot_stream)
       term = "dumb";
     endif
   endif
+
 endfunction
 
 function [term, opts] = gnuplot_trim_term (string)
@@ -398,7 +400,9 @@ function ret = output_to_screen (term)
 endfunction
 
 function retval = have_non_legend_axes (h)
+
   retval = false;
+
   all_axes = findall (h, "type", "axes");
   if (! isempty (all_axes))
     n_all_axes = numel (all_axes);
@@ -409,6 +413,7 @@ function retval = have_non_legend_axes (h)
       retval = (n_all_axes - n_legend_axes) > 1;
     endif
   endif
+
 endfunction
 
 

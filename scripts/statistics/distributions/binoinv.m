@@ -79,6 +79,7 @@ endfunction
 ## Compute CDF in batches of doubling size until CDF > x, or answer > 500
 ## Return the locations of unfinished cases in k.
 function [m, k] = scalar_binoinv (x, n, p)
+
   k = 1:length (x);
   m = zeros (size (x));
   prev_limit = 0;
@@ -104,6 +105,7 @@ endfunction
 ## Return the locations of unfinished cases in k.
 ## Calculates CDF by summing PDF, which is faster than calls to binocdf.
 function [m, k] = vector_binoinv (x, n, p)
+
   k = 1:length(x);
   m = zeros (size (x));
   prev_limit = 0;
@@ -135,6 +137,7 @@ endfunction
 ## but care must be taken to handle both scalar and vector n, p.  Bookkeeping
 ## may cost more than the extra computations.
 function m = bin_search_binoinv (x, n, p)
+
   k = 1:length (x);
   lower = zeros (size (x));
   limit = 500;              # lower bound on point at which prev phase finished
@@ -155,6 +158,7 @@ function m = bin_search_binoinv (x, n, p)
   endfor
   m = ceil (lower);
   m(x > binocdf (m(:), n, p)) += 1;  # fix off-by-one errors from binary search
+
 endfunction
 
 

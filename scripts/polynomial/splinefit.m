@@ -94,6 +94,7 @@
 ## @end deftypefn
 
 function pp = splinefit (x, y, breaks, varargin)
+
   if (nargin > 3)
     n = cellfun ("isclass", varargin, "char");
     varargin(n) = lower (varargin(n));
@@ -105,6 +106,7 @@ function pp = splinefit (x, y, breaks, varargin)
   else
     props = struct ();
   endif
+
   fields = fieldnames (props);
   for f = 1:numel (fields)
     if (! any (strcmp (fields{f},
@@ -113,6 +115,7 @@ function pp = splinefit (x, y, breaks, varargin)
              "unrecognized property '%s'", fields{f});
     endif
   endfor
+
   args = {};
   if (isfield (props, "periodic") && props.periodic)
     args{end+1} = "p";
@@ -142,7 +145,9 @@ function pp = splinefit (x, y, breaks, varargin)
   elseif (! isnumeric (breaks) || ! isvector (breaks))
     print_usage ();
   endif
+
   pp = __splinefit__ (x, y, breaks, args{:});
+
 endfunction
 
 

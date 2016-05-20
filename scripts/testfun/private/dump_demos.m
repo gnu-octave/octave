@@ -95,9 +95,11 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
 
   ## Close script
   fclose (fid);
+
 endfunction
 
 function dump_all_demos (directory, fid, fmt)
+
   dirinfo = dir (fullfile (directory, "*.m"));
   flist = {dirinfo.name};
   ## Remove uigetdir, uigetfile, uiputfile, etc.
@@ -147,9 +149,11 @@ function dump_all_demos (directory, fid, fmt)
     endfor
   endfor
   fprintf (fid, "close all\n");
+
 endfunction
 
 function retval = get_demos (fcn)
+
   [code, idx] = test (fcn, "grabdemo");
   num_demos = length (idx) - 1;
   retval = cell (1, num_demos);
@@ -157,9 +161,11 @@ function retval = get_demos (fcn)
   for k = 1:num_demos
     retval{k} = oct2mat (code(idx(k):idx(k+1)-1));
   endfor
+
 endfunction
 
 function code = oct2mat (code)
+
   ## Simple hacks to make things Matlab compatible
   code = strrep (code, "%!", "%%");
   code = strrep (code, "!", "~");
@@ -183,5 +189,6 @@ function code = oct2mat (code)
 
   ## Fix up sombrero which now has default argument in Octave
   code = strrep (code, "sombrero ()", "sombrero (41)");
+
 endfunction
 

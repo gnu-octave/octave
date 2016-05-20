@@ -46,6 +46,7 @@
 ## @end deftypefn
 
 function obj = ftp (host = "", username = "anonymous", password = "")
+
   if (nargin == 1 && isa (host, "ftp"))
     obj = host;   # Copy constructor
   else
@@ -58,6 +59,7 @@ function obj = ftp (host = "", username = "anonymous", password = "")
     endif
     obj = class (p, "ftp");
   endif
+
 endfunction
 
 

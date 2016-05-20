@@ -23,6 +23,7 @@
 ## @end deftypefn
 
 function load_packages (files, handle_deps, local_list, global_list)
+
   installed_pkgs_lst = installed_packages (local_list, global_list);
   num_packages = length (installed_pkgs_lst);
 
@@ -49,5 +50,6 @@ function load_packages (files, handle_deps, local_list, global_list)
 
   ## Load the packages, but take care of the ordering of dependencies.
   load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst, true);
+
 endfunction
 

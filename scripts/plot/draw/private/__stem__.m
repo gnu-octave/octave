@@ -350,6 +350,7 @@ function [lc, ls, mc, ms] = set_default_values ()
 endfunction
 
 function update_xlim (h, ~)
+
   kids = get (h, "children");
   xlim = get (h, "xlim");
 
@@ -361,9 +362,11 @@ function update_xlim (h, ~)
       endif
     endif
   endfor
+
 endfunction
 
 function update_baseline (h, ~, src)
+
   visible = get (h, "visible");
   if (src == 0)
     basevalue = get (h, "basevalue");
@@ -385,9 +388,11 @@ function update_baseline (h, ~, src)
       endif
     endif
   endfor
+
 endfunction
 
 function show_baseline (h, ~, hg = [])
+
   if (isempty (hg))
     set (get (h, "baseline"), "visible", get (h, "showbaseline"));
   else
@@ -397,9 +402,11 @@ function show_baseline (h, ~, hg = [])
       set (get (h, "baseline"), "visible", "on");
     endif
   endif
+
 endfunction
 
 function move_baseline (h, ~)
+
   b0 = get (h, "basevalue");
   bl = get (h, "baseline");
 
@@ -411,9 +418,11 @@ function move_baseline (h, ~)
   ny = length (yt);
   yt = [b0 * ones(1, ny); yt; NaN(1, ny)](:);
   set (kids(2), "ydata", yt);
+
 endfunction
 
 function update_props (h, ~)
+
   kids = get (h, "children");
   set (kids(2), "color", get (h, "color"),
                 "linestyle", get (h, "linestyle"),
@@ -422,9 +431,11 @@ function update_props (h, ~)
                 "marker", get (h, "marker"),
                 "markerfacecolor", get (h, "markerfacecolor"),
                 "markersize", get (h, "markersize"));
+
 endfunction
 
 function update_data (h, ~)
+
   x = get (h, "xdata");
   y = get (h, "ydata");
   z = get (h, "zdata");
@@ -457,5 +468,6 @@ function update_data (h, ~)
   kids = get (h, "children");
   set (kids(2), "xdata", xt, "ydata", yt, "zdata", zt);
   set (kids(1), "xdata", x, "ydata", y, "zdata", z);
+
 endfunction
 

@@ -330,6 +330,7 @@ function validateattributes (A, cls, attr, varargin)
       error ("%s must be %s", err_ini, attr{idx-1});
     endif
   endwhile
+
 endfunction
 
 function retval = valid_arg_idx (arg)

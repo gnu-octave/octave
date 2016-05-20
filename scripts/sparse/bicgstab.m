@@ -72,133 +72,131 @@
 function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
                                                      M1, M2, x0)
 
-  if (nargin >= 2 && nargin <= 7 && isvector (full (b)))
-
-    if (ischar (A))
-      A = str2func (A);
-    elseif (isnumeric(A) && issquare (A))
-      Ax = @(x) A  * x;
-    elseif (isa (A, "function_handle"))
-      Ax = @(x) feval (A, x);
-    else
-      error ("bicgstab: A must be a square matrix or function");
-    endif
-
-    if (nargin < 3 || isempty (tol))
-      tol = 1e-6;
-    endif
-
-    if (nargin < 4 || isempty (maxit))
-      maxit = min (rows (b), 20);
-    endif
-
-    if (nargin < 5 || isempty (M1))
-      M1m1x = @(x) x;
-    elseif (ischar (M1))
-      M1m1x = str2func (M1);
-    elseif (isnumeric(M1) && ismatrix (M1))
-      M1m1x = @(x) M1  \ x;
-    elseif (isa (M1, "function_handle"))
-      M1m1x = @(x) feval (M1, x);
-    else
-      error ("bicgstab: preconditioner M1 must be a function or matrix");
-    endif
-
-    if (nargin < 6 || isempty (M2))
-      M2m1x = @(x) x;
-    elseif (ischar (M2))
-      M2m1x = str2func (M2);
-    elseif (isnumeric(M2) && ismatrix (M2))
-      M2m1x = @(x) M2  \ x;
-    elseif (isa (M2, "function_handle"))
-      M2m1x = @(x) feval (M2, x);
-    else
-      error ("bicgstab: preconditioner M2 must be a function or matrix");
-    endif
-
-    precon = @(x) M2m1x (M1m1x (x));
-
-    if (nargin < 7 || isempty (x0))
-      x0 = zeros (size (b));
-    endif
-
-    ## specifies initial estimate x0
-    if (nargin < 7)
-      x = zeros (rows (b), 1);
-    else
-      x = x0;
-    endif
-
-    norm_b = norm (b);
-
-    res = b - Ax (x);
-    rr = res;
-
-    ## Vector of the residual norms for each iteration.
-    resvec = norm (res) / norm_b;
-
-    ## Default behavior we don't reach tolerance tol within maxit iterations.
-    flag = 1;
-
-    for iter = 1:maxit
-      rho_1 = rr' * res;
-
-      if (iter == 1)
-        p = res;
-      else
-        beta = (rho_1 / rho_2) * (alpha / omega);
-        p = res + beta * (p - omega * v);
-      endif
-
-      phat = precon (p);
-
-      v = Ax (phat);
-      alpha = rho_1 / (rr' * v);
-      s = res - alpha * v;
-
-      shat = precon (s);
-
-      t = Ax (shat);
-      omega = (s' * t) / (t' * t);
-      x += alpha * phat + omega * shat;
-      res = s - omega * t;
-      rho_2 = rho_1;
-
-      relres = norm (res) / norm_b;
-      resvec = [resvec; relres];
-
-      if (relres <= tol)
-        ## We reach tolerance tol within maxit iterations.
-        flag = 0;
-        break;
-      elseif (resvec(end) == resvec(end - 1))
-        ## The method stagnates.
-        flag = 3;
-        break;
-      endif
-    endfor
-
-    if (nargout < 2)
-      if (flag == 0)
-        printf ("bicgstab converged at iteration %i ", iter);
-        printf ("to a solution with relative residual %e\n", relres);
-      elseif (flag == 3)
-        printf ("bicgstab stopped at iteration %i ", iter);
-        printf ("without converging to the desired tolerance %e\n", tol);
-        printf ("because the method stagnated.\n");
-        printf ("The iterate returned (number %i) ", iter);
-        printf ("has relative residual %e\n", relres);
-      else
-        printf ("bicgstab stopped at iteration %i ", iter);
-        printf ("without converging to the desired toleranc %e\n", tol);
-        printf ("because the maximum number of iterations was reached.\n");
-        printf ("The iterate returned (number %i) ", iter);
-        printf ("has relative residual %e\n", relres);
-      endif
-    endif
-
-  else
+  if (nargin < 2 || nargin > 7 || ! isvector (full (b)))
     print_usage ();
+  endif
+
+  if (ischar (A))
+    A = str2func (A);
+  elseif (isnumeric(A) && issquare (A))
+    Ax = @(x) A  * x;
+  elseif (isa (A, "function_handle"))
+    Ax = @(x) feval (A, x);
+  else
+    error ("bicgstab: A must be a square matrix or function");
+  endif
+
+  if (nargin < 3 || isempty (tol))
+    tol = 1e-6;
+  endif
+
+  if (nargin < 4 || isempty (maxit))
+    maxit = min (rows (b), 20);
+  endif
+
+  if (nargin < 5 || isempty (M1))
+    M1m1x = @(x) x;
+  elseif (ischar (M1))
+    M1m1x = str2func (M1);
+  elseif (isnumeric(M1) && ismatrix (M1))
+    M1m1x = @(x) M1  \ x;
+  elseif (isa (M1, "function_handle"))
+    M1m1x = @(x) feval (M1, x);
+  else
+    error ("bicgstab: preconditioner M1 must be a function or matrix");
+  endif
+
+  if (nargin < 6 || isempty (M2))
+    M2m1x = @(x) x;
+  elseif (ischar (M2))
+    M2m1x = str2func (M2);
+  elseif (isnumeric(M2) && ismatrix (M2))
+    M2m1x = @(x) M2  \ x;
+  elseif (isa (M2, "function_handle"))
+    M2m1x = @(x) feval (M2, x);
+  else
+    error ("bicgstab: preconditioner M2 must be a function or matrix");
+  endif
+
+  precon = @(x) M2m1x (M1m1x (x));
+
+  if (nargin < 7 || isempty (x0))
+    x0 = zeros (size (b));
+  endif
+
+  ## specifies initial estimate x0
+  if (nargin < 7)
+    x = zeros (rows (b), 1);
+  else
+    x = x0;
+  endif
+
+  norm_b = norm (b);
+
+  res = b - Ax (x);
+  rr = res;
+
+  ## Vector of the residual norms for each iteration.
+  resvec = norm (res) / norm_b;
+
+  ## Default behavior we don't reach tolerance tol within maxit iterations.
+  flag = 1;
+
+  for iter = 1:maxit
+    rho_1 = rr' * res;
+
+    if (iter == 1)
+      p = res;
+    else
+      beta = (rho_1 / rho_2) * (alpha / omega);
+      p = res + beta * (p - omega * v);
+    endif
+
+    phat = precon (p);
+
+    v = Ax (phat);
+    alpha = rho_1 / (rr' * v);
+    s = res - alpha * v;
+
+    shat = precon (s);
+
+    t = Ax (shat);
+    omega = (s' * t) / (t' * t);
+    x += alpha * phat + omega * shat;
+    res = s - omega * t;
+    rho_2 = rho_1;
+
+    relres = norm (res) / norm_b;
+    resvec = [resvec; relres];
+
+    if (relres <= tol)
+      ## We reach tolerance tol within maxit iterations.
+      flag = 0;
+      break;
+    elseif (resvec(end) == resvec(end - 1))
+      ## The method stagnates.
+      flag = 3;
+      break;
+    endif
+  endfor
+
+  if (nargout < 2)
+    if (flag == 0)
+      printf ("bicgstab converged at iteration %i ", iter);
+      printf ("to a solution with relative residual %e\n", relres);
+    elseif (flag == 3)
+      printf ("bicgstab stopped at iteration %i ", iter);
+      printf ("without converging to the desired tolerance %e\n", tol);
+      printf ("because the method stagnated.\n");
+      printf ("The iterate returned (number %i) ", iter);
+      printf ("has relative residual %e\n", relres);
+    else
+      printf ("bicgstab stopped at iteration %i ", iter);
+      printf ("without converging to the desired toleranc %e\n", tol);
+      printf ("because the maximum number of iterations was reached.\n");
+      printf ("The iterate returned (number %i) ", iter);
+      printf ("has relative residual %e\n", relres);
+    endif
   endif
 
 endfunction
@@ -249,3 +247,4 @@ endfunction
 %! b = A * [1; 1];
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b);
 %! assert (x, [1; 1], 1e-6);
+

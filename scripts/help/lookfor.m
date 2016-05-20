@@ -183,15 +183,18 @@ function [fcn, help1str] = lookfor (str, arg2)
 endfunction
 
 function [fcns, help_texts] = search_cache (str, cache_file, search_type)
+
   load (cache_file);
-  if (! isempty (cache))
-    t1 = strfind (lower (cache (1, :)), str);
-    t2 = strfind (lower (cache (search_type, :)), str);
+
+  if (isempty (cache))
+    fcns = help_texts = {};
+  else
+    t1 = strfind (lower (cache(1, :)), str);
+    t2 = strfind (lower (cache(search_type, :)), str);
     cache_idx = find (! (cellfun ("isempty", t1) & cellfun ("isempty", t2)));
     fcns = cache(1, cache_idx);
     help_texts = cache(3, cache_idx);
-  else
-    fcns = help_texts = {};
   endif
+
 endfunction
 

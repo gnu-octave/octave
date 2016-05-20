@@ -64,6 +64,7 @@ function [frame] = im2frame (x, map = [])
   endif
 
   frame = struct ("cdata", x, "colormap", map);
+
 endfunction
 
 

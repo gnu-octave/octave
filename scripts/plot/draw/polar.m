@@ -158,9 +158,9 @@ function rtick = __calc_rtick__ (hax, maxr)
   ## FIXME: workaround: calculate r(ho)tick from xtick
   ##        It would be better to just calculate the values,
   ##        but that code is deep in the C++ for the plot engines.
-  savexlim = get (hax, "xlim");
-  saveylim = get (hax, "ylim");
+  saved_lims = get (hax, {"xlim", "ylim"});
   set (hax, "xlim", [-maxr maxr], "ylim", [-maxr maxr]);
+
   xtick = get (hax, "xtick");
   minidx = find (xtick > 0, 1);
   maxidx = find (xtick >= maxr, 1);
@@ -171,7 +171,9 @@ function rtick = __calc_rtick__ (hax, maxr)
     rtick = xtick(minidx:end);
     rtick(end+1) = xtick(end) + diff (xtick(end-1:end));
   endif
-  set (hax, "xlim", savexlim, "ylim", saveylim);
+
+  set (hax, {"xlim", "ylim"}, saved_lims);
+
 endfunction
 
 function retval = __plr1__ (h, theta, fmt)
@@ -194,6 +196,7 @@ function retval = __plr2__ (h, theta, rho, fmt)
   if (ndims (theta) > 2 || ndims (rho) > 2)
     error ("polar: THETA and RHO must be 2-D objects");
   endif
+
   theta = real (theta);
   rho = real (rho);
 
@@ -310,6 +313,7 @@ function __update_layer__ (hax, ~, hg)
   unwind_protect_cleanup
     set (0, "showhiddenhandles", shh);
   end_unwind_protect
+
 endfunction
 
 function __update_polar_grid__ (hax, ~, hg)

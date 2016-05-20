@@ -689,6 +689,7 @@ endfunction
 
 ## Find [start,end] of fn in 'function [a,b] = fn'.
 function pos = function_name (def)
+
   pos = [];
 
   ## Find the end of the name.
@@ -708,11 +709,13 @@ function pos = function_name (def)
 
   ## Return the end points of the name.
   pos = [left, right];
+
 endfunction
 
 ## Strip <pattern> from '<pattern> code'.
 ## Also handles 'id=ID code'
 function [pattern, id, rest] = getpattern (str)
+
   pattern = ".";
   id = [];
   rest = str;
@@ -726,6 +729,7 @@ function [pattern, id, rest] = getpattern (str)
   elseif (strncmp (str, "id=", 3))
     [id, rest] = strtok (str(4:end));
   endif
+
 endfunction
 
 ## Strip '.*prefix:' from '.*prefix: msg\n' and strip trailing blanks.

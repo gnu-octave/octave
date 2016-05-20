@@ -23,6 +23,7 @@
 ## @end deftypefn
 
 function unload_packages (files, handle_deps, local_list, global_list)
+
   installed_pkgs_lst = installed_packages (local_list, global_list);
   num_packages = length (installed_pkgs_lst);
 
@@ -76,5 +77,6 @@ function unload_packages (files, handle_deps, local_list, global_list)
       ## FIXME: We should also check if we need to remove items from EXEC_PATH.
     endif
   endfor
+
 endfunction
 

@@ -66,6 +66,7 @@
 ## @end deftypefn
 
 function z = idivide (x, y, op)
+
   if (nargin < 2 || nargin > 3)
     print_usage ();
   elseif (nargin == 2)
@@ -98,6 +99,7 @@ function z = idivide (x, y, op)
       error ("idivide: unrecognized rounding type");
     endif
   endif
+
 endfunction
 
 

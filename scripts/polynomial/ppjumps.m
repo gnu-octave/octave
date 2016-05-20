@@ -26,6 +26,7 @@
 ## @end deftypefn
 
 function jumps = ppjumps (pp)
+
   if (nargin != 1)
     print_usage ();
   endif
@@ -56,6 +57,7 @@ function jumps = ppjumps (pp)
 
   rlim = shiftdim (ppval (pp, x(2:end-1)), nd - 1);
   jumps = shiftdim (rlim - llim, 1);
+
 endfunction
 
 

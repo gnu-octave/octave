@@ -105,6 +105,7 @@ endfunction
 ## http://www.gnu.org/licenses/gpl.html
 
 function inv = analytic_approx (x, lambda)
+
   s = norminv (x, 0, 1) ./ sqrt (lambda);
   k = (s > -0.6833501) & (s < 1.777993);
   ## use polynomial approximations in central region

@@ -60,6 +60,7 @@ function __add_default_menu__ (fig)
 
 endfunction
 
+
 function save_cb (h, e)
   [hcbo, hfig] = gcbo ();
   lbl = get (hcbo, "label");
@@ -74,6 +75,7 @@ function save_cb (h, e)
     __save_as__ (hcbo);
   endif
 endfunction
+
 
 function __save_as__ (caller)
   [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg",
@@ -96,6 +98,7 @@ function [hax, fig] = __get_axes__ (h)
   hax = findobj (fig, "type", "axes", "-not", "tag", "legend");
 endfunction
 
+
 function grid_cb (h, e)
   hax = __get_axes__ (h);
   id = get (h, "tag");
@@ -108,11 +111,13 @@ function grid_cb (h, e)
   drawnow ();
 endfunction
 
+
 function autoscale_cb (h, e)
   hax = __get_axes__ (h);
   arrayfun (@(h) axis (h, "auto"), hax);
   drawnow ();
 endfunction
+
 
 function guimode_cb (h, e)
   [hax, fig] = __get_axes__ (h);
@@ -135,3 +140,4 @@ function guimode_cb (h, e)
       arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
 endfunction
+

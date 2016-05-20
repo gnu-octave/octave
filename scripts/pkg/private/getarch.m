@@ -25,6 +25,7 @@
 function arch = getarch ()
   persistent _arch = [__octave_config_info__("canonical_host_type"), "-", ...
                       __octave_config_info__("api_version")];
+
   arch = _arch;
 endfunction
 

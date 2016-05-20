@@ -411,6 +411,7 @@ function update_data (h, ~)
 endfunction
 
 function update_props (h, ~)
+
   kids = get (h, "children");
 
   set (kids([3 2]), {"color", "linestyle", "linewidth"},
@@ -418,5 +419,6 @@ function update_props (h, ~)
   set (kids(2), "visible", get (h, "showarrowhead"));
   set (kids(1), {"color", "marker", "markerfacecolor", "markersize"},
         get (h, {"color", "marker", "markerfacecolor", "markersize"}));
+
 endfunction
 

@@ -53,8 +53,13 @@
 ## Author: Carnë Draug <carandraug@octave.org>
 
 function img = im2double (img, im_type)
-  ## "normal" (non-indexed) images
-  if (nargin () == 1)
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
+  if (nargin == 1)
+    ## "normal" (non-indexed) images
     switch (class (img))
       case "uint8",   img = double (img) / 255;
       case "uint16",  img = double (img) / 65535;
@@ -64,9 +69,8 @@ function img = im2double (img, im_type)
       case "double",  # do nothing
       otherwise, error ("im2double: IMG is of unsupported class \"%s\"", class (img));
     endswitch
-
-  ## indexed images
-  elseif (nargin () == 2)
+  else
+    ## indexed images
     if (! strcmpi (im_type, "indexed"))
       error ("im2double: second input argument must be the string \"indexed\"");
     elseif (any (isa (img, {"uint8", "uint16"})))
@@ -80,10 +84,8 @@ function img = im2double (img, im_type)
       error (["im2double: if IMG is indexed, then it must be positive " ...
               "integer floating points, or unsigned integer class"]);
     endif
-
-  else
-    print_usage ();
   endif
+
 endfunction
 
 

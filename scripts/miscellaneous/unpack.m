@@ -290,14 +290,14 @@ endfunction
 
 function files = __parse_gzip__ (output)
   ## Parse the output from gzip and gunzip returning the files
-  ## commpressed (or decompressed).
+  ## compressed (or decompressed).
 
   files = regexprep (output, '^.+ -- replaced with (.*)$', '$1');
 endfunction
 
 function files = __parse_bzip2__ (output)
   ## Parse the output from bzip2 and bunzip2 returning the files
-  ## commpressed (or decompressed).
+  ## compressed (or decompressed).
 
   ## Strip leading blanks and .bz2 extension from filename
   files = regexprep (output, '^\s+(.*)\.bz2: .*', '$1');

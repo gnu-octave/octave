@@ -161,6 +161,7 @@ function h = waitbar (varargin)
 endfunction
 
 function updatecancelbutton (hf, dummy, hax)
+
   if (! strcmpi (get (hf, "__graphics_toolkit__"), "qt"))
     return
   endif
@@ -199,6 +200,7 @@ function updatecancelbutton (hf, dummy, hax)
     set (hf, "position", fpos);
     set (hax, "position", apos, "units", units);
   endif
+
 endfunction
 
 

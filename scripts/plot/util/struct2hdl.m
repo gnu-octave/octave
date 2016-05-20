@@ -177,8 +177,9 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 endfunction
 
 function [h, sout] = createaxes (s, p, par)
-  ## regular axes
+
   if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
+    ## regular axes
     propval = {"position", s.properties.position};
     hid = {"autopos_tag", "looseinset"};
     for ii = 1:numel (hid)
@@ -283,7 +284,9 @@ function [h, sout] = createaxes (s, p, par)
       error ("hdl2struct: didn't find an object");
     endif
   endif
+
   sout = s;
+
 endfunction
 
 function h = createline (s, par)
@@ -292,6 +295,7 @@ function h = createline (s, par)
 endfunction
 
 function [h, sout] = createpatch (s, par)
+
   prp.faces = s.properties.faces;
   prp.vertices = s.properties.vertices;
   prp.facevertexcdata = s.properties.facevertexcdata;
@@ -305,6 +309,7 @@ function [h, sout] = createpatch (s, par)
   s.properties = rmfield (s.properties, {"xdata", "ydata", "zdata", "cdata"});
   addmissingprops (h, s.properties);
   sout = s;
+
 endfunction
 
 function h = createtext (s, par)
@@ -357,11 +362,14 @@ function [h, sout, pout] = createhg (s, p, par, hilev)
     addmissingprops (h, s.properties);
     s.special = [];
   endif
+
   sout = s;
   pout = p;
+
 endfunction
 
 function [h, sout, pout] = createhg_hilev (s, p, par)
+
   fields = s.properties;
   if (isfield (fields, "contourmatrix"))
     ## contours
@@ -547,11 +555,14 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
     addmissingprops (h, s.properties);
     s.special = [];           # children will be treated as normal children
   endif
+
   sout = s;
   pout = p;
+
 endfunction
 
 function setprops (s, h, p, hilev)
+
   if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     specs = s.children(s.special);
     if (isempty (specs))
@@ -624,14 +635,17 @@ function setprops (s, h, p, hilev)
 endfunction
 
 function out = valcomp (x, hdls)
+
   if (isfloat (x) && isscalar (x))
     out = any (x == hdls);
   else
     out = 0;
   endif
+
 endfunction
 
 function addmissingprops (h, props)
+
   hid = {"autopos_tag", "looseinset"};
   oldfields = fieldnames (props);
   curfields = fieldnames (get (h));
@@ -643,6 +657,7 @@ function addmissingprops (h, props)
       addproperty (prop, h, "any");
     endif
   endfor
+
 endfunction
 
 

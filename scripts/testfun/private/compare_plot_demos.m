@@ -108,6 +108,7 @@ function compare_plot_demos (varargin)
   unwind_protect_cleanup
     rmpath (cwd);
   end_unwind_protect
+
   if (! strcmp (arg.toolkits, "matlab"))
     ## Generate the html comparison of the images
     html_compare_plot_demos (arg.toolkits);
@@ -116,5 +117,6 @@ function compare_plot_demos (varargin)
     printf ('\nNow run %s in Matlab.\nAfter this run html_compare_plot_demos,\n', arg.fcn_file);
     printf ('for example html_compare_plot_demos ({"fltk", "gnuplot", "matlab"}), to create the html page.\n');
   endif
+
 endfunction
 

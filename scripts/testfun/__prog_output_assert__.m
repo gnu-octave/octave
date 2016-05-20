@@ -23,6 +23,7 @@
 
 function ret = __prog_output_assert__ (str)
   global _assert_printf = "";
+
   if (isempty (_assert_printf))
     ret = isempty (str);
   elseif (_assert_printf(end) == "\n")
@@ -30,7 +31,9 @@ function ret = __prog_output_assert__ (str)
   else
     ret = strcmp (_assert_printf, str);
   endif
+
   _assert_printf = "";
+
 endfunction
 
 

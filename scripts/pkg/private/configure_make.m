@@ -23,6 +23,7 @@
 ## @end deftypefn
 
 function configure_make (desc, packdir, verbose)
+
   ## Perform ./configure, make, make install in "src".
   if (exist (fullfile (packdir, "src"), "dir"))
     src = fullfile (packdir, "src");
@@ -94,8 +95,8 @@ function configure_make (desc, packdir, verbose)
         error ("pkg: error running `make' for the %s package.", desc.name);
       endif
     endif
-
   endif
+
 endfunction
 
 ## Executes a shell command.  In the end it calls system() but in case of
@@ -133,4 +134,6 @@ function [status, output] = shell (cmd, verbose)
   else
     [status, output] = system (cmd);
   endif
+
 endfunction
+

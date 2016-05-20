@@ -136,6 +136,7 @@ function ginput_windowbuttondownfcn (~, button)
 endfunction
 
 function ginput_keypressfcn (~, evt)
+
   point = get (gca (), "currentpoint");
   if (strcmp (evt.Key, "return"))
     ## Enter key stops ginput.
@@ -146,6 +147,7 @@ function ginput_keypressfcn (~, evt)
       ginput_accumulator (1, point(1,1), point(1,2), uint8 (character(1)));
     endif
   endif
+
 endfunction
 
 function ginput_closerequestfcn (hfig, ~, orig_closerequestfcn)

@@ -149,6 +149,7 @@
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
 function info = imfinfo (filename, varargin)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   elseif (! ischar (filename))
@@ -156,8 +157,11 @@ function info = imfinfo (filename, varargin)
   elseif (nargin > 1 && ! ischar (ext))
     error ("imfinfo: EXT must be a string");
   endif
+
   info = imageIO ("imfinfo", @__imfinfo__, "info", filename, varargin{:});
+
 endfunction
+
 
 ## This test is the same as the similar one in imread.  imfinfo must check
 ## if file exists before calling __imfinfo_.  This BIST test confirms this.

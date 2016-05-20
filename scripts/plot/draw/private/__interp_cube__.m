@@ -24,6 +24,7 @@
 ## @end deftypefn
 
 function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
+
   if (isnumeric (x) && ndims (x) == 3 && isnumeric (y) && ndims (y) == 3
        && isnumeric (z) && ndims (z) == 3 && size_equal (x, y, z, val))
     x = squeeze (x(1,:,1))(:);
@@ -36,6 +37,7 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
   else
     error ("__interp_cube__: X, Y, Z have wrong dimensions");
   endif
+
   if (size (val) != [length(x), length(y), length(z)])
     error ("__interp_cube__: VAL has wrong dimensions");
   endif
@@ -43,8 +45,9 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
     error ( "V has to be Nx3 matrix");
   endif
   ##if (! ischar (req))
-  ## error ('__interp_cube__: Invalid request parameter use "values", "normals" or "normals8"');
+  ##  error ('__interp_cube__: Invalid request parameter use "values", "normals" or "normals8"');
   ##endif
+
   if (isempty (v))
     Vxyz = idx = frac = [];
     return;
@@ -99,9 +102,11 @@ function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
    otherwise
      error ('__interp_cube__: Invalid request type "%s", use "values", "normals" or "normals8"', req);
   endswitch
+
 endfunction
 
 function [Vxyz, idx, frac] = interp_cube_trilin (x, y, z, val, v)
+
   [idx, frac] = cube_idx (x(:), y(:), z(:), v);
   sval = size (val);
   i000 = sub2ind (sval, idx(:, 1), idx(:, 2), idx(:, 3));
@@ -124,9 +129,11 @@ function [Vxyz, idx, frac] = interp_cube_trilin (x, y, z, val, v)
     val( i101 ) .* Bx .* (1 .- By) .* Bz .+ ...
     val( i110 ) .* Bx .* By .* (1 .- Bz) .+ ...
     val( i111 ) .* Bx .* By .* Bz;
+
 endfunction
 
 function [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad (x, y, z, val, v)
+
   [idx, frac] = cube_idx (x(:), y(:), z(:), v);
   sval = size (val);
   i000 = sub2ind (sval, idx(:, 1), idx(:, 2), idx(:, 3));
@@ -167,9 +174,11 @@ function [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad (x, y, z, val, v)
     val( i101 ) .* Bx .* (1 .- By) .+ ...
     val( i110 ) .* Bx .* By .* -1 .+ ...
     val( i111 ) .* Bx .* By;
+
 endfunction
 
 function [idx, frac] = cube_idx (x, y, z, v)
+
   idx = zeros (size (v));
   frac = zeros (size (v));
   idx(:, 2) = lookup (x(2:end-1), v(:, 1)) + 1;
@@ -181,5 +190,6 @@ function [idx, frac] = cube_idx (x, y, z, v)
   idx(:, 3) = lookup (z(2:end-1), v(:, 3)) + 1;
   frac(:, 3) = (v(:, 3) - z(idx(:, 3))) ...
       ./ (z(idx(:, 3)+1) - z(idx(:, 3)));
+
 endfunction
 

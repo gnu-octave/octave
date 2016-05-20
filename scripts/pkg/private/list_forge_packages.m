@@ -23,12 +23,14 @@
 ## @end deftypefn
 
 function list = list_forge_packages ()
+
   [list, succ] = urlread ("http://packages.octave.org/list_packages.php");
-  if (succ)
-    list = ostrsplit (list, " \n\t", true);
-  else
+  if (! succ)
     error ("pkg: could not read URL, please verify internet connection");
   endif
+
+  list = ostrsplit (list, " \n\t", true);
+
   if (nargout == 0)
     page_screen_output (false, "local");
     puts ("OctaveForge provides these packages:\n");
@@ -41,5 +43,6 @@ function list = list_forge_packages ()
       printf ("  %s %s\n", list{i}, ver);
     endfor
   endif
+
 endfunction
 

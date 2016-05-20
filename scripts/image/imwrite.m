@@ -97,9 +97,11 @@
 ## @end deftypefn
 
 function imwrite (varargin)
+
   if (nargin < 2)
     print_usage ();
   endif
+
   [filename, ext] = imwrite_filename (varargin{2:end});
 
   fmt = imformats (ext);
@@ -118,6 +120,7 @@ function imwrite (varargin)
   endif
 
 endfunction
+
 
 ## Test input validation
 %!error imwrite ()                            # Wrong # of args

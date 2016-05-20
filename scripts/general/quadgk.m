@@ -447,6 +447,7 @@ function [q, err] = __quadgk_eval__ (f, subs)
   ## single BLAS call, rather than rows (sub) calls to the @times function.
   q = sum (y * weights15, 2) .* halfwidth;
   err = abs (sum (y(:,2:2:end) * weights7, 2) .* halfwidth - q);
+
 endfunction
 
 function t = __quadgk_finite_waypoint__ (x, a, b)

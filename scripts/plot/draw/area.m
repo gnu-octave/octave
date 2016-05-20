@@ -187,11 +187,13 @@ function retval = __area__ (ax, x, y, bv, varargin)
 endfunction
 
 function update_props (h, d)
+
   kids = get (h, "children");
   set (kids, "edgecolor", get (h, "edgecolor"),
              "facecolor", get (h, "facecolor"),
              "linestyle", get (h, "linestyle"),
              "linewidth", get (h, "linewidth"));
+
 endfunction
 
 function move_baseline (h, d)
@@ -217,9 +219,11 @@ function move_baseline (h, d)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_data (h, d)
+
   hlist = get (h, "areagroup");
   bv = get (h, "basevalue");
   for i = 1 : length (hlist)
@@ -237,6 +241,7 @@ function update_data (h, d)
 
     y0 = y1;
   endfor
+
 endfunction
 
 

@@ -526,6 +526,7 @@ function txt = __unimplemented__ (fcn)
 endfunction
 
 function txt = check_package (fcn, name)
+
   txt = sprintf ("the '%s' function belongs to the %s package from Octave Forge",
                  fcn, name);
 
@@ -542,6 +543,7 @@ function txt = check_package (fcn, name)
       ## the output of describe
       txt = sprintf ("%s which seems to not be installed in your system.", txt);
   endswitch
+
 endfunction
 
 function list = missing_functions ()

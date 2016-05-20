@@ -84,6 +84,7 @@ function run (script)
     evalin ("caller", sprintf ("source ('%s');", script),
             "rethrow (lasterror ())");
   endif
+
 endfunction
 
 

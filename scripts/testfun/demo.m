@@ -152,8 +152,9 @@ function demo (name, n = 0)
 endfunction
 
 function clear_figures ()
-  ## Prevent proliferation of figure windows.  If any figure windows
-  ## exist, close all but one and clear the one remaining.
+
+  ## Prevent proliferation of figure windows.  If any figure windows exist,
+  ## close all but one and clear the one remaining.
   figs = __go_figure_handles__ ();
   if (! isempty (figs))
     if (numel (figs) > 1)
@@ -163,7 +164,9 @@ function clear_figures ()
     endif
     clf ("reset");
   endif
+
 endfunction
+
 
 %!demo
 %! t = 0:0.01:2*pi;

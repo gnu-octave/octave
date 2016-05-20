@@ -22,6 +22,7 @@
 ## @end deftypefn
 
 function [c, hg] = __contour__ (varargin)
+
   ax = varargin{1};
   zlevel = varargin{2};
   filled = "off";
@@ -206,6 +207,7 @@ function [c, hg] = __contour__ (varargin)
 endfunction
 
 function add_patch_children (hg)
+
   c = get (hg, "contourmatrix");
   lev = get (hg, "levellist");
   fill = get (hg, "fill");
@@ -379,6 +381,7 @@ function add_patch_children (hg)
 endfunction
 
 function update_zlevel (h, ~)
+
   z = get (h, "zlevel");
   zmode = get (h, "zlevelmode");
   kids = get (h, "children");
@@ -396,15 +399,18 @@ function update_zlevel (h, ~)
         set (kids(i), "zdata", z .* ones (size (get (kids(i), "xdata"))));
       endfor
   endswitch
+
 endfunction
 
 function update_line (h, ~)
+
   lc = get (h, "linecolor");
   if (strcmp (lc, "auto"))
     lc = "flat";
   endif
   set (findobj (h, "type", "patch"), "edgecolor", lc,
        "linewidth", get (h, "linewidth"), "linestyle", get (h, "linestyle"));
+
 endfunction
 
 function update_data (h, ~, prop = "")
@@ -540,9 +546,11 @@ function update_text (h, ~, prop = "")
 
     recursive = false;
   endif
+
 endfunction
 
 function lvl_eps = get_lvl_eps (lev)
+
   ## FIXME: is this the right thing to do for this tolerance?  Should
   ## it be an absolute or relative tolerance, or switch from one to the
   ## other depending on the value of lev?
@@ -556,5 +564,6 @@ function lvl_eps = get_lvl_eps (lev)
       lvl_eps = tmp / 1000.0;
     endif
   endif
+
 endfunction
 

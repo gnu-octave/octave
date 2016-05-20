@@ -82,6 +82,7 @@ function rgb = ntsc2rgb (yiq)
   rgb(idx,:) = rgb(idx,:) ./ max (rgb(idx,:), [], 2);
 
   rgb = colorspace_conversion_revert (rgb, sz, is_im, is_nd);
+
 endfunction
 
 

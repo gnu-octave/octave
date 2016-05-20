@@ -245,6 +245,7 @@ function update_props (h, ~)
 endfunction
 
 function update_data (h, ~)
+
   x = get (h, "xdata");
   y = get (h, "ydata");
 
@@ -269,6 +270,7 @@ function update_data (h, ~)
   ys(ridx) = y(2:nr);
 
   set (get (h, "children"), "xdata", xs, "ydata", ys);
+
 endfunction
 
 

@@ -31,6 +31,7 @@
 ## @end deftypefn
 
 function [idx, d] = dsearchn (x, tri, xi, outval)
+
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
@@ -45,6 +46,7 @@ function [idx, d] = dsearchn (x, tri, xi, outval)
       d(idx2) = outval;
     endif
   endif
+
 endfunction
 
 

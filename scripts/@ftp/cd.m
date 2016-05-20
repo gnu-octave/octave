@@ -32,6 +32,7 @@
 ## @end deftypefn
 
 function path = cd (f, path)
+
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
@@ -39,7 +40,9 @@ function path = cd (f, path)
   if (nargin == 2)
     __ftp_cwd__ (f.curlhandle, path);
   endif
+
   path = __ftp_pwd__ (f.curlhandle);
+
 endfunction
 
 

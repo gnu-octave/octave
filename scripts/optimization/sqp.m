@@ -554,8 +554,7 @@ endfunction
 
 
 function [x_new, alpha, obj, globals] = ...
-      linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
-                     obj, globals)
+   linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, obj, globals)
 
   ## Choose parameters
   ##

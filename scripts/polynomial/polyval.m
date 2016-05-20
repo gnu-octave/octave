@@ -56,10 +56,10 @@ function [y, dy] = polyval (p, x, s = [], mu)
     y = zeros (size (x));
     return;
   elseif (! isvector (p))
-    error ("polyval: first argument must be a vector");
+    error ("polyval: P must be a vector");
   endif
 
-  if (nargin > 3)
+  if (nargin == 4)
     x = (x - mu(1)) / mu(2);
   endif
 
@@ -83,22 +83,20 @@ function [y, dy] = polyval (p, x, s = [], mu)
       dy = reshape (dy, size (x));
     catch
       if (isempty (s))
-        error ("polyval: third input is required.");
+        error ("polyval: S input is required for DY output argument");
       elseif (isstruct (s)
               && all (ismember ({"R", "normr", "df"}, fieldnames (s))))
         error (lasterr ());
       elseif (isstruct (s))
-        error ("polyval: third input is missing the required fields.");
+        error ("polyval: S input is missing required fields");
       else
-        error ("polyval: third input is not a structure.");
+        error ("polyval: S input must be a structure");
       endif
     end_try_catch
   endif
 
 endfunction
 
-
-%!fail ("polyval ([1,0;0,1],0:10)")
 
 %!test
 %! r = 0:10:50;
@@ -109,7 +107,7 @@ endfunction
 %! [pf, s] = polyfit (x, y, numel (r));
 %! [y1, delta] = polyval (pf, x, s);
 %! expected = [0.37235, 0.35854, 0.32231, 0.32448, 0.31328, ...
-%!    0.32036, 0.31328, 0.32448, 0.32231, 0.35854, 0.37235];
+%!             0.32036, 0.31328, 0.32448, 0.32231, 0.35854, 0.37235];
 %! assert (delta, expected, 0.00001);
 
 %!test
@@ -155,3 +153,14 @@ endfunction
 %!assert ([], polyval (1, []))
 %!assert ([], polyval ([], []))
 %!assert (zeros (0, 1), polyval (1, zeros (0,1)))
+
+## Test input validation
+%!error polyval ()
+%!error polyval (1)
+%!error polyval (1,2,3,4,5)
+%!error <P must be a vector> polyval ([1,0;0,1],0:10)
+%!error <S input is required> [y, dy] = polyval (1, 1, [])
+%!error <S input is missing required fields>
+%!  [y, dy] = polyval (1, 1, struct ("T", 0, "normr", 1, "df", 2))
+%!error <S input must be a structure> [y, dy] = polyval (1, 1, 2)
+

@@ -114,7 +114,7 @@ namespace octave
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)    \
   && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-`                          std::replace_if (tmp.begin (), tmp.end (),
+                          std::replace_if (tmp.begin (), tmp.end (),
                                            std::bind2nd (std::equal_to<char> (),
                                                          '/'),
                                            '\\');

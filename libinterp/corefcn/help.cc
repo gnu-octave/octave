@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include <defaults.h>
+#include "Cell.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -53,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "ovl.h"
 #include "ov-usr-fcn.h"
+#include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
@@ -1195,6 +1197,77 @@ Undocumented internal function.\n\
 
   return ovl (Cell (bif));
 }
+
+DEFUN (localfunctions, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {} {} localfunctions ()\n\
+Return a list of all local functions, i.e., subfunctions, within the current\n\
+file.\n\
+\n\
+The return value is a column cell array of function handles to all local\n\
+functions accessible from the function from which @code{localfunctions} is\n\
+called.  Nested functions are @emph{not} included in the list.\n\
+\n\
+If the call is from the command line, an anonymous function, or a script,\n\
+the return value is an empty cell array.\n\
+\n\
+Compatibility Note: Subfunctions which contain nested functions are not\n\
+included in the list.  This is a known issue.\n\
+@end deftypefn")
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  Cell retval;
+
+  // Find the main function we are in.
+  octave_user_code *parent_fcn = octave_call_stack::debug_user_code ();
+
+  if (! parent_fcn)
+    return ovl (retval);
+
+  // Find the subfunctions of this function.
+  // FIXME: This includes all nested functions.
+  //        Once handles of nested functions are implemented,
+  //        we will need to exclude ones not in scope.
+  const std::list<std::string> names = parent_fcn->subfunction_names ();
+  const std::map<std::string, octave_value> h = parent_fcn->subfunctions ();
+
+  size_t sz = names.size ();
+  retval.resize (dim_vector (sz, 1));
+
+  // loop over them.
+  size_t i = 0;
+  for (std::list<std::string>::const_iterator p = names.begin ();
+       p != names.end (); p++)
+    {
+      std::map<std::string, octave_value>::const_iterator q = h.find (*p);
+      if (q != h.end () &&
+          ! q->second.user_function_value ()->is_nested_function ())
+        retval(i++) = octave_value (new octave_fcn_handle (q->second, *p));
+    }
+
+  // remove pre-allocation for nested functions
+  retval.resize (dim_vector (i, 1));
+
+  return ovl (retval);
+}
+
+/*
+%!test
+%! f = tempname (".", "oct_");
+%! fcn_name = f(3:end);
+%! fid = fopen ([f ".m"], "w+");
+%! fprintf (fid, "function z = %s\n z = localfunctions; end\n", fcn_name);
+%! fprintf (fid, "function z = b(x)\n z = x+1; end\n");
+%! fprintf (fid, "function z = c(x)\n z = 2*x; end\n");
+%! fclose (fid);
+%! d = eval (fcn_name);
+%! unlink (f);
+%! assert (size (d), [2, 1]);
+%! assert (d{1}(3), 4);
+%! assert (d{2}(3), 6);
+*/
 
 static std::string
 do_which (const std::string& name, std::string& type)

@@ -82,11 +82,12 @@ Summary of important user-visible changes for version 4.2:
       evalc
       hash
       im2double
-      psi
+      localfunctions
       odeset
       odeget
       ode45
       padecoef
+      psi
       rad2deg
 
  ** Deprecated functions.

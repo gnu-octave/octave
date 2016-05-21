@@ -844,6 +844,8 @@ subfunctions @code{g} and @code{h} may only be called from the main
 function @code{f} or from the other subfunctions, but not from outside
 the file @file{f.m}.
 
+@DOCSTRING(localfunctions)
+
 @node Private Functions
 @subsection Private Functions
 

@@ -636,10 +636,6 @@ rendering text.  This allows the insertion of special glyphs such as Greek
 characters or mathematical symbols.  Special characters are inserted by using
 a backslash (\) character followed by a code, as shown in @ref{tab:extended}.
 
-Note that for on-screen display the interpreter property is honored by all
-graphics toolkits.  However for printing, @strong{only} the @qcode{"gnuplot"}
-toolkit renders @TeX{} instructions.
-
 Besides special glyphs, the formatting of the text can be changed within the
 string by using the codes
 

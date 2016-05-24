@@ -659,13 +659,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
          if (! isnan (xcol) && ! isnan (ycol))
            ## Is the patch closed or not
-           if (strcmp (obj.facecolor, "none"))
-             hidden_removal = false;
-           else
-
-             if (isnan (hidden_removal))
-               hidden_removal = true;
-             endif
+           if (! strcmp (obj.facecolor, "none"))
+             hidden_removal = true;
              if (nd == 3)
                if (numel (xcol) > 3)
                  error ("__gnuplot_draw_axes__: gnuplot (as of v4.2) only supports 3-D filled triangular patches");
@@ -1246,13 +1241,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
           zz = zz.';
 
-          if (strcmp (obj.facecolor, "none"))
-            hopt = " nohidden3d";
-            hidden_removal = false;
-          else
-            hopt = "";
-          endif
-
           for i_stl = 1:length (style)
             if (flat_interp_edge)
               sopt = "";
@@ -1271,8 +1259,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             titlespec{data_idx} = tspec;
             usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)%s", ylen, xlen, ccol);
             data{data_idx} = zz;
-            withclause{data_idx} = sprintf ("with %s %s %s%s",
-                                             style{i_stl}, scmd, sopt, hopt);
+            withclause{data_idx} = sprintf ("with %s %s %s",
+                                             style{i_stl}, scmd, sopt);
           endfor
 
         endif
@@ -1363,7 +1351,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "set pm3d explicit;\n");
   endif
 
-  if (isnan (hidden_removal) || hidden_removal)
+  if (! isnan (hidden_removal) && hidden_removal)
     fputs (plot_stream, "set hidden3d front nooffset;\n");
   else
     fputs (plot_stream, "unset hidden3d;\n");

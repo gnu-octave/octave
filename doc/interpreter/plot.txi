@@ -630,14 +630,14 @@ to @qcode{"none"}.
 
 The @qcode{"tex"} option implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
-characters or mathematical symbols.  The special characters are inserted with a
-code following a backslash (\) character, as shown in @ref{tab:extended}.
+characters or mathematical symbols.  Special characters are inserted by using
+a backslash (\) character followed by a code, as shown in @ref{tab:extended}.
 
 Note that for on-screen display the interpreter property is honored by all
 graphics toolkits.  However for printing, @strong{only} the @qcode{"gnuplot"}
 toolkit renders @TeX{} instructions.
 
-Besides special glyphs, the formatting of text can be changed within the
+Besides special glyphs, the formatting of the text can be changed within the
 string by using the codes
 
 @multitable @columnfractions .2 .2 .6 .2
@@ -648,16 +648,16 @@ string by using the codes
 @end multitable
 
 These codes may be used in conjunction with the @{ and @} characters to limit
-the change to just a part of the string.  For example,
+the change to a part of the string.  For example,
 
 @example
 xlabel ('@{\bf H@} = a @{\bf V@}')
 @end example
 
 @noindent
-where the character @qcode{'a'} will not appear in a bold font.  Note that to
-avoid having Octave interpret the backslash characters in the strings,
-the strings should be in single quotes.
+where the character @qcode{'a'} will not appear in bold font.  Note that to
+avoid having Octave interpret the backslash character in the strings,
+the strings themselves should be in single quotes.
 
 It is also possible to change the fontname and size within the text
 
@@ -667,11 +667,21 @@ It is also possible to change the fontname and size within the text
 use @tab
 @end multitable
 
+The color of the text may also be changed inline using either a string (e.g.,
+"red") or numerically with a Red-Green-Blue (RGB) specification (.e.g.,
+[1 0 0], also red).
+
+@multitable @columnfractions .1 .4 .6 .1
+@item @tab \color@{@var{color}@} @tab Specify the color as a string @tab
+@item @tab \color[rgb]@{@var{R} @var{G} @var{B}@} @tab Specify the color
+numerically @tab
+@end multitable
+
 Finally, superscripting and subscripting can be controlled with the @qcode{'^'}
 and @qcode{'_'} characters.  If the @qcode{'^'} or @qcode{'_'} is followed by a
-@{ character, then all of the block surrounded by the @{ @} pair is super- or
-sub-scripted.  Without the @{ @} pair, only the character immediately following
-the @qcode{'^'} or @qcode{'_'} is super- or sub-scripted.
+@{ character, then all of the block surrounded by the @{ @} pair is
+superscripted or subscripted.  Without the @{ @} pair, only the character
+immediately following the @qcode{'^'} or @qcode{'_'} is changed.
 
 @float Table,tab:extended
 @tex

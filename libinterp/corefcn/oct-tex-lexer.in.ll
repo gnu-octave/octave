@@ -110,7 +110,7 @@ NUM (({D}+\.?{D}*)|(\.{D}+))
       return NUM;
   }
 
-<NUM_MODE>[ \t]+ { }
+<NUM_MODE>[, \t]+ { }
 
 <NUM_MODE>"\n"|. {
     yyless (0);

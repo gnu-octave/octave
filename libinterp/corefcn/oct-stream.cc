@@ -6697,10 +6697,12 @@ convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
 {
   bool retval = true;
 
-  bool swap
-    = ((octave::mach_info::words_big_endian ()
-        && flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian)
-       || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
+  bool swap = false;
+
+  if (octave::mach_info::words_big_endian ())
+    swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian);
+  else
+    swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
 
   bool do_float_conversion = flt_fmt != octave::mach_info::float_format ();
 
@@ -6860,9 +6862,12 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
                       octave_idx_type skip,
                       octave::mach_info::float_format flt_fmt)
 {
-  bool swap = ((octave::mach_info::words_big_endian ()
-                && flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian)
-               || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
+  bool swap = false;
+
+  if (octave::mach_info::words_big_endian ())
+    swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian);
+  else
+    swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
 
   bool do_data_conversion = (swap || ! is_equivalent_type<T> (output_type)
                              || flt_fmt != octave::mach_info::float_format ());

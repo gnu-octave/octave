@@ -42,7 +42,7 @@ DEFUNOP (not, float_complex)
 {
   const octave_float_complex& v = dynamic_cast<const octave_float_complex&> (a);
   FloatComplex x = v.float_complex_value ();
-  if (xisnan (x))
+  if (octave::math::isnan (x))
     err_nan_to_logical_conversion ();
 
   return octave_value (x == 0.0f);

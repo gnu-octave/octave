@@ -70,7 +70,7 @@ err_nonsquare_matrix (void)
 static inline int
 xisint (double x)
 {
-  return (D_NINT (x) == x
+  return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
@@ -1478,7 +1478,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 static inline int
 xisint (float x)
 {
-  return (D_NINT (x) == x
+  return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }

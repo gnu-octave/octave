@@ -35,14 +35,14 @@ template <>
 bool
 sparse_ascending_compare<double> (double a, double b)
 {
-  return (xisnan (b) || (a < b));
+  return (octave::math::isnan (b) || (a < b));
 }
 
 template <>
 bool
 sparse_descending_compare<double> (double a, double b)
 {
-  return (xisnan (a) || (a > b));
+  return (octave::math::isnan (a) || (a > b));
 }
 
 INSTANTIATE_SPARSE (double, OCTAVE_API);

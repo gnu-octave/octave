@@ -68,12 +68,12 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 
       for (int i = 0; i < dims.ndims (); i++)
         {
-          if (xisnan (val(i,0)))
+          if (octave::math::isnan (val(i,0)))
             error ("%s: SIZE has invalid NaN entries", fcn);
-          else if (NINTbig (val(i,0)) < 0)
+          else if (octave::math::nint_big (val(i,0)) < 0)
             error ("%s: all dimensions in SIZE must be greater than zero", fcn);
           else
-            dims(i) = NINTbig(val(i,0));
+            dims(i) = octave::math::nint_big(val(i,0));
         }
     }
 

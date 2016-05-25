@@ -470,7 +470,7 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
   for (octave_idx_type i = 0; i < x.numel (); i++)
     {
       int exp;
-      f.xelem (i) = xlog2 (x(i), exp);
+      f.xelem (i) = octave::math::log2 (x(i), exp);
       e.xelem (i) = exp;
     }
 }
@@ -664,29 +664,29 @@ periodic, @code{mod} is a better choice.\n\
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = xrem (args(0).float_value (), args(1).float_value ());
+        retval = octave::math::rem (args(0).float_value (), args(1).float_value ());
       else
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, xrem<float>, "rem");
+          retval = binmap<float> (a0, a1, octave::math::rem<float>, "rem");
         }
     }
   else
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = xrem (args(0).scalar_value (), args(1).scalar_value ());
+        retval = octave::math::rem (args(0).scalar_value (), args(1).scalar_value ());
       else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, xrem<double>, "rem");
+          retval = binmap<double> (m0, m1, octave::math::rem<double>, "rem");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, xrem<double>, "rem");
+          retval = binmap<double> (a0, a1, octave::math::rem<double>, "rem");
         }
     }
 
@@ -845,29 +845,29 @@ negative numbers or when the values are periodic.\n\
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = xmod (args(0).float_value (), args(1).float_value ());
+        retval = octave::math::mod (args(0).float_value (), args(1).float_value ());
       else
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, xmod<float>, "mod");
+          retval = binmap<float> (a0, a1, octave::math::mod<float>, "mod");
         }
     }
   else
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = xmod (args(0).scalar_value (), args(1).scalar_value ());
+        retval = octave::math::mod (args(0).scalar_value (), args(1).scalar_value ());
       else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, xmod<double>, "mod");
+          retval = binmap<double> (m0, m1, octave::math::mod<double>, "mod");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, xmod<double>, "mod");
+          retval = binmap<double> (a0, a1, octave::math::mod<double>, "mod");
         }
     }
 
@@ -4540,7 +4540,7 @@ type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
           for (octave_idx_type i = 0; i < x.numel (); i++)
             {
               float val = ::fabsf (x(i));
-              if (xisnan (val) || xisinf (val))
+              if (octave::math::isnan (val) || octave::math::isinf (val))
                 epsval(i) = lo_ieee_nan_value ();
               else if (val < std::numeric_limits<float>::min ())
                 epsval(i) = powf (2.0, -149e0);
@@ -4564,7 +4564,7 @@ type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
           for (octave_idx_type i = 0; i < x.numel (); i++)
             {
               double val = ::fabs (x(i));
-              if (xisnan (val) || xisinf (val))
+              if (octave::math::isnan (val) || octave::math::isinf (val))
                 epsval(i) = lo_ieee_nan_value ();
               else if (val < std::numeric_limits<double>::min ())
                 epsval(i) = pow (2.0, -1074e0);

@@ -394,9 +394,9 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
     {
       double val = args(1).xscalar_value ("find: N must be an integer");
 
-      if (val < 0 || (! xisinf (val) && val != xround (val)))
+      if (val < 0 || (! octave::math::isinf (val) && val != octave::math::round (val)))
         error ("find: N must be a non-negative integer");
-      else if (! xisinf (val))
+      else if (! octave::math::isinf (val))
         n_to_find = val;
     }
 

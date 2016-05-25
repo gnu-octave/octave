@@ -43,7 +43,7 @@ updateSelection (QListWidget* list, const Matrix& value)
 
   for (octave_idx_type i = 0; i < n; i++)
     {
-      int idx = xround (value(i));
+      int idx = octave::math::round (value(i));
 
       if (1 <= idx && idx <= lc)
         {
@@ -96,7 +96,7 @@ ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
 
       for (octave_idx_type i = 0; i < n; i++)
         {
-          int idx = xround (value(i));
+          int idx = octave::math::round (value(i));
 
           if (1 <= idx && idx <= lc)
             {

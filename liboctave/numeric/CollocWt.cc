@@ -227,7 +227,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
           // Famous last words:  100 iterations should be more than
           // enough in all cases.
 
-          if (++k > 100 || xisnan (z))
+          if (++k > 100 || octave::math::isnan (z))
             return false;
 
           if (std::abs (z) <= 100 * std::numeric_limits<double>::epsilon ())

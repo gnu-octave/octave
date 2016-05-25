@@ -108,8 +108,8 @@ boundingBoxToRect (const Matrix& bb)
 
   if (bb.numel () == 4)
     {
-      r = QRect (xround (bb(0)), xround (bb(1)),
-                 xround (bb(2)), xround (bb(3)));
+      r = QRect (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                 octave::math::round (bb(2)), octave::math::round (bb(3)));
       if (! r.isValid ())
         r = QRect ();
     }

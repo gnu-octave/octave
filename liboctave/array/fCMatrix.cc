@@ -1909,7 +1909,7 @@ FloatComplexMatrix::utsolve (MatrixType &mattype, const FloatComplexMatrix& b,
 
                   volatile float rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -2003,7 +2003,7 @@ FloatComplexMatrix::ltsolve (MatrixType &mattype, const FloatComplexMatrix& b,
 
                   volatile float rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -2089,7 +2089,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
 
                   volatile float rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -2172,7 +2172,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
 
                   volatile float rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -2624,7 +2624,7 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
       // call.
       float dminmn = static_cast<float> (minmn);
       float dsmlsizp1 = static_cast<float> (smlsiz+1);
-      float tmp = xlog2 (dminmn / dsmlsizp1);
+      float tmp = octave::math::log2 (dminmn / dsmlsizp1);
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -2817,7 +2817,7 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
       // call.
       float dminmn = static_cast<float> (minmn);
       float dsmlsizp1 = static_cast<float> (smlsiz+1);
-      float tmp = xlog2 (dminmn / dsmlsizp1);
+      float tmp = octave::math::log2 (dminmn / dsmlsizp1);
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -3166,7 +3166,7 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
             {
               tmp_min = elem (i, idx_j);
 
-              if (! xisnan (tmp_min))
+              if (! octave::math::isnan (tmp_min))
                 {
                   abs_min = real_only ? std::real (tmp_min)
                                       : std::abs (tmp_min);
@@ -3178,7 +3178,7 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
             {
               FloatComplex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               float abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3191,7 +3191,7 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_min))
+          if (octave::math::isnan (tmp_min))
             {
               result.elem (i) = FloatComplex_NaN_result;
               idx_arg.elem (i) = 0;
@@ -3241,7 +3241,7 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
             {
               tmp_max = elem (i, idx_j);
 
-              if (! xisnan (tmp_max))
+              if (! octave::math::isnan (tmp_max))
                 {
                   abs_max = real_only ? std::real (tmp_max)
                                       : std::abs (tmp_max);
@@ -3253,7 +3253,7 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
             {
               FloatComplex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               float abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3266,7 +3266,7 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_max))
+          if (octave::math::isnan (tmp_max))
             {
               result.elem (i) = FloatComplex_NaN_result;
               idx_arg.elem (i) = 0;
@@ -3316,7 +3316,7 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
             {
               tmp_min = elem (idx_i, j);
 
-              if (! xisnan (tmp_min))
+              if (! octave::math::isnan (tmp_min))
                 {
                   abs_min = real_only ? std::real (tmp_min)
                                       : std::abs (tmp_min);
@@ -3328,7 +3328,7 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
             {
               FloatComplex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               float abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3341,7 +3341,7 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_min))
+          if (octave::math::isnan (tmp_min))
             {
               result.elem (j) = FloatComplex_NaN_result;
               idx_arg.elem (j) = 0;
@@ -3391,7 +3391,7 @@ FloatComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
             {
               tmp_max = elem (idx_i, j);
 
-              if (! xisnan (tmp_max))
+              if (! octave::math::isnan (tmp_max))
                 {
                   abs_max = real_only ? std::real (tmp_max)
                                       : std::abs (tmp_max);
@@ -3403,7 +3403,7 @@ FloatComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
             {
               FloatComplex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               float abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3416,7 +3416,7 @@ FloatComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_max))
+          if (octave::math::isnan (tmp_max))
             {
               result.elem (j) = FloatComplex_NaN_result;
               idx_arg.elem (j) = 0;
@@ -3736,7 +3736,7 @@ min (const FloatComplex& c, const FloatComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmin (c, m(i, j));
+        result(i, j) = octave::math::min (c, m(i, j));
       }
 
   return result;
@@ -3756,7 +3756,7 @@ min (const FloatComplexMatrix& m, const FloatComplex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmin (m(i, j), c);
+        result(i, j) = octave::math::min (m(i, j), c);
       }
 
   return result;
@@ -3792,14 +3792,14 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
-            result(i, j) = xmin (std::real (a(i, j)), std::real (b(i, j)));
+            result(i, j) = octave::math::min (std::real (a(i, j)), std::real (b(i, j)));
         }
       else
         {
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = xmin (a(i, j), b(i, j));
+              result(i, j) = octave::math::min (a(i, j), b(i, j));
             }
         }
     }
@@ -3821,7 +3821,7 @@ max (const FloatComplex& c, const FloatComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmax (c, m(i, j));
+        result(i, j) = octave::math::max (c, m(i, j));
       }
 
   return result;
@@ -3841,7 +3841,7 @@ max (const FloatComplexMatrix& m, const FloatComplex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmax (m(i, j), c);
+        result(i, j) = octave::math::max (m(i, j), c);
       }
 
   return result;
@@ -3879,7 +3879,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = xmax (std::real (a(i, j)), std::real (b(i, j)));
+              result(i, j) = octave::math::max (std::real (a(i, j)), std::real (b(i, j)));
             }
         }
       else
@@ -3887,7 +3887,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = xmax (a(i, j), b(i, j));
+              result(i, j) = octave::math::max (a(i, j), b(i, j));
             }
         }
     }

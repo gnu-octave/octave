@@ -97,7 +97,7 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
 
   double dval = args(0).double_value ();
 
-  if (D_NINT (dval) != dval)
+  if (octave::math::x_nint (dval) != dval)
     error ("getgrgid: GID must be an integer");
 
   gid_t gid = static_cast<gid_t> (dval);

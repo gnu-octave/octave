@@ -1165,8 +1165,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
         error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
 
       Array<double> v = a.vector_value ();
-      nr = static_cast<octave_idx_type> (fix (v(0)));
-      nc = static_cast<octave_idx_type> (fix (v(1)));
+      nr = static_cast<octave_idx_type> (octave::math::fix (v(0)));
+      nc = static_cast<octave_idx_type> (octave::math::fix (v(1)));
     }
 
   check_dimensions (nr, nc, warn_for);

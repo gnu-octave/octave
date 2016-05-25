@@ -58,10 +58,10 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       if (! args(1).is_empty ())
         {
           double dval = args(1).double_value ();
-          if (xisnan (dval))
+          if (octave::math::isnan (dval))
             error ("%s: number of points (N) cannot be NaN", fcn);
 
-          n_points = NINTbig (dval);
+          n_points = octave::math::nint_big (dval);
           if (n_points < 0)
             error ("%s: number of points (N) must be greater than zero", fcn);
         }
@@ -70,14 +70,14 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
   if (nargin > 2)
     {
       double dval = args(2).double_value ();
-      if (xisnan (dval))
+      if (octave::math::isnan (dval))
         error ("%s: DIM cannot be NaN", fcn);
       else if (dval < 1 || dval > dims.ndims ())
         error ("%s: DIM must be a valid dimension along which to perform FFT",
                fcn);
       else
         // to be safe, cast it back to int since dim is an int
-        dim = NINT (dval) - 1;
+        dim = octave::math::nint (dval) - 1;
     }
 
   for (octave_idx_type i = 0; i < dims.ndims (); i++)

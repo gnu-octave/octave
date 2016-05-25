@@ -450,17 +450,17 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
           && U.xridx (U.xcidx (j+1)-1) == j)
         d = std::abs (U.xdata (U.xcidx (j+1)-1));
 
-      if (xisnan (minU) || d < minU)
+      if (octave::math::isnan (minU) || d < minU)
         minU = d;
 
-      if (xisnan (maxU) || d > maxU)
+      if (octave::math::isnan (maxU) || d > maxU)
         maxU = d;
     }
 
   double rcond = (minU / maxU);
   volatile double rcond_plus_one = rcond + 1.0;
 
-  if (rcond_plus_one == 1.0 || xisnan (rcond))
+  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();
 
   return true;
@@ -522,17 +522,17 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = std::abs (U.xelem (j,j));
-      if (xisnan (minU) || d < minU)
+      if (octave::math::isnan (minU) || d < minU)
         minU = d;
 
-      if (xisnan (maxU) || d > maxU)
+      if (octave::math::isnan (maxU) || d > maxU)
         maxU = d;
     }
 
   double rcond = (minU / maxU);
   volatile double rcond_plus_one = rcond + 1.0;
 
-  if (rcond_plus_one == 1.0 || xisnan (rcond))
+  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();
 
   return true;
@@ -614,17 +614,17 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
           && U.xridx (U.xcidx (j+1)-1) == j)
         d = std::abs (U.xdata (U.xcidx (j+1)-1));
 
-      if (xisnan (minU) || d < minU)
+      if (octave::math::isnan (minU) || d < minU)
         minU = d;
 
-      if (xisnan (maxU) || d > maxU)
+      if (octave::math::isnan (maxU) || d > maxU)
         maxU = d;
     }
 
   double rcond = (minU / maxU);
   volatile double rcond_plus_one = rcond + 1.0;
 
-  if (rcond_plus_one == 1.0 || xisnan (rcond))
+  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();
 
   return true;
@@ -686,17 +686,17 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = std::abs (U.xelem (j,j));
-      if (xisnan (minU) || d < minU)
+      if (octave::math::isnan (minU) || d < minU)
         minU = d;
 
-      if (xisnan (maxU) || d > maxU)
+      if (octave::math::isnan (maxU) || d > maxU)
         maxU = d;
     }
 
   double rcond = (minU / maxU);
   volatile double rcond_plus_one = rcond + 1.0;
 
-  if (rcond_plus_one == 1.0 || xisnan (rcond))
+  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();
 
   return true;
@@ -769,7 +769,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n || D_NINT (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n || octave::math::x_nint (bidx) != bidx)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -847,7 +847,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in dsaupd");
 
-      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -1042,7 +1042,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n || D_NINT (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n || octave::math::x_nint (bidx) != bidx)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1100,7 +1100,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in dsaupd");
 
-      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -1373,7 +1373,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in dsaupd");
 
-      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -1564,7 +1564,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n || D_NINT (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n || octave::math::x_nint (bidx) != bidx)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1642,7 +1642,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in dnaupd");
 
-      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {
@@ -1886,7 +1886,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n || D_NINT (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n || octave::math::x_nint (bidx) != bidx)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1944,7 +1944,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in dsaupd");
 
-      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -2272,7 +2272,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in dnaupd");
 
-      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {
@@ -2513,7 +2513,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n || D_NINT (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n || octave::math::x_nint (bidx) != bidx)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -2592,7 +2592,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in znaupd");
 
-      if (disp > 0 && ! xisnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -2789,7 +2789,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n || D_NINT (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n || octave::math::x_nint (bidx) != bidx)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -2848,7 +2848,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in znaupd");
 
-      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {
@@ -3133,7 +3133,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
         (*current_liboctave_error_handler)
           ("eigs: unrecoverable exception encountered in znaupd");
 
-      if (disp > 0 && ! xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
         {
           if (iter++)
             {

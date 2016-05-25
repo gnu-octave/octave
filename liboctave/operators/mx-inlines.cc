@@ -187,7 +187,7 @@ mx_inline_any_nan (size_t n, const T* x)  throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
-      if (xisnan (x[i]))
+      if (octave::math::isnan (x[i]))
         return true;
     }
 
@@ -200,7 +200,7 @@ mx_inline_all_finite (size_t n, const T* x)  throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
-      if (! xfinite (x[i]))
+      if (! octave::math::finite (x[i]))
         return false;
     }
 
@@ -270,15 +270,15 @@ template <typename T> \
 inline void F (size_t n, T *r, T x, const T *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
-DEFMXMAPPER2 (mx_inline_xmin, xmin)
-DEFMXMAPPER2 (mx_inline_xmax, xmax)
+DEFMXMAPPER2 (mx_inline_xmin, octave::math::min)
+DEFMXMAPPER2 (mx_inline_xmax, octave::math::max)
 
 // Specialize array-scalar max/min
 #define DEFMINMAXSPEC(T, F, OP) \
 template <> \
 inline void F<T> (size_t n, T *r, const T *x, T y) throw () \
 { \
-  if (xisnan (y)) \
+  if (octave::math::isnan (y)) \
     std::memcpy (r, x, n * sizeof (T)); \
   else \
     for (size_t i = 0; i < n; i++) r[i] = (x[i] OP y) ? x[i] : y; \
@@ -286,7 +286,7 @@ inline void F<T> (size_t n, T *r, const T *x, T y) throw () \
 template <> \
 inline void F<T> (size_t n, T *r, T x, const T *y) throw () \
 { \
-  if (xisnan (x)) \
+  if (octave::math::isnan (x)) \
     std::memcpy (r, y, n * sizeof (T)); \
   else \
     for (size_t i = 0; i < n; i++) r[i] = (y[i] OP x) ? y[i] : x; \
@@ -469,14 +469,14 @@ inline bool xis_true (const octave_int<T>& x) { return x.value (); }
 template <typename T>
 inline bool xis_false (const octave_int<T>& x) { return ! x.value (); }
 // for reals, we want to ignore NaNs.
-inline bool xis_true (double x) { return ! xisnan (x) && x != 0.0; }
+inline bool xis_true (double x) { return ! octave::math::isnan (x) && x != 0.0; }
 inline bool xis_false (double x) { return x == 0.0; }
-inline bool xis_true (float x) { return ! xisnan (x) && x != 0.0f; }
+inline bool xis_true (float x) { return ! octave::math::isnan (x) && x != 0.0f; }
 inline bool xis_false (float x) { return x == 0.0f; }
 // Ditto for complex.
-inline bool xis_true (const Complex& x) { return ! xisnan (x) && x != 0.0; }
+inline bool xis_true (const Complex& x) { return ! octave::math::isnan (x) && x != 0.0; }
 inline bool xis_false (const Complex& x) { return x == 0.0; }
-inline bool xis_true (const FloatComplex& x) { return ! xisnan (x) && x != 0.0f; }
+inline bool xis_true (const FloatComplex& x) { return ! octave::math::isnan (x) && x != 0.0f; }
 inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
 
 #define OP_RED_SUM(ac, el) ac += el
@@ -705,9 +705,9 @@ void F (const T *v, T *r, octave_idx_type n) \
   if (! n) return; \
   T tmp = v[0]; \
   octave_idx_type i = 1; \
-  if (xisnan (tmp)) \
+  if (octave::math::isnan (tmp)) \
     { \
-      for (; i < n && xisnan (v[i]); i++) ; \
+      for (; i < n && octave::math::isnan (v[i]); i++) ; \
       if (i < n) tmp = v[i]; \
     } \
   for (; i < n; i++) \
@@ -721,9 +721,9 @@ void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
   T tmp = v[0]; \
   octave_idx_type tmpi = 0; \
   octave_idx_type i = 1; \
-  if (xisnan (tmp)) \
+  if (octave::math::isnan (tmp)) \
     { \
-      for (; i < n && xisnan (v[i]); i++) ; \
+      for (; i < n && octave::math::isnan (v[i]); i++) ; \
       if (i < n) { tmp = v[i]; tmpi = i; } \
     } \
   for (; i < n; i++) \
@@ -750,7 +750,7 @@ F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
   for (octave_idx_type i = 0; i < m; i++) \
     {  \
       r[i] = v[i]; \
-      if (xisnan (v[i])) nan = true;  \
+      if (octave::math::isnan (v[i])) nan = true;  \
     } \
   j++; v += m; \
   while (nan && j < n) \
@@ -758,9 +758,9 @@ F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
       nan = false; \
       for (octave_idx_type i = 0; i < m; i++) \
         {  \
-          if (xisnan (v[i])) \
+          if (octave::math::isnan (v[i])) \
             nan = true;  \
-          else if (xisnan (r[i]) || v[i] OP r[i]) \
+          else if (octave::math::isnan (r[i]) || v[i] OP r[i]) \
             r[i] = v[i]; \
         } \
       j++; v += m; \
@@ -783,7 +783,7 @@ F (const T *v, T *r, octave_idx_type *ri, \
   for (octave_idx_type i = 0; i < m; i++) \
     {  \
       r[i] = v[i]; ri[i] = j; \
-      if (xisnan (v[i])) nan = true;  \
+      if (octave::math::isnan (v[i])) nan = true;  \
     } \
   j++; v += m; \
   while (nan && j < n) \
@@ -791,9 +791,9 @@ F (const T *v, T *r, octave_idx_type *ri, \
       nan = false; \
       for (octave_idx_type i = 0; i < m; i++) \
         {  \
-          if (xisnan (v[i])) \
+          if (octave::math::isnan (v[i])) \
             nan = true;  \
-          else if (xisnan (r[i]) || v[i] OP r[i]) \
+          else if (octave::math::isnan (r[i]) || v[i] OP r[i]) \
             { r[i] = v[i]; ri[i] = j; } \
         } \
       j++; v += m; \
@@ -871,9 +871,9 @@ void F (const T *v, T *r, octave_idx_type n) \
   T tmp = v[0]; \
   octave_idx_type i = 1; \
   octave_idx_type j = 0; \
-  if (xisnan (tmp)) \
+  if (octave::math::isnan (tmp)) \
     { \
-      for (; i < n && xisnan (v[i]); i++) ; \
+      for (; i < n && octave::math::isnan (v[i]); i++) ; \
       for (; j < i; j++) r[j] = tmp; \
       if (i < n) tmp = v[i]; \
     } \
@@ -892,9 +892,9 @@ void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
   T tmp = v[0]; octave_idx_type tmpi = 0; \
   octave_idx_type i = 1; \
   octave_idx_type j = 0; \
-  if (xisnan (tmp)) \
+  if (octave::math::isnan (tmp)) \
     { \
-      for (; i < n && xisnan (v[i]); i++) ; \
+      for (; i < n && octave::math::isnan (v[i]); i++) ; \
       for (; j < i; j++) { r[j] = tmp; ri[j] = tmpi; } \
       if (i < n) { tmp = v[i]; tmpi = i; } \
     } \
@@ -926,7 +926,7 @@ F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
   for (octave_idx_type i = 0; i < m; i++) \
     {  \
       r[i] = v[i]; \
-      if (xisnan (v[i])) nan = true;  \
+      if (octave::math::isnan (v[i])) nan = true;  \
     } \
   j++; v += m; r0 = r; r += m; \
   while (nan && j < n) \
@@ -934,9 +934,9 @@ F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
       nan = false; \
       for (octave_idx_type i = 0; i < m; i++) \
         {  \
-          if (xisnan (v[i])) \
+          if (octave::math::isnan (v[i])) \
             { r[i] = r0[i]; nan = true; } \
-          else if (xisnan (r0[i]) || v[i] OP r0[i]) \
+          else if (octave::math::isnan (r0[i]) || v[i] OP r0[i]) \
             r[i] = v[i]; \
           else \
             r[i] = r0[i]; \
@@ -965,7 +965,7 @@ F (const T *v, T *r, octave_idx_type *ri, \
   for (octave_idx_type i = 0; i < m; i++) \
     {  \
       r[i] = v[i]; ri[i] = 0; \
-      if (xisnan (v[i])) nan = true;  \
+      if (octave::math::isnan (v[i])) nan = true;  \
     } \
   j++; v += m; r0 = r; r += m; r0i = ri; ri += m;  \
   while (nan && j < n) \
@@ -973,9 +973,9 @@ F (const T *v, T *r, octave_idx_type *ri, \
       nan = false; \
       for (octave_idx_type i = 0; i < m; i++) \
         {  \
-          if (xisnan (v[i])) \
+          if (octave::math::isnan (v[i])) \
             { r[i] = r0[i]; ri[i] = r0i[i]; nan = true; } \
-          else if (xisnan (r0[i]) || v[i] OP r0[i]) \
+          else if (octave::math::isnan (r0[i]) || v[i] OP r0[i]) \
             { r[i] = v[i]; ri[i] = j; }\
           else \
             { r[i] = r0[i]; ri[i] = r0i[i]; }\

@@ -1049,7 +1049,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
   anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
   // Work around bug #45577, LAPACK crashes Octave if norm is NaN
-  if (xisnan (anorm))
+  if (octave::math::isnan (anorm))
     info = -1;
   else
     F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
@@ -1617,7 +1617,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
       anorm = xnorm (*this, 1);
 
       // Work around bug #45577, LAPACK crashes Octave if norm is NaN
-      if (xisnan (anorm))
+      if (octave::math::isnan (anorm))
         info = -1;
       else
         F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1812,7 +1812,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               double *prz = rz.fortran_vec ();
 
               // Work around bug #45577, LAPACK crashes Octave if norm is NaN
-              if (xisnan (anorm))
+              if (octave::math::isnan (anorm))
                 info = -1;
               else
                 F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1917,7 +1917,7 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           volatile double rcond_plus_one = rcon + 1.0;
 
-          if (rcond_plus_one == 1.0 || xisnan (rcon))
+          if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
             {
               info = -2;
 
@@ -2007,7 +2007,7 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           volatile double rcond_plus_one = rcon + 1.0;
 
-          if (rcond_plus_one == 1.0 || xisnan (rcon))
+          if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
             {
               info = -2;
 
@@ -2089,7 +2089,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   volatile double rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -2141,7 +2141,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                     .max ();
 
           // Work around bug #45577, LAPACK crashes Octave if norm is NaN
-          if (xisnan (anorm))
+          if (octave::math::isnan (anorm))
             info = -2;
           else
             F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -2176,7 +2176,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   volatile double rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -2617,7 +2617,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       // call.
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
-      double tmp = xlog2 (dminmn / dsmlsizp1);
+      double tmp = octave::math::log2 (dminmn / dsmlsizp1);
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -2807,7 +2807,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       // call.
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
-      double tmp = xlog2 (dminmn / dsmlsizp1);
+      double tmp = octave::math::log2 (dminmn / dsmlsizp1);
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -3153,7 +3153,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
             {
               tmp_min = elem (i, idx_j);
 
-              if (! xisnan (tmp_min))
+              if (! octave::math::isnan (tmp_min))
                 {
                   abs_min = real_only ? std::real (tmp_min)
                                       : std::abs (tmp_min);
@@ -3165,7 +3165,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
             {
               Complex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3178,7 +3178,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_min))
+          if (octave::math::isnan (tmp_min))
             {
               result.elem (i) = Complex_NaN_result;
               idx_arg.elem (i) = 0;
@@ -3228,7 +3228,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
             {
               tmp_max = elem (i, idx_j);
 
-              if (! xisnan (tmp_max))
+              if (! octave::math::isnan (tmp_max))
                 {
                   abs_max = real_only ? std::real (tmp_max)
                                       : std::abs (tmp_max);
@@ -3240,7 +3240,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
             {
               Complex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3253,7 +3253,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_max))
+          if (octave::math::isnan (tmp_max))
             {
               result.elem (i) = Complex_NaN_result;
               idx_arg.elem (i) = 0;
@@ -3303,7 +3303,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
             {
               tmp_min = elem (idx_i, j);
 
-              if (! xisnan (tmp_min))
+              if (! octave::math::isnan (tmp_min))
                 {
                   abs_min = real_only ? std::real (tmp_min)
                                       : std::abs (tmp_min);
@@ -3315,7 +3315,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
             {
               Complex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3328,7 +3328,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_min))
+          if (octave::math::isnan (tmp_min))
             {
               result.elem (j) = Complex_NaN_result;
               idx_arg.elem (j) = 0;
@@ -3378,7 +3378,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
             {
               tmp_max = elem (idx_i, j);
 
-              if (! xisnan (tmp_max))
+              if (! octave::math::isnan (tmp_max))
                 {
                   abs_max = real_only ? std::real (tmp_max)
                                       : std::abs (tmp_max);
@@ -3390,7 +3390,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
             {
               Complex tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
@@ -3403,7 +3403,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
                 }
             }
 
-          if (xisnan (tmp_max))
+          if (octave::math::isnan (tmp_max))
             {
               result.elem (j) = Complex_NaN_result;
               idx_arg.elem (j) = 0;
@@ -3720,7 +3720,7 @@ min (const Complex& c, const ComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmin (c, m(i, j));
+        result(i, j) = octave::math::min (c, m(i, j));
       }
 
   return result;
@@ -3740,7 +3740,7 @@ min (const ComplexMatrix& m, const Complex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmin (m(i, j), c);
+        result(i, j) = octave::math::min (m(i, j), c);
       }
 
   return result;
@@ -3776,14 +3776,14 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
-            result(i, j) = xmin (std::real (a(i, j)), std::real (b(i, j)));
+            result(i, j) = octave::math::min (std::real (a(i, j)), std::real (b(i, j)));
         }
       else
         {
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = xmin (a(i, j), b(i, j));
+              result(i, j) = octave::math::min (a(i, j), b(i, j));
             }
         }
     }
@@ -3805,7 +3805,7 @@ max (const Complex& c, const ComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmax (c, m(i, j));
+        result(i, j) = octave::math::max (c, m(i, j));
       }
 
   return result;
@@ -3825,7 +3825,7 @@ max (const ComplexMatrix& m, const Complex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmax (m(i, j), c);
+        result(i, j) = octave::math::max (m(i, j), c);
       }
 
   return result;
@@ -3863,7 +3863,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = xmax (std::real (a(i, j)), std::real (b(i, j)));
+              result(i, j) = octave::math::max (std::real (a(i, j)), std::real (b(i, j)));
             }
         }
       else
@@ -3871,7 +3871,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = xmax (a(i, j), b(i, j));
+              result(i, j) = octave::math::max (a(i, j), b(i, j));
             }
         }
     }

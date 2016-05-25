@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 static inline int
 xisint (double x)
 {
-  return (D_NINT (x) == x
+  return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }

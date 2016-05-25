@@ -109,11 +109,11 @@ is stored in the audio file.\n\
       if (range.numel () != 2)
         error ("audioread: invalid specification for range of frames");
 
-      double dstart = xisinf (range(0)) ? info.frames : range(0);
-      double dend = xisinf (range(1)) ? info.frames : range(1);
+      double dstart = octave::math::isinf (range(0)) ? info.frames : range(0);
+      double dend = octave::math::isinf (range(1)) ? info.frames : range(1);
 
       if (dstart < 1 || dstart > dend || dend > info.frames
-          || D_NINT (dstart) != dstart || D_NINT (dend) != dend)
+          || octave::math::x_nint (dstart) != dstart || octave::math::x_nint (dend) != dend)
         error ("audioread: invalid specification for range of frames");
 
       start = dstart - 1;

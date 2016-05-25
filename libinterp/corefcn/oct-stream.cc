@@ -97,7 +97,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
     {
       if (! lo_ieee_isnan (dval))
         {
-          int ival = NINT (dval);
+          int ival = octave::math::nint (dval);
 
           if (ival == dval)
             retval = ival;
@@ -119,7 +119,7 @@ get_size (double d, const std::string& who)
   if (lo_ieee_isnan (d))
     ::error ("%s: NaN is invalid as size specification", who.c_str ());
 
-  if (xisinf (d))
+  if (octave::math::isinf (d))
     retval = -1;
   else
     {
@@ -127,7 +127,7 @@ get_size (double d, const std::string& who)
         ::error ("%s: negative value invalid as size specification",
                  who.c_str ());
 
-      retval = NINT (d);
+      retval = octave::math::nint (d);
     }
 
   return retval;
@@ -159,7 +159,7 @@ get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc,
     {
       dnr = size(0);
 
-      if (xisinf (dnr))
+      if (octave::math::isinf (dnr))
         ::error ("%s: invalid size specification", who.c_str ());
 
       dnc = size(1);
@@ -2991,7 +2991,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
 
       // check for "treat as empty" string
       if (treat_as_empty.numel ()
-          && (is.fail () || octave_is_NaN_or_NA (Complex (re))
+          && (is.fail () || octave::math::is_NaN_or_NA (Complex (re))
               || re == octave::numeric_limits<double>::Inf ()))
         {
 
@@ -5365,7 +5365,7 @@ printf_value_cache::get_next_value (char type)
                     {
                       double dval = val(idx);
 
-                      if (D_NINT (dval) != dval || dval < 0 || dval > 255)
+                      if (octave::math::x_nint (dval) != dval || dval < 0 || dval > 255)
                         break;
                     }
 
@@ -5392,7 +5392,7 @@ printf_value_cache::get_next_value (char type)
                 {
                   double dval = retval.double_value ();
 
-                  if (D_NINT (dval) == dval && dval >= 0 && dval < 256)
+                  if (octave::math::x_nint (dval) == dval && dval >= 0 && dval < 256)
                     retval = static_cast<char> (dval);
                 }
             }
@@ -5437,8 +5437,8 @@ printf_value_cache::int_value (void)
 
   double dval = val.double_value (true);
 
-  if (D_NINT (dval) == dval)
-    retval = NINT (dval);
+  if (octave::math::x_nint (dval) == dval)
+    retval = octave::math::nint (dval);
   else
     curr_state = conversion_error;
 
@@ -5532,7 +5532,7 @@ ok_for_signed_int_conv (const octave_value& val)
     {
       double dval = val.double_value (true);
 
-      if (dval == xround (dval) && dval <= limit)
+      if (dval == octave::math::round (dval) && dval <= limit)
         return true;
     }
 
@@ -5559,7 +5559,7 @@ ok_for_unsigned_int_conv (const octave_value& val)
 
       uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
-      if (dval == xround (dval) && dval >= 0 && dval <= limit)
+      if (dval == octave::math::round (dval) && dval >= 0 && dval <= limit)
         return true;
     }
 
@@ -6019,7 +6019,7 @@ octave_stream::skipl (const octave_value& tc_count, bool& err,
 
   if (tc_count.is_defined ())
     {
-      if (tc_count.is_scalar_type () && xisinf (tc_count.scalar_value ()))
+      if (tc_count.is_scalar_type () && octave::math::isinf (tc_count.scalar_value ()))
         count = -1;
       else
         {

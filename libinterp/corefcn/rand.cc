@@ -148,13 +148,13 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           {
             double dval = tmp.double_value ();
 
-            if (xisnan (dval))
+            if (octave::math::isnan (dval))
               error ("%s: NaN is invalid matrix dimension", fcn);
 
             dims.resize (2);
 
-            dims(0) = NINTbig (tmp.double_value ());
-            dims(1) = NINTbig (tmp.double_value ());
+            dims(0) = octave::math::nint_big (tmp.double_value ());
+            dims(1) = octave::math::nint_big (tmp.double_value ());
 
             goto gen_matrix;
           }
@@ -169,8 +169,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             dims.resize (n);
 
-            octave_idx_type base = NINTbig (r.base ());
-            octave_idx_type incr = NINTbig (r.inc ());
+            octave_idx_type base = octave::math::nint_big (r.base ());
+            octave_idx_type incr = octave::math::nint_big (r.inc ());
 
             for (octave_idx_type i = 0; i < n; i++)
               {

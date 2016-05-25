@@ -106,7 +106,7 @@ public:
     return old_value;
   }
 
-  bool ok (void) const { return ! xisnan (val); }
+  bool ok (void) const { return ! octave::math::isnan (val); }
 
 private:
   double val;

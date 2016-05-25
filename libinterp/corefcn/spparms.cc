@@ -145,7 +145,7 @@ longer running time.\n\
           else
             {
               double val = octave_sparse_params::get_key (str);
-              if (xisnan (val))
+              if (octave::math::isnan (val))
                 error ("spparms: KEY not recognized");
 
               retval = ovl (val);

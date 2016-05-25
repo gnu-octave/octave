@@ -354,24 +354,24 @@ rational_approx (double val, int len)
   if (len <= 0)
     len = 10;
 
-  if (xisinf (val))
+  if (octave::math::isinf (val))
     s = "1/0";
-  else if (xisnan (val))
+  else if (octave::math::isnan (val))
     s = "0/0";
   else if (val < std::numeric_limits<int>::min ()
            || val > std::numeric_limits<int>::max ()
-           || D_NINT (val) == val)
+           || octave::math::x_nint (val) == val)
     {
       std::ostringstream buf;
       buf.flags (std::ios::fixed);
-      buf << std::setprecision (0) << xround (val);
+      buf << std::setprecision (0) << octave::math::round (val);
       s = buf.str ();
     }
   else
     {
       double lastn = 1.;
       double lastd = 0.;
-      double n = xround (val);
+      double n = octave::math::round (val);
       double d = 1.;
       double frac = val - n;
       int m = 0;
@@ -384,7 +384,7 @@ rational_approx (double val, int len)
       while (1)
         {
           double flip = 1. / frac;
-          double step = xround (flip);
+          double step = octave::math::round (flip);
           double nextn = n;
           double nextd = d;
 
@@ -510,7 +510,7 @@ pr_max_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (! xfinite (val))
+        if (! octave::math::finite (val))
           continue;
 
         all_inf_or_nan = false;
@@ -539,7 +539,7 @@ pr_min_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (! xfinite (val))
+        if (! octave::math::finite (val))
           continue;
 
         all_inf_or_nan = false;
@@ -660,9 +660,9 @@ set_format (double d, int& fw)
   if (free_format)
     return;
 
-  bool inf_or_nan = (xisinf (d) || xisnan (d));
+  bool inf_or_nan = (octave::math::isinf (d) || octave::math::isnan (d));
 
-  bool int_only = (! inf_or_nan && D_NINT (d) == d);
+  bool int_only = (! inf_or_nan && octave::math::x_nint (d) == d);
 
   double d_abs = d < 0.0 ? -d : d;
 
@@ -1004,16 +1004,16 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double rp = c.real ();
   double ip = c.imag ();
 
-  bool inf_or_nan = (xisinf (c) || xisnan (c));
+  bool inf_or_nan = (octave::math::isinf (c) || octave::math::isnan (c));
 
-  bool int_only = (D_NINT (rp) == rp && D_NINT (ip) == ip);
+  bool int_only = (octave::math::x_nint (rp) == rp && octave::math::x_nint (ip) == ip);
 
   double r_abs = rp < 0.0 ? -rp : rp;
   double i_abs = ip < 0.0 ? -ip : ip;
 
-  int r_x = (! xfinite (rp) || r_abs == 0.0) ? 0 : num_digits (r_abs);
+  int r_x = (! octave::math::finite (rp) || r_abs == 0.0) ? 0 : num_digits (r_abs);
 
-  int i_x = (! xfinite (ip) || i_abs == 0.0) ? 0 : num_digits (i_abs);
+  int i_x = (! octave::math::finite (ip) || i_abs == 0.0) ? 0 : num_digits (i_abs);
 
   int x_max, x_min;
 
@@ -1522,7 +1522,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
                 }
             }
         }
-      else if (octave_is_NA (d))
+      else if (octave::math::is_NA (d))
         {
           octave_preserve_stream_state stream_state (os);
 
@@ -1533,7 +1533,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         }
       else if (rat_format)
         os << pr_rational_float (*fmt, d);
-      else if (xisinf (d))
+      else if (octave::math::isinf (d))
         {
           octave_preserve_stream_state stream_state (os);
 
@@ -1548,7 +1548,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           else
             os << s;
         }
-      else if (xisnan (d))
+      else if (octave::math::isnan (d))
         {
           octave_preserve_stream_state stream_state (os);
 

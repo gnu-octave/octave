@@ -314,7 +314,7 @@ extern void install_ops (void);
     const CONCAT2 (octave_, t1)& v1 = dynamic_cast<const CONCAT2 (octave_, t1)&> (a1); \
     const CONCAT2 (octave_, t2)& v2 = dynamic_cast<const CONCAT2 (octave_, t2)&> (a2); \
  \
-    if (xisnan (v1.CONCAT2 (t1, _value) ()) || xisnan (v2.CONCAT2 (t2, _value) ())) \
+    if (octave::math::isnan (v1.CONCAT2 (t1, _value) ()) || octave::math::isnan (v2.CONCAT2 (t2, _value) ())) \
       err_nan_to_logical_conversion (); \
  \
     return octave_value \

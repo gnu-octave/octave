@@ -44,7 +44,7 @@ DEFUNOP (not, complex)
 {
   const octave_complex& v = dynamic_cast<const octave_complex&> (a);
   Complex x = v.complex_value ();
-  if (xisnan (x))
+  if (octave::math::isnan (x))
     err_nan_to_logical_conversion ();
 
   return octave_value (x == 0.0);

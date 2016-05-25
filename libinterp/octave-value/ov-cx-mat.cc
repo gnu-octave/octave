@@ -765,39 +765,39 @@ octave_complex_matrix::map (unary_mapper_t umap) const
     case umap_ ## UMAP: \
       return octave_value (matrix.map<TYPE> (FCN))
 
-      ARRAY_MAPPER (acos, Complex, ::acos);
+      ARRAY_MAPPER (acos, Complex, octave::math::acos);
       ARRAY_MAPPER (acosh, Complex, xacosh);
       ARRAY_MAPPER (angle, double, std::arg);
       ARRAY_MAPPER (arg, double, std::arg);
-      ARRAY_MAPPER (asin, Complex, ::asin);
+      ARRAY_MAPPER (asin, Complex, octave::math::asin);
       ARRAY_MAPPER (asinh, Complex, xasinh);
-      ARRAY_MAPPER (atan, Complex, ::atan);
+      ARRAY_MAPPER (atan, Complex, octave::math::atan);
       ARRAY_MAPPER (atanh, Complex, xatanh);
       ARRAY_MAPPER (erf, Complex, xerf);
       ARRAY_MAPPER (erfc, Complex, xerfc);
       ARRAY_MAPPER (erfcx, Complex, ::erfcx);
       ARRAY_MAPPER (erfi, Complex, ::erfi);
       ARRAY_MAPPER (dawson, Complex, ::dawson);
-      ARRAY_MAPPER (ceil, Complex, ::ceil);
+      ARRAY_MAPPER (ceil, Complex, octave::math::ceil);
       ARRAY_MAPPER (cos, Complex, std::cos);
       ARRAY_MAPPER (cosh, Complex, std::cosh);
       ARRAY_MAPPER (exp, Complex, std::exp);
       ARRAY_MAPPER (expm1, Complex, xexpm1);
-      ARRAY_MAPPER (fix, Complex, ::fix);
-      ARRAY_MAPPER (floor, Complex, ::floor);
+      ARRAY_MAPPER (fix, Complex, octave::math::fix);
+      ARRAY_MAPPER (floor, Complex, octave::math::floor);
       ARRAY_MAPPER (log, Complex, std::log);
-      ARRAY_MAPPER (log2, Complex, xlog2);
+      ARRAY_MAPPER (log2, Complex, octave::math::log2);
       ARRAY_MAPPER (log10, Complex, std::log10);
       ARRAY_MAPPER (log1p, Complex, xlog1p);
-      ARRAY_MAPPER (round, Complex, xround);
-      ARRAY_MAPPER (roundb, Complex, xroundb);
-      ARRAY_MAPPER (signum, Complex, ::signum);
+      ARRAY_MAPPER (round, Complex, octave::math::round);
+      ARRAY_MAPPER (roundb, Complex, octave::math::roundb);
+      ARRAY_MAPPER (signum, Complex, octave::math::signum);
       ARRAY_MAPPER (sin, Complex, std::sin);
       ARRAY_MAPPER (sinh, Complex, std::sinh);
       ARRAY_MAPPER (sqrt, Complex, std::sqrt);
       ARRAY_MAPPER (tan, Complex, std::tan);
       ARRAY_MAPPER (tanh, Complex, std::tanh);
-      ARRAY_MAPPER (isna, bool, octave_is_NA);
+      ARRAY_MAPPER (isna, bool, octave::math::is_NA);
 
     default:
       return octave_base_value::map (umap);

@@ -469,7 +469,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
   std::unique_ptr<idx_vector_rep> new_rep (
     new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
 
-  if (ext > len*xlog2 (1.0 + len))
+  if (ext > len*octave::math::log2 (1.0 + len))
     {
       // Use standard sort via octave_sort.
       octave_idx_type *new_data = new octave_idx_type [len];
@@ -542,7 +542,7 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
   std::unique_ptr<idx_vector_rep> new_rep (
     new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
 
-  if (ext > len*xlog2 (1.0 + len))
+  if (ext > len*octave::math::log2 (1.0 + len))
     {
       // Use standard sort via octave_sort.
       idx.clear (orig_dims);

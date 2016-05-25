@@ -281,10 +281,10 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 
       float d = matrix(i);
 
-      if (xisnan (d))
+      if (octave::math::isnan (d))
         err_nan_to_character_conversion ();
 
-      int ival = NINT (d);
+      int ival = octave::math::nint (d);
 
       if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         {
@@ -743,14 +743,14 @@ octave_float_matrix::map (unary_mapper_t umap) const
     case umap_ ## UMAP: \
       return do_rc_map (matrix, FCN)
 
-      RC_ARRAY_MAPPER (acos, FloatComplex, rc_acos);
-      RC_ARRAY_MAPPER (acosh, FloatComplex, rc_acosh);
-      ARRAY_MAPPER (angle, float, ::arg);
-      ARRAY_MAPPER (arg, float, ::arg);
-      RC_ARRAY_MAPPER (asin, FloatComplex, rc_asin);
+      RC_ARRAY_MAPPER (acos, FloatComplex, octave::math::rc_acos);
+      RC_ARRAY_MAPPER (acosh, FloatComplex, octave::math::rc_acosh);
+      ARRAY_MAPPER (angle, float, octave::math::arg);
+      ARRAY_MAPPER (arg, float,octave::math ::arg);
+      RC_ARRAY_MAPPER (asin, FloatComplex, octave::math::rc_asin);
       ARRAY_MAPPER (asinh, float, xasinh);
       ARRAY_MAPPER (atan, float, ::atanf);
-      RC_ARRAY_MAPPER (atanh, FloatComplex, rc_atanh);
+      RC_ARRAY_MAPPER (atanh, FloatComplex, octave::math::rc_atanh);
       ARRAY_MAPPER (erf, float, xerf);
       ARRAY_MAPPER (erfinv, float, ::erfinv);
       ARRAY_MAPPER (erfcinv, float, ::erfcinv);
@@ -766,22 +766,22 @@ octave_float_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (cosh, float, ::coshf);
       ARRAY_MAPPER (exp, float, ::expf);
       ARRAY_MAPPER (expm1, float, xexpm1);
-      ARRAY_MAPPER (fix, float, ::fix);
+      ARRAY_MAPPER (fix, float, octave::math::fix);
       ARRAY_MAPPER (floor, float, ::floorf);
-      RC_ARRAY_MAPPER (log, FloatComplex, rc_log);
-      RC_ARRAY_MAPPER (log2, FloatComplex, rc_log2);
-      RC_ARRAY_MAPPER (log10, FloatComplex, rc_log10);
+      RC_ARRAY_MAPPER (log, FloatComplex, octave::math::rc_log);
+      RC_ARRAY_MAPPER (log2, FloatComplex, octave::math::rc_log2);
+      RC_ARRAY_MAPPER (log10, FloatComplex, octave::math::rc_log10);
       RC_ARRAY_MAPPER (log1p, FloatComplex, rc_log1p);
-      ARRAY_MAPPER (round, float, xround);
-      ARRAY_MAPPER (roundb, float, xroundb);
-      ARRAY_MAPPER (signum, float, ::signum);
+      ARRAY_MAPPER (round, float, octave::math::round);
+      ARRAY_MAPPER (roundb, float, octave::math::roundb);
+      ARRAY_MAPPER (signum, float, octave::math::signum);
       ARRAY_MAPPER (sin, float, ::sinf);
       ARRAY_MAPPER (sinh, float, ::sinhf);
-      RC_ARRAY_MAPPER (sqrt, FloatComplex, rc_sqrt);
+      RC_ARRAY_MAPPER (sqrt, FloatComplex, octave::math::rc_sqrt);
       ARRAY_MAPPER (tan, float, ::tanf);
       ARRAY_MAPPER (tanh, float, ::tanhf);
-      ARRAY_MAPPER (isna, bool, octave_is_NA);
-      ARRAY_MAPPER (xsignbit, float, xsignbit);
+      ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+      ARRAY_MAPPER (xsignbit, float, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
     case umap_xtolower:

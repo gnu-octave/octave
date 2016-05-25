@@ -138,8 +138,8 @@ private:
 
   bool is_nan_or_inf (double x, double y, double z) const
   {
-    return (xisnan (x) || xisnan (y) || xisnan (z)
-            || xisinf (x) || xisinf (y) || xisinf (z));
+    return (octave::math::isnan (x) || octave::math::isnan (y) || octave::math::isnan (z)
+            || octave::math::isinf (x) || octave::math::isinf (y) || octave::math::isinf (z));
   }
 
   octave_uint8 clip_code (double x, double y, double z) const

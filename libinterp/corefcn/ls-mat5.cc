@@ -1891,7 +1891,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
             {
               double tmp = val[i];
 
-              if (xfinite (tmp)
+              if (octave::math::finite (tmp)
                   && fabs (tmp) > std::numeric_limits<float>::max ())
                 {
                   too_large_for_float = true;
@@ -1921,7 +1921,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (D_NINT (val) != val)
+      //     if (octave::math::x_nint (val) != val)
       //       {
       //         all_integers = false;
       //         break;
@@ -1976,7 +1976,7 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (D_NINT (val) != val)
+      //     if (octave::math::x_nint (val) != val)
       //       {
       //         all_integers = false;
       //         break;

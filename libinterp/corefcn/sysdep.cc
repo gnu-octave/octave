@@ -795,13 +795,13 @@ clc;\n\
     {
       double dval = args(0).double_value ();
 
-      if (xisnan (dval))
+      if (octave::math::isnan (dval))
         warning ("pause: NaN is an invalid delay");
       else
         {
           Fdrawnow ();
 
-          if (xisinf (dval))
+          if (octave::math::isinf (dval))
             {
               flush_octave_stdout ();
               octave_kbhit ();

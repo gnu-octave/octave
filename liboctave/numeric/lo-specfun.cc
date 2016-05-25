@@ -441,12 +441,12 @@ xgamma (double x)
   // tgamma.  Matlab does not have -0.
 
   if (x == 0)
-    result = (xnegative_sign (x)
+    result = (octave::math::negative_sign (x)
               ? -octave::numeric_limits<double>::Inf ()
               : octave::numeric_limits<double>::Inf ());
-  else if ((x < 0 && D_NINT (x) == x) || xisinf (x))
+  else if ((x < 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
     result = octave::numeric_limits<double>::Inf ();
-  else if (xisnan (x))
+  else if (octave::math::isnan (x))
     result = octave::numeric_limits<double>::NaN ();
   else
     {
@@ -469,9 +469,9 @@ xlgamma (double x)
   double result;
   double sgngam;
 
-  if (xisnan (x))
+  if (octave::math::isnan (x))
     result = x;
-  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
+  else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
     result = octave::numeric_limits<double>::Inf ();
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
@@ -491,9 +491,9 @@ rc_lgamma (double x)
 #else
   double sgngam = 0.0;
 
-  if (xisnan (x))
+  if (octave::math::isnan (x))
     result = x;
-  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
+  else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
     result = octave::numeric_limits<double>::Inf ();
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
@@ -515,12 +515,12 @@ xgamma (float x)
   // tgamma.  Matlab does not have -0.
 
   if (x == 0)
-    result = (xnegative_sign (x)
+    result = (octave::math::negative_sign (x)
               ? -octave::numeric_limits<float>::Inf ()
               : octave::numeric_limits<float>::Inf ());
-  else if ((x < 0 && D_NINT (x) == x) || xisinf (x))
+  else if ((x < 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
     result = octave::numeric_limits<float>::Inf ();
-  else if (xisnan (x))
+  else if (octave::math::isnan (x))
     result = octave::numeric_limits<float>::NaN ();
   else
     {
@@ -543,9 +543,9 @@ xlgamma (float x)
   float result;
   float sgngam;
 
-  if (xisnan (x))
+  if (octave::math::isnan (x))
     result = x;
-  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
+  else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
     result = octave::numeric_limits<float>::Inf ();
   else
     F77_XFCN (algams, ALGAMS, (x, result, sgngam));
@@ -565,9 +565,9 @@ rc_lgamma (float x)
 #else
   float sgngam = 0.0f;
 
-  if (xisnan (x))
+  if (octave::math::isnan (x))
     result = x;
-  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
+  else if ((x <= 0 && octave::math::x_nint (x) == x) || octave::math::isinf (x))
     result = octave::numeric_limits<float>::Inf ();
   else
     F77_XFCN (algams, ALGAMS, (x, result, sgngam));
@@ -744,7 +744,7 @@ T
 xxcbrt (T x)
 {
   static const T one_third = 0.3333333333333333333f;
-  if (xfinite (x))
+  if (octave::math::finite (x))
     {
       // Use pow.
       T y = std::pow (std::abs (x), one_third) * signum (x);
@@ -3046,10 +3046,10 @@ static double do_erfinv (double x, bool refine)
       const double q = sqrt (-2*gnulib::log (0.5*(1-ax)));
       const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
       const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
-      y = yn / yd * signum (-x);
+      y = yn / yd * octave::math::signum (-x);
     }
   else if (ax == 1.0)
-    return octave::numeric_limits<double>::Inf () * signum (x);
+    return octave::numeric_limits<double>::Inf () * octave::math::signum (x);
   else
     return octave::numeric_limits<double>::NaN ();
 
@@ -3767,7 +3767,7 @@ psi (const T& z)
 {
   static const double euler_mascheroni = 0.577215664901532860606512090082402431042;
 
-  const bool is_int = (xfloor (z) == z);
+  const bool is_int = (octave::math::floor (z) == z);
 
   T p = 0;
   if (z <= 0)
@@ -3786,7 +3786,7 @@ psi (const T& z)
       for (octave_idx_type k = z - 1; k > 0; k--)
         p += 1.0 / k;
     }
-  else if (xfloor (z + 0.5) == z + 0.5)
+  else if (octave::math::floor (z + 0.5) == z + 0.5)
     {
       // Abramowitz and Stegun, page 258, eq 6.3.3 and 6.3.4
       for (octave_idx_type k = z; k > 0; k--)

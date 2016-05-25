@@ -37,616 +37,458 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "f77-fcn.h"
 
-// double -> double mappers.
-
-// Both xtrunc and xround belong here so we can keep gnulib:: out of
+// Functions that forward to gnulib belong here so we can keep gnulib:: out of
 // lo-mappers.h.
 
-double
-xtrunc (double x)
+namespace octave
 {
-  return gnulib::trunc (x);
-}
+  namespace math
+  {
+    bool
+    is_NA (double x)
+    {
+      return lo_ieee_is_NA (x);
+    }
 
-double
-xcopysign (double x, double y)
-{
-  return gnulib::copysign (x, y);
-}
+    bool
+    is_NA (const Complex& x)
+    {
+      return (is_NA (real (x)) || is_NA (imag (x)));
+    }
 
-double xfloor (double x)
-{
-  return gnulib::floor (x);
-}
+    bool
+    is_NA (float x)
+    {
+      return lo_ieee_is_NA (x);
+    }
 
-double
-xround (double x)
-{
-  return gnulib::round (x);
-}
+    bool
+    is_NA (const FloatComplex& x)
+    {
+      return (is_NA (real (x)) || is_NA (imag (x)));
+    }
 
-double
-xroundb (double x)
-{
-  double t = xround (x);
+    bool
+    is_NaN_or_NA (const Complex& x)
+    {
+      return (isnan (real (x)) || isnan (imag (x)));
+    }
 
-  if (fabs (x - t) == 0.5)
-    t = 2 * xtrunc (0.5 * t);
+    bool
+    is_NaN_or_NA (const FloatComplex& x)
+    {
+      return (isnan (real (x)) || isnan (imag (x)));
+    }
 
-  return t;
-}
+    Complex
+    acos (const Complex& x)
+    {
+      static Complex i (0, 1);
 
-double
-signum (double x)
-{
-  double tmp = 0.0;
+      Complex tmp;
 
-  if (x < 0.0)
-    tmp = -1.0;
-  else if (x > 0.0)
-    tmp = 1.0;
+      if (imag (x) == 0.0)
+        {
+          // If the imaginary part of X is 0, then avoid generating an
+          // imaginary part of -0 for the expression 1-x*x.
+          // This effectively chooses the same phase of the branch cut as Matlab.
+          double xr = real (x);
+          tmp = Complex (1.0 - xr*xr);
+        }
+      else
+        tmp = 1.0 - x*x;
 
-  return xisnan (x) ? octave::numeric_limits<double>::NaN () : tmp;
-}
+      return -i * log (x + i * sqrt (tmp));
+    }
 
-double
-xlog2 (double x)
-{
-  return gnulib::log2 (x);
-}
+    FloatComplex
+    acos (const FloatComplex& x)
+    {
+      static FloatComplex i (0, 1);
 
-Complex
-xlog2 (const Complex& x)
-{
+      FloatComplex tmp;
+
+      if (imag (x) == 0.0f)
+        {
+          // If the imaginary part of X is 0, then avoid generating an
+          // imaginary part of -0 for the expression 1-x*x.
+          // This effectively chooses the same phase of the branch cut as Matlab.
+          float xr = real (x);
+          tmp = FloatComplex (1.0f - xr*xr);
+        }
+      else
+        tmp = 1.0f - x*x;
+
+      return -i * log (x + i * sqrt (tmp));
+    }
+
+    Complex
+    asin (const Complex& x)
+    {
+      static Complex i (0, 1);
+
+      Complex tmp;
+
+      if (imag (x) == 0.0)
+        {
+          // If the imaginary part of X is 0, then avoid generating an
+          // imaginary part of -0 for the expression 1-x*x.
+          // This effectively chooses the same phase of the branch cut as Matlab.
+          double xr = real (x);
+          tmp = Complex (1.0 - xr*xr);
+        }
+      else
+        tmp = 1.0 - x*x;
+
+      return -i * log (i*x + sqrt (tmp));
+    }
+
+    FloatComplex
+    asin (const FloatComplex& x)
+    {
+      static FloatComplex i (0, 1);
+
+      FloatComplex tmp;
+
+      if (imag (x) == 0.0f)
+        {
+          // If the imaginary part of X is 0, then avoid generating an
+          // imaginary part of -0 for the expression 1-x*x.
+          // This effectively chooses the same phase of the branch cut as Matlab.
+          float xr = real (x);
+          tmp = FloatComplex (1.0f - xr*xr);
+        }
+      else
+        tmp = 1.0f - x*x;
+
+      return -i * log (i*x + sqrt (tmp));
+    }
+
+    Complex
+    atan (const Complex& x)
+    {
+      static Complex i (0, 1);
+
+      return i * log ((i + x) / (i - x)) / 2.0;
+    }
+
+    FloatComplex
+    atan (const FloatComplex& x)
+    {
+      static FloatComplex i (0, 1);
+
+      return i * log ((i + x) / (i - x)) / 2.0f;
+    }
+
+    double log2 (double x) { return gnulib::log2 (x); }
+    float log2 (float x) { return gnulib::log2f (x); }
+
+    Complex
+    log2 (const Complex& x)
+    {
 #if defined (M_LN2)
-  static double ln2 = M_LN2;
+      static double ln2 = M_LN2;
 #else
-  static double ln2 = gnulib::log (2);
+      static double ln2 = gnulib::log (2.0);
 #endif
+      return std::log (x) / ln2;
+    }
 
-  return std::log (x) / ln2;
-}
+    FloatComplex
+    log2 (const FloatComplex& x)
+    {
+#if defined (M_LN2)
+      static float ln2 = M_LN2;
+#else
+      static float ln2 = log (2.0f);
+#endif
+      return std::log (x) / ln2;
+    }
 
-double
-xexp2 (double x)
-{
+    double
+    log2 (double x, int& exp)
+    {
+      return gnulib::frexp (x, &exp);
+    }
+
+    float
+    log2 (float x, int& exp)
+    {
+      return gnulib::frexpf (x, &exp);
+    }
+
+    Complex
+    log2 (const Complex& x, int& exp)
+    {
+      double ax = std::abs (x);
+      double lax = log2 (ax, exp);
+      return (ax != lax) ? (x / ax) * lax : x;
+    }
+
+    FloatComplex
+    log2 (const FloatComplex& x, int& exp)
+    {
+      float ax = std::abs (x);
+      float lax = log2 (ax, exp);
+      return (ax != lax) ? (x / ax) * lax : x;
+    }
+
+    double
+    exp2 (double x)
+    {
 #if defined (HAVE_EXP2)
-  return exp2 (x);
+      return ::exp2 (x);
 #else
 #  if defined (M_LN2)
-  static double ln2 = M_LN2;
-#else
-  static double ln2 = gnulib::log (2);
+      static double ln2 = M_LN2;
+#  else
+      static double ln2 = gnulib::log (2.0);
+#  endif
+      return exp (x * ln2);
 #endif
-
-  return exp (x * ln2);
-#endif
-}
-
-double
-xlog2 (double x, int& exp)
-{
-  return gnulib::frexp (x, &exp);
-}
-
-Complex
-xlog2 (const Complex& x, int& exp)
-{
-  double ax = std::abs (x);
-  double lax = xlog2 (ax, exp);
-  return (ax != lax) ? (x / ax) * lax : x;
-}
-
-// double -> bool mappers.
-
-bool
-xisnan (double x)
-{
-#if defined (HAVE_CMATH_ISNAN)
-  return std::isnan (x);
-#else
-  return lo_ieee_isnan (x);
-#endif
-}
-
-bool
-xfinite (double x)
-{
-#if defined (HAVE_CMATH_ISFINITE)
-  return std::isfinite (x);
-#else
-  return lo_ieee_finite (x);
-#endif
-}
-
-bool
-xisinf (double x)
-{
-#if defined (HAVE_CMATH_ISINF)
-  return std::isinf (x);
-#else
-  return lo_ieee_isinf (x);
-#endif
-}
-
-bool
-octave_is_NA (double x)
-{
-  return lo_ieee_is_NA (x);
-}
-
-// (double, double) -> double mappers.
-
-// complex -> complex mappers.
-
-Complex
-acos (const Complex& x)
-{
-  static Complex i (0, 1);
-
-  Complex tmp;
-
-  if (imag (x) == 0.0)
-    {
-      // If the imaginary part of X is 0, then avoid generating an
-      // imaginary part of -0 for the expression 1-x*x.
-      // This effectively chooses the same phase of the branch cut as Matlab.
-      double xr = real (x);
-      tmp = Complex (1.0 - xr*xr);
     }
-  else
-    tmp = 1.0 - x*x;
 
-  return -i * log (x + i * sqrt (tmp));
-}
-
-Complex
-asin (const Complex& x)
-{
-  static Complex i (0, 1);
-
-  Complex tmp;
-
-  if (imag (x) == 0.0)
+    float
+    exp2 (float x)
     {
-      // If the imaginary part of X is 0, then avoid generating an
-      // imaginary part of -0 for the expression 1-x*x.
-      // This effectively chooses the same phase of the branch cut as Matlab.
-      double xr = real (x);
-      tmp = Complex (1.0 - xr*xr);
-    }
-  else
-    tmp = 1.0 - x*x;
-
-  return -i * log (i*x + sqrt (tmp));
-}
-
-Complex
-atan (const Complex& x)
-{
-  static Complex i (0, 1);
-
-  return i * log ((i + x) / (i - x)) / 2.0;
-}
-
-// complex -> bool mappers.
-
-bool
-octave_is_NA (const Complex& x)
-{
-  return (octave_is_NA (real (x)) || octave_is_NA (imag (x)));
-}
-
-bool
-octave_is_NaN_or_NA (const Complex& x)
-{
-  return (xisnan (real (x)) || xisnan (imag (x)));
-}
-
-// (complex, complex) -> complex mappers.
-
-// FIXME: need to handle NA too?
-
-Complex
-xmin (const Complex& x, const Complex& y)
-{
-  return abs (x) <= abs (y) ? x : (xisnan (x) ? x : y);
-}
-
-Complex
-xmax (const Complex& x, const Complex& y)
-{
-  return abs (x) >= abs (y) ? x : (xisnan (x) ? x : y);
-}
-
-
-// float -> float mappers.
-
-// Both xtrunc and xround belong here so we can keep gnulib:: out of
-// lo-mappers.h.
-
-float
-xtrunc (float x)
-{
-  return gnulib::truncf (x);
-}
-
-float
-xcopysign (float x, float y)
-{
-  return gnulib::copysignf (x, y);
-}
-
-float xfloor (float x)
-{
-  return gnulib::floorf (x);
-}
-
-float
-xround (float x)
-{
-  return gnulib::roundf (x);
-}
-
-float
-xroundb (float x)
-{
-  float t = xround (x);
-
-  if (fabsf (x - t) == 0.5)
-    t = 2 * xtrunc (0.5 * t);
-
-  return t;
-}
-
-float
-signum (float x)
-{
-  float tmp = 0.0;
-
-  if (x < 0.0)
-    tmp = -1.0;
-  else if (x > 0.0)
-    tmp = 1.0;
-
-  return xisnan (x) ? octave::numeric_limits<float>::NaN () : tmp;
-}
-
-float
-xlog2 (float x)
-{
-  return gnulib::log2f (x);
-}
-
-FloatComplex
-xlog2 (const FloatComplex& x)
-{
-#if defined (M_LN2)
-  static float ln2 = M_LN2;
-#else
-  static float ln2 = log (2);
-#endif
-
-  return std::log (x) / ln2;
-}
-
-float
-xexp2 (float x)
-{
 #if defined (HAVE_EXP2F)
-  return exp2f (x);
+      return exp2f (x);
 #elif defined (HAVE_EXP2)
-  return exp2 (x);
+      return ::exp2 (x);
 #else
 #  if defined (M_LN2)
-  static float ln2 = M_LN2;
+      static float ln2 = M_LN2;
+#  else
+      static float ln2 = log2 (2.0f);
+#  endif
+      return exp (x * ln2);
+#endif
+    }
+
+    double copysign (double x, double y) { return gnulib::copysign (x, y); }
+    float copysign (float x, float y) { return gnulib::copysignf (x, y); }
+
+    double signbit (double x) { return ::signbit (x); }
+    float signbit (float x) { return ::signbit (x); }
+
+    bool negative_sign (double x) { return __lo_ieee_signbit (x); }
+    bool negative_sign (float x) { return __lo_ieee_float_signbit (x); }
+
+    double trunc (double x) { return gnulib::trunc (x); }
+    float trunc (float x) { return gnulib::truncf (x); }
+
+    double floor (double x) { return gnulib::floor (x); }
+    float floor (float x) { return gnulib::floor (x); }
+
+    double round (double x) { return gnulib::round (x); }
+    float round (float x) { return gnulib::roundf (x); }
+
+    bool
+    isnan (double x)
+    {
+#if defined (HAVE_CMATH_ISNAN)
+      return std::isnan (x);
 #else
-  static float ln2 = log2 (2);
+      return lo_ieee_isnan (x);
 #endif
+    }
 
-  return exp (x * ln2);
-#endif
-}
-
-float
-xlog2 (float x, int& exp)
-{
-  return gnulib::frexpf (x, &exp);
-}
-
-FloatComplex
-xlog2 (const FloatComplex& x, int& exp)
-{
-  float ax = std::abs (x);
-  float lax = xlog2 (ax, exp);
-  return (ax != lax) ? (x / ax) * lax : x;
-}
-
-// float -> bool mappers.
-
-bool
-xisnan (float x)
-{
+    bool
+    isnan (float x)
+    {
 #if defined (HAVE_CMATH_ISNANF)
-  return std::isnan (x);
+      return std::isnan (x);
 #else
-  return lo_ieee_isnan (x);
+      return lo_ieee_isnan (x);
 #endif
-}
+    }
 
-bool
-xfinite (float x)
-{
+    bool
+    finite (double x)
+    {
+#if defined (HAVE_CMATH_ISFINITE)
+      return std::isfinite (x);
+#else
+      return lo_ieee_finite (x);
+#endif
+    }
+
+    bool
+    finite (float x)
+    {
 #if defined (HAVE_CMATH_ISFINITEF)
-  return std::isfinite (x);
+      return std::isfinite (x);
 #else
-  return lo_ieee_finite (x);
+      return lo_ieee_finite (x);
 #endif
-}
+    }
 
-bool
-xisinf (float x)
-{
+    bool
+    isinf (double x)
+    {
+#if defined (HAVE_CMATH_ISINF)
+      return std::isinf (x);
+#else
+      return lo_ieee_isinf (x);
+#endif
+    }
+
+    bool
+    isinf (float x)
+    {
 #if defined (HAVE_CMATH_ISINFF)
-  return std::isinf (x);
+      return std::isinf (x);
 #else
-  return lo_ieee_isinf (x);
+      return lo_ieee_isinf (x);
 #endif
-}
-
-bool
-octave_is_NA (float x)
-{
-  return lo_ieee_is_NA (x);
-}
-
-// (float, float) -> float mappers.
-
-// complex -> complex mappers.
-
-FloatComplex
-acos (const FloatComplex& x)
-{
-  static FloatComplex i (0, 1);
-
-  FloatComplex tmp;
-
-  if (imag (x) == 0.0f)
-    {
-      // If the imaginary part of X is 0, then avoid generating an
-      // imaginary part of -0 for the expression 1-x*x.
-      // This effectively chooses the same phase of the branch cut as Matlab.
-      float xr = real (x);
-      tmp = FloatComplex (1.0f - xr*xr);
     }
-  else
-    tmp = 1.0f - x*x;
 
-  return -i * log (x + i * sqrt (tmp));
-}
+    // Sometimes you need a large integer, but not always.
 
-FloatComplex
-asin (const FloatComplex& x)
-{
-  static FloatComplex i (0, 1);
-
-  FloatComplex tmp;
-
-  if (imag (x) == 0.0f)
+    octave_idx_type
+    nint_big (double x)
     {
-      // If the imaginary part of X is 0, then avoid generating an
-      // imaginary part of -0 for the expression 1-x*x.
-      // This effectively chooses the same phase of the branch cut as Matlab.
-      float xr = real (x);
-      tmp = FloatComplex (1.0f - xr*xr);
+      if (x > std::numeric_limits<octave_idx_type>::max ())
+        return std::numeric_limits<octave_idx_type>::max ();
+      else if (x < std::numeric_limits<octave_idx_type>::min ())
+        return std::numeric_limits<octave_idx_type>::min ();
+      else
+        return static_cast<octave_idx_type> ((x > 0.0) ? (x + 0.5) : (x - 0.5));
     }
-  else
-    tmp = 1.0f - x*x;
 
-  return -i * log (i*x + sqrt (tmp));
-}
+    octave_idx_type
+    nint_big (float x)
+    {
+      if (x > std::numeric_limits<octave_idx_type>::max ())
+        return std::numeric_limits<octave_idx_type>::max ();
+      else if (x < std::numeric_limits<octave_idx_type>::min ())
+        return std::numeric_limits<octave_idx_type>::min ();
+      else
+        return static_cast<octave_idx_type> ((x > 0.0f) ? (x + 0.5f) : (x - 0.5f));
+    }
 
-FloatComplex
-atan (const FloatComplex& x)
-{
-  static FloatComplex i (0, 1);
+    int
+    nint (double x)
+    {
+      if (x > std::numeric_limits<int>::max ())
+        return std::numeric_limits<int>::max ();
+      else if (x < std::numeric_limits<int>::min ())
+        return std::numeric_limits<int>::min ();
+      else
+        return static_cast<int> ((x > 0.0) ? (x + 0.5) : (x - 0.5));
+    }
 
-  return i * log ((i + x) / (i - x)) / 2.0f;
-}
+    int
+    nint (float x)
+    {
+      if (x > std::numeric_limits<int>::max ())
+        return std::numeric_limits<int>::max ();
+      else if (x < std::numeric_limits<int>::min ())
+        return std::numeric_limits<int>::min ();
+      else
+        return static_cast<int> ((x > 0.0f) ? (x + 0.5f) : (x - 0.5f));
+    }
 
-// complex -> bool mappers.
+    Complex
+    rc_acos (double x)
+    {
+      return fabs (x) > 1.0 ? acos (Complex (x)) : Complex (::acos (x));
+    }
 
-bool
-octave_is_NA (const FloatComplex& x)
-{
-  return (octave_is_NA (real (x)) || octave_is_NA (imag (x)));
-}
+    FloatComplex
+    rc_acos (float x)
+    {
+      return fabsf (x) > 1.0f ? acos (FloatComplex (x)) : FloatComplex (::acosf (x));
+    }
 
-bool
-octave_is_NaN_or_NA (const FloatComplex& x)
-{
-  return (xisnan (real (x)) || xisnan (imag (x)));
-}
+    Complex
+    rc_acosh (double x)
+    {
+      return x < 1.0 ? acosh (Complex (x)) : Complex (acosh (x));
+    }
 
-// (complex, complex) -> complex mappers.
+    FloatComplex
+    rc_acosh (float x)
+    {
+      return x < 1.0f ? acosh (FloatComplex (x)) : FloatComplex (acosh (x));
+    }
 
-// FIXME: need to handle NA too?
+    Complex
+    rc_asin (double x)
+    {
+      return fabs (x) > 1.0 ? asin (Complex (x)) : Complex (::asin (x));
+    }
 
-FloatComplex
-xmin (const FloatComplex& x, const FloatComplex& y)
-{
-  return abs (x) <= abs (y) ? x : (xisnan (x) ? x : y);
-}
+    FloatComplex
+    rc_asin (float x)
+    {
+      return fabsf (x) > 1.0f ? asin (FloatComplex (x)) : FloatComplex (::asinf (x));
+    }
 
-FloatComplex
-xmax (const FloatComplex& x, const FloatComplex& y)
-{
-  return abs (x) >= abs (y) ? x : (xisnan (x) ? x : y);
-}
+    Complex
+    rc_atanh (double x)
+    {
+      return fabs (x) > 1.0 ? atanh (Complex (x)) : Complex (atanh (x));
+    }
 
-Complex
-rc_acos (double x)
-{
-  return fabs (x) > 1.0 ? acos (Complex (x)) : Complex (acos (x));
-}
+    FloatComplex
+    rc_atanh (float x)
+    {
+      return fabsf (x) > 1.0f ? xatanh (FloatComplex (x)) : FloatComplex (atanh (x));
+    }
 
-FloatComplex
-rc_acos (float x)
-{
-  return fabsf (x) > 1.0f ? acos (FloatComplex (x)) : FloatComplex (acosf (x));
-}
+    Complex
+    rc_log (double x)
+    {
+      const double pi = 3.14159265358979323846;
+      return x < 0.0 ? Complex (gnulib::log (-x), pi) : Complex (gnulib::log (x));
+    }
 
-Complex
-rc_acosh (double x)
-{
-  return x < 1.0 ? xacosh (Complex (x)) : Complex (xacosh (x));
-}
+    FloatComplex
+    rc_log (float x)
+    {
+      const float pi = 3.14159265358979323846f;
+      return x < 0.0f ? FloatComplex (gnulib::logf (-x), pi) : FloatComplex (gnulib::logf (x));
+    }
 
-FloatComplex
-rc_acosh (float x)
-{
-  return x < 1.0f ? xacosh (FloatComplex (x)) : FloatComplex (xacosh (x));
-}
+    Complex
+    rc_log2 (double x)
+    {
+      const double pil2 = 4.53236014182719380962; // = pi / log(2)
+      return x < 0.0 ? Complex (log2 (-x), pil2) : Complex (log2 (x));
+    }
 
-Complex
-rc_asin (double x)
-{
-  return fabs (x) > 1.0 ? asin (Complex (x)) : Complex (asin (x));
-}
+    FloatComplex
+    rc_log2 (float x)
+    {
+      const float pil2 = 4.53236014182719380962f; // = pi / log(2)
+      return x < 0.0f ? FloatComplex (log2 (-x), pil2) : FloatComplex (log2 (x));
+    }
 
-FloatComplex
-rc_asin (float x)
-{
-  return fabsf (x) > 1.0f ? asin (FloatComplex (x)) : FloatComplex (asinf (x));
-}
+    Complex
+    rc_log10 (double x)
+    {
+      const double pil10 = 1.36437635384184134748; // = pi / log(10)
+      return x < 0.0 ? Complex (log10 (-x), pil10) : Complex (log10 (x));
+    }
 
-Complex
-rc_atanh (double x)
-{
-  return fabs (x) > 1.0 ? xatanh (Complex (x)) : Complex (xatanh (x));
-}
+    FloatComplex
+    rc_log10 (float x)
+    {
+      const float pil10 = 1.36437635384184134748f; // = pi / log(10)
+      return x < 0.0f ? FloatComplex (log10 (-x), pil10) : FloatComplex (log10f (x));
+    }
 
-FloatComplex
-rc_atanh (float x)
-{
-  return fabsf (x) > 1.0f ? xatanh (FloatComplex (x))
-                          : FloatComplex (xatanh (x));
-}
+    Complex
+    rc_sqrt (double x)
+    {
+      return x < 0.0 ? Complex (0.0, sqrt (-x)) : Complex (sqrt (x));
+    }
 
-Complex
-rc_log (double x)
-{
-  const double pi = 3.14159265358979323846;
-  return x < 0.0 ? Complex (gnulib::log (-x), pi) : Complex (gnulib::log (x));
-}
-
-FloatComplex
-rc_log (float x)
-{
-  const float pi = 3.14159265358979323846f;
-  return (x < 0.0f
-          ? FloatComplex (gnulib::logf (-x), pi)
-          : FloatComplex (gnulib::logf (x)));
-}
-
-Complex
-rc_log2 (double x)
-{
-  const double pil2 = 4.53236014182719380962; // = pi / log(2)
-  return x < 0.0 ? Complex (xlog2 (-x), pil2) : Complex (xlog2 (x));
-}
-
-FloatComplex
-rc_log2 (float x)
-{
-  const float pil2 = 4.53236014182719380962f; // = pi / log(2)
-  return x < 0.0f ? FloatComplex (xlog2 (-x), pil2) : FloatComplex (xlog2 (x));
-}
-
-Complex
-rc_log10 (double x)
-{
-  const double pil10 = 1.36437635384184134748; // = pi / log(10)
-  return x < 0.0 ? Complex (log10 (-x), pil10) : Complex (log10 (x));
-}
-
-FloatComplex
-rc_log10 (float x)
-{
-  const float pil10 = 1.36437635384184134748f; // = pi / log(10)
-  return x < 0.0f ? FloatComplex (log10 (-x), pil10)
-                  : FloatComplex (log10f (x));
-}
-
-Complex
-rc_sqrt (double x)
-{
-  return x < 0.0 ? Complex (0.0, sqrt (-x)) : Complex (sqrt (x));
-}
-
-FloatComplex
-rc_sqrt (float x)
-{
-  return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x)) : FloatComplex (sqrtf (x));
-}
-
-bool
-xnegative_sign (double x)
-{
-  return __lo_ieee_signbit (x);
-}
-
-bool
-xnegative_sign (float x)
-{
-  return __lo_ieee_float_signbit (x);
-}
-
-// Convert X to the nearest integer value.  Should not pass NaN to
-// this function.
-
-// Sometimes you need a large integer, but not always.
-
-octave_idx_type
-NINTbig (double x)
-{
-  if (x > std::numeric_limits<octave_idx_type>::max ())
-    return std::numeric_limits<octave_idx_type>::max ();
-  else if (x < std::numeric_limits<octave_idx_type>::min ())
-    return std::numeric_limits<octave_idx_type>::min ();
-  else
-    return static_cast<octave_idx_type> ((x > 0) ? (x + 0.5) : (x - 0.5));
-}
-
-octave_idx_type
-NINTbig (float x)
-{
-  if (x > std::numeric_limits<octave_idx_type>::max ())
-    return std::numeric_limits<octave_idx_type>::max ();
-  else if (x < std::numeric_limits<octave_idx_type>::min ())
-    return std::numeric_limits<octave_idx_type>::min ();
-  else
-    return static_cast<octave_idx_type> ((x > 0) ? (x + 0.5) : (x - 0.5));
-}
-
-int
-NINT (double x)
-{
-  if (x > std::numeric_limits<int>::max ())
-    return std::numeric_limits<int>::max ();
-  else if (x < std::numeric_limits<int>::min ())
-    return std::numeric_limits<int>::min ();
-  else
-    return static_cast<int> ((x > 0) ? (x + 0.5) : (x - 0.5));
-}
-
-int
-NINT (float x)
-{
-  if (x > std::numeric_limits<int>::max ())
-    return std::numeric_limits<int>::max ();
-  else if (x < std::numeric_limits<int>::min ())
-    return std::numeric_limits<int>::min ();
-  else
-    return static_cast<int> ((x > 0) ? (x + 0.5) : (x - 0.5));
+    FloatComplex
+    rc_sqrt (float x)
+    {
+      return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x)) : FloatComplex (sqrtf (x));
+    }
+  }
 }

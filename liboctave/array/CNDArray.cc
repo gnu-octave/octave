@@ -574,7 +574,7 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
+      if (octave::math::x_nint (r_val) != r_val || octave::math::x_nint (i_val) != i_val)
         return false;
     }
 
@@ -728,19 +728,19 @@ ComplexNDArray::abs (void) const
 boolNDArray
 ComplexNDArray::isnan (void) const
 {
-  return do_mx_unary_map<bool, Complex, xisnan> (*this);
+  return do_mx_unary_map<bool, Complex, octave::math::isnan> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isinf (void) const
 {
-  return do_mx_unary_map<bool, Complex, xisinf> (*this);
+  return do_mx_unary_map<bool, Complex, octave::math::isinf> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isfinite (void) const
 {
-  return do_mx_unary_map<bool, Complex, xfinite> (*this);
+  return do_mx_unary_map<bool, Complex, octave::math::finite> (*this);
 }
 
 ComplexNDArray

@@ -76,8 +76,8 @@ ContextMenu::update (int pId)
           QWidget* parentW = xmenu->parentWidget ();
           QPoint pt;
 
-          pt.rx () = xround (pos(0));
-          pt.ry () = parentW->height () - xround (pos(1));
+          pt.rx () = octave::math::round (pos(0));
+          pt.ry () = parentW->height () - octave::math::round (pos(1));
           pt = parentW->mapToGlobal (pt);
 
           xmenu->popup (pt);

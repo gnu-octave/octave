@@ -419,7 +419,7 @@ Undocumented internal function.\n\
   Array<int> freeLB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (xisinf (lb[i]))
+      if (octave::math::isinf (lb[i]))
         {
           freeLB(i) = 1;
           lb[i] = -octave::numeric_limits<double>::Inf ();
@@ -440,7 +440,7 @@ Undocumented internal function.\n\
   Array<int> freeUB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (xisinf (ub[i]))
+      if (octave::math::isinf (ub[i]))
         {
           freeUB(i) = 1;
           ub[i] = octave::numeric_limits<double>::Inf ();

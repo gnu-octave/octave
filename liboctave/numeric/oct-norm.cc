@@ -179,7 +179,7 @@ public:
   template <typename U>
   void accum (U val)
   {
-    if (xisnan (val))
+    if (octave::math::isnan (val))
       max = octave::numeric_limits<R>::NaN ();
     else
       max = std::max (max, std::abs (val));
@@ -197,7 +197,7 @@ public:
   template <typename U>
   void accum (U val)
   {
-    if (xisnan (val))
+    if (octave::math::isnan (val))
       min = octave::numeric_limits<R>::NaN ();
     else
       min = std::min (min, std::abs (val));
@@ -403,7 +403,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
 template <typename T, typename R>
 inline T elem_dual_p (T x, R p)
 {
-  return signum (x) * std::pow (std::abs (x), p-1);
+  return octave::math::signum (x) * std::pow (std::abs (x), p-1);
 }
 
 // the VectorT is used for vectors, but actually it has to be

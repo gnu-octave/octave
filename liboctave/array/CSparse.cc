@@ -310,12 +310,12 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
             {
               Complex tmp = data (i);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               double abs_tmp = std::abs (tmp);
 
-              if (xisnan (abs_max) || abs_tmp > abs_max)
+              if (octave::math::isnan (abs_max) || abs_tmp > abs_max)
                 {
                   idx_j = ridx (i);
                   tmp_max = tmp;
@@ -323,7 +323,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
                 }
             }
 
-          idx_arg.elem (j) = xisnan (tmp_max) ? 0 : idx_j;
+          idx_arg.elem (j) = octave::math::isnan (tmp_max) ? 0 : idx_j;
           if (abs_max != 0.)
             nel++;
         }
@@ -372,7 +372,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
               octave_idx_type ix = idx_arg.elem (ir);
               Complex tmp = data (i);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
               else if (ix == -1 || std::abs (tmp) > std::abs (elem (ir, ix)))
                 idx_arg.elem (ir) = j;
@@ -467,12 +467,12 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
             {
               Complex tmp = data (i);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
 
               double abs_tmp = std::abs (tmp);
 
-              if (xisnan (abs_min) || abs_tmp < abs_min)
+              if (octave::math::isnan (abs_min) || abs_tmp < abs_min)
                 {
                   idx_j = ridx (i);
                   tmp_min = tmp;
@@ -480,7 +480,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
                 }
             }
 
-          idx_arg.elem (j) = xisnan (tmp_min) ? 0 : idx_j;
+          idx_arg.elem (j) = octave::math::isnan (tmp_min) ? 0 : idx_j;
           if (abs_min != 0.)
             nel++;
         }
@@ -529,7 +529,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
               octave_idx_type ix = idx_arg.elem (ir);
               Complex tmp = data (i);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
               else if (ix == -1 || std::abs (tmp) < std::abs (elem (ir, ix)))
                 idx_arg.elem (ir) = j;
@@ -1161,11 +1161,11 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
       UMFPACK_ZNAME (defaults) (control);
 
       double tmp = octave_sparse_params::get_key ("spumoni");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
       tmp = octave_sparse_params::get_key ("piv_tol");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         {
           Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
           Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
@@ -1173,7 +1173,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
 
       // Set whether we are allowed to modify Q or not
       tmp = octave_sparse_params::get_key ("autoamd");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
 
       // Turn-off UMFPACK scaling for LU
@@ -1779,7 +1779,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -2061,7 +2061,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -2290,7 +2290,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -2572,7 +2572,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -2821,7 +2821,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -3122,7 +3122,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -3375,7 +3375,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -3675,7 +3675,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
       volatile double rcond_plus_one = rcond + 1.0;
 
-      if (rcond_plus_one == 1.0 || xisnan (rcond))
+      if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           err = -2;
 
@@ -4389,7 +4389,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -4508,7 +4508,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -4633,7 +4633,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -4785,7 +4785,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -4949,7 +4949,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -5066,7 +5066,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -5193,7 +5193,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -5350,7 +5350,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   volatile double rcond_plus_one = rcond + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
                       err = -2;
 
@@ -5445,10 +5445,10 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   UMFPACK_ZNAME (defaults) (control);
 
   double tmp = octave_sparse_params::get_key ("spumoni");
-  if (! xisnan (tmp))
+  if (! octave::math::isnan (tmp))
     Control (UMFPACK_PRL) = tmp;
   tmp = octave_sparse_params::get_key ("piv_tol");
-  if (! xisnan (tmp))
+  if (! octave::math::isnan (tmp))
     {
       Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
       Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
@@ -5456,7 +5456,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
 
   // Set whether we are allowed to modify Q or not
   tmp = octave_sparse_params::get_key ("autoamd");
-  if (! xisnan (tmp))
+  if (! octave::math::isnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
   UMFPACK_ZNAME (report_control) (control);
@@ -5506,7 +5506,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
       volatile double rcond_plus_one = rcond + 1.0;
 
       if (status == UMFPACK_WARNING_singular_matrix
-          || rcond_plus_one == 1.0 || xisnan (rcond))
+          || rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
           UMFPACK_ZNAME (report_numeric) (Numeric, control);
 
@@ -5665,7 +5665,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
             {
               volatile double rcond_plus_one = rcond + 1.0;
 
-              if (rcond_plus_one == 1.0 || xisnan (rcond))
+              if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
                   err = -2;
 
@@ -5925,7 +5925,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
             {
               volatile double rcond_plus_one = rcond + 1.0;
 
-              if (rcond_plus_one == 1.0 || xisnan (rcond))
+              if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
                   err = -2;
 
@@ -6213,7 +6213,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
             {
               volatile double rcond_plus_one = rcond + 1.0;
 
-              if (rcond_plus_one == 1.0 || xisnan (rcond))
+              if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
                   err = -2;
 
@@ -6452,7 +6452,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
             {
               volatile double rcond_plus_one = rcond + 1.0;
 
-              if (rcond_plus_one == 1.0 || xisnan (rcond))
+              if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
                   err = -2;
 
@@ -6586,7 +6586,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               volatile double rcond_plus_one = rcond + 1.0;
 
               if (status == UMFPACK_WARNING_singular_matrix
-                  || rcond_plus_one == 1.0 || xisnan (rcond))
+                  || rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
                   err = -2;
 
@@ -7199,7 +7199,7 @@ SparseComplexMatrix::any_element_is_nan (void) const
   for (octave_idx_type i = 0; i < nel; i++)
     {
       Complex val = data (i);
-      if (xisnan (val))
+      if (octave::math::isnan (val))
         return true;
     }
 
@@ -7214,7 +7214,7 @@ SparseComplexMatrix::any_element_is_inf_or_nan (void) const
   for (octave_idx_type i = 0; i < nel; i++)
     {
       Complex val = data (i);
-      if (xisinf (val) || xisnan (val))
+      if (octave::math::isinf (val) || octave::math::isnan (val))
         return true;
     }
 
@@ -7263,7 +7263,7 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
+      if (octave::math::x_nint (r_val) != r_val || octave::math::x_nint (i_val) != i_val)
         return false;
     }
 
@@ -7604,7 +7604,7 @@ min (const Complex& c, const SparseComplexMatrix& m)
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          result.data (i) = xmin (c, m.data (i));
+          result.data (i) = octave::math::min (c, m.data (i));
     }
 
   return result;
@@ -7647,7 +7647,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  Complex tmp = xmin (a.data (ja), 0.);
+                  Complex tmp = octave::math::min (a.data (ja), 0.);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = a.ridx (ja);
@@ -7660,7 +7660,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               else if ((! ja_lt_max)
                        || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
-                  Complex tmp = xmin (0., b.data (jb));
+                  Complex tmp = octave::math::min (0., b.data (jb));
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = b.ridx (jb);
@@ -7672,7 +7672,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                 }
               else
                 {
-                  Complex tmp = xmin (a.data (ja), b.data (jb));
+                  Complex tmp = octave::math::min (a.data (ja), b.data (jb));
                   if (tmp != 0.)
                     {
                       r.data (jx) = tmp;
@@ -7714,12 +7714,12 @@ max (const Complex& c, const SparseComplexMatrix& m)
   EMPTY_RETURN_CHECK (SparseComplexMatrix);
 
   // Count the number of nonzero elements
-  if (xmax (c, 0.) != 0.)
+  if (octave::math::max (c, 0.) != 0.)
     {
       result = SparseComplexMatrix (nr, nc, c);
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          result.xdata (m.ridx (i) + j * nr) = xmax (c, m.data (i));
+          result.xdata (m.ridx (i) + j * nr) = octave::math::max (c, m.data (i));
     }
   else
     result = SparseComplexMatrix (m);
@@ -7764,7 +7764,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  Complex tmp = xmax (a.data (ja), 0.);
+                  Complex tmp = octave::math::max (a.data (ja), 0.);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = a.ridx (ja);
@@ -7777,7 +7777,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               else if ((! ja_lt_max)
                        || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
-                  Complex tmp = xmax (0., b.data (jb));
+                  Complex tmp = octave::math::max (0., b.data (jb));
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = b.ridx (jb);
@@ -7789,7 +7789,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                 }
               else
                 {
-                  Complex tmp = xmax (a.data (ja), b.data (jb));
+                  Complex tmp = octave::math::max (a.data (ja), b.data (jb));
                   if (tmp != 0.)
                     {
                       r.data (jx) = tmp;

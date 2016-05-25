@@ -845,11 +845,11 @@ convert_cdata_2 (bool is_scaled, bool is_real, double clim_0, double clim_1,
                  octave_idx_type nc, octave_idx_type i, double *av)
 {
   if (is_scaled)
-    x = xround ((nc - 1) * (x - clim_0) / (clim_1 - clim_0));
+    x = octave::math::round ((nc - 1) * (x - clim_0) / (clim_1 - clim_0));
   else if (is_real)
-    x = xround (x - 1);
+    x = octave::math::round (x - 1);
 
-  if (xisnan (x))
+  if (octave::math::isnan (x))
     {
       av[i]       = x;
       av[i+lda]   = x;
@@ -985,7 +985,7 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
       double e = double (data[i]);
 
       // Don't need to test for NaN here as NaN>x and NaN<x is always false
-      if (! xisinf (e))
+      if (! octave::math::isinf (e))
         {
           if (e < emin)
             emin = e;
@@ -1560,7 +1560,7 @@ handle_property::do_set (const octave_value& v)
 
   graphics_handle gh = gh_manager::lookup (dv);
 
-  if (! (xisnan (gh.value ()) || gh.ok ()))
+  if (! (octave::math::isnan (gh.value ()) || gh.ok ()))
     error ("set: invalid graphics handle (= %g) for property \"%s\"",
            dv, get_name ().c_str ());
 
@@ -3395,7 +3395,7 @@ root_figure::properties::set_callbackobject (const octave_value& v)
 {
   graphics_handle val (v);
 
-  if (xisnan (val.value ()))
+  if (octave::math::isnan (val.value ()))
     {
       if (! cbo_stack.empty ())
         {
@@ -3422,7 +3422,7 @@ root_figure::properties::set_currentfigure (const octave_value& v)
 {
   graphics_handle val (v);
 
-  if (xisnan (val.value ()) || is_handle (val))
+  if (octave::math::isnan (val.value ()) || is_handle (val))
     {
       currentfigure = val;
 
@@ -3582,7 +3582,7 @@ figure::properties::set_currentaxes (const octave_value& val)
 {
   graphics_handle hax (val);
 
-  if (xisnan (hax.value ()) || is_handle (hax))
+  if (octave::math::isnan (hax.value ()) || is_handle (hax))
     currentaxes = hax;
   else
     err_set_invalid ("currentaxes");
@@ -5222,7 +5222,7 @@ axes::properties::update_camera (void)
       double d = 5 * sqrt (pb(0)*pb(0) + pb(1)*pb(1) + pb(2)*pb(2));
 
       if (el == 90 || el == -90)
-        c_eye(2) = d*signum (el);
+        c_eye(2) = d*octave::math::signum (el);
       else
         {
           az *= M_PI/180.0;
@@ -5249,9 +5249,9 @@ axes::properties::update_camera (void)
       if (el == 90 || el == -90)
         {
           c_upv(0) =
-            -signum (el) *sin (az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
+            -octave::math::signum (el) *sin (az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
           c_upv(1) =
-            signum (el) * cos (az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
+            octave::math::signum (el) * cos (az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
         }
       else
         c_upv(2) = 1;
@@ -5424,8 +5424,8 @@ axes::properties::update_axes_layout (void)
 
   p1 = xform.transform (x_min, (y_min+y_max)/2, (z_min+z_max)/2, false);
   p2 = xform.transform (x_max, (y_min+y_max)/2, (z_min+z_max)/2, false);
-  dir(0) = xround (p2(0) - p1(0));
-  dir(1) = xround (p2(1) - p1(1));
+  dir(0) = octave::math::round (p2(0) - p1(0));
+  dir(1) = octave::math::round (p2(1) - p1(1));
   dir(2) = (p2(2) - p1(2));
   if (dir(0) == 0 && dir(1) == 0)
     xstate = AXE_DEPTH_DIR;
@@ -5452,8 +5452,8 @@ axes::properties::update_axes_layout (void)
 
   p1 = xform.transform ((x_min + x_max)/2, y_min, (z_min + z_max)/2, false);
   p2 = xform.transform ((x_min + x_max)/2, y_max, (z_min + z_max)/2, false);
-  dir(0) = xround (p2(0) - p1(0));
-  dir(1) = xround (p2(1) - p1(1));
+  dir(0) = octave::math::round (p2(0) - p1(0));
+  dir(1) = octave::math::round (p2(1) - p1(1));
   dir(2) = (p2(2) - p1(2));
   if (dir(0) == 0 && dir(1) == 0)
     ystate = AXE_DEPTH_DIR;
@@ -5480,8 +5480,8 @@ axes::properties::update_axes_layout (void)
 
   p1 = xform.transform ((x_min + x_max)/2, (y_min + y_max)/2, z_min, false);
   p2 = xform.transform ((x_min + x_max)/2, (y_min + y_max)/2, z_max, false);
-  dir(0) = xround (p2(0) - p1(0));
-  dir(1) = xround (p2(1) - p1(1));
+  dir(0) = octave::math::round (p2(0) - p1(0));
+  dir(1) = octave::math::round (p2(1) - p1(1));
   dir(2) = (p2(2) - p1(2));
   if (dir(0) == 0 && dir(1) == 0)
     zstate = AXE_DEPTH_DIR;
@@ -5691,11 +5691,11 @@ axes::properties::update_xlabel_position (void)
       ColumnVector p =
         graphics_xform::xform_vector ((xpTickN + xpTick)/2, ypTick, zpTick);
 
-      bool tick_along_z = nearhoriz || xisinf (fy);
+      bool tick_along_z = nearhoriz || octave::math::isinf (fy);
       if (tick_along_z)
-        p(2) += (signum (zpTick - zpTickN) * fz * xtickoffset);
+        p(2) += (octave::math::signum (zpTick - zpTickN) * fz * xtickoffset);
       else
-        p(1) += (signum (ypTick - ypTickN) * fy * xtickoffset);
+        p(1) += (octave::math::signum (ypTick - ypTickN) * fy * xtickoffset);
 
       p = xform.transform (p(0), p(1), p(2), false);
 
@@ -5801,11 +5801,11 @@ axes::properties::update_ylabel_position (void)
       ColumnVector p =
         graphics_xform::xform_vector (xpTick, (ypTickN + ypTick)/2, zpTick);
 
-      bool tick_along_z = nearhoriz || xisinf (fx);
+      bool tick_along_z = nearhoriz || octave::math::isinf (fx);
       if (tick_along_z)
-        p(2) += (signum (zpTick - zpTickN) * fz * ytickoffset);
+        p(2) += (octave::math::signum (zpTick - zpTickN) * fz * ytickoffset);
       else
-        p(0) += (signum (xpTick - xpTickN) * fx * ytickoffset);
+        p(0) += (octave::math::signum (xpTick - xpTickN) * fx * ytickoffset);
 
       p = xform.transform (p(0), p(1), p(2), false);
 
@@ -5907,19 +5907,19 @@ axes::properties::update_zlabel_position (void)
         {
           p = graphics_xform::xform_vector (xPlaneN, yPlane,
                                             (zpTickN + zpTick)/2);
-          if (xisinf (fy))
-            p(0) += (signum (xPlaneN - xPlane) * fx * ztickoffset);
+          if (octave::math::isinf (fy))
+            p(0) += (octave::math::signum (xPlaneN - xPlane) * fx * ztickoffset);
           else
-            p(1) += (signum (yPlane - yPlaneN) * fy * ztickoffset);
+            p(1) += (octave::math::signum (yPlane - yPlaneN) * fy * ztickoffset);
         }
       else
         {
           p = graphics_xform::xform_vector (xPlane, yPlaneN,
                                             (zpTickN + zpTick)/2);
-          if (xisinf (fx))
-            p(1) += (signum (yPlaneN - yPlane) * fy * ztickoffset);
+          if (octave::math::isinf (fx))
+            p(1) += (octave::math::signum (yPlaneN - yPlane) * fy * ztickoffset);
           else
-            p(0) += (signum (xPlane - xPlaneN) * fx * ztickoffset);
+            p(0) += (octave::math::signum (xPlane - xPlaneN) * fx * ztickoffset);
         }
 
       p = xform.transform (p(0), p(1), p(2), false);
@@ -6042,7 +6042,7 @@ normalized_aspectratios (Matrix& aspectratios, const Matrix& scalefactors,
   double yval = ylength / scalefactors(1);
   double zval = zlength / scalefactors(2);
 
-  double minval = xmin (xmin (xval, yval), zval);
+  double minval = octave::math::min (octave::math::min (xval, yval), zval);
 
   aspectratios(0) = xval / minval;
   aspectratios(1) = yval / minval;
@@ -6060,15 +6060,15 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
       double min_pos = octave::numeric_limits<double>::Inf ();
       double max_neg = -octave::numeric_limits<double>::Inf ();
       get_children_limits (minval, maxval, min_pos, max_neg, kids, limit_type);
-      if (xfinite (minval) && xfinite (maxval))
+      if (octave::math::finite (minval) && octave::math::finite (maxval))
         {
           limits(0) = minval;
           limits(1) = maxval;
-          s = xmax (s, (maxval - minval) / (pbfactor * dafactor));
+          s = octave::math::max (s, (maxval - minval) / (pbfactor * dafactor));
         }
     }
   else
-    s = xmax (s, (limits(1) - limits(0)) / (pbfactor * dafactor));
+    s = octave::math::max (s, (limits(1) - limits(0)) / (pbfactor * dafactor));
 }
 
 static std::set<double> updating_aspectratios;
@@ -6147,8 +6147,8 @@ axes::properties::update_aspectratios (void)
           dx = pba(0) * da(0);
           dy = pba(1) * da(1);
           dz = pba(2) * da(2);
-          if (xisinf (s))
-            s = 1 / xmin (xmin (dx, dy), dz);
+          if (octave::math::isinf (s))
+            s = 1 / octave::math::min (octave::math::min (dx, dy), dz);
 
           if (xlimmode_is ("auto"))
             {
@@ -6592,16 +6592,16 @@ check_limit_vals (double& min_val, double& max_val,
                   const array_property& data)
 {
   double val = data.min_val ();
-  if (xfinite (val) && val < min_val)
+  if (octave::math::finite (val) && val < min_val)
     min_val = val;
   val = data.max_val ();
-  if (xfinite (val) && val > max_val)
+  if (octave::math::finite (val) && val > max_val)
     max_val = val;
   val = data.min_pos ();
-  if (xfinite (val) && val > 0 && val < min_pos)
+  if (octave::math::finite (val) && val > 0 && val < min_pos)
     min_pos = val;
   val = data.max_neg ();
-  if (xfinite (val) && val < 0 && val > max_neg)
+  if (octave::math::finite (val) && val < 0 && val > max_neg)
     max_neg = val;
 }
 */
@@ -6620,19 +6620,19 @@ check_limit_vals (double& min_val, double& max_val,
           double val;
 
           val = m(0);
-          if (xfinite (val) && val < min_val)
+          if (octave::math::finite (val) && val < min_val)
             min_val = val;
 
           val = m(1);
-          if (xfinite (val) && val > max_val)
+          if (octave::math::finite (val) && val > max_val)
             max_val = val;
 
           val = m(2);
-          if (xfinite (val) && val > 0 && val < min_pos)
+          if (octave::math::finite (val) && val > 0 && val < min_pos)
             min_pos = val;
 
           val = m(3);
-          if (xfinite (val) && val < 0 && val > max_neg)
+          if (octave::math::finite (val) && val < 0 && val > max_neg)
             max_neg = val;
         }
     }
@@ -6704,16 +6704,16 @@ axes::properties::get_axis_limits (double xmin, double xmax,
   double min_val = xmin;
   double max_val = xmax;
 
-  if (xisinf (min_val) && min_val > 0 && xisinf (max_val) && max_val < 0)
+  if (octave::math::isinf (min_val) && min_val > 0 && octave::math::isinf (max_val) && max_val < 0)
     {
       retval = default_lim (logscale);
       return retval;
     }
-  else if (! (xisinf (min_val) || xisinf (max_val)))
+  else if (! (octave::math::isinf (min_val) || octave::math::isinf (max_val)))
     {
       if (logscale)
         {
-          if (xisinf (min_pos) && xisinf (max_neg))
+          if (octave::math::isinf (min_pos) && octave::math::isinf (max_neg))
             {
               // FIXME: max_neg is needed for "loglog ([0 -Inf])"
               //        This is the *only* place where max_neg is needed.
@@ -6827,7 +6827,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
   if (is_logscale)
     {
-      if (! (xisinf (hi) || xisinf (lo)))
+      if (! (octave::math::isinf (hi) || octave::math::isinf (lo)))
         tick_sep = 1;  // Tick is every order of magnitude (bug #39449)
       else
         tick_sep = 0;
@@ -7128,16 +7128,16 @@ axes::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4) \
     { \
       val = limits(0); \
-      if (xfinite (val)) \
+      if (octave::math::finite (val)) \
         min_val = val; \
       val = limits(1); \
-      if (xfinite (val)) \
+      if (octave::math::finite (val)) \
         max_val = val; \
       val = limits(2); \
-      if (xfinite (val)) \
+      if (octave::math::finite (val)) \
         min_pos = val; \
       val = limits(3); \
-      if (xfinite (val)) \
+      if (octave::math::finite (val)) \
         max_neg = val; \
     } \
   else \
@@ -8209,7 +8209,7 @@ patch::properties::update_data (void)
           bool turn_valid = false;
           for (octave_idx_type ii = 0; ii < idx.rows (); ii++)
             {
-              if (xisnan (idx(ii,jj)) || turn_valid)
+              if (octave::math::isnan (idx(ii,jj)) || turn_valid)
                 {
                   idx(ii,jj) = valid_vert;
                   turn_valid = true;
@@ -8474,16 +8474,16 @@ hggroup::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4)
     {
       val = limits(0);
-      if (xfinite (val))
+      if (octave::math::finite (val))
         min_val = val;
       val = limits(1);
-      if (xfinite (val))
+      if (octave::math::finite (val))
         max_val = val;
       val = limits(2);
-      if (xfinite (val))
+      if (octave::math::finite (val))
         min_pos = val;
       val = limits(3);
-      if (xfinite (val))
+      if (octave::math::finite (val))
         max_neg = val;
     }
   else
@@ -10109,7 +10109,7 @@ make_graphics_object (const std::string& go_name,
         }
     }
 
-  if (xisnan (val))
+  if (octave::math::isnan (val))
     val = args(0).xdouble_value ("__go_%s__: invalid parent", go_name.c_str ());
 
   graphics_handle parent = gh_manager::lookup (val);
@@ -10175,7 +10175,7 @@ Undocumented internal function.\n\
 
       graphics_handle h = octave::numeric_limits<double>::NaN ();
 
-      if (xisnan (val))
+      if (octave::math::isnan (val))
         {
           caseless_str pname ("integerhandle");
 
@@ -10210,7 +10210,7 @@ Undocumented internal function.\n\
               go.get_properties ().init_integerhandle ("off");
             }
         }
-      else if (val > 0 && D_NINT (val) == val)
+      else if (val > 0 && octave::math::x_nint (val) == val)
         h = gh_manager::make_figure_handle (val, false);
 
       if (! h.ok ())

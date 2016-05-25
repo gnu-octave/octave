@@ -139,7 +139,7 @@ template <typename ST>
 bool
 octave_base_scalar<ST>::is_true (void) const
 {
-  if (xisnan (scalar))
+  if (octave::math::isnan (scalar))
     err_nan_to_logical_conversion ();
 
   return (scalar != ST ());

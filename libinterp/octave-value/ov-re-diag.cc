@@ -171,7 +171,7 @@ octave_diag_matrix::map (unary_mapper_t umap) const
       return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
     case umap_sqrt:
       {
-        ComplexColumnVector tmp = matrix.extract_diag ().map<Complex> (rc_sqrt);
+        ComplexColumnVector tmp = matrix.extract_diag ().map<Complex> (octave::math::rc_sqrt);
         ComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;

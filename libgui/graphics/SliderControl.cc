@@ -63,14 +63,14 @@ SliderControl::SliderControl (const graphics_object& go,
   Matrix steps = up.get_sliderstep ().matrix_value ();
   slider->setMinimum (0);
   slider->setMaximum (RANGE_INT_MAX);
-  slider->setSingleStep (xround (steps(0) * RANGE_INT_MAX));
-  slider->setPageStep (xround (steps(1) * RANGE_INT_MAX));
+  slider->setSingleStep (octave::math::round (steps(0) * RANGE_INT_MAX));
+  slider->setPageStep (octave::math::round (steps(1) * RANGE_INT_MAX));
   Matrix value = up.get_value ().matrix_value ();
   if (value.numel () > 0)
     {
       double dmin = up.get_min (), dmax = up.get_max ();
 
-      slider->setValue (xround (((value(0) - dmin) / (dmax - dmin))
+      slider->setValue (octave::math::round (((value(0) - dmin) / (dmax - dmin))
                                 * RANGE_INT_MAX));
     }
 
@@ -93,8 +93,8 @@ SliderControl::update (int pId)
       {
         Matrix steps = up.get_sliderstep ().matrix_value ();
 
-        slider->setSingleStep (xround (steps(0) * RANGE_INT_MAX));
-        slider->setPageStep (xround (steps(1) * RANGE_INT_MAX));
+        slider->setSingleStep (octave::math::round (steps(0) * RANGE_INT_MAX));
+        slider->setPageStep (octave::math::round (steps(1) * RANGE_INT_MAX));
       }
       break;
 
@@ -105,7 +105,7 @@ SliderControl::update (int pId)
 
         if (value.numel () > 0)
           {
-            int ival = xround (((value(0) - dmin) / (dmax - dmin))
+            int ival = octave::math::round (((value(0) - dmin) / (dmax - dmin))
                                * RANGE_INT_MAX);
 
             m_blockUpdates = true;
@@ -137,7 +137,7 @@ SliderControl::valueChanged (int ival)
           double dmin = up.get_min (), dmax = up.get_max ();
 
           int ival_tmp = (value.numel () > 0 ?
-                          xround (((value(0) - dmin) / (dmax - dmin))
+                          octave::math::round (((value(0) - dmin) / (dmax - dmin))
                                   * RANGE_INT_MAX) :
                           0);
 

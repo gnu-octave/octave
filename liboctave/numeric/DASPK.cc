@@ -418,10 +418,10 @@ DASPK::do_integrate (double tout)
 
           if (ich.numel () == 6)
             {
-              iwork(31) = NINTbig (ich(0));
-              iwork(32) = NINTbig (ich(1));
-              iwork(33) = NINTbig (ich(2));
-              iwork(34) = NINTbig (ich(3));
+              iwork(31) = octave::math::nint_big (ich(0));
+              iwork(32) = octave::math::nint_big (ich(1));
+              iwork(33) = octave::math::nint_big (ich(2));
+              iwork(34) = octave::math::nint_big (ich(3));
 
               rwork(13) = ich(4);
               rwork(14) = ich(5);

@@ -152,7 +152,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
         {
           tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
 
-          if (xisnan (tmp))
+          if (octave::math::isnan (tmp))
             ct_x = ct_y = 0.5;
           else
             {
@@ -181,7 +181,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
       pt[1] = (pt[0] + 1) % 4;
       tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
 
-      if (xisnan (tmp))
+      if (octave::math::isnan (tmp))
         ct_x = ct_y = 0.5;
       else
         {

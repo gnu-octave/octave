@@ -1115,7 +1115,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    const double grey = xround (double (*img_fvec) / divisor);
+                    const double grey = octave::math::round (double (*img_fvec) / divisor);
                     Magick::Color c (grey, grey, grey);
                     pix[GM_idx] = c;
                     img_fvec++;
@@ -1145,9 +1145,9 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    double grey = xround (double (*img_fvec) / divisor);
+                    double grey = octave::math::round (double (*img_fvec) / divisor);
                     Magick::Color c (grey, grey, grey,
-                                     MaxRGB - xround (double (*a_fvec) / divisor));
+                                     MaxRGB - octave::math::round (double (*a_fvec) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     a_fvec++;
@@ -1180,9 +1180,9 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (xround (double (*img_fvec)          / divisor),
-                                     xround (double (img_fvec[G_offset]) / divisor),
-                                     xround (double (img_fvec[B_offset]) / divisor));
+                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
+                                     octave::math::round (double (img_fvec[G_offset]) / divisor),
+                                     octave::math::round (double (img_fvec[B_offset]) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     GM_idx += nCols;
@@ -1215,10 +1215,10 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (xround (double (*img_fvec)          / divisor),
-                                     xround (double (img_fvec[G_offset]) / divisor),
-                                     xround (double (img_fvec[B_offset]) / divisor),
-                                     MaxRGB - xround (double (*a_fvec) / divisor));
+                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
+                                     octave::math::round (double (img_fvec[G_offset]) / divisor),
+                                     octave::math::round (double (img_fvec[B_offset]) / divisor),
+                                     MaxRGB - octave::math::round (double (*a_fvec) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     a_fvec++;
@@ -1253,10 +1253,10 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (xround (double (*img_fvec)          / divisor),
-                                     xround (double (img_fvec[M_offset]) / divisor),
-                                     xround (double (img_fvec[Y_offset]) / divisor),
-                                     xround (double (img_fvec[K_offset]) / divisor));
+                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
+                                     octave::math::round (double (img_fvec[M_offset]) / divisor),
+                                     octave::math::round (double (img_fvec[Y_offset]) / divisor),
+                                     octave::math::round (double (img_fvec[K_offset]) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     GM_idx += nCols;
@@ -1291,12 +1291,12 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (xround (double (*img_fvec)          / divisor),
-                                     xround (double (img_fvec[M_offset]) / divisor),
-                                     xround (double (img_fvec[Y_offset]) / divisor),
-                                     xround (double (img_fvec[K_offset]) / divisor));
+                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
+                                     octave::math::round (double (img_fvec[M_offset]) / divisor),
+                                     octave::math::round (double (img_fvec[Y_offset]) / divisor),
+                                     octave::math::round (double (img_fvec[K_offset]) / divisor));
                     pix[GM_idx] = c;
-                    ind[GM_idx] = MaxRGB - xround (double (*a_fvec) / divisor);
+                    ind[GM_idx] = MaxRGB - octave::math::round (double (*a_fvec) / divisor);
                     img_fvec++;
                     a_fvec++;
                     GM_idx += nCols;

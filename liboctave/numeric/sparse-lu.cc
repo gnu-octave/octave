@@ -388,33 +388,33 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
   umfpack_defaults<lu_elt_type> (control);
 
   double tmp = octave_sparse_params::get_key ("spumoni");
-  if (! xisnan (tmp))
+  if (! octave::math::isnan (tmp))
     Control (UMFPACK_PRL) = tmp;
 
   if (piv_thres.numel () == 2)
     {
       tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
       tmp = (piv_thres (1) > 1. ? 1. : piv_thres (1));
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
     }
   else
     {
       tmp = octave_sparse_params::get_key ("piv_tol");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
       tmp = octave_sparse_params::get_key ("sym_tol");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
     }
 
   // Set whether we are allowed to modify Q or not
   tmp = octave_sparse_params::get_key ("autoamd");
-  if (! xisnan (tmp))
+  if (! octave::math::isnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
   // Turn-off UMFPACK scaling for LU
@@ -586,26 +586,26 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
   umfpack_defaults<lu_elt_type> (control);
 
   double tmp = octave_sparse_params::get_key ("spumoni");
-  if (! xisnan (tmp))
+  if (! octave::math::isnan (tmp))
     Control (UMFPACK_PRL) = tmp;
 
   if (piv_thres.numel () == 2)
     {
       tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
       tmp = (piv_thres (1) > 1. ? 1. : piv_thres (1));
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
     }
   else
     {
       tmp = octave_sparse_params::get_key ("piv_tol");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
       tmp = octave_sparse_params::get_key ("sym_tol");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
     }
 
@@ -618,7 +618,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
   else
     {
       tmp = octave_sparse_params::get_key ("autoamd");
-      if (! xisnan (tmp))
+      if (! octave::math::isnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
     }
 

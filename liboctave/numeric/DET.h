@@ -38,18 +38,18 @@ public:
   base_det (T c = 1, int e = 0)
     : c2 (), e2 ()
   {
-    c2 = xlog2 (c, e2);
+    c2 = octave::math::log2 (c, e2);
     e2 += e;
   }
 
   base_det (T c, double e, double b)
     : c2 (), e2 ()
   {
-    e *= xlog2 (b);
+    e *= octave::math::log2 (b);
     e2 = e;
-    c *= xexp2 (e - e2);
+    c *= octave::math::exp2 (e - e2);
     int f;
-    c2 = xlog2 (c, f);
+    c2 = octave::math::log2 (c, f);
     e2 += f;
   }
 
@@ -73,7 +73,7 @@ public:
   void operator *= (T t)
   {
     int e;
-    c2 *= xlog2 (t, e);
+    c2 *= octave::math::log2 (t, e);
     e2 += e;
   }
 

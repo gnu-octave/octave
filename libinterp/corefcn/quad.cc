@@ -219,18 +219,18 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
       FloatIndefQuad::IntegralType indef_type
         = FloatIndefQuad::doubly_infinite;
       float bound = 0.0;
-      if (xisinf (a) && xisinf (b))
+      if (octave::math::isinf (a) && octave::math::isinf (b))
         {
           indefinite = 1;
           indef_type = FloatIndefQuad::doubly_infinite;
         }
-      else if (xisinf (a))
+      else if (octave::math::isinf (a))
         {
           indefinite = 1;
           bound = b;
           indef_type = FloatIndefQuad::neg_inf_to_bound;
         }
-      else if (xisinf (b))
+      else if (octave::math::isinf (b))
         {
           indefinite = 1;
           bound = a;
@@ -312,18 +312,18 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
       int indefinite = 0;
       IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
       double bound = 0.0;
-      if (xisinf (a) && xisinf (b))
+      if (octave::math::isinf (a) && octave::math::isinf (b))
         {
           indefinite = 1;
           indef_type = IndefQuad::doubly_infinite;
         }
-      else if (xisinf (a))
+      else if (octave::math::isinf (a))
         {
           indefinite = 1;
           bound = b;
           indef_type = IndefQuad::neg_inf_to_bound;
         }
-      else if (xisinf (b))
+      else if (octave::math::isinf (b))
         {
           indefinite = 1;
           bound = a;

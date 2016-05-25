@@ -62,7 +62,7 @@ octave_int_base<T>::convert_real (const S& value)
                                             min_val ());
   static const S thmax = compute_threshold (static_cast<S> (max_val ()),
                                             max_val ());
-  if (xisnan (value))
+  if (octave::math::isnan (value))
     {
       return static_cast<T> (0);
     }
@@ -76,7 +76,7 @@ octave_int_base<T>::convert_real (const S& value)
     }
   else
     {
-      S rvalue = xround (value);
+      S rvalue = octave::math::round (value);
       return static_cast<T> (rvalue);
     }
 }
@@ -596,7 +596,7 @@ dbleget (bool sign, uint32_t mtis, int exp)
 
 INT_DOUBLE_BINOP_DECL (*, uint64)
 {
-  if (y >= 0 && y < octave_uint64::max () && y == xround (y))
+  if (y >= 0 && y < octave_uint64::max () && y == octave::math::round (y))
     {
       return x * octave_uint64 (static_cast<uint64_t> (y));
     }
@@ -604,7 +604,7 @@ INT_DOUBLE_BINOP_DECL (*, uint64)
     {
       return x / octave_uint64 (static_cast<uint64_t> (2));
     }
-  else if (y < 0 || xisnan (y) || xisinf (y))
+  else if (y < 0 || octave::math::isnan (y) || octave::math::isinf (y))
     {
       return octave_uint64 (x.value () * y);
     }
@@ -631,7 +631,7 @@ DOUBLE_INT_BINOP_DECL (*, uint64)
 
 INT_DOUBLE_BINOP_DECL (*, int64)
 {
-  if (fabs (y) < octave_int64::max () && y == xround (y))
+  if (fabs (y) < octave_int64::max () && y == octave::math::round (y))
     {
       return x * octave_int64 (static_cast<int64_t> (y));
     }
@@ -639,7 +639,7 @@ INT_DOUBLE_BINOP_DECL (*, int64)
     {
       return x / octave_int64 (static_cast<uint64_t> (4*y));
     }
-  else if (xisnan (y) || xisinf (y))
+  else if (octave::math::isnan (y) || octave::math::isinf (y))
     {
       return octave_int64 (x.value () * y);
     }
@@ -677,7 +677,7 @@ DOUBLE_INT_BINOP_DECL (/, int64)
 
 INT_DOUBLE_BINOP_DECL (/, uint64)
 {
-  if (y >= 0 && y < octave_uint64::max () && y == xround (y))
+  if (y >= 0 && y < octave_uint64::max () && y == octave::math::round (y))
     {
       return x / octave_uint64 (y);
     }
@@ -687,7 +687,7 @@ INT_DOUBLE_BINOP_DECL (/, uint64)
 
 INT_DOUBLE_BINOP_DECL (/, int64)
 {
-  if (fabs (y) < octave_int64::max () && y == xround (y))
+  if (fabs (y) < octave_int64::max () && y == octave::math::round (y))
     {
       return x / octave_int64 (y);
     }
@@ -765,7 +765,7 @@ template <typename T>
 octave_int<T>
 pow (const octave_int<T>& a, const double& b)
 {
-  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == xround (b))
+  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (pow (a.double_value (), b)));
 }
@@ -779,7 +779,7 @@ template <typename T>
 octave_int<T>
 pow (const octave_int<T>& a, const float& b)
 {
-  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == xround (b))
+  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
 }
@@ -796,7 +796,7 @@ template <typename T>
 octave_int<T>
 powf (const octave_int<T>& a, const float& b)
 {
-  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == xround (b))
+  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
 }

@@ -356,7 +356,7 @@ octave_rand::do_scalar (double a)
           break;
 
         case poisson_dist:
-          if (a < 0.0 || ! xfinite (a))
+          if (a < 0.0 || ! octave::math::finite (a))
             retval = octave::numeric_limits<double>::NaN ();
           else
             {
@@ -367,7 +367,7 @@ octave_rand::do_scalar (double a)
           break;
 
         case gamma_dist:
-          if (a <= 0.0 || ! xfinite (a))
+          if (a <= 0.0 || ! octave::math::finite (a))
             retval = octave::numeric_limits<double>::NaN ();
           else
             F77_FUNC (dgengam, DGENGAM) (1.0, a, retval);
@@ -439,7 +439,7 @@ octave_rand::do_float_scalar (float a)
           break;
 
         case poisson_dist:
-          if (da < 0.0 || ! xfinite (a))
+          if (da < 0.0 || ! octave::math::finite (a))
             dretval = octave::numeric_limits<double>::NaN ();
           else
             {
@@ -450,7 +450,7 @@ octave_rand::do_float_scalar (float a)
           break;
 
         case gamma_dist:
-          if (da <= 0.0 || ! xfinite (a))
+          if (da <= 0.0 || ! octave::math::finite (a))
             dretval = octave::numeric_limits<double>::NaN ();
           else
             F77_FUNC (dgengam, DGENGAM) (1.0, da, dretval);
@@ -670,7 +670,7 @@ double2uint32 (double d)
   uint32_t u;
   static const double TWOUP32 = std::numeric_limits<uint32_t>::max() + 1.0;
 
-  if (! xfinite (d))
+  if (! octave::math::finite (d))
     u = 0;
   else
     {
@@ -768,7 +768,7 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     case poisson_dist:
       if (use_old_generators)
         {
-          if (a < 0.0 || ! xfinite (a))
+          if (a < 0.0 || ! octave::math::finite (a))
 #define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
             MAKE_RAND (len);
 #undef RAND_FUNC
@@ -789,7 +789,7 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     case gamma_dist:
       if (use_old_generators)
         {
-          if (a <= 0.0 || ! xfinite (a))
+          if (a <= 0.0 || ! octave::math::finite (a))
 #define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
             MAKE_RAND (len);
 #undef RAND_FUNC
@@ -858,7 +858,7 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
       if (use_old_generators)
         {
           double da = a;
-          if (da < 0.0 || ! xfinite (a))
+          if (da < 0.0 || ! octave::math::finite (a))
 #define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
             MAKE_RAND (len);
 #undef RAND_FUNC
@@ -880,7 +880,7 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
       if (use_old_generators)
         {
           double da = a;
-          if (da <= 0.0 || ! xfinite (a))
+          if (da <= 0.0 || ! octave::math::finite (a))
 #define RAND_FUNC(x) x = octave::numeric_limits<double>::NaN ();
             MAKE_RAND (len);
 #undef RAND_FUNC

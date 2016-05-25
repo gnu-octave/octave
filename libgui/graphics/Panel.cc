@@ -76,7 +76,7 @@ borderWidthFromProperties (const uipanel::properties& pp)
 
   if (! pp.bordertype_is ("none"))
     {
-      bw = xround (pp.get_borderwidth ());
+      bw = octave::math::round (pp.get_borderwidth ());
       if (pp.bordertype_is ("etchedin") || pp.bordertype_is ("etchedout"))
         bw *= 2;
     }
@@ -108,10 +108,10 @@ Panel::Panel (const graphics_object& go, QFrame* frame)
   frame->setObjectName ("UIPanel");
   frame->setAutoFillBackground (true);
   Matrix bb = pp.get_boundingbox (false);
-  frame->setGeometry (xround (bb(0)), xround (bb(1)),
-                      xround (bb(2)), xround (bb(3)));
+  frame->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                      octave::math::round (bb(2)), octave::math::round (bb(3)));
   frame->setFrameStyle (frameStyleFromProperties (pp));
-  frame->setLineWidth (xround (pp.get_borderwidth ()));
+  frame->setLineWidth (octave::math::round (pp.get_borderwidth ()));
   QPalette pal = frame->palette ();
   setupPalette (pp, pal);
   frame->setPalette (pal);
@@ -236,14 +236,14 @@ Panel::update (int pId)
       {
         Matrix bb = pp.get_boundingbox (false);
 
-        frame->setGeometry (xround (bb(0)), xround (bb(1)),
-                            xround (bb(2)), xround (bb(3)));
+        frame->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                            octave::math::round (bb(2)), octave::math::round (bb(3)));
         updateLayout ();
       }
       break;
 
     case uipanel::properties::ID_BORDERWIDTH:
-      frame->setLineWidth (xround (pp.get_borderwidth ()));
+      frame->setLineWidth (octave::math::round (pp.get_borderwidth ()));
       updateLayout ();
       break;
 
@@ -345,10 +345,10 @@ Panel::updateLayout (void)
   Matrix bb = pp.get_boundingbox (true);
   int bw = borderWidthFromProperties (pp);
 
-  frame->setFrameRect (QRect (xround (bb(0)) - bw, xround (bb(1)) - bw,
-                              xround (bb(2)) + 2*bw, xround (bb(3)) + 2*bw));
-  m_container->setGeometry (xround (bb(0)), xround (bb(1)),
-                            xround (bb(2)), xround (bb(3)));
+  frame->setFrameRect (QRect (octave::math::round (bb(0)) - bw, octave::math::round (bb(1)) - bw,
+                              octave::math::round (bb(2)) + 2*bw, octave::math::round (bb(3)) + 2*bw));
+  m_container->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                            octave::math::round (bb(2)), octave::math::round (bb(3)));
 
   if (m_blockUpdates)
     pp.update_boundingbox ();

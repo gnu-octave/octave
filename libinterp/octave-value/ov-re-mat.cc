@@ -383,10 +383,10 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
 
       double d = matrix(i);
 
-      if (xisnan (d))
+      if (octave::math::isnan (d))
         err_nan_to_character_conversion ();
 
-      int ival = NINT (d);
+      int ival = octave::math::nint (d);
 
       if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         {
@@ -868,14 +868,14 @@ octave_matrix::map (unary_mapper_t umap) const
     case umap_ ## UMAP: \
       return do_rc_map (matrix, FCN)
 
-      RC_ARRAY_MAPPER (acos, Complex, rc_acos);
-      RC_ARRAY_MAPPER (acosh, Complex, rc_acosh);
-      ARRAY_MAPPER (angle, double, ::arg);
-      ARRAY_MAPPER (arg, double, ::arg);
-      RC_ARRAY_MAPPER (asin, Complex, rc_asin);
+      RC_ARRAY_MAPPER (acos, Complex, octave::math::rc_acos);
+      RC_ARRAY_MAPPER (acosh, Complex, octave::math::rc_acosh);
+      ARRAY_MAPPER (angle, double, octave::math::arg);
+      ARRAY_MAPPER (arg, double,octave::math ::arg);
+      RC_ARRAY_MAPPER (asin, Complex, octave::math::rc_asin);
       ARRAY_MAPPER (asinh, double, xasinh);
       ARRAY_MAPPER (atan, double, ::atan);
-      RC_ARRAY_MAPPER (atanh, Complex, rc_atanh);
+      RC_ARRAY_MAPPER (atanh, Complex, octave::math::rc_atanh);
       ARRAY_MAPPER (erf, double, xerf);
       ARRAY_MAPPER (erfinv, double, ::erfinv);
       ARRAY_MAPPER (erfcinv, double, ::erfcinv);
@@ -891,22 +891,22 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (cosh, double, ::cosh);
       ARRAY_MAPPER (exp, double, ::exp);
       ARRAY_MAPPER (expm1, double, xexpm1);
-      ARRAY_MAPPER (fix, double, ::fix);
+      ARRAY_MAPPER (fix, double, octave::math::fix);
       ARRAY_MAPPER (floor, double, ::floor);
-      RC_ARRAY_MAPPER (log, Complex, rc_log);
-      RC_ARRAY_MAPPER (log2, Complex, rc_log2);
-      RC_ARRAY_MAPPER (log10, Complex, rc_log10);
+      RC_ARRAY_MAPPER (log, Complex, octave::math::rc_log);
+      RC_ARRAY_MAPPER (log2, Complex, octave::math::rc_log2);
+      RC_ARRAY_MAPPER (log10, Complex, octave::math::rc_log10);
       RC_ARRAY_MAPPER (log1p, Complex, rc_log1p);
-      ARRAY_MAPPER (round, double, xround);
-      ARRAY_MAPPER (roundb, double, xroundb);
-      ARRAY_MAPPER (signum, double, ::signum);
+      ARRAY_MAPPER (round, double, octave::math::round);
+      ARRAY_MAPPER (roundb, double, octave::math::roundb);
+      ARRAY_MAPPER (signum, double, octave::math::signum);
       ARRAY_MAPPER (sin, double, ::sin);
       ARRAY_MAPPER (sinh, double, ::sinh);
-      RC_ARRAY_MAPPER (sqrt, Complex, rc_sqrt);
+      RC_ARRAY_MAPPER (sqrt, Complex, octave::math::rc_sqrt);
       ARRAY_MAPPER (tan, double, ::tan);
       ARRAY_MAPPER (tanh, double, ::tanh);
-      ARRAY_MAPPER (isna, bool, octave_is_NA);
-      ARRAY_MAPPER (xsignbit, double, xsignbit);
+      ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+      ARRAY_MAPPER (xsignbit, double, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
     case umap_xtolower:

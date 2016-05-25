@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 
 bool xis_int_or_inf_or_nan (double x)
-{ return xisnan (x) || D_NINT (x) == x; }
+{ return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
 
 bool xis_one_or_zero (double x)
 { return x == 0 || x == 1; }
@@ -55,7 +55,7 @@ bool xis_zero (double x)
 
 bool xtoo_large_for_float (double x)
 {
-  return (xfinite (x) && fabs (x) > std::numeric_limits<float>::max ());
+  return (octave::math::finite (x) && fabs (x) > std::numeric_limits<float>::max ());
 }
 
 bool xtoo_large_for_float (const Complex& x)
@@ -65,7 +65,7 @@ bool xtoo_large_for_float (const Complex& x)
 }
 
 bool xis_int_or_inf_or_nan (float x)
-{ return xisnan (x) || D_NINT (x) == x; }
+{ return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
 
 bool xis_one_or_zero (float x)
 { return x == 0 || x == 1; }

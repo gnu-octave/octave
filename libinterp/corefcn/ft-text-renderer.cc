@@ -605,7 +605,7 @@ ft_text_renderer::compute_bbox (void)
             {
               bbox(1) -= (*it)(3);
               bbox(3) += (*it)(3);
-              bbox(2) = xmax (bbox(2), (*it)(2));
+              bbox(2) = octave::math::max (bbox(2), (*it)(2));
             }
         }
       break;
@@ -806,7 +806,7 @@ ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
                   // glyph.  Then extend the line bounding box if necessary.
 
                   xoffset += (face->glyph->advance.x >> 6);
-                  bb(2) = xmax (bb(2), xoffset);
+                  bb(2) = octave::math::max (bb(2), xoffset);
                 }
               break;
             }
@@ -1073,7 +1073,7 @@ ft_text_renderer::visit (text_element_combined& e)
     {
       xoffset = saved_xoffset;
       (*it)->accept (*this);
-      max_xoffset = xmax (xoffset, max_xoffset);
+      max_xoffset = octave::math::max (xoffset, max_xoffset);
     }
 
   xoffset = max_xoffset;

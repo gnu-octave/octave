@@ -164,7 +164,7 @@ private:
 
   curl_handle do_lookup (double val)
   {
-    iterator p = (xisnan (val) ? handle_map.end () : handle_map.find (val));
+    iterator p = (octave::math::isnan (val) ? handle_map.end () : handle_map.find (val));
 
     return (p != handle_map.end ()) ? p->first : curl_handle ();
   }

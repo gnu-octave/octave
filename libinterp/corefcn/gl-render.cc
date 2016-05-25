@@ -1262,7 +1262,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
-      bool tick_along_z = nearhoriz || xisinf (fy);
+      bool tick_along_z = nearhoriz || octave::math::isinf (fy);
       bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
       set_color (props.get_xcolor_rgb ());
@@ -1278,14 +1278,14 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTick,
                             zpTick, zpTickN, 0., 0.,
-                            signum (zpTick-zpTickN)*fz*xticklen,
+                            octave::math::signum (zpTick-zpTickN)*fz*xticklen,
                             0, mirror);
         }
       else
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN,
                             zpTick, zpTick, 0.,
-                            signum (ypTick-ypTickN)*fy*xticklen,
+                            octave::math::signum (ypTick-ypTickN)*fy*xticklen,
                             0., 0, mirror);
         }
 
@@ -1297,11 +1297,11 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
 
           if (tick_along_z)
             render_ticktexts (xticks, xticklabels, x_min, x_max, ypTick,
-                              zpTick+signum (zpTick-zpTickN)*fz*xtickoffset,
+                              zpTick+octave::math::signum (zpTick-zpTickN)*fz*xtickoffset,
                               0, halign, valign, wmax, hmax);
           else
             render_ticktexts (xticks, xticklabels, x_min, x_max,
-                              ypTick+signum (ypTick-ypTickN)*fy*xtickoffset,
+                              ypTick+octave::math::signum (ypTick-ypTickN)*fy*xtickoffset,
                               zpTick, 0, halign, valign, wmax, hmax);
         }
 
@@ -1317,12 +1317,12 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
           if (tick_along_z)
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
                               zpTick, zpTickN, 0., 0.,
-                              signum (zpTick-zpTickN)*fz*xticklen/2,
+                              octave::math::signum (zpTick-zpTickN)*fz*xticklen/2,
                               0, mirror);
           else
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
                               zpTick, zpTick, 0.,
-                              signum (ypTick-ypTickN)*fy*xticklen/2,
+                              octave::math::signum (ypTick-ypTickN)*fy*xticklen/2,
                               0., 0, mirror);
         }
 
@@ -1372,7 +1372,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
-      bool tick_along_z = nearhoriz || xisinf (fx);
+      bool tick_along_z = nearhoriz || octave::math::isinf (fx);
       bool mirror = props.is_box () && ystate != AXE_ANY_DIR
                     && (! props.has_property ("__plotyy_axes__"));
 
@@ -1388,12 +1388,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       if (tick_along_z)
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTick,
                           zpTick, zpTickN, 0., 0.,
-                          signum (zpTick-zpTickN)*fz*yticklen,
+                          octave::math::signum (zpTick-zpTickN)*fz*yticklen,
                           1, mirror);
       else
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN,
                           zpTick, zpTick,
-                          signum (xPlaneN-xPlane)*fx*yticklen,
+                          octave::math::signum (xPlaneN-xPlane)*fx*yticklen,
                           0., 0., 1, mirror);
 
       // tick texts
@@ -1405,11 +1405,11 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
 
           if (tick_along_z)
             render_ticktexts (yticks, yticklabels, y_min, y_max, xpTick,
-                              zpTick+signum (zpTick-zpTickN)*fz*ytickoffset,
+                              zpTick+octave::math::signum (zpTick-zpTickN)*fz*ytickoffset,
                               1, halign, valign, wmax, hmax);
           else
             render_ticktexts (yticks, yticklabels, y_min, y_max,
-                              xpTick+signum (xpTick-xpTickN)*fx*ytickoffset,
+                              xpTick+octave::math::signum (xpTick-xpTickN)*fx*ytickoffset,
                               zpTick, 1, halign, valign, wmax, hmax);
         }
 
@@ -1425,12 +1425,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
           if (tick_along_z)
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
                               zpTick, zpTickN, 0., 0.,
-                              signum (zpTick-zpTickN)*fz*yticklen/2,
+                              octave::math::signum (zpTick-zpTickN)*fz*yticklen/2,
                               1, mirror);
           else
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
                               zpTick, zpTick,
-                              signum (xpTick-xpTickN)*fx*yticklen/2,
+                              octave::math::signum (xpTick-xpTickN)*fx*yticklen/2,
                               0., 0., 1, mirror);
         }
 
@@ -1485,28 +1485,28 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       // tick marks
       if (xySym)
         {
-          if (xisinf (fy))
+          if (octave::math::isinf (fy))
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlane, yPlane,
-                              signum (xPlaneN-xPlane)*fx*zticklen,
+                              octave::math::signum (xPlaneN-xPlane)*fx*zticklen,
                               0., 0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
                               yPlane, yPlane, 0.,
-                              signum (yPlane-yPlaneN)*fy*zticklen,
+                              octave::math::signum (yPlane-yPlaneN)*fy*zticklen,
                               0., 2, false);
         }
       else
         {
-          if (xisinf (fx))
+          if (octave::math::isinf (fx))
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlaneN, yPlane, 0.,
-                              signum (yPlaneN-yPlane)*fy*zticklen,
+                              octave::math::signum (yPlaneN-yPlane)*fy*zticklen,
                               0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
                               yPlaneN, yPlane,
-                              signum (xPlane-xPlaneN)*fx*zticklen,
+                              octave::math::signum (xPlane-xPlaneN)*fx*zticklen,
                               0., 0., 2, false);
         }
 
@@ -1518,24 +1518,24 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
 
           if (xySym)
             {
-              if (xisinf (fy))
+              if (octave::math::isinf (fy))
                 render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                  xPlaneN+signum (xPlaneN-xPlane)*fx*ztickoffset,
+                                  xPlaneN+octave::math::signum (xPlaneN-xPlane)*fx*ztickoffset,
                                   yPlane, 2, halign, valign, wmax, hmax);
               else
                 render_ticktexts (zticks, zticklabels, z_min, z_max, xPlaneN,
-                                  yPlane+signum (yPlane-yPlaneN)*fy*ztickoffset,
+                                  yPlane+octave::math::signum (yPlane-yPlaneN)*fy*ztickoffset,
                                   2, halign, valign, wmax, hmax);
             }
           else
             {
-              if (xisinf (fx))
+              if (octave::math::isinf (fx))
                 render_ticktexts (zticks, zticklabels, z_min, z_max, xPlane,
-                                  yPlaneN+signum (yPlaneN-yPlane)*fy*ztickoffset,
+                                  yPlaneN+octave::math::signum (yPlaneN-yPlane)*fy*ztickoffset,
                                   2, halign, valign, wmax, hmax);
               else
                 render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                  xPlane+signum (xPlane-xPlaneN)*fx*ztickoffset,
+                                  xPlane+octave::math::signum (xPlane-xPlaneN)*fx*ztickoffset,
                                   yPlaneN, 2, halign, valign, wmax, hmax);
             }
         }
@@ -1550,28 +1550,28 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
         {
           if (xySym)
             {
-              if (xisinf (fy))
+              if (octave::math::isinf (fy))
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
                                   yPlane, yPlane,
-                                  signum (xPlaneN-xPlane)*fx*zticklen/2,
+                                  octave::math::signum (xPlaneN-xPlane)*fx*zticklen/2,
                                   0., 0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
                                   yPlane, yPlane, 0.,
-                                  signum (yPlane-yPlaneN)*fy*zticklen/2,
+                                  octave::math::signum (yPlane-yPlaneN)*fy*zticklen/2,
                                   0., 2, false);
             }
           else
             {
-              if (xisinf (fx))
+              if (octave::math::isinf (fx))
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlane, 0.,
-                                  signum (yPlaneN-yPlane)*fy*zticklen/2,
+                                  octave::math::signum (yPlaneN-yPlane)*fy*zticklen/2,
                                   0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlaneN,
-                                  signum (xPlane-xPlaneN)*fx*zticklen/2,
+                                  octave::math::signum (xPlane-xPlaneN)*fx*zticklen/2,
                                   0., 0., 2, false);
             }
         }
@@ -2005,14 +2005,14 @@ opengl_renderer::draw_surface (const surface::properties& props)
                   if (fc_mode == FLAT)
                     {
                       // "flat" only needs color at lower-left vertex
-                      if (! xfinite (c(j-1,i-1)))
+                      if (! octave::math::finite (c(j-1,i-1)))
                         continue;
                     }
                   else if (fc_mode == INTERP)
                     {
                       // "interp" needs valid color at all 4 vertices
-                      if (! (xfinite (c(j-1, i-1)) && xfinite (c(j, i-1))
-                             && xfinite (c(j-1, i)) && xfinite (c(j, i))))
+                      if (! (octave::math::finite (c(j-1, i-1)) && octave::math::finite (c(j, i-1))
+                             && octave::math::finite (c(j-1, i)) && octave::math::finite (c(j, i))))
                         continue;
                     }
 
@@ -2210,13 +2210,13 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       if (ec_mode == FLAT)
                         {
                           // "flat" only needs color at lower-left vertex
-                          if (! xfinite (c(j-1,i)))
+                          if (! octave::math::finite (c(j-1,i)))
                             continue;
                         }
                       else if (ec_mode == INTERP)
                         {
                           // "interp" needs valid color at both vertices
-                          if (! (xfinite (c(j-1, i)) && xfinite (c(j, i))))
+                          if (! (octave::math::finite (c(j-1, i)) && octave::math::finite (c(j, i))))
                             continue;
                         }
 
@@ -2307,13 +2307,13 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       if (ec_mode == FLAT)
                         {
                           // "flat" only needs color at lower-left vertex
-                          if (! xfinite (c(j,i-1)))
+                          if (! octave::math::finite (c(j,i-1)))
                             continue;
                         }
                       else if (ec_mode == INTERP)
                         {
                           // "interp" needs valid color at both vertices
-                          if (! (xfinite (c(j, i-1)) && xfinite (c(j, i))))
+                          if (! (octave::math::finite (c(j, i-1)) && octave::math::finite (c(j, i))))
                             continue;
                         }
 
@@ -2445,7 +2445,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
               if ((do_edge && mecolor.is_empty ())
                   || (do_face && mfcolor.is_empty ()))
                 {
-                  if (! xfinite (c(j,i)))
+                  if (! octave::math::finite (c(j,i)))
                     continue;  // Skip NaNs in color data
 
                   for (int k = 0; k < 3; k++)
@@ -2545,7 +2545,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
       bool fclip = false;
       int count = 0;
 
-      for (int j = 0; j < fcmax && ! xisnan (f(i,j)); j++, count++)
+      for (int j = 0; j < fcmax && ! octave::math::isnan (f(i,j)); j++, count++)
         fclip = (fclip || clip(int (f(i,j) - 1)));
 
       clip_f(i) = fclip;
@@ -2993,7 +2993,7 @@ opengl_renderer::draw_image (const image::properties& props)
   const ColumnVector p0 = xform.transform (x(0), y(0), 0);
   const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
-  if (xisnan (p0(0)) || xisnan (p0(1)) || xisnan (p1(0)) || xisnan (p1(1)))
+  if (octave::math::isnan (p0(0)) || octave::math::isnan (p0(1)) || octave::math::isnan (p1(0)) || octave::math::isnan (p1(1)))
     {
       warning ("opengl_renderer: image X,Y data too large to draw");
       return;

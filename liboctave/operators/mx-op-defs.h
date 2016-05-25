@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-inlines.cc"
 
 #define SNANCHK(s) \
-  if (xisnan (s)) \
+  if (octave::math::isnan (s)) \
     err_nan_to_logical_conversion ()
 
 #define MNANCHK(m, MT) \

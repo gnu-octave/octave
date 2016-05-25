@@ -110,10 +110,10 @@ octave_float_scalar::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
 
-  if (xisnan (scalar))
+  if (octave::math::isnan (scalar))
     err_nan_to_character_conversion ();
 
-  int ival = NINT (scalar);
+  int ival = octave::math::nint (scalar);
 
   if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
     {
@@ -297,14 +297,13 @@ octave_float_scalar::map (unary_mapper_t umap) const
       return octave_value (FCN (scalar))
 
       SCALAR_MAPPER (abs, ::fabsf);
-      SCALAR_MAPPER (acos, rc_acos);
-      SCALAR_MAPPER (acosh, rc_acosh);
-      SCALAR_MAPPER (angle, ::arg);
-      SCALAR_MAPPER (arg, ::arg);
-      SCALAR_MAPPER (asin, rc_asin);
+      SCALAR_MAPPER (acos, octave::math::rc_acos);
+      SCALAR_MAPPER (acosh, octave::math::rc_acosh);
+      SCALAR_MAPPER (angle, octave::math::arg);
+      SCALAR_MAPPER (asin, octave::math::rc_asin);
       SCALAR_MAPPER (asinh, xasinh);
       SCALAR_MAPPER (atan, ::atanf);
-      SCALAR_MAPPER (atanh, rc_atanh);
+      SCALAR_MAPPER (atanh, octave::math::rc_atanh);
       SCALAR_MAPPER (erf, xerf);
       SCALAR_MAPPER (erfinv, ::erfinv);
       SCALAR_MAPPER (erfcinv, ::erfcinv);
@@ -320,25 +319,25 @@ octave_float_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (cosh, ::coshf);
       SCALAR_MAPPER (exp, ::expf);
       SCALAR_MAPPER (expm1, xexpm1);
-      SCALAR_MAPPER (fix, ::fix);
+      SCALAR_MAPPER (fix, octave::math::fix);
       SCALAR_MAPPER (floor, gnulib::floorf);
-      SCALAR_MAPPER (log, rc_log);
-      SCALAR_MAPPER (log2, rc_log2);
-      SCALAR_MAPPER (log10, rc_log10);
+      SCALAR_MAPPER (log, octave::math::rc_log);
+      SCALAR_MAPPER (log2, octave::math::rc_log2);
+      SCALAR_MAPPER (log10, octave::math::rc_log10);
       SCALAR_MAPPER (log1p, rc_log1p);
-      SCALAR_MAPPER (round, xround);
-      SCALAR_MAPPER (roundb, xroundb);
-      SCALAR_MAPPER (signum, ::signum);
+      SCALAR_MAPPER (round, octave::math::round);
+      SCALAR_MAPPER (roundb, octave::math::roundb);
+      SCALAR_MAPPER (signum, octave::math::signum);
       SCALAR_MAPPER (sin, ::sinf);
       SCALAR_MAPPER (sinh, ::sinhf);
-      SCALAR_MAPPER (sqrt, rc_sqrt);
+      SCALAR_MAPPER (sqrt, octave::math::rc_sqrt);
       SCALAR_MAPPER (tan, ::tanf);
       SCALAR_MAPPER (tanh, ::tanhf);
-      SCALAR_MAPPER (isfinite, xfinite);
-      SCALAR_MAPPER (isinf, xisinf);
-      SCALAR_MAPPER (isna, octave_is_NA);
-      SCALAR_MAPPER (isnan, xisnan);
-      SCALAR_MAPPER (xsignbit, xsignbit);
+      SCALAR_MAPPER (isfinite, octave::math::finite);
+      SCALAR_MAPPER (isinf, octave::math::isinf);
+      SCALAR_MAPPER (isna, octave::math::is_NA);
+      SCALAR_MAPPER (isnan, octave::math::isnan);
+      SCALAR_MAPPER (xsignbit, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
     case umap_xtolower:

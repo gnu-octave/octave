@@ -1587,7 +1587,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           volatile double rcond_plus_one = rcon + 1.0;
 
-          if (rcond_plus_one == 1.0 || xisnan (rcon))
+          if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
             {
               info = -2;
 
@@ -1676,7 +1676,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           volatile double rcond_plus_one = rcon + 1.0;
 
-          if (rcond_plus_one == 1.0 || xisnan (rcon))
+          if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
             {
               info = -2;
 
@@ -1756,7 +1756,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
                   volatile double rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -1837,7 +1837,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
                   volatile double rcond_plus_one = rcon + 1.0;
 
-                  if (rcond_plus_one == 1.0 || xisnan (rcon))
+                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -2267,7 +2267,7 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       // of LAPACK does not return it on a query call.
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
-      double tmp = xlog2 (dminmn / dsmlsizp1);
+      double tmp = octave::math::log2 (dminmn / dsmlsizp1);
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -2456,7 +2456,7 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
       // of LAPACK does not return it on a query call.
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
-      double tmp = xlog2 (dminmn / dsmlsizp1);
+      double tmp = octave::math::log2 (dminmn / dsmlsizp1);
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -2699,7 +2699,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
             {
               tmp_min = elem (i, idx_j);
 
-              if (! xisnan (tmp_min))
+              if (! octave::math::isnan (tmp_min))
                 break;
             }
 
@@ -2707,7 +2707,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
             {
               double tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
               else if (tmp < tmp_min)
                 {
@@ -2717,7 +2717,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (i) = tmp_min;
-          idx_arg.elem (i) = xisnan (tmp_min) ? 0 : idx_j;
+          idx_arg.elem (i) = octave::math::isnan (tmp_min) ? 0 : idx_j;
         }
     }
 
@@ -2754,7 +2754,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
             {
               tmp_max = elem (i, idx_j);
 
-              if (! xisnan (tmp_max))
+              if (! octave::math::isnan (tmp_max))
                 break;
             }
 
@@ -2762,7 +2762,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
             {
               double tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
               else if (tmp > tmp_max)
                 {
@@ -2772,7 +2772,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (i) = tmp_max;
-          idx_arg.elem (i) = xisnan (tmp_max) ? 0 : idx_j;
+          idx_arg.elem (i) = octave::math::isnan (tmp_max) ? 0 : idx_j;
         }
     }
 
@@ -2809,7 +2809,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
             {
               tmp_min = elem (idx_i, j);
 
-              if (! xisnan (tmp_min))
+              if (! octave::math::isnan (tmp_min))
                 break;
             }
 
@@ -2817,7 +2817,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
             {
               double tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
               else if (tmp < tmp_min)
                 {
@@ -2827,7 +2827,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (j) = tmp_min;
-          idx_arg.elem (j) = xisnan (tmp_min) ? 0 : idx_i;
+          idx_arg.elem (j) = octave::math::isnan (tmp_min) ? 0 : idx_i;
         }
     }
 
@@ -2864,7 +2864,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
             {
               tmp_max = elem (idx_i, j);
 
-              if (! xisnan (tmp_max))
+              if (! octave::math::isnan (tmp_max))
                 break;
             }
 
@@ -2872,7 +2872,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
             {
               double tmp = elem (i, j);
 
-              if (xisnan (tmp))
+              if (octave::math::isnan (tmp))
                 continue;
               else if (tmp > tmp_max)
                 {
@@ -2882,7 +2882,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (j) = tmp_max;
-          idx_arg.elem (j) = xisnan (tmp_max) ? 0 : idx_i;
+          idx_arg.elem (j) = octave::math::isnan (tmp_max) ? 0 : idx_i;
         }
     }
 
@@ -3139,7 +3139,7 @@ min (double d, const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmin (d, m(i, j));
+        result(i, j) = octave::math::min (d, m(i, j));
       }
 
   return result;
@@ -3159,7 +3159,7 @@ min (const Matrix& m, double d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmin (m(i, j), d);
+        result(i, j) = octave::math::min (m(i, j), d);
       }
 
   return result;
@@ -3183,7 +3183,7 @@ min (const Matrix& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmin (a(i, j), b(i, j));
+        result(i, j) = octave::math::min (a(i, j), b(i, j));
       }
 
   return result;
@@ -3203,7 +3203,7 @@ max (double d, const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmax (d, m(i, j));
+        result(i, j) = octave::math::max (d, m(i, j));
       }
 
   return result;
@@ -3223,7 +3223,7 @@ max (const Matrix& m, double d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmax (m(i, j), d);
+        result(i, j) = octave::math::max (m(i, j), d);
       }
 
   return result;
@@ -3247,7 +3247,7 @@ max (const Matrix& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = xmax (a(i, j), b(i, j));
+        result(i, j) = octave::math::max (a(i, j), b(i, j));
       }
 
   return result;

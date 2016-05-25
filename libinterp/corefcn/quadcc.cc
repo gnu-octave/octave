@@ -1639,11 +1639,11 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
 
   // If a or b are +/-Inf, transform the integral.
-  if (xisinf (a) || xisinf (b))
+  if (octave::math::isinf (a) || octave::math::isinf (b))
     {
       wrap = true;
       for (i = 0; i < nivals + 1; i++)
-        if (xisinf (iivals[i]))
+        if (octave::math::isinf (iivals[i]))
           iivals[i] = gnulib::copysign (1.0, iivals[i]);
         else
           iivals[i] = 2.0 * atan (iivals[i]) / M_PI;
@@ -1692,7 +1692,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               iv->fx[i] *= (1.0 + xw * xw) * M_PI / 2;
             }
           neval++;
-          if (! xfinite (iv->fx[i]))
+          if (! octave::math::finite (iv->fx[i]))
             {
               nans[nnans++] = i;
               iv->fx[i] = 0.0;
@@ -1808,7 +1808,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[d])
             {
-              if (! xfinite (iv->fx[i]))
+              if (! octave::math::finite (iv->fx[i]))
                 {
                   nans[nnans++] = i;
                   iv->fx[i] = 0.0;
@@ -1945,7 +1945,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! xfinite (ivl->fx[i]))
+              if (! octave::math::finite (ivl->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivl->fx[i] = 0.0;
@@ -2036,7 +2036,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! xfinite (ivr->fx[i]))
+              if (! octave::math::finite (ivr->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivr->fx[i] = 0.0;

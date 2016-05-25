@@ -549,14 +549,14 @@ NDArray::operator ! (void) const
 bool
 NDArray::any_element_is_negative (bool neg_zero) const
 {
-  return (neg_zero ? test_all (xnegative_sign)
+  return (neg_zero ? test_all (octave::math::negative_sign)
           : do_mx_check<double> (*this, mx_inline_any_negative));
 }
 
 bool
 NDArray::any_element_is_positive (bool neg_zero) const
 {
-  return (neg_zero ? test_all (xpositive_sign)
+  return (neg_zero ? test_all (octave::math::positive_sign)
           : do_mx_check<double> (*this, mx_inline_any_positive));
 }
 
@@ -616,7 +616,7 @@ NDArray::all_integers (double& max_val, double& min_val) const
       if (val < min_val)
         min_val = val;
 
-      if (! xisinteger (val))
+      if (! octave::math::isinteger (val))
         return false;
     }
 
@@ -626,7 +626,7 @@ NDArray::all_integers (double& max_val, double& min_val) const
 bool
 NDArray::all_integers (void) const
 {
-  return test_all (xisinteger);
+  return test_all (octave::math::isinteger);
 }
 
 bool
@@ -766,11 +766,11 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
     {
       double d = elem (i);
 
-      if (xisnan (d))
+      if (octave::math::isnan (d))
         (*current_liboctave_error_handler)
           ("invalid conversion from NaN to character");
 
-      octave_idx_type ival = NINTbig (d);
+      octave_idx_type ival = octave::math::nint_big (d);
 
       if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         // FIXME: is there something better to do? Should we warn the user?
@@ -821,19 +821,19 @@ NDArray::abs (void) const
 boolNDArray
 NDArray::isnan (void) const
 {
-  return do_mx_unary_map<bool, double, xisnan> (*this);
+  return do_mx_unary_map<bool, double, octave::math::isnan> (*this);
 }
 
 boolNDArray
 NDArray::isinf (void) const
 {
-  return do_mx_unary_map<bool, double, xisinf> (*this);
+  return do_mx_unary_map<bool, double, octave::math::isinf> (*this);
 }
 
 boolNDArray
 NDArray::isfinite (void) const
 {
-  return do_mx_unary_map<bool, double, xfinite> (*this);
+  return do_mx_unary_map<bool, double, octave::math::finite> (*this);
 }
 
 void

@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 static double
 xabs (const Complex& x)
 {
-  return ((xisinf (x.real ()) || xisinf (x.imag ()))
+  return ((octave::math::isinf (x.real ()) || octave::math::isinf (x.imag ()))
           ? octave::numeric_limits<double>::Inf () : abs (x));
 }
 
@@ -46,7 +46,7 @@ template <>
 bool
 sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 {
-  return (xisnan (b) || (xabs (a) < xabs (b))
+  return (octave::math::isnan (b) || (xabs (a) < xabs (b))
           || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
 }
 
@@ -54,7 +54,7 @@ template <>
 bool
 sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 {
-  return (xisnan (a) || (xabs (a) > xabs (b))
+  return (octave::math::isnan (a) || (xabs (a) > xabs (b))
           || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
 

@@ -313,12 +313,12 @@ makeImageFromCData (const octave_value& v, int width, int height)
                 float r = f(j, i, 0);
                 float g = f(j, i, 1);
                 float b = f(j, i, 2);
-                int a = (xisnan (r) || xisnan (g) || xisnan (b) ? 0 : 255);
+                int a = (octave::math::isnan (r) || octave::math::isnan (g) || octave::math::isnan (b) ? 0 : 255);
 
                 img.setPixel (x_off + i, y_off + j,
-                              qRgba (xround (r * 255),
-                                     xround (g * 255),
-                                     xround (b * 255),
+                              qRgba (octave::math::round (r * 255),
+                                     octave::math::round (g * 255),
+                                     octave::math::round (b * 255),
                                      a));
               }
         }
@@ -332,12 +332,12 @@ makeImageFromCData (const octave_value& v, int width, int height)
                 double r = d(j, i, 0);
                 double g = d(j, i, 1);
                 double b = d(j, i, 2);
-                int a = (xisnan (r) || xisnan (g) || xisnan (b) ? 0 : 255);
+                int a = (octave::math::isnan (r) || octave::math::isnan (g) || octave::math::isnan (b) ? 0 : 255);
 
                 img.setPixel (x_off + i, y_off + j,
-                              qRgba (xround (r * 255),
-                                     xround (g * 255),
-                                     xround (b * 255),
+                              qRgba (octave::math::round (r * 255),
+                                     octave::math::round (g * 255),
+                                     octave::math::round (b * 255),
                                      a));
               }
         }

@@ -2209,7 +2209,7 @@ Array<T>::lookup (const Array<T>& values, sortmode mode) const
   sortmode vmode = UNSORTED;
 
   // Attempt the O(M+N) algorithm if M is large enough.
-  if (nval > ratio * n / xlog2 (n + 1.0))
+  if (nval > ratio * n / octave::math::log2 (n + 1.0))
     {
       vmode = values.is_sorted ();
       // The table must not contain a NaN.

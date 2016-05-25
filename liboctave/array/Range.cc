@@ -43,9 +43,9 @@ Range::all_elements_are_ints (void) const
   // will also be an integer, even if the limit is not.  If there is one
   // or fewer elements only the base needs to be an integer
 
-  return (! (xisnan (rng_base) || xisnan (rng_inc))
-          && (NINTbig (rng_base) == rng_base || rng_numel < 1)
-          && (NINTbig (rng_inc) == rng_inc || rng_numel <= 1));
+  return (! (octave::math::isnan (rng_base) || octave::math::isnan (rng_inc))
+          && (octave::math::nint_big (rng_base) == rng_base || rng_numel < 1)
+          && (octave::math::nint_big (rng_inc) == rng_inc || rng_numel <= 1));
 }
 
 Matrix

@@ -36,9 +36,27 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
-inline long double xround (long double x) { return roundl (x); }
-inline long double xisnan (long double x)
-{ return xisnan (static_cast<double> (x)); }
+
+namespace octave
+{
+  namespace math
+  {
+    inline long double round (long double x) { return roundl (x); }
+
+    inline long double isnan (long double x) { return isnan (static_cast<double> (x)); }
+  }
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::math::isnan' instead")
+inline long double xround (long double x) { return octave::math::round (x); }
+
+OCTAVE_DEPRECATED ("use 'octave::math::isnan' instead")
+inline bool xisnan (long double x) { return octave::math::isnan (x); }
+
+#endif
+
 #endif
 
 // FIXME: we define this by our own because some compilers, such as
@@ -309,9 +327,9 @@ private:
   static S
   compute_threshold (S val, T orig_val)
   {
-    val = xround (val); // Fool optimizations (maybe redundant)
+    val = octave::math::round (val); // Fool optimizations (maybe redundant)
     // If val is even, but orig_val is odd, we're one unit off.
-    if (orig_val % 2 && val / 2 == xround (val / 2))
+    if (orig_val % 2 && val / 2 == octave::math::round (val / 2))
       // FIXME: is this always correct?
       val *= (static_cast<S> (1) - (std::numeric_limits<S>::epsilon () / 2));
     return val;
@@ -949,10 +967,30 @@ mod (const octave_int<T>& x, const octave_int<T>& y)
 
 // No mixed integer binary operations!
 
+namespace octave
+{
+  namespace math
+  {
+    template <typename T>
+    bool
+    isnan (const octave_int<T>&)
+    {
+      return false;
+    }
+  }
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
 template <typename T>
-inline bool
-xisnan (const octave_int<T>&)
-{ return false; }
+OCTAVE_DEPRECATED ("use 'octave::math::isnan' instead")
+bool
+xisnan (const octave_int<T>& x)
+{
+  return octave::math::isnan (x);
+}
+
+#endif
 
 // FIXME: can/should any of these be inline?
 

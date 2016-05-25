@@ -46,19 +46,19 @@ template <>
 inline bool
 sort_isnan<double> (double x)
 {
-  return xisnan (x);
+  return octave::math::isnan (x);
 }
 
 static bool
 nan_ascending_compare (double x, double y)
 {
-  return xisnan (y) ? ! xisnan (x) : x < y;
+  return octave::math::isnan (y) ? ! octave::math::isnan (x) : x < y;
 }
 
 static bool
 nan_descending_compare (double x, double y)
 {
-  return xisnan (x) ? ! xisnan (y) : x > y;
+  return octave::math::isnan (x) ? ! octave::math::isnan (y) : x > y;
 }
 
 Array<double>::compare_fcn_type
@@ -69,7 +69,7 @@ safe_comparator (sortmode mode, const Array<double>& a , bool allow_chk)
   if (allow_chk)
     {
       octave_idx_type k = 0;
-      for (; k < a.numel () && ! xisnan (a(k)); k++) ;
+      for (; k < a.numel () && ! octave::math::isnan (a(k)); k++) ;
       if (k == a.numel ())
         {
           if (mode == ASCENDING)
@@ -107,7 +107,7 @@ Array<double>::is_sorted (sortmode mode) const
   if (! mode)
     {
       // Auto-detect mode.
-      if (el[n-1] < el[0] || xisnan (el[0]))
+      if (el[n-1] < el[0] || octave::math::isnan (el[0]))
         mode = DESCENDING;
       else
         mode = ASCENDING;
@@ -120,7 +120,7 @@ Array<double>::is_sorted (sortmode mode) const
       // Sort out NaNs.
       do
         r = el[j++];
-      while (xisnan (r) && j < n);
+      while (octave::math::isnan (r) && j < n);
 
       // Orient the test so that NaN will not pass through.
       for (; j < n; j++)
@@ -138,7 +138,7 @@ Array<double>::is_sorted (sortmode mode) const
   else if (mode == ASCENDING)
     {
       // Sort out NaNs.
-      while (n > 0 && xisnan (el[n-1]))
+      while (n > 0 && octave::math::isnan (el[n-1]))
         n--;
 
       if (n > 0)

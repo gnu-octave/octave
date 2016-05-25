@@ -84,8 +84,8 @@ BaseControl::init (QWidget* w, bool callBase)
   uicontrol::properties& up = properties<uicontrol> ();
 
   Matrix bb = up.get_boundingbox (false);
-  w->setGeometry (xround (bb(0)), xround (bb(1)),
-                  xround (bb(2)), xround (bb(3)));
+  w->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                  octave::math::round (bb(2)), octave::math::round (bb(3)));
   w->setFont (Utils::computeFont<uicontrol> (up, bb(3)));
   updatePalette (up, w);
   w->setEnabled (up.enable_is ("on"));
@@ -113,8 +113,8 @@ BaseControl::update (int pId)
     case uicontrol::properties::ID_POSITION:
         {
           Matrix bb = up.get_boundingbox (false);
-          w->setGeometry (xround (bb(0)), xround (bb(1)),
-                          xround (bb(2)), xround (bb(3)));
+          w->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                          octave::math::round (bb(2)), octave::math::round (bb(3)));
         }
       break;
 

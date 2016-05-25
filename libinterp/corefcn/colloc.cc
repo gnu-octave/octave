@@ -52,10 +52,10 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
     error ("colloc: N must be a scalar");
 
   double tmp = args(0).double_value ();
-  if (xisnan (tmp))
+  if (octave::math::isnan (tmp))
     error ("colloc: N cannot be NaN");
 
-  octave_idx_type ncol = NINTbig (tmp);
+  octave_idx_type ncol = octave::math::nint_big (tmp);
   if (ncol < 0)
     error ("colloc: N must be positive");
 

@@ -1415,60 +1415,59 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
   endif
 
-  axis_idx = data_idx;
-  if (strcmpi (axis_obj.box, "on"))
-    if (nd == 3)
-      fputs (plot_stream, "set border 4095;\n");
-    else
-      axis_idx = do_border_2d (axis_obj, plot_stream, axis_idx);
-    endif
-  else
-    if (nd == 3)
-      fputs (plot_stream, "set border 895;\n");
-    elseif (! isempty (axis_obj.ytick))
-      if (strcmpi (axis_obj.yaxislocation, "right"))
-        fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
-                 axis_obj.tickdir);
-        if (strcmpi (axis_obj.xaxislocation, "top"))
-          maybe_do_x2tick_mirror (plot_stream, axis_obj)
-        elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          maybe_do_xtick_mirror (plot_stream, axis_obj)
-        else # xaxislocation == zero
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
-        endif
-      elseif (strcmpi (axis_obj.yaxislocation, "left"))
-        fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
-                 axis_obj.tickdir);
-        if (strcmpi (axis_obj.xaxislocation, "top"))
-          maybe_do_x2tick_mirror (plot_stream, axis_obj)
-        elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          maybe_do_xtick_mirror (plot_stream, axis_obj)
-        else # xaxislocation == zero
-          maybe_do_xtick_mirror (plot_stream, axis_obj)
-        endif
-      else # yaxislocation == zero
-        fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
-                 axis_obj.tickdir);
-        if (strcmpi (axis_obj.xaxislocation, "top"))
-          maybe_do_x2tick_mirror (plot_stream, axis_obj)
-        elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          maybe_do_xtick_mirror (plot_stream, axis_obj)
-        else # xaxislocation == zero
-          maybe_do_xtick_mirror (plot_stream, axis_obj)
-          fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
-                   axis_obj.tickdir);
-          fputs (plot_stream, "unset border;\n");
-        endif
-      endif
-      axis_idx = do_border_2d (axis_obj, plot_stream, axis_idx);
-    endif
-  endif
-
   if (strcmpi (axis_obj.visible, "off"))
     fputs (plot_stream, "unset border; unset tics\n");
   else
-    fprintf (plot_stream, "set border lw %f;\n", axis_obj.linewidth);
+    fputs (plot_stream, "unset border\n");
+    axis_idx = data_idx;
+    if (strcmpi (axis_obj.box, "on"))
+      if (nd == 3)
+        fputs (plot_stream, "set border 4095;\n");
+      else
+        axis_idx = do_border_2d (axis_obj, plot_stream, axis_idx);
+      endif
+    else
+      if (nd == 3)
+        fputs (plot_stream, "set border 895;\n");
+      elseif (! isempty (axis_obj.ytick))
+        if (strcmpi (axis_obj.yaxislocation, "right"))
+          fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
+                   axis_obj.tickdir);
+          if (strcmpi (axis_obj.xaxislocation, "top"))
+            maybe_do_x2tick_mirror (plot_stream, axis_obj)
+          elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
+            maybe_do_xtick_mirror (plot_stream, axis_obj)
+          else # xaxislocation == zero
+            fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
+                     axis_obj.tickdir);
+          endif
+        elseif (strcmpi (axis_obj.yaxislocation, "left"))
+          fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
+                   axis_obj.tickdir);
+          if (strcmpi (axis_obj.xaxislocation, "top"))
+            maybe_do_x2tick_mirror (plot_stream, axis_obj)
+          elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
+            maybe_do_xtick_mirror (plot_stream, axis_obj)
+          else # xaxislocation == zero
+            maybe_do_xtick_mirror (plot_stream, axis_obj)
+          endif
+        else # yaxislocation == zero
+          fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
+                   axis_obj.tickdir);
+          if (strcmpi (axis_obj.xaxislocation, "top"))
+            maybe_do_x2tick_mirror (plot_stream, axis_obj)
+          elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
+            maybe_do_xtick_mirror (plot_stream, axis_obj)
+          else # xaxislocation == zero
+            maybe_do_xtick_mirror (plot_stream, axis_obj)
+            fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
+                     axis_obj.tickdir);
+            fputs (plot_stream, "unset border;\n");
+          endif
+        endif
+        axis_idx = do_border_2d (axis_obj, plot_stream, axis_idx);
+      endif
+    endif
   endif
 
   if (! isempty (hlgnd) && ! isempty (hlgnd.children)

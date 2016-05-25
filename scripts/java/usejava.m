@@ -62,7 +62,7 @@ function retval = usejava (feature)
     case "awt"
       try
         dum = methods ("java.awt.Frame");
-        retval = true;
+        retval = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
       end_try_catch
     case "desktop"
       ## Octave has no Java based GUI/desktop, leave retval = false
@@ -74,7 +74,7 @@ function retval = usejava (feature)
     case "swing"
       try
         dum = methods ("javax.swing.Popup");
-        retval = true;
+        retval = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
       end_try_catch
     otherwise
       error ("usejava: unrecognized feature '%s'", feature);

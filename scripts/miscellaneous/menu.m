@@ -30,8 +30,8 @@
 ## or as a cell array of strings.
 ##
 ## The return value @var{choice} is the number of the option selected by the
-## user counting from 1 or 0 if the user aborts the dialog or makes an invalid
-## selection.
+## user counting from 1.  If the user aborts the dialog or makes an invalid
+## selection then 0 is returned.
 ##
 ## This function is useful for interactive programs.  There is no limit to the
 ## number of options that may be passed in, but it may be confusing to present
@@ -55,7 +55,7 @@ function choice = menu (title, varargin)
     error ("menu: OPTIONS must be string or cell array of strings");
   endif
 
-  if (__octave_link_enabled__ ())
+  if (__octave_link_enabled__ ())  # GUI menu
     [choice, ok] = listdlg ("Name", "menu", "PromptString", title,
                             "ListString", varargin, "SelectionMode", "Single");
     if (! ok)
@@ -65,29 +65,31 @@ function choice = menu (title, varargin)
     ## Force pending output to appear before the menu.
     fflush (stdout);
 
-    ## Don't send the menu through the pager since doing that can cause
-    ## major confusion.
-    page_screen_output (0, "local");
+    ## Don't send the menu through the pager as that can cause major confusion.
+    page_screen_output (false, "local");
 
     if (! isempty (title))
       printf ("%s\n", title);
     endif
 
+    ## Handle case where choices are given as a cell array
+    if (iscellstr (varargin{1}))
+      varargin = varargin{1};
+    endif
+
     nopt = numel (varargin);
-    while (1)
-      for i = 1:nopt
-        printf ("  [%2d] %s\n", i, varargin{i});
-      endfor
-      printf ("\n");
-      s = input ("Select a number: ", "s");
-      choice = sscanf (s, "%d");
-      if (! isscalar (choice) || choice < 1 || choice > nopt)
-        printf ("\nerror: input invalid or out of range\n\n");
-        choice = 0;
-      else
-        break;
-      endif
-    endwhile
+    for i = 1:nopt
+      printf ("  [%2d] %s\n", i, varargin{i});
+    endfor
+    printf ("\n");
+
+    s = input ("Select a number: ", "s");
+    choice = sscanf (s, "%d");
+
+    if (! isscalar (choice) || choice < 1 || choice > nopt)
+      warning ("menu: input invalid or out of range\n");
+      choice = 0;
+    endif
   endif
 
 endfunction
@@ -98,3 +100,4 @@ endfunction
 %!error <TITLE must be a string> menu (1, "opt1")
 %!error <All OPTIONS must be strings> menu ("title", "opt1", 1)
 %!error <OPTIONS must be string or cell array of strings> menu ("title", 1)
+

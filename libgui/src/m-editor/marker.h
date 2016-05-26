@@ -19,8 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (MARKER_H)
-#define MARKER_H
+#if ! defined (octave_marker_h)
+#define octave_marker_h 1
 
 #include <Qsci/qsciscintilla.h>
 #include <QObject>

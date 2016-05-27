@@ -453,6 +453,7 @@ main (int argc, char **argv)
   int k = 1;
 
   bool warn_display = true;
+  bool no_display = false;
 
   for (int i = 1; i < argc; i++)
     {
@@ -485,13 +486,26 @@ main (int argc, char **argv)
           warn_display = false;
           new_argv[k++] = argv[i];
         }
+      else if (! strcmp (argv[i], "--no-window-system")
+               || ! strcmp (argv[i], "-W"))
+        {
+          no_display = true;
+          new_argv[k++] = argv[i];
+        }
       else
         new_argv[k++] = argv[i];
     }
 
   new_argv[k] = 0;
 
-  if (gui_libs || start_gui)
+  if (no_display)
+    {
+      start_gui = false;
+      gui_libs = false;
+
+      file = octave_cli;
+    }
+  else if (gui_libs || start_gui)
     {
       int dpy_avail;
 

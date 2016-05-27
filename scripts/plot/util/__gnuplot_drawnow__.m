@@ -361,7 +361,7 @@ function term = gnuplot_default_term (plot_stream)
       term = "aqua";
     elseif (! isunix ())
       term = "windows";
-    elseif (! isempty (getenv ("DISPLAY")))
+    elseif (have_window_system ())
       term = "x11";
     else
       term = "dumb";

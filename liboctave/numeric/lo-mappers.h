@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 
 #include "oct-cmplx.h"
-#include "oct-inttypes.h"
 #include "lo-math.h"
 #include "lo-ieee.h"
 

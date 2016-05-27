@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 
 #include "mach-info.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 
 class
 OCTAVE_API

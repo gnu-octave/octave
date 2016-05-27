@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "idx-vector.h"
 #include "lo-error.h"
+#include "lo-mappers.h"
 #include "oct-locbuf.h"
 
 // One dimensional array class.  Handles the reference counting for

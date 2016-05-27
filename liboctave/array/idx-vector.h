@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <memory>
 
 #include "dim-vector.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 #include "oct-refcount.h"
 
 template <typename T> class Array;

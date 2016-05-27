@@ -35,6 +35,18 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "lo-mappers.h"
 
+template <typename T> class octave_int;
+
+typedef octave_int<int8_t> octave_int8;
+typedef octave_int<int16_t> octave_int16;
+typedef octave_int<int32_t> octave_int32;
+typedef octave_int<int64_t> octave_int64;
+
+typedef octave_int<uint8_t> octave_uint8;
+typedef octave_int<uint16_t> octave_uint16;
+typedef octave_int<uint32_t> octave_uint32;
+typedef octave_int<uint64_t> octave_uint64;
+
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
 namespace octave
@@ -1132,16 +1144,6 @@ bitshift (const octave_int<T>& a, int n,
   else
     return a & mask;
 }
-
-typedef octave_int<int8_t> octave_int8;
-typedef octave_int<int16_t> octave_int16;
-typedef octave_int<int32_t> octave_int32;
-typedef octave_int<int64_t> octave_int64;
-
-typedef octave_int<uint8_t> octave_uint8;
-typedef octave_int<uint16_t> octave_uint16;
-typedef octave_int<uint32_t> octave_uint32;
-typedef octave_int<uint64_t> octave_uint64;
 
 #if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 

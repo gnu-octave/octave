@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "intNDArray.h"
 #include "mx-op-decl.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 #include "bsxfun-decl.h"
 
 typedef intNDArray<octave_int16> int16NDArray;

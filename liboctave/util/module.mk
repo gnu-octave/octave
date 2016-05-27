@@ -22,6 +22,7 @@ UTIL_INC = \
   liboctave/util/oct-cmplx.h \
   liboctave/util/oct-glob.h \
   liboctave/util/oct-inttypes.h \
+  liboctave/util/oct-inttypes-fwd.h \
   liboctave/util/oct-locbuf.h \
   liboctave/util/oct-mutex.h \
   liboctave/util/oct-refcount.h \

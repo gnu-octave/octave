@@ -237,10 +237,102 @@ BEGIN {
 
               if (sparse)
                 {
-                  ## FIXME: it might be nice to only include the declarations
-                  ## of the operators that are actually needed instead of
-                  ## including all of them.
-                  printf ("#include \"mx-ops.h\"\n");
+                  lhs_is_sparse = 0;
+                  rhs_is_sparse = 0;
+
+                  xlhs_tag = "NONE";
+                  xrhs_tag = "NONE";
+
+                  if (lhs_tag == "sbm")
+                    {
+                      lhs_is_sparse = 1;
+                      xlhs_tag = "b";
+                    }
+                  else if (lhs_tag == "scm")
+                    {
+                      lhs_is_sparse = 1;
+                      xlhs_tag = "cs";
+                    }
+                  else if (lhs_tag == "sm")
+                    {
+                      lhs_is_sparse = 1;
+                      xlhs_tag = "s";
+                    }
+                  else if (lhs_tag == "bm" || lhs_tag == "cm" || lhs_tag == "m")
+                    xlhs_tag = lhs_tag;
+
+                  if (rhs_tag == "sbm")
+                    {
+                      rhs_is_sparse = 1;
+                      xrhs_tag = "b";
+                    }
+                  else if (rhs_tag == "scm")
+                    {
+                      rhs_is_sparse = 1;
+                      xrhs_tag = "cs";
+                    }
+                  else if (rhs_tag == "sm")
+                    {
+                      rhs_is_sparse = 1;
+                      xrhs_tag = "s";
+                    }
+                  else if (rhs_tag == "bm" || rhs_tag == "cm" || rhs_tag == "m")
+                    xrhs_tag = rhs_tag;
+
+                  same_types = ((xlhs_tag == "b" && xrhs_tag == "bm") || (xlhs_tag == "cs" && xrhs_tag == "cm") || (xlhs_tag == "s" && xrhs_tag == "m") || (xlhs_tag == "bm" && xrhs_tag == "b") || (xlhs_tag == "cm" && xrhs_tag == "cs") || (xlhs_tag == "m" && xrhs_tag == "s"));
+
+                  if (! (same_types || (rhs_is_sparse && lhs_is_sparse) || xlhs_tag == "NONE" || xrhs_tag == "NONE"))
+                    {
+                      printf ("#include \"mx-%s-%s.h\"\n", xlhs_tag, xrhs_tag);
+                      printf ("#include \"mx-%s-%s.h\"\n", xrhs_tag, xlhs_tag);
+
+                      xxlhs_tag = xlhs_tag;
+                      xxrhs_tag = xrhs_tag;
+
+                      if (xxlhs_tag == "cs")
+                        xxlhs_tag = "cm";
+                      else if (xxlhs_tag == "s")
+                        xxlhs_tag = "m";
+                      else if (xxlhs_tag == "b")
+                        xxlhs_tag = "NONE";
+
+                      if (xxrhs_tag == "cs")
+                        xxrhs_tag = "cm";
+                      else if (xxrhs_tag == "s")
+                        xxrhs_tag = "m";
+                      else if (xxrhs_tag == "b")
+                        xxrhs_tag = "NONE";
+
+                      if (! (xxlhs_tag == "NONE" || xxrhs_tag == "NONE" || xxlhs_tag == xxrhs_tag))
+                        {
+                          printf ("#include \"mx-%s-%s.h\"\n", xxlhs_tag, xxrhs_tag);
+                          printf ("#include \"mx-%s-%s.h\"\n", xxrhs_tag, xxlhs_tag);
+                        }
+
+                      xxlhs_tag = xlhs_tag;
+                      xxrhs_tag = xrhs_tag;
+
+                      if (xxlhs_tag == "m")
+                        xxlhs_tag = "nda";
+                      else if (xxlhs_tag == "cm")
+                        xxlhs_tag = "cnda";
+                      else if (xxlhs_tag == "bm")
+                        xxlhs_tag = "NONE";
+
+                      if (xxrhs_tag == "m")
+                        xxrhs_tag = "nda";
+                      else if (xxrhs_tag == "cm")
+                        xxrhs_tag = "cnda";
+                      else if (xxrhs_tag == "bm")
+                        xxrhs_tag = "NONE";
+
+                      if (! (xxlhs_tag == "NONE" || xxrhs_tag == "NONE"))
+                        {
+                          printf ("#include \"mx-%s-%s.h\"\n", xxlhs_tag, xxrhs_tag);
+                          printf ("#include \"mx-%s-%s.h\"\n", xxrhs_tag, xxlhs_tag);
+                        }
+                    }
+
                   printf ("#include \"Sparse-op-defs.h\"\n");
                 }
               else

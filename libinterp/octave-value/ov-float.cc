@@ -300,6 +300,7 @@ octave_float_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (acos, octave::math::rc_acos);
       SCALAR_MAPPER (acosh, octave::math::rc_acosh);
       SCALAR_MAPPER (angle, octave::math::arg);
+      SCALAR_MAPPER (arg, octave::math::arg);
       SCALAR_MAPPER (asin, octave::math::rc_asin);
       SCALAR_MAPPER (asinh, octave::math::asinh);
       SCALAR_MAPPER (atan, ::atanf);

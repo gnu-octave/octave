@@ -42,7 +42,8 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
 {
   const octave_idx_type n = sm.cols ();
   octave_idx_type j1, j2, jrow, jw, i, j, k, jj;
-  T tl, r;
+  T r;
+  T tl = 0;
 
   enum {OFF, ROW, COL};
   char opt;

@@ -48,27 +48,27 @@ enum bessel_type
       switch (type) \
         { \
           case BESSEL_J: \
-            result = besselj (alpha, x, scaled, ierr); \
+            result = octave::math::besselj (alpha, x, scaled, ierr); \
             break; \
  \
           case BESSEL_Y: \
-            result = bessely (alpha, x, scaled, ierr); \
+            result = octave::math::bessely (alpha, x, scaled, ierr); \
             break; \
  \
           case BESSEL_I: \
-            result = besseli (alpha, x, scaled, ierr); \
+            result = octave::math::besseli (alpha, x, scaled, ierr); \
             break; \
  \
           case BESSEL_K: \
-            result = besselk (alpha, x, scaled, ierr); \
+            result = octave::math::besselk (alpha, x, scaled, ierr); \
             break; \
  \
           case BESSEL_H1: \
-            result = besselh1 (alpha, x, scaled, ierr); \
+            result = octave::math::besselh1 (alpha, x, scaled, ierr); \
             break; \
  \
           case BESSEL_H2: \
-            result = besselh2 (alpha, x, scaled, ierr); \
+            result = octave::math::besselh2 (alpha, x, scaled, ierr); \
             break; \
  \
           default: \
@@ -535,9 +535,9 @@ return @code{NaN}.\n\
       octave_value result;
 
       if (kind > 1)
-        result = biry (z, kind == 3, scale, ierr);
+        result = octave::math::biry (z, kind == 3, scale, ierr);
       else
-        result = airy (z, kind == 1, scale, ierr);
+        result = octave::math::airy (z, kind == 1, scale, ierr);
 
       retval(0) = result;
       if (nargout > 1)
@@ -551,9 +551,9 @@ return @code{NaN}.\n\
       octave_value result;
 
       if (kind > 1)
-        result = biry (z, kind == 3, scale, ierr);
+        result = octave::math::biry (z, kind == 3, scale, ierr);
       else
-        result = airy (z, kind == 1, scale, ierr);
+        result = octave::math::airy (z, kind == 1, scale, ierr);
 
       retval(0) = result;
       if (nargout > 1)

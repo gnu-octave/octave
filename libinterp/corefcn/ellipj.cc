@@ -90,7 +90,7 @@ and 16.15), Dover, 1965.\n\
               double sn, cn, dn;
               double err = 0;
 
-              ellipj (u, m, sn, cn, dn, err);
+              octave::math::ellipj (u, m, sn, cn, dn, err);
 
               return ovl (sn, cn, dn, err);
             }
@@ -102,7 +102,7 @@ and 16.15), Dover, 1965.\n\
               Complex sn, cn, dn;
               double err = 0;
 
-              ellipj (u, m, sn, cn, dn, err);
+              octave::math::ellipj (u, m, sn, cn, dn, err);
 
               return ovl (sn, cn, dn, err);
             }
@@ -125,7 +125,7 @@ and 16.15), Dover, 1965.\n\
           octave_idx_type nel = u.numel ();
 
           for (octave_idx_type i = 0; i < nel; i++)
-            ellipj (pu[i], m, psn[i], pcn[i], pdn[i], perr[i]);
+            octave::math::ellipj (pu[i], m, psn[i], pcn[i], pdn[i], perr[i]);
 
           return ovl (sn, cn, dn, err);
         }
@@ -155,7 +155,7 @@ and 16.15), Dover, 1965.\n\
               octave_idx_type nel = m.numel ();
 
               for (octave_idx_type i = 0; i < nel; i++)
-                ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                octave::math::ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
               return ovl (sn, cn, dn, err);
             }
@@ -175,7 +175,7 @@ and 16.15), Dover, 1965.\n\
               octave_idx_type nel = m.numel ();
 
               for (octave_idx_type i = 0; i < nel; i++)
-                ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                octave::math::ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
               return ovl (sn, cn, dn, err);
             }
@@ -206,8 +206,7 @@ and 16.15), Dover, 1965.\n\
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
-                              err(i,j));
+                      octave::math::ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
 
                   return ovl (sn, cn, dn, err);
                 }
@@ -225,7 +224,7 @@ and 16.15), Dover, 1965.\n\
                   octave_idx_type nel = m.numel ();
 
                   for (octave_idx_type i = 0; i < nel; i++)
-                    ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                    octave::math::ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
                   return ovl (sn, cn, dn, err);
                 }
@@ -255,8 +254,7 @@ and 16.15), Dover, 1965.\n\
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
-                              err(i,j));
+                      octave::math::ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
 
                   return ovl (sn, cn, dn, err);
                 }
@@ -274,7 +272,7 @@ and 16.15), Dover, 1965.\n\
                   octave_idx_type nel = m.numel ();
 
                   for (octave_idx_type i = 0; i < nel; i++)
-                    ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                    octave::math::ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
                   return ovl (sn, cn, dn, err);
                 }

@@ -434,7 +434,7 @@ namespace octave
     FloatComplex
     rc_atanh (float x)
     {
-      return fabsf (x) > 1.0f ? xatanh (FloatComplex (x)) : FloatComplex (atanh (x));
+      return fabsf (x) > 1.0f ? atanh (FloatComplex (x)) : FloatComplex (atanh (x));
     }
 
     Complex

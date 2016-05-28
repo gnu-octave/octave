@@ -91,7 +91,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
           E* psi_zv = psi_z.fortran_vec (); \
           const octave_idx_type n = z.numel (); \
           for (octave_idx_type i = 0; i < n; i++) \
-            *psi_zv++ = psi (*zv++); \
+            *psi_zv++ = octave::math::psi (*zv++); \
  \
           retval = psi_z; \
         }
@@ -132,7 +132,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
               if (*zv < 0) \
                 error ("psi: Z must be non-negative for polygamma (K > 0)"); \
  \
-              *psi_zv++ = psi (k, *zv++); \
+              *psi_zv++ = octave::math::psi (k, *zv++); \
             } \
           retval = psi_z; \
         }

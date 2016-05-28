@@ -48,11 +48,17 @@ namespace octave
     extern OCTAVE_API Complex acos (const Complex& x);
     extern OCTAVE_API FloatComplex acos (const FloatComplex& x);
 
+    using std::acos;
+
     extern OCTAVE_API Complex asin (const Complex& x);
     extern OCTAVE_API FloatComplex asin (const FloatComplex& x);
 
+    using std::asin;
+
     extern OCTAVE_API Complex atan (const Complex& x);
     extern OCTAVE_API FloatComplex atan (const FloatComplex& x);
+
+    using std::atan;
 
     inline double arg (double x) { return atan2 (0.0, x); }
     inline float arg (float x) { return atan2f (0.0f, x); }

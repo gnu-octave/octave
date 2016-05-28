@@ -90,13 +90,13 @@ compatible dimensions.\n\
                 {
                   float b = b_arg.float_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<float> b = b_arg.float_array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
           else
@@ -107,13 +107,13 @@ compatible dimensions.\n\
                 {
                   float b = b_arg.float_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<float> b = b_arg.float_array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
         }
@@ -129,13 +129,13 @@ compatible dimensions.\n\
                 {
                   float b = b_arg.float_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<float> b = b_arg.float_array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
           else
@@ -146,13 +146,13 @@ compatible dimensions.\n\
                 {
                   float b = b_arg.float_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<float> b = b_arg.float_array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
         }
@@ -171,13 +171,13 @@ compatible dimensions.\n\
                 {
                   double b = b_arg.double_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<double> b = b_arg.array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
           else
@@ -188,13 +188,13 @@ compatible dimensions.\n\
                 {
                   double b = b_arg.double_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<double> b = b_arg.array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
         }
@@ -210,13 +210,13 @@ compatible dimensions.\n\
                 {
                   double b = b_arg.double_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<double> b = b_arg.array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
           else
@@ -227,13 +227,13 @@ compatible dimensions.\n\
                 {
                   double b = b_arg.double_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
               else
                 {
                   Array<double> b = b_arg.array_value ();
 
-                  retval = betainc (x, a, b);
+                  retval = octave::math::betainc (x, a, b);
                 }
             }
         }
@@ -319,13 +319,13 @@ The inverse is the value @var{x} such that\n\
             {
               double b = b_arg.double_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
           else
             {
               Array<double> b = b_arg.array_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
         }
       else
@@ -336,13 +336,13 @@ The inverse is the value @var{x} such that\n\
             {
               double b = b_arg.double_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
           else
             {
               Array<double> b = b_arg.array_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
         }
     }
@@ -358,13 +358,13 @@ The inverse is the value @var{x} such that\n\
             {
               double b = b_arg.double_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
           else
             {
               Array<double> b = b_arg.array_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
         }
       else
@@ -375,13 +375,13 @@ The inverse is the value @var{x} such that\n\
             {
               double b = b_arg.double_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
           else
             {
               Array<double> b = b_arg.array_value ();
 
-              retval = betaincinv (x, a, b);
+              retval = octave::math::betaincinv (x, a, b);
             }
         }
     }

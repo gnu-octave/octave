@@ -902,6 +902,10 @@ file_editor_tab::next_bookmark (const QWidget *ID)
 
   int nextline = _edit_area->markerFindNext (line, (1 << marker::bookmark));
 
+  // Wrap.
+  if (nextline == -1)
+    nextline = _edit_area->markerFindNext (1, (1 << marker::bookmark));
+
   _edit_area->setCursorPosition (nextline, 0);
 }
 
@@ -919,6 +923,11 @@ file_editor_tab::previous_bookmark (const QWidget *ID)
   line--; // Find bookmark strictly before the current line.
 
   int prevline = _edit_area->markerFindPrevious (line, (1 << marker::bookmark));
+
+  // Wrap.  Should use the last line of the file, not 1<<15
+  if (prevline == -1)
+    prevline = _edit_area->markerFindPrevious (_edit_area->lines (),
+                                               (1 << marker::bookmark));
 
   _edit_area->setCursorPosition (prevline, 0);
 }

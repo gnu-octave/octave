@@ -1715,10 +1715,10 @@ file_editor::construct (void)
 
   _edit_nav_menu->addSeparator ();
 
-  _previous_bookmark_action = add_action (_edit_nav_menu, QIcon (),
-          tr ("Pre&vious Bookmark"), SLOT (request_previous_bookmark (bool)));
   _next_bookmark_action = add_action (_edit_nav_menu, QIcon (),
           tr ("&Next Bookmark"), SLOT (request_next_bookmark (bool)));
+  _previous_bookmark_action = add_action (_edit_nav_menu, QIcon (),
+          tr ("Pre&vious Bookmark"), SLOT (request_previous_bookmark (bool)));
   _toggle_bookmark_action = add_action (_edit_nav_menu, QIcon (),
           tr ("Toggle &Bookmark"), SLOT (request_toggle_bookmark (bool)));
   _remove_bookmark_action = add_action (_edit_nav_menu, QIcon (),

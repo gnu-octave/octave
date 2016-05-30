@@ -2091,10 +2091,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                 + n(j-1,i-1,2) * n(j-1,i-1,2));
                       double dir = 1.0;
                       if (bfl_mode > 0)
-                        dir = (n(j-1,i-1,0) * view_vector(0) + 
-                               n(j-1,i-1,1) * view_vector(1) + 
-                               n(j-1,i-1,2) * view_vector(2) < 0) ? 
-                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                        dir = ((n(j-1,i-1,0) * view_vector(0)
+                                + n(j-1,i-1,1) * view_vector(1)
+                                + n(j-1,i-1,2) * view_vector(2) < 0)
+                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                       glNormal3d (dir * n(j-1,i-1,0)/d,
                                   dir * n(j-1,i-1,1)/d,
                                   dir * n(j-1,i-1,2)/d);
@@ -2133,10 +2133,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                 + n(j-1,i,2) * n(j-1,i,2));
                       double dir = 1.0;
                       if (bfl_mode > 0)
-                        dir = (n(j-1,i,0) * view_vector(0) + 
-                               n(j-1,i,1) * view_vector(1) + 
-                               n(j-1,i,2) * view_vector(2) < 0) ? 
-                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                        dir = ((n(j-1,i,0) * view_vector(0)
+                                + n(j-1,i,1) * view_vector(1)
+                                + n(j-1,i,2) * view_vector(2) < 0)
+                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                       glNormal3d (dir * n(j-1,i,0)/d,
                                   dir * n(j-1,i,1)/d,
                                   dir * n(j-1,i,2)/d);
@@ -2175,10 +2175,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                 + n(j,i,2) * n(j,i,2));
                       double dir = 1.0;
                       if (bfl_mode > 0)
-                        dir = (n(j,i,0) * view_vector(0) + 
-                               n(j,i,1) * view_vector(1) + 
-                               n(j,i,2) * view_vector(2) < 0) ? 
-                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                        dir = ((n(j,i,0) * view_vector(0)
+                                + n(j,i,1) * view_vector(1)
+                                + n(j,i,2) * view_vector(2) < 0)
+                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                       glNormal3d (dir * n(j,i,0)/d,
                                   dir * n(j,i,1)/d,
                                   dir * n(j,i,2)/d);
@@ -2216,10 +2216,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                 + n(j,i-1,2) * n(j,i-1,2));
                       double dir = 1.0;
                       if (bfl_mode > 0)
-                        dir = (n(j,i-1,0) * view_vector(0) + 
-                               n(j,i-1,1) * view_vector(1) + 
-                               n(j,i-1,2) * view_vector(2) < 0) ? 
-                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                        dir = ((n(j,i-1,0) * view_vector(0)
+                                + n(j,i-1,1) * view_vector(1)
+                                + n(j,i-1,2) * view_vector(2) < 0)
+                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                       glNormal3d (dir * n(j,i-1,0)/d,
                                   dir * n(j,i-1,1)/d,
                                   dir * n(j,i-1,2)/d);
@@ -2341,10 +2341,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                     + n(j-1,i,2) * n(j-1,i,2));
                           double dir = 1.0;
                           if (bfl_mode > 0)
-                            dir = (n(j-1,i,0) * view_vector(0) + 
-                                   n(j-1,i,1) * view_vector(1) + 
-                                   n(j-1,i,2) * view_vector(2) < 0) ? 
-                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                            dir = ((n(j-1,i,0) * view_vector(0)
+                                    + n(j-1,i,1) * view_vector(1)
+                                    + n(j-1,i,2) * view_vector(2) < 0)
+                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                           glNormal3d (dir * n(j-1,i,0)/d,
                                       dir * n(j-1,i,1)/d,
                                       dir * n(j-1,i,2)/d);
@@ -2380,10 +2380,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                     + n(j,i,2) * n(j,i,2));
                           double dir = 1.0;
                           if (bfl_mode > 0)
-                            dir = (n(j,i,0) * view_vector(0) + 
-                                   n(j,i,1) * view_vector(1) + 
-                                   n(j,i,2) * view_vector(2) < 0) ? 
-                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                            dir = ((n(j,i,0) * view_vector(0)
+                                    + n(j,i,1) * view_vector(1)
+                                    + n(j,i,2) * view_vector(2) < 0)
+                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                           glNormal3d (dir * n(j,i,0)/d,
                                       dir * n(j,i,1)/d,
                                       dir * n(j,i,2)/d);
@@ -2462,10 +2462,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                     + n(j,i-1,2) * n(j,i-1,2));
                           double dir = 1.0;
                           if (bfl_mode > 0)
-                            dir = (n(j,i-1,0) * view_vector(0) + 
-                                   n(j,i-1,1) * view_vector(1) + 
-                                   n(j,i-1,2) * view_vector(2) < 0) ?
-                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                            dir = ((n(j,i-1,0) * view_vector(0)
+                                    + n(j,i-1,1) * view_vector(1)
+                                    + n(j,i-1,2) * view_vector(2) < 0)
+                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                           glNormal3d (dir * n(j,i-1,0)/d,
                                       dir * n(j,i-1,1)/d,
                                       dir * n(j,i-1,2)/d);
@@ -2501,10 +2501,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                                     + n(j,i,2) * n(j,i,2));
                           double dir = 1.0;
                           if (bfl_mode > 0)
-                            dir = (n(j,i,0) * view_vector(0) + 
-                                   n(j,i,1) * view_vector(1) + 
-                                   n(j,i,2) * view_vector(2) < 0) ? 
-                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                            dir = ((n(j,i,0) * view_vector(0)
+                                    + n(j,i,1) * view_vector(1)
+                                    + n(j,i,2) * view_vector(2) < 0)
+                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
                           glNormal3d (dir * n(j,i,0)/d,
                                       dir * n(j,i,1)/d,
                                       dir * n(j,i,2)/d);
@@ -2742,10 +2742,10 @@ opengl_renderer::draw_patch (const patch::properties &props)
           {
             double dir = 1.0;
             if (bfl_mode > 0)
-              dir = (n(idx,0) * view_vector(0) + 
-                     n(idx,1) * view_vector(1) + 
-                     n(idx,2) * view_vector(2) < 0) ?
-                      ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+              dir = ((n(idx,0) * view_vector(0)
+                      + n(idx,1) * view_vector(1)
+                      + n(idx,2) * view_vector(2) < 0)
+                     ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
             nn(0) = dir * n(idx,0);
             nn(1) = dir * n(idx,1);
             nn(2) = dir * n(idx,2);
@@ -3628,7 +3628,7 @@ opengl_renderer::set_clipping (bool enable)
 #else
 
   octave_unused_parameter (enable);
-  
+
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 

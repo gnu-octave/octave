@@ -1947,7 +1947,6 @@ opengl_renderer::draw_surface (const surface::properties& props)
   float se = props.get_specularexponent () * 5; // to fit Matlab
   float scr = props.get_specularcolorreflectance ();
   float cb[4] = { 0.0, 0.0, 0.0, 1.0 };
-  double d = 1.0;
 
   opengl_texture tex;
 
@@ -2085,20 +2084,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                         }
                     }
                   if (fl_mode > 0)
-                    {
-                      d = sqrt (n(j-1,i-1,0) * n(j-1,i-1,0)
-                                + n(j-1,i-1,1) * n(j-1,i-1,1)
-                                + n(j-1,i-1,2) * n(j-1,i-1,2));
-                      double dir = 1.0;
-                      if (bfl_mode > 0)
-                        dir = ((n(j-1,i-1,0) * view_vector(0)
-                                + n(j-1,i-1,1) * view_vector(1)
-                                + n(j-1,i-1,2) * view_vector(2) < 0)
-                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                      glNormal3d (dir * n(j-1,i-1,0)/d,
-                                  dir * n(j-1,i-1,1)/d,
-                                  dir * n(j-1,i-1,2)/d);
-                    }
+                    set_normal (bfl_mode, n, j-1, i-1);
+
                   glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
                   // Vertex 2
@@ -2127,20 +2114,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                     }
 
                   if (fl_mode == GOURAUD)
-                    {
-                      d = sqrt (n(j-1,i,0) * n(j-1,i,0)
-                                + n(j-1,i,1) * n(j-1,i,1)
-                                + n(j-1,i,2) * n(j-1,i,2));
-                      double dir = 1.0;
-                      if (bfl_mode > 0)
-                        dir = ((n(j-1,i,0) * view_vector(0)
-                                + n(j-1,i,1) * view_vector(1)
-                                + n(j-1,i,2) * view_vector(2) < 0)
-                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                      glNormal3d (dir * n(j-1,i,0)/d,
-                                  dir * n(j-1,i,1)/d,
-                                  dir * n(j-1,i,2)/d);
-                    }
+                    set_normal (bfl_mode, n, j-1, i);
 
                   glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
@@ -2169,20 +2143,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                         }
                     }
                   if (fl_mode == GOURAUD)
-                    {
-                      d = sqrt (n(j,i,0) * n(j,i,0)
-                                + n(j,i,1) * n(j,i,1)
-                                + n(j,i,2) * n(j,i,2));
-                      double dir = 1.0;
-                      if (bfl_mode > 0)
-                        dir = ((n(j,i,0) * view_vector(0)
-                                + n(j,i,1) * view_vector(1)
-                                + n(j,i,2) * view_vector(2) < 0)
-                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                      glNormal3d (dir * n(j,i,0)/d,
-                                  dir * n(j,i,1)/d,
-                                  dir * n(j,i,2)/d);
-                    }
+                    set_normal (bfl_mode, n, j, i);
+
                   glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
                   // Vertex 4
@@ -2210,20 +2172,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                         }
                     }
                   if (fl_mode == GOURAUD)
-                    {
-                      d = sqrt (n(j,i-1,0) * n(j,i-1,0)
-                                + n(j,i-1,1) * n(j,i-1,1)
-                                + n(j,i-1,2) * n(j,i-1,2));
-                      double dir = 1.0;
-                      if (bfl_mode > 0)
-                        dir = ((n(j,i-1,0) * view_vector(0)
-                                + n(j,i-1,1) * view_vector(1)
-                                + n(j,i-1,2) * view_vector(2) < 0)
-                               ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                      glNormal3d (dir * n(j,i-1,0)/d,
-                                  dir * n(j,i-1,1)/d,
-                                  dir * n(j,i-1,2)/d);
-                    }
+                    set_normal (bfl_mode, n, j, i-1);
+
                   glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
                   glEnd ();
@@ -2335,20 +2285,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             }
                         }
                       if (el_mode > 0)
-                        {
-                          d = sqrt (n(j-1,i,0) * n(j-1,i,0)
-                                    + n(j-1,i,1) * n(j-1,i,1)
-                                    + n(j-1,i,2) * n(j-1,i,2));
-                          double dir = 1.0;
-                          if (bfl_mode > 0)
-                            dir = ((n(j-1,i,0) * view_vector(0)
-                                    + n(j-1,i,1) * view_vector(1)
-                                    + n(j-1,i,2) * view_vector(2) < 0)
-                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                          glNormal3d (dir * n(j-1,i,0)/d,
-                                      dir * n(j-1,i,1)/d,
-                                      dir * n(j-1,i,2)/d);
-                        }
+                        set_normal (bfl_mode, n, j-1, i);
+
                       glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
                       // Vertex 2
@@ -2374,20 +2312,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             }
                         }
                       if (el_mode == GOURAUD)
-                        {
-                          d = sqrt (n(j,i,0) * n(j,i,0)
-                                    + n(j,i,1) * n(j,i,1)
-                                    + n(j,i,2) * n(j,i,2));
-                          double dir = 1.0;
-                          if (bfl_mode > 0)
-                            dir = ((n(j,i,0) * view_vector(0)
-                                    + n(j,i,1) * view_vector(1)
-                                    + n(j,i,2) * view_vector(2) < 0)
-                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                          glNormal3d (dir * n(j,i,0)/d,
-                                      dir * n(j,i,1)/d,
-                                      dir * n(j,i,2)/d);
-                        }
+                        set_normal (bfl_mode, n, j, i);
+
                       glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
                       glEnd ();
@@ -2456,20 +2382,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             }
                         }
                       if (el_mode > 0)
-                        {
-                          d = sqrt (n(j,i-1,0) * n(j,i-1,0)
-                                    + n(j,i-1,1) * n(j,i-1,1)
-                                    + n(j,i-1,2) * n(j,i-1,2));
-                          double dir = 1.0;
-                          if (bfl_mode > 0)
-                            dir = ((n(j,i-1,0) * view_vector(0)
-                                    + n(j,i-1,1) * view_vector(1)
-                                    + n(j,i-1,2) * view_vector(2) < 0)
-                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                          glNormal3d (dir * n(j,i-1,0)/d,
-                                      dir * n(j,i-1,1)/d,
-                                      dir * n(j,i-1,2)/d);
-                        }
+                        set_normal (bfl_mode, n, j, i-1);
+
                       glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
                       // Vertex 2
@@ -2495,20 +2409,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             }
                         }
                       if (el_mode == GOURAUD)
-                        {
-                          d = sqrt (n(j,i,0) * n(j,i,0)
-                                    + n(j,i,1) * n(j,i,1)
-                                    + n(j,i,2) * n(j,i,2));
-                          double dir = 1.0;
-                          if (bfl_mode > 0)
-                            dir = ((n(j,i,0) * view_vector(0)
-                                    + n(j,i,1) * view_vector(1)
-                                    + n(j,i,2) * view_vector(2) < 0)
-                                   ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-                          glNormal3d (dir * n(j,i,0)/d,
-                                      dir * n(j,i,1)/d,
-                                      dir * n(j,i,2)/d);
-                        }
+                        set_normal (bfl_mode, n, j, i);
+
                       glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
                       glEnd ();
@@ -3741,6 +3643,40 @@ opengl_renderer::draw_marker (double x, double y, double z,
   octave_unused_parameter (z);
   octave_unused_parameter (lc);
   octave_unused_parameter (fc);
+
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+
+#endif
+}
+
+void
+opengl_renderer::set_normal (int bfl_mode, const NDArray& n, int j, int i)
+{
+#if defined (HAVE_OPENGL)
+
+  double x = n(j,i,0);
+  double y = n(j,i,1);
+  double z = n(j,i,2);
+
+  double d = sqrt (x*x + y*y + z*z);
+
+  double dir = 1.0;
+
+  if (bfl_mode > 0)
+    dir = ((x * view_vector(0) + y * view_vector(1) + z * view_vector(2) < 0)
+           ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
+
+  glNormal3d (dir*x/d, dir*y/d, dir*z/d);
+
+#else
+
+  octave_unused_parameter (bfl_mode);
+  octave_unused_parameter (n);
+  octave_unused_parameter (j);
+  octave_unused_parameter (i);
 
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.

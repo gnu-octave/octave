@@ -154,6 +154,8 @@ private:
             | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
   }
 
+  void set_normal (int bfl_mode, const NDArray& n, int j, int i);
+
   unsigned int make_marker_list (const std::string& m, double size,
                                  bool filled) const;
 

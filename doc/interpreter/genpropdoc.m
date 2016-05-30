@@ -30,7 +30,7 @@
 
 function genpropdoc (objname, fname)
   objnames = {"root", "figure", "axes", "line", ...
-              "text", "image", "patch", "surface", ...
+              "text", "image", "patch", "surface", "light", ...
               "uimenu", "uicontextmenu", "uipanel", ...
               "uicontrol", "uitoolbar", "uipushtool", "uitoggletool"};
 
@@ -1052,10 +1052,13 @@ of @code{[1 rows(image)]}.";
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "ambientstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the ambient light. Value between 0.0 and 1.0";
+        s.valid = "scalar";
 
       case "backfacelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "@qcode{\"lit\"}: The normals are used as is for lighting. \
+@qcode{\"reverselit\"}: The normals are always oriented towards the point of view. \
+@qcode{\"unlit\"}: Faces with normals pointing away from the point of view are unlit.";
 
       case "cdata"
         s.valid = "matrix";
@@ -1063,7 +1066,9 @@ of @code{[1 rows(image)]}.";
       case "cdatamapping"
       case "cdatasource"
       case "diffusestrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the diffuse reflex. Value between 0.0 (no \
+diffuse reflex) and 1.0 (full diffuse reflex).";
+        s.valid = "scalar";
 
       case "displayname"
         s.doc = "Text for the legend entry corresponding to this surface.";
@@ -1074,7 +1079,12 @@ of @code{[1 rows(image)]}.";
 
       case "edgecolor"
       case "edgelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "When set to a value other than @qcode{\"none\"}, the edges \
+of the object are drawn with light and shadow effects.  Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
       case "erasemode"
         s.doc = doc_unused;
@@ -1084,7 +1094,12 @@ of @code{[1 rows(image)]}.";
 
       case "facecolor"
       case "facelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
+of the object are drawn with light and shadow effects.  Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
       case "interpreter"
       case "linestyle"
@@ -1112,13 +1127,19 @@ of @code{[1 rows(image)]}.";
       case "meshstyle"
       case "normalmode"
       case "specularcolorreflectance"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Reflectance for specular color. Value between 0.0 (color \
+of underlying face) and 1.0 (color of light source).";
+        s.valid = "scalar";
 
       case "specularexponent"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Exponent for the specular reflex. The lower the value, \
+the more the reflex is spread out.";
+        s.valid = "scalar";
 
       case "specularstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the specular reflex. Value between 0.0 (no \
+specular reflex) and 1.0 (full specular reflex).";
+        s.valid = "scalar";
 
       case "vertexnormals"
       case "xdata"
@@ -1147,11 +1168,13 @@ of @code{[1 rows(image)]}.";
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "ambientstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the ambient light. Value between 0.0 and 1.0";
         s.valid = "scalar";
 
       case "backfacelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc =  "@qcode{\"lit\"}: The normals are used as is for lighting. \
+@qcode{\"reverselit\"}: The normals are always oriented towards the point of view. \
+@qcode{\"unlit\"}: Faces with normals pointing away from the point of view are unlit.";
 
       case "cdata"
         s.doc = "Data defining the patch object color.\n\
@@ -1168,7 +1191,8 @@ it defines the color at each vertex.";
         s.valid = valid_scalmat;
 
       case "diffusestrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the diffuse reflex. Value between 0.0 (no \
+diffuse reflex) and 1.0 (full diffuse reflex).";
         s.valid = "scalar";
 
       case "displayname"
@@ -1180,7 +1204,12 @@ it defines the color at each vertex.";
 
       case "edgecolor"
       case "edgelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "When set to a value other than @qcode{\"none\"}, the edges \
+of the object are drawn with light and shadow effects.  Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
       case "erasemode"
         s.doc = doc_unused;
@@ -1198,7 +1227,12 @@ it defines the color at each vertex.";
                             "@qcode{\"interp\"}"});
 
       case "facelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
+of the object are drawn with light and shadow effects. Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
       case "faces"
       case "xdata"
@@ -1231,15 +1265,18 @@ it defines the color at each vertex.";
 
       case "normalmode"
       case "specularcolorreflectance"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Reflectance for specular color.  Value between 0.0 (color \
+of underlying face) and 1.0 (color of light source).";
         s.valid = "scalar";
 
       case "specularexponent"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Exponent for the specular reflex.  The lower the value, \
+the more the reflex is spread out.";
         s.valid = "scalar";
 
       case "specularstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the specular reflex.  Value between 0.0 (no \
+specular reflex) and 1.0 (full specular reflex).";
         s.valid = "scalar";
 
       case "vertexnormals"
@@ -1254,6 +1291,29 @@ it defines the color at each vertex.";
 
       case "zdata"
         s.valid = valid_vecmat;
+
+    endswitch
+
+  ## Light properties
+  elseif (strcmp (objname, "light"))
+    switch (field)
+      ## Overridden shared properties
+      case "children"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "color"
+        s.doc = "Color of the light source.  @xref{Colors, ,colorspec}.";
+        s.valid = valid_color;
+
+      case "position"
+        s.doc = "Position of the light source.";
+
+      case "style"
+        s.doc = "This string defines whether the light emanates from a \
+light source at infinite distance (@qcode{\"infinite\"}) or from a local \
+point source (@qcode{\"local\"}). Only the default value @qcode{\"infinite\"} \
+is supported.";
 
     endswitch
 

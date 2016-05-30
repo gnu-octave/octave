@@ -1055,7 +1055,8 @@ order to address the data structures which control visual display.  A
 graphics handle may point to any one of a number of different base object
 types and these objects are the graphics data structures themselves.  The
 primitive graphic object types are: @code{figure}, @code{axes}, @code{line},
-@code{text}, @code{patch}, @code{surface}, @code{text}, and @code{image}.
+@code{text}, @code{patch}, @code{surface}, @code{text}, @code{image}, and
+@code{light}.
 
 Each of these objects has a function by the same name, and, each of these
 functions returns a graphics handle pointing to an object of the corresponding
@@ -1081,7 +1082,7 @@ the root object.
 3. Below the @code{figure} objects are @code{axes} objects.
 
 4. Below the @code{axes} objects are @code{line}, @code{text}, @code{patch},
-@code{surface}, and @code{image} objects.
+@code{surface}, @code{image}, and @code{light} objects.
 
 Graphics handles may be distinguished from function handles
 (@pxref{Function Handles}) by means of the function @code{ishandle}.
@@ -1185,7 +1186,7 @@ A figure window.
 @cindex axes graphics object
 @cindex graphics object, axes
 A set of axes.  This object is a child of a figure object and may be a
-parent of line, text, image, patch, or surface objects.
+parent of line, text, image, patch, surface, or light objects.
 
 @item line
 @cindex line graphics object
@@ -1211,6 +1212,11 @@ A filled polygon, currently limited to two dimensions.
 @cindex surface graphics object
 @cindex graphics object, surface
 A three-dimensional surface.
+
+@item light
+@cindex light graphics object
+@cindex graphics object, light
+A light object used for lighting effects on patches and surfaces.
 @c @end group
 @end table
 
@@ -1219,11 +1225,11 @@ A three-dimensional surface.
 
 You can create any graphics object primitive by calling the function of the
 same name as the object; In other words, @code{figure}, @code{axes},
-@code{line}, @code{text}, @code{image}, @code{patch}, and @code{surface}
-functions.  These fundamental graphic objects automatically become children
-of the current axes object as if @code{hold on} was in place.  Seperately, axes
-will automatically become children of the current figure object and figures
-will become children of the root object 0.
+@code{line}, @code{text}, @code{image}, @code{patch}, @code{surface}, and
+@code{light} functions.  These fundamental graphic objects automatically become
+children of the current axes object as if @code{hold on} was in place.
+Seperately, axes will automatically become children of the current figure
+object and figures will become children of the root object 0.
 
 If this auto-joining feature is not desired then it is important to call
 @code{newplot} first to prepare a new figure and axes for plotting.
@@ -1239,6 +1245,8 @@ Instead of calling @code{line}, use @code{plot}.  Or use @code{surf} instead of
 @DOCSTRING(patch)
 
 @DOCSTRING(surface)
+
+@DOCSTRING(light)
 
 @subsubsection Handle Functions
 @cindex handle functions
@@ -1378,6 +1386,7 @@ struct2hdl (fig_struct);
 * Image Properties::
 * Patch Properties::
 * Surface Properties::
+* Light Properties::
 * Uimenu Properties::
 * Uicontextmenu Properties::
 * Uipanel Properties::
@@ -1469,6 +1478,15 @@ The @code{patch} properties are:
 The @code{surface} properties are:
 
 @include plot-surfaceproperties.texi
+
+
+@node Light Properties
+@subsubsection Light Properties
+@cindex light properties
+
+The @code{light} properties are:
+
+@include plot-lightproperties.texi
 
 @node Uimenu Properties
 @subsubsection Uimenu Properties

@@ -369,19 +369,22 @@ public:
     float diffuse;
     float specular;
     float specular_exp;
+    float specular_color_refl;
 
     // reference counter
     octave_refcount<int> count;
 
     vertex_data_rep (void)
       : coords (), color (), normal (), alpha (),
-        ambient (), diffuse (), specular (), specular_exp (),count (1) { }
+        ambient (), diffuse (), specular (), specular_exp (),
+        specular_color_refl (), count (1) { }
 
     vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
-                     double a, float as, float ds, float ss, float se)
+                     double a, float as, float ds, float ss, float se,
+                     float scr)
       : coords (c), color (col), normal (n), alpha (a),
         ambient (as), diffuse (ds), specular (ss), specular_exp (se),
-        count (1) { }
+        specular_color_refl (scr), count (1) { }
   };
 
 private:
@@ -402,8 +405,9 @@ public:
   { rep->count++; }
 
   vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
-               double a, float as, float ds, float ss, float se)
-    : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se))
+               double a, float as, float ds, float ss, float se,
+                     float scr)
+    : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se, scr))
   { }
 
   vertex_data (vertex_data_rep *new_rep)
@@ -490,7 +494,13 @@ protected:
                 for (int k = 0; k < 3; k++)
                   buf[k] = (v->diffuse * col(k));
                 glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
-              }
+
+                for (int k = 0; k < 3; k++)
+                  buf[k] = v->specular * (v->specular_color_refl +
+                           (1 - v->specular_color_refl) * col(k));
+                glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
+
+            }
           }
       }
 
@@ -545,7 +555,7 @@ protected:
       aa += (w[iv] * v[iv]->alpha);
 
     vertex_data new_v (vv, cc, nn, aa, v[0]->ambient, v[0]->diffuse,
-                       v[0]->specular, v[0]->specular_exp);
+                       v[0]->specular, v[0]->specular_exp, v[0]->specular_color_refl);
     tmp_vdata.push_back (new_v);
 
     *out_data = new_v.get_rep ();
@@ -624,6 +634,8 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
     draw_surface (dynamic_cast<const surface::properties&> (props));
   else if (go.isa ("patch"))
     draw_patch (dynamic_cast<const patch::properties&> (props));
+  else if (go.isa ("light"))
+    draw_light (dynamic_cast<const light::properties&> (props));
   else if (go.isa ("hggroup"))
     draw_hggroup (dynamic_cast<const hggroup::properties&> (props));
   else if (go.isa ("text"))
@@ -1598,7 +1610,8 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
   // Start with the last element of the array of child objects to
   // display them in the order they were added to the array.
 
-  has_light = false;
+  num_lights = 0;
+
   for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
     {
       graphics_object go = gh_manager::get_object (children(i));
@@ -1607,13 +1620,32 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
         {
           if (go.isa ("light"))
             {
-              draw (go);
-              has_light = true;
+              if (num_lights < GL_MAX_LIGHTS)
+                {
+                  current_light = GL_LIGHT0 + num_lights;
+                  set_clipping (go.get_properties ().is_clipping ());
+                  draw (go);
+                  num_lights++;
+                }
             }
           else
             obj_list.push_back (go);
         }
     }
+
+  // disable other OpenGL lights
+  for (int i = num_lights; i < GL_MAX_LIGHTS; i++)
+    glDisable (GL_LIGHT0 + i);
+
+  // save camera position and set ambient light color before drawing
+  // other objects
+  view_vector = props.get_cameraposition ().matrix_value ();
+
+  float cb[4] = { 1.0, 1.0, 1.0, 1.0 };
+  ColumnVector ambient_color = props.get_ambientlightcolor_rgb ();
+  for (int i = 0; i < 3; i++)
+    cb[i] = ambient_color(i);
+  glLightfv (GL_LIGHT0, GL_AMBIENT, cb);
 
   // 2nd pass: draw other objects (with units set to "data")
 
@@ -1902,6 +1934,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
                  (props.edgelighting_is ("flat") ? 1 : 2));
   int ea_mode = (props.edgealpha_is_double () ? 0 :
                  (props.edgealpha_is ("flat") ? 1 : 2));
+  int bfl_mode = (props.backfacelighting_is ("lit") ? 0 :
+                  (props.backfacelighting_is ("reverselit") ? 1 : 2));
 
   Matrix fcolor = (fc_mode == TEXTURE ? Matrix (1, 3, 1.0)
                                       : props.get_facecolor_rgb ());
@@ -1910,7 +1944,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
   float as = props.get_ambientstrength ();
   float ds = props.get_diffusestrength ();
   float ss = props.get_specularstrength ();
-  float se = props.get_specularexponent ();
+  float se = props.get_specularexponent () * 5; // to fit Matlab
+  float scr = props.get_specularcolorreflectance ();
   float cb[4] = { 0.0, 0.0, 0.0, 1.0 };
   double d = 1.0;
 
@@ -1948,12 +1983,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
     }
 
   if (fl_mode > 0 || el_mode > 0)
-    {
-      float buf[4] = { ss, ss, ss, 1 };
-
-      glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
-      glMaterialf (LIGHT_MODE, GL_SHININESS, se);
-    }
+    glMaterialf (LIGHT_MODE, GL_SHININESS, se);
 
   // FIXME: good candidate for caching,
   //        transferring pixel data to OpenGL is time consuming.
@@ -1976,10 +2006,14 @@ opengl_renderer::draw_surface (const surface::properties& props)
                   for (int i = 0; i < 3; i++)
                     cb[i] = ds * fcolor(i);
                   glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ss * (scr + (1-scr) * fcolor(i));
+                  glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                 }
             }
 
-          if ((fl_mode > 0) && has_light)
+          if ((fl_mode > 0) && (num_lights > 0))
             glEnable (GL_LIGHTING);
           glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD) ? GL_SMOOTH
                                                                   : GL_FLAT);
@@ -2044,6 +2078,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j-1, i-1, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ss * (scr + (1-scr) * c(j-1, i-1, k));
+                          glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                         }
                     }
                   if (fl_mode > 0)
@@ -2051,9 +2089,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       d = sqrt (n(j-1,i-1,0) * n(j-1,i-1,0)
                                 + n(j-1,i-1,1) * n(j-1,i-1,1)
                                 + n(j-1,i-1,2) * n(j-1,i-1,2));
-                      glNormal3d (n(j-1,i-1,0)/d,
-                                  n(j-1,i-1,1)/d,
-                                  n(j-1,i-1,2)/d);
+                      double dir = 1.0;
+                      if (bfl_mode > 0)
+                        dir = (n(j-1,i-1,0) * view_vector(0) + 
+                               n(j-1,i-1,1) * view_vector(1) + 
+                               n(j-1,i-1,2) * view_vector(2) < 0) ? 
+                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                      glNormal3d (dir * n(j-1,i-1,0)/d,
+                                  dir * n(j-1,i-1,1)/d,
+                                  dir * n(j-1,i-1,2)/d);
                     }
                   glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
@@ -2075,6 +2119,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j-1, i, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ss * (scr + (1-scr) * c(j-1, i, k));
+                          glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                         }
                     }
 
@@ -2083,7 +2131,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       d = sqrt (n(j-1,i,0) * n(j-1,i,0)
                                 + n(j-1,i,1) * n(j-1,i,1)
                                 + n(j-1,i,2) * n(j-1,i,2));
-                      glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
+                      double dir = 1.0;
+                      if (bfl_mode > 0)
+                        dir = (n(j-1,i,0) * view_vector(0) + 
+                               n(j-1,i,1) * view_vector(1) + 
+                               n(j-1,i,2) * view_vector(2) < 0) ? 
+                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                      glNormal3d (dir * n(j-1,i,0)/d,
+                                  dir * n(j-1,i,1)/d,
+                                  dir * n(j-1,i,2)/d);
                     }
 
                   glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
@@ -2106,6 +2162,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j, i, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ss * (scr + (1-scr) * c(j, i, k));
+                          glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                         }
                     }
                   if (fl_mode == GOURAUD)
@@ -2113,7 +2173,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       d = sqrt (n(j,i,0) * n(j,i,0)
                                 + n(j,i,1) * n(j,i,1)
                                 + n(j,i,2) * n(j,i,2));
-                      glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+                      double dir = 1.0;
+                      if (bfl_mode > 0)
+                        dir = (n(j,i,0) * view_vector(0) + 
+                               n(j,i,1) * view_vector(1) + 
+                               n(j,i,2) * view_vector(2) < 0) ? 
+                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                      glNormal3d (dir * n(j,i,0)/d,
+                                  dir * n(j,i,1)/d,
+                                  dir * n(j,i,2)/d);
                     }
                   glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
@@ -2135,6 +2203,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j, i-1, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ss * (scr + (1-scr) * c(j, i-1, k));
+                          glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                         }
                     }
                   if (fl_mode == GOURAUD)
@@ -2142,7 +2214,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       d = sqrt (n(j,i-1,0) * n(j,i-1,0)
                                 + n(j,i-1,1) * n(j,i-1,1)
                                 + n(j,i-1,2) * n(j,i-1,2));
-                      glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
+                      double dir = 1.0;
+                      if (bfl_mode > 0)
+                        dir = (n(j,i-1,0) * view_vector(0) + 
+                               n(j,i-1,1) * view_vector(1) + 
+                               n(j,i-1,2) * view_vector(2) < 0) ? 
+                                ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                      glNormal3d (dir * n(j,i-1,0)/d,
+                                  dir * n(j,i-1,1)/d,
+                                  dir * n(j,i-1,2)/d);
                     }
                   glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
@@ -2154,7 +2234,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
           if (fc_mode == TEXTURE)
             glDisable (GL_TEXTURE_2D);
 
-          if ((fl_mode > 0) && has_light)
+          if ((fl_mode > 0) && (num_lights > 0))
             glDisable (GL_LIGHTING);
         }
       else
@@ -2179,10 +2259,14 @@ opengl_renderer::draw_surface (const surface::properties& props)
                   for (int i = 0; i < 3; i++)
                     cb[i] = ds * ecolor(i);
                   glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ss * (scr + (1-scr) * ecolor(i));
+                  glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                 }
             }
 
-          if ((el_mode > 0) && has_light)
+          if ((el_mode > 0) && (num_lights > 0))
             glEnable (GL_LIGHTING);
           glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD) ? GL_SMOOTH
                                                                   : GL_FLAT);
@@ -2244,6 +2328,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                               for (int k = 0; k < 3; k++)
                                 cb[k] = ds * c(j-1, i, k);
                               glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ss * (scr + (1-scr) * c(j-1, i, k));
+                              glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                             }
                         }
                       if (el_mode > 0)
@@ -2251,7 +2339,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           d = sqrt (n(j-1,i,0) * n(j-1,i,0)
                                     + n(j-1,i,1) * n(j-1,i,1)
                                     + n(j-1,i,2) * n(j-1,i,2));
-                          glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
+                          double dir = 1.0;
+                          if (bfl_mode > 0)
+                            dir = (n(j-1,i,0) * view_vector(0) + 
+                                   n(j-1,i,1) * view_vector(1) + 
+                                   n(j-1,i,2) * view_vector(2) < 0) ? 
+                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                          glNormal3d (dir * n(j-1,i,0)/d,
+                                      dir * n(j-1,i,1)/d,
+                                      dir * n(j-1,i,2)/d);
                         }
                       glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
@@ -2271,6 +2367,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                               for (int k = 0; k < 3; k++)
                                 cb[k] = ds * c(j, i, k);
                               glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ss * (scr + (1-scr) * c(j, i, k));
+                              glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                             }
                         }
                       if (el_mode == GOURAUD)
@@ -2278,7 +2378,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           d = sqrt (n(j,i,0) * n(j,i,0)
                                     + n(j,i,1) * n(j,i,1)
                                     + n(j,i,2) * n(j,i,2));
-                          glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+                          double dir = 1.0;
+                          if (bfl_mode > 0)
+                            dir = (n(j,i,0) * view_vector(0) + 
+                                   n(j,i,1) * view_vector(1) + 
+                                   n(j,i,2) * view_vector(2) < 0) ? 
+                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                          glNormal3d (dir * n(j,i,0)/d,
+                                      dir * n(j,i,1)/d,
+                                      dir * n(j,i,2)/d);
                         }
                       glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
@@ -2341,6 +2449,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                               for (int k = 0; k < 3; k++)
                                 cb[k] = ds * c(j, i-1, k);
                               glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ss * (scr + (1-scr) * c(j, i-1, k));
+                              glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                             }
                         }
                       if (el_mode > 0)
@@ -2348,7 +2460,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           d = sqrt (n(j,i-1,0) * n(j,i-1,0)
                                     + n(j,i-1,1) * n(j,i-1,1)
                                     + n(j,i-1,2) * n(j,i-1,2));
-                          glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
+                          double dir = 1.0;
+                          if (bfl_mode > 0)
+                            dir = (n(j,i-1,0) * view_vector(0) + 
+                                   n(j,i-1,1) * view_vector(1) + 
+                                   n(j,i-1,2) * view_vector(2) < 0) ?
+                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                          glNormal3d (dir * n(j,i-1,0)/d,
+                                      dir * n(j,i-1,1)/d,
+                                      dir * n(j,i-1,2)/d);
                         }
                       glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
@@ -2368,6 +2488,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
                               for (int k = 0; k < 3; k++)
                                 cb[k] = ds * c(j, i, k);
                               glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ss * (scr + (1-scr) * c(j, i, k));
+                              glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                             }
                         }
                       if (el_mode == GOURAUD)
@@ -2375,7 +2499,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           d = sqrt (n(j,i,0) * n(j,i,0)
                                     + n(j,i,1) * n(j,i,1)
                                     + n(j,i,2) * n(j,i,2));
-                          glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+                          double dir = 1.0;
+                          if (bfl_mode > 0)
+                            dir = (n(j,i,0) * view_vector(0) + 
+                                   n(j,i,1) * view_vector(1) + 
+                                   n(j,i,2) * view_vector(2) < 0) ? 
+                                    ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+                          glNormal3d (dir * n(j,i,0)/d,
+                                      dir * n(j,i,1)/d,
+                                      dir * n(j,i,2)/d);
                         }
                       glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
@@ -2387,7 +2519,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
           set_linestyle ("-");
           set_linewidth (0.5);
 
-          if ((el_mode > 0) && has_light)
+          if ((el_mode > 0) && (num_lights > 0))
             glDisable (GL_LIGHTING);
         }
       else
@@ -2504,6 +2636,8 @@ opengl_renderer::draw_patch (const patch::properties &props)
   bool has_z = (v.columns () > 2);
   bool has_facecolor = false;
   bool has_facealpha = false;
+  // FIXME: remove when patch object has normal computation (patch #8951)
+  bool has_normals = (n.rows () == nv);
 
   int fc_mode = ((props.facecolor_is ("none")
                   || props.facecolor_is_rgb ()) ? 0 :
@@ -2519,6 +2653,8 @@ opengl_renderer::draw_patch (const patch::properties &props)
                  (props.edgelighting_is ("flat") ? 1 : 2));
   int ea_mode = (props.edgealpha_is_double () ? 0 :
                  (props.edgealpha_is ("flat") ? 1 : 2));
+  int bfl_mode = (props.backfacelighting_is ("lit") ? 0 :
+                  (props.backfacelighting_is ("reverselit") ? 1 : 2));
 
   Matrix fcolor = props.get_facecolor_rgb ();
   Matrix ecolor = props.get_edgecolor_rgb ();
@@ -2526,7 +2662,8 @@ opengl_renderer::draw_patch (const patch::properties &props)
   float as = props.get_ambientstrength ();
   float ds = props.get_diffusestrength ();
   float ss = props.get_specularstrength ();
-  float se = props.get_specularexponent ();
+  float se = props.get_specularexponent () * 5; // to fit Matlab
+  float scr = props.get_specularcolorreflectance ();
 
   boolMatrix clip (1, nv, false);
 
@@ -2601,8 +2738,18 @@ opengl_renderer::draw_patch (const patch::properties &props)
         vv(0) = v(idx,0); vv(1) = v(idx,1);
         if (has_z)
           vv(2) = v(idx,2);
-        // FIXME: uncomment when patch object has normal computation
-        //nn(0) = n(idx,0); nn(1) = n(idx,1); nn(2) = n(idx,2);
+        if (has_normals)
+          {
+            double dir = 1.0;
+            if (bfl_mode > 0)
+              dir = (n(idx,0) * view_vector(0) + 
+                     n(idx,1) * view_vector(1) + 
+                     n(idx,2) * view_vector(2) < 0) ?
+                      ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0;
+            nn(0) = dir * n(idx,0);
+            nn(1) = dir * n(idx,1);
+            nn(2) = dir * n(idx,2);
+          }
         if (c.numel () > 0)
           {
             cc.resize (1, 3);
@@ -2619,16 +2766,11 @@ opengl_renderer::draw_patch (const patch::properties &props)
               aa = a(idx);
           }
 
-        vdata[i+j*fr] = vertex_data (vv, cc, nn, aa, as, ds, ss, se);
+        vdata[i+j*fr] = vertex_data (vv, cc, nn, aa, as, ds, ss, se, scr);
       }
 
   if (fl_mode > 0 || el_mode > 0)
-    {
-      float buf[4] = { ss, ss, ss, 1 };
-
-      glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
-      glMaterialf (LIGHT_MODE, GL_SHININESS, se);
-    }
+    glMaterialf (LIGHT_MODE, GL_SHININESS, se);
 
   if (! props.facecolor_is ("none"))
     {
@@ -2643,16 +2785,20 @@ opengl_renderer::draw_patch (const patch::properties &props)
                   float cb[4] = { 0, 0, 0, 1 };
 
                   for (int i = 0; i < 3; i++)
-                    cb[i] = (as * fcolor(i));
+                    cb[i] = as * fcolor(i);
                   glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                   for (int i = 0; i < 3; i++)
                     cb[i] = ds * fcolor(i);
                   glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ss * (scr + (1-scr) * fcolor(i));
+                  glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                 }
             }
 
-          if ((fl_mode > 0) && has_light)
+          if ((fl_mode > 0) && (num_lights > 0) && has_normals)
             glEnable (GL_LIGHTING);
 
           // NOTE: Push filled part of patch backwards to avoid Z-fighting with
@@ -2700,6 +2846,11 @@ opengl_renderer::draw_patch (const patch::properties &props)
                               for (int k = 0; k < 3; k++)
                                 cb[k] = (vv->diffuse * col(k));
                               glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = vv->specular * (vv->specular_color_refl
+                                    + (1-vv->specular_color_refl) * col(k));
+                              glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                             }
                         }
                     }
@@ -2711,7 +2862,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
               tess.end_polygon ();
             }
 
-          if ((fl_mode > 0) && has_light)
+          if ((fl_mode > 0) && (num_lights > 0) && has_normals)
             glDisable (GL_LIGHTING);
         }
       else
@@ -2739,10 +2890,14 @@ opengl_renderer::draw_patch (const patch::properties &props)
                   for (int i = 0; i < 3; i++)
                     cb[i] = ds * ecolor(i);
                   glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ss * (scr + (1-scr) * ecolor(i));
+                  glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                 }
             }
 
-          if ((el_mode > 0) && has_light)
+          if ((el_mode > 0) && (num_lights > 0) && has_normals)
             glEnable (GL_LIGHTING);
 
           set_linestyle (props.get_linestyle (), false);
@@ -2834,7 +2989,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
           set_linestyle ("-");
           set_linewidth (0.5);
 
-          if ((el_mode > 0) && has_light)
+          if ((el_mode > 0) && (num_lights > 0) && has_normals)
             glDisable (GL_LIGHTING);
         }
       else
@@ -2910,6 +3065,41 @@ opengl_renderer::draw_patch (const patch::properties &props)
 
       end_marker ();
     }
+
+#else
+
+  octave_unused_parameter (props);
+
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+
+#endif
+}
+
+void
+opengl_renderer::draw_light (const light::properties &props)
+{
+#if defined (HAVE_OPENGL)
+
+  // enable light source
+  glEnable (current_light);
+
+  // light position
+  float pos[4] = { 0, 0, 0, 0 }; // X,Y,Z,attenuation
+  Matrix lpos = props.get_position ().matrix_value ();
+  for (int i = 0; i < 3; i++)
+    pos[i] = lpos(i);
+  glLightfv (current_light, GL_POSITION, pos);
+
+  // light color
+  float col[4] = { 1, 1, 1, 1 }; // R,G,B,ALPHA (the latter has no meaning)
+  Matrix lcolor = props.get_color ().matrix_value ();
+  for (int i = 0; i < 3; i++)
+    col[i] = lcolor(i);
+  glLightfv (current_light, GL_DIFFUSE,  col);
+  glLightfv (current_light, GL_SPECULAR, col);
 
 #else
 

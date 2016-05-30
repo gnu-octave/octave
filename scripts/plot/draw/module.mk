@@ -49,6 +49,7 @@ scripts_plot_draw_FCN_FILES = \
   scripts/plot/draw/isocolors.m \
   scripts/plot/draw/isonormals.m \
   scripts/plot/draw/isosurface.m \
+  scripts/plot/draw/light.m \
   scripts/plot/draw/line.m \
   scripts/plot/draw/loglogerr.m \
   scripts/plot/draw/loglog.m \

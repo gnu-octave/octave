@@ -1337,6 +1337,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           kids = [kids; obj.children];
         endif
 
+      case "light"
+        ## ignore it
+
       otherwise
         error ("__gnuplot_draw_axes__: unknown object class, %s", obj.type);
     endswitch

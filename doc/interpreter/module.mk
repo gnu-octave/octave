@@ -4,6 +4,7 @@ GRAPH_PROP_TEXI_SRC = \
   doc/interpreter/plot-axesproperties.texi \
   doc/interpreter/plot-figureproperties.texi \
   doc/interpreter/plot-imageproperties.texi \
+  doc/interpreter/plot-lightproperties.texi \
   doc/interpreter/plot-lineproperties.texi \
   doc/interpreter/plot-patchproperties.texi \
   doc/interpreter/plot-rootproperties.texi \
@@ -33,6 +34,9 @@ doc/interpreter/plot-figureproperties.texi: doc/interpreter/genpropdoc.m
 
 doc/interpreter/plot-imageproperties.texi: doc/interpreter/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,image)
+
+doc/interpreter/plot-lightproperties.texi: doc/interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,light)
 
 doc/interpreter/plot-lineproperties.texi: doc/interpreter/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,line)

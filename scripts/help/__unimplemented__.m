@@ -714,7 +714,6 @@ function list = missing_functions ()
   "libisloaded",
   "libpointer",
   "libstruct",
-  "light",
   "lightangle",
   "lighting",
   "linkdata",

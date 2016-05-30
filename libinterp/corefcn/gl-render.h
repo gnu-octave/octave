@@ -64,6 +64,7 @@ protected:
   virtual void draw_line (const line::properties& props);
   virtual void draw_surface (const surface::properties& props);
   virtual void draw_patch (const patch::properties& props);
+  virtual void draw_light (const light::properties& props);
   virtual void draw_hggroup (const hggroup::properties& props);
   virtual void draw_text (const text::properties& props);
   virtual void draw_image (const image::properties& props);
@@ -183,8 +184,8 @@ private:
   // call lists identifiers for markers
   unsigned int marker_id, filled_marker_id;
 
-  // camera information for primitive sorting
-  ColumnVector camera_pos, camera_dir;
+  // camera information for primitive sorting and lighting
+  ColumnVector camera_pos, camera_dir, view_vector;
 
   // interpreter to be used by text_to_pixels
   caseless_str interpreter;
@@ -192,7 +193,8 @@ private:
   text_renderer txt_renderer;
 
   // light object present and visible
-  bool has_light;
+  int num_lights;
+  unsigned int current_light;
 
 private:
   class patch_tesselator;

@@ -535,6 +535,18 @@ default_panel_position (void)
   return retval;
 }
 
+static Matrix
+default_light_position (void)
+{
+  Matrix m (1, 3);
+
+  m(0) = 1.0;
+  m(1) = 0.0;
+  m(2) = 1.0;
+
+  return m;
+}
+
 static double
 convert_font_size (double font_size, const caseless_str& from_units,
                    const caseless_str& to_units, double parent_height = 0)
@@ -1097,6 +1109,8 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new text (h, p);
   else if (type.compare ("image"))
     go = new image (h, p);
+  else if (type.compare ("light"))
+    go = new light (h, p);
   else if (type.compare ("patch"))
     go = new patch (h, p);
   else if (type.compare ("surface"))
@@ -8090,7 +8104,7 @@ patch::properties::get_color_data (void) const
   if (fvc.is_undefined () || fvc.is_empty ())
     return Matrix ();
   else
-    return convert_cdata (*this, fvc,cdatamapping_is ("scaled"), 2);
+    return convert_cdata (*this, fvc, cdatamapping_is ("scaled"), 2);
 }
 
 static bool updating_patch_data = false;
@@ -9521,6 +9535,7 @@ root_figure::init_factory_properties (void)
   plist_map["image"] = image::properties::factory_defaults ();
   plist_map["patch"] = patch::properties::factory_defaults ();
   plist_map["surface"] = surface::properties::factory_defaults ();
+  plist_map["light"] = light::properties::factory_defaults ();
   plist_map["hggroup"] = hggroup::properties::factory_defaults ();
   plist_map["uimenu"] = uimenu::properties::factory_defaults ();
   plist_map["uicontrol"] = uicontrol::properties::factory_defaults ();
@@ -10342,6 +10357,15 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (patch);
+}
+
+DEFUN (__go_light__, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {} {} __go_light__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (light);
 }
 
 DEFUN (__go_hggroup__, args, ,

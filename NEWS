@@ -58,6 +58,9 @@ Summary of important user-visible changes for version 4.2:
     output argument is requested, instead the vector or array of
     interpolated values is always returned for Matlab compatibility.
 
+ ** The new function "light" and corresponding graphics object provide
+    light and shadow effects for patch and surface objects.
+
  ** The surfnorm function now returns unnormalized (magnitude != 1)
     normal vectors for compatibility with Matlab.
 

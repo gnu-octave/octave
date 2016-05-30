@@ -4815,6 +4815,55 @@ public:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API light : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
+
+    BEGIN_PROPERTIES (light)
+      color_property color , color_values (1, 1, 1)
+      array_property position , default_light_position ()
+      radio_property style , "{infinite}|local"
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+    {
+      position.add_constraint (dim_vector (1, 3));
+    }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  light (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  { }
+
+  ~light (void) { }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+};
+
+// ---------------------------------------------------------------------
+
 class OCTINTERP_API patch : public base_graphics_object
 {
 public:
@@ -4859,7 +4908,7 @@ public:
       radio_property erasemode , "{normal}|background|xor|none"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
-      radio_property facelighting , "{none}|flat|gouraud|phong"
+      radio_property facelighting , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
       radio_property facenormalsmode , "{auto}|manual"
       array_property faces u , default_patch_faces ()
@@ -5062,7 +5111,7 @@ public:
       radio_property erasemode , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
       color_property facecolor , color_property (radio_values ("none|{flat}|interp|texturemap"), color_values (0, 0, 0))
-      radio_property facelighting , "{none}|flat|gouraud|phong"
+      radio_property facelighting , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
       radio_property facenormalsmode , "{auto}|manual"
       // FIXME: interpreter is not a Matlab surface property

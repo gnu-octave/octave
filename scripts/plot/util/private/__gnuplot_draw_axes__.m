@@ -918,11 +918,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
            endif
 
            sidx = 1;
-           if (isempty (lt))
-             style = "";
-           else
-             style = "lines";
-           endif
+           style = "lines";
            tmpwith = {};
 
            facesame = true;
@@ -1817,7 +1813,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   if (__gnuplot_has_feature__ ("linetype"))
     scommand = "linetype";
   else
-    scommand = "line style";
+    scommand = "style line";
   endif
   fprintf (plot_stream, "set %s %d default;\n", scommand, idx);
   fprintf (plot_stream, "set %s %d", scommand, idx);
@@ -1852,11 +1848,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
 
   sidx = 1;
   if (isempty (errbars))
-    if (isempty (lt))
-      style{sidx} = "";
-    else
-      style{sidx} = "lines";
-    endif
+    style{sidx} = "lines";
     ltidx(sidx) = idx;
 
     facesame = true;

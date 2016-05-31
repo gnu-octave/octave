@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{sout}] =} orderfields (@var{s1})
-## @deftypefnx {} {@var{sout}] =} orderfields (@var{s1}, @var{s2})
-## @deftypefnx {} {@var{sout}] =} orderfields (@var{s1}, @{@var{cellstr}@})
-## @deftypefnx {} {@var{sout}] =} orderfields (@var{s1}, @var{p})
+## @deftypefn  {} {@var{sout} =} orderfields (@var{s1})
+## @deftypefnx {} {@var{sout} =} orderfields (@var{s1}, @var{s2})
+## @deftypefnx {} {@var{sout} =} orderfields (@var{s1}, @{@var{cellstr}@})
+## @deftypefnx {} {@var{sout} =} orderfields (@var{s1}, @var{p})
 ## @deftypefnx {} {[@var{sout}, @var{p}] =} orderfields (@dots{})
 ## Return a @emph{copy} of @var{s1} with fields arranged alphabetically, or as
 ## specified by the second input.

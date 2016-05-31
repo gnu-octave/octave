@@ -37,6 +37,8 @@ typedef char ** (*rl_attempted_completion_fcn_ptr) (const char *, int, int);
 
 typedef char * (*rl_completer_fcn_ptr) (const char *, int);
 
+typedef char * (*rl_completion_hook_fcn_ptr) (void);
+
 typedef char * (*rl_quoting_fcn_ptr) (char *, int, char *);
 
 typedef char * (*rl_dequoting_fcn_ptr) (char *, int);
@@ -117,6 +119,10 @@ extern char *octave_rl_filename_completion_function (const char *, int);
 extern void octave_rl_set_basic_word_break_characters (const char *);
 
 extern void octave_rl_set_completer_word_break_characters (const char *);
+
+extern char *octave_rl_get_completer_word_break_characters (void);
+
+extern void octave_rl_set_completion_word_break_hook (rl_completion_hook_fcn_ptr);
 
 extern void octave_rl_set_basic_quote_characters (const char *);
 

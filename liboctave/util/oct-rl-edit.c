@@ -297,6 +297,18 @@ octave_rl_set_completer_word_break_characters (const char *s)
   rl_completer_word_break_characters = ss;
 }
 
+char *
+octave_rl_get_completer_word_break_characters (void)
+{
+  return rl_completer_word_break_characters;
+}
+
+void
+octave_rl_set_completion_word_break_hook (rl_completion_hook_fcn_ptr f)
+{
+  rl_completion_word_break_hook = f;
+}
+
 void
 octave_rl_set_basic_quote_characters (const char *s)
 {

@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-env.h"
@@ -53,6 +54,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  char *do_completer_word_break_hook ();
+
   command_editor *command_editor::instance = 0;
 
   std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
@@ -217,6 +220,8 @@ namespace octave
 
     user_accept_line_fcn user_accept_line_function;
 
+    static std::string completer_quote_characters;
+
     static char *command_generator (const char *text, int state);
 
     static char *command_quoter (char *text, int match_type, char *quote_pointer);
@@ -227,7 +232,11 @@ namespace octave
     static int command_accept_line (int count, int key);
 
     static char **command_completer (const char *text, int start, int end);
+
+    static char *do_completer_word_break_hook ();
   };
+
+  std::string gnu_readline::completer_quote_characters = "";
 
   gnu_readline::gnu_readline ()
     : command_editor (), previous_startup_hook (0),
@@ -401,6 +410,10 @@ namespace octave
   gnu_readline::do_set_completer_word_break_characters (const std::string& s)
   {
     ::octave_rl_set_completer_word_break_characters (s.c_str ());
+
+    ::octave_rl_set_completion_word_break_hook
+      (gnu_readline::do_completer_word_break_hook);
+
   }
 
   void
@@ -418,7 +431,7 @@ namespace octave
   void
   gnu_readline::do_set_completer_quote_characters (const std::string& s)
   {
-    ::octave_rl_set_completer_quote_characters (s.c_str ());
+    completer_quote_characters = s;
   }
 
   void
@@ -513,6 +526,75 @@ namespace octave
   {
     return user_accept_line_function;
   }
+
+  // True if the last "word" of the string line (delimited by delim) is
+  // an existing directory.  Used by do_completer_word_break_hook.
+
+  static bool
+  looks_like_filename (const char *line, char delim)
+  {
+    bool retval = false;
+
+    const char *s = strrchr (line, delim);
+
+    if (s)
+      {
+        // Remove incomplete component.
+        const char *f = strrchr (line, octave::sys::file_ops::dir_sep_char ());
+
+        if (s[1] == '~' || (f && f != s))
+          {
+            // For something like "A /b", f==s; don't assume a file.
+
+            std::string candidate_filename = s+1;
+
+            candidate_filename = candidate_filename.substr (0, f - s);
+
+            // Handles any complete ~<username>, but doesn't expand usernames.
+
+            if (candidate_filename[0] == '~')
+              candidate_filename
+                = octave::sys::file_ops::tilde_expand (candidate_filename);
+
+            octave::sys::file_stat fs (candidate_filename);
+
+            retval = fs.is_dir ();
+          }
+      }
+
+    return retval;
+  }
+
+  // Decide whether to interpret partial commands like "abc/def" as a
+  // filename or division.  Return the set of delimiters appropriate for
+  // the decision.
+
+  char *
+  gnu_readline::do_completer_word_break_hook ()
+  {
+    static char *dir_sep = strdup (" '\"");
+
+    std::string word;
+    std::string line = get_line_buffer ();
+
+    // For now, assume space or quote delimiter for file names.
+    const char *l = line.c_str ();
+
+    if (looks_like_filename (l, ' ') || looks_like_filename (l, '\'')
+        || looks_like_filename (l, '"'))
+      {
+        ::octave_rl_set_completer_quote_characters (completer_quote_characters.c_str ());
+
+        return dir_sep;
+      }
+    else
+      {
+        ::octave_rl_set_completer_quote_characters ("");
+
+        return octave_rl_get_completer_word_break_characters ();
+      }
+  }
+
 
   string_vector
   gnu_readline::do_generate_filename_completions (const std::string& text)

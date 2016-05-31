@@ -53,6 +53,8 @@ namespace octave
 
     typedef std::string (*completion_fcn) (const std::string&, int);
 
+    typedef char * (*completion_hook_fcn) ();
+
     typedef std::string (*quoting_fcn) (const std::string&, int, char);
 
     typedef std::string (*dequoting_fcn) (const std::string&, int);
@@ -275,6 +277,8 @@ namespace octave
     virtual void do_set_basic_word_break_characters (const std::string&) { }
 
     virtual void do_set_completer_word_break_characters (const std::string&) { }
+
+    virtual void do_set_completer_word_break_hook (completion_hook_fcn) { }
 
     virtual void do_set_basic_quote_characters (const std::string&) { }
 

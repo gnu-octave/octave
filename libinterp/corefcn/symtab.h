@@ -1433,13 +1433,20 @@ public:
   }
 
   static void
-  persistent_assign (const std::string& name,
+  persistent_assign (const std::string& name, scope_id scope,
                      const octave_value& value = octave_value ())
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_persistent_assign (name, value);
+  }
+
+  static void
+  persistent_assign (const std::string& name,
+                     const octave_value& value = octave_value ())
+  {
+    persistent_assign (name, xcurrent_scope, value);
   }
 
   OCTAVE_DEPRECATED ("use 'persistent_assign' instead")
@@ -1451,24 +1458,27 @@ public:
     return inst ? inst->do_persistent_varref (name) : dummy_octave_value;
   }
 
-  static octave_value persistent_varval (const std::string& name)
+  static octave_value persistent_varval (const std::string& name,
+                                         scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_persistent_varval (name) : octave_value ();
   }
 
-  static void erase_persistent (const std::string& name)
+  static void erase_persistent (const std::string& name,
+                                scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_erase_persistent (name);
   }
 
-  static bool is_variable (const std::string& name)
+  static bool is_variable (const std::string& name,
+                           scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_is_variable (name) : false;
   }
@@ -1666,6 +1676,10 @@ public:
     clear_functions (force);
   }
 
+  // This is written as two separate functions instead of a single
+  // function with default values so that it will work properly with
+  // unwind_protect.
+
   static void clear_variables (scope_id scope)
   {
     symbol_table *inst = get_instance (scope);
@@ -1674,7 +1688,6 @@ public:
       inst->do_clear_variables ();
   }
 
-  // This is split for unwind_protect.
   static void clear_variables (void)
   {
     clear_variables (xcurrent_scope);
@@ -1699,17 +1712,19 @@ public:
     clear_user_function (name);
   }
 
-  static void clear_global (const std::string& name)
+  static void clear_global (const std::string& name,
+                            scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_global (name);
   }
 
-  static void clear_variable (const std::string& name)
+  static void clear_variable (const std::string& name,
+                              scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variable (name);
@@ -1734,25 +1749,28 @@ public:
       }
   }
 
-  static void clear_global_pattern (const std::string& pat)
+  static void clear_global_pattern (const std::string& pat,
+                                    scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_global_pattern (pat);
   }
 
-  static void clear_variable_pattern (const std::string& pat)
+  static void clear_variable_pattern (const std::string& pat,
+                                      scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variable_pattern (pat);
   }
 
-  static void clear_variable_regexp (const std::string& pat)
+  static void clear_variable_regexp (const std::string& pat,
+                                     scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variable_regexp (pat);
@@ -1904,50 +1922,60 @@ public:
     return retval;
   }
 
-  static void push_context (void)
+  static void push_context (scope_id scope = xcurrent_scope)
   {
-    if (xcurrent_scope == xglobal_scope || xcurrent_scope == xtop_scope)
-      error ("invalid call to xymtab::push_context");
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("invalid call to symtab::push_context");
 
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_push_context ();
   }
 
-  static void pop_context (void)
-  {
-    if (xcurrent_scope == xglobal_scope || xcurrent_scope == xtop_scope)
-      error ("invalid call to xymtab::pop_context");
+  // This is written as two separate functions instead of a single
+  // function with default values so that it will work properly with
+  // unwind_protect.
 
-    symbol_table *inst = get_instance (xcurrent_scope);
+  static void pop_context (scope_id scope)
+  {
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("invalid call to symtab::pop_context");
+
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_pop_context ();
   }
 
-  // For unwind_protect.
+  static void pop_context (void) { pop_context (xcurrent_scope); }
+
+  // For unwind_protect where a pointer argument is needed.
+
   static void pop_context (void *) { pop_context (); }
 
-  static void mark_automatic (const std::string& name)
+  static void mark_automatic (const std::string& name,
+                              scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_mark_automatic (name);
   }
 
-  static void mark_hidden (const std::string& name)
+  static void mark_hidden (const std::string& name,
+                           scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_mark_hidden (name);
   }
 
-  static void mark_global (const std::string& name)
+  static void mark_global (const std::string& name,
+                           scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_mark_global (name);
@@ -1967,30 +1995,34 @@ public:
            : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> glob (const std::string& pattern)
+  static std::list<symbol_record> glob (const std::string& pattern,
+                                        scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_glob (pattern) : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> regexp (const std::string& pattern)
+  static std::list<symbol_record> regexp (const std::string& pattern,
+                                          scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_regexp (pattern) : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> glob_variables (const std::string& pattern)
+  static std::list<symbol_record> glob_variables (const std::string& pattern,
+                                                  scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_glob (pattern, true) : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> regexp_variables (const std::string& pattern)
+  static std::list<symbol_record> regexp_variables (const std::string& pattern,
+                                                    scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_regexp (pattern, true) : std::list<symbol_record> ();
   }
@@ -2111,9 +2143,9 @@ public:
     return inst ? inst->do_variable_names () : std::list<std::string> ();
   }
 
-  static std::list<std::string> variable_names (void)
+  static std::list<std::string> variable_names (scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_variable_names () : std::list<std::string> ();
   }
@@ -2156,33 +2188,35 @@ public:
     return retval;
   }
 
-  static bool is_local_variable (const std::string& name)
+  static bool is_local_variable (const std::string& name,
+                                 scope_id scope = xcurrent_scope)
   {
-    if (xcurrent_scope == xglobal_scope)
+    if (scope == xglobal_scope)
       return false;
     else
       {
-        symbol_table *inst = get_instance (xcurrent_scope);
+        symbol_table *inst = get_instance (scope);
 
         return inst ? inst->do_is_local_variable (name) : false;
       }
   }
 
-  static bool is_global (const std::string& name)
+  static bool is_global (const std::string& name,
+                         scope_id scope = xcurrent_scope)
   {
-    if (xcurrent_scope == xglobal_scope)
+    if (scope == xglobal_scope)
       return true;
     else
       {
-        symbol_table *inst = get_instance (xcurrent_scope);
+        symbol_table *inst = get_instance (scope);
 
         return inst ? inst->do_is_global (name) : false;
       }
   }
 
-  static std::list<workspace_element> workspace_info (void)
+  static std::list<workspace_element> workspace_info (scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst
            ? inst->do_workspace_info () : std::list<workspace_element> ();

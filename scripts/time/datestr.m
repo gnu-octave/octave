@@ -53,9 +53,9 @@
 ## @item 11 @tab yy                     @tab 00
 ## @item 12 @tab mmmyy                  @tab Sep00
 ## @item 13 @tab HH:MM:SS               @tab 15:38:09
-## @item 14 @tab HH:MM:SS PM            @tab 03:38:09 PM
+## @item 14 @tab HH:MM:SS PM            @tab  3:38:09 PM
 ## @item 15 @tab HH:MM                  @tab 15:38
-## @item 16 @tab HH:MM PM               @tab 03:38 PM
+## @item 16 @tab HH:MM PM               @tab  3:38 PM
 ## @item 17 @tab QQ-YY                  @tab Q3-00
 ## @item 18 @tab QQ                     @tab Q3
 ## @item 19 @tab dd/mm                  @tab 07/09
@@ -87,8 +87,8 @@
 ## @item ddd  @tab Abbreviated weekday name                     @tab Sun
 ## @item dd   @tab Numeric day of month (padded with zeros)     @tab 11
 ## @item d    @tab First letter of weekday name (capitalized)   @tab S
-## @item HH   @tab Hour of day, padded with zeros if PM is set  @tab 09:00
-## @item      @tab and not padded with zeros otherwise          @tab 9:00 AM
+## @item HH   @tab Hour of day, padded with zeros,              @tab 09:00
+## @item      @tab or padded with spaces if PM is set           @tab  9:00 AM
 ## @item MM   @tab Minute of hour (padded with zeros)           @tab 10:05
 ## @item SS   @tab Second of minute (padded with zeros)         @tab 10:05:03
 ## @item FFF  @tab Milliseconds of second (padded with zeros)   @tab 10:05:03.012
@@ -220,7 +220,11 @@ function retval = datestr (date, f = [], p = [])
       ## PM not set.
       df = strrep (df, "HH", "%H");
     else
-      df = strrep (df, "HH", sprintf ("%2d", v(i,4)));
+      hr = mod (v(i,4), 12);
+      if (hr == 0)
+        hr = 12;
+      endif
+      df = strrep (df, "HH", sprintf ("%2d", hr));
     endif
 
     df = regexprep (df, "[Yy][Yy][Yy][Yy]", "%Y");
@@ -312,7 +316,7 @@ endfunction
 %!assert (datestr (testtime,12), "Dec05")
 %!assert (datestr (testtime,13), "02:33:17")
 ## Mac OS X interprets %p parameter to strftime as lower case am/pm indicator.
-## Accomodate this, although no other UNIX-based OS does this.
+## Accommodate this, although no other UNIX-based OS does this.
 %!test
 %! obs = toupper (datestr (testtime,14));
 %! assert (obs, " 2:33:17 AM");
@@ -320,6 +324,11 @@ endfunction
 %!test
 %! obs = toupper (datestr (testtime,16));
 %! assert (obs, " 2:33 AM");
+%!test  # bug #48071
+%! testtime2 = testtime;
+%! testtime2(4) = 15;
+%! obs = toupper (datestr (testtime2,16));
+%! assert (obs, " 3:33 PM");
 %!assert (datestr (testtime,17), "Q4-05")
 %!assert (datestr (testtime,18), "Q4")
 %!assert (datestr (testtime,19), "18/12")

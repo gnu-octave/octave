@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} profexport (@var{dir}, @var{name}, @var{data})
-## @deftypefnx {Function File} {} profexport (@var{dir}, @var{name})
-## @deftypefnx {Function File} {} profexport (@var{dir}, @var{data})
-## @deftypefnx {Function File} {} profexport (@var{dir})
+## @deftypefn  {} {} profexport (@var{dir})
+## @deftypefnx {} {} profexport (@var{dir}, @var{data})
+## @deftypefnx {} {} profexport (@var{dir}, @var{name})
+## @deftypefnx {} {} profexport (@var{dir}, @var{name}, @var{data})
 ##
 ## Export profiler data as HTML.
 ##
-## Export the profiling data in @var{data} into a series of HTML
-## files in the folder @var{dir}.  The initial file will be
+## Export the profiling data in @var{data} into a series of HTML files in
+## the folder @var{dir}.  The initial file will be
 ## @file{@var{data}/index.html}.
 ##
 ## If @var{name} is specified, it must be a string that contains a ``name''
@@ -40,45 +40,45 @@
 ## Built-in profiler.
 ## Author: Daniel Kraft <dkraft@google.com>
 
-function profexport (dir, name, data)
-  if (nargin > 3)
+function profexport (dir, name = "", data)
+
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (!ischar (dir))
-    print_usage ();
+  if (! ischar (dir))
+    error ("profexport: DIR must be a string");
   endif
 
   if (nargin == 1)
     data = profile ("info");
-    name = "";
   elseif (nargin == 2)
     if (isstruct (name))
       data = name;
       name = "";
     else
-      if (!ischar (name))
-        print_usage ();
+      if (! ischar (name))
+        error ("profexport: NAME must be a string");
       endif
       data = profile ("info");
     endif
   endif
 
-  if (!exist (dir, "dir"))
+  if (! exist (dir, "dir"))
     ok = mkdir (dir);
-    if (!ok)
-      error ("failed to create output directory '%s'", dir);
+    if (! ok)
+      error ("profexport: failed to create output directory '%s'", dir);
     endif
   endif
 
-  if (!copyfile (__dataFilename ("style.css"), dir))
-    error ("failed to copy data file to directory '%s'", dir)
+  if (! copyfile (__dataFilename ("style.css"), dir))
+    error ("profexport: failed to copy data file to directory '%s'", dir)
   endif
 
-  if (length (name) > 0)
-    name = sprintf ("Profile - %s", __escapeHtml (name));
-  else
+  if (isempty (name))
     name = "Profile";
+  else
+    name = ["Profile - " __escapeHtml(name)];
   endif
 
   __writeFlat (fullfile (dir, "index.html"), name, data.FunctionTable);
@@ -90,17 +90,19 @@ function profexport (dir, name, data)
   top = struct ("name", "Top");
   __writeHierarchical (dir, name, data.FunctionTable, ...
                        {top}, data.Hierarchical, 1);
+
 endfunction
 
 ################################################################################
-# Write flat profile.
+## Write flat profile.
 
 function __writeFlat (file, name, table)
+
   template = __readTemplate ("flat.html");
   entryTemplate = __readTemplate ("flat_entry.html");
 
-  % Construct the entries string.  This follows the same logic
-  % that is used in profshow.
+  ## Construct the entries string.
+  ## This follows the same logic that is used in profshow.
   times = [ table.TotalTime ];
   totalTime = sum (times);
   [~, p] = sort (times, "descend");
@@ -119,47 +121,51 @@ function __writeFlat (file, name, table)
     entries = [entries, cur];
   endfor
 
-  % Build full page content.
+  ## Build full page content.
   res = template;
   res = strrep (res, "%title", name);
   res = strrep (res, "%entries", entries);
 
-  % Write out the file.
+  ## Write out the file.
   __writeToFile (file, res);
+
 endfunction
 
 ################################################################################
-# Write "function profile" pages.
+## Write "function profile" pages.
 
 function __writeFunc (file, name, table, ind)
+
   template = __readTemplate ("function.html");
   row = table(ind);
 
-  % Fill in basic data.
+  ## Fill in basic data.
   res = template;
   res = strrep (res, "%title", name);
   res = strrep (res, "%name", __escapeHtml (row.FunctionName));
   res = strrep (res, "%timeabs", sprintf ("%.3f", row.TotalTime));
   res = strrep (res, "%calls", sprintf ("%d", row.NumCalls));
 
-  % Build up attribute list.
+  ## Build up attribute list.
   attr = "";
   if (row.IsRecursive)
     attr = "recursive";
   endif
   res = strrep (res, "%attr", attr);
 
-  % Add parent and child list.
+  ## Add parent and child list.
   parents = __buildParentOrChildList (table, row.Parents);
   res = strrep (res, "%parents", parents);
   children = __buildParentOrChildList (table, row.Children);
   res = strrep (res, "%children", children);
 
-  % Write out the file.
+  ## Write out the file.
   __writeToFile (file, res);
+
 endfunction
 
 function lst = __buildParentOrChildList (table, inds)
+
   if (length (inds) == 0)
     lst = "none";
     return;
@@ -178,19 +184,21 @@ function lst = __buildParentOrChildList (table, inds)
     cur = strrep (cur, "%name", __escapeHtml (table(inds(i)).FunctionName));
     lst = [lst, cur];
   endfor
+
 endfunction
 
 ################################################################################
-# Write a hierarchical profile page.
+## Write a hierarchical profile page.
 
-% In order to generate unique filenames for the pages, we keep a running
-% counter that is passed through and updated by the recursive calls.
-% The function returns two counter values:  The one that is chosen
-% for its own page (so that parent nodes can link down to them)
-% and the next value to be passed to the next call.
+## In order to generate unique filenames for the pages, we keep a running
+## counter that is passed through and updated by the recursive calls.
+## The function returns two counter values:  The one that is chosen
+## for its own page (so that parent nodes can link down to them)
+## and the next value to be passed to the next call.
 
 function [mine, cnt] = __writeHierarchical (dir, name, funcs, ...
                                             parents, children, cnt)
+
   template = __readTemplate ("hierarchical.html");
   entryTemplate = __readTemplate ("hierarchical_entry.html");
 
@@ -210,7 +218,7 @@ function [mine, cnt] = __writeHierarchical (dir, name, funcs, ...
   [~, p] = sort (times);
   children = children(p);
 
-  % Recurse on children and construct entry list.
+  ## Recurse on children and construct entry list.
   entries = "";
   for i = 1 : length (children)
     cur = children(i);
@@ -232,12 +240,14 @@ function [mine, cnt] = __writeHierarchical (dir, name, funcs, ...
   endfor
   res = strrep (res, "%entries", entries);
 
-  % Write out the file.
+  ## Write out the file.
   __writeToFile (file, res);
+
 endfunction
 
 function str = __hierarchicalParents (parents)
-  % We always have at least the "Top" entry!
+
+  ## We always have at least the "Top" entry!
   assert (length (parents) > 0);
 
   template = "<a href='hierarchy-%cnt.html'>%name</a>";
@@ -254,15 +264,16 @@ function str = __hierarchicalParents (parents)
   cur = lastTemplate;
   cur = strrep (cur, "%name", __escapeHtml (parents{end}.name));
   str = [str, cur];
+
 endfunction
 
 ################################################################################
-# General helper functions.
+## General helper functions.
 
 function __writeToFile (file, str)
   fid = fopen (file, "w");
   if (fid < 0)
-    error ("failed to open '%s' for writing", file);
+    error ("profexport: failed to open '%s' for writing", file);
   endif
   fputs (fid, str);
   fclose (fid);
@@ -286,7 +297,7 @@ function str = __escapeHtml (str)
 endfunction
 
 ################################################################################
-# Tests and demo.
+## Tests and demo.
 
 %!demo
 %! profile on;
@@ -295,9 +306,12 @@ endfunction
 %! profile off;
 %! dir = tempname ();
 %! profexport (dir, "Example Profile");
-%! printf ("Open %s/index.html to browse the profile.\n", dir);
+%! open (fullfile (dir, "index.html"));
 
+## Test input validation
 %!error profexport ()
 %!error profexport (1)
 %!error profexport (1, 2, 3, 4)
-%!error profexport ("dir", 5)
+%!error <DIR must be a string> profexport (5)
+%!error <NAME must be a string> profexport ("dir", 5)
+

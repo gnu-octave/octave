@@ -2476,9 +2476,10 @@ octave_base_lexer::inside_any_object_index (void)
 }
 
 bool
-octave_base_lexer::is_variable (const std::string& name)
+octave_base_lexer::is_variable (const std::string& name,
+                               symbol_table::scope_id scope)
 {
-  return (symbol_table::is_variable (name)
+  return (symbol_table::is_variable (name, scope)
           || (pending_local_variables.find (name)
               != pending_local_variables.end ()));
 }
@@ -3109,7 +3110,7 @@ octave_base_lexer::handle_identifier (void)
   // function call with the argument "+1".
 
   if (at_beginning_of_statement
-      && (! (is_variable (ident)
+      && (! (is_variable (ident, sid)
              || ident == "e" || ident == "pi"
              || ident == "I" || ident == "i"
              || ident == "J" || ident == "j"

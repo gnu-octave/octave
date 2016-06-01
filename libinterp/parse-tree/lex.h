@@ -578,7 +578,7 @@ public:
 
   bool inside_any_object_index (void);
 
-  bool is_variable (const std::string& name);
+  bool is_variable (const std::string& name, symbol_table::scope_id scope);
 
   int is_keyword_token (const std::string& s);
 

@@ -1209,6 +1209,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           if (flat_interp_edge)
             scmd = "palette";
             ccol = ":($4)";
+            N_tup = 4;
           else
             if (__gnuplot_has_feature__ ("linetype"))
               scmd = "linetype";
@@ -1216,6 +1217,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               scmd = "linestyle";
             endif
             ccol = "";
+            N_tup = 3;
           endif
 
           [style, sidx] = do_linestyle_command (obj, obj.edgecolor,
@@ -1239,7 +1241,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             if (np <= num_cols)
               k = np;
               yrec = ylen;
-              zz = zeros (ylen, 1);
+              zz = zeros (ylen, N_tup);
               zz(:,1) = xdat(:,k);
               zz(:,2) = ydat(:,k);
               zz(:,3) = zdat(:,k);
@@ -1249,7 +1251,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             else
               j = np - num_cols;
               yrec = xlen;
-              zz = zeros (xlen, 1);
+              zz = zeros (xlen, N_tup);
               zz(:,1) = xdat(j,:)';
               zz(:,2) = ydat(j,:)';
               zz(:,3) = zdat(j,:)';

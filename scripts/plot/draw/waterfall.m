@@ -64,12 +64,6 @@ function h = waterfall (varargin)
 
   set (htmp, "meshstyle", "row");
 
-  ## The gnuplot toolkit does nothing with the meshstyle property currently.
-  toolkit = get (ancestor (htmp, "figure"), "__graphics_toolkit__");
-  if (strcmp (toolkit, "gnuplot"))
-    warning ("waterfall: may not render correctly using toolkit '%s'", toolkit);
-  endif
-
   if (nargout > 0)
     h = htmp;
   endif

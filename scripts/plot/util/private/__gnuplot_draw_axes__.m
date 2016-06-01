@@ -1221,48 +1221,68 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           [style, sidx] = do_linestyle_command (obj, obj.edgecolor,
                                                 data_idx,
                                                 plot_stream);
-          if (flat_interp_edge)
-            N_tup = 4;
-          else
-            N_tup = 3;
+          domeshcolumn = (strcmp (obj.meshstyle, "column")
+                          || strcmp (obj.meshstyle, "both"));
+          domeshrow = (strcmp (obj.meshstyle, "row")
+                       || strcmp (obj.meshstyle, "both"));
+          num_pass = 0;
+          num_cols = 0;
+          if (domeshcolumn)
+            num_pass += xlen;
+            num_cols = xlen;
           endif
-          len = N_tup * xlen;
-          zz = zeros (ylen, len);
-          k = 1;
-          for kk = 1:N_tup:len
-            zz(:,kk)   = xdat(:,k);
-            zz(:,kk+1) = ydat(:,k);
-            zz(:,kk+2) = zdat(:,k);
-            if (flat_interp_edge)
-              zz(:,kk+3) = cdat(:,k);
-            endif
-            k += 1;
-          endfor
+          if (domeshrow)
+            num_pass += ylen;
+          endif
 
-          zz = zz.';
-
-          for i_stl = 1:length (style)
-            if (flat_interp_edge)
-              sopt = "";
+          for np = 1:num_pass
+            if (np <= num_cols)
+              k = np;
+              yrec = ylen;
+              zz = zeros (ylen, 1);
+              zz(:,1) = xdat(:,k);
+              zz(:,2) = ydat(:,k);
+              zz(:,3) = zdat(:,k);
+              if (flat_interp_edge)
+                zz(:,4) = cdat(:,k);
+              endif
             else
-              sopt = sprintf("%d", sidx(i_stl));
+              j = np - num_cols;
+              yrec = xlen;
+              zz = zeros (xlen, 1);
+              zz(:,1) = xdat(j,:)';
+              zz(:,2) = ydat(j,:)';
+              zz(:,3) = zdat(j,:)';
+              if (flat_interp_edge)
+                zz(:,4) = cdat(j,:)';
+              endif
             endif
-            data_idx += 1;
-            is_image_data(data_idx) = false;
-            parametric(data_idx) = false;
-            if (flat_interp_edge)
-              have_cdata(data_idx) = true;
-            else
-              have_cdata(data_idx) = false;
-            end
-            have_3d_patch(data_idx) = false;
-            titlespec{data_idx} = tspec;
-            usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)%s", ylen, xlen, ccol);
-            data{data_idx} = zz;
-            withclause{data_idx} = sprintf ("with %s %s %s",
-                                             style{i_stl}, scmd, sopt);
-          endfor
 
+            zz = zz.';
+
+            for i_stl = 1:length (style)
+              if (flat_interp_edge)
+                sopt = "";
+              else
+                sopt = sprintf("%d", sidx(i_stl));
+              endif
+              data_idx += 1;
+              is_image_data(data_idx) = false;
+              parametric(data_idx) = false;
+              if (flat_interp_edge)
+                have_cdata(data_idx) = true;
+              else
+                have_cdata(data_idx) = false;
+              end
+              have_3d_patch(data_idx) = false;
+              titlespec{data_idx} = tspec;
+              usingclause{data_idx} = sprintf ("record=%dx1 using ($1):($2):($3)%s",
+                                               yrec, ccol);
+              data{data_idx} = zz;
+              withclause{data_idx} = sprintf ("with %s %s %s",
+                                              style{i_stl}, scmd, sopt);
+            endfor
+          endfor
         endif
 
       case "text"

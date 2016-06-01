@@ -1676,9 +1676,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "plot \"-\";\nInf Inf\ne\n");
   endif
 
-  ## Needed to allow mouse rotation with pcolor.
-  if (view_map)
-    fputs (plot_stream, "unset view;\n");
+  ## Needed to allow mouse rotation if gnuplot was put in map view.
+  if (view_map && rot_x == 0 && rot_z == 0)
+    fputs (plot_stream, "set view 0,0;\n");
   endif
 
   if (bg_is_set)

@@ -63,9 +63,13 @@ Octave programs.
 
 @item
 When you encounter an error condition, call the function @code{error}
-(or @code{usage}).  The @code{error} and @code{usage} functions do not
-return.
-@xref{Errors}.
+(or @code{print_usage}).  The @code{error} and @code{print_usage} functions
+do not return.  @xref{Errors}.  It is customary to prefix the error message
+with the name of the function that generated it.  For example,
+
+@example
+error ("my_cool_function: input A must be a matrix");
+@end example
 
 @item
 Please put a copyright notice on the file if you give copies to anyone.
@@ -82,18 +86,32 @@ Here are the conventions to follow when writing comments.
 
 @table @samp
 @item #
-Comments that start with a single sharp-sign, @samp{#}, should all be
-aligned to the same column on the right of the source code.  Such
-comments usually explain how the code on the same line does its job.  In
+Comments that start with a single sharp-sign, @samp{#}, are used to explain
+the code on the same line as the comment itself.  These comments should
+all be aligned to the same column to the right of the source code.  In
 the Emacs mode for Octave, the @kbd{M-;} (@code{indent-for-comment})
 command automatically inserts such a @samp{#} in the right place, or
-aligns such a comment if it is already present.
+aligns such a comment if it is already present.  Example:
+
+@example
+@var{C} = 2 * pi * r;    # formula for circumference of a circle
+@end example
 
 @item ##
-Comments that start with a double sharp-sign, @samp{##}, should be aligned to
+Comments that start with a double sharp-sign, @samp{##}, are stand-alone
+comments that occupy an entire line.  These comments should be aligned to
 the same level of indentation as the code.  Such comments usually
 describe the purpose of the following lines or the state of the program
-at that point.
+at that point.  Example:
+
+@example
+@group
+## Calculate area and volume of a sphere
+@var{A} = 4 * pi * r^2;
+@var{V} = 4/3 * pi * r^3;
+@end group
+@end example
+
 @end table
 
 @noindent

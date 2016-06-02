@@ -297,7 +297,7 @@ An exception are matrix or cell constructors:
 Here, putting spaces after @code{sin}, @code{cos} would result in a
 parse error.
 
-For indexing expressions, do @emph{not} put a space after the
+For indexing expressions, do @strong{not} put a space after the
 identifier (this differentiates indexing and function calls nicely).
 The space after a comma is not necessary if index expressions are simple,
 i.e., you may write
@@ -337,8 +337,8 @@ wisely.
 Always use a specific end-of-block statement (like @code{endif},
 @code{endswitch}) rather than the generic @code{end}.
 
-Enclose the @code{if}, @code{while}, @code{until}, and @code{switch}
-conditions in parentheses, as in C:
+Enclose the condition of an @code{if}, @code{while}, @code{until}, or
+@code{switch} statement in parentheses, as in C:
 
 @example
 @group
@@ -349,8 +349,8 @@ endif
 @end example
 
 @noindent
-Do not do this, however, with the iteration counter portion of a
-@code{for} statement.  Write:
+Do not do this, however, with the iteration counter portion of a @code{for}
+statement.  Write:
 
 @example
 @group
@@ -362,11 +362,14 @@ endfor
 
 The Octave operator @samp{!} should be used for logical negation, rather than
 @samp{~}.  The negation operator is written with a space between the operator
-and its target, e.g., @code{! A}.  Comments should begin with the @samp{#}
-character, rather than @samp{%}.
+and its target, e.g., @code{! A}.
 
-Any Built-In Self Tests or demos using the @code{%!test} or @code{%!demo}
-syntax should begin two lines after the @code{endfunction} keyword.
+Comments should begin with the @samp{#} character, rather than @samp{%}.
+@xref{Comment Tips}.
+
+Any demos or Built-In Self Tests (BIST) using the @code{%!demo} or
+@code{%!test} syntax should begin two lines after the @code{endfunction}
+keyword.  Demo blocks should be listed before test blocks.
 
 @node C++ Sources
 @section C++ Sources

@@ -126,7 +126,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "unset lmargin;\n");
     fprintf (plot_stream, "unset rmargin;\n");
     fprintf (plot_stream, "set origin %g, %g;\n", pos(1:2));
-    sz_str = "";
     if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
       sz_str = sprintf ("ratio %g", -dr);
     else
@@ -136,6 +135,19 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
   if (! isempty (sz_str))
     fputs (plot_stream, sz_str);
+  endif
+
+  ## Code above uses axis size for the data aspect ratio, which isn't
+  ## quite correct.  The only fine control is to set all axes units equal.
+  if (nd == 3 &&
+      strcmpi (axis_obj.dataaspectratiomode, "manual") &&
+      axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(2))
+    if (axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(3))
+      zstr = "z";
+    else
+      zstr = "";
+    endif
+    fprintf (plot_stream, "set view equal xy%s;\n", zstr);
   endif
 
   ## Reset all labels, axis-labels, tick-labels, and title

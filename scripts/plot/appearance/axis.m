@@ -61,10 +61,10 @@
 ##
 ## @table @asis
 ## @item @qcode{"square"}
-## Force a square aspect ratio.
+## Force a square axis aspect ratio.
 ##
 ## @item @qcode{"equal"}
-## Force x distance to equal y-distance.
+## Force x-axis unit distance to equal y-axis (and z-axis) unit distance.
 ##
 ## @item @qcode{"normal"}
 ## Restore default aspect ratio.
@@ -191,14 +191,6 @@ function limits = __axis__ (ca, ax, varargin)
       set (ca, "dataaspectratiomode", "auto",
                "plotboxaspectratio", [1, 1, 1]);
     elseif (strcmp (ax, "equal"))
-      if (strcmp (get (ancestor (ca, "figure"), "__graphics_toolkit__"), "gnuplot"))
-        ## FIXME: gnuplot applies the aspect ratio activepostionproperty.
-        set (ca, "activepositionproperty", "position");
-        ## The following line is a trick used to trigger the recalculation of
-        ## aspect related magnitudes even if the aspect ratio is the same
-        ## (useful with the x11 gnuplot terminal after a window resize)
-        set (ca, "dataaspectratiomode", "auto");
-      endif
       set (ca, "dataaspectratio", [1, 1, 1], "plotboxaspectratio", [5 4 4]);
 
     elseif (strcmpi (ax, "normal"))

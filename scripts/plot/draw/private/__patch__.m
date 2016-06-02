@@ -161,11 +161,7 @@ function [h, failed] = __patch__ (p, varargin)
         args{10} = [];
       endif
 
-      if (mod (numel (varargin) - iarg + 1, 2) != 0)
-        failed = true;
-      else
-        args = [args, varargin(iarg:end)];
-      endif
+      args = [args, varargin(iarg:end)];
     endif
   else
     args = varargin;

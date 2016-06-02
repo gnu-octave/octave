@@ -60,24 +60,14 @@ namespace octave
 
     using std::atan;
 
-    inline double arg (double x) { return atan2 (0.0, x); }
-    inline float arg (float x) { return atan2f (0.0f, x); }
+    // C++ now provides versions of the following funtions for
+    // arguments of type std::complex<T> and T so we no longer need to
+    // provide our own wrappers for real-valued arguments.  Import
+    // them to the octave::math namespace for convenience.
 
     using std::arg;
-
-    inline double conj (double x) { return x; }
-    inline float conj (float x) { return x; }
-
     using std::conj;
-
-    inline double imag (double) { return 0.0; }
-    inline float imag (float) { return 0.0f; }
-
     using std::imag;
-
-    inline double real (double x) { return x; }
-    inline float real (float x) { return x; }
-
     using std::real;
 
     extern OCTAVE_API double log2 (double x);
@@ -481,9 +471,9 @@ OCTAVE_DEPRECATED ("use 'octave::math::arg' instead")
 inline float arg (float x) { return octave::math::arg (x); }
 
 OCTAVE_DEPRECATED ("use 'octave::math::conj' instead")
-inline double conj (double x) { return octave::math::conj (x); }
+inline double conj (double x) { return x; }
 OCTAVE_DEPRECATED ("use 'octave::math::conj' instead")
-inline float conj (float x) { return octave::math::conj (x); }
+inline float conj (float x) { return x; }
 
 OCTAVE_DEPRECATED ("use 'octave::math::imag' instead")
 inline double imag (double x) { return octave::math::imag (x); }

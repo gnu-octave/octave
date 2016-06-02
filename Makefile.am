@@ -173,7 +173,16 @@ include examples/module.mk
 include m4/module.mk
 include test/module.mk
 
-dist-hook: doc-interpreter-dist-hook docs-dist-hook icons-dist-hook scripts-dist-hook
+dist-hook: maintainer-mode-dist-hook doc-interpreter-dist-hook docs-dist-hook icons-dist-hook scripts-dist-hook
+
+if AMCOND_MAINTAINER_MODE
+## HG-ID must be correct to package distribution.
+maintainer-mode-dist-hook:
+	@echo "Maintainer-mode enabled.  Cannot package distribution!"
+	exit 1
+else
+maintainer-mode-dist-hook:
+endif
 
 if AMCOND_BUILD_DOCS
 docs-dist-hook:
@@ -293,7 +302,19 @@ ChangeLog:
 	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
 
+if AMCOND_MAINTAINER_MODE
+## Avoid unnecessary building just because HG-ID changes (for example,
+## editing a .m file will cause + to be appended to the hg ID and that
+## will trigger compiling the build-info.cc files, relinking libraries
+## and .oct files).
 HG-ID:
+	$(AM_V_GEN)rm -f $@-t && \
+	echo "maintainer-mode" > $@-t && \
+	$(simple_move_if_change_rule)
+else
+HG-ID:
+## Store hg ID in binaries so that we can identify botched installations
+## that are using incorrect or mismatched libraries.
 	$(AM_V_GEN)rm -f $@-t && \
 	if [ -d $(srcdir)/.hg ]; then \
 	  ( cd $(srcdir) && hg identify --id || echo "unknown" ) > $@-t && \
@@ -305,6 +326,7 @@ HG-ID:
 	  echo "preserving existing HG-ID file" 1>&2; \
 	  $(cp_update_rule); \
 	fi
+endif
 .PHONY: HG-ID
 
 octetc_DATA += \

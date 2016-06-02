@@ -285,6 +285,14 @@ esac
 AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
   [Define this to be the path to the shell command interpreter.])
 
+ENABLE_MAINTAINER_MODE=no
+AC_ARG_ENABLE([maintainer-mode],
+  [AS_HELP_STRING([--enable-maintainer-mode],
+    [enable maintainer mode features in build system])],
+  [if test "$enableval" = yes; then ENABLE_MAINTAINER_MODE=yes; fi], [])
+AM_CONDITIONAL([AMCOND_MAINTAINER_MODE],
+  [test $ENABLE_MAINTAINER_MODE = yes])
+
 ### Enable bounds checking on element references within Octave's array and
 ### matrix classes.  This slows down some operations a bit, so it is turned off
 ### by default.

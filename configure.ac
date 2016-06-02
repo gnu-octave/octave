@@ -1615,7 +1615,7 @@ if test $check_fltk = yes; then
         FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | $SED -e 's/-mwindows//g'`
       ;;
     esac
-
+    AC_LANG_PUSH(C++)
     AC_CACHE_CHECK([for OpenGL support in FLTK],
       [octave_cv_fltk_opengl_support],
       [save_CPPFLAGS="$CPPFLAGS"
@@ -1625,8 +1625,8 @@ if test $check_fltk = yes; then
         ]], [[
         int nothing = 0;
         ]])],
-        octave_cv_fltk_opengl_support=no,
-        octave_cv_fltk_opengl_support=yes)
+        octave_cv_fltk_opengl_support=yes,
+        octave_cv_fltk_opengl_support=no)
       CPPFLAGS="$save_CPPFLAGS"
       ])
     if test $octave_cv_fltk_opengl_support = no; then
@@ -1635,6 +1635,7 @@ if test $check_fltk = yes; then
       build_fltk_graphics=yes
       AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
     fi
+    AC_LANG_POP(C++)
 
     if test -n "$warn_fltk_opengl"; then
       OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])

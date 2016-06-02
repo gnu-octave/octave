@@ -1590,6 +1590,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   cmap = [cmap; addedcmap];
   cmap_sz += rows (addedcmap);
+  if (cmap_sz == 1)        # bug #48083, illegal one-element colormap
+    cmap = [cmap; cmap];
+    cmap_sz = 2;
+  endif
   if (length (cmap) > 0)
     fprintf (plot_stream,
              "set palette positive color model RGB maxcolors %i;\n",

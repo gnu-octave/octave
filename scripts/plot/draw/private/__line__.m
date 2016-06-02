@@ -114,8 +114,10 @@ function h = __line__ (p, varargin)
         || (nvecpts != 0 && any (nvecpts != cellfun ("size", tmp, 1))))
       error ("line: data size_mismatch");
     endif
-    data_args(mask) = cellfun (@(x) x(:,i), data(ismat),
-                               "uniformoutput", false);
+    if (any (mask))
+      data_args(mask) = cellfun (@(x) x(:,i), data(ismat),
+                                 "uniformoutput", false);
+    endif
 
     handles(i) = __go_line__ (p, data_args{:}, other_args{:});
 

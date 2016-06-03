@@ -203,7 +203,7 @@ function h = findobj (varargin)
 
   ## Load all objects which qualify for being searched.
   idepth = 0;
-  h = handles;
+  h = handles(:);
   while (numel (handles) && ! (idepth >= depth))
     children = [];
     for n = 1 : numel (handles)

@@ -22,9 +22,9 @@
 ## @deftypefnx {} {@var{h} =} waitbar (@dots{}, "createcancelbtn", @var{fcn}, @dots{})
 ## @deftypefnx {} {@var{h} =} waitbar (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {} {} waitbar (@var{frac})
-## @deftypefnx {} {} waitbar (@var{frac}, @var{hwbar})
-## @deftypefnx {} {} waitbar (@var{frac}, @var{hwbar}, @var{msg})
-## Return a handle @var{h} to a new waitbar object.
+## @deftypefnx {} {} waitbar (@var{frac}, @var{h})
+## @deftypefnx {} {} waitbar (@var{frac}, @var{h}, @var{msg})
+## Return a handle @var{h} to a new progress indicator ("waitbar") object.
 ##
 ## The waitbar is filled to fraction @var{frac} which must be in the range
 ## [0, 1].
@@ -41,8 +41,10 @@
 ##
 ## When called with a single input the current waitbar, if it exists, is
 ## updated to the new value @var{frac}.  If there are multiple outstanding
-## waitbars they can be updated individually by passing the handle @var{hwbar}
+## waitbars they can be updated individually by passing the handle @var{h}
 ## of the specific waitbar to modify.
+##
+## @seealso{delete}
 ## @end deftypefn
 
 ## Author: jwe

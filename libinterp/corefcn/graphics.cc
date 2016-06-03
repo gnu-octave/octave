@@ -3276,7 +3276,18 @@ base_graphics_object::reset_default_properties (void)
         gh_manager::get_object (0).get_factory_defaults_list ()
         .find (type ())->second;
 
+      // save warning state of "Octave:deprecated-property"
+      int old_dep_prop = warning_enabled ("Octave:deprecated-property");
+      disable_warning ("Octave:deprecated-property");
+
       xreset_default_properties (get_handle (), factory_pval);
+
+      // re-enable warning state of "Octave:deprecated-property"
+      if (old_dep_prop == 1)
+        set_warning_state ("Octave:deprecated-property", "on");
+      else if (old_dep_prop == 2)
+        set_warning_state ("Octave:deprecated-property", "error");
+
     }
 }
 

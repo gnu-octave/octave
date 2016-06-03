@@ -17,18 +17,34 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} ishghandle (@var{h})
-## Return true if @var{h} is a graphics handle and false otherwise.
+## @deftypefn  {} {} ishghandle (@var{h})
+## @deftypefnx {} {} ishghandle (@var{h}, @var{type})
+## Return true if @var{h} is a graphics handle (of type @var{type}) and false
+## otherwise.
 ##
-## This function is equivalent to @code{ishandle} and is provided for
-## compatibility with @sc{matlab}.
+## When no @var{type} is specified the function is equivalent to
+## @code{ishandle}.
 ## @seealso{ishandle}
 ## @end deftypefn
 
-function retval = ishghandle (h)
-  ## This function is just included for compatibility as
-  ## Octave has no simulink equivalent.
+function retval = ishghandle (h, type = "")
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+  
+  if (nargin == 2 && (! ischar (type) || ! isrow (type)))
+    error ("ishghandle: TYPE must be a string");
+  endif
+  
+  ## Octave has no Simulink equivalent so it is sufficient to call ishandle.
   retval = ishandle (h);
+  
+  if (nargin == 2 && any (retval))
+    typematch = strcmpi (get (h(retval), "type"), type);
+    retval(retval) = typematch;
+  endif
+
 endfunction
 
 
@@ -36,29 +52,56 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   assert (ishghandle (hf));
+%!   assert (ishghandle (hf, "figure"));
 %!   assert (! ishghandle (-hf));
+%!   assert (! ishghandle (hf, "foo"));
 %!   l = line;
 %!   ax = gca;
 %!   assert (ishghandle (ax));
+%!   assert (ishghandle (ax, "axes"));
 %!   assert (! ishghandle (-ax));
+%!   assert (! ishghandle (ax, "foo"));
 %!   assert (ishghandle (l));
+%!   assert (ishghandle (l, "line"));
 %!   assert (! ishghandle (-l));
+%!   assert (! ishghandle (l, "foo"));
 %!   p = patch;
 %!   assert (ishghandle (p));
+%!   assert (ishghandle (p, "patch"));
 %!   assert (! ishghandle (-p));
+%!   assert (! ishghandle (p, "foo"));
 %!   s = surface;
 %!   assert (ishghandle (s));
+%!   assert (ishghandle (s, "surface"));
 %!   assert (! ishghandle (-s));
+%!   assert (! ishghandle (s, "foo"));
 %!   t = text;
 %!   assert (ishghandle (t));
+%!   assert (ishghandle (t, "text"));
 %!   assert (! ishghandle (-t));
+%!   assert (! ishghandle (t, "foo"));
 %!   i = image ([1]);
 %!   assert (ishghandle (i));
+%!   assert (ishghandle (i, "image"));
 %!   assert (! ishghandle (-i));
+%!   assert (! ishghandle (i, "foo"));
 %!   hg = hggroup;
 %!   assert (ishghandle (hg));
+%!   assert (ishghandle (hg, "hggroup"));
 %!   assert (! ishghandle (-hg));
+%!   assert (! ishghandle (hg, "foo"));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!test
+%! assert (ishghandle ([-1 0]), [false true]);
+%! assert (ishghandle ([-1 0], "root"), [false true]);
+%! assert (ishghandle ([-1 0], "foobar"), [false false]);
+
+## Test input validation
+%!error ishghandle ()
+%!error ishghandle (1, 2, 3)
+%!error <TYPE must be a string> ishghandle (0, 1)
+%!error <TYPE must be a string> ishghandle (0, {1})
 

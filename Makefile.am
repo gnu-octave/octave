@@ -173,16 +173,14 @@ include examples/module.mk
 include m4/module.mk
 include test/module.mk
 
-dist-hook: maintainer-mode-dist-hook doc-interpreter-dist-hook docs-dist-hook icons-dist-hook scripts-dist-hook
+DIST_HOOKS := \
+  doc-interpreter-dist-hook \
+  docs-dist-hook \
+  hg-id-dist-hook \
+  icons-dist-hook \
+  scripts-dist-hook
 
-if AMCOND_MAINTAINER_MODE
-## HG-ID must be correct to package distribution.
-maintainer-mode-dist-hook:
-	@echo "Maintainer-mode enabled.  Cannot package distribution!"
-	exit 1
-else
-maintainer-mode-dist-hook:
-endif
+dist-hook: $(DIST_HOOKS)
 
 if AMCOND_BUILD_DOCS
 docs-dist-hook:
@@ -190,6 +188,14 @@ else
 docs-dist-hook:
 	@echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
 endif
+
+if AMCOND_ENABLE_HG_ID
+hg-id-dist-hook:
+else
+hg-id-dist-hook:
+	@echo "WARNING: Octave was configured with --disable-hg-id" 1>&2
+endif
+.PHONY: hg-id-dist-hook
 
 if AMCOND_HAVE_ICON_TOOLS
 icons-dist-hook:
@@ -242,6 +248,8 @@ all-local: $(ALL_LOCAL_TARGETS)
 	@echo "   ./run-octave    - to run in place to test before installing"
 	@echo "   make check      - to run the tests"
 	@echo "   make install    - to install (PREFIX=$(prefix))"
+	@echo ""
+	@echo "   HG ID for this build is \"`cat HG-ID`\""
 	@echo ""
 
 run-octave: run-octave.in build-aux/subst-script-vals.sh
@@ -302,16 +310,7 @@ ChangeLog:
 	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
 
-if AMCOND_MAINTAINER_MODE
-## Avoid unnecessary building just because HG-ID changes (for example,
-## editing a .m file will cause + to be appended to the hg ID and that
-## will trigger compiling the build-info.cc files, relinking libraries
-## and .oct files).
-HG-ID:
-	$(AM_V_GEN)rm -f $@-t && \
-	echo "maintainer-mode" > $@-t && \
-	$(simple_move_if_change_rule)
-else
+if AMCOND_ENABLE_HG_ID
 HG-ID:
 ## Store hg ID in binaries so that we can identify botched installations
 ## that are using incorrect or mismatched libraries.
@@ -320,12 +319,24 @@ HG-ID:
 	  ( cd $(srcdir) && hg identify --id || echo "unknown" ) > $@-t && \
 	  $(simple_move_if_change_rule); \
 	elif [ ! -f $(srcdir)/HG-ID ]; then \
-	  echo "$(srcdir)/HG-ID is missing!" 1>&2; \
+	  echo "WARNING: $(srcdir)/HG-ID is missing!" 1>&2; \
 	  echo "unknown" > $@-t && mv $@-t $@; \
 	else \
 	  echo "preserving existing HG-ID file" 1>&2; \
 	  $(cp_update_rule); \
+	  if [ "`cat $@`" = "hg-id-disabled" ]; then \
+	    echo "WARNING: HG-ID is 'hg-id-disabled'" 1>&2; \
+	  fi \
 	fi
+else
+## Avoid unnecessary building just because HG-ID changes (for example,
+## editing a .m file will cause "+" to be appended to the hg ID and that
+## will trigger compiling the build-info.cc files, relinking libraries
+## and .oct files).
+HG-ID:
+	$(AM_V_GEN)rm -f $@-t && \
+	echo "hg-id-disabled" > $@-t && \
+	$(simple_move_if_change_rule)
 endif
 .PHONY: HG-ID
 

@@ -285,13 +285,12 @@ esac
 AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
   [Define this to be the path to the shell command interpreter.])
 
-ENABLE_MAINTAINER_MODE=no
-AC_ARG_ENABLE([maintainer-mode],
-  [AS_HELP_STRING([--enable-maintainer-mode],
-    [enable maintainer mode features in build system])],
-  [if test "$enableval" = yes; then ENABLE_MAINTAINER_MODE=yes; fi], [])
-AM_CONDITIONAL([AMCOND_MAINTAINER_MODE],
-  [test $ENABLE_MAINTAINER_MODE = yes])
+ENABLE_HG_ID=yes
+AC_ARG_ENABLE([hg-id],
+  [AS_HELP_STRING([--disable-hg-id],
+    [disable embedding of hg id in libraries])],
+  [if test "$enableval" = no; then ENABLE_HG_ID=no; fi], [])
+AM_CONDITIONAL([AMCOND_ENABLE_HG_ID], [test $ENABLE_HG_ID = yes])
 
 ### Enable bounds checking on element references within Octave's array and
 ### matrix classes.  This slows down some operations a bit, so it is turned off

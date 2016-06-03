@@ -160,17 +160,33 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   fputs (plot_stream, "unset x2tics;\n");
   fputs (plot_stream, "unset y2tics;\n");
 
-  if (! isempty (axis_obj.title))
-    t = get (axis_obj.title);
-    if (isempty (t.string))
-      fputs (plot_stream, "unset title;\n");
-    else
+  if (isempty (axis_obj.title) || isempty (get (axis_obj.title, "string")))
+    fputs (plot_stream, "unset title;\n");
+  else
+    if (nd == 2)
+      t = get(axis_obj.title);
       colorspec = get_text_colorspec (t.color);
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, "set title \"%s\" %s %s %s;\n",
                undo_string_escapes (tt), fontspec, colorspec,
                __do_enhanced_option__ (enhanced, t));
+    else
+      ## Change meaning of "normalized", but it at least gives user some control
+      if (! strcmp (get (axis_obj.title, "units"), "normalized"))
+        unwind_protect
+          set (axis_obj.title, "units", "normalized");
+          set (axis_obj.title, "position", [0.5 1.02 0.5]);
+        unwind_protect_cleanup
+        end_unwind_protect
+      endif
+      t = get(axis_obj.title);
+      axispos = axis_obj.position;
+      screenpos = t.position;
+      screenpos(1) = axispos(1)+screenpos(1)*axispos(3);
+      screenpos(2) = axispos(2)+screenpos(2)*axispos(4);
+      fputs (plot_stream, "unset title;\n");
+      do_text (plot_stream, gnuplot_term, enhanced, t, nd, screenpos);
     endif
   endif
 
@@ -1301,68 +1317,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         endif
 
       case "text"
-        [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
-        fontspec = create_fontspec (f, s, gnuplot_term);
-        lpos = obj.position;
-        halign = obj.horizontalalignment;
-        valign = obj.verticalalignment;
-        angle = obj.rotation;
-        units = obj.units;
-        color = obj.color;
-        if (strcmpi (units, "normalized"))
-          units = "graph";
-        elseif (strcmp (axis_obj.yaxislocation, "right")
-                && strcmp (units, "data"))
-          units = "second";
-        else
-          units = "";
-        endif
-
-        if (isnumeric (color))
-          colorspec = get_text_colorspec (color);
-        endif
-
-        if (ischar (obj.string))
-          num_lines = rows (obj.string);
-          num_lines += numel (strfind (obj.string, "\n"));
-        else
-          num_lines = numel (obj.string);
-        endif
-        switch (valign)
-          ## Text offset in characters.  Relies on gnuplot for font metrics.
-          case "top"
-            dy = -0.5;
-          case "cap"
-            dy = -0.5;
-          case "middle"
-            dy = 0.5 * (num_lines - 1);
-          case "baseline"
-            dy = 0.5 + (num_lines - 1);
-          case "bottom"
-            dy = 0.5 + (num_lines - 1);
-        endswitch
-        ## Gnuplot's Character units are different for x/y and vary with
-        ## fontsize.  The aspect ratio of 1:1.7 was determined by experiment
-        ## to work for eps/ps/etc.  For the MacOS aqua terminal a value of 2.5
-        ## is needed.  However, the difference is barely noticeable.
-        dx_and_dy = [(-dy * sind (angle)), (dy * cosd (angle))] .* [1.7 1];
-
-        ## FIXME: Multiline text produced the gnuplot
-        ##        "warning: ft_render: skipping glyph"
-        if (nd == 3)
-          ## This produces the desired vertical alignment in 3D.
-          fprintf (plot_stream,
-                   "set label \"%s\" at %s %.15e,%.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
-                   undo_string_escapes (label), units, lpos(1),
-                   lpos(2), lpos(3), halign, angle, dx_and_dy, fontspec,
-                   __do_enhanced_option__ (enhanced, obj), colorspec);
-        else
-          fprintf (plot_stream,
-                   "set label \"%s\" at %s %.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
-                   undo_string_escapes (label), units,
-                   lpos(1), lpos(2), halign, angle, dx_and_dy, fontspec,
-                   __do_enhanced_option__ (enhanced, obj), colorspec);
-        endif
+        do_text (plot_stream, gnuplot_term, enhanced, obj, nd);
 
       case "hggroup"
         ## Push group children into the kid list.
@@ -2677,6 +2632,76 @@ function retval = __do_enhanced_option__ (enhanced, obj)
     else
       retval = "enhanced";
     endif
+  endif
+
+endfunction
+
+function do_text (stream, gpterm, enhanced, obj, nd, screenpos)
+
+  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
+  fontspec = create_fontspec (f, s, gpterm);
+  lpos = obj.position;
+  halign = obj.horizontalalignment;
+  valign = obj.verticalalignment;
+  angle = obj.rotation;
+  units = obj.units;
+  color = obj.color;
+  if (nargin > 5)
+    units = "screen";
+    lpos = screenpos;
+  elseif (strcmpi (units, "normalized"))
+    units = "graph";
+  elseif (strcmp (get (obj.parent, "yaxislocation"), "right")
+          && strcmp (units, "data"))
+    units = "second";
+  else
+    units = "";
+  endif
+
+  if (isnumeric (color))
+    colorspec = get_text_colorspec (color);
+  endif
+
+  if (ischar (obj.string))
+    num_lines = rows (obj.string);
+    num_lines += numel (strfind (obj.string, "\n"));
+  else
+    num_lines = numel (obj.string);
+  endif
+  switch (valign)
+    ## Text offset in characters.  Relies on gnuplot for font metrics.
+    case "top"
+      dy = -0.5;
+    case "cap"
+      dy = -0.5;
+    case "middle"
+      dy = 0.5 * (num_lines - 1);
+    case "baseline"
+      dy = 0.5 + (num_lines - 1);
+    case "bottom"
+      dy = 0.5 + (num_lines - 1);
+  endswitch
+  ## Gnuplot's Character units are different for x/y and vary with
+  ## fontsize.  The aspect ratio of 1:1.7 was determined by experiment
+  ## to work for eps/ps/etc.  For the MacOS aqua terminal a value of 2.5
+  ## is needed.  However, the difference is barely noticeable.
+  dx_and_dy = [(-dy * sind (angle)), (dy * cosd (angle))] .* [1.7 1];
+
+  ## FIXME: Multiline text produced the gnuplot
+  ##        "warning: ft_render: skipping glyph"
+  if (nd == 3)
+    ## This produces the desired vertical alignment in 3D.
+    fprintf (stream,
+             "set label \"%s\" at %s %.15e,%.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
+             undo_string_escapes (label), units, lpos(1),
+             lpos(2), lpos(3), halign, angle, dx_and_dy, fontspec,
+             __do_enhanced_option__ (enhanced, obj), colorspec);
+  else
+    fprintf (stream,
+             "set label \"%s\" at %s %.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
+             undo_string_escapes (label), units,
+             lpos(1), lpos(2), halign, angle, dx_and_dy, fontspec,
+             __do_enhanced_option__ (enhanced, obj), colorspec);
   endif
 
 endfunction

@@ -1520,13 +1520,13 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
       else if (val.is_uint16_type ())
         UNBOX_PRIMITIVE_SCALAR (uint16_t, uint16_scalar, "java/lang/Short", "(S)V");
       else if (val.is_int32_type ())
-        UNBOX_PRIMITIVE_SCALAR (int32_t, int32_scalar, "java/lang/Int", "(I)V");
+        UNBOX_PRIMITIVE_SCALAR (int32_t, int32_scalar, "java/lang/Integer", "(I)V");
       else if (val.is_uint32_type ())
-        UNBOX_PRIMITIVE_SCALAR (uint32_t, uint32_scalar, "java/lang/Int", "(I)V");
+        UNBOX_PRIMITIVE_SCALAR (uint32_t, uint32_scalar, "java/lang/Integer", "(I)V");
       else if (val.is_int64_type ())
-        UNBOX_PRIMITIVE_SCALAR (int64_t, int64_scalar, "java/lang/Long", "(L)V");
+        UNBOX_PRIMITIVE_SCALAR (int64_t, int64_scalar, "java/lang/Long", "(J)V");
       else if (val.is_uint64_type ())
-        UNBOX_PRIMITIVE_SCALAR (uint64_t, uint64_scalar, "java/lang/Long", "(L)V");
+        UNBOX_PRIMITIVE_SCALAR (uint64_t, uint64_scalar, "java/lang/Long", "(J)V");
 
 #undef UNBOX_PRIMITIVE_SCALAR
       }
@@ -3128,10 +3128,14 @@ Return true if @var{x} is a Java object.\n\
 
 ## Check we can create objects that wrap java literals (bug #38821).
 %!testif HAVE_JAVA
-%! assert (class (javaObject ("java.lang.Byte", uint8 (1))), "java.lang.Byte");
-%! assert (class (javaObject ("java.lang.Byte", int8 (1))), "java.lang.Byte");
-%! assert (class (javaObject ("java.lang.Short", uint16 (1))), "java.lang.Short");
-%! assert (class (javaObject ("java.lang.Short", int16 (1))), "java.lang.Short");
+%! assert (class (javaObject ("java.lang.Byte",     uint8 (1))), "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Byte",      int8 (1))), "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Short",   uint16 (1))), "java.lang.Short");
+%! assert (class (javaObject ("java.lang.Short",    int16 (1))), "java.lang.Short");
+%! assert (class (javaObject ("java.lang.Integer", uint32 (1))), "java.lang.Integer");
+%! assert (class (javaObject ("java.lang.Integer",  int32 (1))), "java.lang.Integer");
+%! assert (class (javaObject ("java.lang.Long",    uint64 (1))), "java.lang.Long");
+%! assert (class (javaObject ("java.lang.Long",     int64 (1))), "java.lang.Long");
 
 ## Automatic conversion from string cell array into String[] (bug #45290)
 %!testif HAVE_JAVA

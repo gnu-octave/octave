@@ -25,3 +25,6 @@ FCN_FILES += \
 PKG_ADD_FILES += scripts/profiler/PKG_ADD
 
 DIRSTAMP_FILES += scripts/profiler/$(octave_dirstamp)
+
+scripts_EXTRA_DIST += \
+  $(scripts_profiler_html_DATA)

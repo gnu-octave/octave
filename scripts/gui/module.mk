@@ -13,6 +13,7 @@ scripts_gui_PRIVATE_FCN_FILES = \
   scripts/gui/private/__uiputfile_fltk__.m
 
 scripts_gui_FCN_FILES = \
+  scripts/gui/dialog.m \
   scripts/gui/errordlg.m \
   scripts/gui/guidata.m \
   scripts/gui/guihandles.m \

@@ -85,6 +85,11 @@ errors and to get textual input from the user.
 @cindex dialog, displaying a warning dialog
 @DOCSTRING(warndlg)
 
+For creating new dialog types, there is a dialog function.
+
+@cindex dialog, displaying a modal dialog
+@DOCSTRING(dialog)
+
 @node Progress Bar
 @section Progress Bar
 @cindex Progress Bar

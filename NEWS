@@ -82,16 +82,18 @@ Summary of important user-visible changes for version 4.2:
 
       audioformats
       deg2rad
+      dialog
       evalc
       hash
       im2double
       localfunctions
-      odeset
-      odeget
       ode45
+      odeget
+      odeset
       padecoef
       psi
       rad2deg
+      uibuttongroup
 
  ** Deprecated functions.
 

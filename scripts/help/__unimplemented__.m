@@ -628,7 +628,6 @@ function list = missing_functions ()
   "depfun",
   "details",
   "deval",
-  "dialog",
   "digraph",
   "discretize",
   "dither",

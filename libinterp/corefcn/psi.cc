@@ -222,7 +222,7 @@ can have any value real or complex value.  However, for polygamma functions\n\
 %!error psi ()
 %!error psi (1, 2, 3)
 %!error <Z must be> psi ("non numeric")
-%!error <conversion of 5.3 to int value failed> psi (5.3, 1)
+%!error <conversion of 5.3 to int.* value failed> psi (5.3, 1)
 %!error <K must be non-negative> psi (-5, 1)
 %!error <Z must be non-negative for polygamma> psi (5, -1)
 %!error <Z must be a floating point> psi (5, uint8 (-1))

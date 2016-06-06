@@ -2341,7 +2341,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
 
   dv(dim) = std::min (nn, ns);
   dv.chop_trailing_singletons ();
-  dim = std::min (dv.ndims (), dim);
+  dim = std::min (dv.ndims (), static_cast<octave_idx_type> (dim));
 
   Array<T> m (dv);
 
@@ -2684,7 +2684,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
   if (retval.is_empty ())
     return retval;
 
-  int nidx = std::max (dv.ndims (), dim + 1);
+  int nidx = std::max (dv.ndims (), static_cast<octave_idx_type> (dim + 1));
   Array<idx_vector> idxa (dim_vector (nidx, 1), idx_vector::colon);
   octave_idx_type l = 0;
 

@@ -322,7 +322,7 @@ namespace octave
             bool &interactive)
     {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-      return octave::sys::popen2 (cmd, args, sync_mode, fildes, msg);
+      return octave::sys::win_popen2 (cmd, args, sync_mode, fildes, msg);
 #else
       pid_t pid;
       int child_stdin[2], child_stdout[2];

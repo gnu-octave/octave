@@ -40,8 +40,8 @@ namespace octave
     extern int chdir (const std::string&);
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-    extern pid_t popen2 (const std::string&, const string_vector&,
-                         bool, int *, std::string&);
+    extern pid_t win_popen2 (const std::string&, const string_vector&,
+                             bool, int *, std::string&);
 #endif
   }
 }
@@ -56,7 +56,7 @@ const auto octave_chdir = octave::sys::chdir;
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
-const auto octave_popen2 = octave::sys::popen2;
+const auto octave_popen2 = octave::sys::win_popen2;
 #endif
 
 #endif

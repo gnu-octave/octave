@@ -85,8 +85,8 @@ namespace octave
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 
     pid_t
-    popen2 (const std::string& cmd, const string_vector& args,
-            bool sync_mode, int *fildes, std::string& msg)
+    win_popen2 (const std::string& cmd, const string_vector& args,
+                bool sync_mode, int *fildes, std::string& msg)
     {
       pid_t pid;
       PROCESS_INFORMATION pi;

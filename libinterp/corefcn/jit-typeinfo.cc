@@ -223,7 +223,7 @@ octave_jit_ginvalid_index (void)
 {
   // FIXME: 0-argument form of err_invalid_index removed in cset dd6345fd8a97
   //        Report -1 as the bad index for all occurrences.
-  err_invalid_index (-1);
+  err_invalid_index (static_cast<octave_idx_type> (-1));
 }
 
 extern "C" void

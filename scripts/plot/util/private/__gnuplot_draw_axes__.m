@@ -1415,13 +1415,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     axis_idx = data_idx;
     if (strcmpi (axis_obj.box, "on"))
       if (nd == 3)
-        fputs (plot_stream, "set border 4095;\n");
+        do_border_tick_3d (axis_obj, plot_stream);
       else
         axis_idx = do_border_2d (axis_obj, plot_stream, axis_idx);
       endif
     else
       if (nd == 3)
-        fputs (plot_stream, "set border 895;\n");
+        do_border_tick_3d (axis_obj, plot_stream);
       elseif (! isempty (axis_obj.ytick))
         if (strcmpi (axis_obj.yaxislocation, "right"))
           fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
@@ -1726,16 +1726,16 @@ function idx = do_border_2d (obj, plot_stream, idx)
   fprintf (plot_stream, "set border 0\n");
 
   if (strcmp (obj.box, "on") || strcmp (obj.xaxislocation, "bottom"))
-    arrow (1, obj.xcolor, obj.linewidth, [0,0,0],[1,0,0]);
+    arrow (1, obj.xcolor, obj.linewidth, [0,0,0], [1,0,0]);
   endif
   if (strcmp (obj.box, "on") || strcmp (obj.xaxislocation, "top"))
-    arrow (2, obj.xcolor, obj.linewidth, [0,1,0],[1,1,0]);
+    arrow (2, obj.xcolor, obj.linewidth, [0,1,0], [1,1,0]);
   endif
   if (strcmp (obj.box, "on") || strcmp (obj.yaxislocation, "left"))
-    arrow (3, obj.ycolor, obj.linewidth, [0,0,0],[0,1,0]);
+    arrow (3, obj.ycolor, obj.linewidth, [0,0,0], [0,1,0]);
   endif
   if (strcmp (obj.box, "on") || strcmp (obj.yaxislocation, "right"))
-    arrow (4, obj.ycolor, obj.linewidth, [1,0,0],[1,1,0]);
+    arrow (4, obj.ycolor, obj.linewidth, [1,0,0], [1,1,0]);
   endif
 
   if (strcmp (obj.xaxislocation, "zero"))
@@ -1759,6 +1759,38 @@ function idx = do_border_2d (obj, plot_stream, idx)
     fprintf (plot_stream, "linewidth %.3f ", obj.linewidth);
     fprintf (plot_stream, "from graph %d,%d,%d ", from);
     fprintf (plot_stream, "to graph %d,%d,%d\n", to);
+  endfunction
+
+endfunction
+
+function idx = do_border_tick_3d (obj, plot_stream, idx)
+
+  ## axis location has no effect
+
+  if (strcmp (obj.box, "on"))
+    fputs (plot_stream, "set border 0xFFF;\n");
+    mirrorstr = "mirror";
+  else
+    fputs (plot_stream, "set border 0x15;\n");
+    mirrorstr = "nomirror";
+  endif
+
+  tick ('x', obj.xcolor, obj.tickdir, mirrorstr);
+  tick ('y', obj.ycolor, obj.tickdir, mirrorstr);
+  tick ('z', obj.zcolor, obj.tickdir, mirrorstr);
+
+  function tick (axischar, color, tickdir, mirrorstr);
+    if (isnumeric (color))
+      if (length (color) == 3)
+        colorspec = sprintf ("rgb \"#%02x%02x%02x\"", round (255*color));
+      else
+        colorspec = sprintf ("palatte %d", round (color));
+      endif
+    else
+      colorspec = sprintf ("\"%s\"", color);
+    endif
+    fprintf (plot_stream, "set %ctics %s %s textcolor %s\n",
+             axischar, tickdir, mirrorstr, colorspec);
   endfunction
 
 endfunction

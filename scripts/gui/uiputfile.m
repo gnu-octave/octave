@@ -116,11 +116,12 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
 
   ## Append extension to the name if it isn't already added.
   if (ischar (retfile))
-    ext = outargs{1}{retindex};
-    ext = strrep (ext, "*", "");
-
-    if (length (retfile) >= length (ext))
-      if (! strcmp (retfile(end-length (ext)+1:end), ext))
+    [~, ~, ext] = fileparts (retfile);
+    if (isempty (ext))
+      ext = outargs{1}{retindex};
+      ext = strrep (ext, "*", "");
+      if (ext != '.')
+        [~, ~, ext] = fileparts (ext);  # paranoid checking of extension
         retfile = [retfile ext];
       endif
     endif

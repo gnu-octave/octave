@@ -230,36 +230,31 @@ Undocumented internal function.\n\
   // If 3, then retval is filename, directory, and selected index.
   if (nel <= 3)
     {
-      int idx = 0;
       if (items_lst.front ().empty ())
-        {
-          retval(idx++) = 0;
-          retval(idx++) = 0;
-          retval(idx++) = 0;
-        }
+        retval = ovl (octave_value (0.), octave_value (0.), octave_value (0.));
       else
-        for (std::list<std::string>::iterator it = items_lst.begin ();
-             it != items_lst.end (); it++)
-          {
-            retval(idx++) = *it;
-
-            if (idx == 3)
-              retval(2) = atoi (retval(2).string_value ().c_str ());
-          }
+        {
+          int idx = 0;
+          for (std::list<std::string>::iterator it = items_lst.begin ();
+               it != items_lst.end (); it++)
+            {
+              if (idx != 2)
+                retval(idx++) = *it;
+              else
+                retval(idx++) = atoi (it->c_str ());
+            }
+        }
     }
   else
     {
       // Multiple files.
-      nel = items_lst.size () - 2;
+      nel -= 2;
       Cell items (dim_vector (1, nel));
 
       std::list<std::string>::iterator it = items_lst.begin ();
 
-      for (int idx = 0; idx < nel; idx++)
-        {
-          items.xelem (idx) = *it;
-          it++;
-        }
+      for (int idx = 0; idx < nel; idx++, it++)
+        items.xelem (idx) = *it;
 
       retval = ovl (items, *it++, atoi (it->c_str ()));
     }

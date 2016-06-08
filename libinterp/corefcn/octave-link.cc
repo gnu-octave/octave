@@ -231,17 +231,21 @@ Undocumented internal function.\n\
   if (nel <= 3)
     {
       int idx = 0;
-      for (std::list<std::string>::iterator it = items_lst.begin ();
-           it != items_lst.end (); it++)
+      if (items_lst.front ().empty ())
         {
-          retval(idx++) = *it;
-
-          if (idx == 1 && retval(0).string_value ().length () == 0)
-            retval(0) = 0;
-
-          if (idx == 3)
-            retval(2) = atoi (retval(2).string_value ().c_str ());
+          retval(idx++) = 0;
+          retval(idx++) = 0;
+          retval(idx++) = 0;
         }
+      else
+        for (std::list<std::string>::iterator it = items_lst.begin ();
+             it != items_lst.end (); it++)
+          {
+            retval(idx++) = *it;
+
+            if (idx == 3)
+              retval(2) = atoi (retval(2).string_value ().c_str ());
+          }
     }
   else
     {

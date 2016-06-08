@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} close
-## @deftypefnx {} {} close (@var{h})
 ## @deftypefnx {} {} close @var{h}
+## @deftypefnx {} {} close (@var{h})
+## @deftypefnx {} {} close (@var{h}, "force")
 ## @deftypefnx {} {} close all
 ## @deftypefnx {} {} close all hidden
 ## @deftypefnx {} {} close all force
@@ -35,9 +36,8 @@
 ## If the argument @qcode{"all hidden"} is given then all figures, including
 ## hidden ones, are closed.
 ##
-## If the argument @qcode{"all force"} is given then all figures are closed
-## even when @qcode{"closerequestfcn"} has been altered to prevent closing
-## the window.
+## If the argument @qcode{"force"} is given then figures are closed even when
+## @qcode{"closerequestfcn"} has been altered to prevent closing the window.
 ##
 ## Implementation Note: @code{close} operates by calling the function specified
 ## by the @qcode{"closerequestfcn"} property for each figure.  By default, the
@@ -81,8 +81,12 @@ function retval = close (arg1, arg2)
     if (ischar (arg1) && strcmpi (arg1, "all"))
       figs = (allchild (0))';
       figs = figs(isfigure (figs));
+    elseif (any (isfigure (arg1)))
+      figs = arg1(isfigure (arg1));
+    elseif (isempty (arg1))
+      figs = [];  # Silently accept null argument for Matlab compatibility
     else
-      error ('close: first argument must be "all" with "hidden" or "force"');
+      error ('close: first argument must be "all" or a figure handle');
     endif
     if (strcmpi (arg2, "force"))
       delete (figs);
@@ -118,8 +122,6 @@ endfunction
 %!error <first argument must be "all" or a figure> close ({"all"})
 %!error <first argument must be "all" or a figure> close ("all_and_more")
 %!error <first argument must be "all" or a figure> close (-1)
-%!error <first argument must be "all" with "hidden"> close foo hidden
-%!error <first argument must be "all" with "hidden"> close foo force
 %!error <second argument must be "hidden"> close all hid
 %!error <second argument must be "hidden"> close all for
 

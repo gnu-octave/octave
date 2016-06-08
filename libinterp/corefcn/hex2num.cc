@@ -208,6 +208,9 @@ num2hex (single ([-1, 1, e, Inf]))\n\
   if (args.length () != 1)
     print_usage ();
 
+  if (args(0).is_complex_type ())
+    error ("num2hex: N must be real");
+
   octave_value retval;
 
   if (args(0).is_single_type ())
@@ -285,4 +288,8 @@ num2hex (single ([-1, 1, e, Inf]))\n\
 /*
 %!assert (num2hex (-2:2), ["c000000000000000";"bff0000000000000";"0000000000000000";"3ff0000000000000";"4000000000000000"])
 %!assert (num2hex (single (-2:2)), ["c0000000";"bf800000";"00000000";"3f800000";"40000000"])
+
+%!error num2hex ()
+%!error num2hex (1,2)
+%!error num2hex (1j)
 */

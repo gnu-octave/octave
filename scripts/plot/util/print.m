@@ -396,7 +396,8 @@ function print (varargin)
     if (do_hardcopy)
       ## Set background to white for all top-level axes objects
       hax = findall (opts.figure, "-depth", 1, "type", "axes",
-                                  "-not", "tag", "legend");
+                                  "-not", "tag", "legend",
+                                  "-not", "color", "none");
       m = numel (props);
       for n = 1:numel(hax)
         props(m+n).h = hax(n);

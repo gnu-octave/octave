@@ -96,6 +96,8 @@ function opts = __gnuplot_print__ (opts)
       if (strfind (opts.devopt, "standalone"))
         gp_opts = sprintf ("standalone %s", gp_opts);
         term = strrep (opts.devopt, "standalone", "");
+      else
+        term = sprintf ("%s ", opts.devopt);
       endif
       local_drawnow ([term " " gp_opts],
                      [name "." suffix], opts);

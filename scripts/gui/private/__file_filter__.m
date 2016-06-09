@@ -17,22 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __file_filter__ (@var{file_filter})
+## @deftypefn {} {} __file_filter__ (@var{caller}, @var{file_filter})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: Kai Habel
 
-function [retval, defname, defdir] = __file_filter__ (file_filter, name)
+function [retval, defname, defdir] = __file_filter__ (caller, file_filter)
 
+  #keyboard;
   revtal = {};
   defname = "";
   defdir = "";
 
-  if (iscell (file_filter))
+  if (nargin == 1 || isempty (file_filter))
+    ## Do nothing, and just add default pattern.
+  elseif (iscell (file_filter))
     [r, c] = size (file_filter);
     if (c != 1 && c != 2)
-      error ("%s: invalid filter specification", name);
+      error ("%s: invalid filter specification", caller);
     endif
     if (c == 1)
       retval = cell (r, 2);
@@ -53,12 +56,14 @@ function [retval, defname, defdir] = __file_filter__ (file_filter, name)
     if (! strcmp (fname, "*"))
       defname = [fname, fext];
     endif
-    if ((length (fext) > 0) && (! strcmp (fext, ".*")))
+    if (! isempty (fext))
       fext = ["*" fext];
       retval = {fext, __default_filtername__(fext)};
     endif
   endif
 
+  ## Delete any "*.*" pattern, and add "* All Files"
+  retval(strcmp (retval(1,:), "*.*"), :) = [];
   retval(end+1,:) = {"*", __default_filtername__("*")};
 
 endfunction

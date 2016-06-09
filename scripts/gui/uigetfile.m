@@ -81,44 +81,32 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
              pwd};               # Default directory
 
   idx1 = idx2 = [];
-  if (length (varargin) > 0)
-    for i = 1 : length (varargin)
-      val = varargin{i};
-      if (ischar (val))
-        val = tolower (val);
-        if (strcmp (val, "multiselect"))
-          idx1 = i;
-        elseif (strcmp (val, "position"))
-          idx2 = i;
-        endif
-      endif
-    endfor
+  has_opts = false;
+  if (nargin > 0)
+    idx1 = find (strcmpi (varargin, "multiselect"), 1);
+    idx2 = find (strcmpi (varargin, "position"), 1);
+    if (idx1 || idx2)
+      has_opts = true;
+    endif
   endif
 
-  stridx = [idx1, idx2, 0];
-  if (length (stridx) > 1)
-    stridx = min (stridx(1 : end - 1));
-  endif
+  optidx = min ([idx1, idx2, nargin+1]);
 
-  args = varargin;
-  if (stridx)
-    args = varargin(1 : stridx - 1);
-  endif
+  args = varargin(1:optidx-1);
 
-  len = length (args);
+  len = numel (args);
   if (len > 0)
-    file_filter = args{1};
-    [outargs{1}, outargs{3}, defdir] = __file_filter__ (file_filter);
-    if (length (defdir) > 0)
+    [outargs{1}, outargs{3}, defdir] = __file_filter__ ("uigetfile", args{1});
+    if (! isempty (defdir))
       outargs{6} = defdir;
     endif
   else
-    outargs{1} = __file_filter__ (outargs{1});
+    outargs{1} = __file_filter__ ("uigetfile", outargs{1});
   endif
 
   if (len > 1)
     if (ischar (args{2}))
-      if (length (args{2}) > 0)
+      if (! isempty (args{2}))
         outargs{2} = args{2};
       endif
     elseif (! isempty (args{2}))
@@ -134,10 +122,10 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       else
         [fdir, fname, fext] = fileparts (varargin{3});
       endif
-      if (length (fdir) > 0)
+      if (! isempty (fdir))
         outargs{6} = fdir;
       endif
-      if (length (fname) > 0 || length (fext) > 0)
+      if (! isempty (fname) || ! isempty (fext))
         outargs{3} = [fname fext];
       endif
     elseif (! isempty (args{3}))
@@ -145,31 +133,29 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     endif
   endif
 
-  if (stridx)
+  if (has_opts)
     ## string arguments ("position" or "multiselect")
 
     ## check for even number of remaining arguments, prop/value pair(s)
-    if (rem (nargin - stridx + 1, 2))
+    if (rem (nargin - optidx + 1, 2))
       error ("uigetfile: PROPERTY/VALUE arguments must occur in pairs");
     endif
 
-    for i = stridx : 2 : nargin
+    for i = optidx : 2 : nargin
       prop = varargin{i};
       val = varargin{i + 1};
       if (strcmpi (prop, "position"))
-        if (isnumeric (val) && length (val) == 2)
-          outargs{4} = val;
-        else
+        if (! isnumeric (val) || length (val) != 2)
           error ('uigetfile: "Position" must be a 2-element vector');
         endif
+        outargs{4} = val;
       elseif (strcmpi (prop, "multiselect"))
-        if (ischar (val))
-          outargs{5} = tolower (val);
-        else
+        if (! ischar (val))
           error ('uigetfile: MultiSelect value must be a string ("on"/"off")');
         endif
+        outargs{5} = tolower (val);
       else
-        error ("uigetfile: unknown argument");
+        error ("uigetfile: unknown argument '%s'", prop);
       endif
     endfor
   endif

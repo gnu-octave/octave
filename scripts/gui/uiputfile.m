@@ -71,13 +71,13 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
              pwd};           # Default directory
 
   if (nargin > 0)
-    file_filter = varargin{1};
-    [outargs{1}, outargs{3}, defdir] = __file_filter__ (file_filter);
-    if (length (defdir) > 0)
+    [outargs{1}, outargs{3}, defdir] = __file_filter__ ("uiputfile",
+                                                        varargin{1});
+    if (! isempty (defdir))
       outargs{6} = defdir;
     endif
   else
-    outargs{1} = __file_filter__ (outargs{1});
+    outargs{1} = __file_filter__ ("uiputfile", outargs{1});
   endif
 
   if (nargin > 1)
@@ -120,7 +120,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     if (isempty (ext))
       ext = outargs{1}{retindex};
       ext = strrep (ext, "*", "");
-      if (ext != '.')
+      if (! strcmp (ext, '.'))
         [~, ~, ext] = fileparts (ext);  # paranoid checking of extension
         retfile = [retfile ext];
       endif

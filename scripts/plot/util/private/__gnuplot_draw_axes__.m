@@ -186,7 +186,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       screenpos(1) = axispos(1)+screenpos(1)*axispos(3);
       screenpos(2) = axispos(2)+screenpos(2)*axispos(4);
       fputs (plot_stream, "unset title;\n");
-      do_text (plot_stream, gnuplot_term, enhanced, t, nd, screenpos);
+      do_text (plot_stream, gnuplot_term, enhanced, t, h, screenpos);
     endif
   endif
 
@@ -1317,7 +1317,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         endif
 
       case "text"
-        do_text (plot_stream, gnuplot_term, enhanced, obj, nd);
+        do_text (plot_stream, gnuplot_term, enhanced, obj, h);
 
       case "hggroup"
         ## Push group children into the kid list.
@@ -2668,7 +2668,7 @@ function retval = __do_enhanced_option__ (enhanced, obj)
 
 endfunction
 
-function do_text (stream, gpterm, enhanced, obj, nd, screenpos)
+function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
 
   [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
   fontspec = create_fontspec (f, s, gpterm);
@@ -2683,7 +2683,7 @@ function do_text (stream, gpterm, enhanced, obj, nd, screenpos)
     lpos = screenpos;
   elseif (strcmpi (units, "normalized"))
     units = "graph";
-  elseif (strcmp (get (obj.parent, "yaxislocation"), "right")
+  elseif (strcmp (get (hax, "yaxislocation"), "right")
           && strcmp (units, "data"))
     units = "second";
   else
@@ -2721,20 +2721,16 @@ function do_text (stream, gpterm, enhanced, obj, nd, screenpos)
 
   ## FIXME: Multiline text produced the gnuplot
   ##        "warning: ft_render: skipping glyph"
-  if (nd == 3)
-    ## This produces the desired vertical alignment in 3D.
-    fprintf (stream,
-             "set label \"%s\" at %s %.15e,%.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
-             undo_string_escapes (label), units, lpos(1),
-             lpos(2), lpos(3), halign, angle, dx_and_dy, fontspec,
-             __do_enhanced_option__ (enhanced, obj), colorspec);
+  if (__calc_dimensions__ (hax) == 3)
+    zstr = sprintf(",%.15e", lpos(3));
   else
-    fprintf (stream,
-             "set label \"%s\" at %s %.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
-             undo_string_escapes (label), units,
-             lpos(1), lpos(2), halign, angle, dx_and_dy, fontspec,
-             __do_enhanced_option__ (enhanced, obj), colorspec);
+    zstr = "";
   endif
+  fprintf (stream,
+           "set label \"%s\" at %s %.15e,%.15e%s %s rotate by %f offset character %f,%f %s %s front %s;\n",
+           undo_string_escapes (label), units, lpos(1),
+           lpos(2), zstr, halign, angle, dx_and_dy, fontspec,
+           __do_enhanced_option__ (enhanced, obj), colorspec);
 
 endfunction
 

@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstring>
 
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -42,8 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 #include <unistd.h>
-
-#include <fcntl.h>
 
 #include "oct-rl-hist.h"
 
@@ -402,10 +401,8 @@ namespace octave
 
                     if (! fs)
                       {
-                        int tem;
-
-                        tem = gnulib::open (f.c_str (), O_CREAT, 0666);
-                        gnulib::close (tem);
+                        std::fstream tmp (f, std::ios::out);
+                        tmp.close ();
                       }
 
                     int status

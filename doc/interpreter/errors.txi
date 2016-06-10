@@ -73,6 +73,15 @@ When the @code{error} function is called, it prints the given message
 and returns to the Octave prompt.  This means that no code following
 a call to @code{error} will be executed.
 
+It is also possible to assign an identification string to an error.
+If an error has such an ID the user can catch this error
+as will be described in the next section.  To assign an ID to an error,
+simply call @code{error} with two string arguments, where the first
+is the identification string, and the second is the actual error.  Note
+that error IDs are in the format @qcode{"NAMESPACE:ERROR-NAME"}.  The namespace
+@qcode{"Octave"} is used for Octave's own errors.  Any other string is available
+as a namespace for user's own errors.
+
 @DOCSTRING(error)
 
 Since it is common to use errors when there is something wrong with
@@ -193,15 +202,6 @@ end_try_catch
 @DOCSTRING(lasterror)
 
 @DOCSTRING(lasterr)
-
-It is also possible to assign an identification string to an error.
-If an error has such an ID the user can catch this error
-as will be shown in the next example.  To assign an ID to an error,
-simply call @code{error} with two string arguments, where the first
-is the identification string, and the second is the actual error.  Note
-that error IDs are in the format @qcode{"NAMESPACE:ERROR-NAME"}.  The namespace
-@qcode{"Octave"} is used for Octave's own errors.  Any other string is available
-as a namespace for user's own errors.
 
 The next example counts indexing errors.  The errors are caught using the
 field identifier of the structure returned by the function @code{lasterror}.

@@ -31,7 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_GL2PS_H)
 
 #include <cstdio>
+
 #include <limits>
+
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <gl2ps.h>

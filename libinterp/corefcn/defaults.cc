@@ -30,9 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "dir-ops.h"
 #include "oct-env.h"
 #include "file-stat.h"

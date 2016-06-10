@@ -36,8 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include <sys/select.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"

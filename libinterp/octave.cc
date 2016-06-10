@@ -36,8 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <fcntl.h>
 #include <getopt.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "cmd-edit.h"
 #include "f77-fcn.h"

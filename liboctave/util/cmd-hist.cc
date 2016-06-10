@@ -41,9 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (USE_READLINE)
 #include <cstdlib>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "oct-rl-hist.h"
 
 #include "file-stat.h"

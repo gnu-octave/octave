@@ -33,9 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "vasnprintf.h"
 
 #include "dir-ops.h"

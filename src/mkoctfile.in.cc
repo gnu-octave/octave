@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
+#include <sys/types.h>
 #include <unistd.h>
 
 // This mess suggested by the autoconf manual.

@@ -33,9 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #  define _XOPEN_SOURCE 1
 #endif
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>

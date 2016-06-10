@@ -27,9 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cerrno>
 #include <cstring>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "filemode.h"
 
 #include "file-ops.h"

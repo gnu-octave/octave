@@ -29,8 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 
 #include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "strftime.h"
 

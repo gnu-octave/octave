@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "resource-manager.h"
 
-#include <unistd.h>
 octave_qt_link::octave_qt_link (QWidget *p)
   : octave_link (), main_thread (new QThread ()),
     command_interpreter (new octave_interpreter ())

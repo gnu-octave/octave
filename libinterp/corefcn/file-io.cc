@@ -48,8 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #include <fcntl.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #if defined (HAVE_ZLIB_H)
 #  include <zlib.h>

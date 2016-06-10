@@ -31,9 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <unistd.h>
-#include <fcntl.h>
-
 #if defined (HAVE_SYS_IOCTL_H)
 #  include <sys/ioctl.h>
 #endif

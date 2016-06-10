@@ -33,9 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdio>
 #include <cstring>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include <fcntl.h>
 
 #include "cmd-hist.h"

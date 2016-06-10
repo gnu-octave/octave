@@ -33,9 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"

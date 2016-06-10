@@ -194,9 +194,11 @@ typedef unsigned long ino_t;
 #  define OCTAVE_FLOAT_TRUNCATE
 #endif
 
-/* oct-types.h */
-
-#include <stdint.h>
+#if defined (__cplusplus)
+#  include <cstdint>
+#else
+#  include <stdint.h>
+#endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 

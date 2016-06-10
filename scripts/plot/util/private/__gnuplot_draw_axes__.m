@@ -934,7 +934,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
            endif
 
            sidx = 1;
-           style = "lines";
+           if (isempty (lt))
+             style = "";
+           else
+             style = "lines";
+           endif
            tmpwith = {};
 
            facesame = true;
@@ -1839,7 +1843,11 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
 
   sidx = 1;
   if (isempty (errbars))
-    style{sidx} = "lines";
+    if (isempty (lt))
+      style{sidx} = "";
+    else
+      style{sidx} = "lines";
+    endif
     ltidx(sidx) = idx;
 
     facesame = true;

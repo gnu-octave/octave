@@ -25,13 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <stdio.h>
-
 #include <signal.h>
 #include <setjmp.h>
 
 #if defined (__cplusplus)
-#  include <new>
 #  include <string>
 extern "C" {
 #endif

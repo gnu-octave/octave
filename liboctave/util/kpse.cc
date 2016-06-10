@@ -43,10 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #define DOSISH
 #endif
 
-#if defined (DOSISH)
-#define MONOCASE_FILENAMES      /* case-insensitive filename comparisons */
-#endif
-
 extern "C" {
 #if defined (__MINGW32__)
 #include <windows.h>
@@ -57,12 +53,6 @@ extern "C" {
 #include "win32lib.h"
 #endif
 #endif /* not WIN32 */
-
-#if defined (__DJGPP__)
-#include <fcntl.h>      /* for long filenames' stuff */
-#include <dir.h>        /* for 'getdisk' */
-#include <io.h>         /* for 'setmode' */
-#endif
 }
 
 /* Some drivers have partially integrated kpathsea changes.  */
@@ -79,17 +69,9 @@ extern "C" {
 /* If you want to find subdirectories in a directory with non-Unix
    semantics (specifically, if a directory with no subdirectories does
    not have exactly two links), define this.  */
-#if defined (__DJGPP__) || ! defined (DOSISH)
-/* Surprise!  DJGPP returns st_nlink exactly like on Unix.  */
+#if ! defined (DOSISH)
 #define ST_NLINK_TRICK
-#endif /* either not DOSISH or __DJGPP__ */
-
-#if defined (OS2)
-#define access ln_access
-#define fopen ln_fopen
-#define rename ln_rename
-#define stat ln_stat
-#endif /* OS2 */
+#endif /* not DOSISH */
 
 /* Define the characters which separate components of
    filenames and environment variable paths.  */
@@ -2137,16 +2119,6 @@ cached (const std::string& key)
   return 0;
 }
 
-/* Handle the magic path constructs.  */
-
-/* Declare recursively called routine.  */
-static void expand_elt (str_llist_type *, const std::string&, unsigned);
-
-/* POST is a pointer into the original element (which may no longer be
-   ELT) to just after the doubled DIR_SEP, perhaps to the null.  Append
-   subdirectories of ELT (up to ELT_LENGTH, which must be a /) to
-   STR_LIST_PTR.  */
-
 #if defined (WIN32)
 
 /* Shared across recursive calls, it acts like a stack. */
@@ -2223,7 +2195,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
          example, POST might be 'pk/ljfour', and they might have a
          directory '$TEXMF/fonts/pk/ljfour' that we should find.  */
       name += post;
-      expand_elt (str_list_ptr, name, elt_length);
+      checked_dir_list_add (str_list_ptr, name);
       name.resize (elt_length);
     }
 
@@ -2269,7 +2241,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
          example, POST might be 'pk/ljfour', and they might have a
          directory '$TEXMF/fonts/pk/ljfour' that we should find.  */
       name += post;
-      expand_elt (str_list_ptr, name, elt_length);
+      checked_dir_list_add (str_list_ptr, name);
       name.resize (elt_length);
     }
 
@@ -2327,51 +2299,6 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
 #endif /* not WIN32 */
 }
 
-/* Assume ELT is non-empty and non-NULL.  Return list of corresponding
-   directories (with no terminating NULL entry) in STR_LIST_PTR.  Start
-   looking for magic constructs at START.  */
-
-static void
-expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
-            unsigned /* start */)
-{
-#if 0
-  // We don't want magic constructs.
-
-  size_t elt_len = elt.length ();
-
-  size_t dir = start;
-
-
-  while (dir < elt_len)
-    {
-      if (IS_DIR_SEP (elt[dir]))
-        {
-          /* If two or more consecutive /'s, find subdirectories.  */
-          if (++dir < elt_len && IS_DIR_SEP (elt[dir]))
-            {
-              size_t i = dir;
-              while (i < elt_len && IS_DIR_SEP (elt[i]))
-                i++;
-
-              std::string post = elt.substr (i);
-
-              do_subdir (str_list_ptr, elt, dir, post);
-
-              return;
-            }
-
-          /* No special stuff at this slash.  Keep going.  */
-        }
-      else
-        dir++;
-    }
-#endif
-
-  /* When we reach the end of ELT, it will be a normal filename.  */
-  checked_dir_list_add (str_list_ptr, elt);
-}
-
 /* Here is the entry point.  Returns directory list for ELT.  */
 
 /* Given a path element ELT, return a pointer to a NULL-terminated list
@@ -2402,7 +2329,7 @@ kpse_element_dirs (const std::string& elt)
   *ret = 0;
 
   /* We handle the hard case in a subroutine.  */
-  expand_elt (ret, elt, 0);
+  checked_dir_list_add (ret, elt);
 
   /* Remember the directory list we just found, in case future calls are
      made with the same ELT.  */

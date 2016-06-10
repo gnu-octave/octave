@@ -51,7 +51,6 @@ extern "C" {
 #if defined (__MINGW32__)
 #include <windows.h>
 #include <fcntl.h>
-#include <dirent.h>
 #elif defined (WIN32)
 #if ! defined (_MSC_VER)
 #define __STDC__ 1
@@ -140,7 +139,8 @@ extern "C" {
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "sysdir.h"
+#include <dirent.h>
+
 #include "statdefs.h"
 
 /* define NAME_MAX, the maximum length of a single

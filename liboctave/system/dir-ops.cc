@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <string>
 
-#include "sysdir.h"
+#include <dirent.h>
 
 #include "dir-ops.h"
 #include "file-ops.h"

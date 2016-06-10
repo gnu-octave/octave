@@ -13,7 +13,6 @@ SYSTEM_INC = \
 
 NOINSTALL_SYSTEM_INC = \
   liboctave/system/pathlen.h \
-  liboctave/system/sysdir.h \
   liboctave/system/syswait.h
 
 SYSTEM_SRC = \

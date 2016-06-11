@@ -198,6 +198,19 @@ string_vector::c_str_vec (void) const
   return retval;
 }
 
+std::list<std::string>
+string_vector::std_list (void) const
+{
+  octave_idx_type len = numel ();
+
+  std::list<std::string> retval;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    retval.push_back (elem (i));
+
+  return retval;
+}
+
 void
 string_vector::delete_c_str_vec (const char * const *v)
 {

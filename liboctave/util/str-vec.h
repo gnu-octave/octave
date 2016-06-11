@@ -113,6 +113,8 @@ public:
 
   char **c_str_vec (void) const;
 
+  std::list<std::string> std_list (void) const;
+
   static void delete_c_str_vec (const char * const*);
 
   std::ostream&

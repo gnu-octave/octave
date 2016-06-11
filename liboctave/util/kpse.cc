@@ -230,10 +230,6 @@ static unsigned int kpathsea_debug = 0;
     } \
   while (0)
 
-#if ! defined (WIN32)
-static void xclosedir (DIR *d);
-#endif
-
 /* It's a little bizarre to be using the same type for the list and the
    elements of the list, but no reason not to in this case, I think --
    we never need a NULL string in the middle of the list, and an extra
@@ -1565,9 +1561,7 @@ checked_dir_list_add (str_llist_type *l, const std::string& dir)
 
 /* The cache.  Typically, several paths have the same element; for
    example, /usr/local/lib/texmf/fonts//.  We don't want to compute the
-   expansion of such a thing more than once.  Even though we also cache
-   the dir_links call, that's not enough -- without this path element
-   caching as well, the execution time doubles.  */
+   expansion of such a thing more than once.  */
 
 struct cache_entry
 {
@@ -1632,166 +1626,7 @@ static std::string dirname;
 
 #else /* WIN32 */
 
-/* Return -1 if FN isn't a directory, else its number of links.
-   Duplicate the call to stat; no need to incur overhead of a function
-   call for that little bit of cleanliness. */
-
-static int
-dir_links (const std::string& fn)
-{
-  int retval;
-
-  octave::sys::file_stat fs (fn);
-
-  retval = fs && (fs.is_dir () ? fs.nlink () : -1);
-
-#if defined (KPSE_DEBUG)
-  if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
-    std::cerr << "kdebug: dir_links (" << fn << ") => " << retval << std::endl;
-#endif
-
-  return retval;
-}
-
 #endif /* WIN32 */
-
-static inline void
-do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
-           unsigned elt_length, const std::string& post)
-{
-#if defined (WIN32)
-  WIN32_FIND_DATA find_file_data;
-  HANDLE hnd;
-  int proceed;
-#else
-  DIR *dir;
-  struct dirent *e;
-#endif /* not WIN32 */
-
-  std::string name = elt.substr (0, elt_length);
-
-  assert (IS_DIR_SEP (elt[elt_length - 1])
-          || IS_DEVICE_SEP (elt[elt_length - 1]));
-
-#if defined (WIN32)
-
-  dirname = name + "/*.*";         /* "*.*" or "*" -- seems equivalent. */
-
-  hnd = FindFirstFile (dirname.c_str (), &find_file_data);
-
-  if (hnd == INVALID_HANDLE_VALUE)
-    return;
-
-  /* Include top level before subdirectories, if nothing to match.  */
-  if (post.empty ())
-    dir_list_add (str_list_ptr, name);
-  else
-    {
-      /* If we do have something to match, see if it exists.  For
-         example, POST might be 'pk/ljfour', and they might have a
-         directory '$TEXMF/fonts/pk/ljfour' that we should find.  */
-      name += post;
-      checked_dir_list_add (str_list_ptr, name);
-      name.resize (elt_length);
-    }
-
-  proceed = 1;
-
-  while (proceed)
-    {
-      if (find_file_data.cFileName[0] != '.')
-        {
-          /* Construct the potential subdirectory name.  */
-          name += find_file_data.cFileName;
-
-          if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-            {
-              /* It's a directory, so append the separator.  */
-              name += DIR_SEP_STRING;
-              unsigned potential_len = name.length ();
-
-              do_subdir (str_list_ptr, name, potential_len, post);
-            }
-          name.resize (elt_length);
-        }
-
-      proceed = FindNextFile (hnd, &find_file_data);
-    }
-
-  FindClose (hnd);
-
-#else /* not WIN32 */
-
-  /* If we can't open it, quit.  */
-  dir = gnulib::opendir (name.c_str ());
-
-  if (! dir)
-    return;
-
-  /* Include top level before subdirectories, if nothing to match.  */
-  if (post.empty ())
-    dir_list_add (str_list_ptr, name);
-  else
-    {
-      /* If we do have something to match, see if it exists.  For
-         example, POST might be 'pk/ljfour', and they might have a
-         directory '$TEXMF/fonts/pk/ljfour' that we should find.  */
-      name += post;
-      checked_dir_list_add (str_list_ptr, name);
-      name.resize (elt_length);
-    }
-
-  while ((e = gnulib::readdir (dir)))
-    {
-      /* If it begins with a '.', never mind.  (This allows "hidden"
-         directories that the algorithm won't find.)  */
-
-      if (e->d_name[0] != '.')
-        {
-          /* Construct the potential subdirectory name.  */
-          name += e->d_name;
-
-          /* If we can't stat it, or if it isn't a directory, continue.  */
-          int links = dir_links (name);
-
-          if (links >= 0)
-            {
-              /* It's a directory, so append the separator.  */
-              name += DIR_SEP_STRING;
-              unsigned potential_len = name.length ();
-
-              /* Should we recurse?  To see if the subdirectory is a
-                 leaf, check if it has two links (one for . and one for
-                 ..).  This means that symbolic links to directories do
-                 not affect the leaf-ness.  This is arguably wrong, but
-                 the only alternative I know of is to stat every entry
-                 in the directory, and that is unacceptably slow.
-
-                 The #if here makes all this configurable at
-                 compile-time, so that if we're using VMS directories or
-                 some such, we can still find subdirectories, even if it
-                 is much slower.  */
-#if defined (ST_NLINK_TRICK)
-              if (links != 2)
-#endif /* not ST_NLINK_TRICK */
-                /* All criteria are met; find subdirectories.  */
-                do_subdir (str_list_ptr, name, potential_len, post);
-#if defined (ST_NLINK_TRICK)
-              else if (post.empty ())
-                /* Nothing to match, no recursive subdirectories to
-                   look for: we're done with this branch.  Add it.  */
-                dir_list_add (str_list_ptr, name);
-#endif
-            }
-
-          /* Remove the directory entry we just checked from 'name'.  */
-          name.resize (elt_length);
-        }
-    }
-
-  xclosedir (dir);
-#endif /* not WIN32 */
-}
 
 /* Here is the entry point.  Returns directory list for ELT.  */
 
@@ -1845,17 +1680,6 @@ kpse_element_dirs (const std::string& elt)
 
   return ret;
 }
-
-#if ! defined (WIN32)
-void
-xclosedir (DIR *d)
-{
-  int ret = gnulib::closedir (d);
-
-  if (ret != 0)
-    FATAL ("closedir failed");
-}
-#endif
 
 /* Implementation of a linked list of strings.  */
 

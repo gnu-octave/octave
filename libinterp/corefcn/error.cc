@@ -1875,6 +1875,7 @@ fields are set to their default values.\n\
           std::string new_error_name;
           int new_error_line = -1;
           int new_error_column = -1;
+          bool initialize_stack = false;
 
           if (new_err.contains ("message"))
             {
@@ -1892,42 +1893,49 @@ fields are set to their default values.\n\
 
           if (new_err.contains ("stack"))
             {
-              new_err_stack =
-                new_err.getfield ("stack").scalar_map_value ();
-
-              if (new_err_stack.contains ("file"))
+              if (new_err.getfield ("stack").numel () == 0)
+                initialize_stack = true;
+              else
                 {
-                  const std::string tmp =
-                    new_err_stack.getfield ("file").string_value ();
-                  new_error_file = tmp;
-                }
+                  new_err_stack =
+                    new_err.getfield ("stack").scalar_map_value ();
 
-              if (new_err_stack.contains ("name"))
-                {
-                  const std::string tmp =
-                    new_err_stack.getfield ("name").string_value ();
-                  new_error_name = tmp;
-                }
+                  if (new_err_stack.contains ("file"))
+                    {
+                      const std::string tmp =
+                        new_err_stack.getfield ("file").string_value ();
+                      new_error_file = tmp;
+                    }
 
-              if (new_err_stack.contains ("line"))
-                {
-                  const int tmp =
-                    new_err_stack.getfield ("line").nint_value ();
-                  new_error_line = tmp;
-                }
+                  if (new_err_stack.contains ("name"))
+                    {
+                      const std::string tmp =
+                        new_err_stack.getfield ("name").string_value ();
+                      new_error_name = tmp;
+                    }
 
-              if (new_err_stack.contains ("column"))
-                {
-                  const int tmp =
-                    new_err_stack.getfield ("column").nint_value ();
-                  new_error_column = tmp;
+                  if (new_err_stack.contains ("line"))
+                    {
+                      const int tmp =
+                        new_err_stack.getfield ("line").nint_value ();
+                      new_error_line = tmp;
+                    }
+
+                  if (new_err_stack.contains ("column"))
+                    {
+                      const int tmp =
+                        new_err_stack.getfield ("column").nint_value ();
+                      new_error_column = tmp;
+                    }
                 }
             }
 
           Vlast_error_message = new_error_message;
           Vlast_error_id = new_error_id;
 
-          if (new_err.contains ("stack"))
+          if (initialize_stack)
+            Vlast_error_stack = initialize_last_error_stack ();
+          else if (new_err.contains ("stack"))
             {
               new_err_stack.setfield ("file", new_error_file);
               new_err_stack.setfield ("name", new_error_name);
@@ -1950,6 +1958,19 @@ fields are set to their default values.\n\
 
   return ovl (err);
 }
+
+/*
+## Test lasterror with empty error state
+%!test
+%! lasterror ("reset");
+%! x = lasterror ();
+%! assert (x.identifier, "")
+%! assert (x.message, "")
+%! assert (isempty (x.stack))
+%! lasterror (x);
+%! y = lasterror ();
+%! assert (y, x);
+*/
 
 DEFUN (lasterr, args, nargout,
        "-*- texinfo -*-\n\

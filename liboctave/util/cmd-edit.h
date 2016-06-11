@@ -213,15 +213,6 @@ namespace octave
 
     static std::set<event_hook_fcn> event_hook_set;
 
-    typedef std::set<startup_hook_fcn>::iterator startup_hook_set_iterator;
-    typedef std::set<startup_hook_fcn>::const_iterator startup_hook_set_const_iterator;
-
-    typedef std::set<pre_input_hook_fcn>::iterator pre_input_hook_set_iterator;
-    typedef std::set<pre_input_hook_fcn>::const_iterator pre_input_hook_set_const_iterator;
-
-    typedef std::set<event_hook_fcn>::iterator event_hook_set_iterator;
-    typedef std::set<event_hook_fcn>::const_iterator event_hook_set_const_iterator;
-
     // The real thing.
     static command_editor *instance;
 

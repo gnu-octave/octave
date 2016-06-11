@@ -31,10 +31,9 @@ singleton_cleanup_list *singleton_cleanup_list::instance = 0;
 
 singleton_cleanup_list::~singleton_cleanup_list (void)
 {
-  for (std::set<fptr>::iterator p = fcn_list.begin ();
-       p != fcn_list.end (); p++)
+  for (auto fcnptr : fcn_list)
     {
-      fptr fcn = *p;
+      fptr fcn = *fcnptr;
 
       fcn ();
     }

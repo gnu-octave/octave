@@ -116,7 +116,7 @@ namespace octave
   void
   dynamic_library::dynlib_rep::add_fcn_name (const std::string& name)
   {
-    fcn_names_iterator p = fcn_names.find (name);
+    auto p = fcn_names.find (name);
 
     if (p == fcn_names.end ())
       fcn_names[name] = 1;
@@ -129,7 +129,7 @@ namespace octave
   {
     bool retval = false;
 
-    fcn_names_iterator p = fcn_names.find (fcn_name);
+    auto p = fcn_names.find (fcn_name);
 
     if (p != fcn_names.end () && --(p->second) == 0)
       {
@@ -143,7 +143,7 @@ namespace octave
   void
   dynamic_library::dynlib_rep::do_close_hook (dynamic_library::close_hook cl_hook)
   {
-    for (fcn_names_iterator p = fcn_names.begin (); p != fcn_names.end (); p++)
+    for (auto p = fcn_names.begin (); p != fcn_names.end (); p++)
       cl_hook (p->first);
 
     fcn_names.clear ();

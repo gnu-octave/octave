@@ -1090,10 +1090,9 @@ namespace octave
   int
   command_editor::startup_handler (void)
   {
-    for (startup_hook_set_iterator p = startup_hook_set.begin ();
-         p != startup_hook_set.end (); p++)
+    for (auto fcnptr : startup_hook_set)
       {
-        startup_hook_fcn f = *p;
+        startup_hook_fcn f = *fcnptr;
 
         if (f)
           f ();
@@ -1105,10 +1104,9 @@ namespace octave
   int
   command_editor::pre_input_handler (void)
   {
-    for (pre_input_hook_set_iterator p = pre_input_hook_set.begin ();
-         p != pre_input_hook_set.end (); p++)
+    for (auto fcnptr : pre_input_hook_set)
       {
-        pre_input_hook_fcn f = *p;
+        pre_input_hook_fcn f = *fcnptr;
 
         if (f)
           f ();
@@ -1126,10 +1124,9 @@ namespace octave
 
     event_hook_lock.unlock ();
 
-    for (event_hook_set_iterator p = hook_set.begin ();
-         p != hook_set.end (); p++)
+    for (auto fcnptr : hook_set)
       {
-        event_hook_fcn f = *p;
+        event_hook_fcn f = *fcnptr;
 
         if (f)
           f ();
@@ -1482,7 +1479,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        startup_hook_set_iterator p = startup_hook_set.find (f);
+        auto p = startup_hook_set.find (f);
 
         if (p != startup_hook_set.end ())
           startup_hook_set.erase (p);
@@ -1508,7 +1505,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        pre_input_hook_set_iterator p = pre_input_hook_set.find (f);
+        auto p = pre_input_hook_set.find (f);
 
         if (p != pre_input_hook_set.end ())
           pre_input_hook_set.erase (p);
@@ -1538,7 +1535,7 @@ namespace octave
 
     if (instance_ok ())
       {
-        event_hook_set_iterator p = event_hook_set.find (f);
+        auto p = event_hook_set.find (f);
 
         if (p != event_hook_set.end ())
           event_hook_set.erase (p);

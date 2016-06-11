@@ -3066,7 +3066,8 @@ octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
               delete lhs;
               delete rhs;
 
-              bison_error ("invalid assignment to keyword \"" + kw + "\"", l, c);
+              bison_error ("invalid assignment to keyword \"" + kw + "\"",
+                           l, c);
 
               return 0;
             }
@@ -3638,7 +3639,8 @@ octave_base_parser::make_index_expression (tree_expression *expr,
 
       if (expr->is_index_expression ())
         {
-          tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+          tree_index_expression *tmp =
+            static_cast<tree_index_expression *> (expr);
 
           tmp->append (args, type);
 
@@ -3986,7 +3988,8 @@ octave_base_parser::bison_error (const std::string& str, int l, int c)
 
   std::ostringstream output_buf;
 
-  if (lexer.reading_fcn_file || lexer.reading_script_file || lexer.reading_classdef_file)
+  if (lexer.reading_fcn_file || lexer.reading_script_file
+      || lexer.reading_classdef_file)
     output_buf << "parse error near line " << err_line
                << " of file " << lexer.fcn_file_full_name;
   else
@@ -4697,7 +4700,7 @@ the filename and the extension.\n\
   std::string arg;
 
   if (nargin == 1)
-    arg = args(0).xstring_value ("mfilename: expecting argument to be a character string");
+    arg = args(0).xstring_value ("mfilename: argument must be a string");
 
   std::string fname;
 
@@ -4755,12 +4758,12 @@ context of the function that called the present function\n\
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string file_name = args(0).xstring_value ("source: expecting filename as argument");
+  std::string file_name = args(0).xstring_value ("source: FILE must be a string");
 
   std::string context;
 
   if (nargin == 2)
-    context = args(1).xstring_value ("source: expecting context to be character string");
+    context = args(1).xstring_value ("source: CONTEXT must be a string");
 
   source_file (file_name, context);
 
@@ -4846,7 +4849,7 @@ feval (const octave_value_list& args, int nargout)
           retval = f_arg.do_multi_index_op (nargout, tmp_args);
         }
       else
-        error ("feval: first argument must be a string, inline function or a function handle");
+        error ("feval: first argument must be a string, inline function, or a function handle");
     }
 
   return retval;
@@ -5075,8 +5078,9 @@ eval ('error (\"This is a bad example\");',\n\
 Programming Note: if you are only using @code{eval} as an error-capturing\n\
 mechanism, rather than for the execution of arbitrary code strings,\n\
 Consider using try/catch blocks or unwind_protect/unwind_protect_cleanup\n\
-blocks instead.  These techniques have higher performance and don't introduce\n\
-the security considerations that the evaluation of arbitrary code does.\n\
+blocks instead.  These techniques have higher performance and don't\n\
+introduce the security considerations that the evaluation of arbitrary code\n\
+does.\n\
 @seealso{evalin, evalc, assignin, feval}\n\
 @end deftypefn")
 {
@@ -5323,9 +5327,9 @@ which would normally be written to the console are captured and returned in\n\
 the string @var{s}.\n\
 \n\
 The @code{diary} is disabled during the execution of this function.  When\n\
-@code{system} is used, any output produced by external programs is @emph{not}\n\
-captured, unless their output is captured by the @code{system} function\n\
-itself.\n\
+@code{system} is used, any output produced by external programs is\n\
+@emph{not} captured, unless their output is captured by the @code{system}\n\
+function itself.\n\
 \n\
 @example\n\
 @group\n\
@@ -5453,8 +5457,8 @@ DEFUN (__parser_debug_flag__, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {} {@var{val} =} __parser_debug_flag__ ()\n\
 @deftypefnx {} {@var{old_val} =} __parser_debug_flag__ (@var{new_val})\n\
-Query or set the internal flag that determines whether Octave's parser prints\n\
-debug information as it processes an expression.\n\
+Query or set the internal flag that determines whether Octave's parser\n\
+prints debug information as it processes an expression.\n\
 @seealso{__lexer_debug_flag__}\n\
 @end deftypefn")
 {

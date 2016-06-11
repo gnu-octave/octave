@@ -241,12 +241,11 @@ static void xclosedir (DIR *d);
 
 struct str_llist_elt
 {
-  str_llist_elt (void) : str (), moved (0), next (0) { }
+  str_llist_elt (void) : str (), next (0) { }
 
   ~str_llist_elt (void) { }
 
   std::string str;
-  int moved;
   struct str_llist_elt *next;
 };
 
@@ -254,12 +253,9 @@ typedef str_llist_elt str_llist_elt_type;
 typedef str_llist_elt *str_llist_type;
 
 #define STR_LLIST(sl) ((sl).str)
-#define STR_LLIST_MOVED(sl) ((sl).moved)
 #define STR_LLIST_NEXT(sl) ((sl).next)
 
 static void str_llist_add (str_llist_type *l, const std::string& str);
-
-static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
 
 static std::string kpse_var_expand (const std::string& src);
 
@@ -343,27 +339,6 @@ private:
   // No assignment.
   kpse_path_iterator& operator = (const kpse_path_iterator&);
 };
-
-/* Here's the simple one, when a program just wants a value.  */
-
-static std::string
-kpse_var_value (const std::string& var)
-{
-  std::string ret;
-
-  std::string tmp = octave::sys::env::getenv (var);
-
-  if (! tmp.empty ())
-    ret = kpse_var_expand (tmp);
-
-#if defined (KPSE_DEBUG)
-  if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
-    std::cerr << "kdebug: variable: " << var << " = "
-              << (tmp.empty () ? "(nil)" :  tmp) << std::endl;
-#endif
-
-  return ret;
-}
 
 /* Truncate any too-long components in NAME, returning the result.  It's
    too bad this is necessary.  See comments in readable.c for why.  */
@@ -536,9 +511,6 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
       if (! tmp.empty ())
         {
           ret.push_back (potential);
-
-          /* Move this element towards the top of the list.  */
-          str_llist_float (dirs, elt);
 
           if (! search_all)
             return ret;
@@ -1897,7 +1869,6 @@ str_llist_add (str_llist_type *l, const std::string& str)
 
   /* The new element will be at the end of the list.  */
   STR_LLIST (*new_elt) = str;
-  STR_LLIST_MOVED (*new_elt) = 0;
   STR_LLIST_NEXT (*new_elt) = 0;
 
   /* Find the current end of the list.  */
@@ -1908,56 +1879,6 @@ str_llist_add (str_llist_type *l, const std::string& str)
     *l = new_elt;
   else
     STR_LLIST_NEXT (*e) = new_elt;
-}
-
-/* Move an element towards the top.  The idea is that when a file is
-   found in a given directory, later files will likely be in that same
-   directory, and looking for the file in all the directories in between
-   is thus a waste.  */
-
-static void
-str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
-{
-  str_llist_elt_type *last_moved, *unmoved;
-
-  /* If we've already moved this element, never mind.  */
-  if (STR_LLIST_MOVED (*mover))
-    return;
-
-  /* Find the first unmoved element (to insert before).  We're
-     guaranteed this will terminate, since MOVER itself is currently
-     unmoved, and it must be in L (by hypothesis).  */
-  for (last_moved = 0, unmoved = *l; STR_LLIST_MOVED (*unmoved);
-       last_moved = unmoved, unmoved = STR_LLIST_NEXT (*unmoved))
-    ;
-
-  /* If we are the first unmoved element, nothing to relink.  */
-  if (unmoved != mover)
-    {
-      /* Remember 'mover's current successor, so we can relink 'mover's
-         predecessor to it.  */
-      str_llist_elt_type *before_mover;
-      str_llist_elt_type *after_mover = STR_LLIST_NEXT (*mover);
-
-      /* Find 'mover's predecessor.  */
-      for (before_mover = unmoved; STR_LLIST_NEXT (*before_mover) != mover;
-           before_mover = STR_LLIST_NEXT (*before_mover))
-        ;
-
-      /* 'before_mover' now links to 'after_mover'.  */
-      STR_LLIST_NEXT (*before_mover) = after_mover;
-
-      /* Insert 'mover' before 'unmoved' and after 'last_moved' (or at
-         the head of the list).  */
-      STR_LLIST_NEXT (*mover) = unmoved;
-      if (! last_moved)
-        *l = mover;
-      else
-        STR_LLIST_NEXT (*last_moved) = mover;
-    }
-
-  /* We've moved it.  */
-  STR_LLIST_MOVED (*mover) = 1;
 }
 
 /* Variable expansion.  */

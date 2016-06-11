@@ -55,11 +55,6 @@ extern "C" {
 #endif /* not WIN32 */
 }
 
-/* Some drivers have partially integrated kpathsea changes.  */
-#if ! defined (KPATHSEA)
-#define KPATHSEA 32
-#endif
-
 /* System dependencies that are figured out by 'configure'.  If we are
    compiling standalone, we get our c-auto.h.  Otherwise, the package
    containing us must provide this (unless it can somehow generate ours
@@ -104,6 +99,7 @@ extern "C" {
 #define NAME_BEGINS_WITH_DEVICE(name) 0
 #endif
 
+#include "file-stat.h"
 #include "lo-error.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
@@ -122,8 +118,6 @@ extern "C" {
 #include <unistd.h>
 
 #include <dirent.h>
-
-#include "statdefs.h"
 
 /* define NAME_MAX, the maximum length of a single
    component in a filename.  No such limit may exist, or may vary
@@ -238,7 +232,6 @@ static unsigned int kpathsea_debug = 0;
    defined (most of them anyway). */
 
 #define access  _access
-#define stat    _stat
 #define strdup  _strdup
 
 #define S_IFMT   _S_IFMT
@@ -323,9 +316,6 @@ static std::string kpse_expand (const std::string& s);
 static std::string kpse_expand_default (const std::string& path,
                                         const std::string& dflt);
 
-static string_vector kpse_db_search (const std::string& name,
-                                     const std::string& path_elt, bool all);
-
 #include <ctime> /* for 'time' */
 
 static bool
@@ -354,75 +344,6 @@ xfopen (const std::string& filename, const char *mode)
              reinterpret_cast<intptr_t> (f));
 
   return f;
-}
-
-/* A single (key,value) pair.  */
-
-struct hash_element_type
-{
-  std::string key;
-  std::string value;
-  struct hash_element_type *next;
-};
-
-/* The usual arrangement of buckets initialized to null.  */
-
-struct hash_table_type
-{
-  hash_element_type **buckets;
-  unsigned size;
-};
-
-static unsigned
-kpse_hash (hash_table_type table, const std::string& key)
-{
-  unsigned n = 0;
-
-  /* Our keys aren't often anagrams of each other, so no point in
-     weighting the characters.  */
-  size_t len = key.length ();
-  for (size_t i = 0; i < len; i++)
-    n = (n + n + key[i]) % table.size;
-
-  return n;
-}
-
-/* Look up STR in MAP.  Return a (dynamically-allocated) list of the
-   corresponding strings or NULL if no match.  */
-
-static string_vector
-hash_lookup (hash_table_type table, const std::string& key)
-{
-  hash_element_type *p;
-  string_vector ret;
-  unsigned n = kpse_hash (table, key);
-
-  /* Look at everything in this bucket.  */
-  for (p = table.buckets[n]; p; p = p->next)
-    if (key == p->key)
-      ret.append (p->value);
-
-#if defined (KPSE_DEBUG)
-  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
-    {
-      DEBUGF1 ("hash_lookup (%s) =>", key.c_str ());
-      if (ret.empty ())
-        gnulib::fputs (" (nil)\n", stderr);
-      else
-        {
-          int len = ret.numel ();
-          for (int i = 0; i < len; i++)
-            {
-              gnulib::putc (' ', stderr);
-              gnulib::fputs (ret[i].c_str (), stderr);
-            }
-          gnulib::putc ('\n', stderr);
-        }
-      gnulib::fflush (stderr);
-    }
-#endif
-
-  return ret;
 }
 
 /* A way to step through a path, extracting one directory name at a
@@ -555,7 +476,7 @@ kpse_truncate_filename (const std::string& name)
 
 #if defined (WIN32)
 static inline bool
-READABLE (const std::string& fn, struct stat&)
+READABLE (const std::string& fn)
 {
   const char *t = fn.c_str ();
   return (GetFileAttributes (t) != 0xFFFFFFFF
@@ -563,11 +484,20 @@ READABLE (const std::string& fn, struct stat&)
 }
 #else
 static inline bool
-READABLE (const std::string& fn, struct stat& st)
+READABLE (const std::string& fn)
 {
+  bool retval = false;
+
   const char *t = fn.c_str ();
-  return (access (t, R_OK) == 0
-          && stat (t, &(st)) == 0 && ! S_ISDIR (st.st_mode));
+
+  if (access (t, R_OK) == 0)
+    {
+      octave::sys::file_stat fs (fn);
+
+      retval = fs && ! fs.is_dir ();
+    }
+
+  return retval;
 }
 #endif
 
@@ -580,10 +510,9 @@ READABLE (const std::string& fn, struct stat& st)
 static std::string
 kpse_readable_file (const std::string& name)
 {
-  struct stat st;
   std::string ret;
 
-  if (READABLE (name, st))
+  if (READABLE (name))
     {
       ret = name;
 
@@ -596,7 +525,7 @@ kpse_readable_file (const std::string& name)
       /* Perhaps some other error will occur with the truncated name,
          so let's call access again.  */
 
-      if (! READABLE (ret, st))
+      if (! READABLE (ret))
         {
           /* Failed.  */
           ret = "";
@@ -619,33 +548,12 @@ kpse_readable_file (const std::string& name)
   return ret;
 }
 
-/* Sorry this is such a system-dependent mess, but I can't see any way
-   to usefully generalize.  */
-
 static bool
 kpse_absolute_p (const std::string& filename, int relative_ok)
 {
-  size_t len = filename.length ();
-
-  int absolute = (len > 0 && IS_DIR_SEP (filename[0]))
-#if defined (DOSISH)
-                 /* Novell allows non-alphanumeric drive letters. */
-                 || (len > 0 && IS_DEVICE_SEP (filename[1]))
-#endif /* DOSISH */
-#if defined (WIN32)
-                 /* UNC names */
-                 || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
-#endif
-                 ;
-
-  int explicit_relative
-    = relative_ok
-      && (len > 1
-          && filename[0] == '.'
-          && (IS_DIR_SEP (filename[1])
-              || (len > 2 && filename[1] == '.' && IS_DIR_SEP (filename[2]))));
-
-  return absolute || explicit_relative;
+  return (octave::sys::env::absolute_pathname (filename)
+          || (relative_ok
+              && octave::sys::env::rooted_relative_pathname (filename)));
 }
 
 /* The very first search is for texmf.cnf, called when someone tries to
@@ -775,16 +683,6 @@ path_search (const std::string& path, const std::string& name,
       std::string elt = *pi;
 
       string_vector found;
-      bool allow_disk_search = true;
-
-      if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
-        {
-          /* Those magic leading chars in a path element means don't
-             search the disk for this elt.  And move past the magic to
-             get to the name.  */
-          allow_disk_search = false;
-          elt = elt.substr (2);
-        }
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))
@@ -807,17 +705,12 @@ path_search (const std::string& path, const std::string& name,
 
       /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
          (search), also tests first_search, and does the resetting.  */
-      found = first_search ? string_vector () : kpse_db_search (name, elt, all);
+      if (first_search)
+        found = string_vector ();
 
-      /* Search the filesystem if (1) the path spec allows it, and either
-         (2a) we are searching for texmf.cnf ; or
-         (2b) no db exists; or
-         (2c) no db's are relevant to this elt; or
-         (3) MUST_EXIST && NAME was not in the db.
-         In (2*), 'found' will be NULL.
-         In (3),  'found' will be an empty list. */
+      /* Search the filesystem.  */
 
-      if (allow_disk_search && found.empty ())
+      if (found.empty ())
         {
           str_llist_type *dirs = kpse_element_dirs (elt);
 
@@ -901,13 +794,7 @@ search (const std::string& path, const std::string& original_name,
    (regular) file.
 
    Otherwise, look in each of the directories specified in PATH (also do
-   tilde and variable expansion on elements in PATH), using a prebuilt
-   db (see db.h) if it's relevant for a given path element.
-
-   If the prebuilt db doesn't exist, or if MUST_EXIST is true and NAME
-   isn't found in the prebuilt db, look on the filesystem.  (I.e., if
-   MUST_EXIST is false, and NAME isn't found in the db, do *not* look on
-   the filesystem.)
+   tilde and variable expansion on elements in PATH).
 
    The caller must expand PATH.  This is because it makes more sense to
    do this once, in advance, instead of for every search using it.
@@ -953,17 +840,6 @@ path_find_first_of (const std::string& path, const string_vector& names,
       str_llist_type *dirs;
       str_llist_elt_type *dirs_elt;
       string_vector found;
-      bool allow_disk_search = true;
-
-      if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
-        {
-          /* Those magic leading chars in a path element means don't
-             search the disk for this elt.  And move past the magic to
-             get to the name.  */
-
-          allow_disk_search = false;
-          elt = elt.substr (2);
-        }
 
       /* Do not touch the device if present */
 
@@ -999,21 +875,12 @@ path_find_first_of (const std::string& path, const string_vector& names,
               /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
                  (find_first_of), also tests first_search, and does the
                  resetting.  */
-              found = first_search ? string_vector ()
-                                   : kpse_db_search (name, dir.c_str (), all);
+              if (first_search)
+                found = string_vector ();
 
-              /* Search the filesystem if (1) the path spec allows it,
-                 and either
+              /* Search the filesystem.  */
 
-                   (2a) we are searching for texmf.cnf ; or
-                   (2b) no db exists; or
-                   (2c) no db's are relevant to this elt; or
-                   (3) MUST_EXIST && NAME was not in the db.
-
-                 In (2*), 'found' will be NULL.
-                 In (3),  'found' will be an empty list. */
-
-              if (allow_disk_search && found.empty ())
+              if (found.empty ())
                 {
                   static str_llist_type *tmp = 0;
 
@@ -1660,57 +1527,6 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
   return c;
 }
 
-/* For each file format, we record the following information.  The main
-   thing that is not part of this structure is the environment variable
-   lists.  They are used directly in tex-file.c.  We could incorporate
-   them here, but it would complicate the code a bit.  We could also do
-   it via variable expansion, but not now, maybe not ever:
-   ${PKFONTS-${TEXFONTS-/usr/local/lib/texmf/fonts//}}.  */
-
-struct kpse_format_info_type
-{
-  kpse_format_info_type (void)
-    : type (), path (), raw_path (), path_source (), override_path (),
-      client_path (), cnf_path (), default_path (), suffix ()
-  { }
-
-  ~kpse_format_info_type (void) { }
-
-  std::string type;          /* Human-readable description.  */
-  std::string path;          /* The search path to use.  */
-  std::string raw_path;      /* Pre-$~ (but post-default) expansion.  */
-  std::string path_source;   /* Where the path started from.  */
-  std::string override_path; /* From client environment variable.  */
-  std::string client_path;   /* E.g., from dvips's config.ps.  */
-  std::string cnf_path;      /* From texmf.cnf.  */
-  std::string default_path;  /* If all else fails.  */
-  string_vector suffix;      /* For kpse_find_file to check for/append.  */
-};
-
-/* The sole variable of that type, indexed by 'kpse_file_format_type'.
-   Initialized by calls to 'kpse_find_file' for 'kpse_init_format'.  */
-static kpse_format_info_type kpse_format_info;
-
-/* And EXPAND_DEFAULT calls kpse_expand_default on try_path and the
-   present info->path.  */
-#define EXPAND_DEFAULT(try_path, source_string) \
-  do \
-    { \
-      if (! try_path.empty ()) \
-        { \
-          info.raw_path = try_path;     \
-          info.path = kpse_expand_default (try_path, info.path); \
-          info.path_source = source_string;     \
-        } \
-    } \
-  while (0)
-
-static hash_table_type db; /* The hash table for all the ls-R's.  */
-
-static hash_table_type alias_db;
-
-static string_vector db_dir_list;
-
 /* Return true if FILENAME could be in PATH_ELT, i.e., if the directory
    part of FILENAME matches PATH_ELT.  Have to consider // wildcards, but
    $ and ~ expansion have already been done.  */
@@ -1784,173 +1600,6 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
     }
 
   return matched;
-}
-
-/* If DB_DIR is a prefix of PATH_ELT, return true; otherwise false.
-   That is, the question is whether to try the db for a file looked up
-   in PATH_ELT.  If PATH_ELT == ".", for example, the answer is no.  If
-   PATH_ELT == "/usr/local/lib/texmf/fonts//tfm", the answer is yes.
-
-   In practice, ls-R is only needed for lengthy subdirectory
-   comparisons, but there's no gain to checking PATH_ELT to see if it is
-   a subdir match, since the only way to do that is to do a string
-   search in it, which is all we do anyway.  */
-
-static bool
-elt_in_db (const std::string& db_dir, const std::string& path_elt)
-{
-  bool found = false;
-
-  size_t db_dir_len = db_dir.length ();
-  size_t path_elt_len = path_elt.length ();
-
-  size_t i = 0;
-
-  while (! found && db_dir[i] == path_elt[i])
-    {
-      i++;
-      /* If we've matched the entire db directory, it's good.  */
-      if (i == db_dir_len)
-        found = true;
-
-      /* If we've reached the end of PATH_ELT, but not the end of the db
-         directory, it's no good.  */
-      else if (i == path_elt_len)
-        break;
-    }
-
-  return found;
-}
-
-/* Avoid doing anything if this PATH_ELT is irrelevant to the databases. */
-
-/* Return list of matches for NAME in the ls-R file matching PATH_ELT.  If
-   ALL is set, return (null-terminated list) of all matches, else just
-   the first.  If no matches, return a pointer to an empty list.  If no
-   databases can be read, or PATH_ELT is not in any of the databases,
-   return NULL.  */
-
-static string_vector
-kpse_db_search (const std::string& name_arg,
-                const std::string& orig_path_elt, bool all)
-{
-  bool done;
-  string_vector ret;
-  string_vector aliases;
-  bool relevant = false;
-
-  std::string name = name_arg;
-
-  /* If we failed to build the database (or if this is the recursive
-     call to build the db path), quit.  */
-  if (! db.buckets)
-    return ret;
-
-  /* When tex-glyph.c calls us looking for, e.g., dpi600/cmr10.pk, we
-     won't find it unless we change NAME to just 'cmr10.pk' and append
-     '/dpi600' to PATH_ELT.  We are justified in using a literal '/'
-     here, since that's what tex-glyph.c unconditionally uses in
-     DPI_BITMAP_SPEC.  But don't do anything if the / begins NAME; that
-     should never happen.  */
-  std::string path_elt;
-  size_t last_slash = name.rfind ('/');
-  if (last_slash != std::string::npos && last_slash != 0)
-    {
-      std::string dir_part = name.substr (0, last_slash);
-      name = name.substr (last_slash + 1);
-    }
-  else
-    path_elt = orig_path_elt;
-
-  /* Don't bother doing any lookups if this 'path_elt' isn't covered by
-     any of database directories.  We do this not so much because the
-     extra couple of hash lookups matter -- they don't -- but rather
-     because we want to return NULL in this case, so path_search can
-     know to do a disk search.  */
-  for (int e = 0; ! relevant && e < db_dir_list.numel (); e++)
-    relevant = elt_in_db (db_dir_list[e], path_elt);
-
-  if (! relevant)
-    return ret;
-
-  /* If we have aliases for this name, use them.  */
-  if (alias_db.buckets)
-    aliases = hash_lookup (alias_db, name);
-
-  /* Push aliases up by one and insert the original name at the front.  */
-  int len = aliases.numel ();
-  aliases.resize (len+1);
-  for (int i = len; i > 0; i--)
-    aliases[i] = aliases[i - 1];
-  aliases[0] = name;
-
-  done = false;
-  len = aliases.numel ();
-  for (int i = 0; i < len && ! done; i++)
-    {
-      std::string atry = aliases[i];
-
-      /* We have an ls-R db.  Look up 'atry'.  */
-      string_vector db_dirs = hash_lookup (db, atry);
-
-      /* For each filename found, see if it matches the path element.  For
-         example, if we have .../cx/cmr10.300pk and .../ricoh/cmr10.300pk,
-         and the path looks like .../cx, we don't want the ricoh file.  */
-
-      int db_dirs_len = db_dirs.numel ();
-      for (int j = 0; j < db_dirs_len && ! done; j++)
-        {
-          std::string db_file = db_dirs[j] + atry;
-          bool matched = match (db_file, path_elt);
-
-#if defined (KPSE_DEBUG)
-          if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-            DEBUGF3 ("db:match (%s,%s) = %d\n",
-                     db_file.c_str (), path_elt.c_str (), matched);
-#endif
-
-          /* We got a hit in the database.  Now see if the file actually
-             exists, possibly under an alias.  */
-          if (matched)
-            {
-              std::string found;
-              std::string tmp = kpse_readable_file (db_file);
-              if (! tmp.empty ())
-                found = db_file;
-              else
-                {
-                  /* The hit in the DB doesn't exist in disk.  Now try
-                     all its aliases.  For example, suppose we have a
-                     hierarchy on CD, thus 'mf.bas', but ls-R contains
-                     'mf.base'.  Find it anyway.  Could probably work
-                     around this with aliases, but this is pretty easy
-                     and shouldn't hurt.  The upshot is that if one of
-                     the aliases actually exists, we use that.  */
-
-                  int aliases_len = aliases.numel ();
-
-                  for (int k = 1; k < aliases_len && found.empty (); k++)
-                    {
-                      std::string aatry = db_dirs[j] + aliases[k];
-                      tmp = kpse_readable_file (aatry);
-                      if (! tmp.empty ())
-                        found = aatry;
-                    }
-                }
-
-              /* If we have a real file, add it to the list, maybe done.  */
-              if (! found.empty ())
-                {
-                  ret.append (found);
-
-                  if (! (all || found.empty ()))
-                    done = true;
-                }
-            }
-        }
-    }
-
-  return ret;
 }
 
 /* Expand extra colons.  */
@@ -2039,13 +1688,9 @@ dir_list_add (str_llist_type *l, const std::string& dir)
 static bool
 dir_p (const std::string& fn)
 {
-#if defined (WIN32)
-  unsigned int fa = GetFileAttributes (fn.c_str ());
-  return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
-#else
-  struct stat stats;
-  return stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode);
-#endif
+  octave::sys::file_stat fs (fn);
+
+  return (fs && fs.is_dir ());
 }
 
 /* If DIR is a directory, add it to the list L.  */
@@ -2133,28 +1778,18 @@ static std::string dirname;
 static int
 dir_links (const std::string& fn)
 {
-  std::map<std::string, long> link_table;
+  int retval;
 
-  long ret;
+  octave::sys::file_stat fs (fn);
 
-  if (link_table.find (fn) != link_table.end ())
-    ret = link_table[fn];
-  else
-    {
-      struct stat stats;
-
-      ret = stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode)
-            ? stats.st_nlink : static_cast<unsigned> (-1);
-
-      link_table[fn] = ret;
+  retval = fs && (fs.is_dir () ? fs.nlink () : -1);
 
 #if defined (KPSE_DEBUG)
-      if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
-        DEBUGF2 ("dir_links (%s) => %ld\n", fn.c_str (), ret);
+  if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
+    DEBUGF2 ("dir_links (%s) => %ld\n", fn.c_str (), retval);
 #endif
-    }
 
-  return ret;
+  return retval;
 }
 
 #endif /* WIN32 */
@@ -2252,13 +1887,11 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
 
       if (e->d_name[0] != '.')
         {
-          int links;
-
           /* Construct the potential subdirectory name.  */
           name += e->d_name;
 
           /* If we can't stat it, or if it isn't a directory, continue.  */
-          links = dir_links (name);
+          int links = dir_links (name);
 
           if (links >= 0)
             {

@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 // this file.
 
 #include <map>
+#include <fstream>
+#include <iostream>
 #include <string>
 
 /* System defines are for non-Unix systems only.  (Testing for all Unix
@@ -108,7 +110,6 @@ extern "C" {
 /* Header files that essentially all of our sources need, and
    that all implementations have.  We include these first, to help with
    NULL being defined multiple times.  */
-#include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
 #include <cerrno>
@@ -153,25 +154,6 @@ extern "C" {
 #define IS_ENV_SEP(ch) ((ch) == ENV_SEP)
 #endif
 
-/* define PATH_MAX, the maximum length of a filename.  Since no such
-   limit may exist, it's preferable to dynamically grow filenames as
-   needed.  */
-
-/* Cheat and define this as a manifest constant no matter what, instead
-   of using pathconf.  I forget why we want to do this.  */
-
-#if ! defined (_POSIX_PATH_MAX)
-#define _POSIX_PATH_MAX 255
-#endif
-
-#if ! defined (PATH_MAX)
-#if defined (MAXPATHLEN)
-#define PATH_MAX MAXPATHLEN
-#else
-#define PATH_MAX _POSIX_PATH_MAX
-#endif
-#endif /* not PATH_MAX */
-
 /* If NO_DEBUG is defined (not recommended), skip all this.  */
 #if ! defined (NO_DEBUG)
 
@@ -182,28 +164,10 @@ extern "C" {
 #define KPSE_DEBUG_P(bit) (kpathsea_debug & (1 << (bit)))
 
 #define KPSE_DEBUG_STAT 0               /* stat calls */
-#define KPSE_DEBUG_HASH 1               /* hash lookups */
-#define KPSE_DEBUG_FOPEN 2              /* fopen/fclose calls */
-#define KPSE_DEBUG_PATHS 3              /* search path initializations */
-#define KPSE_DEBUG_EXPAND 4             /* path element expansion */
-#define KPSE_DEBUG_SEARCH 5             /* searches */
-#define KPSE_DEBUG_VARS 6               /* variable values */
+#define KPSE_DEBUG_EXPAND 1             /* path element expansion */
+#define KPSE_DEBUG_SEARCH 2             /* searches */
+#define KPSE_DEBUG_VARS 3               /* variable values */
 #define KPSE_LAST_DEBUG KPSE_DEBUG_VARS
-
-/* A printf for the debugging.  */
-#define DEBUGF_START() do { gnulib::fputs ("kdebug:", stderr)
-#define DEBUGF_END()        gnulib::fflush (stderr); } while (0)
-
-#define DEBUGF(str)                                                     \
-  DEBUGF_START (); gnulib::fputs (str, stderr); DEBUGF_END ()
-#define DEBUGF1(str, e1)                                                \
-  DEBUGF_START (); gnulib::fprintf (stderr, str, e1); DEBUGF_END ()
-#define DEBUGF2(str, e1, e2)                                            \
-  DEBUGF_START (); gnulib::fprintf (stderr, str, e1, e2); DEBUGF_END ()
-#define DEBUGF3(str, e1, e2, e3)                                        \
-  DEBUGF_START (); gnulib::fprintf (stderr, str, e1, e2, e3); DEBUGF_END ()
-#define DEBUGF4(str, e1, e2, e3, e4)                                    \
-  DEBUGF_START (); gnulib::fprintf (stderr, str, e1, e2, e3, e4); DEBUGF_END ()
 
 #endif /* not NO_DEBUG */
 
@@ -224,18 +188,10 @@ static unsigned int kpathsea_debug = 0;
 #define DOSISH
 #endif
 
-#if ! defined (MAXPATHLEN)
-#define MAXPATHLEN      _MAX_PATH
-#endif
-
 /* These have to be defined because our compilers treat __STDC__ as being
    defined (most of them anyway). */
 
 #define access  _access
-#define strdup  _strdup
-
-#define S_IFMT   _S_IFMT
-#define S_IFDIR  _S_IFDIR
 
 /* Define this so that winsock.h definitions don't get included when
    windows.h is...  For this to have proper effect, config.h must
@@ -261,7 +217,7 @@ static unsigned int kpathsea_debug = 0;
 #define FATAL_PERROR(str) \
   do \
     { \
-      gnulib::fputs ("pathsearch: ", stderr); \
+      std::cerr << "pathsearch: "; \
       perror (str); exit (EXIT_FAILURE); \
     } \
   while (0)
@@ -269,9 +225,7 @@ static unsigned int kpathsea_debug = 0;
 #define FATAL(str) \
   do \
     { \
-      gnulib::fputs ("pathsearch: fatal: ", stderr); \
-      gnulib::fputs (str, stderr); \
-      gnulib::fputs (".\n", stderr); \
+      std::cerr << "pathsearch: fatal: " << str << "." << std::endl; \
       exit (1); \
     } \
   while (0)
@@ -322,28 +276,6 @@ static bool
 kpse_is_env_sep (char c)
 {
   return IS_ENV_SEP (c);
-}
-
-/* These routines just check the return status from standard library
-   routines and abort if an error happens.  */
-
-static FILE *
-xfopen (const std::string& filename, const char *mode)
-{
-  FILE *f;
-
-  assert (! filename.empty () && mode);
-
-  f = gnulib::fopen (filename.c_str (), mode);
-
-  if (! f)
-    FATAL_PERROR (filename.c_str ());
-
-  if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
-    DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename.c_str (), mode,
-             reinterpret_cast<intptr_t> (f));
-
-  return f;
 }
 
 /* A way to step through a path, extracting one directory name at a
@@ -426,8 +358,8 @@ kpse_var_value (const std::string& var)
 
 #if defined (KPSE_DEBUG)
   if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
-    DEBUGF2 ("variable: %s = %s\n", var.c_str (),
-             tmp.empty () ? "(nil)" :  tmp.c_str ());
+    std::cerr << "kdebug: variable: " << var << " = "
+              << (tmp.empty () ? "(nil)" :  tmp) << std::endl;
 #endif
 
   return ret;
@@ -564,49 +496,15 @@ kpse_absolute_p (const std::string& filename, int relative_ok)
    configuration files.  */
 static bool first_search = true;
 
-/* This function is called after every search (except the first, since
-   we definitely want to allow enabling the logging in texmf.cnf) to
-   record the filename(s) found in $TEXMFLOG.  */
+/* This function is called after every search.  */
 
 static void
 log_search (const std::list<std::string>& filenames)
 {
-  static FILE *log_file = 0;
-  static bool first_time = true; /* Need to open the log file?  */
-
-  if (first_time)
+  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      first_time = false;
-
-      /* Get name from either envvar or config file.  */
-      std::string log_name = kpse_var_value ("TEXMFLOG");
-
-      if (! log_name.empty ())
-        {
-          log_file = xfopen (log_name.c_str (), "a");
-
-          if (! log_file)
-            perror (log_name.c_str ());
-        }
-    }
-
-  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH) || log_file)
-    {
-      /* FILENAMES should never be null, but safety doesn't hurt.  */
       for (const auto &filename : filenames)
-        {
-          /* Only record absolute filenames, for privacy.  */
-          if (log_file && kpse_absolute_p (filename.c_str (), false))
-            gnulib::fprintf (log_file, "%lu %s\n",
-                             static_cast<unsigned long> (time (0)),
-                             filename.c_str ());
-
-          /* And show them online, if debugging.  We've already started
-             the debugging line in 'search', where this is called, so
-             just print the filename here, don't use DEBUGF.  */
-          if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-            gnulib::fputs (filename.c_str (), stderr);
-        }
+        std::cerr << time (0) << " " << filename << std::endl;
     }
 }
 
@@ -755,8 +653,10 @@ search (const std::string& path, const std::string& original_name,
   absolute_p = kpse_absolute_p (name, true);
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-    DEBUGF4 ("start search (file=%s, must_exist=%d, find_all=%d, path=%s).\n",
-             name.c_str (), must_exist, all, path.c_str ());
+    std::cerr << "kdebug: start search (file=" << name
+              << ", must_exist=" << must_exist
+              << ", find_all=" << all << ", path=" << path << ")."
+              << std::endl;
 
   /* Find the file(s). */
   ret_list = absolute_p ? absolute_search (name)
@@ -774,12 +674,12 @@ search (const std::string& path, const std::string& original_name,
          debugging line if we're doing that.  */
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        DEBUGF1 ("search (%s) =>", original_name.c_str ());
+        std::cerr << "kdebug: search (" << original_name << ") =>";
 
       log_search (ret_list);
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        gnulib::putc ('\n', stderr);
+        std::cerr << std::endl;
     }
 
   return ret_list;
@@ -920,18 +820,18 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      gnulib::fputs ("start find_first_of ((", stderr);
+      std::cerr << "kdebug: start find_first_of ((";
 
       for (auto p = names.cbegin (); p != names.cend (); p++)
         {
           if (p == names.cbegin ())
-            gnulib::fputs (p->c_str (), stderr);
+            std::cerr << *p;
           else
-            gnulib::fprintf (stderr, ", %s", p->c_str ());
+            std::cerr << ", " << *p;
         }
 
-      gnulib::fprintf (stderr, "), path=%s, must_exist=%d).\n",
-                       path.c_str (), must_exist);
+      std::cerr << "), path=" << path << ", must_exist="
+                << must_exist << "." << std::endl;
     }
 
   for (const auto &name : names)
@@ -965,17 +865,17 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
         {
-          gnulib::fputs ("find_first_of (", stderr);
+          std::cerr << "kdebug: find_first_of (";
 
           for (auto p = names.cbegin (); p != names.cend (); p++)
             {
               if (p == names.cbegin ())
-                gnulib::fputs (p->c_str (), stderr);
+                std:: cerr << *p;
               else
-                gnulib::fprintf (stderr, ", %s", p->c_str ());
+                std::cerr << ", " << *p;
             }
 
-          gnulib::fputs (") =>", stderr);
+          std::cerr << ") =>";
         }
 
       log_search (ret_list);
@@ -1775,7 +1675,7 @@ dir_links (const std::string& fn)
 
 #if defined (KPSE_DEBUG)
   if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
-    DEBUGF2 ("dir_links (%s) => %ld\n", fn.c_str (), retval);
+    std::cerr << "kdebug: dir_links (" << fn << ") => " << retval << std::endl;
 #endif
 
   return retval;
@@ -1960,15 +1860,14 @@ kpse_element_dirs (const std::string& elt)
 #if defined (KPSE_DEBUG)
   if (KPSE_DEBUG_P (KPSE_DEBUG_EXPAND))
     {
-      DEBUGF1 ("path element %s =>", elt.c_str ());
+      std::cerr << "kdebug: path element " << elt << " =>";
       if (ret)
         {
           str_llist_elt_type *e;
           for (e = *ret; e; e = STR_LLIST_NEXT (*e))
-            gnulib::fprintf (stderr, " %s", (STR_LLIST (*e)).c_str ());
+            std::cerr << " " << STR_LLIST (*e);
         }
-      gnulib::putc ('\n', stderr);
-      gnulib::fflush (stderr);
+      std::cerr << std::endl;
     }
 #endif /* KPSE_DEBUG */
 

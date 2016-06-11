@@ -1089,7 +1089,7 @@ to the standard output.  To send the output of a command executed with\n\
 \n\
 @example\n\
 @group\n\
-[output, text] = system (\"cmd\");\n\
+[~, text] = system (\"cmd\");\n\
 disp (text);\n\
 @end group\n\
 @end example\n\

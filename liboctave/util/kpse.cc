@@ -541,8 +541,8 @@ path_search (const std::string& path, const std::string& name,
             elt = elt.substr (1);
         }
 
-      /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
-         (search), also tests first_search, and does the resetting.  */
+      /* Our caller (search), also tests first_search, and does
+         the resetting.  */
       if (first_search)
         found = std::list<std::string> ();
 
@@ -709,9 +709,8 @@ path_find_first_of (const std::string& path,
             {
               std::string name = *it;
 
-              /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
-                 (find_first_of), also tests first_search, and does the
-                 resetting.  */
+              /* Our caller (find_first_of), also tests first_search,
+                 and does the resetting.  */
               if (first_search)
                 found = std::list<std::string> ();
 
@@ -976,13 +975,11 @@ kpse_expand_kpse_dot (const std::string& path)
     {
       std::string elt = *pi;
 
-      /* We assume that the !! magic is only used on absolute components.
-         Single "." get special treatment, as does "./" or its equivalent.  */
+      /* Single "." get special treatment, as does "./" or its equivalent.  */
 
       size_t elt_len = elt.length ();
 
-      if (kpse_absolute_p (elt, false)
-          || (elt_len > 1 && elt[0] == '!' && elt[1] == '!'))
+      if (kpse_absolute_p (elt, false))
         ret += elt + ENV_SEP_STRING;
       else if (elt_len == 1 && elt[0] == '.')
         ret += kpse_dot + ENV_SEP_STRING;
@@ -1093,10 +1090,6 @@ kpse_path_expand (const std::string& path)
       std::string elt = *pi;
 
       std::list<std::string> dirs;
-
-      /* Skip and ignore magic leading chars.  */
-      if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
-        elt = elt.substr (2);
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))

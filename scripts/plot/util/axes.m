@@ -51,14 +51,14 @@ function h = axes (varargin)
       cf = gcf ();
     endif
 
-    ## If there is an annotation axes currently on top of the figure
-    ## children stack, we will put it back on top
+    ## If there is an annotation axes currently on top of the
+    ## figure children stack, then we will put it back on top
+    ## FIXME: Should all annotation axes always be put ahead of regular axes?
     do_restack = false;
     ch = allchild (cf);
     hax = ch(isaxes (ch));
-    idx = find (strcmp (get (hax, "tag"), "scribeoverlay"));
-    if (idx == 1)
-      hover = hax(idx);
+    if (! isempty (hax) && strcmp (get (hax(1), "tag"), "scribeoverlay"))
+      h_annotation = hax(1);
       do_restack = true;
     endif
 
@@ -70,7 +70,7 @@ function h = axes (varargin)
 
     ## Restack if necessary
     if (do_restack)
-      restack_axes (hover, cf);
+      restack_axes (h_annotation, cf);
     endif
   else
     ## ARG is axes handle.
@@ -98,15 +98,60 @@ endfunction
 function restack_axes (h, cf)
 
   show = get (0, "showhiddenhandles");
-  set (0, "showhiddenhandles", "on");
   unwind_protect
+    set (0, "showhiddenhandles", "on");
     ch = get (cf, "children");
-    hax = ch(isaxes (ch));
-    ch(isaxes (ch)) = [h; hax(hax != h)];
+    axidx = isaxes (ch);
+    hax = ch(axidx);
+    ## Stack the legend associated with this axes on top of the axes itself
+    hleg = hax(strcmp (get (hax, "tag"), "legend"));
+    if (any (hleg)) 
+      ## Get field "handle" from structure stored in "userdata" property
+      if (isscalar (hleg))
+        hlegaxes = get (hleg, "userdata").handle;
+      else
+        hlegaxes = [[get(hleg, "userdata"){:}].handle](:);
+      endif
+      hleg = hleg(hlegaxes == h);
+      h = [hleg; h];
+    endif
+    ch(axidx) = [h; hax(! ismember (hax, h))];
     set (cf, "children", ch);
   unwind_protect_cleanup
     set (0, "showhiddenhandles", show);
   end_unwind_protect
 
 endfunction
+
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax1 = axes ();
+%!   plot (1:10, "b");
+%!   hleg1 = legend ("hax1");
+%!   hax2 = axes ();
+%!   plot (10:-1:1, "r");
+%!   hleg2 = legend ("hax2");
+%!
+%!   ch = allchild (hf); 
+%!   hax = ch(isaxes (ch)); 
+%!   assert (find (hax == hax2) < find (hax == hax1));
+%!   assert (find (hax == hleg1) < find (hax == hax1));
+%!   assert (find (hax == hleg2) < find (hax == hax2));
+%!
+%!   axes (hax1);
+%!   ch = allchild (hf); 
+%!   hax = ch(isaxes (ch)); 
+%!   assert (find (hax == hax2) > find (hax == hax1));
+%!   assert (find (hax == hleg1) < find (hax == hax1));
+%!
+%!   axes (hax2);
+%!   ch = allchild (hf); 
+%!   hax = ch(isaxes (ch)); 
+%!   assert (find (hax == hax2) < find (hax == hax1));
+%!   assert (find (hax == hleg2) < find (hax == hax2));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

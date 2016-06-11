@@ -230,32 +230,9 @@ static unsigned int kpathsea_debug = 0;
     } \
   while (0)
 
-/* It's a little bizarre to be using the same type for the list and the
-   elements of the list, but no reason not to in this case, I think --
-   we never need a NULL string in the middle of the list, and an extra
-   NULL/NULL element always at the end is inconsequential.  */
-
-struct str_llist_elt
-{
-  str_llist_elt (void) : str (), next (0) { }
-
-  ~str_llist_elt (void) { }
-
-  std::string str;
-  struct str_llist_elt *next;
-};
-
-typedef str_llist_elt str_llist_elt_type;
-typedef str_llist_elt *str_llist_type;
-
-#define STR_LLIST(sl) ((sl).str)
-#define STR_LLIST_NEXT(sl) ((sl).next)
-
-static void str_llist_add (str_llist_type *l, const std::string& str);
-
 static std::string kpse_var_expand (const std::string& src);
 
-static str_llist_type *kpse_element_dirs (const std::string& elt);
+static std::list<std::string> kpse_element_dirs (const std::string& elt);
 
 static std::string kpse_expand (const std::string& s);
 
@@ -490,16 +467,13 @@ log_search (const std::list<std::string>& filenames)
    value, though, since we don't shrink it to the final size returned.)  */
 
 static std::list<std::string>
-dir_list_search (str_llist_type *dirs, const std::string& name,
+dir_list_search (std::list<std::string>& dirs, const std::string& name,
                  bool search_all)
 {
-  str_llist_elt_type *elt;
   std::list<std::string> ret;
 
-  for (elt = *dirs; elt; elt = STR_LLIST_NEXT (*elt))
+  for (const auto &dir : dirs)
     {
-      const std::string dir = STR_LLIST (*elt);
-
       std::string potential = dir + name;
 
       std::string tmp = kpse_readable_file (potential);
@@ -576,9 +550,9 @@ path_search (const std::string& path, const std::string& name,
 
       if (found.empty ())
         {
-          str_llist_type *dirs = kpse_element_dirs (elt);
+          std::list<std::string> dirs = kpse_element_dirs (elt);
 
-          if (dirs && *dirs)
+          if (! dirs.empty ())
             found = dir_list_search (dirs, name, all);
         }
 
@@ -704,8 +678,7 @@ path_find_first_of (const std::string& path,
     {
       std::string elt = *pi;
 
-      str_llist_type *dirs;
-      str_llist_elt_type *dirs_elt;
+      std::list<std::string> dirs;
       std::list<std::string> found;
 
       /* Do not touch the device if present */
@@ -730,10 +703,8 @@ path_find_first_of (const std::string& path,
 
       /* We have to search one directory at a time.  */
       dirs = kpse_element_dirs (elt);
-      for (dirs_elt = *dirs; dirs_elt; dirs_elt = STR_LLIST_NEXT (*dirs_elt))
+      for (const auto &dir : dirs)
         {
-          const std::string dir = STR_LLIST (*dirs_elt);
-
           for (auto it = names.cbegin (); it != names.cend () && ! done; it++)
             {
               std::string name = *it;
@@ -748,16 +719,9 @@ path_find_first_of (const std::string& path,
 
               if (found.empty ())
                 {
-                  static str_llist_type *tmp = 0;
+                  std::list<std::string> tmp;
 
-                  if (! tmp)
-                    {
-                      tmp = new str_llist_type;
-                      *tmp = 0;
-                      str_llist_add (tmp, "");
-                    }
-
-                  STR_LLIST (*(*tmp)) = dir;
+                  tmp.push_back (dir);
 
                   found = dir_list_search (tmp, name, all);
                 }
@@ -1128,7 +1092,7 @@ kpse_path_expand (const std::string& path)
     {
       std::string elt = *pi;
 
-      str_llist_type *dirs;
+      std::list<std::string> dirs;
 
       /* Skip and ignore magic leading chars.  */
       if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
@@ -1157,22 +1121,19 @@ kpse_path_expand (const std::string& path)
          Be faster to check the database, but this is more reliable.  */
       dirs = kpse_element_dirs (elt);
 
-      if (dirs && *dirs)
+      if (! dirs.empty ())
         {
-          str_llist_elt_type *dir;
-
-          for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir))
+          for (const auto &dir : dirs)
             {
-              const std::string thedir = STR_LLIST (*dir);
-              unsigned dirlen = thedir.length ();
+              size_t dirlen = dir.length ();
 
-              ret += thedir;
+              ret += dir;
               len += dirlen;
 
               /* Retain trailing slash if that's the root directory.  */
               if (dirlen == 1
-                  || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
-                      && IS_DIR_SEP (thedir[2])))
+                  || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (dir)
+                      && IS_DIR_SEP (dir[2])))
                 {
                   ret += ENV_SEP_STRING;
                   len++;
@@ -1527,7 +1488,7 @@ kpse_expand_default (const std::string& path, const std::string& fallback)
    DIR ends with a DIR_SEP for the benefit of later searches.  */
 
 static void
-dir_list_add (str_llist_type *l, const std::string& dir)
+dir_list_add (std::list<std::string>& lst, const std::string& dir)
 {
   char last_char = dir[dir.length () - 1];
 
@@ -1536,7 +1497,7 @@ dir_list_add (str_llist_type *l, const std::string& dir)
   if (! (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)))
     saved_dir += DIR_SEP_STRING;
 
-  str_llist_add (l, saved_dir);
+  lst.push_back (saved_dir);
 }
 
 /* Return true if FN is a directory or a symlink to a directory,
@@ -1553,10 +1514,10 @@ dir_p (const std::string& fn)
 /* If DIR is a directory, add it to the list L.  */
 
 static void
-checked_dir_list_add (str_llist_type *l, const std::string& dir)
+checked_dir_list_add (std::list<std::string>& lst, const std::string& dir)
 {
   if (dir_p (dir))
-    dir_list_add (l, dir);
+    dir_list_add (lst, dir);
 }
 
 /* The cache.  Typically, several paths have the same element; for
@@ -1570,7 +1531,7 @@ struct cache_entry
   ~cache_entry (void) { }
 
   std::string key;
-  str_llist_type *value;
+  std::list<std::string> value;
 };
 
 static cache_entry *the_cache = 0;
@@ -1583,7 +1544,7 @@ static unsigned cache_length = 0;
    that's right, but it seems to be all that's needed.  */
 
 static void
-cache (const std::string key, str_llist_type *value)
+cache (const std::string key, std::list<std::string>& value)
 {
   cache_entry *new_cache = new cache_entry [cache_length+1];
 
@@ -1605,18 +1566,21 @@ cache (const std::string key, str_llist_type *value)
 
 /* To retrieve, just check the list in order.  */
 
-static str_llist_type *
+static std::list<std::string>
 cached (const std::string& key)
 {
-  unsigned p;
+  std::list<std::string> retval;
 
-  for (p = 0; p < cache_length; p++)
+  for (unsigned p = 0; p < cache_length; p++)
     {
       if (key == the_cache[p].key)
-        return the_cache[p].value;
+        {
+          retval = the_cache[p].value;
+          break;
+        }
     }
 
-  return 0;
+  return retval;
 }
 
 #if defined (WIN32)
@@ -1639,23 +1603,19 @@ static std::string dirname;
    most likely only useful to be called from 'kpse_path_search', which
    has already assumed expansion has been done.  */
 
-static str_llist_type *
+static std::list<std::string>
 kpse_element_dirs (const std::string& elt)
 {
-  str_llist_type *ret;
+  std::list<std::string> ret;
 
   /* If given nothing, return nothing.  */
   if (elt.empty ())
-    return 0;
+    return ret;
 
   /* If we've already cached the answer for ELT, return it.  */
   ret = cached (elt);
-  if (ret)
+  if (! ret.empty ())
     return ret;
-
-  /* We're going to have a real directory list to return.  */
-  ret = new str_llist_type;
-  *ret = 0;
 
   /* We handle the hard case in a subroutine.  */
   checked_dir_list_add (ret, elt);
@@ -1668,41 +1628,16 @@ kpse_element_dirs (const std::string& elt)
   if (KPSE_DEBUG_P (KPSE_DEBUG_EXPAND))
     {
       std::cerr << "kdebug: path element " << elt << " =>";
-      if (ret)
+      if (! ret.empty  ())
         {
-          str_llist_elt_type *e;
-          for (e = *ret; e; e = STR_LLIST_NEXT (*e))
-            std::cerr << " " << STR_LLIST (*e);
+          for (const auto &ret_elt : ret)
+            std::cerr << " " << ret_elt;
         }
       std::cerr << std::endl;
     }
 #endif /* KPSE_DEBUG */
 
   return ret;
-}
-
-/* Implementation of a linked list of strings.  */
-
-/* Add the new string STR to the end of the list L.  */
-
-static void
-str_llist_add (str_llist_type *l, const std::string& str)
-{
-  str_llist_elt_type *e;
-  str_llist_elt_type *new_elt = new str_llist_elt_type;
-
-  /* The new element will be at the end of the list.  */
-  STR_LLIST (*new_elt) = str;
-  STR_LLIST_NEXT (*new_elt) = 0;
-
-  /* Find the current end of the list.  */
-  for (e = *l; e && STR_LLIST_NEXT (*e); e = STR_LLIST_NEXT (*e))
-    ;
-
-  if (! e)
-    *l = new_elt;
-  else
-    STR_LLIST_NEXT (*e) = new_elt;
 }
 
 /* Variable expansion.  */

@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "pathsearch.h"
 #include "singleton-cleanup.h"
-#include "str-vec.h"
 
 #include "kpse.cc"
 
@@ -63,29 +62,22 @@ namespace octave
     return retval;
   }
 
-  string_vector
+  std::list<std::string>
   directory_path::elements (void)
   {
-    return initialized ? pv : string_vector ();
+    return m_initialized ? m_path_elements : std::list<std::string> ();
   }
 
-  string_vector
+  std::list<std::string>
   directory_path::all_directories (void)
   {
-    int count = 0;
-    string_vector retval;
+    std::list<std::string> retval;
 
-    if (initialized)
+    if (m_initialized)
       {
-        int len = pv.numel ();
-
-        int nmax = len > 32 ? len : 32;
-
-        retval.resize (len);
-
-        for (int i = 0; i < len; i++)
+        for (const auto& elt : m_path_elements)
           {
-            str_llist_type *elt_dirs = kpse_element_dirs (pv[i]);
+            str_llist_type *elt_dirs = kpse_element_dirs (elt);
 
             if (elt_dirs)
               {
@@ -96,19 +88,10 @@ namespace octave
                     const std::string elt_dir = STR_LLIST (*dir);
 
                     if (! elt_dir.empty ())
-                      {
-                        if (count == nmax)
-                          nmax *= 2;
-
-                        retval.resize (nmax);
-
-                        retval[count++] = elt_dir;
-                      }
+                      retval.push_back (elt_dir);
                   }
               }
           }
-
-        retval.resize (count);
       }
 
     return retval;
@@ -117,27 +100,30 @@ namespace octave
   std::string
   directory_path::find_first (const std::string& nm)
   {
-    return initialized ? kpse_path_search (p, nm, true) : "";
+    return m_initialized ? kpse_path_search (m_expanded_path, nm, true) : "";
   }
 
-  string_vector
+  std::list<std::string>
   directory_path::find_all (const std::string& nm)
   {
-    return initialized ? kpse_all_path_search (p, nm) : string_vector ();
+    return (m_initialized
+            ? kpse_all_path_search (m_expanded_path, nm)
+            : std::list<std::string> ());
   }
 
   std::string
-  directory_path::find_first_of (const string_vector& names)
+  directory_path::find_first_of (const std::list<std::string>& names)
   {
-    return initialized
-      ? kpse_path_find_first_of (p, names, true) : "";
+    return (m_initialized
+            ? kpse_path_find_first_of (m_expanded_path, names, true) : "");
   }
 
-  string_vector
-  directory_path::find_all_first_of (const string_vector& names)
+  std::list<std::string>
+  directory_path::find_all_first_of (const std::list<std::string>& names)
   {
-    return initialized
-      ? kpse_all_path_find_first_of (p, names) : string_vector ();
+    return (m_initialized
+            ? kpse_all_path_find_first_of (m_expanded_path, names)
+            : std::list<std::string> ());
   }
 
   void
@@ -155,20 +141,14 @@ namespace octave
         octave_kpathsea_initialized = true;
       }
 
-    p = kpse_path_expand (p_default.empty ()
-                          ? p_orig : kpse_expand_default (p_orig, p_default));
+    m_expanded_path
+      = kpse_path_expand (m_default_path.empty ()
+                          ? m_orig_path
+                          : kpse_expand_default (m_orig_path, m_default_path));
 
-    int count = 0;
-    for (kpse_path_iterator pi (p); pi != std::string::npos; pi++)
-      count++;
+    for (kpse_path_iterator pi (m_expanded_path); pi != std::string::npos; pi++)
+      m_path_elements.push_back (*pi);
 
-    pv.resize (count);
-
-    kpse_path_iterator pi (p);
-
-    for (int i = 0; i < count; i++)
-      pv[i] = *pi++;
-
-    initialized = true;
+    m_initialized = true;
   }
 }

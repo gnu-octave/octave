@@ -899,10 +899,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     else
                       {
                         // Next just search for it anywhere in the system path
-                        string_vector names(3);
-                        names(0) = fname + ".oct";
-                        names(1) = fname + ".mex";
-                        names(2) = fname + ".m";
+                        std::list<std::string> names;
+                        names.push_back (fname + ".oct");
+                        names.push_back (fname + ".mex");
+                        names.push_back (fname + ".m");
 
                         octave::directory_path p (load_path::system_path ());
 

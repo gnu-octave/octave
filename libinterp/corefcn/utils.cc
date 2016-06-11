@@ -252,7 +252,7 @@ search_path_for_file (const std::string& path, const string_vector& names)
 {
   octave::directory_path p (path);
 
-  return octave::sys::env::make_absolute (p.find_first_of (names));
+  return octave::sys::env::make_absolute (p.find_first_of (names.std_list ()));
 }
 
 // Find all locations of the given file in the path.
@@ -262,7 +262,7 @@ search_path_for_all_files (const std::string& path, const string_vector& names)
 {
   octave::directory_path p (path);
 
-  string_vector sv = p.find_all_first_of (names);
+  string_vector sv = p.find_all_first_of (names.std_list ());
 
   octave_idx_type len = sv.numel ();
 

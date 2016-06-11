@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iostream>
+#include <list>
 #include <sstream>
 #include <vector>
 
@@ -287,10 +288,10 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
       else
         {
           // Next just search for it anywhere in the system path
-          string_vector names(3);
-          names(0) = nm + ".oct";
-          names(1) = nm + ".mex";
-          names(2) = nm + ".m";
+          std::list<std::string> names;
+          names.push_back (nm + ".oct");
+          names.push_back (nm + ".mex");
+          names.push_back (nm + ".m");
 
           octave::directory_path p (load_path::system_path ());
 

@@ -25,9 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
-
-#include "str-vec.h"
 
 namespace octave
 {
@@ -38,24 +37,32 @@ namespace octave
   public:
 
     directory_path (const std::string& s = "", const std::string& d = "")
-      : p_orig (s), p_default (d), initialized (false), p (), pv ()
+      : m_orig_path (s), m_default_path (d), m_initialized (false),
+        m_expanded_path (), m_path_elements ()
       {
-        if (! p_orig.empty ())
+        if (! m_orig_path.empty ())
           init ();
       }
 
     directory_path (const directory_path& dp)
-      : p_orig (dp.p_orig), p_default (dp.p_default),
-        initialized (dp.initialized), p (dp.p), pv (dp.pv)
+      : m_orig_path (dp.m_orig_path),
+        m_default_path (dp.m_default_path),
+        m_initialized (dp.m_initialized),
+        m_expanded_path (dp.m_expanded_path),
+        m_path_elements (dp.m_path_elements)
       { }
 
     directory_path& operator = (const directory_path& dp)
       {
-        p_orig = dp.p_orig;
-        p_default = dp.p_default;
-        initialized = dp.initialized;
-        p = dp.p;
-        pv = dp.pv;
+        if (this != &dp)
+          {
+            m_orig_path = dp.m_orig_path;
+            m_default_path = dp.m_default_path;
+            m_initialized = dp.m_initialized;
+            m_expanded_path = dp.m_expanded_path;
+            m_path_elements = dp.m_path_elements;
+          }
+
         return *this;
       }
 
@@ -63,25 +70,29 @@ namespace octave
 
     void set (const std::string& s)
     {
-      initialized = false;
-      p_orig = s;
+      m_initialized = false;
+      m_orig_path = s;
       init ();
     }
 
-    string_vector elements (void);
-    string_vector all_directories (void);
+    std::list<std::string> elements (void);
+
+    std::list<std::string> all_directories (void);
 
     std::string find_first (const std::string&);
+
     std::string find (const std::string& nm) { return find_first (nm); }
 
-    string_vector find_all (const std::string&);
+    std::list<std::string> find_all (const std::string&);
 
-    std::string find_first_of (const string_vector& names);
-    string_vector find_all_first_of (const string_vector& names);
+    std::string find_first_of (const std::list<std::string>& names);
+
+    std::list<std::string>
+    find_all_first_of (const std::list<std::string>& names);
 
     void rehash (void)
     {
-      initialized = false;
+      m_initialized = false;
       init ();
     }
 
@@ -105,21 +116,21 @@ namespace octave
   private:
 
     // The colon separated list that we were given.
-    std::string p_orig;
+    std::string m_orig_path;
 
     // The default path.  If specified, replaces leading, trailing, or
     // doubled colons in p_orig.
-    std::string p_default;
+    std::string m_default_path;
 
-    // TRUE means we've unpacked p.
-    bool initialized;
+    // TRUE means we've unpacked the path p.
+    bool m_initialized;
 
     // A version of the colon separate list on which we have performed
     // tilde, variable, and possibly default path expansion.
-    std::string p;
+    std::string m_expanded_path;
 
     // The elements of the list.
-    string_vector pv;
+    std::list<std::string> m_path_elements;
 
     void init (void);
 

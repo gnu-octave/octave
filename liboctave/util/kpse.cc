@@ -569,7 +569,7 @@ static bool first_search = true;
    record the filename(s) found in $TEXMFLOG.  */
 
 static void
-log_search (const string_vector& filenames)
+log_search (const std::list<std::string>& filenames)
 {
   static FILE *log_file = 0;
   static bool first_time = true; /* Need to open the log file?  */
@@ -593,10 +593,8 @@ log_search (const string_vector& filenames)
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH) || log_file)
     {
       /* FILENAMES should never be null, but safety doesn't hurt.  */
-      for (int e = 0; e < filenames.numel () && ! filenames[e].empty (); e++)
+      for (const auto &filename : filenames)
         {
-          std::string filename = filenames[e];
-
           /* Only record absolute filenames, for privacy.  */
           if (log_file && kpse_absolute_p (filename.c_str (), false))
             gnulib::fprintf (log_file, "%lu %s\n",
@@ -622,12 +620,12 @@ log_search (const string_vector& filenames)
    does seem cleaner.  (We do waste a bit of space in the return
    value, though, since we don't shrink it to the final size returned.)  */
 
-static string_vector
+static std::list<std::string>
 dir_list_search (str_llist_type *dirs, const std::string& name,
                  bool search_all)
 {
   str_llist_elt_type *elt;
-  string_vector ret;
+  std::list<std::string> ret;
 
   for (elt = *dirs; elt; elt = STR_LLIST_NEXT (*elt))
     {
@@ -639,7 +637,7 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
 
       if (! tmp.empty ())
         {
-          ret.append (potential);
+          ret.push_back (potential);
 
           /* Move this element towards the top of the list.  */
           str_llist_float (dirs, elt);
@@ -655,15 +653,15 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
 /* This is called when NAME is absolute or explicitly relative; if it's
    readable, return (a list containing) it; otherwise, return NULL.  */
 
-static string_vector
+static std::list<std::string>
 absolute_search (const std::string& name)
 {
-  string_vector ret_list;
+  std::list<std::string> ret_list;
   std::string found = kpse_readable_file (name);
 
   /* Add 'found' to the return list even if it's null; that tells
      the caller we didn't find anything.  */
-  ret_list.append (found);
+  ret_list.push_back (found);
 
   return ret_list;
 }
@@ -671,18 +669,18 @@ absolute_search (const std::string& name)
 /* This is the hard case -- look for NAME in PATH.  If ALL is false,
    return the first file found.  Otherwise, search all elements of PATH.  */
 
-static string_vector
+static std::list<std::string>
 path_search (const std::string& path, const std::string& name,
              bool /* must_exist */, bool all)
 {
-  string_vector ret_list;
+  std::list<std::string> ret_list;
   bool done = false;
 
   for (kpse_path_iterator pi (path); ! done && pi != std::string::npos; pi++)
     {
       std::string elt = *pi;
 
-      string_vector found;
+      std::list<std::string> found;
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))
@@ -706,7 +704,7 @@ path_search (const std::string& path, const std::string& name,
       /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
          (search), also tests first_search, and does the resetting.  */
       if (first_search)
-        found = string_vector ();
+        found = std::list<std::string> ();
 
       /* Search the filesystem.  */
 
@@ -722,10 +720,10 @@ path_search (const std::string& path, const std::string& name,
       if (! found.empty ())
         {
           if (all)
-            ret_list.append (found);
+            ret_list.splice (ret_list.end (), found);
           else
             {
-              ret_list.append (found[0]);
+              ret_list.push_back (found.front ());
               done = true;
             }
         }
@@ -742,11 +740,11 @@ path_search (const std::string& path, const std::string& name,
    contain just NULL.  If ALL is true, the list will be
    terminated with NULL.  */
 
-static string_vector
+static std::list<std::string>
 search (const std::string& path, const std::string& original_name,
         bool must_exist, bool all)
 {
-  string_vector ret_list;
+  std::list<std::string> ret_list;
   bool absolute_p;
 
   /* Make a leading ~ count as an absolute filename, and expand $FOO's.  */
@@ -805,9 +803,9 @@ static std::string
 kpse_path_search (const std::string& path, const std::string& name,
                   bool must_exist)
 {
-  string_vector ret_list = search (path, name, must_exist, false);
+  std::list<std::string> ret_list = search (path, name, must_exist, false);
 
-  return ret_list.empty () ? "" : ret_list[0];
+  return ret_list.empty () ? "" : ret_list.front ();
 }
 
 /* Search all elements of PATH for files named NAME.  Not sure if it's
@@ -816,7 +814,7 @@ kpse_path_search (const std::string& path, const std::string& name,
 /* Like 'kpse_path_search' with MUST_EXIST true, but return a list of
    all the filenames (or NULL if none), instead of taking the first.  */
 
-static string_vector
+static std::list<std::string>
 kpse_all_path_search (const std::string& path, const std::string& name)
 {
   return search (path, name, true, true);
@@ -826,11 +824,12 @@ kpse_all_path_search (const std::string& path, const std::string& name)
    element of NAMES.  If ALL is false, return the first file found.
    Otherwise, search all elements of PATH.  */
 
-static string_vector
-path_find_first_of (const std::string& path, const string_vector& names,
+static std::list<std::string>
+path_find_first_of (const std::string& path,
+                    const std::list<std::string>& names,
                     bool /* must_exist */, bool all)
 {
-  string_vector ret_list;
+  std::list<std::string> ret_list;
   bool done = false;
 
   for (kpse_path_iterator pi (path); ! done && pi != std::string::npos; pi++)
@@ -839,7 +838,7 @@ path_find_first_of (const std::string& path, const string_vector& names,
 
       str_llist_type *dirs;
       str_llist_elt_type *dirs_elt;
-      string_vector found;
+      std::list<std::string> found;
 
       /* Do not touch the device if present */
 
@@ -867,16 +866,15 @@ path_find_first_of (const std::string& path, const string_vector& names,
         {
           const std::string dir = STR_LLIST (*dirs_elt);
 
-          int len = names.numel ();
-          for (int i = 0; i < len && ! done; i++)
+          for (auto it = names.cbegin (); it != names.cend () && ! done; it++)
             {
-              std::string name = names[i];
+              std::string name = *it;
 
               /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
                  (find_first_of), also tests first_search, and does the
                  resetting.  */
               if (first_search)
-                found = string_vector ();
+                found = std::list<std::string> ();
 
               /* Search the filesystem.  */
 
@@ -900,10 +898,10 @@ path_find_first_of (const std::string& path, const string_vector& names,
               if (! found.empty ())
                 {
                   if (all)
-                    ret_list.append (found);
+                    ret_list.splice (ret_list.end (), found);
                   else
                     {
-                      ret_list.append (found[0]);
+                      ret_list.push_back (found.front ());
                       done = true;
                     }
                 }
@@ -914,34 +912,30 @@ path_find_first_of (const std::string& path, const string_vector& names,
   return ret_list;
 }
 
-static string_vector
-find_first_of (const std::string& path, const string_vector& names,
+static std::list<std::string>
+find_first_of (const std::string& path, const std::list<std::string>& names,
                bool must_exist, bool all)
 {
-  string_vector ret_list;
+  std::list<std::string> ret_list;
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
       gnulib::fputs ("start find_first_of ((", stderr);
 
-      int len = names.numel ();
-
-      for (int i = 0; i < len; i++)
+      for (auto p = names.cbegin (); p != names.cend (); p++)
         {
-          if (i == 0)
-            gnulib::fputs (names[i].c_str (), stderr);
+          if (p == names.cbegin ())
+            gnulib::fputs (p->c_str (), stderr);
           else
-            gnulib::fprintf (stderr, ", %s", names[i].c_str ());
+            gnulib::fprintf (stderr, ", %s", p->c_str ());
         }
 
       gnulib::fprintf (stderr, "), path=%s, must_exist=%d).\n",
                        path.c_str (), must_exist);
     }
 
-  for (int i = 0; i < names.numel (); i++)
+  for (const auto &name : names)
     {
-      std::string name = names[i];
-
       if (kpse_absolute_p (name, true))
         {
           /* If the name is absolute or explicitly relative, no need
@@ -973,14 +967,12 @@ find_first_of (const std::string& path, const string_vector& names,
         {
           gnulib::fputs ("find_first_of (", stderr);
 
-          int len = names.numel ();
-
-          for (int i = 0; i < len; i++)
+          for (auto p = names.cbegin (); p != names.cend (); p++)
             {
-              if (i == 0)
-                gnulib::fputs (names[i].c_str (), stderr);
+              if (p == names.cbegin ())
+                gnulib::fputs (p->c_str (), stderr);
               else
-                gnulib::fprintf (stderr, ", %s", names[i].c_str ());
+                gnulib::fprintf (stderr, ", %s", p->c_str ());
             }
 
           gnulib::fputs (") =>", stderr);
@@ -1002,12 +994,14 @@ find_first_of (const std::string& path, const string_vector& names,
    Return the first one found.  */
 
 static std::string
-kpse_path_find_first_of (const std::string& path, const string_vector& names,
+kpse_path_find_first_of (const std::string& path,
+                         const std::list<std::string>& names,
                          bool must_exist)
 {
-  string_vector ret_list = find_first_of (path, names, must_exist, false);
+  std::list<std::string> ret_list
+    = find_first_of (path, names, must_exist, false);
 
-  return ret_list.empty () ? "" : ret_list[0];
+  return ret_list.empty () ? "" : ret_list.front ();
 }
 
 /* Search each element of PATH for each element of NAMES and return a
@@ -1017,9 +1011,9 @@ kpse_path_find_first_of (const std::string& path, const string_vector& names,
    list of all the filenames (or NULL if none), instead of taking the
    first.  */
 
-static string_vector
+static std::list<std::string>
 kpse_all_path_find_first_of (const std::string& path,
-                             const string_vector& names)
+                             const std::list<std::string>& names)
 {
   return find_first_of (path, names, true, true);
 }
@@ -1132,7 +1126,7 @@ kpse_expand (const std::string& s)
 }
 
 /* Forward declarations of functions from the original expand.c  */
-static string_vector brace_expand (const std::string&);
+static std::list<std::string> brace_expand (const std::string&);
 
 /* If $KPSE_DOT is defined in the environment, prepend it to any relative
    path components. */
@@ -1183,14 +1177,14 @@ kpse_brace_expand_element (const std::string& elt)
 {
   std::string ret;
 
-  string_vector expansions = brace_expand (elt);
+  std::list<std::string> expansions = brace_expand (elt);
 
-  for (int i = 0; i < expansions.numel (); i++)
+  for (const auto &expanded_elt : expansions)
     {
       /* Do $ and ~ expansion on each element.  */
-      std::string x = kpse_expand (expansions[i]);
+      std::string x = kpse_expand (expanded_elt);
 
-      if (x != expansions[i])
+      if (x != elt)
         {
           /* If we did any expansions, do brace expansion again.  Since
              recursive variable definitions are not allowed, this recursion
@@ -1348,10 +1342,11 @@ kpse_path_expand (const std::string& path)
    are free ()'ed.  ARR1 can be NULL, in that case, a new version of ARR2
    is returned. */
 
-static string_vector
-array_concat (const string_vector& arr1, const string_vector& arr2)
+static std::list<std::string>
+array_concat (const std::list<std::string>& arr1,
+              const std::list<std::string>& arr2)
 {
-  string_vector result;
+  std::list<std::string> result;
 
   if (arr1.empty ())
     result = arr2;
@@ -1359,25 +1354,19 @@ array_concat (const string_vector& arr1, const string_vector& arr2)
     result = arr1;
   else
     {
-      int len1 = arr1.numel ();
-      int len2 = arr2.numel ();
-
-      result = string_vector (len1 * len2);
-
-      int k = 0;
-      for (int i = 0; i < len2; i++)
-        for (int j = 0; j < len1; j++)
-          result[k++] = arr1[j] + arr2[i];
+      for (const auto &elt_2 : arr2)
+        for (const auto &elt_1 : arr1)
+          result.push_back (elt_1 + elt_2);
     }
 
   return result;
 }
 
 static int brace_gobbler (const std::string&, int&, int);
-static string_vector expand_amble (const std::string&);
+static std::list<std::string> expand_amble (const std::string&);
 
 /* Return an array of strings; the brace expansion of TEXT. */
-static string_vector
+static std::list<std::string>
 brace_expand (const std::string& text)
 {
   /* Find the text of the preamble. */
@@ -1386,7 +1375,7 @@ brace_expand (const std::string& text)
 
   std::string preamble = text.substr (0, i);
 
-  string_vector result = string_vector (preamble);
+  std::list<std::string> result (1, preamble);
 
   if (c == '{')
     {
@@ -1401,7 +1390,7 @@ brace_expand (const std::string& text)
             ("Octave:pathsearch-syntax",
              "%s: Unmatched {", text.c_str ());
 
-          result = string_vector (text);
+          result = std::list<std::string> (1, text);
         }
       else
         {
@@ -1423,10 +1412,10 @@ static int brace_arg_separator = ',';
    text at BRACE_ARG_SEPARATORs into separate strings.  We then brace
    expand each slot which needs it, until there are no more slots which
    need it. */
-static string_vector
+static std::list<std::string>
 expand_amble (const std::string& text)
 {
-  string_vector result;
+  std::list<std::string> result;
 
   size_t text_len = text.length ();
   size_t start;
@@ -1443,12 +1432,12 @@ expand_amble (const std::string& text)
 
       std::string tem = text.substr (start, i-start);
 
-      string_vector partial = brace_expand (tem);
+      std::list<std::string> partial = brace_expand (tem);
 
       if (result.empty ())
         result = partial;
       else
-        result.append (partial);
+        result.splice (result.end (), partial);
     }
 
   return result;

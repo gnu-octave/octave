@@ -1726,6 +1726,10 @@ opengl_renderer::draw_axes (const axes::properties& props)
 {
 #if defined (HAVE_OPENGL)
 
+  // Legends are not drawn when "visible" is "off".
+  if (! props.is_visible () && props.get_tag () == "legend")
+    return;
+
   static double floatmax = std::numeric_limits<float>::max ();
 
   double x_min = props.get_x_min ();

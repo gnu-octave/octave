@@ -9516,9 +9516,6 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           xset_gcbo (h);
         }
 
-      // Get a copy of the global last error so it can be restored.
-      octave_value_list result = feval ("lasterror", ovl (), 1);
-
       // Copy CB because "function_value" method is non-const.
 
       octave_value cb = cb_arg;
@@ -9538,7 +9535,8 @@ gh_manager::do_execute_callback (const graphics_handle& h,
             {
               std::cerr << "execution error in graphics callback function"
                         << std::endl;
-              feval ("lasterror", result);
+              feval ("lasterr",
+                     ovl ("execution error in graphics callback function"));
               recover_from_exception ();
             }
         }
@@ -9570,7 +9568,8 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           {
             std::cerr << "execution error in graphics callback function"
                       << std::endl;
-            feval ("lasterror", result);
+            feval ("lasterr",
+                   ovl ("execution error in graphics callback function"));
             recover_from_exception ();
           }
 

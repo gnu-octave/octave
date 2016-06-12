@@ -43,8 +43,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
+// Needed for NAME_MAX.
 #include <dirent.h>
 
+#include "file-ops.h"
 #include "file-stat.h"
 #include "lo-error.h"
 #include "oct-env.h"
@@ -56,48 +58,25 @@ along with Octave; see the file COPYING.  If not, see
 #  include <windows.h>
 #endif
 
-// System dependencies that are figured out by 'configure'.  If we are
-// compiling standalone, we get our c-auto.h.  Otherwise, the package
-// containing us must provide this (unless it can somehow generate ours
-// from c-auto.in).  We use <...> instead of "..." so that the current
-// cpp directory (i.e., kpathsea/) won't be searched.
-
 // Define the characters which separate components of filenames and
 // environment variable paths.
 
-// What separates filename components?
-#if ! defined (DIR_SEP)
-#  if defined (__WIN32__) && ! defined (__CYGWIN__)
-// Either \'s or 's work, but use "/".
-#    define DIR_SEP '/'
-#    define DIR_SEP_STRING "/"
-#    define IS_DEVICE_SEP(ch) ((ch) == ':')
-#    define NAME_BEGINS_WITH_DEVICE(name) \
-       ((name.length ()>0) && IS_DEVICE_SEP((name)[1]))
-// On Windows, it's good to allow both \ and / between directories.
-#    define IS_DIR_SEP(ch) ((ch) == '/' || (ch) == '\\')
-#  else
-#    define DIR_SEP '/'
-#    define DIR_SEP_STRING "/"
-#  endif
-#endif
+#define IS_DEVICE_SEP(ch) octave::sys::file_ops::is_dev_sep (ch)
+#define NAME_BEGINS_WITH_DEVICE(name) \
+   (name.length () > 0 && IS_DEVICE_SEP ((name)[1]))
 
-#if ! defined (IS_DIR_SEP)
-#  define IS_DIR_SEP(ch) ((ch) == DIR_SEP)
-#endif
+#define DIR_SEP_STRING octave::sys::file_ops::dir_sep_str ()
+#define IS_DIR_SEP(ch) octave::sys::file_ops::is_dir_sep (ch)
 
-#if ! defined (IS_DEVICE_SEP)
-// No 'devices' on, e.g., Unix.
-#  define IS_DEVICE_SEP(ch) 0
-#endif
+#define ENV_SEP octave::directory_path::path_sep_char ()
+#define ENV_SEP_STRING octave::directory_path::path_sep_str ()
+#define IS_ENV_SEP(ch) octave::directory_path::is_path_sep (ch)
 
-#if ! defined (NAME_BEGINS_WITH_DEVICE)
-#  define NAME_BEGINS_WITH_DEVICE(name) 0
-#endif
-
-// define NAME_MAX, the maximum length of a single component in a
+// Define NAME_MAX, the maximum length of a single component in a
 // filename.  No such limit may exist, or may vary depending on the
-// filesystem.
+// filesystem.  We don't use this value to create a character string, we
+// only truncate given file names to this length if attempts to get info
+// about the file fail with errno == ENAMETOOLONG.
 
 // Most likely the system will truncate filenames if it is not POSIX,
 // and so we can use the BSD value here.
@@ -110,24 +89,6 @@ along with Octave; see the file COPYING.  If not, see
 #  define NAME_MAX _POSIX_NAME_MAX
 #endif
 
-// What separates elements in environment variable path lists?  */
-#if ! defined (ENV_SEP)
-#  if defined (SEPCHAR) && defined (SEPCHAR_STR)
-#    define ENV_SEP SEPCHAR
-#    define ENV_SEP_STRING SEPCHAR_STR
-#  elif defined (__WIN32__) && ! defined (__CYGWIN__)
-#    define ENV_SEP ';'
-#    define ENV_SEP_STRING ";"
-#  else
-#    define ENV_SEP ':'
-#    define ENV_SEP_STRING ":"
-#  endif
-#endif
-
-#if ! defined (IS_ENV_SEP)
-#  define IS_ENV_SEP(ch) ((ch) == ENV_SEP)
-#endif
-
 // If NO_DEBUG is defined (not recommended), skip all this.
 #if ! defined (NO_DEBUG)
 
@@ -135,7 +96,7 @@ along with Octave; see the file COPYING.  If not, see
 #  define KPSE_DEBUG
 
 // Test if a bit is on.
-#  define KPSE_DEBUG_P(bit) (kpathsea_debug & (1 << (bit)))
+#  define KPSE_DEBUG_P(bit) (kpse_debug & (1 << (bit)))
 
 #  define KPSE_DEBUG_STAT 0               // stat calls
 #  define KPSE_DEBUG_EXPAND 1             // path element expansion
@@ -146,7 +107,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (KPSE_DEBUG)
-static unsigned int kpathsea_debug = 0;
+static unsigned int kpse_debug = 0;
 #endif
 
 static std::string kpse_var_expand (const std::string& src);
@@ -753,11 +714,6 @@ kpse_all_path_find_first_of (const std::string& path,
   return find_first_of (path, names, true, true);
 }
 
-/* General expansion.  Some of this file (the brace-expansion
-   code from bash) is covered by the GPL; this is the only GPL-covered
-   code in kpathsea.  The part of the file that I wrote (the first
-   couple of functions) is covered by the LGPL.  */
-
 /* If NAME has a leading ~ or ~user, Unix-style, expand it to the user's
    home directory, and return a new malloced string.  If no ~, or no
    <pwd.h>, just return NAME.  */
@@ -1329,7 +1285,6 @@ kpse_element_dir (const std::string& elt)
 
       if (! (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)))
         ret += DIR_SEP_STRING;
-      
     }
 
   return ret;
@@ -1370,7 +1325,7 @@ expand (std::string &expansion, const std::string& var)
     {
       (*current_liboctave_warning_with_id_handler)
         ("Octave:pathsearch-syntax",
-         "kpathsea: variable '%s' references itself (eventually)",
+         "pathsearch: variable '%s' references itself (eventually)",
          var.c_str ());
     }
   else
@@ -1390,20 +1345,24 @@ expand (std::string &expansion, const std::string& var)
 
 /* Can't think of when it would be useful to change these (and the
    diagnostic messages assume them), but ... */
-#if ! defined (IS_VAR_START)
+
 /* starts all variable references */
-#define IS_VAR_START(c) ((c) == '$')
+#if ! defined (IS_VAR_START)
+#  define IS_VAR_START(c) ((c) == '$')
 #endif
-#if ! defined (IS_VAR_CHAR)
+
 /* variable name constituent */
-#define IS_VAR_CHAR(c) (isalnum (c) || (c) == '_')
+#if ! defined (IS_VAR_CHAR)
+#  define IS_VAR_CHAR(c) (isalnum (c) || (c) == '_')
 #endif
-#if ! defined (IS_VAR_BEGIN_DELIMITER)
+
 /* start delimited variable name (after $) */
-#define IS_VAR_BEGIN_DELIMITER(c) ((c) == '{')
+#if ! defined (IS_VAR_BEGIN_DELIMITER)
+#  define IS_VAR_BEGIN_DELIMITER(c) ((c) == '{')
 #endif
+
 #if ! defined (IS_VAR_END_DELIMITER)
-#define IS_VAR_END_DELIMITER(c) ((c) == '}')
+#  define IS_VAR_END_DELIMITER(c) ((c) == '}')
 #endif
 
 /* Maybe we should support some or all of the various shell ${...}

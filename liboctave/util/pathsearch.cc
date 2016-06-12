@@ -119,16 +119,16 @@ namespace octave
   void
   directory_path::init (void)
   {
-    static bool octave_kpathsea_initialized = false;
+    static bool octave_kpse_initialized = false;
 
-    if (! octave_kpathsea_initialized)
+    if (! octave_kpse_initialized)
       {
         std::string val = octave::sys::env::getenv ("KPATHSEA_DEBUG");
 
         if (! val.empty ())
-          kpathsea_debug |= atoi (val.c_str ());
+          kpse_debug |= atoi (val.c_str ());
 
-        octave_kpathsea_initialized = true;
+        octave_kpse_initialized = true;
       }
 
     m_expanded_path

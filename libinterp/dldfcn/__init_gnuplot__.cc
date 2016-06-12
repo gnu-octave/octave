@@ -171,25 +171,38 @@ have_gnuplot_binary (void)
 {
   const std::string exeext = octave::build_env::EXEEXT;
   const std::string path = octave::sys::env::getenv ("PATH");
+  bool retval = false;
 
-  octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
-  std::string gnuplot_binary = tmp(0).string_value ();
-
-  string_vector args (gnuplot_binary);
-  std::string gnuplot_path = search_path_for_file (path, args);
-
-  octave::sys::file_stat fs (gnuplot_path);
-
-  if (! fs.exists () && ! exeext.empty ())
+  try
     {
-      args[0] += exeext;
+      octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
 
-      gnuplot_path = search_path_for_file (path, args);
+      if (tmp(0).is_string ())
+        {
+          std::string gnuplot_binary = tmp(0).string_value ();
 
-      fs = octave::sys::file_stat (gnuplot_path);
+          string_vector args (gnuplot_binary);
+          std::string gnuplot_path = search_path_for_file (path, args);
+
+          octave::sys::file_stat fs (gnuplot_path);
+
+          if (! fs.exists () && ! exeext.empty ())
+            {
+              args[0] += exeext;
+
+              gnuplot_path = search_path_for_file (path, args);
+
+              fs = octave::sys::file_stat (gnuplot_path);
+            }
+
+          retval = fs.exists ();
+        }
+    }
+  catch (octave_execution_exception&)
+    {
     }
 
-  return fs.exists ();
+  return retval;
 }
 
 // Initialize the gnuplot graphics toolkit.

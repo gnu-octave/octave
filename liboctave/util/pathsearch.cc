@@ -77,16 +77,10 @@ namespace octave
       {
         for (const auto& elt : m_path_elements)
           {
-            std::list<std::string> elt_dirs = kpse_element_dirs (elt);
+            std::string elt_dir = kpse_element_dir (elt);
 
-            if (! elt_dirs.empty ())
-              {
-                for (const auto &elt_dir : elt_dirs)
-                  {
-                    if (! elt_dir.empty ())
-                      retval.push_back (elt_dir);
-                  }
-              }
+            if (! elt_dir.empty ())
+              retval.push_back (elt_dir);
           }
       }
 

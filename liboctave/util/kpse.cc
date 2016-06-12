@@ -232,7 +232,7 @@ static unsigned int kpathsea_debug = 0;
 
 static std::string kpse_var_expand (const std::string& src);
 
-static std::list<std::string> kpse_element_dirs (const std::string& elt);
+static std::string kpse_element_dir (const std::string& elt);
 
 static std::string kpse_expand (const std::string& s);
 
@@ -467,24 +467,21 @@ log_search (const std::list<std::string>& filenames)
    value, though, since we don't shrink it to the final size returned.)  */
 
 static std::list<std::string>
-dir_list_search (std::list<std::string>& dirs, const std::string& name,
-                 bool search_all)
+dir_search (const std::string& dir, const std::string& name,
+            bool search_all)
 {
   std::list<std::string> ret;
 
-  for (const auto &dir : dirs)
+  std::string potential = dir + name;
+
+  std::string tmp = kpse_readable_file (potential);
+
+  if (! tmp.empty ())
     {
-      std::string potential = dir + name;
+      ret.push_back (potential);
 
-      std::string tmp = kpse_readable_file (potential);
-
-      if (! tmp.empty ())
-        {
-          ret.push_back (potential);
-
-          if (! search_all)
-            return ret;
-        }
+      if (! search_all)
+        return ret;
     }
 
   return ret;
@@ -550,10 +547,10 @@ path_search (const std::string& path, const std::string& name,
 
       if (found.empty ())
         {
-          std::list<std::string> dirs = kpse_element_dirs (elt);
+          std::string dir = kpse_element_dir (elt);
 
-          if (! dirs.empty ())
-            found = dir_list_search (dirs, name, all);
+          if (! dir.empty ())
+            found = dir_search (dir, name, all);
         }
 
       /* Did we find anything anywhere?  */
@@ -678,7 +675,7 @@ path_find_first_of (const std::string& path,
     {
       std::string elt = *pi;
 
-      std::list<std::string> dirs;
+      std::string dir;
       std::list<std::string> found;
 
       /* Do not touch the device if present */
@@ -702,8 +699,9 @@ path_find_first_of (const std::string& path,
         }
 
       /* We have to search one directory at a time.  */
-      dirs = kpse_element_dirs (elt);
-      for (const auto &dir : dirs)
+      dir = kpse_element_dir (elt);
+
+      if (! dir.empty ())
         {
           for (auto it = names.cbegin (); it != names.cend () && ! done; it++)
             {
@@ -717,13 +715,7 @@ path_find_first_of (const std::string& path,
               /* Search the filesystem.  */
 
               if (found.empty ())
-                {
-                  std::list<std::string> tmp;
-
-                  tmp.push_back (dir);
-
-                  found = dir_list_search (tmp, name, all);
-                }
+                found = dir_search (dir, name, all);
 
               /* Did we find anything anywhere?  */
               if (! found.empty ())
@@ -1069,9 +1061,8 @@ kpse_brace_expand (const std::string& path)
    existing directories in the result. */
 
 /* Do brace expansion and call 'kpse_expand' on each argument of the
-   result, then expand any '//' constructs.  The final expansion (always
-   in fresh memory) is a path of all the existing directories that match
-   the pattern. */
+   result.  The final expansion (always in fresh memory) is a path of
+   all the existing directories that match the pattern. */
 
 static std::string
 kpse_path_expand (const std::string& path)
@@ -1089,7 +1080,7 @@ kpse_path_expand (const std::string& path)
     {
       std::string elt = *pi;
 
-      std::list<std::string> dirs;
+      std::string dir;
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))
@@ -1112,28 +1103,25 @@ kpse_path_expand (const std::string& path)
 
       /* Search the disk for all dirs in the component specified.
          Be faster to check the database, but this is more reliable.  */
-      dirs = kpse_element_dirs (elt);
+      dir = kpse_element_dir (elt);
 
-      if (! dirs.empty ())
+      size_t dirlen = dir.length ();
+
+      if (dirlen > 0)
         {
-          for (const auto &dir : dirs)
+          ret += dir;
+          len += dirlen;
+
+          /* Retain trailing slash if that's the root directory.  */
+          if (dirlen == 1
+              || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (dir)
+                  && IS_DIR_SEP (dir[2])))
             {
-              size_t dirlen = dir.length ();
-
-              ret += dir;
-              len += dirlen;
-
-              /* Retain trailing slash if that's the root directory.  */
-              if (dirlen == 1
-                  || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (dir)
-                      && IS_DIR_SEP (dir[2])))
-                {
-                  ret += ENV_SEP_STRING;
-                  len++;
-                }
-
-              ret[len-1] = ENV_SEP;
+              ret += ENV_SEP_STRING;
+              len++;
             }
+
+          ret[len-1] = ENV_SEP;
         }
     }
 
@@ -1338,81 +1326,6 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
   return c;
 }
 
-/* Return true if FILENAME could be in PATH_ELT, i.e., if the directory
-   part of FILENAME matches PATH_ELT.  Have to consider // wildcards, but
-   $ and ~ expansion have already been done.  */
-
-static bool
-match (const std::string& filename_arg, const std::string& path_elt_arg)
-{
-  const char *filename = filename_arg.c_str ();
-  const char *path_elt = path_elt_arg.c_str ();
-
-  const char *original_filename = filename;
-  bool matched = false;
-
-  for (; *filename && *path_elt; filename++, path_elt++)
-    {
-      if (*filename == *path_elt) /* normal character match */
-        ;
-
-      else if (IS_DIR_SEP (*path_elt)  /* at // */
-               && original_filename < filename && IS_DIR_SEP (path_elt[-1]))
-        {
-          while (IS_DIR_SEP (*path_elt))
-            path_elt++; /* get past second and any subsequent /'s */
-
-          if (*path_elt == 0)
-            {
-              /* Trailing //, matches anything.  We could make this
-                 part of the other case, but it seems pointless to do
-                 the extra work.  */
-              matched = true;
-              break;
-            }
-          else
-            {
-              /* Intermediate //, have to match rest of PATH_ELT.  */
-              for (; ! matched && *filename; filename++)
-                {
-                  /* Try matching at each possible character.  */
-                  if (IS_DIR_SEP (filename[-1]) && *filename == *path_elt)
-                    matched = match (filename, path_elt);
-                }
-
-              /* Prevent filename++ when *filename='\0'. */
-              break;
-            }
-        }
-      else
-        /* normal character nonmatch, quit */
-        break;
-    }
-
-  /* If we've reached the end of PATH_ELT, check that we're at the last
-     component of FILENAME, we've matched.  */
-  if (! matched && *path_elt == 0)
-    {
-      /* Probably PATH_ELT ended with 'vf' or some such, and FILENAME
-         ends with 'vf/ptmr.vf'.  In that case, we'll be at a
-         directory separator.  On the other hand, if PATH_ELT ended
-         with a / (as in 'vf/'), FILENAME being the same 'vf/ptmr.vf',
-         we'll be at the 'p'.  Upshot: if we're at a dir separator in
-         FILENAME, skip it.  But if not, that's ok, as long as there
-         are no more dir separators.  */
-
-      if (IS_DIR_SEP (*filename))
-        filename++;
-
-      while (*filename && ! IS_DIR_SEP (*filename))
-        filename++;
-
-      matched = *filename == 0;
-    }
-
-  return matched;
-}
-
 /* Expand extra colons.  */
 
 /* Check for leading colon first, then trailing, then doubled, since
@@ -1477,22 +1390,6 @@ kpse_expand_default (const std::string& path, const std::string& fallback)
    definitions, we give all the subroutines first.  The entry point is
    the last routine in the file.  */
 
-/* Make a copy of DIR (unless it's null) and save it in L.  Ensure that
-   DIR ends with a DIR_SEP for the benefit of later searches.  */
-
-static void
-dir_list_add (std::list<std::string>& lst, const std::string& dir)
-{
-  char last_char = dir[dir.length () - 1];
-
-  std::string saved_dir = dir;
-
-  if (! (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)))
-    saved_dir += DIR_SEP_STRING;
-
-  lst.push_back (saved_dir);
-}
-
 /* Return true if FN is a directory or a symlink to a directory,
    false if not. */
 
@@ -1504,131 +1401,34 @@ dir_p (const std::string& fn)
   return (fs && fs.is_dir ());
 }
 
-/* If DIR is a directory, add it to the list L.  */
-
-static void
-checked_dir_list_add (std::list<std::string>& lst, const std::string& dir)
-{
-  if (dir_p (dir))
-    dir_list_add (lst, dir);
-}
-
-/* The cache.  Typically, several paths have the same element; for
-   example, /usr/local/lib/texmf/fonts//.  We don't want to compute the
-   expansion of such a thing more than once.  */
-
-struct cache_entry
-{
-  cache_entry (void) : key (), value (0) { }
-
-  ~cache_entry (void) { }
-
-  std::string key;
-  std::list<std::string> value;
-};
-
-static cache_entry *the_cache = 0;
-static unsigned cache_length = 0;
-
-/* Associate KEY with VALUE.  We implement the cache as a simple linear
-   list, since it's unlikely to ever be more than a dozen or so elements
-   long.  We don't bother to check here if PATH has already been saved;
-   we always add it to our list.  We copy KEY but not VALUE; not sure
-   that's right, but it seems to be all that's needed.  */
-
-static void
-cache (const std::string key, std::list<std::string>& value)
-{
-  cache_entry *new_cache = new cache_entry [cache_length+1];
-
-  for (unsigned i = 0; i < cache_length; i++)
-    {
-      new_cache[i].key = the_cache[i].key;
-      new_cache[i].value = the_cache[i].value;
-    }
-
-  delete [] the_cache;
-
-  the_cache = new_cache;
-
-  the_cache[cache_length].key = key;
-  the_cache[cache_length].value = value;
-
-  cache_length++;
-}
-
-/* To retrieve, just check the list in order.  */
-
-static std::list<std::string>
-cached (const std::string& key)
-{
-  std::list<std::string> retval;
-
-  for (unsigned p = 0; p < cache_length; p++)
-    {
-      if (key == the_cache[p].key)
-        {
-          retval = the_cache[p].value;
-          break;
-        }
-    }
-
-  return retval;
-}
-
-#if defined (WIN32)
-
-/* Shared across recursive calls, it acts like a stack. */
-static std::string dirname;
-
-#else /* WIN32 */
-
-#endif /* WIN32 */
-
 /* Here is the entry point.  Returns directory list for ELT.  */
 
-/* Given a path element ELT, return a pointer to a NULL-terminated list
-   of the corresponding (existing) directory or directories, with
-   trailing slashes, or NULL.  If ELT is the empty string, check the
-   current working directory.
+/* Given a path element ELT, return a the element with a trailing slash
+   or an empty string if the element is not a directory.
 
    It's up to the caller to expand ELT.  This is because this routine is
    most likely only useful to be called from 'kpse_path_search', which
    has already assumed expansion has been done.  */
 
-static std::list<std::string>
-kpse_element_dirs (const std::string& elt)
+static std::string
+kpse_element_dir (const std::string& elt)
 {
-  std::list<std::string> ret;
+  std::string ret;
 
   /* If given nothing, return nothing.  */
   if (elt.empty ())
     return ret;
 
-  /* If we've already cached the answer for ELT, return it.  */
-  ret = cached (elt);
-  if (! ret.empty ())
-    return ret;
-
-  /* We handle the hard case in a subroutine.  */
-  checked_dir_list_add (ret, elt);
-
-  /* Remember the directory list we just found, in case future calls are
-     made with the same ELT.  */
-  cache (elt, ret);
-
-#if defined (KPSE_DEBUG)
-  if (KPSE_DEBUG_P (KPSE_DEBUG_EXPAND))
+  if (dir_p (elt))
     {
-      std::cerr << "kdebug: path element " << elt << " =>";
-      if (! ret.empty  ())
-        {
-          for (const auto &ret_elt : ret)
-            std::cerr << " " << ret_elt;
-        }
-      std::cerr << std::endl;
+      ret = elt;
+
+      char last_char = ret[ret.length () - 1];
+
+      if (! (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)))
+        ret += DIR_SEP_STRING;
+      
     }
-#endif /* KPSE_DEBUG */
 
   return ret;
 }

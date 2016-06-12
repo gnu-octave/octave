@@ -33,13 +33,13 @@
 ## Given the single argument @code{.}, list all operators available in the
 ## current session of Octave.
 ##
-## If invoked without any arguments, @code{help} display instructions on how to
-## access help from the command line.
+## If invoked without any arguments, @code{help} displays instructions on how
+## to access help from the command line.
 ##
-## The help command can provide information about most operators, for example
-## @code{help +}, but not the comma and semicolon characters which are used
-## by the Octave interpreter as command separators.  For help on either of
-## these type @kbd{help comma} or @kbd{help semicolon}.
+## The help command can provide information about most operators, but
+## @var{name} must be enclosed by single or double quotes to prevent
+## the Octave interpreter from acting on @var{name}.  For example,
+## @code{help "+"} displays help on the addition operator.
 ## @seealso{doc, lookfor, which, info}
 ## @end deftypefn
 
@@ -53,10 +53,10 @@ function retval = help (name)
     help NAME\n\
 \n\
   (replace NAME with the name of the command or function you would\n\
-  like to learn more about).\n\
+  like to learn more about; for an operator, enclose NAME in quotes).\n\
 \n\
-  For a more detailed introduction to GNU Octave, please consult the\n\
-  manual.  To read the manual from the prompt type\n\
+  For a more detailed introduction to GNU Octave, consult the manual.\n\
+  The manual may be read from the prompt by typing\n\
 \n\
     doc\n\
 \n\
@@ -130,8 +130,10 @@ function retval = help (name)
 endfunction
 
 function retval = do_list_operators ()
-  retval = sprintf ("*** operators:\n\n%s\n\n",
-                    list_in_columns (__operators__ ()));
+  retval = sprintf ("*** operators:\n\n%s\n%s\n\n",
+                    list_in_columns (__operators__ ()),
+                    ["To obtain help on an operator, type\n"...
+                     "      help \"NAME\"   or   help 'NAME'"]);
 endfunction
 
 function retval = do_list_functions ()

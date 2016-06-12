@@ -3,6 +3,7 @@ FCN_FILE_DIRS += scripts/deprecated
 scripts_deprecated_FCN_FILES = \
   scripts/deprecated/bicubic.m \
   scripts/deprecated/bitmax.m \
+  scripts/deprecated/comma.m \
   scripts/deprecated/delaunay3.m \
   scripts/deprecated/dump_prefs.m \
   scripts/deprecated/find_dir_in_path.m \
@@ -20,8 +21,10 @@ scripts_deprecated_FCN_FILES = \
   scripts/deprecated/octave_config_info.m \
   scripts/deprecated/octave_tmp_file_name.m \
   scripts/deprecated/onenormest.m \
+  scripts/deprecated/paren.m \
   scripts/deprecated/playaudio.m \
   scripts/deprecated/saveaudio.m \
+  scripts/deprecated/semicolon.m \
   scripts/deprecated/setaudio.m \
   scripts/deprecated/sleep.m \
   scripts/deprecated/syl.m \

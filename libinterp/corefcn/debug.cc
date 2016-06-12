@@ -489,7 +489,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
   else
     {
       Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
-      if (W.numel () == 0 || W(0).length () == 0)
+      if (W.is_empty () || W(0).is_empty () == 0)
         Vdebug_on_error = 1;    // like "dbstop if error" with no identifier
       else if (! W(0).is_cell ())
         fail = true;
@@ -515,7 +515,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
   else
     {
       Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
-      if (W.numel () == 0 || W(0).length () == 0)
+      if (W.is_empty () || W(0).is_empty ())
         Vdebug_on_caught = 1;    // like "dbstop if caught error" with no ID
       else if (! W(0).is_cell ())
         fail = true;
@@ -541,7 +541,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
   else
     {
       Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
-      if (W.numel () == 0 || W(0).length () == 0)
+      if (W.is_empty () || W(0).is_empty ())
         Vdebug_on_warning = 1;    // like "dbstop if warning" with no identifier
       else if (! W(0).is_cell ())
         fail = true;
@@ -789,7 +789,7 @@ bp_table::do_remove_breakpoint_1 (octave_user_code *fcn,
           results = cmds->list_breakpoints ();
 
           bp_set_iterator it = bp_set.find (fname);
-          if (results.length () == 0 && it != bp_set.end ())
+          if (results.empty () && it != bp_set.end ())
             bp_set.erase (it);
         }
 
@@ -832,8 +832,7 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 
       for (const auto& subf_nm : subfcn_names)
         {
-          std::map<std::string, octave_value>::const_iterator
-            q = subfcns.find (subf_nm);
+          const auto q = subfcns.find (subf_nm);
 
           if (q != subfcns.end ())
             {
@@ -924,7 +923,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 
   for (auto& bp_fname : tmp_bp_set)
     {
-      if (fname_list.length () == 0
+      if (fname_list.empty ()
           || do_find_bkpt_list (fname_list, bp_fname) != "")
         {
           octave_user_code *f = get_user_code (bp_fname);
@@ -950,8 +949,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 
               for (const auto& subfcn_nm : subf_nm)
                 {
-                  std::map<std::string, octave_value>::const_iterator
-                    q = subf.find (subfcn_nm);
+                  const auto q = subf.find (subfcn_nm);
 
                   if (q != subf.end ())
                     {
@@ -1444,11 +1442,10 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
               octave_stdout << "breakpoint" << _s_ <<" in " << fnm_bp_p.first
                             << " at line" << _s_ << " ";
 
-              for (std::list<bp_type>::const_iterator j = m.begin ();
-                   j != m.end (); j++)
+              for (const auto& bp : m)
                 {
-                  if (j->cond == "")
-                    octave_stdout << j->line << " ";
+                  if (bp.cond == "")
+                    octave_stdout << bp.line << " ";
                 }
               octave_stdout << std::endl;
             }

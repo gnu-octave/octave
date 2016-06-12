@@ -1090,7 +1090,7 @@ namespace octave
   int
   command_editor::startup_handler (void)
   {
-    for (auto fcnptr : startup_hook_set)
+    for (auto& fcnptr : startup_hook_set)
       {
         startup_hook_fcn f = *fcnptr;
 
@@ -1104,7 +1104,7 @@ namespace octave
   int
   command_editor::pre_input_handler (void)
   {
-    for (auto fcnptr : pre_input_hook_set)
+    for (auto& fcnptr : pre_input_hook_set)
       {
         pre_input_hook_fcn f = *fcnptr;
 
@@ -1124,7 +1124,7 @@ namespace octave
 
     event_hook_lock.unlock ();
 
-    for (auto fcnptr : hook_set)
+    for (auto& fcnptr : hook_set)
       {
         event_hook_fcn f = *fcnptr;
 

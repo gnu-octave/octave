@@ -143,8 +143,8 @@ namespace octave
   void
   dynamic_library::dynlib_rep::do_close_hook (dynamic_library::close_hook cl_hook)
   {
-    for (auto p = fcn_names.begin (); p != fcn_names.end (); p++)
-      cl_hook (p->first);
+    for (auto& fcn_sz_p : fcn_names)
+      cl_hook (fcn_sz_p.first);
 
     fcn_names.clear ();
   }

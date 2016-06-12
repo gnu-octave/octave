@@ -30,76 +30,20 @@ along with Octave; see the file COPYING.  If not, see
 // C++ source files that should have included config.h before including
 // this file.
 
+#include <cctype>
+#include <cerrno>
+#include <cstdlib>
+#include <ctime>
+
 #include <map>
 #include <fstream>
 #include <iostream>
 #include <string>
 
-/* System defines are for non-Unix systems only.  (Testing for all Unix
-   variations should be done in configure.)  Presently the defines used
-   are: DOS OS2 WIN32.  I do not use any of these systems
-   myself; if you do, I'd be grateful for any changes. --kb@mail.tug.org */
+#include <sys/types.h>
+#include <unistd.h>
 
-/* If we have either DOS or OS2, we are DOSISH.  */
-#if defined (DOS) || defined (OS2) || defined (WIN32) || defined (__MSDOS__)
-#define DOSISH
-#endif
-
-extern "C" {
-#if defined (__MINGW32__)
-#include <windows.h>
-#include <fcntl.h>
-#elif defined (WIN32)
-#if ! defined (_MSC_VER)
-#define __STDC__ 1
-#include "win32lib.h"
-#endif
-#endif /* not WIN32 */
-}
-
-/* System dependencies that are figured out by 'configure'.  If we are
-   compiling standalone, we get our c-auto.h.  Otherwise, the package
-   containing us must provide this (unless it can somehow generate ours
-   from c-auto.in).  We use <...> instead of "..." so that the current
-   cpp directory (i.e., kpathsea/) won't be searched. */
-
-/* If you want to find subdirectories in a directory with non-Unix
-   semantics (specifically, if a directory with no subdirectories does
-   not have exactly two links), define this.  */
-#if ! defined (DOSISH)
-#define ST_NLINK_TRICK
-#endif /* not DOSISH */
-
-/* Define the characters which separate components of
-   filenames and environment variable paths.  */
-
-/* What separates filename components?  */
-#if ! defined (DIR_SEP)
-#if defined (DOSISH)
-/* Either \'s or 's work.  Wayne Sullivan's web2pc prefers /, so we'll
-   go with that.  */
-#define DIR_SEP '/'
-#define DIR_SEP_STRING "/"
-#define IS_DEVICE_SEP(ch) ((ch) == ':')
-#define NAME_BEGINS_WITH_DEVICE(name) ((name.length ()>0) && IS_DEVICE_SEP((name)[1]))
-/* On DOS, it's good to allow both \ and / between directories.  */
-#define IS_DIR_SEP(ch) ((ch) == '/' || (ch) == '\\')
-#else
-#define DIR_SEP '/'
-#define DIR_SEP_STRING "/"
-#endif /* not DOSISH */
-#endif /* not DIR_SEP */
-
-#if ! defined (IS_DIR_SEP)
-#define IS_DIR_SEP(ch) ((ch) == DIR_SEP)
-#endif
-#if ! defined (IS_DEVICE_SEP)
-/* No 'devices' on, e.g., Unix.  */
-#define IS_DEVICE_SEP(ch) 0
-#endif
-#if ! defined (NAME_BEGINS_WITH_DEVICE)
-#define NAME_BEGINS_WITH_DEVICE(name) 0
-#endif
+#include <dirent.h>
 
 #include "file-stat.h"
 #include "lo-error.h"
@@ -107,128 +51,103 @@ extern "C" {
 #include "oct-passwd.h"
 #include "str-vec.h"
 
-/* Header files that essentially all of our sources need, and
-   that all implementations have.  We include these first, to help with
-   NULL being defined multiple times.  */
-#include <cstdarg>
-#include <cstdlib>
-#include <cerrno>
-#include <cassert>
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#  define WIN32_LEAN_AND_MEAN 1
+#  include <windows.h>
+#endif
 
-#include <sys/types.h>
-#include <unistd.h>
+// System dependencies that are figured out by 'configure'.  If we are
+// compiling standalone, we get our c-auto.h.  Otherwise, the package
+// containing us must provide this (unless it can somehow generate ours
+// from c-auto.in).  We use <...> instead of "..." so that the current
+// cpp directory (i.e., kpathsea/) won't be searched.
 
-#include <dirent.h>
+// Define the characters which separate components of filenames and
+// environment variable paths.
 
-/* define NAME_MAX, the maximum length of a single
-   component in a filename.  No such limit may exist, or may vary
-   depending on the filesystem.  */
+// What separates filename components?
+#if ! defined (DIR_SEP)
+#  if defined (__WIN32__) && ! defined (__CYGWIN__)
+// Either \'s or 's work, but use "/".
+#    define DIR_SEP '/'
+#    define DIR_SEP_STRING "/"
+#    define IS_DEVICE_SEP(ch) ((ch) == ':')
+#    define NAME_BEGINS_WITH_DEVICE(name) \
+       ((name.length ()>0) && IS_DEVICE_SEP((name)[1]))
+// On Windows, it's good to allow both \ and / between directories.
+#    define IS_DIR_SEP(ch) ((ch) == '/' || (ch) == '\\')
+#  else
+#    define DIR_SEP '/'
+#    define DIR_SEP_STRING "/"
+#  endif
+#endif
 
-/* Most likely the system will truncate filenames if it is not POSIX,
-   and so we can use the BSD value here.  */
+#if ! defined (IS_DIR_SEP)
+#  define IS_DIR_SEP(ch) ((ch) == DIR_SEP)
+#endif
+
+#if ! defined (IS_DEVICE_SEP)
+// No 'devices' on, e.g., Unix.
+#  define IS_DEVICE_SEP(ch) 0
+#endif
+
+#if ! defined (NAME_BEGINS_WITH_DEVICE)
+#  define NAME_BEGINS_WITH_DEVICE(name) 0
+#endif
+
+// define NAME_MAX, the maximum length of a single component in a
+// filename.  No such limit may exist, or may vary depending on the
+// filesystem.
+
+// Most likely the system will truncate filenames if it is not POSIX,
+// and so we can use the BSD value here.
+
 #if ! defined (_POSIX_NAME_MAX)
-#define _POSIX_NAME_MAX 255
+#  define _POSIX_NAME_MAX 255
 #endif
 
 #if ! defined (NAME_MAX)
-#define NAME_MAX _POSIX_NAME_MAX
+#  define NAME_MAX _POSIX_NAME_MAX
 #endif
 
-#include <cctype>
-
-/* What separates elements in environment variable path lists?  */
+// What separates elements in environment variable path lists?  */
 #if ! defined (ENV_SEP)
-#if defined (SEPCHAR) && defined (SEPCHAR_STR)
-#define ENV_SEP SEPCHAR
-#define ENV_SEP_STRING SEPCHAR_STR
-#elif defined (DOSISH)
-#define ENV_SEP ';'
-#define ENV_SEP_STRING ";"
-#else
-#define ENV_SEP ':'
-#define ENV_SEP_STRING ":"
-#endif /* not DOS */
-#endif /* not ENV_SEP */
+#  if defined (SEPCHAR) && defined (SEPCHAR_STR)
+#    define ENV_SEP SEPCHAR
+#    define ENV_SEP_STRING SEPCHAR_STR
+#  elif defined (__WIN32__) && ! defined (__CYGWIN__)
+#    define ENV_SEP ';'
+#    define ENV_SEP_STRING ";"
+#  else
+#    define ENV_SEP ':'
+#    define ENV_SEP_STRING ":"
+#  endif
+#endif
 
 #if ! defined (IS_ENV_SEP)
-#define IS_ENV_SEP(ch) ((ch) == ENV_SEP)
+#  define IS_ENV_SEP(ch) ((ch) == ENV_SEP)
 #endif
 
-/* If NO_DEBUG is defined (not recommended), skip all this.  */
+// If NO_DEBUG is defined (not recommended), skip all this.
 #if ! defined (NO_DEBUG)
 
-/* OK, we'll have tracing support.  */
-#define KPSE_DEBUG
+// OK, we'll have tracing support.
+#  define KPSE_DEBUG
 
-/* Test if a bit is on.  */
-#define KPSE_DEBUG_P(bit) (kpathsea_debug & (1 << (bit)))
+// Test if a bit is on.
+#  define KPSE_DEBUG_P(bit) (kpathsea_debug & (1 << (bit)))
 
-#define KPSE_DEBUG_STAT 0               /* stat calls */
-#define KPSE_DEBUG_EXPAND 1             /* path element expansion */
-#define KPSE_DEBUG_SEARCH 2             /* searches */
-#define KPSE_DEBUG_VARS 3               /* variable values */
-#define KPSE_LAST_DEBUG KPSE_DEBUG_VARS
+#  define KPSE_DEBUG_STAT 0               // stat calls
+#  define KPSE_DEBUG_EXPAND 1             // path element expansion
+#  define KPSE_DEBUG_SEARCH 2             // searches
+#  define KPSE_DEBUG_VARS 3               // variable values
+#  define KPSE_LAST_DEBUG KPSE_DEBUG_VARS
 
-#endif /* not NO_DEBUG */
+#endif
 
 #if defined (KPSE_DEBUG)
 static unsigned int kpathsea_debug = 0;
 #endif
-
-#if defined (WIN32) && ! defined (__MINGW32__)
-
-/* System description file for Windows NT.  */
-
-/*
- *      Define symbols to identify the version of Unix this is.
- *      Define all the symbols that apply correctly.
- */
-
-#if ! defined (DOSISH)
-#define DOSISH
-#endif
-
-/* These have to be defined because our compilers treat __STDC__ as being
-   defined (most of them anyway). */
-
-#define access  _access
-
-/* Define this so that winsock.h definitions don't get included when
-   windows.h is...  For this to have proper effect, config.h must
-   always be included before windows.h.  */
-#define _WINSOCKAPI_    1
-
-#include <windows.h>
-
-/* For proper declaration of environ.  */
-#include <io.h>
-#include <fcntl.h>
-#include <process.h>
-
-/* ============================================================ */
-
-#endif /* WIN32 */
-
-/* Define common sorts of messages.  */
-
-/* This should be called only after a system call fails.  Don't exit
-   with status 'errno', because that might be 256, which would mean
-   success (exit statuses are truncated to eight bits).  */
-#define FATAL_PERROR(str) \
-  do \
-    { \
-      std::cerr << "pathsearch: "; \
-      perror (str); exit (EXIT_FAILURE); \
-    } \
-  while (0)
-
-#define FATAL(str) \
-  do \
-    { \
-      std::cerr << "pathsearch: fatal: " << str << "." << std::endl; \
-      exit (1); \
-    } \
-  while (0)
 
 static std::string kpse_var_expand (const std::string& src);
 
@@ -236,19 +155,14 @@ static std::string kpse_element_dir (const std::string& elt);
 
 static std::string kpse_expand (const std::string& s);
 
-static std::string kpse_expand_default (const std::string& path,
-                                        const std::string& dflt);
-
-#include <ctime> /* for 'time' */
-
 static bool
 kpse_is_env_sep (char c)
 {
   return IS_ENV_SEP (c);
 }
 
-/* A way to step through a path, extracting one directory name at a
-   time.  */
+// A way to step through a path, extracting one directory name at a
+// time.
 
 class kpse_path_iterator
 {
@@ -283,13 +197,14 @@ private:
     e = b + 1;
 
     if (e == len)
-      ; /* OK, we have found the last element.  */
+      ; // OK, we have found the last element.
     else if (e > len)
       b = e = std::string::npos;
     else
       {
-        /* Find the next colon not enclosed by braces (or the end of
-           the path).  */
+        // Find the next colon not enclosed by braces (or the end of the
+        // path).
+
         while (e < len && ! kpse_is_env_sep (path[e]))
           e++;
       }
@@ -299,7 +214,7 @@ private:
   {
     b = e + 1;
 
-    /* Skip any consecutive colons.  */
+    // Skip any consecutive colons.
     while (b < len && kpse_is_env_sep (path[b]))
       b++;
 
@@ -354,7 +269,7 @@ kpse_truncate_filename (const std::string& name)
    regular file, as it is potentially useful to read fifo's or some
    kinds of devices.  */
 
-#if defined (WIN32)
+#if defined (__WIN32__)
 static inline bool
 READABLE (const std::string& fn)
 {
@@ -646,9 +561,6 @@ kpse_path_search (const std::string& path, const std::string& name,
 
   return ret_list.empty () ? "" : ret_list.front ();
 }
-
-/* Search all elements of PATH for files named NAME.  Not sure if it's
-   right to assert 'must_exist' here, but it suffices now.  */
 
 /* Like 'kpse_path_search' with MUST_EXIST true, but return a list of
    all the filenames (or NULL if none), instead of taking the first.  */
@@ -1024,9 +936,7 @@ kpse_brace_expand_element (const std::string& elt)
 
 /* Do brace expansion and call 'kpse_expand' on each element of the
    result; return the final expansion (always in fresh memory, even if
-   no expansions were done).  We don't call 'kpse_expand_default'
-   because there is a whole sequence of defaults to run through; see
-   'kpse_init_format'.  */
+   no expansions were done).  */
 
 static std::string
 kpse_brace_expand (const std::string& path)
@@ -1384,12 +1294,6 @@ kpse_expand_default (const std::string& path, const std::string& fallback)
   return expansion;
 }
 
-/* Translate a path element to its corresponding director{y,ies}.  */
-
-/* To avoid giving prototypes for all the routines and then their real
-   definitions, we give all the subroutines first.  The entry point is
-   the last routine in the file.  */
-
 /* Return true if FN is a directory or a symlink to a directory,
    false if not. */
 
@@ -1400,8 +1304,6 @@ dir_p (const std::string& fn)
 
   return (fs && fs.is_dir ());
 }
-
-/* Here is the entry point.  Returns directory list for ELT.  */
 
 /* Given a path element ELT, return a the element with a trailing slash
    or an empty string if the element is not a directory.

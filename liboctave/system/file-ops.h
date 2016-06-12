@@ -39,17 +39,21 @@ namespace octave
     OCTAVE_API
     file_ops
     {
-    public:
+    protected:
 
       // Use a singleton class for dir_sep data members instead of just
       // making them static members of the file_ops class so that we
       // can ensure proper initialization.
 
-      file_ops (char dir_sep_char_arg = 0,
+      file_ops (char dev_sep_char_arg = 0, char dir_sep_char_arg = 0,
                 const std::string& dir_sep_str_arg = std::string ("/"),
                 const std::string& dir_sep_chars_arg = std::string ("/"))
-        : m_dir_sep_char (dir_sep_char_arg), m_dir_sep_str (dir_sep_str_arg),
+        : m_dev_sep_char (dev_sep_char_arg),
+          m_dir_sep_char (dir_sep_char_arg),
+          m_dir_sep_str (dir_sep_str_arg),
           m_dir_sep_chars (dir_sep_chars_arg) { }
+
+    public:
 
       typedef std::string (*tilde_expansion_hook) (const std::string&);
 
@@ -60,6 +64,13 @@ namespace octave
       static string_vector tilde_additional_prefixes;
 
       static string_vector tilde_additional_suffixes;
+
+      static char dev_sep_char (void)
+      {
+        return instance_ok () ? instance->m_dev_sep_char : 0;
+      }
+
+      static bool is_dev_sep (char c);
 
       static char dir_sep_char (void)
       {
@@ -117,6 +128,8 @@ namespace octave
       file_ops& operator = (const file_ops&);
 
       static bool instance_ok (void);
+
+      char m_dev_sep_char;
 
       char m_dir_sep_char;
       std::string m_dir_sep_str;

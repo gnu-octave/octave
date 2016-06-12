@@ -70,9 +70,11 @@ namespace octave
       if (! instance)
         {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+          char system_dev_sep_char = ':';
           char system_dir_sep_char = '\\';
           std::string system_dir_sep_str = "\\";
 #else
+          char system_dev_sep_char = 0;
           char system_dir_sep_char = '/';
           std::string system_dir_sep_str = "/";
 #endif
@@ -82,8 +84,8 @@ namespace octave
           std::string system_dir_sep_chars = system_dir_sep_str;
 #endif
 
-          instance = new file_ops (system_dir_sep_char, system_dir_sep_str,
-                                   system_dir_sep_chars);
+          instance = new file_ops (system_dev_sep_char, system_dir_sep_char,
+                                   system_dir_sep_str, system_dir_sep_chars);
 
           if (instance)
             singleton_cleanup_list::add (cleanup_instance);
@@ -279,6 +281,16 @@ namespace octave
         dirname = pw.dir () + filename.substr (user_len+1);
 
       return dirname;
+    }
+
+    bool
+    octave::sys::file_ops::is_dev_sep (char c)
+    {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+      return c == dev_sep_char ();
+#else
+      return false;
+#endif
     }
 
     // If NAME has a leading ~ or ~user, Unix-style, expand it to the

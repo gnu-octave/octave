@@ -84,6 +84,9 @@ ALL_LOCAL_TARGETS += \
   $(PKG_ADD_FILES) \
   $(JAR_FILES)
 
+OCTAVE_INTERPRETER_TARGETS += \
+  $(GEN_FCN_FILES)
+
 define PKG_ADD_FILE_TEMPLATE
 $(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) scripts/mk-pkg-add
 	$$(AM_V_GEN)rm -f $$@-t $$@ && \

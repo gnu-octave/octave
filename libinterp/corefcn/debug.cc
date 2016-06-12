@@ -584,12 +584,12 @@ bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
     {
       retval = cmds->add_breakpoint (file, line, condition);
 
-      for (intmap_iterator p = retval.begin (); p != retval.end (); p++)
+      for (auto& idx_line_p : retval)
         {
-          if (p->second != 0)
+          if (idx_line_p.second != 0)
             {
-              // normalise to store only the file name.
-              // otherwise, there can be an entry for both file>subfunction and
+              // Normalize to store only the file name.
+              // Otherwise, there can be an entry for both file>subfunction and
               // file, which causes a crash on dbclear all
               const char *s = strchr (fname.c_str (), Vfilemarker);
               if (s)
@@ -657,12 +657,11 @@ find_fcn_by_line (octave_user_code *main_fcn, int lineno, int *end_line = 0)
   int earliest_end = std::numeric_limits<int>::max ();
 
   std::map<std::string, octave_value> subfcns = main_fcn->subfunctions ();
-  for (std::map<std::string,octave_value>::const_iterator q = subfcns.begin ();
-       q != subfcns.end (); q++)
+  for (const auto& str_val_p : subfcns)
     {
-      if (q->second.is_user_function ())
+      if (str_val_p.second.is_user_function ())
         {
-          octave_user_function *dbg_subfcn = q->second.user_function_value ();
+          auto *dbg_subfcn = str_val_p.second.user_function_value ();
 
           // Check if lineno is within dbg_subfcn.
           // FIXME: we could break when beginning_line() > lineno,
@@ -831,11 +830,10 @@ bp_table::do_remove_breakpoint (const std::string& fname,
       std::map<std::string, octave_value> subfcns
         = dbg_fcn->subfunctions ();
 
-      for (std::list<std::string>::const_iterator p = subfcn_names.begin ();
-           p != subfcn_names.end (); p++)
+      for (const auto& subf_nm : subfcn_names)
         {
           std::map<std::string, octave_value>::const_iterator
-            q = subfcns.find (*p);
+            q = subfcns.find (subf_nm);
 
           if (q != subfcns.end ())
             {
@@ -924,12 +922,12 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
   // make copy since changes may invalidate iters of bp_set.
   std::set<std::string> tmp_bp_set = bp_set;
 
-  for (bp_set_iterator it = tmp_bp_set.begin (); it != tmp_bp_set.end (); it++)
+  for (auto& bp_fname : tmp_bp_set)
     {
       if (fname_list.length () == 0
-          || do_find_bkpt_list (fname_list, *it) != "")
+          || do_find_bkpt_list (fname_list, bp_fname) != "")
         {
-          octave_user_code *f = get_user_code (*it);
+          octave_user_code *f = get_user_code (bp_fname);
 
           if (f)
             {
@@ -942,7 +940,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                   std::list<bp_type> bkpts = cmds->breakpoints_and_conds ();
 
                   if (! bkpts.empty ())
-                    retval[*it] = bkpts;
+                    retval[bp_fname] = bkpts;
                 }
 
               // look for breakpoints in subfunctions
@@ -950,11 +948,10 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 
               std::map<std::string, octave_value> subf = f->subfunctions ();
 
-              for (std::list<std::string>::const_iterator p = subf_nm.begin ();
-                   p != subf_nm.end (); p++)
+              for (const auto& subfcn_nm : subf_nm)
                 {
                   std::map<std::string, octave_value>::const_iterator
-                    q = subf.find (*p);
+                    q = subf.find (subfcn_nm);
 
                   if (q != subf.end ())
                     {
@@ -967,7 +964,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                                              = cmds->breakpoints_and_conds ();
 
                           if (! bkpts.empty ())
-                            retval[*it + Vfilemarker + ff->name ()] = bkpts;
+                            retval[bp_fname + Vfilemarker + ff->name ()] = bkpts;
                         }
                     }
                 }
@@ -1262,16 +1259,14 @@ bp_table::stop_on_err_warn_status (bool to_screen)
           Cell errs (dim_vector (bp_table::errors_that_stop.size (), 1));
           int i = 0;
 
-          for (std::set<std::string>::const_iterator e
-                                  = errors_that_stop.begin ();
-               e != errors_that_stop.end (); e++)
+          for (const auto& e : errors_that_stop)
             {
               if (to_screen)
-                octave_stdout << "stop if error " << *e << "\n";
+                octave_stdout << "stop if error " << e << "\n";
               else
-                errs (i++) = *e;
+                errs(i++) = e;
             }
-          if (!to_screen)
+          if (! to_screen)
             retval.assign ("errs", octave_value (errs));
         }
     }
@@ -1291,16 +1286,14 @@ bp_table::stop_on_err_warn_status (bool to_screen)
           Cell errs (dim_vector (caught_that_stop.size (), 1));
           int i = 0;
 
-          for (std::set<std::string>::const_iterator e
-                                  = caught_that_stop.begin ();
-               e != caught_that_stop.end (); e++)
+          for (const auto& e : caught_that_stop)
             {
               if (to_screen)
-                octave_stdout << "stop if caught error " << *e << "\n";
+                octave_stdout << "stop if caught error " << e << "\n";
               else
-                errs (i++) = *e;
+                errs(i++) = e;
             }
-          if (!to_screen)
+          if (! to_screen)
             retval.assign ("caught", octave_value (errs));
         }
     }
@@ -1320,16 +1313,14 @@ bp_table::stop_on_err_warn_status (bool to_screen)
           Cell warn (dim_vector (warnings_that_stop.size (), 1));
           int i = 0;
 
-          for (std::set<std::string>::const_iterator w
-                                  = warnings_that_stop.begin ();
-               w != warnings_that_stop.end (); w++)
+          for (const auto& w : warnings_that_stop)
             {
               if (to_screen)
-                octave_stdout << "stop if warning " << *w << "\n";
+                octave_stdout << "stop if warning " << w << "\n";
               else
-                warn (i++) = *w;
+                warn(i++) = w;
             }
-          if (!to_screen)
+          if (! to_screen)
             retval.assign ("warn", octave_value (warn));
         }
     }
@@ -1430,19 +1421,17 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
     {
       // Print out the breakpoint information.
 
-      for (bp_table::fname_bp_map_iterator it = bp_list.begin ();
-           it != bp_list.end (); it++)
+      for (auto& fnm_bp_p: bp_list)
         {
-          std::list<bp_type> m = it->second;
+          std::list<bp_type> m = fnm_bp_p.second;
 
           // print unconditional breakpoints, if any, on a single line
 
           // first, check to see if there are any
           int have_unconditional = 0;
-          for (std::list<bp_type>::const_iterator j = m.begin ();
-               j != m.end (); j++)
+          for (const auto& bp : m)
             {
-              if (j->cond == "")
+              if (bp.cond == "")
                 {
                   if (have_unconditional++)
                     break;                   // stop once we know its plural
@@ -1452,7 +1441,7 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
           if (have_unconditional)
             {
               const char *_s_ = (have_unconditional > 1) ? "s" : "";
-              octave_stdout << "breakpoint" << _s_ <<" in " << it->first
+              octave_stdout << "breakpoint" << _s_ <<" in " << fnm_bp_p.first
                             << " at line" << _s_ << " ";
 
               for (std::list<bp_type>::const_iterator j = m.begin ();
@@ -1465,13 +1454,12 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
             }
 
           // print conditional breakpoints, one per line, with conditions
-          for (std::list<bp_type>::const_iterator j = m.begin ();
-               j != m.end (); j++)
+          for (const auto& bp : m)
             {
-              if (j->cond != "")
-                octave_stdout << "breakpoint in " << it->first
-                              << " at line " << j->line
-                              << " if " << j->cond << "\n";
+              if (bp.cond != "")
+                octave_stdout << "breakpoint in " << fnm_bp_p.first
+                              << " at line " << bp.line
+                              << " if " << bp.cond << "\n";
             }
         }
 
@@ -1486,38 +1474,31 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
       octave_map retmap;
       octave_value retval;
 
-      // count how many breakpoints there are
+      // count the number of breakpoints in all files
       int count = 0;
-      for (bp_table::const_fname_bp_map_iterator it = bp_list.begin ();
-           it != bp_list.end (); it++)
-        {
-          for (std::list<bp_type>::const_iterator j = it->second.begin ();
-               j != it->second.end (); j++)
-            count++;
-        }
+      for (const auto& fnm_bp_p : bp_list)
+        count += fnm_bp_p.second.size ();
 
       Cell names (dim_vector (count, 1));
       Cell file  (dim_vector (count, 1));
       Cell line  (dim_vector (count, 1));
       Cell cond  (dim_vector (count, 1));
 
-      for (bp_table::const_fname_bp_map_iterator it = bp_list.begin ();
-           it != bp_list.end (); it++)
+      for (const auto& fnm_bp_p : bp_list)
         {
-          std::string filename = it->first;
+          std::string filename = fnm_bp_p.first;
           const char *sub_fun = strchr (filename.c_str (), Vfilemarker);
           if (sub_fun)
             filename = filename.substr(0, sub_fun - filename.c_str ());
           octave_value path_name;
           path_name = octave::sys::canonicalize_file_name (do_which (filename));
 
-          for (std::list<bp_type>::const_iterator j = it->second.begin ();
-               j != it->second.end (); j++)
+          for (const auto& bp : fnm_bp_p.second)
             {
-              names(i) = it->first;
+              names(i) = fnm_bp_p.first;
               file(i) = path_name;
-              line(i) = octave_value (j->line);
-              cond(i) = octave_value (j->cond);
+              line(i) = octave_value (bp.line);
+              cond(i) = octave_value (bp.cond);
               i++;
             }
         }
@@ -1528,7 +1509,7 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
       retmap.assign ("cond", cond);
 
       octave_map ew = bp_table::stop_on_err_warn_status (false);
-      if (ew.numel () == 0)
+      if (ew.is_empty ())
         {
           retval = octave_value (retmap);
         }

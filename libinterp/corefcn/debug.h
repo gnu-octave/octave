@@ -39,11 +39,11 @@ bp_type
 {
   int line;
   std::string cond;
-  bp_type (int l, const std::string& c) : line (l), cond (c)
-    { }
+
+  bp_type (int l, const std::string& c) : line (l), cond (c) { }
 };
 
-// Interface to breakpoints,.
+// Interface to breakpoints.
 class
 OCTINTERP_API
 bp_table

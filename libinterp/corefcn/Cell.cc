@@ -73,11 +73,8 @@ Cell::Cell (const std::list<std::string>& lst)
 
       octave_idx_type i = 0;
 
-      for (std::list<std::string>::const_iterator it = lst.begin ();
-           it != lst.end (); it++)
-        {
-          elem(i++,0) = *it;
-        }
+      for (const auto& str : lst)
+        elem(i++,0) = str;
     }
 }
 

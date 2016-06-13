@@ -28,12 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "kpse.h"
+#include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "pathsearch.h"
 #include "singleton-cleanup.h"
-
-#include "kpse.cc"
 
 namespace octave
 {

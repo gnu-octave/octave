@@ -26,9 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// This file should not include config.h.  It is only included in other
-// C++ source files that should have included config.h before including
-// this file.
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
 #include <cctype>
 #include <cerrno>
@@ -48,10 +48,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-error.h"
+#include "kpse.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
-#include "str-vec.h"
+#include "pathsearch.h"
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #  define WIN32_LEAN_AND_MEAN 1
@@ -106,88 +106,45 @@ along with Octave; see the file COPYING.  If not, see
 
 #endif
 
-#if defined (KPSE_DEBUG)
-static unsigned int kpse_debug = 0;
-#endif
+unsigned int kpse_debug = 0;
 
 static std::string kpse_var_expand (const std::string& src);
 
-static std::string kpse_element_dir (const std::string& elt);
-
 static std::string kpse_expand (const std::string& s);
 
-static bool
-kpse_is_env_sep (char c)
+void
+kpse_path_iterator::set_end (void)
 {
-  return IS_ENV_SEP (c);
+  e = b + 1;
+
+  if (e == len)
+    ; // OK, we have found the last element.
+  else if (e > len)
+    b = e = std::string::npos;
+  else
+    {
+      // Find the next colon not enclosed by braces (or the end of the
+      // path).
+
+      while (e < len && ! octave::directory_path::is_path_sep (path[e]))
+        e++;
+    }
 }
 
-// A way to step through a path, extracting one directory name at a
-// time.
-
-class kpse_path_iterator
+void
+kpse_path_iterator::next (void)
 {
-public:
+  b = e + 1;
 
-  kpse_path_iterator (const std::string& p)
-    : path (p), b (0), e (0), len (path.length ()) { set_end (); }
+  // Skip any consecutive colons.
+  while (b < len && octave::directory_path::is_path_sep (path[b]))
+    b++;
 
-  kpse_path_iterator (const kpse_path_iterator& pi)
-    : path (pi.path), b (pi.b), e (pi.e), len (pi.len) { }
-
-  kpse_path_iterator operator ++ (int)
-  {
-    kpse_path_iterator retval (*this);
-    next ();
-    return retval;
-  }
-
-  std::string operator * (void) { return path.substr (b, e-b); }
-
-  bool operator != (const size_t sz) { return b != sz; }
-
-private:
-
-  const std::string& path;
-  size_t b;
-  size_t e;
-  size_t len;
-
-  void set_end (void)
-  {
-    e = b + 1;
-
-    if (e == len)
-      ; // OK, we have found the last element.
-    else if (e > len)
-      b = e = std::string::npos;
-    else
-      {
-        // Find the next colon not enclosed by braces (or the end of the
-        // path).
-
-        while (e < len && ! kpse_is_env_sep (path[e]))
-          e++;
-      }
-  }
-
-  void next (void)
-  {
-    b = e + 1;
-
-    // Skip any consecutive colons.
-    while (b < len && kpse_is_env_sep (path[b]))
-      b++;
-
-    if (b >= len)
-      b = e = std::string::npos;
-    else
-      set_end ();
-  }
-
-  // No assignment.
-  kpse_path_iterator& operator = (const kpse_path_iterator&);
-};
+  if (b >= len)
+    b = e = std::string::npos;
+  else
+    set_end ();
+}
 
 /* Truncate any too-long components in NAME, returning the result.  It's
    too bad this is necessary.  See comments in readable.c for why.  */
@@ -514,7 +471,7 @@ search (const std::string& path, const std::string& original_name,
 
    In any case, return the complete filename if found, otherwise NULL.  */
 
-static std::string
+std::string
 kpse_path_search (const std::string& path, const std::string& name,
                   bool must_exist)
 {
@@ -526,7 +483,7 @@ kpse_path_search (const std::string& path, const std::string& name,
 /* Like 'kpse_path_search' with MUST_EXIST true, but return a list of
    all the filenames (or NULL if none), instead of taking the first.  */
 
-static std::list<std::string>
+std::list<std::string>
 kpse_all_path_search (const std::string& path, const std::string& name)
 {
   return search (path, name, true, true);
@@ -536,7 +493,7 @@ kpse_all_path_search (const std::string& path, const std::string& name)
    element of NAMES.  If ALL is false, return the first file found.
    Otherwise, search all elements of PATH.  */
 
-static std::list<std::string>
+std::list<std::string>
 path_find_first_of (const std::string& path,
                     const std::list<std::string>& names,
                     bool /* must_exist */, bool all)
@@ -689,7 +646,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
 /* Search each element of PATH for each element in the list of NAMES.
    Return the first one found.  */
 
-static std::string
+std::string
 kpse_path_find_first_of (const std::string& path,
                          const std::list<std::string>& names,
                          bool must_exist)
@@ -707,7 +664,7 @@ kpse_path_find_first_of (const std::string& path,
    list of all the filenames (or NULL if none), instead of taking the
    first.  */
 
-static std::list<std::string>
+std::list<std::string>
 kpse_all_path_find_first_of (const std::string& path,
                              const std::list<std::string>& names)
 {
@@ -930,7 +887,7 @@ kpse_brace_expand (const std::string& path)
    result.  The final expansion (always in fresh memory) is a path of
    all the existing directories that match the pattern. */
 
-static std::string
+std::string
 kpse_path_expand (const std::string& path)
 {
   std::string ret;
@@ -1201,7 +1158,7 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
    no extra colons, return PATH.  Only one extra colon is replaced.
    DFLT may not be NULL.  */
 
-static std::string
+std::string
 kpse_expand_default (const std::string& path, const std::string& fallback)
 {
   std::string expansion;
@@ -1268,7 +1225,7 @@ dir_p (const std::string& fn)
    most likely only useful to be called from 'kpse_path_search', which
    has already assumed expansion has been done.  */
 
-static std::string
+std::string
 kpse_element_dir (const std::string& elt)
 {
   std::string ret;

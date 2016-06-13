@@ -41,6 +41,7 @@ UTIL_INC = \
   liboctave/util/url-transfer.h
 
 NOINSTALL_UTIL_INC = \
+  liboctave/util/kpse.h \
   liboctave/util/oct-sparse.h \
   liboctave/util/statdefs.h
 
@@ -55,6 +56,7 @@ UTIL_SRC = \
   liboctave/util/cmd-hist.cc \
   liboctave/util/data-conv.cc \
   liboctave/util/glob-match.cc \
+  liboctave/util/kpse.cc \
   liboctave/util/lo-array-errwarn.cc \
   liboctave/util/lo-array-gripes.cc \
   liboctave/util/lo-ieee.cc \
@@ -78,9 +80,6 @@ UTIL_SRC = \
 
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/util/oct-sort.cc
-
-EXTRA_DIST += \
-  liboctave/util/kpse.cc
 
 noinst_LTLIBRARIES += liboctave/util/libutil.la
 

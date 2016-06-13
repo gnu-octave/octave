@@ -630,7 +630,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
       log_search (ret_list);
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        gnulib::putc ('\n', stderr);
+        std::cerr << std::endl;
     }
 
   return ret_list;

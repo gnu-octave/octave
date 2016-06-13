@@ -862,25 +862,22 @@ public:
 
     std::string first_match;
 
-    for (std::set<caseless_str>::const_iterator p = possible_vals.begin ();
-         p != possible_vals.end (); p++)
+    for (const auto& possible_val : possible_vals)
       {
-        if (p->compare (val, len))
+        if (possible_val.compare (val, len))
           {
-            if (len == p->length ())
+            if (len == possible_val.length ())
               {
-                // We found a full match (consider the case of val ==
-                // "replace" with possible values "replace" and
-                // "replacechildren").  Any other matches are
-                // irrelevant, so set match and return now.
-
-                match = *p;
+                // We found a full match (consider the case of val == "replace"
+                // with possible values "replace" and "replacechildren").  Any
+                // other matches are irrelevant, so set match and return now.
+                match = possible_val;
                 return true;
               }
             else
               {
                 if (k == 0)
-                  first_match = *p;
+                  first_match = possible_val;
 
                 k++;
               }
@@ -1650,12 +1647,11 @@ public:
 
   void renumber (graphics_handle old_gh, graphics_handle new_gh)
   {
-    for (children_list_iterator p = children_list.begin ();
-         p != children_list.end (); p++)
+    for (auto& hchild : children_list)
       {
-        if (*p == old_gh)
+        if (hchild == old_gh)
           {
-            *p = new_gh.value ();
+            hchild = new_gh.value ();
             return;
           }
       }
@@ -1740,8 +1736,7 @@ private:
   void do_init_children (const std::list<double>& val)
   {
     children_list.clear ();
-    for (const_children_list_iterator p = val.begin (); p != val.end (); p++)
-      children_list.push_front (*p);
+    children_list = val;
   }
 
   Matrix do_get_children (bool return_hidden) const;
@@ -1751,20 +1746,19 @@ private:
     Matrix retval (children_list.size (), 1);
     octave_idx_type i = 0;
 
-    for (const_children_list_iterator p = children_list.begin ();
-         p != children_list.end (); p++)
-      retval(i++) = *p;
+    for (const auto& hchild : children_list)
+      retval(i++) = hchild;
+
     return retval;
   }
 
   bool do_remove_child (double child)
   {
-    for (children_list_iterator p = children_list.begin ();
-         p != children_list.end (); p++)
+    for (auto it = children_list.begin (); it != children_list.end (); it++)
       {
-        if (*p == child)
+        if (*it == child)
           {
-            children_list.erase (p);
+            children_list.erase (it);
             return true;
           }
       }
@@ -1958,9 +1952,9 @@ private:
 
 // ---------------------------------------------------------------------
 
-typedef std::pair <std::string, octave_value> pval_pair;
+typedef std::pair<std::string, octave_value> pval_pair;
 
-class pval_vector : public std::vector <pval_pair>
+class pval_vector : public std::vector<pval_pair>
 {
 public:
   const_iterator find (const std::string pname) const
@@ -2019,7 +2013,7 @@ public:
 
   void erase (iterator it)
   {
-    std::vector <pval_pair>::erase (it);
+    std::vector<pval_pair>::erase (it);
   }
 
 };
@@ -2382,24 +2376,22 @@ private:
 
   Cell do_available_toolkits_list (void) const
   {
-    Cell m (1 , available_toolkits.size ());
+    Cell m (1, available_toolkits.size ());
 
     octave_idx_type i = 0;
-    for (const_available_toolkits_iterator p = available_toolkits.begin ();
-         p != available_toolkits.end (); p++)
-      m(i++) = *p;
+    for (const auto& tkit : available_toolkits)
+      m(i++) = tkit;
 
     return m;
   }
 
   Cell do_loaded_toolkits_list (void) const
   {
-    Cell m (1 , loaded_toolkits.size ());
+    Cell m (1, loaded_toolkits.size ());
 
     octave_idx_type i = 0;
-    for (const_loaded_toolkits_iterator p = loaded_toolkits.begin ();
-         p != loaded_toolkits.end (); p++)
-      m(i++) = p->first;
+    for (const auto& nm_tkit_p : loaded_toolkits)
+      m(i++) = nm_tkit_p.first;
 
     return m;
   }
@@ -2414,8 +2406,7 @@ private:
 
         p->second.close ();
 
-        // The toolkit may have unloaded itself.  If not, we'll do
-        // it here.
+        // The toolkit may have unloaded itself.  If not, we'll do it here.
         if (loaded_toolkits.find (name) != loaded_toolkits.end ())
           unload_toolkit (name);
       }
@@ -6322,7 +6313,8 @@ private:
 
   graphics_handle do_lookup (double val)
   {
-    iterator p = (octave::math::isnan (val) ? handle_map.end () : handle_map.find (val));
+    iterator p = (octave::math::isnan (val) ? handle_map.end ()
+                                            : handle_map.find (val));
 
     return (p != handle_map.end ()) ? p->first : graphics_handle ();
   }
@@ -6347,9 +6339,9 @@ private:
     Matrix retval (1, handle_map.size ());
 
     octave_idx_type i = 0;
-    for (const_iterator p = handle_map.begin (); p != handle_map.end (); p++)
+    for (const auto& h_iter : handle_map)
       {
-        graphics_handle h = p->first;
+        graphics_handle h = h_iter.first;
 
         if (show_hidden || is_handle_visible (h))
           retval(i++) = h.value ();
@@ -6365,14 +6357,10 @@ private:
     Matrix retval (1, figure_list.size ());
 
     octave_idx_type i = 0;
-    for (const_figure_list_iterator p = figure_list.begin ();
-         p != figure_list.end ();
-         p++)
+    for (const auto& hfig : figure_list)
       {
-        graphics_handle h = *p;
-
-        if (show_hidden || is_handle_visible (h))
-          retval(i++) = h.value ();
+        if (show_hidden || is_handle_visible (hfig))
+          retval(i++) = hfig.value ();
       }
 
     retval.resize (1, i);
@@ -6388,14 +6376,10 @@ private:
   {
     graphics_handle retval;
 
-    for (const_figure_list_iterator p = figure_list.begin ();
-         p != figure_list.end ();
-         p++)
+    for (const auto& hfig : figure_list)
       {
-        graphics_handle h = *p;
-
-        if (is_handle_visible (h))
-          retval = h;
+        if (is_handle_visible (hfig))
+          retval = hfig;
       }
 
     return retval;

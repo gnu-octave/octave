@@ -82,18 +82,15 @@ validate_property_name (const std::string& who, const std::string& what,
   size_t len = pname.length ();
   std::set<std::string> matches;
 
-  for (std::set<std::string>::const_iterator p = pnames.begin ();
-       p != pnames.end (); p++)
+  // Find exact or partial matches to property name
+  for (const auto& propnm : pnames)
     {
-      if (pname.compare (*p, len))
+      if (pname.compare (propnm, len))
         {
-          if (len == p->length ())
-            {
-              // Exact match.
-              return pname;
-            }
+          if (len == propnm.length ())
+            return pname;  // Exact match.
 
-          matches.insert (*p);
+          matches.insert (propnm);
         }
     }
 
@@ -118,7 +115,6 @@ validate_property_name (const std::string& who, const std::string& what,
   else if (num_matches == 1)
     {
       // Exact match was handled above.
-
       std::string possible_match = *(matches.begin ());
 
       warning_with_id ("Octave:abbreviated-property-match",
@@ -1433,8 +1429,9 @@ array_property::validate (const octave_value& v)
       xok = false;
 
       // check dimensional size constraints until a match is found
-      for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
-           ! xok && it != size_constraints.end (); ++it)
+      for (auto it = size_constraints.cbegin ();
+           ! xok && it != size_constraints.cend ();
+           ++it)
         {
           dim_vector itdims = (*it);
 
@@ -1603,27 +1600,25 @@ children_property::do_get_children (bool return_hidden) const
 
   if (! props.is_showhiddenhandles ())
     {
-      for (const_children_list_iterator p = children_list.begin ();
-           p != children_list.end (); p++)
+      for (const auto& hchild : children_list)
         {
-          graphics_handle kid = *p;
+          graphics_handle kid = hchild;
 
           if (gh_manager::is_handle_visible (kid))
             {
               if (! return_hidden)
-                retval(k++) = *p;
+                retval(k++) = hchild;
             }
           else if (return_hidden)
-            retval(k++) = *p;
+            retval(k++) = hchild;
         }
 
       retval.resize (k, 1);
     }
   else
     {
-      for (const_children_list_iterator p = children_list.begin ();
-           p != children_list.end (); p++)
-        retval(k++) = *p;
+      for (const auto& hchild : children_list)
+        retval(k++) = hchild;
     }
 
   return retval;
@@ -1632,13 +1627,12 @@ children_property::do_get_children (bool return_hidden) const
 void
 children_property::do_delete_children (bool clear)
 {
-  for (children_list_iterator p = children_list.begin ();
-       p != children_list.end (); p++)
+  for (auto& hchild : children_list)
     {
-      graphics_object go = gh_manager::get_object (*p);
+      graphics_object go = gh_manager::get_object (hchild);
 
       if (go.valid_object ())
-        gh_manager::free (*p);
+        gh_manager::free (hchild);
     }
 
   if (clear)
@@ -2175,10 +2169,8 @@ property_list::as_struct (const std::string& prefix_arg) const
 
       const pval_map_type pval_map = p->second;
 
-      for (pval_map_const_iterator q = pval_map.begin ();
-           q != pval_map.end ();
-           q++)
-        m.assign (prefix + q->first, q->second);
+      for (const auto& prop_val_p : pval_map)
+        m.assign (prefix + prop_val_p.first, prop_val_p.second);
     }
 
   return m;
@@ -2557,12 +2549,11 @@ gh_manager::do_renumber_figure (const graphics_handle& old_gh,
     handle_free_list.insert (std::ceil (old_gh.value ())
                              - make_handle_fraction ());
 
-  for (figure_list_iterator q = figure_list.begin ();
-       q != figure_list.end (); q++)
+  for (auto& hfig : figure_list)
     {
-      if (*q == old_gh)
+      if (hfig == old_gh)
         {
-          *q = new_gh;
+          hfig = new_gh;
           break;
         }
     }
@@ -2902,21 +2893,19 @@ base_properties::set_from_list (base_graphics_object& bgo,
 {
   std::string go_name = graphics_object_name ();
 
-  property_list::plist_map_const_iterator p = defaults.find (go_name);
+  property_list::plist_map_const_iterator plist = defaults.find (go_name);
 
-  if (p != defaults.end ())
+  if (plist != defaults.end ())
     {
-      const property_list::pval_map_type pval_map = p->second;
+      const property_list::pval_map_type pval_map = plist->second;
 
-      for (property_list::pval_map_const_iterator q = pval_map.begin ();
-           q != pval_map.end ();
-           q++)
+      for (const auto& prop_val_p : pval_map)
         {
-          std::string pname = q->first;
+          std::string pname = prop_val_p.first;
 
           try
             {
-              bgo.set (pname, q->second);
+              bgo.set (pname, prop_val_p.second);
             }
           catch (octave_execution_exception& e)
             {
@@ -3246,18 +3235,18 @@ void
 base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def, const std::string go_name) const
 {
   property_list local_defaults = get_defaults_list ();
+  const auto it = local_defaults.find (go_name);
   property_list::plist_map_const_iterator p =
     local_defaults.find (go_name);
 
-  if (p != local_defaults.end ())
+  if (it != local_defaults.end ())
     {
-      property_list::pval_map_type pval = p->second;
-      for (property_list::pval_map_const_iterator q = pval.begin ();
-           q != pval.end (); q++)
+      property_list::pval_map_type pval = it->second;
+      for (const auto& prop_val_p : pval)
         {
-          std::string pname = q->first;
+          std::string pname = prop_val_p.first;
           if (def.find (pname) == def.end ())
-            def[pname] = q->second;
+            def[pname] = prop_val_p.second;
         }
     }
 
@@ -9295,13 +9284,11 @@ gh_manager::do_push_figure (const graphics_handle& h)
 void
 gh_manager::do_pop_figure (const graphics_handle& h)
 {
-  for (figure_list_iterator p = figure_list.begin ();
-       p != figure_list.end ();
-       p++)
+  for (auto it = figure_list.begin (); it != figure_list.end (); it++)
     {
-      if (*p == h)
+      if (*it == h)
         {
-          figure_list.erase (p);
+          figure_list.erase (it);
           break;
         }
     }

@@ -30,13 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/time.h>
 
-#include "strftime.h"
-
 #include "lo-error.h"
 #include "lo-math.h"
 #include "lo-utils.h"
 #include "oct-locbuf.h"
 #include "oct-time.h"
+#include "strftime-wrapper.h"
+#include "strptime-wrapper.h"
 
 namespace octave
 {
@@ -189,7 +189,8 @@ namespace octave
               buf = new char [bufsize];
               buf[0] = '\0';
 
-              chars_written = nstrftime (buf, bufsize, fmt_str, &t, 0, 0);
+              chars_written
+                = octave_strftime_wrapper (buf, bufsize, fmt_str, &t, 0, 0);
 
               bufsize *= 2;
             }
@@ -283,7 +284,7 @@ namespace octave
 
       const char *p = str.c_str ();
 
-      char *q = gnulib::strptime (p, fmt.c_str (), &t);
+      char *q = octave_strptime_wrapper (p, fmt.c_str (), &t);
 
       // Fill in wday and yday, but only if mday is valid and the mon and year
       // are filled in, avoiding issues with mktime and invalid dates.

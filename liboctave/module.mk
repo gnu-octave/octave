@@ -16,7 +16,8 @@ liboctave_liboctave_la_CPPFLAGS = \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
-  -Ilibgnu -I$(srcdir)/libgnu
+  -Ilibgnu -I$(srcdir)/libgnu \
+  -I$(srcdir)/liboctave/wrappers
 
 liboctave_liboctave_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
@@ -65,6 +66,7 @@ include liboctave/numeric/module.mk
 include liboctave/operators/module.mk
 include liboctave/system/module.mk
 include liboctave/util/module.mk
+include liboctave/wrappers/module.mk
 
 ## liboctave merely collects a bunch of compiled convenience libraries.
 ## It has no source code itself.

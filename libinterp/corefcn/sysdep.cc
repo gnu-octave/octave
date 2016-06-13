@@ -71,6 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mach-info.h"
 #include "oct-env.h"
 #include "quit.h"
+#include "unsetenv-wrapper.h"
 
 #include "Cell.h"
 #include "builtins.h"
@@ -695,7 +696,7 @@ occurred.\n\
 
   std::string tmp = args(0).string_value ();
 
-  return ovl (gnulib::unsetenv (tmp.c_str ()));
+  return ovl (octave_unsetenv_wrapper (tmp.c_str ()));
 }
 
 /*

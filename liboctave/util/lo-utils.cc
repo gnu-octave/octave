@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
+#include "putenv-wrapper.h"
 
 bool xis_int_or_inf_or_nan (double x)
 { return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
@@ -104,7 +105,7 @@ octave_putenv (const std::string& name, const std::string& value)
   // As far as I can see there's no way to distinguish between the
   // various errors; putenv doesn't have errno values.
 
-  if (gnulib::putenv (new_item) < 0)
+  if (octave_putenv_wrapper (new_item) < 0)
     (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 }
 

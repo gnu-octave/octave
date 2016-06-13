@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-ieee.h"
+#include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 
@@ -2898,7 +2899,7 @@ message.\n\
   OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
   strcpy (tmp, tmpl8.c_str ());
 
-  int fd = gnulib::mkostemp (tmp, O_BINARY);
+  int fd = octave_mkostemp_wrapper (tmp);
 
   if (fd < 0)
     {

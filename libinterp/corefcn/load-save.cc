@@ -38,8 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#include "strftime.h"
-
 #include "byte-swap.h"
 #include "data-conv.h"
 #include "file-ops.h"
@@ -48,10 +46,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
-#include "oct-locbuf.h"
+#include "strftime-wrapper.h"
 
 #include "Cell.h"
 #include "defun.h"

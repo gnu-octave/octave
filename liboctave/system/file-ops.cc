@@ -35,12 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/stat.h>
 
 #include "pathmax.h"
-#include "canonicalize.h"
 
-extern "C" {
-#include <tempname.h>
-}
-
+#include "canonicalize-file-name-wrapper.h"
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -51,6 +47,7 @@ extern "C" {
 #include "quit.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
+#include "gen-tempname-wrapper.h"
 
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
 #  include <algorithm>
@@ -720,7 +717,7 @@ namespace octave
 
       strcpy (tname, templatename.c_str ());
 
-      if (gen_tempname (tname, 0, 0, GT_NOCREATE) == -1)
+      if (octave_gen_tempname_wrapper (tname) == -1)
         msg = gnulib::strerror (errno);
       else
         retval = tname;
@@ -742,7 +739,7 @@ namespace octave
 
       std::string retval;
 
-      char *tmp = gnulib::canonicalize_file_name (name.c_str ());
+      char *tmp = octave_canonicalize_file_name_wrapper (name.c_str ());
 
       if (tmp)
         {

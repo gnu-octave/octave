@@ -33,19 +33,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <string>
 
-#include "vasnprintf.h"
-
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
+#include "nanosleep-wrapper.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "pathsearch.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "vasprintf-wrapper.h"
 
 #include "Cell.h"
 #include <defaults.h>
@@ -1288,7 +1288,7 @@ octave_vasprintf (const char *fmt, va_list args)
 
   char *result;
 
-  int status = gnulib::vasprintf (&result, fmt, args);
+  int status = octave_vasprintf_wrapper (&result, fmt, args);
 
   if (status >= 0)
     {
@@ -1329,7 +1329,7 @@ octave_sleep (double seconds)
 
   struct timespec delay = { sec, static_cast<long> (fraction) };
   struct timespec remaining;
-  gnulib::nanosleep (&delay, &remaining);
+  octave_nanosleep_wrapper (&delay, &remaining);
 
   octave_quit ();
 }

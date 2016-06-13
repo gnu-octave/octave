@@ -38,17 +38,14 @@ for now.
 #  include "config.h"
 #endif
 
-#include <algorithm>
-#include <iomanip>
-#include <sstream>
+#include <string>
+
+#include "lo-hash.h"
 
 #include "defun.h"
-#include "md2.h"
-#include "md4.h"
-#include "md5.h"
-#include "sha1.h"
-#include "sha256.h"
-#include "sha512.h"
+#include "error.h"
+#include "ov.h"
+#include "ovl.h"
 
 DEFUN (hash, args, ,
        "-*- texinfo -*-\n\
@@ -117,69 +114,10 @@ hash (\"md5\", fileread (file));\n\
   if (args.length () != 2)
     print_usage ();
 
-  std::string hfun = args(0).string_value ();
+  std::string hash_type = args(0).string_value ();
   std::string str = args(1).string_value ();
 
-  // Determine hash function used
-  std::transform(hfun.begin(), hfun.end(), hfun.begin(), ::toupper);
-
-  // Buffer with maximum size for all hash function
-  char result_buffer[SHA512_DIGEST_SIZE];
-
-  int result_buffer_len = 0;
-  if (hfun == "MD2")
-    {
-      md2_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = MD2_DIGEST_SIZE;
-    }
-  else if (hfun == "MD4")
-    {
-      md4_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = MD4_DIGEST_SIZE;
-    }
-  else if (hfun == "MD5")
-    {
-      md5_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = MD5_DIGEST_SIZE;
-    }
-  else if (hfun == "SHA1")
-    {
-      sha1_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = SHA1_DIGEST_SIZE;
-    }
-  else if (hfun == "SHA224")
-    {
-      sha224_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = SHA224_DIGEST_SIZE;
-    }
-  else if (hfun == "SHA256")
-    {
-      sha256_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = SHA256_DIGEST_SIZE;
-    }
-  else if (hfun == "SHA384")
-    {
-      sha384_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = SHA384_DIGEST_SIZE;
-    }
-  else if (hfun == "SHA512")
-    {
-      sha512_buffer (str.data (), str.length (), result_buffer);
-      result_buffer_len = SHA512_DIGEST_SIZE;
-    }
-  else
-    error ("hash function not supported");
-
-  // Everything went fine, return formatted hash string
-  std::ostringstream os;
-  for (int i = 0; i < result_buffer_len; i++)
-    {
-      // Assure hex representation of one byte is written
-      os << std::hex << std::setw (2) << std::setfill ('0')
-         << (static_cast<int> (result_buffer[i]) & 0xFF);
-    }
-
-  return ovl (os.str ());
+  return ovl (octave::crypto::hash (hash_type, str));
 }
 
 /*

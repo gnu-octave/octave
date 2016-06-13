@@ -11,6 +11,7 @@ UTIL_INC = \
   liboctave/util/lo-array-errwarn.h \
   liboctave/util/lo-array-gripes.h \
   liboctave/util/lo-cutils.h \
+  liboctave/util/lo-hash.h \
   liboctave/util/lo-ieee.h \
   liboctave/util/lo-macros.h \
   liboctave/util/lo-math.h \
@@ -59,6 +60,7 @@ UTIL_SRC = \
   liboctave/util/kpse.cc \
   liboctave/util/lo-array-errwarn.cc \
   liboctave/util/lo-array-gripes.cc \
+  liboctave/util/lo-hash.cc \
   liboctave/util/lo-ieee.cc \
   liboctave/util/lo-utils.cc \
   liboctave/util/oct-base64.cc \

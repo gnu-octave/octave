@@ -286,6 +286,8 @@ namespace octave
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
       return c == dev_sep_char ();
 #else
+      octave_unused_parameter (c);
+
       return false;
 #endif
     }

@@ -3236,8 +3236,6 @@ base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def
 {
   property_list local_defaults = get_defaults_list ();
   const auto it = local_defaults.find (go_name);
-  property_list::plist_map_const_iterator p =
-    local_defaults.find (go_name);
 
   if (it != local_defaults.end ())
     {

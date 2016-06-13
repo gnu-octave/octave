@@ -300,7 +300,7 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex matrix", "real scalar");
 
-  if (numel () == 0)
+  if (is_empty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",

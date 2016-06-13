@@ -1893,7 +1893,7 @@ fields are set to their default values.\n\
 
           if (new_err.contains ("stack"))
             {
-              if (new_err.getfield ("stack").numel () == 0)
+              if (new_err.getfield ("stack").is_empty ())
                 initialize_stack = true;
               else
                 {

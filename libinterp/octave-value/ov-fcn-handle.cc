@@ -393,14 +393,14 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
   std::streampos pos = is.tellg ();
   std::string octaveroot = extract_keyword (is, "octaveroot", true);
-  if (octaveroot.length () == 0)
+  if (octaveroot.empty ())
     {
       is.seekg (pos);
       is.clear ();
     }
   pos = is.tellg ();
   std::string fpath = extract_keyword (is, "path", true);
-  if (fpath.length () == 0)
+  if (fpath.empty ())
     {
       is.seekg (pos);
       is.clear ();

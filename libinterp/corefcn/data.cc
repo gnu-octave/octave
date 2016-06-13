@@ -1815,7 +1815,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
                  cname.c_str ());
         }
 
-      if (result.length () == 0)
+      if (result.empty ())
         error ("conversion from %s to %s failed", dtype.c_str (),
                cname.c_str ());
 
@@ -1843,7 +1843,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
                  cname.c_str ());
         }
 
-      if (result.length () == 0)
+      if (result.empty ())
         error ("%s constructor failed for %s argument", dtype.c_str (),
                cname.c_str ());
 
@@ -1879,7 +1879,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
           error (e, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
         }
 
-      if (tmp2.length () == 0)
+      if (tmp2.empty ())
         error ("%s/%s method did not return a value", dtype.c_str (),
                cattype.c_str ());
 

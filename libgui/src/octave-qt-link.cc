@@ -255,7 +255,7 @@ make_filter_list (const octave_link::filter_list& lst)
       name.replace (QRegExp ("\\(.*\\)"), "");
       ext.replace (";", " ");
 
-      if (name.length () == 0)
+      if (name.isEmpty ())
         {
           // No name field.  Build one from the extensions.
           name = ext.toUpper () + " Files";

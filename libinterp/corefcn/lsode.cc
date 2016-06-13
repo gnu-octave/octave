@@ -81,7 +81,7 @@ lsode_user_function (const ColumnVector& x, double t)
           err_user_supplied_eval (e, "lsode");
         }
 
-      if (tmp.length () == 0 || ! tmp(0).is_defined ())
+      if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("lsode");
 
       if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
@@ -121,7 +121,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
           err_user_supplied_eval (e, "lsode");
         }
 
-      if (tmp.length () == 0 || ! tmp(0).is_defined ())
+      if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("lsode");
 
       if (! warned_jac_imaginary && tmp(0).is_complex_type ())

@@ -84,7 +84,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
           err_user_supplied_eval (e, "dasrt");
         }
 
-      if (tmp.length () == 0 || ! tmp(0).is_defined ())
+      if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
       if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
@@ -125,7 +125,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
           err_user_supplied_eval (e, "dasrt");
         }
 
-      if (tmp.length () == 0 || ! tmp(0).is_defined ())
+      if (tmp.empty () || ! tmp(0).is_defined ())
         err_user_supplied_eval ("dasrt");
 
       if (! warned_cf_imaginary && tmp(0).is_complex_type ())

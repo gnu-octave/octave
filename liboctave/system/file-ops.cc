@@ -274,7 +274,7 @@ namespace octave
           // If we don't have a failure hook, or if the failure hook did not
           // expand the tilde, return a copy of what we were passed.
 
-          if (dirname.length () == 0)
+          if (dirname.empty ())
             dirname = filename;
         }
       else

@@ -113,7 +113,7 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
                               "complex sparse matrix", "real scalar");
 
   // FIXME: maybe this should be a function, valid_as_scalar()
-  if (numel () == 0)
+  if (is_empty ())
     err_invalid_conversion ("complex sparse matrix", "real scalar");
 
   if (numel () > 1)
@@ -147,7 +147,7 @@ octave_sparse_complex_matrix::complex_value (bool) const
   Complex retval (tmp, tmp);
 
   // FIXME: maybe this should be a function, valid_as_scalar()
-  if (numel () == 0)
+  if (is_empty ())
     err_invalid_conversion ("complex sparse matrix", "real scalar");
 
   if (numel () > 1)

@@ -469,7 +469,7 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
       return ret;
     }
 
-  if (! (ovl.length () == 0
+  if (! (ovl.empty () 
          || (ovl.length () == 1 && ovl.xelem (0).is_undefined ())))
     err_bad_result ();
 

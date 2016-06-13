@@ -97,7 +97,7 @@ octave_sparse_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  if (numel () == 0)
+  if (is_empty ())
     err_invalid_conversion ("real sparse matrix", "real scalar");
 
   if (numel () > 1)

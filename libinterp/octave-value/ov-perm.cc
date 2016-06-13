@@ -142,7 +142,7 @@ octave_perm_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  if (numel () == 0)
+  if (is_empty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
@@ -158,7 +158,7 @@ octave_perm_matrix::float_value (bool) const
 {
   float retval = lo_ieee_float_nan_value ();
 
-  if (numel () == 0)
+  if (is_empty ())
     err_invalid_conversion (type_name (), "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",

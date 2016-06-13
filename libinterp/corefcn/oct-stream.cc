@@ -3150,7 +3150,7 @@ void
 textscan::scan_string (delimited_stream& is, const textscan_format_elt& fmt,
                        std::string& val) const
 {
-  if (delim_list.numel () == 0)
+  if (delim_list.is_empty ())
     {
       unsigned int i = 0;
       unsigned int width = fmt.width;

@@ -85,13 +85,13 @@ Cell toCellString (const QStringList& l)
 {
   QStringList tmp = l;
 
-  // dont get any empty lines from end of the list
-  while ((tmp.length () > 0) && (tmp.last ().length () == 0))
+  // don't get any empty lines from end of the list
+  while ((tmp.length () > 0) && tmp.last ().isEmpty ())
     {
       tmp.removeLast ();
     }
-  // no strings will be a a 1x1 cell with empty string
-  if (tmp.length () == 0)
+  // no strings converts to a 1x1 cell with empty string
+  if (tmp.isEmpty ())
     tmp += "";
 
   Cell v(toStringVector (tmp));

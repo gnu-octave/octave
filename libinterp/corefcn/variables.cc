@@ -1810,7 +1810,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
     }
   else if (! (symbol_stats.empty () && symbol_names.empty ()))
     {
-      if (msg.length () == 0)
+      if (msg.empty ())
         if (global_only)
           octave_stdout << "Global variables:\n\n";
         else

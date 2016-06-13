@@ -59,7 +59,7 @@ tree::meets_bp_condition () const
   bool retval;
   if (bp == 0)
     retval = false;
-  else if (bp->length () == 0)     // empty condition always met
+  else if (bp->empty ())     // empty condition always met
     retval = true;
   else
     {

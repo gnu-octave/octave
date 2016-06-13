@@ -912,7 +912,7 @@ octave_classdef::subsasgn (const std::string& type,
 
           retlist = meth.execute (args, 1, true, "subsasgn");
 
-          if (retlist.length () == 0)
+          if (retlist.empty ())
             error ("overloaded method `subsasgn' did not return any value");
 
           retval = retlist(0);

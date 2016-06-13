@@ -133,7 +133,7 @@ namespace octave
     string_vector file_list;
 
     std::string realdir
-      = (base.length () == 0
+      = (base.empty ()
          ? directory : base + octave::sys::file_ops::dir_sep_str () + directory);
 
     mkdir (directory);

@@ -1134,7 +1134,7 @@ all breakpoints within the file are cleared.\n\
                 }
             }
         }
-      if (mv.numel () == 0)
+      if (mv.is_empty ())
         {
           // no changes requested.  Occurs if "errs" non-empty but "bkpt" empty
         }

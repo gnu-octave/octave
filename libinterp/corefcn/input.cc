@@ -751,7 +751,7 @@ get_user_input (const octave_value_list& args, int nargout)
 
       retval = eval_string (input_buf, true, parse_status, nargout);
 
-      if (! Vdebugging && retval.length () == 0)
+      if (! Vdebugging && retval.empty ())
         retval(0) = Matrix ();
     }
 

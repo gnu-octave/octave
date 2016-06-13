@@ -89,11 +89,9 @@ kpse_path_expand (const std::string& path);
 
 extern std::string
 kpse_path_find_first_of (const std::string& path,
-                         const std::list<std::string>& names,
-                         bool must_exist);
+                         const std::list<std::string>& names);
 
 extern std::string
-kpse_path_search (const std::string& path, const std::string& name,
-                  bool must_exist);
+kpse_path_search (const std::string& path, const std::string& name);
 
 #endif

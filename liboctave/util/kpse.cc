@@ -340,8 +340,7 @@ absolute_search (const std::string& name)
    return the first file found.  Otherwise, search all elements of PATH.  */
 
 static std::list<std::string>
-path_search (const std::string& path, const std::string& name,
-             bool /* must_exist */, bool all)
+path_search (const std::string& path, const std::string& name, bool all)
 {
   std::list<std::string> ret_list;
   bool done = false;
@@ -412,7 +411,7 @@ path_search (const std::string& path, const std::string& name,
 
 static std::list<std::string>
 search (const std::string& path, const std::string& original_name,
-        bool must_exist, bool all)
+        bool all)
 {
   std::list<std::string> ret_list;
   bool absolute_p;
@@ -426,13 +425,13 @@ search (const std::string& path, const std::string& original_name,
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     std::cerr << "kdebug: start search (file=" << name
-              << ", must_exist=" << must_exist
               << ", find_all=" << all << ", path=" << path << ")."
               << std::endl;
 
   /* Find the file(s). */
-  ret_list = absolute_p ? absolute_search (name)
-                        : path_search (path, name, must_exist, all);
+  ret_list = (absolute_p
+              ? absolute_search (name)
+              : path_search (path, name, all));
 
   /* The very first search is for texmf.cnf.  We can't log that, since
      we want to allow setting TEXMFLOG in texmf.cnf.  */
@@ -472,10 +471,9 @@ search (const std::string& path, const std::string& original_name,
    In any case, return the complete filename if found, otherwise NULL.  */
 
 std::string
-kpse_path_search (const std::string& path, const std::string& name,
-                  bool must_exist)
+kpse_path_search (const std::string& path, const std::string& name)
 {
-  std::list<std::string> ret_list = search (path, name, must_exist, false);
+  std::list<std::string> ret_list = search (path, name, false);
 
   return ret_list.empty () ? "" : ret_list.front ();
 }
@@ -486,7 +484,7 @@ kpse_path_search (const std::string& path, const std::string& name,
 std::list<std::string>
 kpse_all_path_search (const std::string& path, const std::string& name)
 {
-  return search (path, name, true, true);
+  return search (path, name, true);
 }
 
 /* This is the hard case -- look in each element of PATH for each
@@ -495,8 +493,7 @@ kpse_all_path_search (const std::string& path, const std::string& name)
 
 std::list<std::string>
 path_find_first_of (const std::string& path,
-                    const std::list<std::string>& names,
-                    bool /* must_exist */, bool all)
+                    const std::list<std::string>& names, bool all)
 {
   std::list<std::string> ret_list;
   bool done = false;
@@ -567,13 +564,13 @@ path_find_first_of (const std::string& path,
 
 static std::list<std::string>
 find_first_of (const std::string& path, const std::list<std::string>& names,
-               bool must_exist, bool all)
+               bool all)
 {
   std::list<std::string> ret_list;
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      std::cerr << "kdebug: start find_first_of ((";
+      std::cerr << "kdebug: start find_first_of (";
 
       for (auto p = names.cbegin (); p != names.cend (); p++)
         {
@@ -583,8 +580,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
             std::cerr << ", " << *p;
         }
 
-      std::cerr << "), path=" << path << ", must_exist="
-                << must_exist << "." << std::endl;
+      std::cerr << "), path=" << path << "." << std::endl;
     }
 
   for (const auto &name : names)
@@ -603,7 +599,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
     }
 
   /* Find the file. */
-  ret_list = path_find_first_of (path, names, must_exist, all);
+  ret_list = path_find_first_of (path, names, all);
 
   /* The very first search is for texmf.cnf.  We can't log that, since
      we want to allow setting TEXMFLOG in texmf.cnf.  */
@@ -648,11 +644,9 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
 
 std::string
 kpse_path_find_first_of (const std::string& path,
-                         const std::list<std::string>& names,
-                         bool must_exist)
+                         const std::list<std::string>& names)
 {
-  std::list<std::string> ret_list
-    = find_first_of (path, names, must_exist, false);
+  std::list<std::string> ret_list = find_first_of (path, names, false);
 
   return ret_list.empty () ? "" : ret_list.front ();
 }
@@ -668,7 +662,7 @@ std::list<std::string>
 kpse_all_path_find_first_of (const std::string& path,
                              const std::list<std::string>& names)
 {
-  return find_first_of (path, names, true, true);
+  return find_first_of (path, names, true);
 }
 
 /* If NAME has a leading ~ or ~user, Unix-style, expand it to the user's

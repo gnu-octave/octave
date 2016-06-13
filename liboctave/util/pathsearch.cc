@@ -90,7 +90,7 @@ namespace octave
   std::string
   directory_path::find_first (const std::string& nm)
   {
-    return m_initialized ? kpse_path_search (m_expanded_path, nm, true) : "";
+    return m_initialized ? kpse_path_search (m_expanded_path, nm) : "";
   }
 
   std::list<std::string>
@@ -105,7 +105,7 @@ namespace octave
   directory_path::find_first_of (const std::list<std::string>& names)
   {
     return (m_initialized
-            ? kpse_path_find_first_of (m_expanded_path, names, true) : "");
+            ? kpse_path_find_first_of (m_expanded_path, names) : "");
   }
 
   std::list<std::string>

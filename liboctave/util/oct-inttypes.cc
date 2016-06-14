@@ -25,8 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <fpucw.h>
-
 #include "lo-error.h"
 
 #include "oct-inttypes.h"

@@ -318,22 +318,22 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     ## hleg output will be assigned hlegend value at end of function.
   elseif (strcmp (show, "off"))
     if (! isempty (hlegend))
-      set (findobj (hlegend), "visible", "off");
+      set (hlegend, "visible", "off");
       hlegend = [];
     endif
   elseif (strcmp (show, "on"))
     if (! isempty (hlegend))
-      set (findobj (hlegend), "visible", "on");
-      ## NOTE: Matlab sets both "visible" and "box" to "on"
-      set (hlegend, "visible", get (hlegend, "box"));
+      set (hlegend, "visible", "on");
+      ## NOTE: Matlab sets both "visible" and "box" to "on" for "show on"
+      ## set (hlegend, "box", "on");
     endif
   elseif (strcmp (box, "on"))
     if (! isempty (hlegend))
-      set (hlegend, "box", "on", "visible", "on");
+      set (hlegend, "box", "on");
     endif
   elseif (strcmp (box, "off"))
     if (! isempty (hlegend))
-      set (hlegend, "box", "off", "visible", "off");
+      set (hlegend, "box", "off");
     endif
   elseif (! have_labels && ! isempty (hlegend)
           && ! (strcmp (location, "default")
@@ -585,7 +585,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                           "box", box,
                           "xtick", [], "ytick", [],
                           "xlim", [0, 1], "ylim", [0, 1],
-                          "visible", ifelse (strcmp (box, "on"), "on", "off"),
                           "activepositionproperty", "position");
           ## Inherit properties from current axis
           ## "fontunits" shoud be first because it affects interpretation

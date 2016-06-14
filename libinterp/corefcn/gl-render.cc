@@ -1755,9 +1755,9 @@ opengl_renderer::draw_axes (const axes::properties& props)
     glDisable (GL_LINE_SMOOTH);
 
   // draw axes object
-
   draw_axes_planes (props);
-  draw_axes_boxes (props);
+  if (props.get_tag () != "legend" || props.get_box () != "off")
+    draw_axes_boxes (props);
 
   set_font (props);
   set_interpreter (props.get_ticklabelinterpreter ());

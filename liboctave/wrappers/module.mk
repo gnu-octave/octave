@@ -1,4 +1,5 @@
 NOINSTALL_WRAPPERS_INC = \
+  liboctave/wrappers/base64-wrappers.h \
   liboctave/wrappers/canonicalize-file-name-wrapper.h \
   liboctave/wrappers/gen-tempname-wrapper.h \
   liboctave/wrappers/hash-wrappers.h \
@@ -13,6 +14,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/vasprintf-wrapper.h
 
 WRAPPERS_SRC = \
+  liboctave/wrappers/base64-wrappers.c \
   liboctave/wrappers/canonicalize-file-name-wrapper.c \
   liboctave/wrappers/gen-tempname-wrapper.c \
   liboctave/wrappers/hash-wrappers.c \

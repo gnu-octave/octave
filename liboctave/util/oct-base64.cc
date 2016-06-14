@@ -26,9 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 
-#include <base64.h>
-
 #include "Array.h"
+#include "base64-wrappers.h"
 #include "oct-base64.h"
 
 bool
@@ -36,7 +35,7 @@ octave_base64_encode (const char *inc, const size_t inlen, char **out)
 {
   bool ret = false;
 
-  size_t outlen = base64_encode_alloc (inc, inlen, out);
+  size_t outlen = octave_base64_encode_alloc_wrapper (inc, inlen, out);
 
   if (! out)
     {
@@ -58,12 +57,11 @@ octave_base64_decode (const std::string& str)
 {
   Array<double> retval;
 
-  const char *inc = &(str[0]);
-
   char *out;
   size_t outlen;
 
-  bool ok = base64_decode_alloc (inc, str.length (), &out, &outlen);
+  bool ok = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
+                                                &out, &outlen);
 
   if (! ok)
     (*current_liboctave_error_handler)

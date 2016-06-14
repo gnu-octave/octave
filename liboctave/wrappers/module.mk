@@ -6,6 +6,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/nanosleep-wrapper.h \
   liboctave/wrappers/nproc-wrapper.h \
   liboctave/wrappers/putenv-wrapper.h \
+  liboctave/wrappers/set-program-name-wrapper.h \
   liboctave/wrappers/strftime-wrapper.h \
   liboctave/wrappers/strptime-wrapper.h \
   liboctave/wrappers/unsetenv-wrapper.h \
@@ -19,6 +20,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/nanosleep-wrapper.c \
   liboctave/wrappers/nproc-wrapper.c \
   liboctave/wrappers/putenv-wrapper.c \
+  liboctave/wrappers/set-program-name-wrapper.c \
   liboctave/wrappers/strftime-wrapper.c \
   liboctave/wrappers/strptime-wrapper.c \
   liboctave/wrappers/unsetenv-wrapper.c \

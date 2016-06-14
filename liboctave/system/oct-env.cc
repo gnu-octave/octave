@@ -49,8 +49,6 @@ Free Software Foundation, Inc.
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "progname.h"
-
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
@@ -58,6 +56,7 @@ Free Software Foundation, Inc.
 #include "oct-env.h"
 #include "oct-passwd.h"
 #include "oct-syscalls.h"
+#include "set-program-name-wrapper.h"
 #include "singleton-cleanup.h"
 
 namespace octave
@@ -269,16 +268,17 @@ namespace octave
 
       if (! initialized)
         {
+          // octave_set_program_name_wrapper returns a cleaned up
+          // version of the program name (stripping libtool's "lt-"
+          // prefix, for example).
+
           // The string passed to gnulib's ::set_program_name function must
           // exist for the duration of the program so allocate a copy here
           // instead of passing S.c_str () which only exists as long as the
           // string object S.
 
-          // For gnulib.
-          ::set_program_name (strsave (s.c_str ()));
-
-          // Let gnulib strip off things like the "lt-" prefix from libtool.
-          prog_invocation_name = program_name;
+          prog_invocation_name
+            = octave_set_program_name_wrapper (strsave (s.c_str ()));
 
           size_t pos
             = prog_invocation_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());

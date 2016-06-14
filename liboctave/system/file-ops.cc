@@ -36,8 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
-#include <sys/stat.h>
-
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -52,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-passwd.h"
 #include "quit.h"
 #include "singleton-cleanup.h"
+#include "stat-wrappers.h"
 #include "str-vec.h"
 
 namespace octave
@@ -414,9 +413,7 @@ namespace octave
     {
       msg = "";
 
-      int status = -1;
-
-      status = gnulib::mkdir (name.c_str (), mode);
+      int status = octave_mkdir_wrapper (name.c_str (), mode);
 
       if (status < 0)
         msg = gnulib::strerror (errno);
@@ -436,13 +433,7 @@ namespace octave
     {
       msg = "";
 
-      int status = -1;
-
-      // With gnulib we will always have mkfifo, but some systems like MinGW
-      // don't have working mkfifo functions.  On those systems, mkfifo will
-      // always return -1 and set errno.
-
-      status = gnulib::mkfifo (name.c_str (), mode);
+      int status = octave_mkfifo_wrapper (name.c_str (), mode);
 
       if (status < 0)
         msg = gnulib::strerror (errno);
@@ -648,11 +639,7 @@ namespace octave
     int
     umask (mode_t mode)
     {
-#if defined (HAVE_UMASK)
-      return ::umask (mode);
-#else
-      return 0;
-#endif
+      return octave_umask_wrapper (mode);
     }
 
     int

@@ -30,7 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "progname.h"
 
-char *
+#include "set-program-name-wrapper.h"
+
+const char *
 octave_set_program_name_wrapper (const char *pname)
 {
   set_program_name (pname);

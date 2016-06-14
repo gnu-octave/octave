@@ -38,12 +38,8 @@ Software Foundation, Inc.
 #include <cstdlib>
 #include <cstring>
 
-#include <string>
-
 #include <fstream>
-
-#include <sys/types.h>
-#include <unistd.h>
+#include <string>
 
 #include "cmd-hist.h"
 #include "file-ops.h"
@@ -52,6 +48,7 @@ Software Foundation, Inc.
 #include "oct-env.h"
 #include "oct-time.h"
 #include "str-vec.h"
+#include "unistd-wrappers.h"
 
 #include <defaults.h>
 #include "defun.h"
@@ -439,7 +436,7 @@ mk_tmp_hist_file (const octave_value_list& args,
 static void
 unlink_cleanup (const char *file)
 {
-  gnulib::unlink (file);
+  octave_unlink_wrapper (file);
 }
 
 static void

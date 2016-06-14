@@ -58,12 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 
 %{
 
-// The generated code may include unistd.h.  We need that to happen
-// before defining isatty to be prefixed with the gnulib namespace
-// identifier.
-
-#include <sys/types.h>
-#include <unistd.h>
+#include "unistd-wrappers.h"
 
 #include "txt-eng.h"
 #include "oct-tex-parser.h"
@@ -79,6 +74,9 @@ along with Octave; see the file COPYING.  If not, see
 #  define YYSTYPE OCTAVE_TEX_STYPE
 #endif
 
+#define YY_NO_UNISTD_H 1
+#define isatty octave_isatty_wrapper
+
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output
 // from flex without the namespace tag.  Redefine them so we will use
@@ -87,7 +85,6 @@ along with Octave; see the file COPYING.  If not, see
 #  define fread GNULIB_NAMESPACE::fread
 #  define fwrite GNULIB_NAMESPACE::fwrite
 #  define getc GNULIB_NAMESPACE::getc
-#  define isatty GNULIB_NAMESPACE::isatty
 #  define malloc GNULIB_NAMESPACE::malloc
 #  define realloc GNULIB_NAMESPACE::realloc
 #endif

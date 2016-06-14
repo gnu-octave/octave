@@ -40,9 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 // Needed for NAME_MAX.
 #include <dirent.h>
 
@@ -52,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-passwd.h"
 #include "pathsearch.h"
+#include "unistd-wrappers.h"
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #  define WIN32_LEAN_AND_MEAN 1
@@ -203,7 +201,7 @@ READABLE (const std::string& fn)
 
   const char *t = fn.c_str ();
 
-  if (access (t, R_OK) == 0)
+  if (octave_access_wrapper (t, octave_access_r_ok ()) == 0)
     {
       octave::sys::file_stat fs (fn);
 

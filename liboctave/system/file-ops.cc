@@ -36,9 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "areadlink-wrapper.h"
 #include "canonicalize-file-name-wrapper.h"
 #include "dir-ops.h"
@@ -52,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "singleton-cleanup.h"
 #include "stat-wrappers.h"
 #include "str-vec.h"
+#include "unistd-wrappers.h"
 
 namespace octave
 {
@@ -456,7 +454,7 @@ namespace octave
 
       int status = -1;
 
-      status = gnulib::link (old_name.c_str (), new_name.c_str ());
+      status = octave_link_wrapper (old_name.c_str (), new_name.c_str ());
 
       if (status < 0)
         msg = gnulib::strerror (errno);
@@ -479,7 +477,7 @@ namespace octave
 
       int status = -1;
 
-      status = gnulib::symlink (old_name.c_str (), new_name.c_str ());
+      status = octave_symlink_wrapper (old_name.c_str (), new_name.c_str ());
 
       if (status < 0)
         msg = gnulib::strerror (errno);
@@ -551,7 +549,7 @@ namespace octave
 
       int status = -1;
 
-      status = gnulib::rmdir (name.c_str ());
+      status = octave_rmdir_wrapper (name.c_str ());
 
       if (status < 0)
         msg = gnulib::strerror (errno);
@@ -656,7 +654,7 @@ namespace octave
 
       int status = -1;
 
-      status = gnulib::unlink (name.c_str ());
+      status = octave_unlink_wrapper (name.c_str ());
 
       if (status < 0)
         msg = gnulib::strerror (errno);

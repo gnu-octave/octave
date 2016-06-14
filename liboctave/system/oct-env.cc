@@ -46,9 +46,6 @@ Free Software Foundation, Inc.
 
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
@@ -58,6 +55,7 @@ Free Software Foundation, Inc.
 #include "oct-syscalls.h"
 #include "set-program-name-wrapper.h"
 #include "singleton-cleanup.h"
+#include "unistd-wrappers.h"
 
 namespace octave
 {
@@ -511,7 +509,7 @@ namespace octave
         {
           char hostname[1024];
 
-          int status = gnulib::gethostname (hostname, 1023);
+          int status = octave_gethostname_wrapper (hostname, 1023);
 
           host_name = (status < 0) ? "unknown" : hostname;
         }

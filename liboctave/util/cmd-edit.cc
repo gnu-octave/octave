@@ -29,11 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
-#include "quit.h"
-
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"
@@ -43,11 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-mutex.h"
 #include "oct-time.h"
+#include "quit.h"
 #include "singleton-cleanup.h"
+#include "unistd-wrappers.h"
 
 #if defined (USE_READLINE)
 #include <cstdio>
-#include <cstdlib>
 
 #include "oct-rl-edit.h"
 #endif
@@ -1819,12 +1815,7 @@ namespace octave
 
               case '$':
                 {
-#if defined (HAVE_GETEUID)
-                  tmpstr = (::geteuid () == 0 ? '#' : '$');
-#else
-                  tmpstr = '$';
-#endif
-
+                  tmpstr = (octave_geteuid_wrapper () == 0 ? '#' : '$');
                   break;
                 }
 

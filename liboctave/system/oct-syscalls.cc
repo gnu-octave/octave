@@ -29,9 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string.h>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include <fcntl.h>
 
 // We can't use csignal as kill is not in the std namespace, and picky
@@ -43,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-sysdep.h"
 #include "oct-syscalls.h"
 #include "str-vec.h"
+#include "unistd-wrappers.h"
 
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
@@ -65,14 +63,10 @@ namespace octave
 
       int status = -1;
 
-#if defined (HAVE_DUP2)
-      status = gnulib::dup2 (old_fd, new_fd);
+      status = octave_dup2_wrapper (old_fd, new_fd);
 
       if (status < 0)
         msg = gnulib::strerror (errno);
-#else
-      msg = NOT_SUPPORTED ("dup2");
-#endif
 
       return status;
     }
@@ -90,20 +84,14 @@ namespace octave
     {
       msg = "";
 
-      int status = -1;
-
-#if defined (HAVE_EXECVP)
       char **argv = args.c_str_vec ();
 
-      status = ::execvp (file.c_str (), argv);
+      int status = octave_execvp_wrapper (file.c_str (), argv);
 
       string_vector::delete_c_str_vec (argv);
 
       if (status < 0)
         msg = gnulib::strerror (errno);
-#else
-      msg = NOT_SUPPORTED ("execvp");
-#endif
 
       return status;
     }
@@ -114,12 +102,12 @@ namespace octave
       pid_t status = -1;
 
 #if defined (HAVE_FORK)
-      status = ::fork ();
+      status = octave_fork_wrapper ();
 
       if (status < 0)
         msg = gnulib::strerror (errno);
 #else
-      msg = NOT_SUPPORTED ("fork");
+      msg = NOT_SUPPORTED ("vfork");
 #endif
 
       return status;
@@ -132,9 +120,9 @@ namespace octave
 
 #if defined (HAVE_VFORK) || defined (HAVE_FORK)
 #  if defined (HAVE_VFORK)
-      status = ::vfork ();
+      status = octave_vfork_wrapper ();
 #  else
-      status = ::fork ();
+      status = octave_fork_wrapper ();
 #  endif
 
       if (status < 0)
@@ -149,16 +137,10 @@ namespace octave
     pid_t
     getpgrp (std::string& msg)
     {
-      pid_t status = -1;
-
-#if defined (HAVE_GETPGRP)
-      status = ::getpgrp ();
+      pid_t status = octave_getpgrp_wrapper ();
 
       if (status < 0)
         msg = gnulib::strerror (errno);
-#else
-      msg = NOT_SUPPORTED ("getpgrp");
-#endif
 
       return status;
     }
@@ -166,61 +148,37 @@ namespace octave
     pid_t
     getpid (void)
     {
-#if defined (HAVE_GETPID)
-      return ::getpid ();
-#else
-      return 0;
-#endif
+      return octave_getpid_wrapper ();
     }
 
     pid_t
     getppid (void)
     {
-#if defined (HAVE_GETPPID)
-      return ::getppid ();
-#else
-      return 0;
-#endif
+      return octave_getppid_wrapper ();
     }
 
     gid_t
     getgid (void)
     {
-#if defined (HAVE_GETGID)
-      return ::getgid ();
-#else
-      return 0;
-#endif
+      return octave_getgid_wrapper ();
     }
 
     gid_t
     getegid (void)
     {
-#if defined (HAVE_GETEGID)
-      return ::getegid ();
-#else
-      return 0;
-#endif
+      return octave_getegid_wrapper ();
     }
 
     uid_t
     getuid (void)
     {
-#if defined (HAVE_GETUID)
-      return ::getuid ();
-#else
-      return 0;
-#endif
+      return octave_getuid_wrapper ();
     }
 
     uid_t
     geteuid (void)
     {
-#if defined (HAVE_GETEUID)
-      return ::geteuid ();
-#else
-      return 0;
-#endif
+      return octave_geteuid_wrapper ();
     }
 
     int
@@ -237,7 +195,7 @@ namespace octave
 
       int status = -1;
 
-      status = gnulib::pipe (fildes);
+      status = octave_pipe_wrapper (fildes);
 
       if (status < 0)
         msg = gnulib::strerror (errno);
@@ -341,15 +299,15 @@ namespace octave
                   interactive = false;
 
                   // Child process
-                  gnulib::close (child_stdin[1]);
-                  gnulib::close (child_stdout[0]);
+                  octave_close_wrapper (child_stdin[1]);
+                  octave_close_wrapper (child_stdout[0]);
 
-                  if (dup2 (child_stdin[0], STDIN_FILENO) >= 0)
+                  if (dup2 (child_stdin[0], octave_stdin_fileno ()) >= 0)
                     {
-                      gnulib::close (child_stdin[0]);
-                      if (dup2 (child_stdout[1], STDOUT_FILENO) >= 0)
+                      octave_close_wrapper (child_stdin[0]);
+                      if (dup2 (child_stdout[1], octave_stdout_fileno ()) >= 0)
                         {
-                          gnulib::close (child_stdout[1]);
+                          octave_close_wrapper (child_stdout[1]);
                           if (execvp (cmd, args, child_msg) < 0)
                             child_msg = "popen2 (child): unable to start process -- " + child_msg;
                         }
@@ -366,8 +324,8 @@ namespace octave
               else
                 {
                   // Parent process
-                  gnulib::close (child_stdin[0]);
-                  gnulib::close (child_stdout[1]);
+                  octave_close_wrapper (child_stdin[0]);
+                  octave_close_wrapper (child_stdout[1]);
 
 #if defined (F_SETFL) && defined (O_NONBLOCK)
                   if (! sync_mode
@@ -382,14 +340,14 @@ namespace octave
                       return pid;
                     }
                 }
-              gnulib::close (child_stdout[0]);
-              gnulib::close (child_stdout[1]);
+              octave_close_wrapper (child_stdout[0]);
+              octave_close_wrapper (child_stdout[1]);
             }
           else
             msg = "popen2: pipe creation failed -- " + msg;
 
-          gnulib::close (child_stdin[0]);
-          gnulib::close (child_stdin[1]);
+          octave_close_wrapper (child_stdin[0]);
+          octave_close_wrapper (child_stdin[1]);
         }
       else
         msg = "popen2: pipe creation failed -- " + msg;

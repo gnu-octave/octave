@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "oct-env.h"
 #include "str-vec.h"
+#include "unistd-wrappers.h"
 
 #include "build-env.h"
 #include "builtins.h"
@@ -849,10 +850,10 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   // If stdin is not a tty, then we are reading commands from a pipe or
   // a redirected file.
-  bool stdin_is_tty = gnulib::isatty (fileno (stdin));
+  bool stdin_is_tty = octave_isatty_wrapper (fileno (stdin));
 
   interactive = (! embedded && ! an_octave_program && stdin_is_tty
-                 && gnulib::isatty (fileno (stdout)));
+                 && octave_isatty_wrapper (fileno (stdout)));
 
   // Check if the user forced an interactive session.  If he
   // unnecessarily did so, reset forced_interactive to false.
@@ -1039,7 +1040,7 @@ check_starting_gui (void)
   // (for example, starting from a desktop "launcher" with no terminal) and you
   // want to start the GUI, you may use the --force-gui option to start the GUI.
 
-  if (! gnulib::isatty (fileno (stdin)))
+  if (! octave_isatty_wrapper (fileno (stdin)))
     return false;
 
   // If we have code to eval or execute from a file, and we are going to exit

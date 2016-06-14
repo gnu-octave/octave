@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-procbuf.h"
 #include "oct-syscalls.h"
 #include "sysdep.h"
+#include "unistd-wrappers.h"
 #include "variables.h"
 
 #include "defun.h"
@@ -105,12 +106,12 @@ octave_procbuf::open (const char *command, int mode)
 
   if (proc_pid == 0)
     {
-      gnulib::close (parent_end);
+      octave_close_wrapper (parent_end);
 
       if (child_end != child_std_end)
         {
-          gnulib::dup2 (child_end, child_std_end);
-          gnulib::close (child_end);
+          octave_dup2_wrapper (child_end, child_std_end);
+          octave_close_wrapper (child_end);
         }
 
       while (octave_procbuf_list)
@@ -131,11 +132,11 @@ octave_procbuf::open (const char *command, int mode)
       exit (127);
     }
 
-  gnulib::close (child_end);
+  octave_close_wrapper (child_end);
 
   if (proc_pid < 0)
     {
-      gnulib::close (parent_end);
+      octave_close_wrapper (parent_end);
       return 0;
     }
 

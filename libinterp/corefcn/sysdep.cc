@@ -33,9 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #if defined (HAVE_TERMIOS_H)
 #  include <termios.h>
 #elif defined (HAVE_TERMIO_H)
@@ -71,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mach-info.h"
 #include "oct-env.h"
 #include "quit.h"
+#include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 
 #include "Cell.h"
@@ -354,7 +352,7 @@ raw_mode (bool on, bool wait)
   static bool curr_on = false;
 
   int tty_fd = STDIN_FILENO;
-  if (! gnulib::isatty (tty_fd))
+  if (! octave_isatty_wrapper (tty_fd))
     {
       if (interactive && ! forced_interactive)
         error ("stdin is not a tty!");

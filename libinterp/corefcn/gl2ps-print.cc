@@ -34,13 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <limits>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include <gl2ps.h>
 
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
+#include "unistd-wrappers.h"
 #include "unwind-prot.h"
 
 #include "gl-render.h"
@@ -212,7 +210,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
           buffer_overflow = false;
           buffsize *= 2;
           gnulib::fseek (tmpf, 0, SEEK_SET);
-          gnulib::ftruncate (fileno (tmpf), 0);
+          octave_ftruncate_wrapper (fileno (tmpf), 0);
 
           // For LaTeX output the fltk print process uses 2 drawnow() commands.
           // The first one is for the pdf/ps/eps graph to be included.  The

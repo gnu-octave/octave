@@ -89,12 +89,10 @@ object) relevant global values before and after the nested call.
 #include <string>
 #include <stack>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "cmd-edit.h"
-#include "quit.h"
 #include "lo-mappers.h"
+#include "quit.h"
+#include "unistd-wrappers.h"
 
 // These would be alphabetical, but oct-parse.h must be included before
 // oct-gperf.h and oct-parse.h must be included after token.h and the tree
@@ -131,13 +129,15 @@ object) relevant global values before and after the nested call.
 #  define YYSTYPE OCTAVE_STYPE
 #endif
 
+#define YY_NO_UNISTD_H 1
+#define isatty octave_isatty_wrapper
+
 #if defined (GNULIB_NAMESPACE)
 // Calls to the following functions appear in the generated output from
 // flex without the namespace tag.  Redefine them so we will use them
 // via the gnulib namespace.
 #  define fprintf GNULIB_NAMESPACE::fprintf
 #  define fwrite GNULIB_NAMESPACE::fwrite
-#  define isatty GNULIB_NAMESPACE::isatty
 #  define malloc GNULIB_NAMESPACE::malloc
 #  define realloc GNULIB_NAMESPACE::realloc
 #endif

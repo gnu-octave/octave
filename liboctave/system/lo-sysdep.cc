@@ -28,9 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include <fcntl.h>
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
@@ -40,10 +37,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "lo-error.h"
-#include "pathlen.h"
 #include "lo-sysdep.h"
-#include "str-vec.h"
 #include "oct-locbuf.h"
+#include "pathlen.h"
+#include "str-vec.h"
+#include "unistd-wrappers.h"
 
 namespace octave
 {
@@ -54,11 +52,11 @@ namespace octave
     {
       std::string retval;
 
-      // Using the gnulib getcwd module ensures that we have a getcwd that
+      // Using octave_getcwd_wrapper ensures that we have a getcwd that
       // will allocate a buffer as large as necessary if buf and size are
       // both 0.
 
-      char *tmp = gnulib::getcwd (0, 0);
+      char *tmp = octave_getcwd_wrapper (0, 0);
 
       if (! tmp)
         (*current_liboctave_error_handler) ("unable to find current directory");
@@ -79,7 +77,7 @@ namespace octave
         path += "\\";
 #endif
 
-      return gnulib::chdir (path.c_str ());
+      return octave_chdir_wrapper (path.c_str ());
     }
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)

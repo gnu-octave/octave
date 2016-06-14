@@ -27,9 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cerrno>
 #include <cstring>
 
-#include <sys/utsname.h>
-
 #include "oct-uname.h"
+#include "uname-wrapper.h"
 
 namespace octave
 {
@@ -38,19 +37,20 @@ namespace octave
     void
     uname::init (void)
     {
-      struct utsname unm;
+      char *sysname, *nodename, *release, *version, *machine;
 
-      err = ::uname (&unm);
+      err = octave_uname_wrapper (&sysname, &nodename, &release,
+                                  &version, &machine);
 
       if (err < 0)
         msg = gnulib::strerror (errno);
       else
         {
-          m_sysname = unm.sysname;
-          m_nodename = unm.nodename;
-          m_release = unm.release;
-          m_version = unm.version;
-          m_machine = unm.machine;
+          m_sysname = sysname;
+          m_nodename = nodename;
+          m_release = release;
+          m_version = version;
+          m_machine = machine;
         }
     }
   }

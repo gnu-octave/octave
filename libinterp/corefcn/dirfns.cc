@@ -179,6 +179,8 @@ error message.\n\
 
   octave_value_list retval = ovl (Cell (), -1.0, "");
 
+  dirname = octave::sys::file_ops::tilde_expand (dirname);
+
   octave::sys::dir_entry dir (dirname);
 
   if (dir)
@@ -315,6 +317,9 @@ error message.\n\
   std::string from = args(0).xstring_value ("link: OLD must be a string");
   std::string to = args(1).xstring_value ("link: NEW must be a string");
 
+  from = octave::sys::file_ops::tilde_expand (from);
+  to = octave::sys::file_ops::tilde_expand (to);
+
   std::string msg;
 
   int status = octave::sys::link (from, to, msg);
@@ -342,6 +347,9 @@ error message.\n\
 
   std::string from = args(0).xstring_value ("symlink: OLD must be a string");
   std::string to = args(1).xstring_value ("symlink: NEW must be a string");
+
+  from = octave::sys::file_ops::tilde_expand (from);
+  to = octave::sys::file_ops::tilde_expand (to);
 
   std::string msg;
 
@@ -371,6 +379,8 @@ error message.\n\
 
   std::string symlink = args(0).xstring_value ("readlink: SYMLINK must be a string");
 
+  symlink = octave::sys::file_ops::tilde_expand (symlink);
+
   std::string result, msg;
 
   int status = octave::sys::readlink (symlink, result, msg);
@@ -398,6 +408,9 @@ error message.\n\
 
   std::string from = args(0).xstring_value ("rename: OLD must be a string");
   std::string to = args(1).xstring_value ("rename: NEW must be a string");
+
+  from = octave::sys::file_ops::tilde_expand (from);
+  to = octave::sys::file_ops::tilde_expand (to);
 
   std::string msg;
 

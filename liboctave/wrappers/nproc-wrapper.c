@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 unsigned long int
 octave_num_processors_wrapper (enum octave_nproc_query octave_query)
 {
-  enum nproc_query query;
+  enum nproc_query query = NPROC_CURRENT;
 
   switch (octave_query)
     {

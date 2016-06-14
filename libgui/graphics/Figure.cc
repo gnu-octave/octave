@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "version.h"
 
 #include "octave-qt-link.h"
 
@@ -59,8 +60,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace QtHandles
 {
-
-#define ABOUT_TEXT "<b>QtHandles</b> - a Qt-based toolkit for <a href=\"http://www.octave.org\">Octave</a>.<br><br>Copyright (C) 2011-2015 Michael Goffioul"
 
 DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);
 
@@ -335,9 +334,8 @@ Figure::createFigureToolBarAndMenuBar (void)
 
   QMenu* helpMenu = m_menuBar->addMenu (tr ("&Help"));
   helpMenu->menuAction ()->setObjectName ("builtinMenu");
-  helpMenu->addAction (tr ("&About QtHandles"), this,
-                       SLOT (helpAboutQtHandles (void)));
-  helpMenu->addAction (tr ("About &Qt"), qApp, SLOT (aboutQt (void)));
+  helpMenu->addAction (tr ("About Octave"), this,
+                       SLOT (helpAboutOctave (void)));
 
   m_menuBar->addReceiver (this);
 }
@@ -776,10 +774,13 @@ Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
 }
 
 void
-Figure::helpAboutQtHandles (void)
+Figure::helpAboutOctave (void)
 {
-  QMessageBox::about (qWidget<QMainWindow> (), tr ("About QtHandles"),
-                      ABOUT_TEXT);
+  std::string message
+    = octave_name_version_copyright_copying_warranty_and_bugs (true);
+
+  QMessageBox::about (qWidget<QMainWindow> (), tr ("About Octave"),
+                      QString::fromStdString (message));
 }
 
 void

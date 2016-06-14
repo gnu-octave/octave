@@ -121,7 +121,7 @@ private slots:
   void fileSaveFigureAs (void);
   void fileCloseFigure (void);
   void editCopy (bool choose_format = false);
-  void helpAboutQtHandles (void);
+  void helpAboutOctave (void);
   void updateMenuBar (void);
   void updateContainer (void);
   void toggleAxes (void);

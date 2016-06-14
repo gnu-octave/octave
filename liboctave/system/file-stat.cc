@@ -27,11 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <cerrno>
 #include <cstring>
 
-#include "filemode.h"
-
 #include "file-ops.h"
 #include "file-stat.h"
 #include "statdefs.h"
+#include "strmode-wrapper.h"
 
 namespace octave
 {
@@ -158,7 +157,7 @@ namespace octave
     {
       char buf[12];
 
-      strmode (m_mode, buf);
+      octave_strmode_wrapper (m_mode, buf);
 
       return std::string (buf);
     }

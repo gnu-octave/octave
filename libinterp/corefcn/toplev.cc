@@ -35,8 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#include <sys/select.h>
-
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"
@@ -48,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
+#include "wait-for-input.h"
 
 #include "build-env.h"
 #include "liboctinterp-build-info.h"
@@ -992,28 +991,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.\n\
 
 // Execute a shell command.
 
-static int
-wait_for_input (int fid)
-{
-  int retval = -1;
-
-#if defined (HAVE_SELECT)
-  if (fid >= 0)
-    {
-      fd_set set;
-
-      FD_ZERO (&set);
-      FD_SET (fid, &set);
-
-      retval = gnulib::select (FD_SETSIZE, &set, 0, 0, 0);
-    }
-#else
-  retval = 1;
-#endif
-
-  return retval;
-}
-
 static octave_value_list
 run_command_and_return_output (const std::string& cmd_str)
 {
@@ -1044,7 +1021,7 @@ run_command_and_return_output (const std::string& cmd_str)
             {
               cmd->clear ();
 
-              if (wait_for_input (fid) != 1)
+              if (octave_wait_for_input (fid) != 1)
                 break;
             }
           else

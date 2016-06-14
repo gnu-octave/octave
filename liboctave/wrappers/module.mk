@@ -14,7 +14,8 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/strptime-wrapper.h \
   liboctave/wrappers/uname-wrapper.h \
   liboctave/wrappers/unsetenv-wrapper.h \
-  liboctave/wrappers/vasprintf-wrapper.h
+  liboctave/wrappers/vasprintf-wrapper.h \
+  liboctave/wrappers/wait-for-input.h
 
 WRAPPERS_SRC = \
   liboctave/wrappers/areadlink-wrapper.c \
@@ -32,7 +33,8 @@ WRAPPERS_SRC = \
   liboctave/wrappers/strptime-wrapper.c \
   liboctave/wrappers/uname-wrapper.c \
   liboctave/wrappers/unsetenv-wrapper.c \
-  liboctave/wrappers/vasprintf-wrapper.c
+  liboctave/wrappers/vasprintf-wrapper.c \
+  liboctave/wrappers/wait-for-input.c
 
 noinst_LTLIBRARIES += liboctave/wrappers/libwrappers.la
 

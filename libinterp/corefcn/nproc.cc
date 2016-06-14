@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "defun.h"
-#include "nproc.h"
+#include "nproc-wrapper.h"
 
 DEFUN (nproc, args, ,
        "-*- texinfo -*-\n\
@@ -54,7 +54,8 @@ same as @code{current}, but overridable through the\n\
   if (nargin > 1)
     print_usage ();
 
-  nproc_query query = NPROC_CURRENT;
+  octave_nproc_query query = OCTAVE_NPROC_CURRENT;
+
   if (nargin == 1)
     {
       std::string arg = args(0).string_value ();
@@ -62,16 +63,16 @@ same as @code{current}, but overridable through the\n\
       std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
 
       if (arg == "all")
-        query = NPROC_ALL;
+        query = OCTAVE_NPROC_ALL;
       else if (arg == "current")
-        query = NPROC_CURRENT;
+        query = OCTAVE_NPROC_CURRENT;
       else if (arg == "overridable")
-        query = NPROC_CURRENT_OVERRIDABLE;
+        query = OCTAVE_NPROC_CURRENT_OVERRIDABLE;
       else
         error ("nproc: invalid value for QUERY");
     }
 
-  return ovl (num_processors (query));
+  return ovl (octave_num_processors_wrapper (query));
 }
 
 /*

@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "singleton-cleanup.h"
 
 #if defined (HAVE_FFTW3_THREADS) || defined (HAVE_FFTW3F_THREADS)
-#  include "nproc.h"
+#  include "nproc-wrapper.h"
 #endif
 
 #if defined (HAVE_FFTW)
@@ -82,7 +82,7 @@ octave_fftw_planner::octave_fftw_planner (void)
 
   // Use number of processors available to the current process
   // This can be later changed with fftw ("threads", nthreads).
-  nthreads = num_processors (NPROC_CURRENT);
+  nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
   fftw_plan_with_nthreads (nthreads);
 #endif
 
@@ -440,7 +440,7 @@ octave_float_fftw_planner::octave_float_fftw_planner (void)
 
   // Use number of processors available to the current process
   // This can be later changed with fftw ("threads", nthreads).
-  nthreads = num_processors (NPROC_CURRENT);
+  nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
   fftwf_plan_with_nthreads (nthreads);
 #endif
 

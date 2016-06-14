@@ -34,7 +34,8 @@ WRAPPERS_SRC = \
   liboctave/wrappers/uname-wrapper.c \
   liboctave/wrappers/unsetenv-wrapper.c \
   liboctave/wrappers/vasprintf-wrapper.c \
-  liboctave/wrappers/wait-for-input.c
+  liboctave/wrappers/wait-for-input.c \
+  $(NOINSTALL_WRAPPERS_INC)
 
 noinst_LTLIBRARIES += liboctave/wrappers/libwrappers.la
 

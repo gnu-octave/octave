@@ -35,24 +35,10 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
   for i = numel (kids):-1:1
     typ = get (kids(i), "type");
     if (any (strcmp (typ, {"line", "patch", "surface", "hggroup"})))
-      if (strcmp (typ, "hggroup"))
-        hgkids = get (kids(i), "children");
-        for j = 1 : length (hgkids)
-          try
-            dname = get (hgkids(j), "DisplayName");
-            if (! isempty (dname))
-              hplots(end+1) = hgkids(j);
-              text_strings(end+1) = dname;
-              break;  # break from j-loop over hgkids
-            endif
-          end_try_catch
-        endfor
-      else
-        dname = get (kids(i), "DisplayName");
-        if (! isempty (dname))
-          hplots(end+1) = kids(i);
-          text_strings(end+1) = dname;
-        endif
+      dname = get (kids(i), "DisplayName");
+      if (! isempty (dname))
+        hplots(end+1) = kids(i);
+        text_strings(end+1) = dname;
       endif
     endif
   endfor

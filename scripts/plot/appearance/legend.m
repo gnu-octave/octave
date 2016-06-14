@@ -383,26 +383,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       for k = 1 : nkids
         hkid = kids(k);
         typ = get (hkid, "type");
-        if (any (strcmp (typ, {"line", "patch", "surface"})))
+        if (any (strcmp (typ, {"line", "patch", "surface", "hggroup"})))
           if (! isempty (get (hkid, "displayname")))
             have_dname = true;
             break;
           endif
-        elseif (strcmp (typ, "hggroup"))
-          hgkids = get (hkid, "children");
-          for j = 1 : length (hgkids)
-            try
-              dname = get (hgkids(j), "DisplayName");
-              if (! isempty (dname))
-                have_dname = true;
-                break;  # break from j-loop over hgkids
-              endif
-            end_try_catch
-          endfor
-          if (have_dname)
-            break;  # break from k loop over nkids
-          endif
-        endif  # elseif hggroup
+        endif
       endfor   # for loop k = 1 : nkids
     endif      # else branch of if (have_labels)
 
@@ -416,42 +402,26 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       endif
       for i = 1 : nargs
         arg = varargin{i};
-        if (ischar (arg))
-          typ = get (kids(k), "type");
-          while (k > 0
-                 && ! any (strcmp (typ, {"line","patch","surface","hggroup"})))
-            typ = get (kids(--k), "type");
-          endwhile
-          if (k > 0)
-            if (strcmp (get (kids(k), "type"), "hggroup"))
-              hgkids = get (kids(k), "children");
-              for j = 1 : length (hgkids)
-                hgobj = get (hgkids(j));
-                if (isfield (hgobj, "displayname"))
-                  if (have_labels)
-                    set (hgkids(j), "displayname", arg);
-                  endif
-                  hplots(end+1) = hgkids(j);
-                  text_strings(end+1) = arg;
-                  break;
-                endif
-              endfor
-            else
-              if (have_labels)
-                set (kids(k), "displayname", arg);
-              endif
-              hplots(end+1) = kids(k);
-              text_strings(end+1) = arg;
-            endif
+        if (! ischar (arg))
+          error ("legend: expecting argument to be a string");
+        endif
+        typ = get (kids(k), "type");
+        while (k > 0
+               && ! any (strcmp (typ, {"line","patch","surface","hggroup"})))
+          typ = get (kids(--k), "type");
+        endwhile
+        if (k > 0)
+          if (have_labels)
+            set (kids(k), "displayname", arg);
+          endif
+          hplots(end+1) = kids(k);
+          text_strings(end+1) = arg;
 
-            if (--k == 0)
-              break;
-            endif
-          else
-            break;  # k = 0, no further handles to process
+          if (--k == 0)
+            break;
           endif
         else
-          error ("legend: expecting argument to be a string");
+          break;  # k = 0, no further handles to process
         endif
       endfor
       if (have_labels && i < nargs)
@@ -470,22 +440,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           break;
         endif
         if (k > 0)
-          if (strcmp (get (kids(k), "type"), "hggroup"))
-            hgkids = get (kids(k), "children");
-            for j = 1 : length (hgkids)
-              hgobj = get (hgkids(j));
-              if (isfield (hgobj, "displayname")
-                  && ! isempty (hgobj.displayname))
-                hplots(end+1) = hgkids(j);
-                text_strings(end+1) = hgobj.displayname;
-                break;
-              endif
-            endfor
-          else
-            if (! isempty (get (kids(k), "displayname")))
-              hplots(end+1) = kids(k);
-              text_strings(end+1) = get (kids(k), "displayname");
-            endif
+          if (! isempty (get (kids(k), "displayname")))
+            hplots(end+1) = kids(k);
+            text_strings(end+1) = get (kids(k), "displayname");
           endif
           if (--k == 0)
             break;
@@ -537,7 +494,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       endif
 
       ## Get axis size and fontsize in points.
-      ## Rely on listener to handle coversion.
+      ## Rely on listener to handle conversion.
       units = get (ca(1), "units");
       unwind_protect
         set (ca(1), "units", "points");
@@ -598,7 +555,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           addprops = false;
           axes (hlegend);
           delete (get (hlegend, "children"));
-          ## Hack, to get list of hplots for which addlistener has already been called.
+          ## Hack: get list of hplots for which addlistener has been called.
           old_hplots = [ get(hlegend, "deletefcn"){6:end} ];
         endif
         if (addprops)
@@ -834,73 +791,87 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         yk = 0;
         for k = 1 : numel (hplots)
           hobjects(end+1) = texthandle(k);
-          switch (get (hplots(k), "type"))
+          hplt = hplots(k);
+          typ = get (hplt, "type");
+          ## For an hggroup, find an underlying primitive object
+          if (strcmp (typ, "hggroup"))
+            for hgkid = get (hplt, "children").'
+              hgkid_type = get (hgkid, "type");
+              if (any (strcmp (hgkid_type, {"line","patch","surface"})))
+                typ = hgkid_type;
+                hplt = hgkid; 
+                break;
+              endif
+            endfor
+          endif
+
+          switch (typ)
 
             case "line"
-              color = get (hplots(k), "color");
-              style = get (hplots(k), "linestyle");
-              lwidth = min (get (hplots(k), "linewidth"), 5);
+              color = get (hplt, "color");
+              style = get (hplt, "linestyle");
+              lwidth = min (get (hplt, "linewidth"), 5);
               if (! strcmp (style, "none"))
                 l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
                            "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
                            "color", color, "linestyle", style, "linewidth", lwidth,
                            "marker", "none",
-                           "userdata", hplots(k));
+                           "userdata", hplt);
                 hobjects(end+1) = l1;
               endif
-              marker = get (hplots(k), "marker");
+              marker = get (hplt, "marker");
               if (! strcmp (marker, "none"))
                 l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
                            "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
                            "color", color, "linestyle", "none", "linewidth", lwidth,
                            "marker", marker,
-                           "markeredgecolor",get (hplots(k), "markeredgecolor"),
-                           "markerfacecolor",get (hplots(k), "markerfacecolor"),
-                           "markersize", min (get (hplots(k), "markersize"),10),
-                           "userdata", hplots(k));
+                           "markeredgecolor",get (hplt, "markeredgecolor"),
+                           "markerfacecolor",get (hplt, "markerfacecolor"),
+                           "markersize", min (get (hplt, "markersize"),10),
+                           "userdata", hplt);
                 hobjects(end+1) = l1;
               endif
 
-              if (! any (hplots(k) == old_hplots))
-                addlistener (hplots(k), "color",
+              if (! any (hplt == old_hplots))
+                addlistener (hplt, "color",
                              {@updateline, hlegend, linelength, false});
-                addlistener (hplots(k), "linestyle",
+                addlistener (hplt, "linestyle",
                              {@updateline, hlegend, linelength, false});
-                addlistener (hplots(k), "linewidth",
+                addlistener (hplt, "linewidth",
                              {@updateline, hlegend, linelength, false});
-                addlistener (hplots(k), "marker",
+                addlistener (hplt, "marker",
                              {@updateline, hlegend, linelength, false});
-                addlistener (hplots(k), "markeredgecolor",
+                addlistener (hplt, "markeredgecolor",
                              {@updateline, hlegend, linelength, false});
-                addlistener (hplots(k), "markerfacecolor",
+                addlistener (hplt, "markerfacecolor",
                              {@updateline, hlegend, linelength, false});
-                addlistener (hplots(k), "markersize",
+                addlistener (hplt, "markersize",
                              {@updateline, hlegend, linelength, false});
-                addlistener (hplots(k), "displayname",
+                addlistener (hplt, "displayname",
                              {@updateline, hlegend, linelength, true});
               endif
 
             case "patch"
-              facecolor = get (hplots(k), "facecolor");
-              edgecolor = get (hplots(k), "edgecolor");
-              cdata = get (hplots(k), "cdata");
+              facecolor = get (hplt, "facecolor");
+              edgecolor = get (hplt, "edgecolor");
+              cdata = get (hplt, "cdata");
               if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
                 p1 = patch ("xdata", ([0, linelength, linelength, 0] +
                                       xoffset + xk * xstep) / lpos(3),
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
                             "facecolor", facecolor, "edgecolor", edgecolor,
-                            "cdata", cdata, "userdata", hplots(k));
+                            "cdata", cdata, "userdata", hplt);
               else
                 ## non-standard patch only making use of marker styles
                 ## such as scatter plot.
                 p1 = patch ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
                             "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                            "marker", get (hplots(k), "marker"),
-                            "markeredgecolor",get (hplots(k),"markeredgecolor"),
-                            "markerfacecolor",get (hplots(k),"markerfacecolor"),
-                            "markersize", min (get (hplots(k),"markersize"),10),
-                            "cdata", cdata, "userdata", hplots(k));
+                            "marker", get (hplt, "marker"),
+                            "markeredgecolor",get (hplt,"markeredgecolor"),
+                            "markerfacecolor",get (hplt,"markerfacecolor"),
+                            "markersize", min (get (hplt,"markersize"),10),
+                            "cdata", cdata, "userdata", hplt);
               endif
               hobjects(end+1) = p1;
               ## Copy clim from axes so that colors work out.
@@ -910,8 +881,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               ##        Changing clim, for example, won't update colors
 
             case "surface"
-              facecolor = get (hplots(k), "facecolor");
-              edgecolor = get (hplots(k), "edgecolor");
+              facecolor = get (hplt, "facecolor");
+              edgecolor = get (hplt, "edgecolor");
               cdata = sum (get (ca(1), "clim")) / 2;
               if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
                 p1 = patch ("xdata", ([0, linelength, linelength, 0] +
@@ -919,7 +890,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
                             "facecolor", facecolor, "edgecolor", edgecolor,
-                            "cdata", cdata, "userdata", hplots(k));
+                            "cdata", cdata, "userdata", hplt);
                 hobjects(end+1) = p1;
               endif
               ## FIXME: Need listeners, as for line objects.

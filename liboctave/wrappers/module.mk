@@ -1,4 +1,5 @@
 NOINSTALL_WRAPPERS_INC = \
+  liboctave/wrappers/areadlink-wrapper.h \
   liboctave/wrappers/base64-wrappers.h \
   liboctave/wrappers/canonicalize-file-name-wrapper.h \
   liboctave/wrappers/fpucw-wrapper.h \
@@ -16,6 +17,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/vasprintf-wrapper.h
 
 WRAPPERS_SRC = \
+  liboctave/wrappers/areadlink-wrapper.c \
   liboctave/wrappers/base64-wrappers.c \
   liboctave/wrappers/canonicalize-file-name-wrapper.c \
   liboctave/wrappers/fpucw-wrapper.c \

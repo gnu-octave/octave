@@ -29,29 +29,30 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 #include <cstring>
 
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+#  include <algorithm>
+#endif
+
 #include <iostream>
 #include <vector>
 
 #include <sys/stat.h>
 
-#include "pathmax.h"
+#include <sys/types.h>
+#include <unistd.h>
 
+#include "areadlink-wrapper.h"
 #include "canonicalize-file-name-wrapper.h"
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "gen-tempname-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "oct-passwd.h"
-#include "pathlen.h"
 #include "quit.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
-#include "gen-tempname-wrapper.h"
-
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-#  include <algorithm>
-#endif
 
 namespace octave
 {
@@ -509,16 +510,14 @@ namespace octave
 
       msg = "";
 
-      char buf[MAXPATHLEN+1];
+      char *buf = octave_areadlink_wrapper (path.c_str ());
 
-      status = gnulib::readlink (path.c_str (), buf, MAXPATHLEN);
-
-      if (status < 0)
+      if (! buf)
         msg = gnulib::strerror (errno);
       else
         {
-          buf[status] = '\0';
-          result = std::string (buf);
+          result = buf;
+          ::free (buf);
           status = 0;
         }
 

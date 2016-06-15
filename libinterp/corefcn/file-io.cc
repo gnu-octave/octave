@@ -47,8 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
-#include <fcntl.h>
-
 #if defined (HAVE_ZLIB_H)
 #  include <zlib.h>
 #endif

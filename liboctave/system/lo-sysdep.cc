@@ -28,8 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
-#include <fcntl.h>
-
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
@@ -81,6 +79,9 @@ namespace octave
     }
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
+
+    // FIXME: this function could be combined with octave_popen2 in
+    // liboctave/wrappers/octave-popen2.c.
 
     pid_t
     win_popen2 (const std::string& cmd, const string_vector& args,

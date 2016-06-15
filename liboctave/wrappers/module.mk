@@ -2,12 +2,14 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/areadlink-wrapper.h \
   liboctave/wrappers/base64-wrappers.h \
   liboctave/wrappers/canonicalize-file-name-wrapper.h \
+  liboctave/wrappers/fcntl-wrappers.h \
   liboctave/wrappers/fpucw-wrapper.h \
   liboctave/wrappers/gen-tempname-wrapper.h \
   liboctave/wrappers/hash-wrappers.h \
   liboctave/wrappers/mkostemp-wrapper.h \
   liboctave/wrappers/nanosleep-wrapper.h \
   liboctave/wrappers/nproc-wrapper.h \
+  liboctave/wrappers/octave-popen2.h \
   liboctave/wrappers/putenv-wrapper.h \
   liboctave/wrappers/set-program-name-wrapper.h \
   liboctave/wrappers/stat-wrappers.h \
@@ -24,12 +26,14 @@ WRAPPERS_SRC = \
   liboctave/wrappers/areadlink-wrapper.c \
   liboctave/wrappers/base64-wrappers.c \
   liboctave/wrappers/canonicalize-file-name-wrapper.c \
+  liboctave/wrappers/fcntl-wrappers.c \
   liboctave/wrappers/fpucw-wrapper.c \
   liboctave/wrappers/gen-tempname-wrapper.c \
   liboctave/wrappers/hash-wrappers.c \
   liboctave/wrappers/mkostemp-wrapper.c \
   liboctave/wrappers/nanosleep-wrapper.c \
   liboctave/wrappers/nproc-wrapper.c \
+  liboctave/wrappers/octave-popen2.c \
   liboctave/wrappers/putenv-wrapper.c \
   liboctave/wrappers/set-program-name-wrapper.c \
   liboctave/wrappers/stat-wrappers.c \

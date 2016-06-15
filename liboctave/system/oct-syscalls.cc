@@ -29,16 +29,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string.h>
 
-#include <fcntl.h>
-
 // We can't use csignal as kill is not in the std namespace, and picky
 // compiler runtimes will also exclude it from global scope as well.
 
 #include <signal.h>
 
+#include "fcntl-wrappers.h"
 #include "lo-utils.h"
 #include "lo-sysdep.h"
 #include "oct-syscalls.h"
+#include "octave-popen2.h"
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 
@@ -277,82 +277,24 @@ namespace octave
     pid_t
     popen2 (const std::string& cmd, const string_vector& args,
             bool sync_mode, int *fildes, std::string& msg,
-            bool &interactive)
+            bool & /* interactive */)
     {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
+      // FIXME: this function could be combined with octave_popen2 in
+      // liboctave/wrappers/octave-popen2.c.
+
       return octave::sys::win_popen2 (cmd, args, sync_mode, fildes, msg);
 #else
-      pid_t pid;
-      int child_stdin[2], child_stdout[2];
+      char **argv = args.c_str_vec ();
 
-      if (pipe (child_stdin, msg) == 0)
-        {
-          if (pipe (child_stdout, msg) == 0)
-            {
-              pid = fork (msg);
-              if (pid < 0)
-                msg = "popen2: process creation failed -- " + msg;
-              else if (pid == 0)
-                {
-                  std::string child_msg;
+      pid_t pid = octave_popen2 (cmd.c_str (), argv, sync_mode, fildes);
 
-                  interactive = false;
+      string_vector::delete_c_str_vec (argv);
 
-                  // Child process
-                  octave_close_wrapper (child_stdin[1]);
-                  octave_close_wrapper (child_stdout[0]);
+      if (pid < 0)
+        msg = gnulib::strerror (errno);
 
-                  if (dup2 (child_stdin[0], octave_stdin_fileno ()) >= 0)
-                    {
-                      octave_close_wrapper (child_stdin[0]);
-                      if (dup2 (child_stdout[1], octave_stdout_fileno ()) >= 0)
-                        {
-                          octave_close_wrapper (child_stdout[1]);
-                          if (execvp (cmd, args, child_msg) < 0)
-                            child_msg = "popen2 (child): unable to start process -- " + child_msg;
-                        }
-                      else
-                        child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
-                    }
-                  else
-                    child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
-
-                  (*current_liboctave_error_handler) (child_msg.c_str ());
-
-                  exit (0);
-                }
-              else
-                {
-                  // Parent process
-                  octave_close_wrapper (child_stdin[0]);
-                  octave_close_wrapper (child_stdout[1]);
-
-#if defined (F_SETFL) && defined (O_NONBLOCK)
-                  if (! sync_mode
-                      && octave::sys::fcntl (child_stdout[0], F_SETFL,
-                                                  O_NONBLOCK, msg) < 0)
-                    msg = "popen2: error setting file mode -- " + msg;
-                  else
-#endif
-                    {
-                      fildes[0] = child_stdin[1];
-                      fildes[1] = child_stdout[0];
-                      return pid;
-                    }
-                }
-              octave_close_wrapper (child_stdout[0]);
-              octave_close_wrapper (child_stdout[1]);
-            }
-          else
-            msg = "popen2: pipe creation failed -- " + msg;
-
-          octave_close_wrapper (child_stdin[0]);
-          octave_close_wrapper (child_stdin[1]);
-        }
-      else
-        msg = "popen2: pipe creation failed -- " + msg;
-
-      return -1;
+      return pid;
 #endif
     }
 
@@ -370,7 +312,7 @@ namespace octave
 
       int status = -1;
 
-      status = gnulib::fcntl (fd, cmd, arg);
+      status = octave_fcntl_wrapper (fd, cmd, arg);
 
       if (status < 0)
         msg = gnulib::strerror (errno);

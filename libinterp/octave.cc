@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <fcntl.h>
 #include <getopt.h>
 
 #include "cmd-edit.h"

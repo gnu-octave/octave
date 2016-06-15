@@ -33,9 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdio>
 #include <cstring>
 
-#include <fcntl.h>
-
 #include "cmd-hist.h"
+#include "fcntl-wrappers.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-env.h"
@@ -1305,11 +1304,7 @@ const_value (const octave_value_list& args, int val)
   return octave_value (val);
 }
 
-#if ! defined (O_NONBLOCK) && defined (O_NDELAY)
-#define O_NONBLOCK O_NDELAY
-#endif
-
-DEFUNX ("F_DUPFD", FF_DUPFD, args, ,
+DEFUN (F_DUPFD, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_DUPFD ()\n\
 Return the numerical value to pass to @code{fcntl} to return\n\
@@ -1317,14 +1312,15 @@ a duplicate file descriptor.\n\
 @seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
-#if defined (F_DUPFD)
-  return const_value (args, F_DUPFD);
-#else
-  err_disabled_feature ("F_DUPFD", "F_DUPFD");
-#endif
+  static int val = octave_f_dupfd_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("F_DUPFD", "F_DUPFD");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("F_GETFD", FF_GETFD, args, ,
+DEFUN (F_GETFD, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_GETFD ()\n\
 Return the numerical value to pass to @code{fcntl} to return\n\
@@ -1332,14 +1328,15 @@ the file descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
-#if defined (F_GETFD)
-  return const_value (args, F_GETFD);
-#else
-  err_disabled_feature ("F_GETFD", "F_GETFD");
-#endif
+  static int val = octave_f_getfd_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("F_GETFD", "F_GETFD");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("F_GETFL", FF_GETFL, args, ,
+DEFUN (F_GETFL, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_GETFL ()\n\
 Return the numerical value to pass to @code{fcntl} to return\n\
@@ -1347,14 +1344,15 @@ the file status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
-#if defined (F_GETFL)
-  return const_value (args, F_GETFL);
-#else
-  err_disabled_feature ("F_GETFL", "F_GETFL");
-#endif
+  static int val = octave_f_getfl_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("F_GETFL", "F_GETFL");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("F_SETFD", FF_SETFD, args, ,
+DEFUN (F_SETFD, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_SETFD ()\n\
 Return the numerical value to pass to @code{fcntl} to set the file\n\
@@ -1362,14 +1360,15 @@ descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}\n\
 @end deftypefn")
 {
-#if defined (F_SETFD)
-  return const_value (args, F_SETFD);
-#else
-  err_disabled_feature ("F_SETFD", "F_SETFD");
-#endif
+  static int val = octave_f_setfd_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("F_SETFD", "F_SETFD");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("F_SETFL", FF_SETFL, args, ,
+DEFUN (F_SETFL, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_SETFL ()\n\
 Return the numerical value to pass to @code{fcntl} to set the file\n\
@@ -1377,14 +1376,15 @@ status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}\n\
 @end deftypefn")
 {
-#if defined (F_SETFL)
-  return const_value (args, F_SETFL);
-#else
-  err_disabled_feature ("F_SETFL", "F_SETFL");
-#endif
+  static int val = octave_f_setfl_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("F_SETFL", "F_SETFL");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_APPEND", FO_APPEND, args, ,
+DEFUN (O_APPEND, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_APPEND ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1393,14 +1393,15 @@ or that may be passed to @code{fcntl} to set the write mode to append.\n\
 @seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_APPEND)
-  return const_value (args, O_APPEND);
-#else
-  err_disabled_feature ("O_APPEND", "O_APPEND");
-#endif
+  static int val = octave_o_append_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_APPEND", "O_APPEND");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_ASYNC", FO_ASYNC, args, ,
+DEFUN (O_ASYNC, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_ASYNC ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1408,14 +1409,15 @@ returned by @code{fcntl} to indicate asynchronous I/O.\n\
 @seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_ASYNC)
-  return const_value (args, O_ASYNC);
-#else
-  err_disabled_feature ("O_ASYNC", "O_ASYNC");
-#endif
+  static int val = octave_o_async_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_ASYNC", "O_ASYNC");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_CREAT", FO_CREAT, args, ,
+DEFUN (O_CREAT, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_CREAT ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1424,14 +1426,15 @@ does not exist.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_CREAT)
-  return const_value (args, O_CREAT);
-#else
-  err_disabled_feature ("O_CREAT", "O_CREAT");
-#endif
+  static int val = octave_o_creat_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_CREAT", "O_CREAT");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_EXCL", FO_EXCL, args, ,
+DEFUN (O_EXCL, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_EXCL ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1439,14 +1442,15 @@ returned by @code{fcntl} to indicate that file locking is used.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_EXCL)
-  return const_value (args, O_EXCL);
-#else
-  err_disabled_feature ("O_EXCL", "O_EXCL");
-#endif
+  static int val = octave_o_excl_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_EXCL", "O_EXCL");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_NONBLOCK", FO_NONBLOCK, args, ,
+DEFUN (O_NONBLOCK, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_NONBLOCK ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1455,14 +1459,15 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_NONBLOCK)
-  return const_value (args, O_NONBLOCK);
-#else
-  err_disabled_feature ("O_NONBLOCK", "O_NONBLOCK");
-#endif
+  static int val = octave_o_nonblock_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_NONBLOCK", "O_NONBLOCK");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_RDONLY", FO_RDONLY, args, ,
+DEFUN (O_RDONLY, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_RDONLY ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1470,14 +1475,15 @@ returned by @code{fcntl} to indicate that a file is open for reading only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_RDONLY)
-  return const_value (args, O_RDONLY);
-#else
-  err_disabled_feature ("O_RDONLY", "O_RDONLY");
-#endif
+  static int val = octave_o_rdonly_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_RDONLY", "O_RDONLY");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_RDWR", FO_RDWR, args, ,
+DEFUN (O_RDWR, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_RDWR ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1486,14 +1492,15 @@ and writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_RDWR)
-  return const_value (args, O_RDWR);
-#else
-  err_disabled_feature ("O_RDWR", "O_RDWR");
-#endif
+  static int val = octave_o_rdwr_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_RDWR", "O_RDWR");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_SYNC", FO_SYNC, args, ,
+DEFUN (O_SYNC, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_SYNC ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1502,14 +1509,15 @@ I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_SYNC)
-  return const_value (args, O_SYNC);
-#else
-  err_disabled_feature ("O_SYNC", "O_SYNC");
-#endif
+  static int val = octave_o_sync_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_SYNC", "O_SYNC");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
+DEFUN (O_TRUNC, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_TRUNC ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1518,14 +1526,15 @@ truncated when writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}\n\
 @end deftypefn")
 {
-#if defined (O_TRUNC)
-  return const_value (args, O_TRUNC);
-#else
-  err_disabled_feature ("O_TRUNC", "O_TRUNC");
-#endif
+  static int val = octave_o_trunc_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_TRUNC", "O_TRUNC");
+
+  return const_value (args, val);
 }
 
-DEFUNX ("O_WRONLY", FO_WRONLY, args, ,
+DEFUN (O_WRONLY, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_WRONLY ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1533,11 +1542,12 @@ returned by @code{fcntl} to indicate that a file is open for writing only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}\n\
 @end deftypefn")
 {
-#if defined (O_WRONLY)
-  return const_value (args, O_WRONLY);
-#else
-  err_disabled_feature ("O_WRONLY", "O_WRONLY");
-#endif
+  static int val = octave_o_wronly_wrapper ();
+
+  if (val < 0)
+    err_disabled_feature ("O_WRONLY", "O_WRONLY");
+
+  return const_value (args, val);
 }
 
 #if ! defined (WNOHANG)

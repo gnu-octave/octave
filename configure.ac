@@ -1527,7 +1527,7 @@ if test $check_qt = yes; then
     ])
 
     if test $octave_cv_lib_qscintilla = no; then
-      warn_qscintilla_editor="Qscintilla library not found; disabling built-in Qt GUI editor"
+      warn_qscintilla="Qscintilla library not found; disabling built-in Qt GUI editor"
       OCTAVE_CONFIGURE_WARNING([warn_qscintilla])
     else
       ## Let's assume Qscintilla library is at the same location as

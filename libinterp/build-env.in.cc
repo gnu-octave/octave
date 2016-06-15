@@ -187,8 +187,6 @@ namespace octave
 
     const char *LFLAGS = %OCTAVE_CONF_LFLAGS%;
 
-    const char *LIBEXT = %OCTAVE_CONF_LIBEXT%;
-
     const char *LIBOCTAVE = %OCTAVE_CONF_LIBOCTAVE%;
 
     const char *LIBOCTINTERP = %OCTAVE_CONF_LIBOCTINTERP%;
@@ -268,10 +266,6 @@ namespace octave
     const char *SED = %OCTAVE_CONF_SED%;
 
     const char *SHARED_LIBS = %OCTAVE_CONF_SHARED_LIBS%;
-
-    const char *SHLEXT = %OCTAVE_CONF_SHLEXT%;
-
-    const char *SHLEXT_VER = %OCTAVE_CONF_SHLEXT_VER%;
 
     const char *SH_LD = %OCTAVE_CONF_SH_LD%;
 

@@ -111,7 +111,6 @@ namespace octave
     extern const char *LEXLIB;
     extern const char *LEX;
     extern const char *LFLAGS;
-    extern const char *LIBEXT;
     extern const char *LIBOCTAVE;
     extern const char *LIBOCTINTERP;
     extern const char *LIBS;
@@ -152,8 +151,6 @@ namespace octave
     extern const char *READLINE_LIBS;
     extern const char *SED;
     extern const char *SHARED_LIBS;
-    extern const char *SHLEXT;
-    extern const char *SHLEXT_VER;
     extern const char *SH_LD;
     extern const char *SH_LDFLAGS;
     extern const char *STATIC_LIBS;

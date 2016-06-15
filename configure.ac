@@ -2005,22 +2005,11 @@ fi
 CPICFLAG=-fPIC
 CXXPICFLAG=-fPIC
 FPICFLAG=-fPIC
-SHLEXT=so
-SHLLIB="${SHLEXT}"
-SHLBIN=
-SHLEXT_VER="${SHLEXT}.${version}"
-SHLLIB_VER="${SHLLIB}.${version}"
-SHLBIN_VER="${SHLBIN}.${version}"
-LIBPRE=lib
-SHLPRE=lib
-SHLLIBPRE=lib
-SHLBINPRE=lib
 SH_LD="${CXX}"
 SH_LDFLAGS=-shared
 DL_LD="${SH_LD}"
 DL_LDFLAGS="${SH_LDFLAGS}"
 MKOCTFILE_DL_LDFLAGS="${DL_LDFLAGS}"
-SONAME_FLAGS=
 NO_OCT_FILE_STRIP=false
 TEMPLATE_AR="${AR}"
 TEMPLATE_ARFLAGS="$ARFLAGS"
@@ -2059,27 +2048,15 @@ case $canonical_host_type in
         FPICFLAG=
       ;;
     esac
-    SHLEXT=dylib
-    SHLLIB="${SHLEXT}"
-    SHLEXT_VER="${version}.${SHLEXT}"
-    SHLLIB_VER="${version}.${SHLLIB}"
     NO_OCT_FILE_STRIP=true
-    SONAME_FLAGS='-install_name ${octlibdir}/$@'
     library_path_var=DYLD_LIBRARY_PATH
   ;;
   *-*-cygwin*)
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
-    LIBPRE=lib
-    SHLPRE=cyg
-    SHLBINPRE=cyg
-    SHLEXT=dll
-    SHLLIB=dll.a
-    SHLBIN=dll
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    SONAME_FLAGS='-Wl,--out-implib=$(patsubst ${SHLPRE}%,${LIBPRE}%,$@).a'
     ldpreloadsep=":"
   ;;
   *-*-mingw*)
@@ -2088,13 +2065,6 @@ case $canonical_host_type in
       CPICFLAG=
       CXXPICFLAG=
       FPICFLAG=
-      SHLEXT=dll
-      SHLLIB=lib
-      SHLBIN=dll
-      LIBPRE=
-      SHLPRE=
-      SHLLIBPRE=
-      SHLBINPRE=
       SH_LDFLAGS="-shared"
       if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
         DL_LDFLAGS="$DL_LDFLAGS -g"
@@ -2112,12 +2082,8 @@ case $canonical_host_type in
       CPICFLAG=
       CXXPICFLAG=
       FPICFLAG=
-      SHLEXT=dll
-      SHLLIB=dll.a
-      SHLBIN=dll
       DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
       SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-      SONAME_FLAGS='-Wl,--out-implib=$@.a'
       library_path_var=PATH
     fi
   ;;
@@ -2127,13 +2093,6 @@ case $canonical_host_type in
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
-    SHLEXT=dll
-    SHLLIB=lib
-    SHLBIN=dll
-    LIBPRE=
-    SHLPRE=
-    SHLLIBPRE=
-    SHLBINPRE=
     SH_LDFLAGS="-shared"
     if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
       DL_LDFLAGS="$DL_LDFLAGS -g"
@@ -2149,10 +2108,8 @@ case $canonical_host_type in
   ;;
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
-    SONAME_FLAGS='-Wl,-soname -Wl,$@'
   ;;
   i[[3456]]86-*-sco3.2v5*)
-    SONAME_FLAGS='-Wl,-h -Wl,$@'
     SH_LDFLAGS=-G
   ;;
   rs6000-ibm-aix* | powerpc-ibm-aix*)
@@ -2167,7 +2124,6 @@ case $canonical_host_type in
     else
       FPICFLAG=+Z
     fi
-    SHLEXT=sl
     SH_LDFLAGS="-shared -fPIC"
     library_path_var=SHLIB_PATH
   ;;
@@ -2222,22 +2178,11 @@ esac
 AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
 AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
 AC_MSG_NOTICE([defining CXXPICFLAG to be $CXXPICFLAG])
-AC_MSG_NOTICE([defining SHLEXT to be $SHLEXT])
-AC_MSG_NOTICE([defining SHLLIB to be $SHLLIB])
-AC_MSG_NOTICE([defining SHLBIN to be $SHLBIN])
-AC_MSG_NOTICE([defining SHLEXT_VER to be $SHLEXT_VER])
-AC_MSG_NOTICE([defining SHLLIB_VER to be $SHLLIB_VER])
-AC_MSG_NOTICE([defining SHLBIN_VER to be $SHLBIN_VER])
-AC_MSG_NOTICE([defining LIBPRE to be $LIBPRE])
-AC_MSG_NOTICE([defining SHLPRE to be $SHLPRE])
-AC_MSG_NOTICE([defining SHLLIBPRE to be $SHLLIBPRE])
-AC_MSG_NOTICE([defining SHLBINPRE to be $SHLBINPRE])
 AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
 AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
 AC_MSG_NOTICE([defining DL_LD to be $DL_LD])
 AC_MSG_NOTICE([defining DL_LDFLAGS to be $DL_LDFLAGS])
 AC_MSG_NOTICE([defining MKOCTFILE_DL_LDFLAGS to be $MKOCTFILE_DL_LDFLAGS])
-AC_MSG_NOTICE([defining SONAME_FLAGS to be $SONAME_FLAGS])
 AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
 AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
@@ -2250,22 +2195,11 @@ AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
 AC_SUBST(CXXPICFLAG)
-AC_SUBST(SHLEXT)
-AC_SUBST(SHLLIB)
-AC_SUBST(SHLBIN)
-AC_SUBST(SHLEXT_VER)
-AC_SUBST(SHLLIB_VER)
-AC_SUBST(SHLBIN_VER)
-AC_SUBST(LIBPRE)
-AC_SUBST(SHLPRE)
-AC_SUBST(SHLLIBPRE)
-AC_SUBST(SHLBINPRE)
 AC_SUBST(SH_LD)
 AC_SUBST(SH_LDFLAGS)
 AC_SUBST(DL_LD)
 AC_SUBST(DL_LDFLAGS)
 AC_SUBST(MKOCTFILE_DL_LDFLAGS)
-AC_SUBST(SONAME_FLAGS)
 AC_SUBST(NO_OCT_FILE_STRIP)
 AC_SUBST(TEMPLATE_AR)
 AC_SUBST(TEMPLATE_ARFLAGS)
@@ -2302,9 +2236,6 @@ AC_ARG_ENABLE([link-all-dependencies],
    esac],
   [link_all_deps=no])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
-
-LIBEXT=a
-AC_SUBST(LIBEXT)
 
 ## Dynamic linking is now enabled only if we are building shared
 ## libs and some API for dynamic linking has been detected.
@@ -2376,8 +2307,8 @@ if test $SHARED_LIBS = yes; then
   LIBOCTINTERP="-loctinterp"
   LIBOCTAVE="-loctave"
 else
-  LIBOCTINTERP="${top_builddir}/libinterp/liboctinterp.${LIBEXT}"
-  LIBOCTAVE="${top_builddir}/liboctave/liboctave.${LIBEXT}"
+  LIBOCTINTERP="${top_builddir}/libinterp/liboctinterp.a"
+  LIBOCTAVE="${top_builddir}/liboctave/liboctave.a"
 fi
 
 AC_SUBST(LD_CXX)

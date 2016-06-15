@@ -71,9 +71,9 @@ static std::string help_msg =
 "                          INFODIR                OCTINCLUDEDIR\n"
 "                          INFOFILE               OCTLIBDIR\n"
 "                          LIBDIR                 PREFIX\n"
-"                          LIBEXECDIR             SHLEXT\n"
-"                          LOCALAPIARCHLIBDIR     STARTUPFILEDIR\n"
-"                          LOCALAPIFCNFILEDIR     VERSION\n"
+"                          LIBEXECDIR             STARTUPFILEDIR\n"
+"                          LOCALAPIARCHLIBDIR     VERSION\n"
+"                          LOCALAPIFCNFILEDIR\n"
 "                          LOCALAPIOCTFILEDIR\n"
 "\n"
 "  -v, --version         Print the Octave version number.\n"
@@ -120,7 +120,6 @@ initialize (void)
   vars["OCTFILEDIR"] = subst_octave_home (%OCTAVE_OCTFILEDIR%);
   vars["OCTINCLUDEDIR"] = subst_octave_home (%OCTAVE_OCTINCLUDEDIR%);
   vars["OCTLIBDIR"] = subst_octave_home (%OCTAVE_OCTLIBDIR%);
-  vars["SHLEXT"] = subst_octave_home (%OCTAVE_SHLEXT%);
   vars["STARTUPFILEDIR"] = subst_octave_home (%OCTAVE_STARTUPFILEDIR%);
 }
 

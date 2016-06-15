@@ -60,7 +60,6 @@ prefix="@prefix@"
 startupfiledir="@startupfiledir@"
 api_version="@OCTAVE_API_VERSION@"
 OCTAVE_RELEASE=""
-SHLEXT="@SHLEXT@"
 texi_macros_file="@texi_macros_file@"
 version="@PACKAGE_VERSION@"
 
@@ -106,6 +105,5 @@ $SED \
   -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
   -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
-  -e "s|%OCTAVE_SHLEXT%|\"${SHLEXT}\"|" \
   -e "s|%OCTAVE_TEXI_MACROS_FILE%|\"${texi_macros_file}\"|" \
   -e "s|%OCTAVE_VERSION%|\"${version}\"|"

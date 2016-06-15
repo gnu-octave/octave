@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} prefdir
+## @deftypefnx {} {} prefdir (1)
 ## @deftypefnx {} {@var{dir} =} prefdir
 ## Return the directory that holds the preferences for Octave.
 ##
@@ -34,6 +35,9 @@
 ## @example
 ## cd (prefdir)
 ## @end example
+##
+## If called with an argument, the preferences directory is created if it
+## doesn't already exist.
 ## @seealso{getpref, setpref, addpref, rmpref, ispref}
 ## @end deftypefn
 
@@ -42,6 +46,12 @@
 function dir = prefdir ()
 
   dir = get_home_directory ();
+
+  if (nargin > 0)
+    if (! exist (dir, "dir"))
+      mkdir (dir);
+    endif
+  endif
 
 endfunction
 

@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-sysdep.h"
 #include "oct-locbuf.h"
-#include "pathlen.h"
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 

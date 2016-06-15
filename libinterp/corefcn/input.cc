@@ -59,7 +59,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"
-#include "pathlen.h"
 #include "pt.h"
 #include "pt-const.h"
 #include "pt-eval.h"

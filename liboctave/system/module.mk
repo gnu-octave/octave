@@ -12,7 +12,6 @@ SYSTEM_INC = \
   liboctave/system/oct-uname.h
 
 NOINSTALL_SYSTEM_INC = \
-  liboctave/system/pathlen.h \
   liboctave/system/syswait.h
 
 SYSTEM_SRC = \

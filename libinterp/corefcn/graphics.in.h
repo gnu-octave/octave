@@ -4357,7 +4357,8 @@ public:
     BEGIN_PROPERTIES (line)
       color_property color , color_property (color_values (0, 0, 0), radio_values ("none"))
       string_property displayname , ""
-      radio_property erasemode , "{normal}|none|xor|background"
+      // FIXME: Remove erasemode property in version 4.6.
+      radio_property erasemode h , "{normal}|none|xor|background"
       // FIXME: interpreter is not a property of Matlab line objects.
       //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
@@ -4464,7 +4465,7 @@ public:
       string_property displayname , ""
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
-      radio_property erasemode , "{normal}|none|xor|background"
+      radio_property erasemode h , "{normal}|none|xor|background"
       array_property extent rG , Matrix (1, 4, 0.0)
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
@@ -4626,7 +4627,7 @@ public:
       array_property cdata u , default_image_cdata ()
       radio_property cdatamapping al , "scaled|{direct}"
       string_property displayname , ""
-      radio_property erasemode , "{normal}|none|xor|background"
+      radio_property erasemode h , "{normal}|none|xor|background"
       row_vector_property xdata mu , Matrix ()
       row_vector_property ydata mu , Matrix ()
       // hidden properties for limit computation
@@ -4896,7 +4897,7 @@ public:
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property edgelighting , "{none}|flat|gouraud|phong"
-      radio_property erasemode , "{normal}|background|xor|none"
+      radio_property erasemode h , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property facelighting , "none|{flat}|gouraud|phong"
@@ -5099,7 +5100,7 @@ public:
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property edgelighting , "{none}|flat|gouraud|phong"
-      radio_property erasemode , "{normal}|none|xor|background"
+      radio_property erasemode h , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
       color_property facecolor , color_property (radio_values ("none|{flat}|interp|texturemap"), color_values (0, 0, 0))
       radio_property facelighting , "none|{flat}|gouraud|phong"
@@ -5269,7 +5270,7 @@ public:
 
     BEGIN_PROPERTIES (hggroup)
       string_property displayname , ""
-      radio_property erasemode , "{normal}|none|xor|background"
+      radio_property erasemode h , "{normal}|none|xor|background"
 
       // hidden properties for limit computation
       row_vector_property alim hr , Matrix ()

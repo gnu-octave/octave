@@ -78,6 +78,10 @@ Summary of important user-visible changes for version 4.2:
     questdlg, and warndlg--now exclusively use Qt for rendering.
     Java based versions have been removed.
 
+ ** The graphics property 'erasemode' has been hidden, and will
+    eventually be removed.  This property has also been removed
+    from Matlab, and was never implemented in Octave.
+
  ** Other new functions added in 4.2:
 
       audioformats

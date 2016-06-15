@@ -24,10 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cstdint>
+
 #include <QApplication>
 #include <QThread>
-
-#include <stdint.h>
 
 #include "Backend.h"
 #include "Logger.h"

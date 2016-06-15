@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_QSCINTILLA)
 
-#include <stdio.h>
-
 #include "marker.h"
 
 

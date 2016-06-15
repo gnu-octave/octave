@@ -26,8 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cerrno>
 #include <cstdlib>
-
-#include <string.h>
+#include <cstring>
 
 // We can't use csignal as kill is not in the std namespace, and picky
 // compiler runtimes will also exclude it from global scope as well.

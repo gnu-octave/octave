@@ -24,8 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-// <cstdint> requires c++11
-#include <stdint.h>
+#include <cstdint>
 
 #include <string>
 #include <vector>

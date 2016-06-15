@@ -81,7 +81,6 @@ object) relevant global values before and after the nested call.
 
 #include <cctype>
 #include <cstring>
-#include <stdint.h>
 
 #include <iostream>
 #include <set>

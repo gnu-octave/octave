@@ -25,8 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <float.h>
-
 #include "schur.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"

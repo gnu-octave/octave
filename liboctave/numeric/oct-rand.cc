@@ -24,10 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cstdint>
+
 #include <map>
 #include <vector>
-
-#include <stdint.h>
 
 #include "data-conv.h"
 #include "f77-fcn.h"

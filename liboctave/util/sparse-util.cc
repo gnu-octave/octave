@@ -25,8 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstdio>
+
 #include "lo-error.h"
 #include "oct-sparse.h"
 #include "sparse-util.h"

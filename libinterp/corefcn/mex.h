@@ -66,8 +66,6 @@ typedef int bool;
 
 #define mxMAXNAME 64
 
-#include <stdint.h>
-
 #include "mexproto.h"
 
 #if defined (__cplusplus)

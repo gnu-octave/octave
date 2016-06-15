@@ -227,25 +227,13 @@ void w32_raise_sigint (void)
 #  define BADSIG (void (*)(int))-1
 #endif
 
-// The following is a workaround for an apparent bug in GCC 4.1.2 and
-// possibly earlier versions.  See Octave bug report #30685 for details.
-#if defined (__GNUC__)
-#  if ! (__GNUC__ > 4 \
-         || (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 \
-                               || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 2))))
-#    undef GNULIB_NAMESPACE
-#    define GNULIB_NAMESPACE
-#    warning "disabling GNULIB_NAMESPACE for signal functions -- consider upgrading to a current version of GCC"
-#  endif
-#endif
-
 #define BLOCK_SIGNAL(sig, nvar, ovar) \
   do \
     { \
-      GNULIB_NAMESPACE::sigemptyset (&nvar); \
-      GNULIB_NAMESPACE::sigaddset (&nvar, sig); \
-      GNULIB_NAMESPACE::sigemptyset (&ovar); \
-      GNULIB_NAMESPACE::sigprocmask (SIG_BLOCK, &nvar, &ovar); \
+      gnulib::sigemptyset (&nvar); \
+      gnulib::sigaddset (&nvar, sig); \
+      gnulib::sigemptyset (&ovar); \
+      gnulib::sigprocmask (SIG_BLOCK, &nvar, &ovar); \
     } \
   while (0)
 
@@ -254,7 +242,7 @@ void w32_raise_sigint (void)
 #endif
 
 #define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
-#define UNBLOCK_CHILD(ovar) GNULIB_NAMESPACE::sigprocmask (SIG_SETMASK, &ovar, 0)
+#define UNBLOCK_CHILD(ovar) gnulib::sigprocmask (SIG_SETMASK, &ovar, 0)
 
 // Called from octave_quit () to actually do something about the signals
 // we have caught.
@@ -345,7 +333,7 @@ my_friendly_exit (const char *sig_name, int sig_number,
         {
           octave_set_signal_handler (sig_number, SIG_DFL);
 
-          GNULIB_NAMESPACE::raise (sig_number);
+          gnulib::raise (sig_number);
         }
     }
 }
@@ -376,10 +364,10 @@ octave_set_signal_handler (int sig, sig_handler *handler,
     act.sa_flags |= SA_RESTART;
 #endif
 
-  GNULIB_NAMESPACE::sigemptyset (&act.sa_mask);
-  GNULIB_NAMESPACE::sigemptyset (&oact.sa_mask);
+  gnulib::sigemptyset (&act.sa_mask);
+  gnulib::sigemptyset (&oact.sa_mask);
 
-  GNULIB_NAMESPACE::sigaction (sig, &act, &oact);
+  gnulib::sigaction (sig, &act, &oact);
 
   return oact.sa_handler;
 }

@@ -3,6 +3,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/base64-wrappers.h \
   liboctave/wrappers/canonicalize-file-name-wrapper.h \
   liboctave/wrappers/fcntl-wrappers.h \
+  liboctave/wrappers/filepos-wrappers.h \
   liboctave/wrappers/fpucw-wrapper.h \
   liboctave/wrappers/gen-tempname-wrapper.h \
   liboctave/wrappers/hash-wrappers.h \
@@ -27,6 +28,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/base64-wrappers.c \
   liboctave/wrappers/canonicalize-file-name-wrapper.c \
   liboctave/wrappers/fcntl-wrappers.c \
+  liboctave/wrappers/filepos-wrappers.c \
   liboctave/wrappers/fpucw-wrapper.c \
   liboctave/wrappers/gen-tempname-wrapper.c \
   liboctave/wrappers/hash-wrappers.c \

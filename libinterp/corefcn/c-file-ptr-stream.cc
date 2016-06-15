@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "filepos-wrappers.h"
+
 #include "c-file-ptr-stream.h"
 
 #if ! defined (SEEK_SET)
@@ -113,9 +115,9 @@ c_file_ptr_buf::seekoff (std::streamoff offset,
 {
   if (f)
     {
-      gnulib::fseeko (f, offset, seekdir_to_whence (dir));
+      octave_fseeko_wrapper (f, offset, seekdir_to_whence (dir));
 
-      return gnulib::ftello (f);
+      return octave_ftello_wrapper (f);
     }
   else
     return 0;
@@ -126,9 +128,9 @@ c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
   if (f)
     {
-      gnulib::fseeko (f, offset, SEEK_SET);
+      octave_fseeko_wrapper (f, offset, SEEK_SET);
 
-      return gnulib::ftello (f);
+      return octave_ftello_wrapper (f);
     }
   else
     return 0;
@@ -167,13 +169,13 @@ c_file_ptr_buf::buf_close (void)
 int
 c_file_ptr_buf::seek (off_t offset, int origin)
 {
-  return f ? gnulib::fseeko (f, offset, origin) : -1;
+  return f ? octave_fseeko_wrapper (f, offset, origin) : -1;
 }
 
 off_t
 c_file_ptr_buf::tell (void)
 {
-  return f ? gnulib::ftello (f) : -1;
+  return f ? octave_ftello_wrapper (f) : -1;
 }
 
 int

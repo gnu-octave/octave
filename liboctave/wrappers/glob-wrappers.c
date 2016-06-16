@@ -61,7 +61,7 @@ octave_glob_num_matches (void *glob_info)
   return glob_info ? ((glob_t *) glob_info)->gl_pathc : 0;
 }
 
-const char * const *
+char **
 octave_glob_match_list (void *glob_info)
 {
   return glob_info ? ((glob_t *) glob_info)->gl_pathv : 0;

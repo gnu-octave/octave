@@ -39,7 +39,7 @@ octave_glob_wrapper (const char *pattern, int flags, void *glob_info);
 
 extern int octave_glob_num_matches (void *glob_info);
 
-extern const char * const *octave_glob_match_list (void *glob_info);
+extern char **octave_glob_match_list (void *glob_info);
 
 extern void octave_globfree_wrapper (void *glob_info);
 

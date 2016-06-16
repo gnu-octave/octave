@@ -39,7 +39,9 @@ ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
-  btn->setText (Utils::fromStdString (up.get_string_string ()));
+  QString str = Utils::fromStdString (up.get_string_string ());
+  str.replace ("&", "&&");
+  btn->setText (str);
   if (btn->isCheckable () || up.style_is ("togglebutton"))
     {
       btn->setCheckable (true);
@@ -67,8 +69,12 @@ ButtonControl::update (int pId)
   switch (pId)
     {
     case uicontrol::properties::ID_STRING:
-      btn->setText (Utils::fromStdString (up.get_string_string ()));
-      break;
+      {
+        QString str = Utils::fromStdString (up.get_string_string ());
+        str.replace ("&", "&&");
+        btn->setText (str);
+        break;
+      }
 
     case uicontrol::properties::ID_VALUE:
       m_blockCallback = true;

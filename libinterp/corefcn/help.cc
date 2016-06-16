@@ -59,7 +59,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
-#include "syswait.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"

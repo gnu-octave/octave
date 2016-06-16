@@ -13,6 +13,7 @@ SRC_DIR_CPPFLAGS = \
   -I$(srcdir)/liboctave/numeric \
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
+  -Iliboctave/wrappers -I$(srcdir)/liboctave/wrappers \
   -Ilibinterp -I$(srcdir)/libinterp \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/src \
@@ -57,13 +58,15 @@ endif
 
 OCTAVE_CORE_LIBS = \
   libinterp/liboctinterp.la \
-  liboctave/liboctave.la
+  liboctave/liboctave.la \
+  libgnu/libgnu.la
 
 nodist_src_octave_SOURCES = src/main.cc
 
 src_octave_SOURCES = src/display-available.c
 
 src_octave_LDADD = \
+  liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la \
   $(X11_LIBS) \
   $(CARBON_LIBS) \
@@ -135,7 +138,8 @@ src_mkoctfile_SOURCES =
 
 nodist_src_mkoctfile_SOURCES = src/mkoctfile.cc
 
-src_mkoctfile_LDADD = libgnu/libgnu.la $(LIBS)
+src_mkoctfile_LDADD = \
+  libgnu/libgnu.la $(LIBS)
 
 src_mkoctfile_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \

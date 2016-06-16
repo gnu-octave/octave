@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
+#include "oct-syscalls.h"
 #include "quit.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
@@ -72,7 +73,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "sighandlers.h"
 #include "sysdep.h"
-#include "syswait.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -1031,8 +1031,8 @@ run_command_and_return_output (const std::string& cmd_str)
 
   int cmd_status = cmd->close ();
 
-  if (octave_wait::ifexited (cmd_status))
-    cmd_status = octave_wait::exitstatus (cmd_status);
+  if (octave::sys::wifexited (cmd_status))
+    cmd_status = octave::sys::wexitstatus (cmd_status);
   else
     cmd_status = 127;
 
@@ -1190,8 +1190,8 @@ command shell that is started to run the command.\n\
       // status of the command.  Otherwise, return 127 as a
       // failure code.
 
-      if (octave_wait::ifexited (status))
-        status = octave_wait::exitstatus (status);
+      if (octave::sys::wifexited (status))
+        status = octave::sys::wexitstatus (status);
 
       retval(0) = status;
     }

@@ -66,6 +66,28 @@ namespace octave
     extern OCTAVE_API pid_t waitpid (pid_t, int *status, int);
     extern OCTAVE_API pid_t waitpid (pid_t, int *status, int, std::string&);
 
+    extern OCTAVE_API int wcontinue (void);
+
+    extern OCTAVE_API int wcoredump (int status);
+
+    extern OCTAVE_API bool wifcontinued (int status);
+
+    extern OCTAVE_API bool wifexited (int status);
+
+    extern OCTAVE_API bool wifsignaled (int status);
+
+    extern OCTAVE_API bool wifstopped (int status);
+
+    extern OCTAVE_API int wexitstatus (int status);
+
+    extern OCTAVE_API int wnohang (void);
+
+    extern OCTAVE_API int wstopsig (int status);
+
+    extern OCTAVE_API int wtermsig (int status);
+    
+    extern OCTAVE_API int wuntraced (void);
+
     extern OCTAVE_API int kill (pid_t, int);
     extern OCTAVE_API int kill (pid_t, int, std::string&);
 

@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-popen2.h"
 #include "str-vec.h"
 #include "unistd-wrappers.h"
+#include "wait-wrappers.h"
 
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
@@ -216,16 +217,78 @@ namespace octave
       pid_t retval = -1;
       msg = "";
 
-#if defined (HAVE_WAITPID)
-      retval = ::octave_waitpid (pid, status, options);
+      retval = octave_waitpid_wrapper (pid, status, options);
 
       if (retval < 0)
         msg = gnulib::strerror (errno);
-#else
-      msg = NOT_SUPPORTED ("waitpid");
-#endif
 
       return retval;
+    }
+
+    int
+    wcontinue (void)
+    {
+      return octave_wcontinue_wrapper ();
+    }
+
+    int
+    wcoredump (int status)
+    {
+      return octave_wcoredump_wrapper (status);
+    }
+
+    bool
+    wifcontinued (int status)
+    {
+      return octave_wifcontinued_wrapper (status);
+    }
+
+    bool
+    wifexited (int status)
+    {
+      return octave_wifexited_wrapper (status);
+    }
+
+    bool
+    wifsignaled (int status)
+    {
+      return octave_wifsignaled_wrapper (status);
+    }
+
+    bool
+    wifstopped (int status)
+    {
+      return octave_wifstopped_wrapper (status);
+    }
+
+    int
+    wexitstatus (int status)
+    {
+      return octave_wexitstatus_wrapper (status);
+    }
+
+    int
+    wnohang (void)
+    {
+      return octave_wnohang_wrapper ();
+    }
+
+    int
+    wstopsig (int status)
+    {
+      return octave_wstopsig_wrapper (status);
+    }
+
+    int
+    wtermsig (int status)
+    {
+      return octave_wtermsig_wrapper (status);
+    }
+
+    int
+    wuntraced (void)
+    {
+      return octave_wuntraced_wrapper ();
     }
 
     int

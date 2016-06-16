@@ -41,18 +41,6 @@ octave_strcasecmp (const char *s1, const char *s2);
 OCTAVE_API int
 octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
-OCTAVE_API pid_t
-octave_waitpid (pid_t pid, int *status, int options);
-
-OCTAVE_API int octave_wifexited (int status);
-OCTAVE_API int octave_wexitstatus (int status);
-OCTAVE_API int octave_wifsignaled (int status);
-OCTAVE_API int octave_wtermsig (int status);
-OCTAVE_API int octave_wcoredump (int status);
-OCTAVE_API int octave_wifstopped (int status);
-OCTAVE_API int octave_wstopsig (int status);
-OCTAVE_API int octave_wifcontinued (int status);
-
 #if defined (__cplusplus)
 }
 #endif

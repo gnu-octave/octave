@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "oct-env.h"
+#include "oct-syscalls.h"
 #include "singleton-cleanup.h"
 
 #include "defaults.h"
@@ -108,7 +109,7 @@ pager_event_handler (pid_t pid, int status)
 
   if (pid > 0)
     {
-      if (octave_wait::ifexited (status) || octave_wait::ifsignaled (status))
+      if (octave::sys::wifexited (status) || octave::sys::wifsignaled (status))
         {
           // Avoid warning() since that will put us back in the pager,
           // which would be bad news.

@@ -11,9 +11,6 @@ SYSTEM_INC = \
   liboctave/system/oct-time.h \
   liboctave/system/oct-uname.h
 
-NOINSTALL_SYSTEM_INC = \
-  liboctave/system/syswait.h
-
 SYSTEM_SRC = \
   liboctave/system/dir-ops.cc \
   liboctave/system/file-ops.cc \
@@ -25,8 +22,7 @@ SYSTEM_SRC = \
   liboctave/system/oct-passwd.cc \
   liboctave/system/oct-syscalls.cc \
   liboctave/system/oct-time.cc \
-  liboctave/system/oct-uname.cc \
-  $(NOINSTALL_SYSTEM_INC)
+  liboctave/system/oct-uname.cc
 
 noinst_LTLIBRARIES += liboctave/system/libsystem.la
 

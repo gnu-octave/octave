@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "lo-error.h"
-
 /* This gives us a better chance of finding a prototype for strptime
    on some systems.  */
 
@@ -38,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <time.h>
 
 #include "lo-cutils.h"
-#include "syswait.h"
+#include "lo-error.h"
 
 OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,
@@ -57,130 +55,4 @@ OCTAVE_API int
 octave_strncasecmp (const char *s1, const char *s2, size_t n)
 {
   return strncasecmp (s1, s2, n);
-}
-
-OCTAVE_API pid_t
-octave_waitpid (pid_t pid, int *status, int options)
-{
-  return WAITPID (pid, status, options);
-}
-
-static inline void
-warn_missing_wait_macro (const char *id, int status)
-{
-  (*current_liboctave_warning_handler)
-    ("%s always returns false in this version of Octave; status = %d",
-     id, status);
-}
-
-OCTAVE_API int
-octave_wifexited (int status)
-{
-  int retval = 0;
-
-#if defined (WIFEXITED)
-  retval = WIFEXITED (status);
-#else
-  warn_missing_wait_macro ("WIFEXITED", status);
-#endif
-
-  return retval;
-}
-
-OCTAVE_API int
-octave_wexitstatus (int status)
-{
-  int retval = 0;
-
-#if defined (WEXITSTATUS)
-  retval = WEXITSTATUS (status);
-#else
-  warn_missing_wait_macro ("WEXITSTATUS", status);
-#endif
-
-  return retval;
-}
-
-OCTAVE_API int
-octave_wifsignaled (int status)
-{
-  int retval = 0;
-
-#if defined (WIFSIGNALED)
-  retval = WIFSIGNALED (status);
-#else
-  warn_missing_wait_macro ("WIFSIGNALED", status);
-#endif
-
-  return retval;
-}
-
-OCTAVE_API int
-octave_wtermsig (int status)
-{
-  int retval = 0;
-
-#if defined (WTERMSIG)
-  retval = WTERMSIG (status);
-#else
-  warn_missing_wait_macro ("WTERMSIG", status);
-#endif
-
-  return retval;
-}
-
-OCTAVE_API int
-octave_wcoredump (int status)
-{
-  int retval = 0;
-
-#if defined (WCOREDUMP)
-  retval = WCOREDUMP (status);
-#else
-  warn_missing_wait_macro ("WCOREDUMP", status);
-#endif
-
-  return retval;
-}
-
-OCTAVE_API int
-octave_wifstopped (int status)
-{
-  int retval = 0;
-
-#if defined (WIFSTOPPED)
-  retval = WIFSTOPPED (status);
-#else
-  warn_missing_wait_macro ("WIFSTOPPED", status);
-#endif
-
-  return retval;
-}
-
-OCTAVE_API int
-octave_wstopsig (int status)
-{
-  int retval = 0;
-
-#if defined (WSTOPSIG)
-  retval = WSTOPSIG (status);
-#else
-  warn_missing_wait_macro ("WSTOPSIG", status);
-#endif
-
-  return retval;
-}
-
-OCTAVE_API int
-octave_wifcontinued (int status)
-{
-  int retval = 0;
-
-#if defined (WIFCONTINUED)
-  retval = WIFCONTINUED (status);
-#else
-  warn_missing_wait_macro ("WIFCONTINUED", status);
-#endif
-
-  return retval;
 }

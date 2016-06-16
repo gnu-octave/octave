@@ -38,7 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "oct-syscalls.h"
-#include "syswait.h"
 
 #include "octave.h"
 #include "sighandlers.h"

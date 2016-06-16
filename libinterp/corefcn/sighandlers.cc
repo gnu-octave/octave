@@ -46,7 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "sighandlers.h"
 #include "siglist.h"
 #include "sysdep.h"
-#include "syswait.h"
 #include "toplev.h"
 #include "utils.h"
 #include "variables.h"

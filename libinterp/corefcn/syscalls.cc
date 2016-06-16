@@ -1146,7 +1146,7 @@ true if the child terminated normally.\n\
 
   int status = args(0).xint_value ("WIFEXITED: STATUS must be an integer");
 
-  return ovl (octave_wait::ifexited (status));
+  return ovl (octave::sys::wifexited (status));
 }
 
 DEFUNX ("WEXITSTATUS", FWEXITSTATUS, args, ,
@@ -1164,7 +1164,7 @@ This function should only be employed if @code{WIFEXITED} returned true.\n\
 
   int status = args(0).xint_value ("WEXITSTATUS: STATUS must be an integer");
 
-  return ovl (octave_wait::exitstatus (status));
+  return ovl (octave::sys::wexitstatus (status));
 }
 
 DEFUNX ("WIFSIGNALED", FWIFSIGNALED, args, ,
@@ -1180,7 +1180,7 @@ true if the child process was terminated by a signal.\n\
 
   int status = args(0).xint_value ("WIFSIGNALED: STATUS must be an integer");
 
-  return ovl (octave_wait::ifsignaled (status));
+  return ovl (octave::sys::wifsignaled (status));
 }
 
 DEFUNX ("WTERMSIG", FWTERMSIG, args, ,
@@ -1198,7 +1198,7 @@ This function should only be employed if @code{WIFSIGNALED} returned true.\n\
 
   int status = args(0).xint_value ("WTERMSIG: STATUS must be an integer");
 
-  return ovl (octave_wait::termsig (status));
+  return ovl (octave::sys::wtermsig (status));
 }
 
 DEFUNX ("WCOREDUMP", FWCOREDUMP, args, ,
@@ -1218,7 +1218,7 @@ and is not available on some Unix implementations (e.g., AIX, SunOS).\n\
 
   int status = args(0).xint_value ("WCOREDUMP: STATUS must be an integer");
 
-  return ovl (octave_wait::coredump (status));
+  return ovl (octave::sys::wcoredump (status));
 }
 
 DEFUNX ("WIFSTOPPED", FWIFSTOPPED, args, ,
@@ -1237,7 +1237,7 @@ the child is being traced (see ptrace(2)).\n\
 
   int status = args(0).xint_value ("WIFSTOPPED: STATUS must be an integer");
 
-  return ovl (octave_wait::ifstopped (status));
+  return ovl (octave::sys::wifstopped (status));
 }
 
 DEFUNX ("WSTOPSIG", FWSTOPSIG, args, ,
@@ -1255,7 +1255,7 @@ This function should only be employed if @code{WIFSTOPPED} returned true.\n\
 
   int status = args(0).xint_value ("WSTOPSIG: STATUS must be an integer");
 
-  return ovl (octave_wait::stopsig (status));
+  return ovl (octave::sys::wstopsig (status));
 }
 
 DEFUNX ("WIFCONTINUED", FWIFCONTINUED, args, ,
@@ -1271,7 +1271,7 @@ true if the child process was resumed by delivery of @code{SIGCONT}.\n\
 
   int status = args(0).xint_value ("WIFCONTINUED: STATUS must be an integer");
 
-  return ovl (octave_wait::ifcontinued (status));
+  return ovl (octave::sys::wifcontinued (status));
 }
 
 DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
@@ -1304,7 +1304,7 @@ const_value (const octave_value_list& args, int val)
   return octave_value (val);
 }
 
-DEFUN (F_DUPFD, args, ,
+DEFUNX ("F_DUPFD", FF_DUPFD, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_DUPFD ()\n\
 Return the numerical value to pass to @code{fcntl} to return\n\
@@ -1320,7 +1320,7 @@ a duplicate file descriptor.\n\
   return const_value (args, val);
 }
 
-DEFUN (F_GETFD, args, ,
+DEFUNX ("F_GETFD", FF_GETFD, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_GETFD ()\n\
 Return the numerical value to pass to @code{fcntl} to return\n\
@@ -1336,7 +1336,7 @@ the file descriptor flags.\n\
   return const_value (args, val);
 }
 
-DEFUN (F_GETFL, args, ,
+DEFUNX ("F_GETFL", FF_GETFL, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_GETFL ()\n\
 Return the numerical value to pass to @code{fcntl} to return\n\
@@ -1352,7 +1352,7 @@ the file status flags.\n\
   return const_value (args, val);
 }
 
-DEFUN (F_SETFD, args, ,
+DEFUNX ("F_SETFD", FF_SETFD, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_SETFD ()\n\
 Return the numerical value to pass to @code{fcntl} to set the file\n\
@@ -1368,7 +1368,7 @@ descriptor flags.\n\
   return const_value (args, val);
 }
 
-DEFUN (F_SETFL, args, ,
+DEFUNX ("F_SETFL", FF_SETFL, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} F_SETFL ()\n\
 Return the numerical value to pass to @code{fcntl} to set the file\n\
@@ -1384,7 +1384,7 @@ status flags.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_APPEND, args, ,
+DEFUNX ("O_APPEND", FO_APPEND, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_APPEND ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1401,7 +1401,7 @@ or that may be passed to @code{fcntl} to set the write mode to append.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_ASYNC, args, ,
+DEFUNX ("O_ASYNC", FO_ASYNC, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_ASYNC ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1417,7 +1417,7 @@ returned by @code{fcntl} to indicate asynchronous I/O.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_CREAT, args, ,
+DEFUNX ("O_CREAT", FO_CREAT, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_CREAT ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1434,7 +1434,7 @@ does not exist.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_EXCL, args, ,
+DEFUNX ("O_EXCL", FO_EXCL, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_EXCL ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1450,7 +1450,7 @@ returned by @code{fcntl} to indicate that file locking is used.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_NONBLOCK, args, ,
+DEFUNX ("O_NONBLOCK", FO_NONBLOCK, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_NONBLOCK ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1467,7 +1467,7 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_RDONLY, args, ,
+DEFUNX ("O_RDONLY", FO_RDONLY, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_RDONLY ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1483,7 +1483,7 @@ returned by @code{fcntl} to indicate that a file is open for reading only.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_RDWR, args, ,
+DEFUNX ("O_RDWR", FO_RDWR, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_RDWR ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1500,7 +1500,7 @@ and writing.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_SYNC, args, ,
+DEFUNX ("O_SYNC", FO_SYNC, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_SYNC ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1517,7 +1517,7 @@ I/O.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_TRUNC, args, ,
+DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_TRUNC ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1534,7 +1534,7 @@ truncated when writing.\n\
   return const_value (args, val);
 }
 
-DEFUN (O_WRONLY, args, ,
+DEFUNX ("O_WRONLY", FO_WRONLY, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} O_WRONLY ()\n\
 Return the numerical value of the file status flag that may be\n\
@@ -1550,10 +1550,6 @@ returned by @code{fcntl} to indicate that a file is open for writing only.\n\
   return const_value (args, val);
 }
 
-#if ! defined (WNOHANG)
-#define WNOHANG 0
-#endif
-
 DEFUNX ("WNOHANG", FWNOHANG, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {} {} WNOHANG ()\n\
@@ -1563,12 +1559,8 @@ immediately instead of waiting for a process to exit.\n\
 @seealso{waitpid, WUNTRACED, WCONTINUE}\n\
 @end deftypefn")
 {
-  return const_value (args, WNOHANG);
+  return const_value (args, octave::sys::wnohang ());
 }
-
-#if ! defined (WUNTRACED)
-#define WUNTRACED 0
-#endif
 
 DEFUNX ("WUNTRACED", FWUNTRACED, args, ,
         "-*- texinfo -*-\n\
@@ -1579,12 +1571,8 @@ process has stopped but is not traced via the @code{ptrace} system call\n\
 @seealso{waitpid, WNOHANG, WCONTINUE}\n\
 @end deftypefn")
 {
-  return const_value (args, WUNTRACED);
+  return const_value (args, octave::sys::wuntraced ());
 }
-
-#if ! defined (WCONTINUE)
-#define WCONTINUE 0
-#endif
 
 DEFUNX ("WCONTINUE", FWCONTINUE, args, ,
         "-*- texinfo -*-\n\
@@ -1595,5 +1583,5 @@ child has been resumed by delivery of a @code{SIGCONT} signal.\n\
 @seealso{waitpid, WNOHANG, WUNTRACED}\n\
 @end deftypefn")
 {
-  return const_value (args, WCONTINUE);
+  return const_value (args, octave::sys::wcontinue ());
 }

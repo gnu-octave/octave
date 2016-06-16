@@ -42,6 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "wait-wrappers.h"
+
 #if ! defined (OCTAVE_VERSION)
 #  define OCTAVE_VERSION %OCTAVE_VERSION%
 #endif
@@ -68,10 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <signal.h>
 #include <fcntl.h>
-
-// This is a liboctave header, but it doesn't include any other Octave
-// headers or declare any functions that are defined in liboctave.
-#include "syswait.h"
 
 typedef void sig_handler (int);
 
@@ -571,7 +569,7 @@ main (int argc, char **argv)
 
           while (true)
             {
-              WAITPID (gui_pid, &status, 0);
+              octave_waitpid_wrapper (gui_pid, &status, 0);
 
               if (caught_signal > 0)
                 {
@@ -581,15 +579,15 @@ main (int argc, char **argv)
 
                   kill (gui_pid, sig);
                 }
-              else if (WIFEXITED (status))
+              else if (octave_wifexited_wrapper (status))
                 {
-                  retval = WEXITSTATUS (status);
+                  retval = octave_wexitstatus_wrapper (status);
                   break;
                 }
-              else if (WIFSIGNALLED (status))
+              else if (octave_wifsignaled_wrapper (status))
                 {
                   std::cerr << "octave exited with signal "
-                            << WTERMSIG (status) << std::endl;
+                            << octave_wtermsig_wrapper (status) << std::endl;
                   break;
                 }
             }

@@ -353,9 +353,9 @@ function varargout = ode23 (fun, trange, init, varargin)
   ## Print additional information if option Stats is set
   if (strcmp (odeopts.Stats, "on"))
     havestats = true;
-    nsteps    = solution.cntloop-2;              # cntloop from 2..end
-    nfailed   = (solution.cntcycles-1)-nsteps+1; # cntcycl from 1..end
-    nfevals   = 3 * (solution.cntcycles-1);      # number of ode evaluations
+    nsteps    = solution.cntloop;             # cntloop from 2..end
+    nfailed   = solution.cntcycles - nsteps;  # cntcycl from 1..end
+    nfevals   = 3 * solution.cntcycles + 1;   # number of ode evaluations
     ndecomps  = 0;  # number of LU decompositions
     npds      = 0;  # number of partial derivatives
     nlinsols  = 0;  # no. of solutions of linear systems

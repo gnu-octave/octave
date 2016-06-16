@@ -108,8 +108,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     nn = options.NonNegative;
   endif
 
-  solution.cntloop = 2;
-  solution.cntcycles = 1;
+  solution.cntloop = 0;
+  solution.cntcycles = 0;
   solution.cntsave = 2;
   solution.unhandledtermination = true;
   ireject = 0;
@@ -252,8 +252,6 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
       t_old = t_new;
       x_old = x_new;
       k_vals = new_k_vals;
-
-      solution.cntloop += 1;
 
     else
 

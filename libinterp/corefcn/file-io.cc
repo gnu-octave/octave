@@ -58,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "unistd-wrappers.h"
 
 #include "defun.h"
 #include "errwarn.h"
@@ -126,7 +127,7 @@ cleanup_tmp_files (void)
     {
       std::string filename = tmp_files.top ();
       tmp_files.pop ();
-      gnulib::unlink (filename.c_str ());
+      octave_unlink_wrapper (filename.c_str ());
     }
 }
 

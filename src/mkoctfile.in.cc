@@ -35,24 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
-#include <sys/types.h>
-#include <unistd.h>
-
-// This mess suggested by the autoconf manual.
-
-#include <sys/types.h>
-
-#if defined HAVE_SYS_WAIT_H
-#  include <sys/wait.h>
-#endif
-
-#if ! defined (WIFEXITED)
-#  define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
-#endif
-
-#if ! defined (WEXITSTATUS)
-#  define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
-#endif
+#include "unistd-wrappers.h"
+#include "wait-wrappers.h"
 
 static std::map<std::string, std::string> vars;
 
@@ -364,8 +348,8 @@ run_command (const std::string& cmd)
 
   int result = system (cmd.c_str ());
 
-  if (WIFEXITED (result))
-    result = WEXITSTATUS (result);
+  if (octave_wifexited_wrapper (result))
+    result = octave_wexitstatus_wrapper (result);
 
   return result;
 }
@@ -593,7 +577,7 @@ main (int argc, char **argv)
         {
           std::string f = *it, dfile = basename (f, true) + ".d", line;
 
-          gnulib::unlink (dfile.c_str ());
+          octave_unlink_wrapper (dfile.c_str ());
           std::string cmd = vars["CC"] + " "
                             + vars["DEPEND_FLAGS"] + " "
                             + vars["CPPFLAGS"] + " "
@@ -627,7 +611,7 @@ main (int argc, char **argv)
         {
           std::string f = *it, dfile = basename (f, true) + ".d", line;
 
-          gnulib::unlink (dfile.c_str ());
+          octave_unlink_wrapper (dfile.c_str ());
           std::string cmd = vars["CC"] + " "
                             + vars["DEPEND_FLAGS"] + " "
                             + vars["CPPFLAGS"] + " "

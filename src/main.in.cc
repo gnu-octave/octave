@@ -39,9 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
+#include "fcntl-wrappers.h"
+#include "unistd-wrappers.h"
 #include "wait-wrappers.h"
 
 #if ! defined (OCTAVE_VERSION)
@@ -63,13 +62,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "display-available.h"
 #include "shared-fcns.h"
 
-#include <cstdlib>
-
 #if (defined (HAVE_OCTAVE_QT_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
 
 #include <signal.h>
-#include <fcntl.h>
 
 typedef void sig_handler (int);
 
@@ -228,17 +224,13 @@ have_controlling_terminal (void)
 {
   int retval = false;
 
-#if defined (HAVE_CTERMID)
-  const char *ctty = ctermid (0);
-#else
-  const char *ctty = "/dev/tty";
-#endif
+  const char *ctty = octave_ctermid_wrapper ();
 
-  int fd = gnulib::open (ctty, O_RDWR, 0);
+  int fd = octave_open_wrapper (ctty, octave_o_rdwr_wrapper (), 0);
 
   if (fd >= 0)
     {
-      gnulib::close (fd);
+      octave_close_wrapper (fd);
 
       retval = true;
     }
@@ -400,7 +392,7 @@ octave_exec (const std::string& file, char **argv)
   argv = prepare_spawn (argv);
   return _spawnv (_P_WAIT, file.c_str (), argv);
 #else
-  execv (file.c_str (), argv);
+  octave_execv_wrapper (file.c_str (), argv);
 
   std::cerr << "octave: failed to exec '" << file << "'" << std::endl;
 
@@ -540,7 +532,7 @@ main (int argc, char **argv)
     {
       install_signal_handlers ();
 
-      gui_pid = fork ();
+      gui_pid = octave_fork_wrapper ();
 
       if (gui_pid < 0)
         {
@@ -552,7 +544,7 @@ main (int argc, char **argv)
         {
           // Child.
 
-          if (setsid () < 0)
+          if (octave_setsid_wrapper () < 0)
             {
               std::cerr << "octave: error calling setsid!" << std::endl;
 

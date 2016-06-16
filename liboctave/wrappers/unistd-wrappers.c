@@ -76,10 +76,26 @@ octave_close_wrapper (int fd)
   return close (fd);
 }
 
+const char *
+octave_ctermid_wrapper (void)
+{
+#if defined (HAVE_CTERMID)
+  return ctermid (0);
+#else
+  return "/dev/tty";
+#endif
+}
+
 int
 octave_dup2_wrapper (int fd1, int fd2)
 {
   return dup2 (fd1, fd2);
+}
+
+int
+octave_execv_wrapper (const char *file, char *const *argv)
+{
+  return execv (file, argv);
 }
 
 int
@@ -176,6 +192,12 @@ int
 octave_rmdir_wrapper (const char *nm)
 {
   return rmdir (nm);
+}
+
+pid_t
+octave_setsid_wrapper (void)
+{
+  return setsid ();
 }
 
 int

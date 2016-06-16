@@ -139,6 +139,7 @@ src_mkoctfile_SOURCES =
 nodist_src_mkoctfile_SOURCES = src/mkoctfile.cc
 
 src_mkoctfile_LDADD = \
+  liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la $(LIBS)
 
 src_mkoctfile_CPPFLAGS = \

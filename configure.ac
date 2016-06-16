@@ -2038,8 +2038,10 @@ case $canonical_host_type in
     SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
   ;;
   *-*-darwin*)
-    DL_LDFLAGS="-bundle -bundle_loader ${top_builddir}/libinterp/octave ${LDFLAGS}"
-    MKOCTFILE_DL_LDFLAGS="-bundle -bundle_loader ${bindir}/octave-${version}${EXEEXT}"
+    DL_LDFLAGS="-bundle -bundle_loader ${ac_top_build_prefix}libinterp/octave ${LDFLAGS}"
+    ## Contains variables that are defined and undefined at this point, so use
+    ## appropriate quoting to defer expansion of ${bindir} and ${version}.
+    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
     SH_LDFLAGS="-dynamiclib -single_module ${LDFLAGS}"
     case $canonical_host_type in
       powerpc-*)
@@ -3308,6 +3310,11 @@ AC_CONFIG_COMMANDS_PRE([
   eval man1dir="\"$man1dir\""
   eval man1ext="\"$man1ext\""
   eval infofile="\"$infofile\""
+
+  ## Also expand MKOCTFILE_DL_LDFLAGS, because it may depend on the values
+  ## of variables expanded above.
+
+  eval MKOCTFILE_DL_LDFLAGS="\"$MKOCTFILE_DL_LDFLAGS\""
 ])
 
 ### Do the substitutions in Makefiles and other scripts that

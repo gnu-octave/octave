@@ -7,6 +7,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/filepos-wrappers.h \
   liboctave/wrappers/fpucw-wrapper.h \
   liboctave/wrappers/gen-tempname-wrapper.h \
+  liboctave/wrappers/glob-wrappers.h \
   liboctave/wrappers/hash-wrappers.h \
   liboctave/wrappers/mkostemp-wrapper.h \
   liboctave/wrappers/nanosleep-wrapper.h \
@@ -34,6 +35,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/filepos-wrappers.c \
   liboctave/wrappers/fpucw-wrapper.c \
   liboctave/wrappers/gen-tempname-wrapper.c \
+  liboctave/wrappers/glob-wrappers.c \
   liboctave/wrappers/hash-wrappers.c \
   liboctave/wrappers/mkostemp-wrapper.c \
   liboctave/wrappers/nanosleep-wrapper.c \

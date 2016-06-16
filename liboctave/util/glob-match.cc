@@ -24,10 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <fnmatch.h>
-
 #include "glob-match.h"
 #include "oct-glob.h"
+#include "glob-wrappers.h"
 
 bool
 glob_match::match (const std::string& str) const
@@ -47,13 +46,13 @@ glob_match::opts_to_fnmatch_flags (unsigned int xopts) const
   int retval = 0;
 
   if (xopts & pathname)
-    retval |= FNM_PATHNAME;
+    retval |= octave_fnm_pathname_wrapper ();
 
   if (xopts & noescape)
-    retval |= FNM_NOESCAPE;
+    retval |= octave_fnm_noescape_wrapper ();
 
   if (xopts & period)
-    retval |= FNM_PERIOD;
+    retval |= octave_fnm_period_wrapper ();
 
   return retval;
 }

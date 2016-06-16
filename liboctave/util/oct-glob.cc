@@ -27,11 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 #include <string>
 
-#include <fnmatch.h>
-#include <glob.h>
+#include "glob-wrappers.h"
 
 #include "oct-glob.h"
 #include "file-stat.h"
+#include "unwind-prot.h"
 
 // These functions are defined here and not in glob_match.cc so that we
 // can include the glob.h file from gnulib, which defines glob to
@@ -59,7 +59,8 @@ namespace octave
       const char *cstr = str.c_str ();
 
       for (int i = 0; i < npat; i++)
-        if (::fnmatch (pat(i).c_str (), cstr, fnm_flags) != FNM_NOMATCH)
+        if (octave_fnmatch_wrapper (pat(i).c_str (), cstr, fnm_flags)
+            != octave_fnm_nomatch_wrapper ())
           return true;
 
       return false;
@@ -74,14 +75,18 @@ namespace octave
 
       int k = 0;
 
+      octave::unwind_protect frame;
+
+      void *glob_info = octave_create_glob_info_struct ();
+
+      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+
       for (int i = 0; i < npat; i++)
         {
           std::string xpat = pat(i);
 
           if (! xpat.empty ())
             {
-              glob_t glob_info;
-
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
               std::replace_if (xpat.begin (), xpat.end (),
@@ -89,13 +94,16 @@ namespace octave
                                '/');
 #endif
 
-              int err = gnulib::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
+              int err = octave_glob_wrapper (xpat.c_str (),
+                                             octave_glob_nosort_wrapper (),
+                                             glob_info);
 
               if (! err)
                 {
-                  int n = glob_info.gl_pathc;
+                  int n = octave_glob_num_matches (glob_info);
 
-                  const char * const *matches = glob_info.gl_pathv;
+                  const char * const *matches
+                    = octave_glob_match_list (glob_info);
 
                   // FIXME: we shouldn't have to check to see if
                   // a single match exists, but it seems that glob() won't
@@ -124,7 +132,7 @@ namespace octave
                         }
                     }
 
-                  gnulib::globfree (&glob_info);
+                  octave_globfree_wrapper (glob_info);
                 }
             }
         }

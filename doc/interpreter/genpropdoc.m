@@ -851,9 +851,6 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.doc = "Text for the legend entry corresponding to this line.";
         s.valid = valid_cellstring;
 
-      case "erasemode"
-        s.doc = doc_unused;
-
       case "interpreter"
 
       case "linestyle"
@@ -933,8 +930,6 @@ z data.";
         s.valid = valid_color;
 
       case "editing"
-      case "erasemode"
-        s.doc = doc_unused;
 
       case "extent"
       case "fontangle"
@@ -1015,9 +1010,6 @@ measured in degrees.";
         s.doc = "Text for the legend entry corresponding to this image.";
         s.valid = valid_cellstring;
 
-      case "erasemode"
-        s.doc = doc_unused;
-
       case "xdata"
         s.doc = "Two-element vector @code{[xmin xmax]} specifying the x \
 coordinates of the first and last columns of the image.\n\
@@ -1086,8 +1078,6 @@ of the object are drawn with light and shadow effects.  Supported values are \
 the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
-      case "erasemode"
-        s.doc = doc_unused;
       case "facealpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
         s.valid = valid_scalmat;
@@ -1210,9 +1200,6 @@ of the object are drawn with light and shadow effects.  Supported values are \
 @qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
 the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
-
-      case "erasemode"
-        s.doc = doc_unused;
 
       case "facealpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
@@ -1505,8 +1492,8 @@ function s = getstructure (objname, base = [])
 
   ## Build a default object to extract its properties list and default values.
   if (strcmp (objname, "base"))
-    ## Base properties are extracted from hggroup that only have 2 additional
-    ## regular (non-hidden) properties, "displayname" and "erasemode".
+    ## Base properties are extracted from hggroup that only have 1 additional
+    ## regular (non-hidden) property, "displayname".
     h = hggroup ();
   elseif (strcmp (objname, "root"))
     h = 0;
@@ -1554,7 +1541,7 @@ function s = getstructure (objname, base = [])
   s = struct (args{:});
 
   if (strcmp (objname, "base"))
-    s = rmfield (s, {"displayname", "erasemode"});
+    s = rmfield (s, "displayname");
   endif
 
   if (isfigure (hf))

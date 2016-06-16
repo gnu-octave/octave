@@ -101,8 +101,8 @@ function retval = ver (package = "")
     else
       lst = pkg ("list", package);
       if (isempty (lst))
-        retval = struct ("Name", "", "Version", [],
-                         "Release", [], "Date", []);
+        retval = struct ("Name", {}, "Version", {},
+                         "Release", {}, "Date", {});
       else
         retval = struct ("Name", lst{1}.name, "Version", lst{1}.version,
                          "Release", [], "Date", lst{1}.date);
@@ -131,4 +131,8 @@ endfunction
 %!   assert (isfield (result, "Release"), true);
 %!   assert (isfield (result, "Date"), true);
 %! endfor
+
+%!test
+%! result = ver ("%_an_unknown_package_%");
+%! assert (isempty (result), true);
 

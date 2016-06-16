@@ -19,6 +19,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/strftime-wrapper.h \
   liboctave/wrappers/strmode-wrapper.h \
   liboctave/wrappers/strptime-wrapper.h \
+  liboctave/wrappers/time-wrappers.h \
   liboctave/wrappers/uname-wrapper.h \
   liboctave/wrappers/unistd-wrappers.h \
   liboctave/wrappers/unsetenv-wrapper.h \
@@ -47,6 +48,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/strftime-wrapper.c \
   liboctave/wrappers/strmode-wrapper.c \
   liboctave/wrappers/strptime-wrapper.c \
+  liboctave/wrappers/time-wrappers.c \
   liboctave/wrappers/uname-wrapper.c \
   liboctave/wrappers/unistd-wrappers.c \
   liboctave/wrappers/unsetenv-wrapper.c \

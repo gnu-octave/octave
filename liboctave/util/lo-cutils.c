@@ -24,19 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-/* This gives us a better chance of finding a prototype for strptime
-   on some systems.  */
-
-#if ! defined (_XOPEN_SOURCE)
-#  define _XOPEN_SOURCE 1
-#endif
-
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "lo-cutils.h"
-#include "lo-error.h"
 
 OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,

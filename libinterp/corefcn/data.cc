@@ -28,11 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <sys/types.h>
-#include <sys/times.h>
-
-#if defined (HAVE_SYS_RESOURCE_H)
-#  include <sys/resource.h>
-#endif
 
 #include <cfloat>
 #include <ctime>
@@ -68,14 +63,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "pager.h"
 #include "xnorm.h"
-
-#if ! defined (CLOCKS_PER_SEC)
-#  if defined (CLK_TCK)
-#    define CLOCKS_PER_SEC CLK_TCK
-#  else
-#    error "no definition for CLOCKS_PER_SEC!"
-#  endif
-#endif
 
 #if ! defined (HAVE_HYPOTF) && defined (HAVE__HYPOTF)
 #  define hypotf _hypotf
@@ -6340,50 +6327,14 @@ CPU time used is nonzero.\n\
 @end deftypefn")
 {
   if (args.length () != 0)
-    warning ("cputime: ignoring extra arguments");
+    print_usage ();
 
-  double usr = 0.0;
-  double sys = 0.0;
+  octave::sys::cpu_time cpu_tm;
 
-#if defined (HAVE_GETRUSAGE)
+  double usr = cpu_tm.user ();
+  double sys = cpu_tm.system ();
 
-  struct rusage ru;
-
-  getrusage (RUSAGE_SELF, &ru);
-
-  usr = static_cast<double> (ru.ru_utime.tv_sec) +
-        static_cast<double> (ru.ru_utime.tv_usec) * 1e-6;
-
-  sys = static_cast<double> (ru.ru_stime.tv_sec) +
-        static_cast<double> (ru.ru_stime.tv_usec) * 1e-6;
-
-#else
-
-  struct tms t;
-
-  times (&t);
-
-  unsigned long ticks;
-  unsigned long seconds;
-  unsigned long fraction;
-
-  ticks = t.tms_utime + t.tms_cutime;
-  fraction = ticks % CLOCKS_PER_SEC;
-  seconds = ticks / CLOCKS_PER_SEC;
-
-  usr = static_cast<double> (seconds) + static_cast<double>(fraction) /
-        static_cast<double>(CLOCKS_PER_SEC);
-
-  ticks = t.tms_stime + t.tms_cstime;
-  fraction = ticks % CLOCKS_PER_SEC;
-  seconds = ticks / CLOCKS_PER_SEC;
-
-  sys = static_cast<double> (seconds) + static_cast<double>(fraction) /
-        static_cast<double>(CLOCKS_PER_SEC);
-
-#endif
-
-  return ovl (sys + usr, usr, sys);
+  return ovl (usr + sys, usr, sys);
 }
 
 DEFUN (sort, args, nargout,

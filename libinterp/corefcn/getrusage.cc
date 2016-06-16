@@ -24,40 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <sys/time.h>
-#include <sys/times.h>
-#include <sys/types.h>
-
-#if defined (HAVE_SYS_RESOURCE_H)
-#  include <sys/resource.h>
-#endif
-
-#if defined (HAVE_SYS_PARAM_H)
-#  include <sys/param.h>
-#endif
+#include "oct-time.h"
 
 #include "defun.h"
 #include "oct-map.h"
-#include "sysdep.h"
 #include "ov.h"
 #include "ovl.h"
-#include "utils.h"
-
-#if ! defined (HZ)
-#  if defined (CLK_TCK)
-#    define HZ CLK_TCK
-#  elif defined (USG)
-#    define HZ 100
-#  else
-#    define HZ 60
-#  endif
-#endif
-
-#if ! defined (RUSAGE_SELF)
-#  define RUSAGE_SELF 0
-#endif
-
-// System resource functions.
 
 DEFUN (getrusage, , ,
        "-*- texinfo -*-\n\
@@ -122,87 +94,37 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 @end table\n\
 @end deftypefn")
 {
-  octave_scalar_map m;
-  octave_scalar_map tv_tmp;
+  octave_scalar_map ru_map;
+  octave_scalar_map tv_map;
 
-  // FIXME: maybe encapsulate all of this in a liboctave class
-#if defined (HAVE_GETRUSAGE)
+  octave::sys::resource_usage rusage;
 
-  struct rusage ru;
+  octave::sys::cpu_time cpu = rusage.cpu ();
 
-  getrusage (RUSAGE_SELF, &ru);
+  tv_map.assign ("sec", cpu.user_sec ());
+  tv_map.assign ("usec", cpu.user_usec ());
+  ru_map.assign ("utime", octave_value (tv_map));
 
-  tv_tmp.assign ("sec", static_cast<double> (ru.ru_utime.tv_sec));
-  tv_tmp.assign ("usec", static_cast<double> (ru.ru_utime.tv_usec));
-  m.assign ("utime", octave_value (tv_tmp));
+  tv_map.assign ("sec", cpu.system_sec ());
+  tv_map.assign ("usec", cpu.system_usec ());
+  ru_map.assign ("stime", octave_value (tv_map));
 
-  tv_tmp.assign ("sec", static_cast<double> (ru.ru_stime.tv_sec));
-  tv_tmp.assign ("usec", static_cast<double> (ru.ru_stime.tv_usec));
-  m.assign ("stime", octave_value (tv_tmp));
+  ru_map.assign ("maxrss", static_cast<double> (rusage.maxrss ()));
+  ru_map.assign ("ixrss", static_cast<double> (rusage.ixrss ()));
+  ru_map.assign ("idrss", static_cast<double> (rusage.idrss ()));
+  ru_map.assign ("isrss", static_cast<double> (rusage.isrss ()));
+  ru_map.assign ("minflt", static_cast<double> (rusage.minflt ()));
+  ru_map.assign ("majflt", static_cast<double> (rusage.majflt ()));
+  ru_map.assign ("nswap", static_cast<double> (rusage.nswap ()));
+  ru_map.assign ("inblock", static_cast<double> (rusage.inblock ()));
+  ru_map.assign ("oublock", static_cast<double> (rusage.oublock ()));
+  ru_map.assign ("msgsnd", static_cast<double> (rusage.msgsnd ()));
+  ru_map.assign ("msgrcv", static_cast<double> (rusage.msgrcv ()));
+  ru_map.assign ("nsignals", static_cast<double> (rusage.nsignals ()));
+  ru_map.assign ("nvcsw", static_cast<double> (rusage.nvcsw ()));
+  ru_map.assign ("nivcsw", static_cast<double> (rusage.nivcsw ()));
 
-#if ! defined (RUSAGE_TIMES_ONLY)
-  m.assign ("maxrss", static_cast<double> (ru.ru_maxrss));
-  m.assign ("ixrss", static_cast<double> (ru.ru_ixrss));
-  m.assign ("idrss", static_cast<double> (ru.ru_idrss));
-  m.assign ("isrss", static_cast<double> (ru.ru_isrss));
-  m.assign ("minflt", static_cast<double> (ru.ru_minflt));
-  m.assign ("majflt", static_cast<double> (ru.ru_majflt));
-  m.assign ("nswap", static_cast<double> (ru.ru_nswap));
-  m.assign ("inblock", static_cast<double> (ru.ru_inblock));
-  m.assign ("oublock", static_cast<double> (ru.ru_oublock));
-  m.assign ("msgsnd", static_cast<double> (ru.ru_msgsnd));
-  m.assign ("msgrcv", static_cast<double> (ru.ru_msgrcv));
-  m.assign ("nsignals", static_cast<double> (ru.ru_nsignals));
-  m.assign ("nvcsw", static_cast<double> (ru.ru_nvcsw));
-  m.assign ("nivcsw", static_cast<double> (ru.ru_nivcsw));
-#endif
-
-#else
-
-  struct tms t;
-
-  times (&t);
-
-  unsigned long ticks;
-  unsigned long seconds;
-  unsigned long fraction;
-
-  ticks = t.tms_utime + t.tms_cutime;
-  fraction = ticks % HZ;
-  seconds = ticks / HZ;
-
-  tv_tmp.assign ("sec", static_cast<double> (seconds));
-  tv_tmp.assign ("usec", static_cast<double> (fraction * 1e6 / HZ));
-  m.assign ("utime", octave_value (tv_tmp));
-
-  ticks = t.tms_stime + t.tms_cstime;
-  fraction = ticks % HZ;
-  seconds = ticks / HZ;
-
-  tv_tmp.assign ("sec", static_cast<double> (seconds));
-  tv_tmp.assign ("usec", static_cast<double> (fraction * 1e6 / HZ));
-  m.assign ("stime", octave_value (tv_tmp));
-
-  double tmp = lo_ieee_nan_value ();
-
-  m.assign ("maxrss", tmp);
-  m.assign ("ixrss", tmp);
-  m.assign ("idrss", tmp);
-  m.assign ("isrss", tmp);
-  m.assign ("minflt", tmp);
-  m.assign ("majflt", tmp);
-  m.assign ("nswap", tmp);
-  m.assign ("inblock", tmp);
-  m.assign ("oublock", tmp);
-  m.assign ("msgsnd", tmp);
-  m.assign ("msgrcv", tmp);
-  m.assign ("nsignals", tmp);
-  m.assign ("nvcsw", tmp);
-  m.assign ("nivcsw", tmp);
-
-#endif
-
-  return ovl (m);
+  return ovl (ru_map);
 }
 
 /*

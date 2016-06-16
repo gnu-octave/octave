@@ -28,8 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <ctime>
 
-#include <sys/time.h>
-
 #include "lo-error.h"
 #include "lo-math.h"
 #include "lo-utils.h"
@@ -37,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "strftime-wrapper.h"
 #include "strptime-wrapper.h"
+#include "time-wrappers.h"
 
 namespace octave
 {
@@ -92,12 +91,7 @@ namespace octave
     void
     time::stamp (void)
     {
-      struct ::timeval tp;
-
-      gnulib::gettimeofday (&tp, 0);
-
-      ot_unix_time = tp.tv_sec;
-      ot_usec = tp.tv_usec;
+      octave_gettimeofday_wrapper (&ot_unix_time, &ot_usec);
     }
 
     // From the mktime() manual page:
@@ -311,6 +305,28 @@ namespace octave
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       delete [] ps;
 #endif
+    }
+
+    void
+    cpu_time::stamp (void)
+    {
+      octave_cpu_time (&m_usr_sec, &m_sys_sec, &m_usr_usec, &m_sys_usec);
+    }
+
+    void
+    resource_usage::stamp (void)
+    {
+      time_t usr_sec, sys_sec;
+      long usr_usec, sys_usec;
+
+      octave_getrusage_wrapper (&usr_sec, &sys_sec, &usr_usec,
+                                &sys_usec, &m_maxrss, &m_ixrss,
+                                &m_idrss, &m_isrss, &m_minflt,
+                                &m_majflt, &m_nswap, &m_inblock,
+                                &m_oublock, &m_msgsnd, &m_msgrcv,
+                                &m_nsignals, &m_nvcsw, &m_nivcsw);
+
+      m_cpu = cpu_time (usr_sec, sys_sec, usr_usec, sys_usec);
     }
   }
 }

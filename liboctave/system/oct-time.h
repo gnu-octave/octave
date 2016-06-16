@@ -94,7 +94,7 @@ namespace octave
 
       time_t unix_time (void) const { return ot_unix_time; }
 
-      int usec (void) const { return ot_usec; }
+      long usec (void) const { return ot_usec; }
 
       std::string ctime (void) const;
 
@@ -104,7 +104,7 @@ namespace octave
       time_t ot_unix_time;
 
       // Additional microseconds.
-      int ot_usec;
+      long ot_usec;
     };
 
     inline bool
@@ -362,6 +362,161 @@ namespace octave
       int nchars;
 
       void init (const std::string& str, const std::string& fmt);
+    };
+
+    class
+    OCTAVE_API
+    cpu_time
+    {
+    public:
+
+      friend class resource_usage;
+
+      cpu_time (void)
+        : m_usr_sec (0), m_sys_sec (0), m_usr_usec (0), m_sys_usec (0)
+      {
+        stamp ();
+      }
+
+      cpu_time (const cpu_time& tm)
+        : m_usr_sec (tm.m_usr_sec), m_sys_sec (tm.m_sys_sec),
+          m_usr_usec (tm.m_usr_usec), m_sys_usec (tm.m_sys_usec)
+      { }
+
+      cpu_time& operator = (const cpu_time& tm)
+      {
+        if (&tm != this)
+          {
+            m_usr_sec = tm.m_usr_sec;
+            m_sys_sec = tm.m_sys_sec;
+            m_usr_usec = tm.m_usr_usec;
+            m_sys_usec = tm.m_sys_usec;
+          }
+
+        return *this;
+      }
+
+      void stamp (void);
+
+      double user (void) const
+      {
+        return (static_cast<double> (m_usr_sec)
+                + static_cast<double> (m_sys_usec) * 1e-6);
+      }
+
+      double system (void) const
+      {
+        return (static_cast<double> (m_sys_sec)
+                + static_cast<double> (m_sys_usec) * 1e-6);
+      }
+
+      time_t user_sec (void) const { return m_usr_sec; }
+      long user_usec (void) const { return m_usr_usec; }
+
+      time_t system_sec (void) const { return m_sys_sec; }
+      long system_usec (void) const { return m_sys_usec; }
+
+    private:
+
+      time_t m_usr_sec;
+      time_t m_sys_sec;
+
+      long m_usr_usec;
+      long m_sys_usec;
+
+      cpu_time (time_t usr_sec, time_t sys_sec, long usr_usec, long sys_usec)
+        : m_usr_sec (usr_sec), m_sys_sec (sys_sec),
+          m_usr_usec (usr_usec), m_sys_usec (sys_usec)
+      { }
+    };
+
+    class
+    resource_usage
+    {
+    public:
+
+      resource_usage (void)
+        : m_cpu (), m_maxrss (0), m_ixrss (0), m_idrss (0),
+          m_isrss (0), m_minflt (0), m_majflt (0), m_nswap (0),
+          m_inblock (0), m_oublock (0), m_msgsnd (0), m_msgrcv (0),
+          m_nsignals (0), m_nvcsw (0), m_nivcsw (0)
+      {
+        stamp ();
+      }
+
+      resource_usage (const resource_usage& ru)
+        : m_cpu (ru.m_cpu), m_maxrss (ru.m_maxrss), 
+          m_ixrss (ru.m_ixrss), m_idrss (ru.m_idrss),
+          m_isrss (ru.m_isrss), m_minflt (ru.m_minflt),
+          m_majflt (ru.m_majflt), m_nswap (ru.m_nswap),
+          m_inblock (ru.m_inblock), m_oublock (ru.m_oublock),
+          m_msgsnd (ru.m_msgsnd), m_msgrcv (ru.m_msgrcv),
+          m_nsignals (ru.m_nsignals), m_nvcsw (ru.m_nvcsw),
+          m_nivcsw (ru.m_nivcsw)
+      { }
+
+      resource_usage& operator = (const resource_usage& ru)
+      {
+        if (&ru != this)
+          {
+            m_cpu = ru.m_cpu;
+
+            m_maxrss = ru.m_maxrss;
+            m_ixrss = ru.m_ixrss;
+            m_idrss = ru.m_idrss;
+            m_isrss = ru.m_isrss;
+            m_minflt = ru.m_minflt;
+            m_majflt = ru.m_majflt;
+            m_nswap = ru.m_nswap;
+            m_inblock = ru.m_inblock;
+            m_oublock = ru.m_oublock;
+            m_msgsnd = ru.m_msgsnd;
+            m_msgrcv = ru.m_msgrcv;
+            m_nsignals = ru.m_nsignals;
+            m_nvcsw = ru.m_nvcsw;
+            m_nivcsw = ru.m_nivcsw;
+          }
+
+        return *this;
+      }
+
+      void stamp (void);
+
+      cpu_time cpu (void) const { return m_cpu; }
+
+      long maxrss (void) const { return m_maxrss; }
+      long ixrss (void) const { return m_ixrss; }
+      long idrss (void) const { return m_idrss; }
+      long isrss (void) const { return m_isrss; }
+      long minflt (void) const { return m_minflt; }
+      long majflt (void) const { return m_majflt; }
+      long nswap (void) const { return m_nswap; }
+      long inblock (void) const { return m_inblock; }
+      long oublock (void) const { return m_oublock; }
+      long msgsnd (void) const { return m_msgsnd; }
+      long msgrcv (void) const { return m_msgrcv; }
+      long nsignals (void) const { return m_nsignals; }
+      long nvcsw (void) const { return m_nvcsw; }
+      long nivcsw (void) const { return m_nivcsw; }
+
+    private:
+
+      cpu_time m_cpu;
+
+      long m_maxrss;
+      long m_ixrss;
+      long m_idrss;
+      long m_isrss;
+      long m_minflt;
+      long m_majflt;
+      long m_nswap;
+      long m_inblock;
+      long m_oublock;
+      long m_msgsnd;
+      long m_msgrcv;
+      long m_nsignals;
+      long m_nvcsw;
+      long m_nivcsw;
     };
   }
 }

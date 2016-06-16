@@ -830,51 +830,50 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 void
 tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 {
-  octave::unwind_protect frame;
-
-  frame.protect_var (buffer_error_messages);
-  frame.protect_var (Vdebug_on_error);
-  frame.protect_var (Vdebug_on_warning);
-
-  buffer_error_messages++;
-  Vdebug_on_error = false;
-  Vdebug_on_warning = false;
-
-  tree_statement_list *catch_code = cmd.cleanup ();
-
-  // The catch code is *not* added to unwind_protect stack; it doesn't need
-  // to be run on interrupts.
-
-  tree_statement_list *try_code = cmd.body ();
-
   bool execution_error = false;
 
-  if (try_code)
-    {
-      try
-        {
-          in_try_catch++;
-          try_code->accept (*this);
-          in_try_catch--;
-        }
-      catch (const octave_execution_exception&)
-        {
-          recover_from_exception ();
+  { // unwind frame before catch block
+    octave::unwind_protect frame;
 
-          in_try_catch--;          // must be restored before "catch" block
-          execution_error = true;
-        }
-    }
+    frame.protect_var (buffer_error_messages);
+    frame.protect_var (Vdebug_on_error);
+    frame.protect_var (Vdebug_on_warning);
+
+    buffer_error_messages++;
+    Vdebug_on_error = false;
+    Vdebug_on_warning = false;
+
+    // The catch code is *not* added to unwind_protect stack;
+    // it doesn't need to be run on interrupts.
+
+    tree_statement_list *try_code = cmd.body ();
+
+    if (try_code)
+      {
+        try
+          {
+            in_try_catch++;
+            try_code->accept (*this);
+            in_try_catch--;
+          }
+        catch (const octave_execution_exception&)
+          {
+            recover_from_exception ();
+
+            in_try_catch--;          // must be restored before "catch" block
+            execution_error = true;
+          }
+      }
+  // Unwind to let the user print any messages from
+  // errors that occurred in the body of the try_catch statement,
+  // or throw further errors.
+  }
 
   if (execution_error)
     {
+      tree_statement_list *catch_code = cmd.cleanup ();
       if (catch_code)
         {
-          // Set up for letting the user print any messages from errors that
-          // occurred in the body of the try_catch statement.
-
-          buffer_error_messages--;
-
           tree_identifier *expr_id = cmd.identifier ();
           octave_lvalue ult;
 
@@ -889,10 +888,9 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
               err.assign ("stack", last_error_stack ());
 
               ult.assign (octave_value::op_asn_eq, err);
-
             }
 
-              // perform actual "catch" block
+          // perform actual "catch" block
           if (catch_code)
             catch_code->accept (*this);
         }

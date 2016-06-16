@@ -157,13 +157,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cstdio>
-#include <ctime>
-
-#if defined (HAVE_GETTIMEOFDAY)
-#  include <sys/time.h>
-#endif
 
 #include "lo-math.h"
+#include "oct-time.h"
 #include "randmtzig.h"
 
 /* FIXME: may want to suppress X86 if sizeof(long) > 4 */
@@ -275,18 +271,18 @@ oct_init_by_entropy (void)
     }
 
   /* If there isn't enough entropy, gather some from various sources */
+
+  octave::sys::time now;
+
   if (n < MT_N)
-    entropy[n++] = time (0); /* Current time in seconds */
+    entropy[n++] = now.unix_time (); /* Current time in seconds */
+
   if (n < MT_N)
     entropy[n++] = clock ();    /* CPU time used (usec) */
-#if defined (HAVE_GETTIMEOFDAY)
+
   if (n < MT_N)
-    {
-      struct timeval tv;
-      if (gnulib::gettimeofday (&tv, 0) != -1)
-        entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
-    }
-#endif
+    entropy[n++] = now.usec ();   /* Fractional part of current time */
+
   /* Send all the entropy into the initial state vector */
   oct_init_by_array (entropy,n);
 }

@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "file-stat.h"
-#include "statdefs.h"
+#include "stat-wrappers.h"
 #include "strmode-wrapper.h"
 
 namespace octave
@@ -85,71 +85,61 @@ namespace octave
     bool
     base_file_stat::is_blk (mode_t mode)
     {
-#if defined (S_ISBLK)
-      return S_ISBLK (mode);
-#else
-      return false;
-#endif
+      return octave_is_blk_wrapper (mode);
     }
 
     bool
     base_file_stat::is_chr (mode_t mode)
     {
-#if defined (S_ISCHR)
-      return S_ISCHR (mode);
-#else
-      return false;
-#endif
+      return octave_is_chr_wrapper (mode);
     }
 
     bool
     base_file_stat::is_dir (mode_t mode)
     {
-#if defined (S_ISDIR)
-      return S_ISDIR (mode);
-#else
-      return false;
-#endif
+      return octave_is_dir_wrapper (mode);
     }
 
     bool
     base_file_stat::is_fifo (mode_t mode)
     {
-#if defined (S_ISFIFO)
-      return S_ISFIFO (mode);
-#else
-      return false;
-#endif
+      return octave_is_fifo_wrapper (mode);
     }
 
     bool
     base_file_stat::is_lnk (mode_t mode)
     {
-#if defined (S_ISLNK)
-      return S_ISLNK (mode);
-#else
-      return false;
-#endif
+      return octave_is_lnk_wrapper (mode);
     }
 
     bool
     base_file_stat::is_reg (mode_t mode)
     {
-#if defined (S_ISREG)
-      return S_ISREG (mode);
-#else
-      return false;
-#endif
+      return octave_is_reg_wrapper (mode);
     }
 
     bool
     base_file_stat::is_sock (mode_t mode)
     {
-#if defined (S_ISSOCK)
-      return S_ISSOCK (mode);
-#else
-      return false;
-#endif
+      return octave_is_sock_wrapper (mode);
+    }
+
+    bool
+    base_file_stat::have_struct_stat_st_rdev (void)
+    {
+      return ::octave_have_struct_stat_st_rdev ();
+    }
+
+    bool
+    base_file_stat::have_struct_stat_st_blksize (void)
+    {
+      return octave_have_struct_stat_st_blksize ();
+    }
+
+    bool
+    base_file_stat::have_struct_stat_st_blocks (void)
+    {
+      return octave_have_struct_stat_st_blocks ();
     }
 
     std::string
@@ -196,10 +186,18 @@ namespace octave
 
           const char *cname = full_file_name.c_str ();
 
-          struct stat buf;
+          time_t sys_atime, sys_mtime, sys_ctime;
 
-          int status = follow_links
-            ? stat (cname, &buf) : gnulib::lstat (cname, &buf);
+          int status
+            = (follow_links
+               ? octave_stat_wrapper (cname, &m_mode, &m_ino, &m_dev,
+                                      &m_nlink, &m_uid, &m_gid, &m_size,
+                                      &sys_atime, &sys_mtime, &sys_ctime,
+                                      &m_rdev, &m_blksize, &m_blocks)
+               : octave_lstat_wrapper (cname, &m_mode, &m_ino, &m_dev,
+                                       &m_nlink, &m_uid, &m_gid, &m_size,
+                                       &sys_atime, &sys_mtime, &sys_ctime,
+                                       &m_rdev, &m_blksize, &m_blocks));
 
           if (status < 0)
             {
@@ -208,28 +206,9 @@ namespace octave
             }
           else
             {
-              m_mode = buf.st_mode;
-              m_ino = buf.st_ino;
-              m_dev = buf.st_dev;
-              m_nlink = buf.st_nlink;
-              m_uid = buf.st_uid;
-              m_gid = buf.st_gid;
-              m_size = buf.st_size;
-              m_atime = buf.st_atime;
-              m_mtime = buf.st_mtime;
-              m_ctime = buf.st_ctime;
-
-#if defined (HAVE_STRUCT_STAT_ST_RDEV)
-              m_rdev = buf.st_rdev;
-#endif
-
-#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-              m_blksize = buf.st_blksize;
-#endif
-
-#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-              m_blocks = buf.st_blocks;
-#endif
+              m_atime = octave::sys::time (sys_atime);
+              m_mtime = octave::sys::time (sys_mtime);
+              m_ctime = octave::sys::time (sys_ctime);
             }
 
           initialized = true;
@@ -244,9 +223,13 @@ namespace octave
           initialized = false;
           fail = false;
 
-          struct stat buf;
+          time_t sys_atime, sys_mtime, sys_ctime;
 
-          int status = gnulib::fstat (fid, &buf);
+          int status
+            = octave_fstat_wrapper (fid, &m_mode, &m_ino, &m_dev,
+                                    &m_nlink, &m_uid, &m_gid, &m_size,
+                                    &sys_atime, &sys_mtime, &sys_ctime,
+                                    &m_rdev, &m_blksize, &m_blocks);
 
           if (status < 0)
             {
@@ -255,28 +238,9 @@ namespace octave
             }
           else
             {
-              m_mode = buf.st_mode;
-              m_ino = buf.st_ino;
-              m_dev = buf.st_dev;
-              m_nlink = buf.st_nlink;
-              m_uid = buf.st_uid;
-              m_gid = buf.st_gid;
-              m_size = buf.st_size;
-              m_atime = buf.st_atime;
-              m_mtime = buf.st_mtime;
-              m_ctime = buf.st_ctime;
-
-#if defined (HAVE_STRUCT_STAT_ST_RDEV)
-              m_rdev = buf.st_rdev;
-#endif
-
-#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-              m_blksize = buf.st_blksize;
-#endif
-
-#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-              m_blocks = buf.st_blocks;
-#endif
+              m_atime = octave::sys::time (sys_atime);
+              m_mtime = octave::sys::time (sys_mtime);
+              m_ctime = octave::sys::time (sys_ctime);
             }
 
           initialized = true;

@@ -110,6 +110,10 @@ namespace octave
       static bool is_reg (mode_t mode);
       static bool is_sock (mode_t mode);
 
+      static bool have_struct_stat_st_rdev (void);
+      static bool have_struct_stat_st_blksize (void);
+      static bool have_struct_stat_st_blocks (void);
+
       ino_t ino (void) const { return m_ino; }
       dev_t dev (void) const { return m_dev; }
 

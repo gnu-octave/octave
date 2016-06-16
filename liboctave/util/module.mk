@@ -43,8 +43,7 @@ UTIL_INC = \
 
 NOINSTALL_UTIL_INC = \
   liboctave/util/kpse.h \
-  liboctave/util/oct-sparse.h \
-  liboctave/util/statdefs.h
+  liboctave/util/oct-sparse.h
 
 UTIL_C_SRC = \
   liboctave/util/f2c-main.c \

@@ -58,6 +58,12 @@ along with Octave; see the file COPYING.  If not, see
 static octave_scalar_map
 mk_stat_map (const octave::sys::base_file_stat& fs)
 {
+  static bool have_rdev = file_stat::have_struct_stat_st_rdev ();
+  static bool have_blksize = file_stat::have_struct_stat_st_blksize ();
+  static bool have_blocks = file_stat::have_struct_stat_st_blocks ();
+
+  static double nan = octave::numeric_limits<double>::NaN ();
+
   octave_scalar_map m;
 
   m.assign ("dev", static_cast<double> (fs.dev ()));
@@ -67,19 +73,21 @@ mk_stat_map (const octave::sys::base_file_stat& fs)
   m.assign ("nlink", fs.nlink ());
   m.assign ("uid", fs.uid ());
   m.assign ("gid", fs.gid ());
-#if defined (HAVE_STRUCT_STAT_ST_RDEV)
-  m.assign ("rdev", static_cast<double> (fs.rdev ()));
-#endif
+  m.assign ("rdev", have_rdev ? static_cast<double> (fs.rdev ()) : nan);
   m.assign ("size", fs.size ());
   m.assign ("atime", fs.atime ());
   m.assign ("mtime", fs.mtime ());
   m.assign ("ctime", fs.ctime ());
-#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-  m.assign ("blksize", fs.blksize ());
-#endif
-#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-  m.assign ("blocks", fs.blocks ());
-#endif
+
+  if (have_blksize)
+    m.assign ("blksize", fs.blksize ());
+  else
+    m.assign ("blksize", nan);
+  
+  if (have_blocks)
+    m.assign ("blocks", fs.blocks ());
+  else
+    m.assign ("blocks", nan);
 
   return m;
 }

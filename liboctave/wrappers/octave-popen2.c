@@ -32,7 +32,10 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+
+#include <fcntl.h>
 
 #include <sys/types.h>
 #include <unistd.h>

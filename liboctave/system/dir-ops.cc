@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <string>
 
-#include <dirent.h>
+#include "dirent-wrappers.h"
 
 #include "dir-ops.h"
 #include "file-ops.h"
@@ -46,8 +46,6 @@ namespace octave
     bool
     dir_entry::open (const std::string& n)
     {
-      fail = true;
-
       if (! n.empty ())
         name = n;
 
@@ -57,17 +55,15 @@ namespace octave
 
           std::string fullname = octave::sys::file_ops::tilde_expand (name);
 
-          dir = static_cast<void *> (gnulib::opendir (fullname.c_str ()));
+          dir = octave_opendir_wrapper (fullname.c_str ());
 
-          if (dir)
-            fail = false;
-          else
+          if (! dir)
             errmsg = gnulib::strerror (errno);
         }
       else
         errmsg = "dir_entry::open: empty filename";
 
-      return ! fail;
+      return dir != 0;
     }
 
     string_vector
@@ -79,15 +75,10 @@ namespace octave
         {
           std::list<std::string> dirlist;
 
-          struct dirent *dir_ent;
+          char *fname;
 
-          while ((dir_ent = gnulib::readdir (static_cast<DIR *> (dir))))
-            {
-              if (dir_ent)
-                dirlist.push_back (dir_ent->d_name);
-              else
-                break;
-            }
+          while ((fname = octave_readdir_wrapper (dir)))
+            dirlist.push_back (fname);
 
           retval = string_vector (dirlist);
         }
@@ -95,13 +86,20 @@ namespace octave
       return retval;
     }
 
-    void
+    bool
     dir_entry::close (void)
     {
-      if (dir)
-        gnulib::closedir (static_cast<DIR *> (dir));
+      bool retval = (octave_closedir_wrapper (dir) == 0);
 
       dir = 0;
+
+      return retval;
+    }
+
+    unsigned int
+    dir_entry::max_name_length (void)
+    {
+      return octave_name_max_wrapper ();
     }
   }
 }

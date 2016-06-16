@@ -68,13 +68,15 @@ namespace octave
 
       string_vector read (void);
 
-      void close (void);
+      bool close (void);
 
       bool ok (void) const { return dir && ! fail; }
 
       operator bool () const { return ok (); }
 
       std::string error (void) const { return ok () ? "" : errmsg; }
+
+      static unsigned int max_name_length (void);
 
     private:
 

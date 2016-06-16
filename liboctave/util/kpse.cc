@@ -40,9 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-// Needed for NAME_MAX.
-#include <dirent.h>
-
+#include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "kpse.h"
@@ -69,23 +67,6 @@ along with Octave; see the file COPYING.  If not, see
 #define ENV_SEP octave::directory_path::path_sep_char ()
 #define ENV_SEP_STRING octave::directory_path::path_sep_str ()
 #define IS_ENV_SEP(ch) octave::directory_path::is_path_sep (ch)
-
-// Define NAME_MAX, the maximum length of a single component in a
-// filename.  No such limit may exist, or may vary depending on the
-// filesystem.  We don't use this value to create a character string, we
-// only truncate given file names to this length if attempts to get info
-// about the file fail with errno == ENAMETOOLONG.
-
-// Most likely the system will truncate filenames if it is not POSIX,
-// and so we can use the BSD value here.
-
-#if ! defined (_POSIX_NAME_MAX)
-#  define _POSIX_NAME_MAX 255
-#endif
-
-#if ! defined (NAME_MAX)
-#  define NAME_MAX _POSIX_NAME_MAX
-#endif
 
 // If NO_DEBUG is defined (not recommended), skip all this.
 #if ! defined (NO_DEBUG)
@@ -164,7 +145,7 @@ kpse_truncate_filename (const std::string& name)
           /* At a directory delimiter, reset component length.  */
           c_len = 0;
         }
-      else if (c_len > NAME_MAX)
+      else if (c_len > dir_entry::max_name_length ())
         {
           /* If past the max for a component, ignore this character.  */
           continue;

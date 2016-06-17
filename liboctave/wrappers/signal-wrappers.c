@@ -35,8 +35,24 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "signal-wrappers.h"
 
+int
+octave_kill_wrapper (pid_t pid, int signum)
+{
+  return kill (pid, signum);
+}
+
 char *
 octave_strsignal_wrapper (int signum)
 {
   return strsignal (signum);
+}
+
+bool
+octave_have_kill (void)
+{
+#if defined (HAVE_KILL)
+  return true;
+#else
+  return false;
+#endif
 }

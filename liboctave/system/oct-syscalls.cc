@@ -28,16 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 #include <cstring>
 
-// We can't use csignal as kill is not in the std namespace, and picky
-// compiler runtimes will also exclude it from global scope as well.
-
-#include <signal.h>
-
 #include "fcntl-wrappers.h"
 #include "lo-utils.h"
 #include "lo-sysdep.h"
 #include "oct-syscalls.h"
 #include "octave-popen2.h"
+#include "signal-wrappers.h"
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 #include "wait-wrappers.h"
@@ -306,14 +302,15 @@ namespace octave
 
       int status = -1;
 
-#if defined (HAVE_KILL)
-      status = ::kill (pid, sig);
+      if (octave_have_kill ())
+        {
+          status = octave_kill_wrapper (pid, sig);
 
-      if (status < 0)
-        msg = gnulib::strerror (errno);
-#else
-      msg = NOT_SUPPORTED ("kill");
-#endif
+          if (status < 0)
+            msg = gnulib::strerror (errno);
+        }
+      else
+        msg = NOT_SUPPORTED ("kill");
 
       return status;
     }

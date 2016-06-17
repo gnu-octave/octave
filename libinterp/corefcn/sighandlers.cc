@@ -1005,7 +1005,7 @@ OCL_REP::wait (void)
         {
           int status;
 
-          if (octave::sys::waitpid (pid, &status, WNOHANG) > 0)
+          if (octave::sys::waitpid (pid, &status, octave::sys::wnohang ()) > 0)
             {
               oc.have_status = 1;
 

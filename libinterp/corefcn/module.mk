@@ -102,13 +102,9 @@ JIT_SRC = \
   libinterp/corefcn/jit-ir.cc \
   libinterp/corefcn/pt-jit.cc
 
-C_COREFCN_SRC = \
-  libinterp/corefcn/siglist.c
-
 NOINSTALL_COREFCN_INC = \
   libinterp/corefcn/oct-hdf5.h \
-  libinterp/corefcn/oct-opengl.h \
-  libinterp/corefcn/siglist.h
+  libinterp/corefcn/oct-opengl.h
 
 ## oct-tex-parser.h is in the SRC list so that it will be distributed
 ## but not installed.
@@ -257,7 +253,6 @@ COREFCN_SRC = \
   libinterp/corefcn/xpow.cc \
   libinterp/corefcn/zfstream.cc \
   $(JIT_SRC) \
-  $(C_COREFCN_SRC) \
   $(NOINSTALL_COREFCN_INC)
 
 COREFCN_FT2_DF = \

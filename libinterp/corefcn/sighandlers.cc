@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-syscalls.h"
 #include "quit.h"
 #include "singleton-cleanup.h"
+#include "signal-wrappers.h"
 
 #include "debug.h"
 #include "defun.h"
@@ -44,7 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-bp.h"
 #include "pt-eval.h"
 #include "sighandlers.h"
-#include "siglist.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "utils.h"
@@ -374,7 +374,7 @@ octave_set_signal_handler (int sig, sig_handler *handler,
 static void
 generic_sig_handler (int sig)
 {
-  my_friendly_exit (strsignal (sig), sig);
+  my_friendly_exit (octave_strsignal_wrapper (sig), sig);
 }
 
 // Handle SIGCHLD.
@@ -517,9 +517,9 @@ static void
 sigint_handler (int sig)
 {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-  w32_interrupt_manager::user_abort (strsignal (sig), sig);
+  w32_interrupt_manager::user_abort (octave_strsignal_wrapper (sig), sig);
 #else
-  user_abort (strsignal (sig), sig);
+  user_abort (octave_strsignal_wrapper (sig), sig);
 #endif
 }
 

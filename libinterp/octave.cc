@@ -72,7 +72,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "procstream.h"
 #include "sighandlers.h"
-#include "siglist.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -800,8 +799,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (traditional)
     maximum_braindamage ();
-
-  init_signals ();
 
   octave_ieee_init ();
 

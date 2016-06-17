@@ -15,6 +15,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/octave-popen2.h \
   liboctave/wrappers/putenv-wrapper.h \
   liboctave/wrappers/set-program-name-wrapper.h \
+  liboctave/wrappers/signal-wrappers.h \
   liboctave/wrappers/stat-wrappers.h \
   liboctave/wrappers/strftime-wrapper.h \
   liboctave/wrappers/strmode-wrapper.h \
@@ -44,6 +45,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/octave-popen2.c \
   liboctave/wrappers/putenv-wrapper.c \
   liboctave/wrappers/set-program-name-wrapper.c \
+  liboctave/wrappers/signal-wrappers.c \
   liboctave/wrappers/stat-wrappers.c \
   liboctave/wrappers/strftime-wrapper.c \
   liboctave/wrappers/strmode-wrapper.c \

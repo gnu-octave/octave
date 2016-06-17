@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 John W. Eaton
+Copyright (C) 2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,29 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_siglist_h)
-#define octave_siglist_h 1
+#if ! defined (octave_signal_wrappers_h)
+#define octave_signal_wrappers_h 1
 
-#include "octave-config.h"
-
-#if defined (__cplusplus)
-extern "C"
-{
+#if defined __cplusplus
+extern "C" {
 #endif
 
-/* This is borrowed from Emacs.  */
+extern char *octave_strsignal_wrapper (int signum);
 
-#if ! defined (HAVE_DECL_SYS_SIGLIST)
-extern char *sys_siglist[];
-#endif
-
-extern void init_signals (void);
-
-#if ! defined (HAVE_STRSIGNAL)
-extern char *strsignal (int);
-#endif
-
-#if defined (__cplusplus)
+#if defined __cplusplus
 }
 #endif
 

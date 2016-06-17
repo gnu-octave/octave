@@ -176,6 +176,9 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   update (figure::properties::ID_KEYPRESSFCN);
   update (figure::properties::ID_KEYRELEASEFCN);
 
+  // modal style
+  update (figure::properties::ID_WINDOWSTYLE);
+
   // Visibility
   update (figure::properties::ID_VISIBLE);
 
@@ -477,6 +480,24 @@ Figure::update (int pId)
         m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
       else
         m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
+      break;
+
+    case figure::properties::ID_WINDOWSTYLE:
+      if (fp.windowstyle_is ("modal"))
+        {
+          bool is_visible = win->isVisible ();
+
+          // if window is already visible, need to hide and reshow it in order to
+          // make it use the modal settings
+          if (is_visible)
+            win->setVisible (false);
+
+          win->setWindowModality (Qt::ApplicationModal);
+          win->setVisible (is_visible);
+        }
+      else
+        win->setWindowModality (Qt::NonModal);
+
       break;
 
     default:

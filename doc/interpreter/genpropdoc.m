@@ -494,7 +494,17 @@ released respectively.  When these callback functions are executed, the \
         s.valid = valid_fcn;
 
       case "windowstyle"
-        s.doc = doc_unused;
+        s.doc = "The window style of a figure.  One of the following values:\n\
+@table @code\n\
+@item normal\n\
+Set the window style as non modal.\n\
+@item modal\n\
+Set the window as modal so that it will stay on top of all normal figures.\n\
+@item docked\n\
+Setting the window style as docked currently does not dock the window.\n\
+@end table\n\
+\n\
+Changing modes of a visible figure may cause the figure to close and reopen.";
 
     endswitch
 

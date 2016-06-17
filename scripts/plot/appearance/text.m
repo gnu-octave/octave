@@ -303,7 +303,7 @@ endfunction
 %!   h = text (0.5, 0.5, "factory");
 %!   assert (get (h, "string"), "factory");
 %!
-%!   ## Test special null ("") string 
+%!   ## Test special null ("") string
 %!   h = text (0.5, 0.5, "");
 %!   assert (get (h, "string"), "");
 %!

@@ -241,7 +241,7 @@ namespace octave
 
       return isnan (x) ? octave::numeric_limits<float>::NaN () : tmp;
     }
-       
+
     template <typename T>
     std::complex<T>
     signum (const std::complex<T>& x)
@@ -550,7 +550,7 @@ OCTAVE_DEPRECATED ("use 'octave::math::signum' instead")
 inline double signum (double x) { return octave::math::signum (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::signum' instead")
 inline float signum (float x) { return octave::math::signum (x); }
-       
+
 template <typename T>
 OCTAVE_DEPRECATED ("use 'octave::math::signum' instead")
 std::complex<T>
@@ -571,7 +571,7 @@ xtrunc (const std::complex<T>& x)
 {
   return octave::math::trunc (x);
 }
-    
+
 OCTAVE_DEPRECATED ("use 'octave::math::fix' instead")
 inline double fix (double x) { return octave::math::fix (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::fix' instead")
@@ -584,7 +584,7 @@ fix (const std::complex<T>& x)
 {
   return octave::math::fix (x);
 }
-    
+
 OCTAVE_DEPRECATED ("use 'octave::math::floor' instead")
 inline double xfloor (double x) { return octave::math::floor (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::floor' instead")

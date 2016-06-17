@@ -60,7 +60,7 @@ extern int octave_o_sync_wrapper (void);
 extern int octave_o_trunc_wrapper (void);
 
 extern int octave_o_wronly_wrapper (void);
-  
+
 #if defined __cplusplus
 }
 #endif

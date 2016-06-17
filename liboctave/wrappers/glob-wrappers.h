@@ -44,7 +44,7 @@ extern char **octave_glob_match_list (void *glob_info);
 extern void octave_globfree_wrapper (void *glob_info);
 
 extern int octave_glob_nosort_wrapper (void);
-  
+
 extern int
 octave_fnmatch_wrapper (const char *pattern, const char *name, int flags);
 

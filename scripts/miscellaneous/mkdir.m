@@ -89,7 +89,7 @@ endfunction
 %!   assert (status);
 %!   assert (isdir (dir));
 %! unwind_protect_cleanup
-%!   confirm_recursive_rmdir (false, "local"); 
+%!   confirm_recursive_rmdir (false, "local");
 %!   rmdir (dir1, "s");
 %! end_unwind_protect
 

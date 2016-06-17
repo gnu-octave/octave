@@ -105,7 +105,7 @@ function restack_axes (h, cf)
     hax = ch(axidx);
     ## Stack the legend associated with this axes on top of the axes itself
     hleg = hax(strcmp (get (hax, "tag"), "legend"));
-    if (any (hleg)) 
+    if (any (hleg))
       ## Get field "handle" from structure stored in "userdata" property
       if (isscalar (hleg))
         hlegaxes = get (hleg, "userdata").handle;
@@ -134,21 +134,21 @@ endfunction
 %!   plot (10:-1:1, "r");
 %!   hleg2 = legend ("hax2");
 %!
-%!   ch = allchild (hf); 
-%!   hax = ch(isaxes (ch)); 
+%!   ch = allchild (hf);
+%!   hax = ch(isaxes (ch));
 %!   assert (find (hax == hax2) < find (hax == hax1));
 %!   assert (find (hax == hleg1) < find (hax == hax1));
 %!   assert (find (hax == hleg2) < find (hax == hax2));
 %!
 %!   axes (hax1);
-%!   ch = allchild (hf); 
-%!   hax = ch(isaxes (ch)); 
+%!   ch = allchild (hf);
+%!   hax = ch(isaxes (ch));
 %!   assert (find (hax == hax2) > find (hax == hax1));
 %!   assert (find (hax == hleg1) < find (hax == hax1));
 %!
 %!   axes (hax2);
-%!   ch = allchild (hf); 
-%!   hax = ch(isaxes (ch)); 
+%!   ch = allchild (hf);
+%!   hax = ch(isaxes (ch));
 %!   assert (find (hax == hax2) < find (hax == hax1));
 %!   assert (find (hax == hleg2) < find (hax == hax2));
 %! unwind_protect_cleanup

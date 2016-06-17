@@ -83,7 +83,7 @@ mk_stat_map (const octave::sys::base_file_stat& fs)
     m.assign ("blksize", fs.blksize ());
   else
     m.assign ("blksize", nan);
-  
+
   if (have_blocks)
     m.assign ("blocks", fs.blocks ());
   else

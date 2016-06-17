@@ -47,7 +47,7 @@
 ## @item inverthardcopy
 ## off
 ##
-## @item menubar 
+## @item menubar
 ## none
 ##
 ## @item numbertitle
@@ -66,7 +66,7 @@
 ## modal
 ##
 ## @end table
-## 
+##
 ##
 ## Multiple property-value pairs may be specified for the dialog object, but
 ## they must appear in pairs.
@@ -112,13 +112,14 @@ function h = dialog (varargin)
     "paperpositionmode", "auto", ...
     "resize", "off", ...
     "toolbar", "none", ...
-    "visible", "on", 
+    "visible", "on",
     "windowstyle", "modal", ...
     varargin{:} );
-    
+
   if (nargout > 0)
     h = tmph;
-  endif 
+  endif
+
 endfunction
 
 

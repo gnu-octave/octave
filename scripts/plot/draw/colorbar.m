@@ -316,7 +316,7 @@ function update_colorbar_clim (hax, d, hi, vert)
       set (hiax, "xlim", cext);
     endif
   endif
-  
+
 endfunction
 
 function update_colorbar_cmap (hf, d, hi, vert, init_sz)

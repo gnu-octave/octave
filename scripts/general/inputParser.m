@@ -260,7 +260,7 @@ classdef inputParser < handle
     CaseSensitive = false;
     FunctionName  = "";
     KeepUnmatched = false;
-    PartialMatching = false; # FIXME: unimplemented (and default should be true) 
+    PartialMatching = false; # FIXME: unimplemented (and default should be true)
     StructExpand    = true;
   endproperties
 

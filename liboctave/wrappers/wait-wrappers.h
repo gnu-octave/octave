@@ -50,7 +50,7 @@ extern bool octave_wifstopped_wrapper (int status);
 extern int octave_wexitstatus_wrapper (int status);
 
 extern int octave_wnohang_wrapper (void);
-  
+
 extern int octave_wstopsig_wrapper (int status);
 
 extern int octave_wtermsig_wrapper (int status);

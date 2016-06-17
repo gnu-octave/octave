@@ -1997,7 +1997,7 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
       //       size = 2;
       //     else if (max_val <= 2147483647L && min_val >= -2147483647L)
       //       size = 4;
-      //   
+      //
 
       // Round nel up to nearest even number of elements.
       // Take into account short tags for 4 byte elements.

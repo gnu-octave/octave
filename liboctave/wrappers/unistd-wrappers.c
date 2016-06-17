@@ -215,7 +215,7 @@ octave_stdout_fileno (void)
 {
   return STDOUT_FILENO;
 }
-  
+
 int
 octave_symlink_wrapper (const char *nm1, const char *nm2)
 {

@@ -799,7 +799,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               hgkid_type = get (hgkid, "type");
               if (any (strcmp (hgkid_type, {"line","patch","surface"})))
                 typ = hgkid_type;
-                hplt = hgkid; 
+                hplt = hgkid;
                 break;
               endif
             endfor

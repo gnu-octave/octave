@@ -85,7 +85,7 @@ namespace octave
     extern OCTAVE_API int wstopsig (int status);
 
     extern OCTAVE_API int wtermsig (int status);
-    
+
     extern OCTAVE_API int wuntraced (void);
 
     extern OCTAVE_API int kill (pid_t, int);

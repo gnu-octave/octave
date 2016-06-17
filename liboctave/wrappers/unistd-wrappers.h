@@ -84,7 +84,7 @@ extern pid_t octave_setsid_wrapper (void);
 extern int octave_stdin_fileno (void);
 
 extern int octave_stdout_fileno (void);
-  
+
 extern int octave_symlink_wrapper (const char *nm1, const char *nm2);
 
 extern int octave_unlink_wrapper (const char *nm);

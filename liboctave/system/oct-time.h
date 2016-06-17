@@ -445,7 +445,7 @@ namespace octave
       }
 
       resource_usage (const resource_usage& ru)
-        : m_cpu (ru.m_cpu), m_maxrss (ru.m_maxrss), 
+        : m_cpu (ru.m_cpu), m_maxrss (ru.m_maxrss),
           m_ixrss (ru.m_ixrss), m_idrss (ru.m_idrss),
           m_isrss (ru.m_isrss), m_minflt (ru.m_minflt),
           m_majflt (ru.m_majflt), m_nswap (ru.m_nswap),

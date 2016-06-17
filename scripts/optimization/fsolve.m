@@ -255,7 +255,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       ## FIXME: Currently, pivoting is mostly useless because the \ operator
       ## cannot exploit the resulting props of the triangular factor.
       ## Unpivoted QR is significantly faster so it doesn't seem right to pivot
-      ## just to get invariance.  Original MINPACK didn't pivot either, 
+      ## just to get invariance.  Original MINPACK didn't pivot either,
       ## at least when qr updating was used.
       [q, r] = qr (fjac, 0);
     endif

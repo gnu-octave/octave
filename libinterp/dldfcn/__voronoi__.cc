@@ -334,7 +334,7 @@ Undocumented internal function.\n\
 #else
 
   octave_unused_parameter (args);
-  
+
   std::string caller
     = (args.length () > 0
        ? args(0).xstring_value ("__voronoi__: CALLER must be a string")

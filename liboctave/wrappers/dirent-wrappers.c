@@ -52,7 +52,7 @@ octave_rewinddir_wrapper (void *dir)
 {
   rewinddir ((DIR *) dir);
 }
-  
+
 int
 octave_closedir_wrapper (void *dir)
 {

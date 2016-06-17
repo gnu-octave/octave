@@ -36,7 +36,7 @@ extern void *octave_opendir_wrapper (const char *dname);
 extern char *octave_readdir_wrapper (void *dir);
 
 extern void octave_rewinddir_wrapper (void *dir);
-  
+
 extern int octave_closedir_wrapper (void *dir);
 
 extern unsigned int octave_name_max_wrapper (void);

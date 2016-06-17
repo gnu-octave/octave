@@ -32,14 +32,14 @@ function retval = ishghandle (h, type = "")
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-  
+
   if (nargin == 2 && (! ischar (type) || ! isrow (type)))
     error ("ishghandle: TYPE must be a string");
   endif
-  
+
   ## Octave has no Simulink equivalent so it is sufficient to call ishandle.
   retval = ishandle (h);
-  
+
   if (nargin == 2 && any (retval))
     typematch = strcmpi (get (h(retval), "type"), type);
     retval(retval) = typematch;

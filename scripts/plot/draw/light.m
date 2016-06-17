@@ -42,7 +42,7 @@
 ## their respective values:
 ##
 ## @table @asis
-## @item @qcode{"Color":} The color of the light object can be passed as an 
+## @item @qcode{"Color":} The color of the light object can be passed as an
 ## RGB-vector (e.g. @qcode{[1 0 0]} for red) or as a string (e.g. @qcode{"r"}
 ## for red).  The default color is white (@qcode{[1 1 1]}).
 ##

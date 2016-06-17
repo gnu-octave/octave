@@ -99,7 +99,7 @@ octave_stat_wrapper (const char *fname, mode_t *mode, ino_t *ino,
   struct stat buf;
 
   int status = stat (fname, &buf);
-    
+
   assign_stat_fields (&buf, mode, ino, dev, nlink, uid, gid, size,
                       atime, mtime, ctime, rdev, blksize, blocks);
 
@@ -116,7 +116,7 @@ octave_lstat_wrapper (const char *lname, mode_t *mode, ino_t *ino,
   struct stat buf;
 
   int status = lstat (lname, &buf);
-    
+
   assign_stat_fields (&buf, mode, ino, dev, nlink, uid, gid, size,
                       atime, mtime, ctime, rdev, blksize, blocks);
 

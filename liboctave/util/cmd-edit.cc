@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "quit.h"
 #include "singleton-cleanup.h"
+#include "strdup-wrapper.h"
 #include "unistd-wrappers.h"
 
 #if defined (USE_READLINE)
@@ -568,7 +569,7 @@ namespace octave
   char *
   gnu_readline::do_completer_word_break_hook ()
   {
-    static char *dir_sep = strdup (" '\"");
+    static char *dir_sep = octave_strdup_wrapper (" '\"");
 
     std::string word;
     std::string line = get_line_buffer ();

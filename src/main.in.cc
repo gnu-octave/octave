@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "fcntl-wrappers.h"
 #include "signal-wrappers.h"
+#include "strdup-wrapper.h"
 #include "unistd-wrappers.h"
 #include "wait-wrappers.h"
 
@@ -236,7 +237,7 @@ prepare_spawn (char **argv)
       const char *string = argv[i];
 
       if (string[0] == '\0')
-        new_argv[i] = strdup ("\"\"");
+        new_argv[i] = octave_strdup_wrapper ("\"\"");
       else if (strpbrk (string, SHELL_SPECIAL_CHARS) != NULL)
         {
           int quote_around = (strpbrk (string, SHELL_SPACE_CHARS) != NULL);

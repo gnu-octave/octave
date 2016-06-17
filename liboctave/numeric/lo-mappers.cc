@@ -88,6 +88,14 @@ namespace octave
     Complex
     acos (const Complex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ACOS)
+      Complex y = std::acos (x);
+
+      if (imag (x) == 0.0 && real (x) > 1.0)
+        return conj (y);
+      else
+        return y;
+#else
       static Complex i (0, 1);
 
       Complex tmp;
@@ -104,11 +112,20 @@ namespace octave
         tmp = 1.0 - x*x;
 
       return -i * log (x + i * sqrt (tmp));
+#endif
     }
 
     FloatComplex
     acos (const FloatComplex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ACOS)
+      FloatComplex y = std::acos (x);
+
+      if (imag (x) == 0.0f && real (x) > 1.0f)
+        return conj (y);
+      else
+        return y;
+#else
       static FloatComplex i (0, 1);
 
       FloatComplex tmp;
@@ -125,11 +142,20 @@ namespace octave
         tmp = 1.0f - x*x;
 
       return -i * log (x + i * sqrt (tmp));
+#endif
     }
 
     Complex
     asin (const Complex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ASIN)
+      Complex y = std::asin (x);
+
+      if (imag (x) == 0.0 && real (x) > 1.0)
+        return conj (y);
+      else
+        return y;
+#else
       static Complex i (0, 1);
 
       Complex tmp;
@@ -146,11 +172,20 @@ namespace octave
         tmp = 1.0 - x*x;
 
       return -i * log (i*x + sqrt (tmp));
+#endif
     }
 
     FloatComplex
     asin (const FloatComplex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ASIN)
+      FloatComplex y = std::asin (x);
+
+      if (imag (x) == 0.0f && real (x) > 1.0f)
+        return conj (y);
+      else
+        return y;
+#else
       static FloatComplex i (0, 1);
 
       FloatComplex tmp;
@@ -167,22 +202,31 @@ namespace octave
         tmp = 1.0f - x*x;
 
       return -i * log (i*x + sqrt (tmp));
+#endif
     }
 
     Complex
     atan (const Complex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ATAN)
+      return std::atan (x);
+#else
       static Complex i (0, 1);
 
       return i * log ((i + x) / (i - x)) / 2.0;
+#endif
     }
 
     FloatComplex
     atan (const FloatComplex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ATAN)
+      return std::atan (x);
+#else
       static FloatComplex i (0, 1);
 
       return i * log ((i + x) / (i - x)) / 2.0f;
+#endif
     }
 
     double log2 (double x) { return std::log2 (x); }

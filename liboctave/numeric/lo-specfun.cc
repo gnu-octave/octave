@@ -229,13 +229,21 @@ namespace octave
     Complex
     acosh (const Complex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ACOSH)
+      return std::acosh (x);
+#else
       return log (x + sqrt (x + 1.0) * sqrt (x - 1.0));
+#endif
     }
 
     FloatComplex
     acosh (const FloatComplex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ACOSH)
+      return std::acosh (x);
+#else
       return log (x + sqrt (x + 1.0f) * sqrt (x - 1.0f));
+#endif
     }
 
     double
@@ -265,13 +273,21 @@ namespace octave
     Complex
     asinh (const Complex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ASINH)
+      return std::asinh (x);
+#else
       return log (x + sqrt (x*x + 1.0));
+#endif
     }
 
     FloatComplex
     asinh (const FloatComplex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ASINH)
+      return std::asinh (x);
+#else
       return log (x + sqrt (x*x + 1.0f));
+#endif
     }
 
     double
@@ -301,13 +317,21 @@ namespace octave
     Complex
     atanh (const Complex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ATANH)
+      return std::atanh (x);
+#else
       return log ((1.0 + x) / (1.0 - x)) / 2.0;
+#endif
     }
 
     FloatComplex
     atanh (const FloatComplex& x)
     {
+#if defined (HAVE_COMPLEX_STD_ATANH)
+      return std::atanh (x);
+#else
       return log ((1.0f + x) / (1.0f - x)) / 2.0f;
+#endif
     }
 
     double

@@ -320,6 +320,34 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
   fi
 ])
 dnl
+dnl Check whether a complex-valued function is available in <complex>.
+dnl Will define HAVE_COMPLEX_STD_FUNC if the function is available in the
+dnl std namespace and is callable on both std::complex<double> and
+dnl std::complex<float>.  The return type of the function is expected to
+dnl be of the same std::complex<T> type.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_COMPLEX], [
+  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
+
+  AC_CACHE_CHECK([for std::$1 in <complex>],
+    [octave_cv_func_complex_std_$ac_safe],
+    [AC_LANG_PUSH(C++)
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <complex>
+        ]], [[
+        std::complex<double> z = std::$1 (std::complex<double> (1.0, 1.0));
+        std::complex<float>  c = std::$1 (std::complex<float>  (1.0, 1.0));
+        ]])],
+      [eval "octave_cv_func_complex_std_$ac_safe=yes"],
+      [eval "octave_cv_func_complex_std_$ac_safe=no"])
+    AC_LANG_POP(C++)
+  ])
+  if eval "test \"`echo '$octave_cv_func_complex_std_'$ac_safe`\" = yes"; then
+    AC_DEFINE(AS_TR_CPP([[HAVE_COMPLEX_STD_][$1]]), 1,
+      [Define to 1 if <complex> provides std::$1(std::complex<T>).])
+  fi
+])
+dnl
 dnl Check whether Qscintilla has version 2.6.0 or later
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?

@@ -2578,6 +2578,15 @@ case $canonical_host_type in
   ;;
 esac
 
+## Look in <complex> for C++ variants of math functions that we need.
+
+OCTAVE_CHECK_FUNC_COMPLEX(acos)
+OCTAVE_CHECK_FUNC_COMPLEX(acosh)
+OCTAVE_CHECK_FUNC_COMPLEX(asin)
+OCTAVE_CHECK_FUNC_COMPLEX(asinh)
+OCTAVE_CHECK_FUNC_COMPLEX(atan)
+OCTAVE_CHECK_FUNC_COMPLEX(atanh)
+
 ## Check for nonstandard, but common math functions, that we need.
 
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list

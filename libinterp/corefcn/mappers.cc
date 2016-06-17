@@ -125,6 +125,11 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 %! assert (acos ([2 0]),  [ival*i, pi/2], 2*eps);
 %! assert (acos ([2 0i]), [ival*i, pi/2], 2*eps);
 
+## Test large magnitude arguments (bug #45507)
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [0, pi, pi/2, pi/2];
+%! assert (real (acos (x)), v);
+
 %!error acos ()
 %!error acos (1, 2)
 */
@@ -163,6 +168,12 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 %! im = single (pi/2);
 %! assert (acosh (single (10i)), re + i*im, 5*eps ("single"));
 %! assert (acosh (single (-10i)), re - i*im, 5*eps ("single"));
+
+## Test large magnitude arguments (bug #45507)
+%!test
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [0, pi, pi/2, -pi/2];
+%! assert (imag (acosh (x)), v);
 
 %!error acosh ()
 %!error acosh (1, 2)
@@ -277,6 +288,11 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 %! assert (asin ([2 0]),  [rval - ival*i, 0], 2*eps);
 %! assert (asin ([2 0i]), [rval - ival*i, 0], 2*eps);
 
+## Test large magnitude arguments (bug #45507)
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [pi/2, -pi/2, 0, -0];
+%! assert (real (asin (x)), v);
+
 %!error asin ()
 %!error asin (1, 2)
 */
@@ -304,6 +320,11 @@ Compute the inverse hyperbolic sine for each element of @var{x}.\n\
 %! v = single ([0, pi/2*i, 0, -pi/2*i]);
 %! x = single ([0, i, 0, -i]);
 %! assert (asinh (x), v,  sqrt (eps ("single")));
+
+## Test large magnitude arguments (bug #45507)
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [0, 0, pi/2, -pi/2];
+%! assert (imag (asinh (x)), v);
 
 %!error asinh ()
 %!error asinh (1, 2)
@@ -337,6 +358,12 @@ Compute the inverse tangent in radians for each element of @var{x}.\n\
 %! x = single ([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
 %! assert (atan (x), v, sqrt (eps ("single")));
 
+## Test large magnitude arguments (bug #44310, bug #45507)
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [pi/2, -pi/2, pi/2, -pi/2];
+%! assert (real (atan (x)), v);
+%! assert (imag (atan (x)), [0, 0, 0, 0], eps);
+
 %!error atan ()
 %!error atan (1, 2)
 */
@@ -364,6 +391,12 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 %! v = single ([0, 0]);
 %! x = single ([0, 0]);
 %! assert (atanh (x), v, sqrt (eps ("single")));
+
+## Test large magnitude arguments (bug #44310, bug #45507)
+%! x = [1, -1, i, -i] .* 1e150;
+%! v = [pi/2, pi/2, pi/2, -pi/2];
+%! assert (imag (atanh (x)), v);
+%! assert (real (atanh (x)), [0, 0, 0, 0], eps);
 
 %!error atanh ()
 %!error atanh (1, 2)

@@ -90,7 +90,7 @@ public:
               {
                 send_quit (props.get___plot_stream__ ());
                 props.set___plot_stream__ (Matrix ());
-                props.set___enhanced__ (false);
+                props.set_graphicssmoothing (false);
               }
             break;
           }

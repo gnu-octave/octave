@@ -684,7 +684,7 @@ opengl_renderer::draw_figure (const figure::properties& props)
 {
   // Initialize OpenGL context
 
-  init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
+  init_gl_context (props.is_graphicssmoothing (), props.get_color_rgb ());
 
 #if defined (HAVE_OPENGL)
 
@@ -710,7 +710,7 @@ opengl_renderer::draw_uipanel (const uipanel::properties& props,
 
   // Initialize OpenGL context
 
-  init_gl_context (figProps.is___enhanced__ (),
+  init_gl_context (figProps.is_graphicssmoothing (),
                    props.get_backgroundcolor_rgb ());
 
   // Draw children
@@ -728,7 +728,7 @@ opengl_renderer::draw_uibuttongroup (const uibuttongroup::properties& props,
 
   // Initialize OpenGL context
 
-  init_gl_context (figProps.is___enhanced__ (),
+  init_gl_context (figProps.is_graphicssmoothing (),
                    props.get_backgroundcolor_rgb ());
 
   // Draw children

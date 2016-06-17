@@ -3382,23 +3382,22 @@ public:
       handle_property currentobject r , graphics_handle ()
       array_property currentpoint r , Matrix (2, 1, 0)
       bool_property dockcontrols , "off"
-      bool_property doublebuffer , "on"
       string_property filename , ""
       bool_property graphicssmoothing , "on"
       bool_property integerhandle S , "on"
       bool_property inverthardcopy , "on"
       callback_property keypressfcn , Matrix ()
       callback_property keyreleasefcn , Matrix ()
-      radio_property menubar , "none|{figure}"
-      double_property mincolormap , 64
+      radio_property menubar , "{figure}|none"
       string_property name , ""
       // FIXME: Need RO property which returns current figure number.
       // double_property number r ,
-      radio_property nextplot , "new|{add}|replacechildren|replace"
+      radio_property nextplot , "{add}|new|replace|replacechildren"
       bool_property numbertitle , "on"
       array_property outerposition s , Matrix (1, 4, -1.0)
-      radio_property paperorientation U , "{portrait}|landscape|rotated"
+      radio_property paperorientation U , "{portrait}|landscape"
       array_property paperposition m , default_figure_paperposition ()
+      // FIXME: Matlab default is "auto", but this messes up hgsave BIST test.
       radio_property paperpositionmode au , "auto|{manual}"
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
@@ -3410,13 +3409,14 @@ public:
       radio_property renderer m , "{opengl}|painters"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
+      // FIXME: resizefcn has been deprecated by Matlab, and 
+      //        replaced with sizechangedfcn
+      //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
-      radio_property selectiontype , "{normal}|open|alt|extend"
-      // FIXME: This is the new name for the resizefcn from Matlab.
-      //        Need to try supporting both for some amount of time.
+      radio_property selectiontype , "{normal}|extend|alt|open"
       callback_property sizechangedfcn , Matrix ()
-      radio_property toolbar , "none|{auto}|figure"
-      radio_property units Su , "inches|centimeters|normalized|points|{pixels}|characters"
+      radio_property toolbar , "{auto}|figure|none"
+      radio_property units Su , "{pixels}|normalized|inches|centimeters|points|characters"
       callback_property windowbuttondownfcn , Matrix ()
       callback_property windowbuttonmotionfcn , Matrix ()
       callback_property windowbuttonupfcn , Matrix ()
@@ -3424,13 +3424,7 @@ public:
       callback_property windowkeyreleasefcn , Matrix ()
       callback_property windowscrollwheelfcn , Matrix ()
       radio_property windowstyle , "{normal}|modal|docked"
-      string_property wvisual m , ""
-      radio_property wvisualmode , "{auto}|manual"
-      string_property xdisplay , ""
-      string_property xvisual m , ""
-      radio_property xvisualmode , "{auto}|manual"
       // Octave-specific properties
-      bool_property __enhanced__ h , "on"
       mutable string_property __gl_extensions__ hr , ""
       mutable string_property __gl_renderer__ hr , ""
       mutable string_property __gl_vendor__ hr , ""
@@ -3442,6 +3436,17 @@ public:
       any_property __plot_stream__ h , Matrix ()
       any_property __rotate_mode__ h , Matrix ()
       any_property __zoom_mode__ h , Matrix ()
+
+      // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
+      //                      xdisplay, xvisual, xvisualmode
+      // FIXME: Remove in version 4.6 
+      bool_property doublebuffer h , "on"
+      double_property mincolormap h , 64
+      string_property wvisual hm , ""
+      radio_property wvisualmode h , "{auto}|manual"
+      string_property xdisplay h , ""
+      string_property xvisual hm , ""
+      radio_property xvisualmode h , "{auto}|manual"
     END_PROPERTIES
 
   protected:

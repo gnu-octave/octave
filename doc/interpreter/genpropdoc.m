@@ -328,19 +328,19 @@ only if the figure's callback @code{windowbuttonmotionfcn} is defined\n\
       case "dockcontrols"
         s.doc = doc_unused;
 
-      case "doublebuffer"
-
       case "filename"
         s.doc = "The filename used when saving the plot figure.";
         s.valid = valid_string;
 
       case "graphicssmoothing"
-        s.doc = doc_unused;
+        s.doc = "Use smoothing techniques to reduce the appearance of jagged lines.";
 
       case "integerhandle"
         s.doc = "Assign the next lowest unused integer as the Figure number.";
 
       case "inverthardcopy"
+        s.doc = "Replace the figure and axes background color with white when printing.";
+
       case "keypressfcn"
         s.valid = valid_fcn;
 
@@ -388,16 +388,17 @@ value in the figure title bar.";
         s.doc = "The value for the @code{papersize}, and @code{paperposition} \
 properties depends upon __prop__.  The horizontal and vertical values for \
 @code{papersize} and @code{paperposition} reverse order \
-when __prop__ is switched between @code{\"portrait\"} and either \
-@code{\"landscape\"} or @code{\"rotated\"}."
+when __prop__ is switched between @code{\"portrait\"} and \
+@code{\"landscape\"}."
 
       case "paperposition"
         s.doc = "Vector @code{[left bottom width height]} defining the \
 position and size of the figure (in @code{paperunits} units) on the printed \
 page.  The position @code{[left bottom]} defines the lower left corner of the \
 figure on the page, and the size is defined by @code{[width height]}.  For \
-output formats not implicity rendered on paper, @code{width} and @code{height} \
-define the size of the image and the position information is ignored.  \
+output formats not implicitly rendered on paper, @code{width} and \
+@code{height} define the size of the image and the position information is \
+ignored.  \
 __modemsg__.";
         s.valid = valid_4elvec;
 
@@ -446,12 +447,14 @@ units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
         s.doc = doc_unused;
 
       case "resizefcn"
+        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead."
         s.valid = valid_fcn;
 
       case "selectiontype"
         ## FIXME: docstring explaining what "{normal}|open|alt|extend" mean.
 
       case "sizechangedfcn"
+        s.doc = "Callback triggered when the figure window size is changed."
         s.valid = valid_fcn;
 
       case "toolbar"
@@ -492,13 +495,6 @@ released respectively.  When these callback functions are executed, the \
 
       case "windowstyle"
         s.doc = doc_unused;
-
-      ## FIXME: Need to deprecate these for 4.2
-      case "wvisual"
-      case "wvisualmode"
-      case "xdisplay"
-      case "xvisual"
-      case "xvisualmode"
 
     endswitch
 

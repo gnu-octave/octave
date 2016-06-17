@@ -82,6 +82,9 @@ Summary of important user-visible changes for version 4.2:
     eventually be removed.  This property has also been removed
     from Matlab, and was never implemented in Octave.
 
+ ** The graphics property 'graphicssmothing' for figures now controls whether
+    anti-aliasing will be use for lines.  The default is "on".
+
  ** Other new functions added in 4.2:
 
       audioformats

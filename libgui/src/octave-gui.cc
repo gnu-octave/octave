@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-syscalls.h"
 
 #include "octave.h"
-#include "sighandlers.h"
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"

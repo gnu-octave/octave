@@ -25,12 +25,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <signal.h>
 #include <setjmp.h>
 
+/* The signal header is just needed for the sig_atomic_t type.  */
 #if defined (__cplusplus)
+#  include <csignal>
 #  include <string>
 extern "C" {
+#else
+#  include <signal.h>
 #endif
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
@@ -66,10 +69,6 @@ OCTAVE_API extern void octave_save_current_context (void *);
 OCTAVE_API extern void octave_restore_current_context (void *);
 
 OCTAVE_NORETURN OCTAVE_API extern void octave_jump_to_enclosing_context (void);
-
-OCTAVE_API extern void octave_save_signal_mask (void);
-
-OCTAVE_API extern void octave_restore_signal_mask (void);
 
 #if defined (__cplusplus)
 class

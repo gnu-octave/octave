@@ -33,12 +33,41 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
+typedef void octave_sig_handler (int);
+
 extern int octave_kill_wrapper (pid_t pid, int signum);
 
 extern char *octave_strsignal_wrapper (int signum);
 
 extern bool octave_have_kill (void);
   
+extern bool octave_get_sig_number (const char *signame, int *signum);
+
+extern octave_sig_handler *
+octave_set_signal_handler_by_name (const char *signame,
+                                   octave_sig_handler *handler,
+                                   bool restart_syscalls);
+
+octave_sig_handler *
+octave_set_signal_handler_internal (int sig, octave_sig_handler *handler,
+                                    bool restart_syscalls);
+
+extern int octave_num_signals (void);
+
+extern void *octave_block_child (void);
+
+extern void octave_unblock_child (void *context);
+
+extern void octave_block_interrupt_signal (void);
+
+extern void octave_unblock_interrupt_signal (void);
+
+extern void octave_save_signal_mask (void);
+
+extern void octave_restore_signal_mask (void);
+
+extern int octave_raise_wrapper (int signum);
+
 #if defined __cplusplus
 }
 #endif

@@ -30,10 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include <pthread.h>
 #endif
 
-#include <sys/types.h>
-#include <signal.h>
+#include "signal-wrappers.h"
 
-#include "sighandlers.h"
 #include "thread-manager.h"
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
@@ -82,7 +80,10 @@ public:
         // all be executed in the wrong thread?  If so, is there any way to
         // prevent that from happening?
 
-        kill (0, SIGINT);
+        int sigint;
+        octave_get_sig_number ("SIGINT", &sigint);
+
+        octave_kill_wrapper (0, sigint);
       }
   }
 
@@ -99,37 +100,16 @@ octave_thread_manager::octave_thread_manager (void)
   : rep (octave_thread_manager::create_rep ())
 { }
 
-static void
-block_or_unblock_signal (int how, int sig)
-{
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
-  // Blocking/unblocking signals at thread level is only supported
-  // on platform with fully compliant POSIX threads. This is not
-  // supported on Win32. Moreover, we have to make sure that SIGINT
-  // handler is not installed before calling AllocConsole: installing
-  // a SIGINT handler internally calls SetConsoleCtrlHandler, which
-  // must be called after AllocConsole to be effective.
-
-  sigset_t signal_mask;
-
-  gnulib::sigemptyset (&signal_mask);
-
-  gnulib::sigaddset (&signal_mask, sig);
-
-  pthread_sigmask (how, &signal_mask, 0);
-#endif
-}
-
 void
 octave_thread_manager::block_interrupt_signal (void)
 {
-  block_or_unblock_signal (SIG_BLOCK, SIGINT);
+  octave_block_interrupt_signal ();
 }
 
 void
 octave_thread_manager::unblock_interrupt_signal (void)
 {
-  block_or_unblock_signal (SIG_UNBLOCK, SIGINT);
+  octave_unblock_interrupt_signal ();
 }
 
 octave_base_thread_manager *

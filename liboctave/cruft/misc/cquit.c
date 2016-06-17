@@ -53,28 +53,6 @@ octave_jump_to_enclosing_context (void)
 #endif
 }
 
-/* Allow us to save the signal mask and then restore it to the most
-   recently saved value.  This is necessary when using the POSIX
-   signal handling interface on some systems calling longjmp out of
-   the signal handler to get to the top level on an interrupt doesn't
-   restore the original signal mask.  Alternatively, we could use
-   sigsetjmp/siglongjmp, but saving and restoring the signal mask
-   ourselves works ok and seems simpler just now.  */
-
-static sigset_t octave_signal_mask;
-
-void
-octave_save_signal_mask (void)
-{
-  sigprocmask (0, 0, &octave_signal_mask);
-}
-
-void
-octave_restore_signal_mask (void)
-{
-  sigprocmask (SIG_SETMASK, &octave_signal_mask, 0);
-}
-
 sig_atomic_t octave_interrupt_immediately = 0;
 
 sig_atomic_t octave_interrupt_state = 0;

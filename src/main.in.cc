@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "fcntl-wrappers.h"
+#include "signal-wrappers.h"
 #include "unistd-wrappers.h"
 #include "wait-wrappers.h"
 
@@ -65,10 +66,6 @@ along with Octave; see the file COPYING.  If not, see
 #if (defined (HAVE_OCTAVE_QT_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
 
-#include <signal.h>
-
-typedef void sig_handler (int);
-
 // Forward signals to the GUI process.
 
 static pid_t gui_pid = 0;
@@ -82,141 +79,65 @@ gui_driver_sig_handler (int sig)
     caught_signal = sig;
 }
 
-static sig_handler *
-octave_set_signal_handler (int sig, sig_handler *handler)
+static void
+gui_driver_set_signal_handler (const char *signame,
+                               octave_sig_handler *handler)
 {
-  struct sigaction act, oact;
-
-  act.sa_handler = handler;
-  act.sa_flags = 0;
-
-  gnulib::sigemptyset (&act.sa_mask);
-  gnulib::sigemptyset (&oact.sa_mask);
-
-  gnulib::sigaction (sig, &act, &oact);
-
-  return oact.sa_handler;
+  octave_set_signal_handler_by_name (signame, handler, false);
 }
 
 static void
 install_signal_handlers (void)
 {
-
-#if defined (SIGINT)
-  octave_set_signal_handler (SIGINT, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGBREAK)
-  octave_set_signal_handler (SIGBREAK, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGABRT)
-  octave_set_signal_handler (SIGABRT, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGALRM)
-  octave_set_signal_handler (SIGALRM, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGBUS)
-  octave_set_signal_handler (SIGBUS, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGINT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGBREAK", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGABRT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGALRM", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGBUS", gui_driver_sig_handler);
 
   // SIGCHLD
   // SIGCLD
   // SIGCONT
 
-#if defined (SIGEMT)
-  octave_set_signal_handler (SIGEMT, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGFPE)
-  octave_set_signal_handler (SIGFPE, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGHUP)
-  octave_set_signal_handler (SIGHUP, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGILL)
-  octave_set_signal_handler (SIGILL, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGEMT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGFPE", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGHUP", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGILL", gui_driver_sig_handler);
 
   // SIGINFO
   // SIGINT
 
-#if defined (SIGIOT)
-  octave_set_signal_handler (SIGIOT, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGLOST)
-  octave_set_signal_handler (SIGLOST, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGPIPE)
-  octave_set_signal_handler (SIGPIPE, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGPOLL)
-  octave_set_signal_handler (SIGPOLL, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGIOT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGLOST", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGPIPE", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGPOLL", gui_driver_sig_handler);
 
   // SIGPROF
   // SIGPWR
 
-#if defined (SIGQUIT)
-  octave_set_signal_handler (SIGQUIT, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGSEGV)
-  octave_set_signal_handler (SIGSEGV, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGQUIT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGSEGV", gui_driver_sig_handler);
 
   // SIGSTOP
 
-#if defined (SIGSYS)
-  octave_set_signal_handler (SIGSYS, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGTERM)
-  octave_set_signal_handler (SIGTERM, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGTRAP)
-  octave_set_signal_handler (SIGTRAP, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGSYS", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGTERM", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGTRAP", gui_driver_sig_handler);
 
   // SIGTSTP
   // SIGTTIN
   // SIGTTOU
   // SIGURG
 
-#if defined (SIGUSR1)
-  octave_set_signal_handler (SIGUSR1, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGUSR2)
-  octave_set_signal_handler (SIGUSR2, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGVTALRM)
-  octave_set_signal_handler (SIGVTALRM, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGIO)
-  octave_set_signal_handler (SIGIO, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGUSR1", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGUSR2", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGVTALRM", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGIO", gui_driver_sig_handler);
 
   // SIGWINCH
 
-#if defined (SIGXCPU)
-  octave_set_signal_handler (SIGXCPU, gui_driver_sig_handler);
-#endif
-
-#if defined (SIGXFSZ)
-  octave_set_signal_handler (SIGXFSZ, gui_driver_sig_handler);
-#endif
-
+  gui_driver_set_signal_handler ("SIGXCPU", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGXFSZ", gui_driver_sig_handler);
 }
 
 static bool
@@ -569,7 +490,7 @@ main (int argc, char **argv)
 
                   caught_signal = -1;
 
-                  kill (gui_pid, sig);
+                  octave_kill_wrapper (gui_pid, sig);
                 }
               else if (octave_wifexited_wrapper (status))
                 {

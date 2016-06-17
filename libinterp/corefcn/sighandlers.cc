@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <csignal>
 #include <cstdlib>
 
 #include <iostream>
@@ -69,7 +70,7 @@ static bool Vsighup_dumps_octave_core = true;
 static bool Vsigterm_dumps_octave_core = true;
 
 // List of signals we have caught since last call to octave_signal_handler.
-static bool octave_signals_caught[NSIG];
+static bool *octave_signals_caught = 0;
 
 // Forward declaration.
 static void user_abort (const char *sig_name, int sig_number);
@@ -173,11 +174,11 @@ private:
     bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
 
     if (is_interrupt_thread)
-      ::raise (SIGINT);
+      octave_raise_wrapper (SIGINT);
     else
       {
         SuspendThread (thread);
-        ::raise (SIGINT);
+        octave_raise_wrapper (SIGINT);
         ResumeThread (thread);
       }
   }
@@ -221,28 +222,6 @@ void w32_raise_sigint (void)
 
 #endif
 
-// Signal handler return type.
-#if ! defined (BADSIG)
-#  define BADSIG (void (*)(int))-1
-#endif
-
-#define BLOCK_SIGNAL(sig, nvar, ovar) \
-  do \
-    { \
-      gnulib::sigemptyset (&nvar); \
-      gnulib::sigaddset (&nvar, sig); \
-      gnulib::sigemptyset (&ovar); \
-      gnulib::sigprocmask (SIG_BLOCK, &nvar, &ovar); \
-    } \
-  while (0)
-
-#if ! defined (SIGCHLD) && defined (SIGCLD)
-#  define SIGCHLD SIGCLD
-#endif
-
-#define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
-#define UNBLOCK_CHILD(ovar) gnulib::sigprocmask (SIG_SETMASK, &ovar, 0)
-
 // Called from octave_quit () to actually do something about the signals
 // we have caught.
 
@@ -252,45 +231,39 @@ octave_signal_handler (void)
   // The list of signals is relatively short, so we will just go
   // linearly through the list.
 
-  for (int i = 0; i < NSIG; i++)
+  static int sigchld;
+  static int sigfpe;
+  static int sigpipe;
+
+  static const bool have_sigchld = octave_get_sig_number ("SIGCHLD", &sigchld);
+  static const bool have_sigfpe = octave_get_sig_number ("SIGFPE", &sigfpe);
+  static const bool have_sigpipe = octave_get_sig_number ("SIGPIPE", &sigpipe);
+
+  for (int i = 0; i < octave_num_signals (); i++)
     {
       if (octave_signals_caught[i])
         {
           octave_signals_caught[i] = false;
 
-          switch (i)
+          if (have_sigchld && i == sigchld)
             {
-#if defined (SIGCHLD)
-            case SIGCHLD:
-              {
-                volatile octave_interrupt_handler saved_interrupt_handler
-                  = octave_ignore_interrupts ();
+              volatile octave_interrupt_handler saved_interrupt_handler
+                = octave_ignore_interrupts ();
 
-                sigset_t set, oset;
+              void *context = octave_block_child ();
 
-                BLOCK_CHILD (set, oset);
+              octave_child_list::wait ();
 
-                octave_child_list::wait ();
+              octave_set_interrupt_handler (saved_interrupt_handler);
 
-                octave_set_interrupt_handler (saved_interrupt_handler);
+              octave_unblock_child (context);
 
-                UNBLOCK_CHILD (oset);
-
-                octave_child_list::reap ();
-              }
-              break;
-#endif
-
-            case SIGFPE:
-              std::cerr << "warning: floating point exception" << std::endl;
-              break;
-
-#if defined (SIGPIPE)
-            case SIGPIPE:
-              std::cerr << "warning: broken pipe" << std::endl;
-              break;
-#endif
+              octave_child_list::reap ();
             }
+          else if (have_sigfpe && i == sigfpe)
+            std::cerr << "warning: floating point exception" << std::endl;
+          else if (have_sigpipe && i == sigpipe)
+            std::cerr << "warning: broken pipe" << std::endl;
         }
     }
 }
@@ -303,9 +276,7 @@ my_friendly_exit (const char *sig_name, int sig_number,
 
   if (been_there_done_that)
     {
-#if defined (SIGABRT)
-      octave_set_signal_handler (SIGABRT, SIG_DFL);
-#endif
+      octave_set_signal_handler ("SIGABRT", SIG_DFL);
 
       std::cerr << "panic: attempted clean up apparently failed -- aborting...\n";
 
@@ -332,43 +303,24 @@ my_friendly_exit (const char *sig_name, int sig_number,
         {
           octave_set_signal_handler (sig_number, SIG_DFL);
 
-          gnulib::raise (sig_number);
+          octave_raise_wrapper (sig_number);
         }
     }
 }
 
-sig_handler *
-octave_set_signal_handler (int sig, sig_handler *handler,
+octave_sig_handler *
+octave_set_signal_handler (int sig, octave_sig_handler *handler,
                            bool restart_syscalls)
 {
-  struct sigaction act, oact;
+  return octave_set_signal_handler_internal (sig, handler, restart_syscalls);
+}
 
-  act.sa_handler = handler;
-  act.sa_flags = 0;
-
-#if defined (SIGALRM)
-  if (sig == SIGALRM)
-    {
-#  if defined (SA_INTERRUPT)
-      act.sa_flags |= SA_INTERRUPT;
-#  endif
-    }
-#endif
-#if defined (SA_RESTART)
-#  if defined (SIGALRM)
-  else
-#  endif
-  // FIXME: Do we also need to explicitly disable SA_RESTART?
-  if (restart_syscalls)
-    act.sa_flags |= SA_RESTART;
-#endif
-
-  gnulib::sigemptyset (&act.sa_mask);
-  gnulib::sigemptyset (&oact.sa_mask);
-
-  gnulib::sigaction (sig, &act, &oact);
-
-  return oact.sa_handler;
+octave_sig_handler *
+octave_set_signal_handler (const char *signame, octave_sig_handler *handler,
+                           bool restart_syscalls)
+{
+  return octave_set_signal_handler_by_name (signame, handler,
+                                            restart_syscalls);
 }
 
 static void
@@ -379,71 +331,53 @@ generic_sig_handler (int sig)
 
 // Handle SIGCHLD.
 
-#if defined (SIGCHLD)
 static void
-sigchld_handler (int /* sig */)
+sigchld_handler (int sig)
 {
   octave_signal_caught = 1;
 
-  octave_signals_caught[SIGCHLD] = true;
+  octave_signals_caught[sig] = true;
 }
-#endif
 
-#if defined (SIGFPE) && defined (__alpha__)
+#if defined (__alpha__)
 static void
-sigfpe_handler (int /* sig */)
+sigfpe_handler (int sig)
 {
   if (can_interrupt && octave_interrupt_state >= 0)
     {
       octave_signal_caught = 1;
 
-      octave_signals_caught[SIGFPE] = true;
+      octave_signals_caught[sig] = true;
 
       octave_interrupt_state++;
     }
 }
 #endif
 
-#if defined (SIGHUP) || defined (SIGTERM)
 static void
-sig_hup_or_term_handler (int sig)
+sig_hup_handler (int /* sig */)
 {
-  switch (sig)
-    {
-#if defined (SIGHUP)
-    case SIGHUP:
-      {
-        if (Vsighup_dumps_octave_core)
-          dump_octave_core ();
-      }
-      break;
-#endif
-
-#if defined (SIGTERM)
-    case SIGTERM:
-      {
-        if (Vsigterm_dumps_octave_core)
-          dump_octave_core ();
-      }
-      break;
-#endif
-
-    default:
-      break;
-    }
+  if (Vsighup_dumps_octave_core)
+    dump_octave_core ();
 
   clean_up_and_exit (0);
 }
-#endif
+
+static void
+sig_term_handler (int /* sig */)
+{
+  if (Vsigterm_dumps_octave_core)
+    dump_octave_core ();
+
+  clean_up_and_exit (0);
+}
 
 #if 0
-#  if defined (SIGWINCH)
 static void
 sigwinch_handler (int /* sig */)
 {
   octave::command_editor::resize_terminal ();
 }
-#endif
 #endif
 
 // Handle SIGINT by restarting the parser (see octave.cc).
@@ -523,20 +457,18 @@ sigint_handler (int sig)
 #endif
 }
 
-#if defined (SIGPIPE)
 static void
-sigpipe_handler (int /* sig */)
+sigpipe_handler (int sig)
 {
   octave_signal_caught = 1;
 
-  octave_signals_caught[SIGPIPE] = true;
+  octave_signals_caught[sig] = true;
 
   // Don't loop forever on account of this.
 
   if (pipe_handler_error_count++ > 100 && octave_interrupt_state >= 0)
     octave_interrupt_state++;
 }
-#endif
 
 octave_interrupt_handler
 octave_catch_interrupts (void)
@@ -547,13 +479,8 @@ octave_catch_interrupts (void)
   w32_interrupt_manager::init ();
 #endif
 
-#if defined (SIGINT)
-  retval.int_handler = octave_set_signal_handler (SIGINT, sigint_handler);
-#endif
-
-#if defined (SIGBREAK)
-  retval.brk_handler = octave_set_signal_handler (SIGBREAK, sigint_handler);
-#endif
+  retval.int_handler = octave_set_signal_handler ("SIGINT", sigint_handler);
+  retval.brk_handler = octave_set_signal_handler ("SIGBREAK", sigint_handler);
 
   return retval;
 }
@@ -567,13 +494,8 @@ octave_ignore_interrupts (void)
   w32_interrupt_manager::init ();
 #endif
 
-#if defined (SIGINT)
-  retval.int_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
-#endif
-
-#if defined (SIGBREAK)
-  retval.brk_handler = octave_set_signal_handler (SIGBREAK, SIG_IGN);
-#endif
+  retval.int_handler = octave_set_signal_handler ("SIGINT", SIG_IGN);
+  retval.brk_handler = octave_set_signal_handler ("SIGBREAK", SIG_IGN);
 
   return retval;
 }
@@ -588,15 +510,11 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h,
   w32_interrupt_manager::init ();
 #endif
 
-#if defined (SIGINT)
-  retval.int_handler = octave_set_signal_handler (SIGINT, h.int_handler,
+  retval.int_handler = octave_set_signal_handler ("SIGINT", h.int_handler,
                                                   restart_syscalls);
-#endif
 
-#if defined (SIGBREAK)
-  retval.brk_handler = octave_set_signal_handler (SIGBREAK, h.brk_handler,
+  retval.brk_handler = octave_set_signal_handler ("SIGBREAK", h.brk_handler,
                                                   restart_syscalls);
-#endif
 
   return retval;
 }
@@ -606,287 +524,125 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h,
 void
 install_signal_handlers (void)
 {
-  for (int i = 0; i < NSIG; i++)
+  if (! octave_signals_caught)
+    octave_signals_caught = new bool [octave_num_signals ()];
+
+  for (int i = 0; i < octave_num_signals (); i++)
     octave_signals_caught[i] = false;
 
   octave_catch_interrupts ();
 
-#if defined (SIGABRT)
-  octave_set_signal_handler (SIGABRT, generic_sig_handler);
-#endif
-
-#if defined (SIGALRM)
-  octave_set_signal_handler (SIGALRM, generic_sig_handler);
-#endif
-
-#if defined (SIGBUS)
-  octave_set_signal_handler (SIGBUS, generic_sig_handler);
-#endif
-
-#if defined (SIGCHLD)
-  octave_set_signal_handler (SIGCHLD, sigchld_handler);
-#endif
+  octave_set_signal_handler ("SIGABRT", generic_sig_handler);
+  octave_set_signal_handler ("SIGALRM", generic_sig_handler);
+  octave_set_signal_handler ("SIGBUS", generic_sig_handler);
+  octave_set_signal_handler ("SIGCHLD", sigchld_handler);
 
   // SIGCLD
   // SIGCONT
 
-#if defined (SIGEMT)
-  octave_set_signal_handler (SIGEMT, generic_sig_handler);
+  octave_set_signal_handler ("SIGEMT", generic_sig_handler);
+
+#if defined (__alpha__)
+  octave_set_signal_handler ("SIGFPE", sigfpe_handler);
+#else
+  octave_set_signal_handler ("SIGFPE", generic_sig_handler);
 #endif
 
-#if defined (SIGFPE)
-#  if defined (__alpha__)
-  octave_set_signal_handler (SIGFPE, sigfpe_handler);
-#  else
-  octave_set_signal_handler (SIGFPE, generic_sig_handler);
-#  endif
-#endif
-
-#if defined (SIGHUP)
-  octave_set_signal_handler (SIGHUP, sig_hup_or_term_handler);
-#endif
-
-#if defined (SIGILL)
-  octave_set_signal_handler (SIGILL, generic_sig_handler);
-#endif
+  octave_set_signal_handler ("SIGHUP", sig_hup_handler);
+  octave_set_signal_handler ("SIGILL", generic_sig_handler);
 
   // SIGINFO
   // SIGINT
 
-#if defined (SIGIOT)
-  octave_set_signal_handler (SIGIOT, generic_sig_handler);
-#endif
-
-#if defined (SIGLOST)
-  octave_set_signal_handler (SIGLOST, generic_sig_handler);
-#endif
-
-#if defined (SIGPIPE)
-  octave_set_signal_handler (SIGPIPE, sigpipe_handler);
-#endif
-
-#if defined (SIGPOLL)
-  octave_set_signal_handler (SIGPOLL, SIG_IGN);
-#endif
+  octave_set_signal_handler ("SIGIOT", generic_sig_handler);
+  octave_set_signal_handler ("SIGLOST", generic_sig_handler);
+  octave_set_signal_handler ("SIGPIPE", sigpipe_handler);
+  octave_set_signal_handler ("SIGPOLL", SIG_IGN);
 
   // SIGPROF
   // SIGPWR
 
-#if defined (SIGQUIT)
-  octave_set_signal_handler (SIGQUIT, generic_sig_handler);
-#endif
-
-#if defined (SIGSEGV)
-  octave_set_signal_handler (SIGSEGV, generic_sig_handler);
-#endif
+  octave_set_signal_handler ("SIGQUIT", generic_sig_handler);
+  octave_set_signal_handler ("SIGSEGV", generic_sig_handler);
 
   // SIGSTOP
 
-#if defined (SIGSYS)
-  octave_set_signal_handler (SIGSYS, generic_sig_handler);
-#endif
-
-#if defined (SIGTERM)
-  octave_set_signal_handler (SIGTERM, sig_hup_or_term_handler);
-#endif
-
-#if defined (SIGTRAP)
-  octave_set_signal_handler (SIGTRAP, generic_sig_handler);
-#endif
+  octave_set_signal_handler ("SIGSYS", generic_sig_handler);
+  octave_set_signal_handler ("SIGTERM", sig_term_handler);
+  octave_set_signal_handler ("SIGTRAP", generic_sig_handler);
 
   // SIGTSTP
   // SIGTTIN
   // SIGTTOU
   // SIGURG
 
-#if defined (SIGUSR1)
-  octave_set_signal_handler (SIGUSR1, generic_sig_handler);
-#endif
-
-#if defined (SIGUSR2)
-  octave_set_signal_handler (SIGUSR2, generic_sig_handler);
-#endif
-
-#if defined (SIGVTALRM)
-  octave_set_signal_handler (SIGVTALRM, generic_sig_handler);
-#endif
-
-#if defined (SIGIO)
-  octave_set_signal_handler (SIGIO, SIG_IGN);
-#endif
+  octave_set_signal_handler ("SIGUSR1", generic_sig_handler);
+  octave_set_signal_handler ("SIGUSR2", generic_sig_handler);
+  octave_set_signal_handler ("SIGVTALRM", generic_sig_handler);
+  octave_set_signal_handler ("SIGIO", SIG_IGN);
 
 #if 0
-#  if defined (SIGWINCH)
-  octave_set_signal_handler (SIGWINCH, sigwinch_handler);
-#endif
+  octave_set_signal_handler ("SIGWINCH", sigwinch_handler);
 #endif
 
-#if defined (SIGXCPU)
-  octave_set_signal_handler (SIGXCPU, generic_sig_handler);
-#endif
-
-#if defined (SIGXFSZ)
-  octave_set_signal_handler (SIGXFSZ, generic_sig_handler);
-#endif
-
+  octave_set_signal_handler ("SIGXCPU", generic_sig_handler);
+  octave_set_signal_handler ("SIGXFSZ", generic_sig_handler);
 }
 
+static void
+set_sig_struct_field (octave_scalar_map& m, const char *signame)
+{
+  int signum;
+
+  // The names in the struct do not include the leading "SIG" prefix.
+
+  if (octave_get_sig_number (signame, &signum))
+    m.assign (&signame[3], signum);
+}
+ 
 static octave_scalar_map
 make_sig_struct (void)
 {
   octave_scalar_map m;
 
-#if defined (SIGABRT)
-  m.assign ("ABRT", SIGABRT);
-#endif
-
-#if defined (SIGALRM)
-  m.assign ("ALRM", SIGALRM);
-#endif
-
-#if defined (SIGBUS)
-  m.assign ("BUS", SIGBUS);
-#endif
-
-#if defined (SIGCHLD)
-  m.assign ("CHLD", SIGCHLD);
-#endif
-
-#if defined (SIGCLD)
-  m.assign ("CLD", SIGCLD);
-#endif
-
-#if defined (SIGCONT)
-  m.assign ("CONT", SIGCONT);
-#endif
-
-#if defined (SIGEMT)
-  m.assign ("EMT", SIGEMT);
-#endif
-
-#if defined (SIGFPE)
-  m.assign ("FPE", SIGFPE);
-#endif
-
-#if defined (SIGHUP)
-  m.assign ("HUP", SIGHUP);
-#endif
-
-#if defined (SIGILL)
-  m.assign ("ILL", SIGILL);
-#endif
-
-#if defined (SIGINFO)
-  m.assign ("INFO", SIGINFO);
-#endif
-
-#if defined (SIGINT)
-  m.assign ("INT", SIGINT);
-#endif
-
-#if defined (SIGIO)
-  m.assign ("IO", SIGIO);
-#endif
-
-#if defined (SIGIOT)
-  m.assign ("IOT", SIGIOT);
-#endif
-
-#if defined (SIGKILL)
-  m.assign ("KILL", SIGKILL);
-#endif
-
-#if defined (SIGLOST)
-  m.assign ("LOST", SIGLOST);
-#endif
-
-#if defined (SIGPIPE)
-  m.assign ("PIPE", SIGPIPE);
-#endif
-
-#if defined (SIGPOLL)
-  m.assign ("POLL", SIGPOLL);
-#endif
-
-#if defined (SIGPROF)
-  m.assign ("PROF", SIGPROF);
-#endif
-
-#if defined (SIGPWR)
-  m.assign ("PWR", SIGPWR);
-#endif
-
-#if defined (SIGQUIT)
-  m.assign ("QUIT", SIGQUIT);
-#endif
-
-#if defined (SIGSEGV)
-  m.assign ("SEGV", SIGSEGV);
-#endif
-
-#if defined (SIGSTKFLT)
-  m.assign ("STKFLT", SIGSTKFLT);
-#endif
-
-#if defined (SIGSTOP)
-  m.assign ("STOP", SIGSTOP);
-#endif
-
-#if defined (SIGSYS)
-  m.assign ("SYS", SIGSYS);
-#endif
-
-#if defined (SIGTERM)
-  m.assign ("TERM", SIGTERM);
-#endif
-
-#if defined (SIGTRAP)
-  m.assign ("TRAP", SIGTRAP);
-#endif
-
-#if defined (SIGTSTP)
-  m.assign ("TSTP", SIGTSTP);
-#endif
-
-#if defined (SIGTTIN)
-  m.assign ("TTIN", SIGTTIN);
-#endif
-
-#if defined (SIGTTOU)
-  m.assign ("TTOU", SIGTTOU);
-#endif
-
-#if defined (SIGUNUSED)
-  m.assign ("UNUSED", SIGUNUSED);
-#endif
-
-#if defined (SIGURG)
-  m.assign ("URG", SIGURG);
-#endif
-
-#if defined (SIGUSR1)
-  m.assign ("USR1", SIGUSR1);
-#endif
-
-#if defined (SIGUSR2)
-  m.assign ("USR2", SIGUSR2);
-#endif
-
-#if defined (SIGVTALRM)
-  m.assign ("VTALRM", SIGVTALRM);
-#endif
-
-#if defined (SIGWINCH)
-  m.assign ("WINCH", SIGWINCH);
-#endif
-
-#if defined (SIGXCPU)
-  m.assign ("XCPU", SIGXCPU);
-#endif
-
-#if defined (SIGXFSZ)
-  m.assign ("XFSZ", SIGXFSZ);
-#endif
+  set_sig_struct_field (m, "SIGABRT");
+  set_sig_struct_field (m, "SIGALRM");
+  set_sig_struct_field (m, "SIGBUS");
+  set_sig_struct_field (m, "SIGCHLD");
+  set_sig_struct_field (m, "SIGCLD");
+  set_sig_struct_field (m, "SIGCONT");
+  set_sig_struct_field (m, "SIGEMT");
+  set_sig_struct_field (m, "SIGFPE");
+  set_sig_struct_field (m, "SIGHUP");
+  set_sig_struct_field (m, "SIGILL");
+  set_sig_struct_field (m, "SIGINFO");
+  set_sig_struct_field (m, "SIGINT");
+  set_sig_struct_field (m, "SIGIO");
+  set_sig_struct_field (m, "SIGIOT");
+  set_sig_struct_field (m, "SIGKILL");
+  set_sig_struct_field (m, "SIGLOST");
+  set_sig_struct_field (m, "SIGPIPE");
+  set_sig_struct_field (m, "SIGPOLL");
+  set_sig_struct_field (m, "SIGPROF");
+  set_sig_struct_field (m, "SIGPWR");
+  set_sig_struct_field (m, "SIGQUIT");
+  set_sig_struct_field (m, "SIGSEGV");
+  set_sig_struct_field (m, "SIGSTKFLT");
+  set_sig_struct_field (m, "SIGSTOP");
+  set_sig_struct_field (m, "SIGSYS");
+  set_sig_struct_field (m, "SIGTERM");
+  set_sig_struct_field (m, "SIGTRAP");
+  set_sig_struct_field (m, "SIGTSTP");
+  set_sig_struct_field (m, "SIGTTIN");
+  set_sig_struct_field (m, "SIGTTOU");
+  set_sig_struct_field (m, "SIGUNUSED");
+  set_sig_struct_field (m, "SIGURG");
+  set_sig_struct_field (m, "SIGUSR1");
+  set_sig_struct_field (m, "SIGUSR2");
+  set_sig_struct_field (m, "SIGVTALRM");
+  set_sig_struct_field (m, "SIGWINCH");
+  set_sig_struct_field (m, "SIGXCPU");
+  set_sig_struct_field (m, "SIGXFSZ");
 
   return m;
 }

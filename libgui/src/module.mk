@@ -214,7 +214,8 @@ libgui_src_libgui_src_la_CPPFLAGS = \
   -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value \
-  -Ilibgnu -I$(srcdir)/libgnu
+  -Ilibgnu -I$(srcdir)/libgnu \
+  -I$(srcdir)/liboctave/wrappers
 
 libgui_src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 

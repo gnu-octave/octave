@@ -338,9 +338,9 @@ octave_struct::subsasgn (const std::string& type,
                   // still stored inside our map.
                   tmp.make_unique (1);
 
-                  t_rhs =(orig_undefined
-                          ? tmp.undef_subsasgn (next_type, next_idx, rhs)
-                          : tmp.subsasgn (next_type, next_idx, rhs));
+                t_rhs =(orig_undefined
+                        ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                        : tmp.subsasgn (next_type, next_idx, rhs));
               }
             else
               err_invalid_index_for_assignment ();

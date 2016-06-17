@@ -600,7 +600,9 @@ idx_vector::idx_vector_rep::print (std::ostream& os) const
     os << data[ii] << ',' << ' ';
 
   if (len > 0)
-    os << data[len-1]; os << ']';
+    os << data[len-1];
+
+  os << ']';
 
   return os;
 }
@@ -712,7 +714,9 @@ idx_vector::idx_mask_rep::print (std::ostream& os) const
     os << data[ii] << ',' << ' ';
 
   if (ext > 0)
-    os << data[ext-1]; os << ']';
+    os << data[ext-1];
+
+  os << ']';
 
   return os;
 }

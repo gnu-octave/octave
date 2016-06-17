@@ -77,18 +77,6 @@ along with Octave; see the file COPYING.  If not, see
 #define YY_NO_UNISTD_H 1
 #define isatty octave_isatty_wrapper
 
-#if defined (GNULIB_NAMESPACE)
-// Calls to the following functions appear in the generated output
-// from flex without the namespace tag.  Redefine them so we will use
-// them via the gnulib namespace.
-#  define fprintf GNULIB_NAMESPACE::fprintf
-#  define fread GNULIB_NAMESPACE::fread
-#  define fwrite GNULIB_NAMESPACE::fwrite
-#  define getc GNULIB_NAMESPACE::getc
-#  define malloc GNULIB_NAMESPACE::malloc
-#  define realloc GNULIB_NAMESPACE::realloc
-#endif
-
 %}
 
 D   [0-9]

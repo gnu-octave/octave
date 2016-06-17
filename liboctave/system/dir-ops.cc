@@ -58,7 +58,7 @@ namespace octave
           dir = octave_opendir_wrapper (fullname.c_str ());
 
           if (! dir)
-            errmsg = gnulib::strerror (errno);
+            errmsg = std::strerror (errno);
         }
       else
         errmsg = "dir_entry::open: empty filename";

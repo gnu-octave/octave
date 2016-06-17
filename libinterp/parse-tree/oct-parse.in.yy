@@ -89,15 +89,6 @@ extern int octave_lex (YYSTYPE *, void *);
 // FIXME: to be removed after more parser+lexer refactoring.
 octave_base_lexer *LEXER = 0;
 
-#if defined (GNULIB_NAMESPACE)
-// Calls to the following functions appear in the generated output from
-// Bison without the namespace tag.  Redefine them so we will use them
-// via the gnulib namespace.
-#  define fclose GNULIB_NAMESPACE::fclose
-#  define fprintf GNULIB_NAMESPACE::fprintf
-#  define malloc GNULIB_NAMESPACE::malloc
-#endif
-
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
 
@@ -4161,7 +4152,7 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
   FILE *ffile = 0;
 
   if (! full_file.empty ())
-    ffile = gnulib::fopen (full_file.c_str (), "rb");
+    ffile = std::fopen (full_file.c_str (), "rb");
 
   if (ffile)
     {

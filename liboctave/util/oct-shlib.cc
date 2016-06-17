@@ -281,7 +281,7 @@ namespace octave
     if (! library)
       {
         using namespace std;  // FIXME: Why have this line?
-        (*current_liboctave_error_handler) ("%s", gnulib::strerror (errno));
+        (*current_liboctave_error_handler) ("%s", std::strerror (errno));
       }
   }
 

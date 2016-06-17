@@ -819,7 +819,7 @@ namespace octave
 
     if (len > 0)
       {
-        retval = static_cast<char *> (gnulib::malloc (len+1));
+        retval = static_cast<char *> (std::malloc (len+1));
 
         strcpy (retval, tmp.c_str ());
       }
@@ -840,7 +840,7 @@ namespace octave
 
     if (len > 0)
       {
-        retval = static_cast<char *> (gnulib::malloc (len+1));
+        retval = static_cast<char *> (std::malloc (len+1));
 
         strcpy (retval, tmp.c_str ());
       }
@@ -861,7 +861,7 @@ namespace octave
 
     if (len > 0)
       {
-        retval = static_cast<char *> (gnulib::malloc (len+1));
+        retval = static_cast<char *> (std::malloc (len+1));
 
         strcpy (retval, tmp.c_str ());
       }
@@ -953,8 +953,8 @@ namespace octave
   std::string
   default_command_editor::do_readline (const std::string& prompt, bool& eof)
   {
-    gnulib::fputs (prompt.c_str (), output_stream);
-    gnulib::fflush (output_stream);
+    std::fputs (prompt.c_str (), output_stream);
+    std::fflush (output_stream);
 
     return octave_fgetl (input_stream, eof);
   }
@@ -1902,7 +1902,7 @@ namespace octave
   void
   command_editor::error (int err_num)
   {
-    (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
+    (*current_liboctave_error_handler) ("%s", std::strerror (err_num));
   }
 
   void

@@ -102,7 +102,7 @@ flogfak (double k)
     {
       r  = 1.0 / k;
       rr = r * r;
-      return ((k + 0.5)*gnulib::log (k) - k + C0 + r*(C1 + rr*(C3 + rr*(C5 + rr*C7))));
+      return ((k + 0.5)*std::log (k) - k + C0 + r*(C1 + rr*(C3 + rr*(C5 + rr*C7))));
     }
   else
     return (logfak[static_cast<int> (k)]);
@@ -164,9 +164,9 @@ pprsc (double my)
 
       /* mode m, reflection points k2 and k4, and points k1 and k5,      */
       /* which delimit the centre region of h(x)                         */
-      m  = gnulib::floor (my);
+      m  = std::floor (my);
       k2 = ceil (my - 0.5 - Ds);
-      k4 = gnulib::floor (my - 0.5 + Ds);
+      k4 = std::floor (my - 0.5 + Ds);
       k1 = k2 + k2 - m + 1L;
       k5 = k4 + k4 - m;
 
@@ -181,11 +181,11 @@ pprsc (double my)
       r5 = my / (k5 + 1.0);
 
       /* reciprocal values of the scale parameters of exp. tail envelope */
-      ll =  gnulib::log (r1);                        /* expon. tail left */
-      lr = -gnulib::log (r5);                        /* expon. tail right*/
+      ll =  std::log (r1);                        /* expon. tail left */
+      lr = -std::log (r5);                        /* expon. tail right*/
 
       /* Poisson constants, necessary for computing function values f(k) */
-      l_my = gnulib::log (my);
+      l_my = std::log (my);
       c_pm = m * l_my - flogfak (m);
 
       /* function values f(k) = p(k)/p(m) at k = k2, k4, k1, k5          */
@@ -213,14 +213,14 @@ pprsc (double my)
 
           /* immediate acceptance region
              R2 = [k2, m) *[0, f2),  X = k2, ... m -1 */
-          if ((V = U - p1) < 0.0)  return (k2 + gnulib::floor (U/f2));
+          if ((V = U - p1) < 0.0)  return (k2 + std::floor (U/f2));
           /* immediate acceptance region
              R1 = [k1, k2)*[0, f1),  X = k1, ... k2-1 */
-          if ((W = V / dl) < f1 )  return (k1 + gnulib::floor (V/f1));
+          if ((W = V / dl) < f1 )  return (k1 + std::floor (V/f1));
 
           /* computation of candidate X < k2, and its counterpart Y > k2 */
           /* either squeeze-acceptance of X or acceptance-rejection of Y */
-          Dk = gnulib::floor (dl * RUNI) + 1.0;
+          Dk = std::floor (dl * RUNI) + 1.0;
           if (W <= f2 - Dk * (f2 - f2/r2))
             {                                        /* quick accept of  */
               return (k2 - Dk);                      /* X = k2 - Dk      */
@@ -240,14 +240,14 @@ pprsc (double my)
         {                                            /* centre right     */
           /*  immediate acceptance region
               R3 = [m, k4+1)*[0, f4), X = m, ... k4    */
-          if ((V = U - p3) < 0.0)  return (k4 - gnulib::floor ((U - p2)/f4));
+          if ((V = U - p3) < 0.0)  return (k4 - std::floor ((U - p2)/f4));
           /* immediate acceptance region
              R4 = [k4+1, k5+1)*[0, f5)                */
-          if ((W = V / dr) < f5 )  return (k5 - gnulib::floor (V/f5));
+          if ((W = V / dr) < f5 )  return (k5 - std::floor (V/f5));
 
           /* computation of candidate X > k4, and its counterpart Y < k4 */
           /* either squeeze-acceptance of X or acceptance-rejection of Y */
-          Dk = gnulib::floor (dr * RUNI) + 1.0;
+          Dk = std::floor (dr * RUNI) + 1.0;
           if (W <= f4 - Dk * (f4 - f4*r4))
             {                                        /* quick accept of  */
               return (k4 + Dk);                      /* X = k4 + Dk      */
@@ -268,7 +268,7 @@ pprsc (double my)
           W = RUNI;
           if (U < p5)
             {                                        /* expon. tail left */
-              Dk = gnulib::floor (1.0 - gnulib::log (W)/ll);
+              Dk = std::floor (1.0 - std::log (W)/ll);
               if ((X = k1 - Dk) < 0L)  continue;     /* 0 <= X <= k1 - 1 */
               W *= (U - p4) * ll;                    /* W -- U(0, h(x))  */
               if (W <= f1 - Dk * (f1 - f1/r1))
@@ -276,7 +276,7 @@ pprsc (double my)
             }
           else
             {                                        /* expon. tail right*/
-              Dk = gnulib::floor (1.0 - gnulib::log (W)/lr);
+              Dk = std::floor (1.0 - std::log (W)/lr);
               X  = k5 + Dk;                          /* X >= k5 + 1      */
               W *= (U - p5) * lr;                    /* W -- U(0, h(x))  */
               if (W <= f5 - Dk * (f5 - f5*r5))
@@ -287,7 +287,7 @@ pprsc (double my)
       /* acceptance-rejection test of candidate X from the original area */
       /* test, whether  W <= f(k),    with  W = U*h(x)  and  U -- U(0, 1)*/
       /* log f(X) = (X - m)*log(my) - log X! + log m!                    */
-      if (gnulib::log (W) <= X * l_my - flogfak (X) - c_pm)  return (X);
+      if (std::log (W) <= X * l_my - flogfak (X) - c_pm)  return (X);
     }
 }
 /* ---- pprsc.c end ------ */
@@ -313,7 +313,7 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
 
   /* Precompute the table for the u up to and including 0.458.
    * We will almost certainly need it. */
-  int intlambda = static_cast<int> (gnulib::floor (lambda));
+  int intlambda = static_cast<int> (std::floor (lambda));
   double P;
   int tableidx;
   size_t i = n;
@@ -376,7 +376,7 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
 
   /* Precompute the table for the u up to and including 0.458.
    * We will almost certainly need it. */
-  int intlambda = static_cast<int> (gnulib::floor (lambda));
+  int intlambda = static_cast<int> (std::floor (lambda));
   double P;
   int tableidx;
   size_t i = n;
@@ -419,7 +419,7 @@ static void
 poisson_rejection (double lambda, double *p, size_t n)
 {
   double sq = sqrt (2.0*lambda);
-  double alxm = gnulib::log (lambda);
+  double alxm = std::log (lambda);
   double g = lambda*alxm - LGAMMA(lambda+1.0);
   size_t i;
 
@@ -433,7 +433,7 @@ poisson_rejection (double lambda, double *p, size_t n)
               y = tan (M_PI*RUNI);
               em = sq * y + lambda;
             } while (em < 0.0);
-          em = gnulib::floor (em);
+          em = std::floor (em);
           t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
         } while (RUNI > t);
       p[i] = em;
@@ -445,7 +445,7 @@ static void
 poisson_rejection_float (double lambda, float *p, size_t n)
 {
   double sq = sqrt (2.0*lambda);
-  double alxm = gnulib::log (lambda);
+  double alxm = std::log (lambda);
   double g = lambda*alxm - LGAMMA(lambda+1.0);
   size_t i;
 
@@ -459,7 +459,7 @@ poisson_rejection_float (double lambda, float *p, size_t n)
               y = tan (M_PI*RUNI);
               em = sq * y + lambda;
             } while (em < 0.0);
-          em = gnulib::floor (em);
+          em = std::floor (em);
           t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
         } while (RUNI > t);
       p[i] = em;
@@ -500,7 +500,7 @@ oct_fill_randp (double L, octave_idx_type n, double *p)
       const double sqrtL = sqrt (L);
       for (i = 0; i < n; i++)
         {
-          p[i] = gnulib::floor (RNOR*sqrtL + L + 0.5);
+          p[i] = std::floor (RNOR*sqrtL + L + 0.5);
           if (p[i] < 0.0)
             p[i] = 0.0; /* will probably never happen */
         }
@@ -540,7 +540,7 @@ oct_randp (double L)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      ret = gnulib::floor (RNOR*sqrt (L) + L + 0.5);
+      ret = std::floor (RNOR*sqrt (L) + L + 0.5);
       if (ret < 0.0) ret = 0.0; /* will probably never happen */
     }
   return ret;
@@ -572,7 +572,7 @@ oct_fill_float_randp (float FL, octave_idx_type n, float *p)
       const double sqrtL = sqrt (L);
       for (i = 0; i < n; i++)
         {
-          p[i] = gnulib::floor (RNOR*sqrtL + L + 0.5);
+          p[i] = std::floor (RNOR*sqrtL + L + 0.5);
           if (p[i] < 0.0)
             p[i] = 0.0; /* will probably never happen */
         }
@@ -613,7 +613,7 @@ oct_float_randp (float FL)
   else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-      ret = gnulib::floor (RNOR*sqrt (L) + L + 0.5);
+      ret = std::floor (RNOR*sqrt (L) + L + 0.5);
       if (ret < 0.0) ret = 0.0; /* will probably never happen */
     }
   return ret;

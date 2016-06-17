@@ -73,7 +73,7 @@ octave_change_to_directory (const std::string& newdir)
   int cd_ok = octave::sys::env::chdir (xdir);
 
   if (! cd_ok)
-    error ("%s: %s", newdir.c_str (), gnulib::strerror (errno));
+    error ("%s: %s", newdir.c_str (), std::strerror (errno));
 
   Vlast_chdir_time.stamp ();
 

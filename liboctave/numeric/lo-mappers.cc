@@ -37,8 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "f77-fcn.h"
 
-// Functions that forward to gnulib belong here so we can keep gnulib:: out of
-// lo-mappers.h.
+// FIXME: We used to have this situation:
+//
+//   Functions that forward to gnulib belong here so we can keep
+//   gnulib:: out of lo-mappers.h.
+//
+// but now we just use std:: and explicit wrappers in C++ code so maybe
+// some of the forwarding functions can be defined inline here.
 
 namespace octave
 {
@@ -180,8 +185,8 @@ namespace octave
       return i * log ((i + x) / (i - x)) / 2.0f;
     }
 
-    double log2 (double x) { return gnulib::log2 (x); }
-    float log2 (float x) { return gnulib::log2f (x); }
+    double log2 (double x) { return std::log2 (x); }
+    float log2 (float x) { return std::log2 (x); }
 
     Complex
     log2 (const Complex& x)
@@ -189,7 +194,7 @@ namespace octave
 #if defined (M_LN2)
       static double ln2 = M_LN2;
 #else
-      static double ln2 = gnulib::log (2.0);
+      static double ln2 = std::log (2.0);
 #endif
       return std::log (x) / ln2;
     }
@@ -208,13 +213,13 @@ namespace octave
     double
     log2 (double x, int& exp)
     {
-      return gnulib::frexp (x, &exp);
+      return std::frexp (x, &exp);
     }
 
     float
     log2 (float x, int& exp)
     {
-      return gnulib::frexpf (x, &exp);
+      return std::frexp (x, &exp);
     }
 
     Complex
@@ -242,7 +247,7 @@ namespace octave
 #  if defined (M_LN2)
       static double ln2 = M_LN2;
 #  else
-      static double ln2 = gnulib::log (2.0);
+      static double ln2 = std::log (2.0);
 #  endif
       return exp (x * ln2);
 #endif
@@ -265,23 +270,23 @@ namespace octave
 #endif
     }
 
-    double copysign (double x, double y) { return gnulib::copysign (x, y); }
-    float copysign (float x, float y) { return gnulib::copysignf (x, y); }
+    double copysign (double x, double y) { return std::copysign (x, y); }
+    float copysign (float x, float y) { return std::copysign (x, y); }
 
-    double signbit (double x) { return ::signbit (x); }
-    float signbit (float x) { return ::signbit (x); }
+    double signbit (double x) { return std::signbit (x); }
+    float signbit (float x) { return std::signbit (x); }
 
     bool negative_sign (double x) { return __lo_ieee_signbit (x); }
     bool negative_sign (float x) { return __lo_ieee_float_signbit (x); }
 
-    double trunc (double x) { return gnulib::trunc (x); }
-    float trunc (float x) { return gnulib::truncf (x); }
+    double trunc (double x) { return std::trunc (x); }
+    float trunc (float x) { return std::trunc (x); }
 
-    double floor (double x) { return gnulib::floor (x); }
-    float floor (float x) { return gnulib::floor (x); }
+    double floor (double x) { return std::floor (x); }
+    float floor (float x) { return std::floor (x); }
 
-    double round (double x) { return gnulib::round (x); }
-    float round (float x) { return gnulib::roundf (x); }
+    double round (double x) { return std::round (x); }
+    float round (float x) { return std::round (x); }
 
     bool
     isnan (double x)
@@ -441,14 +446,14 @@ namespace octave
     rc_log (double x)
     {
       const double pi = 3.14159265358979323846;
-      return x < 0.0 ? Complex (gnulib::log (-x), pi) : Complex (gnulib::log (x));
+      return x < 0.0 ? Complex (std::log (-x), pi) : Complex (std::log (x));
     }
 
     FloatComplex
     rc_log (float x)
     {
       const float pi = 3.14159265358979323846f;
-      return x < 0.0f ? FloatComplex (gnulib::logf (-x), pi) : FloatComplex (gnulib::logf (x));
+      return x < 0.0f ? FloatComplex (std::log (-x), pi) : FloatComplex (std::log (x));
     }
 
     Complex

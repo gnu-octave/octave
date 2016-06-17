@@ -724,7 +724,7 @@ namespace octave
           retval = 2 * (s + 1) * u;
         }
       else
-        retval = gnulib::log (1 + x);
+        retval = std::log (1 + x);
 
       return retval;
 #endif
@@ -795,7 +795,7 @@ namespace octave
           retval = 2 * (s + 1.0f) * u;
         }
       else
-        retval = gnulib::logf (1.0f + x);
+        retval = std::log (1.0f + x);
 
       return retval;
 #endif
@@ -2989,7 +2989,7 @@ namespace octave
     {
       const double pi = 3.14159265358979323846;
       return (x < -1.0
-              ? Complex (gnulib::log (-(1.0 + x)), pi)
+              ? Complex (std::log (-(1.0 + x)), pi)
               : Complex (log1p (x)));
     }
 
@@ -2997,7 +2997,7 @@ namespace octave
     {
       const float pi = 3.14159265358979323846f;
       return (x < -1.0f
-              ? FloatComplex (gnulib::logf (-(1.0f + x)), pi)
+              ? FloatComplex (std::log (-(1.0f + x)), pi)
               : FloatComplex (log1p (x)));
     }
 
@@ -3053,7 +3053,7 @@ namespace octave
       else if (ax < 1.0)
         {
           // Tail region.
-          const double q = sqrt (-2*gnulib::log (0.5*(1-ax)));
+          const double q = sqrt (-2*std::log (0.5*(1-ax)));
           const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
           const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
           y = yn / yd * octave::math::signum (-x);
@@ -3133,8 +3133,8 @@ namespace octave
         {
           // Tail region.
           const double q = (x < 1
-                            ? sqrt (-2*gnulib::log (0.5*x))
-                            : sqrt (-2*gnulib::log (0.5*(2-x))));
+                            ? sqrt (-2*std::log (0.5*x))
+                            : sqrt (-2*std::log (0.5*(2-x))));
 
           const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
 
@@ -3257,8 +3257,8 @@ namespace octave
 
           if (temp <= acu && temp <= acu * value)
             {
-              value *= exp (pp * gnulib::log (xx)
-                            + (qq - 1.0) * gnulib::log (cx) - beta) / pp;
+              value *= exp (pp * std::log (xx)
+                            + (qq - 1.0) * std::log (cx) - beta) / pp;
 
               if (indx)
                 {
@@ -3347,7 +3347,7 @@ namespace octave
 
       //  Calculate the initial approximation.
 
-      r = sqrt (- gnulib::log (a * a));
+      r = sqrt (- std::log (a * a));
 
       ycur = r - (2.30753 + 0.27061 * r) / (1.0 + (0.99229 + 0.04481 * r) * r);
 
@@ -3368,7 +3368,7 @@ namespace octave
 
           if (t <= 0.0)
             {
-              value = 1.0 - exp ((gnulib::log ((1.0 - a) * qq) + beta) / qq);
+              value = 1.0 - exp ((std::log ((1.0 - a) * qq) + beta) / qq);
             }
           else
             {
@@ -3376,7 +3376,7 @@ namespace octave
 
               if (t <= 1.0)
                 {
-                  value = exp ((gnulib::log (a * pp) + beta) / pp);
+                  value = exp ((std::log (a * pp) + beta) / pp);
                 }
               else
                 {
@@ -3418,8 +3418,8 @@ namespace octave
             }
 
           xin = value;
-          ycur = (ycur - a) * exp (beta + r * gnulib::log (xin)
-                                   + t * gnulib::log (1.0 - xin));
+          ycur = (ycur - a) * exp (beta + r * std::log (xin)
+                                   + t * std::log (1.0 - xin));
 
           if (ycur * yprev <= 0.0)
             {
@@ -3735,14 +3735,14 @@ namespace octave
     inline double
     xlog (const double& x)
     {
-      return gnulib::log (x);
+      return std::log (x);
     }
 
     template <>
     inline float
     xlog (const float& x)
     {
-      return gnulib::logf (x);
+      return std::log (x);
     }
 
     template <typename T>
@@ -3802,7 +3802,7 @@ namespace octave
           for (octave_idx_type k = z; k > 0; k--)
             p += 1.0 / (2 * k - 1);
 
-          p = - euler_mascheroni - 2 * gnulib::log (2) + 2 * (p);
+          p = - euler_mascheroni - 2 * std::log (2) + 2 * (p);
         }
       else
         {

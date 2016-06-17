@@ -43,7 +43,7 @@ namespace octave
                                   &version, &machine);
 
       if (err < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
       else
         {
           m_sysname = sysname;

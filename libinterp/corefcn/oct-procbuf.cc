@@ -120,7 +120,7 @@ octave_procbuf::open (const char *command, int mode)
 
           if (fp)
             {
-              gnulib::fclose (fp);
+              std::fclose (fp);
               fp = 0;
             }
 
@@ -194,7 +194,7 @@ octave_procbuf::close (void)
             }
         }
 
-      if (status == 0 && gnulib::fclose (f) == 0)
+      if (status == 0 && std::fclose (f) == 0)
         {
           using namespace std;
 

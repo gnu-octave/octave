@@ -200,22 +200,9 @@ static inline bool my_isinf(double x) { return 1/x == 0.; }
 // copysign was introduced in C++11 (and is also in POSIX and C99)
 #  if defined(_WIN32) || defined(__WIN32__)
 #    define copysign _copysign // of course MS had to be different
-#  elif defined(GNULIB_NAMESPACE) // we are using using gnulib <cmath>
-#    define copysign GNULIB_NAMESPACE::copysign
 #  elif (__cplusplus < 201103L) && !defined(HAVE_COPYSIGN) && !defined(__linux__) && !(defined(__APPLE__) && defined(__MACH__)) && !defined(_AIX)
 static inline double my_copysign(double x, double y) { return y<0 ? -x : x; }
 #    define copysign my_copysign
-#  endif
-
-// If we are using the gnulib <cmath> (e.g., in the GNU Octave sources),
-// gnulib generates a link warning if we use ::floor instead of gnulib::floor.
-// This warning is completely innocuous because the only difference between
-// gnulib::floor and the system ::floor (and only on ancient OSF systems)
-// has to do with floor(-0), which doesn't occur in the usage below, but
-// the Octave developers prefer that we silence the warning.
-#  if defined (GNULIB_NAMESPACE)
-#    define floor GNULIB_NAMESPACE::floor
-#    define log GNULIB_NAMESPACE::log
 #  endif
 
 #else // !__cplusplus, i.e., pure C (requires C99 features)

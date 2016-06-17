@@ -1715,11 +1715,11 @@ __builtin_new (size_t sz)
   // malloc (0) is unpredictable; avoid it.
   if (sz == 0)
     sz = 1;
-  p = gnulib::malloc (sz);
+  p = std::malloc (sz);
   while (p == 0)
     {
       (*__new_handler) ();
-      p = gnulib::malloc (sz);
+      p = std::malloc (sz);
     }
 
   if (debug_new_delete)

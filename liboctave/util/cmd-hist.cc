@@ -1013,10 +1013,10 @@ namespace octave
   command_history::error (int err_num, const std::string& msg) const
   {
     if (msg.empty ())
-      (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
+      (*current_liboctave_error_handler) ("%s", std::strerror (err_num));
     else
       (*current_liboctave_error_handler) ("%s: %s", msg.c_str (),
-                                          gnulib::strerror (err_num));
+                                          std::strerror (err_num));
   }
 
   void

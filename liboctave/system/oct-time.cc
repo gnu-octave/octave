@@ -73,7 +73,7 @@ namespace octave
       t.tm_zone = ps;
 #endif
 
-      ot_unix_time = gnulib::mktime (&t);
+      ot_unix_time = std::mktime (&t);
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       delete [] ps;
@@ -239,7 +239,7 @@ namespace octave
 
       time_t t = ot.unix_time ();
 
-      base_tm::init (gnulib::localtime (&t));
+      base_tm::init (std::localtime (&t));
     }
 
     void
@@ -249,7 +249,7 @@ namespace octave
 
       time_t t = ot.unix_time ();
 
-      base_tm::init (gnulib::gmtime (&t));
+      base_tm::init (std::gmtime (&t));
     }
 
     void
@@ -286,7 +286,7 @@ namespace octave
           && t.tm_year != std::numeric_limits<int>::min ())
         {
           t.tm_isdst = -1;
-          gnulib::mktime (&t);
+          std::mktime (&t);
         }
 
       if (t.tm_mon < 0)

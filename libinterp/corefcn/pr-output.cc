@@ -242,7 +242,7 @@ engineering_exponent (const double& x)
   if (x != 0)
     {
       double absval = (x < 0.0 ? -x : x);
-      int logabsval = static_cast<int> (gnulib::floor (log10 (absval)));
+      int logabsval = static_cast<int> (std::floor (log10 (absval)));
       // Avoid using modulo function with negative arguments for
       // portability.  See extended comment at calc_scale_exp
       if (logabsval < 0.0)
@@ -258,7 +258,7 @@ num_digits (const double& x)
 {
   return 1 + (print_eng
               ? engineering_exponent (x)
-              : static_cast<int> (gnulib::floor (log10 (x))));
+              : static_cast<int> (std::floor (log10 (x))));
 }
 
 class
@@ -3262,7 +3262,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
             {
               int new_digits
                 = static_cast<int>
-                  (gnulib::floor (log10 (double (abs (nda(i).value ()))) + 1.0));
+                  (std::floor (log10 (double (abs (nda(i).value ()))) + 1.0));
 
               if (new_digits > digits)
                 digits = new_digits;

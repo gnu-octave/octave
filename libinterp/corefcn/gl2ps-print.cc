@@ -197,7 +197,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
         gl2ps_sort = GL2PS_SIMPLE_SORT;
 
       // Use a temporary file in case an overflow happens
-      FILE* tmpf = gnulib::tmpfile ();
+      FILE* tmpf = std::tmpfile ();
 
       if (! tmpf)
         error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
@@ -209,7 +209,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
         {
           buffer_overflow = false;
           buffsize *= 2;
-          gnulib::fseek (tmpf, 0, SEEK_SET);
+          std::fseek (tmpf, 0, SEEK_SET);
           octave_ftruncate_wrapper (fileno (tmpf), 0);
 
           // For LaTeX output the fltk print process uses 2 drawnow() commands.
@@ -268,16 +268,16 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
         }
 
       // Copy temporary file to pipe
-      gnulib::fseek (tmpf, 0, SEEK_SET);
+      std::fseek (tmpf, 0, SEEK_SET);
       char str[256];
       size_t nread, nwrite;
       nread = 1;
       while (! feof (tmpf) && nread)
         {
-          nread = gnulib::fread (str, 1, 256, tmpf);
+          nread = std::fread (str, 1, 256, tmpf);
           if (nread)
             {
-              nwrite = gnulib::fwrite (str, 1, nread, fp);
+              nwrite = std::fwrite (str, 1, nread, fp);
               if (nwrite != nread)
                 {
                   octave_signal_handler ();   // Clear SIGPIPE signal
@@ -769,7 +769,7 @@ static void
 safe_fclose (FILE *f)
 {
   if (f)
-    gnulib::fclose (f);
+    std::fclose (f);
 }
 
 #endif
@@ -809,7 +809,7 @@ gl2ps_print (const graphics_object& fig, const std::string& stream,
     {
       // Write gl2ps output directly to file.
 
-      fp = gnulib::fopen (stream.c_str (), "w");
+      fp = std::fopen (stream.c_str (), "w");
 
       if (! fp)
         error ("gl2ps_print: failed to create file \"%s\"", stream.c_str ());

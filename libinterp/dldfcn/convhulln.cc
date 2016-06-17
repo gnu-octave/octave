@@ -54,7 +54,7 @@ char qh_version[] = "convhulln.oct 2007-07-24";
 static void
 close_fcn (FILE *f)
 {
-  gnulib::fclose (f);
+  std::fclose (f);
 }
 
 static bool
@@ -158,9 +158,9 @@ convex hull is calculated.\n\n\
 
   // Replace the outfile pointer with stdout for debugging information.
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-  FILE *outfile = gnulib::fopen ("NUL", "w");
+  FILE *outfile = std::fopen ("NUL", "w");
 #else
-  FILE *outfile = gnulib::fopen ("/dev/null", "w");
+  FILE *outfile = std::fopen ("/dev/null", "w");
 #endif
   FILE *errfile = stderr;
 

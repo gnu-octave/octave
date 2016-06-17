@@ -1321,7 +1321,7 @@ octave_sleep (double seconds)
     return;
 
   double fraction = std::modf (seconds, &seconds);
-  fraction = gnulib::floor (fraction * 1000000000); // nanoseconds
+  fraction = std::floor (fraction * 1000000000); // nanoseconds
 
   time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
                 ? std::numeric_limits<time_t>::max ()

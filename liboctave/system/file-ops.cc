@@ -414,7 +414,7 @@ namespace octave
       int status = octave_mkdir_wrapper (name.c_str (), mode);
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -434,7 +434,7 @@ namespace octave
       int status = octave_mkfifo_wrapper (name.c_str (), mode);
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -457,7 +457,7 @@ namespace octave
       status = octave_link_wrapper (old_name.c_str (), new_name.c_str ());
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -480,7 +480,7 @@ namespace octave
       status = octave_symlink_wrapper (old_name.c_str (), new_name.c_str ());
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -502,7 +502,7 @@ namespace octave
       char *buf = octave_areadlink_wrapper (path.c_str ());
 
       if (! buf)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
       else
         {
           result = buf;
@@ -527,10 +527,10 @@ namespace octave
 
       msg = "";
 
-      status = gnulib::rename (from.c_str (), to.c_str ());
+      status = std::rename (from.c_str (), to.c_str ());
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -552,7 +552,7 @@ namespace octave
       status = octave_rmdir_wrapper (name.c_str ());
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -657,7 +657,7 @@ namespace octave
       status = octave_unlink_wrapper (name.c_str ());
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -704,7 +704,7 @@ namespace octave
       strcpy (tname, templatename.c_str ());
 
       if (octave_gen_tempname_wrapper (tname) == -1)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
       else
         retval = tname;
 
@@ -739,7 +739,7 @@ namespace octave
 #endif
 
       if (retval.empty ())
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return retval;
     }

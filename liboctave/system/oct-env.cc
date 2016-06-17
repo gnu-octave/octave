@@ -594,7 +594,7 @@ namespace octave
     void
     env::error (int err_num) const
     {
-      (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
+      (*current_liboctave_error_handler) ("%s", std::strerror (err_num));
     }
 
     void

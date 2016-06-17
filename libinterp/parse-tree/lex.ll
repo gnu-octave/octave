@@ -131,16 +131,6 @@ object) relevant global values before and after the nested call.
 #define YY_NO_UNISTD_H 1
 #define isatty octave_isatty_wrapper
 
-#if defined (GNULIB_NAMESPACE)
-// Calls to the following functions appear in the generated output from
-// flex without the namespace tag.  Redefine them so we will use them
-// via the gnulib namespace.
-#  define fprintf GNULIB_NAMESPACE::fprintf
-#  define fwrite GNULIB_NAMESPACE::fwrite
-#  define malloc GNULIB_NAMESPACE::malloc
-#  define realloc GNULIB_NAMESPACE::realloc
-#endif
-
 #if ! (defined (FLEX_SCANNER) \
        && defined (YY_FLEX_MAJOR_VERSION) && YY_FLEX_MAJOR_VERSION >= 2 \
        && defined (YY_FLEX_MINOR_VERSION) && YY_FLEX_MINOR_VERSION >= 5)
@@ -1806,19 +1796,19 @@ ANY_INCLUDING_NL (.|{NL})
 void *
 octave_alloc (yy_size_t size, yyscan_t)
 {
-  return malloc (size);
+  return std::malloc (size);
 }
 
 void *
 octave_realloc (void *ptr, yy_size_t size, yyscan_t)
 {
-  return realloc (ptr, size);
+  return std::realloc (ptr, size);
 }
 
 void
 octave_free (void *ptr, yyscan_t)
 {
-  free (ptr);
+  std::free (ptr);
 }
 
 static void

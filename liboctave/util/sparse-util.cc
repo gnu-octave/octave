@@ -74,8 +74,8 @@ SparseCholPrint (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  int ret = gnulib::vfprintf (stderr, fmt, args);
-  gnulib::fflush (stderr);
+  int ret = std::vfprintf (stderr, fmt, args);
+  std::fflush (stderr);
   va_end (args);
   return ret;
 }

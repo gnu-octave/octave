@@ -16,8 +16,7 @@ SRC_DIR_CPPFLAGS = \
   -Iliboctave/wrappers -I$(srcdir)/liboctave/wrappers \
   -Ilibinterp -I$(srcdir)/libinterp \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
-  -I$(srcdir)/src \
-  -Ilibgnu -I$(srcdir)/libgnu
+  -I$(srcdir)/src
 
 EXTRA_DIST += \
   src/main.in.cc \

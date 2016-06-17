@@ -53,7 +53,7 @@ c_file_ptr_buf::int_type
 c_file_ptr_buf::overflow (int_type c)
 {
   if (f)
-    return (c != traits_type::eof ()) ? gnulib::fputc (c, f) : flush ();
+    return (c != traits_type::eof ()) ? std::fputc (c, f) : flush ();
   else
     return traits_type::not_eof (c);
 }
@@ -63,7 +63,7 @@ c_file_ptr_buf::underflow_common (bool bump)
 {
   if (f)
     {
-      int_type c = gnulib::fgetc (f);
+      int_type c = std::fgetc (f);
 
       if (! bump && c != traits_type::eof ())
         ungetc (c, f);
@@ -85,7 +85,7 @@ std::streamsize
 c_file_ptr_buf::xsputn (const char* s, std::streamsize n)
 {
   if (f)
-    return gnulib::fwrite (s, 1, n, f);
+    return std::fwrite (s, 1, n, f);
   else
     return 0;
 }
@@ -94,7 +94,7 @@ std::streamsize
 c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 {
   if (f)
-    return gnulib::fread (s, 1, n, f);
+    return std::fread (s, 1, n, f);
   else
     return 0;
 }
@@ -147,7 +147,7 @@ c_file_ptr_buf::sync (void)
 int
 c_file_ptr_buf::flush (void)
 {
-  return f ? gnulib::fflush (f) : traits_type::eof ();
+  return f ? std::fflush (f) : traits_type::eof ();
 }
 
 int
@@ -181,7 +181,7 @@ c_file_ptr_buf::tell (void)
 int
 c_file_ptr_buf::file_close (FILE *f)
 {
-  return gnulib::fclose (f);
+  return std::fclose (f);
 }
 
 #if defined (HAVE_ZLIB)

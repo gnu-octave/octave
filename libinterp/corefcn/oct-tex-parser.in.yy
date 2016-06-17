@@ -34,15 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 extern int octave_tex_lex (YYSTYPE *, void *);
 static void yyerror (text_parser_tex& parser, const char *s);
 
-#if defined (GNULIB_NAMESPACE)
-// Calls to the following functions appear in the generated output
-// from Bison without the namespace tag.  Redefine them so we will use
-// them via the gnulib namespace.
-#  define fclose GNULIB_NAMESPACE::fclose
-#  define fprintf GNULIB_NAMESPACE::fprintf
-#  define malloc GNULIB_NAMESPACE::malloc
-#endif
-
 #define scanner parser.get_scanner ()
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)

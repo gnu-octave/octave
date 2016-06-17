@@ -578,7 +578,7 @@ static void
 dblesplit (double x, bool& sign, uint64_t& mtis, int& exp)
 {
   sign = x < 0; x = fabs (x);
-  x = gnulib::frexp (x, &exp);
+  x = std::frexp (x, &exp);
   exp -= 52;
   mtis = static_cast<uint64_t> (ldexp (x, 52));
 }

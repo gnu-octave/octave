@@ -4534,7 +4534,7 @@ type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
               else
                 {
                   int expon;
-                  gnulib::frexpf (val, &expon);
+                  std::frexp (val, &expon);
                   epsval(i) = std::pow (2.0f,
                                         static_cast<float> (expon - 24));
                 }
@@ -4558,7 +4558,7 @@ type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
               else
                 {
                   int expon;
-                  gnulib::frexp (val, &expon);
+                  std::frexp (val, &expon);
                   epsval(i) = std::pow (2.0,
                                         static_cast<double> (expon - 53));
                 }

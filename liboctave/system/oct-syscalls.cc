@@ -62,7 +62,7 @@ namespace octave
       status = octave_dup2_wrapper (old_fd, new_fd);
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -87,7 +87,7 @@ namespace octave
       string_vector::delete_c_str_vec (argv);
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -102,7 +102,7 @@ namespace octave
           status = octave_fork_wrapper ();
 
           if (status < 0)
-            msg = gnulib::strerror (errno);
+            msg = std::strerror (errno);
         }
       else
         msg = NOT_SUPPORTED ("fork");
@@ -123,7 +123,7 @@ namespace octave
             status = octave_fork_wrapper ();
 
           if (status < 0)
-            msg = gnulib::strerror (errno);
+            msg = std::strerror (errno);
         }
       else
         msg = NOT_SUPPORTED ("vfork");
@@ -137,7 +137,7 @@ namespace octave
       pid_t status = octave_getpgrp_wrapper ();
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -195,7 +195,7 @@ namespace octave
       status = octave_pipe_wrapper (fildes);
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }
@@ -217,7 +217,7 @@ namespace octave
       retval = octave_waitpid_wrapper (pid, status, options);
 
       if (retval < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return retval;
     }
@@ -307,7 +307,7 @@ namespace octave
           status = octave_kill_wrapper (pid, sig);
 
           if (status < 0)
-            msg = gnulib::strerror (errno);
+            msg = std::strerror (errno);
         }
       else
         msg = NOT_SUPPORTED ("kill");
@@ -352,7 +352,7 @@ namespace octave
       string_vector::delete_c_str_vec (argv);
 
       if (pid < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return pid;
 #endif
@@ -375,7 +375,7 @@ namespace octave
       status = octave_fcntl_wrapper (fd, cmd, arg);
 
       if (status < 0)
-        msg = gnulib::strerror (errno);
+        msg = std::strerror (errno);
 
       return status;
     }

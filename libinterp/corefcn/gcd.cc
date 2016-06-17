@@ -63,8 +63,8 @@ static void
 divide (const std::complex<FP>& a, const std::complex<FP>& b,
         std::complex<FP>& q, std::complex<FP>& r)
 {
-  FP qr = gnulib::floor ((a/b).real () + 0.5);
-  FP qi = gnulib::floor ((a/b).imag () + 0.5);
+  FP qr = std::floor ((a/b).real () + 0.5);
+  FP qi = std::floor ((a/b).imag () + 0.5);
 
   q = std::complex<FP> (qr, qi);
 
@@ -128,7 +128,7 @@ extended_gcd (double a, double b, double& x, double& y)
 
   while (bb != 0)
     {
-      double qq = gnulib::floor (aa / bb);
+      double qq = std::floor (aa / bb);
       double tt = fmod (aa, bb);
 
       aa = bb;

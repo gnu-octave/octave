@@ -16,7 +16,6 @@ liboctave_liboctave_la_CPPFLAGS = \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
-  -Ilibgnu -I$(srcdir)/libgnu \
   -I$(srcdir)/liboctave/wrappers
 
 liboctave_liboctave_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)

@@ -851,7 +851,7 @@ ft_text_renderer::visit (text_element_string& e)
 
       while (n > 0)
         {
-          size_t r = gnulib::mbrtowc (&wc, str.data () + curr, n, &ps);
+          size_t r = std::mbrtowc (&wc, str.data () + curr, n, &ps);
 
           if (r > 0
               && r != static_cast<size_t> (-1)

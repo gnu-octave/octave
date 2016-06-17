@@ -202,7 +202,7 @@ namespace octave
           if (status < 0)
             {
               fail = true;
-              errmsg = gnulib::strerror (errno);
+              errmsg = std::strerror (errno);
             }
           else
             {
@@ -234,7 +234,7 @@ namespace octave
           if (status < 0)
             {
               fail = true;
-              errmsg = gnulib::strerror (errno);
+              errmsg = std::strerror (errno);
             }
           else
             {

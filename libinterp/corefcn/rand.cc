@@ -1135,7 +1135,7 @@ using std::unordered_map;
       for (octave_idx_type i = 0; i < m; i++)
         {
           octave_idx_type k = i +
-            gnulib::floor (rvec[i] * (n - i));
+            std::floor (rvec[i] * (n - i));
 
           // For shuffling first m entries, no need to use extra
           // storage
@@ -1158,7 +1158,7 @@ using std::unordered_map;
       for (octave_idx_type i = 0; i < m; i++)
         {
           octave_idx_type k = i +
-            gnulib::floor (rvec[i] * (n - i));
+            std::floor (rvec[i] * (n - i));
           std::swap (ivec[i], ivec[k]);
         }
     }

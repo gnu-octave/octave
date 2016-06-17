@@ -20,10 +20,6 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (GNULIB_NAMESPACE)
-#  define GNULIB_NAMESPACE gnulib
-#endif
-
 /* The C++ standard is evolving to allow attribute hints in a
    compiler-independent manner.  In C++ 2011 support for noreturn was
    added.  In C++ 2014 support for deprecated was added.  The Octave

@@ -59,7 +59,7 @@ get_line (FILE *fp)
 
   while (true)
     {
-      c = gnulib::fgetc (fp);
+      c = std::fgetc (fp);
       if (c == '\n' || c == EOF)
         break;
       if (buf.size () <= idx)

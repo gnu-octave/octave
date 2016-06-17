@@ -46,7 +46,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 
   if (! fs)
     // Note: error is inherited from octave_base_stream, not ::error.
-    error (gnulib::strerror (errno));
+    error (std::strerror (errno));
 }
 
 // Position a stream at OFFSET relative to ORIGIN.

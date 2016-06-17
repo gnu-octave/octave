@@ -460,7 +460,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 #if defined (HAVE_ZLIB)
       if (use_zlib)
         {
-          FILE *fptr = gnulib::fopen (fname.c_str (), mode.c_str ());
+          FILE *fptr = std::fopen (fname.c_str (), mode.c_str ());
 
           int fd = fileno (fptr);
 
@@ -470,18 +470,18 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
             retval = octave_zstdiostream::create (fname, gzf, fd,
                                                   md, flt_fmt);
           else
-            retval.error (gnulib::strerror (errno));
+            retval.error (std::strerror (errno));
         }
       else
 #endif
         {
-          FILE *fptr = gnulib::fopen (fname.c_str (), mode.c_str ());
+          FILE *fptr = std::fopen (fname.c_str (), mode.c_str ());
 
           retval = octave_stdiostream::create (fname, fptr, md,
                                                flt_fmt);
 
           if (! fptr)
-            retval.error (gnulib::strerror (errno));
+            retval.error (std::strerror (errno));
         }
 
     }
@@ -2839,7 +2839,7 @@ system-dependent error message.\n\
 
   octave_value_list retval;
 
-  FILE *fid = gnulib::tmpfile ();
+  FILE *fid = std::tmpfile ();
 
   if (fid)
     {
@@ -2856,7 +2856,7 @@ system-dependent error message.\n\
     }
   else
     {
-      retval = ovl (-1, gnulib::strerror (errno));
+      retval = ovl (-1, std::strerror (errno));
     }
 
   return retval;
@@ -2903,7 +2903,7 @@ message.\n\
   if (fd < 0)
     {
       retval(0) = fd;
-      retval(2) = gnulib::strerror (errno);
+      retval(2) = std::strerror (errno);
     }
   else
     {
@@ -2914,7 +2914,7 @@ message.\n\
       if (! fid)
         {
           retval(0) = -1;
-          retval(2) = gnulib::strerror (errno);
+          retval(2) = std::strerror (errno);
         }
       else
         {

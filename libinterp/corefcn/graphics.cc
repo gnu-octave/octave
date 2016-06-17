@@ -6670,7 +6670,7 @@ magform (double x, double& a, int& b)
     }
   else
     {
-      b = static_cast<int> (gnulib::floor (std::log10 (std::abs (x))));
+      b = static_cast<int> (std::floor (std::log10 (std::abs (x))));
       a = x / std::pow (10.0, b);
     }
 }
@@ -6766,14 +6766,14 @@ axes::properties::get_axis_limits (double xmin, double xmax,
           if (min_val > 0)
             {
               // Log plots with all positive data
-              min_val = pow (10, gnulib::floor (log10 (min_val)));
+              min_val = pow (10, std::floor (log10 (min_val)));
               max_val = pow (10, std::ceil (log10 (max_val)));
             }
           else
             {
               // Log plots with all negative data
               min_val = -pow (10, std::ceil (log10 (-min_val)));
-              max_val = -pow (10, gnulib::floor (log10 (-max_val)));
+              max_val = -pow (10, std::floor (log10 (-max_val)));
             }
         }
       else
@@ -6792,7 +6792,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
             }
 
           double tick_sep = calc_tick_sep (min_val, max_val);
-          double min_tick = gnulib::floor (min_val / tick_sep);
+          double min_tick = std::floor (min_val / tick_sep);
           double max_tick = std::ceil (max_val / tick_sep);
           // Prevent round-off from cropping ticks
           min_val = std::min (min_val, tick_sep * min_tick);
@@ -6854,7 +6854,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   else
     tick_sep = calc_tick_sep (lo, hi);
 
-  int i1 = static_cast<int> (gnulib::floor (lo / tick_sep));
+  int i1 = static_cast<int> (std::floor (lo / tick_sep));
   int i2 = static_cast<int> (std::ceil (hi / tick_sep));
 
   if (limmode_is_auto)
@@ -6956,9 +6956,9 @@ axes::properties::calc_ticklabels (const array_property& ticks,
       for (int i = 0; i < values.numel (); i++)
         {
           if (values(i) < 0.0)
-            exponent = gnulib::floor (std::log10 (-values(i)));
+            exponent = std::floor (std::log10 (-values(i)));
           else
-            exponent = gnulib::floor (std::log10 (values(i)));
+            exponent = std::floor (std::log10 (values(i)));
           significand = values(i) * std::pow (10., -exponent);
 
           os.str ("");

@@ -1644,7 +1644,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       wrap = true;
       for (i = 0; i < nivals + 1; i++)
         if (octave::math::isinf (iivals[i]))
-          iivals[i] = gnulib::copysign (1.0, iivals[i]);
+          iivals[i] = std::copysign (1.0, iivals[i]);
         else
           iivals[i] = 2.0 * atan (iivals[i]) / M_PI;
     }
@@ -1982,7 +1982,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                                   && ivl->c[0] / iv->c[0] > 2);
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
             {
-              igral = gnulib::copysign (octave::numeric_limits<double>::Inf (), igral);
+              igral = std::copysign (octave::numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }
@@ -2073,7 +2073,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                                   && ivr->c[0] / iv->c[0] > 2);
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
             {
-              igral = gnulib::copysign (octave::numeric_limits<double>::Inf (), igral);
+              igral = std::copysign (octave::numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }

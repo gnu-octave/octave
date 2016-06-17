@@ -149,7 +149,7 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
           // find first non-integer, then gripe about it
           double b = r.base ();
           double inc = r.inc ();
-          err_invalid_index (b != gnulib::floor (b) ? b : b + inc);
+          err_invalid_index (b != std::floor (b) ? b : b + inc);
         }
     }
 }

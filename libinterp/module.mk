@@ -19,7 +19,6 @@ libinterp_liboctinterp_la_CPPFLAGS = \
   -I$(srcdir)/libinterp/operators \
   -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
-  -Ilibgnu -I$(srcdir)/libgnu \
   -I$(srcdir)/liboctave/wrappers \
   $(HDF5_CPPFLAGS) \
   $(MAGICK_CPPFLAGS)

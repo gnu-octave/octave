@@ -118,7 +118,7 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
         goto restart; /* rare, so don't bother moving up */
       u = RUNI;
       xsq = x*x;
-      if (u >= 1.-0.0331*xsq*xsq && gnulib::log (u) >= 0.5*xsq + d*(1-v+gnulib::log (v)))
+      if (u >= 1.-0.0331*xsq*xsq && std::log (u) >= 0.5*xsq + d*(1-v+std::log (v)))
         goto restart;
       r[i] = d*v;
     }
@@ -173,7 +173,7 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
         goto frestart; /* rare, so don't bother moving up */
       u = RUNI;
       xsq = x*x;
-      if (u >= 1.-0.0331*xsq*xsq && gnulib::log (u) >= 0.5*xsq + d*(1-v+gnulib::log (v)))
+      if (u >= 1.-0.0331*xsq*xsq && std::log (u) >= 0.5*xsq + d*(1-v+std::log (v)))
         goto frestart;
       r[i] = d*v;
     }

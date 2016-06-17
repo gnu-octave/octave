@@ -206,7 +206,11 @@ DEFUN (atan2, args, ,
 Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
 and @var{x}.\n\
 \n\
-@var{y} and @var{x} must match in size and orientation.\n\
+@var{y} and @var{x} must match in size and orientation.  The signs of\n\
+elements of @var{y} and @var{x} are used to determine the quadrats of each\n\
+resulting value.\n\
+\n\
+This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.\n\
 @seealso{tan, tand, tanh, atanh}\n\
 @end deftypefn")
 {

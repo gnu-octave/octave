@@ -111,7 +111,11 @@ octave_execvp_wrapper (const char *file, char *const *argv)
 pid_t
 octave_fork_wrapper (void)
 {
+#if defined (HAVE_FORK)
   return fork ();
+#else
+  return -1;
+#endif
 }
 
 int
@@ -231,5 +235,29 @@ octave_unlink_wrapper (const char *nm)
 pid_t
 octave_vfork_wrapper (void)
 {
+#if defined (HAVE_VFORK)
   return vfork ();
+#else
+  return -1;
+#endif
+}
+
+bool
+octave_have_fork (void)
+{
+#if defined (HAVE_FORK)
+  return true;
+#else
+  return false;
+#endif
+}
+
+bool
+octave_have_vfork (void)
+{
+#if defined (HAVE_VFORK)
+  return true;
+#else
+  return false;
+#endif
 }

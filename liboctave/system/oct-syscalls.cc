@@ -101,14 +101,15 @@ namespace octave
     {
       pid_t status = -1;
 
-#if defined (HAVE_FORK)
-      status = octave_fork_wrapper ();
+      if (octave_have_fork ())
+        {
+          status = octave_fork_wrapper ();
 
-      if (status < 0)
-        msg = gnulib::strerror (errno);
-#else
-      msg = NOT_SUPPORTED ("vfork");
-#endif
+          if (status < 0)
+            msg = gnulib::strerror (errno);
+        }
+      else
+        msg = NOT_SUPPORTED ("fork");
 
       return status;
     }
@@ -118,18 +119,18 @@ namespace octave
     {
       pid_t status = -1;
 
-#if defined (HAVE_VFORK) || defined (HAVE_FORK)
-#  if defined (HAVE_VFORK)
-      status = octave_vfork_wrapper ();
-#  else
-      status = octave_fork_wrapper ();
-#  endif
+      if (octave_have_vfork () || octave_have_fork ())
+        {
+          if (octave_have_vfork ())
+            status = octave_vfork_wrapper ();
+          else
+            status = octave_fork_wrapper ();
 
-      if (status < 0)
-        msg = gnulib::strerror (errno);
-#else
-      msg = NOT_SUPPORTED ("vfork");
-#endif
+          if (status < 0)
+            msg = gnulib::strerror (errno);
+        }
+      else
+        msg = NOT_SUPPORTED ("vfork");
 
       return status;
     }

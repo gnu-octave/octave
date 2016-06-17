@@ -23,6 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_unistd_wrappers_h)
 #define octave_unistd_wrappers_h 1
 
+#if ! defined (__cplusplus)
+#  include <stdbool.h>
+#endif
+
 #if defined __cplusplus
 extern "C" {
 #endif
@@ -90,6 +94,10 @@ extern int octave_symlink_wrapper (const char *nm1, const char *nm2);
 extern int octave_unlink_wrapper (const char *nm);
 
 extern pid_t octave_vfork_wrapper (void);
+
+extern bool octave_have_fork (void);
+
+extern bool octave_have_vfork (void);
 
 #if defined __cplusplus
 }

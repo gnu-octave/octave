@@ -62,7 +62,7 @@ along with Octave; see the file COPYING.  If not, see
   @code{.cc}
   dim_vector d (10, 5, 3);
   octave_idx_type n = d.numel (); // returns 150
-  octave_idx_type nd = d.ndims (); // returns 2
+  octave_idx_type nd = d.ndims (); // returns 3
   @endcode
 
   ## Implementation details ##
@@ -173,19 +173,13 @@ private:
 
 public:
 
-// There are constructors for up to 7 dimensions initialized this way.
-// More can be added if necessary.
-#define ASSIGN_REP(i) rep[i] = d ## i;
-#define DIM_VECTOR_CTOR(N) \
-  dim_vector (OCT_MAKE_DECL_LIST (octave_idx_type, d, N)) \
-    : rep (newrep (N)) \
-  { \
-    OCT_ITERATE_MACRO (ASSIGN_REP, N) \
-  }
-
-  //! Construct dim_vector for 2 dimensional array.
+  //! Construct dim_vector for a N dimensional array.
   /*!
-    It can be used to construct a 2D array.  Example:
+
+    Each argument to constructor defines the length of an additional
+    dimension.  A dim_vector always represents a minimum of 2 dimensions
+    (just like an Array has at least 2 dimensions) and there is no
+    upper limit on the number of dimensions.
 
     @code{.cc}
     dim_vector dv (7, 5);
@@ -196,45 +190,32 @@ public:
     one for each dimension.  It can then be used to construct a Matrix
     with such dimensions, i.e., 7 rows and 5 columns.
 
-    There are constructors available for up to 7 dimensions.  For a higher
-    number of dimensions, use redim() or resize().
-
-    Note that that there is no constructor for a 1 element dim_vector.
-    This is because there are no 1 dimensional Array in liboctave.  Such
-    constructor did exist in liboctave but was removed in version 4.0.0
-    due to its potential for confusion.
-  */
-  DIM_VECTOR_CTOR (2)
-
-  //! Construct dim_vector for 3 dimensional array.
-  /*!
-    It can be used to construct a 3D array.  Example:
-
     @code{.cc}
-    NDArray A (dim_vector (7, 5, 4));
+    NDArray x (dim_vector (7, 5, 10));
     @endcode
 
-    This will construct a 3 dimensional NDArray of lengths 7, 5, and 4,
+    This will construct a 3 dimensional NDArray of lengths 7, 5, and 10,
     on the first, second, and third dimension (rows, columns, and pages)
     respectively.
+
+    Note that that there is no constructor that accepts only one
+    dimension length to avoid confusion.  The source for such confusion
+    is that constructor could mean:
+      - a column vector, i.e., assume @f$[N, 1]@f$;
+      - a square matrix, i.e., as is common in Octave interpreter;
+      - support for a 1 dimensional Array (does not exist);
   */
-  DIM_VECTOR_CTOR (3)
-
-  //! Construct dim_vector for 4 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (4)
-  //! Construct dim_vector for 5 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (5)
-  //! Construct dim_vector for 6 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (6)
-  //! Construct dim_vector for 7 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (7)
-
-#undef ASSIGN_REP
-#undef DIM_VECTOR_CTOR
+  template <typename... Ints>
+  dim_vector (const octave_idx_type r, const octave_idx_type c,
+              Ints... lengths) : rep (newrep (2 + sizeof... (Ints)))
+  {
+    // Using r, c, and lengths, makes sure that there's always a min of
+    // 2 dimensions specified, and that lengths are ints (since otherwise
+    // they can't form a list.
+    for (const auto l: {r, c, lengths...})
+      *rep++ = l;
+    rep -= (2 + sizeof... (Ints));
+  }
 
   octave_idx_type& elem (int i)
   {

@@ -671,8 +671,9 @@ ft_text_renderer::set_mode (int m)
         }
       else
         {
-          pixels = uint8NDArray (dim_vector (4, bbox(2), bbox(3)),
-                                 static_cast<uint8_t> (0));
+          dim_vector d (4, octave_idx_type (bbox(2)),
+                        octave_idx_type (bbox(3)));
+          pixels = uint8NDArray (d, static_cast<uint8_t> (0));
           xoffset = compute_line_xoffset (line_bbox.front ());
           line_yoffset = -bbox(1)-1;
           yoffset = 0;

@@ -29,7 +29,7 @@ extern "C" {
 
 extern pid_t
 octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
-               int *fildes);
+               int *fildes, const char **errmsg);
 
 #if defined __cplusplus
 }

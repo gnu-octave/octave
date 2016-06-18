@@ -45,7 +45,11 @@ along with Octave; see the file COPYING.  If not, see
 int
 octave_kill_wrapper (pid_t pid, int signum)
 {
+#if defined (HAVE_KILL)
   return kill (pid, signum);
+#else
+  return -1;
+#endif
 }
 
 char *

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <ctime>
 #include <cstdio>
 #include <cstring>
 

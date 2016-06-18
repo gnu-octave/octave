@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include <stdbool.h>
 #endif
 
+#include <sys/types.h>
+
 #if defined __cplusplus
 extern "C" {
 #endif

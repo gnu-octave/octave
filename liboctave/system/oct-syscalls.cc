@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <ctime>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
@@ -339,23 +340,18 @@ namespace octave
             bool sync_mode, int *fildes, std::string& msg,
             bool & /* interactive */)
     {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-      // FIXME: this function could be combined with octave_popen2 in
-      // liboctave/wrappers/octave-popen2.c.
-
-      return octave::sys::win_popen2 (cmd, args, sync_mode, fildes, msg);
-#else
       char **argv = args.c_str_vec ();
+      const char *errmsg;
 
-      pid_t pid = octave_popen2 (cmd.c_str (), argv, sync_mode, fildes);
+      pid_t pid = octave_popen2 (cmd.c_str (), argv, sync_mode, fildes,
+                                 &errmsg);
 
       string_vector::delete_c_str_vec (argv);
 
       if (pid < 0)
-        msg = std::strerror (errno);
+        msg = errmsg;
 
       return pid;
-#endif
     }
 
     int

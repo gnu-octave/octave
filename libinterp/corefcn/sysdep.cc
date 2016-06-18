@@ -109,8 +109,9 @@ BSD_init (void)
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
 #define WIN32_LEAN_AND_MEAN
-#include <tlhelp32.h>
 #include <windows.h>
+#include <tlhelp32.h>
+#include <shellapi.h>
 
 static void
 w32_set_octave_home (void)

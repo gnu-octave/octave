@@ -64,6 +64,10 @@ octave_wcoredump_wrapper (int status)
   return WCOREDUMP (status);
 }
 
+#if ! defined (WIFCONTINUED)
+#  define WIFCONTINUED(x) false
+#endif
+
 bool
 octave_wifcontinued_wrapper (int status)
 {

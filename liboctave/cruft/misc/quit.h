@@ -36,18 +36,6 @@ extern "C" {
 #  include <signal.h>
 #endif
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
-
-OCTAVE_API extern void w32_sigint_init (void);   /* setup */
-OCTAVE_API extern void w32_raise_final (void);   /* tear down */
-OCTAVE_API extern void w32_raise (int sig);      /* raise signal in main thread */
-OCTAVE_API extern int w32_in_main_thread (void); /* return true if in main thread */
-
-#endif
-
 #if defined (OCTAVE_HAVE_SIG_JUMP)
 
 typedef sigjmp_buf octave_jmp_buf;

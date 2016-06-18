@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_fcntl_wrappers_h)
 #define octave_fcntl_wrappers_h 1
 
+#include <sys/types.h>
+
 #if defined __cplusplus
 extern "C" {
 #endif

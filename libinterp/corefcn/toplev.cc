@@ -35,6 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#  define WIN32_LEAN_AND_MEAN 1
+#  include <windows.h>
+#endif
+
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"

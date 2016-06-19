@@ -3160,7 +3160,7 @@ public:
       array_property commandwindowsize r , Matrix (1, 2, 0)
       handle_property currentfigure S , graphics_handle ()
       string_property fixedwidthfontname , "Courier"
-      array_property monitorpositions r , Matrix (1, 4, 0)
+      array_property monitorpositions r , default_screensize ()
       array_property pointerlocation , Matrix (1, 2, 0)
       double_property pointerwindow r , 0.0
       double_property screendepth r , default_screendepth ()

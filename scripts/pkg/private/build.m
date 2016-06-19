@@ -1,5 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+## Copyright (C) 2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -49,15 +48,22 @@ function build (builddir, tarballs, verbose)
 
   for i = 1:numel(tarballs)
     filelist = unpack (tarballs{i}, builddir);
-    [~, root_idx] = min (cellfun ("numel", filelist));
-    package_root = filelist{root_idx};
-    build_root = fullfile (builddir, filelist{root_idx});
 
-    desc = get_description (fullfile (build_root, "DESCRIPTION"));
+    ## We want the path for the package root but we can't assume that
+    ## exists in the filelist (see patch #9030).  So we deduce it from
+    ## the path of the DESCRIPTION file (smallest in case there's another
+    ## file named DESCRIPTION somewhere).
+    desc_pos = regexp (filelist, "DESCRIPTION$");
+    desc_mask = ! cellfun ("isempty", desc_pos);
+    [~, desc_r_idx] = min ([desc_pos{desc_mask}]);
+    desc_path = fullfile (builddir, filelist(desc_mask){desc_r_idx});
+    build_root = desc_path(1:end-12); # do not include the last filesep
+
+    desc = get_description (desc_path);
 
     ## If there is no configure or Makefile within src/, there is nothing
     ## to do to prepare a "binary" package.  We only repackage to add more
-    ## info on the filename (version and arch).
+    ## info to the tarball filename (version and arch).
     if (! exist (fullfile (build_root, "src", "configure"), "file")
         && ! exist (fullfile (build_root, "src", "Makefile"), "file"))
       arch_abi = "any-none";
@@ -67,22 +73,22 @@ function build (builddir, tarballs, verbose)
       unlink (fullfile (build_root, "src", "configure"));
       unlink (fullfile (build_root, "src", "Makefile"));
     endif
-    tfile = [desc.name "-" desc.version "-" arch_abi ".tar"];
+    tar_name = [desc.name "-" desc.version "-" arch_abi ".tar"];
+    tar_path = fullfile (builddir, tar_name);
 
-    init_wd = pwd ();
-    unwind_protect
-      chdir (builddir);
-      try
-        tar (tfile, package_root);
-        rmdir (package_root, "s");
-        gzip (tfile);
-        unlink (tfile);
-      catch
-        warning ("failed to create and compress %s", tfile);
-      end_try_catch
-    unwind_protect_cleanup
-      chdir (init_wd);
-    end_unwind_protect
+    ## Figure out the directory name of the build.  Note that fileparts
+    ## gets confused with the version string (the periods makes it think
+    ## it's a file extension).
+    [~, package_root, package_ext] = fileparts (build_root);
+    package_root = [package_root, package_ext];
+
+    tar (tar_path, package_root, builddir);
+    gzip (tar_path, builddir);
+    rmdir (build_root, "s");
+
+    ## Currently does nothing because gzip() removes the original tar
+    ## file but that should change in the future (bug #43431).
+    unlink (tar_path);
   endfor
 
 endfunction

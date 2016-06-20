@@ -2465,8 +2465,14 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
         {
           std::string dir = p;
 
-          //dir = regexprep (dir_elts{j}, '//+', "/");
-          //dir = regexprep (dir, '/$', "");
+          // Remove duplicate directory separators 
+          dir.erase (std::unique (dir.begin (), dir.end (),
+                                  [](char l, char r)
+                                  {
+                                    return l == r &&
+                                           octave::sys::file_ops::is_dir_sep (l);
+                                  }),
+                     dir.end ());
 
           if (append)
             load_path::append (dir, true);

@@ -2402,8 +2402,8 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 @seealso{path, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {
-  // Originally written by Bill Denney and Etienne Grossman.  Heavily
-  // modified and translated to C++ by jwe.
+  // Originally written by Bill Denney and Etienne Grossman.
+  // Heavily modified and translated to C++ by jwe.
 
   int nargin = args.length ();
 
@@ -2448,20 +2448,22 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 
   bool need_to_update = false;
 
-  for (int i = 0; i < nargin; i++)
+  octave_value_list arglist (args.slice (0, nargin));
+  if (! append)
+    arglist.reverse ();
+
+  for (int i = 0; i < arglist.length (); i++)
     {
-      std::string arg = args(i).xstring_value ("addpath: all arguments must be strings");
+      std::string arg = arglist(i).xstring_value ("addpath: all arguments must be strings");
 
       std::list<std::string> dir_elts = split_path (arg);
 
       if (! append)
         std::reverse (dir_elts.begin (), dir_elts.end ());
 
-      for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-           p != dir_elts.end ();
-           p++)
+      for (const auto& p : dir_elts)
         {
-          std::string dir = *p;
+          std::string dir = p;
 
           //dir = regexprep (dir_elts{j}, '//+', "/");
           //dir = regexprep (dir, '/$', "");

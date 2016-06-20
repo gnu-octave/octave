@@ -33,9 +33,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "hsv");
-## PKG_DEL: colormap ("unregister", "hsv");
-
 function map = hsv (n = rows (colormap ()))
 
   if (nargin > 1)

@@ -29,9 +29,6 @@
 ## Author:  Kai Habel <kai.habel@gmx.de>
 ## Date:  06/03/2000
 
-## PKG_ADD: colormap ("register", "summer");
-## PKG_DEL: colormap ("unregister", "summer");
-
 function map = summer (n = rows (colormap ()))
 
   if (nargin > 1)

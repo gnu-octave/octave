@@ -32,9 +32,6 @@
 
 ## Author: Carlo de Falco
 
-## PKG_ADD: colormap ("register", "viridis");
-## PKG_DEL: colormap ("unregister", "viridis");
-
 ## This is a port to Octave of the default matplotlib colormap "viridis"
 ## by Eric Firing.  The original file is distributed under CC0:
 ## http://creativecommons.org/publicdomain/zero/1.0

@@ -29,9 +29,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "prism");
-## PKG_DEL: colormap ("unregister", "prism");
-
 function map = prism (n = rows (colormap ()))
 
   if (nargin > 1)

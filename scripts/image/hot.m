@@ -29,9 +29,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "hot");
-## PKG_DEL: colormap ("unregister", "hot");
-
 function map = hot (n = rows (colormap ()))
 
   if (nargin > 1)

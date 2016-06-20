@@ -29,9 +29,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "bone");
-## PKG_DEL: colormap ("unregister", "bone");
-
 function map = bone (n = rows (colormap ()))
 
   if (nargin > 1)

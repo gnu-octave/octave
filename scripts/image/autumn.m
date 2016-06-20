@@ -29,9 +29,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "autumn");
-## PKG_DEL: colormap ("unregister", "autumn");
-
 function map = autumn (n = rows (colormap ()))
 
   if (nargin > 1)

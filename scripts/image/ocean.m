@@ -31,9 +31,6 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-## PKG_ADD: colormap ("register", "ocean");
-## PKG_DEL: colormap ("unregister", "ocean");
-
 function map = ocean (n = rows (colormap ()))
 
   if (nargin > 1)

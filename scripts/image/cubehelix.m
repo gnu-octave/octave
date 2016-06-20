@@ -43,9 +43,6 @@
 
 ## Author: Carnë Draug <carandraug@octave.org>
 
-## PKG_ADD: colormap ("register", "cubehelix");
-## PKG_DEL: colormap ("unregister", "cubehelix");
-
 function map = cubehelix (n = rows (colormap ()), start = 0.5,
                           rots = -1.5, hue = 1, gamma = 1)
 

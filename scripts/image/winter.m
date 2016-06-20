@@ -28,9 +28,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "winter");
-## PKG_DEL: colormap ("unregister", "winter");
-
 function map = winter (n = rows (colormap ()))
 
   if (nargin > 1)

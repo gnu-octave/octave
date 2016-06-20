@@ -29,9 +29,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "copper");
-## PKG_DEL: colormap ("unregister", "copper");
-
 function map = copper (n = rows (colormap ()))
 
   if (nargin > 1)

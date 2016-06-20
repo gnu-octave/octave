@@ -29,9 +29,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "flag");
-## PKG_DEL: colormap ("unregister", "flag");
-
 function map = flag (n = rows (colormap ()))
 
   if (nargin > 1)

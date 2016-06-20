@@ -29,9 +29,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "jet");
-## PKG_DEL: colormap ("unregister", "jet");
-
 function map = jet (n = rows (colormap ()))
 
   if (nargin > 1)

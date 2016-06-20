@@ -20,13 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{cmap} =} colormap ()
 ## @deftypefnx {} {@var{cmap} =} colormap (@var{map})
-## @deftypefnx {} {@var{cmap} =} colormap ("default")
-## @deftypefnx {} {@var{cmap} =} colormap ("@var{map_name}")
+## @deftypefnx {} {@var{cmap} =} colormap (@qcode{"default"})
+## @deftypefnx {} {@var{cmap} =} colormap (@var{map_name})
 ## @deftypefnx {} {@var{cmap} =} colormap (@var{hax}, @dots{})
 ## @deftypefnx {} {} colormap @var{map_name}
-## @deftypefnx {} {@var{cmaps} =} colormap ("list")
-## @deftypefnx {} {} colormap ("register", "@var{name}")
-## @deftypefnx {} {} colormap ("unregister", "@var{name}")
 ## Query or set the current colormap.
 ##
 ## With no input arguments, @code{colormap} returns the current color map.
@@ -36,21 +33,17 @@
 ## contain red, green, and blue intensities respectively.  All entries
 ## must be between 0 and 1 inclusive.  The new colormap is returned.
 ##
-## @code{colormap ("default")} restores the default colormap (the
+## @code{colormap (@qcode{"default"})} restores the default colormap (the
 ## @code{viridis} map with 64 entries).  The default colormap is returned.
 ##
-## The map may also be specified by a string, @qcode{"@var{map_name}"}, where
-## @var{map_name} is the name of a function that returns a colormap.
+## The map may also be specified by a string, @var{map_name}, which
+## is the name of a function that returns a colormap.
 ##
 ## If the first argument @var{hax} is an axes handle, then the colormap for
 ## the parent figure of @var{hax} is queried or set.
 ##
 ## For convenience, it is also possible to use this function with the
 ## command form, @code{colormap @var{map_name}}.
-##
-## @code{colormap ("list")} returns a cell array with all of the available
-## colormaps.  The options @qcode{"register"} and @qcode{"unregister"}
-## add or remove the colormap @var{name} from this list.
 ##
 ## @seealso{viridis}
 ## @end deftypefn
@@ -61,12 +54,9 @@
 
 function cmap = colormap (varargin)
 
-  mlock; # prevent map_list to be cleared by "clear all"
-  persistent map_list = cell ();
-
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("colormap", varargin{:});
 
-  if (nargin > 2)
+  if (nargin > 1)
     print_usage ();
   endif
 
@@ -81,9 +71,6 @@ function cmap = colormap (varargin)
     if (ischar (map))
       if (strcmp (map, "default"))
         map = viridis (64);
-      elseif (strcmp (map, "list"))
-        cmap = map_list;
-        return;
       else
         map = feval (map);
       endif
@@ -103,23 +90,10 @@ function cmap = colormap (varargin)
       ## Set the new color map
       set (cf, "colormap", map);
     endif
-
-  elseif (nargin == 2)
-    opt = varargin{1};
-    name = varargin{2};
-    if (! ischar (opt) || ! any (strcmp (opt, {"register", "unregister"})))
-      print_usage ();
-    elseif (! ischar (name))
-      error ("colormap: to register/unregister a colormap, NAME must be a string");
-    elseif (strcmp (opt, "register"))
-      map_list{end+1} = name;
-    elseif (strcmp (opt, "unregister"))
-      map_list(strcmp (name, map_list)) = [];
-    endif
   endif
 
   ## Return current color map.
-  if (nargout > 0 || (nargout == 0 && nargin == 0))
+  if (nargout > 0 || nargin == 0)
     if (isempty (cf))
       cf = gcf ();
     endif
@@ -160,27 +134,6 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   cmaplst = colormap ("list");
-%!   assert (iscell (cmaplst));
-%!   colormap ("register", "__mycmap__");
-%!   cmaplst2 = colormap ("list");
-%!   assert (numel (cmaplst2), numel (cmaplst) + 1);
-%!   assert (any (strcmp (cmaplst2, "__mycmap__")));
-%!   colormap ("unregister", "__mycmap__");
-%!   cmaplst2 = colormap ("list");
-%!   assert (numel (cmaplst2), numel (cmaplst));
-%!   assert (! any (strcmp (cmaplst2, "__mycmap__")));
-%!   ## Unregister again and verify that nothing has happened
-%!   colormap ("unregister", "__mycmap__");
-%!   cmaplst3 = colormap ("list");
-%!   assert (isequal (cmaplst2, cmaplst3));
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
 ## Test input validation
 %!error colormap (1,2,3)
 %!error <MAP must be a real-valued N x 3> colormap ({1,2,3})
@@ -190,5 +143,4 @@ endfunction
 %!error <all MAP values must be in the range> colormap ([-1 0 0])
 %!error <all MAP values must be in the range> colormap ([2 0 0])
 %!error colormap ("invalid", "name")
-%!error <NAME must be a string> colormap ("register", 1)
 

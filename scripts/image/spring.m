@@ -28,9 +28,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-## PKG_ADD: colormap ("register", "spring");
-## PKG_DEL: colormap ("unregister", "spring");
-
 function map = spring (n = rows (colormap ()))
 
   if (nargin > 1)

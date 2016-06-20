@@ -3765,11 +3765,12 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       break;
     case '.':
       {
+        // The dot marker is special and is drawn at 1/3rd the specified size
         double ang_step = M_PI / 5;
 
         glBegin (GL_POLYGON);
         for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-          glVertex2d (sz*cos (ang)/3, sz*sin (ang)/3);
+          glVertex2d (sz*cos (ang)/6, sz*sin (ang)/6);
         glEnd ();
       }
       break;

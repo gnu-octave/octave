@@ -632,6 +632,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           scmd = "linestyle";
         endif
 
+        if isempty (style{1})
+          style{1} = "points";
+          data{data_idx} = {};
+        endif
         withclause{data_idx} = sprintf ("with %s %s %d",
                                         style{1}, scmd, sidx(1));
 
@@ -1313,7 +1317,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               titlespec{data_idx} = tspec;
               usingclause{data_idx} = sprintf ("record=%dx1 using ($1):($2):($3)%s",
                                                yrec, ccol);
-              data{data_idx} = zz;
+              if isempty (style{i_stl})
+                style{i_stl} = "points";
+                data{data_idx} = {};
+              else
+                data{data_idx} = zz;
+              endif
               withclause{data_idx} = sprintf ("with %s %s %s",
                                               style{i_stl}, scmd, sopt);
             endfor
@@ -2012,12 +2021,7 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
       case "*"
         pt = pt2 = "3";
       case "."
-        pt = "6";
-        pt2 = "7";
-        if (isfield (obj, "markerfacecolor")
-            || strcmp (obj.markerfacecolor, "none"))
-          obj.markerfacecolor = "auto";
-        endif
+        pt = pt2 = "7";
         if (isfield (obj, "markersize"))
           obj.markersize /= 3;
         else

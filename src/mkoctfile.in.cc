@@ -35,8 +35,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
-#include "unistd-wrappers.h"
-#include "wait-wrappers.h"
+#if defined (CROSS)
+#  include <sys/types.h>
+#  include <sys/wait.h>
+#  include <unistd.h>
+#else
+#  include "unistd-wrappers.h"
+#  include "wait-wrappers.h"
+#endif
 
 static std::map<std::string, std::string> vars;
 
@@ -49,6 +55,28 @@ static std::map<std::string, std::string> vars;
 #endif
 
 #include "shared-fcns.h"
+
+#if defined (CROSS)
+
+static int
+octave_unlink_wrapper (const char *nm)
+{
+  return unlink (nm);
+}
+
+static bool
+octave_wifexited_wrapper (int status)
+{
+  return WIFEXITED (status);
+}
+
+static int
+octave_wexitstatus_wrapper (int status)
+{
+  return WEXITSTATUS (status);
+}
+
+#endif
 
 static std::string
 get_line (FILE *fp)

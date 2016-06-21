@@ -178,7 +178,7 @@ if AMCOND_CROSS_TOOLS
 OCTAVE_CROSS_TOOLS += src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT)
 
 src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT): src/$(host_triplet)-mkoctfile.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-mkoctfile.cc
+	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-mkoctfile.cc
 
 src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc build-aux/subst-cross-config-vals.sh | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-cross-config-vals.sh)
@@ -188,7 +188,7 @@ src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc build-aux/subst-cross-conf
 OCTAVE_CROSS_TOOLS += src/$(host_triplet)-octave-config$(BUILD_EXEEXT)
 
 src/$(host_triplet)-octave-config$(BUILD_EXEEXT): src/$(host_triplet)-octave-config.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -Dgnulib='' -Doctave_idx_type=int $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-octave-config.cc
+	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-octave-config.cc
 
 src/$(host_triplet)-octave-config.cc: src/octave-config.in.cc build-aux/subst-default-vals.sh | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)

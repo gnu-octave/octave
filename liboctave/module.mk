@@ -69,7 +69,7 @@ include liboctave/wrappers/module.mk
 
 ## liboctave merely collects a bunch of compiled convenience libraries.
 ## It has no source code itself.
-liboctave_liboctave_la_SOURCES = \
+nodist_liboctave_liboctave_la_SOURCES = \
   liboctave/liboctave-build-info.cc
 
 # Dummy C++ source to force C++ linking.

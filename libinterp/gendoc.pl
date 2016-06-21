@@ -20,8 +20,7 @@
 
 unless (@ARGV > 1) { die "Usage: $0 SRCDIR src-file1 ..." }
 
-$srcdir = $ARGV[0];
-shift;
+$srcdir = shift (@ARGV);
 
 print <<__END_OF_MSG__;
 ### DO NOT EDIT!
@@ -49,13 +48,13 @@ FILE: foreach $fname (@ARGV)
 
   LINE: while (<SRC_FH>)
   {
-    if (/^\s*DEF(CONSTFUN|UN|UN_DLD|UNX|UNX_DLD)\s*\(/)
+    if (/^\s*DEF(?:CONSTFUN|UN|UN_DLD|UNX|UNX_DLD)\s*\(/)
     {
       ($func) = /\("?(\w+)"?,/;
       unless ($func) { die "Unable to parse $src_fname at line $.\n" }
       push (@func_list, $func);
 
-      if (<SRC_FH> =~ /\s*doc:\s+\/\*\s+-\*- texinfo -\*-\s*$/)
+      if (<SRC_FH> =~ m#\s*doc:\s+\Q/*\E\s+\Q-*- texinfo -*-\E\s*$#)
       {
         $str = "-*- texinfo -*-\n";
         $reading_docstring = 1;
@@ -70,7 +69,7 @@ FILE: foreach $fname (@ARGV)
     {
       if (/^.*\s+\*\/\s*\)\s*$/)
       {
-        s/\s+\*\/\s*\)\s*$//;
+        s#\s+\*/\s*\)\s*$##;
         push (@docstr, $str . $_);
         $reading_docstring = 0;
       }

@@ -705,7 +705,7 @@ r = randn () / sqrt (2 * randg (df / 2) / df)
 r1 = 2 * randg (n1 / 2) / n1
 ## r2 equals 1 if n2 is infinite
 r2 = 2 * randg (n2 / 2) / n2
-r = r1 / r2\n
+r = r1 / r2
 @end group
 @end example
 

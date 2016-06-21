@@ -104,7 +104,7 @@ To append user options to the defaults it is necessary to repeat the
 default arguments in @var{options}.  Use a null string to pass no arguments.
 
 If the second output @var{v} is requested the volume of the enclosing
-convex hull is calculated.\n
+convex hull is calculated.
 @seealso{convhull, delaunayn, voronoin}
 @end deftypefn */)
 {

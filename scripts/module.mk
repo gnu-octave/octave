@@ -77,7 +77,7 @@ DIRSTAMP_FILES += scripts/@ftp/$(octave_dirstamp)
 
 image_DATA += $(SCRIPTS_IMAGES)
 
-GEN_FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
+GEN_FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in.m)
 
 ALL_LOCAL_TARGETS += \
   $(GEN_FCN_FILES) \
@@ -97,7 +97,7 @@ endef
 $(foreach d, $(FCN_FILE_DIRS), $(eval $(call PKG_ADD_FILE_TEMPLATE, $(d),$(subst /,_,$(subst -,_,$(d))))))
 
 define GEN_FCN_FILES_TEMPLATE
-$(1): $(1:.m=.in) build-aux/subst-config-vals.sh $(dir $(1))$(octave_dirstamp)
+$(1): $(1:.m=.in.m) build-aux/subst-config-vals.sh $(dir $(1))$(octave_dirstamp)
 	$$(AM_V_GEN)$$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 endef
 
@@ -107,10 +107,10 @@ if AMCOND_BUILD_DOCS
 
 DOCSTRING_FILES += $(srcdir)/scripts/DOCSTRINGS
 
-$(srcdir)/scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) | scripts/$(octave-dirstamp)
+$(srcdir)/scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | scripts/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f scripts/DOCSTRINGS-t && \
-	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > scripts/DOCSTRINGS-t && \
-	$(SHELL) $(srcdir)/build-aux/move-if-change scripts/DOCSTRINGS-t $@
+	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > scripts/DOCSTRINGS-t && \
+	mv scripts/DOCSTRINGS-t $@
 
 endif
 

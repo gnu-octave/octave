@@ -26,7 +26,7 @@ use Cwd;
 
 ## Expecting arguments in this order:
 ##
-##  SRCDIR SRCDIR-FILES ... -- LOCAL-FILES ...
+##  SRCDIR SRCDIR-FILES ...
 
 unless (@ARGV >= 2) { die "Usage: $0 srcdir m_filename1 ..." ; }
 
@@ -42,17 +42,11 @@ __END_OF_MSG__
 
 MFILE: foreach my $m_fname (@ARGV)
 {
-  if ($m_fname eq "--")
-    {
-      $srcdir = getcwd ();
-      next MFILE;
-    }
-
   my $full_fname = File::Spec->catfile ($srcdir, $m_fname);
   my @paths = File::Spec->splitdir ($full_fname);
   if (@paths < 3
       || $paths[-2] eq "private"   # skip private directories
-      || $paths[-1] !~ s/\.m$//i)  # skip non m-files, and remove extension
+      || $paths[-1] !~ s/(\.in|)\.m$//i)  # skip non m-files, and remove extension
     { next MFILE; }
 
   ## @classes will have @class/method as their function name

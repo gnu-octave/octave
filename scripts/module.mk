@@ -44,6 +44,7 @@ include scripts/time/module.mk
 ## The include above fails because Automake cannot process the '@' character.
 ## As a work around, the contents of scripts/@ftp/module.mk are placed directly
 ## in this module.mk file.
+scripts_EXTRA_DIST += scripts/@ftp/module.mk
 ######################## include scripts/@ftp/module.mk ########################
 FCN_FILE_DIRS += scripts/@ftp
 

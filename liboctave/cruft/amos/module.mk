@@ -65,3 +65,6 @@ CRUFT_SOURCES += \
   liboctave/cruft/amos/zunk2.f \
   liboctave/cruft/amos/zuoik.f \
   liboctave/cruft/amos/zwrsk.f
+
+liboctave_EXTRA_DIST += \
+  liboctave/cruft/amos/README

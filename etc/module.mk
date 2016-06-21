@@ -55,7 +55,8 @@ etc_EXTRA_DIST += \
   $(BUILT_ICONS) \
   $(icon_IMAGE_FILES) \
   etc/icons/octave.appdata.xml.in \
-  etc/icons/octave.desktop.in
+  etc/icons/octave.desktop.in \
+  etc/icons/octave_branding_samples.svg
 
 image_DATA += \
   $(icon_IMAGE_FILES) \

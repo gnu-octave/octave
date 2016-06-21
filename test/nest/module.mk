@@ -1,4 +1,4 @@
-nest_fcn_files = \
+nest_TEST_FILES = \
   test/nest/arg_nest.m \
   test/nest/arg_ret.m \
   test/nest/nest_eval.m \

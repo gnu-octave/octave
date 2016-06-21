@@ -47,14 +47,16 @@ EXTRA_DIST += \
   NEWS \
   README \
   build-aux/OctJavaQry.class \
+  build-aux/OctJavaQry.java \
+  build-aux/changelog.tmpl \
   build-aux/check-subst-vars.in.sh \
   build-aux/find-files-with-tests.sh \
   build-aux/mk-default-qt-settings.in.sh \
   build-aux/mk-f77-def.in.sh \
   build-aux/mk-mxarray-h.in.sh \
-  build-aux/mk-version-h.in.sh \
   build-aux/mk-octave-config-h.sh \
   build-aux/mk-opts.pl \
+  build-aux/mk-version-h.in.sh \
   build-aux/move-if-change \
   build-aux/stl_algo.h-fixed \
   build-aux/subst-config-vals.in.sh \

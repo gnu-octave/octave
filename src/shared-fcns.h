@@ -132,7 +132,7 @@ subst_octave_home (const std::string& s)
 
   if (octave_home != prefix)
     {
-      octave_idx_type len = prefix.length ();
+      size_t len = prefix.length ();
 
       if (s.substr (0, len) == prefix)
         retval.replace (0, len, octave_home);

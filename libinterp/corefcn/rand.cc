@@ -329,93 +329,93 @@ gen_matrix:
 }
 
 DEFUN (rand, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} rand (@var{n})\n\
-@deftypefnx {} {} rand (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {} {} rand ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {@var{v} =} rand (\"state\")\n\
-@deftypefnx {} {} rand (\"state\", @var{v})\n\
-@deftypefnx {} {} rand (\"state\", \"reset\")\n\
-@deftypefnx {} {@var{v} =} rand (\"seed\")\n\
-@deftypefnx {} {} rand (\"seed\", @var{v})\n\
-@deftypefnx {} {} rand (\"seed\", \"reset\")\n\
-@deftypefnx {} {} rand (@dots{}, \"single\")\n\
-@deftypefnx {} {} rand (@dots{}, \"double\")\n\
-Return a matrix with random elements uniformly distributed on the\n\
-interval (0, 1).\n\
-\n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
-\n\
-You can query the state of the random number generator using the form\n\
-\n\
-@example\n\
-v = rand (\"state\")\n\
-@end example\n\
-\n\
-This returns a column vector @var{v} of length 625.  Later, you can restore\n\
-the random number generator to the state @var{v} using the form\n\
-\n\
-@example\n\
-rand (\"state\", v)\n\
-@end example\n\
-\n\
-@noindent\n\
-You may also initialize the state vector from an arbitrary vector of length\n\
-@leq{} 625 for @var{v}.  This new state will be a hash based on the value of\n\
-@var{v}, not @var{v} itself.\n\
-\n\
-By default, the generator is initialized from @code{/dev/urandom} if it is\n\
-available, otherwise from CPU time, wall clock time, and the current\n\
-fraction of a second.  Note that this differs from @sc{matlab}, which\n\
-always initializes the state to the same state at startup.  To obtain\n\
-behavior comparable to @sc{matlab}, initialize with a deterministic state\n\
-vector in Octave's startup files (@pxref{Startup Files}).\n\
-\n\
-To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
-Twister with a period of @math{2^{19937}-1}\n\
-(See @nospell{M. Matsumoto and T. Nishimura},\n\
-@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform\n\
-pseudorandom number generator},\n\
-ACM Trans. on Modeling and Computer Simulation Vol. 8, No. 1, pp. 3--30,\n\
-January 1998,\n\
-@url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\
-Do @strong{not} use for cryptography without securely hashing several\n\
-returned values together, otherwise the generator state can be learned after\n\
-reading 624 consecutive values.\n\
-\n\
-Older versions of Octave used a different random number generator.\n\
-The new generator is used by default as it is significantly faster than the\n\
-old generator, and produces random numbers with a significantly longer cycle\n\
-time.  However, in some circumstances it might be desirable to obtain the\n\
-same random sequences as produced by the old generators.  To do this the\n\
-keyword @qcode{\"seed\"} is used to specify that the old generators should\n\
-be used, as in\n\
-\n\
-@example\n\
-rand (\"seed\", val)\n\
-@end example\n\
-\n\
-@noindent\n\
-which sets the seed of the generator to @var{val}.  The seed of the\n\
-generator can be queried with\n\
-\n\
-@example\n\
-s = rand (\"seed\")\n\
-@end example\n\
-\n\
-However, it should be noted that querying the seed will not cause\n\
-@code{rand} to use the old generators, only setting the seed will.  To cause\n\
-@code{rand} to once again use the new generators, the keyword\n\
-@qcode{\"state\"} should be used to reset the state of the @code{rand}.\n\
-\n\
-The state or seed of the generator can be reset to a new random value using\n\
-the @qcode{\"reset\"} keyword.\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-@seealso{randn, rande, randg, randp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} rand (@var{n})
+@deftypefnx {} {} rand (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} rand ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} rand ("state")
+@deftypefnx {} {} rand ("state", @var{v})
+@deftypefnx {} {} rand ("state", "reset")
+@deftypefnx {} {@var{v} =} rand ("seed")
+@deftypefnx {} {} rand ("seed", @var{v})
+@deftypefnx {} {} rand ("seed", "reset")
+@deftypefnx {} {} rand (@dots{}, "single")
+@deftypefnx {} {} rand (@dots{}, "double")
+Return a matrix with random elements uniformly distributed on the
+interval (0, 1).
+
+The arguments are handled the same as the arguments for @code{eye}.
+
+You can query the state of the random number generator using the form
+
+@example
+v = rand ("state")
+@end example
+
+This returns a column vector @var{v} of length 625.  Later, you can restore
+the random number generator to the state @var{v} using the form
+
+@example
+rand ("state", v)
+@end example
+
+@noindent
+You may also initialize the state vector from an arbitrary vector of length
+@leq{} 625 for @var{v}.  This new state will be a hash based on the value of
+@var{v}, not @var{v} itself.
+
+By default, the generator is initialized from @code{/dev/urandom} if it is
+available, otherwise from CPU time, wall clock time, and the current
+fraction of a second.  Note that this differs from @sc{matlab}, which
+always initializes the state to the same state at startup.  To obtain
+behavior comparable to @sc{matlab}, initialize with a deterministic state
+vector in Octave's startup files (@pxref{Startup Files}).
+
+To compute the pseudo-random sequence, @code{rand} uses the Mersenne
+Twister with a period of @math{2^{19937}-1}
+(See @nospell{M. Matsumoto and T. Nishimura},
+@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform
+pseudorandom number generator},
+ACM Trans. on Modeling and Computer Simulation Vol. 8, No. 1, pp. 3--30,
+January 1998,
+@url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).
+Do @strong{not} use for cryptography without securely hashing several
+returned values together, otherwise the generator state can be learned after
+reading 624 consecutive values.
+
+Older versions of Octave used a different random number generator.
+The new generator is used by default as it is significantly faster than the
+old generator, and produces random numbers with a significantly longer cycle
+time.  However, in some circumstances it might be desirable to obtain the
+same random sequences as produced by the old generators.  To do this the
+keyword @qcode{"seed"} is used to specify that the old generators should
+be used, as in
+
+@example
+rand ("seed", val)
+@end example
+
+@noindent
+which sets the seed of the generator to @var{val}.  The seed of the
+generator can be queried with
+
+@example
+s = rand ("seed")
+@end example
+
+However, it should be noted that querying the seed will not cause
+@code{rand} to use the old generators, only setting the seed will.  To cause
+@code{rand} to once again use the new generators, the keyword
+@qcode{"state"} should be used to reset the state of the @code{rand}.
+
+The state or seed of the generator can be reset to a new random value using
+the @qcode{"reset"} keyword.
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+@seealso{randn, rande, randg, randp}
+@end deftypefn */)
 {
   return do_rand (args, args.length (), "rand", "uniform");
 }
@@ -508,37 +508,37 @@ classes.\n\
 static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN (randn, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} randn (@var{n})\n\
-@deftypefnx {} {} randn (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {} {} randn ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {@var{v} =} randn (\"state\")\n\
-@deftypefnx {} {} randn (\"state\", @var{v})\n\
-@deftypefnx {} {} randn (\"state\", \"reset\")\n\
-@deftypefnx {} {@var{v} =} randn (\"seed\")\n\
-@deftypefnx {} {} randn (\"seed\", @var{v})\n\
-@deftypefnx {} {} randn (\"seed\", \"reset\")\n\
-@deftypefnx {} {} randn (@dots{}, \"single\")\n\
-@deftypefnx {} {} randn (@dots{}, \"double\")\n\
-Return a matrix with normally distributed random elements having zero mean\n\
-and variance one.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}.\n\
-\n\
-By default, @code{randn} uses the @nospell{Marsaglia and Tsang}\n\
-``Ziggurat technique'' to transform from a uniform to a normal distribution.\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-\n\
-Reference: @nospell{G. Marsaglia and W.W. Tsang},\n\
-@cite{Ziggurat Method for Generating Random Variables},\n\
-J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/}\n\
-\n\
-@seealso{rand, rande, randg, randp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randn (@var{n})
+@deftypefnx {} {} randn (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} randn ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} randn ("state")
+@deftypefnx {} {} randn ("state", @var{v})
+@deftypefnx {} {} randn ("state", "reset")
+@deftypefnx {} {@var{v} =} randn ("seed")
+@deftypefnx {} {} randn ("seed", @var{v})
+@deftypefnx {} {} randn ("seed", "reset")
+@deftypefnx {} {} randn (@dots{}, "single")
+@deftypefnx {} {} randn (@dots{}, "double")
+Return a matrix with normally distributed random elements having zero mean
+and variance one.
+
+The arguments are handled the same as the arguments for @code{rand}.
+
+By default, @code{randn} uses the @nospell{Marsaglia and Tsang}
+``Ziggurat technique'' to transform from a uniform to a normal distribution.
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+
+Reference: @nospell{G. Marsaglia and W.W. Tsang},
+@cite{Ziggurat Method for Generating Random Variables},
+J. Statistical Software, vol 5, 2000,
+@url{http://www.jstatsoft.org/v05/i08/}
+
+@seealso{rand, rande, randg, randp}
+@end deftypefn */)
 {
   return do_rand (args, args.length (), "randn", "normal");
 }
@@ -575,37 +575,37 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (rande, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} rande (@var{n})\n\
-@deftypefnx {} {} rande (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {} {} rande ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {@var{v} =} rande (\"state\")\n\
-@deftypefnx {} {} rande (\"state\", @var{v})\n\
-@deftypefnx {} {} rande (\"state\", \"reset\")\n\
-@deftypefnx {} {@var{v} =} rande (\"seed\")\n\
-@deftypefnx {} {} rande (\"seed\", @var{v})\n\
-@deftypefnx {} {} rande (\"seed\", \"reset\")\n\
-@deftypefnx {} {} rande (@dots{}, \"single\")\n\
-@deftypefnx {} {} rande (@dots{}, \"double\")\n\
-Return a matrix with exponentially distributed random elements.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}.\n\
-\n\
-By default, @code{rande} uses the @nospell{Marsaglia and Tsang}\n\
-``Ziggurat technique'' to transform from a uniform to an exponential\n\
-distribution.\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-\n\
-Reference: @nospell{G. Marsaglia and W.W. Tsang},\n\
-@cite{Ziggurat Method for Generating Random Variables},\n\
-J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/}\n\
-\n\
-@seealso{rand, randn, randg, randp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} rande (@var{n})
+@deftypefnx {} {} rande (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} rande ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} rande ("state")
+@deftypefnx {} {} rande ("state", @var{v})
+@deftypefnx {} {} rande ("state", "reset")
+@deftypefnx {} {@var{v} =} rande ("seed")
+@deftypefnx {} {} rande ("seed", @var{v})
+@deftypefnx {} {} rande ("seed", "reset")
+@deftypefnx {} {} rande (@dots{}, "single")
+@deftypefnx {} {} rande (@dots{}, "double")
+Return a matrix with exponentially distributed random elements.
+
+The arguments are handled the same as the arguments for @code{rand}.
+
+By default, @code{rande} uses the @nospell{Marsaglia and Tsang}
+``Ziggurat technique'' to transform from a uniform to an exponential
+distribution.
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+
+Reference: @nospell{G. Marsaglia and W.W. Tsang},
+@cite{Ziggurat Method for Generating Random Variables},
+J. Statistical Software, vol 5, 2000,
+@url{http://www.jstatsoft.org/v05/i08/}
+
+@seealso{rand, randn, randg, randp}
+@end deftypefn */)
 {
   return do_rand (args, args.length (), "rande", "exponential");
 }
@@ -644,104 +644,104 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (randg, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} randg (@var{n})\n\
-@deftypefnx {} {} randg (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {} {} randg ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {@var{v} =} randg (\"state\")\n\
-@deftypefnx {} {} randg (\"state\", @var{v})\n\
-@deftypefnx {} {} randg (\"state\", \"reset\")\n\
-@deftypefnx {} {@var{v} =} randg (\"seed\")\n\
-@deftypefnx {} {} randg (\"seed\", @var{v})\n\
-@deftypefnx {} {} randg (\"seed\", \"reset\")\n\
-@deftypefnx {} {} randg (@dots{}, \"single\")\n\
-@deftypefnx {} {} randg (@dots{}, \"double\")\n\
-Return a matrix with @code{gamma (@var{a},1)} distributed random elements.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}, except\n\
-for the argument @var{a}.\n\
-\n\
-This can be used to generate many distributions:\n\
-\n\
-@table @asis\n\
-@item @code{gamma (a, b)} for @code{a > -1}, @code{b > 0}\n\
-\n\
-@example\n\
-r = b * randg (a)\n\
-@end example\n\
-\n\
-@item @code{beta (a, b)} for @code{a > -1}, @code{b > -1}\n\
-\n\
-@example\n\
-@group\n\
-r1 = randg (a, 1)\n\
-r = r1 / (r1 + randg (b, 1))\n\
-@end group\n\
-@end example\n\
-\n\
-@item @code{Erlang (a, n)}\n\
-\n\
-@example\n\
-r = a * randg (n)\n\
-@end example\n\
-\n\
-@item @code{chisq (df)} for @code{df > 0}\n\
-\n\
-@example\n\
-r = 2 * randg (df / 2)\n\
-@end example\n\
-\n\
-@item @code{t (df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
-\n\
-@example\n\
-r = randn () / sqrt (2 * randg (df / 2) / df)\n\
-@end example\n\
-\n\
-@item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}\n\
-\n\
-@example\n\
-@group\n\
-## r1 equals 1 if n1 is infinite\n\
-r1 = 2 * randg (n1 / 2) / n1\n\
-## r2 equals 1 if n2 is infinite\n\
-r2 = 2 * randg (n2 / 2) / n2\n\
-r = r1 / r2\n\n\
-@end group\n\
-@end example\n\
-\n\
-@item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}\n\
-\n\
-@example\n\
-r = randp ((1 - p) / p * randg (n))\n\
-@end example\n\
-\n\
-@item non-central @code{chisq (df, L)}, for @code{df >= 0} and @code{L > 0}\n\
-(use chisq if @code{L = 0})\n\
-\n\
-@example\n\
-@group\n\
-r = randp (L / 2)\n\
-r(r > 0) = 2 * randg (r(r > 0))\n\
-r(df > 0) += 2 * randg (df(df > 0)/2)\n\
-@end group\n\
-@end example\n\
-\n\
-@item @code{Dirichlet (a1, @dots{} ak)}\n\
-\n\
-@example\n\
-@group\n\
-r = (randg (a1), @dots{}, randg (ak))\n\
-r = r / sum (r)\n\
-@end group\n\
-@end example\n\
-\n\
-@end table\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-@seealso{rand, randn, rande, randp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randg (@var{n})
+@deftypefnx {} {} randg (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} randg ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} randg ("state")
+@deftypefnx {} {} randg ("state", @var{v})
+@deftypefnx {} {} randg ("state", "reset")
+@deftypefnx {} {@var{v} =} randg ("seed")
+@deftypefnx {} {} randg ("seed", @var{v})
+@deftypefnx {} {} randg ("seed", "reset")
+@deftypefnx {} {} randg (@dots{}, "single")
+@deftypefnx {} {} randg (@dots{}, "double")
+Return a matrix with @code{gamma (@var{a},1)} distributed random elements.
+
+The arguments are handled the same as the arguments for @code{rand}, except
+for the argument @var{a}.
+
+This can be used to generate many distributions:
+
+@table @asis
+@item @code{gamma (a, b)} for @code{a > -1}, @code{b > 0}
+
+@example
+r = b * randg (a)
+@end example
+
+@item @code{beta (a, b)} for @code{a > -1}, @code{b > -1}
+
+@example
+@group
+r1 = randg (a, 1)
+r = r1 / (r1 + randg (b, 1))
+@end group
+@end example
+
+@item @code{Erlang (a, n)}
+
+@example
+r = a * randg (n)
+@end example
+
+@item @code{chisq (df)} for @code{df > 0}
+
+@example
+r = 2 * randg (df / 2)
+@end example
+
+@item @code{t (df)} for @code{0 < df < inf} (use randn if df is infinite)
+
+@example
+r = randn () / sqrt (2 * randg (df / 2) / df)
+@end example
+
+@item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}
+
+@example
+@group
+## r1 equals 1 if n1 is infinite
+r1 = 2 * randg (n1 / 2) / n1
+## r2 equals 1 if n2 is infinite
+r2 = 2 * randg (n2 / 2) / n2
+r = r1 / r2\n
+@end group
+@end example
+
+@item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}
+
+@example
+r = randp ((1 - p) / p * randg (n))
+@end example
+
+@item non-central @code{chisq (df, L)}, for @code{df >= 0} and @code{L > 0}
+(use chisq if @code{L = 0})
+
+@example
+@group
+r = randp (L / 2)
+r(r > 0) = 2 * randg (r(r > 0))
+r(df > 0) += 2 * randg (df(df > 0)/2)
+@end group
+@end example
+
+@item @code{Dirichlet (a1, @dots{} ak)}
+
+@example
+@group
+r = (randg (a1), @dots{}, randg (ak))
+r = r / sum (r)
+@end group
+@end example
+
+@end table
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+@seealso{rand, randn, rande, randp}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -918,55 +918,55 @@ classes.\n\
 */
 
 DEFUN (randp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} randp (@var{l}, @var{n})\n\
-@deftypefnx {} {} randp (@var{l}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {} {} randp (@var{l}, [@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {@var{v} =} randp (\"state\")\n\
-@deftypefnx {} {} randp (\"state\", @var{v})\n\
-@deftypefnx {} {} randp (\"state\", \"reset\")\n\
-@deftypefnx {} {@var{v} =} randp (\"seed\")\n\
-@deftypefnx {} {} randp (\"seed\", @var{v})\n\
-@deftypefnx {} {} randp (\"seed\", \"reset\")\n\
-@deftypefnx {} {} randp (@dots{}, \"single\")\n\
-@deftypefnx {} {} randp (@dots{}, \"double\")\n\
-Return a matrix with Poisson distributed random elements with mean value\n\
-parameter given by the first argument, @var{l}.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}, except\n\
-for the argument @var{l}.\n\
-\n\
-Five different algorithms are used depending on the range of @var{l} and\n\
-whether or not @var{l} is a scalar or a matrix.\n\
-\n\
-@table @asis\n\
-@item For scalar @var{l} @leq{} 12, use direct method.\n\
-W.H. Press, et al., @cite{Numerical Recipes in C},\n\
-Cambridge University Press, 1992.\n\
-\n\
-@item For scalar @var{l} > 12, use rejection method.[1]\n\
-W.H. Press, et al., @cite{Numerical Recipes in C},\n\
-Cambridge University Press, 1992.\n\
-\n\
-@item For matrix @var{l} @leq{} 10, use inversion method.[2]\n\
-@nospell{E. Stadlober, et al., WinRand source code}, available via FTP.\n\
-\n\
-@item For matrix @var{l} > 10, use patchwork rejection method.\n\
-@nospell{E. Stadlober, et al., WinRand source code}, available via FTP, or\n\
-@nospell{H. Zechner}, @cite{Efficient sampling from continuous and discrete\n\
-unimodal distributions}, Doctoral Dissertation, 156pp., Technical\n\
-University @nospell{Graz}, Austria, 1994.\n\
-\n\
-@item For @var{l} > 1e8, use normal approximation.\n\
-@nospell{L. Montanet}, et al., @cite{Review of Particle Properties},\n\
-Physical Review D 50 p1284, 1994.\n\
-@end table\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-@seealso{rand, randn, rande, randg}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randp (@var{l}, @var{n})
+@deftypefnx {} {} randp (@var{l}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {} randp (@var{l}, [@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} randp ("state")
+@deftypefnx {} {} randp ("state", @var{v})
+@deftypefnx {} {} randp ("state", "reset")
+@deftypefnx {} {@var{v} =} randp ("seed")
+@deftypefnx {} {} randp ("seed", @var{v})
+@deftypefnx {} {} randp ("seed", "reset")
+@deftypefnx {} {} randp (@dots{}, "single")
+@deftypefnx {} {} randp (@dots{}, "double")
+Return a matrix with Poisson distributed random elements with mean value
+parameter given by the first argument, @var{l}.
+
+The arguments are handled the same as the arguments for @code{rand}, except
+for the argument @var{l}.
+
+Five different algorithms are used depending on the range of @var{l} and
+whether or not @var{l} is a scalar or a matrix.
+
+@table @asis
+@item For scalar @var{l} @leq{} 12, use direct method.
+W.H. Press, et al., @cite{Numerical Recipes in C},
+Cambridge University Press, 1992.
+
+@item For scalar @var{l} > 12, use rejection method.[1]
+W.H. Press, et al., @cite{Numerical Recipes in C},
+Cambridge University Press, 1992.
+
+@item For matrix @var{l} @leq{} 10, use inversion method.[2]
+@nospell{E. Stadlober, et al., WinRand source code}, available via FTP.
+
+@item For matrix @var{l} > 10, use patchwork rejection method.
+@nospell{E. Stadlober, et al., WinRand source code}, available via FTP, or
+@nospell{H. Zechner}, @cite{Efficient sampling from continuous and discrete
+unimodal distributions}, Doctoral Dissertation, 156pp., Technical
+University @nospell{Graz}, Austria, 1994.
+
+@item For @var{l} > 1e8, use normal approximation.
+@nospell{L. Montanet}, et al., @cite{Review of Particle Properties},
+Physical Review D 50 p1284, 1994.
+@end table
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+@seealso{rand, randn, rande, randg}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1063,20 +1063,20 @@ classes.\n\
 */
 
 DEFUN (randperm, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} randperm (@var{n})\n\
-@deftypefnx {} {} randperm (@var{n}, @var{m})\n\
-Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
-\n\
-If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
-replacement from @code{1:@var{n}}.\n\
-\n\
-The complexity is O(@var{n}) in memory and O(@var{m}) in time, unless\n\
-@var{m} < @var{n}/5, in which case O(@var{m}) memory is used as well.  The\n\
-randomization is performed using rand().  All permutations are equally\n\
-likely.\n\
-@seealso{perms}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randperm (@var{n})
+@deftypefnx {} {} randperm (@var{n}, @var{m})
+Return a row vector containing a random permutation of @code{1:@var{n}}.
+
+If @var{m} is supplied, return @var{m} unique entries, sampled without
+replacement from @code{1:@var{n}}.
+
+The complexity is O(@var{n}) in memory and O(@var{m}) in time, unless
+@var{m} < @var{n}/5, in which case O(@var{m}) memory is used as well.  The
+randomization is performed using rand().  All permutations are equally
+likely.
+@seealso{perms}
+@end deftypefn */)
 {
 #if defined (USE_UNORDERED_MAP_WITH_TR1)
 using std::tr1::unordered_map;

@@ -140,40 +140,40 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
 }
 
 DEFUN (fft2, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fft2 (@var{A})\n\
-@deftypefnx {} {} fft2 (@var{A}, @var{m}, @var{n})\n\
-Compute the two-dimensional discrete Fourier transform of @var{A} using\n\
-a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The optional arguments @var{m} and @var{n} may be used specify the number of\n\
-rows and columns of @var{A} to use.  If either of these is larger than the\n\
-size of @var{A}, @var{A} is resized and padded with zeros.\n\
-\n\
-If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
-of @var{A} is treated separately.\n\
-@seealso{ifft2, fft, fftn, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fft2 (@var{A})
+@deftypefnx {} {} fft2 (@var{A}, @var{m}, @var{n})
+Compute the two-dimensional discrete Fourier transform of @var{A} using
+a Fast Fourier Transform (FFT) algorithm.
+
+The optional arguments @var{m} and @var{n} may be used specify the number of
+rows and columns of @var{A} to use.  If either of these is larger than the
+size of @var{A}, @var{A} is resized and padded with zeros.
+
+If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix
+of @var{A} is treated separately.
+@seealso{ifft2, fft, fftn, fftw}
+@end deftypefn */)
 {
   return do_fft2 (args, "fft2", 0);
 }
 
 
 DEFUN (ifft2, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} ifft2 (@var{A})\n\
-@deftypefnx {} {} ifft2 (@var{A}, @var{m}, @var{n})\n\
-Compute the inverse two-dimensional discrete Fourier transform of @var{A}\n\
-using a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The optional arguments @var{m} and @var{n} may be used specify the number of\n\
-rows and columns of @var{A} to use.  If either of these is larger than the\n\
-size of @var{A}, @var{A} is resized and padded with zeros.\n\
-\n\
-If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
-of @var{A} is treated separately\n\
-@seealso{fft2, ifft, ifftn, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} ifft2 (@var{A})
+@deftypefnx {} {} ifft2 (@var{A}, @var{m}, @var{n})
+Compute the inverse two-dimensional discrete Fourier transform of @var{A}
+using a Fast Fourier Transform (FFT) algorithm.
+
+The optional arguments @var{m} and @var{n} may be used specify the number of
+rows and columns of @var{A} to use.  If either of these is larger than the
+size of @var{A}, @var{A} is resized and padded with zeros.
+
+If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix
+of @var{A} is treated separately
+@seealso{fft2, ifft, ifftn, fftw}
+@end deftypefn */)
 {
   return do_fft2 (args, "ifft2", 1);
 }

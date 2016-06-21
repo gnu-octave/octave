@@ -249,10 +249,10 @@ initialize_load_path (void)
 }
 
 DEFUN (__version_info__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})
+Undocumented internal function.
+@end deftypefn */)
 {
   static octave_map vinfo;
 
@@ -1061,11 +1061,11 @@ octave_starting_gui (void)
 }
 
 DEFUN (isguirunning, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isguirunning ()\n\
-Return true if Octave is running in GUI mode and false otherwise.\n\
-@seealso{have_window_system}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isguirunning ()
+Return true if Octave is running in GUI mode and false otherwise.
+@seealso{have_window_system}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -1079,24 +1079,24 @@ Return true if Octave is running in GUI mode and false otherwise.\n\
 */
 
 DEFUN (argv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} argv ()\n\
-Return the command line arguments passed to Octave.\n\
-\n\
-For example, if you invoked Octave using the command\n\
-\n\
-@example\n\
-octave --no-line-editing --silent\n\
-@end example\n\
-\n\
-@noindent\n\
-@code{argv} would return a cell array of strings with the elements\n\
-@option{--no-line-editing} and @option{--silent}.\n\
-\n\
-If you write an executable Octave script, @code{argv} will return the list\n\
-of arguments passed to the script.  @xref{Executable Octave Programs}, for\n\
-an example of how to create an executable Octave script.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} argv ()
+Return the command line arguments passed to Octave.
+
+For example, if you invoked Octave using the command
+
+@example
+octave --no-line-editing --silent
+@end example
+
+@noindent
+@code{argv} would return a cell array of strings with the elements
+@option{--no-line-editing} and @option{--silent}.
+
+If you write an executable Octave script, @code{argv} will return the list
+of arguments passed to the script.  @xref{Executable Octave Programs}, for
+an example of how to create an executable Octave script.
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -1110,16 +1110,16 @@ an example of how to create an executable Octave script.\n\
 */
 
 DEFUN (program_invocation_name, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} program_invocation_name ()\n\
-Return the name that was typed at the shell prompt to run Octave.\n\
-\n\
-If executing a script from the command line (e.g., @code{octave foo.m})\n\
-or using an executable Octave script, the program name is set to the\n\
-name of the script.  @xref{Executable Octave Programs}, for an example of\n\
-how to create an executable Octave script.\n\
-@seealso{program_name}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} program_invocation_name ()
+Return the name that was typed at the shell prompt to run Octave.
+
+If executing a script from the command line (e.g., @code{octave foo.m})
+or using an executable Octave script, the program name is set to the
+name of the script.  @xref{Executable Octave Programs}, for an example of
+how to create an executable Octave script.
+@seealso{program_name}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -1133,12 +1133,12 @@ how to create an executable Octave script.\n\
 */
 
 DEFUN (program_name, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} program_name ()\n\
-Return the last component of the value returned by\n\
-@code{program_invocation_name}.\n\
-@seealso{program_invocation_name}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} program_name ()
+Return the last component of the value returned by
+@code{program_invocation_name}.
+@seealso{program_invocation_name}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();

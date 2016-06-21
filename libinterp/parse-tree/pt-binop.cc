@@ -260,24 +260,24 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
 }
 
 DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
-@deftypefnx {} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
-@deftypefnx {} {} do_braindead_shortcircuit_evaluation (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave will\n\
-do short-circuit evaluation of @samp{|} and @samp{&} operators inside the\n\
-conditions of if or while statements.\n\
-\n\
-This feature is only provided for compatibility with @sc{matlab} and should\n\
-not be used unless you are porting old code that relies on this feature.\n\
-\n\
-To obtain short-circuit behavior for logical expressions in new programs,\n\
-you should always use the @samp{&&} and @samp{||} operators.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} do_braindead_shortcircuit_evaluation ()
+@deftypefnx {} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})
+@deftypefnx {} {} do_braindead_shortcircuit_evaluation (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave will
+do short-circuit evaluation of @samp{|} and @samp{&} operators inside the
+conditions of if or while statements.
+
+This feature is only provided for compatibility with @sc{matlab} and should
+not be used unless you are porting old code that relies on this feature.
+
+To obtain short-circuit behavior for logical expressions in new programs,
+you should always use the @samp{&&} and @samp{||} operators.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   static bool warned = false;
   if (! warned)

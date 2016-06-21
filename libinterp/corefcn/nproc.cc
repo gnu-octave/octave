@@ -28,26 +28,26 @@ along with Octave; see the file COPYING.  If not, see
 #include "nproc-wrapper.h"
 
 DEFUN (nproc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} nproc ()\n\
-@deftypefnx {} {} nproc (@var{query})\n\
-Return the current number of available processors.\n\
-\n\
-If called with the optional argument @var{query}, modify how processors\n\
-are counted as follows:\n\
-\n\
-@table @code\n\
-@item all\n\
-total number of processors.\n\
-\n\
-@item current\n\
-processors available to the current process.\n\
-\n\
-@item overridable\n\
-same as @code{current}, but overridable through the\n\
-@w{@env{OMP_NUM_THREADS}} environment variable.\n\
-@end table\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} nproc ()
+@deftypefnx {} {} nproc (@var{query})
+Return the current number of available processors.
+
+If called with the optional argument @var{query}, modify how processors
+are counted as follows:
+
+@table @code
+@item all
+total number of processors.
+
+@item current
+processors available to the current process.
+
+@item overridable
+same as @code{current}, but overridable through the
+@w{@env{OMP_NUM_THREADS}} environment variable.
+@end table
+@end deftypefn */)
 {
   int nargin = args.length ();
 

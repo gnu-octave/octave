@@ -54,36 +54,36 @@ reset_visibility (figure::properties *fp)
 #endif
 
 DEFUN_DLD(__osmesa_print__, args, ,
-          "-*- texinfo -*-\n\
-@deftypefn  {} {} __osmesa_print__ (@var{h}, @var{file}, @var{term})\n\
-@deftypefnx {} {@var{img} =} __osmesa_print__ (@var{h})\n\
-Print figure @var{h} using OSMesa and gl2ps for vector formats.\n\
-\n\
-This is a private internal function.\n\
-\n\
-The first method calls gl2ps with the appropriate @var{term} and writes\n\
-the output of gl2ps to @var{file}.  If the first character of @var{file}\n\
-is @qcode{|}, then a process is started and the output of gl2ps is piped\n\
-to it.\n\
-\n\
-Valid options for @var{term}, which can be concatenated in one string, are:\n\
-\n\
-@table @asis\n\
-@item @qcode{eps}, @qcode{pdf}, @qcode{ps}, @qcode{svg}, @qcode{pgf}, @qcode{tex}\n\
-Select output format.\n\
-\n\
-@item @qcode{is2D}\n\
-Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting\n\
-algorithm.\n\
-\n\
-@item @qcode{notext}\n\
-Don't render text.\n\
-@end table\n\
-\n\
-The second method doesn't use gl2ps and returns a RGB image in @var{img}\n\
-instead.\n\
-\n\
-@end deftypefn")
+          doc: /* -*- texinfo -*-
+@deftypefn  {} {} __osmesa_print__ (@var{h}, @var{file}, @var{term})
+@deftypefnx {} {@var{img} =} __osmesa_print__ (@var{h})
+Print figure @var{h} using OSMesa and gl2ps for vector formats.
+
+This is a private internal function.
+
+The first method calls gl2ps with the appropriate @var{term} and writes
+the output of gl2ps to @var{file}.  If the first character of @var{file}
+is @qcode{|}, then a process is started and the output of gl2ps is piped
+to it.
+
+Valid options for @var{term}, which can be concatenated in one string, are:
+
+@table @asis
+@item @qcode{eps}, @qcode{pdf}, @qcode{ps}, @qcode{svg}, @qcode{pgf}, @qcode{tex}
+Select output format.
+
+@item @qcode{is2D}
+Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting
+algorithm.
+
+@item @qcode{notext}
+Don't render text.
+@end table
+
+The second method doesn't use gl2ps and returns a RGB image in @var{img}
+instead.
+
+@end deftypefn */)
 {
 #if defined (HAVE_OSMESA)
 

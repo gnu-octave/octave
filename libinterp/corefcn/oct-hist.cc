@@ -552,39 +552,39 @@ octave_history_write_timestamp (void)
 }
 
 DEFUN (edit_history, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} edit_history\n\
-@deftypefnx {} {} edit_history @var{cmd_number}\n\
-@deftypefnx {} {} edit_history @var{first} @var{last}\n\
-Edit the history list using the editor named by the variable @env{EDITOR}.\n\
-\n\
-The commands to be edited are first copied to a temporary file.  When you\n\
-exit the editor, Octave executes the commands that remain in the file.  It\n\
-is often more convenient to use @code{edit_history} to define functions\n\
-rather than attempting to enter them directly on the command line.\n\
-The block of commands is executed as soon as you exit the editor.\n\
-To avoid executing any commands, simply delete all the lines from the buffer\n\
-before leaving the editor.\n\
-\n\
-When invoked with no arguments, edit the previously executed command;\n\
-With one argument, edit the specified command @var{cmd_number};\n\
-With two arguments, edit the list of commands between @var{first} and\n\
-@var{last}.  Command number specifiers may also be negative where -1\n\
-refers to the most recently executed command.\n\
-The following are equivalent and edit the most recently executed command.\n\
-\n\
-@example\n\
-@group\n\
-edit_history\n\
-edit_history -1\n\
-@end group\n\
-@end example\n\
-\n\
-When using ranges, specifying a larger number for the first command than the\n\
-last command reverses the list of commands before they are placed in the\n\
-buffer to be edited.\n\
-@seealso{run_history, history}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} edit_history
+@deftypefnx {} {} edit_history @var{cmd_number}
+@deftypefnx {} {} edit_history @var{first} @var{last}
+Edit the history list using the editor named by the variable @env{EDITOR}.
+
+The commands to be edited are first copied to a temporary file.  When you
+exit the editor, Octave executes the commands that remain in the file.  It
+is often more convenient to use @code{edit_history} to define functions
+rather than attempting to enter them directly on the command line.
+The block of commands is executed as soon as you exit the editor.
+To avoid executing any commands, simply delete all the lines from the buffer
+before leaving the editor.
+
+When invoked with no arguments, edit the previously executed command;
+With one argument, edit the specified command @var{cmd_number};
+With two arguments, edit the list of commands between @var{first} and
+@var{last}.  Command number specifiers may also be negative where -1
+refers to the most recently executed command.
+The following are equivalent and edit the most recently executed command.
+
+@example
+@group
+edit_history
+edit_history -1
+@end group
+@end example
+
+When using ranges, specifying a larger number for the first command than the
+last command reverses the list of commands before they are placed in the
+buffer to be edited.
+@seealso{run_history, history}
+@end deftypefn */)
 {
   if (args.length () > 2)
     print_usage ();
@@ -595,46 +595,46 @@ buffer to be edited.\n\
 }
 
 DEFUN (history, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} history\n\
-@deftypefnx {} {} history @var{opt1} @dots{}\n\
-@deftypefnx {} {@var{h} =} history ()\n\
-@deftypefnx {} {@var{h} =} history (@var{opt1}, @dots{})\n\
-If invoked with no arguments, @code{history} displays a list of commands\n\
-that you have executed.\n\
-\n\
-Valid options are:\n\
-\n\
-@table @code\n\
-@item   @var{n}\n\
-@itemx -@var{n}\n\
-Display only the most recent @var{n} lines of history.\n\
-\n\
-@item -c\n\
-Clear the history list.\n\
-\n\
-@item -q\n\
-Don't number the displayed lines of history.  This is useful for cutting\n\
-and pasting commands using the X Window System.\n\
-\n\
-@item -r @var{file}\n\
-Read the file @var{file}, appending its contents to the current\n\
-history list.  If the name is omitted, use the default history file\n\
-(normally @file{~/.octave_hist}).\n\
-\n\
-@item -w @var{file}\n\
-Write the current history to the file @var{file}.  If the name is\n\
-omitted, use the default history file (normally @file{~/.octave_hist}).\n\
-@end table\n\
-\n\
-For example, to display the five most recent commands that you have\n\
-typed without displaying line numbers, use the command\n\
-@kbd{history -q 5}.\n\
-\n\
-If invoked with a single output argument, the history will be saved to that\n\
-argument as a cell string and will not be output to screen.\n\
-@seealso{edit_history, run_history}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} history
+@deftypefnx {} {} history @var{opt1} @dots{}
+@deftypefnx {} {@var{h} =} history ()
+@deftypefnx {} {@var{h} =} history (@var{opt1}, @dots{})
+If invoked with no arguments, @code{history} displays a list of commands
+that you have executed.
+
+Valid options are:
+
+@table @code
+@item   @var{n}
+@itemx -@var{n}
+Display only the most recent @var{n} lines of history.
+
+@item -c
+Clear the history list.
+
+@item -q
+Don't number the displayed lines of history.  This is useful for cutting
+and pasting commands using the X Window System.
+
+@item -r @var{file}
+Read the file @var{file}, appending its contents to the current
+history list.  If the name is omitted, use the default history file
+(normally @file{~/.octave_hist}).
+
+@item -w @var{file}
+Write the current history to the file @var{file}.  If the name is
+omitted, use the default history file (normally @file{~/.octave_hist}).
+@end table
+
+For example, to display the five most recent commands that you have
+typed without displaying line numbers, use the command
+@kbd{history -q 5}.
+
+If invoked with a single output argument, the history will be saved to that
+argument as a cell string and will not be output to screen.
+@seealso{edit_history, run_history}
+@end deftypefn */)
 {
   // Call do_history even if nargout is zero to display history list.
 
@@ -644,56 +644,56 @@ argument as a cell string and will not be output to screen.\n\
 }
 
 DEFUN (run_history, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} run_history\n\
-@deftypefnx {} {} run_history @var{cmd_number}\n\
-@deftypefnx {} {} run_history @var{first} @var{last}\n\
-Run commands from the history list.\n\
-\n\
-When invoked with no arguments, run the previously executed command;\n\
-\n\
-With one argument, run the specified command @var{cmd_number};\n\
-\n\
-With two arguments, run the list of commands between @var{first} and\n\
-@var{last}.  Command number specifiers may also be negative where -1\n\
-refers to the most recently executed command.  For example, the command\n\
-\n\
-@example\n\
-@group\n\
-run_history\n\
-     OR\n\
-run_history -1\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-executes the most recent command again.\n\
-The command\n\
-\n\
-@example\n\
-run_history 13 169\n\
-@end example\n\
-\n\
-@noindent\n\
-executes commands 13 through 169.\n\
-\n\
-Specifying a larger number for the first command than the last command\n\
-reverses the list of commands before executing them.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-disp (1)\n\
-disp (2)\n\
-run_history -1 -2\n\
-@result{}\n\
- 2\n\
- 1\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{edit_history, history}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} run_history
+@deftypefnx {} {} run_history @var{cmd_number}
+@deftypefnx {} {} run_history @var{first} @var{last}
+Run commands from the history list.
+
+When invoked with no arguments, run the previously executed command;
+
+With one argument, run the specified command @var{cmd_number};
+
+With two arguments, run the list of commands between @var{first} and
+@var{last}.  Command number specifiers may also be negative where -1
+refers to the most recently executed command.  For example, the command
+
+@example
+@group
+run_history
+     OR
+run_history -1
+@end group
+@end example
+
+@noindent
+executes the most recent command again.
+The command
+
+@example
+run_history 13 169
+@end example
+
+@noindent
+executes commands 13 through 169.
+
+Specifying a larger number for the first command than the last command
+reverses the list of commands before executing them.
+For example:
+
+@example
+@group
+disp (1)
+disp (2)
+run_history -1 -2
+@result{}
+ 2
+ 1
+@end group
+@end example
+
+@seealso{edit_history, history}
+@end deftypefn */)
 {
   if (args.length () > 2)
     print_usage ();
@@ -704,28 +704,28 @@ run_history -1 -2\n\
 }
 
 DEFUN (history_control, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} history_control ()\n\
-@deftypefnx {} {@var{old_val} =} history_control (@var{new_val})\n\
-Query or set the internal variable that specifies how commands are saved\n\
-to the history list.\n\
-\n\
-The default value is an empty character string, but may be overridden by the\n\
-environment variable @w{@env{OCTAVE_HISTCONTROL}}.\n\
-\n\
-The value of @code{history_control} is a colon-separated list of values\n\
-controlling how commands are saved on the history list.  If the list\n\
-of values includes @code{ignorespace}, lines which begin with a space\n\
-character are not saved in the history list.  A value of @code{ignoredups}\n\
-causes lines matching the previous history entry to not be saved.\n\
-A value of @code{ignoreboth} is shorthand for @code{ignorespace} and\n\
-@code{ignoredups}.  A value of @code{erasedups} causes all previous lines\n\
-matching the current line to be removed from the history list before that\n\
-line is saved.  Any value not in the above list is ignored.  If\n\
-@code{history_control} is the empty string, all commands are saved on\n\
-the history list, subject to the value of @code{history_save}.\n\
-@seealso{history_file, history_size, history_timestamp_format_string, history_save}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} history_control ()
+@deftypefnx {} {@var{old_val} =} history_control (@var{new_val})
+Query or set the internal variable that specifies how commands are saved
+to the history list.
+
+The default value is an empty character string, but may be overridden by the
+environment variable @w{@env{OCTAVE_HISTCONTROL}}.
+
+The value of @code{history_control} is a colon-separated list of values
+controlling how commands are saved on the history list.  If the list
+of values includes @code{ignorespace}, lines which begin with a space
+character are not saved in the history list.  A value of @code{ignoredups}
+causes lines matching the previous history entry to not be saved.
+A value of @code{ignoreboth} is shorthand for @code{ignorespace} and
+@code{ignoredups}.  A value of @code{erasedups} causes all previous lines
+matching the current line to be removed from the history list before that
+line is saved.  Any value not in the above list is ignored.  If
+@code{history_control} is the empty string, all commands are saved on
+the history list, subject to the value of @code{history_save}.
+@seealso{history_file, history_size, history_timestamp_format_string, history_save}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -742,16 +742,16 @@ the history list, subject to the value of @code{history_save}.\n\
 }
 
 DEFUN (history_size, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} history_size ()\n\
-@deftypefnx {} {@var{old_val} =} history_size (@var{new_val})\n\
-Query or set the internal variable that specifies how many entries\n\
-to store in the history file.\n\
-\n\
-The default value is @code{1000}, but may be overridden by the environment\n\
-variable @w{@env{OCTAVE_HISTSIZE}}.\n\
-@seealso{history_file, history_timestamp_format_string, history_save}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} history_size ()
+@deftypefnx {} {@var{old_val} =} history_size (@var{new_val})
+Query or set the internal variable that specifies how many entries
+to store in the history file.
+
+The default value is @code{1000}, but may be overridden by the environment
+variable @w{@env{OCTAVE_HISTSIZE}}.
+@seealso{history_file, history_timestamp_format_string, history_save}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -770,16 +770,16 @@ variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 }
 
 DEFUN (history_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} history_file ()\n\
-@deftypefnx {} {@var{old_val} =} history_file (@var{new_val})\n\
-Query or set the internal variable that specifies the name of the\n\
-file used to store command history.\n\
-\n\
-The default value is @file{~/.octave_hist}, but may be overridden by the\n\
-environment variable @w{@env{OCTAVE_HISTFILE}}.\n\
-@seealso{history_size, history_save, history_timestamp_format_string}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} history_file ()
+@deftypefnx {} {@var{old_val} =} history_file (@var{new_val})
+Query or set the internal variable that specifies the name of the
+file used to store command history.
+
+The default value is @file{~/.octave_hist}, but may be overridden by the
+environment variable @w{@env{OCTAVE_HISTFILE}}.
+@seealso{history_size, history_save, history_timestamp_format_string}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -796,42 +796,42 @@ environment variable @w{@env{OCTAVE_HISTFILE}}.\n\
 }
 
 DEFUN (history_timestamp_format_string, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} history_timestamp_format_string ()\n\
-@deftypefnx {} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
-@deftypefnx {} {} history_timestamp_format_string (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the format string\n\
-for the comment line that is written to the history file when Octave\n\
-exits.\n\
-\n\
-The format string is passed to @code{strftime}.  The default value is\n\
-\n\
-@example\n\
-\"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{strftime, history_file, history_size, history_save}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} history_timestamp_format_string ()
+@deftypefnx {} {@var{old_val} =} history_timestamp_format_string (@var{new_val})
+@deftypefnx {} {} history_timestamp_format_string (@var{new_val}, "local")
+Query or set the internal variable that specifies the format string
+for the comment line that is written to the history file when Octave
+exits.
+
+The format string is passed to @code{strftime}.  The default value is
+
+@example
+"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>"
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{strftime, history_file, history_size, history_save}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (history_timestamp_format_string);
 }
 
 DEFUN (history_save, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} history_save ()\n\
-@deftypefnx {} {@var{old_val} =} history_save (@var{new_val})\n\
-@deftypefnx {} {} history_save (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether commands entered\n\
-on the command line are saved in the history file.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} history_save ()
+@deftypefnx {} {@var{old_val} =} history_save (@var{new_val})
+@deftypefnx {} {} history_save (@var{new_val}, "local")
+Query or set the internal variable that controls whether commands entered
+on the command line are saved in the history file.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{history_control, history_file, history_size, history_timestamp_format_string}
+@end deftypefn */)
 {
   octave_value retval;
 

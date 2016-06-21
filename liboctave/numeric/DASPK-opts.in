@@ -103,7 +103,7 @@ the second (the default is 0, so you must provide a set of
 initial conditions that are consistent).
 
 If this option is set to a nonzero value, you must also set the
-@qcode{\"algebraic variables\"} option to declare which variables in the
+@qcode{"algebraic variables"} option to declare which variables in the
 problem are algebraic.
 
   END_DOC_ITEM
@@ -139,12 +139,12 @@ Maximum number of Jacobian evaluations (default is 6).
 
 @item MXNH
 Maximum number of values of the artificial stepsize parameter to be
-tried if the @qcode{\"compute consistent initial condition\"} option has
+tried if the @qcode{"compute consistent initial condition"} option has
 been set to 1 (default is 5).
 
 Note that the maximum total number of Newton iterations allowed is
-@code{MXNIT*MXNJ*MXNH} if the @qcode{\"compute consistent initial
-condition\"} option has been set to 1 and @code{MXNIT*MXNJ} if it is
+@code{MXNIT*MXNJ*MXNH} if the @qcode{"compute consistent initial
+condition"} option has been set to 1 and @code{MXNIT*MXNJ} if it is
 set to 2.
 
 @item LSOFF
@@ -194,7 +194,7 @@ OPTION
   NAME = "exclude algebraic variables from error test"
   DOC_ITEM
 Set to a nonzero value to exclude algebraic variables from the error
-test.  You must also set the @qcode{\"algebraic variables\"} option to
+test.  You must also set the @qcode{"algebraic variables"} option to
 declare which variables in the problem are algebraic (default is 0).
 
   END_DOC_ITEM
@@ -212,8 +212,8 @@ algebraic variable (i.e., its derivative does not appear explicitly
 in the equation set).
 
 This option is required by the
-@qcode{\"compute consistent initial condition\"} and
-@qcode{\"exclude algebraic variables from error test\"} options.
+@qcode{"compute consistent initial condition"} and
+@qcode{"exclude algebraic variables from error test"} options.
 
   END_DOC_ITEM
   TYPE = "Array<octave_idx_type>"
@@ -239,7 +239,7 @@ OPTION
   NAME = "enforce inequality constraints"
   DOC_ITEM
 Set to one of the following values to enforce the inequality
-constraints specified by the @qcode{\"inequality constraint types\"}
+constraints specified by the @qcode{"inequality constraint types"}
 option (default is 0).
 
 @enumerate
@@ -282,7 +282,7 @@ Greater than zero.
 @end table
 
 This option only has an effect if the
-@qcode{\"enforce inequality constraints\"} option is nonzero.
+@qcode{"enforce inequality constraints"} option is nonzero.
 
   END_DOC_ITEM
   TYPE = "Array<octave_idx_type>"

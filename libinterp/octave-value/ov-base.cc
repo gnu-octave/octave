@@ -1485,33 +1485,33 @@ install_base_type_conversions (void)
 }
 
 DEFUN (sparse_auto_mutate, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} sparse_auto_mutate ()\n\
-@deftypefnx {} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
-@deftypefnx {} {} sparse_auto_mutate (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave will\n\
-automatically mutate sparse matrices to full matrices to save memory.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-s = speye (3);\n\
-sparse_auto_mutate (false);\n\
-s(:, 1) = 1;\n\
-typeinfo (s)\n\
-@result{} sparse matrix\n\
-sparse_auto_mutate (true);\n\
-s(1, :) = 1;\n\
-typeinfo (s)\n\
-@result{} matrix\n\
-@end group\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} sparse_auto_mutate ()
+@deftypefnx {} {@var{old_val} =} sparse_auto_mutate (@var{new_val})
+@deftypefnx {} {} sparse_auto_mutate (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave will
+automatically mutate sparse matrices to full matrices to save memory.
+
+For example:
+
+@example
+@group
+s = speye (3);
+sparse_auto_mutate (false);
+s(:, 1) = 1;
+typeinfo (s)
+@result{} sparse matrix
+sparse_auto_mutate (true);
+s(1, :) = 1;
+typeinfo (s)
+@result{} matrix
+@end group
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (sparse_auto_mutate);
 }

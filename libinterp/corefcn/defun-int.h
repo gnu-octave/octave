@@ -80,6 +80,13 @@ defun_isargout (int, int);
 extern OCTINTERP_API void
 defun_isargout (int, int, bool *);
 
+#define FORWARD_DECLARE_FUNX(name) \
+  extern OCTAVE_EXPORT octave_value_list \
+  name (const octave_value_list& = octave_value_list (), int = 0)
+
+#define FORWARD_DECLARE_FUN(name) \
+  FORWARD_DECLARE_FUNX (F ## name)
+
 #define DECLARE_FUNX(name, args_name, nargout_name) \
   OCTAVE_EXPORT octave_value_list \
   name (const octave_value_list& args_name, int nargout_name)
@@ -96,8 +103,13 @@ typedef bool (*octave_dld_fcn_installer) (const octave::dynamic_library&, bool r
 typedef octave_function *
   (*octave_dld_fcn_getter) (const octave::dynamic_library&, bool relative);
 
-#define DEFINE_FUN_INSTALLER_FUN(name, doc) \
-  DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)
+#if defined (OCTAVE_SOURCE)
+#  define DEFINE_FUN_INSTALLER_FUN(name, doc) \
+     DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, "external-doc")
+#else
+#  define DEFINE_FUN_INSTALLER_FUN(name, doc) \
+     DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)
+#endif
 
 #define DEFINE_FUNX_INSTALLER_FUN(name, fname, gname, doc) \
   extern "C" \
@@ -114,71 +126,5 @@ typedef octave_function *
  \
     return fcn; \
   }
-
-// MAKE_BUILTINS is defined to extract function names and related
-// information and create the *.df files that are eventually used to
-// create the builtins.cc file.
-
-#if defined (MAKE_BUILTINS)
-
-// Generate code to install name in the symbol table.  The script
-// mkdefs will create a .def file for every .cc file that uses DEFUN,
-// or DEFCMD.
-
-#define DEFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUN_INTERNAL (name, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFCONSTFUN_INTERNAL (name, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUNX_INTERNAL (name, fname, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-// Generate code to install name in the symbol table.  The script
-// mkdefs will create a .def file for every .cc file that uses
-// DEFUN_DLD.
-
-#define DEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUN_DLD_INTERNAL (name, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-#define DEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-// Generate code for making another name for an existing function.
-
-#define DEFALIAS_INTERNAL(alias, name) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFALIAS_INTERNAL(alias, name) \
-  END_INSTALL_BUILTIN
-
-#else
-
-// Generate the first line of the function definition.  This ensures
-// that the internal functions all have the same signature.
-
-#define DEFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name)
-
-#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name)
-
-#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  DECLARE_FUNX (fname, args_name, nargout_name)
-
-// No definition is required for an alias.
-
-#define DEFALIAS_INTERNAL(alias, name)
-
-#endif
 
 #endif

@@ -29,10 +29,8 @@ libinterp_liboctinterp_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 octlib_LTLIBRARIES += libinterp/liboctinterp.la
 
-## This is the subset of $(BUILT_SOURCES) that may be included by source
-## files that are preprocessed to make $(DEF_FILES).  This ensures that
-## files in $(BUILT_SOURCES) are built in the right dependency order.
-GENERATED_MAKE_BUILTINS_INCS = \
+BUILT_SOURCES += \
+  libinterp/builtin-defun-decls.h \
   libinterp/corefcn/defaults.h \
   libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/graphics.h \
@@ -40,20 +38,6 @@ GENERATED_MAKE_BUILTINS_INCS = \
   libinterp/parse-tree/oct-gperf.h \
   libinterp/parse-tree/oct-parse.h \
   libinterp/version.h
-
-BUILT_SOURCES += \
-  $(GENERATED_MAKE_BUILTINS_INCS) \
-  libinterp/build-env.cc \
-  libinterp/builtin-defun-decls.h \
-  libinterp/builtins.cc \
-  libinterp/liboctinterp-build-info.cc \
-  libinterp/corefcn/oct-errno.cc \
-  libinterp/corefcn/oct-tex-lexer.cc \
-  libinterp/corefcn/oct-tex-parser.cc \
-  libinterp/corefcn/oct-tex-symbols.cc \
-  libinterp/operators/ops.cc \
-  libinterp/parse-tree/lex.cc \
-  libinterp/parse-tree/oct-parse.cc
 
 ULT_PARSER_SRC := \
   libinterp/corefcn/oct-tex-lexer.in.ll \
@@ -66,8 +50,12 @@ GENERATED_PARSER_FILES := \
   libinterp/corefcn/oct-tex-parser.yy \
   libinterp/parse-tree/oct-parse.yy
 
+## These generated files are included in the source distribution to
+## avoid needing certain tools to build from a distribution tarball.
+
 LIBINTERP_BUILT_DISTFILES = \
   $(GENERATED_PARSER_FILES) \
+  $(OPT_HANDLERS) \
   libinterp/corefcn/oct-tex-parser.h \
   libinterp/corefcn/oct-tex-symbols.cc \
   libinterp/parse-tree/oct-gperf.h \
@@ -86,8 +74,6 @@ LIBINTERP_BUILT_NODISTFILES = \
   libinterp/builtin-defun-decls.h \
   libinterp/operators/ops.cc \
   libinterp/version.h \
-  $(OPT_HANDLERS) \
-  $(ALL_DEF_FILES) \
   libinterp/builtins.cc
 
 libinterp_EXTRA_DIST += \
@@ -101,7 +87,6 @@ libinterp_EXTRA_DIST += \
   libinterp/mk-errno-list \
   libinterp/mk-pkg-add \
   libinterp/mkbuiltins \
-  libinterp/mkdefs \
   libinterp/mkops \
   libinterp/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
@@ -193,46 +178,28 @@ libinterp_liboctinterp_la_LDFLAGS = \
   $(LIBOCTINTERP_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-## Section for defining and creating DEF_FILES
-
 ULT_DIST_SRC := \
   $(filter-out $(GENERATED_PARSER_FILES), $(DIST_SRC)) $(ULT_PARSER_SRC)
 
-SRC_DEF_FILES := $(shell $(SHELL) $(srcdir)/libinterp/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
+FOUND_DEFUN_FILES := \
+  $(shell $(SHELL) $(srcdir)/libinterp/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
-DLDFCN_DEF_FILES = $(DLDFCN_SRC:.cc=.df)
+SRC_DEFUN_FILES = $(OPT_HANDLERS) $(FOUND_DEFUN_FILES)
 
-## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
-## .df files that correspond to sources included in liboctave.
+DLDFCN_DEFUN_FILES = $(DLDFCN_SRC)
+
 if AMCOND_ENABLE_DYNAMIC_LINKING
-  DEF_FILES = $(SRC_DEF_FILES)
+  DEFUN_FILES = $(SRC_DEFUN_FILES)
 else
-  DEF_FILES = $(SRC_DEF_FILES) $(DLDFCN_DEF_FILES)
+  DEFUN_FILES = $(SRC_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
 endif
 
-ALL_DEF_FILES = $(SRC_DEF_FILES) $(DLDFCN_DEF_FILES)
-
-$(SRC_DEF_FILES): libinterp/mkdefs
-
-$(DEF_FILES): $(OPT_HANDLERS) $(LIBOCTAVE_OPT_INC)
+ALL_DEFUN_FILES = $(SRC_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
 
 ## FIXME: The following two variables are deprecated and should be removed
 ##        in Octave version 3.12.
 DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
-
-## Rule to build a DEF file from a .cc file
-## See also module.mk files for overrides when speciall CPPFLAGS are needed.
-## FIXME: Shouldn't the build stop if CPP fails here?  Yes (10/31/2013)
-%.df: %.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h
-	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
-	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(libinterp_liboctinterp_la_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \
-	  $(libinterp_liboctinterp_la_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t1 && \
-	$(SHELL) $(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
-	rm -f $@-t1 && \
-	mv $@-t $@
 
 ## Rules to build test files
 
@@ -259,7 +226,7 @@ libinterp/build-env.cc: libinterp/build-env.in.cc build-aux/subst-config-vals.sh
 libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
-	$(simple_move_if_change_rule)
+	mv $@-t $@
 
 libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
@@ -271,33 +238,33 @@ libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc HG
 	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
 	$(simple_move_if_change_rule)
 
-libinterp/builtins.cc: $(DEF_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
+libinterp/builtins.cc: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/mkbuiltins --source $(DEF_FILES) > $@-t && \
-	$(simple_move_if_change_rule)
+	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --source $(ALL_DEFUN_FILES) > $@-t && \
+	mv $@-t $@
 
-libinterp/builtin-defun-decls.h: $(SRC_DEF_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
+libinterp/builtin-defun-decls.h: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/mkbuiltins --header $(SRC_DEF_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --header $(ALL_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = libinterp/dldfcn/PKG_ADD
 
-libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) libinterp/mk-pkg-add | libinterp/$(octave-dirstamp)
+libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) libinterp/mk-pkg-add | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t && \
-	$(simple_move_if_change_rule)
+	$(SHELL) $(srcdir)/libinterp/mk-pkg-add "$(srcdir)" $(DLDFCN_DEFUN_FILES) > $@-t && \
+	mv $@-t $@
 endif
 
 if AMCOND_BUILD_DOCS
 
 DOCSTRING_FILES += $(srcdir)/libinterp/DOCSTRINGS
 
-$(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEF_FILES) | libinterp/$(octave-dirstamp)
+$(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f libinterp/DOCSTRINGS-t && \
-	$(PERL) $(srcdir)/libinterp/gendoc.pl $(ALL_DEF_FILES) > libinterp/DOCSTRINGS-t && \
-	$(SHELL) $(srcdir)/build-aux/move-if-change libinterp/DOCSTRINGS-t $@
+	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(ALL_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
+	mv libinterp/DOCSTRINGS-t $@
 
 endif
 

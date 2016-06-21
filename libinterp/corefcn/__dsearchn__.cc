@@ -35,10 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 
 DEFUN (__dsearchn__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();

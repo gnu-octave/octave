@@ -318,70 +318,70 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 }
 
 DEFUN (find, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{idx} =} find (@var{x})\n\
-@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n})\n\
-@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\
-@deftypefnx {} {[i, j] =} find (@dots{})\n\
-@deftypefnx {} {[i, j, v] =} find (@dots{})\n\
-Return a vector of indices of nonzero elements of a matrix, as a row if\n\
-@var{x} is a row vector or as a column otherwise.\n\
-\n\
-To obtain a single index for each matrix element, Octave pretends that the\n\
-columns of a matrix form one long vector (like Fortran arrays are stored).\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-find (eye (2))\n\
-  @result{} [ 1; 4 ]\n\
-@end group\n\
-@end example\n\
-\n\
-If two inputs are given, @var{n} indicates the maximum number of elements to\n\
-find from the beginning of the matrix or vector.\n\
-\n\
-If three inputs are given, @var{direction} should be one of\n\
-@qcode{\"first\"} or @qcode{\"last\"}, requesting only the first or last\n\
-@var{n} indices, respectively.  However, the indices are always returned in\n\
-ascending order.\n\
-\n\
-If two outputs are requested, @code{find} returns the row and column\n\
-indices of nonzero elements of a matrix.  For example:\n\
-\n\
-@example\n\
-@group\n\
-[i, j] = find (2 * eye (2))\n\
-    @result{} i = [ 1; 2 ]\n\
-    @result{} j = [ 1; 2 ]\n\
-@end group\n\
-@end example\n\
-\n\
-If three outputs are requested, @code{find} also returns a vector\n\
-containing the nonzero values.  For example:\n\
-\n\
-@example\n\
-@group\n\
-[i, j, v] = find (3 * eye (2))\n\
-       @result{} i = [ 1; 2 ]\n\
-       @result{} j = [ 1; 2 ]\n\
-       @result{} v = [ 3; 3 ]\n\
-@end group\n\
-@end example\n\
-\n\
-Note that this function is particularly useful for sparse matrices, as\n\
-it extracts the nonzero elements as vectors, which can then be used to\n\
-create the original matrix.  For example:\n\
-\n\
-@example\n\
-@group\n\
-sz = size (a);\n\
-[i, j, v] = find (a);\n\
-b = sparse (i, j, v, sz(1), sz(2));\n\
-@end group\n\
-@end example\n\
-@seealso{nonzeros}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{idx} =} find (@var{x})
+@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n})
+@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})
+@deftypefnx {} {[i, j] =} find (@dots{})
+@deftypefnx {} {[i, j, v] =} find (@dots{})
+Return a vector of indices of nonzero elements of a matrix, as a row if
+@var{x} is a row vector or as a column otherwise.
+
+To obtain a single index for each matrix element, Octave pretends that the
+columns of a matrix form one long vector (like Fortran arrays are stored).
+For example:
+
+@example
+@group
+find (eye (2))
+  @result{} [ 1; 4 ]
+@end group
+@end example
+
+If two inputs are given, @var{n} indicates the maximum number of elements to
+find from the beginning of the matrix or vector.
+
+If three inputs are given, @var{direction} should be one of
+@qcode{"first"} or @qcode{"last"}, requesting only the first or last
+@var{n} indices, respectively.  However, the indices are always returned in
+ascending order.
+
+If two outputs are requested, @code{find} returns the row and column
+indices of nonzero elements of a matrix.  For example:
+
+@example
+@group
+[i, j] = find (2 * eye (2))
+    @result{} i = [ 1; 2 ]
+    @result{} j = [ 1; 2 ]
+@end group
+@end example
+
+If three outputs are requested, @code{find} also returns a vector
+containing the nonzero values.  For example:
+
+@example
+@group
+[i, j, v] = find (3 * eye (2))
+       @result{} i = [ 1; 2 ]
+       @result{} j = [ 1; 2 ]
+       @result{} v = [ 3; 3 ]
+@end group
+@end example
+
+Note that this function is particularly useful for sparse matrices, as
+it extracts the nonzero elements as vectors, which can then be used to
+create the original matrix.  For example:
+
+@example
+@group
+sz = size (a);
+[i, j, v] = find (a);
+b = sparse (i, j, v, sz(1), sz(2));
+@end group
+@end example
+@seealso{nonzeros}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

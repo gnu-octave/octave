@@ -781,37 +781,37 @@ octave_user_function::restore_warning_states (void)
 }
 
 DEFUN (nargin, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} nargin ()\n\
-@deftypefnx {} {} nargin (@var{fcn})\n\
-Report the number of input arguments to a function.\n\
-\n\
-Called from within a function, return the number of arguments passed to the\n\
-function.  At the top level, return the number of command line arguments\n\
-passed to Octave.\n\
-\n\
-If called with the optional argument @var{fcn}---a function name or\n\
-handle---return the declared number of arguments that the function can\n\
-accept.\n\
-\n\
-If the last argument to @var{fcn} is @var{varargin} the returned value is\n\
-negative.  For example, the function @code{union} for sets is declared as\n\
-\n\
-@example\n\
-@group\n\
-function [y, ia, ib] = union (a, b, varargin)\n\
-\n\
-and\n\
-\n\
-nargin (\"union\")\n\
-@result{} -3\n\
-@end group\n\
-@end example\n\
-\n\
-Programming Note: @code{nargin} does not work on compiled functions\n\
-(@file{.oct} files) such as built-in or dynamically loaded functions.\n\
-@seealso{nargout, narginchk, varargin, inputname}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} nargin ()
+@deftypefnx {} {} nargin (@var{fcn})
+Report the number of input arguments to a function.
+
+Called from within a function, return the number of arguments passed to the
+function.  At the top level, return the number of command line arguments
+passed to Octave.
+
+If called with the optional argument @var{fcn}---a function name or
+handle---return the declared number of arguments that the function can
+accept.
+
+If the last argument to @var{fcn} is @var{varargin} the returned value is
+negative.  For example, the function @code{union} for sets is declared as
+
+@example
+@group
+function [y, ia, ib] = union (a, b, varargin)
+
+and
+
+nargin ("union")
+@result{} -3
+@end group
+@end example
+
+Programming Note: @code{nargin} does not work on compiled functions
+(@file{.oct} files) such as built-in or dynamically loaded functions.
+@seealso{nargout, narginchk, varargin, inputname}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -866,59 +866,59 @@ Programming Note: @code{nargin} does not work on compiled functions\n\
 }
 
 DEFUN (nargout, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} nargout ()\n\
-@deftypefnx {} {} nargout (@var{fcn})\n\
-Report the number of output arguments from a function.\n\
-\n\
-Called from within a function, return the number of values the caller\n\
-expects to receive.  At the top level, @code{nargout} with no argument is\n\
-undefined and will produce an error.\n\
-\n\
-If called with the optional argument @var{fcn}---a function name or\n\
-handle---return the number of declared output values that the function can\n\
-produce.\n\
-\n\
-If the final output argument is @var{varargout} the returned value is\n\
-negative.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-f ()\n\
-@end example\n\
-\n\
-@noindent\n\
-will cause @code{nargout} to return 0 inside the function @code{f} and\n\
-\n\
-@example\n\
-[s, t] = f ()\n\
-@end example\n\
-\n\
-@noindent\n\
-will cause @code{nargout} to return 2 inside the function @code{f}.\n\
-\n\
-In the second usage,\n\
-\n\
-@example\n\
-nargout (@@histc) \% or nargout (\"histc\")\n\
-@end example\n\
-\n\
-@noindent\n\
-will return 2, because @code{histc} has two outputs, whereas\n\
-\n\
-@example\n\
-nargout (@@imread)\n\
-@end example\n\
-\n\
-@noindent\n\
-will return -2, because @code{imread} has two outputs and the second is\n\
-@var{varargout}.\n\
-\n\
-Programming Note.  @code{nargout} does not work for built-in functions and\n\
-returns -1 for all anonymous functions.\n\
-@seealso{nargin, varargout, isargout, nthargout}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} nargout ()
+@deftypefnx {} {} nargout (@var{fcn})
+Report the number of output arguments from a function.
+
+Called from within a function, return the number of values the caller
+expects to receive.  At the top level, @code{nargout} with no argument is
+undefined and will produce an error.
+
+If called with the optional argument @var{fcn}---a function name or
+handle---return the number of declared output values that the function can
+produce.
+
+If the final output argument is @var{varargout} the returned value is
+negative.
+
+For example,
+
+@example
+f ()
+@end example
+
+@noindent
+will cause @code{nargout} to return 0 inside the function @code{f} and
+
+@example
+[s, t] = f ()
+@end example
+
+@noindent
+will cause @code{nargout} to return 2 inside the function @code{f}.
+
+In the second usage,
+
+@example
+nargout (@@histc) \% or nargout ("histc")
+@end example
+
+@noindent
+will return 2, because @code{histc} has two outputs, whereas
+
+@example
+nargout (@@imread)
+@end example
+
+@noindent
+will return -2, because @code{imread} has two outputs and the second is
+@var{varargout}.
+
+Programming Note.  @code{nargout} does not work for built-in functions and
+returns -1 for all anonymous functions.
+@seealso{nargin, varargout, isargout, nthargout}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -989,21 +989,21 @@ returns -1 for all anonymous functions.\n\
 }
 
 DEFUN (optimize_subsasgn_calls, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} optimize_subsasgn_calls ()\n\
-@deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
-@deftypefnx {} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
-Query or set the internal flag for @code{subsasgn} method call\n\
-optimizations.\n\
-\n\
-If true, Octave will attempt to eliminate the redundant copying when calling\n\
-the @code{subsasgn} method of a user-defined class.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{subsasgn}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} optimize_subsasgn_calls ()
+@deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})
+@deftypefnx {} {} optimize_subsasgn_calls (@var{new_val}, "local")
+Query or set the internal flag for @code{subsasgn} method call
+optimizations.
+
+If true, Octave will attempt to eliminate the redundant copying when calling
+the @code{subsasgn} method of a user-defined class.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{subsasgn}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
 }
@@ -1026,22 +1026,22 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 }
 
 DEFUN (isargout, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isargout (@var{k})\n\
-Within a function, return a logical value indicating whether the argument\n\
-@var{k} will be assigned to a variable on output.\n\
-\n\
-If the result is false, the argument has been ignored during the function\n\
-call through the use of the tilde (~) special output argument.  Functions\n\
-can use @code{isargout} to avoid performing unnecessary calculations for\n\
-outputs which are unwanted.\n\
-\n\
-If @var{k} is outside the range @code{1:max (nargout)}, the function returns\n\
-false.  @var{k} can also be an array, in which case the function works\n\
-element-by-element and a logical array is returned.  At the top level,\n\
-@code{isargout} returns an error.\n\
-@seealso{nargout, varargout, nthargout}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isargout (@var{k})
+Within a function, return a logical value indicating whether the argument
+@var{k} will be assigned to a variable on output.
+
+If the result is false, the argument has been ignored during the function
+call through the use of the tilde (~) special output argument.  Functions
+can use @code{isargout} to avoid performing unnecessary calculations for
+outputs which are unwanted.
+
+If @var{k} is outside the range @code{1:max (nargout)}, the function returns
+false.  @var{k} can also be an array, in which case the function works
+element-by-element and a logical array is returned.  At the top level,
+@code{isargout} returns an error.
+@seealso{nargout, varargout, nthargout}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

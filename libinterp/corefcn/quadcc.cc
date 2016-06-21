@@ -1478,75 +1478,75 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 // The actual integration routine.
 
 DEFUN (quadcc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})\n\
-@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-@deftypefnx {} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
-Numerically evaluate the integral of @var{f} from @var{a} to @var{b}\n\
-using doubly-adaptive @nospell{Clenshaw-Curtis} quadrature.\n\
-\n\
-@var{f} is a function handle, inline function, or string containing the name\n\
-of the function to evaluate.  The function @var{f} must be vectorized and\n\
-must return a vector of output values if given a vector of input values.\n\
-For example,\n\
-\n\
-@example\n\
-f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
-@end example\n\
-\n\
-@noindent\n\
-which uses the element-by-element ``dot'' form for all operators.\n\
-\n\
-@var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
-or both limits may be infinite.  @code{quadcc} handles an inifinite limit\n\
-by substituting the variable of integration with @code{x = tan (pi/2*u)}.\n\
-\n\
-The optional argument @var{tol} defines the relative tolerance used to stop\n\
-the integration procedure.  The default value is @math{1e^{-6}}.\n\
-\n\
-The optional argument @var{sing} contains a list of points where the\n\
-integrand has known singularities, or discontinuities\n\
-in any of its derivatives, inside the integration interval.\n\
-For the example above, which has a discontinuity at x=1, the call to\n\
-@code{quadcc} would be as follows\n\
-\n\
-@example\n\
-int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
-@end example\n\
-\n\
-The result of the integration is returned in @var{q}.\n\
-\n\
-@var{err} is an estimate of the absolute integration error.\n\
-\n\
-@var{nr_points} is the number of points at which the integrand was\n\
-evaluated.\n\
-\n\
-If the adaptive integration did not converge, the value of @var{err} will be\n\
-larger than the requested tolerance.  Therefore, it is recommended to verify\n\
-this value for difficult integrands.\n\
-\n\
-@code{quadcc} is capable of dealing with non-numeric values of the integrand\n\
-such as @code{NaN} or @code{Inf}.  If the integral diverges, and\n\
-@code{quadcc} detects this, then a warning is issued and @code{Inf} or\n\
-@code{-Inf} is returned.\n\
-\n\
-Note: @code{quadcc} is a general purpose quadrature algorithm and, as such,\n\
-may be less efficient for a smooth or otherwise well-behaved integrand than\n\
-other methods such as @code{quadgk}.\n\
-\n\
-The algorithm uses @nospell{Clenshaw-Curtis} quadrature rules of increasing\n\
-degree in each interval and bisects the interval if either the function does\n\
-not appear to be smooth or a rule of maximum degree has been reached.  The\n\
-error estimate is computed from the L2-norm of the difference between two\n\
-successive interpolations of the integrand over the nodes of the respective\n\
-quadrature rules.\n\
-\n\
-Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive\n\
-Quadrature Using Explicit Interpolants}, ACM Transactions on\n\
-Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
-@seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})
+@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})
+@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
+@deftypefnx {} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})
+Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
+using doubly-adaptive @nospell{Clenshaw-Curtis} quadrature.
+
+@var{f} is a function handle, inline function, or string containing the name
+of the function to evaluate.  The function @var{f} must be vectorized and
+must return a vector of output values if given a vector of input values.
+For example,
+
+@example
+f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));
+@end example
+
+@noindent
+which uses the element-by-element ``dot'' form for all operators.
+
+@var{a} and @var{b} are the lower and upper limits of integration.  Either
+or both limits may be infinite.  @code{quadcc} handles an inifinite limit
+by substituting the variable of integration with @code{x = tan (pi/2*u)}.
+
+The optional argument @var{tol} defines the relative tolerance used to stop
+the integration procedure.  The default value is @math{1e^{-6}}.
+
+The optional argument @var{sing} contains a list of points where the
+integrand has known singularities, or discontinuities
+in any of its derivatives, inside the integration interval.
+For the example above, which has a discontinuity at x=1, the call to
+@code{quadcc} would be as follows
+
+@example
+int = quadcc (f, a, b, 1.0e-6, [ 1 ]);
+@end example
+
+The result of the integration is returned in @var{q}.
+
+@var{err} is an estimate of the absolute integration error.
+
+@var{nr_points} is the number of points at which the integrand was
+evaluated.
+
+If the adaptive integration did not converge, the value of @var{err} will be
+larger than the requested tolerance.  Therefore, it is recommended to verify
+this value for difficult integrands.
+
+@code{quadcc} is capable of dealing with non-numeric values of the integrand
+such as @code{NaN} or @code{Inf}.  If the integral diverges, and
+@code{quadcc} detects this, then a warning is issued and @code{Inf} or
+@code{-Inf} is returned.
+
+Note: @code{quadcc} is a general purpose quadrature algorithm and, as such,
+may be less efficient for a smooth or otherwise well-behaved integrand than
+other methods such as @code{quadgk}.
+
+The algorithm uses @nospell{Clenshaw-Curtis} quadrature rules of increasing
+degree in each interval and bisects the interval if either the function does
+not appear to be smooth or a rule of maximum degree has been reached.  The
+error estimate is computed from the L2-norm of the difference between two
+successive interpolations of the integrand over the nodes of the respective
+quadrature rules.
+
+Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive
+Quadrature Using Explicit Interpolants}, ACM Transactions on
+Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
+@seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}
+@end deftypefn */)
 {
   // Some constants that we will need.
   static const int n[4] = { 4, 8, 16, 32 };

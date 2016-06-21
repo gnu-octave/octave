@@ -29,44 +29,44 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-specfun.h"
 
 DEFUN (ellipj, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
-@deftypefnx {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})\n\
-Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}\n\
-of complex argument @var{u} and real parameter @var{m}.\n\
-\n\
-If @var{m} is a scalar, the results are the same size as @var{u}.\n\
-If @var{u} is a scalar, the results are the same size as @var{m}.\n\
-If @var{u} is a column vector and @var{m} is a row vector, the\n\
-results are matrices with @code{length (@var{u})} rows and\n\
-@code{length (@var{m})} columns.  Otherwise, @var{u} and\n\
-@var{m} must conform in size and the results will be the same size as the\n\
-inputs.\n\
-\n\
-The value of @var{u} may be complex.\n\
-The value of @var{m} must be 0 @leq{} @var{m} @leq{} 1.\n\
-\n\
-The optional input @var{tol} is currently ignored (@sc{matlab} uses this to\n\
-allow faster, less accurate approximation).\n\
-\n\
-If requested, @var{err} contains the following status information\n\
-and is the same size as the result.\n\
-\n\
-@enumerate 0\n\
-@item\n\
-Normal return.\n\
-\n\
-@item\n\
-Error---no computation, algorithm termination condition not met,\n\
-return @code{NaN}.\n\
-@end enumerate\n\
-\n\
-Reference: Milton @nospell{Abramowitz} and Irene A @nospell{Stegun},\n\
-@cite{Handbook of Mathematical Functions}, Chapter 16 (Sections 16.4, 16.13,\n\
-and 16.15), Dover, 1965.\n\
-\n\
-@seealso{ellipke}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})
+@deftypefnx {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})
+Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}
+of complex argument @var{u} and real parameter @var{m}.
+
+If @var{m} is a scalar, the results are the same size as @var{u}.
+If @var{u} is a scalar, the results are the same size as @var{m}.
+If @var{u} is a column vector and @var{m} is a row vector, the
+results are matrices with @code{length (@var{u})} rows and
+@code{length (@var{m})} columns.  Otherwise, @var{u} and
+@var{m} must conform in size and the results will be the same size as the
+inputs.
+
+The value of @var{u} may be complex.
+The value of @var{m} must be 0 @leq{} @var{m} @leq{} 1.
+
+The optional input @var{tol} is currently ignored (@sc{matlab} uses this to
+allow faster, less accurate approximation).
+
+If requested, @var{err} contains the following status information
+and is the same size as the result.
+
+@enumerate 0
+@item
+Normal return.
+
+@item
+Error---no computation, algorithm termination condition not met,
+return @code{NaN}.
+@end enumerate
+
+Reference: Milton @nospell{Abramowitz} and Irene A @nospell{Stegun},
+@cite{Handbook of Mathematical Functions}, Chapter 16 (Sections 16.4, 16.13,
+and 16.15), Dover, 1965.
+
+@seealso{ellipke}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

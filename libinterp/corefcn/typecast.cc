@@ -84,59 +84,59 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
 
 
 DEFUN (typecast, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{y} =} typecast (@var{x}, \"@var{class}\")\n\
-Return a new array @var{y} resulting from interpreting the data of @var{x}\n\
-in memory as data of the numeric class @var{class}.\n\
-\n\
-Both the class of @var{x} and @var{class} must be one of the built-in\n\
-numeric classes:\n\
-\n\
-@example\n\
-@group\n\
-\"logical\"\n\
-\"char\"\n\
-\"int8\"\n\
-\"int16\"\n\
-\"int32\"\n\
-\"int64\"\n\
-\"uint8\"\n\
-\"uint16\"\n\
-\"uint32\"\n\
-\"uint64\"\n\
-\"double\"\n\
-\"single\"\n\
-\"double complex\"\n\
-\"single complex\"\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-the last two are only used with @var{class}; they indicate that a\n\
-complex-valued result is requested.  Complex arrays are stored in memory as\n\
-consecutive pairs of real numbers.  The sizes of integer types are given by\n\
-their bit counts.  Both logical and char are typically one byte wide;\n\
-however, this is not guaranteed by C++.  If your system is IEEE conformant,\n\
-single and double will be 4 bytes and 8 bytes wide, respectively.\n\
-@qcode{\"logical\"} is not allowed for @var{class}.\n\
-\n\
-If the input is a row vector, the return value is a row vector, otherwise it\n\
-is a column vector.\n\
-\n\
-If the bit length of @var{x} is not divisible by that of @var{class}, an\n\
-error occurs.\n\
-\n\
-An example of the use of typecast on a little-endian machine is\n\
-\n\
-@example\n\
-@group\n\
-@var{x} = uint16 ([1, 65535]);\n\
-typecast (@var{x}, \"uint8\")\n\
-@result{} [   1,   0, 255, 255]\n\
-@end group\n\
-@end example\n\
-@seealso{cast, bitpack, bitunpack, swapbytes}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{y} =} typecast (@var{x}, "@var{class}")
+Return a new array @var{y} resulting from interpreting the data of @var{x}
+in memory as data of the numeric class @var{class}.
+
+Both the class of @var{x} and @var{class} must be one of the built-in
+numeric classes:
+
+@example
+@group
+"logical"
+"char"
+"int8"
+"int16"
+"int32"
+"int64"
+"uint8"
+"uint16"
+"uint32"
+"uint64"
+"double"
+"single"
+"double complex"
+"single complex"
+@end group
+@end example
+
+@noindent
+the last two are only used with @var{class}; they indicate that a
+complex-valued result is requested.  Complex arrays are stored in memory as
+consecutive pairs of real numbers.  The sizes of integer types are given by
+their bit counts.  Both logical and char are typically one byte wide;
+however, this is not guaranteed by C++.  If your system is IEEE conformant,
+single and double will be 4 bytes and 8 bytes wide, respectively.
+@qcode{"logical"} is not allowed for @var{class}.
+
+If the input is a row vector, the return value is a row vector, otherwise it
+is a column vector.
+
+If the bit length of @var{x} is not divisible by that of @var{class}, an
+error occurs.
+
+An example of the use of typecast on a little-endian machine is
+
+@example
+@group
+@var{x} = uint16 ([1, 65535]);
+typecast (@var{x}, "uint8")
+@result{} [   1,   0, 255, 255]
+@end group
+@end example
+@seealso{cast, bitpack, bitunpack, swapbytes}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -316,40 +316,40 @@ do_bitpack (const boolNDArray& bitp)
 }
 
 DEFUN (bitpack, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{y} =} bitpack (@var{x}, @var{class})\n\
-Return a new array @var{y} resulting from interpreting the logical array\n\
-@var{x} as raw bit patterns for data of the numeric class @var{class}.\n\
-\n\
-@var{class} must be one of the built-in numeric classes:\n\
-\n\
-@example\n\
-@group\n\
-\"double\"\n\
-\"single\"\n\
-\"double complex\"\n\
-\"single complex\"\n\
-\"char\"\n\
-\"int8\"\n\
-\"int16\"\n\
-\"int32\"\n\
-\"int64\"\n\
-\"uint8\"\n\
-\"uint16\"\n\
-\"uint32\"\n\
-\"uint64\"\n\
-@end group\n\
-@end example\n\
-\n\
-The number of elements of @var{x} should be divisible by the bit length of\n\
-@var{class}.  If it is not, excess bits are discarded.  Bits come in\n\
-increasing order of significance, i.e., @code{x(1)} is bit 0, @code{x(2)} is\n\
-bit 1, etc.\n\
-\n\
-The result is a row vector if @var{x} is a row vector, otherwise it is a\n\
-column vector.\n\
-@seealso{bitunpack, typecast}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{y} =} bitpack (@var{x}, @var{class})
+Return a new array @var{y} resulting from interpreting the logical array
+@var{x} as raw bit patterns for data of the numeric class @var{class}.
+
+@var{class} must be one of the built-in numeric classes:
+
+@example
+@group
+"double"
+"single"
+"double complex"
+"single complex"
+"char"
+"int8"
+"int16"
+"int32"
+"int64"
+"uint8"
+"uint16"
+"uint32"
+"uint64"
+@end group
+@end example
+
+The number of elements of @var{x} should be divisible by the bit length of
+@var{class}.  If it is not, excess bits are discarded.  Bits come in
+increasing order of significance, i.e., @code{x(1)} is bit 0, @code{x(2)} is
+bit 1, etc.
+
+The result is a row vector if @var{x} is a row vector, otherwise it is a
+column vector.
+@seealso{bitunpack, typecast}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -456,33 +456,33 @@ do_bitunpack (const ArrayType& array)
 }
 
 DEFUN (bitunpack, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{y} =} bitunpack (@var{x})\n\
-Return a logical array @var{y} corresponding to the raw bit patterns of\n\
-@var{x}.\n\
-\n\
-@var{x} must belong to one of the built-in numeric classes:\n\
-\n\
-@example\n\
-@group\n\
-\"double\"\n\
-\"single\"\n\
-\"char\"\n\
-\"int8\"\n\
-\"int16\"\n\
-\"int32\"\n\
-\"int64\"\n\
-\"uint8\"\n\
-\"uint16\"\n\
-\"uint32\"\n\
-\"uint64\"\n\
-@end group\n\
-@end example\n\
-\n\
-The result is a row vector if @var{x} is a row vector; otherwise, it is a\n\
-column vector.\n\
-@seealso{bitpack, typecast}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{y} =} bitunpack (@var{x})
+Return a logical array @var{y} corresponding to the raw bit patterns of
+@var{x}.
+
+@var{x} must belong to one of the built-in numeric classes:
+
+@example
+@group
+"double"
+"single"
+"char"
+"int8"
+"int16"
+"int32"
+"int64"
+"uint8"
+"uint16"
+"uint32"
+"uint64"
+@end group
+@end example
+
+The result is a row vector if @var{x} is a row vector; otherwise, it is a
+column vector.
+@seealso{bitpack, typecast}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

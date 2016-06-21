@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 //   doc is the simple help text for the function.
 
 #define DEFUN(name, args_name, nargout_name, doc) \
-  DEFUN_INTERNAL (name, args_name, nargout_name, doc)
+  DECLARE_FUN (name, args_name, nargout_name)
 
 // This one can be used when 'name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
@@ -52,17 +52,16 @@ along with Octave; see the file COPYING.  If not, see
 // too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").
 
 #define DEFUNX(name, fname, args_name, nargout_name, doc) \
-  DEFUNX_INTERNAL (name, fname, args_name, nargout_name, doc)
+  DECLARE_FUNX (fname, args_name, nargout_name)
 
 // This is a function with a name that can't be hidden by a variable.
 #define DEFCONSTFUN(name, args_name, nargout_name, doc) \
-  DEFCONSTFUN_INTERNAL (name, args_name, nargout_name, doc)
+  DECLARE_FUN (name, args_name, nargout_name)
 
 // Make alias another name for the existing function name.  This macro
-// must be used in the same file where name is defined, after the
-// definition for name.
+// is processed by the mkbuiltins to generate code in builtins.cc to
+// create the alias in the symbol table.
 
-#define DEFALIAS(alias, name) \
-  DEFALIAS_INTERNAL (alias, name)
+#define DEFALIAS(alias, name)
 
 #endif

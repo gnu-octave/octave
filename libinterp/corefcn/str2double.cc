@@ -295,51 +295,51 @@ str2double1 (const std::string& str_arg)
 }
 
 DEFUN (str2double, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} str2double (@var{s})\n\
-Convert a string to a real or complex number.\n\
-\n\
-The string must be in one of the following formats where a and b are real\n\
-numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:\n\
-\n\
-@itemize\n\
-@item a + bi\n\
-\n\
-@item a + b*i\n\
-\n\
-@item a + i*b\n\
-\n\
-@item bi + a\n\
-\n\
-@item b*i + a\n\
-\n\
-@item i*b + a\n\
-@end itemize\n\
-\n\
-If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where\n\
-the brackets indicate optional arguments and @qcode{'d'} indicates zero or\n\
-more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}\n\
-are also accepted.\n\
-\n\
-@var{s} may be a character string, character matrix, or cell array.  For\n\
-character arrays the conversion is repeated for every row, and a double or\n\
-complex array is returned.  Empty rows in @var{s} are deleted and not\n\
-returned in the numeric array.  For cell arrays each character string\n\
-element is processed and a double or complex array of the same dimensions as\n\
-@var{s} is returned.\n\
-\n\
-For unconvertible scalar or character string input @code{str2double} returns\n\
-a NaN@.  Similarly, for character array input @code{str2double} returns a\n\
-NaN for any row of @var{s} that could not be converted.  For a cell array,\n\
-@code{str2double} returns a NaN for any element of @var{s} for which\n\
-conversion fails.  Note that numeric elements in a mixed string/numeric\n\
-cell array are not strings and the conversion will fail for these elements\n\
-and return NaN.\n\
-\n\
-@code{str2double} can replace @code{str2num}, and it avoids the security\n\
-risk of using @code{eval} on unknown data.\n\
-@seealso{str2num}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} str2double (@var{s})
+Convert a string to a real or complex number.
+
+The string must be in one of the following formats where a and b are real
+numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:
+
+@itemize
+@item a + bi
+
+@item a + b*i
+
+@item a + i*b
+
+@item bi + a
+
+@item b*i + a
+
+@item i*b + a
+@end itemize
+
+If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where
+the brackets indicate optional arguments and @qcode{'d'} indicates zero or
+more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}
+are also accepted.
+
+@var{s} may be a character string, character matrix, or cell array.  For
+character arrays the conversion is repeated for every row, and a double or
+complex array is returned.  Empty rows in @var{s} are deleted and not
+returned in the numeric array.  For cell arrays each character string
+element is processed and a double or complex array of the same dimensions as
+@var{s} is returned.
+
+For unconvertible scalar or character string input @code{str2double} returns
+a NaN@.  Similarly, for character array input @code{str2double} returns a
+NaN for any row of @var{s} that could not be converted.  For a cell array,
+@code{str2double} returns a NaN for any element of @var{s} for which
+conversion fails.  Note that numeric elements in a mixed string/numeric
+cell array are not strings and the conversion will fail for these elements
+and return NaN.
+
+@code{str2double} can replace @code{str2num}, and it avoids the security
+risk of using @code{eval} on unknown data.
+@seealso{str2num}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

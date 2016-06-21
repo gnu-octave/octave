@@ -37,87 +37,87 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 DEFUN (matrix_type, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{type} =} matrix_type (@var{A})\n\
-@deftypefnx {} {@var{type} =} matrix_type (@var{A}, \"nocompute\")\n\
-@deftypefnx {} {@var{A} =} matrix_type (@var{A}, @var{type})\n\
-@deftypefnx {} {@var{A} =} matrix_type (@var{A}, \"upper\", @var{perm})\n\
-@deftypefnx {} {@var{A} =} matrix_type (@var{A}, \"lower\", @var{perm})\n\
-@deftypefnx {} {@var{A} =} matrix_type (@var{A}, \"banded\", @var{nl}, @var{nu})\n\
-Identify the matrix type or mark a matrix as a particular type.\n\
-\n\
-This allows more rapid solutions of linear equations involving @var{A} to be\n\
-performed.\n\
-\n\
-Called with a single argument, @code{matrix_type} returns the type of the\n\
-matrix and caches it for future use.\n\
-\n\
-Called with more than one argument, @code{matrix_type} allows the type of\n\
-the matrix to be defined.\n\
-\n\
-If the option @qcode{\"nocompute\"} is given, the function will not attempt\n\
-to guess the type if it is still unknown.  This is useful for debugging\n\
-purposes.\n\
-\n\
-The possible matrix types depend on whether the matrix is full or sparse,\n\
-and can be one of the following\n\
-\n\
-@table @asis\n\
-@item @qcode{\"unknown\"}\n\
-Remove any previously cached matrix type, and mark type as unknown.\n\
-\n\
-@item @qcode{\"full\"}\n\
-Mark the matrix as full.\n\
-\n\
-@item @qcode{\"positive definite\"}\n\
-Probable full positive definite matrix.\n\
-\n\
-@item @qcode{\"diagonal\"}\n\
-Diagonal matrix.  (Sparse matrices only)\n\
-\n\
-@item @qcode{\"permuted diagonal\"}\n\
-Permuted Diagonal matrix.  The permutation does not need to be specifically\n\
-indicated, as the structure of the matrix explicitly gives this.  (Sparse\n\
-matrices only)\n\
-\n\
-@item @qcode{\"upper\"}\n\
-Upper triangular.  If the optional third argument @var{perm} is given, the\n\
-matrix is assumed to be a permuted upper triangular with the permutations\n\
-defined by the vector @var{perm}.\n\
-\n\
-@item @qcode{\"lower\"}\n\
-Lower triangular.  If the optional third argument @var{perm} is given, the\n\
-matrix is assumed to be a permuted lower triangular with the permutations\n\
-defined by the vector @var{perm}.\n\
-\n\
-@item  @qcode{\"banded\"}\n\
-@itemx @qcode{\"banded positive definite\"}\n\
-Banded matrix with the band size of @var{nl} below the diagonal and @var{nu}\n\
-above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal\n\
-and treated with specialized code.  In addition the matrix can be marked as\n\
-probably a positive definite.  (Sparse matrices only)\n\
-\n\
-@item @qcode{\"singular\"}\n\
-The matrix is assumed to be singular and will be treated with a minimum norm\n\
-solution.\n\
-\n\
-@end table\n\
-\n\
-Note that the matrix type will be discovered automatically on the first\n\
-attempt to solve a linear equation involving @var{A}.  Therefore\n\
-@code{matrix_type} is only useful to give Octave hints of the matrix type.\n\
-Incorrectly defining the matrix type will result in incorrect results from\n\
-solutions of linear equations; it is entirely @strong{the responsibility of\n\
-the user} to correctly identify the matrix type.\n\
-\n\
-Also, the test for positive definiteness is a low-cost test for a Hermitian\n\
-matrix with a real positive diagonal.  This does not guarantee that the\n\
-matrix is positive definite, but only that it is a probable candidate.  When\n\
-such a matrix is factorized, a Cholesky@tie{}factorization is first\n\
-attempted, and if that fails the matrix is then treated with an\n\
-LU@tie{}factorization.  Once the matrix has been factorized,\n\
-@code{matrix_type} will return the correct classification of the matrix.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{type} =} matrix_type (@var{A})
+@deftypefnx {} {@var{type} =} matrix_type (@var{A}, "nocompute")
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, @var{type})
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, "upper", @var{perm})
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, "lower", @var{perm})
+@deftypefnx {} {@var{A} =} matrix_type (@var{A}, "banded", @var{nl}, @var{nu})
+Identify the matrix type or mark a matrix as a particular type.
+
+This allows more rapid solutions of linear equations involving @var{A} to be
+performed.
+
+Called with a single argument, @code{matrix_type} returns the type of the
+matrix and caches it for future use.
+
+Called with more than one argument, @code{matrix_type} allows the type of
+the matrix to be defined.
+
+If the option @qcode{"nocompute"} is given, the function will not attempt
+to guess the type if it is still unknown.  This is useful for debugging
+purposes.
+
+The possible matrix types depend on whether the matrix is full or sparse,
+and can be one of the following
+
+@table @asis
+@item @qcode{"unknown"}
+Remove any previously cached matrix type, and mark type as unknown.
+
+@item @qcode{"full"}
+Mark the matrix as full.
+
+@item @qcode{"positive definite"}
+Probable full positive definite matrix.
+
+@item @qcode{"diagonal"}
+Diagonal matrix.  (Sparse matrices only)
+
+@item @qcode{"permuted diagonal"}
+Permuted Diagonal matrix.  The permutation does not need to be specifically
+indicated, as the structure of the matrix explicitly gives this.  (Sparse
+matrices only)
+
+@item @qcode{"upper"}
+Upper triangular.  If the optional third argument @var{perm} is given, the
+matrix is assumed to be a permuted upper triangular with the permutations
+defined by the vector @var{perm}.
+
+@item @qcode{"lower"}
+Lower triangular.  If the optional third argument @var{perm} is given, the
+matrix is assumed to be a permuted lower triangular with the permutations
+defined by the vector @var{perm}.
+
+@item  @qcode{"banded"}
+@itemx @qcode{"banded positive definite"}
+Banded matrix with the band size of @var{nl} below the diagonal and @var{nu}
+above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal
+and treated with specialized code.  In addition the matrix can be marked as
+probably a positive definite.  (Sparse matrices only)
+
+@item @qcode{"singular"}
+The matrix is assumed to be singular and will be treated with a minimum norm
+solution.
+
+@end table
+
+Note that the matrix type will be discovered automatically on the first
+attempt to solve a linear equation involving @var{A}.  Therefore
+@code{matrix_type} is only useful to give Octave hints of the matrix type.
+Incorrectly defining the matrix type will result in incorrect results from
+solutions of linear equations; it is entirely @strong{the responsibility of
+the user} to correctly identify the matrix type.
+
+Also, the test for positive definiteness is a low-cost test for a Hermitian
+matrix with a real positive diagonal.  This does not guarantee that the
+matrix is positive definite, but only that it is a probable candidate.  When
+such a matrix is factorized, a Cholesky@tie{}factorization is first
+attempted, and if that fails the matrix is then treated with an
+LU@tie{}factorization.  Once the matrix has been factorized,
+@code{matrix_type} will return the correct classification of the matrix.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

@@ -1194,20 +1194,20 @@ tree_evaluator::do_keyboard (const octave_value_list& args) const
 }
 
 DEFUN (max_recursion_depth, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} max_recursion_depth ()\n\
-@deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
-@deftypefnx {} {} max_recursion_depth (@var{new_val}, \"local\")\n\
-Query or set the internal limit on the number of times a function may\n\
-be called recursively.\n\
-\n\
-If the limit is exceeded, an error message is printed and control returns to\n\
-the top level.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} max_recursion_depth ()
+@deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val})
+@deftypefnx {} {} max_recursion_depth (@var{new_val}, "local")
+Query or set the internal limit on the number of times a function may
+be called recursively.
+
+If the limit is exceeded, an error message is printed and control returns to
+the top level.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (max_recursion_depth);
 }
@@ -1225,21 +1225,21 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (silent_functions, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} silent_functions ()\n\
-@deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val})\n\
-@deftypefnx {} {} silent_functions (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether internal\n\
-output from a function is suppressed.\n\
-\n\
-If this option is disabled, Octave will display the results produced by\n\
-evaluating expressions within a function body that are not terminated with\n\
-a semicolon.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} silent_functions ()
+@deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val})
+@deftypefnx {} {} silent_functions (@var{new_val}, "local")
+Query or set the internal variable that controls whether internal
+output from a function is suppressed.
+
+If this option is disabled, Octave will display the results produced by
+evaluating expressions within a function body that are not terminated with
+a semicolon.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (silent_functions);
 }

@@ -74,39 +74,39 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 #endif
 
 DEFUN_DLD (convhulln, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{h} =} convhulln (@var{pts})\n\
-@deftypefnx {} {@var{h} =} convhulln (@var{pts}, @var{options})\n\
-@deftypefnx {} {[@var{h}, @var{v}] =} convhulln (@dots{})\n\
-Compute the convex hull of the set of points @var{pts}.\n\
-\n\
-@var{pts} is a matrix of size [n, dim] containing n points in a space of\n\
-dimension dim.\n\
-\n\
-The hull @var{h} is an index vector into the set of points and specifies\n\
-which points form the enclosing hull.\n\
-\n\
-An optional second argument, which must be a string or cell array of\n\
-strings, contains options passed to the underlying qhull command.  See the\n\
-documentation for the Qhull library for details\n\
-@url{http://www.qhull.org/html/qh-quick.htm#options}.\n\
-The default options depend on the dimension of the input:\n\
-\n\
-@itemize\n\
-@item 2D, 3D, 4D: @var{options} = @code{@{\"Qt\"@}}\n\
-\n\
-@item 5D and higher: @var{options} = @code{@{\"Qt\", \"Qx\"@}}\n\
-@end itemize\n\
-\n\
-If @var{options} is not present or @code{[]} then the default arguments are\n\
-used.  Otherwise, @var{options} replaces the default argument list.\n\
-To append user options to the defaults it is necessary to repeat the\n\
-default arguments in @var{options}.  Use a null string to pass no arguments.\n\
-\n\
-If the second output @var{v} is requested the volume of the enclosing\n\
-convex hull is calculated.\n\n\
-@seealso{convhull, delaunayn, voronoin}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{h} =} convhulln (@var{pts})
+@deftypefnx {} {@var{h} =} convhulln (@var{pts}, @var{options})
+@deftypefnx {} {[@var{h}, @var{v}] =} convhulln (@dots{})
+Compute the convex hull of the set of points @var{pts}.
+
+@var{pts} is a matrix of size [n, dim] containing n points in a space of
+dimension dim.
+
+The hull @var{h} is an index vector into the set of points and specifies
+which points form the enclosing hull.
+
+An optional second argument, which must be a string or cell array of
+strings, contains options passed to the underlying qhull command.  See the
+documentation for the Qhull library for details
+@url{http://www.qhull.org/html/qh-quick.htm#options}.
+The default options depend on the dimension of the input:
+
+@itemize
+@item 2D, 3D, 4D: @var{options} = @code{@{"Qt"@}}
+
+@item 5D and higher: @var{options} = @code{@{"Qt", "Qx"@}}
+@end itemize
+
+If @var{options} is not present or @code{[]} then the default arguments are
+used.  Otherwise, @var{options} replaces the default argument list.
+To append user options to the defaults it is necessary to repeat the
+default arguments in @var{options}.  Use a null string to pass no arguments.
+
+If the second output @var{v} is requested the volume of the enclosing
+convex hull is calculated.\n
+@seealso{convhull, delaunayn, voronoin}
+@end deftypefn */)
 {
 #if defined (HAVE_QHULL)
 

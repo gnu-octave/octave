@@ -32,67 +32,67 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 
 DEFUN (getrusage, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} getrusage ()\n\
-Return a structure containing a number of statistics about the current\n\
-Octave process.\n\
-\n\
-Not all fields are available on all systems.  If it is not possible to get\n\
-CPU time statistics, the CPU time slots are set to zero.  Other missing data\n\
-are replaced by NaN@.  The list of possible fields is:\n\
-\n\
-@table @code\n\
-@item idrss\n\
-Unshared data size.\n\
-\n\
-@item inblock\n\
-Number of block input operations.\n\
-\n\
-@item isrss\n\
-Unshared stack size.\n\
-\n\
-@item ixrss\n\
-Shared memory size.\n\
-\n\
-@item majflt\n\
-Number of major page faults.\n\
-\n\
-@item maxrss\n\
-Maximum data size.\n\
-\n\
-@item minflt\n\
-Number of minor page faults.\n\
-\n\
-@item msgrcv\n\
-Number of messages received.\n\
-\n\
-@item msgsnd\n\
-Number of messages sent.\n\
-\n\
-@item nivcsw\n\
-Number of involuntary context switches.\n\
-\n\
-@item nsignals\n\
-Number of signals received.\n\
-\n\
-@item nswap\n\
-Number of swaps.\n\
-\n\
-@item nvcsw\n\
-Number of voluntary context switches.\n\
-\n\
-@item oublock\n\
-Number of block output operations.\n\
-\n\
-@item stime\n\
-A structure containing the system CPU time used.  The structure has the\n\
-elements @code{sec} (seconds) @code{usec} (microseconds).\n\
-\n\
-@item utime\n\
-A structure containing the user CPU time used.  The structure has the\n\
-elements @code{sec} (seconds) @code{usec} (microseconds).\n\
-@end table\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} getrusage ()
+Return a structure containing a number of statistics about the current
+Octave process.
+
+Not all fields are available on all systems.  If it is not possible to get
+CPU time statistics, the CPU time slots are set to zero.  Other missing data
+are replaced by NaN@.  The list of possible fields is:
+
+@table @code
+@item idrss
+Unshared data size.
+
+@item inblock
+Number of block input operations.
+
+@item isrss
+Unshared stack size.
+
+@item ixrss
+Shared memory size.
+
+@item majflt
+Number of major page faults.
+
+@item maxrss
+Maximum data size.
+
+@item minflt
+Number of minor page faults.
+
+@item msgrcv
+Number of messages received.
+
+@item msgsnd
+Number of messages sent.
+
+@item nivcsw
+Number of involuntary context switches.
+
+@item nsignals
+Number of signals received.
+
+@item nswap
+Number of swaps.
+
+@item nvcsw
+Number of voluntary context switches.
+
+@item oublock
+Number of block output operations.
+
+@item stime
+A structure containing the system CPU time used.  The structure has the
+elements @code{sec} (seconds) @code{usec} (microseconds).
+
+@item utime
+A structure containing the user CPU time used.  The structure has the
+elements @code{sec} (seconds) @code{usec} (microseconds).
+@end table
+@end deftypefn */)
 {
   octave_scalar_map ru_map;
   octave_scalar_map tv_map;

@@ -1180,11 +1180,11 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 DEFUN (iscell, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} iscell (@var{x})\n\
-Return true if @var{x} is a cell array object.\n\
-@seealso{ismatrix, isstruct, iscellstr, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} iscell (@var{x})
+Return true if @var{x} is a cell array object.
+@seealso{ismatrix, isstruct, iscellstr, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1193,19 +1193,19 @@ Return true if @var{x} is a cell array object.\n\
 }
 
 DEFUN (cell, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cell (@var{n})\n\
-@deftypefnx {} {} cell (@var{m}, @var{n})\n\
-@deftypefnx {} {} cell (@var{m}, @var{n}, @var{k}, @dots{})\n\
-@deftypefnx {} {} cell ([@var{m} @var{n} @dots{}])\n\
-Create a new cell array object.\n\
-\n\
-If invoked with a single scalar integer argument, return a square\n\
-@nospell{NxN} cell array.  If invoked with two or more scalar integer\n\
-arguments, or a vector of integer values, return an array with the given\n\
-dimensions.\n\
-@seealso{cellstr, mat2cell, num2cell, struct2cell}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cell (@var{n})
+@deftypefnx {} {} cell (@var{m}, @var{n})
+@deftypefnx {} {} cell (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {} cell ([@var{m} @var{n} @dots{}])
+Create a new cell array object.
+
+If invoked with a single scalar integer argument, return a square
+@nospell{NxN} cell array.  If invoked with two or more scalar integer
+arguments, or a vector of integer values, return an array with the given
+dimensions.
+@seealso{cellstr, mat2cell, num2cell, struct2cell}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1240,12 +1240,12 @@ dimensions.\n\
 }
 
 DEFUN (iscellstr, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} iscellstr (@var{cell})\n\
-Return true if every element of the cell array @var{cell} is a character\n\
-string.\n\
-@seealso{ischar}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} iscellstr (@var{cell})
+Return true if every element of the cell array @var{cell} is a character
+string.
+@seealso{ischar}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1259,17 +1259,17 @@ string.\n\
 // declaration) and so we don't have to use feval to call it.
 
 DEFUN (cellstr, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{cstr} =} cellstr (@var{strmat})\n\
-Create a new cell array object from the elements of the string array\n\
-@var{strmat}.\n\
-\n\
-Each row of @var{strmat} becomes an element of @var{cstr}.  Any trailing\n\
-spaces in a row are deleted before conversion.\n\
-\n\
-To convert back from a cellstr to a character array use @code{char}.\n\
-@seealso{cell, char}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{cstr} =} cellstr (@var{strmat})
+Create a new cell array object from the elements of the string array
+@var{strmat}.
+
+Each row of @var{strmat} becomes an element of @var{cstr}.  Any trailing
+spaces in a row are deleted before conversion.
+
+To convert back from a cellstr to a character array use @code{char}.
+@seealso{cell, char}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1288,39 +1288,39 @@ To convert back from a cellstr to a character array use @code{char}.\n\
 }
 
 DEFUN (struct2cell, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{c} =} struct2cell (@var{s})\n\
-Create a new cell array from the objects stored in the struct object.\n\
-\n\
-If @var{f} is the number of fields in the structure, the resulting cell\n\
-array will have a dimension vector corresponding to\n\
-@code{[@var{f} size(@var{s})]}.  For example:\n\
-\n\
-@example\n\
-@group\n\
-s = struct (\"name\", @{\"Peter\", \"Hannah\", \"Robert\"@},\n\
-           \"age\", @{23, 16, 3@});\n\
-c = struct2cell (s)\n\
-   @result{} c = @{2x1x3 Cell Array@}\n\
-c(1,1,:)(:)\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = Peter\n\
-        [2,1] = Hannah\n\
-        [3,1] = Robert\n\
-      @}\n\
-c(2,1,:)(:)\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = 23\n\
-        [2,1] = 16\n\
-        [3,1] = 3\n\
-      @}\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{cell2struct, fieldnames}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{c} =} struct2cell (@var{s})
+Create a new cell array from the objects stored in the struct object.
+
+If @var{f} is the number of fields in the structure, the resulting cell
+array will have a dimension vector corresponding to
+@code{[@var{f} size(@var{s})]}.  For example:
+
+@example
+@group
+s = struct ("name", @{"Peter", "Hannah", "Robert"@},
+           "age", @{23, 16, 3@});
+c = struct2cell (s)
+   @result{} c = @{2x1x3 Cell Array@}
+c(1,1,:)(:)
+   @result{}
+      @{
+        [1,1] = Peter
+        [2,1] = Hannah
+        [3,1] = Robert
+      @}
+c(2,1,:)(:)
+   @result{}
+      @{
+        [1,1] = 23
+        [2,1] = 16
+        [3,1] = 3
+      @}
+@end group
+@end example
+
+@seealso{cell2struct, fieldnames}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

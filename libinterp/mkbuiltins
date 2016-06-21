@@ -19,11 +19,14 @@
 # <http://www.gnu.org/licenses/>.
 
 if test $# -lt 2; then
-  echo "usage: mkbuiltins --header|--source f1 f2 ..." 1>&2
+  echo "usage: mkbuiltins SRCDIR --header|--source f1 f2 ..." 1>&2
   exit 1
 fi
 
 SED=${SED:-sed}
+
+srcdir="$1"
+shift
 
 make_header=false
 make_source=false
@@ -54,17 +57,33 @@ if $make_header; then
 
 #include "ovl.h"
 
-#define DEFUN_DECL(name) \
+#define XDEFUN_DECL(name) \
   extern OCTINTERP_API octave_value_list \
   name (const octave_value_list& = octave_value_list (), int = 0);
 
+#if defined (ENABLE_DYNAMIC_LINKING)
+#  define XDEFUN_DLD_DECL(name)
+#else
+#  define XDEFUN_DLD_DECL(name) XDEFUN_DECL (name)
+#endif
+
 EOF
 
- $SED -n -e 's/ *\(XDEFUN\|XDEFCONSTFUN\)_INTERNAL *( *\([_A-Za-z][_A-Za-z0-9]*\) *,.*$/DEFUN_DECL (F\2);/p; s/^ *XDEFUNX_INTERNAL *( *"\([_A-Za-z][_A-Za-z0-9]*\)" *,.*$/DEFUN_DECL (F\1);/p' "$@"
+  for arg
+  do
+    if [ -f $arg ]; then
+      file="$arg";
+    else
+      file="$srcdir/$arg";
+    fi
+
+    $SED -n -e 's/^[ \t]*DEF\(CONSTFUN\|UN\)[ \t]*( *\([_A-Za-z][_A-Za-z0-9]*\) *,.*$/XDEFUN_DECL (F\2)/p; s/^[ \t]*DEFUNX[ \t]*( *"\([_A-Za-z][_A-Za-z0-9]*\)" *,.*$/XDEFUN_DECL (F\1)/p; s/^[ \t]*DEFUN_DLD[ \t]*( *\([_A-Za-z][_A-Za-z0-9]*\) *,.*$/XDEFUN_DLD_DECL (F\1)/p; s/^[ \t]*DEFUNX_DLD[ \t]*( *"\([_A-Za-z][_A-Za-z0-9]*\)" *,.*$/XDEFUN_DLD_DECL (F\1)/p' "$file"
+  done
 
   cat << \EOF
 
-#undef DEFUN_DECL
+#undef XDEFUN_DECL
+#undef XDEFUN_DLD_DECL
 
 #endif
 
@@ -83,6 +102,7 @@ else
 #include "help.h"
 #include "ovl.h"
 #include "variables.h"
+#include "builtin-defun-decls.h"
 #include "builtins.h"
 
 #if defined (quad)
@@ -91,49 +111,54 @@ else
 
 #if defined (ENABLE_DYNAMIC_LINKING)
 
-#  define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc)
+#  define XDEFUN_DLD_INTERNAL(name)
 
-#  define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc)
+#  define XDEFUNX_DLD_INTERNAL(name, fname)
 
 #else
 
-#  define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc) \
-     XDEFUN_INTERNAL(name, args_name, nargout_name, doc)
+#  define XDEFUN_DLD_INTERNAL(name) \
+     XDEFUN_INTERNAL(name)
 
-#  define XDEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc) \
-     XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc)
+#  define XDEFUNX_DLD_INTERNAL(name, fname) \
+     XDEFUNX_INTERNAL(name, fname)
 
 #endif
 
-#define XDEFUN_FILE_NAME(name) \
-  std::string file = name;
+#define XDEFUN_INTERNAL(name) \
+  install_builtin_function (F ## name, #name, file, "external-doc"); \
 
-#define XDEFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  extern DECLARE_FUN (name, args_name, nargout_name); \
-  install_builtin_function (F ## name, #name, file, doc); \
+#define XDEFCONSTFUN_INTERNAL(name) \
+  install_builtin_function (F ## name, #name, file, "external-doc", false); \
 
-#define XDEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  extern DECLARE_FUN (name, args_name, nargout_name); \
-  install_builtin_function (F ## name, #name, file, doc, false); \
-
-#define XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  extern DECLARE_FUNX (fname, args_name, nargout_name); \
-  install_builtin_function (fname, name, file, doc); \
+#define XDEFUNX_INTERNAL(name, fname) \
+  install_builtin_function (fname, name, file, "external-doc"); \
 
 #define XDEFALIAS_INTERNAL(alias, name) \
   alias_builtin (#alias, #name);
-
-#define XDEFCONST_INTERNAL(name, defn, doc)
 
 EOF
 
   for arg
   do
-    fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
+    if [ -f $arg ]; then
+      file="$arg";
+    else
+      file="$srcdir/$arg";
+    fi
+
+    fcn=`echo "$arg" | $SED 's,.*/,,; s/\.\(cc\|cpp\|in\.yy\|ll\)$//; s/-/_/g;'`
     echo "static void"
     echo "install_${fcn}_fcns (void)"
     echo "{"
-    cat "$arg"
+    echo "  std::string file = \"$arg\";"
+    echo ""
+    $SED -n \
+      -e 's/^ *\(DEFUN\(_DLD\|\)\) *( *\([^ ,]*\) *,.*$/  X\1_INTERNAL (\3);/p' \
+      -e 's/^ *\(DEFUNX\(_DLD\|\)\) *( *\("[^"]*"\) *, *\([^ ,]*\) *,.*$/  X\1_INTERNAL (\3, \4);/p' \
+      -e 's/^ *\(DEFCONSTFUN\) *( *\([^ ,]*\) *,.*$/  X\1_INTERNAL (\2);/p' \
+      -e 's/^ *\(DEFALIAS\) *( *\([^ ,]*\) *, *\([^ )]*\) *).*$/  X\1_INTERNAL (\2, \3);/p' \
+      "$file"
     echo "}"
     echo ""
   done
@@ -147,7 +172,7 @@ EOF
 
   for arg
   do
-    fcn=`echo "$arg" | $SED 's,.*/,,; s/\.df//; s/-/_/g;'`
+    fcn=`echo "$arg" | $SED 's,.*/,,; s/\.\(cc\|cpp\|in\.yy\|ll\)$//; s/-/_/g;'`
     echo "  install_${fcn}_fcns ();"
   done
 

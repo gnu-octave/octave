@@ -4401,44 +4401,44 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 }
 
 DEFUN (autoload, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {@var{autoload_map} =} autoload ()\n\
-@deftypefnx {} {} autoload (@var{function}, @var{file})\n\
-@deftypefnx {} {} autoload (@dots{}, \"remove\")\n\
-Define @var{function} to autoload from @var{file}.\n\
-\n\
-The second argument, @var{file}, should be an absolute filename or a file\n\
-name in the same directory as the function or script from which the autoload\n\
-command was run.  @var{file} @emph{should not} depend on the Octave load\n\
-path.\n\
-\n\
-Normally, calls to @code{autoload} appear in PKG_ADD script files that are\n\
-evaluated when a directory is added to Octave's load path.  To avoid having\n\
-to hardcode directory names in @var{file}, if @var{file} is in the same\n\
-directory as the PKG_ADD script then\n\
-\n\
-@example\n\
-autoload (\"foo\", \"bar.oct\");\n\
-@end example\n\
-\n\
-@noindent\n\
-will load the function @code{foo} from the file @code{bar.oct}.  The above\n\
-usage when @code{bar.oct} is not in the same directory, or usages such as\n\
-\n\
-@example\n\
-autoload (\"foo\", file_in_loadpath (\"bar.oct\"))\n\
-@end example\n\
-\n\
-@noindent\n\
-are strongly discouraged, as their behavior may be unpredictable.\n\
-\n\
-With no arguments, return a structure containing the current autoload map.\n\
-\n\
-If a third argument @qcode{\"remove\"} is given, the function is cleared and\n\
-not loaded anymore during the current Octave session.\n\
-\n\
-@seealso{PKG_ADD}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{autoload_map} =} autoload ()
+@deftypefnx {} {} autoload (@var{function}, @var{file})
+@deftypefnx {} {} autoload (@dots{}, "remove")
+Define @var{function} to autoload from @var{file}.
+
+The second argument, @var{file}, should be an absolute filename or a file
+name in the same directory as the function or script from which the autoload
+command was run.  @var{file} @emph{should not} depend on the Octave load
+path.
+
+Normally, calls to @code{autoload} appear in PKG_ADD script files that are
+evaluated when a directory is added to Octave's load path.  To avoid having
+to hardcode directory names in @var{file}, if @var{file} is in the same
+directory as the PKG_ADD script then
+
+@example
+autoload ("foo", "bar.oct");
+@end example
+
+@noindent
+will load the function @code{foo} from the file @code{bar.oct}.  The above
+usage when @code{bar.oct} is not in the same directory, or usages such as
+
+@example
+autoload ("foo", file_in_loadpath ("bar.oct"))
+@end example
+
+@noindent
+are strongly discouraged, as their behavior may be unpredictable.
+
+With no arguments, return a structure containing the current autoload map.
+
+If a third argument @qcode{"remove"} is given, the function is cleared and
+not loaded anymore during the current Octave session.
+
+@seealso{PKG_ADD}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -4666,20 +4666,20 @@ source_file (const std::string& file_name, const std::string& context,
 }
 
 DEFUN (mfilename, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {} mfilename ()\n\
-@deftypefnx {} {} mfilename (\"fullpath\")\n\
-@deftypefnx {} {} mfilename (\"fullpathext\")\n\
-Return the name of the currently executing file.\n\
-\n\
-When called from outside an m-file return the empty string.\n\
-\n\
-Given the argument @qcode{\"fullpath\"}, include the directory part of the\n\
-filename, but not the extension.\n\
-\n\
-Given the argument @qcode{\"fullpathext\"}, include the directory part of\n\
-the filename and the extension.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} mfilename ()
+@deftypefnx {} {} mfilename ("fullpath")
+@deftypefnx {} {} mfilename ("fullpathext")
+Return the name of the currently executing file.
+
+When called from outside an m-file return the empty string.
+
+Given the argument @qcode{"fullpath"}, include the directory part of the
+filename, but not the extension.
+
+Given the argument @qcode{"fullpathext"}, include the directory part of
+the filename and the extension.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -4727,20 +4727,20 @@ the filename and the extension.\n\
 }
 
 DEFUN (source, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {} source (@var{file})\n\
-@deftypefnx {} {} source (@var{file}, @var{context})\n\
-Parse and execute the contents of @var{file}.\n\
-\n\
-Without specifying @var{context}, this is equivalent to executing commands\n\
-from a script file, but without requiring the file to be named\n\
-@file{@var{file}.m} or to be on the execution path.\n\
-\n\
-Instead of the current context, the script may be executed in either the\n\
-context of the function that called the present function\n\
-(@qcode{\"caller\"}), or the top-level context (@qcode{\"base\"}).\n\
-@seealso{run}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} source (@var{file})
+@deftypefnx {} {} source (@var{file}, @var{context})
+Parse and execute the contents of @var{file}.
+
+Without specifying @var{context}, this is equivalent to executing commands
+from a script file, but without requiring the file to be named
+@file{@var{file}.m} or to be on the execution path.
+
+Instead of the current context, the script may be executed in either the
+context of the function that called the present function
+(@qcode{"caller"}), or the top-level context (@qcode{"base"}).
+@seealso{run}
+@end deftypefn */)
 {
   octave_value_list retval;
 
@@ -4847,44 +4847,44 @@ feval (const octave_value_list& args, int nargout)
 }
 
 DEFUN (feval, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {} {} feval (@var{name}, @dots{})\n\
-Evaluate the function named @var{name}.\n\
-\n\
-Any arguments after the first are passed as inputs to the named function.\n\
-For example,\n\
-\n\
-@example\n\
-@group\n\
-feval (\"acos\", -1)\n\
-     @result{} 3.1416\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-calls the function @code{acos} with the argument @samp{-1}.\n\
-\n\
-The function @code{feval} can also be used with function handles of any sort\n\
-(@pxref{Function Handles}).  Historically, @code{feval} was the only way to\n\
-call user-supplied functions in strings, but function handles are now\n\
-preferred due to the cleaner syntax they offer.  For example,\n\
-\n\
-@example\n\
-@group\n\
-@var{f} = @@exp;\n\
-feval (@var{f}, 1)\n\
-    @result{} 2.7183\n\
-@var{f} (1)\n\
-    @result{} 2.7183\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-are equivalent ways to call the function referred to by @var{f}.  If it\n\
-cannot be predicted beforehand whether @var{f} is a function handle,\n\
-function name in a string, or inline function then @code{feval} can be used\n\
-instead.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} feval (@var{name}, @dots{})
+Evaluate the function named @var{name}.
+
+Any arguments after the first are passed as inputs to the named function.
+For example,
+
+@example
+@group
+feval ("acos", -1)
+     @result{} 3.1416
+@end group
+@end example
+
+@noindent
+calls the function @code{acos} with the argument @samp{-1}.
+
+The function @code{feval} can also be used with function handles of any sort
+(@pxref{Function Handles}).  Historically, @code{feval} was the only way to
+call user-supplied functions in strings, but function handles are now
+preferred due to the cleaner syntax they offer.  For example,
+
+@example
+@group
+@var{f} = @@exp;
+feval (@var{f}, 1)
+    @result{} 2.7183
+@var{f} (1)
+    @result{} 2.7183
+@end group
+@end example
+
+@noindent
+are equivalent ways to call the function referred to by @var{f}.  If it
+cannot be predicted beforehand whether @var{f} is a function handle,
+function name in a string, or inline function then @code{feval} can be used
+instead.
+@end deftypefn */)
 {
   if (args.length () == 0)
     print_usage ();
@@ -4893,30 +4893,30 @@ instead.\n\
 }
 
 DEFUN (builtin, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {} {[@dots{}] =} builtin (@var{f}, @dots{})\n\
-Call the base function @var{f} even if @var{f} is overloaded to another\n\
-function for the given type signature.\n\
-\n\
-This is normally useful when doing object-oriented programming and there is\n\
-a requirement to call one of Octave's base functions rather than the\n\
-overloaded one of a new class.\n\
-\n\
-A trivial example which redefines the @code{sin} function to be the\n\
-@code{cos} function shows how @code{builtin} works.\n\
-\n\
-@example\n\
-@group\n\
-sin (0)\n\
-  @result{} 0\n\
-function y = sin (x), y = cos (x); endfunction\n\
-sin (0)\n\
-  @result{} 1\n\
-builtin (\"sin\", 0)\n\
-  @result{} 0\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@dots{}] =} builtin (@var{f}, @dots{})
+Call the base function @var{f} even if @var{f} is overloaded to another
+function for the given type signature.
+
+This is normally useful when doing object-oriented programming and there is
+a requirement to call one of Octave's base functions rather than the
+overloaded one of a new class.
+
+A trivial example which redefines the @code{sin} function to be the
+@code{cos} function shows how @code{builtin} works.
+
+@example
+@group
+sin (0)
+  @result{} 0
+function y = sin (x), y = cos (x); endfunction
+sin (0)
+  @result{} 1
+builtin ("sin", 0)
+  @result{} 0
+@end group
+@end example
+@end deftypefn */)
 {
   octave_value_list retval;
 
@@ -5036,44 +5036,44 @@ cleanup_statement_list (tree_statement_list **lst)
 }
 
 DEFUN (eval, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {} eval (@var{try})\n\
-@deftypefnx {} {} eval (@var{try}, @var{catch})\n\
-Parse the string @var{try} and evaluate it as if it were an Octave\n\
-program.\n\
-\n\
-If execution fails, evaluate the optional string @var{catch}.\n\
-\n\
-The string @var{try} is evaluated in the current context, so any results\n\
-remain available after @code{eval} returns.\n\
-\n\
-The following example creates the variable @var{A} with the approximate\n\
-value of 3.1416 in the current workspace.\n\
-\n\
-@example\n\
-eval (\"A = acos(-1);\");\n\
-@end example\n\
-\n\
-If an error occurs during the evaluation of @var{try} then the @var{catch}\n\
-string is evaluated, as the following example shows:\n\
-\n\
-@example\n\
-@group\n\
-eval ('error (\"This is a bad example\");',\n\
-      'printf (\"This error occurred:\\n%s\\n\", lasterr ());');\n\
-     @print{} This error occurred:\n\
-        This is a bad example\n\
-@end group\n\
-@end example\n\
-\n\
-Programming Note: if you are only using @code{eval} as an error-capturing\n\
-mechanism, rather than for the execution of arbitrary code strings,\n\
-Consider using try/catch blocks or unwind_protect/unwind_protect_cleanup\n\
-blocks instead.  These techniques have higher performance and don't\n\
-introduce the security considerations that the evaluation of arbitrary code\n\
-does.\n\
-@seealso{evalin, evalc, assignin, feval}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} eval (@var{try})
+@deftypefnx {} {} eval (@var{try}, @var{catch})
+Parse the string @var{try} and evaluate it as if it were an Octave
+program.
+
+If execution fails, evaluate the optional string @var{catch}.
+
+The string @var{try} is evaluated in the current context, so any results
+remain available after @code{eval} returns.
+
+The following example creates the variable @var{A} with the approximate
+value of 3.1416 in the current workspace.
+
+@example
+eval ("A = acos(-1);");
+@end example
+
+If an error occurs during the evaluation of @var{try} then the @var{catch}
+string is evaluated, as the following example shows:
+
+@example
+@group
+eval ('error ("This is a bad example");',
+      'printf ("This error occurred:\n%s\n", lasterr ());');
+     @print{} This error occurred:
+        This is a bad example
+@end group
+@end example
+
+Programming Note: if you are only using @code{eval} as an error-capturing
+mechanism, rather than for the execution of arbitrary code strings,
+Consider using try/catch blocks or unwind_protect/unwind_protect_cleanup
+blocks instead.  These techniques have higher performance and don't
+introduce the security considerations that the evaluation of arbitrary code
+does.
+@seealso{evalin, evalc, assignin, feval}
+@end deftypefn */)
 {
   octave_value_list retval;
 
@@ -5174,12 +5174,12 @@ does.\n\
 */
 
 DEFUN (assignin, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {} {} assignin (@var{context}, @var{varname}, @var{value})\n\
-Assign @var{value} to @var{varname} in context @var{context}, which\n\
-may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
-@seealso{evalin}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} assignin (@var{context}, @var{varname}, @var{value})
+Assign @var{value} to @var{varname} in context @var{context}, which
+may be either @qcode{"base"} or @qcode{"caller"}.
+@seealso{evalin}
+@end deftypefn */)
 {
   octave_value_list retval;
 
@@ -5225,13 +5225,13 @@ may be either @qcode{\"base\"} or @qcode{\"caller\"}.\n\
 */
 
 DEFUN (evalin, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {} evalin (@var{context}, @var{try})\n\
-@deftypefnx {} {} evalin (@var{context}, @var{try}, @var{catch})\n\
-Like @code{eval}, except that the expressions are evaluated in the context\n\
-@var{context}, which may be either @qcode{\"caller\"} or @qcode{\"base\"}.\n\
-@seealso{eval, assignin}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} evalin (@var{context}, @var{try})
+@deftypefnx {} {} evalin (@var{context}, @var{try}, @var{catch})
+Like @code{eval}, except that the expressions are evaluated in the context
+@var{context}, which may be either @qcode{"caller"} or @qcode{"base"}.
+@seealso{eval, assignin}
+@end deftypefn */)
 {
   octave_value_list retval;
 
@@ -5305,33 +5305,33 @@ Like @code{eval}, except that the expressions are evaluated in the context\n\
 }
 
 DEFUN (evalc, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {@var{s} =} evalc (@var{try})\n\
-@deftypefnx {} {@var{s} =} evalc (@var{try}, @var{catch})\n\
-Parse and evaluate the string @var{try} as if it were an Octave program,\n\
-while capturing the output into the return variable @var{s}.\n\
-\n\
-If execution fails, evaluate the optional string @var{catch}.\n\
-\n\
-This function behaves like @code{eval}, but any output or warning messages\n\
-which would normally be written to the console are captured and returned in\n\
-the string @var{s}.\n\
-\n\
-The @code{diary} is disabled during the execution of this function.  When\n\
-@code{system} is used, any output produced by external programs is\n\
-@emph{not} captured, unless their output is captured by the @code{system}\n\
-function itself.\n\
-\n\
-@example\n\
-@group\n\
-s = evalc (\"t = 42\"), t\n\
-  @result{} s = t =  42\n\
-\n\
-  @result{} t =  42\n\
-@end group\n\
-@end example\n\
-@seealso{eval, diary}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} evalc (@var{try})
+@deftypefnx {} {@var{s} =} evalc (@var{try}, @var{catch})
+Parse and evaluate the string @var{try} as if it were an Octave program,
+while capturing the output into the return variable @var{s}.
+
+If execution fails, evaluate the optional string @var{catch}.
+
+This function behaves like @code{eval}, but any output or warning messages
+which would normally be written to the console are captured and returned in
+the string @var{s}.
+
+The @code{diary} is disabled during the execution of this function.  When
+@code{system} is used, any output produced by external programs is
+@emph{not} captured, unless their output is captured by the @code{system}
+function itself.
+
+@example
+@group
+s = evalc ("t = 42"), t
+  @result{} s = t =  42
+
+  @result{} t =  42
+@end group
+@end example
+@seealso{eval, diary}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -5445,13 +5445,13 @@ s = evalc (\"t = 42\"), t\n\
 */
 
 DEFUN (__parser_debug_flag__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} __parser_debug_flag__ ()\n\
-@deftypefnx {} {@var{old_val} =} __parser_debug_flag__ (@var{new_val})\n\
-Query or set the internal flag that determines whether Octave's parser\n\
-prints debug information as it processes an expression.\n\
-@seealso{__lexer_debug_flag__}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} __parser_debug_flag__ ()
+@deftypefnx {} {@var{old_val} =} __parser_debug_flag__ (@var{new_val})
+Query or set the internal flag that determines whether Octave's parser
+prints debug information as it processes an expression.
+@seealso{__lexer_debug_flag__}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -5466,10 +5466,10 @@ prints debug information as it processes an expression.\n\
 }
 
 DEFUN (__parse_file__, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {} {} __parse_file__ (@var{file}, @var{verbose})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __parse_file__ (@var{file}, @var{verbose})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 

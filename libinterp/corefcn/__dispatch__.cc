@@ -40,7 +40,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 DEFUN (__dispatch__, args, nargout,
-       "Undocumented internal function")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __dispatch__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

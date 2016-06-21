@@ -228,107 +228,107 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 }
 
 DEFUN (filter, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{y} =} filter (@var{b}, @var{a}, @var{x})\n\
-@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
-@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
-@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
-Apply a 1-D digital filter to the data @var{x}.\n\
-\n\
-@code{filter} returns the solution to the following linear, time-invariant\n\
-difference equation:\n\
-@tex\n\
-$$\n\
-\\sum_{k=0}^N a_{k+1} y_{n-k} = \\sum_{k=0}^M b_{k+1} x_{n-k}, \\qquad\n\
- 1 \\le n \\le P\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-@group\n\
- N                   M\n\
-SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)    for 1<=n<=length(x)\n\
-k=0                 k=0\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@end ifnottex\n\
-\n\
-@noindent\n\
-where\n\
-@ifnottex\n\
-N=length(a)-1 and M=length(b)-1.\n\
-@end ifnottex\n\
-@tex\n\
-$a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
-@end tex\n\
-The result is calculated over the first non-singleton dimension of @var{x}\n\
-or over @var{dim} if supplied.\n\
-\n\
-An equivalent form of the equation is:\n\
-@tex\n\
-$$\n\
-y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\
- 1 \\le n \\le P\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-@group\n\
-          N                   M\n\
-y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
-         k=1                 k=0\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@end ifnottex\n\
-\n\
-@noindent\n\
-where\n\
-@ifnottex\n\
- c = a/a(1) and d = b/a(1).\n\
-@end ifnottex\n\
-@tex\n\
-$c = a/a_1$ and $d = b/a_1$.\n\
-@end tex\n\
-\n\
-If the fourth argument @var{si} is provided, it is taken as the\n\
-initial state of the system and the final state is returned as\n\
-@var{sf}.  The state vector is a column vector whose length is\n\
-equal to the length of the longest coefficient vector minus one.\n\
-If @var{si} is not supplied, the initial state vector is set to all\n\
-zeros.\n\
-\n\
-In terms of the Z Transform, @var{y} is the result of passing the\n\
-discrete-time signal @var{x} through a system characterized by the following\n\
-rational system function:\n\
-@tex\n\
-$$\n\
-H(z) = {\\displaystyle\\sum_{k=0}^M d_{k+1} z^{-k}\n\
-        \\over 1 + \\displaystyle\\sum_{k+1}^N c_{k+1} z^{-k}}\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-          M\n\
-         SUM d(k+1) z^(-k)\n\
-         k=0\n\
-H(z) = ---------------------\n\
-            N\n\
-       1 + SUM c(k+1) z^(-k)\n\
-           k=1\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-@seealso{filter2, fftfilt, freqz}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{y} =} filter (@var{b}, @var{a}, @var{x})
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})
+Apply a 1-D digital filter to the data @var{x}.
+
+@code{filter} returns the solution to the following linear, time-invariant
+difference equation:
+@tex
+$$
+\sum_{k=0}^N a_{k+1} y_{n-k} = \sum_{k=0}^M b_{k+1} x_{n-k}, \qquad
+ 1 \le n \le P
+$$
+@end tex
+@ifnottex
+@c Set example in small font to prevent overfull line
+
+@smallexample
+@group
+ N                   M
+SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)    for 1<=n<=length(x)
+k=0                 k=0
+@end group
+@end smallexample
+
+@end ifnottex
+
+@noindent
+where
+@ifnottex
+N=length(a)-1 and M=length(b)-1.
+@end ifnottex
+@tex
+$a \in \Re^{N-1}$, $b \in \Re^{M-1}$, and $x \in \Re^P$.
+@end tex
+The result is calculated over the first non-singleton dimension of @var{x}
+or over @var{dim} if supplied.
+
+An equivalent form of the equation is:
+@tex
+$$
+y_n = -\sum_{k=1}^N c_{k+1} y_{n-k} + \sum_{k=0}^M d_{k+1} x_{n-k}, \qquad
+ 1 \le n \le P
+$$
+@end tex
+@ifnottex
+@c Set example in small font to prevent overfull line
+
+@smallexample
+@group
+          N                   M
+y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)
+         k=1                 k=0
+@end group
+@end smallexample
+
+@end ifnottex
+
+@noindent
+where
+@ifnottex
+ c = a/a(1) and d = b/a(1).
+@end ifnottex
+@tex
+$c = a/a_1$ and $d = b/a_1$.
+@end tex
+
+If the fourth argument @var{si} is provided, it is taken as the
+initial state of the system and the final state is returned as
+@var{sf}.  The state vector is a column vector whose length is
+equal to the length of the longest coefficient vector minus one.
+If @var{si} is not supplied, the initial state vector is set to all
+zeros.
+
+In terms of the Z Transform, @var{y} is the result of passing the
+discrete-time signal @var{x} through a system characterized by the following
+rational system function:
+@tex
+$$
+H(z) = {\displaystyle\sum_{k=0}^M d_{k+1} z^{-k}
+        \over 1 + \displaystyle\sum_{k+1}^N c_{k+1} z^{-k}}
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+          M
+         SUM d(k+1) z^(-k)
+         k=0
+H(z) = ---------------------
+            N
+       1 + SUM c(k+1) z^(-k)
+           k=1
+@end group
+@end example
+
+@end ifnottex
+@seealso{filter2, fftfilt, freqz}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

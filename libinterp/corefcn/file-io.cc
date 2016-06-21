@@ -232,18 +232,18 @@ fopen_mode_to_ios_mode (const std::string& mode)
 }
 
 DEFUN (fclose, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fclose (@var{fid})\n\
-@deftypefnx {} {} fclose (\"all\")\n\
-@deftypefnx {} {@var{status} =} fclose (\"all\")\n\
-Close the file specified by the file descriptor @var{fid}.\n\
-\n\
-If successful, @code{fclose} returns 0, otherwise, it returns -1.  The\n\
-second form of the @code{fclose} call closes all open files except\n\
-@code{stdin}, @code{stdout}, @code{stderr}, and any FIDs associated\n\
-with gnuplot.\n\
-@seealso{fopen, fflush, freport}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fclose (@var{fid})
+@deftypefnx {} {} fclose ("all")
+@deftypefnx {} {@var{status} =} fclose ("all")
+Close the file specified by the file descriptor @var{fid}.
+
+If successful, @code{fclose} returns 0, otherwise, it returns -1.  The
+second form of the @code{fclose} call closes all open files except
+@code{stdin}, @code{stdout}, @code{stderr}, and any FIDs associated
+with gnuplot.
+@seealso{fopen, fflush, freport}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -252,12 +252,12 @@ with gnuplot.\n\
 }
 
 DEFUN (fclear, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} fclear (@var{fid})\n\
-Clear the stream state for the file specified by the file descriptor\n\
-@var{fid}.\n\
-@seealso{ferror, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} fclear (@var{fid})
+Clear the stream state for the file specified by the file descriptor
+@var{fid}.
+@seealso{ferror, fopen}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -272,19 +272,19 @@ Clear the stream state for the file specified by the file descriptor\n\
 }
 
 DEFUN (fflush, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} fflush (@var{fid})\n\
-Flush output to file descriptor @var{fid}.\n\
-\n\
-@code{fflush} returns 0 on success and an OS dependent error value\n\
-(@minus{}1 on Unix) on error.\n\
-\n\
-Programming Note: Flushing is useful for ensuring that all pending output\n\
-makes it to the screen before some other event occurs.  For example, it is\n\
-always a good idea to flush the standard output stream before calling\n\
-@code{input}.\n\
-@seealso{fopen, fclose}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} fflush (@var{fid})
+Flush output to file descriptor @var{fid}.
+
+@code{fflush} returns 0 on success and an OS dependent error value
+(@minus{}1 on Unix) on error.
+
+Programming Note: Flushing is useful for ensuring that all pending output
+makes it to the screen before some other event occurs.  For example, it is
+always a good idea to flush the standard output stream before calling
+@code{input}.
+@seealso{fopen, fclose}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -311,23 +311,23 @@ always a good idea to flush the standard output stream before calling\n\
 }
 
 DEFUN (fgetl, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{str} =} fgetl (@var{fid})\n\
-@deftypefnx {} {@var{str} =} fgetl (@var{fid}, @var{len})\n\
-Read characters from a file, stopping after a newline, or EOF,\n\
-or @var{len} characters have been read.\n\
-\n\
-The characters read, excluding the possible trailing newline, are returned\n\
-as a string.\n\
-\n\
-If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
-character.\n\
-\n\
-If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
-\n\
-To read a line and return the terminating newline see @code{fgets}.\n\
-@seealso{fgets, fscanf, fread, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{str} =} fgetl (@var{fid})
+@deftypefnx {} {@var{str} =} fgetl (@var{fid}, @var{len})
+Read characters from a file, stopping after a newline, or EOF,
+or @var{len} characters have been read.
+
+The characters read, excluding the possible trailing newline, are returned
+as a string.
+
+If @var{len} is omitted, @code{fgetl} reads until the next newline
+character.
+
+If there are no more characters to read, @code{fgetl} returns @minus{}1.
+
+To read a line and return the terminating newline see @code{fgets}.
+@seealso{fgets, fscanf, fread, fopen}
+@end deftypefn */)
 {
   static std::string who = "fgetl";
 
@@ -351,23 +351,23 @@ To read a line and return the terminating newline see @code{fgets}.\n\
 }
 
 DEFUN (fgets, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{str} =} fgets (@var{fid})\n\
-@deftypefnx {} {@var{str} =} fgets (@var{fid}, @var{len})\n\
-Read characters from a file, stopping after a newline, or EOF,\n\
-or @var{len} characters have been read.\n\
-\n\
-The characters read, including the possible trailing newline, are returned\n\
-as a string.\n\
-\n\
-If @var{len} is omitted, @code{fgets} reads until the next newline\n\
-character.\n\
-\n\
-If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
-\n\
-To read a line and discard the terminating newline see @code{fgetl}.\n\
-@seealso{fputs, fgetl, fscanf, fread, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{str} =} fgets (@var{fid})
+@deftypefnx {} {@var{str} =} fgets (@var{fid}, @var{len})
+Read characters from a file, stopping after a newline, or EOF,
+or @var{len} characters have been read.
+
+The characters read, including the possible trailing newline, are returned
+as a string.
+
+If @var{len} is omitted, @code{fgets} reads until the next newline
+character.
+
+If there are no more characters to read, @code{fgets} returns @minus{}1.
+
+To read a line and discard the terminating newline see @code{fgetl}.
+@seealso{fputs, fgetl, fscanf, fread, fopen}
+@end deftypefn */)
 {
   static std::string who = "fgets";
 
@@ -391,23 +391,23 @@ To read a line and discard the terminating newline see @code{fgetl}.\n\
 }
 
 DEFUN (fskipl, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{nlines} =} fskipl (@var{fid})\n\
-@deftypefnx {} {@var{nlines} =} fskipl (@var{fid}, @var{count})\n\
-@deftypefnx {} {@var{nlines} =} fskipl (@var{fid}, Inf)\n\
-Read and skip @var{count} lines from the file specified by the file\n\
-descriptor @var{fid}.\n\
-\n\
-@code{fskipl} discards characters until an end-of-line is encountered\n\
-exactly @var{count}-times, or until the end-of-file marker is found.\n\
-\n\
-If @var{count} is omitted, it defaults to 1.  @var{count} may also be\n\
-@code{Inf}, in which case lines are skipped until the end of the file.\n\
-This form is suitable for counting the number of lines in a file.\n\
-\n\
-Returns the number of lines skipped (end-of-line sequences encountered).\n\
-@seealso{fgetl, fgets, fscanf, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{nlines} =} fskipl (@var{fid})
+@deftypefnx {} {@var{nlines} =} fskipl (@var{fid}, @var{count})
+@deftypefnx {} {@var{nlines} =} fskipl (@var{fid}, Inf)
+Read and skip @var{count} lines from the file specified by the file
+descriptor @var{fid}.
+
+@code{fskipl} discards characters until an end-of-line is encountered
+exactly @var{count}-times, or until the end-of-file marker is found.
+
+If @var{count} is omitted, it defaults to 1.  @var{count} may also be
+@code{Inf}, in which case lines are skipped until the end of the file.
+This form is suitable for counting the number of lines in a file.
+
+Returns the number of lines skipped (end-of-line sequences encountered).
+@seealso{fgetl, fgets, fscanf, fopen}
+@end deftypefn */)
 {
   static std::string who = "fskipl";
 
@@ -507,105 +507,105 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 }
 
 DEFUN (fopen, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{fid} =} fopen (@var{name})\n\
-@deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode})\n\
-@deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode}, @var{arch})\n\
-@deftypefnx {} {[@var{fid}, @var{msg}] =} fopen (@dots{})\n\
-@deftypefnx {} {@var{fid_list} =} fopen (\"all\")\n\
-@deftypefnx {} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})\n\
-Open a file for low-level I/O or query open files and file descriptors.\n\
-\n\
-The first form of the @code{fopen} function opens the named file with\n\
-the specified mode (read-write, read-only, etc.) and architecture\n\
-interpretation (IEEE big endian, IEEE little endian, etc.), and returns\n\
-an integer value that may be used to refer to the file later.  If an\n\
-error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the\n\
-corresponding system error message.  The @var{mode} is a one or two\n\
-character string that specifies whether the file is to be opened for\n\
-reading, writing, or both.\n\
-\n\
-The second form of the @code{fopen} function returns a vector of file ids\n\
-corresponding to all the currently open files, excluding the\n\
-@code{stdin}, @code{stdout}, and @code{stderr} streams.\n\
-\n\
-The third form of the @code{fopen} function returns information about the\n\
-open file given its file id.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-myfile = fopen (\"splat.dat\", \"r\", \"ieee-le\");\n\
-@end example\n\
-\n\
-@noindent\n\
-opens the file @file{splat.dat} for reading.  If necessary, binary\n\
-numeric values will be read assuming they are stored in IEEE format with\n\
-the least significant bit first, and then converted to the native\n\
-representation.\n\
-\n\
-Opening a file that is already open simply opens it again and returns a\n\
-separate file id.  It is not an error to open a file several times,\n\
-though writing to the same file through several different file ids may\n\
-produce unexpected results.\n\
-\n\
-The possible values @samp{mode} may have are\n\
-\n\
-@table @asis\n\
-@item @samp{r} (default)\n\
-Open a file for reading.\n\
-\n\
-@item @samp{w}\n\
-Open a file for writing.  The previous contents are discarded.\n\
-\n\
-@item @samp{a}\n\
-Open or create a file for writing at the end of the file.\n\
-\n\
-@item @samp{r+}\n\
-Open an existing file for reading and writing.\n\
-\n\
-@item @samp{w+}\n\
-Open a file for reading or writing.  The previous contents are\n\
-discarded.\n\
-\n\
-@item @samp{a+}\n\
-Open or create a file for reading or writing at the end of the\n\
-file.\n\
-@end table\n\
-\n\
-Append a @qcode{\"t\"} to the mode string to open the file in text mode or a\n\
-@qcode{\"b\"} to open in binary mode.  On Windows and Macintosh systems,\n\
-text mode reading and writing automatically converts linefeeds to the\n\
-appropriate line end character for the system (carriage-return linefeed on\n\
-Windows, carriage-return on Macintosh).  The default when no mode is\n\
-specified is binary mode.\n\
-\n\
-Additionally, you may append a @qcode{\"z\"} to the mode string to open a\n\
-gzipped file for reading or writing.  For this to be successful, you\n\
-must also open the file in binary mode.\n\
-\n\
-The parameter @var{arch} is a string specifying the default data format\n\
-for the file.  Valid values for @var{arch} are:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"native\"} or @qcode{\"n\"} (default)\n\
-The format of the current machine.\n\
-\n\
-@item @qcode{\"ieee-be\"} or @qcode{\"b\"}\n\
-IEEE big endian format.\n\
-\n\
-@item @qcode{\"ieee-le\"} or @qcode{\"l\"}\n\
-IEEE little endian format.\n\
-@end table\n\
-\n\
-@noindent\n\
-However, conversions are currently only supported for @samp{native},\n\
-@samp{ieee-be}, and @samp{ieee-le} formats.\n\
-\n\
-When opening a new file that does not yet exist, permissions will be set to\n\
-@code{0666 - @var{umask}}.\n\
-@seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite, fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{fid} =} fopen (@var{name})
+@deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode})
+@deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode}, @var{arch})
+@deftypefnx {} {[@var{fid}, @var{msg}] =} fopen (@dots{})
+@deftypefnx {} {@var{fid_list} =} fopen ("all")
+@deftypefnx {} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})
+Open a file for low-level I/O or query open files and file descriptors.
+
+The first form of the @code{fopen} function opens the named file with
+the specified mode (read-write, read-only, etc.) and architecture
+interpretation (IEEE big endian, IEEE little endian, etc.), and returns
+an integer value that may be used to refer to the file later.  If an
+error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the
+corresponding system error message.  The @var{mode} is a one or two
+character string that specifies whether the file is to be opened for
+reading, writing, or both.
+
+The second form of the @code{fopen} function returns a vector of file ids
+corresponding to all the currently open files, excluding the
+@code{stdin}, @code{stdout}, and @code{stderr} streams.
+
+The third form of the @code{fopen} function returns information about the
+open file given its file id.
+
+For example,
+
+@example
+myfile = fopen ("splat.dat", "r", "ieee-le");
+@end example
+
+@noindent
+opens the file @file{splat.dat} for reading.  If necessary, binary
+numeric values will be read assuming they are stored in IEEE format with
+the least significant bit first, and then converted to the native
+representation.
+
+Opening a file that is already open simply opens it again and returns a
+separate file id.  It is not an error to open a file several times,
+though writing to the same file through several different file ids may
+produce unexpected results.
+
+The possible values @samp{mode} may have are
+
+@table @asis
+@item @samp{r} (default)
+Open a file for reading.
+
+@item @samp{w}
+Open a file for writing.  The previous contents are discarded.
+
+@item @samp{a}
+Open or create a file for writing at the end of the file.
+
+@item @samp{r+}
+Open an existing file for reading and writing.
+
+@item @samp{w+}
+Open a file for reading or writing.  The previous contents are
+discarded.
+
+@item @samp{a+}
+Open or create a file for reading or writing at the end of the
+file.
+@end table
+
+Append a @qcode{"t"} to the mode string to open the file in text mode or a
+@qcode{"b"} to open in binary mode.  On Windows and Macintosh systems,
+text mode reading and writing automatically converts linefeeds to the
+appropriate line end character for the system (carriage-return linefeed on
+Windows, carriage-return on Macintosh).  The default when no mode is
+specified is binary mode.
+
+Additionally, you may append a @qcode{"z"} to the mode string to open a
+gzipped file for reading or writing.  For this to be successful, you
+must also open the file in binary mode.
+
+The parameter @var{arch} is a string specifying the default data format
+for the file.  Valid values for @var{arch} are:
+
+@table @asis
+@item @qcode{"native"} or @qcode{"n"} (default)
+The format of the current machine.
+
+@item @qcode{"ieee-be"} or @qcode{"b"}
+IEEE big endian format.
+
+@item @qcode{"ieee-le"} or @qcode{"l"}
+IEEE little endian format.
+@end table
+
+@noindent
+However, conversions are currently only supported for @samp{native},
+@samp{ieee-be}, and @samp{ieee-le} formats.
+
+When opening a new file that does not yet exist, permissions will be set to
+@code{0666 - @var{umask}}.
+@seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite, fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -658,27 +658,27 @@ When opening a new file that does not yet exist, permissions will be set to\n\
 }
 
 DEFUN (freport, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} freport ()\n\
-Print a list of which files have been opened, and whether they are open\n\
-for reading, writing, or both.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-freport ()\n\
-\n\
-     @print{}  number  mode  arch       name\n\
-     @print{}  ------  ----  ----       ----\n\
-     @print{}     0     r    ieee-le    stdin\n\
-     @print{}     1     w    ieee-le    stdout\n\
-     @print{}     2     w    ieee-le    stderr\n\
-     @print{}     3     r    ieee-le    myfile\n\
-@end group\n\
-@end example\n\
-@seealso{fopen, fclose, is_valid_file_id}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} freport ()
+Print a list of which files have been opened, and whether they are open
+for reading, writing, or both.
+
+For example:
+
+@example
+@group
+freport ()
+
+     @print{}  number  mode  arch       name
+     @print{}  ------  ----  ----       ----
+     @print{}     0     r    ieee-le    stdin
+     @print{}     1     w    ieee-le    stdout
+     @print{}     2     w    ieee-le    stderr
+     @print{}     3     r    ieee-le    myfile
+@end group
+@end example
+@seealso{fopen, fclose, is_valid_file_id}
+@end deftypefn */)
 {
   if (args.length () > 0)
     warning ("freport: ignoring extra arguments");
@@ -689,16 +689,16 @@ freport ()\n\
 }
 
 DEFUN (frewind, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} frewind (@var{fid})\n\
-@deftypefnx {} {@var{status} =} frewind (@var{fid})\n\
-Move the file pointer to the beginning of the file specified by file\n\
-descriptor @var{fid}.\n\
-\n\
-@code{frewind} returns 0 for success, and -1 if an error is encountered.  It\n\
-is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
-@seealso{fseek, ftell, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} frewind (@var{fid})
+@deftypefnx {} {@var{status} =} frewind (@var{fid})
+Move the file pointer to the beginning of the file specified by file
+descriptor @var{fid}.
+
+@code{frewind} returns 0 for success, and -1 if an error is encountered.  It
+is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.
+@seealso{fseek, ftell, fopen}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -716,23 +716,23 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
 }
 
 DEFUN (fseek, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fseek (@var{fid}, @var{offset})\n\
-@deftypefnx {} {} fseek (@var{fid}, @var{offset}, @var{origin})\n\
-@deftypefnx {} {@var{status} =} fseek (@dots{})\n\
-Set the file pointer to the location @var{offset} within the file @var{fid}.\n\
-\n\
-The pointer is positioned @var{offset} characters from the @var{origin},\n\
-which may be one of the predefined variables @w{@code{SEEK_CUR}} (current\n\
-position), @w{@code{SEEK_SET}} (beginning), or @w{@code{SEEK_END}} (end of\n\
-file) or strings @qcode{\"cof\"}, @qcode{\"bof\"} or @qcode{\"eof\"}.  If\n\
-@var{origin} is omitted, @w{@code{SEEK_SET}} is assumed.  @var{offset} may\n\
-be positive, negative, or zero but not all combinations of @var{origin} and\n\
-@var{offset} can be realized.\n\
-\n\
-@code{fseek} returns 0 on success and -1 on error.\n\
-@seealso{fskipl, frewind, ftell, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fseek (@var{fid}, @var{offset})
+@deftypefnx {} {} fseek (@var{fid}, @var{offset}, @var{origin})
+@deftypefnx {} {@var{status} =} fseek (@dots{})
+Set the file pointer to the location @var{offset} within the file @var{fid}.
+
+The pointer is positioned @var{offset} characters from the @var{origin},
+which may be one of the predefined variables @w{@code{SEEK_CUR}} (current
+position), @w{@code{SEEK_SET}} (beginning), or @w{@code{SEEK_END}} (end of
+file) or strings @qcode{"cof"}, @qcode{"bof"} or @qcode{"eof"}.  If
+@var{origin} is omitted, @w{@code{SEEK_SET}} is assumed.  @var{offset} may
+be positive, negative, or zero but not all combinations of @var{origin} and
+@var{offset} can be realized.
+
+@code{fseek} returns 0 on success and -1 on error.
+@seealso{fskipl, frewind, ftell, fopen}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -747,12 +747,12 @@ be positive, negative, or zero but not all combinations of @var{origin} and\n\
 }
 
 DEFUN (ftell, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{pos} =} ftell (@var{fid})\n\
-Return the position of the file pointer as the number of characters from the\n\
-beginning of the file specified by file descriptor @var{fid}.\n\
-@seealso{fseek, frewind, feof, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pos} =} ftell (@var{fid})
+Return the position of the file pointer as the number of characters from the
+beginning of the file specified by file descriptor @var{fid}.
+@seealso{fseek, frewind, feof, fopen}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -763,23 +763,23 @@ beginning of the file specified by file descriptor @var{fid}.\n\
 }
 
 DEFUN (fprintf, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
-@deftypefnx {} {} fprintf (@var{template}, @dots{})\n\
-@deftypefnx {} {@var{numbytes} =} fprintf (@dots{})\n\
-This function is equivalent to @code{printf}, except that the output is\n\
-written to the file descriptor @var{fid} instead of @code{stdout}.\n\
-\n\
-If @var{fid} is omitted, the output is written to @code{stdout} making the\n\
-function exactly equivalent to @code{printf}.\n\
-\n\
-The optional output returns the number of bytes written to the file.\n\
-\n\
-Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
-the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
-expanded even when the template string is defined with single quotes.\n\
-@seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fprintf (@var{fid}, @var{template}, @dots{})
+@deftypefnx {} {} fprintf (@var{template}, @dots{})
+@deftypefnx {} {@var{numbytes} =} fprintf (@dots{})
+This function is equivalent to @code{printf}, except that the output is
+written to the file descriptor @var{fid} instead of @code{stdout}.
+
+If @var{fid} is omitted, the output is written to @code{stdout} making the
+function exactly equivalent to @code{printf}.
+
+The optional output returns the number of bytes written to the file.
+
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in
+the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+expanded even when the template string is defined with single quotes.
+@seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}
+@end deftypefn */)
 {
   static std::string who = "fprintf";
 
@@ -823,22 +823,22 @@ expanded even when the template string is defined with single quotes.\n\
 }
 
 DEFUN (printf, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} printf (@var{template}, @dots{})\n\
-Print optional arguments under the control of the template string\n\
-@var{template} to the stream @code{stdout} and return the number of\n\
-characters printed.\n\
-@ifclear OCTAVE_MANUAL\n\
-\n\
-See the Formatted Output section of the GNU Octave manual for a\n\
-complete description of the syntax of the template string.\n\
-@end ifclear\n\
-\n\
-Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
-the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
-expanded even when the template string is defined with single quotes.\n\
-@seealso{fprintf, sprintf, scanf}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} printf (@var{template}, @dots{})
+Print optional arguments under the control of the template string
+@var{template} to the stream @code{stdout} and return the number of
+characters printed.
+@ifclear OCTAVE_MANUAL
+
+See the Formatted Output section of the GNU Octave manual for a
+complete description of the syntax of the template string.
+@end ifclear
+
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in
+the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+expanded even when the template string is defined with single quotes.
+@seealso{fprintf, sprintf, scanf}
+@end deftypefn */)
 {
   static std::string who = "printf";
 
@@ -871,18 +871,18 @@ expanded even when the template string is defined with single quotes.\n\
 }
 
 DEFUN (fputs, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fputs (@var{fid}, @var{string})\n\
-@deftypefnx {} {@var{status} =} fputs (@var{fid}, @var{string})\n\
-Write the string @var{string} to the file with file descriptor @var{fid}.\n\
-\n\
-The string is written to the file with no additional formatting.  Use\n\
-@code{fdisp} instead to automatically append a newline character appropriate\n\
-for the local machine.\n\
-\n\
-Return a non-negative number on success or EOF on error.\n\
-@seealso{fdisp, fprintf, fwrite, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fputs (@var{fid}, @var{string})
+@deftypefnx {} {@var{status} =} fputs (@var{fid}, @var{string})
+Write the string @var{string} to the file with file descriptor @var{fid}.
+
+The string is written to the file with no additional formatting.  Use
+@code{fdisp} instead to automatically append a newline character appropriate
+for the local machine.
+
+Return a non-negative number on success or EOF on error.
+@seealso{fdisp, fprintf, fwrite, fopen}
+@end deftypefn */)
 {
   static std::string who = "fputs";
 
@@ -895,17 +895,17 @@ Return a non-negative number on success or EOF on error.\n\
 }
 
 DEFUN (puts, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} puts (@var{string})\n\
-@deftypefnx {} {@var{status} =} puts (@var{string})\n\
-Write a string to the standard output with no formatting.\n\
-\n\
-The string is written verbatim to the standard output.  Use @code{disp} to\n\
-automatically append a newline character appropriate for the local machine.\n\
-\n\
-Return a non-negative number on success and EOF on error.\n\
-@seealso{fputs, disp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} puts (@var{string})
+@deftypefnx {} {@var{status} =} puts (@var{string})
+Write a string to the standard output with no formatting.
+
+The string is written verbatim to the standard output.  Use @code{disp} to
+automatically append a newline character appropriate for the local machine.
+
+Return a non-negative number on success and EOF on error.
+@seealso{fputs, disp}
+@end deftypefn */)
 {
   static std::string who = "puts";
 
@@ -916,20 +916,20 @@ Return a non-negative number on success and EOF on error.\n\
 }
 
 DEFUN (sprintf, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sprintf (@var{template}, @dots{})\n\
-This is like @code{printf}, except that the output is returned as a\n\
-string.\n\
-\n\
-Unlike the C library function, which requires you to provide a suitably\n\
-sized string as an argument, Octave's @code{sprintf} function returns the\n\
-string, automatically sized to hold all of the items converted.\n\
-\n\
-Implementation Note: For compatibility with @sc{matlab}, escape sequences in\n\
-the template string (e.g., @qcode{\"@xbackslashchar{}n\"} => newline) are\n\
-expanded even when the template string is defined with single quotes.\n\
-@seealso{printf, fprintf, sscanf}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sprintf (@var{template}, @dots{})
+This is like @code{printf}, except that the output is returned as a
+string.
+
+Unlike the C library function, which requires you to provide a suitably
+sized string as an argument, Octave's @code{sprintf} function returns the
+string, automatically sized to hold all of the items converted.
+
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in
+the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+expanded even when the template string is defined with single quotes.
+@seealso{printf, fprintf, sscanf}
+@end deftypefn */)
 {
   static std::string who = "sprintf";
 
@@ -979,54 +979,54 @@ expanded even when the template string is defined with single quotes.\n\
 }
 
 DEFUN (fscanf, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, \"C\")\n\
-In the first form, read from @var{fid} according to @var{template},\n\
-returning the result in the matrix @var{val}.\n\
-\n\
-The optional argument @var{size} specifies the amount of data to read\n\
-and may be one of\n\
-\n\
-@table @code\n\
-@item Inf\n\
-Read as much as possible, returning a column vector.\n\
-\n\
-@item @var{nr}\n\
-Read up to @var{nr} elements, returning a column vector.\n\
-\n\
-@item [@var{nr}, Inf]\n\
-Read as much as possible, returning a matrix with @var{nr} rows.  If the\n\
-number of elements read is not an exact multiple of @var{nr}, the last\n\
-column is padded with zeros.\n\
-\n\
-@item [@var{nr}, @var{nc}]\n\
-Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with\n\
-@var{nr} rows.  If the number of elements read is not an exact multiple\n\
-of @var{nr}, the last column is padded with zeros.\n\
-@end table\n\
-\n\
-@noindent\n\
-If @var{size} is omitted, a value of @code{Inf} is assumed.\n\
-\n\
-A string is returned if @var{template} specifies only character conversions.\n\
-\n\
-The number of items successfully read is returned in @var{count}.\n\
-\n\
-If an error occurs, @var{errmsg} contains a system-dependent error message.\n\
-\n\
-In the second form, read from @var{fid} according to @var{template},\n\
-with each conversion specifier in @var{template} corresponding to a\n\
-single scalar return value.  This form is more ``C-like'', and also\n\
-compatible with previous versions of Octave.  The number of successful\n\
-conversions is returned in @var{count}\n\
-@ifclear OCTAVE_MANUAL\n\
-\n\
-See the Formatted Input section of the GNU Octave manual for a\n\
-complete description of the syntax of the template string.\n\
-@end ifclear\n\
-@seealso{fgets, fgetl, fread, scanf, sscanf, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})
+@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, "C")
+In the first form, read from @var{fid} according to @var{template},
+returning the result in the matrix @var{val}.
+
+The optional argument @var{size} specifies the amount of data to read
+and may be one of
+
+@table @code
+@item Inf
+Read as much as possible, returning a column vector.
+
+@item @var{nr}
+Read up to @var{nr} elements, returning a column vector.
+
+@item [@var{nr}, Inf]
+Read as much as possible, returning a matrix with @var{nr} rows.  If the
+number of elements read is not an exact multiple of @var{nr}, the last
+column is padded with zeros.
+
+@item [@var{nr}, @var{nc}]
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with
+@var{nr} rows.  If the number of elements read is not an exact multiple
+of @var{nr}, the last column is padded with zeros.
+@end table
+
+@noindent
+If @var{size} is omitted, a value of @code{Inf} is assumed.
+
+A string is returned if @var{template} specifies only character conversions.
+
+The number of items successfully read is returned in @var{count}.
+
+If an error occurs, @var{errmsg} contains a system-dependent error message.
+
+In the second form, read from @var{fid} according to @var{template},
+with each conversion specifier in @var{template} corresponding to a
+single scalar return value.  This form is more ``C-like'', and also
+compatible with previous versions of Octave.  The number of successful
+conversions is returned in @var{count}
+@ifclear OCTAVE_MANUAL
+
+See the Formatted Input section of the GNU Octave manual for a
+complete description of the syntax of the template string.
+@end ifclear
+@seealso{fgets, fgetl, fread, scanf, sscanf, fopen}
+@end deftypefn */)
 {
   static std::string who = "fscanf";
 
@@ -1079,17 +1079,17 @@ get_scan_string_data (const octave_value& val, const std::string& who)
 }
 
 DEFUN (sscanf, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
-@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
-This is like @code{fscanf}, except that the characters are taken from the\n\
-string @var{string} instead of from a stream.\n\
-\n\
-Reaching the end of the string is treated as an end-of-file condition.  In\n\
-addition to the values returned by @code{fscanf}, the index of the next\n\
-character to be read is returned in @var{pos}.\n\
-@seealso{fscanf, scanf, sprintf}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})
+@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} sscanf (@var{string}, @var{template}, "C")
+This is like @code{fscanf}, except that the characters are taken from the
+string @var{string} instead of from a stream.
+
+Reaching the end of the string is treated as an end-of-file condition.  In
+addition to the values returned by @code{fscanf}, the index of the next
+character to be read is returned in @var{pos}.
+@seealso{fscanf, scanf, sprintf}
+@end deftypefn */)
 {
   static std::string who = "sscanf";
 
@@ -1137,14 +1137,14 @@ character to be read is returned in @var{pos}.\n\
 }
 
 DEFUN (scanf, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, \"C\")\n\
-This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
-\n\
-It is currently not useful to call @code{scanf} in interactive programs.\n\
-@seealso{fscanf, sscanf, printf}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})
+@deftypefnx {} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, "C")
+This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.
+
+It is currently not useful to call @code{scanf} in interactive programs.
+@seealso{fscanf, sscanf, printf}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1226,270 +1226,270 @@ textscan_internal (const std::string& who, const octave_value_list& args)
 }
 
 DEFUN (textscan, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat}, @var{param}, @var{value}, @dots{})\n\
-@deftypefnx {} {@var{C} =} textscan (@var{str}, @dots{})\n\
-@deftypefnx {} {[@var{C}, @var{position}, @var{errmsg}] =} textscan (@dots{})\n\
-Read data from a text file or string.\n\
-\n\
-The string @var{str} or file associated with @var{fid} is read from and\n\
-parsed according to @var{format}.  The function is an extension of\n\
-@code{strread} and @code{textread}.  Differences include: the ability to\n\
-read from either a file or a string, additional options, and additional\n\
-format specifiers.\n\
-\n\
-The input is interpreted as a sequence of words, delimiters (such as\n\
-whitespace), and literals.  The characters that form delimiters and\n\
-whitespace are determined by the options.  The format consists of format\n\
-specifiers interspersed between literals.  In the format, whitespace forms\n\
-a delimiter between consecutive literals, but is otherwise ignored.\n\
-\n\
-The output @var{C} is a cell array where the number of columns is determined\n\
-by the number of format specifiers.\n\
-\n\
-The first word of the input is matched to the first specifier of the format\n\
-and placed in the first column of the output; the second is matched to the\n\
-second specifier and placed in the second column and so forth.  If there\n\
-are more words than specifiers then the process is repeated until all words\n\
-have been processed or the limit imposed by @var{repeat} has been met (see\n\
-below).\n\
-\n\
-The string @var{format} describes how the words in @var{str} should be\n\
-parsed.  As in @var{fscanf}, any (non-whitespace) text in the format that is\n\
-not one of these specifiers is considered a literal.  If there is a literal\n\
-between two format specifiers then that same literal must appear in the\n\
-input stream between the matching words.\n\
-\n\
-The following specifiers are valid:\n\
-\n\
-@table @code\n\
-@item  %f\n\
-@itemx %f64\n\
-@itemx %n\n\
-The word is parsed as a number and converted to double.\n\
-\n\
-@item  %f32\n\
-The word is parsed as a number and converted to single (float).\n\
-\n\
-@item  %d\n\
-@itemx %d8\n\
-@itemx %d16\n\
-@itemx %d32\n\
-@itemx %d64\n\
-The word is parsed as a number and converted to int8, int16, int32, or\n\
-int64.  If no size is specified then int32 is used.\n\
-\n\
-@item  %u\n\
-@itemx %u8\n\
-@itemx %u16\n\
-@itemx %u32\n\
-@itemx %u64\n\
-The word is parsed as a number and converted to uint8, uint16, uint32, or\n\
-uint64.  If no size is specified then uint32 is used.\n\
-\n\
-@item %s\n\
-The word is parsed as a string ending at the last character before\n\
-whitespace, an end-of-line, or a delimiter specified in the options.\n\
-\n\
-@item %q\n\
-The word is parsed as a \"quoted string\".\n\
-If the first character of the string is a double quote (\") then the string\n\
-includes everything until a matching double quote---including whitespace,\n\
-delimiters, and end-of-line characters.  If a pair of consecutive double\n\
-quotes appears in the input, it is replaced in the output by a single\n\
-double quote.  For examples, the input \"He said \"\"Hello\"\"\" would\n\
-return the value 'He said \"Hello\"'.\n\
-\n\
-@item  %c\n\
-The next character of the input is read.\n\
-This includes delimiters, whitespace, and end-of-line characters.\n\
-\n\
-@item  %[@dots{}]\n\
-@itemx %[^@dots{}]\n\
-In the first form, the word consists of the longest run consisting of only\n\
-characters between the brackets.  Ranges of characters can be specified by\n\
-a hyphen; for example, %[0-9a-zA-Z] matches all alphanumeric characters (if\n\
-the underlying character set is ASCII).  Since @sc{matlab} treats hyphens\n\
-literally, this expansion only applies to alphanumeric characters.  To\n\
-include '-' in the set, it should appear first or last in the brackets; to\n\
-include ']', it should be the first character.  If the first character is\n\
-'^' then the word consists of characters @strong{not} listed.\n\
-\n\
-@item %N@dots{}\n\
-For %s, %c %d, %f, %n, %u, an optional width can be specified as %Ns, etc.\n\
-where N is an integer > 1.  For %c, this causes exactly N characters to be\n\
-read instead of a single character.  For the other specifiers, it is an\n\
-upper bound on the number of characters read; normal delimiters can cause\n\
-fewer characters to be read.  For complex numbers, this limit applies to\n\
-the real and imaginary components individually.  For %f and %n, format\n\
-specifiers like %N.Mf are allowed, where M is an upper bound on number of\n\
-characters after the decimal point to be considered; subsequent digits are\n\
-skipped.  For example, the specifier %8.2f would read 12.345e6 as 1.234e7.\n\
-\n\
-@item %*@dots{}\n\
-The word specified by the remainder of the conversion specifier is skipped.\n\
-\n\
-@item literals\n\
-In addition the format may contain literal character strings; these will be\n\
-skipped during reading.  If the input string does not match this literal,\n\
-the processing terminates.\n\
-@end table\n\
-\n\
-Parsed words corresponding to the first specifier are returned in the first\n\
-output argument and likewise for the rest of the specifiers.\n\
-\n\
-By default, if there is only one input argument, @var{format} is @t{\"%f\"}.\n\
-This means that numbers are read from the input into a single column vector.\n\
-If @var{format} is explicitly empty (@qcode{\"\"}) then textscan will\n\
-return data in a number of columns matching the number of fields on the\n\
-first data line of the input.  Either of these is suitable only when the\n\
-input is exclusively numeric.\n\
-\n\
-For example, the string\n\
-\n\
-@smallexample\n\
-@group\n\
-@var{str} = \"\\\n\
-Bunny Bugs   5.5\\n\\\n\
-Duck Daffy  -7.5e-5\\n\\\n\
-Penguin Tux   6\"\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@noindent\n\
-can be read using\n\
-\n\
-@example\n\
-@var{a} = textscan (@var{str}, \"%s %s %f\");\n\
-@end example\n\
-\n\
-The optional numeric argument @var{repeat} can be used for limiting the\n\
-number of items read:\n\
-\n\
-@table @asis\n\
-@item -1\n\
-Read all of the string or file until the end (default).\n\
-\n\
-@item N\n\
-Read until the first of two conditions occurs: 1) the format has been\n\
-processed N times, or 2) N lines of the input have been processed.  Zero\n\
-(0) is an acceptable value for @var{repeat}.  Currently, end-of-line\n\
-characters inside %q, %c, and %[@dots{}]$ conversions do not contribute to\n\
-the line count.  This is incompatible with @sc{matlab} and may change in\n\
-future.\n\
-@end table\n\
-\n\
-The behavior of @code{textscan} can be changed via property/value pairs.\n\
-The following properties are recognized:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"BufSize\"}\n\
-This specifies the number of bytes to use for the internal buffer.\n\
-A modest speed improvement may be obtained by setting this to a large value\n\
-when reading a large file, especially if the input contains long strings.\n\
-The default is 4096, or a value dependent on @var{n} if that is specified.\n\
-\n\
-@item @qcode{\"CollectOutput\"}\n\
-A value of 1 or true instructs @code{textscan} to concatenate consecutive\n\
-columns of the same class in the output cell array.  A value of 0 or false\n\
-(default) leaves output in distinct columns.\n\
-\n\
-@item @qcode{\"CommentStyle\"}\n\
-Specify parts of the input which are considered comments and will be\n\
-skipped.  @var{value} is the comment style and can be either (1) A string\n\
-or 1x1 cell string, to skip everything to the right of it; (2) A cell array\n\
-of two strings, to skip everything between the first and second strings.  \n\
-Comments are only parsed where whitespace is accepted and do not act as\n\
-delimiters.\n\
-\n\
-@item @qcode{\"Delimiter\"}\n\
-If @var{value} is a string, any character in @var{value} will be used to\n\
-split the input into words.  If @var{value} is a cell array of strings,\n\
-any string in the array will be used to split the input into words.\n\
-(default value = any whitespace.)\n\
-\n\
-@item @qcode{\"EmptyValue\"}\n\
-Value to return for empty numeric values in non-whitespace delimited data.\n\
-The default is NaN@.  When the data type does not support NaN (int32 for\n\
-example), then the default is zero.\n\
-\n\
-@item @qcode{\"EndOfLine\"}\n\
-@var{value} can be either an emtpy or one character specifying the\n\
-end-of-line character, or the pair\n\
-@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} (CRLF).\n\
-In the latter case, any of\n\
-@qcode{\"@xbackslashchar{}r\"}, @qcode{\"@xbackslashchar{}n\"} or\n\
-@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is counted as a (single)\n\
-newline.  If no value is given,\n\
-@qcode{\"@xbackslashchar{}r@xbackslashchar{}n\"} is used.\n\
-@c If set to \"\" (empty string) EOLs are ignored as delimiters and added\n\
-@c to whitespace.\n\
-\n\
-@c When reading from a character string, optional input argument @var{n}\n\
-@c specifies the number of times @var{format} should be used (i.e., to limit\n\
-@c the amount of data read).\n\
-@c When reading from file, @var{n} specifies the number of data lines to read;\n\
-@c in this sense it differs slightly from the format repeat count in strread.\n\
-\n\
-@item @qcode{\"HeaderLines\"}\n\
-The first @var{value} number of lines of @var{fid} are skipped.  Note that\n\
-this does not refer to the first non-comment lines, but the first lines of\n\
-any type.\n\
-\n\
-@item @qcode{\"MultipleDelimsAsOne\"}\n\
-If @var{value} is nonzero, treat a series of consecutive delimiters,\n\
-without whitespace in between, as a single delimiter.  Consecutive\n\
-delimiter series need not be vertically aligned.  Without this option, a\n\
-single delimiter before the end of the line does not cause the line to be\n\
-considered to end with an empty value, but a single delimiter at the start\n\
-of a line causes the line to be considered to start with an empty value.\n\
-\n\
-@item @qcode{\"TreatAsEmpty\"}\n\
-Treat single occurrences (surrounded by delimiters or whitespace) of the\n\
-string(s) in @var{value} as missing values.\n\
-\n\
-@item @qcode{\"ReturnOnError\"}\n\
-If set to numerical 1 or true, return normally as soon as an error is\n\
-encountered, such as trying to read a string using @qcode{%f}.\n\
-If set to 0 or false, return an error and no data.\n\
-\n\
-@item @qcode{\"Whitespace\"}\n\
-Any character in @var{value} will be interpreted as whitespace and trimmed;\n\
-The default value for whitespace is\n\
-@c Note: the next line specifically has a newline which generates a space\n\
-@c       in the output of qcode, but keeps the next line < 80 characters.\n\
-@qcode{\"\n\
-@xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t\"}\n\
-(note the space).  Unless whitespace is set to @qcode{\"\"} (empty) AND at\n\
-least one @qcode{\"%s\"} format conversion specifier is supplied, a space is\n\
-always part of whitespace.\n\
-\n\
-@end table\n\
-\n\
-When the number of words in @var{str} or @var{fid} doesn't match an exact\n\
-multiple of the number of format conversion specifiers, @code{textscan}'s\n\
-behavior depends on whether the last character of the string or file is an\n\
-end-of-line as specified by the @code{EndOfLine} option:\n\
-\n\
-@table @asis\n\
-@item last character = end-of-line\n\
-Data columns are padded with empty fields, NaN or 0 (for integer fields) so\n\
-that all columns have equal length\n\
-\n\
-@item last character is not end-of-line\n\
-Data columns are not padded; @code{textscan} returns columns of unequal\n\
-length\n\
-@end table\n\
-\n\
-\n\
-The second output @var{position} provides the location, in characters\n\
-from the beginning of the file or string, where processing stopped.\n\
-\n\
-@seealso{dlmread, fscanf, load, strread, textread}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{C} =} textscan (@var{fid}, @var{format})
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat})
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})
+@deftypefnx {} {@var{C} =} textscan (@var{fid}, @var{format}, @var{repeat}, @var{param}, @var{value}, @dots{})
+@deftypefnx {} {@var{C} =} textscan (@var{str}, @dots{})
+@deftypefnx {} {[@var{C}, @var{position}, @var{errmsg}] =} textscan (@dots{})
+Read data from a text file or string.
+
+The string @var{str} or file associated with @var{fid} is read from and
+parsed according to @var{format}.  The function is an extension of
+@code{strread} and @code{textread}.  Differences include: the ability to
+read from either a file or a string, additional options, and additional
+format specifiers.
+
+The input is interpreted as a sequence of words, delimiters (such as
+whitespace), and literals.  The characters that form delimiters and
+whitespace are determined by the options.  The format consists of format
+specifiers interspersed between literals.  In the format, whitespace forms
+a delimiter between consecutive literals, but is otherwise ignored.
+
+The output @var{C} is a cell array where the number of columns is determined
+by the number of format specifiers.
+
+The first word of the input is matched to the first specifier of the format
+and placed in the first column of the output; the second is matched to the
+second specifier and placed in the second column and so forth.  If there
+are more words than specifiers then the process is repeated until all words
+have been processed or the limit imposed by @var{repeat} has been met (see
+below).
+
+The string @var{format} describes how the words in @var{str} should be
+parsed.  As in @var{fscanf}, any (non-whitespace) text in the format that is
+not one of these specifiers is considered a literal.  If there is a literal
+between two format specifiers then that same literal must appear in the
+input stream between the matching words.
+
+The following specifiers are valid:
+
+@table @code
+@item  %f
+@itemx %f64
+@itemx %n
+The word is parsed as a number and converted to double.
+
+@item  %f32
+The word is parsed as a number and converted to single (float).
+
+@item  %d
+@itemx %d8
+@itemx %d16
+@itemx %d32
+@itemx %d64
+The word is parsed as a number and converted to int8, int16, int32, or
+int64.  If no size is specified then int32 is used.
+
+@item  %u
+@itemx %u8
+@itemx %u16
+@itemx %u32
+@itemx %u64
+The word is parsed as a number and converted to uint8, uint16, uint32, or
+uint64.  If no size is specified then uint32 is used.
+
+@item %s
+The word is parsed as a string ending at the last character before
+whitespace, an end-of-line, or a delimiter specified in the options.
+
+@item %q
+The word is parsed as a "quoted string".
+If the first character of the string is a double quote (") then the string
+includes everything until a matching double quote---including whitespace,
+delimiters, and end-of-line characters.  If a pair of consecutive double
+quotes appears in the input, it is replaced in the output by a single
+double quote.  For examples, the input "He said ""Hello""" would
+return the value 'He said "Hello"'.
+
+@item  %c
+The next character of the input is read.
+This includes delimiters, whitespace, and end-of-line characters.
+
+@item  %[@dots{}]
+@itemx %[^@dots{}]
+In the first form, the word consists of the longest run consisting of only
+characters between the brackets.  Ranges of characters can be specified by
+a hyphen; for example, %[0-9a-zA-Z] matches all alphanumeric characters (if
+the underlying character set is ASCII).  Since @sc{matlab} treats hyphens
+literally, this expansion only applies to alphanumeric characters.  To
+include '-' in the set, it should appear first or last in the brackets; to
+include ']', it should be the first character.  If the first character is
+'^' then the word consists of characters @strong{not} listed.
+
+@item %N@dots{}
+For %s, %c %d, %f, %n, %u, an optional width can be specified as %Ns, etc.
+where N is an integer > 1.  For %c, this causes exactly N characters to be
+read instead of a single character.  For the other specifiers, it is an
+upper bound on the number of characters read; normal delimiters can cause
+fewer characters to be read.  For complex numbers, this limit applies to
+the real and imaginary components individually.  For %f and %n, format
+specifiers like %N.Mf are allowed, where M is an upper bound on number of
+characters after the decimal point to be considered; subsequent digits are
+skipped.  For example, the specifier %8.2f would read 12.345e6 as 1.234e7.
+
+@item %*@dots{}
+The word specified by the remainder of the conversion specifier is skipped.
+
+@item literals
+In addition the format may contain literal character strings; these will be
+skipped during reading.  If the input string does not match this literal,
+the processing terminates.
+@end table
+
+Parsed words corresponding to the first specifier are returned in the first
+output argument and likewise for the rest of the specifiers.
+
+By default, if there is only one input argument, @var{format} is @t{"%f"}.
+This means that numbers are read from the input into a single column vector.
+If @var{format} is explicitly empty (@qcode{""}) then textscan will
+return data in a number of columns matching the number of fields on the
+first data line of the input.  Either of these is suitable only when the
+input is exclusively numeric.
+
+For example, the string
+
+@smallexample
+@group
+@var{str} = "\
+Bunny Bugs   5.5\n\
+Duck Daffy  -7.5e-5\n\
+Penguin Tux   6"
+@end group
+@end smallexample
+
+@noindent
+can be read using
+
+@example
+@var{a} = textscan (@var{str}, "%s %s %f");
+@end example
+
+The optional numeric argument @var{repeat} can be used for limiting the
+number of items read:
+
+@table @asis
+@item -1
+Read all of the string or file until the end (default).
+
+@item N
+Read until the first of two conditions occurs: 1) the format has been
+processed N times, or 2) N lines of the input have been processed.  Zero
+(0) is an acceptable value for @var{repeat}.  Currently, end-of-line
+characters inside %q, %c, and %[@dots{}]$ conversions do not contribute to
+the line count.  This is incompatible with @sc{matlab} and may change in
+future.
+@end table
+
+The behavior of @code{textscan} can be changed via property/value pairs.
+The following properties are recognized:
+
+@table @asis
+@item @qcode{"BufSize"}
+This specifies the number of bytes to use for the internal buffer.
+A modest speed improvement may be obtained by setting this to a large value
+when reading a large file, especially if the input contains long strings.
+The default is 4096, or a value dependent on @var{n} if that is specified.
+
+@item @qcode{"CollectOutput"}
+A value of 1 or true instructs @code{textscan} to concatenate consecutive
+columns of the same class in the output cell array.  A value of 0 or false
+(default) leaves output in distinct columns.
+
+@item @qcode{"CommentStyle"}
+Specify parts of the input which are considered comments and will be
+skipped.  @var{value} is the comment style and can be either (1) A string
+or 1x1 cell string, to skip everything to the right of it; (2) A cell array
+of two strings, to skip everything between the first and second strings.  
+Comments are only parsed where whitespace is accepted and do not act as
+delimiters.
+
+@item @qcode{"Delimiter"}
+If @var{value} is a string, any character in @var{value} will be used to
+split the input into words.  If @var{value} is a cell array of strings,
+any string in the array will be used to split the input into words.
+(default value = any whitespace.)
+
+@item @qcode{"EmptyValue"}
+Value to return for empty numeric values in non-whitespace delimited data.
+The default is NaN@.  When the data type does not support NaN (int32 for
+example), then the default is zero.
+
+@item @qcode{"EndOfLine"}
+@var{value} can be either an emtpy or one character specifying the
+end-of-line character, or the pair
+@qcode{"@xbackslashchar{}r@xbackslashchar{}n"} (CRLF).
+In the latter case, any of
+@qcode{"@xbackslashchar{}r"}, @qcode{"@xbackslashchar{}n"} or
+@qcode{"@xbackslashchar{}r@xbackslashchar{}n"} is counted as a (single)
+newline.  If no value is given,
+@qcode{"@xbackslashchar{}r@xbackslashchar{}n"} is used.
+@c If set to "" (empty string) EOLs are ignored as delimiters and added
+@c to whitespace.
+
+@c When reading from a character string, optional input argument @var{n}
+@c specifies the number of times @var{format} should be used (i.e., to limit
+@c the amount of data read).
+@c When reading from file, @var{n} specifies the number of data lines to read;
+@c in this sense it differs slightly from the format repeat count in strread.
+
+@item @qcode{"HeaderLines"}
+The first @var{value} number of lines of @var{fid} are skipped.  Note that
+this does not refer to the first non-comment lines, but the first lines of
+any type.
+
+@item @qcode{"MultipleDelimsAsOne"}
+If @var{value} is nonzero, treat a series of consecutive delimiters,
+without whitespace in between, as a single delimiter.  Consecutive
+delimiter series need not be vertically aligned.  Without this option, a
+single delimiter before the end of the line does not cause the line to be
+considered to end with an empty value, but a single delimiter at the start
+of a line causes the line to be considered to start with an empty value.
+
+@item @qcode{"TreatAsEmpty"}
+Treat single occurrences (surrounded by delimiters or whitespace) of the
+string(s) in @var{value} as missing values.
+
+@item @qcode{"ReturnOnError"}
+If set to numerical 1 or true, return normally as soon as an error is
+encountered, such as trying to read a string using @qcode{%f}.
+If set to 0 or false, return an error and no data.
+
+@item @qcode{"Whitespace"}
+Any character in @var{value} will be interpreted as whitespace and trimmed;
+The default value for whitespace is
+@c Note: the next line specifically has a newline which generates a space
+@c       in the output of qcode, but keeps the next line < 80 characters.
+@qcode{"
+@xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t"}
+(note the space).  Unless whitespace is set to @qcode{""} (empty) AND at
+least one @qcode{"%s"} format conversion specifier is supplied, a space is
+always part of whitespace.
+
+@end table
+
+When the number of words in @var{str} or @var{fid} doesn't match an exact
+multiple of the number of format conversion specifiers, @code{textscan}'s
+behavior depends on whether the last character of the string or file is an
+end-of-line as specified by the @code{EndOfLine} option:
+
+@table @asis
+@item last character = end-of-line
+Data columns are padded with empty fields, NaN or 0 (for integer fields) so
+that all columns have equal length
+
+@item last character is not end-of-line
+Data columns are not padded; @code{textscan} returns columns of unequal
+length
+@end table
+
+
+The second output @var{position} provides the location, in characters
+from the beginning of the file or string, where processing stopped.
+
+@seealso{dlmread, fscanf, load, strread, textread}
+@end deftypefn */)
 {
   static std::string who = "textscan";
 
@@ -1497,11 +1497,11 @@ from the beginning of the file or string, where processing stopped.\n\
 }
 
 DEFUN (__textscan__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{C} =} __textscan__ (@var{who}, @dots{})\n\
-Like @code{textscan} but accept additional argument @var{who} to use\n\
-as the name of the function when reporting errors.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{C} =} __textscan__ (@var{who}, @dots{})
+Like @code{textscan} but accept additional argument @var{who} to use
+as the name of the function when reporting errors.
+@end deftypefn */)
 {
   if (args.length () == 0)
     print_usage ();
@@ -2285,175 +2285,175 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 }
 
 DEFUN (fread, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} fread (@var{fid})\n\
-@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size})\n\
-@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision})\n\
-@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip})\n\
-@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})\n\
-@deftypefnx {} {[@var{val}, @var{count}] =} fread (@dots{})\n\
-Read binary data from the file specified by the file descriptor @var{fid}.\n\
-\n\
-The optional argument @var{size} specifies the amount of data to read\n\
-and may be one of\n\
-\n\
-@table @code\n\
-@item Inf\n\
-Read as much as possible, returning a column vector.\n\
-\n\
-@item @var{nr}\n\
-Read up to @var{nr} elements, returning a column vector.\n\
-\n\
-@item [@var{nr}, Inf]\n\
-Read as much as possible, returning a matrix with @var{nr} rows.  If the\n\
-number of elements read is not an exact multiple of @var{nr}, the last\n\
-column is padded with zeros.\n\
-\n\
-@item [@var{nr}, @var{nc}]\n\
-Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with\n\
-@var{nr} rows.  If the number of elements read is not an exact multiple\n\
-of @var{nr}, the last column is padded with zeros.\n\
-@end table\n\
-\n\
-@noindent\n\
-If @var{size} is omitted, a value of @code{Inf} is assumed.\n\
-\n\
-The optional argument @var{precision} is a string specifying the type of\n\
-data to read and may be one of\n\
-\n\
-@table @asis\n\
-@item  @qcode{\"schar\"}\n\
-@itemx @qcode{\"signed char\"}\n\
-Signed character.\n\
-\n\
-@item  @qcode{\"uchar\"}\n\
-@itemx @qcode{\"unsigned char\"}\n\
-Unsigned character.\n\
-\n\
-@item  @qcode{\"int8\"}\n\
-@itemx @qcode{\"integer*1\"}\n\
-\n\
-8-bit signed integer.\n\
-\n\
-@item  @qcode{\"int16\"}\n\
-@itemx @qcode{\"integer*2\"}\n\
-16-bit signed integer.\n\
-\n\
-@item  @qcode{\"int32\"}\n\
-@itemx @qcode{\"integer*4\"}\n\
-32-bit signed integer.\n\
-\n\
-@item  @qcode{\"int64\"}\n\
-@itemx @qcode{\"integer*8\"}\n\
-64-bit signed integer.\n\
-\n\
-@item @qcode{\"uint8\"}\n\
-8-bit unsigned integer.\n\
-\n\
-@item @qcode{\"uint16\"}\n\
-16-bit unsigned integer.\n\
-\n\
-@item @qcode{\"uint32\"}\n\
-32-bit unsigned integer.\n\
-\n\
-@item @qcode{\"uint64\"}\n\
-64-bit unsigned integer.\n\
-\n\
-@item  @qcode{\"single\"}\n\
-@itemx @qcode{\"float32\"}\n\
-@itemx @qcode{\"real*4\"}\n\
-32-bit floating point number.\n\
-\n\
-@item  @qcode{\"double\"}\n\
-@itemx @qcode{\"float64\"}\n\
-@itemx @qcode{\"real*8\"}\n\
-64-bit floating point number.\n\
-\n\
-@item  @qcode{\"char\"}\n\
-@itemx @qcode{\"char*1\"}\n\
-Single character.\n\
-\n\
-@item @qcode{\"short\"}\n\
-Short integer (size is platform dependent).\n\
-\n\
-@item @qcode{\"int\"}\n\
-Integer (size is platform dependent).\n\
-\n\
-@item @qcode{\"long\"}\n\
-Long integer (size is platform dependent).\n\
-\n\
-@item  @qcode{\"ushort\"}\n\
-@itemx @qcode{\"unsigned short\"}\n\
-Unsigned short integer (size is platform dependent).\n\
-\n\
-@item  @qcode{\"uint\"}\n\
-@itemx @qcode{\"unsigned int\"}\n\
-Unsigned integer (size is platform dependent).\n\
-\n\
-@item  @qcode{\"ulong\"}\n\
-@itemx @qcode{\"unsigned long\"}\n\
-Unsigned long integer (size is platform dependent).\n\
-\n\
-@item @qcode{\"float\"}\n\
-Single precision floating point number (size is platform dependent).\n\
-@end table\n\
-\n\
-@noindent\n\
-The default precision is @qcode{\"uchar\"}.\n\
-\n\
-The @var{precision} argument may also specify an optional repeat\n\
-count.  For example, @samp{32*single} causes @code{fread} to read\n\
-a block of 32 single precision floating point numbers.  Reading in\n\
-blocks is useful in combination with the @var{skip} argument.\n\
-\n\
-The @var{precision} argument may also specify a type conversion.\n\
-For example, @samp{int16=>int32} causes @code{fread} to read 16-bit\n\
-integer values and return an array of 32-bit integer values.  By\n\
-default, @code{fread} returns a double precision array.  The special\n\
-form @samp{*TYPE} is shorthand for @samp{TYPE=>TYPE}.\n\
-\n\
-The conversion and repeat counts may be combined.  For example, the\n\
-specification @samp{32*single=>single} causes @code{fread} to read\n\
-blocks of single precision floating point values and return an array\n\
-of single precision values instead of the default array of double\n\
-precision values.\n\
-\n\
-The optional argument @var{skip} specifies the number of bytes to skip\n\
-after each element (or block of elements) is read.  If it is not\n\
-specified, a value of 0 is assumed.  If the final block read is not\n\
-complete, the final skip is omitted.  For example,\n\
-\n\
-@example\n\
-fread (f, 10, \"3*single=>single\", 8)\n\
-@end example\n\
-\n\
-@noindent\n\
-will omit the final 8-byte skip because the last read will not be\n\
-a complete block of 3 values.\n\
-\n\
-The optional argument @var{arch} is a string specifying the data format\n\
-for the file.  Valid values are\n\
-\n\
-@table @asis\n\
-@item @qcode{\"native\"} or @qcode{\"n\"}\n\
-The format of the current machine.\n\
-\n\
-@item @qcode{\"ieee-be\"} or @qcode{\"b\"}\n\
-IEEE big endian.\n\
-\n\
-@item @qcode{\"ieee-le\"} or @qcode{\"l\"}\n\
-IEEE little endian.\n\
-@end table\n\
-\n\
-If no @var{arch} is given the value used in the call to @code{fopen} which\n\
-created the file descriptor is used.  Otherwise, the value specified with\n\
-@code{fread} overrides that of @code{fopen} and determines the data format.\n\
-\n\
-The output argument @var{val} contains the data read from the file.\n\
-\n\
-The optional return value @var{count} contains the number of elements read.\n\
-@seealso{fwrite, fgets, fgetl, fscanf, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} fread (@var{fid})
+@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size})
+@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision})
+@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip})
+@deftypefnx {} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})
+@deftypefnx {} {[@var{val}, @var{count}] =} fread (@dots{})
+Read binary data from the file specified by the file descriptor @var{fid}.
+
+The optional argument @var{size} specifies the amount of data to read
+and may be one of
+
+@table @code
+@item Inf
+Read as much as possible, returning a column vector.
+
+@item @var{nr}
+Read up to @var{nr} elements, returning a column vector.
+
+@item [@var{nr}, Inf]
+Read as much as possible, returning a matrix with @var{nr} rows.  If the
+number of elements read is not an exact multiple of @var{nr}, the last
+column is padded with zeros.
+
+@item [@var{nr}, @var{nc}]
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with
+@var{nr} rows.  If the number of elements read is not an exact multiple
+of @var{nr}, the last column is padded with zeros.
+@end table
+
+@noindent
+If @var{size} is omitted, a value of @code{Inf} is assumed.
+
+The optional argument @var{precision} is a string specifying the type of
+data to read and may be one of
+
+@table @asis
+@item  @qcode{"schar"}
+@itemx @qcode{"signed char"}
+Signed character.
+
+@item  @qcode{"uchar"}
+@itemx @qcode{"unsigned char"}
+Unsigned character.
+
+@item  @qcode{"int8"}
+@itemx @qcode{"integer*1"}
+
+8-bit signed integer.
+
+@item  @qcode{"int16"}
+@itemx @qcode{"integer*2"}
+16-bit signed integer.
+
+@item  @qcode{"int32"}
+@itemx @qcode{"integer*4"}
+32-bit signed integer.
+
+@item  @qcode{"int64"}
+@itemx @qcode{"integer*8"}
+64-bit signed integer.
+
+@item @qcode{"uint8"}
+8-bit unsigned integer.
+
+@item @qcode{"uint16"}
+16-bit unsigned integer.
+
+@item @qcode{"uint32"}
+32-bit unsigned integer.
+
+@item @qcode{"uint64"}
+64-bit unsigned integer.
+
+@item  @qcode{"single"}
+@itemx @qcode{"float32"}
+@itemx @qcode{"real*4"}
+32-bit floating point number.
+
+@item  @qcode{"double"}
+@itemx @qcode{"float64"}
+@itemx @qcode{"real*8"}
+64-bit floating point number.
+
+@item  @qcode{"char"}
+@itemx @qcode{"char*1"}
+Single character.
+
+@item @qcode{"short"}
+Short integer (size is platform dependent).
+
+@item @qcode{"int"}
+Integer (size is platform dependent).
+
+@item @qcode{"long"}
+Long integer (size is platform dependent).
+
+@item  @qcode{"ushort"}
+@itemx @qcode{"unsigned short"}
+Unsigned short integer (size is platform dependent).
+
+@item  @qcode{"uint"}
+@itemx @qcode{"unsigned int"}
+Unsigned integer (size is platform dependent).
+
+@item  @qcode{"ulong"}
+@itemx @qcode{"unsigned long"}
+Unsigned long integer (size is platform dependent).
+
+@item @qcode{"float"}
+Single precision floating point number (size is platform dependent).
+@end table
+
+@noindent
+The default precision is @qcode{"uchar"}.
+
+The @var{precision} argument may also specify an optional repeat
+count.  For example, @samp{32*single} causes @code{fread} to read
+a block of 32 single precision floating point numbers.  Reading in
+blocks is useful in combination with the @var{skip} argument.
+
+The @var{precision} argument may also specify a type conversion.
+For example, @samp{int16=>int32} causes @code{fread} to read 16-bit
+integer values and return an array of 32-bit integer values.  By
+default, @code{fread} returns a double precision array.  The special
+form @samp{*TYPE} is shorthand for @samp{TYPE=>TYPE}.
+
+The conversion and repeat counts may be combined.  For example, the
+specification @samp{32*single=>single} causes @code{fread} to read
+blocks of single precision floating point values and return an array
+of single precision values instead of the default array of double
+precision values.
+
+The optional argument @var{skip} specifies the number of bytes to skip
+after each element (or block of elements) is read.  If it is not
+specified, a value of 0 is assumed.  If the final block read is not
+complete, the final skip is omitted.  For example,
+
+@example
+fread (f, 10, "3*single=>single", 8)
+@end example
+
+@noindent
+will omit the final 8-byte skip because the last read will not be
+a complete block of 3 values.
+
+The optional argument @var{arch} is a string specifying the data format
+for the file.  Valid values are
+
+@table @asis
+@item @qcode{"native"} or @qcode{"n"}
+The format of the current machine.
+
+@item @qcode{"ieee-be"} or @qcode{"b"}
+IEEE big endian.
+
+@item @qcode{"ieee-le"} or @qcode{"l"}
+IEEE little endian.
+@end table
+
+If no @var{arch} is given the value used in the call to @code{fopen} which
+created the file descriptor is used.  Otherwise, the value specified with
+@code{fread} overrides that of @code{fopen} and determines the data format.
+
+The output argument @var{val} contains the data read from the file.
+
+The optional return value @var{count} contains the number of elements read.
+@seealso{fwrite, fgets, fgetl, fscanf, fopen}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2532,26 +2532,26 @@ do_fwrite (octave_stream& os, const octave_value& data,
 }
 
 DEFUN (fwrite, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fwrite (@var{fid}, @var{data})\n\
-@deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision})\n\
-@deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip})\n\
-@deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})\n\
-@deftypefnx {} {@var{count} =} fwrite (@dots{})\n\
-Write data in binary form to the file specified by the file descriptor\n\
-@var{fid}, returning the number of values @var{count} successfully written\n\
-to the file.\n\
-\n\
-The argument @var{data} is a matrix of values that are to be written to\n\
-the file.  The values are extracted in column-major order.\n\
-\n\
-The remaining arguments @var{precision}, @var{skip}, and @var{arch} are\n\
-optional, and are interpreted as described for @code{fread}.\n\
-\n\
-The behavior of @code{fwrite} is undefined if the values in @var{data}\n\
-are too large to fit in the specified precision.\n\
-@seealso{fread, fputs, fprintf, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fwrite (@var{fid}, @var{data})
+@deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision})
+@deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip})
+@deftypefnx {} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})
+@deftypefnx {} {@var{count} =} fwrite (@dots{})
+Write data in binary form to the file specified by the file descriptor
+@var{fid}, returning the number of values @var{count} successfully written
+to the file.
+
+The argument @var{data} is a matrix of values that are to be written to
+the file.  The values are extracted in column-major order.
+
+The remaining arguments @var{precision}, @var{skip}, and @var{arch} are
+optional, and are interpreted as described for @code{fread}.
+
+The behavior of @code{fwrite} is undefined if the values in @var{data}
+are too large to fit in the specified precision.
+@seealso{fread, fputs, fprintf, fopen}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2586,16 +2586,16 @@ are too large to fit in the specified precision.\n\
 }
 
 DEFUNX ("feof", Ffeof, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {@var{status} =} feof (@var{fid})\n\
-Return 1 if an end-of-file condition has been encountered for the file\n\
-specified by file descriptor @var{fid} and 0 otherwise.\n\
-\n\
-Note that @code{feof} will only return 1 if the end of the file has already\n\
-been encountered, not if the next read operation will result in an\n\
-end-of-file condition.\n\
-@seealso{fread, frewind, fseek, fclear, fopen}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {@var{status} =} feof (@var{fid})
+Return 1 if an end-of-file condition has been encountered for the file
+specified by file descriptor @var{fid} and 0 otherwise.
+
+Note that @code{feof} will only return 1 if the end of the file has already
+been encountered, not if the next read operation will result in an
+end-of-file condition.
+@seealso{fread, frewind, fseek, fclear, fopen}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2606,25 +2606,25 @@ end-of-file condition.\n\
 }
 
 DEFUNX ("ferror", Fferror, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {@var{msg} =} ferror (@var{fid})\n\
-@deftypefnx {} {[@var{msg}, @var{err}] =} ferror (@var{fid})\n\
-@deftypefnx {} {[@var{dots}] =} ferror (@var{fid}, \"clear\")\n\
-Query the error status of the stream specified by file descriptor @var{fid}\n\
-\n\
-If an error condition exists then return a string @var{msg} describing the\n\
-error.  Otherwise, return an empty string @qcode{\"\"}.\n\
-\n\
-The second input @qcode{\"clear\"} is optional.  If supplied, the error\n\
-state on the stream will be cleared.\n\
-\n\
-The optional second output is a numeric indication of the error status.\n\
-@var{err} is 1 if an error condition has been encountered and 0 otherwise.\n\
-\n\
-Note that @code{ferror} indicates if an error has already occurred, not\n\
-whether the next operation will result in an error condition.\n\
-@seealso{fclear, fopen}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{msg} =} ferror (@var{fid})
+@deftypefnx {} {[@var{msg}, @var{err}] =} ferror (@var{fid})
+@deftypefnx {} {[@var{dots}] =} ferror (@var{fid}, "clear")
+Query the error status of the stream specified by file descriptor @var{fid}
+
+If an error condition exists then return a string @var{msg} describing the
+error.  Otherwise, return an empty string @qcode{""}.
+
+The second input @qcode{"clear"} is optional.  If supplied, the error
+state on the stream will be cleared.
+
+The optional second output is a numeric indication of the error status.
+@var{err} is 1 if an error condition has been encountered and 0 otherwise.
+
+Note that @code{ferror} indicates if an error has already occurred, not
+whether the next operation will result in an error condition.
+@seealso{fclear, fopen}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2650,42 +2650,42 @@ whether the next operation will result in an error condition.\n\
 }
 
 DEFUNX ("popen", Fpopen, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {@var{fid} =} popen (@var{command}, @var{mode})\n\
-Start a process and create a pipe.\n\
-\n\
-The name of the command to run is given by @var{command}.  The argument\n\
-@var{mode} may be\n\
-\n\
-@table @code\n\
-@item @qcode{\"r\"}\n\
-The pipe will be connected to the standard output of the process, and\n\
-open for reading.\n\
-\n\
-@item @qcode{\"w\"}\n\
-The pipe will be connected to the standard input of the process, and\n\
-open for writing.\n\
-@end table\n\
-\n\
-The file identifier corresponding to the input or output stream of the\n\
-process is returned in @var{fid}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-fid = popen (\"ls -ltr / | tail -3\", \"r\");\n\
-while (ischar (s = fgets (fid)))\n\
-  fputs (stdout, s);\n\
-endwhile\n\
-\n\
-   @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc\n\
-   @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib\n\
-   @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
-@end group\n\
-@end example\n\
-@seealso{popen2}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {@var{fid} =} popen (@var{command}, @var{mode})
+Start a process and create a pipe.
+
+The name of the command to run is given by @var{command}.  The argument
+@var{mode} may be
+
+@table @code
+@item @qcode{"r"}
+The pipe will be connected to the standard output of the process, and
+open for reading.
+
+@item @qcode{"w"}
+The pipe will be connected to the standard input of the process, and
+open for writing.
+@end table
+
+The file identifier corresponding to the input or output stream of the
+process is returned in @var{fid}.
+
+For example:
+
+@example
+@group
+fid = popen ("ls -ltr / | tail -3", "r");
+while (ischar (s = fgets (fid)))
+  fputs (stdout, s);
+endwhile
+
+   @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc
+   @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib
+   @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp
+@end group
+@end example
+@seealso{popen2}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -2714,13 +2714,13 @@ endwhile\n\
 }
 
 DEFUNX ("pclose", Fpclose, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} pclose (@var{fid})\n\
-Close a file identifier that was opened by @code{popen}.\n\
-\n\
-The function @code{fclose} may also be used for the same purpose.\n\
-@seealso{fclose, popen}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} pclose (@var{fid})
+Close a file identifier that was opened by @code{popen}.
+
+The function @code{fclose} may also be used for the same purpose.
+@seealso{fclose, popen}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2729,24 +2729,24 @@ The function @code{fclose} may also be used for the same purpose.\n\
 }
 
 DEFUN (tempname, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{fname} =} tempname ()\n\
-@deftypefnx {} {@var{fname} =} tempname (@var{dir})\n\
-@deftypefnx {} {@var{fname} =} tempname (@var{dir}, @var{prefix})\n\
-Return a unique temporary filename as a string.\n\
-\n\
-If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
-\n\
-If @var{dir} is also omitted, the default directory for temporary files\n\
-(@code{P_tmpdir}) is used.  If @var{dir} is provided, it must exist,\n\
-otherwise the default directory for temporary files is used.\n\
-\n\
-Programming Note: Because the named file is not opened by @code{tempname},\n\
-it is possible, though relatively unlikely, that it will not be available\n\
-by the time your program attempts to open it.  If this is a concern,\n\
-see @code{tmpfile}.\n\
-@seealso{mkstemp, tempdir, P_tmpdir, tmpfile}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{fname} =} tempname ()
+@deftypefnx {} {@var{fname} =} tempname (@var{dir})
+@deftypefnx {} {@var{fname} =} tempname (@var{dir}, @var{prefix})
+Return a unique temporary filename as a string.
+
+If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.
+
+If @var{dir} is also omitted, the default directory for temporary files
+(@code{P_tmpdir}) is used.  If @var{dir} is provided, it must exist,
+otherwise the default directory for temporary files is used.
+
+Programming Note: Because the named file is not opened by @code{tempname},
+it is possible, though relatively unlikely, that it will not be available
+by the time your program attempts to open it.  If this is a concern,
+see @code{tmpfile}.
+@seealso{mkstemp, tempdir, P_tmpdir, tmpfile}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2820,19 +2820,19 @@ see @code{tmpfile}.\n\
 */
 
 DEFUN (tmpfile, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{fid}, @var{msg}] =} tmpfile ()\n\
-Return the file ID corresponding to a new temporary file with a unique\n\
-name.\n\
-\n\
-The file is opened in binary read/write (@qcode{\"w+b\"}) mode and will be\n\
-deleted automatically when it is closed or when Octave exits.\n\
-\n\
-If successful, @var{fid} is a valid file ID and @var{msg} is an empty\n\
-string.  Otherwise, @var{fid} is -1 and @var{msg} contains a\n\
-system-dependent error message.\n\
-@seealso{tempname, mkstemp, tempdir, P_tmpdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{fid}, @var{msg}] =} tmpfile ()
+Return the file ID corresponding to a new temporary file with a unique
+name.
+
+The file is opened in binary read/write (@qcode{"w+b"}) mode and will be
+deleted automatically when it is closed or when Octave exits.
+
+If successful, @var{fid} is a valid file ID and @var{msg} is an empty
+string.  Otherwise, @var{fid} is -1 and @var{msg} contains a
+system-dependent error message.
+@seealso{tempname, mkstemp, tempdir, P_tmpdir}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -2863,28 +2863,28 @@ system-dependent error message.\n\
 }
 
 DEFUN (mkstemp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (\"@var{template}\")\n\
-@deftypefnx {} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (\"@var{template}\", @var{delete})\n\
-Return the file descriptor @var{fid} corresponding to a new temporary file\n\
-with a unique name created from @var{template}.\n\
-\n\
-The last six characters of @var{template} must be @qcode{\"XXXXXX\"} and\n\
-these are replaced with a string that makes the filename unique.  The file\n\
-is then created with mode read/write and permissions that are system\n\
-dependent (on GNU/Linux systems, the permissions will be 0600 for versions\n\
-of glibc 2.0.7 and later).  The file is opened in binary mode and with the\n\
-@w{@code{O_EXCL}} flag.\n\
-\n\
-If the optional argument @var{delete} is supplied and is true, the file will\n\
-be deleted automatically when Octave exits.\n\
-\n\
-If successful, @var{fid} is a valid file ID, @var{name} is the name of the\n\
-file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
-@var{name} is empty, and @var{msg} contains a system-dependent error\n\
-message.\n\
-@seealso{tempname, tempdir, P_tmpdir, tmpfile, fopen}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp ("@var{template}")
+@deftypefnx {} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp ("@var{template}", @var{delete})
+Return the file descriptor @var{fid} corresponding to a new temporary file
+with a unique name created from @var{template}.
+
+The last six characters of @var{template} must be @qcode{"XXXXXX"} and
+these are replaced with a string that makes the filename unique.  The file
+is then created with mode read/write and permissions that are system
+dependent (on GNU/Linux systems, the permissions will be 0600 for versions
+of glibc 2.0.7 and later).  The file is opened in binary mode and with the
+@w{@code{O_EXCL}} flag.
+
+If the optional argument @var{delete} is supplied and is true, the file will
+be deleted automatically when Octave exits.
+
+If successful, @var{fid} is a valid file ID, @var{name} is the name of the
+file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,
+@var{name} is empty, and @var{msg} contains a system-dependent error
+message.
+@seealso{tempname, tempdir, P_tmpdir, tmpfile, fopen}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2967,22 +2967,22 @@ convert (int x, int ibase, int obase)
 }
 
 DEFUNX ("umask", Fumask, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} umask (@var{mask})\n\
-Set the permission mask for file creation.\n\
-\n\
-The parameter @var{mask} is an integer, interpreted as an octal number.\n\
-\n\
-If successful, returns the previous value of the mask (as an integer to be\n\
-interpreted as an octal number); otherwise an error message is printed.\n\
-\n\
-The permission mask is a UNIX concept used when creating new objects on a\n\
-file system such as files, directories, or named FIFOs.  The object to be\n\
-created has base permissions in an octal number @var{mode} which are\n\
-modified according to the octal value of @var{mask}.  The final permissions\n\
-for the new object are @code{@var{mode} - @var{mask}}.\n\
-@seealso{fopen, mkdir, mkfifo}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} umask (@var{mask})
+Set the permission mask for file creation.
+
+The parameter @var{mask} is an integer, interpreted as an octal number.
+
+If successful, returns the previous value of the mask (as an integer to be
+interpreted as an octal number); otherwise an error message is printed.
+
+The permission mask is a UNIX concept used when creating new objects on a
+file system such as files, directories, or named FIFOs.  The object to be
+created has base permissions in an octal number @var{mode} which are
+modified according to the octal value of @var{mask}.  The final permissions
+for the new object are @code{@var{mode} - @var{mask}}.
+@seealso{fopen, mkdir, mkfifo}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3012,17 +3012,17 @@ const_value (const char *, const octave_value_list& args, int val)
 }
 
 DEFUNX ("P_tmpdir", FP_tmpdir, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} P_tmpdir ()\n\
-Return the name of the host system's @strong{default} directory for\n\
-temporary files.\n\
-\n\
-Programming Note: The value returned by @code{P_tmpdir} is always the\n\
-default location.  This value may not agree with that returned from\n\
-@code{tempdir} if the user has overridden the default with the @env{TMPDIR}\n\
-environment variable.\n\
-@seealso{tempdir, tempname, mkstemp, tmpfile}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} P_tmpdir ()
+Return the name of the host system's @strong{default} directory for
+temporary files.
+
+Programming Note: The value returned by @code{P_tmpdir} is always the
+default location.  This value may not agree with that returned from
+@code{tempdir} if the user has overridden the default with the @env{TMPDIR}
+environment variable.
+@seealso{tempdir, tempname, mkstemp, tmpfile}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -3034,47 +3034,47 @@ environment variable.\n\
 // this way for Matlab compatibility.
 
 DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} SEEK_SET ()\n\
-@deftypefnx {} {} SEEK_CUR ()\n\
-@deftypefnx {} {} SEEK_END ()\n\
-Return the numerical value to pass to @code{fseek} to perform one of the\n\
-following actions:\n\
-\n\
-@table @code\n\
-@item SEEK_SET\n\
-Position file relative to the beginning.\n\
-\n\
-@item SEEK_CUR\n\
-Position file relative to the current position.\n\
-\n\
-@item SEEK_END\n\
-Position file relative to the end.\n\
-@end table\n\
-@seealso{fseek}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} SEEK_SET ()
+@deftypefnx {} {} SEEK_CUR ()
+@deftypefnx {} {} SEEK_END ()
+Return the numerical value to pass to @code{fseek} to perform one of the
+following actions:
+
+@table @code
+@item SEEK_SET
+Position file relative to the beginning.
+
+@item SEEK_CUR
+Position file relative to the current position.
+
+@item SEEK_END
+Position file relative to the end.
+@end table
+@seealso{fseek}
+@end deftypefn */)
 {
   return const_value ("SEEK_SET", args, -1);
 }
 
 DEFUNX ("SEEK_CUR", FSEEK_CUR, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} SEEK_CUR ()\n\
-Return the numerical value to pass to @code{fseek} to\n\
-position the file pointer relative to the current position.\n\
-@seealso{SEEK_SET, SEEK_END}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} SEEK_CUR ()
+Return the numerical value to pass to @code{fseek} to
+position the file pointer relative to the current position.
+@seealso{SEEK_SET, SEEK_END}
+@end deftypefn */)
 {
   return const_value ("SEEK_CUR", args, 0);
 }
 
 DEFUNX ("SEEK_END", FSEEK_END, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} SEEK_END ()\n\
-Return the numerical value to pass to @code{fseek} to\n\
-position the file pointer relative to the end of the file.\n\
-@seealso{SEEK_SET, SEEK_CUR}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} SEEK_END ()
+Return the numerical value to pass to @code{fseek} to
+position the file pointer relative to the end of the file.
+@seealso{SEEK_SET, SEEK_CUR}
+@end deftypefn */)
 {
   return const_value ("SEEK_END", args, 1);
 }
@@ -3090,39 +3090,39 @@ const_value (const char *, const octave_value_list& args,
 }
 
 DEFUNX ("stdin", Fstdin, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} stdin ()\n\
-Return the numeric value corresponding to the standard input stream.\n\
-\n\
-When Octave is used interactively, stdin is filtered through the command\n\
-line editing functions.\n\
-@seealso{stdout, stderr}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} stdin ()
+Return the numeric value corresponding to the standard input stream.
+
+When Octave is used interactively, stdin is filtered through the command
+line editing functions.
+@seealso{stdout, stderr}
+@end deftypefn */)
 {
   return const_value ("stdin", args, stdin_file);
 }
 
 DEFUNX ("stdout", Fstdout, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} stdout ()\n\
-Return the numeric value corresponding to the standard output stream.\n\
-\n\
-Data written to the standard output is normally filtered through the pager.\n\
-@seealso{stdin, stderr}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} stdout ()
+Return the numeric value corresponding to the standard output stream.
+
+Data written to the standard output is normally filtered through the pager.
+@seealso{stdin, stderr}
+@end deftypefn */)
 {
   return const_value ("stdout", args, stdout_file);
 }
 
 DEFUNX ("stderr", Fstderr, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} stderr ()\n\
-Return the numeric value corresponding to the standard error stream.\n\
-\n\
-Even if paging is turned on, the standard error is not sent to the pager.\n\
-It is useful for error messages and prompts.\n\
-@seealso{stdin, stdout}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} stderr ()
+Return the numeric value corresponding to the standard error stream.
+
+Even if paging is turned on, the standard error is not sent to the pager.
+It is useful for error messages and prompts.
+@seealso{stdin, stdout}
+@end deftypefn */)
 {
   return const_value ("stderr", args, stderr_file);
 }

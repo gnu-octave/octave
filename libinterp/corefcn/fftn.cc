@@ -126,39 +126,39 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 }
 
 DEFUN (fftn, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fftn (@var{A})\n\
-@deftypefnx {} {} fftn (@var{A}, @var{size})\n\
-Compute the N-dimensional discrete Fourier transform of @var{A} using\n\
-a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The optional vector argument @var{size} may be used specify the dimensions\n\
-of the array to be used.  If an element of @var{size} is smaller than the\n\
-corresponding dimension of @var{A}, then the dimension of @var{A} is\n\
-truncated prior to performing the FFT@.  Otherwise, if an element of\n\
-@var{size} is larger than the corresponding dimension then @var{A} is\n\
-resized and padded with zeros.\n\
-@seealso{ifftn, fft, fft2, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fftn (@var{A})
+@deftypefnx {} {} fftn (@var{A}, @var{size})
+Compute the N-dimensional discrete Fourier transform of @var{A} using
+a Fast Fourier Transform (FFT) algorithm.
+
+The optional vector argument @var{size} may be used specify the dimensions
+of the array to be used.  If an element of @var{size} is smaller than the
+corresponding dimension of @var{A}, then the dimension of @var{A} is
+truncated prior to performing the FFT@.  Otherwise, if an element of
+@var{size} is larger than the corresponding dimension then @var{A} is
+resized and padded with zeros.
+@seealso{ifftn, fft, fft2, fftw}
+@end deftypefn */)
 {
   return do_fftn (args, "fftn", 0);
 }
 
 DEFUN (ifftn, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} ifftn (@var{A})\n\
-@deftypefnx {} {} ifftn (@var{A}, @var{size})\n\
-Compute the inverse N-dimensional discrete Fourier transform of @var{A}\n\
-using a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The optional vector argument @var{size} may be used specify the dimensions\n\
-of the array to be used.  If an element of @var{size} is smaller than the\n\
-corresponding dimension of @var{A}, then the dimension of @var{A} is\n\
-truncated prior to performing the inverse FFT@.  Otherwise, if an element of\n\
-@var{size} is larger than the corresponding dimension then @var{A} is\n\
-resized and padded with zeros.\n\
-@seealso{fftn, ifft, ifft2, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} ifftn (@var{A})
+@deftypefnx {} {} ifftn (@var{A}, @var{size})
+Compute the inverse N-dimensional discrete Fourier transform of @var{A}
+using a Fast Fourier Transform (FFT) algorithm.
+
+The optional vector argument @var{size} may be used specify the dimensions
+of the array to be used.  If an element of @var{size} is smaller than the
+corresponding dimension of @var{A}, then the dimension of @var{A} is
+truncated prior to performing the inverse FFT@.  Otherwise, if an element of
+@var{size} is larger than the corresponding dimension then @var{A} is
+resized and padded with zeros.
+@seealso{fftn, ifft, ifft2, fftw}
+@end deftypefn */)
 {
   return do_fftn (args, "ifftn", 1);
 }

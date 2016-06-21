@@ -31,19 +31,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (rcond, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{c} =} rcond (@var{A})\n\
-Compute the 1-norm estimate of the reciprocal condition number as returned\n\
-by @sc{lapack}.\n\
-\n\
-If the matrix is well-conditioned then @var{c} will be near 1 and if the\n\
-matrix is poorly conditioned it will be close to 0.\n\
-\n\
-The matrix @var{A} must not be sparse.  If the matrix is sparse then\n\
-@code{condest (@var{A})} or @code{rcond (full (@var{A}))} should be used\n\
-instead.\n\
-@seealso{cond, condest}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{c} =} rcond (@var{A})
+Compute the 1-norm estimate of the reciprocal condition number as returned
+by @sc{lapack}.
+
+If the matrix is well-conditioned then @var{c} will be near 1 and if the
+matrix is poorly conditioned it will be close to 0.
+
+The matrix @var{A} must not be sparse.  If the matrix is sparse then
+@code{condest (@var{A})} or @code{rcond (full (@var{A}))} should be used
+instead.
+@seealso{cond, condest}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

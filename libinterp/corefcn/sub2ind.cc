@@ -59,23 +59,23 @@ get_dim_vector (const octave_value& val, const char *name)
 }
 
 DEFUN (sub2ind, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})\n\
-@deftypefnx {} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})\n\
-Convert subscripts to a linear index.\n\
-\n\
-The following example shows how to convert the two-dimensional index\n\
-@code{(2,3)} of a 3-by-3 matrix to a linear index.  The matrix is linearly\n\
-indexed moving from one column to next, filling up all rows in each column.\n\
-\n\
-@example\n\
-@group\n\
-linear_index = sub2ind ([3, 3], 2, 3)\n\
-@result{} 8\n\
-@end group\n\
-@end example\n\
-@seealso{ind2sub}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})
+@deftypefnx {} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})
+Convert subscripts to a linear index.
+
+The following example shows how to convert the two-dimensional index
+@code{(2,3)} of a 3-by-3 matrix to a linear index.  The matrix is linearly
+indexed moving from one column to next, filling up all rows in each column.
+
+@example
+@group
+linear_index = sub2ind ([3, 3], 2, 3)
+@result{} 8
+@end group
+@end example
+@seealso{ind2sub}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -156,23 +156,23 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 */
 
 DEFUN (ind2sub, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})\n\
-Convert a linear index to subscripts.\n\
-\n\
-The following example shows how to convert the linear index @code{8}\n\
-in a 3-by-3 matrix into a subscript.  The matrix is linearly indexed\n\
-moving from one column to next, filling up all rows in each column.\n\
-\n\
-@example\n\
-@group\n\
-[r, c] = ind2sub ([3, 3], 8)\n\
-    @result{} r =  2\n\
-    @result{} c =  3\n\
-@end group\n\
-@end example\n\
-@seealso{sub2ind}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})
+Convert a linear index to subscripts.
+
+The following example shows how to convert the linear index @code{8}
+in a 3-by-3 matrix into a subscript.  The matrix is linearly indexed
+moving from one column to next, filling up all rows in each column.
+
+@example
+@group
+[r, c] = ind2sub ([3, 3], 8)
+    @result{} r =  2
+    @result{} c =  3
+@end group
+@end example
+@seealso{sub2ind}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();

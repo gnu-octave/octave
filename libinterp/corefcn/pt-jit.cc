@@ -2510,103 +2510,101 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
-#if defined (HAVE_LLVM)
-#  define UNUSED_WITHOUT_LLVM(x) x
-#else
-#  define UNUSED_WITHOUT_LLVM(x) x OCTAVE_UNUSED
-#endif
+DEFUN (jit_failcnt, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} jit_failcnt ()
+@deftypefnx {} {@var{old_val} =} jit_failcnt (@var{new_val})
+@deftypefnx {} {} jit_failcnt (@var{new_val}, "local")
+Query or set the internal variable that counts the number of JIT fail
+exceptions for Octave's JIT compiler.
 
-DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} jit_failcnt ()\n\
-@deftypefnx {} {@var{old_val} =} jit_failcnt (@var{new_val})\n\
-@deftypefnx {} {} jit_failcnt (@var{new_val}, \"local\")\n\
-Query or set the internal variable that counts the number of JIT fail\n\
-exceptions for Octave's JIT compiler.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_enable, jit_startcnt, debug_jit}\n\
-@end deftypefn")
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_enable, jit_startcnt, debug_jit}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (jit_failcnt);
 #else
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
   warn_disabled_feature ("jit_failcnt", "JIT compiling");
   return ovl ();
 #endif
 }
 
-DEFUN (debug_jit, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} debug_jit ()\n\
-@deftypefnx {} {@var{old_val} =} debug_jit (@var{new_val})\n\
-@deftypefnx {} {} debug_jit (@var{new_val}, \"local\")\n\
-Query or set the internal variable that determines whether\n\
-debugging/tracing is enabled for Octave's JIT compiler.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_enable, jit_startcnt}\n\
-@end deftypefn")
+DEFUN (debug_jit, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} debug_jit ()
+@deftypefnx {} {@var{old_val} =} debug_jit (@var{new_val})
+@deftypefnx {} {} debug_jit (@var{new_val}, "local")
+Query or set the internal variable that determines whether
+debugging/tracing is enabled for Octave's JIT compiler.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_enable, jit_startcnt}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (debug_jit);
 #else
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
   warn_disabled_feature ("debug_jit", "JIT");
   return ovl ();
 #endif
 }
 
-DEFUN (jit_enable, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} jit_enable ()\n\
-@deftypefnx {} {@var{old_val} =} jit_enable (@var{new_val})\n\
-@deftypefnx {} {} jit_enable (@var{new_val}, \"local\")\n\
-Query or set the internal variable that enables Octave's JIT compiler.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_startcnt, debug_jit}\n\
-@end deftypefn")
+DEFUN (jit_enable, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} jit_enable ()
+@deftypefnx {} {@var{old_val} =} jit_enable (@var{new_val})
+@deftypefnx {} {} jit_enable (@var{new_val}, "local")
+Query or set the internal variable that enables Octave's JIT compiler.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_startcnt, debug_jit}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (jit_enable);
 #else
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
   warn_disabled_feature ("jit_enable", "JIT");
   return ovl ();
 #endif
 }
 
-DEFUN (jit_startcnt, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} jit_startcnt ()\n\
-@deftypefnx {} {@var{old_val} =} jit_startcnt (@var{new_val})\n\
-@deftypefnx {} {} jit_startcnt (@var{new_val}, \"local\")\n\
-Query or set the internal variable that determines whether JIT compilation\n\
-will take place for a specific loop.\n\
-\n\
-Because compilation is a costly operation it does not make sense to employ\n\
-JIT when the loop count is low.  By default only loops with greater than\n\
-1000 iterations will be accelerated.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_enable, jit_failcnt, debug_jit}\n\
-@end deftypefn")
+DEFUN (jit_startcnt, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} jit_startcnt ()
+@deftypefnx {} {@var{old_val} =} jit_startcnt (@var{new_val})
+@deftypefnx {} {} jit_startcnt (@var{new_val}, "local")
+Query or set the internal variable that determines whether JIT compilation
+will take place for a specific loop.
+
+Because compilation is a costly operation it does not make sense to employ
+JIT when the loop count is low.  By default only loops with greater than
+1000 iterations will be accelerated.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_enable, jit_failcnt, debug_jit}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (jit_startcnt, 1,
                                             std::numeric_limits<int>::max ());
 #else
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
   warn_disabled_feature ("jit_enable", "JIT");
   return ovl ();
 #endif

@@ -209,74 +209,74 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
 }
 
 DEFUN_DLD (colamd, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{p} =} colamd (@var{S})\n\
-@deftypefnx {} {@var{p} =} colamd (@var{S}, @var{knobs})\n\
-@deftypefnx {} {[@var{p}, @var{stats}] =} colamd (@var{S})\n\
-@deftypefnx {} {[@var{p}, @var{stats}] =} colamd (@var{S}, @var{knobs})\n\
-\n\
-Compute the column approximate minimum degree permutation.\n\
-\n\
-@code{@var{p} = colamd (@var{S})} returns the column approximate minimum\n\
-degree permutation vector for the sparse matrix @var{S}.  For a\n\
-non-symmetric matrix @var{S}, @code{@var{S}(:,@var{p})} tends to have\n\
-sparser LU@tie{}factors than @var{S}.  The Cholesky@tie{}factorization of\n\
-@code{@var{S}(:,@var{p})' * @var{S}(:,@var{p})} also tends to be sparser\n\
-than that of @code{@var{S}' * @var{S}}.\n\
-\n\
-@var{knobs} is an optional one- to three-element input vector.  If @var{S}\n\
-is m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))}\n\
-entries are ignored.  Columns with more than\n\
-@code{max (16,@var{knobs}(2)*sqrt(min(m,n)))} entries are removed prior to\n\
-ordering, and ordered last in the output permutation @var{p}.  Only\n\
-completely dense rows or columns are removed if @code{@var{knobs}(1)} and\n\
-@code{@var{knobs}(2)} are < 0, respectively.  If @code{@var{knobs}(3)} is\n\
-nonzero, @var{stats} and @var{knobs} are printed.  The default is\n\
-@code{@var{knobs} = [10 10 0]}.  Note that @var{knobs} differs from earlier\n\
-versions of colamd.\n\
-\n\
-@var{stats} is an optional 20-element output vector that provides data\n\
-about the ordering and the validity of the input matrix @var{S}.  Ordering\n\
-statistics are in @code{@var{stats}(1:3)}.  @code{@var{stats}(1)} and\n\
-@code{@var{stats}(2)} are the number of dense or empty rows and columns\n\
-ignored by @sc{colamd} and @code{@var{stats}(3)} is the number of garbage\n\
-collections performed on the internal data structure used by @sc{colamd}\n\
-(roughly of size @code{2.2 * nnz(@var{S}) + 4 * @var{m} + 7 * @var{n}}\n\
-integers).\n\
-\n\
-Octave built-in functions are intended to generate valid sparse matrices,\n\
-with no duplicate entries, with ascending row indices of the nonzeros\n\
-in each column, with a non-negative number of entries in each column (!)\n\
-and so on.  If a matrix is invalid, then @sc{colamd} may or may not be able\n\
-to continue.  If there are duplicate entries (a row index appears two or\n\
-more times in the same column) or if the row indices in a column are out\n\
-of order, then @sc{colamd} can correct these errors by ignoring the\n\
-duplicate entries and sorting each column of its internal copy of the\n\
-matrix @var{S} (the input matrix @var{S} is not repaired, however).  If a\n\
-matrix is invalid in other ways then @sc{colamd} cannot continue, an error\n\
-message is printed, and no output arguments (@var{p} or @var{stats}) are\n\
-returned.\n\
-@sc{colamd} is thus a simple way to check a sparse matrix to see if it's\n\
-valid.\n\
-\n\
-@code{@var{stats}(4:7)} provide information if @sc{colamd} was able to\n\
-continue.  The matrix is OK if @code{@var{stats}(4)} is zero, or 1 if\n\
-invalid.  @code{@var{stats}(5)} is the rightmost column index that is\n\
-unsorted or contains duplicate entries, or zero if no such column exists.\n\
-@code{@var{stats}(6)} is the last seen duplicate or out-of-order row\n\
-index in the column index given by @code{@var{stats}(5)}, or zero if no\n\
-such row index exists.  @code{@var{stats}(7)} is the number of duplicate\n\
-or out-of-order row indices.  @code{@var{stats}(8:20)} is always zero in\n\
-the current version of @sc{colamd} (reserved for future use).\n\
-\n\
-The ordering is followed by a column elimination tree post-ordering.\n\
-\n\
-The authors of the code itself are @nospell{Stefan I. Larimore} and\n\
-@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},\n\
-Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
-@url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
-@seealso{colperm, symamd, ccolamd}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{p} =} colamd (@var{S})
+@deftypefnx {} {@var{p} =} colamd (@var{S}, @var{knobs})
+@deftypefnx {} {[@var{p}, @var{stats}] =} colamd (@var{S})
+@deftypefnx {} {[@var{p}, @var{stats}] =} colamd (@var{S}, @var{knobs})
+
+Compute the column approximate minimum degree permutation.
+
+@code{@var{p} = colamd (@var{S})} returns the column approximate minimum
+degree permutation vector for the sparse matrix @var{S}.  For a
+non-symmetric matrix @var{S}, @code{@var{S}(:,@var{p})} tends to have
+sparser LU@tie{}factors than @var{S}.  The Cholesky@tie{}factorization of
+@code{@var{S}(:,@var{p})' * @var{S}(:,@var{p})} also tends to be sparser
+than that of @code{@var{S}' * @var{S}}.
+
+@var{knobs} is an optional one- to three-element input vector.  If @var{S}
+is m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))}
+entries are ignored.  Columns with more than
+@code{max (16,@var{knobs}(2)*sqrt(min(m,n)))} entries are removed prior to
+ordering, and ordered last in the output permutation @var{p}.  Only
+completely dense rows or columns are removed if @code{@var{knobs}(1)} and
+@code{@var{knobs}(2)} are < 0, respectively.  If @code{@var{knobs}(3)} is
+nonzero, @var{stats} and @var{knobs} are printed.  The default is
+@code{@var{knobs} = [10 10 0]}.  Note that @var{knobs} differs from earlier
+versions of colamd.
+
+@var{stats} is an optional 20-element output vector that provides data
+about the ordering and the validity of the input matrix @var{S}.  Ordering
+statistics are in @code{@var{stats}(1:3)}.  @code{@var{stats}(1)} and
+@code{@var{stats}(2)} are the number of dense or empty rows and columns
+ignored by @sc{colamd} and @code{@var{stats}(3)} is the number of garbage
+collections performed on the internal data structure used by @sc{colamd}
+(roughly of size @code{2.2 * nnz(@var{S}) + 4 * @var{m} + 7 * @var{n}}
+integers).
+
+Octave built-in functions are intended to generate valid sparse matrices,
+with no duplicate entries, with ascending row indices of the nonzeros
+in each column, with a non-negative number of entries in each column (!)
+and so on.  If a matrix is invalid, then @sc{colamd} may or may not be able
+to continue.  If there are duplicate entries (a row index appears two or
+more times in the same column) or if the row indices in a column are out
+of order, then @sc{colamd} can correct these errors by ignoring the
+duplicate entries and sorting each column of its internal copy of the
+matrix @var{S} (the input matrix @var{S} is not repaired, however).  If a
+matrix is invalid in other ways then @sc{colamd} cannot continue, an error
+message is printed, and no output arguments (@var{p} or @var{stats}) are
+returned.
+@sc{colamd} is thus a simple way to check a sparse matrix to see if it's
+valid.
+
+@code{@var{stats}(4:7)} provide information if @sc{colamd} was able to
+continue.  The matrix is OK if @code{@var{stats}(4)} is zero, or 1 if
+invalid.  @code{@var{stats}(5)} is the rightmost column index that is
+unsorted or contains duplicate entries, or zero if no such column exists.
+@code{@var{stats}(6)} is the last seen duplicate or out-of-order row
+index in the column index given by @code{@var{stats}(5)}, or zero if no
+such row index exists.  @code{@var{stats}(7)} is the number of duplicate
+or out-of-order row indices.  @code{@var{stats}(8:20)} is always zero in
+the current version of @sc{colamd} (reserved for future use).
+
+The ordering is followed by a column elimination tree post-ordering.
+
+The authors of the code itself are @nospell{Stefan I. Larimore} and
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},
+Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
+@url{http://www.cise.ufl.edu/research/sparse/colamd})
+@seealso{colperm, symamd, ccolamd}
+@end deftypefn */)
 {
 #if defined (HAVE_COLAMD)
 
@@ -452,69 +452,69 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 }
 
 DEFUN_DLD (symamd, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{p} =} symamd (@var{S})\n\
-@deftypefnx {} {@var{p} =} symamd (@var{S}, @var{knobs})\n\
-@deftypefnx {} {[@var{p}, @var{stats}] =} symamd (@var{S})\n\
-@deftypefnx {} {[@var{p}, @var{stats}] =} symamd (@var{S}, @var{knobs})\n\
-\n\
-For a symmetric positive definite matrix @var{S}, returns the permutation\n\
-vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a\n\
-sparser Cholesky@tie{}factor than @var{S}.\n\
-\n\
-Sometimes @code{symamd} works well for symmetric indefinite matrices too.\n\
-The matrix @var{S} is assumed to be symmetric; only the strictly lower\n\
-triangular part is referenced.  @var{S} must be square.\n\
-\n\
-@var{knobs} is an optional one- to two-element input vector.  If @var{S} is\n\
-n-by-n, then rows and columns with more than\n\
-@code{max (16,@var{knobs}(1)*sqrt(n))} entries are removed prior to\n\
-ordering, and ordered last in the output permutation @var{p}.  No\n\
-rows/columns are removed if @code{@var{knobs}(1) < 0}.  If\n\
-@code{@var{knobs} (2)} is nonzero, @code{stats} and @var{knobs} are\n\
-printed.  The default is @code{@var{knobs} = [10 0]}.  Note that\n\
-@var{knobs} differs from earlier versions of @code{symamd}.\n\
-\n\
-@var{stats} is an optional 20-element output vector that provides data\n\
-about the ordering and the validity of the input matrix @var{S}.  Ordering\n\
-statistics are in @code{@var{stats}(1:3)}.\n\
-@code{@var{stats}(1) = @var{stats}(2)} is the number of dense or empty rows\n\
-and columns ignored by SYMAMD and @code{@var{stats}(3)} is the number of\n\
-garbage collections performed on the internal data structure used by SYMAMD\n\
-(roughly of size @code{8.4 * nnz (tril (@var{S}, -1)) + 9 * @var{n}}\n\
-integers).\n\
-\n\
-Octave built-in functions are intended to generate valid sparse matrices,\n\
-with no duplicate entries, with ascending row indices of the nonzeros\n\
-in each column, with a non-negative number of entries in each column (!)\n\
-and so on.  If a matrix is invalid, then SYMAMD may or may not be able\n\
-to continue.  If there are duplicate entries (a row index appears two or\n\
-more times in the same column) or if the row indices in a column are out\n\
-of order, then SYMAMD can correct these errors by ignoring the duplicate\n\
-entries and sorting each column of its internal copy of the matrix S (the\n\
-input matrix S is not repaired, however).  If a matrix is invalid in\n\
-other ways then SYMAMD cannot continue, an error message is printed, and\n\
-no output arguments (@var{p} or @var{stats}) are returned.  SYMAMD is\n\
-thus a simple way to check a sparse matrix to see if it's valid.\n\
-\n\
-@code{@var{stats}(4:7)} provide information if SYMAMD was able to\n\
-continue.  The matrix is OK if @code{@var{stats} (4)} is zero, or 1\n\
-if invalid.  @code{@var{stats}(5)} is the rightmost column index that\n\
-is unsorted or contains duplicate entries, or zero if no such column\n\
-exists.  @code{@var{stats}(6)} is the last seen duplicate or out-of-order\n\
-row index in the column index given by @code{@var{stats}(5)}, or zero\n\
-if no such row index exists.  @code{@var{stats}(7)} is the number of\n\
-duplicate or out-of-order row indices.  @code{@var{stats}(8:20)} is\n\
-always zero in the current version of SYMAMD (reserved for future use).\n\
-\n\
-The ordering is followed by a column elimination tree post-ordering.\n\
-\n\
-The authors of the code itself are @nospell{Stefan I. Larimore} and\n\
-@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},\n\
-Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
-@url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
-@seealso{colperm, colamd}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{p} =} symamd (@var{S})
+@deftypefnx {} {@var{p} =} symamd (@var{S}, @var{knobs})
+@deftypefnx {} {[@var{p}, @var{stats}] =} symamd (@var{S})
+@deftypefnx {} {[@var{p}, @var{stats}] =} symamd (@var{S}, @var{knobs})
+
+For a symmetric positive definite matrix @var{S}, returns the permutation
+vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a
+sparser Cholesky@tie{}factor than @var{S}.
+
+Sometimes @code{symamd} works well for symmetric indefinite matrices too.
+The matrix @var{S} is assumed to be symmetric; only the strictly lower
+triangular part is referenced.  @var{S} must be square.
+
+@var{knobs} is an optional one- to two-element input vector.  If @var{S} is
+n-by-n, then rows and columns with more than
+@code{max (16,@var{knobs}(1)*sqrt(n))} entries are removed prior to
+ordering, and ordered last in the output permutation @var{p}.  No
+rows/columns are removed if @code{@var{knobs}(1) < 0}.  If
+@code{@var{knobs} (2)} is nonzero, @code{stats} and @var{knobs} are
+printed.  The default is @code{@var{knobs} = [10 0]}.  Note that
+@var{knobs} differs from earlier versions of @code{symamd}.
+
+@var{stats} is an optional 20-element output vector that provides data
+about the ordering and the validity of the input matrix @var{S}.  Ordering
+statistics are in @code{@var{stats}(1:3)}.
+@code{@var{stats}(1) = @var{stats}(2)} is the number of dense or empty rows
+and columns ignored by SYMAMD and @code{@var{stats}(3)} is the number of
+garbage collections performed on the internal data structure used by SYMAMD
+(roughly of size @code{8.4 * nnz (tril (@var{S}, -1)) + 9 * @var{n}}
+integers).
+
+Octave built-in functions are intended to generate valid sparse matrices,
+with no duplicate entries, with ascending row indices of the nonzeros
+in each column, with a non-negative number of entries in each column (!)
+and so on.  If a matrix is invalid, then SYMAMD may or may not be able
+to continue.  If there are duplicate entries (a row index appears two or
+more times in the same column) or if the row indices in a column are out
+of order, then SYMAMD can correct these errors by ignoring the duplicate
+entries and sorting each column of its internal copy of the matrix S (the
+input matrix S is not repaired, however).  If a matrix is invalid in
+other ways then SYMAMD cannot continue, an error message is printed, and
+no output arguments (@var{p} or @var{stats}) are returned.  SYMAMD is
+thus a simple way to check a sparse matrix to see if it's valid.
+
+@code{@var{stats}(4:7)} provide information if SYMAMD was able to
+continue.  The matrix is OK if @code{@var{stats} (4)} is zero, or 1
+if invalid.  @code{@var{stats}(5)} is the rightmost column index that
+is unsorted or contains duplicate entries, or zero if no such column
+exists.  @code{@var{stats}(6)} is the last seen duplicate or out-of-order
+row index in the column index given by @code{@var{stats}(5)}, or zero
+if no such row index exists.  @code{@var{stats}(7)} is the number of
+duplicate or out-of-order row indices.  @code{@var{stats}(8:20)} is
+always zero in the current version of SYMAMD (reserved for future use).
+
+The ordering is followed by a column elimination tree post-ordering.
+
+The authors of the code itself are @nospell{Stefan I. Larimore} and
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},
+Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
+@url{http://www.cise.ufl.edu/research/sparse/colamd})
+@seealso{colperm, colamd}
+@end deftypefn */)
 {
 #if defined (HAVE_COLAMD)
 
@@ -645,22 +645,22 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 }
 
 DEFUN_DLD (etree, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{p} =} etree (@var{S})\n\
-@deftypefnx {} {@var{p} =} etree (@var{S}, @var{typ})\n\
-@deftypefnx {} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})\n\
-\n\
-Return the elimination tree for the matrix @var{S}.\n\
-\n\
-By default @var{S} is assumed to be symmetric and the symmetric elimination\n\
-tree is returned.  The argument @var{typ} controls whether a symmetric or\n\
-column elimination tree is returned.  Valid values of @var{typ} are\n\
-@qcode{\"sym\"} or @qcode{\"col\"}, for symmetric or column elimination tree\n\
-respectively.\n\
-\n\
-Called with a second argument, @code{etree} also returns the postorder\n\
-permutations on the tree.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{p} =} etree (@var{S})
+@deftypefnx {} {@var{p} =} etree (@var{S}, @var{typ})
+@deftypefnx {} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})
+
+Return the elimination tree for the matrix @var{S}.
+
+By default @var{S} is assumed to be symmetric and the symmetric elimination
+tree is returned.  The argument @var{typ} controls whether a symmetric or
+column elimination tree is returned.  Valid values of @var{typ} are
+@qcode{"sym"} or @qcode{"col"}, for symmetric or column elimination tree
+respectively.
+
+Called with a second argument, @code{etree} also returns the postorder
+permutations on the tree.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

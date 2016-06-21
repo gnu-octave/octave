@@ -40,67 +40,67 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN_DLD (symbfact, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{R}] =} symbfact (@var{S})\n\
-@deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ})\n\
-@deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})\n\
-\n\
-Perform a symbolic factorization analysis of the sparse matrix @var{S}.\n\
-\n\
-The input variables are\n\
-\n\
-@table @var\n\
-@item S\n\
-@var{S} is a real or complex sparse matrix.\n\
-\n\
-@item typ\n\
-Is the type of the factorization and can be one of\n\
-\n\
-@table @asis\n\
-@item @qcode{\"sym\"} (default)\n\
-Factorize @var{S}.  Assumes @var{S} is symmetric and uses the upper\n\
-triangular portion of the matrix.\n\
-\n\
-@item @qcode{\"col\"}\n\
-Factorize @tcode{@var{S}' * @var{S}}.\n\
-\n\
-@item @qcode{\"row\"}\n\
-Factorize @tcode{@var{S} * @var{S}'}.\n\
-\n\
-@item @qcode{\"lo\"}\n\
-Factorize @tcode{@var{S}'}.  Assumes @var{S} is symmetric and uses the lower\n\
-triangular portion of the matrix.\n\
-@end table\n\
-\n\
-@item mode\n\
-When @var{mode} is unspecified return the Cholesky@tie{}factorization for\n\
-@var{R}.  If @var{mode} is @qcode{\"lower\"} or @qcode{\"L\"} then return\n\
-the conjugate transpose @tcode{@var{R}'} which is a lower triangular factor.\n\
-The conjugate transpose version is faster and uses less memory, but still\n\
-returns the same values for all other outputs: @var{count}, @var{h},\n\
-@var{parent}, and @var{post}.\n\
-@end table\n\
-\n\
-The output variables are:\n\
-\n\
-@table @var\n\
-@item count\n\
-The row counts of the Cholesky@tie{}factorization as determined by\n\
-@var{typ}.  The computational difficulty of performing the true\n\
-factorization using @code{chol} is @code{sum (@var{count} .^ 2)}.\n\
-\n\
-@item h\n\
-The height of the elimination tree.\n\
-\n\
-@item parent\n\
-The elimination tree itself.\n\
-\n\
-@item post\n\
-A sparse boolean matrix whose structure is that of the\n\
-Cholesky@tie{}factorization as determined by @var{typ}.\n\
-@end table\n\
-@seealso{chol, etree, treelayout}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{R}] =} symbfact (@var{S})
+@deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ})
+@deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})
+
+Perform a symbolic factorization analysis of the sparse matrix @var{S}.
+
+The input variables are
+
+@table @var
+@item S
+@var{S} is a real or complex sparse matrix.
+
+@item typ
+Is the type of the factorization and can be one of
+
+@table @asis
+@item @qcode{"sym"} (default)
+Factorize @var{S}.  Assumes @var{S} is symmetric and uses the upper
+triangular portion of the matrix.
+
+@item @qcode{"col"}
+Factorize @tcode{@var{S}' * @var{S}}.
+
+@item @qcode{"row"}
+Factorize @tcode{@var{S} * @var{S}'}.
+
+@item @qcode{"lo"}
+Factorize @tcode{@var{S}'}.  Assumes @var{S} is symmetric and uses the lower
+triangular portion of the matrix.
+@end table
+
+@item mode
+When @var{mode} is unspecified return the Cholesky@tie{}factorization for
+@var{R}.  If @var{mode} is @qcode{"lower"} or @qcode{"L"} then return
+the conjugate transpose @tcode{@var{R}'} which is a lower triangular factor.
+The conjugate transpose version is faster and uses less memory, but still
+returns the same values for all other outputs: @var{count}, @var{h},
+@var{parent}, and @var{post}.
+@end table
+
+The output variables are:
+
+@table @var
+@item count
+The row counts of the Cholesky@tie{}factorization as determined by
+@var{typ}.  The computational difficulty of performing the true
+factorization using @code{chol} is @code{sum (@var{count} .^ 2)}.
+
+@item h
+The height of the elimination tree.
+
+@item parent
+The elimination tree itself.
+
+@item post
+A sparse boolean matrix whose structure is that of the
+Cholesky@tie{}factorization as determined by @var{typ}.
+@end table
+@seealso{chol, etree, treelayout}
+@end deftypefn */)
 {
 #if defined (HAVE_CHOLMOD)
 

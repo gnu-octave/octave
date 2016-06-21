@@ -70,14 +70,18 @@ ldpreloadsep = ${null}@ldpreloadsep@${null}
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
-define simple_move_if_change_rule
-  if [ -s $@-t ]; then \
-    ${SHELL} ${top_srcdir}/build-aux/move-if-change $@-t $@; \
+define move_if_change_rule
+  if [ -s $(1) ]; then \
+    ${SHELL} ${top_srcdir}/build-aux/move-if-change $(1) $(2); \
   else \
-    echo "$@-t is empty!" 1>&2; \
-    rm -f $@-t; \
+    echo "$(1) is empty!" 1>&2; \
+    rm -f $(1); \
     exit 1; \
   fi
+endef
+
+define simple_move_if_change_rule
+  $(call move_if_change_rule,$@-t,$@)
 endef
 
 define cp_update_rule

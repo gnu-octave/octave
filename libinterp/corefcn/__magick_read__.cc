@@ -744,15 +744,15 @@ maybe_initialize_magick (void)
 #endif
 
 DEFUN (__magick_read__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{img}, @var{map}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{options})\n\
-Read image with GraphicsMagick or ImageMagick.\n\
-\n\
-This is a private internal function not intended for direct use.\n\
-Use @code{imread} instead.\n\
-\n\
-@seealso{imfinfo, imformats, imread, imwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{img}, @var{map}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{options})
+Read image with GraphicsMagick or ImageMagick.
+
+This is a private internal function not intended for direct use.
+Use @code{imread} instead.
+
+@seealso{imfinfo, imformats, imread, imwrite}
+@end deftypefn */)
 {
 #if defined (HAVE_MAGICK)
 
@@ -1387,15 +1387,15 @@ write_file (const std::string& filename,
 #endif
 
 DEFUN (__magick_write__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map}, @var{options})\n\
-Write image with GraphicsMagick or ImageMagick.\n\
-\n\
-This is a private internal function not intended for direct use.\n\
-Use @code{imwrite} instead.\n\
-\n\
-@seealso{imfinfo, imformats, imread, imwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map}, @var{options})
+Write image with GraphicsMagick or ImageMagick.
+
+This is a private internal function not intended for direct use.
+Use @code{imwrite} instead.
+
+@seealso{imfinfo, imformats, imread, imwrite}
+@end deftypefn */)
 {
 #if defined (HAVE_MAGICK)
 
@@ -1566,14 +1566,14 @@ Use @code{imwrite} instead.\n\
 // this, we need to read the image once for imfinfo to set defaults (which is
 // done in Octave language), and then again for the actual reading.
 DEFUN (__magick_ping__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __magick_ping__ (@var{fname}, @var{idx})\n\
-Ping image information with GraphicsMagick or ImageMagick.\n\
-\n\
-This is a private internal function not intended for direct use.\n\
-\n\
-@seealso{imfinfo}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __magick_ping__ (@var{fname}, @var{idx})
+Ping image information with GraphicsMagick or ImageMagick.
+
+This is a private internal function not intended for direct use.
+
+@seealso{imfinfo}
+@end deftypefn */)
 {
 #if defined (HAVE_MAGICK)
 
@@ -1791,15 +1791,15 @@ fill_exif_floats (octave_scalar_map& map, Magick::Image& img,
 #endif
 
 DEFUN (__magick_finfo__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __magick_finfo__ (@var{fname})\n\
-Read image information with GraphicsMagick or ImageMagick.\n\
-\n\
-This is a private internal function not intended for direct use.\n\
-Use @code{imfinfo} instead.\n\
-\n\
-@seealso{imfinfo, imformats, imread, imwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __magick_finfo__ (@var{fname})
+Read image information with GraphicsMagick or ImageMagick.
+
+This is a private internal function not intended for direct use.
+Use @code{imfinfo} instead.
+
+@seealso{imfinfo, imformats, imread, imwrite}
+@end deftypefn */)
 {
 #if defined (HAVE_MAGICK)
 
@@ -2242,12 +2242,12 @@ Use @code{imfinfo} instead.\n\
 */
 
 DEFUN (__magick_formats__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __magick_imformats__ (@var{formats})\n\
-Fill formats info with GraphicsMagick CoderInfo.\n\
-\n\
-@seealso{imfinfo, imformats, imread, imwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __magick_imformats__ (@var{formats})
+Fill formats info with GraphicsMagick CoderInfo.
+
+@seealso{imfinfo, imformats, imread, imwrite}
+@end deftypefn */)
 {
   if (args.length () != 1 || ! args(0).is_map ())
     print_usage ();

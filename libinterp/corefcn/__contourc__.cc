@@ -299,10 +299,10 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 }
 
 DEFUN (__contourc__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 4)
     print_usage ();

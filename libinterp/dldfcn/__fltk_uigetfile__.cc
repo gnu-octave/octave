@@ -46,10 +46,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {} __fltk_uigetfile__ (@dots{})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __fltk_uigetfile__ (@dots{})
+Undocumented internal function.
+@end deftypefn */)
 {
 #if defined (HAVE_FLTK)
 

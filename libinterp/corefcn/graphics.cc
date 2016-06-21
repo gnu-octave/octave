@@ -9747,15 +9747,15 @@ root_figure::init_factory_properties (void)
 // ---------------------------------------------------------------------
 
 DEFUN (ishandle, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ishandle (@var{h})\n\
-Return true if @var{h} is a graphics handle and false otherwise.\n\
-\n\
-@var{h} may also be a matrix of handles in which case a logical array is\n\
-returned that is true where the elements of @var{h} are graphics handles and\n\
-false where they are not.\n\
-@seealso{isaxes, isfigure}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ishandle (@var{h})
+Return true if @var{h} is a graphics handle and false otherwise.
+
+@var{h} may also be a matrix of handles in which case a logical array is
+returned that is true where the elements of @var{h} are graphics handles and
+false where they are not.
+@seealso{isaxes, isfigure}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -9800,10 +9800,10 @@ is_handle_visible (const octave_value& val)
 }
 
 DEFUN (__is_handle_visible__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __is_handle_visible__ (@var{h})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __is_handle_visible__ (@var{h})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -9812,19 +9812,19 @@ Undocumented internal function.\n\
 }
 
 DEFUN (reset, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} reset (@var{h})\n\
-Reset the properties of the graphic object @var{h} to their default values.\n\
-\n\
-For figures, the properties @qcode{\"position\"}, @qcode{\"units\"},\n\
-@qcode{\"windowstyle\"}, and @qcode{\"paperunits\"} are not affected.\n\
-For axes, the properties @qcode{\"position\"} and @qcode{\"units\"} are\n\
-not affected.\n\
-\n\
-The input @var{h} may also be a vector of graphic handles in which case\n\
-each individual object will be reset.\n\
-@seealso{cla, clf, newplot}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} reset (@var{h})
+Reset the properties of the graphic object @var{h} to their default values.
+
+For figures, the properties @qcode{"position"}, @qcode{"units"},
+@qcode{"windowstyle"}, and @qcode{"paperunits"} are not affected.
+For axes, the properties @qcode{"position"} and @qcode{"units"} are
+not affected.
+
+The input @var{h} may also be a vector of graphic handles in which case
+each individual object will be reset.
+@seealso{cla, clf, newplot}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -9963,69 +9963,69 @@ each individual object will be reset.\n\
 */
 
 DEFUN (set, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
-@deftypefnx {} {} set (@var{h}, @var{properties}, @var{values})\n\
-@deftypefnx {} {} set (@var{h}, @var{pv})\n\
-@deftypefnx {} {@var{value_list} =} set (@var{h}, @var{property})\n\
-@deftypefnx {} {@var{all_value_list} =} set (@var{h})\n\
-Set named property values for the graphics handle (or vector of graphics\n\
-handles) @var{h}.\n\
-\n\
-There are three ways to give the property names and values:\n\
-\n\
-@itemize\n\
-@item as a comma separated list of @var{property}, @var{value} pairs\n\
-\n\
-Here, each @var{property} is a string containing the property name, each\n\
-@var{value} is a value of the appropriate type for the property.\n\
-\n\
-@item as a cell array of strings @var{properties} containing property names\n\
-and a cell array @var{values} containing property values.\n\
-\n\
-In this case, the number of columns of @var{values} must match the number of\n\
-elements in @var{properties}.  The first column of @var{values} contains\n\
-values for the first entry in @var{properties}, etc.  The number of rows of\n\
-@var{values} must be 1 or match the number of elements of @var{h}.  In the\n\
-first case, each handle in @var{h} will be assigned the same values.  In the\n\
-latter case, the first handle in @var{h} will be assigned the values from\n\
-the first row of @var{values} and so on.\n\
-\n\
-@item as a structure array @var{pv}\n\
-\n\
-Here, the field names of @var{pv} represent the property names, and the\n\
-field values give the property values.  In contrast to the previous case,\n\
-all elements of @var{pv} will be set in all handles in @var{h} independent\n\
-of the dimensions of @var{pv}.\n\
-@end itemize\n\
-\n\
-@code{set} is also used to query the list of values a named property will\n\
-take.  @code{@var{clist} = set (@var{h}, \"property\")} will return the list\n\
-of possible values for @qcode{\"property\"} in the cell list @var{clist}.\n\
-If no output variable is used then the list is formatted and printed to the\n\
-screen.\n\
-\n\
-If no property is specified (@code{@var{slist} = set (@var{h})}) then a\n\
-structure @var{slist} is returned where the fieldnames are the properties of\n\
-the object @var{h} and the fields are the list of possible values for each\n\
-property.  If no output variable is used then the list is formatted and\n\
-printed to the screen.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-@group\n\
-hf = figure ();\n\
-set (hf, \"paperorientation\")\n\
-@result{}  paperorientation:  [ landscape | @{portrait@} | rotated ]\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-shows the paperorientation property can take three values with the default\n\
-being @qcode{\"portrait\"}.\n\
-@seealso{get}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} set (@var{h}, @var{property}, @var{value}, @dots{})
+@deftypefnx {} {} set (@var{h}, @var{properties}, @var{values})
+@deftypefnx {} {} set (@var{h}, @var{pv})
+@deftypefnx {} {@var{value_list} =} set (@var{h}, @var{property})
+@deftypefnx {} {@var{all_value_list} =} set (@var{h})
+Set named property values for the graphics handle (or vector of graphics
+handles) @var{h}.
+
+There are three ways to give the property names and values:
+
+@itemize
+@item as a comma separated list of @var{property}, @var{value} pairs
+
+Here, each @var{property} is a string containing the property name, each
+@var{value} is a value of the appropriate type for the property.
+
+@item as a cell array of strings @var{properties} containing property names
+and a cell array @var{values} containing property values.
+
+In this case, the number of columns of @var{values} must match the number of
+elements in @var{properties}.  The first column of @var{values} contains
+values for the first entry in @var{properties}, etc.  The number of rows of
+@var{values} must be 1 or match the number of elements of @var{h}.  In the
+first case, each handle in @var{h} will be assigned the same values.  In the
+latter case, the first handle in @var{h} will be assigned the values from
+the first row of @var{values} and so on.
+
+@item as a structure array @var{pv}
+
+Here, the field names of @var{pv} represent the property names, and the
+field values give the property values.  In contrast to the previous case,
+all elements of @var{pv} will be set in all handles in @var{h} independent
+of the dimensions of @var{pv}.
+@end itemize
+
+@code{set} is also used to query the list of values a named property will
+take.  @code{@var{clist} = set (@var{h}, "property")} will return the list
+of possible values for @qcode{"property"} in the cell list @var{clist}.
+If no output variable is used then the list is formatted and printed to the
+screen.
+
+If no property is specified (@code{@var{slist} = set (@var{h})}) then a
+structure @var{slist} is returned where the fieldnames are the properties of
+the object @var{h} and the fields are the list of possible values for each
+property.  If no output variable is used then the list is formatted and
+printed to the screen.
+
+For example,
+
+@example
+@group
+hf = figure ();
+set (hf, "paperorientation")
+@result{}  paperorientation:  [ landscape | @{portrait@} | rotated ]
+@end group
+@end example
+
+@noindent
+shows the paperorientation property can take three values with the default
+being @qcode{"portrait"}.
+@seealso{get}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10127,18 +10127,18 @@ get_graphics_object_type (double val)
 }
 
 DEFUN (get, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} get (@var{h})\n\
-@deftypefnx {} {@var{val} =} get (@var{h}, @var{p})\n\
-Return the value of the named property @var{p} from the graphics handle\n\
-@var{h}.\n\
-\n\
-If @var{p} is omitted, return the complete property list for @var{h}.\n\
-\n\
-If @var{h} is a vector, return a cell array including the property values or\n\
-lists respectively.\n\
-@seealso{set}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} get (@var{h})
+@deftypefnx {} {@var{val} =} get (@var{h}, @var{p})
+Return the value of the named property @var{p} from the graphics handle
+@var{h}.
+
+If @var{p} is omitted, return the complete property list for @var{h}.
+
+If @var{h} is a vector, return a cell array including the property values or
+lists respectively.
+@seealso{set}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10254,10 +10254,10 @@ lists respectively.\n\
 // property values or lists respectively.
 
 DEFUN (__get__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __get__ (@var{h})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __get__ (@var{h})
+Undocumented internal function.
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10356,10 +10356,10 @@ make_graphics_object (const std::string& go_name,
 }
 
 DEFUN (__go_figure__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_figure__ (@var{fignum})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_figure__ (@var{fignum})
+Undocumented internal function.
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10484,12 +10484,12 @@ calc_dimensions (const graphics_object& go)
 }
 
 DEFUN (__calc_dimensions__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __calc_dimensions__ (@var{axes})\n\
-Internal function.\n\
-\n\
-Determine the number of dimensions in a graphics object, either 2 or 3.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __calc_dimensions__ (@var{axes})
+Internal function.
+
+Determine the number of dimensions in a graphics object, either 2 or 3.
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10502,154 +10502,154 @@ Determine the number of dimensions in a graphics object, either 2 or 3.\n\
 }
 
 DEFUN (__go_axes__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_axes__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_axes__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (axes);
 }
 
 DEFUN (__go_line__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_line__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_line__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (line);
 }
 
 DEFUN (__go_text__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_text__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_text__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (text);
 }
 
 DEFUN (__go_image__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_image__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_image__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (image);
 }
 
 DEFUN (__go_surface__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_surface__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_surface__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (surface);
 }
 
 DEFUN (__go_patch__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_patch__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_patch__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (patch);
 }
 
 DEFUN (__go_light__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_light__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_light__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (light);
 }
 
 DEFUN (__go_hggroup__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_hggroup__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_hggroup__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (hggroup);
 }
 
 DEFUN (__go_uimenu__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uimenu__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uimenu__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uimenu);
 }
 
 DEFUN (__go_uicontrol__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uicontrol__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uicontrol__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uicontrol);
 }
 
 DEFUN (__go_uibuttongroup__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uibuttongroup__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uibuttongroup__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uibuttongroup);
 }
 
 DEFUN (__go_uipanel__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uipanel__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uipanel__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uipanel);
 }
 
 DEFUN (__go_uicontextmenu__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uicontextmenu__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uicontextmenu__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uicontextmenu);
 }
 
 DEFUN (__go_uitoolbar__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uitoolbar__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uitoolbar__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uitoolbar);
 }
 
 DEFUN (__go_uipushtool__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uipushtool__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uipushtool__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uipushtool);
 }
 
 DEFUN (__go_uitoggletool__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_uitoggletool__ (@var{parent})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uitoggletool__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
 {
   GO_BODY (uitoggletool);
 }
 
 DEFUN (__go_delete__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_delete__ (@var{h})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_delete__ (@var{h})
+Undocumented internal function.
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10676,10 +10676,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_axes_init__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_axes_init__ (@var{h}, @var{mode})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_axes_init__ (@var{h}, @var{mode})
+Undocumented internal function.
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10713,10 +10713,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_handles__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_handles__ (@var{show_hidden})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_handles__ (@var{show_hidden})
+Undocumented internal function.
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10729,10 +10729,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_figure_handles__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __go_figure_handles__ (@var{show_hidden})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_figure_handles__ (@var{show_hidden})
+Undocumented internal function.
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10745,11 +10745,11 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_execute_callback__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __go_execute_callback__ (@var{h}, @var{name})\n\
-@deftypefnx {} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __go_execute_callback__ (@var{h}, @var{name})
+@deftypefnx {} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -10779,10 +10779,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__image_pixel_size__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{px}, @var{py}} __image_pixel_size__ (@var{h})\n\
-Internal function: returns the pixel size of the image in normalized units.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{px}, @var{py}} __image_pixel_size__ (@var{h})
+Internal function: returns the pixel size of the image in normalized units.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -10889,11 +10889,11 @@ gtk_manager::do_unregister_toolkit (const std::string& name)
 }
 
 DEFUN (available_graphics_toolkits, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} available_graphics_toolkits ()\n\
-Return a cell array of registered graphics toolkits.\n\
-@seealso{graphics_toolkit, register_graphics_toolkit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} available_graphics_toolkits ()
+Return a cell array of registered graphics toolkits.
+@seealso{graphics_toolkit, register_graphics_toolkit}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10901,11 +10901,11 @@ Return a cell array of registered graphics toolkits.\n\
 }
 
 DEFUN (register_graphics_toolkit, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} register_graphics_toolkit (@var{toolkit})\n\
-List @var{toolkit} as an available graphics toolkit.\n\
-@seealso{available_graphics_toolkits}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} register_graphics_toolkit (@var{toolkit})
+List @var{toolkit} as an available graphics toolkit.
+@seealso{available_graphics_toolkits}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10920,11 +10920,11 @@ List @var{toolkit} as an available graphics toolkit.\n\
 }
 
 DEFUN (loaded_graphics_toolkits, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} loaded_graphics_toolkits ()\n\
-Return a cell array of the currently loaded graphics toolkits.\n\
-@seealso{available_graphics_toolkits}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} loaded_graphics_toolkits ()
+Return a cell array of the currently loaded graphics toolkits.
+@seealso{available_graphics_toolkits}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -10932,21 +10932,21 @@ Return a cell array of the currently loaded graphics toolkits.\n\
 }
 
 DEFUN (drawnow, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} drawnow ()\n\
-@deftypefnx {} {} drawnow (\"expose\")\n\
-@deftypefnx {} {} drawnow (@var{term}, @var{file}, @var{debug_file})\n\
-Update figure windows and their children.\n\
-\n\
-The event queue is flushed and any callbacks generated are executed.\n\
-\n\
-With the optional argument @qcode{\"expose\"}, only graphic objects are\n\
-updated and no other events or callbacks are processed.\n\
-\n\
-The third calling form of @code{drawnow} is for debugging and is\n\
-undocumented.\n\
-@seealso{refresh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} drawnow ()
+@deftypefnx {} {} drawnow ("expose")
+@deftypefnx {} {} drawnow (@var{term}, @var{file}, @var{debug_file})
+Update figure windows and their children.
+
+The event queue is flushed and any callbacks generated are executed.
+
+With the optional argument @qcode{"expose"}, only graphic objects are
+updated and no other events or callbacks are processed.
+
+The third calling form of @code{drawnow} is for debugging and is
+undocumented.
+@seealso{refresh}
+@end deftypefn */)
 {
   static int drawnow_executing = 0;
 
@@ -11072,39 +11072,39 @@ undocumented.\n\
 }
 
 DEFUN (addlistener, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} addlistener (@var{h}, @var{prop}, @var{fcn})\n\
-Register @var{fcn} as listener for the property @var{prop} of the graphics\n\
-object @var{h}.\n\
-\n\
-Property listeners are executed (in order of registration) when the property\n\
-is set.  The new value is already available when the listeners are executed.\n\
-\n\
-@var{prop} must be a string naming a valid property in @var{h}.\n\
-\n\
-@var{fcn} can be a function handle, a string or a cell array whose first\n\
-element is a function handle.  If @var{fcn} is a function handle, the\n\
-corresponding function should accept at least 2 arguments, that will be\n\
-set to the object handle and the empty matrix respectively.  If @var{fcn}\n\
-is a string, it must be any valid octave expression.  If @var{fcn} is a cell\n\
-array, the first element must be a function handle with the same signature\n\
-as described above.  The next elements of the cell array are passed\n\
-as additional arguments to the function.\n\
-\n\
-Example:\n\
-\n\
-@example\n\
-@group\n\
-function my_listener (h, dummy, p1)\n\
-  fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
-endfunction\n\
-\n\
-addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{addproperty, hggroup}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} addlistener (@var{h}, @var{prop}, @var{fcn})
+Register @var{fcn} as listener for the property @var{prop} of the graphics
+object @var{h}.
+
+Property listeners are executed (in order of registration) when the property
+is set.  The new value is already available when the listeners are executed.
+
+@var{prop} must be a string naming a valid property in @var{h}.
+
+@var{fcn} can be a function handle, a string or a cell array whose first
+element is a function handle.  If @var{fcn} is a function handle, the
+corresponding function should accept at least 2 arguments, that will be
+set to the object handle and the empty matrix respectively.  If @var{fcn}
+is a string, it must be any valid octave expression.  If @var{fcn} is a cell
+array, the first element must be a function handle with the same signature
+as described above.  The next elements of the cell array are passed
+as additional arguments to the function.
+
+Example:
+
+@example
+@group
+function my_listener (h, dummy, p1)
+  fprintf ("my_listener called with p1=%s\n", p1);
+endfunction
+
+addlistener (gcf, "position", @{@@my_listener, "my string"@})
+@end group
+@end example
+
+@seealso{addproperty, hggroup}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -11137,32 +11137,32 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 }
 
 DEFUN (dellistener, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} dellistener (@var{h}, @var{prop}, @var{fcn})\n\
-Remove the registration of @var{fcn} as a listener for the property\n\
-@var{prop} of the graphics object @var{h}.\n\
-\n\
-The function @var{fcn} must be the same variable (not just the same value),\n\
-as was passed to the original call to @code{addlistener}.\n\
-\n\
-If @var{fcn} is not defined then all listener functions of @var{prop}\n\
-are removed.\n\
-\n\
-Example:\n\
-\n\
-@example\n\
-@group\n\
-function my_listener (h, dummy, p1)\n\
-  fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
-endfunction\n\
-\n\
-c = @{@@my_listener, \"my string\"@};\n\
-addlistener (gcf, \"position\", c);\n\
-dellistener (gcf, \"position\", c);\n\
-@end group\n\
-@end example\n\
-\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} dellistener (@var{h}, @var{prop}, @var{fcn})
+Remove the registration of @var{fcn} as a listener for the property
+@var{prop} of the graphics object @var{h}.
+
+The function @var{fcn} must be the same variable (not just the same value),
+as was passed to the original call to @code{addlistener}.
+
+If @var{fcn} is not defined then all listener functions of @var{prop}
+are removed.
+
+Example:
+
+@example
+@group
+function my_listener (h, dummy, p1)
+  fprintf ("my_listener called with p1=%s\n", p1);
+endfunction
+
+c = @{@@my_listener, "my string"@};
+addlistener (gcf, "position", c);
+dellistener (gcf, "position", c);
+@end group
+@end example
+
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -11200,76 +11200,76 @@ dellistener (gcf, \"position\", c);\n\
 }
 
 DEFUN (addproperty, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} addproperty (@var{name}, @var{h}, @var{type})\n\
-@deftypefnx {} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})\n\
-Create a new property named @var{name} in graphics object @var{h}.\n\
-\n\
-@var{type} determines the type of the property to create.  @var{args}\n\
-usually contains the default value of the property, but additional\n\
-arguments might be given, depending on the type of the property.\n\
-\n\
-The supported property types are:\n\
-\n\
-@table @code\n\
-@item string\n\
-A string property.  @var{arg} contains the default string value.\n\
-\n\
-@item any\n\
-An @nospell{un-typed} property.  This kind of property can hold any octave\n\
-value.  @var{args} contains the default value.\n\
-\n\
-@item radio\n\
-A string property with a limited set of accepted values.  The first\n\
-argument must be a string with all accepted values separated by\n\
-a vertical bar ('|').  The default value can be marked by enclosing\n\
-it with a '@{' '@}' pair.  The default value may also be given as\n\
-an optional second string argument.\n\
-\n\
-@item boolean\n\
-A boolean property.  This property type is equivalent to a radio\n\
-property with \"on|off\" as accepted values.  @var{arg} contains\n\
-the default property value.\n\
-\n\
-@item double\n\
-A scalar double property.  @var{arg} contains the default value.\n\
-\n\
-@item handle\n\
-A handle property.  This kind of property holds the handle of a\n\
-graphics object.  @var{arg} contains the default handle value.\n\
-When no default value is given, the property is initialized to\n\
-the empty matrix.\n\
-\n\
-@item data\n\
-A data (matrix) property.  @var{arg} contains the default data\n\
-value.  When no default value is given, the data is initialized to\n\
-the empty matrix.\n\
-\n\
-@item color\n\
-A color property.  @var{arg} contains the default color value.\n\
-When no default color is given, the property is set to black.\n\
-An optional second string argument may be given to specify an\n\
-additional set of accepted string values (like a radio property).\n\
-@end table\n\
-\n\
-@var{type} may also be the concatenation of a core object type and\n\
-a valid property name for that object type.  The property created\n\
-then has the same characteristics as the referenced property (type,\n\
-possible values, hidden state@dots{}).  This allows one to clone an\n\
-existing property into the graphics object @var{h}.\n\
-\n\
-Examples:\n\
-\n\
-@example\n\
-@group\n\
-addproperty (\"my_property\", gcf, \"string\", \"a string value\");\n\
-addproperty (\"my_radio\", gcf, \"radio\", \"val_1|val_2|@{val_3@}\");\n\
-addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{addlistener, hggroup}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} addproperty (@var{name}, @var{h}, @var{type})
+@deftypefnx {} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})
+Create a new property named @var{name} in graphics object @var{h}.
+
+@var{type} determines the type of the property to create.  @var{args}
+usually contains the default value of the property, but additional
+arguments might be given, depending on the type of the property.
+
+The supported property types are:
+
+@table @code
+@item string
+A string property.  @var{arg} contains the default string value.
+
+@item any
+An @nospell{un-typed} property.  This kind of property can hold any octave
+value.  @var{args} contains the default value.
+
+@item radio
+A string property with a limited set of accepted values.  The first
+argument must be a string with all accepted values separated by
+a vertical bar ('|').  The default value can be marked by enclosing
+it with a '@{' '@}' pair.  The default value may also be given as
+an optional second string argument.
+
+@item boolean
+A boolean property.  This property type is equivalent to a radio
+property with "on|off" as accepted values.  @var{arg} contains
+the default property value.
+
+@item double
+A scalar double property.  @var{arg} contains the default value.
+
+@item handle
+A handle property.  This kind of property holds the handle of a
+graphics object.  @var{arg} contains the default handle value.
+When no default value is given, the property is initialized to
+the empty matrix.
+
+@item data
+A data (matrix) property.  @var{arg} contains the default data
+value.  When no default value is given, the data is initialized to
+the empty matrix.
+
+@item color
+A color property.  @var{arg} contains the default color value.
+When no default color is given, the property is set to black.
+An optional second string argument may be given to specify an
+additional set of accepted string values (like a radio property).
+@end table
+
+@var{type} may also be the concatenation of a core object type and
+a valid property name for that object type.  The property created
+then has the same characteristics as the referenced property (type,
+possible values, hidden state@dots{}).  This allows one to clone an
+existing property into the graphics object @var{h}.
+
+Examples:
+
+@example
+@group
+addproperty ("my_property", gcf, "string", "a string value");
+addproperty ("my_radio", gcf, "radio", "val_1|val_2|@{val_3@}");
+addproperty ("my_style", gcf, "linelinestyle", "--");
+@end group
+@end example
+
+@seealso{addlistener, hggroup}
+@end deftypefn */)
 {
   gh_manager::auto_lock guard;
 
@@ -11444,46 +11444,46 @@ waitfor_del_listener (const octave_value_list& args, int)
 }
 
 DEFUN (waitfor, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} waitfor (@var{h})\n\
-@deftypefnx {} {} waitfor (@var{h}, @var{prop})\n\
-@deftypefnx {} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
-@deftypefnx {} {} waitfor (@dots{}, \"timeout\", @var{timeout})\n\
-Suspend the execution of the current program until a condition is\n\
-satisfied on the graphics handle @var{h}.\n\
-\n\
-While the program is suspended graphics events are still processed normally,\n\
-allowing callbacks to modify the state of graphics objects.  This function\n\
-is reentrant and can be called from a callback, while another @code{waitfor}\n\
-call is pending at the top-level.\n\
-\n\
-In the first form, program execution is suspended until the graphics object\n\
-@var{h} is destroyed.  If the graphics handle is invalid, the function\n\
-returns immediately.\n\
-\n\
-In the second form, execution is suspended until the graphics object is\n\
-destroyed or the property named @var{prop} is modified.  If the graphics\n\
-handle is invalid or the property does not exist, the function returns\n\
-immediately.\n\
-\n\
-In the third form, execution is suspended until the graphics object is\n\
-destroyed or the property named @var{prop} is set to @var{value}.  The\n\
-function @code{isequal} is used to compare property values.  If the graphics\n\
-handle is invalid, the property does not exist or the property is already\n\
-set to @var{value}, the function returns immediately.\n\
-\n\
-An optional timeout can be specified using the property @code{timeout}.\n\
-This timeout value is the number of seconds to wait for the condition to be\n\
-true.  @var{timeout} must be at least 1.  If a smaller value is specified, a\n\
-warning is issued and a value of 1 is used instead.  If the timeout value is\n\
-not an integer, it is truncated towards 0.\n\
-\n\
-To define a condition on a property named @code{timeout}, use the string\n\
-@code{\\timeout} instead.\n\
-\n\
-In all cases, typing CTRL-C stops program execution immediately.\n\
-@seealso{waitforbuttonpress, isequal}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} waitfor (@var{h})
+@deftypefnx {} {} waitfor (@var{h}, @var{prop})
+@deftypefnx {} {} waitfor (@var{h}, @var{prop}, @var{value})
+@deftypefnx {} {} waitfor (@dots{}, "timeout", @var{timeout})
+Suspend the execution of the current program until a condition is
+satisfied on the graphics handle @var{h}.
+
+While the program is suspended graphics events are still processed normally,
+allowing callbacks to modify the state of graphics objects.  This function
+is reentrant and can be called from a callback, while another @code{waitfor}
+call is pending at the top-level.
+
+In the first form, program execution is suspended until the graphics object
+@var{h} is destroyed.  If the graphics handle is invalid, the function
+returns immediately.
+
+In the second form, execution is suspended until the graphics object is
+destroyed or the property named @var{prop} is modified.  If the graphics
+handle is invalid or the property does not exist, the function returns
+immediately.
+
+In the third form, execution is suspended until the graphics object is
+destroyed or the property named @var{prop} is set to @var{value}.  The
+function @code{isequal} is used to compare property values.  If the graphics
+handle is invalid, the property does not exist or the property is already
+set to @var{value}, the function returns immediately.
+
+An optional timeout can be specified using the property @code{timeout}.
+This timeout value is the number of seconds to wait for the condition to be
+true.  @var{timeout} must be at least 1.  If a smaller value is specified, a
+warning is issued and a value of 1 is used instead.  If the timeout value is
+not an integer, it is truncated towards 0.
+
+To define a condition on a property named @code{timeout}, use the string
+@code{\timeout} instead.
+
+In all cases, typing CTRL-C stops program execution immediately.
+@seealso{waitforbuttonpress, isequal}
+@end deftypefn */)
 {
   if (args.length () == 0)
     print_usage ();
@@ -11679,12 +11679,12 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 }
 
 DEFUN (__zoom__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __zoom__ (@var{axes}, @var{mode}, @var{factor})\n\
-@deftypefnx {} {} __zoom__ (@var{axes}, \"out\")\n\
-@deftypefnx {} {} __zoom__ (@var{axes}, \"reset\")\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __zoom__ (@var{axes}, @var{mode}, @var{factor})
+@deftypefnx {} {} __zoom__ (@var{axes}, "out")
+@deftypefnx {} {} __zoom__ (@var{axes}, "reset")
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

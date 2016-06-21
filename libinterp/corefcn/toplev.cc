@@ -919,22 +919,22 @@ clean_up_and_exit (int status, bool safe_to_return)
 }
 
 DEFUN (quit, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} exit\n\
-@deftypefnx {} {} exit (@var{status})\n\
-@deftypefnx {} {} quit\n\
-@deftypefnx {} {} quit (@var{status})\n\
-Exit the current Octave session.\n\
-\n\
-If the optional integer value @var{status} is supplied, pass that value to\n\
-the operating system as Octave's exit status.  The default value is zero.\n\
-\n\
-When exiting, Octave will attempt to run the m-file @file{finish.m} if it\n\
-exists.  User commands to save the workspace or clean up temporary files\n\
-may be placed in that file.  Alternatively, another m-file may be scheduled\n\
-to run using @code{atexit}.\n\
-@seealso{atexit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} exit
+@deftypefnx {} {} exit (@var{status})
+@deftypefnx {} {} quit
+@deftypefnx {} {} quit (@var{status})
+Exit the current Octave session.
+
+If the optional integer value @var{status} is supplied, pass that value to
+the operating system as Octave's exit status.  The default value is zero.
+
+When exiting, Octave will attempt to run the m-file @file{finish.m} if it
+exists.  User commands to save the workspace or clean up temporary files
+may be placed in that file.  Alternatively, another m-file may be scheduled
+to run using @code{atexit}.
+@seealso{atexit}
+@end deftypefn */)
 {
   // Confirm OK to shutdown.  Note: A dynamic function installation similar
   // to overriding polymorphism for which the GUI can install its own "quit"
@@ -970,10 +970,10 @@ to run using @code{atexit}.\n\
 DEFALIAS (exit, quit);
 
 DEFUN (warranty, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} warranty ()\n\
-Describe the conditions for copying and distributing Octave.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} warranty ()
+Describe the conditions for copying and distributing Octave.
+@end deftypefn */)
 {
   octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
 \n\
@@ -1049,56 +1049,56 @@ run_command_and_return_output (const std::string& cmd_str)
 enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} system (\"@var{string}\")\n\
-@deftypefnx {} {} system (\"@var{string}\", @var{return_output})\n\
-@deftypefnx {} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
-@deftypefnx {} {[@var{status}, @var{output}] =} system (@dots{})\n\
-Execute a shell command specified by @var{string}.\n\
-\n\
-If the optional argument @var{type} is @qcode{\"async\"}, the process is\n\
-started in the background and the process ID of the child process is\n\
-returned immediately.  Otherwise, the child process is started and Octave\n\
-waits until it exits.  If the @var{type} argument is omitted, it defaults to\n\
-the value @qcode{\"sync\"}.\n\
-\n\
-If @var{system} is called with one or more output arguments, or if the\n\
-optional argument @var{return_output} is true and the subprocess is started\n\
-synchronously, then the output from the command is returned as a variable.\n\
-Otherwise, if the subprocess is executed synchronously, its output is sent\n\
-to the standard output.  To send the output of a command executed with\n\
-@code{system} through the pager, use a command like\n\
-\n\
-@example\n\
-@group\n\
-[~, text] = system (\"cmd\");\n\
-disp (text);\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-or\n\
-\n\
-@example\n\
-printf (\"%s\\n\", nthargout (2, \"system\", \"cmd\"));\n\
-@end example\n\
-\n\
-The @code{system} function can return two values.  The first is the\n\
-exit status of the command and the second is any output from the\n\
-command that was written to the standard output stream.  For example,\n\
-\n\
-@example\n\
-[status, output] = system (\"echo foo; exit 2\");\n\
-@end example\n\
-\n\
-@noindent\n\
-will set the variable @code{output} to the string @samp{foo}, and the\n\
-variable @code{status} to the integer @samp{2}.\n\
-\n\
-For commands run asynchronously, @var{status} is the process id of the\n\
-command shell that is started to run the command.\n\
-@seealso{unix, dos}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} system ("@var{string}")
+@deftypefnx {} {} system ("@var{string}", @var{return_output})
+@deftypefnx {} {} system ("@var{string}", @var{return_output}, @var{type})
+@deftypefnx {} {[@var{status}, @var{output}] =} system (@dots{})
+Execute a shell command specified by @var{string}.
+
+If the optional argument @var{type} is @qcode{"async"}, the process is
+started in the background and the process ID of the child process is
+returned immediately.  Otherwise, the child process is started and Octave
+waits until it exits.  If the @var{type} argument is omitted, it defaults to
+the value @qcode{"sync"}.
+
+If @var{system} is called with one or more output arguments, or if the
+optional argument @var{return_output} is true and the subprocess is started
+synchronously, then the output from the command is returned as a variable.
+Otherwise, if the subprocess is executed synchronously, its output is sent
+to the standard output.  To send the output of a command executed with
+@code{system} through the pager, use a command like
+
+@example
+@group
+[~, text] = system ("cmd");
+disp (text);
+@end group
+@end example
+
+@noindent
+or
+
+@example
+printf ("%s\n", nthargout (2, "system", "cmd"));
+@end example
+
+The @code{system} function can return two values.  The first is the
+exit status of the command and the second is any output from the
+command that was written to the standard output stream.  For example,
+
+@example
+[status, output] = system ("echo foo; exit 2");
+@end example
+
+@noindent
+will set the variable @code{output} to the string @samp{foo}, and the
+variable @code{status} to the integer @samp{2}.
+
+For commands run asynchronously, @var{status} is the process id of the
+command shell that is started to run the command.
+@seealso{unix, dos}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1243,44 +1243,44 @@ octave_remove_atexit_function (const std::string& fname)
 
 
 DEFUN (atexit, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} atexit (@var{fcn})\n\
-@deftypefnx {} {} atexit (@var{fcn}, @var{flag})\n\
-Register a function to be called when Octave exits.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-@group\n\
-function last_words ()\n\
-  disp (\"Bye bye\");\n\
-endfunction\n\
-atexit (\"last_words\");\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-will print the message @qcode{\"Bye bye\"} when Octave exits.\n\
-\n\
-The additional argument @var{flag} will register or unregister @var{fcn}\n\
-from the list of functions to be called when Octave exits.  If @var{flag} is\n\
-true, the function is registered, and if @var{flag} is false, it is\n\
-unregistered.  For example, after registering the function @code{last_words}\n\
-above,\n\
-\n\
-@example\n\
-atexit (\"last_words\", false);\n\
-@end example\n\
-\n\
-@noindent\n\
-will remove the function from the list and Octave will not call\n\
-@code{last_words} when it exits.\n\
-\n\
-Note that @code{atexit} only removes the first occurrence of a function\n\
-from the list, so if a function was placed in the list multiple times with\n\
-@code{atexit}, it must also be removed from the list multiple times.\n\
-@seealso{quit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} atexit (@var{fcn})
+@deftypefnx {} {} atexit (@var{fcn}, @var{flag})
+Register a function to be called when Octave exits.
+
+For example,
+
+@example
+@group
+function last_words ()
+  disp ("Bye bye");
+endfunction
+atexit ("last_words");
+@end group
+@end example
+
+@noindent
+will print the message @qcode{"Bye bye"} when Octave exits.
+
+The additional argument @var{flag} will register or unregister @var{fcn}
+from the list of functions to be called when Octave exits.  If @var{flag} is
+true, the function is registered, and if @var{flag} is false, it is
+unregistered.  For example, after registering the function @code{last_words}
+above,
+
+@example
+atexit ("last_words", false);
+@end example
+
+@noindent
+will remove the function from the list and Octave will not call
+@code{last_words} when it exits.
+
+Note that @code{atexit} only removes the first occurrence of a function
+from the list, so if a function was placed in the list multiple times with
+@code{atexit}, it must also be removed from the list multiple times.
+@seealso{quit}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1323,17 +1323,17 @@ find_config_info (const octave_scalar_map& m, const std::string& key)
 }
 
 DEFUN (__octave_config_info__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __octave_config_info__ ()\n\
-@deftypefnx {} {} __octave_config_info__ (@var{option})\n\
-Return a structure containing configuration and installation information for\n\
-Octave.\n\
-\n\
-If @var{option} is a string, return the configuration information for the\n\
-specified option.\n\
-\n\
-@seealso{computer}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __octave_config_info__ ()
+@deftypefnx {} {} __octave_config_info__ (@var{option})
+Return a structure containing configuration and installation information for
+Octave.
+
+If @var{option} is a string, return the configuration information for the
+specified option.
+
+@seealso{computer}
+@end deftypefn */)
 {
 #if defined (ENABLE_DYNAMIC_LINKING)
   bool octave_supports_dynamic_linking = true;

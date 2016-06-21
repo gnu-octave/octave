@@ -278,55 +278,55 @@ ch_manager::do_free (const curl_handle& h)
 ch_manager *ch_manager::instance = 0;
 
 DEFUN (urlwrite, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {} {@var{f} =} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})\n\
-Download a remote file specified by its @var{url} and save it as\n\
-@var{localfile}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-urlwrite (\"ftp://ftp.octave.org/pub/README\",\n\
-          \"README.txt\");\n\
-@end group\n\
-@end example\n\
-\n\
-The full path of the downloaded file is returned in @var{f}.\n\
-\n\
-The variable @var{success} is 1 if the download was successful,\n\
-otherwise it is 0 in which case @var{message} contains an error message.\n\
-\n\
-If no output argument is specified and an error occurs, then the error is\n\
-signaled through Octave's error handling mechanism.\n\
-\n\
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and\n\
-FILE protocols.  Username and password may be specified in the URL, for\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-urlwrite (\"http://username:password@@example.com/file.txt\",\n\
-          \"file.txt\");\n\
-@end group\n\
-@end example\n\
-\n\
-GET and POST requests can be specified by @var{method} and @var{param}.\n\
-The parameter @var{method} is either @samp{get} or @samp{post} and\n\
-@var{param} is a cell array of parameter and value pairs.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
-          \"get\", @{\"query\", \"octave\"@});\n\
-@end group\n\
-@end example\n\
-@seealso{urlread}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {} {@var{f} =} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})
+Download a remote file specified by its @var{url} and save it as
+@var{localfile}.
+
+For example:
+
+@example
+@group
+urlwrite ("ftp://ftp.octave.org/pub/README",
+          "README.txt");
+@end group
+@end example
+
+The full path of the downloaded file is returned in @var{f}.
+
+The variable @var{success} is 1 if the download was successful,
+otherwise it is 0 in which case @var{message} contains an error message.
+
+If no output argument is specified and an error occurs, then the error is
+signaled through Octave's error handling mechanism.
+
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and
+FILE protocols.  Username and password may be specified in the URL, for
+example:
+
+@example
+@group
+urlwrite ("http://username:password@@example.com/file.txt",
+          "file.txt");
+@end group
+@end example
+
+GET and POST requests can be specified by @var{method} and @var{param}.
+The parameter @var{method} is either @samp{get} or @samp{post} and
+@var{param} is a cell array of parameter and value pairs.
+For example:
+
+@example
+@group
+urlwrite ("http://www.google.com/search", "search.html",
+          "get", @{"query", "octave"@});
+@end group
+@end example
+@seealso{urlread}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -399,48 +399,48 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 }
 
 DEFUN (urlread, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{s} =} urlread (@var{url})\n\
-@deftypefnx {} {[@var{s}, @var{success}] =} urlread (@var{url})\n\
-@deftypefnx {} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})\n\
-@deftypefnx {} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})\n\
-Download a remote file specified by its @var{url} and return its content\n\
-in string @var{s}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-s = urlread (\"ftp://ftp.octave.org/pub/README\");\n\
-@end example\n\
-\n\
-The variable @var{success} is 1 if the download was successful,\n\
-otherwise it is 0 in which case @var{message} contains an error\n\
-message.\n\
-\n\
-If no output argument is specified and an error occurs, then the error is\n\
-signaled through Octave's error handling mechanism.\n\
-\n\
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and\n\
-FILE protocols.  Username and password may be specified in the URL@.  For\n\
-example:\n\
-\n\
-@example\n\
-s = urlread (\"http://user:password@@example.com/file.txt\");\n\
-@end example\n\
-\n\
-GET and POST requests can be specified by @var{method} and @var{param}.\n\
-The parameter @var{method} is either @samp{get} or @samp{post} and\n\
-@var{param} is a cell array of parameter and value pairs.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-s = urlread (\"http://www.google.com/search\", \"get\",\n\
-            @{\"query\", \"octave\"@});\n\
-@end group\n\
-@end example\n\
-@seealso{urlwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} urlread (@var{url})
+@deftypefnx {} {[@var{s}, @var{success}] =} urlread (@var{url})
+@deftypefnx {} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})
+@deftypefnx {} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})
+Download a remote file specified by its @var{url} and return its content
+in string @var{s}.
+
+For example:
+
+@example
+s = urlread ("ftp://ftp.octave.org/pub/README");
+@end example
+
+The variable @var{success} is 1 if the download was successful,
+otherwise it is 0 in which case @var{message} contains an error
+message.
+
+If no output argument is specified and an error occurs, then the error is
+signaled through Octave's error handling mechanism.
+
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and
+FILE protocols.  Username and password may be specified in the URL@.  For
+example:
+
+@example
+s = urlread ("http://user:password@@example.com/file.txt");
+@end example
+
+GET and POST requests can be specified by @var{method} and @var{param}.
+The parameter @var{method} is either @samp{get} or @samp{post} and
+@var{param} is a cell array of parameter and value pairs.
+For example:
+
+@example
+@group
+s = urlread ("http://www.google.com/search", "get",
+            @{"query", "octave"@});
+@end group
+@end example
+@seealso{urlwrite}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -491,11 +491,11 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 }
 
 DEFUN (__ftp__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{handle} =} __ftp__ (@var{host})\n\
-@deftypefnx {} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{handle} =} __ftp__ (@var{host})
+@deftypefnx {} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})
+Undocumented internal function
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -519,10 +519,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_pwd__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_pwd__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_pwd__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 1)
     error ("__ftp_pwd__: incorrect number of arguments");
@@ -536,10 +536,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_cwd__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_cwd__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_cwd__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -561,10 +561,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_dir__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_dir__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_dir__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 1)
     error ("__ftp_dir__: incorrect number of arguments");
@@ -633,10 +633,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_ascii__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_ascii__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_ascii__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 1)
     error ("__ftp_ascii__: incorrect number of arguments");
@@ -652,10 +652,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_binary__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_binary__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_binary__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 1)
     error ("__ftp_binary__: incorrect number of arguments");
@@ -671,10 +671,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_close__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_close__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_close__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 1)
     error ("__ftp_close__: incorrect number of arguments");
@@ -690,10 +690,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mode__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_mode__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_mode__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 1)
     error ("__ftp_mode__: incorrect number of arguments");
@@ -707,10 +707,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_delete__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_delete__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_delete__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 2)
     error ("__ftp_delete__: incorrect number of arguments");
@@ -728,10 +728,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_rmdir__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_rmdir__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_rmdir__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 2)
     error ("__ftp_rmdir__: incorrect number of arguments");
@@ -749,10 +749,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mkdir__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_mkdir__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_mkdir__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 2)
     error ("__ftp_mkdir__: incorrect number of arguments");
@@ -770,10 +770,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_rename__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_rename__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_rename__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 3)
     error ("__ftp_rename__: incorrect number of arguments");
@@ -792,10 +792,10 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mput__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __ftp_mput__ (@var{handle}, @var{files})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_mput__ (@var{handle}, @var{files})
+Undocumented internal function
+@end deftypefn */)
 {
   if (args.length () != 2)
     error ("__ftp_mput__: incorrect number of arguments");
@@ -854,11 +854,11 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mget__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __ftp_mget__ (@var{handle}, @var{pattern})\n\
-@deftypefnx {} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __ftp_mget__ (@var{handle}, @var{pattern})
+@deftypefnx {} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})
+Undocumented internal function
+@end deftypefn */)
 {
   int nargin = args.length ();
 

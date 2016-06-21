@@ -300,75 +300,75 @@ do_bessel (enum bessel_type type, const char *fn,
 }
 
 DEFUN (besselj, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
-Compute Bessel or Hankel functions of various kinds:\n\
-\n\
-@table @code\n\
-@item besselj\n\
-Bessel functions of the first kind.  If the argument @var{opt} is 1 or true,\n\
-the result is multiplied by @w{@code{exp (-abs (imag (@var{x})))}}.\n\
-\n\
-@item bessely\n\
-Bessel functions of the second kind.  If the argument @var{opt} is 1 or\n\
-true, the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
-\n\
-@item besseli\n\
-\n\
-Modified Bessel functions of the first kind.  If the argument @var{opt} is 1\n\
-or true, the result is multiplied by @code{exp (-abs (real (@var{x})))}.\n\
-\n\
-@item besselk\n\
-\n\
-Modified Bessel functions of the second kind.  If the argument @var{opt} is\n\
-1 or true, the result is multiplied by @code{exp (@var{x})}.\n\
-\n\
-@item besselh\n\
-Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
-= 2) kind.  If the argument @var{opt} is 1 or true, the result is multiplied\n\
-by @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
-@var{k} = 2.\n\
-@end table\n\
-\n\
-If @var{alpha} is a scalar, the result is the same size as @var{x}.\n\
-If @var{x} is a scalar, the result is the same size as @var{alpha}.\n\
-If @var{alpha} is a row vector and @var{x} is a column vector, the\n\
-result is a matrix with @code{length (@var{x})} rows and\n\
-@code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and\n\
-@var{x} must conform and the result will be the same size.\n\
-\n\
-The value of @var{alpha} must be real.  The value of @var{x} may be\n\
-complex.\n\
-\n\
-If requested, @var{ierr} contains the following status information\n\
-and is the same size as the result.\n\
-\n\
-@enumerate 0\n\
-@item\n\
-Normal return.\n\
-\n\
-@item\n\
-Input error, return @code{NaN}.\n\
-\n\
-@item\n\
-Overflow, return @code{Inf}.\n\
-\n\
-@item\n\
-Loss of significance by argument reduction results in less than\n\
-half of machine accuracy.\n\
-\n\
-@item\n\
-Complete loss of significance by argument reduction, return @code{NaN}.\n\
-\n\
-@item\n\
-Error---no computation, algorithm termination condition not met,\n\
-return @code{NaN}.\n\
-@end enumerate\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
+Compute Bessel or Hankel functions of various kinds:
+
+@table @code
+@item besselj
+Bessel functions of the first kind.  If the argument @var{opt} is 1 or true,
+the result is multiplied by @w{@code{exp (-abs (imag (@var{x})))}}.
+
+@item bessely
+Bessel functions of the second kind.  If the argument @var{opt} is 1 or
+true, the result is multiplied by @code{exp (-abs (imag (@var{x})))}.
+
+@item besseli
+
+Modified Bessel functions of the first kind.  If the argument @var{opt} is 1
+or true, the result is multiplied by @code{exp (-abs (real (@var{x})))}.
+
+@item besselk
+
+Modified Bessel functions of the second kind.  If the argument @var{opt} is
+1 or true, the result is multiplied by @code{exp (@var{x})}.
+
+@item besselh
+Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
+= 2) kind.  If the argument @var{opt} is 1 or true, the result is multiplied
+by @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for
+@var{k} = 2.
+@end table
+
+If @var{alpha} is a scalar, the result is the same size as @var{x}.
+If @var{x} is a scalar, the result is the same size as @var{alpha}.
+If @var{alpha} is a row vector and @var{x} is a column vector, the
+result is a matrix with @code{length (@var{x})} rows and
+@code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and
+@var{x} must conform and the result will be the same size.
+
+The value of @var{alpha} must be real.  The value of @var{x} may be
+complex.
+
+If requested, @var{ierr} contains the following status information
+and is the same size as the result.
+
+@enumerate 0
+@item
+Normal return.
+
+@item
+Input error, return @code{NaN}.
+
+@item
+Overflow, return @code{Inf}.
+
+@item
+Loss of significance by argument reduction results in less than
+half of machine accuracy.
+
+@item
+Complete loss of significance by argument reduction, return @code{NaN}.
+
+@item
+Error---no computation, algorithm termination condition not met,
+return @code{NaN}.
+@end enumerate
+@end deftypefn */)
 {
   return do_bessel (BESSEL_J, "besselj", args, nargout);
 }
@@ -378,10 +378,10 @@ return @code{NaN}.\n\
 */
 
 DEFUN (bessely, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
 {
   return do_bessel (BESSEL_Y, "bessely", args, nargout);
 }
@@ -391,10 +391,10 @@ See besselj.\n\
 */
 
 DEFUN (besseli, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
 {
   return do_bessel (BESSEL_I, "besseli", args, nargout);
 }
@@ -404,10 +404,10 @@ See besselj.\n\
 */
 
 DEFUN (besselk, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
 {
   return do_bessel (BESSEL_K, "besselk", args, nargout);
 }
@@ -417,10 +417,10 @@ See besselj.\n\
 */
 
 DEFUN (besselh, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -461,51 +461,51 @@ See besselj.\n\
 */
 
 DEFUN (airy, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})\n\
-Compute Airy functions of the first and second kind, and their derivatives.\n\
-\n\
-@example\n\
-@group\n\
- K   Function   Scale factor (if \"opt\" is supplied)\n\
----  --------   ---------------------------------------\n\
- 0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
- 1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\
- 2   Bi (Z)     exp (-abs (real ((2/3) * Z * sqrt (Z))))\n\
- 3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z * sqrt (Z))))\n\
-@end group\n\
-@end example\n\
-\n\
-The function call @code{airy (@var{z})} is equivalent to\n\
-@code{airy (0, @var{z})}.\n\
-\n\
-The result is the same size as @var{z}.\n\
-\n\
-If requested, @var{ierr} contains the following status information and\n\
-is the same size as the result.\n\
-\n\
-@enumerate 0\n\
-@item\n\
-Normal return.\n\
-\n\
-@item\n\
-Input error, return @code{NaN}.\n\
-\n\
-@item\n\
-Overflow, return @code{Inf}.\n\
-\n\
-@item\n\
-Loss of significance by argument reduction results in less than half\n\
- of machine accuracy.\n\
-\n\
-@item\n\
-Complete loss of significance by argument reduction, return @code{NaN}.\n\
-\n\
-@item\n\
-Error---no computation, algorithm termination condition not met,\n\
-return @code{NaN}.\n\
-@end enumerate\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})
+Compute Airy functions of the first and second kind, and their derivatives.
+
+@example
+@group
+ K   Function   Scale factor (if "opt" is supplied)
+---  --------   ---------------------------------------
+ 0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))
+ 1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))
+ 2   Bi (Z)     exp (-abs (real ((2/3) * Z * sqrt (Z))))
+ 3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z * sqrt (Z))))
+@end group
+@end example
+
+The function call @code{airy (@var{z})} is equivalent to
+@code{airy (0, @var{z})}.
+
+The result is the same size as @var{z}.
+
+If requested, @var{ierr} contains the following status information and
+is the same size as the result.
+
+@enumerate 0
+@item
+Normal return.
+
+@item
+Input error, return @code{NaN}.
+
+@item
+Overflow, return @code{Inf}.
+
+@item
+Loss of significance by argument reduction results in less than half
+ of machine accuracy.
+
+@item
+Complete loss of significance by argument reduction, return @code{NaN}.
+
+@item
+Error---no computation, algorithm termination condition not met,
+return @code{NaN}.
+@end enumerate
+@end deftypefn */)
 {
   int nargin = args.length ();
 

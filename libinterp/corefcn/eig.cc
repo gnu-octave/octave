@@ -34,21 +34,21 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (eig, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{lambda} =} eig (@var{A})\n\
-@deftypefnx {} {@var{lambda} =} eig (@var{A}, @var{B})\n\
-@deftypefnx {} {[@var{V}, @var{lambda}] =} eig (@var{A})\n\
-@deftypefnx {} {[@var{V}, @var{lambda}] =} eig (@var{A}, @var{B})\n\
-Compute the eigenvalues (and optionally the eigenvectors) of a matrix\n\
-or a pair of matrices\n\
-\n\
-The algorithm used depends on whether there are one or two input\n\
-matrices, if they are real or complex, and if they are symmetric\n\
-(Hermitian if complex) or non-symmetric.\n\
-\n\
-The eigenvalues returned by @code{eig} are not ordered.\n\
-@seealso{eigs, svd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{lambda} =} eig (@var{A})
+@deftypefnx {} {@var{lambda} =} eig (@var{A}, @var{B})
+@deftypefnx {} {[@var{V}, @var{lambda}] =} eig (@var{A})
+@deftypefnx {} {[@var{V}, @var{lambda}] =} eig (@var{A}, @var{B})
+Compute the eigenvalues (and optionally the eigenvectors) of a matrix
+or a pair of matrices
+
+The algorithm used depends on whether there are one or two input
+matrices, if they are real or complex, and if they are symmetric
+(Hermitian if complex) or non-symmetric.
+
+The eigenvalues returned by @code{eig} are not ordered.
+@seealso{eigs, svd}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

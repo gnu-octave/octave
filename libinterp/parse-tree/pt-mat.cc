@@ -1345,30 +1345,30 @@ tree_matrix::accept (tree_walker& tw)
 */
 
 DEFUN (string_fill_char, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} string_fill_char ()\n\
-@deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})\n\
-@deftypefnx {} {} string_fill_char (@var{new_val}, \"local\")\n\
-Query or set the internal variable used to pad all rows of a character\n\
-matrix to the same length.\n\
-\n\
-The value must be a single character and the default is @qcode{\" \"} (a\n\
-single space).  For example:\n\
-\n\
-@example\n\
-@group\n\
-string_fill_char (\"X\");\n\
-[ \"these\"; \"are\"; \"strings\" ]\n\
-      @result{}  \"theseXX\"\n\
-          \"areXXXX\"\n\
-          \"strings\"\n\
-@end group\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} string_fill_char ()
+@deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})
+@deftypefnx {} {} string_fill_char (@var{new_val}, "local")
+Query or set the internal variable used to pad all rows of a character
+matrix to the same length.
+
+The value must be a single character and the default is @qcode{" "} (a
+single space).  For example:
+
+@example
+@group
+string_fill_char ("X");
+[ "these"; "are"; "strings" ]
+      @result{}  "theseXX"
+          "areXXXX"
+          "strings"
+@end group
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (string_fill_char);
 }

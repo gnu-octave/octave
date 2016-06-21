@@ -191,10 +191,10 @@ w32_shell_execute (const std::string& file)
 #endif
 
 DEFUN (__open_with_system_app__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __open_with_system_app__ (@var{file})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __open_with_system_app__ (@var{file})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -599,11 +599,11 @@ get_P_tmpdir (void)
 }
 
 DEFUN (clc, , ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} clc ()\n\
-@deftypefnx {} {} home ()\n\
-Clear the terminal screen and move the cursor to the upper left corner.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} clc ()
+@deftypefnx {} {} home ()
+Clear the terminal screen and move the cursor to the upper left corner.
+@end deftypefn */)
 {
   bool skip_redisplay = true;
 
@@ -615,20 +615,20 @@ Clear the terminal screen and move the cursor to the upper left corner.\n\
 DEFALIAS (home, clc);
 
 DEFUN (getenv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} getenv (@var{var})\n\
-Return the value of the environment variable @var{var}.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-getenv (\"PATH\")\n\
-@end example\n\
-\n\
-@noindent\n\
-returns a string containing the value of your path.\n\
-@seealso{setenv, unsetenv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} getenv (@var{var})
+Return the value of the environment variable @var{var}.
+
+For example,
+
+@example
+getenv ("PATH")
+@end example
+
+@noindent
+returns a string containing the value of your path.
+@seealso{setenv, unsetenv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -643,16 +643,16 @@ returns a string containing the value of your path.\n\
 */
 
 DEFUN (setenv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} setenv (@var{var}, @var{value})\n\
-@deftypefnx {} {} setenv (@var{var})\n\
-@deftypefnx {} {} putenv (@dots{})\n\
-Set the value of the environment variable @var{var} to @var{value}.\n\
-\n\
-If no @var{value} is specified then the variable will be assigned the null\n\
-string.\n\
-@seealso{unsetenv, getenv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} setenv (@var{var}, @var{value})
+@deftypefnx {} {} setenv (@var{var})
+@deftypefnx {} {} putenv (@dots{})
+Set the value of the environment variable @var{var} to @var{value}.
+
+If no @var{value} is specified then the variable will be assigned the null
+string.
+@seealso{unsetenv, getenv}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -681,14 +681,14 @@ DEFALIAS (putenv, setenv);
 */
 
 DEFUN (unsetenv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{status} =} unsetenv (@var{var})\n\
-Delete the environment variable @var{var}.\n\
-\n\
-Return 0 if the variable was deleted, or did not exist, and -1 if an error\n\
-occurred.\n\
-@seealso{setenv, getenv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{status} =} unsetenv (@var{var})
+Delete the environment variable @var{var}.
+
+Return 0 if the variable was deleted, or did not exist, and -1 if an error
+occurred.
+@seealso{setenv, getenv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -705,32 +705,32 @@ occurred.\n\
 // FIXME: perhaps kbhit should also be able to print a prompt?
 
 DEFUN (kbhit, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} kbhit ()\n\
-@deftypefnx {} {} kbhit (1)\n\
-Read a single keystroke from the keyboard.\n\
-\n\
-If called with an argument, don't wait for a keypress.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-x = kbhit ();\n\
-@end example\n\
-\n\
-@noindent\n\
-will set @var{x} to the next character typed at the keyboard as soon as\n\
-it is typed.\n\
-\n\
-@example\n\
-x = kbhit (1);\n\
-@end example\n\
-\n\
-@noindent\n\
-is identical to the above example, but doesn't wait for a keypress,\n\
-returning the empty string if no key is available.\n\
-@seealso{input, pause}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} kbhit ()
+@deftypefnx {} {} kbhit (1)
+Read a single keystroke from the keyboard.
+
+If called with an argument, don't wait for a keypress.
+
+For example,
+
+@example
+x = kbhit ();
+@end example
+
+@noindent
+will set @var{x} to the next character typed at the keyboard as soon as
+it is typed.
+
+@example
+x = kbhit (1);
+@end example
+
+@noindent
+is identical to the above example, but doesn't wait for a keypress,
+returning the empty string if no key is available.
+@seealso{input, pause}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -754,37 +754,37 @@ returning the empty string if no key is available.\n\
 }
 
 DEFUN (pause, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} pause ()\n\
-@deftypefnx {} {} pause (@var{n})\n\
-Suspend the execution of the program for @var{n} seconds.\n\
-\n\
-If invoked without an input arguments then the program is suspended until a\n\
-character is typed.\n\
-\n\
-@var{n} is a positive real value and may be a fraction of a second,\n\
-for example:\n\
-\n\
-@example\n\
-@group\n\
-tic; pause (0.05); toc\n\
-     @print{} Elapsed time is 0.05039 seconds.\n\
-@end group\n\
-@end example\n\
-\n\
-The following example prints a message and then waits 5 seconds before\n\
-clearing the screen.\n\
-\n\
-@example\n\
-@group\n\
-disp (\"wait please...\");\n\
-pause (5);\n\
-clc;\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{kbhit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} pause ()
+@deftypefnx {} {} pause (@var{n})
+Suspend the execution of the program for @var{n} seconds.
+
+If invoked without an input arguments then the program is suspended until a
+character is typed.
+
+@var{n} is a positive real value and may be a fraction of a second,
+for example:
+
+@example
+@group
+tic; pause (0.05); toc
+     @print{} Elapsed time is 0.05039 seconds.
+@end group
+@end example
+
+The following example prints a message and then waits 5 seconds before
+clearing the screen.
+
+@example
+@group
+disp ("wait please...");
+pause (5);
+clc;
+@end group
+@end example
+
+@seealso{kbhit}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -831,13 +831,13 @@ clc;\n\
 // point functions really work.
 
 DEFUN (isieee, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isieee ()\n\
-Return true if your computer @emph{claims} to conform to the IEEE standard\n\
-for floating point calculations.\n\
-\n\
-No actual tests are performed.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isieee ()
+Return true if your computer @emph{claims} to conform to the IEEE standard
+for floating point calculations.
+
+No actual tests are performed.
+@end deftypefn */)
 {
   octave::mach_info::float_format flt_fmt = octave::mach_info::native_float_format ();
 
@@ -850,10 +850,10 @@ No actual tests are performed.\n\
 */
 
 DEFUN (native_float_format, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} native_float_format ()\n\
-Return the native floating point format as a string.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} native_float_format ()
+Return the native floating point format as a string.
+@end deftypefn */)
 {
   octave::mach_info::float_format flt_fmt = octave::mach_info::native_float_format ();
 
@@ -865,32 +865,32 @@ Return the native floating point format as a string.\n\
 */
 
 DEFUN (tilde_expand, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} tilde_expand (@var{string})\n\
-@deftypefnx {} {} tilde_expand (@var{cellstr})\n\
-Perform tilde expansion on @var{string}.\n\
-\n\
-If @var{string} begins with a tilde character, (@samp{~}), all of the\n\
-characters preceding the first slash (or all characters, if there is no\n\
-slash) are treated as a possible user name, and the tilde and the following\n\
-characters up to the slash are replaced by the home directory of the named\n\
-user.  If the tilde is followed immediately by a slash, the tilde is\n\
-replaced by the home directory of the user running Octave.\n\
-\n\
-If the input is a cell array of strings @var{cellstr} then tilde expansion\n\
-is performed on each string element.\n\
-\n\
-Examples:\n\
-\n\
-@example\n\
-@group\n\
-tilde_expand (\"~joeuser/bin\")\n\
-     @result{} \"/home/joeuser/bin\"\n\
-tilde_expand (\"~/bin\")\n\
-     @result{} \"/home/jwe/bin\"\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} tilde_expand (@var{string})
+@deftypefnx {} {} tilde_expand (@var{cellstr})
+Perform tilde expansion on @var{string}.
+
+If @var{string} begins with a tilde character, (@samp{~}), all of the
+characters preceding the first slash (or all characters, if there is no
+slash) are treated as a possible user name, and the tilde and the following
+characters up to the slash are replaced by the home directory of the named
+user.  If the tilde is followed immediately by a slash, the tilde is
+replaced by the home directory of the user running Octave.
+
+If the input is a cell array of strings @var{cellstr} then tilde expansion
+is performed on each string element.
+
+Examples:
+
+@example
+@group
+tilde_expand ("~joeuser/bin")
+     @result{} "/home/joeuser/bin"
+tilde_expand ("~/bin")
+     @result{} "/home/jwe/bin"
+@end group
+@end example
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -916,16 +916,16 @@ tilde_expand (\"~/bin\")\n\
 */
 
 DEFUN (get_home_directory, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{homedir} =} get_home_directory ()\n\
-Return the current home directory.\n\
-\n\
-On most systems, this is equivalent to @code{getenv (\"HOME\")}.  On Windows\n\
-systems, if the environment variable @env{HOME} is not set then it is\n\
-equivalent to\n\
-@code{fullfile (getenv (\"HOMEDRIVE\"), getenv (\"HOMEPATH\"))}\n\
-@seealso{getenv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{homedir} =} get_home_directory ()
+Return the current home directory.
+
+On most systems, this is equivalent to @code{getenv ("HOME")}.  On Windows
+systems, if the environment variable @env{HOME} is not set then it is
+equivalent to
+@code{fullfile (getenv ("HOMEDRIVE"), getenv ("HOMEPATH"))}
+@seealso{getenv}
+@end deftypefn */)
 {
   return ovl (octave::sys::env::get_home_directory ());
 }
@@ -942,12 +942,12 @@ equivalent to\n\
 // needed for X11 and Carbon functions.
 
 DEFUN (have_window_system, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} have_window_system ()\n\
-Return true if a window system is available (X11, Windows, or Apple OS X)\n\
-and false otherwise.\n\
-@seealso{isguirunning}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} have_window_system ()
+Return true if a window system is available (X11, Windows, or Apple OS X)
+and false otherwise.
+@seealso{isguirunning}
+@end deftypefn */)
 {
   return ovl (display_info::display_available ());
 }

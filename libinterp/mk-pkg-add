@@ -22,14 +22,20 @@ set -e
 
 SED=${SED:-sed}
 
-for f in "$@"; do
-  if [ -f $f ]; then
+srcdir="$1"
+shift
+
+for arg
+do
+  src_file="$srcdir/$arg"
+
+  if [ -f "$src_file" ]; then
 
     ## Compute and print the autoloads.
 
-    base=`basename $f | $SED 's/\.df$//'`
-    fcns=`$SED -n -e 's/^ *XDEFUN_DLD_INTERNAL *( *\([^, ]*\)[, ].*$/\1/p' \
-                  -e 's/^ *XDEFUNX_DLD_INTERNAL *( *"\([^"]*\)".*$/\1/p' $f | \
+    base=`basename "$src_file" | $SED 's/\.cc$//'`
+    fcns=`$SED -n -e 's/^ *DEFUN_DLD *( *\([^, ]*\) *,.*$/\1/p' \
+                  -e 's/^ *DEFUNX_DLD *( *"\([^"]*\)".*$/\1/p' "$src_file" | \
           LC_COLLATE=C sort -u`
     if [ -n "$fcns" ]; then
       for n in $fcns; do
@@ -45,7 +51,7 @@ for f in "$@"; do
     ## necessary functions can be found before they are used.
 
     $SED -n -e 's,^//* *PKG_ADD: *,,p' \
-            -e 's,^/\* *PKG_ADD: *\(.*\) *\*/ *$,\1,p' $f
+            -e 's,^/\* *PKG_ADD: *\(.*\) *\*/ *$,\1,p' "$src_file"
 
   fi
 done

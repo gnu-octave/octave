@@ -157,38 +157,38 @@ parse_range_spec (const octave_value& range_spec,
 }
 
 DEFUN (dlmread, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{data} =} dlmread (@var{file})\n\
-@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
-@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
-@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
-@deftypefnx {} {@var{data} =} dlmread (@dots{}, \"emptyvalue\", @var{EMPTYVAL})\n\
-Read numeric data from the text file @var{file} which uses the delimiter\n\
-@var{sep} between data values.\n\
-\n\
-If @var{sep} is not defined the separator between fields is determined from\n\
-the file itself.\n\
-\n\
-The optional scalar arguments @var{r0} and @var{c0} define the starting row\n\
-and column of the data to be read.  These values are indexed from zero,\n\
-i.e., the first data row corresponds to an index of zero.\n\
-\n\
-The @var{range} parameter specifies exactly which data elements are read.\n\
-The first form of the parameter is a 4-element vector containing the upper\n\
-left and lower right corners @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}\n\
-where the indices are zero-based.  Alternatively, a spreadsheet style\n\
-form such as @qcode{\"A2..Q15\"} or @qcode{\"T1:AA5\"} can be used.  The\n\
-lowest alphabetical index @qcode{'A'} refers to the first column.  The\n\
-lowest row index is 1.\n\
-\n\
-@var{file} should be a filename or a file id given by @code{fopen}.  In the\n\
-latter case, the file is read until end of file is reached.\n\
-\n\
-The @qcode{\"emptyvalue\"} option may be used to specify the value used to\n\
-fill empty fields.  The default is zero.  Note that any non-numeric values,\n\
-such as text, are also replaced by the @qcode{\"emptyvalue\"}.\n\
-@seealso{csvread, textscan, textread, dlmwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{data} =} dlmread (@var{file})
+@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep})
+@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})
+@deftypefnx {} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})
+@deftypefnx {} {@var{data} =} dlmread (@dots{}, "emptyvalue", @var{EMPTYVAL})
+Read numeric data from the text file @var{file} which uses the delimiter
+@var{sep} between data values.
+
+If @var{sep} is not defined the separator between fields is determined from
+the file itself.
+
+The optional scalar arguments @var{r0} and @var{c0} define the starting row
+and column of the data to be read.  These values are indexed from zero,
+i.e., the first data row corresponds to an index of zero.
+
+The @var{range} parameter specifies exactly which data elements are read.
+The first form of the parameter is a 4-element vector containing the upper
+left and lower right corners @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}
+where the indices are zero-based.  Alternatively, a spreadsheet style
+form such as @qcode{"A2..Q15"} or @qcode{"T1:AA5"} can be used.  The
+lowest alphabetical index @qcode{'A'} refers to the first column.  The
+lowest row index is 1.
+
+@var{file} should be a filename or a file id given by @code{fopen}.  In the
+latter case, the file is read until end of file is reached.
+
+The @qcode{"emptyvalue"} option may be used to specify the value used to
+fill empty fields.  The default is zero.  Note that any non-numeric values,
+such as text, are also replaced by the @qcode{"emptyvalue"}.
+@seealso{csvread, textscan, textread, dlmwrite}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

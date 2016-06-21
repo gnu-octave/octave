@@ -64,89 +64,89 @@ get_chol_l (const CHOLT& fact)
 }
 
 DEFUN_DLD (chol, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{R} =} chol (@var{A})\n\
-@deftypefnx {} {[@var{R}, @var{p}] =} chol (@var{A})\n\
-@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A})\n\
-@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A}, \"vector\")\n\
-@deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, \"lower\")\n\
-@deftypefnx {} {[@var{R}, @dots{}] =} chol (@dots{}, \"upper\")\n\
-@cindex Cholesky factorization\n\
-Compute the upper Cholesky@tie{}factor, @var{R}, of the real symmetric\n\
-or complex Hermitian positive definite matrix @var{A}.\n\
-\n\
-The upper Cholesky@tie{}factor @var{R} is computed by using the upper\n\
-triangular part of matrix @var{A} and is defined by\n\
-@tex\n\
-$ R^T R = A $.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{R}' * @var{R} = @var{A}.\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-Calling @code{chol} using the optional @qcode{\"upper\"} flag has the\n\
-same behavior.  In contrast, using the optional @qcode{\"lower\"} flag,\n\
-@code{chol} returns the lower triangular factorization, computed by using\n\
-the lower triangular part of matrix @var{A}, such that\n\
-@tex\n\
-$ L L^T = A $.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{L} * @var{L}' = @var{A}.\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-Called with one output argument @code{chol} fails if matrix @var{A} is\n\
-not positive definite.  Note that if matrix @var{A} is not real symmetric\n\
-or complex Hermitian then the lower triangular part is considered to be\n\
-the (complex conjugate) transpose of the upper triangular part, or vice\n\
-versa, given the @qcode{\"lower\"} flag.\n\
-\n\
-Called with two or more output arguments @var{p} flags whether the matrix\n\
-@var{A} was positive definite and @code{chol} does not fail.  A zero value\n\
-of @var{p} indicates that matrix @var{A} is positive definite and @var{R}\n\
-gives the factorization.  Otherwise, @var{p} will have a positive value.\n\
-\n\
-If called with three output arguments matrix @var{A} must be sparse and\n\
-a sparsity preserving row/column permutation is applied to matrix @var{A}\n\
-prior to the factorization.  That is @var{R} is the factorization of\n\
-@code{@var{A}(@var{Q},@var{Q})} such that\n\
-@tex\n\
-$ R^T R = Q^T A Q$.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{R}' * @var{R} = @var{Q}' * @var{A} * @var{Q}.\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-The sparsity preserving permutation is generally returned as a matrix.\n\
-However, given the optional flag @qcode{\"vector\"}, @var{Q} will be\n\
-returned as a vector such that\n\
-@tex\n\
-$ R^T R = A (Q, Q)$.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{R}' * @var{R} = @var{A}(@var{Q}, @var{Q}).\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-In general the lower triangular factorization is significantly faster for\n\
-sparse matrices.\n\
-@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{R} =} chol (@var{A})
+@deftypefnx {} {[@var{R}, @var{p}] =} chol (@var{A})
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A})
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A}, "vector")
+@deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, "lower")
+@deftypefnx {} {[@var{R}, @dots{}] =} chol (@dots{}, "upper")
+@cindex Cholesky factorization
+Compute the upper Cholesky@tie{}factor, @var{R}, of the real symmetric
+or complex Hermitian positive definite matrix @var{A}.
+
+The upper Cholesky@tie{}factor @var{R} is computed by using the upper
+triangular part of matrix @var{A} and is defined by
+@tex
+$ R^T R = A $.
+@end tex
+@ifnottex
+
+@example
+@var{R}' * @var{R} = @var{A}.
+@end example
+
+@end ifnottex
+
+Calling @code{chol} using the optional @qcode{"upper"} flag has the
+same behavior.  In contrast, using the optional @qcode{"lower"} flag,
+@code{chol} returns the lower triangular factorization, computed by using
+the lower triangular part of matrix @var{A}, such that
+@tex
+$ L L^T = A $.
+@end tex
+@ifnottex
+
+@example
+@var{L} * @var{L}' = @var{A}.
+@end example
+
+@end ifnottex
+
+Called with one output argument @code{chol} fails if matrix @var{A} is
+not positive definite.  Note that if matrix @var{A} is not real symmetric
+or complex Hermitian then the lower triangular part is considered to be
+the (complex conjugate) transpose of the upper triangular part, or vice
+versa, given the @qcode{"lower"} flag.
+
+Called with two or more output arguments @var{p} flags whether the matrix
+@var{A} was positive definite and @code{chol} does not fail.  A zero value
+of @var{p} indicates that matrix @var{A} is positive definite and @var{R}
+gives the factorization.  Otherwise, @var{p} will have a positive value.
+
+If called with three output arguments matrix @var{A} must be sparse and
+a sparsity preserving row/column permutation is applied to matrix @var{A}
+prior to the factorization.  That is @var{R} is the factorization of
+@code{@var{A}(@var{Q},@var{Q})} such that
+@tex
+$ R^T R = Q^T A Q$.
+@end tex
+@ifnottex
+
+@example
+@var{R}' * @var{R} = @var{Q}' * @var{A} * @var{Q}.
+@end example
+
+@end ifnottex
+
+The sparsity preserving permutation is generally returned as a matrix.
+However, given the optional flag @qcode{"vector"}, @var{Q} will be
+returned as a vector such that
+@tex
+$ R^T R = A (Q, Q)$.
+@end tex
+@ifnottex
+
+@example
+@var{R}' * @var{R} = @var{A}(@var{Q}, @var{Q}).
+@end example
+
+@end ifnottex
+
+In general the lower triangular factorization is significantly faster for
+sparse matrices.
+@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -329,12 +329,12 @@ sparse matrices.\n\
 */
 
 DEFUN_DLD (cholinv, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {} cholinv (@var{A})\n\
-Compute the inverse of the symmetric positive definite matrix @var{A} using\n\
-the Cholesky@tie{}factorization.\n\
-@seealso{chol, chol2inv, inv}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} cholinv (@var{A})
+Compute the inverse of the symmetric positive definite matrix @var{A} using
+the Cholesky@tie{}factorization.
+@seealso{chol, chol2inv, inv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -453,16 +453,16 @@ the Cholesky@tie{}factorization.\n\
 */
 
 DEFUN_DLD (chol2inv, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {} chol2inv (@var{U})\n\
-Invert a symmetric, positive definite square matrix from its Cholesky\n\
-decomposition, @var{U}.\n\
-\n\
-Note that @var{U} should be an upper-triangular matrix with positive\n\
-diagonal elements.  @code{chol2inv (@var{U})} provides\n\
-@code{inv (@var{U}'*@var{U})} but it is much faster than using @code{inv}.\n\
-@seealso{chol, cholinv, inv}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} chol2inv (@var{U})
+Invert a symmetric, positive definite square matrix from its Cholesky
+decomposition, @var{U}.
+
+Note that @var{U} should be an upper-triangular matrix with positive
+diagonal elements.  @code{chol2inv (@var{U})} provides
+@code{inv (@var{U}'*@var{U})} but it is much faster than using @code{inv}.
+@seealso{chol, cholinv, inv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -536,36 +536,36 @@ diagonal elements.  @code{chol2inv (@var{U})} provides\n\
 }
 
 DEFUN_DLD (cholupdate, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn {} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
-Update or downdate a Cholesky@tie{}factorization.\n\
-\n\
-Given an upper triangular matrix @var{R} and a column vector @var{u},\n\
-attempt to determine another upper triangular matrix @var{R1} such that\n\
-\n\
-@itemize @bullet\n\
-@item\n\
-@var{R1}'*@var{R1} = @var{R}'*@var{R} + @var{u}*@var{u}'\n\
-if @var{op} is @qcode{\"+\"}\n\
-\n\
-@item\n\
-@var{R1}'*@var{R1} = @var{R}'*@var{R} - @var{u}*@var{u}'\n\
-if @var{op} is @qcode{\"-\"}\n\
-@end itemize\n\
-\n\
-If @var{op} is @qcode{\"-\"}, @var{info} is set to\n\
-\n\
-@itemize\n\
-@item 0 if the downdate was successful,\n\
-\n\
-@item 1 if @var{R}'*@var{R} - @var{u}*@var{u}' is not positive definite,\n\
-\n\
-@item 2 if @var{R} is singular.\n\
-@end itemize\n\
-\n\
-If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
-@seealso{chol, cholinsert, choldelete, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})
+Update or downdate a Cholesky@tie{}factorization.
+
+Given an upper triangular matrix @var{R} and a column vector @var{u},
+attempt to determine another upper triangular matrix @var{R1} such that
+
+@itemize @bullet
+@item
+@var{R1}'*@var{R1} = @var{R}'*@var{R} + @var{u}*@var{u}'
+if @var{op} is @qcode{"+"}
+
+@item
+@var{R1}'*@var{R1} = @var{R}'*@var{R} - @var{u}*@var{u}'
+if @var{op} is @qcode{"-"}
+@end itemize
+
+If @var{op} is @qcode{"-"}, @var{info} is set to
+
+@itemize
+@item 0 if the downdate was successful,
+
+@item 1 if @var{R}'*@var{R} - @var{u}*@var{u}' is not positive definite,
+
+@item 2 if @var{R} is singular.
+@end itemize
+
+If @var{info} is not present, an error message is printed in cases 1 and 2.
+@seealso{chol, cholinsert, choldelete, cholshift}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -739,28 +739,28 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 */
 
 DEFUN_DLD (cholinsert, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})\n\
-@deftypefnx {} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
-Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
-positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
-triangular, return the Cholesky@tie{}factorization of\n\
-@var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and\n\
-@w{p = [1:j-1,j+1:n+1]}.  @w{u(j)} should be positive.\n\
-\n\
-On return, @var{info} is set to\n\
-\n\
-@itemize\n\
-@item 0 if the insertion was successful,\n\
-\n\
-@item 1 if @var{A1} is not positive definite,\n\
-\n\
-@item 2 if @var{R} is singular.\n\
-@end itemize\n\
-\n\
-If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
-@seealso{chol, cholupdate, choldelete, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})
+@deftypefnx {} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})
+Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
+triangular, return the Cholesky@tie{}factorization of
+@var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and
+@w{p = [1:j-1,j+1:n+1]}.  @w{u(j)} should be positive.
+
+On return, @var{info} is set to
+
+@itemize
+@item 0 if the insertion was successful,
+
+@item 1 if @var{A1} is not positive definite,
+
+@item 2 if @var{R} is singular.
+@end itemize
+
+If @var{info} is not present, an error message is printed in cases 1 and 2.
+@seealso{chol, cholupdate, choldelete, cholshift}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();
@@ -992,14 +992,14 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 */
 
 DEFUN_DLD (choldelete, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
-Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
-positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
-triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
-@w{p = [1:j-1,j+1:n+1]}.\n\
-@seealso{chol, cholupdate, cholinsert, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{R1} =} choldelete (@var{R}, @var{j})
+Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
+triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
+@w{p = [1:j-1,j+1:n+1]}.
+@seealso{chol, cholupdate, cholinsert, cholshift}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -1114,18 +1114,18 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 */
 
 DEFUN_DLD (cholshift, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
-Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
-positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
-triangular, return the Cholesky@tie{}factorization of\n\
-@w{@var{A}(p,p)}, where @w{p} is the permutation @*\n\
-@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*\n\
- or @*\n\
-@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*\n\
-\n\
-@seealso{chol, cholupdate, cholinsert, choldelete}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})
+Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
+triangular, return the Cholesky@tie{}factorization of
+@w{@var{A}(p,p)}, where @w{p} is the permutation @*
+@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*
+ or @*
+@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*
+
+@seealso{chol, cholupdate, cholinsert, choldelete}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();

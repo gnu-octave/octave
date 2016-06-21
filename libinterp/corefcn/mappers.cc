@@ -37,28 +37,28 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 DEFUN (abs, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} abs (@var{z})\n\
-Compute the magnitude of @var{z}.\n\
-\n\
-The magnitude is defined as\n\
-@tex\n\
-$|z| = \\sqrt{x^2 + y^2}$.\n\
-@end tex\n\
-@ifnottex\n\
-|@var{z}| = @code{sqrt (x^2 + y^2)}.\n\
-@end ifnottex\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-abs (3 + 4i)\n\
-     @result{} 5\n\
-@end group\n\
-@end example\n\
-@seealso{arg}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} abs (@var{z})
+Compute the magnitude of @var{z}.
+
+The magnitude is defined as
+@tex
+$|z| = \sqrt{x^2 + y^2}$.
+@end tex
+@ifnottex
+|@var{z}| = @code{sqrt (x^2 + y^2)}.
+@end ifnottex
+
+For example:
+
+@example
+@group
+abs (3 + 4i)
+     @result{} 5
+@end group
+@end example
+@seealso{arg}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -84,11 +84,11 @@ abs (3 + 4i)\n\
 */
 
 DEFUN (acos, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} acos (@var{x})\n\
-Compute the inverse cosine in radians for each element of @var{x}.\n\
-@seealso{cos, acosd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} acos (@var{x})
+Compute the inverse cosine in radians for each element of @var{x}.
+@seealso{cos, acosd}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -135,11 +135,11 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 */
 
 DEFUN (acosh, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} acosh (@var{x})\n\
-Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
-@seealso{cosh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} acosh (@var{x})
+Compute the inverse hyperbolic cosine for each element of @var{x}.
+@seealso{cosh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -180,11 +180,11 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 */
 
 DEFUN (angle, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} angle (@var{z})\n\
-See @code{arg}.\n\
-@seealso{arg}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} angle (@var{z})
+See @code{arg}.
+@seealso{arg}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -193,30 +193,30 @@ See @code{arg}.\n\
 }
 
 DEFUN (arg, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} arg (@var{z})\n\
-@deftypefnx {} {} angle (@var{z})\n\
-Compute the argument, i.e., angle of @var{z}.\n\
-\n\
-This is defined as,\n\
-@tex\n\
-$\\theta = atan2 (y, x),$\n\
-@end tex\n\
-@ifnottex\n\
-@var{theta} = @code{atan2 (@var{y}, @var{x})},\n\
-@end ifnottex\n\
-in radians.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-arg (3 + 4i)\n\
-     @result{} 0.92730\n\
-@end group\n\
-@end example\n\
-@seealso{abs}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} arg (@var{z})
+@deftypefnx {} {} angle (@var{z})
+Compute the argument, i.e., angle of @var{z}.
+
+This is defined as,
+@tex
+$\theta = atan2 (y, x),$
+@end tex
+@ifnottex
+@var{theta} = @code{atan2 (@var{y}, @var{x})},
+@end ifnottex
+in radians.
+
+For example:
+
+@example
+@group
+arg (3 + 4i)
+     @result{} 0.92730
+@end group
+@end example
+@seealso{abs}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -248,11 +248,11 @@ arg (3 + 4i)\n\
 */
 
 DEFUN (asin, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} asin (@var{x})\n\
-Compute the inverse sine in radians for each element of @var{x}.\n\
-@seealso{sin, asind}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} asin (@var{x})
+Compute the inverse sine in radians for each element of @var{x}.
+@seealso{sin, asind}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -298,11 +298,11 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 */
 
 DEFUN (asinh, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} asinh (@var{x})\n\
-Compute the inverse hyperbolic sine for each element of @var{x}.\n\
-@seealso{sinh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} asinh (@var{x})
+Compute the inverse hyperbolic sine for each element of @var{x}.
+@seealso{sinh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -331,11 +331,11 @@ Compute the inverse hyperbolic sine for each element of @var{x}.\n\
 */
 
 DEFUN (atan, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} atan (@var{x})\n\
-Compute the inverse tangent in radians for each element of @var{x}.\n\
-@seealso{tan, atand}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} atan (@var{x})
+Compute the inverse tangent in radians for each element of @var{x}.
+@seealso{tan, atand}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -369,11 +369,11 @@ Compute the inverse tangent in radians for each element of @var{x}.\n\
 */
 
 DEFUN (atanh, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} atanh (@var{x})\n\
-Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
-@seealso{tanh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} atanh (@var{x})
+Compute the inverse hyperbolic tangent for each element of @var{x}.
+@seealso{tanh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -403,14 +403,14 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 */
 
 DEFUN (cbrt, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} cbrt (@var{x})\n\
-Compute the real cube root of each element of @var{x}.\n\
-\n\
-Unlike @code{@var{x}^(1/3)}, the result will be negative if @var{x} is\n\
-negative.\n\
-@seealso{nthroot}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} cbrt (@var{x})
+Compute the real cube root of each element of @var{x}.
+
+Unlike @code{@var{x}^(1/3)}, the result will be negative if @var{x} is
+negative.
+@seealso{nthroot}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -433,23 +433,23 @@ negative.\n\
 */
 
 DEFUN (ceil, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ceil (@var{x})\n\
-Return the smallest integer not less than @var{x}.\n\
-\n\
-This is equivalent to rounding towards positive infinity.\n\
-\n\
-If @var{x} is complex, return\n\
-@code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
-\n\
-@example\n\
-@group\n\
-ceil ([-2.7, 2.7])\n\
-    @result{} -2    3\n\
-@end group\n\
-@end example\n\
-@seealso{floor, round, fix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ceil (@var{x})
+Return the smallest integer not less than @var{x}.
+
+This is equivalent to rounding towards positive infinity.
+
+If @var{x} is complex, return
+@code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.
+
+@example
+@group
+ceil ([-2.7, 2.7])
+    @result{} -2    3
+@end group
+@end example
+@seealso{floor, round, fix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -475,19 +475,19 @@ ceil ([-2.7, 2.7])\n\
 */
 
 DEFUN (conj, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} conj (@var{z})\n\
-Return the complex conjugate of @var{z}.\n\
-\n\
-The complex conjugate is defined as\n\
-@tex\n\
-$\\bar{z} = x - iy$.\n\
-@end tex\n\
-@ifnottex\n\
-@code{conj (@var{z})} = @var{x} - @var{i}@var{y}.\n\
-@end ifnottex\n\
-@seealso{real, imag}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} conj (@var{z})
+Return the complex conjugate of @var{z}.
+
+The complex conjugate is defined as
+@tex
+$\bar{z} = x - iy$.
+@end tex
+@ifnottex
+@code{conj (@var{z})} = @var{x} - @var{i}@var{y}.
+@end ifnottex
+@seealso{real, imag}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -513,11 +513,11 @@ $\\bar{z} = x - iy$.\n\
 */
 
 DEFUN (cos, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} cos (@var{x})\n\
-Compute the cosine for each element of @var{x} in radians.\n\
-@seealso{acos, cosd, cosh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} cos (@var{x})
+Compute the cosine for each element of @var{x} in radians.
+@seealso{acos, cosd, cosh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -547,11 +547,11 @@ Compute the cosine for each element of @var{x} in radians.\n\
 */
 
 DEFUN (cosh, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} cosh (@var{x})\n\
-Compute the hyperbolic cosine for each element of @var{x}.\n\
-@seealso{acosh, sinh, tanh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} cosh (@var{x})
+Compute the hyperbolic cosine for each element of @var{x}.
+@seealso{acosh, sinh, tanh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -575,31 +575,31 @@ Compute the hyperbolic cosine for each element of @var{x}.\n\
 */
 
 DEFUN (erf, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} erf (@var{z})\n\
-Compute the error function.\n\
-\n\
-The error function is defined as\n\
-@tex\n\
-$$\n\
- {\\rm erf} (z) = {2 \\over \\sqrt{\\pi}}\\int_0^z e^{-t^2} dt\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-                        z\n\
-              2        /\n\
-erf (z) = --------- *  | e^(-t^2) dt\n\
-          sqrt (pi)    /\n\
-                    t=0\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-@seealso{erfc, erfcx, erfi, dawson, erfinv, erfcinv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} erf (@var{z})
+Compute the error function.
+
+The error function is defined as
+@tex
+$$
+ {\rm erf} (z) = {2 \over \sqrt{\pi}}\int_0^z e^{-t^2} dt
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+                        z
+              2        /
+erf (z) = --------- *  | e^(-t^2) dt
+          sqrt (pi)    /
+                    t=0
+@end group
+@end example
+
+@end ifnottex
+@seealso{erfc, erfcx, erfi, dawson, erfinv, erfcinv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -644,17 +644,17 @@ erf (z) = --------- *  | e^(-t^2) dt\n\
 */
 
 DEFUN (erfinv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} erfinv (@var{x})\n\
-Compute the inverse error function.\n\
-\n\
-The inverse error function is defined such that\n\
-\n\
-@example\n\
-erf (@var{y}) == @var{x}\n\
-@end example\n\
-@seealso{erf, erfc, erfcx, erfi, dawson, erfcinv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} erfinv (@var{x})
+Compute the inverse error function.
+
+The inverse error function is defined such that
+
+@example
+erf (@var{y}) == @var{x}
+@end example
+@seealso{erf, erfc, erfcx, erfi, dawson, erfcinv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -681,17 +681,17 @@ erf (@var{y}) == @var{x}\n\
 */
 
 DEFUN (erfcinv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} erfcinv (@var{x})\n\
-Compute the inverse complementary error function.\n\
-\n\
-The inverse complementary error function is defined such that\n\
-\n\
-@example\n\
-erfc (@var{y}) == @var{x}\n\
-@end example\n\
-@seealso{erfc, erf, erfcx, erfi, dawson, erfinv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} erfcinv (@var{x})
+Compute the inverse complementary error function.
+
+The inverse complementary error function is defined such that
+
+@example
+erfc (@var{y}) == @var{x}
+@end example
+@seealso{erfc, erf, erfcx, erfi, dawson, erfinv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -718,19 +718,19 @@ erfc (@var{y}) == @var{x}\n\
 */
 
 DEFUN (erfc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} erfc (@var{z})\n\
-Compute the complementary error function.\n\
-\n\
-The complementary error function is defined as\n\
-@tex\n\
-$1 - {\\rm erf} (z)$.\n\
-@end tex\n\
-@ifnottex\n\
-@w{@code{1 - erf (@var{z})}}.\n\
-@end ifnottex\n\
-@seealso{erfcinv, erfcx, erfi, dawson, erf, erfinv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} erfc (@var{z})
+Compute the complementary error function.
+
+The complementary error function is defined as
+@tex
+$1 - {\rm erf} (z)$.
+@end tex
+@ifnottex
+@w{@code{1 - erf (@var{z})}}.
+@end ifnottex
+@seealso{erfcinv, erfcx, erfi, dawson, erf, erfinv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -748,25 +748,25 @@ $1 - {\\rm erf} (z)$.\n\
 */
 
 DEFUN (erfcx, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} erfcx (@var{z})\n\
-Compute the scaled complementary error function.\n\
-\n\
-The scaled complementary error function is defined as\n\
-@tex\n\
-$$\n\
- e^{z^2} {\\rm erfc} (z) \\equiv e^{z^2} (1 - {\\rm erf} (z))\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-exp (z^2) * erfc (z)\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-@seealso{erfc, erf, erfi, dawson, erfinv, erfcinv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} erfcx (@var{z})
+Compute the scaled complementary error function.
+
+The scaled complementary error function is defined as
+@tex
+$$
+ e^{z^2} {\rm erfc} (z) \equiv e^{z^2} (1 - {\rm erf} (z))
+$$
+@end tex
+@ifnottex
+
+@example
+exp (z^2) * erfc (z)
+@end example
+
+@end ifnottex
+@seealso{erfc, erf, erfi, dawson, erfinv, erfcinv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -790,25 +790,25 @@ exp (z^2) * erfc (z)\n\
 */
 
 DEFUN (erfi, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} erfi (@var{z})\n\
-Compute the imaginary error function.\n\
-\n\
-The imaginary error function is defined as\n\
-@tex\n\
-$$\n\
- -i {\\rm erf} (iz)\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
--i * erf (i*z)\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-@seealso{erfc, erf, erfcx, dawson, erfinv, erfcinv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} erfi (@var{z})
+Compute the imaginary error function.
+
+The imaginary error function is defined as
+@tex
+$$
+ -i {\rm erf} (iz)
+$$
+@end tex
+@ifnottex
+
+@example
+-i * erf (i*z)
+@end example
+
+@end ifnottex
+@seealso{erfc, erf, erfcx, dawson, erfinv, erfcinv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -827,25 +827,25 @@ $$\n\
 */
 
 DEFUN (dawson, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} dawson (@var{z})\n\
-Compute the Dawson (scaled imaginary error) function.\n\
-\n\
-The Dawson function is defined as\n\
-@tex\n\
-$$\n\
- {\\sqrt{\\pi} \\over 2} e^{-z^2} {\\rm erfi} (z) \\equiv -i {\\sqrt{\\pi} \\over 2} e^{-z^2} {\\rm erf} (iz)\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-(sqrt (pi) / 2) * exp (-z^2) * erfi (z)\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-@seealso{erfc, erf, erfcx, erfi, erfinv, erfcinv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} dawson (@var{z})
+Compute the Dawson (scaled imaginary error) function.
+
+The Dawson function is defined as
+@tex
+$$
+ {\sqrt{\pi} \over 2} e^{-z^2} {\rm erfi} (z) \equiv -i {\sqrt{\pi} \over 2} e^{-z^2} {\rm erf} (iz)
+$$
+@end tex
+@ifnottex
+
+@example
+(sqrt (pi) / 2) * exp (-z^2) * erfi (z)
+@end example
+
+@end ifnottex
+@seealso{erfc, erf, erfcx, erfi, erfinv, erfcinv}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -866,20 +866,20 @@ $$\n\
 */
 
 DEFUN (exp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} exp (@var{x})\n\
-Compute\n\
-@tex\n\
-$e^{x}$\n\
-@end tex\n\
-@ifnottex\n\
-@code{e^x}\n\
-@end ifnottex\n\
-for each element of @var{x}.\n\
-\n\
-To compute the matrix exponential, see @ref{Linear Algebra}.\n\
-@seealso{log}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} exp (@var{x})
+Compute
+@tex
+$e^{x}$
+@end tex
+@ifnottex
+@code{e^x}
+@end ifnottex
+for each element of @var{x}.
+
+To compute the matrix exponential, see @ref{Linear Algebra}.
+@seealso{log}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -901,18 +901,18 @@ To compute the matrix exponential, see @ref{Linear Algebra}.\n\
 */
 
 DEFUN (expm1, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} expm1 (@var{x})\n\
-Compute\n\
-@tex\n\
-$ e^{x} - 1 $\n\
-@end tex\n\
-@ifnottex\n\
-@code{exp (@var{x}) - 1}\n\
-@end ifnottex\n\
-accurately in the neighborhood of zero.\n\
-@seealso{exp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} expm1 (@var{x})
+Compute
+@tex
+$ e^{x} - 1 $
+@end tex
+@ifnottex
+@code{exp (@var{x}) - 1}
+@end ifnottex
+accurately in the neighborhood of zero.
+@seealso{exp}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -931,21 +931,21 @@ accurately in the neighborhood of zero.\n\
 */
 
 DEFUN (isfinite, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isfinite (@var{x})\n\
-Return a logical array which is true where the elements of @var{x} are\n\
-finite values and false where they are not.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-isfinite ([13, Inf, NA, NaN])\n\
-     @result{} [ 1, 0, 0, 0 ]\n\
-@end group\n\
-@end example\n\
-@seealso{isinf, isnan, isna}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isfinite (@var{x})
+Return a logical array which is true where the elements of @var{x} are
+finite values and false where they are not.
+
+For example:
+
+@example
+@group
+isfinite ([13, Inf, NA, NaN])
+     @result{} [ 1, 0, 0, 0 ]
+@end group
+@end example
+@seealso{isinf, isnan, isna}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -967,21 +967,21 @@ isfinite ([13, Inf, NA, NaN])\n\
 */
 
 DEFUN (fix, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} fix (@var{x})\n\
-Truncate fractional portion of @var{x} and return the integer portion.\n\
-\n\
-This is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
-@code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
-\n\
-@example\n\
-@group\n\
-fix ([-2.7, 2.7])\n\
-   @result{} -2    2\n\
-@end group\n\
-@end example\n\
-@seealso{ceil, floor, round}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} fix (@var{x})
+Truncate fractional portion of @var{x} and return the integer portion.
+
+This is equivalent to rounding towards zero.  If @var{x} is complex, return
+@code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.
+
+@example
+@group
+fix ([-2.7, 2.7])
+   @result{} -2    2
+@end group
+@end example
+@seealso{ceil, floor, round}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1000,21 +1000,21 @@ fix ([-2.7, 2.7])\n\
 */
 
 DEFUN (floor, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} floor (@var{x})\n\
-Return the largest integer not greater than @var{x}.\n\
-\n\
-This is equivalent to rounding towards negative infinity.  If @var{x} is\n\
-complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
-\n\
-@example\n\
-@group\n\
-floor ([-2.7, 2.7])\n\
-     @result{} -3    2\n\
-@end group\n\
-@end example\n\
-@seealso{ceil, round, fix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} floor (@var{x})
+Return the largest integer not greater than @var{x}.
+
+This is equivalent to rounding towards negative infinity.  If @var{x} is
+complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
+
+@example
+@group
+floor ([-2.7, 2.7])
+     @result{} -3    2
+@end group
+@end example
+@seealso{ceil, round, fix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1033,37 +1033,37 @@ floor ([-2.7, 2.7])\n\
 */
 
 DEFUN (gamma, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} gamma (@var{z})\n\
-Compute the Gamma function.\n\
-\n\
-The Gamma function is defined as\n\
-@tex\n\
-$$\n\
- \\Gamma (z) = \\int_0^\\infty t^{z-1} e^{-t} dt.\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-             infinity\n\
-            /\n\
-gamma (z) = | t^(z-1) exp (-t) dt.\n\
-            /\n\
-         t=0\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-Programming Note: The gamma function can grow quite large even for small\n\
-input values.  In many cases it may be preferable to use the natural\n\
-logarithm of the gamma function (@code{gammaln}) in calculations to minimize\n\
-loss of precision.  The final result is then\n\
-@code{exp (@var{result_using_gammaln}).}\n\
-@seealso{gammainc, gammaln, factorial}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} gamma (@var{z})
+Compute the Gamma function.
+
+The Gamma function is defined as
+@tex
+$$
+ \Gamma (z) = \int_0^\infty t^{z-1} e^{-t} dt.
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+             infinity
+            /
+gamma (z) = | t^(z-1) exp (-t) dt.
+            /
+         t=0
+@end group
+@end example
+
+@end ifnottex
+
+Programming Note: The gamma function can grow quite large even for small
+input values.  In many cases it may be preferable to use the natural
+logarithm of the gamma function (@code{gammaln}) in calculations to minimize
+loss of precision.  The final result is then
+@code{exp (@var{result_using_gammaln}).}
+@seealso{gammainc, gammaln, factorial}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1102,11 +1102,11 @@ loss of precision.  The final result is then\n\
 */
 
 DEFUN (imag, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} imag (@var{z})\n\
-Return the imaginary part of @var{z} as a real number.\n\
-@seealso{real, conj}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} imag (@var{z})
+Return the imaginary part of @var{z} as a real number.
+@seealso{real, conj}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1130,14 +1130,14 @@ Return the imaginary part of @var{z} as a real number.\n\
 */
 
 DEFUNX ("isalnum", Fisalnum, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isalnum (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-letters or digits and false where they are not.\n\
-\n\
-This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).\n\
-@seealso{isalpha, isdigit, ispunct, isspace, iscntrl}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isalnum (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+letters or digits and false where they are not.
+
+This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).
+@seealso{isalpha, isdigit, ispunct, isspace, iscntrl}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1159,14 +1159,14 @@ This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).\n\
 */
 
 DEFUNX ("isalpha", Fisalpha, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isalpha (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-letters and false where they are not.\n\
-\n\
-This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).\n\
-@seealso{isdigit, ispunct, isspace, iscntrl, isalnum, islower, isupper}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isalpha (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+letters and false where they are not.
+
+This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).
+@seealso{isdigit, ispunct, isspace, iscntrl, isalnum, islower, isupper}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1187,12 +1187,12 @@ This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).\n\
 */
 
 DEFUNX ("isascii", Fisascii, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isascii (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-ASCII characters (in the range 0 to 127 decimal) and false where they are\n\
-not.\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isascii (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+ASCII characters (in the range 0 to 127 decimal) and false where they are
+not.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1211,12 +1211,12 @@ not.\n\
 */
 
 DEFUNX ("iscntrl", Fiscntrl, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} iscntrl (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-control characters and false where they are not.\n\
-@seealso{ispunct, isspace, isalpha, isdigit}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} iscntrl (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+control characters and false where they are not.
+@seealso{ispunct, isspace, isalpha, isdigit}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1237,12 +1237,12 @@ control characters and false where they are not.\n\
 */
 
 DEFUNX ("isdigit", Fisdigit, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isdigit (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-decimal digits (0-9) and false where they are not.\n\
-@seealso{isxdigit, isalpha, isletter, ispunct, isspace, iscntrl}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isdigit (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+decimal digits (0-9) and false where they are not.
+@seealso{isxdigit, isalpha, isletter, ispunct, isspace, iscntrl}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1262,21 +1262,21 @@ decimal digits (0-9) and false where they are not.\n\
 */
 
 DEFUN (isinf, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isinf (@var{x})\n\
-Return a logical array which is true where the elements of @var{x} are\n\
-infinite and false where they are not.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-isinf ([13, Inf, NA, NaN])\n\
-      @result{} [ 0, 1, 0, 0 ]\n\
-@end group\n\
-@end example\n\
-@seealso{isfinite, isnan, isna}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isinf (@var{x})
+Return a logical array which is true where the elements of @var{x} are
+infinite and false where they are not.
+
+For example:
+
+@example
+@group
+isinf ([13, Inf, NA, NaN])
+      @result{} [ 0, 1, 0, 0 ]
+@end group
+@end example
+@seealso{isfinite, isnan, isna}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1302,13 +1302,13 @@ isinf ([13, Inf, NA, NaN])\n\
 */
 
 DEFUNX ("isgraph", Fisgraph, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isgraph (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-printable characters (but not the space character) and false where they are\n\
-not.\n\
-@seealso{isprint}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isgraph (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+printable characters (but not the space character) and false where they are
+not.
+@seealso{isprint}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1328,12 +1328,12 @@ not.\n\
 */
 
 DEFUNX ("islower", Fislower, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} islower (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-lowercase letters and false where they are not.\n\
-@seealso{isupper, isalpha, isletter, isalnum}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} islower (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+lowercase letters and false where they are not.
+@seealso{isupper, isalpha, isletter, isalnum}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1353,21 +1353,21 @@ lowercase letters and false where they are not.\n\
 */
 
 DEFUN (isna, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isna (@var{x})\n\
-Return a logical array which is true where the elements of @var{x} are\n\
-NA (missing) values and false where they are not.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-isna ([13, Inf, NA, NaN])\n\
-     @result{} [ 0, 0, 1, 0 ]\n\
-@end group\n\
-@end example\n\
-@seealso{isnan, isinf, isfinite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isna (@var{x})
+Return a logical array which is true where the elements of @var{x} are
+NA (missing) values and false where they are not.
+
+For example:
+
+@example
+@group
+isna ([13, Inf, NA, NaN])
+     @result{} [ 0, 0, 1, 0 ]
+@end group
+@end example
+@seealso{isnan, isinf, isfinite}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1393,21 +1393,21 @@ isna ([13, Inf, NA, NaN])\n\
 */
 
 DEFUN (isnan, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isnan (@var{x})\n\
-Return a logical array which is true where the elements of @var{x} are\n\
-NaN values and false where they are not.\n\
-\n\
-NA values are also considered NaN values.  For example:\n\
-\n\
-@example\n\
-@group\n\
-isnan ([13, Inf, NA, NaN])\n\
-      @result{} [ 0, 0, 1, 1 ]\n\
-@end group\n\
-@end example\n\
-@seealso{isna, isinf, isfinite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isnan (@var{x})
+Return a logical array which is true where the elements of @var{x} are
+NaN values and false where they are not.
+
+NA values are also considered NaN values.  For example:
+
+@example
+@group
+isnan ([13, Inf, NA, NaN])
+      @result{} [ 0, 0, 1, 1 ]
+@end group
+@end example
+@seealso{isna, isinf, isfinite}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1433,13 +1433,13 @@ isnan ([13, Inf, NA, NaN])\n\
 */
 
 DEFUNX ("isprint", Fisprint, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isprint (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-printable characters (including the space character) and false where they\n\
-are not.\n\
-@seealso{isgraph}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isprint (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+printable characters (including the space character) and false where they
+are not.
+@seealso{isgraph}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1459,12 +1459,12 @@ are not.\n\
 */
 
 DEFUNX ("ispunct", Fispunct, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} ispunct (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-punctuation characters and false where they are not.\n\
-@seealso{isalpha, isdigit, isspace, iscntrl}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} ispunct (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+punctuation characters and false where they are not.
+@seealso{isalpha, isdigit, isspace, iscntrl}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1487,13 +1487,13 @@ punctuation characters and false where they are not.\n\
 */
 
 DEFUNX ("isspace", Fisspace, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isspace (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-whitespace characters (space, formfeed, newline, carriage return, tab, and\n\
-vertical tab) and false where they are not.\n\
-@seealso{iscntrl, ispunct, isalpha, isdigit}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isspace (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+whitespace characters (space, formfeed, newline, carriage return, tab, and
+vertical tab) and false where they are not.
+@seealso{iscntrl, ispunct, isalpha, isdigit}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1513,12 +1513,12 @@ vertical tab) and false where they are not.\n\
 */
 
 DEFUNX ("isupper", Fisupper, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isupper (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-uppercase letters and false where they are not.\n\
-@seealso{islower, isalpha, isletter, isalnum}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isupper (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+uppercase letters and false where they are not.
+@seealso{islower, isalpha, isletter, isalnum}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1538,12 +1538,12 @@ uppercase letters and false where they are not.\n\
 */
 
 DEFUNX ("isxdigit", Fisxdigit, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} isxdigit (@var{s})\n\
-Return a logical array which is true where the elements of @var{s} are\n\
-hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
-@seealso{isdigit}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} isxdigit (@var{s})
+Return a logical array which is true where the elements of @var{s} are
+hexadecimal digits (0-9 and @nospell{a-fA-F}).
+@seealso{isdigit}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1565,12 +1565,12 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 */
 
 DEFUN (lgamma, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} gammaln (@var{x})\n\
-@deftypefnx {} {} lgamma (@var{x})\n\
-Return the natural logarithm of the gamma function of @var{x}.\n\
-@seealso{gamma, gammainc}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} gammaln (@var{x})
+@deftypefnx {} {} lgamma (@var{x})
+Return the natural logarithm of the gamma function of @var{x}.
+@seealso{gamma, gammainc}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1608,20 +1608,20 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 */
 
 DEFUN (log, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} log (@var{x})\n\
-Compute the natural logarithm,\n\
-@tex\n\
-$\\ln{(x)},$\n\
-@end tex\n\
-@ifnottex\n\
-@code{ln (@var{x})},\n\
-@end ifnottex\n\
-for each element of @var{x}.\n\
-\n\
-To compute the matrix logarithm, see @ref{Linear Algebra}.\n\
-@seealso{exp, log1p, log2, log10, logspace}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} log (@var{x})
+Compute the natural logarithm,
+@tex
+$\ln{(x)},$
+@end tex
+@ifnottex
+@code{ln (@var{x})},
+@end ifnottex
+for each element of @var{x}.
+
+To compute the matrix logarithm, see @ref{Linear Algebra}.
+@seealso{exp, log1p, log2, log10, logspace}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1641,11 +1641,11 @@ To compute the matrix logarithm, see @ref{Linear Algebra}.\n\
 */
 
 DEFUN (log10, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} log10 (@var{x})\n\
-Compute the base-10 logarithm of each element of @var{x}.\n\
-@seealso{log, log2, logspace, exp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} log10 (@var{x})
+Compute the base-10 logarithm of each element of @var{x}.
+@seealso{log, log2, logspace, exp}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1662,18 +1662,18 @@ Compute the base-10 logarithm of each element of @var{x}.\n\
 */
 
 DEFUN (log1p, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} log1p (@var{x})\n\
-Compute\n\
-@tex\n\
-$\\ln{(1 + x)}$\n\
-@end tex\n\
-@ifnottex\n\
-@code{log (1 + @var{x})}\n\
-@end ifnottex\n\
-accurately in the neighborhood of zero.\n\
-@seealso{log, exp, expm1}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} log1p (@var{x})
+Compute
+@tex
+$\ln{(1 + x)}$
+@end tex
+@ifnottex
+@code{log (1 + @var{x})}
+@end ifnottex
+accurately in the neighborhood of zero.
+@seealso{log, exp, expm1}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1690,11 +1690,11 @@ accurately in the neighborhood of zero.\n\
 */
 
 DEFUN (real, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} real (@var{z})\n\
-Return the real part of @var{z}.\n\
-@seealso{imag, conj}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} real (@var{z})
+Return the real part of @var{z}.
+@seealso{imag, conj}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1711,29 +1711,29 @@ Return the real part of @var{z}.\n\
 %!assert (real (single (1)), single (1))
 %!assert (real (single (i)), single (0))
 %!assert (real (single (1+i)), single (1))
-%!assert (real (single ([1, i; i, 1])), full (eye (2,"single")))
+%!assert (real (single ([1, i; i, 1])), full (eye (2, "single")))
 
 %!error real ()
 %!error real (1, 2)
 */
 
 DEFUN (round, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} round (@var{x})\n\
-Return the integer nearest to @var{x}.\n\
-\n\
-If @var{x} is complex, return\n\
-@code{round (real (@var{x})) + round (imag (@var{x})) * I}.  If there\n\
-are two nearest integers, return the one further away from zero.\n\
-\n\
-@example\n\
-@group\n\
-round ([-2.7, 2.7])\n\
-     @result{} -3    3\n\
-@end group\n\
-@end example\n\
-@seealso{ceil, floor, fix, roundb}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} round (@var{x})
+Return the integer nearest to @var{x}.
+
+If @var{x} is complex, return
+@code{round (real (@var{x})) + round (imag (@var{x})) * I}.  If there
+are two nearest integers, return the one further away from zero.
+
+@example
+@group
+round ([-2.7, 2.7])
+     @result{} -3    3
+@end group
+@end example
+@seealso{ceil, floor, fix, roundb}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1763,15 +1763,15 @@ round ([-2.7, 2.7])\n\
 */
 
 DEFUN (roundb, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} roundb (@var{x})\n\
-Return the integer nearest to @var{x}.  If there are two nearest\n\
-integers, return the even one (banker's rounding).\n\
-\n\
-If @var{x} is complex,\n\
-return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
-@seealso{round}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} roundb (@var{x})
+Return the integer nearest to @var{x}.  If there are two nearest
+integers, return the even one (banker's rounding).
+
+If @var{x} is complex,
+return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.
+@seealso{round}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1803,35 +1803,35 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 */
 
 DEFUN (sign, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sign (@var{x})\n\
-Compute the @dfn{signum} function.\n\
-\n\
-This is defined as\n\
-@tex\n\
-$$\n\
-{\\rm sign} (@var{x}) = \\cases{1,&$x>0$;\\cr 0,&$x=0$;\\cr -1,&$x<0$.\\cr}\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-           -1, x < 0;\n\
-sign (x) =  0, x = 0;\n\
-            1, x > 0.\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
-\n\
-Note that @code{sign (-0.0)} is 0.  Although IEEE 754 floating point\n\
-allows zero to be signed, 0.0 and -0.0 compare equal.  If you must test\n\
-whether zero is signed, use the @code{signbit} function.\n\
-@seealso{signbit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sign (@var{x})
+Compute the @dfn{signum} function.
+
+This is defined as
+@tex
+$$
+{\rm sign} (@var{x}) = \cases{1,&$x>0$;\cr 0,&$x=0$;\cr -1,&$x<0$.\cr}
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+           -1, x < 0;
+sign (x) =  0, x = 0;
+            1, x > 0.
+@end group
+@end example
+
+@end ifnottex
+
+For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.
+
+Note that @code{sign (-0.0)} is 0.  Although IEEE 754 floating point
+allows zero to be signed, 0.0 and -0.0 compare equal.  If you must test
+whether zero is signed, use the @code{signbit} function.
+@seealso{signbit}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1855,20 +1855,20 @@ whether zero is signed, use the @code{signbit} function.\n\
 */
 
 DEFUNX ("signbit", Fsignbit, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} signbit (@var{x})\n\
-Return logical true if the value of @var{x} has its sign bit set and false\n\
-otherwise.\n\
-\n\
-This behavior is consistent with the other logical functions.\n\
-See @ref{Logical Values}.  The behavior differs from the C language function\n\
-which returns nonzero if the sign bit is set.\n\
-\n\
-This is not the same as @code{x < 0.0}, because IEEE 754 floating point\n\
-allows zero to be signed.  The comparison @code{-0.0 < 0.0} is false,\n\
-but @code{signbit (-0.0)} will return a nonzero value.\n\
-@seealso{sign}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} signbit (@var{x})
+Return logical true if the value of @var{x} has its sign bit set and false
+otherwise.
+
+This behavior is consistent with the other logical functions.
+See @ref{Logical Values}.  The behavior differs from the C language function
+which returns nonzero if the sign bit is set.
+
+This is not the same as @code{x < 0.0}, because IEEE 754 floating point
+allows zero to be signed.  The comparison @code{-0.0 < 0.0} is false,
+but @code{signbit (-0.0)} will return a nonzero value.
+@seealso{sign}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1894,11 +1894,11 @@ but @code{signbit (-0.0)} will return a nonzero value.\n\
 */
 
 DEFUN (sin, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sin (@var{x})\n\
-Compute the sine for each element of @var{x} in radians.\n\
-@seealso{asin, sind, sinh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sin (@var{x})
+Compute the sine for each element of @var{x} in radians.
+@seealso{asin, sind, sinh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1926,11 +1926,11 @@ Compute the sine for each element of @var{x} in radians.\n\
 */
 
 DEFUN (sinh, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sinh (@var{x})\n\
-Compute the hyperbolic sine for each element of @var{x}.\n\
-@seealso{asinh, cosh, tanh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sinh (@var{x})
+Compute the hyperbolic sine for each element of @var{x}.
+@seealso{asinh, cosh, tanh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1954,15 +1954,15 @@ Compute the hyperbolic sine for each element of @var{x}.\n\
 */
 
 DEFUN (sqrt, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sqrt (@var{x})\n\
-Compute the square root of each element of @var{x}.\n\
-\n\
-If @var{x} is negative, a complex result is returned.\n\
-\n\
-To compute the matrix square root, see @ref{Linear Algebra}.\n\
-@seealso{realsqrt, nthroot}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sqrt (@var{x})
+Compute the square root of each element of @var{x}.
+
+If @var{x} is negative, a complex result is returned.
+
+To compute the matrix square root, see @ref{Linear Algebra}.
+@seealso{realsqrt, nthroot}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1986,11 +1986,11 @@ To compute the matrix square root, see @ref{Linear Algebra}.\n\
 */
 
 DEFUN (tan, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} tan (@var{z})\n\
-Compute the tangent for each element of @var{x} in radians.\n\
-@seealso{atan, tand, tanh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} tan (@var{z})
+Compute the tangent for each element of @var{x} in radians.
+@seealso{atan, tand, tanh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2018,11 +2018,11 @@ Compute the tangent for each element of @var{x} in radians.\n\
 */
 
 DEFUN (tanh, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} tanh (@var{x})\n\
-Compute hyperbolic tangent for each element of @var{x}.\n\
-@seealso{atanh, sinh, cosh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} tanh (@var{x})
+Compute hyperbolic tangent for each element of @var{x}.
+@seealso{atanh, sinh, cosh}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2046,21 +2046,21 @@ Compute hyperbolic tangent for each element of @var{x}.\n\
 */
 
 DEFUNX ("toascii", Ftoascii, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} toascii (@var{s})\n\
-Return ASCII representation of @var{s} in a matrix.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-toascii (\"ASCII\")\n\
-     @result{} [ 65, 83, 67, 73, 73 ]\n\
-@end group\n\
-\n\
-@end example\n\
-@seealso{char}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} toascii (@var{s})
+Return ASCII representation of @var{s} in a matrix.
+
+For example:
+
+@example
+@group
+toascii ("ASCII")
+     @result{} [ 65, 83, 67, 73, 73 ]
+@end group
+
+@end example
+@seealso{char}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2081,23 +2081,23 @@ toascii (\"ASCII\")\n\
 */
 
 DEFUNX ("tolower", Ftolower, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} tolower (@var{s})\n\
-@deftypefnx {} {} lower (@var{s})\n\
-Return a copy of the string or cell string @var{s}, with each uppercase\n\
-character replaced by the corresponding lowercase one; non-alphabetic\n\
-characters are left unchanged.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-tolower (\"MiXeD cAsE 123\")\n\
-      @result{} \"mixed case 123\"\n\
-@end group\n\
-@end example\n\
-@seealso{toupper}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} tolower (@var{s})
+@deftypefnx {} {} lower (@var{s})
+Return a copy of the string or cell string @var{s}, with each uppercase
+character replaced by the corresponding lowercase one; non-alphabetic
+characters are left unchanged.
+
+For example:
+
+@example
+@group
+tolower ("MiXeD cAsE 123")
+      @result{} "mixed case 123"
+@end group
+@end example
+@seealso{toupper}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2140,23 +2140,23 @@ DEFALIAS (lower, tolower);
 */
 
 DEFUNX ("toupper", Ftoupper, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} toupper (@var{s})\n\
-@deftypefnx {} {} upper (@var{s})\n\
-Return a copy of the string or cell string @var{s}, with each lowercase\n\
-character replaced by the corresponding uppercase one; non-alphabetic\n\
-characters are left unchanged.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-toupper (\"MiXeD cAsE 123\")\n\
-      @result{} \"MIXED CASE 123\"\n\
-@end group\n\
-@end example\n\
-@seealso{tolower}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} toupper (@var{s})
+@deftypefnx {} {} upper (@var{s})
+Return a copy of the string or cell string @var{s}, with each lowercase
+character replaced by the corresponding uppercase one; non-alphabetic
+characters are left unchanged.
+
+For example:
+
+@example
+@group
+toupper ("MiXeD cAsE 123")
+      @result{} "MIXED CASE 123"
+@end group
+@end example
+@seealso{tolower}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

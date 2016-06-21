@@ -355,13 +355,13 @@ bitop (const std::string& fname, const octave_value_list& args)
 }
 
 DEFUN (bitand, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} bitand (@var{x}, @var{y})\n\
-Return the bitwise AND of non-negative integers.\n\
-\n\
-@var{x}, @var{y} must be in the range [0,intmax]\n\
-@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} bitand (@var{x}, @var{y})
+Return the bitwise AND of non-negative integers.
+
+@var{x}, @var{y} must be in the range [0,intmax]
+@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}
+@end deftypefn */)
 {
   return bitop ("bitand", args);
 }
@@ -371,12 +371,12 @@ Return the bitwise AND of non-negative integers.\n\
 */
 
 DEFUN (bitor, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} bitor (@var{x}, @var{y})\n\
-Return the bitwise OR of non-negative integers @var{x} and @var{y}.\n\
-\n\
-@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} bitor (@var{x}, @var{y})
+Return the bitwise OR of non-negative integers @var{x} and @var{y}.
+
+@seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}
+@end deftypefn */)
 {
   return bitop ("bitor", args);
 }
@@ -386,12 +386,12 @@ Return the bitwise OR of non-negative integers @var{x} and @var{y}.\n\
 */
 
 DEFUN (bitxor, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} bitxor (@var{x}, @var{y})\n\
-Return the bitwise XOR of non-negative integers @var{x} and @var{y}.\n\
-\n\
-@seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} bitxor (@var{x}, @var{y})
+Return the bitwise XOR of non-negative integers @var{x} and @var{y}.
+
+@seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}
+@end deftypefn */)
 {
   return bitop ("bitxor", args);
 }
@@ -529,37 +529,37 @@ bitshift (float a, int n, int64_t mask)
   while (0)
 
 DEFUN (bitshift, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} bitshift (@var{a}, @var{k})\n\
-@deftypefnx {} {} bitshift (@var{a}, @var{k}, @var{n})\n\
-Return a @var{k} bit shift of @var{n}-digit unsigned integers in @var{a}.\n\
-\n\
-A positive @var{k} leads to a left shift; A negative value to a right shift.\n\
-\n\
-If @var{n} is omitted it defaults to 64.\n\
-@var{n} must be in the range [1,64].\n\
-\n\
-@example\n\
-@group\n\
-bitshift (eye (3), 1)\n\
-@result{}\n\
-@group\n\
-2 0 0\n\
-0 2 0\n\
-0 0 2\n\
-@end group\n\
-\n\
-bitshift (10, [-2, -1, 0, 1, 2])\n\
-@result{} 2   5  10  20  40\n\
-@c FIXME: restore this example when third arg is allowed to be an array.\n\
-@c\n\
-@c\n\
-@c bitshift ([1, 10], 2, [3,4])\n\
-@c @result{} 4  8\n\
-@end group\n\
-@end example\n\
-@seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, intmax, flintmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} bitshift (@var{a}, @var{k})
+@deftypefnx {} {} bitshift (@var{a}, @var{k}, @var{n})
+Return a @var{k} bit shift of @var{n}-digit unsigned integers in @var{a}.
+
+A positive @var{k} leads to a left shift; A negative value to a right shift.
+
+If @var{n} is omitted it defaults to 64.
+@var{n} must be in the range [1,64].
+
+@example
+@group
+bitshift (eye (3), 1)
+@result{}
+@group
+2 0 0
+0 2 0
+0 0 2
+@end group
+
+bitshift (10, [-2, -1, 0, 1, 2])
+@result{} 2   5  10  20  40
+@c FIXME: restore this example when third arg is allowed to be an array.
+@c
+@c
+@c bitshift ([1, 10], 2, [3,4])
+@c @result{} 4  8
+@end group
+@end example
+@seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, intmax, flintmax}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -655,19 +655,19 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 */
 
 DEFUN (flintmax, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} flintmax ()\n\
-@deftypefnx {} {} flintmax (\"double\")\n\
-@deftypefnx {} {} flintmax (\"single\")\n\
-Return the largest integer that can be represented consecutively in a\n\
-floating point value.\n\
-\n\
-The default class is @qcode{\"double\"}, but @qcode{\"single\"} is a valid\n\
-option.  On IEEE 754 compatible systems, @code{flintmax} is\n\
-@w{@math{2^{53}}} for @qcode{\"double\"} and @w{@math{2^{24}}} for\n\
-@qcode{\"single\"}.\n\
-@seealso{intmax, realmax, realmin}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} flintmax ()
+@deftypefnx {} {} flintmax ("double")
+@deftypefnx {} {} flintmax ("single")
+Return the largest integer that can be represented consecutively in a
+floating point value.
+
+The default class is @qcode{"double"}, but @qcode{"single"} is a valid
+option.  On IEEE 754 compatible systems, @code{flintmax} is
+@w{@math{2^{53}}} for @qcode{"double"} and @w{@math{2^{24}}} for
+@qcode{"single"}.
+@seealso{intmax, realmax, realmin}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -698,41 +698,41 @@ option.  On IEEE 754 compatible systems, @code{flintmax} is\n\
 */
 
 DEFUN (intmax, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} intmax (@var{type})\n\
-Return the largest integer that can be represented in an integer type.\n\
-\n\
-The variable @var{type} can be\n\
-\n\
-@table @code\n\
-@item int8\n\
-signed 8-bit integer.\n\
-\n\
-@item int16\n\
-signed 16-bit integer.\n\
-\n\
-@item int32\n\
-signed 32-bit integer.\n\
-\n\
-@item int64\n\
-signed 64-bit integer.\n\
-\n\
-@item uint8\n\
-unsigned 8-bit integer.\n\
-\n\
-@item uint16\n\
-unsigned 16-bit integer.\n\
-\n\
-@item uint32\n\
-unsigned 32-bit integer.\n\
-\n\
-@item uint64\n\
-unsigned 64-bit integer.\n\
-@end table\n\
-\n\
-The default for @var{type} is @code{int32}.\n\
-@seealso{intmin, flintmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} intmax (@var{type})
+Return the largest integer that can be represented in an integer type.
+
+The variable @var{type} can be
+
+@table @code
+@item int8
+signed 8-bit integer.
+
+@item int16
+signed 16-bit integer.
+
+@item int32
+signed 32-bit integer.
+
+@item int64
+signed 64-bit integer.
+
+@item uint8
+unsigned 8-bit integer.
+
+@item uint16
+unsigned 16-bit integer.
+
+@item uint32
+unsigned 32-bit integer.
+
+@item uint64
+unsigned 64-bit integer.
+@end table
+
+The default for @var{type} is @code{int32}.
+@seealso{intmin, flintmax}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -785,41 +785,41 @@ The default for @var{type} is @code{int32}.\n\
 */
 
 DEFUN (intmin, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} intmin (@var{type})\n\
-Return the smallest integer that can be represented in an integer type.\n\
-\n\
-The variable @var{type} can be\n\
-\n\
-@table @code\n\
-@item int8\n\
-signed 8-bit integer.\n\
-\n\
-@item int16\n\
-signed 16-bit integer.\n\
-\n\
-@item int32\n\
-signed 32-bit integer.\n\
-\n\
-@item int64\n\
-signed 64-bit integer.\n\
-\n\
-@item uint8\n\
-unsigned 8-bit integer.\n\
-\n\
-@item uint16\n\
-unsigned 16-bit integer.\n\
-\n\
-@item uint32\n\
-unsigned 32-bit integer.\n\
-\n\
-@item uint64\n\
-unsigned 64-bit integer.\n\
-@end table\n\
-\n\
-The default for @var{type} is @code{int32}.\n\
-@seealso{intmax, flintmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} intmin (@var{type})
+Return the smallest integer that can be represented in an integer type.
+
+The variable @var{type} can be
+
+@table @code
+@item int8
+signed 8-bit integer.
+
+@item int16
+signed 16-bit integer.
+
+@item int32
+signed 32-bit integer.
+
+@item int64
+signed 64-bit integer.
+
+@item uint8
+unsigned 8-bit integer.
+
+@item uint16
+unsigned 16-bit integer.
+
+@item uint32
+unsigned 32-bit integer.
+
+@item uint64
+unsigned 64-bit integer.
+@end table
+
+The default for @var{type} is @code{int32}.
+@seealso{intmax, flintmax}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -872,16 +872,16 @@ The default for @var{type} is @code{int32}.\n\
 */
 
 DEFUN (sizemax, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sizemax ()\n\
-Return the largest value allowed for the size of an array.\n\
-\n\
-If Octave is compiled with 64-bit indexing, the result is of class int64,\n\
-otherwise it is of class int32.  The maximum array size is slightly\n\
-smaller than the maximum value allowable for the relevant class as reported\n\
-by @code{intmax}.\n\
-@seealso{intmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sizemax ()
+Return the largest value allowed for the size of an array.
+
+If Octave is compiled with 64-bit indexing, the result is of class int64,
+otherwise it is of class int32.  The maximum array size is slightly
+smaller than the maximum value allowable for the relevant class as reported
+by @code{intmax}.
+@seealso{intmax}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();

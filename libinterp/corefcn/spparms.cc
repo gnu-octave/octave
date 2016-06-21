@@ -34,76 +34,76 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 
 DEFUN (spparms, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} { } spparms ()\n\
-@deftypefnx {} {@var{vals} =} spparms ()\n\
-@deftypefnx {} {[@var{keys}, @var{vals}] =} spparms ()\n\
-@deftypefnx {} {@var{val} =} spparms (@var{key})\n\
-@deftypefnx {} { } spparms (@var{vals})\n\
-@deftypefnx {} { } spparms (\"default\")\n\
-@deftypefnx {} { } spparms (\"tight\")\n\
-@deftypefnx {} { } spparms (@var{key}, @var{val})\n\
-Query or set the parameters used by the sparse solvers and factorization\n\
-functions.\n\
-\n\
-The first four calls above get information about the current settings, while\n\
-the others change the current settings.  The parameters are stored as pairs\n\
-of keys and values, where the values are all floats and the keys are one of\n\
-the following strings:\n\
-\n\
-@table @samp\n\
-@item spumoni\n\
-Printing level of debugging information of the solvers (default 0)\n\
-\n\
-@item ths_rel\n\
-Included for compatibility.  Not used.  (default 1)\n\
-\n\
-@item ths_abs\n\
-Included for compatibility.  Not used.  (default 1)\n\
-\n\
-@item exact_d\n\
-Included for compatibility.  Not used.  (default 0)\n\
-\n\
-@item supernd\n\
-Included for compatibility.  Not used.  (default 3)\n\
-\n\
-@item rreduce\n\
-Included for compatibility.  Not used.  (default 3)\n\
-\n\
-@item wh_frac\n\
-Included for compatibility.  Not used.  (default 0.5)\n\
-\n\
-@item autommd\n\
-Flag whether the LU/QR and the '\\' and '/' operators will automatically\n\
-use the sparsity preserving mmd functions (default 1)\n\
-\n\
-@item autoamd\n\
-Flag whether the LU and the '\\' and '/' operators will automatically\n\
-use the sparsity preserving amd functions (default 1)\n\
-\n\
-@item piv_tol\n\
-The pivot tolerance of the @sc{umfpack} solvers (default 0.1)\n\
-\n\
-@item sym_tol\n\
-The pivot tolerance of the @sc{umfpack} symmetric solvers (default 0.001)\n\
-\n\
-@item bandden\n\
-The density of nonzero elements in a banded matrix before it is treated\n\
-by the @sc{lapack} banded solvers (default 0.5)\n\
-\n\
-@item umfpack\n\
-Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
-'/' operations (default 1)\n\
-@end table\n\
-\n\
-The value of individual keys can be set with\n\
-@code{spparms (@var{key}, @var{val})}.\n\
-The default values can be restored with the special keyword\n\
-@qcode{\"default\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
-set the mmd solvers to attempt a sparser solution at the potential cost of\n\
-longer running time.\n\
-@seealso{chol, colamd, lu, qr, symamd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} { } spparms ()
+@deftypefnx {} {@var{vals} =} spparms ()
+@deftypefnx {} {[@var{keys}, @var{vals}] =} spparms ()
+@deftypefnx {} {@var{val} =} spparms (@var{key})
+@deftypefnx {} { } spparms (@var{vals})
+@deftypefnx {} { } spparms ("default")
+@deftypefnx {} { } spparms ("tight")
+@deftypefnx {} { } spparms (@var{key}, @var{val})
+Query or set the parameters used by the sparse solvers and factorization
+functions.
+
+The first four calls above get information about the current settings, while
+the others change the current settings.  The parameters are stored as pairs
+of keys and values, where the values are all floats and the keys are one of
+the following strings:
+
+@table @samp
+@item spumoni
+Printing level of debugging information of the solvers (default 0)
+
+@item ths_rel
+Included for compatibility.  Not used.  (default 1)
+
+@item ths_abs
+Included for compatibility.  Not used.  (default 1)
+
+@item exact_d
+Included for compatibility.  Not used.  (default 0)
+
+@item supernd
+Included for compatibility.  Not used.  (default 3)
+
+@item rreduce
+Included for compatibility.  Not used.  (default 3)
+
+@item wh_frac
+Included for compatibility.  Not used.  (default 0.5)
+
+@item autommd
+Flag whether the LU/QR and the '\' and '/' operators will automatically
+use the sparsity preserving mmd functions (default 1)
+
+@item autoamd
+Flag whether the LU and the '\' and '/' operators will automatically
+use the sparsity preserving amd functions (default 1)
+
+@item piv_tol
+The pivot tolerance of the @sc{umfpack} solvers (default 0.1)
+
+@item sym_tol
+The pivot tolerance of the @sc{umfpack} symmetric solvers (default 0.001)
+
+@item bandden
+The density of nonzero elements in a banded matrix before it is treated
+by the @sc{lapack} banded solvers (default 0.5)
+
+@item umfpack
+Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\' and
+'/' operations (default 1)
+@end table
+
+The value of individual keys can be set with
+@code{spparms (@var{key}, @var{val})}.
+The default values can be restored with the special keyword
+@qcode{"default"}.  The special keyword @qcode{"tight"} can be used to
+set the mmd solvers to attempt a sparser solution at the potential cost of
+longer running time.
+@seealso{chol, colamd, lu, qr, symamd}
+@end deftypefn */)
 {
   octave_value_list retval;
   int nargin = args.length ();

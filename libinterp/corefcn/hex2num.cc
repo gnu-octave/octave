@@ -33,37 +33,37 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (hex2num, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{n} =} hex2num (@var{s})\n\
-@deftypefnx {} {@var{n} =} hex2num (@var{s}, @var{class})\n\
-Typecast the 16 character hexadecimal character string to an IEEE 754\n\
-double precision number.\n\
-\n\
-If fewer than 16 characters are given the strings are right padded with\n\
-@qcode{'0'} characters.\n\
-\n\
-Given a string matrix, @code{hex2num} treats each row as a separate number.\n\
-\n\
-@example\n\
-@group\n\
-hex2num ([\"4005bf0a8b145769\"; \"4024000000000000\"])\n\
-   @result{} [2.7183; 10.000]\n\
-@end group\n\
-@end example\n\
-\n\
-The optional argument @var{class} can be passed as the string\n\
-@qcode{\"single\"} to specify that the given string should be interpreted as\n\
-a single precision number.  In this case, @var{s} should be an 8 character\n\
-hexadecimal string.  For example:\n\
-\n\
-@example\n\
-@group\n\
-hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
-   @result{} [2.7183; 10.000]\n\
-@end group\n\
-@end example\n\
-@seealso{num2hex, hex2dec, dec2hex}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{n} =} hex2num (@var{s})
+@deftypefnx {} {@var{n} =} hex2num (@var{s}, @var{class})
+Typecast the 16 character hexadecimal character string to an IEEE 754
+double precision number.
+
+If fewer than 16 characters are given the strings are right padded with
+@qcode{'0'} characters.
+
+Given a string matrix, @code{hex2num} treats each row as a separate number.
+
+@example
+@group
+hex2num (["4005bf0a8b145769"; "4024000000000000"])
+   @result{} [2.7183; 10.000]
+@end group
+@end example
+
+The optional argument @var{class} can be passed as the string
+@qcode{"single"} to specify that the given string should be interpreted as
+a single precision number.  In this case, @var{s} should be an 8 character
+hexadecimal string.  For example:
+
+@example
+@group
+hex2num (["402df854"; "41200000"], "single")
+   @result{} [2.7183; 10.000]
+@end group
+@end example
+@seealso{num2hex, hex2dec, dec2hex}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -173,37 +173,37 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 */
 
 DEFUN (num2hex, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{s} =} num2hex (@var{n})\n\
-Typecast a double or single precision number or vector to a 8 or 16\n\
-character hexadecimal string of the IEEE 754 representation of the number.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-num2hex ([-1, 1, e, Inf])\n\
-@result{} \"bff0000000000000\n\
-    3ff0000000000000\n\
-    4005bf0a8b145769\n\
-    7ff0000000000000\"\n\
-@end group\n\
-@end example\n\
-\n\
-If the argument @var{n} is a single precision number or vector, the returned\n\
-string has a length of 8.  For example:\n\
-\n\
-@example\n\
-@group\n\
-num2hex (single ([-1, 1, e, Inf]))\n\
-@result{} \"bf800000\n\
-    3f800000\n\
-    402df854\n\
-    7f800000\"\n\
-@end group\n\
-@end example\n\
-@seealso{hex2num, hex2dec, dec2hex}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{s} =} num2hex (@var{n})
+Typecast a double or single precision number or vector to a 8 or 16
+character hexadecimal string of the IEEE 754 representation of the number.
+
+For example:
+
+@example
+@group
+num2hex ([-1, 1, e, Inf])
+@result{} "bff0000000000000
+    3ff0000000000000
+    4005bf0a8b145769
+    7ff0000000000000"
+@end group
+@end example
+
+If the argument @var{n} is a single precision number or vector, the returned
+string has a length of 8.  For example:
+
+@example
+@group
+num2hex (single ([-1, 1, e, Inf]))
+@result{} "bf800000
+    3f800000
+    402df854
+    7f800000"
+@end group
+@end example
+@seealso{hex2num, hex2dec, dec2hex}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

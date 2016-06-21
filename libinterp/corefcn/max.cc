@@ -433,71 +433,71 @@ do_minmax_body (const octave_value_list& args,
 }
 
 DEFUN (min, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} min (@var{x})\n\
-@deftypefnx {} {} min (@var{x}, [], @var{dim})\n\
-@deftypefnx {} {[@var{w}, @var{iw}] =} min (@var{x})\n\
-@deftypefnx {} {} min (@var{x}, @var{y})\n\
-Find minimum values in the array @var{x}.\n\
-\n\
-For a vector argument, return the minimum value.  For a matrix argument,\n\
-return a row vector with the minimum value of each column.  For a\n\
-multi-dimensional array, @code{min} operates along the first non-singleton\n\
-dimension.\n\
-\n\
-If the optional third argument @var{dim} is present then operate along\n\
-this dimension.  In this case the second argument is ignored and should be\n\
-set to the empty matrix.\n\
-\n\
-For two matrices (or a matrix and a scalar), return the pairwise minimum.\n\
-\n\
-Thus,\n\
-\n\
-@example\n\
-min (min (@var{x}))\n\
-@end example\n\
-\n\
-@noindent\n\
-returns the smallest element of the 2-D matrix @var{x}, and\n\
-\n\
-@example\n\
-@group\n\
-min (2:5, pi)\n\
-    @result{}  2.0000  3.0000  3.1416  3.1416\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-compares each element of the range @code{2:5} with @code{pi}, and returns a\n\
-row vector of the minimum values.\n\
-\n\
-For complex arguments, the magnitude of the elements are used for\n\
-comparison.  If the magnitudes are identical, then the results are ordered\n\
-by phase angle in the range (-pi, pi].  Hence,\n\
-\n\
-@example\n\
-@group\n\
-min ([-1 i 1 -i])\n\
-    @result{} -i\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-because all entries have magnitude 1, but -i has the smallest phase angle\n\
-with value -pi/2.\n\
-\n\
-If called with one input and two output arguments, @code{min} also returns\n\
-the first index of the minimum value(s).  Thus,\n\
-\n\
-@example\n\
-@group\n\
-[x, ix] = min ([1, 3, 0, 2, 0])\n\
-    @result{}  x = 0\n\
-        ix = 3\n\
-@end group\n\
-@end example\n\
-@seealso{max, cummin, cummax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} min (@var{x})
+@deftypefnx {} {} min (@var{x}, [], @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} min (@var{x})
+@deftypefnx {} {} min (@var{x}, @var{y})
+Find minimum values in the array @var{x}.
+
+For a vector argument, return the minimum value.  For a matrix argument,
+return a row vector with the minimum value of each column.  For a
+multi-dimensional array, @code{min} operates along the first non-singleton
+dimension.
+
+If the optional third argument @var{dim} is present then operate along
+this dimension.  In this case the second argument is ignored and should be
+set to the empty matrix.
+
+For two matrices (or a matrix and a scalar), return the pairwise minimum.
+
+Thus,
+
+@example
+min (min (@var{x}))
+@end example
+
+@noindent
+returns the smallest element of the 2-D matrix @var{x}, and
+
+@example
+@group
+min (2:5, pi)
+    @result{}  2.0000  3.0000  3.1416  3.1416
+@end group
+@end example
+
+@noindent
+compares each element of the range @code{2:5} with @code{pi}, and returns a
+row vector of the minimum values.
+
+For complex arguments, the magnitude of the elements are used for
+comparison.  If the magnitudes are identical, then the results are ordered
+by phase angle in the range (-pi, pi].  Hence,
+
+@example
+@group
+min ([-1 i 1 -i])
+    @result{} -i
+@end group
+@end example
+
+@noindent
+because all entries have magnitude 1, but -i has the smallest phase angle
+with value -pi/2.
+
+If called with one input and two output arguments, @code{min} also returns
+the first index of the minimum value(s).  Thus,
+
+@example
+@group
+[x, ix] = min ([1, 3, 0, 2, 0])
+    @result{}  x = 0
+        ix = 3
+@end group
+@end example
+@seealso{max, cummin, cummax}
+@end deftypefn */)
 {
   return do_minmax_body (args, nargout, true);
 }
@@ -654,71 +654,71 @@ the first index of the minimum value(s).  Thus,\n\
 */
 
 DEFUN (max, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} max (@var{x})\n\
-@deftypefnx {} {} max (@var{x}, [], @var{dim})\n\
-@deftypefnx {} {[@var{w}, @var{iw}] =} max (@var{x})\n\
-@deftypefnx {} {} max (@var{x}, @var{y})\n\
-Find maximum values in the array @var{x}.\n\
-\n\
-For a vector argument, return the maximum value.  For a matrix argument,\n\
-return a row vector with the maximum value of each column.  For a\n\
-multi-dimensional array, @code{max} operates along the first non-singleton\n\
-dimension.\n\
-\n\
-If the optional third argument @var{dim} is present then operate along\n\
-this dimension.  In this case the second argument is ignored and should be\n\
-set to the empty matrix.\n\
-\n\
-For two matrices (or a matrix and a scalar), return the pairwise maximum.\n\
-\n\
-Thus,\n\
-\n\
-@example\n\
-max (max (@var{x}))\n\
-@end example\n\
-\n\
-@noindent\n\
-returns the largest element of the 2-D matrix @var{x}, and\n\
-\n\
-@example\n\
-@group\n\
-max (2:5, pi)\n\
-    @result{}  3.1416  3.1416  4.0000  5.0000\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-compares each element of the range @code{2:5} with @code{pi}, and returns a\n\
-row vector of the maximum values.\n\
-\n\
-For complex arguments, the magnitude of the elements are used for\n\
-comparison.  If the magnitudes are identical, then the results are ordered\n\
-by phase angle in the range (-pi, pi].  Hence,\n\
-\n\
-@example\n\
-@group\n\
-max ([-1 i 1 -i])\n\
-    @result{} -1\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-because all entries have magnitude 1, but -1 has the largest phase angle\n\
-with value pi.\n\
-\n\
-If called with one input and two output arguments, @code{max} also returns\n\
-the first index of the maximum value(s).  Thus,\n\
-\n\
-@example\n\
-@group\n\
-[x, ix] = max ([1, 3, 5, 2, 5])\n\
-    @result{}  x = 5\n\
-        ix = 3\n\
-@end group\n\
-@end example\n\
-@seealso{min, cummax, cummin}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} max (@var{x})
+@deftypefnx {} {} max (@var{x}, [], @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} max (@var{x})
+@deftypefnx {} {} max (@var{x}, @var{y})
+Find maximum values in the array @var{x}.
+
+For a vector argument, return the maximum value.  For a matrix argument,
+return a row vector with the maximum value of each column.  For a
+multi-dimensional array, @code{max} operates along the first non-singleton
+dimension.
+
+If the optional third argument @var{dim} is present then operate along
+this dimension.  In this case the second argument is ignored and should be
+set to the empty matrix.
+
+For two matrices (or a matrix and a scalar), return the pairwise maximum.
+
+Thus,
+
+@example
+max (max (@var{x}))
+@end example
+
+@noindent
+returns the largest element of the 2-D matrix @var{x}, and
+
+@example
+@group
+max (2:5, pi)
+    @result{}  3.1416  3.1416  4.0000  5.0000
+@end group
+@end example
+
+@noindent
+compares each element of the range @code{2:5} with @code{pi}, and returns a
+row vector of the maximum values.
+
+For complex arguments, the magnitude of the elements are used for
+comparison.  If the magnitudes are identical, then the results are ordered
+by phase angle in the range (-pi, pi].  Hence,
+
+@example
+@group
+max ([-1 i 1 -i])
+    @result{} -1
+@end group
+@end example
+
+@noindent
+because all entries have magnitude 1, but -1 has the largest phase angle
+with value pi.
+
+If called with one input and two output arguments, @code{max} also returns
+the first index of the maximum value(s).  Thus,
+
+@example
+@group
+[x, ix] = max ([1, 3, 5, 2, 5])
+    @result{}  x = 5
+        ix = 3
+@end group
+@end example
+@seealso{min, cummax, cummin}
+@end deftypefn */)
 {
   return do_minmax_body (args, nargout, false);
 }
@@ -984,36 +984,36 @@ do_cumminmax_body (const octave_value_list& args,
 }
 
 DEFUN (cummin, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cummin (@var{x})\n\
-@deftypefnx {} {} cummin (@var{x}, @var{dim})\n\
-@deftypefnx {} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
-Return the cumulative minimum values along dimension @var{dim}.\n\
-\n\
-If @var{dim} is unspecified it defaults to column-wise operation.  For\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-cummin ([5 4 6 2 3 1])\n\
-   @result{}  5  4  4  2  2  1\n\
-@end group\n\
-@end example\n\
-\n\
-If called with two output arguments the index of the minimum value is also\n\
-returned.\n\
-\n\
-@example\n\
-@group\n\
-[w, iw] = cummin ([5 4 6 2 3 1])\n\
-@result{}\n\
-w =  5  4  4  2  2  1\n\
-iw = 1  2  2  4  4  6\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{cummax, min, max}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cummin (@var{x})
+@deftypefnx {} {} cummin (@var{x}, @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} cummin (@var{x})
+Return the cumulative minimum values along dimension @var{dim}.
+
+If @var{dim} is unspecified it defaults to column-wise operation.  For
+example:
+
+@example
+@group
+cummin ([5 4 6 2 3 1])
+   @result{}  5  4  4  2  2  1
+@end group
+@end example
+
+If called with two output arguments the index of the minimum value is also
+returned.
+
+@example
+@group
+[w, iw] = cummin ([5 4 6 2 3 1])
+@result{}
+w =  5  4  4  2  2  1
+iw = 1  2  2  4  4  6
+@end group
+@end example
+
+@seealso{cummax, min, max}
+@end deftypefn */)
 {
   return do_cumminmax_body (args, nargout, true);
 }
@@ -1040,36 +1040,36 @@ iw = 1  2  2  4  4  6\n\
 */
 
 DEFUN (cummax, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cummax (@var{x})\n\
-@deftypefnx {} {} cummax (@var{x}, @var{dim})\n\
-@deftypefnx {} {[@var{w}, @var{iw}] =} cummax (@dots{})\n\
-Return the cumulative maximum values along dimension @var{dim}.\n\
-\n\
-If @var{dim} is unspecified it defaults to column-wise operation.  For\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-cummax ([1 3 2 6 4 5])\n\
-   @result{}  1  3  3  6  6  6\n\
-@end group\n\
-@end example\n\
-\n\
-If called with two output arguments the index of the maximum value is also\n\
-returned.\n\
-\n\
-@example\n\
-@group\n\
-[w, iw] = cummax ([1 3 2 6 4 5])\n\
-@result{}\n\
-w =  1  3  3  6  6  6\n\
-iw = 1  2  2  4  4  4\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{cummin, max, min}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cummax (@var{x})
+@deftypefnx {} {} cummax (@var{x}, @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} cummax (@dots{})
+Return the cumulative maximum values along dimension @var{dim}.
+
+If @var{dim} is unspecified it defaults to column-wise operation.  For
+example:
+
+@example
+@group
+cummax ([1 3 2 6 4 5])
+   @result{}  1  3  3  6  6  6
+@end group
+@end example
+
+If called with two output arguments the index of the maximum value is also
+returned.
+
+@example
+@group
+[w, iw] = cummax ([1 3 2 6 4 5])
+@result{}
+w =  1  3  3  6  6  6
+iw = 1  2  2  4  4  4
+@end group
+@end example
+
+@seealso{cummin, max, min}
+@end deftypefn */)
 {
   return do_cumminmax_body (args, nargout, false);
 }

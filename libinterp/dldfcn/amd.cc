@@ -52,38 +52,38 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (amd, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{p} =} amd (@var{S})\n\
-@deftypefnx {} {@var{p} =} amd (@var{S}, @var{opts})\n\
-\n\
-Return the approximate minimum degree permutation of a matrix.\n\
-\n\
-This is a permutation such that the Cholesky@tie{}factorization of\n\
-@code{@var{S} (@var{p}, @var{p})} tends to be sparser than the\n\
-Cholesky@tie{}factorization of @var{S} itself.  @code{amd} is typically\n\
-faster than @code{symamd} but serves a similar purpose.\n\
-\n\
-The optional parameter @var{opts} is a structure that controls the behavior\n\
-of @code{amd}.  The fields of the structure are\n\
-\n\
-@table @asis\n\
-@item @var{opts}.dense\n\
-Determines what @code{amd} considers to be a dense row or column of the\n\
-input matrix.  Rows or columns with more than @code{max (16, (dense *\n\
-sqrt (@var{n})))} entries, where @var{n} is the order of the matrix @var{S},\n\
-are ignored by @code{amd} during the calculation of the permutation.\n\
-The value of dense must be a positive scalar and the default value is 10.0\n\
-\n\
-@item @var{opts}.aggressive\n\
-If this value is a nonzero scalar, then @code{amd} performs aggressive\n\
-absorption.  The default is not to perform aggressive absorption.\n\
-@end table\n\
-\n\
-The author of the code itself is Timothy A. Davis\n\
-@email{davis@@cise.ufl.edu}, University of Florida\n\
-(see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n\
-@seealso{symamd, colamd}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{p} =} amd (@var{S})
+@deftypefnx {} {@var{p} =} amd (@var{S}, @var{opts})
+
+Return the approximate minimum degree permutation of a matrix.
+
+This is a permutation such that the Cholesky@tie{}factorization of
+@code{@var{S} (@var{p}, @var{p})} tends to be sparser than the
+Cholesky@tie{}factorization of @var{S} itself.  @code{amd} is typically
+faster than @code{symamd} but serves a similar purpose.
+
+The optional parameter @var{opts} is a structure that controls the behavior
+of @code{amd}.  The fields of the structure are
+
+@table @asis
+@item @var{opts}.dense
+Determines what @code{amd} considers to be a dense row or column of the
+input matrix.  Rows or columns with more than @code{max (16, (dense *
+sqrt (@var{n})))} entries, where @var{n} is the order of the matrix @var{S},
+are ignored by @code{amd} during the calculation of the permutation.
+The value of dense must be a positive scalar and the default value is 10.0
+
+@item @var{opts}.aggressive
+If this value is a nonzero scalar, then @code{amd} performs aggressive
+absorption.  The default is not to perform aggressive absorption.
+@end table
+
+The author of the code itself is Timothy A. Davis
+@email{davis@@cise.ufl.edu}, University of Florida
+(see @url{http://www.cise.ufl.edu/research/sparse/amd}).
+@seealso{symamd, colamd}
+@end deftypefn */)
 {
 #if defined (HAVE_AMD)
 

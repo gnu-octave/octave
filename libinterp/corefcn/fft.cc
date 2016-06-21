@@ -173,58 +173,58 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
 
 DEFUN (fft, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} fft (@var{x})\n\
-@deftypefnx {} {} fft (@var{x}, @var{n})\n\
-@deftypefnx {} {} fft (@var{x}, @var{n}, @var{dim})\n\
-Compute the discrete Fourier transform of @var{A} using\n\
-a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The FFT is calculated along the first non-singleton dimension of the\n\
-array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes the\n\
-FFT for each column of @var{x}.\n\
-\n\
-If called with two arguments, @var{n} is expected to be an integer\n\
-specifying the number of elements of @var{x} to use, or an empty\n\
-matrix to specify that its value should be ignored.  If @var{n} is\n\
-larger than the dimension along which the FFT is calculated, then\n\
-@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
-smaller than the dimension along which the FFT is calculated, then\n\
-@var{x} is truncated.\n\
-\n\
-If called with three arguments, @var{dim} is an integer specifying the\n\
-dimension of the matrix along which the FFT is performed\n\
-@seealso{ifft, fft2, fftn, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fft (@var{x})
+@deftypefnx {} {} fft (@var{x}, @var{n})
+@deftypefnx {} {} fft (@var{x}, @var{n}, @var{dim})
+Compute the discrete Fourier transform of @var{A} using
+a Fast Fourier Transform (FFT) algorithm.
+
+The FFT is calculated along the first non-singleton dimension of the
+array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes the
+FFT for each column of @var{x}.
+
+If called with two arguments, @var{n} is expected to be an integer
+specifying the number of elements of @var{x} to use, or an empty
+matrix to specify that its value should be ignored.  If @var{n} is
+larger than the dimension along which the FFT is calculated, then
+@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is
+smaller than the dimension along which the FFT is calculated, then
+@var{x} is truncated.
+
+If called with three arguments, @var{dim} is an integer specifying the
+dimension of the matrix along which the FFT is performed
+@seealso{ifft, fft2, fftn, fftw}
+@end deftypefn */)
 {
   return do_fft (args, "fft", 0);
 }
 
 
 DEFUN (ifft, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} ifft (@var{x})\n\
-@deftypefnx {} {} ifft (@var{x}, @var{n})\n\
-@deftypefnx {} {} ifft (@var{x}, @var{n}, @var{dim})\n\
-Compute the inverse discrete Fourier transform of @var{A}\n\
-using a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The inverse FFT is calculated along the first non-singleton dimension\n\
-of the array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes\n\
-the inverse FFT for each column of @var{x}.\n\
-\n\
-If called with two arguments, @var{n} is expected to be an integer\n\
-specifying the number of elements of @var{x} to use, or an empty\n\
-matrix to specify that its value should be ignored.  If @var{n} is\n\
-larger than the dimension along which the inverse FFT is calculated, then\n\
-@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
-smaller than the dimension along which the inverse FFT is calculated,\n\
-then @var{x} is truncated.\n\
-\n\
-If called with three arguments, @var{dim} is an integer specifying the\n\
-dimension of the matrix along which the inverse FFT is performed\n\
-@seealso{fft, ifft2, ifftn, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} ifft (@var{x})
+@deftypefnx {} {} ifft (@var{x}, @var{n})
+@deftypefnx {} {} ifft (@var{x}, @var{n}, @var{dim})
+Compute the inverse discrete Fourier transform of @var{A}
+using a Fast Fourier Transform (FFT) algorithm.
+
+The inverse FFT is calculated along the first non-singleton dimension
+of the array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes
+the inverse FFT for each column of @var{x}.
+
+If called with two arguments, @var{n} is expected to be an integer
+specifying the number of elements of @var{x} to use, or an empty
+matrix to specify that its value should be ignored.  If @var{n} is
+larger than the dimension along which the inverse FFT is calculated, then
+@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is
+smaller than the dimension along which the inverse FFT is calculated,
+then @var{x} is truncated.
+
+If called with three arguments, @var{dim} is an integer specifying the
+dimension of the matrix along which the inverse FFT is performed
+@seealso{fft, ifft2, ifftn, fftw}
+@end deftypefn */)
 {
   return do_fft (args, "ifft", 1);
 }

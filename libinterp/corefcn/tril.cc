@@ -328,70 +328,70 @@ do_trilu (const std::string& name,
 }
 
 DEFUN (tril, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} tril (@var{A})\n\
-@deftypefnx {} {} tril (@var{A}, @var{k})\n\
-@deftypefnx {} {} tril (@var{A}, @var{k}, @var{pack})\n\
-@deftypefnx {} {} triu (@var{A})\n\
-@deftypefnx {} {} triu (@var{A}, @var{k})\n\
-@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})\n\
-Return a new matrix formed by extracting the lower (@code{tril})\n\
-or upper (@code{triu}) triangular part of the matrix @var{A}, and\n\
-setting all other elements to zero.\n\
-\n\
-The second argument is optional, and specifies how many diagonals above or\n\
-below the main diagonal should also be set to zero.\n\
-\n\
-The default value of @var{k} is zero, so that @code{triu} and @code{tril}\n\
-normally include the main diagonal as part of the result.\n\
-\n\
-If the value of @var{k} is nonzero integer, the selection of elements starts\n\
-at an offset of @var{k} diagonals above or below the main diagonal; above\n\
-for positive @var{k} and below for negative @var{k}.\n\
-\n\
-The absolute value of @var{k} must not be greater than the number of\n\
-subdiagonals or superdiagonals.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-tril (ones (3), -1)\n\
-     @result{}  0  0  0\n\
-         1  0  0\n\
-         1  1  0\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-and\n\
-\n\
-@example\n\
-@group\n\
-tril (ones (3), 1)\n\
-     @result{}  1  1  0\n\
-         1  1  1\n\
-         1  1  1\n\
-@end group\n\
-@end example\n\
-\n\
-If the option @qcode{\"pack\"} is given as third argument, the extracted\n\
-elements are not inserted into a matrix, but rather stacked column-wise one\n\
-above other.\n\
-@seealso{diag}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} tril (@var{A})
+@deftypefnx {} {} tril (@var{A}, @var{k})
+@deftypefnx {} {} tril (@var{A}, @var{k}, @var{pack})
+@deftypefnx {} {} triu (@var{A})
+@deftypefnx {} {} triu (@var{A}, @var{k})
+@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})
+Return a new matrix formed by extracting the lower (@code{tril})
+or upper (@code{triu}) triangular part of the matrix @var{A}, and
+setting all other elements to zero.
+
+The second argument is optional, and specifies how many diagonals above or
+below the main diagonal should also be set to zero.
+
+The default value of @var{k} is zero, so that @code{triu} and @code{tril}
+normally include the main diagonal as part of the result.
+
+If the value of @var{k} is nonzero integer, the selection of elements starts
+at an offset of @var{k} diagonals above or below the main diagonal; above
+for positive @var{k} and below for negative @var{k}.
+
+The absolute value of @var{k} must not be greater than the number of
+subdiagonals or superdiagonals.
+
+For example:
+
+@example
+@group
+tril (ones (3), -1)
+     @result{}  0  0  0
+         1  0  0
+         1  1  0
+@end group
+@end example
+
+@noindent
+and
+
+@example
+@group
+tril (ones (3), 1)
+     @result{}  1  1  0
+         1  1  1
+         1  1  1
+@end group
+@end example
+
+If the option @qcode{"pack"} is given as third argument, the extracted
+elements are not inserted into a matrix, but rather stacked column-wise one
+above other.
+@seealso{diag}
+@end deftypefn */)
 {
   return do_trilu ("tril", args);
 }
 
 DEFUN (triu, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} triu (@var{A})\n\
-@deftypefnx {} {} triu (@var{A}, @var{k})\n\
-@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})\n\
-See the documentation for the @code{tril} function (@pxref{tril}).\n\
-@seealso{tril}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} triu (@var{A})
+@deftypefnx {} {} triu (@var{A}, @var{k})
+@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})
+See the documentation for the @code{tril} function (@pxref{tril}).
+@seealso{tril}
+@end deftypefn */)
 {
   return do_trilu ("triu", args);
 }

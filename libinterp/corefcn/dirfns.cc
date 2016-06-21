@@ -88,34 +88,34 @@ octave_change_to_directory (const std::string& newdir)
 }
 
 DEFUN (cd, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cd @var{dir}\n\
-@deftypefnx {} {} cd\n\
-@deftypefnx {} {@var{old_dir} =} cd (@var{dir})\n\
-@deftypefnx {} {} chdir @dots{}\n\
-Change the current working directory to @var{dir}.\n\
-\n\
-If @var{dir} is omitted, the current directory is changed to the user's home\n\
-directory (@qcode{\"~\"}).\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-cd ~/octave\n\
-@end example\n\
-\n\
-@noindent\n\
-changes the current working directory to @file{~/octave}.  If the\n\
-directory does not exist, an error message is printed and the working\n\
-directory is not changed.\n\
-\n\
-@code{chdir} is an alias for @code{cd} and can be used in all of the same\n\
-calling formats.\n\
-\n\
-Compatibility Note: When called with no arguments, @sc{matlab} prints the\n\
-present working directory rather than changing to the user's home directory.\n\
-@seealso{pwd, mkdir, rmdir, dir, ls}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cd @var{dir}
+@deftypefnx {} {} cd
+@deftypefnx {} {@var{old_dir} =} cd (@var{dir})
+@deftypefnx {} {} chdir @dots{}
+Change the current working directory to @var{dir}.
+
+If @var{dir} is omitted, the current directory is changed to the user's home
+directory (@qcode{"~"}).
+
+For example,
+
+@example
+cd ~/octave
+@end example
+
+@noindent
+changes the current working directory to @file{~/octave}.  If the
+directory does not exist, an error message is printed and the working
+directory is not changed.
+
+@code{chdir} is an alias for @code{cd} and can be used in all of the same
+calling formats.
+
+Compatibility Note: When called with no arguments, @sc{matlab} prints the
+present working directory rather than changing to the user's home directory.
+@seealso{pwd, mkdir, rmdir, dir, ls}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -148,29 +148,29 @@ present working directory rather than changing to the user's home directory.\n\
 DEFALIAS (chdir, cd);
 
 DEFUN (pwd, , ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} pwd ()\n\
-@deftypefnx {} {@var{dir} =} pwd ()\n\
-Return the current working directory.\n\
-@seealso{cd, dir, ls, mkdir, rmdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} pwd ()
+@deftypefnx {} {@var{dir} =} pwd ()
+Return the current working directory.
+@seealso{cd, dir, ls, mkdir, rmdir}
+@end deftypefn */)
 {
   return ovl (octave::sys::env::get_current_directory ());
 }
 
 DEFUN (readdir, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{files} =} readdir (@var{dir})\n\
-@deftypefnx {} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})\n\
-Return the names of files in the directory @var{dir} as a cell array of\n\
-strings.\n\
-\n\
-If an error occurs, return an empty cell array in @var{files}.\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{ls, dir, glob, what}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{files} =} readdir (@var{dir})
+@deftypefnx {} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})
+Return the names of files in the directory @var{dir} as a cell array of
+strings.
+
+If an error occurs, return an empty cell array in @var{files}.
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{ls, dir, glob, what}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -199,11 +199,11 @@ error message.\n\
 //        OTOH, that might cause trouble with compatibility later...
 
 DEFUN (__mkdir__, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} __mkdir__ (@var{parent}, @var{dir})\n\
-Internal function called by mkdir.m.\n\
-@seealso{mkdir, rmdir, pwd, cd, umask}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __mkdir__ (@var{parent}, @var{dir})
+Internal function called by mkdir.m.
+@seealso{mkdir, rmdir, pwd, cd, umask}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -245,22 +245,22 @@ Internal function called by mkdir.m.\n\
 }
 
 DEFUNX ("rmdir", Frmdir, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} rmdir @var{dir}\n\
-@deftypefnx {} {} rmdir (@var{dir}, \"s\")\n\
-@deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})\n\
-Remove the directory named @var{dir}.\n\
-\n\
-If the optional second parameter is supplied with value @qcode{\"s\"},\n\
-recursively remove all subdirectories as well.\n\
-\n\
-If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
-character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-system-dependent error message, and @var{msgid} contains a unique message\n\
-identifier.\n\
-\n\
-@seealso{mkdir, confirm_recursive_rmdir, pwd}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} rmdir @var{dir}
+@deftypefnx {} {} rmdir (@var{dir}, "s")
+@deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})
+Remove the directory named @var{dir}.
+
+If the optional second parameter is supplied with value @qcode{"s"},
+recursively remove all subdirectories as well.
+
+If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
+character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
+system-dependent error message, and @var{msgid} contains a unique message
+identifier.
+
+@seealso{mkdir, confirm_recursive_rmdir, pwd}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -300,16 +300,16 @@ identifier.\n\
 }
 
 DEFUNX ("link", Flink, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} link @var{old} @var{new}\n\
-@deftypefnx {} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})\n\
-Create a new link (also known as a hard link) to an existing file.\n\
-\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{symlink, unlink, readlink, lstat}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} link @var{old} @var{new}
+@deftypefnx {} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})
+Create a new link (also known as a hard link) to an existing file.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{symlink, unlink, readlink, lstat}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -331,16 +331,16 @@ error message.\n\
 }
 
 DEFUNX ("symlink", Fsymlink, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} symlink @var{old} @var{new}\n\
-@deftypefnx {} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})\n\
-Create a symbolic link @var{new} which contains the string @var{old}.\n\
-\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{link, unlink, readlink, lstat}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} symlink @var{old} @var{new}
+@deftypefnx {} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})
+Create a symbolic link @var{new} which contains the string @var{old}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{link, unlink, readlink, lstat}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -362,17 +362,17 @@ error message.\n\
 }
 
 DEFUNX ("readlink", Freadlink, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} readlink @var{symlink}\n\
-@deftypefnx {} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})\n\
-Read the value of the symbolic link @var{symlink}.\n\
-\n\
-If successful, @var{result} contains the contents of the symbolic link\n\
-@var{symlink}, @var{err} is 0, and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{lstat, symlink, link, unlink, delete}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} readlink @var{symlink}
+@deftypefnx {} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})
+Read the value of the symbolic link @var{symlink}.
+
+If successful, @var{result} contains the contents of the symbolic link
+@var{symlink}, @var{err} is 0, and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{lstat, symlink, link, unlink, delete}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -392,16 +392,16 @@ error message.\n\
 }
 
 DEFUNX ("rename", Frename, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} rename @var{old} @var{new}\n\
-@deftypefnx {} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\
-Change the name of file @var{old} to @var{new}.\n\
-\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{movefile, copyfile, ls, dir}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} rename @var{old} @var{new}
+@deftypefnx {} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})
+Change the name of file @var{old} to @var{new}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{movefile, copyfile, ls, dir}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -423,55 +423,55 @@ error message.\n\
 }
 
 DEFUN (glob, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} glob (@var{pattern})\n\
-Given an array of pattern strings (as a char array or a cell array) in\n\
-@var{pattern}, return a cell array of filenames that match any of\n\
-them, or an empty cell array if no patterns match.\n\
-\n\
-The pattern strings are interpreted as filename globbing patterns (as they\n\
-are used by Unix shells).\n\
-\n\
-Within a pattern\n\
-\n\
-@table @code\n\
-@item *\n\
-matches any string, including the null string,\n\
-\n\
-@item ?\n\
-matches any single character, and\n\
-\n\
-@item [@dots{}]\n\
-matches any of the enclosed characters.\n\
-@end table\n\
-\n\
-Tilde expansion is performed on each of the patterns before looking for\n\
-matching filenames.  For example:\n\
-\n\
-@example\n\
-ls\n\
-   @result{}\n\
-      file1  file2  file3  myfile1 myfile1b\n\
-glob (\"*file1\")\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = file1\n\
-        [2,1] = myfile1\n\
-      @}\n\
-glob (\"myfile?\")\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = myfile1\n\
-      @}\n\
-glob (\"file[12]\")\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = file1\n\
-        [2,1] = file2\n\
-      @}\n\
-@end example\n\
-@seealso{ls, dir, readdir, what}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} glob (@var{pattern})
+Given an array of pattern strings (as a char array or a cell array) in
+@var{pattern}, return a cell array of filenames that match any of
+them, or an empty cell array if no patterns match.
+
+The pattern strings are interpreted as filename globbing patterns (as they
+are used by Unix shells).
+
+Within a pattern
+
+@table @code
+@item *
+matches any string, including the null string,
+
+@item ?
+matches any single character, and
+
+@item [@dots{}]
+matches any of the enclosed characters.
+@end table
+
+Tilde expansion is performed on each of the patterns before looking for
+matching filenames.  For example:
+
+@example
+ls
+   @result{}
+      file1  file2  file3  myfile1 myfile1b
+glob ("*file1")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = myfile1
+      @}
+glob ("myfile?")
+   @result{}
+      @{
+        [1,1] = myfile1
+      @}
+glob ("file[12]")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = file2
+      @}
+@end example
+@seealso{ls, dir, readdir, what}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -516,22 +516,22 @@ glob (\"file[12]\")\n\
 */
 
 DEFUN (__fnmatch__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} fnmatch (@var{pattern}, @var{string})\n\
-Return true or false for each element of @var{string} that matches any of\n\
-the elements of the string array @var{pattern}, using the rules of\n\
-filename pattern matching.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
-     @result{} [ 1; 1; 0 ]\n\
-@end group\n\
-@end example\n\
-@seealso{glob, regexp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} fnmatch (@var{pattern}, @var{string})
+Return true or false for each element of @var{string} that matches any of
+the elements of the string array @var{pattern}, using the rules of
+filename pattern matching.
+
+For example:
+
+@example
+@group
+fnmatch ("a*b", @{"ab"; "axyzb"; "xyzab"@})
+     @result{} [ 1; 1; 0 ]
+@end group
+@end example
+@seealso{glob, regexp}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -545,17 +545,17 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 }
 
 DEFUN (filesep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} filesep ()\n\
-@deftypefnx {} {} filesep (\"all\")\n\
-Return the system-dependent character used to separate directory names.\n\
-\n\
-If @qcode{\"all\"} is given, the function returns all valid file separators\n\
-in the form of a string.  The list of file separators is system-dependent.\n\
-It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
-@samp{\\} (forward and backward slashes) under Windows.\n\
-@seealso{pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} filesep ()
+@deftypefnx {} {} filesep ("all")
+Return the system-dependent character used to separate directory names.
+
+If @qcode{"all"} is given, the function returns all valid file separators
+in the form of a string.  The list of file separators is system-dependent.
+It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
+@samp{\} (forward and backward slashes) under Windows.
+@seealso{pathsep}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -579,12 +579,12 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
 }
 
 DEFUN (pathsep, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} pathsep ()\n\
-@deftypefnx {} {@var{old_val} =} pathsep (@var{new_val})\n\
-Query or set the character used to separate directories in a path.\n\
-@seealso{filesep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} pathsep ()
+@deftypefnx {} {@var{old_val} =} pathsep (@var{new_val})
+Query or set the character used to separate directories in a path.
+@seealso{filesep}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -620,18 +620,18 @@ Query or set the character used to separate directories in a path.\n\
 }
 
 DEFUN (confirm_recursive_rmdir, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} confirm_recursive_rmdir ()\n\
-@deftypefnx {} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
-@deftypefnx {} {} confirm_recursive_rmdir (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave\n\
-will ask for confirmation before recursively removing a directory tree.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{rmdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} confirm_recursive_rmdir ()
+@deftypefnx {} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})
+@deftypefnx {} {} confirm_recursive_rmdir (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave
+will ask for confirmation before recursively removing a directory tree.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{rmdir}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);
 }

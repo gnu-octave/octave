@@ -33,50 +33,50 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (gammainc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} gammainc (@var{x}, @var{a})\n\
-@deftypefnx {} {} gammainc (@var{x}, @var{a}, \"lower\")\n\
-@deftypefnx {} {} gammainc (@var{x}, @var{a}, \"upper\")\n\
-Compute the normalized incomplete gamma function.\n\
-\n\
-This is defined as\n\
-@tex\n\
-$$\n\
- \\gamma (x, a) = {1 \\over {\\Gamma (a)}}\\displaystyle{\\int_0^x t^{a-1} e^{-t} dt}\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-                                x\n\
-                       1       /\n\
-gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
-                  gamma (a)    /\n\
-                            t=0\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-with the limiting value of 1 as @var{x} approaches infinity.\n\
-The standard notation is @math{P(a,x)}, e.g., @nospell{Abramowitz} and\n\
-@nospell{Stegun} (6.5.1).\n\
-\n\
-If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned\n\
-for each element of @var{x} and vice versa.\n\
-\n\
-If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
-@var{a} must agree, and @code{gammainc} is applied element-by-element.\n\
-\n\
-By default the incomplete gamma function integrated from 0 to @var{x} is\n\
-computed.  If @qcode{\"upper\"} is given then the complementary function\n\
-integrated from @var{x} to infinity is calculated.  It should be noted that\n\
-\n\
-@example\n\
-gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\
-@end example\n\
-@seealso{gamma, gammaln}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} gammainc (@var{x}, @var{a})
+@deftypefnx {} {} gammainc (@var{x}, @var{a}, "lower")
+@deftypefnx {} {} gammainc (@var{x}, @var{a}, "upper")
+Compute the normalized incomplete gamma function.
+
+This is defined as
+@tex
+$$
+ \gamma (x, a) = {1 \over {\Gamma (a)}}\displaystyle{\int_0^x t^{a-1} e^{-t} dt}
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+                                x
+                       1       /
+gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt
+                  gamma (a)    /
+                            t=0
+@end group
+@end example
+
+@end ifnottex
+with the limiting value of 1 as @var{x} approaches infinity.
+The standard notation is @math{P(a,x)}, e.g., @nospell{Abramowitz} and
+@nospell{Stegun} (6.5.1).
+
+If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned
+for each element of @var{x} and vice versa.
+
+If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and
+@var{a} must agree, and @code{gammainc} is applied element-by-element.
+
+By default the incomplete gamma function integrated from 0 to @var{x} is
+computed.  If @qcode{"upper"} is given then the complementary function
+integrated from @var{x} to infinity is calculated.  It should be noted that
+
+@example
+gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
+@end example
+@seealso{gamma, gammaln}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

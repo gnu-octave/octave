@@ -41,40 +41,40 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (char, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} char (@var{x})\n\
-@deftypefnx {} {} char (@var{x}, @dots{})\n\
-@deftypefnx {} {} char (@var{s1}, @var{s2}, @dots{})\n\
-@deftypefnx {} {} char (@var{cell_array})\n\
-Create a string array from one or more numeric matrices, character\n\
-matrices, or cell arrays.\n\
-\n\
-Arguments are concatenated vertically.  The returned values are padded with\n\
-blanks as needed to make each row of the string array have the same length.\n\
-Empty input strings are significant and will concatenated in the output.\n\
-\n\
-For numerical input, each element is converted to the corresponding ASCII\n\
-character.  A range error results if an input is outside the ASCII range\n\
-(0-255).\n\
-\n\
-For cell arrays, each element is concatenated separately.  Cell arrays\n\
-converted through @code{char} can mostly be converted back with\n\
-@code{cellstr}.  For example:\n\
-\n\
-@example\n\
-@group\n\
-char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
-   @result{} [\"abc    \"\n\
-       \"       \"\n\
-       \"98     \"\n\
-       \"99     \"\n\
-       \"d      \"\n\
-       \"str1   \"\n\
-       \"half   \"]\n\
-@end group\n\
-@end example\n\
-@seealso{strvcat, cellstr}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} char (@var{x})
+@deftypefnx {} {} char (@var{x}, @dots{})
+@deftypefnx {} {} char (@var{s1}, @var{s2}, @dots{})
+@deftypefnx {} {} char (@var{cell_array})
+Create a string array from one or more numeric matrices, character
+matrices, or cell arrays.
+
+Arguments are concatenated vertically.  The returned values are padded with
+blanks as needed to make each row of the string array have the same length.
+Empty input strings are significant and will concatenated in the output.
+
+For numerical input, each element is converted to the corresponding ASCII
+character.  A range error results if an input is outside the ASCII range
+(0-255).
+
+For cell arrays, each element is concatenated separately.  Cell arrays
+converted through @code{char} can mostly be converted back with
+@code{cellstr}.  For example:
+
+@example
+@group
+char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
+   @result{} ["abc    "
+       "       "
+       "98     "
+       "99     "
+       "d      "
+       "str1   "
+       "half   "]
+@end group
+@end example
+@seealso{strvcat, cellstr}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -166,40 +166,40 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 */
 
 DEFUN (strvcat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} strvcat (@var{x})\n\
-@deftypefnx {} {} strvcat (@var{x}, @dots{})\n\
-@deftypefnx {} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
-@deftypefnx {} {} strvcat (@var{cell_array})\n\
-Create a character array from one or more numeric matrices, character\n\
-matrices, or cell arrays.\n\
-\n\
-Arguments are concatenated vertically.  The returned values are padded with\n\
-blanks as needed to make each row of the string array have the same length.\n\
-Unlike @code{char}, empty strings are removed and will not appear in the\n\
-output.\n\
-\n\
-For numerical input, each element is converted to the corresponding ASCII\n\
-character.  A range error results if an input is outside the ASCII range\n\
-(0-255).\n\
-\n\
-For cell arrays, each element is concatenated separately.  Cell arrays\n\
-converted through @code{strvcat} can mostly be converted back with\n\
-@code{cellstr}.  For example:\n\
-\n\
-@example\n\
-@group\n\
-strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
-      @result{} [\"abc    \"\n\
-          \"98     \"\n\
-          \"99     \"\n\
-          \"d      \"\n\
-          \"str1   \"\n\
-          \"half   \"]\n\
-@end group\n\
-@end example\n\
-@seealso{char, strcat, cstrcat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} strvcat (@var{x})
+@deftypefnx {} {} strvcat (@var{x}, @dots{})
+@deftypefnx {} {} strvcat (@var{s1}, @var{s2}, @dots{})
+@deftypefnx {} {} strvcat (@var{cell_array})
+Create a character array from one or more numeric matrices, character
+matrices, or cell arrays.
+
+Arguments are concatenated vertically.  The returned values are padded with
+blanks as needed to make each row of the string array have the same length.
+Unlike @code{char}, empty strings are removed and will not appear in the
+output.
+
+For numerical input, each element is converted to the corresponding ASCII
+character.  A range error results if an input is outside the ASCII range
+(0-255).
+
+For cell arrays, each element is concatenated separately.  Cell arrays
+converted through @code{strvcat} can mostly be converted back with
+@code{cellstr}.  For example:
+
+@example
+@group
+strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
+      @result{} ["abc    "
+          "98     "
+          "99     "
+          "d      "
+          "str1   "
+          "half   "]
+@end group
+@end example
+@seealso{char, strcat, cstrcat}
+@end deftypefn */)
 {
   int nargin = args.length ();
   int n_elts = 0;
@@ -280,11 +280,11 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 
 
 DEFUN (ischar, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ischar (@var{x})\n\
-Return true if @var{x} is a character array.\n\
-@seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ischar (@var{x})
+Return true if @var{x} is a character array.
+@seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -532,22 +532,22 @@ strcmp_str_op (const std::string& s1, const std::string& s2,
 }
 
 DEFUN (strcmp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} strcmp (@var{s1}, @var{s2})\n\
-Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
-and 0 otherwise.\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-@seealso{strcmpi, strncmp, strncmpi}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} strcmp (@var{s1}, @var{s2})
+Return 1 if the character strings @var{s1} and @var{s2} are the same,
+and 0 otherwise.
+
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+@seealso{strcmpi, strncmp, strncmpi}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -628,36 +628,36 @@ strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 }
 
 DEFUN (strncmp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
-Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2}\n\
-are the same, and 0 otherwise.\n\
-\n\
-@example\n\
-@group\n\
-strncmp (\"abce\", \"abcd\", 3)\n\
-      @result{} 1\n\
-@end group\n\
-@end example\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@example\n\
-@group\n\
-strncmp (\"abce\", @{\"abcd\", \"bca\", \"abc\"@}, 3)\n\
-     @result{} [1, 0, 1]\n\
-@end group\n\
-@end example\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmp\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-@seealso{strncmpi, strcmp, strcmpi}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} strncmp (@var{s1}, @var{s2}, @var{n})
+Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2}
+are the same, and 0 otherwise.
+
+@example
+@group
+strncmp ("abce", "abcd", 3)
+      @result{} 1
+@end group
+@end example
+
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@example
+@group
+strncmp ("abce", @{"abcd", "bca", "abc"@}, 3)
+     @result{} [1, 0, 1]
+@end group
+@end example
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmp
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+@seealso{strncmpi, strcmp, strcmpi}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();
@@ -713,24 +713,24 @@ strcmpi_str_op (const std::string& s1, const std::string& s2,
 }
 
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} strcmpi (@var{s1}, @var{s2})\n\
-Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
-disregarding case of alphabetic characters, and 0 otherwise.\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-\n\
-@strong{Caution:} National alphabets are not supported.\n\
-@seealso{strcmp, strncmp, strncmpi}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} strcmpi (@var{s1}, @var{s2})
+Return 1 if the character strings @var{s1} and @var{s2} are the same,
+disregarding case of alphabetic characters, and 0 otherwise.
+
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+
+@strong{Caution:} National alphabets are not supported.
+@seealso{strcmp, strncmp, strncmpi}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -768,24 +768,24 @@ strncmpi_str_op (const std::string& s1, const std::string& s2,
 }
 
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
-Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the\n\
-same, disregarding case of alphabetic characters, and 0 otherwise.\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmpi\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-\n\
-@strong{Caution:} National alphabets are not supported.\n\
-@seealso{strncmp, strcmp, strcmpi}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} strncmpi (@var{s1}, @var{s2}, @var{n})
+Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the
+same, disregarding case of alphabetic characters, and 0 otherwise.
+
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmpi
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+
+@strong{Caution:} National alphabets are not supported.
+@seealso{strncmp, strcmp, strcmpi}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();
@@ -804,40 +804,40 @@ This is just the opposite of the corresponding C library function.\n\
 */
 
 DEFUN (list_in_columns, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})\n\
-Return a string containing the elements of @var{arg} listed in columns with\n\
-an overall maximum width of @var{width} and optional prefix @var{prefix}.\n\
-\n\
-The argument @var{arg} must be a cell array of character strings or a\n\
-character array.\n\
-\n\
-If @var{width} is not specified or is an empty matrix, or less than or equal\n\
-to zero, the width of the terminal screen is used.  Newline characters are\n\
-used to break the lines in the output string.  For example:\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-@group\n\
-list_in_columns (@{\"abc\", \"def\", \"ghijkl\", \"mnop\", \"qrs\", \"tuv\"@}, 20)\n\
-     @result{} abc     mnop\n\
-        def     qrs\n\
-        ghijkl  tuv\n\
-\n\
-whos ans\n\
-     @result{}\n\
-     Variables in the current scope:\n\
-\n\
-       Attr Name        Size                     Bytes  Class\n\
-       ==== ====        ====                     =====  =====\n\
-            ans         1x37                        37  char\n\
-\n\
-     Total is 37 elements using 37 bytes\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@seealso{terminal_size}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})
+Return a string containing the elements of @var{arg} listed in columns with
+an overall maximum width of @var{width} and optional prefix @var{prefix}.
+
+The argument @var{arg} must be a cell array of character strings or a
+character array.
+
+If @var{width} is not specified or is an empty matrix, or less than or equal
+to zero, the width of the terminal screen is used.  Newline characters are
+used to break the lines in the output string.  For example:
+@c Set example in small font to prevent overfull line
+
+@smallexample
+@group
+list_in_columns (@{"abc", "def", "ghijkl", "mnop", "qrs", "tuv"@}, 20)
+     @result{} abc     mnop
+        def     qrs
+        ghijkl  tuv
+
+whos ans
+     @result{}
+     Variables in the current scope:
+
+       Attr Name        Size                     Bytes  Class
+       ==== ====        ====                     =====  =====
+            ans         1x37                        37  char
+
+     Total is 37 elements using 37 bytes
+@end group
+@end smallexample
+
+@seealso{terminal_size}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

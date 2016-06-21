@@ -2651,12 +2651,12 @@ octave_java::release (void)
 // documentation strings are always available, even when functions are not.
 
 DEFUN (__java_init__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __java_init__ ()\n\
-Internal function used @strong{only} when debugging Java interface.\n\
-\n\
-Function will directly call initialize_java to create an instance of a JVM.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __java_init__ ()
+Internal function used @strong{only} when debugging Java interface.
+
+Function will directly call initialize_java to create an instance of a JVM.
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -2678,13 +2678,13 @@ Function will directly call initialize_java to create an instance of a JVM.\n\
 }
 
 DEFUN (__java_exit__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __java_exit__ ()\n\
-Internal function used @strong{only} when debugging Java interface.\n\
-\n\
-Function will directly call terminate_jvm to destroy the current JVM\n\
-instance.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __java_exit__ ()
+Internal function used @strong{only} when debugging Java interface.
+
+Function will directly call terminate_jvm to destroy the current JVM
+instance.
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -2700,24 +2700,24 @@ instance.\n\
 }
 
 DEFUN (javaObject, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{jobj} =} javaObject (@var{classname})\n\
-@deftypefnx {} {@var{jobj} =} javaObject (@var{classname}, @var{arg1}, @dots{})\n\
-Create a Java object of class @var{classsname}, by calling the class\n\
-constructor with the arguments @var{arg1}, @dots{}\n\
-\n\
-The first example below creates an uninitialized object, while the second\n\
-example supplies an initial argument to the constructor.\n\
-\n\
-@example\n\
-@group\n\
-x = javaObject (\"java.lang.StringBuffer\")\n\
-x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{javaMethod, javaArray}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{jobj} =} javaObject (@var{classname})
+@deftypefnx {} {@var{jobj} =} javaObject (@var{classname}, @var{arg1}, @dots{})
+Create a Java object of class @var{classsname}, by calling the class
+constructor with the arguments @var{arg1}, @dots{}
+
+The first example below creates an uninitialized object, while the second
+example supplies an initial argument to the constructor.
+
+@example
+@group
+x = javaObject ("java.lang.StringBuffer")
+x = javaObject ("java.lang.StringBuffer", "Initial string")
+@end group
+@end example
+
+@seealso{javaMethod, javaArray}
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -2755,30 +2755,30 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 */
 
 DEFUN (javaMethod, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
-@deftypefnx {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
-Invoke the method @var{methodname} on the Java object @var{obj} with the\n\
-arguments @var{arg1}, @dots{}.\n\
-\n\
-For static methods, @var{obj} can be a string representing the fully\n\
-qualified name of the corresponding class.\n\
-\n\
-When @var{obj} is a regular Java object, structure-like indexing can be\n\
-used as a shortcut syntax.  For instance, the two following statements are\n\
-equivalent\n\
-\n\
-@example\n\
-@group\n\
-  ret = javaMethod (\"method1\", x, 1.0, \"a string\")\n\
-  ret = x.method1 (1.0, \"a string\")\n\
-@end group\n\
-@end example\n\
-\n\
-@code{javaMethod} returns the result of the method invocation.\n\
-\n\
-@seealso{methods, javaObject}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})
+@deftypefnx {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})
+Invoke the method @var{methodname} on the Java object @var{obj} with the
+arguments @var{arg1}, @dots{}.
+
+For static methods, @var{obj} can be a string representing the fully
+qualified name of the corresponding class.
+
+When @var{obj} is a regular Java object, structure-like indexing can be
+used as a shortcut syntax.  For instance, the two following statements are
+equivalent
+
+@example
+@group
+  ret = javaMethod ("method1", x, 1.0, "a string")
+  ret = x.method1 (1.0, "a string")
+@end group
+@end example
+
+@code{javaMethod} returns the result of the method invocation.
+
+@seealso{methods, javaObject}
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -2829,26 +2829,26 @@ equivalent\n\
 */
 
 DEFUN (__java_get__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{val} =} __java_get__ (@var{obj}, @var{name})\n\
-Get the value of the field @var{name} of the Java object @var{obj}.\n\
-\n\
-For static fields, @var{obj} can be a string representing the fully\n\
-qualified name of the corresponding class.\n\
-\n\
-When @var{obj} is a regular Java object, structure-like indexing can be used\n\
-as a shortcut syntax.  For instance, the two following statements are\n\
-equivalent\n\
-\n\
-@example\n\
-@group\n\
-  __java_get__ (x, \"field1\")\n\
-  x.field1\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{__java_set__, javaMethod, javaObject}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{val} =} __java_get__ (@var{obj}, @var{name})
+Get the value of the field @var{name} of the Java object @var{obj}.
+
+For static fields, @var{obj} can be a string representing the fully
+qualified name of the corresponding class.
+
+When @var{obj} is a regular Java object, structure-like indexing can be used
+as a shortcut syntax.  For instance, the two following statements are
+equivalent
+
+@example
+@group
+  __java_get__ (x, "field1")
+  x.field1
+@end group
+@end example
+
+@seealso{__java_set__, javaMethod, javaObject}
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -2888,27 +2888,27 @@ equivalent\n\
 }
 
 DEFUN (__java_set__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{obj} =} __java_set__ (@var{obj}, @var{name}, @var{val})\n\
-Set the value of the field @var{name} of the Java object @var{obj} to\n\
-@var{val}.\n\
-\n\
-For static fields, @var{obj} can be a string representing the fully\n\
-qualified named of the corresponding Java class.\n\
-\n\
-When @var{obj} is a regular Java object, structure-like indexing can be\n\
-used as a shortcut syntax.  For instance, the two following statements are\n\
-equivalent\n\
-\n\
-@example\n\
-@group\n\
-  __java_set__ (x, \"field1\", val)\n\
-  x.field1 = val\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{__java_get__, javaMethod, javaObject}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{obj} =} __java_set__ (@var{obj}, @var{name}, @var{val})
+Set the value of the field @var{name} of the Java object @var{obj} to
+@var{val}.
+
+For static fields, @var{obj} can be a string representing the fully
+qualified named of the corresponding Java class.
+
+When @var{obj} is a regular Java object, structure-like indexing can be
+used as a shortcut syntax.  For instance, the two following statements are
+equivalent
+
+@example
+@group
+  __java_set__ (x, "field1", val)
+  x.field1 = val
+@end group
+@end example
+
+@seealso{__java_get__, javaMethod, javaObject}
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -2948,10 +2948,10 @@ equivalent\n\
 }
 
 DEFUN (java2mat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} java2mat (@var{javaobj})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} java2mat (@var{javaobj})
+Undocumented internal function.
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -2984,20 +2984,20 @@ Undocumented internal function.\n\
 }
 
 DEFUN (java_matrix_autoconversion, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} java_matrix_autoconversion ()\n\
-@deftypefnx {} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})\n\
-@deftypefnx {} {} java_matrix_autoconversion (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Java arrays are\n\
-automatically converted to Octave matrices.\n\
-\n\
-The default value is false.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{java_unsigned_autoconversion, debug_java}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} java_matrix_autoconversion ()
+@deftypefnx {} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})
+@deftypefnx {} {} java_matrix_autoconversion (@var{new_val}, "local")
+Query or set the internal variable that controls whether Java arrays are
+automatically converted to Octave matrices.
+
+The default value is false.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{java_unsigned_autoconversion, debug_java}
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -3014,21 +3014,21 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (java_unsigned_autoconversion, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} java_unsigned_autoconversion ()\n\
-@deftypefnx {} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})\n\
-@deftypefnx {} {} java_unsigned_autoconversion (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls how integer classes are\n\
-converted when @code{java_matrix_autoconversion} is enabled.\n\
-\n\
-When enabled, Java arrays of class Byte or Integer are converted to matrices\n\
-of class uint8 or uint32 respectively.  The default value is true.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{java_matrix_autoconversion, debug_java}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} java_unsigned_autoconversion ()
+@deftypefnx {} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})
+@deftypefnx {} {} java_unsigned_autoconversion (@var{new_val}, "local")
+Query or set the internal variable that controls how integer classes are
+converted when @code{java_matrix_autoconversion} is enabled.
+
+When enabled, Java arrays of class Byte or Integer are converted to matrices
+of class uint8 or uint32 respectively.  The default value is true.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{java_matrix_autoconversion, debug_java}
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -3045,19 +3045,19 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (debug_java, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} debug_java ()\n\
-@deftypefnx {} {@var{old_val} =} debug_java (@var{new_val})\n\
-@deftypefnx {} {} debug_java (@var{new_val}, \"local\")\n\
-Query or set the internal variable that determines whether extra debugging\n\
-information regarding the initialization of the JVM and any Java exceptions\n\
-is printed.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{java_matrix_autoconversion, java_unsigned_autoconversion}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} debug_java ()
+@deftypefnx {} {@var{old_val} =} debug_java (@var{new_val})
+@deftypefnx {} {} debug_java (@var{new_val}, "local")
+Query or set the internal variable that determines whether extra debugging
+information regarding the initialization of the JVM and any Java exceptions
+is printed.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{java_matrix_autoconversion, java_unsigned_autoconversion}
+@end deftypefn */)
 {
 #if defined (HAVE_JAVA)
 
@@ -3078,11 +3078,11 @@ The original variable value is restored when exiting the function.\n\
 // installed.
 
 DEFUN (isjava, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isjava (@var{x})\n\
-Return true if @var{x} is a Java object.\n\
-@seealso{class, typeinfo, isa, javaObject}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isjava (@var{x})
+Return true if @var{x} is a Java object.
+@seealso{class, typeinfo, isa, javaObject}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

@@ -125,29 +125,29 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 #endif
 
 DEFUN_DLD (__eigs__, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{d} =} __eigs__ (@var{A})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {} {[@var{V}, @var{d}] =} __eigs__ (@var{A}, @dots{})\n\
-@deftypefnx {} {[@var{V}, @var{d}] =} __eigs__ (@var{af}, @var{n}, @dots{})\n\
-@deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{A}, @dots{})\n\
-@deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{af}, @var{n}, @dots{})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{d} =} __eigs__ (@var{A})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma}, @var{opts})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})
+@deftypefnx {} {@var{d} =} __eigs__ (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})
+@deftypefnx {} {[@var{V}, @var{d}] =} __eigs__ (@var{A}, @dots{})
+@deftypefnx {} {[@var{V}, @var{d}] =} __eigs__ (@var{af}, @var{n}, @dots{})
+@deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{A}, @dots{})
+@deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} __eigs__ (@var{af}, @var{n}, @dots{})
+Undocumented internal function.
+@end deftypefn */)
 {
 #if defined (HAVE_ARPACK)
 

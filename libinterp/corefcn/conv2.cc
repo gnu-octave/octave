@@ -35,34 +35,34 @@ along with Octave; see the file COPYING.  If not, see
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 DEFUN (conv2, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} conv2 (@var{A}, @var{B})\n\
-@deftypefnx {} {} conv2 (@var{v1}, @var{v2}, @var{m})\n\
-@deftypefnx {} {} conv2 (@dots{}, @var{shape})\n\
-Return the 2-D convolution of @var{A} and @var{B}.\n\
-\n\
-The size of the result is determined by the optional @var{shape} argument\n\
-which takes the following values\n\
-\n\
-@table @asis\n\
-@item @var{shape} = @qcode{\"full\"}\n\
-Return the full convolution.  (default)\n\
-\n\
-@item @var{shape} = @qcode{\"same\"}\n\
-Return the central part of the convolution with the same size as @var{A}.\n\
-The central part of the convolution begins at the indices\n\
-@code{floor ([size(@var{B})/2] + 1)}.\n\
-\n\
-@item @var{shape} = @qcode{\"valid\"}\n\
-Return only the parts which do not include zero-padded edges.\n\
-The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
-@end table\n\
-\n\
-When the third argument is a matrix, return the convolution of the matrix\n\
-@var{m} by the vector @var{v1} in the column direction and by the vector\n\
-@var{v2} in the row direction.\n\
-@seealso{conv, convn}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} conv2 (@var{A}, @var{B})
+@deftypefnx {} {} conv2 (@var{v1}, @var{v2}, @var{m})
+@deftypefnx {} {} conv2 (@dots{}, @var{shape})
+Return the 2-D convolution of @var{A} and @var{B}.
+
+The size of the result is determined by the optional @var{shape} argument
+which takes the following values
+
+@table @asis
+@item @var{shape} = @qcode{"full"}
+Return the full convolution.  (default)
+
+@item @var{shape} = @qcode{"same"}
+Return the central part of the convolution with the same size as @var{A}.
+The central part of the convolution begins at the indices
+@code{floor ([size(@var{B})/2] + 1)}.
+
+@item @var{shape} = @qcode{"valid"}
+Return only the parts which do not include zero-padded edges.
+The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
+@end table
+
+When the third argument is a matrix, return the convolution of the matrix
+@var{m} by the vector @var{v1} in the column direction and by the vector
+@var{v2} in the row direction.
+@seealso{conv, convn}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -280,30 +280,30 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 */
 
 DEFUN (convn, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{C} =} convn (@var{A}, @var{B})\n\
-@deftypefnx {} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
-Return the n-D convolution of @var{A} and @var{B}.\n\
-\n\
-The size of the result is determined by the optional @var{shape} argument\n\
-which takes the following values\n\
-\n\
-@table @asis\n\
-@item @var{shape} = @qcode{\"full\"}\n\
-Return the full convolution.  (default)\n\
-\n\
-@item @var{shape} = @qcode{\"same\"}\n\
-Return central part of the convolution with the same size as @var{A}.\n\
-The central part of the convolution begins at the indices\n\
-@code{floor ([size(@var{B})/2] + 1)}.\n\
-\n\
-@item @var{shape} = @qcode{\"valid\"}\n\
-Return only the parts which do not include zero-padded edges.\n\
-The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
-@end table\n\
-\n\
-@seealso{conv2, conv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{C} =} convn (@var{A}, @var{B})
+@deftypefnx {} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})
+Return the n-D convolution of @var{A} and @var{B}.
+
+The size of the result is determined by the optional @var{shape} argument
+which takes the following values
+
+@table @asis
+@item @var{shape} = @qcode{"full"}
+Return the full convolution.  (default)
+
+@item @var{shape} = @qcode{"same"}
+Return central part of the convolution with the same size as @var{A}.
+The central part of the convolution begins at the indices
+@code{floor ([size(@var{B})/2] + 1)}.
+
+@item @var{shape} = @qcode{"valid"}
+Return only the parts which do not include zero-padded edges.
+The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
+@end table
+
+@seealso{conv2, conv}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

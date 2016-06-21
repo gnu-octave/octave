@@ -327,10 +327,10 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   while (0)
 
 DEFUN_DLD (__glpk__, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {[@var{values}] =} __glpk__ (@var{args})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{values}] =} __glpk__ (@var{args})
+Undocumented internal function.
+@end deftypefn */)
 {
 #if defined (HAVE_GLPK)
 

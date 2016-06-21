@@ -1975,14 +1975,14 @@ is_keyword (const std::string& s)
 }
 
 DEFUN (iskeyword, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {} iskeyword ()\n\
-@deftypefnx {} {} iskeyword (@var{name})\n\
-Return true if @var{name} is an Octave keyword.\n\
-\n\
-If @var{name} is omitted, return a list of keywords.\n\
-@seealso{isvarname, exist}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} iskeyword ()
+@deftypefnx {} {} iskeyword (@var{name})
+Return true if @var{name} is an Octave keyword.
+
+If @var{name} is omitted, return a list of keywords.
+@seealso{isvarname, exist}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -2035,34 +2035,34 @@ If @var{name} is omitted, return a list of keywords.\n\
 */
 
 DEFUN (__display_tokens__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {} {} __display_tokens__ ()\n\
-Query or set the internal variable that determines whether Octave's\n\
-lexer displays tokens as they are read.\n\
-@seealso{__lexer_debug_flag__, __token_count__}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __display_tokens__ ()
+Query or set the internal variable that determines whether Octave's
+lexer displays tokens as they are read.
+@seealso{__lexer_debug_flag__, __token_count__}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (display_tokens);
 }
 
 DEFUN (__token_count__, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {} {} __token_count__ ()\n\
-Return the number of language tokens processed since Octave startup.\n\
-@seealso{__lexer_debug_flag__, __display_tokens__}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __token_count__ ()
+Return the number of language tokens processed since Octave startup.
+@seealso{__lexer_debug_flag__, __display_tokens__}
+@end deftypefn */)
 {
   return octave_value (Vtoken_count);
 }
 
 DEFUN (__lexer_debug_flag__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} __lexer_debug_flag__ ()\n\
-@deftypefnx {} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val})\n\
-Query or set the internal flag that determines whether Octave's lexer prints\n\
-debug information as it processes an expression.\n\
-@seealso{__display_tokens__, __token_count__, __parse_debug_flag__}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} __lexer_debug_flag__ ()
+@deftypefnx {} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val})
+Query or set the internal flag that determines whether Octave's lexer prints
+debug information as it processes an expression.
+@seealso{__display_tokens__, __token_count__, __parse_debug_flag__}
+@end deftypefn */)
 {
   octave_value retval;
 

@@ -79,11 +79,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint64_scalar,
                                      "uint64 scalar", "uint64");
 
 DEFUN (uint64, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} uint64 (@var{x})\n\
-Convert @var{x} to unsigned 64-bit integer type.\n\
-@seealso{int8, uint8, int16, uint16, int32, uint32, int64}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uint64 (@var{x})
+Convert @var{x} to unsigned 64-bit integer type.
+@seealso{int8, uint8, int16, uint16, int32, uint32, int64}
+@end deftypefn */)
 {
   OCTAVE_TYPE_CONV_BODY (uint64);
 }

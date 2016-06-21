@@ -951,24 +951,24 @@ raw_help (const std::string& nm, bool& symbol_found)
 }
 
 DEFUN (built_in_docstrings_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} built_in_docstrings_file ()\n\
-@deftypefnx {} {@var{old_val} =} built_in_docstrings_file (@var{new_val})\n\
-@deftypefnx {} {} built_in_docstrings_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-file containing docstrings for built-in Octave functions.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/share/octave/@var{version}/etc/built-in-docstrings},\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-and @var{version} is the Octave version number.  The default value may be\n\
-overridden by the environment variable\n\
-@w{@env{OCTAVE_BUILT_IN_DOCSTRINGS_FILE}}, or the command line argument\n\
-@option{--built-in-docstrings-file FNAME}.\n\
-\n\
-Note: This variable is only used when Octave is initializing itself.\n\
-Modifying it during a running session of Octave will have no effect.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} built_in_docstrings_file ()
+@deftypefnx {} {@var{old_val} =} built_in_docstrings_file (@var{new_val})
+@deftypefnx {} {} built_in_docstrings_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+file containing docstrings for built-in Octave functions.
+
+The default value is
+@file{@var{octave-home}/share/octave/@var{version}/etc/built-in-docstrings},
+in which @var{octave-home} is the root directory of the Octave installation,
+and @var{version} is the Octave version number.  The default value may be
+overridden by the environment variable
+@w{@env{OCTAVE_BUILT_IN_DOCSTRINGS_FILE}}, or the command line argument
+@option{--built-in-docstrings-file FNAME}.
+
+Note: This variable is only used when Octave is initializing itself.
+Modifying it during a running session of Octave will have no effect.
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (built_in_docstrings_file);
 }
@@ -1077,15 +1077,16 @@ do_get_help_text (const std::string& name, std::string& text,
     }
 }
 
-DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
-@deftypefn {} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
-Return the raw help text of function @var{name}.\n\
-\n\
-The raw help text is returned in @var{text} and the format in @var{format}\n\
-The format is a string which is one of @qcode{\"texinfo\"},\n\
-@qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
-@seealso{get_help_text_from_file}\n\
-@end deftypefn")
+DEFUN (get_help_text, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{text}, @var{format}] =} get_help_text (@var{name})
+Return the raw help text of function @var{name}.
+
+The raw help text is returned in @var{text} and the format in @var{format}
+The format is a string which is one of @qcode{"texinfo"},
+@qcode{"html"}, or @qcode{"plain text"}.
+@seealso{get_help_text_from_file}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1134,15 +1135,15 @@ do_get_help_text_from_file (const std::string& fname, std::string& text,
 }
 
 DEFUN (get_help_text_from_file, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
-Return the raw help text from the file @var{fname}.\n\
-\n\
-The raw help text is returned in @var{text} and the format in @var{format}\n\
-The format is a string which is one of @qcode{\"texinfo\"},\n\
-@qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
-@seealso{get_help_text}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})
+Return the raw help text from the file @var{fname}.
+
+The raw help text is returned in @var{text} and the format in @var{format}
+The format is a string which is one of @qcode{"texinfo"},
+@qcode{"html"}, or @qcode{"plain text"}.
+@seealso{get_help_text}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1160,10 +1161,10 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 // operators.
 
 DEFUN (__operators__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __operators__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __operators__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   return ovl (Cell (names (operators_map)));
 }
@@ -1172,10 +1173,10 @@ Undocumented internal function.\n\
 // keywords.
 
 DEFUN (__keywords__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __keywords__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __keywords__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   return ovl (Cell (names (keywords_map)));
 }
@@ -1184,10 +1185,10 @@ Undocumented internal function.\n\
 // functions.
 
 DEFUN (__builtins__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __builtins__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __builtins__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   const string_vector bif = symbol_table::built_in_function_names ();
 
@@ -1195,21 +1196,21 @@ Undocumented internal function.\n\
 }
 
 DEFUN (localfunctions, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} localfunctions ()\n\
-Return a list of all local functions, i.e., subfunctions, within the current\n\
-file.\n\
-\n\
-The return value is a column cell array of function handles to all local\n\
-functions accessible from the function from which @code{localfunctions} is\n\
-called.  Nested functions are @emph{not} included in the list.\n\
-\n\
-If the call is from the command line, an anonymous function, or a script,\n\
-the return value is an empty cell array.\n\
-\n\
-Compatibility Note: Subfunctions which contain nested functions are not\n\
-included in the list.  This is a known issue.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} localfunctions ()
+Return a list of all local functions, i.e., subfunctions, within the current
+file.
+
+The return value is a column cell array of function handles to all local
+functions accessible from the function from which @code{localfunctions} is
+called.  Nested functions are @emph{not} included in the list.
+
+If the call is from the command line, an anonymous function, or a script,
+the return value is an empty cell array.
+
+Compatibility Note: Subfunctions which contain nested functions are not
+included in the list.  This is a known issue.
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -1336,10 +1337,10 @@ do_which (const std::string& name)
 }
 
 DEFUN (__which__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __which__ (@var{name}, @dots{})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __which__ (@var{name}, @dots{})
+Undocumented internal function.
+@end deftypefn */)
 {
   string_vector argv = args.make_argv ();
 
@@ -1398,11 +1399,11 @@ file_is_in_dir (const std::string filename, const std::string dir)
 // the current path.
 
 DEFUN (__list_functions__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{retval} =} __list_functions__ ()\n\
-@deftypefnx {} {@var{retval} =} __list_functions__ (@var{directory})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{retval} =} __list_functions__ ()
+@deftypefnx {} {@var{retval} =} __list_functions__ (@var{directory})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -1430,141 +1431,141 @@ Undocumented internal function.\n\
 }
 
 DEFUN (doc_cache_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} doc_cache_file ()\n\
-@deftypefnx {} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
-@deftypefnx {} {} doc_cache_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-Octave documentation cache file.\n\
-\n\
-A cache file significantly improves the performance of the @code{lookfor}\n\
-command.  The default value is\n\
-@file{@var{octave-home}/share/octave/@var{version}/etc/doc-cache},\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-and @var{version} is the Octave version number.\n\
-The default value may be overridden by the environment variable\n\
-@w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
-@option{--doc-cache-file FNAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{doc_cache_create, lookfor, info_program, doc, help, makeinfo_program}\n\
-@seealso{lookfor}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} doc_cache_file ()
+@deftypefnx {} {@var{old_val} =} doc_cache_file (@var{new_val})
+@deftypefnx {} {} doc_cache_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+Octave documentation cache file.
+
+A cache file significantly improves the performance of the @code{lookfor}
+command.  The default value is
+@file{@var{octave-home}/share/octave/@var{version}/etc/doc-cache},
+in which @var{octave-home} is the root directory of the Octave installation,
+and @var{version} is the Octave version number.
+The default value may be overridden by the environment variable
+@w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument
+@option{--doc-cache-file FNAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{doc_cache_create, lookfor, info_program, doc, help, makeinfo_program}
+@seealso{lookfor}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (doc_cache_file);
 }
 
 DEFUN (texi_macros_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} texi_macros_file ()\n\
-@deftypefnx {} {@var{old_val} =} texi_macros_file (@var{new_val})\n\
-@deftypefnx {} {} texi_macros_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-file containing Texinfo macros that are prepended to documentation strings\n\
-before they are passed to makeinfo.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/share/octave/@var{version}/etc/macros.texi},\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-and @var{version} is the Octave version number.\n\
-The default value may be overridden by the environment variable\n\
-@w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument\n\
-@option{--texi-macros-file FNAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{makeinfo_program}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} texi_macros_file ()
+@deftypefnx {} {@var{old_val} =} texi_macros_file (@var{new_val})
+@deftypefnx {} {} texi_macros_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+file containing Texinfo macros that are prepended to documentation strings
+before they are passed to makeinfo.
+
+The default value is
+@file{@var{octave-home}/share/octave/@var{version}/etc/macros.texi},
+in which @var{octave-home} is the root directory of the Octave installation,
+and @var{version} is the Octave version number.
+The default value may be overridden by the environment variable
+@w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument
+@option{--texi-macros-file FNAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{makeinfo_program}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (texi_macros_file);
 }
 
 DEFUN (info_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} info_file ()\n\
-@deftypefnx {} {@var{old_val} =} info_file (@var{new_val})\n\
-@deftypefnx {} {} info_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-Octave info file.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/info/octave.info}, in\n\
-which @var{octave-home} is the root directory of the Octave installation.\n\
-The default value may be overridden by the environment variable\n\
-@w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
-@option{--info-file FNAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{info_program, doc, help, makeinfo_program}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} info_file ()
+@deftypefnx {} {@var{old_val} =} info_file (@var{new_val})
+@deftypefnx {} {} info_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+Octave info file.
+
+The default value is
+@file{@var{octave-home}/info/octave.info}, in
+which @var{octave-home} is the root directory of the Octave installation.
+The default value may be overridden by the environment variable
+@w{@env{OCTAVE_INFO_FILE}}, or the command line argument
+@option{--info-file FNAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{info_program, doc, help, makeinfo_program}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (info_file);
 }
 
 DEFUN (info_program, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} info_program ()\n\
-@deftypefnx {} {@var{old_val} =} info_program (@var{new_val})\n\
-@deftypefnx {} {} info_program (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-info program to run.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-@var{version} is the Octave version number, and @var{arch} is the system\n\
-type (for example, @code{i686-pc-linux-gnu}).  The default value may be\n\
-overridden by the environment variable\n\
-@w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
-@option{--info-program NAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{info_file, doc, help, makeinfo_program}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} info_program ()
+@deftypefnx {} {@var{old_val} =} info_program (@var{new_val})
+@deftypefnx {} {} info_program (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+info program to run.
+
+The default value is
+@file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}
+in which @var{octave-home} is the root directory of the Octave installation,
+@var{version} is the Octave version number, and @var{arch} is the system
+type (for example, @code{i686-pc-linux-gnu}).  The default value may be
+overridden by the environment variable
+@w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument
+@option{--info-program NAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{info_file, doc, help, makeinfo_program}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (info_program);
 }
 
 DEFUN (makeinfo_program, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} makeinfo_program ()\n\
-@deftypefnx {} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
-@deftypefnx {} {} makeinfo_program (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-program that Octave runs to format help text containing\n\
-Texinfo markup commands.\n\
-\n\
-The default value is @code{makeinfo}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{texi_macros_file, info_file, info_program, doc, help}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} makeinfo_program ()
+@deftypefnx {} {@var{old_val} =} makeinfo_program (@var{new_val})
+@deftypefnx {} {} makeinfo_program (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+program that Octave runs to format help text containing
+Texinfo markup commands.
+
+The default value is @code{makeinfo}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{texi_macros_file, info_file, info_program, doc, help}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (makeinfo_program);
 }
 
 DEFUN (suppress_verbose_help_message, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} suppress_verbose_help_message ()\n\
-@deftypefnx {} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
-@deftypefnx {} {} suppress_verbose_help_message (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave\n\
-will add additional help information to the end of the output from\n\
-the @code{help} command and usage messages for built-in commands.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} suppress_verbose_help_message ()
+@deftypefnx {} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})
+@deftypefnx {} {} suppress_verbose_help_message (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave
+will add additional help information to the end of the output from
+the @code{help} command and usage messages for built-in commands.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);
 }

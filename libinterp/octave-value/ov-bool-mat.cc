@@ -523,18 +523,18 @@ octave_bool_matrix::as_mxArray (void) const
 }
 
 DEFUN (logical, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} logical (@var{x})\n\
-Convert the numeric object @var{x} to logical type.\n\
-\n\
-Any nonzero values will be converted to true (1) while zero values will be\n\
-converted to false (0).  The non-numeric value NaN cannot be converted and\n\
-will produce an error.\n\
-\n\
-Compatibility Note: Octave accepts complex values as input, whereas\n\
-@sc{matlab} issues an error.\n\
-@seealso{double, single, char}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} logical (@var{x})
+Convert the numeric object @var{x} to logical type.
+
+Any nonzero values will be converted to true (1) while zero values will be
+converted to false (0).  The non-numeric value NaN cannot be converted and
+will produce an error.
+
+Compatibility Note: Octave accepts complex values as input, whereas
+@sc{matlab} issues an error.
+@seealso{double, single, char}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

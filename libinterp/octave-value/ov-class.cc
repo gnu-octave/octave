@@ -1710,17 +1710,17 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
 }
 
 DEFUN (class, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{classname} =} class (@var{obj})\n\
-@deftypefnx {} {} class (@var{s}, @var{id})\n\
-@deftypefnx {} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
-Return the class of the object @var{obj}, or create a class with\n\
-fields from structure @var{s} and name (string) @var{id}.\n\
-\n\
-Additional arguments name a list of parent classes from which the new class\n\
-is derived.\n\
-@seealso{typeinfo, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{classname} =} class (@var{obj})
+@deftypefnx {} {} class (@var{s}, @var{id})
+@deftypefnx {} {} class (@var{s}, @var{id}, @var{p}, @dots{})
+Return the class of the object @var{obj}, or create a class with
+fields from structure @var{s} and name (string) @var{id}.
+
+Additional arguments name a list of parent classes from which the new class
+is derived.
+@seealso{typeinfo, isa}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1784,30 +1784,30 @@ is derived.\n\
 */
 
 DEFUN (isa, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isa (@var{obj}, @var{classname})\n\
-Return true if @var{obj} is an object from the class @var{classname}.\n\
-\n\
-@var{classname} may also be one of the following class categories:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"float\"}\n\
-Floating point value comprising classes @qcode{\"double\"} and\n\
-@qcode{\"single\"}.\n\
-\n\
-@item @qcode{\"integer\"}\n\
-Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.\n\
-\n\
-@item @qcode{\"numeric\"}\n\
-Numeric value comprising either a floating point or integer value.\n\
-@end table\n\
-\n\
-If @var{classname} is a cell array of string, a logical array of the same\n\
-size is returned, containing true for each class to which @var{obj}\n\
-belongs to.\n\
-\n\
-@seealso{class, typeinfo}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isa (@var{obj}, @var{classname})
+Return true if @var{obj} is an object from the class @var{classname}.
+
+@var{classname} may also be one of the following class categories:
+
+@table @asis
+@item @qcode{"float"}
+Floating point value comprising classes @qcode{"double"} and
+@qcode{"single"}.
+
+@item @qcode{"integer"}
+Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.
+
+@item @qcode{"numeric"}
+Numeric value comprising either a floating point or integer value.
+@end table
+
+If @var{classname} is a cell array of string, a logical array of the same
+size is returned, containing true for each class to which @var{obj}
+belongs to.
+
+@seealso{class, typeinfo}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -1893,10 +1893,10 @@ belongs to.\n\
 */
 
 DEFUN (__parent_classes__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __parent_classes__ (@var{x})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __parent_classes__ (@var{x})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1910,11 +1910,11 @@ Undocumented internal function.\n\
 }
 
 DEFUN (isobject, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isobject (@var{x})\n\
-Return true if @var{x} is a class object.\n\
-@seealso{class, typeinfo, isa, ismethod, isprop}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isobject (@var{x})
+Return true if @var{x} is a class object.
+@seealso{class, typeinfo, isa, ismethod, isprop}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1923,13 +1923,13 @@ Return true if @var{x} is a class object.\n\
 }
 
 DEFUN (ismethod, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} ismethod (@var{obj}, @var{method})\n\
-@deftypefnx {} {} ismethod (@var{clsname}, @var{method})\n\
-Return true if the string @var{method} is a valid method of the object\n\
-@var{obj} or of the class @var{clsname}.\n\
-@seealso{isprop, isobject}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} ismethod (@var{obj}, @var{method})
+@deftypefnx {} {} ismethod (@var{clsname}, @var{method})
+Return true if the string @var{method} is a valid method of the object
+@var{obj} or of the class @var{clsname}.
+@seealso{isprop, isobject}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -1954,14 +1954,14 @@ Return true if the string @var{method} is a valid method of the object\n\
 }
 
 DEFUN (__methods__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __methods__ (@var{x})\n\
-@deftypefnx {} {} __methods__ (\"classname\")\n\
-Internal function.\n\
-\n\
-Implements @code{methods} for Octave class objects and classnames.\n\
-@seealso{methods}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __methods__ (@var{x})
+@deftypefnx {} {} __methods__ ("classname")
+Internal function.
+
+Implements @code{methods} for Octave class objects and classnames.
+@seealso{methods}
+@end deftypefn */)
 {
   // Input validation has already been done in methods.m.
   octave_value arg = args(0);
@@ -2006,15 +2006,15 @@ is_built_in_class (const std::string& cn)
 }
 
 DEFUN (superiorto, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} superiorto (@var{class_name}, @dots{})\n\
-When called from a class constructor, mark the object currently constructed\n\
-as having a higher precedence than @var{class_name}.\n\
-\n\
-More that one such class can be specified in a single call.  This function\n\
-may @emph{only} be called from a class constructor.\n\
-@seealso{inferiorto}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} superiorto (@var{class_name}, @dots{})
+When called from a class constructor, mark the object currently constructed
+as having a higher precedence than @var{class_name}.
+
+More that one such class can be specified in a single call.  This function
+may @emph{only} be called from a class constructor.
+@seealso{inferiorto}
+@end deftypefn */)
 {
   octave_function *fcn = octave_call_stack::caller ();
   if (! fcn || ! fcn->is_class_constructor ())
@@ -2039,15 +2039,15 @@ may @emph{only} be called from a class constructor.\n\
 }
 
 DEFUN (inferiorto, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} inferiorto (@var{class_name}, @dots{})\n\
-When called from a class constructor, mark the object currently constructed\n\
-as having a lower precedence than @var{class_name}.\n\
-\n\
-More that one such class can be specified in a single call.  This function\n\
-may @emph{only} be called from a class constructor.\n\
-@seealso{superiorto}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} inferiorto (@var{class_name}, @dots{})
+When called from a class constructor, mark the object currently constructed
+as having a lower precedence than @var{class_name}.
+
+More that one such class can be specified in a single call.  This function
+may @emph{only} be called from a class constructor.
+@seealso{superiorto}
+@end deftypefn */)
 {
   octave_function *fcn = octave_call_stack::caller ();
   if (! fcn || ! fcn->is_class_constructor ())

@@ -115,28 +115,28 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 #endif
 
 DEFUN_DLD (dmperm, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{p} =} dmperm (@var{S})\n\
-@deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})\n\
-\n\
-@cindex @nospell{Dulmage-Mendelsohn} decomposition\n\
-Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix\n\
-@var{S}.\n\
-\n\
-With a single output argument @code{dmperm} performs the row permutations\n\
-@var{p} such that @code{@var{S}(@var{p},:)} has no zero elements on the\n\
-diagonal.\n\
-\n\
-Called with two or more output arguments, returns the row and column\n\
-permutations, such that @code{@var{S}(@var{p}, @var{q})} is in block\n\
-triangular form.  The values of @var{r} and @var{S} define the boundaries\n\
-of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.\n\
-\n\
-The method used is described in: @nospell{A. Pothen & C.-J. Fan.}\n\
-@cite{Computing the Block Triangular Form of a Sparse Matrix}.\n\
-ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
-@seealso{colamd, ccolamd}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{p} =} dmperm (@var{S})
+@deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})
+
+@cindex @nospell{Dulmage-Mendelsohn} decomposition
+Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix
+@var{S}.
+
+With a single output argument @code{dmperm} performs the row permutations
+@var{p} such that @code{@var{S}(@var{p},:)} has no zero elements on the
+diagonal.
+
+Called with two or more output arguments, returns the row and column
+permutations, such that @code{@var{S}(@var{p}, @var{q})} is in block
+triangular form.  The values of @var{r} and @var{S} define the boundaries
+of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.
+
+The method used is described in: @nospell{A. Pothen & C.-J. Fan.}
+@cite{Computing the Block Triangular Form of a Sparse Matrix}.
+ACM Trans. Math. Software, 16(4):303-324, 1990.
+@seealso{colamd, ccolamd}
+@end deftypefn */)
 {
 #if defined (HAVE_CXSPARSE)
 
@@ -172,19 +172,19 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
 */
 
 DEFUN_DLD (sprank, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn {} {@var{p} =} sprank (@var{S})\n\
-@cindex structural rank\n\
-\n\
-Calculate the structural rank of the sparse matrix @var{S}.\n\
-\n\
-Note that only the structure of the matrix is used in this calculation based\n\
-on a @nospell{Dulmage-Mendelsohn} permutation to block triangular form.  As\n\
-such the numerical rank of the matrix @var{S} is bounded by\n\
-@code{sprank (@var{S}) >= rank (@var{S})}.  Ignoring floating point errors\n\
-@code{sprank (@var{S}) == rank (@var{S})}.\n\
-@seealso{dmperm}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{p} =} sprank (@var{S})
+@cindex structural rank
+
+Calculate the structural rank of the sparse matrix @var{S}.
+
+Note that only the structure of the matrix is used in this calculation based
+on a @nospell{Dulmage-Mendelsohn} permutation to block triangular form.  As
+such the numerical rank of the matrix @var{S} is bounded by
+@code{sprank (@var{S}) >= rank (@var{S})}.  Ignoring floating point errors
+@code{sprank (@var{S}) == rank (@var{S})}.
+@seealso{dmperm}
+@end deftypefn */)
 {
 #if defined (HAVE_CXSPARSE)
 

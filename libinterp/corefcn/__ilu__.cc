@@ -134,12 +134,12 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
 }
 
 DEFUN (__ilu0__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -468,12 +468,12 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
 }
 
 DEFUN (__iluc__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{L}, @var{U}] =} __iluc__ (@var{A})\n\
-@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})\n\
-@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{L}, @var{U}] =} __iluc__ (@var{A})
+@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol})
+@deftypefnx {} {[@var{L}, @var{U}] =} __iluc__ (@var{A}, @var{droptol}, @var{milu})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -926,15 +926,15 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 }
 
 DEFUN (__ilutp__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A})\n\
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol})\n\
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh})\n\
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu})\n\
-@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})\n\
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@var{A}, @dots{})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A})
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol})
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh})
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu})
+@deftypefnx {} {[@var{L}, @var{U}] =} __ilutp__ (@var{A}, @var{droptol}, @var{thresh}, @var{milu}, @var{udiag})
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} __ilutp__ (@var{A}, @dots{})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

@@ -472,22 +472,22 @@ install_defaults (void)
 }
 
 DEFUN (EDITOR, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} EDITOR ()\n\
-@deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val})\n\
-@deftypefnx {} {} EDITOR (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the default text editor.\n\
-\n\
-The default value is taken from the environment variable @w{@env{EDITOR}}\n\
-when Octave starts.  If the environment variable is not initialized,\n\
-@w{@env{EDITOR}} will be set to @qcode{\"emacs\"}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-@seealso{edit, edit_history}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} EDITOR ()
+@deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val})
+@deftypefnx {} {} EDITOR (@var{new_val}, "local")
+Query or set the internal variable that specifies the default text editor.
+
+The default value is taken from the environment variable @w{@env{EDITOR}}
+when Octave starts.  If the environment variable is not initialized,
+@w{@env{EDITOR}} will be set to @qcode{"emacs"}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+@seealso{edit, edit_history}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
 }
@@ -505,24 +505,24 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (EXEC_PATH, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} EXEC_PATH ()\n\
-@deftypefnx {} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
-@deftypefnx {} {} EXEC_PATH (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies a colon separated\n\
-list of directories to append to the shell PATH when executing external\n\
-programs.\n\
-\n\
-The initial value of is taken from the environment variable\n\
-@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by the command\n\
-line argument @option{--exec-path PATH}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-@seealso{IMAGE_PATH, OCTAVE_HOME}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} EXEC_PATH ()
+@deftypefnx {} {@var{old_val} =} EXEC_PATH (@var{new_val})
+@deftypefnx {} {} EXEC_PATH (@var{new_val}, "local")
+Query or set the internal variable that specifies a colon separated
+list of directories to append to the shell PATH when executing external
+programs.
+
+The initial value of is taken from the environment variable
+@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by the command
+line argument @option{--exec-path PATH}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+@seealso{IMAGE_PATH, OCTAVE_HOME}
+@end deftypefn */)
 {
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
 
@@ -545,19 +545,19 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (IMAGE_PATH, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} IMAGE_PATH ()\n\
-@deftypefnx {} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
-@deftypefnx {} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies a colon separated\n\
-list of directories in which to search for image files.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-@seealso{EXEC_PATH, OCTAVE_HOME}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} IMAGE_PATH ()
+@deftypefnx {} {@var{old_val} =} IMAGE_PATH (@var{new_val})
+@deftypefnx {} {} IMAGE_PATH (@var{new_val}, "local")
+Query or set the internal variable that specifies a colon separated
+list of directories in which to search for image files.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+@seealso{EXEC_PATH, OCTAVE_HOME}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
 }
@@ -575,11 +575,11 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (OCTAVE_HOME, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} OCTAVE_HOME ()\n\
-Return the name of the top-level Octave installation directory.\n\
-@seealso{EXEC_PATH, IMAGE_PATH}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} OCTAVE_HOME ()
+Return the name of the top-level Octave installation directory.
+@seealso{EXEC_PATH, IMAGE_PATH}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -593,11 +593,11 @@ Return the name of the top-level Octave installation directory.\n\
 */
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {} {} OCTAVE_VERSION ()\n\
-Return the version number of Octave as a string.\n\
-@seealso{ver, version}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} OCTAVE_VERSION ()
+Return the version number of Octave as a string.
+@seealso{ver, version}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();

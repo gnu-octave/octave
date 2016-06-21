@@ -34,36 +34,36 @@ along with Octave; see the file COPYING.  If not, see
 
 
 DEFUN (betainc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} betainc (@var{x}, @var{a}, @var{b})\n\
-Compute the regularized incomplete Beta function.\n\
-\n\
-The regularized incomplete Beta function is defined by\n\
-@tex\n\
-$$\n\
- I (x, a, b) = {1 \\over {B (a, b)}} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-@group\n\
-                                   x\n\
-                          1       /\n\
-betainc (x, a, b) = -----------   | t^(a-1) (1-t)^(b-1) dt.\n\
-                    beta (a, b)   /\n\
-                               t=0\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@end ifnottex\n\
-\n\
-If @var{x} has more than one component, both @var{a} and @var{b} must be\n\
-scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of\n\
-compatible dimensions.\n\
-@seealso{betaincinv, beta, betaln}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} betainc (@var{x}, @var{a}, @var{b})
+Compute the regularized incomplete Beta function.
+
+The regularized incomplete Beta function is defined by
+@tex
+$$
+ I (x, a, b) = {1 \over {B (a, b)}} \int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.
+$$
+@end tex
+@ifnottex
+@c Set example in small font to prevent overfull line
+
+@smallexample
+@group
+                                   x
+                          1       /
+betainc (x, a, b) = -----------   | t^(a-1) (1-t)^(b-1) dt.
+                    beta (a, b)   /
+                               t=0
+@end group
+@end smallexample
+
+@end ifnottex
+
+If @var{x} has more than one component, both @var{a} and @var{b} must be
+scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
+compatible dimensions.
+@seealso{betaincinv, beta, betaln}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();
@@ -286,17 +286,17 @@ compatible dimensions.\n\
 */
 
 DEFUN (betaincinv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} betaincinv (@var{y}, @var{a}, @var{b})\n\
-Compute the inverse of the incomplete Beta function.\n\
-\n\
-The inverse is the value @var{x} such that\n\
-\n\
-@example\n\
-@var{y} == betainc (@var{x}, @var{a}, @var{b})\n\
-@end example\n\
-@seealso{betainc, beta, betaln}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} betaincinv (@var{y}, @var{a}, @var{b})
+Compute the inverse of the incomplete Beta function.
+
+The inverse is the value @var{x} such that
+
+@example
+@var{y} == betainc (@var{x}, @var{a}, @var{b})
+@end example
+@seealso{betainc, beta, betaln}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();

@@ -109,19 +109,19 @@ octave_link::do_discard_events (void)
 }
 
 DEFUN (__octave_link_enabled__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_enabled__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_enabled__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   return ovl (octave_link::enabled ());
 }
 
 DEFUN (__octave_link_edit_file__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_edit_file__ (@var{file})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_edit_file__ (@var{file})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -146,10 +146,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_message_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_message_dialog__ (@var{dlg}, @var{msg}, @var{title})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_message_dialog__ (@var{dlg}, @var{msg}, @var{title})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -168,10 +168,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_question_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -194,10 +194,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_file_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 6)
     return ovl ();
@@ -263,10 +263,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_list_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{intial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{intial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 8)
     return ovl ();
@@ -321,10 +321,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_input_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 4)
     return ovl ();
@@ -374,19 +374,19 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_show_preferences__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_show_preferences__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_show_preferences__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   return ovl (octave_link::show_preferences ());
 }
 
 DEFUN (__octave_link_show_doc__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __octave_link_show_doc__ (@var{filename})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_show_doc__ (@var{filename})
+Undocumented internal function.
+@end deftypefn */)
 {
   std::string file;
 

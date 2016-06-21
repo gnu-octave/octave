@@ -434,43 +434,43 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 }
 
 DEFUN (gcd, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
-@deftypefnx {} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
-Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.\n\
-\n\
-If more than one argument is given then all arguments must be the same size\n\
-or scalar.  In this case the greatest common divisor is calculated for each\n\
-element individually.  All elements must be ordinary or Gaussian (complex)\n\
-integers.  Note that for Gaussian integers, the gcd is only unique up to a\n\
-phase factor (multiplication by 1, -1, i, or -i), so an arbitrary greatest\n\
-common divisor among the four possible is returned.\n\
-\n\
-Optional return arguments @var{v1}, @dots{}, contain integer vectors such\n\
-that,\n\
-\n\
-@tex\n\
-$g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @dots{}\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-Example code:\n\
-\n\
-@example\n\
-@group\n\
-gcd ([15, 9], [20, 18])\n\
-   @result{}  5  9\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{lcm, factor, isprime}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})
+@deftypefnx {} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})
+Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.
+
+If more than one argument is given then all arguments must be the same size
+or scalar.  In this case the greatest common divisor is calculated for each
+element individually.  All elements must be ordinary or Gaussian (complex)
+integers.  Note that for Gaussian integers, the gcd is only unique up to a
+phase factor (multiplication by 1, -1, i, or -i), so an arbitrary greatest
+common divisor among the four possible is returned.
+
+Optional return arguments @var{v1}, @dots{}, contain integer vectors such
+that,
+
+@tex
+$g = v_1 a_1 + v_2 a_2 + \cdots$
+@end tex
+@ifnottex
+
+@example
+@var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @dots{}
+@end example
+
+@end ifnottex
+
+Example code:
+
+@example
+@group
+gcd ([15, 9], [20, 18])
+   @result{}  5  9
+@end group
+@end example
+
+@seealso{lcm, factor, isprime}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

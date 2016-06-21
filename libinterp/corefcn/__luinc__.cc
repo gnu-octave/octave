@@ -38,15 +38,15 @@ along with Octave; see the file COPYING.  If not, see
 
 // FIXME: Deprecated in 4.0 and should be removed in 4.4.
 DEFUN (__luinc__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, '0')\n\
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, @var{droptol})\n\
-@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, @var{opts})\n\
-Internal implementation of @code{luinc}.\n\
-\n\
-See documentation for @code{luinc}.\n\
-@seealso{luinc}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, '0')
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, @var{droptol})
+@deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} __luinc__ (@var{A}, @var{opts})
+Internal implementation of @code{luinc}.
+
+See documentation for @code{luinc}.
+@seealso{luinc}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

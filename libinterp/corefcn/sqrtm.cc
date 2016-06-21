@@ -198,16 +198,16 @@ do_sqrtm (const octave_value& arg)
 }
 
 DEFUN (sqrtm, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{s} =} sqrtm (@var{A})\n\
-@deftypefnx {} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})\n\
-Compute the matrix square root of the square matrix @var{A}.\n\
-\n\
-Ref: @nospell{N.J. Higham}.  @cite{A New sqrtm for @sc{matlab}}.  Numerical\n\
-Analysis Report No. 336, Manchester @nospell{Centre} for Computational\n\
-Mathematics, Manchester, England, January 1999.\n\
-@seealso{expm, logm}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} sqrtm (@var{A})
+@deftypefnx {} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})
+Compute the matrix square root of the square matrix @var{A}.
+
+Ref: @nospell{N.J. Higham}.  @cite{A New sqrtm for @sc{matlab}}.  Numerical
+Analysis Report No. 336, Manchester @nospell{Centre} for Computational
+Mathematics, Manchester, England, January 1999.
+@seealso{expm, logm}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

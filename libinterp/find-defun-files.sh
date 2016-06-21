@@ -9,7 +9,7 @@ EGREP=${EGREP:-egrep}
 # so we have to repeat ourselves because some stupid egreps don't like
 # empty elements in alternation patterns.
 
-DEFUN_PATTERN="^[ \t]*DEF(CONSTFUN|CMD|UN|UN_DLD|UNX_DLD|UN_TEXT)[ \t]*\\("
+DEFUN_PATTERN="^[ \t]*DEF(CONSTFUN|UN|UN_DLD|UNX|UNX_DLD)[ \t]*\\("
 
 srcdir="$1"
 if [ "$1" ]; then
@@ -25,7 +25,7 @@ do
   fi
   if [ -f "$file" ]; then
     if [ "`$EGREP -l "$DEFUN_PATTERN" $file`" ]; then
-      echo "$file" | $SED "s,\\$srcdir/,," | $SED 's/\.cc$/.df/; s/\.ll$/.df/; s/\.in.yy$/.df/'
+      echo "$file" | $SED "s,\\$srcdir/,,"
     fi
   fi
 done

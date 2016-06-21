@@ -399,17 +399,17 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 }
 
 DEFUN (save_precision, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} save_precision ()\n\
-@deftypefnx {} {@var{old_val} =} save_precision (@var{new_val})\n\
-@deftypefnx {} {} save_precision (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the number of digits to\n\
-keep when saving data in text format.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} save_precision ()
+@deftypefnx {} {@var{old_val} =} save_precision (@var{new_val})
+@deftypefnx {} {} save_precision (@var{new_val}, "local")
+Query or set the internal variable that specifies the number of digits to
+keep when saving data in text format.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1,
                                             std::numeric_limits<int>::max ());

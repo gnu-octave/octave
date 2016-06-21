@@ -149,48 +149,48 @@ qs_search (const Array<char>& needle,
 }
 
 DEFUN (strfind, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
-@deftypefnx {} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})\n\
-@deftypefnx {} {@var{idx} =} strfind (@dots{}, \"overlaps\", @var{val})\n\
-Search for @var{pattern} in the string @var{str} and return the starting\n\
-index of every such occurrence in the vector @var{idx}.\n\
-\n\
-If there is no such occurrence, or if @var{pattern} is longer than\n\
-@var{str}, or if @var{pattern} itself is empty, then @var{idx} is the empty\n\
-array @code{[]}.\n\
-\n\
-The optional argument @qcode{\"overlaps\"} determines whether the pattern\n\
-can match at every position in @var{str} (true), or only for unique\n\
-occurrences of the complete pattern (false).  The default is true.\n\
-\n\
-If a cell array of strings @var{cellstr} is specified then @var{idx} is a\n\
-cell array of vectors, as specified above.\n\
-\n\
-Examples:\n\
-\n\
-@example\n\
-@group\n\
-strfind (\"abababa\", \"aba\")\n\
-     @result{} [1, 3, 5]\n\
-\n\
-strfind (\"abababa\", \"aba\", \"overlaps\", false)\n\
-     @result{} [1, 5]\n\
-\n\
-strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] =\n\
-\n\
-             1   3   5\n\
-\n\
-          [1,2] = [](1x0)\n\
-          [1,3] = [](1x0)\n\
-        @}\n\
-@end group\n\
-@end example\n\
-@seealso{findstr, strmatch, regexp, regexpi, find}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{idx} =} strfind (@var{str}, @var{pattern})
+@deftypefnx {} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})
+@deftypefnx {} {@var{idx} =} strfind (@dots{}, "overlaps", @var{val})
+Search for @var{pattern} in the string @var{str} and return the starting
+index of every such occurrence in the vector @var{idx}.
+
+If there is no such occurrence, or if @var{pattern} is longer than
+@var{str}, or if @var{pattern} itself is empty, then @var{idx} is the empty
+array @code{[]}.
+
+The optional argument @qcode{"overlaps"} determines whether the pattern
+can match at every position in @var{str} (true), or only for unique
+occurrences of the complete pattern (false).  The default is true.
+
+If a cell array of strings @var{cellstr} is specified then @var{idx} is a
+cell array of vectors, as specified above.
+
+Examples:
+
+@example
+@group
+strfind ("abababa", "aba")
+     @result{} [1, 3, 5]
+
+strfind ("abababa", "aba", "overlaps", false)
+     @result{} [1, 5]
+
+strfind (@{"abababa", "bebebe", "ab"@}, "aba")
+     @result{}
+        @{
+          [1,1] =
+
+             1   3   5
+
+          [1,2] = [](1x0)
+          [1,3] = [](1x0)
+        @}
+@end group
+@end example
+@seealso{findstr, strmatch, regexp, regexpi, find}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -352,31 +352,31 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 }
 
 DEFUN (strrep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{newstr} =} strrep (@var{str}, @var{ptn}, @var{rep})\n\
-@deftypefnx {} {@var{newstr} =} strrep (@var{cellstr}, @var{ptn}, @var{rep})\n\
-@deftypefnx {} {@var{newstr} =} strrep (@dots{}, \"overlaps\", @var{val})\n\
-Replace all occurrences of the pattern @var{ptn} in the string @var{str}\n\
-with the string @var{rep} and return the result.\n\
-\n\
-The optional argument @qcode{\"overlaps\"} determines whether the pattern\n\
-can match at every position in @var{str} (true), or only for unique\n\
-occurrences of the complete pattern (false).  The default is true.\n\
-\n\
-@var{s} may also be a cell array of strings, in which case the replacement\n\
-is done for each element and a cell array is returned.\n\
-\n\
-Example:\n\
-\n\
-@example\n\
-@group\n\
-strrep (\"This is a test string\", \"is\", \"&%$\")\n\
-    @result{}  \"Th&%$ &%$ a test string\"\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{regexprep, strfind, findstr}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{newstr} =} strrep (@var{str}, @var{ptn}, @var{rep})
+@deftypefnx {} {@var{newstr} =} strrep (@var{cellstr}, @var{ptn}, @var{rep})
+@deftypefnx {} {@var{newstr} =} strrep (@dots{}, "overlaps", @var{val})
+Replace all occurrences of the pattern @var{ptn} in the string @var{str}
+with the string @var{rep} and return the result.
+
+The optional argument @qcode{"overlaps"} determines whether the pattern
+can match at every position in @var{str} (true), or only for unique
+occurrences of the complete pattern (false).  The default is true.
+
+@var{s} may also be a cell array of strings, in which case the replacement
+is done for each element and a cell array is returned.
+
+Example:
+
+@example
+@group
+strrep ("This is a test string", "is", "&%$")
+    @result{}  "Th&%$ &%$ a test string"
+@end group
+@end example
+
+@seealso{regexprep, strfind, findstr}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

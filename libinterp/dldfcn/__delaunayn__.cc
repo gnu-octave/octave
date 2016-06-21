@@ -85,11 +85,11 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 #endif
 
 DEFUN_DLD (__delaunayn__, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{T} =} __delaunayn__ (@var{pts})\n\
-@deftypefnx {} {@var{T} =} __delaunayn__ (@var{pts}, @var{options})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{T} =} __delaunayn__ (@var{pts})
+@deftypefnx {} {@var{T} =} __delaunayn__ (@var{pts}, @var{options})
+Undocumented internal function.
+@end deftypefn */)
 
 {
 #if defined (HAVE_QHULL)

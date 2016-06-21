@@ -232,38 +232,39 @@ dispatch_kron (const octave_value& a, const octave_value& b)
 }
 
 
-DEFUN (kron, args, , "-*- texinfo -*-\n\
-@deftypefn  {} {} kron (@var{A}, @var{B})\n\
-@deftypefnx {} {} kron (@var{A1}, @var{A2}, @dots{})\n\
-Form the Kronecker product of two or more matrices.\n\
-\n\
-This is defined block by block as\n\
-\n\
-@example\n\
-x = [ a(i,j)*b ]\n\
-@end example\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-kron (1:4, ones (3, 1))\n\
-     @result{}  1  2  3  4\n\
-         1  2  3  4\n\
-         1  2  3  4\n\
-@end group\n\
-@end example\n\
-\n\
-If there are more than two input arguments @var{A1}, @var{A2}, @dots{},\n\
-@var{An} the Kronecker product is computed as\n\
-\n\
-@example\n\
-kron (kron (@var{A1}, @var{A2}), @dots{}, @var{An})\n\
-@end example\n\
-\n\
-@noindent\n\
-Since the Kronecker product is associative, this is well-defined.\n\
-@end deftypefn")
+DEFUN (kron, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} kron (@var{A}, @var{B})
+@deftypefnx {} {} kron (@var{A1}, @var{A2}, @dots{})
+Form the Kronecker product of two or more matrices.
+
+This is defined block by block as
+
+@example
+x = [ a(i,j)*b ]
+@end example
+
+For example:
+
+@example
+@group
+kron (1:4, ones (3, 1))
+     @result{}  1  2  3  4
+         1  2  3  4
+         1  2  3  4
+@end group
+@end example
+
+If there are more than two input arguments @var{A1}, @var{A2}, @dots{},
+@var{An} the Kronecker product is computed as
+
+@example
+kron (kron (@var{A1}, @var{A2}), @dots{}, @var{An})
+@end example
+
+@noindent
+Since the Kronecker product is associative, this is well-defined.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

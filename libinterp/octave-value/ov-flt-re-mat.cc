@@ -812,11 +812,11 @@ octave_float_matrix::map (unary_mapper_t umap) const
 }
 
 DEFUN (single, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} single (@var{x})\n\
-Convert @var{x} to single precision type.\n\
-@seealso{double}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} single (@var{x})
+Convert @var{x} to single precision type.
+@seealso{double}
+@end deftypefn */)
 {
   // The OCTAVE_TYPE_CONV_BODY3 macro declares retval, so they go
   // inside their own scopes, and we don't declare retval here to

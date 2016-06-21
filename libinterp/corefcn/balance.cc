@@ -45,49 +45,49 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (balance, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{AA} =} balance (@var{A})\n\
-@deftypefnx {} {@var{AA} =} balance (@var{A}, @var{opt})\n\
-@deftypefnx {} {[@var{DD}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
-@deftypefnx {} {[@var{D}, @var{P}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
-@deftypefnx {} {[@var{CC}, @var{DD}, @var{AA}, @var{BB}] =} balance (@var{A}, @var{B}, @var{opt})\n\
-\n\
-Balance the matrix @var{A} to reduce numerical errors in future\n\
-calculations.\n\
-\n\
-Compute @code{@var{AA} = @var{DD} \\ @var{A} * @var{DD}} in which @var{AA}\n\
-is a matrix whose row and column norms are roughly equal in magnitude, and\n\
-@code{@var{DD} = @var{P} * @var{D}}, in which @var{P} is a permutation\n\
-matrix and @var{D} is a diagonal matrix of powers of two.  This allows the\n\
-equilibration to be computed without round-off.  Results of eigenvalue\n\
-calculation are typically improved by balancing first.\n\
-\n\
-If two output values are requested, @code{balance} returns\n\
-the diagonal @var{D} and the permutation @var{P} separately as vectors.\n\
-In this case, @code{@var{DD} = eye(n)(:,@var{P}) * diag (@var{D})}, where\n\
-@math{n} is the matrix size.\n\
-\n\
-If four output values are requested, compute @code{@var{AA} =\n\
-@var{CC}*@var{A}*@var{DD}} and @code{@var{BB} = @var{CC}*@var{B}*@var{DD}},\n\
-in which @var{AA} and @var{BB} have nonzero elements of approximately the\n\
-same magnitude and @var{CC} and @var{DD} are permuted diagonal matrices as\n\
-in @var{DD} for the algebraic eigenvalue problem.\n\
-\n\
-The eigenvalue balancing option @var{opt} may be one of:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"noperm\"}, @qcode{\"S\"}\n\
-Scale only; do not permute.\n\
-\n\
-@item @qcode{\"noscal\"}, @qcode{\"P\"}\n\
-Permute only; do not scale.\n\
-@end table\n\
-\n\
-Algebraic eigenvalue balancing uses standard @sc{lapack} routines.\n\
-\n\
-Generalized eigenvalue problem balancing uses Ward's algorithm\n\
-(SIAM Journal on Scientific and Statistical Computing, 1981).\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{AA} =} balance (@var{A})
+@deftypefnx {} {@var{AA} =} balance (@var{A}, @var{opt})
+@deftypefnx {} {[@var{DD}, @var{AA}] =} balance (@var{A}, @var{opt})
+@deftypefnx {} {[@var{D}, @var{P}, @var{AA}] =} balance (@var{A}, @var{opt})
+@deftypefnx {} {[@var{CC}, @var{DD}, @var{AA}, @var{BB}] =} balance (@var{A}, @var{B}, @var{opt})
+
+Balance the matrix @var{A} to reduce numerical errors in future
+calculations.
+
+Compute @code{@var{AA} = @var{DD} \ @var{A} * @var{DD}} in which @var{AA}
+is a matrix whose row and column norms are roughly equal in magnitude, and
+@code{@var{DD} = @var{P} * @var{D}}, in which @var{P} is a permutation
+matrix and @var{D} is a diagonal matrix of powers of two.  This allows the
+equilibration to be computed without round-off.  Results of eigenvalue
+calculation are typically improved by balancing first.
+
+If two output values are requested, @code{balance} returns
+the diagonal @var{D} and the permutation @var{P} separately as vectors.
+In this case, @code{@var{DD} = eye(n)(:,@var{P}) * diag (@var{D})}, where
+@math{n} is the matrix size.
+
+If four output values are requested, compute @code{@var{AA} =
+@var{CC}*@var{A}*@var{DD}} and @code{@var{BB} = @var{CC}*@var{B}*@var{DD}},
+in which @var{AA} and @var{BB} have nonzero elements of approximately the
+same magnitude and @var{CC} and @var{DD} are permuted diagonal matrices as
+in @var{DD} for the algebraic eigenvalue problem.
+
+The eigenvalue balancing option @var{opt} may be one of:
+
+@table @asis
+@item @qcode{"noperm"}, @qcode{"S"}
+Scale only; do not permute.
+
+@item @qcode{"noscal"}, @qcode{"P"}
+Permute only; do not scale.
+@end table
+
+Algebraic eigenvalue balancing uses standard @sc{lapack} routines.
+
+Generalized eigenvalue problem balancing uses Ward's algorithm
+(SIAM Journal on Scientific and Statistical Computing, 1981).
+@end deftypefn */)
 {
   int nargin = args.length ();
 

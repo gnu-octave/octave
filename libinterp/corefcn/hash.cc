@@ -48,68 +48,68 @@ for now.
 #include "ovl.h"
 
 DEFUN (hash, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} hash (@var{hfun}, @var{str})\n\
-Calculate the hash value of the string @var{str} using the hash function\n\
-@var{hfun}.\n\
-\n\
-The available hash functions are given in the table below.\n\
-\n\
-@table @samp\n\
-@item MD2\n\
-Message-Digest Algorithm 2 (RFC 1319).\n\
-\n\
-@item MD4\n\
-Message-Digest Algorithm 4 (RFC 1320).\n\
-\n\
-@item MD5\n\
-Message-Digest Algorithm 5 (RFC 1321).\n\
-\n\
-@item SHA1\n\
-Secure Hash Algorithm 1 (RFC 3174)\n\
-\n\
-@item SHA224\n\
-Secure Hash Algorithm 2 (224 Bits, RFC 3874)\n\
-\n\
-@item SHA256\n\
-Secure Hash Algorithm 2 (256 Bits, RFC 6234)\n\
-\n\
-@item SHA384\n\
-Secure Hash Algorithm 2 (384 Bits, RFC 6234)\n\
-\n\
-@item SHA512\n\
-Secure Hash Algorithm 2 (512 Bits, RFC 6234)\n\
-@end table\n\
-\n\
-To calculate for example the MD5 hash value of the string\n\
-@nospell{@qcode{\"abc\"}} the @code{hash} function is called as follows:\n\
-\n\
-@example\n\
-@group\n\
-hash (\"md5\", \"abc\")\n\
-     @print{} ans = 900150983cd24fb0d6963f7d28e17f72\n\
-@end group\n\
-@end example\n\
-\n\
-For the same string, the SHA-1 hash value is calculated with:\n\
-\n\
-@example\n\
-@group\n\
-hash (\"sha1\", \"abc\")\n\
-     @print{} ans = a9993e364706816aba3e25717850c26c9cd0d89d\n\
-@end group\n\
-@end example\n\
-\n\
-And to compute the hash value of a file, e.g., @code{file = \"file.txt\"},\n\
-call @code{hash} in combination with the @code{fileread}:\n\
-\n\
-@example\n\
-@group\n\
-hash (\"md5\", fileread (file));\n\
-@end group\n\
-@end example\n\
-\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} hash (@var{hfun}, @var{str})
+Calculate the hash value of the string @var{str} using the hash function
+@var{hfun}.
+
+The available hash functions are given in the table below.
+
+@table @samp
+@item MD2
+Message-Digest Algorithm 2 (RFC 1319).
+
+@item MD4
+Message-Digest Algorithm 4 (RFC 1320).
+
+@item MD5
+Message-Digest Algorithm 5 (RFC 1321).
+
+@item SHA1
+Secure Hash Algorithm 1 (RFC 3174)
+
+@item SHA224
+Secure Hash Algorithm 2 (224 Bits, RFC 3874)
+
+@item SHA256
+Secure Hash Algorithm 2 (256 Bits, RFC 6234)
+
+@item SHA384
+Secure Hash Algorithm 2 (384 Bits, RFC 6234)
+
+@item SHA512
+Secure Hash Algorithm 2 (512 Bits, RFC 6234)
+@end table
+
+To calculate for example the MD5 hash value of the string
+@nospell{@qcode{"abc"}} the @code{hash} function is called as follows:
+
+@example
+@group
+hash ("md5", "abc")
+     @print{} ans = 900150983cd24fb0d6963f7d28e17f72
+@end group
+@end example
+
+For the same string, the SHA-1 hash value is calculated with:
+
+@example
+@group
+hash ("sha1", "abc")
+     @print{} ans = a9993e364706816aba3e25717850c26c9cd0d89d
+@end group
+@end example
+
+And to compute the hash value of a file, e.g., @code{file = "file.txt"},
+call @code{hash} in combination with the @code{fileread}:
+
+@example
+@group
+hash ("md5", fileread (file));
+@end group
+@end example
+
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();

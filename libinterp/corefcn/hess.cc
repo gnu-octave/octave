@@ -33,33 +33,33 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (hess, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{H} =} hess (@var{A})\n\
-@deftypefnx {} {[@var{P}, @var{H}] =} hess (@var{A})\n\
-@cindex Hessenberg decomposition\n\
-Compute the Hessenberg decomposition of the matrix @var{A}.\n\
-\n\
-The Hessenberg decomposition is\n\
-@tex\n\
-$$\n\
-A = PHP^T\n\
-$$\n\
-where $P$ is a square unitary matrix ($P^TP = I$), and $H$\n\
-is upper Hessenberg ($H_{i,j} = 0, \\forall i > j+1$).\n\
-@end tex\n\
-@ifnottex\n\
-@code{@var{P} * @var{H} * @var{P}' = @var{A}} where @var{P} is a square\n\
-unitary matrix (@code{@var{P}' * @var{P} = I}, using complex-conjugate\n\
-transposition) and @var{H} is upper Hessenberg\n\
-(@code{@var{H}(i, j) = 0 forall i > j+1)}.\n\
-@end ifnottex\n\
-\n\
-The Hessenberg decomposition is usually used as the first step in an\n\
-eigenvalue computation, but has other applications as well\n\
-(see @nospell{Golub, Nash, and Van Loan},\n\
-IEEE Transactions on Automatic Control, 1979).\n\
-@seealso{eig, chol, lu, qr, qz, schur, svd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{H} =} hess (@var{A})
+@deftypefnx {} {[@var{P}, @var{H}] =} hess (@var{A})
+@cindex Hessenberg decomposition
+Compute the Hessenberg decomposition of the matrix @var{A}.
+
+The Hessenberg decomposition is
+@tex
+$$
+A = PHP^T
+$$
+where $P$ is a square unitary matrix ($P^TP = I$), and $H$
+is upper Hessenberg ($H_{i,j} = 0, \forall i > j+1$).
+@end tex
+@ifnottex
+@code{@var{P} * @var{H} * @var{P}' = @var{A}} where @var{P} is a square
+unitary matrix (@code{@var{P}' * @var{P} = I}, using complex-conjugate
+transposition) and @var{H} is upper Hessenberg
+(@code{@var{H}(i, j) = 0 forall i > j+1)}.
+@end ifnottex
+
+The Hessenberg decomposition is usually used as the first step in an
+eigenvalue computation, but has other applications as well
+(see @nospell{Golub, Nash, and Van Loan},
+IEEE Transactions on Automatic Control, 1979).
+@seealso{eig, chol, lu, qr, qz, schur, svd}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

@@ -39,102 +39,102 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 
 DEFUN_DLD (fftw, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {@var{method} =} fftw (\"planner\")\n\
-@deftypefnx {} {} fftw (\"planner\", @var{method})\n\
-@deftypefnx {} {@var{wisdom} =} fftw (\"dwisdom\")\n\
-@deftypefnx {} {} fftw (\"dwisdom\", @var{wisdom})\n\
-@deftypefnx {} {} fftw (\"threads\", @var{nthreads})\n\
-@deftypefnx {} {@var{nthreads} =} fftw (\"threads\")\n\
-\n\
-Manage @sc{fftw} wisdom data.\n\
-\n\
-Wisdom data can be used to significantly accelerate the calculation of the\n\
-FFTs, but implies an initial cost in its calculation.  When the @sc{fftw}\n\
-libraries are initialized, they read a system wide wisdom file (typically in\n\
-@file{/etc/fftw/wisdom}), allowing wisdom to be shared between applications\n\
-other than Octave.  Alternatively, the @code{fftw} function can be used to\n\
-import wisdom.  For example,\n\
-\n\
-@example\n\
-@var{wisdom} = fftw (\"dwisdom\")\n\
-@end example\n\
-\n\
-@noindent\n\
-will save the existing wisdom used by Octave to the string @var{wisdom}.\n\
-This string can then be saved to a file and restored using the @code{save}\n\
-and @code{load} commands respectively.  This existing wisdom can be\n\
-re-imported as follows\n\
-\n\
-@example\n\
-fftw (\"dwisdom\", @var{wisdom})\n\
-@end example\n\
-\n\
-If @var{wisdom} is an empty string, then the wisdom used is cleared.\n\
-\n\
-During the calculation of Fourier transforms further wisdom is generated.\n\
-The fashion in which this wisdom is generated is also controlled by\n\
-the @code{fftw} function.  There are five different manners in which the\n\
-wisdom can be treated:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"estimate\"}\n\
-Specifies that no run-time measurement of the optimal means of\n\
-calculating a particular is performed, and a simple heuristic is used\n\
-to pick a (probably sub-optimal) plan.  The advantage of this method is\n\
-that there is little or no overhead in the generation of the plan, which\n\
-is appropriate for a Fourier transform that will be calculated once.\n\
-\n\
-@item @qcode{\"measure\"}\n\
-In this case a range of algorithms to perform the transform is considered\n\
-and the best is selected based on their execution time.\n\
-\n\
-@item @qcode{\"patient\"}\n\
-Similar to @qcode{\"measure\"}, but a wider range of algorithms is\n\
-considered.\n\
-\n\
-@item @qcode{\"exhaustive\"}\n\
-Like @qcode{\"measure\"}, but all possible algorithms that may be used to\n\
-treat the transform are considered.\n\
-\n\
-@item @qcode{\"hybrid\"}\n\
-As run-time measurement of the algorithm can be expensive, this is a\n\
-compromise where @qcode{\"measure\"} is used for transforms up to the size\n\
-of 8192 and beyond that the @qcode{\"estimate\"} method is used.\n\
-@end table\n\
-\n\
-The default method is @qcode{\"estimate\"}.  The current method can\n\
-be queried with\n\
-\n\
-@example\n\
-@var{method} = fftw (\"planner\")\n\
-@end example\n\
-\n\
-@noindent\n\
-or set by using\n\
-\n\
-@example\n\
-fftw (\"planner\", @var{method})\n\
-@end example\n\
-\n\
-Note that calculated wisdom will be lost when restarting Octave.  However,\n\
-the wisdom data can be reloaded if it is saved to a file as described\n\
-above.  Saved wisdom files should not be used on different platforms since\n\
-they will not be efficient and the point of calculating the wisdom is lost.\n\
-\n\
-The number of threads used for computing the plans and executing the\n\
-transforms can be set with\n\
-\n\
-@example\n\
-fftw (\"threads\", @var{NTHREADS})\n\
-@end example\n\
-\n\
-Note that octave must be compiled with multi-threaded @sc{fftw} support for\n\
-this feature.  The number of processors available to the current process is\n\
-used per default.\n\
-\n\
-@seealso{fft, ifft, fft2, ifft2, fftn, ifftn}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{method} =} fftw ("planner")
+@deftypefnx {} {} fftw ("planner", @var{method})
+@deftypefnx {} {@var{wisdom} =} fftw ("dwisdom")
+@deftypefnx {} {} fftw ("dwisdom", @var{wisdom})
+@deftypefnx {} {} fftw ("threads", @var{nthreads})
+@deftypefnx {} {@var{nthreads} =} fftw ("threads")
+
+Manage @sc{fftw} wisdom data.
+
+Wisdom data can be used to significantly accelerate the calculation of the
+FFTs, but implies an initial cost in its calculation.  When the @sc{fftw}
+libraries are initialized, they read a system wide wisdom file (typically in
+@file{/etc/fftw/wisdom}), allowing wisdom to be shared between applications
+other than Octave.  Alternatively, the @code{fftw} function can be used to
+import wisdom.  For example,
+
+@example
+@var{wisdom} = fftw ("dwisdom")
+@end example
+
+@noindent
+will save the existing wisdom used by Octave to the string @var{wisdom}.
+This string can then be saved to a file and restored using the @code{save}
+and @code{load} commands respectively.  This existing wisdom can be
+re-imported as follows
+
+@example
+fftw ("dwisdom", @var{wisdom})
+@end example
+
+If @var{wisdom} is an empty string, then the wisdom used is cleared.
+
+During the calculation of Fourier transforms further wisdom is generated.
+The fashion in which this wisdom is generated is also controlled by
+the @code{fftw} function.  There are five different manners in which the
+wisdom can be treated:
+
+@table @asis
+@item @qcode{"estimate"}
+Specifies that no run-time measurement of the optimal means of
+calculating a particular is performed, and a simple heuristic is used
+to pick a (probably sub-optimal) plan.  The advantage of this method is
+that there is little or no overhead in the generation of the plan, which
+is appropriate for a Fourier transform that will be calculated once.
+
+@item @qcode{"measure"}
+In this case a range of algorithms to perform the transform is considered
+and the best is selected based on their execution time.
+
+@item @qcode{"patient"}
+Similar to @qcode{"measure"}, but a wider range of algorithms is
+considered.
+
+@item @qcode{"exhaustive"}
+Like @qcode{"measure"}, but all possible algorithms that may be used to
+treat the transform are considered.
+
+@item @qcode{"hybrid"}
+As run-time measurement of the algorithm can be expensive, this is a
+compromise where @qcode{"measure"} is used for transforms up to the size
+of 8192 and beyond that the @qcode{"estimate"} method is used.
+@end table
+
+The default method is @qcode{"estimate"}.  The current method can
+be queried with
+
+@example
+@var{method} = fftw ("planner")
+@end example
+
+@noindent
+or set by using
+
+@example
+fftw ("planner", @var{method})
+@end example
+
+Note that calculated wisdom will be lost when restarting Octave.  However,
+the wisdom data can be reloaded if it is saved to a file as described
+above.  Saved wisdom files should not be used on different platforms since
+they will not be efficient and the point of calculating the wisdom is lost.
+
+The number of threads used for computing the plans and executing the
+transforms can be set with
+
+@example
+fftw ("threads", @var{NTHREADS})
+@end example
+
+Note that octave must be compiled with multi-threaded @sc{fftw} support for
+this feature.  The number of processors available to the current process is
+used per default.
+
+@seealso{fft, ifft, fft2, ifft2, fftn, ifftn}
+@end deftypefn */)
 {
 #if defined (HAVE_FFTW)
 

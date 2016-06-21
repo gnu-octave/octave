@@ -701,21 +701,21 @@ octave_range::fast_elem_extract (octave_idx_type n) const
 }
 
 DEFUN (allow_noninteger_range_as_index, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} allow_noninteger_range_as_index ()\n\
-@deftypefnx {} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
-@deftypefnx {} {} allow_noninteger_range_as_index (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether non-integer\n\
-ranges are allowed as indices.\n\
-\n\
-This might be useful for @sc{matlab} compatibility; however, it is still not\n\
-entirely compatible because @sc{matlab} treats the range expression\n\
-differently in different contexts.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} allow_noninteger_range_as_index ()
+@deftypefnx {} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})
+@deftypefnx {} {} allow_noninteger_range_as_index (@var{new_val}, "local")
+Query or set the internal variable that controls whether non-integer
+ranges are allowed as indices.
+
+This might be useful for @sc{matlab} compatibility; however, it is still not
+entirely compatible because @sc{matlab} treats the range expression
+differently in different contexts.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   static bool warned = false;
   if (! warned)

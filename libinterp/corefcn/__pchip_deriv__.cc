@@ -51,10 +51,10 @@ extern "C"
 // for piecewise polynomials.
 
 DEFUN (__pchip_deriv__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
   int nargin = args.length ();

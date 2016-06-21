@@ -655,32 +655,32 @@ octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
 }
 
 DEFUNX ("inline", Finline, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {} inline (@var{str})\n\
-@deftypefnx {} {} inline (@var{str}, @var{arg1}, @dots{})\n\
-@deftypefnx {} {} inline (@var{str}, @var{n})\n\
-Create an inline function from the character string @var{str}.\n\
-\n\
-If called with a single argument, the arguments of the generated function\n\
-are extracted from the function itself.  The generated function arguments\n\
-will then be in alphabetical order.  It should be noted that i and j are\n\
-ignored as arguments due to the ambiguity between their use as a variable or\n\
-their use as an built-in constant.  All arguments followed by a parenthesis\n\
-are considered to be functions.  If no arguments are found, a function\n\
-taking a single argument named @code{x} will be created.\n\
-\n\
-If the second and subsequent arguments are character strings, they are the\n\
-names of the arguments of the function.\n\
-\n\
-If the second argument is an integer @var{n}, the arguments are\n\
-@qcode{\"x\"}, @qcode{\"P1\"}, @dots{}, @qcode{\"P@var{N}\"}.\n\
-\n\
-Programming Note: The use of @code{inline} is discouraged and it may be\n\
-removed from a future version of Octave.  The preferred way to create\n\
-functions from strings is through the use of anonymous functions\n\
-(@pxref{Anonymous Functions}) or @code{str2func}.\n\
-@seealso{argnames, formula, vectorize, str2func}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} inline (@var{str})
+@deftypefnx {} {} inline (@var{str}, @var{arg1}, @dots{})
+@deftypefnx {} {} inline (@var{str}, @var{n})
+Create an inline function from the character string @var{str}.
+
+If called with a single argument, the arguments of the generated function
+are extracted from the function itself.  The generated function arguments
+will then be in alphabetical order.  It should be noted that i and j are
+ignored as arguments due to the ambiguity between their use as a variable or
+their use as an built-in constant.  All arguments followed by a parenthesis
+are considered to be functions.  If no arguments are found, a function
+taking a single argument named @code{x} will be created.
+
+If the second and subsequent arguments are character strings, they are the
+names of the arguments of the function.
+
+If the second argument is an integer @var{n}, the arguments are
+@qcode{"x"}, @qcode{"P1"}, @dots{}, @qcode{"P@var{N}"}.
+
+Programming Note: The use of @code{inline} is discouraged and it may be
+removed from a future version of Octave.  The preferred way to create
+functions from strings is through the use of anonymous functions
+(@pxref{Anonymous Functions}) or @code{str2func}.
+@seealso{argnames, formula, vectorize, str2func}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -834,14 +834,14 @@ functions from strings is through the use of anonymous functions\n\
 */
 
 DEFUN (formula, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} formula (@var{fun})\n\
-Return a character string representing the inline function @var{fun}.\n\
-\n\
-Note that @code{char (@var{fun})} is equivalent to\n\
-@code{formula (@var{fun})}.\n\
-@seealso{char, argnames, inline, vectorize}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} formula (@var{fun})
+Return a character string representing the inline function @var{fun}.
+
+Note that @code{char (@var{fun})} is equivalent to
+@code{formula (@var{fun})}.
+@seealso{char, argnames, inline, vectorize}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -865,12 +865,12 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 */
 
 DEFUN (argnames, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} argnames (@var{fun})\n\
-Return a cell array of character strings containing the names of the\n\
-arguments of the inline function @var{fun}.\n\
-@seealso{inline, formula, vectorize}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} argnames (@var{fun})
+Return a cell array of character strings containing the names of the
+arguments of the inline function @var{fun}.
+@seealso{inline, formula, vectorize}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -902,24 +902,24 @@ arguments of the inline function @var{fun}.\n\
 */
 
 DEFUN (vectorize, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} vectorize (@var{fun})\n\
-Create a vectorized version of the inline function @var{fun} by replacing\n\
-all occurrences of @code{*}, @code{/}, etc., with @code{.*}, @code{./}, etc.\n\
-\n\
-This may be useful, for example, when using inline functions with numerical\n\
-integration or optimization where a vector-valued function is expected.\n\
-\n\
-@example\n\
-@group\n\
-fcn = vectorize (inline (\"x^2 - 1\"))\n\
-   @result{} fcn = f(x) = x.^2 - 1\n\
-quadv (fcn, 0, 3)\n\
-   @result{} 6\n\
-@end group\n\
-@end example\n\
-@seealso{inline, formula, argnames}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} vectorize (@var{fun})
+Create a vectorized version of the inline function @var{fun} by replacing
+all occurrences of @code{*}, @code{/}, etc., with @code{.*}, @code{./}, etc.
+
+This may be useful, for example, when using inline functions with numerical
+integration or optimization where a vector-valued function is expected.
+
+@example
+@group
+fcn = vectorize (inline ("x^2 - 1"))
+   @result{} fcn = f(x) = x.^2 - 1
+quadv (fcn, 0, 3)
+   @result{} 6
+@end group
+@end example
+@seealso{inline, formula, argnames}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

@@ -55,75 +55,75 @@ mark_upper_triangular (const Matrix& a)
 }
 
 DEFUN (schur, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{S} =} schur (@var{A})\n\
-@deftypefnx {} {@var{S} =} schur (@var{A}, \"real\")\n\
-@deftypefnx {} {@var{S} =} schur (@var{A}, \"complex\")\n\
-@deftypefnx {} {@var{S} =} schur (@var{A}, @var{opt})\n\
-@deftypefnx {} {[@var{U}, @var{S}] =} schur (@dots{})\n\
-@cindex Schur decomposition\n\
-Compute the Schur@tie{}decomposition of @var{A}.\n\
-\n\
-The Schur@tie{}decomposition is defined as\n\
-@tex\n\
-$$\n\
- S = U^T A U\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@code{@var{S} = @var{U}' * @var{A} * @var{U}}\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-where @var{U} is a unitary matrix\n\
-@tex\n\
-($U^T U$ is identity)\n\
-@end tex\n\
-@ifnottex\n\
-(@code{@var{U}'* @var{U}} is identity)\n\
-@end ifnottex\n\
-and @var{S} is upper triangular.  The eigenvalues of @var{A} (and @var{S})\n\
-are the diagonal elements of @var{S}.  If the matrix @var{A} is real, then\n\
-the real Schur@tie{}decomposition is computed, in which the matrix @var{U}\n\
-is orthogonal and @var{S} is block upper triangular with blocks of size at\n\
-most\n\
-@tex\n\
-$2 \\times 2$\n\
-@end tex\n\
-@ifnottex\n\
-@code{2 x 2}\n\
-@end ifnottex\n\
-along the diagonal.  The diagonal elements of @var{S}\n\
-(or the eigenvalues of the\n\
-@tex\n\
-$2 \\times 2$\n\
-@end tex\n\
-@ifnottex\n\
-@code{2 x 2}\n\
-@end ifnottex\n\
-blocks, when appropriate) are the eigenvalues of @var{A} and @var{S}.\n\
-\n\
-The default for real matrices is a real Schur@tie{}decomposition.\n\
-A complex decomposition may be forced by passing the flag\n\
-@qcode{\"complex\"}.\n\
-\n\
-The eigenvalues are optionally ordered along the diagonal according to the\n\
-value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all eigenvalues\n\
-with negative real parts should be moved to the leading block of @var{S}\n\
-(used in @code{are}), @code{@var{opt} = \"d\"} indicates that all\n\
-eigenvalues with magnitude less than one should be moved to the leading\n\
-block of @var{S} (used in @code{dare}), and @code{@var{opt} = \"u\"}, the\n\
-default, indicates that no ordering of eigenvalues should occur.  The\n\
-leading @var{k} columns of @var{U} always span the @var{A}-invariant\n\
-subspace corresponding to the @var{k} leading eigenvalues of @var{S}.\n\
-\n\
-The Schur@tie{}decomposition is used to compute eigenvalues of a square\n\
-matrix, and has applications in the solution of algebraic Riccati equations\n\
-in control (see @code{are} and @code{dare}).\n\
-@seealso{rsf2csf, ordschur, lu, chol, hess, qr, qz, svd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{S} =} schur (@var{A})
+@deftypefnx {} {@var{S} =} schur (@var{A}, "real")
+@deftypefnx {} {@var{S} =} schur (@var{A}, "complex")
+@deftypefnx {} {@var{S} =} schur (@var{A}, @var{opt})
+@deftypefnx {} {[@var{U}, @var{S}] =} schur (@dots{})
+@cindex Schur decomposition
+Compute the Schur@tie{}decomposition of @var{A}.
+
+The Schur@tie{}decomposition is defined as
+@tex
+$$
+ S = U^T A U
+$$
+@end tex
+@ifnottex
+
+@example
+@code{@var{S} = @var{U}' * @var{A} * @var{U}}
+@end example
+
+@end ifnottex
+where @var{U} is a unitary matrix
+@tex
+($U^T U$ is identity)
+@end tex
+@ifnottex
+(@code{@var{U}'* @var{U}} is identity)
+@end ifnottex
+and @var{S} is upper triangular.  The eigenvalues of @var{A} (and @var{S})
+are the diagonal elements of @var{S}.  If the matrix @var{A} is real, then
+the real Schur@tie{}decomposition is computed, in which the matrix @var{U}
+is orthogonal and @var{S} is block upper triangular with blocks of size at
+most
+@tex
+$2 \times 2$
+@end tex
+@ifnottex
+@code{2 x 2}
+@end ifnottex
+along the diagonal.  The diagonal elements of @var{S}
+(or the eigenvalues of the
+@tex
+$2 \times 2$
+@end tex
+@ifnottex
+@code{2 x 2}
+@end ifnottex
+blocks, when appropriate) are the eigenvalues of @var{A} and @var{S}.
+
+The default for real matrices is a real Schur@tie{}decomposition.
+A complex decomposition may be forced by passing the flag
+@qcode{"complex"}.
+
+The eigenvalues are optionally ordered along the diagonal according to the
+value of @var{opt}.  @code{@var{opt} = "a"} indicates that all eigenvalues
+with negative real parts should be moved to the leading block of @var{S}
+(used in @code{are}), @code{@var{opt} = "d"} indicates that all
+eigenvalues with magnitude less than one should be moved to the leading
+block of @var{S} (used in @code{dare}), and @code{@var{opt} = "u"}, the
+default, indicates that no ordering of eigenvalues should occur.  The
+leading @var{k} columns of @var{U} always span the @var{A}-invariant
+subspace corresponding to the @var{k} leading eigenvalues of @var{S}.
+
+The Schur@tie{}decomposition is used to compute eigenvalues of a square
+matrix, and has applications in the solution of algebraic Riccati equations
+in control (see @code{are} and @code{dare}).
+@seealso{rsf2csf, ordschur, lu, chol, hess, qr, qz, svd}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -266,25 +266,25 @@ in control (see @code{are} and @code{dare}).\n\
 */
 
 DEFUN (rsf2csf, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
-Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a\n\
-complex, upper triangular Schur@tie{}form @var{T}.\n\
-\n\
-Note that the following relations hold:\n\
-\n\
-@tex\n\
-$UR \\cdot TR \\cdot {UR}^T = U T U^{\\dagger}$ and\n\
-$U^{\\dagger} U$ is the identity matrix I.\n\
-@end tex\n\
-@ifnottex\n\
-@tcode{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
-@code{@var{U}' * @var{U}} is the identity matrix I.\n\
-@end ifnottex\n\
-\n\
-Note also that @var{U} and @var{T} are not unique.\n\
-@seealso{schur}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})
+Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a
+complex, upper triangular Schur@tie{}form @var{T}.
+
+Note that the following relations hold:
+
+@tex
+$UR \cdot TR \cdot {UR}^T = U T U^{\dagger}$ and
+$U^{\dagger} U$ is the identity matrix I.
+@end tex
+@ifnottex
+@tcode{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and
+@code{@var{U}' * @var{U}} is the identity matrix I.
+@end ifnottex
+
+Note also that @var{U} and @var{T} are not unique.
+@seealso{schur}
+@end deftypefn */)
 {
   if (args.length () != 2 || nargout > 2)
     print_usage ();

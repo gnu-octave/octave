@@ -63,13 +63,13 @@ mk_gr_map (const octave::sys::group& gr)
 }
 
 DEFUN (getgrent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{grp_struct} =} getgrent ()\n\
-Return an entry from the group database, opening it if necessary.\n\
-\n\
-Once the end of data has been reached, @code{getgrent} returns 0.\n\
-@seealso{setgrent, endgrent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{grp_struct} =} getgrent ()
+Return an entry from the group database, opening it if necessary.
+
+Once the end of data has been reached, @code{getgrent} returns 0.
+@seealso{setgrent, endgrent}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -83,14 +83,14 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
 }
 
 DEFUN (getgrgid, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{grp_struct} =} getgrgid (@var{gid}).\n\
-Return the first entry from the group database with the group ID\n\
-@var{gid}.\n\
-\n\
-If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
-@seealso{getgrnam}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{grp_struct} =} getgrgid (@var{gid}).
+Return the first entry from the group database with the group ID
+@var{gid}.
+
+If the group ID does not exist in the database, @code{getgrgid} returns 0.
+@seealso{getgrnam}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -111,14 +111,14 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.\n\
 }
 
 DEFUN (getgrnam, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{grp_struct} =} getgrnam (@var{name})\n\
-Return the first entry from the group database with the group name\n\
-@var{name}.\n\
-\n\
-If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
-@seealso{getgrgid}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{grp_struct} =} getgrnam (@var{name})
+Return the first entry from the group database with the group name
+@var{name}.
+
+If the group name does not exist in the database, @code{getgrnam} returns 0.
+@seealso{getgrgid}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -134,11 +134,11 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.\n\
 }
 
 DEFUN (setgrent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} setgrent ()\n\
-Return the internal pointer to the beginning of the group database.\n\
-@seealso{getgrent, endgrent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} setgrent ()
+Return the internal pointer to the beginning of the group database.
+@seealso{getgrent, endgrent}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -152,11 +152,11 @@ Return the internal pointer to the beginning of the group database.\n\
 }
 
 DEFUN (endgrent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} endgrent ()\n\
-Close the group database.\n\
-@seealso{getgrent, setgrent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} endgrent ()
+Close the group database.
+@seealso{getgrent, setgrent}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();

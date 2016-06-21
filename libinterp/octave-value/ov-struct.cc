@@ -1631,61 +1631,61 @@ octave_scalar_struct::fast_elem_insert_self (void *where,
 }
 
 DEFUN (struct, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{s} =} struct ()\n\
-@deftypefnx {} {@var{s} =} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
-@deftypefnx {} {@var{s} =} struct (@var{obj})\n\
-\n\
-Create a scalar or array structure and initialize its values.\n\
-\n\
-The @var{field1}, @var{field2}, @dots{} variables are strings specifying the\n\
-names of the fields and the @var{value1}, @var{value2}, @dots{} variables\n\
-can be of any type.\n\
-\n\
-If the values are cell arrays, create a structure array and initialize its\n\
-values.  The dimensions of each cell array of values must match.  Singleton\n\
-cells and non-cell values are repeated so that they fill the entire array.\n\
-If the cells are empty, create an empty structure array with the specified\n\
-field names.\n\
-\n\
-If the argument is an object, return the underlying struct.\n\
-\n\
-Observe that the syntax is optimized for struct @strong{arrays}.  Consider\n\
-the following examples:\n\
-\n\
-@example\n\
-@group\n\
-struct (\"foo\", 1)\n\
-  @result{} scalar structure containing the fields:\n\
-    foo =  1\n\
-\n\
-struct (\"foo\", @{@})\n\
-  @result{} 0x0 struct array containing the fields:\n\
-    foo\n\
-\n\
-struct (\"foo\", @{ @{@} @})\n\
-  @result{} scalar structure containing the fields:\n\
-    foo = @{@}(0x0)\n\
-\n\
-struct (\"foo\", @{1, 2, 3@})\n\
-  @result{} 1x3 struct array containing the fields:\n\
-    foo\n\
-\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-The first case is an ordinary scalar struct---one field, one value.  The\n\
-second produces an empty struct array with one field and no values, since\n\
-being passed an empty cell array of struct array values.  When the value is\n\
-a cell array containing a single entry, this becomes a scalar struct with\n\
-that single entry as the value of the field.  That single entry happens\n\
-to be an empty cell array.\n\
-\n\
-Finally, if the value is a non-scalar cell array, then @code{struct}\n\
-produces a struct @strong{array}.\n\
-@seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield, orderfields, isstruct, structfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} struct ()
+@deftypefnx {} {@var{s} =} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})
+@deftypefnx {} {@var{s} =} struct (@var{obj})
+
+Create a scalar or array structure and initialize its values.
+
+The @var{field1}, @var{field2}, @dots{} variables are strings specifying the
+names of the fields and the @var{value1}, @var{value2}, @dots{} variables
+can be of any type.
+
+If the values are cell arrays, create a structure array and initialize its
+values.  The dimensions of each cell array of values must match.  Singleton
+cells and non-cell values are repeated so that they fill the entire array.
+If the cells are empty, create an empty structure array with the specified
+field names.
+
+If the argument is an object, return the underlying struct.
+
+Observe that the syntax is optimized for struct @strong{arrays}.  Consider
+the following examples:
+
+@example
+@group
+struct ("foo", 1)
+  @result{} scalar structure containing the fields:
+    foo =  1
+
+struct ("foo", @{@})
+  @result{} 0x0 struct array containing the fields:
+    foo
+
+struct ("foo", @{ @{@} @})
+  @result{} scalar structure containing the fields:
+    foo = @{@}(0x0)
+
+struct ("foo", @{1, 2, 3@})
+  @result{} 1x3 struct array containing the fields:
+    foo
+
+@end group
+@end example
+
+@noindent
+The first case is an ordinary scalar struct---one field, one value.  The
+second produces an empty struct array with one field and no values, since
+being passed an empty cell array of struct array values.  When the value is
+a cell array containing a single entry, this becomes a scalar struct with
+that single entry as the value of the field.  That single entry happens
+to be an empty cell array.
+
+Finally, if the value is a non-scalar cell array, then @code{struct}
+produces a struct @strong{array}.
+@seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield, orderfields, isstruct, structfun}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1808,11 +1808,11 @@ produces a struct @strong{array}.\n\
 */
 
 DEFUN (isstruct, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isstruct (@var{x})\n\
-Return true if @var{x} is a structure or a structure array.\n\
-@seealso{ismatrix, iscell, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isstruct (@var{x})
+Return true if @var{x} is a structure or a structure array.
+@seealso{ismatrix, iscell, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1821,14 +1821,14 @@ Return true if @var{x} is a structure or a structure array.\n\
 }
 
 DEFUN (__fieldnames__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __fieldnames__ (@var{struct})\n\
-@deftypefnx {} {} __fieldnames__ (@var{obj})\n\
-Internal function.\n\
-\n\
-Implements @code{fieldnames()} for structures and Octave objects.\n\
-@seealso{fieldnames}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __fieldnames__ (@var{struct})
+@deftypefnx {} {} __fieldnames__ (@var{obj})
+Internal function.
+
+Implements @code{fieldnames()} for structures and Octave objects.
+@seealso{fieldnames}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -1848,16 +1848,16 @@ Implements @code{fieldnames()} for structures and Octave objects.\n\
 }
 
 DEFUN (isfield, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} isfield (@var{x}, \"@var{name}\")\n\
-@deftypefnx {} {} isfield (@var{x}, @var{name})\n\
-Return true if the @var{x} is a structure and it includes an element named\n\
-@var{name}.\n\
-\n\
-If @var{name} is a cell array of strings then a logical array of equal\n\
-dimension is returned.\n\
-@seealso{fieldnames}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} isfield (@var{x}, "@var{name}")
+@deftypefnx {} {} isfield (@var{x}, @var{name})
+Return true if the @var{x} is a structure and it includes an element named
+@var{name}.
+
+If @var{name} is a cell array of strings then a logical array of equal
+dimension is returned.
+@seealso{fieldnames}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -1902,11 +1902,11 @@ dimension is returned.\n\
 }
 
 DEFUN (numfields, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} numfields (@var{s})\n\
-Return the number of fields of the structure @var{s}.\n\
-@seealso{fieldnames}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} numfields (@var{s})
+Return the number of fields of the structure @var{s}.
+@seealso{fieldnames}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1930,32 +1930,32 @@ Return the number of fields of the structure @var{s}.\n\
 */
 
 DEFUN (cell2struct, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cell2struct (@var{cell}, @var{fields})\n\
-@deftypefnx {} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
-Convert @var{cell} to a structure.\n\
-\n\
-The number of fields in @var{fields} must match the number of elements in\n\
-@var{cell} along dimension @var{dim}, that is\n\
-@code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.  If @var{dim}\n\
-is omitted, a value of 1 is assumed.\n\
-\n\
-@example\n\
-@group\n\
-A = cell2struct (@{\"Peter\", \"Hannah\", \"Robert\";\n\
-                   185, 170, 168@},\n\
-                 @{\"Name\",\"Height\"@}, 1);\n\
-A(1)\n\
-   @result{}\n\
-      @{\n\
-        Name   = Peter\n\
-        Height = 185\n\
-      @}\n\
-\n\
-@end group\n\
-@end example\n\
-@seealso{struct2cell, cell2mat, struct}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cell2struct (@var{cell}, @var{fields})
+@deftypefnx {} {} cell2struct (@var{cell}, @var{fields}, @var{dim})
+Convert @var{cell} to a structure.
+
+The number of fields in @var{fields} must match the number of elements in
+@var{cell} along dimension @var{dim}, that is
+@code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.  If @var{dim}
+is omitted, a value of 1 is assumed.
+
+@example
+@group
+A = cell2struct (@{"Peter", "Hannah", "Robert";
+                   185, 170, 168@},
+                 @{"Name","Height"@}, 1);
+A(1)
+   @result{}
+      @{
+        Name   = Peter
+        Height = 185
+      @}
+
+@end group
+@end example
+@seealso{struct2cell, cell2mat, struct}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2041,16 +2041,16 @@ extern OCTINTERP_API octave_value_list
 Fcellstr (const octave_value_list& = octave_value_list (), int = 0);
 
 DEFUN (rmfield, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{sout} =} rmfield (@var{s}, \"@var{f}\")\n\
-@deftypefnx {} {@var{sout} =} rmfield (@var{s}, @var{f})\n\
-Return a @emph{copy} of the structure (array) @var{s} with the field @var{f}\n\
-removed.\n\
-\n\
-If @var{f} is a cell array of strings or a character array, remove each of\n\
-the named fields.\n\
-@seealso{orderfields, fieldnames, isfield}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{sout} =} rmfield (@var{s}, "@var{f}")
+@deftypefnx {} {@var{sout} =} rmfield (@var{s}, @var{f})
+Return a @emph{copy} of the structure (array) @var{s} with the field @var{f}
+removed.
+
+If @var{f} is a cell array of strings or a character array, remove each of
+the named fields.
+@seealso{orderfields, fieldnames, isfield}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -2090,41 +2090,41 @@ the named fields.\n\
 */
 
 DEFUN (struct_levels_to_print, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} struct_levels_to_print ()\n\
-@deftypefnx {} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
-@deftypefnx {} {} struct_levels_to_print (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the number of\n\
-structure levels to display.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{print_struct_array_contents}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} struct_levels_to_print ()
+@deftypefnx {} {@var{old_val} =} struct_levels_to_print (@var{new_val})
+@deftypefnx {} {} struct_levels_to_print (@var{new_val}, "local")
+Query or set the internal variable that specifies the number of
+structure levels to display.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{print_struct_array_contents}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print, -1,
                                             std::numeric_limits<int>::max ());
 }
 
 DEFUN (print_struct_array_contents, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} print_struct_array_contents ()\n\
-@deftypefnx {} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
-@deftypefnx {} {} print_struct_array_contents (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies whether to print struct\n\
-array contents.\n\
-\n\
-If true, values of struct array elements are printed.  This variable does\n\
-not affect scalar structures whose elements are always printed.  In both\n\
-cases, however, printing will be limited to the number of levels specified\n\
-by @var{struct_levels_to_print}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{struct_levels_to_print}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} print_struct_array_contents ()
+@deftypefnx {} {@var{old_val} =} print_struct_array_contents (@var{new_val})
+@deftypefnx {} {} print_struct_array_contents (@var{new_val}, "local")
+Query or set the internal variable that specifies whether to print struct
+array contents.
+
+If true, values of struct array elements are printed.  This variable does
+not affect scalar structures whose elements are always printed.  In both
+cases, however, printing will be limited to the number of levels specified
+by @var{struct_levels_to_print}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{struct_levels_to_print}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);
 }

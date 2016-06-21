@@ -35,13 +35,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (colloc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
-Compute derivative and integral weight matrices for orthogonal collocation.\n\
-\n\
-Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
-@cite{Solution of Differential Equation Models by Polynomial Approximation}.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, "left", "right")
+Compute derivative and integral weight matrices for orthogonal collocation.
+
+Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
+@cite{Solution of Differential Equation Models by Polynomial Approximation}.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

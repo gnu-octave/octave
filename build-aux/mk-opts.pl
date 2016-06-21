@@ -155,7 +155,6 @@ sub parse_option_block
           {
             $DOC_ITEM[$OPT_NUM] .= $_;
           }
-          $DOC_ITEM[$OPT_NUM] =~ s/\n/\\n\\\n/g;
         }
       elsif (/^\s*TYPE\s*=\s*"(.*)"\s*$/)
         {
@@ -231,14 +230,14 @@ sub process_data
 
   if (not defined $DOC_STRING)
     {
-      $DOC_STRING = "Query or set options for the function \@code{$FCN_NAME}.\\n\\
-\\n\\
-When called with no arguments, the names of all available options and\\n\\
-their current values are displayed.\\n\\
-\\n\\
-Given one argument, return the value of the option \@var{opt}.\\n\\
-\\n\\
-When called with two arguments, \@code{$OPT_FCN_NAME} sets the option\\n\\
+      $DOC_STRING = "Query or set options for the function \@code{$FCN_NAME}.
+
+When called with no arguments, the names of all available options and
+their current values are displayed.
+
+Given one argument, return the value of the option \@var{opt}.
+
+When called with two arguments, \@code{$OPT_FCN_NAME} sets the option
 \@var{opt} to value \@var{val}.";
     }
 }
@@ -906,27 +905,27 @@ sub emit_options_function
 {
   print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
 DEFUN ($OPT_FCN_NAME, args, ,
-  "-*- texinfo -*-\\n\\
-\@deftypefn  {} {} $OPT_FCN_NAME ()\\n\\
-\@deftypefnx {} {val =} $OPT_FCN_NAME (\@var{opt})\\n\\
-\@deftypefnx {} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
-$DOC_STRING\\n\\
-\\n\\
-Options include\\n\\
-\\n\\
-\@table \@code\\n\\
+       doc: /* -*- texinfo -*-
+\@deftypefn  {} {} $OPT_FCN_NAME ()
+\@deftypefnx {} {val =} $OPT_FCN_NAME (\@var{opt})
+\@deftypefnx {} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})
+$DOC_STRING
+
+Options include
+
+\@table \@code
 _END_EMIT_OPTIONS_FUNCTION_HDR_
 # FIXME: Add extra newline above
 
   for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      print '@item @qcode{\"', $NAME[$i], '\"}\n\\', "\n";
+      print '@item @qcode{"', $NAME[$i], '"}', "\n";
       print $DOC_ITEM[$i] if $DOC_ITEM[$i];
     }
 
   print <<"_END_EMIT_OPTIONS_FUNCTION_BODY_";
-\@end table\\n\\
-\@end deftypefn")
+\@end table
+\@end deftypefn */)
 {
   octave_value_list retval;
 

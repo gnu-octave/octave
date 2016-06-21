@@ -48,21 +48,21 @@ along with Octave; see the file COPYING.  If not, see
    dynamic_cast<const CLASS *> (&arg.get_rep ()) : 0
 
 DEFUN (det, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} det (@var{A})\n\
-@deftypefnx {} {[@var{d}, @var{rcond}] =} det (@var{A})\n\
-Compute the determinant of @var{A}.\n\
-\n\
-Return an estimate of the reciprocal condition number if requested.\n\
-\n\
-Programming Notes: Routines from @sc{lapack} are used for full matrices and\n\
-code from @sc{umfpack} is used for sparse matrices.\n\
-\n\
-The determinant should not be used to check a matrix for singularity.\n\
-For that, use any of the condition number functions: @code{cond},\n\
-@code{condest}, @code{rcond}.\n\
-@seealso{cond, condest, rcond}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} det (@var{A})
+@deftypefnx {} {[@var{d}, @var{rcond}] =} det (@var{A})
+Compute the determinant of @var{A}.
+
+Return an estimate of the reciprocal condition number if requested.
+
+Programming Notes: Routines from @sc{lapack} are used for full matrices and
+code from @sc{umfpack} is used for sparse matrices.
+
+The determinant should not be used to check a matrix for singularity.
+For that, use any of the condition number functions: @code{cond},
+@code{condest}, @code{rcond}.
+@seealso{cond, condest, rcond}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

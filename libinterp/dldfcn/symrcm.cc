@@ -412,30 +412,30 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
 
 // An implementation of the Cuthill-McKee algorithm.
 DEFUN_DLD (symrcm, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {@var{p} =} symrcm (@var{S})\n\
-Return the symmetric reverse @nospell{Cuthill-McKee} permutation of @var{S}.\n\
-\n\
-@var{p} is a permutation vector such that\n\
-@code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements closer\n\
-to the diagonal than @var{S}.  This is a good preordering for LU or\n\
-Cholesky@tie{}factorization of matrices that come from ``long, skinny''\n\
-problems.  It works for both symmetric and asymmetric @var{S}.\n\
-\n\
-The algorithm represents a heuristic approach to the NP-complete bandwidth\n\
-minimization problem.  The implementation is based in the descriptions found\n\
-in\n\
-\n\
-@nospell{E. Cuthill, J. McKee}. @cite{Reducing the Bandwidth of Sparse\n\
-Symmetric Matrices}. Proceedings of the 24th ACM National Conference,\n\
-157--172 1969, Brandon Press, New Jersey.\n\
-\n\
-@nospell{A. George, J.W.H. Liu}. @cite{Computer Solution of Large Sparse\n\
-Positive Definite Systems}, Prentice Hall Series in Computational\n\
-Mathematics, ISBN 0-13-165274-5, 1981.\n\
-\n\
-@seealso{colperm, colamd, symamd}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{p} =} symrcm (@var{S})
+Return the symmetric reverse @nospell{Cuthill-McKee} permutation of @var{S}.
+
+@var{p} is a permutation vector such that
+@code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements closer
+to the diagonal than @var{S}.  This is a good preordering for LU or
+Cholesky@tie{}factorization of matrices that come from ``long, skinny''
+problems.  It works for both symmetric and asymmetric @var{S}.
+
+The algorithm represents a heuristic approach to the NP-complete bandwidth
+minimization problem.  The implementation is based in the descriptions found
+in
+
+@nospell{E. Cuthill, J. McKee}. @cite{Reducing the Bandwidth of Sparse
+Symmetric Matrices}. Proceedings of the 24th ACM National Conference,
+157--172 1969, Brandon Press, New Jersey.
+
+@nospell{A. George, J.W.H. Liu}. @cite{Computer Solution of Large Sparse
+Positive Definite Systems}, Prentice Hall Series in Computational
+Mathematics, ISBN 0-13-165274-5, 1981.
+
+@seealso{colperm, colamd, symamd}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

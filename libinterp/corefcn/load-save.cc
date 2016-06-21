@@ -529,103 +529,103 @@ is_octave_data_file (const std::string& fname)
 }
 
 DEFUN (load, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} load file\n\
-@deftypefnx {} {} load options file\n\
-@deftypefnx {} {} load options file v1 v2 @dots{}\n\
-@deftypefnx {} {S =} load (\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
-@deftypefnx {} {} load file options\n\
-@deftypefnx {} {} load file options v1 v2 @dots{}\n\
-@deftypefnx {} {S =} load (\"file\", \"options\", \"v1\", \"v2\", @dots{})\n\
-Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
-@var{file}.\n\
-\n\
-If no variables are specified then all variables found in the\n\
-file will be loaded.  As with @code{save}, the list of variables to extract\n\
-can be full names or use a pattern syntax.  The format of the file is\n\
-automatically detected but may be overridden by supplying the appropriate\n\
-option.\n\
-\n\
-If load is invoked using the functional form\n\
-\n\
-@example\n\
-load (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
-@end example\n\
-\n\
-@noindent\n\
-then the @var{options}, @var{file}, and variable name arguments\n\
-(@var{v1}, @dots{}) must be specified as character strings.\n\
-\n\
-If a variable that is not marked as global is loaded from a file when a\n\
-global symbol with the same name already exists, it is loaded in the\n\
-global symbol table.  Also, if a variable is marked as global in a file\n\
-and a local symbol exists, the local symbol is moved to the global\n\
-symbol table and given the value from the file.\n\
-\n\
-If invoked with a single output argument, Octave returns data instead\n\
-of inserting variables in the symbol table.  If the data file contains\n\
-only numbers (TAB- or space-delimited columns), a matrix of values is\n\
-returned.  Otherwise, @code{load} returns a structure with members\n\
- corresponding to the names of the variables in the file.\n\
-\n\
-The @code{load} command can read data stored in Octave's text and\n\
-binary formats, and @sc{matlab}'s binary format.  If compiled with zlib\n\
-support, it can also load gzip-compressed files.  It will automatically\n\
-detect the type of file and do conversion from different floating point\n\
-formats (currently only IEEE big and little endian, though other formats\n\
-may be added in the future).\n\
-\n\
-Valid options for @code{load} are listed in the following table.\n\
-\n\
-@table @code\n\
-@item -force\n\
-This option is accepted for backward compatibility but is ignored.\n\
-Octave now overwrites variables currently in memory with\n\
-those of the same name found in the file.\n\
-\n\
-@item -ascii\n\
-Force Octave to assume the file contains columns of numbers in text format\n\
-without any header or other information.  Data in the file will be loaded\n\
-as a single numeric matrix with the name of the variable derived from the\n\
-name of the file.\n\
-\n\
-@item -binary\n\
-Force Octave to assume the file is in Octave's binary format.\n\
-\n\
-@item -hdf5\n\
-Force Octave to assume the file is in @sc{hdf5} format.\n\
-(@sc{hdf5} is a free, portable binary format developed by the National\n\
-Center for Supercomputing Applications at the University of Illinois.)\n\
-Note that Octave can read @sc{hdf5} files not created by itself, but may\n\
-skip some datasets in formats that it cannot support.  This format is\n\
-only available if Octave was built with a link to the @sc{hdf5} libraries.\n\
-\n\
-@item -import\n\
-This option is accepted for backward compatibility but is ignored.\n\
-Octave can now support multi-dimensional HDF data and automatically\n\
-modifies variable names if they are invalid Octave identifiers.\n\
-\n\
-@item  -mat\n\
-@itemx -mat-binary\n\
-@itemx -6\n\
-@itemx -v6\n\
-@itemx -7\n\
-@itemx -v7\n\
-Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary\n\
-format.\n\
-\n\
-@item  -mat4-binary\n\
-@itemx -4\n\
-@itemx -v4\n\
-@itemx -V4\n\
-Force Octave to assume the file is in the binary format written by\n\
-@sc{matlab} version 4.\n\
-\n\
-@item -text\n\
-Force Octave to assume the file is in Octave's text format.\n\
-@end table\n\
-@seealso{save, dlmwrite, csvwrite, fwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} load file
+@deftypefnx {} {} load options file
+@deftypefnx {} {} load options file v1 v2 @dots{}
+@deftypefnx {} {S =} load ("options", "file", "v1", "v2", @dots{})
+@deftypefnx {} {} load file options
+@deftypefnx {} {} load file options v1 v2 @dots{}
+@deftypefnx {} {S =} load ("file", "options", "v1", "v2", @dots{})
+Load the named variables @var{v1}, @var{v2}, @dots{}, from the file
+@var{file}.
+
+If no variables are specified then all variables found in the
+file will be loaded.  As with @code{save}, the list of variables to extract
+can be full names or use a pattern syntax.  The format of the file is
+automatically detected but may be overridden by supplying the appropriate
+option.
+
+If load is invoked using the functional form
+
+@example
+load ("-option1", @dots{}, "file", "v1", @dots{})
+@end example
+
+@noindent
+then the @var{options}, @var{file}, and variable name arguments
+(@var{v1}, @dots{}) must be specified as character strings.
+
+If a variable that is not marked as global is loaded from a file when a
+global symbol with the same name already exists, it is loaded in the
+global symbol table.  Also, if a variable is marked as global in a file
+and a local symbol exists, the local symbol is moved to the global
+symbol table and given the value from the file.
+
+If invoked with a single output argument, Octave returns data instead
+of inserting variables in the symbol table.  If the data file contains
+only numbers (TAB- or space-delimited columns), a matrix of values is
+returned.  Otherwise, @code{load} returns a structure with members
+ corresponding to the names of the variables in the file.
+
+The @code{load} command can read data stored in Octave's text and
+binary formats, and @sc{matlab}'s binary format.  If compiled with zlib
+support, it can also load gzip-compressed files.  It will automatically
+detect the type of file and do conversion from different floating point
+formats (currently only IEEE big and little endian, though other formats
+may be added in the future).
+
+Valid options for @code{load} are listed in the following table.
+
+@table @code
+@item -force
+This option is accepted for backward compatibility but is ignored.
+Octave now overwrites variables currently in memory with
+those of the same name found in the file.
+
+@item -ascii
+Force Octave to assume the file contains columns of numbers in text format
+without any header or other information.  Data in the file will be loaded
+as a single numeric matrix with the name of the variable derived from the
+name of the file.
+
+@item -binary
+Force Octave to assume the file is in Octave's binary format.
+
+@item -hdf5
+Force Octave to assume the file is in @sc{hdf5} format.
+(@sc{hdf5} is a free, portable binary format developed by the National
+Center for Supercomputing Applications at the University of Illinois.)
+Note that Octave can read @sc{hdf5} files not created by itself, but may
+skip some datasets in formats that it cannot support.  This format is
+only available if Octave was built with a link to the @sc{hdf5} libraries.
+
+@item -import
+This option is accepted for backward compatibility but is ignored.
+Octave can now support multi-dimensional HDF data and automatically
+modifies variable names if they are invalid Octave identifiers.
+
+@item  -mat
+@itemx -mat-binary
+@itemx -6
+@itemx -v6
+@itemx -7
+@itemx -v7
+Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary
+format.
+
+@item  -mat4-binary
+@itemx -4
+@itemx -v4
+@itemx -V4
+Force Octave to assume the file is in the binary format written by
+@sc{matlab} version 4.
+
+@item -text
+Force Octave to assume the file is in Octave's text format.
+@end table
+@seealso{save, dlmwrite, csvwrite, fwrite}
+@end deftypefn */)
 {
   octave_value_list retval;
 
@@ -1444,135 +1444,135 @@ dump_octave_core (void)
 }
 
 DEFUN (save, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} save file\n\
-@deftypefnx {} {} save options file\n\
-@deftypefnx {} {} save options file @var{v1} @var{v2} @dots{}\n\
-@deftypefnx {} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
-@deftypefnx {} {} save @code{\"-\"} @var{v1} @var{v2} @dots{}\n\
-@deftypefnx {} {@var{s} =} save (@code{\"-\"} @var{v1} @var{v2} @dots{})\n\
-Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
-@var{file}.\n\
-\n\
-The special filename @samp{-} may be used to return the\n\
-content of the variables as a string.  If no variable names are listed,\n\
-Octave saves all the variables in the current scope.  Otherwise, full\n\
-variable names or pattern syntax can be used to specify the variables to\n\
-save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}\n\
-@dots{} of the scalar structure @var{STRUCT} are saved as if they were\n\
-variables with corresponding names.  Valid options for the @code{save}\n\
-command are listed in the following table.  Options that modify the output\n\
-format override the format specified by @code{save_default_options}.\n\
-\n\
-If save is invoked using the functional form\n\
-\n\
-@example\n\
-save (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
-@end example\n\
-\n\
-@noindent\n\
-then the @var{options}, @var{file}, and variable name arguments\n\
-(@var{v1}, @dots{}) must be specified as character strings.\n\
-\n\
-If called with a filename of @qcode{\"-\"}, write the output to stdout\n\
-if nargout is 0, otherwise return the output in a character string.\n\
-\n\
-@table @code\n\
-@item -append\n\
-Append to the destination instead of overwriting.\n\
-\n\
-@item -ascii\n\
-Save a single matrix in a text file without header or any other information.\n\
-\n\
-@item -binary\n\
-Save the data in Octave's binary data format.\n\
-\n\
-@item -float-binary\n\
-Save the data in Octave's binary data format but only using single\n\
-precision.  Only use this format if you know that all the\n\
-values to be saved can be represented in single precision.\n\
-\n\
-@item -hdf5\n\
-Save the data in @sc{hdf5} format.\n\
-(HDF5 is a free, portable binary format developed by the National\n\
-Center for Supercomputing Applications at the University of Illinois.)\n\
-This format is only available if Octave was built with a link to the\n\
-@sc{hdf5} libraries.\n\
-\n\
-@item -float-hdf5\n\
-Save the data in @sc{hdf5} format but only using single precision.\n\
-Only use this format if you know that all the\n\
-values to be saved can be represented in single precision.\n\
-\n\
-@item  -V7\n\
-@itemx -v7\n\
-@itemx -7\n\
-@itemx -mat7-binary\n\
-Save the data in @sc{matlab}'s v7 binary data format.\n\
-\n\
-@item  -V6\n\
-@itemx -v6\n\
-@itemx -6\n\
-@itemx -mat\n\
-@itemx -mat-binary\n\
-Save the data in @sc{matlab}'s v6 binary data format.\n\
-\n\
-@item  -V4\n\
-@itemx -v4\n\
-@itemx -4\n\
-@itemx -mat4-binary\n\
-Save the data in the binary format written by @sc{matlab} version 4.\n\
-\n\
-@item -text\n\
-Save the data in Octave's text data format.  (default).\n\
-\n\
-@item  -zip\n\
-@itemx -z\n\
-Use the gzip algorithm to compress the file.  This works equally on files\n\
-that are compressed with gzip outside of octave, and gzip can equally be\n\
-used to convert the files for backward compatibility.\n\
-This option is only available if Octave was built with a link to the zlib\n\
-libraries.\n\
-@end table\n\
-\n\
-The list of variables to save may use wildcard patterns containing\n\
-the following special characters:\n\
-\n\
-@table @code\n\
-@item ?\n\
-Match any single character.\n\
-\n\
-@item *\n\
-Match zero or more characters.\n\
-\n\
-@item [ @var{list} ]\n\
-Match the list of characters specified by @var{list}.  If the first\n\
-character is @code{!} or @code{^}, match all characters except those\n\
-specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will\n\
-match all lower and uppercase alphabetic characters.\n\
-\n\
-Wildcards may also be used in the field name specifications when using\n\
-the @option{-struct} modifier (but not in the struct name itself).\n\
-\n\
-@end table\n\
-\n\
-Except when using the @sc{matlab} binary data file format or the\n\
-@samp{-ascii} format, saving global\n\
-variables also saves the global status of the variable.  If the variable\n\
-is restored at a later time using @samp{load}, it will be restored as a\n\
-global variable.\n\
-\n\
-The command\n\
-\n\
-@example\n\
-save -binary data a b*\n\
-@end example\n\
-\n\
-@noindent\n\
-saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
-the file @file{data} in Octave's binary format.\n\
-@seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} save file
+@deftypefnx {} {} save options file
+@deftypefnx {} {} save options file @var{v1} @var{v2} @dots{}
+@deftypefnx {} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}
+@deftypefnx {} {} save @code{"-"} @var{v1} @var{v2} @dots{}
+@deftypefnx {} {@var{s} =} save (@code{"-"} @var{v1} @var{v2} @dots{})
+Save the named variables @var{v1}, @var{v2}, @dots{}, in the file
+@var{file}.
+
+The special filename @samp{-} may be used to return the
+content of the variables as a string.  If no variable names are listed,
+Octave saves all the variables in the current scope.  Otherwise, full
+variable names or pattern syntax can be used to specify the variables to
+save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}
+@dots{} of the scalar structure @var{STRUCT} are saved as if they were
+variables with corresponding names.  Valid options for the @code{save}
+command are listed in the following table.  Options that modify the output
+format override the format specified by @code{save_default_options}.
+
+If save is invoked using the functional form
+
+@example
+save ("-option1", @dots{}, "file", "v1", @dots{})
+@end example
+
+@noindent
+then the @var{options}, @var{file}, and variable name arguments
+(@var{v1}, @dots{}) must be specified as character strings.
+
+If called with a filename of @qcode{"-"}, write the output to stdout
+if nargout is 0, otherwise return the output in a character string.
+
+@table @code
+@item -append
+Append to the destination instead of overwriting.
+
+@item -ascii
+Save a single matrix in a text file without header or any other information.
+
+@item -binary
+Save the data in Octave's binary data format.
+
+@item -float-binary
+Save the data in Octave's binary data format but only using single
+precision.  Only use this format if you know that all the
+values to be saved can be represented in single precision.
+
+@item -hdf5
+Save the data in @sc{hdf5} format.
+(HDF5 is a free, portable binary format developed by the National
+Center for Supercomputing Applications at the University of Illinois.)
+This format is only available if Octave was built with a link to the
+@sc{hdf5} libraries.
+
+@item -float-hdf5
+Save the data in @sc{hdf5} format but only using single precision.
+Only use this format if you know that all the
+values to be saved can be represented in single precision.
+
+@item  -V7
+@itemx -v7
+@itemx -7
+@itemx -mat7-binary
+Save the data in @sc{matlab}'s v7 binary data format.
+
+@item  -V6
+@itemx -v6
+@itemx -6
+@itemx -mat
+@itemx -mat-binary
+Save the data in @sc{matlab}'s v6 binary data format.
+
+@item  -V4
+@itemx -v4
+@itemx -4
+@itemx -mat4-binary
+Save the data in the binary format written by @sc{matlab} version 4.
+
+@item -text
+Save the data in Octave's text data format.  (default).
+
+@item  -zip
+@itemx -z
+Use the gzip algorithm to compress the file.  This works equally on files
+that are compressed with gzip outside of octave, and gzip can equally be
+used to convert the files for backward compatibility.
+This option is only available if Octave was built with a link to the zlib
+libraries.
+@end table
+
+The list of variables to save may use wildcard patterns containing
+the following special characters:
+
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will
+match all lower and uppercase alphabetic characters.
+
+Wildcards may also be used in the field name specifications when using
+the @option{-struct} modifier (but not in the struct name itself).
+
+@end table
+
+Except when using the @sc{matlab} binary data file format or the
+@samp{-ascii} format, saving global
+variables also saves the global status of the variable.  If the variable
+is restored at a later time using @samp{load}, it will be restored as a
+global variable.
+
+The command
+
+@example
+save -binary data a b*
+@end example
+
+@noindent
+saves the variable @samp{a} and all variables beginning with @samp{b} to
+the file @file{data} in Octave's binary format.
+@seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}
+@end deftypefn */)
 {
   // Here is where we would get the default save format if it were
   // stored in a user preference variable.
@@ -1715,131 +1715,131 @@ the file @file{data} in Octave's binary format.\n\
 }
 
 DEFUN (crash_dumps_octave_core, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} crash_dumps_octave_core ()\n\
-@deftypefnx {} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
-@deftypefnx {} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file @file{octave-workspace} if it\n\
-crashes or receives a hangup, terminate or similar signal.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} crash_dumps_octave_core ()
+@deftypefnx {} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})
+@deftypefnx {} {} crash_dumps_octave_core (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave tries
+to save all current variables to the file @file{octave-workspace} if it
+crashes or receives a hangup, terminate or similar signal.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (crash_dumps_octave_core);
 }
 
 DEFUN (save_default_options, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} save_default_options ()\n\
-@deftypefnx {} {@var{old_val} =} save_default_options (@var{new_val})\n\
-@deftypefnx {} {} save_default_options (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the default options\n\
-for the @code{save} command, and defines the default format.\n\
-\n\
-Typical values include @qcode{\"-ascii\"}, @qcode{\"-text -zip\"}.\n\
-The default value is @option{-text}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{save}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} save_default_options ()
+@deftypefnx {} {@var{old_val} =} save_default_options (@var{new_val})
+@deftypefnx {} {} save_default_options (@var{new_val}, "local")
+Query or set the internal variable that specifies the default options
+for the @code{save} command, and defines the default format.
+
+Typical values include @qcode{"-ascii"}, @qcode{"-text -zip"}.
+The default value is @option{-text}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{save}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (save_default_options);
 }
 
 DEFUN (octave_core_file_limit, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} octave_core_file_limit ()\n\
-@deftypefnx {} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
-@deftypefnx {} {} octave_core_file_limit (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the maximum amount\n\
-of memory (in kilobytes) of the top-level workspace that Octave will\n\
-attempt to save when writing data to the crash dump file (the name of\n\
-the file is specified by @var{octave_core_file_name}).\n\
-\n\
-If @var{octave_core_file_options} flags specify a binary format,\n\
-then @var{octave_core_file_limit} will be approximately the maximum\n\
-size of the file.  If a text file format is used, then the file could\n\
-be much larger than the limit.  The default value is -1 (unlimited)\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} octave_core_file_limit ()
+@deftypefnx {} {@var{old_val} =} octave_core_file_limit (@var{new_val})
+@deftypefnx {} {} octave_core_file_limit (@var{new_val}, "local")
+Query or set the internal variable that specifies the maximum amount
+of memory (in kilobytes) of the top-level workspace that Octave will
+attempt to save when writing data to the crash dump file (the name of
+the file is specified by @var{octave_core_file_name}).
+
+If @var{octave_core_file_options} flags specify a binary format,
+then @var{octave_core_file_limit} will be approximately the maximum
+size of the file.  If a text file format is used, then the file could
+be much larger than the limit.  The default value is -1 (unlimited)
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (octave_core_file_limit);
 }
 
 DEFUN (octave_core_file_name, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} octave_core_file_name ()\n\
-@deftypefnx {} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
-@deftypefnx {} {} octave_core_file_name (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the file\n\
-used for saving data from the top-level workspace if Octave aborts.\n\
-\n\
-The default value is @qcode{\"octave-workspace\"}\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} octave_core_file_name ()
+@deftypefnx {} {@var{old_val} =} octave_core_file_name (@var{new_val})
+@deftypefnx {} {} octave_core_file_name (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the file
+used for saving data from the top-level workspace if Octave aborts.
+
+The default value is @qcode{"octave-workspace"}
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (octave_core_file_name);
 }
 
 DEFUN (octave_core_file_options, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} octave_core_file_options ()\n\
-@deftypefnx {} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
-@deftypefnx {} {} octave_core_file_options (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the options used for\n\
-saving the workspace data if Octave aborts.\n\
-\n\
-The value of @code{octave_core_file_options} should follow the same format\n\
-as the options for the @code{save} function.  The default value is Octave's\n\
-binary format.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} octave_core_file_options ()
+@deftypefnx {} {@var{old_val} =} octave_core_file_options (@var{new_val})
+@deftypefnx {} {} octave_core_file_options (@var{new_val}, "local")
+Query or set the internal variable that specifies the options used for
+saving the workspace data if Octave aborts.
+
+The value of @code{octave_core_file_options} should follow the same format
+as the options for the @code{save} function.  The default value is Octave's
+binary format.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (octave_core_file_options);
 }
 
 DEFUN (save_header_format_string, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} save_header_format_string ()\n\
-@deftypefnx {} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
-@deftypefnx {} {} save_header_format_string (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the format\n\
-string used for the comment line written at the beginning of\n\
-text-format data files saved by Octave.\n\
-\n\
-The format string is passed to @code{strftime} and should begin with the\n\
-character @samp{#} and contain no newline characters.  If the value of\n\
-@code{save_header_format_string} is the empty string, the header comment is\n\
-omitted from text-format data files.  The default value is\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-\"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
-@end smallexample\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{strftime, save}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} save_header_format_string ()
+@deftypefnx {} {@var{old_val} =} save_header_format_string (@var{new_val})
+@deftypefnx {} {} save_header_format_string (@var{new_val}, "local")
+Query or set the internal variable that specifies the format
+string used for the comment line written at the beginning of
+text-format data files saved by Octave.
+
+The format string is passed to @code{strftime} and should begin with the
+character @samp{#} and contain no newline characters.  If the value of
+@code{save_header_format_string} is the empty string, the header comment is
+omitted from text-format data files.  The default value is
+@c Set example in small font to prevent overfull line
+
+@smallexample
+"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>"
+@end smallexample
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{strftime, save}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (save_header_format_string);
 }

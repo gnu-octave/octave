@@ -1650,51 +1650,51 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 */
 
 DEFUN (functions, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{s} =} functions (@var{fcn_handle})\n\
-Return a structure containing information about the function handle\n\
-@var{fcn_handle}.\n\
-\n\
-The structure @var{s} always contains these three fields:\n\
-\n\
-@table @asis\n\
-@item function\n\
-The function name.  For an anonymous function (no name) this will be the\n\
-actual function definition.\n\
-\n\
-@item type\n\
-Type of the function.\n\
-\n\
-@table @asis\n\
-@item anonymous\n\
-The function is anonymous.\n\
-\n\
-@item private\n\
-The function is private.\n\
-\n\
-@item overloaded\n\
-The function overloads an existing function.\n\
-\n\
-@item simple\n\
-The function is a built-in or m-file function.\n\
-\n\
-@item subfunction\n\
-The function is a subfunction within an m-file.\n\
-@end table\n\
-\n\
-@item file\n\
-The m-file that will be called to perform the function.  This field is empty\n\
-for anonymous and built-in functions.\n\
-@end table\n\
-\n\
-In addition, some function types may return more information in additional\n\
-fields.\n\
-\n\
-@strong{Warning:} @code{functions} is provided for debugging purposes only.\n\
-It's behavior may change in the future and programs should not depend on a\n\
-particular output.\n\
-\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{s} =} functions (@var{fcn_handle})
+Return a structure containing information about the function handle
+@var{fcn_handle}.
+
+The structure @var{s} always contains these three fields:
+
+@table @asis
+@item function
+The function name.  For an anonymous function (no name) this will be the
+actual function definition.
+
+@item type
+Type of the function.
+
+@table @asis
+@item anonymous
+The function is anonymous.
+
+@item private
+The function is private.
+
+@item overloaded
+The function overloads an existing function.
+
+@item simple
+The function is a built-in or m-file function.
+
+@item subfunction
+The function is a subfunction within an m-file.
+@end table
+
+@item file
+The m-file that will be called to perform the function.  This field is empty
+for anonymous and built-in functions.
+@end table
+
+In addition, some function types may return more information in additional
+fields.
+
+@strong{Warning:} @code{functions} is provided for debugging purposes only.
+It's behavior may change in the future and programs should not depend on a
+particular output.
+
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1775,12 +1775,12 @@ particular output.\n\
 }
 
 DEFUN (func2str, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} func2str (@var{fcn_handle})\n\
-Return a string containing the name of the function referenced by the\n\
-function handle @var{fcn_handle}.\n\
-@seealso{str2func, functions}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} func2str (@var{fcn_handle})
+Return a string containing the name of the function referenced by the
+function handle @var{fcn_handle}.
+@seealso{str2func, functions}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1809,15 +1809,15 @@ function handle @var{fcn_handle}.\n\
 }
 
 DEFUN (str2func, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} str2func (@var{fcn_name})\n\
-@deftypefnx {} {} str2func (@var{fcn_name}, \"global\")\n\
-Return a function handle constructed from the string @var{fcn_name}.\n\
-\n\
-If the optional @qcode{\"global\"} argument is passed, locally visible\n\
-functions are ignored in the lookup.\n\
-@seealso{func2str, inline}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} str2func (@var{fcn_name})
+@deftypefnx {} {} str2func (@var{fcn_name}, "global")
+Return a function handle constructed from the string @var{fcn_name}.
+
+If the optional @qcode{"global"} argument is passed, locally visible
+functions are ignored in the lookup.
+@seealso{func2str, inline}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1876,11 +1876,11 @@ functions are ignored in the lookup.\n\
 */
 
 DEFUN (is_function_handle, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} is_function_handle (@var{x})\n\
-Return true if @var{x} is a function handle.\n\
-@seealso{isa, typeinfo, class, functions}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} is_function_handle (@var{x})
+Return true if @var{x} is a function handle.
+@seealso{isa, typeinfo, class, functions}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

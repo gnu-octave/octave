@@ -207,7 +207,11 @@ have_gnuplot_binary (void)
 
 // Initialize the gnuplot graphics toolkit.
 
-DEFUN_DLD (__init_gnuplot__, , , "")
+DEFUN_DLD (__init_gnuplot__, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} __init_gnuplot__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -227,10 +231,10 @@ DEFUN_DLD (__init_gnuplot__, , , "")
 }
 
 DEFUN_DLD (__have_gnuplot__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {@var{gnuplot_available} =} __have_gnuplot__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{gnuplot_available} =} __have_gnuplot__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 

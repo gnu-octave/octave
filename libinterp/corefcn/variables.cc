@@ -336,21 +336,21 @@ do_isglobal (const octave_value_list& args)
 }
 
 DEFUN (isglobal, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isglobal (@var{name})\n\
-Return true if @var{name} is a globally visible variable.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-global x\n\
-isglobal (\"x\")\n\
-   @result{} 1\n\
-@end group\n\
-@end example\n\
-@seealso{isvarname, exist}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isglobal (@var{name})
+Return true if @var{name} is a globally visible variable.
+
+For example:
+
+@example
+@group
+global x
+isglobal ("x")
+   @result{} 1
+@end group
+@end example
+@seealso{isvarname, exist}
+@end deftypefn */)
 {
   return do_isglobal (args);
 }
@@ -519,77 +519,77 @@ unique_symbol_name (const std::string& basename)
 }
 
 DEFUN (exist, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{c} =} exist (@var{name})\n\
-@deftypefnx {} {@var{c} =} exist (@var{name}, @var{type})\n\
-Check for the existence of @var{name} as a variable, function, file,\n\
-directory, or class.\n\
-\n\
-The return code @var{c} is one of\n\
-\n\
-@table @asis\n\
-@item 1\n\
-@var{name} is a variable.\n\
-\n\
-@item 2\n\
-@var{name} is an absolute filename, an ordinary file in Octave's\n\
-@code{path}, or (after appending @samp{.m}) a function file in Octave's\n\
-@code{path}.\n\
-\n\
-@item 3\n\
-@var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.\n\
-\n\
-@item 5\n\
-@var{name} is a built-in function.\n\
-\n\
-@item 7\n\
-@var{name} is a directory.\n\
-\n\
-@item 103\n\
-@var{name} is a function not associated with a file (entered on the command\n\
-line).\n\
-\n\
-@item 0\n\
-@var{name} does not exist.\n\
-@end table\n\
-\n\
-If the optional argument @var{type} is supplied, check only for symbols of\n\
-the specified type.  Valid types are\n\
-\n\
-@table @asis\n\
-@item @qcode{\"var\"}\n\
-Check only for variables.\n\
-\n\
-@item @qcode{\"builtin\"}\n\
-Check only for built-in functions.\n\
-\n\
-@item @qcode{\"dir\"}\n\
-Check only for directories.\n\
-\n\
-@item @qcode{\"file\"}\n\
-Check only for files and directories.\n\
-\n\
-@item @qcode{\"class\"}\n\
-Check only for classes.  (Note: This option is accepted, but not currently\n\
-implemented)\n\
-@end table\n\
-\n\
-If no type is given, and there are multiple possible matches for name,\n\
-@code{exist} will return a code according to the following priority list:\n\
-variable, built-in function, oct-file, directory, file, class.\n\
-\n\
-@code{exist} returns 2 if a regular file called @var{name} is present in\n\
-Octave's search path.  If you want information about other types of files\n\
-not on the search path you should use some combination of the functions\n\
-@code{file_in_path} and @code{stat} instead.\n\
-\n\
-Programming Note: If @var{name} is implemented by a buggy .oct/.mex file,\n\
-calling @var{exist} may cause Octave to crash.  To maintain high\n\
-performance, Octave trusts .oct/.mex files instead of @nospell{sandboxing}\n\
-them.\n\
-\n\
-@seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{c} =} exist (@var{name})
+@deftypefnx {} {@var{c} =} exist (@var{name}, @var{type})
+Check for the existence of @var{name} as a variable, function, file,
+directory, or class.
+
+The return code @var{c} is one of
+
+@table @asis
+@item 1
+@var{name} is a variable.
+
+@item 2
+@var{name} is an absolute filename, an ordinary file in Octave's
+@code{path}, or (after appending @samp{.m}) a function file in Octave's
+@code{path}.
+
+@item 3
+@var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.
+
+@item 5
+@var{name} is a built-in function.
+
+@item 7
+@var{name} is a directory.
+
+@item 103
+@var{name} is a function not associated with a file (entered on the command
+line).
+
+@item 0
+@var{name} does not exist.
+@end table
+
+If the optional argument @var{type} is supplied, check only for symbols of
+the specified type.  Valid types are
+
+@table @asis
+@item @qcode{"var"}
+Check only for variables.
+
+@item @qcode{"builtin"}
+Check only for built-in functions.
+
+@item @qcode{"dir"}
+Check only for directories.
+
+@item @qcode{"file"}
+Check only for files and directories.
+
+@item @qcode{"class"}
+Check only for classes.  (Note: This option is accepted, but not currently
+implemented)
+@end table
+
+If no type is given, and there are multiple possible matches for name,
+@code{exist} will return a code according to the following priority list:
+variable, built-in function, oct-file, directory, file, class.
+
+@code{exist} returns 2 if a regular file called @var{name} is present in
+Octave's search path.  If you want information about other types of files
+not on the search path you should use some combination of the functions
+@code{file_in_path} and @code{stat} instead.
+
+Programming Note: If @var{name} is implemented by a buggy .oct/.mex file,
+calling @var{exist} may cause Octave to crash.  To maintain high
+performance, Octave trusts .oct/.mex files instead of @nospell{sandboxing}
+them.
+
+@seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1834,39 +1834,39 @@ do_who (int argc, const string_vector& argv, bool return_list,
 }
 
 DEFUN (who, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} who\n\
-@deftypefnx {} {} who pattern @dots{}\n\
-@deftypefnx {} {} who option pattern @dots{}\n\
-@deftypefnx {} {C =} who (\"pattern\", @dots{})\n\
-List currently defined variables matching the given patterns.\n\
-\n\
-Valid pattern syntax is the same as described for the @code{clear} command.\n\
-If no patterns are supplied, all variables are listed.\n\
-\n\
-By default, only variables visible in the local scope are displayed.\n\
-\n\
-The following are valid options, but may not be combined.\n\
-\n\
-@table @code\n\
-@item global\n\
-List variables in the global scope rather than the current scope.\n\
-\n\
-@item -regexp\n\
-The patterns are considered to be regular expressions when matching the\n\
-variables to display.  The same pattern syntax accepted by the @code{regexp}\n\
-function is used.\n\
-\n\
-@item -file\n\
-The next argument is treated as a filename.  All variables found within the\n\
-specified file are listed.  No patterns are accepted when reading variables\n\
-from a file.\n\
-@end table\n\
-\n\
-If called as a function, return a cell array of defined variable names\n\
-matching the given patterns.\n\
-@seealso{whos, isglobal, isvarname, exist, regexp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} who
+@deftypefnx {} {} who pattern @dots{}
+@deftypefnx {} {} who option pattern @dots{}
+@deftypefnx {} {C =} who ("pattern", @dots{})
+List currently defined variables matching the given patterns.
+
+Valid pattern syntax is the same as described for the @code{clear} command.
+If no patterns are supplied, all variables are listed.
+
+By default, only variables visible in the local scope are displayed.
+
+The following are valid options, but may not be combined.
+
+@table @code
+@item global
+List variables in the global scope rather than the current scope.
+
+@item -regexp
+The patterns are considered to be regular expressions when matching the
+variables to display.  The same pattern syntax accepted by the @code{regexp}
+function is used.
+
+@item -file
+The next argument is treated as a filename.  All variables found within the
+specified file are listed.  No patterns are accepted when reading variables
+from a file.
+@end table
+
+If called as a function, return a cell array of defined variable names
+matching the given patterns.
+@seealso{whos, isglobal, isvarname, exist, regexp}
+@end deftypefn */)
 {
   int argc = args.length () + 1;
 
@@ -1876,68 +1876,68 @@ matching the given patterns.\n\
 }
 
 DEFUN (whos, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} whos\n\
-@deftypefnx {} {} whos pattern @dots{}\n\
-@deftypefnx {} {} whos option pattern @dots{}\n\
-@deftypefnx {} {S =} whos (\"pattern\", @dots{})\n\
-Provide detailed information on currently defined variables matching the\n\
-given patterns.\n\
-\n\
-Options and pattern syntax are the same as for the @code{who} command.\n\
-\n\
-Extended information about each variable is summarized in a table with the\n\
-following default entries.\n\
-\n\
-@table @asis\n\
-@item Attr\n\
-Attributes of the listed variable.  Possible attributes are:\n\
-\n\
-@table @asis\n\
-@item blank\n\
-Variable in local scope\n\
-\n\
-@item @code{a}\n\
-Automatic variable.  An automatic variable is one created by the\n\
-interpreter, for example @code{argn}.\n\
-\n\
-@item @code{c}\n\
-Variable of complex type.\n\
-\n\
-@item @code{f}\n\
-Formal parameter (function argument).\n\
-\n\
-@item @code{g}\n\
-Variable with global scope.\n\
-\n\
-@item @code{p}\n\
-Persistent variable.\n\
-@end table\n\
-\n\
-@item Name\n\
-The name of the variable.\n\
-\n\
-@item Size\n\
-The logical size of the variable.  A scalar is 1x1, a vector is\n\
-@nospell{1xN} or @nospell{Nx1}, a 2-D matrix is @nospell{MxN}.\n\
-\n\
-@item Bytes\n\
-The amount of memory currently used to store the variable.\n\
-\n\
-@item Class\n\
-The class of the variable.  Examples include double, single, char, uint16,\n\
-cell, and struct.\n\
-@end table\n\
-\n\
-The table can be customized to display more or less information through\n\
-the function @code{whos_line_format}.\n\
-\n\
-If @code{whos} is called as a function, return a struct array of defined\n\
-variable names matching the given patterns.  Fields in the structure\n\
-describing each variable are: name, size, bytes, class, global, sparse,\n\
-complex, nesting, persistent.\n\
-@seealso{who, whos_line_format}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} whos
+@deftypefnx {} {} whos pattern @dots{}
+@deftypefnx {} {} whos option pattern @dots{}
+@deftypefnx {} {S =} whos ("pattern", @dots{})
+Provide detailed information on currently defined variables matching the
+given patterns.
+
+Options and pattern syntax are the same as for the @code{who} command.
+
+Extended information about each variable is summarized in a table with the
+following default entries.
+
+@table @asis
+@item Attr
+Attributes of the listed variable.  Possible attributes are:
+
+@table @asis
+@item blank
+Variable in local scope
+
+@item @code{a}
+Automatic variable.  An automatic variable is one created by the
+interpreter, for example @code{argn}.
+
+@item @code{c}
+Variable of complex type.
+
+@item @code{f}
+Formal parameter (function argument).
+
+@item @code{g}
+Variable with global scope.
+
+@item @code{p}
+Persistent variable.
+@end table
+
+@item Name
+The name of the variable.
+
+@item Size
+The logical size of the variable.  A scalar is 1x1, a vector is
+@nospell{1xN} or @nospell{Nx1}, a 2-D matrix is @nospell{MxN}.
+
+@item Bytes
+The amount of memory currently used to store the variable.
+
+@item Class
+The class of the variable.  Examples include double, single, char, uint16,
+cell, and struct.
+@end table
+
+The table can be customized to display more or less information through
+the function @code{whos_line_format}.
+
+If @code{whos} is called as a function, return a struct array of defined
+variable names matching the given patterns.  Fields in the structure
+describing each variable are: name, size, bytes, class, global, sparse,
+complex, nesting, persistent.
+@seealso{who, whos_line_format}
+@end deftypefn */)
 {
   int argc = args.length () + 1;
 
@@ -2026,11 +2026,11 @@ mislocked (const std::string& nm)
 }
 
 DEFUN (mlock, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} mlock ()\n\
-Lock the current function into memory so that it can't be cleared.\n\
-@seealso{munlock, mislocked, persistent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} mlock ()
+Lock the current function into memory so that it can't be cleared.
+@seealso{munlock, mislocked, persistent}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -2046,14 +2046,14 @@ Lock the current function into memory so that it can't be cleared.\n\
 }
 
 DEFUN (munlock, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} munlock ()\n\
-@deftypefnx {} {} munlock (@var{fcn})\n\
-Unlock the named function @var{fcn}.\n\
-\n\
-If no function is named then unlock the current function.\n\
-@seealso{mlock, mislocked, persistent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} munlock ()
+@deftypefnx {} {} munlock (@var{fcn})
+Unlock the named function @var{fcn}.
+
+If no function is named then unlock the current function.
+@seealso{mlock, mislocked, persistent}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2081,14 +2081,14 @@ If no function is named then unlock the current function.\n\
 
 
 DEFUN (mislocked, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} mislocked ()\n\
-@deftypefnx {} {} mislocked (@var{fcn})\n\
-Return true if the named function @var{fcn} is locked.\n\
-\n\
-If no function is named then return true if the current function is locked.\n\
-@seealso{mlock, munlock, persistent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} mislocked ()
+@deftypefnx {} {} mislocked (@var{fcn})
+Return true if the named function @var{fcn} is locked.
+
+If no function is named then return true if the current function is locked.
+@seealso{mlock, munlock, persistent}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2337,78 +2337,78 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
   while (0)
 
 DEFUN (clear, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} clear [options] pattern @dots{}\n\
-Delete the names matching the given patterns from the symbol table.\n\
-\n\
-The pattern may contain the following special characters:\n\
-\n\
-@table @code\n\
-@item ?\n\
-Match any single character.\n\
-\n\
-@item *\n\
-Match zero or more characters.\n\
-\n\
-@item [ @var{list} ]\n\
-Match the list of characters specified by @var{list}.  If the first\n\
-character is @code{!} or @code{^}, match all characters except those\n\
-specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
-match all lowercase and uppercase alphabetic characters.\n\
-@end table\n\
-\n\
-For example, the command\n\
-\n\
-@example\n\
-clear foo b*r\n\
-@end example\n\
-\n\
-@noindent\n\
-clears the name @code{foo} and all names that begin with the letter\n\
-@code{b} and end with the letter @code{r}.\n\
-\n\
-If @code{clear} is called without any arguments, all user-defined\n\
-variables (local and global) are cleared from the symbol table.\n\
-\n\
-If @code{clear} is called with at least one argument, only the visible\n\
-names matching the arguments are cleared.  For example, suppose you have\n\
-defined a function @code{foo}, and then hidden it by performing the\n\
-assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once\n\
-will clear the variable definition and restore the definition of\n\
-@code{foo} as a function.  Executing @kbd{clear foo} a second time will\n\
-clear the function definition.\n\
-\n\
-The following options are available in both long and short form\n\
-\n\
-@table @code\n\
-@item -all, -a\n\
-Clear all local and global user-defined variables and all functions from the\n\
-symbol table.\n\
-\n\
-@item -exclusive, -x\n\
-Clear the variables that don't match the following pattern.\n\
-\n\
-@item -functions, -f\n\
-Clear the function names and the built-in symbols names.\n\
-\n\
-@item -global, -g\n\
-Clear global symbol names.\n\
-\n\
-@item -variables, -v\n\
-Clear local variable names.\n\
-\n\
-@item -classes, -c\n\
-Clears the class structure table and clears all objects.\n\
-\n\
-@item -regexp, -r\n\
-The arguments are treated as regular expressions as any variables that\n\
-match will be cleared.\n\
-@end table\n\
-\n\
-With the exception of @code{exclusive}, all long options can be used\n\
-without the dash as well.\n\
-@seealso{who, whos, exist}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} clear [options] pattern @dots{}
+Delete the names matching the given patterns from the symbol table.
+
+The pattern may contain the following special characters:
+
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
+match all lowercase and uppercase alphabetic characters.
+@end table
+
+For example, the command
+
+@example
+clear foo b*r
+@end example
+
+@noindent
+clears the name @code{foo} and all names that begin with the letter
+@code{b} and end with the letter @code{r}.
+
+If @code{clear} is called without any arguments, all user-defined
+variables (local and global) are cleared from the symbol table.
+
+If @code{clear} is called with at least one argument, only the visible
+names matching the arguments are cleared.  For example, suppose you have
+defined a function @code{foo}, and then hidden it by performing the
+assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once
+will clear the variable definition and restore the definition of
+@code{foo} as a function.  Executing @kbd{clear foo} a second time will
+clear the function definition.
+
+The following options are available in both long and short form
+
+@table @code
+@item -all, -a
+Clear all local and global user-defined variables and all functions from the
+symbol table.
+
+@item -exclusive, -x
+Clear the variables that don't match the following pattern.
+
+@item -functions, -f
+Clear the function names and the built-in symbols names.
+
+@item -global, -g
+Clear global symbol names.
+
+@item -variables, -v
+Clear local variable names.
+
+@item -classes, -c
+Clears the class structure table and clears all objects.
+
+@item -regexp, -r
+The arguments are treated as regular expressions as any variables that
+match will be cleared.
+@end table
+
+With the exception of @code{exclusive}, all long options can be used
+without the dash as well.
+@seealso{who, whos, exist}
+@end deftypefn */)
 {
   int argc = args.length () + 1;
 
@@ -2538,78 +2538,78 @@ without the dash as well.\n\
 }
 
 DEFUN (whos_line_format, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} whos_line_format ()\n\
-@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})\n\
-@deftypefnx {} {} whos_line_format (@var{new_val}, \"local\")\n\
-Query or set the format string used by the command @code{whos}.\n\
-\n\
-A full format string is:\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-%[modifier]<command>[:width[:left-min[:balance]]];\n\
-@end smallexample\n\
-\n\
-The following command sequences are available:\n\
-\n\
-@table @code\n\
-@item %a\n\
-Prints attributes of variables (g=global, p=persistent, f=formal parameter,\n\
-a=automatic variable).\n\
-\n\
-@item %b\n\
-Prints number of bytes occupied by variables.\n\
-\n\
-@item %c\n\
-Prints class names of variables.\n\
-\n\
-@item %e\n\
-Prints elements held by variables.\n\
-\n\
-@item %n\n\
-Prints variable names.\n\
-\n\
-@item %s\n\
-Prints dimensions of variables.\n\
-\n\
-@item %t\n\
-Prints type names of variables.\n\
-@end table\n\
-\n\
-Every command may also have an alignment modifier:\n\
-\n\
-@table @code\n\
-@item l\n\
-Left alignment.\n\
-\n\
-@item r\n\
-Right alignment (default).\n\
-\n\
-@item c\n\
-Column-aligned (only applicable to command %s).\n\
-@end table\n\
-\n\
-The @code{width} parameter is a positive integer specifying the minimum\n\
-number of columns used for printing.  No maximum is needed as the field will\n\
-auto-expand as required.\n\
-\n\
-The parameters @code{left-min} and @code{balance} are only available when\n\
-the column-aligned modifier is used with the command @samp{%s}.\n\
-@code{balance} specifies the column number within the field width which\n\
-will be aligned between entries.  Numbering starts from 0 which indicates\n\
-the leftmost column.  @code{left-min} specifies the minimum field width to\n\
-the left of the specified balance column.\n\
-\n\
-The default format is:\n\
-\n\
-@qcode{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n\"}\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{whos}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} whos_line_format ()
+@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})
+@deftypefnx {} {} whos_line_format (@var{new_val}, "local")
+Query or set the format string used by the command @code{whos}.
+
+A full format string is:
+@c Set example in small font to prevent overfull line
+
+@smallexample
+%[modifier]<command>[:width[:left-min[:balance]]];
+@end smallexample
+
+The following command sequences are available:
+
+@table @code
+@item %a
+Prints attributes of variables (g=global, p=persistent, f=formal parameter,
+a=automatic variable).
+
+@item %b
+Prints number of bytes occupied by variables.
+
+@item %c
+Prints class names of variables.
+
+@item %e
+Prints elements held by variables.
+
+@item %n
+Prints variable names.
+
+@item %s
+Prints dimensions of variables.
+
+@item %t
+Prints type names of variables.
+@end table
+
+Every command may also have an alignment modifier:
+
+@table @code
+@item l
+Left alignment.
+
+@item r
+Right alignment (default).
+
+@item c
+Column-aligned (only applicable to command %s).
+@end table
+
+The @code{width} parameter is a positive integer specifying the minimum
+number of columns used for printing.  No maximum is needed as the field will
+auto-expand as required.
+
+The parameters @code{left-min} and @code{balance} are only available when
+the column-aligned modifier is used with the command @samp{%s}.
+@code{balance} specifies the column number within the field width which
+will be aligned between entries.  Numbering starts from 0 which indicates
+the leftmost column.  @code{left-min} specifies the minimum field width to
+the left of the specified balance column.
+
+The default format is:
+
+@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n"}
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{whos}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);
 }
@@ -2617,18 +2617,18 @@ The original variable value is restored when exiting the function.\n\
 static std::string Vmissing_function_hook = "__unimplemented__";
 
 DEFUN (missing_function_hook, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} missing_function_hook ()\n\
-@deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
-@deftypefnx {} {} missing_function_hook (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the function to call when\n\
-an unknown identifier is requested.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{missing_component_hook}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} missing_function_hook ()
+@deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val})
+@deftypefnx {} {} missing_function_hook (@var{new_val}, "local")
+Query or set the internal variable that specifies the function to call when
+an unknown identifier is requested.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{missing_component_hook}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);
 }
@@ -2657,10 +2657,10 @@ void maybe_missing_function_hook (const std::string& name)
 }
 
 DEFUN (__varval__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __varval__ (@var{name})\n\
-Return the value of the variable @var{name} directly from the symbol table.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __varval__ (@var{name})
+Return the value of the variable @var{name} directly from the symbol table.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2673,32 +2673,32 @@ Return the value of the variable @var{name} directly from the symbol table.\n\
 static std::string Vmissing_component_hook;
 
 DEFUN (missing_component_hook, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} missing_component_hook ()\n\
-@deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
-@deftypefnx {} {} missing_component_hook (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the function to call when\n\
-a component of Octave is missing.\n\
-\n\
-This can be useful for packagers that may split the Octave installation into\n\
-multiple sub-packages, for example, to provide a hint to users for how to\n\
-install the missing components.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-The hook function is expected to be of the form\n\
-\n\
-@example\n\
-@var{fcn} (@var{component})\n\
-@end example\n\
-\n\
-Octave will call @var{fcn} with the name of the function that requires the\n\
-component and a string describing the missing component.  The hook function\n\
-should return an error message to be displayed.\n\
-@seealso{missing_function_hook}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} missing_component_hook ()
+@deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val})
+@deftypefnx {} {} missing_component_hook (@var{new_val}, "local")
+Query or set the internal variable that specifies the function to call when
+a component of Octave is missing.
+
+This can be useful for packagers that may split the Octave installation into
+multiple sub-packages, for example, to provide a hint to users for how to
+install the missing components.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+The hook function is expected to be of the form
+
+@example
+@var{fcn} (@var{component})
+@end example
+
+Octave will call @var{fcn} with the name of the function that requires the
+component and a string describing the missing component.  The hook function
+should return an error message to be displayed.
+@seealso{missing_function_hook}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);
 }

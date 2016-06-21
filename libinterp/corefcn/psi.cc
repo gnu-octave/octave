@@ -33,39 +33,39 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-specfun.h"
 
 DEFUN (psi, args, ,
-"-*- texinfo -*-\n\
-@deftypefn  {} {} psi (@var{z})\n\
-@deftypefnx {} {} psi (@var{k}, @var{z})\n\
-Compute the psi (polygamma) function.\n\
-\n\
-The polygamma functions are the @var{k}th derivative of the logarithm\n\
-of the gamma function.  If unspecified, @var{k} defaults to zero.  A value\n\
-of zero computes the digamma function, a value of 1, the trigamma function,\n\
-and so on.\n\
-\n\
-The digamma function is defined:\n\
-\n\
-@tex\n\
-$$\n\
-\\Psi (z) = {d (log (\\Gamma (z))) \\over dx}\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-psi (z) = d (log (gamma (z))) / dx\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-When computing the digamma function (when @var{k} equals zero), @var{z}\n\
-can have any value real or complex value.  However, for polygamma functions\n\
-(@var{k} higher than 0), @var{z} must be real and non-negative.\n\
-\n\
-@seealso{gamma, gammainc, gammaln}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} psi (@var{z})
+@deftypefnx {} {} psi (@var{k}, @var{z})
+Compute the psi (polygamma) function.
+
+The polygamma functions are the @var{k}th derivative of the logarithm
+of the gamma function.  If unspecified, @var{k} defaults to zero.  A value
+of zero computes the digamma function, a value of 1, the trigamma function,
+and so on.
+
+The digamma function is defined:
+
+@tex
+$$
+\Psi (z) = {d (log (\Gamma (z))) \over dx}
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+psi (z) = d (log (gamma (z))) / dx
+@end group
+@end example
+
+@end ifnottex
+
+When computing the digamma function (when @var{k} equals zero), @var{z}
+can have any value real or complex value.  However, for polygamma functions
+(@var{k} higher than 0), @var{z} must be real and non-negative.
+
+@seealso{gamma, gammainc, gammaln}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

@@ -2230,14 +2230,14 @@ load_path::execute_pkg_del (const std::string& dir)
 }
 
 DEFUN (genpath, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} genpath (@var{dir})\n\
-@deftypefnx {} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
-Return a path constructed from @var{dir} and all its subdirectories.\n\
-\n\
-If additional string parameters are given, the resulting path will exclude\n\
-directories with those names.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} genpath (@var{dir})
+@deftypefnx {} {} genpath (@var{dir}, @var{skip}, @dots{})
+Return a path constructed from @var{dir} and all its subdirectories.
+
+If additional string parameters are given, the resulting path will exclude
+directories with those names.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2280,10 +2280,10 @@ rehash_internal (void)
 }
 
 DEFUN (rehash, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} rehash ()\n\
-Reinitialize Octave's load path directory cache.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rehash ()
+Reinitialize Octave's load path directory cache.
+@end deftypefn */)
 {
   rehash_internal ();
 
@@ -2291,23 +2291,23 @@ Reinitialize Octave's load path directory cache.\n\
 }
 
 DEFUN (command_line_path, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} command_line_path (@dots{})\n\
-Return the command line path variable.\n\
-\n\
-@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} command_line_path (@dots{})
+Return the command line path variable.
+
+@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
   return ovl (load_path::get_command_line_path ());
 }
 
 DEFUN (restoredefaultpath, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} restoredefaultpath (@dots{})\n\
-Restore Octave's path to its initial state at startup.\n\
-\n\
-@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} restoredefaultpath (@dots{})
+Restore Octave's path to its initial state at startup.
+
+@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
   load_path::initialize (true);
 
@@ -2320,34 +2320,34 @@ Restore Octave's path to its initial state at startup.\n\
 // ~/.octaverc file
 
 DEFUN (__pathorig__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{val} =} __pathorig__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{val} =} __pathorig__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   return ovl (load_path::system_path ());
 }
 
 DEFUN (path, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} path ()\n\
-@deftypefnx {} {@var{str} =} path ()\n\
-@deftypefnx {} {@var{str} =} path (@var{path1}, @dots{})\n\
-Modify or display Octave's load path.\n\
-\n\
-If @var{nargin} and @var{nargout} are zero, display the elements of\n\
-Octave's load path in an easy to read format.\n\
-\n\
-If @var{nargin} is zero and nargout is greater than zero, return the\n\
-current load path.\n\
-\n\
-If @var{nargin} is greater than zero, concatenate the arguments,\n\
-separating them with @code{pathsep}.  Set the internal search path\n\
-to the result and return it.\n\
-\n\
-No checks are made for duplicate elements.\n\
-@seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} path ()
+@deftypefnx {} {@var{str} =} path ()
+@deftypefnx {} {@var{str} =} path (@var{path1}, @dots{})
+Modify or display Octave's load path.
+
+If @var{nargin} and @var{nargout} are zero, display the elements of
+Octave's load path in an easy to read format.
+
+If @var{nargin} is zero and nargout is greater than zero, return the
+current load path.
+
+If @var{nargin} is greater than zero, concatenate the arguments,
+separating them with @code{pathsep}.  Set the internal search path
+to the result and return it.
+
+No checks are made for duplicate elements.
+@seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2383,24 +2383,24 @@ No checks are made for duplicate elements.\n\
 }
 
 DEFUN (addpath, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} addpath (@var{dir1}, @dots{})\n\
-@deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
-Add named directories to the function search path.\n\
-\n\
-If @var{option} is @qcode{\"-begin\"} or 0 (the default), prepend the\n\
-directory name to the current path.  If @var{option} is @qcode{\"-end\"}\n\
-or 1, append the directory name to the current path.\n\
-Directories added to the path must exist.\n\
-\n\
-In addition to accepting individual directory arguments, lists of\n\
-directory names separated by @code{pathsep} are also accepted.  For example:\n\
-\n\
-@example\n\
-addpath (\"dir1:/dir2:~/dir3\")\n\
-@end example\n\
-@seealso{path, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} addpath (@var{dir1}, @dots{})
+@deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})
+Add named directories to the function search path.
+
+If @var{option} is @qcode{"-begin"} or 0 (the default), prepend the
+directory name to the current path.  If @var{option} is @qcode{"-end"}
+or 1, append the directory name to the current path.
+Directories added to the path must exist.
+
+In addition to accepting individual directory arguments, lists of
+directory names separated by @code{pathsep} are also accepted.  For example:
+
+@example
+addpath ("dir1:/dir2:~/dir3")
+@end example
+@seealso{path, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
   // Originally written by Bill Denney and Etienne Grossman.
   // Heavily modified and translated to C++ by jwe.
@@ -2490,18 +2490,18 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 }
 
 DEFUN (rmpath, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} rmpath (@var{dir1}, @dots{})\n\
-Remove @var{dir1}, @dots{} from the current function search path.\n\
-\n\
-In addition to accepting individual directory arguments, lists of\n\
-directory names separated by @code{pathsep} are also accepted.  For example:\n\
-\n\
-@example\n\
-rmpath (\"dir1:/dir2:~/dir3\")\n\
-@end example\n\
-@seealso{path, addpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rmpath (@var{dir1}, @dots{})
+Remove @var{dir1}, @dots{} from the current function search path.
+
+In addition to accepting individual directory arguments, lists of
+directory names separated by @code{pathsep} are also accepted.  For example:
+
+@example
+rmpath ("dir1:/dir2:~/dir3")
+@end example
+@seealso{path, addpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
   // Originally written by Etienne Grossmann.  Heavily modified and translated
   // to C++ by jwe.
@@ -2545,7 +2545,11 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
   return retval;
 }
 
-DEFUN (__dump_load_path__, , , "")
+DEFUN (__dump_load_path__, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __dump_load_path__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   load_path::display (octave_stdout);
 

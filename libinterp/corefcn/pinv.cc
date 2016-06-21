@@ -37,22 +37,22 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-perm.h"
 
 DEFUN (pinv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} pinv (@var{x})\n\
-@deftypefnx {} {} pinv (@var{x}, @var{tol})\n\
-Return the pseudoinverse of @var{x}.\n\
-\n\
-Singular values less than @var{tol} are ignored.\n\
-\n\
-If the second argument is omitted, it is taken to be\n\
-\n\
-@example\n\
-tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,\n\
-@end example\n\
-\n\
-@noindent\n\
-where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} pinv (@var{x})
+@deftypefnx {} {} pinv (@var{x}, @var{tol})
+Return the pseudoinverse of @var{x}.
+
+Singular values less than @var{tol} are ignored.
+
+If the second argument is omitted, it is taken to be
+
+@example
+tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,
+@end example
+
+@noindent
+where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

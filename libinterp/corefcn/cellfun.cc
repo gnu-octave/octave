@@ -260,142 +260,142 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
 }
 
 DEFUN (cellfun, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cellfun (@var{name}, @var{C})\n\
-@deftypefnx {} {} cellfun (\"size\", @var{C}, @var{k})\n\
-@deftypefnx {} {} cellfun (\"isclass\", @var{C}, @var{class})\n\
-@deftypefnx {} {} cellfun (@var{func}, @var{C})\n\
-@deftypefnx {} {} cellfun (@var{func}, @var{C}, @var{D})\n\
-@deftypefnx {} {[@var{a}, @dots{}] =} cellfun (@dots{})\n\
-@deftypefnx {} {} cellfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
-@deftypefnx {} {} cellfun (@dots{}, \"UniformOutput\", @var{val})\n\
-\n\
-Evaluate the function named @var{name} on the elements of the cell array\n\
-@var{C}.\n\
-\n\
-Elements in @var{C} are passed on to the named function individually.  The\n\
-function @var{name} can be one of the functions\n\
-\n\
-@table @code\n\
-@item isempty\n\
-Return 1 for empty elements.\n\
-\n\
-@item islogical\n\
-Return 1 for logical elements.\n\
-\n\
-@item isnumeric\n\
-Return 1 for numeric elements.\n\
-\n\
-@item isreal\n\
-Return 1 for real elements.\n\
-\n\
-@item length\n\
-Return a vector of the lengths of cell elements.\n\
-\n\
-@item ndims\n\
-Return the number of dimensions of each element.\n\
-\n\
-@item  numel\n\
-@itemx prodofsize\n\
-Return the number of elements contained within each cell element.  The\n\
-number is the product of the dimensions of the object at each cell element.\n\
-\n\
-@item size\n\
-Return the size along the @var{k}-th dimension.\n\
-\n\
-@item isclass\n\
-Return 1 for elements of @var{class}.\n\
-@end table\n\
-\n\
-Additionally, @code{cellfun} accepts an arbitrary function @var{func}\n\
-in the form of an inline function, function handle, or the name of a\n\
-function (in a character string).  The function can take one or more\n\
-arguments, with the inputs arguments given by @var{C}, @var{D}, etc.\n\
-Equally the function can return one or more output arguments.  For example:\n\
-\n\
-@example\n\
-@group\n\
-cellfun (\"atan2\", @{1, 0@}, @{0, 1@})\n\
-     @result{} [ 1.57080   0.00000 ]\n\
-@end group\n\
-@end example\n\
-\n\
-The number of output arguments of @code{cellfun} matches the number of\n\
-output arguments of the function.  The outputs of the function will be\n\
-collected into the output arguments of @code{cellfun} like this:\n\
-\n\
-@example\n\
-@group\n\
-function [a, b] = twoouts (x)\n\
-  a = x;\n\
-  b = x*x;\n\
-endfunction\n\
-[aa, bb] = cellfun (@@twoouts, @{1, 2, 3@})\n\
-     @result{}\n\
-        aa =\n\
-           1 2 3\n\
-        bb =\n\
-           1 4 9\n\
-@end group\n\
-@end example\n\
-\n\
-Note that per default the output argument(s) are arrays of the same size as\n\
-the input arguments.  Input arguments that are singleton (1x1) cells will be\n\
-automatically expanded to the size of the other arguments.\n\
-\n\
-If the parameter @qcode{\"UniformOutput\"} is set to true (the default),\n\
-then the function must return scalars which will be concatenated into the\n\
-return array(s).  If @qcode{\"UniformOutput\"} is false, the outputs are\n\
-concatenated into a cell array (or cell arrays).  For example:\n\
-\n\
-@example\n\
-@group\n\
-cellfun (\"tolower\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
-         \"UniformOutput\", false)\n\
-@result{} @{\"foo\", \"bar\", \"foobar\"@}\n\
-@end group\n\
-@end example\n\
-\n\
-Given the parameter @qcode{\"ErrorHandler\"}, then @var{errfunc} defines a\n\
-function to call in case @var{func} generates an error.  The form of the\n\
-function is\n\
-\n\
-@example\n\
-function [@dots{}] = errfunc (@var{s}, @dots{})\n\
-@end example\n\
-\n\
-@noindent\n\
-where there is an additional input argument to @var{errfunc} relative to\n\
-@var{func}, given by @var{s}.  This is a structure with the elements\n\
-@qcode{\"identifier\"}, @qcode{\"message\"}, and @qcode{\"index\"} giving\n\
-respectively the error identifier, the error message, and the index into the\n\
-input arguments of the element that caused the error.  For example:\n\
-\n\
-@example\n\
-@group\n\
-function y = foo (s, x), y = NaN; endfunction\n\
-cellfun (\"factorial\", @{-1,2@}, \"ErrorHandler\", @@foo)\n\
-@result{} [NaN 2]\n\
-@end group\n\
-@end example\n\
-\n\
-Use @code{cellfun} intelligently.  The @code{cellfun} function is a\n\
-useful tool for avoiding loops.  It is often used with anonymous\n\
-function handles; however, calling an anonymous function involves an\n\
-overhead quite comparable to the overhead of an m-file function.\n\
-Passing a handle to a built-in function is faster, because the\n\
-interpreter is not involved in the internal loop.  For example:\n\
-\n\
-@example\n\
-@group\n\
-a = @{@dots{}@}\n\
-v = cellfun (@@(x) det (x), a); # compute determinants\n\
-v = cellfun (@@det, a); # faster\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{arrayfun, structfun, spfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cellfun (@var{name}, @var{C})
+@deftypefnx {} {} cellfun ("size", @var{C}, @var{k})
+@deftypefnx {} {} cellfun ("isclass", @var{C}, @var{class})
+@deftypefnx {} {} cellfun (@var{func}, @var{C})
+@deftypefnx {} {} cellfun (@var{func}, @var{C}, @var{D})
+@deftypefnx {} {[@var{a}, @dots{}] =} cellfun (@dots{})
+@deftypefnx {} {} cellfun (@dots{}, "ErrorHandler", @var{errfunc})
+@deftypefnx {} {} cellfun (@dots{}, "UniformOutput", @var{val})
+
+Evaluate the function named @var{name} on the elements of the cell array
+@var{C}.
+
+Elements in @var{C} are passed on to the named function individually.  The
+function @var{name} can be one of the functions
+
+@table @code
+@item isempty
+Return 1 for empty elements.
+
+@item islogical
+Return 1 for logical elements.
+
+@item isnumeric
+Return 1 for numeric elements.
+
+@item isreal
+Return 1 for real elements.
+
+@item length
+Return a vector of the lengths of cell elements.
+
+@item ndims
+Return the number of dimensions of each element.
+
+@item  numel
+@itemx prodofsize
+Return the number of elements contained within each cell element.  The
+number is the product of the dimensions of the object at each cell element.
+
+@item size
+Return the size along the @var{k}-th dimension.
+
+@item isclass
+Return 1 for elements of @var{class}.
+@end table
+
+Additionally, @code{cellfun} accepts an arbitrary function @var{func}
+in the form of an inline function, function handle, or the name of a
+function (in a character string).  The function can take one or more
+arguments, with the inputs arguments given by @var{C}, @var{D}, etc.
+Equally the function can return one or more output arguments.  For example:
+
+@example
+@group
+cellfun ("atan2", @{1, 0@}, @{0, 1@})
+     @result{} [ 1.57080   0.00000 ]
+@end group
+@end example
+
+The number of output arguments of @code{cellfun} matches the number of
+output arguments of the function.  The outputs of the function will be
+collected into the output arguments of @code{cellfun} like this:
+
+@example
+@group
+function [a, b] = twoouts (x)
+  a = x;
+  b = x*x;
+endfunction
+[aa, bb] = cellfun (@@twoouts, @{1, 2, 3@})
+     @result{}
+        aa =
+           1 2 3
+        bb =
+           1 4 9
+@end group
+@end example
+
+Note that per default the output argument(s) are arrays of the same size as
+the input arguments.  Input arguments that are singleton (1x1) cells will be
+automatically expanded to the size of the other arguments.
+
+If the parameter @qcode{"UniformOutput"} is set to true (the default),
+then the function must return scalars which will be concatenated into the
+return array(s).  If @qcode{"UniformOutput"} is false, the outputs are
+concatenated into a cell array (or cell arrays).  For example:
+
+@example
+@group
+cellfun ("tolower", @{"Foo", "Bar", "FooBar"@},
+         "UniformOutput", false)
+@result{} @{"foo", "bar", "foobar"@}
+@end group
+@end example
+
+Given the parameter @qcode{"ErrorHandler"}, then @var{errfunc} defines a
+function to call in case @var{func} generates an error.  The form of the
+function is
+
+@example
+function [@dots{}] = errfunc (@var{s}, @dots{})
+@end example
+
+@noindent
+where there is an additional input argument to @var{errfunc} relative to
+@var{func}, given by @var{s}.  This is a structure with the elements
+@qcode{"identifier"}, @qcode{"message"}, and @qcode{"index"} giving
+respectively the error identifier, the error message, and the index into the
+input arguments of the element that caused the error.  For example:
+
+@example
+@group
+function y = foo (s, x), y = NaN; endfunction
+cellfun ("factorial", @{-1,2@}, "ErrorHandler", @@foo)
+@result{} [NaN 2]
+@end group
+@end example
+
+Use @code{cellfun} intelligently.  The @code{cellfun} function is a
+useful tool for avoiding loops.  It is often used with anonymous
+function handles; however, calling an anonymous function involves an
+overhead quite comparable to the overhead of an m-file function.
+Passing a handle to a built-in function is faster, because the
+interpreter is not involved in the internal loop.  For example:
+
+@example
+@group
+a = @{@dots{}@}
+v = cellfun (@@(x) det (x), a); # compute determinants
+v = cellfun (@@det, a); # faster
+@end group
+@end example
+
+@seealso{arrayfun, structfun, spfun}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -998,119 +998,119 @@ v = cellfun (@@det, a); # faster\n\
 // handle the nargout = 0 case.
 
 DEFUN (arrayfun, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} arrayfun (@var{func}, @var{A})\n\
-@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A})\n\
-@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})\n\
-@deftypefnx {} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})\n\
-@deftypefnx {} {} arrayfun (@dots{}, \"UniformOutput\", @var{val})\n\
-@deftypefnx {} {} arrayfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
-\n\
-Execute a function on each element of an array.\n\
-\n\
-This is useful for functions that do not accept array arguments.  If the\n\
-function does accept array arguments it is better to call the function\n\
-directly.\n\
-\n\
-The first input argument @var{func} can be a string, a function\n\
-handle, an inline function, or an anonymous function.  The input\n\
-argument @var{A} can be a logic array, a numeric array, a string\n\
-array, a structure array, or a cell array.  By a call of the function\n\
-@command{arrayfun} all elements of @var{A} are passed on to the named\n\
-function @var{func} individually.\n\
-\n\
-The named function can also take more than two input arguments, with\n\
-the input arguments given as third input argument @var{b}, fourth\n\
-input argument @var{c}, @dots{}  If given more than one array input\n\
-argument then all input arguments must have the same sizes, for\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-arrayfun (@@atan2, [1, 0], [0, 1])\n\
-     @result{} [ 1.5708   0.0000 ]\n\
-@end group\n\
-@end example\n\
-\n\
-If the parameter @var{val} after a further string input argument\n\
-@qcode{\"UniformOutput\"} is set @code{true} (the default), then the named\n\
-function @var{func} must return a single element which then will be\n\
-concatenated into the return value and is of type matrix.  Otherwise,\n\
-if that parameter is set to @code{false}, then the outputs are\n\
-concatenated in a cell array.  For example:\n\
-\n\
-@example\n\
-@group\n\
-arrayfun (@@(x,y) x:y, \"abc\", \"def\", \"UniformOutput\", false)\n\
-@result{}\n\
-   @{\n\
-     [1,1] = abcd\n\
-     [1,2] = bcde\n\
-     [1,3] = cdef\n\
-   @}\n\
-@end group\n\
-@end example\n\
-\n\
-If more than one output arguments are given then the named function\n\
-must return the number of return values that also are expected, for\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-[A, B, C] = arrayfun (@@find, [10; 0], \"UniformOutput\", false)\n\
-@result{}\n\
-A =\n\
-@{\n\
-   [1,1] =  1\n\
-   [2,1] = [](0x0)\n\
-@}\n\
-B =\n\
-@{\n\
-   [1,1] =  1\n\
-   [2,1] = [](0x0)\n\
-@}\n\
-C =\n\
-@{\n\
-   [1,1] =  10\n\
-   [2,1] = [](0x0)\n\
-@}\n\
-@end group\n\
-@end example\n\
-\n\
-If the parameter @var{errfunc} after a further string input argument\n\
-@qcode{\"ErrorHandler\"} is another string, a function handle, an inline\n\
-function, or an anonymous function, then @var{errfunc} defines a\n\
-function to call in the case that @var{func} generates an error.\n\
-The definition of the function must be of the form\n\
-\n\
-@example\n\
-function [@dots{}] = errfunc (@var{s}, @dots{})\n\
-@end example\n\
-\n\
-@noindent\n\
-where there is an additional input argument to @var{errfunc}\n\
-relative to @var{func}, given by @var{s}.  This is a structure with\n\
-the elements @qcode{\"identifier\"}, @qcode{\"message\"}, and\n\
-@qcode{\"index\"} giving, respectively, the error identifier, the error\n\
-message, and the index of the array elements that caused the error.  The\n\
-size of the output argument of @var{errfunc} must have the same size as the\n\
-output argument of @var{func}, otherwise a real error is thrown.  For\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-function y = ferr (s, x), y = \"MyString\"; endfunction\n\
-arrayfun (@@str2num, [1234],\n\
-          \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
-@result{}\n\
-   @{\n\
-     [1,1] = MyString\n\
-   @}\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{spfun, cellfun, structfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} arrayfun (@var{func}, @var{A})
+@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A})
+@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})
+@deftypefnx {} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})
+@deftypefnx {} {} arrayfun (@dots{}, "UniformOutput", @var{val})
+@deftypefnx {} {} arrayfun (@dots{}, "ErrorHandler", @var{errfunc})
+
+Execute a function on each element of an array.
+
+This is useful for functions that do not accept array arguments.  If the
+function does accept array arguments it is better to call the function
+directly.
+
+The first input argument @var{func} can be a string, a function
+handle, an inline function, or an anonymous function.  The input
+argument @var{A} can be a logic array, a numeric array, a string
+array, a structure array, or a cell array.  By a call of the function
+@command{arrayfun} all elements of @var{A} are passed on to the named
+function @var{func} individually.
+
+The named function can also take more than two input arguments, with
+the input arguments given as third input argument @var{b}, fourth
+input argument @var{c}, @dots{}  If given more than one array input
+argument then all input arguments must have the same sizes, for
+example:
+
+@example
+@group
+arrayfun (@@atan2, [1, 0], [0, 1])
+     @result{} [ 1.5708   0.0000 ]
+@end group
+@end example
+
+If the parameter @var{val} after a further string input argument
+@qcode{"UniformOutput"} is set @code{true} (the default), then the named
+function @var{func} must return a single element which then will be
+concatenated into the return value and is of type matrix.  Otherwise,
+if that parameter is set to @code{false}, then the outputs are
+concatenated in a cell array.  For example:
+
+@example
+@group
+arrayfun (@@(x,y) x:y, "abc", "def", "UniformOutput", false)
+@result{}
+   @{
+     [1,1] = abcd
+     [1,2] = bcde
+     [1,3] = cdef
+   @}
+@end group
+@end example
+
+If more than one output arguments are given then the named function
+must return the number of return values that also are expected, for
+example:
+
+@example
+@group
+[A, B, C] = arrayfun (@@find, [10; 0], "UniformOutput", false)
+@result{}
+A =
+@{
+   [1,1] =  1
+   [2,1] = [](0x0)
+@}
+B =
+@{
+   [1,1] =  1
+   [2,1] = [](0x0)
+@}
+C =
+@{
+   [1,1] =  10
+   [2,1] = [](0x0)
+@}
+@end group
+@end example
+
+If the parameter @var{errfunc} after a further string input argument
+@qcode{"ErrorHandler"} is another string, a function handle, an inline
+function, or an anonymous function, then @var{errfunc} defines a
+function to call in the case that @var{func} generates an error.
+The definition of the function must be of the form
+
+@example
+function [@dots{}] = errfunc (@var{s}, @dots{})
+@end example
+
+@noindent
+where there is an additional input argument to @var{errfunc}
+relative to @var{func}, given by @var{s}.  This is a structure with
+the elements @qcode{"identifier"}, @qcode{"message"}, and
+@qcode{"index"} giving, respectively, the error identifier, the error
+message, and the index of the array elements that caused the error.  The
+size of the output argument of @var{errfunc} must have the same size as the
+output argument of @var{func}, otherwise a real error is thrown.  For
+example:
+
+@example
+@group
+function y = ferr (s, x), y = "MyString"; endfunction
+arrayfun (@@str2num, [1234],
+          "UniformOutput", false, "ErrorHandler", @@ferr)
+@result{}
+   @{
+     [1,1] = MyString
+   @}
+@end group
+@end example
+
+@seealso{spfun, cellfun, structfun}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1736,40 +1736,40 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
 }
 
 DEFUN (num2cell, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{C} =} num2cell (@var{A})\n\
-@deftypefnx {} {@var{C} =} num2cell (@var{A}, @var{dim})\n\
-Convert the numeric matrix @var{A} to a cell array.\n\
-\n\
-If @var{dim} is defined, the value @var{C} is of dimension 1 in this\n\
-dimension and the elements of @var{A} are placed into @var{C} in slices.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-num2cell ([1,2;3,4])\n\
-   @result{}\n\
-      @{\n\
-        [1,1] =  1\n\
-        [2,1] =  3\n\
-        [1,2] =  2\n\
-        [2,2] =  4\n\
-      @}\n\
-num2cell ([1,2;3,4],1)\n\
-   @result{}\n\
-      @{\n\
-        [1,1] =\n\
-           1\n\
-           3\n\
-        [1,2] =\n\
-           2\n\
-           4\n\
-      @}\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{mat2cell}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{C} =} num2cell (@var{A})
+@deftypefnx {} {@var{C} =} num2cell (@var{A}, @var{dim})
+Convert the numeric matrix @var{A} to a cell array.
+
+If @var{dim} is defined, the value @var{C} is of dimension 1 in this
+dimension and the elements of @var{A} are placed into @var{C} in slices.
+For example:
+
+@example
+@group
+num2cell ([1,2;3,4])
+   @result{}
+      @{
+        [1,1] =  1
+        [2,1] =  3
+        [1,2] =  2
+        [2,2] =  4
+      @}
+num2cell ([1,2;3,4],1)
+   @result{}
+      @{
+        [1,1] =
+           1
+           3
+        [1,2] =
+           2
+           4
+      @}
+@end group
+@end example
+
+@seealso{mat2cell}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2057,49 +2057,49 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 }
 
 DEFUN (mat2cell, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})\n\
-@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})\n\
-@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{r})\n\
-Convert the matrix @var{A} to a cell array.\n\
-\n\
-If @var{A} is 2-D, then it is required that\n\
-@code{sum (@var{m}) == size (@var{A}, 1)} and\n\
-@code{sum (@var{n}) == size (@var{A}, 2)}.  Similarly, if @var{A} is\n\
-multi-dimensional and the number of dimensional arguments is equal to the\n\
-dimensions of @var{A}, then it is required that\n\
-@code{sum (@var{di}) == size (@var{A}, i)}.\n\
-\n\
-Given a single dimensional argument @var{r}, the other dimensional\n\
-arguments are assumed to equal @code{size (@var{A},@var{i})}.\n\
-\n\
-An example of the use of mat2cell is\n\
-\n\
-@example\n\
-mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
-@result{}\n\
-@{\n\
-   [1,1] =\n\
-\n\
-      1   5   9\n\
-      2   6  10\n\
-      3   7  11\n\
-\n\
-   [2,1] =\n\
-\n\
-      4   8  12\n\
-\n\
-   [1,2] =\n\
-\n\
-     13\n\
-     14\n\
-     15\n\
-\n\
-   [2,2] = 16\n\
-@}\n\
-@end example\n\
-@seealso{num2cell, cell2mat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})
+@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})
+@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{r})
+Convert the matrix @var{A} to a cell array.
+
+If @var{A} is 2-D, then it is required that
+@code{sum (@var{m}) == size (@var{A}, 1)} and
+@code{sum (@var{n}) == size (@var{A}, 2)}.  Similarly, if @var{A} is
+multi-dimensional and the number of dimensional arguments is equal to the
+dimensions of @var{A}, then it is required that
+@code{sum (@var{di}) == size (@var{A}, i)}.
+
+Given a single dimensional argument @var{r}, the other dimensional
+arguments are assumed to equal @code{size (@var{A},@var{i})}.
+
+An example of the use of mat2cell is
+
+@example
+mat2cell (reshape (1:16,4,4), [3,1], [3,1])
+@result{}
+@{
+   [1,1] =
+
+      1   5   9
+      2   6  10
+      3   7  11
+
+   [2,1] =
+
+      4   8  12
+
+   [1,2] =
+
+     13
+     14
+     15
+
+   [2,2] = 16
+@}
+@end example
+@seealso{num2cell, cell2mat}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2227,28 +2227,28 @@ do_cellslices_nda (const NDA& array,
 }
 
 DEFUN (cellslices, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
-Given an array @var{x}, this function produces a cell array of slices from\n\
-the array determined by the index vectors @var{lb}, @var{ub}, for lower and\n\
-upper bounds, respectively.\n\
-\n\
-In other words, it is equivalent to the following code:\n\
-\n\
-@example\n\
-@group\n\
-n = length (lb);\n\
-sl = cell (1, n);\n\
-for i = 1:length (lb)\n\
-  sl@{i@} = x(:,@dots{},lb(i):ub(i),@dots{},:);\n\
-endfor\n\
-@end group\n\
-@end example\n\
-\n\
-The position of the index is determined by @var{dim}.  If not specified,\n\
-slicing is done along the first non-singleton dimension.\n\
-@seealso{cell2mat, cellindexmat, cellfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})
+Given an array @var{x}, this function produces a cell array of slices from
+the array determined by the index vectors @var{lb}, @var{ub}, for lower and
+upper bounds, respectively.
+
+In other words, it is equivalent to the following code:
+
+@example
+@group
+n = length (lb);
+sl = cell (1, n);
+for i = 1:length (lb)
+  sl@{i@} = x(:,@dots{},lb(i):ub(i),@dots{},:);
+endfor
+@end group
+@end example
+
+The position of the index is determined by @var{dim}.  If not specified,
+slicing is done along the first non-singleton dimension.
+@seealso{cell2mat, cellindexmat, cellfun}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2354,22 +2354,22 @@ slicing is done along the first non-singleton dimension.\n\
 */
 
 DEFUN (cellindexmat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
-Perform indexing of matrices in a cell array.\n\
-\n\
-Given a cell array of matrices @var{x}, this function computes\n\
-\n\
-@example\n\
-@group\n\
-Y = cell (size (X));\n\
-for i = 1:numel (X)\n\
-  Y@{i@} = X@{i@}(varargin@{:@});\n\
-endfor\n\
-@end group\n\
-@end example\n\
-@seealso{cellslices, cellfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{y} =} cellindexmat (@var{x}, @var{varargin})
+Perform indexing of matrices in a cell array.
+
+Given a cell array of matrices @var{x}, this function computes
+
+@example
+@group
+Y = cell (size (X));
+for i = 1:numel (X)
+  Y@{i@} = X@{i@}(varargin@{:@});
+endfor
+@end group
+@end example
+@seealso{cellslices, cellfun}
+@end deftypefn */)
 {
   if (args.length () == 0)
     print_usage ();

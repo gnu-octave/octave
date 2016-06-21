@@ -997,94 +997,94 @@ intmap_to_ov (const bp_table::intmap& line)
 }
 
 DEFUN (dbstop, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbstop @var{func}\n\
-@deftypefnx {} {} dbstop @var{func} @var{line}\n\
-@deftypefnx {} {} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
-@deftypefnx {} {} dbstop @var{line1} @dots{}\n\
-@deftypefnx {} {} dbstop in @var{func}\n\
-@deftypefnx {} {} dbstop in @var{func} at @var{line}\n\
-@deftypefnx {} {} dbstop in @var{func} at @var{line} if \"@var{condition}\"\n\
-@deftypefnx {} {} dbstop if @var{event}\n\
-@deftypefnx {} {} dbstop if @var{event} @var{ID}\n\
-@deftypefnx {} {} dbstop (@var{bp_struct})\n\
-@deftypefnx {} {@var{rline} =} dbstop @dots{}\n\
-\n\
-Set breakpoints for the built-in debugger.\n\
-\n\
-@var{func} is the name of a function on the current @code{path}.  When\n\
-already in debug mode the @var{func} argument can be omitted and the current\n\
-function will be used.  Breakpoints at subfunctions are set with the scope\n\
-operator @samp{>}.  For example, If @file{file.m} has a subfunction\n\
-@code{func2}, then a breakpoint in @code{func2} can be specified by\n\
-@code{file>func2}.\n\
-\n\
-@var{line} is the line number at which to break.  If @var{line} is not\n\
-specified, it defaults to the first executable line in the file\n\
-@file{func.m}.  Multiple lines can be specified in a single command; when\n\
-function syntax is used, the lines may also be passed as a single vector\n\
-argument (@code{[@var{line1}, @var{line2}, @dots{}]}).\n\
-\n\
-@var{condition} is any Octave expression that can be evaluated in the code\n\
-context that exists at the breakpoint.  When the breakpoint is encountered,\n\
-@var{condition} will be evaluated, and execution will stop if\n\
-@var{condition} is true.  If @var{condition} cannot be evaluated, for\n\
-example because it refers to an undefined variable, an error will be thrown.\n\
- Expressions with side effects (such as @code{y++ > 1}) will alter\n\
-variables, and should generally be avoided.  Conditions containing quotes\n\
-(@samp{\"}, @samp{'}) or comment characters (@samp{#}, @samp{%}) must be\n\
-enclosed in quotes.  (This does not apply to conditions entered from the\n\
-editor's context menu.)  For example:\n\
-\n\
-@example\n\
-dbstop in strread at 209 if 'any (format == \"%f\")'\n\
-@end example\n\
-\n\
-The form specifying @var{event} does not cause a specific breakpoint at a\n\
-given function and line number.  Instead it causes debug mode to be entered\n\
-when certain unexpected events are encountered.  Possible values are\n\
-\n\
-@table @code\n\
-@item error\n\
-Stop when an error is reported.  This is equivalent to specifying\n\
-both @code{debug_on_error (true)} and @code{debug_on_interrupt (true)}.\n\
-\n\
-@item caught error\n\
-Stop when an error is caught by a try-catch block (not yet implemented).\n\
-\n\
-@item interrupt\n\
-Stop when an interrupt (@kbd{Ctrl-C}) occurs.\n\
-\n\
-@item naninf\n\
-Stop when code returns a non-finite value (not yet implemented).\n\
-\n\
-@item warning\n\
-Stop when a warning is reported.  This is equivalent to specifying\n\
-@code{debug_on_warning (true)}.\n\
-@end table\n\
-\n\
-The events @code{error}, @code{caught error}, and @code{warning} can all be\n\
-followed by a string specifying an error ID or warning ID@.  If that is\n\
-done, only errors with the specified ID will cause execution to stop.  To\n\
-stop on one of a set of IDs, multiple @code{dbstop} commands must be\n\
-issued.\n\
-\n\
-Breakpoints and events can be removed using the @code{dbclear} command with\n\
-the same syntax.\n\
-\n\
-It is possible to save all breakpoints and restore them at once by issuing\n\
-the commands @code{bp_state = dbstatus; @dots{}; dbstop (bp_state)}.\n\
-\n\
-The optional output @var{rline} is the real line number where the breakpoint\n\
-was set.  This can differ from the specified line if the line is not\n\
-executable.  For example, if a breakpoint attempted on a blank line then\n\
-Octave will set the real breakpoint at the next executable line.\n\
-\n\
-When a file is re-parsed, such as when it is modified outside the GUI,\n\
-all breakpoints within the file are cleared.\n\
-\n\
-@seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbstop @var{func}
+@deftypefnx {} {} dbstop @var{func} @var{line}
+@deftypefnx {} {} dbstop @var{func} @var{line1} @var{line2} @dots{}
+@deftypefnx {} {} dbstop @var{line1} @dots{}
+@deftypefnx {} {} dbstop in @var{func}
+@deftypefnx {} {} dbstop in @var{func} at @var{line}
+@deftypefnx {} {} dbstop in @var{func} at @var{line} if "@var{condition}"
+@deftypefnx {} {} dbstop if @var{event}
+@deftypefnx {} {} dbstop if @var{event} @var{ID}
+@deftypefnx {} {} dbstop (@var{bp_struct})
+@deftypefnx {} {@var{rline} =} dbstop @dots{}
+
+Set breakpoints for the built-in debugger.
+
+@var{func} is the name of a function on the current @code{path}.  When
+already in debug mode the @var{func} argument can be omitted and the current
+function will be used.  Breakpoints at subfunctions are set with the scope
+operator @samp{>}.  For example, If @file{file.m} has a subfunction
+@code{func2}, then a breakpoint in @code{func2} can be specified by
+@code{file>func2}.
+
+@var{line} is the line number at which to break.  If @var{line} is not
+specified, it defaults to the first executable line in the file
+@file{func.m}.  Multiple lines can be specified in a single command; when
+function syntax is used, the lines may also be passed as a single vector
+argument (@code{[@var{line1}, @var{line2}, @dots{}]}).
+
+@var{condition} is any Octave expression that can be evaluated in the code
+context that exists at the breakpoint.  When the breakpoint is encountered,
+@var{condition} will be evaluated, and execution will stop if
+@var{condition} is true.  If @var{condition} cannot be evaluated, for
+example because it refers to an undefined variable, an error will be thrown.
+ Expressions with side effects (such as @code{y++ > 1}) will alter
+variables, and should generally be avoided.  Conditions containing quotes
+(@samp{"}, @samp{'}) or comment characters (@samp{#}, @samp{%}) must be
+enclosed in quotes.  (This does not apply to conditions entered from the
+editor's context menu.)  For example:
+
+@example
+dbstop in strread at 209 if 'any (format == "%f")'
+@end example
+
+The form specifying @var{event} does not cause a specific breakpoint at a
+given function and line number.  Instead it causes debug mode to be entered
+when certain unexpected events are encountered.  Possible values are
+
+@table @code
+@item error
+Stop when an error is reported.  This is equivalent to specifying
+both @code{debug_on_error (true)} and @code{debug_on_interrupt (true)}.
+
+@item caught error
+Stop when an error is caught by a try-catch block (not yet implemented).
+
+@item interrupt
+Stop when an interrupt (@kbd{Ctrl-C}) occurs.
+
+@item naninf
+Stop when code returns a non-finite value (not yet implemented).
+
+@item warning
+Stop when a warning is reported.  This is equivalent to specifying
+@code{debug_on_warning (true)}.
+@end table
+
+The events @code{error}, @code{caught error}, and @code{warning} can all be
+followed by a string specifying an error ID or warning ID@.  If that is
+done, only errors with the specified ID will cause execution to stop.  To
+stop on one of a set of IDs, multiple @code{dbstop} commands must be
+issued.
+
+Breakpoints and events can be removed using the @code{dbclear} command with
+the same syntax.
+
+It is possible to save all breakpoints and restore them at once by issuing
+the commands @code{bp_state = dbstatus; @dots{}; dbstop (bp_state)}.
+
+The optional output @var{rline} is the real line number where the breakpoint
+was set.  This can differ from the specified line if the line is not
+executable.  For example, if a breakpoint attempted on a blank line then
+Octave will set the real breakpoint at the next executable line.
+
+When a file is re-parsed, such as when it is modified outside the GUI,
+all breakpoints within the file are cleared.
+
+@seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}
+@end deftypefn */)
 {
   bp_table::intmap retmap;
   std::string symbol_name = "";  // stays empty for "dbstop if error" etc
@@ -1165,48 +1165,48 @@ all breakpoints within the file are cleared.\n\
 }
 
 DEFUN (dbclear, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbclear @var{func}\n\
-@deftypefnx {} {} dbclear @var{func} @var{line}\n\
-@deftypefnx {} {} dbclear @var{func} @var{line1} @var{line2} @dots{}\n\
-@deftypefnx {} {} dbclear @var{line} @dots{}\n\
-@deftypefnx {} {} dbclear all\n\
-@deftypefnx {} {} dbclear in @var{func}\n\
-@deftypefnx {} {} dbclear in @var{func} at @var{line}\n\
-@deftypefnx {} {} dbclear if @var{event}\n\
-@deftypefnx {} {} dbclear (\"@var{func}\")\n\
-@deftypefnx {} {} dbclear (\"@var{func}\", @var{line})\n\
-@deftypefnx {} {} dbclear (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
-@deftypefnx {} {} dbclear (\"@var{func}\", @var{line1}, @dots{})\n\
-@deftypefnx {} {} dbclear (@var{line}, @dots{})\n\
-@deftypefnx {} {} dbclear (\"all\")\n\
-Delete a breakpoint at line number @var{line} in the function @var{func}.\n\
-\n\
-Arguments are\n\
-\n\
-@table @var\n\
-@item func\n\
-Function name as a string variable.  When already in debug mode this\n\
-argument can be omitted and the current function will be used.\n\
-\n\
-@item line\n\
-Line number from which to remove a breakpoint.  Multiple lines may be given\n\
-as separate arguments or as a vector.\n\
-\n\
-@item event\n\
-An event such as @code{error}, @code{interrupt}, or @code{warning}\n\
-(@pxref{XREFdbstop,,dbstop} for details).\n\
-@end table\n\
-\n\
-When called without a line number specification all breakpoints in the named\n\
-function are cleared.\n\
-\n\
-If the requested line is not a breakpoint no action is performed.\n\
-\n\
-The special keyword @qcode{\"all\"} will clear all breakpoints from all\n\
-files.\n\
-@seealso{dbstop, dbstatus, dbwhere}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbclear @var{func}
+@deftypefnx {} {} dbclear @var{func} @var{line}
+@deftypefnx {} {} dbclear @var{func} @var{line1} @var{line2} @dots{}
+@deftypefnx {} {} dbclear @var{line} @dots{}
+@deftypefnx {} {} dbclear all
+@deftypefnx {} {} dbclear in @var{func}
+@deftypefnx {} {} dbclear in @var{func} at @var{line}
+@deftypefnx {} {} dbclear if @var{event}
+@deftypefnx {} {} dbclear ("@var{func}")
+@deftypefnx {} {} dbclear ("@var{func}", @var{line})
+@deftypefnx {} {} dbclear ("@var{func}", @var{line1}, @var{line2}, @dots{})
+@deftypefnx {} {} dbclear ("@var{func}", @var{line1}, @dots{})
+@deftypefnx {} {} dbclear (@var{line}, @dots{})
+@deftypefnx {} {} dbclear ("all")
+Delete a breakpoint at line number @var{line} in the function @var{func}.
+
+Arguments are
+
+@table @var
+@item func
+Function name as a string variable.  When already in debug mode this
+argument can be omitted and the current function will be used.
+
+@item line
+Line number from which to remove a breakpoint.  Multiple lines may be given
+as separate arguments or as a vector.
+
+@item event
+An event such as @code{error}, @code{interrupt}, or @code{warning}
+(@pxref{XREFdbstop,,dbstop} for details).
+@end table
+
+When called without a line number specification all breakpoints in the named
+function are cleared.
+
+If the requested line is not a breakpoint no action is performed.
+
+The special keyword @qcode{"all"} will clear all breakpoints from all
+files.
+@seealso{dbstop, dbstatus, dbwhere}
+@end deftypefn */)
 {
   std::string symbol_name = "";  // stays empty for "dbclear if error" etc
   bp_table::intmap lines;
@@ -1336,49 +1336,49 @@ bp_table::stop_on_err_warn_status (bool to_screen)
 }
 
 DEFUN (dbstatus, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbstatus\n\
-@deftypefnx {} {} dbstatus @var{func}\n\
-@deftypefnx {} {@var{bp_list} =} dbstatus @dots{}\n\
-Report the location of active breakpoints.\n\
-\n\
-When called with no input or output arguments, print the list of all\n\
-functions with breakpoints and the line numbers where those breakpoints are\n\
-set.\n\
-\n\
-If a function name @var{func} is specified then only report breakpoints\n\
-for the named function and its subfunctions.\n\
-\n\
-The optional return argument @var{bp_list} is a struct array with the\n\
-following fields.\n\
-\n\
-@table @asis\n\
-@item name\n\
-The name of the function with a breakpoint.  A subfunction, say @code{func2}\n\
-within an m-file, say @file{file.m}, is specified as @code{file>func2}.\n\
-\n\
-@item file\n\
-The name of the m-file where the function code is located.\n\
-\n\
-@item line\n\
-The line number with the breakpoint.\n\
-\n\
-@item cond\n\
-The condition that must be satisfied for the breakpoint to be active, or\n\
-the empty string for unconditional breakpoints.\n\
-@end table\n\
-\n\
-@c Note: When @code{dbstatus} is called from the debug prompt within a function,\n\
-@c the list of breakpoints is automatically trimmed to the breakpoints in the\n\
-@c current function.\n\
-If @code{dbstop if error} is true but no explicit IDs are specified, the\n\
-return value will have an empty field called @qcode{\"errs\"}.  If IDs are\n\
-specified, the @code{errs} field will have one row per ID@.  If\n\
-@code{dbstop if error} is false, there is no @qcode{\"errs\"} field.\n\
-The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
-\n\
-@seealso{dbstop, dbclear, dbwhere, dblist, dbstack}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbstatus
+@deftypefnx {} {} dbstatus @var{func}
+@deftypefnx {} {@var{bp_list} =} dbstatus @dots{}
+Report the location of active breakpoints.
+
+When called with no input or output arguments, print the list of all
+functions with breakpoints and the line numbers where those breakpoints are
+set.
+
+If a function name @var{func} is specified then only report breakpoints
+for the named function and its subfunctions.
+
+The optional return argument @var{bp_list} is a struct array with the
+following fields.
+
+@table @asis
+@item name
+The name of the function with a breakpoint.  A subfunction, say @code{func2}
+within an m-file, say @file{file.m}, is specified as @code{file>func2}.
+
+@item file
+The name of the m-file where the function code is located.
+
+@item line
+The line number with the breakpoint.
+
+@item cond
+The condition that must be satisfied for the breakpoint to be active, or
+the empty string for unconditional breakpoints.
+@end table
+
+@c Note: When @code{dbstatus} is called from the debug prompt within a function,
+@c the list of breakpoints is automatically trimmed to the breakpoints in the
+@c current function.
+If @code{dbstop if error} is true but no explicit IDs are specified, the
+return value will have an empty field called @qcode{"errs"}.  If IDs are
+specified, the @code{errs} field will have one row per ID@.  If
+@code{dbstop if error} is false, there is no @qcode{"errs"} field.
+The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
+
+@seealso{dbstop, dbclear, dbwhere, dblist, dbstack}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1541,12 +1541,12 @@ The @qcode{\"warn\"} field is set similarly by @code{dbstop if warning}.\n\
 */
 
 DEFUN (dbwhere, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} dbwhere\n\
-In debugging mode, report the current file and line number where execution\n\
-is stopped.\n\
-@seealso{dbstack, dblist, dbstatus, dbcont, dbstep, dbup, dbdown}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} dbwhere
+In debugging mode, report the current file and line number where execution
+is stopped.
+@seealso{dbstack, dblist, dbstatus, dbcont, dbstep, dbup, dbdown}
+@end deftypefn */)
 {
   octave_user_code *dbg_fcn = get_user_code ();
 
@@ -1616,28 +1616,28 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 }
 
 DEFUN (dbtype, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbtype\n\
-@deftypefnx {} {} dbtype @var{lineno}\n\
-@deftypefnx {} {} dbtype @var{startl:endl}\n\
-@deftypefnx {} {} dbtype @var{startl:end}\n\
-@deftypefnx {} {} dbtype @var{func}\n\
-@deftypefnx {} {} dbtype @var{func} @var{lineno}\n\
-@deftypefnx {} {} dbtype @var{func} @var{startl:endl}\n\
-@deftypefnx {} {} dbtype @var{func} @var{startl:end}\n\
-Display a script file with line numbers.\n\
-\n\
-When called with no arguments in debugging mode, display the script file\n\
-currently being debugged.\n\
-\n\
-An optional range specification can be used to list only a portion of the\n\
-file.  The special keyword @qcode{\"end\"} is a valid line number\n\
-specification for the last line of the file.\n\
-\n\
-When called with the name of a function, list that script file with line\n\
-numbers.\n\
-@seealso{dblist, dbwhere, dbstatus, dbstop}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbtype
+@deftypefnx {} {} dbtype @var{lineno}
+@deftypefnx {} {} dbtype @var{startl:endl}
+@deftypefnx {} {} dbtype @var{startl:end}
+@deftypefnx {} {} dbtype @var{func}
+@deftypefnx {} {} dbtype @var{func} @var{lineno}
+@deftypefnx {} {} dbtype @var{func} @var{startl:endl}
+@deftypefnx {} {} dbtype @var{func} @var{startl:end}
+Display a script file with line numbers.
+
+When called with no arguments in debugging mode, display the script file
+currently being debugged.
+
+An optional range specification can be used to list only a portion of the
+file.  The special keyword @qcode{"end"} is a valid line number
+specification for the last line of the file.
+
+When called with the name of a function, list that script file with line
+numbers.
+@seealso{dblist, dbwhere, dbstatus, dbstop}
+@end deftypefn */)
 {
   octave_user_code *dbg_fcn;
 
@@ -1763,15 +1763,15 @@ numbers.\n\
 }
 
 DEFUN (dblist, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dblist\n\
-@deftypefnx {} {} dblist @var{n}\n\
-In debugging mode, list @var{n} lines of the function being debugged\n\
-centered around the current line to be executed.\n\
-\n\
-If unspecified @var{n} defaults to 10 (+/- 5 lines)\n\
-@seealso{dbwhere, dbtype, dbstack}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dblist
+@deftypefnx {} {} dblist @var{n}
+In debugging mode, list @var{n} lines of the function being debugged
+centered around the current line to be executed.
+
+If unspecified @var{n} defaults to 10 (+/- 5 lines)
+@seealso{dbwhere, dbtype, dbstack}
+@end deftypefn */)
 {
   int n = 10;
 
@@ -1946,48 +1946,48 @@ show_octave_dbstack (void)
 }
 
 DEFUN (dbstack, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbstack\n\
-@deftypefnx {} {} dbstack @var{n}\n\
-@deftypefnx {} {} dbstack @var{-completenames}\n\
-@deftypefnx {} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
-Display or return current debugging function stack information.\n\
-\n\
-With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
-\n\
-Although accepted, the argument @var{-completenames} is silently ignored.\n\
-Octave always returns absolute filenames.\n\
-\n\
-The arguments @var{n} and @var{-completenames} can be both specified in any\n\
-order.\n\
-\n\
-The optional return argument @var{stack} is a struct array with the\n\
-following fields:\n\
-\n\
-@table @asis\n\
-@item file\n\
-The name of the m-file where the function code is located.\n\
-\n\
-@item name\n\
-The name of the function with a breakpoint.\n\
-\n\
-@item line\n\
-The line number of an active breakpoint.\n\
-\n\
-@item column\n\
-The column number of the line where the breakpoint begins.\n\
-\n\
-@item scope\n\
-Undocumented.\n\
-\n\
-@item context\n\
-Undocumented.\n\
-@end table\n\
-\n\
-The return argument @var{idx} specifies which element of the @var{stack}\n\
-struct array is currently active.\n\
-@seealso{dbup, dbdown, dbwhere, dblist, dbstatus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbstack
+@deftypefnx {} {} dbstack @var{n}
+@deftypefnx {} {} dbstack @var{-completenames}
+@deftypefnx {} {[@var{stack}, @var{idx}] =} dbstack (@dots{})
+Display or return current debugging function stack information.
+
+With optional argument @var{n}, omit the @var{n} innermost stack frames.
+
+Although accepted, the argument @var{-completenames} is silently ignored.
+Octave always returns absolute filenames.
+
+The arguments @var{n} and @var{-completenames} can be both specified in any
+order.
+
+The optional return argument @var{stack} is a struct array with the
+following fields:
+
+@table @asis
+@item file
+The name of the m-file where the function code is located.
+
+@item name
+The name of the function with a breakpoint.
+
+@item line
+The line number of an active breakpoint.
+
+@item column
+The column number of the line where the breakpoint begins.
+
+@item scope
+Undocumented.
+
+@item context
+Undocumented.
+@end table
+
+The return argument @var{idx} specifies which element of the @var{stack}
+struct array is currently active.
+@seealso{dbup, dbdown, dbwhere, dblist, dbstatus}
+@end deftypefn */)
 {
   return do_dbstack (args, nargout, octave_stdout);
 }
@@ -2019,14 +2019,14 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 }
 
 DEFUN (dbup, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbup\n\
-@deftypefnx {} {} dbup @var{n}\n\
-In debugging mode, move up the execution stack @var{n} frames.\n\
-\n\
-If @var{n} is omitted, move up one frame.\n\
-@seealso{dbstack, dbdown}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbup
+@deftypefnx {} {} dbup @var{n}
+In debugging mode, move up the execution stack @var{n} frames.
+
+If @var{n} is omitted, move up one frame.
+@seealso{dbstack, dbdown}
+@end deftypefn */)
 {
   do_dbupdown (args, "dbup");
 
@@ -2034,14 +2034,14 @@ If @var{n} is omitted, move up one frame.\n\
 }
 
 DEFUN (dbdown, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbdown\n\
-@deftypefnx {} {} dbdown @var{n}\n\
-In debugging mode, move down the execution stack @var{n} frames.\n\
-\n\
-If @var{n} is omitted, move down one frame.\n\
-@seealso{dbstack, dbup}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbdown
+@deftypefnx {} {} dbdown @var{n}
+In debugging mode, move down the execution stack @var{n} frames.
+
+If @var{n} is omitted, move down one frame.
+@seealso{dbstack, dbup}
+@end deftypefn */)
 {
   do_dbupdown (args, "dbdown");
 
@@ -2049,27 +2049,27 @@ If @var{n} is omitted, move down one frame.\n\
 }
 
 DEFUN (dbstep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dbstep\n\
-@deftypefnx {} {} dbstep @var{n}\n\
-@deftypefnx {} {} dbstep in\n\
-@deftypefnx {} {} dbstep out\n\
-@deftypefnx {} {} dbnext @dots{}\n\
-In debugging mode, execute the next @var{n} lines of code.\n\
-\n\
-If @var{n} is omitted, execute the next single line of code.  If the next\n\
-line of code is itself defined in terms of an m-file remain in the existing\n\
-function.\n\
-\n\
-Using @code{dbstep in} will cause execution of the next line to step into\n\
-any m-files defined on the next line.\n\
-\n\
-Using @code{dbstep out} will cause execution to continue until the current\n\
-function returns.\n\
-\n\
-@code{dbnext} is an alias for @code{dbstep}.\n\
-@seealso{dbcont, dbquit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dbstep
+@deftypefnx {} {} dbstep @var{n}
+@deftypefnx {} {} dbstep in
+@deftypefnx {} {} dbstep out
+@deftypefnx {} {} dbnext @dots{}
+In debugging mode, execute the next @var{n} lines of code.
+
+If @var{n} is omitted, execute the next single line of code.  If the next
+line of code is itself defined in terms of an m-file remain in the existing
+function.
+
+Using @code{dbstep in} will cause execution of the next line to step into
+any m-files defined on the next line.
+
+Using @code{dbstep out} will cause execution to continue until the current
+function returns.
+
+@code{dbnext} is an alias for @code{dbstep}.
+@seealso{dbcont, dbquit}
+@end deftypefn */)
 {
   if (! Vdebugging)
     error ("dbstep: can only be called in debug mode");
@@ -2120,11 +2120,11 @@ function returns.\n\
 DEFALIAS (dbnext, dbstep);
 
 DEFUN (dbcont, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} dbcont\n\
-Leave command-line debugging mode and continue code execution normally.\n\
-@seealso{dbstep, dbquit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} dbcont
+Leave command-line debugging mode and continue code execution normally.
+@seealso{dbstep, dbquit}
+@end deftypefn */)
 {
   if (! Vdebugging)
     error ("dbcont: can only be called in debug mode");
@@ -2140,12 +2140,12 @@ Leave command-line debugging mode and continue code execution normally.\n\
 }
 
 DEFUN (dbquit, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} dbquit\n\
-Quit debugging mode immediately without further code execution and return to\n\
-the Octave prompt.\n\
-@seealso{dbcont, dbstep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} dbquit
+Quit debugging mode immediately without further code execution and return to
+the Octave prompt.
+@seealso{dbcont, dbstep}
+@end deftypefn */)
 {
   if (! Vdebugging)
     error ("dbquit: can only be called in debug mode");
@@ -2163,11 +2163,11 @@ the Octave prompt.\n\
 }
 
 DEFUN (isdebugmode, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isdebugmode ()\n\
-Return true if in debugging mode, otherwise false.\n\
-@seealso{dbwhere, dbstack, dbstatus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isdebugmode ()
+Return true if in debugging mode, otherwise false.
+@seealso{dbwhere, dbstack, dbstatus}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -2176,13 +2176,13 @@ Return true if in debugging mode, otherwise false.\n\
 }
 
 DEFUN (__db_next_breakpoint_quiet__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __db_next_breakpoint_quiet__ ()\n\
-@deftypefnx {} {} __db_next_breakpoint_quiet__ (@var{flag})\n\
-Disable line info printing at the next breakpoint.\n\
-\n\
-With a logical argument @var{flag}, set the state on or off.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __db_next_breakpoint_quiet__ ()
+@deftypefnx {} {} __db_next_breakpoint_quiet__ (@var{flag})
+Disable line info printing at the next breakpoint.
+
+With a logical argument @var{flag}, set the state on or off.
+@end deftypefn */)
 {
   int nargin = args.length ();
 

@@ -53,89 +53,89 @@ svd_driver (void)
 }
 
 DEFUN (svd, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{s} =} svd (@var{A})\n\
-@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})\n\
-@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, @var{econ})\n\
-@cindex singular value decomposition\n\
-Compute the singular value decomposition of @var{A}\n\
-@tex\n\
-$$\n\
- A = U S V^{\\dagger}\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-A = U*S*V'\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-The function @code{svd} normally returns only the vector of singular values.\n\
-When called with three return values, it computes\n\
-@tex\n\
-$U$, $S$, and $V$.\n\
-@end tex\n\
-@ifnottex\n\
-@var{U}, @var{S}, and @var{V}.\n\
-@end ifnottex\n\
-For example,\n\
-\n\
-@example\n\
-svd (hilb (3))\n\
-@end example\n\
-\n\
-@noindent\n\
-returns\n\
-\n\
-@example\n\
-@group\n\
-ans =\n\
-\n\
-  1.4083189\n\
-  0.1223271\n\
-  0.0026873\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-and\n\
-\n\
-@example\n\
-[u, s, v] = svd (hilb (3))\n\
-@end example\n\
-\n\
-@noindent\n\
-returns\n\
-\n\
-@example\n\
-@group\n\
-u =\n\
-\n\
-  -0.82704   0.54745   0.12766\n\
-  -0.45986  -0.52829  -0.71375\n\
-  -0.32330  -0.64901   0.68867\n\
-\n\
-s =\n\
-\n\
-  1.40832  0.00000  0.00000\n\
-  0.00000  0.12233  0.00000\n\
-  0.00000  0.00000  0.00269\n\
-\n\
-v =\n\
-\n\
-  -0.82704   0.54745   0.12766\n\
-  -0.45986  -0.52829  -0.71375\n\
-  -0.32330  -0.64901   0.68867\n\
-@end group\n\
-@end example\n\
-\n\
-If given a second argument, @code{svd} returns an economy-sized\n\
-decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
-@var{V}.\n\
-@seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} svd (@var{A})
+@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})
+@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, @var{econ})
+@cindex singular value decomposition
+Compute the singular value decomposition of @var{A}
+@tex
+$$
+ A = U S V^{\dagger}
+$$
+@end tex
+@ifnottex
+
+@example
+A = U*S*V'
+@end example
+
+@end ifnottex
+
+The function @code{svd} normally returns only the vector of singular values.
+When called with three return values, it computes
+@tex
+$U$, $S$, and $V$.
+@end tex
+@ifnottex
+@var{U}, @var{S}, and @var{V}.
+@end ifnottex
+For example,
+
+@example
+svd (hilb (3))
+@end example
+
+@noindent
+returns
+
+@example
+@group
+ans =
+
+  1.4083189
+  0.1223271
+  0.0026873
+@end group
+@end example
+
+@noindent
+and
+
+@example
+[u, s, v] = svd (hilb (3))
+@end example
+
+@noindent
+returns
+
+@example
+@group
+u =
+
+  -0.82704   0.54745   0.12766
+  -0.45986  -0.52829  -0.71375
+  -0.32330  -0.64901   0.68867
+
+s =
+
+  1.40832  0.00000  0.00000
+  0.00000  0.12233  0.00000
+  0.00000  0.00000  0.00269
+
+v =
+
+  -0.82704   0.54745   0.12766
+  -0.45986  -0.52829  -0.71375
+  -0.32330  -0.64901   0.68867
+@end group
+@end example
+
+If given a second argument, @code{svd} returns an economy-sized
+decomposition, eliminating the unnecessary rows or columns of @var{U} or
+@var{V}.
+@seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -322,20 +322,20 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 */
 
 DEFUN (svd_driver, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} svd_driver ()\n\
-@deftypefnx {} {@var{old_val} =} svd_driver (@var{new_val})\n\
-@deftypefnx {} {} svd_driver (@var{new_val}, \"local\")\n\
-Query or set the underlying @sc{lapack} driver used by @code{svd}.\n\
-\n\
-Currently recognized values are @qcode{\"gesvd\"} and @qcode{\"gesdd\"}.\n\
-The default is @qcode{\"gesvd\"}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{svd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} svd_driver ()
+@deftypefnx {} {@var{old_val} =} svd_driver (@var{new_val})
+@deftypefnx {} {} svd_driver (@var{new_val}, "local")
+Query or set the underlying @sc{lapack} driver used by @code{svd}.
+
+Currently recognized values are @qcode{"gesvd"} and @qcode{"gesdd"}.
+The default is @qcode{"gesvd"}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{svd}
+@end deftypefn */)
 {
   static const char *driver_names[] = { "gesvd", "gesdd", 0 };
 

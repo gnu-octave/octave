@@ -79,11 +79,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint8_scalar,
                                      "uint8 scalar", "uint8");
 
 DEFUN (uint8, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} uint8 (@var{x})\n\
-Convert @var{x} to unsigned 8-bit integer type.\n\
-@seealso{int8, int16, uint16, int32, uint32, int64, uint64}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uint8 (@var{x})
+Convert @var{x} to unsigned 8-bit integer type.
+@seealso{int8, int16, uint16, int32, uint32, int64, uint64}
+@end deftypefn */)
 {
   OCTAVE_TYPE_CONV_BODY (uint8);
 }

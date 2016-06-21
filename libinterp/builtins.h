@@ -25,9 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#if ! defined (MAKE_BUILTINS)
-#  include "builtin-defun-decls.h"
-#endif
+#include "builtin-defun-decls.h"
 
 extern OCTINTERP_API void install_builtins (void);
 

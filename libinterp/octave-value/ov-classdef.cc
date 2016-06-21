@@ -3712,7 +3712,11 @@ cdef_manager::do_find_package_symbol (const std::string& pack_name)
 
 //----------------------------------------------------------------------------
 
-DEFUN (__meta_get_package__, args, , "")
+DEFUN (__meta_get_package__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __meta_get_package__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3723,19 +3727,19 @@ DEFUN (__meta_get_package__, args, , "")
 }
 
 DEFUN (__superclass_reference__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __superclass_reference__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __superclass_reference__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   return ovl (new octave_classdef_superclass_ref (args));
 }
 
 DEFUN (__meta_class_query__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __meta_class_query__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __meta_class_query__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
 #if DEBUG_TRACE
   std::cerr << "__meta_class_query__ ("
@@ -3752,10 +3756,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (metaclass, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} metaclass (obj)\n\
-Returns the meta.class object corresponding to the class of @var{obj}.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} metaclass (obj)
+Returns the meta.class object corresponding to the class of @var{obj}.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

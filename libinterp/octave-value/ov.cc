@@ -2713,11 +2713,11 @@ install_types (void)
 }
 
 DEFUN (sizeof, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} sizeof (@var{val})\n\
-Return the size of @var{val} in bytes.\n\
-@seealso{whos}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sizeof (@var{val})
+Return the size of @var{val} in bytes.
+@seealso{whos}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2791,40 +2791,40 @@ decode_subscripts (const char* name, const octave_value& arg,
 }
 
 DEFUN (subsref, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} subsref (@var{val}, @var{idx})\n\
-Perform the subscripted element selection operation on @var{val} according\n\
-to the subscript specified by @var{idx}.\n\
-\n\
-The subscript @var{idx} must be a structure array with fields @samp{type}\n\
-and @samp{subs}.  Valid values for @samp{type} are @qcode{\"()\"},\n\
-@qcode{\"@{@}\"}, and @qcode{\".\"}.  The @samp{subs} field may be either\n\
-@qcode{\":\"} or a cell array of index values.\n\
-\n\
-The following example shows how to extract the first two columns of a matrix\n\
-\n\
-@example\n\
-@group\n\
-val = magic (3)\n\
-    @result{} val = [ 8   1   6\n\
-               3   5   7\n\
-               4   9   2 ]\n\
-idx.type = \"()\";\n\
-idx.subs = @{\":\", 1:2@};\n\
-subsref (val, idx)\n\
-     @result{} [ 8   1\n\
-          3   5\n\
-          4   9 ]\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Note that this is the same as writing @code{val(:, 1:2)}.\n\
-\n\
-If @var{idx} is an empty structure array with fields @samp{type} and\n\
-@samp{subs}, return @var{val}.\n\
-@seealso{subsasgn, substruct}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} subsref (@var{val}, @var{idx})
+Perform the subscripted element selection operation on @var{val} according
+to the subscript specified by @var{idx}.
+
+The subscript @var{idx} must be a structure array with fields @samp{type}
+and @samp{subs}.  Valid values for @samp{type} are @qcode{"()"},
+@qcode{"@{@}"}, and @qcode{"."}.  The @samp{subs} field may be either
+@qcode{":"} or a cell array of index values.
+
+The following example shows how to extract the first two columns of a matrix
+
+@example
+@group
+val = magic (3)
+    @result{} val = [ 8   1   6
+               3   5   7
+               4   9   2 ]
+idx.type = "()";
+idx.subs = @{":", 1:2@};
+subsref (val, idx)
+     @result{} [ 8   1
+          3   5
+          4   9 ]
+@end group
+@end example
+
+@noindent
+Note that this is the same as writing @code{val(:, 1:2)}.
+
+If @var{idx} is an empty structure array with fields @samp{type} and
+@samp{subs}, return @var{val}.
+@seealso{subsasgn, substruct}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -2843,37 +2843,37 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 }
 
 DEFUN (subsasgn, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} subsasgn (@var{val}, @var{idx}, @var{rhs})\n\
-Perform the subscripted assignment operation according to the subscript\n\
-specified by @var{idx}.\n\
-\n\
-The subscript @var{idx} must be a structure array with fields @samp{type}\n\
-and @samp{subs}.  Valid values for @samp{type} are @qcode{\"()\"},\n\
-@qcode{\"@{@}\"}, and @qcode{\".\"}.  The @samp{subs} field may be either\n\
-@qcode{\":\"} or a cell array of index values.\n\
-\n\
-The following example shows how to set the two first columns of a 3-by-3\n\
-matrix to zero.\n\
-\n\
-@example\n\
-@group\n\
-val = magic (3);\n\
-idx.type = \"()\";\n\
-idx.subs = @{\":\", 1:2@};\n\
-subsasgn (val, idx, 0)\n\
-     @result{}  [ 0   0   6\n\
-           0   0   7\n\
-           0   0   2 ]\n\
-@end group\n\
-@end example\n\
-\n\
-Note that this is the same as writing @code{val(:, 1:2) = 0}.\n\
-\n\
-If @var{idx} is an empty structure array with fields @samp{type} and\n\
-@samp{subs}, return @var{rhs}.\n\
-@seealso{subsref, substruct, optimize_subsasgn_calls}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} subsasgn (@var{val}, @var{idx}, @var{rhs})
+Perform the subscripted assignment operation according to the subscript
+specified by @var{idx}.
+
+The subscript @var{idx} must be a structure array with fields @samp{type}
+and @samp{subs}.  Valid values for @samp{type} are @qcode{"()"},
+@qcode{"@{@}"}, and @qcode{"."}.  The @samp{subs} field may be either
+@qcode{":"} or a cell array of index values.
+
+The following example shows how to set the two first columns of a 3-by-3
+matrix to zero.
+
+@example
+@group
+val = magic (3);
+idx.type = "()";
+idx.subs = @{":", 1:2@};
+subsasgn (val, idx, 0)
+     @result{}  [ 0   0   6
+           0   0   7
+           0   0   2 ]
+@end group
+@end example
+
+Note that this is the same as writing @code{val(:, 1:2) = 0}.
+
+If @var{idx} is an empty structure array with fields @samp{type} and
+@samp{subs}, return @var{rhs}.
+@seealso{subsref, substruct, optimize_subsasgn_calls}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();
@@ -2966,11 +2966,11 @@ If @var{idx} is an empty structure array with fields @samp{type} and\n\
 */
 
 DEFUN (is_sq_string, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} is_sq_string (@var{x})\n\
-Return true if @var{x} is a single-quoted character string.\n\
-@seealso{is_dq_string, ischar}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} is_sq_string (@var{x})
+Return true if @var{x} is a single-quoted character string.
+@seealso{is_dq_string, ischar}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2989,11 +2989,11 @@ Return true if @var{x} is a single-quoted character string.\n\
 */
 
 DEFUN (is_dq_string, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} is_dq_string (@var{x})\n\
-Return true if @var{x} is a double-quoted character string.\n\
-@seealso{is_sq_string, ischar}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} is_dq_string (@var{x})
+Return true if @var{x} is a double-quoted character string.
+@seealso{is_sq_string, ischar}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3012,21 +3012,21 @@ Return true if @var{x} is a double-quoted character string.\n\
 */
 
 DEFUN (disable_permutation_matrix, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} disable_permutation_matrix ()\n\
-@deftypefnx {} {@var{old_val} =} disable_permutation_matrix (@var{new_val})\n\
-@deftypefnx {} {} disable_permutation_matrix (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether permutation\n\
-matrices are stored in a special space-efficient format.\n\
-\n\
-The default value is true.  If this option is disabled Octave will store\n\
-permutation matrices as full matrices.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{disable_range, disable_diagonal_matrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} disable_permutation_matrix ()
+@deftypefnx {} {@var{old_val} =} disable_permutation_matrix (@var{new_val})
+@deftypefnx {} {} disable_permutation_matrix (@var{new_val}, "local")
+Query or set the internal variable that controls whether permutation
+matrices are stored in a special space-efficient format.
+
+The default value is true.  If this option is disabled Octave will store
+permutation matrices as full matrices.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{disable_range, disable_diagonal_matrix}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (disable_permutation_matrix);
 }
@@ -3042,21 +3042,21 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (disable_diagonal_matrix, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} disable_diagonal_matrix ()\n\
-@deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})\n\
-@deftypefnx {} {} disable_diagonal_matrix (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether diagonal\n\
-matrices are stored in a special space-efficient format.\n\
-\n\
-The default value is true.  If this option is disabled Octave will store\n\
-diagonal matrices as full matrices.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{disable_range, disable_permutation_matrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} disable_diagonal_matrix ()
+@deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})
+@deftypefnx {} {} disable_diagonal_matrix (@var{new_val}, "local")
+Query or set the internal variable that controls whether diagonal
+matrices are stored in a special space-efficient format.
+
+The default value is true.  If this option is disabled Octave will store
+diagonal matrices as full matrices.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{disable_range, disable_permutation_matrix}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (disable_diagonal_matrix);
 }
@@ -3086,21 +3086,21 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (disable_range, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} disable_range ()\n\
-@deftypefnx {} {@var{old_val} =} disable_range (@var{new_val})\n\
-@deftypefnx {} {} disable_range (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether ranges are stored\n\
-in a special space-efficient format.\n\
-\n\
-The default value is true.  If this option is disabled Octave will store\n\
-ranges as full matrices.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{disable_diagonal_matrix, disable_permutation_matrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} disable_range ()
+@deftypefnx {} {@var{old_val} =} disable_range (@var{new_val})
+@deftypefnx {} {} disable_range (@var{new_val}, "local")
+Query or set the internal variable that controls whether ranges are stored
+in a special space-efficient format.
+
+The default value is true.  If this option is disabled Octave will store
+ranges as full matrices.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{disable_diagonal_matrix, disable_permutation_matrix}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (disable_range);
 }

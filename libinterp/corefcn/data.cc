@@ -76,27 +76,27 @@ index_error (const char *fmt, const std::string& idx, const std::string& msg)
 }
 
 DEFUN (all, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} all (@var{x})\n\
-@deftypefnx {} {} all (@var{x}, @var{dim})\n\
-For a vector argument, return true (logical 1) if all elements of the vector\n\
-are nonzero.\n\
-\n\
-For a matrix argument, return a row vector of logical ones and\n\
-zeros with each element indicating whether all of the elements of the\n\
-corresponding column of the matrix are nonzero.  For example:\n\
-\n\
-@example\n\
-@group\n\
-all ([2, 3; 1, 0])\n\
-    @result{} [ 1, 0 ]\n\
-@end group\n\
-@end example\n\
-\n\
-If the optional argument @var{dim} is supplied, work along dimension\n\
-@var{dim}.\n\
-@seealso{any}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} all (@var{x})
+@deftypefnx {} {} all (@var{x}, @var{dim})
+For a vector argument, return true (logical 1) if all elements of the vector
+are nonzero.
+
+For a matrix argument, return a row vector of logical ones and
+zeros with each element indicating whether all of the elements of the
+corresponding column of the matrix are nonzero.  For example:
+
+@example
+@group
+all ([2, 3; 1, 0])
+    @result{} [ 1, 0 ]
+@end group
+@end example
+
+If the optional argument @var{dim} is supplied, work along dimension
+@var{dim}.
+@seealso{any}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -134,34 +134,34 @@ If the optional argument @var{dim} is supplied, work along dimension\n\
 */
 
 DEFUN (any, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} any (@var{x})\n\
-@deftypefnx {} {} any (@var{x}, @var{dim})\n\
-For a vector argument, return true (logical 1) if any element of the vector\n\
-is nonzero.\n\
-\n\
-For a matrix argument, return a row vector of logical ones and\n\
-zeros with each element indicating whether any of the elements of the\n\
-corresponding column of the matrix are nonzero.  For example:\n\
-\n\
-@example\n\
-@group\n\
-any (eye (2, 4))\n\
- @result{} [ 1, 1, 0, 0 ]\n\
-@end group\n\
-@end example\n\
-\n\
-If the optional argument @var{dim} is supplied, work along dimension\n\
-@var{dim}.  For example:\n\
-\n\
-@example\n\
-@group\n\
-any (eye (2, 4), 2)\n\
- @result{} [ 1; 1 ]\n\
-@end group\n\
-@end example\n\
-@seealso{all}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} any (@var{x})
+@deftypefnx {} {} any (@var{x}, @var{dim})
+For a vector argument, return true (logical 1) if any element of the vector
+is nonzero.
+
+For a matrix argument, return a row vector of logical ones and
+zeros with each element indicating whether any of the elements of the
+corresponding column of the matrix are nonzero.  For example:
+
+@example
+@group
+any (eye (2, 4))
+ @result{} [ 1, 1, 0, 0 ]
+@end group
+@end example
+
+If the optional argument @var{dim} is supplied, work along dimension
+@var{dim}.  For example:
+
+@example
+@group
+any (eye (2, 4), 2)
+ @result{} [ 1; 1 ]
+@end group
+@end example
+@seealso{all}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -201,18 +201,18 @@ any (eye (2, 4), 2)\n\
 // These mapping functions may also be useful in other places, eh?
 
 DEFUN (atan2, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} atan2 (@var{y}, @var{x})\n\
-Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
-and @var{x}.\n\
-\n\
-@var{y} and @var{x} must match in size and orientation.  The signs of\n\
-elements of @var{y} and @var{x} are used to determine the quadrats of each\n\
-resulting value.\n\
-\n\
-This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.\n\
-@seealso{tan, tand, tanh, atanh}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} atan2 (@var{y}, @var{x})
+Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}
+and @var{x}.
+
+@var{y} and @var{x} must match in size and orientation.  The signs of
+elements of @var{y} and @var{x} are used to determine the quadrats of each
+resulting value.
+
+This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
+@seealso{tan, tand, tanh, atanh}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -372,26 +372,26 @@ do_hypot (const octave_value& x, const octave_value& y)
 }
 
 DEFUN (hypot, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} hypot (@var{x}, @var{y})\n\
-@deftypefnx {} {} hypot (@var{x}, @var{y}, @var{z}, @dots{})\n\
-Compute the element-by-element square root of the sum of the squares of\n\
-@var{x} and @var{y}.\n\
-\n\
-This is equivalent to\n\
-@code{sqrt (@var{x}.^2 + @var{y}.^2)}, but is calculated in a manner that\n\
-avoids overflows for large values of @var{x} or @var{y}.\n\
-\n\
-@code{hypot} can also be called with more than 2 arguments; in this case,\n\
-the arguments are accumulated from left to right:\n\
-\n\
-@example\n\
-@group\n\
-hypot (hypot (@var{x}, @var{y}), @var{z})\n\
-hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} hypot (@var{x}, @var{y})
+@deftypefnx {} {} hypot (@var{x}, @var{y}, @var{z}, @dots{})
+Compute the element-by-element square root of the sum of the squares of
+@var{x} and @var{y}.
+
+This is equivalent to
+@code{sqrt (@var{x}.^2 + @var{y}.^2)}, but is calculated in a manner that
+avoids overflows for large values of @var{x} or @var{y}.
+
+@code{hypot} can also be called with more than 2 arguments; in this case,
+the arguments are accumulated from left to right:
+
+@example
+@group
+hypot (hypot (@var{x}, @var{y}), @var{z})
+hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.
+@end group
+@end example
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -467,28 +467,28 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 }
 
 DEFUN (log2, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} log2 (@var{x})\n\
-@deftypefnx {} {[@var{f}, @var{e}] =} log2 (@var{x})\n\
-Compute the base-2 logarithm of each element of @var{x}.\n\
-\n\
-If called with two output arguments, split @var{x} into\n\
-binary mantissa and exponent so that\n\
-@tex\n\
-${1 \\over 2} \\le \\left| f \\right| < 1$\n\
-@end tex\n\
-@ifnottex\n\
-@w{@code{1/2 <= abs(f) < 1}}\n\
-@end ifnottex\n\
-and @var{e} is an integer.  If\n\
-@tex\n\
-$x = 0$, $f = e = 0$.\n\
-@end tex\n\
-@ifnottex\n\
-@w{@code{x = 0}}, @w{@code{f = e = 0}}.\n\
-@end ifnottex\n\
-@seealso{pow2, log, log10, exp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} log2 (@var{x})
+@deftypefnx {} {[@var{f}, @var{e}] =} log2 (@var{x})
+Compute the base-2 logarithm of each element of @var{x}.
+
+If called with two output arguments, split @var{x} into
+binary mantissa and exponent so that
+@tex
+${1 \over 2} \le \left| f \right| < 1$
+@end tex
+@ifnottex
+@w{@code{1/2 <= abs(f) < 1}}
+@end ifnottex
+and @var{e} is an integer.  If
+@tex
+$x = 0$, $f = e = 0$.
+@end tex
+@ifnottex
+@w{@code{x = 0}}, @w{@code{f = e = 0}}.
+@end ifnottex
+@seealso{pow2, log, log10, exp}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -564,39 +564,39 @@ $x = 0$, $f = e = 0$.\n\
 */
 
 DEFUN (rem, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} rem (@var{x}, @var{y})\n\
-Return the remainder of the division @code{@var{x} / @var{y}}.\n\
-\n\
-The remainder is computed using the expression\n\
-\n\
-@example\n\
-x - y .* fix (x ./ y)\n\
-@end example\n\
-\n\
-An error message is printed if the dimensions of the arguments do not agree,\n\
-or if either argument is complex.\n\
-\n\
-Programming Notes: Floating point numbers within a few eps of an integer\n\
-will be rounded to an integer before computation for compatibility with\n\
-@sc{matlab}.\n\
-\n\
-By convention,\n\
-\n\
-@example\n\
-@group\n\
-rem (@var{x}, 0) = NaN  if @var{x} is a floating point variable\n\
-rem (@var{x}, 0) = 0    if @var{x} is an integer variable\n\
-rem (@var{x}, @var{y})        returns a value with the signbit from @var{x}\n\
-@end group\n\
-@end example\n\
-\n\
-For the opposite conventions see the @code{mod} function.  In general,\n\
-@code{rem} is best when computing the remainder after division of two\n\
-@emph{positive} numbers.  For negative numbers, or when the values are\n\
-periodic, @code{mod} is a better choice.\n\
-@seealso{mod}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rem (@var{x}, @var{y})
+Return the remainder of the division @code{@var{x} / @var{y}}.
+
+The remainder is computed using the expression
+
+@example
+x - y .* fix (x ./ y)
+@end example
+
+An error message is printed if the dimensions of the arguments do not agree,
+or if either argument is complex.
+
+Programming Notes: Floating point numbers within a few eps of an integer
+will be rounded to an integer before computation for compatibility with
+@sc{matlab}.
+
+By convention,
+
+@example
+@group
+rem (@var{x}, 0) = NaN  if @var{x} is a floating point variable
+rem (@var{x}, 0) = 0    if @var{x} is an integer variable
+rem (@var{x}, @var{y})        returns a value with the signbit from @var{x}
+@end group
+@end example
+
+For the opposite conventions see the @code{mod} function.  In general,
+@code{rem} is best when computing the remainder after division of two
+@emph{positive} numbers.  For negative numbers, or when the values are
+periodic, @code{mod} is a better choice.
+@seealso{mod}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -742,42 +742,42 @@ periodic, @code{mod} is a better choice.\n\
 */
 
 DEFUN (mod, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} mod (@var{x}, @var{y})\n\
-Compute the modulo of @var{x} and @var{y}.\n\
-\n\
-Conceptually this is given by\n\
-\n\
-@example\n\
-x - y .* floor (x ./ y)\n\
-@end example\n\
-\n\
-@noindent\n\
-and is written such that the correct modulus is returned for integer types.\n\
-This function handles negative values correctly.  That is,\n\
-@w{@code{mod (-1, 3)}} is 2, not -1, as @w{@code{rem (-1, 3)}} returns.\n\
-\n\
-An error results if the dimensions of the arguments do not agree, or if\n\
-either of the arguments is complex.\n\
-\n\
-Programming Notes: Floating point numbers within a few eps of an integer\n\
-will be rounded to an integer before computation for compatibility with\n\
-@sc{matlab}.\n\
-\n\
-By convention,\n\
-\n\
-@example\n\
-@group\n\
-mod (@var{x}, 0) = @var{x}\n\
-mod (@var{x}, @var{y})      returns a value with the signbit from @var{y}\n\
-@end group\n\
-@end example\n\
-\n\
-For the opposite conventions see the @code{rem} function.  In general,\n\
-@code{mod} is a better choice than @code{rem} when any of the inputs are\n\
-negative numbers or when the values are periodic.\n\
-@seealso{rem}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} mod (@var{x}, @var{y})
+Compute the modulo of @var{x} and @var{y}.
+
+Conceptually this is given by
+
+@example
+x - y .* floor (x ./ y)
+@end example
+
+@noindent
+and is written such that the correct modulus is returned for integer types.
+This function handles negative values correctly.  That is,
+@w{@code{mod (-1, 3)}} is 2, not -1, as @w{@code{rem (-1, 3)}} returns.
+
+An error results if the dimensions of the arguments do not agree, or if
+either of the arguments is complex.
+
+Programming Notes: Floating point numbers within a few eps of an integer
+will be rounded to an integer before computation for compatibility with
+@sc{matlab}.
+
+By convention,
+
+@example
+@group
+mod (@var{x}, 0) = @var{x}
+mod (@var{x}, @var{y})      returns a value with the signbit from @var{y}
+@end group
+@end example
+
+For the opposite conventions see the @code{rem} function.  In general,
+@code{mod} is a better choice than @code{rem} when any of the inputs are
+negative numbers or when the values are periodic.
+@seealso{rem}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -1134,24 +1134,24 @@ negative numbers or when the values are periodic.\n\
   return retval
 
 DEFUN (cumprod, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cumprod (@var{x})\n\
-@deftypefnx {} {} cumprod (@var{x}, @var{dim})\n\
-Cumulative product of elements along dimension @var{dim}.\n\
-\n\
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-cumprod ([1, 2; 3, 4; 5, 6])\n\
-   @result{}  1   2\n\
-       3   8\n\
-      15  48\n\
-@end group\n\
-@end example\n\
-@seealso{prod, cumsum}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cumprod (@var{x})
+@deftypefnx {} {} cumprod (@var{x}, @var{dim})
+Cumulative product of elements along dimension @var{dim}.
+
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+For example:
+
+@example
+@group
+cumprod ([1, 2; 3, 4; 5, 6])
+   @result{}  1   2
+       3   8
+      15  48
+@end group
+@end example
+@seealso{prod, cumsum}
+@end deftypefn */)
 {
   DATA_REDUCTION (cumprod);
 }
@@ -1177,30 +1177,30 @@ cumprod ([1, 2; 3, 4; 5, 6])\n\
 */
 
 DEFUN (cumsum, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} cumsum (@var{x})\n\
-@deftypefnx {} {} cumsum (@var{x}, @var{dim})\n\
-@deftypefnx {} {} cumsum (@dots{}, \"native\")\n\
-@deftypefnx {} {} cumsum (@dots{}, \"double\")\n\
-@deftypefnx {} {} cumsum (@dots{}, \"extra\")\n\
-Cumulative sum of elements along dimension @var{dim}.\n\
-\n\
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-cumsum ([1, 2; 3, 4; 5, 6])\n\
-   @result{}  1   2\n\
-       4   6\n\
-       9  12\n\
-@end group\n\
-@end example\n\
-\n\
-See @code{sum} for an explanation of the optional parameters\n\
-@qcode{\"native\"}, @qcode{\"double\"}, and @qcode{\"extra\"}.\n\
-@seealso{sum, cumprod}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cumsum (@var{x})
+@deftypefnx {} {} cumsum (@var{x}, @var{dim})
+@deftypefnx {} {} cumsum (@dots{}, "native")
+@deftypefnx {} {} cumsum (@dots{}, "double")
+@deftypefnx {} {} cumsum (@dots{}, "extra")
+Cumulative sum of elements along dimension @var{dim}.
+
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+For example:
+
+@example
+@group
+cumsum ([1, 2; 3, 4; 5, 6])
+   @result{}  1   2
+       4   6
+       9  12
+@end group
+@end example
+
+See @code{sum} for an explanation of the optional parameters
+@qcode{"native"}, @qcode{"double"}, and @qcode{"extra"}.
+@seealso{sum, cumprod}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1328,37 +1328,37 @@ See @code{sum} for an explanation of the optional parameters\n\
 */
 
 DEFUN (diag, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{M} =} diag (@var{v})\n\
-@deftypefnx {} {@var{M} =} diag (@var{v}, @var{k})\n\
-@deftypefnx {} {@var{M} =} diag (@var{v}, @var{m}, @var{n})\n\
-@deftypefnx {} {@var{v} =} diag (@var{M})\n\
-@deftypefnx {} {@var{v} =} diag (@var{M}, @var{k})\n\
-Return a diagonal matrix with vector @var{v} on diagonal @var{k}.\n\
-\n\
-The second argument is optional.  If it is positive, the vector is placed on\n\
-the @var{k}-th superdiagonal.  If it is negative, it is placed on the\n\
-@var{-k}-th subdiagonal.  The default value of @var{k} is 0, and the vector\n\
-is placed on the main diagonal.  For example:\n\
-\n\
-@example\n\
-@group\n\
-diag ([1, 2, 3], 1)\n\
-   @result{}  0  1  0  0\n\
-       0  0  2  0\n\
-       0  0  0  3\n\
-       0  0  0  0\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-The 3-input form returns a diagonal matrix with vector @var{v} on the main\n\
-diagonal and the resulting matrix being of size @var{m} rows x @var{n}\n\
-columns.\n\
-\n\
-Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
-@var{k}-th diagonal of the matrix.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{M} =} diag (@var{v})
+@deftypefnx {} {@var{M} =} diag (@var{v}, @var{k})
+@deftypefnx {} {@var{M} =} diag (@var{v}, @var{m}, @var{n})
+@deftypefnx {} {@var{v} =} diag (@var{M})
+@deftypefnx {} {@var{v} =} diag (@var{M}, @var{k})
+Return a diagonal matrix with vector @var{v} on diagonal @var{k}.
+
+The second argument is optional.  If it is positive, the vector is placed on
+the @var{k}-th superdiagonal.  If it is negative, it is placed on the
+@var{-k}-th subdiagonal.  The default value of @var{k} is 0, and the vector
+is placed on the main diagonal.  For example:
+
+@example
+@group
+diag ([1, 2, 3], 1)
+   @result{}  0  1  0  0
+       0  0  2  0
+       0  0  0  3
+       0  0  0  0
+@end group
+@end example
+
+@noindent
+The 3-input form returns a diagonal matrix with vector @var{v} on the main
+diagonal and the resulting matrix being of size @var{m} rows x @var{n}
+columns.
+
+Given a matrix argument, instead of a vector, @code{diag} extracts the
+@var{k}-th diagonal of the matrix.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1458,35 +1458,35 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 */
 
 DEFUN (prod, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} prod (@var{x})\n\
-@deftypefnx {} {} prod (@var{x}, @var{dim})\n\
-@deftypefnx {} {} prod (@dots{}, \"native\")\n\
-@deftypefnx {} {} prod (@dots{}, \"double\")\n\
-Product of elements along dimension @var{dim}.\n\
-\n\
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
-\n\
-The optional @qcode{\"type\"} input determines the class of the variable\n\
-used for calculations.  If the argument @qcode{\"native\"} is given, then\n\
-the operation is performed in the same type as the original argument, rather\n\
-than the default double type.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-prod ([true, true])\n\
-   @result{} 1\n\
-prod ([true, true], \"native\")\n\
-   @result{} true\n\
-@end group\n\
-@end example\n\
-\n\
-On the contrary, if @qcode{\"double\"} is given, the operation is performed\n\
-in double precision even for single precision inputs.\n\
-@seealso{cumprod, sum}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} prod (@var{x})
+@deftypefnx {} {} prod (@var{x}, @var{dim})
+@deftypefnx {} {} prod (@dots{}, "native")
+@deftypefnx {} {} prod (@dots{}, "double")
+Product of elements along dimension @var{dim}.
+
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+
+The optional @qcode{"type"} input determines the class of the variable
+used for calculations.  If the argument @qcode{"native"} is given, then
+the operation is performed in the same type as the original argument, rather
+than the default double type.
+
+For example:
+
+@example
+@group
+prod ([true, true])
+   @result{} 1
+prod ([true, true], "native")
+   @result{} true
+@end group
+@end example
+
+On the contrary, if @qcode{"double"} is given, the operation is performed
+in double precision even for single precision inputs.
+@seealso{cumprod, sum}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2118,19 +2118,19 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
 }
 
 DEFUN (horzcat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} horzcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the horizontal concatenation of N-D array objects, @var{array1},\n\
-@var{array2}, @dots{}, @var{arrayN} along dimension 2.\n\
-\n\
-Arrays may also be concatenated horizontally using the syntax for creating\n\
-new matrices.  For example:\n\
-\n\
-@example\n\
-@var{hcat} = [ @var{array1}, @var{array2}, @dots{} ]\n\
-@end example\n\
-@seealso{cat, vertcat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} horzcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})
+Return the horizontal concatenation of N-D array objects, @var{array1},
+@var{array2}, @dots{}, @var{arrayN} along dimension 2.
+
+Arrays may also be concatenated horizontally using the syntax for creating
+new matrices.  For example:
+
+@example
+@var{hcat} = [ @var{array1}, @var{array2}, @dots{} ]
+@end example
+@seealso{cat, vertcat}
+@end deftypefn */)
 {
   return do_cat (args, -2, "horzcat");
 }
@@ -2354,19 +2354,19 @@ new matrices.  For example:\n\
 */
 
 DEFUN (vertcat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the vertical concatenation of N-D array objects, @var{array1},\n\
-@var{array2}, @dots{}, @var{arrayN} along dimension 1.\n\
-\n\
-Arrays may also be concatenated vertically using the syntax for creating\n\
-new matrices.  For example:\n\
-\n\
-@example\n\
-@var{vcat} = [ @var{array1}; @var{array2}; @dots{} ]\n\
-@end example\n\
-@seealso{cat, horzcat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})
+Return the vertical concatenation of N-D array objects, @var{array1},
+@var{array2}, @dots{}, @var{arrayN} along dimension 1.
+
+Arrays may also be concatenated vertically using the syntax for creating
+new matrices.  For example:
+
+@example
+@var{vcat} = [ @var{array1}; @var{array2}; @dots{} ]
+@end example
+@seealso{cat, horzcat}
+@end deftypefn */)
 {
   return do_cat (args, -1, "vertcat");
 }
@@ -2378,50 +2378,50 @@ new matrices.  For example:\n\
 */
 
 DEFUN (cat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the concatenation of N-D array objects, @var{array1},\n\
-@var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.\n\
-\n\
-@example\n\
-@group\n\
-A = ones (2, 2);\n\
-B = zeros (2, 2);\n\
-cat (2, A, B)\n\
-  @result{} 1 1 0 0\n\
-     1 1 0 0\n\
-@end group\n\
-@end example\n\
-\n\
-Alternatively, we can concatenate @var{A} and @var{B} along the\n\
-second dimension in the following way:\n\
-\n\
-@example\n\
-@group\n\
-[A, B]\n\
-@end group\n\
-@end example\n\
-\n\
-@var{dim} can be larger than the dimensions of the N-D array objects\n\
-and the result will thus have @var{dim} dimensions as the\n\
-following example shows:\n\
-\n\
-@example\n\
-@group\n\
-cat (4, ones (2, 2), zeros (2, 2))\n\
-  @result{} ans(:,:,1,1) =\n\
-\n\
-       1 1\n\
-       1 1\n\
-\n\
-     ans(:,:,1,2) =\n\
-\n\
-       0 0\n\
-       0 0\n\
-@end group\n\
-@end example\n\
-@seealso{horzcat, vertcat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})
+Return the concatenation of N-D array objects, @var{array1},
+@var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.
+
+@example
+@group
+A = ones (2, 2);
+B = zeros (2, 2);
+cat (2, A, B)
+  @result{} 1 1 0 0
+     1 1 0 0
+@end group
+@end example
+
+Alternatively, we can concatenate @var{A} and @var{B} along the
+second dimension in the following way:
+
+@example
+@group
+[A, B]
+@end group
+@end example
+
+@var{dim} can be larger than the dimensions of the N-D array objects
+and the result will thus have @var{dim} dimensions as the
+following example shows:
+
+@example
+@group
+cat (4, ones (2, 2), zeros (2, 2))
+  @result{} ans(:,:,1,1) =
+
+       1 1
+       1 1
+
+     ans(:,:,1,2) =
+
+       0 0
+       0 0
+@end group
+@end example
+@seealso{horzcat, vertcat}
+@end deftypefn */)
 {
   if (args.length () == 0)
     print_usage ();
@@ -2595,68 +2595,68 @@ do_permute (const octave_value_list& args, bool inv)
 }
 
 DEFUN (permute, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} permute (@var{A}, @var{perm})\n\
-Return the generalized transpose for an N-D array object @var{A}.\n\
-\n\
-The permutation vector @var{perm} must contain the elements\n\
-@w{@code{1:ndims (A)}} (in any order, but each element must appear only\n\
-once).  The @var{N}th dimension of @var{A} gets remapped to dimension\n\
-@code{@var{PERM}(@var{N})}.  For example:\n\
-\n\
-@example\n\
-@group\n\
-@var{x} = zeros ([2, 3, 5, 7]);\n\
-size (@var{x})\n\
-   @result{}  2   3   5   7\n\
-\n\
-size (permute (@var{x}, [2, 1, 3, 4]))\n\
-   @result{}  3   2   5   7\n\
-\n\
-size (permute (@var{x}, [1, 3, 4, 2]))\n\
-   @result{}  2   5   7   3\n\
-\n\
-## The identity permutation\n\
-size (permute (@var{x}, [1, 2, 3, 4]))\n\
-   @result{}  2   3   5   7\n\
-@end group\n\
-@end example\n\
-@seealso{ipermute}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} permute (@var{A}, @var{perm})
+Return the generalized transpose for an N-D array object @var{A}.
+
+The permutation vector @var{perm} must contain the elements
+@w{@code{1:ndims (A)}} (in any order, but each element must appear only
+once).  The @var{N}th dimension of @var{A} gets remapped to dimension
+@code{@var{PERM}(@var{N})}.  For example:
+
+@example
+@group
+@var{x} = zeros ([2, 3, 5, 7]);
+size (@var{x})
+   @result{}  2   3   5   7
+
+size (permute (@var{x}, [2, 1, 3, 4]))
+   @result{}  3   2   5   7
+
+size (permute (@var{x}, [1, 3, 4, 2]))
+   @result{}  2   5   7   3
+
+## The identity permutation
+size (permute (@var{x}, [1, 2, 3, 4]))
+   @result{}  2   3   5   7
+@end group
+@end example
+@seealso{ipermute}
+@end deftypefn */)
 {
   return do_permute (args, false);
 }
 
 DEFUN (ipermute, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ipermute (@var{A}, @var{iperm})\n\
-The inverse of the @code{permute} function.\n\
-\n\
-The expression\n\
-\n\
-@example\n\
-ipermute (permute (A, perm), perm)\n\
-@end example\n\
-\n\
-@noindent\n\
-returns the original array @var{A}.\n\
-@seealso{permute}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ipermute (@var{A}, @var{iperm})
+The inverse of the @code{permute} function.
+
+The expression
+
+@example
+ipermute (permute (A, perm), perm)
+@end example
+
+@noindent
+returns the original array @var{A}.
+@seealso{permute}
+@end deftypefn */)
 {
   return do_permute (args, true);
 }
 
 DEFUN (length, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} length (@var{a})\n\
-Return the length of the object @var{a}.\n\
-\n\
-The length is 0 for empty objects, 1 for scalars, and the number of elements\n\
-for vectors.  For matrix or N-dimensional objects, the length is the number\n\
-of elements along the largest dimension\n\
-(equivalent to @w{@code{max (size (@var{a}))}}).\n\
-@seealso{numel, size}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} length (@var{a})
+Return the length of the object @var{a}.
+
+The length is 0 for empty objects, 1 for scalars, and the number of elements
+for vectors.  For matrix or N-dimensional objects, the length is the number
+of elements along the largest dimension
+(equivalent to @w{@code{max (size (@var{a}))}}).
+@seealso{numel, size}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2665,21 +2665,21 @@ of elements along the largest dimension\n\
 }
 
 DEFUN (ndims, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ndims (@var{a})\n\
-Return the number of dimensions of @var{a}.\n\
-\n\
-For any array, the result will always be greater than or equal to 2.\n\
-Trailing singleton dimensions are not counted.\n\
-\n\
-@example\n\
-@group\n\
-ndims (ones (4, 1, 2, 1))\n\
-    @result{} 3\n\
-@end group\n\
-@end example\n\
-@seealso{size}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ndims (@var{a})
+Return the number of dimensions of @var{a}.
+
+For any array, the result will always be greater than or equal to 2.
+Trailing singleton dimensions are not counted.
+
+@example
+@group
+ndims (ones (4, 1, 2, 1))
+    @result{} 3
+@end group
+@end example
+@seealso{size}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2688,47 +2688,47 @@ ndims (ones (4, 1, 2, 1))\n\
 }
 
 DEFUN (numel, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} numel (@var{a})\n\
-@deftypefnx {} {} numel (@var{a}, @var{idx1}, @var{idx2}, @dots{})\n\
-Return the number of elements in the object @var{a}.\n\
-\n\
-Optionally, if indices @var{idx1}, @var{idx2}, @dots{} are supplied,\n\
-return the number of elements that would result from the indexing\n\
-\n\
-@example\n\
-@var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
-@end example\n\
-\n\
-Note that the indices do not have to be scalar numbers.  For example,\n\
-\n\
-@example\n\
-@group\n\
-@var{a} = 1;\n\
-@var{b} = ones (2, 3);\n\
-numel (@var{a}, @var{b})\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-will return 6, as this is the number of ways to index with @var{b}.\n\
-Or the index could be the string @qcode{\":\"} which represents the colon\n\
-operator.  For example,\n\
-\n\
-@example\n\
-@group\n\
-@var{a} = ones (5, 3);\n\
-numel (@var{a}, 2, \":\")\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-will return 3 as the second row has three column entries.\n\
-\n\
-This method is also called when an object appears as lvalue with cs-list\n\
-indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
-@seealso{size}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} numel (@var{a})
+@deftypefnx {} {} numel (@var{a}, @var{idx1}, @var{idx2}, @dots{})
+Return the number of elements in the object @var{a}.
+
+Optionally, if indices @var{idx1}, @var{idx2}, @dots{} are supplied,
+return the number of elements that would result from the indexing
+
+@example
+@var{a}(@var{idx1}, @var{idx2}, @dots{})
+@end example
+
+Note that the indices do not have to be scalar numbers.  For example,
+
+@example
+@group
+@var{a} = 1;
+@var{b} = ones (2, 3);
+numel (@var{a}, @var{b})
+@end group
+@end example
+
+@noindent
+will return 6, as this is the number of ways to index with @var{b}.
+Or the index could be the string @qcode{":"} which represents the colon
+operator.  For example,
+
+@example
+@group
+@var{a} = ones (5, 3);
+numel (@var{a}, 2, ":")
+@end group
+@end example
+
+@noindent
+will return 3 as the second row has three column entries.
+
+This method is also called when an object appears as lvalue with cs-list
+indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.
+@seealso{size}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2750,41 +2750,41 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 }
 
 DEFUN (size, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} size (@var{a})\n\
-@deftypefnx {} {} size (@var{a}, @var{dim})\n\
-Return the number of rows and columns of @var{a}.\n\
-\n\
-With one input argument and one output argument, the result is returned\n\
-in a row vector.  If there are multiple output arguments, the number of\n\
-rows is assigned to the first, and the number of columns to the second,\n\
-etc.  For example:\n\
-\n\
-@example\n\
-@group\n\
-size ([1, 2; 3, 4; 5, 6])\n\
-   @result{} [ 3, 2 ]\n\
-\n\
-[nr, nc] = size ([1, 2; 3, 4; 5, 6])\n\
-    @result{} nr = 3\n\
-    @result{} nc = 2\n\
-@end group\n\
-@end example\n\
-\n\
-If given a second argument, @code{size} will return the size of the\n\
-corresponding dimension.  For example,\n\
-\n\
-@example\n\
-@group\n\
-size ([1, 2; 3, 4; 5, 6], 2)\n\
-    @result{} 2\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-returns the number of columns in the given matrix.\n\
-@seealso{numel, ndims, length, rows, columns}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} size (@var{a})
+@deftypefnx {} {} size (@var{a}, @var{dim})
+Return the number of rows and columns of @var{a}.
+
+With one input argument and one output argument, the result is returned
+in a row vector.  If there are multiple output arguments, the number of
+rows is assigned to the first, and the number of columns to the second,
+etc.  For example:
+
+@example
+@group
+size ([1, 2; 3, 4; 5, 6])
+   @result{} [ 3, 2 ]
+
+[nr, nc] = size ([1, 2; 3, 4; 5, 6])
+    @result{} nr = 3
+    @result{} nc = 2
+@end group
+@end example
+
+If given a second argument, @code{size} will return the size of the
+corresponding dimension.  For example,
+
+@example
+@group
+size ([1, 2; 3, 4; 5, 6], 2)
+    @result{} 2
+@end group
+@end example
+
+@noindent
+returns the number of columns in the given matrix.
+@seealso{numel, ndims, length, rows, columns}
+@end deftypefn */)
 {
   octave_value_list retval;
 
@@ -2834,14 +2834,14 @@ returns the number of columns in the given matrix.\n\
 }
 
 DEFUN (size_equal, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} size_equal (@var{a}, @var{b}, @dots{})\n\
-Return true if the dimensions of all arguments agree.\n\
-\n\
-Trailing singleton dimensions are ignored.\n\
-When called with a single or no argument @code{size_equal} returns true.\n\
-@seealso{size, numel, ndims}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} size_equal (@var{a}, @var{b}, @dots{})
+Return true if the dimensions of all arguments agree.
+
+Trailing singleton dimensions are ignored.
+When called with a single or no argument @code{size_equal} returns true.
+@seealso{size, numel, ndims}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -2862,11 +2862,11 @@ When called with a single or no argument @code{size_equal} returns true.\n\
 }
 
 DEFUN (nnz, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{n} =} nnz (@var{a})\n\
-Return the number of nonzero elements in @var{a}.\n\
-@seealso{nzmax, nonzeros, find}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{n} =} nnz (@var{a})
+Return the number of nonzero elements in @var{a}.
+@seealso{nzmax, nonzeros, find}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2875,15 +2875,15 @@ Return the number of nonzero elements in @var{a}.\n\
 }
 
 DEFUN (nzmax, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{n} =} nzmax (@var{SM})\n\
-Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
-\n\
-Note that Octave tends to crop unused memory at the first opportunity\n\
-for sparse objects.  Thus, in general the value of @code{nzmax} will be the\n\
-same as @code{nnz} except for some cases of user-created sparse objects.\n\
-@seealso{nnz, spalloc, sparse}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{n} =} nzmax (@var{SM})
+Return the amount of storage allocated to the sparse matrix @var{SM}.
+
+Note that Octave tends to crop unused memory at the first opportunity
+for sparse objects.  Thus, in general the value of @code{nzmax} will be the
+same as @code{nnz} except for some cases of user-created sparse objects.
+@seealso{nnz, spalloc, sparse}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2892,11 +2892,11 @@ same as @code{nnz} except for some cases of user-created sparse objects.\n\
 }
 
 DEFUN (rows, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} rows (@var{a})\n\
-Return the number of rows of @var{a}.\n\
-@seealso{columns, size, length, numel, isscalar, isvector, ismatrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rows (@var{a})
+Return the number of rows of @var{a}.
+@seealso{columns, size, length, numel, isscalar, isvector, ismatrix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2932,11 +2932,11 @@ Return the number of rows of @var{a}.\n\
 */
 
 DEFUN (columns, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} columns (@var{a})\n\
-Return the number of columns of @var{a}.\n\
-@seealso{rows, size, length, numel, isscalar, isvector, ismatrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} columns (@var{a})
+Return the number of columns of @var{a}.
+@seealso{rows, size, length, numel, isscalar, isvector, ismatrix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -2945,41 +2945,41 @@ Return the number of columns of @var{a}.\n\
 }
 
 DEFUN (sum, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} sum (@var{x})\n\
-@deftypefnx {} {} sum (@var{x}, @var{dim})\n\
-@deftypefnx {} {} sum (@dots{}, \"native\")\n\
-@deftypefnx {} {} sum (@dots{}, \"double\")\n\
-@deftypefnx {} {} sum (@dots{}, \"extra\")\n\
-Sum of elements along dimension @var{dim}.\n\
-\n\
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
-\n\
-The optional @qcode{\"type\"} input determines the class of the variable\n\
-used for calculations.  If the argument @qcode{\"native\"} is given, then\n\
-the operation is performed in the same type as the original argument, rather\n\
-than the default double type.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-sum ([true, true])\n\
-   @result{} 2\n\
-sum ([true, true], \"native\")\n\
-   @result{} true\n\
-@end group\n\
-@end example\n\
-\n\
-On the contrary, if @qcode{\"double\"} is given, the sum is performed in\n\
-double precision even for single precision inputs.\n\
-\n\
-For double precision inputs, the @qcode{\"extra\"} option will use a more\n\
-accurate algorithm than straightforward summation.  For single precision\n\
-inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
-@qcode{\"extra\"} has no effect.\n\
-@seealso{cumsum, sumsq, prod}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} sum (@var{x})
+@deftypefnx {} {} sum (@var{x}, @var{dim})
+@deftypefnx {} {} sum (@dots{}, "native")
+@deftypefnx {} {} sum (@dots{}, "double")
+@deftypefnx {} {} sum (@dots{}, "extra")
+Sum of elements along dimension @var{dim}.
+
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+
+The optional @qcode{"type"} input determines the class of the variable
+used for calculations.  If the argument @qcode{"native"} is given, then
+the operation is performed in the same type as the original argument, rather
+than the default double type.
+
+For example:
+
+@example
+@group
+sum ([true, true])
+   @result{} 2
+sum ([true, true], "native")
+   @result{} true
+@end group
+@end example
+
+On the contrary, if @qcode{"double"} is given, the sum is performed in
+double precision even for single precision inputs.
+
+For double precision inputs, the @qcode{"extra"} option will use a more
+accurate algorithm than straightforward summation.  For single precision
+inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
+@qcode{"extra"} has no effect.
+@seealso{cumsum, sumsq, prod}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -3173,23 +3173,23 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
 */
 
 DEFUN (sumsq, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} sumsq (@var{x})\n\
-@deftypefnx {} {} sumsq (@var{x}, @var{dim})\n\
-Sum of squares of elements along dimension @var{dim}.\n\
-\n\
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
-\n\
-This function is conceptually equivalent to computing\n\
-\n\
-@example\n\
-sum (x .* conj (x), dim)\n\
-@end example\n\
-\n\
-@noindent\n\
-but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
-@seealso{sum, prod}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} sumsq (@var{x})
+@deftypefnx {} {} sumsq (@var{x}, @var{dim})
+Sum of squares of elements along dimension @var{dim}.
+
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+
+This function is conceptually equivalent to computing
+
+@example
+sum (x .* conj (x), dim)
+@end example
+
+@noindent
+but it uses less memory and avoids calling @code{conj} if @var{x} is real.
+@seealso{sum, prod}
+@end deftypefn */)
 {
   DATA_REDUCTION (sumsq);
 }
@@ -3213,12 +3213,12 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 */
 
 DEFUN (islogical, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} islogical (@var{x})\n\
-@deftypefnx {} {} isbool (@var{x})\n\
-Return true if @var{x} is a logical object.\n\
-@seealso{isfloat, isinteger, ischar, isnumeric, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} islogical (@var{x})
+@deftypefnx {} {} isbool (@var{x})
+Return true if @var{x} is a logical object.
+@seealso{isfloat, isinteger, ischar, isnumeric, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3243,14 +3243,14 @@ DEFALIAS (isbool, islogical);
 */
 
 DEFUN (isinteger, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isinteger (@var{x})\n\
-Return true if @var{x} is an integer object (int8, uint8, int16, etc.).\n\
-\n\
-Note that @w{@code{isinteger (14)}} is false because numeric constants in\n\
-Octave are double precision floating point values.\n\
-@seealso{isfloat, ischar, islogical, isnumeric, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isinteger (@var{x})
+Return true if @var{x} is an integer object (int8, uint8, int16, etc.).
+
+Note that @w{@code{isinteger (14)}} is false because numeric constants in
+Octave are double precision floating point values.
+@seealso{isfloat, ischar, islogical, isnumeric, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3259,11 +3259,11 @@ Octave are double precision floating point values.\n\
 }
 
 DEFUN (iscomplex, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} iscomplex (@var{x})\n\
-Return true if @var{x} is a complex-valued numeric object.\n\
-@seealso{isreal, isnumeric, islogical, ischar, isfloat, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} iscomplex (@var{x})
+Return true if @var{x} is a complex-valued numeric object.
+@seealso{isreal, isnumeric, islogical, ischar, isfloat, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3272,13 +3272,13 @@ Return true if @var{x} is a complex-valued numeric object.\n\
 }
 
 DEFUN (isfloat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isfloat (@var{x})\n\
-Return true if @var{x} is a floating-point numeric object.\n\
-\n\
-Objects of class double or single are floating-point objects.\n\
-@seealso{isinteger, ischar, islogical, isnumeric, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isfloat (@var{x})
+Return true if @var{x} is a floating-point numeric object.
+
+Objects of class double or single are floating-point objects.
+@seealso{isinteger, ischar, islogical, isnumeric, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3290,28 +3290,28 @@ Objects of class double or single are floating-point objects.\n\
 // octave_value member function?
 
 DEFUN (complex, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} complex (@var{x})\n\
-@deftypefnx {} {} complex (@var{re}, @var{im})\n\
-Return a complex value from real arguments.\n\
-\n\
-With 1 real argument @var{x}, return the complex result\n\
-@w{@code{@var{x} + 0i}}.\n\
-\n\
-With 2 real arguments, return the complex result\n\
-@w{@code{@var{re} + @var{im}}}.\n\
-@code{complex} can often be more convenient than expressions such as\n\
-@w{@code{a + i*b}}.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-complex ([1, 2], [3, 4])\n\
-  @result{} [ 1 + 3i   2 + 4i ]\n\
-@end group\n\
-@end example\n\
-@seealso{real, imag, iscomplex, abs, arg}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} complex (@var{x})
+@deftypefnx {} {} complex (@var{re}, @var{im})
+Return a complex value from real arguments.
+
+With 1 real argument @var{x}, return the complex result
+@w{@code{@var{x} + 0i}}.
+
+With 2 real arguments, return the complex result
+@w{@code{@var{re} + @var{im}}}.
+@code{complex} can often be more convenient than expressions such as
+@w{@code{a + i*b}}.
+For example:
+
+@example
+@group
+complex ([1, 2], [3, 4])
+  @result{} [ 1 + 3i   2 + 4i ]
+@end group
+@end example
+@seealso{real, imag, iscomplex, abs, arg}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -3554,14 +3554,14 @@ complex ([1, 2], [3, 4])\n\
 }
 
 DEFUN (isreal, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isreal (@var{x})\n\
-Return true if @var{x} is a non-complex matrix or scalar.\n\
-\n\
-For compatibility with @sc{matlab}, this includes logical and character\n\
-matrices.\n\
-@seealso{iscomplex, isnumeric, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isreal (@var{x})
+Return true if @var{x} is a non-complex matrix or scalar.
+
+For compatibility with @sc{matlab}, this includes logical and character
+matrices.
+@seealso{iscomplex, isnumeric, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3570,12 +3570,12 @@ matrices.\n\
 }
 
 DEFUN (isempty, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isempty (@var{a})\n\
-Return true if @var{a} is an empty matrix (any one of its dimensions is\n\
-zero).\n\
-@seealso{isnull, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isempty (@var{a})
+Return true if @var{a} is an empty matrix (any one of its dimensions is
+zero).
+@seealso{isnull, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3589,14 +3589,14 @@ zero).\n\
 */
 
 DEFUN (isnumeric, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isnumeric (@var{x})\n\
-Return true if @var{x} is a numeric object, i.e., an integer, real, or\n\
-complex array.\n\
-\n\
-Logical and character arrays are not considered to be numeric.\n\
-@seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isnumeric (@var{x})
+Return true if @var{x} is a numeric object, i.e., an integer, real, or
+complex array.
+
+Logical and character arrays are not considered to be numeric.
+@seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3621,11 +3621,11 @@ Logical and character arrays are not considered to be numeric.\n\
 */
 
 DEFUN (isscalar, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isscalar (@var{x})\n\
-Return true if @var{x} is a scalar.\n\
-@seealso{isvector, ismatrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isscalar (@var{x})
+Return true if @var{x} is a scalar.
+@seealso{isvector, ismatrix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3653,14 +3653,14 @@ Return true if @var{x} is a scalar.\n\
 */
 
 DEFUN (isvector, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isvector (@var{x})\n\
-Return true if @var{x} is a vector.\n\
-\n\
-A vector is a 2-D array where one of the dimensions is equal to 1.  As a\n\
-consequence a 1x1 array, or scalar, is also a vector.\n\
-@seealso{isscalar, ismatrix, size, rows, columns, length}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isvector (@var{x})
+Return true if @var{x} is a vector.
+
+A vector is a 2-D array where one of the dimensions is equal to 1.  As a
+consequence a 1x1 array, or scalar, is also a vector.
+@seealso{isscalar, ismatrix, size, rows, columns, length}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3691,11 +3691,11 @@ consequence a 1x1 array, or scalar, is also a vector.\n\
 */
 
 DEFUN (isrow, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isrow (@var{x})\n\
-Return true if @var{x} is a row vector 1xN with non-negative N.\n\
-@seealso{iscolumn, isscalar, isvector, ismatrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isrow (@var{x})
+Return true if @var{x} is a row vector 1xN with non-negative N.
+@seealso{iscolumn, isscalar, isvector, ismatrix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3736,11 +3736,11 @@ Return true if @var{x} is a row vector 1xN with non-negative N.\n\
 */
 
 DEFUN (iscolumn, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} iscolumn (@var{x})\n\
-Return true if @var{x} is a column vector Nx1 with non-negative N.\n\
-@seealso{isrow, isscalar, isvector, ismatrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} iscolumn (@var{x})
+Return true if @var{x} is a column vector Nx1 with non-negative N.
+@seealso{isrow, isscalar, isvector, ismatrix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3780,11 +3780,11 @@ Return true if @var{x} is a column vector Nx1 with non-negative N.\n\
 */
 
 DEFUN (ismatrix, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ismatrix (@var{a})\n\
-Return true if @var{a} is a 2-D array.\n\
-@seealso{isscalar, isvector, iscell, isstruct, issparse, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ismatrix (@var{a})
+Return true if @var{a} is a 2-D array.
+@seealso{isscalar, isvector, iscell, isstruct, issparse, isa}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3823,11 +3823,11 @@ Return true if @var{a} is a 2-D array.\n\
 */
 
 DEFUN (issquare, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} issquare (@var{x})\n\
-Return true if @var{x} is a square matrix.\n\
-@seealso{isscalar, isvector, ismatrix, size}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} issquare (@var{x})
+Return true if @var{x} is a square matrix.
+@seealso{isscalar, isvector, ismatrix, size}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -4204,35 +4204,35 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 }
 
 DEFUN (ones, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} ones (@var{n})\n\
-@deftypefnx {} {} ones (@var{m}, @var{n})\n\
-@deftypefnx {} {} ones (@var{m}, @var{n}, @var{k}, @dots{})\n\
-@deftypefnx {} {} ones ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {} ones (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all 1.\n\
-\n\
-If invoked with a single scalar integer argument @var{n}, return a square\n\
-@nospell{NxN} matrix.\n\
-\n\
-If invoked with two or more scalar integer arguments, or a vector of integer\n\
-values, return an array with the given dimensions.\n\
-\n\
-To create a constant matrix whose values are all the same use an expression\n\
-such as\n\
-\n\
-@example\n\
-val_matrix = val * ones (m, n)\n\
-@end example\n\
-\n\
-The optional argument @var{class} specifies the class of the return array\n\
-and defaults to double.  For example:\n\
-\n\
-@example\n\
-val = ones (m,n, \"uint8\")\n\
-@end example\n\
-@seealso{zeros}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} ones (@var{n})
+@deftypefnx {} {} ones (@var{m}, @var{n})
+@deftypefnx {} {} ones (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {} ones ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {} ones (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all 1.
+
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
+
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
+
+To create a constant matrix whose values are all the same use an expression
+such as
+
+@example
+val_matrix = val * ones (m, n)
+@end example
+
+The optional argument @var{class} specifies the class of the return array
+and defaults to double.  For example:
+
+@example
+val = ones (m,n, "uint8")
+@end example
+@seealso{zeros}
+@end deftypefn */)
 {
   return fill_matrix (args, 1, "ones");
 }
@@ -4272,28 +4272,28 @@ val = ones (m,n, \"uint8\")\n\
 */
 
 DEFUN (zeros, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} zeros (@var{n})\n\
-@deftypefnx {} {} zeros (@var{m}, @var{n})\n\
-@deftypefnx {} {} zeros (@var{m}, @var{n}, @var{k}, @dots{})\n\
-@deftypefnx {} {} zeros ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {} zeros (@dots{}, @var{class})\n\
-Return a matrix or N-dimensional array whose elements are all 0.\n\
-\n\
-If invoked with a single scalar integer argument, return a square\n\
-@nospell{NxN} matrix.\n\
-\n\
-If invoked with two or more scalar integer arguments, or a vector of integer\n\
-values, return an array with the given dimensions.\n\
-\n\
-The optional argument @var{class} specifies the class of the return array\n\
-and defaults to double.  For example:\n\
-\n\
-@example\n\
-val = zeros (m,n, \"uint8\")\n\
-@end example\n\
-@seealso{ones}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} zeros (@var{n})
+@deftypefnx {} {} zeros (@var{m}, @var{n})
+@deftypefnx {} {} zeros (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {} zeros ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {} zeros (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all 0.
+
+If invoked with a single scalar integer argument, return a square
+@nospell{NxN} matrix.
+
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
+
+The optional argument @var{class} specifies the class of the return array
+and defaults to double.  For example:
+
+@example
+val = zeros (m,n, "uint8")
+@end example
+@seealso{ones}
+@end deftypefn */)
 {
   return fill_matrix (args, 0, "zeros");
 }
@@ -4316,42 +4316,42 @@ val = zeros (m,n, \"uint8\")\n\
 */
 
 DEFUN (Inf, args, ,
-       "-*- texinfo -*-\n\
-@c List other form of function in documentation index\n\
-@findex inf\n\
-\n\
-@deftypefn  {} {} Inf\n\
-@deftypefnx {} {} Inf (@var{n})\n\
-@deftypefnx {} {} Inf (@var{n}, @var{m})\n\
-@deftypefnx {} {} Inf (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} Inf (@dots{}, @var{class})\n\
-Return a scalar, matrix or N-dimensional array whose elements are all equal\n\
-to the IEEE representation for positive infinity.\n\
-\n\
-Infinity is produced when results are too large to be represented using the\n\
-IEEE floating point format for numbers.  Two common examples which produce\n\
-infinity are division by zero and overflow.\n\
-\n\
-@example\n\
-@group\n\
-[ 1/0 e^800 ]\n\
-@result{} Inf   Inf\n\
-@end group\n\
-@end example\n\
-\n\
-When called with no arguments, return a scalar with the value @samp{Inf}.\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{isinf, NaN}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@c List other form of function in documentation index
+@findex inf
+
+@deftypefn  {} {} Inf
+@deftypefnx {} {} Inf (@var{n})
+@deftypefnx {} {} Inf (@var{n}, @var{m})
+@deftypefnx {} {} Inf (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} Inf (@dots{}, @var{class})
+Return a scalar, matrix or N-dimensional array whose elements are all equal
+to the IEEE representation for positive infinity.
+
+Infinity is produced when results are too large to be represented using the
+IEEE floating point format for numbers.  Two common examples which produce
+infinity are division by zero and overflow.
+
+@example
+@group
+[ 1/0 e^800 ]
+@result{} Inf   Inf
+@end group
+@end example
+
+When called with no arguments, return a scalar with the value @samp{Inf}.
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{isinf, NaN}
+@end deftypefn */)
 {
   return fill_matrix (args, lo_ieee_inf_value (),
                       lo_ieee_float_inf_value (), "Inf");
@@ -4377,47 +4377,47 @@ DEFALIAS (inf, Inf);
 */
 
 DEFUN (NaN, args, ,
-       "-*- texinfo -*-\n\
-@c List other form of function in documentation index\n\
-@findex nan\n\
-\n\
-@deftypefn  {} {} NaN\n\
-@deftypefnx {} {} NaN (@var{n})\n\
-@deftypefnx {} {} NaN (@var{n}, @var{m})\n\
-@deftypefnx {} {} NaN (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} NaN (@dots{}, @var{class})\n\
-Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the IEEE symbol NaN (Not a Number).\n\
-\n\
-NaN is the result of operations which do not produce a well defined\n\
-numerical result.  Common operations which produce a NaN are arithmetic\n\
-with infinity\n\
-@tex\n\
-($\\infty - \\infty$), zero divided by zero ($0/0$),\n\
-@end tex\n\
-@ifnottex\n\
-(Inf - Inf), zero divided by zero (0/0),\n\
-@end ifnottex\n\
-and any operation involving another NaN value (5 + NaN).\n\
-\n\
-Note that NaN always compares not equal to NaN (NaN != NaN).  This behavior\n\
-is specified by the IEEE standard for floating point arithmetic.  To find\n\
-NaN values, use the @code{isnan} function.\n\
-\n\
-When called with no arguments, return a scalar with the value @samp{NaN}.\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{isnan, Inf}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@c List other form of function in documentation index
+@findex nan
+
+@deftypefn  {} {} NaN
+@deftypefnx {} {} NaN (@var{n})
+@deftypefnx {} {} NaN (@var{n}, @var{m})
+@deftypefnx {} {} NaN (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} NaN (@dots{}, @var{class})
+Return a scalar, matrix, or N-dimensional array whose elements are all equal
+to the IEEE symbol NaN (Not a Number).
+
+NaN is the result of operations which do not produce a well defined
+numerical result.  Common operations which produce a NaN are arithmetic
+with infinity
+@tex
+($\infty - \infty$), zero divided by zero ($0/0$),
+@end tex
+@ifnottex
+(Inf - Inf), zero divided by zero (0/0),
+@end ifnottex
+and any operation involving another NaN value (5 + NaN).
+
+Note that NaN always compares not equal to NaN (NaN != NaN).  This behavior
+is specified by the IEEE standard for floating point arithmetic.  To find
+NaN values, use the @code{isnan} function.
+
+When called with no arguments, return a scalar with the value @samp{NaN}.
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{isnan, Inf}
+@end deftypefn */)
 {
   return fill_matrix (args, lo_ieee_nan_value (),
                       lo_ieee_float_nan_value (), "NaN");
@@ -4443,36 +4443,36 @@ DEFALIAS (nan, NaN);
 */
 
 DEFUN (e, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} e\n\
-@deftypefnx {} {} e (@var{n})\n\
-@deftypefnx {} {} e (@var{n}, @var{m})\n\
-@deftypefnx {} {} e (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} e (@dots{}, @var{class})\n\
-Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the base of natural logarithms.\n\
-\n\
-The constant\n\
-@tex\n\
-$e$ satisfies the equation $\\log (e) = 1$.\n\
-@end tex\n\
-@ifnottex\n\
-@samp{e} satisfies the equation @code{log} (e) = 1.\n\
-@end ifnottex\n\
-\n\
-When called with no arguments, return a scalar with the value @math{e}.\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{log, exp, pi, I}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} e
+@deftypefnx {} {} e (@var{n})
+@deftypefnx {} {} e (@var{n}, @var{m})
+@deftypefnx {} {} e (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} e (@dots{}, @var{class})
+Return a scalar, matrix, or N-dimensional array whose elements are all equal
+to the base of natural logarithms.
+
+The constant
+@tex
+$e$ satisfies the equation $\log (e) = 1$.
+@end tex
+@ifnottex
+@samp{e} satisfies the equation @code{log} (e) = 1.
+@end ifnottex
+
+When called with no arguments, return a scalar with the value @math{e}.
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{log, exp, pi, I}
+@end deftypefn */)
 {
 #if defined (M_E)
   double e_val = M_E;
@@ -4484,39 +4484,39 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 }
 
 DEFUN (eps, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} eps\n\
-@deftypefnx {} {} eps (@var{x})\n\
-@deftypefnx {} {} eps (@var{n}, @var{m})\n\
-@deftypefnx {} {} eps (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} eps (@dots{}, @var{class})\n\
-Return a scalar, matrix or N-dimensional array whose elements are all eps,\n\
-the machine precision.\n\
-\n\
-More precisely, @code{eps} is the relative spacing between any two adjacent\n\
-numbers in the machine's floating point system.  This number is obviously\n\
-system dependent.  On machines that support IEEE floating point arithmetic,\n\
-@code{eps} is approximately\n\
-@tex\n\
-$2.2204\\times10^{-16}$ for double precision and $1.1921\\times10^{-7}$\n\
-@end tex\n\
-@ifnottex\n\
-2.2204e-16 for double precision and 1.1921e-07\n\
-@end ifnottex\n\
-for single precision.\n\
-\n\
-When called with no arguments, return a scalar with the value\n\
-@code{eps (1.0)}.\n\
-\n\
-Given a single argument @var{x}, return the distance between @var{x} and the\n\
-next largest value.\n\
-\n\
-When called with more than one argument the first two arguments are taken as\n\
-the number of rows and columns and any further arguments specify additional\n\
-matrix dimensions.  The optional argument @var{class} specifies the return\n\
-type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{realmax, realmin, intmax, flintmax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} eps
+@deftypefnx {} {} eps (@var{x})
+@deftypefnx {} {} eps (@var{n}, @var{m})
+@deftypefnx {} {} eps (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} eps (@dots{}, @var{class})
+Return a scalar, matrix or N-dimensional array whose elements are all eps,
+the machine precision.
+
+More precisely, @code{eps} is the relative spacing between any two adjacent
+numbers in the machine's floating point system.  This number is obviously
+system dependent.  On machines that support IEEE floating point arithmetic,
+@code{eps} is approximately
+@tex
+$2.2204\times10^{-16}$ for double precision and $1.1921\times10^{-7}$
+@end tex
+@ifnottex
+2.2204e-16 for double precision and 1.1921e-07
+@end ifnottex
+for single precision.
+
+When called with no arguments, return a scalar with the value
+@code{eps (1.0)}.
+
+Given a single argument @var{x}, return the distance between @var{x} and the
+next largest value.
+
+When called with more than one argument the first two arguments are taken as
+the number of rows and columns and any further arguments specify additional
+matrix dimensions.  The optional argument @var{class} specifies the return
+type and may be either @qcode{"double"} or @qcode{"single"}.
+@seealso{realmax, realmin, intmax, flintmax}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -4605,42 +4605,42 @@ type and may be either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 */
 
 DEFUN (pi, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} pi\n\
-@deftypefnx {} {} pi (@var{n})\n\
-@deftypefnx {} {} pi (@var{n}, @var{m})\n\
-@deftypefnx {} {} pi (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} pi (@dots{}, @var{class})\n\
-Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the ratio of the circumference of a circle to its\n\
-@tex\n\
-diameter($\\pi$).\n\
-@end tex\n\
-@ifnottex\n\
-diameter.\n\
-@end ifnottex\n\
-\n\
-Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
-\n\
-When called with no arguments, return a scalar with the value of\n\
-@tex\n\
-$\\pi$.\n\
-@end tex\n\
-@ifnottex\n\
-pi.\n\
-@end ifnottex\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{e, I}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} pi
+@deftypefnx {} {} pi (@var{n})
+@deftypefnx {} {} pi (@var{n}, @var{m})
+@deftypefnx {} {} pi (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} pi (@dots{}, @var{class})
+Return a scalar, matrix, or N-dimensional array whose elements are all equal
+to the ratio of the circumference of a circle to its
+@tex
+diameter($\pi$).
+@end tex
+@ifnottex
+diameter.
+@end ifnottex
+
+Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.
+
+When called with no arguments, return a scalar with the value of
+@tex
+$\pi$.
+@end tex
+@ifnottex
+pi.
+@end ifnottex
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{e, I}
+@end deftypefn */)
 {
 #if defined (M_PI)
   double pi_val = M_PI;
@@ -4652,120 +4652,120 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 }
 
 DEFUN (realmax, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} realmax\n\
-@deftypefnx {} {} realmax (@var{n})\n\
-@deftypefnx {} {} realmax (@var{n}, @var{m})\n\
-@deftypefnx {} {} realmax (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} realmax (@dots{}, @var{class})\n\
-Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the largest floating point number that is representable.\n\
-\n\
-The actual value is system dependent.  On machines that support IEEE\n\
-floating point arithmetic, @code{realmax} is approximately\n\
-@tex\n\
-$1.7977\\times10^{308}$ for double precision and $3.4028\\times10^{38}$\n\
-@end tex\n\
-@ifnottex\n\
-1.7977e+308 for double precision and 3.4028e+38\n\
-@end ifnottex\n\
-for single precision.\n\
-\n\
-When called with no arguments, return a scalar with the value\n\
-@code{realmax (@qcode{\"double\"})}.\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{realmin, intmax, flintmax, eps}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} realmax
+@deftypefnx {} {} realmax (@var{n})
+@deftypefnx {} {} realmax (@var{n}, @var{m})
+@deftypefnx {} {} realmax (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} realmax (@dots{}, @var{class})
+Return a scalar, matrix, or N-dimensional array whose elements are all equal
+to the largest floating point number that is representable.
+
+The actual value is system dependent.  On machines that support IEEE
+floating point arithmetic, @code{realmax} is approximately
+@tex
+$1.7977\times10^{308}$ for double precision and $3.4028\times10^{38}$
+@end tex
+@ifnottex
+1.7977e+308 for double precision and 3.4028e+38
+@end ifnottex
+for single precision.
+
+When called with no arguments, return a scalar with the value
+@code{realmax (@qcode{"double"})}.
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{realmin, intmax, flintmax, eps}
+@end deftypefn */)
 {
   return fill_matrix (args, std::numeric_limits<double>::max (),
                       std::numeric_limits<float>::max (), "realmax");
 }
 
 DEFUN (realmin, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} realmin\n\
-@deftypefnx {} {} realmin (@var{n})\n\
-@deftypefnx {} {} realmin (@var{n}, @var{m})\n\
-@deftypefnx {} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} realmin (@dots{}, @var{class})\n\
-Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the smallest normalized floating point number that is representable.\n\
-\n\
-The actual value is system dependent.  On machines that support\n\
-IEEE floating point arithmetic, @code{realmin} is approximately\n\
-@tex\n\
-$2.2251\\times10^{-308}$ for double precision and $1.1755\\times10^{-38}$\n\
-@end tex\n\
-@ifnottex\n\
-2.2251e-308 for double precision and 1.1755e-38\n\
-@end ifnottex\n\
-for single precision.\n\
-\n\
-When called with no arguments, return a scalar with the value\n\
-@code{realmin (@qcode{\"double\"})}.\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{realmax, intmin, eps}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} realmin
+@deftypefnx {} {} realmin (@var{n})
+@deftypefnx {} {} realmin (@var{n}, @var{m})
+@deftypefnx {} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} realmin (@dots{}, @var{class})
+Return a scalar, matrix, or N-dimensional array whose elements are all equal
+to the smallest normalized floating point number that is representable.
+
+The actual value is system dependent.  On machines that support
+IEEE floating point arithmetic, @code{realmin} is approximately
+@tex
+$2.2251\times10^{-308}$ for double precision and $1.1755\times10^{-38}$
+@end tex
+@ifnottex
+2.2251e-308 for double precision and 1.1755e-38
+@end ifnottex
+for single precision.
+
+When called with no arguments, return a scalar with the value
+@code{realmin (@qcode{"double"})}.
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{realmax, intmin, eps}
+@end deftypefn */)
 {
   return fill_matrix (args, std::numeric_limits<double>::min (),
                       std::numeric_limits<float>::min (), "realmin");
 }
 
 DEFUN (I, args, ,
-       "-*- texinfo -*-\n\
-@c List other forms of function in documentation index\n\
-@findex i\n\
-@findex j\n\
-@findex J\n\
-\n\
-@deftypefn  {} {} I\n\
-@deftypefnx {} {} I (@var{n})\n\
-@deftypefnx {} {} I (@var{n}, @var{m})\n\
-@deftypefnx {} {} I (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} I (@dots{}, @var{class})\n\
-Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the pure imaginary unit, defined as\n\
-@tex\n\
-$\\sqrt{-1}$.\n\
-@end tex\n\
-@ifnottex\n\
-@w{@code{sqrt (-1)}}.\n\
-@end ifnottex\n\
-\n\
-I, and its equivalents i, j, and J, are functions so any of the names may\n\
-be reused for other purposes (such as i for a counter variable).\n\
-\n\
-When called with no arguments, return a scalar with the value @math{i}.\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{e, pi, log, exp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@c List other forms of function in documentation index
+@findex i
+@findex j
+@findex J
+
+@deftypefn  {} {} I
+@deftypefnx {} {} I (@var{n})
+@deftypefnx {} {} I (@var{n}, @var{m})
+@deftypefnx {} {} I (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} I (@dots{}, @var{class})
+Return a scalar, matrix, or N-dimensional array whose elements are all equal
+to the pure imaginary unit, defined as
+@tex
+$\sqrt{-1}$.
+@end tex
+@ifnottex
+@w{@code{sqrt (-1)}}.
+@end ifnottex
+
+I, and its equivalents i, j, and J, are functions so any of the names may
+be reused for other purposes (such as i for a counter variable).
+
+When called with no arguments, return a scalar with the value @math{i}.
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{e, pi, log, exp}
+@end deftypefn */)
 {
   return fill_matrix (args, Complex (0.0, 1.0), "I");
 }
@@ -4775,31 +4775,31 @@ DEFALIAS (J, I);
 DEFALIAS (j, I);
 
 DEFUN (NA, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} NA\n\
-@deftypefnx {} {} NA (@var{n})\n\
-@deftypefnx {} {} NA (@var{n}, @var{m})\n\
-@deftypefnx {} {} NA (@var{n}, @var{m}, @var{k}, @dots{})\n\
-@deftypefnx {} {} NA (@dots{}, @var{class})\n\
-Return a scalar, matrix, or N-dimensional array whose elements are all equal\n\
-to the special constant used to designate missing values.\n\
-\n\
-Note that NA always compares not equal to NA (NA != NA).\n\
-To find NA values, use the @code{isna} function.\n\
-\n\
-When called with no arguments, return a scalar with the value @samp{NA}.\n\
-\n\
-When called with a single argument, return a square matrix with the\n\
-dimension specified.\n\
-\n\
-When called with more than one scalar argument the first two arguments are\n\
-taken as the number of rows and columns and any further arguments specify\n\
-additional matrix dimensions.\n\
-\n\
-The optional argument @var{class} specifies the return type and may be\n\
-either @qcode{\"double\"} or @qcode{\"single\"}.\n\
-@seealso{isna}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} NA
+@deftypefnx {} {} NA (@var{n})
+@deftypefnx {} {} NA (@var{n}, @var{m})
+@deftypefnx {} {} NA (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {} NA (@dots{}, @var{class})
+Return a scalar, matrix, or N-dimensional array whose elements are all equal
+to the special constant used to designate missing values.
+
+Note that NA always compares not equal to NA (NA != NA).
+To find NA values, use the @code{isna} function.
+
+When called with no arguments, return a scalar with the value @samp{NA}.
+
+When called with a single argument, return a square matrix with the
+dimension specified.
+
+When called with more than one scalar argument the first two arguments are
+taken as the number of rows and columns and any further arguments specify
+additional matrix dimensions.
+
+The optional argument @var{class} specifies the return type and may be
+either @qcode{"double"} or @qcode{"single"}.
+@seealso{isna}
+@end deftypefn */)
 {
   return fill_matrix (args, lo_ieee_na_value (),
                       lo_ieee_float_na_value (), "NA");
@@ -4811,37 +4811,37 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 */
 
 DEFUN (false, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} false (@var{x})\n\
-@deftypefnx {} {} false (@var{n}, @var{m})\n\
-@deftypefnx {} {} false (@var{n}, @var{m}, @var{k}, @dots{})\n\
-Return a matrix or N-dimensional array whose elements are all logical 0.\n\
-\n\
-If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.\n\
-\n\
-If invoked with two or more scalar integer arguments, or a vector of integer\n\
-values, return an array with given dimensions.\n\
-@seealso{true}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} false (@var{x})
+@deftypefnx {} {} false (@var{n}, @var{m})
+@deftypefnx {} {} false (@var{n}, @var{m}, @var{k}, @dots{})
+Return a matrix or N-dimensional array whose elements are all logical 0.
+
+If invoked with a single scalar integer argument, return a square
+matrix of the specified size.
+
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with given dimensions.
+@seealso{true}
+@end deftypefn */)
 {
   return fill_matrix (args, false, "false");
 }
 
 DEFUN (true, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} true (@var{x})\n\
-@deftypefnx {} {} true (@var{n}, @var{m})\n\
-@deftypefnx {} {} true (@var{n}, @var{m}, @var{k}, @dots{})\n\
-Return a matrix or N-dimensional array whose elements are all logical 1.\n\
-\n\
-If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.\n\
-\n\
-If invoked with two or more scalar integer arguments, or a vector of integer\n\
-values, return an array with given dimensions.\n\
-@seealso{false}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} true (@var{x})
+@deftypefnx {} {} true (@var{n}, @var{m})
+@deftypefnx {} {} true (@var{n}, @var{m}, @var{k}, @dots{})
+Return a matrix or N-dimensional array whose elements are all logical 1.
+
+If invoked with a single scalar integer argument, return a square
+matrix of the specified size.
+
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with given dimensions.
+@seealso{false}
+@end deftypefn */)
 {
   return fill_matrix (args, true, "true");
 }
@@ -4959,54 +4959,54 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 #undef INT_EYE_MATRIX
 
 DEFUN (eye, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} eye (@var{n})\n\
-@deftypefnx {} {} eye (@var{m}, @var{n})\n\
-@deftypefnx {} {} eye ([@var{m} @var{n}])\n\
-@deftypefnx {} {} eye (@dots{}, @var{class})\n\
-Return an identity matrix.\n\
-\n\
-If invoked with a single scalar argument @var{n}, return a square\n\
-@nospell{NxN} identity matrix.\n\
-\n\
-If supplied two scalar arguments (@var{m}, @var{n}), @code{eye} takes them\n\
-to be the number of rows and columns.  If given a vector with two elements,\n\
-@code{eye} uses the values of the elements as the number of rows and\n\
-columns, respectively.  For example:\n\
-\n\
-@example\n\
-@group\n\
-eye (3)\n\
- @result{}  1  0  0\n\
-     0  1  0\n\
-     0  0  1\n\
-@end group\n\
-@end example\n\
-\n\
-The following expressions all produce the same result:\n\
-\n\
-@example\n\
-@group\n\
-eye (2)\n\
-@equiv{}\n\
-eye (2, 2)\n\
-@equiv{}\n\
-eye (size ([1, 2; 3, 4]))\n\
-@end group\n\
-@end example\n\
-\n\
-The optional argument @var{class}, allows @code{eye} to return an array of\n\
-the specified type, like\n\
-\n\
-@example\n\
-val = zeros (n,m, \"uint8\")\n\
-@end example\n\
-\n\
-Calling @code{eye} with no arguments is equivalent to calling it with an\n\
-argument of 1.  Any negative dimensions are treated as zero.  These odd\n\
-definitions are for compatibility with @sc{matlab}.\n\
-@seealso{speye, ones, zeros}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} eye (@var{n})
+@deftypefnx {} {} eye (@var{m}, @var{n})
+@deftypefnx {} {} eye ([@var{m} @var{n}])
+@deftypefnx {} {} eye (@dots{}, @var{class})
+Return an identity matrix.
+
+If invoked with a single scalar argument @var{n}, return a square
+@nospell{NxN} identity matrix.
+
+If supplied two scalar arguments (@var{m}, @var{n}), @code{eye} takes them
+to be the number of rows and columns.  If given a vector with two elements,
+@code{eye} uses the values of the elements as the number of rows and
+columns, respectively.  For example:
+
+@example
+@group
+eye (3)
+ @result{}  1  0  0
+     0  1  0
+     0  0  1
+@end group
+@end example
+
+The following expressions all produce the same result:
+
+@example
+@group
+eye (2)
+@equiv{}
+eye (2, 2)
+@equiv{}
+eye (size ([1, 2; 3, 4]))
+@end group
+@end example
+
+The optional argument @var{class}, allows @code{eye} to return an array of
+the specified type, like
+
+@example
+val = zeros (n,m, "uint8")
+@end example
+
+Calling @code{eye} with no arguments is equivalent to calling it with an
+argument of 1.  Any negative dimensions are treated as zero.  These odd
+definitions are for compatibility with @sc{matlab}.
+@seealso{speye, ones, zeros}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -5105,27 +5105,27 @@ do_linspace (const octave_value& base, const octave_value& limit,
 }
 
 DEFUN (linspace, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} linspace (@var{base}, @var{limit})\n\
-@deftypefnx {} {} linspace (@var{base}, @var{limit}, @var{n})\n\
-Return a row vector with @var{n} linearly spaced elements between\n\
-@var{base} and @var{limit}.\n\
-\n\
-If the number of elements is greater than one, then the endpoints @var{base}\n\
-and @var{limit} are always included in the range.  If @var{base} is greater\n\
-than @var{limit}, the elements are stored in decreasing order.  If the\n\
-number of points is not specified, a value of 100 is used.\n\
-\n\
-The @code{linspace} function returns a row vector when both @var{base}\n\
-and @var{limit} are scalars.  If one, or both, inputs are vectors, then\n\
-@code{linspace} transforms them to column vectors and returns a matrix where\n\
-each row is an independent sequence between\n\
-@w{@code{@var{base}(@var{row_n}), @var{limit}(@var{row_n})}}.\n\
-\n\
-For compatibility with @sc{matlab}, return the second argument (@var{limit})\n\
-if fewer than two values are requested.\n\
-@seealso{logspace}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} linspace (@var{base}, @var{limit})
+@deftypefnx {} {} linspace (@var{base}, @var{limit}, @var{n})
+Return a row vector with @var{n} linearly spaced elements between
+@var{base} and @var{limit}.
+
+If the number of elements is greater than one, then the endpoints @var{base}
+and @var{limit} are always included in the range.  If @var{base} is greater
+than @var{limit}, the elements are stored in decreasing order.  If the
+number of points is not specified, a value of 100 is used.
+
+The @code{linspace} function returns a row vector when both @var{base}
+and @var{limit} are scalars.  If one, or both, inputs are vectors, then
+@code{linspace} transforms them to column vectors and returns a matrix where
+each row is an independent sequence between
+@w{@code{@var{base}(@var{row_n}), @var{limit}(@var{row_n})}}.
+
+For compatibility with @sc{matlab}, return the second argument (@var{limit})
+if fewer than two values are requested.
+@seealso{logspace}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -5237,51 +5237,51 @@ if fewer than two values are requested.\n\
 // arrays as well as 1-D and 2-D arrays.
 
 DEFUN (resize, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} resize (@var{x}, @var{m})\n\
-@deftypefnx {} {} resize (@var{x}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {} {} resize (@var{x}, [@var{m} @var{n} @dots{}])\n\
-Resize @var{x} cutting off elements as necessary.\n\
-\n\
-In the result, element with certain indices is equal to the corresponding\n\
-element of @var{x} if the indices are within the bounds of @var{x};\n\
-otherwise, the element is set to zero.\n\
-\n\
-In other words, the statement\n\
-\n\
-@example\n\
-y = resize (x, dv)\n\
-@end example\n\
-\n\
-@noindent\n\
-is equivalent to the following code:\n\
-\n\
-@example\n\
-@group\n\
-y = zeros (dv, class (x));\n\
-sz = min (dv, size (x));\n\
-for i = 1:length (sz)\n\
-  idx@{i@} = 1:sz(i);\n\
-endfor\n\
-y(idx@{:@}) = x(idx@{:@});\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-but is performed more efficiently.\n\
-\n\
-If only @var{m} is supplied, and it is a scalar, the dimension of the\n\
-result is @var{m}-by-@var{m}.\n\
-If @var{m}, @var{n}, @dots{} are all scalars, then the dimensions of\n\
-the result are @var{m}-by-@var{n}-by-@dots{}.\n\
-If given a vector as input, then the\n\
-dimensions of the result are given by the elements of that vector.\n\
-\n\
-An object can be resized to more dimensions than it has;\n\
-in such case the missing dimensions are assumed to be 1.\n\
-Resizing an object to fewer dimensions is not possible.\n\
-@seealso{reshape, postpad, prepad, cat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} resize (@var{x}, @var{m})
+@deftypefnx {} {} resize (@var{x}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {} resize (@var{x}, [@var{m} @var{n} @dots{}])
+Resize @var{x} cutting off elements as necessary.
+
+In the result, element with certain indices is equal to the corresponding
+element of @var{x} if the indices are within the bounds of @var{x};
+otherwise, the element is set to zero.
+
+In other words, the statement
+
+@example
+y = resize (x, dv)
+@end example
+
+@noindent
+is equivalent to the following code:
+
+@example
+@group
+y = zeros (dv, class (x));
+sz = min (dv, size (x));
+for i = 1:length (sz)
+  idx@{i@} = 1:sz(i);
+endfor
+y(idx@{:@}) = x(idx@{:@});
+@end group
+@end example
+
+@noindent
+but is performed more efficiently.
+
+If only @var{m} is supplied, and it is a scalar, the dimension of the
+result is @var{m}-by-@var{m}.
+If @var{m}, @var{n}, @dots{} are all scalars, then the dimensions of
+the result are @var{m}-by-@var{n}-by-@dots{}.
+If given a vector as input, then the
+dimensions of the result are given by the elements of that vector.
+
+An object can be resized to more dimensions than it has;
+in such case the missing dimensions are assumed to be 1.
+Resizing an object to fewer dimensions is not possible.
+@seealso{reshape, postpad, prepad, cat}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -5327,38 +5327,38 @@ Resizing an object to fewer dimensions is not possible.\n\
 // FIXME: should use octave_idx_type for dimensions.
 
 DEFUN (reshape, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} reshape (@var{A}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {} {} reshape (@var{A}, [@var{m} @var{n} @dots{}])\n\
-@deftypefnx {} {} reshape (@var{A}, @dots{}, [], @dots{})\n\
-@deftypefnx {} {} reshape (@var{A}, @var{size})\n\
-Return a matrix with the specified dimensions (@var{m}, @var{n}, @dots{})\n\
-whose elements are taken from the matrix @var{A}.\n\
-\n\
-The elements of the matrix are accessed in column-major order (like Fortran\n\
-arrays are stored).\n\
-\n\
-The following code demonstrates reshaping a 1x4 row vector into a 2x2 square\n\
-matrix.\n\
-\n\
-@example\n\
-@group\n\
-reshape ([1, 2, 3, 4], 2, 2)\n\
-      @result{}  1  3\n\
-          2  4\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Note that the total number of elements in the original matrix\n\
-(@code{prod (size (@var{A}))}) must match the total number of elements\n\
-in the new matrix (@code{prod ([@var{m} @var{n} @dots{}])}).\n\
-\n\
-A single dimension of the return matrix may be left unspecified and Octave\n\
-will determine its size automatically.  An empty matrix ([]) is used to flag\n\
-the unspecified dimension.\n\
-@seealso{resize, vec, postpad, cat, squeeze}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} reshape (@var{A}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {} reshape (@var{A}, [@var{m} @var{n} @dots{}])
+@deftypefnx {} {} reshape (@var{A}, @dots{}, [], @dots{})
+@deftypefnx {} {} reshape (@var{A}, @var{size})
+Return a matrix with the specified dimensions (@var{m}, @var{n}, @dots{})
+whose elements are taken from the matrix @var{A}.
+
+The elements of the matrix are accessed in column-major order (like Fortran
+arrays are stored).
+
+The following code demonstrates reshaping a 1x4 row vector into a 2x2 square
+matrix.
+
+@example
+@group
+reshape ([1, 2, 3, 4], 2, 2)
+      @result{}  1  3
+          2  4
+@end group
+@end example
+
+@noindent
+Note that the total number of elements in the original matrix
+(@code{prod (size (@var{A}))}) must match the total number of elements
+in the new matrix (@code{prod ([@var{m} @var{n} @dots{}])}).
+
+A single dimension of the return matrix may be left unspecified and Octave
+will determine its size automatically.  An empty matrix ([]) is used to flag
+the unspecified dimension.
+@seealso{resize, vec, postpad, cat, squeeze}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -5460,19 +5460,19 @@ the unspecified dimension.\n\
 */
 
 DEFUN (vec, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{v} =} vec (@var{x})\n\
-@deftypefnx {} {@var{v} =} vec (@var{x}, @var{dim})\n\
-Return the vector obtained by stacking the columns of the matrix @var{x}\n\
-one above the other.\n\
-\n\
-Without @var{dim} this is equivalent to @code{@var{x}(:)}.\n\
-\n\
-If @var{dim} is supplied, the dimensions of @var{v} are set to @var{dim}\n\
-with all elements along the last dimension.  This is equivalent to\n\
-@code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
-@seealso{vech, resize, cat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{v} =} vec (@var{x})
+@deftypefnx {} {@var{v} =} vec (@var{x}, @var{dim})
+Return the vector obtained by stacking the columns of the matrix @var{x}
+one above the other.
+
+Without @var{dim} this is equivalent to @code{@var{x}(:)}.
+
+If @var{dim} is supplied, the dimensions of @var{v} are set to @var{dim}
+with all elements along the last dimension.  This is equivalent to
+@code{shiftdim (@var{x}(:), 1-@var{dim})}.
+@seealso{vech, resize, cat}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -5524,14 +5524,14 @@ with all elements along the last dimension.  This is equivalent to\n\
 */
 
 DEFUN (squeeze, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} squeeze (@var{x})\n\
-Remove singleton dimensions from @var{x} and return the result.\n\
-\n\
-Note that for compatibility with @sc{matlab}, all objects have\n\
-a minimum of two dimensions and row vectors are left unchanged.\n\
-@seealso{reshape}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} squeeze (@var{x})
+Remove singleton dimensions from @var{x} and return the result.
+
+Note that for compatibility with @sc{matlab}, all objects have
+a minimum of two dimensions and row vectors are left unchanged.
+@seealso{reshape}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -5540,12 +5540,12 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 }
 
 DEFUN (full, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{FM} =} full (@var{SM})\n\
-Return a full storage matrix from a sparse, diagonal, or permutation matrix,\n\
-or a range.\n\
-@seealso{sparse, issparse}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{FM} =} full (@var{SM})
+Return a full storage matrix from a sparse, diagonal, or permutation matrix,
+or a range.
+@seealso{sparse, issparse}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -5556,64 +5556,64 @@ or a range.\n\
 // Compute various norms of the vector X.
 
 DEFUN (norm, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} norm (@var{A})\n\
-@deftypefnx {} {} norm (@var{A}, @var{p})\n\
-@deftypefnx {} {} norm (@var{A}, @var{p}, @var{opt})\n\
-Compute the p-norm of the matrix @var{A}.\n\
-\n\
-If the second argument is missing, @w{@code{p = 2}} is assumed.\n\
-\n\
-If @var{A} is a matrix (or sparse matrix):\n\
-\n\
-@table @asis\n\
-@item @var{p} = @code{1}\n\
-1-norm, the largest column sum of the absolute values of @var{A}.\n\
-\n\
-@item @var{p} = @code{2}\n\
-Largest singular value of @var{A}.\n\
-\n\
-@item @var{p} = @code{Inf} or @qcode{\"inf\"}\n\
-@cindex infinity norm\n\
-Infinity norm, the largest row sum of the absolute values of @var{A}.\n\
-\n\
-@item @var{p} = @qcode{\"fro\"}\n\
-@cindex Frobenius norm\n\
-Frobenius norm of @var{A}, @code{sqrt (sum (diag (@var{A}' * @var{A})))}.\n\
-\n\
-@item other @var{p}, @code{@var{p} > 1}\n\
-@cindex general p-norm\n\
-maximum @code{norm (A*x, p)} such that @code{norm (x, p) == 1}\n\
-@end table\n\
-\n\
-If @var{A} is a vector or a scalar:\n\
-\n\
-@table @asis\n\
-@item @var{p} = @code{Inf} or @qcode{\"inf\"}\n\
-@code{max (abs (@var{A}))}.\n\
-\n\
-@item @var{p} = @code{-Inf}\n\
-@code{min (abs (@var{A}))}.\n\
-\n\
-@item @var{p} = @qcode{\"fro\"}\n\
-Frobenius norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.\n\
-\n\
-@item @var{p} = 0\n\
-Hamming norm - the number of nonzero elements.\n\
-\n\
-@item other @var{p}, @code{@var{p} > 1}\n\
-p-norm of @var{A}, @code{(sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})}.\n\
-\n\
-@item other @var{p} @code{@var{p} < 1}\n\
-the p-pseudonorm defined as above.\n\
-@end table\n\
-\n\
-If @var{opt} is the value @qcode{\"rows\"}, treat each row as a vector and\n\
-compute its norm.  The result is returned as a column vector.\n\
-Similarly, if @var{opt} is @qcode{\"columns\"} or @qcode{\"cols\"} then\n\
-compute the norms of each column and return a row vector.\n\
-@seealso{cond, svd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} norm (@var{A})
+@deftypefnx {} {} norm (@var{A}, @var{p})
+@deftypefnx {} {} norm (@var{A}, @var{p}, @var{opt})
+Compute the p-norm of the matrix @var{A}.
+
+If the second argument is missing, @w{@code{p = 2}} is assumed.
+
+If @var{A} is a matrix (or sparse matrix):
+
+@table @asis
+@item @var{p} = @code{1}
+1-norm, the largest column sum of the absolute values of @var{A}.
+
+@item @var{p} = @code{2}
+Largest singular value of @var{A}.
+
+@item @var{p} = @code{Inf} or @qcode{"inf"}
+@cindex infinity norm
+Infinity norm, the largest row sum of the absolute values of @var{A}.
+
+@item @var{p} = @qcode{"fro"}
+@cindex Frobenius norm
+Frobenius norm of @var{A}, @code{sqrt (sum (diag (@var{A}' * @var{A})))}.
+
+@item other @var{p}, @code{@var{p} > 1}
+@cindex general p-norm
+maximum @code{norm (A*x, p)} such that @code{norm (x, p) == 1}
+@end table
+
+If @var{A} is a vector or a scalar:
+
+@table @asis
+@item @var{p} = @code{Inf} or @qcode{"inf"}
+@code{max (abs (@var{A}))}.
+
+@item @var{p} = @code{-Inf}
+@code{min (abs (@var{A}))}.
+
+@item @var{p} = @qcode{"fro"}
+Frobenius norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.
+
+@item @var{p} = 0
+Hamming norm - the number of nonzero elements.
+
+@item other @var{p}, @code{@var{p} > 1}
+p-norm of @var{A}, @code{(sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})}.
+
+@item other @var{p} @code{@var{p} < 1}
+the p-pseudonorm defined as above.
+@end table
+
+If @var{opt} is the value @qcode{"rows"}, treat each row as a vector and
+compute its norm.  The result is returned as a column vector.
+Similarly, if @var{opt} is @qcode{"columns"} or @qcode{"cols"} then
+compute the norms of each column and return a row vector.
+@seealso{cond, svd}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -5776,45 +5776,45 @@ unary_op_defun_body (octave_value::unary_op op,
 }
 
 DEFUN (not, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{z} =} not (@var{x})\n\
-Return the logical NOT of @var{x}.\n\
-\n\
-This function is equivalent to the operator syntax @w{@code{! x}}.\n\
-@seealso{and, or, xor}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{z} =} not (@var{x})
+Return the logical NOT of @var{x}.
+
+This function is equivalent to the operator syntax @w{@code{! x}}.
+@seealso{and, or, xor}
+@end deftypefn */)
 {
   return unary_op_defun_body (octave_value::op_not, args);
 }
 
 DEFUN (uplus, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} uplus (@var{x})\n\
-This function and @w{@tcode{+ x}} are equivalent.\n\
-@seealso{uminus, plus, minus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uplus (@var{x})
+This function and @w{@tcode{+ x}} are equivalent.
+@seealso{uminus, plus, minus}
+@end deftypefn */)
 {
   return unary_op_defun_body (octave_value::op_uplus, args);
 }
 
 DEFUN (uminus, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} uminus (@var{x})\n\
-This function and @w{@tcode{- x}} are equivalent.\n\
-@seealso{uplus, minus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uminus (@var{x})
+This function and @w{@tcode{- x}} are equivalent.
+@seealso{uplus, minus}
+@end deftypefn */)
 {
   return unary_op_defun_body (octave_value::op_uminus, args);
 }
 
 DEFUN (transpose, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} transpose (@var{x})\n\
-Return the transpose of @var{x}.\n\
-\n\
-This function and @tcode{x.'} are equivalent.\n\
-@seealso{ctranspose}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} transpose (@var{x})
+Return the transpose of @var{x}.
+
+This function and @tcode{x.'} are equivalent.
+@seealso{ctranspose}
+@end deftypefn */)
 {
   return unary_op_defun_body (octave_value::op_transpose, args);
 }
@@ -5840,13 +5840,13 @@ This function and @tcode{x.'} are equivalent.\n\
 */
 
 DEFUN (ctranspose, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ctranspose (@var{x})\n\
-Return the complex conjugate transpose of @var{x}.\n\
-\n\
-This function and @tcode{x'} are equivalent.\n\
-@seealso{transpose}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ctranspose (@var{x})
+Return the complex conjugate transpose of @var{x}.
+
+This function and @tcode{x'} are equivalent.
+@seealso{transpose}
+@end deftypefn */)
 {
   return unary_op_defun_body (octave_value::op_hermitian, args);
 }
@@ -5909,276 +5909,276 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
 }
 
 DEFUN (plus, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} plus (@var{x}, @var{y})\n\
-@deftypefnx {} {} plus (@var{x1}, @var{x2}, @dots{})\n\
-This function and @w{@tcode{x + y}} are equivalent.\n\
-\n\
-If more arguments are given, the summation is applied\n\
-cumulatively from left to right:\n\
-\n\
-@example\n\
-(@dots{}((x1 + x2) + x3) + @dots{})\n\
-@end example\n\
-\n\
-At least one argument is required.\n\
-@seealso{minus, uplus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} plus (@var{x}, @var{y})
+@deftypefnx {} {} plus (@var{x1}, @var{x2}, @dots{})
+This function and @w{@tcode{x + y}} are equivalent.
+
+If more arguments are given, the summation is applied
+cumulatively from left to right:
+
+@example
+(@dots{}((x1 + x2) + x3) + @dots{})
+@end example
+
+At least one argument is required.
+@seealso{minus, uplus}
+@end deftypefn */)
 {
   return binary_assoc_op_defun_body (octave_value::op_add,
                                      octave_value::op_add_eq, args);
 }
 
 DEFUN (minus, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} minus (@var{x}, @var{y})\n\
-This function and @w{@tcode{x - y}} are equivalent.\n\
-@seealso{plus, uminus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} minus (@var{x}, @var{y})
+This function and @w{@tcode{x - y}} are equivalent.
+@seealso{plus, uminus}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_sub, args);
 }
 
 DEFUN (mtimes, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} mtimes (@var{x}, @var{y})\n\
-@deftypefnx {} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
-Return the matrix multiplication product of inputs.\n\
-\n\
-This function and @w{@tcode{x * y}} are equivalent.\n\
-If more arguments are given, the multiplication is applied\n\
-cumulatively from left to right:\n\
-\n\
-@example\n\
-(@dots{}((x1 * x2) * x3) * @dots{})\n\
-@end example\n\
-\n\
-At least one argument is required.\n\
-@seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} mtimes (@var{x}, @var{y})
+@deftypefnx {} {} mtimes (@var{x1}, @var{x2}, @dots{})
+Return the matrix multiplication product of inputs.
+
+This function and @w{@tcode{x * y}} are equivalent.
+If more arguments are given, the multiplication is applied
+cumulatively from left to right:
+
+@example
+(@dots{}((x1 * x2) * x3) * @dots{})
+@end example
+
+At least one argument is required.
+@seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower}
+@end deftypefn */)
 {
   return binary_assoc_op_defun_body (octave_value::op_mul,
                                      octave_value::op_mul_eq, args);
 }
 
 DEFUN (mrdivide, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} mrdivide (@var{x}, @var{y})\n\
-Return the matrix right division of @var{x} and @var{y}.\n\
-\n\
-This function and @w{@tcode{x / y}} are equivalent.\n\
-@seealso{mldivide, rdivide, plus, minus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} mrdivide (@var{x}, @var{y})
+Return the matrix right division of @var{x} and @var{y}.
+
+This function and @w{@tcode{x / y}} are equivalent.
+@seealso{mldivide, rdivide, plus, minus}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_div, args);
 }
 
 DEFUN (mpower, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} mpower (@var{x}, @var{y})\n\
-Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
-\n\
-This function and @w{@tcode{x ^ y}} are equivalent.\n\
-@seealso{power, mtimes, plus, minus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} mpower (@var{x}, @var{y})
+Return the matrix power operation of @var{x} raised to the @var{y} power.
+
+This function and @w{@tcode{x ^ y}} are equivalent.
+@seealso{power, mtimes, plus, minus}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_pow, args);
 }
 
 DEFUN (mldivide, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} mldivide (@var{x}, @var{y})\n\
-Return the matrix left division of @var{x} and @var{y}.\n\
-\n\
-This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.\n\
-@seealso{mrdivide, ldivide, rdivide}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} mldivide (@var{x}, @var{y})
+Return the matrix left division of @var{x} and @var{y}.
+
+This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.
+@seealso{mrdivide, ldivide, rdivide}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_ldiv, args);
 }
 
 DEFUN (lt, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} lt (@var{x}, @var{y})\n\
-This function is equivalent to @w{@code{x < y}}.\n\
-@seealso{le, eq, ge, gt, ne}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} lt (@var{x}, @var{y})
+This function is equivalent to @w{@code{x < y}}.
+@seealso{le, eq, ge, gt, ne}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_lt, args);
 }
 
 DEFUN (le, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} le (@var{x}, @var{y})\n\
-This function is equivalent to @w{@code{x <= y}}.\n\
-@seealso{eq, ge, gt, ne, lt}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} le (@var{x}, @var{y})
+This function is equivalent to @w{@code{x <= y}}.
+@seealso{eq, ge, gt, ne, lt}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_le, args);
 }
 
 DEFUN (eq, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} eq (@var{x}, @var{y})\n\
-Return true if the two inputs are equal.\n\
-\n\
-This function is equivalent to @w{@code{x == y}}.\n\
-@seealso{ne, isequal, le, ge, gt, ne, lt}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} eq (@var{x}, @var{y})
+Return true if the two inputs are equal.
+
+This function is equivalent to @w{@code{x == y}}.
+@seealso{ne, isequal, le, ge, gt, ne, lt}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_eq, args);
 }
 
 DEFUN (ge, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ge (@var{x}, @var{y})\n\
-This function is equivalent to @w{@code{x >= y}}.\n\
-@seealso{le, eq, gt, ne, lt}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ge (@var{x}, @var{y})
+This function is equivalent to @w{@code{x >= y}}.
+@seealso{le, eq, gt, ne, lt}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_ge, args);
 }
 
 DEFUN (gt, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} gt (@var{x}, @var{y})\n\
-This function is equivalent to @w{@code{x > y}}.\n\
-@seealso{le, eq, ge, ne, lt}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} gt (@var{x}, @var{y})
+This function is equivalent to @w{@code{x > y}}.
+@seealso{le, eq, ge, ne, lt}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_gt, args);
 }
 
 DEFUN (ne, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ne (@var{x}, @var{y})\n\
-Return true if the two inputs are not equal.\n\
-\n\
-This function is equivalent to @w{@code{x != y}}.\n\
-@seealso{eq, isequal, le, ge, lt}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ne (@var{x}, @var{y})
+Return true if the two inputs are not equal.
+
+This function is equivalent to @w{@code{x != y}}.
+@seealso{eq, isequal, le, ge, lt}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_ne, args);
 }
 
 DEFUN (times, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} times (@var{x}, @var{y})\n\
-@deftypefnx {} {} times (@var{x1}, @var{x2}, @dots{})\n\
-Return the element-by-element multiplication product of inputs.\n\
-\n\
-This function and @w{@tcode{x .* y}} are equivalent.\n\
-If more arguments are given, the multiplication is applied\n\
-cumulatively from left to right:\n\
-\n\
-@example\n\
-(@dots{}((x1 .* x2) .* x3) .* @dots{})\n\
-@end example\n\
-\n\
-At least one argument is required.\n\
-@seealso{mtimes, rdivide}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} times (@var{x}, @var{y})
+@deftypefnx {} {} times (@var{x1}, @var{x2}, @dots{})
+Return the element-by-element multiplication product of inputs.
+
+This function and @w{@tcode{x .* y}} are equivalent.
+If more arguments are given, the multiplication is applied
+cumulatively from left to right:
+
+@example
+(@dots{}((x1 .* x2) .* x3) .* @dots{})
+@end example
+
+At least one argument is required.
+@seealso{mtimes, rdivide}
+@end deftypefn */)
 {
   return binary_assoc_op_defun_body (octave_value::op_el_mul,
                                      octave_value::op_el_mul_eq, args);
 }
 
 DEFUN (rdivide, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} rdivide (@var{x}, @var{y})\n\
-Return the element-by-element right division of @var{x} and @var{y}.\n\
-\n\
-This function and @w{@tcode{x ./ y}} are equivalent.\n\
-@seealso{ldivide, mrdivide, times, plus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rdivide (@var{x}, @var{y})
+Return the element-by-element right division of @var{x} and @var{y}.
+
+This function and @w{@tcode{x ./ y}} are equivalent.
+@seealso{ldivide, mrdivide, times, plus}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_el_div, args);
 }
 
 DEFUN (power, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} power (@var{x}, @var{y})\n\
-Return the element-by-element operation of @var{x} raised to the\n\
-@var{y} power.\n\
-\n\
-This function and @w{@tcode{x .^ y}} are equivalent.\n\
-\n\
-If several complex results are possible, returns the one with smallest\n\
-non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},\n\
-@code{cbrt}, or @code{nthroot} if a real result is preferred.\n\
-\n\
-@seealso{mpower, realpow, realsqrt, cbrt, nthroot}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} power (@var{x}, @var{y})
+Return the element-by-element operation of @var{x} raised to the
+@var{y} power.
+
+This function and @w{@tcode{x .^ y}} are equivalent.
+
+If several complex results are possible, returns the one with smallest
+non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},
+@code{cbrt}, or @code{nthroot} if a real result is preferred.
+
+@seealso{mpower, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_el_pow, args);
 }
 
 DEFUN (ldivide, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} ldivide (@var{x}, @var{y})\n\
-Return the element-by-element left division of @var{x} and @var{y}.\n\
-\n\
-This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
-@seealso{rdivide, mldivide, times, plus}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ldivide (@var{x}, @var{y})
+Return the element-by-element left division of @var{x} and @var{y}.
+
+This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.
+@seealso{rdivide, mldivide, times, plus}
+@end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_el_ldiv, args);
 }
 
 DEFUN (and, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{z} =} and (@var{x}, @var{y})\n\
-@deftypefnx {} {@var{z} =} and (@var{x1}, @var{x2}, @dots{})\n\
-Return the logical AND of @var{x} and @var{y}.\n\
-\n\
-This function is equivalent to the operator syntax @w{@code{x & y}}.  If\n\
-more than two arguments are given, the logical AND is applied cumulatively\n\
-from left to right:\n\
-\n\
-@example\n\
-(@dots{}((x1 & x2) & x3) & @dots{})\n\
-@end example\n\
-\n\
-At least one argument is required.\n\
-@seealso{or, not, xor}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{z} =} and (@var{x}, @var{y})
+@deftypefnx {} {@var{z} =} and (@var{x1}, @var{x2}, @dots{})
+Return the logical AND of @var{x} and @var{y}.
+
+This function is equivalent to the operator syntax @w{@code{x & y}}.  If
+more than two arguments are given, the logical AND is applied cumulatively
+from left to right:
+
+@example
+(@dots{}((x1 & x2) & x3) & @dots{})
+@end example
+
+At least one argument is required.
+@seealso{or, not, xor}
+@end deftypefn */)
 {
   return binary_assoc_op_defun_body (octave_value::op_el_and,
                                      octave_value::op_el_and_eq, args);
 }
 
 DEFUN (or, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{z} =} or (@var{x}, @var{y})\n\
-@deftypefnx {} {@var{z} =} or (@var{x1}, @var{x2}, @dots{})\n\
-Return the logical OR of @var{x} and @var{y}.\n\
-\n\
-This function is equivalent to the operator syntax @w{@code{x | y}}.  If\n\
-more than two arguments are given, the logical OR is applied cumulatively\n\
-from left to right:\n\
-\n\
-@example\n\
-(@dots{}((x1 | x2) | x3) | @dots{})\n\
-@end example\n\
-\n\
-At least one argument is required.\n\
-@seealso{and, not, xor}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{z} =} or (@var{x}, @var{y})
+@deftypefnx {} {@var{z} =} or (@var{x1}, @var{x2}, @dots{})
+Return the logical OR of @var{x} and @var{y}.
+
+This function is equivalent to the operator syntax @w{@code{x | y}}.  If
+more than two arguments are given, the logical OR is applied cumulatively
+from left to right:
+
+@example
+(@dots{}((x1 | x2) | x3) | @dots{})
+@end example
+
+At least one argument is required.
+@seealso{and, not, xor}
+@end deftypefn */)
 {
   return binary_assoc_op_defun_body (octave_value::op_el_or,
                                      octave_value::op_el_or_eq, args);
 }
 
 DEFUN (colon, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{r} =} colon (@var{base}, @var{limit})\n\
-@deftypefnx {} {@var{r} =} colon (@var{base}, @var{increment}, @var{limit})\n\
-Return the result of the colon expression corresponding to @var{base},\n\
-@var{limit}, and optionally, @var{increment}.\n\
-\n\
-This function is equivalent to the operator syntax @w{@code{base : limit}}\n\
-or @w{@code{base : increment : limit}}.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{r} =} colon (@var{base}, @var{limit})
+@deftypefnx {} {@var{r} =} colon (@var{base}, @var{increment}, @var{limit})
+Return the result of the colon expression corresponding to @var{base},
+@var{limit}, and optionally, @var{increment}.
+
+This function is equivalent to the operator syntax @w{@code{base : limit}}
+or @w{@code{base : increment : limit}}.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -6192,50 +6192,50 @@ or @w{@code{base : increment : limit}}.\n\
 static double tic_toc_timestamp = -1.0;
 
 DEFUN (tic, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} tic ()\n\
-@deftypefnx {} {@var{id} =} tic ()\n\
-@deftypefnx {} {} toc ()\n\
-@deftypefnx {} {} toc (@var{id})\n\
-@deftypefnx {} {@var{val} =} toc (@dots{})\n\
-Set or check a wall-clock timer.\n\
-\n\
-Calling @code{tic} without an output argument sets the internal timer state.\n\
-Subsequent calls to @code{toc} return the number of seconds since the timer\n\
-was set.\n\
-For example,\n\
-\n\
-@example\n\
-@group\n\
-tic ();\n\
-# many computations later@dots{}\n\
-elapsed_time = toc ();\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-will set the variable @code{elapsed_time} to the number of seconds since\n\
-the most recent call to the function @code{tic}.\n\
-\n\
-If called with one output argument, @code{tic} returns a scalar\n\
-of type @code{uint64} that may be later passed to @code{toc}.\n\
-\n\
-@example\n\
-@group\n\
-id = tic; pause (5); toc (id)\n\
-      @result{} 5.0010\n\
-@end group\n\
-@end example\n\
-\n\
-Calling @code{tic} and @code{toc} this way allows nested timing calls.\n\
-\n\
-If you are more interested in the CPU time that your process used, you\n\
-should use the @code{cputime} function instead.  The @code{tic} and\n\
-@code{toc} functions report the actual wall clock time that elapsed\n\
-between the calls.  This may include time spent processing other jobs or\n\
-doing nothing at all.\n\
-@seealso{toc, cputime}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} tic ()
+@deftypefnx {} {@var{id} =} tic ()
+@deftypefnx {} {} toc ()
+@deftypefnx {} {} toc (@var{id})
+@deftypefnx {} {@var{val} =} toc (@dots{})
+Set or check a wall-clock timer.
+
+Calling @code{tic} without an output argument sets the internal timer state.
+Subsequent calls to @code{toc} return the number of seconds since the timer
+was set.
+For example,
+
+@example
+@group
+tic ();
+# many computations later@dots{}
+elapsed_time = toc ();
+@end group
+@end example
+
+@noindent
+will set the variable @code{elapsed_time} to the number of seconds since
+the most recent call to the function @code{tic}.
+
+If called with one output argument, @code{tic} returns a scalar
+of type @code{uint64} that may be later passed to @code{toc}.
+
+@example
+@group
+id = tic; pause (5); toc (id)
+      @result{} 5.0010
+@end group
+@end example
+
+Calling @code{tic} and @code{toc} this way allows nested timing calls.
+
+If you are more interested in the CPU time that your process used, you
+should use the @code{cputime} function instead.  The @code{tic} and
+@code{toc} functions report the actual wall clock time that elapsed
+between the calls.  This may include time spent processing other jobs or
+doing nothing at all.
+@seealso{toc, cputime}
+@end deftypefn */)
 {
   if (args.length () != 0)
     warning ("tic: ignoring extra arguments");
@@ -6259,12 +6259,12 @@ doing nothing at all.\n\
 }
 
 DEFUN (toc, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} toc ()\n\
-@deftypefnx {} {} toc (@var{id})\n\
-@deftypefnx {} {@var{val} =} toc (@dots{})\n\
-@seealso{tic, cputime}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} toc ()
+@deftypefnx {} {} toc (@var{id})
+@deftypefnx {} {@var{val} =} toc (@dots{})
+@seealso{tic, cputime}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -6312,23 +6312,23 @@ DEFUN (toc, args, nargout,
 */
 
 DEFUN (cputime, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{total}, @var{user}, @var{system}] =} cputime ();\n\
-Return the CPU time used by your Octave session.\n\
-\n\
-The first output is the total time spent executing your process and is equal\n\
-to the sum of second and third outputs, which are the number of CPU seconds\n\
-spent executing in user mode and the number of CPU seconds spent executing\n\
-in system mode, respectively.\n\
-\n\
-If your system does not have a way to report CPU time usage, @code{cputime}\n\
-returns 0 for each of its output values.\n\
-\n\
-Note that because Octave used some CPU time to start, it is reasonable\n\
-to check to see if @code{cputime} works by checking to see if the total\n\
-CPU time used is nonzero.\n\
-@seealso{tic, toc}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{total}, @var{user}, @var{system}] =} cputime ();
+Return the CPU time used by your Octave session.
+
+The first output is the total time spent executing your process and is equal
+to the sum of second and third outputs, which are the number of CPU seconds
+spent executing in user mode and the number of CPU seconds spent executing
+in system mode, respectively.
+
+If your system does not have a way to report CPU time usage, @code{cputime}
+returns 0 for each of its output values.
+
+Note that because Octave used some CPU time to start, it is reasonable
+to check to see if @code{cputime} works by checking to see if the total
+CPU time used is nonzero.
+@seealso{tic, toc}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -6342,74 +6342,74 @@ CPU time used is nonzero.\n\
 }
 
 DEFUN (sort, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{s}, @var{i}] =} sort (@var{x})\n\
-@deftypefnx {} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
-@deftypefnx {} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
-@deftypefnx {} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
-Return a copy of @var{x} with the elements arranged in increasing order.\n\
-\n\
-For matrices, @code{sort} orders the elements within columns\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-sort ([1, 2; 2, 3; 3, 1])\n\
-   @result{}  1  1\n\
-       2  2\n\
-       3  3\n\
-@end group\n\
-@end example\n\
-\n\
-If the optional argument @var{dim} is given, then the matrix is sorted\n\
-along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
-defines the order in which the values will be sorted.  Valid values of\n\
-@code{mode} are @qcode{\"ascend\"} or @qcode{\"descend\"}.\n\
-\n\
-The @code{sort} function may also be used to produce a matrix\n\
-containing the original row indices of the elements in the sorted\n\
-matrix.  For example:\n\
-\n\
-@example\n\
-@group\n\
-[s, i] = sort ([1, 2; 2, 3; 3, 1])\n\
-  @result{} s = 1  1\n\
-         2  2\n\
-         3  3\n\
-  @result{} i = 1  3\n\
-         2  1\n\
-         3  2\n\
-@end group\n\
-@end example\n\
-\n\
-For equal elements, the indices are such that equal elements are listed\n\
-in the order in which they appeared in the original list.\n\
-\n\
-Sorting of complex entries is done first by magnitude\n\
-(@w{@code{abs (@var{z})}}) and for any ties by phase angle\n\
-(@w{@code{angle (z)}}).  For example:\n\
-\n\
-@example\n\
-@group\n\
-sort ([1+i; 1; 1-i])\n\
-    @result{} 1 + 0i\n\
-       1 - 1i\n\
-       1 + 1i\n\
-@end group\n\
-@end example\n\
-\n\
-NaN values are treated as being greater than any other value and are sorted\n\
-to the end of the list.\n\
-\n\
-The @code{sort} function may also be used to sort strings and cell arrays\n\
-of strings, in which case ASCII dictionary order (uppercase 'A' precedes\n\
-lowercase 'a') of the strings is used.\n\
-\n\
-The algorithm used in @code{sort} is optimized for the sorting of partially\n\
-ordered lists.\n\
-@seealso{sortrows, issorted}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{s}, @var{i}] =} sort (@var{x})
+@deftypefnx {} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})
+@deftypefnx {} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})
+@deftypefnx {} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})
+Return a copy of @var{x} with the elements arranged in increasing order.
+
+For matrices, @code{sort} orders the elements within columns
+
+For example:
+
+@example
+@group
+sort ([1, 2; 2, 3; 3, 1])
+   @result{}  1  1
+       2  2
+       3  3
+@end group
+@end example
+
+If the optional argument @var{dim} is given, then the matrix is sorted
+along the dimension defined by @var{dim}.  The optional argument @code{mode}
+defines the order in which the values will be sorted.  Valid values of
+@code{mode} are @qcode{"ascend"} or @qcode{"descend"}.
+
+The @code{sort} function may also be used to produce a matrix
+containing the original row indices of the elements in the sorted
+matrix.  For example:
+
+@example
+@group
+[s, i] = sort ([1, 2; 2, 3; 3, 1])
+  @result{} s = 1  1
+         2  2
+         3  3
+  @result{} i = 1  3
+         2  1
+         3  2
+@end group
+@end example
+
+For equal elements, the indices are such that equal elements are listed
+in the order in which they appeared in the original list.
+
+Sorting of complex entries is done first by magnitude
+(@w{@code{abs (@var{z})}}) and for any ties by phase angle
+(@w{@code{angle (z)}}).  For example:
+
+@example
+@group
+sort ([1+i; 1; 1-i])
+    @result{} 1 + 0i
+       1 - 1i
+       1 + 1i
+@end group
+@end example
+
+NaN values are treated as being greater than any other value and are sorted
+to the end of the list.
+
+The @code{sort} function may also be used to sort strings and cell arrays
+of strings, in which case ASCII dictionary order (uppercase 'A' precedes
+lowercase 'a') of the strings is used.
+
+The algorithm used in @code{sort} is optimized for the sorting of partially
+ordered lists.
+@seealso{sortrows, issorted}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -6664,10 +6664,10 @@ ordered lists.\n\
 
 // FIXME: Is this function used anymore?  12/14/2015
 DEFUN (__sort_rows_idx__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __sort_rows_idx__ (@var{a}, @var{mode})\n\
-Undocumented internal function.\n\
-@end deftypefn\n")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __sort_rows_idx__ (@var{a}, @var{mode})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -6726,24 +6726,24 @@ get_sort_mode_option (const octave_value& arg)
 }
 
 DEFUN (issorted, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} issorted (@var{a})\n\
-@deftypefnx {} {} issorted (@var{a}, @var{mode})\n\
-@deftypefnx {} {} issorted (@var{a}, \"rows\", @var{mode})\n\
-Return true if the array is sorted according to @var{mode}, which\n\
-may be either @qcode{\"ascending\"}, @qcode{\"descending\"}, or\n\
-@qcode{\"either\"}.\n\
-\n\
-By default,  @var{mode} is @qcode{\"ascending\"}.  NaNs are treated in the\n\
-same manner as @code{sort}.\n\
-\n\
-If the optional argument @qcode{\"rows\"} is supplied, check whether\n\
-the array is sorted by rows as output by the function @code{sortrows}\n\
-(with no options).\n\
-\n\
-This function does not support sparse matrices.\n\
-@seealso{sort, sortrows}\n\
-@end deftypefn\n")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} issorted (@var{a})
+@deftypefnx {} {} issorted (@var{a}, @var{mode})
+@deftypefnx {} {} issorted (@var{a}, "rows", @var{mode})
+Return true if the array is sorted according to @var{mode}, which
+may be either @qcode{"ascending"}, @qcode{"descending"}, or
+@qcode{"either"}.
+
+By default,  @var{mode} is @qcode{"ascending"}.  NaNs are treated in the
+same manner as @code{sort}.
+
+If the optional argument @qcode{"rows"} is supplied, check whether
+the array is sorted by rows as output by the function @code{sortrows}
+(with no options).
+
+This function does not support sparse matrices.
+@seealso{sort, sortrows}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -6838,28 +6838,28 @@ This function does not support sparse matrices.\n\
 */
 
 DEFUN (nth_element, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} nth_element (@var{x}, @var{n})\n\
-@deftypefnx {} {} nth_element (@var{x}, @var{n}, @var{dim})\n\
-Select the n-th smallest element of a vector, using the ordering defined by\n\
-@code{sort}.\n\
-\n\
-The result is equivalent to @code{sort(@var{x})(@var{n})}.\n\
-\n\
-@var{n} can also be a contiguous range, either ascending @code{l:u}\n\
-or descending @code{u:-1:l}, in which case a range of elements is returned.\n\
-\n\
-If @var{x} is an array, @code{nth_element} operates along the dimension\n\
-defined by @var{dim}, or the first non-singleton dimension if @var{dim} is\n\
-not given.\n\
-\n\
-Programming Note: nth_element encapsulates the C++ standard library\n\
-algorithms nth_element and partial_sort.  On average, the complexity of the\n\
-operation is O(M*log(K)), where @w{@code{M = size (@var{x}, @var{dim})}} and\n\
-@w{@code{K = length (@var{n})}}.  This function is intended for cases where\n\
-the ratio K/M is small; otherwise, it may be better to use @code{sort}.\n\
-@seealso{sort, min, max}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} nth_element (@var{x}, @var{n})
+@deftypefnx {} {} nth_element (@var{x}, @var{n}, @var{dim})
+Select the n-th smallest element of a vector, using the ordering defined by
+@code{sort}.
+
+The result is equivalent to @code{sort(@var{x})(@var{n})}.
+
+@var{n} can also be a contiguous range, either ascending @code{l:u}
+or descending @code{u:-1:l}, in which case a range of elements is returned.
+
+If @var{x} is an array, @code{nth_element} operates along the dimension
+defined by @var{dim}, or the first non-singleton dimension if @var{dim} is
+not given.
+
+Programming Note: nth_element encapsulates the C++ standard library
+algorithms nth_element and partial_sort.  On average, the complexity of the
+operation is O(M*log(K)), where @w{@code{M = size (@var{x}, @var{dim})}} and
+@w{@code{K = length (@var{n})}}.  This function is intended for cases where
+the ratio K/M is small; otherwise, it may be better to use @code{sort}.
+@seealso{sort, min, max}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -6953,10 +6953,10 @@ do_accumarray_sum (const idx_vector& idx, const NDT& vals,
 }
 
 DEFUN (__accumarray_sum__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __accumarray_sum__ (@var{idx}, @var{vals}, @var{n})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __accumarray_sum__ (@var{idx}, @var{vals}, @var{n})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -7127,19 +7127,19 @@ do_accumarray_minmax_fun (const octave_value_list& args,
 }
 
 DEFUN (__accumarray_min__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __accumarray_min__ (@var{idx}, @var{vals}, @var{zero}, @var{n})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __accumarray_min__ (@var{idx}, @var{vals}, @var{zero}, @var{n})
+Undocumented internal function.
+@end deftypefn */)
 {
   return do_accumarray_minmax_fun (args, true);
 }
 
 DEFUN (__accumarray_max__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __accumarray_max__ (@var{idx}, @var{vals}, @var{zero}, @var{n})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __accumarray_max__ (@var{idx}, @var{vals}, @var{zero}, @var{n})
+Undocumented internal function.
+@end deftypefn */)
 {
   return do_accumarray_minmax_fun (args, false);
 }
@@ -7176,10 +7176,10 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
 }
 
 DEFUN (__accumdim_sum__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __accumdim_sum__ (@var{idx}, @var{vals}, @var{dim}, @var{n})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __accumdim_sum__ (@var{idx}, @var{vals}, @var{dim}, @var{n})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -7299,33 +7299,33 @@ do_merge (const Array<bool>& mask,
     }
 
 DEFUN (merge, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
-@deftypefnx {} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
-Merge elements of @var{true_val} and @var{false_val}, depending on the\n\
-value of @var{mask}.\n\
-\n\
-If @var{mask} is a logical scalar, the other two arguments can be arbitrary\n\
-values.  Otherwise, @var{mask} must be a logical array, and @var{tval},\n\
-@var{fval} should be arrays of matching class, or cell arrays.  In the\n\
-scalar mask case, @var{tval} is returned if @var{mask} is true, otherwise\n\
-@var{fval} is returned.\n\
-\n\
-In the array mask case, both @var{tval} and @var{fval} must be either\n\
-scalars or arrays with dimensions equal to @var{mask}.  The result is\n\
-constructed as follows:\n\
-\n\
-@example\n\
-@group\n\
-result(mask) = tval(mask);\n\
-result(! mask) = fval(! mask);\n\
-@end group\n\
-@end example\n\
-\n\
-@var{mask} can also be arbitrary numeric type, in which case it is first\n\
-converted to logical.\n\
-@seealso{logical, diff}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} merge (@var{mask}, @var{tval}, @var{fval})
+@deftypefnx {} {} ifelse (@var{mask}, @var{tval}, @var{fval})
+Merge elements of @var{true_val} and @var{false_val}, depending on the
+value of @var{mask}.
+
+If @var{mask} is a logical scalar, the other two arguments can be arbitrary
+values.  Otherwise, @var{mask} must be a logical array, and @var{tval},
+@var{fval} should be arrays of matching class, or cell arrays.  In the
+scalar mask case, @var{tval} is returned if @var{mask} is true, otherwise
+@var{fval} is returned.
+
+In the array mask case, both @var{tval} and @var{fval} must be either
+scalars or arrays with dimensions equal to @var{mask}.  The result is
+constructed as follows:
+
+@example
+@group
+result(mask) = tval(mask);
+result(! mask) = fval(! mask);
+@end group
+@end example
+
+@var{mask} can also be arbitrary numeric type, in which case it is first
+converted to logical.
+@seealso{logical, diff}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();
@@ -7530,36 +7530,36 @@ do_diff (const octave_value& array, octave_idx_type order,
 }
 
 DEFUN (diff, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} diff (@var{x})\n\
-@deftypefnx {} {} diff (@var{x}, @var{k})\n\
-@deftypefnx {} {} diff (@var{x}, @var{k}, @var{dim})\n\
-If @var{x} is a vector of length @math{n}, @w{@code{diff (@var{x})}} is the\n\
-vector of first differences\n\
-@tex\n\
- $x_2 - x_1, \\ldots{}, x_n - x_{n-1}$.\n\
-@end tex\n\
-@ifnottex\n\
- @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).\n\
-@end ifnottex\n\
-\n\
-If @var{x} is a matrix, @w{@code{diff (@var{x})}} is the matrix of column\n\
-differences along the first non-singleton dimension.\n\
-\n\
-The second argument is optional.  If supplied,\n\
-@w{@code{diff (@var{x}, @var{k})}}, where @var{k} is a non-negative integer,\n\
-returns the @var{k}-th differences.  It is possible that @var{k} is larger\n\
-than the first non-singleton dimension of the matrix.  In this case,\n\
-@code{diff} continues to take the differences along the next\n\
-non-singleton dimension.\n\
-\n\
-The dimension along which to take the difference can be explicitly\n\
-stated with the optional variable @var{dim}.  In this case the\n\
-@var{k}-th order differences are calculated along this dimension.\n\
-In the case where @var{k} exceeds @w{@code{size (@var{x}, @var{dim})}}\n\
-an empty matrix is returned.\n\
-@seealso{sort, merge}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} diff (@var{x})
+@deftypefnx {} {} diff (@var{x}, @var{k})
+@deftypefnx {} {} diff (@var{x}, @var{k}, @var{dim})
+If @var{x} is a vector of length @math{n}, @w{@code{diff (@var{x})}} is the
+vector of first differences
+@tex
+ $x_2 - x_1, \ldots{}, x_n - x_{n-1}$.
+@end tex
+@ifnottex
+ @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).
+@end ifnottex
+
+If @var{x} is a matrix, @w{@code{diff (@var{x})}} is the matrix of column
+differences along the first non-singleton dimension.
+
+The second argument is optional.  If supplied,
+@w{@code{diff (@var{x}, @var{k})}}, where @var{k} is a non-negative integer,
+returns the @var{k}-th differences.  It is possible that @var{k} is larger
+than the first non-singleton dimension of the matrix.  In this case,
+@code{diff} continues to take the differences along the next
+non-singleton dimension.
+
+The dimension along which to take the difference can be explicitly
+stated with the optional variable @var{dim}.  In this case the
+@var{k}-th order differences are calculated along this dimension.
+In the case where @var{k} exceeds @w{@code{size (@var{x}, @var{dim})}}
+an empty matrix is returned.
+@seealso{sort, merge}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -7639,30 +7639,30 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 }
 
 DEFUN (repelems, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} repelems (@var{x}, @var{r})\n\
-Construct a vector of repeated elements from @var{x}.\n\
-\n\
-@var{r} is a 2x@var{N} integer matrix specifying which elements to repeat\n\
-and how often to repeat each element.  Entries in the first row,\n\
-@var{r}(1,j), select an element to repeat.  The corresponding entry in the\n\
-second row, @var{r}(2,j), specifies the repeat count.  If @var{x} is a\n\
-matrix then the columns of @var{x} are imagined to be stacked on top of\n\
-each other for purposes of the selection index.  A row vector is always\n\
-returned.\n\
-\n\
-Conceptually the result is calculated as follows:\n\
-\n\
-@example\n\
-@group\n\
-y = [];\n\
-for i = 1:columns (@var{r})\n\
-  y = [y, @var{x}(@var{r}(1,i)*ones(1, @var{r}(2,i)))];\n\
-endfor\n\
-@end group\n\
-@end example\n\
-@seealso{repmat, cat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} repelems (@var{x}, @var{r})
+Construct a vector of repeated elements from @var{x}.
+
+@var{r} is a 2x@var{N} integer matrix specifying which elements to repeat
+and how often to repeat each element.  Entries in the first row,
+@var{r}(1,j), select an element to repeat.  The corresponding entry in the
+second row, @var{r}(2,j), specifies the repeat count.  If @var{x} is a
+matrix then the columns of @var{x} are imagined to be stacked on top of
+each other for purposes of the selection index.  A row vector is always
+returned.
+
+Conceptually the result is calculated as follows:
+
+@example
+@group
+y = [];
+for i = 1:columns (@var{r})
+  y = [y, @var{x}(@var{r}(1,i)*ones(1, @var{r}(2,i)))];
+endfor
+@end group
+@end example
+@seealso{repmat, cat}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -7722,13 +7722,13 @@ endfor\n\
 }
 
 DEFUN (base64_encode, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{s} =} base64_encode (@var{x})\n\
-Encode a double matrix or array @var{x} into the base64 format string\n\
-@var{s}.\n\
-\n\
-@seealso{base64_decode}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{s} =} base64_encode (@var{x})
+Encode a double matrix or array @var{x} into the base64 format string
+@var{s}.
+
+@seealso{base64_decode}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -7826,16 +7826,16 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 */
 
 DEFUN (base64_decode, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{x} =} base64_decode (@var{s})\n\
-@deftypefnx {} {@var{x} =} base64_decode (@var{s}, @var{dims})\n\
-Decode the double matrix or array @var{x} from the base64 encoded string\n\
-@var{s}.\n\
-\n\
-The optional input parameter @var{dims} should be a vector containing the\n\
-dimensions of the decoded array.\n\
-@seealso{base64_encode}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{x} =} base64_decode (@var{s})
+@deftypefnx {} {@var{x} =} base64_decode (@var{s}, @var{dims})
+Decode the double matrix or array @var{x} from the base64 encoded string
+@var{s}.
+
+The optional input parameter @var{dims} should be a vector containing the
+dimensions of the decoded array.
+@seealso{base64_encode}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

@@ -317,23 +317,23 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 }
 
 DEFUN (bsxfun, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
-The binary singleton expansion function performs broadcasting,\n\
-that is, it applies a binary function @var{f} element-by-element to two\n\
-array arguments @var{A} and @var{B}, and expands as necessary\n\
-singleton dimensions in either input argument.\n\
-\n\
-@var{f} is a function handle, inline function, or string containing the name\n\
-of the function to evaluate.  The function @var{f} must be capable of\n\
-accepting two column-vector arguments of equal length, or one column vector\n\
-argument and a scalar.\n\
-\n\
-The dimensions of @var{A} and @var{B} must be equal or singleton.  The\n\
-singleton dimensions of the arrays will be expanded to the same\n\
-dimensionality as the other array.\n\
-@seealso{arrayfun, cellfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
+The binary singleton expansion function performs broadcasting,
+that is, it applies a binary function @var{f} element-by-element to two
+array arguments @var{A} and @var{B}, and expands as necessary
+singleton dimensions in either input argument.
+
+@var{f} is a function handle, inline function, or string containing the name
+of the function to evaluate.  The function @var{f} must be capable of
+accepting two column-vector arguments of equal length, or one column vector
+argument and a scalar.
+
+The dimensions of @var{A} and @var{B} must be equal or singleton.  The
+singleton dimensions of the arrays will be expanded to the same
+dimensionality as the other array.
+@seealso{arrayfun, cellfun}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();

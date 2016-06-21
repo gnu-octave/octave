@@ -154,106 +154,106 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 }
 
 DEFUN (dassl, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
-Solve the set of differential-algebraic equations\n\
-@tex\n\
-$$ 0 = f (x, \\dot{x}, t) $$\n\
-with\n\
-$$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-0 = f (x, xdot, t)\n\
-@end example\n\
-\n\
-@noindent\n\
-with\n\
-\n\
-@example\n\
-x(t_0) = x_0, xdot(t_0) = xdot_0\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-The solution is returned in the matrices @var{x} and @var{xdot},\n\
-with each row in the result matrices corresponding to one of the\n\
-elements in the vector @var{t}.  The first element of @var{t}\n\
-should be @math{t_0} and correspond to the initial state of the\n\
-system @var{x_0} and its derivative @var{xdot_0}, so that the first\n\
-row of the output @var{x} is @var{x_0} and the first row\n\
-of the output @var{xdot} is @var{xdot_0}.\n\
-\n\
-The first argument, @var{fcn}, is a string, inline, or function handle\n\
-that names the function @math{f} to call to compute the vector of\n\
-residuals for the set of equations.  It must have the form\n\
-\n\
-@example\n\
-@var{res} = f (@var{x}, @var{xdot}, @var{t})\n\
-@end example\n\
-\n\
-@noindent\n\
-in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
-scalar.\n\
-\n\
-If @var{fcn} is a two-element string array or a two-element cell array\n\
-of strings, inline functions, or function handles, the first element names\n\
-the function @math{f} described above, and the second element names a\n\
-function to compute the modified Jacobian\n\
-\n\
-@tex\n\
-$$\n\
-J = {\\partial f \\over \\partial x}\n\
-  + c {\\partial f \\over \\partial \\dot{x}}\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-      df       df\n\
-jac = -- + c ------\n\
-      dx     d xdot\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-The modified Jacobian function must have the form\n\
-\n\
-@example\n\
-@group\n\
-\n\
-@var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{c})\n\
-\n\
-@end group\n\
-@end example\n\
-\n\
-The second and third arguments to @code{dassl} specify the initial\n\
-condition of the states and their derivatives, and the fourth argument\n\
-specifies a vector of output times at which the solution is desired,\n\
-including the time corresponding to the initial condition.\n\
-\n\
-The set of initial states and derivatives are not strictly required to\n\
-be consistent.  In practice, however, @sc{dassl} is not very good at\n\
-determining a consistent set for you, so it is best if you ensure that\n\
-the initial values result in the function evaluating to zero.\n\
-\n\
-The fifth argument is optional, and may be used to specify a set of\n\
-times that the DAE solver should not integrate past.  It is useful for\n\
-avoiding difficulties with singularities and points where there is a\n\
-discontinuity in the derivative.\n\
-\n\
-After a successful computation, the value of @var{istate} will be\n\
-greater than zero (consistent with the Fortran version of @sc{dassl}).\n\
-\n\
-If the computation is not successful, the value of @var{istate} will be\n\
-less than zero and @var{msg} will contain additional information.\n\
-\n\
-You can use the function @code{dassl_options} to set optional\n\
-parameters for @code{dassl}.\n\
-@seealso{daspk, dasrt, lsode}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
+Solve the set of differential-algebraic equations
+@tex
+$$ 0 = f (x, \dot{x}, t) $$
+with
+$$ x(t_0) = x_0, \dot{x}(t_0) = \dot{x}_0 $$
+@end tex
+@ifnottex
+
+@example
+0 = f (x, xdot, t)
+@end example
+
+@noindent
+with
+
+@example
+x(t_0) = x_0, xdot(t_0) = xdot_0
+@end example
+
+@end ifnottex
+The solution is returned in the matrices @var{x} and @var{xdot},
+with each row in the result matrices corresponding to one of the
+elements in the vector @var{t}.  The first element of @var{t}
+should be @math{t_0} and correspond to the initial state of the
+system @var{x_0} and its derivative @var{xdot_0}, so that the first
+row of the output @var{x} is @var{x_0} and the first row
+of the output @var{xdot} is @var{xdot_0}.
+
+The first argument, @var{fcn}, is a string, inline, or function handle
+that names the function @math{f} to call to compute the vector of
+residuals for the set of equations.  It must have the form
+
+@example
+@var{res} = f (@var{x}, @var{xdot}, @var{t})
+@end example
+
+@noindent
+in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a
+scalar.
+
+If @var{fcn} is a two-element string array or a two-element cell array
+of strings, inline functions, or function handles, the first element names
+the function @math{f} described above, and the second element names a
+function to compute the modified Jacobian
+
+@tex
+$$
+J = {\partial f \over \partial x}
+  + c {\partial f \over \partial \dot{x}}
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+      df       df
+jac = -- + c ------
+      dx     d xdot
+@end group
+@end example
+
+@end ifnottex
+
+The modified Jacobian function must have the form
+
+@example
+@group
+
+@var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{c})
+
+@end group
+@end example
+
+The second and third arguments to @code{dassl} specify the initial
+condition of the states and their derivatives, and the fourth argument
+specifies a vector of output times at which the solution is desired,
+including the time corresponding to the initial condition.
+
+The set of initial states and derivatives are not strictly required to
+be consistent.  In practice, however, @sc{dassl} is not very good at
+determining a consistent set for you, so it is best if you ensure that
+the initial values result in the function evaluating to zero.
+
+The fifth argument is optional, and may be used to specify a set of
+times that the DAE solver should not integrate past.  It is useful for
+avoiding difficulties with singularities and points where there is a
+discontinuity in the derivative.
+
+After a successful computation, the value of @var{istate} will be
+greater than zero (consistent with the Fortran version of @sc{dassl}).
+
+If the computation is not successful, the value of @var{istate} will be
+less than zero and @var{msg} will contain additional information.
+
+You can use the function @code{dassl_options} to set optional
+parameters for @code{dassl}.
+@seealso{daspk, dasrt, lsode}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

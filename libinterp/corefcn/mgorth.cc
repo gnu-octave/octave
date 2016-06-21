@@ -49,23 +49,23 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 }
 
 DEFUN (mgorth, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
-Orthogonalize a given column vector @var{x} with respect to a set of\n\
-orthonormal vectors comprising the columns of @var{v} using the modified\n\
-Gram-Schmidt method.\n\
-\n\
-On exit, @var{y} is a unit vector such that:\n\
-\n\
-@example\n\
-@group\n\
-  norm (@var{y}) = 1\n\
-  @var{v}' * @var{y} = 0\n\
-  @var{x} = [@var{v}, @var{y}]*@var{h}'\n\
-@end group\n\
-@end example\n\
-\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})
+Orthogonalize a given column vector @var{x} with respect to a set of
+orthonormal vectors comprising the columns of @var{v} using the modified
+Gram-Schmidt method.
+
+On exit, @var{y} is a unit vector such that:
+
+@example
+@group
+  norm (@var{y}) = 1
+  @var{v}' * @var{y} = 0
+  @var{x} = [@var{v}, @var{y}]*@var{h}'
+@end group
+@end example
+
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();

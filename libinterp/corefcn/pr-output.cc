@@ -3408,26 +3408,26 @@ octave_print_internal (std::ostream&, const octave_value&, bool)
 }
 
 DEFUN (rats, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} rats (@var{x}, @var{len})\n\
-Convert @var{x} into a rational approximation represented as a string.\n\
-\n\
-The string can be converted back into a matrix as follows:\n\
-\n\
-@example\n\
-@group\n\
-r = rats (hilb (4));\n\
-x = str2num (r)\n\
-@end group\n\
-@end example\n\
-\n\
-The optional second argument defines the maximum length of the string\n\
-representing the elements of @var{x}.  By default @var{len} is 9.\n\
-\n\
-If the length of the smallest possible rational approximation exceeds\n\
-@var{len}, an asterisk (*) padded with spaces will be returned instead.\n\
-@seealso{format, rat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rats (@var{x}, @var{len})
+Convert @var{x} into a rational approximation represented as a string.
+
+The string can be converted back into a matrix as follows:
+
+@example
+@group
+r = rats (hilb (4));
+x = str2num (r)
+@end group
+@end example
+
+The optional second argument defines the maximum length of the string
+representing the elements of @var{x}.  By default @var{len} is 9.
+
+If the length of the smallest possible rational approximation exceeds
+@var{len}, an asterisk (*) padded with spaces will be returned instead.
+@seealso{format, rat}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -3480,28 +3480,28 @@ If the length of the smallest possible rational approximation exceeds\n\
 }
 
 DEFUN (disp, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} disp (@var{x})\n\
-Display the value of @var{x}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-disp (\"The value of pi is:\"), disp (pi)\n\
-\n\
-     @print{} the value of pi is:\n\
-     @print{} 3.1416\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Note that the output from @code{disp} always ends with a newline.\n\
-\n\
-If an output value is requested, @code{disp} prints nothing and returns the\n\
-formatted output in a string.\n\
-@seealso{fdisp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} disp (@var{x})
+Display the value of @var{x}.
+
+For example:
+
+@example
+@group
+disp ("The value of pi is:"), disp (pi)
+
+     @print{} the value of pi is:
+     @print{} 3.1416
+@end group
+@end example
+
+@noindent
+Note that the output from @code{disp} always ends with a newline.
+
+If an output value is requested, @code{disp} prints nothing and returns the
+formatted output in a string.
+@seealso{fdisp}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -3523,25 +3523,25 @@ formatted output in a string.\n\
 }
 
 DEFUN (fdisp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} fdisp (@var{fid}, @var{x})\n\
-Display the value of @var{x} on the stream @var{fid}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-fdisp (stdout, \"The value of pi is:\"), fdisp (stdout, pi)\n\
-\n\
-     @print{} the value of pi is:\n\
-     @print{} 3.1416\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Note that the output from @code{fdisp} always ends with a newline.\n\
-@seealso{disp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} fdisp (@var{fid}, @var{x})
+Display the value of @var{x} on the stream @var{fid}.
+
+For example:
+
+@example
+@group
+fdisp (stdout, "The value of pi is:"), fdisp (stdout, pi)
+
+     @print{} the value of pi is:
+     @print{} 3.1416
+@end group
+@end example
+
+@noindent
+Note that the output from @code{fdisp} always ends with a newline.
+@seealso{disp}
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();
@@ -3856,177 +3856,177 @@ set_format_style (int argc, const string_vector& argv)
 
 
 DEFUN (format, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} format\n\
-@deftypefnx {} {} format options\n\
-Reset or specify the format of the output produced by @code{disp} and\n\
-Octave's normal echoing mechanism.\n\
-\n\
-This command only affects the display of numbers but not how they are stored\n\
-or computed.  To change the internal representation from the default double\n\
-use one of the conversion functions such as @code{single}, @code{uint8},\n\
-@code{int64}, etc.\n\
-\n\
-By default, Octave displays 5 significant digits in a human readable form\n\
-(option @samp{short} paired with @samp{loose} format for matrices).\n\
-If @code{format} is invoked without any options, this default format\n\
-is restored.\n\
-\n\
-Valid formats for floating point numbers are listed in the following\n\
-table.\n\
-\n\
-@table @code\n\
-@item short\n\
-Fixed point format with 5 significant figures in a field that is a maximum\n\
-of 10 characters wide.  (default).\n\
-\n\
-If Octave is unable to format a matrix so that columns line up on the\n\
-decimal point and all numbers fit within the maximum field width then\n\
-it switches to an exponential @samp{e} format.\n\
-\n\
-@item long\n\
-Fixed point format with 15 significant figures in a field that is a maximum\n\
-of 20 characters wide.\n\
-\n\
-As with the @samp{short} format, Octave will switch to an exponential\n\
-@samp{e} format if it is unable to format a matrix properly using the\n\
-current format.\n\
-\n\
-@item  short e\n\
-@itemx long e\n\
-Exponential format.  The number to be represented is split between a\n\
-mantissa and an exponent (power of 10).  The mantissa has 5 significant\n\
-digits in the short format and 15 digits in the long format.  For example,\n\
-with the @samp{short e} format, @code{pi} is displayed as\n\
-@code{3.1416e+00}.\n\
-\n\
-@item  short E\n\
-@itemx long E\n\
-Identical to @samp{short e} or @samp{long e} but displays an uppercase\n\
-@samp{E} to indicate the exponent.\n\
-For example, with the @samp{long E} format, @code{pi} is displayed as\n\
-@code{3.14159265358979E+00}.\n\
-\n\
-@item  short g\n\
-@itemx long g\n\
-Optimally choose between fixed point and exponential format based on\n\
-the magnitude of the number.\n\
-For example, with the @samp{short g} format,\n\
-@code{pi .^ [2; 4; 8; 16; 32]} is displayed as\n\
-\n\
-@example\n\
-@group\n\
-ans =\n\
-\n\
-      9.8696\n\
-      97.409\n\
-      9488.5\n\
-  9.0032e+07\n\
-  8.1058e+15\n\
-@end group\n\
-@end example\n\
-\n\
-@item  short eng\n\
-@itemx long eng\n\
-Identical to @samp{short e} or @samp{long e} but displays the value\n\
-using an engineering format, where the exponent is divisible by 3.  For\n\
-example, with the @samp{short eng} format, @code{10 * pi} is displayed as\n\
-@code{31.4159e+00}.\n\
-\n\
-@item  long G\n\
-@itemx short G\n\
-Identical to @samp{short g} or @samp{long g} but displays an uppercase\n\
-@samp{E} to indicate the exponent.\n\
-\n\
-@item  free\n\
-@itemx none\n\
-Print output in free format, without trying to line up columns of\n\
-matrices on the decimal point.  This also causes complex numbers to be\n\
-formatted as numeric pairs like this @samp{(0.60419, 0.60709)} instead\n\
-of like this @samp{0.60419 + 0.60709i}.\n\
-@end table\n\
-\n\
-The following formats affect all numeric output (floating point and\n\
-integer types).\n\
-\n\
-@table @code\n\
-@item  \"+\"\n\
-@itemx \"+\" @var{chars}\n\
-@itemx plus\n\
-@itemx plus @var{chars}\n\
-Print a @samp{+} symbol for matrix elements greater than zero, a\n\
-@samp{-} symbol for elements less than zero and a space for zero matrix\n\
-elements.  This format can be very useful for examining the structure\n\
-of a large sparse matrix.\n\
-\n\
-The optional argument @var{chars} specifies a list of 3 characters to use\n\
-for printing values greater than zero, less than zero and equal to zero.\n\
-For example, with the @samp{\"+\" \"+-.\"} format,\n\
-@code{[1, 0, -1; -1, 0, 1]} is displayed as\n\
-\n\
-@example\n\
-@group\n\
-ans =\n\
-\n\
-+.-\n\
--.+\n\
-@end group\n\
-@end example\n\
-\n\
-@item bank\n\
-Print in a fixed format with two digits to the right of the decimal\n\
-point.\n\
-\n\
-@item native-hex\n\
-Print the hexadecimal representation of numbers as they are stored in\n\
-memory.  For example, on a workstation which stores 8 byte real values\n\
-in IEEE format with the least significant byte first, the value of\n\
-@code{pi} when printed in @code{native-hex} format is\n\
-@code{400921fb54442d18}.\n\
-\n\
-@item hex\n\
-The same as @code{native-hex}, but always print the most significant\n\
-byte first.\n\
-\n\
-@item native-bit\n\
-Print the bit representation of numbers as stored in memory.\n\
-For example, the value of @code{pi} is\n\
-\n\
-@example\n\
-@group\n\
-01000000000010010010000111111011\n\
-01010100010001000010110100011000\n\
-@end group\n\
-@end example\n\
-\n\
-(shown here in two 32 bit sections for typesetting purposes) when\n\
-printed in native-bit format on a workstation which stores 8 byte real\n\
-values in IEEE format with the least significant byte first.\n\
-\n\
-@item bit\n\
-The same as @code{native-bit}, but always print the most significant\n\
-bits first.\n\
-\n\
-@item rat\n\
-Print a rational approximation, i.e., values are approximated\n\
-as the ratio of small integers.\n\
-For example, with the @samp{rat} format,\n\
-@code{pi} is displayed as @code{355/113}.\n\
-@end table\n\
-\n\
-The following two options affect the display of all matrices.\n\
-\n\
-@table @code\n\
-@item compact\n\
-Remove blank lines around column number labels and between\n\
-matrices producing more compact output with more data per page.\n\
-\n\
-@item loose\n\
-Insert blank lines above and below column number labels and between matrices\n\
-to produce a more readable output with less data per page.  (default).\n\
-@end table\n\
-@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} format
+@deftypefnx {} {} format options
+Reset or specify the format of the output produced by @code{disp} and
+Octave's normal echoing mechanism.
+
+This command only affects the display of numbers but not how they are stored
+or computed.  To change the internal representation from the default double
+use one of the conversion functions such as @code{single}, @code{uint8},
+@code{int64}, etc.
+
+By default, Octave displays 5 significant digits in a human readable form
+(option @samp{short} paired with @samp{loose} format for matrices).
+If @code{format} is invoked without any options, this default format
+is restored.
+
+Valid formats for floating point numbers are listed in the following
+table.
+
+@table @code
+@item short
+Fixed point format with 5 significant figures in a field that is a maximum
+of 10 characters wide.  (default).
+
+If Octave is unable to format a matrix so that columns line up on the
+decimal point and all numbers fit within the maximum field width then
+it switches to an exponential @samp{e} format.
+
+@item long
+Fixed point format with 15 significant figures in a field that is a maximum
+of 20 characters wide.
+
+As with the @samp{short} format, Octave will switch to an exponential
+@samp{e} format if it is unable to format a matrix properly using the
+current format.
+
+@item  short e
+@itemx long e
+Exponential format.  The number to be represented is split between a
+mantissa and an exponent (power of 10).  The mantissa has 5 significant
+digits in the short format and 15 digits in the long format.  For example,
+with the @samp{short e} format, @code{pi} is displayed as
+@code{3.1416e+00}.
+
+@item  short E
+@itemx long E
+Identical to @samp{short e} or @samp{long e} but displays an uppercase
+@samp{E} to indicate the exponent.
+For example, with the @samp{long E} format, @code{pi} is displayed as
+@code{3.14159265358979E+00}.
+
+@item  short g
+@itemx long g
+Optimally choose between fixed point and exponential format based on
+the magnitude of the number.
+For example, with the @samp{short g} format,
+@code{pi .^ [2; 4; 8; 16; 32]} is displayed as
+
+@example
+@group
+ans =
+
+      9.8696
+      97.409
+      9488.5
+  9.0032e+07
+  8.1058e+15
+@end group
+@end example
+
+@item  short eng
+@itemx long eng
+Identical to @samp{short e} or @samp{long e} but displays the value
+using an engineering format, where the exponent is divisible by 3.  For
+example, with the @samp{short eng} format, @code{10 * pi} is displayed as
+@code{31.4159e+00}.
+
+@item  long G
+@itemx short G
+Identical to @samp{short g} or @samp{long g} but displays an uppercase
+@samp{E} to indicate the exponent.
+
+@item  free
+@itemx none
+Print output in free format, without trying to line up columns of
+matrices on the decimal point.  This also causes complex numbers to be
+formatted as numeric pairs like this @samp{(0.60419, 0.60709)} instead
+of like this @samp{0.60419 + 0.60709i}.
+@end table
+
+The following formats affect all numeric output (floating point and
+integer types).
+
+@table @code
+@item  "+"
+@itemx "+" @var{chars}
+@itemx plus
+@itemx plus @var{chars}
+Print a @samp{+} symbol for matrix elements greater than zero, a
+@samp{-} symbol for elements less than zero and a space for zero matrix
+elements.  This format can be very useful for examining the structure
+of a large sparse matrix.
+
+The optional argument @var{chars} specifies a list of 3 characters to use
+for printing values greater than zero, less than zero and equal to zero.
+For example, with the @samp{"+" "+-."} format,
+@code{[1, 0, -1; -1, 0, 1]} is displayed as
+
+@example
+@group
+ans =
+
++.-
+-.+
+@end group
+@end example
+
+@item bank
+Print in a fixed format with two digits to the right of the decimal
+point.
+
+@item native-hex
+Print the hexadecimal representation of numbers as they are stored in
+memory.  For example, on a workstation which stores 8 byte real values
+in IEEE format with the least significant byte first, the value of
+@code{pi} when printed in @code{native-hex} format is
+@code{400921fb54442d18}.
+
+@item hex
+The same as @code{native-hex}, but always print the most significant
+byte first.
+
+@item native-bit
+Print the bit representation of numbers as stored in memory.
+For example, the value of @code{pi} is
+
+@example
+@group
+01000000000010010010000111111011
+01010100010001000010110100011000
+@end group
+@end example
+
+(shown here in two 32 bit sections for typesetting purposes) when
+printed in native-bit format on a workstation which stores 8 byte real
+values in IEEE format with the least significant byte first.
+
+@item bit
+The same as @code{native-bit}, but always print the most significant
+bits first.
+
+@item rat
+Print a rational approximation, i.e., values are approximated
+as the ratio of small integers.
+For example, with the @samp{rat} format,
+@code{pi} is displayed as @code{355/113}.
+@end table
+
+The following two options affect the display of all matrices.
+
+@table @code
+@item compact
+Remove blank lines around column number labels and between
+matrices producing more compact output with more data per page.
+
+@item loose
+Insert blank lines above and below column number labels and between matrices
+to produce a more readable output with less data per page.  (default).
+@end table
+@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}
+@end deftypefn */)
 {
   int argc = args.length () + 1;
 
@@ -4038,165 +4038,165 @@ to produce a more readable output with less data per page.  (default).\n\
 }
 
 DEFUN (__compactformat__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} __compactformat__ ()\n\
-@deftypefnx {} {} __compactformat__ (@var{TRUE|FALSE})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} __compactformat__ ()
+@deftypefnx {} {} __compactformat__ (@var{TRUE|FALSE})
+Undocumented internal function
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (compact_format);
 }
 
 DEFUN (__formatstring__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{val} =} __formatstring__ ()\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{val} =} __formatstring__ ()
+Undocumented internal function
+@end deftypefn */)
 {
   return ovl (format_string);
 }
 
 DEFUN (fixed_point_format, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} fixed_point_format ()\n\
-@deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
-@deftypefnx {} {} fixed_point_format (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave will\n\
-use a scaled format to print matrix values.\n\
-\n\
-The scaled format prints a scaling factor on the first line of output chosen\n\
-such that the largest matrix element can be written with a single leading\n\
-digit.  For example:\n\
-\n\
-@example\n\
-@group\n\
-logspace (1, 7, 5)'\n\
-ans =\n\
-\n\
-  1.0e+07  *\n\
-\n\
-  0.00000\n\
-  0.00003\n\
-  0.00100\n\
-  0.03162\n\
-  1.00000\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Notice that the first value appears to be 0 when it is actually 1.  Because\n\
-of the possibility for confusion you should be careful about enabling\n\
-@code{fixed_point_format}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format, output_max_field_width, output_precision}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} fixed_point_format ()
+@deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val})
+@deftypefnx {} {} fixed_point_format (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave will
+use a scaled format to print matrix values.
+
+The scaled format prints a scaling factor on the first line of output chosen
+such that the largest matrix element can be written with a single leading
+digit.  For example:
+
+@example
+@group
+logspace (1, 7, 5)'
+ans =
+
+  1.0e+07  *
+
+  0.00000
+  0.00003
+  0.00100
+  0.03162
+  1.00000
+@end group
+@end example
+
+@noindent
+Notice that the first value appears to be 0 when it is actually 1.  Because
+of the possibility for confusion you should be careful about enabling
+@code{fixed_point_format}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format, output_max_field_width, output_precision}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (fixed_point_format);
 }
 
 DEFUN (print_empty_dimensions, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} print_empty_dimensions ()\n\
-@deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
-@deftypefnx {} {} print_empty_dimensions (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether the dimensions of\n\
-empty matrices are printed along with the empty matrix symbol, @samp{[]}.\n\
-\n\
-For example, the expression\n\
-\n\
-@example\n\
-zeros (3, 0)\n\
-@end example\n\
-\n\
-@noindent\n\
-will print\n\
-\n\
-@example\n\
-ans = [](3x0)\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} print_empty_dimensions ()
+@deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val})
+@deftypefnx {} {} print_empty_dimensions (@var{new_val}, "local")
+Query or set the internal variable that controls whether the dimensions of
+empty matrices are printed along with the empty matrix symbol, @samp{[]}.
+
+For example, the expression
+
+@example
+zeros (3, 0)
+@end example
+
+@noindent
+will print
+
+@example
+ans = [](3x0)
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (print_empty_dimensions);
 }
 
 DEFUN (split_long_rows, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} split_long_rows ()\n\
-@deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val})\n\
-@deftypefnx {} {} split_long_rows (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether rows of a matrix\n\
-may be split when displayed to a terminal window.\n\
-\n\
-If the rows are split, Octave will display the matrix in a series of smaller\n\
-pieces, each of which can fit within the limits of your terminal width and\n\
-each set of rows is labeled so that you can easily see which columns are\n\
-currently being displayed.  For example:\n\
-\n\
-@example\n\
-@group\n\
-octave:13> rand (2,10)\n\
-ans =\n\
-\n\
- Columns 1 through 6:\n\
-\n\
-  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467\n\
-  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201\n\
-\n\
- Columns 7 through 10:\n\
-\n\
-  0.90174  0.11854  0.72313  0.73326\n\
-  0.44672  0.94303  0.56564  0.82150\n\
-@end group\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} split_long_rows ()
+@deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val})
+@deftypefnx {} {} split_long_rows (@var{new_val}, "local")
+Query or set the internal variable that controls whether rows of a matrix
+may be split when displayed to a terminal window.
+
+If the rows are split, Octave will display the matrix in a series of smaller
+pieces, each of which can fit within the limits of your terminal width and
+each set of rows is labeled so that you can easily see which columns are
+currently being displayed.  For example:
+
+@example
+@group
+octave:13> rand (2,10)
+ans =
+
+ Columns 1 through 6:
+
+  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467
+  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201
+
+ Columns 7 through 10:
+
+  0.90174  0.11854  0.72313  0.73326
+  0.44672  0.94303  0.56564  0.82150
+@end group
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (split_long_rows);
 }
 
 DEFUN (output_max_field_width, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} output_max_field_width ()\n\
-@deftypefnx {} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
-@deftypefnx {} {} output_max_field_width (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the maximum width\n\
-of a numeric output field.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format, fixed_point_format, output_precision}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} output_max_field_width ()
+@deftypefnx {} {@var{old_val} =} output_max_field_width (@var{new_val})
+@deftypefnx {} {} output_max_field_width (@var{new_val}, "local")
+Query or set the internal variable that specifies the maximum width
+of a numeric output field.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format, fixed_point_format, output_precision}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_max_field_width, 0,
                                             std::numeric_limits<int>::max ());
 }
 
 DEFUN (output_precision, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} output_precision ()\n\
-@deftypefnx {} {@var{old_val} =} output_precision (@var{new_val})\n\
-@deftypefnx {} {} output_precision (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the minimum number of\n\
-significant figures to display for numeric output.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format, fixed_point_format, output_max_field_width}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} output_precision ()
+@deftypefnx {} {@var{old_val} =} output_precision (@var{new_val})
+@deftypefnx {} {} output_precision (@var{new_val}, "local")
+Query or set the internal variable that specifies the minimum number of
+significant figures to display for numeric output.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format, fixed_point_format, output_max_field_width}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1,
                                             std::numeric_limits<int>::max ());

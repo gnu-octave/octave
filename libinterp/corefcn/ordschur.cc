@@ -63,49 +63,49 @@ extern "C"
 }
 
 DEFUN (ordschur, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})\n\
-Reorders the real Schur factorization (@var{U},@var{S}) obtained with the\n\
-@code{schur} function, so that selected eigenvalues appear in the upper left\n\
-diagonal blocks of the quasi triangular Schur matrix.\n\
-\n\
-The logical vector @var{select} specifies the selected eigenvalues as they\n\
-appear along @var{S}'s diagonal.\n\
-\n\
-For example, given the matrix @code{@var{A} = [1, 2; 3, 4]}, and its Schur\n\
-decomposition\n\
-\n\
-@example\n\
-[@var{U}, @var{S}] = schur (@var{A})\n\
-@end example\n\
-\n\
-@noindent\n\
-which returns\n\
-\n\
-@example\n\
-@group\n\
-@var{U} =\n\
-\n\
-  -0.82456  -0.56577\n\
-   0.56577  -0.82456\n\
-\n\
-@var{S} =\n\
-\n\
-  -0.37228  -1.00000\n\
-   0.00000   5.37228\n\
-\n\
-@end group\n\
-@end example\n\
-\n\
-It is possible to reorder the decomposition so that the positive eigenvalue\n\
-is in the upper left corner, by doing:\n\
-\n\
-@example\n\
-[@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])\n\
-@end example\n\
-\n\
-@seealso{schur}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})
+Reorders the real Schur factorization (@var{U},@var{S}) obtained with the
+@code{schur} function, so that selected eigenvalues appear in the upper left
+diagonal blocks of the quasi triangular Schur matrix.
+
+The logical vector @var{select} specifies the selected eigenvalues as they
+appear along @var{S}'s diagonal.
+
+For example, given the matrix @code{@var{A} = [1, 2; 3, 4]}, and its Schur
+decomposition
+
+@example
+[@var{U}, @var{S}] = schur (@var{A})
+@end example
+
+@noindent
+which returns
+
+@example
+@group
+@var{U} =
+
+  -0.82456  -0.56577
+   0.56577  -0.82456
+
+@var{S} =
+
+  -0.37228  -1.00000
+   0.00000   5.37228
+
+@end group
+@end example
+
+It is possible to reorder the decomposition so that the positive eigenvalue
+is in the upper left corner, by doing:
+
+@example
+[@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])
+@end example
+
+@seealso{schur}
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();

@@ -94,25 +94,25 @@ octave_null_sq_str::numeric_conversion_function (void) const
 }
 
 DEFUN (isnull, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isnull (@var{x})\n\
-Return true if @var{x} is a special null matrix, string, or single quoted\n\
-string.\n\
-\n\
-Indexed assignment with such a value on the right-hand side should delete\n\
-array elements.  This function should be used when overloading indexed\n\
-assignment for user-defined classes instead of @code{isempty}, to\n\
-distinguish the cases:\n\
-\n\
-@table @asis\n\
-@item @code{A(I) = []}\n\
-This should delete elements if @code{I} is nonempty.\n\
-\n\
-@item @code{X = []; A(I) = X}\n\
-This should give an error if @code{I} is nonempty.\n\
-@end table\n\
-@seealso{isempty, isindex}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isnull (@var{x})
+Return true if @var{x} is a special null matrix, string, or single quoted
+string.
+
+Indexed assignment with such a value on the right-hand side should delete
+array elements.  This function should be used when overloading indexed
+assignment for user-defined classes instead of @code{isempty}, to
+distinguish the cases:
+
+@table @asis
+@item @code{A(I) = []}
+This should delete elements if @code{I} is nonempty.
+
+@item @code{X = []; A(I) = X}
+This should give an error if @code{I} is nonempty.
+@end table
+@seealso{isempty, isindex}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();

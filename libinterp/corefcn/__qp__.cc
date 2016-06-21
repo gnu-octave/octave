@@ -486,10 +486,10 @@ qp (const Matrix& H, const ColumnVector& q,
 }
 
 DEFUN (__qp__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 8)
     print_usage ();

@@ -290,87 +290,87 @@ fout (const octave_idx_type& lsize, const double& alpha,
 //FIXME: Matlab does not produce lambda as the first output argument.
 //       Compatibility problem?
 DEFUN (qz, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{lambda} =} qz (@var{A}, @var{B})\n\
-@deftypefnx {} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})\n\
-QZ@tie{}decomposition of the generalized eigenvalue problem\n\
-(@math{A x = s B x}).\n\
-\n\
-There are three ways to call this function:\n\
-@enumerate\n\
-@item @code{@var{lambda} = qz (@var{A}, @var{B})}\n\
-\n\
-Computes the generalized eigenvalues\n\
-@tex\n\
-$\\lambda$\n\
-@end tex\n\
-@ifnottex\n\
-@var{lambda}\n\
-@end ifnottex\n\
-of @math{(A - s B)}.\n\
-\n\
-@item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}\n\
-\n\
-Computes QZ@tie{}decomposition, generalized eigenvectors, and generalized\n\
-eigenvalues of @math{(A - s B)}\n\
-@tex\n\
-$$ AV = BV{ \\rm diag }(\\lambda) $$\n\
-$$ W^T A = { \\rm diag }(\\lambda)W^T B $$\n\
-$$ AA = Q^T AZ, BB = Q^T BZ $$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-\n\
-A * V = B * V * diag (@var{lambda})\n\
-W' * A = diag (@var{lambda}) * W' * B\n\
-AA = Q * A * Z, BB = Q * B * Z\n\
-\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
-\n\
-@item @code{[AA,BB,Z@{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}\n\
-\n\
-As in form [2], but allows ordering of generalized eigenpairs for, e.g.,\n\
-solution of discrete time algebraic Riccati equations.  Form 3 is not\n\
-available for complex matrices, and does not compute the generalized\n\
-eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
-\n\
-@table @var\n\
-@item opt\n\
-for ordering eigenvalues of the @nospell{GEP} pencil.  The leading block of\n\
-the revised pencil contains all eigenvalues that satisfy:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"N\"}\n\
-= unordered (default)\n\
-\n\
-@item @qcode{\"S\"}\n\
-= small: leading block has all |lambda| @leq{} 1\n\
-\n\
-@item @qcode{\"B\"}\n\
-= big: leading block has all |lambda| @geq{} 1\n\
-\n\
-@item @qcode{\"-\"}\n\
-= negative real part: leading block has all eigenvalues\n\
-in the open left half-plane\n\
-\n\
-@item @qcode{\"+\"}\n\
-= non-negative real part: leading block has all eigenvalues\n\
-in the closed right half-plane\n\
-@end table\n\
-@end table\n\
-@end enumerate\n\
-\n\
-Note: @code{qz} performs permutation balancing, but not scaling\n\
-(@pxref{XREFbalance}).  The order of output arguments was selected for\n\
-compatibility with @sc{matlab}.\n\
-@seealso{eig, balance, lu, chol, hess, qr, qzhess, schur, svd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{lambda} =} qz (@var{A}, @var{B})
+@deftypefnx {} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})
+QZ@tie{}decomposition of the generalized eigenvalue problem
+(@math{A x = s B x}).
+
+There are three ways to call this function:
+@enumerate
+@item @code{@var{lambda} = qz (@var{A}, @var{B})}
+
+Computes the generalized eigenvalues
+@tex
+$\lambda$
+@end tex
+@ifnottex
+@var{lambda}
+@end ifnottex
+of @math{(A - s B)}.
+
+@item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}
+
+Computes QZ@tie{}decomposition, generalized eigenvectors, and generalized
+eigenvalues of @math{(A - s B)}
+@tex
+$$ AV = BV{ \rm diag }(\lambda) $$
+$$ W^T A = { \rm diag }(\lambda)W^T B $$
+$$ AA = Q^T AZ, BB = Q^T BZ $$
+@end tex
+@ifnottex
+
+@example
+@group
+
+A * V = B * V * diag (@var{lambda})
+W' * A = diag (@var{lambda}) * W' * B
+AA = Q * A * Z, BB = Q * B * Z
+
+@end group
+@end example
+
+@end ifnottex
+with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}
+
+@item @code{[AA,BB,Z@{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}
+
+As in form [2], but allows ordering of generalized eigenpairs for, e.g.,
+solution of discrete time algebraic Riccati equations.  Form 3 is not
+available for complex matrices, and does not compute the generalized
+eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.
+
+@table @var
+@item opt
+for ordering eigenvalues of the @nospell{GEP} pencil.  The leading block of
+the revised pencil contains all eigenvalues that satisfy:
+
+@table @asis
+@item @qcode{"N"}
+= unordered (default)
+
+@item @qcode{"S"}
+= small: leading block has all |lambda| @leq{} 1
+
+@item @qcode{"B"}
+= big: leading block has all |lambda| @geq{} 1
+
+@item @qcode{"-"}
+= negative real part: leading block has all eigenvalues
+in the open left half-plane
+
+@item @qcode{"+"}
+= non-negative real part: leading block has all eigenvalues
+in the closed right half-plane
+@end table
+@end table
+@end enumerate
+
+Note: @code{qz} performs permutation balancing, but not scaling
+(@pxref{XREFbalance}).  The order of output arguments was selected for
+compatibility with @sc{matlab}.
+@seealso{eig, balance, lu, chol, hess, qr, qzhess, schur, svd}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

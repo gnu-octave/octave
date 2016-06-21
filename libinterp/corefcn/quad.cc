@@ -130,50 +130,50 @@ quad_float_user_function (float x)
 }
 
 DEFUN (quad, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})\n\
-@deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-@deftypefnx {} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
-Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using\n\
-Fortran routines from @w{@sc{quadpack}}.\n\
-\n\
-@var{f} is a function handle, inline function, or a string containing the\n\
-name of the function to evaluate.  The function must have the form @code{y =\n\
-f (x)} where @var{y} and @var{x} are scalars.\n\
-\n\
-@var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
-or both may be infinite.\n\
-\n\
-The optional argument @var{tol} is a vector that specifies the desired\n\
-accuracy of the result.  The first element of the vector is the desired\n\
-absolute tolerance, and the second element is the desired relative\n\
-tolerance.  To choose a relative test only, set the absolute\n\
-tolerance to zero.  To choose an absolute test only, set the relative\n\
-tolerance to zero.  Both tolerances default to @code{sqrt (eps)} or\n\
-approximately @math{1.5e^{-8}}.\n\
-\n\
-The optional argument @var{sing} is a vector of values at which the\n\
-integrand is known to be singular.\n\
-\n\
-The result of the integration is returned in @var{q}.\n\
-\n\
-@var{ier} contains an integer error code (0 indicates a successful\n\
-integration).\n\
-\n\
-@var{nfun} indicates the number of function evaluations that were\n\
-made.\n\
-\n\
-@var{err} contains an estimate of the error in the solution.\n\
-\n\
-The function @code{quad_options} can set other optional parameters for\n\
-@code{quad}.\n\
-\n\
-Note: because @code{quad} is written in Fortran it cannot be called\n\
-recursively.  This prevents its use in integrating over more than one\n\
-variable by routines @code{dblquad} and @code{triplequad}.\n\
-@seealso{quad_options, quadv, quadl, quadgk, quadcc, trapz, dblquad, triplequad}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})
+@deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})
+@deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
+@deftypefnx {} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})
+Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
+Fortran routines from @w{@sc{quadpack}}.
+
+@var{f} is a function handle, inline function, or a string containing the
+name of the function to evaluate.  The function must have the form @code{y =
+f (x)} where @var{y} and @var{x} are scalars.
+
+@var{a} and @var{b} are the lower and upper limits of integration.  Either
+or both may be infinite.
+
+The optional argument @var{tol} is a vector that specifies the desired
+accuracy of the result.  The first element of the vector is the desired
+absolute tolerance, and the second element is the desired relative
+tolerance.  To choose a relative test only, set the absolute
+tolerance to zero.  To choose an absolute test only, set the relative
+tolerance to zero.  Both tolerances default to @code{sqrt (eps)} or
+approximately @math{1.5e^{-8}}.
+
+The optional argument @var{sing} is a vector of values at which the
+integrand is known to be singular.
+
+The result of the integration is returned in @var{q}.
+
+@var{ier} contains an integer error code (0 indicates a successful
+integration).
+
+@var{nfun} indicates the number of function evaluations that were
+made.
+
+@var{err} contains an estimate of the error in the solution.
+
+The function @code{quad_options} can set other optional parameters for
+@code{quad}.
+
+Note: because @code{quad} is written in Fortran it cannot be called
+recursively.  This prevents its use in integrating over more than one
+variable by routines @code{dblquad} and @code{triplequad}.
+@seealso{quad_options, quadv, quadl, quadgk, quadcc, trapz, dblquad, triplequad}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

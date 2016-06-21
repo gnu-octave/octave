@@ -1687,23 +1687,23 @@ symbol_table::do_update_nest (void)
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} ignore_function_time_stamp ()\n\
-@deftypefnx {} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
-Query or set the internal variable that controls whether Octave checks\n\
-the time stamp on files each time it looks up functions defined in\n\
-function files.\n\
-\n\
-If the internal variable is set to @qcode{\"system\"}, Octave will not\n\
-automatically recompile function files in subdirectories of\n\
-@file{@var{octave-home}/lib/@var{version}} if they have changed since they were last compiled, but will recompile other function files in the search path if they change.\n\
-\n\
-If set to @qcode{\"all\"}, Octave will not recompile any function files\n\
-unless their definitions are removed with @code{clear}.\n\
-\n\
-If set to @qcode{\"none\"}, Octave will always check time stamps on files to\n\
-determine whether functions defined in function files need to recompiled.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} ignore_function_time_stamp ()
+@deftypefnx {} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})
+Query or set the internal variable that controls whether Octave checks
+the time stamp on files each time it looks up functions defined in
+function files.
+
+If the internal variable is set to @qcode{"system"}, Octave will not
+automatically recompile function files in subdirectories of
+@file{@var{octave-home}/lib/@var{version}} if they have changed since they were last compiled, but will recompile other function files in the search path if they change.
+
+If set to @qcode{"all"}, Octave will not recompile any function files
+unless their definitions are removed with @code{clear}.
+
+If set to @qcode{"none"}, Octave will always check time stamps on files to
+determine whether functions defined in function files need to recompiled.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1766,24 +1766,24 @@ determine whether functions defined in function files need to recompiled.\n\
 */
 
 DEFUN (__current_scope__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {[@var{scope}, @var{context}]} __current_scope__ ()\n\
-Return the current scope and context as integers.\n\
-@seealso{__dump_symtab_info__}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{scope}, @var{context}]} __current_scope__ ()
+Return the current scope and context as integers.
+@seealso{__dump_symtab_info__}
+@end deftypefn */)
 {
   return ovl (symbol_table::current_scope (), symbol_table::current_context ());
 }
 
 DEFUN (__dump_symtab_info__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __dump_symtab_info__ ()\n\
-@deftypefnx {} {} __dump_symtab_info__ (@var{scope})\n\
-@deftypefnx {} {} __dump_symtab_info__ (\"scopes\")\n\
-@deftypefnx {} {} __dump_symtab_info__ (\"functions\")\n\
-Undocumented internal function.\n\
-@seealso{__current_scope__}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __dump_symtab_info__ ()
+@deftypefnx {} {} __dump_symtab_info__ (@var{scope})
+@deftypefnx {} {} __dump_symtab_info__ ("scopes")
+@deftypefnx {} {} __dump_symtab_info__ ("functions")
+Undocumented internal function.
+@seealso{__current_scope__}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1845,10 +1845,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__get_cmdline_fcn_txt__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __get_cmdline_fcn_txt__ (@var{name})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __get_cmdline_fcn_txt__ (@var{name})
+Undocumented internal function.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1875,41 +1875,37 @@ Undocumented internal function.\n\
   return retval;
 }
 
-#if 0
-
 // FIXME: should we have functions like this in Octave?
-
-DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
-{
-  if (args.length () != 2)
-    print_usage ();
-
-  std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
-
-  symbol_table::assign (name, args(1));
-
-  return ovl ();
-}
-
-DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
-{
-  if (args.length () != 1)
-    print_usage ();
-
-  octave_value retval;
-
-  std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
-
-  retval = symbol_table::varval (name);
-
-  if (retval.is_undefined ())
-    error ("variable_value: '%s' is not a variable in the current scope",
-           name.c_str ());
-
-  return retval;
-}
-#endif
-
+// 
+// DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
+// {
+//   if (args.length () != 2)
+//     print_usage ();
+// 
+//   std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
+// 
+//   symbol_table::assign (name, args(1));
+// 
+//   return ovl ();
+// }
+// 
+// DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
+// {
+//   if (args.length () != 1)
+//     print_usage ();
+// 
+//   octave_value retval;
+// 
+//   std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
+// 
+//   retval = symbol_table::varval (name);
+// 
+//   if (retval.is_undefined ())
+//     error ("variable_value: '%s' is not a variable in the current scope",
+//            name.c_str ());
+// 
+//   return retval;
+// }
 
 /*
 bug #34497: 'clear -f' does not work for command line functions

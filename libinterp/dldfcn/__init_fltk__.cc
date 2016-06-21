@@ -2391,10 +2391,10 @@ private:
 #endif
 
 DEFUN_DLD (__fltk_check__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {} __fltk_check__ ()\n\
-Undocumented internal function.  Calls Fl::check ()\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __fltk_check__ ()
+Undocumented internal function.  Calls Fl::check ()
+@end deftypefn */)
 {
 #if defined (HAVE_FLTK)
   Fl::check ();
@@ -2411,10 +2411,10 @@ Undocumented internal function.  Calls Fl::check ()\n\
 // Initialize the fltk graphics toolkit.
 
 DEFUN_DLD (__init_fltk__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {} __init_fltk__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __init_fltk__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
 #if defined (HAVE_FLTK)
   if (! display_info::display_available ())

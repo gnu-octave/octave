@@ -606,16 +606,16 @@ octave_value_typeinfo::do_installed_type_names (void)
 }
 
 DEFUN (typeinfo, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} typeinfo ()\n\
-@deftypefnx {} {} typeinfo (@var{expr})\n\
-\n\
-Return the type of the expression @var{expr}, as a string.\n\
-\n\
-If @var{expr} is omitted, return a cell array of strings containing all the\n\
-currently installed data types.\n\
-@seealso{class, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} typeinfo ()
+@deftypefnx {} {} typeinfo (@var{expr})
+
+Return the type of the expression @var{expr}, as a string.
+
+If @var{expr} is omitted, return a cell array of strings containing all the
+currently installed data types.
+@seealso{class, isa}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

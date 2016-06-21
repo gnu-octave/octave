@@ -104,23 +104,23 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
 }
 
 DEFUN (dot, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} dot (@var{x}, @var{y}, @var{dim})\n\
-Compute the dot product of two vectors.\n\
-\n\
-If @var{x} and @var{y} are matrices, calculate the dot products along the\n\
-first non-singleton dimension.\n\
-\n\
-If the optional argument @var{dim} is given, calculate the dot products\n\
-along this dimension.\n\
-\n\
-This is equivalent to\n\
-@code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},\n\
-but avoids forming a temporary array and is faster.  When @var{X} and\n\
-@var{Y} are column vectors, the result is equivalent to\n\
-@code{@var{X}' * @var{Y}}.\n\
-@seealso{cross, divergence}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} dot (@var{x}, @var{y}, @var{dim})
+Compute the dot product of two vectors.
+
+If @var{x} and @var{y} are matrices, calculate the dot products along the
+first non-singleton dimension.
+
+If the optional argument @var{dim} is given, calculate the dot products
+along this dimension.
+
+This is equivalent to
+@code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},
+but avoids forming a temporary array and is faster.  When @var{X} and
+@var{Y} are column vectors, the result is equivalent to
+@code{@var{X}' * @var{Y}}.
+@seealso{cross, divergence}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -267,23 +267,23 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 */
 
 DEFUN (blkmm, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} blkmm (@var{A}, @var{B})\n\
-Compute products of matrix blocks.\n\
-\n\
-The blocks are given as 2-dimensional subarrays of the arrays @var{A},\n\
-@var{B}.  The size of @var{A} must have the form @code{[m,k,@dots{}]} and\n\
-size of @var{B} must be @code{[k,n,@dots{}]}.  The result is then of size\n\
-@code{[m,n,@dots{}]} and is computed as follows:\n\
-\n\
-@example\n\
-@group\n\
-for i = 1:prod (size (@var{A})(3:end))\n\
-  @var{C}(:,:,i) = @var{A}(:,:,i) * @var{B}(:,:,i)\n\
-endfor\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} blkmm (@var{A}, @var{B})
+Compute products of matrix blocks.
+
+The blocks are given as 2-dimensional subarrays of the arrays @var{A},
+@var{B}.  The size of @var{A} must have the form @code{[m,k,@dots{}]} and
+size of @var{B} must be @code{[k,n,@dots{}]}.  The result is then of size
+@code{[m,n,@dots{}]} and is computed as follows:
+
+@example
+@group
+for i = 1:prod (size (@var{A})(3:end))
+  @var{C}(:,:,i) = @var{A}(:,:,i) * @var{B}(:,:,i)
+endfor
+@end group
+@end example
+@end deftypefn */)
 {
   if (args.length () != 2)
     print_usage ();

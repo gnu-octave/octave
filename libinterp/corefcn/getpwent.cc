@@ -66,14 +66,14 @@ mk_pw_map (const octave::sys::password& pw)
 }
 
 DEFUN (getpwent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{pw_struct} =} getpwent ()\n\
-Return a structure containing an entry from the password database,\n\
-opening it if necessary.\n\
-\n\
-Once the end of the data has been reached, @code{getpwent} returns 0.\n\
-@seealso{setpwent, endpwent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pw_struct} =} getpwent ()
+Return a structure containing an entry from the password database,
+opening it if necessary.
+
+Once the end of the data has been reached, @code{getpwent} returns 0.
+@seealso{setpwent, endpwent}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -87,14 +87,14 @@ Once the end of the data has been reached, @code{getpwent} returns 0.\n\
 }
 
 DEFUN (getpwuid, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{pw_struct} =} getpwuid (@var{uid}).\n\
-Return a structure containing the first entry from the password database\n\
-with the user ID @var{uid}.\n\
-\n\
-If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
-@seealso{getpwnam}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pw_struct} =} getpwuid (@var{uid}).
+Return a structure containing the first entry from the password database
+with the user ID @var{uid}.
+
+If the user ID does not exist in the database, @code{getpwuid} returns 0.
+@seealso{getpwnam}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -115,14 +115,14 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
 }
 
 DEFUN (getpwnam, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{pw_struct} =} getpwnam (@var{name})\n\
-Return a structure containing the first entry from the password database\n\
-with the user name @var{name}.\n\
-\n\
-If the user name does not exist in the database, @code{getpwname} returns 0.\n\
-@seealso{getpwuid}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pw_struct} =} getpwnam (@var{name})
+Return a structure containing the first entry from the password database
+with the user name @var{name}.
+
+If the user name does not exist in the database, @code{getpwname} returns 0.
+@seealso{getpwuid}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -138,11 +138,11 @@ If the user name does not exist in the database, @code{getpwname} returns 0.\n\
 }
 
 DEFUN (setpwent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} setpwent ()\n\
-Return the internal pointer to the beginning of the password database.\n\
-@seealso{getpwent, endpwent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} setpwent ()
+Return the internal pointer to the beginning of the password database.
+@seealso{getpwent, endpwent}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -156,11 +156,11 @@ Return the internal pointer to the beginning of the password database.\n\
 }
 
 DEFUN (endpwent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} endpwent ()\n\
-Close the password database.\n\
-@seealso{getpwent, setpwent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} endpwent ()
+Close the password database.
+@seealso{getpwent, setpwent}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();

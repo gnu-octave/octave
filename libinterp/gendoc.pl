@@ -18,7 +18,10 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-unless (@ARGV > 1) { die "Usage: $0 df-file1 ..." }
+unless (@ARGV > 1) { die "Usage: $0 SRCDIR src-file1 ..." }
+
+$srcdir = $ARGV[0];
+shift;
 
 print <<__END_OF_MSG__;
 ### DO NOT EDIT!
@@ -28,44 +31,63 @@ print <<__END_OF_MSG__;
 
 __END_OF_MSG__
 
-DFFILE: foreach $df_fname (@ARGV)
+FILE: foreach $fname (@ARGV)
 {
-  open (DF_FH, $df_fname) or die "Unable to open $df_fname";
+  if (-f "$fname")
+  {
+    $src_fname = "$fname";
+  }
+  else
+  {
+    $src_fname = "$srcdir/$fname";
+  }
 
-  $src_fname = "";
+  open (SRC_FH, $src_fname) or die "Unable to open $src_fname";
+
   @func_list = ();
   @docstr = ();
 
-  LINE: while (<DF_FH>)
+  LINE: while (<SRC_FH>)
   {
-    if (/XDEFUN_FILE_NAME \("([^"]+)"/)
+    if (/^\s*DEF(CONSTFUN|UN|UN_DLD|UNX|UNX_DLD)\s*\(/)
     {
-      $src_fname = $1;
-      next LINE;
-    }
-    if (/XDEF/ and ! /XDEFALIAS/)
-    {
-      ## Decode 4 or 5 part macro definition.
-      ($func, $str) = /\("?(\w+)"?,[^,]+,[^,]+,(?:[^,]+,)?\s*"(.*)"\)\s*$/ ;
-
-      unless ($func) { die "Unable to parse $df_fname at line $.\n" }
-
+      ($func) = /\("?(\w+)"?,/;
+      unless ($func) { die "Unable to parse $src_fname at line $.\n" }
       push (@func_list, $func);
-      ## Do escape sequence expansion
-      $str =~ s/(?<!\\)\\n/\n/g;
-      $str =~ s/\\([^\\])/$1/g;
-      $str =~ s/\\\\/\\/g;
-      push (@docstr, $str);
+
+      if (<SRC_FH> =~ /\s*doc:\s+\/\*\s+-\*- texinfo -\*-\s*$/)
+      {
+        $str = "-*- texinfo -*-\n";
+        $reading_docstring = 1;
+      }
+      else
+      {
+        print STDERR "gendoc.pl: undocumented function $func from $fname\n";
+        push (@docstr, "Undocumented.");
+      }
+    }
+    elsif ($reading_docstring)
+    {
+      if (/^.*\s+\*\/\s*\)\s*$/)
+      {
+        s/\s+\*\/\s*\)\s*$//;
+        push (@docstr, $str . $_);
+        $reading_docstring = 0;
+      }
+      else
+      {
+        $str .= $_;
+      }
     }
   }
-  close (DF_FH);
+  close (SRC_FH);
 
   ## Print results in DOCSTRING format
   foreach $i (0 .. $#func_list)
   {
     $func = $func_list[$i];
     print "\x{1d}$func\n";
-    print "\@c $func $src_fname\n";
+    print "\@c $func $fname\n";
     print $docstr[$i],"\n";
   }
 

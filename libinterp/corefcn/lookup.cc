@@ -188,55 +188,55 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
 }
 
 DEFUN (lookup, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{idx} =} lookup (@var{table}, @var{y})\n\
-@deftypefnx {} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
-Lookup values in a sorted table.\n\
-\n\
-This function is usually used as a prelude to interpolation.\n\
-\n\
-If table is increasing and @code{idx = lookup (table, y)}, then\n\
-@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within\n\
-the table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If\n\
-@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is\n\
-@code{n}.\n\
-\n\
-If the table is decreasing, then the tests are reversed.\n\
-For non-strictly monotonic tables, empty intervals are always skipped.\n\
-The result is undefined if @var{table} is not monotonic, or if\n\
-@var{table} contains a NaN.\n\
-\n\
-The complexity of the lookup is O(M*log(N)) where N is the size of\n\
-@var{table} and M is the size of @var{y}.  In the special case when @var{y}\n\
-is also sorted, the complexity is O(min(M*log(N),M+N)).\n\
-\n\
-@var{table} and @var{y} can also be cell arrays of strings\n\
-(or @var{y} can be a single string).  In this case, string lookup\n\
-is performed using lexicographical comparison.\n\
-\n\
-If @var{opts} is specified, it must be a string with letters indicating\n\
-additional options.\n\
-\n\
-@table @code\n\
-@item m\n\
-@code{table(idx(i)) == val(i)} if @code{val(i)}\n\
-occurs in table; otherwise, @code{idx(i)} is zero.\n\
-\n\
-@item b\n\
-@code{idx(i)} is a logical 1 or 0, indicating whether\n\
-@code{val(i)} is contained in table or not.\n\
-\n\
-@item l\n\
-For numeric lookups\n\
-the leftmost subinterval shall be extended to infinity (i.e., all indices\n\
-at least 1)\n\
-\n\
-@item r\n\
-For numeric lookups\n\
-the rightmost subinterval shall be extended to infinity (i.e., all indices\n\
-at most n-1).\n\
-@end table\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{idx} =} lookup (@var{table}, @var{y})
+@deftypefnx {} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})
+Lookup values in a sorted table.
+
+This function is usually used as a prelude to interpolation.
+
+If table is increasing and @code{idx = lookup (table, y)}, then
+@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within
+the table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If
+@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is
+@code{n}.
+
+If the table is decreasing, then the tests are reversed.
+For non-strictly monotonic tables, empty intervals are always skipped.
+The result is undefined if @var{table} is not monotonic, or if
+@var{table} contains a NaN.
+
+The complexity of the lookup is O(M*log(N)) where N is the size of
+@var{table} and M is the size of @var{y}.  In the special case when @var{y}
+is also sorted, the complexity is O(min(M*log(N),M+N)).
+
+@var{table} and @var{y} can also be cell arrays of strings
+(or @var{y} can be a single string).  In this case, string lookup
+is performed using lexicographical comparison.
+
+If @var{opts} is specified, it must be a string with letters indicating
+additional options.
+
+@table @code
+@item m
+@code{table(idx(i)) == val(i)} if @code{val(i)}
+occurs in table; otherwise, @code{idx(i)} is zero.
+
+@item b
+@code{idx(i)} is a logical 1 or 0, indicating whether
+@code{val(i)} is contained in table or not.
+
+@item l
+For numeric lookups
+the leftmost subinterval shall be extended to infinity (i.e., all indices
+at least 1)
+
+@item r
+For numeric lookups
+the rightmost subinterval shall be extended to infinity (i.e., all indices
+at most n-1).
+@end table
+@end deftypefn */)
 {
   int nargin = args.length ();
 

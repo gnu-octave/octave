@@ -90,11 +90,11 @@ valid_identifier (const std::string& s)
 }
 
 DEFUN (isvarname, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isvarname (@var{name})\n\
-Return true if @var{name} is a valid variable name.\n\
-@seealso{iskeyword, exist, who}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isvarname (@var{name})
+Return true if @var{name} is a valid variable name.
+@seealso{iskeyword, exist, who}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -286,24 +286,24 @@ make_absolute (const string_vector& sv)
 }
 
 DEFUN (file_in_loadpath, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} file_in_loadpath (@var{file})\n\
-@deftypefnx {} {} file_in_loadpath (@var{file}, \"all\")\n\
-\n\
-Return the absolute name of @var{file} if it can be found in\n\
-the list of directories specified by @code{path}.\n\
-\n\
-If no file is found, return an empty character string.\n\
-\n\
-If the first argument is a cell array of strings, search each directory of\n\
-the loadpath for element of the cell array and return the first that\n\
-matches.\n\
-\n\
-If the second optional argument @qcode{\"all\"} is supplied, return a cell\n\
-array containing the list of all files that have the same name in the path.\n\
-If no files are found, return an empty cell array.\n\
-@seealso{file_in_path, dir_in_loadpath, path}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} file_in_loadpath (@var{file})
+@deftypefnx {} {} file_in_loadpath (@var{file}, "all")
+
+Return the absolute name of @var{file} if it can be found in
+the list of directories specified by @code{path}.
+
+If no file is found, return an empty character string.
+
+If the first argument is a cell array of strings, search each directory of
+the loadpath for element of the cell array and return the first that
+matches.
+
+If the second optional argument @qcode{"all"} is supplied, return a cell
+array containing the list of all files that have the same name in the path.
+If no files are found, return an empty cell array.
+@seealso{file_in_path, dir_in_loadpath, path}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -349,30 +349,30 @@ If no files are found, return an empty cell array.\n\
 */
 
 DEFUN (file_in_path, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} file_in_path (@var{path}, @var{file})\n\
-@deftypefnx {} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
-Return the absolute name of @var{file} if it can be found in @var{path}.\n\
-\n\
-The value of @var{path} should be a colon-separated list of directories in\n\
-the format described for @code{path}.  If no file is found, return an empty\n\
-character string.  For example:\n\
-\n\
-@example\n\
-@group\n\
-file_in_path (EXEC_PATH, \"sh\")\n\
-     @result{} \"/bin/sh\"\n\
-@end group\n\
-@end example\n\
-\n\
-If the second argument is a cell array of strings, search each directory of\n\
-the path for element of the cell array and return the first that matches.\n\
-\n\
-If the third optional argument @qcode{\"all\"} is supplied, return a cell\n\
-array containing the list of all files that have the same name in the path.\n\
-If no files are found, return an empty cell array.\n\
-@seealso{file_in_loadpath, dir_in_loadpath, path}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} file_in_path (@var{path}, @var{file})
+@deftypefnx {} {} file_in_path (@var{path}, @var{file}, "all")
+Return the absolute name of @var{file} if it can be found in @var{path}.
+
+The value of @var{path} should be a colon-separated list of directories in
+the format described for @code{path}.  If no file is found, return an empty
+character string.  For example:
+
+@example
+@group
+file_in_path (EXEC_PATH, "sh")
+     @result{} "/bin/sh"
+@end group
+@end example
+
+If the second argument is a cell array of strings, search each directory of
+the path for element of the cell array and return the first that matches.
+
+If the third optional argument @qcode{"all"} is supplied, return a cell
+array containing the list of all files that have the same name in the path.
+If no files are found, return an empty cell array.
+@seealso{file_in_loadpath, dir_in_loadpath, path}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -714,15 +714,15 @@ do_string_escapes (const std::string& s)
 }
 
 DEFUN (do_string_escapes, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} do_string_escapes (@var{string})\n\
-Convert escape sequences in @var{string} to the characters they represent.\n\
-\n\
-Escape sequences begin with a leading backslash\n\
-(@qcode{'@xbackslashchar{}'}) followed by 1--3 characters\n\
-(.e.g., @qcode{\"@xbackslashchar{}n\"} => newline).\n\
-@seealso{undo_string_escapes}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} do_string_escapes (@var{string})
+Convert escape sequences in @var{string} to the characters they represent.
+
+Escape sequences begin with a leading backslash
+(@qcode{'@xbackslashchar{}'}) followed by 1--3 characters
+(.e.g., @qcode{"@xbackslashchar{}n"} => newline).
+@seealso{undo_string_escapes}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -829,35 +829,35 @@ undo_string_escapes (const std::string& s)
 }
 
 DEFUN (undo_string_escapes, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} undo_string_escapes (@var{s})\n\
-Convert special characters in strings back to their escaped forms.\n\
-\n\
-For example, the expression\n\
-\n\
-@example\n\
-bell = \"\\a\";\n\
-@end example\n\
-\n\
-@noindent\n\
-assigns the value of the alert character (control-g, ASCII code 7) to the\n\
-string variable @code{bell}.  If this string is printed, the system will\n\
-ring the terminal bell (if it is possible).  This is normally the desired\n\
-outcome.  However, sometimes it is useful to be able to print the original\n\
-representation of the string, with the special characters replaced by their\n\
-escape sequences.  For example,\n\
-\n\
-@example\n\
-@group\n\
-octave:13> undo_string_escapes (bell)\n\
-ans = \\a\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-replaces the unprintable alert character with its printable representation.\n\
-@seealso{do_string_escapes}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} undo_string_escapes (@var{s})
+Convert special characters in strings back to their escaped forms.
+
+For example, the expression
+
+@example
+bell = "\a";
+@end example
+
+@noindent
+assigns the value of the alert character (control-g, ASCII code 7) to the
+string variable @code{bell}.  If this string is printed, the system will
+ring the terminal bell (if it is possible).  This is normally the desired
+outcome.  However, sometimes it is useful to be able to print the original
+representation of the string, with the special characters replaced by their
+escape sequences.  For example,
+
+@example
+@group
+octave:13> undo_string_escapes (bell)
+ans = \a
+@end group
+@end example
+
+@noindent
+replaces the unprintable alert character with its printable representation.
+@seealso{do_string_escapes}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -890,11 +890,11 @@ replaces the unprintable alert character with its printable representation.\n\
 */
 
 DEFUN (is_absolute_filename, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} is_absolute_filename (@var{file})\n\
-Return true if @var{file} is an absolute filename.\n\
-@seealso{is_rooted_relative_filename, make_absolute_filename, isdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} is_absolute_filename (@var{file})
+Return true if @var{file} is an absolute filename.
+@seealso{is_rooted_relative_filename, make_absolute_filename, isdir}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -911,11 +911,11 @@ Return true if @var{file} is an absolute filename.\n\
 */
 
 DEFUN (is_rooted_relative_filename, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} is_rooted_relative_filename (@var{file})\n\
-Return true if @var{file} is a rooted-relative filename.\n\
-@seealso{is_absolute_filename, make_absolute_filename, isdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} is_rooted_relative_filename (@var{file})
+Return true if @var{file} is a rooted-relative filename.
+@seealso{is_absolute_filename, make_absolute_filename, isdir}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -932,14 +932,14 @@ Return true if @var{file} is a rooted-relative filename.\n\
 */
 
 DEFUN (make_absolute_filename, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} make_absolute_filename (@var{file})\n\
-Return the full name of @var{file} beginning from the root of the file\n\
-system.\n\
-\n\
-No check is done for the existence of @var{file}.\n\
-@seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} make_absolute_filename (@var{file})
+Return the full name of @var{file} beginning from the root of the file
+system.
+
+No check is done for the existence of @var{file}.
+@seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isdir}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -957,21 +957,21 @@ No check is done for the existence of @var{file}.\n\
 */
 
 DEFUN (dir_in_loadpath, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} dir_in_loadpath (@var{dir})\n\
-@deftypefnx {} {} dir_in_loadpath (@var{dir}, \"all\")\n\
-Return the full name of the path element matching @var{dir}.\n\
-\n\
-The match is performed at the end of each path element.  For example, if\n\
-@var{dir} is @qcode{\"foo/bar\"}, it matches the path element\n\
-@nospell{@qcode{\"/some/dir/foo/bar\"}}, but not\n\
-@nospell{@qcode{\"/some/dir/foo/bar/baz\"}}\n\
-@nospell{@qcode{\"/some/dir/allfoo/bar\"}}.\n\
-\n\
-If the optional second argument is supplied, return a cell array containing\n\
-all name matches rather than just the first.\n\
-@seealso{file_in_path, file_in_loadpath, path}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} dir_in_loadpath (@var{dir})
+@deftypefnx {} {} dir_in_loadpath (@var{dir}, "all")
+Return the full name of the path element matching @var{dir}.
+
+The match is performed at the end of each path element.  For example, if
+@var{dir} is @qcode{"foo/bar"}, it matches the path element
+@nospell{@qcode{"/some/dir/foo/bar"}}, but not
+@nospell{@qcode{"/some/dir/foo/bar/baz"}}
+@nospell{@qcode{"/some/dir/allfoo/bar"}}.
+
+If the optional second argument is supplied, return a cell array containing
+all name matches rather than just the first.
+@seealso{file_in_path, file_in_loadpath, path}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1007,16 +1007,16 @@ all name matches rather than just the first.\n\
 */
 
 DEFUNX ("errno", Ferrno, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {} {@var{err} =} errno ()\n\
-@deftypefnx {} {@var{err} =} errno (@var{val})\n\
-@deftypefnx {} {@var{err} =} errno (@var{name})\n\
-Return the current value of the system-dependent variable errno,\n\
-set its value to @var{val} and return the previous value, or return\n\
-the named error code given @var{name} as a character string, or -1\n\
-if @var{name} is not found.\n\
-@seealso{errno_list}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{err} =} errno ()
+@deftypefnx {} {@var{err} =} errno (@var{val})
+@deftypefnx {} {@var{err} =} errno (@var{name})
+Return the current value of the system-dependent variable errno,
+set its value to @var{val} and return the previous value, or return
+the named error code given @var{name} as a character string, or -1
+if @var{name} is not found.
+@seealso{errno_list}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1062,11 +1062,11 @@ if @var{name} is not found.\n\
 */
 
 DEFUN (errno_list, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} errno_list ()\n\
-Return a structure containing the system-dependent errno values.\n\
-@seealso{errno}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} errno_list ()
+Return a structure containing the system-dependent errno values.
+@seealso{errno}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -1335,22 +1335,22 @@ octave_sleep (double seconds)
 }
 
 DEFUN (isindex, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} isindex (@var{ind})\n\
-@deftypefnx {} {} isindex (@var{ind}, @var{n})\n\
-Return true if @var{ind} is a valid index.\n\
-\n\
-Valid indices are either positive integers (although possibly of real data\n\
-type), or logical arrays.\n\
-\n\
-If present, @var{n} specifies the maximum extent of the dimension to be\n\
-indexed.  When possible the internal result is cached so that subsequent\n\
-indexing using @var{ind} will not perform the check again.\n\
-\n\
-Implementation Note: Strings are first converted to double values before the\n\
-checks for valid indices are made.  Unless a string contains the NULL\n\
-character @nospell{\"@xbackslashchar{}0\"}, it will always be a valid index.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} isindex (@var{ind})
+@deftypefnx {} {} isindex (@var{ind}, @var{n})
+Return true if @var{ind} is a valid index.
+
+Valid indices are either positive integers (although possibly of real data
+type), or logical arrays.
+
+If present, @var{n} specifies the maximum extent of the dimension to be
+indexed.  When possible the internal result is cached so that subsequent
+indexing using @var{ind} will not perform the check again.
+
+Implementation Note: Strings are first converted to double values before the
+checks for valid indices are made.  Unless a string contains the NULL
+character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1480,13 +1480,13 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
 }
 
 DEFUN (isstudent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} isstudent ()\n\
-Return true if running in the student edition of @sc{matlab}.\n\
-\n\
-@code{isstudent} always returns false in Octave.\n\
-@seealso{false}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isstudent ()
+Return true if running in the student edition of @sc{matlab}.
+
+@code{isstudent} always returns false in Octave.
+@seealso{false}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();

@@ -33,32 +33,32 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (sylvester, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{X} =} syl (@var{A}, @var{B}, @var{C})\n\
-Solve the Sylvester equation\n\
-@tex\n\
-$$\n\
- A X + X B = C\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-A X + X B = C\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-using standard @sc{lapack} subroutines.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
-   @result{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{X} =} syl (@var{A}, @var{B}, @var{C})
+Solve the Sylvester equation
+@tex
+$$
+ A X + X B = C
+$$
+@end tex
+@ifnottex
+
+@example
+A X + X B = C
+@end example
+
+@end ifnottex
+using standard @sc{lapack} subroutines.
+
+For example:
+
+@example
+@group
+sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
+   @result{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]
+@end group
+@end example
+@end deftypefn */)
 {
   if (args.length () != 3)
     print_usage ();

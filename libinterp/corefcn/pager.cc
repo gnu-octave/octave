@@ -506,31 +506,31 @@ open_diary_file (void)
 }
 
 DEFUN (diary, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} diary\n\
-@deftypefnx {} {} diary on\n\
-@deftypefnx {} {} diary off\n\
-@deftypefnx {} {} diary @var{filename}\n\
-Record a list of all commands @emph{and} the output they produce, mixed\n\
-together just as they appear on the terminal.\n\
-\n\
-Valid options are:\n\
-\n\
-@table @asis\n\
-@item on\n\
-Start recording a session in a file called @file{diary} in the\n\
-current working directory.\n\
-\n\
-@item off\n\
-Stop recording the session in the diary file.\n\
-\n\
-@item @var{filename}\n\
-Record the session in the file named @var{filename}.\n\
-@end table\n\
-\n\
-With no arguments, @code{diary} toggles the current diary state.\n\
-@seealso{history, evalc}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} diary
+@deftypefnx {} {} diary on
+@deftypefnx {} {} diary off
+@deftypefnx {} {} diary @var{filename}
+Record a list of all commands @emph{and} the output they produce, mixed
+together just as they appear on the terminal.
+
+Valid options are:
+
+@table @asis
+@item on
+Start recording a session in a file called @file{diary} in the
+current working directory.
+
+@item off
+Stop recording the session in the diary file.
+
+@item @var{filename}
+Record the session in the file named @var{filename}.
+@end table
+
+With no arguments, @code{diary} toggles the current diary state.
+@seealso{history, evalc}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -571,35 +571,35 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 }
 
 DEFUN (__diaryfile__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{fname} =} __diaryfile__ ()\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{fname} =} __diaryfile__ ()
+Undocumented internal function
+@end deftypefn */)
 {
   return ovl (diary_file);
 }
 
 DEFUN (__diarystate__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{state} =} __diarystate__ ()\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{state} =} __diarystate__ ()
+Undocumented internal function
+@end deftypefn */)
 {
   return ovl (write_to_diary_file);
 }
 
 DEFUN (more, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} more\n\
-@deftypefnx {} {} more on\n\
-@deftypefnx {} {} more off\n\
-Turn output pagination on or off.\n\
-\n\
-Without an argument, @code{more} toggles the current state.\n\
-\n\
-The current state can be determined via @code{page_screen_output}.\n\
-@seealso{page_screen_output, page_output_immediately, PAGER, PAGER_FLAGS}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} more
+@deftypefnx {} {} more on
+@deftypefnx {} {} more off
+Turn output pagination on or off.
+
+Without an argument, @code{more} toggles the current state.
+
+The current state can be determined via @code{page_screen_output}.
+@seealso{page_screen_output, page_output_immediately, PAGER, PAGER_FLAGS}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -624,12 +624,12 @@ The current state can be determined via @code{page_screen_output}.\n\
 }
 
 DEFUN (terminal_size, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} terminal_size ()\n\
-Return a two-element row vector containing the current size of the terminal\n\
-window in characters (rows and columns).\n\
-@seealso{list_in_columns}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} terminal_size ()
+Return a two-element row vector containing the current size of the terminal
+window in characters (rows and columns).
+@seealso{list_in_columns}
+@end deftypefn */)
 {
   RowVector size (2, 0.0);
 
@@ -640,81 +640,81 @@ window in characters (rows and columns).\n\
 }
 
 DEFUN (page_output_immediately, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} page_output_immediately ()\n\
-@deftypefnx {} {@var{old_val} =} page_output_immediately (@var{new_val})\n\
-@deftypefnx {} {} page_output_immediately (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave sends\n\
-output to the pager as soon as it is available.\n\
-\n\
-Otherwise, Octave buffers its output and waits until just before the prompt\n\
-is printed to flush it to the pager.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{page_screen_output, more, PAGER, PAGER_FLAGS}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} page_output_immediately ()
+@deftypefnx {} {@var{old_val} =} page_output_immediately (@var{new_val})
+@deftypefnx {} {} page_output_immediately (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave sends
+output to the pager as soon as it is available.
+
+Otherwise, Octave buffers its output and waits until just before the prompt
+is printed to flush it to the pager.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{page_screen_output, more, PAGER, PAGER_FLAGS}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (page_output_immediately);
 }
 
 DEFUN (page_screen_output, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} page_screen_output ()\n\
-@deftypefnx {} {@var{old_val} =} page_screen_output (@var{new_val})\n\
-@deftypefnx {} {} page_screen_output (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether output intended\n\
-for the terminal window that is longer than one page is sent through a\n\
-pager.\n\
-\n\
-This allows you to view one screenful at a time.  Some pagers\n\
-(such as @code{less}---see @ref{Installation}) are also capable of moving\n\
-backward on the output.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{more, page_output_immediately, PAGER, PAGER_FLAGS}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} page_screen_output ()
+@deftypefnx {} {@var{old_val} =} page_screen_output (@var{new_val})
+@deftypefnx {} {} page_screen_output (@var{new_val}, "local")
+Query or set the internal variable that controls whether output intended
+for the terminal window that is longer than one page is sent through a
+pager.
+
+This allows you to view one screenful at a time.  Some pagers
+(such as @code{less}---see @ref{Installation}) are also capable of moving
+backward on the output.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{more, page_output_immediately, PAGER, PAGER_FLAGS}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (page_screen_output);
 }
 
 DEFUN (PAGER, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} PAGER ()\n\
-@deftypefnx {} {@var{old_val} =} PAGER (@var{new_val})\n\
-@deftypefnx {} {} PAGER (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the program to use\n\
-to display terminal output on your system.\n\
-\n\
-The default value is normally @qcode{\"less\"}, @qcode{\"more\"}, or\n\
-@qcode{\"pg\"}, depending on what programs are installed on your system.\n\
-@xref{Installation}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{PAGER_FLAGS, page_output_immediately, more, page_screen_output}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} PAGER ()
+@deftypefnx {} {@var{old_val} =} PAGER (@var{new_val})
+@deftypefnx {} {} PAGER (@var{new_val}, "local")
+Query or set the internal variable that specifies the program to use
+to display terminal output on your system.
+
+The default value is normally @qcode{"less"}, @qcode{"more"}, or
+@qcode{"pg"}, depending on what programs are installed on your system.
+@xref{Installation}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{PAGER_FLAGS, page_output_immediately, more, page_screen_output}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER);
 }
 
 DEFUN (PAGER_FLAGS, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} PAGER_FLAGS ()\n\
-@deftypefnx {} {@var{old_val} =} PAGER_FLAGS (@var{new_val})\n\
-@deftypefnx {} {} PAGER_FLAGS (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the options to pass\n\
-to the pager.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{PAGER, more, page_screen_output, page_output_immediately}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} PAGER_FLAGS ()
+@deftypefnx {} {@var{old_val} =} PAGER_FLAGS (@var{new_val})
+@deftypefnx {} {} PAGER_FLAGS (@var{new_val}, "local")
+Query or set the internal variable that specifies the options to pass
+to the pager.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{PAGER, more, page_screen_output, page_output_immediately}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER_FLAGS);
 }

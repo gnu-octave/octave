@@ -55,25 +55,25 @@ safe_close (SNDFILE *file)
 #endif
 
 DEFUN_DLD (audioread, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
-@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
-\n\
-@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
-@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
-Read the audio file @var{filename} and return the audio data @var{y} and\n\
-sampling rate @var{fs}.\n\
-\n\
-The audio data is stored as matrix with rows corresponding to audio frames\n\
-and columns corresponding to channels.\n\
-\n\
-The optional two-element vector argument @var{samples} specifies starting\n\
-and ending frames.\n\
-\n\
-The optional argument @var{datatype} specifies the datatype to return.\n\
-If it is @qcode{\"native\"}, then the type of data depends on how the data\n\
-is stored in the audio file.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{y}, @var{fs}] =} audioread (@var{filename})
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})
+
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})
+Read the audio file @var{filename} and return the audio data @var{y} and
+sampling rate @var{fs}.
+
+The audio data is stored as matrix with rows corresponding to audio frames
+and columns corresponding to channels.
+
+The optional two-element vector argument @var{samples} specifies starting
+and ending frames.
+
+The optional argument @var{datatype} specifies the datatype to return.
+If it is @qcode{"native"}, then the type of data depends on how the data
+is stored in the audio file.
+@end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
 
@@ -234,38 +234,38 @@ extension_to_format (const std::string& ext)
 #endif
 
 DEFUN_DLD (audiowrite, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
-@deftypefnx {} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})\n\
-\n\
-Write audio data from the matrix @var{y} to @var{filename} at sampling rate\n\
-@var{fs} with the file format determined by the file extension.\n\
-\n\
-Additional name/value argument pairs may be used to specify the\n\
-following options:\n\
-\n\
-@table @samp\n\
-@item BitsPerSample\n\
-Number of bits per sample.  Valid values are 8, 16, 24, and 32.  Default is\n\
-16.\n\
-\n\
-@item BitRate\n\
-Valid argument name, but ignored.  Left for compatibility with @sc{matlab}.\n\
-\n\
-@item Quality\n\
-Quality setting for the Ogg Vorbis compressor.  Values can range between 0\n\
-and 100 with 100 being the highest quality setting.  Default is 75.\n\
-\n\
-@item Title\n\
-Title for the audio file.\n\
-\n\
-@item Artist\n\
-Artist name.\n\
-\n\
-@item Comment\n\
-Comment.\n\
-@end table\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} audiowrite (@var{filename}, @var{y}, @var{fs})
+@deftypefnx {} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})
+
+Write audio data from the matrix @var{y} to @var{filename} at sampling rate
+@var{fs} with the file format determined by the file extension.
+
+Additional name/value argument pairs may be used to specify the
+following options:
+
+@table @samp
+@item BitsPerSample
+Number of bits per sample.  Valid values are 8, 16, 24, and 32.  Default is
+16.
+
+@item BitRate
+Valid argument name, but ignored.  Left for compatibility with @sc{matlab}.
+
+@item Quality
+Quality setting for the Ogg Vorbis compressor.  Values can range between 0
+and 100 with 100 being the highest quality setting.  Default is 75.
+
+@item Title
+Title for the audio file.
+
+@item Artist
+Artist name.
+
+@item Comment
+Comment.
+@end table
+@end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
 
@@ -443,10 +443,10 @@ Comment.\n\
 }
 
 DEFUN_DLD (audioinfo, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {} {@var{info} =} audioinfo (@var{filename})\n\
-Return information about an audio file specified by @var{filename}.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{info} =} audioinfo (@var{filename})
+Return information about an audio file specified by @var{filename}.
+@end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
 
@@ -546,14 +546,14 @@ audio_sub_formats (int format)
 #endif
 
 DEFUN_DLD (audioformats, args, ,
-"-*- texinfo -*-\n\
-@deftypefn  {} {} audioformats ()\n\
-@deftypefnx {} {} audioformats (@var{format})\n\
-Display information about all supported audio formats.\n\
-\n\
-If the optional argument @var{format} is given, then display only formats\n\
-with names that start with @var{format}.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} audioformats ()
+@deftypefnx {} {} audioformats (@var{format})
+Display information about all supported audio formats.
+
+If the optional argument @var{format} is given, then display only formats
+with names that start with @var{format}.
+@end deftypefn */)
 {
 #if defined (HAVE_SNDFILE)
 

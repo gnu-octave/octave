@@ -758,43 +758,43 @@ get_user_input (const octave_value_list& args, int nargout)
 }
 
 DEFUN (input, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{ans} =} input (@var{prompt})\n\
-@deftypefnx {} {@var{ans} =} input (@var{prompt}, \"s\")\n\
-Print @var{prompt} and wait for user input.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-input (\"Pick a number, any number! \")\n\
-@end example\n\
-\n\
-@noindent\n\
-prints the prompt\n\
-\n\
-@example\n\
-Pick a number, any number!\n\
-@end example\n\
-\n\
-@noindent\n\
-and waits for the user to enter a value.  The string entered by the user\n\
-is evaluated as an expression, so it may be a literal constant, a variable\n\
-name, or any other valid Octave code.\n\
-\n\
-The number of return arguments, their size, and their class depend on the\n\
-expression entered.\n\
-\n\
-If you are only interested in getting a literal string value, you can call\n\
-@code{input} with the character string @qcode{\"s\"} as the second argument.\n\
-This tells Octave to return the string entered by the user directly, without\n\
-evaluating it first.\n\
-\n\
-Because there may be output waiting to be displayed by the pager, it is a\n\
-good idea to always call @code{fflush (stdout)} before calling @code{input}.\n\
- This will ensure that all pending output is written to the screen before\n\
-your prompt.\n\
-@seealso{yes_or_no, kbhit, pause, menu, listdlg}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{ans} =} input (@var{prompt})
+@deftypefnx {} {@var{ans} =} input (@var{prompt}, "s")
+Print @var{prompt} and wait for user input.
+
+For example,
+
+@example
+input ("Pick a number, any number! ")
+@end example
+
+@noindent
+prints the prompt
+
+@example
+Pick a number, any number!
+@end example
+
+@noindent
+and waits for the user to enter a value.  The string entered by the user
+is evaluated as an expression, so it may be a literal constant, a variable
+name, or any other valid Octave code.
+
+The number of return arguments, their size, and their class depend on the
+expression entered.
+
+If you are only interested in getting a literal string value, you can call
+@code{input} with the character string @qcode{"s"} as the second argument.
+This tells Octave to return the string entered by the user directly, without
+evaluating it first.
+
+Because there may be output waiting to be displayed by the pager, it is a
+good idea to always call @code{fflush (stdout)} before calling @code{input}.
+ This will ensure that all pending output is written to the screen before
+your prompt.
+@seealso{yes_or_no, kbhit, pause, menu, listdlg}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -825,18 +825,18 @@ octave_yes_or_no (const std::string& prompt)
 }
 
 DEFUN (yes_or_no, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{ans} =} yes_or_no (\"@var{prompt}\")\n\
-Ask the user a yes-or-no question.\n\
-\n\
-Return logical true if the answer is yes or false if the answer is no.\n\
-\n\
-Takes one argument, @var{prompt}, which is the string to display when asking\n\
-the question.  @var{prompt} should end in a space; @code{yes-or-no} adds the\n\
-string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
-@key{RET} and can edit it until it has been confirmed.\n\
-@seealso{input}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{ans} =} yes_or_no ("@var{prompt}")
+Ask the user a yes-or-no question.
+
+Return logical true if the answer is yes or false if the answer is no.
+
+Takes one argument, @var{prompt}, which is the string to display when asking
+the question.  @var{prompt} should end in a space; @code{yes-or-no} adds the
+string @samp{(yes or no) } to it.  The user must confirm the answer with
+@key{RET} and can edit it until it has been confirmed.
+@seealso{input}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -890,22 +890,22 @@ do_keyboard (const octave_value_list& args)
 }
 
 DEFUN (keyboard, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} keyboard ()\n\
-@deftypefnx {} {} keyboard (\"@var{prompt}\")\n\
-Stop m-file execution and enter debug mode.\n\
-\n\
-When the @code{keyboard} function is executed, Octave prints a prompt and\n\
-waits for user input.  The input strings are then evaluated and the results\n\
-are printed.  This makes it possible to examine the values of variables\n\
-within a function, and to assign new values if necessary.  To leave the\n\
-prompt and return to normal execution type @samp{return} or @samp{dbcont}.\n\
-The @code{keyboard} function does not return an exit status.\n\
-\n\
-If @code{keyboard} is invoked without arguments, a default prompt of\n\
-@samp{debug> } is used.\n\
-@seealso{dbstop, dbcont, dbquit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} keyboard ()
+@deftypefnx {} {} keyboard ("@var{prompt}")
+Stop m-file execution and enter debug mode.
+
+When the @code{keyboard} function is executed, Octave prints a prompt and
+waits for user input.  The input strings are then evaluated and the results
+are printed.  This makes it possible to examine the values of variables
+within a function, and to assign new values if necessary.  To leave the
+prompt and return to normal execution type @samp{return} or @samp{dbcont}.
+The @code{keyboard} function does not return an exit status.
+
+If @code{keyboard} is invoked without arguments, a default prompt of
+@samp{debug> } is used.
+@seealso{dbstop, dbcont, dbquit}
+@end deftypefn */)
 {
   if (args.length () > 1)
     print_usage ();
@@ -929,35 +929,35 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 }
 
 DEFUN (echo, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} echo\n\
-@deftypefnx {} {} echo on\n\
-@deftypefnx {} {} echo off\n\
-@deftypefnx {} {} echo on all\n\
-@deftypefnx {} {} echo off all\n\
-Control whether commands are displayed as they are executed.\n\
-\n\
-Valid options are:\n\
-\n\
-@table @code\n\
-@item on\n\
-Enable echoing of commands as they are executed in script files.\n\
-\n\
-@item off\n\
-Disable echoing of commands as they are executed in script files.\n\
-\n\
-@item on all\n\
-Enable echoing of commands as they are executed in script files and\n\
-functions.\n\
-\n\
-@item off all\n\
-Disable echoing of commands as they are executed in script files and\n\
-functions.\n\
-@end table\n\
-\n\
-@noindent\n\
-With no arguments, @code{echo} toggles the current echo state.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} echo
+@deftypefnx {} {} echo on
+@deftypefnx {} {} echo off
+@deftypefnx {} {} echo on all
+@deftypefnx {} {} echo off all
+Control whether commands are displayed as they are executed.
+
+Valid options are:
+
+@table @code
+@item on
+Enable echoing of commands as they are executed in script files.
+
+@item off
+Disable echoing of commands as they are executed in script files.
+
+@item on all
+Enable echoing of commands as they are executed in script files and
+functions.
+
+@item off all
+Disable echoing of commands as they are executed in script files and
+functions.
+@end table
+
+@noindent
+With no arguments, @code{echo} toggles the current echo state.
+@end deftypefn */)
 {
   string_vector argv = args.make_argv ();
 
@@ -1058,24 +1058,24 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 */
 
 DEFUN (__echostate__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{state} =} __echostate__ ()\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{state} =} __echostate__ ()
+Undocumented internal function
+@end deftypefn */)
 {
   return ovl (Vecho_executing_commands == ECHO_SCRIPTS);
 }
 
 DEFUN (completion_matches, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} completion_matches (@var{hint})\n\
-Generate possible completions given @var{hint}.\n\
-\n\
-This function is provided for the benefit of programs like Emacs which\n\
-might be controlling Octave and handling user input.  The current\n\
-command number is not incremented when this function is called.  This is\n\
-a feature, not a bug.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} completion_matches (@var{hint})
+Generate possible completions given @var{hint}.
+
+This function is provided for the benefit of programs like Emacs which
+might be controlling Octave and handling user input.  The current
+command number is not incremented when this function is called.  This is
+a feature, not a bug.
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -1151,17 +1151,17 @@ a feature, not a bug.\n\
 */
 
 DEFUN (readline_read_init_file, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} readline_read_init_file (@var{file})\n\
-Read the readline library initialization file @var{file}.\n\
-\n\
-If @var{file} is omitted, read the default initialization file\n\
-(normally @file{~/.inputrc}).\n\
-\n\
-@xref{Readline Init File, , , readline, GNU Readline Library},\n\
-for details.\n\
-@seealso{readline_re_read_init_file}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} readline_read_init_file (@var{file})
+Read the readline library initialization file @var{file}.
+
+If @var{file} is omitted, read the default initialization file
+(normally @file{~/.inputrc}).
+
+@xref{Readline Init File, , , readline, GNU Readline Library},
+for details.
+@seealso{readline_re_read_init_file}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1181,14 +1181,14 @@ for details.\n\
 }
 
 DEFUN (readline_re_read_init_file, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} readline_re_read_init_file ()\n\
-Re-read the last readline library initialization file that was read.\n\
-\n\
-@xref{Readline Init File, , , readline, GNU Readline Library},\n\
-for details.\n\
-@seealso{readline_read_init_file}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} readline_re_read_init_file ()
+Re-read the last readline library initialization file that was read.
+
+@xref{Readline Init File, , , readline, GNU Readline Library},
+for details.
+@seealso{readline_read_init_file}
+@end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
@@ -1210,24 +1210,24 @@ internal_input_event_hook_fcn (void)
 }
 
 DEFUN (add_input_event_hook, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{id} =} add_input_event_hook (@var{fcn})\n\
-@deftypefnx {} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
-Add the named function or function handle @var{fcn} to the list of functions\n\
-to call periodically when Octave is waiting for input.\n\
-\n\
-The function should have the form\n\
-\n\
-@example\n\
-@var{fcn} (@var{data})\n\
-@end example\n\
-\n\
-If @var{data} is omitted, Octave calls the function without any arguments.\n\
-\n\
-The returned identifier may be used to remove the function handle from the\n\
-list of input hook functions.\n\
-@seealso{remove_input_event_hook}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{id} =} add_input_event_hook (@var{fcn})
+@deftypefnx {} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})
+Add the named function or function handle @var{fcn} to the list of functions
+to call periodically when Octave is waiting for input.
+
+The function should have the form
+
+@example
+@var{fcn} (@var{data})
+@end example
+
+If @var{data} is omitted, Octave calls the function without any arguments.
+
+The returned identifier may be used to remove the function handle from the
+list of input hook functions.
+@seealso{remove_input_event_hook}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1250,14 +1250,14 @@ list of input hook functions.\n\
 }
 
 DEFUN (remove_input_event_hook, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} remove_input_event_hook (@var{name})\n\
-@deftypefnx {} {} remove_input_event_hook (@var{fcn_id})\n\
-Remove the named function or function handle with the given identifier\n\
-from the list of functions to call periodically when Octave is waiting\n\
-for input.\n\
-@seealso{add_input_event_hook}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} remove_input_event_hook (@var{name})
+@deftypefnx {} {} remove_input_event_hook (@var{fcn_id})
+Remove the named function or function handle with the given identifier
+from the list of functions to call periodically when Octave is waiting
+for input.
+@seealso{add_input_event_hook}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1284,147 +1284,147 @@ for input.\n\
 }
 
 DEFUN (PS1, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} PS1 ()\n\
-@deftypefnx {} {@var{old_val} =} PS1 (@var{new_val})\n\
-@deftypefnx {} {} PS1 (@var{new_val}, \"local\")\n\
-Query or set the primary prompt string.\n\
-\n\
-When executing interactively, Octave displays the primary prompt when it is\n\
-ready to read a command.\n\
-\n\
-The default value of the primary prompt string is @qcode{\"octave:\\#> \"}.\n\
-To change it, use a command like\n\
-\n\
-@example\n\
-PS1 (\"\\\\u@@\\\\H> \")\n\
-@end example\n\
-\n\
-@noindent\n\
-which will result in the prompt @samp{boris@@kremvax> } for the user\n\
-@samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two\n\
-backslashes are required to enter a backslash into a double-quoted\n\
-character string.  @xref{Strings}.\n\
-\n\
-You can also use ANSI escape sequences if your terminal supports them.\n\
-This can be useful for coloring the prompt.  For example,\n\
-\n\
-@example\n\
-PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\\\]\")\n\
-@end example\n\
-\n\
-@noindent\n\
-will give the default Octave prompt a red coloring.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{PS2, PS4}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} PS1 ()
+@deftypefnx {} {@var{old_val} =} PS1 (@var{new_val})
+@deftypefnx {} {} PS1 (@var{new_val}, "local")
+Query or set the primary prompt string.
+
+When executing interactively, Octave displays the primary prompt when it is
+ready to read a command.
+
+The default value of the primary prompt string is @qcode{"octave:\#> "}.
+To change it, use a command like
+
+@example
+PS1 ("\\u@@\\H> ")
+@end example
+
+@noindent
+which will result in the prompt @samp{boris@@kremvax> } for the user
+@samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two
+backslashes are required to enter a backslash into a double-quoted
+character string.  @xref{Strings}.
+
+You can also use ANSI escape sequences if your terminal supports them.
+This can be useful for coloring the prompt.  For example,
+
+@example
+PS1 ('\[\033[01;31m\]\s:\#> \[\033[0m\]')
+@end example
+
+@noindent
+will give the default Octave prompt a red coloring.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{PS2, PS4}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (PS1);
 }
 
 DEFUN (PS2, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} PS2 ()\n\
-@deftypefnx {} {@var{old_val} =} PS2 (@var{new_val})\n\
-@deftypefnx {} {} PS2 (@var{new_val}, \"local\")\n\
-Query or set the secondary prompt string.\n\
-\n\
-The secondary prompt is printed when Octave is expecting additional input to\n\
-complete a command.  For example, if you are typing a @code{for} loop that\n\
-spans several lines, Octave will print the secondary prompt at the beginning\n\
-of each line after the first.  The default value of the secondary prompt\n\
-string is @qcode{\"> \"}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{PS1, PS4}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} PS2 ()
+@deftypefnx {} {@var{old_val} =} PS2 (@var{new_val})
+@deftypefnx {} {} PS2 (@var{new_val}, "local")
+Query or set the secondary prompt string.
+
+The secondary prompt is printed when Octave is expecting additional input to
+complete a command.  For example, if you are typing a @code{for} loop that
+spans several lines, Octave will print the secondary prompt at the beginning
+of each line after the first.  The default value of the secondary prompt
+string is @qcode{"> "}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{PS1, PS4}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (PS2);
 }
 
 DEFUN (PS4, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} PS4 ()\n\
-@deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})\n\
-@deftypefnx {} {} PS4 (@var{new_val}, \"local\")\n\
-Query or set the character string used to prefix output produced\n\
-when echoing commands is enabled.\n\
-\n\
-The default value is @qcode{\"+ \"}.\n\
-@xref{Diary and Echo Commands}, for a description of echoing commands.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{echo, echo_executing_commands, PS1, PS2}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} PS4 ()
+@deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})
+@deftypefnx {} {} PS4 (@var{new_val}, "local")
+Query or set the character string used to prefix output produced
+when echoing commands is enabled.
+
+The default value is @qcode{"+ "}.
+@xref{Diary and Echo Commands}, for a description of echoing commands.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{echo, echo_executing_commands, PS1, PS2}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (PS4);
 }
 
 DEFUN (completion_append_char, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} completion_append_char ()\n\
-@deftypefnx {} {@var{old_val} =} completion_append_char (@var{new_val})\n\
-@deftypefnx {} {} completion_append_char (@var{new_val}, \"local\")\n\
-Query or set the internal character variable that is appended to\n\
-successful command-line completion attempts.\n\
-\n\
-The default value is @qcode{\" \"} (a single space).\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} completion_append_char ()
+@deftypefnx {} {@var{old_val} =} completion_append_char (@var{new_val})
+@deftypefnx {} {} completion_append_char (@var{new_val}, "local")
+Query or set the internal character variable that is appended to
+successful command-line completion attempts.
+
+The default value is @qcode{" "} (a single space).
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (completion_append_char);
 }
 
 DEFUN (echo_executing_commands, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} echo_executing_commands ()\n\
-@deftypefnx {} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
-@deftypefnx {} {} echo_executing_commands (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls the echo state.\n\
-\n\
-It may be the sum of the following values:\n\
-\n\
-@table @asis\n\
-@item 1\n\
-Echo commands read from script files.\n\
-\n\
-@item 2\n\
-Echo commands from functions.\n\
-\n\
-@item 4\n\
-Echo commands read from command line.\n\
-@end table\n\
-\n\
-More than one state can be active at once.  For example, a value of 3 is\n\
-equivalent to the command @kbd{echo on all}.\n\
-\n\
-The value of @code{echo_executing_commands} may be set by the @kbd{echo}\n\
-command or the command line option @option{--echo-commands}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} echo_executing_commands ()
+@deftypefnx {} {@var{old_val} =} echo_executing_commands (@var{new_val})
+@deftypefnx {} {} echo_executing_commands (@var{new_val}, "local")
+Query or set the internal variable that controls the echo state.
+
+It may be the sum of the following values:
+
+@table @asis
+@item 1
+Echo commands read from script files.
+
+@item 2
+Echo commands from functions.
+
+@item 4
+Echo commands read from command line.
+@end table
+
+More than one state can be active at once.  For example, a value of 3 is
+equivalent to the command @kbd{echo on all}.
+
+The value of @code{echo_executing_commands} may be set by the @kbd{echo}
+command or the command line option @option{--echo-commands}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);
 }
 
 DEFUN (__request_drawnow__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {} __request_drawnow__ ()\n\
-@deftypefnx {} {} __request_drawnow__ (@var{flag})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __request_drawnow__ ()
+@deftypefnx {} {} __request_drawnow__ (@var{flag})
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1440,10 +1440,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__gud_mode__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} __gud_mode__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __gud_mode__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -1461,40 +1461,40 @@ Undocumented internal function.\n\
 }
 
 DEFUN (filemarker, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{val} =} filemarker ()\n\
-@deftypefnx {} {@var{old_val} =} filemarker (@var{new_val})\n\
-@deftypefnx {} {} filemarker (@var{new_val}, \"local\")\n\
-Query or set the character used to separate the filename from the\n\
-subfunction names contained within the file.\n\
-\n\
-By default this is the character @samp{>}.\n\
-This can be used in a generic manner to interact with subfunctions.\n\
-For example,\n\
-\n\
-@example\n\
-help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
-@end example\n\
-\n\
-@noindent\n\
-returns the help string associated with the subfunction @code{mysubfunc}\n\
-located in the file @file{myfunc.m}.\n\
-\n\
-@code{filemarker} is also useful during debugging for placing breakpoints\n\
-within subfunctions or nested functions.\n\
-For example,\n\
-\n\
-@example\n\
-dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
-@end example\n\
-\n\
-@noindent\n\
-will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} filemarker ()
+@deftypefnx {} {@var{old_val} =} filemarker (@var{new_val})
+@deftypefnx {} {} filemarker (@var{new_val}, "local")
+Query or set the character used to separate the filename from the
+subfunction names contained within the file.
+
+By default this is the character @samp{>}.
+This can be used in a generic manner to interact with subfunctions.
+For example,
+
+@example
+help (["myfunc", filemarker, "mysubfunc"])
+@end example
+
+@noindent
+returns the help string associated with the subfunction @code{mysubfunc}
+located in the file @file{myfunc.m}.
+
+@code{filemarker} is also useful during debugging for placing breakpoints
+within subfunctions or nested functions.
+For example,
+
+@example
+dbstop (["myfunc", filemarker, "mysubfunc"])
+@end example
+
+@noindent
+will set a breakpoint at the first line of the subfunction @code{mysubfunc}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   char tmp = Vfilemarker;
   octave_value retval = SET_INTERNAL_VARIABLE (filemarker);

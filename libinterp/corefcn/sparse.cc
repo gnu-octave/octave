@@ -42,11 +42,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool-sparse.h"
 
 DEFUN (issparse, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {} issparse (@var{x})\n\
-Return true if @var{x} is a sparse matrix.\n\
-@seealso{ismatrix}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} issparse (@var{x})
+Return true if @var{x} is a sparse matrix.
+@seealso{ismatrix}
+@end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
@@ -55,72 +55,72 @@ Return true if @var{x} is a sparse matrix.\n\
 }
 
 DEFUN (sparse, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {@var{s} =} sparse (@var{a})\n\
-@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n})\n\
-@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
-@deftypefnx {} {@var{s} =} sparse (@var{m}, @var{n})\n\
-@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
-@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
-Create a sparse matrix from a full matrix, or row, column, value triplets.\n\
-\n\
-If @var{a} is a full matrix, convert it to a sparse matrix representation,\n\
-removing all zero values in the process.\n\
-\n\
-Given the integer index vectors @var{i} and @var{j}, and a 1-by-@code{nnz}\n\
-vector of real or complex values @var{sv}, construct the sparse matrix\n\
-@code{S(@var{i}(@var{k}),@var{j}(@var{k})) = @var{sv}(@var{k})} with overall\n\
-dimensions @var{m} and @var{n}.  If any of @var{sv}, @var{i} or @var{j} are\n\
-scalars, they are expanded to have a common size.\n\
-\n\
-If @var{m} or @var{n} are not specified their values are derived from the\n\
-maximum index in the vectors @var{i} and @var{j} as given by\n\
-@code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}.\n\
-\n\
-@strong{Note}: if multiple values are specified with the same @var{i},\n\
-@var{j} indices, the corresponding value in @var{s} will be the sum of the\n\
-values at the repeated location.  See @code{accumarray} for an example of\n\
-how to produce different behavior, such as taking the minimum instead.\n\
-\n\
-If the option @qcode{\"unique\"} is given, and more than one value is\n\
-specified at the same @var{i}, @var{j} indices, then the last specified\n\
-value will be used.\n\
-\n\
-@code{sparse (@var{m}, @var{n})} will create an empty @var{m}x@var{n} sparse\n\
-matrix and is equivalent to @code{sparse ([], [], [], @var{m}, @var{n})}\n\
-\n\
-The argument @code{nzmax} is ignored but accepted for compatibility with\n\
-@sc{matlab}.\n\
-\n\
-Example 1 (sum at repeated indices):\n\
-\n\
-@example\n\
-@group\n\
-@var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];\n\
-sparse (@var{i}, @var{j}, @var{sv}, 3, 4)\n\
-@result{}\n\
-Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
-\n\
-  (1, 1) ->  7\n\
-  (2, 2) ->  5\n\
-@end group\n\
-@end example\n\
-\n\
-Example 2 (\"unique\" option):\n\
-\n\
-@example\n\
-@group\n\
-@var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];\n\
-sparse (@var{i}, @var{j}, @var{sv}, 3, 4, \"unique\")\n\
-@result{}\n\
-Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
-\n\
-  (1, 1) ->  4\n\
-  (2, 2) ->  5\n\
-@end group\n\
-@end example\n\
-@seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn, sprandsym, spconvert, spfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} sparse (@var{a})
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n})
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})
+@deftypefnx {} {@var{s} =} sparse (@var{m}, @var{n})
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, "unique")
+@deftypefnx {} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})
+Create a sparse matrix from a full matrix, or row, column, value triplets.
+
+If @var{a} is a full matrix, convert it to a sparse matrix representation,
+removing all zero values in the process.
+
+Given the integer index vectors @var{i} and @var{j}, and a 1-by-@code{nnz}
+vector of real or complex values @var{sv}, construct the sparse matrix
+@code{S(@var{i}(@var{k}),@var{j}(@var{k})) = @var{sv}(@var{k})} with overall
+dimensions @var{m} and @var{n}.  If any of @var{sv}, @var{i} or @var{j} are
+scalars, they are expanded to have a common size.
+
+If @var{m} or @var{n} are not specified their values are derived from the
+maximum index in the vectors @var{i} and @var{j} as given by
+@code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}.
+
+@strong{Note}: if multiple values are specified with the same @var{i},
+@var{j} indices, the corresponding value in @var{s} will be the sum of the
+values at the repeated location.  See @code{accumarray} for an example of
+how to produce different behavior, such as taking the minimum instead.
+
+If the option @qcode{"unique"} is given, and more than one value is
+specified at the same @var{i}, @var{j} indices, then the last specified
+value will be used.
+
+@code{sparse (@var{m}, @var{n})} will create an empty @var{m}x@var{n} sparse
+matrix and is equivalent to @code{sparse ([], [], [], @var{m}, @var{n})}
+
+The argument @code{nzmax} is ignored but accepted for compatibility with
+@sc{matlab}.
+
+Example 1 (sum at repeated indices):
+
+@example
+@group
+@var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];
+sparse (@var{i}, @var{j}, @var{sv}, 3, 4)
+@result{}
+Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
+
+  (1, 1) ->  7
+  (2, 2) ->  5
+@end group
+@end example
+
+Example 2 ("unique" option):
+
+@example
+@group
+@var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];
+sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
+@result{}
+Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
+
+  (1, 1) ->  4
+  (2, 2) ->  5
+@end group
+@end example
+@seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn, sprandsym, spconvert, spfun}
+@end deftypefn */)
 {
   int nargin = args.length ();
 
@@ -221,42 +221,42 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])\n\
 }
 
 DEFUN (spalloc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
-Create an @var{m}-by-@var{n} sparse matrix with pre-allocated space for at\n\
-most @var{nz} nonzero elements.\n\
-\n\
-This is useful for building a matrix incrementally by a sequence of indexed\n\
-assignments.  Subsequent indexed assignments after @code{spalloc} will reuse\n\
-the pre-allocated memory, provided they are of one of the simple forms\n\
-\n\
-@itemize\n\
-@item @code{@var{s}(I:J) = @var{x}}\n\
-\n\
-@item @code{@var{s}(:,I:J) = @var{x}}\n\
-\n\
-@item @code{@var{s}(K:L,I:J) = @var{x}}\n\
-@end itemize\n\
-\n\
-@b{and} that the following conditions are met:\n\
-\n\
-@itemize\n\
-@item the assignment does not decrease nnz (@var{S}).\n\
-\n\
-@item after the assignment, nnz (@var{S}) does not exceed @var{nz}.\n\
-\n\
-@item no index is out of bounds.\n\
-@end itemize\n\
-\n\
-Partial movement of data may still occur, but in general the assignment will\n\
-be more memory and time efficient under these circumstances.  In particular,\n\
-it is possible to efficiently build a pre-allocated sparse matrix from a\n\
-contiguous block of columns.\n\
-\n\
-The amount of pre-allocated memory for a given matrix may be queried using\n\
-the function @code{nzmax}.\n\
-@seealso{nzmax, sparse}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})
+Create an @var{m}-by-@var{n} sparse matrix with pre-allocated space for at
+most @var{nz} nonzero elements.
+
+This is useful for building a matrix incrementally by a sequence of indexed
+assignments.  Subsequent indexed assignments after @code{spalloc} will reuse
+the pre-allocated memory, provided they are of one of the simple forms
+
+@itemize
+@item @code{@var{s}(I:J) = @var{x}}
+
+@item @code{@var{s}(:,I:J) = @var{x}}
+
+@item @code{@var{s}(K:L,I:J) = @var{x}}
+@end itemize
+
+@b{and} that the following conditions are met:
+
+@itemize
+@item the assignment does not decrease nnz (@var{S}).
+
+@item after the assignment, nnz (@var{S}) does not exceed @var{nz}.
+
+@item no index is out of bounds.
+@end itemize
+
+Partial movement of data may still occur, but in general the assignment will
+be more memory and time efficient under these circumstances.  In particular,
+it is possible to efficiently build a pre-allocated sparse matrix from a
+contiguous block of columns.
+
+The amount of pre-allocated memory for a given matrix may be queried using
+the function @code{nzmax}.
+@seealso{nzmax, sparse}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

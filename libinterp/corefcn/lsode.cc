@@ -140,122 +140,122 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 }
 
 DEFUN (lsode, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})\n\
-@deftypefnx {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})\n\
-Ordinary Differential Equation (ODE) solver.\n\
-\n\
-The set of differential equations to solve is\n\
-@tex\n\
-$$ {dx \\over dt} = f (x, t) $$\n\
-with\n\
-$$ x(t_0) = x_0 $$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-dx\n\
--- = f (x, t)\n\
-dt\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-with\n\
-\n\
-@example\n\
-x(t_0) = x_0\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-The solution is returned in the matrix @var{x}, with each row\n\
-corresponding to an element of the vector @var{t}.  The first element\n\
-of @var{t} should be @math{t_0} and should correspond to the initial\n\
-state of the system @var{x_0}, so that the first row of the output\n\
-is @var{x_0}.\n\
-\n\
-The first argument, @var{fcn}, is a string, inline, or function handle\n\
-that names the function @math{f} to call to compute the vector of right\n\
-hand sides for the set of equations.  The function must have the form\n\
-\n\
-@example\n\
-@var{xdot} = f (@var{x}, @var{t})\n\
-@end example\n\
-\n\
-@noindent\n\
-in which @var{xdot} and @var{x} are vectors and @var{t} is a scalar.\n\
-\n\
-If @var{fcn} is a two-element string array or a two-element cell array\n\
-of strings, inline functions, or function handles, the first element names\n\
-the function @math{f} described above, and the second element names a\n\
-function to compute the Jacobian of @math{f}.  The Jacobian function\n\
-must have the form\n\
-\n\
-@example\n\
-@var{jac} = j (@var{x}, @var{t})\n\
-@end example\n\
-\n\
-@noindent\n\
-in which @var{jac} is the matrix of partial derivatives\n\
-@tex\n\
-$$ J = {\\partial f_i \\over \\partial x_j} = \\left[\\matrix{\n\
-{\\partial f_1 \\over \\partial x_1}\n\
-  & {\\partial f_1 \\over \\partial x_2}\n\
-  & \\cdots\n\
-  & {\\partial f_1 \\over \\partial x_N} \\cr\n\
-{\\partial f_2 \\over \\partial x_1}\n\
-  & {\\partial f_2 \\over \\partial x_2}\n\
-  & \\cdots\n\
-  & {\\partial f_2 \\over \\partial x_N} \\cr\n\
- \\vdots & \\vdots & \\ddots & \\vdots \\cr\n\
-{\\partial f_3 \\over \\partial x_1}\n\
-  & {\\partial f_3 \\over \\partial x_2}\n\
-  & \\cdots\n\
-  & {\\partial f_3 \\over \\partial x_N} \\cr}\\right]$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-             | df_1  df_1       df_1 |\n\
-             | ----  ----  ...  ---- |\n\
-             | dx_1  dx_2       dx_N |\n\
-             |                       |\n\
-             | df_2  df_2       df_2 |\n\
-             | ----  ----  ...  ---- |\n\
-      df_i   | dx_1  dx_2       dx_N |\n\
-jac = ---- = |                       |\n\
-      dx_j   |  .    .     .    .    |\n\
-             |  .    .      .   .    |\n\
-             |  .    .       .  .    |\n\
-             |                       |\n\
-             | df_N  df_N       df_N |\n\
-             | ----  ----  ...  ---- |\n\
-             | dx_1  dx_2       dx_N |\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-The second and third arguments specify the initial state of the system,\n\
-@math{x_0}, and the initial value of the independent variable @math{t_0}.\n\
-\n\
-The fourth argument is optional, and may be used to specify a set of\n\
-times that the ODE solver should not integrate past.  It is useful for\n\
-avoiding difficulties with singularities and points where there is a\n\
-discontinuity in the derivative.\n\
-\n\
-After a successful computation, the value of @var{istate} will be 2\n\
-(consistent with the Fortran version of @sc{lsode}).\n\
-\n\
-If the computation is not successful, @var{istate} will be something\n\
-other than 2 and @var{msg} will contain additional information.\n\
-\n\
-You can use the function @code{lsode_options} to set optional\n\
-parameters for @code{lsode}.\n\
-@seealso{daspk, dassl, dasrt}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})
+@deftypefnx {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})
+Ordinary Differential Equation (ODE) solver.
+
+The set of differential equations to solve is
+@tex
+$$ {dx \over dt} = f (x, t) $$
+with
+$$ x(t_0) = x_0 $$
+@end tex
+@ifnottex
+
+@example
+@group
+dx
+-- = f (x, t)
+dt
+@end group
+@end example
+
+@noindent
+with
+
+@example
+x(t_0) = x_0
+@end example
+
+@end ifnottex
+The solution is returned in the matrix @var{x}, with each row
+corresponding to an element of the vector @var{t}.  The first element
+of @var{t} should be @math{t_0} and should correspond to the initial
+state of the system @var{x_0}, so that the first row of the output
+is @var{x_0}.
+
+The first argument, @var{fcn}, is a string, inline, or function handle
+that names the function @math{f} to call to compute the vector of right
+hand sides for the set of equations.  The function must have the form
+
+@example
+@var{xdot} = f (@var{x}, @var{t})
+@end example
+
+@noindent
+in which @var{xdot} and @var{x} are vectors and @var{t} is a scalar.
+
+If @var{fcn} is a two-element string array or a two-element cell array
+of strings, inline functions, or function handles, the first element names
+the function @math{f} described above, and the second element names a
+function to compute the Jacobian of @math{f}.  The Jacobian function
+must have the form
+
+@example
+@var{jac} = j (@var{x}, @var{t})
+@end example
+
+@noindent
+in which @var{jac} is the matrix of partial derivatives
+@tex
+$$ J = {\partial f_i \over \partial x_j} = \left[\matrix{
+{\partial f_1 \over \partial x_1}
+  & {\partial f_1 \over \partial x_2}
+  & \cdots
+  & {\partial f_1 \over \partial x_N} \cr
+{\partial f_2 \over \partial x_1}
+  & {\partial f_2 \over \partial x_2}
+  & \cdots
+  & {\partial f_2 \over \partial x_N} \cr
+ \vdots & \vdots & \ddots & \vdots \cr
+{\partial f_3 \over \partial x_1}
+  & {\partial f_3 \over \partial x_2}
+  & \cdots
+  & {\partial f_3 \over \partial x_N} \cr}\right]$$
+@end tex
+@ifnottex
+
+@example
+@group
+             | df_1  df_1       df_1 |
+             | ----  ----  ...  ---- |
+             | dx_1  dx_2       dx_N |
+             |                       |
+             | df_2  df_2       df_2 |
+             | ----  ----  ...  ---- |
+      df_i   | dx_1  dx_2       dx_N |
+jac = ---- = |                       |
+      dx_j   |  .    .     .    .    |
+             |  .    .      .   .    |
+             |  .    .       .  .    |
+             |                       |
+             | df_N  df_N       df_N |
+             | ----  ----  ...  ---- |
+             | dx_1  dx_2       dx_N |
+@end group
+@end example
+
+@end ifnottex
+
+The second and third arguments specify the initial state of the system,
+@math{x_0}, and the initial value of the independent variable @math{t_0}.
+
+The fourth argument is optional, and may be used to specify a set of
+times that the ODE solver should not integrate past.  It is useful for
+avoiding difficulties with singularities and points where there is a
+discontinuity in the derivative.
+
+After a successful computation, the value of @var{istate} will be 2
+(consistent with the Fortran version of @sc{lsode}).
+
+If the computation is not successful, @var{istate} will be something
+other than 2 and @var{msg} will contain additional information.
+
+You can use the function @code{lsode_options} to set optional
+parameters for @code{lsode}.
+@seealso{daspk, dassl, dasrt}
+@end deftypefn */)
 {
   int nargin = args.length ();
 

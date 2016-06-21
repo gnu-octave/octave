@@ -60,15 +60,15 @@ inline double min (double a, double b, double c)
 // method to traverse it
 
 DEFUN (tsearch, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
-Search for the enclosing Delaunay convex hull.\n\
-\n\
-For @code{@var{t} = delaunay (@var{x}, @var{y})}, finds the index in @var{t}\n\
-containing the points @code{(@var{xi}, @var{yi})}.  For points outside the\n\
-convex hull, @var{idx} is NaN.\n\
-@seealso{delaunay, delaunayn}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})
+Search for the enclosing Delaunay convex hull.
+
+For @code{@var{t} = delaunay (@var{x}, @var{y})}, finds the index in @var{t}
+containing the points @code{(@var{xi}, @var{yi})}.  For points outside the
+convex hull, @var{idx} is NaN.
+@seealso{delaunay, delaunayn}
+@end deftypefn */)
 {
   if (args.length () != 5)
     print_usage ();

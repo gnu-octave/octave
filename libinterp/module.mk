@@ -258,8 +258,6 @@ libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) libinterp/mk-pkg-add | libinterp
 	mv $@-t $@
 endif
 
-if AMCOND_BUILD_DOCS
-
 DOCSTRING_FILES += $(srcdir)/libinterp/DOCSTRINGS
 
 $(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave-dirstamp)
@@ -267,17 +265,11 @@ $(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave-dirstamp
 	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(ALL_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
 	mv libinterp/DOCSTRINGS-t $@
 
-endif
-
 OCTAVE_INTERPRETER_TARGETS += \
   $(OCT_FILES) \
   $(DLDFCN_PKG_ADD_FILE)
 
-if AMCOND_BUILD_DOCS
 install-data-hook: install-oct install-built-in-docstrings
-else
-install-data-hook: install-oct uninstall-built-in-docstrings
-endif
 
 uninstall-local: uninstall-oct uninstall-built-in-docstrings
 
@@ -311,15 +303,14 @@ uninstall-oct:
 endif
 .PHONY: install-oct uninstall-oct
 
-if AMCOND_BUILD_DOCS
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
 	$(INSTALL_DATA) $(srcdir)/libinterp/DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+.PHONY: install-built-in-docstrings
 
 uninstall-built-in-docstrings:
 	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
-endif
-.PHONY: install-built-in-docstrings uninstall-built-in-docstrings
+.PHONY: uninstall-built-in-docstrings
 
 EXTRA_DIST += $(libinterp_EXTRA_DIST)
 

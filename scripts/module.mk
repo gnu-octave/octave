@@ -104,16 +104,12 @@ endef
 
 $(foreach f, $(GEN_FCN_FILES), $(eval $(call GEN_FCN_FILES_TEMPLATE, $(f))))
 
-if AMCOND_BUILD_DOCS
-
 DOCSTRING_FILES += $(srcdir)/scripts/DOCSTRINGS
 
 $(srcdir)/scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | scripts/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f scripts/DOCSTRINGS-t && \
 	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > scripts/DOCSTRINGS-t && \
 	mv scripts/DOCSTRINGS-t $@
-
-endif
 
 check-m-sources:
 	@echo "checking whether files in source tree are listed in module.mk files..."; \

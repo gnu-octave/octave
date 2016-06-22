@@ -89,9 +89,14 @@ namespace octave
     bool
     dir_entry::close (void)
     {
-      bool retval = (octave_closedir_wrapper (dir) == 0);
+      bool retval = true;
 
-      dir = 0;
+      if (dir)
+        {
+          retval = (octave_closedir_wrapper (dir) == 0);
+
+          dir = 0;
+        }
 
       return retval;
     }

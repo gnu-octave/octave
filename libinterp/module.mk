@@ -35,6 +35,7 @@ BUILT_SOURCES += \
   libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/graphics.h \
   libinterp/corefcn/mxarray.h \
+  libinterp/corefcn/oct-tex-parser.h \
   libinterp/parse-tree/oct-gperf.h \
   libinterp/parse-tree/oct-parse.h \
   libinterp/version.h

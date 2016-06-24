@@ -379,35 +379,16 @@ ChangeLog:
 	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
 
+## The mk-hg-id.sh script will be executed each time Make runs.  It will
+## update the HG-ID file in the build tree if it is out of date.
+
 if AMCOND_ENABLE_HG_ID
-HG-ID:
-## Store hg ID in binaries so that we can identify botched installations
-## that are using incorrect or mismatched libraries.
-	$(AM_V_GEN)rm -f $@-t && \
-	if [ -d $(srcdir)/.hg ]; then \
-	  ( cd $(srcdir) && hg identify --id || echo "unknown" ) > $@-t && \
-	  $(simple_move_if_change_rule); \
-	elif [ ! -f $(srcdir)/HG-ID ]; then \
-	  echo "WARNING: $(srcdir)/HG-ID is missing!" 1>&2; \
-	  echo "unknown" > $@-t && mv $@-t $@; \
-	else \
-	  echo "preserving existing HG-ID file" 1>&2; \
-	  $(cp_update_rule); \
-	  if [ "`cat $@`" = "hg-id-disabled" ]; then \
-	    echo "WARNING: HG-ID is 'hg-id-disabled'" 1>&2; \
-	  fi \
-	fi
+HG_ID_VAR := \
+  $(shell $(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)")
 else
-## Avoid unnecessary building just because HG-ID changes (for example,
-## editing a .m file will cause "+" to be appended to the hg ID and that
-## will trigger compiling the build-info.cc files, relinking libraries
-## and .oct files).
-HG-ID:
-	$(AM_V_GEN)rm -f $@-t && \
-	echo "hg-id-disabled" > $@-t && \
-	$(simple_move_if_change_rule)
+HG_ID_VAR := \
+  $(shell $(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)" --disable)
 endif
-.PHONY: HG-ID
 
 octetc_DATA += \
   CITATION \

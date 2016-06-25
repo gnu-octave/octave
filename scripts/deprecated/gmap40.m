@@ -34,9 +34,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## PKG_ADD: colormap ("register", "gmap40");
-## PKG_DEL: colormap ("unregister", "gmap40");
-
 ## Deprecated in 4.0
 
 function map = gmap40 (n = rows (colormap ()))

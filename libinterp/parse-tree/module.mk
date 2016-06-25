@@ -86,8 +86,6 @@ libinterp/parse-tree/oct-gperf.h: libinterp/parse-tree/octave.gperf
 	mv $@-t $@ && \
 	rm -f $@-t1
 
-libinterp/parse-tree/oct-parse.h: libinterp/parse-tree/oct-parse.cc
-
 libinterp/parse-tree/oct-parse.yy: libinterp/parse-tree/oct-parse.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
 

@@ -212,11 +212,11 @@ libinterptestsdir := $(octtestsdir)
 
 nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 
-## Override Automake's rule that forces a .hh extension on us even
-## though we don't want it.  It would be super awesome if automake
-## would allow users to choose the header file extension.
+## Cancel the suffix rule and use a pattern rule instead.
 .yy.cc:
-	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE)
+
+%.cc %.h : %.yy
+	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $*.cc y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE)
 
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.

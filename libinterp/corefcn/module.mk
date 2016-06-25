@@ -320,7 +320,6 @@ libinterp/corefcn/oct-tex-symbols.cc: libinterp/corefcn/oct-tex-symbols.in | lib
 
 libinterp/corefcn/txt-eng.cc: libinterp/corefcn/oct-tex-symbols.cc
 libinterp/corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
-libinterp/corefcn/oct-tex-parser.h: libinterp/corefcn/oct-tex-parser.yy
 
 libinterp/corefcn/oct-tex-parser.yy: libinterp/corefcn/oct-tex-parser.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)

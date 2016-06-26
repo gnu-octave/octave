@@ -864,7 +864,15 @@ if test -z "$warn_z"; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
 
- ### Check for the LLVM library
+
+### Check for BZIP2 library.
+
+OCTAVE_CHECK_LIB(bz2, BZIP2,
+  [BZIP2 library not found.  Octave will not be able to compress or decompress bzip2 files.],
+  [bzlib.h], [BZ2_bzCompressInit])
+
+
+### Check for the LLVM library
 
 ENABLE_JIT=no
 AC_ARG_ENABLE([jit],
@@ -3367,6 +3375,9 @@ Octave is now configured for $canonical_host_type
   ARPACK LDFLAGS:              $ARPACK_LDFLAGS
   ARPACK libraries:            $ARPACK_LIBS
   BLAS libraries:              $BLAS_LIBS
+  BZ2 CPPFLAGS:                $BZ2_CPPFLAGS
+  BZ2 LDFLAGS:                 $BZ2_LDFLAGS
+  BZ2 libraries:               $BZ2_LIBS
   CAMD CPPFLAGS:               $CAMD_CPPFLAGS
   CAMD LDFLAGS:                $CAMD_LDFLAGS
   CAMD libraries:              $CAMD_LIBS

@@ -4,13 +4,11 @@ FCN_FILE_DIRS += \
 
 scripts_miscellaneous_PRIVATE_FCN_FILES = \
   scripts/miscellaneous/private/display_info_file.m \
-  scripts/miscellaneous/private/__w2mpth__.m \
-  scripts/miscellaneous/private/__xzip__.m
+  scripts/miscellaneous/private/__w2mpth__.m
 
 scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/bug_report.m \
   scripts/miscellaneous/bunzip2.m \
-  scripts/miscellaneous/bzip2.m \
   scripts/miscellaneous/cast.m \
   scripts/miscellaneous/citation.m \
   scripts/miscellaneous/compare_versions.m \
@@ -30,7 +28,6 @@ scripts_miscellaneous_FCN_FILES = \
   scripts/miscellaneous/getappdata.m \
   scripts/miscellaneous/getfield.m \
   scripts/miscellaneous/gunzip.m \
-  scripts/miscellaneous/gzip.m \
   scripts/miscellaneous/info.m \
   scripts/miscellaneous/inputname.m \
   scripts/miscellaneous/isappdata.m \

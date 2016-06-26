@@ -75,14 +75,12 @@ extern "C"
   F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, float*,
                              const octave_idx_type&, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (cpotrf, CPOTRF) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, FloatComplex*,
                              const octave_idx_type&, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
@@ -428,7 +426,6 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
   F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
                              n, tmp_data, n,
                              info
-                             F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
   if (a.is_symmetric () && b.is_symmetric () && info == 0)
@@ -612,7 +609,6 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
                              n, tmp_data, n,
                              info
-                             F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
   if (a.is_hermitian () && b.is_hermitian () && info == 0)

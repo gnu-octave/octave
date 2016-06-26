@@ -76,7 +76,6 @@ extern "C"
   F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
@@ -84,7 +83,6 @@ extern "C"
                              const octave_idx_type&,
                              Complex*, const octave_idx_type&,
                              octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
@@ -432,7 +430,6 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
   F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
                              n, tmp_data, n,
                              info
-                             F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
   if (a.is_symmetric () && b.is_symmetric () && info == 0)
@@ -615,7 +612,6 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
   F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
                              n, tmp_data, n,
                              info
-                             F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
   if (a.is_hermitian () && b.is_hermitian () && info == 0)

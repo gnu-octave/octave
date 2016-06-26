@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
 #endif
@@ -1142,7 +1142,7 @@ command shell that is started to run the command.
 
   std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   // Work around weird double-quote handling on Windows systems.
   if (type == et_sync)
     cmd_str = "\"" + cmd_str + "\"";
@@ -1166,7 +1166,7 @@ command shell that is started to run the command.
         }
       else
         retval(0) = pid;
-#elif defined (__WIN32__)
+#elif defined (OCTAVE_USE_WINDOWS_API)
       STARTUPINFO si;
       PROCESS_INFORMATION pi;
       ZeroMemory (&si, sizeof (si));
@@ -1629,7 +1629,7 @@ specified option.
       bool mac_system = false;
       bool windows_system = false;
 
-#if defined (WIN32)
+#if defined (__WIN32__)
       windows_system = true;
 #if ! defined (__CYGWIN__)
       unix_system = false;

@@ -157,7 +157,7 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 
       // We provide specific terminal capabilities, so ensure that TERM is
       // always set appropriately
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
       octave::sys::env::putenv ("TERM", "cygwin");
 #else
       octave::sys::env::putenv ("TERM", "xterm");

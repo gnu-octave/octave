@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "lo-error.h"
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
 #elif defined (HAVE_PTHREAD_H)
 #  include <pthread.h>
@@ -53,7 +53,7 @@ octave_base_mutex::try_lock (void)
   return false;
 }
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
 class
 octave_w32_mutex : public octave_base_mutex
@@ -163,7 +163,7 @@ octave_thread::is_octave_thread (void)
 static octave_base_mutex *
 init_rep (void)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   return new octave_w32_mutex ();
 #elif defined (HAVE_PTHREAD_H)
   return new octave_pthread_mutex ();

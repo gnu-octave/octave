@@ -261,7 +261,7 @@ private:
 
     if (file.empty ())
       {
-#if defined (__WIN32__)
+#if defined (OCTAVE_USE_WINDOWS_API)
         file = "C:/WINDOWS/Fonts/verdana.ttf";
 #else
         // FIXME: find a "standard" font for UNIX platforms

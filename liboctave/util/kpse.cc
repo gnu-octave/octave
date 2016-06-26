@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathsearch.h"
 #include "unistd-wrappers.h"
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
 #endif
@@ -166,7 +166,7 @@ kpse_truncate_filename (const std::string& name)
    regular file, as it is potentially useful to read fifo's or some
    kinds of devices.  */
 
-#if defined (__WIN32__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 static inline bool
 READABLE (const std::string& fn)
 {

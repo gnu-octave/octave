@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_shared_fcns_h)
 #define octave_shared_fcns_h 1
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
 #include <windows.h>
 #include <tlhelp32.h>
@@ -111,7 +111,7 @@ get_octave_home (void)
 {
   std::string oh = octave_getenv ("OCTAVE_HOME");
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
   if (oh.empty ())
     oh = w32_get_octave_home ();
 #endif

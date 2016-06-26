@@ -143,7 +143,7 @@ initialize (void)
   vars["LIBDIR"] = get_variable ("LIBDIR", DEFAULT_LIBDIR);
   vars["OCTLIBDIR"] = get_variable ("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
   std::string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
       + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
@@ -256,7 +256,7 @@ static std::string help_msg =
 "\n"
 "  -M, --depend            Generate dependency files (.d) for C and C++\n"
 "                          source files.\n"
-#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+#if ! defined (OCTAVE_USE_WINDOWS_API)
 "\n"
 "  -pthread                Add -pthread to link command.\n"
 #endif
@@ -498,7 +498,7 @@ main (int argc, char **argv)
         {
           ldflags += (" " + arg);
         }
-#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+#if ! defined (OCTAVE_USE_WINDOWS_API)
       else if (arg == "-pthread")
         {
           ldflags += (" " + arg);

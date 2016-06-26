@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
 #else
 #  include <pthread.h>
@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "thread-manager.h"
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
 class windows_thread_manager : public octave_base_thread_manager
 {
@@ -115,7 +115,7 @@ octave_thread_manager::unblock_interrupt_signal (void)
 octave_base_thread_manager *
 octave_thread_manager::create_rep (void)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   return new windows_thread_manager ();
 #else
   return new pthread_thread_manager ();

@@ -75,7 +75,7 @@ static bool *octave_signals_caught = 0;
 // Forward declaration.
 static void user_abort (const char *sig_name, int sig_number);
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -418,7 +418,7 @@ user_abort (const char *sig_name, int sig_number)
           if (octave_interrupt_state == 0)
             octave_interrupt_state = 1;
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
           w32_interrupt_manager::octave_jump_to_enclosing_context ();
 #else
           octave_jump_to_enclosing_context ();
@@ -450,7 +450,7 @@ user_abort (const char *sig_name, int sig_number)
 static void
 sigint_handler (int sig)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   w32_interrupt_manager::user_abort (octave_strsignal_wrapper (sig), sig);
 #else
   user_abort (octave_strsignal_wrapper (sig), sig);
@@ -475,7 +475,7 @@ octave_catch_interrupts (void)
 {
   octave_interrupt_handler retval;
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   w32_interrupt_manager::init ();
 #endif
 
@@ -490,7 +490,7 @@ octave_ignore_interrupts (void)
 {
   octave_interrupt_handler retval;
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   w32_interrupt_manager::init ();
 #endif
 
@@ -506,7 +506,7 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h,
 {
   octave_interrupt_handler retval;
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   w32_interrupt_manager::init ();
 #endif
 

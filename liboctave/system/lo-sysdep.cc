@@ -60,7 +60,7 @@ namespace octave
     {
       std::string path = octave::sys::file_ops::tilde_expand (path_arg);
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
       if (path.length () == 2 && path[1] == ':')
         path += "\\";
 #endif

@@ -276,7 +276,7 @@ private:
   std::list<std::string> java_opts;
 };
 
-#if defined (__WIN32__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
 static std::string
 read_registry_string (const std::string& key, const std::string& value)
@@ -515,7 +515,7 @@ initialize_jvm (void)
   const char *static_locale = setlocale (LC_ALL, 0);
   const std::string locale (static_locale);
 
-#if defined (__WIN32__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
   HMODULE hMod = GetModuleHandle ("jvm.dll");
   std::string jvm_lib_path;
@@ -595,7 +595,7 @@ initialize_jvm (void)
     error ("unable to load Java Runtime Environment from %s",
            jvm_lib_path.c_str ());
 
-#if defined (__WIN32__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
   set_dll_directory ();
 

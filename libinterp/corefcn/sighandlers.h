@@ -75,7 +75,7 @@ extern OCTINTERP_API octave_interrupt_handler
 octave_set_interrupt_handler (const volatile octave_interrupt_handler&,
                               bool restart_syscalls = true);
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 extern OCTINTERP_API void w32_raise_sigint (void);
 #endif
 

@@ -106,7 +106,7 @@ BSD_init (void)
 }
 #endif
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -203,7 +203,7 @@ Undocumented internal function.
 
   octave_value retval;
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
   HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
                                    SW_SHOWNORMAL);
 
@@ -562,7 +562,7 @@ octave_kbhit (bool wait)
 std::string
 get_P_tmpdir (void)
 {
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
   std::string retval;
 

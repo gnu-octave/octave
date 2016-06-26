@@ -64,8 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "display-available.h"
 #include "shared-fcns.h"
 
-#if (defined (HAVE_OCTAVE_QT_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
+#if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
 // Forward signals to the GUI process.
 
@@ -318,14 +317,13 @@ main (int argc, char **argv)
         }
     }
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   file += ".exe";
 #endif
 
   new_argv[0] = strsave (file.c_str ());
 
-#if (defined (HAVE_OCTAVE_QT_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
+#if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
   if (gui_libs && start_gui && have_controlling_terminal ())
     {

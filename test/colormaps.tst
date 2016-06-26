@@ -16,15 +16,20 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## This is a test that should be used on all Octave colormaps.
+## Because there is no function to get a list of all colormap
+## functions, they should be added here manually.
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   all_colormaps = colormap ("list");
-%!
-%!   assert (numel (all_colormaps) > 0);
+%!   all_colormaps = {@autumn, @bone, @cool, @copper, @cubehelix, ...
+%!                    @flag, @gray, @hot, @hsv, @jet, @lines, @ocean, ...
+%!                    @pink, @prism, @rainbow, @spring, @summer, ...
+%!                    @viridis, @white, @winter};
 %!
 %!   for i = 1:numel (all_colormaps)
-%!     f = str2func (all_colormaps{i});
+%!     f = all_colormaps{i};
 %!
 %!     assert (iscolormap (f (1)));
 %!     assert (iscolormap (f (12)));
@@ -39,4 +44,3 @@
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-

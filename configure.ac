@@ -1614,7 +1614,15 @@ if test $check_fltk = yes; then
     warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
   else
-    FLTK_CPPFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
+    ## Only include -I options in FLTK_CPPFLAGS
+    fltk_cflags=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
+    for fltk_option in $fltk_cflags; do
+      case $fltk_option in
+        -I*)
+          FLTK_CPPFLAGS="$FLTK_CPPFLAGS $fltk_option"
+        ;;
+      esac
+    done
     FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
 
     case $host_os in

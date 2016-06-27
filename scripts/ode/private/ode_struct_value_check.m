@@ -30,7 +30,7 @@
 ## of any problems.
 ##
 ## The second argument @var{ode_struct} is a structure with fields and values
-## that configure the ODE solvers (@pxref{XREFodeset,,odeset).
+## that configure the ODE solvers (@pxref{XREFodeset,,odeset}).
 ##
 ## The optional third argument @var{"solver"} is a string with the name of a
 ## specific ODE solver.  This extra information can enable more extensive value

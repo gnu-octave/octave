@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in}, @var{t_next})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in}, @var{t_next})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_23 (@dots{})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_23 (@dots{})
 ##
@@ -30,7 +30,7 @@
 ## method of third order.  For the definition of this method see
 ## @url{http://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods}.
 ##
-## @var{@fun} is a function handle that defines the ODE: @code{y' = f(tau,y)}.
+## @var{fun} is a function handle that defines the ODE: @code{y' = f(tau,y)}.
 ## The function must accept two inputs where the first is time @var{tau} and
 ## the second is a column vector of unknowns @var{y}.
 ##

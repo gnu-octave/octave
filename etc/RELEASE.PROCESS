@@ -3,7 +3,7 @@
    The format of the file is wiki markup and can be directly used as a page
    on wiki.octave.org.
 <!----------------------------------------------------------------------------->
-==4.0.0 Release Tasks==
+==4.2.0 Release Tasks==
 
 This page shows the tasks to be completed before the GUI release is finalized.
 
@@ -21,7 +21,7 @@ This page shows the tasks to be completed before the GUI release is finalized.
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Clear all bugs identified as must-fix
-#* See [[Bug Fix List - 4.0 Release]]
+#* See [[Bug Fix List - 4.2 Release]]
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # GPL License activities
@@ -44,7 +44,7 @@ This page shows the tasks to be completed before the GUI release is finalized.
 #* Identify and fix any tests determined critical in step above
 #: Completion Date:
 <!----------------------------------------------------------------------------->
-# Run Octave test suite under [http://valgrind.org Valgrind] to check for memory leaks
+# Compile and run Octave test suite with --enable-address-sanitizer-flags to check for memory leaks
 #* Results posted to bug report:
 #: Completion Date:
 <!----------------------------------------------------------------------------->

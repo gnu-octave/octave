@@ -238,19 +238,23 @@
 
 %!error <... getppid> getppid (1)
 
-%!assert (geteuid () >= 0)
+%!testif HAVE_GETEUID
+%! assert (geteuid () >= 0)
 
 %!error <... geteuid> geteuid (1)
 
-%!assert (getuid () >= 0)
+%!testif HAVE_GETUID
+%! assert (getuid () >= 0)
 
 %!error <... getuid> getuid (1)
 
-%!assert (getegid () >= 0)
+%!testif HAVE_GETEGID
+%! assert (getegid () >= 0)
 
 %!error <... getegid> getegid (1)
 
-%!assert (getgid () >= 0)
+%!testif HAVE_GETGID
+%! assert (getgid () >= 0)
 
 %!error <... getgid> getgid (1)
 

@@ -77,6 +77,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define YY_NO_UNISTD_H 1
 #define isatty octave_isatty_wrapper
+#define yyguts_t octave_tex_yyguts_t
 
 %}
 

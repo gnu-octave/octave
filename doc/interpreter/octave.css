@@ -19,30 +19,30 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 /* Import web font Roboto Condensed, Font Library Version 2015-06-06 */
-@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Bold'), local('RobotoCondensed-Bold'),
 	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/4b8b4b377e8cb358cf886d13c7bb287c/RobotoCondensedBold.ttf') format('truetype');
 	font-weight: bold; font-style: normal; }
-@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Bold Italic'), local('RobotoCondensed-BoldItalic'),
 	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/9b1d05d1b332e5b95ad86e71ca8404fb/RobotoCondensedBoldItalic.ttf') format('truetype');
     	font-weight: bold; font-style: italic; }
-@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Italic'), local('RobotoCondensed-Italic'),
 	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/d02fffb6890e4f28023dd149916d1b8a/RobotoCondensedItalic.ttf') format('truetype');
 	font-weight: normal; font-style: italic; }
-@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed'),
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Regular'), local('RobotoCondensed-Regular'),
 	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/b0b1845ecce8ab6a503971e808a8409c/RobotoCondensedRegular.ttf') format('truetype');
 	font-weight: normal; font-style: normal; }
 
 /* Import web font Fantasque Sans Mono, Font Library Version 2016-04-05 */
-@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Bold'), local('FantasqueSansMono-Bold'),
 	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/a46033d3a07d9385620dc83b7655203f/FantasqueSansMonoBold.ttf') format('truetype');
 	font-weight: bold; font-style: normal; }
-@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Bold Italic'), local('FantasqueSansMono-BoldItalic'),
 	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/b0683ef4c834908aa372ec78dea42349/FantasqueSansMonoBoldItalic.ttf') format('truetype');
 	font-weight: bold; font-style: italic; }
-@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Italic'), local('FantasqueSansMono-Italic'),
 	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/b78d0a48e4443f797e8d45dcf97594f7/FantasqueSansMonoItalic.ttf') format('truetype');
 	font-weight: normal; font-style: italic; }
-@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono'),
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Regular'), local('FantasqueSansMono-Regular'),
 	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/f3fdc4f0f26e4431f54e8b552d55480c/FantasqueSansMonoRegular.ttf') format('truetype');
 	font-weight: normal; font-style: normal; }
 

@@ -45,15 +45,6 @@ extern OCTINTERP_API int octave_kbhit (bool wait = true);
 
 extern OCTINTERP_API std::string get_P_tmpdir (void);
 
-extern void w32_set_quiet_shutdown (void);
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-extern void MINGW_signal_cleanup (void);
-#  define MINGW_SIGNAL_CLEANUP() MINGW_signal_cleanup ()
-#else
-#  define MINGW_SIGNAL_CLEANUP() do { } while (0)
-#endif
-
 extern OCTINTERP_API bool same_file_internal (const std::string&,
                                               const std::string&);
 

@@ -273,9 +273,10 @@ my_friendly_exit (const char *sig_name, int sig_number,
     {
       octave_set_signal_handler ("SIGABRT", SIG_DFL);
 
-      std::cerr << "panic: attempted clean up apparently failed -- aborting...\n";
+      std::cerr << "panic: attempted clean up failed -- aborting..."
+                << std::endl;
 
-      MINGW_SIGNAL_CLEANUP ();
+      sysdep_cleanup ();
 
       abort ();
     }
@@ -283,14 +284,15 @@ my_friendly_exit (const char *sig_name, int sig_number,
     {
       been_there_done_that = true;
 
-      std::cerr << "panic: " << sig_name << " -- stopping myself...\n";
+      std::cerr << "panic: " << sig_name << " -- stopping myself..."
+                << std::endl;
 
       if (save_vars)
         dump_octave_core ();
 
       if (sig_number < 0)
         {
-          MINGW_SIGNAL_CLEANUP ();
+          sysdep_cleanup ();
 
           exit (1);
         }

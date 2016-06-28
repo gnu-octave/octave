@@ -80,22 +80,13 @@ typedef unsigned long ino_t;
 #  pragma warning (disable: 4661)
 #endif
 
-/* Define to 1 if we expect to have <windows.h>, Sleep, etc. */
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-#  define OCTAVE_USE_WINDOWS_API 1
-#endif
-
-#if defined (OCTAVE_USE_WINDOWS_API)
 #  define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
 #elif defined (__CYGWIN__)
 #  define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
 #  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
 #else
 #  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#endif
-
-#if defined (__APPLE__) && defined (__MACH__)
-#  define OCTAVE_USE_OS_X_API 1
 #endif
 
 /* sigsetjmp is a macro, not a function. */

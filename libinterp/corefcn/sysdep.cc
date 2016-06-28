@@ -160,22 +160,6 @@ w32_set_octave_home (void)
     }
 }
 
-void
-w32_set_quiet_shutdown (void)
-{
-  // Let the user close the console window or shutdown without the
-  // pesky dialog.
-  //
-  // FIXME: should this be user configurable?
-  SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
-}
-
-void
-MINGW_signal_cleanup (void)
-{
-  w32_set_quiet_shutdown ();
-}
-
 static void
 w32_init (void)
 {
@@ -243,7 +227,6 @@ MSVC_init (void)
   w32_init ();
 }
 #endif
-
 
 // Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
 
@@ -332,7 +315,10 @@ sysdep_init (void)
 void
 sysdep_cleanup (void)
 {
-  MINGW_SIGNAL_CLEANUP ();
+#if defined (OCTAVE_USE_WINDOWS_API)
+  // Let us fail immediately without displaying any dialog.
+  SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
+#endif
 }
 
 // Set terminal in raw mode.  From less-177.

@@ -215,11 +215,6 @@ private:
 
 w32_interrupt_manager* w32_interrupt_manager::instance = 0;
 
-void w32_raise_sigint (void)
-{
-  w32_interrupt_manager::raise_sigint ();
-}
-
 #endif
 
 // Called from octave_quit () to actually do something about the signals

@@ -24,7 +24,7 @@
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
 ##
 ## @item Octave:array-as-logical
-## If the @code{Octave:array-to-scalar} warning is enabled,
+## If the @code{Octave:array-as-logical} warning is enabled,
 ## Octave will warn when an array of size greater than 1x1 is used
 ## as a truth value in an if, while or until statement.
 ## By default, the @code{Octave:array-as-logical} warning is disabled.

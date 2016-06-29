@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
+#include "tmpfile-wrapper.h"
 #include "unistd-wrappers.h"
 #include "unwind-prot.h"
 
@@ -197,7 +198,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
         gl2ps_sort = GL2PS_SIMPLE_SORT;
 
       // Use a temporary file in case an overflow happens
-      FILE* tmpf = std::tmpfile ();
+      FILE* tmpf = octave_tmpfile_wrapper ();
 
       if (! tmpf)
         error ("gl2ps_renderer::draw: couldn't open temporary file for printing");

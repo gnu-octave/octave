@@ -58,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "tmpfile-wrapper.h"
 #include "unistd-wrappers.h"
 
 #include "defun.h"
@@ -2839,7 +2840,7 @@ system-dependent error message.
 
   octave_value_list retval;
 
-  FILE *fid = std::tmpfile ();
+  FILE *fid = octave_tmpfile_wrapper ();
 
   if (fid)
     {

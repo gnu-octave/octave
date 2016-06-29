@@ -100,13 +100,14 @@ octinclude_HEADERS += \
   libinterp/liboctinterp-build-info.h \
   libinterp/octave.h \
   libinterp/options-usage.h \
+  $(COREFCN_INC) \
+  $(LIBINTERP_OPERATORS_INC) \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
-  $(PARSER_INC) \
-  $(COREFCN_INC)
+  $(PARSER_INC)
 
 noinst_HEADERS += \
-  $(LIBINTERP_OPERATORS_INC)
+  $(NOINSTALL_LIBINTERP_OPERATORS_INC)
 
 nodist_octinclude_HEADERS += \
   libinterp/corefcn/mxarray.h \

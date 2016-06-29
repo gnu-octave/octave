@@ -127,13 +127,15 @@ LIBINTERP_OPERATORS_SRC = \
   libinterp/operators/op-ui64-ui64.cc \
   libinterp/operators/op-ui8-ui8.cc
 
-## These look like included header files to Autotools build process
 LIBINTERP_OPERATORS_INC = \
+  libinterp/operators/ops.h
+
+## These look like included header files to Autotools build process
+NOINSTALL_LIBINTERP_OPERATORS_INC = \
   libinterp/operators/op-dm-template.cc \
   libinterp/operators/op-dms-template.cc \
   libinterp/operators/op-int.h \
-  libinterp/operators/op-pm-template.cc \
-  libinterp/operators/ops.h
+  libinterp/operators/op-pm-template.cc
 
 ## Special rules for sources which must be built before rest of compilation.
 libinterp/operators/ops.cc: $(LIBINTERP_OPERATORS_SRC) libinterp/mkops

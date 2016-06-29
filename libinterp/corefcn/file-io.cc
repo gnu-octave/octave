@@ -1402,7 +1402,7 @@ columns of the same class in the output cell array.  A value of 0 or false
 Specify parts of the input which are considered comments and will be
 skipped.  @var{value} is the comment style and can be either (1) A string
 or 1x1 cell string, to skip everything to the right of it; (2) A cell array
-of two strings, to skip everything between the first and second strings.  
+of two strings, to skip everything between the first and second strings.
 Comments are only parsed where whitespace is accepted and do not act as
 delimiters.
 

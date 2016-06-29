@@ -40,7 +40,7 @@ extern int octave_kill_wrapper (pid_t pid, int signum);
 extern char *octave_strsignal_wrapper (int signum);
 
 extern bool octave_have_kill (void);
-  
+
 extern bool octave_get_sig_number (const char *signame, int *signum);
 
 extern octave_sig_handler *

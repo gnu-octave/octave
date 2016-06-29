@@ -3409,7 +3409,7 @@ public:
       radio_property renderer m , "{opengl}|painters"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
-      // FIXME: resizefcn has been deprecated by Matlab, and 
+      // FIXME: resizefcn has been deprecated by Matlab, and
       //        replaced with sizechangedfcn
       //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
@@ -3439,7 +3439,7 @@ public:
 
       // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
       //                      xdisplay, xvisual, xvisualmode
-      // FIXME: Remove in version 4.6 
+      // FIXME: Remove in version 4.6
       bool_property doublebuffer h , "on"
       double_property mincolormap h , 64
       string_property wvisual hm , ""

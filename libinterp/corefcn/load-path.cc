@@ -2465,7 +2465,7 @@ addpath ("dir1:/dir2:~/dir3")
         {
           std::string dir = p;
 
-          // Remove duplicate directory separators 
+          // Remove duplicate directory separators
           dir.erase (std::unique (dir.begin (), dir.end (),
                                   [](char l, char r)
                                   {

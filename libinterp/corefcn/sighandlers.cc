@@ -596,7 +596,7 @@ set_sig_struct_field (octave_scalar_map& m, const char *signame)
   if (octave_get_sig_number (signame, &signum))
     m.assign (&signame[3], signum);
 }
- 
+
 static octave_scalar_map
 make_sig_struct (void)
 {

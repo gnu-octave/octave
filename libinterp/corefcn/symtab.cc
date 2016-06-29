@@ -1876,34 +1876,34 @@ Undocumented internal function.
 }
 
 // FIXME: should we have functions like this in Octave?
-// 
+//
 // DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 // {
 //   if (args.length () != 2)
 //     print_usage ();
-// 
+//
 //   std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
-// 
+//
 //   symbol_table::assign (name, args(1));
-// 
+//
 //   return ovl ();
 // }
-// 
+//
 // DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
 // {
 //   if (args.length () != 1)
 //     print_usage ();
-// 
+//
 //   octave_value retval;
-// 
+//
 //   std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
-// 
+//
 //   retval = symbol_table::varval (name);
-// 
+//
 //   if (retval.is_undefined ())
 //     error ("variable_value: '%s' is not a variable in the current scope",
 //            name.c_str ());
-// 
+//
 //   return retval;
 // }
 

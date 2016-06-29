@@ -539,7 +539,13 @@ function [local_packages, global_packages] = pkg (varargin)
       for i = 1:numel (installed_pkgs_lst)
         installed_pkg_name = installed_pkgs_lst{i}.name;
         installed_pkg_version = installed_pkgs_lst{i}.version;
-        forge_pkg_version = get_forge_pkg (installed_pkg_name);
+        try
+          forge_pkg_version = get_forge_pkg (installed_pkg_name);
+        catch
+          warning ("pkg: package %s not found on forge - skipping update\n",
+                   installed_pkg_name);
+          forge_pkg_version = "0";
+        end_try_catch
         if (compare_versions (forge_pkg_version, installed_pkg_version, ">"))
           feval (@pkg, "install", "-forge", installed_pkg_name);
         endif

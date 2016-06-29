@@ -173,6 +173,11 @@ sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h
 sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
 
+sed -n 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' $config_h_file
+sed -n 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' $config_h_file
+
+sed -n 's/#\(\(undef\|define\) nlink_t.*$\)/#  \1/p' $config_h_file
+
 if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
   cat << EOF
 

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 
 #include "Cell.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "oct-map.h"
 #include "ov-base.h"
@@ -401,6 +402,7 @@ octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
+// Return true if this matrix has all true elements (non-zero, not NA/NaN).
 template <typename MT>
 bool
 octave_base_matrix<MT>::is_true (void) const
@@ -415,6 +417,9 @@ octave_base_matrix<MT>::is_true (void) const
 
       if (t1.any_element_is_nan ())
         err_nan_to_logical_conversion ();
+
+      if (nel > 1)
+        warn_array_as_logical (dv);
 
       boolNDArray t2 = t1.all ();
 

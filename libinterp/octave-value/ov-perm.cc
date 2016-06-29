@@ -131,10 +131,18 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
+// Return true if this matrix has all true elements (non-zero, not NaN/NA).
+// A permutation cannot have NaN/NA.
 bool
 octave_perm_matrix::is_true (void) const
 {
-  return to_dense ().is_true ();
+  if (dims ().numel () > 1)
+    {
+      warn_array_as_logical (dims ());
+      return false;    // > 1x1 permutation always has zeros, and no NaN.
+    }
+  else
+    return dims ().numel ();    // 1x1 is [1] == true, 0x0 == false.
 }
 
 double

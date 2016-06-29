@@ -300,13 +300,22 @@ octave_base_sparse<T>::is_true (void) const
   octave_idx_type nel = dv.numel ();
   octave_idx_type nz = nnz ();
 
-  if (nz == nel && nel > 0)
+  if (nel > 0)
     {
       T t1 (matrix.reshape (dim_vector (nel, 1)));
 
-      SparseBoolMatrix t2 = t1.all ();
+      if (t1.any_element_is_nan ())
+        err_nan_to_logical_conversion ();
 
-      retval = t2(0);
+      if (nel > 1)
+        warn_array_as_logical (dv);
+
+      if (nz == nel)
+        {
+          SparseBoolMatrix t2 = t1.all ();
+
+          retval = t2(0);
+        }
     }
 
   return retval;

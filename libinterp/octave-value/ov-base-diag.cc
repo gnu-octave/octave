@@ -273,11 +273,20 @@ octave_base_diag<DMT, MT>::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
+// Return true if this matrix has all true elements (non-zero, not NA/NaN).
 template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::is_true (void) const
 {
-  return to_dense ().is_true ();
+  if (dims ().numel () > 1)
+    {
+      warn_array_as_logical (dims ());
+      // Throw error if any NaN or NA by calling is_true().
+      octave_value (matrix.extract_diag ()).is_true ();
+      return false;                 // > 1x1 diagonal always has zeros
+    }
+  else
+    return to_dense ().is_true ();  // 0x0 or 1x1, handle NaN etc.
 }
 
 // FIXME: This should be achieveable using ::real

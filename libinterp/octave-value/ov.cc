@@ -1411,7 +1411,17 @@ octave_value::is_equal (const octave_value& test) const
 
       // Empty array also means a match.
       if (tmp.is_defined ())
-        retval = tmp.is_true () || tmp.is_empty ();
+        {
+          if (tmp.is_empty ())
+            retval = true;
+          else
+            {
+              // Reshape into a vector and call all() explicitly,
+              // to avoid Octave:array-as-logical warning.
+              tmp = tmp.reshape (dim_vector (tmp.numel (), 1));
+              retval = tmp.all ().is_true ();
+            }
+        }
     }
 
   return retval;

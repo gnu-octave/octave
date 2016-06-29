@@ -145,6 +145,9 @@ OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg_for_unary_op (const octave_value& op);
 
 OCTINTERP_API extern void
+warn_array_as_logical (const dim_vector& dv);
+
+OCTINTERP_API extern void
 warn_complex_cmp (void);
 
 OCTINTERP_API extern void

@@ -273,6 +273,23 @@ err_wrong_type_arg_for_unary_op (const octave_value& op)
 }
 
 void
+warn_array_as_logical (const dim_vector& dv)
+{
+  warning_with_id ("Octave:array-as-logical",
+                   "Using an object of size %s as "
+                   "a boolean value implies all().",
+                   dv.str ().c_str ());
+}
+
+/*
+%!warning <boolean value implies all>
+%! warning ("on", "Octave:array-as-logical");
+%! if ([1 1 0])
+%!   assert (false);
+%! endif
+*/
+
+void
 warn_complex_cmp (void)
 {
   warning_with_id ("Octave:language-extension",

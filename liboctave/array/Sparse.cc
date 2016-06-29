@@ -193,6 +193,19 @@ Sparse<T>::SparseRep::indices_ok (void) const
 }
 
 template <typename T>
+bool
+Sparse<T>::SparseRep::any_element_is_nan (void) const
+{
+  octave_idx_type nz = nnz ();
+
+  for (octave_idx_type i = 0; i < nz; i++)
+    if (octave::math::isnan (d[i]))
+      return true;
+
+  return false;
+}
+
+template <typename T>
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
   : rep (0), dimensions (dim_vector (nr, nc))
 {

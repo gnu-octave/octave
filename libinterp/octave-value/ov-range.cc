@@ -264,6 +264,8 @@ octave_range::diag (octave_idx_type m, octave_idx_type n) const
   return mat.diag (m, n);
 }
 
+// Return true if this range has all true elements (non-zero, not NaN/NA).
+// A range cannot have NaN/NA.
 bool
 octave_range::is_true (void) const
 {
@@ -271,10 +273,30 @@ octave_range::is_true (void) const
 
   if (! range.is_empty ())
     {
-      // FIXME: this is a potential waste of memory.
-      Matrix m ((range.matrix_value ().all ()).all ());
+      if (dims ().numel () > 1)
+        warn_array_as_logical (dims ());
 
-      retval = (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
+      Range r = range_value ();
+      double base = r.base ();
+      double limit = r.limit ();
+
+      // Can't be zero if we start and finish on the same size of 0
+      if (((base > 0 && limit > 0) || (base < 0 && limit < 0)) && numel () > 0)
+        retval = true;
+      else
+        {
+          /*
+          // This tells us whether one element is 0, if arithmetic is exact.
+          double steps_to_zero = base / r.inc ();
+
+          retval = (steps_to_zero != floor (steps_to_zero));
+          */
+
+          // FIXME: this is a waste of memory.
+          Matrix m ((range.matrix_value ().all ()).all ());
+
+          retval = ! m.is_empty () && m(0, 0) != 0.0;
+        }
     }
 
   return retval;

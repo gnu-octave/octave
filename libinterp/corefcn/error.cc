@@ -1780,6 +1780,7 @@ initialize_default_warning_state (void)
 
   // Most people will want to have the following disabled.
 
+  disable_warning ("Octave:array-as-logical");
   disable_warning ("Octave:array-to-scalar");
   disable_warning ("Octave:array-to-vector");
   disable_warning ("Octave:imag-to-real");

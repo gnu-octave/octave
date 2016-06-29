@@ -136,6 +136,8 @@ protected:
 
     bool indices_ok (void) const;
 
+    bool any_element_is_nan (void) const;
+
   private:
 
     // No assignment!
@@ -692,6 +694,9 @@ public:
   { return map<U, U (&) (const T&)> (fcn); }
 
   bool indices_ok (void) const { return rep->indices_ok (); }
+
+  bool any_element_is_nan (void) const
+  { return rep->any_element_is_nan (); }
 };
 
 template <typename T>

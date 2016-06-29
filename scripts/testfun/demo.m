@@ -108,6 +108,9 @@ function demo (name, n = 0)
     error ("demo: N must be a scalar integer");
   endif
 
+  ## Paging causes Qt graphics to hang on some demos.
+  page_screen_output (false, "local");
+
   [code, idx] = test (name, "grabdemo");
 
   if (idx == -1)

@@ -9551,10 +9551,23 @@ gh_manager::do_execute_callback (const graphics_handle& h,
             recover_from_exception ();
           }
 
+      // Redraw after interacting with a user-interface (ui*) object.
       if (Vdrawnow_requested)
         {
-          Fdrawnow ();
-          Vdrawnow_requested = false;
+          graphics_object go = get_object (h);
+
+          if (go)
+            {
+              std::string go_name = go.get_properties ()
+                                      .graphics_object_name ();
+
+              if (go_name.length () > 1
+                  && go_name[0] == 'u' && go_name[1] == 'i')
+                {
+                  Fdrawnow ();
+                  Vdrawnow_requested = false;
+                }
+            }
         }
     }
 }

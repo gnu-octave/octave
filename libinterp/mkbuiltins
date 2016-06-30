@@ -19,7 +19,7 @@
 # <http://www.gnu.org/licenses/>.
 
 if test $# -lt 2; then
-  echo "usage: mkbuiltins SRCDIR --header|--source f1 f2 ..." 1>&2
+  echo "usage: mkbuiltins SRCDIR --header|--source [--disable-dl] f1 f2 ..." 1>&2
   exit 1
 fi
 
@@ -45,6 +45,18 @@ case "$1" in
   ;;
 esac
 
+## If DLD functions are disabled, then DEFUN_DLD functions
+## are built-in instead of being dynamically loaded so they will also
+## need to be installed.
+
+defun_dld_are_built_in=false
+case "$1" in
+  --disable-dl)
+    defun_dld_are_built_in=true
+    shift
+  ;;
+esac
+
 if $make_header; then
 
   cat << \EOF
@@ -57,17 +69,15 @@ if $make_header; then
 
 #include "ovl.h"
 
-#define XDEFUN_DECL(name) \
-  extern OCTINTERP_API octave_value_list \
-  name (const octave_value_list& = octave_value_list (), int = 0);
-
-#if defined (ENABLE_DYNAMIC_LINKING)
-#  define XDEFUN_DLD_DECL(name)
-#else
-#  define XDEFUN_DLD_DECL(name) XDEFUN_DECL (name)
-#endif
-
 EOF
+
+  pattern='s/^[ \t]*DEF\(CONSTFUN\|UN\)[ \t]*( *\([^ ,]*\).*$/F\2/p; s/^[ \t]*DEFUNX[ \t]*( *"[^"]*" *, *\([^ ,]*\).*$/\1/p'
+
+  dld_pattern='s/^[ \t]*DEFUN_DLD[ \t]*( *\([^ ,]*\).*$/F\1/p; s/^[ \t]*DEFUNX_DLD[ \t]*( *"[^"]*" *, *\([^ ,]*\).*$/\1/p'
+
+  if $defun_dld_are_built_in; then
+    pattern="$pattern; $dld_pattern"
+  fi
 
   for arg
   do
@@ -77,13 +87,20 @@ EOF
       file="$srcdir/$arg";
     fi
 
-    $SED -n -e 's/^[ \t]*DEF\(CONSTFUN\|UN\)[ \t]*( *\([_A-Za-z][_A-Za-z0-9]*\) *,.*$/XDEFUN_DECL (F\2)/p; s/^[ \t]*DEFUNX[ \t]*( *"\([_A-Za-z][_A-Za-z0-9]*\)" *,.*$/XDEFUN_DECL (F\1)/p; s/^[ \t]*DEFUN_DLD[ \t]*( *\([_A-Za-z][_A-Za-z0-9]*\) *,.*$/XDEFUN_DLD_DECL (F\1)/p; s/^[ \t]*DEFUNX_DLD[ \t]*( *"\([_A-Za-z][_A-Za-z0-9]*\)" *,.*$/XDEFUN_DLD_DECL (F\1)/p' "$file"
+    ## Generate a list of function names to declare.  We could do
+    ## this in one step, but this way keeps the sed patterns a
+    ## bit smaller.
+
+    names=`$SED -n -e "$pattern" "$file"`
+
+    for name in $names; do
+      echo "extern OCTINTERP_API octave_value_list"
+      echo "$name (const octave_value_list& = octave_value_list (), int = 0);"
+      echo ""
+    done
   done
 
   cat << \EOF
-
-#undef XDEFUN_DECL
-#undef XDEFUN_DLD_DECL
 
 #endif
 
@@ -95,7 +112,7 @@ elif $make_source; then
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
 
 #if defined (HAVE_CONFIG_H)
-#include "config.h"
+#  include "config.h"
 #endif
 
 #include "defun.h"
@@ -109,35 +126,15 @@ elif $make_source; then
 #  undef quad
 #endif
 
-#if defined (ENABLE_DYNAMIC_LINKING)
-
-#  define XDEFUN_DLD_INTERNAL(name)
-
-#  define XDEFUNX_DLD_INTERNAL(name, fname)
-
-#else
-
-#  define XDEFUN_DLD_INTERNAL(name) \
-     XDEFUN_INTERNAL(name)
-
-#  define XDEFUNX_DLD_INTERNAL(name, fname) \
-     XDEFUNX_INTERNAL(name, fname)
-
-#endif
-
-#define XDEFUN_INTERNAL(name) \
-  install_builtin_function (F ## name, #name, file, "external-doc"); \
-
-#define XDEFCONSTFUN_INTERNAL(name) \
-  install_builtin_function (F ## name, #name, file, "external-doc", false); \
-
-#define XDEFUNX_INTERNAL(name, fname) \
-  install_builtin_function (fname, name, file, "external-doc"); \
-
-#define XDEFALIAS_INTERNAL(alias, name) \
-  alias_builtin (#alias, #name);
-
 EOF
+
+  pattern='s/^ *DEFUN *( *\([^ ,]*\) *,.*$/type=fun;fname=F\1;name=\1/p; s/^ *DEFUNX *( *"\([^"]*\)" *, *\([^ ,]*\) *,.*$/type=fun;fname=\2;name=\1/p; s/^ *DEFCONSTFUN *( *\([^ ,]*\) *,.*$/type=fun;fname=F\1;name=\1;const=true/p; s/^ *DEFALIAS *( *\([^ ,]*\) *, *\([^ )]*\) *).*$/type=alias;alias=\1;name=\2/p'
+
+  dld_pattern='s/^ *DEFUN_DLD *( *\([^ ,]*\) *,.*$/type=fun;fname=F\1;name=\1/p; s/^ *DEFUNX_DLD *( *"\([^"]*\)" *, *\([^ ,]*\) *,.*$/type=fun;fname=\2;name=\1/p'
+
+  if $defun_dld_are_built_in; then
+    pattern="$pattern; $dld_pattern"
+  fi
 
   for arg
   do
@@ -153,12 +150,33 @@ EOF
     echo "{"
     echo "  std::string file = \"$arg\";"
     echo ""
-    $SED -n \
-      -e 's/^ *\(DEFUN\(_DLD\|\)\) *( *\([^ ,]*\) *,.*$/  X\1_INTERNAL (\3);/p' \
-      -e 's/^ *\(DEFUNX\(_DLD\|\)\) *( *\("[^"]*"\) *, *\([^ ,]*\) *,.*$/  X\1_INTERNAL (\3, \4);/p' \
-      -e 's/^ *\(DEFCONSTFUN\) *( *\([^ ,]*\) *,.*$/  X\1_INTERNAL (\2);/p' \
-      -e 's/^ *\(DEFALIAS\) *( *\([^ ,]*\) *, *\([^ )]*\) *).*$/  X\1_INTERNAL (\2, \3);/p' \
-      "$file"
+
+    ## Generate a list of shell variable assignment expressions
+    ## then evaluate them to generate the function calls that
+    ## install the built-in functions or function aliases.
+
+    info_list=`$SED -n -e "$pattern" "$file"`
+
+    for info in $info_list; do
+      eval "$info"
+
+      const=false
+      case $type in
+        fun)
+          if $const; then
+            echo "  install_builtin_function ($fname, \"$name\", file, \"external-doc\", true);"
+          else
+            echo "  install_builtin_function ($fname, \"$name\", file, \"external-doc\");"
+          fi
+          unset type fname name const
+        ;;
+        alias)
+          echo "  alias_builtin (\"$alias\", \"$name\");"
+          unset type alias name
+        ;;
+      esac
+    done
+
     echo "}"
     echo ""
   done

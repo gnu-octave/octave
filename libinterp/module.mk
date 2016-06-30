@@ -240,14 +240,20 @@ libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc HG
 	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
 	$(simple_move_if_change_rule)
 
+if AMCOND_ENABLE_DYNAMIC_LINKING
+  mkbuiltins_dld_opt =
+else
+  mkbuiltins_dld_opt = --disable-dl
+endif
+
 libinterp/builtins.cc: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --source $(ALL_DEFUN_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --source $(mkbuiltins_dld_opt) $(ALL_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
 
 libinterp/builtin-defun-decls.h: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --header $(ALL_DEFUN_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --header $(mkbuiltins_dld_opt) $(ALL_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING

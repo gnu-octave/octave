@@ -228,7 +228,7 @@ SUBDIRS = libgnu
 # See bug #45578.
 BUILT_SOURCES += libgnu/libgnu.la
 
-libgnu/libgnu.la:
+libgnu/libgnu.la: oct-conf-post.h
 	cd libgnu; $(MAKE) all
 
 include liboctave/module.mk

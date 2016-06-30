@@ -35,7 +35,7 @@ function sparseimages (d, nm, typ)
          && __have_feature__ ("UMFPACK")))
     ## There is no sparse matrix implementation available because
     ## of missing libraries, plot sombreros instead.
-    sombreroimage (d, nm, typ);
+    sombreroimage (outfile, typ, d_typ);
   elseif (strcmp (typ, "txt"))
     txtimages (d, nm, 15, typ);
   elseif (strcmp (nm, "gplot"))
@@ -218,17 +218,18 @@ endfunction
 function sombreroimage (outfile, typ, d_typ)
   if (strcmp (typ, "txt"))
     fid = fopen (outfile, "wt");
-    fputs (fid, "+---------------------------------------+\n");
-    fputs (fid, "| Image unavailable because of a        |\n");
-    fputs (fid, "| missing sparse matrix implementation. |\n");
-    fputs (fid, "+---------------------------------------+\n");
+    fputs (fid, "+--------------------------------+\n");
+    fputs (fid, "| Image unavailable because of a |\n");
+    fputs (fid, "| missing SuiteSparse library.   |\n");
+    fputs (fid, "+--------------------------------+\n");
     fclose (fid);
     return;
   else
     [x, y, z] = sombrero ();
     unwind_protect
       mesh (x, y, z);
-      title ("Sorry, graphics are unavailable because Octave was\ncompiled without a sparse matrix implementation.");
+      title ({"Sorry, graphics are unavailable because Octave was",
+              "compiled without the SuiteSparse library."});
     unwind_protect_cleanup
       print (outfile, d_typ);
       hide_output ();

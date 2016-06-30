@@ -126,7 +126,8 @@ function sombreroimage (outfile, typ, d_typ)
     [x, y, z] = sombrero ();
     unwind_protect
       mesh (x, y, z);
-      title ("Sorry, graphics not available because Octave was\\ncompiled without the QHULL library.");
+      title ({"Sorry, graphics are unavailable because Octave was",
+              "compiled without the QHULL library."});
     unwind_protect_cleanup
       print (outfile, d_typ);
       hide_output ();

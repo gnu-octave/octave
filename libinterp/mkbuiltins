@@ -89,7 +89,7 @@ EOF
 
 EOF
 
-else
+elif $make_source; then
 
   cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
@@ -182,6 +182,11 @@ EOF
 }
 
 EOF
+
+else
+
+  echo "mkbuiltins: must specify --header or --source!" 1>&2
+  exit 1
 
 fi
 

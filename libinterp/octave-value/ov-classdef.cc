@@ -1652,7 +1652,7 @@ cdef_object_array::subsasgn (const std::string& type,
 
           bool is_scalar = true;
 
-          Array<idx_vector> iv (dim_vector (1, ival.length ()));
+          Array<idx_vector> iv (dim_vector (1, std::max (ival.length (), 2)));
 
           for (int i = 0; i < ival.length (); i++)
             {
@@ -1674,6 +1674,11 @@ cdef_object_array::subsasgn (const std::string& type,
                        ", the index must reference a single object in the "
                        "array.");
             }
+
+          // Fill in trailing singleton dimensions so that
+          // array.index doesn't create a new blank entry (bug #46660).
+          for (int i = ival.length (); i < 2; i++)
+            iv(i) = 1;
 
           Array<cdef_object> a = array.index (iv, true);
 

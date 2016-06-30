@@ -21,17 +21,17 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if defined (HAVE_CONFIG_H)
-#include "config.h"
+#  include "config.h"
 #endif
 
 #include <stdlib.h>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#include <windows.h>
+#  include <windows.h>
 #elif defined (HAVE_FRAMEWORK_CARBON)
-#include <Carbon/Carbon.h>
+#  include <Carbon/Carbon.h>
 #elif defined (HAVE_X_WINDOWS)
-#include <X11/Xlib.h>
+#  include <X11/Xlib.h>
 #endif
 
 #include "display-available.h"

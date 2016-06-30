@@ -33,7 +33,7 @@ object) relevant global values before and after the nested call.
 
 %top {
 #if defined (HAVE_CONFIG_H)
-#include "config.h"
+#  include "config.h"
 #endif
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)

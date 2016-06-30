@@ -24,7 +24,7 @@ cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkops.
 
 #if defined (HAVE_CONFIG_H)
-#include "config.h"
+#  include "config.h"
 #endif
 
 extern void install_base_type_conversions (void);

@@ -135,9 +135,11 @@ $(srcdir)/libinterp/dldfcn/module.mk: $(srcdir)/libinterp/dldfcn/config-module.s
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
   DLD_LIBOCTINTERP_LIBADD = libinterp/liboctinterp.la
+  LIBINTERP_DLDFCN_LIBADD =
 else
   OCT_FILES =
   DLD_LIBOCTINTERP_LIBADD =
+  LIBINTERP_DLDFCN_LIBADD = $(DLDFCN_LIBS)
 endif
 
 libinterp_liboctinterp_la_SOURCES = \
@@ -163,6 +165,7 @@ libinterp_liboctinterp_la_LIBADD = \
   libinterp/octave-value/liboctave-value.la \
   libinterp/parse-tree/libparse-tree.la \
   libinterp/corefcn/libcorefcn.la \
+  $(LIBINTERP_DLDFCN_LIBADD) \
   liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 

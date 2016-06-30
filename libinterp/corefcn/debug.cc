@@ -2094,12 +2094,14 @@ function returns.
       if (arg == "in")
         {
           Vdebugging = false;
+          Vtrack_line_num = true;
 
           tree_evaluator::dbstep_flag = -1;
         }
       else if (arg == "out")
         {
           Vdebugging = false;
+          Vtrack_line_num = true;
 
           tree_evaluator::dbstep_flag = -2;
         }
@@ -2111,6 +2113,7 @@ function returns.
             error ("dbstep: invalid argument");
 
           Vdebugging = false;
+          Vtrack_line_num = true;
 
           tree_evaluator::dbstep_flag = n;
         }
@@ -2118,6 +2121,7 @@ function returns.
   else
     {
       Vdebugging = false;
+      Vtrack_line_num = true;
 
       tree_evaluator::dbstep_flag = 1;
     }
@@ -2141,6 +2145,7 @@ Leave command-line debugging mode and continue code execution normally.
     print_usage ();
 
   Vdebugging = false;
+  Vtrack_line_num = true;
 
   tree_evaluator::reset_debug_state ();
 

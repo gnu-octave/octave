@@ -663,9 +663,10 @@ tree_evaluator::visit_statement (tree_statement& stmt)
       if (statement_context == function || statement_context == script)
         {
           // Skip commands issued at a debug> prompt to avoid disturbing
-          // the state of the program we are debugging.
+          // the state of the program we are debugging, but still track
+          // progress through user functions called from debug> prompt.
 
-          if (! Vdebugging)
+          if (Vtrack_line_num)
             octave_call_stack::set_location (stmt.line (), stmt.column ());
 
           if ((statement_context == script

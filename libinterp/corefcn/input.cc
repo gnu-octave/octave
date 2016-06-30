@@ -108,6 +108,11 @@ bool Vdrawnow_requested = false;
 // TRUE if we are in debugging mode.
 bool Vdebugging = false;
 
+// TRUE if we are recording line numbers in a source file.
+// Always true except when debugging and taking input directly from
+// the terminal.
+bool Vtrack_line_num = true;
+
 // If we are in debugging mode, this is the last command entered, so
 // that we can repeat the previous command if the user just types RET.
 static std::string last_debugging_command = "\n";
@@ -621,6 +626,8 @@ get_debug_input (const std::string& prompt)
     {
       try
         {
+          Vtrack_line_num = false;
+
           reset_error_handler ();
 
           curr_parser.reset ();
@@ -885,6 +892,7 @@ do_keyboard (const octave_value_list& args)
   // stmt.accept (tpc);
 
   Vdebugging = true;
+  Vtrack_line_num = false;
 
   std::string prompt = "debug> ";
   if (nargin > 0)

@@ -141,6 +141,9 @@ octave_user_script::do_multi_index_op (int nargout,
 
       frame.add_fcn (octave_call_stack::pop);
 
+      frame.protect_var (Vtrack_line_num);
+      Vtrack_line_num = true;    // update line no. even if debugging
+
       frame.protect_var (tree_evaluator::statement_context);
       tree_evaluator::statement_context = tree_evaluator::script;
 
@@ -504,6 +507,9 @@ octave_user_function::do_multi_index_op (int nargout,
   int context = active_context ();
 
   octave_call_stack::push (this, local_scope, context);
+
+  frame.protect_var (Vtrack_line_num);
+  Vtrack_line_num = true;    // update source line numbers, even if debugging
   frame.add_fcn (octave_call_stack::pop);
 
   if (call_depth > 0 && ! is_anonymous_function ())

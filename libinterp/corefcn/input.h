@@ -50,6 +50,9 @@ extern OCTINTERP_API bool Vdrawnow_requested;
 // TRUE if we are in debugging mode.
 extern OCTINTERP_API bool Vdebugging;
 
+// TRUE if we are not executing a command direct from debug> prompt.
+extern OCTINTERP_API bool Vtrack_line_num;
+
 extern void initialize_command_input (void);
 
 extern bool octave_yes_or_no (const std::string& prompt);

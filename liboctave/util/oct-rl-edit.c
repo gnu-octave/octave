@@ -173,6 +173,12 @@ octave_rl_line_buffer (void)
 }
 
 int
+octave_rl_point (void)
+{
+  return rl_point;
+}
+
+int
 octave_rl_do_undo (void)
 {
   return rl_do_undo ();

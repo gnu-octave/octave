@@ -153,6 +153,8 @@ namespace octave
 
     std::string do_get_current_line (void) const;
 
+    char do_get_prev_char (int) const;
+
     void do_replace_line (const std::string& text, bool clear_undo);
 
     void do_kill_full_line (void);
@@ -647,6 +649,17 @@ namespace octave
     return retval;
   }
 
+  // Return the character (offset+1) to the left of the cursor,
+  // or '\0' if the cursor is at the start of the line.
+  char
+  gnu_readline::do_get_prev_char (int offset) const
+  {
+    const char *buf = ::octave_rl_line_buffer ();
+    int p = ::octave_rl_point ();
+
+    return p > offset ? buf[p - offset - 1] : '\0';
+  }
+
   void
   gnu_readline::do_replace_line (const std::string& text, bool clear_undo)
   {
@@ -927,6 +940,8 @@ namespace octave
 
     std::string do_get_current_line (void) const;
 
+    char do_get_prev_char (int) const;
+
     void do_replace_line (const std::string& text, bool clear_undo);
 
     void do_kill_full_line (void);
@@ -1001,6 +1016,12 @@ namespace octave
   {
     // FIXME
     return "";
+  }
+
+  char
+  default_command_editor::do_get_prev_char (int) const
+  {
+    return '\0';
   }
 
   void
@@ -1409,6 +1430,14 @@ namespace octave
   command_editor::get_current_line (void)
   {
     return (instance_ok ()) ? instance->do_get_current_line () : "";
+  }
+
+  // Return the character (offset+1) to the left of the cursor,
+  // or '\0' if the cursor is at the start of the line.
+  char
+  command_editor::get_prev_char (int offset)
+  {
+    return (instance_ok ()) ? instance->do_get_prev_char (offset) : '\0';
   }
 
   void

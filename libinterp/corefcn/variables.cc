@@ -238,6 +238,7 @@ generate_struct_completions (const std::string& text,
   string_vector names;
 
   size_t pos = text.rfind ('.');
+  bool array = false;
 
   if (pos != std::string::npos)
     {
@@ -248,9 +249,15 @@ generate_struct_completions (const std::string& text,
 
       prefix = text.substr (0, pos);
 
+      if (prefix == "")
+        {
+          array = true;
+          prefix = find_indexed_expression (text);
+        }
+
       std::string base_name = prefix;
 
-      pos = base_name.find_first_of ("{(.");
+      pos = base_name.find_first_of ("{(. ");
 
       if (pos != std::string::npos)
         base_name = base_name.substr (0, pos);
@@ -284,16 +291,20 @@ generate_struct_completions (const std::string& text,
         }
     }
 
+  // Undo look-back that found the array expression,
+  // but insert an extra "." to distinguish from the non-struct case.
+  if (array)
+    prefix = ".";
+
   return names;
 }
 
 // FIXME: this will have to be much smarter to work "correctly".
-
 bool
-looks_like_struct (const std::string& text)
+looks_like_struct (const std::string& text, char prev_char)
 {
   bool retval = (! text.empty ()
-                 && text != "."
+                 && (text != "." || prev_char == ')' || prev_char == '}')
                  && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
                  && text.find ("..") == std::string::npos
                  && text.rfind ('.') != std::string::npos);

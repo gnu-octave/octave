@@ -348,13 +348,16 @@ get_input_from_stdin (void)
 
 static string_vector
 generate_possible_completions (const std::string& text, std::string& prefix,
-                               std::string& hint)
+                               std::string& hint, bool& deemed_struct)
 {
   string_vector names;
 
   prefix = "";
 
-  if (looks_like_struct (text))
+  char prev_char = octave::command_editor::get_prev_char (text.length ());
+  deemed_struct = looks_like_struct (text, prev_char);
+
+  if (deemed_struct)
     names = generate_struct_completions (text, prefix, hint);
   else
     names = make_name_list ();
@@ -419,16 +422,26 @@ generate_completion (const std::string& text, int state)
       // No reason to display symbols while completing a
       // file/directory operation.
 
+      bool deemed_struct = false;
+
       if (is_completing_dirfns ())
         name_list = string_vector ();
       else
-        name_list = generate_possible_completions (text, prefix, hint);
+        name_list = generate_possible_completions (text, prefix, hint,
+                                                   deemed_struct);
 
       name_list_len = name_list.numel ();
 
-      file_name_list = octave::command_editor::generate_filename_completions (text);
+      // If the line was something like "a{1}." then text = "." but
+      // we don't want to expand all the . files.
+      if (! deemed_struct)
+        {
 
-      name_list.append (file_name_list);
+          file_name_list = octave::command_editor::generate_filename_completions (text);
+
+          name_list.append (file_name_list);
+
+        }
 
       name_list_total_len = name_list.numel ();
 
@@ -451,15 +464,16 @@ generate_completion (const std::string& text, int state)
 
           if (hint == name.substr (0, hint_len))
             {
+                    // Special case: array reference forces prefix="."
+                    //               in generate_struct_completions ()
               if (list_index <= name_list_len && ! prefix.empty ())
-                retval = prefix + "." + name;
+                retval = (prefix == "." ? "" : prefix) + "." + name;
               else
                 retval = name;
 
-              // FIXME: looks_like_struct is broken for now,
-              //        so it always returns false.
-
-              if (matches == 1 && looks_like_struct (retval))
+              char prev_char = octave::command_editor::get_prev_char
+                                                       (text.length ());
+              if (matches == 1 && looks_like_struct (retval, prev_char))
                 {
                   // Don't append anything, since we don't know
                   // whether it should be '(' or '.'.
@@ -485,6 +499,53 @@ quoting_filename (const std::string &text, int, char quote)
     return text;
   else
     return (std::string ("'") + text);
+}
+
+// Try to parse a partial command line in reverse, excluding trailing TEXT.
+// If it appears a variable has been indexed by () or {},
+// return that expression,
+// to allow autocomplete of field names of arrays of structures.
+std::string
+find_indexed_expression (const std::string& text)
+{
+  std::string line = octave::command_editor::get_line_buffer ();
+
+  int pos = line.length () - text.length ();
+  int curly_count = 0;
+  int paren_count = 0;
+
+  int last = --pos;
+
+  while (pos >= 0 && (line[pos] == ')' || line[pos] == '}'))
+    {
+      if (line[pos] == ')')
+        paren_count++;
+      else if (line[pos] == '}')
+        curly_count++;
+
+      while (curly_count + paren_count > 0 && --pos >= 0)
+        {
+          if (line[pos] == ')')
+            paren_count++;
+          else if (line[pos] == '(')
+            paren_count--;
+          else if (line[pos] == '}')
+            curly_count++;
+          else if (line[pos] == '{')
+            curly_count--;
+        }
+
+      while (--pos >= 0 && line[pos] == ' ')
+        ;
+    }
+
+  while (pos >= 0 && (isalnum (line[pos]) || line[pos] == '_'))
+    pos--;
+
+  if (++pos >= 0)
+    return (line.substr (pos, last + 1 - pos));
+  else
+    return std::string ();
 }
 
 void

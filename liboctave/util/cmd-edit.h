@@ -137,6 +137,8 @@ namespace octave
 
     static std::string get_current_line (void);
 
+    static char get_prev_char (int);
+
     static void replace_line (const std::string& text, bool clear_undo = true);
 
     static void kill_full_line (void);
@@ -307,6 +309,8 @@ namespace octave
     virtual std::string do_get_line_buffer (void) const = 0;
 
     virtual std::string do_get_current_line (void) const = 0;
+
+    virtual char do_get_prev_char (int) const = 0;
 
     virtual void do_replace_line (const std::string& text, bool clear_undo) = 0;
 

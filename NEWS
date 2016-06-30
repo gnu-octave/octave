@@ -1,8 +1,6 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
- ** condest now works with a normest1 compatible syntax.
-
  ** The parser has been extended to accept, but ignore, underscore
     characters in numbers.  This facilitates writing more legible code
     by using '_' as a thousands separator or to group nibbles into bytes
@@ -30,7 +28,7 @@ Summary of important user-visible changes for version 4.2:
     to the old command "hold all" and was made for Matlab compatibility.
     Existing code *may* produce differently colored plots if it did not
     specify the color for a plot and relied on each new plot having the
-    the default first color in the "ColorOrder" property.
+    default first color in the "ColorOrder" property.
 
  ** When starting, Octave now looks in the function path for a file
     startup.m and executes any commands found there.  This change was
@@ -63,6 +61,12 @@ Summary of important user-visible changes for version 4.2:
     points is 0 or a negative number.  This change was made to be
     compatible with Matlab releases newer than 2011.  In addition,
     Octave no longer supports matrix inputs for A or B.
+
+ ** The cov function now returns the complex conjugate of the result
+    from previous versions of Octave.  This change was made for
+    compatibility with Matlab.
+
+ ** condest now works with a normest1 compatible syntax.
 
  ** The griddata function no longer plots the interpolated mesh if no
     output argument is requested, instead the vector or array of

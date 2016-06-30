@@ -56,11 +56,13 @@
 ##   normalize with @math{N}, this provides the second moment around the mean
 ## @end table
 ##
-## Compatibility Note:: Octave always computes the covariance matrix.
-## For two inputs, however, @sc{matlab} will calculate
-## @code{cov (@var{x}(:), @var{y}(:))} whenever the number of elements in
-## @var{x} and @var{y} are equal.  This will result in a scalar rather than
-## a matrix output.  Code relying on this odd definition will need to be
+## Compatibility Note:: Octave always treats rows of @var{x} and @var{y}
+## as multivariate random variables.
+## For two inputs, however, @sc{matlab} treats @var{x} and @var{y} as two
+## univariate distributions regardless of their shapes, and will calculate
+## @code{cov ([@var{x}(:), @var{y}(:)])} whenever the number of elements in
+## @var{x} and @var{y} are equal.  This will result in a 2x2 matrix.
+## Code relying on @sc{Matlab}'s definition will need to be
 ## changed when running in Octave.
 ## @seealso{corr}
 ## @end deftypefn
@@ -108,7 +110,7 @@ function c = cov (x, y = [], opt = 0)
 
   if (nargin == 1 || isscalar (y))
     x = center (x, 1);
-    c = conj (x' * x / (n - 1 + opt));
+    c = x' * x / (n - 1 + opt);
   else
     if (isrow (y))
       y = y.';
@@ -118,7 +120,7 @@ function c = cov (x, y = [], opt = 0)
     endif
     x = center (x, 1);
     y = center (y, 1);
-    c = conj (x' * y / (n - 1 + opt));
+    c = x' * y / (n - 1 + opt);
   endif
 
 endfunction

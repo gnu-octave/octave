@@ -42,12 +42,15 @@ class marker : public QObject
 
 public:
 
+  // List of all marker types
+  // If multiple markers are on the same line, the first one listed
+  // is drawn at the back, so big ones should be first.
   enum editor_markers
     {
-      bookmark,
       breakpoint,
       cond_break,
       unsure_breakpoint,
+      bookmark,
       debugger_position,
       unsure_debugger_position
     };

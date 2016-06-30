@@ -157,9 +157,9 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->setMarkerBackgroundColor (QColor (192,0,0), marker::breakpoint);
   _edit_area->markerDefine (QsciScintilla::Circle, marker::cond_break);
   _edit_area->setMarkerBackgroundColor (QColor (255,127,0), marker::cond_break);
-  _edit_area->markerDefine (QsciScintilla::RightTriangle, marker::debugger_position);
+  _edit_area->markerDefine (QsciScintilla::RightArrow, marker::debugger_position);
   _edit_area->setMarkerBackgroundColor (QColor (255,255,0), marker::debugger_position);
-  _edit_area->markerDefine (QsciScintilla::RightTriangle,
+  _edit_area->markerDefine (QsciScintilla::RightArrow,
                             marker::unsure_debugger_position);
   _edit_area->setMarkerBackgroundColor (QColor (192,192,192), marker::unsure_debugger_position);
 

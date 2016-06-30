@@ -1939,7 +1939,7 @@ if test -n "$UMFPACK_LIBS"; then
   LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   xtra_libs=
   OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
-  if test $octave_cv_umfpack_need_suitesparse_time = yes; then
+  if test $STATIC_LIBS = yes || test $octave_cv_umfpack_need_suitesparse_time = yes; then
     AC_CHECK_LIB([rt], [clock_gettime], [xtra_libs="-lrt"], [xtra_libs=])
     ## FIXME: This library list is only accurate for Linux, Mac OS X.
     ##        Possibly need other library names for MinGW, Cygwin.

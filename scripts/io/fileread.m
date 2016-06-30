@@ -32,7 +32,7 @@ function str = fileread (filename)
     error ("fileread: FILENAME argument must be a string");
   endif
 
-  fid = fopen (filename, "rt");
+  fid = fopen (filename, "r");
   if (fid < 0)
     error ("fileread: cannot open file");
   endif

@@ -120,6 +120,7 @@ EXTRA_DIST += \
   build-aux/find-files-with-tests.sh \
   build-aux/mk-default-qt-settings.in.sh \
   build-aux/mk-f77-def.in.sh \
+  build-aux/mk-hg-id.sh \
   build-aux/mk-mxarray-h.in.sh \
   build-aux/mk-octave-config-h.sh \
   build-aux/mk-opts.pl \

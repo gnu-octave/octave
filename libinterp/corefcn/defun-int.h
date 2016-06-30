@@ -82,7 +82,7 @@ defun_isargout (int, int, bool *);
 
 #define FORWARD_DECLARE_FUNX(name) \
   extern OCTAVE_EXPORT octave_value_list \
-  name (const octave_value_list& = octave_value_list (), int = 0)
+  name (const octave_value_list&, int)
 
 #define FORWARD_DECLARE_FUN(name) \
   FORWARD_DECLARE_FUNX (F ## name)

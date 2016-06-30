@@ -219,8 +219,10 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 ## Cancel the suffix rule and use a pattern rule instead.
 .yy.cc:
 
+## The ylwrap script always updates the parser source file so we use a temporary file
+## name and our own move-if-change rule for that file.
 %.cc %.h : %.yy
-	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $*.cc y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE)
+	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $*.cc-t y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE) && $(call move_if_change_rule,$*.cc-t,$*.cc)
 
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.

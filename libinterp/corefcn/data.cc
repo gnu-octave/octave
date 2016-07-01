@@ -2815,7 +2815,10 @@ returns the number of columns in the given matrix.
     }
   else if (nargin == 2 && nargout < 2)
     {
-      octave_idx_type nd = args(1).xidx_type_value ("size: DIM must be an integer");
+      if (! args(1).is_real_scalar ())
+        error ("size: DIM must be a positive integer");
+
+      octave_idx_type nd = args(1).idx_type_value ();
 
       const dim_vector dv = args(0).dims ();
 

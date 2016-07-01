@@ -3009,8 +3009,8 @@ endfunction
 %!assert (size (gallery ("kms", 5, 0.2)), [5 5])
 
 %!assert (size (gallery ("krylov", 4)), [4 4])
-%!assert (size (gallery ("krylov", ones (4)), [4 4]))
-%!assert (size (gallery ("krylov", ones (4), [.2 .3 .4 .5], 3), [4 4]))
+%!assert (size (gallery ("krylov", ones (4))), [4 4])
+%!assert (size (gallery ("krylov", ones (4), [.2 .3 .4 .5], 3)), [4 3])
 
 %!assert (size (gallery ("lauchli", 5)), [6 5])
 %!assert (size (gallery ("lauchli", 5, 3)), [6 5])

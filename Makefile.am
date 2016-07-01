@@ -299,8 +299,9 @@ DISTCLEANFILES += \
   .gdbinit
 
 MAINTAINERCLEANFILES += \
+  $(BUILT_DISTFILES) \
   ChangeLog \
-  $(BUILT_DISTFILES)
+  HG-ID
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
@@ -419,6 +420,7 @@ install-data-local: installdirs-local
 clean-local: doc-clean
 
 distclean-local:
+	if [ "x${srcdir}" != "x." ]; then rm -f HG-ID; fi
 
 maintainer-clean-local: doc-maintainer-clean
 

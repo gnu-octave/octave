@@ -29,7 +29,7 @@ liboctave/cruft/cruft.def: $(liboctave_cruft_libcruft_la_SOURCES) build-aux/mk-f
 	$(SHELL) build-aux/mk-f77-def.sh $(srcdir) $(liboctave_cruft_libcruft_la_SOURCES) > $@-t && \
 	mv $@-t $@
 
-liboctave_DISTCLEANFILES += \
+liboctave_CLEANFILES += \
   liboctave/cruft/cruft.def \
   liboctave/cruft/ranlib/ranlib.def \
   $(nodist_liboctave_cruft_libcruft_la_SOURCES)

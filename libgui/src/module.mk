@@ -228,13 +228,11 @@ libgui_EXTRA_DIST += \
   $(octave_gui_UI) \
   $(octave_gui_ICONS)
 
-libgui_DISTCLEANFILES += \
-  libgui/src/liboctgui-build-info.cc
-
 libgui_CLEANFILES += \
   $(octave_gui_MOC) \
   $(octave_gui_UI_H) \
-  $(octave_gui_RC)
+  $(octave_gui_RC) \
+  libgui/src/liboctgui-build-info.cc
 
 libgui/src/liboctgui-build-info.cc: libgui/src/liboctgui-build-info.in.cc | libgui/src/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \

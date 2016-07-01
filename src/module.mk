@@ -24,11 +24,6 @@ EXTRA_DIST += \
   src/octave-build-info.in.cc \
   src/octave-config.in.cc
 
-DISTCLEANFILES += \
-  src/main.cc \
-  src/mkoctfile.cc \
-  src/octave-config.cc
-
 bin_PROGRAMS += \
   src/mkoctfile \
   src/octave \
@@ -249,8 +244,12 @@ src/octave-gui-$(version)$(EXEEXT): src/octave-gui$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
 	cd $(@D) && $(LN_S) $(<F) $(@F)
 
-src_CLEANFILES += $(OCTAVE_VERSION_LINKS)
-src_DISTCLEANFILES += src/octave-build-info.cc
+src_CLEANFILES += \
+  $(OCTAVE_VERSION_LINKS) \
+  src/main.cc \
+  src/mkoctfile.cc \
+  src/octave-build-info.cc \
+  src/octave-config.cc
 
 CLEANFILES += $(src_CLEANFILES)
 DISTCLEANFILES += $(src_DISTCLEANFILES)

@@ -289,12 +289,14 @@ endif
 noinst_SCRIPTS = run-octave
 
 CLEANFILES += \
-  $(BUILT_SOURCES) \
   config-vars \
-  make-vars
+  make-vars \
+  octave-config.h \
+  run-octave
 
 DISTCLEANFILES += \
   $(DIRSTAMP_FILES) \
+  $(GEN_CONFIG_INC) \
   $(GEN_CONFIG_SHELL) \
   .gdbinit
 
@@ -305,8 +307,10 @@ MAINTAINERCLEANFILES += \
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
-octinclude_HEADERS += oct-conf-post.h
-nodist_octinclude_HEADERS += config.h octave-config.h
+nodist_octinclude_HEADERS += \
+  config.h \
+  oct-conf-post.h \
+  octave-config.h
 
 ALL_LOCAL_TARGETS += \
   $(OCTAVE_INTERPRETER_TARGETS) \

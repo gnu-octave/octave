@@ -188,11 +188,11 @@ scripts_EXTRA_DIST += \
 EXTRA_DIST += $(scripts_EXTRA_DIST)
 
 scripts_CLEANFILES += \
+  $(GEN_FCN_FILES) \
   $(PKG_ADD_FILES)
 
 scripts_DISTCLEANFILES += \
-  $(DIRSTAMP_FILES) \
-  $(GEN_FCN_FILES)
+  $(DIRSTAMP_FILES)
 
 scripts_MAINTAINERCLEANFILES += \
   $(srcdir)/scripts/DOCSTRINGS

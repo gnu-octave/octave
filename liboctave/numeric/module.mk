@@ -119,3 +119,5 @@ liboctave_liboctave_la_LIBADD += liboctave/numeric/libnumeric.la
 
 liboctave_EXTRA_DIST += $(LIBOCTAVE_OPT_IN)
 
+liboctave_CLEANFILES += \
+  $(LIBOCTAVE_OPT_INC)

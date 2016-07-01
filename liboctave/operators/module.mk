@@ -95,4 +95,5 @@ liboctave_EXTRA_DIST += \
   liboctave/operators/smx-ops \
   liboctave/operators/vx-ops
 
-liboctave_DISTCLEANFILES += $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)
+liboctave_CLEANFILES += \
+  $(BUILT_LIBOCTAVE_OPERATORS_FILES)

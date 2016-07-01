@@ -71,6 +71,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   libinterp/corefcn/mxarray.h \
   libinterp/corefcn/oct-errno.cc \
   libinterp/corefcn/defaults.h \
+  libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/graphics.h \
   libinterp/builtin-defun-decls.h \
   libinterp/operators/ops.cc \
@@ -93,9 +94,7 @@ libinterp_EXTRA_DIST += \
   $(LIBINTERP_BUILT_DISTFILES)
 
 octinclude_HEADERS += \
-  libinterp/corefcn/graphics-props.cc \
   libinterp/builtins.h \
-  libinterp/builtin-defun-decls.h \
   libinterp/build-env.h \
   libinterp/liboctinterp-build-info.h \
   libinterp/octave.h \
@@ -110,9 +109,11 @@ noinst_HEADERS += \
   $(NOINSTALL_LIBINTERP_OPERATORS_INC)
 
 nodist_octinclude_HEADERS += \
-  libinterp/corefcn/mxarray.h \
+  libinterp/builtin-defun-decls.h \
   libinterp/corefcn/defaults.h \
+  libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/graphics.h \
+  libinterp/corefcn/mxarray.h \
   libinterp/version.h
 
 DIST_SRC += \
@@ -328,14 +329,11 @@ EXTRA_DIST += $(libinterp_EXTRA_DIST)
 
 libinterp_CLEANFILES += \
   $(DLDFCN_PKG_ADD_FILE) \
+  $(LIBINTERP_BUILT_NODISTFILES) \
   $(LIBINTERP_TST_FILES) \
   $(OCT_FILES) \
-  libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/oct-tex-parser.output \
   libinterp/parse-tree/oct-parse.output
-
-libinterp_DISTCLEANFILES += \
-  $(LIBINTERP_BUILT_NODISTFILES)
 
 libinterp_MAINTAINERCLEANFILES += \
   $(srcdir)/libinterp/DOCSTRINGS \

@@ -294,8 +294,9 @@ CLEANFILES += \
   make-vars
 
 DISTCLEANFILES += \
-  .gdbinit \
-  $(DIRSTAMP_FILES)
+  $(DIRSTAMP_FILES) \
+  $(GEN_CONFIG_SHELL) \
+  .gdbinit
 
 MAINTAINERCLEANFILES += \
   ChangeLog \

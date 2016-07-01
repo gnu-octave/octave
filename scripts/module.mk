@@ -187,8 +187,10 @@ scripts_EXTRA_DIST += \
 
 EXTRA_DIST += $(scripts_EXTRA_DIST)
 
+scripts_CLEANFILES += \
+  $(PKG_ADD_FILES)
+
 scripts_DISTCLEANFILES += \
-  $(PKG_ADD_FILES) \
   $(DIRSTAMP_FILES) \
   $(GEN_FCN_FILES)
 

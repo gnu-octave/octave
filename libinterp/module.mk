@@ -328,14 +328,14 @@ EXTRA_DIST += $(libinterp_EXTRA_DIST)
 
 libinterp_CLEANFILES += \
   $(DLDFCN_PKG_ADD_FILE) \
+  $(LIBINTERP_TST_FILES) \
+  $(OCT_FILES) \
   libinterp/corefcn/graphics-props.cc \
   libinterp/corefcn/oct-tex-parser.output \
   libinterp/parse-tree/oct-parse.output
 
 libinterp_DISTCLEANFILES += \
-  $(LIBINTERP_BUILT_NODISTFILES) \
-  $(OCT_FILES) \
-  $(LIBINTERP_TST_FILES)
+  $(LIBINTERP_BUILT_NODISTFILES)
 
 libinterp_MAINTAINERCLEANFILES += \
   $(srcdir)/libinterp/DOCSTRINGS \

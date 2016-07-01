@@ -120,10 +120,12 @@ liboctave/liboctave-build-info.cc: liboctave/liboctave-build-info.in.cc HG-ID | 
 
 EXTRA_DIST += $(liboctave_EXTRA_DIST)
 
+liboctave_CLEANFILES += \
+  $(LIBOCTAVE_TST_FILES)
+
 liboctave_DISTCLEANFILES += \
   $(LIBOCTAVE_BUILT_NODISTFILES) \
-  $(BUILT_INCS) \
-  $(LIBOCTAVE_TST_FILES)
+  $(BUILT_INCS)
 
 BUILT_NODISTFILES += $(LIBOCTAVE_BUILT_NODISTFILES)
 

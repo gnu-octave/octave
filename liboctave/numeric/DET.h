@@ -74,7 +74,9 @@ public:
   void operator *= (T t)
   {
     int e;
-    c2 *= octave::math::log2 (t, e);
+    c2 *= t;
+    // Renormalize c2 to [0.5, 1), and find required change in exponent.
+    c2 = octave::math::log2 (c2, e);
     e2 += e;
   }
 

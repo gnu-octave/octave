@@ -226,6 +226,7 @@ For that, use any of the condition number functions: @code{cond},
 /*
 %!assert (det ([1, 2; 3, 4]), -2, 10*eps)
 %!assert (det (single ([1, 2; 3, 4])), single (-2), 10*eps ("single"))
+%!assert (det (eye (2000)), 1)
 %!error det ()
 %!error det (1, 2)
 %!error <must be a square matrix> det ([1, 2; 3, 4; 5, 6])

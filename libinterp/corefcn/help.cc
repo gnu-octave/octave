@@ -1254,16 +1254,20 @@ included in the list.  This is a known issue.
 %!test
 %! f = tempname (".", "oct_");
 %! fcn_name = f(3:end);
-%! fid = fopen ([f ".m"], "w+");
-%! fprintf (fid, "function z = %s\n z = localfunctions; end\n", fcn_name);
-%! fprintf (fid, "function z = b(x)\n z = x+1; end\n");
-%! fprintf (fid, "function z = c(x)\n z = 2*x; end\n");
-%! fclose (fid);
-%! d = eval (fcn_name);
-%! unlink (f);
-%! assert (size (d), [2, 1]);
-%! assert (d{1}(3), 4);
-%! assert (d{2}(3), 6);
+%! f = [f ".m"];
+%! unwind_protect
+%!   fid = fopen (f, "w+");
+%!   fprintf (fid, "function z = %s\n z = localfunctions; end\n", fcn_name);
+%!   fprintf (fid, "function z = b(x)\n z = x+1; end\n");
+%!   fprintf (fid, "function z = c(x)\n z = 2*x; end\n");
+%!   fclose (fid);
+%!   d = eval (fcn_name);
+%!   assert (size (d), [2, 1]);
+%!   assert (d{1}(3), 4);
+%!   assert (d{2}(3), 6);
+%! unwind_protect_cleanup
+%!   unlink (f);
+%! end_unwind_protect
 */
 
 static std::string

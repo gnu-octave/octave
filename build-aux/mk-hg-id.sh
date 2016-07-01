@@ -41,10 +41,10 @@ elif [ -d $srcdir/.hg ]; then
   ( cd $srcdir && hg identify --id || echo "unknown" ) > ${hg_id}-t
   ${move_if_change} ${hg_id}-t ${hg_id}
 elif [ ! -f $srcdir/${hg_id} ]; then
-  echo "WARNING: $srcdir/HG-ID is missing!" 1>&2
+  echo "WARNING: $srcdir/${hg_id} is missing!" 1>&2
   echo "unknown" > ${hg_id}-t && mv ${hg_id}-t ${hg_id}
 else
-  echo "preserving existing HG-ID file" 1>&2
+  echo "preserving existing ${hg_id} file" 1>&2
   if [ "x$srcdir" != "x." ] && [ -f $srcdir/${hg_id} ] && [ ! -f ${hg_id} ]; then
     cp ${srcdir}/${hg_id} ${hg_id}
     touch -r ${srcdir}/${hg_id} ${hg_id}
@@ -52,7 +52,7 @@ else
 fi
 
 if [ "`cat ${hg_id}`" = "hg-id-disabled" ]; then
-  echo "WARNING: HG-ID is 'hg-id-disabled'" 1>&2
+  echo "WARNING: ${hg_id} is 'hg-id-disabled'" 1>&2
 fi
 
 cat ${hg_id}

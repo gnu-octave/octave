@@ -321,7 +321,7 @@ all-local: $(ALL_LOCAL_TARGETS)
 	@echo "   make check      - to run the tests"
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
-	@echo "   HG ID for this build is \"`cat HG-ID`\""
+	@echo "   HG ID for this build is \"$(HG_ID_VAR)\""
 	@echo ""
 
 run-octave: run-octave.in build-aux/subst-script-vals.sh
@@ -383,7 +383,8 @@ ChangeLog:
 .PHONY: ChangeLog
 
 ## The mk-hg-id.sh script will be executed each time Make runs.  It will
-## update the HG-ID file in the build tree if it is out of date.
+## update the HG-ID file in the build tree if it is out of date.  As a side
+## effect, HG_ID_VAR is assigned the contents of the file.
 
 if AMCOND_ENABLE_HG_ID
 HG_ID_VAR := \

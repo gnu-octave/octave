@@ -238,11 +238,11 @@ libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libi
 libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
 
-libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc HG-ID | libinterp/$(octave-dirstamp)
+libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
-	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
+	  -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
 	$(simple_move_if_change_rule)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING

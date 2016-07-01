@@ -236,9 +236,9 @@ libgui_CLEANFILES += \
   $(octave_gui_UI_H) \
   $(octave_gui_RC)
 
-libgui/src/liboctgui-build-info.cc: libgui/src/liboctgui-build-info.in.cc HG-ID | libgui/src/$(octave-dirstamp)
+libgui/src/liboctgui-build-info.cc: libgui/src/liboctgui-build-info.in.cc | libgui/src/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
-	  -e "s|%OCTAVE_HG_ID%|`cat $(builddir)/HG-ID`|" $< > $@-t && \
+	  -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
 	$(simple_move_if_change_rule)

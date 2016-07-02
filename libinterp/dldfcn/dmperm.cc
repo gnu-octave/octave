@@ -119,7 +119,7 @@ DEFUN_DLD (dmperm, args, nargout,
 @deftypefn  {} {@var{p} =} dmperm (@var{S})
 @deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})
 
-@cindex @nospell{Dulmage-Mendelsohn} decomposition
+@cindex Dulmage-Mendelsohn decomposition
 Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix
 @var{S}.
 

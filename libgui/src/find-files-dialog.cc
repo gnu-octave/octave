@@ -193,7 +193,6 @@ find_files_dialog::find_files_dialog (QWidget * p)
   main_layout->setRowStretch (2,1);
   main_layout->addWidget (_status_bar,3,0,1,-1);
 
-
   setLayout (main_layout);
 
   connect (this, SIGNAL (finished (int)), this, SLOT (handle_done (int)));

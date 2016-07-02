@@ -446,7 +446,6 @@ dimensionality as the other array.
           octave_value_list inputs (2);
           Array<int> ra_idx (dim_vector (dvc.ndims (), 1), 0);
 
-
           for (octave_idx_type i = 0; i < ncount; i++)
             {
               if (maybe_update_column (Ac, A, dva, dvc, i, idxA))

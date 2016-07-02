@@ -3008,7 +3008,6 @@ namespace octave
       return retval;
     }
 
-
     Complex rc_log1p (double x)
     {
       const double pi = 3.14159265358979323846;
@@ -3899,7 +3898,6 @@ namespace octave
     // explicit instantiations
     Complex psi (const Complex& z) { return xpsi (z); }
     FloatComplex psi (const FloatComplex& z) { return xpsi (z); }
-
 
     template <typename T>
     static inline void

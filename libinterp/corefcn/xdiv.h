@@ -100,7 +100,6 @@ extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a,
                                     MatrixType &typ,
                                     blas_trans_type transt = blas_no_trans);
 
-
 extern Matrix xdiv (const Matrix& a, const DiagMatrix& b);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const DiagMatrix& b);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const ComplexDiagMatrix& b);

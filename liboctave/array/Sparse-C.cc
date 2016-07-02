@@ -41,7 +41,6 @@ xabs (const Complex& x)
           ? octave::numeric_limits<double>::Inf () : abs (x));
 }
 
-
 template <>
 bool
 sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)

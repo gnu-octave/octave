@@ -184,7 +184,6 @@ private:
 
   mutable std::unique_ptr<Array<std::string> > cellstr_cache;
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

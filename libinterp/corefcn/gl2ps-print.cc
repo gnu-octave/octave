@@ -509,7 +509,6 @@ code_to_symbol (uint32_t code)
   return retval;
 }
 
-
 static std::string
 select_font (caseless_str fn, bool isbold, bool isitalic)
 {

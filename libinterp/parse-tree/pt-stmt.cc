@@ -302,7 +302,6 @@ tree_statement_list::remove_all_breakpoints (const std::string& file)
   return retval;
 }
 
-
 tree_statement_list *
 tree_statement_list::dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const

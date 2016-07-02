@@ -518,7 +518,6 @@ public:
   // FIXME: this is really a corner case, that should better be
   // handled directly in liboctinterp.
 
-
   Array<T> index (const idx_vector& i, bool resize_ok, const T& rfv) const;
   Array<T> index (const idx_vector& i, bool resize_ok) const
   {
@@ -540,7 +539,6 @@ public:
     return index (ia, resize_ok, resize_fill_value ());
   }
   //@}
-
 
   //@{
   //! Indexed assignment (always with resize & fill).

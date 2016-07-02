@@ -75,7 +75,6 @@ DEFBINOP (div, float_complex_matrix, float_matrix)
   return ret;
 }
 
-
 DEFBINOPX (pow, float_complex_matrix, float_matrix)
 {
   error ("can't do A ^ B for A and B both matrices");

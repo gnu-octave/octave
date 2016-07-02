@@ -79,7 +79,6 @@ idx_vector::idx_base_rep::as_array (void)
   return Array<octave_idx_type> ();
 }
 
-
 idx_vector::idx_colon_rep::idx_colon_rep (char c)
 {
   if (c != ':')
@@ -112,7 +111,6 @@ idx_vector::idx_colon_rep::print (std::ostream& os) const
 {
   return os << ":";
 }
-
 
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
                                           octave_idx_type _limit,
@@ -259,7 +257,6 @@ convert_index (octave_int<T> x, bool& conv_error,
   return convert_index (i, conv_error, ext);
 }
 
-
 template <typename T>
 idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
   : data (0)
@@ -310,7 +307,6 @@ idx_vector::idx_scalar_rep::as_array (void)
 {
   return Array<octave_idx_type> (dim_vector (1, 1), data);
 }
-
 
 template <typename T>
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
@@ -632,7 +628,6 @@ idx_vector::idx_vector_rep::as_array (void)
       return retval;
     }
 }
-
 
 idx_vector::idx_mask_rep::idx_mask_rep (bool b)
   : data (0), len (b ? 1 : 0), ext (0), lsti (-1), lste (-1),

@@ -312,7 +312,6 @@ public:
     error ("get: invalid property \"%s\"", name.c_str ());
   }
 
-
   virtual std::string values_as_string (void) const
   {
     error ("values_as_string: invalid property \"%s\"", name.c_str ());
@@ -1772,8 +1771,6 @@ private:
 
   void do_delete_children (bool clear);
 };
-
-
 
 // ---------------------------------------------------------------------
 

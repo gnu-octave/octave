@@ -3141,7 +3141,6 @@ textscan::read_until (delimited_stream& is, const Cell& delimiters,
   return retval;
 }
 
-
 // Read stream until either fmt.width chars have been read, or
 // options.delimiter has been found.  Does *not* rely on fmt being 's'.
 // Used by formats like %6f to limit to 6.
@@ -3250,7 +3249,6 @@ textscan::scan_cstring (delimited_stream& is, const textscan_format_elt& fmt,
         }
     }
 }
-
 
 //  Read a single '%...' conversion and place it in position ROW of OV.
 

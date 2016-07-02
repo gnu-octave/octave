@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 octave_dock_widget::octave_dock_widget (QWidget *p)
   : QDockWidget (p)
 {
-
   _parent = static_cast<QMainWindow *> (p);     // store main window
   _floating = false;
   _predecessor_widget = 0;
@@ -156,7 +155,6 @@ octave_dock_widget::connect_visibility_changed (void)
   emit active_changed (isVisible ());  // emit once for init of window menu
 }
 
-
 // set the widget which previously had focus when tabified
 void
 octave_dock_widget::set_predecessor_widget (octave_dock_widget *prev_widget)
@@ -229,7 +227,6 @@ octave_dock_widget::make_window ()
 
   set_focus_predecessor ();  // set focus previously active widget if tabbed
 }
-
 
 // dock the widget
 void

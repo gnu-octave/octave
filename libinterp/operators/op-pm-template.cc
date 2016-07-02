@@ -76,7 +76,6 @@ DEFBINOP (div, LMATRIX, RMATRIX)
 }
 #endif
 
-
 #define SHORT_NAME CONCAT3(LSHORT, _, RSHORT)
 #define INST_NAME CONCAT3(install_, SHORT_NAME, _ops)
 

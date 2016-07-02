@@ -220,7 +220,6 @@ of @var{A} is treated separately
 %!
 %! assert (s, answer, 30*eps);
 
-
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000

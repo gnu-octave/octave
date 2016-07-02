@@ -48,7 +48,6 @@ make_octave_logo (QWidget *p = 0, int height = 100)
 };
 
 
-
 initial_page::initial_page (welcome_wizard *wizard)
   : QWidget (wizard),
     title (new QLabel (tr ("Welcome to Octave!"), this)),
@@ -101,8 +100,6 @@ initial_page::initial_page (welcome_wizard *wizard)
   connect (next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
   connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
 }
-
-
 
 setup_community_news::setup_community_news (welcome_wizard *wizard)
   : QWidget (wizard),
@@ -193,7 +190,6 @@ setup_community_news::setup_community_news (welcome_wizard *wizard)
   connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
 }
 
-
 final_page::final_page (welcome_wizard *wizard)
   : QWidget (wizard),
     title (new QLabel (tr ("Enjoy!"), this)),
@@ -268,7 +264,6 @@ final_page::final_page (welcome_wizard *wizard)
   connect (finish, SIGNAL (clicked ()), wizard, SLOT (accept ()));
   connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
 }
-
 
 welcome_wizard::welcome_wizard (QWidget *p)
   : QDialog (p), page_ctor_list (), page_list_iterator (),

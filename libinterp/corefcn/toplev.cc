@@ -1241,7 +1241,6 @@ octave_remove_atexit_function (const std::string& fname)
   return found;
 }
 
-
 DEFUN (atexit, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} atexit (@var{fcn})
@@ -1589,7 +1588,6 @@ specified option.
       { "config_opts", octave::build_env::config_opts },
       { 0, 0 },
     };
-
 
   static octave_scalar_map config;
   static octave_scalar_map build_env;

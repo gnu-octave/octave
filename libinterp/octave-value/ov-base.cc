@@ -1012,7 +1012,6 @@ octave_base_value::is_sorted_rows (sortmode) const
   err_wrong_type_arg ("octave_base_value::is_sorted_rows ()", type_name ());
 }
 
-
 const char *
 octave_base_value::get_umap_name (unary_mapper_t umap)
 {
@@ -1333,7 +1332,6 @@ octave_base_value::reset (void) const
   beginning_of_line = true;
   curr_print_indent_level = 0;
 }
-
 
 octave_value
 octave_base_value::fast_elem_extract (octave_idx_type) const

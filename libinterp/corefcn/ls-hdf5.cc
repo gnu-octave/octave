@@ -737,7 +737,6 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
       hs.current_item++;
     }
 
-
   if (hs.current_item < static_cast<int> (num_obj))
     H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
                                     hdf5_read_next_data, &d);

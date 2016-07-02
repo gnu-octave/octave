@@ -64,7 +64,6 @@ workspace_model::storage_class_default_colors (void)
   return colors;
 }
 
-
 QStringList
 workspace_model::storage_class_names (void)
 {
@@ -224,7 +223,6 @@ workspace_model::setData (const QModelIndex& idx, const QVariant& value,
 
   return retval;
 }
-
 
 void
 workspace_model::set_workspace (bool top_level,

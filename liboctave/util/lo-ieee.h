@@ -107,7 +107,6 @@ extern OCTAVE_API int __lo_ieee_float_signbit (float);
 #define lo_ieee_isinf(x) (sizeof (x) == sizeof (float) ? \
                           __lo_ieee_float_isinf (x) : __lo_ieee_isinf (x))
 
-
 #define lo_ieee_is_NA(x) (sizeof (x) == sizeof (float) ? \
                           __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
 #define lo_ieee_is_NaN_or_NA(x) (sizeof (x) == sizeof (float) ? \

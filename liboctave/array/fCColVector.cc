@@ -142,7 +142,6 @@ FloatComplexColumnVector::fill (const FloatComplex& val)
         xelem (i) = val;
     }
 
-
   return *this;
 }
 

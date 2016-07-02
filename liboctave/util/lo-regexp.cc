@@ -442,7 +442,6 @@ typedef struct
   int num;
 } rep_token_t;
 
-
 std::string
 regexp::replace (const std::string& buffer, const std::string& replacement)
 {

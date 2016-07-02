@@ -51,7 +51,6 @@ gripe_nonconformant (const char *op,
                      octave_idx_type op1_nr, octave_idx_type op1_nc,
                      octave_idx_type op2_nr, octave_idx_type op2_nc);
 
-
 OCTAVE_DEPRECATED ("use 'err_nonconformant' instead")
 OCTAVE_NORETURN OCTAVE_API extern void
 gripe_nonconformant (const char *op, const dim_vector& op1_dims,

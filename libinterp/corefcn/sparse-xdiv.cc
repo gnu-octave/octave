@@ -381,7 +381,6 @@ x_el_div (double a, const SparseMatrix& b)
   else
     result = Matrix (nr, nc, -octave::numeric_limits<double>::Inf ());
 
-
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
       {

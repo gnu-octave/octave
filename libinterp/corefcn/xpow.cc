@@ -609,7 +609,6 @@ xpow (const DiagMatrix& a, const Complex& b)
   return xpow (ComplexDiagMatrix (a), b);
 }
 
-
 // Safer pow functions that work elementwise for matrices.
 //
 //       op2 \ op1:   s   m   cs   cm
@@ -970,7 +969,6 @@ elem_xpow (const Complex& a, const Range& r)
     }
   else
     retval = elem_xpow (a, r.matrix_value ());
-
 
   return retval;
 }

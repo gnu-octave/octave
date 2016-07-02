@@ -1383,7 +1383,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     temp = builder.CreateFMul (lhs, temp);
     fn.do_return (builder, complex_new (temp, fzero), false);
 
-
     builder.SetInsertPoint (complex_mul);
     temp = complex_new (builder.CreateFMul (lhs, complex_real (rhs)),
                         builder.CreateFMul (lhs, complex_imag (rhs)));
@@ -1391,7 +1390,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   binary_ops[octave_value::op_mul].add_overload (fn);
   binary_ops[octave_value::op_el_mul].add_overload (fn);
-
 
   fn = mirror_binary (mul_scalar_complex);
   binary_ops[octave_value::op_mul].add_overload (fn);
@@ -1546,7 +1544,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     = create_external (JIT_FN (octave_jit_compute_nelem),
                        index, scalar, scalar, scalar);
 
-
   fn = create_internal ("octave_jit_make_range", range, scalar, scalar, scalar);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
@@ -1610,7 +1607,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *len
       = builder.CreateExtractValue (mat, llvm::ArrayRef<unsigned> (2));
     cond = builder.CreateICmpSGT (int_idx, len);
-
 
     llvm::BasicBlock *bounds_error = fn.new_block ("bounds_error", done);
     llvm::BasicBlock *success = fn.new_block ("success", done);

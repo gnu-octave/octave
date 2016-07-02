@@ -75,7 +75,6 @@ octave_type_conv_body (const octave_value &arg, const std::string& name,
   return retval;
 }
 
-
 #define OCTAVE_TYPE_CONV_BODY3(NAME, MATRIX_RESULT_T, SCALAR_RESULT_T) \
  \
   if (args.length () != 1) \

@@ -82,7 +82,6 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
   return retval;
 }
 
-
 DEFUN (typecast, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{y} =} typecast (@var{x}, "@var{class}")

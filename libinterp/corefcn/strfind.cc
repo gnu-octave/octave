@@ -59,7 +59,6 @@ qs_preprocess (const Array<char>& needle,
     table[ORD(x[i])] = m - i;
 }
 
-
 static Array<octave_idx_type>
 qs_search (const Array<char>& needle,
            const Array<char>& haystack,

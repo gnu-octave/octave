@@ -177,7 +177,6 @@ keyword_almost_match (const char * const *std, int *min_len,
   if (*beg == '\0')
     return status;
 
-
   const char **to_match = new const char * [max_toks + 1];
   const char * const *s1 = std;
   const char **s2 = to_match;
@@ -1112,7 +1111,6 @@ check_dimensions (dim_vector& dim, const char *warnfor)
                      "%s: converting negative dimension to zero", warnfor);
 }
 
-
 void
 get_dimensions (const octave_value& a, const char *warn_for,
                 dim_vector& dim)
@@ -1143,7 +1141,6 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
   check_dimensions (dim, warn_for);
 }
-
 
 void
 get_dimensions (const octave_value& a, const char *warn_for,

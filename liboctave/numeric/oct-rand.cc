@@ -333,7 +333,6 @@ octave_rand::do_gamma_distribution (void)
   F77_FUNC (setcgn, SETCGN) (gamma_dist);
 }
 
-
 double
 octave_rand::do_scalar (double a)
 {

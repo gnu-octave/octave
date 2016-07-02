@@ -153,7 +153,6 @@ lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
             }
         }
 
-
       if (out)
         vi[m] = extrapval;
       else

@@ -2962,7 +2962,6 @@ opengl_renderer::draw_patch (const patch::properties &props)
             }
         }
 
-
       init_marker (props.get_marker (), props.get_markersize (),
                    props.get_linewidth ());
 

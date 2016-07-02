@@ -1467,7 +1467,6 @@ along with Octave; see the file COPYING.  If not, see
  \
   return retval
 
-
 #define SPARSE_CUMPROD(RET_TYPE, ELT_TYPE, FCN) \
  \
   octave_idx_type nr = rows (); \
@@ -1661,7 +1660,6 @@ along with Octave; see the file COPYING.  If not, see
                         SPARSE_REDUCTION_OP_ROW_EXPR (OP), \
                         SPARSE_REDUCTION_OP_COL_EXPR (OP), \
                         INIT_VAL, MT_RESULT)
-
 
 // Don't break from this loop if the test succeeds because
 // we are looping over the rows and not the columns in the inner loop.

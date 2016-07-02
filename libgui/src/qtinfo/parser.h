@@ -115,7 +115,6 @@ private:
   /** Seeks to position pos. */
   void seek (QIODevice *io, int pos);
 
-
   QString                       _info_path;
   QFileInfoList                 _info_files;
   QHash<QString, node_map_item> _node_map;

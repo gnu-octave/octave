@@ -273,7 +273,6 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #endif
 
-
 /* Build a C string local variable CS from the Fortran string parameter S
    declared as F77_CHAR_ARG_DEF(s, len) or F77_CONST_CHAR_ARG_DEF(s, len).
    The string will be cleaned up at the end of the current block.

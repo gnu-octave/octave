@@ -54,9 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 
 extern template class OCTINTERP_API octave_base_scalar<float>;
 
-
 template class octave_base_scalar<FloatComplex>;
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex,
                                      "float complex scalar", "single");
@@ -266,7 +264,6 @@ octave_float_complex::load_ascii (std::istream& is)
 
   return true;
 }
-
 
 bool
 octave_float_complex::save_binary (std::ostream& os, bool& /* save_as_floats */)

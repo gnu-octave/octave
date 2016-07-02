@@ -320,7 +320,6 @@ private:
 
 std::ostream& operator << (std::ostream& os, const jit_function& fn);
 
-
 // Keeps track of information about how to implement operations (+, -, *, ect)
 // and their resulting types.
 class
@@ -671,7 +670,6 @@ private:
 
   jit_type *new_type (const std::string& name, jit_type *parent,
                       llvm::Type *llvm_type, bool skip_paren = false);
-
 
   void add_print (jit_type *ty, void *fptr);
 

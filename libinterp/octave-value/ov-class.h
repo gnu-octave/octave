@@ -205,9 +205,7 @@ public:
   mxArray *as_mxArray (void) const;
 
 private:
-
   octave_map map;
-
 
 public:
   int type_id (void) const { return t_id; }

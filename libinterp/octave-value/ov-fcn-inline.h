@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
-
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-fcn.h"
@@ -90,7 +89,6 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

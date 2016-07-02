@@ -109,7 +109,6 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
   return plus_or_minus (a, b, std::minus<T> (), "operator -=");
 }
 
-
 // Element by element MSparse by scalar ops.
 
 template <typename T, typename OP>
@@ -140,7 +139,6 @@ operator - (const MSparse<T>& a, const T& s)
 {
   return plus_or_minus (a, s, std::minus<T> ());
 }
-
 
 template <typename T, typename OP>
 MSparse<T>
@@ -176,7 +174,6 @@ operator / (const MSparse<T>& a, const T& s)
 {
   return times_or_divide (a, s, std::divides<T> ());
 }
-
 
 // Element by element scalar by MSparse ops.
 
@@ -243,7 +240,6 @@ operator / (const T& s, const MSparse<T>& a)
 {
   return times_or_divides (s, a, std::divides<T> ());
 }
-
 
 // Element by element MSparse by MSparse ops.
 
@@ -590,8 +586,6 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
 
   return r;
 }
-
-
 
 // Unary MSparse ops.
 

@@ -125,7 +125,6 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
 
 template class octave_base_matrix<Cell>;
 
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 
 octave_value_list
@@ -358,7 +357,6 @@ octave_cell::subsasgn (const std::string& type,
             if (didx.numel () == tmp_cell.numel ())
               tmp_cell = tmp_cell.reshape (didx);
 
-
             octave_base_matrix<Cell>::assign (idxf, tmp_cell);
           }
         else if (idxf.all_scalars ()
@@ -431,7 +429,6 @@ octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
   octave_base_matrix<Cell>::assign (idx, rhs);
 }
 
-
 void
 octave_cell::delete_elements (const octave_value_list& idx)
 {
@@ -501,7 +498,6 @@ octave_cell::is_sorted (sortmode mode) const
 
   return retval;
 }
-
 
 Array<octave_idx_type>
 octave_cell::sort_rows_idx (sortmode mode) const

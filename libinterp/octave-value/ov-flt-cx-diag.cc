@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-cx-mat.h"
 #include "ls-utils.h"
 
-template class octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix>;
 
+template class octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_diag_matrix,
                                      "float complex diagonal matrix", "single");
@@ -142,7 +142,6 @@ octave_float_complex_diag_matrix::map (unary_mapper_t umap) const
       return to_dense ().map (umap);
     }
 }
-
 
 bool
 octave_float_complex_diag_matrix::save_binary (std::ostream& os,

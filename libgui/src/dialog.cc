@@ -41,8 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QGridLayout>
 #include <QLabel>
 
-QUIWidgetCreator uiwidget_creator;
 
+QUIWidgetCreator uiwidget_creator;
 
 QUIWidgetCreator::QUIWidgetCreator (void)
   : QObject (), dialog_result (-1), dialog_button (),
@@ -50,14 +50,12 @@ QUIWidgetCreator::QUIWidgetCreator (void)
     path_name (new QString ())
 { }
 
-
 QUIWidgetCreator::~QUIWidgetCreator (void)
 {
   delete string_list;
   delete list_index;
   delete path_name;
 }
-
 
 void
 QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
@@ -78,7 +76,6 @@ QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
   waitcondition.wakeAll ();
 }
 
-
 void
 QUIWidgetCreator::list_select_finished (const QIntList& selected,
                                         int button_pressed)
@@ -95,7 +92,6 @@ QUIWidgetCreator::list_select_finished (const QIntList& selected,
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
 }
-
 
 void
 QUIWidgetCreator::input_finished (const QStringList& input, int button_pressed)
@@ -130,8 +126,6 @@ QUIWidgetCreator::filedialog_finished (const QStringList& files,
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
 }
-
-
 
 MessageDialog::MessageDialog (const QString& message,
                               const QString& title,
@@ -199,7 +193,6 @@ MessageDialog::MessageDialog (const QString& message,
   connect (this, SIGNAL (buttonClicked (QAbstractButton *)),
            &uiwidget_creator, SLOT (dialog_button_clicked (QAbstractButton *)));
 }
-
 
 ListDialog::ListDialog (const QStringList& list, const QString& mode,
                         int wd, int ht, const QList<int>& initial,
@@ -323,7 +316,6 @@ ListDialog::buttonOk_clicked (void)
   done (QDialog::Accepted);
 }
 
-
 void
 ListDialog::buttonCancel_clicked (void)
 {
@@ -336,20 +328,17 @@ ListDialog::buttonCancel_clicked (void)
   done (QDialog::Rejected);
 }
 
-
 void
 ListDialog::reject (void)
 {
   buttonCancel_clicked ();
 }
 
-
 void
 ListDialog::item_double_clicked (const QModelIndex&)
 {
   buttonOk_clicked ();
 }
-
 
 InputDialog::InputDialog (const QStringList& prompt, const QString& title,
                           const QFloatList& nr, const QFloatList& nc,
@@ -420,7 +409,6 @@ InputDialog::InputDialog (const QStringList& prompt, const QString& title,
            SLOT (input_finished (const QStringList&, int)));
 }
 
-
 void
 InputDialog::buttonOk_clicked (void)
 {
@@ -442,7 +430,6 @@ InputDialog::buttonCancel_clicked (void)
   emit finish_input (empty, 0);
   done (QDialog::Rejected);
 }
-
 
 void
 InputDialog::reject (void)

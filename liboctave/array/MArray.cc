@@ -279,7 +279,6 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
-
 template <typename T>
 MArray<T>&
 product_eq (MArray<T>& a, const MArray<T>& b)

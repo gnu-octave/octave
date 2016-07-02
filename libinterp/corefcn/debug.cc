@@ -563,7 +563,6 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
     Vdebug_on_interrupt = 1;
 }
 
-
 // Insert a breakpoint in function fcn at line within file fname,
 // to stop only when condition is true.
 // Record in bp_set that fname contains a breakpoint.
@@ -743,7 +742,6 @@ bp_table::do_add_breakpoint (const std::string& fname,
             retval.insert (std::pair<int,int> (i, ret_one.find (i)->second));
         }
     }
-
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 

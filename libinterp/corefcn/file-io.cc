@@ -431,7 +431,6 @@ Returns the number of lines skipped (end-of-line sequences encountered).
     return ovl ();
 }
 
-
 static octave_stream
 do_stream_open (const std::string& name, const std::string& mode_arg,
                 const std::string& arch, int& fid)
@@ -1484,7 +1483,6 @@ that all columns have equal length
 Data columns are not padded; @code{textscan} returns columns of unequal
 length
 @end table
-
 
 The second output @var{position} provides the location, in characters
 from the beginning of the file or string, where processing stopped.

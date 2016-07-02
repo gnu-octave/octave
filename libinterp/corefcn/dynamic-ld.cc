@@ -213,7 +213,6 @@ octave_dynamic_loader::instance_ok (void)
   if (! instance)
     error ("unable to create dynamic loader object!");
 
-
   return retval;
 }
 

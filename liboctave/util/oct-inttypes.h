@@ -1095,7 +1095,6 @@ operator << (std::ostream& os, const octave_int<uint8_t>& ival)
   return os;
 }
 
-
 template <>
 inline std::istream&
 operator >> (std::istream& is, octave_int<int8_t>& ival)
@@ -1115,7 +1114,6 @@ operator >> (std::istream& is, octave_int<uint8_t>& ival)
   ival = static_cast<uint8_t> (tmp);
   return is;
 }
-
 
 // Bitwise operations
 

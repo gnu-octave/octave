@@ -73,7 +73,6 @@ public:
 
   type_conv_info numeric_conversion_function (void) const;
 
-
 private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

@@ -176,7 +176,6 @@ private:
 #endif
   }
 
-
   FT_Face do_get_font (const std::string& name, const std::string& weight,
                        const std::string& angle, double size)
   {

@@ -210,7 +210,6 @@ public:
            : std::list<std::string> ();
   }
 
-
   static int debug_cd_or_addpath_error (const std::string& file,
                                         const std::string& dir,
                                         bool addpath_option)

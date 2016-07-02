@@ -115,7 +115,6 @@ public:
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
-
   size_t byte_size (void) const { return 3 * sizeof (double); }
 
   octave_value reshape (const dim_vector& new_dims) const
@@ -312,7 +311,6 @@ private:
   // No assignment.
 
   octave_range& operator = (const octave_range&);
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

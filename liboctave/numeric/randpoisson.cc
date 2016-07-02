@@ -108,7 +108,6 @@ flogfak (double k)
     return (logfak[static_cast<int> (k)]);
 }
 
-
 /******************************************************************
  *                                                                *
  * Poisson Distribution - Patchwork Rejection/Inversion           *
@@ -291,7 +290,6 @@ pprsc (double my)
     }
 }
 /* ---- pprsc.c end ------ */
-
 
 /* The remainder of the file is by Paul Kienzle */
 

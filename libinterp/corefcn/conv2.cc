@@ -268,7 +268,6 @@ When the third argument is a matrix, return the convolution of the matrix
 %! B = conv2 (x, y, "valid");
 %! assert (B, A);   # Yes, this test is for *exact* equivalence.
 
-
 %% Test input validation
 %!error conv2 ()
 %!error conv2 (1)

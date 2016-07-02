@@ -567,7 +567,6 @@ octave_qt_link::do_set_default_prompts (std::string& ps1, std::string& ps2,
   ps4 = "";
 }
 
-
 void
 octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
 {
@@ -579,7 +578,6 @@ octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
 {
   emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
 }
-
 
 bool
 octave_qt_link::file_in_path (const std::string& file, const std::string& dir)

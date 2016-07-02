@@ -164,7 +164,6 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
     static const std::string t_name; \
     static const std::string c_name;
 
-
 #define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c) \
   int t::t_id (-1); \
   const std::string t::t_name (n); \

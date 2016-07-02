@@ -527,7 +527,6 @@ OP_RED_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 OP_RED_FCN (mx_inline_any, T, bool, OP_RED_ANYC, false)
 OP_RED_FCN (mx_inline_all, T, bool, OP_RED_ALLC, true)
 
-
 #define OP_RED_FCN2(F, TSRC, TRES, OP, ZERO) \
 template <typename T> \
 inline void \

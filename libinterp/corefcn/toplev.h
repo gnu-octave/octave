@@ -44,7 +44,6 @@ class charMatrix;
 #include "oct-map.h"
 #include "symtab.h"
 
-
 typedef void (*octave_exit_func) (int);
 extern OCTINTERP_API octave_exit_func octave_exit;
 

@@ -215,7 +215,6 @@ err_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
   err_invalid_index (buf.str (), nd, dim, var);
 }
 
-
 // Complain for read access beyond the bounds of an array.
 
 class out_of_range : public index_exception

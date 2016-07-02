@@ -60,7 +60,6 @@ annotation_dialog::init ()
   connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
            this, SLOT (button_clicked (QAbstractButton *)));
 
-
   connect (ui->edit_string, SIGNAL (textChanged (const QString&)),
            this, SLOT (edit_string_changed (const QString&)));
 

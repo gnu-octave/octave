@@ -300,7 +300,6 @@ webinfo::selectAll ()
     }
 }
 
-
 void
 webinfo::pasteClipboard ()
 {

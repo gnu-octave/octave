@@ -812,7 +812,6 @@ make_package (const std::string& nm,
 
 //----------------------------------------------------------------------------
 
-
 int octave_classdef::t_id (-1);
 
 const std::string octave_classdef::t_name ("object");

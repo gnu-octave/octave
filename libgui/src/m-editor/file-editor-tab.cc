@@ -1168,7 +1168,6 @@ file_editor_tab::zoom_normal (const QWidget *ID)
   auto_margin_width ();
 }
 
-
 void
 file_editor_tab::handle_find_dialog_finished (int)
 {
@@ -2443,7 +2442,6 @@ file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line,
     }
 }
 
-
 void
 file_editor_tab::center_current_line (bool always)
 {
@@ -2540,7 +2538,6 @@ file_editor_tab::do_smart_indent ()
     }
 
 }
-
 
 QString
 file_editor_tab::get_function_name ()

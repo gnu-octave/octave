@@ -122,7 +122,6 @@ struct octave_base_int_helper_traits<unsigned char>
   static const bool can_be_larger_than_uchar_max = false;
 };
 
-
 template <typename T>
 octave_base_value *
 octave_base_int_matrix<T>::try_narrowing_conversion (void)

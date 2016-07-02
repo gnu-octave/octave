@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-mat.h"
 #include "ls-utils.h"
 
-template class octave_base_diag<ComplexDiagMatrix, ComplexMatrix>;
 
+template class octave_base_diag<ComplexDiagMatrix, ComplexMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_diag_matrix,
                                      "complex diagonal matrix", "double");

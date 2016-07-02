@@ -403,7 +403,6 @@ extern OCTAVE_API FloatMatrix linspace (const FloatColumnVector& x1,
                                         const FloatColumnVector& x2,
                                         octave_idx_type n);
 
-
 MS_CMP_OP_DECLS (FloatMatrix, float, OCTAVE_API)
 MS_BOOL_OP_DECLS (FloatMatrix, float, OCTAVE_API)
 

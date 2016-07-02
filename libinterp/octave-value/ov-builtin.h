@@ -112,7 +112,6 @@ private:
 
   octave_builtin& operator = (const octave_builtin& ob);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

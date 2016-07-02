@@ -111,7 +111,6 @@ qrp<Matrix>::init (const Matrix& a, type qr_type)
   jpvt -= static_cast<octave_idx_type> (1);
   p = PermMatrix (jpvt, true);
 
-
   form (n, afact, tau, qr_type);
 }
 
@@ -175,7 +174,6 @@ qrp<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
 
   jpvt -= static_cast<octave_idx_type> (1);
   p = PermMatrix (jpvt, true);
-
 
   form (n, afact, tau, qr_type);
 }
@@ -243,7 +241,6 @@ qrp<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
   jpvt -= static_cast<octave_idx_type> (1);
   p = PermMatrix (jpvt, true);
 
-
   form (n, afact, tau, qr_type);
 }
 
@@ -309,7 +306,6 @@ qrp<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
 
   jpvt -= static_cast<octave_idx_type> (1);
   p = PermMatrix (jpvt, true);
-
 
   form (n, afact, tau, qr_type);
 }

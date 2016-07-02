@@ -182,7 +182,6 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   // Visibility
   update (figure::properties::ID_VISIBLE);
 
-
   connect (this, SIGNAL (asyncUpdate (void)),
            this, SLOT (updateContainer (void)));
 

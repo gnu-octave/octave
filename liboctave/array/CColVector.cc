@@ -141,7 +141,6 @@ ComplexColumnVector::fill (const Complex& val)
         xelem (i) = val;
     }
 
-
   return *this;
 }
 
@@ -340,7 +339,6 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
                                    F77_CHAR_ARG_LEN (1)));
         }
     }
-
 
   return retval;
 }

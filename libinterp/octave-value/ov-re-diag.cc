@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ls-utils.h"
 
-template class octave_base_diag<DiagMatrix, Matrix>;
 
+template class octave_base_diag<DiagMatrix, Matrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix",
                                      "double");

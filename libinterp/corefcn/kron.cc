@@ -284,7 +284,6 @@ Since the Kronecker product is associative, this is well-defined.
   return retval;
 }
 
-
 /*
 %!test
 %! x = ones (2);
@@ -309,7 +308,6 @@ Since the Kronecker product is associative, this is well-defined.
 %!assert (kron (p1, p2), kron (p2, p1))
 %!assert (kron (d1, d1), kron (d2, d2))
 %!assert (kron (d1, d2), kron (d2, d1))
-
 
 %!assert (kron (diag ([1, 2]), diag ([3, 4])), diag ([3, 4, 6, 8]))
 

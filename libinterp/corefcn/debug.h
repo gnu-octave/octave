@@ -162,14 +162,12 @@ private:
   // Set of function (.m file) names containing at least one breakpoint.
   std::set<std::string> bp_set;
 
-
   // Set of error and warning message IDs that cause us to stop
   // *if* Vdebug_on_error / Vdebug_on_caught / Vdebug_on_warning is set.
   // Empty means stop on any error / caught error / warning.
   static std::set<std::string> errors_that_stop;
   static std::set<std::string> caught_that_stop;
   static std::set<std::string> warnings_that_stop;
-
 
   static bp_table *instance;
 

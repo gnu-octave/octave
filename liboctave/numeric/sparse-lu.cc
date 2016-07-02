@@ -301,7 +301,6 @@ umfpack_numeric<Complex>
                                   0, Symbolic, Numeric, Control, Info);
 }
 
-
 template <>
 inline octave_idx_type
 umfpack_qsymbolic<Complex>
@@ -314,7 +313,6 @@ umfpack_qsymbolic<Complex>
                                     reinterpret_cast<const double *> (Az),
                                     0, Qinit, Symbolic, Control, Info);
 }
-
 
 template <>
 inline void

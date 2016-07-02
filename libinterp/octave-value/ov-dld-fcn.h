@@ -95,7 +95,6 @@ private:
 
   octave_dld_function& operator = (const octave_dld_function& fn);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

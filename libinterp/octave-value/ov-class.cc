@@ -984,7 +984,6 @@ octave_class::string_vector_value (bool pad) const
   return retval;
 }
 
-
 void
 octave_class::print (std::ostream& os, bool)
 {
@@ -1665,7 +1664,6 @@ octave_class::exemplar_info::exemplar_info (const octave_value& obj)
 
   parent_class_names = obj.parent_class_name_list ();
 }
-
 
 // A map from class names to lists of fields.
 std::map<std::string, octave_class::exemplar_info> octave_class::exemplar_map;

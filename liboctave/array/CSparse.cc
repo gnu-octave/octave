@@ -269,7 +269,6 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
-
   if (dim >= dv.ndims ())
     {
       idx_arg.resize (dim_vector (nr, nc), 0);
@@ -895,7 +894,6 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
                     }
                 }
               while (rpX < j && rpU < j && colXp < cx && colUp < nz);
-
 
               // get A(m,m)
               if (typ == MatrixType::Upper)
@@ -3290,7 +3288,6 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
         {
           OCTAVE_LOCAL_BUFFER (Complex, work, nm);
           retval.resize (nc, b_nc, 0.);
-
 
           for (octave_idx_type j = 0; j < b_nc; j++)
             {

@@ -286,7 +286,6 @@ fout (const octave_idx_type& lsize, const double& alpha,
     return (fabs (p) >= 1 ? 1 : -1);
 }
 
-
 //FIXME: Matlab does not produce lambda as the first output argument.
 //       Compatibility problem?
 DEFUN (qz, args, nargout,

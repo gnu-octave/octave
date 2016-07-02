@@ -657,8 +657,6 @@ ind2sub (const dim_vector& dv, const idx_vector& idx)
         retval(j) = rdata[j];
     }
 
-
-
   return retval;
 }
 

@@ -562,7 +562,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->btn_default_shortcut_set, SIGNAL (clicked ()),
            this, SLOT (default_shortcut_set ()));
 
-
 #if defined (HAVE_QSCINTILLA)
   // editor styles: create lexer, read settings, and create dialog elements
   QsciLexer *lexer;
@@ -964,7 +963,6 @@ settings_dialog::write_terminal_colors (QSettings *settings)
     }
   settings->sync ();
 }
-
 
 // internal slots
 

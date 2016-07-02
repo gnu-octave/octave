@@ -93,7 +93,6 @@ extern OCTINTERP_API octave_value elem_xpow (const ComplexMatrix& a,
 extern OCTINTERP_API octave_value elem_xpow (const ComplexMatrix& a,
                                              const ComplexMatrix& b);
 
-
 extern OCTINTERP_API octave_value elem_xpow (double a, const NDArray& b);
 extern OCTINTERP_API octave_value elem_xpow (double a, const ComplexNDArray& b);
 
@@ -174,7 +173,6 @@ extern OCTINTERP_API octave_value elem_xpow (const FloatComplexMatrix& a,
                                              const FloatComplex& b);
 extern OCTINTERP_API octave_value elem_xpow (const FloatComplexMatrix& a,
                                              const FloatComplexMatrix& b);
-
 
 extern OCTINTERP_API octave_value elem_xpow (float a, const FloatNDArray& b);
 extern OCTINTERP_API octave_value elem_xpow (float a,

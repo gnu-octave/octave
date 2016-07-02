@@ -177,7 +177,6 @@ bool octave_lazy_index::load_ascii (std::istream& is)
   return true;
 }
 
-
 bool octave_lazy_index::save_binary (std::ostream& os, bool& save_as_floats)
 {
   return save_binary_data (os, make_value (), value_save_tag,

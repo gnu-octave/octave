@@ -61,11 +61,9 @@ along with Octave; see the file COPYING.  If not, see
 
 extern template class OCTINTERP_API octave_base_scalar<double>;
 
-
 template class octave_base_matrix<int8NDArray>;
 
 template class octave_base_int_matrix<int8NDArray>;
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int8_matrix,
                                      "int8 matrix", "int8");
@@ -73,7 +71,6 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int8_matrix,
 template class octave_base_scalar<octave_int8>;
 
 template class octave_base_int_scalar<octave_int8>;
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int8_scalar,
                                      "int8 scalar", "int8");

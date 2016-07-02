@@ -106,7 +106,6 @@ PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
   return elem (i, j);
 }
 
-
 PermMatrix
 PermMatrix::transpose (void) const
 {

@@ -112,7 +112,6 @@ public:
 
   std::string profiler_name (void) const { return "prefix " + oper (); }
 
-
 private:
 
   // No copying!

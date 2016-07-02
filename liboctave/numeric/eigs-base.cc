@@ -148,7 +148,6 @@ extern "C"
                            const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL);
 
-
   F77_RET_T
   F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
                            const octave_idx_type&, const octave_idx_type&,
@@ -1393,7 +1392,6 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
             workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
         }
 
-
       if (ido == -1 || ido == 1 || ido == 2)
         {
           double *ip2 = workd + iptr(0) - 1;
@@ -2203,7 +2201,6 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   if (p <= k || p >= n)
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than n");
-
 
   if (! have_sigma)
     {

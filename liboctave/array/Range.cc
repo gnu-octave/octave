@@ -436,7 +436,6 @@ Range operator * (const Range& r, double x)
   return result;
 }
 
-
 // C  See Knuth, Art Of Computer Programming, Vol. 1, Problem 1.2.4-5.
 // C
 // C===Tolerant FLOOR function.

@@ -38,7 +38,6 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dld_function,
                                      "dynamically-linked function",
                                      "dynamically-linked function");
 
-
 octave_dld_function::octave_dld_function
   (octave_builtin::fcn ff, const octave::dynamic_library& shl,
    const std::string& nm, const std::string& ds)

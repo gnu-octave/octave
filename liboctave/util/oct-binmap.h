@@ -101,7 +101,6 @@ public:
 template <typename R, typename X, typename Y, typename F>
 F bsxfun_wrapper<R, X, Y, F>::f;
 
-
 // scalar-Array
 template <typename U, typename T, typename R, typename F>
 Array<U>

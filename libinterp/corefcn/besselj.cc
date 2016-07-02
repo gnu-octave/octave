@@ -847,7 +847,6 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
 
-
 Tests contributed by Robert T. Short.
 Tests are based on the properties and tables in A&S:
  Abramowitz and Stegun, "Handbook of Mathematical Functions",

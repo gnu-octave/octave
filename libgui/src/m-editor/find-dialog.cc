@@ -435,5 +435,4 @@ find_dialog::no_matches_message ()
   msg_box.exec ();
 }
 
-
 #endif

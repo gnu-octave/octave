@@ -365,7 +365,6 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
       for (i = total_len_l ; i < (total_len_l + w_len_l); i++)
         data_l[i] /= data_u[total_len_u];
 
-
       total_len_u += w_len_u;
       total_len_l += w_len_l;
       // Check if there are too many elements to be indexed with

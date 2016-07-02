@@ -1042,7 +1042,6 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
 
   SparseComplexMatrix ret ((econ ? (nc > nrows ? nrows : nc) : nrows), nc, nz);
 
-
   for (octave_idx_type j = 0; j < nc+1; j++)
     ret.xcidx (j) = N->U->p[j];
 
@@ -1078,7 +1077,6 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C (const ComplexMatrix& b) const
 
   if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
-
 
   if (nr == 0 || nc == 0 || b_nc == 0)
     ret = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));

@@ -1589,7 +1589,6 @@ struct sortrows_run_t
   octave_idx_type col, ofs, nel;
 };
 
-
 template <typename T>
 template <typename Comp>
 void
@@ -1603,7 +1602,6 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
 
   if (cols == 0 || rows <= 1)
     return;
-
 
   // This is a breadth-first traversal.
   typedef sortrows_run_t run_t;

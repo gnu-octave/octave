@@ -89,7 +89,6 @@ private:
   bool chk_valid_scalar (const octave_value&,
                          FloatComplex&) const;
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

@@ -51,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class OCTINTERP_API octave_base_sparse<SparseBoolMatrix>;
 
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix,
                                      "sparse bool matrix", "logical");
 
@@ -192,7 +191,6 @@ octave_sparse_bool_matrix::bool_array_value (bool) const
 {
   return boolNDArray (matrix.matrix_value ());
 }
-
 
 SparseMatrix
 octave_sparse_bool_matrix::sparse_matrix_value (bool) const

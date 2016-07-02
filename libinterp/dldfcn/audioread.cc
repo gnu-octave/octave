@@ -39,19 +39,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 #include "pager.h"
 
-
 #if defined (HAVE_SNDFILE)
 #  include <sndfile.h>
 #endif
 
 #if defined (HAVE_SNDFILE)
-
 static void
 safe_close (SNDFILE *file)
 {
   sf_close (file);
 }
-
 #endif
 
 DEFUN_DLD (audioread, args, ,

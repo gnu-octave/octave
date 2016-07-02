@@ -220,7 +220,6 @@ public:
   operator R () { return num; }
 };
 
-
 // OK, we're armed :) Now let's go for the fun
 
 template <typename T, typename R, typename ACC>

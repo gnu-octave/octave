@@ -84,7 +84,6 @@ private:
   // The list of Octave values.
   octave_value_list lst;
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

@@ -254,7 +254,6 @@ F2C_BLAS_CALL(doublecomplex, zdotu_)
 F2C_BLAS_CALL(complex, cdotc_)
 F2C_BLAS_CALL(doublecomplex, zdotc_)
 
-
 /*
  * Function pointer arrays, indexed by the enums
  */

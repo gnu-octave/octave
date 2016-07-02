@@ -496,7 +496,6 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
         menu.addAction (tr ("Open in Text Editor"),
                         this, SLOT (contextmenu_open_in_editor (bool)));
 
-
       menu.addAction (tr ("Copy Selection to Clipboard"),
                       this, SLOT (contextmenu_copy_selection (bool)));
 
@@ -555,7 +554,6 @@ files_dock_widget::contextmenu_open (bool)
         display_directory (file.absoluteFilePath ());
     }
 }
-
 
 void
 files_dock_widget::contextmenu_open_in_editor (bool)

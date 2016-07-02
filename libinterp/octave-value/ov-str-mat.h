@@ -173,7 +173,6 @@ protected:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
@@ -246,7 +245,6 @@ public:
                             bool resize_ok = false)
   { return do_index_op_internal (idx, resize_ok, '\''); }
 
-
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
   { return octave_value (matrix.sort (dim, mode), '\''); }
 
@@ -255,7 +253,6 @@ public:
   { return octave_value (matrix.sort (sidx, dim, mode), '\''); }
 
 private:
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

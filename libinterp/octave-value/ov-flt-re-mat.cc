@@ -69,8 +69,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
-template class octave_base_matrix<FloatNDArray>;
 
+template class octave_base_matrix<FloatNDArray>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
                                      "single");

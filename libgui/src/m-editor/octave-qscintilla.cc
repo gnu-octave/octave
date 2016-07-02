@@ -265,7 +265,6 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 #endif
 }
 
-
 // handle the menu entry for calling help or doc
 void
 octave_qscintilla::contextmenu_doc (bool)

@@ -726,7 +726,6 @@ shortcut_manager::do_import_export (int action)
   return true;
 }
 
-
 // enter_shortcut:
 // class derived from QLineEdit for directly entering key sequences which
 enter_shortcut::enter_shortcut (QWidget *p) : QLineEdit (p)

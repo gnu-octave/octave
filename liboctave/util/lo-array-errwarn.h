@@ -116,7 +116,6 @@ err_nonconformant (const char *op,
                    octave_idx_type op1_nr, octave_idx_type op1_nc,
                    octave_idx_type op2_nr, octave_idx_type op2_nc);
 
-
 OCTAVE_NORETURN OCTAVE_API extern void
 err_nonconformant (const char *op,
                    const dim_vector& op1_dims, const dim_vector& op2_dims);

@@ -1648,7 +1648,6 @@ static inline Cell
 do_num2cell_elem (const Cell& array, octave_idx_type i)
 { return Cell (array(i)); }
 
-
 template <typename NDA>
 static Cell
 do_num2cell (const NDA& array, const Array<int>& dimv)

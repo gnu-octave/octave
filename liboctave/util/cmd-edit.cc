@@ -592,7 +592,6 @@ namespace octave
       }
   }
 
-
   string_vector
   gnu_readline::do_generate_filename_completions (const std::string& text)
   {

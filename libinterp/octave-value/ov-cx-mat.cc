@@ -57,8 +57,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-template class octave_base_matrix<ComplexNDArray>;
 
+template class octave_base_matrix<ComplexNDArray>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix,
                                      "complex matrix", "double");
@@ -441,7 +441,6 @@ octave_complex_matrix::save_binary (std::ostream& os, bool& save_as_floats)
       if (m.all_integers (max_val, min_val))
         st = get_save_type (max_val, min_val);
     }
-
 
   const Complex *mtmp = m.data ();
   write_doubles (os, reinterpret_cast<const double *> (mtmp), st,

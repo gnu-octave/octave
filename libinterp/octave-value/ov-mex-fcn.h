@@ -114,7 +114,6 @@ private:
 
   octave_mex_function& operator = (const octave_mex_function& fn);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

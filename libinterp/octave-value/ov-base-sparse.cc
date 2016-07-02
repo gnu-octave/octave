@@ -225,7 +225,6 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
       throw;
     }
 
-
   // Invalidate matrix type.
   typ.invalidate_type ();
 }
@@ -470,7 +469,6 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
 
   return true;
 }
-
 
 template <typename T>
 octave_value

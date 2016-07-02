@@ -638,7 +638,6 @@ qr<Matrix>::form (octave_idx_type n, Matrix& afact, double *tau, type qr_type)
           r = afact;
         }
 
-
       if (m > 0)
         {
           octave_idx_type k = q.columns ();
@@ -997,7 +996,6 @@ qr<FloatMatrix>::form (octave_idx_type n, FloatMatrix& afact, float *tau, type q
               }
           r = afact;
         }
-
 
       if (m > 0)
         {
@@ -1358,7 +1356,6 @@ qr<ComplexMatrix>::form (octave_idx_type n, ComplexMatrix& afact,
               }
           r = afact;
         }
-
 
       if (m > 0)
         {
@@ -1723,7 +1720,6 @@ qr<FloatComplexMatrix>::form (octave_idx_type n, FloatComplexMatrix& afact, Floa
               }
           r = afact;
         }
-
 
       if (m > 0)
         {

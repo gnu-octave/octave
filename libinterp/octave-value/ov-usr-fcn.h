@@ -167,7 +167,6 @@ private:
 
   octave_user_script& operator = (const octave_user_script& f);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
@@ -521,7 +520,6 @@ private:
   octave_user_function (const octave_user_function& fn);
 
   octave_user_function& operator = (const octave_user_function& fn);
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

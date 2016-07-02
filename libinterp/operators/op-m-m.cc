@@ -146,7 +146,6 @@ DEFNDBINOP_FN (el_not_or,  matrix, matrix, array, array, mx_el_not_or)
 DEFNDBINOP_FN (el_and_not, matrix, matrix, array, array, mx_el_and_not)
 DEFNDBINOP_FN (el_or_not,  matrix, matrix, array, array, mx_el_or_not)
 
-
 DEFNDCATOP_FN (m_m, matrix, matrix, array, array, concat)
 
 DEFNDASSIGNOP_FN (assign, matrix, matrix, array, assign)

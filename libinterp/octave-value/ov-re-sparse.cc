@@ -48,8 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov-bool-sparse.h"
 
-template class OCTINTERP_API octave_base_sparse<SparseMatrix>;
 
+template class OCTINTERP_API octave_base_sparse<SparseMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix",
                                      "double");

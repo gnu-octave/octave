@@ -40,8 +40,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list", "cs-list");
 
 octave_cs_list::octave_cs_list (const Cell& c)
   : octave_base_value (), lst (c)
-{
-}
+{ }
 
 octave_value
 octave_cs_list::subsref (const std::string&,

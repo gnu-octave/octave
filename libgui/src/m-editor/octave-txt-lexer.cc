@@ -41,19 +41,16 @@ octave_txt_lexer::description (int style) const
     return QString ();
 };
 
-
 const char*
 octave_txt_lexer::language () const
 {
   return "Text";
 }
 
-
 const char*
 octave_txt_lexer::lexer () const
 {
   return "text";
 }
-
 
 #endif

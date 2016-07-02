@@ -94,7 +94,6 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-
   F77_RET_T
   F77_FUNC (dgemm, DGEMM) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
@@ -702,7 +701,6 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
   return retval;
 }
 
-
 Matrix
 Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
                   bool force, bool calc_cond) const
@@ -1246,7 +1244,6 @@ Matrix::determinant (MatrixType& mattype,
 
       double anorm = 0;
       if (calc_cond) anorm = xnorm (*this, 1);
-
 
       char job = 'L';
       F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
@@ -2985,7 +2982,6 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
-
   // FIXME: check info?
 
   retval = ua*cx*ub.transpose ();
@@ -3290,7 +3286,6 @@ Matrix linspace (const ColumnVector& x1,
 
   return retval;
 }
-
 
 MS_CMP_OPS (Matrix, double)
 MS_BOOL_OPS (Matrix, double)

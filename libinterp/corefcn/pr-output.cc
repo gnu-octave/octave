@@ -3854,7 +3854,6 @@ set_format_style (int argc, const string_vector& argv)
   format_string = format;
 }
 
-
 DEFUN (format, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} format

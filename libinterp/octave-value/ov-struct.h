@@ -161,7 +161,6 @@ protected:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
@@ -193,7 +192,6 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int);
-
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx,
@@ -278,7 +276,6 @@ protected:
 private:
 
   octave_value to_array (void);
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

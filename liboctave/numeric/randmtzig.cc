@@ -668,7 +668,6 @@ static float fwi[ZIGGURAT_TABLE_SIZE], ffi[ZIGGURAT_TABLE_SIZE];
 static ZIGINT fke[ZIGGURAT_TABLE_SIZE];
 static float fwe[ZIGGURAT_TABLE_SIZE], ffe[ZIGGURAT_TABLE_SIZE];
 
-
 static void
 create_ziggurat_float_tables (void)
 {

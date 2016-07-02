@@ -2,7 +2,6 @@
 
 Copyright (C) 2005-2015 Ludwig Schwardt, Kevin Ruland
 
-
 This file is part of Octave.
 
 Octave is free software; you can redistribute it and/or modify it

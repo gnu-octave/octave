@@ -179,7 +179,6 @@ gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
 #endif
 }
 
-
 // Gripe and exception for read access beyond the bounds of an array.
 
 class out_of_range : public index_exception

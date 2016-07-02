@@ -375,7 +375,6 @@ public:
     return ndims () == 2 && (elem (0) == 0 || elem (1) == 0);
   }
 
-
   bool zero_by_zero (void) const
   {
     return ndims () == 2 && elem (0) == 0 && elem (1) == 0;
@@ -563,7 +562,6 @@ public:
 
     return k;
   }
-
 
   friend bool operator == (const dim_vector& a, const dim_vector& b);
 };

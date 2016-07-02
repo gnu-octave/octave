@@ -444,7 +444,6 @@ public:
   void permute (const T *src, T *dest) const { do_permute (src, dest, top); }
 };
 
-
 template <typename T>
 Array<T>
 Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
@@ -861,7 +860,6 @@ Array<T>::index (const Array<idx_vector>& ia) const
           all_colons = all_colons && ia(i).is_colon ();
         }
 
-
       if (all_colons)
         {
           // A(:,:,...,:) produces a shallow copy.
@@ -1126,7 +1124,6 @@ Array<T>::index (const Array<idx_vector>& ia,
 
   return tmp.index (ia);
 }
-
 
 template <typename T>
 void
@@ -1610,7 +1607,6 @@ Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 
   return *this;
 }
-
 
 template <typename T>
 Array<T>
@@ -2101,7 +2097,6 @@ Array<T>::sort_rows_idx (sortmode mode) const
   return idx;
 }
 
-
 template <typename T>
 sortmode
 Array<T>::is_sorted_rows (sortmode mode) const
@@ -2510,7 +2505,6 @@ Array<T>::find (octave_idx_type, bool) const\
  \
 template <> Array<T>  \
 Array<T>::nth_element (const idx_vector&, int) const { return Array<T> (); }
-
 
 template <typename T>
 Array<T>

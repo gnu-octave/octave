@@ -383,7 +383,6 @@ main_window::display_release_notes (void)
         news = (tr ("The release notes file '%1' cannot be read.")
                 . arg (QString::fromStdString (news_file)));
 
-
       release_notes_window = new QWidget;
 
       QTextBrowser *browser = new QTextBrowser (release_notes_window);
@@ -1136,7 +1135,6 @@ main_window::write_settings (void)
   settings->sync ();
 }
 
-
 // Connecting the signals emitted when the visibility of a widget changes.
 // This has to be done after the window is shown (see octave-gui.cc)
 void
@@ -1197,7 +1195,6 @@ main_window::selectAll (void)
   else
     emit selectAll_signal ();
 }
-
 
 // Connect the signals emitted when the Octave thread wants to create
 // a dialog box of some sort.  Perhaps a better place for this would be
@@ -1432,7 +1429,6 @@ main_window::construct (void)
     }
 }
 
-
 void
 main_window::handle_octave_ready ()
 {
@@ -1479,7 +1475,6 @@ main_window::handle_octave_ready ()
     focus_command_window ();  // make sure that the command window has focus
 
 }
-
 
 void
 main_window::construct_octave_qt_link (void)
@@ -1630,7 +1625,6 @@ main_window::construct_menu_bar (void)
   editor_window->insert_global_actions (shared_actions);
 #endif
 }
-
 
 QAction*
 main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,

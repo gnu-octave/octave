@@ -321,7 +321,6 @@ octave_int_cmp_op::emulate_mop (double x, int64_t y)
   return mop<rop> (y, x);
 }
 
-
 // Define handlers for int64 multiplication
 
 template <>
@@ -448,7 +447,6 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
       else
         return -static_cast<int64_t> (res);
     }
-
 
 overflow:
   return positive ? max_val () : min_val ();
@@ -820,7 +818,6 @@ INSTANTIATE_INTTYPE (uint8_t);
 INSTANTIATE_INTTYPE (uint16_t);
 INSTANTIATE_INTTYPE (uint32_t);
 INSTANTIATE_INTTYPE (uint64_t);
-
 
 /*
 

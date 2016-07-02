@@ -117,7 +117,6 @@ tree_switch_case::~tree_switch_case (void)
   delete lead_comm;
 }
 
-
 bool
 tree_switch_case::label_matches (const octave_value& val)
 {

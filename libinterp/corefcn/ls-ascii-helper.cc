@@ -80,10 +80,8 @@ skip_until_newline (std::istream& is, bool keep_newline)
     }
 }
 
-
-// If stream IS currently points to a newline (a leftover from a
-// previous read) then eat newline(s) until a non-newline character is
-// found.
+// If stream IS currently points to a newline (a leftover from a previous read)
+// then eat newline(s) until a non-newline character is found.
 
 void
 skip_preceeding_newline (std::istream& is)

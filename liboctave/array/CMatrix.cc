@@ -1565,7 +1565,6 @@ ComplexMatrix::determinant (MatrixType& mattype,
       double anorm = 0;
       if (calc_cond) anorm = xnorm (*this, 1);
 
-
       char job = 'L';
       F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                  tmp_data, nr, info
@@ -1790,7 +1789,6 @@ ComplexMatrix::rcond (MatrixType &mattype) const
                     rcon = 0.0;
                 }
             }
-
 
           if (typ == MatrixType::Full)
             {
@@ -2032,7 +2030,6 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-
 
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)

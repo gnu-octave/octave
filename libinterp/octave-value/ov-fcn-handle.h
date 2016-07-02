@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <memory>
 
-
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-fcn.h"
@@ -162,7 +161,6 @@ public:
 private:
 
   bool set_fcn (const std::string &octaveroot, const std::string& fpath);
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

@@ -278,7 +278,6 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 %!assert (strvcat (), "")
 */
 
-
 DEFUN (ischar, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} ischar (@var{x})

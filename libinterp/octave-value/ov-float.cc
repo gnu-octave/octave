@@ -52,8 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-text.h"
 #include "ls-hdf5.h"
 
-template class octave_base_scalar<float>;
 
+template class octave_base_scalar<float>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_scalar, "float scalar",
                                      "single");

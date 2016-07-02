@@ -1324,7 +1324,6 @@ do_which (const std::string& name, std::string& type)
       file = octave::sys::env::make_absolute (file);
     }
 
-
   return file;
 }
 

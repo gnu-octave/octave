@@ -2775,8 +2775,6 @@ private:
         else
           q++;
       }
-
-
   }
 
   void do_clear_variable_pattern (const std::string& pat)

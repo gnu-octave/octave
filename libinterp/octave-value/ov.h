@@ -959,7 +959,6 @@ public:
   complex_row_vector_value (bool frc_str_conv = false,
                             bool frc_vec_conv = false) const;
 
-
   FloatColumnVector float_column_vector_value (bool frc_str_conv = false,
                                                bool frc_vec_conv = false) const;
 
@@ -973,9 +972,6 @@ public:
   FloatComplexRowVector
   float_complex_row_vector_value (bool frc_str_conv = false,
                                   bool frc_vec_conv = false) const;
-
-
-
 
   Array<int> int_vector_value (bool req_int = false,
                                bool frc_str_conv = false,
@@ -1559,7 +1555,6 @@ DEF_VALUE_EXTRACTOR (octave_uint8, uint8_scalar)
 DEF_VALUE_EXTRACTOR (octave_uint16, uint16_scalar)
 DEF_VALUE_EXTRACTOR (octave_uint32, uint32_scalar)
 DEF_VALUE_EXTRACTOR (octave_uint64, uint64_scalar)
-
 
 DEF_VALUE_EXTRACTOR (NDArray, array)
 DEF_VALUE_EXTRACTOR (FloatNDArray, float_array)

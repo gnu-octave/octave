@@ -104,7 +104,6 @@ public:
 
   std::string profiler_name (void) const { return "binary " + oper (); }
 
-
 protected:
 
   // The operands for the expression.

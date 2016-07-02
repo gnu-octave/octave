@@ -572,7 +572,6 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   if (! last_else)
     entry_blocks[entry_blocks.size () - 1] = tail;
 
-
   // each branch in the if statement will have different breaks/continues
   block_list current_breaks = breaks;
   block_list current_continues = continues;
@@ -1314,7 +1313,6 @@ jit_convert_llvm::convert_loop (llvm::Module *module,
         = dynamic_cast<jit_extract_argument *> (*iter))
       argument_vec.push_back (std::make_pair (extract->name (), true));
 
-
   jit_type *any = jit_typeinfo::get_any ();
 
   // argument is an array of octave_base_value*, or octave_base_value**
@@ -1348,7 +1346,6 @@ jit_convert_llvm::convert_loop (llvm::Module *module,
 
   return function;
 }
-
 
 jit_function
 jit_convert_llvm::convert_function (llvm::Module *module,
@@ -2178,7 +2175,6 @@ tree_jit::trip_count (const octave_value& bounds) const
   // unsupported type
   return 0;
 }
-
 
 void
 tree_jit::optimize (llvm::Function *fn)

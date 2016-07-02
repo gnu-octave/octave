@@ -69,7 +69,6 @@ octave_user_code::subfunctions (void) const
 
 // User defined scripts.
 
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
                                      "user-defined script",
                                      "user-defined script");
@@ -167,7 +166,6 @@ octave_user_script::accept (tree_walker& tw)
 }
 
 // User defined functions.
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
                                      "user-defined function",

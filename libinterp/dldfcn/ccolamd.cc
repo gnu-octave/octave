@@ -456,7 +456,6 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
             octave_stdout << "knobs(2): " << User_knobs(1)
                           << ", aggressive absorption: no";
 
-
           octave_stdout << "knobs(3): " << User_knobs(2)
                         << ", statistics and knobs printed\n";
         }

@@ -51,7 +51,6 @@ xisint (double x)
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
 
-
 // Safer pow functions.  Only two make sense for sparse matrices, the
 // others should all promote to full matrices.
 

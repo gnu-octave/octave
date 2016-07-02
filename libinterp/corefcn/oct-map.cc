@@ -657,7 +657,6 @@ permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
     }
 }
 
-
 octave_map
 octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
 {

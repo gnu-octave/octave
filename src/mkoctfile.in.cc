@@ -100,7 +100,6 @@ get_line (FILE *fp)
     return std::string (&buf[0], idx);
 }
 
-
 static std::string
 get_variable (const char *name, const std::string& defval)
 {

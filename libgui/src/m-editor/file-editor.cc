@@ -594,7 +594,6 @@ file_editor::request_mru_open_file (QAction *action)
     }
 }
 
-
 void
 file_editor::check_conflict_save (const QString& saveFileName,
                                   bool remove_on_success)
@@ -872,7 +871,6 @@ file_editor::request_print_file (bool)
   emit fetab_print_file (_tab_widget->currentWidget ());
 }
 
-
 void
 file_editor::request_run_file (bool)
 {
@@ -1044,7 +1042,6 @@ file_editor::request_conv_eol_mac (bool)
                           QsciScintilla::EolMac);
 }
 
-
 void
 file_editor::request_find (bool)
 {
@@ -1186,7 +1183,6 @@ file_editor::request_close_other_files (bool)
         }
     }
 }
-
 
 void
 file_editor::handle_tab_close_request (int index)
@@ -1541,7 +1537,6 @@ file_editor::construct (void)
 #if defined (HAVE_QTABWIDGET_SETMOVABLE)
   _tab_widget->setMovable (true);
 #endif
-
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();

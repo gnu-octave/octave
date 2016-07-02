@@ -394,7 +394,6 @@ public:
   {
     octave_idx_type k = 0;
 
-
     Matrix pos = Matrix (uimenu_childs.numel (), 1);
 
     for (octave_idx_type ii = 0; ii < uimenu_childs.numel (); ii++)
@@ -1119,7 +1118,6 @@ private:
   int pos_x;
   int pos_y;
 
-
   void axis_auto (void)
   {
     octave_value_list args;
@@ -1728,7 +1726,6 @@ private:
                     const double factor = (Fl::event_dy () < 0
                                            ? 1 / (1.0 - wheel_zoom_speed)
                                            : 1.0 - wheel_zoom_speed);
-
 
                     // Get the point we're zooming about.
                     double x1, y1;

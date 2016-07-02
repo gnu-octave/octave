@@ -2079,7 +2079,6 @@ If no function is named then unlock the current function.
   return ovl ();
 }
 
-
 DEFUN (mislocked, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} mislocked ()

@@ -42,7 +42,6 @@ public:
   virtual void execute () { };
 };
 
-
 // ---------------------------------------------------------------------
 //  class octave_cmd_exec
 
@@ -58,7 +57,6 @@ protected:
   QString _cmd;
 };
 
-
 // ---------------------------------------------------------------------
 //  class octave_cmd_eval
 
@@ -73,7 +71,6 @@ protected:
 
   QFileInfo _info;
 };
-
 
 // ---------------------------------------------------------------------
 //  class octave_cmd_debug
@@ -94,7 +91,6 @@ protected:
 
   bool _suppress_dbg_location;
 };
-
 
 /**
  * @class octave_command_queue

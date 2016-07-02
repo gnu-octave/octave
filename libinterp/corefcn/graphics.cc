@@ -210,7 +210,6 @@ viridis_colormap (void)
   return cmap;
 }
 
-
 static double
 default_screendepth (void)
 {
@@ -1158,7 +1157,6 @@ base_property::set (const octave_value& v, bool do_run, bool do_notify_toolkit)
   return false;
 }
 
-
 void
 base_property::run_listeners (listener_mode mode)
 {
@@ -1366,7 +1364,6 @@ double_radio_property::do_set (const octave_value& val)
       if (s.empty () || ! radio_val.contains (s, match))
         error ("invalid value for double_radio property \"%s\"",
                get_name ().c_str ());
-
 
       if (current_type != radio_t || match != current_val)
         {
@@ -3973,7 +3970,6 @@ papersize_from_type (const caseless_str punits, const caseless_str ptype)
 
   return retval;
 }
-
 
 Matrix
 figure::properties::get_auto_paperposition (void)
@@ -8197,7 +8193,6 @@ patch::properties::update_fvc (void)
   facevertexcdata.set (fvc);
 }
 
-
 void
 patch::properties::update_data (void)
 {
@@ -8290,7 +8285,6 @@ patch::properties::update_data (void)
               cd(ii,jj,kk) = fvc(row,kk);
         }
     }
-
 
   octave::unwind_protect frame;
   frame.protect_var (updating_patch_data);
@@ -8662,7 +8656,6 @@ uicontextmenu::~uicontextmenu (void)
         go.set ("uicontextmenu", Matrix ());
     }
 }
-
 
 /*
 ## Test deletion/reset of uicontextmenu

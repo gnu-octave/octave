@@ -457,7 +457,6 @@ extern OCTAVE_API ComplexMatrix linspace (const ComplexColumnVector& x1,
                                           const ComplexColumnVector& x2,
                                           octave_idx_type n);
 
-
 MS_CMP_OP_DECLS (ComplexMatrix, Complex, OCTAVE_API)
 MS_BOOL_OP_DECLS (ComplexMatrix, Complex, OCTAVE_API)
 

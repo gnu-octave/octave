@@ -395,7 +395,6 @@ Undocumented internal function.
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
 
-
       if (have_a_fun)
         nconv = EigsComplexNonSymmetricFunc
           (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,

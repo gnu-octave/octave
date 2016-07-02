@@ -2796,7 +2796,6 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
   return is;
 }
 
-
 /*
  * Tests
  *
@@ -2882,7 +2881,6 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 # These 2 errors are the same as in the full case
 %!error id=Octave:invalid-resize set_slice (sparse (ones ([2 2])), 11, 5)
 %!error id=Octave:invalid-resize set_slice (sparse (ones ([2 2])), 11, 6)
-
 
 #### 2d indexing
 

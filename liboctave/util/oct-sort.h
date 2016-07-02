@@ -232,7 +232,6 @@ private:
 
   MergeState *ms;
 
-
   template <typename Comp>
   void binarysort (T *data, octave_idx_type nel,
                    octave_idx_type start, Comp comp);

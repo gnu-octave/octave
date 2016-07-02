@@ -69,7 +69,6 @@ octave_base_diag<DMT, MT>::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
-
 template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
@@ -93,7 +92,6 @@ octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
     retval = matrix.extract_diag (k);
   return retval;
 }
-
 
 template <typename DMT, typename MT>
 octave_value

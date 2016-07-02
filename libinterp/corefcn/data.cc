@@ -321,7 +321,6 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
 %!error atan2 (1, 2, 3)
 */
 
-
 static octave_value
 do_hypot (const octave_value& x, const octave_value& y)
 {
@@ -3724,7 +3723,6 @@ Return true if @var{x} is a row vector 1xN with non-negative N.
 %!assert (isrow (ones (0, 0)), false)
 %!assert (isrow (ones (1, 1, 0)), false)
 
-
 %!assert (isrow ("t"), true)
 %!assert (isrow ("test"), true)
 %!assert (isrow (["test"; "ing"]), false)
@@ -4415,7 +4413,6 @@ dimension specified.
 When called with more than one scalar argument the first two arguments are
 taken as the number of rows and columns and any further arguments specify
 additional matrix dimensions.
-
 
 The optional argument @var{class} specifies the return type and may be
 either @qcode{"double"} or @qcode{"single"}.
@@ -5181,7 +5178,6 @@ if fewer than two values are requested.
 
   return retval;
 }
-
 
 /*
 %!test

@@ -295,7 +295,6 @@ private:
 
   QHash<QMenu*, QStringList> _hash_menu_text;
 
-
   // Toolbars.
   QStatusBar *status_bar;
 

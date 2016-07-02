@@ -48,7 +48,6 @@ octave_cmd_exec::execute ()
   octave::command_editor::accept_line ();
 }
 
-
 // ---------------------------------------------------------------------
 //  class octave_cmd_eval: running a file
 
@@ -81,7 +80,6 @@ octave_cmd_eval::execute ()
   octave::command_editor::accept_line ();
 }
 
-
 // ---------------------------------------------------------------------
 //  class octave_cmd_debug: executing a debugger command
 
@@ -108,7 +106,6 @@ octave_cmd_debug::execute ()
 
   octave::command_editor::interrupt (true);
 }
-
 
 // ---------------------------------------------------------------------
 //  class octave_command_queue: queue of octave commands

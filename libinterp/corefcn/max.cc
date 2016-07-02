@@ -1034,7 +1034,6 @@ iw = 1  2  2  4  4  6
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-
 %!error cummin ()
 %!error cummin (1, 2, 3)
 */

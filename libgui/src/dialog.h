@@ -163,7 +163,6 @@ private:
 
 extern QUIWidgetCreator uiwidget_creator;
 
-
 class MessageDialog : public QMessageBox
 {
   Q_OBJECT
@@ -184,7 +183,6 @@ private:
     emit buttonClicked (0);
   }
 };
-
 
 class ListDialog : public QDialog
 {
@@ -219,7 +217,6 @@ private:
 
   QAbstractItemModel *model;
 };
-
 
 class InputDialog : public QDialog
 {

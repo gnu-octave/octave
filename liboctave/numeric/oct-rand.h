@@ -163,7 +163,6 @@ public:
     return instance_ok () ? instance->do_nd_array (dims, a) : NDArray ();
   }
 
-
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
   static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)

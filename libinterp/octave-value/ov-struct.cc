@@ -437,7 +437,6 @@ octave_struct::subsasgn (const std::string& type,
                 if (didx.numel () == tmp_cell.numel ())
                   tmp_cell = tmp_cell.reshape (didx);
 
-
                 map.assign (idxf, key, tmp_cell);
 
                 count++;
@@ -650,7 +649,6 @@ scalar (const dim_vector& dims)
 {
   return dims.ndims () == 2 && dims(0) == 1 && dims(1) == 1;
 }
-
 
 bool
 octave_struct::save_ascii (std::ostream& os)
@@ -1608,7 +1606,6 @@ octave_scalar_struct::as_mxArray (void) const
 
   return retval;
 }
-
 
 octave_value
 octave_scalar_struct::to_array (void)

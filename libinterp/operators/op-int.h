@@ -453,7 +453,6 @@ along with Octave; see the file COPYING.  If not, see
     return octave_value (result); \
   }
 
-
 #define OCTAVE_SM_CONV(TS, TM) \
   DEFCONV (TS ## s_ ## TM ## m_conv, TM ## scalar, TM ## matrix) \
   { \
@@ -618,7 +617,6 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2 b) \
     } \
   return octave_value (result); \
 }
-
 
 #define OCTAVE_MS_INT_OPS(TYPE) \
   OCTAVE_MS_POW_OPS (TYPE, TYPE) \
@@ -829,7 +827,6 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2 b) \
       } \
     return octave_value (result); \
   }
-
 
 #define OCTAVE_MM_CONV(T1, T2) \
   DEFCONV (T1 ## m_ ## T2 ## m_conv, T1 ## matrix, T2 ## matrix) \

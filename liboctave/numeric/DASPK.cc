@@ -123,7 +123,6 @@ ddaspk_psol (const octave_idx_type&, const double&, const double *,
   return 0;
 }
 
-
 static octave_idx_type
 ddaspk_j (const double& time, const double *state, const double *deriv,
           double *pd, const double& cj, double *, octave_idx_type *)

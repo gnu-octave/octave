@@ -147,7 +147,6 @@ public:
   }
 };
 
-
 class OCTINTERP_API
 octave_scalar_map
 {

@@ -1280,7 +1280,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       OCTAVE_MAT5_INTEGER_READ (uint64NDArray);
       break;
 
-
     case MAT_FILE_SINGLE_CLASS:
       {
         FloatNDArray re (dims);
@@ -1957,7 +1956,6 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
     {
       int size = 4;
 
-
       // The code below is disabled since get_save_type currently doesn't
       // deal with integer types.  This will need to be activated if
       // get_save_type is changed.
@@ -2183,7 +2181,6 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         fieldcnt++;
 
       ret += 16 + fieldcnt * (max_namelen + 1);
-
 
       for (octave_idx_type j = 0; j < nel; j++)
         {

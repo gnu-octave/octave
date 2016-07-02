@@ -153,7 +153,6 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 extern OCTINTERP_API octave_hdf5_err
 hdf5_add_attr (octave_hdf5_id loc_id, const char *attr_name);
 
-
 extern OCTINTERP_API octave_hdf5_err
 hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
                       const char *attr_name, void *buf);

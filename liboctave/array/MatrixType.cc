@@ -182,7 +182,6 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
             }
         }
 
-
       if (upper)
         typ = MatrixType::Upper;
       else if (lower)
@@ -213,7 +212,6 @@ MatrixType::MatrixType (const ComplexMatrix &a)
 {
   typ = matrix_complex_probe (a);
 }
-
 
 MatrixType::MatrixType (const FloatMatrix &a)
   : typ (MatrixType::Unknown),
@@ -511,7 +509,6 @@ MatrixType::MatrixType (const SparseMatrix &a)
                     }
                 }
             }
-
 
           // next, check symmetry and 2x2 positiveness
 
@@ -853,7 +850,6 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
                       }
                   }
               }
-
 
           if (is_herm)
             {

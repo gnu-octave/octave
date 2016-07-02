@@ -147,7 +147,6 @@ private:
 
   private:
 
-
     // No copying!
     idx_colon_rep (const idx_colon_rep& idx);
     idx_colon_rep& operator = (const idx_colon_rep& idx);
@@ -208,7 +207,6 @@ private:
 
   private:
 
-
     // No copying!
     idx_range_rep (const idx_range_rep& idx);
     idx_range_rep& operator = (const idx_range_rep& idx);
@@ -263,7 +261,6 @@ private:
     Array<octave_idx_type> as_array (void);
 
   private:
-
 
     // No copying!
     idx_scalar_rep (const idx_scalar_rep& idx);
@@ -329,7 +326,6 @@ private:
     Array<octave_idx_type> as_array (void);
 
   private:
-
 
     // No copying!
     idx_vector_rep (const idx_vector_rep& idx);
@@ -402,7 +398,6 @@ private:
     Array<octave_idx_type> as_array (void);
 
   private:
-
 
     // No copying!
     idx_mask_rep (const idx_mask_rep& idx);

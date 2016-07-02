@@ -96,7 +96,6 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-
   F77_RET_T
   F77_FUNC (sgemm, SGEMM) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
@@ -709,7 +708,6 @@ FloatMatrix::tinverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
   return retval;
 }
 
-
 FloatMatrix
 FloatMatrix::finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
                        bool force, bool calc_cond) const
@@ -1257,7 +1255,6 @@ FloatMatrix::determinant (MatrixType& mattype,
 
       float anorm = 0;
       if (calc_cond) anorm = xnorm (*this, 1);
-
 
       char job = 'L';
       F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
@@ -3002,7 +2999,6 @@ Sylvester (const FloatMatrix& a, const FloatMatrix& b, const FloatMatrix& c)
                              b_nr, px, a_nr, scale, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
-
 
   // FIXME: check info?
 

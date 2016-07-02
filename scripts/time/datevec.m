@@ -205,6 +205,7 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
 endfunction
 
 function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
+  original_f = f;   # Store for error messages.
 
   ## Play safe with percent signs.
   f = strrep (f, "%", "%%");
@@ -235,6 +236,30 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
   endif
   f = strrep (f, "MM", "%M");
   f = regexprep (f, '[Ss][Ss]', "%S");
+
+  ## Check for conflicting or repeated fields.
+  ## Only warn, not error, if we may be confused by an original '%'s.
+  if (index (original_f, "%"))
+    err_or_warn = @warning;
+  else
+    err_or_warn = @error;
+  endif
+
+  if (numel (strfind (f, "%Y")) + numel (strfind (f, "%y")) > 1)
+    err_or_warn ("datevec: multiple year specifiers in %s", original_f);
+  elseif (numel (strfind (f, "%m")) + numel (strfind (f, "%b"))
+          + numel (strfind (f, "%B")) > 1)
+    err_or_warn ("datevec: multiple month specifiers in %s", original_f);
+  elseif (numel (strfind (f, "%d")) + numel (strfind (f, "%a"))
+          + numel (strfind (f, "%A")) > 1)
+    err_or_warn ("datevec: multiple day specifiers in %s", original_f);
+  elseif (numel (strfind (f, "%H")) + numel (strfind (f, "%I")) > 1)
+    err_or_warn ("datevec: multiple hour specifiers in %s", original_f);
+  elseif (numel (strfind (f, "%M")) > 1)
+    err_or_warn ("datevec: multiple minute specifiers in %s", original_f);
+  elseif (numel (strfind (f, "%S")) > 1)
+    err_or_warn ("datevec: multiple second specifiers in %s", original_f);
+  endif
 
   rY = rindex (f, "%Y");
   ry = rindex (f, "%y");
@@ -426,3 +451,9 @@ endfunction
 %!error <Invalid call> datevec ()
 %!error <none of the standard formats match> datevec ("foobar")
 %!error <DATE not parsed correctly with given format> datevec ("foobar", "%d")
+%!error <multiple year specifiers> datevec ("1/2/30", "mm/yy/yy")
+%!error <multiple month specifiers> datevec ("1/2/30", "mm/mm/yy")
+%!error <multiple day specifiers> datevec ("1/2/30", "mm/dd/dd")
+%!error <multiple hour specifiers> datevec ("15:38:21.251", "HH:HH:SS")
+%!error <multiple minute specifiers> datevec ("15:38:21.251", "MM:MM:SS")
+%!error <multiple second specifiers> datevec ("15:38:21.251", "HH:SS:SS")

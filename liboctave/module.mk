@@ -110,7 +110,7 @@ liboctavetestsdir := $(octtestsdir)
 
 nobase_liboctavetests_DATA = $(LIBOCTAVE_TST_FILES)
 
-liboctave/liboctave-build-info.cc: liboctave/liboctave-build-info.in.cc | liboctave/$(octave-dirstamp)
+liboctave/liboctave-build-info.cc: liboctave/liboctave-build-info.in.cc HG-ID | liboctave/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \

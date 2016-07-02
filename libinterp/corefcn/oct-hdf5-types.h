@@ -32,7 +32,7 @@ extern bool check_hdf5_types (bool warn = true);
 
 // Available for C and C++.
 
-typedef int octave_hdf5_id;
+typedef int64_t octave_hdf5_id;
 typedef int octave_hdf5_err;
 
 #if defined (__cplusplus)

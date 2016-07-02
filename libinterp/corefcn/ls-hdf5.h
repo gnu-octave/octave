@@ -122,6 +122,10 @@ hdf5_types_compatible (octave_hdf5_id t1, octave_hdf5_id t2);
 extern OCTINTERP_API octave_hdf5_err
 hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv);
 
+extern OCTINTERP_API octave_hdf5_err
+hdf5_h5g_iterate (octave_hdf5_id loc_id, const char* name, int *idx,
+                  void *operator_data);
+
 extern OCTINTERP_API bool
 add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                const std::string& name, const std::string& doc,
@@ -152,6 +156,7 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 
 extern OCTINTERP_API octave_hdf5_err
 hdf5_add_attr (octave_hdf5_id loc_id, const char *attr_name);
+
 
 extern OCTINTERP_API octave_hdf5_err
 hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,

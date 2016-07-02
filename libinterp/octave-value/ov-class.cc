@@ -1589,8 +1589,8 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Gclose (subgroup_hid);
 
   while (current_item < static_cast<int> (num_obj)
-         && (retval2 = H5Giterate (group_hid, name, &current_item,
-                                   hdf5_read_next_data, &dsub)) > 0)
+         && (retval2 = hdf5_h5g_iterate (group_hid, name, &current_item,
+                                         &dsub)) > 0)
     {
       octave_value t2 = dsub.tc;
 

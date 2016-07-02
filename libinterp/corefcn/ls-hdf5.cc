@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -71,6 +72,19 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ls-utils.h"
 #include "ls-hdf5.h"
+
+#if defined (HAVE_HDF5)
+
+static hid_t
+check_hdf5_id_value (octave_hdf5_id id, const char *who)
+{
+  if (id > std::numeric_limits<hid_t>::max ())
+    error ("%s: internal error: ID too large for hid_t", who);
+
+  return static_cast<hid_t> (id);
+}
+
+#endif
 
 hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
   : file_id (-1), current_item (-1)
@@ -327,6 +341,8 @@ hdf5_make_complex_type (octave_hdf5_id num_type)
 #endif
 }
 
+#if defined (HAVE_HDF5)
+
 // This function is designed to be passed to H5Giterate, which calls it
 // on each data item in an HDF5 file.  For the item whose name is NAME in
 // the group GROUP_ID, this function sets dv->tc to an Octave representation
@@ -337,11 +353,9 @@ hdf5_make_complex_type (octave_hdf5_id num_type)
 // -1 on error, and 0 to tell H5Giterate to continue on to the next item
 // (e.g., if NAME was a data type we don't recognize).
 
-octave_hdf5_err
-hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
+static herr_t
+hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 {
-#if defined (HAVE_HDF5)
-
   hdf5_callback_data *d = static_cast<hdf5_callback_data *> (dv);
   hid_t type_id = -1;
   hid_t type_class_id = -1;
@@ -670,9 +684,37 @@ done:
     }
 
   return retval;
+}
+
+#endif
+
+octave_hdf5_err
+hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
+{
+#if defined (HAVE_HDF5)
+
+  hid_t new_id = check_hdf5_id_value (group_id, "hdf5_read_next_data");
+
+  return hdf5_read_next_data_internal (new_id, name, dv);
 
 #else
   err_disabled_feature ("hdf5_read_next_data", "HDF5");
+#endif
+}
+
+octave_hdf5_err
+hdf5_h5g_iterate (octave_hdf5_id loc_id, const char* name, int *idx,
+                  void *operator_data)
+{
+#if defined (HAVE_HDF5)
+
+  hid_t new_id = check_hdf5_id_value (loc_id, "hdf5_h5g_iterate");
+
+  return H5Giterate (new_id, name, idx, hdf5_read_next_data_internal,
+                     operator_data);
+
+#else
+  err_disabled_feature ("hdf5_h5g_iterate", "HDF5");
 #endif
 }
 
@@ -739,7 +781,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
   if (hs.current_item < static_cast<int> (num_obj))
     H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
-                                    hdf5_read_next_data, &d);
+                                    hdf5_read_next_data_internal, &d);
 
   if (H5Giterate_retval > 0)
     {

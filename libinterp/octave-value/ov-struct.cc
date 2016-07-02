@@ -944,8 +944,8 @@ octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   // Why is that happening?
 
   while (current_item < static_cast<int> (num_obj)
-         && (retval2 = H5Giterate (loc_id, name, &current_item,
-                                   hdf5_read_next_data, &dsub)) > 0)
+         && (retval2 = hdf5_h5g_iterate (loc_id, name, &current_item,
+                                         &dsub)) > 0)
     {
       octave_value t2 = dsub.tc;
 
@@ -1549,8 +1549,8 @@ octave_scalar_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   // Why is that happening?
 
   while (current_item < static_cast<int> (num_obj)
-         && (retval2 = H5Giterate (loc_id, name, &current_item,
-                                   hdf5_read_next_data, &dsub)) > 0)
+         && (retval2 = hdf5_h5g_iterate (loc_id, name, &current_item,
+                                         &dsub)) > 0)
     {
       octave_value t2 = dsub.tc;
 

@@ -388,9 +388,6 @@ namespace octave
 
       std::string current_dir = dot_path;
 
-      if (current_dir.empty ())
-        current_dir = do_getcwd ();
-
       size_t pos = current_dir.length () - 1;
 
       if (! octave::sys::file_ops::is_dir_sep (current_dir[pos]))
@@ -415,10 +412,10 @@ namespace octave
                 }
 
               if (s[i+1] == '.'
-                  && (i + 2 == slen || octave::sys::file_ops::is_dir_sep (s[i+2])))
+                  && (i + 2 == slen
+                      || octave::sys::file_ops::is_dir_sep (s[i+2])))
                 {
                   i += 2;
-
                   if (i != slen)
                     i++;
 
@@ -428,12 +425,18 @@ namespace octave
                 }
             }
 
-          size_t tmp = s.find_first_of (octave::sys::file_ops::dir_sep_chars (), i);
+          size_t tmp;
+          tmp = s.find_first_of (octave::sys::file_ops::dir_sep_chars (), i);
 
           if (tmp == std::string::npos)
             {
               current_dir.append (s, i, tmp-i);
               break;
+            }
+          else if (tmp == i)
+            {
+              /* Two separators in a row, skip adding 2nd separator */
+              i++;
             }
           else
             {
@@ -442,6 +445,10 @@ namespace octave
             }
         }
 
+      // Strip any trailing directory separator
+      if (octave::sys::file_ops::is_dir_sep (current_dir.back ()))
+        current_dir.pop_back ();
+      
       return current_dir;
     }
 

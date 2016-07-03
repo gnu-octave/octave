@@ -79,7 +79,7 @@ function name = __default_filtername__ (filterext)
       name = "Octave Source Files";
     case "*.c"
       name = "C Source Files";
-    case {"*.cc" "*.c++" "*.cpp"}
+    case {"*.cc", "*.cp", "*.cpp", "*.CPP", "*.cxx", "*.c++" "*.C"}
       name = "C++ Source Files";
     case "*.oct"
       name = "Octave Compiled Files";

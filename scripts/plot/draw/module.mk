@@ -5,6 +5,7 @@ FCN_FILE_DIRS += \
 scripts_plot_draw_PRIVATE_FCN_FILES = \
   scripts/plot/draw/private/__add_datasource__.m \
   scripts/plot/draw/private/__bar__.m \
+  scripts/plot/draw/private/__calc_isovalue_from_data__.m \
   scripts/plot/draw/private/__contour__.m \
   scripts/plot/draw/private/__errplot__.m \
   scripts/plot/draw/private/__ezplot__.m \
@@ -16,7 +17,8 @@ scripts_plot_draw_PRIVATE_FCN_FILES = \
   scripts/plot/draw/private/__plt__.m \
   scripts/plot/draw/private/__quiver__.m \
   scripts/plot/draw/private/__scatter__.m \
-  scripts/plot/draw/private/__stem__.m
+  scripts/plot/draw/private/__stem__.m \
+  scripts/plot/draw/private/__unite_shared_vertices__.m
 
 scripts_plot_draw_FCN_FILES = \
   scripts/plot/draw/area.m \

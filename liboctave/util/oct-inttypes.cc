@@ -564,7 +564,7 @@ static void
 dblesplit (double x, bool& sign, uint64_t& mtis, int& exp)
 {
   sign = x < 0; x = fabs (x);
-  x = std::frexp (x, &exp);
+  x = octave::math::frexp (x, &exp);
   exp -= 52;
   mtis = static_cast<uint64_t> (ldexp (x, 52));
 }

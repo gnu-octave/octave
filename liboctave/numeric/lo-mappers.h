@@ -178,6 +178,9 @@ namespace octave
       return std::complex<T> (roundb (real (x)), roundb (imag (x)));
     }
 
+    extern OCTAVE_API double frexp (double x, int *expptr);
+    extern OCTAVE_API float frexp (float x, int *expptr);
+
     inline bool isnan (bool) { return false; }
     inline bool isnan (char) { return false; }
     extern OCTAVE_API bool isnan (double x);

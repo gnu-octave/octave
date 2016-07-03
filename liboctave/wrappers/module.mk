@@ -10,6 +10,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/getopt-wrapper.h \
   liboctave/wrappers/glob-wrappers.h \
   liboctave/wrappers/hash-wrappers.h \
+  liboctave/wrappers/math-wrappers.h \
   liboctave/wrappers/mkostemp-wrapper.h \
   liboctave/wrappers/nanosleep-wrapper.h \
   liboctave/wrappers/nproc-wrapper.h \
@@ -43,6 +44,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/getopt-wrapper.c \
   liboctave/wrappers/glob-wrappers.c \
   liboctave/wrappers/hash-wrappers.c \
+  liboctave/wrappers/math-wrappers.c \
   liboctave/wrappers/mkostemp-wrapper.c \
   liboctave/wrappers/nanosleep-wrapper.c \
   liboctave/wrappers/nproc-wrapper.c \

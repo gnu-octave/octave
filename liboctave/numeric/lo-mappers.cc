@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "lo-specfun.h"
 #include "lo-utils.h"
+#include "math-wrappers.h"
 #include "oct-cmplx.h"
 
 #include "f77-fcn.h"
@@ -257,13 +258,13 @@ namespace octave
     double
     log2 (double x, int& exp)
     {
-      return std::frexp (x, &exp);
+      return frexp (x, &exp);
     }
 
     float
     log2 (float x, int& exp)
     {
-      return std::frexp (x, &exp);
+      return frexp (x, &exp);
     }
 
     Complex
@@ -331,6 +332,16 @@ namespace octave
 
     double round (double x) { return std::round (x); }
     float round (float x) { return std::round (x); }
+
+    double frexp (double x, int *expptr)
+    {
+      return octave_frexp_wrapper (x, expptr);
+    }
+
+    float frexp (float x, int *expptr)
+    {
+      return octave_frexpf_wrapper (x, expptr);
+    }
 
     bool
     isnan (double x)

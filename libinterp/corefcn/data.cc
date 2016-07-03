@@ -4538,7 +4538,7 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
               else
                 {
                   int expon;
-                  std::frexp (val, &expon);
+                  octave::math::frexp (val, &expon);
                   epsval(i) = std::pow (2.0f,
                                         static_cast<float> (expon - 24));
                 }
@@ -4562,7 +4562,7 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
               else
                 {
                   int expon;
-                  std::frexp (val, &expon);
+                  octave::math::frexp (val, &expon);
                   epsval(i) = std::pow (2.0,
                                         static_cast<double> (expon - 53));
                 }

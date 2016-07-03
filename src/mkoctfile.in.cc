@@ -318,8 +318,12 @@ static std::string help_msg =
 "\n"
 "                            .c    C source\n"
 "                            .cc   C++ source\n"
-"                            .C    C++ source\n"
+"                            .cp   C++ source\n"
 "                            .cpp  C++ source\n"
+"                            .CPP  C++ source\n"
+"                            .cxx  C++ source\n"
+"                            .c++  C++ source\n"
+"                            .C    C++ source\n"
 "                            .f    Fortran source (fixed form)\n"
 "                            .F    Fortran source (fixed form)\n"
 "                            .f90  Fortran source (free form)\n"
@@ -434,8 +438,10 @@ main (int argc, char **argv)
           file = arg;
           cfiles.push_back (file);
         }
-      else if (ends_with (arg, ".cc") || ends_with (arg, ".C")
-               || ends_with (arg, ".cpp"))
+      else if (ends_with (arg, ".cc") || ends_with (arg, ".cp")
+               || ends_with (arg, ".cpp") || ends_with (arg, ".CPP")
+               || ends_with (arg, ".cxx") || ends_with (arg, ".c++")
+               || ends_with (arg, ".C"))
         {
           file = arg;
           ccfiles.push_back (file);
@@ -639,7 +645,7 @@ main (int argc, char **argv)
           std::string f = *it, dfile = basename (f, true) + ".d", line;
 
           octave_unlink_wrapper (dfile.c_str ());
-          std::string cmd = vars["CC"] + " "
+          std::string cmd = vars["CXX"] + " "
                             + vars["DEPEND_FLAGS"] + " "
                             + vars["CPPFLAGS"] + " "
                             + vars["ALL_CXXFLAGS"] + " "

@@ -59,21 +59,23 @@ function run (script)
   endif
 
   if (! isempty (d))
-    if (exist (d, "dir"))
-      startdir = pwd ();
-      d = make_absolute_filename (d);
-      unwind_protect
-        cd (d);
-        evalin ("caller", sprintf ("source ('%s%s');", f, ext),
-                "rethrow (lasterror ())");
-      unwind_protect_cleanup
-        if (strcmp (d, pwd ()))
-          cd (startdir);
-        endif
-      end_unwind_protect
-    else
+    if (! exist (d, "dir"))
       error ("run: the path %s doesn't exist", d);
     endif
+
+    startdir = pwd ();
+    scriptdir = "";
+    unwind_protect
+      cd (d);
+      scriptdir = pwd ();
+      evalin ("caller", sprintf ("source ('%s%s');", f, ext),
+              "rethrow (lasterror ())");
+    unwind_protect_cleanup
+      if (strcmp (scriptdir, pwd ()))
+        cd (startdir);
+      endif
+    end_unwind_protect
+
   else
     if (! isempty (ext))
       script = which (script);

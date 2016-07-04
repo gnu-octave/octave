@@ -386,14 +386,15 @@ namespace octave
       if (dot_path.empty () || s.empty () || do_absolute_pathname (s))
         return s;
 
+      // Optimization: every time Octave returns to the prompt it calls
+      // make_absolute_filename with '.' as argument.
+      if (s == ".")
+        return dot_path;
+
       std::string current_dir = dot_path;
 
-      size_t pos = current_dir.length () - 1;
-
-      if (! octave::sys::file_ops::is_dir_sep (current_dir[pos]))
+      if (! octave::sys::file_ops::is_dir_sep (current_dir.back ()))
         current_dir.append (octave::sys::file_ops::dir_sep_str ());
-
-      // FIXME: this is probably not correct for all systems.
 
       size_t i = 0;
       size_t slen = s.length ();
@@ -403,7 +404,7 @@ namespace octave
           if (s[i] == '.')
             {
               if (i + 1 == slen)
-                return current_dir;
+                break;
 
               if (octave::sys::file_ops::is_dir_sep (s[i+1]))
                 {
@@ -425,23 +426,23 @@ namespace octave
                 }
             }
 
-          size_t tmp;
-          tmp = s.find_first_of (octave::sys::file_ops::dir_sep_chars (), i);
+          size_t sep_pos;
+          sep_pos = s.find_first_of (octave::sys::file_ops::dir_sep_chars (), i);
 
-          if (tmp == std::string::npos)
+          if (sep_pos == std::string::npos)
             {
-              current_dir.append (s, i, tmp-i);
+              current_dir.append (s, i, sep_pos-i);
               break;
             }
-          else if (tmp == i)
+          else if (sep_pos == i)
             {
               /* Two separators in a row, skip adding 2nd separator */
               i++;
             }
           else
             {
-              current_dir.append (s, i, tmp-i+1);
-              i = tmp + 1;
+              current_dir.append (s, i, sep_pos-i+1);
+              i = sep_pos + 1;
             }
         }
 

@@ -152,6 +152,8 @@ its elements may have, consult @ref{Status of Variables}.
 
 @DOCSTRING(repelems)
 
+@DOCSTRING(repelem)
+
 The functions @code{linspace} and @code{logspace} make it very easy to
 create vectors with evenly or logarithmically spaced elements.
 @xref{Ranges}.

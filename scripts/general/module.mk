@@ -69,6 +69,7 @@ FCN_FILE_DIRS += \
   %reldir%/rad2deg.m \
   %reldir%/randi.m \
   %reldir%/rat.m \
+  %reldir%/repelem.m \
   %reldir%/repmat.m \
   %reldir%/rot90.m \
   %reldir%/rotdim.m \

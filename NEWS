@@ -42,6 +42,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       gsvd
       hgtransform
       humps
+      repelem
 
  ** Deprecated functions.
 

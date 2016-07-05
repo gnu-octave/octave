@@ -1151,7 +1151,7 @@ AC_ARG_WITH([magick],
     [select library to use for image I/O (options: GraphicsMagick(default) or ImageMagick)])],
   [if test x"$withval" = xno; then
      check_magick=no
-     warn_magick_disabled="--without-magick specified.  The imread function for reading images will not be fully functional."
+     warn_magick_disabled="--without-magick specified.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
      OCTAVE_CONFIGURE_WARNING([warn_magick_disabled])
    else
      magick="$withval"
@@ -1172,7 +1172,7 @@ if test $check_magick = yes; then
     MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
     MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
 
-    warn_magick="$magick++ library fails tests.  The imread function for reading image files will not be fully functional."
+    warn_magick="$magick++ library fails tests.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
 
     save_CPPFLAGS="$CPPFLAGS"
     save_LIBS="$LIBS"
@@ -1201,8 +1201,10 @@ if test $check_magick = yes; then
 
     AC_CHECK_FUNCS([setlocale], [],
       [use_magick=no
-       warn_magick="$magick++ requires setlocale function.  The imread function for reading image files will not be fully functional."])
-  ])
+       warn_magick="$magick++ requires setlocale function.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])
+  ],
+  [use_magick=no
+   warn_magick="$magick++ library not found.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])
 fi
 
 if test $use_magick = yes; then

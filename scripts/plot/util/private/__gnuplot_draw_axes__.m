@@ -358,13 +358,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "set border back;\n");
   endif
 
-  fprintf (plot_stream, "set grid linewidth %f, linewidth %f;\n",
-           axis_obj.linewidth, axis_obj.linewidth);
-
-  if (! have_grid)
-    fputs (plot_stream, "unset grid;\n");
-  endif
-
   xlogscale = strcmpi (axis_obj.xscale, "log");
   ylogscale = strcmpi (axis_obj.yscale, "log");
   zlogscale = strcmpi (axis_obj.zscale, "log");
@@ -1476,6 +1469,23 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
   endif
 
+  grid_idx = axis_idx;
+  if (! have_grid)
+    fputs (plot_stream, "unset grid;\n");
+  else
+    grid_idx += 1;
+    grid_obj.linestyle = axis_obj.gridlinestyle;
+    grid_obj.linewidth = axis_obj.linewidth;
+    [style, sidx] = do_linestyle_command (grid_obj, axis_obj.gridcolor,
+                                          grid_idx, plot_stream);
+    if (__gnuplot_has_feature__ ("linetype"))
+      scmd = "linetype";
+    else
+      scmd = "linestyle";
+    endif
+    fprintf (plot_stream, "set grid %s %d, %s %d;\n", scmd, sidx, scmd, sidx);
+  endif
+
   if (! isempty (hlgnd) && ! isempty (hlgnd.children)
       && any (strcmpi (get (hlgnd.children, "visible"), "on")))
     if (strcmpi (hlgnd.box, "on"))
@@ -1901,7 +1911,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
         endif
       endif
     endif
-    if (isfield (obj, "markeredgecolor")
+    if (! isempty(pt) && isfield (obj, "markeredgecolor")
         && ! strcmp (obj.markeredgecolor, "none"))
       if (facesame && ! isempty (pt)
           && (strcmp (obj.markeredgecolor, "auto")

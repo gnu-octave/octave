@@ -667,6 +667,12 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     ;;
   esac
 
+  PKG_CHECK_EXISTS([$1], [
+    m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $1) $m4_toupper([$1])_CPPFLAGS"
+    m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L $1) $m4_toupper([$1])_LDFLAGS"
+    m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l $1) $m4_toupper([$1])_LIBS"
+  ])
+
   if test -n "$m4_toupper([$1])_LIBS"; then
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     ac_octave_save_LDFLAGS="$LDFLAGS"

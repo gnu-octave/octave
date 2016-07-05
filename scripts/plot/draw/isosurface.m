@@ -503,5 +503,6 @@ endfunction
 %!error <parameter 'test_string' not supported> fvc = isosurface (val, iso, "test_string");
 
 ## test for __calc_isovalue_from_data__
-%!test
+## FIXME: private function cannot be tested, unless bug #38776 is resolved.
+%!xtest
 %! assert (__calc_isovalue_from_data__ (1:5), 3.02);

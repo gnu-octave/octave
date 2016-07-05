@@ -139,8 +139,11 @@ CLEANFILES += $(test_CLEANFILES)
 DISTCLEANFILES += $(test_DISTCLEANFILES)
 MAINTAINERCLEANFILES += $(test_MAINTAINERCLEANFILES)
 
+clean-local: test-clean
+
 test-clean:
 	rm -f $(test_CLEANFILES)
+	rm -rf $(GENERATED_BC_OVERLOADS_DIRS)
 
 test-distclean: test-clean
 	rm -f $(test_DISTCLEANFILES)

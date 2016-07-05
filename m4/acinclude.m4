@@ -649,6 +649,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
       [AS_HELP_STRING([--without-$1], [$7])])],
     with_$1=$withval, with_$1=yes)
 
+  ac_octave_$1_pkg_check=no
   m4_toupper([$1])_LIBS=
   warn_$1="$3"
   case $with_$1 in
@@ -657,6 +658,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
       m4_toupper([$1])_LIBS=
     ;;
     yes | "")
+      ac_octave_$1_pkg_check=yes
       m4_toupper([$1])_LIBS="-l$1"
     ;;
     -* | */* | *.a | *.so | *.so.* | *.o)
@@ -667,11 +669,17 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     ;;
   esac
 
-  PKG_CHECK_EXISTS([$1], [
-    m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $1) $m4_toupper([$1])_CPPFLAGS"
-    m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L $1) $m4_toupper([$1])_LDFLAGS"
-    m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l $1) $m4_toupper([$1])_LIBS"
-  ])
+  if test $ac_octave_$1_pkg_check = yes; then
+    PKG_CHECK_EXISTS([$1], [
+      if test -z "$m4_toupper([$1])_CPPFLAGS"; then
+        m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $1)"
+      fi
+      if test -z "$m4_toupper([$1])_LDFLAGS"; then
+        m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L $1)"
+      fi
+      m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l $1)"
+    ])
+  fi
 
   if test -n "$m4_toupper([$1])_LIBS"; then
     ac_octave_save_CPPFLAGS="$CPPFLAGS"

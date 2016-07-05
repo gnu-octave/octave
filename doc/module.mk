@@ -69,3 +69,4 @@ doc-distclean: doc-clean
 
 doc-maintainer-clean: doc-distclean
 	rm -f $(doc_MAINTAINERCLEANFILES)
+	rm -rf $(DVIS) $(HTMLS) $(PDFS) $(PSS)

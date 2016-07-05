@@ -429,6 +429,12 @@ distclean-local:
 
 maintainer-clean-local: doc-maintainer-clean
 
+## The 'clean-aminfo' target is defined by Automake >= 1.11.  We want to
+## distribute all Texinfo docs with the source distribution and not delete
+## them on 'clean', so we override this target to do nothing by default.
+
+clean-aminfo:
+
 define move_if_change_rule
   if [ -s $(1) ]; then \
     ${SHELL} ${top_srcdir}/build-aux/move-if-change $(1) $(2); \

@@ -96,12 +96,14 @@ function set_graphics_toolkit ()
 endfunction
 
 function set_print_size ()
-  image_size = [5.0, 3.5]; # in inches, 16:9 format
+  image_size = [8.0, 6.0]; # in inches, 4:3 format
   border = 0;              # For postscript use 50/72
   set (0, "defaultfigurepapertype", "<custom>");
   set (0, "defaultfigurepaperorientation", "landscape");
   set (0, "defaultfigurepapersize", image_size + 2*border);
   set (0, "defaultfigurepaperposition", [border, border, image_size]);
+  ## FIXME: Required until listener for legend exists (bug #39697)
+  set (0, "defaultfigureposition", [ 72*[border, border, image_size] ]);
 endfunction
 
 ## Use this function before plotting commands and after every call to print

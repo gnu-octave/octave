@@ -2159,8 +2159,8 @@ tree_jit::enabled (void)
   // Ideally, we should only disable JIT if there is a breakpoint in the code
   // we are about to run. However, we can't figure this out in O(1) time, so
   // we conservatively check for the existence of any breakpoints.
-  return Vjit_enable && ! bp_table::have_breakpoints ()
-         && ! Vdebug_on_interrupt && ! Vdebug_on_error;
+  return (Vjit_enable && ! bp_table::have_breakpoints ()
+          && ! octave::Vdebug_on_interrupt && ! Vdebug_on_error);
 }
 
 size_t

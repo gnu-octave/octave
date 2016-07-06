@@ -523,13 +523,13 @@ octave_kbhit (bool wait)
   raw_mode (true, wait);
 
   // Get current handler.
-  octave_interrupt_handler saved_interrupt_handler
-    = octave_ignore_interrupts ();
+  octave::interrupt_handler saved_interrupt_handler
+    = octave::ignore_interrupts ();
 
   // Restore it, disabling system call restarts (if possible) so the
   // read can be interrupted.
 
-  octave_set_interrupt_handler (saved_interrupt_handler, false);
+  octave::set_interrupt_handler (saved_interrupt_handler, false);
 
   int c = std::cin.get ();
 
@@ -537,7 +537,7 @@ octave_kbhit (bool wait)
     std::cin.clear ();
 
   // Restore it, enabling system call restarts (if possible).
-  octave_set_interrupt_handler (saved_interrupt_handler, true);
+  octave::set_interrupt_handler (saved_interrupt_handler, true);
 
   raw_mode (false, true);
 #endif

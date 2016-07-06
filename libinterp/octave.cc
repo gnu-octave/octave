@@ -424,13 +424,13 @@ execute_eval_option_code (const std::string& code)
 
   octave_save_signal_mask ();
 
-  can_interrupt = true;
+  octave::can_interrupt = true;
 
-  octave_signal_hook = octave_signal_handler;
+  octave_signal_hook = octave::signal_handler;
   octave_interrupt_hook = 0;
   octave_bad_alloc_hook = 0;
 
-  octave_catch_interrupts ();
+  octave::catch_interrupts ();
 
   octave_initialized = true;
 
@@ -469,13 +469,13 @@ execute_command_line_file (const std::string& fname)
 
   octave_save_signal_mask ();
 
-  can_interrupt = true;
+  octave::can_interrupt = true;
 
-  octave_signal_hook = octave_signal_handler;
+  octave_signal_hook = octave::signal_handler;
   octave_interrupt_hook = 0;
   octave_bad_alloc_hook = 0;
 
-  octave_catch_interrupts ();
+  octave::catch_interrupts ();
 
   octave_initialized = true;
 
@@ -816,7 +816,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   initialize_error_handlers ();
 
   if (! embedded)
-    install_signal_handlers ();
+    octave::install_signal_handlers ();
   else
     quit_allowed = false;
 

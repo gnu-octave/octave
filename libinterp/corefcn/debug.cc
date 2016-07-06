@@ -375,7 +375,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                   }
                 else if (condition == "interrupt")
                   {
-                    Vdebug_on_interrupt = on_off;
+                    octave::Vdebug_on_interrupt = on_off;
                   }
                 else if (condition == "naninf")
 #if defined (DBSTOP_NANINF)
@@ -416,7 +416,10 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                         id_list->clear ();
                         *stop_flag = on_off;
                         if (stop_flag == &Vdebug_on_error)
-                          Vdebug_on_interrupt = on_off; // Matlabs stops on both
+                          {
+                            // Matlab stops on both.
+                            octave::Vdebug_on_interrupt = on_off;
+                          }
                       }
                   }
 
@@ -469,10 +472,16 @@ bp_table::instance_ok (void)
 void
 bp_table::dbclear_all_signals (void)
 {
-  Vdebug_on_error     = false;  bp_table::errors_that_stop.clear ();
-  Vdebug_on_caught    = false;  bp_table::caught_that_stop.clear ();
-  Vdebug_on_warning   = false;  bp_table::warnings_that_stop.clear ();
-  Vdebug_on_interrupt = false;
+  Vdebug_on_error = false;
+  bp_table::errors_that_stop.clear ();
+
+  Vdebug_on_caught = false;
+  bp_table::caught_that_stop.clear ();
+
+  Vdebug_on_warning = false;
+  bp_table::warnings_that_stop.clear ();
+
+  octave::Vdebug_on_interrupt = false;
 }
 
 // Process the "warn", "errs", "caught" and "intr" fields for a call of
@@ -560,7 +569,7 @@ bp_table::dbstop_process_map_args (const octave_map& mv)
 
   // process interrupt
   if (mv.isfield ("intr"))
-    Vdebug_on_interrupt = 1;
+    octave::Vdebug_on_interrupt = 1;
 }
 
 // Insert a breakpoint in function fcn at line within file fname,
@@ -1322,7 +1331,7 @@ bp_table::stop_on_err_warn_status (bool to_screen)
     }
 
   // print dbstop if interrupt information
-  if (Vdebug_on_interrupt)
+  if (octave::Vdebug_on_interrupt)
     {
       if (to_screen)
         octave_stdout << "stop if interrupt\n";

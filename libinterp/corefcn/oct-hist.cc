@@ -455,12 +455,12 @@ do_edit_history (const octave_value_list& args)
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?
 
-  volatile octave_interrupt_handler old_interrupt_handler
-    = octave_ignore_interrupts ();
+  volatile octave::interrupt_handler old_interrupt_handler
+    = octave::ignore_interrupts ();
 
   int status = system (cmd.c_str ());
 
-  octave_set_interrupt_handler (old_interrupt_handler);
+  octave::set_interrupt_handler (old_interrupt_handler);
 
   // Check if text edition was successfull.  Abort the operation
   // in case of failure.

@@ -659,13 +659,13 @@ octave_call_stack::do_goto_base_frame (void)
 void
 recover_from_exception (void)
 {
-  can_interrupt = true;
+  octave::can_interrupt = true;
   octave_interrupt_immediately = 0;
   octave_interrupt_state = 0;
   octave_signal_caught = 0;
   octave_exception_state = octave_no_exception;
   octave_restore_signal_mask ();
-  octave_catch_interrupts ();
+  octave::catch_interrupts ();
 }
 
 int
@@ -673,13 +673,13 @@ main_loop (void)
 {
   octave_save_signal_mask ();
 
-  can_interrupt = true;
+  octave::can_interrupt = true;
 
-  octave_signal_hook = octave_signal_handler;
+  octave_signal_hook = octave::signal_handler;
   octave_interrupt_hook = 0;
   octave_bad_alloc_hook = 0;
 
-  octave_catch_interrupts ();
+  octave::catch_interrupts ();
 
   octave_initialized = true;
 

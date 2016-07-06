@@ -256,7 +256,7 @@ octave_base_reader::octave_gets (bool& eof)
 
   std::string prompt = octave::command_editor::decode_prompt_string (ps);
 
-  pipe_handler_error_count = 0;
+  octave::pipe_handler_error_count = 0;
 
   flush_octave_stdout ();
 

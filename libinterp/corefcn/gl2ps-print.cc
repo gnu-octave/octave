@@ -281,7 +281,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
               nwrite = std::fwrite (str, 1, nread, fp);
               if (nwrite != nread)
                 {
-                  octave_signal_handler ();   // Clear SIGPIPE signal
+                  octave::signal_handler ();   // Clear SIGPIPE signal
                   error ("gl2ps_renderer::draw: internal pipe error");
                 }
             }

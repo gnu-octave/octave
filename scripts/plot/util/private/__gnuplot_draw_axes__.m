@@ -283,31 +283,36 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
   endif
 
-  have_grid = false;
+  have_major_grid = false;
+  have_minor_grid = false;
+  visible_gls = ! strcmp (axis_obj.gridlinestyle, "none") ...
+                && ! strcmp (axis_obj.gridcolor, "none");
+  visible_mgls = ! strcmp (axis_obj.minorgridlinestyle, "none") ...
+                 && ! strcmp (axis_obj.minorgridcolor, "none");
 
-  if (strcmpi (axis_obj.xgrid, "on"))
-    have_grid = true;
+  if (strcmp (axis_obj.xgrid, "on") && visible_gls)
+    have_major_grid = true;
     fprintf (plot_stream, "set grid %stics;\n", xaxisloc);
   else
     fprintf (plot_stream, "set grid no%stics;\n", xaxisloc);
   endif
 
-  if (strcmpi (axis_obj.ygrid, "on"))
-    have_grid = true;
+  if (strcmp (axis_obj.ygrid, "on") && visible_gls)
+    have_major_grid = true;
     fprintf (plot_stream, "set grid %stics;\n", yaxisloc);
   else
     fprintf (plot_stream, "set grid no%stics;\n", yaxisloc);
   endif
 
-  if (strcmpi (axis_obj.zgrid, "on"))
-    have_grid = true;
+  if (strcmp (axis_obj.zgrid, "on") && visible_gls)
+    have_major_grid = true;
     fputs (plot_stream, "set grid ztics;\n");
   else
     fputs (plot_stream, "set grid noztics;\n");
   endif
 
-  if (strcmpi (axis_obj.xminorgrid, "on"))
-    have_grid = true;
+  if (strcmp (axis_obj.xminorgrid, "on") && visible_mgls)
+    have_minor_grid = true;
     if (strcmp (axis_obj.xscale, "log"))
       m = 10;
     else
@@ -319,8 +324,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "set grid nom%stics;\n", xaxisloc);
   endif
 
-  if (strcmpi (axis_obj.yminorgrid, "on"))
-    have_grid = true;
+  if (strcmp (axis_obj.yminorgrid, "on") && visible_mgls)
+    have_minor_grid = true;
     if (strcmp (axis_obj.yscale, "log"))
       m = 10;
     else
@@ -332,8 +337,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "set grid nom%stics;\n", yaxisloc);
   endif
 
-  if (strcmpi (axis_obj.zminorgrid, "on"))
-    have_grid = true;
+  if (strcmp (axis_obj.zminorgrid, "on") && visible_mgls)
+    have_minor_grid = true;
     if (strcmp (axis_obj.zscale, "log"))
       m = 10;
     else
@@ -1296,7 +1301,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               if (flat_interp_edge)
                 sopt = "";
               else
-                sopt = sprintf("%d", sidx(i_stl));
+                sopt = sprintf ("%d", sidx(i_stl));
               endif
               data_idx += 1;
               is_image_data(data_idx) = false;
@@ -1305,7 +1310,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 have_cdata(data_idx) = true;
               else
                 have_cdata(data_idx) = false;
-              end
+              endif
               have_3d_patch(data_idx) = false;
               titlespec{data_idx} = tspec;
               usingclause{data_idx} = sprintf ("record=%dx1 using ($1):($2):($3)%s",
@@ -1470,20 +1475,37 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   grid_idx = axis_idx;
-  if (! have_grid)
+  if (! have_major_grid && ! have_minor_grid)
     fputs (plot_stream, "unset grid;\n");
   else
-    grid_idx += 1;
-    grid_obj.linestyle = axis_obj.gridlinestyle;
-    grid_obj.linewidth = axis_obj.linewidth;
-    [style, sidx] = do_linestyle_command (grid_obj, axis_obj.gridcolor,
-                                          grid_idx, plot_stream);
+    if (have_major_grid)
+      grid_idx += 1;
+      grid_obj.linestyle = axis_obj.gridlinestyle;
+      grid_obj.linewidth = axis_obj.linewidth;
+      grid_obj.alpha = axis_obj.gridalpha;
+      [style, sidx_major] = do_linestyle_command (grid_obj, axis_obj.gridcolor,
+                                                  grid_idx, plot_stream);
+    else
+      sidx_major = 0;
+    endif
+    if (have_minor_grid)
+      grid_idx += 1;
+      grid_obj.linestyle = axis_obj.minorgridlinestyle;
+      grid_obj.linewidth = axis_obj.linewidth;
+      grid_obj.alpha = axis_obj.minorgridalpha;
+      [style, sidx_minor] = do_linestyle_command (grid_obj,
+                                                  axis_obj.minorgridcolor,
+                                                  grid_idx, plot_stream);
+    else
+      sidx_minor = 0;
+    endif
     if (__gnuplot_has_feature__ ("linetype"))
       scmd = "linetype";
     else
       scmd = "linestyle";
     endif
-    fprintf (plot_stream, "set grid %s %d, %s %d;\n", scmd, sidx, scmd, sidx);
+    fprintf (plot_stream, "set grid %s %d, %s %d;\n",
+             scmd, sidx_major, scmd, sidx_minor);
   endif
 
   if (! isempty (hlgnd) && ! isempty (hlgnd.children)
@@ -1835,8 +1857,13 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   found_style = false;
   if (isnumeric (linecolor))
     color = linecolor;
-    fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-             round (255*color));
+    if (isfield (obj, "alpha"))
+      alphastr = sprintf ("%02x", round (255*obj.alpha));
+    else
+      alphastr = "";
+    endif
+    fprintf (plot_stream, " linecolor rgb \"#%s%02x%02x%02x\"",
+             alphastr, round (255*color));
   else
     color = [0, 0, 0];
   endif
@@ -2744,7 +2771,7 @@ function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
   ## FIXME: Multiline text produced the gnuplot
   ##        "warning: ft_render: skipping glyph"
   if (__calc_dimensions__ (hax) == 3)
-    zstr = sprintf(",%.15e", lpos(3));
+    zstr = sprintf (",%.15e", lpos(3));
   else
     zstr = "";
   endif

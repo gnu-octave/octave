@@ -1474,10 +1474,14 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
   endif
 
-  grid_idx = axis_idx;
   if (! have_major_grid && ! have_minor_grid)
     fputs (plot_stream, "unset grid;\n");
   else
+    if (exist ("axis_idx", "var"))
+      grid_idx = axis_idx;
+    else
+      grid_idx = data_idx;
+    endif
     if (have_major_grid)
       grid_idx += 1;
       grid_obj.linestyle = axis_obj.gridlinestyle;

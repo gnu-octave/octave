@@ -10,6 +10,7 @@ LIBOCTINTERP_LINK_DEPS += \
   $(FT2_LIBS) \
   $(HDF5_LIBS) \
   $(MAGICK_LIBS) \
+  $(Z_LIBS) \
   $(FFTW_XLIBS) \
   $(OPENGL_LIBS) \
   $(X11_LIBS) \

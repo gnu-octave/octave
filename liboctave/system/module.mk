@@ -1,4 +1,5 @@
 SYSTEM_INC = \
+  liboctave/system/child-list.h \
   liboctave/system/dir-ops.h \
   liboctave/system/file-ops.h \
   liboctave/system/file-stat.h \
@@ -12,6 +13,7 @@ SYSTEM_INC = \
   liboctave/system/oct-uname.h
 
 SYSTEM_SRC = \
+  liboctave/system/child-list.cc \
   liboctave/system/dir-ops.cc \
   liboctave/system/file-ops.cc \
   liboctave/system/file-stat.cc \

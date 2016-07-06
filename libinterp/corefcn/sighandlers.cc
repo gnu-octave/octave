@@ -247,13 +247,13 @@ octave_signal_handler (void)
 
               void *context = octave_block_child ();
 
-              octave_child_list::wait ();
+              octave::child_list::wait ();
 
               octave_set_interrupt_handler (saved_interrupt_handler);
 
               octave_unblock_child (context);
 
-              octave_child_list::reap ();
+              octave::child_list::reap ();
             }
           else if (have_sigfpe && i == sigfpe)
             std::cerr << "warning: floating point exception" << std::endl;
@@ -642,136 +642,6 @@ make_sig_struct (void)
   set_sig_struct_field (m, "SIGXFSZ");
 
   return m;
-}
-
-octave_child_list::octave_child_list_rep *octave_child_list::instance = 0;
-
-bool
-octave_child_list::instance_ok (void)
-{
-  bool retval = true;
-
-  if (! instance)
-    {
-      instance = new octave_child_list_rep ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
-
-  if (! instance)
-    error ("unable to create child list object!");
-
-  return retval;
-}
-
-void
-octave_child_list::insert (pid_t pid, octave_child::child_event_handler f)
-{
-  if (instance_ok ())
-    instance->insert (pid, f);
-}
-
-void
-octave_child_list::reap (void)
-{
-  if (instance_ok ())
-    instance->reap ();
-}
-
-bool
-octave_child_list::wait (void)
-{
-  return (instance_ok ()) ? instance->wait () : false;
-}
-
-class pid_equal
-{
-public:
-
-  pid_equal (pid_t v) : val (v) { }
-
-  bool operator () (const octave_child& oc) const { return oc.pid == val; }
-
-private:
-
-  pid_t val;
-};
-
-void
-octave_child_list::remove (pid_t pid)
-{
-  if (instance_ok ())
-    instance->remove_if (pid_equal (pid));
-}
-
-#define OCL_REP octave_child_list::octave_child_list_rep
-
-void
-OCL_REP::insert (pid_t pid, octave_child::child_event_handler f)
-{
-  append (octave_child (pid, f));
-}
-
-void
-OCL_REP::reap (void)
-{
-  // Mark the record for PID invalid.
-
-  for (iterator p = begin (); p != end (); p++)
-    {
-      // The call to the octave_child::child_event_handler might
-      // invalidate the iterator (for example, by calling
-      // octave_child_list::remove), so we increment the iterator
-      // here.
-
-      octave_child& oc = *p;
-
-      if (oc.have_status)
-        {
-          oc.have_status = 0;
-
-          octave_child::child_event_handler f = oc.handler;
-
-          if (f && f (oc.pid, oc.status))
-            oc.pid = -1;
-        }
-    }
-
-  remove_if (pid_equal (-1));
-}
-
-// Wait on our children and record any changes in their status.
-
-bool
-OCL_REP::wait (void)
-{
-  bool retval = false;
-
-  for (iterator p = begin (); p != end (); p++)
-    {
-      octave_child& oc = *p;
-
-      pid_t pid = oc.pid;
-
-      if (pid > 0)
-        {
-          int status;
-
-          if (octave::sys::waitpid (pid, &status, octave::sys::wnohang ()) > 0)
-            {
-              oc.have_status = 1;
-
-              oc.status = status;
-
-              retval = true;
-
-              break;
-            }
-        }
-    }
-
-  return retval;
 }
 
 DEFUN (SIG, args, ,

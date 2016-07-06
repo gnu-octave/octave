@@ -95,7 +95,7 @@ clear_external_pager (void)
 {
   if (external_pager)
     {
-      octave_child_list::remove (external_pager->pid ());
+      octave::child_list::remove (external_pager->pid ());
 
       delete external_pager;
       external_pager = 0;
@@ -161,8 +161,8 @@ do_sync (const char *msg, int len, bool bypass_pager)
                   external_pager = new oprocstream (pgr.c_str ());
 
                   if (external_pager)
-                    octave_child_list::insert (external_pager->pid (),
-                                               pager_event_handler);
+                    octave::child_list::insert (external_pager->pid (),
+                                                pager_event_handler);
                 }
             }
 

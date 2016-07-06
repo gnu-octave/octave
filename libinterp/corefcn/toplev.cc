@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-syscalls.h"
 #include "quit.h"
+#include "signal-wrappers.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
 #include "wait-for-input.h"
@@ -1005,7 +1006,7 @@ run_command_and_return_output (const std::string& cmd_str)
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
   frame.add_delete (cmd);
-  frame.add_fcn (octave_child_list::remove, cmd->pid ());
+  frame.add_fcn (octave::child_list::remove, cmd->pid ());
 
   if (! *cmd)
     error ("system: unable to start subprocess for '%s'", cmd_str.c_str ());

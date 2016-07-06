@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "oct-env.h"
 #include "str-vec.h"
+#include "signal-wrappers.h"
 #include "unistd-wrappers.h"
 
 #include "build-env.h"

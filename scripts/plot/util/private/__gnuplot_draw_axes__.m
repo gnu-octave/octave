@@ -70,7 +70,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   pos = __actual_axis_position__ (h);
 
-  if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+  if (strcmp (axis_obj.dataaspectratiomode, "manual"))
     dr = axis_obj.dataaspectratio;
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       dr = dr(1) / dr(2);
@@ -113,7 +113,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
       fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
 
-      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+      if (strcmp (axis_obj.dataaspectratiomode, "manual"))
         sz_str = sprintf ("set size ratio %.15g", -dr);
       else
         sz_str = "set size noratio";
@@ -126,7 +126,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "unset lmargin;\n");
     fprintf (plot_stream, "unset rmargin;\n");
     fprintf (plot_stream, "set origin %g, %g;\n", pos(1:2));
-    if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+    if (strcmp (axis_obj.dataaspectratiomode, "manual"))
       sz_str = sprintf ("ratio %g", -dr);
     else
       sz_str = "noratio";
@@ -140,7 +140,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   ## Code above uses axis size for the data aspect ratio, which isn't
   ## quite correct.  The only fine control is to set all axes units equal.
   if (nd == 3 &&
-      strcmpi (axis_obj.dataaspectratiomode, "manual") &&
+      strcmp (axis_obj.dataaspectratiomode, "manual") &&
       axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(2))
     if (axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(3))
       zstr = "z";
@@ -200,7 +200,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     else
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
       fontspec = create_fontspec (f, s, gnuplot_term);
-      if (strcmpi (axis_obj.xaxislocation, "top"))
+      if (strcmp (axis_obj.xaxislocation, "top"))
         fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
                  undo_string_escapes (tt), colorspec, fontspec,
                  __do_enhanced_option__ (enhanced, t));
@@ -210,7 +210,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                  __do_enhanced_option__ (enhanced, t));
       endif
       fprintf (plot_stream, " rotate by %f;\n", angle);
-      if (strcmpi (axis_obj.xaxislocation, "top"))
+      if (strcmp (axis_obj.xaxislocation, "top"))
         fprintf (plot_stream, "unset xlabel;\n");
       else
         fprintf (plot_stream, "unset x2label;\n");
@@ -228,7 +228,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     else
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
       fontspec = create_fontspec (f, s, gnuplot_term);
-      if (strcmpi (axis_obj.yaxislocation, "right"))
+      if (strcmp (axis_obj.yaxislocation, "right"))
         fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
                  undo_string_escapes (tt), colorspec, fontspec,
                  __do_enhanced_option__ (enhanced, t));
@@ -238,7 +238,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                  __do_enhanced_option__ (enhanced, t));
       endif
       fprintf (plot_stream, " rotate by %f;\n", angle);
-      if (strcmpi (axis_obj.yaxislocation, "right"))
+      if (strcmp (axis_obj.yaxislocation, "right"))
         fprintf (plot_stream, "unset ylabel;\n");
       else
         fprintf (plot_stream, "unset y2label;\n");
@@ -262,23 +262,23 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
   endif
 
-  if (strcmpi (axis_obj.xaxislocation, "top"))
+  if (strcmp (axis_obj.xaxislocation, "top"))
     xaxisloc = "x2";
     xaxisloc_using = "x2";
   else
     xaxisloc = "x";
     xaxisloc_using = "x1";
-    if (strcmpi (axis_obj.xaxislocation, "zero"))
+    if (strcmp (axis_obj.xaxislocation, "zero"))
       fputs (plot_stream, "set xzeroaxis;\n");
     endif
   endif
-  if (strcmpi (axis_obj.yaxislocation, "right"))
+  if (strcmp (axis_obj.yaxislocation, "right"))
     yaxisloc = "y2";
     yaxisloc_using = "y2";
   else
     yaxisloc = "y";
     yaxisloc_using = "y1";
-    if (strcmpi (axis_obj.yaxislocation, "zero"))
+    if (strcmp (axis_obj.yaxislocation, "zero"))
       fputs (plot_stream, "set yzeroaxis;\n");
     endif
   endif
@@ -352,7 +352,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   ## The grid front/back/layerdefault option also controls the
   ## appearance of tics, so it is used even if the grid is absent.
-  if (strcmpi (axis_obj.layer, "top"))
+  if (strcmp (axis_obj.layer, "top"))
     fputs (plot_stream, "set grid front;\n");
     fputs (plot_stream, "set border front;\n");
   else
@@ -363,9 +363,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "set border back;\n");
   endif
 
-  xlogscale = strcmpi (axis_obj.xscale, "log");
-  ylogscale = strcmpi (axis_obj.yscale, "log");
-  zlogscale = strcmpi (axis_obj.zscale, "log");
+  xlogscale = strcmp (axis_obj.xscale, "log");
+  ylogscale = strcmp (axis_obj.yscale, "log");
+  zlogscale = strcmp (axis_obj.zscale, "log");
 
   ## Detect logscale and negative lims
   if (xlogscale && all (axis_obj.xlim < 0))
@@ -426,10 +426,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "set logscale z;\n");
   endif
 
-  xautoscale = strcmpi (axis_obj.xlimmode, "auto");
-  yautoscale = strcmpi (axis_obj.ylimmode, "auto");
-  zautoscale = strcmpi (axis_obj.zlimmode, "auto");
-  cautoscale = strcmpi (axis_obj.climmode, "auto");
+  xautoscale = strcmp (axis_obj.xlimmode, "auto");
+  yautoscale = strcmp (axis_obj.ylimmode, "auto");
+  zautoscale = strcmp (axis_obj.zlimmode, "auto");
+  cautoscale = strcmp (axis_obj.climmode, "auto");
   cdatadirect = false;
   truecolor = false;
 
@@ -513,7 +513,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
         if (ndims (img_data) == 3)
           truecolor = true;
-        elseif (strcmpi (obj.cdatamapping, "direct"))
+        elseif (strcmp (obj.cdatamapping, "direct"))
           cdatadirect = true;
         endif
         data_idx += 1;
@@ -668,7 +668,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
        if (! isempty (obj.cdata))
          cdat = obj.cdata;
-         if (strcmpi (obj.cdatamapping, "direct"))
+         if (strcmp (obj.cdatamapping, "direct"))
            cdatadirect = true;
          endif
        else
@@ -1368,23 +1368,23 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   if (isempty (xlim))
     return;
   endif
-  if (strcmpi (axis_obj.xdir, "reverse"))
+  if (strcmp (axis_obj.xdir, "reverse"))
     xlim = flip (xlim);
   endif
 
   fprintf (plot_stream, "set xrange [%.15e:%.15e];\n", xlim);
-  if (strcmpi (axis_obj.xaxislocation, "top"))
+  if (strcmp (axis_obj.xaxislocation, "top"))
     fprintf (plot_stream, "set x2range [%.15e:%.15e];\n", xlim);
   endif
 
   if (isempty (ylim))
     return;
   endif
-  if (strcmpi (axis_obj.ydir, "reverse"))
+  if (strcmp (axis_obj.ydir, "reverse"))
     ylim = flip (ylim);
   endif
   fprintf (plot_stream, "set yrange [%.15e:%.15e];\n", ylim);
-  if (strcmpi (axis_obj.yaxislocation, "right"))
+  if (strcmp (axis_obj.yaxislocation, "right"))
     fprintf (plot_stream, "set y2range [%.15e:%.15e];\n", ylim);
   endif
 
@@ -1392,7 +1392,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (isempty (zlim))
       return;
     endif
-    if (strcmpi (axis_obj.zdir, "reverse"))
+    if (strcmp (axis_obj.zdir, "reverse"))
       zlim = flip (zlim);
     endif
     fprintf (plot_stream, "set zrange [%.15e:%.15e];\n", zlim);
@@ -1419,12 +1419,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endif
   endif
 
-  if (strcmpi (axis_obj.visible, "off"))
+  if (strcmp (axis_obj.visible, "off"))
     fputs (plot_stream, "unset border; unset tics\n");
   else
     fputs (plot_stream, "unset border\n");
     axis_idx = data_idx;
-    if (strcmpi (axis_obj.box, "on"))
+    if (strcmp (axis_obj.box, "on"))
       if (nd == 3)
         do_border_tick_3d (axis_obj, plot_stream);
       else
@@ -1434,23 +1434,23 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       if (nd == 3)
         do_border_tick_3d (axis_obj, plot_stream);
       elseif (! isempty (axis_obj.ytick))
-        if (strcmpi (axis_obj.yaxislocation, "right"))
+        if (strcmp (axis_obj.yaxislocation, "right"))
           fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
                    axis_obj.tickdir);
-          if (strcmpi (axis_obj.xaxislocation, "top"))
+          if (strcmp (axis_obj.xaxislocation, "top"))
             maybe_do_x2tick_mirror (plot_stream, axis_obj)
-          elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
+          elseif (strcmp (axis_obj.xaxislocation, "bottom"))
             maybe_do_xtick_mirror (plot_stream, axis_obj)
           else # xaxislocation == zero
             fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                      axis_obj.tickdir);
           endif
-        elseif (strcmpi (axis_obj.yaxislocation, "left"))
+        elseif (strcmp (axis_obj.yaxislocation, "left"))
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                    axis_obj.tickdir);
-          if (strcmpi (axis_obj.xaxislocation, "top"))
+          if (strcmp (axis_obj.xaxislocation, "top"))
             maybe_do_x2tick_mirror (plot_stream, axis_obj)
-          elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
+          elseif (strcmp (axis_obj.xaxislocation, "bottom"))
             maybe_do_xtick_mirror (plot_stream, axis_obj)
           else # xaxislocation == zero
             maybe_do_xtick_mirror (plot_stream, axis_obj)
@@ -1458,9 +1458,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         else # yaxislocation == zero
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                    axis_obj.tickdir);
-          if (strcmpi (axis_obj.xaxislocation, "top"))
+          if (strcmp (axis_obj.xaxislocation, "top"))
             maybe_do_x2tick_mirror (plot_stream, axis_obj)
-          elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
+          elseif (strcmp (axis_obj.xaxislocation, "bottom"))
             maybe_do_xtick_mirror (plot_stream, axis_obj)
           else # xaxislocation == zero
             maybe_do_xtick_mirror (plot_stream, axis_obj)
@@ -1513,18 +1513,18 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   if (! isempty (hlgnd) && ! isempty (hlgnd.children)
-      && any (strcmpi (get (hlgnd.children, "visible"), "on")))
-    if (strcmpi (hlgnd.box, "on"))
+      && any (strcmp (get (hlgnd.children, "visible"), "on")))
+    if (strcmp (hlgnd.box, "on"))
       box = "box";
     else
       box = "nobox";
     endif
-    if (strcmpi (hlgnd.orientation, "vertical"))
+    if (strcmp (hlgnd.orientation, "vertical"))
       horzvert = "vertical";
     else
       horzvert = "horizontal";
     endif
-    if (strcmpi (hlgnd.textposition, "right"))
+    if (strcmp (hlgnd.textposition, "right"))
       reverse = "reverse Left";
     else
       reverse = "noreverse Right";
@@ -2158,7 +2158,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
   ## A Gnuplot tic scale of 69 is equivalent to Octave's 0.5.
   ticklength = sprintf ("scale %4.1f", (69/0.5)*obj.ticklength(1));
 
-  if (strcmpi (obj.xaxislocation, "top"))
+  if (strcmp (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
                obj.xticklabel, obj.xcolor, "x2", plot_stream, true,
                "border", obj.tickdir, ticklength, fontname, fontspec,
@@ -2167,7 +2167,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
                obj.xcolor, "x", plot_stream, true, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.xscale, obj.xsgn, gnuplot_term);
-  elseif (strcmpi (obj.xaxislocation, "zero"))
+  elseif (strcmp (obj.xaxislocation, "zero"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
                obj.xticklabel, obj.xcolor, "x", plot_stream, true,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
@@ -2186,7 +2186,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.xscale, obj.xsgn, gnuplot_term);
   endif
-  if (strcmpi (obj.yaxislocation, "right"))
+  if (strcmp (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
                obj.yticklabel, obj.ycolor, "y2", plot_stream, ymirror,
                "border", obj.tickdir, ticklength, fontname, fontspec,
@@ -2195,7 +2195,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
                obj.ycolor, "y", plot_stream, ymirror, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.yscale, obj.ysgn, gnuplot_term);
-  elseif (strcmpi (obj.yaxislocation, "zero"))
+  elseif (strcmp (obj.yaxislocation, "zero"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
                obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
@@ -2237,11 +2237,11 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   else
     mirror = "nomirror";
   endif
-  if (strcmpi (interpreter, "tex"))
+  if (strcmp (interpreter, "tex"))
     for n = 1 : numel (labels)
       labels{n} = __tex2enhanced__ (labels{n}, fontname, false, false);
     endfor
-  elseif (strcmpi (interpreter, "latex"))
+  elseif (strcmp (interpreter, "latex"))
     if (! warned_latex)
       warning ("latex markup not supported for tick marks");
       warned_latex = true;
@@ -2264,7 +2264,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
   colorspec = get_text_colorspec (color);
   fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
-  if (strcmpi (ticmode, "manual"))
+  if (strcmp (ticmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
       return
@@ -2277,7 +2277,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     fprintf (plot_stream, "set %stics %s %s %s %s %s %s;\n", ax,
              tickdir, ticklength, axispos, mirror, colorspec, fontspec);
   endif
-  if (strcmpi (labelmode, "manual"))
+  if (strcmp (labelmode, "manual"))
     k = 1;
     ntics = numel (tics);
     nlabels = numel (labels);
@@ -2330,10 +2330,10 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
   f = fnt;
   it = false;
   bld = false;
-  if (! isempty (t.fontweight) && strcmpi (t.fontweight, "bold"))
+  if (! isempty (t.fontweight) && strcmp (t.fontweight, "bold"))
     if (! isempty (t.fontangle)
-        && (strcmpi (t.fontangle, "italic")
-            || strcmpi (t.fontangle, "oblique")))
+        && (strcmp (t.fontangle, "italic")
+            || strcmp (t.fontangle, "oblique")))
       f = [f "-bolditalic"];
       it = true;
       bld = true;
@@ -2342,8 +2342,8 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
       bld = true;
     endif
   elseif (! isempty (t.fontangle)
-          && (strcmpi (t.fontangle, "italic")
-              || strcmpi (t.fontangle, "oblique")))
+          && (strcmp (t.fontangle, "italic")
+              || strcmp (t.fontangle, "oblique")))
     f = [f "-italic"];
     it = true;
   endif
@@ -2390,7 +2390,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
   endif
 
   if (enhanced)
-    if (strcmpi (obj.interpreter, "tex"))
+    if (strcmp (obj.interpreter, "tex"))
       if (iscellstr (str))
         for n = 1:numel (str)
           str{n} = __tex2enhanced__ (str{n}, fnt, it, bld);
@@ -2398,7 +2398,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
       else
         str = __tex2enhanced__ (str, fnt, it, bld);
       endif
-    elseif (strcmpi (obj.interpreter, "latex"))
+    elseif (strcmp (obj.interpreter, "latex"))
       if (! warned_latex)
         warning ("latex markup not supported for text objects");
         warned_latex = true;
@@ -2451,7 +2451,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         else
           str = [str(1:s(i) - 1) '{/' fnt '-bold ' str(s(i) + 3:end) '}'];
         endif
-      elseif (strcmpi (f, "color"))
+      elseif (strcmp (f, "color"))
         ## FIXME: Ignore \color but remove trailing {} block as well
         d = strfind (str(e(i) + 1:end),'}');
         if (isempty (d))
@@ -2459,7 +2459,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         else
           str = [str(1:s(i) - 1) str(e(i) + d + 1:end)];
         endif
-      elseif (strcmpi (f, "fontname"))
+      elseif (strcmp (f, "fontname"))
         b1 = strfind (str(e(i) + 1:end),'{');
         b2 = strfind (str(e(i) + 1:end),'}');
         if (isempty (b1) || isempty (b2))
@@ -2468,7 +2468,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
           str = [str(1:s(i) - 1), '/', str(e(i)+b1(1) + 1:e(i)+b2(1)-1), ...
                  '{}', str(e(i) + b2(1) + 1:end)];
         endif
-      elseif (strcmpi (f, "fontsize"))
+      elseif (strcmp (f, "fontsize"))
         b1 = strfind (str(e(i) + 1:end),'{');
         b2 = strfind (str(e(i) + 1:end),'}');
         if (isempty (b1) || isempty (b2))
@@ -2712,7 +2712,7 @@ function retval = __do_enhanced_option__ (enhanced, obj)
 
   retval = "";
   if (enhanced)
-    if (strcmpi (obj.interpreter, "none"))
+    if (strcmp (obj.interpreter, "none"))
       retval = "noenhanced";
     else
       retval = "enhanced";
@@ -2734,7 +2734,7 @@ function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
   if (nargin > 5)
     units = "screen";
     lpos = screenpos;
-  elseif (strcmpi (units, "normalized"))
+  elseif (strcmp (units, "normalized"))
     units = "graph";
   elseif (strcmp (get (hax, "yaxislocation"), "right")
           && strcmp (units, "data"))

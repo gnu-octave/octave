@@ -1049,7 +1049,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
   anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
   // Work around bug #45577, LAPACK crashes Octave if norm is NaN
-  if (octave::math::isnan (anorm))
+  // and bug #46330, segfault with matrices containing Inf & NaN
+  if (octave::math::isnan (anorm) || octave::math::isinf (anorm))
     info = -1;
   else
     F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
@@ -1074,7 +1075,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
         info = -1;
     }
 
-  if (info == -1 && ! force)
+  if ((info == -1 && ! force) || octave::math::isinf (anorm))
     retval = *this;  // Restore contents.
   else
     {
@@ -2138,7 +2139,8 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                     .max ();
 
           // Work around bug #45577, LAPACK crashes Octave if norm is NaN
-          if (octave::math::isnan (anorm))
+          // and bug #46330, segfault with matrices containing Inf & NaN
+          if (octave::math::isnan (anorm) || octave::math::isinf (anorm))
             info = -2;
           else
             F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -2200,6 +2202,11 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
               else
                 mattype.mark_as_rectangular ();
             }
+        }
+      if (octave::math::isinf (anorm))
+        {
+          retval = ComplexMatrix (b.rows (), b.cols (), Complex (0, 0));
+          mattype.mark_as_full ();
         }
     }
 

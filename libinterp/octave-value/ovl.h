@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 #include <vector>
+#include <initializer_list>
 
 #include "str-vec.h"
 #include "Array.h"
@@ -55,6 +56,14 @@ public:
 
   octave_value_list (const Array<octave_value>& d)
     : data (d.as_row ()), names () { }
+
+  octave_value_list (const std::initializer_list<octave_value>& args)
+    : data (dim_vector (1, args.size ())), names ()
+  {
+    octave_idx_type i = 0;
+    for (const octave_value& x : args)
+      data(i++) = x;
+  }
 
   octave_value_list (const Cell& tc)
     : data (tc.as_row ()), names () { }
@@ -167,158 +176,23 @@ private:
 
 };
 
-// Make it easy to build argument lists for built-in functions,
-// or for returning values.
+//! Construct an octave_value_list with less typing.
+/*!
+  Historically, this made it easier to create an octave_value_list
+  from multiple octave_value arguments.  It is no longer useful since
+  octave_value_list has now a constructor accepting an initializer_list
+  so all it does is save some typing.  The following are equivalent:
 
+  @code{.cc}
+  return octave_value_list ({ov0, ov1, ov2});
+  return ovl (ov0, ov1, ov2);
+  @endcode
+*/
+template<typename... OV_Args>
 inline octave_value_list
-ovl ()
+ovl (const OV_Args&... args)
 {
-  return octave_value_list ();
-}
-
-inline octave_value_list
-ovl (const octave_value& a0)
-{
-  octave_value_list retval (1);
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1)
-{
-  octave_value_list retval (2);
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2)
-{
-  octave_value_list retval (3);
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2, const octave_value& a3)
-{
-  octave_value_list retval (4);
-  retval(3) = a3;
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2, const octave_value& a3,
-     const octave_value& a4)
-{
-  octave_value_list retval (5);
-  retval(4) = a4;
-  retval(3) = a3;
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2, const octave_value& a3,
-     const octave_value& a4, const octave_value& a5)
-{
-  octave_value_list retval (6);
-  retval(5) = a5;
-  retval(4) = a4;
-  retval(3) = a3;
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2, const octave_value& a3,
-     const octave_value& a4, const octave_value& a5,
-     const octave_value& a6)
-{
-  octave_value_list retval (7);
-  retval(6) = a6;
-  retval(5) = a5;
-  retval(4) = a4;
-  retval(3) = a3;
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2, const octave_value& a3,
-     const octave_value& a4, const octave_value& a5,
-     const octave_value& a6, const octave_value& a7)
-{
-  octave_value_list retval (8);
-  retval(7) = a7;
-  retval(6) = a6;
-  retval(5) = a5;
-  retval(4) = a4;
-  retval(3) = a3;
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2, const octave_value& a3,
-     const octave_value& a4, const octave_value& a5,
-     const octave_value& a6, const octave_value& a7,
-     const octave_value& a8)
-{
-  octave_value_list retval (9);
-  retval(8) = a8;
-  retval(7) = a7;
-  retval(6) = a6;
-  retval(5) = a5;
-  retval(4) = a4;
-  retval(3) = a3;
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
-}
-
-inline octave_value_list
-ovl (const octave_value& a0, const octave_value& a1,
-     const octave_value& a2, const octave_value& a3,
-     const octave_value& a4, const octave_value& a5,
-     const octave_value& a6, const octave_value& a7,
-     const octave_value& a8, const octave_value& a9)
-{
-  octave_value_list retval (10);
-  retval(9) = a9;
-  retval(8) = a8;
-  retval(7) = a7;
-  retval(6) = a6;
-  retval(5) = a5;
-  retval(4) = a4;
-  retval(3) = a3;
-  retval(2) = a2;
-  retval(1) = a1;
-  retval(0) = a0;
-  return retval;
+  return octave_value_list ({args...});
 }
 
 #endif

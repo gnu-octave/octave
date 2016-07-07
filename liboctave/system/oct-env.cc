@@ -449,7 +449,7 @@ namespace octave
       // Strip any trailing directory separator
       if (octave::sys::file_ops::is_dir_sep (current_dir.back ()))
         current_dir.pop_back ();
-      
+
       return current_dir;
     }
 

@@ -505,6 +505,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       obj.zdata(obj.zdata<=0) = NaN;
     endif
 
+    if (strcmp (get (obj.parent, "type"), "hggroup"))
+      obj.displayname = get (obj.parent, "displayname");
+    endif
+
     switch (obj.type)
       case "image"
         img_data = obj.cdata;
@@ -1566,8 +1570,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endswitch
     if (__gnuplot_has_feature__ ("key_has_font_properties"))
       [fontname, fontsize] = get_fontname_and_size (hlgnd);
-      fontspacespec = [ create_spacingspec(fontname, fontsize, gnuplot_term),...
-                        create_fontspec(fontname, fontsize, gnuplot_term) ];
+      fontspacespec = [create_spacingspec(fontname, fontsize, gnuplot_term),...
+                       ' ', create_fontspec(fontname, fontsize, gnuplot_term)];
     else
       fontspacespec = "";
     endif

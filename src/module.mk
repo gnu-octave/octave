@@ -206,7 +206,7 @@ src/mkoctfile.cc: src/mkoctfile.in.cc build-aux/subst-config-vals.sh | src/$(oct
 src/main.cc: src/main.in.cc build-aux/subst-default-vals.sh | src/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
-src/octave-build-info.cc: src/octave-build-info.in.cc HG-ID | src/$(octave-dirstamp)
+src/octave-build-info.cc: src/octave-build-info.in.cc HG-ID | src/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \

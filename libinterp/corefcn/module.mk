@@ -7,12 +7,14 @@ OPT_HANDLERS = \
   libinterp/corefcn/LSODE-opts.cc \
   libinterp/corefcn/Quad-opts.cc
 
-$(OPT_HANDLERS): libinterp/corefcn/%.cc : liboctave/numeric/%.in | libinterp/corefcn/$(octave-dirstamp)
+$(OPT_HANDLERS): libinterp/corefcn/%.cc : liboctave/numeric/%.in | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(PERL) $(srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t && \
 	mv $@-t $@
 
 $(OPT_HANDLERS): $(srcdir)/build-aux/mk-opts.pl
+
+DIRSTAMP_FILES += libinterp/corefcn/$(octave_dirstamp)
 
 JIT_INC = \
   libinterp/corefcn/jit-util.h \
@@ -269,7 +271,7 @@ COREFCN_FT2_DF = \
 
 ## Special rules for FreeType .df files so that not all .df files are built
 ## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
-$(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h | libinterp/corefcn/$(octave-dirstamp)
+$(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(libinterp_corefcn_libcorefcn_la_CPPFLAGS) $(CPPFLAGS) \
@@ -281,20 +283,20 @@ $(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_
 
 ## Special rules for sources which must be built before rest of compilation.
 
-libinterp/corefcn/defaults.h: libinterp/corefcn/defaults.in.h build-aux/subst-default-vals.sh | libinterp/corefcn/$(octave-dirstamp)
+libinterp/corefcn/defaults.h: libinterp/corefcn/defaults.in.h build-aux/subst-default-vals.sh | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
-libinterp/corefcn/graphics.h: libinterp/corefcn/graphics.in.h libinterp/genprops.awk | libinterp/corefcn/$(octave-dirstamp)
+libinterp/corefcn/graphics.h: libinterp/corefcn/graphics.in.h libinterp/genprops.awk | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
-libinterp/corefcn/graphics-props.cc: libinterp/corefcn/graphics.in.h libinterp/genprops.awk | libinterp/corefcn/$(octave-dirstamp)
+libinterp/corefcn/graphics-props.cc: libinterp/corefcn/graphics.in.h libinterp/genprops.awk | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
-libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc | libinterp/corefcn/$(octave-dirstamp)
+libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	if test -n "$(PERL)"; then \
 	  $(SHELL) $(srcdir)/libinterp/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
@@ -305,15 +307,15 @@ libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc | libinterp/co
 	fi && \
 	mv $@-t $@
 
-libinterp/corefcn/mxarray.h: libinterp/corefcn/mxarray.in.h build-aux/mk-mxarray-h.sh | libinterp/corefcn/$(octave-dirstamp)
+libinterp/corefcn/mxarray.h: libinterp/corefcn/mxarray.in.h build-aux/mk-mxarray-h.sh | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-mxarray-h.sh)
 
-libinterp/corefcn/oct-tex-lexer.ll: libinterp/corefcn/oct-tex-lexer.in.ll libinterp/corefcn/oct-tex-symbols.in | libinterp/corefcn/$(octave-dirstamp)
+libinterp/corefcn/oct-tex-lexer.ll: libinterp/corefcn/oct-tex-lexer.in.ll libinterp/corefcn/oct-tex-symbols.in | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/libinterp/corefcn/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t && \
 	mv $@-t $@
 
-libinterp/corefcn/oct-tex-symbols.cc: libinterp/corefcn/oct-tex-symbols.in | libinterp/corefcn/$(octave-dirstamp)
+libinterp/corefcn/oct-tex-symbols.cc: libinterp/corefcn/oct-tex-symbols.in | libinterp/corefcn/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } !/^#/ && (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; }' $< > $@-t && \
 	mv $@-t $@

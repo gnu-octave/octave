@@ -228,18 +228,18 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-libinterp/build-env.cc: libinterp/build-env.in.cc build-aux/subst-config-vals.sh | libinterp/$(octave-dirstamp)
+libinterp/build-env.cc: libinterp/build-env.in.cc build-aux/subst-config-vals.sh | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
-libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libinterp/$(octave-dirstamp)
+libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
 	mv $@-t $@
 
-libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave-dirstamp)
+libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
 
-libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc HG-ID | libinterp/$(octave-dirstamp)
+libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc HG-ID | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
@@ -252,12 +252,12 @@ else
   mkbuiltins_dld_opt = --disable-dl
 endif
 
-libinterp/builtins.cc: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
+libinterp/builtins.cc: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --source $(mkbuiltins_dld_opt) $(ALL_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
 
-libinterp/builtin-defun-decls.h: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave-dirstamp)
+libinterp/builtin-defun-decls.h: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --header $(mkbuiltins_dld_opt) $(ALL_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
@@ -265,7 +265,7 @@ libinterp/builtin-defun-decls.h: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libin
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = libinterp/dldfcn/PKG_ADD
 
-libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) libinterp/mk-pkg-add | libinterp/$(octave-dirstamp)
+libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) libinterp/mk-pkg-add | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/libinterp/mk-pkg-add "$(srcdir)" $(DLDFCN_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
@@ -273,7 +273,7 @@ endif
 
 DOCSTRING_FILES += $(srcdir)/libinterp/DOCSTRINGS
 
-$(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave-dirstamp)
+$(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f libinterp/DOCSTRINGS-t && \
 	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(ALL_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
 	$(call move_if_change_rule,libinterp/DOCSTRINGS-t,$@)
@@ -281,6 +281,8 @@ $(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave-dirstamp
 OCTAVE_INTERPRETER_TARGETS += \
   $(OCT_FILES) \
   $(DLDFCN_PKG_ADD_FILE)
+
+DIRSTAMP_FILES += libinterp/$(octave_dirstamp)
 
 install-data-hook: install-oct install-built-in-docstrings
 

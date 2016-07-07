@@ -234,7 +234,7 @@ libgui_CLEANFILES += \
   $(octave_gui_RC) \
   libgui/src/liboctgui-build-info.cc
 
-libgui/src/liboctgui-build-info.cc: libgui/src/liboctgui-build-info.in.cc HG-ID | libgui/src/$(octave-dirstamp)
+libgui/src/liboctgui-build-info.cc: libgui/src/liboctgui-build-info.in.cc HG-ID | libgui/src/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SED) \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \

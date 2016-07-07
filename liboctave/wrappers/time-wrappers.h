@@ -48,6 +48,9 @@ octave_getrusage_wrapper (time_t *usr_sec, time_t *sys_sec,
                           long *msgsnd, long *msgrcv, long *nsignals,
                           long *nvcsw, long *nivcsw);
 
+extern time_t
+octave_mktime_wrapper (struct tm *tp);
+  
 #if defined __cplusplus
 }
 #endif

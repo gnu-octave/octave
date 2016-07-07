@@ -146,3 +146,9 @@ octave_getrusage_wrapper (time_t *usr_sec, time_t *sys_sec,
 
   return status;
 }
+
+time_t
+octave_mktime_wrapper (struct tm *tp)
+{
+  return mktime (tp);
+}

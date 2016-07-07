@@ -73,7 +73,7 @@ namespace octave
       t.tm_zone = ps;
 #endif
 
-      ot_unix_time = std::mktime (&t);
+      ot_unix_time = octave_mktime_wrapper (&t);
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       delete [] ps;
@@ -286,7 +286,7 @@ namespace octave
           && t.tm_year != std::numeric_limits<int>::min ())
         {
           t.tm_isdst = -1;
-          std::mktime (&t);
+          octave_mktime_wrapper (&t);
         }
 
       if (t.tm_mon < 0)

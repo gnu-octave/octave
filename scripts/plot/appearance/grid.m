@@ -54,6 +54,7 @@ function grid (varargin)
     hax = gca ();
   endif
 
+  ## Must be after gca (), since grid with no plot should create one.
   if (nargs > 2)
     print_usage ();
   endif
@@ -99,11 +100,9 @@ function grid (varargin)
   endif
 
   if (grid_on)
-    set (hax, "xgrid", "on", "ygrid", "on", "zgrid", "on",
-              "gridlinestyle", ":");
+    set (hax, "xgrid", "on", "ygrid", "on", "zgrid", "on");
     if (minor_on)
-      set (hax, "xminorgrid", "on", "yminorgrid", "on", "zminorgrid", "on",
-                "gridlinestyle", "-", "minorgridlinestyle", ":");
+      set (hax, "xminorgrid", "on", "yminorgrid", "on", "zminorgrid", "on");
       xg = ifelse (strcmp (get (hax, "xscale"), "log"), "off", "on");
       yg = ifelse (strcmp (get (hax, "yscale"), "log"), "off", "on");
       zg = ifelse (strcmp (get (hax, "zscale"), "log"), "off", "on");

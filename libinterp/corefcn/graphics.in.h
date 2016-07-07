@@ -3840,7 +3840,7 @@ public:
       radio_property gridalphamode , "{auto}|manual"
       color_property gridcolor , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
-      radio_property gridlinestyle , "{:}|-|--|-.|none"
+      radio_property gridlinestyle , "{-}|--|:|-.|none"
       double_property labelfontsizemultiplier , 1.1
       radio_property layer u , "{bottom}|top"
       // FIXME: should be kind of string array.

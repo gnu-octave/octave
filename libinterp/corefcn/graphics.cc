@@ -4855,7 +4855,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   fontunits = "points";
   fontweight = "normal";
 
-  gridlinestyle = ":";
+  gridlinestyle = "-";
   linestyleorder = "-";
   linewidth = 0.5;
   minorgridlinestyle = ":";

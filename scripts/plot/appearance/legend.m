@@ -917,10 +917,10 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
         ## Add an invisible text object to original axis
         ## that when it is destroyed will remove the legend
-        props = {"parent", ca(1), "tag", "legend", ...
+        props = {"parent", ca(1), "tag", "deletelegend", ...
                  "handlevisibility", "off", "visible", "off", ...
                  "xliminclude", "off", "yliminclude", "off"};
-        t1 = findall (ca(1), "tag", "legend", "type", "text");
+        t1 = findall (ca(1), "tag", "deletelegend", "type", "text");
         if (isempty (t1))
           t1 = text (0, 0, "", props{:});
           set (t1, "deletefcn", {@deletelegend1, hlegend});

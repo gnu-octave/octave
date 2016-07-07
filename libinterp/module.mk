@@ -276,7 +276,7 @@ DOCSTRING_FILES += $(srcdir)/libinterp/DOCSTRINGS
 $(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f libinterp/DOCSTRINGS-t && \
 	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(ALL_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
-	mv libinterp/DOCSTRINGS-t $@
+	$(call move_if_change_rule,libinterp/DOCSTRINGS-t,$@)
 
 OCTAVE_INTERPRETER_TARGETS += \
   $(OCT_FILES) \

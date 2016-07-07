@@ -109,7 +109,7 @@ DOCSTRING_FILES += $(srcdir)/scripts/DOCSTRINGS
 $(srcdir)/scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | scripts/$(octave-dirstamp)
 	$(AM_V_GEN)rm -f scripts/DOCSTRINGS-t && \
 	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > scripts/DOCSTRINGS-t && \
-	mv scripts/DOCSTRINGS-t $@
+	$(call move_if_change_rule,scripts/DOCSTRINGS-t,$@)
 
 check-m-sources:
 	@echo "checking whether files in source tree are listed in module.mk files..."; \

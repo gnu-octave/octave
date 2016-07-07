@@ -34,12 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <getopt.h>
-
 #include "cmd-edit.h"
 #include "f77-fcn.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "getopt-wrapper.h"
 #include "lo-error.h"
 #include "oct-env.h"
 #include "str-vec.h"
@@ -587,7 +586,8 @@ octave_process_command_line (int argc, char **argv)
     {
       int long_idx;
 
-      int optc = getopt_long (argc, argv, short_opts, long_opts, &long_idx);
+      int optc = octave_getopt_long_wrapper (argc, argv, short_opts,
+                                             long_opts, &long_idx);
 
       if (optc < 0)
         break;

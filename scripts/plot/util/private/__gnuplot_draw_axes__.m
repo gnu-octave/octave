@@ -1866,7 +1866,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   if (isnumeric (linecolor))
     color = linecolor;
     if (isfield (obj, "alpha"))
-      alphastr = sprintf ("%02x", round (255*obj.alpha));
+      alphastr = sprintf ("%02x", round (255*(1-obj.alpha)));
     else
       alphastr = "";
     endif

@@ -41,10 +41,10 @@ function [linestyle, marker] = __next_line_style__ ()
 
   style_idx = fix (get (ca, "linestyleorderindex"));
   num_styles = rows (styleorder);
-  if (style_idx > num_styles)
-    style_idx = mod (style_idx, num_styles);
-  endif
-  if (style_idx < 1)
+  style_idx = mod (style_idx, num_styles);
+  if (style_idx == 0)
+    style_idx = num_styles;
+  elseif (style_idx < 0)
     style_idx = 1;
   endif
 
@@ -62,13 +62,13 @@ endfunction
 %!   set (hax, "colororder", [0 0 1]);
 %!   set (hax, "linestyleorder", {"-", ":", "--"});
 %!   hold on;
-%!   h = plot (1:5,1:5, 1:4,1:4, 1:3,1:3);
+%!   h = plot (1:2,1:2, 2:3,2:3, 3:4,3:4);
 %!   assert (get (h, "linestyle"), {"-"; ":"; "--"});
 %!   cla (hax);
 %!   hold on;
-%!   h1 = plot (1:5,1:5);
-%!   h2 = plot (1:4,1:4);
-%!   h3 = plot (1:3,1:3);
+%!   h1 = plot (1:2,1:2);
+%!   h2 = plot (2:3,2:3);
+%!   h3 = plot (3:4,3:4);
 %!   assert (get ([h1;h2;h3], "linestyle"), {"-"; ":"; "--"});
 %! unwind_protect_cleanup
 %!   close (hf);

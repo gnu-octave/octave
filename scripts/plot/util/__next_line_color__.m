@@ -39,10 +39,10 @@ function rgb = __next_line_color__ ()
 
   color_idx = fix (get (ca, "colororderindex"));
   num_colors = rows (colororder);
-  if (color_idx > num_colors)
-    color_idx = mod (color_idx, num_colors);
-  endif
-  if (color_idx < 1)
+  color_idx = mod (color_idx, num_colors);
+  if (color_idx == 0)
+    color_idx = num_colors;
+  elseif (color_idx < 0)
     color_idx = 1;
   endif
 
@@ -50,7 +50,10 @@ function rgb = __next_line_color__ ()
 
   if (++color_idx > num_colors)
     color_idx = mod (color_idx, num_colors);
-    ## Rollover of all colors switches to next linestyle.
+    if (color_idx == 0)
+      color_idx = 1;
+    endif
+    ## Rollover through all colors also switches to next linestyle.
     style_idx = fix (get (ca, "linestyleorderindex"));
     set (ca, "linestyleorderindex", ++style_idx);
   endif
@@ -65,13 +68,13 @@ endfunction
 %!   hax = axes ();
 %!   set (hax, "colororder", [1 0 0; 0 1 0; 0 0 1]);
 %!   hold on;
-%!   h = plot (1:5,1:5,'o', 1:4,1:4,"x", 1:3,1:3,"d");
+%!   h = plot (1:2,1:2,"o", 2:3,2:3,"x", 3:4,3:4,"d");
 %!   assert (get (h, "color"), {[1 0 0]; [0 1 0]; [0 0 1]});
 %!   cla (hax);
 %!   hold on;
-%!   h1 = plot (1:5,1:5, 'o');
-%!   h2 = plot (1:4,1:4, "x");
-%!   h3 = plot (1:3,1:3, "d");
+%!   h1 = plot (1:2,1:2, "o");
+%!   h2 = plot (2:3,2:3, "x");
+%!   h3 = plot (3:4,3:4, "d");
 %!   assert (get ([h1;h2;h3], "color"), {[1 0 0]; [0 1 0]; [0 0 1]});
 %! unwind_protect_cleanup
 %!   close (hf);

@@ -75,13 +75,25 @@ qr_type (int nargin, int nargout)
 
 DEFUN_DLD (qr, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})
-@deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}, '0')
+@deftypefn  {} {[@var{Q}, @var{R}] =} qr (@var{A})
+@deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}) # non-sparse A
+@deftypefnx {} {@var{X} =} qr (@var{A})
+@deftypefnx {} {@var{R} =} qr (@var{A})  # sparse A
 @deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})
-@deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B}, '0')
+@deftypefnx {} {[...] =} qr (..., 0)
+@deftypefnx {} {[...] =} qr (..., 'vector')
+@deftypefnx {} {[...] =} qr (..., 'matrix')
 @cindex QR factorization
 Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}
 subroutines.
+The QR@tie{}factorization is
+@tex
+$QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.
+@end tex
+@ifnottex
+@code{@var{Q} * @var{R} = @var{A}} where @var{Q} is an orthogonal matrix and
+@var{R} is upper triangular.
+@end ifnottex
 
 For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},
 
@@ -127,18 +139,14 @@ $A$
 @ifnottex
 @var{A}
 @end ifnottex
-is a tall, thin matrix).  The QR@tie{}factorization is
-@tex
-$QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.
-@end tex
-@ifnottex
-@code{@var{Q} * @var{R} = @var{A}} where @var{Q} is an orthogonal matrix and
-@var{R} is upper triangular.
-@end ifnottex
+is a tall, thin matrix).
 
-If given a second argument of @qcode{'0'}, @code{qr} returns an
-economy-sized QR@tie{}factorization, omitting zero rows of @var{R} and the
-corresponding columns of @var{Q}.
+If only a single return value is requested, then it is either @var{R} if
+@var{A} is sparse, or @var{X} such that @code{@var{R} = triu (@var{X})} if
+@var{A} is full.
+(Note: Unlike most commands, the single return value is not
+the first return value when multiple are requested.)
+
 
 If the matrix @var{A} is full, the permuted QR@tie{}factorization
 @code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} forms the
@@ -176,17 +184,15 @@ The permuted @code{qr} factorization
 @code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} factorization allows the
 construction of an orthogonal basis of @code{span (A)}.
 
-If the matrix @var{A} is sparse, then compute the sparse
-QR@tie{}factorization of @var{A}, using @sc{CSparse}.  As the matrix @var{Q}
-is in general a full matrix, this function returns the @var{Q}-less
-factorization @var{R} of @var{A}, such that
+If the matrix @var{A} is sparse, then the sparse QR@tie{}factorization
+of @var{A} is computed using @sc{CSparse}.
+As the matrix @var{Q} is in general a full matrix,
+it is recommended to request only one return value,
+which is the @var{Q}-less factorization @var{R} of @var{A}, such that
 @code{@var{R} = chol (@var{A}' * @var{A})}.
 
-If the final argument is the scalar @code{0} and the number of rows is
-larger than the number of columns, then an economy factorization is
-returned.  That is @var{R} will have only @code{size (@var{A},1)} rows.
-
-If an additional matrix @var{B} is supplied, then @code{qr} returns
+If an additional matrix @var{B} is supplied and two return values are
+requested, then @code{qr} returns
 @var{C}, where @code{@var{C} = @var{Q}' * @var{B}}.  This allows the
 least squares approximation of @code{@var{A} \ @var{B}} to be calculated
 as
@@ -197,12 +203,22 @@ as
 x = @var{R} \ @var{C}
 @end group
 @end example
+
+If the final argument is the scalar 0 and the number of rows is larger
+than the number of columns, then an 'economy' factorization is returned,
+omitting zeroes of @var{R} and the corresponding columns of @var{Q}.
+That is, @var{R} will have only @code{size (@var{A},1)} rows.
+In this case, @var{P} is a vector rather than a matrix.
+
+If the final argument is the string 'vector' then @var{P} is a permutation
+vector instead of a permutation matrix.
+
 @seealso{chol, hess, lu, qz, schur, svd, qrupdate, qrinsert, qrdelete, qrshift}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > (args(0).is_sparse_type () ? 3 : 2))
+  if (nargin < 1 || nargin > 3)
     print_usage ();
 
   octave_value_list retval;
@@ -216,42 +232,59 @@ x = @var{R} \ @var{C}
 
   bool economy = false;
   bool is_cmplx = false;
-  bool b_mat = false;
-  int have_b = 0;
+  bool have_b = 0;
+  bool vector_p = 0;
 
   if (arg.is_complex_type ())
     is_cmplx = true;
   if (nargin > 1)
     {
-      have_b = 1;
+      have_b = true;
       if (args(nargin-1).is_scalar_type ())
         {
           int val = args(nargin-1).int_value ();
           if (val == 0)
             {
               economy = true;
-              have_b = (nargin > 2 ? 2 : 0);
+              have_b = (nargin > 2);
             }
+          else if (nargin == 3)   // argument 3 should be 0 or a string
+            print_usage ();
         }
-      else if (args(nargin-1).is_matrix_type ())
-          b_mat = true;
-      if (have_b > 0 && args(have_b).is_complex_type ())
+      else if (args(nargin-1).is_string ())
+        {
+          if (args(nargin-1).string_value () == "vector")
+            vector_p = true;
+          else if (args(nargin-1).string_value () != "matrix")
+            error ("qr: type for P must be 'matrix' or 'vector', not %s",
+                   args(nargin-1).string_value ().c_str ());
+          have_b = (nargin > 2);
+        }
+      else if (! args(nargin-1).is_matrix_type ())
+        err_wrong_type_arg ("qr", args(nargin-1));
+      else if (nargin == 3)   // should be caught by is_scalar_type or is_string
+        print_usage ();
+
+      if (have_b && args(1).is_complex_type ())
         is_cmplx = true;
     }
 
   if (arg.is_sparse_type ())
     {
+      if (nargout > 2)
+        error ("qr: Permutation output is not supported for sparse input");
 
       if (is_cmplx)
         {
           sparse_qr<SparseComplexMatrix> q (arg.sparse_complex_matrix_value ());
 
-          if (have_b > 0)
+          if (have_b)
             {
-              retval = ovl (q.C (args(have_b).complex_matrix_value ()),
+              retval = ovl (q.C (args(1).complex_matrix_value ()),
                             q.R (economy));
               if (arg.rows () < arg.columns ())
-                warning ("qr: non minimum norm solution for under-determined problem");
+                warning ("qr: non minimum norm solution for under-determined "
+                         "problem %dx%d", arg.rows (), arg.columns ());
             }
           else if (nargout > 1)
             retval = ovl (q.Q (), q.R (economy));
@@ -262,11 +295,12 @@ x = @var{R} \ @var{C}
         {
           sparse_qr<SparseMatrix> q (arg.sparse_matrix_value ());
 
-          if (have_b > 0)
+          if (have_b)
             {
-              retval = ovl (q.C (args(have_b).matrix_value ()), q.R (economy));
-              if (args(0).rows () < args(0).columns ())
-                warning ("qr: non minimum norm solution for under-determined problem");
+              retval = ovl (q.C (args(1).matrix_value ()), q.R (economy));
+              if (arg.rows () < arg.columns ())
+                warning ("qr: non minimum norm solution for under-determined "
+                         "problem %dx%d", arg.rows (), arg.columns ());
             }
           else if (nargout > 1)
             retval = ovl (q.Q (), q.R (economy));
@@ -299,7 +333,7 @@ x = @var{R} \ @var{C}
                   {
                     qr<FloatMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
-                    if (b_mat)
+                    if (have_b)
                       {
                         if (is_cmplx)
                           retval(0) = fact.Q ().transpose ()
@@ -315,7 +349,7 @@ x = @var{R} \ @var{C}
                   {
                     qrp<FloatMatrix> fact (m, type);
 
-                    if (type == qr<FloatMatrix>::economy)
+                    if (type == qr<FloatMatrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -344,7 +378,7 @@ x = @var{R} \ @var{C}
                   {
                     qr<FloatComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
-                    if (b_mat)
+                    if (have_b)
                       retval (0) = conj (fact.Q ().transpose ())
                                    * args(1).float_complex_matrix_value ();
                   }
@@ -353,7 +387,7 @@ x = @var{R} \ @var{C}
                 default:
                   {
                     qrp<FloatComplexMatrix> fact (m, type);
-                    if (type == qr<FloatComplexMatrix>::economy)
+                    if (type == qr<FloatComplexMatrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -384,7 +418,7 @@ x = @var{R} \ @var{C}
                   {
                     qr<Matrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
-                    if (b_mat)
+                    if (have_b)
                       {
                         if (is_cmplx)
                           retval(0) = fact.Q ().transpose ()
@@ -399,7 +433,7 @@ x = @var{R} \ @var{C}
                 default:
                   {
                     qrp<Matrix> fact (m, type);
-                    if (type == qr<Matrix>::economy)
+                    if (type == qr<Matrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -428,7 +462,7 @@ x = @var{R} \ @var{C}
                   {
                     qr<ComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
-                    if (b_mat)
+                    if (have_b)
                       retval (0) = conj (fact.Q ().transpose ())
                                    * args(1).complex_matrix_value ();
                   }
@@ -437,7 +471,7 @@ x = @var{R} \ @var{C}
                 default:
                   {
                     qrp<ComplexMatrix> fact (m, type);
-                    if (type == qr<ComplexMatrix>::economy)
+                    if (type == qr<ComplexMatrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -1206,11 +1240,11 @@ DEFUN_DLD (qrdelete, args, ,
 Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of
-@w{[A(:,1:j-1) A(:,j+1:n)]}, i.e., @var{A} with one column deleted
-(if @var{orient} is @qcode{"col"}), or the QR@tie{}factorization of
-@w{[A(1:j-1,:);A(j+1:n,:)]}, i.e., @var{A} with one row deleted (if
-@var{orient} is @qcode{"row"}).
-
+@w{[A(:,1:j-1), U, A(:,j:n)]},
+where @var{u} is a column vector to be inserted into @var{A}
+(if @var{orient} is @qcode{\"col\"}),
+or the QR@tie{}factorization of @w{[A(1:j-1,:);X;A(:,j:n)]},
+where @var{x} is a row @var{orient} is @qcode{"row"}).
 The default value of @var{orient} is @qcode{"col"}.
 
 If @var{orient} is @qcode{"col"}, @var{j} may be an index vector

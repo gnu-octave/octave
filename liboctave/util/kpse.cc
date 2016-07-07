@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <cerrno>
 #include <cstdlib>
-#include <ctime>
 
 #include <map>
 #include <fstream>
@@ -46,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "kpse.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
+#include "oct-time.h"
 #include "pathsearch.h"
 #include "unistd-wrappers.h"
 
@@ -264,7 +264,10 @@ log_search (const std::list<std::string>& filenames)
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
       for (const auto &filename : filenames)
-        std::cerr << time (0) << " " << filename << std::endl;
+        {
+          octave::sys::time now;
+          std::cerr << now.unix_time () << " " << filename << std::endl;
+        }
     }
 }
 

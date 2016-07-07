@@ -214,7 +214,7 @@ endfunction
 ## function to print all possible options
 function print_options ()
 
-  disp ("List of all possible ODE solver options.");
+  disp ("List of the most common ODE solver options.");
   disp ("Default values are in square brackets.");
   disp ("");
   disp ("             AbsTol:  scalar or vector, >0, [1e-6]");

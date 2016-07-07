@@ -5,7 +5,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/dirent-wrappers.h \
   liboctave/wrappers/fcntl-wrappers.h \
   liboctave/wrappers/filepos-wrappers.h \
-  liboctave/wrappers/fpucw-wrapper.h \
+  liboctave/wrappers/fpucw-wrappers.h \
   liboctave/wrappers/gen-tempname-wrapper.h \
   liboctave/wrappers/getopt-wrapper.h \
   liboctave/wrappers/glob-wrappers.h \
@@ -38,7 +38,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/dirent-wrappers.c \
   liboctave/wrappers/fcntl-wrappers.c \
   liboctave/wrappers/filepos-wrappers.c \
-  liboctave/wrappers/fpucw-wrapper.c \
+  liboctave/wrappers/fpucw-wrappers.c \
   liboctave/wrappers/gen-tempname-wrapper.c \
   liboctave/wrappers/getopt-wrapper.c \
   liboctave/wrappers/glob-wrappers.c \

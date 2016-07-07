@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "fpucw-wrapper.h"
+#include "fpucw-wrappers.h"
 
 #if defined (HAVE_WINDOWS_H)
 #  include <windows.h>

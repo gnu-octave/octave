@@ -25,8 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "fpucw-wrappers.h"
 #include "lo-error.h"
-
 #include "oct-inttypes.h"
 
 template <typename T>
@@ -110,14 +110,12 @@ INSTANTIATE_CONVERT_REAL (long double);
   bool \
   octave_int_cmp_op::external_mop (double x, T y) \
   { \
-     DECL_LONG_DOUBLE_ROUNDING \
-   \
-     BEGIN_LONG_DOUBLE_ROUNDING (); \
+     unsigned int oldcw = octave_begin_long_double_rounding (); \
    \
      bool retval = xop::op (static_cast<long double> (x), \
                             static_cast<long double> (y)); \
    \
-     END_LONG_DOUBLE_ROUNDING (); \
+     octave_end_long_double_rounding (oldcw); \
    \
      return retval; \
   } \
@@ -126,16 +124,14 @@ INSTANTIATE_CONVERT_REAL (long double);
   bool \
   octave_int_cmp_op::external_mop (T x, double y) \
   { \
-     DECL_LONG_DOUBLE_ROUNDING \
+    unsigned int oldcw = octave_begin_long_double_rounding (); \
    \
-     BEGIN_LONG_DOUBLE_ROUNDING (); \
+    bool retval = xop::op (static_cast<long double> (x), \
+                           static_cast<long double> (y)); \
    \
-     bool retval = xop::op (static_cast<long double> (x), \
-                            static_cast<long double> (y)); \
+    octave_end_long_double_rounding (oldcw); \
    \
-     END_LONG_DOUBLE_ROUNDING (); \
-   \
-     return retval; \
+    return retval; \
   }
 
 DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (int64_t)
@@ -161,13 +157,11 @@ INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (uint64_t);
 uint64_t
 octave_external_uint64_uint64_mul (uint64_t x, uint64_t y)
 {
-  DECL_LONG_DOUBLE_ROUNDING
-
-  BEGIN_LONG_DOUBLE_ROUNDING ();
+  unsigned int oldcw = octave_begin_long_double_rounding ();
 
   uint64_t retval = octave_int_arith_base<uint64_t, false>::mul_internal (x, y);
 
-  END_LONG_DOUBLE_ROUNDING ();
+  octave_end_long_double_rounding (oldcw);
 
   return retval;
 }
@@ -175,13 +169,11 @@ octave_external_uint64_uint64_mul (uint64_t x, uint64_t y)
 int64_t
 octave_external_int64_int64_mul (int64_t x, int64_t y)
 {
-  DECL_LONG_DOUBLE_ROUNDING
-
-  BEGIN_LONG_DOUBLE_ROUNDING ();
+  unsigned int oldcw = octave_begin_long_double_rounding ();
 
   int64_t retval = octave_int_arith_base<int64_t, true>::mul_internal (x, y);
 
-  END_LONG_DOUBLE_ROUNDING ();
+  octave_end_long_double_rounding (oldcw);
 
   return retval;
 }
@@ -198,13 +190,11 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
   T \
   external_double_ ## T ## _ ## NAME (double x, T y) \
   { \
-    DECL_LONG_DOUBLE_ROUNDING \
- \
-    BEGIN_LONG_DOUBLE_ROUNDING (); \
+    unsigned int oldcw = octave_begin_long_double_rounding (); \
  \
     T retval = T (x OP static_cast<long double> (y.value ())); \
  \
-    END_LONG_DOUBLE_ROUNDING (); \
+    octave_end_long_double_rounding (oldcw); \
  \
     return retval; \
   } \
@@ -212,13 +202,11 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
   T \
   external_ ## T ## _double_ ## NAME (T x, double y) \
   { \
-    DECL_LONG_DOUBLE_ROUNDING \
- \
-    BEGIN_LONG_DOUBLE_ROUNDING (); \
+    unsigned int oldcw = octave_begin_long_double_rounding (); \
  \
     T retval = T (static_cast<long double> (x.value ()) OP y); \
  \
-    END_LONG_DOUBLE_ROUNDING (); \
+    octave_end_long_double_rounding (oldcw); \
  \
     return retval; \
   }

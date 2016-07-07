@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "fpucw.h"
 
-#include "fpucw-wrapper.h"
+#include "fpucw-wrappers.h"
 
 #if ! defined (_FPU_DEFAULT)
 #  if defined __i386__ || defined __x86_64__
@@ -52,4 +52,22 @@ octave_set_default_fpucw (void)
 
   if (cw != _FPU_DEFAULT)
     SET_FPUCW (_FPU_DEFAULT);
+}
+
+// OLDCW is the name used by the fpucw.h macros.
+
+unsigned int
+octave_begin_long_double_rounding (void)
+{
+  DECL_LONG_DOUBLE_ROUNDING
+
+  BEGIN_LONG_DOUBLE_ROUNDING ();
+
+  return oldcw;
+}
+
+void
+octave_end_long_double_rounding (unsigned int oldcw)
+{
+  END_LONG_DOUBLE_ROUNDING ();
 }

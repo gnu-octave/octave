@@ -20,17 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_fpucw_wrapper_h)
-#define octave_fpucw_wrapper_h 1
+#if ! defined (octave_fpucw_wrappers_h)
+#define octave_fpucw_wrappers_h 1
 
 #if defined __cplusplus
 extern "C" {
 #endif
 
-/* For now, all we need to be able to do is set the control word to
-   the default value.  */
-
 extern void octave_set_default_fpucw (void);
+
+// unsigned int must match the actual type of fpucw_t.
+
+extern unsigned int octave_begin_long_double_rounding (void);
+
+extern void octave_end_long_double_rounding (unsigned int);
 
 #if defined __cplusplus
 }

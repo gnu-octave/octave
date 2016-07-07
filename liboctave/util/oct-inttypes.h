@@ -28,12 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#include <limits>
 #include <iosfwd>
+#include <limits>
 
-#include "lo-traits.h"
 #include "lo-math.h"
 #include "lo-mappers.h"
+#include "lo-traits.h"
 
 template <typename T> class octave_int;
 

@@ -148,7 +148,7 @@ An overview of the directory layout of Octave's source files:
                    programming interface)
 
 
-  gnulib-hg     -- gnulib subrepo.  This is a clone of the gnulib source
+  gnulib        -- gnulib subrepo.  This is a clone of the gnulib source
                    tree maintained by the Octave project.  The default
                    branch is identical to the upstream gnulib sources.
                    There is also an "octave-stable" branch that may

@@ -10,7 +10,6 @@ TEST_FILES += \
   test/bug-31371.tst \
   test/bug-38565.tst \
   test/bug-38576.tst \
-  test/bug-46330.tst \
   test/colormaps.tst \
   test/command.tst \
   test/complex.tst \

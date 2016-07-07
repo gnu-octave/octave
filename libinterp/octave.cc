@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "fpucw-wrappers.h"
 #include "getopt-wrapper.h"
 #include "lo-error.h"
 #include "oct-env.h"
@@ -781,6 +782,9 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   setlocale (LC_TIME, "C");
   octave::sys::env::putenv ("LC_NUMERIC", "C");
   octave::sys::env::putenv ("LC_TIME", "C");
+
+  // Initialize the default floating point unit control state
+  octave_set_default_fpucw ();
 
   octave_embedded = embedded;
 

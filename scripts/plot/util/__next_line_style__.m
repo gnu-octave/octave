@@ -24,35 +24,33 @@
 ## Return the next line style in the rotation.
 
 
-function [linestyle, marker] = __next_line_style__ (reset)
+function [linestyle, marker] = __next_line_style__ ()
 
-  persistent reset_style = true;
+  ca = gca ();
 
-  if (nargin == 1)
-    ## Indicates whether the next call will increment or not
-    reset_style = reset;
-  else
-    ## Find and return the next line style
-    ca = gca ();
-    style_rotation = get (ca, "linestyleorder");
-    if (ischar (style_rotation))
-      style_rotation = strsplit (style_rotation, "|");
-    endif
-    nStyles = length (style_rotation);
-    if (reset_style || (nStyles < 2))
-      style_index = 1;
-      reset_style = false;
-    else
-      ## Executed when "hold all" is active
-      nChildren = length (get (ca, "Children"));
-      nColors = rows (get (ca, "ColorOrder"));
-      style_index = mod (floor (nChildren/nColors), nStyles) + 1;
-    endif
-    options = __pltopt__ ("__next_line_style__",
-                          style_rotation(style_index));
-    linestyle = options.linestyle;
-    marker = options.marker;
+  styleorder = get (ca, "linestyleorder");
+  if (isempty (styleorder))
+    linestyle = "-";   # basic line
+    marker = "none";   # no marker
+    return;
   endif
+
+  if (ischar (styleorder))
+    styleorder = cellstr (styleorder);
+  endif
+
+  style_idx = fix (get (ca, "linestyleorderindex"));
+  num_styles = rows (styleorder);
+  if (style_idx > num_styles)
+    style_idx = mod (style_idx, num_styles);
+  endif
+  if (style_idx < 1)
+    style_idx = 1;
+  endif
+
+  options = __pltopt__ ("__next_line_style__", styleorder{style_idx});
+  linestyle = options.linestyle;
+  marker = options.marker;
 
 endfunction
 
@@ -67,7 +65,7 @@ endfunction
 %!   h = plot (1:5,1:5, 1:4,1:4, 1:3,1:3);
 %!   assert (get (h, "linestyle"), {"-"; ":"; "--"});
 %!   cla (hax);
-%!   hold all;
+%!   hold on;
 %!   h1 = plot (1:5,1:5);
 %!   h2 = plot (1:4,1:4);
 %!   h3 = plot (1:3,1:3);

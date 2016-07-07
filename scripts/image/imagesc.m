@@ -159,7 +159,7 @@ endfunction
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! imagesc (g, g, sin (h));
-%! hold all;
+%! hold on;
 %! plot (g, 11.0 * ones (size (g)));
 %! imagesc (g, g+12, cos (h/2));
 %! axis ([0 10 0 22]);
@@ -172,7 +172,7 @@ endfunction
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! plot (g, 10.5 * ones (size (g)));
-%! hold all;
+%! hold on;
 %! imagesc (g, g, sin (h));
 %! plot (g, 11.0 * ones (size (g)));
 %! imagesc (g, g+12, cos (h/2));

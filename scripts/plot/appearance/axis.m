@@ -605,7 +605,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot (11:20, [21:24, NaN, -Inf, 27:30]);
-%!   hold all;
+%!   hold on;
 %!   plot (11:20, 25.5 + rand (10));
 %!   axis tight;
 %!   assert (axis (), [11 20 21 30]);

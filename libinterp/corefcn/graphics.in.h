@@ -3922,7 +3922,6 @@ public:
       radio_property ztickmode u , "{auto}|manual"
       // Octave-specific properties
       double_property mousewheelzoom , 0.5
-      bool_property __hold_all__ h , "off"
       // hidden properties for alignment of subplots
       radio_property autopos_tag h , "{none}|subplot"
       // hidden properties for inset

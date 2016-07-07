@@ -1399,7 +1399,7 @@ endfunction
 %! clf;
 %! x = 0:0.1:10;
 %! plot (x, sin (x), ';sin (x);');
-%! hold all;
+%! hold on;
 %! plot (x, cos (x), ';cos (x);');
 %! hold off;
 %! title ('legend constructed from multiple plot calls');
@@ -1408,7 +1408,7 @@ endfunction
 %! clf;
 %! x = 0:0.1:10;
 %! plot (x, sin (x), ';sin (x);');
-%! hold all;
+%! hold on;
 %! plot (x, cos (x), ';cos (x);');
 %! hold off;
 %! title ('Specified label text overrides previous labels');

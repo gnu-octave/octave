@@ -4836,7 +4836,6 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   tview(1) = 90;
   view = tview;
 
-  __hold_all__ = "off";
   nextplot = "replace";
 
   ambientlightcolor = Matrix (1, 3, 1.0);

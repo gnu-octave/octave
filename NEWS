@@ -22,6 +22,14 @@ Summary of important user-visible changes for version 4.2:
     "luminance profile" and is also more similar to Matlab's new default
     colormap "parula".
 
+ ** The graphics command "hold on" now ensures that each new plot added to
+    an existing plot has a different color or linestyle according to the
+    "ColorOrder" and/or "LineStyleOrder" properties.  This is equivalent
+    to the old command "hold all" and was made for Matlab compatibility.
+    Existing code *may* produce differently colored plots if it did not
+    specify the color for a plot and relied on each new plot having the
+    the default first color in the "ColorOrder" property.
+
  ** When starting, Octave now looks in the function path for a file
     startup.m and executes any commands found there.  This change was
     made to accommodate Matlab users.  Octave has it's own configuration

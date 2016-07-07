@@ -20,7 +20,6 @@
 ## @deftypefn  {} {} hold
 ## @deftypefnx {} {} hold on
 ## @deftypefnx {} {} hold off
-## @deftypefnx {} {} hold all
 ## @deftypefnx {} {} hold (@var{hax}, @dots{})
 ## Toggle or set the @qcode{"hold"} state of the plotting engine which
 ## determines whether new graphic objects are added to the plot or replace
@@ -29,12 +28,11 @@
 ## @table @code
 ## @item hold on
 ## Retain plot data and settings so that subsequent plot commands are displayed
-## on a single graph.
+## on a single graph.  Line color and line style are advanced for each new plot
+## added.
 ##
-## @item hold all
-## Retain plot line color, line style, data, and settings so that subsequent
-## plot commands are displayed on a single graph with the next line color and
-## style.
+## @item hold all (deprecated)
+## Equivalent to @code{hold on}.
 ##
 ## @item hold off
 ## Restore default graphics settings which clear the graph and reset axis
@@ -92,7 +90,6 @@ function hold (varargin)
     set (hax, "nextplot", "add");
     set (hfig, "nextplot", "add");
   endif
-  set (hax, "__hold_all__", hold_all);
 
 endfunction
 
@@ -104,15 +101,6 @@ endfunction
 %! hold on;
 %! plot (t, cos (t));
 %! title ({'hold on', '2 plots shown on same graph'});
-%! hold off;
-
-%!demo
-%! clf;
-%! t = linspace (0, 2*pi, 100);
-%! plot (t, sin (t));
-%! hold all;
-%! plot (t, cos (t));
-%! title ({'hold all', '2 plots shown on same graph with linestyle also preserved'});
 %! hold off;
 
 %!demo

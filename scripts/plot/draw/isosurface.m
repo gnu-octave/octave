@@ -58,9 +58,9 @@
 ## If given the string input argument @qcode{"noshare"}, vertices might be
 ## returned multiple times for different faces. The default behavior is to
 ## search vertices shared by adjacent faces with @command{unique} which might be
-## time consuming.  
+## time consuming.
 ## The string input argument @qcode{"verbose"} is only for compatibility and
-## has no effect.  
+## has no effect.
 ## The string input arguments must be passed after the other arguments.
 ##
 ## If called with two or three output arguments, return the information about
@@ -230,14 +230,14 @@ function [x, y, z, data, iso, colors, noshare, verbose] = __get_check_isosurface
   switch (nin - num_string_inputs)
     case 1 ## isosurface (val, ...)
       data = varargin{1};
-    case 2 ## isosurface (val, iso, ...) or isosurface (val, col, ...) 
+    case 2 ## isosurface (val, iso, ...) or isosurface (val, col, ...)
       data = varargin{1};
       if (isscalar (varargin{2}) || isempty (varargin{2}))
         iso = varargin{2};
       else
         colors = varargin{2};
       endif
-    case 3 ## isosurface (val, iso, col, ...) 
+    case 3 ## isosurface (val, iso, col, ...)
       data = varargin{1};
       iso = varargin{2};
       colors = varargin{3};

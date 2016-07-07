@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## -*- texinfo -*- 
+## -*- texinfo -*-
 ## @deftypefn {} {[@var{faces}, @var{vertices}, @var{J}] =} __unite_shared_vertices__ (@var{faces}, @var{vertices})
 ##
 ## Detect and unite shared vertices in patches

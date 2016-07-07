@@ -203,7 +203,7 @@ function hax = newplot (hsave = [])
       ## the above code is is required.
   endswitch
 
-  ## Reset line and color styles when hold is not on 
+  ## Reset line and color styles when hold is not on
   if (! strcmp (anp, "add"))
     set (ca, "colororderindex", 1, "linestyleorderindex", 1);
   endif

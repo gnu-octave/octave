@@ -16,12 +16,13 @@
 
 args = argv ();
 
-if (nargin < 2)
-  error ("usage: mk_doc_cache OUTPUT-FILE DOCSTRINGS-FILE ...");
+if (nargin < 3)
+  error ("usage: mk_doc_cache OUTPUT-FILE SRCDIR DOCSTRINGS-FILE ...");
 endif
 
 output_file = args{1};
-docstrings_files = args(2:end);
+top_srcdir = args{2};
+docstrings_files = args(3:end);
 
 ## Special character used as break between DOCSTRINGS
 doc_delim = char (0x1d);
@@ -33,7 +34,12 @@ nfiles = numel (docstrings_files);
 text = cell (1, nfiles);
 for i = 1:nfiles
   file = docstrings_files{i};
+  ## DOCSTRINGS files may exist in the current (build) directory or in the
+  ## source directory when building from a release.
   fid = fopen (file, "r");
+  if (fid < 0)
+    fid = fopen (fullfile (top_srcdir, file), "r");
+  endif
   if (fid < 0)
     error ("unable to open %s for reading", file);
   else

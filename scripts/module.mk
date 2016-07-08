@@ -103,9 +103,9 @@ endef
 
 $(foreach f, $(GEN_FCN_FILES), $(eval $(call GEN_FCN_FILES_TEMPLATE, $(f))))
 
-DOCSTRING_FILES += $(srcdir)/scripts/DOCSTRINGS
+DOCSTRING_FILES += scripts/DOCSTRINGS
 
-$(srcdir)/scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | scripts/$(octave_dirstamp)
+scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | scripts/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f scripts/DOCSTRINGS-t && \
 	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > scripts/DOCSTRINGS-t && \
 	$(call move_if_change_rule,scripts/DOCSTRINGS-t,$@)
@@ -182,7 +182,7 @@ scripts_EXTRA_DIST += \
   $(SCRIPTS_IMAGES) \
   $(FCN_FILES) \
   $(GEN_FCN_FILES_IN) \
-  $(srcdir)/scripts/DOCSTRINGS \
+  scripts/DOCSTRINGS \
   scripts/mkdoc.pl \
   scripts/mk-pkg-add
 
@@ -196,7 +196,7 @@ scripts_DISTCLEANFILES += \
   $(DIRSTAMP_FILES)
 
 scripts_MAINTAINERCLEANFILES += \
-  $(srcdir)/scripts/DOCSTRINGS
+  scripts/DOCSTRINGS
 
 CLEANFILES += $(scripts_CLEANFILES)
 DISTCLEANFILES += $(scripts_DISTCLEANFILES)

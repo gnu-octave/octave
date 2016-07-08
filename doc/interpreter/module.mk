@@ -290,7 +290,7 @@ octetc_DATA += \
 
 doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk_doc_cache.m | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) run-octave --norc --silent --no-history $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
+	$(SHELL) run-octave --norc --silent --no-history $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir) $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)

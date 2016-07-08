@@ -16,7 +16,12 @@ keys(%help_text) = 1800;
 # Load DOCSTRINGS into memory while expanding @seealso references
 foreach $DOCSTRING_file (@ARGV)
 {
-  open (DOCFH, $DOCSTRING_file) or die "Unable to open $DOCSTRING_file\n";
+  ## DOCSTRINGS files may exist in the current (build) directory or in the
+  ## source directory when building from a release.
+  $DOCSTRING_file_srcdir = "$top_srcdir/$DOCSTRING_file";
+
+  open (DOCFH, $DOCSTRING_file) or open (DOCFH, $DOCSTRING_file_srcdir)
+    or die "Unable to open $DOCSTRING_file\n";
 
   # Skip comments
   while (defined ($_ = <DOCFH>) and /$comment_line/o) {;}

@@ -51,7 +51,7 @@ octave_executable="$builddir/src/octave"
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
-BUILT_IN_DOCSTRINGS_FILE="$top_srcdir/libinterp/DOCSTRINGS"
+BUILT_IN_DOCSTRINGS_FILE="$builddir/libinterp/DOCSTRINGS"
 TEXIMACROSFILE="$top_srcdir/doc/interpreter/macros.texi"
 INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 
@@ -86,6 +86,15 @@ while [ $# -gt 0 ]; do
     break
   fi
 done
+
+## DOCSTRINGS and doc-cache files may exist in the current (build) directory
+## or in the source directory when building from a release.
+if ! [ -e $DOCFILE ]; then
+  DOCFILE="$top_srcdir/doc/interpreter/doc-cache"
+fi
+if ! [ -e $BUILT_IN_DOCSTRINGS_FILE ]; then
+  BUILT_IN_DOCSTRINGS_FILE="$top_srcdir/libinterp/DOCSTRINGS"
+fi
 
 ## We set OCTAVE_ARCHLIBDIR so that the wrapper program can find the
 ## octave-gui program in the build tree.  That will fail if we ever

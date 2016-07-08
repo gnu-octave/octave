@@ -79,7 +79,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   libinterp/builtins.cc
 
 libinterp_EXTRA_DIST += \
-  $(srcdir)/libinterp/DOCSTRINGS \
+  libinterp/DOCSTRINGS \
   libinterp/build-env.in.cc \
   libinterp/build-env-features.sh \
   libinterp/find-defun-files.sh \
@@ -271,9 +271,9 @@ libinterp/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) libinterp/mk-pkg-add | libinterp
 	mv $@-t $@
 endif
 
-DOCSTRING_FILES += $(srcdir)/libinterp/DOCSTRINGS
+DOCSTRING_FILES += libinterp/DOCSTRINGS
 
-$(srcdir)/libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave_dirstamp)
+libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f libinterp/DOCSTRINGS-t && \
 	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(ALL_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
 	$(call move_if_change_rule,libinterp/DOCSTRINGS-t,$@)
@@ -320,7 +320,9 @@ endif
 
 install-built-in-docstrings:
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
-	$(INSTALL_DATA) $(srcdir)/libinterp/DOCSTRINGS $(DESTDIR)$(octetcdir)/built-in-docstrings
+	f=libinterp/DOCSTRINGS; \
+	  if test -f $$f; then d=; else d="$(srcdir)/"; fi; \
+	  $(INSTALL_DATA) "$$d$$f" $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: install-built-in-docstrings
 
 uninstall-built-in-docstrings:
@@ -338,7 +340,7 @@ libinterp_CLEANFILES += \
   libinterp/parse-tree/oct-parse.output
 
 libinterp_MAINTAINERCLEANFILES += \
-  $(srcdir)/libinterp/DOCSTRINGS \
+  libinterp/DOCSTRINGS \
   $(LIBINTERP_BUILT_DISTFILES)
 
 BUILT_DISTFILES += $(LIBINTERP_BUILT_DISTFILES)

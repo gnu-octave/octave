@@ -213,7 +213,7 @@ src/octave-build-info.cc: src/octave-build-info.in.cc HG-ID | src/$(octave_dirst
 	  -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
 	$(simple_move_if_change_rule)
 
-ALL_LOCAL_TARGETS += $(OCTAVE_VERSION_LINKS) $(OCTAVE_CROSS_TOOLS)
+ALL_LOCAL_TARGETS += $(OCTAVE_CROSS_TOOLS)
 
 install-exec-hook: make-version-links
 

@@ -666,471 +666,471 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                                           style{3}, scmd, sidx(3));
         endif
 
-     case "patch"
-       cmap = parent_figure_obj.colormap;
-       [nr, nc] = size (obj.xdata);
+      case "patch"
+        cmap = parent_figure_obj.colormap;
+        [nr, nc] = size (obj.xdata);
 
-       if (! isempty (obj.cdata))
-         cdat = obj.cdata;
-         if (strcmp (obj.cdatamapping, "direct"))
-           cdatadirect = true;
-         endif
-       else
-         cdat = [];
-       endif
+        if (! isempty (obj.cdata))
+          cdat = obj.cdata;
+          if (strcmp (obj.cdatamapping, "direct"))
+            cdatadirect = true;
+          endif
+        else
+          cdat = [];
+        endif
 
-       data_3d_idx = NaN;
-       for i = 1:nc
-         xcol = obj.xdata(:,i);
-         ycol = obj.ydata(:,i);
-         if (nd == 3)
-           if (! isempty (obj.zdata))
-             zcol = obj.zdata(:,i);
-           else
-             zcol = zeros (size (xcol));
-           endif
-         endif
+        data_3d_idx = NaN;
+        for i = 1:nc
+          xcol = obj.xdata(:,i);
+          ycol = obj.ydata(:,i);
+          if (nd == 3)
+            if (! isempty (obj.zdata))
+              zcol = obj.zdata(:,i);
+            else
+              zcol = zeros (size (xcol));
+            endif
+          endif
 
-         if (! isnan (xcol) && ! isnan (ycol))
-           ## Is the patch closed or not
-           if (! strcmp (obj.facecolor, "none"))
-             hidden_removal = true;
-             if (nd == 3)
-               if (numel (xcol) > 3)
-                 error ("__gnuplot_draw_axes__: gnuplot (as of v4.2) only supports 3-D filled triangular patches");
-               else
-                 if (isnan (data_3d_idx))
-                   data_idx += 1;
-                   data_3d_idx = data_idx;
-                   is_image_data(data_idx) = false;
-                   parametric(data_idx) = false;
-                   have_cdata(data_idx) = true;
-                   have_3d_patch(data_idx) = true;
-                   withclause{data_3d_idx} = sprintf ("with pm3d");
-                   usingclause{data_3d_idx} =  "using 1:2:3:4";
-                   data{data_3d_idx} = [];
-                 endif
-                 local_idx = data_3d_idx;
-                 ccdat = NaN;
-               endif
-             else
-               data_idx += 1;
-               local_idx = data_idx;
-               is_image_data(data_idx) = false;
-               parametric(data_idx) = false;
-               have_cdata(data_idx) = false;
-               have_3d_patch(data_idx) = false;
-             endif
+          if (! isnan (xcol) && ! isnan (ycol))
+            ## Is the patch closed or not
+            if (! strcmp (obj.facecolor, "none"))
+              hidden_removal = true;
+              if (nd == 3)
+                if (numel (xcol) > 3)
+                  error ("__gnuplot_draw_axes__: gnuplot (as of v4.2) only supports 3-D filled triangular patches");
+                else
+                  if (isnan (data_3d_idx))
+                    data_idx += 1;
+                    data_3d_idx = data_idx;
+                    is_image_data(data_idx) = false;
+                    parametric(data_idx) = false;
+                    have_cdata(data_idx) = true;
+                    have_3d_patch(data_idx) = true;
+                    withclause{data_3d_idx} = sprintf ("with pm3d");
+                    usingclause{data_3d_idx} =  "using 1:2:3:4";
+                    data{data_3d_idx} = [];
+                  endif
+                  local_idx = data_3d_idx;
+                  ccdat = NaN;
+                endif
+              else
+                data_idx += 1;
+                local_idx = data_idx;
+                is_image_data(data_idx) = false;
+                parametric(data_idx) = false;
+                have_cdata(data_idx) = false;
+                have_3d_patch(data_idx) = false;
+              endif
 
-             if (i > 1 || isempty (obj.displayname))
-               titlespec{local_idx} = "title \"\"";
-             else
-               tmp = undo_string_escapes (
-                       __maybe_munge_text__ (enhanced, obj, "displayname")
-                     );
-               titlespec{local_idx} = ['title "' tmp '"'];
-             endif
-             if (isfield (obj, "facecolor"))
-               if ((strcmp (obj.facecolor, "flat")
-                   || strcmp (obj.facecolor, "interp"))
-                   && isfield (obj, "cdata"))
-                 if (ndims (obj.cdata) == 2
-                     && (columns (obj.cdata) == nc
-                         && (rows (obj.cdata) == 1
-                             || rows (obj.cdata) == 3)))
-                   ccol = cdat(:, i);
-                 elseif (ndims (obj.cdata) == 2
-                     && (rows (obj.cdata) == nc
-                         && (columns (obj.cdata) == 1
-                             || columns (obj.cdata) == 3)))
-                   ccol = cdat(i, :);
-                 elseif (ndims (obj.cdata) == 3)
-                   ccol = permute (cdat (:, i, :), [1, 3, 2]);
-                 else
-                   ccol = cdat;
-                 endif
-                 if (strcmp (obj.facecolor, "flat"))
-                   if (isequal (size (ccol), [1, 3]))
-                     ## RGB Triplet
-                     color = ccol;
-                   elseif (nd == 3 && numel (xcol) == 3)
-                     ccdat = ccol;
-                   else
-                     if (cdatadirect)
-                       r = round (ccol);
-                     else
-                       r = 1 + round ((rows (cmap) - 1)
-                                      * (ccol - clim(1))/(clim(2) - clim(1)));
-                     endif
-                     r = max (1, min (r, rows (cmap)));
-                     color = cmap(r, :);
-                   endif
-                 elseif (strcmp (obj.facecolor, "interp"))
-                   if (nd == 3 && numel (xcol) == 3)
-                     ccdat = ccol;
-                     if (! isvector (ccdat))
-                       tmp = rows (cmap) + rows (addedcmap) + ...
-                            [1 : rows(ccdat)];
-                       addedcmap = [addedcmap; ccdat];
-                       ccdat = tmp(:);
-                     else
-                       ccdat = ccdat(:);
-                     endif
-                   else
-                     if (sum (diff (ccol)))
-                       warning ("\"interp\" not supported, using 1st entry of cdata");
-                     endif
-                     if (cdatadirect)
-                       r = round (ccol);
-                     else
-                       r = 1 + round ((rows (cmap) - 1)
-                                      * (ccol - clim(1))/(clim(2) - clim(1)));
-                     endif
-                     r = max (1, min (r, rows (cmap)));
-                     color = cmap(r(1),:);
-                   endif
-                 endif
-               elseif (isnumeric (obj.facecolor))
-                 color = obj.facecolor;
-               else
-                 color = [0, 1, 0];
-               endif
-             else
-               color = [0, 1, 0];
-             endif
+              if (i > 1 || isempty (obj.displayname))
+                titlespec{local_idx} = "title \"\"";
+              else
+                tmp = undo_string_escapes (
+                        __maybe_munge_text__ (enhanced, obj, "displayname")
+                      );
+                titlespec{local_idx} = ['title "' tmp '"'];
+              endif
+              if (isfield (obj, "facecolor"))
+                if ((strcmp (obj.facecolor, "flat")
+                    || strcmp (obj.facecolor, "interp"))
+                    && isfield (obj, "cdata"))
+                  if (ndims (obj.cdata) == 2
+                      && (columns (obj.cdata) == nc
+                          && (rows (obj.cdata) == 1
+                              || rows (obj.cdata) == 3)))
+                    ccol = cdat(:, i);
+                  elseif (ndims (obj.cdata) == 2
+                      && (rows (obj.cdata) == nc
+                          && (columns (obj.cdata) == 1
+                              || columns (obj.cdata) == 3)))
+                    ccol = cdat(i, :);
+                  elseif (ndims (obj.cdata) == 3)
+                    ccol = permute (cdat (:, i, :), [1, 3, 2]);
+                  else
+                    ccol = cdat;
+                  endif
+                  if (strcmp (obj.facecolor, "flat"))
+                    if (isequal (size (ccol), [1, 3]))
+                      ## RGB Triplet
+                      color = ccol;
+                    elseif (nd == 3 && numel (xcol) == 3)
+                      ccdat = ccol;
+                    else
+                      if (cdatadirect)
+                        r = round (ccol);
+                      else
+                        r = 1 + round ((rows (cmap) - 1)
+                                       * (ccol - clim(1))/(clim(2) - clim(1)));
+                      endif
+                      r = max (1, min (r, rows (cmap)));
+                      color = cmap(r, :);
+                    endif
+                  elseif (strcmp (obj.facecolor, "interp"))
+                    if (nd == 3 && numel (xcol) == 3)
+                      ccdat = ccol;
+                      if (! isvector (ccdat))
+                        tmp = rows (cmap) + rows (addedcmap) + ...
+                             [1 : rows(ccdat)];
+                        addedcmap = [addedcmap; ccdat];
+                        ccdat = tmp(:);
+                      else
+                        ccdat = ccdat(:);
+                      endif
+                    else
+                      if (sum (diff (ccol)))
+                        warning ("\"interp\" not supported, using 1st entry of cdata");
+                      endif
+                      if (cdatadirect)
+                        r = round (ccol);
+                      else
+                        r = 1 + round ((rows (cmap) - 1)
+                                       * (ccol - clim(1))/(clim(2) - clim(1)));
+                      endif
+                      r = max (1, min (r, rows (cmap)));
+                      color = cmap(r(1),:);
+                    endif
+                  endif
+                elseif (isnumeric (obj.facecolor))
+                  color = obj.facecolor;
+                else
+                  color = [0, 1, 0];
+                endif
+              else
+                color = [0, 1, 0];
+              endif
 
-             if (nd == 3 && numel (xcol) == 3)
-               if (isnan (ccdat))
-                 ccdat = (rows (cmap) + rows (addedcmap) + 1) * ones(3, 1);
-                 addedcmap = [addedcmap; reshape(color, 1, 3)];
-               elseif (numel (ccdat) <= 1)
-                 ccdat = zcol;
-               endif
-               data{data_3d_idx} = [data{data_3d_idx}, ...
-                                    [[xcol; xcol(end)], [ycol; ycol(end)], ...
-                                    [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
-             else
-               if (__gnuplot_has_feature__ ("transparent_patches")
-                       && isscalar (obj.facealpha))
-                 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
-                                      round (255*color), obj.facealpha);
-               else
-                 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                      round (255*color));
-               endif
+              if (nd == 3 && numel (xcol) == 3)
+                if (isnan (ccdat))
+                  ccdat = (rows (cmap) + rows (addedcmap) + 1) * ones(3, 1);
+                  addedcmap = [addedcmap; reshape(color, 1, 3)];
+                elseif (numel (ccdat) <= 1)
+                  ccdat = zcol;
+                endif
+                data{data_3d_idx} = [data{data_3d_idx}, ...
+                                     [[xcol; xcol(end)], [ycol; ycol(end)], ...
+                                     [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
+              else
+                if (__gnuplot_has_feature__ ("transparent_patches")
+                        && isscalar (obj.facealpha))
+                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
+                                       round (255*color), obj.facealpha);
+                else
+                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                       round (255*color));
+                endif
 
-               withclause{data_idx} = sprintf ("with filledcurve %s",
+                withclause{data_idx} = sprintf ("with filledcurve %s",
+                                              colorspec);
+                data{data_idx} = [xcol, ycol]';
+                usingclause{data_idx} = sprintf ("record=%d using ($1):($2)",
+                                                 numel (xcol));
+              endif
+            endif
+          endif
+
+          ## patch outline
+          if (!(strcmp (obj.edgecolor, "none")
+                 && (strcmp (obj.marker, "none")
+                     || (strcmp (obj.markeredgecolor, "none")
+                         && strcmp (obj.markerfacecolor, "none")))))
+
+            data_idx += 1;
+            is_image_data(data_idx) = false;
+            parametric(data_idx) = false;
+            have_cdata(data_idx) = false;
+            have_3d_patch(data_idx) = false;
+            titlespec{data_idx} = "title \"\"";
+            usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
+
+            if (isfield (obj, "markersize"))
+              mdat = obj.markersize / 3;
+            endif
+
+            if (isfield (obj, "edgecolor"))
+              ## FIXME: This is the wrong thing to do as edgecolor,
+              ## markeredgecolor and markerfacecolor can have different values
+              ## and we should treat them seperately.  However, the code below
+              ## allows the scatter functions to work as expected, where only
+              ## one of these values is set.
+              if (strcmp (obj.edgecolor, "none"))
+                if (strcmp (obj.markeredgecolor, "none"))
+                  ec = obj.markerfacecolor;
+                else
+                  ec = obj.markeredgecolor;
+                endif
+              else
+                ec = obj.edgecolor;
+              endif
+
+              if ((strcmp (ec, "flat")
+                   || strcmp (ec, "interp"))
+                  && isfield (obj, "cdata"))
+                if (ndims (obj.cdata) == 2
+                    && (columns (obj.cdata) == nc
+                        && (rows (obj.cdata) == 1
+                            || rows (obj.cdata) == 3)))
+                  ccol = cdat(:, i);
+                elseif (ndims (obj.cdata) == 2
+                        && (rows (obj.cdata) == nc
+                            && (columns (obj.cdata) == 1
+                                || columns (obj.cdata) == 3)))
+                  ccol = cdat(i, :);
+                elseif (ndims (obj.cdata) == 3)
+                  ccol = permute (cdat (:, i, :), [1, 3, 2]);
+                else
+                  ccol = cdat;
+                endif
+                if (strcmp (ec, "flat"))
+                  if (numel (ccol) == 3)
+                    color = ccol;
+                  else
+                    if (isscalar (ccol))
+                      ccol = repmat (ccol, numel (xcol), 1);
+                    endif
+                    color = "flat";
+                    have_cdata(data_idx) = true;
+                  endif
+                elseif (strcmp (ec, "interp"))
+                  if (numel (ccol) == 3)
+                    warning ("\"interp\" not supported, using 1st entry of cdata");
+                    color = ccol(1,:);
+                  else
+                    if (isscalar (ccol))
+                      ccol = repmat (ccol, numel (xcol), 1);
+                    endif
+                    color = "interp";
+                    have_cdata(data_idx) = true;
+                  endif
+                endif
+              elseif (isnumeric (ec))
+                color = ec;
+              else
+                color = [0, 0, 0];
+              endif
+            else
+              color = [0, 0, 0];
+            endif
+
+            lt = gnuplot_linetype (obj);
+
+            if (isfield (obj, "linewidth"))
+              lw = sprintf ("linewidth %f", obj.linewidth);
+            else
+              lw = "";
+            endif
+
+            [pt, pt2, obj] = gnuplot_pointtype (obj);
+            if (! isempty (pt))
+              pt = sprintf ("pointtype %s", pt);
+            endif
+            if (! isempty (pt2))
+              pt2 = sprintf ("pointtype %s", pt2);
+            endif
+
+            if (ischar (color))
+              if (columns (ccol) == 1)
+                colorspec = "palette";
+              elseif (columns (ccol) == 3)
+                colorspec = "lc rgb variable";
+                ccol = 255*ccol*[0x1; 0x100; 0x10000];
+              endif
+            else
+              colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                   round (255*color));
+            endif
+
+            sidx = 1;
+            if (isempty (lt))
+              style = "";
+            else
+              style = "lines";
+            endif
+            tmpwith = {};
+
+            facesame = true;
+            if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
+                && ! strcmp (obj.markerfacecolor, "none"))
+              if (strcmp (obj.markerfacecolor, "auto")
+                  || ! isnumeric (obj.markerfacecolor)
+                  || (isnumeric (obj.markerfacecolor)
+                      && isequal (color, obj.markerfacecolor)))
+                style = [style "points"];
+                if (isfield (obj, "markersize"))
+                  if (length (mdat) == nc)
+                    m = mdat(i);
+                  else
+                    m = mdat;
+                  endif
+                  ps = sprintf ("pointsize %f", m / 3);
+                else
+                  ps = "";
+                endif
+
+                tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                         style, lw, pt2, lt, ps,
+                                         colorspec);
+              else
+                facesame = false;
+                if (! isempty (style))
+                  tmpwith{sidx} = sprintf ("with %s %s %s %s",
+                                           style, lw, lt,
+                                           colorspec);
+                  sidx += 1;
+                endif
+                if (isnumeric (obj.markerfacecolor))
+                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                       round (255*obj.markerfacecolor));
+                endif
+                style = "points";
+                if (isfield (obj, "markersize"))
+                  if (length (mdat) == nc)
+                    m = mdat(i);
+                  else
+                    m = mdat;
+                  endif
+                  ps = sprintf ("pointsize %f", m / 3);
+                else
+                  ps = "";
+                endif
+                tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                         style, lw, pt2, lt, ps,
+                                         colorspec);
+              endif
+            endif
+
+            if (isfield (obj, "markeredgecolor")
+                && ! strcmp (obj.markeredgecolor, "none"))
+              if (facesame && ! isempty (pt)
+                  && (strcmp (obj.markeredgecolor, "auto")
+                      || ! isnumeric (obj.markeredgecolor)
+                      || (isnumeric (obj.markeredgecolor)
+                          && isequal (color, obj.markeredgecolor))))
+                if (sidx == 1 && ((length (style) == 5
+                         && strncmp (style, "lines", 5))
+                        || isempty (style)))
+                  style = [style, "points"];
+                  if (isfield (obj, "markersize"))
+                    if (length (mdat) == nc)
+                      m = mdat(i);
+                    else
+                      m = mdat;
+                    endif
+                    ps = sprintf ("pointsize %f", m / 3);
+                  else
+                    ps = "";
+                  endif
+                  tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                           style, lw, pt, lt, ps,
+                                           colorspec);
+                endif
+              else
+                if (! isempty (style))
+                  if (length (tmpwith) < sidx || isempty (tmpwith{sidx}))
+                    tmpwith{sidx} = sprintf ("with %s %s %s %s",
+                                             style, lw, lt,
                                              colorspec);
-               data{data_idx} = [xcol, ycol]';
-               usingclause{data_idx} = sprintf ("record=%d using ($1):($2)",
-                                                numel (xcol));
-             endif
-           endif
-         endif
+                  endif
+                  sidx += 1;
+                endif
 
-         ## patch outline
-         if (!(strcmp (obj.edgecolor, "none")
-                && (strcmp (obj.marker, "none")
-                    || (strcmp (obj.markeredgecolor, "none")
-                        && strcmp (obj.markerfacecolor, "none")))))
+                if (! isempty (pt))
+                  if (strcmp (obj.markeredgecolor, "auto"))
+                    colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                         round (255*color));
+                  elseif (isnumeric (obj.markeredgecolor))
+                    colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                         round (255*obj.markeredgecolor));
+                  endif
+                  style = "points";
+                  if (isfield (obj, "markersize"))
+                    if (length (mdat) == nc)
+                      m = mdat(i);
+                    else
+                      m = mdat;
+                    endif
+                    ps = sprintf ("pointsize %f", m / 3);
+                  else
+                    ps = "";
+                  endif
+                  tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                           style, lw, pt, lt, ps,
+                                           colorspec);
+                endif
+              endif
+            endif
 
-           data_idx += 1;
-           is_image_data(data_idx) = false;
-           parametric(data_idx) = false;
-           have_cdata(data_idx) = false;
-           have_3d_patch(data_idx) = false;
-           titlespec{data_idx} = "title \"\"";
-           usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
+            if (! isempty (tmpwith))
+              withclause{data_idx} = tmpwith{1};
+            else
+              if (! isempty (style))
+                withclause{data_idx} = sprintf ("with %s %s %s %s %s",
+                                                style, lw, pt, lt,
+                                                colorspec);
+              else
+                withclause{data_idx} = "";
+              endif
+            endif
+            if (nd == 3)
+              if (ischar (color))
+                if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
+                  data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+                                    [zcol; zcol(1)], [ccol; ccol(1)]]';
+                else
+                  data{data_idx} = [xcol, ycol, zcol, ccol]';
+                endif
+                usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", columns (data{data_idx}));
+              else
+                if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
+                  data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+                                    [zcol; zcol(1)]]';
+                else
+                  data{data_idx} = [xcol, ycol, zcol]';
+                endif
+                usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
+              endif
+            else
+              if (ischar (color))
+                if (! isnan (xcol) && ! isnan (ycol))
+                  data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+                                    [ccol; ccol(1)]]';
+                else
+                  data{data_idx} = [xcol, ycol, ccol]';
+                endif
+                usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
+              else
+                if (! isnan (xcol) && ! isnan (ycol))
+                  data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
+                else
+                  data{data_idx} = [xcol, ycol]';
+                endif
+                usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
+              endif
+            endif
 
-           if (isfield (obj, "markersize"))
-             mdat = obj.markersize / 3;
-           endif
-
-           if (isfield (obj, "edgecolor"))
-             ## FIXME: This is the wrong thing to do as edgecolor,
-             ## markeredgecolor and markerfacecolor can have different values
-             ## and we should treat them seperately.  However, the code below
-             ## allows the scatter functions to work as expected, where only
-             ## one of these values is set.
-             if (strcmp (obj.edgecolor, "none"))
-               if (strcmp (obj.markeredgecolor, "none"))
-                 ec = obj.markerfacecolor;
-               else
-                 ec = obj.markeredgecolor;
-               endif
-             else
-               ec = obj.edgecolor;
-             endif
-
-             if ((strcmp (ec, "flat")
-                  || strcmp (ec, "interp"))
-                 && isfield (obj, "cdata"))
-               if (ndims (obj.cdata) == 2
-                   && (columns (obj.cdata) == nc
-                       && (rows (obj.cdata) == 1
-                           || rows (obj.cdata) == 3)))
-                 ccol = cdat(:, i);
-               elseif (ndims (obj.cdata) == 2
-                       && (rows (obj.cdata) == nc
-                           && (columns (obj.cdata) == 1
-                               || columns (obj.cdata) == 3)))
-                 ccol = cdat(i, :);
-               elseif (ndims (obj.cdata) == 3)
-                 ccol = permute (cdat (:, i, :), [1, 3, 2]);
-               else
-                 ccol = cdat;
-               endif
-               if (strcmp (ec, "flat"))
-                 if (numel (ccol) == 3)
-                   color = ccol;
-                 else
-                   if (isscalar (ccol))
-                     ccol = repmat (ccol, numel (xcol), 1);
-                   endif
-                   color = "flat";
-                   have_cdata(data_idx) = true;
-                 endif
-               elseif (strcmp (ec, "interp"))
-                 if (numel (ccol) == 3)
-                   warning ("\"interp\" not supported, using 1st entry of cdata");
-                   color = ccol(1,:);
-                 else
-                   if (isscalar (ccol))
-                     ccol = repmat (ccol, numel (xcol), 1);
-                   endif
-                   color = "interp";
-                   have_cdata(data_idx) = true;
-                 endif
-               endif
-             elseif (isnumeric (ec))
-               color = ec;
-             else
-               color = [0, 0, 0];
-             endif
-           else
-             color = [0, 0, 0];
-           endif
-
-           lt = gnuplot_linetype (obj);
-
-           if (isfield (obj, "linewidth"))
-             lw = sprintf ("linewidth %f", obj.linewidth);
-           else
-             lw = "";
-           endif
-
-           [pt, pt2, obj] = gnuplot_pointtype (obj);
-           if (! isempty (pt))
-             pt = sprintf ("pointtype %s", pt);
-           endif
-           if (! isempty (pt2))
-             pt2 = sprintf ("pointtype %s", pt2);
-           endif
-
-           if (ischar (color))
-             if (columns (ccol) == 1)
-               colorspec = "palette";
-             elseif (columns (ccol) == 3)
-               colorspec = "lc rgb variable";
-               ccol = 255*ccol*[0x1; 0x100; 0x10000];
-             endif
-           else
-             colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                  round (255*color));
-           endif
-
-           sidx = 1;
-           if (isempty (lt))
-             style = "";
-           else
-             style = "lines";
-           endif
-           tmpwith = {};
-
-           facesame = true;
-           if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-               && ! strcmp (obj.markerfacecolor, "none"))
-             if (strcmp (obj.markerfacecolor, "auto")
-                 || ! isnumeric (obj.markerfacecolor)
-                 || (isnumeric (obj.markerfacecolor)
-                     && isequal (color, obj.markerfacecolor)))
-               style = [style "points"];
-               if (isfield (obj, "markersize"))
-                 if (length (mdat) == nc)
-                   m = mdat(i);
-                 else
-                   m = mdat;
-                 endif
-                 ps = sprintf ("pointsize %f", m / 3);
-               else
-                 ps = "";
-               endif
-
-               tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                        style, lw, pt2, lt, ps,
-                                        colorspec);
-             else
-               facesame = false;
-               if (! isempty (style))
-                 tmpwith{sidx} = sprintf ("with %s %s %s %s",
-                                          style, lw, lt,
-                                          colorspec);
-                 sidx += 1;
-               endif
-               if (isnumeric (obj.markerfacecolor))
-                 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                      round (255*obj.markerfacecolor));
-               endif
-               style = "points";
-               if (isfield (obj, "markersize"))
-                 if (length (mdat) == nc)
-                   m = mdat(i);
-                 else
-                   m = mdat;
-                 endif
-                 ps = sprintf ("pointsize %f", m / 3);
-               else
-                 ps = "";
-               endif
-               tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                        style, lw, pt2, lt, ps,
-                                        colorspec);
-             endif
-           endif
-
-           if (isfield (obj, "markeredgecolor")
-               && ! strcmp (obj.markeredgecolor, "none"))
-             if (facesame && ! isempty (pt)
-                 && (strcmp (obj.markeredgecolor, "auto")
-                     || ! isnumeric (obj.markeredgecolor)
-                     || (isnumeric (obj.markeredgecolor)
-                         && isequal (color, obj.markeredgecolor))))
-               if (sidx == 1 && ((length (style) == 5
-                        && strncmp (style, "lines", 5))
-                       || isempty (style)))
-                 style = [style, "points"];
-                 if (isfield (obj, "markersize"))
-                   if (length (mdat) == nc)
-                     m = mdat(i);
-                   else
-                     m = mdat;
-                   endif
-                   ps = sprintf ("pointsize %f", m / 3);
-                 else
-                   ps = "";
-                 endif
-                 tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                          style, lw, pt, lt, ps,
-                                          colorspec);
-               endif
-             else
-               if (! isempty (style))
-                 if (length (tmpwith) < sidx || isempty (tmpwith{sidx}))
-                   tmpwith{sidx} = sprintf ("with %s %s %s %s",
-                                            style, lw, lt,
-                                            colorspec);
-                 endif
-                 sidx += 1;
-               endif
-
-               if (! isempty (pt))
-                 if (strcmp (obj.markeredgecolor, "auto"))
-                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                        round (255*color));
-                 elseif (isnumeric (obj.markeredgecolor))
-                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                        round (255*obj.markeredgecolor));
-                 endif
-                 style = "points";
-                 if (isfield (obj, "markersize"))
-                   if (length (mdat) == nc)
-                     m = mdat(i);
-                   else
-                     m = mdat;
-                   endif
-                   ps = sprintf ("pointsize %f", m / 3);
-                 else
-                   ps = "";
-                 endif
-                 tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                          style, lw, pt, lt, ps,
-                                          colorspec);
-               endif
-             endif
-           endif
-
-           if (! isempty (tmpwith))
-             withclause{data_idx} = tmpwith{1};
-           else
-             if (! isempty (style))
-               withclause{data_idx} = sprintf ("with %s %s %s %s %s",
-                                               style, lw, pt, lt,
-                                               colorspec);
-             else
-               withclause{data_idx} = "";
-             endif
-           endif
-           if (nd == 3)
-             if (ischar (color))
-               if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
-                 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
-                                   [zcol; zcol(1)], [ccol; ccol(1)]]';
-               else
-                 data{data_idx} = [xcol, ycol, zcol, ccol]';
-               endif
-               usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", columns (data{data_idx}));
-             else
-               if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
-                 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
-                                   [zcol; zcol(1)]]';
-               else
-                 data{data_idx} = [xcol, ycol, zcol]';
-               endif
-               usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
-             endif
-           else
-             if (ischar (color))
-               if (! isnan (xcol) && ! isnan (ycol))
-                 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
-                                   [ccol; ccol(1)]]';
-               else
-                 data{data_idx} = [xcol, ycol, ccol]';
-               endif
-               usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
-             else
-               if (! isnan (xcol) && ! isnan (ycol))
-                 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
-               else
-                 data{data_idx} = [xcol, ycol]';
-               endif
-               usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
-             endif
-           endif
-
-           if (length (tmpwith) > 1)
-             data_idx += 1;
-             is_image_data(data_idx) = is_image_data(data_idx - 1);
-             parametric(data_idx) = parametric(data_idx - 1);
-             have_cdata(data_idx) = have_cdata(data_idx - 1);
-             have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-             titlespec{data_idx} = "title \"\"";
-             usingclause{data_idx} = usingclause{data_idx - 1};
-             data{data_idx} = data{data_idx - 1};
-             withclause{data_idx} = tmpwith{2};
-           endif
-           if (length (tmpwith) > 2)
-             data_idx += 1;
-             is_image_data(data_idx) = is_image_data(data_idx - 1);
-             parametric(data_idx) = parametric(data_idx - 1);
-             have_cdata(data_idx) = have_cdata(data_idx - 1);
-             have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-             titlespec{data_idx} = "title \"\"";
-             usingclause{data_idx} = usingclause{data_idx - 1};
-             data{data_idx} = data{data_idx - 1};
-             withclause{data_idx} = tmpwith{3};
-           endif
-         endif
-       endfor
+            if (length (tmpwith) > 1)
+              data_idx += 1;
+              is_image_data(data_idx) = is_image_data(data_idx - 1);
+              parametric(data_idx) = parametric(data_idx - 1);
+              have_cdata(data_idx) = have_cdata(data_idx - 1);
+              have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+              titlespec{data_idx} = "title \"\"";
+              usingclause{data_idx} = usingclause{data_idx - 1};
+              data{data_idx} = data{data_idx - 1};
+              withclause{data_idx} = tmpwith{2};
+            endif
+            if (length (tmpwith) > 2)
+              data_idx += 1;
+              is_image_data(data_idx) = is_image_data(data_idx - 1);
+              parametric(data_idx) = parametric(data_idx - 1);
+              have_cdata(data_idx) = have_cdata(data_idx - 1);
+              have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+              titlespec{data_idx} = "title \"\"";
+              usingclause{data_idx} = usingclause{data_idx - 1};
+              data{data_idx} = data{data_idx - 1};
+              withclause{data_idx} = tmpwith{3};
+            endif
+          endif
+        endfor
 
       case "surface"
         view_map = true;

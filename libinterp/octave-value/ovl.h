@@ -54,16 +54,18 @@ public:
   octave_value_list (const octave_value& tc)
     : data (dim_vector (1, 1), tc), names () { }
 
-  octave_value_list (const Array<octave_value>& d)
-    : data (d.as_row ()), names () { }
-
-  octave_value_list (const std::initializer_list<octave_value>& args)
+  template<template <typename...> class OV_Container>
+  octave_value_list (const OV_Container<octave_value>& args)
     : data (dim_vector (1, args.size ())), names ()
   {
     octave_idx_type i = 0;
     for (const octave_value& x : args)
       data(i++) = x;
   }
+
+  // Shold probably be handled as a specialization of the Container template.
+  octave_value_list (const Array<octave_value>& d)
+    : data (d.as_row ()), names () { }
 
   octave_value_list (const Cell& tc)
     : data (tc.as_row ()), names () { }
@@ -175,6 +177,7 @@ private:
   { return data(n); }
 
 };
+
 
 //! Construct an octave_value_list with less typing.
 /*!

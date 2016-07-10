@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "load-save.h"
+#include "octave.h"
 #include "octave-link.h"
 #include "oct-hist.h"
 #include "oct-map.h"
@@ -685,7 +686,7 @@ main_loop (void)
 
   // The big loop.
 
-  octave_lexer *lxr = (interactive
+  octave_lexer *lxr = (octave::application::interactive ()
                        ? new octave_lexer ()
                        : new octave_lexer (stdin));
 
@@ -713,7 +714,7 @@ main_loop (void)
 
                   octave_quit ();
 
-                  if (! interactive)
+                  if (! octave::application::interactive ())
                     {
                       bool quit = (tree_return_command::returning
                                    || tree_break_command::breaking);
@@ -745,7 +746,7 @@ main_loop (void)
             return exit_status;
 
           // Required newline when the user does Ctrl+C at the prompt.
-          if (interactive)
+          if (octave::application::interactive ())
             octave_stdout << "\n";
         }
       catch (const index_exception& e)
@@ -763,7 +764,7 @@ main_loop (void)
           if (! stack_trace.empty ())
             std::cerr << stack_trace;
 
-          if (interactive)
+          if (octave::application::interactive ())
             recover_from_exception ();
           else
             {
@@ -790,7 +791,7 @@ main_loop (void)
     }
   while (retval == 0);
 
-  if (interactive)
+  if (octave::application::interactive ())
     octave_stdout << "\n";
 
   if (retval == EOF)
@@ -863,7 +864,7 @@ do_octave_atexit (void)
 
       OCTAVE_SAFE_CALL (flush_octave_stdout, ());
 
-      if (! quitting_gracefully && interactive)
+      if (! quitting_gracefully && octave::application::interactive ())
         {
           octave_stdout << "\n";
 

@@ -23,7 +23,39 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_octave_gui_h)
 #define octave_octave_gui_h 1
 
-extern OCTGUI_API int octave_start_gui (int argc, char **argv,
-                                        bool start_gui = true);
+#include "octave.h"
+
+namespace octave
+{
+  class OCTGUI_API gui_application : public application
+  {
+  public:
+
+    gui_application (int argc, char **argv)
+      : application (argc, argv), m_argc (argc), m_argv (argv),
+        m_gui_running (false)
+    { }
+
+    // Should we start the GUI or fall back to the CLI?
+    bool start_gui_p (void) const;
+
+    int execute (void);
+
+    bool gui_running (void) const { return m_gui_running; }
+    void gui_running (bool arg) { m_gui_running = arg; }
+
+  private:
+
+    // No copying, at least not yet.
+
+    gui_application (const gui_application&);
+
+    gui_application& operator = (const gui_application&);
+
+    int m_argc;
+    char **m_argv;
+    bool m_gui_running;
+  };
+}
 
 #endif

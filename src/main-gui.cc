@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "liboctgui-build-info.h"
 
+#include "oct-env.h"
+
 #include "defaults.h"
 #include "octave.h"
 #include "octave-build-info.h"
@@ -95,13 +97,9 @@ main (int argc, char **argv)
 {
   check_hg_versions ();
 
-  octave_process_command_line (argc, argv);
+  octave::sys::env::set_program_name (argv[0]);
 
-  sysdep_init ();
+  octave::gui_application app (argc, argv);
 
-  install_defaults ();
-
-  bool start_gui = octave_starting_gui ();
-
-  return octave_start_gui (argc, argv, start_gui);
+  return app.execute ();
 }

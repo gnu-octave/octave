@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMutex>
 #include <QWaitCondition>
 
+#include "octave-gui.h"
 #include "octave-link.h"
 #include "octave-interpreter.h"
 
@@ -55,7 +56,7 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (QWidget *p);
+  octave_qt_link (QWidget *p, octave::gui_application *app_context);
 
   ~octave_qt_link (void);
 
@@ -155,6 +156,8 @@ private:
 
   // Thread running octave_main.
   QThread *main_thread;
+
+  octave::gui_application *m_app_context;
 
   octave_interpreter *command_interpreter;
 

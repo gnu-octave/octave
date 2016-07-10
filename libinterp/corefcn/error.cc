@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "input.h"
+#include "octave.h"
 #include "pager.h"
 #include "ovl.h"
 #include "oct-map.h"
@@ -313,7 +314,8 @@ static void
 maybe_enter_debugger (octave_execution_exception& e,
                       bool show_stack_trace = false)
 {
-  if ((interactive || forced_interactive)
+  if ((octave::application::interactive ()
+       || octave::application::forced_interactive ())
       && ((Vdebug_on_error && bp_table::debug_on_err (last_error_id ()))
           || (Vdebug_on_caught && bp_table::debug_on_caught (last_error_id ())))
       && octave_call_stack::caller_user_code ())
@@ -720,7 +722,8 @@ warning_1 (const char *id, const char *fmt, va_list args)
           && ! discard_warning_messages)
         pr_where (std::cerr, "warning");
 
-      if ((interactive || forced_interactive)
+      if ((octave::application::interactive ()
+           || octave::application::forced_interactive ())
           && Vdebug_on_warning && in_user_code && bp_table::debug_on_warn (id))
         {
           octave::unwind_protect frame;

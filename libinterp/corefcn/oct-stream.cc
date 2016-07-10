@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "octave.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "ov.h"
@@ -3989,7 +3990,7 @@ std::string
 octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
                              bool strip_newline, const std::string& who)
 {
-  if (interactive && file_number () == 0)
+  if (octave::application::interactive () && file_number () == 0)
     ::error ("%s: unable to read from stdin while running interactively",
              who.c_str ());
 
@@ -4100,7 +4101,7 @@ octave_base_stream::gets (octave_idx_type max_len, bool& err,
 off_t
 octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
 {
-  if (interactive && file_number () == 0)
+  if (octave::application::interactive () && file_number () == 0)
     ::error ("%s: unable to read from stdin while running interactively",
              who.c_str ());
 
@@ -4568,7 +4569,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
                               octave_idx_type& conversion_count,
                               const std::string& who)
 {
-  if (interactive && file_number () == 0)
+  if (octave::application::interactive () && file_number () == 0)
     ::error ("%s: unable to read from stdin while running interactively",
              who.c_str ());
 
@@ -4896,7 +4897,9 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
                     is.clear (is.rdstate () & (~std::ios::failbit));
 
                   // FIXME: is this the right thing to do?
-                  if (interactive && ! forced_interactive && name () == "stdin")
+                  if (octave::application::interactive ()
+                      && ! octave::application::forced_interactive ()
+                      && name () == "stdin")
                     {
                       is.clear ();
 
@@ -5126,7 +5129,9 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 
       // FIXME: is this the right thing to do?
 
-      if (interactive && ! forced_interactive && name () == "stdin")
+      if (octave::application::interactive ()
+          && ! octave::application::forced_interactive ()
+          && name () == "stdin")
         {
           // Skip to end of line.
           bool err;
@@ -5218,7 +5223,7 @@ octave_base_stream::do_textscan (const std::string& fmt,
                                  const std::string& who,
                                  octave_idx_type& read_count)
 {
-  if (interactive && file_number () == 0)
+  if (octave::application::interactive () && file_number () == 0)
     ::error ("%s: unable to read from stdin while running interactively",
              who.c_str ());
 

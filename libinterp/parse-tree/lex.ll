@@ -107,6 +107,7 @@ object) relevant global values before and after the nested call.
 #include "errwarn.h"
 #include "input.h"
 #include "lex.h"
+#include "octave.h"
 #include "ov.h"
 #include "parse.h"
 #include "pt-all.h"
@@ -2321,7 +2322,7 @@ octave_base_lexer::reset (void)
   // input.
 
   if (! quitting_gracefully
-      && interactive
+      && octave::application::interactive ()
       && ! (reading_fcn_file
             || reading_classdef_file
             || reading_script_file

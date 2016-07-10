@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "input.h"
 #include "load-save.h"
+#include "octave.h"
 #include "oct-map.h"
 #include "pager.h"
 #include "pt-bp.h"
@@ -523,7 +524,8 @@ namespace octave
             octave_signal_caught = 1;
             octave_interrupt_state++;
 
-            if (interactive && ! forced_interactive
+            if (octave::application::interactive ()
+                && ! octave::application::forced_interactive ()
                 && octave_interrupt_state == 2)
               std::cerr << "Press Control-C again to abort." << std::endl;
 

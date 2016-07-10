@@ -78,8 +78,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
-#include "ovl.h"
+#include "octave.h"
 #include "ov.h"
+#include "ovl.h"
 #include "pager.h"
 #include "parse.h"
 #include "sighandlers.h"
@@ -341,7 +342,8 @@ raw_mode (bool on, bool wait)
   int tty_fd = STDIN_FILENO;
   if (! octave_isatty_wrapper (tty_fd))
     {
-      if (interactive && ! forced_interactive)
+      if (octave::application::interactive ()
+          && ! octave::application::forced_interactive ())
         error ("stdin is not a tty!");
     }
 
@@ -722,7 +724,7 @@ returning the empty string if no key is available.
 
   // FIXME: add timeout and default value args?
 
-  if (interactive)
+  if (octave::application::interactive ())
     {
       Fdrawnow ();
 

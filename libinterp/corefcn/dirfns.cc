@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "input.h"
 #include "load-path.h"
+#include "octave.h"
 #include "octave-link.h"
 #include "ovl.h"
 #include "pager.h"
@@ -280,7 +281,9 @@ identifier.
 
       bool doit = true;
 
-      if (interactive && ! forced_interactive && Vconfirm_recursive_rmdir)
+      if (octave::application::interactive ()
+          && ! octave::application::forced_interactive ()
+          && Vconfirm_recursive_rmdir)
         {
           std::string prompt = "remove entire contents of " + fulldir + "? ";
 

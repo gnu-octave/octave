@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
+#include "octave.h"
 #include "octave-link.h"
 #include "oct-map.h"
 #include "oct-hist.h"
@@ -94,13 +95,6 @@ octave::sys::time Vlast_prompt_time = 0.0;
 
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char = ' ';
-
-// TRUE means this is an interactive shell (either forced or not)
-bool interactive = false;
-
-// TRUE means the user forced this shell to be interactive (-i).
-// FALSE means the shell would be interactive, independent of user settings.
-bool forced_interactive = false;
 
 // TRUE after a call to completion_matches.
 bool octave_completion_matches_called = false;
@@ -147,9 +141,11 @@ set_default_prompts (void)
 void
 octave_base_reader::do_input_echo (const std::string& input_string) const
 {
+  bool forced_interactive = octave::application::forced_interactive ();
+
   int do_echo = reading_script_file ()
     ? (Vecho_executing_commands & ECHO_SCRIPTS)
-    : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
+    : ((Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive);
 
   if (do_echo)
     {
@@ -193,7 +189,7 @@ interactive_input (const std::string& s, bool& eof)
 {
   Vlast_prompt_time.stamp ();
 
-  if (Vdrawnow_requested && interactive)
+  if (Vdrawnow_requested && octave::application::interactive ())
     {
       bool eval_error = false;
 
@@ -210,7 +206,7 @@ interactive_input (const std::string& s, bool& eof)
           if (! stack_trace.empty ())
             std::cerr << stack_trace;
 
-          if (interactive)
+          if (octave::application::interactive ())
             recover_from_exception ();
         }
 
@@ -240,7 +236,7 @@ octave_base_reader::octave_gets (bool& eof)
   // Process pre input event hook function prior to flushing output and
   // printing the prompt.
 
-  if (interactive)
+  if (octave::application::interactive ())
     {
       if (! Vdebugging)
         octave_link::exit_debugger_event ();
@@ -306,7 +302,7 @@ octave_base_reader::octave_gets (bool& eof)
   // Process post input event hook function after the internal history
   // list has been updated.
 
-  if (interactive)
+  if (octave::application::interactive ())
     octave_link::post_input_event ();
 
   return retval;
@@ -601,12 +597,20 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
-  if (! interactive)
+  octave::application *app = octave::application::app ();
+
+  if (! app->interactive ())
     {
-      frame.protect_var (interactive);
-      interactive = true;
-      frame.protect_var (forced_interactive);
-      forced_interactive = true;
+
+      frame.add_method (app, &octave::application::interactive,
+                        app->interactive ());
+
+      frame.add_method (app, &octave::application::forced_interactive,
+                        app->forced_interactive ());
+
+      app->interactive (true);
+
+      app->forced_interactive (true);
     }
 
   octave_parser curr_parser;

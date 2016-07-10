@@ -60,6 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
+#include "octave.h"
 #include "symtab.h"
 #include "version.h"
 #include "utils.h"
@@ -74,26 +75,29 @@ create_default_editor (QWidget *p)
 #endif
 }
 
-main_window::main_window (QWidget *p, bool start_gui)
-  : QMainWindow (p),
-    _workspace_model (start_gui ? new workspace_model () : 0),
-    status_bar (start_gui ? new QStatusBar () : 0),
-    command_window (start_gui ? new terminal_dock_widget (this) : 0),
-    history_window (start_gui ? new history_dock_widget (this) : 0),
-    file_browser_window (start_gui ? new files_dock_widget (this) : 0),
-    doc_browser_window (start_gui ? new documentation_dock_widget (this) : 0),
-    editor_window (start_gui ? create_default_editor (this) : 0),
-    workspace_window (start_gui ? new workspace_view (this) : 0),
-    _settings_dlg (0),
-    find_files_dlg (0),
-    release_notes_window (0),
-    community_news_window (0),
-    _octave_qt_link (0),
+main_window::main_window (QWidget *p, octave::gui_application *app_context)
+  : QMainWindow (p), m_app_context (app_context), _workspace_model (0),
+    status_bar (0), command_window (0), history_window (0),
+    file_browser_window (0), doc_browser_window (0), editor_window (0),
+    workspace_window (0), _settings_dlg (0), find_files_dlg (0),
+    release_notes_window (0), community_news_window (0), _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
     _prevent_readline_conflicts (true),
     _suppress_dbg_location (true),
-    _start_gui (start_gui)
+    _start_gui (app_context && app_context->start_gui_p ())
 {
+  if (_start_gui)
+    {
+      _workspace_model = new workspace_model ();
+      status_bar = new QStatusBar ();
+      command_window = new terminal_dock_widget (this);
+      history_window = new history_dock_widget (this);
+      file_browser_window = new files_dock_widget (this);
+      doc_browser_window = new documentation_dock_widget (this);
+      editor_window = create_default_editor (this);
+      workspace_window = new workspace_view (this);
+    }
+
   QSettings *settings = resource_manager::get_settings ();
 
   bool connect_to_web = true;
@@ -115,7 +119,7 @@ main_window::main_window (QWidget *p, bool start_gui)
   QDateTime current = QDateTime::currentDateTime ();
   QDateTime one_day_ago = current.addDays (-1);
 
-  if (start_gui && connect_to_web
+  if (_start_gui && connect_to_web
       && (! last_checked.isValid () || one_day_ago > last_checked))
     load_and_display_community_news (serial);
 
@@ -1479,7 +1483,7 @@ main_window::handle_octave_ready ()
 void
 main_window::construct_octave_qt_link (void)
 {
-  _octave_qt_link = new octave_qt_link (this);
+  _octave_qt_link = new octave_qt_link (this, m_app_context);
 
   connect (_octave_qt_link, SIGNAL (exit_app_signal (int)),
            this, SLOT (exit_app (int)));

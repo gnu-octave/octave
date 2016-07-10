@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "octave.h"
 #include "ovl.h"
 #include "pager.h"
 #include "procstream.h"
@@ -232,7 +233,8 @@ more_than_a_screenful (const char *s, int len)
 int
 octave_pager_buf::sync (void)
 {
-  if (! interactive || forced_interactive
+  if (! octave::application::interactive ()
+      || octave::application::forced_interactive ()
       || really_flush_to_pager
       || (Vpage_screen_output && Vpage_output_immediately)
       || ! Vpage_screen_output)
@@ -241,7 +243,8 @@ octave_pager_buf::sync (void)
 
       int len = pptr () - buf;
 
-      bool bypass_pager = (! interactive || forced_interactive
+      bool bypass_pager = (! octave::application::interactive ()
+                           || octave::application::forced_interactive ()
                            || ! Vpage_screen_output
                            || (really_flush_to_pager
                                && Vpage_screen_output

@@ -31,22 +31,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDir>
 #include <QPushButton>
 
+#include "oct-env.h"
 #include "str-vec.h"
+
+#include "builtin-defun-decls.h"
 #include "dialog.h"
 #include "error.h"
-#include "workspace-element.h"
-#include "builtin-defun-decls.h"
 #include "load-path.h"
-#include "oct-env.h"
 #include "utils.h"
 
+#include "octave-gui.h"
 #include "octave-qt-link.h"
-
 #include "resource-manager.h"
+#include "workspace-element.h"
 
-octave_qt_link::octave_qt_link (QWidget *p)
+octave_qt_link::octave_qt_link (QWidget *p,
+                                octave::gui_application *app_context)
   : octave_link (), main_thread (new QThread ()),
-    command_interpreter (new octave_interpreter ())
+    m_app_context (app_context),
+    command_interpreter (new octave_interpreter (app_context))
 {
   _current_directory = "";
   _new_dir = true;
@@ -562,9 +565,12 @@ void
 octave_qt_link::do_set_default_prompts (std::string& ps1, std::string& ps2,
                                         std::string& ps4)
 {
-  ps1 = ">> ";
-  ps2 = "";
-  ps4 = "";
+  if (m_app_context->start_gui_p ())
+    {
+      ps1 = ">> ";
+      ps2 = "";
+      ps4 = "";
+    }
 }
 
 void

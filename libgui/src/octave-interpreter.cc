@@ -29,6 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-interpreter.h"
 
+octave_interpreter::octave_interpreter (octave::application *app_context)
+  : QObject (), thread_manager (), m_app_context (app_context),
+    m_exit_status (0)
+{ }
+
 void
 octave_interpreter::execute (void)
 {
@@ -36,12 +41,13 @@ octave_interpreter::execute (void)
 
   octave_thread_manager::unblock_interrupt_signal ();
 
-  octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
-                                 octave_embedded);
+  // The application context owns the interpreter.
+
+  m_app_context->create_interpreter ();
 
   emit octave_ready_signal ();
 
-  octave_execute_interpreter ();
+  m_exit_status = m_app_context->execute_interpreter ();
 }
 
 void

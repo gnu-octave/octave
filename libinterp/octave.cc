@@ -87,116 +87,7 @@ F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL,
 
 extern void install_builtins (void);
 
-int octave_cmdline_argc;
-char **octave_cmdline_argv;
-int octave_embedded;
-
-// The command-line options.
-static string_vector octave_argv;
-
-// The name used to invoke Octave.
-static std::string octave_program_invocation_name;
-
-// The last component of octave_program_invocation_name.
-static std::string octave_program_name;
-
-// TRUE means we are using readline.
-// (--no-line-editing)
-static bool line_editing = true;
-
-// TRUE means we read ~/.octaverc and ./.octaverc.
-// (--norc; --no-init-file; -f)
-static bool read_init_files = true;
-
-// TRUE means we read the site-wide octaverc files.
-// (--norc; --no-site-file; -f)
-static bool read_site_files = true;
-
-// TRUE means we set the initial path to configured defaults.
-// (--no-init-path)
-static bool set_initial_path = true;
-
-// TRUE means we don't print the usual startup message.
-// (--quiet; --silent; -q)
-static bool inhibit_startup_message = false;
-
-// If TRUE, print verbose info in some cases.
-// (--verbose; -V)
-static bool verbose_flag = false;
-
-// If TRUE, force the GUI to start.
-// (--force-gui)
-static bool force_gui_option = false;
-
-// If TRUE don't start the GUI.
-// (--no-gui)
-static bool no_gui_option = false;
-
-// If TRUE, force readline command line editing.
-// (--line-editing)
-static bool forced_line_editing = false;
-
-// If TRUE, initialize history list from saved history file.
-// (--no-history; -H)
-static bool read_history_file = true;
-
-// The value of "path" specified on the command line.
-// (--path; -p)
-static std::list<std::string> command_line_path;
-
-// The value for "EXEC_PATH" specified on the command line.
-// (--exec-path)
-static std::string exec_path;
-
-// The value for "IMAGE_PATH" specified on the command line.
-// (--image-path)
-static std::string image_path;
-
-// If TRUE, ignore the window system even if it is available.
-// (--no-window-system, -W)
-static bool no_window_system = false;
-
-// The code to evaluate at startup
-// (--eval CODE)
-static std::string code_to_eval;
-
-// If TRUE, don't exit after evaluating code given by --eval option.
-// (--persist)
-static bool persist = false;
-
-// If TRUE, the GUI should be started.
-static bool start_gui = false;
-
-// If TRUE use traditional (maximally MATLAB compatible) settings
-// (--traditional)
-static bool traditional = false;
-
-// TRUE if this is a program and no interpreter and interaction is
-// needed.  For example, an octave program with shebang line, or code
-// from eval without persist.
-static bool an_octave_program = false;
-
 // Store the command-line options for later use.
-
-static void
-intern_argv (int argc, char **argv)
-{
-  assert (symbol_table::at_top_level ());
-
-  symbol_table::assign (".nargin.", argc - 1);
-
-  symbol_table::mark_hidden (".nargin.");
-
-  if (argc > 0)
-    {
-      octave_argv.resize (argc - 1);
-
-      // Skip program name in argv.
-      int i = argc;
-      while (--i > 0)
-        octave_argv[i-1] = *(argv+i);
-    }
-}
 
 static void
 execute_pkg_add (const std::string& dir)
@@ -230,7 +121,7 @@ execute_pkg_add (const std::string& dir)
 }
 
 static void
-initialize_load_path (void)
+initialize_load_path (bool set_initial_path)
 {
   // Temporarily set the execute_pkg_add function to one that catches
   // exceptions.  This is better than wrapping load_path::initialize in
@@ -346,7 +237,8 @@ safe_source_file (const std::string& file_name,
 // Initialize by reading startup files.
 
 static void
-execute_startup_files (void)
+execute_startup_files (bool read_site_files, bool read_init_files,
+                       bool verbose_flag, bool inhibit_startup_message)
 {
   octave::unwind_protect frame;
 
@@ -417,89 +309,6 @@ execute_startup_files (void)
     }
 }
 
-static int
-execute_eval_option_code (const std::string& code)
-{
-  octave::unwind_protect frame;
-
-  octave_save_signal_mask ();
-
-  octave::can_interrupt = true;
-
-  octave_signal_hook = octave::signal_handler;
-  octave_interrupt_hook = 0;
-  octave_bad_alloc_hook = 0;
-
-  octave::catch_interrupts ();
-
-  octave_initialized = true;
-
-  frame.protect_var (interactive);
-
-  interactive = false;
-
-  int parse_status = 0;
-
-  try
-    {
-      eval_string (code, false, parse_status, 0);
-    }
-  catch (const octave_interrupt_exception&)
-    {
-      recover_from_exception ();
-
-      if (quitting_gracefully)
-        clean_up_and_exit (exit_status);
-    }
-  catch (const octave_execution_exception&)
-    {
-      recover_from_exception ();
-
-      std::cerr << "error: unhandled execution exception -- eval failed"
-                << std::endl;
-    }
-
-  return parse_status;
-}
-
-static void
-execute_command_line_file (const std::string& fname)
-{
-  octave::unwind_protect frame;
-
-  octave_save_signal_mask ();
-
-  octave::can_interrupt = true;
-
-  octave_signal_hook = octave::signal_handler;
-  octave_interrupt_hook = 0;
-  octave_bad_alloc_hook = 0;
-
-  octave::catch_interrupts ();
-
-  octave_initialized = true;
-
-  frame.protect_var (interactive);
-
-  frame.protect_var (octave_program_invocation_name);
-  frame.protect_var (octave_program_name);
-
-  interactive = false;
-
-  octave_program_invocation_name = fname;
-
-  size_t pos = fname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
-
-  octave_program_name
-    = (pos != std::string::npos) ? fname.substr (pos+1) : fname;
-
-  std::string context;
-  bool verbose = false;
-  bool require_file = true;
-
-  safe_source_file (fname, context, verbose, require_file, "octave");
-}
-
 OCTAVE_NORETURN static void
 lo_error_handler (const char *fmt, ...)
 {
@@ -536,8 +345,6 @@ initialize_error_handlers ()
 static void
 maximum_braindamage (void)
 {
-  persist = true;
-
   FPS1 (octave_value (">> "));
   FPS2 (octave_value (""));
   FPS4 (octave_value (""));
@@ -560,509 +367,726 @@ maximum_braindamage (void)
   disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
-// EMBEDDED is declared int instead of bool because this function is
-// declared extern "C".
+namespace octave
+{
+  cmdline_options::cmdline_options (void)
+  {
+    m_all_args.resize (1);
+    m_all_args[0] = "";
+  }
+
+  cmdline_options::cmdline_options (int argc, char **argv)
+  {
+    // Save raw program arguments.
+    m_all_args = string_vector (argv, argc);
+
+    while (true)
+      {
+        int long_idx;
+
+        int optc = octave_getopt_long_wrapper (argc, argv, short_opts,
+                                               long_opts, &long_idx);
+
+        if (optc < 0)
+          break;
+
+        switch (optc)
+          {
+          case '?':
+            // Unrecognized option.  getopt_long already printed a message about
+            // it, so we will just print the usage string and exit.
+            octave_print_terse_usage_and_exit ();
+            break;
+
+          case 'H':
+            Fhistory_save (octave_value (false));
+            m_read_history_file = false;
+            break;
+
+          case 'W':
+            m_no_window_system = true;
+            break;
+
+          case 'V':
+            m_verbose_flag = true;
+            break;
+
+          case 'd':
+            // This is the same as yydebug in parse.y.
+            octave_debug++;
+            break;
+
+          case 'f':
+            m_read_init_files = false;
+            m_read_site_files = false;
+            break;
+
+          case 'h':
+            octave_print_verbose_usage_and_exit ();
+            break;
+
+          case 'i':
+            m_forced_interactive = true;
+            break;
+
+          case 'p':
+            if (optarg)
+              m_command_line_path.push_back (optarg);
+            break;
+
+          case 'q':
+            m_inhibit_startup_message = true;
+            break;
+
+          case 'x':
+            {
+              int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
+              Fecho_executing_commands (octave_value (val));
+            }
+            break;
+
+          case 'v':
+            octave_print_version_and_exit ();
+            break;
+
+          case BUILT_IN_DOCSTRINGS_FILE_OPTION:
+            if (optarg)
+              Fbuilt_in_docstrings_file (octave_value (optarg));
+            break;
+
+          case DOC_CACHE_FILE_OPTION:
+            if (optarg)
+              Fdoc_cache_file (octave_value (optarg));
+            break;
+
+          case EVAL_OPTION:
+            if (optarg)
+              {
+                if (m_code_to_eval.empty ())
+                  m_code_to_eval = optarg;
+                else
+                  m_code_to_eval += std::string (" ") + optarg;
+              }
+            break;
+
+          case EXEC_PATH_OPTION:
+            if (optarg)
+              m_exec_path = optarg;
+            break;
+
+          case FORCE_GUI_OPTION:
+            m_force_gui = true;
+            break;
+
+          case IMAGE_PATH_OPTION:
+            if (optarg)
+              m_image_path = optarg;
+            break;
+
+          case INFO_FILE_OPTION:
+            if (optarg)
+              Finfo_file (octave_value (optarg));
+            break;
+
+          case INFO_PROG_OPTION:
+            if (optarg)
+              Finfo_program (octave_value (optarg));
+            break;
+
+          case DEBUG_JIT_OPTION:
+            Fdebug_jit (octave_value (true));
+            break;
+
+          case JIT_COMPILER_OPTION:
+            Fjit_enable (octave_value (true));
+            break;
+
+          case LINE_EDITING_OPTION:
+            m_forced_line_editing = m_line_editing = true;
+            break;
+
+          case NO_GUI_OPTION:
+            m_no_gui = true;
+            break;
+
+          case NO_INIT_FILE_OPTION:
+            m_read_init_files = false;
+            break;
+
+          case NO_INIT_PATH_OPTION:
+            m_set_initial_path = false;
+            break;
+
+          case NO_LINE_EDITING_OPTION:
+            m_line_editing = false;
+            break;
+
+          case NO_SITE_FILE_OPTION:
+            m_read_site_files = 0;
+            break;
+
+          case PERSIST_OPTION:
+            m_persist = true;
+            break;
+
+          case TEXI_MACROS_FILE_OPTION:
+            if (optarg)
+              Ftexi_macros_file (octave_value (optarg));
+            break;
+
+          case TRADITIONAL_OPTION:
+            m_traditional = true;
+            m_persist = true;
+            break;
+
+          default:
+            // getopt_long should print a message about unrecognized options and
+            // return '?', which is handled above.  If we end up here, it is
+            // because there was an option but we forgot to handle it.
+            // That should be fatal.
+            panic_impossible ();
+            break;
+          }
+      }
+
+    // Check for various incompatible argument pairs
+    if (m_force_gui && m_no_gui)
+      {
+        warning ("only one of --force-gui and --no-gui may be used");
+
+        octave_print_terse_usage_and_exit ();
+      }
+
+    m_remaining_args = string_vector (argv+optind, argc-optind);
+  }
+
+  cmdline_options::cmdline_options (const cmdline_options& opts)
+    : m_force_gui (opts.m_force_gui),
+      m_forced_interactive (opts.m_forced_interactive),
+      m_forced_line_editing (opts.m_forced_line_editing),
+      m_inhibit_startup_message (opts.m_inhibit_startup_message),
+      m_line_editing (opts.m_line_editing),
+      m_no_gui (opts.m_no_gui),
+      m_no_window_system (opts.m_no_window_system),
+      m_persist (opts.m_persist),
+      m_read_history_file (opts.m_read_history_file),
+      m_read_init_files (opts.m_read_init_files),
+      m_read_site_files (opts.m_read_site_files),
+      m_set_initial_path (opts.m_set_initial_path),
+      m_traditional (opts.m_traditional),
+      m_verbose_flag (opts.m_verbose_flag),
+      m_code_to_eval (opts.m_code_to_eval),
+      m_command_line_path (opts.m_command_line_path),
+      m_exec_path (opts.m_exec_path),
+      m_image_path (opts.m_image_path),
+      m_all_args (opts.m_all_args),
+      m_remaining_args (opts.m_remaining_args)
+  { }
+
+  cmdline_options&
+  cmdline_options::operator = (const cmdline_options& opts)
+  {
+    if (this != &opts)
+      {
+        m_force_gui = opts.m_force_gui;
+        m_forced_interactive = opts.m_forced_interactive;
+        m_forced_line_editing = opts.m_forced_line_editing;
+        m_inhibit_startup_message = opts.m_inhibit_startup_message;
+        m_line_editing = opts.m_line_editing;
+        m_no_gui = opts.m_no_gui;
+        m_no_window_system = opts.m_no_window_system;
+        m_persist = opts.m_persist;
+        m_read_history_file = opts.m_read_history_file;
+        m_read_init_files = opts.m_read_init_files;
+        m_read_site_files = opts.m_read_site_files;
+        m_set_initial_path = opts.m_set_initial_path;
+        m_traditional = opts.m_traditional;
+        m_verbose_flag = opts.m_verbose_flag;
+        m_code_to_eval = opts.m_code_to_eval;
+        m_command_line_path = opts.m_command_line_path;
+        m_exec_path = opts.m_exec_path;
+        m_image_path = opts.m_image_path;
+        m_all_args = opts.m_all_args;
+        m_remaining_args = opts.m_remaining_args;
+      }
+
+    return *this;
+  }
+
+  application *application::instance = 0;
+
+  application::application (int argc, char **argv)
+    : m_options (argc, argv)
+  {
+    init ();
+  }
+
+  application::application (const cmdline_options& opts)
+    : m_options (opts)
+  {
+    init ();
+  }
+
+  void
+  application::set_program_names (const std::string& pname)
+  {
+    m_program_invocation_name = pname;
+
+    size_t pos = pname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+
+    m_program_name = (pos != std::string::npos) ? pname.substr (pos+1) : pname;
+  }
+
+  void
+  application::intern_argv (const string_vector& args)
+  {
+    assert (symbol_table::at_top_level ());
+
+    octave_idx_type nargs = args.numel ();
+
+    if (nargs > 0)
+      {
+        // Skip first argument (program name).
+        nargs--;
+
+        m_argv.resize (nargs);
+
+        for (octave_idx_type i = 0; i < nargs; i++)
+          m_argv[i] = args[i+1];
+      }
+
+    symbol_table::assign (".nargin.", nargs);
+    symbol_table::mark_hidden (".nargin.");
+  }
+
+  void application::interactive (bool arg)
+  {
+    m_interpreter->interactive (arg);
+  }
+
+  bool application::forced_interactive (void)
+  {
+    return instance->m_options.forced_interactive ();
+  }
+
+  bool application::interactive (void)
+  {
+    return instance->m_interpreter->interactive ();
+  }
+
+  application::~application (void)
+  {
+    instance = 0;
+
+    delete m_interpreter;
+  }
+
+  void application::create_interpreter (void)
+  {
+    if (! m_interpreter)
+      m_interpreter = new interpreter (this);
+  }
+
+  int application::execute_interpreter (void)
+  {
+    return m_interpreter ? m_interpreter->execute () : -1;
+  }
+
+  void application::init (void)
+  {
+    if (instance)
+      {
+        // FIXME: Should this be an error?
+      }
+    else
+      instance = this;
+
+    string_vector all_args = m_options.all_args ();
+
+    set_program_names (all_args[0]);
+
+    string_vector remaining_args = m_options.remaining_args ();
+
+    std::string code_to_eval = m_options.code_to_eval ();
+
+    m_have_script_file = ! remaining_args.empty ();
+
+    if (! code_to_eval.empty () && m_have_script_file)
+      {
+        warning ("--eval \"CODE\" and script file are mutually exclusive options");
+
+        octave_print_terse_usage_and_exit ();
+      }
+
+    m_is_octave_program = ((m_have_script_file || ! code_to_eval.empty ())
+                           && ! m_options.persist ()
+                           && ! m_options.traditional ());
+  }
+
+  int cli_application::execute (void)
+  {
+    create_interpreter ();
+
+    return execute_interpreter ();
+  }
+
+  void embedded_application::create_interpreter (void)
+  {
+    if (! m_interpreter)
+      m_interpreter = new interpreter (this, true);
+  }
+
+  int embedded_application::execute (void)
+  {
+    create_interpreter ();
+
+    return execute_interpreter ();
+  }
+
+  interpreter::interpreter (application *app_context, bool embedded)
+    : m_app_context (app_context), m_embedded (embedded),
+      m_interactive (false)
+  {
+    cmdline_options options = m_app_context->options ();
+
+    sysdep_init ();
+
+    install_defaults ();
+
+    // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
+    setlocale (LC_NUMERIC, "C");
+    setlocale (LC_TIME, "C");
+    octave::sys::env::putenv ("LC_NUMERIC", "C");
+    octave::sys::env::putenv ("LC_TIME", "C");
+
+    // Initialize the default floating point unit control state.
+    octave_set_default_fpucw ();
+
+    string_vector all_args = options.all_args ();
+
+    octave_thread::init ();
+
+    set_default_prompts ();
+
+    // Initialize default warning state before --traditional option
+    // that may reset them.
+
+    initialize_default_warning_state ();
+
+    if (options.traditional ())
+      maximum_braindamage ();
+
+    octave_ieee_init ();
+
+    // The idea here is to force xerbla to be referenced so that we will link to
+    // our own version instead of the one provided by the BLAS library.  But
+    // octave::numeric_limits<double>::NaN () should never be -1, so we
+    // should never actually call xerbla.  FIXME (again!):  If this
+    // becomes a constant expression the test might be optimized away and
+    // then the reference to the function might also disappear.
+
+    if (octave::numeric_limits<double>::NaN () == -1)
+      F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
+
+    initialize_error_handlers ();
+
+    if (! m_embedded)
+      octave::install_signal_handlers ();
+    else
+      quit_allowed = false;
+
+    initialize_file_io ();
+
+    install_types ();
+
+    install_ops ();
+
+    install_builtins ();
+
+    install_classdef ();
+
+    std::list<std::string> command_line_path = options.command_line_path ();
+
+    for (std::list<std::string>::const_iterator it = command_line_path.begin ();
+         it != command_line_path.end (); it++)
+      load_path::set_command_line_path (*it);
+
+    std::string exec_path = options.exec_path ();
+    if (! exec_path.empty ())
+      set_exec_path (exec_path);
+
+    std::string image_path = options.image_path ();
+    if (! image_path.empty ())
+      set_image_path (image_path);
+
+    if (options.no_window_system ())
+      display_info::no_window_system ();
+
+    // Is input coming from a terminal?  If so, we are probably interactive.
+
+    // If stdin is not a tty, then we are reading commands from a pipe or
+    // a redirected file.
+    bool stdin_is_tty = octave_isatty_wrapper (fileno (stdin));
+
+    m_interactive = (! m_embedded
+                     && ! m_app_context->is_octave_program ()
+                     && stdin_is_tty
+                     && octave_isatty_wrapper (fileno (stdout)));
+
+    // Check if the user forced an interactive session.  If he
+    // unnecessarily did so, reset forced_interactive to false.
+    if (options.forced_interactive ())
+      {
+        if (m_interactive)
+          options.forced_interactive (false);
+        else
+          m_interactive = true;
+      }
+
+    if ((! m_interactive || options.forced_interactive ())
+        && ! options.forced_line_editing ())
+      options.line_editing (false);
+
+    // Also skip start-up message unless session is interactive.
+    if (! m_interactive)
+      options.inhibit_startup_message (true);
+
+    // Force default line editor if we don't want readline editing.
+    if (! options.line_editing ())
+      octave::command_editor::force_default_editor ();
+
+    // These can come after command line args since none of them set any
+    // defaults that might be changed by command line options.
+
+    if (options.line_editing ())
+      initialize_command_input ();
+
+    octave_interpreter_ready = true;
+
+    initialize_version_info ();
+
+    // Make all command-line arguments available to startup files,
+    // including PKG_ADD files.
+
+    app_context->intern_argv (options.all_args ());
+
+    initialize_load_path (options.set_initial_path ());
+
+    initialize_history (options.read_history_file ());
+  }
+
+  int interpreter::execute (void)
+  {
+    cmdline_options options = m_app_context->options ();
+
+    if (! options.inhibit_startup_message ())
+      std::cout << octave_startup_message () << "\n" << std::endl;
+
+    octave_prepare_hdf5 ();
+
+    execute_startup_files (options.read_site_files (),
+                           options.read_init_files (),
+                           options.verbose_flag (),
+                           options.inhibit_startup_message ());
+
+    if (! options.inhibit_startup_message ()
+        && reading_startup_message_printed)
+      std::cout << std::endl;
+
+    // Execute any code specified with --eval 'CODE'
+    std::string code_to_eval = options.code_to_eval ();
+
+    if (! code_to_eval.empty ())
+      {
+        int parse_status = 0;
+
+        try
+          {
+            parse_status = execute_eval_option_code (code_to_eval);
+          }
+        catch (const octave_execution_exception&)
+          {
+            recover_from_exception ();
+
+            parse_status = 1;
+          }
+
+        if (! options.persist ())
+          {
+            quitting_gracefully = true;
+
+            clean_up_and_exit (parse_status);
+          }
+      }
+
+    // If there is an extra argument, see if it names a file to read.
+    // Additional arguments are taken as command line options for the script.
+
+    if (m_app_context->have_script_file ())
+      {
+        // If we are running an executable script (#! /bin/octave) then
+        // we should only see the args passed to the script.
+
+        exit_status = 0;
+
+        try
+          {
+            string_vector script_args = options.remaining_args ();
+
+            m_app_context->intern_argv (script_args);
+
+            execute_command_line_file (script_args[0]);
+          }
+        catch (const octave_execution_exception&)
+          {
+            recover_from_exception ();
+
+            exit_status = 1;
+          }
+
+        // Restore full set of args.
+        m_app_context->intern_argv (options.all_args ());
+
+        if (! options.persist ())
+          {
+            quitting_gracefully = true;
+
+            clean_up_and_exit (exit_status);
+          }
+      }
+
+    // Avoid counting commands executed from startup or script files.
+
+    octave::command_editor::reset_current_command_number (1);
+
+    // Force input to be echoed if not really interactive,
+    // but the user has forced interactive behavior.
+
+    if (options.forced_interactive ())
+      {
+        octave::command_editor::blink_matching_paren (false);
+
+        // FIXME: is this the right thing to do?
+        Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
+      }
+
+    if (m_embedded)
+      {
+        // FIXME: Do we need to do any cleanup here before returning?
+        // If we don't, what will happen to Octave functions that have been
+        // registered to execute with atexit, for example?
+
+        return 1;
+      }
+
+    int retval = main_loop ();
+
+    quitting_gracefully = true;
+
+    clean_up_and_exit (retval, true);
+
+    return retval;
+  }
+
+  int interpreter::execute_eval_option_code (const std::string& code)
+  {
+    octave::unwind_protect frame;
+
+    octave_save_signal_mask ();
+
+    octave::can_interrupt = true;
+
+    octave_signal_hook = octave::signal_handler;
+    octave_interrupt_hook = 0;
+    octave_bad_alloc_hook = 0;
+
+    octave::catch_interrupts ();
+
+    octave_initialized = true;
+
+    frame.add_method (this, &interpreter::interactive, m_interactive);
+
+    m_interactive = false;
+
+    int parse_status = 0;
+
+    try
+      {
+        eval_string (code, false, parse_status, 0);
+      }
+    catch (const octave_interrupt_exception&)
+      {
+        recover_from_exception ();
+
+        if (quitting_gracefully)
+          clean_up_and_exit (exit_status);
+      }
+    catch (const octave_execution_exception&)
+      {
+        recover_from_exception ();
+
+        std::cerr << "error: unhandled execution exception -- eval failed"
+                  << std::endl;
+      }
+
+    return parse_status;
+  }
+
+  void interpreter::execute_command_line_file (const std::string& fname)
+  {
+    octave::unwind_protect frame;
+
+    octave_save_signal_mask ();
+
+    octave::can_interrupt = true;
+
+    octave_signal_hook = octave::signal_handler;
+    octave_interrupt_hook = 0;
+    octave_bad_alloc_hook = 0;
+
+    octave::catch_interrupts ();
+
+    octave_initialized = true;
+
+    frame.add_method (this, &interpreter::interactive, m_interactive);
+
+    frame.add_method (m_app_context,
+                      &application::program_invocation_name,
+                      application::program_invocation_name ());
+
+    frame.add_method (m_app_context,
+                      &application::program_name,
+                      application::program_name ());
+
+    m_interactive = false;
+
+    m_app_context->set_program_names (fname);
+
+    std::string context;
+    bool verbose = false;
+    bool require_file = true;
+
+    safe_source_file (fname, context, verbose, require_file, "octave");
+  }
+}
+
+// embedded is int here because octave_main is extern "C".
 
 int
 octave_main (int argc, char **argv, int embedded)
 {
-  octave_process_command_line (argc, argv);
-
-  sysdep_init ();
-
-  install_defaults ();
-
-  octave_initialize_interpreter (argc, argv, embedded);
-
-  return octave_execute_interpreter ();
-}
-
-void
-octave_process_command_line (int argc, char **argv)
-{
-  octave_cmdline_argc = argc;
-  octave_cmdline_argv = argv;
-
-  while (true)
-    {
-      int long_idx;
-
-      int optc = octave_getopt_long_wrapper (argc, argv, short_opts,
-                                             long_opts, &long_idx);
-
-      if (optc < 0)
-        break;
-
-      switch (optc)
-        {
-        case '?':
-          // Unrecognized option.  getopt_long already printed a message about
-          // it, so we will just print the usage string and exit.
-          octave_print_terse_usage_and_exit ();
-          break;
-
-        case 'H':
-          Fhistory_save (octave_value (false));
-          read_history_file = false;
-          break;
-
-        case 'W':
-          no_window_system = true;
-          break;
-
-        case 'V':
-          verbose_flag = true;
-          break;
-
-        case 'd':
-          // This is the same as yydebug in parse.y.
-          octave_debug++;
-          break;
-
-        case 'f':
-          read_init_files = false;
-          read_site_files = false;
-          break;
-
-        case 'h':
-          octave_print_verbose_usage_and_exit ();
-          break;
-
-        case 'i':
-          forced_interactive = true;
-          break;
-
-        case 'p':
-          if (optarg)
-            command_line_path.push_back (optarg);
-          break;
-
-        case 'q':
-          inhibit_startup_message = true;
-          break;
-
-        case 'x':
-          {
-            int val = ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE;
-            Fecho_executing_commands (octave_value (val));
-          }
-          break;
-
-        case 'v':
-          octave_print_version_and_exit ();
-          break;
-
-        case BUILT_IN_DOCSTRINGS_FILE_OPTION:
-          if (optarg)
-            Fbuilt_in_docstrings_file (octave_value (optarg));
-          break;
-
-        case DOC_CACHE_FILE_OPTION:
-          if (optarg)
-            Fdoc_cache_file (octave_value (optarg));
-          break;
-
-        case EVAL_OPTION:
-          if (optarg)
-            {
-              if (code_to_eval.empty ())
-                code_to_eval = optarg;
-              else
-                code_to_eval += std::string (" ") + optarg;
-            }
-          break;
-
-        case EXEC_PATH_OPTION:
-          if (optarg)
-            exec_path = optarg;
-          break;
-
-        case FORCE_GUI_OPTION:
-          force_gui_option = true;
-          break;
-
-        case IMAGE_PATH_OPTION:
-          if (optarg)
-            image_path = optarg;
-          break;
-
-        case INFO_FILE_OPTION:
-          if (optarg)
-            Finfo_file (octave_value (optarg));
-          break;
-
-        case INFO_PROG_OPTION:
-          if (optarg)
-            Finfo_program (octave_value (optarg));
-          break;
-
-        case DEBUG_JIT_OPTION:
-          Fdebug_jit (octave_value (true));
-          break;
-
-        case JIT_COMPILER_OPTION:
-          Fjit_enable (octave_value (true));
-          break;
-
-        case LINE_EDITING_OPTION:
-          forced_line_editing = line_editing = true;
-          break;
-
-        case NO_GUI_OPTION:
-          no_gui_option = true;
-          break;
-
-        case NO_INIT_FILE_OPTION:
-          read_init_files = false;
-          break;
-
-        case NO_INIT_PATH_OPTION:
-          set_initial_path = false;
-          break;
-
-        case NO_LINE_EDITING_OPTION:
-          line_editing = false;
-          break;
-
-        case NO_SITE_FILE_OPTION:
-          read_site_files = 0;
-          break;
-
-        case PERSIST_OPTION:
-          persist = true;
-          break;
-
-        case TEXI_MACROS_FILE_OPTION:
-          if (optarg)
-            Ftexi_macros_file (octave_value (optarg));
-          break;
-
-        case TRADITIONAL_OPTION:
-          traditional = true;
-          break;
-
-        default:
-          // getopt_long should print a message about unrecognized options and
-          // return '?', which is handled above.  If we end up here, it is
-          // because there was an option but we forgot to handle it.
-          // That should be fatal.
-          panic_impossible ();
-          break;
-        }
-    }
-
-  // Check for various incompatible argument pairs
-  if (force_gui_option && no_gui_option)
-    {
-      warning ("only one of --force-gui and --no-gui may be used");
-
-      octave_print_terse_usage_and_exit ();
-    }
-
-  bool script_file = (argc - optind) > 0;
-  if (! code_to_eval.empty () && script_file)
-    {
-      warning ("--eval \"CODE\" and script file are mutually exclusive options");
-
-      octave_print_terse_usage_and_exit ();
-    }
-  an_octave_program = ((script_file || ! code_to_eval.empty ())
-                       && ! persist && ! traditional);
-
-}
-
-// EMBEDDED is declared int instead of bool because this function is
-// declared extern "C".
-
-void
-octave_initialize_interpreter (int argc, char **argv, int embedded)
-{
-  // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
-  setlocale (LC_NUMERIC, "C");
-  setlocale (LC_TIME, "C");
-  octave::sys::env::putenv ("LC_NUMERIC", "C");
-  octave::sys::env::putenv ("LC_TIME", "C");
-
-  // Initialize the default floating point unit control state
-  octave_set_default_fpucw ();
-
-  octave_embedded = embedded;
-
   octave::sys::env::set_program_name (argv[0]);
 
-  octave_program_invocation_name = octave::sys::env::get_program_invocation_name ();
-  octave_program_name = octave::sys::env::get_program_name ();
-
-  octave_thread::init ();
-
-  set_default_prompts ();
-
-  // Initialize default warning state before --traditional option
-  // that may reset them.
-
-  initialize_default_warning_state ();
-
-  if (traditional)
-    maximum_braindamage ();
-
-  octave_ieee_init ();
-
-  // The idea here is to force xerbla to be referenced so that we will link to
-  // our own version instead of the one provided by the BLAS library.  But
-  // octave::numeric_limits<double>::NaN () should never be -1, so we
-  // should never actually call xerbla.  FIXME (again!):  If this
-  // becomes a constant expression the test might be optimized away and
-  // then the reference to the function might also disappear.
-
-  if (octave::numeric_limits<double>::NaN () == -1)
-    F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
-
-  initialize_error_handlers ();
-
-  if (! embedded)
-    octave::install_signal_handlers ();
+  if (embedded)
+    {
+      octave::embedded_application app (argc, argv);
+      return app.execute ();
+    }
   else
-    quit_allowed = false;
-
-  initialize_file_io ();
-
-  install_types ();
-
-  install_ops ();
-
-  install_builtins ();
-
-  install_classdef ();
-
-  for (std::list<std::string>::const_iterator it = command_line_path.begin ();
-       it != command_line_path.end (); it++)
-    load_path::set_command_line_path (*it);
-
-  if (! exec_path.empty ())
-    set_exec_path (exec_path);
-
-  if (! image_path.empty ())
-    set_image_path (image_path);
-
-  if (no_window_system)
-    display_info::no_window_system ();
-
-  // Is input coming from a terminal?  If so, we are probably interactive.
-
-  // If stdin is not a tty, then we are reading commands from a pipe or
-  // a redirected file.
-  bool stdin_is_tty = octave_isatty_wrapper (fileno (stdin));
-
-  interactive = (! embedded && ! an_octave_program && stdin_is_tty
-                 && octave_isatty_wrapper (fileno (stdout)));
-
-  // Check if the user forced an interactive session.  If he
-  // unnecessarily did so, reset forced_interactive to false.
-  if (forced_interactive)
     {
-      if (interactive)
-        forced_interactive = false;
-      else
-        interactive = true;
+      octave::cli_application app (argc, argv);
+      return app.execute ();
     }
-
-  if ((! interactive || forced_interactive) && ! forced_line_editing)
-    line_editing = false;
-
-  // Also skip start-up message unless session is interactive.
-  if (! interactive)
-    inhibit_startup_message = true;
-
-  // Force default line editor if we don't want readline editing.
-  if (! line_editing)
-    octave::command_editor::force_default_editor ();
-
-  // These can come after command line args since none of them set any
-  // defaults that might be changed by command line options.
-
-  if (line_editing)
-    initialize_command_input ();
-
-  octave_interpreter_ready = true;
-
-  initialize_version_info ();
-
-  // Make all command-line arguments available to startup files,
-  // including PKG_ADD files.
-
-  intern_argv (argc, argv);
-
-  initialize_load_path ();
-
-  initialize_history (read_history_file);
-}
-
-int
-octave_execute_interpreter (void)
-{
-  if (! inhibit_startup_message)
-    std::cout << octave_startup_message () << "\n" << std::endl;
-
-  octave_prepare_hdf5 ();
-
-  execute_startup_files ();
-
-  if (! inhibit_startup_message && reading_startup_message_printed)
-    std::cout << std::endl;
-
-  // Execute any code specified with --eval 'CODE'
-  if (! code_to_eval.empty ())
-    {
-      int parse_status = 0;
-
-      try
-        {
-          parse_status = execute_eval_option_code (code_to_eval);
-        }
-      catch (const octave_execution_exception&)
-        {
-          recover_from_exception ();
-
-          parse_status = 1;
-        }
-
-      if (! persist)
-        {
-          quitting_gracefully = true;
-
-          clean_up_and_exit (parse_status);
-        }
-    }
-
-  // If there is an extra argument, see if it names a file to read.
-  // Additional arguments are taken as command line options for the script.
-
-  int last_arg_idx = optind;
-  int remaining_args = octave_cmdline_argc - last_arg_idx;
-
-  if (remaining_args > 0)
-    {
-      // If we are running an executable script (#! /bin/octave) then
-      // we should only see the args passed to the script.
-
-      exit_status = 0;
-
-      try
-        {
-          intern_argv (remaining_args, octave_cmdline_argv+last_arg_idx);
-
-          execute_command_line_file (octave_cmdline_argv[last_arg_idx]);
-        }
-      catch (const octave_execution_exception&)
-        {
-          recover_from_exception ();
-
-          exit_status = 1;
-        }
-
-      if (! persist)
-        {
-          quitting_gracefully = true;
-
-          clean_up_and_exit (exit_status);
-        }
-    }
-
-  // Avoid counting commands executed from startup files.
-
-  octave::command_editor::reset_current_command_number (1);
-
-  // Now argv should have the full set of args.
-  intern_argv (octave_cmdline_argc, octave_cmdline_argv);
-
-  // Force input to be echoed if not really interactive,
-  // but the user has forced interactive behavior.
-
-  if (forced_interactive)
-    {
-      octave::command_editor::blink_matching_paren (false);
-
-      // FIXME: is this the right thing to do?
-      Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
-    }
-
-  if (octave_embedded)
-    {
-      // FIXME: Do we need to do any cleanup here before returning?
-      // If we don't, what will happen to Octave functions that have been
-      // registered to execute with atexit, for example?
-
-      return 1;
-    }
-
-  int retval = main_loop ();
-
-  quitting_gracefully = true;
-
-  clean_up_and_exit (retval, true);
-
-  return retval;
-}
-
-static bool
-check_starting_gui (void)
-{
-  if (no_window_system)
-    return false;
-
-  std::string err_msg;
-  if (! display_info::display_available (err_msg))
-    {
-      if (! (inhibit_startup_message || err_msg.empty ()))
-        warning (err_msg.c_str ());
-
-      return false;
-    }
-
-  if (! line_editing)
-    {
-      if (! (inhibit_startup_message || no_gui_option))
-        warning ("--no-line-editing option given, disabling GUI");
-
-      return false;
-    }
-
-  if (force_gui_option)
-    return true;
-
-  if (no_gui_option)
-    return false;
-
-  if (persist)
-    return true;
-
-  // If stdin is not a tty, then assume we are reading commands from a pipe or
-  // a redirected file and the GUI should not start.  If this is not the case
-  // (for example, starting from a desktop "launcher" with no terminal) and you
-  // want to start the GUI, you may use the --force-gui option to start the GUI.
-
-  if (! octave_isatty_wrapper (fileno (stdin)))
-    return false;
-
-  // If we have code to eval or execute from a file, and we are going to exit
-  // immediately after executing it, don't start the gui.
-
-  int last_arg_idx = optind;
-  int remaining_args = octave_cmdline_argc - last_arg_idx;
-
-  if (! code_to_eval.empty () || remaining_args > 0)
-    return false;
-
-  return true;
-}
-
-// Return int instead of bool because this function is declared extern "C".
-
-int
-octave_starting_gui (void)
-{
-  start_gui = check_starting_gui ();
-  return start_gui;
 }
 
 DEFUN (isguirunning, args, ,
@@ -1075,7 +1099,10 @@ Return true if Octave is running in GUI mode and false otherwise.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (start_gui);
+  // FIXME: This isn't quite right, it just says that we intended to
+  // start the GUI, not that it is actually running.
+
+  return ovl (octave::application::is_gui_running ());
 }
 
 /*
@@ -1106,7 +1133,7 @@ an example of how to create an executable Octave script.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (Cell (octave_argv));
+  return ovl (Cell (octave::application::argv ()));
 }
 
 /*
@@ -1129,7 +1156,7 @@ how to create an executable Octave script.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_program_invocation_name);
+  return ovl (octave::application::program_invocation_name ());
 }
 
 /*
@@ -1148,7 +1175,7 @@ Return the last component of the value returned by
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave_program_name);
+  return ovl (octave::application::program_name ());
 }
 
 /*

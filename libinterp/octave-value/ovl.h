@@ -192,7 +192,7 @@ template<typename... OV_Args>
 inline octave_value_list
 ovl (const OV_Args&... args)
 {
-  return octave_value_list ({args...});
+  return octave_value_list (std::initializer_list<octave_value> ({args...}));
 }
 
 #endif

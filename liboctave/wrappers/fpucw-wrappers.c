@@ -59,7 +59,7 @@ octave_set_default_fpucw (void)
 unsigned int
 octave_begin_long_double_rounding (void)
 {
-  DECL_LONG_DOUBLE_ROUNDING
+  fpucw_t oldcw = 0;
 
   BEGIN_LONG_DOUBLE_ROUNDING ();
 

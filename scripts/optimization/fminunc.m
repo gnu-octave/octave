@@ -84,7 +84,7 @@
 ## Application Notes: If the objective function is a single nonlinear equation
 ## of one variable then using @code{fminbnd} is usually a better choice.
 ##
-## The algorithm used by @code{fminsearch} is a gradient search which depends
+## The algorithm used by @code{fminunc} is a gradient search which depends
 ## on the objective function being differentiable.  If the function has
 ## discontinuities it may be better to use a derivative-free algorithm such as
 ## @code{fminsearch}.

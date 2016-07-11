@@ -390,6 +390,8 @@ three-dimensional plots.
 
 @DOCSTRING(specular)
 
+@DOCSTRING(lighting)
+
 @DOCSTRING(meshgrid)
 
 @DOCSTRING(ndgrid)

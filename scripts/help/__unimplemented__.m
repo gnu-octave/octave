@@ -712,7 +712,6 @@ function list = missing_functions ()
   "libpointer",
   "libstruct",
   "lightangle",
-  "lighting",
   "linkdata",
   "listfonts",
   "loadlibrary",

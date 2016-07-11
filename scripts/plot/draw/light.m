@@ -60,7 +60,7 @@
 ##
 ## Optionally, the handle to the light object is returned in @var{h}.
 ##
-## @seealso{get, set, patch, surface}
+## @seealso{get, set, patch, surface, lighting}
 ## @end deftypefn
 
 ## Author: mmuetzel

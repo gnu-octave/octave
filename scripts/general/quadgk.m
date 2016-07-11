@@ -323,28 +323,19 @@ function [q, err] = quadgk (f, a, b, varargin)
 
   warn_id = "Octave:quadgk:warning-termination";
 
+  if (issingle)
+    eps1 = eps ("single");
+  else
+    eps1 = eps ("double");
+  endif
+
   ## Initial evaluation of the integrand on the subintervals
-  [q_subs, q_errs] = __quadgk_eval__ (f, subs);
+  [q_subs, q_errs] = __quadgk_eval__ (f, subs, eps1, trans);
   q0 = sum (q_subs);
   err0 = sum (q_errs);
 
-  if (issingle)
-    eps = eps ("single");
-  else
-    eps = eps ("double");
-  endif
-
   first = true;
   while (true)
-    ## Check for subintervals that are too small.
-    ## Test must be performed in untransformed subintervals.
-    ## What is a good value for this test?  Shampine suggests 100*eps.
-    if (any (abs (diff (trans (subs), [], 2) / h0) < 100 * eps))
-      q = q0;
-      err = err0;
-      break;
-    endif
-
     ## Quit if any evaluations are not finite (Inf or NaN).
     if (any (! isfinite (q_subs)))
       warning (warn_id, "quadgk: non finite integrand encountered");
@@ -399,7 +390,7 @@ function [q, err] = quadgk (f, a, b, varargin)
     endif
 
     ## Evaluation of the integrand on the remaining subintervals
-    [q_subs, q_errs] = __quadgk_eval__ (f, subs);
+    [q_subs, q_errs] = __quadgk_eval__ (f, subs, eps1, trans);
   endwhile
 
   if (err > max (abstol, reltol * abs (q)))
@@ -409,8 +400,8 @@ function [q, err] = quadgk (f, a, b, varargin)
 
 endfunction
 
-function [q, err] = __quadgk_eval__ (f, subs)
-  ## A (15,7) point pair of Gauss-Konrod quadrature rules.
+function [q, err, too_close] = __quadgk_eval__ (f, subs, eps1, trans)
+  ## A (15,7) point pair of Gauss-Kronrod quadrature rules.
   ## The abscissa and weights are copied directly from dqk15w.f from quadpack.
 
   persistent abscissa = [-0.9914553711208126e+00, -0.9491079123427585e+00, ...
@@ -440,8 +431,18 @@ function [q, err] = __quadgk_eval__ (f, subs)
 
   halfwidth = diff (subs, [], 2) ./ 2;
   center = sum (subs, 2) ./ 2;
-  x = (halfwidth * abscissa) + center;
-  y = reshape (f (x(:)), size (x));
+  t = (halfwidth * abscissa) + center;
+  x = trans ([t(:,1), t(:,end)]);
+
+  ## Shampine suggests 100 * eps1.
+  ## FIXME: reference for suggestion?
+  if (any (abs (diff (x, [], 2) ./ max (abs (x), [], 2))) < 100 * eps1)
+    too_close = true;
+    return;
+  endif
+
+  too_close = false;
+  y = reshape (f (t(:)), size (t));
 
   ## This is faster than using bsxfun as the * operator can use a
   ## single BLAS call, rather than rows (sub) calls to the @times function.
@@ -469,9 +470,11 @@ endfunction
 %!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-6)
 %!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-6)
 %!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
-
 %!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), 1e-6)
 %!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, 1e-6)
+%!test
+%! f = @(x) x .^ 5 .* exp (-x) .* sin (x);
+%! assert (quadgk (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, 2e-12);
 
 ## Test input validation
 %!error quadgk (@sin)

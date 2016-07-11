@@ -53,6 +53,8 @@ Array<T>::nil_rep (void)
   return &nr;
 }
 
+// This is similar to the template for containers but specialized for Array.
+// Note we can't specialize a member without also specializing the class.
 template <typename T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   : dimensions (dv), rep (a.rep),

@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 #include "idx-vector.h"
+#include "lo-error.h"
 #include "lo-traits.h"
 #include "lo-utils.h"
 #include "oct-sort.h"
@@ -192,6 +193,10 @@ public:
 
   //! Reshape constructor.
   Array (const Array<T>& a, const dim_vector& dv);
+
+  //! Constructor from standard library sequence containers.
+  template<template <typename...> class Container>
+  Array (const Container<T>& a, const dim_vector& dv);
 
   //! Type conversion case.
   template <typename U>
@@ -750,6 +755,31 @@ public:
 private:
   static void instantiation_guard ();
 };
+
+// We use a variadic template for template template parameter so that
+// we don't have to specify all the template parameters and limit this
+// to Container<T>. http://stackoverflow.com/a/20499809/1609556
+template<typename T>
+template<template <typename...> class Container>
+Array<T>::Array (const Container<T>& a, const dim_vector& dv)
+  : dimensions (dv), rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
+    slice_data (rep->data), slice_len (rep->len)
+{
+  if (dimensions.safe_numel () != octave_idx_type (a.size ()))
+    {
+      std::string new_dims_str = dimensions.str ();
+
+      (*current_liboctave_error_handler)
+        ("reshape: can't reshape %i elements into %s array",
+         a.size (), new_dims_str.c_str ());
+    }
+
+  octave_idx_type i = 0;
+  for (const T& x : a)
+    slice_data[i++] = x;
+
+  dimensions.chop_trailing_singletons ();
+}
 
 //! This is a simple wrapper template that will subclass an Array<T>
 //! type or any later type derived from it and override the default

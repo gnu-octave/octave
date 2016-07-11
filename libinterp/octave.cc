@@ -430,8 +430,8 @@ namespace octave
             break;
 
           case 'p':
-            if (optarg)
-              m_command_line_path.push_back (optarg);
+            if (octave_optarg_wrapper ())
+              m_command_line_path.push_back (octave_optarg_wrapper ());
             break;
 
           case 'q':
@@ -450,28 +450,28 @@ namespace octave
             break;
 
           case BUILT_IN_DOCSTRINGS_FILE_OPTION:
-            if (optarg)
-              Fbuilt_in_docstrings_file (octave_value (optarg));
+            if (octave_optarg_wrapper ())
+              Fbuilt_in_docstrings_file (octave_value (octave_optarg_wrapper ()));
             break;
 
           case DOC_CACHE_FILE_OPTION:
-            if (optarg)
-              Fdoc_cache_file (octave_value (optarg));
+            if (octave_optarg_wrapper ())
+              Fdoc_cache_file (octave_value (octave_optarg_wrapper ()));
             break;
 
           case EVAL_OPTION:
-            if (optarg)
+            if (octave_optarg_wrapper ())
               {
                 if (m_code_to_eval.empty ())
-                  m_code_to_eval = optarg;
+                  m_code_to_eval = octave_optarg_wrapper ();
                 else
-                  m_code_to_eval += std::string (" ") + optarg;
+                  m_code_to_eval += std::string (" ") + octave_optarg_wrapper ();
               }
             break;
 
           case EXEC_PATH_OPTION:
-            if (optarg)
-              m_exec_path = optarg;
+            if (octave_optarg_wrapper ())
+              m_exec_path = octave_optarg_wrapper ();
             break;
 
           case FORCE_GUI_OPTION:
@@ -479,18 +479,18 @@ namespace octave
             break;
 
           case IMAGE_PATH_OPTION:
-            if (optarg)
-              m_image_path = optarg;
+            if (octave_optarg_wrapper ())
+              m_image_path = octave_optarg_wrapper ();
             break;
 
           case INFO_FILE_OPTION:
-            if (optarg)
-              Finfo_file (octave_value (optarg));
+            if (octave_optarg_wrapper ())
+              Finfo_file (octave_value (octave_optarg_wrapper ()));
             break;
 
           case INFO_PROG_OPTION:
-            if (optarg)
-              Finfo_program (octave_value (optarg));
+            if (octave_optarg_wrapper ())
+              Finfo_program (octave_value (octave_optarg_wrapper ()));
             break;
 
           case DEBUG_JIT_OPTION:
@@ -530,8 +530,8 @@ namespace octave
             break;
 
           case TEXI_MACROS_FILE_OPTION:
-            if (optarg)
-              Ftexi_macros_file (octave_value (optarg));
+            if (octave_optarg_wrapper ())
+              Ftexi_macros_file (octave_value (octave_optarg_wrapper ()));
             break;
 
           case TRADITIONAL_OPTION:
@@ -557,7 +557,8 @@ namespace octave
         octave_print_terse_usage_and_exit ();
       }
 
-    m_remaining_args = string_vector (argv+optind, argc-optind);
+    m_remaining_args = string_vector (argv+octave_optind_wrapper (),
+                                      argc-octave_optind_wrapper ());
   }
 
   cmdline_options::cmdline_options (const cmdline_options& opts)

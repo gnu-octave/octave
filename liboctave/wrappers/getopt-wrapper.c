@@ -101,3 +101,15 @@ octave_getopt_long_wrapper (int argc, char *const *argv,
 
   return retval;
 }
+
+char *
+octave_optarg_wrapper (void)
+{
+  return optarg;
+}
+
+int
+octave_optind_wrapper (void)
+{
+  return optind;
+}

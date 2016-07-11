@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "pt-walk.h"
 #include "pt-pr-code.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 class tree;
 class tree_decl_command;

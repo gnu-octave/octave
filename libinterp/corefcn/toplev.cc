@@ -24,14 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cassert>
 #include <cerrno>
 #include <cstdlib>
-#include <cstring>
 #include <new>
 
-#include <fstream>
-#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -40,18 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include <windows.h>
 #endif
 
-#include "cmd-edit.h"
-#include "cmd-hist.h"
-#include "file-ops.h"
+#include "child-list.h"
 #include "lo-error.h"
-#include "lo-mappers.h"
-#include "oct-env.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "oct-syscalls.h"
-#include "quit.h"
-#include "signal-wrappers.h"
-#include "singleton-cleanup.h"
 #include "str-vec.h"
 #include "wait-for-input.h"
 
@@ -62,365 +51,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "file-io.h"
-#include "graphics.h"
-#include "input.h"
-#include "lex.h"
-#include "load-save.h"
 #include "octave.h"
-#include "octave-link.h"
-#include "oct-hist.h"
 #include "oct-map.h"
 #include "ovl.h"
 #include "ov.h"
 #include "pager.h"
-#include "parse.h"
-#include "pathsearch.h"
 #include "procstream.h"
-#include "pt-eval.h"
-#include "pt-jump.h"
-#include "pt-stmt.h"
-#include "sighandlers.h"
 #include "sysdep.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
-#include "variables.h"
-#include "version.h"
+#include <version.h>
 
 #if ! defined (SHELL_PATH)
 #  define SHELL_PATH "/bin/sh"
 #endif
-
-void (*octave_exit) (int) = ::exit;
-
-// TRUE means the quit() call is allowed.
-bool quit_allowed = true;
-
-// TRUE means we are exiting via the builtin exit or quit functions.
-bool quitting_gracefully = false;
-// This stores the exit status.
-int exit_status = 0;
-
-// TRUE means we are ready to interpret commands, but not everything
-// is ready for interactive use.
-bool octave_interpreter_ready = false;
-
-// TRUE means we've processed all the init code and we are good to go.
-bool octave_initialized = false;
-
-void
-recover_from_exception (void)
-{
-  octave::can_interrupt = true;
-  octave_interrupt_immediately = 0;
-  octave_interrupt_state = 0;
-  octave_signal_caught = 0;
-  octave_exception_state = octave_no_exception;
-  octave_restore_signal_mask ();
-  octave::catch_interrupts ();
-}
-
-int
-main_loop (void)
-{
-  octave_save_signal_mask ();
-
-  octave::can_interrupt = true;
-
-  octave_signal_hook = octave::signal_handler;
-  octave_interrupt_hook = 0;
-  octave_bad_alloc_hook = 0;
-
-  octave::catch_interrupts ();
-
-  octave_initialized = true;
-
-  // The big loop.
-
-  octave_lexer *lxr = (octave::application::interactive ()
-                       ? new octave_lexer ()
-                       : new octave_lexer (stdin));
-
-  octave_parser parser (*lxr);
-
-  int retval = 0;
-  do
-    {
-      try
-        {
-          reset_error_handler ();
-
-          parser.reset ();
-
-          if (symbol_table::at_top_level ())
-            tree_evaluator::reset_debug_state ();
-
-          retval = parser.run ();
-
-          if (retval == 0)
-            {
-              if (parser.stmt_list)
-                {
-                  parser.stmt_list->accept (*current_evaluator);
-
-                  octave_quit ();
-
-                  if (! octave::application::interactive ())
-                    {
-                      bool quit = (tree_return_command::returning
-                                   || tree_break_command::breaking);
-
-                      if (tree_return_command::returning)
-                        tree_return_command::returning = 0;
-
-                      if (tree_break_command::breaking)
-                        tree_break_command::breaking--;
-
-                      if (quit)
-                        break;
-                    }
-
-                  if (octave_completion_matches_called)
-                    octave_completion_matches_called = false;
-                  else
-                    octave::command_editor::increment_current_command_number ();
-                }
-              else if (parser.lexer.end_of_input)
-                break;
-            }
-        }
-      catch (const octave_interrupt_exception&)
-        {
-          recover_from_exception ();
-
-          if (quitting_gracefully)
-            return exit_status;
-
-          // Required newline when the user does Ctrl+C at the prompt.
-          if (octave::application::interactive ())
-            octave_stdout << "\n";
-        }
-      catch (const index_exception& e)
-        {
-          recover_from_exception ();
-
-          std::cerr << "error: unhandled index exception: "
-                    << e.message () << " -- trying to return to prompt"
-                    << std::endl;
-        }
-      catch (const octave_execution_exception& e)
-        {
-          std::string stack_trace = e.info ();
-
-          if (! stack_trace.empty ())
-            std::cerr << stack_trace;
-
-          if (octave::application::interactive ())
-            recover_from_exception ();
-          else
-            {
-              // We should exit with a nonzero status.
-              retval = 1;
-              break;
-            }
-        }
-      catch (const std::bad_alloc&)
-        {
-          recover_from_exception ();
-
-          std::cerr << "error: out of memory -- trying to return to prompt"
-                    << std::endl;
-        }
-
-#if defined (DBSTOP_NANINF)
-      if (Vdebug_on_naninf)
-        {
-          if (setjump (naninf_jump) != 0)
-            debug_or_throw_exception (true);  // true = stack trace
-        }
-#endif
-    }
-  while (retval == 0);
-
-  if (octave::application::interactive ())
-    octave_stdout << "\n";
-
-  if (retval == EOF)
-    retval = 0;
-
-  return retval;
-}
-
-// Fix up things before exiting.
-
-static std::list<std::string> octave_atexit_functions;
-
-static void
-do_octave_atexit (void)
-{
-  static bool deja_vu = false;
-
-  OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
-
-  while (! octave_atexit_functions.empty ())
-    {
-      std::string fcn = octave_atexit_functions.front ();
-
-      octave_atexit_functions.pop_front ();
-
-      OCTAVE_SAFE_CALL (reset_error_handler, ());
-
-      OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
-
-      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-    }
-
-  if (! deja_vu)
-    {
-      deja_vu = true;
-
-      // Process pending events and disasble octave_link event
-      // processing with this call.
-
-      octave_link::process_events (true);
-
-      // Do this explicitly so that destructors for mex file objects
-      // are called, so that functions registered with mexAtExit are
-      // called.
-      OCTAVE_SAFE_CALL (clear_mex_functions, ());
-
-      OCTAVE_SAFE_CALL (octave::command_editor::restore_terminal_state, ());
-
-      // FIXME: is this needed?  Can it cause any trouble?
-      OCTAVE_SAFE_CALL (raw_mode, (0));
-
-      OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
-
-      if (! octave::command_history::ignoring_entries ())
-        OCTAVE_SAFE_CALL (octave::command_history::clean_up_and_save, ());
-
-      OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
-
-      OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
-
-      OCTAVE_SAFE_CALL (close_files, ());
-
-      OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
-
-      OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
-
-      OCTAVE_SAFE_CALL (sysdep_cleanup, ());
-
-      OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
-
-      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-
-      if (! quitting_gracefully && octave::application::interactive ())
-        {
-          octave_stdout << "\n";
-
-          // Yes, we want this to be separate from the call to
-          // flush_octave_stdout above.
-
-          OCTAVE_SAFE_CALL (flush_octave_stdout, ());
-        }
-
-      // Don't call singleton_cleanup_list::cleanup until we have the
-      // problems with registering/unregistering types worked out.  For
-      // example, uncomment the following line, then use the make_int
-      // function from the examples directory to create an integer
-      // object and then exit Octave.  Octave should crash with a
-      // segfault when cleaning up the typinfo singleton.  We need some
-      // way to force new octave_value_X types that are created in
-      // .oct files to be unregistered when the .oct file shared library
-      // is unloaded.
-      //
-      // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
-
-      OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
-    }
-}
-
-void
-clean_up_and_exit (int status, bool safe_to_return)
-{
-  do_octave_atexit ();
-
-  if (octave_link::exit (status))
-    {
-      if (safe_to_return)
-        return;
-      else
-        {
-          // What should we do here?  We might be called from some
-          // location other than the end of octave_execute_interpreter,
-          // so it might not be safe to return.
-
-          // We have nothing else to do at this point, and the
-          // octave_link::exit function is supposed to take care of
-          // exiting for us.  Assume that job won't take more than a
-          // day...
-
-          octave_sleep (86400); // FIXME: really needed?
-        }
-    }
-  else
-    {
-      if (octave_exit)
-        (*octave_exit) (status);
-    }
-}
-
-DEFUN (quit, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} exit
-@deftypefnx {} {} exit (@var{status})
-@deftypefnx {} {} quit
-@deftypefnx {} {} quit (@var{status})
-Exit the current Octave session.
-
-If the optional integer value @var{status} is supplied, pass that value to
-the operating system as Octave's exit status.  The default value is zero.
-
-When exiting, Octave will attempt to run the m-file @file{finish.m} if it
-exists.  User commands to save the workspace or clean up temporary files
-may be placed in that file.  Alternatively, another m-file may be scheduled
-to run using @code{atexit}.
-@seealso{atexit}
-@end deftypefn */)
-{
-  // Confirm OK to shutdown.  Note: A dynamic function installation similar
-  // to overriding polymorphism for which the GUI can install its own "quit"
-  // yet call this base "quit" could be nice.  No link would be needed here.
-  if (! octave_link::confirm_shutdown ())
-    return ovl ();
-
-  if (! quit_allowed)
-    error ("quit: not supported in embedded mode");
-
-  if (args.length () > 0)
-    {
-      int tmp = args(0).nint_value ();
-
-      exit_status = tmp;
-    }
-
-  // Instead of simply calling exit, we simulate an interrupt
-  // with a request to exit cleanly so that no matter where the
-  // call to quit occurs, we will run the unwind_protect stack,
-  // clear the OCTAVE_LOCAL_BUFFER allocations, etc. before
-  // exiting.
-
-  quitting_gracefully = true;
-
-  octave_interrupt_state = -1;
-
-  octave_throw_interrupt_exception ();
-
-  return ovl ();
-}
-
-DEFALIAS (exit, quit);
 
 DEFUN (warranty, , ,
        doc: /* -*- texinfo -*-
@@ -668,97 +312,6 @@ command shell that is started to run the command.
 %!error system ()
 %!error system (1, 2, 3)
 */
-
-void
-octave_add_atexit_function (const std::string& fname)
-{
-  octave_atexit_functions.push_front (fname);
-}
-
-bool
-octave_remove_atexit_function (const std::string& fname)
-{
-  bool found = false;
-
-  for (std::list<std::string>::iterator p = octave_atexit_functions.begin ();
-       p != octave_atexit_functions.end (); p++)
-    {
-      if (*p == fname)
-        {
-          octave_atexit_functions.erase (p);
-          found = true;
-          break;
-        }
-    }
-
-  return found;
-}
-
-DEFUN (atexit, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} atexit (@var{fcn})
-@deftypefnx {} {} atexit (@var{fcn}, @var{flag})
-Register a function to be called when Octave exits.
-
-For example,
-
-@example
-@group
-function last_words ()
-  disp ("Bye bye");
-endfunction
-atexit ("last_words");
-@end group
-@end example
-
-@noindent
-will print the message @qcode{"Bye bye"} when Octave exits.
-
-The additional argument @var{flag} will register or unregister @var{fcn}
-from the list of functions to be called when Octave exits.  If @var{flag} is
-true, the function is registered, and if @var{flag} is false, it is
-unregistered.  For example, after registering the function @code{last_words}
-above,
-
-@example
-atexit ("last_words", false);
-@end example
-
-@noindent
-will remove the function from the list and Octave will not call
-@code{last_words} when it exits.
-
-Note that @code{atexit} only removes the first occurrence of a function
-from the list, so if a function was placed in the list multiple times with
-@code{atexit}, it must also be removed from the list multiple times.
-@seealso{quit}
-@end deftypefn */)
-{
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-
-  std::string arg = args(0).xstring_value ("atexit: FCN argument must be a string");
-
-  bool add_mode = (nargin == 2)
-    ? args(1).xbool_value ("atexit: FLAG argument must be a logical value")
-    : true;
-
-  octave_value_list retval;
-
-  if (add_mode)
-    octave_add_atexit_function (arg);
-  else
-    {
-      bool found = octave_remove_atexit_function (arg);
-
-      if (nargout > 0)
-        retval = ovl (found);
-    }
-
-  return retval;
-}
 
 static octave_value
 find_config_info (const octave_scalar_map& m, const std::string& key)

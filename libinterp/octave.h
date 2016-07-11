@@ -173,8 +173,8 @@ namespace octave
 
   // The application object contains a pointer to the current
   // interpreter and the interpreter contains a pointer back to the
-  // application context so we need a forward declaration for one of
-  // them...
+  // application context so we need a forward declaration for one (or
+  // both) of them...
 
   class interpreter;
 
@@ -329,39 +329,6 @@ namespace octave
     embedded_application (const embedded_application&);
 
     embedded_application& operator = (const embedded_application&);
-  };
-
-  class OCTINTERP_API interpreter
-  {
-  public:
-
-    interpreter (application *app_context = 0, bool embedded = false);
-
-    ~interpreter (void) { }
-
-    int execute (void);
-
-    int execute_eval_option_code (const std::string& code);
-
-    void execute_command_line_file (const std::string& fname);
-
-    bool interactive (void) const { return m_interactive; }
-    void interactive (bool arg) { m_interactive = arg; }
-
-  private:
-
-    // No copying, at least not yet...
-
-    interpreter (const interpreter&);
-
-    interpreter& operator = (const interpreter&);
-
-    application *m_app_context;
-
-    bool m_embedded;
-
-    // TRUE means this is an interactive interpreter (forced or not).
-    bool m_interactive = false;
   };
 }
 

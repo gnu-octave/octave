@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "singleton-cleanup.h"
 #include "symtab.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0

@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-eval.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "variables.h"
 

@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "file-ops.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "ls-hdf5.h"
 #include "ls-oct-text.h"
@@ -52,7 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "parse.h"
 #include "pr-output.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "variables.h"
 

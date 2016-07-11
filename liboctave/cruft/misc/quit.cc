@@ -48,6 +48,14 @@ octave_handle_signal (void)
     }
 }
 
+extern OCTAVE_API void
+clean_up_and_exit (int exit_status, bool safe_to_return)
+{
+  octave_exception_state = octave_quit_exception;
+
+  throw octave_exit_exception (exit_status, safe_to_return);
+}
+
 void
 octave_throw_interrupt_exception (void)
 {
@@ -96,6 +104,11 @@ octave_rethrow_exception (void)
 
         case octave_alloc_exception:
           octave_throw_bad_alloc ();
+          break;
+
+        case octave_quit_exception:
+          clean_up_and_exit (octave_exit_exception_status,
+                             octave_exit_exception_safe_to_return);
           break;
 
         default:

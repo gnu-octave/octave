@@ -85,7 +85,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "sighandlers.h"
 #include "sysdep.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "utils.h"
 #include "file-stat.h"
 

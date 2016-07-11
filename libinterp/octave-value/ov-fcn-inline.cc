@@ -47,7 +47,7 @@ Open Source Initiative (www.opensource.org)
 #include "pr-output.h"
 #include "variables.h"
 #include "parse.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"

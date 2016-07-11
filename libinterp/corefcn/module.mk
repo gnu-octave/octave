@@ -48,6 +48,7 @@ COREFCN_INC = \
   libinterp/corefcn/help.h \
   libinterp/corefcn/hook-fcn.h \
   libinterp/corefcn/input.h \
+  libinterp/corefcn/interpreter.h \
   libinterp/corefcn/load-path.h \
   libinterp/corefcn/load-save.h \
   libinterp/corefcn/ls-ascii-helper.h \
@@ -179,6 +180,7 @@ COREFCN_SRC = \
   libinterp/corefcn/hook-fcn.cc \
   libinterp/corefcn/input.cc \
   libinterp/corefcn/inv.cc \
+  libinterp/corefcn/interpreter.cc \
   libinterp/corefcn/kron.cc \
   libinterp/corefcn/load-path.cc \
   libinterp/corefcn/load-save.cc \

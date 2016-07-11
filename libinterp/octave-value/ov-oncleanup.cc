@@ -25,11 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "defun.h"
+#include "interpreter.h"
 #include "ov-oncleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pt-misc.h"
-#include "toplev.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_oncleanup, "onCleanup",
                                      "onCleanup");

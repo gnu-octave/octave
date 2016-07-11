@@ -25,68 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <string>
+#warning "toplev.h has been deprecated; use interpreter.h instead"
 
-#include "quit.h"
-
-typedef void (*octave_exit_func) (int);
-extern OCTINTERP_API octave_exit_func octave_exit;
-
-extern OCTINTERP_API bool quit_allowed;
-
-extern OCTINTERP_API bool quitting_gracefully;
-
-extern OCTINTERP_API int exit_status;
-
-extern OCTINTERP_API void
-clean_up_and_exit (int status, bool safe_to_return = false);
-
-extern OCTINTERP_API void recover_from_exception (void);
-
-extern OCTINTERP_API int main_loop (void);
-
-extern OCTINTERP_API void
-octave_add_atexit_function (const std::string& fname);
-
-extern OCTINTERP_API bool
-octave_remove_atexit_function (const std::string& fname);
-
-// TRUE means we are ready to interpret commands, but not everything
-// is ready for interactive use.
-extern OCTINTERP_API bool octave_interpreter_ready;
-
-// TRUE means we've processed all the init code and we are good to go.
-extern OCTINTERP_API bool octave_initialized;
-
-// Call a function with exceptions handled to avoid problems with
-// errors while shutting down.
-
-#define OCTAVE_IGNORE_EXCEPTION(E) \
-  catch (E) \
-    { \
-      std::cerr << "error: ignoring " #E " while preparing to exit" << std::endl; \
-      recover_from_exception (); \
-    }
-
-#define OCTAVE_SAFE_CALL(F, ARGS) \
-  do \
-    { \
-      try \
-        { \
-          octave::unwind_protect frame; \
- \
-          frame.protect_var (Vdebug_on_error); \
-          frame.protect_var (Vdebug_on_warning); \
- \
-          Vdebug_on_error = false; \
-          Vdebug_on_warning = false; \
- \
-          F ARGS; \
-        } \
-      OCTAVE_IGNORE_EXCEPTION (const octave_interrupt_exception&) \
-      OCTAVE_IGNORE_EXCEPTION (const octave_execution_exception&) \
-      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&) \
-    } \
-  while (0)
+#include "interpreter.h"
 
 #endif

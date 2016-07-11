@@ -89,7 +89,7 @@ To initialize:
 #include "gl2ps-print.h"
 #include "graphics.h"
 #include "parse.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "variables.h"
 
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"

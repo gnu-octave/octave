@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "input.h"
+#include "interpreter.h"
 #include "load-save.h"
 #include "octave.h"
 #include "oct-map.h"
@@ -53,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-eval.h"
 #include "sighandlers.h"
 #include "sysdep.h"
-#include "toplev.h"
 #include "utils.h"
 #include "variables.h"
 

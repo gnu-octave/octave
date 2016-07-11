@@ -61,7 +61,7 @@ Software Foundation, Inc.
 #include "parse.h"
 #include "sighandlers.h"
 #include "sysdep.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"

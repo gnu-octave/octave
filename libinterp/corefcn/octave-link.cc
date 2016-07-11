@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "pager.h"
 #include "singleton-cleanup.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 #include "octave-link.h"
 

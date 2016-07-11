@@ -54,7 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "procstream.h"
 #include "sysdep.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"

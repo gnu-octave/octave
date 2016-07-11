@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRegExp>
 
 #include "graphics.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "defun.h"
 
 #include "Backend.h"

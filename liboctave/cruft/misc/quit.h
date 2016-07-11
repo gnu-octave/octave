@@ -59,6 +59,7 @@ OCTAVE_API extern void octave_restore_current_context (void *);
 OCTAVE_NORETURN OCTAVE_API extern void octave_jump_to_enclosing_context (void);
 
 #if defined (__cplusplus)
+
 class
 octave_execution_exception
 {
@@ -100,16 +101,55 @@ private:
 };
 
 class
+octave_exit_exception
+{
+public:
+
+  octave_exit_exception (int exit_status = 0, bool safe_to_return = false)
+    : m_exit_status (exit_status), m_safe_to_return (safe_to_return)
+  { }
+
+  octave_exit_exception (const octave_exit_exception& ex)
+    : m_exit_status (ex.m_exit_status), m_safe_to_return (ex.m_safe_to_return)
+  { }
+
+  octave_exit_exception& operator = (octave_exit_exception& ex)
+  {
+    if (this != &ex)
+      {
+        m_exit_status = ex.m_exit_status;
+        m_safe_to_return = ex.m_safe_to_return;
+      }
+
+    return *this;
+  }
+
+  ~octave_exit_exception (void) { }
+
+  int exit_status (void) const { return m_exit_status; }
+
+  bool safe_to_return (void) const { return m_safe_to_return; }
+
+private:
+
+  int m_exit_status;
+
+  bool m_safe_to_return;
+};
+
+class
 octave_interrupt_exception
 {
 };
+
 #endif
 
 enum octave_exception
 {
   octave_no_exception = 0,
   octave_exec_exception = 1,
-  octave_alloc_exception = 2
+  octave_alloc_exception = 3,
+  octave_quit_exception = 4
 };
 
 OCTAVE_API extern sig_atomic_t octave_interrupt_immediately;
@@ -122,6 +162,10 @@ OCTAVE_API extern sig_atomic_t octave_interrupt_immediately;
 OCTAVE_API extern sig_atomic_t octave_interrupt_state;
 
 OCTAVE_API extern sig_atomic_t octave_exception_state;
+
+OCTAVE_API extern sig_atomic_t octave_exit_exception_status;
+
+OCTAVE_API extern sig_atomic_t octave_exit_exception_safe_to_return;
 
 OCTAVE_API extern volatile sig_atomic_t octave_signal_caught;
 
@@ -136,6 +180,10 @@ OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
 OCTAVE_API extern void octave_rethrow_exception (void);
 
 #if defined (__cplusplus)
+
+extern OCTAVE_API void
+clean_up_and_exit (int exit_status, bool safe_to_return = false);
+
 inline void octave_quit (void)
 {
   if (octave_signal_caught)
@@ -232,6 +280,14 @@ inline void octave_quit (void)
     { \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_exception_state = octave_alloc_exception; \
+      octave_jump_to_enclosing_context (); \
+    } \
+  catch (const octave_exit_exception& ex) \
+    { \
+      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
+      octave_exception_state = octave_quit_exception; \
+      octave_exit_exception_status = ex.exit_status (); \
+      octave_exit_exception_safe_to_return = ex.safe_to_return (); \
       octave_jump_to_enclosing_context (); \
     } \
  \

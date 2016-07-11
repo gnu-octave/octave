@@ -37,13 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "variables.h"
 #include "pt-all.h"
 #include "pt-eval.h"
 #include "symtab.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 
 //FIXME: This should be part of tree_evaluator

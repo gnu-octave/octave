@@ -106,6 +106,7 @@ object) relevant global values before and after the nested call.
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter.h"
 #include "lex.h"
 #include "octave.h"
 #include "ov.h"
@@ -113,7 +114,6 @@ object) relevant global values before and after the nested call.
 #include "pt-all.h"
 #include "symtab.h"
 #include "token.h"
-#include "toplev.h"
 #include "utils.h"
 #include "variables.h"
 #include <oct-parse.h>
@@ -2321,8 +2321,7 @@ octave_base_lexer::reset (void)
   // Only ask for input from stdin if we are expecting interactive
   // input.
 
-  if (! quitting_gracefully
-      && octave::application::interactive ()
+  if (octave::application::interactive ()
       && ! (reading_fcn_file
             || reading_classdef_file
             || reading_script_file

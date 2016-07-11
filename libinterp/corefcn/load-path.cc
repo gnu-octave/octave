@@ -37,11 +37,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "defun.h"
 #include "input.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 

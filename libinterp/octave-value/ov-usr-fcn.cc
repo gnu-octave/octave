@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "pt-walk.h"
 #include "symtab.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "parse.h"

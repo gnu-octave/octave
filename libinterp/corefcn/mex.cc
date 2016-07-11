@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "call-stack.h"
 #include "error.h"
+#include "interpreter.h"
 // mxArray must be declared as a class before including mexproto.h.
 #include "mxarray.h"
 #include "mexproto.h"
@@ -50,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"

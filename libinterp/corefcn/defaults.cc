@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "ov.h"
 #include "parse.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "variables.h"
 #include <version.h>

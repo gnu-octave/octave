@@ -50,12 +50,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter.h"
 #include "octave.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "ov.h"
 #include "ovl.h"
-#include "toplev.h"
 #include "utils.h"
 
 // Programming Note: There are two very different error functions used

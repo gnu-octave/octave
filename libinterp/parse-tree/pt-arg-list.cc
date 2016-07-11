@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-id.h"
 #include "pt-pr-code.h"
 #include "pt-walk.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 
 // Argument lists.

@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fcntl-wrappers.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-utils.h"
 #include "oct-env.h"
 #include "oct-syscalls.h"
 #include "oct-uname.h"
@@ -45,7 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "lo-utils.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "ovl.h"
@@ -279,8 +279,8 @@ exit status, it will linger until Octave exits.
   std::string msg;
   pid_t pid;
 
-  pid = octave::sys::popen2 (exec_file, arg_list, sync_mode, filedesc,
-                             msg, interactive);
+  pid = octave::sys::popen2 (exec_file, arg_list, sync_mode, filedesc, msg);
+
   if (pid < 0)
     error (msg.c_str ());
 

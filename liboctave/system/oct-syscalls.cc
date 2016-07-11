@@ -321,24 +321,12 @@ namespace octave
             bool sync_mode, int *fildes)
     {
       std::string msg;
-      bool interactive = false;
-      return octave::sys::popen2 (cmd, args, sync_mode, fildes, msg,
-                                       interactive);
+      return octave::sys::popen2 (cmd, args, sync_mode, fildes, msg);
     }
 
     pid_t
     popen2 (const std::string& cmd, const string_vector& args,
             bool sync_mode, int *fildes, std::string& msg)
-    {
-      bool interactive = false;
-      return octave::sys::popen2 (cmd, args, sync_mode, fildes, msg,
-                                       interactive);
-    }
-
-    pid_t
-    popen2 (const std::string& cmd, const string_vector& args,
-            bool sync_mode, int *fildes, std::string& msg,
-            bool & /* interactive */)
     {
       char **argv = args.c_str_vec ();
       const char *errmsg;

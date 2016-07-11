@@ -98,10 +98,6 @@ namespace octave
     popen2 (const std::string&, const string_vector&, bool, int *,
             std::string&);
 
-    extern OCTAVE_API pid_t
-    popen2 (const std::string&, const string_vector&, bool, int *,
-            std::string&, bool &interactive);
-
     extern OCTAVE_API int fcntl (int, int, long);
     extern OCTAVE_API int fcntl (int, int, long, std::string&);
   }
@@ -128,9 +124,10 @@ popen2 (const std::string& cmd, const string_vector& args,
 OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
 inline pid_t
 popen2 (const std::string& cmd, const string_vector& args,
-        bool sync_mode, int *filedes, std::string& msg, bool &interactive)
+        bool sync_mode, int *filedes, std::string& msg,
+        bool &/*interactive*/)
 {
-  return octave::sys::popen2 (cmd, args, sync_mode, filedes, msg, interactive);
+  return octave::sys::popen2 (cmd, args, sync_mode, filedes, msg);
 }
 
 #endif

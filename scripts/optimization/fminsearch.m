@@ -21,7 +21,7 @@
 ## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options}, @var{fun_arg1}, @var{fun_arg2}, @dots{})
-## @deftypefnx {} {[@var{x}, @var{fval}] =} fminsearch (@dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{exitflag}, @var{output}] =} fminsearch (@dots{})
 ##
 ## Find a value of @var{x} which minimizes the function @var{fun}.
 ##
@@ -32,7 +32,9 @@
 ##
 ## Options for the search are provided in the parameter @var{options} using the
 ## function @code{optimset}.  Currently, @code{fminsearch} accepts the options:
-## @qcode{"TolX"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"}, @qcode{"Display"}.
+## options: @qcode{"TolX"}, @qcode{"TolFun"}, @qcode{"MaxFunEvals"},
+## @qcode{"MaxIter"}, @qcode{"Display"}, @qcode{"FunValCheck"} and
+## @qcode{"OutputFcn"}.
 ## For a description of these options, see @code{optimset}.
 ##
 ## Additional inputs for the function @var{fun} can be passed as the fourth
@@ -42,14 +44,34 @@
 ## On exit, the function returns @var{x}, the minimum point, and @var{fval},
 ## the function value at the minimum.
 ##
-## Example usages:
+## The third return value @var{exitflag} is
+##
+## @table
+## @item 1
+## if the algorithm converged
+## (size of the simplex is smaller than @code{@var{options}.TolX} @strong{AND}
+## the step in the function value between iterations is smaller than
+## @code{@var{options}.TolFun}).
+##
+## @item 0
+## if the maximum number of iterations or the maximum number of function
+## evaluations are exceeded.
+##
+## @item -1
+## if the iteration is stopped by the @qcode{"OutputFcn"}.
+## @end table
+##
+## The fourth return value is a structure @var{output} with the fields,
+## @code{funcCount} containing the number of function calls to @var{fun},
+## @code{iterations} containing the number of iteration steps,
+## @code{algorithm} with the name of the search algorithm (always:
+## @qcode{"Nelder-Mead simplex direct search"}), and @code{message} with the
+## exit message.
+##
+## Example:
 ##
 ## @example
-## @group
 ## fminsearch (@@(x) (x(1)-5).^2+(x(2)-8).^4, [0;0])
-##
-## fminsearch (inline ("(x(1)-5).^2+(x(2)-8).^4", "x"), [0;0])
-## @end group
 ## @end example
 ## @seealso{fminbnd, fminunc, optimset}
 ## @end deftypefn
@@ -57,13 +79,9 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fminsearch");
 
-## FIXME: Add support for "exitflag" output variable.
-## FIXME: Add support for "output" output variable.
-## FIXME: For Display option, add 'final' and 'notify' options.  Not too hard.
-## FIXME: Add support for OutputFcn.  See fminunc for a template.
-## FIXME: Add support for exiting based on TolFun.  See fminunc for an idea.
+## FIXME: Add support for output function with "state" set to "interrupt".
 
-function [x, fval] = fminsearch (fun, x0, options, varargin)
+function [x, fval, exitflag, output] = fminsearch (fun, x0, options, varargin)
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
@@ -82,7 +100,7 @@ function [x, fval] = fminsearch (fun, x0, options, varargin)
     options = struct ();
   endif
 
-  x = nmsmax (fun, x0, options, varargin{:});
+  [x, exitflag, output] = nmsmax (fun, x0, options, varargin{:});
 
   if (isargout (2))
     fval = feval (fun, x);
@@ -90,7 +108,7 @@ function [x, fval] = fminsearch (fun, x0, options, varargin)
 
 endfunction
 
-##NMSMAX  Nelder-Mead simplex method for direct search optimization.
+## NMSMAX  Nelder-Mead simplex method for direct search optimization.
 ##        [x, fmax, nf] = NMSMAX(FUN, x0, STOPIT, SAVIT) attempts to
 ##        maximize the function FUN, using the starting vector x0.
 ##        The Nelder-Mead direct search method is used.
@@ -130,18 +148,22 @@ endfunction
 ##
 ## Modifications for Octave by A.Adler 2003
 
-function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x)
+function [stopit, savit, dirn, trace, tol, maxiter, tol_f, outfcn] = ...
+                                                     parse_options (options, x)
 
   ## Tolerance for cgce test based on relative size of simplex.
   stopit(1) = tol = optimget (options, "TolX", 1e-4);
 
-  ## Max no. of f-evaluations.
+  ## Tolerance for cgce test based on step in function value.
+  tol_f = optimget (options, "TolFun", 1e-7);
+
+  ## Max number of function evaluations.
   stopit(2) = optimget (options, "MaxFunEvals", length (x) * 200);
 
-  ## Max no. of iterations
+  ## Max number of iterations
   maxiter = optimget (options, "MaxIter", length (x) * 200);
 
-  ## Default target for f-values.
+  ## Default target for function values.
   stopit(3) = Inf;  # FIXME: expose this parameter to the outside
 
   ## Default initial simplex.
@@ -149,11 +171,16 @@ function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x)
 
   ## Default: show progress.
   display = optimget (options, "Display", "notify");
-  if (strcmp (display, "iter"))
-    stopit(5) = 1;
-  else
-    stopit(5) = 0;
-  endif
+  switch (display)
+    case "iter"
+      stopit(5) = 1;
+    case "final"
+      stopit(5) = 2;
+    case "notify"
+      stopit(5) = 3;
+    otherwise  # "none"
+      stopit(5) = 0;
+  endswitch
   trace = stopit(5);
 
   ## Use function to minimize, not maximize
@@ -162,11 +189,15 @@ function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x)
   ## Filename for snapshots.
   savit = [];  # FIXME: expose this parameter to the outside
 
+  ## OutputFcn
+  outfcn = optimget (options, "OutputFcn");
+
 endfunction
 
-function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
+function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
 
-  [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x);
+  [stopit, savit, dirn, trace, tol, maxiter, tol_f, outfcn] = ...
+                                                    parse_options (options, x);
 
   if (strcmpi (optimget (options, "FunValCheck", "off"), "on"))
     ## Replace fcn with a guarded version.
@@ -179,17 +210,18 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
   V = [zeros(n,1) eye(n)];
   f = zeros (n+1,1);
   V(:,1) = x0;
-  f(1) = dirn * feval (fun,x,varargin{:});
+  f(1) = dirn * feval (fun, x, varargin{:});
   fmax_old = f(1);
+  nf = 1;
 
-  if (trace)
-    fprintf ("f(x0) = %9.4e\n", f(1));
+  if (trace == 1)
+    printf ("f(x0) = %9.4e\n", f(1));
   endif
 
   k = 0; m = 0;
 
   ## Set up initial simplex.
-  scale = max (norm (x0,Inf), 1);
+  scale = max (norm (x0, Inf), 1);
   if (stopit(4) == 0)
     ## Regular simplex - all edges have same length.
     ## Generated from construction given in reference [18, pp. 80-81] of [1].
@@ -203,23 +235,38 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
   else
     ## Right-angled simplex based on co-ordinate axes.
     alpha = scale * ones(n+1,1);
-    for j=2:n+1
+    for j = 2:n+1
       V(:,j) = x0 + alpha(j)*V(:,j);
       x(:) = V(:,j);
       f(j) = dirn * feval (fun,x,varargin{:});
     endfor
   endif
-  nf = n+1;
+  nf += n;
   how = "initial  ";
 
-  [~,j] = sort (f);
+  [~, j] = sort (f);
   j = j(n+1:-1:1);
   f = f(j);
   V = V(:,j);
 
+  exitflag = 0;
+
+  if (! isempty (outfcn))
+    optimvalues.iteration = 0;
+    optimvalues.funccount = nf;
+    optimvalues.fval = f(1);
+    optimvalues.procedure = how;
+    state = "init";
+    stop = outfcn (x, optimvalues, state);
+    if (stop)
+      msg = "Stopped by OutputFcn\n";
+      exitflag = -1;
+    endif
+  endif
+
   alpha = 1;  beta = 1/2;  gamma = 2;
 
-  while (1)   # Outer (and only) loop.
+  while (exitflag != -1)   # Outer (and only) loop.
     k += 1;
 
     if (k > maxiter)
@@ -234,11 +281,11 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
         eval (["save " savit " x fmax nf"]);
       endif
     endif
-    if (trace)
-      fprintf ("Iter. %2.0f,", k);
-      fprintf (["  how = " how "  "]);
-      fprintf ("nf = %3.0f,  f = %9.4e  (%2.1f%%)\n", nf, fmax, ...
-               100*(fmax-fmax_old)/(abs(fmax_old)+eps));
+    if (trace == 1)
+      printf ("Iter. %2.0f,", k);
+      printf ("  how = %-11s", [how ","]);
+      printf ("nf = %3.0f,  f = %9.4e  (%2.1f%%)\n", nf, fmax, ...
+              100*(fmax-fmax_old)/(abs(fmax_old)+eps));
     endif
     fmax_old = fmax;
 
@@ -247,6 +294,8 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
     ## Stopping Test 1 - f reached target value?
     if (fmax >= stopit(3))
       msg = "Exceeded target...quitting\n";
+      ## FIXME: Add docu when stopit(3) gets exposed to the outside
+      exitflag = -1;
       break;
     endif
 
@@ -256,13 +305,31 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
       break;
     endif
 
-    ## Stopping Test 3 - converged?   This is test (4.3) in [1].
+    ## Stopping Test 3 - converged?   The first part is test (4.3) in [1].
     v1 = V(:,1);
     size_simplex = norm (V(:,2:n+1)-v1(:,ones (1,n)),1) / max (1, norm (v1,1));
-    if (size_simplex <= tol)
-      msg = sprintf ("Simplex size %9.4e <= %9.4e...quitting\n", ...
-                      size_simplex, tol);
+    step_f = max (abs (f(1) - f(2:n+1)));
+    if (size_simplex <= tol && step_f <= tol_f )
+      msg = sprintf (["Simplex size %9.4e <= %9.4e and ", ...
+                      "step in function value %9.4e <= %9.4e...quitting\n"], ...
+                      size_simplex, tol, step_f, tol_f);
+      exitflag = 1;
       break;
+    endif
+
+    ## Call OutputFcn
+    if (! isempty (outfcn))
+      optimvalues.funccount = nf;
+      optimvalues.fval = f(1);
+      optimvalues.iteration = k;
+      optimvalues.procedure = how;
+      state = "iter";
+      stop = outfcn (x, optimvalues, state);
+      if (stop)
+        msg = "Stopped by OutputFcn\n";
+        exitflag = -1;
+        break;
+      endif
     endif
 
     ##  One step of the Nelder-Mead simplex algorithm
@@ -275,7 +342,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
     x(:) = vr;
     fr = dirn * feval (fun,x,varargin{:});
     nf += 1;
-    vk = vr;  fk = fr; how = "reflect, ";
+    vk = vr;  fk = fr; how = "reflect";
     if (fr > f(n))
       if (fr > f(1))
         ve = gamma*vr + (1-gamma)*vbar;
@@ -285,7 +352,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
         if (fe > f(1))
           vk = ve;
           fk = fe;
-          how = "expand,  ";
+          how = "expand";
         endif
       endif
     else
@@ -301,7 +368,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
       nf += 1;
       if (fc > f(n))
         vk = vc; fk = fc;
-        how = "contract,";
+        how = "contract";
       else
         for j = 2:n
           V(:,j) = (V(:,1) + V(:,j))/2;
@@ -313,7 +380,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
         x(:) = vk;
         fk = dirn * feval (fun,x,varargin{:});
         nf += 1;
-        how = "shrink,  ";
+        how = "shrink";
       endif
     endif
     V(:,n+1) = vk;
@@ -326,10 +393,27 @@ function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
   endwhile   # End of outer (and only) loop.
 
   ## Finished.
-  if (trace)
-    fprintf (msg);
+  if ( (trace == 1) || (trace == 2) || (trace == 3 && exitflag != 1) )
+    printf (msg);
   endif
   x(:) = V(:,1);
+
+  ## FIXME: Should outputfcn be called only if exitflag != 0,
+  ##        i.e., only when we have successfully converged?
+  if (! isempty (outfcn))
+    optimvalues.funccount = nf;
+    optimvalues.fval = f(1);
+    optimvalues.iteration = k;
+    optimvalues.procedure = how;
+    state = "done";
+    outfcn (x, optimvalues, state);
+  endif
+
+  ## output
+  output.iterations = k;
+  output.funcCount = nf;
+  output.algorithm = "Nelder-Mead simplex direct search";
+  output.message = msg;
 
 endfunction
 
@@ -350,26 +434,51 @@ endfunction
 
 
 %!demo
+%! clf;
+%! hold on;
+%! draw_fcn = @(x) (plot (x(1), x(2)) && false);
 %! fcn = @(x) (x(1)-5).^2 + (x(2)-8).^4;
 %! x0 = [0;0];
-%! [xmin, fval] = fminsearch (fcn, x0)
+%! [xmin, fval] = fminsearch (fcn, x0, optimset ("OutputFcn", draw_fcn))
+%! hold off;
 
 %!assert (fminsearch (@sin, 3, optimset ("MaxIter", 30)), 3*pi/2, 1e-4)
+
+## The following test is for checking that fminsearch stops earlier with
+## these settings.  If the optimizer algorithm is changed it is allowed to
+## fail.  Just adapt the values to make it pass again.
+%!xtest
+%! x = fminsearch (@sin, 3, optimset ("MaxIter", 3, "Display", "none"));
+%! assert (x, 4.8750, 1e-4);
+%! x = fminsearch (@sin, 3, optimset ("MaxFunEvals", 18, "Display", "none"));
+%! assert (x, 4.7109, 1e-4);
+
 %!test
 %! c = 1.5;
-%! assert (fminsearch (@(x) x(1).^2+c*x(2).^2,[1;1]), [0;0], 1e-4);
+%! assert (fminsearch (@(x) x(1).^2 + c*x(2).^2, [1;1]), [0;0], 1e-4);
 
-## Additional argument
+## additional input argument
 %!test
 %! x1 = fminsearch (@(x, c) x(1).^2 + c*x(2).^2, [1;1], [], 1.5);
 %! assert (x1, [0;0], 1e-4);
-%! x1 = fminsearch (@(x, c) x(1).^2 + c*x(2).^2, [1;1], ...
-%!                  optimset ("Display", "none"), 1.5);
+%! x1 = fminsearch (@(x, c) c(1)*x(1).^2 + c(2)*x(2).^2, [1;1], ...
+%!                  optimset ("Display", "none"), [1 1.5]);
 %! assert (x1, [0;0], 1e-4);
 
-## Test input validation
-%!error fminsearch ()
-%!error fminsearch (1)
+## all output arguments
+%!test
+%! options = optimset ("Display", "none", "TolX", 1e-4, "TolFun", 1e-7);
+%! [x, fval, exitflag, output] = fminsearch (@sin, 3, options);
+%! assert (x, 3*pi/2, options.TolX);
+%! assert (fval, -1, options.TolFun);
+%! assert (exitflag, 1);
+%! assert (isstruct (output));
+%! assert (isfield (output, "iterations") && isnumeric (output.iterations)
+%!         && isscalar (output.iterations) && output.iterations > 0);
+%! assert (isfield (output, "funcCount") && isnumeric (output.funcCount)
+%!         && isscalar (output.funcCount) && output.funcCount > 0);
+%! assert (isfield (output, "algorithm") && ischar (output.algorithm));
+%! assert (isfield (output, "message") && ischar (output.message));
 
 ## Tests for guarded_eval
 %!error <non-real value encountered>
@@ -378,3 +487,8 @@ endfunction
 %! fminsearch (@(x) (NaN), 0, optimset ("FunValCheck", "on"));
 %!error <Inf value encountered>
 %! fminsearch (@(x) (Inf), 0, optimset ("FunValCheck", "on"));
+
+## Test input validation
+%!error fminsearch ()
+%!error fminsearch (1)
+

@@ -329,11 +329,11 @@ function y = guarded_eval (fun, x)
 
   y = fun (x);
 
-  if (! (isreal (f)))
+  if (! (isreal (y)))
     error ("fminsearch:notreal", "fminsearch: non-real value encountered");
-  elseif (any (isnan (f(:))))
+  elseif (any (isnan (y(:))))
     error ("fminsearch:isnan", "fminsearch: NaN value encountered");
-  elseif (any (isinf (f(:))))
+  elseif (any (isinf (y(:))))
     error ("fminsearch:isinf", "fminsearch: Inf value encountered");
   endif
 
@@ -341,13 +341,23 @@ endfunction
 
 
 %!demo
-%! fcn = @(x) (x(1)-5).^2 + (x(2)-8).^4
+%! fcn = @(x) (x(1)-5).^2 + (x(2)-8).^4;
 %! x0 = [0;0];
 %! [xmin, fval] = fminsearch (fcn, x0)
 
-%!assert (fminsearch (@sin, 3, optimset ("MaxIter", 3)), 4.8750, 1e-4)
-%!assert (fminsearch (@sin, 3, optimset ("MaxIter", 30)), 4.7124, 1e-4)
-%!shared c
+%!assert (fminsearch (@sin, 3, optimset ("MaxIter", 30)), 3*pi/2, 1e-4)
+%!test
 %! c = 1.5;
-%!assert (fminsearch (@(x) x(1).^2+c*x(2).^2,[1;1]), [0;0], 1e-4)
+%! assert (fminsearch (@(x) x(1).^2+c*x(2).^2,[1;1]), [0;0], 1e-4);
+
+%!error fminsearch ()
+%!error fminsearch (1)
+
+## Tests for guarded_eval
+%!error <non-real value encountered>
+%! fminsearch (@(x) ([0 2i]), 0, optimset ("FunValCheck", "on"));
+%!error <NaN value encountered>
+%! fminsearch (@(x) (NaN), 0, optimset ("FunValCheck", "on"));
+%!error <Inf value encountered>
+%! fminsearch (@(x) (Inf), 0, optimset ("FunValCheck", "on"));
 

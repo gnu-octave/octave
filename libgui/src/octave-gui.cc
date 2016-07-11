@@ -39,53 +39,18 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-syscalls.h"
 
-#include "octave.h"
-
-#include "welcome-wizard.h"
-#include "resource-manager.h"
-#include "shortcut-manager.h"
-#include "main-window.h"
-#include "octave-gui.h"
-#include "thread-manager.h"
-
 #include "builtin-defun-decls.h"
-
 #if defined (HAVE_QT_GRAPHICS)
 #  include "__init_qt__.h"
 #endif
+#include "octave.h"
 
-// Allow the Octave interpreter to start as in CLI mode with a
-// QApplication context so that it can use Qt for things like plotting
-// and UI widgets.
-
-class octave_cli_thread : public QThread
-{
-public:
-
-  octave_cli_thread (int argc, char **argv)
-    : m_argc (argc), m_argv (argv), m_result (0) { }
-
-  int result (void) const { return m_result; }
-
-protected:
-
-  void run (void)
-  {
-    octave_thread_manager::unblock_interrupt_signal ();
-
-    octave_initialize_interpreter (m_argc, m_argv, 0);
-
-    m_result = octave_execute_interpreter ();
-
-    QApplication::exit (m_result);
-  }
-
-private:
-
-  int m_argc;
-  char** m_argv;
-  int m_result;
-};
+#include "main-window.h"
+#include "octave-gui.h"
+#include "resource-manager.h"
+#include "shortcut-manager.h"
+#include "thread-manager.h"
+#include "welcome-wizard.h"
 
 // Disable all Qt messages by default.
 

@@ -263,7 +263,8 @@ extern "C"
                                F77_CHAR_ARG_LEN_DECL);
 }
 
-static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (), octave::numeric_limits<double>::NaN ());
+static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (),
+                                         octave::numeric_limits<double>::NaN ());
 
 // Complex Matrix class
 
@@ -1043,10 +1044,9 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
   info = 0;
 
-  // Calculate the norm of the matrix, for later use.
-  double anorm;
-  //if (calc_cond)   // Must always calculate anorm for bug #45577
-  anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
+  // Calculate (always, see bug #45577) the norm of the matrix, for later use.
+  double anorm =
+    retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
   // Work around bug #45577, LAPACK crashes Octave if norm is NaN
   // and bug #46330, segfault with matrices containing Inf & NaN
@@ -1127,7 +1127,8 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
-        ret = ComplexMatrix (rows (), columns (), Complex (octave::numeric_limits<double>::Inf (), 0.));
+        ret = ComplexMatrix (rows (), columns (),
+                             Complex (octave::numeric_limits<double>::Inf (), 0.));
     }
 
   return ret;
@@ -1611,10 +1612,8 @@ ComplexMatrix::determinant (MatrixType& mattype,
 
       info = 0;
 
-      // Calculate the norm of the matrix, for later use.
-      double anorm = 0;
-      //if (calc_cond)   // Must always calculate anorm for bug #45577
-      anorm = xnorm (*this, 1);
+      // Calculate (always, see bug #45577) the norm of the matrix, for later use.
+      double anorm = xnorm (*this, 1);
 
       // Work around bug #45577, LAPACK crashes Octave if norm is NaN
       if (octave::math::isnan (anorm))
@@ -2203,6 +2202,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                 mattype.mark_as_rectangular ();
             }
         }
+
       if (octave::math::isinf (anorm))
         {
           retval = ComplexMatrix (b.rows (), b.cols (), Complex (0, 0));
@@ -3733,21 +3733,7 @@ min (const Complex& c, const ComplexMatrix& m)
 ComplexMatrix
 min (const ComplexMatrix& m, const Complex& c)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (ComplexMatrix);
-
-  ComplexMatrix result (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        octave_quit ();
-        result(i, j) = octave::math::min (m(i, j), c);
-      }
-
-  return result;
+  return min (c, m);
 }
 
 ComplexMatrix
@@ -3818,21 +3804,7 @@ max (const Complex& c, const ComplexMatrix& m)
 ComplexMatrix
 max (const ComplexMatrix& m, const Complex& c)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (ComplexMatrix);
-
-  ComplexMatrix result (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        octave_quit ();
-        result(i, j) = octave::math::max (m(i, j), c);
-      }
-
-  return result;
+  return max (c, m);
 }
 
 ComplexMatrix
@@ -3862,6 +3834,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
             }
         }
 
+      // FIXME: is it so much faster?
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
@@ -3886,7 +3859,6 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 ComplexMatrix linspace (const ComplexColumnVector& x1,
                         const ComplexColumnVector& x2,
                         octave_idx_type n)
-
 {
   octave_idx_type m = x1.numel ();
 

@@ -1049,13 +1049,16 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
   info = 0;
 
-  // Calculate the norm of the matrix, for later use.
-  float anorm;
-  if (calc_cond)
-    anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0))
-            .max ();
+  // Calculate (always, see bug #45577) the norm of the matrix, for later use.
+  float anorm =
+    retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
-  F77_XFCN (cgetrf, CGETRF, (nc, nc, tmp_data, nr, pipvt, info));
+  // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+  // and bug #46330, segfault with matrices containing Inf & NaN
+  if (octave::math::isnan (anorm) || octave::math::isinf (anorm))
+    info = -1;
+  else
+    F77_XFCN (cgetrf, CGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
   // Throw-away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
@@ -1077,7 +1080,7 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
         info = -1;
     }
 
-  if (info == -1 && ! force)
+  if ((info == -1 && ! force) || octave::math::isinf (anorm))
     retval = *this;  // Restore contents.
   else
     {
@@ -1611,11 +1614,14 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
 
       info = 0;
 
-      // Calculate the norm of the matrix, for later use.
-      float anorm = 0;
-      if (calc_cond) anorm = xnorm (*this, 1);
+      // Calculate (always, see bug #45577) the norm of the matrix, for later use.
+      float anorm = xnorm (*this, 1);
 
-      F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+      // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+      if (octave::math::isnan (anorm))
+        info = -1;
+      else
+        F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
       // Throw-away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
@@ -1805,7 +1811,11 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
               Array<float> rz (dim_vector (2 * nc, 1));
               float *prz = rz.fortran_vec ();
 
-              F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+              // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+              if (octave::math::isnan (anorm))
+                info = -1;
+              else
+                F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
               if (info != 0)
                 {
@@ -2137,7 +2147,12 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
             anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0))
                     .max ();
 
-          F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+          // Work around bug #45577, LAPACK crashes Octave if norm is NaN
+          // and bug #46330, segfault with matrices containing Inf & NaN
+          if (octave::math::isnan (anorm) || octave::math::isinf (anorm))
+            info = -2;
+          else
+            F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
@@ -2196,6 +2211,13 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
               else
                 mattype.mark_as_rectangular ();
             }
+        }
+
+      if (octave::math::isinf (anorm))
+        {
+          retval = FloatComplexMatrix (b.rows (), b.cols (),
+                                       FloatComplex (0, 0));
+          mattype.mark_as_full ();
         }
     }
 
@@ -3742,21 +3764,7 @@ min (const FloatComplex& c, const FloatComplexMatrix& m)
 FloatComplexMatrix
 min (const FloatComplexMatrix& m, const FloatComplex& c)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (FloatComplexMatrix);
-
-  FloatComplexMatrix result (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        octave_quit ();
-        result(i, j) = octave::math::min (m(i, j), c);
-      }
-
-  return result;
+  return min (c, m);
 }
 
 FloatComplexMatrix
@@ -3827,21 +3835,7 @@ max (const FloatComplex& c, const FloatComplexMatrix& m)
 FloatComplexMatrix
 max (const FloatComplexMatrix& m, const FloatComplex& c)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (FloatComplexMatrix);
-
-  FloatComplexMatrix result (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        octave_quit ();
-        result(i, j) = octave::math::max (m(i, j), c);
-      }
-
-  return result;
+  return max (c, m);
 }
 
 FloatComplexMatrix

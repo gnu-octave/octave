@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "call-stack.h"
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "error.h"

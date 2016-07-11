@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 
+#include "call-stack.h"
 #include "defun.h"
 #include "errwarn.h"
 #include "mxarray.h"

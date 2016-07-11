@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 
+#include "call-stack.h"
 #include "defun.h"
 #include "load-path.h"
 #include "ov-builtin.h"

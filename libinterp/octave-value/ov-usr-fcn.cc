@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "str-vec.h"
 
+#include "call-stack.h"
 #include <defaults.h>
 #include "Cell.h"
 #include "builtins.h"

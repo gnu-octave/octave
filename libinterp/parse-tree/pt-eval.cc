@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <fstream>
 #include <typeinfo>
 
+#include "call-stack.h"
 #include "debug.h"
 #include "defun.h"
 #include "error.h"

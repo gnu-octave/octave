@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <sstream>
 
-#include "Cell.h"
 #include "Matrix.h"
 #include "cmd-edit.h"
 #include "cmd-hist.h"
@@ -53,6 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "quit.h"
 
+#include "Cell.h"
+#include "call-stack.h"
 #include "comment-list.h"
 #include "defaults.h"
 #include "defun.h"

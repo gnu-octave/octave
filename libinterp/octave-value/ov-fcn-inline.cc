@@ -35,6 +35,7 @@ Open Source Initiative (www.opensource.org)
 
 #include "oct-locbuf.h"
 
+#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"

@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "Cell.h"
+#include "call-stack.h"
 #include "error.h"
 // mxArray must be declared as a class before including mexproto.h.
 #include "mxarray.h"

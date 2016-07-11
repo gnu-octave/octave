@@ -26,6 +26,7 @@ COREFCN_INC = \
   libinterp/corefcn/base-text-renderer.h \
   libinterp/corefcn/Cell.h \
   libinterp/corefcn/c-file-ptr-stream.h \
+  libinterp/corefcn/call-stack.h \
   libinterp/corefcn/cdisplay.h \
   libinterp/corefcn/comment-list.h \
   libinterp/corefcn/data.h \
@@ -129,6 +130,7 @@ COREFCN_SRC = \
   libinterp/corefcn/bitfcns.cc \
   libinterp/corefcn/bsxfun.cc \
   libinterp/corefcn/c-file-ptr-stream.cc \
+  libinterp/corefcn/call-stack.cc \
   libinterp/corefcn/cdisplay.c \
   libinterp/corefcn/cellfun.cc \
   libinterp/corefcn/colloc.cc \

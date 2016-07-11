@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "call-stack.h"
 #include "error.h"
 #include "ovl.h"
 #include "ov-fcn-handle.h"

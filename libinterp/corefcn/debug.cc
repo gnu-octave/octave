@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "singleton-cleanup.h"
 
+#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"

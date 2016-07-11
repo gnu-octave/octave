@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
+## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options}, @var{fun_arg1}, @var{fun_arg2}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{fval}] =} fminsearch (@dots{})
 ##
 ## Find a value of @var{x} which minimizes the function @var{fun}.
@@ -34,8 +35,12 @@
 ## @qcode{"TolX"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"}, @qcode{"Display"}.
 ## For a description of these options, see @code{optimset}.
 ##
+## Additional inputs for the function @var{fun} can be passed as the fourth
+## and higher arguments.  To pass function arguments while using the default
+## @var{options} values, use @code{[]} for @var{options}.
+##
 ## On exit, the function returns @var{x}, the minimum point, and @var{fval},
-## the function value thereof.
+## the function value at the minimum.
 ##
 ## Example usages:
 ##
@@ -58,7 +63,7 @@
 ## FIXME: Add support for OutputFcn.  See fminunc for a template.
 ## FIXME: Add support for exiting based on TolFun.  See fminunc for an idea.
 
-function [x, fval] = fminsearch (fun, x0, options = struct ())
+function [x, fval] = fminsearch (fun, x0, options, varargin)
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
@@ -69,11 +74,15 @@ function [x, fval] = fminsearch (fun, x0, options = struct ())
     return;
   endif
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
+  
+  if (nargin < 3 || isempty (options))
+    options = struct ();
+  endif
 
-  x = nmsmax (fun, x0, options);
+  x = nmsmax (fun, x0, options, varargin{:});
 
   if (isargout (2))
     fval = feval (fun, x);
@@ -121,7 +130,7 @@ endfunction
 ##
 ## Modifications for Octave by A.Adler 2003
 
-function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x )
+function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x)
 
   ## Tolerance for cgce test based on relative size of simplex.
   stopit(1) = tol = optimget (options, "TolX", 1e-4);
@@ -155,7 +164,7 @@ function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x 
 
 endfunction
 
-function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
+function [x, fmax, nf] = nmsmax (fun, x, options, varargin)
 
   [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x);
 
@@ -350,6 +359,15 @@ endfunction
 %! c = 1.5;
 %! assert (fminsearch (@(x) x(1).^2+c*x(2).^2,[1;1]), [0;0], 1e-4);
 
+## Additional argument
+%!test
+%! x1 = fminsearch (@(x, c) x(1).^2 + c*x(2).^2, [1;1], [], 1.5);
+%! assert (x1, [0;0], 1e-4);
+%! x1 = fminsearch (@(x, c) x(1).^2 + c*x(2).^2, [1;1], ...
+%!                  optimset ("Display", "none"), 1.5);
+%! assert (x1, [0;0], 1e-4);
+
+## Test input validation
 %!error fminsearch ()
 %!error fminsearch (1)
 

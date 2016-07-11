@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 VZLU Prague
+Copyright (C) 2009-2016 VZLU Prague
 
 This file is part of Octave.
 
@@ -62,16 +62,31 @@ DEFUN (sub2ind, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})
 @deftypefnx {} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})
-Convert subscripts to a linear index.
+Convert subscripts to linear indices.
 
-The following example shows how to convert the two-dimensional index
-@code{(2,3)} of a 3-by-3 matrix to a linear index.  The matrix is linearly
-indexed moving from one column to next, filling up all rows in each column.
+Assume the following 3-by-3 matrices.  The left matrix contains the
+subscript tuples for each matrix element.  Those are converted to
+linear indices shown in the right matrix.  The matrices are linearly
+indexed moving from one column to next, filling up all rows in each
+column.
 
 @example
 @group
-linear_index = sub2ind ([3, 3], 2, 3)
-@result{} 8
+[(1,1), (1,2), (1,3)]     [1, 4, 7]
+[(2,1), (2,2), (2,3)] ==> [2, 5, 8]
+[(3,1), (3,2), (3,3)]     [3, 6, 9]
+@end group
+@end example
+
+The following example shows how to convert the two-dimensional indices
+@code{(2,1)} and @code{(2,3)} of a 3-by-3 matrix to a linear index.
+
+@example
+@group
+s1 = [2, 2];
+s2 = [1, 3];
+ind = sub2ind ([3, 3], s1, s2)
+@result{} ind =  2   8
 @end group
 @end example
 @seealso{ind2sub}
@@ -82,10 +97,9 @@ linear_index = sub2ind ([3, 3], 2, 3)
   if (nargin < 2)
     print_usage ();
 
-  dim_vector dv = get_dim_vector (args(0), "sub2ind");
+  dim_vector dv = get_dim_vector (args(0), "sub2ind").redim (nargin - 1);
   Array<idx_vector> idxa (dim_vector (nargin-1, 1));
 
-  dv = dv.redim (nargin - 1);
   for (int j = 0; j < nargin - 1; j++)
     {
       if (! args(j+1).is_numeric_type ())
@@ -158,17 +172,51 @@ linear_index = sub2ind ([3, 3], 2, 3)
 DEFUN (ind2sub, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})
-Convert a linear index to subscripts.
+Convert linear indices to subscripts.
 
-The following example shows how to convert the linear index @code{8}
-in a 3-by-3 matrix into a subscript.  The matrix is linearly indexed
-moving from one column to next, filling up all rows in each column.
+Assume the following 3-by-3 matrices.  The left matrix contains
+the linear indices @var{ind} for each matrix element.  Those are
+converted to subscript tuples shown in the right matrix.  The
+matrices are linearly indexed moving from one column to next,
+filling up all rows in each column.
 
 @example
 @group
-[r, c] = ind2sub ([3, 3], 8)
-    @result{} r =  2
-    @result{} c =  3
+[1, 4, 7]     [(1,1), (1,2), (1,3)]
+[2, 5, 8] ==> [(2,1), (2,2), (2,3)]
+[3, 6, 9]     [(3,1), (3,2), (3,3)]
+@end group
+@end example
+
+The following example shows how to convert the linear indices
+@code{2} and @code{8} in a 3-by-3 matrix into a subscripts.
+
+@example
+@group
+ind = [2, 8];
+[r, c] = ind2sub ([3, 3], ind)
+    @result{} r =  2   2
+    @result{} c =  1   3
+@end group
+@end example
+
+If the number of subscripts exceeds the number of dimensions, the
+exceeded dimensions are treated as @code{1}.  On the other hand,
+if less subscripts than dimensions are provided, the exceeding
+dimensions are merged.  For clarity see the following examples:
+
+@example
+@group
+ind = [2, 8];
+dims = [3, 3];
+% same as dims = [3, 3, 1]
+[r, c, s] = ind2sub (dims, ind)
+    @result{} r =  2   2
+    @result{} c =  1   3
+    @result{} s =  1   1
+% same as dims = 9
+r = ind2sub (dims, ind)
+    @result{} r =  2   8
 @end group
 @end example
 @seealso{sub2ind}
@@ -179,23 +227,58 @@ moving from one column to next, filling up all rows in each column.
 
   octave_value_list retval;
 
-  dim_vector dv = get_dim_vector (args(0), "ind2sub");
+  // Redimension to provided number of subscripts.
+  dim_vector dv = get_dim_vector (args(0), "ind2sub").redim (nargout);
 
   try
     {
-      idx_vector idx = args(1).index_vector ();
-
-      if (nargout > dv.ndims ())
-        dv = dv.redim (nargout);
-
-      retval = Array<octave_value> (ind2sub (dv, idx));
+      retval = Array<octave_value> (ind2sub (dv, args(1).index_vector ()));
     }
   catch (const index_exception& e)
     {
-      std::string idx = e.idx ();
-      std::string msg = e.details ();
-      error ("ind2sub: Invalid index %s. %s", idx.c_str (), msg.c_str ());
+      error ("ind2sub: Invalid index %s. %s", e.idx ().c_str (),
+        e.details ().c_str ());
     }
 
   return retval;
 }
+
+/*
+## Examples
+%!test
+%! [r, c] = ind2sub ([3, 3], [2, 8]);
+%! assert (r, [2, 2]);
+%! assert (c, [1, 3]);
+
+%!test
+%! [r, c, s] = ind2sub ([3, 3], [2, 8]);
+%! assert (r, [2, 2]);
+%! assert (c, [1, 3]);
+%! assert (s, [1, 1]);
+%! [r, c, s] = ind2sub ([3, 3, 1], [2, 8]);
+%! assert (r, [2, 2]);
+%! assert (c, [1, 3]);
+%! assert (s, [1, 1]);
+
+%!test
+%! r = ind2sub ([3, 3], [2, 8]);
+%! assert (r, [2, 8]);
+%! r = ind2sub (9, [2, 8]);
+%! assert (r, [2, 8]);
+
+## 3-dimensional test
+%!test
+%! [r, c, s] = ind2sub ([2, 2, 2], 1:8);
+%! assert (r, [1, 2, 1, 2, 1, 2, 1, 2]);
+%! assert (c, [1, 1, 2, 2, 1, 1, 2, 2]);
+%! assert (s, [1, 1, 1, 1, 2, 2, 2, 2]);
+%! [r, c] = ind2sub ([2, 2, 2], 1:8);
+%! assert (r, [1, 2, 1, 2, 1, 2, 1, 2]);
+%! assert (c, [1, 1, 2, 2, 3, 3, 4, 4]);
+%! r = ind2sub ([2, 2, 2], 1:8);
+%! assert (r, 1:8);
+
+%!error <DIMS must contain integers> ind2sub ([2, -2], 3);
+%!error <index out of range> ind2sub ([2, 2, 2], 1:9);
+%!error <Invalid index> ind2sub ([2, 2, 2], -1:8);
+*/

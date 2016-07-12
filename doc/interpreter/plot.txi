@@ -402,6 +402,8 @@ three-dimensional plots.
 
 @DOCSTRING(material)
 
+@DOCSTRING(camlight)
+
 @DOCSTRING(meshgrid)
 
 @DOCSTRING(ndgrid)

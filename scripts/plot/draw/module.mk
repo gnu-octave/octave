@@ -16,6 +16,7 @@ scripts_plot_draw_PRIVATE_FCN_FILES = \
   scripts/plot/draw/private/__pie__.m \
   scripts/plot/draw/private/__plt__.m \
   scripts/plot/draw/private/__quiver__.m \
+  scripts/plot/draw/__rotate_around_axis__.m \
   scripts/plot/draw/private/__scatter__.m \
   scripts/plot/draw/private/__stem__.m \
   scripts/plot/draw/private/__unite_shared_vertices__.m
@@ -24,6 +25,7 @@ scripts_plot_draw_FCN_FILES = \
   scripts/plot/draw/area.m \
   scripts/plot/draw/barh.m \
   scripts/plot/draw/bar.m \
+  scripts/plot/draw/camlight.m \
   scripts/plot/draw/colorbar.m \
   scripts/plot/draw/comet3.m \
   scripts/plot/draw/comet.m \

@@ -117,7 +117,9 @@ EXTRA_DIST += \
   build-aux/OctJavaQry.java \
   build-aux/changelog.tmpl \
   build-aux/check-subst-vars.in.sh \
+  build-aux/find-defun-files.sh \
   build-aux/find-files-with-tests.sh \
+  build-aux/mk-builtins.sh \
   build-aux/mk-default-qt-settings.in.sh \
   build-aux/mk-f77-def.in.sh \
   build-aux/mk-hg-id.sh \

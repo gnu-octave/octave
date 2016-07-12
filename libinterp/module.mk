@@ -83,13 +83,11 @@ libinterp_EXTRA_DIST += \
   libinterp/DOCSTRINGS \
   libinterp/build-env.in.cc \
   libinterp/build-env-features.sh \
-  libinterp/find-defun-files.sh \
   libinterp/gendoc.pl \
   libinterp/genprops.awk \
   libinterp/liboctinterp-build-info.in.cc \
   libinterp/mk-errno-list \
   libinterp/mk-pkg-add \
-  libinterp/mkbuiltins \
   libinterp/mkops \
   libinterp/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
@@ -188,20 +186,20 @@ libinterp_liboctinterp_la_LDFLAGS = \
 ULT_DIST_SRC := \
   $(filter-out $(GENERATED_PARSER_FILES), $(DIST_SRC)) $(ULT_PARSER_SRC)
 
-FOUND_DEFUN_FILES := \
-  $(shell $(SHELL) $(srcdir)/libinterp/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
+LIBINTERP_FOUND_DEFUN_FILES := \
+  $(shell $(SHELL) $(srcdir)/build-aux/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
-SRC_DEFUN_FILES = $(OPT_HANDLERS) $(FOUND_DEFUN_FILES)
+BUILT_IN_DEFUN_FILES = $(OPT_HANDLERS) $(LIBINTERP_FOUND_DEFUN_FILES)
 
 DLDFCN_DEFUN_FILES = $(DLDFCN_SRC)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
-  DEFUN_FILES = $(SRC_DEFUN_FILES)
+  DEFUN_FILES = $(BUILT_IN_DEFUN_FILES)
 else
-  DEFUN_FILES = $(SRC_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
+  DEFUN_FILES = $(BUILT_IN_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
 endif
 
-ALL_DEFUN_FILES = $(SRC_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
+LIBINTERP_DEFUN_FILES = $(BUILT_IN_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
 
 ## FIXME: The following two variables are deprecated and should be removed
 ##        in Octave version 3.12.
@@ -253,14 +251,14 @@ else
   mkbuiltins_dld_opt = --disable-dl
 endif
 
-libinterp/builtins.cc: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave_dirstamp)
+libinterp/builtins.cc: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.sh | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --source $(mkbuiltins_dld_opt) $(ALL_DEFUN_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/build-aux/mk-builtins.sh --source $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
 
-libinterp/builtin-defun-decls.h: $(ALL_DEFUN_FILES) libinterp/mkbuiltins | libinterp/$(octave_dirstamp)
+libinterp/builtin-defun-decls.h: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.sh | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/mkbuiltins "$(srcdir)" --header $(mkbuiltins_dld_opt) $(ALL_DEFUN_FILES) > $@-t && \
+	$(SHELL) $(srcdir)/build-aux/mk-builtins.sh --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
@@ -274,9 +272,9 @@ endif
 
 DOCSTRING_FILES += libinterp/DOCSTRINGS
 
-libinterp/DOCSTRINGS: $(ALL_DEFUN_FILES) | libinterp/$(octave_dirstamp)
+libinterp/DOCSTRINGS: $(LIBINTERP_DEFUN_FILES) | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f libinterp/DOCSTRINGS-t && \
-	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(ALL_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
+	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(LIBINTERP_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
 	$(call move_if_change_rule,libinterp/DOCSTRINGS-t,$@)
 
 OCTAVE_INTERPRETER_TARGETS += \

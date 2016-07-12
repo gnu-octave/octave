@@ -18,49 +18,68 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-if test $# -lt 2; then
-  echo "usage: mkbuiltins SRCDIR --header|--source [--disable-dl] f1 f2 ..." 1>&2
-  exit 1
-fi
+set -e
 
 SED=${SED:-sed}
 
-srcdir="$1"
-shift
-
+defun_dld_are_built_in=false
 make_header=false
 make_source=false
-case "$1" in
-  --header)
-    make_header=true
-    shift
-  ;;
-  --source)
-    make_source=true
-    shift
-  ;;
-  *)
-    echo "mkbuiltins: unrecognized option: $1" 1>&2
-    exit 1
-  ;;
-esac
 
-## If DLD functions are disabled, then DEFUN_DLD functions
-## are built-in instead of being dynamically loaded so they will also
-## need to be installed.
+for arg
+do
+  case "$arg" in
+    --header)
+      if $make_source; then
+        echo "mk-builtins.sh: only one of --header or --source may be specified" 1>&2
+        exit 1
+      fi
+      make_header=true
+      shift
+    ;;
+    --source)
+      if $make_header; then
+        echo "mk-builtins.sh: only one of --header or --source may be specified" 1>&2
+        exit 1
+      fi
+      make_source=true
+      shift
+    ;;
+    --disable-dl)
+      ## If DLD functions are disabled, then DEFUN_DLD functions are
+      ## built-in instead of being dynamically loaded so they will also
+      ## need to be installed.
+      defun_dld_are_built_in=true
+      shift
+    ;;
+    *)
+      srcdir="$arg"
+      shift
+      if [ "x$1" = "x--" ]; then
+        shift
+        break
+      else
+        echo "mk-builtins.sh: '--' must separate SRCDIR from other file names" 1>&2
+        exit 1
+      fi
+    ;;
+  esac
+done
 
-defun_dld_are_built_in=false
-case "$1" in
-  --disable-dl)
-    defun_dld_are_built_in=true
-    shift
-  ;;
-esac
+if [ $# -eq 0 ]; then
+  echo "usage: mk-builtins.sh --header|--source [--disable-dl] SRCDIR -- f1 f2 ..." 1>&2
+  exit 1
+fi
+
+if ! $make_header && ! $make_source; then
+  echo "mk-builtins.sh: one of --header or --source must be specified" 1>&2
+  exit 1
+fi
 
 if $make_header; then
 
   cat << \EOF
-// DO NOT EDIT!  Generated automatically by mkbuiltins.
+// DO NOT EDIT!  Generated automatically by mk-builtins.sh.
 
 #if ! defined (octave_builtin_defun_decls_h)
 #define octave_builtin_defun_decls_h 1
@@ -109,7 +128,7 @@ EOF
 elif $make_source; then
 
   cat << \EOF
-// DO NOT EDIT!  Generated automatically by mkbuiltins.
+// DO NOT EDIT!  Generated automatically by mk-builtins.sh.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -200,11 +219,6 @@ EOF
 }
 
 EOF
-
-else
-
-  echo "mkbuiltins: must specify --header or --source!" 1>&2
-  exit 1
 
 fi
 

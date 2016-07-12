@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "pt-eval.h"
+
 typedef void (*octave_exit_func) (int);
 extern OCTINTERP_API octave_exit_func octave_exit;
 
@@ -85,6 +87,8 @@ extern OCTINTERP_API bool octave_initialized;
 
 namespace octave
 {
+  extern tree_evaluator *current_evaluator;
+
   // The application object contains a pointer to the current
   // interpreter and the interpreter contains a pointer back to the
   // application context so we need a forward declaration for one (or
@@ -98,7 +102,7 @@ namespace octave
 
     interpreter (application *app_context = 0, bool embedded = false);
 
-    ~interpreter (void) { }
+    ~interpreter (void);
 
     int execute (void);
 
@@ -122,6 +126,8 @@ namespace octave
     void clean_up_and_exit (int status, bool safe_to_return = false);
 
     application *m_app_context;
+
+    tree_evaluator *m_evaluator;
 
     bool m_embedded;
 

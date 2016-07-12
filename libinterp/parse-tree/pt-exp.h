@@ -95,7 +95,7 @@ public:
 
   // Check if the result of the expression should be printed.
   // Should normally be used in conjunction with
-  // tree_evaluator::statement_printing_enabled.
+  // octave::tree_evaluator::statement_printing_enabled.
   bool print_result (void) const { return print_flag; }
 
   virtual std::string oper (void) const { return "<unknown>"; }

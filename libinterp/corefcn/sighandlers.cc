@@ -490,7 +490,7 @@ namespace octave
           {
             if (! octave_debug_on_interrupt_state)
               {
-                tree_evaluator::debug_mode = true;
+                octave::tree_evaluator::debug_mode = true;
                 octave_debug_on_interrupt_state = true;
 
                 return;
@@ -499,7 +499,7 @@ namespace octave
               {
                 // Clear the flag and do normal interrupt stuff.
 
-                tree_evaluator::debug_mode
+                octave::tree_evaluator::debug_mode
                   = bp_table::have_breakpoints () || Vdebugging;
                 octave_debug_on_interrupt_state = false;
               }

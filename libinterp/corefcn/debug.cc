@@ -623,7 +623,7 @@ bp_table::condition_valid (const std::string& cond)
 {
   if (cond.length () > 0)
     {
-      octave_parser parser (cond + " ;"); // ; to reject partial expr like "y=="
+      octave::parser parser (cond + " ;"); // ; to reject partial expr like "y=="
       parser.reset ();
       int parse_status = parser.run ();
       if (parse_status)
@@ -753,7 +753,7 @@ bp_table::do_add_breakpoint (const std::string& fname,
         }
     }
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
   return retval;
 }
@@ -851,7 +851,7 @@ bp_table::do_remove_breakpoint (const std::string& fname,
         }
     }
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
   return retval;
 }
@@ -884,7 +884,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
     error ("remove_all_breakpoint_in_file: "
            "unable to find function %s\n", fname.c_str ());
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
   return retval;
 }
@@ -901,7 +901,7 @@ bp_table::do_remove_all_breakpoints (void)
       remove_all_breakpoints_in_file (*it);
     }
 
-  tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 }
 
 std::string
@@ -2096,14 +2096,14 @@ function returns.
           Vdebugging = false;
           Vtrack_line_num = true;
 
-          tree_evaluator::dbstep_flag = -1;
+          octave::tree_evaluator::dbstep_flag = -1;
         }
       else if (arg == "out")
         {
           Vdebugging = false;
           Vtrack_line_num = true;
 
-          tree_evaluator::dbstep_flag = -2;
+          octave::tree_evaluator::dbstep_flag = -2;
         }
       else
         {
@@ -2115,7 +2115,7 @@ function returns.
           Vdebugging = false;
           Vtrack_line_num = true;
 
-          tree_evaluator::dbstep_flag = n;
+          octave::tree_evaluator::dbstep_flag = n;
         }
     }
   else
@@ -2123,7 +2123,7 @@ function returns.
       Vdebugging = false;
       Vtrack_line_num = true;
 
-      tree_evaluator::dbstep_flag = 1;
+      octave::tree_evaluator::dbstep_flag = 1;
     }
 
   return ovl ();
@@ -2147,7 +2147,7 @@ Leave command-line debugging mode and continue code execution normally.
   Vdebugging = false;
   Vtrack_line_num = true;
 
-  tree_evaluator::reset_debug_state ();
+  octave::tree_evaluator::reset_debug_state ();
 
   return ovl ();
 }
@@ -2168,7 +2168,7 @@ the Octave prompt.
 
   Vdebugging = false;
 
-  tree_evaluator::reset_debug_state ();
+  octave::tree_evaluator::reset_debug_state ();
 
   octave_throw_interrupt_exception ();
 
@@ -2207,7 +2207,7 @@ With a logical argument @var{flag}, set the state on or off.
   if (nargin == 1)
     state = args(0).bool_value ();
 
-  tree_evaluator::quiet_breakpoint_flag = state;
+  octave::tree_evaluator::quiet_breakpoint_flag = state;
 
   return ovl ();
 }

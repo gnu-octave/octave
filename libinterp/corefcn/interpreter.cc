@@ -526,10 +526,15 @@ execute_startup_files (bool read_site_files, bool read_init_files,
 
 namespace octave
 {
+  tree_evaluator *current_evaluator = 0;
+
   interpreter::interpreter (application *app_context, bool embedded)
-    : m_app_context (app_context), m_embedded (embedded),
-      m_interactive (false), m_quitting_gracefully (false)
+    : m_app_context (app_context), m_evaluator (new tree_evaluator (this)),
+      m_embedded (embedded), m_interactive (false),
+      m_quitting_gracefully (false)
   {
+    current_evaluator = m_evaluator;
+
     cmdline_options options = m_app_context->options ();
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
@@ -643,6 +648,13 @@ namespace octave
     initialize_load_path (options.set_initial_path ());
 
     initialize_history (options.read_history_file ());
+  }
+
+  interpreter::~interpreter (void)
+  {
+    current_evaluator = 0;
+
+    delete m_evaluator;
   }
 
   int interpreter::execute (void)
@@ -858,11 +870,11 @@ namespace octave
 
     // The big loop.
 
-    octave_lexer *lxr = (octave::application::interactive ()
-                         ? new octave_lexer ()
-                         : new octave_lexer (stdin));
+    octave::lexer *lxr = (octave::application::interactive ()
+                          ? new octave::lexer ()
+                          : new octave::lexer (stdin));
 
-    octave_parser parser (*lxr);
+    octave::parser parser (*lxr);
 
     int retval = 0;
     do
@@ -874,7 +886,7 @@ namespace octave
             parser.reset ();
 
             if (symbol_table::at_top_level ())
-              tree_evaluator::reset_debug_state ();
+              octave::tree_evaluator::reset_debug_state ();
 
             retval = parser.run ();
 

@@ -380,7 +380,7 @@ isglobal ("x")
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
-  if (is_keyword (name))
+  if (octave::is_keyword (name))
     return 0;
 
   bool search_any = type == "any";

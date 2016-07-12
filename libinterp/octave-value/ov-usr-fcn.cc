@@ -141,15 +141,16 @@ octave_user_script::do_multi_index_op (int nargout,
 
       frame.add_fcn (octave_call_stack::pop);
 
+      // Update line number even if debugging.
       frame.protect_var (Vtrack_line_num);
-      Vtrack_line_num = true;    // update line no. even if debugging
+      Vtrack_line_num = true;
 
-      frame.protect_var (tree_evaluator::statement_context);
-      tree_evaluator::statement_context = tree_evaluator::script;
+      frame.protect_var (octave::tree_evaluator::statement_context);
+      octave::tree_evaluator::statement_context = octave::tree_evaluator::script;
 
       BEGIN_PROFILER_BLOCK (octave_user_script)
 
-        cmd_list->accept (*current_evaluator);
+        cmd_list->accept (*octave::current_evaluator);
 
       END_PROFILER_BLOCK
 
@@ -583,8 +584,8 @@ octave_user_function::do_multi_index_op (int nargout,
 
   // Evaluate the commands that make up the function.
 
-  frame.protect_var (tree_evaluator::statement_context);
-  tree_evaluator::statement_context = tree_evaluator::function;
+  frame.protect_var (octave::tree_evaluator::statement_context);
+  octave::tree_evaluator::statement_context = octave::tree_evaluator::function;
 
   BEGIN_PROFILER_BLOCK (octave_user_function)
 
@@ -598,7 +599,7 @@ octave_user_function::do_multi_index_op (int nargout,
                   : expr->rvalue (nargout));
     }
   else
-    cmd_list->accept (*current_evaluator);
+    cmd_list->accept (*octave::current_evaluator);
 
   END_PROFILER_BLOCK
 

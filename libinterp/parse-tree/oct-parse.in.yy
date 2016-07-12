@@ -88,7 +88,7 @@ extern int octave_lex (YYSTYPE *, void *);
 
 // Global access to currently active lexer.
 // FIXME: to be removed after more parser+lexer refactoring.
-octave_base_lexer *LEXER = 0;
+octave::base_lexer *LEXER = 0;
 
 // TRUE means we printed messages about reading startup files.
 bool reading_startup_message_printed = false;
@@ -99,7 +99,7 @@ static std::map<std::string, std::string> autoload_map;
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
-static void yyerror (octave_base_parser& parser, const char *s);
+static void yyerror (octave::base_parser& parser, const char *s);
 
 #define lexer parser.lexer
 #define scanner lexer.scanner
@@ -134,7 +134,7 @@ static void yyerror (octave_base_parser& parser, const char *s);
 
 %define api.pure
 %PUSH_PULL_DECL%
-%parse-param { octave_base_parser& parser }
+%parse-param { octave::base_parser& parser }
 %lex-param { void *scanner }
 
 %union
@@ -1400,7 +1400,7 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                         // after parsing the function.  Any function
                         // definitions found in the file have already
                         // been stored in the symbol table or in
-                        // octave_base_parser::primary_fcn_ptr.
+                        // base_parser::primary_fcn_ptr.
 
                         delete $3;
                       }
@@ -2010,60 +2010,63 @@ opt_sep         : // empty
 #undef lexer
 
 static void
-yyerror (octave_base_parser& parser, const char *s)
+yyerror (octave::base_parser& parser, const char *s)
 {
   parser.bison_error (s);
 }
 
-octave_base_parser::octave_base_parser (octave_base_lexer& lxr)
-  : endfunction_found (false), autoloading (false),
-    fcn_file_from_relative_lookup (false), parsing_subfunctions (false),
-    max_fcn_depth (0), curr_fcn_depth (0), primary_fcn_scope (-1),
-    curr_class_name (), curr_package_name (), function_scopes (),
-    primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
-    stmt_list (0), lexer (lxr), parser_state (yypstate_new ())
-{ }
-
-octave_base_parser::~octave_base_parser (void)
+namespace octave
 {
-  delete stmt_list;
+  base_parser::base_parser (base_lexer& lxr)
+    : endfunction_found (false), autoloading (false),
+      fcn_file_from_relative_lookup (false), parsing_subfunctions (false),
+      max_fcn_depth (0), curr_fcn_depth (0), primary_fcn_scope (-1),
+      curr_class_name (), curr_package_name (), function_scopes (),
+      primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
+      stmt_list (0), lexer (lxr), parser_state (yypstate_new ())
+  { }
 
-  delete &lexer;
+  base_parser::~base_parser (void)
+  {
+    delete stmt_list;
 
-  // FIXME: Deleting the internal Bison parser state structure does
-  // not clean up any partial parse trees in the event of an interrupt or
-  // error.  It's not clear how to safely do that with the C language
-  // parser that Bison generates.  The C++ language parser that Bison
-  // generates would do it for us automatically whenever an exception
-  // is thrown while parsing input, but there is currently no C++
-  // interface for a push parser.
+    delete &lexer;
 
-  yypstate_delete (static_cast<yypstate *> (parser_state));
-}
+    // FIXME: Deleting the internal Bison parser state structure does
+    // not clean up any partial parse trees in the event of an interrupt or
+    // error.  It's not clear how to safely do that with the C language
+    // parser that Bison generates.  The C++ language parser that Bison
+    // generates would do it for us automatically whenever an exception
+    // is thrown while parsing input, but there is currently no C++
+    // interface for a push parser.
 
-void
-octave_base_parser::reset (void)
-{
-  endfunction_found = false;
-  autoloading = false;
-  fcn_file_from_relative_lookup = false;
-  parsing_subfunctions = false;
-  max_fcn_depth = 0;
-  curr_fcn_depth = 0;
-  primary_fcn_scope = -1;
-  curr_class_name = "";
-  curr_package_name = "";
-  function_scopes.clear ();
-  primary_fcn_ptr  = 0;
-  subfunction_names.clear ();
+    yypstate_delete (static_cast<yypstate *> (parser_state));
+  }
 
-  delete stmt_list;
-  stmt_list = 0;
+  void
+  base_parser::reset (void)
+  {
+    endfunction_found = false;
+    autoloading = false;
+    fcn_file_from_relative_lookup = false;
+    parsing_subfunctions = false;
+    max_fcn_depth = 0;
+    curr_fcn_depth = 0;
+    primary_fcn_scope = -1;
+    curr_class_name = "";
+    curr_package_name = "";
+    function_scopes.clear ();
+    primary_fcn_ptr  = 0;
+    subfunction_names.clear ();
 
-  lexer.reset ();
+    delete stmt_list;
+    stmt_list = 0;
 
-  yypstate_delete (static_cast<yypstate *> (parser_state));
-  parser_state = yypstate_new ();
+    lexer.reset ();
+
+    yypstate_delete (static_cast<yypstate *> (parser_state));
+    parser_state = yypstate_new ();
+  }
 }
 
 // Error mesages for mismatched end tokens.
@@ -2139,1015 +2142,1230 @@ end_token_as_string (token::end_tok_type ettype)
   return retval;
 }
 
-void
-octave_base_parser::end_token_error (token *tok, token::end_tok_type expected)
+namespace octave
 {
-  std::string msg = ("'" + end_token_as_string (expected)
-                     + "' command matched by '"
-                     + end_token_as_string (tok->ettype ()) + "'");
+  void
+  base_parser::end_token_error (token *tok, token::end_tok_type expected)
+  {
+    std::string msg = ("'" + end_token_as_string (expected)
+                       + "' command matched by '"
+                       + end_token_as_string (tok->ettype ()) + "'");
 
-  bison_error (msg, tok->line (), tok->column ());
-}
+    bison_error (msg, tok->line (), tok->column ());
+  }
 
+  // Check to see that end tokens are properly matched.
 
-// Check to see that end tokens are properly matched.
+  bool
+  base_parser::end_token_ok (token *tok, token::end_tok_type expected)
+  {
+    token::end_tok_type ettype = tok->ettype ();
 
-bool
-octave_base_parser::end_token_ok (token *tok, token::end_tok_type expected)
-{
-  token::end_tok_type ettype = tok->ettype ();
+    return ettype == expected || ettype == token::simple_end;
+  }
 
-  return ettype == expected || ettype == token::simple_end;
-}
+  // Maybe print a warning if an assignment expression is used as the
+  // test in a logical expression.
 
-// Maybe print a warning if an assignment expression is used as the
-// test in a logical expression.
-
-void
-octave_base_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
-{
-  if (expr->is_assignment_expression ()
-      && expr->paren_count () < 2)
-    {
-      if (lexer.fcn_file_full_name.empty ())
-        warning_with_id
-          ("Octave:assign-as-truth-value",
-           "suggest parenthesis around assignment used as truth value");
-      else
-        warning_with_id
-          ("Octave:assign-as-truth-value",
-           "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
-    }
-}
-
-// Maybe print a warning about switch labels that aren't constants.
-
-void
-octave_base_parser::maybe_warn_variable_switch_label (tree_expression *expr)
-{
-  if (! expr->is_constant ())
-    {
-      if (lexer.fcn_file_full_name.empty ())
-        warning_with_id ("Octave:variable-switch-label",
-                         "variable switch label");
-      else
-        warning_with_id
-          ("Octave:variable-switch-label",
-           "variable switch label near line %d, column %d in file '%s'",
-           expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
-    }
-}
-
-// Finish building a range.
-
-tree_expression *
-octave_base_parser::finish_colon_expression (tree_colon_expression *e)
-{
-  tree_expression *retval = e;
-
-  octave::unwind_protect frame;
-
-  frame.protect_var (discard_error_messages);
-  frame.protect_var (discard_warning_messages);
-
-  discard_error_messages = true;
-  discard_warning_messages = true;
-
-  tree_expression *base = e->base ();
-  tree_expression *limit = e->limit ();
-  tree_expression *incr = e->increment ();
-
-  if (base)
-    {
-      if (limit)
-        {
-          if (base->is_constant () && limit->is_constant ()
-              && (! incr || (incr && incr->is_constant ())))
-            {
-              try
-                {
-                  octave_value tmp = e->rvalue1 ();
-
-                  tree_constant *tc_retval
-                    = new tree_constant (tmp, base->line (), base->column ());
-
-                  std::ostringstream buf;
-
-                  tree_print_code tpc (buf);
-
-                  e->accept (tpc);
-
-                  tc_retval->stash_original_text (buf.str ());
-
-                  delete e;
-
-                  retval = tc_retval;
-                }
-              catch (const octave_execution_exception&)
-                {
-                  recover_from_exception ();
-                }
-            }
-        }
-      else
-        {
-          e->preserve_base ();
-          delete e;
-
-          retval = base;
-        }
-    }
-
-  return retval;
-}
-
-// Make a constant.
-
-tree_constant *
-octave_base_parser::make_constant (int op, token *tok_val)
-{
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  tree_constant *retval = 0;
-
-  switch (op)
-    {
-    case NUM:
+  void
+  base_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
+  {
+    if (expr->is_assignment_expression ()
+        && expr->paren_count () < 2)
       {
-        octave_value tmp (tok_val->number ());
-        retval = new tree_constant (tmp, l, c);
-        retval->stash_original_text (tok_val->text_rep ());
+        if (lexer.fcn_file_full_name.empty ())
+          warning_with_id
+            ("Octave:assign-as-truth-value",
+             "suggest parenthesis around assignment used as truth value");
+        else
+          warning_with_id
+            ("Octave:assign-as-truth-value",
+             "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
+             expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
       }
-      break;
+  }
 
-    case IMAG_NUM:
+  // Maybe print a warning about switch labels that aren't constants.
+
+  void
+  base_parser::maybe_warn_variable_switch_label (tree_expression *expr)
+  {
+    if (! expr->is_constant ())
       {
-        octave_value tmp (Complex (0.0, tok_val->number ()));
-        retval = new tree_constant (tmp, l, c);
-        retval->stash_original_text (tok_val->text_rep ());
+        if (lexer.fcn_file_full_name.empty ())
+          warning_with_id ("Octave:variable-switch-label",
+                           "variable switch label");
+        else
+          warning_with_id
+            ("Octave:variable-switch-label",
+             "variable switch label near line %d, column %d in file '%s'",
+             expr->line (), expr->column (), lexer.fcn_file_full_name.c_str ());
       }
-      break;
+  }
 
-    case DQ_STRING:
-    case SQ_STRING:
+  // Finish building a range.
+
+  tree_expression *
+  base_parser::finish_colon_expression (tree_colon_expression *e)
+  {
+    tree_expression *retval = e;
+
+    octave::unwind_protect frame;
+
+    frame.protect_var (discard_error_messages);
+    frame.protect_var (discard_warning_messages);
+
+    discard_error_messages = true;
+    discard_warning_messages = true;
+
+    tree_expression *base = e->base ();
+    tree_expression *limit = e->limit ();
+    tree_expression *incr = e->increment ();
+
+    if (base)
       {
-        std::string txt = tok_val->text ();
-
-        char delim = op == DQ_STRING ? '"' : '\'';
-        octave_value tmp (txt, delim);
-
-        if (txt.empty ())
+        if (limit)
           {
-            if (op == DQ_STRING)
-              tmp = octave_null_str::instance;
-            else
-              tmp = octave_null_sq_str::instance;
+            if (base->is_constant () && limit->is_constant ()
+                && (! incr || (incr && incr->is_constant ())))
+              {
+                try
+                  {
+                    octave_value tmp = e->rvalue1 ();
+
+                    tree_constant *tc_retval
+                      = new tree_constant (tmp, base->line (), base->column ());
+
+                    std::ostringstream buf;
+
+                    tree_print_code tpc (buf);
+
+                    e->accept (tpc);
+
+                    tc_retval->stash_original_text (buf.str ());
+
+                    delete e;
+
+                    retval = tc_retval;
+                  }
+                catch (const octave_execution_exception&)
+                  {
+                    recover_from_exception ();
+                  }
+              }
+          }
+        else
+          {
+            e->preserve_base ();
+            delete e;
+
+            retval = base;
+          }
+      }
+
+    return retval;
+  }
+
+  // Make a constant.
+
+  tree_constant *
+  base_parser::make_constant (int op, token *tok_val)
+  {
+    int l = tok_val->line ();
+    int c = tok_val->column ();
+
+    tree_constant *retval = 0;
+
+    switch (op)
+      {
+      case NUM:
+        {
+          octave_value tmp (tok_val->number ());
+          retval = new tree_constant (tmp, l, c);
+          retval->stash_original_text (tok_val->text_rep ());
+        }
+        break;
+
+      case IMAG_NUM:
+        {
+          octave_value tmp (Complex (0.0, tok_val->number ()));
+          retval = new tree_constant (tmp, l, c);
+          retval->stash_original_text (tok_val->text_rep ());
+        }
+        break;
+
+      case DQ_STRING:
+      case SQ_STRING:
+        {
+          std::string txt = tok_val->text ();
+
+          char delim = op == DQ_STRING ? '"' : '\'';
+          octave_value tmp (txt, delim);
+
+          if (txt.empty ())
+            {
+              if (op == DQ_STRING)
+                tmp = octave_null_str::instance;
+              else
+                tmp = octave_null_sq_str::instance;
+            }
+
+          retval = new tree_constant (tmp, l, c);
+
+          if (op == DQ_STRING)
+            txt = undo_string_escapes (txt);
+
+          // FIXME: maybe this should also be handled by
+          // tok_val->text_rep () for character strings?
+          retval->stash_original_text (delim + txt + delim);
+        }
+        break;
+
+      default:
+        panic_impossible ();
+        break;
+      }
+
+    return retval;
+  }
+
+  // Make a function handle.
+
+  tree_fcn_handle *
+  base_parser::make_fcn_handle (token *tok_val)
+  {
+    int l = tok_val->line ();
+    int c = tok_val->column ();
+
+    tree_fcn_handle *retval = new tree_fcn_handle (tok_val->text (), l, c);
+
+    return retval;
+  }
+
+  // Make an anonymous function handle.
+
+  tree_anon_fcn_handle *
+  base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
+                                     tree_statement *stmt)
+  {
+    // FIXME: need to get these from the location of the @ symbol.
+    int l = lexer.input_line_number;
+    int c = lexer.current_input_column;
+
+    tree_parameter_list *ret_list = 0;
+
+    symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
+
+    lexer.symtab_context.pop ();
+
+    stmt->set_print_flag (false);
+
+    tree_statement_list *body = new tree_statement_list (stmt);
+
+    body->mark_as_anon_function_body ();
+
+    tree_anon_fcn_handle *retval
+      = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
+    // FIXME: Stash the filename.  This does not work and produces
+    // errors when executed.
+    //retval->stash_file_name (lexer.fcn_file_name);
+
+    return retval;
+  }
+
+  // Build a binary expression.
+
+  tree_expression *
+  base_parser::make_binary_op (int op, tree_expression *op1,
+                               token *tok_val, tree_expression *op2)
+  {
+    octave_value::binary_op t = octave_value::unknown_binary_op;
+
+    switch (op)
+      {
+      case POW:
+        t = octave_value::op_pow;
+        break;
+
+      case EPOW:
+        t = octave_value::op_el_pow;
+        break;
+
+      case '+':
+        t = octave_value::op_add;
+        break;
+
+      case '-':
+        t = octave_value::op_sub;
+        break;
+
+      case '*':
+        t = octave_value::op_mul;
+        break;
+
+      case '/':
+        t = octave_value::op_div;
+        break;
+
+      case EMUL:
+        t = octave_value::op_el_mul;
+        break;
+
+      case EDIV:
+        t = octave_value::op_el_div;
+        break;
+
+      case LEFTDIV:
+        t = octave_value::op_ldiv;
+        break;
+
+      case ELEFTDIV:
+        t = octave_value::op_el_ldiv;
+        break;
+
+      case EXPR_LT:
+        t = octave_value::op_lt;
+        break;
+
+      case EXPR_LE:
+        t = octave_value::op_le;
+        break;
+
+      case EXPR_EQ:
+        t = octave_value::op_eq;
+        break;
+
+      case EXPR_GE:
+        t = octave_value::op_ge;
+        break;
+
+      case EXPR_GT:
+        t = octave_value::op_gt;
+        break;
+
+      case EXPR_NE:
+        t = octave_value::op_ne;
+        break;
+
+      case EXPR_AND:
+        t = octave_value::op_el_and;
+        break;
+
+      case EXPR_OR:
+        t = octave_value::op_el_or;
+        break;
+
+      default:
+        panic_impossible ();
+        break;
+      }
+
+    int l = tok_val->line ();
+    int c = tok_val->column ();
+
+    return maybe_compound_binary_expression (op1, op2, l, c, t);
+  }
+
+  // Build a boolean expression.
+
+  tree_expression *
+  base_parser::make_boolean_op (int op, tree_expression *op1,
+                                token *tok_val, tree_expression *op2)
+  {
+    tree_boolean_expression::type t;
+
+    switch (op)
+      {
+      case EXPR_AND_AND:
+        t = tree_boolean_expression::bool_and;
+        break;
+
+      case EXPR_OR_OR:
+        t = tree_boolean_expression::bool_or;
+        break;
+
+      default:
+        panic_impossible ();
+        break;
+      }
+
+    int l = tok_val->line ();
+    int c = tok_val->column ();
+
+    return new tree_boolean_expression (op1, op2, l, c, t);
+  }
+
+  // Build a prefix expression.
+
+  tree_expression *
+  base_parser::make_prefix_op (int op, tree_expression *op1, token *tok_val)
+  {
+    octave_value::unary_op t = octave_value::unknown_unary_op;
+
+    switch (op)
+      {
+      case EXPR_NOT:
+        t = octave_value::op_not;
+        break;
+
+      case '+':
+        t = octave_value::op_uplus;
+        break;
+
+      case '-':
+        t = octave_value::op_uminus;
+        break;
+
+      case PLUS_PLUS:
+        t = octave_value::op_incr;
+        break;
+
+      case MINUS_MINUS:
+        t = octave_value::op_decr;
+        break;
+
+      default:
+        panic_impossible ();
+        break;
+      }
+
+    int l = tok_val->line ();
+    int c = tok_val->column ();
+
+    return new tree_prefix_expression (op1, l, c, t);
+  }
+
+  // Build a postfix expression.
+
+  tree_expression *
+  base_parser::make_postfix_op (int op, tree_expression *op1, token *tok_val)
+  {
+    octave_value::unary_op t = octave_value::unknown_unary_op;
+
+    switch (op)
+      {
+      case HERMITIAN:
+        t = octave_value::op_hermitian;
+        break;
+
+      case TRANSPOSE:
+        t = octave_value::op_transpose;
+        break;
+
+      case PLUS_PLUS:
+        t = octave_value::op_incr;
+        break;
+
+      case MINUS_MINUS:
+        t = octave_value::op_decr;
+        break;
+
+      default:
+        panic_impossible ();
+        break;
+      }
+
+    int l = tok_val->line ();
+    int c = tok_val->column ();
+
+    return new tree_postfix_expression (op1, l, c, t);
+  }
+
+  // Build an unwind-protect command.
+
+  tree_command *
+  base_parser::make_unwind_command (token *unwind_tok,
+                                    tree_statement_list *body,
+                                    tree_statement_list *cleanup_stmts,
+                                    token *end_tok,
+                                    octave_comment_list *lc,
+                                    octave_comment_list *mc)
+  {
+    tree_command *retval = 0;
+
+    if (end_token_ok (end_tok, token::unwind_protect_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = unwind_tok->line ();
+        int c = unwind_tok->column ();
+
+        retval = new tree_unwind_protect_command (body, cleanup_stmts,
+                                                  lc, mc, tc, l, c);
+      }
+    else
+      {
+        delete body;
+        delete cleanup_stmts;
+
+        end_token_error (end_tok, token::unwind_protect_end);
+      }
+
+    return retval;
+  }
+
+  // Build a try-catch command.
+
+  tree_command *
+  base_parser::make_try_command (token *try_tok,
+                                 tree_statement_list *body,
+                                 char catch_sep,
+                                 tree_statement_list *cleanup_stmts,
+                                 token *end_tok,
+                                 octave_comment_list *lc,
+                                 octave_comment_list *mc)
+  {
+    tree_command *retval = 0;
+
+    if (end_token_ok (end_tok, token::try_catch_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = try_tok->line ();
+        int c = try_tok->column ();
+
+        tree_identifier *id = 0;
+
+        if (! catch_sep && cleanup_stmts && ! cleanup_stmts->empty ())
+          {
+            tree_statement *stmt = cleanup_stmts->front ();
+
+            if (stmt)
+              {
+                tree_expression *expr = stmt->expression ();
+
+                if (expr && expr->is_identifier ())
+                  {
+                    id = dynamic_cast<tree_identifier *> (expr);
+
+                    cleanup_stmts->pop_front ();
+
+                    stmt->set_expression (0);
+                    delete stmt;
+                  }
+              }
           }
 
-        retval = new tree_constant (tmp, l, c);
-
-        if (op == DQ_STRING)
-          txt = undo_string_escapes (txt);
-
-        // FIXME: maybe this should also be handled by
-        // tok_val->text_rep () for character strings?
-        retval->stash_original_text (delim + txt + delim);
+        retval = new tree_try_catch_command (body, cleanup_stmts, id,
+                                             lc, mc, tc, l, c);
       }
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  return retval;
-}
-
-// Make a function handle.
-
-tree_fcn_handle *
-octave_base_parser::make_fcn_handle (token *tok_val)
-{
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  tree_fcn_handle *retval = new tree_fcn_handle (tok_val->text (), l, c);
-
-  return retval;
-}
-
-// Make an anonymous function handle.
-
-tree_anon_fcn_handle *
-octave_base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
-                                          tree_statement *stmt)
-{
-  // FIXME: need to get these from the location of the @ symbol.
-  int l = lexer.input_line_number;
-  int c = lexer.current_input_column;
-
-  tree_parameter_list *ret_list = 0;
-
-  symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
-
-  lexer.symtab_context.pop ();
-
-  stmt->set_print_flag (false);
-
-  tree_statement_list *body = new tree_statement_list (stmt);
-
-  body->mark_as_anon_function_body ();
-
-  tree_anon_fcn_handle *retval
-    = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
-  // FIXME: Stash the filename.  This does not work and produces
-  // errors when executed.
-  //retval->stash_file_name (lexer.fcn_file_name);
-
-  return retval;
-}
-
-// Build a binary expression.
-
-tree_expression *
-octave_base_parser::make_binary_op (int op, tree_expression *op1,
-                                    token *tok_val, tree_expression *op2)
-{
-  octave_value::binary_op t = octave_value::unknown_binary_op;
-
-  switch (op)
-    {
-    case POW:
-      t = octave_value::op_pow;
-      break;
-
-    case EPOW:
-      t = octave_value::op_el_pow;
-      break;
-
-    case '+':
-      t = octave_value::op_add;
-      break;
-
-    case '-':
-      t = octave_value::op_sub;
-      break;
-
-    case '*':
-      t = octave_value::op_mul;
-      break;
-
-    case '/':
-      t = octave_value::op_div;
-      break;
-
-    case EMUL:
-      t = octave_value::op_el_mul;
-      break;
-
-    case EDIV:
-      t = octave_value::op_el_div;
-      break;
-
-    case LEFTDIV:
-      t = octave_value::op_ldiv;
-      break;
-
-    case ELEFTDIV:
-      t = octave_value::op_el_ldiv;
-      break;
-
-    case EXPR_LT:
-      t = octave_value::op_lt;
-      break;
-
-    case EXPR_LE:
-      t = octave_value::op_le;
-      break;
-
-    case EXPR_EQ:
-      t = octave_value::op_eq;
-      break;
-
-    case EXPR_GE:
-      t = octave_value::op_ge;
-      break;
-
-    case EXPR_GT:
-      t = octave_value::op_gt;
-      break;
-
-    case EXPR_NE:
-      t = octave_value::op_ne;
-      break;
-
-    case EXPR_AND:
-      t = octave_value::op_el_and;
-      break;
-
-    case EXPR_OR:
-      t = octave_value::op_el_or;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  return maybe_compound_binary_expression (op1, op2, l, c, t);
-}
-
-// Build a boolean expression.
-
-tree_expression *
-octave_base_parser::make_boolean_op (int op, tree_expression *op1,
-                                     token *tok_val, tree_expression *op2)
-{
-  tree_boolean_expression::type t;
-
-  switch (op)
-    {
-    case EXPR_AND_AND:
-      t = tree_boolean_expression::bool_and;
-      break;
-
-    case EXPR_OR_OR:
-      t = tree_boolean_expression::bool_or;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  return new tree_boolean_expression (op1, op2, l, c, t);
-}
-
-// Build a prefix expression.
-
-tree_expression *
-octave_base_parser::make_prefix_op (int op, tree_expression *op1,
-                                    token *tok_val)
-{
-  octave_value::unary_op t = octave_value::unknown_unary_op;
-
-  switch (op)
-    {
-    case EXPR_NOT:
-      t = octave_value::op_not;
-      break;
-
-    case '+':
-      t = octave_value::op_uplus;
-      break;
-
-    case '-':
-      t = octave_value::op_uminus;
-      break;
-
-    case PLUS_PLUS:
-      t = octave_value::op_incr;
-      break;
-
-    case MINUS_MINUS:
-      t = octave_value::op_decr;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  return new tree_prefix_expression (op1, l, c, t);
-}
-
-// Build a postfix expression.
-
-tree_expression *
-octave_base_parser::make_postfix_op (int op, tree_expression *op1,
-                                     token *tok_val)
-{
-  octave_value::unary_op t = octave_value::unknown_unary_op;
-
-  switch (op)
-    {
-    case HERMITIAN:
-      t = octave_value::op_hermitian;
-      break;
-
-    case TRANSPOSE:
-      t = octave_value::op_transpose;
-      break;
-
-    case PLUS_PLUS:
-      t = octave_value::op_incr;
-      break;
-
-    case MINUS_MINUS:
-      t = octave_value::op_decr;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  return new tree_postfix_expression (op1, l, c, t);
-}
-
-// Build an unwind-protect command.
-
-tree_command *
-octave_base_parser::make_unwind_command (token *unwind_tok,
-                                         tree_statement_list *body,
-                                         tree_statement_list *cleanup_stmts,
-                                         token *end_tok,
-                                         octave_comment_list *lc,
-                                         octave_comment_list *mc)
-{
-  tree_command *retval = 0;
-
-  if (end_token_ok (end_tok, token::unwind_protect_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = unwind_tok->line ();
-      int c = unwind_tok->column ();
-
-      retval = new tree_unwind_protect_command (body, cleanup_stmts,
-                                                lc, mc, tc, l, c);
-    }
-  else
-    {
-      delete body;
-      delete cleanup_stmts;
-
-      end_token_error (end_tok, token::unwind_protect_end);
-    }
-
-  return retval;
-}
-
-// Build a try-catch command.
-
-tree_command *
-octave_base_parser::make_try_command (token *try_tok,
-                                      tree_statement_list *body,
-                                      char catch_sep,
-                                      tree_statement_list *cleanup_stmts,
-                                      token *end_tok,
-                                      octave_comment_list *lc,
-                                      octave_comment_list *mc)
-{
-  tree_command *retval = 0;
-
-  if (end_token_ok (end_tok, token::try_catch_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = try_tok->line ();
-      int c = try_tok->column ();
-
-      tree_identifier *id = 0;
-
-      if (! catch_sep && cleanup_stmts && ! cleanup_stmts->empty ())
-        {
-          tree_statement *stmt = cleanup_stmts->front ();
-
-          if (stmt)
-            {
-              tree_expression *expr = stmt->expression ();
-
-              if (expr && expr->is_identifier ())
-                {
-                  id = dynamic_cast<tree_identifier *> (expr);
-
-                  cleanup_stmts->pop_front ();
-
-                  stmt->set_expression (0);
-                  delete stmt;
-                }
-            }
-        }
-
-      retval = new tree_try_catch_command (body, cleanup_stmts, id,
-                                           lc, mc, tc, l, c);
-    }
-  else
-    {
-      delete body;
-      delete cleanup_stmts;
-
-      end_token_error (end_tok, token::try_catch_end);
-    }
-
-  return retval;
-}
-
-// Build a while command.
-
-tree_command *
-octave_base_parser::make_while_command (token *while_tok,
-                                        tree_expression *expr,
-                                        tree_statement_list *body,
-                                        token *end_tok,
-                                        octave_comment_list *lc)
-{
-  tree_command *retval = 0;
-
-  maybe_warn_assign_as_truth_value (expr);
-
-  if (end_token_ok (end_tok, token::while_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      lexer.looping--;
-
-      int l = while_tok->line ();
-      int c = while_tok->column ();
-
-      retval = new tree_while_command (expr, body, lc, tc, l, c);
-    }
-  else
-    {
-      delete expr;
-      delete body;
-
-      end_token_error (end_tok, token::while_end);
-    }
-
-  return retval;
-}
-
-// Build a do-until command.
-
-tree_command *
-octave_base_parser::make_do_until_command (token *until_tok,
-                                           tree_statement_list *body,
-                                           tree_expression *expr,
-                                           octave_comment_list *lc)
-{
-  maybe_warn_assign_as_truth_value (expr);
-
-  octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-  lexer.looping--;
-
-  int l = until_tok->line ();
-  int c = until_tok->column ();
-
-  return new tree_do_until_command (expr, body, lc, tc, l, c);
-}
-
-// Build a for command.
-
-tree_command *
-octave_base_parser::make_for_command (int tok_id, token *for_tok,
-                                      tree_argument_list *lhs,
-                                      tree_expression *expr,
-                                      tree_expression *maxproc,
-                                      tree_statement_list *body,
-                                      token *end_tok,
-                                      octave_comment_list *lc)
-{
-  tree_command *retval = 0;
-
-  bool parfor = tok_id == PARFOR;
-
-  if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
-    {
-      expr->mark_as_for_cmd_expr ();
-
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      lexer.looping--;
-
-      int l = for_tok->line ();
-      int c = for_tok->column ();
-
-      if (lhs->length () == 1)
-        {
-          tree_expression *tmp = lhs->remove_front ();
-
-          retval = new tree_simple_for_command (parfor, tmp, expr, maxproc,
-                                                body, lc, tc, l, c);
-
-          delete lhs;
-        }
-      else
-        {
-          if (parfor)
-            {
-              delete lhs;
-              delete expr;
-              delete maxproc;
-              delete body;
-
-              bison_error ("invalid syntax for parfor statement");
-            }
-          else
-            retval = new tree_complex_for_command (lhs, expr, body,
-                                                   lc, tc, l, c);
-        }
-    }
-  else
-    {
-      delete lhs;
-      delete expr;
-      delete maxproc;
-      delete body;
-
-      end_token_error (end_tok, parfor ? token::parfor_end : token::for_end);
-    }
-
-  return retval;
-}
-
-// Build a break command.
-
-tree_command *
-octave_base_parser::make_break_command (token *break_tok)
-{
-  int l = break_tok->line ();
-  int c = break_tok->column ();
-
-  return new tree_break_command (l, c);
-}
-
-// Build a continue command.
-
-tree_command *
-octave_base_parser::make_continue_command (token *continue_tok)
-{
-  int l = continue_tok->line ();
-  int c = continue_tok->column ();
-
-  return new tree_continue_command (l, c);
-}
-
-// Build a return command.
-
-tree_command *
-octave_base_parser::make_return_command (token *return_tok)
-{
-  int l = return_tok->line ();
-  int c = return_tok->column ();
-
-  return new tree_return_command (l, c);
-}
-
-// Start an if command.
-
-tree_if_command_list *
-octave_base_parser::start_if_command (tree_expression *expr,
-                                      tree_statement_list *list)
-{
-  maybe_warn_assign_as_truth_value (expr);
-
-  tree_if_clause *t = new tree_if_clause (expr, list);
-
-  return new tree_if_command_list (t);
-}
-
-// Finish an if command.
-
-tree_if_command *
-octave_base_parser::finish_if_command (token *if_tok,
-                                       tree_if_command_list *list,
-                                       token *end_tok,
-                                       octave_comment_list *lc)
-{
-  tree_if_command *retval = 0;
-
-  if (end_token_ok (end_tok, token::if_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = if_tok->line ();
-      int c = if_tok->column ();
-
-      if (list && ! list->empty ())
-        {
-          tree_if_clause *elt = list->front ();
-
-          if (elt)
-            {
-              elt->line (l);
-              elt->column (c);
-            }
-        }
-
-      retval = new tree_if_command (list, lc, tc, l, c);
-    }
-  else
-    {
-      delete list;
-
-      end_token_error (end_tok, token::if_end);
-    }
-
-  return retval;
-}
-
-// Build an elseif clause.
-
-tree_if_clause *
-octave_base_parser::make_elseif_clause (token *elseif_tok,
-                                        tree_expression *expr,
-                                        tree_statement_list *list,
-                                        octave_comment_list *lc)
-{
-  maybe_warn_assign_as_truth_value (expr);
-
-  int l = elseif_tok->line ();
-  int c = elseif_tok->column ();
-
-  return new tree_if_clause (expr, list, lc, l, c);
-}
-
-// Finish a switch command.
-
-tree_switch_command *
-octave_base_parser::finish_switch_command (token *switch_tok,
-                                           tree_expression *expr,
-                                           tree_switch_case_list *list,
-                                           token *end_tok,
-                                           octave_comment_list *lc)
-{
-  tree_switch_command *retval = 0;
-
-  if (end_token_ok (end_tok, token::switch_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = switch_tok->line ();
-      int c = switch_tok->column ();
-
-      if (list && ! list->empty ())
-        {
-          tree_switch_case *elt = list->front ();
-
-          if (elt)
-            {
-              elt->line (l);
-              elt->column (c);
-            }
-        }
-
-      retval = new tree_switch_command (expr, list, lc, tc, l, c);
-    }
-  else
-    {
-      delete expr;
-      delete list;
-
-      end_token_error (end_tok, token::switch_end);
-    }
-
-  return retval;
-}
-
-// Build a switch case.
-
-tree_switch_case *
-octave_base_parser::make_switch_case (token *case_tok,
-                                      tree_expression *expr,
-                                      tree_statement_list *list,
-                                      octave_comment_list *lc)
-{
-  maybe_warn_variable_switch_label (expr);
-
-  int l = case_tok->line ();
-  int c = case_tok->column ();
-
-  return new tree_switch_case (expr, list, lc, l, c);
-}
-
-// Build an assignment to a variable.
-
-tree_expression *
-octave_base_parser::make_assign_op (int op, tree_argument_list *lhs,
-                                    token *eq_tok, tree_expression *rhs)
-{
-  octave_value::assign_op t = octave_value::unknown_assign_op;
-
-  switch (op)
-    {
-    case '=':
-      t = octave_value::op_asn_eq;
-      break;
-
-    case ADD_EQ:
-      t = octave_value::op_add_eq;
-      break;
-
-    case SUB_EQ:
-      t = octave_value::op_sub_eq;
-      break;
-
-    case MUL_EQ:
-      t = octave_value::op_mul_eq;
-      break;
-
-    case DIV_EQ:
-      t = octave_value::op_div_eq;
-      break;
-
-    case LEFTDIV_EQ:
-      t = octave_value::op_ldiv_eq;
-      break;
-
-    case POW_EQ:
-      t = octave_value::op_pow_eq;
-      break;
-
-    case EMUL_EQ:
-      t = octave_value::op_el_mul_eq;
-      break;
-
-    case EDIV_EQ:
-      t = octave_value::op_el_div_eq;
-      break;
-
-    case ELEFTDIV_EQ:
-      t = octave_value::op_el_ldiv_eq;
-      break;
-
-    case EPOW_EQ:
-      t = octave_value::op_el_pow_eq;
-      break;
-
-    case AND_EQ:
-      t = octave_value::op_el_and_eq;
-      break;
-
-    case OR_EQ:
-      t = octave_value::op_el_or_eq;
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  int l = eq_tok->line ();
-  int c = eq_tok->column ();
-
-  if (! lhs->is_simple_assign_lhs () && t != octave_value::op_asn_eq)
-    {
-      // Multiple assignments like [x,y] OP= rhs are only valid for
-      // '=', not '+=', etc.
-
-      delete lhs;
-      delete rhs;
-
-      bison_error ("computed multiple assignment not allowed", l, c);
-
-      return 0;
-    }
-
-  if (lhs->is_simple_assign_lhs ())
-    {
-      // We are looking at a simple assignment statement like x = rhs;
-
-      tree_expression *tmp = lhs->remove_front ();
-
-      if ((tmp->is_identifier () || tmp->is_index_expression ())
-          && is_keyword (tmp->name ()))
-        {
-          std::string kw = tmp->name ();
-
-          delete tmp;
-          delete lhs;
-          delete rhs;
-
-          bison_error ("invalid assignment to keyword \"" + kw + "\"", l, c);
-
-          return 0;
-        }
-
-      delete lhs;
-
-      return new tree_simple_assignment (tmp, rhs, false, l, c, t);
-    }
-  else
-    {
-      std::list<std::string> names = lhs->variable_names ();
-
-      for (std::list<std::string>::const_iterator it = names.begin ();
-           it != names.end (); it++)
-        {
-          std::string kw = *it;
-
-          if (is_keyword (kw))
-            {
-              delete lhs;
-              delete rhs;
-
-              bison_error ("invalid assignment to keyword \"" + kw + "\"",
-                           l, c);
-
-              return 0;
-            }
-        }
-
-      return new tree_multi_assignment (lhs, rhs, false, l, c);
-    }
-}
-
-// Define a script.
-
-void
-octave_base_parser::make_script (tree_statement_list *cmds,
-                                 tree_statement *end_script)
-{
-  if (! cmds)
-    cmds = new tree_statement_list ();
-
-  cmds->append (end_script);
-
-  octave_user_script *script
-    = new octave_user_script (lexer.fcn_file_full_name,
-                              lexer.fcn_file_name,
-                              cmds, lexer.help_text);
-
-  lexer.help_text = "";
-
-  octave::sys::time now;
-
-  script->stash_fcn_file_time (now);
-
-  primary_fcn_ptr = script;
-}
-
-// Begin defining a function.
-
-octave_user_function *
-octave_base_parser::start_function (tree_parameter_list *param_list,
-                                    tree_statement_list *body,
-                                    tree_statement *end_fcn_stmt)
-{
-  // We'll fill in the return list later.
-
-  if (! body)
-    body = new tree_statement_list ();
-
-  body->append (end_fcn_stmt);
-
-  octave_user_function *fcn
-    = new octave_user_function (lexer.symtab_context.curr_scope (),
-                                param_list, 0, body);
-
-  if (fcn)
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      fcn->stash_trailing_comment (tc);
-      fcn->stash_fcn_end_location (end_fcn_stmt->line (),
-                                   end_fcn_stmt->column ());
-    }
-
-  return fcn;
-}
-
-tree_statement *
-octave_base_parser::make_end (const std::string& type, bool eof, int l, int c)
-{
-  return make_statement (new tree_no_op_command (type, eof, l, c));
-}
-
-// Do most of the work for defining a function.
-
-octave_user_function *
-octave_base_parser::frob_function (const std::string& fname,
-                                   octave_user_function *fcn)
-{
-  std::string id_name = fname;
-
-  // If input is coming from a file, issue a warning if the name of
-  // the file does not match the name of the function stated in the
-  // file.  Matlab doesn't provide a diagnostic (it ignores the stated
-  // name).
-  if (! autoloading && lexer.reading_fcn_file
-      && curr_fcn_depth == 1 && ! parsing_subfunctions)
+    else
+      {
+        delete body;
+        delete cleanup_stmts;
+
+        end_token_error (end_tok, token::try_catch_end);
+      }
+
+    return retval;
+  }
+
+  // Build a while command.
+
+  tree_command *
+  base_parser::make_while_command (token *while_tok,
+                                   tree_expression *expr,
+                                   tree_statement_list *body,
+                                   token *end_tok,
+                                   octave_comment_list *lc)
   {
-    // FIXME: should lexer.fcn_file_name already be
-    // preprocessed when we get here?  It seems to only be a
-    // problem with relative filenames.
+    tree_command *retval = 0;
+
+    maybe_warn_assign_as_truth_value (expr);
+
+    if (end_token_ok (end_tok, token::while_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        lexer.looping--;
+
+        int l = while_tok->line ();
+        int c = while_tok->column ();
+
+        retval = new tree_while_command (expr, body, lc, tc, l, c);
+      }
+    else
+      {
+        delete expr;
+        delete body;
+
+        end_token_error (end_tok, token::while_end);
+      }
+
+    return retval;
+  }
+
+  // Build a do-until command.
+
+  tree_command *
+  base_parser::make_do_until_command (token *until_tok,
+                                      tree_statement_list *body,
+                                      tree_expression *expr,
+                                      octave_comment_list *lc)
+  {
+    maybe_warn_assign_as_truth_value (expr);
+
+    octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+    lexer.looping--;
+
+    int l = until_tok->line ();
+    int c = until_tok->column ();
+
+    return new tree_do_until_command (expr, body, lc, tc, l, c);
+  }
+
+  // Build a for command.
+
+  tree_command *
+  base_parser::make_for_command (int tok_id, token *for_tok,
+                                 tree_argument_list *lhs,
+                                 tree_expression *expr,
+                                 tree_expression *maxproc,
+                                 tree_statement_list *body,
+                                 token *end_tok,
+                                 octave_comment_list *lc)
+  {
+    tree_command *retval = 0;
+
+    bool parfor = tok_id == PARFOR;
+
+    if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
+      {
+        expr->mark_as_for_cmd_expr ();
+
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        lexer.looping--;
+
+        int l = for_tok->line ();
+        int c = for_tok->column ();
+
+        if (lhs->length () == 1)
+          {
+            tree_expression *tmp = lhs->remove_front ();
+
+            retval = new tree_simple_for_command (parfor, tmp, expr, maxproc,
+                                                  body, lc, tc, l, c);
+
+            delete lhs;
+          }
+        else
+          {
+            if (parfor)
+              {
+                delete lhs;
+                delete expr;
+                delete maxproc;
+                delete body;
+
+                bison_error ("invalid syntax for parfor statement");
+              }
+            else
+              retval = new tree_complex_for_command (lhs, expr, body,
+                                                     lc, tc, l, c);
+          }
+      }
+    else
+      {
+        delete lhs;
+        delete expr;
+        delete maxproc;
+        delete body;
+
+        end_token_error (end_tok, parfor ? token::parfor_end : token::for_end);
+      }
+
+    return retval;
+  }
+
+  // Build a break command.
+
+  tree_command *
+  base_parser::make_break_command (token *break_tok)
+  {
+    int l = break_tok->line ();
+    int c = break_tok->column ();
+
+    return new tree_break_command (l, c);
+  }
+
+  // Build a continue command.
+
+  tree_command *
+  base_parser::make_continue_command (token *continue_tok)
+  {
+    int l = continue_tok->line ();
+    int c = continue_tok->column ();
+
+    return new tree_continue_command (l, c);
+  }
+
+  // Build a return command.
+
+  tree_command *
+  base_parser::make_return_command (token *return_tok)
+  {
+    int l = return_tok->line ();
+    int c = return_tok->column ();
+
+    return new tree_return_command (l, c);
+  }
+
+  // Start an if command.
+
+  tree_if_command_list *
+  base_parser::start_if_command (tree_expression *expr,
+                                 tree_statement_list *list)
+  {
+    maybe_warn_assign_as_truth_value (expr);
+
+    tree_if_clause *t = new tree_if_clause (expr, list);
+
+    return new tree_if_command_list (t);
+  }
+
+  // Finish an if command.
+
+  tree_if_command *
+  base_parser::finish_if_command (token *if_tok,
+                                  tree_if_command_list *list,
+                                  token *end_tok,
+                                  octave_comment_list *lc)
+  {
+    tree_if_command *retval = 0;
+
+    if (end_token_ok (end_tok, token::if_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = if_tok->line ();
+        int c = if_tok->column ();
+
+        if (list && ! list->empty ())
+          {
+            tree_if_clause *elt = list->front ();
+
+            if (elt)
+              {
+                elt->line (l);
+                elt->column (c);
+              }
+          }
+
+        retval = new tree_if_command (list, lc, tc, l, c);
+      }
+    else
+      {
+        delete list;
+
+        end_token_error (end_tok, token::if_end);
+      }
+
+    return retval;
+  }
+
+  // Build an elseif clause.
+
+  tree_if_clause *
+  base_parser::make_elseif_clause (token *elseif_tok,
+                                   tree_expression *expr,
+                                   tree_statement_list *list,
+                                   octave_comment_list *lc)
+  {
+    maybe_warn_assign_as_truth_value (expr);
+
+    int l = elseif_tok->line ();
+    int c = elseif_tok->column ();
+
+    return new tree_if_clause (expr, list, lc, l, c);
+  }
+
+  // Finish a switch command.
+
+  tree_switch_command *
+  base_parser::finish_switch_command (token *switch_tok,
+                                      tree_expression *expr,
+                                      tree_switch_case_list *list,
+                                      token *end_tok,
+                                      octave_comment_list *lc)
+  {
+    tree_switch_command *retval = 0;
+
+    if (end_token_ok (end_tok, token::switch_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = switch_tok->line ();
+        int c = switch_tok->column ();
+
+        if (list && ! list->empty ())
+          {
+            tree_switch_case *elt = list->front ();
+
+            if (elt)
+              {
+                elt->line (l);
+                elt->column (c);
+              }
+          }
+
+        retval = new tree_switch_command (expr, list, lc, tc, l, c);
+      }
+    else
+      {
+        delete expr;
+        delete list;
+
+        end_token_error (end_tok, token::switch_end);
+      }
+
+    return retval;
+  }
+
+  // Build a switch case.
+
+  tree_switch_case *
+  base_parser::make_switch_case (token *case_tok,
+                                 tree_expression *expr,
+                                 tree_statement_list *list,
+                                 octave_comment_list *lc)
+  {
+    maybe_warn_variable_switch_label (expr);
+
+    int l = case_tok->line ();
+    int c = case_tok->column ();
+
+    return new tree_switch_case (expr, list, lc, l, c);
+  }
+
+  // Build an assignment to a variable.
+
+  tree_expression *
+  base_parser::make_assign_op (int op, tree_argument_list *lhs,
+                               token *eq_tok, tree_expression *rhs)
+  {
+    octave_value::assign_op t = octave_value::unknown_assign_op;
+
+    switch (op)
+      {
+      case '=':
+        t = octave_value::op_asn_eq;
+        break;
+
+      case ADD_EQ:
+        t = octave_value::op_add_eq;
+        break;
+
+      case SUB_EQ:
+        t = octave_value::op_sub_eq;
+        break;
+
+      case MUL_EQ:
+        t = octave_value::op_mul_eq;
+        break;
+
+      case DIV_EQ:
+        t = octave_value::op_div_eq;
+        break;
+
+      case LEFTDIV_EQ:
+        t = octave_value::op_ldiv_eq;
+        break;
+
+      case POW_EQ:
+        t = octave_value::op_pow_eq;
+        break;
+
+      case EMUL_EQ:
+        t = octave_value::op_el_mul_eq;
+        break;
+
+      case EDIV_EQ:
+        t = octave_value::op_el_div_eq;
+        break;
+
+      case ELEFTDIV_EQ:
+        t = octave_value::op_el_ldiv_eq;
+        break;
+
+      case EPOW_EQ:
+        t = octave_value::op_el_pow_eq;
+        break;
+
+      case AND_EQ:
+        t = octave_value::op_el_and_eq;
+        break;
+
+      case OR_EQ:
+        t = octave_value::op_el_or_eq;
+        break;
+
+      default:
+        panic_impossible ();
+        break;
+      }
+
+    int l = eq_tok->line ();
+    int c = eq_tok->column ();
+
+    if (! lhs->is_simple_assign_lhs () && t != octave_value::op_asn_eq)
+      {
+        // Multiple assignments like [x,y] OP= rhs are only valid for
+        // '=', not '+=', etc.
+
+        delete lhs;
+        delete rhs;
+
+        bison_error ("computed multiple assignment not allowed", l, c);
+
+        return 0;
+      }
+
+    if (lhs->is_simple_assign_lhs ())
+      {
+        // We are looking at a simple assignment statement like x = rhs;
+
+        tree_expression *tmp = lhs->remove_front ();
+
+        if ((tmp->is_identifier () || tmp->is_index_expression ())
+            && is_keyword (tmp->name ()))
+          {
+            std::string kw = tmp->name ();
+
+            delete tmp;
+            delete lhs;
+            delete rhs;
+
+            bison_error ("invalid assignment to keyword \"" + kw + "\"", l, c);
+
+            return 0;
+          }
+
+        delete lhs;
+
+        return new tree_simple_assignment (tmp, rhs, false, l, c, t);
+      }
+    else
+      {
+        std::list<std::string> names = lhs->variable_names ();
+
+        for (std::list<std::string>::const_iterator it = names.begin ();
+             it != names.end (); it++)
+          {
+            std::string kw = *it;
+
+            if (is_keyword (kw))
+              {
+                delete lhs;
+                delete rhs;
+
+                bison_error ("invalid assignment to keyword \"" + kw + "\"",
+                             l, c);
+
+                return 0;
+              }
+          }
+
+        return new tree_multi_assignment (lhs, rhs, false, l, c);
+      }
+  }
+
+  // Define a script.
+
+  void
+  base_parser::make_script (tree_statement_list *cmds,
+                            tree_statement *end_script)
+  {
+    if (! cmds)
+      cmds = new tree_statement_list ();
+
+    cmds->append (end_script);
+
+    octave_user_script *script
+      = new octave_user_script (lexer.fcn_file_full_name,
+                                lexer.fcn_file_name,
+                                cmds, lexer.help_text);
+
+    lexer.help_text = "";
+
+    octave::sys::time now;
+
+    script->stash_fcn_file_time (now);
+
+    primary_fcn_ptr = script;
+  }
+
+  // Begin defining a function.
+
+  octave_user_function *
+  base_parser::start_function (tree_parameter_list *param_list,
+                               tree_statement_list *body,
+                               tree_statement *end_fcn_stmt)
+  {
+    // We'll fill in the return list later.
+
+    if (! body)
+      body = new tree_statement_list ();
+
+    body->append (end_fcn_stmt);
+
+    octave_user_function *fcn
+      = new octave_user_function (lexer.symtab_context.curr_scope (),
+                                  param_list, 0, body);
+
+    if (fcn)
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        fcn->stash_trailing_comment (tc);
+        fcn->stash_fcn_end_location (end_fcn_stmt->line (),
+                                     end_fcn_stmt->column ());
+      }
+
+    return fcn;
+  }
+
+  tree_statement *
+  base_parser::make_end (const std::string& type, bool eof, int l, int c)
+  {
+    return make_statement (new tree_no_op_command (type, eof, l, c));
+  }
+
+  // Do most of the work for defining a function.
+
+  octave_user_function *
+  base_parser::frob_function (const std::string& fname,
+                              octave_user_function *fcn)
+  {
+    std::string id_name = fname;
+
+    // If input is coming from a file, issue a warning if the name of
+    // the file does not match the name of the function stated in the
+    // file.  Matlab doesn't provide a diagnostic (it ignores the stated
+    // name).
+    if (! autoloading && lexer.reading_fcn_file
+        && curr_fcn_depth == 1 && ! parsing_subfunctions)
+      {
+        // FIXME: should lexer.fcn_file_name already be
+        // preprocessed when we get here?  It seems to only be a
+        // problem with relative filenames.
+
+        std::string nm = lexer.fcn_file_name;
+
+        size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+
+        if (pos != std::string::npos)
+          nm = lexer.fcn_file_name.substr (pos+1);
+
+        if (nm != id_name)
+          {
+            warning_with_id
+              ("Octave:function-name-clash",
+               "function name '%s' does not agree with function filename '%s'",
+               id_name.c_str (), lexer.fcn_file_full_name.c_str ());
+
+            id_name = nm;
+          }
+      }
+
+    if (lexer.reading_fcn_file || lexer.reading_classdef_file || autoloading)
+      {
+        octave::sys::time now;
+
+        fcn->stash_fcn_file_name (lexer.fcn_file_full_name);
+        fcn->stash_fcn_file_time (now);
+        fcn->mark_as_system_fcn_file ();
+
+        if (fcn_file_from_relative_lookup)
+          fcn->mark_relative ();
+
+        if (curr_fcn_depth > 1 || parsing_subfunctions)
+          {
+            fcn->stash_parent_fcn_name (lexer.fcn_file_name);
+
+            if (curr_fcn_depth > 1)
+              fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
+            else
+              fcn->stash_parent_fcn_scope (primary_fcn_scope);
+          }
+
+        if (lexer.parsing_class_method)
+          {
+            if (curr_class_name == id_name)
+              fcn->mark_as_class_constructor ();
+            else
+              fcn->mark_as_class_method ();
+
+            fcn->stash_dispatch_class (curr_class_name);
+          }
+
+        std::string nm = fcn->fcn_file_name ();
+
+        octave::sys::file_stat fs (nm);
+
+        if (fs && fs.is_newer (now))
+          warning_with_id ("Octave:future-time-stamp",
+                           "time stamp for '%s' is in the future", nm.c_str ());
+      }
+    else if (! input_from_tmp_history_file
+             && ! lexer.force_script
+             && lexer.reading_script_file
+             && lexer.fcn_file_name == id_name)
+      {
+        warning ("function '%s' defined within script file '%s'",
+                 id_name.c_str (), lexer.fcn_file_full_name.c_str ());
+      }
+
+    fcn->stash_function_name (id_name);
+
+    if (! lexer.help_text.empty () && curr_fcn_depth == 1
+        && ! parsing_subfunctions)
+      {
+        fcn->document (lexer.help_text);
+
+        lexer.help_text = "";
+      }
+
+    if (lexer.reading_fcn_file && curr_fcn_depth == 1
+        && ! parsing_subfunctions)
+      primary_fcn_ptr = fcn;
+
+    return fcn;
+  }
+
+  tree_function_def *
+  base_parser::finish_function (tree_parameter_list *ret_list,
+                                octave_user_function *fcn,
+                                octave_comment_list *lc,
+                                int l, int c)
+  {
+    tree_function_def *retval = 0;
+
+    if (ret_list)
+      ret_list->mark_as_formal_parameters ();
+
+    if (fcn)
+      {
+        std::string nm = fcn->name ();
+        std::string file = fcn->fcn_file_name ();
+
+        std::string tmp = nm;
+        if (! file.empty ())
+          tmp += ": " + file;
+
+        symbol_table::cache_name (fcn->scope (), tmp);
+
+        if (lc)
+          fcn->stash_leading_comment (lc);
+
+        fcn->define_ret_list (ret_list);
+
+        if (curr_fcn_depth > 1 || parsing_subfunctions)
+          {
+            fcn->mark_as_subfunction ();
+            fcn->stash_fcn_location (l, c);
+
+            subfunction_names.push_back (nm);
+
+            if (endfunction_found && function_scopes.size () > 1)
+              {
+                symbol_table::scope_id pscope
+                  = function_scopes[function_scopes.size ()-2];
+
+                symbol_table::install_nestfunction (nm, octave_value (fcn),
+                                                    pscope);
+              }
+            else
+              symbol_table::install_subfunction (nm, octave_value (fcn),
+                                                 primary_fcn_scope);
+          }
+
+        if (curr_fcn_depth == 1 && fcn)
+          symbol_table::update_nest (fcn->scope ());
+
+        if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
+          {
+            // We are either reading a script file or defining a function
+            // at the command line, so this definition creates a
+            // tree_function object that is placed in the parse tree.
+            // Otherwise, it is just inserted in the symbol table,
+            // either as a subfunction or nested function (see above),
+            // or as the primary function for the file, via
+            // primary_fcn_ptr (see also load_fcn_from_file,,
+            // parse_fcn_file, and
+            // symbol_table::fcn_info::fcn_info_rep::find_user_function).
+
+            retval = new tree_function_def (fcn);
+          }
+      }
+
+    return retval;
+  }
+
+  void
+  base_parser::recover_from_parsing_function (void)
+  {
+    lexer.symtab_context.pop ();
+
+    if (lexer.reading_fcn_file && curr_fcn_depth == 1
+        && ! parsing_subfunctions)
+      parsing_subfunctions = true;
+
+    curr_fcn_depth--;
+    function_scopes.pop_back ();
+
+    lexer.defining_func--;
+    lexer.parsed_function_name.pop ();
+    lexer.looking_at_return_list = false;
+    lexer.looking_at_parameter_list = false;
+  }
+
+  tree_funcall *
+  base_parser::make_superclass_ref (const std::string& method_nm,
+                                    const std::string& class_nm)
+  {
+    octave_value_list args;
+
+    args(1) = class_nm;
+    args(0) = method_nm;
+
+    octave_value fcn
+      = symbol_table::find_built_in_function ("__superclass_reference__");
+
+    return new tree_funcall (fcn, args);
+  }
+
+  tree_funcall *
+  base_parser::make_meta_class_query (const std::string& class_nm)
+  {
+    octave_value_list args;
+
+    args(0) = class_nm;
+
+    octave_value fcn
+      = symbol_table::find_built_in_function ("__meta_class_query__");
+
+    return new tree_funcall (fcn, args);
+  }
+
+  // A CLASSDEF block defines a class that has a constructor and other
+  // methods, but it is not an executable command.  Parsing the block
+  // makes some changes in the symbol table (inserting the constructor
+  // and methods, and adding to the list of known objects) and creates
+  // a parse tree containing meta information about the class.
+
+  tree_classdef *
+  base_parser::make_classdef (token *tok_val,
+                              tree_classdef_attribute_list *a,
+                              tree_identifier *id,
+                              tree_classdef_superclass_list *sc,
+                              tree_classdef_body *body, token *end_tok,
+                              octave_comment_list *lc)
+  {
+    tree_classdef *retval = 0;
+
+    std::string cls_name = id->name ();
 
     std::string nm = lexer.fcn_file_name;
 
@@ -3156,969 +3374,754 @@ octave_base_parser::frob_function (const std::string& fname,
     if (pos != std::string::npos)
       nm = lexer.fcn_file_name.substr (pos+1);
 
-    if (nm != id_name)
+    if (nm != cls_name)
       {
-        warning_with_id
-          ("Octave:function-name-clash",
-           "function name '%s' does not agree with function filename '%s'",
-           id_name.c_str (), lexer.fcn_file_full_name.c_str ());
+        delete a;
+        delete id;
+        delete sc;
+        delete body;
 
-        id_name = nm;
+        bison_error ("invalid classdef definition, the class name must match the filename");
+
+      }
+    else
+      {
+        if (end_token_ok (end_tok, token::classdef_end))
+          {
+            octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+            int l = tok_val->line ();
+            int c = tok_val->column ();
+
+            if (! body)
+              body = new tree_classdef_body ();
+
+            retval = new tree_classdef (a, id, sc, body, lc, tc,
+                                        curr_package_name, l, c);
+          }
+        else
+          {
+            delete a;
+            delete id;
+            delete sc;
+            delete body;
+
+            end_token_error (end_tok, token::switch_end);
+          }
+      }
+
+    return retval;
+  }
+
+  tree_classdef_properties_block *
+  base_parser::make_classdef_properties_block (token *tok_val,
+                                               tree_classdef_attribute_list *a,
+                                               tree_classdef_property_list *plist,
+                                               token *end_tok,
+                                               octave_comment_list *lc)
+  {
+    tree_classdef_properties_block *retval = 0;
+
+    if (end_token_ok (end_tok, token::properties_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = tok_val->line ();
+        int c = tok_val->column ();
+
+        if (! plist)
+          plist = new tree_classdef_property_list ();
+
+        retval = new tree_classdef_properties_block (a, plist, lc, tc, l, c);
+      }
+    else
+      {
+        delete a;
+        delete plist;
+
+        end_token_error (end_tok, token::properties_end);
+      }
+
+    return retval;
+  }
+
+  tree_classdef_methods_block *
+  base_parser::make_classdef_methods_block (token *tok_val,
+                                            tree_classdef_attribute_list *a,
+                                            tree_classdef_methods_list *mlist,
+                                            token *end_tok,
+                                            octave_comment_list *lc)
+  {
+    tree_classdef_methods_block *retval = 0;
+
+    if (end_token_ok (end_tok, token::methods_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = tok_val->line ();
+        int c = tok_val->column ();
+
+        if (! mlist)
+          mlist = new tree_classdef_methods_list ();
+
+        retval = new tree_classdef_methods_block (a, mlist, lc, tc, l, c);
+      }
+    else
+      {
+        delete a;
+        delete mlist;
+
+        end_token_error (end_tok, token::methods_end);
+      }
+
+    return retval;
+  }
+
+  tree_classdef_events_block *
+  base_parser::make_classdef_events_block (token *tok_val,
+                                           tree_classdef_attribute_list *a,
+                                           tree_classdef_events_list *elist,
+                                           token *end_tok,
+                                           octave_comment_list *lc)
+  {
+    tree_classdef_events_block *retval = 0;
+
+    if (end_token_ok (end_tok, token::events_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = tok_val->line ();
+        int c = tok_val->column ();
+
+        if (! elist)
+          elist = new tree_classdef_events_list ();
+
+        retval = new tree_classdef_events_block (a, elist, lc, tc, l, c);
+      }
+    else
+      {
+        delete a;
+        delete elist;
+
+        end_token_error (end_tok, token::events_end);
+      }
+
+    return retval;
+  }
+
+  tree_classdef_enum_block *
+  base_parser::make_classdef_enum_block (token *tok_val,
+                                         tree_classdef_attribute_list *a,
+                                         tree_classdef_enum_list *elist,
+                                         token *end_tok,
+                                         octave_comment_list *lc)
+  {
+    tree_classdef_enum_block *retval = 0;
+
+    if (end_token_ok (end_tok, token::enumeration_end))
+      {
+        octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+        int l = tok_val->line ();
+        int c = tok_val->column ();
+
+        if (! elist)
+          elist = new tree_classdef_enum_list ();
+
+        retval = new tree_classdef_enum_block (a, elist, lc, tc, l, c);
+      }
+    else
+      {
+        delete a;
+        delete elist;
+
+        end_token_error (end_tok, token::enumeration_end);
+      }
+
+    return retval;
+  }
+
+  octave_user_function*
+  base_parser::start_classdef_external_method (tree_identifier *id,
+                                               tree_parameter_list *pl)
+  {
+    octave_user_function* retval = 0;
+
+    // External methods are only allowed within @-folders. In this case,
+    // curr_class_name will be non-empty.
+
+    if (! curr_class_name.empty ())
+      {
+
+        std::string mname = id->name ();
+
+        // Methods that cannot be declared outside the classdef file:
+        // - methods with '.' character (e.g. property accessors)
+        // - class constructor
+        // - `delete'
+
+        if (mname.find_first_of (".") == std::string::npos
+            && mname != "delete"
+            && mname != curr_class_name)
+          {
+            // Create a dummy function that is used until the real method
+            // is loaded.
+
+            retval = new octave_user_function (-1, pl);
+
+            retval->stash_function_name (mname);
+
+            int l = id->line ();
+            int c = id->column ();
+
+            retval->stash_fcn_location (l, c);
+          }
+        else
+          bison_error ("invalid external method declaration, an external "
+                       "method cannot be the class constructor, `delete' "
+                       "or have a dot (.) character in its name");
+      }
+    else
+      bison_error ("external methods are only allowed in @-folders");
+
+    if (! retval)
+      delete id;
+
+    return retval;
+  }
+
+  tree_function_def *
+  base_parser::finish_classdef_external_method (octave_user_function *fcn,
+                                                tree_parameter_list *ret_list,
+                                                octave_comment_list *cl)
+  {
+    if (ret_list)
+      fcn->define_ret_list (ret_list);
+
+    if (cl)
+      fcn->stash_leading_comment (cl);
+
+    int l = fcn->beginning_line ();
+    int c = fcn->beginning_column ();
+
+    return new tree_function_def (fcn, l, c);
+  }
+
+  // Make an index expression.
+
+  tree_index_expression *
+  base_parser::make_index_expression (tree_expression *expr,
+                                      tree_argument_list *args,
+                                      char type)
+  {
+    tree_index_expression *retval = 0;
+
+    if (args && args->has_magic_tilde ())
+      {
+        delete expr;
+        delete args;
+
+        bison_error ("invalid use of empty argument (~) in index expression");
+      }
+    else
+      {
+        int l = expr->line ();
+        int c = expr->column ();
+
+        if (! expr->is_postfix_indexed ())
+          expr->set_postfix_index (type);
+
+        if (expr->is_index_expression ())
+          {
+            tree_index_expression *tmp =
+              static_cast<tree_index_expression *> (expr);
+
+            tmp->append (args, type);
+
+            retval = tmp;
+          }
+        else
+          retval = new tree_index_expression (expr, args, l, c, type);
+      }
+
+    return retval;
+  }
+
+  // Make an indirect reference expression.
+
+  tree_index_expression *
+  base_parser::make_indirect_ref (tree_expression *expr,
+                                  const std::string& elt)
+  {
+    tree_index_expression *retval = 0;
+
+    int l = expr->line ();
+    int c = expr->column ();
+
+    if (! expr->is_postfix_indexed ())
+      expr->set_postfix_index ('.');
+
+    if (expr->is_index_expression ())
+      {
+        tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+
+        tmp->append (elt);
+
+        retval = tmp;
+      }
+    else
+      retval = new tree_index_expression (expr, elt, l, c);
+
+    lexer.looking_at_indirect_ref = false;
+
+    return retval;
+  }
+
+  // Make an indirect reference expression with dynamic field name.
+
+  tree_index_expression *
+  base_parser::make_indirect_ref (tree_expression *expr,
+                                  tree_expression *elt)
+  {
+    tree_index_expression *retval = 0;
+
+    int l = expr->line ();
+    int c = expr->column ();
+
+    if (! expr->is_postfix_indexed ())
+      expr->set_postfix_index ('.');
+
+    if (expr->is_index_expression ())
+      {
+        tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+
+        tmp->append (elt);
+
+        retval = tmp;
+      }
+    else
+      retval = new tree_index_expression (expr, elt, l, c);
+
+    lexer.looking_at_indirect_ref = false;
+
+    return retval;
+  }
+
+  // Make a declaration command.
+
+  tree_decl_command *
+  base_parser::make_decl_command (int tok, token *tok_val,
+                                  tree_decl_init_list *lst)
+  {
+    tree_decl_command *retval = 0;
+
+    int l = tok_val->line ();
+    int c = tok_val->column ();
+
+    switch (tok)
+      {
+      case GLOBAL:
+        retval = new tree_global_command (lst, l, c);
+        break;
+
+      case PERSISTENT:
+        if (curr_fcn_depth > 0)
+          retval = new tree_persistent_command (lst, l, c);
+        else
+          {
+            if (lexer.reading_script_file)
+              warning ("ignoring persistent declaration near line %d of file '%s'",
+                       l, lexer.fcn_file_full_name.c_str ());
+            else
+              warning ("ignoring persistent declaration near line %d", l);
+          }
+        break;
+
+      default:
+        panic_impossible ();
+        break;
+      }
+
+    return retval;
+  }
+
+  bool
+  base_parser::validate_array_list (tree_expression *e)
+  {
+    bool retval = true;
+
+    tree_array_list *al = dynamic_cast<tree_array_list *> (e);
+
+    for (tree_array_list::iterator i = al->begin (); i != al->end (); i++)
+      {
+        tree_argument_list *row = *i;
+
+        if (row && row->has_magic_tilde ())
+          {
+            retval = false;
+
+            if (e->is_matrix ())
+              bison_error ("invalid use of tilde (~) in matrix expression");
+            else
+              bison_error ("invalid use of tilde (~) in cell expression");
+
+            break;
+          }
+      }
+
+    return retval;
+  }
+
+  tree_argument_list *
+  base_parser::validate_matrix_for_assignment (tree_expression *e)
+  {
+    tree_argument_list *retval = 0;
+
+    if (e->is_constant ())
+      {
+        octave_value ov = e->rvalue1 ();
+
+        delete e;
+
+        if (ov.is_empty ())
+          bison_error ("invalid empty left hand side of assignment");
+        else
+          bison_error ("invalid constant left hand side of assignment");
+      }
+    else
+      {
+        bool is_simple_assign = true;
+
+        tree_argument_list *tmp = 0;
+
+        if (e->is_matrix ())
+          {
+            tree_matrix *mat = dynamic_cast<tree_matrix *> (e);
+
+            if (mat && mat->size () == 1)
+              {
+                tmp = mat->front ();
+                mat->pop_front ();
+                delete e;
+                is_simple_assign = false;
+              }
+          }
+        else
+          tmp = new tree_argument_list (e);
+
+        if (tmp && tmp->is_valid_lvalue_list ())
+          {
+            lexer.mark_as_variables (tmp->variable_names ());
+            retval = tmp;
+          }
+        else
+          {
+            delete tmp;
+
+            bison_error ("invalid left hand side of assignment");
+          }
+
+        if (retval && is_simple_assign)
+          retval->mark_as_simple_assign_lhs ();
+      }
+
+    return retval;
+  }
+
+  // Finish building an array_list.
+
+  tree_expression *
+  base_parser::finish_array_list (tree_array_list *array_list)
+  {
+    tree_expression *retval = array_list;
+
+    octave::unwind_protect frame;
+
+    frame.protect_var (discard_error_messages);
+    frame.protect_var (discard_warning_messages);
+
+    discard_error_messages = true;
+    discard_warning_messages = true;
+
+    if (array_list->all_elements_are_constant ())
+      {
+        try
+          {
+            octave_value tmp = array_list->rvalue1 ();
+
+            tree_constant *tc_retval
+              = new tree_constant (tmp, array_list->line (),
+                                   array_list->column ());
+
+            std::ostringstream buf;
+
+            tree_print_code tpc (buf);
+
+            array_list->accept (tpc);
+
+            tc_retval->stash_original_text (buf.str ());
+
+            delete array_list;
+
+            retval = tc_retval;
+          }
+        catch (const octave_execution_exception&)
+          {
+            recover_from_exception ();
+          }
+      }
+
+    return retval;
+  }
+
+  // Finish building a matrix list.
+
+  tree_expression *
+  base_parser::finish_matrix (tree_matrix *m)
+  {
+    return (m
+            ? finish_array_list (m)
+            : new tree_constant (octave_null_matrix::instance));
+  }
+
+  // Finish building a cell list.
+
+  tree_expression *
+  base_parser::finish_cell (tree_cell *c)
+  {
+    return (c
+            ? finish_array_list (c)
+            : new tree_constant (octave_value (Cell ())));
+  }
+
+  void
+  base_parser::maybe_warn_missing_semi (tree_statement_list *t)
+  {
+    if (curr_fcn_depth > 0)
+      {
+        tree_statement *tmp = t->back ();
+
+        if (tmp->is_expression ())
+          warning_with_id
+            ("Octave:missing-semicolon",
+             "missing semicolon near line %d, column %d in file '%s'",
+             tmp->line (), tmp->column (), lexer.fcn_file_full_name.c_str ());
       }
   }
 
-  if (lexer.reading_fcn_file || lexer.reading_classdef_file || autoloading)
-    {
-      octave::sys::time now;
-
-      fcn->stash_fcn_file_name (lexer.fcn_file_full_name);
-      fcn->stash_fcn_file_time (now);
-      fcn->mark_as_system_fcn_file ();
-
-      if (fcn_file_from_relative_lookup)
-        fcn->mark_relative ();
-
-      if (curr_fcn_depth > 1 || parsing_subfunctions)
-        {
-          fcn->stash_parent_fcn_name (lexer.fcn_file_name);
-
-          if (curr_fcn_depth > 1)
-            fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
-          else
-            fcn->stash_parent_fcn_scope (primary_fcn_scope);
-        }
-
-      if (lexer.parsing_class_method)
-        {
-          if (curr_class_name == id_name)
-            fcn->mark_as_class_constructor ();
-          else
-            fcn->mark_as_class_method ();
-
-          fcn->stash_dispatch_class (curr_class_name);
-        }
-
-      std::string nm = fcn->fcn_file_name ();
-
-      octave::sys::file_stat fs (nm);
-
-      if (fs && fs.is_newer (now))
-        warning_with_id ("Octave:future-time-stamp",
-                         "time stamp for '%s' is in the future", nm.c_str ());
-    }
-  else if (! input_from_tmp_history_file
-           && ! lexer.force_script
-           && lexer.reading_script_file
-           && lexer.fcn_file_name == id_name)
-    {
-      warning ("function '%s' defined within script file '%s'",
-               id_name.c_str (), lexer.fcn_file_full_name.c_str ());
-    }
-
-  fcn->stash_function_name (id_name);
-
-  if (! lexer.help_text.empty () && curr_fcn_depth == 1
-      && ! parsing_subfunctions)
-    {
-      fcn->document (lexer.help_text);
-
-      lexer.help_text = "";
-    }
-
-  if (lexer.reading_fcn_file && curr_fcn_depth == 1
-      && ! parsing_subfunctions)
-    primary_fcn_ptr = fcn;
-
-  return fcn;
-}
-
-tree_function_def *
-octave_base_parser::finish_function (tree_parameter_list *ret_list,
-                                     octave_user_function *fcn,
-                                     octave_comment_list *lc,
-                                     int l, int c)
-{
-  tree_function_def *retval = 0;
-
-  if (ret_list)
-    ret_list->mark_as_formal_parameters ();
-
-  if (fcn)
-    {
-      std::string nm = fcn->name ();
-      std::string file = fcn->fcn_file_name ();
-
-      std::string tmp = nm;
-      if (! file.empty ())
-        tmp += ": " + file;
-
-      symbol_table::cache_name (fcn->scope (), tmp);
-
-      if (lc)
-        fcn->stash_leading_comment (lc);
-
-      fcn->define_ret_list (ret_list);
-
-      if (curr_fcn_depth > 1 || parsing_subfunctions)
-        {
-          fcn->mark_as_subfunction ();
-          fcn->stash_fcn_location (l, c);
-
-          subfunction_names.push_back (nm);
-
-          if (endfunction_found && function_scopes.size () > 1)
-            {
-              symbol_table::scope_id pscope
-                = function_scopes[function_scopes.size ()-2];
-
-              symbol_table::install_nestfunction (nm, octave_value (fcn),
-                                                  pscope);
-            }
-          else
-            symbol_table::install_subfunction (nm, octave_value (fcn),
-                                               primary_fcn_scope);
-        }
-
-      if (curr_fcn_depth == 1 && fcn)
-        symbol_table::update_nest (fcn->scope ());
-
-      if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
-        {
-          // We are either reading a script file or defining a function
-          // at the command line, so this definition creates a
-          // tree_function object that is placed in the parse tree.
-          // Otherwise, it is just inserted in the symbol table,
-          // either as a subfunction or nested function (see above),
-          // or as the primary function for the file, via
-          // primary_fcn_ptr (see also load_fcn_from_file,,
-          // parse_fcn_file, and
-          // symbol_table::fcn_info::fcn_info_rep::find_user_function).
-
-          retval = new tree_function_def (fcn);
-        }
-    }
-
-  return retval;
-}
-
-void
-octave_base_parser::recover_from_parsing_function (void)
-{
-  lexer.symtab_context.pop ();
-
-  if (lexer.reading_fcn_file && curr_fcn_depth == 1
-      && ! parsing_subfunctions)
-    parsing_subfunctions = true;
-
-  curr_fcn_depth--;
-  function_scopes.pop_back ();
-
-  lexer.defining_func--;
-  lexer.parsed_function_name.pop ();
-  lexer.looking_at_return_list = false;
-  lexer.looking_at_parameter_list = false;
-}
-
-tree_funcall *
-octave_base_parser::make_superclass_ref (const std::string& method_nm,
-                                         const std::string& class_nm)
-{
-  octave_value_list args;
-
-  args(1) = class_nm;
-  args(0) = method_nm;
-
-  octave_value fcn
-    = symbol_table::find_built_in_function ("__superclass_reference__");
-
-  return new tree_funcall (fcn, args);
-}
-
-tree_funcall *
-octave_base_parser::make_meta_class_query (const std::string& class_nm)
-{
-  octave_value_list args;
-
-  args(0) = class_nm;
-
-  octave_value fcn
-    = symbol_table::find_built_in_function ("__meta_class_query__");
-
-  return new tree_funcall (fcn, args);
-}
-
-// A CLASSDEF block defines a class that has a constructor and other
-// methods, but it is not an executable command.  Parsing the block
-// makes some changes in the symbol table (inserting the constructor
-// and methods, and adding to the list of known objects) and creates
-// a parse tree containing meta information about the class.
-
-tree_classdef *
-octave_base_parser::make_classdef (token *tok_val,
-                                   tree_classdef_attribute_list *a,
-                                   tree_identifier *id,
-                                   tree_classdef_superclass_list *sc,
-                                   tree_classdef_body *body, token *end_tok,
-                                   octave_comment_list *lc)
-{
-  tree_classdef *retval = 0;
-
-  std::string cls_name = id->name ();
-
-  std::string nm = lexer.fcn_file_name;
-
-  size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_chars ());
-
-  if (pos != std::string::npos)
-    nm = lexer.fcn_file_name.substr (pos+1);
-
-  if (nm != cls_name)
-    {
-      delete a;
-      delete id;
-      delete sc;
-      delete body;
-
-      bison_error ("invalid classdef definition, the class name must match the filename");
-
-    }
-  else
-    {
-      if (end_token_ok (end_tok, token::classdef_end))
-        {
-          octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-          int l = tok_val->line ();
-          int c = tok_val->column ();
-
-          if (! body)
-            body = new tree_classdef_body ();
-
-          retval = new tree_classdef (a, id, sc, body, lc, tc,
-                                      curr_package_name, l, c);
-        }
-      else
-        {
-          delete a;
-          delete id;
-          delete sc;
-          delete body;
-
-          end_token_error (end_tok, token::switch_end);
-        }
-    }
-
-  return retval;
-}
-
-tree_classdef_properties_block *
-octave_base_parser::make_classdef_properties_block (token *tok_val,
-                                                    tree_classdef_attribute_list *a,
-                                                    tree_classdef_property_list *plist,
-                                                    token *end_tok,
-                                                    octave_comment_list *lc)
-{
-  tree_classdef_properties_block *retval = 0;
-
-  if (end_token_ok (end_tok, token::properties_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = tok_val->line ();
-      int c = tok_val->column ();
-
-      if (! plist)
-        plist = new tree_classdef_property_list ();
-
-      retval = new tree_classdef_properties_block (a, plist, lc, tc, l, c);
-    }
-  else
-    {
-      delete a;
-      delete plist;
-
-      end_token_error (end_tok, token::properties_end);
-    }
-
-  return retval;
-}
-
-tree_classdef_methods_block *
-octave_base_parser::make_classdef_methods_block (token *tok_val,
-                                                 tree_classdef_attribute_list *a,
-                                                 tree_classdef_methods_list *mlist,
-                                                 token *end_tok,
-                                                 octave_comment_list *lc)
-{
-  tree_classdef_methods_block *retval = 0;
-
-  if (end_token_ok (end_tok, token::methods_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = tok_val->line ();
-      int c = tok_val->column ();
-
-      if (! mlist)
-        mlist = new tree_classdef_methods_list ();
-
-      retval = new tree_classdef_methods_block (a, mlist, lc, tc, l, c);
-    }
-  else
-    {
-      delete a;
-      delete mlist;
-
-      end_token_error (end_tok, token::methods_end);
-    }
-
-  return retval;
-}
-
-tree_classdef_events_block *
-octave_base_parser::make_classdef_events_block (token *tok_val,
-                                                tree_classdef_attribute_list *a,
-                                                tree_classdef_events_list *elist,
-                                                token *end_tok,
-                                                octave_comment_list *lc)
-{
-  tree_classdef_events_block *retval = 0;
-
-  if (end_token_ok (end_tok, token::events_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = tok_val->line ();
-      int c = tok_val->column ();
-
-      if (! elist)
-        elist = new tree_classdef_events_list ();
-
-      retval = new tree_classdef_events_block (a, elist, lc, tc, l, c);
-    }
-  else
-    {
-      delete a;
-      delete elist;
-
-      end_token_error (end_tok, token::events_end);
-    }
-
-  return retval;
-}
-
-tree_classdef_enum_block *
-octave_base_parser::make_classdef_enum_block (token *tok_val,
-                                              tree_classdef_attribute_list *a,
-                                              tree_classdef_enum_list *elist,
-                                              token *end_tok,
-                                              octave_comment_list *lc)
-{
-  tree_classdef_enum_block *retval = 0;
-
-  if (end_token_ok (end_tok, token::enumeration_end))
-    {
-      octave_comment_list *tc = lexer.comment_buf.get_comment ();
-
-      int l = tok_val->line ();
-      int c = tok_val->column ();
-
-      if (! elist)
-        elist = new tree_classdef_enum_list ();
-
-      retval = new tree_classdef_enum_block (a, elist, lc, tc, l, c);
-    }
-  else
-    {
-      delete a;
-      delete elist;
-
-      end_token_error (end_tok, token::enumeration_end);
-    }
-
-  return retval;
-}
-
-octave_user_function*
-octave_base_parser::start_classdef_external_method (tree_identifier *id,
-                                                    tree_parameter_list *pl)
-{
-  octave_user_function* retval = 0;
-
-  // External methods are only allowed within @-folders. In this case,
-  // curr_class_name will be non-empty.
-
-  if (! curr_class_name.empty ())
-    {
-
-      std::string mname = id->name ();
-
-      // Methods that cannot be declared outside the classdef file:
-      // - methods with '.' character (e.g. property accessors)
-      // - class constructor
-      // - `delete'
-
-      if (mname.find_first_of (".") == std::string::npos
-          && mname != "delete"
-          && mname != curr_class_name)
-        {
-          // Create a dummy function that is used until the real method
-          // is loaded.
-
-          retval = new octave_user_function (-1, pl);
-
-          retval->stash_function_name (mname);
-
-          int l = id->line ();
-          int c = id->column ();
-
-          retval->stash_fcn_location (l, c);
-        }
-      else
-        bison_error ("invalid external method declaration, an external "
-                     "method cannot be the class constructor, `delete' "
-                     "or have a dot (.) character in its name");
-    }
-  else
-    bison_error ("external methods are only allowed in @-folders");
-
-  if (! retval)
-    delete id;
-
-  return retval;
-}
-
-tree_function_def *
-octave_base_parser::finish_classdef_external_method (octave_user_function *fcn,
-                                                     tree_parameter_list *ret_list,
-                                                     octave_comment_list *cl)
-{
-  if (ret_list)
-    fcn->define_ret_list (ret_list);
-
-  if (cl)
-    fcn->stash_leading_comment (cl);
-
-  int l = fcn->beginning_line ();
-  int c = fcn->beginning_column ();
-
-  return new tree_function_def (fcn, l, c);
-}
-
-// Make an index expression.
-
-tree_index_expression *
-octave_base_parser::make_index_expression (tree_expression *expr,
-                                           tree_argument_list *args,
-                                           char type)
-{
-  tree_index_expression *retval = 0;
-
-  if (args && args->has_magic_tilde ())
-    {
-      delete expr;
-      delete args;
-
-      bison_error ("invalid use of empty argument (~) in index expression");
-    }
-  else
-    {
-      int l = expr->line ();
-      int c = expr->column ();
-
-      if (! expr->is_postfix_indexed ())
-        expr->set_postfix_index (type);
-
-      if (expr->is_index_expression ())
-        {
-          tree_index_expression *tmp =
-            static_cast<tree_index_expression *> (expr);
-
-          tmp->append (args, type);
-
-          retval = tmp;
-        }
-      else
-        retval = new tree_index_expression (expr, args, l, c, type);
-    }
-
-  return retval;
-}
-
-// Make an indirect reference expression.
-
-tree_index_expression *
-octave_base_parser::make_indirect_ref (tree_expression *expr,
-                                       const std::string& elt)
-{
-  tree_index_expression *retval = 0;
-
-  int l = expr->line ();
-  int c = expr->column ();
-
-  if (! expr->is_postfix_indexed ())
-    expr->set_postfix_index ('.');
-
-  if (expr->is_index_expression ())
-    {
-      tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
-
-      tmp->append (elt);
-
-      retval = tmp;
-    }
-  else
-    retval = new tree_index_expression (expr, elt, l, c);
-
-  lexer.looking_at_indirect_ref = false;
-
-  return retval;
-}
-
-// Make an indirect reference expression with dynamic field name.
-
-tree_index_expression *
-octave_base_parser::make_indirect_ref (tree_expression *expr,
-                                       tree_expression *elt)
-{
-  tree_index_expression *retval = 0;
-
-  int l = expr->line ();
-  int c = expr->column ();
-
-  if (! expr->is_postfix_indexed ())
-    expr->set_postfix_index ('.');
-
-  if (expr->is_index_expression ())
-    {
-      tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
-
-      tmp->append (elt);
-
-      retval = tmp;
-    }
-  else
-    retval = new tree_index_expression (expr, elt, l, c);
-
-  lexer.looking_at_indirect_ref = false;
-
-  return retval;
-}
-
-// Make a declaration command.
-
-tree_decl_command *
-octave_base_parser::make_decl_command (int tok, token *tok_val,
-                                       tree_decl_init_list *lst)
-{
-  tree_decl_command *retval = 0;
-
-  int l = tok_val->line ();
-  int c = tok_val->column ();
-
-  switch (tok)
-    {
-    case GLOBAL:
-      retval = new tree_global_command (lst, l, c);
-      break;
-
-    case PERSISTENT:
-      if (curr_fcn_depth > 0)
-        retval = new tree_persistent_command (lst, l, c);
-      else
-        {
-          if (lexer.reading_script_file)
-            warning ("ignoring persistent declaration near line %d of file '%s'",
-                     l, lexer.fcn_file_full_name.c_str ());
-          else
-            warning ("ignoring persistent declaration near line %d", l);
-        }
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  return retval;
-}
-
-bool
-octave_base_parser::validate_array_list (tree_expression *e)
-{
-  bool retval = true;
-
-  tree_array_list *al = dynamic_cast<tree_array_list *> (e);
-
-  for (tree_array_list::iterator i = al->begin (); i != al->end (); i++)
-    {
-      tree_argument_list *row = *i;
-
-      if (row && row->has_magic_tilde ())
-        {
-          retval = false;
-
-          if (e->is_matrix ())
-            bison_error ("invalid use of tilde (~) in matrix expression");
-          else
-            bison_error ("invalid use of tilde (~) in cell expression");
-
-          break;
-        }
-    }
-
-  return retval;
-}
-
-tree_argument_list *
-octave_base_parser::validate_matrix_for_assignment (tree_expression *e)
-{
-  tree_argument_list *retval = 0;
-
-  if (e->is_constant ())
-    {
-      octave_value ov = e->rvalue1 ();
-
-      delete e;
-
-      if (ov.is_empty ())
-        bison_error ("invalid empty left hand side of assignment");
-      else
-        bison_error ("invalid constant left hand side of assignment");
-    }
-  else
-    {
-      bool is_simple_assign = true;
-
-      tree_argument_list *tmp = 0;
-
-      if (e->is_matrix ())
-        {
-          tree_matrix *mat = dynamic_cast<tree_matrix *> (e);
-
-          if (mat && mat->size () == 1)
-            {
-              tmp = mat->front ();
-              mat->pop_front ();
-              delete e;
-              is_simple_assign = false;
-            }
-        }
-      else
-        tmp = new tree_argument_list (e);
-
-      if (tmp && tmp->is_valid_lvalue_list ())
-        {
-          lexer.mark_as_variables (tmp->variable_names ());
-          retval = tmp;
-        }
-      else
-        {
-          delete tmp;
-
-          bison_error ("invalid left hand side of assignment");
-        }
-
-      if (retval && is_simple_assign)
-        retval->mark_as_simple_assign_lhs ();
-    }
-
-  return retval;
-}
-
-// Finish building an array_list.
-
-tree_expression *
-octave_base_parser::finish_array_list (tree_array_list *array_list)
-{
-  tree_expression *retval = array_list;
-
-  octave::unwind_protect frame;
-
-  frame.protect_var (discard_error_messages);
-  frame.protect_var (discard_warning_messages);
-
-  discard_error_messages = true;
-  discard_warning_messages = true;
-
-  if (array_list->all_elements_are_constant ())
-    {
-      try
-        {
-          octave_value tmp = array_list->rvalue1 ();
-
-          tree_constant *tc_retval
-            = new tree_constant (tmp, array_list->line (),
-                                 array_list->column ());
-
-          std::ostringstream buf;
-
-          tree_print_code tpc (buf);
-
-          array_list->accept (tpc);
-
-          tc_retval->stash_original_text (buf.str ());
-
-          delete array_list;
-
-          retval = tc_retval;
-        }
-      catch (const octave_execution_exception&)
-        {
-          recover_from_exception ();
-        }
-    }
-
-  return retval;
-}
-
-// Finish building a matrix list.
-
-tree_expression *
-octave_base_parser::finish_matrix (tree_matrix *m)
-{
-  return (m
-          ? finish_array_list (m)
-          : new tree_constant (octave_null_matrix::instance));
-}
-
-// Finish building a cell list.
-
-tree_expression *
-octave_base_parser::finish_cell (tree_cell *c)
-{
-  return (c
-          ? finish_array_list (c)
-          : new tree_constant (octave_value (Cell ())));
-}
-
-void
-octave_base_parser::maybe_warn_missing_semi (tree_statement_list *t)
-{
-  if (curr_fcn_depth > 0)
-    {
-      tree_statement *tmp = t->back ();
-
-      if (tmp->is_expression ())
-        warning_with_id
-          ("Octave:missing-semicolon",
-           "missing semicolon near line %d, column %d in file '%s'",
-            tmp->line (), tmp->column (), lexer.fcn_file_full_name.c_str ());
-    }
-}
-
-tree_statement_list *
-octave_base_parser::set_stmt_print_flag (tree_statement_list *list,
-                                         char sep, bool warn_missing_semi)
-{
-  tree_statement *tmp = list->back ();
-
-  switch (sep)
-    {
-    case ';':
-      tmp->set_print_flag (false);
-      break;
-
-    case 0:
-    case ',':
-    case '\n':
-      tmp->set_print_flag (true);
-      if (warn_missing_semi)
-        maybe_warn_missing_semi (list);
-      break;
-
-    default:
-      warning ("unrecognized separator type!");
-      break;
-    }
-
-  // Even if a statement is null, we add it to the list then remove it
-  // here so that the print flag is applied to the correct statement.
-
-  if (tmp->is_null_statement ())
-    {
-      list->pop_back ();
-      delete tmp;
-    }
-
-  return list;
-}
-
-// Finish building a statement.
-template <typename T>
-tree_statement *
-octave_base_parser::make_statement (T *arg)
-{
-  octave_comment_list *comment = lexer.get_comment ();
-
-  return new tree_statement (arg, comment);
-}
-
-tree_statement_list *
-octave_base_parser::make_statement_list (tree_statement *stmt)
-{
-  return new tree_statement_list (stmt);
-}
-
-tree_statement_list *
-octave_base_parser::append_statement_list (tree_statement_list *list,
-                                           char sep, tree_statement *stmt,
-                                           bool warn_missing_semi)
-{
-  set_stmt_print_flag (list, sep, warn_missing_semi);
-
-  list->append (stmt);
-
-  return list;
-}
-
-void
-octave_base_parser::bison_error (const std::string& str, int l, int c)
-{
-  int err_line = l < 0 ? lexer.input_line_number : l;
-  int err_col = c < 0 ? lexer.current_input_column - 1 : c;
-
-  std::ostringstream output_buf;
-
-  if (lexer.reading_fcn_file || lexer.reading_script_file
-      || lexer.reading_classdef_file)
-    output_buf << "parse error near line " << err_line
-               << " of file " << lexer.fcn_file_full_name;
-  else
-    output_buf << "parse error:";
-
-  if (str != "parse error")
-    output_buf << "\n\n  " << str;
-
-  output_buf << "\n\n";
-
-  std::string curr_line = lexer.current_input_line;
-
-  if (! curr_line.empty ())
-    {
-      size_t len = curr_line.length ();
-
-      if (curr_line[len-1] == '\n')
-        curr_line.resize (len-1);
-
-      // Print the line, maybe with a pointer near the error token.
-
-      output_buf << ">>> " << curr_line << "\n";
-
-      if (err_col == 0)
-        err_col = len;
-
-      for (int i = 0; i < err_col + 3; i++)
-        output_buf << " ";
-
-      output_buf << "^";
-    }
-
-  output_buf << "\n";
-
-  parse_error_msg = output_buf.str ();
-}
-
-int
-octave_parser::run (void)
-{
-  int status = -1;
-
-  yypstate *pstate = static_cast<yypstate *> (parser_state);
-
-  try
-    {
-      status = octave_pull_parse (pstate, *this);
-    }
-  catch (octave_execution_exception& e)
-    {
-      std::string file = lexer.fcn_file_full_name;
-
-      if (file.empty ())
-        error (e, "parse error");
-      else
-        error (e, "parse error in %s", file.c_str ());
-    }
-  catch (octave_interrupt_exception &)
-    {
-      throw;
-    }
-  catch (...)
-    {
-      std::string file = lexer.fcn_file_full_name;
-
-      if (file.empty ())
-        error ("unexpected exception while parsing input");
-      else
-        error ("unexpected exception while parsing %s", file.c_str ());
-    }
-
-  if (status != 0)
-    parse_error ("%s", parse_error_msg.c_str ());
-
-  return status;
-}
-
-// Parse input from INPUT.  Pass TRUE for EOF if the end of INPUT should
-// finish the parse.
-
-int
-octave_push_parser::run (const std::string& input, bool eof)
-{
-  int status = -1;
-
-  dynamic_cast<octave_push_lexer&> (lexer).append_input (input, eof);
-
-  do
-    {
-      YYSTYPE lval;
-
-      int token = octave_lex (&lval, scanner);
-
-      if (token < 0)
-        {
-          if (! eof && lexer.at_end_of_buffer ())
-            {
-              status = -1;
-              break;
-            }
-        }
-
-      yypstate *pstate = static_cast<yypstate *> (parser_state);
-
-      try
-        {
-          status = octave_push_parse (pstate, token, &lval, *this);
-        }
-      catch (octave_execution_exception& e)
-        {
-          std::string file = lexer.fcn_file_full_name;
-
-          if (file.empty ())
-            error (e, "parse error");
-          else
-            error (e, "parse error in %s", file.c_str ());
-        }
-      catch (octave_interrupt_exception &)
-        {
-          throw;
-        }
-      catch (...)
-        {
-          std::string file = lexer.fcn_file_full_name;
-
-          if (file.empty ())
-            error ("unexpected exception while parsing input");
-          else
-            error ("unexpected exception while parsing %s", file.c_str ());
-        }
-    }
-  while (status == YYPUSH_MORE);
-
-  if (status != 0)
-    parse_error ("%s", parse_error_msg.c_str ());
-
-  return status;
+  tree_statement_list *
+  base_parser::set_stmt_print_flag (tree_statement_list *list,
+                                    char sep, bool warn_missing_semi)
+  {
+    tree_statement *tmp = list->back ();
+
+    switch (sep)
+      {
+      case ';':
+        tmp->set_print_flag (false);
+        break;
+
+      case 0:
+      case ',':
+      case '\n':
+        tmp->set_print_flag (true);
+        if (warn_missing_semi)
+          maybe_warn_missing_semi (list);
+        break;
+
+      default:
+        warning ("unrecognized separator type!");
+        break;
+      }
+
+    // Even if a statement is null, we add it to the list then remove it
+    // here so that the print flag is applied to the correct statement.
+
+    if (tmp->is_null_statement ())
+      {
+        list->pop_back ();
+        delete tmp;
+      }
+
+    return list;
+  }
+
+  // Finish building a statement.
+  template <typename T>
+  tree_statement *
+  base_parser::make_statement (T *arg)
+  {
+    octave_comment_list *comment = lexer.get_comment ();
+
+    return new tree_statement (arg, comment);
+  }
+
+  tree_statement_list *
+  base_parser::make_statement_list (tree_statement *stmt)
+  {
+    return new tree_statement_list (stmt);
+  }
+
+  tree_statement_list *
+  base_parser::append_statement_list (tree_statement_list *list,
+                                      char sep, tree_statement *stmt,
+                                      bool warn_missing_semi)
+  {
+    set_stmt_print_flag (list, sep, warn_missing_semi);
+
+    list->append (stmt);
+
+    return list;
+  }
+
+  void
+  base_parser::bison_error (const std::string& str, int l, int c)
+  {
+    int err_line = l < 0 ? lexer.input_line_number : l;
+    int err_col = c < 0 ? lexer.current_input_column - 1 : c;
+
+    std::ostringstream output_buf;
+
+    if (lexer.reading_fcn_file || lexer.reading_script_file
+        || lexer.reading_classdef_file)
+      output_buf << "parse error near line " << err_line
+                 << " of file " << lexer.fcn_file_full_name;
+    else
+      output_buf << "parse error:";
+
+    if (str != "parse error")
+      output_buf << "\n\n  " << str;
+
+    output_buf << "\n\n";
+
+    std::string curr_line = lexer.current_input_line;
+
+    if (! curr_line.empty ())
+      {
+        size_t len = curr_line.length ();
+
+        if (curr_line[len-1] == '\n')
+          curr_line.resize (len-1);
+
+        // Print the line, maybe with a pointer near the error token.
+
+        output_buf << ">>> " << curr_line << "\n";
+
+        if (err_col == 0)
+          err_col = len;
+
+        for (int i = 0; i < err_col + 3; i++)
+          output_buf << " ";
+
+        output_buf << "^";
+      }
+
+    output_buf << "\n";
+
+    parse_error_msg = output_buf.str ();
+  }
+
+  int
+  parser::run (void)
+  {
+    int status = -1;
+
+    yypstate *pstate = static_cast<yypstate *> (parser_state);
+
+    try
+      {
+        status = octave_pull_parse (pstate, *this);
+      }
+    catch (octave_execution_exception& e)
+      {
+        std::string file = lexer.fcn_file_full_name;
+
+        if (file.empty ())
+          error (e, "parse error");
+        else
+          error (e, "parse error in %s", file.c_str ());
+      }
+    catch (octave_interrupt_exception &)
+      {
+        throw;
+      }
+    catch (...)
+      {
+        std::string file = lexer.fcn_file_full_name;
+
+        if (file.empty ())
+          error ("unexpected exception while parsing input");
+        else
+          error ("unexpected exception while parsing %s", file.c_str ());
+      }
+
+    if (status != 0)
+      parse_error ("%s", parse_error_msg.c_str ());
+
+    return status;
+  }
+
+  // Parse input from INPUT.  Pass TRUE for EOF if the end of INPUT should
+  // finish the parse.
+
+  int
+  push_parser::run (const std::string& input, bool eof)
+  {
+    int status = -1;
+
+    dynamic_cast<push_lexer&> (lexer).append_input (input, eof);
+
+    do
+      {
+        YYSTYPE lval;
+
+        int token = octave_lex (&lval, scanner);
+
+        if (token < 0)
+          {
+            if (! eof && lexer.at_end_of_buffer ())
+              {
+                status = -1;
+                break;
+              }
+          }
+
+        yypstate *pstate = static_cast<yypstate *> (parser_state);
+
+        try
+          {
+            status = octave_push_parse (pstate, token, &lval, *this);
+          }
+        catch (octave_execution_exception& e)
+          {
+            std::string file = lexer.fcn_file_full_name;
+
+            if (file.empty ())
+              error (e, "parse error");
+            else
+              error (e, "parse error in %s", file.c_str ());
+          }
+        catch (octave_interrupt_exception &)
+          {
+            throw;
+          }
+        catch (...)
+          {
+            std::string file = lexer.fcn_file_full_name;
+
+            if (file.empty ())
+              error ("unexpected exception while parsing input");
+            else
+              error ("unexpected exception while parsing %s", file.c_str ());
+          }
+      }
+    while (status == YYPUSH_MORE);
+
+    if (status != 0)
+      parse_error ("%s", parse_error_msg.c_str ());
+
+    return status;
+  }
 }
 
 static void
@@ -4159,10 +4162,10 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
     {
       frame.add_fcn (safe_fclose, ffile);
 
-      // octave_base_parser constructor sets this for us.
+      // octave::base_parser constructor sets this for us.
       frame.protect_var (LEXER);
 
-      octave_parser parser (ffile);
+      octave::parser parser (ffile);
 
       parser.curr_class_name = dispatch_type;
       parser.curr_package_name = package_name;
@@ -4942,7 +4945,7 @@ eval_string (const std::string& eval_str, bool silent,
 {
   octave_value_list retval;
 
-  octave_parser parser (eval_str);
+  octave::parser parser (eval_str);
 
   do
     {
@@ -4986,7 +4989,7 @@ eval_string (const std::string& eval_str, bool silent,
                     retval = octave_value_list ();
                 }
               else if (nargout == 0)
-                parser.stmt_list->accept (*current_evaluator);
+                parser.stmt_list->accept (*octave::current_evaluator);
               else
                 error ("eval: invalid use of statement list");
 
@@ -5208,7 +5211,7 @@ may be either @qcode{"base"} or @qcode{"caller"}.
       // generally.  Any that go through Octave's parser should have
       // already been checked.
 
-      if (is_keyword (nm))
+      if (octave::is_keyword (nm))
         error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
 
       symbol_table::assign (nm, args(2));

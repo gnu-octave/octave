@@ -105,7 +105,7 @@ Return true if @var{name} is a valid variable name.
     {
       std::string varname = args(0).string_value ();
 
-      retval = valid_identifier (varname) && ! is_keyword (varname);
+      retval = valid_identifier (varname) && ! octave::is_keyword (varname);
     }
 
   return retval;

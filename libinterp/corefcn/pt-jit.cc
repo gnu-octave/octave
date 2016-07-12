@@ -780,7 +780,7 @@ jit_convert::visit_statement (tree_statement& stmt)
     visit (cmd);
   else
     {
-      // stolen from tree_evaluator::visit_statement
+      // stolen from octave::tree_evaluator::visit_statement
       bool do_bind_ans = false;
 
       if (expr->is_identifier ())

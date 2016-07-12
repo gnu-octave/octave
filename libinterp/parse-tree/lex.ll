@@ -139,7 +139,7 @@ object) relevant global values before and after the nested call.
 #error lex.l requires flex version 2.5.4 or later
 #endif
 
-#define YY_EXTRA_TYPE octave_base_lexer *
+#define YY_EXTRA_TYPE octave::base_lexer *
 #define curr_lexer yyextra
 
 // Arrange to get input via readline.
@@ -1959,21 +1959,24 @@ display_character (char c)
       }
 }
 
-bool
-is_keyword (const std::string& s)
+namespace octave
 {
-  // Parsing function names like "set.property_name" inside
-  // classdef-style class definitions is simplified by handling the
-  // "set" and "get" portions of the names using the same mechanism as
-  // is used for keywords.  However, they are not really keywords in
-  // the language, so omit them from the list of possible keywords.
-  // Likewise for "enumeration", "events", "methods", and
-  // "properties".
+  bool
+  is_keyword (const std::string& s)
+  {
+    // Parsing function names like "set.property_name" inside
+    // classdef-style class definitions is simplified by handling the
+    // "set" and "get" portions of the names using the same mechanism
+    // as is used for keywords.  However, they are not really keywords
+    // in the language, so omit them from the list of possible
+    // keywords.  Likewise for "enumeration", "events", "methods", and
+    // "properties".
 
-  return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
-          && ! (s == "set" || s == "get"
-                || s == "enumeration" || s == "events"
-                || s == "methods" || s == "properties"));
+    return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
+            && ! (s == "set" || s == "get"
+                  || s == "enumeration" || s == "events"
+                  || s == "methods" || s == "properties"));
+  }
 }
 
 DEFUN (iskeyword, args, ,
@@ -2017,7 +2020,7 @@ If @var{name} is omitted, return a list of keywords.
   else
     {
       std::string name = args(0).xstring_value ("iskeyword: NAME must be a string");
-      retval = is_keyword (name);
+      retval = octave::is_keyword (name);
     }
 
   return retval;
@@ -2074,152 +2077,155 @@ debug information as it processes an expression.
   return retval;
 }
 
-lexical_feedback::~lexical_feedback (void)
+namespace octave
 {
-  tokens.clear ();
-}
+  lexical_feedback::~lexical_feedback (void)
+  {
+    tokens.clear ();
+  }
 
-void
-lexical_feedback::init (void)
-{
-  // The closest paren, brace, or bracket nesting is not an object
-  // index.
-  looking_at_object_index.push_front (false);
-}
+  void
+  lexical_feedback::init (void)
+  {
+    // The closest paren, brace, or bracket nesting is not an object
+    // index.
+    looking_at_object_index.push_front (false);
+  }
 
-void
-lexical_feedback::reset (void)
-{
-  end_of_input = false;
-  at_beginning_of_statement = true;
-  looking_at_anon_fcn_args = false;
-  looking_at_return_list = false;
-  looking_at_parameter_list = false;
-  looking_at_decl_list = false;
-  looking_at_initializer_expression = false;
-  looking_at_matrix_or_assign_lhs = false;
-  looking_for_object_index = false;
-  looking_at_indirect_ref = false;
-  parsing_class_method = false;
-  parsing_classdef = false;
-  maybe_classdef_get_set_method = false;
-  parsing_classdef_get_method = false;
-  parsing_classdef_set_method = false;
-  quote_is_transpose = false;
-  force_script = false;
-  reading_fcn_file = false;
-  reading_script_file = false;
-  reading_classdef_file = false;
-  input_line_number = 1;
-  current_input_column = 1;
-  bracketflag = 0;
-  braceflag = 0;
-  looping = 0;
-  defining_func = 0;
-  looking_at_function_handle = 0;
-  block_comment_nesting_level = 0;
-  command_arg_paren_count = 0;
-  token_count = 0;
-  current_input_line = "";
-  comment_text = "";
-  help_text = "";
-  string_text = "";
-  string_line = 0;
-  string_column = 0;
-  fcn_file_name = "";
-  fcn_file_full_name = "";
-  looking_at_object_index.clear ();
-  looking_at_object_index.push_front (false);
+  void
+  lexical_feedback::reset (void)
+  {
+    end_of_input = false;
+    at_beginning_of_statement = true;
+    looking_at_anon_fcn_args = false;
+    looking_at_return_list = false;
+    looking_at_parameter_list = false;
+    looking_at_decl_list = false;
+    looking_at_initializer_expression = false;
+    looking_at_matrix_or_assign_lhs = false;
+    looking_for_object_index = false;
+    looking_at_indirect_ref = false;
+    parsing_class_method = false;
+    parsing_classdef = false;
+    maybe_classdef_get_set_method = false;
+    parsing_classdef_get_method = false;
+    parsing_classdef_set_method = false;
+    quote_is_transpose = false;
+    force_script = false;
+    reading_fcn_file = false;
+    reading_script_file = false;
+    reading_classdef_file = false;
+    input_line_number = 1;
+    current_input_column = 1;
+    bracketflag = 0;
+    braceflag = 0;
+    looping = 0;
+    defining_func = 0;
+    looking_at_function_handle = 0;
+    block_comment_nesting_level = 0;
+    command_arg_paren_count = 0;
+    token_count = 0;
+    current_input_line = "";
+    comment_text = "";
+    help_text = "";
+    string_text = "";
+    string_line = 0;
+    string_column = 0;
+    fcn_file_name = "";
+    fcn_file_full_name = "";
+    looking_at_object_index.clear ();
+    looking_at_object_index.push_front (false);
 
-  while (! parsed_function_name.empty ())
-    parsed_function_name.pop ();
+    while (! parsed_function_name.empty ())
+      parsed_function_name.pop ();
 
-  pending_local_variables.clear ();
-  symtab_context.clear ();
-  nesting_level.reset ();
-  tokens.clear ();
-}
+    pending_local_variables.clear ();
+    symtab_context.clear ();
+    nesting_level.reset ();
+    tokens.clear ();
+  }
 
-int
-lexical_feedback::previous_token_value (void) const
-{
-  const token *tok = tokens.front ();
-  return tok ? tok->token_value () : 0;
-}
+  int
+  lexical_feedback::previous_token_value (void) const
+  {
+    const token *tok = tokens.front ();
+    return tok ? tok->token_value () : 0;
+  }
 
-bool
-lexical_feedback::previous_token_value_is (int tok_val) const
-{
-  const token *tok = tokens.front ();
-  return tok ? tok->token_value_is (tok_val) : false;
-}
+  bool
+  lexical_feedback::previous_token_value_is (int tok_val) const
+  {
+    const token *tok = tokens.front ();
+    return tok ? tok->token_value_is (tok_val) : false;
+  }
 
-void
-lexical_feedback::mark_previous_token_trailing_space (void)
-{
-  token *tok = tokens.front ();
-  if (tok && ! previous_token_value_is ('\n'))
-    tok->mark_trailing_space ();
-}
+  void
+  lexical_feedback::mark_previous_token_trailing_space (void)
+  {
+    token *tok = tokens.front ();
+    if (tok && ! previous_token_value_is ('\n'))
+      tok->mark_trailing_space ();
+  }
 
-bool
-lexical_feedback::space_follows_previous_token (void) const
-{
-  const token *tok = tokens.front ();
-  return tok ? tok->space_follows_token () : false;
-}
+  bool
+  lexical_feedback::space_follows_previous_token (void) const
+  {
+    const token *tok = tokens.front ();
+    return tok ? tok->space_follows_token () : false;
+  }
 
-bool
-lexical_feedback::previous_token_is_binop (void) const
-{
-  int tok = previous_token_value ();
+  bool
+  lexical_feedback::previous_token_is_binop (void) const
+  {
+    int tok = previous_token_value ();
 
-  return (tok == '+' || tok == '-' || tok == '@'
-          || tok == ',' || tok == ';' || tok == '*' || tok == '/'
-          || tok == ':' || tok == '=' || tok == ADD_EQ
-          || tok == AND_EQ || tok == DIV_EQ || tok == EDIV
-          || tok == EDIV_EQ || tok == ELEFTDIV || tok == ELEFTDIV_EQ
-          || tok == EMINUS || tok == EMUL || tok == EMUL_EQ
-          || tok == EPOW || tok == EPOW_EQ || tok == EXPR_AND
-          || tok == EXPR_AND_AND || tok == EXPR_EQ || tok == EXPR_GE
-          || tok == EXPR_GT || tok == EXPR_LE || tok == EXPR_LT
-          || tok == EXPR_NE || tok == EXPR_NOT || tok == EXPR_OR
-          || tok == EXPR_OR_OR || tok == LEFTDIV || tok == LEFTDIV_EQ
-          || tok == MUL_EQ || tok == OR_EQ || tok == POW
-          || tok == POW_EQ || tok == SUB_EQ);
-}
+    return (tok == '+' || tok == '-' || tok == '@'
+            || tok == ',' || tok == ';' || tok == '*' || tok == '/'
+            || tok == ':' || tok == '=' || tok == ADD_EQ
+            || tok == AND_EQ || tok == DIV_EQ || tok == EDIV
+            || tok == EDIV_EQ || tok == ELEFTDIV || tok == ELEFTDIV_EQ
+            || tok == EMINUS || tok == EMUL || tok == EMUL_EQ
+            || tok == EPOW || tok == EPOW_EQ || tok == EXPR_AND
+            || tok == EXPR_AND_AND || tok == EXPR_EQ || tok == EXPR_GE
+            || tok == EXPR_GT || tok == EXPR_LE || tok == EXPR_LT
+            || tok == EXPR_NE || tok == EXPR_NOT || tok == EXPR_OR
+            || tok == EXPR_OR_OR || tok == LEFTDIV || tok == LEFTDIV_EQ
+            || tok == MUL_EQ || tok == OR_EQ || tok == POW
+            || tok == POW_EQ || tok == SUB_EQ);
+  }
 
-bool
-lexical_feedback::previous_token_is_keyword (void) const
-{
-  const token *tok = tokens.front ();
-  return tok ? tok->is_keyword () : false;
-}
+  bool
+  lexical_feedback::previous_token_is_keyword (void) const
+  {
+    const token *tok = tokens.front ();
+    return tok ? tok->is_keyword () : false;
+  }
 
-bool
-lexical_feedback::previous_token_may_be_command (void) const
-{
-  const token *tok = tokens.front ();
-  return tok ? tok->may_be_command () : false;
-}
+  bool
+  lexical_feedback::previous_token_may_be_command (void) const
+  {
+    const token *tok = tokens.front ();
+    return tok ? tok->may_be_command () : false;
+  }
 
-void
-lexical_feedback::maybe_mark_previous_token_as_variable (void)
-{
-  token *tok = tokens.front ();
+  void
+  lexical_feedback::maybe_mark_previous_token_as_variable (void)
+  {
+    token *tok = tokens.front ();
 
-  if (tok && tok->is_symbol ())
-    pending_local_variables.insert (tok->symbol_name ());
-}
+    if (tok && tok->is_symbol ())
+      pending_local_variables.insert (tok->symbol_name ());
+  }
 
-void
-lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
-{
-  for (std::list<std::string>::const_iterator p = lst.begin ();
-       p != lst.end (); p++)
-    {
-      pending_local_variables.insert (*p);
-    }
+  void
+  lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
+  {
+    for (std::list<std::string>::const_iterator p = lst.begin ();
+         p != lst.end (); p++)
+      {
+        pending_local_variables.insert (*p);
+      }
+  }
 }
 
 static bool
@@ -2237,508 +2243,511 @@ looks_like_copyright (const std::string& s)
   return retval;
 }
 
-void
-octave_base_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
+namespace octave
 {
-  buffer = input;
-  chars_left = buffer.length ();
-  pos = buffer.c_str ();
-  eof = eof_arg;
-}
+  void
+  base_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
+  {
+    buffer = input;
+    chars_left = buffer.length ();
+    pos = buffer.c_str ();
+    eof = eof_arg;
+  }
 
-int
-octave_base_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
-{
-  static const char * const eol = "\n";
+  int
+  base_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
+  {
+    static const char * const eol = "\n";
 
-  size_t len = max_size > chars_left ? chars_left : max_size;
-  assert (len > 0);
+    size_t len = max_size > chars_left ? chars_left : max_size;
+    assert (len > 0);
 
-  memcpy (buf, pos, len);
+    memcpy (buf, pos, len);
 
-  chars_left -= len;
-  pos += len;
+    chars_left -= len;
+    pos += len;
 
-  // Make sure input ends with a new line character.
-  if (chars_left == 0 && buf[len-1] != '\n')
-    {
-      if (len < max_size)
-        {
-          // There is enough room to plug the newline character in
-          // the buffer.
-          buf[len++] = '\n';
-        }
-      else
-        {
-          // There isn't enough room to plug the newline character
-          // in the buffer so arrange to have it returned on the next
-          // call to octave_base_lexer::read.
-          pos = eol;
-          chars_left = 1;
-        }
-    }
+    // Make sure input ends with a new line character.
+    if (chars_left == 0 && buf[len-1] != '\n')
+      {
+        if (len < max_size)
+          {
+            // There is enough room to plug the newline character in
+            // the buffer.
+            buf[len++] = '\n';
+          }
+        else
+          {
+            // There isn't enough room to plug the newline character
+            // in the buffer so arrange to have it returned on the next
+            // call to base_lexer::read.
+            pos = eol;
+            chars_left = 1;
+          }
+      }
 
-  return len;
-}
+    return len;
+  }
 
-octave_base_lexer::~octave_base_lexer (void)
-{
-  yylex_destroy (scanner);
-}
+  base_lexer::~base_lexer (void)
+  {
+    yylex_destroy (scanner);
+  }
 
-void
-octave_base_lexer::init (void)
-{
-  yylex_init (&scanner);
+  void
+  base_lexer::init (void)
+  {
+    yylex_init (&scanner);
 
-  // Make octave_base_lexer object available through yyextra in
-  // flex-generated lexer.
-  yyset_extra (this, scanner);
+    // Make base_lexer object available through yyextra in
+    // flex-generated lexer.
+    yyset_extra (this, scanner);
 
-  clear_start_state ();
-}
+    clear_start_state ();
+  }
 
-// Inside Flex-generated functions, yyg is the scanner cast to its real
-// type.  Some flex macros that we use in octave_base_lexer member functions
-// (for example, BEGIN) use yyg.  If we could perform the actions of
-// these macros with functions instead, we could eliminate the
-// OCTAVE_YYG macro.
+  // Inside Flex-generated functions, yyg is the scanner cast to its real
+  // type.  Some flex macros that we use in base_lexer member functions
+  // (for example, BEGIN) use yyg.  If we could perform the actions of
+  // these macros with functions instead, we could eliminate the
+  // OCTAVE_YYG macro.
 
-#define OCTAVE_YYG \
+#define OCTAVE_YYG                                                      \
   struct yyguts_t *yyg = static_cast<struct yyguts_t*> (scanner)
 
-void
-octave_base_lexer::reset (void)
-{
-  // Start off on the right foot.
-  clear_start_state ();
-
-  symtab_context.clear ();
-
-  // We do want a prompt by default.
-  promptflag (1);
-
-  // Only ask for input from stdin if we are expecting interactive
-  // input.
-
-  if (octave::application::interactive ()
-      && ! (reading_fcn_file
-            || reading_classdef_file
-            || reading_script_file
-            || input_from_eval_string ()))
-    yyrestart (stdin, scanner);
-
-  lexical_feedback::reset ();
-
-  comment_buf.reset ();
-}
-
-void
-octave_base_lexer::prep_for_file (void)
-{
-  reading_script_file = true;
-
-  push_start_state (INPUT_FILE_START);
-}
-
-void
-octave_base_lexer::begin_string (int state)
-{
-  string_line = input_line_number;
-  string_column = current_input_column;
-
-  push_start_state (state);
-}
-
-int
-octave_base_lexer::handle_end_of_input (void)
-{
-  lexer_debug ("<<EOF>>");
-
-  if (block_comment_nesting_level != 0)
-    {
-      warning ("block comment open at end of input");
-
-      if ((reading_fcn_file || reading_script_file || reading_classdef_file)
-          && ! fcn_file_name.empty ())
-        warning ("near line %d of file '%s.m'",
-                 input_line_number, fcn_file_name.c_str ());
-    }
-
-  return handle_token (END_OF_INPUT);
-}
-
-char *
-octave_base_lexer::flex_yytext (void)
-{
-  return yyget_text (scanner);
-}
-
-int
-octave_base_lexer::flex_yyleng (void)
-{
-  return yyget_leng (scanner);
-}
-
-int
-octave_base_lexer::text_yyinput (void)
-{
-  int c = yyinput (scanner);
-
-  if (lexer_debug_flag)
-    {
-      std::cerr << "I: ";
-      display_character (c);
-      std::cerr << std::endl;
-    }
-
-  // Convert CRLF into just LF and single CR into LF.
-
-  if (c == '\r')
-    {
-      c = yyinput (scanner);
-
-      if (lexer_debug_flag)
-        {
-          std::cerr << "I: ";
-          display_character (c);
-          std::cerr << std::endl;
-        }
-
-      if (c != '\n')
-        {
-          xunput (c);
-          c = '\n';
-        }
-    }
-
-  return c;
-}
-
-void
-octave_base_lexer::xunput (char c, char *buf)
-{
-  if (c != EOF)
-    {
-      if (lexer_debug_flag)
-        {
-          std::cerr << "U: ";
-          display_character (c);
-          std::cerr << std::endl;
-        }
-
-      yyunput (c, buf, scanner);
-    }
-}
-
-void
-octave_base_lexer::xunput (char c)
-{
-  char *yytxt = flex_yytext ();
-
-  xunput (c, yytxt);
-}
-
-bool
-octave_base_lexer::looking_at_space (void)
-{
-  int c = text_yyinput ();
-  xunput (c);
-  return (c == ' ' || c == '\t');
-}
-
-bool
-octave_base_lexer::inside_any_object_index (void)
-{
-  bool retval = false;
-
-  for (std::list<bool>::const_iterator i = looking_at_object_index.begin ();
-       i != looking_at_object_index.end (); i++)
-    {
-      if (*i)
-        {
-          retval = true;
-          break;
-        }
-    }
-
-  return retval;
-}
-
-bool
-octave_base_lexer::is_variable (const std::string& name,
-                               symbol_table::scope_id scope)
-{
-  return (symbol_table::is_variable (name, scope)
-          || (pending_local_variables.find (name)
-              != pending_local_variables.end ()));
-}
-
-// Handle keywords.  Return -1 if the keyword should be ignored.
-
-int
-octave_base_lexer::is_keyword_token (const std::string& s)
-{
-  int l = input_line_number;
-  int c = current_input_column;
-
-  int len = s.length ();
-
-  const octave_kw *kw = octave_kw_hash::in_word_set (s.c_str (), len);
-
-  if (kw)
-    {
-      bool previous_at_bos = at_beginning_of_statement;
-
-      // May be reset to true for some token types.
-      at_beginning_of_statement = false;
-
-      token *tok_val = 0;
-
-      switch (kw->kw_id)
-        {
-        case break_kw:
-        case catch_kw:
-        case continue_kw:
-        case else_kw:
-        case otherwise_kw:
-        case return_kw:
-        case unwind_protect_cleanup_kw:
-          at_beginning_of_statement = true;
-          break;
-
-        case persistent_kw:
-        case global_kw:
-          looking_at_decl_list = true;
-          break;
-
-        case case_kw:
-        case elseif_kw:
-        case until_kw:
-          break;
-
-        case end_kw:
-          if (inside_any_object_index ()
-              || (defining_func
-                  && ! (looking_at_return_list
-                        || parsed_function_name.top ())))
-            {
-              at_beginning_of_statement = previous_at_bos;
-              return 0;
-            }
-
-          tok_val = new token (end_kw, token::simple_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case end_try_catch_kw:
-          tok_val = new token (end_try_catch_kw, token::try_catch_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case end_unwind_protect_kw:
-          tok_val = new token (end_unwind_protect_kw,
-                               token::unwind_protect_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endfor_kw:
-          tok_val = new token (endfor_kw, token::for_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endfunction_kw:
-          tok_val = new token (endfunction_kw, token::function_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endif_kw:
-          tok_val = new token (endif_kw, token::if_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endparfor_kw:
-          tok_val = new token (endparfor_kw, token::parfor_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endswitch_kw:
-          tok_val = new token (endswitch_kw, token::switch_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endwhile_kw:
-          tok_val = new token (endwhile_kw, token::while_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endclassdef_kw:
-          tok_val = new token (endclassdef_kw, token::classdef_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endenumeration_kw:
-          tok_val = new token (endenumeration_kw, token::enumeration_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endevents_kw:
-          tok_val = new token (endevents_kw, token::events_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endmethods_kw:
-          tok_val = new token (endmethods_kw, token::methods_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-        case endproperties_kw:
-          tok_val = new token (endproperties_kw, token::properties_end, l, c);
-          at_beginning_of_statement = true;
-          break;
-
-
-        case for_kw:
-        case parfor_kw:
-        case while_kw:
-          decrement_promptflag ();
-          looping++;
-          break;
-
-        case do_kw:
-          at_beginning_of_statement = true;
-          decrement_promptflag ();
-          looping++;
-          break;
-
-        case try_kw:
-        case unwind_protect_kw:
-          at_beginning_of_statement = true;
-          decrement_promptflag ();
-          break;
-
-        case if_kw:
-        case switch_kw:
-          decrement_promptflag ();
-          break;
-
-        case get_kw:
-        case set_kw:
-          // 'get' and 'set' are keywords in classdef method
-          // declarations.
-          if (! maybe_classdef_get_set_method)
-            {
-              at_beginning_of_statement = previous_at_bos;
-              return 0;
-            }
-          break;
-
-        case enumeration_kw:
-        case events_kw:
-        case methods_kw:
-        case properties_kw:
-          // 'properties', 'methods' and 'events' are keywords for
-          // classdef blocks.
-          if (! parsing_classdef)
-            {
-              at_beginning_of_statement = previous_at_bos;
-              return 0;
-            }
-          // fall through ...
-
-        case classdef_kw:
-          // 'classdef' is always a keyword.
-          decrement_promptflag ();
-
-          if (! force_script && token_count == 0 && input_from_file ())
-            {
-              reading_classdef_file = true;
-              reading_script_file = false;
-            }
-          break;
-
-        case function_kw:
-          decrement_promptflag ();
-
-          defining_func++;
-          parsed_function_name.push (false);
-
-          if (! force_script && token_count == 0 && input_from_file ())
-            {
-              reading_fcn_file = true;
-              reading_script_file = false;
-            }
-
-          if (! (reading_fcn_file || reading_script_file
-                 || reading_classdef_file))
-            input_line_number = 1;
-          break;
-
-        case magic_file_kw:
+  void
+  base_lexer::reset (void)
+  {
+    // Start off on the right foot.
+    clear_start_state ();
+
+    symtab_context.clear ();
+
+    // We do want a prompt by default.
+    promptflag (1);
+
+    // Only ask for input from stdin if we are expecting interactive
+    // input.
+
+    if (octave::application::interactive ()
+        && ! (reading_fcn_file
+              || reading_classdef_file
+              || reading_script_file
+              || input_from_eval_string ()))
+      yyrestart (stdin, scanner);
+
+    lexical_feedback::reset ();
+
+    comment_buf.reset ();
+  }
+
+  void
+  base_lexer::prep_for_file (void)
+  {
+    reading_script_file = true;
+
+    push_start_state (INPUT_FILE_START);
+  }
+
+  void
+  base_lexer::begin_string (int state)
+  {
+    string_line = input_line_number;
+    string_column = current_input_column;
+
+    push_start_state (state);
+  }
+
+  int
+  base_lexer::handle_end_of_input (void)
+  {
+    lexer_debug ("<<EOF>>");
+
+    if (block_comment_nesting_level != 0)
+      {
+        warning ("block comment open at end of input");
+
+        if ((reading_fcn_file || reading_script_file || reading_classdef_file)
+            && ! fcn_file_name.empty ())
+          warning ("near line %d of file '%s.m'",
+                   input_line_number, fcn_file_name.c_str ());
+      }
+
+    return handle_token (END_OF_INPUT);
+  }
+
+  char *
+  base_lexer::flex_yytext (void)
+  {
+    return yyget_text (scanner);
+  }
+
+  int
+  base_lexer::flex_yyleng (void)
+  {
+    return yyget_leng (scanner);
+  }
+
+  int
+  base_lexer::text_yyinput (void)
+  {
+    int c = yyinput (scanner);
+
+    if (lexer_debug_flag)
+      {
+        std::cerr << "I: ";
+        display_character (c);
+        std::cerr << std::endl;
+      }
+
+    // Convert CRLF into just LF and single CR into LF.
+
+    if (c == '\r')
+      {
+        c = yyinput (scanner);
+
+        if (lexer_debug_flag)
           {
-            if ((reading_fcn_file || reading_script_file
-                 || reading_classdef_file)
-                && ! fcn_file_full_name.empty ())
-              tok_val = new token (magic_file_kw, fcn_file_full_name, l, c);
-            else
-              tok_val = new token (magic_file_kw, "stdin", l, c);
+            std::cerr << "I: ";
+            display_character (c);
+            std::cerr << std::endl;
           }
-          break;
 
-        case magic_line_kw:
-          tok_val = new token (magic_line_kw, static_cast<double> (l),
-                               "", l, c);
-          break;
+        if (c != '\n')
+          {
+            xunput (c);
+            c = '\n';
+          }
+      }
 
-        default:
-          panic_impossible ();
-        }
+    return c;
+  }
 
-      if (! tok_val)
-        tok_val = new token (kw->tok, true, l, c);
+  void
+  base_lexer::xunput (char c, char *buf)
+  {
+    if (c != EOF)
+      {
+        if (lexer_debug_flag)
+          {
+            std::cerr << "U: ";
+            display_character (c);
+            std::cerr << std::endl;
+          }
 
-      push_token (tok_val);
+        yyunput (c, buf, scanner);
+      }
+  }
 
-      return kw->tok;
-    }
+  void
+  base_lexer::xunput (char c)
+  {
+    char *yytxt = flex_yytext ();
 
-  return 0;
-}
+    xunput (c, yytxt);
+  }
 
-bool
-octave_base_lexer::fq_identifier_contains_keyword (const std::string& s)
-{
-  size_t p1 = 0;
-  size_t p2;
+  bool
+  base_lexer::looking_at_space (void)
+  {
+    int c = text_yyinput ();
+    xunput (c);
+    return (c == ' ' || c == '\t');
+  }
 
-  std::string s_part;
+  bool
+  base_lexer::inside_any_object_index (void)
+  {
+    bool retval = false;
 
-  do
-    {
-      p2 = s.find ('.', p1);
+    for (std::list<bool>::const_iterator i = looking_at_object_index.begin ();
+         i != looking_at_object_index.end (); i++)
+      {
+        if (*i)
+          {
+            retval = true;
+            break;
+          }
+      }
 
-      if (p2 != std::string::npos)
-        {
-          s_part = s.substr (p1, p2 - p1);
-          p1 = p2 + 1;
-        }
-      else
-        s_part = s.substr (p1);
+    return retval;
+  }
 
-      if (is_keyword_token (s_part))
-        return true;
-    }
-  while (p2 != std::string::npos);
+  bool
+  base_lexer::is_variable (const std::string& name,
+                                  symbol_table::scope_id scope)
+  {
+    return (symbol_table::is_variable (name, scope)
+            || (pending_local_variables.find (name)
+                != pending_local_variables.end ()));
+  }
 
-  return false;
-}
+  // Handle keywords.  Return -1 if the keyword should be ignored.
 
-bool
-octave_base_lexer::whitespace_is_significant (void)
-{
-  return (nesting_level.is_bracket ()
-          || (nesting_level.is_brace ()
-              && ! looking_at_object_index.front ()));
+  int
+  base_lexer::is_keyword_token (const std::string& s)
+  {
+    int l = input_line_number;
+    int c = current_input_column;
+
+    int len = s.length ();
+
+    const octave_kw *kw = octave_kw_hash::in_word_set (s.c_str (), len);
+
+    if (kw)
+      {
+        bool previous_at_bos = at_beginning_of_statement;
+
+        // May be reset to true for some token types.
+        at_beginning_of_statement = false;
+
+        token *tok_val = 0;
+
+        switch (kw->kw_id)
+          {
+          case break_kw:
+          case catch_kw:
+          case continue_kw:
+          case else_kw:
+          case otherwise_kw:
+          case return_kw:
+          case unwind_protect_cleanup_kw:
+            at_beginning_of_statement = true;
+            break;
+
+          case persistent_kw:
+          case global_kw:
+            looking_at_decl_list = true;
+            break;
+
+          case case_kw:
+          case elseif_kw:
+          case until_kw:
+            break;
+
+          case end_kw:
+            if (inside_any_object_index ()
+                || (defining_func
+                    && ! (looking_at_return_list
+                          || parsed_function_name.top ())))
+              {
+                at_beginning_of_statement = previous_at_bos;
+                return 0;
+              }
+
+            tok_val = new token (end_kw, token::simple_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case end_try_catch_kw:
+            tok_val = new token (end_try_catch_kw, token::try_catch_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case end_unwind_protect_kw:
+            tok_val = new token (end_unwind_protect_kw,
+                                 token::unwind_protect_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endfor_kw:
+            tok_val = new token (endfor_kw, token::for_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endfunction_kw:
+            tok_val = new token (endfunction_kw, token::function_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endif_kw:
+            tok_val = new token (endif_kw, token::if_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endparfor_kw:
+            tok_val = new token (endparfor_kw, token::parfor_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endswitch_kw:
+            tok_val = new token (endswitch_kw, token::switch_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endwhile_kw:
+            tok_val = new token (endwhile_kw, token::while_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endclassdef_kw:
+            tok_val = new token (endclassdef_kw, token::classdef_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endenumeration_kw:
+            tok_val = new token (endenumeration_kw, token::enumeration_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endevents_kw:
+            tok_val = new token (endevents_kw, token::events_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endmethods_kw:
+            tok_val = new token (endmethods_kw, token::methods_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+          case endproperties_kw:
+            tok_val = new token (endproperties_kw, token::properties_end, l, c);
+            at_beginning_of_statement = true;
+            break;
+
+
+          case for_kw:
+          case parfor_kw:
+          case while_kw:
+            decrement_promptflag ();
+            looping++;
+            break;
+
+          case do_kw:
+            at_beginning_of_statement = true;
+            decrement_promptflag ();
+            looping++;
+            break;
+
+          case try_kw:
+          case unwind_protect_kw:
+            at_beginning_of_statement = true;
+            decrement_promptflag ();
+            break;
+
+          case if_kw:
+          case switch_kw:
+            decrement_promptflag ();
+            break;
+
+          case get_kw:
+          case set_kw:
+            // 'get' and 'set' are keywords in classdef method
+            // declarations.
+            if (! maybe_classdef_get_set_method)
+              {
+                at_beginning_of_statement = previous_at_bos;
+                return 0;
+              }
+            break;
+
+          case enumeration_kw:
+          case events_kw:
+          case methods_kw:
+          case properties_kw:
+            // 'properties', 'methods' and 'events' are keywords for
+            // classdef blocks.
+            if (! parsing_classdef)
+              {
+                at_beginning_of_statement = previous_at_bos;
+                return 0;
+              }
+            // fall through ...
+
+          case classdef_kw:
+            // 'classdef' is always a keyword.
+            decrement_promptflag ();
+
+            if (! force_script && token_count == 0 && input_from_file ())
+              {
+                reading_classdef_file = true;
+                reading_script_file = false;
+              }
+            break;
+
+          case function_kw:
+            decrement_promptflag ();
+
+            defining_func++;
+            parsed_function_name.push (false);
+
+            if (! force_script && token_count == 0 && input_from_file ())
+              {
+                reading_fcn_file = true;
+                reading_script_file = false;
+              }
+
+            if (! (reading_fcn_file || reading_script_file
+                   || reading_classdef_file))
+              input_line_number = 1;
+            break;
+
+          case magic_file_kw:
+            {
+              if ((reading_fcn_file || reading_script_file
+                   || reading_classdef_file)
+                  && ! fcn_file_full_name.empty ())
+                tok_val = new token (magic_file_kw, fcn_file_full_name, l, c);
+              else
+                tok_val = new token (magic_file_kw, "stdin", l, c);
+            }
+            break;
+
+          case magic_line_kw:
+            tok_val = new token (magic_line_kw, static_cast<double> (l),
+                                 "", l, c);
+            break;
+
+          default:
+            panic_impossible ();
+          }
+
+        if (! tok_val)
+          tok_val = new token (kw->tok, true, l, c);
+
+        push_token (tok_val);
+
+        return kw->tok;
+      }
+
+    return 0;
+  }
+
+  bool
+  base_lexer::fq_identifier_contains_keyword (const std::string& s)
+  {
+    size_t p1 = 0;
+    size_t p2;
+
+    std::string s_part;
+
+    do
+      {
+        p2 = s.find ('.', p1);
+
+        if (p2 != std::string::npos)
+          {
+            s_part = s.substr (p1, p2 - p1);
+            p1 = p2 + 1;
+          }
+        else
+          s_part = s.substr (p1);
+
+        if (is_keyword_token (s_part))
+          return true;
+      }
+    while (p2 != std::string::npos);
+
+    return false;
+  }
+
+  bool
+  base_lexer::whitespace_is_significant (void)
+  {
+    return (nesting_level.is_bracket ()
+            || (nesting_level.is_brace ()
+                && ! looking_at_object_index.front ()));
+  }
 }
 
 static inline bool
@@ -2753,852 +2762,854 @@ looks_like_hex (const char *s, int len)
   return (len > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X'));
 }
 
-void
-octave_base_lexer::handle_number (void)
+namespace octave
 {
-  double value = 0.0;
-  int nread = 0;
-
-  char *yytxt = flex_yytext ();
-
-  // Strip any underscores
-  char *tmptxt = strsave (yytxt);
-  char *rptr = tmptxt;
-  char *wptr = tmptxt;
-  while (*rptr)
+  void
+  base_lexer::handle_number (void)
   {
-    *wptr = *rptr++;
-     wptr += (*wptr != '_');
+    double value = 0.0;
+    int nread = 0;
+
+    char *yytxt = flex_yytext ();
+
+    // Strip any underscores
+    char *tmptxt = strsave (yytxt);
+    char *rptr = tmptxt;
+    char *wptr = tmptxt;
+    while (*rptr)
+      {
+        *wptr = *rptr++;
+        wptr += (*wptr != '_');
+      }
+    *wptr = '\0';
+
+    if (looks_like_hex (tmptxt, strlen (tmptxt)))
+      {
+        uintmax_t long_int_value;
+
+        nread = sscanf (tmptxt, "%jx", &long_int_value);
+
+        value = static_cast<double> (long_int_value);
+      }
+    else if (looks_like_bin (tmptxt, strlen (tmptxt)))
+      {
+        uintmax_t long_int_value = 0;
+
+        for (size_t i = 0; i < strlen (tmptxt); i++)
+          {
+            long_int_value <<= 1;
+            long_int_value += static_cast<uintmax_t> (tmptxt[i] == '1');
+          }
+
+        value = static_cast<double> (long_int_value);
+
+        nread = 1;  // Just to pass the assert stmt below
+      }
+    else
+      {
+        char *idx = strpbrk (tmptxt, "Dd");
+
+        if (idx)
+          *idx = 'e';
+
+        nread = sscanf (tmptxt, "%lf", &value);
+      }
+
+    delete [] tmptxt;
+
+    // If yytext doesn't contain a valid number, we are in deep doo doo.
+
+    assert (nread == 1);
+
+    looking_for_object_index = false;
+    at_beginning_of_statement = false;
+
+    push_token (new token (NUM, value, yytxt, input_line_number,
+                           current_input_column));
+
+    current_input_column += flex_yyleng ();
   }
-  *wptr = '\0';
-
-  if (looks_like_hex (tmptxt, strlen (tmptxt)))
-    {
-      uintmax_t long_int_value;
-
-      nread = sscanf (tmptxt, "%jx", &long_int_value);
-
-      value = static_cast<double> (long_int_value);
-    }
-  else if (looks_like_bin (tmptxt, strlen (tmptxt)))
-    {
-      uintmax_t long_int_value = 0;
-
-      for (size_t i = 0; i < strlen (tmptxt); i++)
-        {
-          long_int_value <<= 1;
-          long_int_value += static_cast<uintmax_t> (tmptxt[i] == '1');
-        }
-
-      value = static_cast<double> (long_int_value);
-
-      nread = 1;  // Just to pass the assert stmt below
-    }
-  else
-    {
-      char *idx = strpbrk (tmptxt, "Dd");
-
-      if (idx)
-        *idx = 'e';
-
-      nread = sscanf (tmptxt, "%lf", &value);
-    }
-
-  delete [] tmptxt;
-
-  // If yytext doesn't contain a valid number, we are in deep doo doo.
-
-  assert (nread == 1);
-
-  looking_for_object_index = false;
-  at_beginning_of_statement = false;
-
-  push_token (new token (NUM, value, yytxt, input_line_number,
-                         current_input_column));
-
-  current_input_column += flex_yyleng ();
-}
-
-void
-octave_base_lexer::handle_continuation (void)
-{
-  char *yytxt = flex_yytext ();
-  int yylng = flex_yyleng ();
-
-  int offset = 1;
-  if (yytxt[0] == '\\')
-    warn_language_extension_continuation ();
-  else
-    offset = 3;
-
-  bool have_space = false;
-  while (offset < yylng)
-    {
-      char c = yytxt[offset];
-      if (c == ' ' || c == '\t')
-        {
-          have_space = true;
-          offset++;
-        }
-      else
-        break;
-    }
-
-  if (have_space)
-    mark_previous_token_trailing_space ();
-
-  bool have_comment = false;
-  while (offset < yylng)
-    {
-      char c = yytxt[offset];
-      if (c == '#' || c == '%')
-        {
-          have_comment = true;
-          offset++;
-        }
-      else
-        break;
-    }
-
-  if (have_comment)
-    {
-      comment_text = &yytxt[offset];
-
-      // finish_comment sets at_beginning_of_statement to true but
-      // that's not be correct if we are handling a continued
-      // statement.  Preserve the current state.
-
-      bool saved_bos = at_beginning_of_statement;
-
-      finish_comment (octave_comment_elt::end_of_line);
 
-      at_beginning_of_statement = saved_bos;
-    }
+  void
+  base_lexer::handle_continuation (void)
+  {
+    char *yytxt = flex_yytext ();
+    int yylng = flex_yyleng ();
+
+    int offset = 1;
+    if (yytxt[0] == '\\')
+      warn_language_extension_continuation ();
+    else
+      offset = 3;
+
+    bool have_space = false;
+    while (offset < yylng)
+      {
+        char c = yytxt[offset];
+        if (c == ' ' || c == '\t')
+          {
+            have_space = true;
+            offset++;
+          }
+        else
+          break;
+      }
+
+    if (have_space)
+      mark_previous_token_trailing_space ();
+
+    bool have_comment = false;
+    while (offset < yylng)
+      {
+        char c = yytxt[offset];
+        if (c == '#' || c == '%')
+          {
+            have_comment = true;
+            offset++;
+          }
+        else
+          break;
+      }
+
+    if (have_comment)
+      {
+        comment_text = &yytxt[offset];
+
+        // finish_comment sets at_beginning_of_statement to true but
+        // that's not be correct if we are handling a continued
+        // statement.  Preserve the current state.
+
+        bool saved_bos = at_beginning_of_statement;
+
+        finish_comment (octave_comment_elt::end_of_line);
+
+        at_beginning_of_statement = saved_bos;
+      }
+
+    decrement_promptflag ();
+    input_line_number++;
+    current_input_column = 1;
+  }
+
+  void
+  base_lexer::finish_comment (octave_comment_elt::comment_type typ)
+  {
+    bool copyright = looks_like_copyright (comment_text);
+
+    if (nesting_level.none () && help_text.empty ()
+        && ! comment_text.empty () && ! copyright)
+      help_text = comment_text;
+
+    if (copyright)
+      typ = octave_comment_elt::copyright;
+
+    comment_buf.append (comment_text, typ);
+
+    comment_text = "";
+
+    at_beginning_of_statement = true;
+  }
+
+  int
+  base_lexer::handle_close_bracket (int bracket_type)
+  {
+    int retval = bracket_type;
+
+    if (! nesting_level.none ())
+      {
+        nesting_level.remove ();
+
+        if (bracket_type == ']')
+          bracketflag--;
+        else if (bracket_type == '}')
+          braceflag--;
+        else
+          panic_impossible ();
+      }
+
+    pop_start_state ();
+
+    return retval;
+  }
 
-  decrement_promptflag ();
-  input_line_number++;
-  current_input_column = 1;
-}
+  bool
+  base_lexer::looks_like_command_arg (void)
+  {
+    bool space_before = space_follows_previous_token ();
+    bool space_after = looking_at_space ();
 
-void
-octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ)
-{
-  bool copyright = looks_like_copyright (comment_text);
+    return (space_before && ! space_after
+            && previous_token_may_be_command ());
+  }
 
-  if (nesting_level.none () && help_text.empty ()
-    && ! comment_text.empty () && ! copyright)
-    help_text = comment_text;
+  int
+  base_lexer::handle_superclass_identifier (void)
+  {
+    std::string meth = flex_yytext ();
 
-  if (copyright)
-    typ = octave_comment_elt::copyright;
+    size_t pos = meth.find ("@");
+    std::string cls = meth.substr (pos + 1);
+    meth = meth.substr (0, pos);
 
-  comment_buf.append (comment_text, typ);
+    bool kw_token = (is_keyword_token (meth)
+                     || fq_identifier_contains_keyword (cls));
 
-  comment_text = "";
+    if (kw_token)
+      {
+        token *tok
+          = new token (LEXICAL_ERROR,
+                       "method, class, and package names may not be keywords",
+                       input_line_number, current_input_column);
 
-  at_beginning_of_statement = true;
-}
+        push_token (tok);
 
-int
-octave_base_lexer::handle_close_bracket (int bracket_type)
-{
-  int retval = bracket_type;
+        return count_token_internal (LEXICAL_ERROR);
+      }
 
-  if (! nesting_level.none ())
-    {
-      nesting_level.remove ();
+    push_token (new token (SUPERCLASSREF, meth, cls,
+                           input_line_number, current_input_column));
 
-      if (bracket_type == ']')
-        bracketflag--;
-      else if (bracket_type == '}')
-        braceflag--;
-      else
-        panic_impossible ();
-    }
+    current_input_column += flex_yyleng ();
 
-  pop_start_state ();
+    return SUPERCLASSREF;
+  }
 
-  return retval;
-}
+  int
+  base_lexer::handle_meta_identifier (void)
+  {
+    std::string cls = std::string(flex_yytext ()).substr (1);
 
-bool
-octave_base_lexer::looks_like_command_arg (void)
-{
-  bool space_before = space_follows_previous_token ();
-  bool space_after = looking_at_space ();
+    if (fq_identifier_contains_keyword (cls))
+      {
+        token *tok = new token (LEXICAL_ERROR,
+                                "class and package names may not be keywords",
+                                input_line_number, current_input_column);
+        push_token (tok);
 
-  return (space_before && ! space_after
-          && previous_token_may_be_command ());
-}
+        return count_token_internal (LEXICAL_ERROR);
+      }
 
-int
-octave_base_lexer::handle_superclass_identifier (void)
-{
-  std::string meth = flex_yytext ();
+    push_token (new token (METAQUERY, cls, input_line_number,
+                           current_input_column));
 
-  size_t pos = meth.find ("@");
-  std::string cls = meth.substr (pos + 1);
-  meth = meth.substr (0, pos);
+    current_input_column += flex_yyleng ();
 
-  bool kw_token = (is_keyword_token (meth)
-                   || fq_identifier_contains_keyword (cls));
+    return METAQUERY;
+  }
 
-  if (kw_token)
-    {
-      token *tok
-        = new token (LEXICAL_ERROR,
-                     "method, class, and package names may not be keywords",
-                     input_line_number, current_input_column);
+  int
+  base_lexer::handle_fq_identifier (void)
+  {
+    std::string fq_id = flex_yytext ();
 
-      push_token (tok);
+    if (fq_identifier_contains_keyword (fq_id))
+      {
+        token *tok
+          = new token (LEXICAL_ERROR,
+                       "function, method, class, and package names may not be keywords",
+                       input_line_number, current_input_column);
 
-      return count_token_internal (LEXICAL_ERROR);
-    }
+        push_token (tok);
 
-  push_token (new token (SUPERCLASSREF, meth, cls,
-                         input_line_number, current_input_column));
+        return count_token_internal (LEXICAL_ERROR);
+      }
 
-  current_input_column += flex_yyleng ();
+    push_token (new token (FQ_IDENT, fq_id, input_line_number,
+                           current_input_column));
 
-  return SUPERCLASSREF;
-}
+    current_input_column += flex_yyleng ();
 
-int
-octave_base_lexer::handle_meta_identifier (void)
-{
-  std::string cls = std::string(flex_yytext ()).substr (1);
+    return FQ_IDENT;
+  }
 
-  if (fq_identifier_contains_keyword (cls))
-    {
-      token *tok = new token (LEXICAL_ERROR,
-                              "class and package names may not be keywords",
-                              input_line_number, current_input_column);
-      push_token (tok);
+  // Figure out exactly what kind of token to return when we have seen
+  // an identifier.  Handles keywords.  Return -1 if the identifier
+  // should be ignored.
 
-      return count_token_internal (LEXICAL_ERROR);
-    }
+  int
+  base_lexer::handle_identifier (void)
+  {
+    std::string ident = flex_yytext ();
 
-  push_token (new token (METAQUERY, cls, input_line_number,
-                         current_input_column));
+    // If we are expecting a structure element, avoid recognizing
+    // keywords and other special names and return STRUCT_ELT, which is
+    // a string that is also a valid identifier.
 
-  current_input_column += flex_yyleng ();
+    if (looking_at_indirect_ref)
+      {
+        push_token (new token (STRUCT_ELT, ident, input_line_number,
+                               current_input_column));
 
-  return METAQUERY;
-}
+        looking_for_object_index = true;
 
-int
-octave_base_lexer::handle_fq_identifier (void)
-{
-  std::string fq_id = flex_yytext ();
+        current_input_column += flex_yyleng ();
 
-  if (fq_identifier_contains_keyword (fq_id))
-    {
-      token *tok
-        = new token (LEXICAL_ERROR,
-                     "function, method, class, and package names may not be keywords",
-                     input_line_number, current_input_column);
+        return STRUCT_ELT;
+      }
 
-      push_token (tok);
+    // If ident is a keyword token, then is_keyword_token will set
+    // at_beginning_of_statement.  For example, if tok is an IF
+    // token, then at_beginning_of_statement will be false.
 
-      return count_token_internal (LEXICAL_ERROR);
-    }
+    int kw_token = is_keyword_token (ident);
 
-  push_token (new token (FQ_IDENT, fq_id, input_line_number,
-                         current_input_column));
+    if (looking_at_function_handle)
+      {
+        if (kw_token)
+          {
+            token *tok
+              = new token (LEXICAL_ERROR,
+                           "function handles may not refer to keywords",
+                           input_line_number, current_input_column);
 
-  current_input_column += flex_yyleng ();
+            push_token (tok);
 
-  return FQ_IDENT;
-}
+            return count_token_internal (LEXICAL_ERROR);
+          }
+        else
+          {
+            push_token (new token (FCN_HANDLE, ident, input_line_number,
+                                   current_input_column));
 
-// Figure out exactly what kind of token to return when we have seen
-// an identifier.  Handles keywords.  Return -1 if the identifier
-// should be ignored.
+            current_input_column += flex_yyleng ();
+            looking_for_object_index = true;
 
-int
-octave_base_lexer::handle_identifier (void)
-{
-  std::string ident = flex_yytext ();
+            at_beginning_of_statement = false;
 
-  // If we are expecting a structure element, avoid recognizing
-  // keywords and other special names and return STRUCT_ELT, which is
-  // a string that is also a valid identifier.
+            return FCN_HANDLE;
+          }
+      }
 
-  if (looking_at_indirect_ref)
-    {
-      push_token (new token (STRUCT_ELT, ident, input_line_number,
-                             current_input_column));
+    // If we have a regular keyword, return it.
+    // Keywords can be followed by identifiers.
 
+    if (kw_token)
+      {
+        if (kw_token >= 0)
+          {
+            current_input_column += flex_yyleng ();
+            looking_for_object_index = false;
+          }
+
+        // The call to is_keyword_token set at_beginning_of_statement.
+
+        return kw_token;
+      }
+
+    // Find the token in the symbol table.
+
+    symbol_table::scope_id sid = symtab_context.curr_scope ();
+
+    token *tok = new token (NAME, &(symbol_table::insert (ident, sid)),
+                            input_line_number, current_input_column);
+
+    // The following symbols are handled specially so that things like
+    //
+    //   pi +1
+    //
+    // are parsed as an addition expression instead of as a command-style
+    // function call with the argument "+1".
+
+    if (at_beginning_of_statement
+        && (! (is_variable (ident, sid)
+               || ident == "e" || ident == "pi"
+               || ident == "I" || ident == "i"
+               || ident == "J" || ident == "j"
+               || ident == "Inf" || ident == "inf"
+               || ident == "NaN" || ident == "nan")))
+      tok->mark_may_be_command ();
+
+    push_token (tok);
+
+    current_input_column += flex_yyleng ();
+
+    // The magic end index can't be indexed.
+
+    if (ident != "end")
       looking_for_object_index = true;
 
-      current_input_column += flex_yyleng ();
+    at_beginning_of_statement = false;
 
-      return STRUCT_ELT;
-    }
+    return NAME;
+  }
 
-  // If ident is a keyword token, then is_keyword_token will set
-  // at_beginning_of_statement.  For example, if tok is an IF
-  // token, then at_beginning_of_statement will be false.
+  void
+  base_lexer::maybe_warn_separator_insert (char sep)
+  {
+    std::string nm = fcn_file_full_name;
 
-  int kw_token = is_keyword_token (ident);
+    if (nm.empty ())
+      warning_with_id ("Octave:separator-insert",
+                       "potential auto-insertion of '%c' near line %d",
+                       sep, input_line_number);
+    else
+      warning_with_id ("Octave:separator-insert",
+                       "potential auto-insertion of '%c' near line %d of file %s",
+                       sep, input_line_number, nm.c_str ());
+  }
 
-  if (looking_at_function_handle)
-    {
-      if (kw_token)
+  void
+  base_lexer::warn_single_quote_string (void)
+  {
+    std::string nm = fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:single-quote-string",
+                       "single quote delimited string near line %d",
+                       input_line_number);
+    else
+      warning_with_id ("Octave:single-quote-string",
+                       "single quote delimited string near line %d of file %s",
+                       input_line_number, nm.c_str ());
+  }
+
+  void
+  base_lexer::warn_language_extension (const std::string& msg)
+  {
+    std::string nm = fcn_file_full_name;
+
+    if (nm.empty ())
+      warning_with_id ("Octave:language-extension",
+                       "Octave language extension used: %s",
+                       msg.c_str ());
+    else
+      warning_with_id ("Octave:language-extension",
+                       "Octave language extension used: %s near line %d offile %s",
+                       msg.c_str (), input_line_number, nm.c_str ());
+  }
+
+  void
+  base_lexer::maybe_warn_language_extension_comment (char c)
+  {
+    if (c == '#')
+      warn_language_extension ("# used as comment character");
+  }
+
+  void
+  base_lexer::warn_language_extension_continuation (void)
+  {
+    warn_language_extension ("\\ used as line continuation marker");
+  }
+
+  void
+  base_lexer::warn_language_extension_operator (const std::string& op)
+  {
+    std::string t = op;
+    int n = t.length ();
+    if (t[n-1] == '\n')
+      t.resize (n-1);
+    warn_language_extension (t + " used as operator");
+  }
+
+  void
+  base_lexer::push_token (token *tok)
+  {
+    YYSTYPE *lval = yyget_lval (scanner);
+    lval->tok_val = tok;
+    tokens.push (tok);
+  }
+
+  token *
+  base_lexer::current_token (void)
+  {
+    YYSTYPE *lval = yyget_lval (scanner);
+    return lval->tok_val;
+  }
+
+  void
+  base_lexer::display_token (int tok)
+  {
+    switch (tok)
+      {
+      case '=': std::cerr << "'='\n"; break;
+      case ':': std::cerr << "':'\n"; break;
+      case '-': std::cerr << "'-'\n"; break;
+      case '+': std::cerr << "'+'\n"; break;
+      case '*': std::cerr << "'*'\n"; break;
+      case '/': std::cerr << "'/'\n"; break;
+      case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
+      case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
+      case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
+      case DIV_EQ: std::cerr << "DIV_EQ\n"; break;
+      case LEFTDIV_EQ: std::cerr << "LEFTDIV_EQ\n"; break;
+      case POW_EQ: std::cerr << "POW_EQ\n"; break;
+      case EMUL_EQ: std::cerr << "EMUL_EQ\n"; break;
+      case EDIV_EQ: std::cerr << "EDIV_EQ\n"; break;
+      case ELEFTDIV_EQ: std::cerr << "ELEFTDIV_EQ\n"; break;
+      case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
+      case AND_EQ: std::cerr << "AND_EQ\n"; break;
+      case OR_EQ: std::cerr << "OR_EQ\n"; break;
+      case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
+      case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
+      case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
+      case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
+      case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
+      case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
+      case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
+      case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;
+      case EXPR_NE: std::cerr << "EXPR_NE\n"; break;
+      case EXPR_GE: std::cerr << "EXPR_GE\n"; break;
+      case EXPR_GT: std::cerr << "EXPR_GT\n"; break;
+      case LEFTDIV: std::cerr << "LEFTDIV\n"; break;
+      case EMUL: std::cerr << "EMUL\n"; break;
+      case EDIV: std::cerr << "EDIV\n"; break;
+      case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
+      case EPLUS: std::cerr << "EPLUS\n"; break;
+      case EMINUS: std::cerr << "EMINUS\n"; break;
+      case HERMITIAN: std::cerr << "HERMITIAN\n"; break;
+      case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
+      case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
+      case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
+      case POW: std::cerr << "POW\n"; break;
+      case EPOW: std::cerr << "EPOW\n"; break;
+
+      case NUM:
+      case IMAG_NUM:
         {
-          token *tok
-            = new token (LEXICAL_ERROR,
-                         "function handles may not refer to keywords",
-                         input_line_number, current_input_column);
-
-          push_token (tok);
-
-          return count_token_internal (LEXICAL_ERROR);
+          token *tok_val = current_token ();
+          std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
+                    << " [" << tok_val->number () << "]\n";
         }
-      else
+        break;
+
+      case STRUCT_ELT:
         {
-          push_token (new token (FCN_HANDLE, ident, input_line_number,
-                                 current_input_column));
-
-          current_input_column += flex_yyleng ();
-          looking_for_object_index = true;
-
-          at_beginning_of_statement = false;
-
-          return FCN_HANDLE;
+          token *tok_val = current_token ();
+          std::cerr << "STRUCT_ELT [" << tok_val->text () << "]\n";
         }
-    }
+        break;
 
-  // If we have a regular keyword, return it.
-  // Keywords can be followed by identifiers.
-
-  if (kw_token)
-    {
-      if (kw_token >= 0)
+      case NAME:
         {
-          current_input_column += flex_yyleng ();
-          looking_for_object_index = false;
+          token *tok_val = current_token ();
+          symbol_table::symbol_record *sr = tok_val->sym_rec ();
+          std::cerr << "NAME";
+          if (sr)
+            std::cerr << " [" << sr->name () << "]";
+          std::cerr << "\n";
         }
+        break;
 
-      // The call to is_keyword_token set at_beginning_of_statement.
+      case END: std::cerr << "END\n"; break;
 
-      return kw_token;
-    }
+      case DQ_STRING:
+      case SQ_STRING:
+        {
+          token *tok_val = current_token ();
 
-  // Find the token in the symbol table.
+          std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
+                    << " [" << tok_val->text () << "]\n";
+        }
+        break;
 
-  symbol_table::scope_id sid = symtab_context.curr_scope ();
-
-  token *tok = new token (NAME, &(symbol_table::insert (ident, sid)),
-                          input_line_number, current_input_column);
-
-  // The following symbols are handled specially so that things like
-  //
-  //   pi +1
-  //
-  // are parsed as an addition expression instead of as a command-style
-  // function call with the argument "+1".
-
-  if (at_beginning_of_statement
-      && (! (is_variable (ident, sid)
-             || ident == "e" || ident == "pi"
-             || ident == "I" || ident == "i"
-             || ident == "J" || ident == "j"
-             || ident == "Inf" || ident == "inf"
-             || ident == "NaN" || ident == "nan")))
-    tok->mark_may_be_command ();
-
-  push_token (tok);
-
-  current_input_column += flex_yyleng ();
-
-  // The magic end index can't be indexed.
-
-  if (ident != "end")
-    looking_for_object_index = true;
-
-  at_beginning_of_statement = false;
-
-  return NAME;
-}
-
-void
-octave_base_lexer::maybe_warn_separator_insert (char sep)
-{
-  std::string nm = fcn_file_full_name;
-
-  if (nm.empty ())
-    warning_with_id ("Octave:separator-insert",
-                     "potential auto-insertion of '%c' near line %d",
-                     sep, input_line_number);
-  else
-    warning_with_id ("Octave:separator-insert",
-                     "potential auto-insertion of '%c' near line %d of file %s",
-                     sep, input_line_number, nm.c_str ());
-}
-
-void
-octave_base_lexer::warn_single_quote_string (void)
-{
-  std::string nm = fcn_file_full_name;
-
-  if (nm.empty ())
-    warning_with_id ("Octave:single-quote-string",
-                     "single quote delimited string near line %d",
-                     input_line_number);
-  else
-    warning_with_id ("Octave:single-quote-string",
-                     "single quote delimited string near line %d of file %s",
-                     input_line_number, nm.c_str ());
-}
-
-void
-octave_base_lexer::warn_language_extension (const std::string& msg)
-{
-  std::string nm = fcn_file_full_name;
-
-  if (nm.empty ())
-    warning_with_id ("Octave:language-extension",
-                     "Octave language extension used: %s",
-                     msg.c_str ());
-  else
-    warning_with_id ("Octave:language-extension",
-                     "Octave language extension used: %s near line %d offile %s",
-                     msg.c_str (), input_line_number, nm.c_str ());
-}
-
-void
-octave_base_lexer::maybe_warn_language_extension_comment (char c)
-{
-  if (c == '#')
-    warn_language_extension ("# used as comment character");
-}
-
-void
-octave_base_lexer::warn_language_extension_continuation (void)
-{
-  warn_language_extension ("\\ used as line continuation marker");
-}
-
-void
-octave_base_lexer::warn_language_extension_operator (const std::string& op)
-{
-  std::string t = op;
-  int n = t.length ();
-  if (t[n-1] == '\n')
-    t.resize (n-1);
-  warn_language_extension (t + " used as operator");
-}
-
-void
-octave_base_lexer::push_token (token *tok)
-{
-  YYSTYPE *lval = yyget_lval (scanner);
-  lval->tok_val = tok;
-  tokens.push (tok);
-}
-
-token *
-octave_base_lexer::current_token (void)
-{
-  YYSTYPE *lval = yyget_lval (scanner);
-  return lval->tok_val;
-}
-
-void
-octave_base_lexer::display_token (int tok)
-{
-  switch (tok)
-    {
-    case '=': std::cerr << "'='\n"; break;
-    case ':': std::cerr << "':'\n"; break;
-    case '-': std::cerr << "'-'\n"; break;
-    case '+': std::cerr << "'+'\n"; break;
-    case '*': std::cerr << "'*'\n"; break;
-    case '/': std::cerr << "'/'\n"; break;
-    case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
-    case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
-    case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
-    case DIV_EQ: std::cerr << "DIV_EQ\n"; break;
-    case LEFTDIV_EQ: std::cerr << "LEFTDIV_EQ\n"; break;
-    case POW_EQ: std::cerr << "POW_EQ\n"; break;
-    case EMUL_EQ: std::cerr << "EMUL_EQ\n"; break;
-    case EDIV_EQ: std::cerr << "EDIV_EQ\n"; break;
-    case ELEFTDIV_EQ: std::cerr << "ELEFTDIV_EQ\n"; break;
-    case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
-    case AND_EQ: std::cerr << "AND_EQ\n"; break;
-    case OR_EQ: std::cerr << "OR_EQ\n"; break;
-    case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
-    case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
-    case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
-    case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
-    case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
-    case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
-    case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
-    case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;
-    case EXPR_NE: std::cerr << "EXPR_NE\n"; break;
-    case EXPR_GE: std::cerr << "EXPR_GE\n"; break;
-    case EXPR_GT: std::cerr << "EXPR_GT\n"; break;
-    case LEFTDIV: std::cerr << "LEFTDIV\n"; break;
-    case EMUL: std::cerr << "EMUL\n"; break;
-    case EDIV: std::cerr << "EDIV\n"; break;
-    case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
-    case EPLUS: std::cerr << "EPLUS\n"; break;
-    case EMINUS: std::cerr << "EMINUS\n"; break;
-    case HERMITIAN: std::cerr << "HERMITIAN\n"; break;
-    case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
-    case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
-    case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
-    case POW: std::cerr << "POW\n"; break;
-    case EPOW: std::cerr << "EPOW\n"; break;
-
-    case NUM:
-    case IMAG_NUM:
-      {
-        token *tok_val = current_token ();
-        std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
-                  << " [" << tok_val->number () << "]\n";
+      case FOR: std::cerr << "FOR\n"; break;
+      case WHILE: std::cerr << "WHILE\n"; break;
+      case DO: std::cerr << "DO\n"; break;
+      case UNTIL: std::cerr << "UNTIL\n"; break;
+      case IF: std::cerr << "IF\n"; break;
+      case ELSEIF: std::cerr << "ELSEIF\n"; break;
+      case ELSE: std::cerr << "ELSE\n"; break;
+      case SWITCH: std::cerr << "SWITCH\n"; break;
+      case CASE: std::cerr << "CASE\n"; break;
+      case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
+      case BREAK: std::cerr << "BREAK\n"; break;
+      case CONTINUE: std::cerr << "CONTINUE\n"; break;
+      case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
+      case UNWIND: std::cerr << "UNWIND\n"; break;
+      case CLEANUP: std::cerr << "CLEANUP\n"; break;
+      case TRY: std::cerr << "TRY\n"; break;
+      case CATCH: std::cerr << "CATCH\n"; break;
+      case GLOBAL: std::cerr << "GLOBAL\n"; break;
+      case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
+      case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
+      case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
+      case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
+      case FCN: std::cerr << "FCN\n"; break;
+      case INPUT_FILE: std::cerr << "INPUT_FILE\n"; break;
+      case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
+      case METAQUERY: std::cerr << "METAQUERY\n"; break;
+      case GET: std::cerr << "GET\n"; break;
+      case SET: std::cerr << "SET\n"; break;
+      case PROPERTIES: std::cerr << "PROPERTIES\n"; break;
+      case METHODS: std::cerr << "METHODS\n"; break;
+      case EVENTS: std::cerr << "EVENTS\n"; break;
+      case CLASSDEF: std::cerr << "CLASSDEF\n"; break;
+      case '\n': std::cerr << "\\n\n"; break;
+      case '\r': std::cerr << "\\r\n"; break;
+      case '\t': std::cerr << "TAB\n"; break;
+      default:
+        {
+          if (tok < 256 && tok > 31)
+            std::cerr << static_cast<char> (tok) << "\n";
+          else
+            std::cerr << "UNKNOWN(" << tok << ")\n";
+        }
+        break;
       }
-      break;
+  }
 
-    case STRUCT_ELT:
+  void
+  base_lexer::fatal_error (const char *msg)
+  {
+    error ("fatal lexer error: %s", msg);
+  }
+
+  void
+  base_lexer::lexer_debug (const char *pattern)
+  {
+    if (lexer_debug_flag)
       {
-        token *tok_val = current_token ();
-        std::cerr << "STRUCT_ELT [" << tok_val->text () << "]\n";
+        std::cerr << std::endl;
+
+        display_start_state ();
+
+        std::cerr << "P: " << pattern << std::endl;
+        std::cerr << "T: " << flex_yytext () << std::endl;
       }
-      break;
+  }
 
-    case NAME:
-      {
-        token *tok_val = current_token ();
-        symbol_table::symbol_record *sr = tok_val->sym_rec ();
-        std::cerr << "NAME";
-        if (sr)
-          std::cerr << " [" << sr->name () << "]";
-        std::cerr << "\n";
-      }
-      break;
+  void
+  base_lexer::push_start_state (int state)
+  {
+    OCTAVE_YYG;
 
-    case END: std::cerr << "END\n"; break;
+    start_state_stack.push (state);
 
-    case DQ_STRING:
-    case SQ_STRING:
-      {
-        token *tok_val = current_token ();
+    BEGIN (start_state ());
+  }
 
-        std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
-                  << " [" << tok_val->text () << "]\n";
-      }
-      break;
+  void
+  base_lexer::pop_start_state (void)
+  {
+    OCTAVE_YYG;
 
-    case FOR: std::cerr << "FOR\n"; break;
-    case WHILE: std::cerr << "WHILE\n"; break;
-    case DO: std::cerr << "DO\n"; break;
-    case UNTIL: std::cerr << "UNTIL\n"; break;
-    case IF: std::cerr << "IF\n"; break;
-    case ELSEIF: std::cerr << "ELSEIF\n"; break;
-    case ELSE: std::cerr << "ELSE\n"; break;
-    case SWITCH: std::cerr << "SWITCH\n"; break;
-    case CASE: std::cerr << "CASE\n"; break;
-    case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
-    case BREAK: std::cerr << "BREAK\n"; break;
-    case CONTINUE: std::cerr << "CONTINUE\n"; break;
-    case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
-    case UNWIND: std::cerr << "UNWIND\n"; break;
-    case CLEANUP: std::cerr << "CLEANUP\n"; break;
-    case TRY: std::cerr << "TRY\n"; break;
-    case CATCH: std::cerr << "CATCH\n"; break;
-    case GLOBAL: std::cerr << "GLOBAL\n"; break;
-    case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
-    case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
-    case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
-    case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
-    case FCN: std::cerr << "FCN\n"; break;
-    case INPUT_FILE: std::cerr << "INPUT_FILE\n"; break;
-    case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
-    case METAQUERY: std::cerr << "METAQUERY\n"; break;
-    case GET: std::cerr << "GET\n"; break;
-    case SET: std::cerr << "SET\n"; break;
-    case PROPERTIES: std::cerr << "PROPERTIES\n"; break;
-    case METHODS: std::cerr << "METHODS\n"; break;
-    case EVENTS: std::cerr << "EVENTS\n"; break;
-    case CLASSDEF: std::cerr << "CLASSDEF\n"; break;
-    case '\n': std::cerr << "\\n\n"; break;
-    case '\r': std::cerr << "\\r\n"; break;
-    case '\t': std::cerr << "TAB\n"; break;
-    default:
-      {
-        if (tok < 256 && tok > 31)
-          std::cerr << static_cast<char> (tok) << "\n";
-        else
-          std::cerr << "UNKNOWN(" << tok << ")\n";
-      }
-      break;
-    }
-}
-
-void
-octave_base_lexer::fatal_error (const char *msg)
-{
-  error ("fatal lexer error: %s", msg);
-}
-
-void
-octave_base_lexer::lexer_debug (const char *pattern)
-{
-  if (lexer_debug_flag)
-    {
-      std::cerr << std::endl;
-
-      display_start_state ();
-
-      std::cerr << "P: " << pattern << std::endl;
-      std::cerr << "T: " << flex_yytext () << std::endl;
-    }
-}
-
-void
-octave_base_lexer::push_start_state (int state)
-{
-  OCTAVE_YYG;
-
-  start_state_stack.push (state);
-
-  BEGIN (start_state ());
-}
-
-void
-octave_base_lexer::pop_start_state (void)
-{
-  OCTAVE_YYG;
-
-  start_state_stack.pop ();
-
-  BEGIN (start_state ());
-}
-
-void
-octave_base_lexer::clear_start_state (void)
-{
-  while (! start_state_stack.empty ())
     start_state_stack.pop ();
 
-  push_start_state (INITIAL);
-}
+    BEGIN (start_state ());
+  }
 
-void
-octave_base_lexer::display_start_state (void) const
-{
-  std::cerr << "S: ";
+  void
+  base_lexer::clear_start_state (void)
+  {
+    while (! start_state_stack.empty ())
+      start_state_stack.pop ();
 
-  switch (start_state ())
-    {
-    case INITIAL:
-      std::cerr << "INITIAL" << std::endl;
-      break;
+    push_start_state (INITIAL);
+  }
 
-    case COMMAND_START:
-      std::cerr << "COMMAND_START" << std::endl;
-      break;
+  void
+  base_lexer::display_start_state (void) const
+  {
+    std::cerr << "S: ";
 
-    case MATRIX_START:
-      std::cerr << "MATRIX_START" << std::endl;
-      break;
+    switch (start_state ())
+      {
+      case INITIAL:
+        std::cerr << "INITIAL" << std::endl;
+        break;
 
-    case INPUT_FILE_START:
-      std::cerr << "INPUT_FILE_BEGIN" << std::endl;
-      break;
+      case COMMAND_START:
+        std::cerr << "COMMAND_START" << std::endl;
+        break;
 
-    case BLOCK_COMMENT_START:
-      std::cerr << "BLOCK_COMMENT_START" << std::endl;
-      break;
+      case MATRIX_START:
+        std::cerr << "MATRIX_START" << std::endl;
+        break;
 
-    case LINE_COMMENT_START:
-      std::cerr << "LINE_COMMENT_START" << std::endl;
-      break;
+      case INPUT_FILE_START:
+        std::cerr << "INPUT_FILE_BEGIN" << std::endl;
+        break;
 
-    case DQ_STRING_START:
-      std::cerr << "DQ_STRING_START" << std::endl;
-      break;
+      case BLOCK_COMMENT_START:
+        std::cerr << "BLOCK_COMMENT_START" << std::endl;
+        break;
 
-    case SQ_STRING_START:
-      std::cerr << "SQ_STRING_START" << std::endl;
-      break;
+      case LINE_COMMENT_START:
+        std::cerr << "LINE_COMMENT_START" << std::endl;
+        break;
 
-    default:
-      std::cerr << "UNKNOWN START STATE!" << std::endl;
-      break;
-    }
-}
+      case DQ_STRING_START:
+        std::cerr << "DQ_STRING_START" << std::endl;
+        break;
 
-int
-octave_base_lexer::handle_op (const char *pattern, int tok, bool bos)
-{
-  lexer_debug (pattern);
+      case SQ_STRING_START:
+        std::cerr << "SQ_STRING_START" << std::endl;
+        break;
 
-  return handle_op_internal (tok, bos, true);
-}
+      default:
+        std::cerr << "UNKNOWN START STATE!" << std::endl;
+        break;
+      }
+  }
 
-int
-octave_base_lexer::handle_language_extension_op (const char *pattern, int tok,
-                                                 bool bos)
-{
-  lexer_debug (pattern);
+  int
+  base_lexer::handle_op (const char *pattern, int tok, bool bos)
+  {
+    lexer_debug (pattern);
 
-  return handle_op_internal (tok, bos, false);
-}
+    return handle_op_internal (tok, bos, true);
+  }
 
-bool
-octave_base_lexer::maybe_unput_comma_before_unary_op (int tok)
-{
-  int prev_tok = previous_token_value ();
+  int
+  base_lexer::handle_language_extension_op (const char *pattern, int tok,
+                                                   bool bos)
+  {
+    lexer_debug (pattern);
 
-  bool unput_comma = false;
+    return handle_op_internal (tok, bos, false);
+  }
 
-  if (whitespace_is_significant () && space_follows_previous_token ())
-    {
-      int c = text_yyinput ();
-      xunput (c);
+  bool
+  base_lexer::maybe_unput_comma_before_unary_op (int tok)
+  {
+    int prev_tok = previous_token_value ();
 
-      bool space_after = (c == ' ' || c == '\t');
+    bool unput_comma = false;
 
-      if (! (prev_tok == '[' || prev_tok == '{'
-             || previous_token_is_binop ()
-             || ((tok == '+' || tok == '-') && space_after)))
-        unput_comma = true;
-    }
+    if (whitespace_is_significant () && space_follows_previous_token ())
+      {
+        int c = text_yyinput ();
+        xunput (c);
 
-  return unput_comma;
-}
+        bool space_after = (c == ' ' || c == '\t');
 
-int
-octave_base_lexer::handle_unary_op (int tok, bool bos)
-{
-  return maybe_unput_comma_before_unary_op (tok)
-    ? -1 : handle_op_internal (tok, bos, true);
-}
+        if (! (prev_tok == '[' || prev_tok == '{'
+               || previous_token_is_binop ()
+               || ((tok == '+' || tok == '-') && space_after)))
+          unput_comma = true;
+      }
 
-int
-octave_base_lexer::handle_language_extension_unary_op (int tok, bool bos)
-{
-  return maybe_unput_comma_before_unary_op (tok)
-    ? -1 : handle_op_internal (tok, bos, false);
-}
+    return unput_comma;
+  }
 
-int
-octave_base_lexer::handle_op_internal (int tok, bool bos, bool compat)
-{
-  if (! compat)
-    warn_language_extension_operator (flex_yytext ());
+  int
+  base_lexer::handle_unary_op (int tok, bool bos)
+  {
+    return maybe_unput_comma_before_unary_op (tok)
+      ? -1 : handle_op_internal (tok, bos, true);
+  }
 
-  push_token (new token (tok, input_line_number, current_input_column));
+  int
+  base_lexer::handle_language_extension_unary_op (int tok, bool bos)
+  {
+    return maybe_unput_comma_before_unary_op (tok)
+      ? -1 : handle_op_internal (tok, bos, false);
+  }
 
-  current_input_column += flex_yyleng ();
-  looking_for_object_index = false;
-  at_beginning_of_statement = bos;
+  int
+  base_lexer::handle_op_internal (int tok, bool bos, bool compat)
+  {
+    if (! compat)
+      warn_language_extension_operator (flex_yytext ());
 
-  return count_token_internal (tok);
-}
+    push_token (new token (tok, input_line_number, current_input_column));
 
-int
-octave_base_lexer::handle_token (const std::string& name, int tok)
-{
-  token *tok_val = new token (tok, name, input_line_number,
-                              current_input_column);
+    current_input_column += flex_yyleng ();
+    looking_for_object_index = false;
+    at_beginning_of_statement = bos;
 
-  return handle_token (tok, tok_val);
-}
+    return count_token_internal (tok);
+  }
 
-int
-octave_base_lexer::handle_token (int tok, token *tok_val)
-{
-  if (! tok_val)
-    tok_val = new token (tok, input_line_number, current_input_column);
+  int
+  base_lexer::handle_token (const std::string& name, int tok)
+  {
+    token *tok_val = new token (tok, name, input_line_number,
+                                current_input_column);
 
-  push_token (tok_val);
+    return handle_token (tok, tok_val);
+  }
 
-  current_input_column += flex_yyleng ();
+  int
+  base_lexer::handle_token (int tok, token *tok_val)
+  {
+    if (! tok_val)
+      tok_val = new token (tok, input_line_number, current_input_column);
 
-  return count_token_internal (tok);
-}
+    push_token (tok_val);
 
-int
-octave_base_lexer::count_token (int tok)
-{
-  token *tok_val = new token (tok, input_line_number, current_input_column);
+    current_input_column += flex_yyleng ();
 
-  push_token (tok_val);
+    return count_token_internal (tok);
+  }
 
-  return count_token_internal (tok);
-}
+  int
+  base_lexer::count_token (int tok)
+  {
+    token *tok_val = new token (tok, input_line_number, current_input_column);
 
-int
-octave_base_lexer::count_token_internal (int tok)
-{
-  if (tok != '\n')
-    {
-      Vtoken_count++;
-      token_count++;
-    }
+    push_token (tok_val);
 
-  return show_token (tok);
-}
+    return count_token_internal (tok);
+  }
 
-int
-octave_base_lexer::show_token (int tok)
-{
-  if (Vdisplay_tokens)
-    display_token (tok);
+  int
+  base_lexer::count_token_internal (int tok)
+  {
+    if (tok != '\n')
+      {
+        Vtoken_count++;
+        token_count++;
+      }
 
-  if (lexer_debug_flag)
-    {
-      std::cerr << "R: ";
+    return show_token (tok);
+  }
+
+  int
+  base_lexer::show_token (int tok)
+  {
+    if (Vdisplay_tokens)
       display_token (tok);
-      std::cerr << std::endl;
-    }
 
-  return tok;
+    if (lexer_debug_flag)
+      {
+        std::cerr << "R: ";
+        display_token (tok);
+        std::cerr << std::endl;
+      }
+
+    return tok;
+  }
+
+  void
+  base_lexer::enable_fq_identifier (void)
+  {
+    push_start_state (FQ_IDENT_START);
+  }
+
+  int
+  lexer::fill_flex_buffer (char *buf, unsigned max_size)
+  {
+    int status = 0;
+
+    if (input_buf.empty ())
+      {
+        bool eof = false;
+        current_input_line = input_reader.get_input (eof);
+        input_buf.fill (current_input_line, eof);
+      }
+
+    if (! input_buf.empty ())
+      status = input_buf.copy_chunk (buf, max_size);
+    else
+      status = YY_NULL;
+
+    return status;
+  }
+
+  int
+  push_lexer::fill_flex_buffer (char *buf, unsigned max_size)
+  {
+    int status = 0;
+
+    if (input_buf.empty () && ! input_buf.at_eof ())
+      input_buf.fill (std::string (1, static_cast<char> (1)), false);
+
+    if (! input_buf.empty ())
+      status = input_buf.copy_chunk (buf, max_size);
+    else
+      status = YY_NULL;
+
+    return status;
+  }
 }
-
-void
-octave_base_lexer::enable_fq_identifier (void)
-{
-  push_start_state (FQ_IDENT_START);
-}
-
-int
-octave_lexer::fill_flex_buffer (char *buf, unsigned max_size)
-{
-  int status = 0;
-
-  if (input_buf.empty ())
-    {
-      bool eof = false;
-      current_input_line = input_reader.get_input (eof);
-      input_buf.fill (current_input_line, eof);
-    }
-
-  if (! input_buf.empty ())
-    status = input_buf.copy_chunk (buf, max_size);
-  else
-    status = YY_NULL;
-
-  return status;
-}
-
-int
-octave_push_lexer::fill_flex_buffer (char *buf, unsigned max_size)
-{
-  int status = 0;
-
-  if (input_buf.empty () && ! input_buf.at_eof ())
-    input_buf.fill (std::string (1, static_cast<char> (1)), false);
-
-  if (! input_buf.empty ())
-    status = input_buf.copy_chunk (buf, max_size);
-  else
-    status = YY_NULL;
-
-  return status;
-}
-

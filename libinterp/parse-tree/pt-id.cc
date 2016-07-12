@@ -94,7 +94,7 @@ tree_identifier::rvalue (int nargout,
       else
         {
           if (print_result () && nargout == 0
-              && tree_evaluator::statement_printing_enabled ())
+              && octave::tree_evaluator::statement_printing_enabled ())
             val.print_with_name (octave_stdout, name ());
 
           retval = val;

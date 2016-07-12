@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "call-stack.h"
 #include <defaults.h>
 #include "Cell.h"
-#include "builtins.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"

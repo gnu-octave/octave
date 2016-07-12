@@ -71,6 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 
+#include "builtin-defun-decls.h"
 #include "Cell.h"
 #include "defun.h"
 #include "display.h"

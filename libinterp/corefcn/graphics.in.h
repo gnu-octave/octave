@@ -3599,14 +3599,14 @@ public:
       color_property ambientlightcolor , color_values (1, 1, 1)
       bool_property box u , "off"
       radio_property boxstyle , "{back}|full"
-      row_vector_property cameraposition m , Matrix (1, 3, 0.0)
-      radio_property camerapositionmode , "{auto}|manual"
-      row_vector_property cameratarget m , Matrix (1, 3, 0.0)
-      radio_property cameratargetmode , "{auto}|manual"
-      row_vector_property cameraupvector m , Matrix (1, 3, 0.0)
-      radio_property cameraupvectormode , "{auto}|manual"
-      double_property cameraviewangle m , 6.6086
-      radio_property cameraviewanglemode , "{auto}|manual"
+      row_vector_property cameraposition mu , Matrix (1, 3, 0.0)
+      radio_property camerapositionmode u , "{auto}|manual"
+      row_vector_property cameratarget mu , Matrix (1, 3, 0.0)
+      radio_property cameratargetmode u , "{auto}|manual"
+      row_vector_property cameraupvector mu , Matrix (1, 3, 0.0)
+      radio_property cameraupvectormode u , "{auto}|manual"
+      double_property cameraviewangle mu , 6.6086
+      radio_property cameraviewanglemode u , "{auto}|manual"
       row_vector_property clim m , default_lim ()
       radio_property climmode al , "{auto}|manual"
       radio_property clippingstyle , "{3dbox}|rectangle"
@@ -3773,6 +3773,33 @@ public:
     { update_label_color (zlabel, zcolor); }
 
     void update_view (void) { sync_positions (); }
+
+    void update_cameraposition (void) { update_transform (); }
+    void update_cameratarget (void) { update_transform (); }
+    void update_cameraupvector (void) { update_transform (); }
+    void update_cameraviewangle (void) { update_transform (); }
+
+    void update_camerapositionmode (void)
+    {
+      if (camerapositionmode_is ("auto"))
+        update_cameraposition ();
+    }
+    void update_cameratargetmode (void)
+    {
+      if (cameratargetmode_is ("auto"))
+        update_cameratarget ();
+    }
+    void update_cameraupvectormode (void)
+    {
+      if (cameraupvectormode_is ("auto"))
+        update_cameraupvector ();
+    }
+    void update_cameraviewanglemode (void)
+    {
+      if (cameraviewanglemode_is ("auto"))
+        update_cameraviewangle ();
+    }
+
     void update_dataaspectratio (void) { sync_positions (); }
     void update_dataaspectratiomode (void) { sync_positions (); }
     void update_plotboxaspectratio (void) { sync_positions (); }

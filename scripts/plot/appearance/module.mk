@@ -12,6 +12,10 @@ FCN_FILE_DIRS += \
   %reldir%/annotation.m \
   %reldir%/axis.m \
   %reldir%/box.m \
+  %reldir%/campos.m \
+  %reldir%/camtarget.m \
+  %reldir%/camup.m \
+  %reldir%/camva.m \
   %reldir%/caxis.m \
   %reldir%/clabel.m \
   %reldir%/daspect.m \

@@ -464,6 +464,14 @@ three-dimensional plots.
 
 @DOCSTRING(view)
 
+@DOCSTRING(campos)
+
+@DOCSTRING(camtarget)
+
+@DOCSTRING(camup)
+
+@DOCSTRING(camva)
+
 @DOCSTRING(slice)
 
 @DOCSTRING(ribbon)

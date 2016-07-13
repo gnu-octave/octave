@@ -9,13 +9,16 @@ FCN_FILE_DIRS += \
 %canon_reldir%_FCN_FILES = \
   %reldir%/__clabel__.m \
   %reldir%/__getlegenddata__.m \
+  %reldir%/__rotate_around_axis__.m \
   %reldir%/annotation.m \
   %reldir%/axis.m \
   %reldir%/box.m \
   %reldir%/campos.m \
+  %reldir%/camroll.m \
   %reldir%/camtarget.m \
   %reldir%/camup.m \
   %reldir%/camva.m \
+  %reldir%/camzoom.m \
   %reldir%/caxis.m \
   %reldir%/clabel.m \
   %reldir%/daspect.m \

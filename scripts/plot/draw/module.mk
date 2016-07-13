@@ -16,7 +16,6 @@ FCN_FILE_DIRS += \
   %reldir%/private/__pie__.m \
   %reldir%/private/__plt__.m \
   %reldir%/private/__quiver__.m \
-  %reldir%/private/__rotate_around_axis__.m \
   %reldir%/private/__scatter__.m \
   %reldir%/private/__stem__.m \
   %reldir%/private/__unite_shared_vertices__.m

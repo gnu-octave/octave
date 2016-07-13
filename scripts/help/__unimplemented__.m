@@ -578,8 +578,6 @@ function list = missing_functions ()
   "camorbit",
   "campan",
   "camproj",
-  "camroll",
-  "camzoom",
   "categorical",
   "categories",
   "cdf2rdf",

@@ -344,7 +344,10 @@ namespace octave
 
   void application::interactive (bool arg)
   {
-    m_interpreter->interactive (arg);
+    interpreter *interp = instance->m_interpreter;
+
+    if (interp)
+      interp->interactive (arg);
   }
 
   bool application::forced_interactive (void)
@@ -354,7 +357,9 @@ namespace octave
 
   bool application::interactive (void)
   {
-    return instance->m_interpreter->interactive ();
+    interpreter *interp = instance->m_interpreter;
+
+    return interp ? interp->interactive () : false;
   }
 
   application::~application (void)

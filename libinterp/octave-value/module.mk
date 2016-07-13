@@ -133,24 +133,6 @@ libinterp_EXTRA_DIST += \
   libinterp/octave-value/ov-base-scalar.cc \
   libinterp/octave-value/ov-base-sparse.cc
 
-OV_JAVA_DF = \
-  libinterp/octave-value/ov.df \
-  libinterp/octave-value/ov-class.df \
-  libinterp/octave-value/ov-java.df \
-  libinterp/octave-value/ov-typeinfo.df
-
-## Special rules for Java .df files so that not all .df files are built with
-## JAVA_CPPFLAGS
-$(OV_JAVA_DF) : libinterp/octave-value/%.df : libinterp/octave-value/%.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h
-	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
-	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(libinterp_octave_value_liboctave_value_la_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
-	  $(libinterp_octave_value_liboctave_value_la_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t1 && \
-	$(SHELL) $(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
-	mv $@-t $@ && \
-	rm -f $@-t1
-
 noinst_LTLIBRARIES += libinterp/octave-value/liboctave-value.la
 
 libinterp_octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)

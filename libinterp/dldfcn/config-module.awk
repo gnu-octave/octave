@@ -55,8 +55,6 @@ BEGIN {
             basename, files[i]);
     if (cppflags[i])
       {
-        printf ("libinterp/dldfcn/%s.df: CPPFLAGS += %s\n",
-                basename, cppflags[i]);
         printf ("libinterp_dldfcn_%s_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS) %s\n",
                 basename, cppflags[i]);
       }

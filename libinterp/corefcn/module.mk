@@ -261,30 +261,6 @@ COREFCN_SRC = \
   $(JIT_SRC) \
   $(NOINSTALL_COREFCN_INC)
 
-COREFCN_FT2_DF = \
-  libinterp/corefcn/graphics.df \
-  libinterp/corefcn/gl-render.df \
-  libinterp/corefcn/toplev.df \
-  libinterp/corefcn/txt-eng-ft.df
-
-## FIXME: Automake does not support per-object rules.
-##        These rules could be emulated by creating a new convenience
-##        library and using per-library rules.  Or we can just live
-##        without the rule since there haven't been any problems. (09/18/2012)
-#display.df display.lo: CPPFLAGS += $(X11_FLAGS)
-
-## Special rules for FreeType .df files so that not all .df files are built
-## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
-$(COREFCN_FT2_DF) : libinterp/corefcn/%.df : libinterp/corefcn/%.cc $(GENERATED_MAKE_BUILTINS_INCS) octave-config.h | libinterp/corefcn/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
-	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(libinterp_corefcn_libcorefcn_la_CPPFLAGS) $(CPPFLAGS) \
-	  $(libinterp_corefcn_libcorefcn_la_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t1 && \
-	$(SHELL) $(srcdir)/libinterp/mkdefs $(srcdir)/libinterp $< < $@-t1 > $@-t && \
-	rm -f $@-t1 && \
-	mv $@-t $@
-
 ## Special rules for sources which must be built before rest of compilation.
 
 libinterp/corefcn/defaults.h: libinterp/corefcn/defaults.in.h build-aux/subst-default-vals.sh | libinterp/corefcn/$(octave_dirstamp)

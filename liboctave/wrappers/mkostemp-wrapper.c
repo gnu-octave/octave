@@ -28,13 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <fcntl.h>
 #include <stdlib.h>
 
 #include "mkostemp-wrapper.h"
-
-#ifndef O_BINARY
-# define O_BINARY 0
-#endif
 
 int
 octave_mkostemp_wrapper (char *tmpl)

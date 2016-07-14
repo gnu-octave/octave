@@ -68,6 +68,30 @@ check-jit: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) test/$(octave
 	cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
 endif
 
+COVERAGE_DIR = test/coverage
+COVERAGE_INFO = $(COVERAGE_DIR)/$(PACKAGE).info
+
+## FIXME: To get something useful out of 'make coverage', you should use gcc
+## and configure with compiler flags set to '-g --coverage'.  Adding the
+## --coverage option to either WARN_CXXFLAGS or XTRA_CXXFLAGS resulted in
+## link errors, so some work still needed to get a '--enable-coverage-flags'
+## option working.
+
+coverage: all
+	lcov --directory . --zerocounters
+	$(MAKE) $(AM_MAKEFLAGS) check
+	$(MKDIR_P) $(COVERAGE_DIR)
+	lcov --directory . --capture --output-file $(COVERAGE_INFO)
+	genhtml --output-directory $(COVERAGE_DIR) $(COVERAGE_INFO)
+	@echo ""
+	@echo "Code coverage report successfully built.  Open the file"
+	@echo ""
+	@echo "   $(abs_top_builddir)/$(COVERAGE_DIR)/index.html"
+	@echo ""
+	@echo "in a web browser to view the results."
+	@echo ""
+.PHONY: coverage
+
 test/sparse.tst: test/build-sparse-tests.sh | test/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SHELL) $(srcdir)/test/build-sparse-tests.sh > $@-t && \
@@ -145,6 +169,7 @@ clean-local: test-clean
 test-clean:
 	rm -f $(test_CLEANFILES)
 	rm -rf $(GENERATED_BC_OVERLOADS_DIRS)
+	rm -rf $(COVERAGE_DIR)
 
 test-distclean: test-clean
 	rm -f $(test_DISTCLEANFILES)

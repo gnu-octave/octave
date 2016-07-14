@@ -54,8 +54,16 @@ SUCH DAMAGE.
 
 typedef void mxArray;
 
-#if ! defined (__cplusplus) && ! defined (bool)
-typedef int bool;
+#if (! defined (__cplusplus) && ! defined (__bool_true_false_are_defined)
+#  if ! defined (bool)
+#    typedef int bool;
+#  endif
+#  if ! defined (true)
+#    define true 1
+#  endif
+#  if ! defined (false)
+#    define false 0
+#  endif
 #endif
 
 /* -V4 stuff */

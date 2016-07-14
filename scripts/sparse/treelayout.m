@@ -110,7 +110,7 @@ function [x_coordinate, y_coordinate, height, s] = ...
     vec_of_child = permutation;
   endif
 
-  ## The number of "parent" (actual) node (it's descendants will be
+  ## The number of "parent" (actual) node (its descendants will be
   ## browse in the next iteration).
   par_number = 0;
 

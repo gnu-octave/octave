@@ -78,7 +78,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
     xhelp(tree(i)+1) = xhelp(tree(i)+1)+1;
   endfor
 
-  ## The number of "parent" (actual) node (it's descendants will be
+  ## The number of "parent" (actual) node (its descendants will be
   ## browse in the next iteration).
   par_number = 0;
 

@@ -191,7 +191,7 @@ Undocumented internal function.
     michol = args(1).string_value ();
 
   // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved
-  // so it's structure does not change during the algorithm.  The same input
+  // so its structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
   octave_value_list arg_list;
   if (! args(0).is_complex_type ())

@@ -3146,7 +3146,7 @@ opengl_renderer::draw_image (const image::properties& props)
       nor_dy = 1;
     }
 
-  // OpenGL won't draw any of the image if it's origin is outside the
+  // OpenGL won't draw any of the image if its origin is outside the
   // viewport/clipping plane so we must do the clipping ourselves.
 
   int j0, j1, i0, i1;

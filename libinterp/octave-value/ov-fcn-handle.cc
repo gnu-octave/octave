@@ -1693,7 +1693,7 @@ In addition, some function types may return more information in additional
 fields.
 
 @strong{Warning:} @code{functions} is provided for debugging purposes only.
-It's behavior may change in the future and programs should not depend on a
+Its behavior may change in the future and programs should not depend on a
 particular output.
 
 @end deftypefn */)

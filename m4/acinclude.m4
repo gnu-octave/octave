@@ -628,7 +628,7 @@ AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
 dnl
 dnl Usage:
 dnl OCTAVE_CHECK_LIB(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
-dnl                  LANG, DOC-STRING, EXTRA-CHECK)
+dnl                  LANG, DOC-STRING, EXTRA-CHECK, PKG-CONFIG-NAME)
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB], [
   AC_ARG_WITH([$1-includedir],
@@ -670,14 +670,14 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   esac
 
   if test $ac_octave_$1_pkg_check = yes; then
-    PKG_CHECK_EXISTS([$1], [
+    PKG_CHECK_EXISTS(m4_default([$9], [$1]), [
       if test -z "$m4_toupper([$1])_CPPFLAGS"; then
-        m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $1)"
+        m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I m4_default([$9], [$1]))"
       fi
       if test -z "$m4_toupper([$1])_LDFLAGS"; then
-        m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L $1)"
+        m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]))"
       fi
-      m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l $1)"
+      m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l m4_default([$9], [$1]))"
     ])
   fi
 

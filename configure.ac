@@ -1071,76 +1071,18 @@ CPPFLAGS="$save_CPPFLAGS"
 
 ### Check for sndfile
 
-warn_sndfile="sndfile library fails tests.  The audioinfo, audioread, and audiowrite functions for reading and writing audio files will not be fully functional."
-
-check_sndfile=no
-AC_ARG_WITH([sndfile],
-  [AS_HELP_STRING([--without-sndfile],
-    [don't use sndfile library, disable audio file I/O])],
-  [if test x"$withval" = xno; then
-     warn_sndfile="--without-sndfile specified.  The audioinfo, audioread, and audiowrite functions for reading and writing audio files will not be fully functional."
-   else
-     check_sndfile=yes
-   fi],
-  [check_sndfile=yes])
-
-if test $check_sndfile = yes; then
-  PKG_CHECK_EXISTS([sndfile], [
-    SNDFILE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I sndfile`
-    SNDFILE_LDFLAGS=`$PKG_CONFIG --libs-only-L sndfile`
-    SNDFILE_LIBS=`$PKG_CONFIG --libs-only-l sndfile`
-    OCTAVE_CHECK_LIB_SNDFILE_OK([warn_sndfile=])
-  ])
-fi
-
-if test -z "$warn_sndfile"; then
-  AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])
-else
-  OCTAVE_CONFIGURE_WARNING([warn_sndfile])
-  SNDFILE_CPPFLAGS=
-  SNDFILE_LDFLAGS=
-  SNDFILE_LIBS=
-fi
-
-AC_SUBST(SNDFILE_CPPFLAGS)
-AC_SUBST(SNDFILE_LDFLAGS)
-AC_SUBST(SNDFILE_LIBS)
+OCTAVE_CHECK_LIB(sndfile, sndfile,
+  [sndfile library not found.  The audioinfo, audioread, and audiowrite functions will be disabled.],
+  [sndfile.h], [sf_open],
+  [], [don't use sndfile library, disable audio file I/O])
 
 ### Check for PortAudio
 
-warn_portaudio="PortAudio library fails tests.  The audioplayer, audiorecorder classes, and audiodevinfo function for audio playback and recording will not be fully functional."
-
-check_portaudio=no
-AC_ARG_WITH([portaudio],
-  [AS_HELP_STRING([--without-portaudio],
-    [don't use PortAudio library, disable audio playback and recording])],
-  [if test x"$withval" = xno; then
-     warn_portaudio="--without-portaudio specified.  The audioplayer, audiorecorder classes, and audiodevinfo function for audio playback and recording will not be fully functional."
-   else
-     check_portaudio=yes
-   fi],
-  [check_portaudio=yes])
-
-if test $check_portaudio = yes; then
-  PKG_CHECK_EXISTS([portaudio-2.0 >= 19], [
-    PORTAUDIO_CPPFLAGS=`$PKG_CONFIG --cflags-only-I portaudio-2.0`
-    PORTAUDIO_LDFLAGS=`$PKG_CONFIG --libs-only-L portaudio-2.0`
-    PORTAUDIO_LIBS=`$PKG_CONFIG --libs-only-l portaudio-2.0`
-    warn_portaudio=
-  ])
-fi
-
-if test -z "$warn_portaudio"; then
-  AC_DEFINE(HAVE_PORTAUDIO, 1, [Define to 1 if PortAudio is available.])
-else
-  OCTAVE_CONFIGURE_WARNING([warn_portaudio])
-  PORTAUDIO_CPPFLAGS=
-  PORTAUDIO_LDFLAGS=
-  PORTAUDIO_LIBS=
-fi
-AC_SUBST(PORTAUDIO_CPPFLAGS)
-AC_SUBST(PORTAUDIO_LDFLAGS)
-AC_SUBST(PORTAUDIO_LIBS)
+OCTAVE_CHECK_LIB(portaudio, PortAudio,
+  [PortAudio library not found.  The audioplayer, audiorecorder, and audiodevinfo functions will be disabled.],
+  [portaudio.h], [Pa_Initialize],
+  [], [don't use PortAudio library, disable audio playback and recording],
+  [], [portaudio-2.0])
 
 ### Check for either of Graphics/ImageMagick++ libraries
 

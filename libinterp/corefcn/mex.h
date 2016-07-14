@@ -56,7 +56,7 @@ typedef void mxArray;
 
 #if (! defined (__cplusplus) && ! defined (__bool_true_false_are_defined)
 #  if ! defined (bool)
-#    typedef int bool;
+typedef int bool;
 #  endif
 #  if ! defined (true)
 #    define true 1

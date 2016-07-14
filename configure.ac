@@ -1074,7 +1074,11 @@ CPPFLAGS="$save_CPPFLAGS"
 OCTAVE_CHECK_LIB(sndfile, sndfile,
   [sndfile library not found.  The audioinfo, audioread, and audiowrite functions will be disabled.],
   [sndfile.h], [sf_open],
-  [], [don't use sndfile library, disable audio file I/O])
+  [], [don't use sndfile library, disable audio file I/O],
+  [warn_sndfile=
+   OCTAVE_CHECK_LIB_SNDFILE_OK(
+    [AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])],
+    [warn_sndfile="sndfile library found, but does not seem to work properly; disabling audio file I/O functions"])])
 
 ### Check for PortAudio
 

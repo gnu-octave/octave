@@ -1228,7 +1228,7 @@ same name as the object; In other words, @code{figure}, @code{axes},
 @code{line}, @code{text}, @code{image}, @code{patch}, @code{surface}, and
 @code{light} functions.  These fundamental graphic objects automatically become
 children of the current axes object as if @code{hold on} was in place.
-Seperately, axes will automatically become children of the current figure
+Separately, axes will automatically become children of the current figure
 object and figures will become children of the root object 0.
 
 If this auto-joining feature is not desired then it is important to call

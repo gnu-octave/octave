@@ -52,7 +52,7 @@
 ## of text.
 ##
 ## @item @qcode{"listbox"}
-## Create a listbox control that displays a lit of items and allows user
+## Create a listbox control that displays a list of items and allows user
 ## selection of single or multiple items.
 ##
 ## @item @qcode{"popupmenu"}

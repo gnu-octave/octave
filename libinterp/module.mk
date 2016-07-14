@@ -220,9 +220,14 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 .yy.cc:
 
 ## The ylwrap script always updates the parser source file so we use a temporary file
-## name and our own move-if-change rule for that file.
+## name and our own move-if-change rule for that file.  Additionally fix up the file
+## name comments that bison writes into the source file.
 %.cc %.h : %.yy
-	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $*.cc-t y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE) && $(call move_if_change_rule,$*.cc-t,$*.cc)
+	$(AM_V_YACC)$(am__skipyacc) rm -f $*.cc-t $*.cc-tt && \
+	$(SHELL) $(YLWRAP) $< y.tab.c $*.cc-t y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE) && \
+	$(SED) 's|"$*\.cc-t"|"$*.cc"|g' $*.cc-t > $*.cc-tt && \
+	mv $*.cc-tt $*.cc-t && \
+	$(call move_if_change_rule,$*.cc-t,$*.cc)
 
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.

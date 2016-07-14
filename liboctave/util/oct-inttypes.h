@@ -61,7 +61,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED ("use 'octave::math::isnan' instead")
+OCTAVE_DEPRECATED ("use 'octave::math::round' instead")
 inline long double xround (long double x) { return octave::math::round (x); }
 
 OCTAVE_DEPRECATED ("use 'octave::math::isnan' instead")

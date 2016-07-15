@@ -575,7 +575,6 @@ function list = missing_functions ()
   "camdolly",
   "cameratoolbar",
   "camlookat",
-  "camorbit",
   "campan",
   "camproj",
   "categorical",

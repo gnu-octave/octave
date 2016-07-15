@@ -466,6 +466,8 @@ three-dimensional plots.
 
 @DOCSTRING(campos)
 
+@DOCSTRING(camorbit)
+
 @DOCSTRING(camroll)
 
 @DOCSTRING(camtarget)

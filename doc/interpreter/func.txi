@@ -1265,6 +1265,361 @@ execute commands from any file.
 
 @DOCSTRING(source)
 
+@menu
+* Publish Octave script files::
+* Publishing Markup::
+@end menu
+
+@node Publish Octave script files
+@subsection Publish Octave script files
+
+The function @code{publish} provides a dynamic possibility to document your
+script file.  Unlike static documentation, @code{publish} runs the script
+file, saves any figures and output while running the script, and presents them
+alongside static documentation in a desired output format.  The static
+documentation can make use of @ref{Publishing Markup} to enhance and
+customize the output.
+
+@DOCSTRING(publish)
+
+The counterpart to @code{publish} is @code{grabcode}:
+
+@DOCSTRING(grabcode)
+
+@node Publishing Markup
+@subsection Publishing Markup
+
+@menu
+* Using Publishing Markup in script files::
+* Text formatting::
+* Sections::
+* Preformatted code::
+* Preformatted text::
+* Bulleted lists::
+* Numbered lists::
+* Including file content::
+* Including graphics::
+* Including URLs::
+* Mathematical equations::
+* HTML markup::
+* LaTeX markup::
+@end menu
+
+@node Using Publishing Markup in script files
+@subsubsection Using Publishing Markup in script files
+
+To use Publishing Markup, start by typing @samp{##} or @samp{%%} at the
+beginning of a new line.  For Matlab compatibility @samp{%%} is treated the
+same way as @samp{%%}.
+
+The lines following @samp{##} or @samp{%%} start with only one of either
+@samp{#} or @samp{%} followed by at least one space.  These lines are
+interpreted as section.  A section ends with the first line not starting
+with @samp{#} or @samp{%} or the end of the document is reached.
+
+A section starting in the first line of the document, followed by another
+start of a section that might be empty, is interpreted as a document
+title and introduction text.
+
+See the example below for clarity:
+
+@example
+@group
+%% Headline title
+%
+% Some *bold*, _italic_, or |monospaced| Text with
+% a <http://www.octave.org link to GNU Octave>.
+%%
+
+# "Real" Octave commands to be evaluated
+sombrero ()
+
+## Octave comment style supported as well
+#
+# * Bulleted list item 1
+# * Bulleted list item 2
+#
+# # Numbered list item 1
+# # Numbered list item 2
+@end group
+@end example
+
+@node Text formatting
+@subsubsection Text formatting
+
+Basic text formatting is supported inside sections, see the example
+given below:
+
+@example
+@group
+##
+# @b{*bold*}, @i{_italic_}, or |monospaced| Text
+@end group
+@end example
+
+Additionally two trademark symbols are supported, just embrace the letters
+@samp{TM} or @samp{R}.
+
+@example
+@group
+##
+# (TM) or (R)
+@end group
+@end example
+
+@node Sections
+@subsubsection Sections
+
+A section is started by typing @samp{##} or @samp{%%} at the beginning of
+a new line.  A section title can be provided by writing it, separated by a
+space, in the first line after @samp{##} or @samp{%%}.  Without a section
+title, the section is interpreted as a continuation of the previous section.
+For Matlab compatibility @samp{%%} is treated the same way as @samp{%%}.
+
+@example
+@group
+some_code ();
+
+## Section 1
+#
+## Section 2
+
+some_code ();
+
+##
+# Still in section 2
+
+some_code ();
+
+### Section 3
+#
+#
+@end group
+@end example
+
+@node Preformatted code
+@subsubsection Preformatted code
+
+To write preformatted code inside a section, indent the code by three
+spaces after @samp{#} at the beginning of each line and leave the lines
+above and below the code blank, except for @samp{#} at the beginning of
+those lines.
+
+@example
+@group
+##
+# This is a syntax highlighted for-loop:
+#
+#   for i = 1:5
+#     disp (i);
+#   endfor
+#
+# And more usual text.
+@end group
+@end example
+
+@node Preformatted text
+@subsubsection Preformatted text
+
+To write preformatted text inside a section, indent the code by two spaces
+after @samp{#} at the beginning of each line and leave the lines above and
+below the preformatted text blank, except for @samp{#} at the beginning of
+those lines.
+
+@example
+@group
+##
+# This following text is preformatted:
+#
+#  "To be, or not to be: that is the question:
+#  Whether 'tis nobler in the mind to suffer
+#  The slings and arrows of outrageous fortune,
+#  Or to take arms against a sea of troubles,
+#  And by opposing end them? To die: to sleep;"
+#
+#  --"Hamlet" by W. Shakespeare
+@end group
+@end example
+
+@node Bulleted lists
+@subsubsection Bulleted lists
+
+To create a bulleted list, type
+
+@example
+@group
+##
+#
+# * Bulleted list item 1
+# * Bulleted list item 2
+#
+@end group
+@end example
+
+to get output like
+
+@itemize @bullet
+@item Bulleted list item 1
+@item Bulleted list item 2
+@end itemize
+
+Notice the blank lines, except for the @samp{#} or @samp{%} before and
+after the bulleted list!
+
+@node Numbered lists
+@subsubsection Numbered lists
+
+To create a numbered list, type
+
+@example
+@group
+##
+#
+# # Numbered list item 1
+# # Numbered list item 2
+#
+@end group
+@end example
+
+to get output like
+
+@enumerate
+@item Numbered list item 1
+@item Numbered list item 2
+@end enumerate
+
+Notice the blank lines, except for the @samp{#} or @samp{%} before and
+after the numbered list!
+
+@node Including file content
+@subsubsection Including file content
+
+To include the content of an external file, e.g. a file called
+@samp{my_function.m} at the same location as the published Octave script,
+use the following syntax to include it with Octave syntax highlighting.
+
+Alternatively, you can write the full or relative path to the file.
+
+@example
+@group
+##
+#
+# <include>my_function.m</include>
+#
+# <include>/full/path/to/my_function.m</include>
+#
+# <include>../relative/path/to/my_function.m</include>
+#
+@end group
+@end example
+
+@node Including graphics
+@subsubsection Including graphics
+
+To include external graphics, e.g. a graphic called @samp{my_graphic.png}
+at the same location as the published Octave script, use the following syntax.
+
+Alternatively, you can write the full path to the graphic.
+
+@example
+@group
+##
+#
+# <<my_graphic.png>>
+#
+# <</full/path/to/my_graphic.png>>
+#
+# <<../relative/path/to/my_graphic.png>>
+#
+@end group
+@end example
+
+@node Including URLs
+@subsubsection Including URLs
+
+Basically, a URL is written between an opening @samp{<} and a closing @samp{>}
+angle.
+
+@example
+@group
+##
+# <http://www.octave.org>
+@end group
+@end example
+
+Text that is within these angles and separated by at least one space from the
+URL is a displayed text for the link.
+
+@example
+@group
+##
+# <http://www.octave.org GNU Octave>
+@end group
+@end example
+
+A link starting with @samp{<octave:} followed by the name of a GNU Octave
+function, optionally with a displayed text, results in a link to the online
+GNU Octave documentations function index.
+
+@example
+@group
+##
+# <octave:DISP The display function>
+@end group
+@end example
+
+@node Mathematical equations
+@subsubsection Mathematical equations
+
+One can insert LaTeX inline math, surrounded by single @samp{$} signs, or
+displayed math, surrounded by double @samp{$$} signs, directly inside
+sections.
+
+@example
+@group
+##
+# Some shorter inline equation $e^@{ix@} = \cos x + i\sin x$.
+#
+# Or more complicated formulas as displayed math:
+# $$e^x = \lim_@{n\rightarrow\infty@}\left(1+\dfrac@{x@}@{n@}\right)^@{n@}.$$
+@end group
+@end example
+
+@node HTML markup
+@subsubsection HTML markup
+
+If the published output is a HTML report, you can insert HTML markup,
+that is only visible in this kind of output.
+
+@example
+@group
+##
+# <html>
+# <table style="border:1px solid black;">
+# <tr><td>1</td><td>2</td></tr>
+# <tr><td>3</td><td>3</td></tr>
+# </html>
+@end group
+@end example
+
+@node LaTeX markup
+@subsubsection LaTeX markup
+
+If the published output is a LaTeX or PDF report, you can insert LaTeX markup,
+that is only visible in this kind of output.
+
+@example
+@group
+##
+# <latex>
+# Some output only visible in \LaTeX or PDF reports.
+# \begin@{equation@}
+# e^x = \lim\limits_@{n\rightarrow\infty@}\left(1+\dfrac@{x@}@{n@}\right)^@{n@}
+# \end@{equation@}
+# </latex>
+@end group
+@end example
+
 @node Function Handles Anonymous Functions Inline Functions
 @section Function Handles, Anonymous Functions, Inline Functions
 @cindex handle, function handles

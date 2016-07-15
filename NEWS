@@ -93,6 +93,11 @@ Summary of important user-visible changes for version 4.2:
  ** The graphics property 'graphicssmothing' for figures now controls whether
     anti-aliasing will be use for lines.  The default is "on".
 
+ ** The publish function allows easy publication of Octave script files
+    in HTML or other formats, including figures and output created by this
+    script.  It comes with its counterpart grabcode, which lets one literally
+    grab the HTML published code from a remote website, for example.
+
  ** Other new functions added in 4.2:
 
       audioformats

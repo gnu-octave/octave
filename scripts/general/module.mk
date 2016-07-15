@@ -4,6 +4,8 @@ FCN_FILE_DIRS += \
 
 scripts_general_PRIVATE_FCN_FILES = \
   scripts/general/private/__isequal__.m \
+  scripts/general/private/__publish_html_output__.m \
+  scripts/general/private/__publish_latex_output__.m \
   scripts/general/private/__splinen__.m
 
 scripts_general_FCN_FILES = \
@@ -35,6 +37,7 @@ scripts_general_FCN_FILES = \
   scripts/general/flipdim.m \
   scripts/general/fliplr.m \
   scripts/general/flipud.m \
+  scripts/general/grabcode.m \
   scripts/general/gradient.m \
   scripts/general/idivide.m \
   scripts/general/inputParser.m \
@@ -60,6 +63,7 @@ scripts_general_FCN_FILES = \
   scripts/general/polyarea.m \
   scripts/general/postpad.m \
   scripts/general/prepad.m \
+  scripts/general/publish.m \
   scripts/general/quadgk.m \
   scripts/general/quadl.m \
   scripts/general/quadv.m \

@@ -54,6 +54,7 @@ include test/classes/module.mk
 include test/ctor-vs-method/module.mk
 include test/fcn-handle-derived-resolution/module.mk
 include test/nest/module.mk
+include test/publish/module.mk
 
 ALL_LOCAL_TARGETS += test/.gdbinit
 

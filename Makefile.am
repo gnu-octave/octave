@@ -310,7 +310,6 @@ MAINTAINERCLEANFILES += \
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 nodist_octinclude_HEADERS += \
-  config.h \
   oct-conf-post.h \
   octave-config.h
 

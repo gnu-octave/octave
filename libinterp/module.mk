@@ -288,9 +288,9 @@ OCTAVE_INTERPRETER_TARGETS += \
 
 DIRSTAMP_FILES += libinterp/$(octave_dirstamp)
 
-install-data-hook: install-oct install-built-in-docstrings
+install-data-hook: install-oct install-built-in-docstrings install-deprecated-config-h
 
-uninstall-local: uninstall-oct uninstall-built-in-docstrings
+uninstall-local: uninstall-oct uninstall-built-in-docstrings uninstall-deprecated-config-h
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
@@ -332,6 +332,15 @@ install-built-in-docstrings:
 uninstall-built-in-docstrings:
 	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: uninstall-built-in-docstrings
+
+install-deprecated-config-h: libinterp/deprecated-config.h
+	$(MKDIR_P) $(DESTDIR)$(octincludedir)
+	$(INSTALL_DATA) $< $(DESTDIR)$(octincludedir)/config.h
+.PHONY: install-deprecated-config-h
+
+uninstall-deprecated-config-h:
+	rm -f $(DESTDIR)$(octincludedir)/config.h
+.PHONY: uninstall-deprecated-config-h
 
 EXTRA_DIST += $(libinterp_EXTRA_DIST)
 

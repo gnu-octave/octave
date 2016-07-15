@@ -176,34 +176,18 @@ profile_data_accumulator::tree_node::get_hierarchical (double* total) const
 
 profile_data_accumulator::profile_data_accumulator ()
   : known_functions (), fcn_index (),
-    enabled (false), call_tree (0), last_time (-1.0)
-{}
+    enabled (false), call_tree (new tree_node (0, 0)),
+    active_fcn (0), last_time (-1.0)
+{ }
 
 profile_data_accumulator::~profile_data_accumulator ()
 {
-  if (call_tree)
-    delete call_tree;
+  delete call_tree;
 }
 
 void
 profile_data_accumulator::set_active (bool value)
 {
-  if (value)
-    {
-      // Create a call-tree top-node if there isn't yet one.
-      if (! call_tree)
-        call_tree = new tree_node (0, 0);
-
-      // Let the top-node be the active one.  This ensures we have a clean
-      // fresh start collecting times.
-      active_fcn = call_tree;
-    }
-  else
-    {
-      // Make sure we start with fresh timing if we're re-enabled later.
-      last_time = -1.0;
-    }
-
   enabled = value;
 }
 
@@ -216,7 +200,7 @@ profile_data_accumulator::enter_function (const std::string& fcn)
 
   // If there is already an active function, add to its time before
   // pushing the new one.
-  if (active_fcn != call_tree)
+  if (active_fcn && active_fcn != call_tree)
     add_current_time ();
 
   // Map the function's name to its index.
@@ -231,7 +215,11 @@ profile_data_accumulator::enter_function (const std::string& fcn)
   else
     fcn_idx = pos->second;
 
+  if (! active_fcn)
+    active_fcn = call_tree;
+
   active_fcn = active_fcn->enter (fcn_idx);
+
   last_time = query_time ();
 
 }
@@ -239,26 +227,29 @@ profile_data_accumulator::enter_function (const std::string& fcn)
 void
 profile_data_accumulator::exit_function (const std::string& fcn)
 {
-  assert (call_tree);
-  // FIXME: This assert statements doesn't make sense if profile() is called
-  //        from within a function hierarchy to begin with.  See bug #39587.
-  //assert (active_fcn != call_tree);
+  if (active_fcn)
+    {
+      assert (call_tree);
+      // FIXME: This assert statements doesn't make sense if profile() is called
+      //        from within a function hierarchy to begin with.  See bug #39587.
+      //assert (active_fcn != call_tree);
 
-  // Usually, if we are disabled this function is not even called.  But the
-  // call disabling the profiler is an exception.  So also check here
-  // and only record the time if enabled.
-  if (is_active ())
-    add_current_time ();
+      // Usually, if we are disabled this function is not even called.  But the
+      // call disabling the profiler is an exception.  So also check here
+      // and only record the time if enabled.
+      if (is_active ())
+        add_current_time ();
 
-  fcn_index_map::iterator pos = fcn_index.find (fcn);
-  // FIXME: This assert statements doesn't make sense if profile() is called
-  //        from within a function hierarchy to begin with.  See bug #39587.
-  //assert (pos != fcn_index.end ());
-  active_fcn = active_fcn->exit (pos->second);
+      fcn_index_map::iterator pos = fcn_index.find (fcn);
+      // FIXME: This assert statements doesn't make sense if profile() is called
+      //        from within a function hierarchy to begin with.  See bug #39587.
+      //assert (pos != fcn_index.end ());
+      active_fcn = active_fcn->exit (pos->second);
 
-  // If this was an "inner call", we resume executing the parent function
-  // up the stack.  So note the start-time for this!
-  last_time = query_time ();
+      // If this was an "inner call", we resume executing the parent function
+      // up the stack.  So note the start-time for this!
+      last_time = query_time ();
+    }
 }
 
 void
@@ -273,7 +264,8 @@ profile_data_accumulator::reset (void)
   if (call_tree)
     {
       delete call_tree;
-      call_tree = 0;
+      call_tree = new tree_node (0, 0);
+      active_fcn = 0;
     }
 
   last_time = -1.0;
@@ -382,11 +374,12 @@ profile_data_accumulator::query_time (void) const
 void
 profile_data_accumulator::add_current_time (void)
 {
-  const double t = query_time ();
-  assert (last_time >= 0.0 && last_time <= t);
+  if (active_fcn)
+    {
+      const double t = query_time ();
 
-  assert (call_tree && active_fcn != call_tree);
-  active_fcn->add_time (t - last_time);
+      active_fcn->add_time (t - last_time);
+    }
 }
 
 profile_data_accumulator profiler;

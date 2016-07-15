@@ -69,7 +69,6 @@ function retval = profile (option)
 
   switch (option)
     case "on"
-      __profiler_reset__ ();
       __profiler_enable__ (true);
 
     case "off"

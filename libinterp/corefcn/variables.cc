@@ -366,26 +366,6 @@ isglobal ("x")
 %!error isglobal (1)
 */
 
-static octave_value
-safe_symbol_lookup (const std::string& symbol_name)
-{
-  octave_value retval;
-
-  octave::unwind_protect frame;
-  interpreter_try (frame);
-
-  try
-    {
-      retval = symbol_table::find (symbol_name);
-    }
-  catch (const octave_execution_exception&)
-    {
-      recover_from_exception ();
-    }
-
-  return retval;
-}
-
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
@@ -420,21 +400,13 @@ symbol_exist (const std::string& name, const std::string& type)
   // We shouldn't need to look in the global symbol table, since any name
   // that is visible in the current scope will be in the local symbol table.
 
-  octave_value val;
-
-  if (search_any || search_builtin)
+  // Command line function which Matlab does not support
+  if (search_any)
     {
-      // FIXME: safe_symbol_lookup will attempt unsafe load of .oct/.mex file.
-      // This can cause a segfault.  To catch this would require temporarily
-      // diverting the SIGSEGV exception handler and then restoring it.
-      // See bug #36067.
-      val = safe_symbol_lookup (name);
+      octave_value val = symbol_table::find_cmdline_function (name);
 
-      if (val.is_defined () && val.is_builtin_function ())
-        return 5;
-
-      if (search_builtin)
-        return 0;
+      if (val.is_defined ())
+        return 103;
     }
 
   if (search_any || search_file || search_dir)
@@ -488,9 +460,14 @@ symbol_exist (const std::string& name, const std::string& type)
         return 0;
     }
 
-  // Command line function which Matlab does not support
-  if (search_any && val.is_defined () && val.is_user_function ())
-    return 103;
+  if (search_any || search_builtin)
+    {
+      if (symbol_table::is_built_in_function_name (name))
+        return 5;
+
+      if (search_builtin)
+        return 0;
+    }
 
   return 0;
 }

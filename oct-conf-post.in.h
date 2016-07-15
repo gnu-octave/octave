@@ -50,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #  define OCTAVE_UNUSED
 #endif
 
-#define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
+// #define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
 
 #if defined (__cplusplus)
 template <typename T>

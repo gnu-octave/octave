@@ -111,8 +111,8 @@ MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
   octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.numel ());
-  idx.loop (len, _idxbinop_helper<T, xmin> (this->fortran_vec (),
-                                            vals.data ()));
+  idx.loop (len, _idxbinop_helper<T, octave::math::min> (this->fortran_vec (),
+                                                         vals.data ()));
 }
 
 template <typename T>
@@ -130,8 +130,8 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
   octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.numel ());
-  idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (),
-                                            vals.data ()));
+  idx.loop (len, _idxbinop_helper<T, octave::math::max> (this->fortran_vec (),
+                                                         vals.data ()));
 }
 
 #include <iostream>

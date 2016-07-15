@@ -59,9 +59,9 @@ along with Octave; see the file COPYING.  If not, see
 static octave_scalar_map
 mk_stat_map (const octave::sys::base_file_stat& fs)
 {
-  static bool have_rdev = file_stat::have_struct_stat_st_rdev ();
-  static bool have_blksize = file_stat::have_struct_stat_st_blksize ();
-  static bool have_blocks = file_stat::have_struct_stat_st_blocks ();
+  static bool have_rdev = octave::sys::base_file_stat::have_struct_stat_st_rdev ();
+  static bool have_blksize = octave::sys::base_file_stat::have_struct_stat_st_blksize ();
+  static bool have_blocks = octave::sys::base_file_stat::have_struct_stat_st_blocks ();
 
   static double nan = octave::numeric_limits<double>::NaN ();
 

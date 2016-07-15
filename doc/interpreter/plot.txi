@@ -464,6 +464,8 @@ three-dimensional plots.
 
 @DOCSTRING(view)
 
+@DOCSTRING(camlookat)
+
 @DOCSTRING(campos)
 
 @DOCSTRING(camorbit)

@@ -574,7 +574,6 @@ function list = missing_functions ()
   "callSoapService",
   "camdolly",
   "cameratoolbar",
-  "camlookat",
   "campan",
   "camproj",
   "categorical",

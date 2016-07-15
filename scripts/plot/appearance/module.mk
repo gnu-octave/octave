@@ -13,8 +13,9 @@ FCN_FILE_DIRS += \
   %reldir%/annotation.m \
   %reldir%/axis.m \
   %reldir%/box.m \
-  %reldir%/campos.m \
+  %reldir%/camlookat.m \
   %reldir%/camorbit.m \
+  %reldir%/campos.m \
   %reldir%/camroll.m \
   %reldir%/camtarget.m \
   %reldir%/camup.m \

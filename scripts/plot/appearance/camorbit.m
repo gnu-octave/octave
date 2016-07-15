@@ -89,7 +89,7 @@
 ## By default, this command affects the current axis; alternatively, an axis
 ## can be specified by the optional argument @var{hax}.
 ##
-## @seealso{camzoom, camroll}
+## @seealso{camzoom, camroll, camlookat}
 ## @end deftypefn
 
 

@@ -52,7 +52,7 @@
 ## By default, these commands affect the current axis; alternatively, an axis
 ## can be specified by the optional argument @var{ax}.
 ##
-## @seealso{camzoom, camorbit, camup}
+## @seealso{camzoom, camorbit, camlookat, camup}
 ## @end deftypefn
 
 

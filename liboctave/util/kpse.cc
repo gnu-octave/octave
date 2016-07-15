@@ -145,7 +145,7 @@ kpse_truncate_filename (const std::string& name)
           /* At a directory delimiter, reset component length.  */
           c_len = 0;
         }
-      else if (c_len > dir_entry::max_name_length ())
+      else if (c_len > octave::sys::dir_entry::max_name_length ())
         {
           /* If past the max for a component, ignore this character.  */
           continue;

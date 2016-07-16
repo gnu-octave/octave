@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "glob-match.h"
 #include "oct-env.h"
+#include "oct-glob.h"
 #include "pathsearch.h"
 #include "str-vec.h"
 
@@ -484,6 +485,73 @@ glob ("file[12]")
   glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
 
   return ovl (Cell (pattern.glob ()));
+}
+
+
+DEFUN (__wglob__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __wglob__ (@var{pattern})
+Windows-like glob for dir.
+
+Given an array of pattern strings (as a char array or a cell array) in
+@var{pattern}, return a cell array of filenames that match any of
+them, or an empty cell array if no patterns match.
+
+The pattern strings are interpreted as filename globbing patterns
+(roughly as they are used by Windows dir).
+
+Within a pattern
+
+@table @code
+@item *
+matches any string, including the null string,
+
+@item ?
+matches any single character, and
+
+@item *.*
+matches any string, even if no . is present.
+@end table
+
+Tilde expansion is performed on each of the patterns before looking for
+matching filenames.  For example:
+
+@example
+ls
+   @result{}
+      file1  file2  file3  myfile1 myfile1b
+glob ("*file1")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = myfile1
+      @}
+glob ("myfile?")
+   @result{}
+      @{
+        [1,1] = myfile1
+      @}
+glob ("*.*")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = file2
+        [3,1] = file3
+        [4,1] = myfile1
+        [5,1] = myfile1b
+      @}
+@end example
+@seealso{glob, dir}
+@end deftypefn */)
+{
+  if (args.length () == 0)
+    return ovl ();
+
+  string_vector pat = args(0).string_vector_value ();
+
+  string_vector pattern (octave::sys::file_ops::tilde_expand (pat));
+
+  return ovl (Cell (octave::sys::windows_glob (pattern)));
 }
 
 /*

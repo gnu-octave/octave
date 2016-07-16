@@ -91,7 +91,7 @@ function retval = dir (directory)
     flst = {"."};
     nf = 1;
   else
-    flst = glob (directory);
+    flst = __wglob__ (directory);
     nf = numel (flst);
   endif
 

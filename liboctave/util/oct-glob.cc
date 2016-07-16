@@ -139,5 +139,110 @@ namespace octave
 
       return retval.sort ();
     }
+
+    // Glob like Windows "dir".  Treat only * and ? as wildcards,
+    // and "*.*" matches filenames even if they do not contain ".".
+    string_vector
+    windows_glob (const string_vector& pat)
+    {
+      string_vector retval;
+
+      int npat = pat.numel ();
+
+      int k = 0;
+
+      octave::unwind_protect frame;
+
+      void *glob_info = octave_create_glob_info_struct ();
+
+      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+
+      for (int i = 0; i < npat; i++)
+        {
+          std::string xpat = pat(i);
+
+          if (! xpat.empty ())
+            {
+              std::string escaped;
+              escaped.reserve (xpat.length ());
+
+              for (size_t j = 0; j < xpat.length (); j++)
+                {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+                  if (xpat[j] == '\\')
+                      escaped += '/';
+                  else
+#endif
+                  {
+                    if (xpat[j] == ']' || xpat[j] == '[')
+                      escaped += '\\';
+
+                    escaped += xpat[j];
+                  }
+                }
+
+              // Replace trailing "*.*" by "*".
+              int len = escaped.length ();
+              if (len >= 3 && escaped.substr (len - 3) == "*.*")
+                escaped = escaped.substr (0, len - 2);
+
+              int err = octave_glob_wrapper (escaped.c_str (),
+                                             octave_glob_nosort_wrapper (),
+                                             glob_info);
+
+              if (! err)
+                {
+                  int n = octave_glob_num_matches (glob_info);
+
+                  const char * const *matches
+                    = octave_glob_match_list (glob_info);
+
+                  // FIXME: we shouldn't have to check to see if
+                  // a single match exists, but it seems that glob() won't
+                  // check for us unless the pattern contains globbing
+                  // characters.  Hmm.
+
+                  if (n > 1
+                      || (n == 1
+                          && single_match_exists (std::string (matches[0]))))
+                    {
+                      retval.resize (k + n);
+
+                      for (int j = 0; j < n; j++)
+                        {
+                          std::string tmp = matches[j];
+
+                          std::string unescaped;
+                          unescaped.reserve (tmp.length ());
+
+                          for (size_t m = 0; m < tmp.length (); m++)
+                            {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+                              if (tmp[m] == '/')
+                                  unescaped += '\\';
+                              else
+#endif
+                              {
+                                if (tmp[m] == '\\'
+                                    && ++m == tmp.length ())
+                                  break;
+
+                                unescaped += tmp[m];
+                              }
+                            }
+
+                          retval[k++] = unescaped;
+                        }
+                    }
+
+                  octave_globfree_wrapper (glob_info);
+                }
+            }
+        }
+
+      return retval.sort ();
+    }
   }
 }

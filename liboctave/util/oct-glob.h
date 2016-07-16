@@ -37,6 +37,9 @@ namespace octave
 
     extern string_vector
     glob (const string_vector&);
+
+    extern string_vector
+    windows_glob (const string_vector&);
   }
 }
 

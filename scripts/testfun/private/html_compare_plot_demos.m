@@ -59,9 +59,10 @@ function html_compare_plot_demos (toolkits, varargin)
   ## Set defaults
   in.fmt = "png";
   in.figfiles = {};
-  in.output= "compare_plot_demos.html";
+  in.output_fmt = @(p) sprintf ("compare_plot_demos_%02i.html", p);
   in.template = "html_plot_demos_template.html";
   in.column_width = 600;
+  in.plots_per_page = 50;
 
   ## Parse inputs
   for n = 1:2:numel(varargin)
@@ -83,53 +84,82 @@ function html_compare_plot_demos (toolkits, varargin)
   header = template(1:n-1);
   trailer = template(n+numel(anchor):end);
 
-  fid = fopen (in.output, "w");
-  unwind_protect
-    fputs (fid, header);
-    fprintf (fid, "<p><b>\nGenerated on %s by %s with GNU Octave %s</p>",
-             datestr (now (), 0), mfilename, version);
+  page = 1;
+  do
+    start_fig = (page - 1) * in.plots_per_page + 1;
+    stop_fig = page * in.plots_per_page;
+    last_page = stop_fig > numel (in.figfiles);
+    if (last_page)
+      stop_fig = numel (in.figfiles);
+    endif
 
-    ## Create table header
-    fprintf (fid, "<table border='1'><tr>\n");
-    for t = 1:numel(toolkits)
-      ## set default
-      column_header = upper (toolkits{t});
-      if (isfield (in, toolkits{t}))
-        column_header = [column_header, in.(toolkits{t})];
+    fid = fopen (in.output_fmt (page), "w");
+    unwind_protect
+      fputs (fid, header);
+      fprintf (fid, "<p><b>\nGenerated on %s by %s with GNU Octave %s</p>",
+               datestr (now (), 0), mfilename, version);
+
+      ## Create page previous/next
+      if (page > 1)
+        previous_page_link = sprintf ('<a href="%s">previous page</a><br>', in.output_fmt (page - 1));
+      else
+        previous_page_link = "";
       endif
-      fprintf (fid, '<th>%s <a href="%s/diary.log">diary</a></th>\n', ...
-                    column_header, toolkits{t});
-    endfor
-    fprintf (fid, "</tr>\n");
 
-    for m = 1:numel (in.figfiles)
-      [~, file] = fileparts (in.figfiles{m});
-      fn = [file "." in.fmt];
-      fprintf (fid, "<tr>\n");
-      for k = toolkits
-        ffn = fullfile (k{:}, fn);
-        fprintf (fid, "  <td>%s<br>", ffn);
-        if (exist (ffn, "file"))
-          fprintf (fid, "<img src='%s' style='width: %dpx;'>", ...
-                        ffn, in.column_width);
-        else
-          err_fn = strrep (ffn, ".png", ".err");
-          if (! exist (err_fn, "file"))
-            warning("File %s doesn't exist...", err_fn);
-          else
-            err_fid = fopen (err_fn);
-            msg = char (fread (err_fid))';
-            fclose (err_fid);
-            fprintf (fid, "%s", strrep (msg, "\n", "<br>"));
-          endif
+      if (! last_page)
+        next_page_link = sprintf ('<a href="%s">next page</a><br>', in.output_fmt (page + 1));
+      else
+        next_page_link = "";
+      endif
+
+      fprintf (fid, '%s%s<br>', previous_page_link, next_page_link);
+
+      ## Create table header
+      fprintf (fid, "<table border='1'><tr>\n");
+      for t = 1:numel(toolkits)
+        ## set default
+        column_header = upper (toolkits{t});
+        if (isfield (in, toolkits{t}))
+          column_header = [column_header, in.(toolkits{t})];
         endif
-        fprintf (fid, "</td>\n");
+        fprintf (fid, '<th>%s <a href="%s/diary.log">diary</a></th>\n', ...
+                      column_header, toolkits{t});
       endfor
       fprintf (fid, "</tr>\n");
-    endfor
-    fputs (fid, trailer);
-  unwind_protect_cleanup
-    fclose (fid);
-  end_unwind_protect
+      for m = start_fig:stop_fig
+        [~, file] = fileparts (in.figfiles{m});
+        fn = [file "." in.fmt];
+        fprintf (fid, "<tr id=\"%s\">\n", file);
+        for k = toolkits
+          ffn = fullfile (k{:}, fn);
+          fprintf (fid, "  <td>%s<br>", ffn);
+          if (exist (ffn, "file"))
+            fprintf (fid, "<img src='%s' style='width: %dpx;'>", ...
+                          ffn, in.column_width);
+          else
+            err_fn = strrep (ffn, ".png", ".err");
+            if (! exist (err_fn, "file"))
+              warning("File %s doesn't exist...", err_fn);
+            else
+              err_fid = fopen (err_fn);
+              msg = char (fread (err_fid))';
+              fclose (err_fid);
+              fprintf (fid, "%s", strrep (msg, "\n", "<br>"));
+            endif
+          endif
+          fprintf (fid, "</td>\n");
+        endfor
+        fprintf (fid, "</tr>\n");
+      endfor
+
+      fprintf (fid, '</table>\n');
+      fprintf (fid, '%s%s<br>', previous_page_link, next_page_link);
+
+      fputs (fid, trailer);
+      page++;
+    unwind_protect_cleanup
+      fclose (fid);
+    end_unwind_protect
+  until (stop_fig == numel (in.figfiles))
 
 endfunction

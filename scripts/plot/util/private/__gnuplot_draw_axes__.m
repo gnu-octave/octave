@@ -1242,7 +1242,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                    interp_str, dord);
         endif
 
-        if (! strcmp (obj.edgecolor, "none"))
+        if (! strcmp (obj.linestyle, "none") && ! strcmp (obj.edgecolor, "none"))
           flat_interp_edge = (strcmp (obj.edgecolor, "flat")
                               || strcmp (obj.edgecolor, "interp"));
           if (flat_interp_edge)

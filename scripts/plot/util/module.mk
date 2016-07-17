@@ -24,6 +24,13 @@ scripts_plot_util_PRIVATE_FCN_FILES = \
 
 scripts_plot_util_FCN_FILES = \
   scripts/plot/util/__actual_axis_position__.m \
+  scripts/plot/util/__default_plot_options__.m \
+  scripts/plot/util/__gnuplot_drawnow__.m \
+  scripts/plot/util/__next_line_color__.m \
+  scripts/plot/util/__next_line_style__.m \
+  scripts/plot/util/__opengl_info__.m \
+  scripts/plot/util/__plt_get_axis_arg__.m \
+  scripts/plot/util/__pltopt__.m \
   scripts/plot/util/allchild.m \
   scripts/plot/util/ancestor.m \
   scripts/plot/util/axes.m \
@@ -33,7 +40,6 @@ scripts_plot_util_FCN_FILES = \
   scripts/plot/util/closereq.m \
   scripts/plot/util/colstyle.m \
   scripts/plot/util/copyobj.m \
-  scripts/plot/util/__default_plot_options__.m \
   scripts/plot/util/figure.m \
   scripts/plot/util/findall.m \
   scripts/plot/util/findfigs.m \
@@ -45,7 +51,6 @@ scripts_plot_util_FCN_FILES = \
   scripts/plot/util/gcf.m \
   scripts/plot/util/gco.m \
   scripts/plot/util/ginput.m \
-  scripts/plot/util/__gnuplot_drawnow__.m \
   scripts/plot/util/graphics_toolkit.m \
   scripts/plot/util/hdl2struct.m \
   scripts/plot/util/hggroup.m \
@@ -63,15 +68,11 @@ scripts_plot_util_FCN_FILES = \
   scripts/plot/util/meshgrid.m \
   scripts/plot/util/ndgrid.m \
   scripts/plot/util/newplot.m \
-  scripts/plot/util/__next_line_color__.m \
-  scripts/plot/util/__next_line_style__.m \
   scripts/plot/util/pan.m \
-  scripts/plot/util/__plt_get_axis_arg__.m \
-  scripts/plot/util/__pltopt__.m \
-  scripts/plot/util/printd.m \
   scripts/plot/util/print.m \
-  scripts/plot/util/refreshdata.m \
+  scripts/plot/util/printd.m \
   scripts/plot/util/refresh.m \
+  scripts/plot/util/refreshdata.m \
   scripts/plot/util/rotate.m \
   scripts/plot/util/rotate3d.m \
   scripts/plot/util/saveas.m \

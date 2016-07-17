@@ -1115,7 +1115,7 @@ C     - Substitute a max-norm of (v(i)*w(i)) for the rms-norm, or
 C     - Ignore some components of v in the norm, with the effect of
 C       suppressing the error control on those components of Y.
 C  ---------------------------------------------------------------------
-C***ROUTINES CALLED  SEWSET, SINTDY, D1MACH, SSTODE, SVNORM, XERRWD
+C***ROUTINES CALLED  SEWSET, SINTDY, R1MACH, SSTODE, SVNORM, XERRWD
 C***COMMON BLOCKS    SLS001
 C***REVISION HISTORY  (YYYYMMDD)
 C 19791129  DATE WRITTEN
@@ -1194,17 +1194,17 @@ C  DGETRF AND DGETRS   ARE ROUTINES FROM LAPACK FOR SOLVING FULL
 C           SYSTEMS OF LINEAR ALGEBRAIC EQUATIONS.
 C  DGBTRF AND DGBTRS   ARE ROUTINES FROM LAPACK FOR SOLVING BANDED
 C           LINEAR SYSTEMS.
-C  D1MACH   computes the unit roundoff in a machine-independent manner.
+C  R1MACH   computes the unit roundoff in a machine-independent manner.
 C  XERRWD, XSETUN, XSETF, IXSAV, IUMACH   handle the printing of all
 C           error messages and warnings.  XERRWD is machine-dependent.
-C Note: SVNORM, D1MACH, IXSAV, and IUMACH are function routines.
+C Note: SVNORM, R1MACH, IXSAV, and IUMACH are function routines.
 C All the others are subroutines.
 C
 C**End
 C
 C  Declare externals.
       EXTERNAL SPREPJ, SSOLSY
-      REAL D1MACH, SVNORM
+      REAL R1MACH, SVNORM
 C
 C  Declare all other variables.
       INTEGER INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH, IOWNS,
@@ -1367,7 +1367,7 @@ C It contains all remaining initializations, the initial call to F,
 C and the calculation of the initial step size.
 C The error weights in EWT are inverted after being loaded.
 C-----------------------------------------------------------------------
- 100  UROUND = D1MACH(4)
+ 100  UROUND = R1MACH(4)
       TN = T
       IF (ITASK .NE. 4 .AND. ITASK .NE. 5) GO TO 110
       TCRIT = RWORK(1)

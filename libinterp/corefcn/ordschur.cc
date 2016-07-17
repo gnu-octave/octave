@@ -33,33 +33,33 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dtrsen, DTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
-                             double*, double*, octave_idx_type&, double&, double&, double*,
-                             const octave_idx_type&, octave_idx_type*,
-                             const octave_idx_type&, octave_idx_type&);
+                             const F77_INT*, const F77_INT&,
+                             F77_DBLE*, const F77_INT&, F77_DBLE*, const F77_INT&,
+                             F77_DBLE*, F77_DBLE*, F77_INT&, F77_DBLE&, F77_DBLE&, F77_DBLE*,
+                             const F77_INT&, F77_INT*,
+                             const F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (ztrsen, ZTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-                             Complex*, octave_idx_type&, double&, double&, Complex*,
-                             const octave_idx_type&, octave_idx_type &);
+                             const F77_INT*, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_DBLE_CMPLX*, F77_INT&, F77_DBLE&, F77_DBLE&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_INT &);
 
   F77_RET_T
   F77_FUNC (strsen, STRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             float*, const octave_idx_type&, float*, const octave_idx_type&,
-                             float*, float*, octave_idx_type&, float&, float&, float*,
-                             const octave_idx_type&, octave_idx_type*,
-                             const octave_idx_type&, octave_idx_type&);
+                             const F77_INT*, const F77_INT&,
+                             F77_REAL*, const F77_INT&, F77_REAL*, const F77_INT&,
+                             F77_REAL*, F77_REAL*, F77_INT&, F77_REAL&, F77_REAL&, F77_REAL*,
+                             const F77_INT&, F77_INT*,
+                             const F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (ctrsen, CTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&, FloatComplex*, const octave_idx_type&,
-                             FloatComplex*, octave_idx_type&, float&, float&, FloatComplex*,
-                             const octave_idx_type&, octave_idx_type &);
+                             const F77_INT*, const F77_INT&,
+                             F77_CMPLX*, const F77_INT&, F77_CMPLX*, const F77_INT&,
+                             F77_CMPLX*, F77_INT&, F77_REAL&, F77_REAL&, F77_CMPLX*,
+                             const F77_INT&, F77_INT &);
 }
 
 DEFUN (ordschur, args, ,

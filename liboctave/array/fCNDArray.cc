@@ -191,15 +191,15 @@ FloatComplexNDArray::ifourierNd (void) const
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, FloatComplex*);
+  F77_FUNC (cffti, CFFTI) (const F77_INT&, F77_CMPLX*);
 
   F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, FloatComplex*,
-                           FloatComplex*);
+  F77_FUNC (cfftf, CFFTF) (const F77_INT&, F77_CMPLX*,
+                           F77_CMPLX*);
 
   F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, FloatComplex*,
-                           FloatComplex*);
+  F77_FUNC (cfftb, CFFTB) (const F77_INT&, F77_CMPLX*,
+                           F77_CMPLX*);
 }
 
 FloatComplexNDArray

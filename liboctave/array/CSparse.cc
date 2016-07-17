@@ -74,73 +74,73 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zgbtrf, ZGBTRF) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&,
-                             octave_idx_type*, octave_idx_type&);
+  F77_FUNC (zgbtrf, ZGBTRF) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_INT*, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zgbtrs, ZGBTRS) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const Complex*, const octave_idx_type&,
-                             const octave_idx_type*, Complex*,
-                             const octave_idx_type&, octave_idx_type&
+                             const F77_INT&, const F77_INT&,
+                             const F77_INT&, const F77_INT&,
+                             const F77_DBLE_CMPLX*, const F77_INT&,
+                             const F77_INT*, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgbcon, ZGBCON) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, const octave_idx_type*,
-                             const double&, double&, Complex*, double*,
-                             octave_idx_type&
+                             const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, const F77_INT*,
+                             const F77_DBLE&, F77_DBLE&, F77_DBLE_CMPLX*, F77_DBLE*,
+                             F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zpbtrf, ZPBTRF) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, octave_idx_type&
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zpbtrs, ZPBTRS) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, octave_idx_type&
+                             const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zpbcon, ZPBCON) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, const double&,
-                             double&, Complex*, double*, octave_idx_type&
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, const F77_DBLE&,
+                             F77_DBLE&, F77_DBLE_CMPLX*, F77_DBLE*, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zgttrf, ZGTTRF) (const octave_idx_type&, Complex*, Complex*,
-                             Complex*, Complex*, octave_idx_type*,
-                             octave_idx_type&);
+  F77_FUNC (zgttrf, ZGTTRF) (const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
+                             F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, F77_INT*,
+                             F77_INT&);
 
   F77_RET_T
   F77_FUNC (zgttrs, ZGTTRS) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const Complex*, const Complex*, const Complex*,
-                             const Complex*, const octave_idx_type*,
-                             Complex *, const octave_idx_type&,
-                             octave_idx_type&
+                             const F77_INT&, const F77_INT&,
+                             const F77_DBLE_CMPLX*, const F77_DBLE_CMPLX*, const F77_DBLE_CMPLX*,
+                             const F77_DBLE_CMPLX*, const F77_INT*,
+                             F77_DBLE_CMPLX *, const F77_INT&,
+                             F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zptsv, ZPTSV) (const octave_idx_type&, const octave_idx_type&,
-                           double*, Complex*, Complex*,
-                           const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (zptsv, ZPTSV) (const F77_INT&, const F77_INT&,
+                           F77_DBLE*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
+                           const F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zgtsv, ZGTSV) (const octave_idx_type&, const octave_idx_type&,
-                           Complex*, Complex*, Complex*, Complex*,
-                           const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (zgtsv, ZGTSV) (const F77_INT&, const F77_INT&,
+                           F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
+                           const F77_INT&, F77_INT&);
 }
 
 SparseComplexMatrix::SparseComplexMatrix (const SparseMatrix& a)

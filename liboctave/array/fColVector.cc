@@ -42,10 +42,10 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&,
-                           const float&, const float*, const octave_idx_type&,
-                           const float*, const octave_idx_type&, const float&,
-                           float*, const octave_idx_type&
+                           const F77_INT&, const F77_INT&,
+                           const F77_REAL&, const F77_REAL*, const F77_INT&,
+                           const F77_REAL*, const F77_INT&, const F77_REAL&,
+                           F77_REAL*, const F77_INT&
                            F77_CHAR_ARG_LEN_DECL);
 }
 

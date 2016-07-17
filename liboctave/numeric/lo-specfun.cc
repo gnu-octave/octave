@@ -54,148 +54,148 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zbesj, ZBESJ) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           double*, double*, octave_idx_type&,
-                           octave_idx_type&);
+  F77_FUNC (zbesj, ZBESJ) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_INT&,
+                           F77_DBLE*, F77_DBLE*, F77_INT&,
+                           F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zbesy, ZBESY) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           double*, double*, octave_idx_type&, double*,
-                           double*, octave_idx_type&);
+  F77_FUNC (zbesy, ZBESY) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_INT&,
+                           F77_DBLE*, F77_DBLE*, F77_INT&, F77_DBLE*,
+                           F77_DBLE*, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zbesi, ZBESI) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           double*, double*, octave_idx_type&,
-                           octave_idx_type&);
+  F77_FUNC (zbesi, ZBESI) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_INT&,
+                           F77_DBLE*, F77_DBLE*, F77_INT&,
+                           F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zbesk, ZBESK) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           double*, double*, octave_idx_type&,
-                           octave_idx_type&);
+  F77_FUNC (zbesk, ZBESK) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_INT&,
+                           F77_DBLE*, F77_DBLE*, F77_INT&,
+                           F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zbesh, ZBESH) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           const octave_idx_type&, double*, double*,
-                           octave_idx_type&, octave_idx_type&);
+  F77_FUNC (zbesh, ZBESH) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_INT&,
+                           const F77_INT&, F77_DBLE*, F77_DBLE*,
+                           F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesj, cBESJ) (const FloatComplex&, const float&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           FloatComplex*, octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cbesj, cBESJ) (const F77_CMPLX&, const F77_REAL&,
+                           const F77_INT&, const F77_INT&,
+                           F77_CMPLX*, F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesy, CBESY) (const FloatComplex&, const float&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           FloatComplex*, octave_idx_type&,
-                           FloatComplex*, octave_idx_type&);
+  F77_FUNC (cbesy, CBESY) (const F77_CMPLX&, const F77_REAL&,
+                           const F77_INT&, const F77_INT&,
+                           F77_CMPLX*, F77_INT&,
+                           F77_CMPLX*, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesi, CBESI) (const FloatComplex&, const float&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           FloatComplex*, octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cbesi, CBESI) (const F77_CMPLX&, const F77_REAL&,
+                           const F77_INT&, const F77_INT&,
+                           F77_CMPLX*, F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesk, CBESK) (const FloatComplex&, const float&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           FloatComplex*, octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cbesk, CBESK) (const F77_CMPLX&, const F77_REAL&,
+                           const F77_INT&, const F77_INT&,
+                           F77_CMPLX*, F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesh, CBESH) (const FloatComplex&, const float&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           const octave_idx_type&, FloatComplex*,
-                           octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cbesh, CBESH) (const F77_CMPLX&, const F77_REAL&,
+                           const F77_INT&, const F77_INT&,
+                           const F77_INT&, F77_CMPLX*,
+                           F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zairy, ZAIRY) (const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           double&, double&, octave_idx_type&,
-                           octave_idx_type&);
+  F77_FUNC (zairy, ZAIRY) (const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_INT&,
+                           F77_DBLE&, F77_DBLE&, F77_INT&,
+                           F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cairy, CAIRY) (const float&, const float&, const octave_idx_type&,
-                           const octave_idx_type&, float&, float&,
-                           octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cairy, CAIRY) (const F77_REAL&, const F77_REAL&, const F77_INT&,
+                           const F77_INT&, F77_REAL&, F77_REAL&,
+                           F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zbiry, ZBIRY) (const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           double&, double&, octave_idx_type&);
+  F77_FUNC (zbiry, ZBIRY) (const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_INT&,
+                           F77_DBLE&, F77_DBLE&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbiry, CBIRY) (const float&, const float&, const octave_idx_type&,
-                           const octave_idx_type&, float&, float&,
-                           octave_idx_type&);
+  F77_FUNC (cbiry, CBIRY) (const F77_REAL&, const F77_REAL&, const F77_INT&,
+                           const F77_INT&, F77_REAL&, F77_REAL&,
+                           F77_INT&);
 
   F77_RET_T
-  F77_FUNC (xdacosh, XDACOSH) (const double&, double&);
+  F77_FUNC (xdacosh, XDACOSH) (const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xacosh, XACOSH) (const float&, float&);
+  F77_FUNC (xacosh, XACOSH) (const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (xdasinh, XDASINH) (const double&, double&);
+  F77_FUNC (xdasinh, XDASINH) (const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xasinh, XASINH) (const float&, float&);
+  F77_FUNC (xasinh, XASINH) (const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (xdatanh, XDATANH) (const double&, double&);
+  F77_FUNC (xdatanh, XDATANH) (const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xatanh, XATANH) (const float&, float&);
+  F77_FUNC (xatanh, XATANH) (const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (xderf, XDERF) (const double&, double&);
+  F77_FUNC (xderf, XDERF) (const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xerf, XERF) (const float&, float&);
+  F77_FUNC (xerf, XERF) (const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (xderfc, XDERFC) (const double&, double&);
+  F77_FUNC (xderfc, XDERFC) (const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xerfc, XERFC) (const float&, float&);
+  F77_FUNC (xerfc, XERFC) (const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (xdbetai, XDBETAI) (const double&, const double&,
-                               const double&, double&);
+  F77_FUNC (xdbetai, XDBETAI) (const F77_DBLE&, const F77_DBLE&,
+                               const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xbetai, XBETAI) (const float&, const float&,
-                             const float&, float&);
+  F77_FUNC (xbetai, XBETAI) (const F77_REAL&, const F77_REAL&,
+                             const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (xdgamma, XDGAMMA) (const double&, double&);
+  F77_FUNC (xdgamma, XDGAMMA) (const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xgamma, XGAMMA) (const float&, float&);
+  F77_FUNC (xgamma, XGAMMA) (const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (xgammainc, XGAMMAINC) (const double&, const double&, double&);
+  F77_FUNC (xgammainc, XGAMMAINC) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xsgammainc, XSGAMMAINC) (const float&, const float&, float&);
+  F77_FUNC (xsgammainc, XSGAMMAINC) (const F77_REAL&, const F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (dlgams, DLGAMS) (const double&, double&, double&);
+  F77_FUNC (dlgams, DLGAMS) (const F77_DBLE&, F77_DBLE&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (algams, ALGAMS) (const float&, float&, float&);
+  F77_FUNC (algams, ALGAMS) (const F77_REAL&, F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (psifn, PSIFN) (const float*, const octave_idx_type&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           float*, octave_idx_type*, octave_idx_type*);
+  F77_FUNC (psifn, PSIFN) (const F77_REAL*, const F77_INT&,
+                           const F77_INT&, const F77_INT&,
+                           F77_REAL*, F77_INT*, F77_INT*);
 
   F77_RET_T
-  F77_FUNC (dpsifn, DPSIFN) (const double*, const octave_idx_type&,
-                             const octave_idx_type&, const octave_idx_type&,
-                             double*, octave_idx_type*, octave_idx_type*);
+  F77_FUNC (dpsifn, DPSIFN) (const F77_DBLE*, const F77_INT&,
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE*, F77_INT*, F77_INT*);
 }
 
 namespace octave

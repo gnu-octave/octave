@@ -40,24 +40,24 @@ convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
              T *c, bool inner);
 
 // Forward instances to our Fortran implementations.
-#define FORWARD_IMPL(T,R,f,F) \
+#define FORWARD_IMPL(T, R, f, F) \
 extern "C" \
 F77_RET_T \
-F77_FUNC (f##conv2o, F##CONV2O) (const octave_idx_type&, \
-                                 const octave_idx_type&, \
-                                 const T*, const octave_idx_type&, \
-                                 const octave_idx_type&, const R*, T *); \
+F77_FUNC (f##conv2o, F##CONV2O) (const F77_INT&, \
+                                 const F77_INT&, \
+                                 const T*, const F77_INT&, \
+                                 const F77_INT&, const R*, T *); \
 \
 extern "C" \
 F77_RET_T \
-F77_FUNC (f##conv2i, F##CONV2I) (const octave_idx_type&, \
-                                 const octave_idx_type&, \
-                                 const T*, const octave_idx_type&, \
-                                 const octave_idx_type&, const R*, T *); \
+F77_FUNC (f##conv2i, F##CONV2I) (const F77_INT&, \
+                                 const F77_INT&, \
+                                 const T*, const F77_INT&, \
+                                 const F77_INT&, const R*, T *); \
 \
 template <> void \
-convolve_2d<T, R> (const T *a, octave_idx_type ma, octave_idx_type na, \
-                   const R *b, octave_idx_type mb, octave_idx_type nb, \
+convolve_2d<T, R> (const T *a, F77_INT ma, F77_INT na, \
+                   const R *b, F77_INT mb, F77_INT nb, \
                    T *c, bool inner) \
 { \
   if (inner) \
@@ -66,12 +66,12 @@ convolve_2d<T, R> (const T *a, octave_idx_type ma, octave_idx_type na, \
     F77_XFCN (f##conv2o, F##CONV2O, (ma, na, a, mb, nb, b, c)); \
 }
 
-FORWARD_IMPL (double, double, d, D)
-FORWARD_IMPL (float, float, s, S)
-FORWARD_IMPL (Complex, Complex, z, Z)
-FORWARD_IMPL (FloatComplex, FloatComplex, c, C)
-FORWARD_IMPL (Complex, double, zd, ZD)
-FORWARD_IMPL (FloatComplex, float, cs, CS)
+FORWARD_IMPL (F77_DBLE, F77_DBLE, d, D)
+FORWARD_IMPL (F77_REAL, F77_REAL, s, S)
+FORWARD_IMPL (F77_DBLE_CMPLX, F77_DBLE_CMPLX, z, Z)
+FORWARD_IMPL (F77_CMPLX, F77_CMPLX, c, C)
+FORWARD_IMPL (F77_DBLE_CMPLX, F77_DBLE, zd, ZD)
+FORWARD_IMPL (F77_CMPLX, F77_REAL, cs, CS)
 
 template <typename T, typename R>
 void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,

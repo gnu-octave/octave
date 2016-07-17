@@ -113,10 +113,17 @@ Fortran-style character strings:
   F77_CHAR_ARG_USE(s)
   F77_CHAR_ARG_LEN_USE(s, len)
 
-Use this macro to declare the return type of a C-language function
-that is supposed to act like a Fortran subroutine:
+Use these macros for C++ code
 
-  F77_RET_T int
+  F77_INT         Equivalent to Fortran INTEGER type
+  F77_INT4        Equivalent to Fortran INTEGER*4 type
+  F77_DBLE        Equivalent to Fortran DOUBLE PRECISION type
+  F77_REAL        Equivalent to Fortran REAL type
+  F77_CMPLX       Equivalent to Fortran COMPLEX type
+  F77_DBLE_CMPLX  Equivalent to Fortran DOUBLE COMPLEX type
+  F77_LOGICAL     Equivalent to Fortran LOGICAL type
+  F77_RET_T       Return type of a C++ function that acts like a
+                  Fortran subroutine.
 
 Use these macros to return from C-language functions that are supposed
 to act like Fortran subroutines.  F77_NORETURN is intended to be used
@@ -158,8 +165,6 @@ not returning a value from a function declared to return something.
 #define F77_CHAR_ARG_USE(s) s.ptr
 #define F77_CHAR_ARG_LEN_USE(s, len) (s.mask.len >> 3)
 
-/* Use this macro to declare the return type of a C-language function
-   that is supposed to act like a Fortran subroutine.  */
 #define F77_RET_T int
 
 /* Use these macros to return from C-language functions that are
@@ -190,7 +195,7 @@ typedef union
 
 typedef void *octave_cray_ftn_ch_dsc;
 
-#if defined (__cplusplus)
+ #if defined (__cplusplus)
 #  define OCTAVE_F77_FCN_INLINE inline
 #else
 #  define OCTAVE_F77_FCN_INLINE
@@ -214,10 +219,8 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
   return *((octave_cray_ftn_ch_dsc *) &desc);
 }
 
-#if defined (__cplusplus)
-#  undef OCTAVE_F77_FCN_INLINE
-#endif
-
+#undef OCTAVE_F77_FCN_INLINE
+  
 #elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
 
 /* Use these macros to pass character strings from C to Fortran.  */
@@ -272,6 +275,14 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #endif
 
 #endif
+
+#define F77_DBLE double
+#define F77_REAL float
+#define F77_DBLE_CMPLX Complex
+#define F77_CMPLX FloatComplex
+#define F77_INT octave_idx_type
+#define F77_INT4 int32_t
+#define F77_LOGICAL octave_idx_type
 
 /* Build a C string local variable CS from the Fortran string parameter S
    declared as F77_CHAR_ARG_DEF(s, len) or F77_CONST_CHAR_ARG_DEF(s, len).

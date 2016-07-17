@@ -44,36 +44,36 @@ typedef octave_idx_type (*quad_float_fcn_ptr) (float*, int&, float*);
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const double&, const double&,
-                           const octave_idx_type&, const double*,
-                           const double&, const double&, double&,
-                           double&, octave_idx_type&, octave_idx_type&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           octave_idx_type&, octave_idx_type*, double*);
+  F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_DBLE*,
+                           const F77_DBLE&, const F77_DBLE&, F77_DBLE&,
+                           F77_DBLE&, F77_INT&, F77_INT&,
+                           const F77_INT&, const F77_INT&,
+                           F77_INT&, F77_INT*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const double&,
-                           const octave_idx_type&, const double&,
-                           const double&, double&, double&,
-                           octave_idx_type&, octave_idx_type&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           octave_idx_type&, octave_idx_type*, double*);
+  F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const F77_DBLE&,
+                           const F77_INT&, const F77_DBLE&,
+                           const F77_DBLE&, F77_DBLE&, F77_DBLE&,
+                           F77_INT&, F77_INT&,
+                           const F77_INT&, const F77_INT&,
+                           F77_INT&, F77_INT*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (qagp, QAGP) (quad_float_fcn_ptr, const float&, const float&,
-                         const octave_idx_type&, const float*, const float&,
-                         const float&, float&, float&, octave_idx_type&,
-                         octave_idx_type&, const octave_idx_type&,
-                         const octave_idx_type&, octave_idx_type&,
-                         octave_idx_type*, float*);
+  F77_FUNC (qagp, QAGP) (quad_float_fcn_ptr, const F77_REAL&, const F77_REAL&,
+                         const F77_INT&, const F77_REAL*, const F77_REAL&,
+                         const F77_REAL&, F77_REAL&, F77_REAL&, F77_INT&,
+                         F77_INT&, const F77_INT&,
+                         const F77_INT&, F77_INT&,
+                         F77_INT*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (qagi, QAGI) (quad_float_fcn_ptr, const float&,
-                         const octave_idx_type&, const float&,
-                         const float&, float&, float&, octave_idx_type&,
-                         octave_idx_type&, const octave_idx_type&,
-                         const octave_idx_type&, octave_idx_type&,
-                         octave_idx_type*, float*);
+  F77_FUNC (qagi, QAGI) (quad_float_fcn_ptr, const F77_REAL&,
+                         const F77_INT&, const F77_REAL&,
+                         const F77_REAL&, F77_REAL&, F77_REAL&, F77_INT&,
+                         F77_INT&, const F77_INT&,
+                         const F77_INT&, F77_INT&,
+                         F77_INT*, F77_REAL*);
 }
 
 static octave_idx_type

@@ -65,71 +65,71 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N, double* A,
-                             const octave_idx_type& LDA, double* B,
-                             const octave_idx_type& LDB, octave_idx_type& ILO,
-                             octave_idx_type& IHI, double* LSCALE,
-                             double* RSCALE, double* WORK,
-                             octave_idx_type& INFO
+                             const F77_INT& N, F77_DBLE* A,
+                             const F77_INT& LDA, F77_DBLE* B,
+                             const F77_INT& LDB, F77_INT& ILO,
+                             F77_INT& IHI, F77_DBLE* LSCALE,
+                             F77_DBLE* RSCALE, F77_DBLE* WORK,
+                             F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N, Complex* A,
-                             const octave_idx_type& LDA, Complex* B,
-                             const octave_idx_type& LDB, octave_idx_type& ILO,
-                             octave_idx_type& IHI, double* LSCALE,
-                             double* RSCALE, double* WORK,
-                             octave_idx_type& INFO
+                             const F77_INT& N, F77_DBLE_CMPLX* A,
+                             const F77_INT& LDA, F77_DBLE_CMPLX* B,
+                             const F77_INT& LDB, F77_INT& ILO,
+                             F77_INT& IHI, F77_DBLE* LSCALE,
+                             F77_DBLE* RSCALE, F77_DBLE* WORK,
+                             F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N,
-                             const octave_idx_type& ILO,
-                             const octave_idx_type& IHI,
-                             const double* LSCALE, const double* RSCALE,
-                             octave_idx_type& M, double* V,
-                             const octave_idx_type& LDV, octave_idx_type& INFO
+                             const F77_INT& N,
+                             const F77_INT& ILO,
+                             const F77_INT& IHI,
+                             const F77_DBLE* LSCALE, const F77_DBLE* RSCALE,
+                             F77_INT& M, F77_DBLE* V,
+                             const F77_INT& LDV, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zggbak, ZGGBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N,
-                             const octave_idx_type& ILO,
-                             const octave_idx_type& IHI,
-                             const double* LSCALE, const double* RSCALE,
-                             octave_idx_type& M, Complex* V,
-                             const octave_idx_type& LDV, octave_idx_type& INFO
+                             const F77_INT& N,
+                             const F77_INT& ILO,
+                             const F77_INT& IHI,
+                             const F77_DBLE* LSCALE, const F77_DBLE* RSCALE,
+                             F77_INT& M, F77_DBLE_CMPLX* V,
+                             const F77_INT& LDV, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgghrd, DGGHRD) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N,
-                             const octave_idx_type& ILO,
-                             const octave_idx_type& IHI, double* A,
-                             const octave_idx_type& LDA, double* B,
-                             const octave_idx_type& LDB, double* Q,
-                             const octave_idx_type& LDQ, double* Z,
-                             const octave_idx_type& LDZ, octave_idx_type& INFO
+                             const F77_INT& N,
+                             const F77_INT& ILO,
+                             const F77_INT& IHI, F77_DBLE* A,
+                             const F77_INT& LDA, F77_DBLE* B,
+                             const F77_INT& LDB, F77_DBLE* Q,
+                             const F77_INT& LDQ, F77_DBLE* Z,
+                             const F77_INT& LDZ, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgghrd, ZGGHRD) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N,
-                             const octave_idx_type& ILO,
-                             const octave_idx_type& IHI, Complex* A,
-                             const octave_idx_type& LDA, Complex* B,
-                             const octave_idx_type& LDB, Complex* Q,
-                             const octave_idx_type& LDQ, Complex* Z,
-                             const octave_idx_type& LDZ, octave_idx_type& INFO
+                             const F77_INT& N,
+                             const F77_INT& ILO,
+                             const F77_INT& IHI, F77_DBLE_CMPLX* A,
+                             const F77_INT& LDA, F77_DBLE_CMPLX* B,
+                             const F77_INT& LDB, F77_DBLE_CMPLX* Q,
+                             const F77_INT& LDQ, F77_DBLE_CMPLX* Z,
+                             const F77_INT& LDZ, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
@@ -137,16 +137,16 @@ extern "C"
   F77_FUNC (dhgeqz, DHGEQZ) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N,
-                             const octave_idx_type& ILO,
-                             const octave_idx_type& IHI,
-                             double* A, const octave_idx_type& LDA, double* B,
-                             const octave_idx_type& LDB, double* ALPHAR,
-                             double* ALPHAI, double* BETA, double* Q,
-                             const octave_idx_type& LDQ, double* Z,
-                             const octave_idx_type& LDZ, double* WORK,
-                             const octave_idx_type& LWORK,
-                             octave_idx_type& INFO
+                             const F77_INT& N,
+                             const F77_INT& ILO,
+                             const F77_INT& IHI,
+                             F77_DBLE* A, const F77_INT& LDA, F77_DBLE* B,
+                             const F77_INT& LDB, F77_DBLE* ALPHAR,
+                             F77_DBLE* ALPHAI, F77_DBLE* BETA, F77_DBLE* Q,
+                             const F77_INT& LDQ, F77_DBLE* Z,
+                             const F77_INT& LDZ, F77_DBLE* WORK,
+                             const F77_INT& LWORK,
+                             F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
@@ -155,35 +155,35 @@ extern "C"
   F77_FUNC (zhgeqz, ZHGEQZ) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N,
-                             const octave_idx_type& ILO,
-                             const octave_idx_type& IHI,
-                             Complex* A, const octave_idx_type& LDA,
-                             Complex* B, const octave_idx_type& LDB,
-                             Complex* ALPHA, Complex* BETA, Complex* CQ,
-                             const octave_idx_type& LDQ,
-                             Complex* CZ, const octave_idx_type& LDZ,
-                             Complex* WORK, const octave_idx_type& LWORK,
-                             double* RWORK, octave_idx_type& INFO
+                             const F77_INT& N,
+                             const F77_INT& ILO,
+                             const F77_INT& IHI,
+                             F77_DBLE_CMPLX* A, const F77_INT& LDA,
+                             F77_DBLE_CMPLX* B, const F77_INT& LDB,
+                             F77_DBLE_CMPLX* ALPHA, F77_DBLE_CMPLX* BETA, F77_DBLE_CMPLX* CQ,
+                             const F77_INT& LDQ,
+                             F77_DBLE_CMPLX* CZ, const F77_INT& LDZ,
+                             F77_DBLE_CMPLX* WORK, const F77_INT& LWORK,
+                             F77_DBLE* RWORK, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dlag2, DLAG2) (const double* A, const octave_idx_type& LDA,
-                           const double* B, const octave_idx_type& LDB,
-                           const double& SAFMIN, double& SCALE1,
-                           double& SCALE2, double& WR1, double& WR2,
-                           double& WI);
+  F77_FUNC (dlag2, DLAG2) (const F77_DBLE* A, const F77_INT& LDA,
+                           const F77_DBLE* B, const F77_INT& LDB,
+                           const F77_DBLE& SAFMIN, F77_DBLE& SCALE1,
+                           F77_DBLE& SCALE2, F77_DBLE& WR1, F77_DBLE& WR2,
+                           F77_DBLE& WI);
 
   // Van Dooren's code (netlib.org: toms/590) for reordering
   // GEP.  Only processes Z, not Q.
   F77_RET_T
-  F77_FUNC (dsubsp, DSUBSP) (const octave_idx_type& NMAX,
-                             const octave_idx_type& N, double* A,
-                             double* B, double* Z, sort_function,
-                             const double& EPS, octave_idx_type& NDIM,
-                             octave_idx_type& FAIL, octave_idx_type* IND);
+  F77_FUNC (dsubsp, DSUBSP) (const F77_INT& NMAX,
+                             const F77_INT& N, F77_DBLE* A,
+                             F77_DBLE* B, F77_DBLE* Z, sort_function,
+                             const F77_DBLE& EPS, F77_INT& NDIM,
+                             F77_INT& FAIL, F77_INT* IND);
 
   // Documentation for DTGEVC incorrectly states that VR, VL are
   // complex*16; they are declared in DTGEVC as double precision
@@ -191,42 +191,42 @@ extern "C"
   F77_RET_T
   F77_FUNC (dtgevc, DTGEVC) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             octave_idx_type* SELECT,
-                             const octave_idx_type& N, double* A,
-                             const octave_idx_type& LDA, double* B,
-                             const octave_idx_type& LDB, double* VL,
-                             const octave_idx_type& LDVL, double* VR,
-                             const octave_idx_type& LDVR,
-                             const octave_idx_type& MM, octave_idx_type& M,
-                             double* WORK, octave_idx_type& INFO
+                             F77_INT* SELECT,
+                             const F77_INT& N, F77_DBLE* A,
+                             const F77_INT& LDA, F77_DBLE* B,
+                             const F77_INT& LDB, F77_DBLE* VL,
+                             const F77_INT& LDVL, F77_DBLE* VR,
+                             const F77_INT& LDVR,
+                             const F77_INT& MM, F77_INT& M,
+                             F77_DBLE* WORK, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (ztgevc, ZTGEVC) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             octave_idx_type* SELECT,
-                             const octave_idx_type& N, const Complex* A,
-                             const octave_idx_type& LDA,const Complex* B,
-                             const octave_idx_type& LDB, Complex* xVL,
-                             const octave_idx_type& LDVL, Complex* xVR,
-                             const octave_idx_type& LDVR,
-                             const octave_idx_type& MM, octave_idx_type& M,
-                             Complex* CWORK, double* RWORK,
-                             octave_idx_type& INFO
+                             F77_INT* SELECT,
+                             const F77_INT& N, const F77_DBLE_CMPLX* A,
+                             const F77_INT& LDA,const F77_DBLE_CMPLX* B,
+                             const F77_INT& LDB, F77_DBLE_CMPLX* xVL,
+                             const F77_INT& LDVL, F77_DBLE_CMPLX* xVR,
+                             const F77_INT& LDVR,
+                             const F77_INT& MM, F77_INT& M,
+                             F77_DBLE_CMPLX* CWORK, F77_DBLE* RWORK,
+                             F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG_DECL,
-                               double& retval
+                               F77_DBLE& retval
                                F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (xdlange, XDLANGE) (F77_CONST_CHAR_ARG_DECL,
-                               const octave_idx_type&,
-                               const octave_idx_type&, const double*,
-                               const octave_idx_type&, double*, double&
+                               const F77_INT&,
+                               const F77_INT&, const F77_DBLE*,
+                               const F77_INT&, F77_DBLE*, F77_DBLE&
                                F77_CHAR_ARG_LEN_DECL);
 }
 

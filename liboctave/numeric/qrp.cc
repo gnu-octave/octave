@@ -41,27 +41,27 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgeqp3, DGEQP3) (const octave_idx_type&, const octave_idx_type&,
-                             double*, const octave_idx_type&,
-                             octave_idx_type*, double*, double*,
-                             const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (dgeqp3, DGEQP3) (const F77_INT&, const F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             F77_INT*, F77_DBLE*, F77_DBLE*,
+                             const F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (sgeqp3, SGEQP3) (const octave_idx_type&, const octave_idx_type&,
-                             float*, const octave_idx_type&, octave_idx_type*,
-                             float*, float*, const octave_idx_type&,
-                             octave_idx_type&);
+  F77_FUNC (sgeqp3, SGEQP3) (const F77_INT&, const F77_INT&,
+                             F77_REAL*, const F77_INT&, F77_INT*,
+                             F77_REAL*, F77_REAL*, const F77_INT&,
+                             F77_INT&);
   F77_RET_T
-  F77_FUNC (zgeqp3, ZGEQP3) (const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&,
-                             octave_idx_type*, Complex*, Complex*,
-                             const octave_idx_type&, double*,
-                             octave_idx_type&);
+  F77_FUNC (zgeqp3, ZGEQP3) (const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_INT*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE*,
+                             F77_INT&);
   F77_RET_T
-  F77_FUNC (cgeqp3, CGEQP3) (const octave_idx_type&, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&,
-                             octave_idx_type*, FloatComplex*, FloatComplex*,
-                             const octave_idx_type&, float*, octave_idx_type&);
+  F77_FUNC (cgeqp3, CGEQP3) (const F77_INT&, const F77_INT&,
+                             F77_CMPLX*, const F77_INT&,
+                             F77_INT*, F77_CMPLX*, F77_CMPLX*,
+                             const F77_INT&, F77_REAL*, F77_INT&);
 }
 
 // Specialization.

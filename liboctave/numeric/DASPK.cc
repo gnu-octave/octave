@@ -56,13 +56,13 @@ typedef octave_idx_type (*daspk_psol_ptr) (const octave_idx_type&,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const octave_idx_type&,
-                             double&, double*, double*, double&,
-                             const octave_idx_type*, const double*,
-                             const double*, octave_idx_type&,
-                             double*, const octave_idx_type&,
-                             octave_idx_type*, const octave_idx_type&,
-                             const double*, const octave_idx_type*,
+  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const F77_INT&,
+                             F77_DBLE&, F77_DBLE*, F77_DBLE*, F77_DBLE&,
+                             const F77_INT*, const F77_DBLE*,
+                             const F77_DBLE*, F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             F77_INT*, const F77_INT&,
+                             const F77_DBLE*, const F77_INT*,
                              daspk_jac_ptr, daspk_psol_ptr);
 }
 

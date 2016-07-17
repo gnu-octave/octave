@@ -48,8 +48,11 @@ along with Octave; see the file COPYING.  If not, see
 #define RNOR oct_randn()
 #define LGAMMA xlgamma
 
-F77_RET_T
-F77_FUNC (dlgams, DLGAMS) (const double *, double *, double *);
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (dlgams, DLGAMS) (const F77_DBLE *, F77_DBLE *, F77_DBLE *);
+}
 
 static double
 xlgamma (double x)

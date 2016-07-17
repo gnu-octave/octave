@@ -42,11 +42,11 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgemv, CGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&,
-                           const FloatComplex&, const FloatComplex*,
-                           const octave_idx_type&, const FloatComplex*,
-                           const octave_idx_type&, const FloatComplex&,
-                           FloatComplex*, const octave_idx_type&
+                           const F77_INT&, const F77_INT&,
+                           const F77_CMPLX&, const F77_CMPLX*,
+                           const F77_INT&, const F77_CMPLX*,
+                           const F77_INT&, const F77_CMPLX&,
+                           F77_CMPLX*, const F77_INT&
                            F77_CHAR_ARG_LEN_DECL);
 }
 

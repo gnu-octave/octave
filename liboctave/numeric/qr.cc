@@ -47,227 +47,227 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgeqrf, DGEQRF) (const octave_idx_type&, const octave_idx_type&,
-                             double*, const octave_idx_type&, double*,
-                             double*, const octave_idx_type&,
-                             octave_idx_type&);
+  F77_FUNC (dgeqrf, DGEQRF) (const F77_INT&, const F77_INT&,
+                             F77_DBLE*, const F77_INT&, F77_DBLE*,
+                             F77_DBLE*, const F77_INT&,
+                             F77_INT&);
 
   F77_RET_T
-  F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, double*, double*,
-                             const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (dorgqr, DORGQR) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_DBLE*, F77_DBLE*,
+                             const F77_INT&, F77_INT&);
 
 #if defined (HAVE_QRUPDATE)
 
   F77_RET_T
-  F77_FUNC (dqr1up, DQR1UP) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, double*, double*, double*);
+  F77_FUNC (dqr1up, DQR1UP) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_DBLE*, F77_DBLE*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (dqrinc, DQRINC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const double*, double*);
+  F77_FUNC (dqrinc, DQRINC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, const F77_INT&,
+                             const F77_DBLE*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (dqrdec, DQRDEC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             double*);
+  F77_FUNC (dqrdec, DQRDEC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (dqrinr, DQRINR) (const octave_idx_type&, const octave_idx_type&,
-                             double*, const octave_idx_type&, double*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const double*, double*);
+  F77_FUNC (dqrinr, DQRINR) (const F77_INT&, const F77_INT&,
+                             F77_DBLE*, const F77_INT&, F77_DBLE*,
+                             const F77_INT&, const F77_INT&,
+                             const F77_DBLE*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (dqrder, DQRDER) (const octave_idx_type&, const octave_idx_type&,
-                             double*, const octave_idx_type&, double*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             double*);
+  F77_FUNC (dqrder, DQRDER) (const F77_INT&, const F77_INT&,
+                             F77_DBLE*, const F77_INT&, F77_DBLE*,
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (dqrshc, DQRSHC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, double*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, double*);
+  F77_FUNC (dqrshc, DQRSHC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_DBLE*,
+                             const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE*);
 
 #endif
 
   F77_RET_T
-  F77_FUNC (sgeqrf, SGEQRF) (const octave_idx_type&, const octave_idx_type&,
-                             float*, const octave_idx_type&, float*, float*,
-                             const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (sgeqrf, SGEQRF) (const F77_INT&, const F77_INT&,
+                             F77_REAL*, const F77_INT&, F77_REAL*, F77_REAL*,
+                             const F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (sorgqr, SORGQR) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&, float*, float*,
-                             const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (sorgqr, SORGQR) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&, F77_REAL*, F77_REAL*,
+                             const F77_INT&, F77_INT&);
 
 #if defined (HAVE_QRUPDATE)
 
   F77_RET_T
-  F77_FUNC (sqr1up, SQR1UP) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&, float*, float*, float*);
+  F77_FUNC (sqr1up, SQR1UP) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&, F77_REAL*, F77_REAL*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (sqrinc, SQRINC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&,
-                             const octave_idx_type&, const float*, float*);
+  F77_FUNC (sqrinc, SQRINC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&,
+                             const F77_INT&, const F77_REAL*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (sqrdec, SQRDEC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&,
-                             const octave_idx_type&, float*);
+  F77_FUNC (sqrdec, SQRDEC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&,
+                             const F77_INT&, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (sqrinr, SQRINR) (const octave_idx_type&, const octave_idx_type&,
-                             float*, const octave_idx_type&,
-                             float*, const octave_idx_type&,
-                             const octave_idx_type&, const float*, float*);
+  F77_FUNC (sqrinr, SQRINR) (const F77_INT&, const F77_INT&,
+                             F77_REAL*, const F77_INT&,
+                             F77_REAL*, const F77_INT&,
+                             const F77_INT&, const F77_REAL*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (sqrder, SQRDER) (const octave_idx_type&, const octave_idx_type&,
-                             float*, const octave_idx_type&,
-                             float*, const octave_idx_type&,
-                             const octave_idx_type&, float*);
+  F77_FUNC (sqrder, SQRDER) (const F77_INT&, const F77_INT&,
+                             F77_REAL*, const F77_INT&,
+                             F77_REAL*, const F77_INT&,
+                             const F77_INT&, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (sqrshc, SQRSHC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&, float*,
-                             const octave_idx_type&,
-                             const octave_idx_type&, const octave_idx_type&,
-                             float*);
+  F77_FUNC (sqrshc, SQRSHC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&, F77_REAL*,
+                             const F77_INT&,
+                             const F77_INT&, const F77_INT&,
+                             F77_REAL*);
 
 #endif
 
   F77_RET_T
-  F77_FUNC (zgeqrf, ZGEQRF) (const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, Complex*,
-                             Complex*, const octave_idx_type&,
-                             octave_idx_type&);
+  F77_FUNC (zgeqrf, ZGEQRF) (const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_INT&);
 
   F77_RET_T
-  F77_FUNC (zungqr, ZUNGQR) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*, Complex*,
-                             const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (zungqr, ZUNGQR) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_INT&);
 
 #if defined (HAVE_QRUPDATE)
 
   F77_RET_T
-  F77_FUNC (zqr1up, ZQR1UP) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*,
-                             Complex*, Complex*, double*);
+  F77_FUNC (zqr1up, ZQR1UP) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (zqrinc, ZQRINC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const Complex*, double*);
+  F77_FUNC (zqrinc, ZQRINC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, const F77_INT&,
+                             const F77_DBLE_CMPLX*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (zqrdec, ZQRDEC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             double*);
+  F77_FUNC (zqrdec, ZQRDEC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (zqrinr, ZQRINR) (const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, Complex*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const Complex*, double*);
+  F77_FUNC (zqrinr, ZQRINR) (const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, const F77_INT&,
+                             const F77_DBLE_CMPLX*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (zqrder, ZQRDER) (const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, Complex*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             Complex*, double*);
+  F77_FUNC (zqrder, ZQRDER) (const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (zqrshc, ZQRSHC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, Complex*, double*);
+  F77_FUNC (zqrshc, ZQRSHC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*);
 
 #endif
 
   F77_RET_T
-  F77_FUNC (cgeqrf, CGEQRF) (const octave_idx_type&, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&,
-                             FloatComplex*, FloatComplex*,
-                             const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cgeqrf, CGEQRF) (const F77_INT&, const F77_INT&,
+                             F77_CMPLX*, const F77_INT&,
+                             F77_CMPLX*, F77_CMPLX*,
+                             const F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cungqr, CUNGQR) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, FloatComplex*,
-                             FloatComplex*, const octave_idx_type&,
-                             octave_idx_type&);
+  F77_FUNC (cungqr, CUNGQR) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, F77_CMPLX*,
+                             F77_CMPLX*, const F77_INT&,
+                             F77_INT&);
 
 #if defined (HAVE_QRUPDATE)
 
   F77_RET_T
-  F77_FUNC (cqr1up, CQR1UP) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, FloatComplex*,
-                             FloatComplex*, FloatComplex*, float*);
+  F77_FUNC (cqr1up, CQR1UP) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, F77_CMPLX*,
+                             F77_CMPLX*, F77_CMPLX*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (cqrinc, CQRINC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&,const octave_idx_type&,
-                             const FloatComplex*, float*);
+  F77_FUNC (cqrinc, CQRINC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&,const F77_INT&,
+                             const F77_CMPLX*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (cqrdec, CQRDEC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             float*);
+  F77_FUNC (cqrdec, CQRDEC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, const F77_INT&,
+                             F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (cqrinr, CQRINR) (const octave_idx_type&, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&,
-                             const octave_idx_type&, const FloatComplex*,
-                             float*);
+  F77_FUNC (cqrinr, CQRINR) (const F77_INT&, const F77_INT&,
+                             F77_CMPLX*, const F77_INT&,
+                             F77_CMPLX*, const F77_INT&,
+                             const F77_INT&, const F77_CMPLX*,
+                             F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (cqrder, CQRDER) (const octave_idx_type&, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&,
-                             const octave_idx_type&, FloatComplex*, float*);
+  F77_FUNC (cqrder, CQRDER) (const F77_INT&, const F77_INT&,
+                             F77_CMPLX*, const F77_INT&,
+                             F77_CMPLX*, const F77_INT&,
+                             const F77_INT&, F77_CMPLX*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (cqrshc, CQRSHC) (const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, const octave_idx_type&,
-                             const octave_idx_type&, FloatComplex*,
-                             float*);
+  F77_FUNC (cqrshc, CQRSHC) (const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, F77_CMPLX*,
+                             const F77_INT&, const F77_INT&,
+                             const F77_INT&, F77_CMPLX*,
+                             F77_REAL*);
 
 #endif
 }

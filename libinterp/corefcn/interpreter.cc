@@ -82,10 +82,12 @@ bool octave_interpreter_ready = false;
 bool octave_initialized = false;
 
 // Kluge.
-extern "C" F77_RET_T
-F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&
-                           F77_CHAR_ARG_LEN_DECL);
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL, const F77_INT&
+                             F77_CHAR_ARG_LEN_DECL);
+}
 
 DEFUN (__version_info__, args, ,
        doc: /* -*- texinfo -*-

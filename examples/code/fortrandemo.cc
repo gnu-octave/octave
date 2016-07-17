@@ -5,7 +5,7 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (fortransub, FORTSUB)
-    (const int&, double*, F77_CHAR_ARG_DECL F77_CHAR_ARG_LEN_DECL);
+    (const F77_INT&, F77_DBLE*, F77_CHAR_ARG_DECL F77_CHAR_ARG_LEN_DECL);
 }
 
 DEFUN_DLD (fortrandemo, args, , "Fortran Demo")

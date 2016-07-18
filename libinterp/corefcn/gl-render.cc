@@ -3097,6 +3097,8 @@ namespace octave
     if (fl_mode > 0 || el_mode > 0)
       glMaterialf (LIGHT_MODE, GL_SHININESS, se);
 
+    std::list<std::list<octave_idx_type>>::const_iterator it1;
+
     if (draw_all || ! props.facecolor_is ("none"))
       {
         // FIXME: adapt to double-radio property
@@ -3126,65 +3128,104 @@ namespace octave
             if ((fl_mode > 0) && (num_lights > 0) && has_normals)
               glEnable (GL_LIGHTING);
 
-            // NOTE: Push filled part of patch backwards to avoid Z-fighting with
-            // tesselator outline.  A value of 1.0 seems to work fine.  Value
-            // can't be too large or the patch will be pushed below the axes
-            // planes at +2.5.
+            // NOTE: Push filled part of patch backwards to avoid Z-fighting
+            // with tesselator outline.  A value of 1.0 seems to work fine.
+            // Value can't be too large or the patch will be pushed below the
+            // axes planes at +2.5.
             patch_tesselator tess (this, fc_mode, fl_mode, 1.0);
+
+            it1 = props.coplanar_last_idx.begin ();
+            std::list<octave_idx_type>::const_iterator it2;
+            octave_idx_type i_start, i_end;
 
             for (int i = 0; i < nf; i++)
               {
                 if (clip_f(i))
                   continue;
 
-                tess.begin_polygon (true);
-                tess.begin_contour ();
-
-                // Add vertices in reverse order for Matlab compatibility
-                for (int j = count_f(i)-1; j > 0; j--)
+                bool check_coplanarity = false;
+                if (has_z && count_f(i) > 3)
                   {
-                    vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
-
-                    tess.add_vertex (vv->coords.fortran_vec (), vv);
+                    check_coplanarity = true;
+                    it2 = (*it1).end ();
+                    it2--;
                   }
 
-                if (count_f(i) > 0)
+                // loop over planar subsets of face
+                do
                   {
-                    vertex_data::vertex_data_rep *vv = vdata[i].get_rep ();
-
-                    if (fc_mode == FLAT)
+                    if (check_coplanarity)
                       {
-                        // For "flat" shading, use color of 1st vertex.
-                        Matrix col = vv->color;
-
-                        if (col.numel () == 3)
+                        i_end = *it2;
+                        if (it2 == (*it1).begin ())
+                          i_start = 0;
+                        else
                           {
-                            glColor4d (col(0), col(1), col(2), fa);
-                            if (fl_mode > 0)
-                              {
-                                float cb[4] = { 0, 0, 0, 1 };
-
-                                for (int k = 0; k < 3; k++)
-                                  cb[k] = (vv->ambient * col(k));
-                                glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-
-                                for (int k = 0; k < 3; k++)
-                                  cb[k] = (vv->diffuse * col(k));
-                                glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-
-                                for (int k = 0; k < 3; k++)
-                                  cb[k] = vv->specular * (vv->specular_color_refl
-                                                          + (1-vv->specular_color_refl) * col(k));
-                                glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
-                              }
+                            it2--;
+                            i_start = *it2 - 1;
                           }
                       }
+                    else
+                      {
+                        i_end = count_f(i) - 1;
+                        i_start = 0;
+                      }
 
-                    tess.add_vertex (vv->coords.fortran_vec (), vv);
-                  }
+                    tess.begin_polygon (true);
+                    tess.begin_contour ();
 
-                tess.end_contour ();
-                tess.end_polygon ();
+                    // Add vertices in reverse order for Matlab compatibility
+                    for (int j = i_end; j > i_start; j--)
+                      {
+                        vertex_data::vertex_data_rep *vv =
+                          vdata[i+j*fr].get_rep ();
+
+                        tess.add_vertex (vv->coords.fortran_vec (), vv);
+                      }
+
+                    if (count_f(i) > 0)
+                      {
+                        vertex_data::vertex_data_rep *vv = vdata[i].get_rep ();
+
+                        if (fc_mode == FLAT)
+                          {
+                            // For "flat" shading, use color of 1st vertex.
+                            Matrix col = vv->color;
+
+                            if (col.numel () == 3)
+                              {
+                                glColor4d (col(0), col(1), col(2), fa);
+                                if (fl_mode > 0)
+                                  {
+                                    float cb[4] = { 0, 0, 0, 1 };
+
+                                    for (int k = 0; k < 3; k++)
+                                      cb[k] = (vv->ambient * col(k));
+                                    glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+                                    for (int k = 0; k < 3; k++)
+                                      cb[k] = (vv->diffuse * col(k));
+                                    glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                                    for (int k = 0; k < 3; k++)
+                                      cb[k] = vv->specular *
+                                              (vv->specular_color_refl
+                                               + (1-vv->specular_color_refl) *
+                                              col(k));
+                                    glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                  }
+                              }
+                          }
+
+                        tess.add_vertex (vv->coords.fortran_vec (), vv);
+                      }
+
+                    tess.end_contour ();
+                    tess.end_polygon ();
+                  } while (i_start > 0);
+
+                if (check_coplanarity)
+                  it1++;
               }
 
             if ((fl_mode > 0) && (num_lights > 0) && has_normals)
@@ -3239,11 +3280,17 @@ namespace octave
             // not supported by glPolygonOffset which is used to do Z offsets.
             patch_tesselator tess (this, ec_mode, el_mode);
 
+            it1 = props.coplanar_last_idx.begin ();
+
             for (int i = 0; i < nf; i++)
               {
-                if (clip_f(i))
+                bool is_non_planar = false;
+                if ((has_z && count_f(i) > 3) && (*it1).front () != count_f(i))
+                  is_non_planar = true;
+                if (clip_f(i) || is_non_planar)
                   {
-                    // This is an unclosed contour.  Draw it as a line.
+                    // This is an unclosed contour or a non-planar face.
+                    // Draw it as a line.
                     bool flag = false;
 
                     glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
@@ -3313,6 +3360,8 @@ namespace octave
                     tess.end_contour ();
                     tess.end_polygon ();
                   }
+                if (has_z && count_f(i) > 3)
+                  it1++;
               }
 
             set_linestyle ("-");  // Disable LineStipple

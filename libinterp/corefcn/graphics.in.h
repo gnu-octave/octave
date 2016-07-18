@@ -4834,6 +4834,8 @@ public:
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
 
+    std::list<std::list<octave_idx_type>> coplanar_last_idx;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.

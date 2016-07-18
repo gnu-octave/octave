@@ -9011,6 +9011,53 @@ patch::properties::update_data (void)
         }
     }
 
+  // check coplanarity for 3d-faces with more than 3 corners
+  int fcmax = idx.rows ();
+  if (fcmax > 3 && vert.columns () > 2)
+    {
+      for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
+        {
+          if (! octave::math::isnan (idx(3,jj)))
+            {
+              // find first element that is NaN to get number of corners
+              octave_idx_type nc = 3;
+              while (! octave::math::isnan (idx(nc,jj)) && nc < fcmax)
+                nc++;
+
+              std::list<octave_idx_type> coplanar_ends;
+
+              octave_idx_type i_start = 1;
+              octave_idx_type i_end = 2;
+              while (i_end < nc - 1)
+                {
+                  // look for coplanar subsets
+                  for (i_end = nc-1; i_end > i_start+1; i_end--)
+                    {
+                      Matrix fc = Matrix (i_end - i_start + 1, 3, 0.0);
+                      for (octave_idx_type j = 0; j <= i_end-i_start; j++)
+                        for (octave_idx_type i = 0; i < 3; i++)
+                          fc(j,i) = vert(idx(j + i_start,jj)-1,i)
+                                    - vert(idx(0,jj)-1,i);
+
+                      // calculate rank of matrix
+                      octave::math::svd<Matrix> result
+                        (fc,
+                         octave::math::svd<Matrix>::Type::sigma_only,
+                         octave::math::svd<Matrix>::Driver::GESVD);
+                      DiagMatrix sigma = result.singular_values ();
+                      double tol = nc * sigma(0,0)
+                                   * std::numeric_limits<double>::epsilon ();
+                      if (sigma(2,2) < tol)
+                        break;
+                    }
+                  coplanar_ends.push_back (i_end);
+                  i_start = i_end;
+                }
+              coplanar_last_idx.push_back (coplanar_ends);
+            }
+        }
+    }
+
   // Build cdata
   dim_vector dv = dim_vector::alloc (3);
   NDArray cd;

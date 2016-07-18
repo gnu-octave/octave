@@ -1,5 +1,11 @@
 FCN_FILE_DIRS += scripts/testfun
 
+scripts_testfun_PRIVATE_FCN_FILES = \
+  scripts/testfun/private/compare_plot_demos.m \
+  scripts/testfun/private/dump_demos.m \
+  scripts/testfun/private/html_compare_plot_demos.m \
+  scripts/testfun/private/html_plot_demos_template.html 
+
 scripts_testfun_FCN_FILES = \
   scripts/testfun/__have_feature__.m \
   scripts/testfun/__printf_assert__.m \
@@ -18,7 +24,13 @@ scripts_testfundir = $(fcnfiledir)/testfun
 
 scripts_testfun_DATA = $(scripts_testfun_FCN_FILES)
 
-FCN_FILES += $(scripts_testfun_FCN_FILES)
+scripts_testfun_privatedir = $(fcnfiledir)/testfun/private
+
+scripts_testfun_private_DATA = $(scripts_testfun_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_testfun_FCN_FILES) \
+  $(scripts_testfun_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += scripts/testfun/PKG_ADD
 

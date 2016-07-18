@@ -720,7 +720,7 @@ returning the empty string if no key is available.
 @seealso{input, pause}
 @end deftypefn */)
 {
-  octave_value retval;
+  octave_value retval = "";
 
   // FIXME: add timeout and default value args?
 

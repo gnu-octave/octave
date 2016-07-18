@@ -5,6 +5,7 @@ scripts_linear_algebra_FCN_FILES = \
   scripts/linear-algebra/commutation_matrix.m \
   scripts/linear-algebra/cond.m \
   scripts/linear-algebra/condest.m \
+  scripts/linear-algebra/condeig.m \
   scripts/linear-algebra/cross.m \
   scripts/linear-algebra/duplication_matrix.m \
   scripts/linear-algebra/expm.m \

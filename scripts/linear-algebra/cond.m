@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} cond (@var{A})
 ## @deftypefnx {} {} cond (@var{A}, @var{p})
-## Compute the @var{p}-norm condition number of a matrix.
+## Compute the @var{p}-norm condition number of a matrix with respect to
+## inversion.
 ##
 ## @code{cond (@var{A})} is defined as
 ## @tex
@@ -40,7 +41,7 @@
 ## indicates small changes (such as underflow or round-off error) will produce
 ## large changes in the resulting output.  In such cases the solution results
 ## from numerical computing are not likely to be accurate.
-## @seealso{condest, rcond, norm, svd}
+## @seealso{condest, rcond, condeig, norm, svd}
 ## @end deftypefn
 
 ## Author: jwe

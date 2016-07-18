@@ -100,6 +100,8 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(cond)
 
+@DOCSTRING(condeig)
+
 @DOCSTRING(det)
 
 @DOCSTRING(eig)

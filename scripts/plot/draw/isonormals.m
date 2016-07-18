@@ -92,7 +92,7 @@
 ## isofinish (p);
 ## @end smallexample
 ##
-## @seealso{isosurface, isocolors}
+## @seealso{isosurface, isocolors, smooth3}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>

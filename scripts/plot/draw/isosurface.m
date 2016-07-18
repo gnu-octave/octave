@@ -132,12 +132,13 @@
 ## light ("Position", [1 1 5]);
 ## @end smallexample
 ##
-## @seealso{isonormals, isocolors}
+## @seealso{isonormals, isocolors, smooth3}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>
 
-## FIXME: Add support for string input argument "verbose" (needs changes to __marching_cube__.m)
+## FIXME: Add support for string input argument "verbose"
+##        (needs changes to __marching_cube__.m)
 
 function varargout = isosurface (varargin)
 

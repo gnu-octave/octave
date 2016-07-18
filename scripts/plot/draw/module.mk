@@ -82,6 +82,7 @@ scripts_plot_draw_FCN_FILES = \
   scripts/plot/draw/semilogy.m \
   scripts/plot/draw/shrinkfaces.m \
   scripts/plot/draw/slice.m \
+  scripts/plot/draw/smooth3.m \
   scripts/plot/draw/sombrero.m \
   scripts/plot/draw/sphere.m \
   scripts/plot/draw/stairs.m \

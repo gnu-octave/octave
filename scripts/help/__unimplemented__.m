@@ -801,7 +801,6 @@ function list = missing_functions ()
   "serial",
   "setpixelposition",
   "showplottool",
-  "smooth3",
   "snapnow",
   "splitapply",
   "ss2tf",

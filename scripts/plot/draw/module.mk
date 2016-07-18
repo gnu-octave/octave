@@ -72,6 +72,7 @@ scripts_plot_draw_FCN_FILES = \
   scripts/plot/draw/quiver3.m \
   scripts/plot/draw/quiver.m \
   scripts/plot/draw/rectangle.m \
+  scripts/plot/draw/reducevolume.m \
   scripts/plot/draw/ribbon.m \
   scripts/plot/draw/rose.m \
   scripts/plot/draw/scatter3.m \

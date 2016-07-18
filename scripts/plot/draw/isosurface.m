@@ -133,7 +133,7 @@
 ## light ("Position", [1 1 5]);
 ## @end smallexample
 ##
-## @seealso{isonormals, isocolors, smooth3}
+## @seealso{isonormals, isocolors, smooth3, reducevolume}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>

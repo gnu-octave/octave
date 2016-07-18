@@ -787,7 +787,6 @@ function list = missing_functions ()
   "rbbox",
   "readtable",
   "reducepatch",
-  "reducevolume",
   "remove",
   "removecats",
   "renamecats",

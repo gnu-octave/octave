@@ -17,80 +17,39 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{n}] =} isonormals (@var{val}, @var{v})
-## @deftypefnx {} {[@var{n}] =} isonormals (@var{val}, @var{p})
-## @deftypefnx {} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{v})
-## @deftypefnx {} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{p})
-## @deftypefnx {} {[@var{n}] =} isonormals (@dots{}, "negate")
-## @deftypefnx {} {} isonormals (@dots{}, @var{p})
+## @deftypefn  {} {[@var{vn}] =} isonormals (@var{val}, @var{vert})
+## @deftypefnx {} {[@var{vn}] =} isonormals (@var{val}, @var{hp})
+## @deftypefnx {} {[@var{vn}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{vert})
+## @deftypefnx {} {[@var{vn}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{hp})
+## @deftypefnx {} {[@var{vn}] =} isonormals (@dots{}, "negate")
+## @deftypefnx {} {} isonormals (@var{val}, @var{hp})
+## @deftypefnx {} {} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{hp})
+## @deftypefnx {} {} isonormals (@dots{}, "negate")
 ##
 ## Calculate normals to an isosurface.
 ##
-## If called with one output argument and the first input argument
-## @var{val} is a three-dimensional array that contains the data for an
-## isosurface geometry and the second input argument @var{v} keeps the
-## vertices of an isosurface then return the normals @var{n} in form of
-## a matrix with the same size than @var{v} at computed points
-## @command{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
-## @var{n} can be taken to manually set @var{VertexNormals} of a patch.
+## The vertex normals @var{vn} are calculated from the gradient of the
+## 3-dimensional array @var{val} (size: lxmxn) with the data for an
+## isosurface geometry.  The normals point towards lower values in @var{val}.
 ##
-## If called with further input arguments @var{x}, @var{y} and @var{z}
-## which are three--dimensional arrays with the same size than @var{val}
-## then the volume data is taken at those given points.  Instead of the
-## vertices data @var{v} a patch handle @var{p} can be passed to this
-## function.
+## If called with one output argument @var{vn} and the second input argument
+## @var{vert} holds the vertices of an isosurface, the normals @var{vn} are
+## calculated at the vertices @var{vert} on a grid given by
+## @code{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
+## @var{vn} has the same size as @var{vert} and can be used to set the
+## @qcode{"VertexNormals"} property of the corresponding patch.
 ##
-## If given the string input argument @qcode{"negate"} as last input argument
-## then compute the reverse vector normals of an isosurface geometry.
+## If called with further input arguments @var{x}, @var{y}, and @var{z}
+## which are 3-dimensional arrays with the same size as @var{val},
+## the volume data is taken at these points.  Instead of the vertex data
+## @var{vert}, a patch handle @var{hp} can be passed to this function.
 ##
-## If no output argument is given then directly redraw the patch that is
-## given by the patch handle @var{p}.
+## If the last input argument is the string @qcode{"negate"}, compute the
+## reverse vector normals of an isosurface geometry (i.e., pointed towards
+## higher values in @var{val}).
 ##
-## For example:
-## @c Set example in small font to prevent overfull line
-##
-## @smallexample
-## function isofinish (p)
-##   set (gca, "PlotBoxAspectRatioMode", "manual", ...
-##             "PlotBoxAspectRatio", [1 1 1]);
-##   set (p, "VertexNormals", -get (p,"VertexNormals")); # Revert normals
-##   set (p, "FaceColor", "interp");
-##   ## set (p, "FaceLighting", "phong");
-##   ## light ("Position", [1 1 5]); # Available with JHandles
-## endfunction
-##
-## N = 15;    # Increase number of vertices in each direction
-## iso = .4;  # Change isovalue to .1 to display a sphere
-## lin = linspace (0, 2, N);
-## [x, y, z] = meshgrid (lin, lin, lin);
-## c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
-## figure (); # Open another figure window
-##
-## subplot (2,2,1); view (-38, 20);
-## [f, v, cdat] = isosurface (x, y, z, c, iso, y);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
-##            "FaceColor", "interp", "EdgeColor", "none");
-## isofinish (p);  # Call user function isofinish
-##
-## subplot (2,2,2); view (-38, 20);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
-##            "FaceColor", "interp", "EdgeColor", "none");
-## isonormals (x, y, z, c, p); # Directly modify patch
-## isofinish (p);
-##
-## subplot (2,2,3); view (-38, 20);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
-##            "FaceColor", "interp", "EdgeColor", "none");
-## n = isonormals (x, y, z, c, v); # Compute normals of isosurface
-## set (p, "VertexNormals", n);    # Manually set vertex normals
-## isofinish (p);
-##
-## subplot (2,2,4); view (-38, 20);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
-##            "FaceColor", "interp", "EdgeColor", "none");
-## isonormals (x, y, z, c, v, "negate"); # Use reverse directly
-## isofinish (p);
-## @end smallexample
+## If no output argument is given, the property @qcode{"VertexNormals"} of
+## the patch associated with the patch handle @var{hp} is changed directly.
 ##
 ## @seealso{isosurface, isocolors, smooth3}
 ## @end deftypefn
@@ -101,46 +60,49 @@ function varargout = isonormals (varargin)
 
   na = nargin;
   negate = false;
-  if (ischar (varargin{nargin}))
-    na = nargin-1;
-    if (strcmp (lower (varargin{nargin}), "negate"))
+  if (ischar (varargin{na}))
+    if (strcmpi (varargin{na}, "negate"))
       negate = true;
     else
       error ("isonormals: Unknown option '%s'", varargin{nargin});
     endif
+    na = nargin-1;
   endif
 
   switch (na)
     case 2
-      c = varargin{1};
+      val = varargin{1};
       vp = varargin{2};
-      x = 1:size (c, 2);
-      y = 1:size (c, 1);
-      z = 1:size (c, 3);
+      x = 1:size (val, 2);
+      y = 1:size (val, 1);
+      z = 1:size (val, 3);
+
     case 5
       x = varargin{1};
       y = varargin{2};
       z = varargin{3};
-      c = varargin{4};
+      val = varargin{4};
       vp = varargin{5};
+
     otherwise
       print_usage ();
+
   endswitch
 
   if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
-  elseif (ishandle (vp))
+  elseif (ishghandle (vp, "patch"))
     pa = vp;
     v = get (pa, "Vertices");
   else
-    error ("isonormals: Last argument is not a vertex list or a patch handle");
+    error ("isonormals: input must be a list of vertices or a patch handle");
   endif
 
   if (negate)
-    normals = -__interp_cube__ (x, y, z, c, v, "normals");
+    normals = __interp_cube__ (x, y, z, val, v, "normals");
   else
-    normals = __interp_cube__ (x, y, z, c, v, "normals");
+    normals = -__interp_cube__ (x, y, z, val, v, "normals");
   endif
 
   switch (nargout)
@@ -148,26 +110,83 @@ function varargout = isonormals (varargin)
       if (! isempty (pa))
         set (pa, "VertexNormals", normals);
       endif
+
     case 1
       varargout = {normals};
+
     otherwise
       print_usage ();
+
   endswitch
 
 endfunction
 
 
-%!test
+%!demo
+%! function isofinish (hp)
+%!   axis equal
+%!   set (hp, "VertexNormals", -get (hp, "VertexNormals")); # Revert normals
+%!   shading interp
+%!   set (hp, "FaceLighting", "gouraud");
+%!   set (hp, "BackFaceLighting", "unlit");
+%!   light ();
+%! endfunction
+%!
+%! N = 15;    # Increase number of vertices in each direction
+%! iso = .4;  # Change isovalue to .1 to display a sphere
+%! lin = linspace (0, 2, N);
+%! [x, y, z] = meshgrid (lin, lin, lin);
+%! val = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
+%! clf;
+%!
+%! subplot (2,2,1); view (-38, 20);
+%! [fac, vert, cdat] = isosurface (x, y, z, val, iso, y);
+%! hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
+%! title ("without isonormals")
+%! isofinish (hp);  # Call user function isofinish
+%!
+%! subplot (2,2,2); view (-38, 20);
+%! hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
+%! title ("patch modified by isonormals")
+%! isonormals (x, y, z, val, hp); # Directly modify patch
+%! isofinish (hp);
+%!
+%! subplot (2,2,3); view (-38, 20);
+%! hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
+%! vn = isonormals (x, y, z, val, vert); # Compute normals of isosurface
+%! set (hp, "VertexNormals", vn);    # Manually set vertex normals
+%! title ("'VertexNormals' from isonormals manually set")
+%! isofinish (hp);
+%!
+%! subplot (2,2,4); view (-38, 20);
+%! hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
+%! isonormals (x, y, z, val, hp, "negate"); # Use reverse directly
+%! title ("patch modified by isonormals (..., 'negate')")
+%! isofinish (hp);
+
+%!shared x,y,z,val,vert
 %! [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
-%! c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
-%! [f, v, cdat] = isosurface (x, y, z, c, .4, y);
-%! n = isonormals (x, y, z, c, v);
-%! assert (size (v), size (n));
+%! val = abs ((x-.5).^2 + (y-.3).^2 + (z-.4).^2);
+%! [fac, vert, cdat] = isosurface (x, y, z, val, .4, y);
+
 %!test
-%! [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
-%! c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
-%! [f, v, cdat] = isosurface (x, y, z, c, .4, y);
-%! np = isonormals (x, y, z, c, v);
-%! nn = isonormals (x, y, z, c, v, "negate");
+%! vn = isonormals (x, y, z, val, vert);
+%! assert (size (vert), size (vn));
+
+%!test
+%! np = isonormals (x, y, z, val, vert);
+%! nn = isonormals (x, y, z, val, vert, "negate");
 %! assert (np, -nn);
+
+%!test
+%! [x,y,z] = meshgrid (-2:1:2, -2:1:2, -2:1:2);
+%! val = x.^2 + y.^2 + z.^2;
+%! [f,vert] = isosurface (x, y, z, val, 1);
+%! vn = isonormals (x, y, z, val, vert);
+%! dirn = vert ./ vn;
+%! assert (all (dirn(isfinite (dirn)) <= 0));
+
+%!error <Unknown option 'foo'> n = isonormals (x, y, z, val, vert, "foo")
+%!error <input must be a list of vertices or a patch handle>
+%! n = isonormals (x, y, z, val, x);
 

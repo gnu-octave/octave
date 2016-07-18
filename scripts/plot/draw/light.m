@@ -344,10 +344,10 @@ endfunction
 %! [x,y,z] = meshgrid (-.5:0.1:2, -2:0.1:2, -2:0.1:2);
 %! val = x.^2 + y.^2 + z.^2;
 %! fv = isosurface (x, y, z, val, 1);
+%! vn = isonormals (x, y, z, val, fv.vertices, "negate");
 %! h_axes1 = subplot (1, 3, 1);
-%! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", "FaceLighting", "Gouraud");
-%! isonormals (x, y, z, val, h_patch)
-%! vn = get (h_patch, "VertexNormals");
+%! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", ...
+%!                  "FaceLighting", "Gouraud", "VertexNormals", vn);
 %! set (h_patch, "BackFaceLighting", "reverselit");
 %! h_light = light ();
 %! view (h_axes1, [-50 30])

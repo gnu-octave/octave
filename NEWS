@@ -72,6 +72,9 @@ Summary of important user-visible changes for version 4.2:
  ** The surfnorm function now returns unnormalized (magnitude != 1)
     normal vectors for compatibility with Matlab.
 
+ ** The normal vectors returned from isonormals have been reversed to
+    point towards smaller values for compatibility with Matlab.
+
  ** The quadl function now uses an absolute, rather than relative,
     tolerance for Matlab compatibility.  The default tolerance is 1e-6
     which may result in lower precision results than previous versions

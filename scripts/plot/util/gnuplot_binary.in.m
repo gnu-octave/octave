@@ -32,6 +32,7 @@
 
 function [prog, args] = gnuplot_binary (new_prog, varargin)
 
+  mlock ()
   persistent gp_binary = %OCTAVE_CONF_GNUPLOT%;
   persistent gp_args = {};
 

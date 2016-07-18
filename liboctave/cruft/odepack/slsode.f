@@ -1207,13 +1207,14 @@ C  Declare externals.
       REAL R1MACH, SVNORM
 C
 C  Declare all other variables.
-      INTEGER INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH, IOWNS,
+      INTEGER INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH,
+     1   IALTH, IPUP, LMAX, MEO, NQNYH, NSLP,
      1   ICF, IERPJ, IERSL, JCUR, JSTART, KFLAG, L,
      2   LYH, LEWT, LACOR, LSAVF, LWM, LIWM, METH, MITER,
      3   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU
       INTEGER I, I1, I2, IFLAG, IMXER, KGO, LF0,
      1   LENIW, LENRW, LENWM, ML, MORD, MU, MXHNL0, MXSTP0
-      REAL ROWNS,
+      REAL CONIT, CRATE, EL, ELCO, HOLD, RMAX, TESCO,
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND
       REAL ATOLI, AYI, BIG, EWTI, H0, HMAX, HMX, RH, RTOLI,
      1   TCRIT, TDIST, TNEXT, TOL, TOLSF, TP, SIZE, SUM, W0
@@ -1231,9 +1232,11 @@ C SPREPJ, and SSOLSY.
 C Groups of variables are replaced by dummy arrays in the Common
 C declarations in routines where those variables are not used.
 C-----------------------------------------------------------------------
-      COMMON /SLS001/ ROWNS(209),
+      COMMON /SLS001/ CONIT, CRATE, EL(13), ELCO(13,12),
+     1   HOLD, RMAX, TESCO(3,12),
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND,
-     2   INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH, IOWNS(6),
+     2   INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH,
+     3   IALTH, IPUP, LMAX, MEO, NQNYH, NSLP,
      3   ICF, IERPJ, IERSL, JCUR, JSTART, KFLAG, L,
      4   LYH, LEWT, LACOR, LSAVF, LWM, LIWM, METH, MITER,
      5   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU

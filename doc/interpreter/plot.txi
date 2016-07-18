@@ -388,6 +388,8 @@ three-dimensional plots.
 
 @DOCSTRING(reducevolume)
 
+@DOCSTRING(reducepatch)
+
 @DOCSTRING(shrinkfaces)
 
 @DOCSTRING(diffuse)

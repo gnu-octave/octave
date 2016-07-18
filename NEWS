@@ -124,6 +124,7 @@ Summary of important user-visible changes for version 4.2:
       padecoef
       psi
       rad2deg
+      reducepatch
       reducevolume
       uibuttongroup
 

@@ -780,7 +780,6 @@ function list = missing_functions ()
   "RandStream",
   "rbbox",
   "readtable",
-  "reducepatch",
   "remove",
   "removecats",
   "renamecats",

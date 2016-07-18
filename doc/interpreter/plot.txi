@@ -398,6 +398,8 @@ three-dimensional plots.
 
 @DOCSTRING(lighting)
 
+@DOCSTRING(material)
+
 @DOCSTRING(meshgrid)
 
 @DOCSTRING(ndgrid)

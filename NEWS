@@ -117,6 +117,7 @@ Summary of important user-visible changes for version 4.2:
       hash
       im2double
       localfunctions
+      material
       normest1
       ode45
       odeget

@@ -713,7 +713,6 @@ function list = missing_functions ()
   "lsqr",
   "makehgtform",
   "mapreduce",
-  "material",
   "matfile",
   "matlabrc",
   "memmapfile",

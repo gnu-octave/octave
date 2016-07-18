@@ -22,6 +22,7 @@ scripts_plot_appearance_FCN_FILES = \
   scripts/plot/appearance/hidden.m \
   scripts/plot/appearance/legend.m \
   scripts/plot/appearance/lighting.m \
+  scripts/plot/appearance/material.m \
   scripts/plot/appearance/orient.m \
   scripts/plot/appearance/pbaspect.m \
   scripts/plot/appearance/shading.m \

@@ -371,7 +371,7 @@ compatibility with @sc{matlab}.
 @seealso{eig, balance, lu, chol, hess, qr, qzhess, schur, svd}
 @end deftypefn */)
 {
-  int nargin = args.length ();
+  volatile int nargin = args.length ();
 
 #if defined (DEBUG)
   std::cout << "qz: nargin = " << nargin

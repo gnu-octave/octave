@@ -86,13 +86,10 @@ OCTAVE_API extern int f77_exception_encountered;
 
 The following macros are used for handling Fortran <-> C calling
 conventions.  They are defined below for three different types of
-systems, Cray (possibly now obsolete), Visual Fortran, and any system
-that is compatible with the f2c calling conventions, including g77 and
-gfortran.  Note that gfortran is not completely compatible with the
-f2c calling conventions, but that we only use the parts that are
-compatible.  For example, f2c and gfortran differ in the way they
-handle Fortran functions that return complex values, but Octave does
-not call any Fortran functions like that directly from C or C++.
+systems, Cray (possibly now obsolete), Visual Fortran, and gfortran.
+Note that we don't attempt to handle Fortran functions, we always use
+subroutine wrappers for them and pass the return value as an extra
+argument.
 
 Use these macros to pass character strings from C to Fortran:
 
@@ -144,7 +141,10 @@ not returning a value from a function declared to return something.
 
 #include <fortran.h>
 
-/* Use these macros to pass character strings from C to Fortran.  */
+/* Use these macros to pass character strings from C to Fortran.  Cray
+   Fortran uses a descriptor structure to pass a pointer to the string
+   and the length in a single argument.  */
+
 #define F77_CHAR_ARG(x) octave_make_cray_ftn_ch_dsc (x, strlen (x))
 #define F77_CONST_CHAR_ARG(x) \
   octave_make_cray_const_ftn_ch_dsc (x, strlen (x))
@@ -153,9 +153,10 @@ not returning a value from a function declared to return something.
 #define F77_CXX_STRING_ARG(x) \
   octave_make_cray_const_ftn_ch_dsc (x.c_str (), x.length ())
 #define F77_CHAR_ARG_LEN(l)
+#define F77_CHAR_ARG_LEN_TYPE
+#define F77_CHAR_ARG_LEN_DECL
 #define F77_CHAR_ARG_DECL octave_cray_ftn_ch_dsc
 #define F77_CONST_CHAR_ARG_DECL octave_cray_ftn_ch_dsc
-#define F77_CHAR_ARG_LEN_DECL
 
 /* Use these macros to write C-language functions that accept
    Fortran-style character strings.  */
@@ -171,6 +172,7 @@ not returning a value from a function declared to return something.
    supposed to act like Fortran subroutines.  F77_NORETURN is intended
    to be used as the last statement of such a function that has been
    tagged with a "noreturn" attribute.  */
+
 #define F77_RETURN(retval) return retval;
 #if defined (HAVE_OCTAVE_NORETURN_ATTR)
 #  define F77_NORETURN(retval)
@@ -223,19 +225,23 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
   
 #elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
 
-/* Use these macros to pass character strings from C to Fortran.  */
+/* Use these macros to pass character strings from C to Fortran.
+   Visual Fortran inserts the length after each character string
+   argument.  */
+
 #define F77_CHAR_ARG(x) x, strlen (x)
 #define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
 #define F77_CHAR_ARG2(x, l) x, l
 #define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
 #define F77_CXX_STRING_ARG(x) F77_CONST_CHAR_ARG2 (x.c_str (), x.length ())
 #define F77_CHAR_ARG_LEN(l)
-#define F77_CHAR_ARG_DECL char *, int
-#define F77_CONST_CHAR_ARG_DECL const char *, int
+#define F77_CHAR_ARG_LEN_TYPE int
 #define F77_CHAR_ARG_LEN_DECL
+#define F77_CHAR_ARG_DECL char *, F77_CHAR_ARG_LEN_TYPE
+#define F77_CONST_CHAR_ARG_DECL const char *, F77_CHAR_ARG_LEN_TYPE
 
-#define F77_CHAR_ARG_DEF(s, len) char *s, int len
-#define F77_CONST_CHAR_ARG_DEF(s, len) const char *s, int len
+#define F77_CHAR_ARG_DEF(s, len) char *s, F77_CHAR_ARG_LEN_TYPE len
+#define F77_CONST_CHAR_ARG_DEF(s, len) const char *s, F77_CHAR_ARG_LEN_TYPE len
 #define F77_CHAR_ARG_LEN_DEF(len)
 #define F77_CHAR_ARG_USE(s) s
 #define F77_CHAR_ARG_LEN_USE(s, len) len
@@ -245,9 +251,17 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_RETURN(retval) return;
 #define F77_NORETURN(retval)
 
-#else
+#elif defined (F77_USES_GFORTRAN_CALLING_CONVENTION)
 
-/* Assume f2c-compatible calling convention.  */
+/* Use these macros to pass character strings from C to Fortran.
+   gfortran appends length arguments for assumed size character
+   strings to the and ignores others.
+
+   FIXME: I don't think we correctly handle the case of mixing some
+   fixed-length and some assumed-length character string arguments as
+   we don't handle each case separately, so it seems there could be
+   mismatch?  However, I don't think we currently have to handle this
+   case in Octave.  */
 
 #define F77_CHAR_ARG(x) x
 #define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
@@ -255,13 +269,47 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
 #define F77_CXX_STRING_ARG(x) F77_CONST_CHAR_ARG2 (x.c_str (), x.length ())
 #define F77_CHAR_ARG_LEN(l) , l
+#define F77_CHAR_ARG_LEN_TYPE int
+#define F77_CHAR_ARG_LEN_DECL , F77_CHAR_ARG_LEN_TYPE
 #define F77_CHAR_ARG_DECL char *
 #define F77_CONST_CHAR_ARG_DECL const char *
-#define F77_CHAR_ARG_LEN_DECL , long
 
 #define F77_CHAR_ARG_DEF(s, len) char *s
 #define F77_CONST_CHAR_ARG_DEF(s, len) const char *s
-#define F77_CHAR_ARG_LEN_DEF(len) , long len
+#define F77_CHAR_ARG_LEN_DEF(len) , F77_CHAR_ARG_LEN_TYPE len
+#define F77_CHAR_ARG_USE(s) s
+#define F77_CHAR_ARG_LEN_USE(s, len) len
+
+#define F77_RET_T void
+
+#define F77_RETURN(retval) return retval;
+#if defined (HAVE_OCTAVE_NORETURN_ATTR)
+#  define F77_NORETURN(retval)
+#else
+#  define F77_NORETURN(retval) return retval;
+#endif
+
+#elif defined (F77_USES_F2C_CALLING_CONVENTION)
+
+/* Assume f2c-compatible calling convention.  */
+
+/* Use these macros to pass character strings from C to Fortran.  f2c
+   appends all length arguments at the end of the parameter list.  */
+
+#define F77_CHAR_ARG(x) x
+#define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
+#define F77_CHAR_ARG2(x, l) x
+#define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
+#define F77_CXX_STRING_ARG(x) F77_CONST_CHAR_ARG2 (x.c_str (), x.length ())
+#define F77_CHAR_ARG_LEN(l) , l
+#define F77_CHAR_ARG_LEN_TYPE long
+#define F77_CHAR_ARG_LEN_DECL , F77_CHAR_ARG_LEN_TYPE
+#define F77_CHAR_ARG_DECL char *
+#define F77_CONST_CHAR_ARG_DECL const char *
+
+#define F77_CHAR_ARG_DEF(s, len) char *s
+#define F77_CONST_CHAR_ARG_DEF(s, len) const char *s
+#define F77_CHAR_ARG_LEN_DEF(len) , F77_CHAR_ARG_LEN_TYPE len
 #define F77_CHAR_ARG_USE(s) s
 #define F77_CHAR_ARG_LEN_USE(s, len) len
 
@@ -273,6 +321,10 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #else
 #  define F77_NORETURN(retval) return retval;
 #endif
+
+#else
+
+#error "unknown C++ to Fortran calling convention"
 
 #endif
 
@@ -293,7 +345,6 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
  OCTAVE_LOCAL_BUFFER (char, cs, F77_CHAR_ARG_LEN_USE (s, len) + 1); \
  memcpy (cs, F77_CHAR_ARG_USE (s), F77_CHAR_ARG_LEN_USE (s, len)); \
  cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0'
-
 
 OCTAVE_NORETURN OCTAVE_API extern
 F77_RET_T

@@ -668,7 +668,6 @@ else
   AC_MSG_ERROR([A Fortran compiler is required])
 fi
 
-## Determine calling conventions for Fortran compiler
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_DUMMY_MAIN
 AC_F77_WRAPPERS
@@ -706,6 +705,34 @@ case $canonical_host_type in
   ;;
 esac
 
+if test $ac_cv_f77_compiler_gnu = yes; then
+  FORTRAN_CALLING_CONVENTION=gfortran
+else
+  FORTRAN_CALLING_CONVENTION=unknown
+fi
+AC_ARG_ENABLE([fortran-calling-convention],
+  [AS_HELP_STRING([--enable-fortran-calling-convention=OPTION],
+    [Select C++ to Fortran calling convention.  "gfortran" should be detected automatically.  Other options are "cray", "visual-fortran", or "f2c".])],
+  [FORTRAN_CALLING_CONVENTION="$enableval"], [])
+
+case "$FORTRAN_CALLING_CONVENTION" in
+  gfortran)
+    AC_DEFINE(F77_USES_GFORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the gfortran calling convention.])
+  ;;
+  cray)
+    AC_DEFINE(F77_USES_CRAY_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Cray Fortran calling convention.])
+  ;;
+  visual-fortran)
+    AC_DEFINE(F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Visual Fortran calling convention.])
+  ;;
+  f2c)
+    AC_DEFINE(F77_USES_F2C_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the f2c calling convention.])
+  ;;
+  *)
+    AC_MSG_ERROR([to build Octave, the C++ to Fortran calling convention must be known.])
+  ;;
+esac
+
 if test -n "$FFLAGS"; then
   AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
 fi
@@ -715,7 +742,7 @@ AC_SUBST(F77_APPEND_UNDERSCORE)
 AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
 
 if test -z "$F77"; then
-  AC_MSG_ERROR([in order to build Octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
+  AC_MSG_ERROR([to build Octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
 fi
 
 OCTAVE_CHECK_FUNC_FORTRAN_ISNAN
@@ -756,7 +783,7 @@ if test $octave_cv_sizeof_fortran_integer = no; then
       OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
     fi
     if test $octave_cv_sizeof_fortran_integer = no; then
-      AC_MSG_ERROR([in order to build Octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
+      AC_MSG_ERROR([to build Octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
     fi
   else
     AC_MSG_ERROR([your Fortran compiler must have an option to make integers the same size as octave_idx_type ($OCTAVE_IDX_TYPE).  See the file INSTALL for more information.])

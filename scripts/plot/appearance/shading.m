@@ -28,16 +28,16 @@
 ## Single colored patches with invisible edges.
 ##
 ## @item @qcode{"faceted"}
-## Single colored patches with visible edges.
+## Single colored patches with black edges.
 ##
 ## @item @qcode{"interp"}
-## Color between patch vertices are interpolated and the patch edges are
+## Colors between patch vertices are interpolated and the patch edges are
 ## invisible.
 ## @end table
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
-## @seealso{fill, mesh, patch, pcolor, surf, surface, hidden}
+## @seealso{fill, mesh, patch, pcolor, surf, surface, hidden, lighting}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
@@ -51,6 +51,11 @@ function shading (varargin)
   endif
 
   mode = varargin{1};
+  if (! ischar (mode))
+    error ("shading: MODE must be a valid string");
+  elseif (! any (strcmpi (mode, {"flat", "interp", "faceted"})))
+    error ('shading: Invalid MODE "%s"', mode);
+  endif
 
   if (isempty (hax))
     hax = gca ();
@@ -81,19 +86,35 @@ function shading (varargin)
   ##hs = findobj (hax, "type", "surface");
   ##hlist = [hp(:); hs(:)];
 
-  switch (lower (mode))
-    case "flat"
-      set (hlist, "facecolor", "flat");
-      set (hlist, "edgecolor", "none");
-    case "interp"
-      set (hlist, "facecolor", "interp");
-      set (hlist, "edgecolor", "none");
-    case "faceted"
-      set (hlist, "facecolor", "flat");
-      set (hlist, "edgecolor", [0 0 0]);
-    otherwise
-      error ('shading: Invalid MODE "%s"', mode);
-  endswitch
+  if (isempty (hlist))
+    return;
+  endif
+
+  ## Change "EdgeColor" for meshes instead of "FaceColor"
+  fc = get (hlist, "facecolor");
+  is_mesh = strcmp (fc, "none");
+  if (! iscell (fc))
+    fc = {fc};
+  endif
+  bg = get (hax, "color");
+  if (strcmp (bg, "none"))
+    if (isprop (get (hax, "parent"), "color"))
+      bg = get (get (hax, "parent"), "color");
+    endif
+    if (isempty (bg) || strcmp (bg, "none"))
+      bg = [1 1 1];
+    endif
+  endif
+  is_mesh |= cellfun (@(x) isequal (x, bg), fc);
+
+  ec = "none";
+  if (strcmpi (mode, "faceted"))
+    ec = [0 0 0];
+    mode = "flat";
+  endif
+
+  set (hlist(! is_mesh), "facecolor", mode, "edgecolor", ec);
+  set (hlist(is_mesh), "edgecolor", mode);
 
 endfunction
 
@@ -113,7 +134,7 @@ endfunction
 %! h = findobj (gca (), "type", "surface");
 %! facecolor = get (h, "facecolor");
 %! edgecolor = get (h, "edgecolor");
-%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor);
 %! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
@@ -131,7 +152,7 @@ endfunction
 %! h = findobj (gca (), "type", "surface");
 %! facecolor = get (h, "facecolor");
 %! edgecolor = get (h, "edgecolor");
-%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor);
 %! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
@@ -149,17 +170,17 @@ endfunction
 %! h = findobj (gca (), "type", "surface");
 %! facecolor = get (h, "facecolor");
 %! edgecolor = get (h, "edgecolor");
-%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor);
 %! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
-%! clf
-%! colormap ("default")
-%! peaks ()
-%! shading interp
+%! clf;
+%! colormap ("default");
+%! peaks ();
+%! shading interp;
 %! h = findobj (gca (), "type", "surface");
-%! set (h, "edgecolor", "k")
-%! title ({'shading ''interp''', 'with "edgecolor" set to black'})
+%! set (h, "edgecolor", "k");
+%! title ({'shading ''interp''', 'with "edgecolor" set to black'});
 
 %!demo
 %! clf;
@@ -176,7 +197,7 @@ endfunction
 %! h = findobj (gca (), "type", "surface");
 %! facecolor = get (h, "facecolor");
 %! edgecolor = get (h, "edgecolor");
-%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor);
 %! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
@@ -194,7 +215,7 @@ endfunction
 %! h = findobj (gca (), "type", "surface");
 %! facecolor = get (h, "facecolor");
 %! edgecolor = get (h, "edgecolor");
-%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor);
 %! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
@@ -212,6 +233,72 @@ endfunction
 %! h = findobj (gca (), "type", "surface");
 %! facecolor = get (h, "facecolor");
 %! edgecolor = get (h, "edgecolor");
-%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor);
 %! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" reversed'});
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! mesh (sombrero ());
+%! shading interp;
+%! title ('mesh with shading ''interp''');
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! mesh (sombrero ());
+%! shading flat;
+%! title ('mesh with shading ''flat''');
+
+%!test
+%! hf = figure ("Visible", "off");
+%! unwind_protect
+%!   ha = axes;
+%!   hm = mesh (sombrero ());
+%!   hp = patch;
+%!   hs = surface;
+%!   shading interp;
+%!   assert (get (hp, "facecolor"), "interp");
+%!   assert (get (hs, "facecolor"), "interp");
+%!   assert (get (hp, "edgecolor"), "none");
+%!   assert (get (hs, "edgecolor"), "none");
+%!   assert (get (hm, "edgecolor"), "interp");
+%!   shading faceted;
+%!   assert (get (hp, "facecolor"), "flat");
+%!   assert (get (hs, "facecolor"), "flat");
+%!   assert (get (hp, "edgecolor"), [0 0 0]);
+%!   assert (get (hs, "edgecolor"), [0 0 0]);
+%!   assert (get (hm, "edgecolor"), "flat");
+%!   shading (ha, "interp");
+%!   assert (get (hp, "facecolor"), "interp");
+%!   assert (get (hs, "facecolor"), "interp");
+%!   assert (get (hp, "edgecolor"), "none");
+%!   assert (get (hs, "edgecolor"), "none");
+%!   assert (get (hm, "edgecolor"), "interp");
+%!   set (hp, "edgecolor", "k");
+%!   set (hs, "edgecolor", "k");
+%!   shading flat;
+%!   assert (get (hp, "facecolor"), "flat");
+%!   assert (get (hs, "facecolor"), "flat");
+%!   assert (get (hp, "edgecolor"), "none");
+%!   assert (get (hs, "edgecolor"), "none");
+%!   assert (get (hm, "edgecolor"), "flat");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test on axes which has no patch or mesh objects
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   shading flat
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error shading ()
+%!error shading (1, 2, "flat")
+%!error <MODE must be a valid string> shading (-1)
+%!error <MODE must be a valid string> shading ({})
+%!error <Invalid MODE "foo"> shading foo
 

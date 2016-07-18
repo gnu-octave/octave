@@ -316,8 +316,8 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_ev)
 
   F77_XFCN (cgeev, CGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, tmp_data, n, pw, dummy, idummy,
-                           pv, n, &dummy_work, lwork, prwork, info
+                           n, F77_CMPLX_ARG (tmp_data), n, F77_CMPLX_ARG (pw), F77_CMPLX_ARG (dummy), idummy,
+                           F77_CMPLX_ARG (pv), n, F77_CMPLX_ARG (&dummy_work), lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
 
@@ -330,8 +330,8 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_ev)
 
   F77_XFCN (cgeev, CGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, tmp_data, n, pw, dummy, idummy,
-                           pv, n, pwork, lwork, prwork, info
+                           n, F77_CMPLX_ARG (tmp_data), n, F77_CMPLX_ARG (pw), F77_CMPLX_ARG (dummy), idummy,
+                           F77_CMPLX_ARG (pv), n, F77_CMPLX_ARG (pwork), lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
 
@@ -372,7 +372,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_ev)
 
   F77_XFCN (cheev, CHEEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, tmp_data, n, pwr, &dummy_work, lwork,
+                           n, F77_CMPLX_ARG (tmp_data), n, pwr, F77_CMPLX_ARG (&dummy_work), lwork,
                            prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
@@ -386,7 +386,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_ev)
 
   F77_XFCN (cheev, CHEEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, tmp_data, n, pwr, pwork, lwork, prwork, info
+                           n, F77_CMPLX_ARG (tmp_data), n, pwr, F77_CMPLX_ARG (pwork), lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
 
@@ -607,7 +607,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   FloatComplex *tmp_data = tmp.fortran_vec ();
 
   F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
-                             n, tmp_data, n,
+                             n, F77_CMPLX_ARG (tmp_data), n,
                              info
                              F77_CHAR_ARG_LEN (1)));
 
@@ -642,9 +642,9 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, atmp_data, n, btmp_data, n,
-                           palpha, pbeta, dummy, idummy,
-                           pv, n, &dummy_work, lwork, prwork, info
+                           n, F77_CMPLX_ARG (atmp_data), n, F77_CMPLX_ARG (btmp_data), n,
+                           F77_CMPLX_ARG (palpha), F77_CMPLX_ARG (pbeta), F77_CMPLX_ARG (dummy), idummy,
+                           F77_CMPLX_ARG (pv), n, F77_CMPLX_ARG (&dummy_work), lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
 
@@ -657,9 +657,9 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, atmp_data, n, btmp_data, n,
-                           palpha, pbeta, dummy, idummy,
-                           pv, n, pwork, lwork, prwork, info
+                           n, F77_CMPLX_ARG (atmp_data), n, F77_CMPLX_ARG (btmp_data), n,
+                           F77_CMPLX_ARG (palpha), F77_CMPLX_ARG (pbeta), F77_CMPLX_ARG (dummy), idummy,
+                           F77_CMPLX_ARG (pv), n, F77_CMPLX_ARG (pwork), lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
 
@@ -712,9 +712,9 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
 
   F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, atmp_data, n,
-                           btmp_data, n,
-                           pwr, &dummy_work, lwork,
+                           n, F77_CMPLX_ARG (atmp_data), n,
+                           F77_CMPLX_ARG (btmp_data), n,
+                           pwr, F77_CMPLX_ARG (&dummy_work), lwork,
                            prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
@@ -728,9 +728,9 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
 
   F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, atmp_data, n,
-                           btmp_data, n,
-                           pwr, pwork, lwork, prwork, info
+                           n, F77_CMPLX_ARG (atmp_data), n,
+                           F77_CMPLX_ARG (btmp_data), n,
+                           pwr, F77_CMPLX_ARG (pwork), lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
 

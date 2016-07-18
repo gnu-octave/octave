@@ -215,7 +215,7 @@ aepbalance<ComplexMatrix>::aepbalance (const ComplexMatrix& a, bool noperm,
   octave_idx_type info;
 
   F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1), n,
-                             balanced_mat.fortran_vec (), n, ilo, ihi,
+                             F77_DBLE_CMPLX_ARG (balanced_mat.fortran_vec ()), n, ilo, ihi,
                              scale.fortran_vec (), info
                              F77_CHAR_ARG_LEN (1)));
 }
@@ -236,7 +236,7 @@ aepbalance<ComplexMatrix>::balancing_matrix (void) const
   F77_XFCN (zgebak, ZGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
                              F77_CONST_CHAR_ARG2 (&side, 1),
                              n, ilo, ihi, scale.data (), n,
-                             balancing_mat.fortran_vec (), n, info
+                             F77_DBLE_CMPLX_ARG (balancing_mat.fortran_vec ()), n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
@@ -258,7 +258,7 @@ aepbalance<FloatComplexMatrix>::aepbalance (const FloatComplexMatrix& a,
   octave_idx_type info;
 
   F77_XFCN (cgebal, CGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1), n,
-                             balanced_mat.fortran_vec (), n, ilo, ihi,
+                             F77_CMPLX_ARG (balanced_mat.fortran_vec ()), n, ilo, ihi,
                              scale.fortran_vec (), info
                              F77_CHAR_ARG_LEN (1)));
 }
@@ -279,7 +279,7 @@ aepbalance<FloatComplexMatrix>::balancing_matrix (void) const
   F77_XFCN (cgebak, CGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
                              F77_CONST_CHAR_ARG2 (&side, 1),
                              n, ilo, ihi, scale.data (), n,
-                             balancing_mat.fortran_vec (), n, info
+                             F77_CMPLX_ARG (balancing_mat.fortran_vec ()), n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 

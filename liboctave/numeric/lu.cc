@@ -612,7 +612,7 @@ lu<ComplexMatrix>::lu (const ComplexMatrix& a)
 
   octave_idx_type info = 0;
 
-  F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
+  F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, F77_DBLE_CMPLX_ARG (tmp_data), a_nr, pipvt, info));
 
   for (octave_idx_type i = 0; i < mn; i++)
     pipvt[i] -= 1;
@@ -640,8 +640,8 @@ lu<ComplexMatrix>::update (const ComplexColumnVector& u,
 
   ComplexColumnVector utmp = u;
   ComplexColumnVector vtmp = v;
-  F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
-                             utmp.fortran_vec (), vtmp.fortran_vec ()));
+  F77_XFCN (zlu1up, ZLU1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()), m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+                             F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ())));
 }
 
 template <>
@@ -665,9 +665,9 @@ lu<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
     {
       ComplexColumnVector utmp = u.column (i);
       ComplexColumnVector vtmp = v.column (i);
-      F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (),
-                                 m, r.fortran_vec (), k,
-                                 utmp.fortran_vec (), vtmp.fortran_vec ()));
+      F77_XFCN (zlu1up, ZLU1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
+                                 m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ())));
     }
 }
 
@@ -693,10 +693,10 @@ lu<ComplexMatrix>::update_piv (const ComplexColumnVector& u,
   ComplexColumnVector vtmp = v;
   OCTAVE_LOCAL_BUFFER (Complex, w, m);
   for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-  F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (),
-                               m, r.fortran_vec (), k,
+  F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
+                               m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
                                ipvt.fortran_vec (),
-                               utmp.data (), vtmp.data (), w));
+                               F77_CONST_DBLE_CMPLX_ARG (utmp.data ()), F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
   for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
 }
 
@@ -723,10 +723,10 @@ lu<ComplexMatrix>::update_piv (const ComplexMatrix& u, const ComplexMatrix& v)
     {
       ComplexColumnVector utmp = u.column (i);
       ComplexColumnVector vtmp = v.column (i);
-      F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (),
-                                   m, r.fortran_vec (), k,
+      F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
+                                   m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
-                                   utmp.data (), vtmp.data (), w));
+                                   F77_CONST_DBLE_CMPLX_ARG (utmp.data ()), F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
     }
   for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
 }
@@ -748,7 +748,7 @@ lu<FloatComplexMatrix>::lu (const FloatComplexMatrix& a)
 
   octave_idx_type info = 0;
 
-  F77_XFCN (cgetrf, CGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
+  F77_XFCN (cgetrf, CGETRF, (a_nr, a_nc, F77_CMPLX_ARG (tmp_data), a_nr, pipvt, info));
 
   for (octave_idx_type i = 0; i < mn; i++)
     pipvt[i] -= 1;
@@ -775,8 +775,8 @@ lu<FloatComplexMatrix>::update (const FloatComplexColumnVector& u,
     {
       FloatComplexColumnVector utmp = u;
       FloatComplexColumnVector vtmp = v;
-      F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
-                                 utmp.fortran_vec (), vtmp.fortran_vec ()));
+      F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()), m, F77_CMPLX_ARG (r.fortran_vec ()), k,
+                                 F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ())));
     }
   else
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -804,9 +804,9 @@ lu<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
     {
       FloatComplexColumnVector utmp = u.column (i);
       FloatComplexColumnVector vtmp = v.column (i);
-      F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (),
-                                 m, r.fortran_vec (), k,
-                                 utmp.fortran_vec (), vtmp.fortran_vec ()));
+      F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
+                                 m, F77_CMPLX_ARG (r.fortran_vec ()), k,
+                                 F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ())));
     }
 }
 
@@ -832,10 +832,10 @@ lu<FloatComplexMatrix>::update_piv (const FloatComplexColumnVector& u,
   FloatComplexColumnVector vtmp = v;
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
   for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-  F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
-                               m, r.fortran_vec (), k,
+  F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
+                               m, F77_CMPLX_ARG (r.fortran_vec ()), k,
                                ipvt.fortran_vec (),
-                               utmp.data (), vtmp.data (), w));
+                               F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()), F77_CMPLX_ARG (w)));
   for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
 }
 
@@ -863,10 +863,10 @@ lu<FloatComplexMatrix>::update_piv (const FloatComplexMatrix& u,
     {
       FloatComplexColumnVector utmp = u.column (i);
       FloatComplexColumnVector vtmp = v.column (i);
-      F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
-                                   m, r.fortran_vec (), k,
+      F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
+                                   m, F77_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
-                                   utmp.data (), vtmp.data (), w));
+                                   F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()), F77_CMPLX_ARG (w)));
     }
   for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
 }

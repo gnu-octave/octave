@@ -263,7 +263,7 @@ gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
   char job = balance_job[0];
 
   F77_XFCN (zggbal, ZGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                             n, p_balanced_mat, n, p_balanced_mat2,
+                             n, F77_DBLE_CMPLX_ARG (p_balanced_mat), n, F77_DBLE_CMPLX_ARG (p_balanced_mat2),
                              n, ilo, ihi, plscale, prscale, pwork, info
                              F77_CHAR_ARG_LEN (1)));
 
@@ -332,8 +332,8 @@ gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
   char job = balance_job[0];
 
   F77_XFCN (cggbal, CGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                             n, p_balanced_mat, n, p_balanced_mat2,
-                             n, ilo, ihi, plscale,prscale, pwork, info
+                             n, F77_CMPLX_ARG (p_balanced_mat), n, F77_CMPLX_ARG (p_balanced_mat2),
+                             n, ilo, ihi, plscale, prscale, pwork, info
                              F77_CHAR_ARG_LEN (1)));
 
   balancing_mat = FloatMatrix (n, n, 0.0);

@@ -348,11 +348,11 @@ chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
 
   if (is_upper)
     F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               tmp.fortran_vec (), n, info
+                               F77_DBLE_CMPLX_ARG (tmp.fortran_vec ()), n, info
                                F77_CHAR_ARG_LEN (1)));
   else
     F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               tmp.fortran_vec (), n, info
+                               F77_DBLE_CMPLX_ARG (tmp.fortran_vec ()), n, info
                                F77_CHAR_ARG_LEN (1)));
 
   // If someone thinks of a more graceful way of doing this (or
@@ -393,11 +393,11 @@ chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
 
   if (is_upper)
     F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               tmp.fortran_vec (), n, info
+                               F77_CMPLX_ARG (tmp.fortran_vec ()), n, info
                                F77_CHAR_ARG_LEN (1)));
   else
     F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               tmp.fortran_vec (), n, info
+                               F77_CMPLX_ARG (tmp.fortran_vec ()), n, info
                                F77_CHAR_ARG_LEN (1)));
 
   // If someone thinks of a more graceful way of doing this (or
@@ -974,10 +974,10 @@ chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
     anorm = xnorm (a, 1);
 
   if (is_upper)
-    F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
+    F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, F77_DBLE_CMPLX_ARG (h), n, info
                                F77_CHAR_ARG_LEN (1)));
   else
-    F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1), n, h, n, info
+    F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1), n, F77_DBLE_CMPLX_ARG (h), n, info
                                F77_CHAR_ARG_LEN (1)));
 
   xrcond = 0.0;
@@ -992,8 +992,8 @@ chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
       Complex *pz = z.fortran_vec ();
       Array<double> rz (dim_vector (n, 1));
       double *prz = rz.fortran_vec ();
-      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-                                 n, anorm, xrcond, pz, prz, zpocon_info
+      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, F77_DBLE_CMPLX_ARG (h),
+                                 n, anorm, xrcond, F77_DBLE_CMPLX_ARG (pz), prz, zpocon_info
                                  F77_CHAR_ARG_LEN (1)));
 
       if (zpocon_info != 0)
@@ -1018,8 +1018,8 @@ chol<ComplexMatrix>::update (const ComplexColumnVector& u)
 
   OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-  F77_XFCN (zch1up, ZCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             utmp.fortran_vec (), rw));
+  F77_XFCN (zch1up, ZCH1UP, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw));
 }
 
 template <>
@@ -1037,8 +1037,8 @@ chol<ComplexMatrix>::downdate (const ComplexColumnVector& u)
 
   OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-  F77_XFCN (zch1dn, ZCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             utmp.fortran_vec (), rw, info));
+  F77_XFCN (zch1dn, ZCH1DN, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
 
   return info;
 }
@@ -1063,8 +1063,8 @@ chol<ComplexMatrix>::insert_sym (const ComplexColumnVector& u,
 
   chol_mat.resize (n+1, n+1);
 
-  F77_XFCN (zchinx, ZCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             j + 1, utmp.fortran_vec (), rw, info));
+  F77_XFCN (zchinx, ZCHINX, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             j + 1, F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
 
   return info;
 }
@@ -1080,7 +1080,7 @@ chol<ComplexMatrix>::delete_sym (octave_idx_type j)
 
   OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-  F77_XFCN (zchdex, ZCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+  F77_XFCN (zchdex, ZCHDEX, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
                              j + 1, rw));
 
   chol_mat.resize (n-1, n-1);
@@ -1098,8 +1098,8 @@ chol<ComplexMatrix>::shift_sym (octave_idx_type i, octave_idx_type j)
   OCTAVE_LOCAL_BUFFER (Complex, w, n);
   OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-  F77_XFCN (zchshx, ZCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             i + 1, j + 1, w, rw));
+  F77_XFCN (zchshx, ZCHSHX, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             i + 1, j + 1, F77_DBLE_CMPLX_ARG (w), rw));
 }
 
 #endif
@@ -1145,10 +1145,10 @@ chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
     anorm = xnorm (a, 1);
 
   if (is_upper)
-    F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
+    F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, F77_CMPLX_ARG (h), n, info
                                F77_CHAR_ARG_LEN (1)));
   else
-    F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1), n, h, n, info
+    F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1), n, F77_CMPLX_ARG (h), n, info
                                F77_CHAR_ARG_LEN (1)));
 
   xrcond = 0.0;
@@ -1163,8 +1163,8 @@ chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
       FloatComplex *pz = z.fortran_vec ();
       Array<float> rz (dim_vector (n, 1));
       float *prz = rz.fortran_vec ();
-      F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-                                 n, anorm, xrcond, pz, prz, cpocon_info
+      F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, F77_CMPLX_ARG (h),
+                                 n, anorm, xrcond, F77_CMPLX_ARG (pz), prz, cpocon_info
                                  F77_CHAR_ARG_LEN (1)));
 
       if (cpocon_info != 0)
@@ -1189,8 +1189,8 @@ chol<FloatComplexMatrix>::update (const FloatComplexColumnVector& u)
 
   OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-  F77_XFCN (cch1up, CCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             utmp.fortran_vec (), rw));
+  F77_XFCN (cch1up, CCH1UP, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             F77_CMPLX_ARG (utmp.fortran_vec ()), rw));
 }
 
 template <>
@@ -1208,8 +1208,8 @@ chol<FloatComplexMatrix>::downdate (const FloatComplexColumnVector& u)
 
   OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-  F77_XFCN (cch1dn, CCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             utmp.fortran_vec (), rw, info));
+  F77_XFCN (cch1dn, CCH1DN, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             F77_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
 
   return info;
 }
@@ -1234,8 +1234,8 @@ chol<FloatComplexMatrix>::insert_sym (const FloatComplexColumnVector& u,
 
   chol_mat.resize (n+1, n+1);
 
-  F77_XFCN (cchinx, CCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             j + 1, utmp.fortran_vec (), rw, info));
+  F77_XFCN (cchinx, CCHINX, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             j + 1, F77_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
 
   return info;
 }
@@ -1251,7 +1251,7 @@ chol<FloatComplexMatrix>::delete_sym (octave_idx_type j)
 
   OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-  F77_XFCN (cchdex, CCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+  F77_XFCN (cchdex, CCHDEX, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
                              j + 1, rw));
 
   chol_mat.resize (n-1, n-1);
@@ -1269,8 +1269,8 @@ chol<FloatComplexMatrix>::shift_sym (octave_idx_type i, octave_idx_type j)
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, n);
   OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-  F77_XFCN (cchshx, CCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                             i + 1, j + 1, w, rw));
+  F77_XFCN (cchshx, CCHSHX, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()), chol_mat.rows (),
+                             i + 1, j + 1, F77_CMPLX_ARG (w), rw));
 }
 
 #endif

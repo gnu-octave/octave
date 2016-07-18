@@ -305,7 +305,7 @@ hess<ComplexMatrix>::init (const ComplexMatrix& a)
   double *pscale = scale.fortran_vec ();
 
   F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                             n, h, n, ilo, ihi, pscale, info
+                             n, F77_DBLE_CMPLX_ARG (h), n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
   Array<Complex> tau (dim_vector (n-1, 1));
@@ -314,17 +314,17 @@ hess<ComplexMatrix>::init (const ComplexMatrix& a)
   Array<Complex> work (dim_vector (lwork, 1));
   Complex *pwork = work.fortran_vec ();
 
-  F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, h, n, ptau, pwork, lwork, info));
+  F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (h), n, F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork), lwork, info));
 
   unitary_hess_mat = hess_mat;
   Complex *z = unitary_hess_mat.fortran_vec ();
 
-  F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, z, n, ptau, pwork,
+  F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (z), n, F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork),
                              lwork, info));
 
   F77_XFCN (zgebak, ZGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
                              F77_CONST_CHAR_ARG2 (&side, 1),
-                             n, ilo, ihi, pscale, n, z, n, info
+                             n, ilo, ihi, pscale, n, F77_DBLE_CMPLX_ARG (z), n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
@@ -369,7 +369,7 @@ hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
   float *pscale = scale.fortran_vec ();
 
   F77_XFCN (cgebal, CGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                             n, h, n, ilo, ihi, pscale, info
+                             n, F77_CMPLX_ARG (h), n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
   Array<FloatComplex> tau (dim_vector (n-1, 1));
@@ -378,17 +378,17 @@ hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
   Array<FloatComplex> work (dim_vector (lwork, 1));
   FloatComplex *pwork = work.fortran_vec ();
 
-  F77_XFCN (cgehrd, CGEHRD, (n, ilo, ihi, h, n, ptau, pwork, lwork, info));
+  F77_XFCN (cgehrd, CGEHRD, (n, ilo, ihi, F77_CMPLX_ARG (h), n, F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork), lwork, info));
 
   unitary_hess_mat = hess_mat;
   FloatComplex *z = unitary_hess_mat.fortran_vec ();
 
-  F77_XFCN (cunghr, CUNGHR, (n, ilo, ihi, z, n, ptau, pwork,
+  F77_XFCN (cunghr, CUNGHR, (n, ilo, ihi, F77_CMPLX_ARG (z), n, F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork),
                              lwork, info));
 
   F77_XFCN (cgebak, CGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
                              F77_CONST_CHAR_ARG2 (&side, 1),
-                             n, ilo, ihi, pscale, n, z, n, info
+                             n, ilo, ihi, pscale, n, F77_CMPLX_ARG (z), n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 

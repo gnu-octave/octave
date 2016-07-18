@@ -517,8 +517,8 @@ svd<ComplexMatrix>::init (const ComplexMatrix& a, svd::type svd_type,
 
       F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
@@ -528,8 +528,8 @@ svd<ComplexMatrix>::init (const ComplexMatrix& a, svd::type svd_type,
 
       F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
@@ -549,8 +549,8 @@ svd<ComplexMatrix>::init (const ComplexMatrix& a, svd::type svd_type,
       OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
 
       F77_XFCN (zgesdd, ZGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), iwork, info
                                  F77_CHAR_ARG_LEN (1)));
 
@@ -558,8 +558,8 @@ svd<ComplexMatrix>::init (const ComplexMatrix& a, svd::type svd_type,
       work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (zgesdd, ZGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), iwork, info
                                  F77_CHAR_ARG_LEN (1)));
     }
@@ -656,8 +656,8 @@ svd<FloatComplexMatrix>::init (const FloatComplexMatrix& a, svd::type svd_type,
 
       F77_XFCN (cgesvd, CGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
@@ -667,8 +667,8 @@ svd<FloatComplexMatrix>::init (const FloatComplexMatrix& a, svd::type svd_type,
 
       F77_XFCN (cgesvd, CGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
@@ -688,8 +688,8 @@ svd<FloatComplexMatrix>::init (const FloatComplexMatrix& a, svd::type svd_type,
       OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
 
       F77_XFCN (cgesdd, CGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), iwork, info
                                  F77_CHAR_ARG_LEN (1)));
 
@@ -697,8 +697,8 @@ svd<FloatComplexMatrix>::init (const FloatComplexMatrix& a, svd::type svd_type,
       work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (cgesdd, CGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork,
+                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
+                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  rwork.fortran_vec (), iwork, info
                                  F77_CHAR_ARG_LEN (1)));
     }

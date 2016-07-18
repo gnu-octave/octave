@@ -4146,7 +4146,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
           retval = b;
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result,
+          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (result),
                                    b_nr, err));
 
           if (err != 0)
@@ -4204,7 +4204,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
           retval = b;
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result,
+          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
                                    b_nr, err));
 
           if (err != 0)

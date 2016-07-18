@@ -51,7 +51,7 @@ extern "C"
   F77_RET_T
   F77_FUNC (xzdotu, XZDOTU) (const F77_INT&, const F77_DBLE_CMPLX*,
                              const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX&);
+                             const F77_INT&, F77_DBLE_CMPLX*);
 }
 
 // Complex Row Vector class
@@ -321,8 +321,8 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
       Complex *y = retval.fortran_vec ();
 
       F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
-                               a_nr, a_nc, 1.0, a.data (),
-                               ld, v.data (), 1, 0.0, y, 1
+                               a_nr, a_nc, 1.0, F77_CONST_DBLE_CMPLX_ARG (a.data ()),
+                               ld, F77_CONST_DBLE_CMPLX_ARG (v.data ()), 1, 0.0, F77_DBLE_CMPLX_ARG (y), 1
                                F77_CHAR_ARG_LEN (1)));
     }
 
@@ -432,7 +432,7 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
   if (len != a_len)
     err_nonconformant ("operator *", len, a_len);
   if (len != 0)
-    F77_FUNC (xzdotu, XZDOTU) (len, v.data (), 1, a.data (), 1, retval);
+    F77_FUNC (xzdotu, XZDOTU) (len, F77_CONST_DBLE_CMPLX_ARG (v.data ()), 1, F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, F77_DBLE_CMPLX_ARG (&retval));
 
   return retval;
 }

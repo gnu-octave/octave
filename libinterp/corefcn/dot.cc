@@ -171,8 +171,8 @@ but avoids forming a temporary array and is faster.  When @var{X} and
           FloatComplexNDArray z (dimz);
 
           F77_XFCN (cdotc3, CDOTC3, (m, n, k,
-                                     x.data (), y.data (),
-                                     z.fortran_vec ()));
+                                     F77_CONST_CMPLX_ARG (x.data ()), F77_CONST_CMPLX_ARG (y.data ()),
+                                     F77_CMPLX_ARG (z.fortran_vec ())));
           retval = z;
         }
       else
@@ -183,8 +183,8 @@ but avoids forming a temporary array and is faster.  When @var{X} and
           ComplexNDArray z (dimz);
 
           F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
-                                     x.data (), y.data (),
-                                     z.fortran_vec ()));
+                                     F77_CONST_DBLE_CMPLX_ARG (x.data ()), F77_CONST_DBLE_CMPLX_ARG (y.data ()),
+                                     F77_DBLE_CMPLX_ARG (z.fortran_vec ())));
           retval = z;
         }
     }
@@ -327,8 +327,8 @@ endfor
           FloatComplexNDArray z (dimz);
 
           F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
-                                     x.data (), y.data (),
-                                     z.fortran_vec ()));
+                                     F77_CONST_CMPLX_ARG (x.data ()), F77_CONST_CMPLX_ARG (y.data ()),
+                                     F77_CMPLX_ARG (z.fortran_vec ())));
           retval = z;
         }
       else
@@ -338,8 +338,8 @@ endfor
           ComplexNDArray z (dimz);
 
           F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
-                                     x.data (), y.data (),
-                                     z.fortran_vec ()));
+                                     F77_CONST_DBLE_CMPLX_ARG (x.data ()), F77_CONST_DBLE_CMPLX_ARG (y.data ()),
+                                     F77_DBLE_CMPLX_ARG (z.fortran_vec ())));
           retval = z;
         }
     }

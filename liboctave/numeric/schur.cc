@@ -385,8 +385,8 @@ schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
                              F77_CONST_CHAR_ARG2 (&sort, 1),
                              selector,
                              F77_CONST_CHAR_ARG2 (&sense, 1),
-                             n, s, n, sdim, pw, q, n, rconde, rcondv,
-                             pwork, lwork, prwork, pbwork, info
+                             n, F77_DBLE_CMPLX_ARG (s), n, sdim, F77_DBLE_CMPLX_ARG (pw), F77_DBLE_CMPLX_ARG (q), n, rconde, rcondv,
+                             F77_DBLE_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
@@ -412,8 +412,8 @@ rsf2csf<ComplexMatrix, Matrix> (const Matrix& s_arg, const Matrix& u_arg)
       OCTAVE_LOCAL_BUFFER (double, c, n-1);
       OCTAVE_LOCAL_BUFFER (double, sx, n-1);
 
-      F77_XFCN (zrsf2csf, ZRSF2CSF, (n, s.fortran_vec (),
-                                     u.fortran_vec (), c, sx));
+      F77_XFCN (zrsf2csf, ZRSF2CSF, (n, F77_DBLE_CMPLX_ARG (s.fortran_vec ()),
+                                     F77_DBLE_CMPLX_ARG (u.fortran_vec ()), c, sx));
     }
 
   return schur<ComplexMatrix> (s, u);
@@ -492,8 +492,8 @@ schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
                              F77_CONST_CHAR_ARG2 (&sort, 1),
                              selector,
                              F77_CONST_CHAR_ARG2 (&sense, 1),
-                             n, s, n, sdim, pw, q, n, rconde, rcondv,
-                             pwork, lwork, prwork, pbwork, info
+                             n, F77_CMPLX_ARG (s), n, sdim, F77_CMPLX_ARG (pw), F77_CMPLX_ARG (q), n, rconde, rcondv,
+                             F77_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
@@ -519,8 +519,8 @@ rsf2csf<FloatComplexMatrix, FloatMatrix> (const FloatMatrix& s_arg, const FloatM
       OCTAVE_LOCAL_BUFFER (float, c, n-1);
       OCTAVE_LOCAL_BUFFER (float, sx, n-1);
 
-      F77_XFCN (crsf2csf, CRSF2CSF, (n, s.fortran_vec (),
-                                     u.fortran_vec (), c, sx));
+      F77_XFCN (crsf2csf, CRSF2CSF, (n, F77_CMPLX_ARG (s.fortran_vec ()),
+                                     F77_CMPLX_ARG (u.fortran_vec ()), c, sx));
     }
 
   return schur<FloatComplexMatrix> (s, u);

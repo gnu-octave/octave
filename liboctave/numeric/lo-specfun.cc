@@ -84,28 +84,28 @@ extern "C"
                            F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesj, cBESJ) (const F77_CMPLX&, const F77_REAL&,
+  F77_FUNC (cbesj, cBESJ) (const F77_CMPLX*, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
                            F77_CMPLX*, F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesy, CBESY) (const F77_CMPLX&, const F77_REAL&,
+  F77_FUNC (cbesy, CBESY) (const F77_CMPLX*, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
                            F77_CMPLX*, F77_INT&,
                            F77_CMPLX*, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesi, CBESI) (const F77_CMPLX&, const F77_REAL&,
+  F77_FUNC (cbesi, CBESI) (const F77_CMPLX*, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
                            F77_CMPLX*, F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesk, CBESK) (const F77_CMPLX&, const F77_REAL&,
+  F77_FUNC (cbesk, CBESK) (const F77_CMPLX*, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
                            F77_CMPLX*, F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbesh, CBESH) (const F77_CMPLX&, const F77_REAL&,
+  F77_FUNC (cbesh, CBESH) (const F77_CMPLX*, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
                            const F77_INT&, F77_CMPLX*,
                            F77_INT&, F77_INT&);
@@ -117,8 +117,8 @@ extern "C"
                            F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cairy, CAIRY) (const F77_REAL&, const F77_REAL&, const F77_INT&,
-                           const F77_INT&, F77_REAL&, F77_REAL&,
+  F77_FUNC (cairy, CAIRY) (const F77_CMPLX*, const F77_INT&,
+                           const F77_INT&, F77_CMPLX*,
                            F77_INT&, F77_INT&);
 
   F77_RET_T
@@ -127,9 +127,8 @@ extern "C"
                            F77_DBLE&, F77_DBLE&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (cbiry, CBIRY) (const F77_REAL&, const F77_REAL&, const F77_INT&,
-                           const F77_INT&, F77_REAL&, F77_REAL&,
-                           F77_INT&);
+  F77_FUNC (cbiry, CBIRY) (const F77_CMPLX*, const F77_INT&, const F77_INT&,
+                           const F77_CMPLX*, F77_INT&);
 
   F77_RET_T
   F77_FUNC (xdacosh, XDACOSH) (const F77_DBLE&, F77_DBLE&);
@@ -1560,7 +1559,7 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesj, CBESJ) (z, alpha, 2, 1, &y, nz, ierr);
+          F77_FUNC (cbesj, CBESJ) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -1625,7 +1624,7 @@ namespace octave
             }
           else
             {
-              F77_FUNC (cbesy, CBESY) (z, alpha, 2, 1, &y, nz, &w, ierr);
+              F77_FUNC (cbesy, CBESY) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, F77_CMPLX_ARG (&w), ierr);
 
               if (kode != 2)
                 {
@@ -1681,7 +1680,7 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesi, CBESI) (z, alpha, 2, 1, &y, nz, ierr);
+          F77_FUNC (cbesi, CBESI) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -1743,7 +1742,7 @@ namespace octave
             }
           else
             {
-              F77_FUNC (cbesk, CBESK) (z, alpha, 2, 1, &y, nz, ierr);
+              F77_FUNC (cbesk, CBESK) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
 
               if (kode != 2)
                 {
@@ -1785,7 +1784,7 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesh, CBESH) (z, alpha, 2, 1, 1, &y, nz, ierr);
+          F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, 1, F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -1828,7 +1827,7 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesh, CBESH) (z, alpha, 2, 2, 1, &y, nz, ierr);
+          F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -2243,17 +2242,16 @@ namespace octave
     FloatComplex
     airy (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
     {
-      float ar = 0.0;
-      float ai = 0.0;
+      FloatComplex a;
 
       octave_idx_type nz;
 
-      float zr = z.real ();
-      float zi = z.imag ();
-
       octave_idx_type id = deriv ? 1 : 0;
 
-      F77_FUNC (cairy, CAIRY) (zr, zi, id, 2, ar, ai, nz, ierr);
+      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a), nz, ierr);
+
+      float ar = a.real ();
+      float ai = a.imag ();
 
       if (! scaled)
         {
@@ -2268,7 +2266,7 @@ namespace octave
           ar = tmp;
         }
 
-      if (zi == 0.0 && (! scaled || zr >= 0.0))
+      if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
         ai = 0.0;
 
       return bessel_return_value (FloatComplex (ar, ai), ierr);
@@ -2277,15 +2275,14 @@ namespace octave
     FloatComplex
     biry (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
     {
-      float ar = 0.0;
-      float ai = 0.0;
-
-      float zr = z.real ();
-      float zi = z.imag ();
+      FloatComplex a;
 
       octave_idx_type id = deriv ? 1 : 0;
 
-      F77_FUNC (cbiry, CBIRY) (zr, zi, id, 2, ar, ai, ierr);
+      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a), ierr);
+
+      float ar = a.real ();
+      float ai = a.imag ();
 
       if (! scaled)
         {
@@ -2300,7 +2297,7 @@ namespace octave
           ar = tmp;
         }
 
-      if (zi == 0.0 && (! scaled || zr >= 0.0))
+      if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
         ai = 0.0;
 
       return bessel_return_value (FloatComplex (ar, ai), ierr);

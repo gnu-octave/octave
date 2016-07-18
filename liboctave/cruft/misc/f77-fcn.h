@@ -330,11 +330,23 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #define F77_DBLE double
 #define F77_REAL float
-#define F77_DBLE_CMPLX Complex
-#define F77_CMPLX FloatComplex
+#define F77_DBLE_CMPLX double _Complex
+#define F77_CMPLX float _Complex
 #define F77_INT octave_idx_type
 #define F77_INT4 int32_t
 #define F77_LOGICAL octave_idx_type
+
+#define F77_CMPLX_ARG(x) \
+  reinterpret_cast<float _Complex *> (x)
+
+#define F77_CONST_CMPLX_ARG(x) \
+  reinterpret_cast<const float _Complex *> (x)
+
+#define F77_DBLE_CMPLX_ARG(x) \
+  reinterpret_cast<double _Complex *> (x)
+
+#define F77_CONST_DBLE_CMPLX_ARG(x) \
+  reinterpret_cast<const double _Complex *> (x)
 
 /* Build a C string local variable CS from the Fortran string parameter S
    declared as F77_CHAR_ARG_DEF(s, len) or F77_CONST_CHAR_ARG_DEF(s, len).

@@ -337,8 +337,8 @@ operator * (const FloatComplexMatrix& m, const FloatComplexColumnVector& a)
           FloatComplex *y = retval.fortran_vec ();
 
           F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                                   nr, nc, 1.0f, m.data (), nr,
-                                   a.data (), 1, 0.0f, y, 1
+                                   nr, nc, 1.0f, F77_CONST_CMPLX_ARG (m.data ()), nr,
+                                   F77_CONST_CMPLX_ARG (a.data ()), 1, 0.0f, F77_CMPLX_ARG (y), 1
                                    F77_CHAR_ARG_LEN (1)));
         }
     }

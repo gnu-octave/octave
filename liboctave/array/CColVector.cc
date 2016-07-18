@@ -334,8 +334,10 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
           Complex *y = retval.fortran_vec ();
 
           F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                                   nr, nc, 1.0, m.data (), nr,
-                                   a.data (), 1, 0.0, y, 1
+                                   nr, nc, 1.0,
+                                   F77_CONST_DBLE_CMPLX_ARG (m.data ()), nr,
+                                   F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, 0.0,
+                                   F77_DBLE_CMPLX_ARG (y), 1
                                    F77_CHAR_ARG_LEN (1)));
         }
     }

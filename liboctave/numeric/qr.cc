@@ -1362,15 +1362,15 @@ qr<ComplexMatrix>::form (octave_idx_type n, ComplexMatrix& afact,
           octave_idx_type k = q.columns ();
           // workspace query.
           Complex clwork;
-          F77_XFCN (zungqr, ZUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
-                                     &clwork, -1, info));
+          F77_XFCN (zungqr, ZUNGQR, (m, k, min_mn, F77_DBLE_CMPLX_ARG (q.fortran_vec ()), m, F77_DBLE_CMPLX_ARG (tau),
+                                     F77_DBLE_CMPLX_ARG (&clwork), -1, info));
 
           // allocate buffer and do the job.
           octave_idx_type lwork = clwork.real ();
           lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
-          F77_XFCN (zungqr, ZUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
-                                     work, lwork, info));
+          F77_XFCN (zungqr, ZUNGQR, (m, k, min_mn, F77_DBLE_CMPLX_ARG (q.fortran_vec ()), m, F77_DBLE_CMPLX_ARG (tau),
+                                     F77_DBLE_CMPLX_ARG (work), lwork, info));
         }
     }
 }
@@ -1395,15 +1395,15 @@ qr<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
     {
       // workspace query.
       Complex clwork;
-      F77_XFCN (zgeqrf, ZGEQRF, (m, n, afact.fortran_vec (), m, tau,
-                                 &clwork, -1, info));
+      F77_XFCN (zgeqrf, ZGEQRF, (m, n, F77_DBLE_CMPLX_ARG (afact.fortran_vec ()), m, F77_DBLE_CMPLX_ARG (tau),
+                                 F77_DBLE_CMPLX_ARG (&clwork), -1, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = clwork.real ();
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
-      F77_XFCN (zgeqrf, ZGEQRF, (m, n, afact.fortran_vec (), m, tau,
-                                 work, lwork, info));
+      F77_XFCN (zgeqrf, ZGEQRF, (m, n, F77_DBLE_CMPLX_ARG (afact.fortran_vec ()), m, F77_DBLE_CMPLX_ARG (tau),
+                                 F77_DBLE_CMPLX_ARG (work), lwork, info));
     }
 
   form (n, afact, tau, qr_type);
@@ -1426,10 +1426,10 @@ qr<ComplexMatrix>::update (const ComplexColumnVector& u, const ComplexColumnVect
   ComplexColumnVector vtmp = v;
   OCTAVE_LOCAL_BUFFER (Complex, w, k);
   OCTAVE_LOCAL_BUFFER (double, rw, k);
-  F77_XFCN (zqr1up, ZQR1UP, (m, n, k, q.fortran_vec (),
-                             m, r.fortran_vec (), k,
-                             utmp.fortran_vec (), vtmp.fortran_vec (),
-                             w, rw));
+  F77_XFCN (zqr1up, ZQR1UP, (m, n, k, F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
+                             m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+                             F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ()),
+                             F77_DBLE_CMPLX_ARG (w), rw));
 }
 
 template <>
@@ -1449,10 +1449,10 @@ qr<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
     {
       ComplexColumnVector utmp = u.column (i);
       ComplexColumnVector vtmp = v.column (i);
-      F77_XFCN (zqr1up, ZQR1UP, (m, n, k, q.fortran_vec (),
-                                 m, r.fortran_vec (), k,
-                                 utmp.fortran_vec (), vtmp.fortran_vec (),
-                                 w, rw));
+      F77_XFCN (zqr1up, ZQR1UP, (m, n, k, F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
+                                 m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ()),
+                                 F77_DBLE_CMPLX_ARG (w), rw));
     }
 }
 
@@ -1481,9 +1481,9 @@ qr<ComplexMatrix>::insert_col (const ComplexColumnVector& u, octave_idx_type j)
 
   ComplexColumnVector utmp = u;
   OCTAVE_LOCAL_BUFFER (double, rw, k);
-  F77_XFCN (zqrinc, ZQRINC, (m, n, k, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (), j + 1,
-                             utmp.data (), rw));
+  F77_XFCN (zqrinc, ZQRINC, (m, n, k, F77_DBLE_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_DBLE_CMPLX_ARG (r.fortran_vec ()), r.rows (), j + 1,
+                             F77_CONST_DBLE_CMPLX_ARG (utmp.data ()), rw));
 }
 
 template <>
@@ -1527,9 +1527,9 @@ qr<ComplexMatrix>::insert_col (const ComplexMatrix& u, const Array<octave_idx_ty
           octave_idx_type ii = i;
           ComplexColumnVector utmp = u.column (jsi(i));
           F77_XFCN (zqrinc, ZQRINC, (m, n + ii, std::min (kmax, k + ii),
-                                     q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(ii) + 1,
-                                     utmp.data (), rw));
+                                     F77_DBLE_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                                     F77_DBLE_CMPLX_ARG (r.fortran_vec ()), r.rows (), js(ii) + 1,
+                                     F77_CONST_DBLE_CMPLX_ARG (utmp.data ()), rw));
         }
     }
 }
@@ -1546,8 +1546,8 @@ qr<ComplexMatrix>::delete_col (octave_idx_type j)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
   OCTAVE_LOCAL_BUFFER (double, rw, k);
-  F77_XFCN (zqrdec, ZQRDEC, (m, n, k, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (), j + 1, rw));
+  F77_XFCN (zqrdec, ZQRDEC, (m, n, k, F77_DBLE_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_DBLE_CMPLX_ARG (r.fortran_vec ()), r.rows (), j + 1, rw));
 
   if (k < m)
     {
@@ -1587,8 +1587,8 @@ qr<ComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
         {
           octave_idx_type ii = i;
           F77_XFCN (zqrdec, ZQRDEC, (m, n - ii, k == m ? k : k - ii,
-                                     q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (),
+                                     F77_DBLE_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                                     F77_DBLE_CMPLX_ARG (r.fortran_vec ()), r.rows (),
                                      js(ii) + 1, rw));
         }
       if (k < m)
@@ -1621,9 +1621,9 @@ qr<ComplexMatrix>::insert_row (const ComplexRowVector& u, octave_idx_type j)
   r.resize (m + 1, n);
   ComplexRowVector utmp = u;
   OCTAVE_LOCAL_BUFFER (double, rw, k);
-  F77_XFCN (zqrinr, ZQRINR, (m, n, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (),
-                             j + 1, utmp.fortran_vec (), rw));
+  F77_XFCN (zqrinr, ZQRINR, (m, n, F77_DBLE_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_DBLE_CMPLX_ARG (r.fortran_vec ()), r.rows (),
+                             j + 1, F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw));
 
 }
 
@@ -1641,9 +1641,9 @@ qr<ComplexMatrix>::delete_row (octave_idx_type j)
 
   OCTAVE_LOCAL_BUFFER (Complex, w, m);
   OCTAVE_LOCAL_BUFFER (double, rw, m);
-  F77_XFCN (zqrder, ZQRDER, (m, n, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (), j + 1,
-                             w, rw));
+  F77_XFCN (zqrder, ZQRDER, (m, n, F77_DBLE_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_DBLE_CMPLX_ARG (r.fortran_vec ()), r.rows (), j + 1,
+                             F77_DBLE_CMPLX_ARG (w), rw));
 
   q.resize (m - 1, m - 1);
   r.resize (m - 1, n);
@@ -1663,9 +1663,9 @@ qr<ComplexMatrix>::shift_cols (octave_idx_type i, octave_idx_type j)
   OCTAVE_LOCAL_BUFFER (Complex, w, k);
   OCTAVE_LOCAL_BUFFER (double, rw, k);
   F77_XFCN (zqrshc, ZQRSHC, (m, n, k,
-                             q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (),
-                             i + 1, j + 1, w, rw));
+                             F77_DBLE_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_DBLE_CMPLX_ARG (r.fortran_vec ()), r.rows (),
+                             i + 1, j + 1, F77_DBLE_CMPLX_ARG (w), rw));
 }
 
 #endif
@@ -1726,15 +1726,15 @@ qr<FloatComplexMatrix>::form (octave_idx_type n, FloatComplexMatrix& afact, Floa
           octave_idx_type k = q.columns ();
           // workspace query.
           FloatComplex clwork;
-          F77_XFCN (cungqr, CUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
-                                     &clwork, -1, info));
+          F77_XFCN (cungqr, CUNGQR, (m, k, min_mn, F77_CMPLX_ARG (q.fortran_vec ()), m, F77_CMPLX_ARG (tau),
+                                     F77_CMPLX_ARG (&clwork), -1, info));
 
           // allocate buffer and do the job.
           octave_idx_type lwork = clwork.real ();
           lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
-          F77_XFCN (cungqr, CUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
-                                     work, lwork, info));
+          F77_XFCN (cungqr, CUNGQR, (m, k, min_mn, F77_CMPLX_ARG (q.fortran_vec ()), m, F77_CMPLX_ARG (tau),
+                                     F77_CMPLX_ARG (work), lwork, info));
         }
     }
 }
@@ -1759,15 +1759,15 @@ qr<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
     {
       // workspace query.
       FloatComplex clwork;
-      F77_XFCN (cgeqrf, CGEQRF, (m, n, afact.fortran_vec (), m, tau,
-                                 &clwork, -1, info));
+      F77_XFCN (cgeqrf, CGEQRF, (m, n, F77_CMPLX_ARG (afact.fortran_vec ()), m, F77_CMPLX_ARG (tau),
+                                 F77_CMPLX_ARG (&clwork), -1, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = clwork.real ();
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
-      F77_XFCN (cgeqrf, CGEQRF, (m, n, afact.fortran_vec (), m, tau,
-                                 work, lwork, info));
+      F77_XFCN (cgeqrf, CGEQRF, (m, n, F77_CMPLX_ARG (afact.fortran_vec ()), m, F77_CMPLX_ARG (tau),
+                                 F77_CMPLX_ARG (work), lwork, info));
     }
 
   form (n, afact, tau, qr_type);
@@ -1790,10 +1790,10 @@ qr<FloatComplexMatrix>::update (const FloatComplexColumnVector& u, const FloatCo
   FloatComplexColumnVector vtmp = v;
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
   OCTAVE_LOCAL_BUFFER (float, rw, k);
-  F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
-                             m, r.fortran_vec (), k,
-                             utmp.fortran_vec (), vtmp.fortran_vec (),
-                             w, rw));
+  F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()),
+                             m, F77_CMPLX_ARG (r.fortran_vec ()), k,
+                             F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ()),
+                             F77_CMPLX_ARG (w), rw));
 }
 
 template <>
@@ -1813,10 +1813,10 @@ qr<FloatComplexMatrix>::update (const FloatComplexMatrix& u, const FloatComplexM
     {
       FloatComplexColumnVector utmp = u.column (i);
       FloatComplexColumnVector vtmp = v.column (i);
-      F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
-                                 m, r.fortran_vec (), k,
-                                 utmp.fortran_vec (), vtmp.fortran_vec (),
-                                 w, rw));
+      F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()),
+                                 m, F77_CMPLX_ARG (r.fortran_vec ()), k,
+                                 F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ()),
+                                 F77_CMPLX_ARG (w), rw));
     }
 }
 
@@ -1845,9 +1845,9 @@ qr<FloatComplexMatrix>::insert_col (const FloatComplexColumnVector& u, octave_id
 
   FloatComplexColumnVector utmp = u;
   OCTAVE_LOCAL_BUFFER (float, rw, k);
-  F77_XFCN (cqrinc, CQRINC, (m, n, k, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (), j + 1,
-                             utmp.data (), rw));
+  F77_XFCN (cqrinc, CQRINC, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_CMPLX_ARG (r.fortran_vec ()), r.rows (), j + 1,
+                             F77_CONST_CMPLX_ARG (utmp.data ()), rw));
 }
 
 template <>
@@ -1890,9 +1890,9 @@ qr<FloatComplexMatrix>::insert_col (const FloatComplexMatrix& u, const Array<oct
         {
           octave_idx_type ii = i;
           F77_XFCN (cqrinc, CQRINC, (m, n + ii, std::min (kmax, k + ii),
-                                     q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(ii) + 1,
-                                     u.column (jsi(i)).data (), rw));
+                                     F77_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                                     F77_CMPLX_ARG (r.fortran_vec ()), r.rows (), js(ii) + 1,
+                                     F77_CONST_CMPLX_ARG (u.column (jsi(i)).data ()), rw));
         }
     }
 }
@@ -1909,8 +1909,8 @@ qr<FloatComplexMatrix>::delete_col (octave_idx_type j)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
   OCTAVE_LOCAL_BUFFER (float, rw, k);
-  F77_XFCN (cqrdec, CQRDEC, (m, n, k, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (), j + 1, rw));
+  F77_XFCN (cqrdec, CQRDEC, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_CMPLX_ARG (r.fortran_vec ()), r.rows (), j + 1, rw));
 
   if (k < m)
     {
@@ -1950,8 +1950,8 @@ qr<FloatComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
         {
           octave_idx_type ii = i;
           F77_XFCN (cqrdec, CQRDEC, (m, n - ii, k == m ? k : k - ii,
-                                     q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (),
+                                     F77_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                                     F77_CMPLX_ARG (r.fortran_vec ()), r.rows (),
                                      js(ii) + 1, rw));
         }
       if (k < m)
@@ -1984,9 +1984,9 @@ qr<FloatComplexMatrix>::insert_row (const FloatComplexRowVector& u, octave_idx_t
   r.resize (m + 1, n);
   FloatComplexRowVector utmp = u;
   OCTAVE_LOCAL_BUFFER (float, rw, k);
-  F77_XFCN (cqrinr, CQRINR, (m, n, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (),
-                             j + 1, utmp.fortran_vec (), rw));
+  F77_XFCN (cqrinr, CQRINR, (m, n, F77_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_CMPLX_ARG (r.fortran_vec ()), r.rows (),
+                             j + 1, F77_CMPLX_ARG (utmp.fortran_vec ()), rw));
 
 }
 
@@ -2004,9 +2004,9 @@ qr<FloatComplexMatrix>::delete_row (octave_idx_type j)
 
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
   OCTAVE_LOCAL_BUFFER (float, rw, m);
-  F77_XFCN (cqrder, CQRDER, (m, n, q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (), j + 1,
-                             w, rw));
+  F77_XFCN (cqrder, CQRDER, (m, n, F77_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_CMPLX_ARG (r.fortran_vec ()), r.rows (), j + 1,
+                             F77_CMPLX_ARG (w), rw));
 
   q.resize (m - 1, m - 1);
   r.resize (m - 1, n);
@@ -2026,9 +2026,9 @@ qr<FloatComplexMatrix>::shift_cols (octave_idx_type i, octave_idx_type j)
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
   OCTAVE_LOCAL_BUFFER (float, rw, k);
   F77_XFCN (cqrshc, CQRSHC, (m, n, k,
-                             q.fortran_vec (), q.rows (),
-                             r.fortran_vec (), r.rows (),
-                             i + 1, j + 1, w, rw));
+                             F77_CMPLX_ARG (q.fortran_vec ()), q.rows (),
+                             F77_CMPLX_ARG (r.fortran_vec ()), r.rows (),
+                             i + 1, j + 1, F77_CMPLX_ARG (w), rw));
 }
 
 #endif

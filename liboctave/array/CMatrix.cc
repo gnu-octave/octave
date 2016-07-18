@@ -119,12 +119,12 @@ extern "C"
   F77_RET_T
   F77_FUNC (xzdotu, XZDOTU) (const F77_INT&, const F77_DBLE_CMPLX*,
                              const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX&);
+                             const F77_INT&, F77_DBLE_CMPLX*);
 
   F77_RET_T
   F77_FUNC (xzdotc, XZDOTC) (const F77_INT&, const F77_DBLE_CMPLX*,
                              const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX&);
+                             const F77_INT&, F77_DBLE_CMPLX*);
 
   F77_RET_T
   F77_FUNC (zsyrk, ZSYRK) (F77_CONST_CHAR_ARG_DECL,
@@ -241,8 +241,8 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zlartg, ZLARTG) (const F77_DBLE_CMPLX&, const F77_DBLE_CMPLX&, F77_DBLE&,
-                             F77_DBLE_CMPLX&, F77_DBLE_CMPLX&);
+  F77_FUNC (zlartg, ZLARTG) (const F77_DBLE_CMPLX*, const F77_DBLE_CMPLX*, F77_DBLE&,
+                             F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
 
   F77_RET_T
   F77_FUNC (ztrsyl, ZTRSYL) (F77_CONST_CHAR_ARG_DECL,
@@ -974,11 +974,11 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
   retval = *this;
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_XFCN (ztrtri, ZTRTRI, (F77_CONST_CHAR_ARG2 (&uplo, 1),
-                             F77_CONST_CHAR_ARG2 (&udiag, 1),
-                             nr, tmp_data, nr, info
-                             F77_CHAR_ARG_LEN (1)
-                             F77_CHAR_ARG_LEN (1)));
+  F77_XFCN (ztrtri, ZTRTRI,(F77_CONST_CHAR_ARG2 (&uplo, 1),
+                            F77_CONST_CHAR_ARG2 (&udiag, 1),
+                            nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, info
+                            F77_CHAR_ARG_LEN (1)
+                            F77_CHAR_ARG_LEN (1)));
 
   // Throw-away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
@@ -995,8 +995,8 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
       F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                  F77_CONST_CHAR_ARG2 (&uplo, 1),
                                  F77_CONST_CHAR_ARG2 (&udiag, 1),
-                                 nr, tmp_data, nr, rcon,
-                                 cwork, rwork, ztrcon_info
+                                 nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, rcon,
+                                 F77_DBLE_CMPLX_ARG (cwork), rwork, ztrcon_info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
@@ -1034,8 +1034,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
   // Query the optimum work array size.
 
-  F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
-                             z.fortran_vec (), lwork, info));
+  F77_XFCN (zgetri, ZGETRI, (nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt,
+                             F77_DBLE_CMPLX_ARG (z.fortran_vec ()), lwork, info));
 
   lwork = static_cast<octave_idx_type> (std::real (z(0)));
   lwork = (lwork <  2 *nc ? 2*nc : lwork);
@@ -1053,7 +1053,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
   if (octave::math::isnan (anorm) || octave::math::isinf (anorm))
     info = -1;
   else
-    F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
+    F77_XFCN (zgetrf, ZGETRF, (nc, nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt, info));
 
   // Throw-away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
@@ -1067,8 +1067,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       Array<double> rz (dim_vector (2 * nc, 1));
       double *prz = rz.fortran_vec ();
       F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nc, tmp_data, nr, anorm,
-                                 rcon, pz, prz, zgecon_info
+                                 nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                 rcon, F77_DBLE_CMPLX_ARG (pz), prz, zgecon_info
                                  F77_CHAR_ARG_LEN (1)));
 
       if (zgecon_info != 0)
@@ -1081,8 +1081,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
     {
       octave_idx_type zgetri_info = 0;
 
-      F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
-                                 pz, lwork, zgetri_info));
+      F77_XFCN (zgetri, ZGETRI, (nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt,
+                                 F77_DBLE_CMPLX_ARG (pz), lwork, zgetri_info));
 
       if (zgetri_info != 0)
         info = -1;
@@ -1569,7 +1569,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
 
       char job = 'L';
       F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
-                                 tmp_data, nr, info
+                                 F77_DBLE_CMPLX_ARG (tmp_data), nr, info
                                  F77_CHAR_ARG_LEN (1)));
 
       if (info != 0)
@@ -1586,8 +1586,8 @@ ComplexMatrix::determinant (MatrixType& mattype,
           double *prz = rz.fortran_vec ();
 
           F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nr, tmp_data, nr, anorm,
-                                     rcon, pz, prz, info
+                                     nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                     rcon, F77_DBLE_CMPLX_ARG (pz), prz, info
                                      F77_CHAR_ARG_LEN (1)));
 
           if (info != 0)
@@ -1619,7 +1619,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
       if (octave::math::isnan (anorm))
         info = -1;
       else
-        F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+        F77_XFCN (zgetrf, ZGETRF, (nr, nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt, info));
 
       // Throw-away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
@@ -1640,8 +1640,8 @@ ComplexMatrix::determinant (MatrixType& mattype,
               double *prz = rz.fortran_vec ();
 
               F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                         nc, tmp_data, nr, anorm,
-                                         rcon, pz, prz, info
+                                         nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                         rcon, F77_DBLE_CMPLX_ARG (pz), prz, info
                                          F77_CHAR_ARG_LEN (1)));
             }
 
@@ -1707,8 +1707,8 @@ ComplexMatrix::rcond (MatrixType &mattype) const
           F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
                                      F77_CONST_CHAR_ARG2 (&dia, 1),
-                                     nr, tmp_data, nr, rcon,
-                                     pz, prz, info
+                                     nr, F77_CONST_DBLE_CMPLX_ARG (tmp_data), nr, rcon,
+                                     F77_DBLE_CMPLX_ARG (pz), prz, info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
@@ -1735,8 +1735,8 @@ ComplexMatrix::rcond (MatrixType &mattype) const
           F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
                                      F77_CONST_CHAR_ARG2 (&dia, 1),
-                                     nr, tmp_data, nr, rcon,
-                                     pz, prz, info
+                                     nr, F77_CONST_DBLE_CMPLX_ARG (tmp_data), nr, rcon,
+                                     F77_DBLE_CMPLX_ARG (pz), prz, info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
@@ -1763,7 +1763,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
                       row(static_cast<octave_idx_type>(0)).max();
 
               F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
-                                         tmp_data, nr, info
+                                         F77_DBLE_CMPLX_ARG (tmp_data), nr, info
                                          F77_CHAR_ARG_LEN (1)));
 
               if (info != 0)
@@ -1781,8 +1781,8 @@ ComplexMatrix::rcond (MatrixType &mattype) const
                   double *prz = rz.fortran_vec ();
 
                   F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nr, tmp_data, nr, anorm,
-                                             rcon, pz, prz, info
+                                             nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                             rcon, F77_DBLE_CMPLX_ARG (pz), prz, info
                                              F77_CHAR_ARG_LEN (1)));
 
                   if (info != 0)
@@ -1813,7 +1813,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               if (octave::math::isnan (anorm))
                 info = -1;
               else
-                F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+                F77_XFCN (zgetrf, ZGETRF, (nr, nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt, info));
 
               if (info != 0)
                 {
@@ -1824,8 +1824,8 @@ ComplexMatrix::rcond (MatrixType &mattype) const
                 {
                   char job = '1';
                   F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nc, tmp_data, nr, anorm,
-                                             rcon, pz, prz, info
+                                             nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                             rcon, F77_DBLE_CMPLX_ARG (pz), prz, info
                                              F77_CHAR_ARG_LEN (1)));
 
                   if (info != 0)
@@ -1884,8 +1884,8 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
       F77_XFCN (ztrtrs, ZTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
                                  F77_CONST_CHAR_ARG2 (&trans, 1),
                                  F77_CONST_CHAR_ARG2 (&dia, 1),
-                                 nr, b_nc, tmp_data, nr,
-                                 result, nr, info
+                                 nr, b_nc, F77_CONST_DBLE_CMPLX_ARG (tmp_data), nr,
+                                 F77_DBLE_CMPLX_ARG (result), nr, info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
@@ -1904,8 +1904,8 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
           F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
                                      F77_CONST_CHAR_ARG2 (&dia, 1),
-                                     nr, tmp_data, nr, rcon,
-                                     pz, prz, info
+                                     nr, F77_CONST_DBLE_CMPLX_ARG (tmp_data), nr, rcon,
+                                     F77_DBLE_CMPLX_ARG (pz), prz, info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
@@ -1974,8 +1974,8 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
       F77_XFCN (ztrtrs, ZTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
                                  F77_CONST_CHAR_ARG2 (&trans, 1),
                                  F77_CONST_CHAR_ARG2 (&dia, 1),
-                                 nr, b_nc, tmp_data, nr,
-                                 result, nr, info
+                                 nr, b_nc, F77_CONST_DBLE_CMPLX_ARG (tmp_data), nr,
+                                 F77_DBLE_CMPLX_ARG (result), nr, info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
@@ -1994,8 +1994,8 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
           F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
                                      F77_CONST_CHAR_ARG2 (&dia, 1),
-                                     nr, tmp_data, nr, rcon,
-                                     pz, prz, info
+                                     nr, F77_CONST_DBLE_CMPLX_ARG (tmp_data), nr, rcon,
+                                     F77_DBLE_CMPLX_ARG (pz), prz, info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
@@ -2055,7 +2055,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
           F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
-                                     tmp_data, nr, info
+                                     F77_DBLE_CMPLX_ARG (tmp_data), nr, info
                                      F77_CHAR_ARG_LEN (1)));
 
           // Throw-away extra info LAPACK gives so as to not change output.
@@ -2077,8 +2077,8 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                   double *prz = rz.fortran_vec ();
 
                   F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nr, tmp_data, nr, anorm,
-                                             rcon, pz, prz, info
+                                             nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                             rcon, F77_DBLE_CMPLX_ARG (pz), prz, info
                                              F77_CHAR_ARG_LEN (1)));
 
                   if (info != 0)
@@ -2105,8 +2105,8 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                   octave_idx_type b_nc = b.cols ();
 
                   F77_XFCN (zpotrs, ZPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nr, b_nc, tmp_data, nr,
-                                             result, b.rows (), info
+                                             nr, b_nc, F77_DBLE_CMPLX_ARG (tmp_data), nr,
+                                             F77_DBLE_CMPLX_ARG (result), b.rows (), info
                                              F77_CHAR_ARG_LEN (1)));
                 }
               else
@@ -2142,7 +2142,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           if (octave::math::isnan (anorm) || octave::math::isinf (anorm))
             info = -2;
           else
-            F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+            F77_XFCN (zgetrf, ZGETRF, (nr, nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt, info));
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
@@ -2165,8 +2165,8 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                   // non-singular matrix.
                   char job = '1';
                   F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nc, tmp_data, nr, anorm,
-                                             rcon, pz, prz, info
+                                             nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                             rcon, F77_DBLE_CMPLX_ARG (pz), prz, info
                                              F77_CHAR_ARG_LEN (1)));
 
                   if (info != 0)
@@ -2194,8 +2194,8 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   char job = 'N';
                   F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nr, b_nc, tmp_data, nr,
-                                             pipvt, result, b.rows (), info
+                                             nr, b_nc, F77_DBLE_CMPLX_ARG (tmp_data), nr,
+                                             pipvt, F77_DBLE_CMPLX_ARG (result), b.rows (), info
                                              F77_CHAR_ARG_LEN (1)));
                 }
               else
@@ -2642,8 +2642,8 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       Array<octave_idx_type> iwork (dim_vector (liwork, 1));
       octave_idx_type* piwork = iwork.fortran_vec ();
 
-      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
-                                 ps, rcon, rank, work.fortran_vec (),
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, F77_DBLE_CMPLX_ARG (tmp_data), m, F77_DBLE_CMPLX_ARG (pretval), maxmn,
+                                 ps, rcon, rank, F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
                                  lwork, prwork, piwork, info));
 
       // The workspace query is broken in at least LAPACK 3.0.0
@@ -2679,9 +2679,9 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
-      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, F77_DBLE_CMPLX_ARG (tmp_data), m, F77_DBLE_CMPLX_ARG (pretval),
                                  maxmn, ps, rcon, rank,
-                                 work.fortran_vec (), lwork,
+                                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  prwork, piwork, info));
 
       if (s.elem (0) == 0.0)
@@ -2830,8 +2830,8 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       Array<octave_idx_type> iwork (dim_vector (liwork, 1));
       octave_idx_type* piwork = iwork.fortran_vec ();
 
-      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
-                                 ps, rcon, rank, work.fortran_vec (),
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, F77_DBLE_CMPLX_ARG (tmp_data), m, F77_DBLE_CMPLX_ARG (pretval), maxmn,
+                                 ps, rcon, rank, F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
                                  lwork, prwork, piwork, info));
 
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
@@ -2839,9 +2839,9 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       rwork.resize (dim_vector (static_cast<octave_idx_type> (rwork(0)), 1));
       iwork.resize (dim_vector (iwork(0), 1));
 
-      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, F77_DBLE_CMPLX_ARG (tmp_data), m, F77_DBLE_CMPLX_ARG (pretval),
                                  maxmn, ps, rcon, rank,
-                                 work.fortran_vec (), lwork,
+                                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  prwork, piwork, info));
 
       if (rank < minmn)
@@ -2890,8 +2890,8 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
 
       F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
                                F77_CONST_CHAR_ARG2 ("N", 1),
-                               len, a_len, 1, 1.0, v.data (), len,
-                               a.data (), 1, 0.0, c, len
+                               len, a_len, 1, 1.0, F77_CONST_DBLE_CMPLX_ARG (v.data ()), len,
+                               F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, 0.0, F77_DBLE_CMPLX_ARG (c), len
                                F77_CHAR_ARG_LEN (1)
                                F77_CHAR_ARG_LEN (1)));
     }
@@ -3469,7 +3469,7 @@ Givens (const Complex& x, const Complex& y)
   double cc;
   Complex cs, temp_r;
 
-  F77_FUNC (zlartg, ZLARTG) (x, y, cc, cs, temp_r);
+  F77_FUNC (zlartg, ZLARTG) (F77_CONST_DBLE_CMPLX_ARG (&x), F77_CONST_DBLE_CMPLX_ARG (&y), cc, F77_DBLE_CMPLX_ARG (&cs), F77_DBLE_CMPLX_ARG (&temp_r));
 
   ComplexMatrix g (2, 2);
 
@@ -3518,8 +3518,8 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   F77_XFCN (ztrsyl, ZTRSYL, (F77_CONST_CHAR_ARG2 ("N", 1),
                              F77_CONST_CHAR_ARG2 ("N", 1),
-                             1, a_nr, b_nr, pa, a_nr, pb,
-                             b_nr, px, a_nr, scale, info
+                             1, a_nr, b_nr, F77_DBLE_CMPLX_ARG (pa), a_nr, F77_DBLE_CMPLX_ARG (pb),
+                             b_nr, F77_DBLE_CMPLX_ARG (px), a_nr, scale, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
@@ -3619,7 +3619,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
           F77_XFCN (zherk, ZHERK, (F77_CONST_CHAR_ARG2 ("U", 1),
                                    F77_CONST_CHAR_ARG2 (&ctra, 1),
                                    a_nr, a_nc, 1.0,
-                                   a.data (), lda, 0.0, c, a_nr
+                                   F77_CONST_DBLE_CMPLX_ARG (a.data ()), lda, 0.0, F77_DBLE_CMPLX_ARG (c), a_nr
                                    F77_CHAR_ARG_LEN (1)
                                    F77_CHAR_ARG_LEN (1)));
           for (octave_idx_type j = 0; j < a_nr; j++)
@@ -3631,7 +3631,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
           F77_XFCN (zsyrk, ZSYRK, (F77_CONST_CHAR_ARG2 ("U", 1),
                                    F77_CONST_CHAR_ARG2 (&ctra, 1),
                                    a_nr, a_nc, 1.0,
-                                   a.data (), lda, 0.0, c, a_nr
+                                   F77_CONST_DBLE_CMPLX_ARG (a.data ()), lda, 0.0, F77_DBLE_CMPLX_ARG (c), a_nr
                                    F77_CHAR_ARG_LEN (1)
                                    F77_CHAR_ARG_LEN (1)));
           for (octave_idx_type j = 0; j < a_nr; j++)
@@ -3655,31 +3655,31 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
         {
           if (cja == cjb)
             {
-              F77_FUNC (xzdotu, XZDOTU) (a_nc, a.data (), 1, b.data (), 1,
-                                         *c);
+              F77_FUNC (xzdotu, XZDOTU) (a_nc, F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, F77_CONST_DBLE_CMPLX_ARG (b.data ()), 1,
+                                         F77_DBLE_CMPLX_ARG (c));
               if (cja) *c = std::conj (*c);
             }
           else if (cja)
-            F77_FUNC (xzdotc, XZDOTC) (a_nc, a.data (), 1, b.data (), 1,
-                                       *c);
+            F77_FUNC (xzdotc, XZDOTC) (a_nc, F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, F77_CONST_DBLE_CMPLX_ARG (b.data ()), 1,
+                                       F77_DBLE_CMPLX_ARG (c));
           else
-            F77_FUNC (xzdotc, XZDOTC) (a_nc, b.data (), 1, a.data (), 1,
-                                       *c);
+            F77_FUNC (xzdotc, XZDOTC) (a_nc, F77_CONST_DBLE_CMPLX_ARG (b.data ()), 1, F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1,
+                                       F77_DBLE_CMPLX_ARG (c));
         }
       else if (b_nc == 1 && ! cjb)
         {
           const char ctra = get_blas_trans_arg (tra, cja);
           F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 (&ctra, 1),
-                                   lda, tda, 1.0,  a.data (), lda,
-                                   b.data (), 1, 0.0, c, 1
+                                   lda, tda, 1.0,  F77_CONST_DBLE_CMPLX_ARG (a.data ()), lda,
+                                   F77_CONST_DBLE_CMPLX_ARG (b.data ()), 1, 0.0, F77_DBLE_CMPLX_ARG (c), 1
                                    F77_CHAR_ARG_LEN (1)));
         }
       else if (a_nr == 1 && ! cja && ! cjb)
         {
           const char crevtrb = get_blas_trans_arg (! trb, cjb);
           F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 (&crevtrb, 1),
-                                   ldb, tdb, 1.0,  b.data (), ldb,
-                                   a.data (), 1, 0.0, c, 1
+                                   ldb, tdb, 1.0,  F77_CONST_DBLE_CMPLX_ARG (b.data ()), ldb,
+                                   F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, 0.0, F77_DBLE_CMPLX_ARG (c), 1
                                    F77_CHAR_ARG_LEN (1)));
         }
       else
@@ -3688,8 +3688,8 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
           const char ctrb = get_blas_trans_arg (trb, cjb);
           F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 (&ctra, 1),
                                    F77_CONST_CHAR_ARG2 (&ctrb, 1),
-                                   a_nr, b_nc, a_nc, 1.0, a.data (),
-                                   lda, b.data (), ldb, 0.0, c, a_nr
+                                   a_nr, b_nc, a_nc, 1.0, F77_CONST_DBLE_CMPLX_ARG (a.data ()),
+                                   lda, F77_CONST_DBLE_CMPLX_ARG (b.data ()), ldb, 0.0, F77_DBLE_CMPLX_ARG (c), a_nr
                                    F77_CHAR_ARG_LEN (1)
                                    F77_CHAR_ARG_LEN (1)));
         }

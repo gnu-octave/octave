@@ -605,7 +605,6 @@ function list = missing_functions ()
   "colormapeditor",
   "commandhistory",
   "commandwindow",
-  "condeig",
   "coneplot",
   "containers.Map",
   "contourslice",

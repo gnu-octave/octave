@@ -83,6 +83,7 @@ libinterp_EXTRA_DIST += \
   libinterp/DOCSTRINGS \
   libinterp/build-env.in.cc \
   libinterp/build-env-features.sh \
+  libinterp/deprecated-config.h \
   libinterp/gendoc.pl \
   libinterp/genprops.awk \
   libinterp/liboctinterp-build-info.in.cc \

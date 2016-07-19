@@ -330,26 +330,6 @@ get_module_filename (HMODULE hMod)
   return (found ? retval : "");
 }
 
-static void
-set_dll_directory (const std::string& dir = "")
-{
-  typedef BOOL (WINAPI *dllfcn_t) (LPCTSTR path);
-
-  static dllfcn_t dllfcn = 0;
-  static bool first = true;
-
-  if (! dllfcn && first)
-    {
-      HINSTANCE hKernel32 = GetModuleHandle ("kernel32");
-      dllfcn = reinterpret_cast<dllfcn_t> (GetProcAddress (hKernel32,
-                                           "SetDllDirectoryA"));
-      first = false;
-    }
-
-  if (dllfcn)
-    dllfcn (dir.empty () ? 0 : dir.c_str ());
-}
-
 #endif
 
 static std::string
@@ -519,7 +499,6 @@ initialize_jvm (void)
 
   HMODULE hMod = GetModuleHandle ("jvm.dll");
   std::string jvm_lib_path;
-  std::string old_cwd;
 
   if (hMod)
     {
@@ -558,20 +537,6 @@ initialize_jvm (void)
       if (jvm_lib_path.empty ())
         error ("unable to find Java Runtime Environment: %s::%s",
                key.c_str (), value.c_str ());
-
-      std::string jvm_bin_path;
-
-      value = "JavaHome";
-      jvm_bin_path = read_registry_string (key, value);
-      if (! jvm_bin_path.empty ())
-        {
-          jvm_bin_path = (jvm_bin_path + std::string ("\\bin"));
-
-          old_cwd = octave::sys::env::get_current_directory ();
-
-          set_dll_directory (jvm_bin_path);
-          octave::sys::env::chdir (jvm_bin_path);
-        }
     }
 
 #else
@@ -594,15 +559,6 @@ initialize_jvm (void)
   if (! lib)
     error ("unable to load Java Runtime Environment from %s",
            jvm_lib_path.c_str ());
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-
-  set_dll_directory ();
-
-  if (! old_cwd.empty ())
-    octave::sys::env::chdir (old_cwd);
-
-#endif
 
   JNI_CreateJavaVM_t create_vm =
     reinterpret_cast<JNI_CreateJavaVM_t> (lib.search ("JNI_CreateJavaVM"));

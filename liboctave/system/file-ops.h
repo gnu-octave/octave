@@ -99,6 +99,16 @@ namespace octave
 
       static std::string concat (const std::string&, const std::string&);
 
+      // Return the directory part of a filename or an empty string if
+      // there is no directory component.  Does not check to see
+      // whether the file exists or is a directory.
+      static std::string dirname (const std::string& path)
+      {
+        size_t ipos = path.find_last_of (dir_sep_chars ());
+
+        return (ipos != std::string::npos) ? path.substr (0, ipos) : "";
+      }
+      
       // Return the tail member of a filename.
       static std::string tail (const std::string& path)
       {

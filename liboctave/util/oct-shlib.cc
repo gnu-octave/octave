@@ -55,6 +55,7 @@ extern int dlclose (void *);
 #endif
 }
 
+#include "file-ops.h"
 #include "file-stat.h"
 #include "lo-error.h"
 #include "oct-shlib.h"
@@ -339,11 +340,23 @@ namespace octave
     HINSTANCE handle;
   };
 
+  static void
+  set_dll_directory (const std::string& dir = "")
+  {
+    SetDllDirectory (dir.empty () ? 0 : dir.c_str ());
+  }
+
   octave_w32_shlib::octave_w32_shlib (const std::string& f)
     : dynamic_library::dynlib_rep (f), handle (0)
   {
+    std::string dir = octave::sys::file_ops::dirname (f);
+
+    set_dll_directory (dir);
+
     handle = LoadLibrary (file.c_str ());
 
+    set_dll_directory ();
+    
     if (! handle)
       {
         DWORD lastError = GetLastError ();

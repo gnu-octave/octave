@@ -3684,15 +3684,15 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
           if (cja == cjb)
             {
               F77_FUNC (xcdotu, XCDOTU) (a_nc, F77_CONST_CMPLX_ARG (a.data ()), 1, F77_CONST_CMPLX_ARG (b.data ()), 1,
-                                         F77_CMPLX_ARG (&c));
+                                         F77_CMPLX_ARG (c));
               if (cja) *c = std::conj (*c);
             }
           else if (cja)
             F77_FUNC (xcdotc, XCDOTC) (a_nc, F77_CONST_CMPLX_ARG (a.data ()), 1, F77_CONST_CMPLX_ARG (b.data ()), 1,
-                                       F77_CMPLX_ARG (&c));
+                                       F77_CMPLX_ARG (c));
           else
             F77_FUNC (xcdotc, XCDOTC) (a_nc, F77_CONST_CMPLX_ARG (b.data ()), 1, F77_CONST_CMPLX_ARG (a.data ()), 1,
-                                       F77_CMPLX_ARG (&c));
+                                       F77_CMPLX_ARG (c));
         }
       else if (b_nc == 1 && ! cjb)
         {

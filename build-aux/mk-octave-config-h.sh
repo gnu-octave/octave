@@ -239,6 +239,7 @@ else
 EOF
 fi
 
+sed -n 's/#\(\(undef\|define\) F77_USES_.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) F77_FUNC.*$\)/#  \1/p' $config_h_file
 
 cat << EOF

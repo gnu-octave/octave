@@ -103,14 +103,6 @@ typedef unsigned long ino_t;
 #  define OCTAVE_HAVE_SIG_JUMP 1
 #endif
 
-#if defined (_UNICOS)
-#  define F77_USES_CRAY_CALLING_CONVENTION
-#endif
-
-#if 0
-#  define F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION
-#endif
-
 #if defined (OCTAVE_ENABLE_64)
 #  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
 #else

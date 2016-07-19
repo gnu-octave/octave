@@ -163,48 +163,44 @@ else
   echo "#  define OCTAVE_FLOAT_TRUNCATE"
 fi
 
+echo ""
+
 sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_ATOMIC_REFCOUNT.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' $config_h_file
-
 sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_FAST_INT_OPS.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
 
+echo ""
+
 sed -n 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' $config_h_file
 sed -n 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' $config_h_file
-
 sed -n 's/#\(\(undef\|define\) nlink_t.*$\)/#  \1/p' $config_h_file
 
 if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
   cat << EOF
-
 typedef short dev_t;
-
 EOF
 else
   cat << EOF
-
 /* typedef short dev_t; */
-
 EOF
 fi
 
 if grep "#undef HAVE_INO_T" $config_h_file > /dev/null; then
     cat << EOF
-
 typedef unsigned long ino_t;
-
 EOF
 else
     cat << EOF
-
 /* typedef unsigned long ino_t; */
-
 EOF
 fi
+
+echo ""
 
 have_roundl=no
 if grep "#define HAVE_ROUNDL" $config_h_file > /dev/null; then
@@ -222,7 +218,6 @@ if test $sizeof_long_double -ge 10 && test $have_roundl = yes; then
   echo "#  define OCTAVE_INT_USE_LONG_DOUBLE 1"
   if test $sizeof_long_double -lt 16; then
     cat << EOF
-
 #  if (defined (__i386__) || defined (__x86_64__)) && defined (__GNUC__)
 #    define OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED 1
 #  endif
@@ -239,7 +234,12 @@ else
 EOF
 fi
 
+echo ""
+
 sed -n 's/#\(\(undef\|define\) F77_USES_.*$\)/#  \1/p' $config_h_file
+
+echo ""
+
 sed -n 's/#\(\(undef\|define\) F77_FUNC.*$\)/#  \1/p' $config_h_file
 
 cat << EOF

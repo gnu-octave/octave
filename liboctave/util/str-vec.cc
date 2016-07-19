@@ -39,39 +39,6 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #include "lo-utils.h"
 #include "str-vec.h"
 
-// FIXME: isn't there some STL trick that could be used to make this
-// work for all STL containers of std::string objects?
-
-string_vector::string_vector (const std::list<std::string>& lst)
-  : Array<std::string> ()
-{
-  size_t n = lst.size ();
-
-  resize (n);
-
-  octave_idx_type i = 0;
-
-  for (std::list<std::string>::const_iterator p = lst.begin ();
-       p != lst.end ();
-       p++)
-    elem (i++) = *p;
-}
-
-string_vector::string_vector (const std::set<std::string>& lst)
-  : Array<std::string> ()
-{
-  size_t n = lst.size ();
-
-  resize (n);
-
-  octave_idx_type i = 0;
-
-  for (std::set<std::string>::const_iterator p = lst.begin ();
-       p != lst.end ();
-       p++)
-    elem (i++) = *p;
-}
-
 // Create a string vector from a NULL terminated list of C strings.
 
 string_vector::string_vector (const char * const *s)

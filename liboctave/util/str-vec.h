@@ -51,9 +51,14 @@ public:
 
   string_vector (const string_vector& s) : Array<std::string> (s) { }
 
-  string_vector (const std::list<std::string>& lst);
-
-  string_vector (const std::set<std::string>& lst);
+  //! Constructor for STL containers of std::string
+  /*!
+    Templated constructor for any template class with std::string as the
+    first parameter, and begin, end, and size methods, i.e., a class with
+    similar interface as the STL containers.
+  */
+  template<template <typename...> class String_Container>
+  string_vector (const String_Container<std::string>& lst);
 
   string_vector (const Array<std::string>& s)
     : Array<std::string> (s.as_column ()) { }
@@ -121,5 +126,17 @@ public:
   list_in_columns (std::ostream&, int width = 0,
                    const std::string& prefix = "") const;
 };
+
+
+template<template <typename...> class String_Container>
+string_vector::string_vector (const String_Container<std::string>& lst)
+  : Array<std::string> ()
+{
+  resize (lst.size ());
+
+  octave_idx_type i = 0;
+  for (const std::string& s : lst)
+    elem(i++) = s;
+}
 
 #endif

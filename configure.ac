@@ -2379,7 +2379,6 @@ AC_CHECK_HEADERS([sys/select.h sys/stropts.h termcap.h])
 AC_LANG_PUSH(C++)
 
 AC_CHECK_HEADERS([sstream])
-OCTAVE_UNORDERED_MAP_HEADERS
 
 AC_LANG_POP(C++)
 

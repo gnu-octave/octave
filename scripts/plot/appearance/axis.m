@@ -18,21 +18,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} axis ()
-## @deftypefnx {} {} axis ([@var{x}_lo @var{x}_hi])
-## @deftypefnx {} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi])
-## @deftypefnx {} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi @var{z}_lo @var{z}_hi])
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi}])
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi}])
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi} @var{z_lo} @var{z_hi}])
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi} @var{z_lo} @var{z_hi} @var{c_lo} @var{c_hi}])
 ## @deftypefnx {} {} axis (@var{option})
 ## @deftypefnx {} {} axis (@dots{}, @var{option})
 ## @deftypefnx {} {} axis (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{limits} =} axis ()
 ## Set axis limits and appearance.
 ##
-## The argument @var{limits} should be a 2-, 4-, or 6-element vector.  The
+## The argument @var{limits} should be a 2-, 4-, 6-, or 8-element vector.  The
 ## first and second elements specify the lower and upper limits for the
-## x-axis.  The third and fourth specify the limits for the y-axis, and the
-## fifth and sixth specify the limits for the z-axis.  The special values
-## -Inf and Inf may be used to indicate that the limit should automatically be
-## computed based on the data in the axis.
+## x-axis.  The third and fourth specify the limits for the y-axis, the fifth
+## and sixth specify the limits for the z-axis, and the seventh and eighth
+## specify the limits for the color axis.  The special values -Inf and Inf may
+## be used to indicate that the limit should automatically be computed based
+## on the data in the axis.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
@@ -54,7 +56,7 @@
 ## @end example
 ##
 ## @noindent
-## turns tic marks on for all axes and tic mark labels on for the y-axis only.
+## turns tick marks on for all axes and tick mark labels on for the y-axis only.
 ##
 ## @noindent
 ## The following options control the aspect ratio of the axes.
@@ -74,7 +76,7 @@
 ## The following options control the way axis limits are interpreted.
 ##
 ## @table @asis
-## @item @qcode{"auto"}
+## @item @qcode{"auto[xyz]"}
 ## Set the specified axes to have nice limits around the data or all if no
 ## axes are specified.
 ##
@@ -89,28 +91,28 @@
 ## @end table
 ##
 ## @noindent
-## The following options affect the appearance of tic marks.
+## The following options affect the appearance of tick marks.
 ##
 ## @table @asis
 ## @item @qcode{"on"}
-## Turn tic marks and labels on for all axes.
+## Turn tick marks and labels on for all axes.
 ##
 ## @item @qcode{"off"}
-## Turn tic marks off for all axes.
+## Turn tick marks off for all axes.
 ##
 ## @item @qcode{"tic[xyz]"}
-## Turn tic marks on for all axes, or turn them on for the specified axes and
+## Turn tick marks on for all axes, or turn them on for the specified axes and
 ## off for the remainder.
 ##
 ## @item @qcode{"label[xyz]"}
-## Turn tic labels on for all axes, or turn them on for the specified axes
+## Turn tick labels on for all axes, or turn them on for the specified axes
 ## and off for the remainder.
 ##
 ## @item @qcode{"nolabel"}
-## Turn tic labels off for all axes.
+## Turn tick labels off for all axes.
 ## @end table
 ##
-## Note, if there are no tic marks for an axis, there can be no labels.
+## Note, if there are no tick marks for an axis, there can be no labels.
 ##
 ## @noindent
 ## The following options affect the direction of increasing values on the axes.
@@ -126,7 +128,7 @@
 ## If the first argument @var{hax} is an axes handle, then operate on this
 ## axes rather than the current axes returned by @code{gca}.
 ##
-## @seealso{xlim, ylim, zlim, daspect, pbaspect, box, grid}
+## @seealso{xlim, ylim, zlim, daspect, pbaspect, box, grid, caxis}
 ## @end deftypefn
 
 ## Author: jwe
@@ -221,7 +223,7 @@ function limits = __axis__ (ca, ax, varargin)
     elseif (strcmpi (ax, "tight"))
       ## sets the axis limits to the min and max of all data.
       __do_tight_option__ (ca);
-      ## tic marks
+      ## tick marks
     elseif (strcmpi (ax, "on") || strcmpi (ax, "tic"))
       set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto");
       if (strcmpi (ax, "on"))
@@ -274,12 +276,12 @@ function limits = __axis__ (ca, ax, varargin)
       warning ("axis: unknown option '%s'", ax);
     endif
 
-  elseif (isvector (ax))
+  elseif (isnumeric (ax) && isvector (ax))
 
     len = length (ax);
 
-    if (len != 2 && len != 4 && len != 6)
-      error ("axis: LIMITS vector must have 2, 4, or 6 elements");
+    if (len != 2 && len != 4 && len != 6 && len != 8)
+      error ("axis: LIMITS vector must have 2, 4, 6, or 8 elements");
     endif
 
     for i = 1:2:len
@@ -300,8 +302,12 @@ function limits = __axis__ (ca, ax, varargin)
       zlim (ca, ax(5:6));
     endif
 
+    if (len > 7)
+      clim (ca, ax(7:8));
+    endif
+
   else
-    error ("axis: expecting no args, or a vector with 2, 4, or 6 elements");
+    error ("axis: expecting no args, or a numeric vector with 2, 4, 6, or 8 elements");
   endif
 
   if (! isempty (varargin))
@@ -437,12 +443,12 @@ endfunction
 %!
 %! subplot (331);
 %!  plot (t, x);
-%!  title ('x tics and labels');
+%!  title ('x ticks and labels');
 %!  axis ('ticx');
 %!
 %! subplot (332);
 %!  plot (t, x);
-%!  title ('y tics and labels');
+%!  title ('y ticks and labels');
 %!  axis ('ticy');
 %!
 %! subplot (333);
@@ -452,32 +458,32 @@ endfunction
 %!
 %! subplot (334);
 %!  plot (t, x);
-%!  title ('x and y tics, x labels');
+%!  title ('x and y ticks, x labels');
 %!  axis ('labelx','tic');
 %!
 %! subplot (335);
 %!  plot (t, x);
-%!  title ('x and y tics, y labels');
+%!  title ('x and y ticks, y labels');
 %!  axis ('labely','tic');
 %!
 %! subplot (336);
 %!  plot (t, x);
-%!  title ('all tics but no labels');
+%!  title ('all ticks but no labels');
 %!  axis ('nolabel','tic');
 %!
 %! subplot (337);
 %!  plot (t, x);
-%!  title ('x tics, no labels');
+%!  title ('x ticks, no labels');
 %!  axis ('nolabel','ticx');
 %!
 %! subplot (338);
 %!  plot (t, x);
-%!  title ('y tics, no labels');
+%!  title ('y ticks, no labels');
 %!  axis ('nolabel','ticy');
 %!
 %! subplot (339);
 %!  plot (t, x);
-%!  title ('all tics and labels');
+%!  title ('all ticks and labels');
 %!  axis ('on');
 
 %!demo
@@ -637,3 +643,5 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+%!error<LIMITS vector must have .* elements> axis (1:5)
+%!error<expecting no args, or a numeric vector with .* elements> axis ({1,2})

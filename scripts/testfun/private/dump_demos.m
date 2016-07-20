@@ -87,8 +87,11 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
     dump_all_demos (d, fid, fmt);
   endfor
 
+  ## Add helper functions like sombrero
+  dump_helper_fcns (fid);
+
   ## Stop and flush diary
-  fprintf (fid, "diary off\n");
+  fprintf (fid, "\ndiary off\n");
 
   ## Create script ending
   fprintf (fid, "end\n\n")
@@ -153,7 +156,7 @@ function dump_all_demos (directory, fid, fmt)
       fprintf (fid, "%s ();\n", base_fn);
     endfor
   endfor
-  fprintf (fid, "close all\n");
+  fprintf (fid, "\nclose all\n");
 
 endfunction
 
@@ -194,6 +197,70 @@ function code = oct2mat (code)
 
   ## Fix up sombrero which now has default argument in Octave
   code = strrep (code, "sombrero ()", "sombrero (41)");
+
+endfunction
+
+function dump_helper_fcns (fid)
+
+  fprintf (fid, "\n%s\n", repmat ("%", [1, 60]));
+  fdisp (fid, "% Helper functions");
+  fprintf (fid, "%s\n", repmat ("%", [1, 60]));
+
+  ## Add sombrero function
+  fdisp (fid, [
+"function [x, y, z] = sombrero (n)                                            "
+"                                                                             "
+"  if (nargin == 0)                                                           "
+"    n = 41;                                                                  "
+"  end                                                                        "
+"                                                                             "
+"  [xx, yy] = meshgrid (linspace (-8, 8, n));                                 "
+"  r = sqrt (xx.^2 + yy.^2) + eps;  % eps prevents div/0 errors               "
+"  zz = sin (r) ./ r;                                                         "
+"                                                                             "
+"  if (nargout == 0)                                                          "
+"    surf (xx, yy, zz);                                                       "
+"  elseif (nargout == 1)                                                      "
+"    x = zz;                                                                  "
+"  else                                                                       "
+"    x = xx;                                                                  "
+"    y = yy;                                                                  "
+"    z = zz;                                                                  "
+"  end                                                                        "
+"                                                                             "
+"end                                                                          "
+]);  # End of sombrero dump
+
+  fprintf (fid, "\n");
+
+  ## Add rgbplot function
+  fdisp (fid, [
+"function h = rgbplot (cmap, style)                                           "
+"                                                                             "
+"  if (nargin == 1)                                                           "
+"    style = 'profile';                                                       "
+"  end                                                                        "
+"                                                                             "
+"  switch (lower (style))                                                     "
+"    case 'profile'                                                           "
+"      htmp = plot (cmap(:,1),'r', cmap(:,2),'g', cmap(:,3),'b');             "
+"      set (gca (), 'ytick', 0:0.1:1);                                        "
+"      set (gca (), 'xlim', [0 rows(cmap)]);                                  "
+"    case 'composite'                                                         "
+"      htmp = image (1:rows(cmap));                                           "
+"      set (gca, 'ytick', []);                                                "
+"      colormap (cmap);                                                       "
+"  end                                                                        "
+"  xlabel ('color index');                                                    "
+"                                                                             "
+"  if (nargout > 0)                                                           "
+"    h = htmp;                                                                "
+"  end                                                                        "
+"                                                                             "
+"end                                                                          "
+]);  # End of rgbplot dump
+
+  fprintf (fid, "%s\n", repmat ("%", [1, 60]));
 
 endfunction
 

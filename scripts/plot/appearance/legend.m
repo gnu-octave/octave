@@ -1311,12 +1311,10 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x, x, ';\alpha;',  ...
-%!       x, 2*x, ';\beta=2\alpha;',  ...
-%!       x, 3*x, ';\gamma=3\alpha;');
-%! h = legend ();
-%! set (h, 'interpreter', 'tex');
+%! plot (x,x,  x,2*x, x,3*x);
 %! title ('Labels with interpreted Greek text');
+%! h = legend ('\alpha', '\beta=2\alpha', '\gamma=3\alpha');
+%! set (h, 'interpreter', 'tex');
 
 %!demo
 %! clf;
@@ -1384,7 +1382,7 @@ endfunction
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
-%! title ('"left" option places text label west of colors');
+%! title ('"left" option places colors to the left of text label');
 %! legend ('1st Bar', '2nd Bar', '3rd Bar');
 %! legend left;
 

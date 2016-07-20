@@ -155,13 +155,13 @@ endfunction
 %! hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
 %! vn = isonormals (x, y, z, val, vert); # Compute normals of isosurface
 %! set (hp, "VertexNormals", vn);    # Manually set vertex normals
-%! title ("'VertexNormals' from isonormals manually set")
+%! title ('''VertexNormals'' from isonormals manually set')
 %! isofinish (hp);
 %!
 %! subplot (2,2,4); view (-38, 20);
 %! hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
 %! isonormals (x, y, z, val, hp, "negate"); # Use reverse directly
-%! title ("patch modified by isonormals (..., 'negate')")
+%! title ('patch modified by isonormals (..., ''negate'')')
 %! isofinish (hp);
 
 %!shared x,y,z,val,vert

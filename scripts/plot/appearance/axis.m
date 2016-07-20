@@ -555,20 +555,20 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! set (gca, 'xaxislocation', 'zero');
-%! set (gca, 'yaxislocation', 'zero');
+%! set (gca, 'xaxislocation', 'origin');
+%! set (gca, 'yaxislocation', 'origin');
 %! box off;
-%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = zero'});
+%! title ({'no plot box', 'xaxislocation = origin, yaxislocation = origin'});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'xaxislocation', 'origin');
 %! set (gca, 'yaxislocation', 'left');
 %! box off;
-%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = left'});
+%! title ({'no plot box', 'xaxislocation = origin, yaxislocation = left'});
 
 %!demo
 %! clf;
@@ -576,10 +576,10 @@ endfunction
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
 %! title ('no plot box');
-%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'xaxislocation', 'origin');
 %! set (gca, 'yaxislocation', 'right');
 %! box off;
-%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = right'});
+%! title ({'no plot box', 'xaxislocation = origin, yaxislocation = right'});
 
 %!demo
 %! clf;
@@ -587,9 +587,9 @@ endfunction
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
 %! set (gca, 'xaxislocation', 'bottom');
-%! set (gca, 'yaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'origin');
 %! box off;
-%! title ({'no plot box', 'xaxislocation = bottom, yaxislocation = zero'});
+%! title ({'no plot box', 'xaxislocation = bottom, yaxislocation = origin'});
 
 %!demo
 %! clf;
@@ -597,9 +597,9 @@ endfunction
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
 %! set (gca, 'xaxislocation', 'top');
-%! set (gca, 'yaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'origin');
 %! box off;
-%! title ({'no plot box', 'xaxislocation = top, yaxislocation = zero'});
+%! title ({'no plot box', 'xaxislocation = top, yaxislocation = origin'});
 
 %!test
 %! hf = figure ("visible", "off");

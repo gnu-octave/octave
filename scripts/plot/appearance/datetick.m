@@ -81,7 +81,7 @@ endfunction
 %! ylabel ('average price');
 %! ax = gca;
 %! set (ax, 'xtick', datenum (1990:5:2005,1,1));
-%! datetick (2, 'x', 'keepticks');
+%! datetick (ax, 'x', 'keepticks');
 %! set (ax, 'ytick', 12:16);
 
 ## Remove from test statistics.  No real tests possible.

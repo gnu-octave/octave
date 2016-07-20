@@ -87,7 +87,8 @@ endfunction
 %! clf;
 %! colormap (gray (64));
 %! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! axis ([1, 64, 0, 1], "xy");
+%! set (gca, "xtick", []);
 %! title ("default grayscale colormap");
 %! pos = get (gcf, "position");
 %! pos(1) += pos(3) + 25;
@@ -95,7 +96,8 @@ endfunction
 %! figure ("position", pos);
 %! colormap (gray (64));
 %! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! axis ([1, 64, 0, 1], "xy");
+%! set (gca, "xtick", []);
 %! brighten (0.5);
 %! title ("grayscale colormap brightened by 0.5");
 

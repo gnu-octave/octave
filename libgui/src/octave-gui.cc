@@ -63,6 +63,29 @@ message_handler (QtMsgType, const char *)
 {
 }
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+// set app id if we have the SetCurrentProcessExplicitAppUserModelID
+// available (>= Win7)
+static void 
+set_win_app_id ()
+{
+  typedef HRESULT (WINAPI *SETCURRENTAPPID)(PCWSTR AppID);
+  HMODULE hShell = LoadLibrary ("shell32.dll");
+  if (hShell != NULL)
+    {
+      SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
+        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell, 
+          "SetCurrentProcessExplicitAppUserModelID"));
+
+      if (pfnSetCurrentProcessExplicitAppUserModelID)
+        {
+          pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave");
+        }
+      FreeLibrary (hShell);
+    }
+}
+#endif
+
 namespace octave
 {
   bool gui_application::start_gui_p (void) const
@@ -119,6 +142,10 @@ namespace octave
   int gui_application::execute (void)
   {
     octave_thread_manager::block_interrupt_signal ();
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+    set_win_app_id ();
+#endif
 
     std::string show_gui_msgs = octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 

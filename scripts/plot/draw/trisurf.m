@@ -68,17 +68,9 @@ function h = trisurf (tri, x, y, z, varargin)
   else
     c = z(:);
   endif
-  ## FIXME: Is all this extra input parsing necessary?
-  ##        Is it for Matlab compatibility?
+  ## For Matlab compatibility:
   if (! any (strcmpi (varargin, "FaceColor")))
-    nfc = numel (varargin) + 1;
-    varargin(nfc+(0:1)) = {"FaceColor", "flat"};
-  else
-    nfc = find (any (strcmpi (varargin, "FaceColor")), 1);
-  endif
-  if (! any (strcmpi (varargin, "EdgeColor"))
-      && strcmpi (varargin{nfc+1}, "interp"))
-    varargin(end+(1:2)) = {"EdgeColor", "none"};
+    varargin(end+(1:2)) = {"FaceColor", "flat"};
   endif
 
   hax = newplot ();

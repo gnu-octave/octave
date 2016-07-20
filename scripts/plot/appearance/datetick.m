@@ -18,19 +18,21 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} datetick ()
-## @deftypefnx {} {} datetick (@var{form})
-## @deftypefnx {} {} datetick (@var{axis}, @var{form})
+## @deftypefnx {} {} datetick (@var{date_format})
+## @deftypefnx {} {} datetick (@var{axis_str}, @var{date_format})
 ## @deftypefnx {} {} datetick (@dots{}, "keeplimits")
 ## @deftypefnx {} {} datetick (@dots{}, "keepticks")
 ## @deftypefnx {} {} datetick (@var{hax}, @dots{})
 ## Add date formatted tick labels to an axis.
 ##
-## The axis to apply the ticks to is determined by @var{axis} which can take
-## the values @qcode{"x"}, @qcode{"y"}, or @qcode{"z"}.  The default value is
-## @qcode{"x"}.
+## The axis to apply the ticks to is determined by @var{axis_str} which can
+## take the values @qcode{"x"}, @qcode{"y"}, or @qcode{"z"}.  The default
+## value is @qcode{"x"}.
 ##
-## The formatting of the labels is determined by the variable @var{form}, which
-## can either be a string or positive integer that @code{datestr} accepts.
+## The formatting of the labels is determined by the variable
+## @var{date_format}, which can either be a string or positive integer that
+## @code{datestr} accepts.
+##
 ## @seealso{datenum, datestr}
 ## @end deftypefn
 
@@ -81,7 +83,7 @@ endfunction
 %! ylabel ('average price');
 %! ax = gca;
 %! set (ax, 'xtick', datenum (1990:5:2005,1,1));
-%! datetick (ax, 'x', 'keepticks');
+%! datetick ('x', 2, 'keepticks');
 %! set (ax, 'ytick', 12:16);
 
 ## Remove from test statistics.  No real tests possible.

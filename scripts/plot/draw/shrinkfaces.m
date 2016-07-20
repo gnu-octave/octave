@@ -197,7 +197,7 @@ endfunction
 %! N = 10;  % N intervals per axis
 %! [x, y, z] = meshgrid (linspace (-4,4,N+1));
 %! val = x.^3 + y.^3 + z.^3;
-%! fv = isosurface (x, y, z, val, 3, z);
+%! fv = isosurface (x, y, z, val, 3, z, 'noshare');
 %!
 %! p = patch ('Faces', fv.faces, 'Vertices', fv.vertices, 'FaceVertexCData', ...
 %!            fv.facevertexcdata, 'FaceColor', 'interp', 'EdgeColor', 'black');

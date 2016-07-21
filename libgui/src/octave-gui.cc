@@ -64,6 +64,7 @@ message_handler (QtMsgType, const char *)
 }
 
 #if defined (OCTAVE_USE_WINDOWS_API)
+#include <windows.h>
 // set app id if we have the SetCurrentProcessExplicitAppUserModelID
 // available (>= Win7)
 static void 

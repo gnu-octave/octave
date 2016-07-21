@@ -1,0 +1,677 @@
+## Copyright (C) 1993-2015 John W. Eaton
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## FIXME: the information in this file is currently duplicated in help.cc.
+
+!
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} !
+Logical 'not' operator.
+@seealso{~, not}
+@end deftypefn
+~
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ~
+Logical 'not' operator.
+@seealso{!, not}
+@end deftypefn
+!=
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} !=
+Logical 'not equals' operator.
+@seealso{~=, ne}
+@end deftypefn
+~=
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ~=
+Logical 'not equals' operator.
+@seealso{!=, ne}
+@end deftypefn
+"
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} "
+String delimiter.
+@end deftypefn
+#
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} #
+Begin comment character.
+@seealso{%, #@\{}
+@end deftypefn
+%
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} %
+Begin comment character.
+@seealso{#, %@\{}
+@end deftypefn
+#{
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} #@{
+Begin block comment.  There must be nothing else, other than
+whitespace, in the line both before and after @code{#@{}.
+It is possible to nest block comments.
+@seealso{%@\{, #@\}, #}
+@end deftypefn
+%{
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} %@{
+Begin block comment.  There must be nothing else, other than
+whitespace, in the line both before and after @code{%@{}.
+It is possible to nest block comments.
+@seealso{#@\{, %@\}, %}
+@end deftypefn
+#}
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} #@}
+Close block comment.  There must be nothing else, other than
+whitespace, in the line both before and after @code{#@}}.
+It is possible to nest block comments.
+@seealso{%@\}, #@\{, #}
+@end deftypefn
+%}
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} %@}
+Close block comment.  There must be nothing else, other than
+whitespace, in the line both before and after @code{%@}}.
+It is possible to nest block comments.
+@seealso{#@\}, %@\{, %}
+@end deftypefn
+...
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ...
+Continuation marker.  Joins current line with following line.
+@end deftypefn
+&
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} &
+Element by element logical 'and' operator.
+@seealso{&&, and}
+@end deftypefn
+&&
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} &&
+Logical 'and' operator (with short-circuit evaluation).
+@seealso{&, and}
+@end deftypefn
+'
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} '
+Matrix transpose operator.  For complex matrices, computes the
+complex conjugate (Hermitian) transpose.
+
+The single quote character may also be used to delimit strings, but
+it is better to use the double quote character, since that is never
+ambiguous.
+@seealso{.', transpose}
+@end deftypefn
+(
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} (
+Array index or function argument delimiter.
+@end deftypefn
+)
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {})
+Array index or function argument delimiter.
+@end deftypefn
+*
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} *
+Multiplication operator.
+@seealso{.*, times}
+@end deftypefn
+**
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} **
+Power operator.  This may return complex results for real inputs.  Use
+@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain
+real results when possible.
+@seealso{power, ^, .**, .^, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
+^
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ^
+Power operator.  This may return complex results for real inputs.  Use
+@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain
+real results when possible.
+@seealso{power, **, .^, .**, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
++
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} +
+Addition operator.
+@seealso{plus}
+@end deftypefn
+++
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ++
+Increment operator.  As in C, may be applied as a prefix or postfix
+operator.
+@seealso{--}
+@end deftypefn
+,
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ,
+Array index, function argument, or command separator.
+@end deftypefn
+-
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} -
+Subtraction or unary negation operator.
+@seealso{minus}
+@end deftypefn
+--
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} --
+Decrement operator.  As in C, may be applied as a prefix or postfix
+operator.
+@seealso{++}
+@end deftypefn
+.'
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} .'
+Matrix transpose operator.  For complex matrices, computes the
+transpose, @emph{not} the complex conjugate transpose.
+@seealso{', transpose}
+@end deftypefn
+.*
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} .*
+Element by element multiplication operator.
+@seealso{*, times}
+@end deftypefn
+.**
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} .*
+Element by element power operator.  If several complex results are possible,
+returns the one with smallest non-negative argument (angle).  Use
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a
+real result is preferred.
+@seealso{**, ^, .^, power, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
+.^
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} .^
+Element by element power operator.  If several complex results are possible,
+returns the one with smallest non-negative argument (angle).  Use
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a
+real result is preferred.
+@seealso{.**, ^, **, power, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
+./
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ./
+Element by element right division operator.
+@seealso{/, .\, rdivide, mrdivide}
+@end deftypefn
+/
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} /
+Right division operator.
+@seealso{./, \, rdivide, mrdivide}
+@end deftypefn
+.\
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} .\
+Element by element left division operator.
+@seealso{\, ./, rdivide, mrdivide}
+@end deftypefn
+\
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} \
+Left division operator.
+@seealso{.\, /, ldivide, mldivide}
+@end deftypefn
+:
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} :
+Select entire rows or columns of matrices.
+@end deftypefn
+;
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ;
+Array row or command separator.
+@seealso{,}
+@end deftypefn
+<
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} <
+'Less than' operator.
+@seealso{lt}
+@end deftypefn
+<=
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} <=
+'Less than' or 'equals' operator.
+@seealso{le}
+@end deftypefn
+=
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} =
+Assignment operator.
+@end deftypefn
+==
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ==
+Equality test operator.
+@seealso{eq}
+@end deftypefn
+>
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} >
+'Greater than' operator.
+@seealso{gt}
+@end deftypefn
+>=
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} >=
+'Greater than' or 'equals' operator.
+@seealso{ge}
+@end deftypefn
+[
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} [
+Return list delimiter.
+@seealso{]}
+@end deftypefn
+]
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ]
+Return list delimiter.
+@seealso{[}
+@end deftypefn
+|
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} |
+Element by element logical 'or' operator.
+@seealso{||, or}
+@end deftypefn
+||
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} ||
+Logical 'or' (with short-circuit evaluation) operator.
+@seealso{|, or}
+@end deftypefn
+break
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} break
+Exit the innermost enclosing do, while or for loop.
+@seealso{do, while, for, parfor, continue}
+@end deftypefn
+case
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn  {} {} case @var{value}
+@deftypefnx {} {} case @{@var{value}, @dots{}@}
+A case statement in a switch.  Octave cases are exclusive and do not
+fall-through as do C-language cases.  A switch statement must have at least
+one case.  See @code{switch} for an example.
+@seealso{switch}
+@end deftypefn
+catch
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn  {} {} catch
+@deftypefnx {} {} catch @var{value}
+Begin the cleanup part of a try-catch block.
+@seealso{try}
+@end deftypefn
+continue
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} continue
+Jump to the end of the innermost enclosing do, while or for loop.
+@seealso{do, while, for, parfor, break}
+@end deftypefn
+do
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} do
+Begin a do-until loop.  This differs from a do-while loop in that the
+body of the loop is executed at least once.
+
+@example
+@group
+i = 0;
+do
+  i++
+until (i == 10)
+@end group
+@end example
+@seealso{for, until, while}
+@end deftypefn
+else
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} else
+Alternate action for an if block.  See @code{if} for an example.
+@seealso{if}
+@end deftypefn
+elseif
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} elseif (@var{condition})
+Alternate conditional test for an if block.  See @code{if} for an example.
+@seealso{if}
+@end deftypefn
+end_try_catch
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} end_try_catch
+Mark the end of an @code{try-catch} block.
+@seealso{try, catch}
+@end deftypefn
+end_unwind_protect
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} end_unwind_protect
+Mark the end of an unwind_protect block.
+@seealso{unwind_protect}
+@end deftypefn
+endfor
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} endfor
+Mark the end of a for loop.  See @code{for} for an example.
+@seealso{for}
+@end deftypefn
+endfunction
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} endfunction
+Mark the end of a function.
+@seealso{function}
+@end deftypefn
+endif
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} endif
+Mark the end of an if block.  See @code{if} for an example.
+@seealso{if}
+@end deftypefn
+endparfor
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} endparfor
+Mark the end of a parfor loop.  See @code{parfor} for an example.
+@seealso{parfor}
+@end deftypefn
+endswitch
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} endswitch
+Mark the end of a switch block.  See @code{switch} for an example.
+@seealso{switch}
+@end deftypefn
+endwhile
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} endwhile
+Mark the end of a while loop.  See @code{while} for an example.
+@seealso{do, while}
+@end deftypefn
+for
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} for @var{i} = @var{range}
+Begin a for loop.
+
+@example
+@group
+for i = 1:10
+  i
+endfor
+@end group
+@end example
+@seealso{do, parfor, while}
+@end deftypefn
+function
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn  {} {} function @var{outputs} = function (@var{input}, @dots{})
+@deftypefnx {} {} function {} function (@var{input}, @dots{})
+@deftypefnx {} {} function @var{outputs} = function
+Begin a function body with @var{outputs} as results and @var{inputs} as
+parameters.
+@seealso{return}
+@end deftypefn
+global
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} global @var{var}
+Declare variables to have global scope.
+
+@example
+@group
+global @var{x};
+if (isempty (@var{x}))
+  x = 1;
+endif
+@end group
+@end example
+@seealso{persistent}
+@end deftypefn
+if
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn  {} {} if (@var{cond}) @dots{} endif
+@deftypefnx {} {} if (@var{cond}) @dots{} else @dots{} endif
+@deftypefnx {} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif
+@deftypefnx {} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif
+Begin an if block.
+
+@example
+@group
+x = 1;
+if (x == 1)
+  disp ("one");
+elseif (x == 2)
+  disp ("two");
+else
+  disp ("not one or two");
+endif
+@end group
+@end example
+@seealso{switch}
+@end deftypefn
+otherwise
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} otherwise
+The default statement in a switch block (similar to else in an if block).
+@seealso{switch}
+@end deftypefn
+parfor
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn  {} {} parfor @var{i} = @var{range}
+@deftypefnx {} {} parfor (@var{i} = @var{range}, @var{maxproc})
+Begin a for loop that may execute in parallel.
+
+@example
+@group
+parfor i = 1:10
+  i
+endparfor
+@end group
+@end example
+@seealso{for, do, while}
+@end deftypefn
+persistent
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} persistent @var{var}
+Declare variables as persistent.  A variable that has been declared
+persistent within a function will retain its contents in memory between
+subsequent calls to the same function.  The difference between persistent
+variables and global variables is that persistent variables are local in
+scope to a particular function and are not visible elsewhere.
+@seealso{global}
+@end deftypefn
+return
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} return
+Return from a function.
+@seealso{function}
+@end deftypefn
+static
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} static
+This statement has been deprecated in favor of @code{persistent}.
+@seealso{persistent}
+@end deftypefn
+switch
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} switch @var{statement}
+Begin a switch block.
+
+@example
+@group
+yesno = "yes"
+
+switch yesno
+  case @{"Yes" "yes" "YES" "y" "Y"@}
+    value = 1;
+  case @{"No" "no" "NO" "n" "N"@}
+    value = 0;
+  otherwise
+    error ("invalid value");
+endswitch
+@end group
+@end example
+@seealso{if, case, otherwise}
+@end deftypefn
+try
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} try
+Begin a try-catch block.
+
+If an error occurs within a try block, then the catch code will be run and
+execution will proceed after the catch block (though it is often
+recommended to use the lasterr function to re-throw the error after cleanup
+is completed).
+@seealso{catch, unwind_protect}
+@end deftypefn
+until
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} until (@var{cond})
+End a do-until loop.  See @code{do} for an example.
+@seealso{do}
+@end deftypefn
+unwind_protect
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} unwind_protect
+Begin an unwind_protect block.
+
+If an error occurs within the first part of an unwind_protect block
+the commands within the unwind_protect_cleanup block are executed before
+the error is thrown.  If an error is not thrown, then the
+unwind_protect_cleanup block is still executed (in other words, the
+unwind_protect_cleanup will be run with or without an error in the
+unwind_protect block).
+@seealso{unwind_protect_cleanup, try}
+@end deftypefn
+unwind_protect_cleanup
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} unwind_protect_cleanup
+Begin the cleanup section of an unwind_protect block.
+@seealso{unwind_protect}
+@end deftypefn
+varargin
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} varargin
+Pass an arbitrary number of arguments into a function.
+@seealso{varargout, nargin, isargout, nargout, nthargout}
+@end deftypefn
+varargout
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} varargout
+Pass an arbitrary number of arguments out of a function.
+@seealso{varargin, nargin, isargout, nargout, nthargout}
+@end deftypefn
+while
+@c libinterp/parse-tree/oct-parse.in.yy
+-*- texinfo -*-
+@deftypefn {} {} while
+Begin a while loop.
+
+@example
+@group
+i = 0;
+while (i < 10)
+  i++
+endwhile
+@end group
+@end example
+@seealso{do, endwhile, for, until}
+@end deftypefn

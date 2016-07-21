@@ -288,9 +288,9 @@ octetc_DATA += \
   doc/interpreter/doc-cache \
   doc/interpreter/macros.texi
 
-doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk_doc_cache.m | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
+doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk-doc-cache.pl | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) run-octave --norc --silent --no-history $(srcdir)/doc/interpreter/mk_doc_cache.m - $(srcdir) $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
+	$(PERL) $(srcdir)/doc/interpreter/mk-doc-cache.pl - $(srcdir) $(srcdir)/doc/interpreter/macros.texi -- $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
@@ -342,7 +342,7 @@ doc_EXTRA_DIST += \
   doc/interpreter/images.awk \
   doc/interpreter/images.mk \
   doc/interpreter/macros.texi \
-  doc/interpreter/mk_doc_cache.m \
+  doc/interpreter/mk-doc-cache.pl \
   doc/interpreter/mkcontrib.awk \
   doc/interpreter/munge-texi.pl \
   $(DOC_IMAGES) \

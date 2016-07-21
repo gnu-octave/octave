@@ -104,6 +104,11 @@ size (T const (&)[z])
   return z;
 }
 
+// FIXME: the doc strings for operators and keywords is currently
+// duplicated in op-kw-docs.  We should arrange for Octave to read the
+// info from that file (or the generated DOCSTRINGS file) at startup
+// instead and remove the data from this file.
+
 const static pair_type operators[] =
 {
   pair_type ("!",

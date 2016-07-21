@@ -90,6 +90,7 @@ libinterp_EXTRA_DIST += \
   libinterp/mk-errno-list \
   libinterp/mk-pkg-add \
   libinterp/mkops \
+  libinterp/op-kw-docs \
   libinterp/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
 
@@ -278,9 +279,9 @@ endif
 
 DOCSTRING_FILES += libinterp/DOCSTRINGS
 
-libinterp/DOCSTRINGS: $(LIBINTERP_DEFUN_FILES) | libinterp/$(octave_dirstamp)
+libinterp/DOCSTRINGS: $(LIBINTERP_DEFUN_FILES) libinterp/op-kw-docs | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f libinterp/DOCSTRINGS-t && \
-	$(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(LIBINTERP_DEFUN_FILES) > libinterp/DOCSTRINGS-t && \
+	( $(PERL) $(srcdir)/libinterp/gendoc.pl "$(srcdir)" $(LIBINTERP_DEFUN_FILES); cat $(srcdir)/libinterp/op-kw-docs ) > libinterp/DOCSTRINGS-t && \
 	$(call move_if_change_rule,libinterp/DOCSTRINGS-t,$@)
 
 OCTAVE_INTERPRETER_TARGETS += \
@@ -323,11 +324,9 @@ uninstall-oct:
 endif
 .PHONY: install-oct uninstall-oct
 
-install-built-in-docstrings:
+install-built-in-docstrings: libinterp/DOCSTRINGS
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
-	f=libinterp/DOCSTRINGS; \
-	  if test -f $$f; then d=; else d="$(srcdir)/"; fi; \
-	  $(INSTALL_DATA) "$$d$$f" $(DESTDIR)$(octetcdir)/built-in-docstrings
+	$(INSTALL_DATA) $< $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: install-built-in-docstrings
 
 uninstall-built-in-docstrings:

@@ -284,15 +284,6 @@ doc-interpreter-dist-hook:
 	@$(GREP) '#define HAVE_UMFPACK 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing UMFPACK library.  Cannot package distribution!" ; exit 1; }
 	@$(GREP) '#define HAVE_QHULL 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing QHULL library.  Cannot package distribution!" ; exit 1; }
 
-octetc_DATA += \
-  doc/interpreter/doc-cache \
-  doc/interpreter/macros.texi
-
-doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk-doc-cache.pl | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(srcdir)/doc/interpreter/mk-doc-cache.pl - $(srcdir) $(srcdir)/doc/interpreter/macros.texi -- $(DOCSTRING_FILES) > $@-t && \
-	mv $@-t $@
-
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
 
 ## These two texi files have an additional dependency through the
@@ -353,17 +344,33 @@ doc_EXTRA_DIST += \
 doc_MAINTAINERCLEANFILES += \
   AUTHORS \
   $(BUILT_DOC_IMAGES) \
-  $(BUILT_OCTAVE_TEXI_SRC) \
-  doc/interpreter/doc-cache
+  $(BUILT_OCTAVE_TEXI_SRC)
 
 ## The TeX software suite is used to create both PDF and PS output formats.
 ## In order to avoid race conditions between simultaneous TeX commands, the
 ## PDF and PS builds are forced to run serially through the following rule.
 doc/interpreter/octave.pdf: doc/interpreter/octave.ps
 
+endif
+
 DIRSTAMP_FILES += doc/interpreter/$(octave_dirstamp)
 
-endif
+## The doc-cache file can be built without TeX but it does require
+## makeinfo, but that is needed to display function docstrings at the
+## Octave command line.  The macros.texi file must also be installed
+## to display docstrings at the command line.
+
+doc_MAINTAINERCLEANFILES += \
+  doc/interpreter/doc-cache
+
+octetc_DATA += \
+  doc/interpreter/doc-cache \
+  doc/interpreter/macros.texi
+
+doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk-doc-cache.pl | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(PERL) $(srcdir)/doc/interpreter/mk-doc-cache.pl - $(srcdir) $(srcdir)/doc/interpreter/macros.texi -- $(DOCSTRING_FILES) > $@-t && \
+	mv $@-t $@
 
 doc/interpreter/undocumented_list:
 	rm -f $@-t $@

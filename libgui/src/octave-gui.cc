@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "__init_qt__.h"
 #endif
 #include "octave.h"
+#include "sysdep.h"
 #include "unistd-wrappers.h"
 
 #include "main-window.h"
@@ -62,30 +63,6 @@ static void
 message_handler (QtMsgType, const char *)
 {
 }
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-#include <windows.h>
-// set app id if we have the SetCurrentProcessExplicitAppUserModelID
-// available (>= Win7)
-static void
-set_win_app_id ()
-{
-  typedef HRESULT (WINAPI *SETCURRENTAPPID)(PCWSTR AppID);
-  HMODULE hShell = LoadLibrary ("shell32.dll");
-  if (hShell != NULL)
-    {
-      SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
-        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
-          "SetCurrentProcessExplicitAppUserModelID"));
-
-      if (pfnSetCurrentProcessExplicitAppUserModelID)
-        {
-          pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave");
-        }
-      FreeLibrary (hShell);
-    }
-}
-#endif
 
 namespace octave
 {
@@ -144,9 +121,7 @@ namespace octave
   {
     octave_thread_manager::block_interrupt_signal ();
 
-#if defined (OCTAVE_USE_WINDOWS_API)
-    set_win_app_id ();
-#endif
+    set_application_id ();
 
     std::string show_gui_msgs = octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 

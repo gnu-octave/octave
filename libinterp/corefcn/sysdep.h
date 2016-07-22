@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 extern OCTINTERP_API void sysdep_init (void);
 
+extern OCTINTERP_API void set_application_id (void);
+
 extern OCTINTERP_API void sysdep_cleanup (void);
 
 extern OCTINTERP_API void raw_mode (bool, bool wait = true);

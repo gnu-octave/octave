@@ -173,7 +173,36 @@ static bool
 w32_shell_execute (const std::string& file)
 {
 }
+
 #endif
+
+// Set app id if we have the SetCurrentProcessExplicitAppUserModelID
+// available (>= Win7).  FIXME: Could we check for existence of this
+// function in the configure script instead of dynamically loading
+// shell32.dll?
+
+void
+set_application_id (void)
+{
+#if defined (__MINGW32__) || defined (_MSC_VER)
+
+  typedef HRESULT (WINAPI *SETCURRENTAPPID)(PCWSTR AppID);
+
+  HMODULE hShell = LoadLibrary ("shell32.dll");
+
+  if (hShell != NULL)
+    {
+      SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
+        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell, "SetCurrentProcessExplicitAppUserModelID"));
+
+      if (pfnSetCurrentProcessExplicitAppUserModelID)
+        pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave");
+
+      FreeLibrary (hShell);
+    }
+
+#endif
+}
 
 DEFUN (__open_with_system_app__, args, ,
        doc: /* -*- texinfo -*-

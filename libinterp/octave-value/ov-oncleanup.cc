@@ -76,6 +76,8 @@ octave_oncleanup::~octave_oncleanup (void)
   frame.protect_var (quit_allowed);
   quit_allowed = false;
 
+  interpreter_try (frame);
+
   try
     {
       // Run the actual code.
@@ -89,12 +91,15 @@ octave_oncleanup::~octave_oncleanup (void)
     }
   catch (const octave_execution_exception&)
     {
-      throw;
+      std::string msg = last_error_message ();
+      warning ("onCleanup: error caught while executing cleanup function:\n%s\n",
+               msg.c_str ());
+      
     }
   catch (...) // Yes, the black hole.  We're in a d-tor.
     {
       // This shouldn't happen, in theory.
-      error ("onCleanup: internal error: unhandled exception in cleanup action");
+      warning ("onCleanup: internal error: unhandled exception in cleanup action");
     }
 }
 

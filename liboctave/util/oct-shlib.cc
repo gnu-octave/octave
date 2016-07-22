@@ -356,7 +356,7 @@ namespace octave
     handle = LoadLibrary (file.c_str ());
 
     set_dll_directory ();
-    
+
     if (! handle)
       {
         DWORD lastError = GetLastError ();

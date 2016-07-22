@@ -108,7 +108,7 @@ namespace octave
 
         return (ipos != std::string::npos) ? path.substr (0, ipos) : "";
       }
-      
+
       // Return the tail member of a filename.
       static std::string tail (const std::string& path)
       {

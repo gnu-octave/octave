@@ -4,7 +4,7 @@ scripts_testfun_PRIVATE_FCN_FILES = \
   scripts/testfun/private/compare_plot_demos.m \
   scripts/testfun/private/dump_demos.m \
   scripts/testfun/private/html_compare_plot_demos.m \
-  scripts/testfun/private/html_plot_demos_template.html 
+  scripts/testfun/private/html_plot_demos_template.html
 
 scripts_testfun_FCN_FILES = \
   scripts/testfun/__have_feature__.m \

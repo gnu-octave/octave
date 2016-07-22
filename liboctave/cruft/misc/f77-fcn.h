@@ -222,7 +222,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 }
 
 #undef OCTAVE_F77_FCN_INLINE
-  
+
 #elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
 
 /* Use these macros to pass character strings from C to Fortran.

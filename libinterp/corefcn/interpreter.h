@@ -120,7 +120,7 @@ namespace octave
     int main_loop (void);
 
     void clean_up_and_exit (int status, bool safe_to_return = false);
-    
+
     application *m_app_context;
 
     bool m_embedded;

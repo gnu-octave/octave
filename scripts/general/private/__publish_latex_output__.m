@@ -61,7 +61,7 @@ function outstr = handle_header (title_str, intro_str, toc_cstr)
     "{\\Huge\\section*{", escape_chars(title_str),"}}\n\n", ...
     "\\tableofcontents\n", ...
     "\\vspace*{4em}\n\n"];
-    
+
   outstr = [publish_comment, latex_preamble, listings_option, latex_head];
 endfunction
 

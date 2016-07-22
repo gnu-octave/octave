@@ -90,7 +90,7 @@ function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, me
   if (! ischar (method))
     error ("smooth3: METHOD must be a string");
   endif
-  
+
   if (! isreal (sz))
     error ("smooth3: SZ must be a real scalar or 3-element vector");
   elseif (isscalar (sz))

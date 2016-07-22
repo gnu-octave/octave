@@ -612,10 +612,10 @@ function [p_content] = parse_paragraph_content (content)
       p_content{end+1}.type = "preformatted_code";
       include_code = read_file_to_cellstr (strtrim ((fname{1}){1}));
       p_content{end}.content = strjoin (include_code, "\n");
-      
+
       continue;
     endif
-    
+
     ## Graphic <<myGraphic.png>>
     if (! isempty ([~,~,~,~,fname] = regexpi (strjoin (block, ""), ...
                                               '^<<(.*)>>$')))

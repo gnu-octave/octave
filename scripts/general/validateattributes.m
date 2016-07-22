@@ -552,181 +552,181 @@ endfunction
 %! end_try_catch
 
 %!test
-%! try validateattributes (ones(3), {"numeric"}, {"vector"});      
+%! try validateattributes (ones(3), {"numeric"}, {"vector"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-vector");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([1 2], {"numeric"}, {"size", [1 1]}); 
+%! try validateattributes ([1 2], {"numeric"}, {"size", [1 1]});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:incorrect-size");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {"numel", 7}); 
+%! try validateattributes (1, {"numeric"}, {"numel", 7});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:incorrect-numel");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {"ncols", 7}); 
+%! try validateattributes (1, {"numeric"}, {"ncols", 7});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:incorrect-numcols");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {"nrows", 7}); 
+%! try validateattributes (1, {"numeric"}, {"nrows", 7});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:incorrect-numrows");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {"ndims", 5}); 
+%! try validateattributes (1, {"numeric"}, {"ndims", 5});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:incorrect-numdims");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([1 2], {"numeric"}, {"square"}); 
+%! try validateattributes ([1 2], {"numeric"}, {"square"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-square");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([1 2], {"numeric"}, {"diag"}); 
+%! try validateattributes ([1 2], {"numeric"}, {"diag"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-diag");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([], {"numeric"}, {"nonempty"}); 
+%! try validateattributes ([], {"numeric"}, {"nonempty"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-nonempty");
 %! end_try_catch
 
 %!test
-%! try validateattributes (speye(2), {"numeric"}, {"nonsparse"}); 
+%! try validateattributes (speye(2), {"numeric"}, {"nonsparse"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-nonsparse");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {">", 3}); 
+%! try validateattributes (1, {"numeric"}, {">", 3});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-greater");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {">=", 3}); 
+%! try validateattributes (1, {"numeric"}, {">=", 3});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-greater-equal");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {"<", -3}); 
+%! try validateattributes (1, {"numeric"}, {"<", -3});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-less");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {"<=", -3}); 
+%! try validateattributes (1, {"numeric"}, {"<=", -3});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-less-equal");
 %! end_try_catch
 
 %!test
-%! try validateattributes (3, {"numeric"}, {"binary"}); 
+%! try validateattributes (3, {"numeric"}, {"binary"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-binary");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1, {"numeric"}, {"even"}); 
+%! try validateattributes (1, {"numeric"}, {"even"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-even");
 %! end_try_catch
 
 %!test
-%! try validateattributes (2, {"numeric"}, {"odd"}); 
+%! try validateattributes (2, {"numeric"}, {"odd"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-odd");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1.1, {"numeric"}, {"integer"}); 
+%! try validateattributes (1.1, {"numeric"}, {"integer"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-integer");
 %! end_try_catch
 
 %!test
-%! try validateattributes (1+1i*2, {"numeric"}, {"real"}); 
+%! try validateattributes (1+1i*2, {"numeric"}, {"real"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-real");
 %! end_try_catch
 
 %!test
-%! try validateattributes (Inf, {"numeric"}, {"finite"}); 
+%! try validateattributes (Inf, {"numeric"}, {"finite"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-finite");
 %! end_try_catch
 
 %!test
-%! try validateattributes (NaN, {"numeric"}, {"nonnan"}); 
+%! try validateattributes (NaN, {"numeric"}, {"nonnan"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-nonnan");
 %! end_try_catch
 
 %!test
-%! try validateattributes (-1, {"numeric"}, {"nonnegative"}); 
+%! try validateattributes (-1, {"numeric"}, {"nonnegative"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-nonnegative");
 %! end_try_catch
 
 %!test
-%! try validateattributes (0, {"numeric"}, {"nonzero"}); 
+%! try validateattributes (0, {"numeric"}, {"nonzero"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-nonzero");
 %! end_try_catch
 
 %!test
-%! try validateattributes (-1, {"numeric"}, {"positive"}); 
+%! try validateattributes (-1, {"numeric"}, {"positive"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-positive");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([1 2], {"numeric"}, {"decreasing"}); 
+%! try validateattributes ([1 2], {"numeric"}, {"decreasing"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-decreasing");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([2 1], {"numeric"}, {"increasing"}); 
+%! try validateattributes ([2 1], {"numeric"}, {"increasing"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-increasing");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([1 0], {"numeric"}, {"nondecreasing"}); 
+%! try validateattributes ([1 0], {"numeric"}, {"nondecreasing"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-nondecreasing");
 %! end_try_catch
 
 %!test
-%! try validateattributes ([1 2], {"numeric"}, {"nonincreasing"}); 
+%! try validateattributes ([1 2], {"numeric"}, {"nonincreasing"});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:expected-nonincreasing");
 %! end_try_catch
 
 %!test
-%! try validateattributes (@sin, {"numeric"}, {}); 
+%! try validateattributes (@sin, {"numeric"}, {});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:invalid-type");
 %! end_try_catch
 
 %!test
-%! try validateattributes (@sin, 1, {}); 
+%! try validateattributes (@sin, 1, {});
 %! catch id,
 %! assert (getfield (id, "identifier"), "Octave:invalid-type");
 %! end_try_catch

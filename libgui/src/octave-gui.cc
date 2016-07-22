@@ -67,7 +67,7 @@ message_handler (QtMsgType, const char *)
 #include <windows.h>
 // set app id if we have the SetCurrentProcessExplicitAppUserModelID
 // available (>= Win7)
-static void 
+static void
 set_win_app_id ()
 {
   typedef HRESULT (WINAPI *SETCURRENTAPPID)(PCWSTR AppID);
@@ -75,7 +75,7 @@ set_win_app_id ()
   if (hShell != NULL)
     {
       SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
-        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell, 
+        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
           "SetCurrentProcessExplicitAppUserModelID"));
 
       if (pfnSetCurrentProcessExplicitAppUserModelID)

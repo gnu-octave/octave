@@ -217,7 +217,6 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-%! 
 
 %!error lighting ()
 %!error lighting (1, 2, "flat")

@@ -369,7 +369,7 @@ octetc_DATA += \
 
 doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk-doc-cache.pl | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(srcdir)/doc/interpreter/mk-doc-cache.pl - $(srcdir) $(srcdir)/doc/interpreter/macros.texi -- $(DOCSTRING_FILES) > $@-t && \
+	$(PERL) $(srcdir)/doc/interpreter/mk-doc-cache.pl $(srcdir) $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
 doc/interpreter/undocumented_list:

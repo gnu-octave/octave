@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 #
 # Copyright (C) 2016 John W. Eaton
 #
@@ -20,162 +20,134 @@
 
 # This script is based on the old mk_doc_cache.m file.
 
-use File::Temp qw(tempfile);
+use strict;
+use warnings;
 
-## Validate program call.
+use File::Spec;
+use File::Temp;
 
-die "usage: mk_doc_cache OUTPUT-FILE SRCDIR MACRO-FILE ... -- DOCSTRINGS-FILE ..." if (@ARGV < 3);
+my $doc_delim = "\x{1d}";
+my $tex_delim_pat = qr/\Q-*- texinfo -*-\E/;
 
-$makeinfo_command = "makeinfo --no-headers --no-warn --force --no-validate --fill-column=1024";
-
-$output_file = shift (@ARGV);
-$top_srcdir = shift (@ARGV);
-
-$amp = "@";
-
-## Constant patterns.
-
-$doc_delim = "\x{1d}";
-$doc_delim_pat = qr/^\x{1d}/;
-$tex_delim_pat = qr/\Q-*- texinfo -*-\E/;
-$private_name_pat = qr/^__.+__/;
-
-$text = "";
-
-$macro_file = 1;
-
-foreach $arg (@ARGV)
+## Returns a File::Temp object with texinfo code.
+sub make_texinfo_file
 {
-  if ($arg eq "--")
+  my $srcdir = shift;
+  my $macro_fpath = shift;
+  my @docstrings = @_;
+
+  my $t_file = File::Temp->new (UNLINK => 1);
+
+  ## Only the first file is the macro file.  Copy its contents verbatim.
+  open (my $macro_fh, "<", $macro_fpath)
+    or die "Unable to open $macro_fpath for reading: $!\n";
+  while (<$macro_fh>)
     {
-      $macro_file = 0;
-      next;
+      print {$t_file} $_;
     }
+  close ($macro_fh);
 
-  $file = $arg;
-
-  ## DOCSTRINGS files may exist in the current (build) directory or in
-  ## the source directory when building from a release.
-
-  $file_srcdir = "$top_srcdir/$file";
-
-  open (FH, $file) or open (FH, $file_srcdir)
-    or die "Unable to open $file or $file_srcdir\n";
-
-  $in_header = 1;
-
-  while (<FH>)
+  foreach my $filepath (@docstrings)
     {
-      if ($macro_file)
+      ## DOCSTRINGS files may exist in the current (build) directory or in
+      ## the source directory when building from a release.
+      if (! -e $filepath)
         {
-          ## Copy contents verbatim.
-
-          $text .= $_;
+          ## Only triggered when re-building doc-cache outside source
+          ## tree, from released sources.
+          $filepath = File::Spec->catfile ($srcdir, $filepath);
         }
-      else
+      open (my $fh, "<", $filepath)
+        or die "Unable to open $filepath for reading: $!\n";
+
+      my $in_header = 1;
+      while (my $line = <$fh>)
         {
-          if ($in_header && /$doc_delim_pat/)
+          ## DOCSTRINGS header ends once we find the first function.
+          if ($in_header && $line =~ m/^$doc_delim/)
             {
               $in_header = 0;
             }
+          next if $in_header;
+          next if $line =~ /$tex_delim_pat/;
 
-          next if ($in_header);
+          ## escape {}@ characters for texinfo
+          $line =~ s/([{}\@])/\@$1/g
+            if $line =~ m/^$doc_delim/;
 
-          next if (/$tex_delim_pat/);
-
-          ## Escapes for symbol names.
-
-          s/$doc_delim_pat([{}@])/$doc_delim$amp$1/;
-          s/$doc_delim_pat([#%])([{}])/$doc_delim$1$amp$2/;
-          $text .= $_;
+          print {$t_file} $line;
         }
+      close ($fh);
     }
+
+  print {$t_file} $doc_delim;
+
+  $t_file->flush ();
+  return $t_file;
 }
 
-$text .= $doc_delim;
-
-($fh, $file) = tempfile ();
-print $fh "$text";
-close ($fh);
-
-$cmd = "$makeinfo_command $file";
-open (CMD, "-|", $cmd) or die "Unable to start makeinfo command $cmd\n";
-$formatted_text = "";
-while (<CMD>)
+sub get_info_text
 {
-  $formatted_text .= $_;
-}
-close (CMD);
+  my $texi_path = shift;
 
-if (! $formatted_text)
-{
-  die "makeinfo produced no output!\n";
+  my $makeinfo_command = "makeinfo --no-headers --no-warn --force --no-validate --fill-column=1024 $texi_path";
+  my $info_text = `$makeinfo_command`;
+
+  die "Unable to start makeinfo command '$makeinfo_command'"
+    if (! defined $info_text);
+
+  die "makeinfo produced no output!"
+    if ! $info_text;
+
+  return $info_text;
 }
 
-@formatted = ();
-
-$beg_idx = index ($formatted_text, $doc_delim);
-while ($beg_idx >= 0)
+sub split_info
 {
-  $end_idx = index ($formatted_text, $doc_delim, $beg_idx+1);
-  if ($end_idx < 1)
+  my $info_text = shift;
+
+  ## Constant patterns.  We only check for two underscores at the end,
+  ## and not at the start, to also skip @class/__method__
+  my $private_name_pat = qr/__$/;
+
+  my @formatted = ();
+
+  my $beg_idx = index ($info_text, $doc_delim);
+  while ($beg_idx >= 0)
     {
-      $beg_idx = -1;
-      next;
+      my $end_idx = index ($info_text, $doc_delim, $beg_idx+1);
+      if ($end_idx < 1)
+        {
+          $beg_idx = -1;
+          next;
+        }
+      my $block = substr ($info_text, $beg_idx+1, $end_idx-$beg_idx-1);
+      $beg_idx = $end_idx;
+
+      my ($symbol, $doc) = split (/[\r\n]/, $block, 2);
+
+      next if (length ($symbol) > 2 && $symbol =~ m/$private_name_pat/);
+
+      $doc =~ s/^[\r\n]+//;
+      next if (! $doc);
+
+      (my $tmp = $doc) =~ s/^[\r\n]*  *-- .*[\r\n]//mg;
+      next if (! $tmp);
+
+      (my $first_sentence = $tmp) =~ s/(\.|[\r\n][\r\n]).*/$1/s;
+      $first_sentence =~ s/([\r\n]| {2,})/ /g;
+      $first_sentence =~ s/   *$/ /g;
+      $first_sentence =~ s/^ +//;
+
+      push (@formatted, [($symbol, $doc, $first_sentence)]);
     }
-  $block = substr ($formatted_text, $beg_idx+1, $end_idx-$beg_idx-1);
-  $beg_idx = $end_idx;
-
-  ($symbol, $doc) = split (/[\r\n]/, $block, 2);
-
-  next if (length ($symbol) > 2 && $symbol =~ m/$private_name_pat/);
-
-  $doc =~ s/^[\r\n]+//;
-  next if (! $doc);
-
-  ($tmp = $doc) =~ s/^[\r\n]*  *-- .*[\r\n]//mg;
-  next if (! $tmp);
-
-  ($first_sentence = $tmp) =~ s/(\.|[\r\n][\r\n]).*/$1/s;
-  $first_sentence =~ s/([\r\n]| {2,})/ /g;
-  $first_sentence =~ s/   *$/ /g;
-  $first_sentence =~ s/^ +//;
-
-  push (@formatted, [($symbol, $doc, $first_sentence)]);
-}
-
-$num = @formatted;
-
-print_preamble ($output_file, $num);
-
-foreach $elt (@formatted)
-{
-  $symbol = $elt->[0];
-  $doc = $elt->[1];
-  $first_sentence = $elt->[2];
-
-  print_element ($symbol);
-  print_element ($doc);
-  print_element ($first_sentence);
-  print "\n";
-}
-
-sub print_preamble
-{
-  my ($output_file, $num) = @_;
-
-  print "# $output_file created by mk-doc-cache.pl\n";
-  print "# name: cache\n";
-  print "# type: cell\n";
-  print "# rows: 3\n";
-  print "# columns: $num\n";
+  return @formatted;
 }
 
 sub print_element
 {
   my ($str) = @_;
-
-  $len = length ($str);
+  my $len = length ($str);
 
   print "# name: <cell-element>\n";
   print "# type: sq_string\n";
@@ -183,3 +155,47 @@ sub print_element
   print "# length: $len\n";
   print "$str\n\n\n";
 }
+
+sub print_cache
+{
+  my $num = @_;
+
+  print "# created by mk-doc-cache.pl\n";
+  print "# name: cache\n";
+  print "# type: cell\n";
+  print "# rows: 3\n";
+  print "# columns: $num\n";
+
+  foreach my $elt (@_)
+    {
+      my $symbol = $elt->[0];
+      my $doc = $elt->[1];
+      my $first_sentence = $elt->[2];
+
+      print_element ($symbol);
+      print_element ($doc);
+      print_element ($first_sentence);
+      print "\n";
+    }
+}
+
+sub main
+{
+  my $srcdir = shift;
+  my $macro_texi = shift;
+  my @docstrings = @_;
+  ## Everything else left in @_ are DOCSTRINGS files
+
+  die "usage: mk_doc_cache SRCDIR MACRO-FILE DOCSTRINGS-FILE ..."
+    if (@docstrings < 1);
+
+  my $texi_file = make_texinfo_file ($srcdir, $macro_texi, @docstrings);
+
+  my $info_text = get_info_text ($texi_file->filename);
+
+  my @cache_blocks = split_info ($info_text);
+
+  print_cache (@cache_blocks);
+}
+
+main (@ARGV);

@@ -20,12 +20,15 @@
 ## @deftypefn  {} {} methods (@var{obj})
 ## @deftypefnx {} {} methods ("@var{classname}")
 ## @deftypefnx {} {@var{mtds} =} methods (@dots{})
-##
-## Return a cell array containing the names of the methods for the
-## object @var{obj} or the named class @var{classname}.
+## List the names of the public methods for the object @var{obj} or the
+## named class @var{classname}.
 ##
 ## @var{obj} may be an Octave class object or a Java object.
+## @var{classname} may be the name of an Octave class or a Java class.
 ##
+## When called with no output arguments, @code{methods} prints the list of
+## method names to the screen.  Otherwise, the output argument @var{mtds}
+## contains the list in a cell array of strings.
 ## @seealso{fieldnames}
 ## @end deftypefn
 

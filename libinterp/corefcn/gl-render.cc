@@ -587,6 +587,33 @@ opengl_renderer::patch_tesselator
 
 #endif
 
+static int
+get_maxlights (void)
+{
+#if defined (HAVE_OPENGL)
+
+  static int max_lights = 0;
+
+  // Check actual maximum number of lights possible
+  if (max_lights == 0)
+    {
+      for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
+        {
+          glDisable (GL_LIGHT0 + max_lights);
+          if (glGetError ())
+            break;
+        }
+    }
+
+  return max_lights;
+#else
+
+  err_disabled_feature ("opengl_renderer", "OpenGL");
+
+#endif
+
+}
+
 opengl_renderer::opengl_renderer (void)
   : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
     zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
@@ -605,6 +632,9 @@ opengl_renderer::opengl_renderer (void)
 
   if (! ok)
     error ("the size of GLsizei is smaller than the size of int");
+
+  // Check actual maximum number of lights possible
+  max_lights = get_maxlights ();
 
 #else
 
@@ -1618,22 +1648,9 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
 }
 
 void
-opengl_renderer::draw_axes_children (const axes::properties& props)
+opengl_renderer::draw_all_lights (const base_properties& props, std::list<graphics_object>& obj_list)
 {
-#if defined (HAVE_OPENGL)
-
-  // Children
-
   Matrix children = props.get_all_children ();
-  std::list<graphics_object> obj_list;
-  std::list<graphics_object>::iterator it;
-
-  // 1st pass: draw light objects
-
-  // Start with the last element of the array of child objects to
-  // display them in the order they were added to the array.
-
-  num_lights = 0;
 
   for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
     {
@@ -1643,21 +1660,44 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
         {
           if (go.isa ("light"))
             {
-              if (num_lights < GL_MAX_LIGHTS)
+              if (num_lights < max_lights)
                 {
                   current_light = GL_LIGHT0 + num_lights;
                   set_clipping (go.get_properties ().is_clipping ());
                   draw (go);
                   num_lights++;
                 }
+              else
+                warning_with_id ("Octave:max-lights-exceeded",
+                  "light: Maximum number of lights (%d) in these axes is "
+                  "exceeded.", max_lights);
             }
+          else if (go.isa ("hggroup"))
+            draw_all_lights (go.get_properties (), obj_list);
           else
             obj_list.push_back (go);
         }
     }
+}
+
+void
+opengl_renderer::draw_axes_children (const axes::properties& props)
+{
+#if defined (HAVE_OPENGL)
+  // list for non-light child objects
+  std::list<graphics_object> obj_list;
+  std::list<graphics_object>::iterator it;
+
+  // 1st pass: draw light objects
+
+  // Start with the last element of the array of child objects to
+  // display them in the order they were added to the array.
+
+  num_lights = 0;
+  draw_all_lights (props, obj_list);
 
   // disable other OpenGL lights
-  for (int i = num_lights; i < GL_MAX_LIGHTS; i++)
+  for (int i = num_lights; i < max_lights; i++)
     glDisable (GL_LIGHT0 + i);
 
   // save camera position and set ambient light color before drawing
@@ -1942,9 +1982,6 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
   // FIXME: handle transparency
   Matrix a;
-
-  if (props.facelighting_is ("phong") || props.edgelighting_is ("phong"))
-    warning ("opengl_renderer: phong light model not supported");
 
   int fc_mode = (props.facecolor_is_rgb () ? 0 :
                  (props.facecolor_is ("flat") ? 1 :
@@ -2296,7 +2333,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             cb[k] = c(j-1, i, k);
                           glColor3fv (cb);
 
-                          if (fl_mode > 0)
+                          if (el_mode > 0)
                             {
                               for (int k = 0; k < 3; k++)
                                 cb[k] *= as;
@@ -2323,7 +2360,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             cb[k] = c(j, i, k);
                           glColor3fv (cb);
 
-                          if (fl_mode > 0)
+                          if (el_mode > 0)
                             {
                               for (int k = 0; k < 3; k++)
                                 cb[k] *= as;
@@ -2393,7 +2430,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             cb[k] = c(j, i-1, k);
                           glColor3fv (cb);
 
-                          if (fl_mode > 0)
+                          if (el_mode > 0)
                             {
                               for (int k = 0; k < 3; k++)
                                 cb[k] *= as;
@@ -2420,7 +2457,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                             cb[k] = c(j, i, k);
                           glColor3fv (cb);
 
-                          if (fl_mode > 0)
+                          if (el_mode > 0)
                             {
                               for (int k = 0; k < 3; k++)
                                 cb[k] *= as;
@@ -3015,10 +3052,12 @@ opengl_renderer::draw_light (const light::properties &props)
   glEnable (current_light);
 
   // light position
-  float pos[4] = { 0, 0, 0, 0 }; // X,Y,Z,attenuation
+  float pos[4] = { 0, 0, 0, 0 }; // X,Y,Z,infinite/local
   Matrix lpos = props.get_position ().matrix_value ();
   for (int i = 0; i < 3; i++)
     pos[i] = lpos(i);
+  if (props.style_is ("local"))
+    pos[3] = 1;
   glLightfv (current_light, GL_POSITION, pos);
 
   // light color

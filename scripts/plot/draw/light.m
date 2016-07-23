@@ -51,8 +51,7 @@
 ##
 ## @item @qcode{"Style":} This string defines whether the light emanates from a
 ## light source at infinite distance (@qcode{"infinite"}) or from a local point
-## source (@qcode{"local"}).  Only the default value @qcode{"infinite"} is
-## supported.
+## source (@qcode{"local"}).
 ## @end table
 ##
 ## If @command{light} is called with an axes handle @var{hax}, it must be passed
@@ -177,7 +176,7 @@ endfunction
 %! %% Diffuse and specular reflex
 %! clf;
 %! h_axes = axes ();
-%! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
+%! [x,y,z] = meshgrid (-.2:0.04:.2, -.2:0.04:.2, -.2:0.04:.2);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! fv = isosurface (x, y, z, val, .039);
@@ -297,7 +296,7 @@ endfunction
 %!demo
 %! %% Specular Exponent
 %! clf;
-%! [x,y,z] = meshgrid (-.2:0.01:.2, -.2:0.01:.2, -.2:0.01:.2);
+%! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! h_axes = axes ();
@@ -380,7 +379,7 @@ endfunction
 %!demo
 %! %% Colored patch
 %! clf;
-%! [x,y,z] = meshgrid (-.2:0.01:.2, -.2:0.01:.2, -.2:0.01:.2);
+%! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! h_axes = axes ();
@@ -389,8 +388,69 @@ endfunction
 %!             "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularExponent", 15);
 %! isonormals (x, y, z, val, h_patch);
+%! title ('Colored patch');
 %! h_light = light ("Position", [-1 1 1]);
 %! axis tight
+%! axis equal
+%! view (3);
+
+%!demo
+%! %% Colored mesh (patch)
+%! clf;
+%! [x,y,z] = meshgrid (-.2:0.05:.2, -.2:0.05:.2, -.2:0.05:.2);
+%! val = (x.^2 + y.^2 + z.^2);
+%!
+%! h_axes = axes ();
+%! fv = isosurface (x, y, z, val, .039, z);
+%! h_patch = patch (fv, 'FaceColor', 'w', 'EdgeColor', 'interp');
+%! isonormals (x, y, z, val, h_patch);
+%! title ('Colored mesh (patch)');
+%! h_light = light;
+%! lighting gouraud
+%! axis tight
+%! axis equal
+%! view (3);
+
+%!demo
+%! %% Colored mesh (surface)
+%! clf;
+%! h_mesh = mesh (peaks);
+%! title ('Colored mesh (surface)');
+%! h_light = light;
+%! lighting gouraud
+
+%!demo
+%! %% Light in hggroup
+%! clf;
+%! h_mesh = mesh (peaks);
+%! h_hg = hggroup ();
+%! title ('Light in hggroup');
+%! h_light = light ('Parent', h_hg);
+%! lighting gouraud
+
+%!demo
+%! %% Style local/infinite
+%! clf;
+%! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
+%! val = (x.^2 + y.^2 + z.^2);
+%!
+%! h_axes1 = subplot (1,2,1);
+%! fv = isosurface (x, y, z, val, .039);
+%! h_patch = patch (fv, 'FaceColor', 'r', 'EdgeColor', 'none');
+%! isonormals (x, y, z, val, h_patch);
+%! title ('"Style" set to "infinite" (default)');
+%! h_light = light ('Position', [.3 0 .3]);
+%! lighting gouraud
+%! axis equal
+%! view (3);
+%!
+%! h_axes2 = subplot (1,2,2);
+%! fv = isosurface (x, y, z, val, .039);
+%! h_patch = patch (fv, 'FaceColor', 'r', 'EdgeColor', 'none');
+%! isonormals (x, y, z, val, h_patch);
+%! title ('"Style" set to "local"');
+%! h_light = light ('Style', 'local', 'Position', [.3 0 .3]);
+%! lighting gouraud
 %! axis equal
 %! view (3);
 

@@ -169,6 +169,8 @@ private:
 
   void draw_axes_children (const axes::properties& props);
 
+  void draw_all_lights (const base_properties& props, std::list<graphics_object>& obj_list);
+
 private:
   // The graphics toolkit associated with the figure being rendered.
   graphics_toolkit toolkit;
@@ -198,6 +200,7 @@ private:
   // light object present and visible
   int num_lights;
   unsigned int current_light;
+  int max_lights;
 
 private:
   class patch_tesselator;

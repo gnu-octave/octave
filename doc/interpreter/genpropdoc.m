@@ -1305,8 +1305,7 @@ specular reflex) and 1.0 (full specular reflex).";
       case "style"
         s.doc = "This string defines whether the light emanates from a \
 light source at infinite distance (@qcode{\"infinite\"}) or from a local \
-point source (@qcode{\"local\"}). Only the default value @qcode{\"infinite\"} \
-is supported.";
+point source (@qcode{\"local\"}).";
 
     endswitch
 

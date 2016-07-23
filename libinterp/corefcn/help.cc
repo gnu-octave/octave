@@ -796,6 +796,38 @@ const static map_type operators_map (operators, operators + size (operators));
 const static map_type keywords_map (keywords, keywords + size (keywords));
 const static string_vector keyword_names = names (keywords_map);
 
+// Return a vector of all functions from this file,
+// for use in command line auto-completion.
+static string_vector
+local_functions (void)
+{
+  string_vector retval;
+
+  octave_user_code *curr_fcn = octave_call_stack::caller_user_code ();
+
+  if (! curr_fcn)
+    return retval;
+
+  // All subfunctions are listed in the top-level function of this file.
+  while (curr_fcn->is_subfunction ())
+    curr_fcn = symbol_table::get_curr_fcn (curr_fcn->parent_fcn_scope ());
+
+  // Get subfunctions.
+  const std::list<std::string> names = curr_fcn->subfunction_names ();
+
+  size_t sz = names.size ();
+  retval.resize (sz);
+
+  // Loop over them.
+  size_t i = 0;
+  for (std::list<std::string>::const_iterator p = names.begin ();
+       p != names.end (); p++)
+    retval(i++) = *p;
+
+  retval.resize (i);
+  return retval;
+}
+
 // FIXME: It's not likely that this does the right thing now.
 
 string_vector
@@ -818,8 +850,11 @@ make_name_list (void)
   const string_vector afl = autoloaded_functions ();
   const int afl_len = afl.numel ();
 
+  const string_vector lfl = local_functions ();
+  const int lfl_len = lfl.numel ();
+
   const int total_len
-    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len;
+    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len + lfl_len;
 
   string_vector list (total_len);
 
@@ -844,6 +879,9 @@ make_name_list (void)
 
   for (i = 0; i < afl_len; i++)
     list[j++] = afl[i];
+
+  for (i = 0; i < lfl_len; i++)
+    list[j++] = lfl[i];
 
   return list;
 }

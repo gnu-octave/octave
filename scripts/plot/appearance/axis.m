@@ -643,5 +643,20 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error<LIMITS vector must have .* elements> axis (1:5)
-%!error<expecting no args, or a numeric vector with .* elements> axis ({1,2})
+## Even on errors, axis can display a figure.
+
+%!error<LIMITS vector must have .* elements>
+%! hf= figure ("visible", "off");
+%! unwind_protect
+%!   axis (1:5)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error<expecting no args, or a numeric vector with .* elements>
+%! hf= figure ("visible", "off");
+%! unwind_protect
+%!   axis ({1,2})
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

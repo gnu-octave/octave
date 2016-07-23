@@ -20,7 +20,7 @@
 ## @deftypefn  {} {@var{names} =} fieldnames (@var{struct})
 ## @deftypefnx {} {@var{names} =} fieldnames (@var{obj})
 ## @deftypefnx {} {@var{names} =} fieldnames (@var{javaobj})
-## @deftypefnx {} {@var{names} =} fieldnames ("@var{jclassname}")
+## @deftypefnx {} {@var{names} =} fieldnames ("@var{javaclassname}")
 ## Return a cell array of strings with the names of the fields in the
 ## specified input.
 ##
@@ -30,9 +30,9 @@
 ## When the input is an Octave object @var{obj}, the names are the public
 ## properties of the object.
 ##
-## When the input is a Java object @var{javaobj} or Java classname
-## @var{jclassname} the name are the public data elements of the object or
-## class.
+## When the input is a Java object @var{javaobj} or a string containing the
+## name of a Java class @var{javaclassname}, the names are the public fields
+## (data members) of the object or class.
 ## @seealso{numfields, isfield, orderfields, struct, methods}
 ## @end deftypefn
 

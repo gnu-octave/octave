@@ -143,7 +143,7 @@ endfunction
 %! assert (fieldnames (ftbl), {"FunctionName"; "TotalTime"; "NumCalls"; "IsRecursive"; "Parents"; "Children"});
 %! hier = info.Hierarchical;
 %! assert (size (hier), [0, 1]);
-%! assert (fieldnames (hier), {"Index"; "SelfTime"; "NumCalls"; "Children"});
+%! assert (fieldnames (hier), {"Index"; "SelfTime"; "TotalTime"; "NumCalls"; "Children"});
 
 ## Test input validation
 %!error profile ()

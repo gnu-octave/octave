@@ -357,7 +357,7 @@ from the list, so if a function was placed in the list multiple times with
 
 // Execute commands from a file and catch potential exceptions in a consistent
 // way.  This function should be called anywhere we might parse and execute
-// commands from a file before before we have entered the main loop in
+// commands from a file before we have entered the main loop in
 // toplev.cc.
 
 static void

@@ -865,7 +865,7 @@ jit_convert::visit_switch_command (tree_switch_command& cmd)
 
   jit_block *tail = factory.create<jit_block> ("switch_tail");
 
-  // if there's no otherwise branch, the the 'else' of the last branch
+  // if there's no otherwise branch, the 'else' of the last branch
   // has to point to the tail
   if (! has_otherwise)
     entry_blocks[entry_blocks.size()-1] = tail;

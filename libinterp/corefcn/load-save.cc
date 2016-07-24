@@ -188,7 +188,7 @@ read_binary_file_header (std::istream& is, bool& swap,
   else
     {
       if (! quiet)
-        error ("load: unable to read read binary file");
+        error ("load: unable to read binary file");
 
       return -1;
     }

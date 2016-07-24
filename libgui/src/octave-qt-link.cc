@@ -243,7 +243,7 @@ make_filter_list (const octave_link::filter_list& lst)
 
   // We have pairs of data, first being the list of extensions
   // exta;exb;extc etc second the name to use as filter name
-  // (optional).  Qt wants a a list of filters in the format of
+  // (optional).  Qt wants a list of filters in the format of
   // 'FilterName (space separated exts)'.
 
   for (octave_link::filter_list::const_iterator it = lst.begin ();

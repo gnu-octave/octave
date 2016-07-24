@@ -411,7 +411,7 @@ xzip (const Array<std::string>& source_patterns,
             // Error "handling" is not including filename on the output list.
             // Also remove created file which maybe was not even created
             // in the first place.  Note that it is possible for the file
-            // to exist in the first place and for for X::zip to not have
+            // to exist in the first place and for X::zip to not have
             // clobber it yet but we remove it anyway by design.
             octave::sys::unlink (dest_path);
             return;

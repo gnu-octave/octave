@@ -1096,7 +1096,7 @@ audioplayer::playblocking (void)
 
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    error ("audioplayer: unable to start start audio playback stream");
+    error ("audioplayer: unable to start audio playback stream");
 
   unsigned int start, end;
   start = get_sample_number ();

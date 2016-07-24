@@ -565,7 +565,7 @@ octave_rand::do_float_nd_array (const dim_vector& dims, float a)
 
 // Make the random number generator give us a different sequence every
 // time we start octave unless we specifically set the seed.  The
-// technique used below will cycle monthly, but it it does seem to
+// technique used below will cycle monthly, but it does seem to
 // work ok to give fairly different seeds each time Octave starts.
 
 void

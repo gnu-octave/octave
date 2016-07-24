@@ -176,7 +176,7 @@ split_name_with_package (const std::string& name, std::string& fname,
 // Check the load path to see if file that defined this is still
 // visible.  If the file is no longer visible, then erase the
 // definition and move on.  If the file is visible, then we also
-// need to check to see whether the file has changed since the the
+// need to check to see whether the file has changed since the
 // function was loaded/parsed.  However, this check should only
 // happen once per prompt (for files found from relative path
 // elements, we also check if the working directory has changed

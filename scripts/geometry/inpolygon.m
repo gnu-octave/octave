@@ -37,7 +37,7 @@
 
 ## Vectorized by Søren Hauberg <soren@hauberg.org>
 
-## The method for determining if a point is in in a polygon is based on
+## The method for determining if a point is in a polygon is based on
 ## the algorithm shown on
 ## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 ## and is credited to Randolph Franklin.

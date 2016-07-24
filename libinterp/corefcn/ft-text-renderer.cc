@@ -744,7 +744,7 @@ ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
 
                   // 'w' seems to have a negative -1
                   // face->glyph->bitmap_left, this is so we don't
-                  // index out of bound, and assumes we we allocated
+                  // index out of bound, and assumes we've allocated
                   // the right amount of horizontal space in the bbox.
                   if (x0 < 0)
                     x0 = 0;

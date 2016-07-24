@@ -166,7 +166,7 @@ function h = subplot (varargin)
     endif
 
     if (rows < 1 || cols < 1 || index < 1)
-      error ("subplot: ROWS, COLS, and INDEX must be be positive");
+      error ("subplot: ROWS, COLS, and INDEX must be positive");
     endif
   endif
 

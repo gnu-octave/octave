@@ -27,7 +27,7 @@
 ## @seealso{atexit}
 ## @end deftypefn
 
-## No function declaration, this is is an Octave script.  This means we are
+## No function declaration, this is an Octave script.  This means we are
 ## still in the base workspace with access to all user variables.
 
 if (exist ("finish", "file"))

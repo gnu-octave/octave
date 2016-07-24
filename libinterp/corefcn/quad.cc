@@ -253,7 +253,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
           have_sing = true;
 
-          sing = args(4).xfloat_vector_value ("quad: fifth argument SING must be a vector vector of singularities");
+          sing = args(4).xfloat_vector_value ("quad: fifth argument SING must be a vector of singularities");
 
         case 4:
           tol = args(3).xfloat_vector_value ("quad: TOL must be a 1 or 2-element vector");
@@ -346,7 +346,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
           have_sing = true;
 
-          sing = args(4).vector_value ("quad: fifth argument SING must be a vector vector of singularities");
+          sing = args(4).vector_value ("quad: fifth argument SING must be a vector of singularities");
 
         case 4:
           tol = args(3).xvector_value ("quad: TOL must be a 1 or 2-element vector");

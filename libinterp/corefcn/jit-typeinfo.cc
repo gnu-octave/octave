@@ -2208,7 +2208,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
 {
   if (ov.is_function ())
     {
-      // FIXME: This is ugly, we need to finalize how we want to to this, then
+      // FIXME: This is ugly, we need to finalize how we want to do this, then
       // have octave_value fully support the needed functionality
       octave_builtin *builtin
         = dynamic_cast<octave_builtin *> (ov.internal_rep ());

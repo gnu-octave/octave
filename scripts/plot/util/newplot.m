@@ -200,7 +200,7 @@ function hax = newplot (hsave = [])
       ## xlabel, ylabel, zlabel, and title text objects.
       ## Also it preserves font properties like fontsize.
       ## For the time being, in order to have axis labels and title work,
-      ## the above code is is required.
+      ## the above code is required.
   endswitch
 
   ## Reset line and color styles when hold is not on

@@ -845,7 +845,7 @@ Programming Note: @code{nargin} does not work on compiled functions
 
       if (! fcn)
         {
-          // Matlab gives up for histc, so maybe it's ok that that we
+          // Matlab gives up for histc, so maybe it's ok that we
           // give up sometimes too?
 
           std::string type = fcn_val->type_name ();
@@ -964,7 +964,7 @@ returns -1 for all anonymous functions.
 
       if (! fcn)
         {
-          // Matlab gives up for histc, so maybe it's ok that that we
+          // Matlab gives up for histc, so maybe it's ok that we
           // give up sometimes too?
 
           std::string type = fcn_val->type_name ();

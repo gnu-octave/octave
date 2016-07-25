@@ -126,7 +126,7 @@ octave_qt_link::do_prompt_new_edit_file (const std::string& file)
 {
   QSettings *settings = resource_manager::get_settings ();
 
-  if (settings->value ("editor/create_new_file",false).toBool ())
+  if (! settings || settings->value ("editor/create_new_file",false).toBool ())
     return true;
 
   QFileInfo file_info (QString::fromStdString (file));

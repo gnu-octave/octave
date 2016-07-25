@@ -40,6 +40,7 @@ class find_files_dialog : public QDialog
 public:
   find_files_dialog (QWidget * parent=0);
   virtual ~find_files_dialog ();
+  void save_settings (void);
 
 signals:
   void file_selected (const QString &fileName);

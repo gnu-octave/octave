@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
-#include "singleton-cleanup.h"
 
 shortcut_manager *shortcut_manager::instance = 0;
 
@@ -66,12 +65,7 @@ shortcut_manager::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    {
       instance = new shortcut_manager ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
 
   if (! instance)
     {

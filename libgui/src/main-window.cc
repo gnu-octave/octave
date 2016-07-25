@@ -822,6 +822,12 @@ main_window::confirm_shutdown_octave (void)
 void
 main_window::prepare_to_exit (void)
 {
+  // Find files dialog is constructed dynamically, not at time of main_window
+  // construction.  Connecting it to qApp aboutToQuit signal would have
+  // caused it to run after QSettings deleted.
+  if (find_files_dlg)
+    find_files_dlg->save_settings ();
+
   write_settings ();
 }
 
@@ -1353,8 +1359,24 @@ main_window::construct (void)
 
       construct_tool_bar ();
 
+      // Order is important.  Deleting QSettings must be last.
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               command_window, SLOT (save_settings ()));
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               history_window, SLOT (save_settings ()));
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               file_browser_window, SLOT (save_settings ()));
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               doc_browser_window, SLOT (save_settings ()));
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               workspace_window, SLOT (save_settings ()));
       connect (qApp, SIGNAL (aboutToQuit ()),
                this, SLOT (prepare_to_exit ()));
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               shortcut_manager::instance, SLOT (cleanup_instance ()));
+      // QSettings are saved upon deletion (i.e., cleanup_instance)
+      connect (qApp, SIGNAL (aboutToQuit ()),
+               resource_manager::instance, SLOT (cleanup_instance ()));
 
       connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
                this, SLOT(focus_changed (QWidget*, QWidget*)));

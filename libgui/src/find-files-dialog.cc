@@ -198,9 +198,13 @@ find_files_dialog::find_files_dialog (QWidget * p)
   connect (this, SIGNAL (finished (int)), this, SLOT (handle_done (int)));
 }
 
-find_files_dialog::~find_files_dialog ()
+void
+find_files_dialog::save_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
 
   int sort_column = _file_list->horizontalHeader ()->sortIndicatorSection ();
   Qt::SortOrder sort_order
@@ -225,7 +229,10 @@ find_files_dialog::~find_files_dialog ()
                       _content_case_check->isChecked ());
 
   settings->sync ();
+}
 
+find_files_dialog::~find_files_dialog ()
+{
   if (_dir_iterator)
     delete _dir_iterator;
 }

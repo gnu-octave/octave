@@ -123,11 +123,15 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   setFocusPolicy (Qt::StrongFocus);
 }
 
-octave_dock_widget::~octave_dock_widget ()
+void
+octave_dock_widget::save_settings (void)
 {
   // save state of this dock-widget
   QString name = objectName ();
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
 
   settings->beginGroup ("DockWidgets");
 

@@ -37,7 +37,7 @@ class octave_dock_widget : public QDockWidget
 public:
 
   octave_dock_widget (QWidget *p = 0);
-  virtual ~octave_dock_widget ();
+  virtual ~octave_dock_widget (void) { }
 
   virtual void connect_visibility_changed (void);
   void make_window (void);
@@ -83,6 +83,8 @@ public slots:
   void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
   QMainWindow *main_win () { return _parent; }
+
+  void save_settings (void);
 
 protected slots:
 

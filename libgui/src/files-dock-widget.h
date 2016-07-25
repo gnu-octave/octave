@@ -52,7 +52,7 @@ public:
 
   files_dock_widget (QWidget *parent = 0);
 
-  ~files_dock_widget ();
+  ~files_dock_widget (void) { }
 
 public slots:
 
@@ -79,6 +79,8 @@ public slots:
 
   /** Tells the widget to react on changed settings. */
   void notice_settings (const QSettings *settings);
+
+  void save_settings (void);
 
 private slots:
 

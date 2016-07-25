@@ -69,3 +69,9 @@ terminal_dock_widget::terminal_interrupt (void)
 {
   emit interrupt_signal ();
 }
+
+terminal_dock_widget::~terminal_dock_widget (void)
+{
+  delete terminal;
+}
+

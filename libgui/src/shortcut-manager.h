@@ -95,7 +95,11 @@ public:
       instance->do_import_export (action);
   }
 
+  static shortcut_manager *instance;
+
 public slots:
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
 signals:
 
@@ -109,13 +113,7 @@ protected slots:
 
 private:
 
-  static shortcut_manager *instance;
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
   // No copying!
-
-  shortcut_manager (const shortcut_manager&);
-  shortcut_manager& operator = (const shortcut_manager&);
 
   static bool instance_ok (void);
 

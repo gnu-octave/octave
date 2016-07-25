@@ -114,6 +114,10 @@ void QUnixTerminalImpl::connectToPty()
 
 QUnixTerminalImpl::~QUnixTerminalImpl()
 {
+    delete m_terminalModel;
+    delete m_kpty;
+    delete m_terminalView;
+
     // Restore stderr so that any errors at exit might appear somewhere.
     dup2 (fdstderr, STDERR_FILENO);
 

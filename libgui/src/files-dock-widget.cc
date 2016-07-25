@@ -272,9 +272,14 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _octave_dir = "";
 }
 
-files_dock_widget::~files_dock_widget ()
+void
+files_dock_widget::save_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
+
   int sort_column = _file_tree_view->header ()->sortIndicatorSection ();
   Qt::SortOrder sort_order = _file_tree_view->header ()->sortIndicatorOrder ();
   settings->setValue ("filesdockwidget/sort_files_by_column", sort_column);
@@ -290,6 +295,8 @@ files_dock_widget::~files_dock_widget ()
   settings->setValue ("filesdockwidget/mru_dir_list", dirs);
 
   settings->sync ();
+
+  octave_dock_widget::save_settings ();
 
   if (_sig_mapper)
     delete _sig_mapper;

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QVector>
 #include <QHash>
+#include <QMessageBox>
 #include <QTextCodec>
 
 #if defined (HAVE_QSCINTILLA)
@@ -262,6 +263,15 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->setupUi (this);
 
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    {
+      QMessageBox msgBox (QMessageBox::Warning, tr ("Octave Settings"),
+                          tr ("Unable to save settings.  Missing settings "
+                              "file or unknown directory."));
+      msgBox.exec ();
+      return;
+    }
 
   // restore last geometry
   restoreGeometry (settings->value("settings/geometry").toByteArray ());
@@ -613,8 +623,9 @@ settings_dialog::show_tab (const QString& tab)
   if (tab.isEmpty ())
     {
       QSettings *settings = resource_manager::get_settings ();
-      ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
-                                      0).toInt ());
+      if (settings)
+        ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
+                                        0).toInt ());
     }
   else
     {

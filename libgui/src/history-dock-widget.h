@@ -39,13 +39,14 @@ class history_dock_widget : public octave_dock_widget
 public:
 
   history_dock_widget (QWidget *parent = 0);
-  ~history_dock_widget ();
+  ~history_dock_widget (void) { }
 
 public slots:
 
   void set_history (const QStringList& hist);
   void append_history (const QString& hist_entry);
   void clear_history (void);
+  void save_settings (void);
 
 signals:
 

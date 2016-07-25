@@ -92,43 +92,43 @@ workspace_view::workspace_view (QWidget *p)
 
   QSettings *settings = resource_manager::get_settings ();
 
-  _filter_shown = settings->value ("workspaceview/filter_shown",true).toBool();
-  _filter_widget->setVisible (_filter_shown);
+  if (settings)
+    {
+      _filter_shown = settings->value ("workspaceview/filter_shown",true).toBool();
+      _filter_widget->setVisible (_filter_shown);
 
-  ws_layout->setMargin (2);
+      ws_layout->setMargin (2);
 
-  // Set the empty widget to have our layout.
-  widget ()->setLayout (ws_layout);
+      // Set the empty widget to have our layout.
+      widget ()->setLayout (ws_layout);
 
-  // Initialize collapse/expand state of the workspace subcategories.
+      // Initialize collapse/expand state of the workspace subcategories.
 
-  //enable sorting (setting column and order after model was set)
-  view->setSortingEnabled (true);
-  // Initialize column order and width of the workspace
-  view->horizontalHeader ()->restoreState (
-    settings->value ("workspaceview/column_state").toByteArray ());
-  // Set header properties for sorting
-  view->horizontalHeader ()->setClickable (true);
-  view->horizontalHeader ()->setMovable (true);
-  view->horizontalHeader ()->setSortIndicator (
-    settings->value ("workspaceview/sort_by_column",0).toInt (),
-    static_cast<Qt::SortOrder>
-    (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ())
-  );
-  view->horizontalHeader ()->setSortIndicatorShown (true);
+      //enable sorting (setting column and order after model was set)
+      view->setSortingEnabled (true);
+      // Initialize column order and width of the workspace
+      view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
+      // Set header properties for sorting
+      view->horizontalHeader ()->setClickable (true);
+      view->horizontalHeader ()->setMovable (true);
+      view->horizontalHeader ()->setSortIndicator (settings->value ("workspaceview/sort_by_column",0).toInt (),
+                                                   static_cast<Qt::SortOrder>
+                                                   (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ()));
+      view->horizontalHeader ()->setSortIndicatorShown (true);
 
-  view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
-  connect (view->horizontalHeader (),
-           SIGNAL (customContextMenuRequested (const QPoint &)),
-           this, SLOT (header_contextmenu_requested (const QPoint &)));
+      view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
+      connect (view->horizontalHeader (),
+               SIGNAL (customContextMenuRequested (const QPoint &)),
+               this, SLOT (header_contextmenu_requested (const QPoint &)));
 
-  // Init state of the filter
-  _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
+      // Init state of the filter
+      _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
 
-  bool filter_state =
-    settings->value ("workspaceview/filter_active", false).toBool ();
-  _filter_checkbox->setChecked (filter_state);
-  filter_activate (filter_state);
+      bool filter_state =
+        settings->value ("workspaceview/filter_active", false).toBool ();
+      _filter_checkbox->setChecked (filter_state);
+      filter_activate (filter_state);
+    }
 
   // Connect signals and slots.
 
@@ -146,9 +146,13 @@ workspace_view::workspace_view (QWidget *p)
            p, SLOT (execute_command_in_terminal (const QString&)));
 }
 
-workspace_view::~workspace_view (void)
+void
+workspace_view::save_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
 
   settings->setValue ("workspaceview/column_state",
                       view->horizontalHeader ()->saveState ());
@@ -278,6 +282,8 @@ workspace_view::toggle_header (int col)
 
   settings->setValue (key, ! shown);
   settings->sync ();
+
+  octave_dock_widget::save_settings ();
 }
 
 void

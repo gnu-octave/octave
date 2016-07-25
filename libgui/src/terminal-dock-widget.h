@@ -37,6 +37,8 @@ public:
 
   terminal_dock_widget (QWidget *parent = 0);
 
+  ~terminal_dock_widget (void);
+
   bool has_focus (void) const;
 
   void focus (void);

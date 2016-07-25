@@ -43,13 +43,15 @@ public:
 
   workspace_view (QWidget *parent = 0);
 
-  ~workspace_view (void);
+  ~workspace_view (void) { }
 
 public slots:
 
   void notice_settings (const QSettings *);
 
   void setModel (workspace_model *model);
+
+  void save_settings (void);
 
 signals:
 

@@ -106,17 +106,15 @@ public:
   static QStringList terminal_color_names (void);
   static QList<QColor> terminal_default_colors (void);
 
-private:
-
   static resource_manager *instance;
+
+public slots:
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
+private:
+
   // No copying!
-
-  resource_manager (const resource_manager&);
-
-  resource_manager& operator = (const resource_manager&);
 
   static bool instance_ok (void);
 

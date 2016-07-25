@@ -142,9 +142,13 @@ history_dock_widget::construct ()
   _history_list_view->setTextElideMode (Qt::ElideRight);
 }
 
-history_dock_widget::~history_dock_widget ()
+void
+history_dock_widget::save_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
 
   settings->setValue ("history_dock_widget/filter_active",
                       _filter_checkbox->isChecked ());
@@ -156,6 +160,8 @@ history_dock_widget::~history_dock_widget ()
   settings->setValue ("history_dock_widget/mru_list", mru);
 
   settings->sync ();
+
+  octave_dock_widget::save_settings ();
 }
 
 void

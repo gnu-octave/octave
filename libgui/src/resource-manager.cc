@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "help.h"
 #include "oct-env.h"
-#include "singleton-cleanup.h"
 
 #include "defaults.h"
 
@@ -136,12 +135,7 @@ resource_manager::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    {
       instance = new resource_manager ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
 
   if (! instance)
     {

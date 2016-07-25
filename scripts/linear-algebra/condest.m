@@ -1,4 +1,5 @@
 ## Copyright (C) 2007-2015 Regents of the University of California
+## Copyright (C) 2016 Marco Caliari
 ##
 ## This file is part of Octave.
 ##
@@ -20,8 +21,8 @@
 ## @deftypefn  {} {} condest (@var{A})
 ## @deftypefnx {} {} condest (@var{A}, @var{t})
 ## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@dots{})
-## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solve}, @var{solve_t}, @var{t})
-## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{apply}, @var{apply_t}, @var{solve}, @var{solve_t}, @var{n}, @var{t})
+## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{afun}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
 ##
 ## Estimate the 1-norm condition number of a matrix @var{A} using @var{t} test
 ## vectors using a randomized 1-norm estimator.
@@ -32,23 +33,39 @@
 ## number of @var{A} given an LU@tie{}factorization, @code{condest} uses the
 ## following functions:
 ##
-## @table @var
-## @item apply
-## @code{A*x} for a matrix @code{x} of size @var{n} by @var{t}.
+## @itemize @minus
+## @item @var{afun} which should returns
+## @itemize @bullet
+## @item
+## the dimension @var{n} of @var{a}, if @var{flag} is "dim"
+## @item
+## true if @var{a} is a real operator, if @var{flag} is "real"
+## @item
+## the result @code{@var{a} * @var{x}}, if @var{flag} is "notransp"
+## @item
+## the result @code{@var{a}' * @var{x}}, if @var{flag} is "transp"
+## @end itemize
+## @item @var{solvefun} which should returns
+## @itemize @bullet
+## @item
+## the dimension @var{n} of @var{a}, if @var{flag} is "dim"
+## @item
+## true if @var{a} is a real operator, if @var{flag} is "real"
+## @item
+## the result @code{@var{a} \ @var{x}}, if @var{flag} is "notransp"
+## @item
+## the result @code{@var{a}' \ @var{x}}, if @var{flag} is "transp"
+## @end itemize
+## @end itemize
 ##
-## @item apply_t
-## @code{A'*x} for a matrix @code{x} of size @var{n} by @var{t}.
+## The parameters @var{p1}, @var{p2}, @dots{} are arguments of
+## @code{@var{afun} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}
+## and @code{@var{solvefun} (@var{flag}, @var{x}, @var{p1}, @var{p2},
+## @dots{})}.
 ##
-## @item solve
-## @code{A \ b} for a matrix @code{b} of size @var{n} by @var{t}.
-##
-## @item solve_t
-## @code{A' \ b} for a matrix @code{b} of size @var{n} by @var{t}.
-## @end table
-##
-## The implicit version requires an explicit dimension @var{n}.
-##
-## @code{condest} uses a randomized algorithm to approximate the 1-norms.
+## @code{condest} uses a randomized algorithm to approximate the
+## 1-norms. Therefore, if consistent results are required, the "state" of the
+## random generator should be fixed before invoking @code{normest1}.
 ##
 ## @code{condest} returns the 1-norm condition estimate @var{est} and a vector
 ## @var{v} satisfying @code{norm (A*v, 1) == norm (A, 1) * norm
@@ -70,7 +87,7 @@
 ## Pseudospectra}. @url{http://citeseer.ist.psu.edu/223007.html}
 ## @end itemize
 ##
-## @seealso{cond, norm, onenormest}
+## @seealso{cond, norm, normest1}
 ## @end deftypefn
 
 ## Code originally licensed under:
@@ -120,10 +137,129 @@ function [est, v] = condest (varargin)
 
   default_t = 5;
 
+  if ((nargin == 3 && is_function_handle (varargin{3}))
+      || (nargin == 4 && is_function_handle (varargin{3})
+          && isnumeric (varargin{4})))
+    ## onenormest syntax, deprecated in 4.2
+    [est, v] = condest_legacy (varargin{:});
+    return
+  elseif ((nargin >= 5) && is_function_handle (varargin{4}))
+    ## onenormest syntax, deprecated in 4.2
+    [est, v] = condest_legacy (varargin{:});
+    return
+  endif
+
+  have_A = false;
+  have_t = false;
+  have_apply_normest1 = false;
+  have_solve_normest1 = false;
+
+  if (isnumeric (varargin{1}))
+    A = varargin{1};
+    if (! issquare (A))
+      error ("condest: matrix must be square");
+    endif
+    n = rows (A);
+    have_A = true;
+    if (nargin > 1)
+      if (is_function_handle (varargin{2}))
+        solve = varargin{2};
+        have_solve_normest1 = true;
+        if (nargin > 2)
+          t = varargin{3};
+          have_t = true;
+        endif
+      else
+        t = varargin{2};
+        have_t = true;
+        real_op = isreal (A);
+      endif
+    else
+      real_op = isreal (A);
+    endif
+  else # varargin{1} is function handle
+    apply = varargin{1};
+    if (nargin > 1)
+      solve = varargin{2};
+      have_apply_normest1 = true;
+      have_solve_normest1 = true;
+      n = apply ("dim", [], varargin{4:end});
+      if (nargin > 2)
+        t = varargin{3};
+        have_t = true;
+      endif
+    else
+      error("condest: wrong number of input parameters");
+    endif
+  endif
+
+  if (! have_t)
+    t = min (n, default_t);
+  endif
+
+  if (! have_solve_normest1)
+     ## prepare solve in normest1 form
+    if (issparse (A))
+      [L, U, P, Pc] = lu (A);
+      solve = @(flag, x) solve_sparse (flag, x, n, real_op, L, U, P, Pc);
+    else
+      [L, U, P] = lu (A);
+      solve = @(flag, x) solve_not_sparse (flag, x, n, real_op, L, U, P);
+    endif
+  endif
+
+  if (have_A)
+    Anorm = norm (A, 1);
+  else
+    Anorm = normest1 (apply, t, [], varargin{4:end});
+  endif
+  [Ainv_norm, v, w] = normest1 (solve, t, [], varargin{4:end});
+
+  est = Anorm * Ainv_norm;
+  v = w / norm (w, 1);
+
+endfunction
+
+function value = solve_sparse (flag, x, n, real_op, L , U , P , Pc)
+  switch flag
+    case "dim"
+      value = n;
+    case "real"
+      value = real_op;
+    case "notransp"
+      value = P' * (L' \ (U' \ (Pc * x)));
+    case "transp"
+      value = Pc' * (U \ (L \ (P * x)));
+  endswitch
+endfunction
+
+function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
+  switch flag
+    case "dim"
+      value = n;
+    case "real"
+      value = real_op;
+    case "notransp"
+      value = P' * (L' \ (U' \ x));
+    case "transp"
+      value = U \ (L \ (P * x));
+  endswitch
+endfunction
+
+function [est, v] = condest_legacy (varargin) # to be removed after 4.2
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "condest: this syntax is deprecated, call condest (A, SOLVEFUN, T, P1, P2, ...) instead.");
+  endif
+
+  default_t = 5;
+
   have_A = false;
   have_t = false;
   have_solve = false;
-
   if (isnumeric (varargin{1}))
     A = varargin{1};
     if (! issquare (A))
@@ -182,6 +318,10 @@ function [est, v] = condest (varargin)
     endif
   endif
 
+  ## We already warned about this usage being deprecated.  Don't
+  ## warn again about onenormest.
+  warning ("off", "Octave:deprecated-function", "local");
+
   if (have_A)
     Anorm = norm (A, 1);
   else
@@ -195,18 +335,39 @@ function [est, v] = condest (varargin)
 
 endfunction
 
-
-%!demo
-%! N = 100;
-%! A = randn (N) + eye (N);
-%! condest (A)
-%! [L,U,P] = lu (A);
-%! condest (A, @(x) U \ (L \ (P*x)), @(x) P'*(L' \ (U'\x)))
-%! condest (@(x) A*x, @(x) A'*x, @(x) U \ (L \ (P*x)), @(x) P'*(L' \ (U'\x)), N)
-%! norm (inv (A), 1) * norm (A, 1)
-
 ## Yes, these test bounds are really loose.  There's
 ## enough randomization to trigger odd cases with hilb().
+
+%!function value = apply_fun (flag, x, A, m)
+%!  if (nargin == 3)
+%!    m = 1;
+%!  endif
+%!  switch flag
+%!    case "dim"
+%!      value = length (A);
+%!    case "real"
+%!      value = isreal (A);
+%!    case "notransp"
+%!      value = x; for i = 1:m, value = A * value;, endfor
+%!    case "transp"
+%!      value = x; for i = 1:m, value = A' * value;, endfor
+%!  endswitch
+%!endfunction
+%!function value = solve_fun (flag, x, A, m)
+%!  if (nargin == 3)
+%!    m = 1;
+%!  endif
+%!  switch flag
+%!    case "dim"
+%!      value = length (A);
+%!    case "real"
+%!      value = isreal (A);
+%!    case "notransp"
+%!      value = x; for i = 1:m, value = A \ value;, endfor;
+%!    case "transp"
+%!      value = x; for i = 1:m, value = A' \ value;, endfor;
+%!  endswitch
+%!endfunction
 
 %!test
 %! N = 6;
@@ -215,7 +376,8 @@ endfunction
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-8);
 
-%!test
+%!test # to be removed after 4.2
+%! warning ("off", "Octave:deprecated-function", "local");
 %! N = 6;
 %! A = hilb (N);
 %! solve = @(x) A\x; solve_t = @(x) A'\x;
@@ -223,12 +385,23 @@ endfunction
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-8);
 
-%!test
+%!test # to be removed after 4.2
+%! warning ("off", "Octave:deprecated-function", "local");
 %! N = 6;
 %! A = hilb (N);
 %! apply = @(x) A*x; apply_t = @(x) A'*x;
 %! solve = @(x) A\x; solve_t = @(x) A'\x;
 %! cA = condest (apply, apply_t, solve, solve_t, N);
+%! cA_test = norm (inv (A), 1) * norm (A, 1);
+%! assert (cA, cA_test, -2^-6);
+
+%!test # to be removed after 4.2
+%! warning ("off", "Octave:deprecated-function", "local");
+%! N = 6;
+%! A = hilb (N);
+%! apply = @(x) A*x; apply_t = @(x) A'*x;
+%! solve = @(x) A\x; solve_t = @(x) A'\x;
+%! cA = condest (apply, apply_t, solve, solve_t, N, 2);
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-6);
 
@@ -240,3 +413,26 @@ endfunction
 %! x = A*v;
 %! assert (norm (x, inf), 0, eps);
 
+%!test
+%! N = 6;
+%! A = hilb (N);
+%! solve = @(flag, x) solve_fun (flag, x, A);
+%! cA = condest (A, solve);
+%! cA_test = norm (inv (A), 1) * norm (A, 1);
+%! assert (cA, cA_test, -2^-6);
+%!test
+%! N = 6;
+%! A = hilb (N);
+%! apply = @(flag, x) apply_fun (flag, x, A);
+%! solve = @(flag, x) solve_fun (flag, x, A);
+%! cA = condest (apply, solve);
+%! cA_test = norm (inv (A), 1) * norm (A, 1);
+%! assert (cA, cA_test, -2^-6);
+
+%!test # parameters for apply and solve functions
+%! N = 6;
+%! A = hilb (N);
+%! m = 2;
+%! cA = condest (@apply_fun, @solve_fun, [], A, m);
+%! cA_test = norm (inv (A^2), 1) * norm (A^2, 1);
+%! assert (cA, cA_test, -2^-6);

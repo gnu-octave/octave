@@ -486,7 +486,7 @@ rest of this article, the specific sparse versions of functions are used.
 
 @item Linear algebra:
   @dfn{condest}, @dfn{eigs}, @dfn{matrix_type},
-  @dfn{normest}, @dfn{sprank}, @dfn{spaugment}, @dfn{svds}
+  @dfn{normest}, @dfn{normest1}, @dfn{sprank}, @dfn{spaugment}, @dfn{svds}
 
 @item Iterative techniques:
   @dfn{ichol}, @dfn{ilu}, @dfn{pcg}, @dfn{pcr}
@@ -830,7 +830,7 @@ used with care.
 
 @DOCSTRING(normest)
 
-@DOCSTRING(onenormest)
+@DOCSTRING(normest1)
 
 @DOCSTRING(condest)
 

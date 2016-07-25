@@ -20,6 +20,9 @@
 ## @deftypefn  {} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t})
 ## @deftypefnx {} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
+## @code{onenormest} is deprecated and will be removed in Octave version 4.4.
+## Use @code{normest1} for the equivalent functionality.
+##
 ## Apply @nospell{Higham and Tisseur's} randomized block 1-norm estimator to
 ## matrix @var{A} using @var{t} test vectors.
 ##
@@ -95,6 +98,14 @@
 ## Version: 0.2
 
 function [est, v, w, iter] = onenormest (varargin)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "onenormest is obsolete and will be removed from a future version of Octave, please use normest1 instead");
+  endif
+
 
   if (nargin < 1 || nargin > 4)
     print_usage ();
@@ -248,6 +259,7 @@ endfunction
 %! norm (inv (A), 1)
 
 %!test
+%! warning ("off", "Octave:deprecated-function", "local");
 %! N = 10;
 %! A = ones (N);
 %! [nm1, v1, w1] = onenormest (A);
@@ -258,6 +270,7 @@ endfunction
 %! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 %!test
+%! warning ("off", "Octave:deprecated-function", "local");
 %! N = 10;
 %! A = ones (N);
 %! [nm1, v1, w1] = onenormest (@(x) A*x, @(x) A'*x, N, 3);
@@ -268,6 +281,7 @@ endfunction
 %! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 %!test
+%! warning ("off", "Octave:deprecated-function", "local");
 %! N = 5;
 %! A = hilb (N);
 %! [nm1, v1, w1] = onenormest (A);
@@ -279,6 +293,7 @@ endfunction
 
 ## Only likely to be within a factor of 10.
 %!test
+%! warning ("off", "Octave:deprecated-function", "local");
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 42);  # Initialize to guarantee reproducible results
@@ -290,4 +305,3 @@ endfunction
 %! assert (nminf, norm (A, inf), -.1);
 %! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
 %! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
-

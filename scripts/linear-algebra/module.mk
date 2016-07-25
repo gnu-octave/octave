@@ -21,8 +21,8 @@ scripts_linear_algebra_FCN_FILES = \
   scripts/linear-algebra/linsolve.m \
   scripts/linear-algebra/logm.m \
   scripts/linear-algebra/normest.m \
+  scripts/linear-algebra/normest1.m \
   scripts/linear-algebra/null.m \
-  scripts/linear-algebra/onenormest.m \
   scripts/linear-algebra/orth.m \
   scripts/linear-algebra/planerot.m \
   scripts/linear-algebra/qzhess.m \

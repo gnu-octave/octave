@@ -19,6 +19,7 @@ scripts_deprecated_FCN_FILES = \
   scripts/deprecated/nfields.m \
   scripts/deprecated/octave_config_info.m \
   scripts/deprecated/octave_tmp_file_name.m \
+  scripts/deprecated/onenormest.m \
   scripts/deprecated/playaudio.m \
   scripts/deprecated/saveaudio.m \
   scripts/deprecated/setaudio.m \

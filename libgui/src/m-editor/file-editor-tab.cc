@@ -1,4 +1,3 @@
-
 /*
 
 Copyright (C) 2011-2015 Jacob Dawid
@@ -69,11 +68,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 
+#include "call-stack.h"
 #include "debug.h"
 #include "octave-qt-link.h"
 #include "version.h"
 #include "utils.h"
 #include "defaults.h"
+#include "ov-usr-fcn.h"
+#include "symtab.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include <oct-map.h>
 
@@ -1730,6 +1733,73 @@ file_editor_tab::new_file (const QString &commands)
   _edit_area->setModified (false); // new file is not modified yet
 }
 
+// Force reloading of a file after it is saved.
+// This is needed to get the right line numbers for breakpoints (bug #46632).
+bool
+file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
+                                       const QString& base_name_q)
+{
+  std::string base_name = base_name_q.toStdString ();
+  octave_value sym;
+  try
+    {
+      sym = symbol_table::find (base_name);
+    }
+  catch (const octave_execution_exception& e)
+    {
+      // Ignore syntax error.
+      // It was in the old file on disk; the user may have fixed it already.
+    }
+
+  // Return early if this file is not loaded in the symbol table
+  if (!sym.is_defined () || !sym.is_user_code ())
+    return true;
+
+  octave_user_code *fcn = sym.user_code_value ();
+
+  std::string full_name = full_name_q.toStdString ();
+  if (octave::sys::canonicalize_file_name (full_name.c_str ())
+      != octave::sys::canonicalize_file_name (fcn->fcn_file_name ().c_str ()))
+    return true;
+
+  // If this file is loaded, check that we aren't currently running it
+  bool retval = true;
+  octave_idx_type curr_frame = -1;
+  size_t nskip = 0;
+  octave_map stk = octave_call_stack::backtrace (nskip, curr_frame, false);
+  Cell names = stk.contents ("name");
+  for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
+    {
+      if (names(i).string_value () == base_name)
+        {
+          int ans = QMessageBox::question (0, tr ("Debug or Save"),
+             tr ("This file is currently being executed.\n"
+                          "Quit debugging and save?"),
+              QMessageBox::Save | QMessageBox::Cancel);
+
+          if (ans == QMessageBox::Save)
+            {
+              emit execute_command_in_terminal_signal ("dbquit");
+              // Wait until dbquit has actually occurred
+              while (names.numel () > i)
+                {
+                  octave_sleep (0.01);
+                  stk = octave_call_stack::backtrace (nskip, curr_frame, false);
+                  names = stk.contents ("name");
+                }
+            }
+          else
+            retval = false;
+          break;
+        }
+    }
+
+  // If we aren't currently running it, or have quit above, force a reload.
+  if (retval == true)
+    symbol_table::clear_user_function (base_name);
+  return retval;
+}
+
 void
 file_editor_tab::save_file (const QString& saveFileName,
                             bool remove_on_success, bool restore_breakpoints)
@@ -1741,17 +1811,23 @@ file_editor_tab::save_file (const QString& saveFileName,
       save_file_as (remove_on_success);
       return;
     }
+
+  // Get a list of breakpoint line numbers, before  exit_debug_and_clear().
+  emit report_marker_linenr (_bp_lines, _bp_conditions);
+
   // get the absolute path (if existing)
   QFileInfo file_info = QFileInfo (saveFileName);
   QString file_to_save;
   if (file_info.exists ())
-    file_to_save = file_info.canonicalFilePath ();
+    {
+      file_to_save = file_info.canonicalFilePath ();
+      // Force reparse of this function next time it is used (bug #46632)
+      if (!exit_debug_and_clear (file_to_save, file_info.baseName ()))
+        return;
+    }
   else
     file_to_save = saveFileName;
   QFile file (file_to_save);
-
-  // Get a list of all the breakpoint line numbers.
-  emit report_marker_linenr (_bp_lines, _bp_conditions);
 
   // stop watching file
   QStringList trackedFiles = _file_system_watcher.files ();
@@ -2411,7 +2487,7 @@ file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
     return;
 
   if (line > 0)
-    _edit_area->markerDelete (line-1, marker::debugger_position);
+    emit remove_position_via_debugger_linenr (line);
 }
 
 void

@@ -174,6 +174,7 @@ signals:
   void report_marker_linenr (QIntList& lines, QStringList& conditions);
   void remove_position_via_debugger_linenr (int debugger_linenr);
   void remove_all_positions (void);
+  void execute_command_in_terminal_signal (const QString&);
   // FIXME: The following is similar to "process_octave_code" signal.  However,
   // currently that signal is connected to something that simply focuses a
   // window and not actually communicate with Octave.
@@ -229,6 +230,8 @@ private:
   };
 
   bool valid_file_name (const QString& file=QString ());
+  bool exit_debug_and_clear (const QString& full_name,
+                             const QString& base_name);
   void save_file (const QString& saveFileName, bool remove_on_success = false,
                                                bool restore_breakpoints = true);
   void save_file_as (bool remove_on_success = false);

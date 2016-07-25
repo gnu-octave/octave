@@ -31,6 +31,8 @@ $makeinfo_command = "makeinfo --no-headers --no-warn --force --no-validate --fil
 $output_file = shift (@ARGV);
 $top_srcdir = shift (@ARGV);
 
+$amp = "@";
+
 ## Constant patterns.
 
 $doc_delim = "\x{1d}";
@@ -83,7 +85,8 @@ foreach $arg (@ARGV)
 
           ## Escapes for symbol names.
 
-          s/$doc_delim_pat(([#%]|)[{}]|@)/$doc_delim@$1/;
+          s/$doc_delim_pat([{}@])/$doc_delim$amp$1/;
+          s/$doc_delim_pat([#%])([{}])/$doc_delim$1$amp$2/;
           $text .= $_;
         }
     }
@@ -91,7 +94,7 @@ foreach $arg (@ARGV)
 
 $text .= $doc_delim;
 
-($fh, $file) = tempfile (UNLINK => 1);
+($fh, $file) = tempfile ();
 print $fh "$text";
 close ($fh);
 

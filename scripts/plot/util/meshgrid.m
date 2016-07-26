@@ -29,7 +29,8 @@
 ## as @var{x}.
 ##
 ## If the optional @var{z} input is given, or @var{zz} is requested, then the
-## output will be a full 3-D grid.
+## output will be a full 3-D grid.  If @var{z} is omitted and @var{zz} is
+## requested, it is assumed to be the same as @var{y}.
 ##
 ## @code{meshgrid} is most frequently used to produce input for a 2-D or 3-D
 ## function that will be plotted.  The following example creates a surface
@@ -71,7 +72,7 @@ function [xx, yy, zz] = meshgrid (x, y, z)
 
   ## Use repmat to ensure that result values have the same type as the inputs
 
-  if (nargout < 3)
+  if (nargout < 3 && nargin < 3)
     if (! (isvector (x) && isvector (y)))
       error ("meshgrid: X and Y must be vectors");
     endif
@@ -125,6 +126,17 @@ endfunction
 %! assert (size (XX1), [3, 3]);
 %! assert (XX1, XX2);
 %! assert (YY1, YY2);
+
+%!test
+%! x = 1:2;
+%! y = 1:3;
+%! z = 1:4;
+%! [XX, YY] = meshgrid (x, y, z);
+%! assert (size_equal (XX, YY));
+%! assert (ndims (XX), 3);
+%! assert (size (XX), [3, 2, 4]);
+%! assert (XX(1) * YY(1), x(1) * y(1));
+%! assert (XX(end) * YY(end), x(end) * y(end));
 
 ## Test input validation
 %!error meshgrid ()

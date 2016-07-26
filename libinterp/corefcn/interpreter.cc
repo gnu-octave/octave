@@ -616,32 +616,23 @@ namespace octave
                      && stdin_is_tty
                      && octave_isatty_wrapper (fileno (stdout)));
 
-    // Check if the user forced an interactive session.  If he
-    // unnecessarily did so, reset forced_interactive to false.
+    // Check if the user forced an interactive session.
     if (options.forced_interactive ())
-      {
-        if (m_interactive)
-          options.forced_interactive (false);
-        else
-          m_interactive = true;
-      }
+      m_interactive = true;
 
+    bool line_editing = options.line_editing ();
     if ((! m_interactive || options.forced_interactive ())
         && ! options.forced_line_editing ())
-      options.line_editing (false);
-
-    // Also skip start-up message unless session is interactive.
-    if (! m_interactive)
-      options.inhibit_startup_message (true);
+      line_editing = false;
 
     // Force default line editor if we don't want readline editing.
-    if (! options.line_editing ())
+    if (line_editing)
       octave::command_editor::force_default_editor ();
 
     // These can come after command line args since none of them set any
     // defaults that might be changed by command line options.
 
-    if (options.line_editing ())
+    if (line_editing )
       initialize_command_input ();
 
     octave_interpreter_ready = true;
@@ -662,7 +653,7 @@ namespace octave
   {
     cmdline_options options = m_app_context->options ();
 
-    if (! options.inhibit_startup_message ())
+    if (m_interactive && ! options.inhibit_startup_message ())
       std::cout << octave_startup_message () << "\n" << std::endl;
 
     octave_prepare_hdf5 ();
@@ -672,7 +663,7 @@ namespace octave
                            options.verbose_flag (),
                            options.inhibit_startup_message ());
 
-    if (! options.inhibit_startup_message ()
+    if (m_interactive && ! options.inhibit_startup_message ()
         && reading_startup_message_printed)
       std::cout << std::endl;
 

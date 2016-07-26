@@ -626,13 +626,13 @@ namespace octave
       line_editing = false;
 
     // Force default line editor if we don't want readline editing.
-    if (line_editing)
+    if (! line_editing)
       octave::command_editor::force_default_editor ();
 
     // These can come after command line args since none of them set any
     // defaults that might be changed by command line options.
 
-    if (line_editing )
+    if (line_editing)
       initialize_command_input ();
 
     octave_interpreter_ready = true;

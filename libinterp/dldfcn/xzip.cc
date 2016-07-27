@@ -52,11 +52,11 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef HAVE_BZLIB_H
+#if defined (HAVE_BZLIB_H)
 #  include <bzlib.h>
 #endif
 
-#ifdef HAVE_ZLIB_H
+#if defined (HAVE_ZLIB_H)
 #  include <zlib.h>
 #endif
 
@@ -107,7 +107,8 @@ public:
   }
 };
 
-#ifdef HAVE_BZ2
+#if defined (HAVE_BZ2)
+
 class bz2
 {
 private:
@@ -179,7 +180,8 @@ public:
   }
 
 };
-#endif // HAVE_BZL2
+
+#endif
 
 // Note about zlib and gzip
 //
@@ -208,7 +210,8 @@ public:
 // GZIP file format specification version 4.3
 
 
-#ifdef HAVE_Z
+#if defined (HAVE_Z)
+
 class gz
 {
 private:
@@ -293,10 +296,12 @@ private:
       // destination file.
 
 #if defined (__WIN32__)
-      os = 0; // or should it be 11?
+      // Or should it be 11?
+      os = 0;
 #elif defined (__APPLE__)
       os = 7;
-#else // unix by default?
+#else
+      // Unix by default?
       os = 3;
 #endif
     }
@@ -403,7 +408,8 @@ public:
     z.close ();
   }
 };
-#endif // HAVE_Z
+
+#endif
 
 
 template<typename X>
@@ -546,7 +552,7 @@ The optional output @var{filelist} is a list of the compressed files.
 @seealso{gunzip, unpack, bzip2, zip, tar}
 @end deftypefn */)
 {
-#ifndef HAVE_Z
+#if ! defined (HAVE_Z)
   err_disabled_feature ("gzip", "gzip");
 #else
   return xzip<gz> ("gzip", args);
@@ -583,7 +589,7 @@ The optional output @var{filelist} is a list of the compressed files.
 @seealso{bunzip2, unpack, gzip, zip, tar}
 @end deftypefn */)
 {
-#ifndef HAVE_BZ2
+#if ! defined (HAVE_BZ2)
   err_disabled_feature ("bzip2", "bzip2");
 #else
   return xzip<bz2> ("bzip2", args);

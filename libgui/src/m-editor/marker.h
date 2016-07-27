@@ -94,4 +94,5 @@ private:
   QString               _condition;
 };
 
-#endif // MARKER_H
+#endif
+

@@ -587,13 +587,13 @@ oct_randn (void)
       p[0] = lo;
       p[1] = hi & 0x1FFFFF;
       x = ( si ? -rabs : rabs ) * wi[idx];
-# else /* ! HAVE_X86_32 */
+# else
       /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
       const uint64_t r = NRANDI;
       const int64_t rabs = r >> 1;
       const int idx = static_cast<int> (rabs & 0xFF);
       const double x = ( (r & 1) ? -rabs : rabs) * wi[idx];
-# endif /* ! HAVE_X86_32 */
+# endif
       if (rabs < static_cast<int64_t> (ki[idx]))
         return x;        /* 99.3% of the time we return here 1st try */
       else if (idx == 0)

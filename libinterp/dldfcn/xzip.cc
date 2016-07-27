@@ -72,10 +72,18 @@
 #include "defun-int.h"
 #include "errwarn.h"
 
+//! RIIA wrapper for std::FILE*
+/*! If error handling is available for failing to close the file, use
+    the close method which throws.
+
+    If the file has been closed, fp is set to nullptr.  Remember that
+    behavior is undefined if the value of the pointer stream is used
+    after fclose.
+*/
 class CFile
 {
 public:
-  FILE* fp;
+  std::FILE* fp;
 
   CFile (const std::string& path, const std::string& mode)
   {
@@ -84,12 +92,18 @@ public:
       throw std::runtime_error ("unable to open file");
   }
 
-  ~CFile ()
+  void
+  close (void)
   {
     if (std::fclose (fp))
-      // Not pedantic.  If this is dest, maybe it failed to flush
-      // so we should signal this before someone removes the source.
       throw std::runtime_error ("unable to close file");
+    fp = nullptr;
+  }
+
+  ~CFile ()
+  {
+    if (fp)
+      std::fclose (fp);
   }
 };
 
@@ -132,12 +146,24 @@ private:
         throw std::runtime_error ("failed to read from source file");
     }
 
-    ~zipper ()
+    void
+    close (void)
     {
       int abandon = (status == BZ_IO_ERROR) ? 1 : 0;
       BZ2_bzWriteClose (&status, bz, abandon, 0, 0);
       if (status != BZ_OK)
         throw std::runtime_error ("failed to close bzip2 stream");
+      bz = nullptr;
+
+      // We have no error handling for failing to close source, let
+      // the destructor close it.
+      dest.close ();
+    }
+
+    ~zipper ()
+    {
+      if (bz != nullptr)
+        BZ2_bzWriteClose (&status, bz, 1, 0, 0);
     }
   };
 
@@ -147,7 +173,9 @@ public:
   static void
   zip (const std::string& source_path, const std::string& dest_path)
   {
-    bz2::zipper (source_path, dest_path).deflate ();
+    bz2::zipper z (source_path, dest_path);
+    z.deflate ();
+    z.close ();
   }
 
 };
@@ -201,28 +229,10 @@ private:
     ~uchar_array (void) { delete[] p; }
   };
 
-  // This is the really thing that needs to be 
-  class gzip_stream : public z_stream
-  {
-  public:
-    gzip_stream ()
-    {
-      zalloc = Z_NULL;
-      zfree = Z_NULL;
-      opaque = Z_NULL;
-    }
-
-    ~gzip_stream ()
-    {
-      int status = deflateEnd (this);
-      if (status != Z_OK)
-        throw std::runtime_error ("failed to close zlib stream");
-    }
-  };
-
   class gzip_header : public gz_header
   {
   private:
+    // This must be kept for gz_header.name
     uchar_array basename;
 
   public:
@@ -298,13 +308,17 @@ private:
     CFile source;
     CFile dest;
     gzip_header header;
-    gzip_stream strm = gzip_stream ();
+    z_stream* strm;
 
   public:
     zipper (const std::string& source_path, const std::string& dest_path)
       : source (source_path, "rb"), dest (dest_path, "wb"),
-        header (source_path)
-    { }
+        header (source_path), strm (new z_stream)
+    {
+      strm->zalloc = Z_NULL;
+      strm->zfree = Z_NULL;
+      strm->opaque = Z_NULL;
+    }
 
     void
     deflate ()
@@ -315,25 +329,24 @@ private:
       //                   int  windowBits, // 15 (default) + 16 (gzip format)
       //                   int  memLevel,   // memory usage (default is 8)
       //                   int  strategy);
-
-      int status = deflateInit2 (&strm, 8, Z_DEFLATED, 31, 8,
+      int status = deflateInit2 (strm, 8, Z_DEFLATED, 31, 8,
                                  Z_DEFAULT_STRATEGY);
       if (status != Z_OK)
         throw std::runtime_error ("failed to open zlib stream");
 
-      deflateSetHeader (&strm, &header);
+      deflateSetHeader (strm, &header);
 
       const std::size_t buf_len = 8192;
       unsigned char buf_in[buf_len];
       unsigned char buf_out[buf_len];
 
-      while ((strm.avail_in = std::fread (buf_in, sizeof (buf_in[0]),
-                                          buf_len, source.fp)) != 0)
+      while ((strm->avail_in = std::fread (buf_in, sizeof (buf_in[0]),
+                                           buf_len, source.fp)) != 0)
         {
           if (std::ferror (source.fp))
             throw std::runtime_error ("failed to read source file");
 
-          strm.next_in = buf_in;
+          strm->next_in = buf_in;
           const int flush = std::feof (source.fp) ? Z_FINISH : Z_NO_FLUSH;
 
           // If deflate returns Z_OK and with zero avail_out, it must be
@@ -341,22 +354,41 @@ private:
           // there might be more output pending.
           do
             {
-              strm.avail_out = buf_len;
-              strm.next_out = buf_out;
-              status = ::deflate (&strm, flush);
+              strm->avail_out = buf_len;
+              strm->next_out = buf_out;
+              status = ::deflate (strm, flush);
               if (status == Z_STREAM_ERROR)
                 throw std::runtime_error ("failed to deflate");
 
               std::fwrite (buf_out, sizeof (buf_out[0]),
-                           buf_len - strm.avail_out, dest.fp);
+                           buf_len - strm->avail_out, dest.fp);
               if (std::ferror (dest.fp))
                 throw std::runtime_error ("failed to write file");
             }
-          while (strm.avail_out == 0);
+          while (strm->avail_out == 0);
 
-          if (strm.avail_in != 0)
+          if (strm->avail_in != 0)
             throw std::runtime_error ("failed to wrote file");
         }
+    }
+
+    void
+    close (void)
+    {
+      if (deflateEnd (strm) != Z_OK)
+        throw std::runtime_error ("failed to close zlib stream");
+      strm = nullptr;
+
+      // We have no error handling for failing to close source, let
+      // the destructor close it.
+      dest.close ();
+    }
+
+    ~zipper (void)
+    {
+      if (strm)
+        deflateEnd (strm);
+      delete strm;
     }
   };
 
@@ -366,7 +398,9 @@ public:
   static void
   zip (const std::string& source_path, const std::string& dest_path)
   {
-    gz::zipper (source_path, dest_path).deflate ();
+    gz::zipper z (source_path, dest_path);
+    z.deflate ();
+    z.close ();
   }
 };
 #endif // HAVE_Z

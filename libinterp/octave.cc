@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "Cell.h"
+#include "defaults.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
@@ -48,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "options-usage.h"
 #include "ov.h"
 #include "parse.h"
+#include "sysdep.h"
 
 namespace octave
 {
@@ -409,6 +411,12 @@ namespace octave
     m_is_octave_program = ((m_have_script_file || ! code_to_eval.empty ())
                            && ! m_options.persist ()
                            && ! m_options.traditional ());
+
+    // This should probably happen early.
+    sysdep_init ();
+
+    // Need to have global Vfoo variables defined early.
+    install_defaults ();
   }
 
   int cli_application::execute (void)

@@ -532,10 +532,6 @@ namespace octave
   {
     cmdline_options options = m_app_context->options ();
 
-    sysdep_init ();
-
-    install_defaults ();
-
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_NUMERIC, "C");
     setlocale (LC_TIME, "C");

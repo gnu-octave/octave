@@ -177,11 +177,23 @@ function code = oct2mat (code)
   ## Simple hacks to make things Matlab compatible
   code = strrep (code, "%!", "%%");
   code = strrep (code, "!", "~");
+
   ## Simply replacing double quotes with single quotes
-  ## causes problems with strings like 'hello "world"'
-  ## More complicated regexprep targets only full double quoted strings
-  code = regexprep (code, "^([^']*)\"(.*)\"", "$1'$2'",
+  ## causes problems with strings like 'hello "world"' or transpose.
+
+  ## Test input for double quote replacement:
+  ## title ("bar");
+  ## a'
+  ## foo 'bar' "baz"
+  ## image (repmat ((1:64)', 1, 64));
+  ## fprintf ('File "brighten_01.png" already exists.\n');
+  ## title ({'x^2 + y^2'; 'plotted over circular disk with "circ"'});
+  ## annotation ('textbox', [0.1 0 0.8 1], 'string', ...
+  ##             '"headstyle" property:', ...
+
+  code = regexprep (code, "[(,;\n][ ]*'[^']*'(*SKIP)(*F)|\"", "'",
                           "lineanchors", "dotexceptnewline");
+
   code = strrep (code, "#", "%");
   ## Fix the format specs for the errorbar demos changed by the line above
   code = strrep (code, "%r", "#r");
@@ -260,7 +272,15 @@ function dump_helper_fcns (fid)
 "end                                                                          "
 ]);  # End of rgbplot dump
 
-  fprintf (fid, "%s\n", repmat ("%", [1, 60]));
+  fprintf (fid, "\n");
+
+  ## Add dummy assert until we've removed all assert from demos
+  fdisp (fid, [
+"function assert (varargin)                                                   "
+"end                                                                          "
+]);  # End of dummy assert
+
+  fprintf (fid, "\n%s\n", repmat ("%", [1, 60]));
 
 endfunction
 

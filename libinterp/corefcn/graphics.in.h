@@ -2796,13 +2796,15 @@ public:
   virtual base_properties& get_properties (void)
   {
     static base_properties properties;
-    error ("base_graphics_object::get_properties: invalid graphics object");
+    warning ("base_graphics_object::get_properties: invalid graphics object");
+    return properties;
   }
 
   virtual const base_properties& get_properties (void) const
   {
     static base_properties properties;
-    error ("base_graphics_object::get_properties: invalid graphics object");
+    warning ("base_graphics_object::get_properties: invalid graphics object");
+    return properties;
   }
 
   virtual void update_axis_limits (const std::string& axis_type);

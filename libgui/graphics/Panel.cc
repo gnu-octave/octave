@@ -191,7 +191,11 @@ Panel::eventFilter (QObject* watched, QEvent* xevent)
                     {
                       gh_manager::auto_lock lock;
 
-                      ContextMenu::executeAt (properties (), m->globalPos ());
+                      graphics_object go = object ();
+
+                      if (go.valid_object ())
+                        ContextMenu::executeAt (go.get_properties (),
+                                                m->globalPos ());
                     }
                 }
               break;
@@ -209,7 +213,10 @@ Panel::eventFilter (QObject* watched, QEvent* xevent)
                 {
                   gh_manager::auto_lock lock;
 
-                  properties ().update_boundingbox ();
+                  graphics_object go = object ();
+
+                  if (go.valid_object ())
+                    go.get_properties ().update_boundingbox ();
                 }
               break;
 

@@ -89,11 +89,16 @@ Container::resizeEvent (QResizeEvent* /* event */)
 
           if (obj)
             {
-              Matrix bb = obj->properties ().get_boundingbox (false);
+              graphics_object go = obj->object ();
 
-              obj->qWidget<QWidget> ()
-                ->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
-                               octave::math::round (bb(2)), octave::math::round (bb(3)));
+              if (go.valid_object ())
+                {
+                  Matrix bb = go.get_properties ().get_boundingbox (false);
+
+                  obj->qWidget<QWidget> ()
+                    ->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                                   octave::math::round (bb(2)), octave::math::round (bb(3)));
+                }
             }
         }
     }

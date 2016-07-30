@@ -111,7 +111,10 @@ function [est, v, w, k] = normest1 (A, t = [], X = [], varargin)
       v = zeros (n, 1);
       v(idx) = 1;
       w = A(:, idx);
-      k = [0, 1];
+      ## Matlab incompatible on purpose.  Matlab returns k as a row vector
+      ## for this special case, but a column vector in all other cases.
+      ## This is obviously a bug in Matlab that we don't reproduce.
+      k = [0; 1];
       return
     else
       realm = isreal (A);
@@ -354,3 +357,10 @@ endfunction
 %! unwind_protect_cleanup
 %!   rand ("state", old_state);
 %! end_unwind_protect
+
+## Check IT is always a column vector.
+%!test
+%! [~, ~, ~, it] = normest1 (rand (3), 3);
+%! assert (iscolumn (it))
+%! [~, ~, ~, it] = normest1 (rand (50), 20);
+%! assert (iscolumn (it))

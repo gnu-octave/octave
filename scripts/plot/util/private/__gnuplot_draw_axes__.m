@@ -803,7 +803,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 if (isnan (ccdat))
                   ccdat = (rows (cmap) + rows (addedcmap) + 1) * ones(3, 1);
                   addedcmap = [addedcmap; reshape(color, 1, 3)];
-                elseif (numel (ccdat) <= 1)
+                elseif (numel (ccdat) == 1)
+                  ccdat = ccdat * ones (size (zcol));
+                elseif (numel (ccdat) < 1)
                   ccdat = zcol;
                 endif
                 data{data_3d_idx} = [data{data_3d_idx}, ...

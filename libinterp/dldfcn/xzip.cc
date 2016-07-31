@@ -604,16 +604,16 @@ The optional output @var{filelist} is a list of the compressed files.
 ## a cell array with zip function, unzip function, and file extension.
 
 %!function run_test_function (test_function)
-%!  enabled_zippers = cell (0, 0);
+%!  enabled_zippers = struct ("zip", {}, "unzip", {}, "ext", {});
 %!  if (__octave_config_info__ ().build_features.BZ2)
-%!    enabled_zippers(1, end+1) = @bzip2;
-%!    enabled_zippers(2, end) = @bunzip2;
-%!    enabled_zippers(3, end) = ".bz2";
+%!    enabled_zippers(end+1).zip = @bzip2;
+%!    enabled_zippers(end).unzip = @bunzip2;
+%!    enabled_zippers(end).ext = ".bz2";
 %!  endif
 %!  if (__octave_config_info__ ().build_features.Z)
-%!    enabled_zippers(1, end+1) = @gzip;
-%!    enabled_zippers(2, end) = @gunzip;
-%!    enabled_zippers(3, end) = ".gz";
+%!    enabled_zippers(end+1).zip = @gzip;
+%!    enabled_zippers(end).unzip = @gunzip;
+%!    enabled_zippers(end).ext = ".gz";
 %!  endif
 %!
 %!  for z = enabled_zippers
@@ -643,18 +643,27 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  endif
 %!endfunction
 
+%!function unlink_or_error (filepath)
+%!  [err, msg] = unlink (filepath);
+%!  if (err)
+%!    error ("unable to remove file required for the test");
+%!  endif
+%!endfunction
+
 ## Test with large files because of varied buffer size
 %!function test_large_file (test_dir, z)
 %!  test_file = tempname (test_dir);
 %!  create_file (test_file, rand (500000, 1));
 %!  md5 = hash ("md5", fileread (test_file));
 %!
-%!  expected_z_file = [test_file z{3}];
-%!  z_files = z{1} (test_file);
-%!  assert (z_files, {expected_z_file})
+%!  z_file = [test_file z.ext];
+%!  z_filelist = z.zip (test_file);
+%!  assert (z_filelist, {z_file})
 %!
-%!  unlink (test_file);
-%!  assert (z{2} (z_files{1}), {test_file})
+%!  unlink_or_error (test_file);
+%!  uz_filelist = z.unzip (z_file);
+%!  assert (uz_filelist, {test_file})
+%!
 %!  assert (hash ("md5", fileread (test_file)), md5)
 %!endfunction
 %!test run_test_function (@test_large_file)
@@ -665,49 +674,63 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  create_file (ori_file, rand (100, 1));
 %!  md5_ori = hash ("md5", fileread (ori_file));
 %!
-%!  z_file = [ori_file z{3}];
-%!  filelist = z{1} (ori_file);
-%!  assert (filelist, {z_file}) # check output
+%!  z_file = [ori_file z.ext];
+%!  z_filelist = z.zip (ori_file);
+%!  assert (z_filelist, {z_file}) # check output
 %!  assert (exist (z_file), 2) # confirm file exists
-%!  assert (exist (z_file), 2) # and did not remove original file
-%!  md5_z = hash ("md5", fileread (z_file));
+%!  assert (exist (ori_file), 2) # and did not remove original file
 %!
-%!  unlink (ori_file);
-%!  assert (z{2} (z_file), {ori_file})
-%!  ## bug #48597
-%!  assert (exist (ori_file), 2) # bug #48597 (Xunzip should not remove file)
+%!  unlink_or_error (ori_file);
+%!  uz_filelist = z.unzip (z_file);
+%!  assert (uz_filelist, {ori_file}) # bug #48598
 %!  assert (hash ("md5", fileread (ori_file)), md5_ori)
+%!  assert (exist (z_file), 2) # bug #48597
 %!
 %!  ## xzip should dutifully re-xzip files even if they already are zipped
-%!  z_z_file = [z_file z{3}];
-%!
-%!  filelist = z{1} (z_file);
-%!  assert (filelist, {z_z_file}) # check output
+%!  z_z_file = [z_file z.ext];
+%!  z_z_filelist = z.zip (z_file);
+%!  assert (z_z_filelist, {z_z_file}) # check output
 %!  assert (exist (z_z_file), 2) # confirm file exists
-%!  assert (exist (z_z_file), 2) # and did not remove original file
+%!  assert (exist (z_file), 2)
 %!
-%!  unlink (z_file);
-%!  assert (z{2} (z_z_file), {z_file})
+%!  md5_z = hash ("md5", fileread (z_file));
+%!  unlink_or_error (z_file);
+%!  uz_z_filelist = z.unzip (z_z_file);
+%!  assert (uz_z_filelist, {z_file}) # bug #48598
+%!  assert (exist (z_z_file), 2) # bug #48597
 %!  assert (hash ("md5", fileread (z_file)), md5_z)
 %!endfunction
 %!test run_test_function (@test_z_z)
 
-%!function test_xzip_dir (test_dir, z)
+%!function test_xzip_dir (test_dir, z) # bug #43431
 %!  fpaths = fullfile (test_dir, {"test1", "test2", "test3"});
-%!  z_files = strcat (fpaths, z{3});
 %!  md5s = cell (1, 3);
 %!  for idx = 1:numel(fpaths)
 %!    create_file (fpaths{idx}, rand (100, 1));
 %!    md5s(idx) = hash ("md5", fileread (fpaths{idx}));
 %!  endfor
 %!
-%!  assert (sort (z{1} ([test_dir filesep()])), z_files(:))
+%!  test_dir = [test_dir filesep()];
+%!
+%!  z_files = strcat (fpaths, z.ext);
+%!  z_filelist = z.zip (test_dir);
+%!  assert (sort (z_filelist), z_files(:))
 %!  for idx = 1:numel(fpaths)
 %!    assert (exist (z_files{idx}), 2)
-%!    unlink (fpaths{idx});
+%!    unlink_or_error (fpaths{idx});
 %!  endfor
+%!
+%!  ## only gunzip handles directory (bunzip2 should too though)
+%!  if (z.unzip == @gunzip)
+%!    uz_filelist = z.unzip (test_dir);
+%!  else
+%!    uz_filelist = cell (1, numel (z_filelist));
+%!    for idx = 1:numel(z_filelist)
+%!      uz_filelist(idx) = z.unzip (z_filelist{idx});
+%!    endfor
+%!  endif
+%!  assert (sort (uz_filelist), fpaths(:)) # bug #48598
 %!  for idx = 1:numel(fpaths)
-%!    assert (z{2} (z_files{idx}), fpaths{idx}); # bug #48598
 %!    assert (hash ("md5", fileread (fpaths{idx})), md5s{idx})
 %!  endfor
 %!endfunction
@@ -726,11 +749,16 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  endif
 %!  for idx = 1:numel(out_dirs)
 %!    out_dir = out_dirs{idx};
-%!    z_file = fullfile (out_dir, [filename z{3}]);
-%!    assert (z{1} (filepath, out_dir), {z_file})
+%!    uz_file = fullfile (out_dir, filename);
+%!    z_file = [uz_file z.ext];
+%!
+%!    z_filelist = z.zip (filepath, out_dir);
+%!    assert (z_filelist, {z_file})
 %!    assert (exist (z_file, "file"), 2)
-%!    uz_file = z_file(1:(end-numel(z{3})));
-%!    assert (z{2} (z_file), uz_file); # bug #48598
+%!
+%!    uz_filelist = z.unzip (z_file);
+%!    assert (uz_filelist, {uz_file}) # bug #48598
+%!
 %!    assert (hash ("md5", fileread (uz_file)), md5)
 %!  endfor
 %!endfunction

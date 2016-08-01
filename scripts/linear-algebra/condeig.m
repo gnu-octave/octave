@@ -36,7 +36,7 @@
 ##
 ## @item
 ## @var{v} is the matrix of right eigenvectors of @var{a}.  The result is
-## equivalent to calling @code{[@var{v}, @var{lambda}] = eig (@var{a)}}.
+## equivalent to calling @code{[@var{v}, @var{lambda}] = eig (@var{a})}.
 ##
 ## @item
 ## @var{lambda} is the diagonal matrix of eigenvalues of @var{a}.  The

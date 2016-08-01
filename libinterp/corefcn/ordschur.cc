@@ -129,20 +129,20 @@ is in the upper left corner, by doing:
   const bool complex_type = args(0).is_complex_type ()
                             || args(1).is_complex_type ();
 
-#define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND) \
-          TYPE ## Matrix U = args(0).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
-          TYPE ## Matrix S = args(1).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
-          TYPE ## Matrix w (dim_vector (n, 1)); \
-          TYPE ## Matrix work (dim_vector (n, 1)); \
-          octave_idx_type m; \
-          octave_idx_type info; \
-          TYPE_COND cond1, cond2;
+#define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND)                           \
+  TYPE ## Matrix U = args(0).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
+  TYPE ## Matrix S = args(1).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
+  TYPE ## Matrix w (dim_vector (n, 1));                                 \
+  TYPE ## Matrix work (dim_vector (n, 1));                              \
+  octave_idx_type m;                                                    \
+  octave_idx_type info;                                                 \
+  TYPE_COND cond1, cond2;
 
-#define PREPARE_OUTPUT()\
-          if (info != 0) \
-            error ("ordschur: trsen failed"); \
- \
-          retval = ovl (U, S);
+#define PREPARE_OUTPUT()                        \
+  if (info != 0)                                \
+    error ("ordschur: trsen failed");           \
+                                                \
+  retval = ovl (U, S);
 
   if (double_type)
     {

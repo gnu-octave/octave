@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 //
 //   doc is the simple help text for the function.
 
-#define DEFUN(name, args_name, nargout_name, doc) \
+#define DEFUN(name, args_name, nargout_name, doc)       \
   DECLARE_FUN (name, args_name, nargout_name)
 
 // This one can be used when 'name' cannot be used directly (if it is
@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 // quoted string, and the internal name of the function must be passed
 // too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").
 
-#define DEFUNX(name, fname, args_name, nargout_name, doc) \
+#define DEFUNX(name, fname, args_name, nargout_name, doc)       \
   DECLARE_FUNX (fname, args_name, nargout_name)
 
 // This is a function with a name that can't be hidden by a variable.

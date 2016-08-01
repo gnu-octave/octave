@@ -580,27 +580,27 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
   return retval;
 }
 
-#define META_CLASS_CMP(OP, CLSA, CLSB, FUN) \
-static octave_value_list \
-class_ ## OP (const octave_value_list& args, int /* nargout */) \
-{ \
-  octave_value_list retval; \
- \
-  if (args.length () != 2 \
-      || args(0).type_name () != "object" \
-      || args(1).type_name () != "object" \
-      || args(0).class_name () != "meta.class" \
-      || args(1).class_name () != "meta.class") \
-    error (#OP ": invalid arguments"); \
- \
-  cdef_class clsa = to_cdef (args(0)); \
- \
-  cdef_class clsb = to_cdef (args(1)); \
- \
-  retval(0) = FUN (CLSA, CLSB); \
-\
-  return retval; \
-}
+#define META_CLASS_CMP(OP, CLSA, CLSB, FUN)                             \
+  static octave_value_list                                              \
+  class_ ## OP (const octave_value_list& args, int /* nargout */)       \
+  {                                                                     \
+    octave_value_list retval;                                           \
+                                                                        \
+    if (args.length () != 2                                             \
+        || args(0).type_name () != "object"                             \
+        || args(1).type_name () != "object"                             \
+        || args(0).class_name () != "meta.class"                        \
+        || args(1).class_name () != "meta.class")                       \
+      error (#OP ": invalid arguments");                                \
+                                                                        \
+    cdef_class clsa = to_cdef (args(0));                                \
+                                                                        \
+    cdef_class clsb = to_cdef (args(1));                                \
+                                                                        \
+    retval(0) = FUN (CLSA, CLSB);                                       \
+                                                                        \
+    return retval;                                                      \
+  }
 
 META_CLASS_CMP (lt, clsb, clsa, is_strict_superclass)
 META_CLASS_CMP (le, clsb, clsa, is_superclass)

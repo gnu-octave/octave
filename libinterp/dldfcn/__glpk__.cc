@@ -296,34 +296,34 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
 #endif
 
-#define OCTAVE_GLPK_GET_REAL_PARAM(NAME, VAL) \
-  do \
-    { \
-      octave_value tmp = PARAM.getfield (NAME); \
- \
-      if (tmp.is_defined ()) \
-        { \
-          if (! tmp.is_empty ()) \
+#define OCTAVE_GLPK_GET_REAL_PARAM(NAME, VAL)                           \
+  do                                                                    \
+    {                                                                   \
+      octave_value tmp = PARAM.getfield (NAME);                         \
+                                                                        \
+      if (tmp.is_defined ())                                            \
+        {                                                               \
+          if (! tmp.is_empty ())                                        \
             VAL = tmp.xscalar_value ("glpk: invalid value in PARAM" NAME); \
-          else \
-            error ("glpk: invalid value in PARAM" NAME); \
-        } \
-    } \
+          else                                                          \
+            error ("glpk: invalid value in PARAM" NAME);                \
+        }                                                               \
+    }                                                                   \
   while (0)
 
-#define OCTAVE_GLPK_GET_INT_PARAM(NAME, VAL) \
-  do \
-    { \
-      octave_value tmp = PARAM.getfield (NAME); \
- \
-      if (tmp.is_defined ()) \
-        { \
-          if (! tmp.is_empty ()) \
+#define OCTAVE_GLPK_GET_INT_PARAM(NAME, VAL)                            \
+  do                                                                    \
+    {                                                                   \
+      octave_value tmp = PARAM.getfield (NAME);                         \
+                                                                        \
+      if (tmp.is_defined ())                                            \
+        {                                                               \
+          if (! tmp.is_empty ())                                        \
             VAL = tmp.xint_value ("glpk: invalid value in PARAM" NAME); \
-          else \
-            error ("glpk: invalid value in PARAM" NAME); \
-        } \
-    } \
+          else                                                          \
+            error ("glpk: invalid value in PARAM" NAME);                \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 DEFUN_DLD (__glpk__, args, ,

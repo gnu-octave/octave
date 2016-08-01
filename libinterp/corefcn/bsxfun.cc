@@ -133,24 +133,24 @@ static void maybe_fill_table (void)
   if (filled)
     return;
 
-#define REGISTER_OP_HANDLER(OP, BTYP, NDA, FUNOP) \
+#define REGISTER_OP_HANDLER(OP, BTYP, NDA, FUNOP)                       \
   bsxfun_handler_table[OP][BTYP] = bsxfun_forward_op<NDA, FUNOP>
 
-#define REGISTER_REL_HANDLER(REL, BTYP, NDA, FUNREL) \
+#define REGISTER_REL_HANDLER(REL, BTYP, NDA, FUNREL)                    \
   bsxfun_handler_table[REL][BTYP] = bsxfun_forward_rel<NDA, FUNREL>
 
-#define REGISTER_STD_HANDLERS(BTYP, NDA) \
-  REGISTER_OP_HANDLER (bsxfun_builtin_plus, BTYP, NDA, bsxfun_add); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_minus, BTYP, NDA, bsxfun_sub); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_times, BTYP, NDA, bsxfun_mul); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_divide, BTYP, NDA, bsxfun_div); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_max, BTYP, NDA, bsxfun_max); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_min, BTYP, NDA, bsxfun_min); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_eq, BTYP, NDA, bsxfun_eq); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_ne, BTYP, NDA, bsxfun_ne); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_lt, BTYP, NDA, bsxfun_lt); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_le, BTYP, NDA, bsxfun_le); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_gt, BTYP, NDA, bsxfun_gt); \
+#define REGISTER_STD_HANDLERS(BTYP, NDA)                                \
+  REGISTER_OP_HANDLER (bsxfun_builtin_plus, BTYP, NDA, bsxfun_add);     \
+  REGISTER_OP_HANDLER (bsxfun_builtin_minus, BTYP, NDA, bsxfun_sub);    \
+  REGISTER_OP_HANDLER (bsxfun_builtin_times, BTYP, NDA, bsxfun_mul);    \
+  REGISTER_OP_HANDLER (bsxfun_builtin_divide, BTYP, NDA, bsxfun_div);   \
+  REGISTER_OP_HANDLER (bsxfun_builtin_max, BTYP, NDA, bsxfun_max);      \
+  REGISTER_OP_HANDLER (bsxfun_builtin_min, BTYP, NDA, bsxfun_min);      \
+  REGISTER_REL_HANDLER (bsxfun_builtin_eq, BTYP, NDA, bsxfun_eq);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_ne, BTYP, NDA, bsxfun_ne);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_lt, BTYP, NDA, bsxfun_lt);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_le, BTYP, NDA, bsxfun_le);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_gt, BTYP, NDA, bsxfun_gt);       \
   REGISTER_REL_HANDLER (bsxfun_builtin_ge, BTYP, NDA, bsxfun_ge)
 
   REGISTER_STD_HANDLERS (btyp_double, NDArray);
@@ -420,9 +420,9 @@ dimensionality as the other array.
           for (octave_idx_type i = 1; i < nd; i++)
             ncount *= dvc(i);
 
-#define BSXDEF(T) \
-  T result_ ## T; \
-  bool have_ ## T = false;
+#define BSXDEF(T)                               \
+          T result_ ## T;                       \
+          bool have_ ## T = false;
 
           BSXDEF(NDArray);
           BSXDEF(ComplexNDArray);
@@ -456,13 +456,13 @@ dimensionality as the other array.
 
               octave_value_list tmp = func.do_multi_index_op (1, inputs);
 
-#define BSXINIT(T, CLS, EXTRACTOR) \
-  (result_type == CLS) \
-    { \
-      have_ ## T = true; \
-      result_ ## T = tmp(0). EXTRACTOR ## _array_value (); \
-      result_ ## T .resize (dvc); \
-    }
+#define BSXINIT(T, CLS, EXTRACTOR)                                      \
+              (result_type == CLS)                                      \
+                {                                                       \
+                  have_ ## T = true;                                    \
+                  result_ ## T = tmp(0). EXTRACTOR ## _array_value ();  \
+                  result_ ## T .resize (dvc);                           \
+                }
 
               if (i == 0)
                 {
@@ -602,18 +602,18 @@ dimensionality as the other array.
                         }
                     }
 
-#define BSXLOOP(T, CLS, EXTRACTOR) \
-  (have_ ## T) \
-    { \
-      if (tmp(0).class_name () != CLS) \
-        { \
-          have_ ## T = false; \
-          C = result_ ## T; \
-          C = do_cat_op (C, tmp(0), ra_idx); \
-        } \
-      else \
-        result_ ## T .insert (tmp(0). EXTRACTOR ## _array_value (), ra_idx); \
-    }
+#define BSXLOOP(T, CLS, EXTRACTOR)                                      \
+                  (have_ ## T)                                          \
+                    {                                                   \
+                      if (tmp(0).class_name () != CLS)                  \
+                        {                                               \
+                          have_ ## T = false;                           \
+                          C = result_ ## T;                             \
+                          C = do_cat_op (C, tmp(0), ra_idx);            \
+                        }                                               \
+                      else                                              \
+                        result_ ## T .insert (tmp(0). EXTRACTOR ## _array_value (), ra_idx); \
+                    }
 
                   else if BSXLOOP(ComplexNDArray, "double", complex)
                   else if BSXLOOP(boolNDArray, "logical", bool)
@@ -630,9 +630,9 @@ dimensionality as the other array.
                 }
             }
 
-#define BSXEND(T) \
-  (have_ ## T) \
-    retval(0) = result_ ## T;
+#define BSXEND(T)                               \
+          (have_ ## T)                          \
+            retval(0) = result_ ## T;
 
           if BSXEND(NDArray)
           else if BSXEND(ComplexNDArray)

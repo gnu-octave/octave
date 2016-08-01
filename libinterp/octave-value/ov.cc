@@ -1771,30 +1771,30 @@ octave_value::float_complex_vector_value (bool force_string_conv,
 // value extraction functions perform implicit type conversions that we
 // wish to avoid for these functions.
 
-#define XVALUE_EXTRACTOR(TYPE, NAME, FCN) \
-  TYPE \
-  octave_value::NAME (const char *fmt, ...) const \
-  { \
-    TYPE retval; \
- \
-    try \
-      { \
-        retval = FCN (); \
-      } \
-    catch (octave_execution_exception& e) \
-      { \
-        if (fmt) \
-          { \
-            va_list args; \
-            va_start (args, fmt); \
-            verror (e, fmt, args); \
-            va_end (args); \
-          } \
- \
-        throw e; \
-      } \
- \
-    return retval; \
+#define XVALUE_EXTRACTOR(TYPE, NAME, FCN)               \
+  TYPE                                                  \
+  octave_value::NAME (const char *fmt, ...) const       \
+  {                                                     \
+    TYPE retval;                                        \
+                                                        \
+    try                                                 \
+      {                                                 \
+        retval = FCN ();                                \
+      }                                                 \
+    catch (octave_execution_exception& e)               \
+      {                                                 \
+        if (fmt)                                        \
+          {                                             \
+            va_list args;                               \
+            va_start (args, fmt);                       \
+            verror (e, fmt, args);                      \
+            va_end (args);                              \
+          }                                             \
+                                                        \
+        throw e;                                        \
+      }                                                 \
+                                                        \
+    return retval;                                      \
   }
 
 XVALUE_EXTRACTOR (short int, xshort_value, short_value)

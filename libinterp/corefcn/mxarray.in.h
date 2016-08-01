@@ -99,24 +99,24 @@ typedef %OCTAVE_IDX_TYPE% mwSignedIndex;
 
 class octave_value;
 
-#define DO_MUTABLE_METHOD(RET_T, METHOD_CALL) \
-  RET_T retval = rep->METHOD_CALL; \
- \
-  if (rep->mutation_needed ()) \
-    { \
-      maybe_mutate (); \
-      retval = rep->METHOD_CALL; \
-    } \
- \
+#define DO_MUTABLE_METHOD(RET_T, METHOD_CALL)   \
+  RET_T retval = rep->METHOD_CALL;              \
+                                                \
+  if (rep->mutation_needed ())                  \
+    {                                           \
+      maybe_mutate ();                          \
+      retval = rep->METHOD_CALL;                \
+    }                                           \
+                                                \
   return retval
 
-#define DO_VOID_MUTABLE_METHOD(METHOD_CALL) \
-  rep->METHOD_CALL; \
- \
-  if (rep->mutation_needed ()) \
-    { \
-      maybe_mutate (); \
-      rep->METHOD_CALL; \
+#define DO_VOID_MUTABLE_METHOD(METHOD_CALL)     \
+  rep->METHOD_CALL;                             \
+                                                \
+  if (rep->mutation_needed ())                  \
+    {                                           \
+      maybe_mutate ();                          \
+      rep->METHOD_CALL;                         \
     }
 
 class mxArray;

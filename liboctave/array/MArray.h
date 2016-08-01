@@ -123,97 +123,141 @@ public:
 
 // Define all the MArray forwarding functions for return type R and
 // MArray element type T
-#define MARRAY_FORWARD_DEFS(B, R, T) \
-  inline R operator += (R& x, const T& y) \
-    { return R (operator += (dynamic_cast<B<T>&> (x), (y))); } \
-  inline R operator -= (R& x, const T& y) \
-    { return R (operator -= (dynamic_cast<B<T>&> (x), (y))); } \
-  inline R operator *= (R& x, const T& y) \
-    { return R (operator *= (dynamic_cast<B<T>&> (x), (y))); } \
-  inline R operator /= (R& x, const T& y) \
-    { return R (operator /= (dynamic_cast<B<T>&> (x), (y))); } \
-  inline R operator += (R& x, const R& y) \
-    { return R (operator += (dynamic_cast<B<T>&> (x), \
-                             dynamic_cast<const B<T>&> (y))); } \
-  inline R operator -= (R& x, const R& y) \
-    { return R (operator -= (dynamic_cast<B<T>&> (x), \
-                             dynamic_cast<const B<T>&> (y))); } \
-  inline R product_eq (R& x, const R& y) \
-    { return R (product_eq (dynamic_cast<B<T>&> (x), \
-                            dynamic_cast<const B<T>&> (y))); } \
-  inline R quotient_eq (R& x, const R& y) \
-    { return R (quotient_eq (dynamic_cast<B<T>&> (x), \
-                             dynamic_cast<const B<T>&> (y))); } \
-  inline R operator + (const R& x) \
-    { return R (operator + (dynamic_cast<const B<T>&> (x))); } \
-  inline R operator - (const R& x) \
-    { return R (operator - (dynamic_cast<const B<T>&> (x))); } \
-  inline R operator + (const R& x, const T& y) \
-    { return R (operator + (dynamic_cast<const B<T>&> (x), (y))); } \
-  inline R operator - (const R& x, const T& y) \
-    { return R (operator - (dynamic_cast<const B<T>&> (x), (y))); } \
-  inline R operator * (const R& x, const T& y) \
-    { return R (operator * (dynamic_cast<const B<T>&> (x), (y))); } \
-  inline R operator / (const R& x, const T& y) \
-    { return R (operator / (dynamic_cast<const B<T>&> (x), (y))); } \
-  inline R operator + (const T& x, const R& y) \
-    { return R (operator + ( (x), dynamic_cast<const B<T>&> (y))); } \
-  inline R operator - (const T& x, const R& y) \
-    { return R (operator - ( (x), dynamic_cast<const B<T>&> (y))); } \
-  inline R operator * (const T& x, const R& y) \
-    { return R (operator * ( (x), dynamic_cast<const B<T>&> (y))); } \
-  inline R operator / (const T& x, const R& y) \
-    { return R (operator / ( (x), dynamic_cast<const B<T>&> (y))); } \
-  inline R operator + (const R& x, const R& y) \
-    { return R (operator + (dynamic_cast<const B<T>&> (x), \
-                            dynamic_cast<const B<T>&> (y))); } \
-  inline R operator - (const R& x, const R& y) \
-    { return R (operator - (dynamic_cast<const B<T>&> (x), \
-                            dynamic_cast<const B<T>&> (y))); } \
-  inline R product (const R& x, const R& y) \
-    { return R (product (dynamic_cast<const B<T>&> (x), \
-                         dynamic_cast<const B<T>&> (y))); } \
-  inline R quotient (const R& x, const R& y) \
-    { return R (quotient (dynamic_cast<const B<T>&> (x), \
-                          dynamic_cast<const B<T>&> (y))); }
+#define MARRAY_FORWARD_DEFS(B, R, T)                                    \
+  inline R operator += (R& x, const T& y)                               \
+  {                                                                     \
+    return R (operator += (dynamic_cast<B<T>&> (x), (y)));              \
+  }                                                                     \
+  inline R operator -= (R& x, const T& y)                               \
+  {                                                                     \
+    return R (operator -= (dynamic_cast<B<T>&> (x), (y)));              \
+  }                                                                     \
+  inline R operator *= (R& x, const T& y)                               \
+  {                                                                     \
+    return R (operator *= (dynamic_cast<B<T>&> (x), (y)));              \
+  }                                                                     \
+  inline R operator /= (R& x, const T& y)                               \
+  {                                                                     \
+    return R (operator /= (dynamic_cast<B<T>&> (x), (y)));              \
+  }                                                                     \
+  inline R operator += (R& x, const R& y)                               \
+  {                                                                     \
+    return R (operator += (dynamic_cast<B<T>&> (x),                     \
+                           dynamic_cast<const B<T>&> (y)));             \
+  }                                                                     \
+  inline R operator -= (R& x, const R& y)                               \
+  {                                                                     \
+    return R (operator -= (dynamic_cast<B<T>&> (x),                     \
+                           dynamic_cast<const B<T>&> (y)));             \
+  }                                                                     \
+  inline R product_eq (R& x, const R& y)                                \
+  {                                                                     \
+    return R (product_eq (dynamic_cast<B<T>&> (x),                      \
+                          dynamic_cast<const B<T>&> (y)));              \
+  }                                                                     \
+  inline R quotient_eq (R& x, const R& y)                               \
+  {                                                                     \
+    return R (quotient_eq (dynamic_cast<B<T>&> (x),                     \
+                           dynamic_cast<const B<T>&> (y)));             \
+  }                                                                     \
+  inline R operator + (const R& x)                                      \
+  {                                                                     \
+    return R (operator + (dynamic_cast<const B<T>&> (x)));              \
+  }                                                                     \
+  inline R operator - (const R& x)                                      \
+  {                                                                     \
+    return R (operator - (dynamic_cast<const B<T>&> (x)));              \
+  }                                                                     \
+  inline R operator + (const R& x, const T& y)                          \
+  {                                                                     \
+    return R (operator + (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R operator - (const R& x, const T& y)                          \
+  {                                                                     \
+    return R (operator - (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R operator * (const R& x, const T& y)                          \
+  {                                                                     \
+    return R (operator * (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R operator / (const R& x, const T& y)                          \
+  {                                                                     \
+    return R (operator / (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R operator + (const T& x, const R& y)                          \
+  {                                                                     \
+    return R (operator + ( (x), dynamic_cast<const B<T>&> (y)));        \
+  }                                                                     \
+  inline R operator - (const T& x, const R& y)                          \
+  {                                                                     \
+    return R (operator - ( (x), dynamic_cast<const B<T>&> (y)));        \
+  }                                                                     \
+  inline R operator * (const T& x, const R& y)                          \
+  {                                                                     \
+    return R (operator * ( (x), dynamic_cast<const B<T>&> (y)));        \
+  }                                                                     \
+  inline R operator / (const T& x, const R& y)                          \
+  {                                                                     \
+    return R (operator / ( (x), dynamic_cast<const B<T>&> (y)));        \
+  }                                                                     \
+  inline R operator + (const R& x, const R& y)                          \
+  {                                                                     \
+    return R (operator + (dynamic_cast<const B<T>&> (x),                \
+                          dynamic_cast<const B<T>&> (y)));              \
+  }                                                                     \
+  inline R operator - (const R& x, const R& y)                          \
+  {                                                                     \
+    return R (operator - (dynamic_cast<const B<T>&> (x),                \
+                          dynamic_cast<const B<T>&> (y)));              \
+  }                                                                     \
+  inline R product (const R& x, const R& y)                             \
+  {                                                                     \
+    return R (product (dynamic_cast<const B<T>&> (x),                   \
+                       dynamic_cast<const B<T>&> (y)));                 \
+  }                                                                     \
+  inline R quotient (const R& x, const R& y)                            \
+  {                                                                     \
+    return R (quotient (dynamic_cast<const B<T>&> (x),                  \
+                        dynamic_cast<const B<T>&> (y)));                \
+  }
 
 // Instantiate all the MArray friends for MArray element type T.
-#define INSTANTIATE_MARRAY_FRIENDS(T, API) \
-  template API MArray<T>& operator += (MArray<T>&, const T&); \
-  template API MArray<T>& operator -= (MArray<T>&, const T&); \
-  template API MArray<T>& operator *= (MArray<T>&, const T&); \
-  template API MArray<T>& operator /= (MArray<T>&, const T&); \
-  template API MArray<T>& operator += (MArray<T>&, const MArray<T>&); \
-  template API MArray<T>& operator -= (MArray<T>&, const MArray<T>&); \
-  template API MArray<T>& product_eq (MArray<T>&, const MArray<T>&); \
-  template API MArray<T>& quotient_eq (MArray<T>&, const MArray<T>&); \
-  template API MArray<T> operator + (const MArray<T>&); \
-  template API MArray<T> operator - (const MArray<T>&); \
-  template API MArray<T> operator + (const MArray<T>&, const T&); \
-  template API MArray<T> operator - (const MArray<T>&, const T&); \
-  template API MArray<T> operator * (const MArray<T>&, const T&); \
-  template API MArray<T> operator / (const MArray<T>&, const T&); \
-  template API MArray<T> operator + (const T&, const MArray<T>&); \
-  template API MArray<T> operator - (const T&, const MArray<T>&); \
-  template API MArray<T> operator * (const T&, const MArray<T>&); \
-  template API MArray<T> operator / (const T&, const MArray<T>&); \
+#define INSTANTIATE_MARRAY_FRIENDS(T, API)                              \
+  template API MArray<T>& operator += (MArray<T>&, const T&);           \
+  template API MArray<T>& operator -= (MArray<T>&, const T&);           \
+  template API MArray<T>& operator *= (MArray<T>&, const T&);           \
+  template API MArray<T>& operator /= (MArray<T>&, const T&);           \
+  template API MArray<T>& operator += (MArray<T>&, const MArray<T>&);   \
+  template API MArray<T>& operator -= (MArray<T>&, const MArray<T>&);   \
+  template API MArray<T>& product_eq (MArray<T>&, const MArray<T>&);    \
+  template API MArray<T>& quotient_eq (MArray<T>&, const MArray<T>&);   \
+  template API MArray<T> operator + (const MArray<T>&);                 \
+  template API MArray<T> operator - (const MArray<T>&);                 \
+  template API MArray<T> operator + (const MArray<T>&, const T&);       \
+  template API MArray<T> operator - (const MArray<T>&, const T&);       \
+  template API MArray<T> operator * (const MArray<T>&, const T&);       \
+  template API MArray<T> operator / (const MArray<T>&, const T&);       \
+  template API MArray<T> operator + (const T&, const MArray<T>&);       \
+  template API MArray<T> operator - (const T&, const MArray<T>&);       \
+  template API MArray<T> operator * (const T&, const MArray<T>&);       \
+  template API MArray<T> operator / (const T&, const MArray<T>&);       \
   template API MArray<T> operator + (const MArray<T>&, const MArray<T>&); \
   template API MArray<T> operator - (const MArray<T>&, const MArray<T>&); \
   template API MArray<T> quotient (const MArray<T>&, const MArray<T>&); \
   template API MArray<T> product (const MArray<T>&, const MArray<T>&);
 
 // Instantiate all the MDiagArray2 friends for MDiagArray2 element type T.
-#define INSTANTIATE_MDIAGARRAY2_FRIENDS(T, API) \
-  template API MDiagArray2<T> operator + (const MDiagArray2<T>&); \
-  template API MDiagArray2<T> operator - (const MDiagArray2<T>&); \
+#define INSTANTIATE_MDIAGARRAY2_FRIENDS(T, API)                         \
+  template API MDiagArray2<T> operator + (const MDiagArray2<T>&);       \
+  template API MDiagArray2<T> operator - (const MDiagArray2<T>&);       \
   template API MDiagArray2<T> operator * (const MDiagArray2<T>&, const T&); \
   template API MDiagArray2<T> operator / (const MDiagArray2<T>&, const T&); \
   template API MDiagArray2<T> operator * (const T&, const MDiagArray2<T>&); \
-  template API MDiagArray2<T> operator + (const MDiagArray2<T>&, \
-                                          const MDiagArray2<T>&); \
-  template API MDiagArray2<T> operator - (const MDiagArray2<T>&, \
-                                          const MDiagArray2<T>&); \
-  template API MDiagArray2<T> product (const MDiagArray2<T>&, \
+  template API MDiagArray2<T> operator + (const MDiagArray2<T>&,        \
+                                          const MDiagArray2<T>&);       \
+  template API MDiagArray2<T> operator - (const MDiagArray2<T>&,        \
+                                          const MDiagArray2<T>&);       \
+  template API MDiagArray2<T> product (const MDiagArray2<T>&,           \
                                        const MDiagArray2<T>&);
 
 #endif

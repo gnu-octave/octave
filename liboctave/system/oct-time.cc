@@ -108,10 +108,10 @@ namespace octave
     // So, we no longer check limits here.
 
 #define DEFINE_SET_FIELD_FCN(type, f, lo, hi)   \
-    base_tm&                             \
-    base_tm::f (type v)                  \
+    base_tm&                                    \
+    base_tm::f (type v)                         \
     {                                           \
-      m_ ## f = v;                             \
+      m_ ## f = v;                              \
                                                 \
       return *this;                             \
     }

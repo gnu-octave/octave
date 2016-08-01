@@ -292,30 +292,30 @@ void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 }
 
 // now the dispatchers
-#define DEFINE_DISPATCHER(FUNC_NAME, ARG_TYPE, RES_TYPE) \
-template <typename T, typename R> \
-RES_TYPE FUNC_NAME (const ARG_TYPE& v, R p) \
-{ \
-  RES_TYPE res; \
-  if (p == 2) \
-    FUNC_NAME (v, res, norm_accumulator_2<R> ()); \
-  else if (p == 1) \
-    FUNC_NAME (v, res, norm_accumulator_1<R> ()); \
-  else if (lo_ieee_isinf (p)) \
-    { \
-      if (p > 0) \
-        FUNC_NAME (v, res, norm_accumulator_inf<R> ()); \
-      else \
-        FUNC_NAME (v, res, norm_accumulator_minf<R> ()); \
-    } \
-  else if (p == 0) \
-    FUNC_NAME (v, res, norm_accumulator_0<R> ()); \
-  else if (p > 0) \
-    FUNC_NAME (v, res, norm_accumulator_p<R> (p)); \
-  else \
-    FUNC_NAME (v, res, norm_accumulator_mp<R> (p)); \
-  return res; \
-}
+#define DEFINE_DISPATCHER(FUNC_NAME, ARG_TYPE, RES_TYPE)        \
+  template <typename T, typename R>                             \
+  RES_TYPE FUNC_NAME (const ARG_TYPE& v, R p)                   \
+  {                                                             \
+    RES_TYPE res;                                               \
+    if (p == 2)                                                 \
+      FUNC_NAME (v, res, norm_accumulator_2<R> ());             \
+    else if (p == 1)                                            \
+      FUNC_NAME (v, res, norm_accumulator_1<R> ());             \
+    else if (lo_ieee_isinf (p))                                 \
+      {                                                         \
+        if (p > 0)                                              \
+          FUNC_NAME (v, res, norm_accumulator_inf<R> ());       \
+        else                                                    \
+          FUNC_NAME (v, res, norm_accumulator_minf<R> ());      \
+      }                                                         \
+    else if (p == 0)                                            \
+      FUNC_NAME (v, res, norm_accumulator_0<R> ());             \
+    else if (p > 0)                                             \
+      FUNC_NAME (v, res, norm_accumulator_p<R> (p));            \
+    else                                                        \
+      FUNC_NAME (v, res, norm_accumulator_mp<R> (p));           \
+    return res;                                                 \
+  }
 
 DEFINE_DISPATCHER (vector_norm, MArray<T>, R)
 DEFINE_DISPATCHER (column_norms, MArray<T>, MArray<R>)
@@ -527,15 +527,23 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
 
 // and finally, here's what we've promised in the header file
 
-#define DEFINE_XNORM_FUNCS(PREFIX, RTYPE) \
-  OCTAVE_API RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p) \
-  { return vector_norm (x, p); } \
-  OCTAVE_API RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p) \
-  { return vector_norm (x, p); } \
-  OCTAVE_API RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p) \
-  { return svd_matrix_norm (x, p, PREFIX##Matrix ()); } \
-  OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix& x) \
-  { return vector_norm (x, static_cast<RTYPE> (2)); }
+#define DEFINE_XNORM_FUNCS(PREFIX, RTYPE)                               \
+  OCTAVE_API RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p)       \
+  {                                                                     \
+    return vector_norm (x, p);                                          \
+  }                                                                     \
+  OCTAVE_API RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p)          \
+  {                                                                     \
+    return vector_norm (x, p);                                          \
+  }                                                                     \
+  OCTAVE_API RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p)             \
+  {                                                                     \
+    return svd_matrix_norm (x, p, PREFIX##Matrix ());                   \
+  }                                                                     \
+  OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix& x)                  \
+  {                                                                     \
+    return vector_norm (x, static_cast<RTYPE> (2));                     \
+  }
 
 DEFINE_XNORM_FUNCS(, double)
 DEFINE_XNORM_FUNCS(Complex, double)
@@ -553,24 +561,32 @@ inline void array_norm_2 (const T* v, octave_idx_type n, R& res)
   res = acc;
 }
 
-#define DEFINE_XNORM_SPARSE_FUNCS(PREFIX, RTYPE) \
-  OCTAVE_API RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p) \
-  { return matrix_norm (x, p, PREFIX##Matrix ()); } \
-  OCTAVE_API RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x) \
-  { \
-    RTYPE res; \
-    array_norm_2 (x.data (), x.nnz (), res); \
-    return res; \
+#define DEFINE_XNORM_SPARSE_FUNCS(PREFIX, RTYPE)                        \
+  OCTAVE_API RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p)     \
+  {                                                                     \
+    return matrix_norm (x, p, PREFIX##Matrix ());                       \
+  }                                                                     \
+  OCTAVE_API RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x)          \
+  {                                                                     \
+    RTYPE res;                                                          \
+    array_norm_2 (x.data (), x.nnz (), res);                            \
+    return res;                                                         \
   }
 
 DEFINE_XNORM_SPARSE_FUNCS(, double)
 DEFINE_XNORM_SPARSE_FUNCS(Complex, double)
 
-#define DEFINE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE) \
-  extern OCTAVE_API RPREFIX##RowVector xcolnorms (const PREFIX##Matrix& m, RTYPE p) \
-  { return column_norms (m, p); } \
-  extern OCTAVE_API RPREFIX##ColumnVector xrownorms (const PREFIX##Matrix& m, RTYPE p) \
-  { return row_norms (m, p); } \
+#define DEFINE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE)        \
+  extern OCTAVE_API RPREFIX##RowVector                          \
+  xcolnorms (const PREFIX##Matrix& m, RTYPE p)                  \
+  {                                                             \
+    return column_norms (m, p);                                 \
+  }                                                             \
+  extern OCTAVE_API RPREFIX##ColumnVector                       \
+  xrownorms (const PREFIX##Matrix& m, RTYPE p)                  \
+  {                                                             \
+    return row_norms (m, p);                                    \
+  }                                                             \
 
 DEFINE_COLROW_NORM_FUNCS(, , double)
 DEFINE_COLROW_NORM_FUNCS(Complex, , double)

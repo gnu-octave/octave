@@ -42,39 +42,39 @@ enum bessel_type
   BESSEL_H2
 };
 
-#define DO_BESSEL(type, alpha, x, scaled, ierr, result) \
-  do \
-    { \
-      switch (type) \
-        { \
-          case BESSEL_J: \
-            result = octave::math::besselj (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_Y: \
-            result = octave::math::bessely (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_I: \
-            result = octave::math::besseli (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_K: \
-            result = octave::math::besselk (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_H1: \
-            result = octave::math::besselh1 (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_H2: \
-            result = octave::math::besselh2 (alpha, x, scaled, ierr); \
-            break; \
- \
-          default: \
-            break; \
-        } \
-    } \
+#define DO_BESSEL(type, alpha, x, scaled, ierr, result)                 \
+  do                                                                    \
+    {                                                                   \
+      switch (type)                                                     \
+        {                                                               \
+        case BESSEL_J:                                                  \
+          result = octave::math::besselj (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_Y:                                                  \
+          result = octave::math::bessely (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_I:                                                  \
+          result = octave::math::besseli (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_K:                                                  \
+          result = octave::math::besselk (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_H1:                                                 \
+          result = octave::math::besselh1 (alpha, x, scaled, ierr);     \
+          break;                                                        \
+                                                                        \
+        case BESSEL_H2:                                                 \
+          result = octave::math::besselh2 (alpha, x, scaled, ierr);     \
+          break;                                                        \
+                                                                        \
+        default:                                                        \
+          break;                                                        \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 octave_value_list

@@ -129,25 +129,49 @@ public:
 
 };
 
-#define MDIAGARRAY2_FORWARD_DEFS(B, R, T) \
-  inline R operator + (const R& x) \
-    { return R (operator + (dynamic_cast<const B<T>&> (x))); } \
-  inline R operator - (const R& x) \
-    { return R (operator - (dynamic_cast<const B<T>&> (x))); } \
-  inline R operator * (const R& x, const T& y) \
-    { return R (operator * (dynamic_cast<const B<T>&> (x), (y))); } \
-  inline R operator / (const R& x, const T& y) \
-    { return R (operator / (dynamic_cast<const B<T>&> (x), (y))); } \
-  inline R operator * (const T& x, const R& y) \
-    { return R (operator * ( (x), dynamic_cast<const B<T>&> (y))); } \
-  inline R operator + (const R& x, const R& y) \
-    { return R (operator + (dynamic_cast<const B<T>&> (x), \
-                            dynamic_cast<const B<T>&> (y))); } \
-  inline R operator - (const R& x, const R& y) \
-    { return R (operator - (dynamic_cast<const B<T>&> (x), \
-                            dynamic_cast<const B<T>&> (y))); } \
-  inline R product (const R& x, const R& y) \
-    { return R (product (dynamic_cast<const B<T>&> (x), \
-                         dynamic_cast<const B<T>&> (y))); }
+#define MDIAGARRAY2_FORWARD_DEFS(B, R, T)                               \
+  inline R                                                              \
+  operator + (const R& x)                                               \
+  {                                                                     \
+    return R (operator + (dynamic_cast<const B<T>&> (x)));              \
+  }                                                                     \
+  inline R                                                              \
+  operator - (const R& x)                                               \
+  {                                                                     \
+    return R (operator - (dynamic_cast<const B<T>&> (x)));              \
+  }                                                                     \
+  inline R                                                              \
+  operator * (const R& x, const T& y)                                   \
+  {                                                                     \
+    return R (operator * (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R                                                              \
+  operator / (const R& x, const T& y)                                   \
+  {                                                                     \
+    return R (operator / (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R                                                              \
+  operator * (const T& x, const R& y)                                   \
+  {                                                                     \
+    return R (operator * ( (x), dynamic_cast<const B<T>&> (y)));        \
+  }                                                                     \
+  inline R                                                              \
+  operator + (const R& x, const R& y)                                   \
+  {                                                                     \
+    return R (operator + (dynamic_cast<const B<T>&> (x),                \
+                          dynamic_cast<const B<T>&> (y)));              \
+  }                                                                     \
+  inline R                                                              \
+  operator - (const R& x, const R& y)                                   \
+  {                                                                     \
+    return R (operator - (dynamic_cast<const B<T>&> (x),                \
+                          dynamic_cast<const B<T>&> (y)));              \
+  }                                                                     \
+  inline R                                                              \
+  product (const R& x, const R& y)                                      \
+  {                                                                     \
+    return R (product (dynamic_cast<const B<T>&> (x),                   \
+                       dynamic_cast<const B<T>&> (y)));                 \
+  }
 
 #endif

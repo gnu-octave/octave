@@ -102,8 +102,7 @@ do_regexp_ptn_string_escapes (const std::string& s)
                 {
                   bad_esc_seq = true;
                   tmpi = 0;
-                  warning ("malformed octal escape sequence '\\o' --\
- converting to '\\0'");
+                  warning ("malformed octal escape sequence '\\o' -- converting to '\\0'");
                 }
               retval[i] = tmpi;
               j = k - 1;
@@ -198,8 +197,7 @@ do_regexp_rep_string_escapes (const std::string& s)
                 }
               if (bad_esc_seq || (brace && s[k++] != '}'))
                 {
-                  warning ("malformed octal escape sequence '\\o' --\
- converting to '\\0'");
+                  warning ("malformed octal escape sequence '\\o' -- converting to '\\0'");
                   tmpi = 0;
                 }
               retval[i] = tmpi;
@@ -236,8 +234,7 @@ do_regexp_rep_string_escapes (const std::string& s)
                 }
               if (bad_esc_seq || (brace && s[k++] != '}'))
                 {
-                  warning ("malformed hex escape sequence '\\x' --\
- converting to '\\0'");
+                  warning ("malformed hex escape sequence '\\x' -- converting to '\\0'");
                   tmpi = 0;
                 }
               retval[i] = tmpi;

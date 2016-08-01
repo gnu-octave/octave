@@ -210,50 +210,50 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
     }
 }
 
-#define BSXFUN_OP_DEF(OP, ARRAY) \
-ARRAY bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
+#define BSXFUN_OP_DEF(OP, ARRAY)                        \
+  ARRAY bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
 
-#define BSXFUN_OP2_DEF(OP, ARRAY, ARRAY1, ARRAY2) \
-ARRAY bsxfun_ ## OP (const ARRAY1& x, const ARRAY2& y)
+#define BSXFUN_OP2_DEF(OP, ARRAY, ARRAY1, ARRAY2)               \
+  ARRAY bsxfun_ ## OP (const ARRAY1& x, const ARRAY2& y)
 
-#define BSXFUN_REL_DEF(OP, ARRAY) \
-boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
+#define BSXFUN_REL_DEF(OP, ARRAY)                               \
+  boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
 
-#define BSXFUN_OP_DEF_MXLOOP(OP, ARRAY, LOOP) \
-  BSXFUN_OP_DEF(OP, ARRAY) \
+#define BSXFUN_OP_DEF_MXLOOP(OP, ARRAY, LOOP)                           \
+  BSXFUN_OP_DEF(OP, ARRAY)                                              \
   { return do_bsxfun_op<ARRAY::element_type, ARRAY::element_type, ARRAY::element_type> \
-    (x, y, LOOP, LOOP, LOOP); }
+      (x, y, LOOP, LOOP, LOOP); }
 
-#define BSXFUN_OP2_DEF_MXLOOP(OP, ARRAY, ARRAY1, ARRAY2, LOOP) \
-  BSXFUN_OP2_DEF(OP, ARRAY, ARRAY1, ARRAY2) \
+#define BSXFUN_OP2_DEF_MXLOOP(OP, ARRAY, ARRAY1, ARRAY2, LOOP)          \
+  BSXFUN_OP2_DEF(OP, ARRAY, ARRAY1, ARRAY2)                             \
   { return do_bsxfun_op<ARRAY::element_type, ARRAY1::element_type, ARRAY2::element_type> \
-    (x, y, LOOP, LOOP, LOOP); }
+      (x, y, LOOP, LOOP, LOOP); }
 
-#define BSXFUN_REL_DEF_MXLOOP(OP, ARRAY, LOOP) \
-  BSXFUN_REL_DEF(OP, ARRAY) \
+#define BSXFUN_REL_DEF_MXLOOP(OP, ARRAY, LOOP)                          \
+  BSXFUN_REL_DEF(OP, ARRAY)                                             \
   { return do_bsxfun_op<bool, ARRAY::element_type, ARRAY::element_type> \
-    (x, y, LOOP, LOOP, LOOP); }
+      (x, y, LOOP, LOOP, LOOP); }
 
-#define BSXFUN_STDOP_DEFS_MXLOOP(ARRAY) \
-  BSXFUN_OP_DEF_MXLOOP (add, ARRAY, mx_inline_add) \
-  BSXFUN_OP_DEF_MXLOOP (sub, ARRAY, mx_inline_sub) \
-  BSXFUN_OP_DEF_MXLOOP (mul, ARRAY, mx_inline_mul) \
-  BSXFUN_OP_DEF_MXLOOP (div, ARRAY, mx_inline_div) \
-  BSXFUN_OP_DEF_MXLOOP (min, ARRAY, mx_inline_xmin) \
+#define BSXFUN_STDOP_DEFS_MXLOOP(ARRAY)                 \
+  BSXFUN_OP_DEF_MXLOOP (add, ARRAY, mx_inline_add)      \
+  BSXFUN_OP_DEF_MXLOOP (sub, ARRAY, mx_inline_sub)      \
+  BSXFUN_OP_DEF_MXLOOP (mul, ARRAY, mx_inline_mul)      \
+  BSXFUN_OP_DEF_MXLOOP (div, ARRAY, mx_inline_div)      \
+  BSXFUN_OP_DEF_MXLOOP (min, ARRAY, mx_inline_xmin)     \
   BSXFUN_OP_DEF_MXLOOP (max, ARRAY, mx_inline_xmax)
 
-#define BSXFUN_STDREL_DEFS_MXLOOP(ARRAY) \
-  BSXFUN_REL_DEF_MXLOOP (eq, ARRAY, mx_inline_eq) \
-  BSXFUN_REL_DEF_MXLOOP (ne, ARRAY, mx_inline_ne) \
-  BSXFUN_REL_DEF_MXLOOP (lt, ARRAY, mx_inline_lt) \
-  BSXFUN_REL_DEF_MXLOOP (le, ARRAY, mx_inline_le) \
-  BSXFUN_REL_DEF_MXLOOP (gt, ARRAY, mx_inline_gt) \
+#define BSXFUN_STDREL_DEFS_MXLOOP(ARRAY)                \
+  BSXFUN_REL_DEF_MXLOOP (eq, ARRAY, mx_inline_eq)       \
+  BSXFUN_REL_DEF_MXLOOP (ne, ARRAY, mx_inline_ne)       \
+  BSXFUN_REL_DEF_MXLOOP (lt, ARRAY, mx_inline_lt)       \
+  BSXFUN_REL_DEF_MXLOOP (le, ARRAY, mx_inline_le)       \
+  BSXFUN_REL_DEF_MXLOOP (gt, ARRAY, mx_inline_gt)       \
   BSXFUN_REL_DEF_MXLOOP (ge, ARRAY, mx_inline_ge)
 
 //For bsxfun power with mixed integer/float types
-#define BSXFUN_POW_MIXED_MXLOOP(INT_TYPE)                              \
+#define BSXFUN_POW_MIXED_MXLOOP(INT_TYPE)                               \
   BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, NDArray, mx_inline_pow) \
-  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, FloatNDArray, mx_inline_pow)\
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, FloatNDArray, mx_inline_pow) \
   BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, NDArray, INT_TYPE,  mx_inline_pow) \
   BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, FloatNDArray, INT_TYPE, mx_inline_pow)
 

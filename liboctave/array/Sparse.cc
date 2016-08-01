@@ -3011,7 +3011,8 @@ Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
      << prefix << "rep->count:  " << rep->count << "\n";
 }
 
-#define INSTANTIATE_SPARSE(T, API) \
-  template class API Sparse<T>; \
-  template std::istream& read_sparse_matrix<T> \
-    (std::istream& is, Sparse<T>& a, T (*read_fcn) (std::istream&));
+#define INSTANTIATE_SPARSE(T, API)                                      \
+  template class API Sparse<T>;                                         \
+  template std::istream&                                                \
+  read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,                \
+                         T (*read_fcn) (std::istream&));

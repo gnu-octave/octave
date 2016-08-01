@@ -85,9 +85,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include <cs.h>
 #endif
 
-#if (defined (HAVE_SUITESPARSE_CHOLMOD_H) \
-     || defined (HAVE_UFSPARSE_CHOLMOD_H) \
-     || defined (HAVE_CHOLMOD_CHOLMOD_H) \
+#if (defined (HAVE_SUITESPARSE_CHOLMOD_H)       \
+     || defined (HAVE_UFSPARSE_CHOLMOD_H)       \
+     || defined (HAVE_CHOLMOD_CHOLMOD_H)        \
      || defined (HAVE_CHOLMOD_H))
 #  if defined (OCTAVE_ENABLE_64)
 #    define CHOLMOD_NAME(name) cholmod_l_ ## name

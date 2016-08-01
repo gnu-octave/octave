@@ -52,11 +52,11 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
 
 // Element by element MDiagArray2 by scalar ops.
 
-#define MARRAY_DAS_OP(OP, FN) \
-  template <typename T> \
-  MDiagArray2<T> \
-  operator OP (const MDiagArray2<T>& a, const T& s) \
-  { \
+#define MARRAY_DAS_OP(OP, FN)                                           \
+  template <typename T>                                                 \
+  MDiagArray2<T>                                                        \
+  operator OP (const MDiagArray2<T>& a, const T& s)                     \
+  {                                                                     \
     return MDiagArray2<T> (do_ms_binary_op<T, T, T> (a, s, FN), a.d1, a.d2); \
   }
 
@@ -75,14 +75,14 @@ operator * (const T& s, const MDiagArray2<T>& a)
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
 
-#define MARRAY_DADA_OP(FCN, OP, FN) \
-  template <typename T> \
-  MDiagArray2<T> \
-  FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
-  { \
-    if (a.d1 != b.d1 || a.d2 != b.d2) \
-      err_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2); \
- \
+#define MARRAY_DADA_OP(FCN, OP, FN)                                     \
+  template <typename T>                                                 \
+  MDiagArray2<T>                                                        \
+  FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b)                \
+  {                                                                     \
+    if (a.d1 != b.d1 || a.d2 != b.d2)                                   \
+      err_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2);                 \
+                                                                        \
     return MDiagArray2<T> (do_mm_binary_op<T, T, T> (a, b, FN, FN, FN, #FCN), a.d1, a.d2); \
   }
 

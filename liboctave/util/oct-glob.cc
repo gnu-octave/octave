@@ -87,7 +87,7 @@ namespace octave
 
           if (! xpat.empty ())
             {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
               std::replace_if (xpat.begin (), xpat.end (),
                                std::bind2nd (std::equal_to<char> (), '\\'),
@@ -168,10 +168,10 @@ namespace octave
 
               for (size_t j = 0; j < xpat.length (); j++)
                 {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
                   if (xpat[j] == '\\')
-                      escaped += '/';
+                    escaped += '/';
                   else
 #endif
                   {
@@ -218,10 +218,10 @@ namespace octave
 
                           for (size_t m = 0; m < tmp.length (); m++)
                             {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
                               if (tmp[m] == '/')
-                                  unescaped += '\\';
+                                unescaped += '\\';
                               else
 #endif
                               {

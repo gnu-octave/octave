@@ -38,30 +38,30 @@ along with Octave; see the file COPYING.  If not, see
 
 // class ops.
 
-#define DEF_CLASS_UNOP(name) \
-  static octave_value \
-  oct_unop_ ## name (const octave_value& a) \
-  { \
-    octave_value retval; \
- \
-    std::string class_name = a.class_name (); \
- \
-    octave_value meth = symbol_table::find_method (#name, class_name); \
- \
-    if (meth.is_undefined ()) \
-      error ("%s method not defined for %s class", #name, \
-             class_name.c_str ()); \
- \
-    octave_value_list args; \
- \
-    args(0) = a; \
- \
-    octave_value_list tmp = feval (meth.function_value (), args, 1); \
- \
-    if (tmp.length () > 0) \
-      retval = tmp(0); \
- \
-    return retval; \
+#define DEF_CLASS_UNOP(name)                                            \
+  static octave_value                                                   \
+  oct_unop_ ## name (const octave_value& a)                             \
+  {                                                                     \
+    octave_value retval;                                                \
+                                                                        \
+    std::string class_name = a.class_name ();                           \
+                                                                        \
+    octave_value meth = symbol_table::find_method (#name, class_name);  \
+                                                                        \
+    if (meth.is_undefined ())                                           \
+      error ("%s method not defined for %s class", #name,               \
+             class_name.c_str ());                                      \
+                                                                        \
+    octave_value_list args;                                             \
+                                                                        \
+    args(0) = a;                                                        \
+                                                                        \
+    octave_value_list tmp = feval (meth.function_value (), args, 1);    \
+                                                                        \
+    if (tmp.length () > 0)                                              \
+      retval = tmp(0);                                                  \
+                                                                        \
+    return retval;                                                      \
   }
 
 DEF_CLASS_UNOP (not)
@@ -73,31 +73,31 @@ DEF_CLASS_UNOP (ctranspose)
 // FIXME: we need to handle precedence in the binop function.
 
 #define DEF_CLASS_BINOP(name) \
-  static octave_value \
-  oct_binop_ ## name (const octave_value& a1, const octave_value& a2) \
-  { \
-    octave_value retval; \
- \
-    std::string dispatch_type \
-      = a1.is_object () ? a1.class_name () : a2.class_name (); \
- \
+  static octave_value                                                   \
+  oct_binop_ ## name (const octave_value& a1, const octave_value& a2)   \
+  {                                                                     \
+    octave_value retval;                                                \
+                                                                        \
+    std::string dispatch_type                                           \
+      = a1.is_object () ? a1.class_name () : a2.class_name ();          \
+                                                                        \
     octave_value meth = symbol_table::find_method (#name, dispatch_type); \
- \
-    if (meth.is_undefined ()) \
-      error ("%s method not defined for %s class", #name, \
-             dispatch_type.c_str ()); \
- \
-    octave_value_list args; \
- \
-    args(1) = a2; \
-    args(0) = a1; \
- \
-    octave_value_list tmp = feval (meth.function_value (), args, 1); \
- \
-    if (tmp.length () > 0) \
-      retval = tmp(0); \
- \
-    return retval; \
+                                                                        \
+    if (meth.is_undefined ())                                           \
+      error ("%s method not defined for %s class", #name,               \
+             dispatch_type.c_str ());                                   \
+                                                                        \
+    octave_value_list args;                                             \
+                                                                        \
+    args(1) = a2;                                                       \
+    args(0) = a1;                                                       \
+                                                                        \
+    octave_value_list tmp = feval (meth.function_value (), args, 1);    \
+                                                                        \
+    if (tmp.length () > 0)                                              \
+      retval = tmp(0);                                                  \
+                                                                        \
+    return retval;                                                      \
   }
 
 DEF_CLASS_BINOP (plus)
@@ -119,12 +119,12 @@ DEF_CLASS_BINOP (ldivide)
 DEF_CLASS_BINOP (and)
 DEF_CLASS_BINOP (or)
 
-#define INSTALL_CLASS_UNOP(op, f) \
-  octave_value_typeinfo::register_unary_class_op \
+#define INSTALL_CLASS_UNOP(op, f)                       \
+  octave_value_typeinfo::register_unary_class_op        \
     (octave_value::op, oct_unop_ ## f)
 
-#define INSTALL_CLASS_BINOP(op, f) \
-  octave_value_typeinfo::register_binary_class_op \
+#define INSTALL_CLASS_BINOP(op, f)                      \
+  octave_value_typeinfo::register_binary_class_op       \
     (octave_value::op, oct_binop_ ## f)
 
 void

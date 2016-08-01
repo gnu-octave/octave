@@ -133,7 +133,7 @@ object) relevant global values before and after the nested call.
 #define YY_NO_UNISTD_H 1
 #define isatty octave_isatty_wrapper
 
-#if ! (defined (FLEX_SCANNER) \
+#if ! (defined (FLEX_SCANNER)                                           \
        && defined (YY_FLEX_MAJOR_VERSION) && YY_FLEX_MAJOR_VERSION >= 2 \
        && defined (YY_FLEX_MINOR_VERSION) && YY_FLEX_MINOR_VERSION >= 5)
 #error lex.l requires flex version 2.5.4 or later
@@ -147,7 +147,7 @@ object) relevant global values before and after the nested call.
 #if defined (YY_INPUT)
 #  undef YY_INPUT
 #endif
-#define YY_INPUT(buf, result, max_size) \
+#define YY_INPUT(buf, result, max_size)                 \
   result = curr_lexer->fill_flex_buffer (buf, max_size)
 
 // Try to avoid crashing out completely on fatal scanner errors.
@@ -155,86 +155,83 @@ object) relevant global values before and after the nested call.
 #if defined (YY_FATAL_ERROR)
 #  undef YY_FATAL_ERROR
 #endif
-#define YY_FATAL_ERROR(msg) \
-  (yyget_extra (yyscanner))->fatal_error (msg)
+#define YY_FATAL_ERROR(msg)                     \
+   (yyget_extra (yyscanner))->fatal_error (msg)
 
-#define CMD_OR_OP(PATTERN, TOK, COMPAT) \
- \
-  do \
-    { \
-      curr_lexer->lexer_debug (PATTERN); \
- \
-      if (curr_lexer->looks_like_command_arg ()) \
-        { \
-          yyless (0); \
-          curr_lexer->push_start_state (COMMAND_START); \
-        } \
-      else \
-        { \
-          return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
-        } \
-    } \
-  while (0)
+#define CMD_OR_OP(PATTERN, TOK, COMPAT)                                 \
+   do                                                                   \
+     {                                                                  \
+       curr_lexer->lexer_debug (PATTERN);                               \
+                                                                        \
+       if (curr_lexer->looks_like_command_arg ())                       \
+         {                                                              \
+           yyless (0);                                                  \
+           curr_lexer->push_start_state (COMMAND_START);                \
+         }                                                              \
+       else                                                             \
+         {                                                              \
+           return curr_lexer->handle_op_internal (TOK, false, COMPAT);  \
+         }                                                              \
+     }                                                                  \
+   while (0)
 
-#define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK) \
- \
-  do \
-    { \
-      curr_lexer->lexer_debug (PATTERN); \
- \
-      if (curr_lexer->previous_token_may_be_command () \
-          && curr_lexer->space_follows_previous_token ()) \
-        { \
-          yyless (0); \
-          curr_lexer->push_start_state (COMMAND_START); \
-        } \
-      else \
-        { \
-          return curr_lexer->handle_language_extension_op (PATTERN, TOK, \
-                                                           false); \
-        } \
-    } \
-  while (0)
+#define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK)                         \
+   do                                                                   \
+     {                                                                  \
+       curr_lexer->lexer_debug (PATTERN);                               \
+                                                                        \
+       if (curr_lexer->previous_token_may_be_command ()                 \
+           && curr_lexer->space_follows_previous_token ())              \
+         {                                                              \
+           yyless (0);                                                  \
+           curr_lexer->push_start_state (COMMAND_START);                \
+         }                                                              \
+       else                                                             \
+         {                                                              \
+           return curr_lexer->handle_language_extension_op (PATTERN, TOK, \
+                                                            false);     \
+         }                                                              \
+     }                                                                  \
+   while (0)
 
-#define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT) \
- \
-  do \
-    { \
-      curr_lexer->lexer_debug (PATTERN); \
- \
-      if (curr_lexer->previous_token_may_be_command ()) \
-        { \
-          if (curr_lexer->looks_like_command_arg ()) \
-            { \
-              yyless (0); \
-              curr_lexer->push_start_state (COMMAND_START); \
-            } \
-          else \
-            { \
-              return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
-            } \
-        } \
-      else \
-        { \
-          int tok \
-            = (COMPAT \
-               ? curr_lexer->handle_unary_op (TOK) \
-               : curr_lexer->handle_language_extension_unary_op (TOK)); \
- \
-          if (tok < 0) \
-            { \
-              yyless (0); \
-              curr_lexer->xunput (','); \
-              /* Adjust for comma that was not really in the input stream. */ \
-              curr_lexer->current_input_column--; \
-            } \
-          else \
-            { \
-              return tok; \
-            } \
-        } \
-    } \
-  while (0)
+#define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT)                           \
+   do                                                                   \
+     {                                                                  \
+       curr_lexer->lexer_debug (PATTERN);                               \
+                                                                        \
+       if (curr_lexer->previous_token_may_be_command ())                \
+         {                                                              \
+           if (curr_lexer->looks_like_command_arg ())                   \
+             {                                                          \
+               yyless (0);                                              \
+               curr_lexer->push_start_state (COMMAND_START);            \
+             }                                                          \
+           else                                                         \
+             {                                                          \
+               return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
+             }                                                          \
+         }                                                              \
+       else                                                             \
+         {                                                              \
+           int tok                                                      \
+           = (COMPAT                                                    \
+              ? curr_lexer->handle_unary_op (TOK)                       \
+              : curr_lexer->handle_language_extension_unary_op (TOK));  \
+                                                                        \
+           if (tok < 0)                                                 \
+             {                                                          \
+               yyless (0);                                              \
+               curr_lexer->xunput (',');                                \
+               /* Adjust for comma that was not really in the input stream. */ \
+               curr_lexer->current_input_column--;                      \
+             }                                                          \
+           else                                                         \
+             {                                                          \
+               return tok;                                              \
+             }                                                          \
+         }                                                              \
+     }                                                                  \
+   while (0)
 
 // We can't rely on the trick used elsewhere of sticking ASCII 1 in
 // the input buffer and recognizing it as a special case because ASCII
@@ -242,85 +239,85 @@ object) relevant global values before and after the nested call.
 // end of the buffer, ask for more input.  If we are at the end of the
 // file, deal with it.  Otherwise, just keep going with the text from
 // the current buffer.
-#define HANDLE_STRING_CONTINUATION \
-  do \
-    { \
-      curr_lexer->decrement_promptflag (); \
-      curr_lexer->input_line_number++; \
-      curr_lexer->current_input_column = 1; \
- \
-      if (curr_lexer->is_push_lexer ()) \
-        { \
-          if (curr_lexer->at_end_of_buffer ()) \
-            return -1; \
- \
-          if (curr_lexer->at_end_of_file ()) \
-            return curr_lexer->handle_end_of_input (); \
-        } \
-    } \
-  while (0)
+#define HANDLE_STRING_CONTINUATION                      \
+   do                                                   \
+     {                                                  \
+       curr_lexer->decrement_promptflag ();             \
+       curr_lexer->input_line_number++;                 \
+       curr_lexer->current_input_column = 1;            \
+                                                        \
+       if (curr_lexer->is_push_lexer ())                \
+         {                                              \
+           if (curr_lexer->at_end_of_buffer ())         \
+             return -1;                                 \
+                                                        \
+           if (curr_lexer->at_end_of_file ())           \
+             return curr_lexer->handle_end_of_input (); \
+         }                                              \
+     }                                                  \
+   while (0)
 
 // When a command argument boundary is detected, push out the
 // current argument being built.  This one seems like a good
 // candidate for a function call.
 
-#define COMMAND_ARG_FINISH \
-  do \
-    { \
-      if (curr_lexer->string_text.empty ()) \
-        break; \
- \
-      int retval = curr_lexer->handle_token (curr_lexer->string_text, \
-                                             SQ_STRING); \
- \
-      curr_lexer->string_text = ""; \
-      curr_lexer->command_arg_paren_count = 0; \
- \
-      yyless (0); \
- \
-      return retval; \
-    } \
-  while (0)
+#define COMMAND_ARG_FINISH                                              \
+   do                                                                   \
+     {                                                                  \
+       if (curr_lexer->string_text.empty ())                            \
+         break;                                                         \
+                                                                        \
+       int retval = curr_lexer->handle_token (curr_lexer->string_text,  \
+                                              SQ_STRING);               \
+                                                                        \
+       curr_lexer->string_text = "";                                    \
+       curr_lexer->command_arg_paren_count = 0;                         \
+                                                                        \
+       yyless (0);                                                      \
+                                                                        \
+       return retval;                                                   \
+     }                                                                  \
+   while (0)
 
-#define HANDLE_IDENTIFIER(pattern, get_set) \
-  do \
-    { \
-      curr_lexer->lexer_debug (pattern); \
- \
-      int tok = curr_lexer->previous_token_value (); \
- \
-      if (curr_lexer->whitespace_is_significant () \
-          && curr_lexer->space_follows_previous_token () \
-          && ! (tok == '[' || tok == '{' \
-                || curr_lexer->previous_token_is_binop ())) \
-        { \
-          yyless (0); \
-          unput (','); \
-        } \
-      else \
-        { \
-          if (! curr_lexer->looking_at_decl_list \
-              && curr_lexer->previous_token_may_be_command ()) \
-            { \
-              yyless (0); \
-              curr_lexer->push_start_state (COMMAND_START); \
-            } \
-          else \
-            { \
-              if (get_set) \
-                { \
-                  yyless (3); \
-                  curr_lexer->maybe_classdef_get_set_method = false; \
-                } \
- \
-              int id_tok = curr_lexer->handle_identifier (); \
- \
-              if (id_tok >= 0) \
-                return curr_lexer->count_token_internal (id_tok); \
-            } \
-        } \
-    } \
-  while (0)
+#define HANDLE_IDENTIFIER(pattern, get_set)                             \
+   do                                                                   \
+     {                                                                  \
+       curr_lexer->lexer_debug (pattern);                               \
+                                                                        \
+       int tok = curr_lexer->previous_token_value ();                   \
+                                                                        \
+       if (curr_lexer->whitespace_is_significant ()                     \
+           && curr_lexer->space_follows_previous_token ()               \
+           && ! (tok == '[' || tok == '{'                               \
+                 || curr_lexer->previous_token_is_binop ()))            \
+         {                                                              \
+           yyless (0);                                                  \
+           unput (',');                                                 \
+         }                                                              \
+       else                                                             \
+         {                                                              \
+           if (! curr_lexer->looking_at_decl_list                       \
+               && curr_lexer->previous_token_may_be_command ())         \
+             {                                                          \
+               yyless (0);                                              \
+               curr_lexer->push_start_state (COMMAND_START);            \
+             }                                                          \
+           else                                                         \
+             {                                                          \
+               if (get_set)                                             \
+                 {                                                      \
+                   yyless (3);                                          \
+                   curr_lexer->maybe_classdef_get_set_method = false;   \
+                 }                                                      \
+                                                                        \
+               int id_tok = curr_lexer->handle_identifier ();           \
+                                                                        \
+               if (id_tok >= 0)                                         \
+                 return curr_lexer->count_token_internal (id_tok);      \
+             }                                                          \
+         }                                                              \
+     }                                                                  \
+   while (0)
 
 static bool Vdisplay_tokens = false;
 

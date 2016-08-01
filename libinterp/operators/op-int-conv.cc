@@ -47,12 +47,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "ops.h"
 
 #define DEFINTCONVFN(name, tfrom, tto) \
-  CONVDECL (name) \
-  { \
+  CONVDECL (name)                                                       \
+  {                                                                     \
     const octave_ ## tfrom& v = dynamic_cast<const octave_ ## tfrom&> (a); \
- \
-    octave_ ## tto ## _matrix v2 = v.tto ## _array_value (); \
-    return new octave_ ## tto ## _matrix (v2); \
+                                                                        \
+    octave_ ## tto ## _matrix v2 = v.tto ## _array_value ();            \
+    return new octave_ ## tto ## _matrix (v2);                          \
   }
 
 // conversion ops
@@ -147,25 +147,25 @@ DEFINTCONVFN (range_to_uint16, range, uint16)
 DEFINTCONVFN (range_to_uint32, range, uint32)
 DEFINTCONVFN (range_to_uint64, range, uint64)
 
-#define INT_CONV_FUNCTIONS(tfrom) \
-  DEFCONVFN2 (tfrom ## _scalar_to_int8, tfrom, scalar, int8) \
-  DEFCONVFN2 (tfrom ## _scalar_to_int16, tfrom, scalar, int16) \
-  DEFCONVFN2 (tfrom ## _scalar_to_int32, tfrom, scalar, int32) \
-  DEFCONVFN2 (tfrom ## _scalar_to_int64, tfrom, scalar, int64) \
- \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint8, tfrom, scalar, uint8) \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint16, tfrom, scalar, uint16) \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint32, tfrom, scalar, uint32) \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint64, tfrom, scalar, uint64) \
- \
-  DEFCONVFN2 (tfrom ## _matrix_to_int8, tfrom, matrix, int8) \
-  DEFCONVFN2 (tfrom ## _matrix_to_int16, tfrom, matrix, int16) \
-  DEFCONVFN2 (tfrom ## _matrix_to_int32, tfrom, matrix, int32) \
-  DEFCONVFN2 (tfrom ## _matrix_to_int64, tfrom, matrix, int64) \
- \
-  DEFCONVFN2 (tfrom ## _matrix_to_uint8, tfrom, matrix, uint8) \
-  DEFCONVFN2 (tfrom ## _matrix_to_uint16, tfrom, matrix, uint16) \
-  DEFCONVFN2 (tfrom ## _matrix_to_uint32, tfrom, matrix, uint32) \
+#define INT_CONV_FUNCTIONS(tfrom)                                       \
+  DEFCONVFN2 (tfrom ## _scalar_to_int8, tfrom, scalar, int8)            \
+  DEFCONVFN2 (tfrom ## _scalar_to_int16, tfrom, scalar, int16)          \
+  DEFCONVFN2 (tfrom ## _scalar_to_int32, tfrom, scalar, int32)          \
+  DEFCONVFN2 (tfrom ## _scalar_to_int64, tfrom, scalar, int64)          \
+                                                                        \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint8, tfrom, scalar, uint8)          \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint16, tfrom, scalar, uint16)        \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint32, tfrom, scalar, uint32)        \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint64, tfrom, scalar, uint64)        \
+                                                                        \
+  DEFCONVFN2 (tfrom ## _matrix_to_int8, tfrom, matrix, int8)            \
+  DEFCONVFN2 (tfrom ## _matrix_to_int16, tfrom, matrix, int16)          \
+  DEFCONVFN2 (tfrom ## _matrix_to_int32, tfrom, matrix, int32)          \
+  DEFCONVFN2 (tfrom ## _matrix_to_int64, tfrom, matrix, int64)          \
+                                                                        \
+  DEFCONVFN2 (tfrom ## _matrix_to_uint8, tfrom, matrix, uint8)          \
+  DEFCONVFN2 (tfrom ## _matrix_to_uint16, tfrom, matrix, uint16)        \
+  DEFCONVFN2 (tfrom ## _matrix_to_uint32, tfrom, matrix, uint32)        \
   DEFCONVFN2 (tfrom ## _matrix_to_uint64, tfrom, matrix, uint64)
 
 INT_CONV_FUNCTIONS (int8)
@@ -178,37 +178,61 @@ INT_CONV_FUNCTIONS (uint16)
 INT_CONV_FUNCTIONS (uint32)
 INT_CONV_FUNCTIONS (uint64)
 
-#define INSTALL_INT_CONV_FUNCTIONS(tfrom) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int8_matrix, tfrom ## _scalar_to_int8) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int16_matrix, tfrom ## _scalar_to_int16) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int32_matrix, tfrom ## _scalar_to_int32) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int64_matrix, tfrom ## _scalar_to_int64) \
- \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint8_matrix, tfrom ## _scalar_to_uint8) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint16_matrix, tfrom ## _scalar_to_uint16) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint32_matrix, tfrom ## _scalar_to_uint32) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint64_matrix, tfrom ## _scalar_to_uint64) \
- \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int8_matrix, tfrom ## _matrix_to_int8) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int16_matrix, tfrom ## _matrix_to_int16) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int32_matrix, tfrom ## _matrix_to_int32) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int64_matrix, tfrom ## _matrix_to_int64) \
- \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint8_matrix, tfrom ## _matrix_to_uint8) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint16_matrix, tfrom ## _matrix_to_uint16) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint32_matrix, tfrom ## _matrix_to_uint32) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint64_matrix, tfrom ## _matrix_to_uint64)
+#define INSTALL_INT_CONV_FUNCTIONS(tfrom)                               \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int8_matrix,      \
+                  tfrom ## _scalar_to_int8)                             \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int16_matrix,     \
+                  tfrom ## _scalar_to_int16)                            \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int32_matrix,     \
+                  tfrom ## _scalar_to_int32)                            \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_int64_matrix,     \
+                  tfrom ## _scalar_to_int64)                            \
+                                                                        \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint8_matrix,     \
+                  tfrom ## _scalar_to_uint8)                            \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint16_matrix,    \
+                  tfrom ## _scalar_to_uint16)                           \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint32_matrix,    \
+                  tfrom ## _scalar_to_uint32)                           \
+  INSTALL_CONVOP (octave_ ## tfrom ## _scalar, octave_uint64_matrix,    \
+                  tfrom ## _scalar_to_uint64)                           \
+                                                                        \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int8_matrix,      \
+                  tfrom ## _matrix_to_int8)                             \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int16_matrix,     \
+                  tfrom ## _matrix_to_int16)                            \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int32_matrix,     \
+                  tfrom ## _matrix_to_int32)                            \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_int64_matrix,     \
+                  tfrom ## _matrix_to_int64)                            \
+                                                                        \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint8_matrix,     \
+                  tfrom ## _matrix_to_uint8)                            \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint16_matrix,    \
+                  tfrom ## _matrix_to_uint16)                           \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint32_matrix,    \
+                  tfrom ## _matrix_to_uint32)                           \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint64_matrix,    \
+                  tfrom ## _matrix_to_uint64)
 
-#define INSTALL_CONVOPS(tfrom) \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_int8_matrix, tfrom ## _to_int8) \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_int16_matrix, tfrom ## _to_int16) \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_int32_matrix, tfrom ## _to_int32) \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_int64_matrix, tfrom ## _to_int64) \
- \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_uint8_matrix, tfrom ## _to_uint8) \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_uint16_matrix, tfrom ## _to_uint16) \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_uint32_matrix, tfrom ## _to_uint32) \
-  INSTALL_CONVOP (octave_ ## tfrom, octave_uint64_matrix, tfrom ## _to_uint64)
+#define INSTALL_CONVOPS(tfrom)                                  \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int8_matrix,         \
+                  tfrom ## _to_int8)                            \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int16_matrix,        \
+                  tfrom ## _to_int16)                           \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int32_matrix,        \
+                  tfrom ## _to_int32)                           \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int64_matrix,        \
+                  tfrom ## _to_int64)                           \
+                                                                \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint8_matrix,        \
+                  tfrom ## _to_uint8)                           \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint16_matrix,       \
+                  tfrom ## _to_uint16)                          \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint32_matrix,       \
+                  tfrom ## _to_uint32)                          \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint64_matrix,       \
+                  tfrom ## _to_uint64)
 
 void
 install_int_conv_ops (void)

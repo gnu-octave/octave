@@ -276,35 +276,35 @@ extern OCTINTERP_API char *mxArrayToString (const mxArray *ptr);
 
 /* Miscellaneous.  */
 #if defined (NDEBUG)
-#  define mxAssert(expr, msg) \
-    do \
-      { \
-        if (! expr) \
-          { \
-            mexPrintf ("Assertion failed: %s, at line %d of file \"%s\".\n%s\n", \
-                       #expr, __LINE__, __FILE__, msg); \
-          } \
-      } \
-    while (0)
+#  define mxAssert(expr, msg)                                           \
+  do                                                                    \
+    {                                                                   \
+      if (! expr)                                                       \
+        {                                                               \
+          mexPrintf ("Assertion failed: %s, at line %d of file \"%s\".\n%s\n", \
+                     #expr, __LINE__, __FILE__, msg);                   \
+        }                                                               \
+    }                                                                   \
+  while (0)
 
-#  define mxAssertS(expr, msg) \
-    do \
-      { \
-        if (! expr) \
-          { \
-            mexPrintf ("Assertion failed at line %d of file \"%s\".\n%s\n", \
-                       __LINE__, __FILE__, msg); \
-            abort (); \
-          } \
-      } \
-    while (0)
+#  define mxAssertS(expr, msg)                                          \
+  do                                                                    \
+    {                                                                   \
+      if (! expr)                                                       \
+        {                                                               \
+          mexPrintf ("Assertion failed at line %d of file \"%s\".\n%s\n", \
+                     __LINE__, __FILE__, msg);                          \
+          abort ();                                                     \
+        }                                                               \
+    }                                                                   \
+  while (0)
 #else
 #  define mxAssert(expr, msg)
 #  define mxAssertS(expr, msg)
 #endif
 
-extern OCTINTERP_API mwIndex mxCalcSingleSubscript (const mxArray *ptr,
-                                                    mwSize nsubs, mwIndex *subs);
+extern OCTINTERP_API mwIndex
+mxCalcSingleSubscript (const mxArray *ptr, mwSize nsubs, mwIndex *subs);
 
 extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
 

@@ -7320,12 +7320,12 @@ SparseComplexMatrix::sum (int dim) const
 SparseComplexMatrix
 SparseComplexMatrix::sumsq (int dim) const
 {
-#define ROW_EXPR \
-  Complex d = data (i); \
+#define ROW_EXPR                                \
+  Complex d = data (i);                         \
   tmp[ridx (i)] += d * conj (d)
 
-#define COL_EXPR \
-  Complex d = data (i); \
+#define COL_EXPR                                \
+  Complex d = data (i);                         \
   tmp[j] += d * conj (d)
 
   SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR,
@@ -7579,8 +7579,8 @@ operator * (const SparseComplexMatrix& a, const PermMatrix& p)
 
 // FIXME: it would be nice to share code among the min/max functions below.
 
-#define EMPTY_RETURN_CHECK(T) \
-  if (nr == 0 || nc == 0) \
+#define EMPTY_RETURN_CHECK(T)                   \
+  if (nr == 0 || nc == 0)                       \
     return T (nr, nc);
 
 SparseComplexMatrix

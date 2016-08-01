@@ -37,9 +37,9 @@ extern "C" {
 
 /* How to print an error for the F77_XFCN macro. */
 
-#define F77_XFCN_ERROR(f, F) \
-  (*current_liboctave_error_handler) \
-    ("exception encountered in Fortran subroutine %s", \
+#define F77_XFCN_ERROR(f, F)                            \
+  (*current_liboctave_error_handler)                    \
+    ("exception encountered in Fortran subroutine %s",  \
      STRINGIZE (F77_FUNC (f, F)))
 
 /* This can be used to call a Fortran subroutine that might call
@@ -49,30 +49,30 @@ extern "C" {
    subroutine is called.  In that case, we resotre the context and go
    to the top level. */
 
-#define F77_XFCN(f, F, args) \
-  do \
-    { \
-      octave_jmp_buf saved_context; \
+#define F77_XFCN(f, F, args)                                            \
+  do                                                                    \
+    {                                                                   \
+      octave_jmp_buf saved_context;                                     \
       sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
-      f77_exception_encountered = 0; \
-      octave_save_current_context (saved_context); \
-      if (octave_set_current_context) \
-        { \
+      f77_exception_encountered = 0;                                    \
+      octave_save_current_context (saved_context);                      \
+      if (octave_set_current_context)                                   \
+        {                                                               \
           octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-          octave_restore_current_context (saved_context); \
-          if (f77_exception_encountered) \
-            F77_XFCN_ERROR (f, F); \
-          else \
-            octave_rethrow_exception (); \
-        } \
-      else \
-        { \
-          octave_interrupt_immediately++; \
-          F77_FUNC (f, F) args; \
-          octave_interrupt_immediately--; \
-          octave_restore_current_context (saved_context); \
-        } \
-    } \
+          octave_restore_current_context (saved_context);               \
+          if (f77_exception_encountered)                                \
+            F77_XFCN_ERROR (f, F);                                      \
+          else                                                          \
+            octave_rethrow_exception ();                                \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          octave_interrupt_immediately++;                               \
+          F77_FUNC (f, F) args;                                         \
+          octave_interrupt_immediately--;                               \
+          octave_restore_current_context (saved_context);               \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 /* So we can check to see if an exception has occurred. */
@@ -146,11 +146,11 @@ not returning a value from a function declared to return something.
    and the length in a single argument.  */
 
 #define F77_CHAR_ARG(x) octave_make_cray_ftn_ch_dsc (x, strlen (x))
-#define F77_CONST_CHAR_ARG(x) \
+#define F77_CONST_CHAR_ARG(x)                           \
   octave_make_cray_const_ftn_ch_dsc (x, strlen (x))
 #define F77_CHAR_ARG2(x, l) octave_make_cray_ftn_ch_dsc (x, l)
 #define F77_CONST_CHAR_ARG2(x, l) octave_make_cray_const_ftn_ch_dsc (x, l)
-#define F77_CXX_STRING_ARG(x) \
+#define F77_CXX_STRING_ARG(x)                                   \
   octave_make_cray_const_ftn_ch_dsc (x.c_str (), x.length ())
 #define F77_CHAR_ARG_LEN(l)
 #define F77_CHAR_ARG_LEN_TYPE
@@ -336,16 +336,16 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_INT4 int32_t
 #define F77_LOGICAL octave_idx_type
 
-#define F77_CMPLX_ARG(x) \
+#define F77_CMPLX_ARG(x)                        \
   reinterpret_cast<float _Complex *> (x)
 
-#define F77_CONST_CMPLX_ARG(x) \
+#define F77_CONST_CMPLX_ARG(x)                  \
   reinterpret_cast<const float _Complex *> (x)
 
-#define F77_DBLE_CMPLX_ARG(x) \
+#define F77_DBLE_CMPLX_ARG(x)                   \
   reinterpret_cast<double _Complex *> (x)
 
-#define F77_CONST_DBLE_CMPLX_ARG(x) \
+#define F77_CONST_DBLE_CMPLX_ARG(x)             \
   reinterpret_cast<const double _Complex *> (x)
 
 /* Build a C string local variable CS from the Fortran string parameter S
@@ -353,10 +353,10 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
    The string will be cleaned up at the end of the current block.
    Needs to include <cstring> and <vector>.  */
 
-#define F77_CSTRING(s, len, cs) \
- OCTAVE_LOCAL_BUFFER (char, cs, F77_CHAR_ARG_LEN_USE (s, len) + 1); \
- memcpy (cs, F77_CHAR_ARG_USE (s), F77_CHAR_ARG_LEN_USE (s, len)); \
- cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0'
+#define F77_CSTRING(s, len, cs)                                         \
+  OCTAVE_LOCAL_BUFFER (char, cs, F77_CHAR_ARG_LEN_USE (s, len) + 1);    \
+  memcpy (cs, F77_CHAR_ARG_USE (s), F77_CHAR_ARG_LEN_USE (s, len));     \
+  cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0'
 
 OCTAVE_NORETURN OCTAVE_API extern
 F77_RET_T

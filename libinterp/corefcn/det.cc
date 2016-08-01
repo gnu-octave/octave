@@ -43,9 +43,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
 
-#define MAYBE_CAST(VAR, CLASS) \
-  const CLASS *VAR = arg.type_id () == CLASS::static_type_id () ? \
-   dynamic_cast<const CLASS *> (&arg.get_rep ()) : 0
+#define MAYBE_CAST(VAR, CLASS)                                          \
+  const CLASS *VAR = (arg.type_id () == CLASS::static_type_id ()        \
+                      ? dynamic_cast<const CLASS *> (&arg.get_rep ())   \
+                      : 0)
 
 DEFUN (det, args, nargout,
        doc: /* -*- texinfo -*-

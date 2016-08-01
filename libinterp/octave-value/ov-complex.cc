@@ -474,9 +474,9 @@ octave_complex::map (unary_mapper_t umap) const
 {
   switch (umap)
     {
-#define SCALAR_MAPPER(UMAP, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (FCN (scalar))
+#define SCALAR_MAPPER(UMAP, FCN)                \
+      case umap_ ## UMAP:                       \
+        return octave_value (FCN (scalar))
 
       SCALAR_MAPPER (abs, std::abs);
       SCALAR_MAPPER (acos, octave::math::acos);

@@ -303,11 +303,11 @@ quotient_eq (MArray<T>& a, const MArray<T>& b)
 
 // Element by element MArray by scalar ops.
 
-#define MARRAY_NDS_OP(OP, FN) \
-  template <typename T> \
-  MArray<T> \
-  operator OP (const MArray<T>& a, const T& s) \
-  { \
+#define MARRAY_NDS_OP(OP, FN)                   \
+  template <typename T>                         \
+  MArray<T>                                     \
+  operator OP (const MArray<T>& a, const T& s)  \
+  {                                             \
     return do_ms_binary_op<T, T, T> (a, s, FN); \
   }
 
@@ -318,11 +318,11 @@ MARRAY_NDS_OP (/, mx_inline_div)
 
 // Element by element scalar by MArray ops.
 
-#define MARRAY_SND_OP(OP, FN) \
-  template <typename T> \
-  MArray<T> \
-  operator OP (const T& s, const MArray<T>& a) \
-  { \
+#define MARRAY_SND_OP(OP, FN)                   \
+  template <typename T>                         \
+  MArray<T>                                     \
+  operator OP (const T& s, const MArray<T>& a)  \
+  {                                             \
     return do_sm_binary_op<T, T, T> (s, a, FN); \
   }
 

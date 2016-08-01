@@ -260,17 +260,17 @@ namespace octave
   while (0)
 
   // Same as above but with a return value.
-#define SETOPTR(option, parameter)                              \
-  do                                                            \
-    {                                                           \
-  CURLcode res = curl_easy_setopt (curl, option, parameter);    \
-  if (res != CURLE_OK)                                          \
-    {                                                           \
-  ok = false;                                                   \
-  errmsg = curl_easy_strerror (res);                            \
-  return retval;                                                \
-}                                                               \
-}                                                               \
+#define SETOPTR(option, parameter)                                      \
+  do                                                                    \
+    {                                                                   \
+      CURLcode res = curl_easy_setopt (curl, option, parameter);        \
+      if (res != CURLE_OK)                                              \
+        {                                                               \
+          ok = false;                                                   \
+          errmsg = curl_easy_strerror (res);                            \
+          return retval;                                                \
+        }                                                               \
+    }                                                                   \
   while (0)
 
   class curl_transfer : public base_url_transfer

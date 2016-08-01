@@ -710,17 +710,17 @@ octave_rand::switch_to_generator (int dist)
     }
 }
 
-#define MAKE_RAND(len) \
-  do \
-    { \
-      double val; \
-      for (volatile octave_idx_type i = 0; i < len; i++) \
-        { \
-          octave_quit (); \
-          RAND_FUNC (val); \
-          v[i] = val; \
-        } \
-    } \
+#define MAKE_RAND(len)                                          \
+  do                                                            \
+    {                                                           \
+      double val;                                               \
+      for (volatile octave_idx_type i = 0; i < len; i++)        \
+        {                                                       \
+          octave_quit ();                                       \
+          RAND_FUNC (val);                                      \
+          v[i] = val;                                           \
+        }                                                       \
+    }                                                           \
   while (0)
 
 void

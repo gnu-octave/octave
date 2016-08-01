@@ -627,14 +627,14 @@ periodic, @code{mod} is a better choice.
 
       switch (btyp0)
         {
-#define MAKE_INT_BRANCH(X) \
-  case btyp_ ## X: \
-    { \
-      X##NDArray a0 = args(0).X##_array_value (); \
-      X##NDArray a1 = args(1).X##_array_value (); \
-      retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, rem, "rem"); \
-    } \
-    break
+#define MAKE_INT_BRANCH(X)                                              \
+          case btyp_ ## X:                                              \
+            {                                                           \
+              X##NDArray a0 = args(0).X##_array_value ();               \
+              X##NDArray a1 = args(1).X##_array_value ();               \
+              retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, rem, "rem"); \
+            }                                                           \
+            break
 
           MAKE_INT_BRANCH (int8);
           MAKE_INT_BRANCH (int16);
@@ -808,14 +808,14 @@ negative numbers or when the values are periodic.
 
       switch (btyp0)
         {
-#define MAKE_INT_BRANCH(X) \
-  case btyp_ ## X: \
-    { \
-      X##NDArray a0 = args(0).X##_array_value (); \
-      X##NDArray a1 = args(1).X##_array_value (); \
-      retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, mod, "mod"); \
-    } \
-    break
+#define MAKE_INT_BRANCH(X)                                              \
+          case btyp_ ## X:                                              \
+            {                                                           \
+              X##NDArray a0 = args(0).X##_array_value ();               \
+              X##NDArray a1 = args(1).X##_array_value ();               \
+              retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, mod, "mod"); \
+            }                                                           \
+            break
 
           MAKE_INT_BRANCH (int8);
           MAKE_INT_BRANCH (int16);
@@ -918,218 +918,218 @@ negative numbers or when the values are periodic.
 //        Checked 1/23/2016.  They should probably be removed for clarity.
 // FIXME: Need to convert reduction functions of this file for single precision
 
-#define NATIVE_REDUCTION_1(FCN, TYPE, DIM) \
-  (arg.is_ ## TYPE ## _type ()) \
-    { \
-      TYPE ## NDArray tmp = arg. TYPE ##_array_value (); \
- \
-      retval = tmp.FCN (DIM); \
-    }
+#define NATIVE_REDUCTION_1(FCN, TYPE, DIM)              \
+  (arg.is_ ## TYPE ## _type ())                         \
+  {                                                     \
+    TYPE ## NDArray tmp = arg. TYPE ##_array_value ();  \
+                                                        \
+    retval = tmp.FCN (DIM);                             \
+  }
 
-#define NATIVE_REDUCTION(FCN, BOOL_FCN) \
- \
-  int nargin = args.length (); \
- \
-  bool isnative = false; \
-  bool isdouble = false; \
- \
-  if (nargin > 1 && args(nargin - 1).is_string ()) \
-    { \
-      std::string str = args(nargin - 1).string_value (); \
- \
-      if (str == "native") \
-        isnative = true; \
-      else if (str == "double") \
-        isdouble = true; \
-      else \
-        error ("sum: unrecognized string argument"); \
- \
-      nargin--; \
-    } \
- \
-  if (nargin < 1 || nargin > 2) \
-    print_usage (); \
- \
-  octave_value retval; \
- \
-  octave_value arg = args(0); \
- \
-  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
- \
-  if (dim < -1) \
-    error (#FCN ": invalid dimension argument = %d", dim + 1); \
- \
-  if (arg.is_sparse_type ()) \
-    { \
-      if (arg.is_real_type ()) \
-        { \
-          SparseMatrix tmp = arg.sparse_matrix_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else \
-        { \
-          SparseComplexMatrix tmp \
-            = arg.sparse_complex_matrix_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-    } \
-  else \
-    { \
-      if (isnative) \
-        { \
-          if NATIVE_REDUCTION_1 (FCN, uint8, dim) \
-          else if NATIVE_REDUCTION_1 (FCN, uint16, dim) \
-          else if NATIVE_REDUCTION_1 (FCN, uint32, dim) \
-          else if NATIVE_REDUCTION_1 (FCN, uint64, dim) \
-          else if NATIVE_REDUCTION_1 (FCN, int8, dim) \
-          else if NATIVE_REDUCTION_1 (FCN, int16, dim) \
-          else if NATIVE_REDUCTION_1 (FCN, int32, dim) \
-          else if NATIVE_REDUCTION_1 (FCN, int64, dim) \
-          else if (arg.is_bool_type ()) \
-            { \
-              boolNDArray tmp = arg.bool_array_value (); \
-\
-              retval = boolNDArray (tmp.BOOL_FCN (dim)); \
-            } \
-          else if (arg.is_char_matrix ()) \
-            { \
-              error (#FCN, ": invalid char type"); \
-            } \
-          else if (! isdouble && arg.is_single_type ()) \
-            { \
-              if (arg.is_complex_type ()) \
-                { \
-                  FloatComplexNDArray tmp = \
-                    arg.float_complex_array_value (); \
-\
-                  retval = tmp.FCN (dim); \
-                } \
-              else if (arg.is_real_type ()) \
-                { \
-                  FloatNDArray tmp = arg.float_array_value (); \
-\
-                  retval = tmp.FCN (dim); \
-                } \
-            } \
-          else if (arg.is_complex_type ()) \
-            { \
-              ComplexNDArray tmp = arg.complex_array_value (); \
-\
-              retval = tmp.FCN (dim); \
-            } \
-          else if (arg.is_real_type ()) \
-            { \
-              NDArray tmp = arg.array_value (); \
-\
-              retval = tmp.FCN (dim); \
-            } \
-          else \
-            err_wrong_type_arg (#FCN, arg); \
-        } \
-      else if (arg.is_bool_type ()) \
-        { \
-          boolNDArray tmp = arg.bool_array_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else if (! isdouble && arg.is_single_type ()) \
-        { \
-          if (arg.is_real_type ()) \
-            { \
-              FloatNDArray tmp = arg.float_array_value (); \
-\
-              retval = tmp.FCN (dim); \
-            } \
-          else if (arg.is_complex_type ()) \
-            { \
-              FloatComplexNDArray tmp = \
-                arg.float_complex_array_value (); \
-\
-              retval = tmp.FCN (dim); \
-            } \
-        } \
-      else if (arg.is_real_type ()) \
-        { \
-          NDArray tmp = arg.array_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else if (arg.is_complex_type ()) \
-        { \
-          ComplexNDArray tmp = arg.complex_array_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else \
-        err_wrong_type_arg (#FCN, arg); \
-    } \
- \
+#define NATIVE_REDUCTION(FCN, BOOL_FCN)                                 \
+                                                                        \
+  int nargin = args.length ();                                          \
+                                                                        \
+  bool isnative = false;                                                \
+  bool isdouble = false;                                                \
+                                                                        \
+  if (nargin > 1 && args(nargin - 1).is_string ())                      \
+    {                                                                   \
+      std::string str = args(nargin - 1).string_value ();               \
+                                                                        \
+      if (str == "native")                                              \
+        isnative = true;                                                \
+      else if (str == "double")                                         \
+        isdouble = true;                                                \
+      else                                                              \
+        error ("sum: unrecognized string argument");                    \
+                                                                        \
+      nargin--;                                                         \
+    }                                                                   \
+                                                                        \
+  if (nargin < 1 || nargin > 2)                                         \
+    print_usage ();                                                     \
+                                                                        \
+  octave_value retval;                                                  \
+                                                                        \
+  octave_value arg = args(0);                                           \
+                                                                        \
+  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1);          \
+                                                                        \
+  if (dim < -1)                                                         \
+    error (#FCN ": invalid dimension argument = %d", dim + 1);          \
+                                                                        \
+  if (arg.is_sparse_type ())                                            \
+    {                                                                   \
+      if (arg.is_real_type ())                                          \
+        {                                                               \
+          SparseMatrix tmp = arg.sparse_matrix_value ();                \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          SparseComplexMatrix tmp                                       \
+            = arg.sparse_complex_matrix_value ();                       \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+    }                                                                   \
+  else                                                                  \
+    {                                                                   \
+      if (isnative)                                                     \
+        {                                                               \
+          if NATIVE_REDUCTION_1 (FCN, uint8, dim)                       \
+            else if NATIVE_REDUCTION_1 (FCN, uint16, dim)               \
+              else if NATIVE_REDUCTION_1 (FCN, uint32, dim)             \
+                else if NATIVE_REDUCTION_1 (FCN, uint64, dim)           \
+                  else if NATIVE_REDUCTION_1 (FCN, int8, dim)           \
+                    else if NATIVE_REDUCTION_1 (FCN, int16, dim)        \
+                      else if NATIVE_REDUCTION_1 (FCN, int32, dim)      \
+                        else if NATIVE_REDUCTION_1 (FCN, int64, dim)    \
+                          else if (arg.is_bool_type ())                 \
+                            {                                           \
+                              boolNDArray tmp = arg.bool_array_value (); \
+                                                                        \
+                              retval = boolNDArray (tmp.BOOL_FCN (dim)); \
+                            }                                           \
+                          else if (arg.is_char_matrix ())               \
+                            {                                           \
+                              error (#FCN, ": invalid char type");      \
+                            }                                           \
+                          else if (! isdouble && arg.is_single_type ()) \
+                            {                                           \
+                              if (arg.is_complex_type ())               \
+                                {                                       \
+                                  FloatComplexNDArray tmp =             \
+                                    arg.float_complex_array_value ();   \
+                                                                        \
+                                  retval = tmp.FCN (dim);               \
+                                }                                       \
+                              else if (arg.is_real_type ())             \
+                                {                                       \
+                                  FloatNDArray tmp = arg.float_array_value (); \
+                                                                        \
+                                  retval = tmp.FCN (dim);               \
+                                }                                       \
+                            }                                           \
+                          else if (arg.is_complex_type ())              \
+                            {                                           \
+                              ComplexNDArray tmp = arg.complex_array_value (); \
+                                                                        \
+                              retval = tmp.FCN (dim);                   \
+                            }                                           \
+                          else if (arg.is_real_type ())                 \
+                            {                                           \
+                              NDArray tmp = arg.array_value ();         \
+                                                                        \
+                              retval = tmp.FCN (dim);                   \
+                            }                                           \
+                          else                                          \
+                            err_wrong_type_arg (#FCN, arg);             \
+        }                                                               \
+      else if (arg.is_bool_type ())                                     \
+        {                                                               \
+          boolNDArray tmp = arg.bool_array_value ();                    \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else if (! isdouble && arg.is_single_type ())                     \
+        {                                                               \
+          if (arg.is_real_type ())                                      \
+            {                                                           \
+              FloatNDArray tmp = arg.float_array_value ();              \
+                                                                        \
+              retval = tmp.FCN (dim);                                   \
+            }                                                           \
+          else if (arg.is_complex_type ())                              \
+            {                                                           \
+              FloatComplexNDArray tmp =                                 \
+                arg.float_complex_array_value ();                       \
+                                                                        \
+              retval = tmp.FCN (dim);                                   \
+            }                                                           \
+        }                                                               \
+      else if (arg.is_real_type ())                                     \
+        {                                                               \
+          NDArray tmp = arg.array_value ();                             \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else if (arg.is_complex_type ())                                  \
+        {                                                               \
+          ComplexNDArray tmp = arg.complex_array_value ();              \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else                                                              \
+        err_wrong_type_arg (#FCN, arg);                                 \
+    }                                                                   \
+                                                                        \
   return retval
 
-#define DATA_REDUCTION(FCN) \
- \
-  int nargin = args.length (); \
- \
-  if (nargin < 1 || nargin > 2) \
-    print_usage (); \
- \
-  octave_value retval; \
- \
-  octave_value arg = args(0); \
- \
-  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
- \
-  if (dim < -1) \
-    error (#FCN ": invalid dimension argument = %d", dim + 1); \
- \
-  if (arg.is_real_type ()) \
-    { \
-      if (arg.is_sparse_type ()) \
-        { \
-          SparseMatrix tmp = arg.sparse_matrix_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else if (arg.is_single_type ()) \
-        { \
-          FloatNDArray tmp = arg.float_array_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else \
-        { \
-          NDArray tmp = arg.array_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-    } \
-  else if (arg.is_complex_type ()) \
-    { \
-      if (arg.is_sparse_type ()) \
-        { \
+#define DATA_REDUCTION(FCN)                                             \
+                                                                        \
+  int nargin = args.length ();                                          \
+                                                                        \
+  if (nargin < 1 || nargin > 2)                                         \
+    print_usage ();                                                     \
+                                                                        \
+  octave_value retval;                                                  \
+                                                                        \
+  octave_value arg = args(0);                                           \
+                                                                        \
+  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1);          \
+                                                                        \
+  if (dim < -1)                                                         \
+    error (#FCN ": invalid dimension argument = %d", dim + 1);          \
+                                                                        \
+  if (arg.is_real_type ())                                              \
+    {                                                                   \
+      if (arg.is_sparse_type ())                                        \
+        {                                                               \
+          SparseMatrix tmp = arg.sparse_matrix_value ();                \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else if (arg.is_single_type ())                                   \
+        {                                                               \
+          FloatNDArray tmp = arg.float_array_value ();                  \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          NDArray tmp = arg.array_value ();                             \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+    }                                                                   \
+  else if (arg.is_complex_type ())                                      \
+    {                                                                   \
+      if (arg.is_sparse_type ())                                        \
+        {                                                               \
           SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else if (arg.is_single_type ()) \
-        { \
-          FloatComplexNDArray tmp \
-            = arg.float_complex_array_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-      else \
-        { \
-          ComplexNDArray tmp = arg.complex_array_value (); \
-\
-          retval = tmp.FCN (dim); \
-        } \
-    } \
-  else \
-    err_wrong_type_arg (#FCN, arg); \
- \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else if (arg.is_single_type ())                                   \
+        {                                                               \
+          FloatComplexNDArray tmp                                       \
+            = arg.float_complex_array_value ();                         \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          ComplexNDArray tmp = arg.complex_array_value ();              \
+                                                                        \
+          retval = tmp.FCN (dim);                                       \
+        }                                                               \
+    }                                                                   \
+  else                                                                  \
+    err_wrong_type_arg (#FCN, arg);                                     \
+                                                                        \
   return retval
 
 DEFUN (cumprod, args, ,
@@ -1261,13 +1261,13 @@ See @code{sum} for an explanation of the optional parameters
         retval = arg.float_complex_array_value ().cumsum (dim);
       break;
 
-#define MAKE_INT_BRANCH(X) \
-  case btyp_ ## X: \
-    if (isnative) \
-      retval = arg.X ## _array_value ().cumsum (dim); \
-    else \
-      retval = arg.array_value ().cumsum (dim); \
-    break;
+#define MAKE_INT_BRANCH(X)                                      \
+      case btyp_ ## X:                                          \
+        if (isnative)                                           \
+          retval = arg.X ## _array_value ().cumsum (dim);       \
+        else                                                    \
+          retval = arg.array_value ().cumsum (dim);             \
+        break;
 
       MAKE_INT_BRANCH (int8);
       MAKE_INT_BRANCH (int16);
@@ -1548,13 +1548,13 @@ in double precision even for single precision inputs.
         retval = arg.float_complex_array_value ().prod (dim);
       break;
 
-#define MAKE_INT_BRANCH(X) \
-  case btyp_ ## X: \
-    if (isnative) \
-      retval = arg.X ## _array_value ().prod (dim); \
-    else \
-      retval = arg.array_value ().prod (dim); \
-    break;
+#define MAKE_INT_BRANCH(X)                              \
+      case btyp_ ## X:                                  \
+        if (isnative)                                   \
+          retval = arg.X ## _array_value ().prod (dim); \
+        else                                            \
+          retval = arg.array_value ().prod (dim);       \
+        break;
 
       MAKE_INT_BRANCH (int8);
       MAKE_INT_BRANCH (int16);
@@ -3061,13 +3061,13 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
         retval = arg.float_complex_array_value ().sum (dim);
       break;
 
-#define MAKE_INT_BRANCH(X) \
-  case btyp_ ## X: \
-    if (isnative) \
-      retval = arg.X ## _array_value ().sum (dim); \
-    else \
-      retval = arg.X ## _array_value ().dsum (dim); \
-    break;
+#define MAKE_INT_BRANCH(X)                              \
+      case btyp_ ## X:                                  \
+        if (isnative)                                   \
+          retval = arg.X ## _array_value ().sum (dim);  \
+        else                                            \
+          retval = arg.X ## _array_value ().dsum (dim); \
+        break;
 
       MAKE_INT_BRANCH (int8);
       MAKE_INT_BRANCH (int16);
@@ -4878,7 +4878,7 @@ identity_matrix (int nr, int nc)
   return retval;
 }
 
-#define INSTANTIATE_EYE(T) \
+#define INSTANTIATE_EYE(T)                              \
   template octave_value identity_matrix<T> (int, int)
 
 INSTANTIATE_EYE (int8NDArray);
@@ -6897,10 +6897,11 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
         case btyp_float_complex:
           retval = argx.float_complex_array_value ().nth_element (n, dim);
           break;
-#define MAKE_INT_BRANCH(X) \
-  case btyp_ ## X: \
-    retval = argx.X ## _array_value ().nth_element (n, dim); \
-    break;
+
+#define MAKE_INT_BRANCH(X)                                              \
+          case btyp_ ## X:                                              \
+            retval = argx.X ## _array_value ().nth_element (n, dim);    \
+            break;
 
           MAKE_INT_BRANCH (int8);
           MAKE_INT_BRANCH (int16);
@@ -6911,7 +6912,9 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
           MAKE_INT_BRANCH (uint32);
           MAKE_INT_BRANCH (uint64);
           MAKE_INT_BRANCH (bool);
+
 #undef MAKE_INT_BRANCH
+
         default:
           if (argx.is_cellstr ())
             retval = argx.cellstr_value ().nth_element (n, dim);
@@ -7090,10 +7093,10 @@ do_accumarray_minmax_fun (const octave_value_list& args,
                                          zero.float_complex_value ());
           break;
 
-#define MAKE_INT_BRANCH(X) \
-  case btyp_ ## X: \
-    retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
-                                   n, ismin, zero.X ## _scalar_value ()); \
+#define MAKE_INT_BRANCH(X)                                              \
+          case btyp_ ## X:                                              \
+            retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
+                                           n, ismin, zero.X ## _scalar_value ()); \
             break;
 
           MAKE_INT_BRANCH (int8);
@@ -7289,12 +7292,12 @@ do_merge (const Array<bool>& mask,
   return retval;
 }
 
-#define MAKE_INT_BRANCH(INTX) \
+#define MAKE_INT_BRANCH(INTX)                                           \
   else if (tval.is_ ## INTX ## _type () && fval.is_ ## INTX ## _type ()) \
-    { \
-      retval = do_merge (mask, \
-                         tval.INTX ## _array_value (), \
-                         fval.INTX ## _array_value ()); \
+    {                                                                   \
+      retval = do_merge (mask,                                          \
+                         tval.INTX ## _array_value (),                  \
+                         fval.INTX ## _array_value ());                 \
     }
 
 DEFUN (merge, args, ,
@@ -7688,10 +7691,10 @@ endfor
 
   switch (x.builtin_type ())
     {
-#define BTYP_BRANCH(X, EX) \
-    case btyp_ ## X: \
-      retval = do_repelems (x.EX ## _value (), r); \
-      break;
+#define BTYP_BRANCH(X, EX)                              \
+      case btyp_ ## X:                                  \
+        retval = do_repelems (x.EX ## _value (), r);    \
+        break;
 
       BTYP_BRANCH (double, array);
       BTYP_BRANCH (float, float_array);
@@ -7711,6 +7714,7 @@ endfor
 
       BTYP_BRANCH (cell, cell);
       //BTYP_BRANCH (struct, map);//FIXME
+
 #undef BTYP_BRANCH
 
     default:
@@ -7742,18 +7746,18 @@ Encode a double matrix or array @var{x} into the base64 format string
 
   if (args(0).is_integer_type ())
     {
-#define MAKE_INT_BRANCH(X) \
-      if (args(0).is_ ## X ## _type ()) \
-        { \
-          const X##NDArray in = args(0).  X## _array_value (); \
+#define MAKE_INT_BRANCH(X)                                              \
+      if (args(0).is_ ## X ## _type ())                                 \
+        {                                                               \
+          const X##NDArray in = args(0).  X## _array_value ();          \
           size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char); \
           const char* inc = reinterpret_cast<const char*> (in.data ()); \
-          char* out; \
-          if (octave_base64_encode (inc, inlen, &out)) \
-            { \
-              retval(0) = octave_value (out); \
-              ::free (out); \
-            } \
+          char* out;                                                    \
+          if (octave_base64_encode (inc, inlen, &out))                  \
+            {                                                           \
+              retval(0) = octave_value (out);                           \
+              ::free (out);                                             \
+            }                                                           \
         }
 
       MAKE_INT_BRANCH(int8)
@@ -7764,6 +7768,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       else MAKE_INT_BRANCH(uint16)
       else MAKE_INT_BRANCH(uint32)
       else MAKE_INT_BRANCH(uint64)
+
 #undef MAKE_INT_BRANCH
 
       else

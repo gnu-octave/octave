@@ -1402,77 +1402,77 @@ namespace octave
       return retval;
     }
 
-#define SS_BESSEL(name, fcn) \
-    Complex \
+#define SS_BESSEL(name, fcn)                                            \
+    Complex                                                             \
     name (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define SM_BESSEL(name, fcn) \
-    ComplexMatrix \
-    name (double alpha, const ComplexMatrix& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define SM_BESSEL(name, fcn)                                    \
+    ComplexMatrix                                               \
+    name (double alpha, const ComplexMatrix& x, bool scaled,    \
+          Array<octave_idx_type>& ierr)                         \
+    {                                                           \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);    \
     }
 
-#define MS_BESSEL(name, fcn) \
-    ComplexMatrix \
-    name (const Matrix& alpha, const Complex& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define MS_BESSEL(name, fcn)                                    \
+    ComplexMatrix                                               \
+    name (const Matrix& alpha, const Complex& x, bool scaled,   \
+          Array<octave_idx_type>& ierr)                         \
+    {                                                           \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);    \
     }
 
-#define MM_BESSEL(name, fcn) \
-    ComplexMatrix \
-    name (const Matrix& alpha, const ComplexMatrix& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define MM_BESSEL(name, fcn)                                            \
+    ComplexMatrix                                                       \
+    name (const Matrix& alpha, const ComplexMatrix& x, bool scaled,     \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define SN_BESSEL(name, fcn) \
-    ComplexNDArray \
-    name (double alpha, const ComplexNDArray& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define SN_BESSEL(name, fcn)                                    \
+    ComplexNDArray                                              \
+    name (double alpha, const ComplexNDArray& x, bool scaled,   \
+          Array<octave_idx_type>& ierr)                         \
+    {                                                           \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);    \
     }
 
-#define NS_BESSEL(name, fcn) \
-    ComplexNDArray \
-    name (const NDArray& alpha, const Complex& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define NS_BESSEL(name, fcn)                                    \
+    ComplexNDArray                                              \
+    name (const NDArray& alpha, const Complex& x, bool scaled,  \
+          Array<octave_idx_type>& ierr)                         \
+    {                                                           \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);    \
     }
 
-#define NN_BESSEL(name, fcn) \
-    ComplexNDArray \
-    name (const NDArray& alpha, const ComplexNDArray& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define NN_BESSEL(name, fcn)                                            \
+    ComplexNDArray                                                      \
+    name (const NDArray& alpha, const ComplexNDArray& x, bool scaled,   \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define RC_BESSEL(name, fcn) \
-    ComplexMatrix \
+#define RC_BESSEL(name, fcn)                                            \
+    ComplexMatrix                                                       \
     name (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define ALL_BESSEL(name, fcn) \
-    SS_BESSEL (name, fcn) \
-    SM_BESSEL (name, fcn) \
-    MS_BESSEL (name, fcn) \
-    MM_BESSEL (name, fcn) \
-    SN_BESSEL (name, fcn) \
-    NS_BESSEL (name, fcn) \
-    NN_BESSEL (name, fcn) \
+#define ALL_BESSEL(name, fcn)                   \
+    SS_BESSEL (name, fcn)                       \
+    SM_BESSEL (name, fcn)                       \
+    MS_BESSEL (name, fcn)                       \
+    MM_BESSEL (name, fcn)                       \
+    SN_BESSEL (name, fcn)                       \
+    NS_BESSEL (name, fcn)                       \
+    NN_BESSEL (name, fcn)                       \
     RC_BESSEL (name, fcn)
 
     ALL_BESSEL (besselj, zbesj)
@@ -2015,77 +2015,77 @@ namespace octave
       return retval;
     }
 
-#define SS_BESSEL(name, fcn) \
-    FloatComplex \
+#define SS_BESSEL(name, fcn)                                            \
+    FloatComplex                                                        \
     name (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define SM_BESSEL(name, fcn) \
-    FloatComplexMatrix \
-    name (float alpha, const FloatComplexMatrix& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define SM_BESSEL(name, fcn)                                            \
+    FloatComplexMatrix                                                  \
+    name (float alpha, const FloatComplexMatrix& x, bool scaled,        \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define MS_BESSEL(name, fcn) \
-    FloatComplexMatrix \
+#define MS_BESSEL(name, fcn)                                            \
+    FloatComplexMatrix                                                  \
     name (const FloatMatrix& alpha, const FloatComplex& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define MM_BESSEL(name, fcn) \
-    FloatComplexMatrix \
+#define MM_BESSEL(name, fcn)                                            \
+    FloatComplexMatrix                                                  \
     name (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define SN_BESSEL(name, fcn) \
-    FloatComplexNDArray \
-    name (float alpha, const FloatComplexNDArray& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+#define SN_BESSEL(name, fcn)                                            \
+    FloatComplexNDArray                                                 \
+    name (float alpha, const FloatComplexNDArray& x, bool scaled,       \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define NS_BESSEL(name, fcn) \
-    FloatComplexNDArray \
+#define NS_BESSEL(name, fcn)                                            \
+    FloatComplexNDArray                                                 \
     name (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define NN_BESSEL(name, fcn) \
-    FloatComplexNDArray \
+#define NN_BESSEL(name, fcn)                                            \
+    FloatComplexNDArray                                                 \
     name (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define RC_BESSEL(name, fcn) \
-    FloatComplexMatrix \
+#define RC_BESSEL(name, fcn)                                            \
+    FloatComplexMatrix                                                  \
     name (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, \
-          Array<octave_idx_type>& ierr) \
-    { \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+          Array<octave_idx_type>& ierr)                                 \
+    {                                                                   \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define ALL_BESSEL(name, fcn) \
-    SS_BESSEL (name, fcn) \
-    SM_BESSEL (name, fcn) \
-    MS_BESSEL (name, fcn) \
-    MM_BESSEL (name, fcn) \
-    SN_BESSEL (name, fcn) \
-    NS_BESSEL (name, fcn) \
-    NN_BESSEL (name, fcn) \
+#define ALL_BESSEL(name, fcn)                   \
+    SS_BESSEL (name, fcn)                       \
+    SM_BESSEL (name, fcn)                       \
+    MS_BESSEL (name, fcn)                       \
+    MM_BESSEL (name, fcn)                       \
+    SN_BESSEL (name, fcn)                       \
+    NS_BESSEL (name, fcn)                       \
+    NN_BESSEL (name, fcn)                       \
     RC_BESSEL (name, fcn)
 
     ALL_BESSEL (besselj, cbesj)

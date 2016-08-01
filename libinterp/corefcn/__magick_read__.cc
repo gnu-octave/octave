@@ -1527,19 +1527,27 @@ Use @code{imwrite} instead.
   imvec[0].animationIterations (options.getfield ("loopcount").uint_value ());
 
   const std::string compression = options.getfield ("compression").string_value ();
-#define COMPRESS_MAGICK_IMAGE_VECTOR(COMPRESSION_STRING, GM_TYPE) \
-  if (compression == COMPRESSION_STRING) \
-    for (std::vector<Magick::Image>::size_type i = 0; i < imvec.size (); i++) \
-      imvec[i].compressType (GM_TYPE);
 
-  COMPRESS_MAGICK_IMAGE_VECTOR("none", Magick::NoCompression)
-  else COMPRESS_MAGICK_IMAGE_VECTOR("bzip", Magick::BZipCompression)
-  else COMPRESS_MAGICK_IMAGE_VECTOR("fax3", Magick::FaxCompression)
-  else COMPRESS_MAGICK_IMAGE_VECTOR("fax4", Magick::Group4Compression)
-  else COMPRESS_MAGICK_IMAGE_VECTOR("jpeg", Magick::JPEGCompression)
-  else COMPRESS_MAGICK_IMAGE_VECTOR("lzw", Magick::LZWCompression)
-  else COMPRESS_MAGICK_IMAGE_VECTOR("rle", Magick::RLECompression)
-  else COMPRESS_MAGICK_IMAGE_VECTOR("deflate", Magick::ZipCompression)
+#define COMPRESS_MAGICK_IMAGE_VECTOR(GM_TYPE)                           \
+  for (std::vector<Magick::Image>::size_type i = 0; i < imvec.size (); i++) \
+    imvec[i].compressType (GM_TYPE)
+
+  if (compression == "none")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::NoCompression);
+  else if (compression == "bzip")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::BZipCompression);
+  else if (compression == "fax3")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::FaxCompression);
+  else if (compression == "fax4")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::Group4Compression);
+  else if (compression == "jpeg")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::JPEGCompression);
+  else if (compression == "lzw")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::LZWCompression);
+  else if (compression == "rle")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::RLECompression);
+  else if (compression == "deflate")
+    COMPRESS_MAGICK_IMAGE_VECTOR (Magick::ZipCompression);
 
 #undef COMPRESS_MAGICK_IMAGE_VECTOR
 

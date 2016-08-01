@@ -352,10 +352,12 @@ protected:
   virtual ~text_processor (void) { }
 };
 
-#define TEXT_ELEMENT_ACCEPT(cls) \
-inline void \
-cls::accept (text_processor& p) \
-{ p.visit (*this); }
+#define TEXT_ELEMENT_ACCEPT(cls)                \
+  inline void                                   \
+  cls::accept (text_processor& p)               \
+  {                                             \
+    p.visit (*this);                            \
+  }
 
 TEXT_ELEMENT_ACCEPT(text_element_string)
 TEXT_ELEMENT_ACCEPT(text_element_symbol)

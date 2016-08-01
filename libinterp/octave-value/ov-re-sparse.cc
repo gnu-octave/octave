@@ -897,15 +897,15 @@ octave_sparse_matrix::map (unary_mapper_t umap) const
       return matrix;
 
     // Mappers handled specially.
-#define ARRAY_METHOD_MAPPER(UMAP, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (matrix.FCN ())
+#define ARRAY_METHOD_MAPPER(UMAP, FCN)          \
+      case umap_ ## UMAP:                       \
+        return octave_value (matrix.FCN ())
 
       ARRAY_METHOD_MAPPER (abs, abs);
 
-#define ARRAY_MAPPER(UMAP, TYPE, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (matrix.map<TYPE> (FCN))
+#define ARRAY_MAPPER(UMAP, TYPE, FCN)                   \
+      case umap_ ## UMAP:                               \
+        return octave_value (matrix.map<TYPE> (FCN))
 
       ARRAY_MAPPER (acos, Complex, octave::math::rc_acos);
       ARRAY_MAPPER (acosh, Complex, octave::math::rc_acosh);

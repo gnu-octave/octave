@@ -274,10 +274,10 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
       retval = do_simple_gcd<NDArray> (a, b);
       break;
 
-#define MAKE_INT_BRANCH(X) \
-    case btyp_ ## X: \
-      retval = do_simple_gcd<X ## NDArray> (a, b); \
-      break
+#define MAKE_INT_BRANCH(X)                              \
+      case btyp_ ## X:                                  \
+        retval = do_simple_gcd<X ## NDArray> (a, b);    \
+        break
 
     MAKE_INT_BRANCH (int8);
     MAKE_INT_BRANCH (int16);
@@ -386,10 +386,10 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       retval = do_extended_gcd<NDArray> (a, b, x, y);
       break;
 
-#define MAKE_INT_BRANCH(X) \
-    case btyp_ ## X: \
-      retval = do_extended_gcd<X ## NDArray> (a, b, x, y); \
-      break
+#define MAKE_INT_BRANCH(X)                                      \
+      case btyp_ ## X:                                          \
+        retval = do_extended_gcd<X ## NDArray> (a, b, x, y);    \
+        break
 
     MAKE_INT_BRANCH (int8);
     MAKE_INT_BRANCH (int16);

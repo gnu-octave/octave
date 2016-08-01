@@ -96,8 +96,7 @@ xpow (const SparseMatrix& a, double b)
           atmp = a.inverse (mattyp, info, rcond, 1);
 
           if (info == -1)
-            warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
+            warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
         }
       else
         atmp = a;
@@ -165,8 +164,7 @@ xpow (const SparseComplexMatrix& a, double b)
           atmp = a.inverse (mattyp, info, rcond, 1);
 
           if (info == -1)
-            warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
+            warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
         }
       else
         atmp = a;

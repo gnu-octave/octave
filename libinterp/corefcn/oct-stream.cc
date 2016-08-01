@@ -4344,222 +4344,223 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
                Matrix&, double*, octave_idx_type&, octave_idx_type&,
                octave_idx_type, octave_idx_type, bool);
 
-#define DO_WHITESPACE_CONVERSION() \
-  do \
-    { \
-      int c = std::istream::traits_type::eof (); \
- \
+#define DO_WHITESPACE_CONVERSION()                                      \
+  do                                                                    \
+    {                                                                   \
+      int c = std::istream::traits_type::eof ();                        \
+                                                                        \
       while (is && (c = is.get ()) != std::istream::traits_type::eof () \
-             && isspace (c)) \
-        { /* skip whitespace */ } \
- \
-      if (c != std::istream::traits_type::eof ()) \
-        is.putback (c); \
-    } \
+             && isspace (c))                                            \
+        { /* skip whitespace */ }                                       \
+                                                                        \
+      if (c != std::istream::traits_type::eof ())                       \
+        is.putback (c);                                                 \
+    }                                                                   \
   while (0)
 
-#define DO_LITERAL_CONVERSION() \
-  do \
-    { \
-      int c = std::istream::traits_type::eof (); \
- \
-      int n = strlen (fmt); \
-      int i = 0; \
- \
-      while (i < n && is && (c = is.get ()) != std::istream::traits_type::eof ()) \
-        { \
-          if (c == static_cast<unsigned char> (fmt[i])) \
-            { \
-              i++; \
-              continue; \
-            } \
-          else \
-            { \
-              is.putback (c); \
-              break; \
-            } \
-        } \
- \
-      if (i != n) \
-        is.setstate (std::ios::failbit); \
-    } \
+#define DO_LITERAL_CONVERSION()                                         \
+  do                                                                    \
+    {                                                                   \
+     int c = std::istream::traits_type::eof ();                         \
+                                                                        \
+     int n = strlen (fmt);                                              \
+     int i = 0;                                                         \
+                                                                        \
+     while (i < n && is && (c = is.get ()) != std::istream::traits_type::eof ()) \
+       {                                                                \
+        if (c == static_cast<unsigned char> (fmt[i]))                   \
+          {                                                             \
+           i++;                                                         \
+           continue;                                                    \
+           }                                                            \
+        else                                                            \
+          {                                                             \
+           is.putback (c);                                              \
+           break;                                                       \
+           }                                                            \
+        }                                                               \
+                                                                        \
+     if (i != n)                                                        \
+       is.setstate (std::ios::failbit);                                 \
+     }                                                                  \
   while (0)
 
-#define DO_PCT_CONVERSION() \
-  do \
-    { \
-      int c = is.get (); \
- \
-      if (c != std::istream::traits_type::eof ()) \
-        { \
-          if (c != '%') \
-            { \
-              is.putback (c); \
-              is.setstate (std::ios::failbit); \
-            } \
-        } \
-      else \
-        is.setstate (std::ios::failbit); \
-    } \
+#define DO_PCT_CONVERSION()                             \
+  do                                                    \
+    {                                                   \
+      int c = is.get ();                                \
+                                                        \
+      if (c != std::istream::traits_type::eof ())       \
+        {                                               \
+          if (c != '%')                                 \
+            {                                           \
+              is.putback (c);                           \
+              is.setstate (std::ios::failbit);          \
+            }                                           \
+        }                                               \
+      else                                              \
+        is.setstate (std::ios::failbit);                \
+    }                                                   \
   while (0)
 
-#define BEGIN_C_CONVERSION() \
-  is.unsetf (std::ios::skipws); \
- \
-  int width = elt->width ? elt->width : 1; \
- \
-  std::string tmp (width, '\0'); \
- \
-  int c = std::istream::traits_type::eof (); \
-  int n = 0; \
- \
-  while (is && n < width && (c = is.get ()) != std::istream::traits_type::eof ()) \
-    tmp[n++] = static_cast<char> (c); \
- \
-  if (n > 0 && c == std::istream::traits_type::eof ()) \
-    is.clear (); \
- \
+#define BEGIN_C_CONVERSION()                                            \
+  is.unsetf (std::ios::skipws);                                         \
+                                                                        \
+  int width = elt->width ? elt->width : 1;                              \
+                                                                        \
+  std::string tmp (width, '\0');                                        \
+                                                                        \
+  int c = std::istream::traits_type::eof ();                            \
+  int n = 0;                                                            \
+                                                                        \
+  while (is && n < width                                                \
+         && (c = is.get ()) != std::istream::traits_type::eof ())       \
+    tmp[n++] = static_cast<char> (c);                                   \
+                                                                        \
+  if (n > 0 && c == std::istream::traits_type::eof ())                  \
+    is.clear ();                                                        \
+                                                                        \
   tmp.resize (n)
 
 // For a '%s' format, skip initial whitespace and then read until the
 // next whitespace character or until WIDTH characters have been read.
-#define BEGIN_S_CONVERSION() \
-  int width = elt->width; \
- \
-  std::string tmp; \
- \
-  do \
-    { \
-      if (width) \
-        { \
-          tmp = std::string (width, '\0'); \
- \
-          int c = std::istream::traits_type::eof (); \
- \
-          int n = 0; \
- \
+#define BEGIN_S_CONVERSION()                                            \
+  int width = elt->width;                                               \
+                                                                        \
+  std::string tmp;                                                      \
+                                                                        \
+  do                                                                    \
+    {                                                                   \
+      if (width)                                                        \
+        {                                                               \
+          tmp = std::string (width, '\0');                              \
+                                                                        \
+          int c = std::istream::traits_type::eof ();                    \
+                                                                        \
+          int n = 0;                                                    \
+                                                                        \
           while (is && (c = is.get ()) != std::istream::traits_type::eof ()) \
-            { \
-              if (! isspace (c)) \
-                { \
-                  tmp[n++] = static_cast<char> (c); \
-                  break; \
-                } \
-            } \
- \
-          while (is && n < width \
+            {                                                           \
+              if (! isspace (c))                                        \
+                {                                                       \
+                  tmp[n++] = static_cast<char> (c);                     \
+                  break;                                                \
+                }                                                       \
+            }                                                           \
+                                                                        \
+          while (is && n < width                                        \
                  && (c = is.get ()) != std::istream::traits_type::eof ()) \
-            { \
-              if (isspace (c)) \
-                { \
-                  is.putback (c); \
-                  break; \
-                } \
-              else \
-                tmp[n++] = static_cast<char> (c); \
-            } \
- \
-          if (n > 0 && c == std::istream::traits_type::eof ()) \
-            is.clear (); \
- \
-          tmp.resize (n); \
-        } \
-      else \
-        { \
-          is >> std::ws >> tmp; \
-        } \
-    } \
+            {                                                           \
+              if (isspace (c))                                          \
+                {                                                       \
+                  is.putback (c);                                       \
+                  break;                                                \
+                }                                                       \
+              else                                                      \
+                tmp[n++] = static_cast<char> (c);                       \
+            }                                                           \
+                                                                        \
+          if (n > 0 && c == std::istream::traits_type::eof ())          \
+            is.clear ();                                                \
+                                                                        \
+          tmp.resize (n);                                               \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          is >> std::ws >> tmp;                                         \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 // This format must match a nonempty sequence of characters.
-#define BEGIN_CHAR_CLASS_CONVERSION() \
-  int width = elt->width; \
- \
-  std::string tmp; \
- \
-  do \
-    { \
-      if (! width) \
-        width = std::numeric_limits<int>::max (); \
- \
-      std::ostringstream buf; \
- \
-      std::string char_class = elt->char_class; \
- \
-      int c = std::istream::traits_type::eof (); \
- \
-      if (elt->type == '[') \
-        { \
-          int chars_read = 0; \
-          while (is && chars_read++ < width \
-                 && (c = is.get ()) != std::istream::traits_type::eof () \
-                 && char_class.find (c) != std::string::npos) \
-            buf << static_cast<char> (c); \
-        } \
-      else \
-        { \
-          int chars_read = 0; \
-          while (is && chars_read++ < width \
-                 && (c = is.get ()) != std::istream::traits_type::eof () \
-                 && char_class.find (c) == std::string::npos) \
-            buf << static_cast<char> (c); \
-        } \
- \
-      if (width == std::numeric_limits<int>::max () \
-          && c != std::istream::traits_type::eof ()) \
-        is.putback (c); \
- \
-      tmp = buf.str (); \
- \
-      if (tmp.empty ()) \
-        is.setstate (std::ios::failbit); \
-      else if (c == std::istream::traits_type::eof ()) \
-        is.clear (); \
- \
-    } \
+#define BEGIN_CHAR_CLASS_CONVERSION()                                   \
+  int width = elt->width;                                               \
+                                                                        \
+  std::string tmp;                                                      \
+                                                                        \
+  do                                                                    \
+    {                                                                   \
+     if (! width)                                                       \
+       width = std::numeric_limits<int>::max ();                        \
+                                                                        \
+     std::ostringstream buf;                                            \
+                                                                        \
+     std::string char_class = elt->char_class;                          \
+                                                                        \
+     int c = std::istream::traits_type::eof ();                         \
+                                                                        \
+     if (elt->type == '[')                                              \
+       {                                                                \
+        int chars_read = 0;                                             \
+        while (is && chars_read++ < width                               \
+               && (c = is.get ()) != std::istream::traits_type::eof ()  \
+                                    && char_class.find (c) != std::string::npos) \
+          buf << static_cast<char> (c);                                 \
+        }                                                               \
+     else                                                               \
+       {                                                                \
+         int chars_read = 0;                                            \
+         while (is && chars_read++ < width                              \
+                && (c = is.get ()) != std::istream::traits_type::eof () \
+                && char_class.find (c) == std::string::npos)            \
+           buf << static_cast<char> (c);                                \
+       }                                                                \
+                                                                        \
+     if (width == std::numeric_limits<int>::max ()                      \
+         && c != std::istream::traits_type::eof ())                     \
+       is.putback (c);                                                  \
+                                                                        \
+     tmp = buf.str ();                                                  \
+                                                                        \
+     if (tmp.empty ())                                                  \
+       is.setstate (std::ios::failbit);                                 \
+     else if (c == std::istream::traits_type::eof ())                   \
+       is.clear ();                                                     \
+                                                                        \
+    }                                                                   \
   while (0)
 
-#define FINISH_CHARACTER_CONVERSION() \
-  do \
-    { \
-      width = tmp.length (); \
- \
-      if (is) \
-        { \
-          int i = 0; \
- \
-          if (! discard) \
-            { \
-              conversion_count++; \
- \
-              while (i < width) \
-                { \
-                  if (data_index == max_size) \
-                    { \
-                      max_size *= 2; \
- \
-                      if (all_char_conv) \
-                        { \
-                          if (one_elt_size_spec) \
-                            mval.resize (1, max_size, 0.0); \
-                          else if (nr > 0) \
-                            mval.resize (nr, max_size / nr, 0.0); \
-                          else \
-                            panic_impossible (); \
-                        } \
-                      else if (nr > 0) \
-                        mval.resize (nr, max_size / nr, 0.0); \
-                      else \
-                        mval.resize (max_size, 1, 0.0); \
- \
-                      data = mval.fortran_vec (); \
-                    } \
- \
-                  data[data_index++] = tmp[i++]; \
-                } \
-            } \
-        } \
-    } \
+#define FINISH_CHARACTER_CONVERSION()                                   \
+  do                                                                    \
+    {                                                                   \
+      width = tmp.length ();                                            \
+                                                                        \
+      if (is)                                                           \
+        {                                                               \
+          int i = 0;                                                    \
+                                                                        \
+          if (! discard)                                                \
+            {                                                           \
+              conversion_count++;                                       \
+                                                                        \
+              while (i < width)                                         \
+                {                                                       \
+                  if (data_index == max_size)                           \
+                    {                                                   \
+                      max_size *= 2;                                    \
+                                                                        \
+                      if (all_char_conv)                                \
+                        {                                               \
+                          if (one_elt_size_spec)                        \
+                            mval.resize (1, max_size, 0.0);             \
+                          else if (nr > 0)                              \
+                            mval.resize (nr, max_size / nr, 0.0);       \
+                          else                                          \
+                            panic_impossible ();                        \
+                        }                                               \
+                      else if (nr > 0)                                  \
+                        mval.resize (nr, max_size / nr, 0.0);           \
+                      else                                              \
+                        mval.resize (max_size, 1, 0.0);                 \
+                                                                        \
+                      data = mval.fortran_vec ();                       \
+                    }                                                   \
+                                                                        \
+                  data[data_index++] = tmp[i++];                        \
+                }                                                       \
+            }                                                           \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 octave_value
@@ -6321,23 +6322,23 @@ typedef octave_value (*conv_fptr)
    bool swap, bool do_float_fmt_conv, bool do_NA_conv,
    octave::mach_info::float_format from_flt_fmt);
 
-#define TABLE_ELT(T, U, V, W) \
+#define TABLE_ELT(T, U, V, W)                                           \
   conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
 
-#define FILL_TABLE_ROW(T, V) \
-  TABLE_ELT (T, dt_int8, V, int8NDArray); \
-  TABLE_ELT (T, dt_uint8, V, uint8NDArray); \
-  TABLE_ELT (T, dt_int16, V, int16NDArray); \
-  TABLE_ELT (T, dt_uint16, V, uint16NDArray); \
-  TABLE_ELT (T, dt_int32, V, int32NDArray); \
-  TABLE_ELT (T, dt_uint32, V, uint32NDArray); \
-  TABLE_ELT (T, dt_int64, V, int64NDArray); \
-  TABLE_ELT (T, dt_uint64, V, uint64NDArray); \
-  TABLE_ELT (T, dt_single, V, FloatNDArray); \
-  TABLE_ELT (T, dt_double, V, NDArray); \
-  TABLE_ELT (T, dt_char, V, charNDArray); \
-  TABLE_ELT (T, dt_schar, V, charNDArray); \
-  TABLE_ELT (T, dt_uchar, V, charNDArray); \
+#define FILL_TABLE_ROW(T, V)                    \
+  TABLE_ELT (T, dt_int8, V, int8NDArray);       \
+  TABLE_ELT (T, dt_uint8, V, uint8NDArray);     \
+  TABLE_ELT (T, dt_int16, V, int16NDArray);     \
+  TABLE_ELT (T, dt_uint16, V, uint16NDArray);   \
+  TABLE_ELT (T, dt_int32, V, int32NDArray);     \
+  TABLE_ELT (T, dt_uint32, V, uint32NDArray);   \
+  TABLE_ELT (T, dt_int64, V, int64NDArray);     \
+  TABLE_ELT (T, dt_uint64, V, uint64NDArray);   \
+  TABLE_ELT (T, dt_single, V, FloatNDArray);    \
+  TABLE_ELT (T, dt_double, V, NDArray);         \
+  TABLE_ELT (T, dt_char, V, charNDArray);       \
+  TABLE_ELT (T, dt_schar, V, charNDArray);      \
+  TABLE_ELT (T, dt_uchar, V, charNDArray);      \
   TABLE_ELT (T, dt_logical, V, boolNDArray);
 
 octave_value
@@ -6930,12 +6931,12 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
   return nel;
 }
 
-#define INSTANTIATE_WRITE(T) \
-  template \
-  octave_idx_type \
+#define INSTANTIATE_WRITE(T)                                            \
+  template                                                              \
+  octave_idx_type                                                       \
   octave_stream::write (const Array<T>& data, octave_idx_type block_size, \
-                        oct_data_conv::data_type output_type, \
-                        octave_idx_type skip, \
+                        oct_data_conv::data_type output_type,           \
+                        octave_idx_type skip,                           \
                         octave::mach_info::float_format flt_fmt)
 
 INSTANTIATE_WRITE (octave_int8);

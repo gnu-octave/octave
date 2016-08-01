@@ -232,8 +232,7 @@ xpow (const Matrix& a, double b)
               atmp = a.inverse (mattype, info, rcond, 1);
 
               if (info == -1)
-                warning ("inverse: matrix singular to machine\
-precision, rcond = %g", rcond);
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
             atmp = a;
@@ -493,8 +492,7 @@ xpow (const ComplexMatrix& a, double b)
               atmp = a.inverse (mattype, info, rcond, 1);
 
               if (info == -1)
-                warning ("inverse: matrix singular to machine\
-precision, rcond = %g", rcond);
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
             atmp = a;
@@ -1639,8 +1637,7 @@ xpow (const FloatMatrix& a, float b)
               atmp = a.inverse (mattype, info, rcond, 1);
 
               if (info == -1)
-                warning ("inverse: matrix singular to machine\
-precision, rcond = %g", rcond);
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
             atmp = a;
@@ -1890,8 +1887,7 @@ xpow (const FloatComplexMatrix& a, float b)
               atmp = a.inverse (mattype, info, rcond, 1);
 
               if (info == -1)
-                warning ("inverse: matrix singular to machine\
-precision, rcond = %g", rcond);
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
             atmp = a;

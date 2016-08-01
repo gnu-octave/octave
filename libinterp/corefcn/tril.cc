@@ -237,8 +237,8 @@ do_trilu (const std::string& name,
         retval = do_trilu (arg.bool_array_value (), k, lower, pack);
       break;
 
-#define ARRAYCASE(TYP)       \
-      case btyp_ ## TYP: \
+#define ARRAYCASE(TYP)                                                  \
+      case btyp_ ## TYP:                                                \
         retval = do_trilu (arg.TYP ## _array_value (), k, lower, pack); \
         break
 

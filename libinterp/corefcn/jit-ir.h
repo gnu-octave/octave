@@ -102,7 +102,9 @@ class
 jit_factory
 {
   typedef std::list<jit_value *> value_list;
+
 public:
+
   ~jit_factory (void);
 
   const value_list& constants (void) const { return mconstants; }
@@ -116,6 +118,7 @@ public:
   }
 
 #define DECL_ARG(n) const ARG ## n& arg ## n
+
 #define JIT_CREATE(N)                                           \
   template <typename T, OCT_MAKE_DECL_LIST (typename, ARG, N)>  \
   T *create (OCT_MAKE_LIST (DECL_ARG, N))                       \
@@ -132,7 +135,9 @@ public:
 
 #undef JIT_CREATE
 #undef DECL_ARG
+
 private:
+
   void track_value (jit_value *v);
 
   value_list all_values;
@@ -340,6 +345,7 @@ public:
   }
 
 #define STASH_ARG(i) stash_argument (i, arg ## i);
+
 #define JIT_INSTRUCTION_CTOR(N)                                         \
   jit_instruction (OCT_MAKE_DECL_LIST (jit_value *, arg, N))            \
   : already_infered (N), marguments (N), mid (next_id ()), mparent (0)  \
@@ -1022,10 +1028,11 @@ class
 jit_terminator : public jit_instruction
 {
 public:
-#define JIT_TERMINATOR_CONST(N)                                         \
-  jit_terminator (size_t asuccessor_count,                              \
-                  OCT_MAKE_DECL_LIST (jit_value *, arg, N))             \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)),                     \
+
+#define JIT_TERMINATOR_CONST(N)                                 \
+  jit_terminator (size_t asuccessor_count,                      \
+                  OCT_MAKE_DECL_LIST (jit_value *, arg, N))     \
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)),             \
       malive (asuccessor_count, false) { }
 
   JIT_TERMINATOR_CONST (1)
@@ -1416,7 +1423,7 @@ jit_ir_walker
 public:
   virtual ~jit_ir_walker () { }
 
-#define JIT_METH(clname) \
+#define JIT_METH(clname)                        \
   virtual void visit (jit_ ## clname&) = 0;
 
   JIT_VISIT_IR_CLASSES;

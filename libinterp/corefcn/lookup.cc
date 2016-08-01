@@ -100,11 +100,11 @@ get_sort_mode (const Array<T>& array,
 // The question is, how should it behave w.r.t. the second argument's type.
 // We'd need a dispatch on two arguments.  Hmmm...
 
-#define INT_ARRAY_LOOKUP(TYPE) \
-  (table.is_ ## TYPE ## _type () && y.is_ ## TYPE ## _type ()) \
-    retval = do_numeric_lookup (table.TYPE ## _array_value (), \
-                                y.TYPE ## _array_value (), \
-                                left_inf, right_inf, \
+#define INT_ARRAY_LOOKUP(TYPE)                                  \
+  (table.is_ ## TYPE ## _type () && y.is_ ## TYPE ## _type ())  \
+    retval = do_numeric_lookup (table.TYPE ## _array_value (),  \
+                                y.TYPE ## _array_value (),      \
+                                left_inf, right_inf,            \
                                 match_idx, match_bool);
 template <typename ArrayT>
 static octave_value

@@ -197,15 +197,15 @@ inline void octave_quit (void)
 
 #else
 
-#define OCTAVE_QUIT \
-  do \
-    { \
-      if (octave_signal_caught) \
-        { \
-          octave_signal_caught = 0; \
-          octave_handle_signal (); \
-        } \
-    } \
+#define OCTAVE_QUIT                             \
+  do                                            \
+    {                                           \
+      if (octave_signal_caught)                 \
+        {                                       \
+          octave_signal_caught = 0;             \
+          octave_handle_signal ();              \
+        }                                       \
+    }                                           \
   while (0)
 #endif
 
@@ -225,72 +225,72 @@ inline void octave_quit (void)
    so that you can perform extra clean up operations before throwing
    the interrupt exception.  */
 
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1; \
-  octave_rethrow_exception (); \
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE     \
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1;        \
+  octave_rethrow_exception ();                          \
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
 
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1 \
-  do \
-    { \
-      octave_jmp_buf saved_context; \
- \
-      octave_save_current_context (saved_context); \
- \
-      if (octave_set_current_context) \
-        { \
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1           \
+  do                                                            \
+    {                                                           \
+      octave_jmp_buf saved_context;                             \
+                                                                \
+      octave_save_current_context (saved_context);              \
+                                                                \
+      if (octave_set_current_context)                           \
+        {                                                       \
           octave_restore_current_context (saved_context)
 
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2 \
-        } \
-      else \
-        { \
-          octave_interrupt_immediately++
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2   \
+  }                                                     \
+      else                                              \
+        {                                               \
+  octave_interrupt_immediately++
 
-#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
-          octave_interrupt_immediately--; \
-          octave_restore_current_context (saved_context); \
-        } \
-    } \
+#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE       \
+  octave_interrupt_immediately--;                       \
+  octave_restore_current_context (saved_context);       \
+}                                                       \
+}                                                       \
   while (0)
 
 #if defined (__cplusplus)
 
-#define BEGIN_INTERRUPT_WITH_EXCEPTIONS \
+#define BEGIN_INTERRUPT_WITH_EXCEPTIONS                                 \
   sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
- \
-  try \
-    { \
+                                                                        \
+  try                                                                   \
+    {                                                                   \
       octave_interrupt_immediately = 0;
 
-#define END_INTERRUPT_WITH_EXCEPTIONS \
-    } \
-  catch (const octave_interrupt_exception&) \
-    { \
+#define END_INTERRUPT_WITH_EXCEPTIONS                                   \
+    }                                                                   \
+  catch (const octave_interrupt_exception&)                             \
+    {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_jump_to_enclosing_context (); \
-    } \
-  catch (const octave_execution_exception&) \
-    { \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+  catch (const octave_execution_exception&)                             \
+    {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_exec_exception; \
-      octave_jump_to_enclosing_context (); \
-    } \
-  catch (const std::bad_alloc&) \
-    { \
+      octave_exception_state = octave_exec_exception;                   \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+  catch (const std::bad_alloc&)                                         \
+    {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_alloc_exception; \
-      octave_jump_to_enclosing_context (); \
-    } \
-  catch (const octave_exit_exception& ex) \
-    { \
+      octave_exception_state = octave_alloc_exception;                  \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+  catch (const octave_exit_exception& ex)                               \
+    {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_quit_exception; \
-      octave_exit_exception_status = ex.exit_status (); \
-      octave_exit_exception_safe_to_return = ex.safe_to_return (); \
-      octave_jump_to_enclosing_context (); \
-    } \
- \
+      octave_exception_state = octave_quit_exception;                   \
+      octave_exit_exception_status = ex.exit_status ();                 \
+      octave_exit_exception_safe_to_return = ex.safe_to_return ();      \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+                                                                        \
   octave_interrupt_immediately = saved_octave_interrupt_immediately
 #endif
 

@@ -206,9 +206,9 @@ octave_char_matrix::map (unary_mapper_t umap) const
 
   switch (umap)
     {
-#define STRING_MAPPER(UMAP,FCN,TYPE) \
-    case umap_ ## UMAP: \
-      return octave_value (matrix.map<TYPE, int (&) (int)> (FCN))
+#define STRING_MAPPER(UMAP,FCN,TYPE)                                    \
+      case umap_ ## UMAP:                                               \
+        return octave_value (matrix.map<TYPE, int (&) (int)> (FCN))
 
     STRING_MAPPER (xisalnum, std::isalnum, bool);
     STRING_MAPPER (xisalpha, std::isalpha, bool);

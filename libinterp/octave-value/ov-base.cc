@@ -435,33 +435,33 @@ octave_base_value::print_info (std::ostream& os,
   os << "no info for type: " << type_name () << "\n";
 }
 
-#define INT_CONV_METHOD(T, F) \
-  T \
+#define INT_CONV_METHOD(T, F)                                           \
+  T                                                                     \
   octave_base_value::F ## _value (bool require_int, bool frc_str_conv) const \
-  { \
-    T retval = 0; \
- \
-    double d = 0.0; \
- \
-    try \
-      { \
-        d = double_value (frc_str_conv); \
-      } \
-    catch (octave_execution_exception& e) \
-      { \
+  {                                                                     \
+    T retval = 0;                                                       \
+                                                                        \
+    double d = 0.0;                                                     \
+                                                                        \
+    try                                                                 \
+      {                                                                 \
+        d = double_value (frc_str_conv);                                \
+      }                                                                 \
+    catch (octave_execution_exception& e)                               \
+      {                                                                 \
         err_wrong_type_arg (e, "octave_base_value::" #F "_value ()", type_name ()); \
-      } \
- \
-    if (require_int && octave::math::x_nint (d) != d) \
-      error_with_cfn ("conversion of %g to " #T " value failed", d); \
-    else if (d < std::numeric_limits<T>::min ()) \
-      retval = std::numeric_limits<T>::min (); \
-    else if (d > std::numeric_limits<T>::max ()) \
-      retval = std::numeric_limits<T>::max (); \
-    else \
-      retval = static_cast<T> (octave::math::fix (d)); \
- \
-    return retval; \
+      }                                                                 \
+                                                                        \
+    if (require_int && octave::math::x_nint (d) != d)                   \
+      error_with_cfn ("conversion of %g to " #T " value failed", d);    \
+    else if (d < std::numeric_limits<T>::min ())                        \
+      retval = std::numeric_limits<T>::min ();                          \
+    else if (d > std::numeric_limits<T>::max ())                        \
+      retval = std::numeric_limits<T>::max ();                          \
+    else                                                                \
+      retval = static_cast<T> (octave::math::fix (d));                  \
+                                                                        \
+    return retval;                                                      \
   }
 
 INT_CONV_METHOD (short int, short)

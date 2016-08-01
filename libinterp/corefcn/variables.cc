@@ -483,7 +483,7 @@ symbol_exist (const std::string& name, const std::string& type)
   return 0;
 }
 
-#define GET_IDX(LEN) \
+#define GET_IDX(LEN)                                                    \
   static_cast<int> ((LEN-1) * static_cast<double> (rand ()) / RAND_MAX)
 
 std::string
@@ -2316,12 +2316,12 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
     }
 }
 
-#define CLEAR_OPTION_ERROR(cond) \
-  do \
-    { \
-      if (cond) \
-        print_usage (); \
-    } \
+#define CLEAR_OPTION_ERROR(cond)                \
+  do                                            \
+    {                                           \
+      if (cond)                                 \
+        print_usage ();                         \
+    }                                           \
   while (0)
 
 DEFUN (clear, args, ,

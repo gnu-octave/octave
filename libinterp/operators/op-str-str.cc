@@ -47,33 +47,38 @@ DEFUNOP (transpose, char_matrix_str)
 
 // string by string ops.
 
-#define DEFCHARNDBINOP_FN(name, op, t1, t2, e1, e2, f)  \
-  static octave_value \
-  CONCAT2(oct_binop_, name) (const octave_base_value& a1, const octave_base_value& a2) \
-  { \
-    dim_vector a1_dims = a1.dims (); \
-    dim_vector a2_dims = a2.dims (); \
- \
-    bool a1_is_scalar = a1_dims.all_ones (); \
-    bool a2_is_scalar = a2_dims.all_ones (); \
- \
-    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1); \
-    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2); \
- \
-    if (a1_is_scalar) \
-      { \
-        if (a2_is_scalar) \
-          return octave_value ((v1.e1 ## _value ())(0) op (v2.e2 ## _value ())(0)); \
-        else \
-          return octave_value (f ((v1.e1 ## _value ())(0), v2.e2 ## _value ())); \
-      } \
-    else \
-      { \
-        if (a2_is_scalar) \
-          return octave_value (f (v1.e1 ## _value (), (v2.e2 ## _value ())(0))); \
-        else \
-          return octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
-      } \
+#define DEFCHARNDBINOP_FN(name, op, t1, t2, e1, e2, f)                  \
+  static octave_value                                                   \
+  CONCAT2(oct_binop_, name) (const octave_base_value& a1,               \
+                             const octave_base_value& a2)               \
+  {                                                                     \
+    dim_vector a1_dims = a1.dims ();                                    \
+    dim_vector a2_dims = a2.dims ();                                    \
+                                                                        \
+    bool a1_is_scalar = a1_dims.all_ones ();                            \
+    bool a2_is_scalar = a2_dims.all_ones ();                            \
+                                                                        \
+    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1);  \
+    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2);  \
+                                                                        \
+    if (a1_is_scalar)                                                   \
+      {                                                                 \
+        if (a2_is_scalar)                                               \
+          return octave_value ((v1.e1 ## _value ())(0)                  \
+                               op (v2.e2 ## _value ())(0));             \
+        else                                                            \
+          return octave_value (f ((v1.e1 ## _value ())(0),              \
+                                  v2.e2 ## _value ()));                 \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        if (a2_is_scalar)                                               \
+          return octave_value (f (v1.e1 ## _value (),                   \
+                                  (v2.e2 ## _value ())(0)));            \
+        else                                                            \
+          return octave_value (f (v1.e1 ## _value (),                   \
+                                  v2.e2 ## _value ()));                 \
+      }                                                                 \
   }
 
 DEFCHARNDBINOP_FN (lt, <, char_matrix_str, char_matrix_str, char_array,

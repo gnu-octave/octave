@@ -160,16 +160,16 @@ octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
   return octave_value (retval, is_sq_string () ? '\'' : '"');
 }
 
-#define CHAR_MATRIX_CONV(T, INIT, TNAME, FCN) \
-  T retval INIT; \
- \
-  if (! force_string_conv) \
-    err_invalid_conversion ("string", TNAME); \
- \
-  warn_implicit_conversion ("Octave:str-to-num", "string", TNAME); \
- \
-  retval = octave_char_matrix::FCN (); \
- \
+#define CHAR_MATRIX_CONV(T, INIT, TNAME, FCN)                           \
+  T retval INIT;                                                        \
+                                                                        \
+  if (! force_string_conv)                                              \
+    err_invalid_conversion ("string", TNAME);                           \
+                                                                        \
+  warn_implicit_conversion ("Octave:str-to-num", "string", TNAME);      \
+                                                                        \
+  retval = octave_char_matrix::FCN ();                                  \
+                                                                        \
   return retval
 
 double

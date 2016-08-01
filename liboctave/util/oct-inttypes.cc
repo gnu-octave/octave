@@ -36,9 +36,9 @@ template <typename T>
 const octave_int<T> octave_int<T>::one (static_cast<T> (1));
 
 // define type names.
-#define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME) \
-  template <> \
-  OCTAVE_API const char * \
+#define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME)     \
+  template <>                                           \
+  OCTAVE_API const char *                               \
   octave_int<TYPE>::type_name () { return TYPENAME; }
 
 DECLARE_OCTAVE_INT_TYPENAME (int8_t, "int8")
@@ -79,20 +79,20 @@ octave_int_base<T>::convert_real (const S& value)
     }
 }
 
-#define INSTANTIATE_CONVERT_REAL_1(T, S) \
-  template \
-  OCTAVE_API \
-  T \
+#define INSTANTIATE_CONVERT_REAL_1(T, S)        \
+  template                                      \
+  OCTAVE_API                                    \
+  T                                             \
   octave_int_base<T>::convert_real (const S&)
 
-#define INSTANTIATE_CONVERT_REAL(S) \
-  INSTANTIATE_CONVERT_REAL_1 (int8_t, S); \
-  INSTANTIATE_CONVERT_REAL_1 (uint8_t, S); \
-  INSTANTIATE_CONVERT_REAL_1 (int16_t, S); \
-  INSTANTIATE_CONVERT_REAL_1 (uint16_t, S); \
-  INSTANTIATE_CONVERT_REAL_1 (int32_t, S); \
-  INSTANTIATE_CONVERT_REAL_1 (uint32_t, S); \
-  INSTANTIATE_CONVERT_REAL_1 (int64_t, S); \
+#define INSTANTIATE_CONVERT_REAL(S)             \
+  INSTANTIATE_CONVERT_REAL_1 (int8_t, S);       \
+  INSTANTIATE_CONVERT_REAL_1 (uint8_t, S);      \
+  INSTANTIATE_CONVERT_REAL_1 (int16_t, S);      \
+  INSTANTIATE_CONVERT_REAL_1 (uint16_t, S);     \
+  INSTANTIATE_CONVERT_REAL_1 (int32_t, S);      \
+  INSTANTIATE_CONVERT_REAL_1 (uint32_t, S);     \
+  INSTANTIATE_CONVERT_REAL_1 (int64_t, S);      \
   INSTANTIATE_CONVERT_REAL_1 (uint64_t, S)
 
 INSTANTIATE_CONVERT_REAL (double);
@@ -105,50 +105,50 @@ INSTANTIATE_CONVERT_REAL (long double);
 
 #if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 
-#define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T) \
-  template <typename xop> \
-  bool \
-  octave_int_cmp_op::external_mop (double x, T y) \
-  { \
-     unsigned int oldcw = octave_begin_long_double_rounding (); \
-   \
-     bool retval = xop::op (static_cast<long double> (x), \
-                            static_cast<long double> (y)); \
-   \
-     octave_end_long_double_rounding (oldcw); \
-   \
-     return retval; \
-  } \
-   \
-  template <typename xop> \
-  bool \
-  octave_int_cmp_op::external_mop (T x, double y) \
-  { \
-    unsigned int oldcw = octave_begin_long_double_rounding (); \
-   \
-    bool retval = xop::op (static_cast<long double> (x), \
-                           static_cast<long double> (y)); \
-   \
-    octave_end_long_double_rounding (oldcw); \
-   \
-    return retval; \
+#define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T)           \
+  template <typename xop>                                       \
+  bool                                                          \
+  octave_int_cmp_op::external_mop (double x, T y)               \
+  {                                                             \
+    unsigned int oldcw = octave_begin_long_double_rounding ();  \
+                                                                \
+    bool retval = xop::op (static_cast<long double> (x),        \
+                           static_cast<long double> (y));       \
+                                                                \
+    octave_end_long_double_rounding (oldcw);                    \
+                                                                \
+    return retval;                                              \
+  }                                                             \
+                                                                \
+  template <typename xop>                                       \
+  bool                                                          \
+  octave_int_cmp_op::external_mop (T x, double y)               \
+  {                                                             \
+    unsigned int oldcw = octave_begin_long_double_rounding ();  \
+                                                                \
+    bool retval = xop::op (static_cast<long double> (x),        \
+                           static_cast<long double> (y));       \
+                                                                \
+    octave_end_long_double_rounding (oldcw);                    \
+                                                                \
+    return retval;                                              \
   }
 
 DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (int64_t)
 DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (uint64_t)
 
-#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP, T) \
-  template OCTAVE_API bool \
-  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (double, T); \
-  template OCTAVE_API bool \
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP, T)               \
+  template OCTAVE_API bool                                              \
+  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (double, T);   \
+  template OCTAVE_API bool                                              \
   octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (T, double)
 
-#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS(T) \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (lt, T); \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (le, T); \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (gt, T); \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ge, T); \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (eq, T); \
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS(T)  \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (lt, T);   \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (le, T);   \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (gt, T);   \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ge, T);   \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (eq, T);   \
   INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ne, T)
 
 INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (int64_t);
@@ -186,35 +186,35 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
 // Similarly, the conversion from the 64-bit integer type to long double
 // must also occur in long double rounding mode.
 
-#define OCTAVE_LONG_DOUBLE_OP(T, OP, NAME) \
-  T \
-  external_double_ ## T ## _ ## NAME (double x, T y) \
-  { \
-    unsigned int oldcw = octave_begin_long_double_rounding (); \
- \
-    T retval = T (x OP static_cast<long double> (y.value ())); \
- \
-    octave_end_long_double_rounding (oldcw); \
- \
-    return retval; \
-  } \
- \
-  T \
-  external_ ## T ## _double_ ## NAME (T x, double y) \
-  { \
-    unsigned int oldcw = octave_begin_long_double_rounding (); \
- \
-    T retval = T (static_cast<long double> (x.value ()) OP y); \
- \
-    octave_end_long_double_rounding (oldcw); \
- \
-    return retval; \
+#define OCTAVE_LONG_DOUBLE_OP(T, OP, NAME)                      \
+  T                                                             \
+  external_double_ ## T ## _ ## NAME (double x, T y)            \
+  {                                                             \
+    unsigned int oldcw = octave_begin_long_double_rounding ();  \
+                                                                \
+    T retval = T (x OP static_cast<long double> (y.value ()));  \
+                                                                \
+    octave_end_long_double_rounding (oldcw);                    \
+                                                                \
+    return retval;                                              \
+  }                                                             \
+                                                                \
+  T                                                             \
+  external_ ## T ## _double_ ## NAME (T x, double y)            \
+  {                                                             \
+    unsigned int oldcw = octave_begin_long_double_rounding ();  \
+                                                                \
+    T retval = T (static_cast<long double> (x.value ()) OP y);  \
+                                                                \
+    octave_end_long_double_rounding (oldcw);                    \
+                                                                \
+    return retval;                                              \
   }
 
-#define OCTAVE_LONG_DOUBLE_OPS(T) \
-  OCTAVE_LONG_DOUBLE_OP (T, +, add); \
-  OCTAVE_LONG_DOUBLE_OP (T, -, sub); \
-  OCTAVE_LONG_DOUBLE_OP (T, *, mul); \
+#define OCTAVE_LONG_DOUBLE_OPS(T)               \
+  OCTAVE_LONG_DOUBLE_OP (T, +, add);            \
+  OCTAVE_LONG_DOUBLE_OP (T, -, sub);            \
+  OCTAVE_LONG_DOUBLE_OP (T, *, mul);            \
   OCTAVE_LONG_DOUBLE_OP (T, /, div)
 
 OCTAVE_LONG_DOUBLE_OPS(octave_int64);
@@ -280,12 +280,12 @@ public:
   typedef xop op;
 };
 
-#define DEFINE_REVERTED_OPERATOR(OP1,OP2) \
-  template <> \
-  class rev_op<octave_int_cmp_op::OP1> \
-  { \
-  public: \
-    typedef octave_int_cmp_op::OP2 op; \
+#define DEFINE_REVERTED_OPERATOR(OP1,OP2)       \
+  template <>                                   \
+  class rev_op<octave_int_cmp_op::OP1>          \
+  {                                             \
+  public:                                       \
+    typedef octave_int_cmp_op::OP2 op;          \
   }
 
 DEFINE_REVERTED_OPERATOR(lt,gt);
@@ -441,14 +441,14 @@ overflow:
 
 }
 
-#define INT_DOUBLE_BINOP_DECL(OP,SUFFIX) \
-  template <> \
-  OCTAVE_API octave_ ## SUFFIX \
+#define INT_DOUBLE_BINOP_DECL(OP,SUFFIX)                        \
+  template <>                                                   \
+  OCTAVE_API octave_ ## SUFFIX                                  \
   operator OP (const octave_ ## SUFFIX & x, const double& y)
 
-#define DOUBLE_INT_BINOP_DECL(OP,SUFFIX) \
-  template <> \
-  OCTAVE_API octave_ ## SUFFIX \
+#define DOUBLE_INT_BINOP_DECL(OP,SUFFIX)                        \
+  template <>                                                   \
+  OCTAVE_API octave_ ## SUFFIX                                  \
   operator OP (const double& x, const octave_ ## SUFFIX & y)
 
 INT_DOUBLE_BINOP_DECL (+, uint64)
@@ -679,14 +679,14 @@ INT_DOUBLE_BINOP_DECL (/, int64)
     return x * (1.0/y);
 }
 
-#define INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP,T1,T2) \
-  template OCTAVE_API bool \
+#define INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP,T1,T2)                      \
+  template OCTAVE_API bool                                              \
   octave_int_cmp_op::emulate_mop<octave_int_cmp_op::OP> (T1 x, T2 y)
 
-#define INSTANTIATE_INT64_DOUBLE_CMP_OP(OP) \
-  INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, double, int64_t); \
-  INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, double, uint64_t); \
-  INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, int64_t, double); \
+#define INSTANTIATE_INT64_DOUBLE_CMP_OP(OP)                     \
+  INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, double, int64_t);        \
+  INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, double, uint64_t);       \
+  INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, int64_t, double);        \
   INSTANTIATE_INT64_DOUBLE_CMP_OP0(OP, uint64_t, double)
 
 INSTANTIATE_INT64_DOUBLE_CMP_OP(lt);
@@ -785,16 +785,16 @@ powf (const octave_int<T>& a, const float& b)
           : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
 }
 
-#define INSTANTIATE_INTTYPE(T) \
-  template class OCTAVE_API octave_int<T>; \
+#define INSTANTIATE_INTTYPE(T)                                          \
+  template class OCTAVE_API octave_int<T>;                              \
   template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> pow (const double&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const double&); \
-  template OCTAVE_API octave_int<T> pow (const float&, const octave_int<T>&);  \
-  template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const float&);  \
+  template OCTAVE_API octave_int<T> pow (const float&, const octave_int<T>&); \
+  template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const float&); \
   template OCTAVE_API octave_int<T> powf (const float&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> powf (const octave_int<T>&, const float&); \
-  template OCTAVE_API octave_int<T> \
+  template OCTAVE_API octave_int<T>                                     \
   bitshift (const octave_int<T>&, int, const octave_int<T>&);
 
 INSTANTIATE_INTTYPE (int8_t);

@@ -292,9 +292,9 @@ octave_float_scalar::map (unary_mapper_t umap) const
     case umap_conj:
       return scalar;
 
-#define SCALAR_MAPPER(UMAP, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (FCN (scalar))
+#define SCALAR_MAPPER(UMAP, FCN)                \
+      case umap_ ## UMAP:                       \
+        return octave_value (FCN (scalar))
 
       SCALAR_MAPPER (abs, ::fabsf);
       SCALAR_MAPPER (acos, octave::math::rc_acos);

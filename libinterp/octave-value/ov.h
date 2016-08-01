@@ -1323,7 +1323,10 @@ public:
   void dump (std::ostream& os) const { rep->dump (os); }
 
 #define MAPPER_FORWARD(F) \
-  octave_value F (void) const { return rep->map (octave_base_value::umap_ ## F); }
+  octave_value F (void) const                           \
+  {                                                     \
+    return rep->map (octave_base_value::umap_ ## F);    \
+  }
 
   MAPPER_FORWARD (abs)
   MAPPER_FORWARD (acos)
@@ -1445,22 +1448,22 @@ extern OCTINTERP_API octave_value
 do_binary_op (octave_value::compound_binary_op op,
               const octave_value& a, const octave_value& b);
 
-#define OV_UNOP_FN(name) \
-  inline octave_value \
-  name (const octave_value& a) \
-  { \
+#define OV_UNOP_FN(name)                        \
+  inline octave_value                           \
+  name (const octave_value& a)                  \
+  {                                             \
     return do_unary_op (octave_value::name, a); \
   }
 
-#define OV_UNOP_OP(name, op) \
-  inline octave_value \
-  operator op (const octave_value& a) \
-  { \
-    return name (a); \
+#define OV_UNOP_OP(name, op)                    \
+  inline octave_value                           \
+  operator op (const octave_value& a)           \
+  {                                             \
+    return name (a);                            \
   }
 
-#define OV_UNOP_FN_OP(name, op) \
-  OV_UNOP_FN (name) \
+#define OV_UNOP_FN_OP(name, op)                 \
+  OV_UNOP_FN (name)                             \
   OV_UNOP_OP (name, op)
 
 OV_UNOP_FN_OP (op_not, !)
@@ -1475,22 +1478,22 @@ OV_UNOP_FN (op_hermitian)
 //   incr
 //   decr
 
-#define OV_BINOP_FN(name) \
-  inline octave_value \
+#define OV_BINOP_FN(name)                               \
+  inline octave_value                                   \
   name (const octave_value& a1, const octave_value& a2) \
-  { \
-    return do_binary_op (octave_value::name, a1, a2); \
+  {                                                     \
+    return do_binary_op (octave_value::name, a1, a2);   \
   }
 
-#define OV_BINOP_OP(name, op) \
-  inline octave_value \
-  operator op (const octave_value& a1, const octave_value& a2) \
-  { \
-    return name (a1, a2); \
+#define OV_BINOP_OP(name, op)                                   \
+  inline octave_value                                           \
+  operator op (const octave_value& a1, const octave_value& a2)  \
+  {                                                             \
+    return name (a1, a2);                                       \
   }
 
-#define OV_BINOP_FN_OP(name, op) \
-  OV_BINOP_FN (name) \
+#define OV_BINOP_FN_OP(name, op)                \
+  OV_BINOP_FN (name)                            \
   OV_BINOP_OP (name, op)
 
 OV_BINOP_FN_OP (op_add, +)
@@ -1517,11 +1520,11 @@ OV_BINOP_FN (op_el_or)
 
 OV_BINOP_FN (op_struct_ref)
 
-#define OV_COMP_BINOP_FN(name) \
-  inline octave_value \
+#define OV_COMP_BINOP_FN(name)                          \
+  inline octave_value                                   \
   name (const octave_value& a1, const octave_value& a2) \
-  { \
-    return do_binary_op (octave_value::name, a1, a2); \
+  {                                                     \
+    return do_binary_op (octave_value::name, a1, a2);   \
   }
 
 OV_COMP_BINOP_FN (op_trans_mul)
@@ -1536,10 +1539,12 @@ template <typename Value>
 inline Value octave_value_extract (const octave_value&)
 { assert (false); }
 
-#define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX) \
-template <> \
-inline VALUE octave_value_extract<VALUE> (const octave_value& v) \
-  { return v.MPREFIX ## _value (); }
+#define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX)                              \
+  template <>                                                           \
+  inline VALUE octave_value_extract<VALUE> (const octave_value& v)      \
+  {                                                                     \
+    return v.MPREFIX ## _value ();                                      \
+  }
 
 DEF_VALUE_EXTRACTOR (double, scalar)
 DEF_VALUE_EXTRACTOR (float, float_scalar)
@@ -1599,10 +1604,13 @@ DEF_VALUE_EXTRACTOR (SparseComplexMatrix, sparse_complex_matrix)
 DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
 #undef DEF_VALUE_EXTRACTOR
 
-#define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL) \
-template <> \
-inline VALUE octave_value_extract<VALUE> (const octave_value&) \
-  { assert (false); return DEFVAL; }
+#define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL)                         \
+  template <>                                                           \
+  inline VALUE octave_value_extract<VALUE> (const octave_value&)        \
+  {                                                                     \
+    assert (false);                                                     \
+    return DEFVAL;                                                      \
+  }
 
 DEF_DUMMY_VALUE_EXTRACTOR (char, 0)
 DEF_DUMMY_VALUE_EXTRACTOR (octave_value, octave_value ())

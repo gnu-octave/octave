@@ -91,7 +91,7 @@ w32_get_octave_home (void)
 // Find the directory where the octave binary is supposed to be
 // installed.
 
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
 static const char dir_sep_char = '\\';
 #else

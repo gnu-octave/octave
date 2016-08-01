@@ -945,14 +945,14 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   //        is supported anyways so there is another double for loop across
   //        height and width to convert all of the input data to GLfloat.
 
-#define CONVERT_CDATA_1(ARRAY_T, VAL_FN, IS_REAL) \
-  do \
-    { \
-      ARRAY_T tmp = cdata. VAL_FN ## array_value (); \
- \
-      convert_cdata_1 (is_scaled, IS_REAL, clim_0, clim_1, cmapv, \
-                       tmp.data (), lda, nc, av); \
-    } \
+#define CONVERT_CDATA_1(ARRAY_T, VAL_FN, IS_REAL)                       \
+  do                                                                    \
+    {                                                                   \
+      ARRAY_T tmp = cdata. VAL_FN ## array_value ();                    \
+                                                                        \
+      convert_cdata_1 (is_scaled, IS_REAL, clim_0, clim_1, cmapv,       \
+                       tmp.data (), lda, nc, av);                       \
+    }                                                                   \
   while (0)
 
   if (cdata.is_uint8_type ())
@@ -1461,29 +1461,30 @@ array_property::is_equal (const octave_value& v) const
       if (data.dims () == v.dims ())
         {
 
-#define CHECK_ARRAY_EQUAL(T,F,A) \
-            { \
-              if (data.numel () == 1) \
-                return data.F ## scalar_value () == \
-                  v.F ## scalar_value (); \
-              else  \
-                { \
-                  /* Keep copy of array_value to allow sparse/bool arrays */ \
-                  /* that are converted, to not be deallocated early */ \
-                  const A m1 = data.F ## array_value (); \
-                  const T* d1 = m1.data (); \
-                  const A m2 = v.F ## array_value (); \
-                  const T* d2 = m2.data ();\
-                  \
-                  bool flag = true; \
-                  \
-                  for (int i = 0; flag && i < data.numel (); i++) \
-                    if (d1[i] != d2[i]) \
-                      flag = false; \
-                  \
-                  return flag; \
-                } \
-            }
+#define CHECK_ARRAY_EQUAL(T, F, A)                                      \
+          {                                                             \
+            if (data.numel () == 1)                                     \
+              return data.F ## scalar_value () ==                       \
+                v.F ## scalar_value ();                                 \
+            else                                                        \
+              {                                                         \
+                /* Keep copy of array_value to allow */                 \
+                /* sparse/bool arrays that are converted, to */         \
+                /* not be deallocated early */                          \
+                const A m1 = data.F ## array_value ();                  \
+                const T* d1 = m1.data ();                               \
+                const A m2 = v.F ## array_value ();                     \
+                const T* d2 = m2.data ();                               \
+                                                                        \
+                bool flag = true;                                       \
+                                                                        \
+                for (int i = 0; flag && i < data.numel (); i++)         \
+                  if (d1[i] != d2[i])                                   \
+                    flag = false;                                       \
+                                                                        \
+                return flag;                                            \
+              }                                                         \
+          }
 
           if (data.is_double_type () || data.is_bool_type ())
             CHECK_ARRAY_EQUAL (double, , NDArray)
@@ -7138,29 +7139,29 @@ axes::update_axis_limits (const std::string& axis_type,
   Matrix limits;
   double val;
 
-#define FIX_LIMITS \
-  if (limits.numel () == 4) \
-    { \
-      val = limits(0); \
-      if (octave::math::finite (val)) \
-        min_val = val; \
-      val = limits(1); \
-      if (octave::math::finite (val)) \
-        max_val = val; \
-      val = limits(2); \
-      if (octave::math::finite (val)) \
-        min_pos = val; \
-      val = limits(3); \
-      if (octave::math::finite (val)) \
-        max_neg = val; \
-    } \
-  else \
-    { \
-      limits.resize (4, 1); \
-      limits(0) = min_val; \
-      limits(1) = max_val; \
-      limits(2) = min_pos; \
-      limits(3) = max_neg; \
+#define FIX_LIMITS                              \
+  if (limits.numel () == 4)                     \
+    {                                           \
+      val = limits(0);                          \
+      if (octave::math::finite (val))           \
+        min_val = val;                          \
+      val = limits(1);                          \
+      if (octave::math::finite (val))           \
+        max_val = val;                          \
+      val = limits(2);                          \
+      if (octave::math::finite (val))           \
+        min_pos = val;                          \
+      val = limits(3);                          \
+      if (octave::math::finite (val))           \
+        max_neg = val;                          \
+    }                                           \
+  else                                          \
+    {                                           \
+      limits.resize (4, 1);                     \
+      limits(0) = min_val;                      \
+      limits(1) = max_val;                      \
+      limits(2) = min_pos;                      \
+      limits(3) = max_neg;                      \
     }
 
   if (axis_type == "xdata" || axis_type == "xscale"
@@ -10446,13 +10447,13 @@ Undocumented internal function.
   return retval;
 }
 
-#define GO_BODY(TYPE) \
-  gh_manager::auto_lock guard; \
- \
-  if (args.length () == 0) \
-    print_usage (); \
- \
-  return octave_value (make_graphics_object (#TYPE, false, args)); \
+#define GO_BODY(TYPE)                                                   \
+  gh_manager::auto_lock guard;                                          \
+                                                                        \
+  if (args.length () == 0)                                              \
+    print_usage ();                                                     \
+                                                                        \
+  return octave_value (make_graphics_object (#TYPE, false, args));      \
 
 int
 calc_dimensions (const graphics_object& go)

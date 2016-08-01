@@ -58,13 +58,13 @@ Undocumented internal function.
   ColumnVector dist (nxi);
   double *pdist = dist.fortran_vec ();
 
-#define DIST(dd, y, yi, m) \
-  dd = 0.0; \
-  for (octave_idx_type k = 0; k < m; k++) \
-    { \
-      double yd = y[k] - yi[k]; \
-      dd += yd * yd; \
-    } \
+#define DIST(dd, y, yi, m)                      \
+  dd = 0.0;                                     \
+  for (octave_idx_type k = 0; k < m; k++)       \
+    {                                           \
+      double yd = y[k] - yi[k];                 \
+      dd += yd * yd;                            \
+    }                                           \
   dd = sqrt (dd)
 
   const double *pxi = xi.fortran_vec ();

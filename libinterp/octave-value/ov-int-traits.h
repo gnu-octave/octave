@@ -43,13 +43,13 @@ public:
   typedef T scalar_type;
 };
 
-#define OCTAVE_VALUE_INT_TRAITS(MT, ST) \
-  template <> \
-  class \
-  octave_value_int_traits<MT> \
-  { \
-  public: \
-    typedef ST scalar_type; \
+#define OCTAVE_VALUE_INT_TRAITS(MT, ST)         \
+  template <>                                   \
+  class                                         \
+  octave_value_int_traits<MT>                   \
+  {                                             \
+  public:                                       \
+    typedef ST scalar_type;                     \
   }
 
 OCTAVE_VALUE_INT_TRAITS(int8NDArray, octave_int8_scalar);

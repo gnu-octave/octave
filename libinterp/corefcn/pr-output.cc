@@ -1417,40 +1417,40 @@ union equiv
   unsigned char i[sizeof (double)];
 };
 
-#define PRINT_CHAR_BITS(os, c) \
-  do \
-    { \
-      unsigned char ctmp = c; \
-      char stmp[9]; \
-      stmp[0] = (ctmp & 0x80) ? '1' : '0'; \
-      stmp[1] = (ctmp & 0x40) ? '1' : '0'; \
-      stmp[2] = (ctmp & 0x20) ? '1' : '0'; \
-      stmp[3] = (ctmp & 0x10) ? '1' : '0'; \
-      stmp[4] = (ctmp & 0x08) ? '1' : '0'; \
-      stmp[5] = (ctmp & 0x04) ? '1' : '0'; \
-      stmp[6] = (ctmp & 0x02) ? '1' : '0'; \
-      stmp[7] = (ctmp & 0x01) ? '1' : '0'; \
-      stmp[8] = '\0'; \
-      os << stmp; \
-    } \
+#define PRINT_CHAR_BITS(os, c)                  \
+  do                                            \
+    {                                           \
+      unsigned char ctmp = c;                   \
+      char stmp[9];                             \
+      stmp[0] = (ctmp & 0x80) ? '1' : '0';      \
+      stmp[1] = (ctmp & 0x40) ? '1' : '0';      \
+      stmp[2] = (ctmp & 0x20) ? '1' : '0';      \
+      stmp[3] = (ctmp & 0x10) ? '1' : '0';      \
+      stmp[4] = (ctmp & 0x08) ? '1' : '0';      \
+      stmp[5] = (ctmp & 0x04) ? '1' : '0';      \
+      stmp[6] = (ctmp & 0x02) ? '1' : '0';      \
+      stmp[7] = (ctmp & 0x01) ? '1' : '0';      \
+      stmp[8] = '\0';                           \
+      os << stmp;                               \
+    }                                           \
   while (0)
 
-#define PRINT_CHAR_BITS_SWAPPED(os, c) \
-  do \
-    { \
-      unsigned char ctmp = c; \
-      char stmp[9]; \
-      stmp[0] = (ctmp & 0x01) ? '1' : '0'; \
-      stmp[1] = (ctmp & 0x02) ? '1' : '0'; \
-      stmp[2] = (ctmp & 0x04) ? '1' : '0'; \
-      stmp[3] = (ctmp & 0x08) ? '1' : '0'; \
-      stmp[4] = (ctmp & 0x10) ? '1' : '0'; \
-      stmp[5] = (ctmp & 0x20) ? '1' : '0'; \
-      stmp[6] = (ctmp & 0x40) ? '1' : '0'; \
-      stmp[7] = (ctmp & 0x80) ? '1' : '0'; \
-      stmp[8] = '\0'; \
-      os << stmp; \
-    } \
+#define PRINT_CHAR_BITS_SWAPPED(os, c)          \
+  do                                            \
+    {                                           \
+      unsigned char ctmp = c;                   \
+      char stmp[9];                             \
+      stmp[0] = (ctmp & 0x01) ? '1' : '0';      \
+      stmp[1] = (ctmp & 0x02) ? '1' : '0';      \
+      stmp[2] = (ctmp & 0x04) ? '1' : '0';      \
+      stmp[3] = (ctmp & 0x08) ? '1' : '0';      \
+      stmp[4] = (ctmp & 0x10) ? '1' : '0';      \
+      stmp[5] = (ctmp & 0x20) ? '1' : '0';      \
+      stmp[6] = (ctmp & 0x40) ? '1' : '0';      \
+      stmp[7] = (ctmp & 0x80) ? '1' : '0';      \
+      stmp[8] = '\0';                           \
+      os << stmp;                               \
+    }                                           \
   while (0)
 
 static void
@@ -2978,13 +2978,13 @@ public:
   typedef T print_conv_type;
 };
 
-#define PRINT_CONV(T1, T2) \
-  template <> \
-  class \
-  octave_print_conv<T1> \
-  { \
-  public: \
-    typedef T2 print_conv_type; \
+#define PRINT_CONV(T1, T2)                      \
+  template <>                                   \
+  class                                         \
+  octave_print_conv<T1>                         \
+  {                                             \
+  public:                                       \
+    typedef T2 print_conv_type;                 \
   }
 
 PRINT_CONV (octave_int8, octave_int16);
@@ -3068,7 +3068,7 @@ abs (T x)
   return x < 0 ? -x : x;
 }
 
-#define INSTANTIATE_ABS(T) \
+#define INSTANTIATE_ABS(T)                      \
   template /* static */ T abs (T)
 
 INSTANTIATE_ABS(signed char);
@@ -3077,12 +3077,12 @@ INSTANTIATE_ABS(int);
 INSTANTIATE_ABS(long);
 INSTANTIATE_ABS(long long);
 
-#define SPECIALIZE_UABS(T) \
-  template <> \
-  /* static */ inline unsigned T \
-  abs (unsigned T x) \
-  { \
-    return x; \
+#define SPECIALIZE_UABS(T)                      \
+  template <>                                   \
+  /* static */ inline unsigned T                \
+  abs (unsigned T x)                            \
+  {                                             \
+    return x;                                   \
   }
 
 SPECIALIZE_UABS(char)
@@ -3133,11 +3133,11 @@ octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
     }
 }
 
-#define PRINT_INT_SCALAR_INTERNAL(TYPE) \
-  OCTINTERP_API void \
+#define PRINT_INT_SCALAR_INTERNAL(TYPE)                                 \
+  OCTINTERP_API void                                                    \
   octave_print_internal (std::ostream& os, const octave_int<TYPE>& val, bool dummy) \
-  { \
-    octave_print_internal_template (os, val, dummy); \
+  {                                                                     \
+    octave_print_internal_template (os, val, dummy);                    \
   }
 
 PRINT_INT_SCALAR_INTERNAL (int8_t)
@@ -3378,11 +3378,11 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
     }
 }
 
-#define PRINT_INT_ARRAY_INTERNAL(TYPE) \
-  OCTINTERP_API void \
+#define PRINT_INT_ARRAY_INTERNAL(TYPE)                                  \
+  OCTINTERP_API void                                                    \
   octave_print_internal (std::ostream& os, const intNDArray<TYPE>& nda, \
-                         bool pr_as_read_syntax, int extra_indent) \
-  { \
+                         bool pr_as_read_syntax, int extra_indent)      \
+  {                                                                     \
     octave_print_internal_template (os, nda, pr_as_read_syntax, extra_indent); \
   }
 

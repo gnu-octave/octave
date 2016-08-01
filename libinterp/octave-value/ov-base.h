@@ -118,10 +118,12 @@ struct class_to_btyp
   static const builtin_type_t btyp = btyp_unknown;
 };
 
-#define DEF_CLASS_TO_BTYP(CLASS,BTYP) \
-template <> \
-struct class_to_btyp<CLASS> \
-{ static const builtin_type_t btyp = BTYP; }
+#define DEF_CLASS_TO_BTYP(CLASS,BTYP)           \
+  template <>                                   \
+  struct class_to_btyp<CLASS>                   \
+  {                                             \
+    static const builtin_type_t btyp = BTYP;    \
+  }
 
 DEF_CLASS_TO_BTYP (double, btyp_double);
 DEF_CLASS_TO_BTYP (float, btyp_float);
@@ -143,37 +145,37 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
 
 #define OCTAVE_EMPTY_CPP_ARG /* empty */
 
-#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA \
+#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA                    \
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (OCTAVE_EMPTY_CPP_ARG)
 
-#define DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA \
+#define DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA       \
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(virtual)
 
-#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(VIRTUAL) \
-  public: \
-    VIRTUAL int type_id (void) const { return t_id; } \
-    VIRTUAL std::string type_name (void) const { return t_name; } \
-    VIRTUAL std::string class_name (void) const { return c_name; } \
-    static int static_type_id (void) { return t_id; } \
-    static std::string static_type_name (void) { return t_name; } \
-    static std::string static_class_name (void) { return c_name; } \
-    static void register_type (void); \
- \
-  private: \
-    static int t_id; \
-    static const std::string t_name; \
+#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(VIRTUAL)                  \
+  public:                                                               \
+    VIRTUAL int type_id (void) const { return t_id; }                   \
+    VIRTUAL std::string type_name (void) const { return t_name; }       \
+    VIRTUAL std::string class_name (void) const { return c_name; }      \
+    static int static_type_id (void) { return t_id; }                   \
+    static std::string static_type_name (void) { return t_name; }       \
+    static std::string static_class_name (void) { return c_name; }      \
+    static void register_type (void);                                   \
+                                                                        \
+  private:                                                              \
+    static int t_id;                                                    \
+    static const std::string t_name;                                    \
     static const std::string c_name;
 
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c) \
-  int t::t_id (-1); \
-  const std::string t::t_name (n); \
-  const std::string t::c_name (c); \
-  void t::register_type (void) \
-    { \
-      static t exemplar; \
-      octave_value v (&exemplar, true); \
-      t_id = octave_value_typeinfo::register_type (t::t_name, t::c_name, v); \
-    }
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)                    \
+  int t::t_id (-1);                                                     \
+  const std::string t::t_name (n);                                      \
+  const std::string t::c_name (c);                                      \
+  void t::register_type (void)                                          \
+  {                                                                     \
+    static t exemplar;                                                  \
+    octave_value v (&exemplar, true);                                   \
+    t_id = octave_value_typeinfo::register_type (t::t_name, t::c_name, v); \
+  }
 
 // A base value type, so that derived types only have to redefine what
 // they need (if they are derived from octave_base_value instead of

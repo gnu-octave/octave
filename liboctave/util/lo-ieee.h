@@ -100,19 +100,29 @@ extern OCTAVE_API int __lo_ieee_float_signbit (float);
 }
 #endif
 
-#define lo_ieee_isnan(x) (sizeof (x) == sizeof (float) ? \
-                         __lo_ieee_float_isnan (x) : __lo_ieee_isnan (x))
-#define lo_ieee_finite(x) (sizeof (x) == sizeof (float) ? \
-                           __lo_ieee_float_finite (x) : __lo_ieee_finite (x))
-#define lo_ieee_isinf(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_isinf (x) : __lo_ieee_isinf (x))
+#define lo_ieee_isnan(x)                                \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_isnan (x) : __lo_ieee_isnan (x))
 
-#define lo_ieee_is_NA(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
-#define lo_ieee_is_NaN_or_NA(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_is_NaN_or_NA (x) : __lo_ieee_is_NaN_or_NA (x))
-#define lo_ieee_signbit(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
+#define lo_ieee_finite(x)                               \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_finite (x) : __lo_ieee_finite (x))
+
+#define lo_ieee_isinf(x)                                \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_isinf (x) : __lo_ieee_isinf (x))
+
+#define lo_ieee_is_NA(x)                                \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
+
+#define lo_ieee_is_NaN_or_NA(x)                                         \
+  (sizeof (x) == sizeof (float)                                         \
+   ? __lo_ieee_float_is_NaN_or_NA (x) : __lo_ieee_is_NaN_or_NA (x))
+
+#define lo_ieee_signbit(x)                                      \
+  (sizeof (x) == sizeof (float)                                 \
+   ? __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
 
 #if defined (__cplusplus)
 

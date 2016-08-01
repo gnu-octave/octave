@@ -446,11 +446,11 @@ b = sparse (i, j, v, sz(1), sz(2));
     }
   else if (arg.is_integer_type ())
     {
-#define DO_INT_BRANCH(INTT) \
-      else if (arg.is_ ## INTT ## _type ()) \
-        { \
-          INTT ## NDArray v = arg.INTT ## _array_value (); \
- \
+#define DO_INT_BRANCH(INTT)                                             \
+      else if (arg.is_ ## INTT ## _type ())                             \
+        {                                                               \
+          INTT ## NDArray v = arg.INTT ## _array_value ();              \
+                                                                        \
           retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction); \
         }
 

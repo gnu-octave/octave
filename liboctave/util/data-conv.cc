@@ -38,54 +38,54 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
-     do \
-       { \
-         int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-         if (sizeof (TQ char) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## char; \
-         else if (sizeof (TQ short) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## short; \
-         else if (sizeof (TQ int) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## int; \
-         else if (sizeof (TQ long) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## long; \
-         else if (sizeof (TQ long long) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## longlong; \
-         else \
-           VAL = oct_data_conv::dt_unknown; \
-       } \
-     while (0)
+#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q)                         \
+  do                                                                    \
+    {                                                                   \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits;       \
+      if (sizeof (TQ char) == sz)                                       \
+        VAL = oct_data_conv::dt_ ## Q ## char;                          \
+      else if (sizeof (TQ short) == sz)                                 \
+        VAL = oct_data_conv::dt_ ## Q ## short;                         \
+      else if (sizeof (TQ int) == sz)                                   \
+        VAL = oct_data_conv::dt_ ## Q ## int;                           \
+      else if (sizeof (TQ long) == sz)                                  \
+        VAL = oct_data_conv::dt_ ## Q ## long;                          \
+      else if (sizeof (TQ long long) == sz)                             \
+        VAL = oct_data_conv::dt_ ## Q ## longlong;                      \
+      else                                                              \
+        VAL = oct_data_conv::dt_unknown;                                \
+    }                                                                   \
+  while (0)
 #else
-#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
-     do \
-       { \
-         int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-         if (sizeof (TQ char) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## char; \
-         else if (sizeof (TQ short) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## short; \
-         else if (sizeof (TQ int) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## int; \
-         else if (sizeof (TQ long) == sz) \
-           VAL = oct_data_conv::dt_ ## Q ## long; \
-         else \
-           VAL = oct_data_conv::dt_unknown; \
-       } \
-     while (0)
+#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q)                         \
+  do                                                                    \
+    {                                                                   \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits;       \
+      if (sizeof (TQ char) == sz)                                       \
+        VAL = oct_data_conv::dt_ ## Q ## char;                          \
+      else if (sizeof (TQ short) == sz)                                 \
+        VAL = oct_data_conv::dt_ ## Q ## short;                         \
+      else if (sizeof (TQ int) == sz)                                   \
+        VAL = oct_data_conv::dt_ ## Q ## int;                           \
+      else if (sizeof (TQ long) == sz)                                  \
+        VAL = oct_data_conv::dt_ ## Q ## long;                          \
+      else                                                              \
+        VAL = oct_data_conv::dt_unknown;                                \
+    }                                                                   \
+  while (0)
 #endif
 
-#define FIND_SIZED_FLOAT_TYPE(VAL, BITS) \
-  do \
-    { \
-      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-      if (sizeof (float) == sz) \
-        VAL = oct_data_conv::dt_float; \
-      else if (sizeof (double) == sz) \
-        VAL = oct_data_conv::dt_double; \
-      else \
-        VAL = oct_data_conv::dt_unknown; \
-    } \
+#define FIND_SIZED_FLOAT_TYPE(VAL, BITS)                                \
+  do                                                                    \
+    {                                                                   \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits;       \
+      if (sizeof (float) == sz)                                         \
+        VAL = oct_data_conv::dt_float;                                  \
+      else if (sizeof (double) == sz)                                   \
+        VAL = oct_data_conv::dt_double;                                 \
+      else                                                              \
+        VAL = oct_data_conv::dt_unknown;                                \
+    }                                                                   \
   while (0)
 
 // I'm not sure it is worth the trouble, but let's use a lookup table
@@ -146,32 +146,32 @@ strip_spaces (const std::string& str)
   return s;
 }
 
-#define GET_SIZED_INT_TYPE(T, U) \
-  do \
-    { \
-      switch (sizeof (T)) \
-        { \
-        case 1: \
-          retval = dt_ ## U ## int8; \
-          break; \
- \
-        case 2: \
-          retval = dt_ ## U ## int16; \
-          break; \
- \
-        case 4: \
-          retval = dt_ ## U ## int32; \
-          break; \
- \
-        case 8: \
-          retval = dt_ ## U ## int64; \
-          break; \
- \
-        default: \
-          retval = dt_unknown; \
-          break; \
-        } \
-    } \
+#define GET_SIZED_INT_TYPE(T, U)                \
+  do                                            \
+    {                                           \
+      switch (sizeof (T))                       \
+        {                                       \
+        case 1:                                 \
+          retval = dt_ ## U ## int8;            \
+          break;                                \
+                                                \
+        case 2:                                 \
+          retval = dt_ ## U ## int16;           \
+          break;                                \
+                                                \
+        case 4:                                 \
+          retval = dt_ ## U ## int32;           \
+          break;                                \
+                                                \
+        case 8:                                 \
+          retval = dt_ ## U ## int64;           \
+          break;                                \
+                                                \
+        default:                                \
+          retval = dt_unknown;                  \
+          break;                                \
+        }                                       \
+    }                                           \
   while (0)
 
 size_t
@@ -572,39 +572,39 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
   return retval;
 }
 
-#define LS_DO_READ(TYPE, swap, data, size, len, stream) \
-  do \
-    { \
-      if (len > 0) \
-        { \
-          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+#define LS_DO_READ(TYPE, swap, data, size, len, stream)                 \
+  do                                                                    \
+    {                                                                   \
+      if (len > 0)                                                      \
+        {                                                               \
+          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                         \
           std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.read (reinterpret_cast<char *> (ptr), n_bytes); \
-          if (swap) \
-            swap_bytes< size > (ptr, len); \
-          for (octave_idx_type i = 0; i < len; i++) \
-            data[i] = ptr[i]; \
-        } \
-    } \
+          stream.read (reinterpret_cast<char *> (ptr), n_bytes);        \
+          if (swap)                                                     \
+            swap_bytes< size > (ptr, len);                              \
+          for (octave_idx_type i = 0; i < len; i++)                     \
+            data[i] = ptr[i];                                           \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 // Have to use copy here to avoid writing over data accessed via
 // Matrix::data ().
 
-#define LS_DO_WRITE(TYPE, data, size, len, stream) \
-  do \
-    { \
-      if (len > 0) \
-        { \
-          char tmp_type = type; \
-          stream.write (&tmp_type, 1); \
-          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-          for (octave_idx_type i = 0; i < len; i++) \
-            ptr[i] = static_cast<TYPE> (data[i]);         \
-          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.write (reinterpret_cast<char *> (ptr), n_bytes); \
-        } \
-    } \
+#define LS_DO_WRITE(TYPE, data, size, len, stream)                      \
+  do                                                                    \
+    {                                                                   \
+     if (len > 0)                                                       \
+       {                                                                \
+        char tmp_type = type;                                           \
+        stream.write (&tmp_type, 1);                                    \
+        OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                           \
+        for (octave_idx_type i = 0; i < len; i++)                       \
+          ptr[i] = static_cast<TYPE> (data[i]);                         \
+        std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
+        stream.write (reinterpret_cast<char *> (ptr), n_bytes);         \
+        }                                                               \
+     }                                                                  \
   while (0)
 
 // Loading variables from files.

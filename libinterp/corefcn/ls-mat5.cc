@@ -259,20 +259,20 @@ read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
                         bool swap, mat5_data_type type)
 {
 
-#define READ_INTEGER_DATA(TYPE, swap, data, size, len, stream)  \
-  do \
-    { \
-      if (len > 0) \
-        { \
-          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+#define READ_INTEGER_DATA(TYPE, swap, data, size, len, stream)          \
+  do                                                                    \
+    {                                                                   \
+      if (len > 0)                                                      \
+        {                                                               \
+          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                         \
           std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.read (reinterpret_cast<char *> (ptr), n_bytes); \
-          if (swap) \
-            swap_bytes< size > (ptr, len); \
-          for (octave_idx_type i = 0; i < len; i++) \
-            data[i] = ptr[i]; \
-        } \
-    } \
+          stream.read (reinterpret_cast<char *> (ptr), n_bytes);        \
+          if (swap)                                                     \
+            swap_bytes< size > (ptr, len);                              \
+          for (octave_idx_type i = 0; i < len; i++)                     \
+            data[i] = ptr[i];                                           \
+        }                                                               \
+    }                                                                   \
   while (0)
 
   switch (type)
@@ -370,52 +370,52 @@ read_mat5_integer_data (std::istream& is, int *m,
                         octave_idx_type count, bool swap,
                         mat5_data_type type);
 
-#define OCTAVE_MAT5_INTEGER_READ(TYP) \
-  { \
-        TYP re (dims); \
-  \
-        std::streampos tmp_pos; \
-  \
+#define OCTAVE_MAT5_INTEGER_READ(TYP)                                   \
+  {                                                                     \
+    TYP re (dims);                                                      \
+                                                                        \
+    std::streampos tmp_pos;                                             \
+                                                                        \
+    if (read_mat5_tag (is, swap, type, len, is_small_data_element))     \
+      error ("load: reading matrix data for '%s'", retval.c_str ());    \
+                                                                        \
+    octave_idx_type n = re.numel ();                                    \
+    tmp_pos = is.tellg ();                                              \
+    read_mat5_integer_data (is, re.fortran_vec (), n, swap,             \
+                            static_cast<enum mat5_data_type> (type));   \
+                                                                        \
+    if (! is)                                                           \
+      error ("load: reading matrix data for '%s'", retval.c_str ());    \
+                                                                        \
+    is.seekg (tmp_pos + static_cast<std::streamoff>                     \
+              (READ_PAD (is_small_data_element, len)));                 \
+                                                                        \
+    if (imag)                                                           \
+      {                                                                 \
+        /* We don't handle imag integer types, convert to an array */   \
+        NDArray im (dims);                                              \
+                                                                        \
         if (read_mat5_tag (is, swap, type, len, is_small_data_element)) \
-          error ("load: reading matrix data for '%s'", retval.c_str ()); \
-  \
-        octave_idx_type n = re.numel (); \
-        tmp_pos = is.tellg (); \
-        read_mat5_integer_data (is, re.fortran_vec (), n, swap, \
-                                static_cast<enum mat5_data_type> (type)); \
-  \
-        if (! is) \
-          error ("load: reading matrix data for '%s'", retval.c_str ()); \
-  \
-        is.seekg (tmp_pos + static_cast<std::streamoff>\
-                  (READ_PAD (is_small_data_element, len))); \
-  \
-        if (imag) \
-          { \
-            /* We don't handle imag integer types, convert to an array */ \
-            NDArray im (dims); \
-  \
-            if (read_mat5_tag (is, swap, type, len, is_small_data_element)) \
-              error ("load: reading matrix data for '%s'", \
-                     retval.c_str ()); \
-  \
-            n = im.numel (); \
-            read_mat5_binary_data (is, im.fortran_vec (), n, swap, \
-                                   static_cast<enum mat5_data_type> (type), flt_fmt); \
-  \
-            if (! is) \
-              error ("load: reading imaginary matrix data for '%s'", \
-                     retval.c_str ()); \
-  \
-            ComplexNDArray ctmp (dims); \
-  \
-            for (octave_idx_type i = 0; i < n; i++) \
-              ctmp(i) = Complex (re(i).double_value (), im(i)); \
-  \
-            tc = ctmp;  \
-          } \
-        else \
-          tc = re; \
+          error ("load: reading matrix data for '%s'",                  \
+                 retval.c_str ());                                      \
+                                                                        \
+        n = im.numel ();                                                \
+        read_mat5_binary_data (is, im.fortran_vec (), n, swap,          \
+                               static_cast<enum mat5_data_type> (type), flt_fmt); \
+                                                                        \
+        if (! is)                                                       \
+          error ("load: reading imaginary matrix data for '%s'",        \
+                 retval.c_str ());                                      \
+                                                                        \
+        ComplexNDArray ctmp (dims);                                     \
+                                                                        \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          ctmp(i) = Complex (re(i).double_value (), im(i));             \
+                                                                        \
+        tc = ctmp;                                                      \
+      }                                                                 \
+    else                                                                \
+      tc = re;                                                          \
   }
 
 // Read one element tag from stream IS,
@@ -1572,15 +1572,15 @@ write_mat5_tag (std::ostream& is, int type, octave_idx_type bytes)
 // Have to use copy here to avoid writing over data accessed via
 // Matrix::data().
 
-#define MAT5_DO_WRITE(TYPE, data, count, stream) \
-  do \
-    { \
-      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count); \
-      for (octave_idx_type i = 0; i < count; i++) \
-        ptr[i] = static_cast<TYPE> (data[i]); \
+#define MAT5_DO_WRITE(TYPE, data, count, stream)                        \
+  do                                                                    \
+    {                                                                   \
+      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count);                           \
+      for (octave_idx_type i = 0; i < count; i++)                       \
+        ptr[i] = static_cast<TYPE> (data[i]);                           \
       std::streamsize n_bytes = sizeof (TYPE) * static_cast<std::streamsize> (count); \
-      stream.write (reinterpret_cast<char *> (ptr), n_bytes); \
-    } \
+      stream.write (reinterpret_cast<char *> (ptr), n_bytes);           \
+    }                                                                   \
   while (0)
 
 // write out the numeric values in M to OS,
@@ -2097,12 +2097,12 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         }
     }
 
-#define INT_LEN(nel, size) \
-  { \
-    ret += 8; \
-    octave_idx_type sz = nel * size; \
-    if (sz > 4) \
-      ret += PAD (sz);  \
+#define INT_LEN(nel, size)                      \
+  {                                             \
+    ret += 8;                                   \
+    octave_idx_type sz = nel * size;            \
+    if (sz > 4)                                 \
+      ret += PAD (sz);                          \
   }
 
   else if (cname == "int8")

@@ -48,69 +48,106 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename R, typename S>
 inline void mx_inline_fill (size_t n, R *r, S s) throw ()
-{ for (size_t i = 0; i < n; i++) r[i] = s; }
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = s;
+}
 
-#define DEFMXUNOP(F, OP) \
-template <typename R, typename X> \
-inline void F (size_t n, R *r, const X *x) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = OP x[i]; }
+#define DEFMXUNOP(F, OP)                                \
+  template <typename R, typename X>                     \
+  inline void F (size_t n, R *r, const X *x) throw ()   \
+  {                                                     \
+    for (size_t i = 0; i < n; i++)                      \
+      r[i] = OP x[i];                                   \
+  }
 
 DEFMXUNOP (mx_inline_uminus, -)
 
-#define DEFMXUNOPEQ(F, OP) \
-template <typename R> \
-inline void F (size_t n, R *r) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = OP r[i]; }
+#define DEFMXUNOPEQ(F, OP)                      \
+  template <typename R>                         \
+  inline void F (size_t n, R *r) throw ()       \
+  {                                             \
+    for (size_t i = 0; i < n; i++)              \
+      r[i] = OP r[i];                           \
+  }
 
 DEFMXUNOPEQ (mx_inline_uminus2, -)
 
-#define DEFMXUNBOOLOP(F, OP) \
-template <typename X> \
-inline void F (size_t n, bool *r, const X *x) throw () \
-{ const X zero = X (); for (size_t i = 0; i < n; i++) r[i] = x[i] OP zero; }
+#define DEFMXUNBOOLOP(F, OP)                                    \
+  template <typename X>                                         \
+  inline void F (size_t n, bool *r, const X *x) throw ()        \
+  {                                                             \
+    const X zero = X ();                                        \
+    for (size_t i = 0; i < n; i++)                              \
+      r[i] = x[i] OP zero;                                      \
+  }
 
 DEFMXUNBOOLOP (mx_inline_iszero, ==)
 DEFMXUNBOOLOP (mx_inline_notzero, !=)
 
-#define DEFMXBINOP(F, OP) \
-template <typename R, typename X, typename Y> \
-inline void F (size_t n, R *r, const X *x, const Y *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = x[i] OP y[i]; } \
-template <typename R, typename X, typename Y> \
-inline void F (size_t n, R *r, const X *x, Y y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = x[i] OP y; } \
-template <typename R, typename X, typename Y> \
-inline void F (size_t n, R *r, X x, const Y *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = x OP y[i]; }
+#define DEFMXBINOP(F, OP)                                               \
+  template <typename R, typename X, typename Y>                         \
+  inline void F (size_t n, R *r, const X *x, const Y *y) throw ()       \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = x[i] OP y[i];                                              \
+  }                                                                     \
+  template <typename R, typename X, typename Y>                         \
+  inline void F (size_t n, R *r, const X *x, Y y) throw ()              \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = x[i] OP y;                                                 \
+  }                                                                     \
+  template <typename R, typename X, typename Y>                         \
+  inline void F (size_t n, R *r, X x, const Y *y) throw ()              \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = x OP y[i];                                                 \
+  }
 
 DEFMXBINOP (mx_inline_add, +)
 DEFMXBINOP (mx_inline_sub, -)
 DEFMXBINOP (mx_inline_mul, *)
 DEFMXBINOP (mx_inline_div, /)
 
-#define DEFMXBINOPEQ(F, OP) \
-template <typename R, typename X> \
-inline void F (size_t n, R *r, const X *x) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] OP x[i]; } \
-template <typename R, typename X> \
-inline void F (size_t n, R *r, X x) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] OP x; }
+#define DEFMXBINOPEQ(F, OP)                             \
+  template <typename R, typename X>                     \
+  inline void F (size_t n, R *r, const X *x) throw ()   \
+  {                                                     \
+    for (size_t i = 0; i < n; i++)                      \
+      r[i] OP x[i];                                     \
+  }                                                     \
+  template <typename R, typename X>                     \
+  inline void F (size_t n, R *r, X x) throw ()          \
+  {                                                     \
+    for (size_t i = 0; i < n; i++)                      \
+      r[i] OP x;                                        \
+  }
 
 DEFMXBINOPEQ (mx_inline_add2, +=)
 DEFMXBINOPEQ (mx_inline_sub2, -=)
 DEFMXBINOPEQ (mx_inline_mul2, *=)
 DEFMXBINOPEQ (mx_inline_div2, /=)
 
-#define DEFMXCMPOP(F, OP) \
-template <typename X, typename Y> \
-inline void F (size_t n, bool *r, const X *x, const Y *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = x[i] OP y[i]; } \
-template <typename X, typename Y> \
-inline void F (size_t n, bool *r, const X *x, Y y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = x[i] OP y; } \
-template <typename X, typename Y> \
-inline void F (size_t n, bool *r, X x, const Y *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = x OP y[i]; }
+#define DEFMXCMPOP(F, OP)                                               \
+  template <typename X, typename Y>                                     \
+  inline void F (size_t n, bool *r, const X *x, const Y *y) throw ()    \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = x[i] OP y[i];                                              \
+  }                                                                     \
+  template <typename X, typename Y>                                     \
+  inline void F (size_t n, bool *r, const X *x, Y y) throw ()           \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = x[i] OP y;                                                 \
+  }                                                                     \
+  template <typename X, typename Y>                                     \
+  inline void F (size_t n, bool *r, X x, const Y *y) throw ()           \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = x OP y[i];                                                 \
+  }
 
 DEFMXCMPOP (mx_inline_lt, <)
 DEFMXCMPOP (mx_inline_le, <=)
@@ -120,11 +157,26 @@ DEFMXCMPOP (mx_inline_eq, ==)
 DEFMXCMPOP (mx_inline_ne, !=)
 
 // Convert to logical value, for logical op purposes.
-template <typename T> inline bool logical_value (T x) { return x; }
-template <typename T> inline bool logical_value (const std::complex<T>& x)
-{ return x.real () != 0 || x.imag () != 0; }
-template <typename T> inline bool logical_value (const octave_int<T>& x)
-{ return x.value (); }
+template <typename T>
+inline bool
+logical_value (T x)
+{
+  return x;
+}
+
+template <typename T>
+inline bool
+logical_value (const std::complex<T>& x)
+{
+  return x.real () != 0 || x.imag () != 0;
+}
+
+template <typename T>
+inline bool
+logical_value (const octave_int<T>& x)
+{
+  return x.value ();
+}
 
 template <typename X>
 void mx_inline_not (size_t n, bool *r, const X* x) throw ()
@@ -135,30 +187,32 @@ void mx_inline_not (size_t n, bool *r, const X* x) throw ()
 
 inline void mx_inline_not2 (size_t n, bool *r) throw ()
 {
-  for (size_t i = 0; i < n; i++) r[i] = ! r[i];
+  for (size_t i = 0; i < n; i++)
+    r[i] = ! r[i];
 }
 
-#define DEFMXBOOLOP(F, NOT1, OP, NOT2) \
-template <typename X, typename Y> \
-inline void F (size_t n, bool *r, const X *x, const Y *y) throw () \
-{ \
-  for (size_t i = 0; i < n; i++) \
-    r[i] = (NOT1 logical_value (x[i])) OP (NOT2 logical_value (y[i])); \
-} \
-template <typename X, typename Y> \
-inline void F (size_t n, bool *r, const X *x, Y y) throw () \
-{ \
-  const bool yy = (NOT2 logical_value (y)); \
-  for (size_t i = 0; i < n; i++) \
-    r[i] = (NOT1 logical_value (x[i])) OP yy; \
-} \
-template <typename X, typename Y> \
-inline void F (size_t n, bool *r, X x, const Y *y) throw () \
-{ \
-  const bool xx = (NOT1 logical_value (x)); \
-  for (size_t i = 0; i < n; i++) \
-    r[i] = xx OP (NOT2 logical_value (y[i])); \
-}
+#define DEFMXBOOLOP(F, NOT1, OP, NOT2)                                  \
+  template <typename X, typename Y>                                     \
+  inline void F (size_t n, bool *r, const X *x, const Y *y) throw ()    \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = ((NOT1 logical_value (x[i]))                               \
+              OP (NOT2 logical_value (y[i])));                          \
+  }                                                                     \
+  template <typename X, typename Y>                                     \
+  inline void F (size_t n, bool *r, const X *x, Y y) throw ()           \
+  {                                                                     \
+    const bool yy = (NOT2 logical_value (y));                           \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = (NOT1 logical_value (x[i])) OP yy;                         \
+  }                                                                     \
+  template <typename X, typename Y>                                     \
+  inline void F (size_t n, bool *r, X x, const Y *y) throw ()           \
+  {                                                                     \
+    const bool xx = (NOT1 logical_value (x));                           \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = xx OP (NOT2 logical_value (y[i]));                         \
+  }
 
 DEFMXBOOLOP (mx_inline_and, , &, )
 DEFMXBOOLOP (mx_inline_or, , |, )
@@ -167,16 +221,19 @@ DEFMXBOOLOP (mx_inline_not_or, !, |, )
 DEFMXBOOLOP (mx_inline_and_not, , &, !)
 DEFMXBOOLOP (mx_inline_or_not, , |, !)
 
-#define DEFMXBOOLOPEQ(F, OP) \
-template <typename X> \
-inline void F (size_t n, bool *r, const X *x) throw () \
-{ \
-  for (size_t i = 0; i < n; i++) \
-    r[i] OP logical_value (x[i]); \
-} \
-template <typename X> \
-inline void F (size_t n, bool *r, X x) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] OP x; }
+#define DEFMXBOOLOPEQ(F, OP)                                    \
+  template <typename X>                                         \
+  inline void F (size_t n, bool *r, const X *x) throw ()        \
+  {                                                             \
+    for (size_t i = 0; i < n; i++)                              \
+      r[i] OP logical_value (x[i]);                             \
+  }                                                             \
+  template <typename X>                                         \
+  inline void F (size_t n, bool *r, X x) throw ()               \
+  {                                                             \
+    for (size_t i = 0; i < n; i++)                              \
+      r[i] OP x;                                                \
+  }
 
 DEFMXBOOLOPEQ (mx_inline_and2, &=)
 DEFMXBOOLOPEQ (mx_inline_or2, |=)
@@ -246,51 +303,72 @@ mx_inline_all_real (size_t n, const std::complex<T>* x) throw ()
   return true;
 }
 
-#define DEFMXMAPPER(F, FUN) \
-template <typename T> \
-inline void F (size_t n, T *r, const T *x) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i]); }
+#define DEFMXMAPPER(F, FUN)                             \
+  template <typename T>                                 \
+  inline void F (size_t n, T *r, const T *x) throw ()   \
+  {                                                     \
+    for (size_t i = 0; i < n; i++)                      \
+      r[i] = FUN (x[i]);                                \
+  }
 
 template <typename T>
 inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x) throw ()
-{ for (size_t i = 0; i < n; i++) r[i] = x[i].real (); }
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = x[i].real ();
+}
+
 template <typename T>
 inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x) throw ()
-{ for (size_t i = 0; i < n; i++) r[i] = x[i].imag (); }
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = x[i].imag ();
+}
 
 // Pairwise minimums/maximums
-#define DEFMXMAPPER2(F, FUN) \
-template <typename T> \
-inline void F (size_t n, T *r, const T *x, const T *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
-template <typename T> \
-inline void F (size_t n, T *r, const T *x, T y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
-template <typename T> \
-inline void F (size_t n, T *r, T x, const T *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
+#define DEFMXMAPPER2(F, FUN)                                            \
+  template <typename T>                                                 \
+  inline void F (size_t n, T *r, const T *x, const T *y) throw ()       \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = FUN (x[i], y[i]);                                          \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void F (size_t n, T *r, const T *x, T y) throw ()              \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = FUN (x[i], y);                                             \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void F (size_t n, T *r, T x, const T *y) throw ()              \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = FUN (x, y[i]);                                             \
+  }
 
 DEFMXMAPPER2 (mx_inline_xmin, octave::math::min)
 DEFMXMAPPER2 (mx_inline_xmax, octave::math::max)
 
 // Specialize array-scalar max/min
-#define DEFMINMAXSPEC(T, F, OP) \
-template <> \
-inline void F<T> (size_t n, T *r, const T *x, T y) throw () \
-{ \
-  if (octave::math::isnan (y)) \
-    std::memcpy (r, x, n * sizeof (T)); \
-  else \
-    for (size_t i = 0; i < n; i++) r[i] = (x[i] OP y) ? x[i] : y; \
-} \
-template <> \
-inline void F<T> (size_t n, T *r, T x, const T *y) throw () \
-{ \
-  if (octave::math::isnan (x)) \
-    std::memcpy (r, y, n * sizeof (T)); \
-  else \
-    for (size_t i = 0; i < n; i++) r[i] = (y[i] OP x) ? y[i] : x; \
-}
+#define DEFMINMAXSPEC(T, F, OP)                                 \
+  template <>                                                   \
+  inline void F<T> (size_t n, T *r, const T *x, T y) throw ()   \
+  {                                                             \
+    if (octave::math::isnan (y))                                \
+      std::memcpy (r, x, n * sizeof (T));                       \
+    else                                                        \
+      for (size_t i = 0; i < n; i++)                            \
+        r[i] = (x[i] OP y) ? x[i] : y;                          \
+  }                                                             \
+  template <>                                                   \
+  inline void F<T> (size_t n, T *r, T x, const T *y) throw ()   \
+  {                                                             \
+    if (octave::math::isnan (x))                                \
+      std::memcpy (r, y, n * sizeof (T));                       \
+    else                                                        \
+      for (size_t i = 0; i < n; i++)                            \
+        r[i] = (y[i] OP x) ? y[i] : x;                          \
+  }
 
 DEFMINMAXSPEC (double, mx_inline_xmin, <=)
 DEFMINMAXSPEC (double, mx_inline_xmax, >=)
@@ -298,16 +376,25 @@ DEFMINMAXSPEC (float, mx_inline_xmin, <=)
 DEFMINMAXSPEC (float, mx_inline_xmax, >=)
 
 // Pairwise power
-#define DEFMXMAPPER2X(F, FUN) \
-template <typename R, typename X, typename Y> \
-inline void F (size_t n, R *r, const X *x, const Y *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
-template <typename R, typename X, typename Y> \
-inline void F (size_t n, R *r, const X *x, Y y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
-template <typename R, typename X, typename Y> \
-inline void F (size_t n, R *r, X x, const Y *y) throw () \
-{ for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
+#define DEFMXMAPPER2X(F, FUN)                                           \
+  template <typename R, typename X, typename Y>                         \
+  inline void F (size_t n, R *r, const X *x, const Y *y) throw ()       \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = FUN (x[i], y[i]);                                          \
+  }                                                                     \
+  template <typename R, typename X, typename Y>                         \
+  inline void F (size_t n, R *r, const X *x, Y y) throw ()              \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = FUN (x[i], y);                                             \
+  }                                                                     \
+  template <typename R, typename X, typename Y>                         \
+  inline void F (size_t n, R *r, X x, const Y *y) throw ()              \
+  {                                                                     \
+    for (size_t i = 0; i < n; i++)                                      \
+      r[i] = FUN (x, y[i]);                                             \
+  }
 
 // Let the compiler decide which pow to use, whichever best matches the
 // arguments provided.
@@ -318,11 +405,17 @@ DEFMXMAPPER2X (mx_inline_pow, pow)
 // The function is a template parameter to enable inlining.
 template <typename R, typename X, R fun (X x)>
 inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
-{ for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = fun (x[i]);
+}
 
 template <typename R, typename X, R fun (const X& x)>
 inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
-{ for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = fun (x[i]);
+}
 
 // Appliers.  Since these call the operation just once, we pass it as
 // a pointer, to allow the compiler reduce number of instances.
@@ -456,66 +549,166 @@ do_mx_check (const Array<T>& a,
 // magic to avoid underflows, which we don't need here.
 template <typename T>
 inline T cabsq (const std::complex<T>& c)
-{ return c.real () * c.real () + c.imag () * c.imag (); }
+{ return c.real () * c.real () + c.imag () * c.imag ();
+}
 
 // default.  works for integers and bool.
 template <typename T>
-inline bool xis_true (T x) { return x; }
+inline bool
+xis_true (T x)
+{
+  return x;
+}
+
 template <typename T>
-inline bool xis_false (T x) { return ! x; }
+inline bool
+xis_false (T x)
+{
+  return ! x;
+}
+
 // for octave_ints
 template <typename T>
-inline bool xis_true (const octave_int<T>& x) { return x.value (); }
+inline bool
+xis_true (const octave_int<T>& x)
+{
+  return x.value ();
+}
+
 template <typename T>
-inline bool xis_false (const octave_int<T>& x) { return ! x.value (); }
+inline bool
+xis_false (const octave_int<T>& x)
+{
+  return ! x.value ();
+}
+
 // for reals, we want to ignore NaNs.
-inline bool xis_true (double x) { return ! octave::math::isnan (x) && x != 0.0; }
-inline bool xis_false (double x) { return x == 0.0; }
-inline bool xis_true (float x) { return ! octave::math::isnan (x) && x != 0.0f; }
-inline bool xis_false (float x) { return x == 0.0f; }
+inline bool
+xis_true (double x)
+{
+  return ! octave::math::isnan (x) && x != 0.0;
+}
+
+inline bool
+xis_false (double x)
+{
+  return x == 0.0;
+}
+
+inline bool
+xis_true (float x)
+{
+  return ! octave::math::isnan (x) && x != 0.0f;
+}
+
+inline bool
+xis_false (float x)
+{
+  return x == 0.0f;
+}
+
 // Ditto for complex.
-inline bool xis_true (const Complex& x) { return ! octave::math::isnan (x) && x != 0.0; }
-inline bool xis_false (const Complex& x) { return x == 0.0; }
-inline bool xis_true (const FloatComplex& x) { return ! octave::math::isnan (x) && x != 0.0f; }
-inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
+inline bool
+xis_true (const Complex& x)
+{
+  return ! octave::math::isnan (x) && x != 0.0;
+}
+
+inline bool
+xis_false (const Complex& x)
+{
+  return x == 0.0;
+}
+
+inline bool
+xis_true (const FloatComplex& x)
+{
+  return ! octave::math::isnan (x) && x != 0.0f;
+}
+
+inline bool
+xis_false (const FloatComplex& x)
+{
+  return x == 0.0f;
+}
 
 #define OP_RED_SUM(ac, el) ac += el
 #define OP_RED_PROD(ac, el) ac *= el
 #define OP_RED_SUMSQ(ac, el) ac += el*el
 #define OP_RED_SUMSQC(ac, el) ac += cabsq (el)
 
-inline void op_dble_prod (double& ac, float el)
-{ ac *= el; }
-inline void op_dble_prod (Complex& ac, const FloatComplex& el)
-{ ac *= el; } // FIXME: guaranteed?
-template <typename T>
-inline void op_dble_prod (double& ac, const octave_int<T>& el)
-{ ac *= el.double_value (); }
-
-inline void op_dble_sum (double& ac, float el)
-{ ac += el; }
-inline void op_dble_sum (Complex& ac, const FloatComplex& el)
-{ ac += el; } // FIXME: guaranteed?
-template <typename T>
-inline void op_dble_sum (double& ac, const octave_int<T>& el)
-{ ac += el.double_value (); }
-
-// The following two implement a simple short-circuiting.
-#define OP_RED_ANYC(ac, el) if (xis_true (el)) { ac = true; break; } else continue
-#define OP_RED_ALLC(ac, el) if (xis_false (el)) { ac = false; break; } else continue
-
-#define OP_RED_FCN(F, TSRC, TRES, OP, ZERO) \
-template <typename T> \
-inline TRES \
-F (const TSRC* v, octave_idx_type n) \
-{ \
-  TRES ac = ZERO; \
-  for (octave_idx_type i = 0; i < n; i++) \
-    OP(ac, v[i]); \
-  return ac; \
+inline void
+op_dble_prod (double& ac, float el)
+{
+  ac *= el;
 }
 
-#define PROMOTE_DOUBLE(T) typename subst_template_param<std::complex, T, double>::type
+// FIXME: guaranteed?
+inline void
+op_dble_prod (Complex& ac, const FloatComplex& el)
+{
+  ac *= el;
+}
+
+template <typename T>
+inline void
+op_dble_prod (double& ac, const octave_int<T>& el)
+{
+  ac *= el.double_value ();
+}
+
+inline void
+op_dble_sum (double& ac, float el)
+{
+  ac += el;
+}
+
+// FIXME: guaranteed?
+inline void
+op_dble_sum (Complex& ac, const FloatComplex& el)
+{
+  ac += el;
+}
+
+template <typename T>
+inline void
+op_dble_sum (double& ac, const octave_int<T>& el)
+{
+  ac += el.double_value ();
+}
+
+// The following two implement a simple short-circuiting.
+#define OP_RED_ANYC(ac, el)                     \
+  if (xis_true (el))                            \
+    {                                           \
+      ac = true;                                \
+      break;                                    \
+    }                                           \
+  else                                          \
+    continue
+
+#define OP_RED_ALLC(ac, el)                     \
+  if (xis_false (el))                           \
+    {                                           \
+      ac = false;                               \
+      break;                                    \
+    }                                           \
+  else                                          \
+    continue
+
+#define OP_RED_FCN(F, TSRC, TRES, OP, ZERO)     \
+  template <typename T>                         \
+  inline TRES                                   \
+  F (const TSRC* v, octave_idx_type n)          \
+  {                                             \
+    TRES ac = ZERO;                             \
+    for (octave_idx_type i = 0; i < n; i++)     \
+      OP(ac, v[i]);                             \
+    return ac;                                  \
+  }
+
+#define PROMOTE_DOUBLE(T)                                       \
+  typename subst_template_param<std::complex, T, double>::type
 
 OP_RED_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
@@ -527,20 +720,20 @@ OP_RED_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 OP_RED_FCN (mx_inline_any, T, bool, OP_RED_ANYC, false)
 OP_RED_FCN (mx_inline_all, T, bool, OP_RED_ALLC, true)
 
-#define OP_RED_FCN2(F, TSRC, TRES, OP, ZERO) \
-template <typename T> \
-inline void \
-F (const TSRC* v, TRES *r, octave_idx_type m, octave_idx_type n) \
-{ \
-  for (octave_idx_type i = 0; i < m; i++) \
-    r[i] = ZERO; \
-  for (octave_idx_type j = 0; j < n; j++) \
-    { \
-      for (octave_idx_type i = 0; i < m; i++) \
-        OP(r[i], v[i]); \
-      v += m; \
-    } \
-}
+#define OP_RED_FCN2(F, TSRC, TRES, OP, ZERO)                            \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const TSRC* v, TRES *r, octave_idx_type m, octave_idx_type n)      \
+  {                                                                     \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      r[i] = ZERO;                                                      \
+    for (octave_idx_type j = 0; j < n; j++)                             \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          OP(r[i], v[i]);                                               \
+        v += m;                                                         \
+      }                                                                 \
+  }
 
 OP_RED_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
@@ -561,61 +754,61 @@ OP_RED_FCN2 (mx_inline_all_r, T, bool, OP_RED_ALLR, true)
 // algorithm will achieve both, at the cost of a temporary octave_idx_type
 // array.
 
-#define OP_ROW_SHORT_CIRCUIT(F, PRED, ZERO) \
-template <typename T> \
-inline void \
-F (const T* v, bool *r, octave_idx_type m, octave_idx_type n) \
-{ \
-  if (n <= 8) \
-    return F ## _r (v, r, m, n); \
-  \
-  /* FIXME: it may be sub-optimal to allocate the buffer here. */ \
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, iact, m); \
-  for (octave_idx_type i = 0; i < m; i++) iact[i] = i; \
-  octave_idx_type nact = m; \
-  for (octave_idx_type j = 0; j < n; j++) \
-    { \
-      octave_idx_type k = 0; \
-      for (octave_idx_type i = 0; i < nact; i++) \
-        { \
-          octave_idx_type ia = iact[i]; \
-          if (! PRED (v[ia])) \
-            iact[k++] = ia; \
-        } \
-      nact = k; \
-      v += m; \
-    } \
-  for (octave_idx_type i = 0; i < m; i++) r[i] = ! ZERO; \
-  for (octave_idx_type i = 0; i < nact; i++) r[iact[i]] = ZERO; \
-}
+#define OP_ROW_SHORT_CIRCUIT(F, PRED, ZERO)                             \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T* v, bool *r, octave_idx_type m, octave_idx_type n)         \
+  {                                                                     \
+    if (n <= 8)                                                         \
+      return F ## _r (v, r, m, n);                                      \
+                                                                        \
+    /* FIXME: it may be sub-optimal to allocate the buffer here. */     \
+    OCTAVE_LOCAL_BUFFER (octave_idx_type, iact, m);                     \
+    for (octave_idx_type i = 0; i < m; i++) iact[i] = i;                \
+    octave_idx_type nact = m;                                           \
+    for (octave_idx_type j = 0; j < n; j++)                             \
+      {                                                                 \
+        octave_idx_type k = 0;                                          \
+        for (octave_idx_type i = 0; i < nact; i++)                      \
+          {                                                             \
+            octave_idx_type ia = iact[i];                               \
+            if (! PRED (v[ia]))                                         \
+              iact[k++] = ia;                                           \
+          }                                                             \
+        nact = k;                                                       \
+        v += m;                                                         \
+      }                                                                 \
+    for (octave_idx_type i = 0; i < m; i++) r[i] = ! ZERO;              \
+    for (octave_idx_type i = 0; i < nact; i++) r[iact[i]] = ZERO;       \
+  }
 
 OP_ROW_SHORT_CIRCUIT (mx_inline_any, xis_true, false)
 OP_ROW_SHORT_CIRCUIT (mx_inline_all, xis_false, true)
 
-#define OP_RED_FCNN(F, TSRC, TRES) \
-template <typename T> \
-inline void \
-F (const TSRC *v, TRES *r, octave_idx_type l, \
-   octave_idx_type n, octave_idx_type u) \
-{ \
-  if (l == 1) \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          r[i] = F<T> (v, n); \
-          v += n; \
-        } \
-    } \
-  else \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, l, n); \
-          v += l*n; \
-          r += l; \
-        } \
-    } \
-}
+#define OP_RED_FCNN(F, TSRC, TRES)              \
+  template <typename T>                         \
+  inline void                                   \
+  F (const TSRC *v, TRES *r, octave_idx_type l, \
+     octave_idx_type n, octave_idx_type u)      \
+  {                                             \
+    if (l == 1)                                 \
+      {                                         \
+        for (octave_idx_type i = 0; i < u; i++) \
+          {                                     \
+            r[i] = F<T> (v, n);                 \
+            v += n;                             \
+          }                                     \
+      }                                         \
+    else                                        \
+      {                                         \
+        for (octave_idx_type i = 0; i < u; i++) \
+          {                                     \
+            F (v, r, l, n);                     \
+            v += l*n;                           \
+            r += l;                             \
+          }                                     \
+      }                                         \
+  }
 
 OP_RED_FCNN (mx_inline_sum, T, T)
 OP_RED_FCNN (mx_inline_dsum, T, PROMOTE_DOUBLE(T))
@@ -627,109 +820,122 @@ OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)
 OP_RED_FCNN (mx_inline_any, T, bool)
 OP_RED_FCNN (mx_inline_all, T, bool)
 
-#define OP_CUM_FCN(F, TSRC, TRES, OP) \
-template <typename T> \
-inline void \
-F (const TSRC *v, TRES *r, octave_idx_type n) \
-{ \
-  if (n) \
-    { \
-      TRES t = r[0] = v[0]; \
-      for (octave_idx_type i = 1; i < n; i++) \
-        r[i] = t = t OP v[i]; \
-    } \
-}
+#define OP_CUM_FCN(F, TSRC, TRES, OP)           \
+  template <typename T>                         \
+  inline void                                   \
+  F (const TSRC *v, TRES *r, octave_idx_type n) \
+  {                                             \
+    if (n)                                      \
+      {                                         \
+        TRES t = r[0] = v[0];                   \
+        for (octave_idx_type i = 1; i < n; i++) \
+          r[i] = t = t OP v[i];                 \
+      }                                         \
+  }
 
 OP_CUM_FCN (mx_inline_cumsum, T, T, +)
 OP_CUM_FCN (mx_inline_cumprod, T, T, *)
 OP_CUM_FCN (mx_inline_cumcount, bool, T, +)
 
-#define OP_CUM_FCN2(F, TSRC, TRES, OP) \
-template <typename T> \
-inline void \
-F (const TSRC *v, TRES *r, octave_idx_type m, octave_idx_type n) \
-{ \
-  if (n) \
-    { \
-      for (octave_idx_type i = 0; i < m; i++) \
-        r[i] = v[i]; \
-      const T *r0 = r; \
-      for (octave_idx_type j = 1; j < n; j++) \
-        { \
-          r += m; v += m; \
-          for (octave_idx_type i = 0; i < m; i++) \
-            r[i] = r0[i] OP v[i]; \
-          r0 += m; \
-        } \
-    } \
-}
+#define OP_CUM_FCN2(F, TSRC, TRES, OP)                                  \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const TSRC *v, TRES *r, octave_idx_type m, octave_idx_type n)      \
+  {                                                                     \
+    if (n)                                                              \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          r[i] = v[i];                                                  \
+        const T *r0 = r;                                                \
+        for (octave_idx_type j = 1; j < n; j++)                         \
+          {                                                             \
+            r += m; v += m;                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              r[i] = r0[i] OP v[i];                                     \
+            r0 += m;                                                    \
+          }                                                             \
+      }                                                                 \
+  }
 
 OP_CUM_FCN2 (mx_inline_cumsum, T, T, +)
 OP_CUM_FCN2 (mx_inline_cumprod, T, T, *)
 OP_CUM_FCN2 (mx_inline_cumcount, bool, T, +)
 
-#define OP_CUM_FCNN(F, TSRC, TRES) \
-template <typename T> \
-inline void \
-F (const TSRC *v, TRES *r, octave_idx_type l, \
-   octave_idx_type n, octave_idx_type u) \
-{ \
-  if (l == 1) \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, n); \
-          v += n; r += n; \
-        } \
-    } \
-  else \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, l, n); \
-          v += l*n; \
-          r += l*n; \
-        } \
-    } \
-}
+#define OP_CUM_FCNN(F, TSRC, TRES)              \
+  template <typename T>                         \
+  inline void                                   \
+  F (const TSRC *v, TRES *r, octave_idx_type l, \
+     octave_idx_type n, octave_idx_type u)      \
+  {                                             \
+    if (l == 1)                                 \
+      {                                         \
+        for (octave_idx_type i = 0; i < u; i++) \
+          {                                     \
+            F (v, r, n);                        \
+            v += n;                             \
+            r += n;                             \
+          }                                     \
+      }                                         \
+    else                                        \
+      {                                         \
+        for (octave_idx_type i = 0; i < u; i++) \
+          {                                     \
+            F (v, r, l, n);                     \
+            v += l*n;                           \
+            r += l*n;                           \
+          }                                     \
+      }                                         \
+  }
 
 OP_CUM_FCNN (mx_inline_cumsum, T, T)
 OP_CUM_FCNN (mx_inline_cumprod, T, T)
 OP_CUM_FCNN (mx_inline_cumcount, bool, T)
 
-#define OP_MINMAX_FCN(F, OP) \
-template <typename T> \
-void F (const T *v, T *r, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  T tmp = v[0]; \
-  octave_idx_type i = 1; \
-  if (octave::math::isnan (tmp)) \
-    { \
-      for (; i < n && octave::math::isnan (v[i]); i++) ; \
-      if (i < n) tmp = v[i]; \
-    } \
-  for (; i < n; i++) \
-    if (v[i] OP tmp) tmp = v[i]; \
-  *r = tmp; \
-} \
-template <typename T> \
-void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  T tmp = v[0]; \
-  octave_idx_type tmpi = 0; \
-  octave_idx_type i = 1; \
-  if (octave::math::isnan (tmp)) \
-    { \
-      for (; i < n && octave::math::isnan (v[i]); i++) ; \
-      if (i < n) { tmp = v[i]; tmpi = i; } \
-    } \
-  for (; i < n; i++) \
-    if (v[i] OP tmp) { tmp = v[i]; tmpi = i; }\
-  *r = tmp; \
-  *ri = tmpi; \
-}
+#define OP_MINMAX_FCN(F, OP)                                            \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type n)                          \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type i = 1;                                              \
+    if (octave::math::isnan (tmp))                                      \
+      {                                                                 \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;              \
+        if (i < n)                                                      \
+          tmp = v[i];                                                   \
+      }                                                                 \
+    for (; i < n; i++)                                                  \
+      if (v[i] OP tmp)                                                  \
+        tmp = v[i];                                                     \
+    *r = tmp;                                                           \
+  }                                                                     \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n)     \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type tmpi = 0;                                           \
+    octave_idx_type i = 1;                                              \
+    if (octave::math::isnan (tmp))                                      \
+      {                                                                 \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;              \
+        if (i < n)                                                      \
+          {                                                             \
+            tmp = v[i];                                                 \
+            tmpi = i;                                                   \
+          }                                                             \
+      }                                                                 \
+    for (; i < n; i++)                                                  \
+      if (v[i] OP tmp)                                                  \
+        {                                                               \
+          tmp = v[i];                                                   \
+          tmpi = i;                                                     \
+        }                                                               \
+    *r = tmp;                                                           \
+    *ri = tmpi;                                                         \
+  }
 
 OP_MINMAX_FCN (mx_inline_min, <)
 OP_MINMAX_FCN (mx_inline_max, >)
@@ -738,173 +944,220 @@ OP_MINMAX_FCN (mx_inline_max, >)
 // for NaNs until we detect that no row will yield a NaN, in which case we
 // proceed to a faster code.
 
-#define OP_MINMAX_FCN2(F, OP) \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  bool nan = false; \
-  octave_idx_type j = 0; \
-  for (octave_idx_type i = 0; i < m; i++) \
-    {  \
-      r[i] = v[i]; \
-      if (octave::math::isnan (v[i])) nan = true;  \
-    } \
-  j++; v += m; \
-  while (nan && j < n) \
-    { \
-      nan = false; \
-      for (octave_idx_type i = 0; i < m; i++) \
-        {  \
-          if (octave::math::isnan (v[i])) \
-            nan = true;  \
-          else if (octave::math::isnan (r[i]) || v[i] OP r[i]) \
-            r[i] = v[i]; \
-        } \
-      j++; v += m; \
-    } \
-  while (j < n) \
-    { \
-      for (octave_idx_type i = 0; i < m; i++) \
-        if (v[i] OP r[i]) r[i] = v[i]; \
-      j++; v += m; \
-    } \
-} \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type *ri, \
-   octave_idx_type m, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  bool nan = false; \
-  octave_idx_type j = 0; \
-  for (octave_idx_type i = 0; i < m; i++) \
-    {  \
-      r[i] = v[i]; ri[i] = j; \
-      if (octave::math::isnan (v[i])) nan = true;  \
-    } \
-  j++; v += m; \
-  while (nan && j < n) \
-    { \
-      nan = false; \
-      for (octave_idx_type i = 0; i < m; i++) \
-        {  \
-          if (octave::math::isnan (v[i])) \
-            nan = true;  \
-          else if (octave::math::isnan (r[i]) || v[i] OP r[i]) \
-            { r[i] = v[i]; ri[i] = j; } \
-        } \
-      j++; v += m; \
-    } \
-  while (j < n) \
-    { \
-      for (octave_idx_type i = 0; i < m; i++) \
-        if (v[i] OP r[i]) \
-          { r[i] = v[i]; ri[i] = j; } \
-      j++; v += m; \
-    } \
-}
+#define OP_MINMAX_FCN2(F, OP)                                           \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type m, octave_idx_type n)            \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    bool nan = false;                                                   \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+        if (octave::math::isnan (v[i]))                                 \
+          nan = true;                                                   \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    while (nan && j < n)                                                \
+      {                                                                 \
+        nan = false;                                                    \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          {                                                             \
+            if (octave::math::isnan (v[i]))                             \
+              nan = true;                                               \
+            else if (octave::math::isnan (r[i]) || v[i] OP r[i])        \
+              r[i] = v[i];                                              \
+          }                                                             \
+        j++;                                                            \
+        v += m;                                                         \
+      }                                                                 \
+    while (j < n)                                                       \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          if (v[i] OP r[i])                                             \
+            r[i] = v[i];                                                \
+        j++;                                                            \
+        v += m;                                                         \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri,                             \
+     octave_idx_type m, octave_idx_type n)                              \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    bool nan = false;                                                   \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+        ri[i] = j;                                                      \
+        if (octave::math::isnan (v[i]))                                 \
+          nan = true;                                                   \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    while (nan && j < n)                                                \
+      {                                                                 \
+        nan = false;                                                    \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          {                                                             \
+            if (octave::math::isnan (v[i]))                             \
+              nan = true;                                               \
+            else if (octave::math::isnan (r[i]) || v[i] OP r[i])        \
+              {                                                         \
+                r[i] = v[i];                                            \
+                ri[i] = j;                                              \
+              }                                                         \
+          }                                                             \
+        j++;                                                            \
+        v += m;                                                         \
+      }                                                                 \
+    while (j < n)                                                       \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          if (v[i] OP r[i])                                             \
+            {                                                           \
+              r[i] = v[i];                                              \
+              ri[i] = j;                                                \
+            }                                                           \
+        j++;                                                            \
+        v += m;                                                         \
+      }                                                                 \
+  }
 
 OP_MINMAX_FCN2 (mx_inline_min, <)
 OP_MINMAX_FCN2 (mx_inline_max, >)
 
-#define OP_MINMAX_FCNN(F) \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type l, \
-   octave_idx_type n, octave_idx_type u) \
-{ \
-  if (! n) return; \
-  if (l == 1) \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, n); \
-          v += n; r++; \
-        } \
-    } \
-  else \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, l, n); \
-          v += l*n; \
-          r += l; \
-        } \
-    } \
-} \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type *ri, \
-   octave_idx_type l, octave_idx_type n, octave_idx_type u) \
-{ \
-  if (! n) return; \
-  if (l == 1) \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, ri, n); \
-          v += n; r++; ri++; \
-        } \
-    } \
-  else \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, ri, l, n); \
-          v += l*n; \
-          r += l; ri += l; \
-        } \
-    } \
-}
+#define OP_MINMAX_FCNN(F)                                       \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type l,                       \
+     octave_idx_type n, octave_idx_type u)                      \
+  {                                                             \
+    if (! n)                                                    \
+      return;                                                   \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, n);                                        \
+            v += n;                                             \
+            r++;                                                \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, l, n);                                     \
+            v += l*n;                                           \
+            r += l;                                             \
+          }                                                     \
+      }                                                         \
+  }                                                             \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type *ri,                     \
+     octave_idx_type l, octave_idx_type n, octave_idx_type u)   \
+  {                                                             \
+    if (! n) return;                                            \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, n);                                    \
+            v += n;                                             \
+            r++;                                                \
+            ri++;                                               \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, l, n);                                 \
+            v += l*n;                                           \
+            r += l;                                             \
+            ri += l;                                            \
+          }                                                     \
+      }                                                         \
+  }
 
 OP_MINMAX_FCNN (mx_inline_min)
 OP_MINMAX_FCNN (mx_inline_max)
 
-#define OP_CUMMINMAX_FCN(F, OP) \
-template <typename T> \
-void F (const T *v, T *r, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  T tmp = v[0]; \
-  octave_idx_type i = 1; \
-  octave_idx_type j = 0; \
-  if (octave::math::isnan (tmp)) \
-    { \
-      for (; i < n && octave::math::isnan (v[i]); i++) ; \
-      for (; j < i; j++) r[j] = tmp; \
-      if (i < n) tmp = v[i]; \
-    } \
-  for (; i < n; i++) \
-    if (v[i] OP tmp) \
-      { \
-        for (; j < i; j++) r[j] = tmp; \
-        tmp = v[i]; \
-      } \
-  for (; j < i; j++) r[j] = tmp; \
-} \
-template <typename T> \
-void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  T tmp = v[0]; octave_idx_type tmpi = 0; \
-  octave_idx_type i = 1; \
-  octave_idx_type j = 0; \
-  if (octave::math::isnan (tmp)) \
-    { \
-      for (; i < n && octave::math::isnan (v[i]); i++) ; \
-      for (; j < i; j++) { r[j] = tmp; ri[j] = tmpi; } \
-      if (i < n) { tmp = v[i]; tmpi = i; } \
-    } \
-  for (; i < n; i++) \
-    if (v[i] OP tmp) \
-      { \
-        for (; j < i; j++) { r[j] = tmp; ri[j] = tmpi; } \
-        tmp = v[i]; tmpi = i; \
-      } \
-  for (; j < i; j++) { r[j] = tmp; ri[j] = tmpi; } \
-}
+#define OP_CUMMINMAX_FCN(F, OP)                                         \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type n)                          \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type i = 1;                                              \
+    octave_idx_type j = 0;                                              \
+    if (octave::math::isnan (tmp))                                      \
+      {                                                                 \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;              \
+        for (; j < i; j++)                                              \
+          r[j] = tmp;                                                   \
+        if (i < n)                                                      \
+          tmp = v[i];                                                   \
+      }                                                                 \
+    for (; i < n; i++)                                                  \
+      if (v[i] OP tmp)                                                  \
+        {                                                               \
+          for (; j < i; j++)                                            \
+            r[j] = tmp;                                                 \
+          tmp = v[i];                                                   \
+        }                                                               \
+    for (; j < i; j++)                                                  \
+      r[j] = tmp;                                                       \
+  }                                                                     \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n)     \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type tmpi = 0;                                           \
+    octave_idx_type i = 1;                                              \
+    octave_idx_type j = 0;                                              \
+    if (octave::math::isnan (tmp))                                      \
+      {                                                                 \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;              \
+        for (; j < i; j++)                                              \
+          {                                                             \
+            r[j] = tmp;                                                 \
+            ri[j] = tmpi;                                               \
+          }                                                             \
+        if (i < n)                                                      \
+          {                                                             \
+            tmp = v[i];                                                 \
+            tmpi = i;                                                   \
+          }                                                             \
+      }                                                                 \
+    for (; i < n; i++)                                                  \
+      if (v[i] OP tmp)                                                  \
+        {                                                               \
+          for (; j < i; j++)                                            \
+            {                                                           \
+              r[j] = tmp;                                               \
+              ri[j] = tmpi;                                             \
+            }                                                           \
+          tmp = v[i];                                                   \
+          tmpi = i;                                                     \
+        }                                                               \
+    for (; j < i; j++)                                                  \
+      {                                                                 \
+        r[j] = tmp;                                                     \
+        ri[j] = tmpi;                                                   \
+      }                                                                 \
+  }
 
 OP_CUMMINMAX_FCN (mx_inline_cummin, <)
 OP_CUMMINMAX_FCN (mx_inline_cummax, >)
@@ -913,137 +1166,191 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
 // for NaNs until we detect that no row will yield a NaN, in which case we
 // proceed to a faster code.
 
-#define OP_CUMMINMAX_FCN2(F, OP) \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  bool nan = false; \
-  const T *r0; \
-  octave_idx_type j = 0; \
-  for (octave_idx_type i = 0; i < m; i++) \
-    {  \
-      r[i] = v[i]; \
-      if (octave::math::isnan (v[i])) nan = true;  \
-    } \
-  j++; v += m; r0 = r; r += m; \
-  while (nan && j < n) \
-    { \
-      nan = false; \
-      for (octave_idx_type i = 0; i < m; i++) \
-        {  \
-          if (octave::math::isnan (v[i])) \
-            { r[i] = r0[i]; nan = true; } \
-          else if (octave::math::isnan (r0[i]) || v[i] OP r0[i]) \
-            r[i] = v[i]; \
-          else \
-            r[i] = r0[i]; \
-        } \
-      j++; v += m; r0 = r; r += m; \
-    } \
-  while (j < n) \
-    { \
-      for (octave_idx_type i = 0; i < m; i++) \
-        if (v[i] OP r0[i]) \
-          r[i] = v[i]; \
-        else \
-          r[i] = r0[i]; \
-      j++; v += m; r0 = r; r += m; \
-    } \
-} \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type *ri, \
-   octave_idx_type m, octave_idx_type n) \
-{ \
-  if (! n) return; \
-  bool nan = false; \
-  const T *r0; const octave_idx_type *r0i; \
-  octave_idx_type j = 0; \
-  for (octave_idx_type i = 0; i < m; i++) \
-    {  \
-      r[i] = v[i]; ri[i] = 0; \
-      if (octave::math::isnan (v[i])) nan = true;  \
-    } \
-  j++; v += m; r0 = r; r += m; r0i = ri; ri += m;  \
-  while (nan && j < n) \
-    { \
-      nan = false; \
-      for (octave_idx_type i = 0; i < m; i++) \
-        {  \
-          if (octave::math::isnan (v[i])) \
-            { r[i] = r0[i]; ri[i] = r0i[i]; nan = true; } \
-          else if (octave::math::isnan (r0[i]) || v[i] OP r0[i]) \
-            { r[i] = v[i]; ri[i] = j; }\
-          else \
-            { r[i] = r0[i]; ri[i] = r0i[i]; }\
-        } \
-      j++; v += m; r0 = r; r += m; r0i = ri; ri += m;  \
-    } \
-  while (j < n) \
-    { \
-      for (octave_idx_type i = 0; i < m; i++) \
-        if (v[i] OP r0[i]) \
-          { r[i] = v[i]; ri[i] = j; } \
-        else \
-          { r[i] = r0[i]; ri[i] = r0i[i]; } \
-      j++; v += m; r0 = r; r += m; r0i = ri; ri += m;  \
-    } \
-}
+#define OP_CUMMINMAX_FCN2(F, OP)                                        \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type m, octave_idx_type n)            \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    bool nan = false;                                                   \
+    const T *r0;                                                        \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+        if (octave::math::isnan (v[i]))                                 \
+          nan = true;                                                   \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    r0 = r;                                                             \
+    r += m;                                                             \
+    while (nan && j < n)                                                \
+      {                                                                 \
+        nan = false;                                                    \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          {                                                             \
+            if (octave::math::isnan (v[i]))                             \
+              {                                                         \
+                r[i] = r0[i];                                           \
+                nan = true;                                             \
+              }                                                         \
+            else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])      \
+              r[i] = v[i];                                              \
+            else                                                        \
+              r[i] = r0[i];                                             \
+          }                                                             \
+        j++;                                                            \
+        v += m;                                                         \
+        r0 = r;                                                         \
+        r += m;                                                         \
+      }                                                                 \
+    while (j < n)                                                       \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          if (v[i] OP r0[i])                                            \
+            r[i] = v[i];                                                \
+          else                                                          \
+            r[i] = r0[i];                                               \
+        j++;                                                            \
+        v += m;                                                         \
+        r0 = r;                                                         \
+        r += m;                                                         \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri,                             \
+     octave_idx_type m, octave_idx_type n)                              \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    bool nan = false;                                                   \
+    const T *r0;                                                        \
+    const octave_idx_type *r0i;                                         \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i]; ri[i] = 0;                                         \
+        if (octave::math::isnan (v[i]))                                 \
+          nan = true;                                                   \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    r0 = r;                                                             \
+    r += m;                                                             \
+    r0i = ri;                                                           \
+    ri += m;                                                            \
+    while (nan && j < n)                                                \
+      {                                                                 \
+        nan = false;                                                    \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          {                                                             \
+            if (octave::math::isnan (v[i]))                             \
+              {                                                         \
+                r[i] = r0[i];                                           \
+                ri[i] = r0i[i];                                         \
+                nan = true;                                             \
+              }                                                         \
+            else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])      \
+              {                                                         \
+                r[i] = v[i];                                            \
+                ri[i] = j;                                              \
+              }                                                         \
+            else                                                        \
+              {                                                         \
+                r[i] = r0[i];                                           \
+                ri[i] = r0i[i];                                         \
+              }                                                         \
+          }                                                             \
+        j++;                                                            \
+        v += m;                                                         \
+        r0 = r;                                                         \
+        r += m;                                                         \
+        r0i = ri;                                                       \
+        ri += m;                                                        \
+      }                                                                 \
+    while (j < n)                                                       \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < m; i++)                         \
+          if (v[i] OP r0[i])                                            \
+            {                                                           \
+              r[i] = v[i];                                              \
+              ri[i] = j;                                                \
+            }                                                           \
+          else                                                          \
+            {                                                           \
+              r[i] = r0[i];                                             \
+              ri[i] = r0i[i];                                           \
+            }                                                           \
+        j++;                                                            \
+        v += m;                                                         \
+        r0 = r;                                                         \
+        r += m;                                                         \
+        r0i = ri;                                                       \
+        ri += m;                                                        \
+      }                                                                 \
+  }
 
 OP_CUMMINMAX_FCN2 (mx_inline_cummin, <)
 OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
 
-#define OP_CUMMINMAX_FCNN(F) \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type l, \
-   octave_idx_type n, octave_idx_type u) \
-{ \
-  if (! n) return; \
-  if (l == 1) \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, n); \
-          v += n; r += n; \
-        } \
-    } \
-  else \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, l, n); \
-          v += l*n; \
-          r += l*n; \
-        } \
-    } \
-} \
-template <typename T> \
-inline void \
-F (const T *v, T *r, octave_idx_type *ri, \
-   octave_idx_type l, octave_idx_type n, octave_idx_type u) \
-{ \
-  if (! n) return; \
-  if (l == 1) \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, ri, n); \
-          v += n; r += n; ri += n; \
-        } \
-    } \
-  else \
-    { \
-      for (octave_idx_type i = 0; i < u; i++) \
-        { \
-          F (v, r, ri, l, n); \
-          v += l*n; \
-          r += l*n; ri += l*n; \
-        } \
-    } \
-}
+#define OP_CUMMINMAX_FCNN(F)                                    \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type l,                       \
+     octave_idx_type n, octave_idx_type u)                      \
+  {                                                             \
+    if (! n)                                                    \
+      return;                                                   \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, n);                                        \
+            v += n;                                             \
+            r += n;                                             \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, l, n);                                     \
+            v += l*n;                                           \
+            r += l*n;                                           \
+          }                                                     \
+      }                                                         \
+  }                                                             \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type *ri,                     \
+     octave_idx_type l, octave_idx_type n, octave_idx_type u)   \
+  {                                                             \
+    if (! n)                                                    \
+      return;                                                   \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, n);                                    \
+            v += n;                                             \
+            r += n;                                             \
+            ri += n;                                            \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, l, n);                                 \
+            v += l*n;                                           \
+            r += l*n;                                           \
+            ri += l*n;                                          \
+          }                                                     \
+      }                                                         \
+  }
 
 OP_CUMMINMAX_FCNN (mx_inline_cummin)
 OP_CUMMINMAX_FCNN (mx_inline_cummax)
@@ -1310,8 +1617,8 @@ template <typename R>
 inline Array<R>
 do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
                void (*mx_diff_op) (const R *, R *,
-                                   octave_idx_type, octave_idx_type, octave_idx_type,
-                                   octave_idx_type))
+                                   octave_idx_type, octave_idx_type,
+                                   octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
   if (order <= 0)

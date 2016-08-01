@@ -693,7 +693,7 @@ private:
     return retval;
   }
 
-#define JIT_PARAM_ARGS llvm::ExecutionEngine *ee, T fn,     \
+#define JIT_PARAM_ARGS llvm::ExecutionEngine *ee, T fn, \
     const llvm::Twine& name, jit_type *ret,
 #define JIT_PARAMS ee, fn, name, ret,
 #define CREATE_FUNCTION(N) JIT_EXPAND(template <typename T> jit_function, \

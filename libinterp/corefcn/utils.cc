@@ -685,8 +685,7 @@ do_string_escapes (const std::string& s)
                 }
 
               if (k == j+1)
-                warning ("malformed hex escape sequence '\\x' --\
- converting to '\\0'");
+                warning ("malformed hex escape sequence '\\x' -- converting to '\\0'");
 
               retval[i] = tmpi;
               j = k - 1;
@@ -694,8 +693,7 @@ do_string_escapes (const std::string& s)
             }
 
             default:
-              warning ("unrecognized escape sequence '\\%c' --\
- converting to '%c'", s[j], s[j]);
+              warning ("unrecognized escape sequence '\\%c' -- converting to '%c'", s[j], s[j]);
               retval[i] = s[j];
               break;
             }

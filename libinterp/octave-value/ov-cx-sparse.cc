@@ -908,15 +908,15 @@ octave_sparse_complex_matrix::map (unary_mapper_t umap) const
     case umap_imag:
       return ::imag (matrix);
 
-#define ARRAY_METHOD_MAPPER(UMAP, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (matrix.FCN ())
+#define ARRAY_METHOD_MAPPER(UMAP, FCN)          \
+      case umap_ ## UMAP:                       \
+        return octave_value (matrix.FCN ())
 
       ARRAY_METHOD_MAPPER (abs, abs);
 
-#define ARRAY_MAPPER(UMAP, TYPE, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (matrix.map<TYPE> (FCN))
+#define ARRAY_MAPPER(UMAP, TYPE, FCN)                   \
+      case umap_ ## UMAP:                               \
+        return octave_value (matrix.map<TYPE> (FCN))
 
       ARRAY_MAPPER (acos, Complex, octave::math::acos);
       ARRAY_MAPPER (acosh, Complex, octave::math::acosh);

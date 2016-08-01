@@ -3128,8 +3128,8 @@ operator * (const FloatMatrix& a, const FloatMatrix& b)
 
 // FIXME: it would be nice to share code among the min/max functions below.
 
-#define EMPTY_RETURN_CHECK(T) \
-  if (nr == 0 || nc == 0) \
+#define EMPTY_RETURN_CHECK(T)                   \
+  if (nr == 0 || nc == 0)                       \
     return T (nr, nc);
 
 FloatMatrix

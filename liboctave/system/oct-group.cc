@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-group.h"
 #include "str-vec.h"
 
-#define NOT_SUPPORTED(nm) \
+#define NOT_SUPPORTED(nm)                       \
   nm ": not supported on this system"
 
 OCTAVE_NORETURN static

@@ -51,16 +51,16 @@ namespace octave
     equiv fp_par[4];
   };
 
-  #define INIT_FLT_PAR(fp, fmt, sm1, sm2, lrg1, lrg2, rt1, rt2, dv1, dv2) \
-    do \
-      { \
-        fp.fp_fmt = (fmt); \
-        fp.fp_par[0].i[0] = (sm1);  fp.fp_par[0].i[1] = (sm2); \
-        fp.fp_par[1].i[0] = (lrg1); fp.fp_par[1].i[1] = (lrg2); \
-        fp.fp_par[2].i[0] = (rt1);  fp.fp_par[2].i[1] = (rt2); \
-        fp.fp_par[3].i[0] = (dv1);  fp.fp_par[3].i[1] = (dv2); \
-      } \
-    while (0)
+#define INIT_FLT_PAR(fp, fmt, sm1, sm2, lrg1, lrg2, rt1, rt2, dv1, dv2) \
+  do                                                                    \
+    {                                                                   \
+      fp.fp_fmt = (fmt);                                                \
+      fp.fp_par[0].i[0] = (sm1);  fp.fp_par[0].i[1] = (sm2);            \
+      fp.fp_par[1].i[0] = (lrg1); fp.fp_par[1].i[1] = (lrg2);           \
+      fp.fp_par[2].i[0] = (rt1);  fp.fp_par[2].i[1] = (rt2);            \
+      fp.fp_par[3].i[0] = (dv1);  fp.fp_par[3].i[1] = (dv2);            \
+    }                                                                   \
+  while (0)
 
   static int
   equiv_compare (const equiv *std, const equiv *v, int len)

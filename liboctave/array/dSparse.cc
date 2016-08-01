@@ -7477,12 +7477,12 @@ SparseMatrix::sum (int dim) const
 SparseMatrix
 SparseMatrix::sumsq (int dim) const
 {
-#define ROW_EXPR \
-  double d = data (i); \
+#define ROW_EXPR                                \
+  double d = data (i);                          \
   tmp[ridx (i)] += d * d
 
-#define COL_EXPR \
-  double d = data (i); \
+#define COL_EXPR                                \
+  double d = data (i);                          \
   tmp[j] += d * d
 
   SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR,
@@ -7656,8 +7656,8 @@ operator * (const SparseMatrix& a, const PermMatrix& p)
 
 // FIXME: it would be nice to share code among the min/max functions below.
 
-#define EMPTY_RETURN_CHECK(T) \
-  if (nr == 0 || nc == 0) \
+#define EMPTY_RETURN_CHECK(T)                   \
+  if (nr == 0 || nc == 0)                       \
     return T (nr, nc);
 
 SparseMatrix

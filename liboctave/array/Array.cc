@@ -2466,47 +2466,62 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
   return m;
 }
 
-#define NO_INSTANTIATE_ARRAY_SORT(T) \
- \
-template <> Array<T>  \
-Array<T>::sort (int, sortmode) const { return *this; } \
- \
-template <> Array<T>  \
-Array<T>::sort (Array<octave_idx_type> &sidx, int, sortmode) const \
-{ sidx = Array<octave_idx_type> (); return *this; } \
- \
-template <> sortmode  \
-Array<T>::is_sorted (sortmode) const  \
-{ return UNSORTED; } \
- \
-Array<T>::compare_fcn_type \
-safe_comparator (sortmode, const Array<T>&, bool) \
-{ return 0; } \
- \
-template <> Array<octave_idx_type>  \
-Array<T>::sort_rows_idx (sortmode) const  \
-{ return Array<octave_idx_type> (); } \
- \
-template <> sortmode  \
-Array<T>::is_sorted_rows (sortmode) const \
-{ return UNSORTED; } \
- \
-template <> octave_idx_type  \
-Array<T>::lookup (T const &, sortmode) const \
-{ return 0; } \
-template <> Array<octave_idx_type>  \
-Array<T>::lookup (const Array<T>&, sortmode) const \
-{ return Array<octave_idx_type> (); } \
- \
-template <> octave_idx_type \
-Array<T>::nnz (void) const\
-{ return 0; } \
-template <> Array<octave_idx_type> \
-Array<T>::find (octave_idx_type, bool) const\
-{ return Array<octave_idx_type> (); } \
- \
-template <> Array<T>  \
-Array<T>::nth_element (const idx_vector&, int) const { return Array<T> (); }
+#define NO_INSTANTIATE_ARRAY_SORT(T)                                    \
+  template <> Array<T>                                                  \
+  Array<T>::sort (int, sortmode) const                                  \
+  {                                                                     \
+    return *this;                                                       \
+  }                                                                     \
+  template <> Array<T>                                                  \
+  Array<T>::sort (Array<octave_idx_type> &sidx, int, sortmode) const    \
+  {                                                                     \
+    sidx = Array<octave_idx_type> ();                                   \
+    return *this;                                                       \
+  }                                                                     \
+  template <> sortmode                                                  \
+  Array<T>::is_sorted (sortmode) const                                  \
+  {                                                                     \
+    return UNSORTED;                                                    \
+  }                                                                     \
+  Array<T>::compare_fcn_type                                            \
+  safe_comparator (sortmode, const Array<T>&, bool)                     \
+  {                                                                     \
+    return 0;                                                           \
+  }                                                                     \
+  template <> Array<octave_idx_type>                                    \
+  Array<T>::sort_rows_idx (sortmode) const                              \
+  {                                                                     \
+    return Array<octave_idx_type> ();                                   \
+  }                                                                     \
+  template <> sortmode                                                  \
+  Array<T>::is_sorted_rows (sortmode) const                             \
+  {                                                                     \
+    return UNSORTED;                                                    \
+  }                                                                     \
+  template <> octave_idx_type                                           \
+  Array<T>::lookup (T const &, sortmode) const                          \
+  {                                                                     \
+    return 0;                                                           \
+  }                                                                     \
+  template <> Array<octave_idx_type>                                    \
+  Array<T>::lookup (const Array<T>&, sortmode) const                    \
+  {                                                                     \
+    return Array<octave_idx_type> ();                                   \
+  }                                                                     \
+  template <> octave_idx_type                                           \
+  Array<T>::nnz (void) const                                            \
+  {                                                                     \
+    return 0;                                                           \
+  }                                                                     \
+  template <> Array<octave_idx_type>                                    \
+  Array<T>::find (octave_idx_type, bool) const                          \
+  {                                                                     \
+    return Array<octave_idx_type> ();                                   \
+  }                                                                     \
+  template <> Array<T>                                                  \
+  Array<T>::nth_element (const idx_vector&, int) const {                \
+    return Array<T> ();                                                 \
+  }
 
 template <typename T>
 Array<T>
@@ -2748,7 +2763,7 @@ void Array<T>::instantiation_guard ()
   T::__xXxXx__ ();
 }
 
-#define INSTANTIATE_ARRAY(T, API) \
+#define INSTANTIATE_ARRAY(T, API)                       \
   template <> void Array<T>::instantiation_guard () { } \
   template class API Array<T>
 

@@ -57,32 +57,32 @@ extern OCTINTERP_API bool octave_initialized;
 // Call a function with exceptions handled to avoid problems with
 // errors while shutting down.
 
-#define OCTAVE_IGNORE_EXCEPTION(E) \
-  catch (E) \
-    { \
+#define OCTAVE_IGNORE_EXCEPTION(E)                                      \
+  catch (E)                                                             \
+    {                                                                   \
       std::cerr << "error: ignoring " #E " while preparing to exit" << std::endl; \
-      recover_from_exception (); \
+      recover_from_exception ();                                        \
     }
 
-#define OCTAVE_SAFE_CALL(F, ARGS) \
-  do \
-    { \
-      try \
-        { \
-          octave::unwind_protect frame; \
- \
-          frame.protect_var (Vdebug_on_error); \
-          frame.protect_var (Vdebug_on_warning); \
- \
-          Vdebug_on_error = false; \
-          Vdebug_on_warning = false; \
- \
-          F ARGS; \
-        } \
-      OCTAVE_IGNORE_EXCEPTION (const octave_interrupt_exception&) \
-      OCTAVE_IGNORE_EXCEPTION (const octave_execution_exception&) \
-      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&) \
-    } \
+#define OCTAVE_SAFE_CALL(F, ARGS)                                       \
+  do                                                                    \
+    {                                                                   \
+      try                                                               \
+        {                                                               \
+          octave::unwind_protect frame;                                 \
+                                                                        \
+          frame.protect_var (Vdebug_on_error);                          \
+          frame.protect_var (Vdebug_on_warning);                        \
+                                                                        \
+          Vdebug_on_error = false;                                      \
+          Vdebug_on_warning = false;                                    \
+                                                                        \
+          F ARGS;                                                       \
+        }                                                               \
+      OCTAVE_IGNORE_EXCEPTION (const octave_interrupt_exception&)       \
+        OCTAVE_IGNORE_EXCEPTION (const octave_execution_exception&)     \
+        OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                 \
+        }                                                               \
   while (0)
 
 namespace octave

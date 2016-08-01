@@ -81,19 +81,19 @@ can have any value real or complex value.  However, for polygamma functions
 
   if (k == 0)
     {
-#define FLOAT_BRANCH(T, A, M, E) \
-      if (oct_z.is_ ## T ##_type ()) \
-        { \
-          const A ## NDArray z = oct_z.M ## array_value (); \
-          A ## NDArray psi_z (z.dims ()); \
- \
-          const E* zv = z.data (); \
-          E* psi_zv = psi_z.fortran_vec (); \
-          const octave_idx_type n = z.numel (); \
-          for (octave_idx_type i = 0; i < n; i++) \
-            *psi_zv++ = octave::math::psi (*zv++); \
- \
-          retval = psi_z; \
+#define FLOAT_BRANCH(T, A, M, E)                                \
+      if (oct_z.is_ ## T ##_type ())                            \
+        {                                                       \
+          const A ## NDArray z = oct_z.M ## array_value ();     \
+          A ## NDArray psi_z (z.dims ());                       \
+                                                                \
+          const E* zv = z.data ();                              \
+          E* psi_zv = psi_z.fortran_vec ();                     \
+          const octave_idx_type n = z.numel ();                 \
+          for (octave_idx_type i = 0; i < n; i++)               \
+            *psi_zv++ = octave::math::psi (*zv++);              \
+                                                                \
+          retval = psi_z;                                       \
         }
 
       if (oct_z.is_complex_type ())
@@ -118,23 +118,23 @@ can have any value real or complex value.  However, for polygamma functions
       if (! oct_z.is_real_type ())
         error ("psi: Z must be real value for polygamma (K > 0)");
 
-#define FLOAT_BRANCH(T, A, M, E) \
-      if (oct_z.is_ ## T ##_type ()) \
-        { \
-          const A ## NDArray z = oct_z.M ## array_value (); \
-          A ## NDArray psi_z (z.dims ()); \
- \
-          const E* zv = z.data (); \
-          E* psi_zv = psi_z.fortran_vec (); \
-          const octave_idx_type n = z.numel (); \
-          for (octave_idx_type i = 0; i < n; i++) \
-            { \
-              if (*zv < 0) \
+#define FLOAT_BRANCH(T, A, M, E)                                        \
+      if (oct_z.is_ ## T ##_type ())                                    \
+        {                                                               \
+          const A ## NDArray z = oct_z.M ## array_value ();             \
+          A ## NDArray psi_z (z.dims ());                               \
+                                                                        \
+          const E* zv = z.data ();                                      \
+          E* psi_zv = psi_z.fortran_vec ();                             \
+          const octave_idx_type n = z.numel ();                         \
+          for (octave_idx_type i = 0; i < n; i++)                       \
+            {                                                           \
+              if (*zv < 0)                                              \
                 error ("psi: Z must be non-negative for polygamma (K > 0)"); \
- \
-              *psi_zv++ = octave::math::psi (k, *zv++); \
-            } \
-          retval = psi_z; \
+                                                                        \
+              *psi_zv++ = octave::math::psi (k, *zv++);                 \
+            }                                                           \
+          retval = psi_z;                                               \
         }
 
       FLOAT_BRANCH(double, , , double)

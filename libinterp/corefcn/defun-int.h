@@ -80,18 +80,18 @@ defun_isargout (int, int);
 extern OCTINTERP_API void
 defun_isargout (int, int, bool *);
 
-#define FORWARD_DECLARE_FUNX(name) \
-  extern OCTAVE_EXPORT octave_value_list \
+#define FORWARD_DECLARE_FUNX(name)              \
+  extern OCTAVE_EXPORT octave_value_list        \
   name (const octave_value_list&, int)
 
-#define FORWARD_DECLARE_FUN(name) \
+#define FORWARD_DECLARE_FUN(name)               \
   FORWARD_DECLARE_FUNX (F ## name)
 
-#define DECLARE_FUNX(name, args_name, nargout_name) \
-  OCTAVE_EXPORT octave_value_list \
+#define DECLARE_FUNX(name, args_name, nargout_name)             \
+  OCTAVE_EXPORT octave_value_list                               \
   name (const octave_value_list& args_name, int nargout_name)
 
-#define DECLARE_FUN(name, args_name, nargout_name) \
+#define DECLARE_FUN(name, args_name, nargout_name)      \
   DECLARE_FUNX (F ## name, args_name, nargout_name)
 
 // Define the code that will be used to insert the new function into
@@ -104,27 +104,28 @@ typedef octave_function *
   (*octave_dld_fcn_getter) (const octave::dynamic_library&, bool relative);
 
 #if defined (OCTAVE_SOURCE)
-#  define DEFINE_FUN_INSTALLER_FUN(name, doc) \
-     DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, "external-doc")
+#  define DEFINE_FUN_INSTALLER_FUN(name, doc)                           \
+  DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, "external-doc")
 #else
-#  define DEFINE_FUN_INSTALLER_FUN(name, doc) \
-     DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)
+#  define DEFINE_FUN_INSTALLER_FUN(name, doc)                   \
+  DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)
 #endif
 
-#define DEFINE_FUNX_INSTALLER_FUN(name, fname, gname, doc) \
-  extern "C" \
-  OCTAVE_EXPORT \
-  octave_function * \
-  gname (const octave::dynamic_library& shl, bool relative) \
-  { \
-    check_version (OCTAVE_API_VERSION, name); \
- \
-    octave_dld_function *fcn = octave_dld_function::create (fname, shl, name, doc); \
- \
-    if (relative) \
-      fcn->mark_relative (); \
- \
-    return fcn; \
+#define DEFINE_FUNX_INSTALLER_FUN(name, fname, gname, doc)              \
+  extern "C"                                                            \
+  OCTAVE_EXPORT                                                         \
+  octave_function *                                                     \
+  gname (const octave::dynamic_library& shl, bool relative)             \
+  {                                                                     \
+    check_version (OCTAVE_API_VERSION, name);                           \
+                                                                        \
+    octave_dld_function *fcn                                            \
+      = octave_dld_function::create (fname, shl, name, doc);            \
+                                                                        \
+    if (relative)                                                       \
+      fcn->mark_relative ();                                            \
+                                                                        \
+    return fcn;                                                         \
   }
 
 #endif

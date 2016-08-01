@@ -1388,9 +1388,10 @@ octave_cell::map (unary_mapper_t umap) const
 {
   switch (umap)
     {
-#define FORWARD_MAPPER(UMAP) \
-    case umap_ ## UMAP: \
-      return matrix.UMAP ()
+#define FORWARD_MAPPER(UMAP)                    \
+      case umap_ ## UMAP:                       \
+        return matrix.UMAP ()
+
     FORWARD_MAPPER (xisalnum);
     FORWARD_MAPPER (xisalpha);
     FORWARD_MAPPER (xisascii);

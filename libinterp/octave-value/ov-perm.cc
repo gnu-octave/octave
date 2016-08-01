@@ -213,12 +213,12 @@ octave_perm_matrix::float_complex_value (bool) const
   return retval;
 }
 
-#define FORWARD_MATRIX_VALUE(TYPE, PREFIX) \
-TYPE \
-octave_perm_matrix::PREFIX ## _value (bool frc_str_conv) const \
-{ \
-  return to_dense ().PREFIX ## _value (frc_str_conv); \
-}
+#define FORWARD_MATRIX_VALUE(TYPE, PREFIX)                              \
+  TYPE                                                                  \
+  octave_perm_matrix::PREFIX ## _value (bool frc_str_conv) const        \
+  {                                                                     \
+    return to_dense ().PREFIX ## _value (frc_str_conv);                 \
+  }
 
 SparseMatrix
 octave_perm_matrix::sparse_matrix_value (bool) const

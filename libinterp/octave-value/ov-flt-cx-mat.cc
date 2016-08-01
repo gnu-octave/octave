@@ -702,18 +702,18 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
     case umap_conj:
       return ::conj (matrix);
 
-#define ARRAY_METHOD_MAPPER(UMAP, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (matrix.FCN ())
+#define ARRAY_METHOD_MAPPER(UMAP, FCN)          \
+      case umap_ ## UMAP:                       \
+        return octave_value (matrix.FCN ())
 
       ARRAY_METHOD_MAPPER (abs, abs);
       ARRAY_METHOD_MAPPER (isnan, isnan);
       ARRAY_METHOD_MAPPER (isinf, isinf);
       ARRAY_METHOD_MAPPER (isfinite, isfinite);
 
-#define ARRAY_MAPPER(UMAP, TYPE, FCN) \
-    case umap_ ## UMAP: \
-      return octave_value (matrix.map<TYPE> (FCN))
+#define ARRAY_MAPPER(UMAP, TYPE, FCN)                   \
+      case umap_ ## UMAP:                               \
+        return octave_value (matrix.map<TYPE> (FCN))
 
       ARRAY_MAPPER (acos, FloatComplex, octave::math::acos);
       ARRAY_MAPPER (acosh, FloatComplex, octave::math::acosh);

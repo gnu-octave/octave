@@ -458,74 +458,75 @@ bitshift (float a, int n, int64_t mask)
 // bits than in the type, so we need to test for the size of the
 // shift.
 
-#define DO_BITSHIFT(T) \
-  double d1, d2; \
- \
-  if (! n.all_integers (d1, d2)) \
-    error ("bitshift: K must be a scalar or array of integers"); \
- \
-  int m_nel = m.numel (); \
-  int n_nel = n.numel (); \
- \
-  bool is_scalar_op = (m_nel == 1 || n_nel == 1); \
- \
-  dim_vector m_dv = m.dims (); \
-  dim_vector n_dv = n.dims (); \
- \
-  bool is_array_op = (m_dv == n_dv); \
- \
-  if (! is_array_op && ! is_scalar_op) \
+#define DO_BITSHIFT(T)                                                  \
+  double d1, d2;                                                        \
+                                                                        \
+  if (! n.all_integers (d1, d2))                                        \
+    error ("bitshift: K must be a scalar or array of integers");        \
+                                                                        \
+  int m_nel = m.numel ();                                               \
+  int n_nel = n.numel ();                                               \
+                                                                        \
+  bool is_scalar_op = (m_nel == 1 || n_nel == 1);                       \
+                                                                        \
+  dim_vector m_dv = m.dims ();                                          \
+  dim_vector n_dv = n.dims ();                                          \
+                                                                        \
+  bool is_array_op = (m_dv == n_dv);                                    \
+                                                                        \
+  if (! is_array_op && ! is_scalar_op)                                  \
     error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
- \
-  T ## NDArray result; \
- \
-  if (m_nel != 1) \
-    result.resize (m_dv); \
-  else \
-    result.resize (n_dv); \
- \
-  for (int i = 0; i < m_nel; i++) \
-    if (is_scalar_op) \
-      for (int k = 0; k < n_nel; k++) \
-        if (static_cast<int> (n(k)) >= bits_in_type) \
-          result(i+k) = 0; \
-        else \
+                                                                        \
+  T ## NDArray result;                                                  \
+                                                                        \
+  if (m_nel != 1)                                                       \
+    result.resize (m_dv);                                               \
+  else                                                                  \
+    result.resize (n_dv);                                               \
+                                                                        \
+  for (int i = 0; i < m_nel; i++)                                       \
+    if (is_scalar_op)                                                   \
+      for (int k = 0; k < n_nel; k++)                                   \
+        if (static_cast<int> (n(k)) >= bits_in_type)                    \
+          result(i+k) = 0;                                              \
+        else                                                            \
           result(i+k) = bitshift (m(i), static_cast<int> (n(k)), mask); \
-    else \
-      if (static_cast<int> (n(i)) >= bits_in_type) \
-        result(i) = 0; \
-      else \
-        result(i) = bitshift (m(i), static_cast<int> (n(i)), mask); \
- \
+    else                                                                \
+      if (static_cast<int> (n(i)) >= bits_in_type)                      \
+        result(i) = 0;                                                  \
+      else                                                              \
+        result(i) = bitshift (m(i), static_cast<int> (n(i)), mask);     \
+                                                                        \
   retval = result;
 
-#define DO_UBITSHIFT(T, N) \
-  do \
-    { \
-      int bits_in_type = octave_ ## T :: nbits (); \
-      T ## NDArray m = m_arg.T ## _array_value (); \
-        octave_ ## T mask = octave_ ## T::max (); \
-      if ((N) < bits_in_type) \
-        mask = bitshift (mask, (N) - bits_in_type); \
-      else if ((N) < 1) \
-        mask = 0; \
-      DO_BITSHIFT (T); \
-    } \
+#define DO_UBITSHIFT(T, N)                              \
+  do                                                    \
+    {                                                   \
+      int bits_in_type = octave_ ## T :: nbits ();      \
+      T ## NDArray m = m_arg.T ## _array_value ();      \
+      octave_ ## T mask = octave_ ## T::max ();         \
+      if ((N) < bits_in_type)                           \
+        mask = bitshift (mask, (N) - bits_in_type);     \
+      else if ((N) < 1)                                 \
+        mask = 0;                                       \
+      DO_BITSHIFT (T);                                  \
+    }                                                   \
   while (0)
 
-#define DO_SBITSHIFT(T, N) \
-  do \
-    { \
-      int bits_in_type = octave_ ## T :: nbits (); \
-      T ## NDArray m = m_arg.T ## _array_value (); \
-        octave_ ## T mask = octave_ ## T::max (); \
-      if ((N) < bits_in_type) \
-        mask = bitshift (mask, (N) - bits_in_type); \
-      else if ((N) < 1) \
-        mask = 0; \
-      mask = mask | octave_ ## T :: min (); /* FIXME: 2's complement only? */ \
-      DO_BITSHIFT (T); \
-    } \
+#define DO_SBITSHIFT(T, N)                              \
+  do                                                    \
+    {                                                   \
+      int bits_in_type = octave_ ## T :: nbits ();      \
+      T ## NDArray m = m_arg.T ## _array_value ();      \
+      octave_ ## T mask = octave_ ## T::max ();         \
+      if ((N) < bits_in_type)                           \
+        mask = bitshift (mask, (N) - bits_in_type);     \
+      else if ((N) < 1)                                 \
+        mask = 0;                                       \
+      /* FIXME: 2's complement only? */                 \
+      mask = mask | octave_ ## T :: min ();             \
+      DO_BITSHIFT (T);                                  \
+    }                                                   \
   while (0)
 
 DEFUN (bitshift, args, ,

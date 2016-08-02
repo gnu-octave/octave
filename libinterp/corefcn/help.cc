@@ -28,8 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <algorithm>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <map>
 #include <sstream>
 #include <string>
 
@@ -967,6 +968,123 @@ raw_help_from_map (const std::string& nm, std::string& h,
   return symbol_found;
 }
 
+static bool
+raw_help_from_docstrings_file (const std::string& nm, std::string& h,
+                               bool& symbol_found)
+{
+  typedef std::pair<std::streampos, std::streamoff> txt_limits_type;
+  typedef std::map<std::string, txt_limits_type> help_txt_map_type;
+
+  static help_txt_map_type help_txt_map;
+  static bool initialized = false;
+
+  h = "";
+  symbol_found = false;
+
+  // FIXME: Should we cache the timestamp of the file and reload the
+  // offsets if it changes?  Or just warn about that?  Or just ignore
+  // it, and assume it won't change?
+
+  if (! initialized)
+    {
+      std::string fname = Vbuilt_in_docstrings_file;
+
+      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+
+      if (! file)
+        error ("failed to open docstrings file: %s", fname.c_str ());
+
+      // Ignore header;
+      file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
+
+      if (file.eof ())
+        error ("invalid built-in-docstrings file!");
+
+      // FIXME: eliminate fixed buffer size.
+      size_t bufsize = 1000;
+      OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
+
+      while (! file.eof ())
+        {
+          std::string name;
+          int i = 0;
+          int c;
+          while (file && (c = file.get ()) != std::istream::traits_type::eof ())
+            {
+              if (c == '\n' || c == '\r')
+                {
+                  buf[i] = '\0';
+                  name = buf;
+                  break;
+                }
+              else
+                buf[i++] = c;
+            }
+
+          // Skip @c FILENAME which is part of current DOCSTRINGS
+          // syntax.  This may disappear if a specific format for
+          // docstring files is developed.
+          while (file
+                 && (c = file.get ()) != std::istream::traits_type::eof ()
+                 && c != '\n' && c != '\r')
+            ; // skip text
+
+          // skip newline characters
+          while (file
+                 && (c = file.get ()) != std::istream::traits_type::eof ()
+                 && c == '\n' && c == '\r')
+            ; // skip text
+
+          file.unget ();
+
+          // Position of beginning of help text.
+          std::streampos beg = file.tellg ();
+
+          // Skip help text.
+          file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
+ 
+          // Position of end of help text.
+          std::streamoff len = file.tellg () - beg - 1;
+
+          help_txt_map[name] = txt_limits_type (beg, len);
+        }
+
+      initialized = true;
+    }
+
+  help_txt_map_type::const_iterator it = help_txt_map.find (nm);
+
+  if (it != help_txt_map.end ())
+    {
+      txt_limits_type txt_limits = it->second;
+
+      std::streampos beg = txt_limits.first;
+      std::streamoff len = txt_limits.second;
+
+      std::string fname = Vbuilt_in_docstrings_file;
+
+      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+
+      if (! file)
+        error ("failed to open docstrings file: %s", fname.c_str ());
+
+      file.seekg (beg);
+
+      size_t txt_len = len;
+      OCTAVE_LOCAL_BUFFER (char, buf, txt_len + 1);
+
+      file.read (buf, txt_len);
+
+      buf[txt_len] = '\0';
+
+      h = buf;
+
+      symbol_found = true;
+    }
+
+  return symbol_found;
+}
+
 std::string
 raw_help (const std::string& nm, bool& symbol_found)
 {
@@ -987,9 +1105,12 @@ raw_help (const std::string& nm, bool& symbol_found)
           found = raw_help_from_map (nm, h, operators_map, symbol_found);
 
           if (! found)
-            raw_help_from_map (nm, h, keywords_map, symbol_found);
+            found = raw_help_from_map (nm, h, keywords_map, symbol_found);
         }
     }
+
+  if (! found || h == "external-doc")
+    raw_help_from_docstrings_file (nm, h, symbol_found);
 
   return h;
 }
@@ -1015,79 +1136,6 @@ Modifying it during a running session of Octave will have no effect.
 @end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (built_in_docstrings_file);
-}
-
-void
-install_built_in_docstrings (void)
-{
-  std::string fname = Vbuilt_in_docstrings_file;
-
-  std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
-
-  if (file)
-    {
-      // Ignore header;
-      file.ignore (1000, 0x1d);
-
-      if (file.gcount () == 1000)
-        {
-          // We use std::cerr here instead of calling Octave's warning
-          // function because install_built_in_docstrings is called
-          // before the interpreter is initialized, so warning messages
-          // won't work properly.
-
-          std::cerr << "warning: is builtin-docstrings file corrupted?"
-                    << std::endl;
-          return;
-        }
-
-      // FIXME: eliminate fixed buffer size.
-      size_t bufsize = 100000;
-
-      OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
-
-      while (! file.eof ())
-        {
-          file.getline (buf, bufsize, 0x1d);
-
-          std::string tmp (buf);
-
-          size_t pos = tmp.find ('\n');
-
-          std::string fcn = tmp.substr (0, pos);
-
-          octave_value ov = symbol_table::find_built_in_function (fcn);
-
-          if (ov.is_defined ())
-            {
-              octave_function *fp = ov.function_value ();
-
-              if (fp)
-                {
-                  tmp = tmp.substr (pos+1);
-
-                  // Strip @c FILENAME which is part of current DOCSTRINGS
-                  // syntax.  This may disappear if a specific format for
-                  // docstring files is developed.
-                  while (tmp.length () > 2 && tmp[0] == '@' && tmp[1] == 'c')
-                    {
-                      pos = tmp.find ('\n');
-                      tmp = tmp.substr (pos+1);
-                    }
-
-                  fp->document (tmp);
-                }
-            }
-        }
-    }
-  else
-    {
-      // See note above about using std::cerr instead of warning.
-
-      std::cerr << "warning: docstring file '" << fname << "' not found"
-                << std::endl;
-    }
-
 }
 
 static void

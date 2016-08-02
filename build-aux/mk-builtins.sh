@@ -214,10 +214,7 @@ EOF
   done
 
   cat << \EOF
-
-  install_built_in_docstrings ();
 }
-
 EOF
 
 fi

@@ -34,8 +34,6 @@ extern string_vector make_name_list (void);
 
 extern OCTINTERP_API std::string raw_help (const std::string&, bool&);
 
-extern OCTINTERP_API void install_built_in_docstrings (void);
-
 // Name of the doc cache file specified on the command line.
 // (--doc-cache-file file)
 extern OCTINTERP_API std::string Vdoc_cache_file;

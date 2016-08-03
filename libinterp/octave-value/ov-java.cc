@@ -3127,6 +3127,17 @@ Return true if @var{x} is a Java object.
 %! assert (class (javaObject ("java.lang.Long",    uint64 (1))), "java.lang.Long");
 %! assert (class (javaObject ("java.lang.Long",     int64 (1))), "java.lang.Long");
 
+## Test for automatic conversion of specific numeric classes (bug #48013)
+%!testif HAVE_JAVA
+%! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1)
+%! assert (javaMethod ("valueOf", "java.lang.Short",   int16 (1)), 1)
+%! assert (javaMethod ("valueOf", "java.lang.Integer", int32 (1)), 1)
+%! assert (javaMethod ("valueOf", "java.lang.Long",    int64 (1)), 1)
+%! assert (javaMethod ("valueOf", "java.lang.Float",  single (1)), 1)
+%! assert (javaMethod ("valueOf", "java.lang.Double", double (1)), 1)
+%! assert (class (javaMethod ("valueOf", "java.math.BigDecimal", double (1))), "java.math.BigDecimal")
+%! assert (class (javaMethod ("valueOf", "java.math.BigInteger",  int64 (1))), "java.math.BigInteger")
+
 ## Automatic conversion from string cell array into String[] (bug #45290)
 %!testif HAVE_JAVA
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "aaa"), 0);

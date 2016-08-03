@@ -1231,7 +1231,7 @@ dimensions.
 
   check_dimensions (dims, "cell");
 
-  return ovl (Cell (dims, Matrix ()));
+  return ovl (Cell (dims));
 }
 
 DEFUN (iscellstr, args, ,

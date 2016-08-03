@@ -222,6 +222,7 @@ PREDEFINED = HAVE_ARPACK=1          \
              HAVE_FREETYPE=1        \
              HAVE_GLPK=1            \
              HAVE_HDF5=1            \
+             HAVE_JAVA=1            \
              HAVE_LLVM=1            \
              HAVE_MAGICK=1          \
              HAVE_OPENGL=1          \

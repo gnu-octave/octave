@@ -2272,12 +2272,7 @@ cdef_class::cdef_class_rep::get_names (void)
 
   find_names (names, false);
 
-  string_vector v (names.size ());
-
-  int idx = 0;
-  for (std::set<std::string>::const_iterator it = names.begin ();
-       it != names.end (); ++it, ++idx)
-    v[idx] = *it;
+  string_vector v (names);
 
   return v.sort (true);
 }

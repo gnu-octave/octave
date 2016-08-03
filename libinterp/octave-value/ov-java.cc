@@ -1075,6 +1075,59 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
 
 #define TO_JAVA(obj) dynamic_cast<octave_java*> ((obj).internal_rep ())
 
+//! Return whether @c jobj shall be automatically converted to an Octave
+//! numeric value.
+//!
+//! If @c jobj is an instance of any of the numeric wrapper classes @c Byte,
+//! @c Integer, @c Long, @c Short, @c Float, or @c Double, then it will be
+//! converted using the @c java.lang.Number.doubleValue() method.
+//!
+//! @param jobj Java object being returned to Octave
+//! @return @c true if @c jobj shall be converted into a numeric value
+//!         automatically, @c false otherwise
+static bool
+is_auto_convertible_number (JNIEnv *jni_env, jobject jobj)
+{
+  jclass_ref cls (jni_env);
+  cls = jni_env->FindClass ("java/lang/Double");
+  if (jni_env->IsInstanceOf (jobj, cls))
+    return true;
+  cls = jni_env->FindClass ("java/lang/Float");
+  if (jni_env->IsInstanceOf (jobj, cls))
+    return true;
+  cls = jni_env->FindClass ("java/lang/Byte");
+  if (jni_env->IsInstanceOf (jobj, cls))
+    return true;
+  cls = jni_env->FindClass ("java/lang/Short");
+  if (jni_env->IsInstanceOf (jobj, cls))
+    return true;
+  cls = jni_env->FindClass ("java/lang/Integer");
+  if (jni_env->IsInstanceOf (jobj, cls))
+    return true;
+  cls = jni_env->FindClass ("java/lang/Long");
+  if (jni_env->IsInstanceOf (jobj, cls))
+    return true;
+
+  return false;
+}
+
+//! Convert the Java object pointed to by @c jobj_arg with class @c jcls_arg
+//! to an Octave value.
+//!
+//! @param jni_env JNI environment pointer
+//! @param jobj_arg pointer to a Java object
+//! @param jcls_arg optional pointer to the Java class of @c jobj_arg
+//! @return
+//!   @arg numeric value as a @c double if @c jobj_arg is of type @c Byte,
+//!     @c Short, @c Integer, @c Long, @c Float or @c Double
+//!   @arg logical value if @c jobj_arg is of type @c Boolean
+//!   @arg string value if @c jobj_arg is of type @c Character or @c String
+//!   @arg Octave array of numeric, logical, or char type if @c jobj_arg is
+//!     a Java array of primitive types
+//!   @arg Octave matrix if @c jobj_arg is of type @c org.octave.Matrix and
+//!     #Vjava_matrix_autoconversion is enabled
+//!   @arg Octave object if @c jobj_arg is of type @c org.octave.OctaveReference
+//!   @arg @c octave_java object wrapping the Java object otherwise
 static octave_value
 box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
 {
@@ -1090,10 +1143,12 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
 
   while (retval.is_undefined ())
     {
-      // Convert a scalar of any numeric class (byte, short, integer, long,
-      // float, double) to a double value.  Matlab does the same thing.
+      // Convert a scalar of any numeric class wrapping a primitive class
+      // (byte, short, integer, long, float, double) to a double value.
+      // Test whether java.lang.Number before testing for each type.
       cls = jni_env->FindClass ("java/lang/Number");
-      if (jni_env->IsInstanceOf (jobj, cls))
+      if (jni_env->IsInstanceOf (jobj, cls)
+          && is_auto_convertible_number (jni_env, jobj))
         {
           jmethodID m = jni_env->GetMethodID (cls, "doubleValue", "()D");
           retval = jni_env->CallDoubleMethod (jobj, m);

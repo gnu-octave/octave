@@ -818,15 +818,21 @@ find_octave_class (JNIEnv *jni_env, const char *name)
             {
               jclass_ref syscls (jni_env,
                                  jni_env->FindClass ("java/lang/System"));
-              jmethodID mID = jni_env->GetStaticMethodID (syscls, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
-              jstring_ref js (jni_env, jni_env->NewStringUTF ("octave.class.loader"));
-              js = reinterpret_cast<jstring> (jni_env->CallStaticObjectMethod (syscls, mID, jstring (js)));
+              jmethodID mID = jni_env->GetStaticMethodID
+                (syscls,
+                 "getProperty",
+                 "(Ljava/lang/String;)Ljava/lang/String;");
+              jstring_ref js (jni_env,
+                              jni_env->NewStringUTF ("octave.class.loader"));
+              js = reinterpret_cast<jstring> (jni_env->CallStaticObjectMethod
+                                              (syscls, mID, jstring (js)));
               class_loader = jstring_to_string (jni_env, jstring (js));
               std::replace (class_loader.begin (), class_loader.end (),
                             '.', '/');
             }
 
-          jclass_ref uicls (jni_env, jni_env->FindClass (class_loader.c_str ()));
+          jclass_ref uicls (jni_env,
+                            jni_env->FindClass (class_loader.c_str ()));
 
           if (! uicls)
             {
@@ -835,27 +841,39 @@ find_octave_class (JNIEnv *jni_env, const char *name)
               // Try the netbeans way
               std::replace (class_loader.begin (), class_loader.end (),
                             '/', '.');
-              jclass_ref jcls2 (jni_env, jni_env->FindClass ("org/openide/util/Lookup"));
-              jmethodID mID = jni_env->GetStaticMethodID (jcls2, "getDefault", "()Lorg/openide/util/Lookup;");
-              jobject_ref lObj (jni_env, jni_env->CallStaticObjectMethod (jcls2, mID));
+              jclass_ref jcls2 (jni_env,
+                                jni_env->FindClass ("org/openide/util/Lookup"));
+              jmethodID mID = jni_env->GetStaticMethodID
+                (jcls2, "getDefault", "()Lorg/openide/util/Lookup;");
+              jobject_ref lObj (jni_env,
+                                jni_env->CallStaticObjectMethod (jcls2, mID));
               mID = jni_env->GetMethodID (jcls2, "lookup",
                                           "(Ljava/lang/Class;)Ljava/lang/Object;");
-              jclass_ref cLoaderCls (jni_env, jni_env->FindClass ("java/lang/ClassLoader"));
-              jobject_ref cLoader (jni_env, jni_env->CallObjectMethod (lObj, mID, jclass (cLoaderCls)));
-              mID = jni_env->GetMethodID (cLoaderCls, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
-              jstring_ref js (jni_env, jni_env->NewStringUTF (class_loader.c_str ()));
-              uicls = reinterpret_cast<jclass> (jni_env->CallObjectMethod (cLoader, mID, jstring (js)));
+              jclass_ref cLoaderCls (jni_env,
+                                     jni_env->FindClass ("java/lang/ClassLoader"));
+              jobject_ref cLoader (jni_env,
+                                   jni_env->CallObjectMethod
+                                   (lObj, mID, jclass (cLoaderCls)));
+              mID = jni_env->GetMethodID (cLoaderCls, "loadClass",
+                                          "(Ljava/lang/String;)Ljava/lang/Class;");
+              jstring_ref js (jni_env,
+                              jni_env->NewStringUTF (class_loader.c_str ()));
+              uicls = reinterpret_cast<jclass>
+                (jni_env->CallObjectMethod (cLoader, mID, jstring (js)));
             }
 
           if (uicls)
-            uiClass = reinterpret_cast<jclass> (jni_env->NewGlobalRef (jclass (uicls)));
+            uiClass = reinterpret_cast<jclass>
+              (jni_env->NewGlobalRef (jclass (uicls)));
         }
 
       if (uiClass)
         {
-          jmethodID mID = jni_env->GetStaticMethodID (uiClass, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+          jmethodID mID = jni_env->GetStaticMethodID
+            (uiClass, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
           jstring_ref js (jni_env, jni_env->NewStringUTF (name));
-          jcls = reinterpret_cast<jclass> (jni_env->CallStaticObjectMethod (uiClass, mID, jstring (js)));
+          jcls = reinterpret_cast<jclass>
+            (jni_env->CallStaticObjectMethod (uiClass, mID, jstring (js)));
         }
     }
 
@@ -869,7 +887,9 @@ compute_array_dimensions (JNIEnv *jni_env, jobject obj)
   jclass_ref jcls (jni_env, jni_env->GetObjectClass (obj));
   jclass_ref ccls (jni_env, jni_env->GetObjectClass (jcls));
   jmethodID isArray_ID = jni_env->GetMethodID (ccls, "isArray", "()Z");
-  jmethodID getComponentType_ID = jni_env->GetMethodID (ccls, "getComponentType", "()Ljava/lang/Class;");
+  jmethodID getComponentType_ID = jni_env->GetMethodID (ccls,
+                                                        "getComponentType",
+                                                        "()Ljava/lang/Class;");
 
   dim_vector dv (1, 1);
   int idx = 0;
@@ -881,8 +901,12 @@ compute_array_dimensions (JNIEnv *jni_env, jobject obj)
       if (idx >= dv.ndims ())
         dv.resize (idx+1);
       dv(idx) = len;
-      jcls = reinterpret_cast<jclass> (jni_env->CallObjectMethod (jcls, getComponentType_ID));
-      jobj = (len > 0 ? reinterpret_cast<jobjectArray> (jni_env->GetObjectArrayElement (jobj, 0)) : 0);
+      jcls = reinterpret_cast<jclass>
+        (jni_env->CallObjectMethod (jcls, getComponentType_ID));
+      jobj = len > 0
+        ? reinterpret_cast<jobjectArray> (jni_env->GetObjectArrayElement (jobj,
+                                                                          0))
+        : 0;
       idx++;
     }
 
@@ -896,7 +920,9 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
 {
   jclass_ref ocls (jni_env, jni_env->FindClass ("[I"));
   jobjectArray retval = jni_env->NewObjectArray (idx.length (), ocls, 0);
+ // Here retval has the same length as idx
 
+  // Fill in entries of idx into retval
   for (int i = 0; i < idx.length (); i++)
     try
       {
@@ -904,10 +930,13 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
 
         jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
         jint *buf = jni_env->GetIntArrayElements (i_array, 0);
+        // Here, buf points to the beginning of i_array
 
+        // Copy v to buf
         for (int k = 0; k < v.length (); k++)
           buf[k] = v(k);
 
+        // set retval[i]=i_array
         jni_env->ReleaseIntArrayElements (i_array, buf, 0);
         jni_env->SetObjectArrayElement (retval, i, i_array);
 
@@ -931,9 +960,14 @@ get_array_elements (JNIEnv *jni_env, jobject jobj,
   jobject_ref resObj (jni_env);
   jobject_ref java_idx (jni_env, make_java_index (jni_env, idx));
 
-  jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
-  jmethodID mID = jni_env->GetStaticMethodID (helperClass, "arraySubsref", "(Ljava/lang/Object;[[I)Ljava/lang/Object;");
-  resObj = jni_env->CallStaticObjectMethod (helperClass, mID, jobj, jobject (java_idx));
+  jclass_ref helperClass (jni_env,
+                          find_octave_class (jni_env,
+                                             "org/octave/ClassHelper"));
+  jmethodID mID = jni_env
+    ->GetStaticMethodID (helperClass, "arraySubsref",
+                         "(Ljava/lang/Object;[[I)Ljava/lang/Object;");
+  resObj = jni_env->CallStaticObjectMethod
+    (helperClass, mID, jobj, jobject (java_idx));
 
   if (resObj)
     retval = box (jni_env, resObj);
@@ -958,11 +992,13 @@ set_array_elements (JNIEnv *jni_env, jobject jobj,
 
   if (unbox (jni_env, rhs, rhsObj, rhsCls))
     {
-      jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
+      jclass_ref helperClass (jni_env,
+                              find_octave_class (jni_env,
+                                                 "org/octave/ClassHelper"));
       jmethodID mID = jni_env->GetStaticMethodID (helperClass, "arraySubsasgn",
-          "(Ljava/lang/Object;[[ILjava/lang/Object;)Ljava/lang/Object;");
-      resObj = jni_env->CallStaticObjectMethod (helperClass, mID,
-          jobj, jobject (java_idx), jobject (rhsObj));
+          "(Ljava/lang/Object;[[ILjava/lang/Object;)" "Ljava/lang/Object;");
+      resObj = jni_env->CallStaticObjectMethod
+        (helperClass, mID, jobj, jobject (java_idx), jobject (rhsObj));
     }
 
   if (resObj)
@@ -986,28 +1022,43 @@ get_invoke_list (JNIEnv *jni_env, void *jobj_arg)
     {
       jclass_ref cls (jni_env, jni_env->GetObjectClass (jobj));
       jclass_ref ccls (jni_env, jni_env->GetObjectClass (cls));
-      jmethodID getMethods_ID = jni_env->GetMethodID (ccls, "getMethods", "()[Ljava/lang/reflect/Method;");
-      jmethodID getFields_ID = jni_env->GetMethodID (ccls, "getFields", "()[Ljava/lang/reflect/Field;");
-      jobjectArray_ref mList (jni_env, reinterpret_cast<jobjectArray> (jni_env->CallObjectMethod (cls, getMethods_ID)));
-      jobjectArray_ref fList (jni_env, reinterpret_cast<jobjectArray> (jni_env->CallObjectMethod (cls, getFields_ID)));
+      jmethodID getMethods_ID = jni_env->GetMethodID
+        (ccls, "getMethods", "()[Ljava/lang/reflect/Method;");
+      jmethodID getFields_ID = jni_env->GetMethodID
+        (ccls, "getFields", "()[Ljava/lang/reflect/Field;");
+      jobjectArray_ref mList (jni_env,
+                              reinterpret_cast<jobjectArray>
+                              (jni_env->CallObjectMethod (cls, getMethods_ID)));
+      jobjectArray_ref fList (jni_env,
+                              reinterpret_cast<jobjectArray>
+                              (jni_env->CallObjectMethod (cls, getFields_ID)));
       int mLen = jni_env->GetArrayLength (mList);
       int fLen = jni_env->GetArrayLength (fList);
-      jclass_ref mCls (jni_env, jni_env->FindClass ("java/lang/reflect/Method"));
-      jclass_ref fCls (jni_env, jni_env->FindClass ("java/lang/reflect/Field"));
-      jmethodID m_getName_ID = jni_env->GetMethodID (mCls, "getName", "()Ljava/lang/String;");
-      jmethodID f_getName_ID = jni_env->GetMethodID (fCls, "getName", "()Ljava/lang/String;");
+      jclass_ref mCls (jni_env,
+                       jni_env->FindClass ("java/lang/reflect/Method"));
+      jclass_ref fCls (jni_env,
+                       jni_env->FindClass ("java/lang/reflect/Field"));
+      jmethodID m_getName_ID = jni_env->GetMethodID (mCls, "getName",
+                                                     "()Ljava/lang/String;");
+      jmethodID f_getName_ID = jni_env->GetMethodID (fCls, "getName",
+                                                     "()Ljava/lang/String;");
 
       for (int i = 0; i < mLen; i++)
         {
           jobject_ref meth (jni_env, jni_env->GetObjectArrayElement (mList, i));
-          jstring_ref methName (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (meth, m_getName_ID)));
+          jstring_ref methName (jni_env, reinterpret_cast<jstring>
+                                (jni_env->CallObjectMethod (meth, m_getName_ID)));
           name_list.push_back (jstring_to_string (jni_env, methName));
         }
 
       for (int i = 0; i < fLen; i++)
         {
-          jobject_ref field (jni_env, jni_env->GetObjectArrayElement (fList, i));
-          jstring_ref fieldName (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (field, f_getName_ID)));
+          jobject_ref field (jni_env,
+                             jni_env->GetObjectArrayElement (fList, i));
+          jstring_ref fieldName (jni_env,
+                                 reinterpret_cast<jstring>
+                                 (jni_env->CallObjectMethod
+                                  (field, f_getName_ID)));
           name_list.push_back (jstring_to_string (jni_env, fieldName));
         }
 
@@ -1042,7 +1093,9 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
 
               for (int i = 0; i < len; i++)
                 {
-                  jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->GetObjectArrayElement (array, i)));
+                  jstring_ref js (jni_env,
+                                  reinterpret_cast<jstring>
+                                  (jni_env->GetObjectArrayElement (array, i)));
 
                   if (js)
                     c(i) = octave_value (jstring_to_string (jni_env, js), type);
@@ -1055,8 +1108,11 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
           else
             {
               cls = jni_env->FindClass ("java/lang/Object");
-              jmethodID mID = jni_env->GetMethodID (cls, "toString", "()Ljava/lang/String;");
-              jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (java_object, mID)));
+              jmethodID mID = jni_env->GetMethodID (cls, "toString",
+                                                    "()Ljava/lang/String;");
+              jstring_ref js (jni_env,
+                              reinterpret_cast<jstring>
+                              (jni_env->CallObjectMethod (java_object, mID)));
 
               if (js)
                 retval = octave_value (jstring_to_string (jni_env, js), type);
@@ -1210,7 +1266,9 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
           if (jni_env->IsInstanceOf (jobj, cls))
             {
               jmethodID mID = jni_env->GetMethodID (cls, "getDims", "()[I");
-              jintArray_ref iv (jni_env, reinterpret_cast<jintArray> (jni_env->CallObjectMethod (jobj, mID)));
+              jintArray_ref iv (jni_env,
+                                reinterpret_cast<jintArray>
+                                (jni_env->CallObjectMethod (jobj, mID)));
               jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), 0);
               dim_vector dims;
               dims.resize (jni_env->GetArrayLength (jintArray (iv)));
@@ -1219,8 +1277,11 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                 dims(i) = iv_data[i];
 
               jni_env->ReleaseIntArrayElements (jintArray (iv), iv_data, 0);
-              mID = jni_env->GetMethodID (cls, "getClassName", "()Ljava/lang/String;");
-              jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (jobj, mID)));
+              mID = jni_env->GetMethodID (cls, "getClassName",
+                                          "()Ljava/lang/String;");
+              jstring_ref js (jni_env,
+                              reinterpret_cast<jstring>
+                              (jni_env->CallObjectMethod (jobj, mID)));
 
               std::string s = jstring_to_string (jni_env, js);
 
@@ -1228,8 +1289,12 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                 {
                   NDArray m (dims);
                   mID = jni_env->GetMethodID (cls, "toDouble", "()[D");
-                  jdoubleArray_ref dv (jni_env, reinterpret_cast<jdoubleArray> (jni_env->CallObjectMethod (jobj, mID)));
-                  jni_env->GetDoubleArrayRegion (dv, 0, m.numel (), m.fortran_vec ());
+                  jdoubleArray_ref dv (jni_env,
+                                       reinterpret_cast<jdoubleArray>
+                                       (jni_env->CallObjectMethod (jobj, mID)));
+                  jni_env->GetDoubleArrayRegion (dv, 0,
+                                                 m.numel (),
+                                                 m.fortran_vec ());
                   retval = m;
                   break;
                 }
@@ -1239,8 +1304,13 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                     {
                       uint8NDArray m (dims);
                       mID = jni_env->GetMethodID (cls, "toByte", "()[B");
-                      jbyteArray_ref dv (jni_env, reinterpret_cast<jbyteArray> (jni_env->CallObjectMethod (jobj, mID)));
-                      jni_env->GetByteArrayRegion (dv, 0, m.numel (), reinterpret_cast<jbyte *> (m.fortran_vec ()));
+                      jbyteArray_ref dv (jni_env,
+                                         reinterpret_cast<jbyteArray>
+                                         (jni_env->CallObjectMethod (jobj,
+                                                                     mID)));
+                      jni_env->GetByteArrayRegion (dv, 0, m.numel (),
+                                                   reinterpret_cast<jbyte *>
+                                                   (m.fortran_vec ()));
                       retval = m;
                       break;
                     }
@@ -1248,8 +1318,13 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                     {
                       int8NDArray m (dims);
                       mID = jni_env->GetMethodID (cls, "toByte", "()[B");
-                      jbyteArray_ref dv (jni_env, reinterpret_cast<jbyteArray> (jni_env->CallObjectMethod (jobj, mID)));
-                      jni_env->GetByteArrayRegion (dv, 0, m.numel (), reinterpret_cast<jbyte *> (m.fortran_vec ()));
+                      jbyteArray_ref dv (jni_env,
+                                         reinterpret_cast<jbyteArray>
+                                         (jni_env->CallObjectMethod (jobj,
+                                                                     mID)));
+                      jni_env->GetByteArrayRegion (dv, 0, m.numel (),
+                                                   reinterpret_cast<jbyte *>
+                                                   (m.fortran_vec ()));
                       retval = m;
                       break;
                     }
@@ -1269,8 +1344,13 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                     {
                       int32NDArray m (dims);
                       mID = jni_env->GetMethodID (cls, "toInt", "()[I");
-                      jintArray_ref dv (jni_env, reinterpret_cast<jintArray> (jni_env->CallObjectMethod (jobj, mID)));
-                      jni_env->GetIntArrayRegion (dv, 0, m.numel (), reinterpret_cast<jint *> (m.fortran_vec ()));
+                      jintArray_ref dv (jni_env,
+                                        reinterpret_cast<jintArray>
+                                        (jni_env->CallObjectMethod (jobj,
+                                                                    mID)));
+                      jni_env->GetIntArrayRegion (dv, 0, m.numel (),
+                                                  reinterpret_cast<jint *>
+                                                  (m.fortran_vec ()));
                       retval = m;
                       break;
                     }
@@ -1287,7 +1367,6 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
 
           if (it != octave_ref_map.end ())
             retval = it->second;
-
           break;
         }
 
@@ -1350,14 +1429,17 @@ box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                   for (int r = 0; r < rows; r++)
                     {
                       jdoubleArray_ref row (jni_env,
-                                            reinterpret_cast<jdoubleArray> (jni_env->GetObjectArrayElement (jarr, r)));
+                                            reinterpret_cast<jdoubleArray>
+                                            (jni_env->GetObjectArrayElement
+                                             (jarr, r)));
 
                       if (m.is_empty ())
                         {
                           cols = jni_env->GetArrayLength (row);
                           m.resize (cols, rows);
                         }
-                      jni_env->GetDoubleArrayRegion (row, 0, cols, m.fortran_vec () + r * cols);
+                      jni_env->GetDoubleArrayRegion
+                        (row, 0, cols, m.fortran_vec () + r * cols);
                     }
                   retval = m.transpose ();
                 }
@@ -1379,7 +1461,8 @@ box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
               for (int i = 0; i < len; i++)
                 {
                   jstring_ref js (jni_env,
-                                  reinterpret_cast<jstring> (jni_env->GetObjectArrayElement (jarr, i)));
+                                  reinterpret_cast<jstring>
+                                  (jni_env->GetObjectArrayElement (jarr, i)));
                   m(i) = jstring_to_string (jni_env, js);
                 }
 
@@ -1426,7 +1509,8 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
 
       for (octave_idx_type i = 0; i < n; i++)
         {
-          jstring_ref jstr (jni_env, jni_env->NewStringUTF (str_arr(i).c_str ()));
+          jstring_ref jstr (jni_env, jni_env->NewStringUTF
+                            (str_arr(i).c_str ()));
           jni_env->SetObjectArrayElement (array, i, jstr);
         }
 
@@ -1538,9 +1622,11 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
       jcls = jni_env->GetObjectClass (jobj);
     }
   else if (Vjava_matrix_autoconversion
-           && (val.is_matrix_type () || val.is_range ()) && val.is_real_type ())
+           && (val.is_matrix_type () || val.is_range ())
+           && val.is_real_type ())
     {
-      jclass_ref mcls (jni_env, find_octave_class (jni_env, "org/octave/Matrix"));
+      jclass_ref mcls (jni_env, find_octave_class (jni_env,
+                                                   "org/octave/Matrix"));
       dim_vector dims = val.dims ();
       jintArray_ref iv (jni_env, jni_env->NewIntArray (dims.ndims ()));
       jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), 0);
@@ -1566,9 +1652,11 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           int8NDArray m = val.int8_array_value ();
           jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.numel ()));
           jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.numel (),
-                                       reinterpret_cast<jbyte *> (m.fortran_vec ()));
+                                       reinterpret_cast<jbyte *>
+                                       (m.fortran_vec ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
-          jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
+          jobj = jni_env->NewObject
+            (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
         }
       else if (val.is_uint8_type ())
@@ -1576,9 +1664,11 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           uint8NDArray m = val.uint8_array_value ();
           jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.numel ()));
           jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.numel (),
-                                       reinterpret_cast<jbyte *> (m.fortran_vec ()));
+                                       reinterpret_cast<jbyte *>
+                                       (m.fortran_vec ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
-          jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
+          jobj = jni_env->NewObject
+            (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
         }
       else if (val.is_int32_type ())
@@ -1586,15 +1676,18 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           int32NDArray m = val.int32_array_value ();
           jintArray_ref v (jni_env, jni_env->NewIntArray (m.numel ()));
           jni_env->SetIntArrayRegion (jintArray (v), 0, m.numel (),
-                                      reinterpret_cast<jint *> (m.fortran_vec ()));
+                                      reinterpret_cast<jint *>
+                                      (m.fortran_vec ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([I[I)V");
-          jobj = jni_env->NewObject (jclass (mcls), mID, jintArray (v), jintArray (iv));
+          jobj = jni_env->NewObject
+            (jclass (mcls), mID, jintArray (v), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
         }
       else
         {
           found = false;
-          error ("cannot convert matrix of type '%s'", val.class_name ().c_str ());
+          error ("cannot convert matrix of type '%s'",
+                 val.class_name ().c_str ());
         }
     }
   else
@@ -1648,7 +1741,8 @@ get_current_thread_ID (JNIEnv *jni_env)
   if (jni_env)
     {
       jclass_ref cls (jni_env, jni_env->FindClass ("java/lang/Thread"));
-      jmethodID mID = jni_env->GetStaticMethodID (cls, "currentThread", "()Ljava/lang/Thread;");
+      jmethodID mID = jni_env->GetStaticMethodID (cls, "currentThread",
+                                                  "()Ljava/lang/Thread;");
       jobject_ref jthread (jni_env, jni_env->CallStaticObjectMethod (cls, mID));
 
       if (jthread)
@@ -1671,8 +1765,10 @@ java_event_hook (void)
 
   if (current_env)
     {
-      jclass_ref cls (current_env, find_octave_class (current_env, "org/octave/Octave"));
-      jmethodID mID = current_env->GetStaticMethodID (cls, "checkPendingAction", "()V");
+      jclass_ref cls (current_env, find_octave_class (current_env,
+                                                      "org/octave/Octave"));
+      jmethodID mID = current_env->GetStaticMethodID
+        (cls, "checkPendingAction", "()V");
       current_env->CallStaticVoidMethod (cls, mID);
 
       octave_set_default_fpucw ();
@@ -1896,7 +1992,8 @@ octave_java::subsref (const std::string& type,
 
     case '(':
       if (current_env)
-        retval = get_array_elements (current_env, TO_JOBJECT (to_java ()), idx.front ());
+        retval = get_array_elements
+          (current_env, TO_JOBJECT (to_java ()), idx.front ());
       break;
 
     default:
@@ -1984,7 +2081,8 @@ octave_java::subsasgn (const std::string& type,
     case '(':
       if (current_env)
         {
-          set_array_elements (current_env, TO_JOBJECT (to_java ()), idx.front (), rhs);
+          set_array_elements (current_env, TO_JOBJECT (to_java ()),
+                              idx.front (), rhs);
 
           count++;
           retval = octave_value (this);

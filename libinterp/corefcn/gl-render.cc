@@ -633,9 +633,6 @@ namespace octave
     if (! ok)
       error ("the size of GLsizei is smaller than the size of int");
 
-    // Check actual maximum number of lights possible
-    max_lights = get_maxlights ();
-
 #else
 
     err_disabled_feature ("opengl_renderer", "OpenGL");
@@ -1749,6 +1746,13 @@ namespace octave
     std::list<graphics_object>::iterator it;
 
     // 1st pass: draw light objects
+
+    // FIXME: max_lights only needs to be set once.
+    // It would be better if this could be in the constructor for gl_renderer
+    // but this seems to lead to calls of OpenGL functions before the context
+    // is actually initialized.  See bug #48669.
+    // Check actual maximum number of lights possible
+    max_lights = get_maxlights ();
 
     // Start with the last element of the array of child objects to
     // display them in the order they were added to the array.

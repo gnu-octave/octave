@@ -49,11 +49,6 @@ function txt = __unimplemented__ (fcn)
       txt = ["exifread is deprecated.  " ...
              "The functionality is available in the imfinfo function."];
 
-    case "gsvd"
-      txt = ["gsvd is not currently part of core Octave.  ", ...
-             "See the linear-algebra package at ", ...
-             "@url{http://octave.sourceforge.net/linear-algebra/}."];
-
     case "funm"
       txt = ["funm is not currently part of core Octave.  ", ...
              "See the linear-algebra package at ", ...
@@ -658,7 +653,6 @@ function list = missing_functions ()
   "graph",
   "graymon",
   "griddedInterpolant",
-  "gsvd",
   "guide",
   "h5create",
   "h5disp",

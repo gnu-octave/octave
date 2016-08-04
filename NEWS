@@ -113,6 +113,7 @@ Summary of important user-visible changes for version 4.2:
       deg2rad
       dialog
       evalc
+      gsvd
       hash
       im2double
       localfunctions

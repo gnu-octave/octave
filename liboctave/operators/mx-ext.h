@@ -57,6 +57,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "EIG.h"
 
+// Result of a Generalized Singular Value Decomposition.
+
+#include "dbleGSVD.h"
+#include "CmplxGSVD.h"
+
+
 // Result of an LU decomposition.
 
 #include "lu.h"

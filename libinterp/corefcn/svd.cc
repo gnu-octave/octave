@@ -37,19 +37,19 @@ along with Octave; see the file COPYING.  If not, see
 static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
-static typename svd<T>::type
+static typename svd<T>::Type
 svd_type (int nargin, int nargout)
 {
   return ((nargout == 0 || nargout == 1)
-          ? svd<T>::sigma_only
-          : (nargin == 2) ? svd<T>::economy : svd<T>::std);
+          ? svd<T>::Type::sigma_only
+          : (nargin == 2) ? svd<T>::Type::economy : svd<T>::Type::std);
 }
 
 template <typename T>
-static typename svd<T>::driver
+static typename svd<T>::Driver
 svd_driver (void)
 {
-  return Vsvd_driver == "gesvd" ? svd<T>::GESVD : svd<T>::GESDD;
+  return Vsvd_driver == "gesvd" ? svd<T>::Driver::GESVD : svd<T>::Driver::GESDD;
 }
 
 DEFUN (svd, args, nargout,

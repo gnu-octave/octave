@@ -830,7 +830,7 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 FloatMatrix
 FloatMatrix::pseudo_inverse (float tol) const
 {
-  svd<FloatMatrix> result (*this, svd<FloatMatrix>::economy);
+  svd<FloatMatrix> result (*this, svd<FloatMatrix>::Type::economy);
 
   FloatDiagMatrix S = result.singular_values ();
   FloatMatrix U = result.left_singular_matrix ();

@@ -485,7 +485,7 @@ R svd_matrix_norm (const MatrixT& m, R p, VectorT)
   R res = 0;
   if (p == 2)
     {
-      svd<MatrixT> fact (m, svd<MatrixT>::sigma_only);
+      svd<MatrixT> fact (m, svd<MatrixT>::Type::sigma_only);
       res = fact.singular_values () (0,0);
     }
   else if (p == 1)

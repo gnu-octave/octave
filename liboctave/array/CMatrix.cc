@@ -1139,7 +1139,7 @@ ComplexMatrix::pseudo_inverse (double tol) const
 {
   ComplexMatrix retval;
 
-  svd<ComplexMatrix> result (*this, svd<ComplexMatrix>::economy);
+  svd<ComplexMatrix> result (*this, svd<ComplexMatrix>::Type::economy);
 
   DiagMatrix S = result.singular_values ();
   ComplexMatrix U = result.left_singular_matrix ();

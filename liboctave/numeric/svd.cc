@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 Carnë Draug
 Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
@@ -24,7 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "svd.h"
+
 #include <cassert>
+#include <algorithm>
 
 #include "CMatrix.h"
 #include "dDiagMatrix.h"
@@ -35,7 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "fMatrix.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
-#include "svd.h"
 
 extern "C"
 {
@@ -128,7 +131,7 @@ template <typename T>
 T
 svd<T>::left_singular_matrix (void) const
 {
-  if (type_computed == svd::sigma_only)
+  if (type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)
       ("svd: U not computed because type == svd::sigma_only");
 
@@ -139,65 +142,270 @@ template <typename T>
 T
 svd<T>::right_singular_matrix (void) const
 {
-  if (type_computed == svd::sigma_only)
+  if (type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)
       ("svd: V not computed because type == svd::sigma_only");
 
   return right_sm;
 }
 
-template <typename T>
-octave_idx_type
-svd<T>::empty_init (octave_idx_type nr, octave_idx_type nc, svd::type svd_type)
+
+// GESVD specializations
+
+#define GESVD_REAL_STEP(f, F)                                 \
+  F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),            \
+                   F77_CONST_CHAR_ARG2 (&jobv, 1),            \
+                   m, n, tmp_data, m1, s_vec, u, m1, vt,      \
+                   nrow_vt1, work.fortran_vec (), lwork, info \
+                   F77_CHAR_ARG_LEN (1)                       \
+                   F77_CHAR_ARG_LEN (1)))
+
+#define GESVD_COMPLEX_STEP(f, F, CMPLX_ARG)           \
+  F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),    \
+                   F77_CONST_CHAR_ARG2 (&jobv, 1),    \
+                   m, n, CMPLX_ARG (tmp_data),        \
+                   m1, s_vec, CMPLX_ARG (u), m1,      \
+                   CMPLX_ARG (vt), nrow_vt1,          \
+                   CMPLX_ARG (work.fortran_vec ()),   \
+                   lwork, rwork.fortran_vec (), info  \
+                   F77_CHAR_ARG_LEN (1)               \
+                   F77_CHAR_ARG_LEN (1)))
+
+// DGESVD
+template<>
+void
+svd<Matrix>::gesvd (char& jobu, char& jobv, octave_idx_type m,
+                    octave_idx_type n, double* tmp_data, octave_idx_type m1,
+                    double* s_vec, double* u, double* vt,
+                    octave_idx_type nrow_vt1, Matrix& work,
+                    octave_idx_type& lwork, octave_idx_type& info)
 {
-  assert (nr == 0 || nc == 0);
+  GESVD_REAL_STEP (dgesvd, DGESVD);
 
-  static typename T::element_type zero (0);
-  static typename T::element_type one (1);
+  lwork = static_cast<octave_idx_type> (work(0));
+  work.resize (lwork, 1);
 
-  switch (svd_type)
-    {
-    case svd::std:
-      left_sm = T (nr, nr, zero);
-      for (octave_idx_type i = 0; i < nr; i++)
-        left_sm.xelem (i, i) = one;
-      sigma = DM_T (nr, nc);
-      right_sm = T (nc, nc, zero);
-      for (octave_idx_type i = 0; i < nc; i++)
-        right_sm.xelem (i, i) = one;
-      break;
-
-    case svd::economy:
-      left_sm = T (nr, 0, zero);
-      sigma = DM_T (0, 0);
-      right_sm = T (0, nc, zero);
-      break;
-
-    case svd::sigma_only:
-    default:
-      sigma = DM_T (0, 1);
-      break;
-    }
-
-  return 0;
+  GESVD_REAL_STEP (dgesvd, DGESVD);
 }
 
-// Specializations.
-
-template <>
-octave_idx_type
-svd<Matrix>::init (const Matrix& a, svd::type svd_type, svd::driver svd_driver)
+// SGESVD
+template<>
+void
+svd<FloatMatrix>::gesvd (char& jobu, char& jobv, octave_idx_type m,
+                         octave_idx_type n, float* tmp_data,
+                         octave_idx_type m1, float* s_vec, float* u, float* vt,
+                         octave_idx_type nrow_vt1, FloatMatrix& work,
+                         octave_idx_type& lwork, octave_idx_type& info)
 {
-  octave_idx_type info = 0;
+  GESVD_REAL_STEP (sgesvd, SGESVD);
+
+  lwork = static_cast<octave_idx_type> (work(0));
+  work.resize (lwork, 1);
+
+  GESVD_REAL_STEP (sgesvd, SGESVD);
+}
+
+// ZGESVD
+template<>
+void
+svd<ComplexMatrix>::gesvd (char& jobu, char& jobv, octave_idx_type m,
+                           octave_idx_type n, Complex* tmp_data,
+                           octave_idx_type m1, double* s_vec, Complex* u,
+                           Complex* vt, octave_idx_type nrow_vt1,
+                           ComplexMatrix& work,
+                           octave_idx_type& lwork, octave_idx_type& info)
+{
+  Matrix rwork (5 * std::max (m, n), 1);
+
+  GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
+
+  lwork = static_cast<octave_idx_type> (work(0).real ());
+  work.resize (lwork, 1);
+
+  GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
+}
+
+// CGESVD
+template<>
+void
+svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv,
+                                octave_idx_type m, octave_idx_type n,
+                                FloatComplex* tmp_data, octave_idx_type m1,
+                                float* s_vec, FloatComplex* u,
+                                FloatComplex* vt, octave_idx_type nrow_vt1,
+                                FloatComplexMatrix& work,
+                                octave_idx_type& lwork, octave_idx_type& info)
+{
+  FloatMatrix rwork (5 * std::max (m, n), 1);
+
+  GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
+
+  lwork = static_cast<octave_idx_type> (work(0).real ());
+  work.resize (lwork, 1);
+
+  GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
+}
+
+#undef GESVD_REAL_STEP
+#undef GESVD_COMPLEX_STEP
+
+
+// GESDD specializations
+
+#define GESDD_REAL_STEP(f, F)                                       \
+  F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobz, 1),                  \
+                   m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,  \
+                   work.fortran_vec (), lwork, iwork, info          \
+                   F77_CHAR_ARG_LEN (1)))
+
+#define GESDD_COMPLEX_STEP(f, F, CMPLX_ARG)                 \
+  F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobz, 1), m, n,    \
+                   CMPLX_ARG (tmp_data), m1,                \
+                   s_vec, CMPLX_ARG (u), m1,                \
+                   CMPLX_ARG (vt), nrow_vt1,                \
+                   CMPLX_ARG (work.fortran_vec ()), lwork,  \
+                   rwork.fortran_vec (), iwork, info        \
+                   F77_CHAR_ARG_LEN (1)))
+
+// DGESDD
+template<>
+void
+svd<Matrix>::gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
+                    double* tmp_data, octave_idx_type m1,
+                    double* s_vec, double* u,
+                    double* vt, octave_idx_type nrow_vt1,
+                    Matrix& work, octave_idx_type& lwork,
+                    octave_idx_type* iwork, octave_idx_type& info)
+{
+  GESDD_REAL_STEP (dgesdd, DGESDD);
+
+  lwork = static_cast<octave_idx_type> (work(0));
+  work.resize (lwork, 1);
+
+  GESDD_REAL_STEP (dgesdd, DGESDD);
+}
+
+// SGESDD
+template<>
+void
+svd<FloatMatrix>::gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
+                         float* tmp_data, octave_idx_type m1,
+                         float* s_vec, float* u,
+                         float* vt, octave_idx_type nrow_vt1,
+                         FloatMatrix& work, octave_idx_type& lwork,
+                         octave_idx_type* iwork, octave_idx_type& info)
+{
+  GESDD_REAL_STEP (sgesdd, SGESDD);
+
+  lwork = static_cast<octave_idx_type> (work(0));
+  work.resize (lwork, 1);
+
+  GESDD_REAL_STEP (sgesdd, SGESDD);
+}
+
+// ZGESDD
+template<>
+void
+svd<ComplexMatrix>::gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
+                           Complex* tmp_data, octave_idx_type m1,
+                           double* s_vec, Complex* u,
+                           Complex* vt, octave_idx_type nrow_vt1,
+                           ComplexMatrix& work, octave_idx_type& lwork,
+                           octave_idx_type* iwork, octave_idx_type& info)
+{
+
+  octave_idx_type min_mn = std::min (m, n);
+
+  octave_idx_type lrwork;
+  if (jobz == 'N')
+    lrwork = 7*min_mn;
+  else
+    lrwork = 5*min_mn*min_mn + 5*min_mn;
+  Matrix rwork (lrwork, 1);
+
+
+  GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
+
+  lwork = static_cast<octave_idx_type> (work(0).real ());
+  work.resize (lwork, 1);
+
+  GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
+}
+
+// CGESDD
+template<>
+void
+svd<FloatComplexMatrix>::gesdd (char& jobz, octave_idx_type m,
+                                octave_idx_type n,
+                                FloatComplex* tmp_data, octave_idx_type m1,
+                                float* s_vec, FloatComplex* u,
+                                FloatComplex* vt, octave_idx_type nrow_vt1,
+                                FloatComplexMatrix& work,
+                                octave_idx_type& lwork, octave_idx_type* iwork,
+                                octave_idx_type& info)
+{
+  octave_idx_type min_mn = std::min (m, n);
+  octave_idx_type max_mn = std::max (m, n);
+
+  octave_idx_type lrwork;
+  if (jobz == 'N')
+    lrwork = 5*min_mn;
+  else
+    lrwork = min_mn * std::max (5*min_mn+7, 2*max_mn+2*min_mn+1);
+  FloatMatrix rwork (lrwork, 1);
+
+  GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
+
+  lwork = static_cast<octave_idx_type> (work(0).real ());
+  work.resize (lwork, 1);
+
+  GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
+}
+
+#undef GESDD_REAL_STEP
+#undef GESDD_COMPLEX_STEP
+
+
+template<typename T>
+svd<T>::svd (const T& a, svd::Type type,
+             svd::Driver driver)
+  : type (type), driver (driver), left_sm (), sigma (), right_sm ()
+{
+  octave_idx_type info;
 
   octave_idx_type m = a.rows ();
   octave_idx_type n = a.cols ();
 
   if (m == 0 || n == 0)
-    return empty_init (m, n, svd_type);
+    {
+      switch (type)
+        {
+        case svd::Type::std:
+          left_sm = T (m, m, 0);
+          for (octave_idx_type i = 0; i < m; i++)
+            left_sm.xelem (i, i) = 1;
+          sigma = DM_T (m, n);
+          right_sm = T (n, n, 0);
+          for (octave_idx_type i = 0; i < n; i++)
+            right_sm.xelem (i, i) = 1;
+          break;
 
-  Matrix atmp = a;
-  double *tmp_data = atmp.fortran_vec ();
+        case svd::Type::economy:
+          left_sm = T (m, 0, 0);
+          sigma = DM_T (0, 0);
+          right_sm = T (0, n, 0);
+          break;
+
+        case svd::Type::sigma_only:
+        default:
+          sigma = DM_T (0, 1);
+          break;
+        }
+      return;
+    }
+
+  T atmp = a;
+  P* tmp_data = atmp.fortran_vec ();
 
   octave_idx_type min_mn = m < n ? m : n;
 
@@ -209,14 +417,14 @@ svd<Matrix>::init (const Matrix& a, svd::type svd_type, svd::driver svd_driver)
   octave_idx_type nrow_s = m;
   octave_idx_type ncol_s = n;
 
-  switch (svd_type)
+  switch (type)
     {
-    case svd::economy:
+    case svd::Type::economy:
       jobu = jobv = 'S';
       ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
       break;
 
-    case svd::sigma_only:
+    case svd::Type::sigma_only:
 
       // Note:  for this case, both jobu and jobv should be 'N', but
       // there seems to be a bug in dgesvd from Lapack V2.0.  To
@@ -234,481 +442,46 @@ svd<Matrix>::init (const Matrix& a, svd::type svd_type, svd::driver svd_driver)
       break;
     }
 
-  type_computed = svd_type;
-
   if (! (jobu == 'N' || jobu == 'O'))
     left_sm.resize (m, ncol_u);
 
-  double *u = left_sm.fortran_vec ();
+  P* u = left_sm.fortran_vec ();
 
   sigma.resize (nrow_s, ncol_s);
-  double *s_vec = sigma.fortran_vec ();
+  DM_P* s_vec = sigma.fortran_vec ();
 
   if (! (jobv == 'N' || jobv == 'O'))
     right_sm.resize (nrow_vt, n);
 
-  double *vt = right_sm.fortran_vec ();
+  P* vt = right_sm.fortran_vec ();
 
-  // Query DGESVD for the correct dimension of WORK.
+  // Query _GESVD for the correct dimension of WORK.
 
   octave_idx_type lwork = -1;
 
-  Array<double> work (dim_vector (1, 1));
+  T work (1, 1);
 
-  octave_idx_type one = 1;
-  octave_idx_type m1 = std::max (m, one);
-  octave_idx_type nrow_vt1 = std::max (nrow_vt, one);
+  octave_idx_type m1 = std::max (m, 1);
+  octave_idx_type nrow_vt1 = std::max (nrow_vt, 1);
 
-  if (svd_driver == svd::GESVD)
-    {
-      F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-    }
-  else if (svd_driver == svd::GESDD)
+  if (driver == svd::Driver::GESVD)
+    gesvd (jobu, jobv, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
+           work, lwork, info);
+  else if (driver == svd::Driver::GESDD)
     {
       assert (jobu == jobv);
       char jobz = jobu;
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
 
-      F77_XFCN (dgesdd, DGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,
-                                 work.fortran_vec (), lwork, iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8 * std::min (m, n));
 
-      lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (dgesdd, DGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,
-                                 work.fortran_vec (), lwork, iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-
+      gesdd (jobz, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
+             work, lwork, iwork, info);
     }
   else
     abort ();
 
   if (! (jobv == 'N' || jobv == 'O'))
     right_sm = right_sm.transpose ();
-
-  return info;
-}
-
-template <>
-octave_idx_type
-svd<FloatMatrix>::init (const FloatMatrix& a, svd::type svd_type,
-                        svd::driver svd_driver)
-{
-  octave_idx_type info;
-
-  octave_idx_type m = a.rows ();
-  octave_idx_type n = a.cols ();
-
-  if (m == 0 || n == 0)
-    return empty_init (m, n, svd_type);
-
-  FloatMatrix atmp = a;
-  float *tmp_data = atmp.fortran_vec ();
-
-  octave_idx_type min_mn = m < n ? m : n;
-
-  char jobu = 'A';
-  char jobv = 'A';
-
-  octave_idx_type ncol_u = m;
-  octave_idx_type nrow_vt = n;
-  octave_idx_type nrow_s = m;
-  octave_idx_type ncol_s = n;
-
-  switch (svd_type)
-    {
-    case svd::economy:
-      jobu = jobv = 'S';
-      ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
-      break;
-
-    case svd::sigma_only:
-
-      // Note:  for this case, both jobu and jobv should be 'N', but
-      // there seems to be a bug in dgesvd from Lapack V2.0.  To
-      // demonstrate the bug, set both jobu and jobv to 'N' and find
-      // the singular values of [eye(3), eye(3)].  The result is
-      // [-sqrt(2), -sqrt(2), -sqrt(2)].
-      //
-      // For Lapack 3.0, this problem seems to be fixed.
-
-      jobu = jobv = 'N';
-      ncol_u = nrow_vt = 1;
-      break;
-
-    default:
-      break;
-    }
-
-  type_computed = svd_type;
-
-  if (! (jobu == 'N' || jobu == 'O'))
-    left_sm.resize (m, ncol_u);
-
-  float *u = left_sm.fortran_vec ();
-
-  sigma.resize (nrow_s, ncol_s);
-  float *s_vec = sigma.fortran_vec ();
-
-  if (! (jobv == 'N' || jobv == 'O'))
-    right_sm.resize (nrow_vt, n);
-
-  float *vt = right_sm.fortran_vec ();
-
-  // Query SGESVD for the correct dimension of WORK.
-
-  octave_idx_type lwork = -1;
-
-  Array<float> work (dim_vector (1, 1));
-
-  octave_idx_type one = 1;
-  octave_idx_type m1 = std::max (m, one);
-  octave_idx_type nrow_vt1 = std::max (nrow_vt, one);
-
-  if (svd_driver == svd::GESVD)
-    {
-      F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-    }
-  else if (svd_driver == svd::GESDD)
-    {
-      assert (jobu == jobv);
-      char jobz = jobu;
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
-
-      F77_XFCN (sgesdd, SGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,
-                                 work.fortran_vec (), lwork, iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-
-      lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (sgesdd, SGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,
-                                 work.fortran_vec (), lwork, iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-
-    }
-  else
-    abort ();
-
-  if (! (jobv == 'N' || jobv == 'O'))
-    right_sm = right_sm.transpose ();
-
-  return info;
-}
-
-template <>
-octave_idx_type
-svd<ComplexMatrix>::init (const ComplexMatrix& a, svd::type svd_type,
-                          svd::driver svd_driver)
-{
-  octave_idx_type info;
-
-  octave_idx_type m = a.rows ();
-  octave_idx_type n = a.cols ();
-
-  if (m == 0 || n == 0)
-    return empty_init (m, n, svd_type);
-
-  ComplexMatrix atmp = a;
-  Complex *tmp_data = atmp.fortran_vec ();
-
-  octave_idx_type min_mn = m < n ? m : n;
-  octave_idx_type max_mn = m > n ? m : n;
-
-  char jobu = 'A';
-  char jobv = 'A';
-
-  octave_idx_type ncol_u = m;
-  octave_idx_type nrow_vt = n;
-  octave_idx_type nrow_s = m;
-  octave_idx_type ncol_s = n;
-
-  switch (svd_type)
-    {
-    case svd::economy:
-      jobu = jobv = 'S';
-      ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
-      break;
-
-    case svd::sigma_only:
-
-      // Note:  for this case, both jobu and jobv should be 'N', but
-      // there seems to be a bug in dgesvd from Lapack V2.0.  To
-      // demonstrate the bug, set both jobu and jobv to 'N' and find
-      // the singular values of [eye(3), eye(3)].  The result is
-      // [-sqrt(2), -sqrt(2), -sqrt(2)].
-      //
-      // For Lapack 3.0, this problem seems to be fixed.
-
-      jobu = jobv = 'N';
-      ncol_u = nrow_vt = 1;
-      break;
-
-    default:
-      break;
-    }
-
-  type_computed = svd_type;
-
-  if (! (jobu == 'N' || jobu == 'O'))
-    left_sm.resize (m, ncol_u);
-
-  Complex *u = left_sm.fortran_vec ();
-
-  sigma.resize (nrow_s, ncol_s);
-  double *s_vec = sigma.fortran_vec ();
-
-  if (! (jobv == 'N' || jobv == 'O'))
-    right_sm.resize (nrow_vt, n);
-
-  Complex *vt = right_sm.fortran_vec ();
-
-  // Query ZGESVD for the correct dimension of WORK.
-
-  octave_idx_type lwork = -1;
-
-  Array<Complex> work (dim_vector (1, 1));
-
-  octave_idx_type one = 1;
-  octave_idx_type m1 = std::max (m, one);
-  octave_idx_type nrow_vt1 = std::max (nrow_vt, one);
-
-  if (svd_driver == svd::GESVD)
-    {
-      octave_idx_type lrwork = 5*max_mn;
-      Array<double> rwork (dim_vector (lrwork, 1));
-
-      F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      lwork = static_cast<octave_idx_type> (work(0).real ());
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-    }
-  else if (svd_driver == svd::GESDD)
-    {
-      assert (jobu == jobv);
-      char jobz = jobu;
-
-      octave_idx_type lrwork;
-      if (jobz == 'N')
-        lrwork = 7*min_mn;
-      else
-        lrwork = 5*min_mn*min_mn + 5*min_mn;
-      Array<double> rwork (dim_vector (lrwork, 1));
-
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
-
-      F77_XFCN (zgesdd, ZGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-
-      lwork = static_cast<octave_idx_type> (work(0).real ());
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (zgesdd, ZGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, F77_DBLE_CMPLX_ARG (tmp_data), m1, s_vec, F77_DBLE_CMPLX_ARG (u), m1, F77_DBLE_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-    }
-  else
-    abort ();
-
-  if (! (jobv == 'N' || jobv == 'O'))
-    right_sm = right_sm.hermitian ();
-
-  return info;
-}
-
-template <>
-octave_idx_type
-svd<FloatComplexMatrix>::init (const FloatComplexMatrix& a, svd::type svd_type,
-                              svd::driver svd_driver)
-{
-  octave_idx_type info;
-
-  octave_idx_type m = a.rows ();
-  octave_idx_type n = a.cols ();
-
-  if (m == 0 || n == 0)
-    return empty_init (m, n, svd_type);
-
-  FloatComplexMatrix atmp = a;
-  FloatComplex *tmp_data = atmp.fortran_vec ();
-
-  octave_idx_type min_mn = m < n ? m : n;
-  octave_idx_type max_mn = m > n ? m : n;
-
-  char jobu = 'A';
-  char jobv = 'A';
-
-  octave_idx_type ncol_u = m;
-  octave_idx_type nrow_vt = n;
-  octave_idx_type nrow_s = m;
-  octave_idx_type ncol_s = n;
-
-  switch (svd_type)
-    {
-    case svd::economy:
-      jobu = jobv = 'S';
-      ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
-      break;
-
-    case svd::sigma_only:
-
-      // Note:  for this case, both jobu and jobv should be 'N', but
-      // there seems to be a bug in dgesvd from Lapack V2.0.  To
-      // demonstrate the bug, set both jobu and jobv to 'N' and find
-      // the singular values of [eye(3), eye(3)].  The result is
-      // [-sqrt(2), -sqrt(2), -sqrt(2)].
-      //
-      // For Lapack 3.0, this problem seems to be fixed.
-
-      jobu = jobv = 'N';
-      ncol_u = nrow_vt = 1;
-      break;
-
-    default:
-      break;
-    }
-
-  type_computed = svd_type;
-
-  if (! (jobu == 'N' || jobu == 'O'))
-    left_sm.resize (m, ncol_u);
-
-  FloatComplex *u = left_sm.fortran_vec ();
-
-  sigma.resize (nrow_s, ncol_s);
-  float *s_vec = sigma.fortran_vec ();
-
-  if (! (jobv == 'N' || jobv == 'O'))
-    right_sm.resize (nrow_vt, n);
-
-  FloatComplex *vt = right_sm.fortran_vec ();
-
-  // Query CGESVD for the correct dimension of WORK.
-
-  octave_idx_type lwork = -1;
-
-  Array<FloatComplex> work (dim_vector (1, 1));
-
-  octave_idx_type one = 1;
-  octave_idx_type m1 = std::max (m, one);
-  octave_idx_type nrow_vt1 = std::max (nrow_vt, one);
-
-  if (svd_driver == svd::GESVD)
-    {
-      octave_idx_type lrwork = 5*max_mn;
-      Array<float> rwork (dim_vector (lrwork, 1));
-
-      F77_XFCN (cgesvd, CGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      lwork = static_cast<octave_idx_type> (work(0).real ());
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (cgesvd, CGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
-                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-    }
-  else if (svd_driver == svd::GESDD)
-    {
-      assert (jobu == jobv);
-      char jobz = jobu;
-
-      octave_idx_type lrwork;
-      if (jobz == 'N')
-        lrwork = 5*min_mn;
-      else
-        lrwork = min_mn * std::max (5*min_mn+7, 2*max_mn+2*min_mn+1);
-      Array<float> rwork (dim_vector (lrwork, 1));
-
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
-
-      F77_XFCN (cgesdd, CGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-
-      lwork = static_cast<octave_idx_type> (work(0).real ());
-      work.resize (dim_vector (lwork, 1));
-
-      F77_XFCN (cgesdd, CGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, F77_CMPLX_ARG (tmp_data), m1, s_vec, F77_CMPLX_ARG (u), m1, F77_CMPLX_ARG (vt),
-                                 nrow_vt1, F77_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 rwork.fortran_vec (), iwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-    }
-  else
-    abort ();
-
-  if (! (jobv == 'N' || jobv == 'O'))
-    right_sm = right_sm.hermitian ();
-
-  return info;
 }
 
 // Instantiations we need.

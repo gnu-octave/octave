@@ -1144,7 +1144,7 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
 {
   FloatComplexMatrix retval;
 
-  svd<FloatComplexMatrix> result (*this, svd<FloatComplexMatrix>::economy);
+  svd<FloatComplexMatrix> result (*this, svd<FloatComplexMatrix>::Type::economy);
 
   FloatDiagMatrix S = result.singular_values ();
   FloatComplexMatrix U = result.left_singular_matrix ();

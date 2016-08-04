@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2016 Carnë Draug
 Copyright (C) 1994-2015 John W. Eaton
 
 This file is part of Octave.
@@ -35,49 +36,40 @@ public:
 
   typedef typename T::real_diag_matrix_type DM_T;
 
-  enum type
+  enum class Type
   {
     std,
     economy,
     sigma_only
   };
 
-  enum driver
+  enum class Driver
   {
     GESVD,
     GESDD
   };
 
   svd (void)
-    : type_computed (), left_sm (), sigma (), right_sm ()
+    : type (), driver (), left_sm (), sigma (), right_sm ()
   { }
 
-  svd (const T& a, type svd_type = svd::std, driver svd_driver = svd::GESVD)
-    : type_computed (), left_sm (), sigma (), right_sm ()
-  {
-    init (a, svd_type, svd_driver);
-  }
-
-  svd (const T& a, octave_idx_type& info, type svd_type = svd::std,
-       driver svd_driver = svd::GESVD)
-    : type_computed (), left_sm (), sigma (), right_sm ()
-  {
-    info = init (a, svd_type, svd_driver);
-  }
+  svd (const T& a, svd::Type type = svd::Type::std,
+       svd::Driver driver = svd::Driver::GESVD);
 
   svd (const svd& a)
-    : type_computed (a.type_computed), left_sm (a.left_sm),
-      sigma (a.sigma), right_sm (a.right_sm)
+    : type (a.type), driver (a.driver), left_sm (a.left_sm), sigma (a.sigma),
+      right_sm (a.right_sm)
   { }
 
   svd& operator = (const svd& a)
   {
     if (this != &a)
       {
-        type_computed = a.type_computed;
+        type = a.type;
         left_sm = a.left_sm;
         sigma = a.sigma;
         right_sm = a.right_sm;
+        driver = a.driver;
       }
 
     return *this;
@@ -93,17 +85,26 @@ public:
 
 private:
 
-  svd::type type_computed;
+  typedef typename T::element_type P;
+  typedef typename DM_T::element_type DM_P;
+
+  svd::Type type;
+  svd::Driver driver;
 
   T left_sm;
   DM_T sigma;
   T right_sm;
 
-  octave_idx_type
-  init (const T& a, type svd_type, driver svd_driver);
+  void gesvd (char& jobu, char& jobv, octave_idx_type m, octave_idx_type n,
+              P* tmp_data, octave_idx_type m1, DM_P* s_vec, P* u, P* vt,
+              octave_idx_type nrow_vt1, T& work, octave_idx_type& lwork,
+              octave_idx_type& info);
 
-  octave_idx_type
-  empty_init (octave_idx_type nr, octave_idx_type nc, type svd_type);
+  void gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
+              P* tmp_data, octave_idx_type m1, DM_P* s_vec, P* u, P* vt,
+              octave_idx_type nrow_vt1, T& work, octave_idx_type& lwork,
+              octave_idx_type* iwork, octave_idx_type& info);
+
 };
 
 #endif

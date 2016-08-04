@@ -823,7 +823,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 Matrix
 Matrix::pseudo_inverse (double tol) const
 {
-  svd<Matrix> result (*this, svd<Matrix>::economy);
+  svd<Matrix> result (*this, svd<Matrix>::Type::economy);
 
   DiagMatrix S = result.singular_values ();
   Matrix U = result.left_singular_matrix ();

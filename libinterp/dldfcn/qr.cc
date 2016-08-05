@@ -80,9 +80,9 @@ DEFUN_DLD (qr, args, nargout,
 @deftypefnx {} {@var{X} =} qr (@var{A})
 @deftypefnx {} {@var{R} =} qr (@var{A})  # sparse A
 @deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})
-@deftypefnx {} {[...] =} qr (..., 0)
-@deftypefnx {} {[...] =} qr (..., 'vector')
-@deftypefnx {} {[...] =} qr (..., 'matrix')
+@deftypefnx {} {[@dots{}] =} qr (@dots{}, 0)
+@deftypefnx {} {[@dots{}] =} qr (@dots{}, 'vector')
+@deftypefnx {} {[@dots{}] =} qr (@dots{}, 'matrix')
 @cindex QR factorization
 Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}
 subroutines.

@@ -73,7 +73,15 @@ function y = postpad (x, l, c, dim)
 
   d = sz(dim);
 
-  if (d >= l)
+  if (d == l)
+    ## This optimization makes sense because the function is used to match
+    ## the length between two vectors not knowing a priori is larger, and
+    ## allow for:
+    ##    ml = max (numel (v1), numel (v2));
+    ##    v1 = postpad (v1, ml);
+    ##    v2 = postpad (v2, ml);
+    y = x;
+  elseif (d >= l)
     idx = repmat ({':'}, nd, 1);
     idx{dim} = 1:l;
     y = x(idx{:});
@@ -92,6 +100,10 @@ endfunction
 %!assert (postpad ([1,2], 2, 2, 1), [1,2;2,2])
 %!assert (postpad ([1;2], 2, 2, 3), reshape ([1;2;2;2], 2, 1, 2))
 %!assert (postpad ([1,2], 2, 2, 3), reshape ([1,2,2,2], 1, 2, 2))
+
+%!assert (postpad ([1 2], 2), [1 2])
+%!assert (postpad ([1; 2], 2), [1; 2])
+%!assert (postpad ([1; 2], 2, 3, 2), [1 3; 2 3])
 
 %! ## Test with string concatenation (bug #44162)
 %!assert (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")

@@ -73,7 +73,15 @@ function y = prepad (x, l, c, dim)
 
   d = sz(dim);
 
-  if (d >= l)
+  if (d == l)
+    ## This optimization makes sense because the function is used to match
+    ## the length between two vectors not knowing a priori is larger, and
+    ## allow for:
+    ##    ml = max (numel (v1), numel (v2));
+    ##    v1 = prepad (v1, ml);
+    ##    v2 = prepad (v2, ml);
+    y = x;
+  elseif (d >= l)
     idx = repmat ({':'}, nd, 1);
     idx{dim} = d-l+1:d;
     y = x(idx{:});
@@ -90,6 +98,10 @@ endfunction
 
 %!assert (prepad ([1,2], 4, 2), [2,2,1,2])
 %!assert (prepad ([1;2], 4, 2), [2;2;1;2])
+
+%!assert (prepad ([1 2], 2), [1 2])
+%!assert (prepad ([1; 2], 2), [1; 2])
+%!assert (prepad ([1; 2], 2, 3, 2), [3 1; 3 2])
 
 %!assert (prepad ([1,2], 2, 2, 1), [2,2;1,2])
 

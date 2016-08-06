@@ -430,8 +430,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   yautoscale = strcmp (axis_obj.ylimmode, "auto");
   zautoscale = strcmp (axis_obj.zlimmode, "auto");
   cautoscale = strcmp (axis_obj.climmode, "auto");
-  cdatadirect = false;
-  truecolor = false;
 
   fputs (plot_stream, "set clip two;\n");
 
@@ -455,9 +453,75 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   hidden_removal = NaN;
   view_map = false;
 
-  if (! cautoscale && clim(1) == clim(2))
+  if (cautoscale)
+    ## First pass to get cdata limits, maybe general graphics should do this
+    kids1 = kids;
+    clim = [Inf -Inf];
+
+    while (! isempty (kids1))
+      obj = get (kids1(end));
+      kids1 = kids1(1:(end-1));
+
+      switch (obj.type)
+        case {"image", "patch", "surface"}
+          if (isfield (obj, "cdatamapping")
+              && strcmp (obj.cdatamapping, "scaled")
+              && isfield (obj, "cdata")
+              && ! isempty (obj.cdata))
+            clim(1) = min (clim(1), min (obj.cdata(:)));
+            clim(2) = max (clim(2), max (obj.cdata(:)));
+          endif
+
+        case "hggroup"
+          ## Push group children into the kid list.
+          if (isempty (kids1))
+            kids1 = obj.children;
+          elseif (! isempty (obj.children))
+            kids1 = [kids1; obj.children];
+          endif
+      endswitch
+    endwhile
+
+    if (clim(1) == Inf)
+      clim = axis_obj.clim;
+    endif
+
+  elseif (clim(1) == clim(2))
     clim(2)++;
   endif
+
+  if (rows (parent_figure_obj.colormap) != 2)
+    ## Second pass to change color map for binary images (not sure correct)
+    kids1 = kids;
+    while (! isempty (kids1))
+      obj = get (kids1(end));
+      kids1 = kids1(1:(end-1));
+
+      switch (obj.type)
+        case {"image"}
+          if (isfield (obj, "cdata") && islogical (obj.cdata))
+            set (axis_obj.parent, "colormap", [0 0 0; 1 1 1]);
+            set (h, "clim", [0 1]);
+            set (h, "climmode", "manual");
+            parent_figure_obj.colormap = [0 0 0; 1 1 1];
+            axis_obj.clim = [0 1];
+            axis_obj.climmode = "manual";
+            break;
+          endif
+
+        case "hggroup"
+          ## Push group children into the kid list.
+          if (isempty (kids1))
+            kids1 = obj.children;
+          elseif (! isempty (obj.children))
+            kids1 = [kids1; obj.children];
+          endif
+      endswitch
+    endwhile
+  endif
+
+  cmap = parent_figure_obj.colormap;
+  cmap_sz = rows (cmap);
   addedcmap = [];
 
   ximg_data = {};
@@ -515,10 +579,15 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         img_xdata = obj.xdata;
         img_ydata = obj.ydata;
 
-        if (ndims (img_data) == 3)
-          truecolor = true;
-        elseif (strcmp (obj.cdatamapping, "direct"))
-          cdatadirect = true;
+        if (ndims (img_data) != 3)
+          if (islogical (img_data))
+            img_data += 1;
+          else
+            if (strcmp (obj.cdatamapping, "scaled"))
+              img_data = 1 + fix (cmap_sz*(img_data-clim(1))/(clim(2)-clim(1)));
+            endif
+            img_data = max (1, min (img_data, cmap_sz));
+          endif
         endif
         data_idx += 1;
         is_image_data(data_idx) = true;
@@ -667,14 +736,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         endif
 
       case "patch"
-        cmap = parent_figure_obj.colormap;
         [nr, nc] = size (obj.xdata);
 
         if (! isempty (obj.cdata))
           cdat = obj.cdata;
-          if (strcmp (obj.cdatamapping, "direct"))
-            cdatadirect = true;
-          endif
         else
           cdat = [];
         endif
@@ -754,39 +819,47 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                       ## RGB Triplet
                       color = ccol;
                     elseif (nd == 3 && numel (xcol) == 3)
-                      ccdat = ccol;
+                      if (strcmp (obj.cdatamapping, "scaled"))
+                        ccdat = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
+                      else
+                        ccdat = ccol;
+                      endif
+                      ccdat = max (1, min (ccdat, cmap_sz));
                     else
-                      if (cdatadirect)
+                      if (strcmp (obj.cdatamapping, "direct"))
                         r = round (ccol);
                       else
-                        r = 1 + round ((rows (cmap) - 1)
-                                       * (ccol - clim(1))/(clim(2) - clim(1)));
+                        r = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
                       endif
-                      r = max (1, min (r, rows (cmap)));
+                      r = max (1, min (r, cmap_sz));
                       color = cmap(r, :);
                     endif
                   elseif (strcmp (obj.facecolor, "interp"))
                     if (nd == 3 && numel (xcol) == 3)
                       ccdat = ccol;
                       if (! isvector (ccdat))
-                        tmp = rows (cmap) + rows (addedcmap) + ...
+                        tmp = cmap_sz + rows (addedcmap) + ...
                              [1 : rows(ccdat)];
                         addedcmap = [addedcmap; ccdat];
                         ccdat = tmp(:);
                       else
-                        ccdat = ccdat(:);
+                        if (strcmp (obj.cdatamapping, "scaled"))
+                          ccdat = 1 + fix (cmap_sz*(ccdat(:)-clim(1))/(clim(2)-clim(1)));
+                        else
+                          ccdat = ccdat(:);
+                        endif
+                        ccdat = max (1, min (ccdat, cmap_sz));
                       endif
                     else
                       if (sum (diff (ccol)))
                         warning ("\"interp\" not supported, using 1st entry of cdata");
                       endif
-                      if (cdatadirect)
+                      if (strcmp (obj.cdatamapping, "direct"))
                         r = round (ccol);
                       else
-                        r = 1 + round ((rows (cmap) - 1)
-                                       * (ccol - clim(1))/(clim(2) - clim(1)));
+                        r = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
                       endif
-                      r = max (1, min (r, rows (cmap)));
+                      r = max (1, min (r, cmap_sz));
                       color = cmap(r(1),:);
                     endif
                   endif
@@ -801,7 +874,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
               if (nd == 3 && numel (xcol) == 3)
                 if (isnan (ccdat))
-                  ccdat = (rows (cmap) + rows (addedcmap) + 1) * ones(3, 1);
+                  ccdat = (cmap_sz + rows (addedcmap) + 1) * ones(3, 1);
                   addedcmap = [addedcmap; reshape(color, 1, 3)];
                 elseif (numel (ccdat) == 1)
                   ccdat = ccdat * ones (size (zcol));
@@ -1149,6 +1222,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         ydat = obj.ydata;
         zdat = obj.zdata;
         cdat = obj.cdata;
+        if (strcmp (obj.cdatamapping, "scaled"))
+          cdat = 1 + fix (cmap_sz*(cdat-clim(1))/(clim(2)-clim(1)));
+        endif
+        cdat = max (1, min (cdat, cmap_sz));
         err = false;
         if (! size_equal (zdat, cdat))
           err = true;
@@ -1404,24 +1481,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "set zrange [%.15e:%.15e];\n", zlim);
   endif
 
-  cmap = parent_figure_obj.colormap;
-  cmap_sz = rows (cmap);
   if (! any (isinf (clim)))
-    if (truecolor || ! cdatadirect)
-      if (rows (addedcmap) > 0)
-        for i = 1:data_idx
-          if (have_3d_patch(i))
-            data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
-           endif
-        endfor
-        fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n",
-                 clim(1), clim(2) * (cmap_sz + rows (addedcmap)) / cmap_sz);
-      else
-        fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n", clim);
-      endif
+    if (rows (addedcmap) > 0)
+      fprintf (plot_stream, "set cbrange [1:%.15e];\n",
+               cmap_sz + rows (addedcmap));
     else
-      fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz +
-               rows (addedcmap));
+      fprintf (plot_stream, "set cbrange [1:%.15e];\n", cmap_sz);
     endif
   endif
 

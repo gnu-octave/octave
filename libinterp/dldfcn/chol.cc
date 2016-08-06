@@ -570,6 +570,35 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
   return retval;
 }
 
+/*
+
+## Test for bug #36437
+%!function sparse_chol2inv (T, tol)
+%!  iT = inv (T);
+%!  ciT = chol2inv (chol (T));
+%!  assert (ciT, iT, tol);
+%!  assert (chol2inv (chol ( full (T))), ciT, tol*2);
+%!endfunction
+
+%!test
+%! A = gallery ("poisson", 3);
+%! sparse_chol2inv (A, eps);
+
+%!test
+%! n = 10;
+%! B = spdiags (ones (n, 1) * [1 2 1], [-1 0 1], n, n);
+%! sparse_chol2inv (B, eps*100);
+
+%!test
+%! C = gallery("tridiag", 5);
+%! sparse_chol2inv (C, eps*10);
+
+%!test
+%! D = gallery("wathen", 1, 1);
+%! sparse_chol2inv (D, eps*10^4);
+
+*/
+
 DEFUN_DLD (cholupdate, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})

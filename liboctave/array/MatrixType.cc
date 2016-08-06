@@ -351,7 +351,9 @@ MatrixType::MatrixType (const SparseMatrix &a)
               else
                 dense = false;
             }
-          else if (upper_band == 0)
+
+          // If a matrix is Banded but also Upper/Lower, set to the latter.
+          if (upper_band == 0)
             typ = MatrixType::Lower;
           else if (lower_band == 0)
             typ = MatrixType::Upper;
@@ -668,7 +670,9 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
               else
                 dense = false;
             }
-          else if (upper_band == 0)
+
+          // If a matrix is Banded but also Upper/Lower, set to the latter.
+          if (upper_band == 0)
             typ = MatrixType::Lower;
           else if (lower_band == 0)
             typ = MatrixType::Upper;

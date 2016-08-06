@@ -76,12 +76,9 @@ function retval = mahalanobis (x, y)
 
   w = (x' * x + y' * y) / (xr + yr - 2);
 
-  winv = inv (w);
-
-  retval = (xm - ym) * winv * (xm - ym)';
+  retval = sumsq ((xm - ym) / chol (w));
 
 endfunction
-
 
 ## Test input validation
 %!error mahalanobis ()

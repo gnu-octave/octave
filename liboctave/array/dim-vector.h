@@ -27,9 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <cassert>
-#include <limits>
 
-#include <sstream>
 #include <string>
 
 #include "lo-error.h"

@@ -243,7 +243,7 @@ public:
         do
           l--;
         while (l > 2 && rep[l-1] == 1);
-        ndims () = l;
+        rep[-1] = l;
       }
   }
 
@@ -303,7 +303,7 @@ public:
       elements in the dim_vector including trailing singetons.  It is also
       the number of dimensions an Array with this dim_vector would have.
   */
-  octave_idx_type& ndims (void) const { return rep[-1]; }
+  octave_idx_type ndims (void) const { return rep[-1]; }
 
   //! Number of dimensions.
   //! Synonymous with ndims().

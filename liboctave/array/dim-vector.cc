@@ -63,7 +63,7 @@ dim_vector::chop_all_singletons (void)
   if (j == 1)
     rep[1] = 1;
 
-  ndims () = j > 2 ? j : 2;
+  rep[-1] = j > 2 ? j : 2;
 }
 
 std::string

@@ -26,11 +26,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <string>
+
 #include "chol.h"
 #include "sparse-chol.h"
 #include "oct-spparms.h"
 #include "sparse-util.h"
 
+#include "caseless-str.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 #include "defun-dld.h"
@@ -160,13 +163,13 @@ sparse matrices.
   int n = 1;
   while (n < nargin)
     {
-      std::string tmp = args(n++).xstring_value ("chol: optional arguments must be strings");
+      caseless_str tmp = args(n++).xstring_value ("chol: optional arguments must be strings");
 
-      if (tmp == "vector")
+      if (tmp.compare ("vector"))
         vecout = true;
-      else if (tmp == "lower")
+      else if (tmp.compare ("lower"))
         LLt = true;
-      else if (tmp == "upper")
+      else if (tmp.compare ("upper"))
         LLt = false;
       else
         error ("chol: optional argument must be one of \"vector\", \"lower\", or \"upper\"");
@@ -313,6 +316,16 @@ sparse matrices.
 /*
 %!assert (chol ([2, 1; 1, 1]), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)], sqrt (eps))
 %!assert (chol (single ([2, 1; 1, 1])), single ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
+
+%!assert (chol ([2, 1; 1, 1], "upper"), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)],
+%!        sqrt (eps))
+%!assert (chol ([2, 1; 1, 1], "lower"), [sqrt(2), 0; 1/sqrt(2), 1/sqrt(2)],
+%!        sqrt (eps))
+
+%!assert (chol ([2, 1; 1, 1], "lower"), chol ([2, 1; 1, 1], "LoweR"))
+%!assert (chol ([2, 1; 1, 1], "upper"), chol ([2, 1; 1, 1], "Upper"))
+%!assert (chol ([2, 1; 1, 1], "vector"), chol ([2, 1; 1, 1], "VECTOR"))
+
 %!testif HAVE_CHOLMOD
 %! ## Bug #42587
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);

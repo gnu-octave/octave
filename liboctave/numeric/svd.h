@@ -50,26 +50,26 @@ public:
   };
 
   svd (void)
-    : type (), driver (), left_sm (), sigma (), right_sm ()
+    : m_type (), m_driver (), left_sm (), sigma (), right_sm ()
   { }
 
   svd (const T& a, svd::Type type = svd::Type::std,
        svd::Driver driver = svd::Driver::GESVD);
 
   svd (const svd& a)
-    : type (a.type), driver (a.driver), left_sm (a.left_sm), sigma (a.sigma),
-      right_sm (a.right_sm)
+    : m_type (a.m_type), m_driver (a.m_driver), left_sm (a.left_sm),
+      sigma (a.sigma), right_sm (a.right_sm)
   { }
 
   svd& operator = (const svd& a)
   {
     if (this != &a)
       {
-        type = a.type;
+        m_type = a.m_type;
         left_sm = a.left_sm;
         sigma = a.sigma;
         right_sm = a.right_sm;
-        driver = a.driver;
+        m_driver = a.m_driver;
       }
 
     return *this;
@@ -88,8 +88,8 @@ private:
   typedef typename T::element_type P;
   typedef typename DM_T::element_type DM_P;
 
-  svd::Type type;
-  svd::Driver driver;
+  svd::Type m_type;
+  svd::Driver m_driver;
 
   T left_sm;
   DM_T sigma;

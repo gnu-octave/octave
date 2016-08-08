@@ -131,7 +131,7 @@ template <typename T>
 T
 svd<T>::left_singular_matrix (void) const
 {
-  if (type == svd::Type::sigma_only)
+  if (m_type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)
       ("svd: U not computed because type == svd::sigma_only");
 
@@ -142,7 +142,7 @@ template <typename T>
 T
 svd<T>::right_singular_matrix (void) const
 {
-  if (type == svd::Type::sigma_only)
+  if (m_type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)
       ("svd: V not computed because type == svd::sigma_only");
 
@@ -369,7 +369,7 @@ svd<FloatComplexMatrix>::gesdd (char& jobz, octave_idx_type m,
 template<typename T>
 svd<T>::svd (const T& a, svd::Type type,
              svd::Driver driver)
-  : type (type), driver (driver), left_sm (), sigma (), right_sm ()
+  : m_type (type), m_driver (driver), left_sm (), sigma (), right_sm ()
 {
   octave_idx_type info;
 
@@ -378,7 +378,7 @@ svd<T>::svd (const T& a, svd::Type type,
 
   if (m == 0 || n == 0)
     {
-      switch (type)
+      switch (m_type)
         {
         case svd::Type::std:
           left_sm = T (m, m, 0);
@@ -417,7 +417,7 @@ svd<T>::svd (const T& a, svd::Type type,
   octave_idx_type nrow_s = m;
   octave_idx_type ncol_s = n;
 
-  switch (type)
+  switch (m_type)
     {
     case svd::Type::economy:
       jobu = jobv = 'S';
@@ -464,10 +464,10 @@ svd<T>::svd (const T& a, svd::Type type,
   octave_idx_type m1 = std::max (m, 1);
   octave_idx_type nrow_vt1 = std::max (nrow_vt, 1);
 
-  if (driver == svd::Driver::GESVD)
+  if (m_driver == svd::Driver::GESVD)
     gesvd (jobu, jobv, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
            work, lwork, info);
-  else if (driver == svd::Driver::GESDD)
+  else if (m_driver == svd::Driver::GESDD)
     {
       assert (jobu == jobv);
       char jobz = jobu;

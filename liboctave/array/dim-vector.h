@@ -111,10 +111,7 @@ private:
   {
     int l = ndims ();
 
-    octave_idx_type *r = new octave_idx_type [l + 2];
-
-    *r++ = 1;
-    *r++ = l;
+    octave_idx_type* r = newrep (l);
 
     for (int i = 0; i < l; i++)
       r[i] = rep[i];
@@ -131,16 +128,13 @@ private:
     if (n < 2)
       n = 2;
 
-    octave_idx_type *r = new octave_idx_type [n + 2];
-
-    *r++ = 1;
-    *r++ = n;
+    octave_idx_type* r = newrep (n);
 
     if (l > n)
       l = n;
 
-    int j;
-    for (j = 0; j < l; j++)
+    int j = 0;
+    for (; j < l; j++)
       r[j] = rep[j];
     for (; j < n; j++)
       r[j] = fill_value;
@@ -474,19 +468,11 @@ public:
     return def;
   }
 
-  //! Compute a linear index from an index tuple.
+  //! Linear index from an index tuple.
+  octave_idx_type compute_index (const octave_idx_type* idx) const
+  { return compute_index (idx, ndims ()); }
 
-  octave_idx_type compute_index (const octave_idx_type *idx) const
-  {
-    octave_idx_type k = 0;
-    for (int i = ndims () - 1; i >= 0; i--)
-      k = rep[i] * k + idx[i];
-
-    return k;
-  }
-
-  //! Ditto, but the tuple may be incomplete (nidx < length ()).
-
+  //! Linear index from an incomplete index tuple (nidx < length ()).
   octave_idx_type compute_index (const octave_idx_type *idx, int nidx) const
   {
     octave_idx_type k = 0;

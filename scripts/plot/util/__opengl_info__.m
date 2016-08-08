@@ -14,8 +14,8 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} __opengl_info__
-## @deftypefnx {Function File} {@var{retval} =} __opengl_info__ ()
+## @deftypefn  {} {} __opengl_info__
+## @deftypefnx {} {@var{retval} =} __opengl_info__ ()
 ##
 ## Get OpenGL driver information.
 ##
@@ -24,13 +24,17 @@
 ## in a structure.
 ##
 ## Fields in the structure are:
+##
 ## @table @asis
 ## @item version
 ## OpenGL Driver version string
+##
 ## @item vendor
 ## OpenGL Driver vendor string
+##
 ## @item renderer
 ## OpenGL renderer string
+##
 ## @item extensions
 ## List of enabled extensions for the OpenGL driver.
 ## @end table
@@ -43,14 +47,16 @@
 
 function retval = __opengl_info__ ()
 
-  # currently we only handle a single argument
+  ## currently we only handle a single argument
   if (nargin != 0)
     print_usage ();
   endif
 
   [info, msg] = gl_info ();
 
-  if (isempty (msg))
+  if (! isempty (msg))
+    warning (msg);
+  else
     if (nargout == 0)
       printf ("version    = %s\n", info.version);
       printf ("vendor     = %s\n", info.vendor);
@@ -60,14 +66,13 @@ function retval = __opengl_info__ ()
     else
       retval = info;
     endif
-  else
-    warning (msg);
   endif
 
 endfunction
 
 function info = fig_gl_info (h)
   info = [];
+
   if (ishandle (h) && strcmp (get (h, "renderer"), "opengl"))
     vers = get (h, "__gl_version__");
     vend = get (h, "__gl_vendor__");
@@ -87,23 +92,21 @@ function [info, msg] = gl_info ()
   msg = "";
 
   ## If we have any open figures, take a look for any OpenGL info.
-
   figs = findall (0, "type", "figure");
 
-  for i = 1:numel (figs)
-    if (isempty (info))
-      info = fig_gl_info (figs(i));
-      if (! isempty (info))
-        break
-      endif
+  for hf = figs.'
+    info = fig_gl_info (hf);
+    if (! isempty (info))
+      break;
     endif
   endfor
 
-  ## If no info yet, try open a figure brifly to get the info.
-
+  ## If no info yet, try open a figure to get the info.
   if (isempty (info))
+    ## Need to create a figure, place an OpenGL object, and force drawing.
     h = figure ("position", [0,0,1,1], "toolbar", "none", "menubar", "none");
-    waitfor (h, "timeout", 1);
+    hax = axes ();
+    drawnow ();
     info = fig_gl_info (h);
     close (h);
   endif
@@ -119,3 +122,4 @@ endfunction
 %! a = __opengl_info__ ();
 %! assert (! isempty (a))
 %! assert (isfield (a, "version"))
+

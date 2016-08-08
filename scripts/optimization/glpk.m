@@ -504,7 +504,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   [nc, nxa] = size (A);
   if (nxa != nx)
     error ("glpk: A must be %d by %d, not %d by %d",
-           nc, nx, rows(A), columns(A));
+           nc, nx, rows (A), columns (A));
   endif
 
   ## 3) RHS

@@ -2718,17 +2718,25 @@ if test $ENABLE_DOCS = yes; then
 fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
+case "$GCC_VERSION" in
+  *4*)
+  ;;
+  *)
+    GCC_WSHADOW_OPTION=-Wshadow
+  ;;
+esac
+
 ### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
 ### done feature testing.
 
-GCC_EXTRA_FLAGS="-Wall -W -Wshadow -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
-GXX_EXTRA_FLAGS="-Wall -W -Wshadow -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
+GCC_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
+GXX_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
 
 try_extra_warning_flags=yes
 
 AC_ARG_ENABLE([extra-warning-flags],
   [AS_HELP_STRING([--disable-extra-warning-flags],
-    [don't add -Wall, -W, -Wshadow, and -Wold-style-cast options to CFLAGS and CXXFLAGS])],
+    [don't add -Wall, -W, -Wformat, -Wold-style-cast, and other warning options to CFLAGS and CXXFLAGS])],
   [if test "$enableval" = no; then
      try_extra_warning_flags=no
    fi],

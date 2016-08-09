@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "MSparse.h"
+
 class Matrix;
 class ComplexMatrix;
 class FloatMatrix;
@@ -68,9 +70,8 @@ public:
 
   MatrixType (const FloatComplexMatrix &a);
 
-  MatrixType (const SparseMatrix &a);
-
-  MatrixType (const SparseComplexMatrix &a);
+  template <typename T>
+  MatrixType (const MSparse<T> &a);
 
   MatrixType (const matrix_type t, bool _full = false);
 

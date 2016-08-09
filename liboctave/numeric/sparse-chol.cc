@@ -92,7 +92,7 @@ public:
 #endif
   }
 
-  ColumnVector perm (void) const { return perms + 1; }
+  RowVector perm (void) const { return perms + 1; }
 
   SparseMatrix Q (void) const;
 
@@ -108,7 +108,7 @@ private:
 
   octave_idx_type minor_p;
 
-  ColumnVector perms;
+  RowVector perms;
 
   double cond;
 
@@ -474,7 +474,7 @@ sparse_chol<chol_type>::P (void) const
 }
 
 template <typename chol_type>
-ColumnVector
+RowVector
 sparse_chol<chol_type>::perm (void) const
 {
   return rep->perm ();
@@ -511,7 +511,7 @@ sparse_chol<chol_type>::inverse (void) const
 
   cholmod_sparse *m = rep->L ();
   octave_idx_type n = m->ncol;
-  ColumnVector perms = rep->perm ();
+  RowVector perms = rep->perm ();
   double rcond2;
   octave_idx_type info;
   MatrixType mattype (MatrixType::Upper);

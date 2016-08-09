@@ -249,6 +249,8 @@ sparse matrices.
     }
   else if (arg.is_single_type ())
     {
+      if (vecout)
+        error ("chol: A must be sparse for the \"vector\" option");
       if (arg.is_real_type ())
         {
           FloatMatrix m = arg.float_matrix_value ();
@@ -280,6 +282,8 @@ sparse matrices.
     }
   else
     {
+      if (vecout)
+        error ("chol: A must be sparse for the \"vector\" option");
       if (arg.is_real_type ())
         {
           Matrix m = arg.matrix_value ();
@@ -324,7 +328,25 @@ sparse matrices.
 
 %!assert (chol ([2, 1; 1, 1], "lower"), chol ([2, 1; 1, 1], "LoweR"))
 %!assert (chol ([2, 1; 1, 1], "upper"), chol ([2, 1; 1, 1], "Upper"))
-%!assert (chol ([2, 1; 1, 1], "vector"), chol ([2, 1; 1, 1], "VECTOR"))
+
+## Check the "vector" option which only affects the 3rd argument and
+## is only valid for sparse input.
+%!test
+%! a = sparse ([2 1; 1 1]);
+%! r = sparse ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]);
+%! [rd, pd, qd] = chol (a);
+%! [rv, pv, qv] = chol (a, "vector");
+%! assert (r, rd, eps)
+%! assert (r, rv, eps)
+%! assert (pd, 0)
+%! assert (pd, pv)
+%! assert (qd, sparse (eye (2)))
+%! assert (qv, [1 2])
+%!
+%! [rv, pv, qv] = chol (a, "Vector"); # check case sensitivity
+%! assert (r, rv, eps)
+%! assert (pd, pv)
+%! assert (qv, [1 2])
 
 %!testif HAVE_CHOLMOD
 %! ## Bug #42587
@@ -338,6 +360,7 @@ sparse matrices.
 %!error <optional arguments must be strings> chol (1, 2)
 %!error <optional argument must be one of "vector", "lower"> chol (1, "foobar")
 %!error <matrix A must be sparse> [L,p,Q] = chol ([1, 2; 3, 4])
+%!error <A must be sparse> [L, p] = chol ([1, 2; 3, 4], "vector")
 */
 
 DEFUN_DLD (cholinv, args, ,

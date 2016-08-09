@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "CSparse.h"
-#include "dColVector.h"
+#include "dRowVector.h"
 #include "dSparse.h"
 
 // If the sparse matrix classes become templated on the element type
@@ -65,7 +65,7 @@ public:
 
   octave_idx_type P (void) const;
 
-  ColumnVector perm (void) const;
+  RowVector perm (void) const;
 
   SparseMatrix Q (void) const;
 

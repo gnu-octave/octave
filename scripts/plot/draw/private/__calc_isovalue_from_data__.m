@@ -19,23 +19,21 @@
 ## Undocumented internal function.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{iso} =} __calc_isovalue_from_data__ (@var{data})
-## Undocumented internal function.
+## @deftypefn {} {@var{isoval} =} __calc_isovalue_from_data__ (@var{data})
+## Calculate a "good" iso value from histogram of data.
 ## @end deftypefn
 
-## calculate a "good" iso value from histogram of data
 ## called from isocaps, isosurface
 
+function isoval = __calc_isovalue_from_data__ (data)
 
-function iso = __calc_isovalue_from_data__ (data)
-
-  ## use a maximum of 10000-20000 samples to limit run-time of hist
+  ## use a maximum of 10,000-20,000 samples to limit runtime of hist
   step = 1;
-  data_numel = numel (data);
-  if (data_numel > 20000)
-    step = floor (data_numel / 10000);
+  ndata = numel (data);
+  if (ndata > 20_000)
+    step = floor (ndata / 10_000);
     data = data(1:step:end);
-    data_numel = numel (data);
+    ndata = numel (data);
   endif
 
   num_bins = 100;
@@ -43,18 +41,20 @@ function iso = __calc_isovalue_from_data__ (data)
 
   ## if one of the first two bins contains more than 10 times the count as
   ## compared to equally distributed data, remove both (zero-padded + noise)
-  if (any (bin_count(1:2) > 10 * (data_numel / num_bins)))
+  if (any (bin_count(1:2) > 10 * (ndata / num_bins)))
     bin_count(1:2) = [];
     bin_centers(1:2) = [];
   endif
 
-  ## if bins have low counts, remove them (but keep them if we would loose more than 90 % of bins)
+  ## if bins have low counts, remove them (but keep them if we would lose
+  ## more than 90% of bins)
   bins_to_remove = find (bin_count < max (bin_count)/50);
-  if length (bins_to_remove) < .9 * num_bins
+  if (length (bins_to_remove) < .9 * num_bins)
     bin_centers(bins_to_remove) = [];
   endif
 
   ## select middle bar of histogram with previous conditions
-  iso = bin_centers(floor (length (bin_centers) / 2));
+  isoval = bin_centers(floor (numel (bin_centers) / 2));
 
 endfunction
+

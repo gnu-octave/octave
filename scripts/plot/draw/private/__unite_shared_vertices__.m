@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{faces}, @var{vertices}, @var{J}] =} __unite_shared_vertices__ (@var{faces}, @var{vertices})
 ##
-## Detect and unite shared vertices in patches
+## Detect and unite shared vertices in patches.
 ##
-## Vertices of neighboring faces are detected and united to shared vertices. For
-## this, the mutual squared distances between all vertices are calculated. If
-## all coordinates are closer than @command{2 * eps (max (abs (vertices(:))))},
-## the vertices are united to one.
+## Vertices of neighboring faces are detected and united to shared vertices.
+## For this, the mutual squared distances between all vertices are
+## calculated.  If all coordinates are closer than
+## @code{2 * eps (max (abs (vertices(:))))}, the vertices are united to one.
 ##
 ## @var{J} holds the indices of the deleted vertices.
 ##
@@ -34,26 +34,31 @@
 ## Author: mmuetzel
 
 function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
-  ### unite shared vertices
 
   J = [];
+
   ## Calculate the mutual differences of all vertex coordinates
   close_points = zeros (0, 2);
-  num_vertices = size (vertices, 1);
+  num_vertices = rows (vertices);
   skip_point = false (num_vertices, 1);
+  ## FIXME: Can this be vectorized in some way to increase performance?
+  ##        Regardless, should probably allocate close_points to be the
+  ##        same size as the number of vertices and then truncate the
+  ##        array at the end of the calculation.  Extending an array
+  ##        involves a copy operation every time.
   for (i_point1 = 1:num_vertices - 1)
     if (skip_point(i_point1))
       ## points already detected as duplicates can be skipped
-      continue
+      continue;
     endif
 
     diff = vertices(i_point1,:) - vertices(i_point1 + 1:end,:);
-    is_close_point = all (abs (diff) <= sqrt(3) * eps * ...
+    is_close_point = all (abs (diff) <= sqrt (3) * eps * ...
         (max (abs (vertices(i_point1,:)), abs (vertices(i_point1 + 1:end,:)))), 2);
 
     if (any (is_close_point))
       close_points_idx = find (is_close_point) + i_point1;
-      new_close_points_num = size (close_points_idx, 1);
+      new_close_points_num = rows (close_points_idx);
       close_points(end + 1:end + new_close_points_num,1) = i_point1;
       close_points(end - new_close_points_num + 1:end,2) = close_points_idx;
       skip_point(close_points_idx) = true;
@@ -76,11 +81,12 @@ function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
     faces = sort (faces, 2);
     faces = unique (faces, "rows");
 
-    ## eliminate faces with zero area
-    is_zero_area = (faces(:,1) == faces(:,2)) | (faces(:,2) == faces(:,3)); # vertices in faces are sorted
-    faces = faces(!is_zero_area,:);
+    ## eliminate faces with zero area.  Vertices in faces are sorted.
+    is_zero_area = (faces(:,1) == faces(:,2)) | (faces(:,2) == faces(:,3));
+    faces = faces(! is_zero_area, :);
 
     J = close_points(:,2);
   endif
 
 endfunction
+

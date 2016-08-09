@@ -364,6 +364,14 @@ endfunction
 %! clf;
 %! [x,y,z] = meshgrid (-2:0.5:2, -2:0.5:2, -2:0.5:2);
 %! v = x.^2 + y.^2 + z.^2;
+%! isosurface (x, y, z, v, 1);
+%! axis equal;
+%! title ("isosurface of a sphere");
+
+%!demo
+%! clf;
+%! [x,y,z] = meshgrid (-2:0.5:2, -2:0.5:2, -2:0.5:2);
+%! v = x.^2 + y.^2 + z.^2;
 %! isosurface (x, y, z, v, 3);
 %! isosurface (x, y, z, v, 5);
 %! axis equal;
@@ -377,21 +385,38 @@ endfunction
 %! v        = [0, 0, 0; 0, 0, 0; 0, 0, 1; 0, 0, 1];
 %! v(:,:,2) = [0, 0, 0; 0, 0, 1; 0, 1, 2; 0, 1, 2];
 %! iso = 0.8;
+%! clf;
 %% three arguments, no output
-%! figure;
-%! subplot (2, 2, 1); isosurface (v, iso, yy); view(3)
+%! subplot (2, 2, 1);
+%! fvc = isosurface (v, iso, yy);
+%! patch (fvc);
+%! shading faceted
+%! view (110, 40);
 %% six arguments, no output (x, y, z are vectors)
-%! subplot (2, 2, 2); isosurface (x, y, z, v, iso, yy); view (3)
+%! subplot (2, 2, 2);
+%! fvc = isosurface (x, y, z, v, iso, yy);
+%! patch (fvc);
+%! shading faceted
+%! view (110, 40);
 %% six arguments, no output (x, y, z are matrices)
-%! subplot (2, 2, 3); isosurface (xx, yy, zz, v, iso, yy); view (3)
+%! subplot (2, 2, 3);
+%! fvc = isosurface (xx, yy, zz, v, iso, yy);
+%! patch (fvc);
+%! shading faceted
+%! view (110, 40);
 %% six arguments, no output (mixed x, y, z) and option "noshare"
-%! subplot (2, 2, 4); isosurface (x, yy, z, v, iso, yy, "noshare"); view (3)
-%! annotation ("textbox", [0.01 0.93 1 0.1], ...
+%! subplot (2, 2, 4);
+%! fvc = isosurface (x, yy, z, v, iso, yy, "noshare");
+%! patch (fvc);
+%! shading faceted
+%! view (110, 40);
+%! annotation ("textbox", [0.1 0.9 0.9 0.1], ...
 %!    "String", ["Apart from the first plot having a different scale, " ...
-%!               "all four plots must look the same.\n" ...
+%!               "all four plots must look the same." 10 ...
 %!               "The last plot might have different colors but must have " ...
 %!               "the same shape."], ...
-%!    "HorizontalAlignment", "left");
+%!    "HorizontalAlignment", "left", ...
+%!    "FontSize", 12);
 
 %!shared x, y, z, xx, yy, zz, val, iso
 %! x = 0:2;

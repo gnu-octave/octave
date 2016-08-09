@@ -546,21 +546,23 @@ chol2inv (const chol_type& r)
   int typ = mattype.type (false);
   double rcond;
   octave_idx_type info;
-  chol_type rinv;
+  chol_type rtra, multip;
 
   if (typ == MatrixType::Upper)
     {
-      rinv = r.inverse (mattype, info, rcond, true, false);
-      retval = rinv.transpose () * rinv;
+      rtra = r.transpose ();
+      multip = (rtra*r);
     }
   else if (typ == MatrixType::Lower)
     {
-      rinv = r.transpose ().inverse (mattype, info, rcond, true, false);
-      retval = rinv.transpose () * rinv;
+      rtra = r.transpose ();
+      multip = (r*rtra);
     }
   else
     (*current_liboctave_error_handler) ("U must be a triangular matrix");
 
+  MatrixType mattypenew (multip);
+  retval = multip.inverse (mattypenew, info, rcond, true, false);
   return retval;
 }
 

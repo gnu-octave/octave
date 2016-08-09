@@ -587,10 +587,11 @@ opengl_renderer::patch_tesselator
 
 #endif
 
+#if defined (HAVE_OPENGL)
+
 static int
 get_maxlights (void)
 {
-#if defined (HAVE_OPENGL)
 
   static int max_lights = 0;
 
@@ -606,13 +607,10 @@ get_maxlights (void)
     }
 
   return max_lights;
-#else
-
-  err_disabled_feature ("opengl_renderer", "OpenGL");
-
-#endif
 
 }
+
+#endif
 
 opengl_renderer::opengl_renderer (void)
   : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
@@ -1650,6 +1648,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
 void
 opengl_renderer::draw_all_lights (const base_properties& props, std::list<graphics_object>& obj_list)
 {
+#if defined (HAVE_OPENGL)
   Matrix children = props.get_all_children ();
 
   for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
@@ -1678,6 +1677,17 @@ opengl_renderer::draw_all_lights (const base_properties& props, std::list<graphi
             obj_list.push_back (go);
         }
     }
+#else
+
+  octave_unused_parameter (props);
+  octave_unused_parameter (obj_list);
+
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+
+#endif
 }
 
 void

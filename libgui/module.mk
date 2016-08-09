@@ -81,7 +81,7 @@ define moc-command
   ( echo "#if defined (HAVE_CONFIG_H)"; \
     echo '#  include "config.h"'; \
     echo "#endif"; \
-    $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(libgui_liboctgui_la_CPPFLAGS) $< ) > $@-t && \
+    $(MOC) $(MOCFLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(libgui_liboctgui_la_CPPFLAGS) $< ) > $@-t && \
   mv $@-t $@
 endef
 
@@ -94,7 +94,7 @@ define rcc-command
     echo "#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)"; \
     echo "#pragma GCC diagnostic ignored \"-Wunused-variable\""; \
     echo "#endif"; \
-    $(RCC) -name $(@D) $< ) > $@-t && \
+    $(RCC) $(RCCFLAGS) -name $(@D) $< ) > $@-t && \
   mv $@-t $@
 endef
 
@@ -102,7 +102,7 @@ moc-%.cc: %.h
 	$(AM_V_GEN)$(moc-command)
 
 ui-%.h: %.ui
-	$(AM_V_GEN)$(UIC) -o $@ $<
+	$(AM_V_GEN)$(UIC) $(UICFLAGS) -o $@ $<
 
 qrc-%.cc: %.qrc
 	$(AM_V_GEN)$(rcc-command)
@@ -113,7 +113,7 @@ am__v_lrelease_0 = -silent
 am__v_lrelease_1 =
 
 %.qm: %.ts | libgui/languages/$(octave_dirstamp)
-	$(AM_V_GEN)$(LRELEASE) $(AM_V_lrelease) -qm $@ $<
+	$(AM_V_GEN)$(LRELEASE) $(LRELEASEFLAGS) $(AM_V_lrelease) -qm $@ $<
 
 DIRSTAMP_FILES += \
   libgui/languages/$(octave_dirstamp)

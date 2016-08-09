@@ -484,6 +484,422 @@ AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
+### Start determination of shared vs. static libraries
+
+## Use -static if compiling on Alpha OSF/1 1.3 systems.
+case $canonical_host_type in
+  alpha*-dec-osf1.3)
+    LD_STATIC_FLAG=-static
+  ;;
+esac
+if test -n "$LD_STATIC_FLAG"; then
+  AC_MSG_NOTICE([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
+fi
+AC_SUBST(LD_STATIC_FLAG)
+
+OCTAVE_PROG_AR
+
+ifdef([LT_INIT], [], [
+  errprint([error: you must have libtool 2.2.2 or a more recent version
+])
+  m4exit([1])])
+
+LT_PREREQ([2.2.2])
+LT_INIT([disable-static dlopen win32-dll])
+
+if test $enable_shared = yes; then
+  SHARED_LIBS=yes
+else
+  SHARED_LIBS=no
+fi
+AC_SUBST(SHARED_LIBS)
+
+if test $enable_static = yes; then
+  STATIC_LIBS=yes
+else
+  STATIC_LIBS=no
+fi
+AC_SUBST(STATIC_LIBS)
+
+XTRA_CRUFT_SH_LDFLAGS=
+if test $have_msvc = yes; then
+  FLIBS="$FLIBS -lkernel32"
+  XTRA_CRUFT_SH_LDFLAGS="-Wl,cruft/cruft.def"
+fi
+AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
+
+### Enable dynamic linking.  --enable-shared implies this, so
+### --enable-dl is only need if you are only building static libraries
+### and want to try dynamic linking too (works on some systems, for
+### example, OS X and Windows).
+
+AC_ARG_ENABLE([dl],
+  [AS_HELP_STRING([--disable-dl],
+    [disable loading of dynamically linked modules])],
+  [case $enableval in
+     yes) ENABLE_DYNAMIC_LINKING=yes ;;
+     no) ENABLE_DYNAMIC_LINKING=no ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-dl]) ;;
+   esac],
+  [ENABLE_DYNAMIC_LINKING=no])
+
+if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
+  AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
+fi
+
+CPICFLAG=-fPIC
+CXXPICFLAG=-fPIC
+FPICFLAG=-fPIC
+SH_LD="${CXX}"
+SH_LDFLAGS=-shared
+DL_LD="${SH_LD}"
+DL_LDFLAGS="${SH_LDFLAGS}"
+MKOCTFILE_DL_LDFLAGS="${DL_LDFLAGS}"
+NO_OCT_FILE_STRIP=false
+TEMPLATE_AR="${AR}"
+TEMPLATE_ARFLAGS="$ARFLAGS"
+CRUFT_DLL_DEFS=
+OCTAVE_DLL_DEFS=
+OCTINTERP_DLL_DEFS=
+OCTGUI_DLL_DEFS=
+OCTGRAPHICS_DLL_DEFS=
+library_path_var=LD_LIBRARY_PATH
+ldpreloadsep=" "
+case $canonical_host_type in
+  *-*-386bsd* | *-*-netbsd*)
+    SH_LD=ld
+    SH_LDFLAGS=-Bshareable
+  ;;
+  *-*-openbsd*)
+    SH_LDFLAGS="-shared -fPIC"
+  ;;
+  *-*-freebsd*)
+    SH_LDFLAGS="-shared -Wl,-x"
+  ;;
+  alpha*-dec-osf*)
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+    SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
+  ;;
+  *-*-darwin*)
+    DL_LDFLAGS="-bundle -bundle_loader ${ac_top_build_prefix}libinterp/octave ${LDFLAGS}"
+    ## Contains variables that are defined and undefined at this point, so use
+    ## appropriate quoting to defer expansion of ${bindir} and ${version}.
+    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
+    SH_LDFLAGS="-dynamiclib -single_module ${LDFLAGS}"
+    case $canonical_host_type in
+      powerpc-*)
+        CXXPICFLAG=
+        CPICFLAG=
+        FPICFLAG=
+      ;;
+    esac
+    NO_OCT_FILE_STRIP=true
+    library_path_var=DYLD_LIBRARY_PATH
+  ;;
+  *-*-cygwin*)
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+    ldpreloadsep=":"
+  ;;
+  *-*-mingw*)
+    if test $have_msvc = yes; then
+      DL_LDFLAGS="-shared"
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      SH_LDFLAGS="-shared"
+      if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
+        DL_LDFLAGS="$DL_LDFLAGS -g"
+        SH_LDFLAGS="$SH_LDFLAGS -g"
+      fi
+      NO_OCT_FILE_STRIP=true
+      library_path_var=PATH
+      ## Extra compilation flags.
+      CRUFT_DLL_DEFS="-DCRUFT_DLL"
+      OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+      OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+      OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
+      OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+    else
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+      SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+      library_path_var=PATH
+    fi
+  ;;
+
+  *-*-msdosmsvc)
+    DL_LDFLAGS="-shared"
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+    SH_LDFLAGS="-shared"
+    if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
+      DL_LDFLAGS="$DL_LDFLAGS -g"
+      SH_LDFLAGS="$SH_LDFLAGS -g"
+    fi
+    NO_OCT_FILE_STRIP=true
+    library_path_var=PATH
+    ## Extra compilation flags.
+    CRUFT_DLL_DEFS="-DCRUFT_DLL"
+    OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+    OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
+    OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+  ;;
+  *-*-linux* | *-*-gnu*)
+    MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
+  ;;
+  i[[3456]]86-*-sco3.2v5*)
+    SH_LDFLAGS=-G
+  ;;
+  rs6000-ibm-aix* | powerpc-ibm-aix*)
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+    library_path_var=LIBPATH
+  ;;
+  hppa*-hp-hpux*)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=+Z
+    fi
+    SH_LDFLAGS="-shared -fPIC"
+    library_path_var=SHLIB_PATH
+  ;;
+  ia64*-hp-hpux*)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=+Z
+    fi
+    SH_LDFLAGS="-shared -fPIC"
+  ;;
+  *-sgi-*)
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+  ;;
+  sparc-sun-sunos4*)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=-PIC
+    fi
+    SH_LD=ld
+    SH_LDFLAGS="-assert nodefinitions"
+  ;;
+  sparc-sun-solaris2* | i386-pc-solaris2*)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=-KPIC
+    fi
+    if test "$GCC" = yes; then
+      CPICFLAG=-fPIC
+    else
+      CPICFLAG=-KPIC
+    fi
+    if test "$GXX" = yes; then
+      CXXPICFLAG=-fPIC
+      SH_LDFLAGS=-shared
+    else
+      CXXPICFLAG=-KPIC
+      SH_LDFLAGS=-G
+    fi
+    ## Template closures in archive libraries need a different mechanism.
+    if test "$GXX" != yes; then
+      TEMPLATE_AR="${CXX}"
+      TEMPLATE_ARFLAGS="-xar -o"
+    fi
+  ;;
+esac
+
+AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
+AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
+AC_MSG_NOTICE([defining CXXPICFLAG to be $CXXPICFLAG])
+AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
+AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
+AC_MSG_NOTICE([defining DL_LD to be $DL_LD])
+AC_MSG_NOTICE([defining DL_LDFLAGS to be $DL_LDFLAGS])
+AC_MSG_NOTICE([defining MKOCTFILE_DL_LDFLAGS to be $MKOCTFILE_DL_LDFLAGS])
+AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
+AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
+AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
+AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
+AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
+AC_SUBST(FPICFLAG)
+AC_SUBST(CPICFLAG)
+AC_SUBST(CXXPICFLAG)
+AC_SUBST(SH_LD)
+AC_SUBST(SH_LDFLAGS)
+AC_SUBST(DL_LD)
+AC_SUBST(DL_LDFLAGS)
+AC_SUBST(MKOCTFILE_DL_LDFLAGS)
+AC_SUBST(NO_OCT_FILE_STRIP)
+AC_SUBST(TEMPLATE_AR)
+AC_SUBST(TEMPLATE_ARFLAGS)
+AC_SUBST(CRUFT_DLL_DEFS)
+AC_SUBST(OCTAVE_DLL_DEFS)
+AC_SUBST(OCTINTERP_DLL_DEFS)
+AC_SUBST(OCTGUI_DLL_DEFS)
+AC_SUBST(OCTGRAPHICS_DLL_DEFS)
+AC_SUBST(library_path_var)
+AC_SUBST(ldpreloadsep)
+AM_SUBST_NOTMAKE(ldpreloadsep)
+
+### More configure argument checking related to linking
+
+AC_ARG_ENABLE([no-undefined],
+  [AS_HELP_STRING([--disable-no-undefined],
+    [don't pass -no-undefined to libtool when linking Octave and its shared libraries])],
+  [case $enableval in
+     yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
+     no)  NO_UNDEFINED_LDFLAG="" ;;
+     *) AC_MSG_ERROR([bad value $enableval for --disable-no-undefined]) ;;
+   esac],
+  [NO_UNDEFINED_LDFLAG="-no-undefined"])
+AC_SUBST(NO_UNDEFINED_LDFLAG)
+
+AC_ARG_ENABLE([link-all-dependencies],
+  [AS_HELP_STRING([--enable-link-all-dependencies],
+    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
+  [case $enableval in
+     yes) link_all_deps=yes ;;
+     no)  link_all_deps=no ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-depenencies])
+     ;;
+   esac],
+  [link_all_deps=no])
+AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
+
+## Dynamic linking is now enabled only if we are building shared
+## libs and some API for dynamic linking has been detected.
+
+## FIXME: A lot of the following duplicates the functionality of
+## code generated by the dlopen option for LT_INIT.
+
+LD_CXX="${CXX}"
+RDYNAMIC_FLAG=
+DL_API_MSG=""
+dlopen_api=no
+shl_load_api=no
+loadlibrary_api=no
+dyld_api=no
+
+if test $SHARED_LIBS = yes || test $ENABLE_DYNAMIC_LINKING = yes; then
+
+  case $lt_cv_dlopen in
+    dlopen)
+      dlopen_api=yes
+      DL_API_MSG="(dlopen)"
+      AC_DEFINE(HAVE_DLOPEN_API, 1,
+        [Define to 1 if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
+      OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
+    ;;
+    shl_load)
+      shl_load_api=yes
+      DL_API_MSG="(shl_load)"
+      AC_DEFINE(HAVE_SHL_LOAD_API, 1,
+        [Define to 1 if your system has shl_load and shl_findsym for dynamic linking.])
+    ;;
+    LoadLibrary)
+      loadlibrary_api=yes
+      DL_API_MSG="(LoadLibrary)"
+      AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
+        [Define to 1 if your system has LoadLibrary for dynamic linking.])
+    ;;
+    dyld)
+      dyld_api=yes
+      DL_API_MSG="(dyld)"
+      AC_DEFINE(HAVE_DYLD_API, 1,
+        [Define to 1 if your system has dyld for dynamic linking.])
+    ;;
+  esac
+
+  DL_LIBS="$lt_cv_dlopen_libs"
+  AC_SUBST(DL_LIBS)
+
+  ## Disable dynamic linking if capability is not present.
+  if test $dlopen_api = yes \
+      || test $shl_load_api = yes \
+      || test $loadlibrary_api = yes \
+      || test $dyld_api = yes; then
+    # some form of dynamic linking present
+    ENABLE_DYNAMIC_LINKING=yes
+  else
+    ENABLE_DYNAMIC_LINKING=no
+  fi
+fi
+
+if test $ENABLE_DYNAMIC_LINKING = yes; then
+  AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define to 1 if using dynamic linking.])
+fi
+
+AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
+  [test $ENABLE_DYNAMIC_LINKING = yes])
+
+if test $SHARED_LIBS = yes; then
+  LIBOCTINTERP="-loctinterp"
+  LIBOCTAVE="-loctave"
+else
+  LIBOCTINTERP="${top_builddir}/libinterp/liboctinterp.a"
+  LIBOCTAVE="${top_builddir}/liboctave/liboctave.a"
+fi
+
+AC_SUBST(LD_CXX)
+AC_SUBST(RDYNAMIC_FLAG)
+AC_SUBST(ENABLE_DYNAMIC_LINKING)
+AC_SUBST(LIBOCTINTERP)
+AC_SUBST(LIBOCTAVE)
+
+
+if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
+  CROSS_TOOL_PREFIX="$ac_tool_prefix"
+  MKOCTFILE_AR=`echo "$AR" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_CC=`echo "$CC" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_CXX=`echo "$CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_DL_LD=`echo "$DL_LD" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_F77=`echo "$F77" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_LD_CXX=`echo "$LD_CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_RANLIB=`echo "$RANLIB" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+else
+  MKOCTFILE_AR="$AR"
+  MKOCTFILE_CC="$CC"
+  MKOCTFILE_CXX="$CXX"
+  MKOCTFILE_DL_LD="$DL_LD"
+  MKOCTFILE_F77="$F77"
+  MKOCTFILE_LD_CXX="$LD_CXX"
+  MKOCTFILE_RANLIB="$RANLIB"
+fi
+AC_MSG_NOTICE([defining CROSS_TOOL_PREFIX to be $CROSS_TOOL_PREFIX])
+AC_MSG_NOTICE([defining MKOCTFILE_AR to be $MKOCTFILE_AR])
+AC_MSG_NOTICE([defining MKOCTFILE_CC to be $MKOCTFILE_CC])
+AC_MSG_NOTICE([defining MKOCTFILE_CXX to be $MKOCTFILE_CXX])
+AC_MSG_NOTICE([defining MKOCTFILE_DL_LD to be $MKOCTFILE_DL_LD])
+AC_MSG_NOTICE([defining MKOCTFILE_F77 to be $MKOCTFILE_F77])
+AC_MSG_NOTICE([defining MKOCTFILE_LD_CXX to be $MKOCTFILE_LD_CXX])
+AC_MSG_NOTICE([defining MKOCTFILE_RANLIB to be $MKOCTFILE_RANLIB])
+AC_SUBST(CROSS_TOOL_PREFIX)
+AC_SUBST(MKOCTFILE_AR)
+AC_SUBST(MKOCTFILE_CC)
+AC_SUBST(MKOCTFILE_CXX)
+AC_SUBST(MKOCTFILE_DL_LD)
+AC_SUBST(MKOCTFILE_F77)
+AC_SUBST(MKOCTFILE_LD_CXX)
+AC_SUBST(MKOCTFILE_RANLIB)
+
 ### Check for pthread library
 
 AX_PTHREAD
@@ -1336,212 +1752,23 @@ AC_SUBST(GL2PS_LIBS)
 
 ### GUI/Qt related tests.
 
-QT_CPPFLAGS=
-QT_LDFLAGS=
-QT_LIBS=
-
+## Change to "5 4" once Octave works with both versions.
+QT_VERSIONS="4"
 check_qt=yes
-build_qt_gui=no
-build_qt_graphics=no
-use_qscintilla=no
-win32_terminal=no
 
 AC_ARG_WITH([qt],
-  [AS_HELP_STRING([--without-qt], [don't use Qt libraries; disable Qt GUI])],
+  [AS_HELP_STRING([--without-qt], [don't use Qt libraries; disable Qt GUI.  May also select Qt major version:  --with-qt=5])],
   [if test x"$withval" = xno; then
      check_qt=no;
      warn_qt_disabled="--without-qt specified.  The Qt GUI will be disabled."
      OCTAVE_CONFIGURE_WARNING([warn_qt_disabled])
+   elif test -n "$withval"; then
+     QT_VERSIONS="$withval"
    fi])
 
 if test $check_qt = yes; then
-
-  warn_qt_libraries=""
-  ## Check for Qt libraries
-  QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
-  PKG_CHECK_MODULES(QT, [$QT_MODULES],
-    [],
-    [check_qt=no
-     warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
-
-  if test -n "$warn_qt_libraries"; then
-    OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
-  fi
-
-  if test $check_qt = yes; then
-    ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I $QT_MODULES`"
-    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L $QT_MODULES`"
-    QT_LIBS="`$PKG_CONFIG --libs-only-l $QT_MODULES`"
-
-    case $host_os in
-      *darwin*)
-        ## Qt might be installed in framework
-        if test -z "$QT_LIBS"; then
-          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
-          QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
-          ## Enabling link_all_deps works around libtool's imperfect handling
-          ## of the -F flag
-          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
-                         [test $link_all_deps = yes || test -n "$QT_LDFLAGS"])
-        fi
-      ;;
-    esac
-
-    ## Check for Qt4
-    if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-      check_qt=no
-      warn_qt_version="Qt >= 4.0.0 not found; disabling Qt GUI"
-      OCTAVE_CONFIGURE_WARNING([warn_qt_version])
-    fi
-  fi
-
-  if test $check_qt = yes; then
-    warn_qt_tools=""
-    AC_CHECK_TOOLS(MOC, [moc-qt4 moc])
-    AC_CHECK_TOOLS(UIC, [uic-qt4 uic])
-    AC_CHECK_TOOLS(RCC, [rcc-qt4 rcc])
-    AC_CHECK_TOOLS(LRELEASE, [lrelease-qt4 lrelease])
-
-    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
-      AC_DEFINE(HAVE_QT, 1,
-        [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
-    else
-      warn_qt_tools="Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
-      check_qt=no
-      OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
-    fi
-  fi
-
-  if test $check_qt = yes; then
-    warn_qt_setlocale=""
-    AC_CHECK_FUNCS([setlocale], [],
-      [check_qt=no
-       warn_qt_setlocale="setlocale not found; disabling Qt GUI"])
-
-    if test -n "$warn_qt_setlocale"; then
-      OCTAVE_CONFIGURE_WARNING([warn_qt_setlocale])
-    fi
-  fi
-
-  if test $check_qt = yes; then
-    warn_qt_setvbuf=""
-    warn_qt_lib_fcns=""
-    case $host_os in
-      mingw* | msdosmsvc*)
-        AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
-          [check_qt=no
-           warn_qt_setvbuf="setvbuf not found; disabling Qt GUI"])
-
-        if test -n "$warn_qt_setvbuf"; then
-          OCTAVE_CONFIGURE_WARNING([warn_qt_setvbuf])
-        fi
-      ;;
-      *)
-        AC_CHECK_HEADERS([pty.h libutil.h util.h])
-        AC_SEARCH_LIBS([openpty], [util],
-          [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
-        AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
-          [check_qt=no
-           warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])
-
-        if test -n "$warn_qt_lib_fcns"; then
-          OCTAVE_CONFIGURE_WARNING([warn_qt_lib_fcns])
-        fi
-      ;;
-    esac
-  fi
-
-  if test $check_qt = yes; then
-    OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
-
-    if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
-      check_qt=no
-      warn_qt_abstract_item_model="QAbstractItemModel::beginResetModel not found; disabling Qt GUI"
-      OCTAVE_CONFIGURE_WARNING([warn_qt_abstract_item_model])
-    fi
-  fi
-
-  if test $check_qt = yes; then
-    ## We have what we need to build the Qt GUI.  The remaining
-    ## checks below are for optional features related to the Qt GUI.
-    build_qt_gui=yes
-  fi
-
-  if test $check_qt = yes; then
-    OCTAVE_CHECK_QFONT_MONOSPACE
-    OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
-    OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
-
-    if test -n "$OPENGL_LIBS"; then
-      OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],
-        [warn_qt_opengl="Qt does not work with the OpenGL libs (GL and GLU); disabling OpenGL graphics with Qt GUI"])
-
-      if test -n "$warn_qt_opengl"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_opengl])
-      fi
-
-      if test $build_qt_graphics = yes; then
-        AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
-      fi
-    fi
-
-    ## Check for Qscintilla library which is used in the Qt GUI editor.
-    AC_CACHE_CHECK([whether Qscintilla library is installed],
-      [octave_cv_lib_qscintilla],
-      [save_CPPFLAGS="$CPPFLAGS"
-      save_LDFLAGS="$LDFLAGS"
-      save_LIBS="$LIBS"
-      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
-      LDFLAGS="$QT_LDFLAGS $LDFLAGS"
-      LIBS="$QT_LIBS -lqscintilla2"
-      AC_LANG_PUSH(C++)
-      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-        #include <Qsci/qscilexersql.h>
-        ]], [[
-        QsciLexerSQL sqlLexer(0);
-        ]])],
-        octave_cv_lib_qscintilla=yes,
-        octave_cv_lib_qscintilla=no)
-      CPPFLAGS="$save_CPPFLAGS"
-      LDFLAGS="$save_LDFLAGS"
-      LIBS="$save_LIBS"
-      AC_LANG_POP([C++])
-    ])
-
-    if test $octave_cv_lib_qscintilla = no; then
-      warn_qscintilla="Qscintilla library not found; disabling built-in Qt GUI editor"
-      OCTAVE_CONFIGURE_WARNING([warn_qscintilla])
-    else
-      ## Let's assume Qscintilla library is at the same location as
-      ## other regular Qt libraries.
-      QT_LIBS="$QT_LIBS -lqscintilla2"
-      OCTAVE_CHECK_VERSION_2_6_0
-      AC_DEFINE(HAVE_QSCINTILLA, 1,
-        [Define to 1 if the QScintilla library and header files are available])
-
-      save_CPPFLAGS="$CPPFLAGS"
-      CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
-      AC_LANG_PUSH(C++)
-      AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
-      AC_LANG_POP(C++)
-      CPPFLAGS="$save_CPPFLAGS"
-
-      OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
-      OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
-      use_qscintilla=yes
-    fi
-  fi
+  OCTAVE_CHECK_QT([$QT_VERSIONS])
 fi
-
-AC_SUBST(QT_CPPFLAGS)
-AC_SUBST(QT_LDFLAGS)
-AC_SUBST(QT_LIBS)
-
-AM_CONDITIONAL([AMCOND_BUILD_QT_GUI], [test $build_qt_gui = yes])
-AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test $build_qt_graphics = yes])
-AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test $use_qscintilla = yes])
-AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 
 ## Check for FLTK (www.fltk.org) library
 
@@ -1650,50 +1877,6 @@ if test $build_qt_graphics = no && test $build_fltk_graphics = no; then
 else
   opengl_graphics=yes
 fi
-
-### Start determination of shared vs. static libraries
-
-## Use -static if compiling on Alpha OSF/1 1.3 systems.
-case $canonical_host_type in
-  alpha*-dec-osf1.3)
-    LD_STATIC_FLAG=-static
-  ;;
-esac
-if test -n "$LD_STATIC_FLAG"; then
-  AC_MSG_NOTICE([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
-fi
-AC_SUBST(LD_STATIC_FLAG)
-
-OCTAVE_PROG_AR
-
-ifdef([LT_INIT], [], [
-  errprint([error: you must have libtool 2.2.2 or a more recent version
-])
-  m4exit([1])])
-
-LT_PREREQ([2.2.2])
-LT_INIT([disable-static dlopen win32-dll])
-
-if test $enable_shared = yes; then
-  SHARED_LIBS=yes
-else
-  SHARED_LIBS=no
-fi
-AC_SUBST(SHARED_LIBS)
-
-if test $enable_static = yes; then
-  STATIC_LIBS=yes
-else
-  STATIC_LIBS=no
-fi
-AC_SUBST(STATIC_LIBS)
-
-XTRA_CRUFT_SH_LDFLAGS=
-if test $have_msvc = yes; then
-  FLIBS="$FLIBS -lkernel32"
-  XTRA_CRUFT_SH_LDFLAGS="-Wl,cruft/cruft.def"
-fi
-AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
 ### Check for BLAS and LAPACK libraries:
 
@@ -1973,378 +2156,6 @@ LIBS="$save_LIBS"
 ### Check for readline library.
 
 OCTAVE_ENABLE_READLINE
-
-### Enable dynamic linking.  --enable-shared implies this, so
-### --enable-dl is only need if you are only building static libraries
-### and want to try dynamic linking too (works on some systems, for
-### example, OS X and Windows).
-
-AC_ARG_ENABLE([dl],
-  [AS_HELP_STRING([--disable-dl],
-    [disable loading of dynamically linked modules])],
-  [case $enableval in
-     yes) ENABLE_DYNAMIC_LINKING=yes ;;
-     no) ENABLE_DYNAMIC_LINKING=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-dl]) ;;
-   esac],
-  [ENABLE_DYNAMIC_LINKING=no])
-
-if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
-  AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
-fi
-
-CPICFLAG=-fPIC
-CXXPICFLAG=-fPIC
-FPICFLAG=-fPIC
-SH_LD="${CXX}"
-SH_LDFLAGS=-shared
-DL_LD="${SH_LD}"
-DL_LDFLAGS="${SH_LDFLAGS}"
-MKOCTFILE_DL_LDFLAGS="${DL_LDFLAGS}"
-NO_OCT_FILE_STRIP=false
-TEMPLATE_AR="${AR}"
-TEMPLATE_ARFLAGS="$ARFLAGS"
-CRUFT_DLL_DEFS=
-OCTAVE_DLL_DEFS=
-OCTINTERP_DLL_DEFS=
-OCTGUI_DLL_DEFS=
-OCTGRAPHICS_DLL_DEFS=
-library_path_var=LD_LIBRARY_PATH
-ldpreloadsep=" "
-case $canonical_host_type in
-  *-*-386bsd* | *-*-netbsd*)
-    SH_LD=ld
-    SH_LDFLAGS=-Bshareable
-  ;;
-  *-*-openbsd*)
-    SH_LDFLAGS="-shared -fPIC"
-  ;;
-  *-*-freebsd*)
-    SH_LDFLAGS="-shared -Wl,-x"
-  ;;
-  alpha*-dec-osf*)
-    CPICFLAG=
-    CXXPICFLAG=
-    FPICFLAG=
-    SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
-  ;;
-  *-*-darwin*)
-    DL_LDFLAGS="-bundle -bundle_loader ${ac_top_build_prefix}libinterp/octave ${LDFLAGS}"
-    ## Contains variables that are defined and undefined at this point, so use
-    ## appropriate quoting to defer expansion of ${bindir} and ${version}.
-    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
-    SH_LDFLAGS="-dynamiclib -single_module ${LDFLAGS}"
-    case $canonical_host_type in
-      powerpc-*)
-        CXXPICFLAG=
-        CPICFLAG=
-        FPICFLAG=
-      ;;
-    esac
-    NO_OCT_FILE_STRIP=true
-    library_path_var=DYLD_LIBRARY_PATH
-  ;;
-  *-*-cygwin*)
-    CPICFLAG=
-    CXXPICFLAG=
-    FPICFLAG=
-    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-    ldpreloadsep=":"
-  ;;
-  *-*-mingw*)
-    if test $have_msvc = yes; then
-      DL_LDFLAGS="-shared"
-      CPICFLAG=
-      CXXPICFLAG=
-      FPICFLAG=
-      SH_LDFLAGS="-shared"
-      if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
-        DL_LDFLAGS="$DL_LDFLAGS -g"
-        SH_LDFLAGS="$SH_LDFLAGS -g"
-      fi
-      NO_OCT_FILE_STRIP=true
-      library_path_var=PATH
-      ## Extra compilation flags.
-      CRUFT_DLL_DEFS="-DCRUFT_DLL"
-      OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
-      OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
-      OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
-      OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
-    else
-      CPICFLAG=
-      CXXPICFLAG=
-      FPICFLAG=
-      DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
-      SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
-      library_path_var=PATH
-    fi
-  ;;
-
-  *-*-msdosmsvc)
-    DL_LDFLAGS="-shared"
-    CPICFLAG=
-    CXXPICFLAG=
-    FPICFLAG=
-    SH_LDFLAGS="-shared"
-    if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
-      DL_LDFLAGS="$DL_LDFLAGS -g"
-      SH_LDFLAGS="$SH_LDFLAGS -g"
-    fi
-    NO_OCT_FILE_STRIP=true
-    library_path_var=PATH
-    ## Extra compilation flags.
-    CRUFT_DLL_DEFS="-DCRUFT_DLL"
-    OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
-    OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
-    OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
-  ;;
-  *-*-linux* | *-*-gnu*)
-    MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
-  ;;
-  i[[3456]]86-*-sco3.2v5*)
-    SH_LDFLAGS=-G
-  ;;
-  rs6000-ibm-aix* | powerpc-ibm-aix*)
-    CPICFLAG=
-    CXXPICFLAG=
-    FPICFLAG=
-    library_path_var=LIBPATH
-  ;;
-  hppa*-hp-hpux*)
-    if test $ac_cv_f77_compiler_gnu = yes; then
-      FPICFLAG=-fPIC
-    else
-      FPICFLAG=+Z
-    fi
-    SH_LDFLAGS="-shared -fPIC"
-    library_path_var=SHLIB_PATH
-  ;;
-  ia64*-hp-hpux*)
-    if test $ac_cv_f77_compiler_gnu = yes; then
-      FPICFLAG=-fPIC
-    else
-      FPICFLAG=+Z
-    fi
-    SH_LDFLAGS="-shared -fPIC"
-  ;;
-  *-sgi-*)
-    CPICFLAG=
-    CXXPICFLAG=
-    FPICFLAG=
-  ;;
-  sparc-sun-sunos4*)
-    if test $ac_cv_f77_compiler_gnu = yes; then
-      FPICFLAG=-fPIC
-    else
-      FPICFLAG=-PIC
-    fi
-    SH_LD=ld
-    SH_LDFLAGS="-assert nodefinitions"
-  ;;
-  sparc-sun-solaris2* | i386-pc-solaris2*)
-    if test $ac_cv_f77_compiler_gnu = yes; then
-      FPICFLAG=-fPIC
-    else
-      FPICFLAG=-KPIC
-    fi
-    if test "$GCC" = yes; then
-      CPICFLAG=-fPIC
-    else
-      CPICFLAG=-KPIC
-    fi
-    if test "$GXX" = yes; then
-      CXXPICFLAG=-fPIC
-      SH_LDFLAGS=-shared
-    else
-      CXXPICFLAG=-KPIC
-      SH_LDFLAGS=-G
-    fi
-    ## Template closures in archive libraries need a different mechanism.
-    if test "$GXX" != yes; then
-      TEMPLATE_AR="${CXX}"
-      TEMPLATE_ARFLAGS="-xar -o"
-    fi
-  ;;
-esac
-
-AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
-AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
-AC_MSG_NOTICE([defining CXXPICFLAG to be $CXXPICFLAG])
-AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
-AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
-AC_MSG_NOTICE([defining DL_LD to be $DL_LD])
-AC_MSG_NOTICE([defining DL_LDFLAGS to be $DL_LDFLAGS])
-AC_MSG_NOTICE([defining MKOCTFILE_DL_LDFLAGS to be $MKOCTFILE_DL_LDFLAGS])
-AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
-AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
-AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
-AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
-AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
-AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
-AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
-AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
-AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
-AC_SUBST(FPICFLAG)
-AC_SUBST(CPICFLAG)
-AC_SUBST(CXXPICFLAG)
-AC_SUBST(SH_LD)
-AC_SUBST(SH_LDFLAGS)
-AC_SUBST(DL_LD)
-AC_SUBST(DL_LDFLAGS)
-AC_SUBST(MKOCTFILE_DL_LDFLAGS)
-AC_SUBST(NO_OCT_FILE_STRIP)
-AC_SUBST(TEMPLATE_AR)
-AC_SUBST(TEMPLATE_ARFLAGS)
-AC_SUBST(CRUFT_DLL_DEFS)
-AC_SUBST(OCTAVE_DLL_DEFS)
-AC_SUBST(OCTINTERP_DLL_DEFS)
-AC_SUBST(OCTGUI_DLL_DEFS)
-AC_SUBST(OCTGRAPHICS_DLL_DEFS)
-AC_SUBST(library_path_var)
-AC_SUBST(ldpreloadsep)
-AM_SUBST_NOTMAKE(ldpreloadsep)
-
-### More configure argument checking related to linking
-
-AC_ARG_ENABLE([no-undefined],
-  [AS_HELP_STRING([--disable-no-undefined],
-    [don't pass -no-undefined to libtool when linking Octave and its shared libraries])],
-  [case $enableval in
-     yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
-     no)  NO_UNDEFINED_LDFLAG="" ;;
-     *) AC_MSG_ERROR([bad value $enableval for --disable-no-undefined]) ;;
-   esac],
-  [NO_UNDEFINED_LDFLAG="-no-undefined"])
-AC_SUBST(NO_UNDEFINED_LDFLAG)
-
-AC_ARG_ENABLE([link-all-dependencies],
-  [AS_HELP_STRING([--enable-link-all-dependencies],
-    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
-  [case $enableval in
-     yes) link_all_deps=yes ;;
-     no)  link_all_deps=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-depenencies])
-     ;;
-   esac],
-  [link_all_deps=no])
-AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
-
-## Dynamic linking is now enabled only if we are building shared
-## libs and some API for dynamic linking has been detected.
-
-## FIXME: A lot of the following duplicates the functionality of
-## code generated by the dlopen option for LT_INIT.
-
-LD_CXX="${CXX}"
-RDYNAMIC_FLAG=
-DL_API_MSG=""
-dlopen_api=no
-shl_load_api=no
-loadlibrary_api=no
-dyld_api=no
-
-if test $SHARED_LIBS = yes || test $ENABLE_DYNAMIC_LINKING = yes; then
-
-  case $lt_cv_dlopen in
-    dlopen)
-      dlopen_api=yes
-      DL_API_MSG="(dlopen)"
-      AC_DEFINE(HAVE_DLOPEN_API, 1,
-        [Define to 1 if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
-      OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
-    ;;
-    shl_load)
-      shl_load_api=yes
-      DL_API_MSG="(shl_load)"
-      AC_DEFINE(HAVE_SHL_LOAD_API, 1,
-        [Define to 1 if your system has shl_load and shl_findsym for dynamic linking.])
-    ;;
-    LoadLibrary)
-      loadlibrary_api=yes
-      DL_API_MSG="(LoadLibrary)"
-      AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
-        [Define to 1 if your system has LoadLibrary for dynamic linking.])
-    ;;
-    dyld)
-      dyld_api=yes
-      DL_API_MSG="(dyld)"
-      AC_DEFINE(HAVE_DYLD_API, 1,
-        [Define to 1 if your system has dyld for dynamic linking.])
-    ;;
-  esac
-
-  DL_LIBS="$lt_cv_dlopen_libs"
-  AC_SUBST(DL_LIBS)
-
-  ## Disable dynamic linking if capability is not present.
-  if test $dlopen_api = yes \
-      || test $shl_load_api = yes \
-      || test $loadlibrary_api = yes \
-      || test $dyld_api = yes; then
-    # some form of dynamic linking present
-    ENABLE_DYNAMIC_LINKING=yes
-  else
-    ENABLE_DYNAMIC_LINKING=no
-  fi
-fi
-
-if test $ENABLE_DYNAMIC_LINKING = yes; then
-  AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define to 1 if using dynamic linking.])
-fi
-
-AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
-  [test $ENABLE_DYNAMIC_LINKING = yes])
-
-if test $SHARED_LIBS = yes; then
-  LIBOCTINTERP="-loctinterp"
-  LIBOCTAVE="-loctave"
-else
-  LIBOCTINTERP="${top_builddir}/libinterp/liboctinterp.a"
-  LIBOCTAVE="${top_builddir}/liboctave/liboctave.a"
-fi
-
-AC_SUBST(LD_CXX)
-AC_SUBST(RDYNAMIC_FLAG)
-AC_SUBST(ENABLE_DYNAMIC_LINKING)
-AC_SUBST(LIBOCTINTERP)
-AC_SUBST(LIBOCTAVE)
-
-
-if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
-  CROSS_TOOL_PREFIX="$ac_tool_prefix"
-  MKOCTFILE_AR=`echo "$AR" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_CC=`echo "$CC" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_CXX=`echo "$CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_DL_LD=`echo "$DL_LD" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_F77=`echo "$F77" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_LD_CXX=`echo "$LD_CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_RANLIB=`echo "$RANLIB" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-else
-  MKOCTFILE_AR="$AR"
-  MKOCTFILE_CC="$CC"
-  MKOCTFILE_CXX="$CXX"
-  MKOCTFILE_DL_LD="$DL_LD"
-  MKOCTFILE_F77="$F77"
-  MKOCTFILE_LD_CXX="$LD_CXX"
-  MKOCTFILE_RANLIB="$RANLIB"
-fi
-AC_MSG_NOTICE([defining CROSS_TOOL_PREFIX to be $CROSS_TOOL_PREFIX])
-AC_MSG_NOTICE([defining MKOCTFILE_AR to be $MKOCTFILE_AR])
-AC_MSG_NOTICE([defining MKOCTFILE_CC to be $MKOCTFILE_CC])
-AC_MSG_NOTICE([defining MKOCTFILE_CXX to be $MKOCTFILE_CXX])
-AC_MSG_NOTICE([defining MKOCTFILE_DL_LD to be $MKOCTFILE_DL_LD])
-AC_MSG_NOTICE([defining MKOCTFILE_F77 to be $MKOCTFILE_F77])
-AC_MSG_NOTICE([defining MKOCTFILE_LD_CXX to be $MKOCTFILE_LD_CXX])
-AC_MSG_NOTICE([defining MKOCTFILE_RANLIB to be $MKOCTFILE_RANLIB])
-AC_SUBST(CROSS_TOOL_PREFIX)
-AC_SUBST(MKOCTFILE_AR)
-AC_SUBST(MKOCTFILE_CC)
-AC_SUBST(MKOCTFILE_CXX)
-AC_SUBST(MKOCTFILE_DL_LD)
-AC_SUBST(MKOCTFILE_F77)
-AC_SUBST(MKOCTFILE_LD_CXX)
-AC_SUBST(MKOCTFILE_RANLIB)
 
 ### Check for existence of various libraries
 
@@ -3456,6 +3267,10 @@ Octave is now configured for $canonical_host_type
   Qt CPPFLAGS:                 $QT_CPPFLAGS
   Qt LDFLAGS:                  $QT_LDFLAGS
   Qt libraries:                $QT_LIBS
+  Qt moc:                      $MOC $MOCFLAGS
+  Qt uic:                      $UIC $UICFLAGS
+  Qt rcc:                      $RCC $RCCFLAGS
+  Qt lrelease:                 $LRELEASE $LRELEASEFLAGS
   READLINE libraries:          $READLINE_LIBS
   Sndfile CPPFLAGS:            $SNDFILE_CPPFLAGS
   Sndfile LDFLAGS:             $SNDFILE_LDFLAGS

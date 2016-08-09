@@ -26,8 +26,8 @@
 ## @deftypefnx {} {@var{reduced_fv} =} reducepatch (@dots{}, "verbose")
 ## @deftypefnx {} {[@var{reduced_faces}, @var{reduces_vertices}] =} reducepatch (@dots{})
 ##
-## Reduce the number of faces and vertices in a surface or patch object while
-## retaining the overall shape of the patch.
+## Reduce the number of faces and vertices in a patch object while retaining
+## the overall shape of the patch.
 ##
 ## The input patch can be represented by a structure @var{fv} with the
 ## fields @code{faces} and @code{vertices}, by two matrices @var{faces} and

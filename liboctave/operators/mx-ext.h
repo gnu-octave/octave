@@ -59,8 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a Generalized Singular Value Decomposition.
 
-#include "dbleGSVD.h"
-#include "CmplxGSVD.h"
+#include "gsvd.h"
 
 
 // Result of an LU decomposition.

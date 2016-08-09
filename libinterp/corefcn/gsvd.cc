@@ -1,5 +1,6 @@
 // Copyright (C) 1996, 1997 John W. Eaton
 // Copyright (C) 2006, 2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+// Copyright (C) 2016 Barbara Lócsi
 //
 // This program is free software; you can redistribute it and/or modify it under
 // the terms of the GNU General Public License as published by the Free Software
@@ -25,8 +26,17 @@
 #include "utils.h"
 #include "ovl.h"
 
-#include "CmplxGSVD.h"
-#include "dbleGSVD.h"
+#include "gsvd.h"
+
+template <typename T>
+static typename gsvd<T>::Type
+gsvd_type (int nargout)
+{
+  return ((nargout == 0 || nargout == 1)
+         ? gsvd<T>::Type::sigma_only
+         : (nargout > 5) ? gsvd<T>::Type::std : gsvd<T>::Type::economy);
+}
+
 
 DEFUN (gsvd, args, nargout,
        doc: /* -*- texinfo -*-
@@ -86,7 +96,7 @@ r,
 @end ifinfo
 The common upper triangular right term. Other authors, like S. Van Huffel,
 define this transformation as the simulatenous diagonalisation of the
-input matrices, this can be achieved by multiplying 
+input matrices, this can be achieved by multiplying
 @iftex
 @tex
 X
@@ -185,7 +195,7 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
 
 //  octave_idx_type  nn = argB.rows ();
   octave_idx_type  np = argB.columns ();
-  
+
   if (nr == 0 || nc == 0)
     {
       if (nargout == 5)
@@ -208,10 +218,6 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
           return retval;
         }
 
-      GSVD::type type = ((nargout == 0 || nargout == 1)
-                        ? GSVD::sigma_only
-                        : (nargout > 5) ? GSVD::std : GSVD::economy );
-
       if (argA.is_real_type () && argB.is_real_type ())
         {
           Matrix tmpA = argA.matrix_value ();
@@ -221,17 +227,17 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
             {
               if (tmpA.any_element_is_inf_or_nan ())
                 {
-                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
-                  return retval;
-                }
-              
-              if (tmpB.any_element_is_inf_or_nan ())
-                {
-                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
+                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
                   return retval;
                 }
 
-              GSVD result (tmpA, tmpB, type);
+              if (tmpB.any_element_is_inf_or_nan ())
+                {
+                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
+                  return retval;
+                }
+
+              gsvd<Matrix> result (tmpA, tmpB, gsvd_type<Matrix> (nargout));
 
               // DiagMatrix sigma = result.singular_values ();
 
@@ -244,7 +250,7 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
                   retval = ovl (sigA.diag());
                 }
               else
-                { 
+                {
                   if (nargout > 5)
                     retval = ovl (result.left_singular_matrix_A (),
                                   result.left_singular_matrix_B (),
@@ -270,16 +276,16 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
             {
               if (ctmpA.any_element_is_inf_or_nan ())
                 {
-                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
+                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
                   return retval;
                 }
               if (ctmpB.any_element_is_inf_or_nan ())
                 {
-                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
+                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
                   return retval;
                 }
 
-              ComplexGSVD result (ctmpA, ctmpB, type);
+              gsvd<ComplexMatrix> result (ctmpA, ctmpB, gsvd_type<ComplexMatrix> (nargout));
 
               // DiagMatrix sigma = result.singular_values ();
 
@@ -370,7 +376,7 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
 
 %! [U, V, C, S, X, R] = gsvd(A, B);
 %! D1 = [C zeros(3,2)];
-%! D2 = [S zeros(3,2); zeros(2, 3) eye(2)]; 
+%! D2 = [S zeros(3,2); zeros(2, 3) eye(2)];
 %!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
 %!assert(norm((U'*A*X)-D1*R) <= 1e-6)
 %!assert(norm((V'*B*X)-D2*R) <= 1e-6)
@@ -453,13 +459,13 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
 %!assert(norm((V'*B*X)-D2*[zeros(2, 1) R]) <= 1e-6)
 
 %! # now, A is 3x5
-%! A = A0.'; B0=diag([1 2 4 8 16])+j*diag([-5 4 -3 2 -1]); 
+%! A = A0.'; B0=diag([1 2 4 8 16])+j*diag([-5 4 -3 2 -1]);
 %! B = B0;
 %! # disp('Complex: Full rank, 3x5 by 5x5 matrices');
 %! # disp([rank(A) rank(B) rank([A' B'])]);
 %! [U, V, C, S, X, R] = gsvd(A, B);
 %! D1 = [C zeros(3,2)];
-%! D2 = [S zeros(3,2); zeros(2, 3) eye(2)]; 
+%! D2 = [S zeros(3,2); zeros(2, 3) eye(2)];
 %!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
 %!assert(norm((U'*A*X)-D1*R) <= 1e-6)
 %!assert(norm((V'*B*X)-D2*R) <= 1e-6)
@@ -497,4 +503,4 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
 %!assert(norm((U'*A*X)-D1*[zeros(4, 1) R]) <= 1e-6)
 %!assert(norm((V'*B*X)-D2*[zeros(4, 1) R]) <= 1e-6)
 
- */
+*/

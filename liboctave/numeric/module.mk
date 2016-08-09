@@ -8,7 +8,6 @@ LIBOCTAVE_OPT_INC = \
 LIBOCTAVE_OPT_IN = $(LIBOCTAVE_OPT_INC:.h=.in)
 
 NUMERIC_INC = \
-  liboctave/numeric/CmplxGSVD.h \
   liboctave/numeric/CollocWt.h \
   liboctave/numeric/DAE.h \
   liboctave/numeric/DAEFunc.h \
@@ -17,9 +16,9 @@ NUMERIC_INC = \
   liboctave/numeric/DASPK.h \
   liboctave/numeric/DASRT.h \
   liboctave/numeric/DASSL.h \
-  liboctave/numeric/dbleGSVD.h \
   liboctave/numeric/DET.h \
   liboctave/numeric/EIG.h \
+  liboctave/numeric/gsvd.h \
   liboctave/numeric/LSODE.h \
   liboctave/numeric/ODE.h \
   liboctave/numeric/ODEFunc.h \
@@ -58,13 +57,12 @@ NUMERIC_INC = \
   liboctave/numeric/svd.h
 
 NUMERIC_SRC = \
-  liboctave/numeric/CmplxGSVD.cc \
   liboctave/numeric/CollocWt.cc \
   liboctave/numeric/DASPK.cc \
   liboctave/numeric/DASRT.cc \
   liboctave/numeric/DASSL.cc \
-  liboctave/numeric/dbleGSVD.cc \
   liboctave/numeric/EIG.cc \
+  liboctave/numeric/gsvd.cc \
   liboctave/numeric/LSODE.cc \
   liboctave/numeric/ODES.cc \
   liboctave/numeric/Quad.cc \

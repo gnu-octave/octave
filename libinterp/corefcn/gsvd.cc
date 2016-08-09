@@ -19,14 +19,19 @@
 #  include <config.h>
 #endif
 
+#include "dMatrix.h"
+#include "CMatrix.h"
+#include "dDiagMatrix.h"
+#include "gsvd.h"
+
 #include "defun.h"
+#include "defun-int.h"
 #include "error.h"
-#include "gripes.h"
-#include "pr-output.h"
+#include "errwarn.h"
 #include "utils.h"
 #include "ovl.h"
+#include "ov.h"
 
-#include "gsvd.h"
 
 template <typename T>
 static typename gsvd<T>::Type

@@ -515,7 +515,7 @@ function txt = __unimplemented__ (fcn)
   endif
 
   if (nargout == 0)
-    warning ("Octave:missing-function", "%s", txt);
+    warning ("Octave:missing-function", "%s\n", txt);
   endif
 
 endfunction

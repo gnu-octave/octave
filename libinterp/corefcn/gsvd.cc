@@ -317,8 +317,8 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
         }
       else
         {
-          gripe_wrong_type_arg ("gsvd", argA);
-          gripe_wrong_type_arg ("gsvd", argB);
+          err_wrong_type_arg ("gsvd", argA);
+          err_wrong_type_arg ("gsvd", argB);
           return retval;
         }
     }

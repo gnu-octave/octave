@@ -1752,8 +1752,7 @@ AC_SUBST(GL2PS_LIBS)
 
 ### GUI/Qt related tests.
 
-## Change to "5 4" once Octave works with both versions.
-QT_VERSIONS="4"
+QT_VERSIONS="5 4"
 check_qt=yes
 
 AC_ARG_WITH([qt],

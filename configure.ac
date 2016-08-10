@@ -1753,21 +1753,25 @@ AC_SUBST(GL2PS_LIBS)
 ### GUI/Qt related tests.
 
 QT_VERSIONS="5 4"
-check_qt=yes
 
 AC_ARG_WITH([qt],
-  [AS_HELP_STRING([--without-qt], [don't use Qt libraries; disable Qt GUI.  May also select Qt major version:  --with-qt=5])],
-  [if test x"$withval" = xno; then
-     check_qt=no;
-     warn_qt_disabled="--without-qt specified.  The Qt GUI will be disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_qt_disabled])
-   elif test -n "$withval"; then
-     QT_VERSIONS="$withval"
-   fi])
+  [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])
+dnl Second help string must not be indented for correct alignment
+AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
+  [case $withval in
+     yes | "")
+     ;;
+     no)
+       QT_VERSIONS=
+       warn_qt_disabled="--without-qt specified.  The Qt GUI will be disabled."
+       OCTAVE_CONFIGURE_WARNING([warn_qt_disabled])
+     ;;
+     *)
+       QT_VERSIONS="$withval"
+     ;;
+   esac])
 
-if test $check_qt = yes; then
-  OCTAVE_CHECK_QT([$QT_VERSIONS])
-fi
+OCTAVE_CHECK_QT([$QT_VERSIONS])
 
 ## Check for FLTK (www.fltk.org) library
 

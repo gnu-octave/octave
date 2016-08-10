@@ -1557,6 +1557,12 @@ dnl OCTAVE_CHECK_QT
 dnl
 AC_DEFUN([OCTAVE_CHECK_QT], [
   octave_qt_versions="$1"
+
+  build_qt_gui=no
+  build_qt_graphics=no
+  use_qscintilla=no
+  win32_terminal=no
+
   for ver in $octave_qt_versions; do
     OCTAVE_CHECK_QT_VERSION([$ver])
     if test $build_qt_gui = yes; then

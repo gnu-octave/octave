@@ -1328,7 +1328,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
   qt_version="$1";
 
-  build_qt_gui=no
+  build_qt_gui=yes
   build_qt_graphics=no
   use_qscintilla=no
   win32_terminal=no
@@ -1360,10 +1360,10 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
   PKG_CHECK_MODULES(QT, [$QT_MODULES],
     [],
-    [check_qt=no
+    [build_qt_gui=no
      warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
 
-  if test $check_qt = yes; then
+  if test $build_qt_gui = yes; then
     ## Retrieve Qt compilation and linker flags
     QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I $QT_MODULES`"
     QT_LDFLAGS="`$PKG_CONFIG --libs-only-L $QT_MODULES`"
@@ -1386,13 +1386,13 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     if test $qt_version = 4; then
       ## Check for Qt4
       if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-        check_qt=no
+        build_qt_gui=no
         warn_qt_version="Qt >= 4.0.0 not found; disabling Qt GUI"
       fi
     fi
   fi
 
-  if test $check_qt = yes; then
+  if test $build_qt_gui = yes; then
     AC_CHECK_TOOLS(MOC, [moc-qt$qt_version])
     AC_CHECK_TOOLS(UIC, [uic-qt$qt_version])
     AC_CHECK_TOOLS(RCC, [rcc-qt$qt_version])
@@ -1427,26 +1427,23 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       fi
     fi
 
-    if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
-      AC_DEFINE(HAVE_QT, 1,
-        [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
-    else
+    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE"; then
       warn_qt_tools="one or more of the Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
-      check_qt=no
+      build_qt_gui=no
     fi
   fi
 
-  if test $check_qt = yes; then
+  if test $build_qt_gui = yes; then
     AC_CHECK_FUNCS([setlocale], [],
-      [check_qt=no
+      [build_qt_gui=no
        warn_qt_setlocale="setlocale not found; disabling Qt GUI"])
   fi
 
-  if test $check_qt = yes; then
+  if test $build_qt_gui = yes; then
     case $host_os in
       mingw* | msdosmsvc*)
         AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
-          [check_qt=no
+          [build_qt_gui=no
            warn_qt_setvbuf="setvbuf not found; disabling Qt GUI"])
       ;;
       *)
@@ -1454,28 +1451,35 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         AC_SEARCH_LIBS([openpty], [util],
           [AC_DEFINE(HAVE_OPENPTY, [], [Define whether openpty exists])])
         AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
-          [check_qt=no
+          [build_qt_gui=no
            warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])
       ;;
     esac
   fi
 
-  if test $check_qt = yes; then
+  if test $build_qt_gui = yes; then
     OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
 
     if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
-      check_qt=no
+      build_qt_gui=no
       warn_qt_abstract_item_model="QAbstractItemModel::beginResetModel not found; disabling Qt GUI"
+      ## Invalidate cache so that this test will be done again if we
+      ## perform the test with a different Qt version.
+      $as_unset octave_cv_func_qabstractitemmodel_beginresetmodel
     fi
   fi
 
-  if test $check_qt = yes; then
+  if test $build_qt_gui = yes; then
     ## We have what we need to build the Qt GUI.  The remaining
     ## checks below are for optional features related to the Qt GUI.
-    build_qt_gui=yes
-  fi
 
-  if test $check_qt = yes; then
+    AC_DEFINE(HAVE_QT, 1,
+      [Define to 1 if Qt is available, with all required functions, libraries, developer header files, and utility programs (moc, uic, rcc, and lrelease).])
+
+    ## We don't need to unset cache variables for any of the remaining
+    ## tests if they fail because we have already decided that the Qt
+    ## version that we are testing now will be the one used.
+
     OCTAVE_CHECK_QFONT_MONOSPACE
     OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
@@ -1553,50 +1557,48 @@ dnl OCTAVE_CHECK_QT
 dnl
 AC_DEFUN([OCTAVE_CHECK_QT], [
   octave_qt_versions="$1"
-  if test $check_qt = yes; then
-    for ver in $octave_qt_versions; do
-      OCTAVE_CHECK_QT_VERSION([$ver])
-      if test $build_qt_gui = yes; then
-        have_qt_version=$ver
-        break
-      fi
-    done
-
+  for ver in $octave_qt_versions; do
+    OCTAVE_CHECK_QT_VERSION([$ver])
     if test $build_qt_gui = yes; then
-      if test x"$have_qt_version" = x4; then
-        AC_DEFINE(HAVE_QT4, 1, [Define if you are using Qt version 4.])
-      fi
-      if test x"$have_qt_version" = x5; then
-        AC_DEFINE(HAVE_QT5, 1, [Define if you are using Qt version 5.])
-      fi
-    else
-      if test -n "$warn_qt_libraries"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
-      fi
-      if test -n "$warn_qt_version"; then
-          OCTAVE_CONFIGURE_WARNING([warn_qt_version])
-      fi
-      if test -n "$warn_qt_tools"; then
-          OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
-      fi
-      if test -n "$warn_qt_setlocale"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_setlocale])
-      fi
-      if test -n "$warn_qt_setvbuf"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_setvbuf])
-      fi
-      if test -n "$warn_qt_lib_fcns"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_lib_fcns])
-      fi
-      if test -n "$warn_qt_abstract_item_model"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_abstract_item_model])
-      fi
-      if test -n "$warn_qt_opengl"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_opengl])
-      fi
-      if test -n "$warn_qscintilla"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qscintilla])
-      fi
+      have_qt_version=$ver
+      break
+    fi
+  done
+
+  if test $build_qt_gui = yes; then
+    if test x"$have_qt_version" = x4; then
+      AC_DEFINE(HAVE_QT4, 1, [Define if you are using Qt version 4.])
+    fi
+    if test x"$have_qt_version" = x5; then
+      AC_DEFINE(HAVE_QT5, 1, [Define if you are using Qt version 5.])
+    fi
+  else
+    if test -n "$warn_qt_libraries"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
+    fi
+    if test -n "$warn_qt_version"; then
+        OCTAVE_CONFIGURE_WARNING([warn_qt_version])
+    fi
+    if test -n "$warn_qt_tools"; then
+        OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
+    fi
+    if test -n "$warn_qt_setlocale"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_setlocale])
+    fi
+    if test -n "$warn_qt_setvbuf"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_setvbuf])
+    fi
+    if test -n "$warn_qt_lib_fcns"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_lib_fcns])
+    fi
+    if test -n "$warn_qt_abstract_item_model"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_abstract_item_model])
+    fi
+    if test -n "$warn_qt_opengl"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_opengl])
+    fi
+    if test -n "$warn_qscintilla"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qscintilla])
     fi
   fi
 

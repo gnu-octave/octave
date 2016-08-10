@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 Kurt Hornik
+## Copyright (C) 1996-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -47,10 +47,17 @@ function s = deblank (s)
     print_usage ();
   endif
 
-  if (ischar (s))
+  if (isempty (s))
 
+    ## Return empty objects unchanged (Matlab compatibility)
+
+  elseif (ischar (s))
+
+    ## Find indices of non-whitespace characters.  If s is a
+    ## char matrix, the indices are in column major order.
     k = find (! isspace (s) & s != "\0");
-    if (isempty (s) || isempty (k))
+    if (isempty (k))
+      ## Even if s was a char matrix! (Matlab compatibility)
       s = "";
     else
       s = s(:,1:ceil (max (k) / rows (s)));
@@ -60,7 +67,8 @@ function s = deblank (s)
 
     char_idx = cellfun ("isclass", s, "char");
     cell_idx = cellfun ("isclass", s, "cell");
-    if (! all (char_idx | cell_idx))
+    empty_idx = cellfun ("isempty", s);
+    if (! all (char_idx | cell_idx | empty_idx))
       error ("deblank: S argument must be a string or cellstring");
     endif
 
@@ -77,14 +85,18 @@ endfunction
 
 
 %!assert (deblank (" f o o \0"), " f o o")
+%!assert (deblank (" \t f o o \t \0"), " \t f o o")
+%!assert (deblank ([" abc   "; "   def   "]), [" abc  " ; "   def"])
+%!assert (deblank (["   "; "   "]), "")
 %!assert (deblank ('   '), '')
 %!assert (deblank ("   "), "")
 %!assert (deblank (""), "")
+%!assert (deblank ([]), [])
 %!assert (deblank ({}), {})
+%!assert (deblank ({[]}), {[]})
+%!assert (deblank ({[], []}), {[], []})
 %!assert (deblank ({" abc   ", {"   def   "}}), {" abc", {"   def"}})
 
 %!error <Invalid call to deblank> deblank ()
 %!error <Invalid call to deblank> deblank ("foo", "bar")
 %!error <argument must be a string> deblank (1)
-%!error <argument must be a string> deblank ({[]})
-

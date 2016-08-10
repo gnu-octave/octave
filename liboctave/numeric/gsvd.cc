@@ -26,6 +26,8 @@
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
 
+#include <vector>
+
 extern "C"
 {
   F77_RET_T

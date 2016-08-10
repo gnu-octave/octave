@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 #include <algorithm>
-#include <vector>
 
 #include "CMatrix.h"
 #include "dDiagMatrix.h"

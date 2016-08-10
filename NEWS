@@ -116,6 +116,8 @@ Summary of important user-visible changes for version 4.2:
       gsvd
       hash
       im2double
+      isocaps
+      lighting
       localfunctions
       material
       normest1
@@ -127,6 +129,7 @@ Summary of important user-visible changes for version 4.2:
       rad2deg
       reducepatch
       reducevolume
+      smooth3
       uibuttongroup
 
  ** Deprecated functions.

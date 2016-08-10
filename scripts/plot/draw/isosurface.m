@@ -135,7 +135,7 @@
 ## light ("Position", [1 1 5]);
 ## @end smallexample
 ##
-## @seealso{isonormals, isocolors, smooth3, reducevolume, reducepatch, patch}
+## @seealso{isonormals, isocolors, isocaps, smooth3, reducevolume, reducepatch, patch}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>
@@ -242,6 +242,10 @@ function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface
       case {"n", "noshare"}
         noshare = true;
         num_string_inputs++;
+
+      case ""
+        num_string_inputs++;
+        ## silently ignore empty strings
 
       otherwise
         error ("isosurface: parameter '%s' not supported", varargin{i_arg});

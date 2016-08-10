@@ -48,6 +48,7 @@ scripts_plot_draw_FCN_FILES = \
   scripts/plot/draw/fill.m \
   scripts/plot/draw/fplot.m \
   scripts/plot/draw/hist.m \
+  scripts/plot/draw/isocaps.m \
   scripts/plot/draw/isocolors.m \
   scripts/plot/draw/isonormals.m \
   scripts/plot/draw/isosurface.m \

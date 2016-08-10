@@ -687,7 +687,6 @@ function list = missing_functions ()
   "isenum",
   "isKey",
   "ismissing",
-  "isocaps",
   "isordinal",
   "isprotected",
   "isstudent",

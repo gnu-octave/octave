@@ -382,6 +382,8 @@ three-dimensional plots.
 
 @DOCSTRING(isonormals)
 
+@DOCSTRING(isocaps)
+
 @DOCSTRING(isocolors)
 
 @DOCSTRING(smooth3)

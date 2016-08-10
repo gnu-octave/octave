@@ -117,7 +117,7 @@ private:
 
   static bool instance_ok (void);
 
-  void init (QString, QString, QKeySequence);
+  void init (const QString&, const QString&, const QKeySequence&);
   void do_init_data ();
   void do_write_shortcuts (QSettings *settings, bool closing);
   void do_set_shortcut (QAction *action, const QString& key);

@@ -333,7 +333,8 @@ shortcut_manager::do_init_data ()
 }
 
 void
-shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
+shortcut_manager::init (const QString& description, const QString& key,
+                        const QKeySequence& def_sc)
 {
   QKeySequence actual
     = QKeySequence (_settings->value ("shortcuts/"+key, def_sc).toString ());

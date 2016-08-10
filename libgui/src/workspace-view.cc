@@ -108,9 +108,15 @@ workspace_view::workspace_view (QWidget *p)
       view->setSortingEnabled (true);
       // Initialize column order and width of the workspace
       view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
+
       // Set header properties for sorting
+#if defined (HAVE_QT4)
       view->horizontalHeader ()->setClickable (true);
       view->horizontalHeader ()->setMovable (true);
+#else
+      view->horizontalHeader ()->setSectionsClickable (true);
+      view->horizontalHeader ()->setSectionsMovable (true);
+#endif
       view->horizontalHeader ()->setSortIndicator (settings->value ("workspaceview/sort_by_column",0).toInt (),
                                                    static_cast<Qt::SortOrder>
                                                    (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ()));

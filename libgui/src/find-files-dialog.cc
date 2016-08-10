@@ -125,7 +125,11 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _file_list->horizontalHeader ()->restoreState (
     settings->value ("findfiles/column_state").toByteArray ());
   _file_list->horizontalHeader ()->setSortIndicatorShown (true);
+#if defined (HAVE_QT4)
   _file_list->horizontalHeader ()->setClickable (true);
+#else
+  _file_list->horizontalHeader ()->setSectionsClickable (true);
+#endif
   _file_list->horizontalHeader ()->setStretchLastSection (true);
   _file_list->sortByColumn (
                 settings->value ("findfiles/sort_files_by_column",0).toInt (),

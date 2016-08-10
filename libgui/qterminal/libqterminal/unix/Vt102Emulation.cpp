@@ -994,7 +994,7 @@ void Vt102Emulation::sendKeyEvent( QKeyEvent* event )
                                          "is missing.");
 
         reset();
-        receiveData( translatorError.toAscii().constData() , translatorError.count() );
+        receiveData( translatorError.toLatin1().constData() , translatorError.count() );
     }
 }
 

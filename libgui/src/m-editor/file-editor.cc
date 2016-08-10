@@ -30,17 +30,18 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 
-#include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
-#include <QFont>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QStyle>
-#include <QTextStream>
-#include <QTabBar>
-#include <QProcess>
+#include <QFont>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QProcess>
+#include <QStyle>
+#include <QTabBar>
+#include <QTextStream>
+#include <QVBoxLayout>
 #include <Qsci/qscicommandset.h>
 
 #include "octave-link.h"

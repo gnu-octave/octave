@@ -1350,7 +1350,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       LIBQSCINTILLA=qscintilla2
     ;;
     5)
-      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL"
+      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5PrintSupport"
       LIBQSCINTILLA=qt5scintilla2
     ;;
     *)
@@ -1523,7 +1523,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       QT_LIBS="$QT_LIBS -l$LIBQSCINTILLA"
       OCTAVE_CHECK_QSCINTILLA_VERSION
       AC_DEFINE(HAVE_QSCINTILLA, 1,
-        [Define to 1 if the QScintilla library and header files are available])
+        [Define to 1 if the QScintilla library and header files are available.])
 
       save_CPPFLAGS="$CPPFLAGS"
       save_CXXFLAGS="$CXXFLAGS"
@@ -1557,11 +1557,19 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     for ver in $octave_qt_versions; do
       OCTAVE_CHECK_QT_VERSION([$ver])
       if test $build_qt_gui = yes; then
+        have_qt_version=$ver
         break
       fi
     done
 
-    if test $build_qt_gui = no; then
+    if test $build_qt_gui = yes; then
+      if test x"$have_qt_version" = x4; then
+        AC_DEFINE(HAVE_QT4, 1, [Define if you are using Qt version 4.])
+      fi
+      if test x"$have_qt_version" = x5; then
+        AC_DEFINE(HAVE_QT5, 1, [Define if you are using Qt version 5.])
+      fi
+    else
       if test -n "$warn_qt_libraries"; then
         OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
       fi

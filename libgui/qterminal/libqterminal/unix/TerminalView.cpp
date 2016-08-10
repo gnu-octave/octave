@@ -41,6 +41,7 @@
 #include <QPixmap>
 #include <QScrollBar>
 #include <QStyle>
+#include <QToolTip>
 #include <QtCore>
 #include <QtGui>
 

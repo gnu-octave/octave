@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
+#include <QtGlobal>
 
 #include <cstdio>
 
@@ -60,7 +61,11 @@ along with Octave; see the file COPYING.  If not, see
 // Disable all Qt messages by default.
 
 static void
+#if defined (HAVE_QT4)
 message_handler (QtMsgType, const char *)
+#else
+message_handler (QtMsgType, const QMessageLogContext &, const QString &)
+#endif
 {
 }
 
@@ -128,7 +133,13 @@ namespace octave
     // Installing our handler suppresses the messages.
 
     if (show_gui_msgs.empty ())
-      qInstallMsgHandler (message_handler);
+      {
+#if defined (HAVE_QT4)
+        qInstallMsgHandler (message_handler);
+#else
+        qInstallMessageHandler (message_handler);
+#endif
+      }
 
 #if defined (HAVE_QT_GRAPHICS)
     install___init_qt___functions ();
@@ -144,7 +155,7 @@ namespace octave
 
     // Set the codec for all strings (before wizard or any GUI object)
 #if ! defined (Q_OS_WIN32)
-    QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
+    QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
 #endif
 
     bool start_gui = start_gui_p ();

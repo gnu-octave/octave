@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QInputDialog>
 #include <QPrintDialog>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QTextCodec>
 #include <QStyle>
 #include <QTextBlock>
@@ -591,10 +592,15 @@ file_editor_tab::update_lexer ()
       bool update_apis_file = false;  // flag, whether update of apis files
 
       // get path to prepared api info
-      QDesktopServices desktopServices;
+#if defined (HAVE_QT4)
       QString prep_apis_path
-        = desktopServices.storageLocation (QDesktopServices::HomeLocation)
+        = QDesktopServices::storageLocation (QDesktopServices::HomeLocation)
           + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+#else
+      QString prep_apis_path
+        = QStandardPaths::writableLocation (QStandardPaths::HomeLocation)
+          + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+#endif
 
       // get settings which infos are used for octave
       bool octave_builtins = settings->value (
@@ -627,9 +633,16 @@ file_editor_tab::update_lexer ()
 
               // compare to local package list
               // FIXME: How to get user chosen location?
-              QFileInfo local_pkg_list = QFileInfo (
-                desktopServices.storageLocation (QDesktopServices::HomeLocation)
-                + "/.octave_packages");
+#if defined (HAVE_QT4)
+              QFileInfo local_pkg_list
+                = QFileInfo (QDesktopServices::storageLocation (QDesktopServices::HomeLocation)
+                             + "/.octave_packages");
+#else
+              QFileInfo local_pkg_list
+                = QFileInfo (QStandardPaths::writableLocation (QStandardPaths::HomeLocation)
+                             + "/.octave_packages");
+#endif
+
               if (local_pkg_list.exists ()
                   & (apis_date < local_pkg_list.lastModified ()) )
                 update_apis_file = true;
@@ -1578,7 +1591,7 @@ file_editor_tab::load_file (const QString& fileName)
   // read the file
   QTextStream in (&file);
   // set the desired codec
-  QTextCodec *codec = QTextCodec::codecForName (_encoding.toAscii ());
+  QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
   in.setCodec(codec);
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
@@ -1617,7 +1630,7 @@ file_editor_tab::load_file (const QString& fileName)
 QsciScintilla::EolMode
 file_editor_tab::detect_eol_mode ()
 {
-  QByteArray text = _edit_area->text ().toAscii ();
+  QByteArray text = _edit_area->text ().toLatin1 ();
 
   QByteArray eol_lf = QByteArray (1,0x0a);
   QByteArray eol_cr = QByteArray (1,0x0d);
@@ -1859,7 +1872,7 @@ file_editor_tab::save_file (const QString& saveFileName,
   _encoding = _new_encoding;    // consider a possible new encoding
 
   // set the desired codec (if suitable for contents)
-  QTextCodec *codec = QTextCodec::codecForName (_encoding.toAscii ());
+  QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
 
   if (check_valid_codec (codec))
     {

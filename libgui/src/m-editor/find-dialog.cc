@@ -65,8 +65,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_QSCINTILLA)
 
-#include <QtGui>
+#include <QCheckBox>
+#include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QGridLayout>
 #include <QIcon>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include "find-dialog.h"
 
 find_dialog::find_dialog (QsciScintilla* edit_area,

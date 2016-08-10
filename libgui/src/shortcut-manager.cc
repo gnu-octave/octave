@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
+#include <QKeySequence>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QCheckBox>
@@ -80,7 +81,7 @@ shortcut_manager::instance_ok (void)
 void
 shortcut_manager::do_init_data ()
 {
-  QKeySequence ctrl;
+  Qt::KeyboardModifier ctrl;
   int prefix;
 #if defined (Q_OS_MAC)
   // Use CMD key as an equivalent of Ctrl key on other platforms
@@ -94,8 +95,8 @@ shortcut_manager::do_init_data ()
   prefix = Qt::NoModifier;
 #endif
 
-  QKeySequence ctrl_shift = ctrl + Qt::ShiftModifier;
-  QKeySequence ctrl_alt = ctrl + Qt::AltModifier;
+  Qt::KeyboardModifiers ctrl_shift = ctrl | Qt::ShiftModifier;
+  Qt::KeyboardModifiers ctrl_alt = ctrl | Qt::AltModifier;
 
   // actions of the main window
 
@@ -362,7 +363,11 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   _dialog = 0;
   _level_hash.clear ();
 
+#if defined (HAVE_QT4)
   tree_view->header ()->setResizeMode (QHeaderView::ResizeToContents);
+#else
+  tree_view->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
+#endif
 
   QTreeWidgetItem *main = new QTreeWidgetItem (tree_view);
   main->setText (0, tr ("Global"));
@@ -430,8 +435,8 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
 
       // write the shortcuts
       tree_item->setText (0, sc.description);
-      tree_item->setText (1, sc.default_sc);
-      tree_item->setText (2, sc.actual_sc);
+      tree_item->setText (1, sc.default_sc.toString ());
+      tree_item->setText (2, sc.actual_sc.toString ());
 
       _item_index_hash[tree_item] = i + 1; // index+1 to avoid 0
       _index_item_hash[i] = tree_item;
@@ -555,8 +560,8 @@ shortcut_manager::shortcut_dialog (int index)
 
     }
 
-  _edit_actual->setText (_sc.at (index).actual_sc);
-  _label_default->setText (_sc.at (index).default_sc);
+  _edit_actual->setText (_sc.at (index).actual_sc.toString ());
+  _label_default->setText (_sc.at (index).default_sc.toString ());
   _handled_index = index;
 
   _edit_actual->setFocus ();
@@ -589,7 +594,7 @@ shortcut_manager::shortcut_dialog_finished (int result)
           shortcut_t double_shortcut = _sc.at (double_index);
           double_shortcut.actual_sc = QKeySequence ();
           _sc.replace (double_index, double_shortcut);
-          _index_item_hash[double_index]->setText (2, QKeySequence ());
+          _index_item_hash[double_index]->setText (2, QString ());
         }
       else
         return;
@@ -601,7 +606,7 @@ shortcut_manager::shortcut_dialog_finished (int result)
   shortcut.actual_sc = _edit_actual->text();
   _sc.replace (_handled_index, shortcut);
 
-  _index_item_hash[_handled_index]->setText (2, shortcut.actual_sc);
+  _index_item_hash[_handled_index]->setText (2, shortcut.actual_sc.toString ());
 
   if (! shortcut.actual_sc.isEmpty ())
     _shortcut_hash[shortcut.actual_sc.toString ()] = _handled_index + 1;
@@ -634,7 +639,7 @@ shortcut_manager::import_shortcuts (QSettings *settings)
 
       // update the tree view
       QTreeWidgetItem* tree_item = _index_item_hash[i]; // get related tree item
-      tree_item->setText (2, sc.actual_sc); // display new shortcut
+      tree_item->setText (2, sc.actual_sc.toString ()); // display new shortcut
     }
 }
 
@@ -773,6 +778,6 @@ enter_shortcut::keyPressEvent (QKeyEvent *e)
       if (modifiers & Qt::MetaModifier)
         key += Qt::META;
 
-      setText (QKeySequence(key));
+      setText (QKeySequence(key).toString ());
     }
 }

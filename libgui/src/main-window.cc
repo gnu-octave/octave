@@ -71,6 +71,8 @@ create_default_editor (QWidget *p)
 #if defined (HAVE_QSCINTILLA)
   return new file_editor (p);
 #else
+  octave_unused_parameter (p);
+
   return 0;
 #endif
 }

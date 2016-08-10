@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "vector"
+
 template <typename T>
 class
 svd
@@ -95,12 +97,13 @@ private:
 
   void gesvd (char& jobu, char& jobv, octave_idx_type m, octave_idx_type n,
               P* tmp_data, octave_idx_type m1, DM_P* s_vec, P* u, P* vt,
-              octave_idx_type nrow_vt1, T& work, octave_idx_type& lwork,
+              octave_idx_type nrow_vt1, std::vector<P>& work, octave_idx_type& lwork,
               octave_idx_type& info);
 
   void gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
               P* tmp_data, octave_idx_type m1, DM_P* s_vec, P* u, P* vt,
-              octave_idx_type nrow_vt1, T& work, octave_idx_type& lwork,
+              octave_idx_type nrow_vt1, std::vector<P>& work,
+              octave_idx_type& lwork,
               octave_idx_type* iwork, octave_idx_type& info);
 
 };

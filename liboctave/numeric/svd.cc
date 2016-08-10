@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 #include <algorithm>
+#include <vector>
 
 #include "CMatrix.h"
 #include "dDiagMatrix.h"
@@ -156,7 +157,7 @@ svd<T>::right_singular_matrix (void) const
   F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),            \
                    F77_CONST_CHAR_ARG2 (&jobv, 1),            \
                    m, n, tmp_data, m1, s_vec, u, m1, vt,      \
-                   nrow_vt1, work.fortran_vec (), lwork, info \
+                   nrow_vt1, work.data (), lwork, info \
                    F77_CHAR_ARG_LEN (1)                       \
                    F77_CHAR_ARG_LEN (1)))
 
@@ -166,8 +167,8 @@ svd<T>::right_singular_matrix (void) const
                    m, n, CMPLX_ARG (tmp_data),        \
                    m1, s_vec, CMPLX_ARG (u), m1,      \
                    CMPLX_ARG (vt), nrow_vt1,          \
-                   CMPLX_ARG (work.fortran_vec ()),   \
-                   lwork, rwork.fortran_vec (), info  \
+                   CMPLX_ARG (work.data ()),   \
+                   lwork, rwork.data (), info         \
                    F77_CHAR_ARG_LEN (1)               \
                    F77_CHAR_ARG_LEN (1)))
 
@@ -177,13 +178,13 @@ void
 svd<Matrix>::gesvd (char& jobu, char& jobv, octave_idx_type m,
                     octave_idx_type n, double* tmp_data, octave_idx_type m1,
                     double* s_vec, double* u, double* vt,
-                    octave_idx_type nrow_vt1, Matrix& work,
+                    octave_idx_type nrow_vt1, std::vector<double>& work,
                     octave_idx_type& lwork, octave_idx_type& info)
 {
   GESVD_REAL_STEP (dgesvd, DGESVD);
 
-  lwork = static_cast<octave_idx_type> (work(0));
-  work.resize (lwork, 1);
+  lwork = work[0];
+  work.reserve (lwork);
 
   GESVD_REAL_STEP (dgesvd, DGESVD);
 }
@@ -194,13 +195,13 @@ void
 svd<FloatMatrix>::gesvd (char& jobu, char& jobv, octave_idx_type m,
                          octave_idx_type n, float* tmp_data,
                          octave_idx_type m1, float* s_vec, float* u, float* vt,
-                         octave_idx_type nrow_vt1, FloatMatrix& work,
+                         octave_idx_type nrow_vt1, std::vector<float>& work,
                          octave_idx_type& lwork, octave_idx_type& info)
 {
   GESVD_REAL_STEP (sgesvd, SGESVD);
 
-  lwork = static_cast<octave_idx_type> (work(0));
-  work.resize (lwork, 1);
+  lwork = work[0];
+  work.reserve (lwork);
 
   GESVD_REAL_STEP (sgesvd, SGESVD);
 }
@@ -212,15 +213,15 @@ svd<ComplexMatrix>::gesvd (char& jobu, char& jobv, octave_idx_type m,
                            octave_idx_type n, Complex* tmp_data,
                            octave_idx_type m1, double* s_vec, Complex* u,
                            Complex* vt, octave_idx_type nrow_vt1,
-                           ComplexMatrix& work,
+                           std::vector<Complex>& work,
                            octave_idx_type& lwork, octave_idx_type& info)
 {
-  Matrix rwork (5 * std::max (m, n), 1);
+  std::vector<double> rwork (5 * std::max (m, n));
 
   GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
 
-  lwork = static_cast<octave_idx_type> (work(0).real ());
-  work.resize (lwork, 1);
+  lwork = work[0].real ();
+  work.reserve (lwork);
 
   GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
 }
@@ -233,15 +234,15 @@ svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv,
                                 FloatComplex* tmp_data, octave_idx_type m1,
                                 float* s_vec, FloatComplex* u,
                                 FloatComplex* vt, octave_idx_type nrow_vt1,
-                                FloatComplexMatrix& work,
+                                std::vector<FloatComplex>& work,
                                 octave_idx_type& lwork, octave_idx_type& info)
 {
-  FloatMatrix rwork (5 * std::max (m, n), 1);
+  std::vector<float> rwork (5 * std::max (m, n));
 
   GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
 
-  lwork = static_cast<octave_idx_type> (work(0).real ());
-  work.resize (lwork, 1);
+  lwork = work[0].real ();
+  work.reserve (lwork);
 
   GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
 }
@@ -255,7 +256,7 @@ svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv,
 #define GESDD_REAL_STEP(f, F)                                       \
   F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobz, 1),                  \
                    m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,  \
-                   work.fortran_vec (), lwork, iwork, info          \
+                   work.data (), lwork, iwork, info                 \
                    F77_CHAR_ARG_LEN (1)))
 
 #define GESDD_COMPLEX_STEP(f, F, CMPLX_ARG)                 \
@@ -263,8 +264,8 @@ svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv,
                    CMPLX_ARG (tmp_data), m1,                \
                    s_vec, CMPLX_ARG (u), m1,                \
                    CMPLX_ARG (vt), nrow_vt1,                \
-                   CMPLX_ARG (work.fortran_vec ()), lwork,  \
-                   rwork.fortran_vec (), iwork, info        \
+                   CMPLX_ARG (work.data ()), lwork,         \
+                   rwork.data (), iwork, info               \
                    F77_CHAR_ARG_LEN (1)))
 
 // DGESDD
@@ -274,13 +275,13 @@ svd<Matrix>::gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
                     double* tmp_data, octave_idx_type m1,
                     double* s_vec, double* u,
                     double* vt, octave_idx_type nrow_vt1,
-                    Matrix& work, octave_idx_type& lwork,
+                    std::vector<double>& work, octave_idx_type& lwork,
                     octave_idx_type* iwork, octave_idx_type& info)
 {
   GESDD_REAL_STEP (dgesdd, DGESDD);
 
-  lwork = static_cast<octave_idx_type> (work(0));
-  work.resize (lwork, 1);
+  lwork = work[0];
+  work.reserve (lwork);
 
   GESDD_REAL_STEP (dgesdd, DGESDD);
 }
@@ -292,13 +293,13 @@ svd<FloatMatrix>::gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
                          float* tmp_data, octave_idx_type m1,
                          float* s_vec, float* u,
                          float* vt, octave_idx_type nrow_vt1,
-                         FloatMatrix& work, octave_idx_type& lwork,
+                         std::vector<float>& work, octave_idx_type& lwork,
                          octave_idx_type* iwork, octave_idx_type& info)
 {
   GESDD_REAL_STEP (sgesdd, SGESDD);
 
-  lwork = static_cast<octave_idx_type> (work(0));
-  work.resize (lwork, 1);
+  lwork = work[0];
+  work.reserve (lwork);
 
   GESDD_REAL_STEP (sgesdd, SGESDD);
 }
@@ -310,7 +311,7 @@ svd<ComplexMatrix>::gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
                            Complex* tmp_data, octave_idx_type m1,
                            double* s_vec, Complex* u,
                            Complex* vt, octave_idx_type nrow_vt1,
-                           ComplexMatrix& work, octave_idx_type& lwork,
+                           std::vector<Complex>& work, octave_idx_type& lwork,
                            octave_idx_type* iwork, octave_idx_type& info)
 {
 
@@ -321,13 +322,13 @@ svd<ComplexMatrix>::gesdd (char& jobz, octave_idx_type m, octave_idx_type n,
     lrwork = 7*min_mn;
   else
     lrwork = 5*min_mn*min_mn + 5*min_mn;
-  Matrix rwork (lrwork, 1);
 
+  std::vector<double> rwork (lrwork);
 
   GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
 
-  lwork = static_cast<octave_idx_type> (work(0).real ());
-  work.resize (lwork, 1);
+  lwork = work[0].real ();
+  work.reserve (lwork);
 
   GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
 }
@@ -340,7 +341,7 @@ svd<FloatComplexMatrix>::gesdd (char& jobz, octave_idx_type m,
                                 FloatComplex* tmp_data, octave_idx_type m1,
                                 float* s_vec, FloatComplex* u,
                                 FloatComplex* vt, octave_idx_type nrow_vt1,
-                                FloatComplexMatrix& work,
+                                std::vector<FloatComplex>& work,
                                 octave_idx_type& lwork, octave_idx_type* iwork,
                                 octave_idx_type& info)
 {
@@ -352,12 +353,12 @@ svd<FloatComplexMatrix>::gesdd (char& jobz, octave_idx_type m,
     lrwork = 5*min_mn;
   else
     lrwork = min_mn * std::max (5*min_mn+7, 2*max_mn+2*min_mn+1);
-  FloatMatrix rwork (lrwork, 1);
+  std::vector<float> rwork (lrwork);
 
   GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
 
-  lwork = static_cast<octave_idx_type> (work(0).real ());
-  work.resize (lwork, 1);
+  lwork = work[0].real ();
+  work.reserve (lwork);
 
   GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
 }
@@ -459,7 +460,7 @@ svd<T>::svd (const T& a, svd::Type type,
 
   octave_idx_type lwork = -1;
 
-  T work (1, 1);
+  std::vector<P> work (1);
 
   octave_idx_type m1 = std::max (m, 1);
   octave_idx_type nrow_vt1 = std::max (nrow_vt, 1);
@@ -472,10 +473,10 @@ svd<T>::svd (const T& a, svd::Type type,
       assert (jobu == jobv);
       char jobz = jobu;
 
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8 * std::min (m, n));
+      std::vector<octave_idx_type> iwork (8 * std::min (m, n));
 
       gesdd (jobz, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
-             work, lwork, iwork, info);
+             work, lwork, iwork.data (), info);
     }
   else
     abort ();

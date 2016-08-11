@@ -72,7 +72,7 @@
 ## All other fields in @var{opts} are ignored.  The outputs from @code{luinc}
 ## are the same as for @code{lu}.
 ##
-## Given the string argument @qcode{\"vector\"}, @code{luinc} returns the
+## Given the string argument @qcode{"vector"}, @code{luinc} returns the
 ## values of @var{p} @var{q} as vector values.
 ## @seealso{ilu, ichol, lu, sparse}
 ## @end deftypefn

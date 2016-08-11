@@ -1242,7 +1242,7 @@ Given a QR@tie{}factorization of a real or complex matrix
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of
 @w{[A(:,1:j-1), U, A(:,j:n)]},
 where @var{u} is a column vector to be inserted into @var{A}
-(if @var{orient} is @qcode{\"col\"}),
+(if @var{orient} is @qcode{"col"}),
 or the QR@tie{}factorization of @w{[A(1:j-1,:);X;A(:,j:n)]},
 where @var{x} is a row @var{orient} is @qcode{"row"}).
 The default value of @var{orient} is @qcode{"col"}.

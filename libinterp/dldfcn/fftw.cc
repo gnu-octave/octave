@@ -372,8 +372,8 @@ used per default.
 %!   fftw ("threads", n);
 %! end_unwind_protect
 
-%!error <Invalid call to fftw> fftw ()
-%!error <Invalid call to fftw> fftw ("planner", "estimate", "measure")
+%!error <Invalid call to fftw|was unavailable or disabled> fftw ()
+%!error <Invalid call to fftw|was unavailable or disabled> fftw ("planner", "estimate", "measure")
 %!error fftw (3)
 %!error fftw ("invalid")
 %!error fftw ("planner", "invalid")

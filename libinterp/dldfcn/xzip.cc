@@ -568,7 +568,7 @@ The optional output @var{filelist} is a list of the compressed files.
 /*
 %!error gzip ()
 %!error gzip ("1", "2", "3")
-%!error <FILES must be a character array or cellstr> gzip (1)
+%!error <FILES must be a character array or cellstr|was unavailable or disabled> gzip (1)
 */
 
 DEFUN_DLD (bzip2, args, ,

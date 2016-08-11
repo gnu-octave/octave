@@ -537,8 +537,8 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
     {
       FloatComplex val = elem (0);
 
-      float r_val = std::real (val);
-      float i_val = std::imag (val);
+      float r_val = val.real ();
+      float i_val = val.imag ();
 
       max_val = r_val;
       min_val = r_val;
@@ -556,8 +556,8 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
     {
       FloatComplex val = elem (i);
 
-      float r_val = std::real (val);
-      float i_val = std::imag (val);
+      float r_val = val.real ();
+      float i_val = val.imag ();
 
       if (r_val > max_val)
         max_val = r_val;

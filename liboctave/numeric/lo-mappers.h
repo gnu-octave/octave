@@ -46,6 +46,20 @@ namespace octave
     extern OCTAVE_API bool is_NaN_or_NA (const Complex& x);
     extern OCTAVE_API bool is_NaN_or_NA (const FloatComplex& x);
 
+    extern OCTAVE_API double copysign (double x, double y);
+    extern OCTAVE_API float copysign (float x, float y);
+
+    extern OCTAVE_API double signbit (double x);
+    extern OCTAVE_API float signbit (float x);
+
+    // Test for negative sign.
+    extern OCTAVE_API bool negative_sign (double x);
+    extern OCTAVE_API bool negative_sign (float x);
+
+    // Test for positive sign.
+    inline bool positive_sign (double x) { return ! negative_sign (x); }
+    inline bool positive_sign (float x) { return ! negative_sign (x); }
+
     extern OCTAVE_API Complex acos (const Complex& x);
     extern OCTAVE_API FloatComplex acos (const FloatComplex& x);
 
@@ -62,14 +76,49 @@ namespace octave
     using std::atan;
 
     // C++ now provides versions of the following funtions for
-    // arguments of type std::complex<T> and T so we no longer need to
-    // provide our own wrappers for real-valued arguments.  Import
-    // them to the octave::math namespace for convenience.
+    // arguments of type std::complex<T> and T.  But some compilers
+    // (I'm looking at you, clang) apparently don't get this right
+    // yet...  So we provide our own wrappers for real-valued arguments.
 
-    using std::arg;
-    using std::conj;
-    using std::imag;
-    using std::real;
+    inline double arg (double x) { return signbit (x) ? M_PI : 0; }
+    inline float arg (float x) { return signbit (x) ? M_PI : 0; }
+
+    template <typename T>
+    T
+    arg (const std::complex<T>& x)
+    {
+      return std::arg (x);
+    }
+
+    inline double conj (double x) { return x; }
+    inline float conj (float x) { return x; }
+
+    template <typename T>
+    std::complex<T>
+    conj (const std::complex<T>& x)
+    {
+      return std::conj (x);
+    }
+
+    inline double imag (double) { return 0; }
+    inline float imag (float) { return 0; }
+
+    template <typename T>
+    T
+    imag (const std::complex<T>& x)
+    {
+      return std::imag (x);
+    }
+
+    inline double real (double x) { return x; }
+    inline float real (float x) { return x; }
+
+    template <typename T>
+    T
+    real (const std::complex<T>& x)
+    {
+      return std::real (x);
+    }
 
     extern OCTAVE_API double log2 (double x);
     extern OCTAVE_API float log2 (float x);
@@ -93,22 +142,8 @@ namespace octave
     std::complex<T>
     ceil (const std::complex<T>& x)
     {
-      return std::complex<T> (ceil (real (x)), ceil (imag (x)));
+      return std::complex<T> (ceil (std::real (x)), ceil (std::imag (x)));
     }
-
-    extern OCTAVE_API double copysign (double x, double y);
-    extern OCTAVE_API float copysign (float x, float y);
-
-    extern OCTAVE_API double signbit (double x);
-    extern OCTAVE_API float signbit (float x);
-
-    // Test for negative sign.
-    extern OCTAVE_API bool negative_sign (double x);
-    extern OCTAVE_API bool negative_sign (float x);
-
-    // Test for positive sign.
-    inline bool positive_sign (double x) { return ! negative_sign (x); }
-    inline bool positive_sign (float x) { return ! negative_sign (x); }
 
     extern OCTAVE_API double trunc (double x);
     extern OCTAVE_API float trunc (float x);
@@ -117,7 +152,7 @@ namespace octave
     std::complex<T>
     trunc (const std::complex<T>& x)
     {
-      return std::complex<T> (trunc (real (x)), trunc (imag (x)));
+      return std::complex<T> (trunc (std::real (x)), trunc (std::imag (x)));
     }
 
     inline double fix (double x) { return trunc (x); }
@@ -137,7 +172,7 @@ namespace octave
     std::complex<T>
     floor (const std::complex<T>& x)
     {
-      return std::complex<T> (floor (real (x)), floor (imag (x)));
+      return std::complex<T> (floor (std::real (x)), floor (std::imag (x)));
     }
 
     extern OCTAVE_API double round (double x);
@@ -147,7 +182,7 @@ namespace octave
     std::complex<T>
     round (const std::complex<T>& x)
     {
-      return std::complex<T> (round (real (x)), round (imag (x)));
+      return std::complex<T> (round (std::real (x)), round (std::imag (x)));
     }
 
     inline double
@@ -166,8 +201,8 @@ namespace octave
     {
       float t = round (x);
 
-      if (fabsf (x - t) == 0.5)
-        t = 2 * trunc (0.5 * t);
+      if (fabsf (x - t) == 0.5f)
+        t = 2 * trunc (0.5f * t);
 
       return t;
     }
@@ -176,7 +211,7 @@ namespace octave
     std::complex<T>
     roundb (const std::complex<T>& x)
     {
-      return std::complex<T> (roundb (real (x)), roundb (imag (x)));
+      return std::complex<T> (roundb (std::real (x)), roundb (std::imag (x)));
     }
 
     extern OCTAVE_API double frexp (double x, int *expptr);
@@ -191,7 +226,7 @@ namespace octave
     bool
     isnan (const std::complex<T>& x)
     {
-      return (isnan (real (x)) || isnan (imag (x)));
+      return (isnan (std::real (x)) || isnan (std::imag (x)));
     }
 
     extern OCTAVE_API bool finite (double x);
@@ -201,7 +236,7 @@ namespace octave
     bool
     finite (const std::complex<T>& x)
     {
-      return (finite (real (x)) && finite (imag (x)));
+      return (finite (std::real (x)) && finite (std::imag (x)));
     }
 
     extern OCTAVE_API bool isinf (double x);
@@ -211,7 +246,7 @@ namespace octave
     bool
     isinf (const std::complex<T>& x)
     {
-      return (isinf (real (x)) || isinf (imag (x)));
+      return (isinf (std::real (x)) || isinf (std::imag (x)));
     }
 
     // Some useful tests, that are commonly repeated.

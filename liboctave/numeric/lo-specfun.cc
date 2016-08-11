@@ -367,9 +367,9 @@ namespace octave
     FloatComplex
     erf (const FloatComplex& x)
     {
-      Complex xd (real (x), imag (x));
+      Complex xd (x.real (), x.imag ());
       Complex ret = Faddeeva::erf (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (real (ret), imag (ret));
+      return FloatComplex (ret.real (), ret.imag ());
     }
 
     double
@@ -406,9 +406,9 @@ namespace octave
     FloatComplex
     erfc (const FloatComplex& x)
     {
-      Complex xd (real (x), imag (x));
+      Complex xd (x.real (), x.imag ());
       Complex ret = Faddeeva::erfc (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (real (ret), imag (ret));
+      return FloatComplex (ret.real (), ret.imag ());
     }
 
     // Real and complex scaled complementary error function from Faddeeva package
@@ -424,9 +424,9 @@ namespace octave
     FloatComplex
     erfcx (const FloatComplex& x)
     {
-      Complex xd (real (x), imag (x));
+      Complex xd (x.real (), x.imag ());
       Complex ret = Faddeeva::erfcx (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (real (ret), imag (ret));
+      return FloatComplex (ret.real (), ret.imag ());
     }
 
     // Real and complex imaginary error function from Faddeeva package
@@ -442,9 +442,9 @@ namespace octave
     FloatComplex
     erfi (const FloatComplex& x)
     {
-      Complex xd (real (x), imag (x));
+      Complex xd (x.real (), x.imag ());
       Complex ret = Faddeeva::erfi (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (real (ret), imag (ret));
+      return FloatComplex (ret.real (), ret.imag ());
     }
 
     // Real and complex Dawson function (= scaled erfi) from Faddeeva package
@@ -460,9 +460,9 @@ namespace octave
     FloatComplex
     dawson (const FloatComplex& x)
     {
-      Complex xd (real (x), imag (x));
+      Complex xd (x.real (), x.imag ());
       Complex ret = Faddeeva::Dawson (xd, std::numeric_limits<float>::epsilon ());
-      return FloatComplex (real (ret), imag (ret));
+      return FloatComplex (ret.real (), ret.imag ());
     }
 
     double
@@ -1133,8 +1133,8 @@ namespace octave
                 {
                   Complex expz = exp (-z);
 
-                  double rexpz = real (expz);
-                  double iexpz = imag (expz);
+                  double rexpz = expz.real ();
+                  double iexpz = expz.imag ();
 
                   double tmp = yr*rexpz - yi*iexpz;
 
@@ -1179,8 +1179,8 @@ namespace octave
             {
               Complex expz = exp (Complex (0.0, 1.0) * z);
 
-              double rexpz = real (expz);
-              double iexpz = imag (expz);
+              double rexpz = expz.real ();
+              double iexpz = expz.imag ();
 
               double tmp = yr*rexpz - yi*iexpz;
 
@@ -1225,8 +1225,8 @@ namespace octave
             {
               Complex expz = exp (-Complex (0.0, 1.0) * z);
 
-              double rexpz = real (expz);
-              double iexpz = imag (expz);
+              double rexpz = expz.real ();
+              double iexpz = expz.imag ();
 
               double tmp = yr*rexpz - yi*iexpz;
 
@@ -1563,11 +1563,11 @@ namespace octave
 
           if (kode != 2)
             {
-              float expz = exp (std::abs (imag (z)));
+              float expz = exp (std::abs (z.imag ()));
               y *= expz;
             }
 
-          if (imag (z) == 0.0 && real (z) >= 0.0)
+          if (z.imag () == 0.0 && z.real () >= 0.0)
             y = FloatComplex (y.real (), 0.0);
 
           retval = bessel_return_value (y, ierr);
@@ -1618,7 +1618,7 @@ namespace octave
 
           ierr = 0;
 
-          if (real (z) == 0.0 && imag (z) == 0.0)
+          if (z.real () == 0.0 && z.imag () == 0.0)
             {
               y = FloatComplex (-octave::numeric_limits<float>::Inf (), 0.0);
             }
@@ -1628,11 +1628,11 @@ namespace octave
 
               if (kode != 2)
                 {
-                  float expz = exp (std::abs (imag (z)));
+                  float expz = exp (std::abs (z.imag ()));
                   y *= expz;
                 }
 
-              if (imag (z) == 0.0 && real (z) >= 0.0)
+              if (z.imag () == 0.0 && z.real () >= 0.0)
                 y = FloatComplex (y.real (), 0.0);
             }
 
@@ -1684,11 +1684,11 @@ namespace octave
 
           if (kode != 2)
             {
-              float expz = exp (std::abs (real (z)));
+              float expz = exp (std::abs (z.real ()));
               y *= expz;
             }
 
-          if (imag (z) == 0.0 && real (z) >= 0.0)
+          if (z.imag () == 0.0 && z.real () >= 0.0)
             y = FloatComplex (y.real (), 0.0);
 
           retval = bessel_return_value (y, ierr);
@@ -1736,7 +1736,7 @@ namespace octave
 
           ierr = 0;
 
-          if (real (z) == 0.0 && imag (z) == 0.0)
+          if (z.real () == 0.0 && z.imag () == 0.0)
             {
               y = FloatComplex (octave::numeric_limits<float>::Inf (), 0.0);
             }
@@ -1748,16 +1748,16 @@ namespace octave
                 {
                   FloatComplex expz = exp (-z);
 
-                  float rexpz = real (expz);
-                  float iexpz = imag (expz);
+                  float rexpz = expz.real ();
+                  float iexpz = expz.imag ();
 
-                  float tmp_r = real (y) * rexpz - imag (y) * iexpz;
-                  float tmp_i = real (y) * iexpz + imag (y) * rexpz;
+                  float tmp_r = y.real () * rexpz - y.imag () * iexpz;
+                  float tmp_i = y.real () * iexpz + y.imag () * rexpz;
 
                   y = FloatComplex (tmp_r, tmp_i);
                 }
 
-              if (imag (z) == 0.0 && real (z) >= 0.0)
+              if (z.imag () == 0.0 && z.real () >= 0.0)
                 y = FloatComplex (y.real (), 0.0);
             }
 
@@ -1790,11 +1790,11 @@ namespace octave
             {
               FloatComplex expz = exp (FloatComplex (0.0, 1.0) * z);
 
-              float rexpz = real (expz);
-              float iexpz = imag (expz);
+              float rexpz = expz.real ();
+              float iexpz = expz.imag ();
 
-              float tmp_r = real (y) * rexpz - imag (y) * iexpz;
-              float tmp_i = real (y) * iexpz + imag (y) * rexpz;
+              float tmp_r = y.real () * rexpz - y.imag () * iexpz;
+              float tmp_i = y.real () * iexpz + y.imag () * rexpz;
 
               y = FloatComplex (tmp_r, tmp_i);
             }
@@ -1833,11 +1833,11 @@ namespace octave
             {
               FloatComplex expz = exp (-FloatComplex (0.0, 1.0) * z);
 
-              float rexpz = real (expz);
-              float iexpz = imag (expz);
+              float rexpz = expz.real ();
+              float iexpz = expz.imag ();
 
-              float tmp_r = real (y) * rexpz - imag (y) * iexpz;
-              float tmp_i = real (y) * iexpz + imag (y) * rexpz;
+              float tmp_r = y.real () * rexpz - y.imag () * iexpz;
+              float tmp_i = y.real () * iexpz + y.imag () * rexpz;
 
               y = FloatComplex (tmp_r, tmp_i);
             }
@@ -2124,8 +2124,8 @@ namespace octave
         {
           Complex expz = exp (- 2.0 / 3.0 * z * sqrt (z));
 
-          double rexpz = real (expz);
-          double iexpz = imag (expz);
+          double rexpz = expz.real ();
+          double iexpz = expz.imag ();
 
           double tmp = ar*rexpz - ai*iexpz;
 
@@ -2154,10 +2154,10 @@ namespace octave
 
       if (! scaled)
         {
-          Complex expz = exp (std::abs (real (2.0 / 3.0 * z * sqrt (z))));
+          Complex expz = exp (std::abs (std::real (2.0 / 3.0 * z * sqrt (z))));
 
-          double rexpz = real (expz);
-          double iexpz = imag (expz);
+          double rexpz = expz.real ();
+          double iexpz = expz.imag ();
 
           double tmp = ar*rexpz - ai*iexpz;
 
@@ -2257,8 +2257,8 @@ namespace octave
         {
           FloatComplex expz = exp (- 2.0f / 3.0f * z * sqrt (z));
 
-          float rexpz = real (expz);
-          float iexpz = imag (expz);
+          float rexpz = expz.real ();
+          float iexpz = expz.imag ();
 
           float tmp = ar*rexpz - ai*iexpz;
 
@@ -2286,10 +2286,10 @@ namespace octave
 
       if (! scaled)
         {
-          FloatComplex expz = exp (std::abs (real (2.0f / 3.0f * z * sqrt (z))));
+          FloatComplex expz = exp (std::abs (std::real (2.0f / 3.0f * z * sqrt (z))));
 
-          float rexpz = real (expz);
-          float iexpz = imag (expz);
+          float rexpz = expz.real ();
+          float iexpz = expz.imag ();
 
           float tmp = ar*rexpz - ai*iexpz;
 
@@ -3721,8 +3721,8 @@ namespace octave
     {
       double m1 = 1 - m, ss1, cc1, dd1;
 
-      ellipj (imag (u), m1, ss1, cc1, dd1, err);
-      if (real (u) == 0)
+      ellipj (u.imag (), m1, ss1, cc1, dd1, err);
+      if (u.real () == 0)
         {
           // u is pure imag: Jacoby imag. transf.
           sn = Complex (0, ss1/cc1);
@@ -3734,7 +3734,7 @@ namespace octave
           // u is generic complex
           double ss, cc, dd, ddd;
 
-          ellipj (real (u), m, ss, cc, dd, err);
+          ellipj (u.real (), m, ss, cc, dd, err);
           ddd = cc1*cc1 + m*ss*ss*ss1*ss1;
           sn = Complex (ss*dd1/ddd, cc*dd*ss1*cc1/ddd);
           cn = Complex (cc*cc1/ddd, -ss*dd*ss1*dd1/ddd);

@@ -75,8 +75,8 @@ octave_sparse_complex_matrix::try_narrowing_conversion (void)
 
           Complex c = tmp (0, 0);
 
-          if (std::imag (c) == 0.0)
-            retval = new octave_scalar (std::real (c));
+          if (c.imag () == 0.0)
+            retval = new octave_scalar (c.real ());
           else
             retval = new octave_complex (c);
         }
@@ -120,7 +120,7 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:array-to-scalar",
                               "complex sparse matrix", "real scalar");
 
-  retval = std::real (matrix(0, 0));
+  retval = octave::math::real (matrix(0, 0));
 
   return retval;
 }
@@ -188,7 +188,7 @@ octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
           retval(matrix.ridx (i) + nr * j) =
-            static_cast<char>(std::real (matrix.data (i)));
+            static_cast<char>(octave::math::real (matrix.data (i)));
     }
 
   return retval;
@@ -886,8 +886,8 @@ octave_sparse_complex_matrix::as_mxArray (void) const
   for (mwIndex i = 0; i < nz; i++)
     {
       Complex val = matrix.data (i);
-      pr[i] = std::real (val);
-      pi[i] = std::imag (val);
+      pr[i] = val.real ();
+      pi[i] = val.imag ();
       ir[i] = matrix.ridx (i);
     }
 

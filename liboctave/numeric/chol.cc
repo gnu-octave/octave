@@ -516,7 +516,7 @@ chol<T>::insert_sym (const VT& u, octave_idx_type j)
 
   if (singular (chol_mat))
     info = 2;
-  else if (std::imag (u(j)) != zero)
+  else if (octave::math::imag (u(j)) != zero)
     info = 3;
   else
     {
@@ -528,7 +528,7 @@ chol<T>::insert_sym (const VT& u, octave_idx_type j)
             if (l == j)
               a1(k, l) = u(k);
             else if (k == j)
-              a1(k, l) = std::conj (u(l));
+              a1(k, l) = octave::math::conj (u(l));
             else
               a1(k, l) = a(k < j ? k : k-1, l < j ? l : l-1);
           }

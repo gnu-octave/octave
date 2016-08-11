@@ -295,8 +295,8 @@ Undocumented internal function.
         }
     }
 
-  sigmar = std::real (sigma);
-  sigmai = std::imag (sigma);
+  sigmar = sigma.real ();
+  sigmai = sigma.imag ();
 
   if (nargin > (3+arg_offset))
     {

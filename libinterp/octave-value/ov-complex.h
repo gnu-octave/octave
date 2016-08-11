@@ -86,8 +86,8 @@ public:
   octave_value any (int = 0) const
   {
     return (scalar != Complex (0, 0)
-            && ! (lo_ieee_isnan (std::real (scalar))
-                  || lo_ieee_isnan (std::imag (scalar))));
+            && ! (lo_ieee_isnan (scalar.real ())
+                  || lo_ieee_isnan (scalar.imag ())));
   }
 
   builtin_type_t builtin_type (void) const { return btyp_complex; }

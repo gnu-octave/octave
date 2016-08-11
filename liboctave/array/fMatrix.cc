@@ -1983,8 +1983,8 @@ stack_complex_matrix (const FloatComplexMatrix& cm)
   float *rd = retval.fortran_vec ();
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      rd[i] = std::real (cmd[i]);
-      rd[nel+i] = std::imag (cmd[i]);
+      rd[i] = octave::math::real (cmd[i]);
+      rd[nel+i] = octave::math::imag (cmd[i]);
     }
   return retval;
 }

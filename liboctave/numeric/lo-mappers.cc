@@ -59,7 +59,7 @@ namespace octave
     bool
     is_NA (const Complex& x)
     {
-      return (is_NA (real (x)) || is_NA (imag (x)));
+      return (is_NA (std::real (x)) || is_NA (std::imag (x)));
     }
 
     bool
@@ -71,19 +71,19 @@ namespace octave
     bool
     is_NA (const FloatComplex& x)
     {
-      return (is_NA (real (x)) || is_NA (imag (x)));
+      return (is_NA (std::real (x)) || is_NA (std::imag (x)));
     }
 
     bool
     is_NaN_or_NA (const Complex& x)
     {
-      return (isnan (real (x)) || isnan (imag (x)));
+      return (isnan (std::real (x)) || isnan (std::imag (x)));
     }
 
     bool
     is_NaN_or_NA (const FloatComplex& x)
     {
-      return (isnan (real (x)) || isnan (imag (x)));
+      return (isnan (std::real (x)) || isnan (std::imag (x)));
     }
 
     Complex
@@ -92,8 +92,8 @@ namespace octave
 #if defined (HAVE_COMPLEX_STD_ACOS)
       Complex y = std::acos (x);
 
-      if (imag (x) == 0.0 && real (x) > 1.0)
-        return conj (y);
+      if (std::imag (x) == 0.0 && std::real (x) > 1.0)
+        return std::conj (y);
       else
         return y;
 #else
@@ -101,12 +101,12 @@ namespace octave
 
       Complex tmp;
 
-      if (imag (x) == 0.0)
+      if (std::imag (x) == 0.0)
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
           // This effectively chooses the same phase of the branch cut as Matlab.
-          double xr = real (x);
+          double xr = std::real (x);
           tmp = Complex (1.0 - xr*xr);
         }
       else
@@ -122,8 +122,8 @@ namespace octave
 #if defined (HAVE_COMPLEX_STD_ACOS)
       FloatComplex y = std::acos (x);
 
-      if (imag (x) == 0.0f && real (x) > 1.0f)
-        return conj (y);
+      if (std::imag (x) == 0.0f && std::real (x) > 1.0f)
+        return std::conj (y);
       else
         return y;
 #else
@@ -131,12 +131,12 @@ namespace octave
 
       FloatComplex tmp;
 
-      if (imag (x) == 0.0f)
+      if (std::imag (x) == 0.0f)
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
           // This effectively chooses the same phase of the branch cut as Matlab.
-          float xr = real (x);
+          float xr = std::real (x);
           tmp = FloatComplex (1.0f - xr*xr);
         }
       else
@@ -152,8 +152,8 @@ namespace octave
 #if defined (HAVE_COMPLEX_STD_ASIN)
       Complex y = std::asin (x);
 
-      if (imag (x) == 0.0 && real (x) > 1.0)
-        return conj (y);
+      if (std::imag (x) == 0.0 && std::real (x) > 1.0)
+        return std::conj (y);
       else
         return y;
 #else
@@ -161,12 +161,12 @@ namespace octave
 
       Complex tmp;
 
-      if (imag (x) == 0.0)
+      if (std::imag (x) == 0.0)
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
           // This effectively chooses the same phase of the branch cut as Matlab.
-          double xr = real (x);
+          double xr = std::real (x);
           tmp = Complex (1.0 - xr*xr);
         }
       else
@@ -182,8 +182,8 @@ namespace octave
 #if defined (HAVE_COMPLEX_STD_ASIN)
       FloatComplex y = std::asin (x);
 
-      if (imag (x) == 0.0f && real (x) > 1.0f)
-        return conj (y);
+      if (std::imag (x) == 0.0f && std::real (x) > 1.0f)
+        return std::conj (y);
       else
         return y;
 #else
@@ -191,12 +191,12 @@ namespace octave
 
       FloatComplex tmp;
 
-      if (imag (x) == 0.0f)
+      if (std::imag (x) == 0.0f)
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
           // This effectively chooses the same phase of the branch cut as Matlab.
-          float xr = real (x);
+          float xr = std::real (x);
           tmp = FloatComplex (1.0f - xr*xr);
         }
       else

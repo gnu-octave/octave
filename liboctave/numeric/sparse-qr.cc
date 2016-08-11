@@ -770,8 +770,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, ComplexMatri
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
-          Xx[j] = std::real (c);
-          Xz[j] = std::imag (c);
+          Xx[j] = c.real ();
+          Xz[j] = c.imag ();
         }
 
       for (octave_idx_type j = nr; j < S->m2; j++)
@@ -866,8 +866,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, ComplexMatri
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
-          Xx[j] = std::real (c);
-          Xz[j] = std::imag (c);
+          Xx[j] = c.real ();
+          Xz[j] = c.imag ();
         }
 
       for (octave_idx_type j = nr; j < nbuf; j++)
@@ -1213,8 +1213,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseCo
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
-          Xx[j] = std::real (c);
-          Xz[j] = std::imag (c);
+          Xx[j] = c.real ();
+          Xz[j] = c.imag ();
         }
 
       for (octave_idx_type j = nr; j < S->m2; j++)
@@ -1332,8 +1332,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseCo
       for (octave_idx_type j = 0; j < b_nr; j++)
         {
           Complex c = b.xelem (j,i);
-          Xx[j] = std::real (c);
-          Xz[j] = std::imag (c);
+          Xx[j] = c.real ();
+          Xz[j] = c.imag ();
         }
 
       for (octave_idx_type j = nr; j < nbuf; j++)

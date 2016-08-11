@@ -649,7 +649,7 @@ real (const SparseComplexMatrix& a)
 
   for (octave_idx_type i = 0; i < nz; i++)
     {
-      r.data (i) = std::real (a.data (i));
+      r.data (i) = octave::math::real (a.data (i));
       r.ridx (i) = a.ridx (i);
     }
 
@@ -670,7 +670,7 @@ imag (const SparseComplexMatrix& a)
 
   for (octave_idx_type i = 0; i < nz; i++)
     {
-      r.data (i) = std::imag (a.data (i));
+      r.data (i) = octave::math::imag (a.data (i));
       r.ridx (i) = a.ridx (i);
     }
 
@@ -4337,8 +4337,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
                       Complex c = b(i,j);
-                      Bx[i] = std::real (c);
-                      Bz[i] = std::imag (c);
+                      Bx[i] = c.real ();
+                      Bz[i] = c.imag ();
                     }
 
                   F77_XFCN (dgttrs, DGTTRS,
@@ -5087,8 +5087,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                       for (octave_idx_type i = 0; i < b_nr; i++)
                         {
                           Complex c = b(i,j);
-                          Bx[i] = std::real (c);
-                          Bz[i] = std::imag (c);
+                          Bx[i] = c.real ();
+                          Bz[i] = c.imag ();
                         }
 
                       F77_XFCN (dpbtrs, DPBTRS,
@@ -5235,8 +5235,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                       for (octave_idx_type i = 0; i < nr; i++)
                         {
                           Complex c = b(i, j);
-                          Bx[i] = std::real (c);
-                          Bz[i] = std::imag  (c);
+                          Bx[i] = c.real ();
+                          Bz[i] = c.imag ();
                         }
 
                       F77_XFCN (dgbtrs, DGBTRS,
@@ -5389,8 +5389,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                       for (octave_idx_type i = 0; i < b_nr; i++)
                         {
                           Complex c = b(i,j);
-                          Bx[i] = std::real (c);
-                          Bz[i] = std::imag (c);
+                          Bx[i] = c.real ();
+                          Bz[i] = c.imag ();
                         }
 
                       F77_XFCN (dpbtrs, DPBTRS,
@@ -5571,8 +5571,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                            i < b.cidx (j+1); i++)
                         {
                           Complex c = b.data (i);
-                          Bx[b.ridx (i)] = std::real (c);
-                          Bz[b.ridx (i)] = std::imag (c);
+                          Bx[b.ridx (i)] = c.real ();
+                          Bz[b.ridx (i)] = c.imag ();
                         }
 
                       F77_XFCN (dgbtrs, DGBTRS,
@@ -6428,8 +6428,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
                       Complex c = b(i,j);
-                      Bx[i] = std::real (c);
-                      Bz[i] = std::imag (c);
+                      Bx[i] = c.real ();
+                      Bz[i] = c.imag ();
                     }
 
                   status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
@@ -6690,8 +6690,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
                       Complex c = b(i,j);
-                      Bx[i] = std::real (c);
-                      Bz[i] = std::imag (c);
+                      Bx[i] = c.real ();
+                      Bz[i] = c.imag ();
                     }
 
                   status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,

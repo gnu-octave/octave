@@ -3727,11 +3727,11 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
 
               for (octave_idx_type j = 0; j < nc-1; j++)
                 {
-                  D[j] = std::real (data (ii++));
+                  D[j] = octave::math::real (data (ii++));
                   DL[j] = data (ii);
                   ii += 2;
                 }
-              D[nc-1] = std::real (data (ii));
+              D[nc-1] = octave::math::real (data (ii));
             }
           else
             {
@@ -3746,7 +3746,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                 for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                   {
                     if (ridx (i) == j)
-                      D[j] = std::real (data (i));
+                      D[j] = octave::math::real (data (i));
                     else if (ridx (i) == j + 1)
                       DL[j] = data (i);
                   }
@@ -4024,11 +4024,11 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
 
               for (octave_idx_type j = 0; j < nc-1; j++)
                 {
-                  D[j] = std::real (data (ii++));
+                  D[j] = octave::math::real (data (ii++));
                   DL[j] = data (ii);
                   ii += 2;
                 }
-              D[nc-1] = std::real (data (ii));
+              D[nc-1] = octave::math::real (data (ii));
             }
           else
             {
@@ -4043,7 +4043,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                 for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                   {
                     if (ridx (i) == j)
-                      D[j] = std::real (data (i));
+                      D[j] = octave::math::real (data (i));
                     else if (ridx (i) == j + 1)
                       DL[j] = data (i);
                   }
@@ -7238,15 +7238,15 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
   if (nel == 0)
     return false;
 
-  max_val = std::real (data (0));
-  min_val = std::real (data (0));
+  max_val = octave::math::real (data (0));
+  min_val = octave::math::real (data (0));
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
       Complex val = data (i);
 
-      double r_val = std::real (val);
-      double i_val = std::imag (val);
+      double r_val = val.real ();
+      double i_val = val.imag ();
 
       if (r_val > max_val)
         max_val = r_val;

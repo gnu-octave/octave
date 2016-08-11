@@ -35,11 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 Complex ichol_mult_complex (Complex a, Complex b)
 {
 #if defined (HAVE_CXX_COMPLEX_SETTERS)
-  b.imag (-std::imag (b));
+  b.imag (-b.imag ());
 #elif defined (HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS)
-  b.imag () = -std::imag (b);
+  b.imag () = -b.imag ();
 #else
-  b = std::conj (b);
+  b = b.conj ();
 #endif
   return a * b;
 }

@@ -540,8 +540,8 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
     {
       Complex val = elem (0);
 
-      double r_val = std::real (val);
-      double i_val = std::imag (val);
+      double r_val = val.real ();
+      double i_val = val.imag ();
 
       max_val = r_val;
       min_val = r_val;
@@ -559,8 +559,8 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
     {
       Complex val = elem (i);
 
-      double r_val = std::real (val);
-      double i_val = std::imag (val);
+      double r_val = val.real ();
+      double i_val = val.imag ();
 
       if (r_val > max_val)
         max_val = r_val;

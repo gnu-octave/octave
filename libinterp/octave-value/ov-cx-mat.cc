@@ -88,8 +88,8 @@ octave_complex_matrix::try_narrowing_conversion (void)
     {
       Complex c = matrix (0);
 
-      if (std::imag (c) == 0.0)
-        retval = new octave_scalar (std::real (c));
+      if (c.imag () == 0.0)
+        retval = new octave_scalar (c.real ());
       else
         retval = new octave_complex (c);
     }
@@ -114,7 +114,7 @@ octave_complex_matrix::double_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                              "complex matrix", "real scalar");
 
-  retval = std::real (matrix(0, 0));
+  retval = octave::math::real (matrix(0, 0));
 
   return retval;
 }
@@ -134,7 +134,7 @@ octave_complex_matrix::float_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                              "complex matrix", "real scalar");
 
-  retval = std::real (matrix(0, 0));
+  retval = octave::math::real (matrix(0, 0));
 
   return retval;
 }
@@ -255,7 +255,7 @@ octave_complex_matrix::char_array_value (bool frc_str_conv) const
       octave_idx_type nel = numel ();
 
       for (octave_idx_type i = 0; i < nel; i++)
-        retval.elem (i) = static_cast<char>(std::real (matrix.elem (i)));
+        retval.elem (i) = static_cast<char>(octave::math::real (matrix.elem (i)));
     }
 
   return retval;
@@ -731,8 +731,8 @@ octave_complex_matrix::as_mxArray (void) const
 
   for (mwIndex i = 0; i < nel; i++)
     {
-      pr[i] = std::real (p[i]);
-      pi[i] = std::imag (p[i]);
+      pr[i] = octave::math::real (p[i]);
+      pi[i] = octave::math::imag (p[i]);
     }
 
   return retval;

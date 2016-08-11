@@ -105,10 +105,10 @@ octave_complex::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  double im = std::imag (scalar);
+  double im = scalar.imag ();
 
   if (im == 0.0)
-    retval = new octave_scalar (std::real (scalar));
+    retval = new octave_scalar (scalar.real ());
 
   return retval;
 }
@@ -136,7 +136,7 @@ idx_vector
 octave_complex::index_vector (bool) const
 {
   std::ostringstream buf;
-  buf << std::real (scalar) << std::showpos << std::imag (scalar) << "i";
+  buf << scalar.real () << std::showpos << scalar.imag () << "i";
   complex_index_exception e (buf.str ());
 
   throw e;
@@ -151,7 +151,7 @@ octave_complex::double_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real scalar");
 
-  retval = std::real (scalar);
+  retval = scalar.real ();
 
   return retval;
 }
@@ -165,7 +165,7 @@ octave_complex::float_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real scalar");
 
-  retval = std::real (scalar);
+  retval = scalar.real ();
 
   return retval;
 }
@@ -179,7 +179,7 @@ octave_complex::matrix_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real matrix");
 
-  retval = Matrix (1, 1, std::real (scalar));
+  retval = Matrix (1, 1, scalar.real ());
 
   return retval;
 }
@@ -193,7 +193,7 @@ octave_complex::float_matrix_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real matrix");
 
-  retval = FloatMatrix (1, 1, std::real (scalar));
+  retval = FloatMatrix (1, 1, scalar.real ());
 
   return retval;
 }
@@ -207,7 +207,7 @@ octave_complex::array_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real matrix");
 
-  retval = NDArray (dim_vector (1, 1), std::real (scalar));
+  retval = NDArray (dim_vector (1, 1), scalar.real ());
 
   return retval;
 }
@@ -221,7 +221,7 @@ octave_complex::float_array_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real matrix");
 
-  retval = FloatNDArray (dim_vector (1, 1), std::real (scalar));
+  retval = FloatNDArray (dim_vector (1, 1), scalar.real ());
 
   return retval;
 }
@@ -463,8 +463,8 @@ octave_complex::as_mxArray (void) const
   double *pr = static_cast<double *> (retval->get_data ());
   double *pi = static_cast<double *> (retval->get_imag_data ());
 
-  pr[0] = std::real (scalar);
-  pi[0] = std::imag (scalar);
+  pr[0] = scalar.real ();
+  pi[0] = scalar.imag ();
 
   return retval;
 }

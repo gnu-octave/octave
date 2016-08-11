@@ -1037,7 +1037,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
   F77_XFCN (zgetri, ZGETRI, (nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt,
                              F77_DBLE_CMPLX_ARG (z.fortran_vec ()), lwork, info));
 
-  lwork = static_cast<octave_idx_type> (std::real (z(0)));
+  lwork = static_cast<octave_idx_type> (octave::math::real (z(0)));
   lwork = (lwork <  2 *nc ? 2*nc : lwork);
   z.resize (dim_vector (lwork, 1));
   Complex *pz = z.fortran_vec ();
@@ -2665,18 +2665,18 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 
           const octave_idx_type lworkaround = 4*m + m*m + addend;
 
-          if (std::real (work(0)) < lworkaround)
+          if (octave::math::real (work(0)) < lworkaround)
             work(0) = lworkaround;
         }
       else if (m >= n)
         {
           octave_idx_type lworkaround = 2*m + m*nrhs;
 
-          if (std::real (work(0)) < lworkaround)
+          if (octave::math::real (work(0)) < lworkaround)
             work(0) = lworkaround;
         }
 
-      lwork = static_cast<octave_idx_type> (std::real (work(0)));
+      lwork = static_cast<octave_idx_type> (octave::math::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, F77_DBLE_CMPLX_ARG (tmp_data), m, F77_DBLE_CMPLX_ARG (pretval),
@@ -2834,7 +2834,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
                                  ps, rcon, rank, F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
                                  lwork, prwork, piwork, info));
 
-      lwork = static_cast<octave_idx_type> (std::real (work(0)));
+      lwork = static_cast<octave_idx_type> (octave::math::real (work(0)));
       work.resize (dim_vector (lwork, 1));
       rwork.resize (dim_vector (static_cast<octave_idx_type> (rwork(0)), 1));
       iwork.resize (dim_vector (iwork(0), 1));
@@ -3094,7 +3094,7 @@ ComplexMatrix::row_is_real_only (octave_idx_type i) const
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      if (std::imag (elem (i, j)) != 0.0)
+      if (octave::math::imag (elem (i, j)) != 0.0)
         {
           retval = false;
           break;
@@ -3113,7 +3113,7 @@ ComplexMatrix::column_is_real_only (octave_idx_type j) const
 
   for (octave_idx_type i = 0; i < nr; i++)
     {
-      if (std::imag (elem (i, j)) != 0.0)
+      if (octave::math::imag (elem (i, j)) != 0.0)
         {
           retval = false;
           break;
@@ -3159,7 +3159,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_min))
                 {
-                  abs_min = real_only ? std::real (tmp_min)
+                  abs_min = real_only ? tmp_min.real ()
                                       : std::abs (tmp_min);
                   break;
                 }
@@ -3172,7 +3172,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
+              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
 
               if (abs_tmp < abs_min)
                 {
@@ -3234,7 +3234,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_max))
                 {
-                  abs_max = real_only ? std::real (tmp_max)
+                  abs_max = real_only ? tmp_max.real ()
                                       : std::abs (tmp_max);
                   break;
                 }
@@ -3247,7 +3247,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
+              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
 
               if (abs_tmp > abs_max)
                 {
@@ -3309,7 +3309,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_min))
                 {
-                  abs_min = real_only ? std::real (tmp_min)
+                  abs_min = real_only ? tmp_min.real ()
                                       : std::abs (tmp_min);
                   break;
                 }
@@ -3322,7 +3322,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
+              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
 
               if (abs_tmp < abs_min)
                 {
@@ -3384,7 +3384,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_max))
                 {
-                  abs_max = real_only ? std::real (tmp_max)
+                  abs_max = real_only ? tmp_max.real ()
                                       : std::abs (tmp_max);
                   break;
                 }
@@ -3397,7 +3397,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? std::real (tmp) : std::abs (tmp);
+              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
 
               if (abs_tmp > abs_max)
                 {
@@ -3624,7 +3624,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
                                    F77_CHAR_ARG_LEN (1)));
           for (octave_idx_type j = 0; j < a_nr; j++)
             for (octave_idx_type i = 0; i < j; i++)
-              retval.xelem (j,i) = std::conj (retval.xelem (i,j));
+              retval.xelem (j,i) = octave::math::conj (retval.xelem (i,j));
         }
       else
         {
@@ -3657,7 +3657,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
             {
               F77_FUNC (xzdotu, XZDOTU) (a_nc, F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, F77_CONST_DBLE_CMPLX_ARG (b.data ()), 1,
                                          F77_DBLE_CMPLX_ARG (c));
-              if (cja) *c = std::conj (*c);
+              if (cja) *c = octave::math::conj (*c);
             }
           else if (cja)
             F77_FUNC (xzdotc, XZDOTC) (a_nc, F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, F77_CONST_DBLE_CMPLX_ARG (b.data ()), 1,
@@ -3756,7 +3756,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
+          if (octave::math::imag (a(i, j)) != 0.0 || octave::math::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = false;
               break;
@@ -3766,7 +3766,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
-            result(i, j) = octave::math::min (std::real (a(i, j)), std::real (b(i, j)));
+            result(i, j) = octave::math::min (octave::math::real (a(i, j)), octave::math::real (b(i, j)));
         }
       else
         {
@@ -3827,7 +3827,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
+          if (octave::math::imag (a(i, j)) != 0.0 || octave::math::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = false;
               break;
@@ -3840,7 +3840,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = octave::math::max (std::real (a(i, j)), std::real (b(i, j)));
+              result(i, j) = octave::math::max (octave::math::real (a(i, j)), octave::math::real (b(i, j)));
             }
         }
       else

@@ -177,7 +177,7 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
               std::complex<T> aji = a.elem (j,i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
-              hermitian = hermitian && (aij == std::conj (aji)
+              hermitian = hermitian && (aij == octave::math::conj (aji)
                                         && std::norm (aij) < diag[i]*diag[j]);
             }
         }
@@ -507,8 +507,9 @@ MatrixType::MatrixType (const MSparse<T>& a)
                   if (a.ridx (i) == j)
                     {
                       T d = a.data (i);
-                      is_herm = std::real (d) > 0.0 && std::imag (d) == 0.0;
-                      diag(j) = std::real (d);
+                      is_herm = (octave::math::real (d) > 0.0
+                                 && octave::math::imag (d) == 0.0);
+                      diag(j) = octave::math::real (d);
                       break;
                     }
                 }
@@ -527,7 +528,7 @@ MatrixType::MatrixType (const MSparse<T>& a)
                 T d = a.data (i);
                 if (std::norm (d) < diag(j)*diag(k))
                   {
-                    d = std::conj (d);
+                    d = octave::math::conj (d);
                     for (octave_idx_type l = a.cidx (k); l < a.cidx (k+1); l++)
                       {
                         if (a.ridx (l) == j)

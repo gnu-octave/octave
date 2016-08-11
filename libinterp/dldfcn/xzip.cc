@@ -552,10 +552,16 @@ The optional output @var{filelist} is a list of the compressed files.
 @seealso{gunzip, unpack, bzip2, zip, tar}
 @end deftypefn */)
 {
-#if ! defined (HAVE_Z)
-  err_disabled_feature ("gzip", "gzip");
-#else
+#if defined (HAVE_Z)
+
   return xzip<gz> ("gzip", args);
+
+#else
+
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("gzip", "gzip");
+
 #endif
 }
 
@@ -589,10 +595,16 @@ The optional output @var{filelist} is a list of the compressed files.
 @seealso{bunzip2, unpack, gzip, zip, tar}
 @end deftypefn */)
 {
-#if ! defined (HAVE_BZ2)
-  err_disabled_feature ("bzip2", "bzip2");
-#else
+#if defined (HAVE_BZ2)
+
   return xzip<bz2> ("bzip2", args);
+
+#else
+
+  octave_unused_paramter (args);
+
+  err_disabled_feature ("bzip2", "bzip2");
+
 #endif
 }
 

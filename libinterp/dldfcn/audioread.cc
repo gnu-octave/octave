@@ -593,8 +593,12 @@ with names that start with @var{format}.
     }
 
 #else
+
+  octave_unused_parameter (args);
+
   err_disabled_feature ("audioformats",
                         "getting sound formats through libsndfile");
+
 #endif
 
   return octave_value ();

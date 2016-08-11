@@ -977,3 +977,8 @@ MatrixType::transpose (void) const
 
   return retval;
 }
+
+// Instantiate MatrixType template constructors that we need.
+
+template MatrixType::MatrixType (const MSparse<double>&);
+template MatrixType::MatrixType (const MSparse<Complex>&);

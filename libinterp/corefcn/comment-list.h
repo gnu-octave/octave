@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <base-list.h>
+#include "base-list.h"
 
 extern std::string get_comment_text (void);
 

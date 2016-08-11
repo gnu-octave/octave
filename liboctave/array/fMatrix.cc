@@ -998,13 +998,13 @@ FloatMatrix::fourier (void) const
   retval = FloatComplexMatrix (*this);
   FloatComplex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
-      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
     }
 
   return retval;
@@ -1039,13 +1039,13 @@ FloatMatrix::ifourier (void) const
   retval = FloatComplexMatrix (*this);
   FloatComplex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
-      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -1083,13 +1083,13 @@ FloatMatrix::fourier2d (void) const
   retval = FloatComplexMatrix (*this);
   FloatComplex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
-      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
     }
 
   npts = nc;
@@ -1102,7 +1102,7 @@ FloatMatrix::fourier2d (void) const
   Array<FloatComplex> tmp (dim_vector (npts, 1));
   FloatComplex *prow = tmp.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
@@ -1111,7 +1111,7 @@ FloatMatrix::fourier2d (void) const
       for (octave_idx_type i = 0; i < npts; i++)
         prow[i] = tmp_data[i*nr + j];
 
-      F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
+      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
 
       for (octave_idx_type i = 0; i < npts; i++)
         tmp_data[i*nr + j] = prow[i];
@@ -1149,13 +1149,13 @@ FloatMatrix::ifourier2d (void) const
   retval = FloatComplexMatrix (*this);
   FloatComplex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
-      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -1171,7 +1171,7 @@ FloatMatrix::ifourier2d (void) const
   Array<FloatComplex> tmp (dim_vector (npts, 1));
   FloatComplex *prow = tmp.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
@@ -1180,7 +1180,7 @@ FloatMatrix::ifourier2d (void) const
       for (octave_idx_type i = 0; i < npts; i++)
         prow[i] = tmp_data[i*nr + j];
 
-      F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
+      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
 
       for (octave_idx_type i = 0; i < npts; i++)
         tmp_data[i*nr + j] = prow[i] / static_cast<float> (npts);

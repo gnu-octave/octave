@@ -143,7 +143,7 @@ function retval = material (varargin)
         error ("material: unknown material type '%s'", mtype);
 
     endswitch
-    
+
     if (nargout == 1)
       ## Return 1x5 cell vector with reflectance properties.
       retval = {as, ds, ss, se, scr};
@@ -296,13 +296,49 @@ endfunction
 %!error <Invalid call to material> a = material ({})
 %!error <Invalid call to material> a = material ([.3 .4 .5])
 %!error <Invalid call to material> [a, b] = material ()
-%!error <first argument must be a list of handles> material (-1, "metal")
-%!error <unknown material type 'foo'> material foo
-%!error <incorrect number of elements in material vector> material (-1)
-%!error <incorrect number of elements in material vector> material ([1 2 3 4 5 6])
-%!error <MTYPE must be a named material or a vector> material ({})
 
-%!error <Invalid call to material.> 
+## Test error handling, all following errors require a figure
+%!error <first argument must be a list of handles>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   material (-1, "metal")
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <unknown material type 'foo'>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   material foo
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <incorrect number of elements in material vector>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   material (-1)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <incorrect number of elements in material vector>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   material ([1 2 3 4 5 6])
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <MTYPE must be a named material or a vector>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   material ({})
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <Invalid call to material.>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   material (hf);

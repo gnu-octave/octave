@@ -211,31 +211,39 @@ instead.
 ##        For the moment, disable these tests on PC's and Macs.
 %!testif HAVE_OPENGL, HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
-%!   h = figure ("visible", "off");
+%!   hf = figure ("visible", "off");
 %!   fn = tempname ();
-%!   sombrero ();
-%!   __osmesa_print__ (h, fn, "svg");
-%!   assert (stat (fn).size, 2692270, -0.1);
-%!   unlink (fn);
-%!   img = __osmesa_print__ (h);
-%!   assert (size (img), [get(h, "position")([4, 3]), 3]);
-%!   ## Use pixel sum per RGB channel as fingerprint
-%!   img_fp = squeeze (sum (sum (img), 2));
-%!   assert (img_fp, [52942515; 54167797; 56158178], -0.05);
+%!   unwind_protect
+%!     sombrero ();
+%!     __osmesa_print__ (hf, fn, "svg");
+%!     assert (stat (fn).size, 2692270, -0.1);
+%!     img = __osmesa_print__ (hf);
+%!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
+%!     ## Use pixel sum per RGB channel as fingerprint
+%!     img_fp = squeeze (sum (sum (img), 2));
+%!     assert (img_fp, [52942515; 54167797; 56158178], -0.05);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!     unlink (fn);
+%!   end_unwind_protect
 %! endif
 
 %!testif HAVE_OPENGL, HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
-%!   h = figure ("visible", "off");
+%!   hf = figure ("visible", "off");
 %!   fn = tempname ();
-%!   plot (sin (0:0.1:2*pi));
-%!   __osmesa_print__ (h, fn, "svgis2d");
-%!   assert (stat (fn).size, 7438, -0.1);
-%!   unlink (fn);
-%!   img = __osmesa_print__ (h);
-%!   assert (size (img), [get(h, "position")([4, 3]), 3]);
-%!   ## Use pixel sum per RGB channel as fingerprint
-%!   img_fp = squeeze (sum (sum (img), 2));
-%!   assert (img_fp, [59281711; 59281711; 59482179], -0.05);
+%!   unwind_protect
+%!     plot (sin (0:0.1:2*pi));
+%!     __osmesa_print__ (hf, fn, "svgis2d");
+%!     assert (stat (fn).size, 7438, -0.1);
+%!     img = __osmesa_print__ (hf);
+%!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
+%!     ## Use pixel sum per RGB channel as fingerprint
+%!     img_fp = squeeze (sum (sum (img), 2));
+%!     assert (img_fp, [59281711; 59281711; 59482179], -0.05);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!     unlink (fn);
+%!   end_unwind_protect
 %! endif
 */

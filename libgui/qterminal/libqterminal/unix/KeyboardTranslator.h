@@ -32,6 +32,10 @@
 #include <QtCore/QVarLengthArray>
 #include <QtCore>
 
+#if QT_VERSION >= 0x050100
+#  define K_GLOBAL_STATIC Q_GLOBAL_STATIC
+#else
+
 typedef void (*CleanUpFunction)();
 
 /**
@@ -102,10 +106,8 @@ static struct K_GLOBAL_STATIC_STRUCT_NAME(NAME)                                \
         delete x;                                                              \
     }                                                                          \
 } NAME;
-								
-								
 
-
+#endif
 
 class QIODevice;
 class QTextStream;

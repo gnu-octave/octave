@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <windows.h>
 #endif
 
+#include "async-system-wrapper.h"
 #include "child-list.h"
 #include "lo-error.h"
 #include "oct-fftw.h"
@@ -246,41 +247,7 @@ command shell that is started to run the command.
 #endif
 
   if (type == et_async)
-    {
-      // FIXME: maybe this should go in sysdep.cc?
-#if defined (HAVE_FORK)
-      pid_t pid = fork ();
-
-      if (pid < 0)
-        error ("system: fork failed -- can't create child process");
-      else if (pid == 0)
-        {
-          // FIXME: should probably replace this call with something portable.
-          execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
-                 static_cast<char *> (0));
-
-          panic_impossible ();
-        }
-      else
-        retval(0) = pid;
-#elif defined (OCTAVE_USE_WINDOWS_API)
-      STARTUPINFO si;
-      PROCESS_INFORMATION pi;
-      ZeroMemory (&si, sizeof (si));
-      ZeroMemory (&pi, sizeof (pi));
-      OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length ()+1);
-      strcpy (xcmd_str, cmd_str.c_str ());
-
-      if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))
-        error ("system: CreateProcess failed -- can't create child process");
-
-      retval(0) = pi.dwProcessId;
-      CloseHandle (pi.hProcess);
-      CloseHandle (pi.hThread);
-#else
-      err_disabled_feature ("system", "asynchronous system calls");
-#endif
-    }
+    retval(0) = octave_async_system_wrapper (cmd_str.c_str ());
   else if (return_output)
     retval = run_command_and_return_output (cmd_str);
   else

@@ -28,6 +28,18 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+// FIXME: we would prefer to avoid including these directly in Octave
+// sources, but eliminating them is complicated by the mingling of
+// octave_procbuf_list and the calls to system library functions like
+// execl.
+
+#if defined (HAVE_UNISTD_H)
+#  if defined (HAVE_SYS_TYPES_H)
+#    include <sys/types.h>
+#  endif
+#  include <unistd.h>
+#endif
+
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "oct-procbuf.h"
@@ -77,7 +89,7 @@ octave_procbuf::open (const char *command, int mode)
 
   return this;
 
-#elif defined (HAVE_SYS_WAIT_H)
+#elif defined (HAVE_UNISTD_H)
 
   int pipe_fds[2];
 
@@ -174,7 +186,7 @@ octave_procbuf::close (void)
 
   return this;
 
-#elif defined (HAVE_SYS_WAIT_H)
+#elif defined (HAVE_UNISTD_H)
 
   if (f)
     {

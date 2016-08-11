@@ -1,5 +1,6 @@
 NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/areadlink-wrapper.h \
+  liboctave/wrappers/async-system-wrapper.h \
   liboctave/wrappers/base64-wrappers.h \
   liboctave/wrappers/canonicalize-file-name-wrapper.h \
   liboctave/wrappers/dirent-wrappers.h \
@@ -34,6 +35,7 @@ NOINSTALL_WRAPPERS_INC = \
 
 WRAPPERS_SRC = \
   liboctave/wrappers/areadlink-wrapper.c \
+  liboctave/wrappers/async-system-wrapper.c \
   liboctave/wrappers/base64-wrappers.c \
   liboctave/wrappers/canonicalize-file-name-wrapper.c \
   liboctave/wrappers/dirent-wrappers.c \

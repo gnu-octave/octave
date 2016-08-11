@@ -331,7 +331,7 @@ sparse matrices.
 
 ## Check the "vector" option which only affects the 3rd argument and
 ## is only valid for sparse input.
-%!test
+%!testif HAVE_CHOLMOD
 %! a = sparse ([2 1; 1 1]);
 %! r = sparse ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]);
 %! [rd, pd, qd] = chol (a);
@@ -580,20 +580,20 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
 %!  assert (chol2inv (chol ( full (T))), ciT, tol*2);
 %!endfunction
 
-%!test
+%!testif HAVE_CHOLMOD
 %! A = gallery ("poisson", 3);
 %! sparse_chol2inv (A, eps);
 
-%!test
+%!testif HAVE_CHOLMOD
 %! n = 10;
 %! B = spdiags (ones (n, 1) * [1 2 1], [-1 0 1], n, n);
 %! sparse_chol2inv (B, eps*100);
 
-%!test
+%!testif HAVE_CHOLMOD
 %! C = gallery("tridiag", 5);
 %! sparse_chol2inv (C, eps*10);
 
-%!test
+%!testif HAVE_CHOLMOD
 %! D = gallery("wathen", 1, 1);
 %! sparse_chol2inv (D, eps*10^4);
 

@@ -304,7 +304,7 @@ function files = __parse_bzip2__ (output)
 endfunction
 
 
-%!test
+%!testif HAVE_ZLIB
 %! ## Create temporary directory and file for packing and unpacking
 %! dirname = tempname ();
 %! assert (mkdir (dirname));

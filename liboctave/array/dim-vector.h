@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 
+#include <initializer_list>
 #include <string>
 
 #include "lo-error.h"
@@ -196,17 +197,19 @@ public:
       - a column vector, i.e., assume @f$[N, 1]@f$;
       - a square matrix, i.e., as is common in Octave interpreter;
       - support for a 1 dimensional Array (does not exist);
+
+    Using r, c, and lengths... as arguments, allow us to check at compile
+    time that there's at least 2 dimensions specified, while maintaining
+    type safety.
   */
   template <typename... Ints>
   dim_vector (const octave_idx_type r, const octave_idx_type c,
               Ints... lengths) : rep (newrep (2 + sizeof... (Ints)))
   {
-    // Using r, c, and lengths, makes sure that there's always a min of
-    // 2 dimensions specified, and that lengths are ints (since otherwise
-    // they can't form a list.
-    for (const auto l: {r, c, lengths...})
+    std::initializer_list<octave_idx_type> all_lengths = {r, c, lengths...};
+    for (const octave_idx_type l: all_lengths)
       *rep++ = l;
-    rep -= (2 + sizeof... (Ints));
+    rep -= all_lengths.size ();
   }
 
   octave_idx_type& elem (int i)

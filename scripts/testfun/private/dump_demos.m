@@ -17,11 +17,27 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} dump_demos (@var{dirs}, @var{mfile}, @var{fmt})
+## @deftypefn  {} {} dump_demos ()
+## @deftypefnx {} {} dump_demos (@var{dirs})
+## @deftypefnx {} {} dump_demos (@var{dirs}, @var{mfile})
+## @deftypefnx {} {} dump_demos (@var{dirs}, @var{mfile}, @var{fmt})
 ## Produce a script, with the name specified by @var{mfile}, containing
 ## the demos in the directories, @var{dirs}.  The demos are assumed to produce
 ## graphical output, whose renderings are saved with the specified format,
 ## @var{fmt}.
+##
+## The defaults for each input are;
+##
+## @table @var
+##   @item @var{dirs}
+##   @code{@{"plot/appearance", "plot/draw", "plot/util", "image"@}}
+##
+##   @item @var{mfile}
+##   @qcode{"dump.m"}
+##
+##   @item @var{fmt}
+##   @qcode{"png"}
+## @end table
 ##
 ## For example, to produce PNG output for all demos of the functions
 ## in the plot directory;
@@ -34,9 +50,9 @@
 
 ## Author: Søren Hauberg  <soren@hauberg.org>
 
-function dump_demos (dirs, output, fmt)
+function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, output="dump_plot_demos.m", fmt="png")
 
-  if (nargin != 3)
+  if (nargin > 3)
     print_usage ();
   endif
 
@@ -44,6 +60,10 @@ function dump_demos (dirs, output, fmt)
     dirs = {dirs};
   elseif (! iscellstr (dirs))
     error ("dump_demos: DIRS must be a cell array of strings with directory names");
+  endif
+
+  if (! isunix ())
+    dirs = strrep (dirs, "/", filesep ());
   endif
 
   [~, funcname, ext] = fileparts (output);

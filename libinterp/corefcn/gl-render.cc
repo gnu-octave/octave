@@ -3814,16 +3814,25 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
     case '.':
       {
         // The dot marker is special and is drawn at 1/3rd the specified size
-        double ang_step = M_PI / 5;
+
+        // Ensure that something is drawn even at very small markersizes
+        if (sz > 0 && sz < 3)
+          sz = 3;
+
+        int div = static_cast <int> (M_PI * sz / 12);
+        if (! (div % 2))
+          div += 1;               // ensure odd number for left/right symmetry
+        div = std::max (div, 3);  // ensure at least a few vertices are drawn
+        double ang_step = M_PI / div;
 
         glBegin (GL_POLYGON);
-        for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-          glVertex2d (sz*cos (ang)/6, sz*sin (ang)/6);
+        for (double ang = 0; ang < 2*M_PI; ang += ang_step)
+          glVertex2d (sz/6*cos (ang), sz/6*sin (ang));
         glEnd ();
       }
       break;
     case 's':
-      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
       glVertex2d (-sz/2, -sz/2);
       glVertex2d (-sz/2, sz/2);
       glVertex2d (sz/2, sz/2);
@@ -3832,16 +3841,20 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       break;
     case 'o':
       {
-        double ang_step = M_PI / 5;
+        int div = static_cast <int> (M_PI * sz / 4);
+        if (! (div % 2))
+          div += 1;               // ensure odd number for left/right symmetry
+        div = std::max (div, 5);  // ensure at least a few vertices are drawn
+        double ang_step = M_PI / div;
 
-        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-        for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-          glVertex2d (sz*cos (ang)/2, sz*sin (ang)/2);
+        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+        for (double ang = 0; ang < 2*M_PI; ang += ang_step)
+          glVertex2d (sz/2*cos (ang), sz/2*sin (ang));
         glEnd ();
       }
       break;
     case 'd':
-      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
       glVertex2d (0, -sz/2);
       glVertex2d (sz/2, 0);
       glVertex2d (0, sz/2);
@@ -3849,28 +3862,28 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glEnd ();
       break;
     case 'v':
-      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
       glVertex2d (0, sz/2);
       glVertex2d (sz/2, -sz/2);
       glVertex2d (-sz/2, -sz/2);
       glEnd ();
       break;
     case '^':
-      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
       glVertex2d (0, -sz/2);
       glVertex2d (-sz/2, sz/2);
       glVertex2d (sz/2, sz/2);
       glEnd ();
       break;
     case '>':
-      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
       glVertex2d (sz/2, 0);
       glVertex2d (-sz/2, sz/2);
       glVertex2d (-sz/2, -sz/2);
       glEnd ();
       break;
     case '<':
-      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
       glVertex2d (-sz/2, 0);
       glVertex2d (sz/2, -sz/2);
       glVertex2d (sz/2, sz/2);
@@ -3878,32 +3891,30 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       break;
     case 'p':
       {
-        double ang;
-        double r;
-        double dr = 1.0 - sin (M_PI/10)/sin (3*M_PI/10)*1.02;
+        double ang, r, dr;
+        dr = 1.0 - sin (M_PI/10)/sin (3*M_PI/10)*1.02;
 
-        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
         for (int i = 0; i < 2*5; i++)
           {
-            ang = (-0.5 + double(i+1)/5) * M_PI;
-            r = 1.0 - (dr * fmod (double(i+1), 2.0));
-            glVertex2d (sz*r*cos (ang)/2, sz*r*sin (ang)/2);
+            ang = (-0.5 + double (i+1) / 5) * M_PI;
+            r = 1.0 - (dr * fmod (double (i+1), 2.0));
+            glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
           }
         glEnd ();
       }
       break;
     case 'h':
       {
-        double ang;
-        double r;
-        double dr = 1.0 - 0.5/sin (M_PI/3)*1.02;
+        double ang, r, dr;
+        dr = 1.0 - 0.5/sin (M_PI/3)*1.02;
 
-        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
         for (int i = 0; i < 2*6; i++)
           {
-            ang = (0.5 + double(i+1)/6.0) * M_PI;
-            r = 1.0 - (dr * fmod (double(i+1), 2.0));
-            glVertex2d (sz*r*cos (ang)/2, sz*r*sin (ang)/2);
+            ang = (0.5 + double (i+1) / 6.0) * M_PI;
+            r = 1.0 - (dr * fmod (double (i+1), 2.0));
+            glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
           }
         glEnd ();
       }

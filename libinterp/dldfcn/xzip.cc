@@ -601,7 +601,7 @@ The optional output @var{filelist} is a list of the compressed files.
 
 #else
 
-  octave_unused_paramter (args);
+  octave_unused_parameter (args);
 
   err_disabled_feature ("bzip2", "bzip2");
 

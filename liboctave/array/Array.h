@@ -43,7 +43,72 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "oct-refcount.h"
 
-//! Handles the reference counting for all the derived classes.
+//! N Dimensional Array with copy-on-write semantics.
+/*!
+    The Array class is at the root of Octave.  It provides a container
+    with an arbitrary number of dimensions.  The operator () provides
+    access to individual elements via subscript and linear indexing.
+    Indexing starts at 1, and arrays are column-major order as in Fortran.
+
+    @code{.cc}
+    // 3 D Array with 10 rows, 20 columns, and 5 pages, filled with 7.0
+    Array<double> A Array<double (dim_vector (10, 20, 5), 7.0);
+
+    // set value for row 5, column 10, and page 3
+    A(5, 10, 3) = 2.5;
+
+    // get value for row 1, column 2, and page 1
+    double v = A(1, 2, 1);
+
+    // get value for 24th element (row 4, column 3, page 1)
+    double v = A(24);
+    @endcode
+
+    ## Notes on STL compatibility
+
+    ### size() and length()
+
+    To access the total number of elements in an Array, use numel()
+    which is short for number of elements and has the same as the
+    Octave function.
+
+    The methods size() and length() do not exist for Array and will not
+    be added (to be more precise, they are currently deprecated).
+    The reason is that such methods cause confusion in the context of
+    a N dimensional array.
+
+    Since there is more than 1 dimension, length() would not make sense
+    without expliciting which dimension.  If the function existed, which
+    length should it return?  Octave length() function returns the length
+    of the longest dimension which is an odd definition, only useful for
+    vectors and square matrices.
+
+    The size() of an array is the length of all dimensions.  In Octave
+    the size() function returns a row vector with the length of each
+    dimension.  Use dims() to get a dim_vector representing the Array
+    dimensions.
+
+    ### size type
+
+    Octave's "size type", is octave_idx_type which is a typedef for int
+    or long int, depending whether Octave was configured for 64-bit
+    indexing.
+
+    This is a signed integer which may cause problems when mixed with
+    STL containers.  The reason is that Octave interacts with Fortran
+    routines, providing an interface many Fortran numeric libraries.
+
+    ## Subclasses
+
+    The following subclasses specializations, will be of most use:
+      - Matrix: Array<double> with only 2 dimensions
+      - ComplexMatrix: Array<std::complex<double>> with only 2 dimensions
+      - boolNDArray: N dimensional Array<bool>
+      - ColumnVector: Array<double> with 1 column
+      - string_vector: Array<std::string> with 1 column
+      - Cell: Array<octave_value>, equivalent to an Octave cell.
+
+*/
 template <typename T>
 class
 Array

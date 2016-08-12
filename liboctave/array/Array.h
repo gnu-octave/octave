@@ -48,19 +48,19 @@ along with Octave; see the file COPYING.  If not, see
     The Array class is at the root of Octave.  It provides a container
     with an arbitrary number of dimensions.  The operator () provides
     access to individual elements via subscript and linear indexing.
-    Indexing starts at 1, and arrays are column-major order as in Fortran.
+    Indexing starts at 0.  Arrays are column-major order as in Fortran.
 
     @code{.cc}
     // 3 D Array with 10 rows, 20 columns, and 5 pages, filled with 7.0
     Array<double> A Array<double (dim_vector (10, 20, 5), 7.0);
 
-    // set value for row 5, column 10, and page 3
-    A(5, 10, 3) = 2.5;
+    // set value for row 0, column 10, and page 3
+    A(0, 10, 3) = 2.5;
 
-    // get value for row 1, column 2, and page 1
-    double v = A(1, 2, 1);
+    // get value for row 1, column 2, and page 0
+    double v = A(1, 2, 0);
 
-    // get value for 24th element (row 4, column 3, page 1)
+    // get value for 25th element (row 4, column 3, page 1)
     double v = A(24);
     @endcode
 

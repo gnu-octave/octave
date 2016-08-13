@@ -595,7 +595,7 @@ octave_value_typeinfo::do_lookup_widening_op (int t, int t_result)
 }
 
 string_vector
-octave_value_typeinfo::do_installed_type_names (void)
+octave_value_typeinfo::do_installed_type_names (void) const
 {
   string_vector retval (num_types);
 
@@ -723,3 +723,204 @@ currently installed data types.
 ## Test input validation
 %!error typeinfo ("foo", 1)
 */
+
+static boolNDArray
+as_bool_nd_array (const Array<void *>& x)
+{
+  boolNDArray retval (x.dims ());
+
+  for (octave_idx_type i = 0; i < x.numel (); i++)
+    retval.xelem (i) = x(i);
+
+  return retval;
+}
+
+octave_scalar_map
+octave_value_typeinfo::unary_ops_map (void) const
+{
+  octave_scalar_map retval;
+
+  int len = std::min (non_const_unary_ops.columns (), num_types);
+
+  dim_vector tab_dims (1, len);
+
+  for (int j = 0; j < octave_value::num_unary_ops; j++)
+    {
+      boolNDArray tab (tab_dims);
+
+      for (int i = 0; i < len; i++)
+        tab.xelem (i) = (unary_ops(j,i) != 0);
+
+      octave_value::unary_op op_id = static_cast<octave_value::unary_op> (j);
+
+      retval.setfield (octave_value::unary_op_as_string (op_id), tab);
+    }
+
+  return retval;
+}
+
+octave_scalar_map
+octave_value_typeinfo::non_const_unary_ops_map (void) const
+{
+  octave_scalar_map retval;
+
+  int len = std::min (non_const_unary_ops.columns (), num_types);
+
+  dim_vector tab_dims (1, len);
+
+  for (int j = 0; j < octave_value::num_unary_ops; j++)
+    {
+      boolNDArray tab (tab_dims);
+
+      for (int i = 0; i < len; i++)
+        tab.xelem (i) = (non_const_unary_ops(j,i) != 0);
+
+      octave_value::unary_op op_id = static_cast<octave_value::unary_op> (j);
+
+      retval.setfield (octave_value::unary_op_as_string (op_id), tab);
+    }
+
+  return retval;
+}
+
+octave_scalar_map
+octave_value_typeinfo::binary_ops_map (void) const
+{
+  octave_scalar_map retval;
+
+  int len = std::min (binary_ops.columns (), num_types);
+
+  dim_vector tab_dims (len, len);
+
+  for (int k = 0; k < octave_value::num_binary_ops; k++)
+    {
+      boolNDArray tab (tab_dims);
+
+      for (int j = 0; j < len; j++)
+        for (int i = 0; i < len; i++)
+          tab.xelem (j,i) = (binary_ops(k,j,i) != 0);
+
+      octave_value::binary_op op_id = static_cast<octave_value::binary_op> (k);
+
+      retval.setfield (octave_value::binary_op_as_string (op_id), tab);
+    }
+
+  return retval;
+}
+
+octave_scalar_map
+octave_value_typeinfo::compound_binary_ops_map (void) const
+{
+  octave_scalar_map retval;
+
+  int len = std::min (compound_binary_ops.columns (), num_types);
+
+  dim_vector tab_dims (len, len);
+
+  for (int k = 0; k < octave_value::num_compound_binary_ops; k++)
+    {
+      boolNDArray tab (tab_dims);
+
+      for (int j = 0; j < len; j++)
+        for (int i = 0; i < len; i++)
+          tab.xelem (j,i) = (compound_binary_ops(k,j,i) != 0);
+
+      octave_value::compound_binary_op op_id = static_cast<octave_value::compound_binary_op> (k);
+
+      retval.setfield (octave_value::binary_op_fcn_name (op_id), tab);
+    }
+
+  return retval;
+}
+
+octave_scalar_map
+octave_value_typeinfo::assign_ops_map (void) const
+{
+  octave_scalar_map retval;
+
+  int len = std::min (assign_ops.columns (), num_types);
+
+  dim_vector tab_dims (len, len);
+
+  for (int k = 0; k < octave_value::num_assign_ops; k++)
+    {
+      boolNDArray tab (tab_dims);
+
+      for (int j = 0; j < len; j++)
+        for (int i = 0; i < len; i++)
+          tab.xelem (j,i) = (assign_ops(k,j,i) != 0);
+
+      octave_value::assign_op op_id = static_cast<octave_value::assign_op> (k);
+
+      retval.setfield (octave_value::assign_op_as_string (op_id), tab);
+    }
+
+  return retval;
+}
+
+octave_scalar_map
+octave_value_typeinfo::assignany_ops_map (void) const
+{
+  octave_scalar_map retval;
+
+  int len = std::min (assignany_ops.columns (), num_types);
+
+  dim_vector tab_dims (1, len);
+
+  for (int j = 0; j < octave_value::num_assign_ops; j++)
+    {
+      boolNDArray tab (tab_dims);
+
+      for (int i = 0; i < len; i++)
+        tab.xelem (i) = (assignany_ops(j,i) != 0);
+
+      octave_value::assign_op op_id = static_cast<octave_value::assign_op> (j);
+
+      retval.setfield (octave_value::assign_op_as_string (op_id), tab);
+    }
+
+  return retval;
+}
+
+static NDArray
+as_nd_array (const Array<int>& x)
+{
+  NDArray retval (x.dims ());
+
+  for (int i = 0; i < x.numel (); i++)
+    retval.xelem(i) = x(i);
+
+  return retval;
+}
+
+octave_scalar_map
+octave_value_typeinfo::do_installed_type_info (void) const
+{
+  octave_scalar_map retval;
+
+  retval.setfield ("types", octave_value (Cell (do_installed_type_names ())));
+  retval.setfield ("unary_ops", unary_ops_map ());
+  retval.setfield ("non_const_unary_ops", non_const_unary_ops_map ());
+  retval.setfield ("binary_ops", binary_ops_map ());
+  retval.setfield ("compound_unary_ops", compound_binary_ops_map ());
+  retval.setfield ("cat_ops", as_bool_nd_array (cat_ops));
+  retval.setfield ("assign_ops", assign_ops_map ());
+  retval.setfield ("assignany_ops", assignany_ops_map ());
+  retval.setfield ("pref_assign_conv", as_nd_array (pref_assign_conv));
+  retval.setfield ("type_conv_ops", as_bool_nd_array (type_conv_ops));
+  retval.setfield ("widening_ops", as_bool_nd_array (widening_ops));
+
+  return retval;
+}
+
+DEFUN (__dump_typeinfo__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __dump_typeinfo__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  if (args.length () > 0)
+    print_usage ();
+
+  return ovl (octave_value_typeinfo::installed_type_info ());
+}

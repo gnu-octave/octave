@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 
+#include "oct-map.h"
 #include "ov.h"
 
 class string_vector;
@@ -191,6 +192,11 @@ public:
     return instance->do_installed_type_names ();
   }
 
+  static octave_scalar_map installed_type_info (void)
+  {
+    return instance->do_installed_type_info ();
+  }
+
 protected:
 
   octave_value_typeinfo (void)
@@ -318,7 +324,16 @@ private:
 
   octave_base_value::type_conv_fcn do_lookup_widening_op (int, int);
 
-  string_vector do_installed_type_names (void);
+  string_vector do_installed_type_names (void) const;
+
+  octave_scalar_map do_installed_type_info (void) const;
+
+  octave_scalar_map unary_ops_map (void) const;
+  octave_scalar_map non_const_unary_ops_map (void) const;
+  octave_scalar_map binary_ops_map (void) const;
+  octave_scalar_map compound_binary_ops_map (void) const;
+  octave_scalar_map assign_ops_map (void) const;
+  octave_scalar_map assignany_ops_map (void) const;
 
   // No copying!
 

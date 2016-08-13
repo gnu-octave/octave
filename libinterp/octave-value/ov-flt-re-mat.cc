@@ -59,7 +59,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-flt-re-diag.h"
 #include "ov-flt-cx-diag.h"
-#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 #include "ops.h"
@@ -810,74 +809,3 @@ octave_float_matrix::map (unary_mapper_t umap) const
       return octave_base_value::map (umap);
     }
 }
-
-DEFUN (single, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} single (@var{x})
-Convert @var{x} to single precision type.
-@seealso{double}
-@end deftypefn */)
-{
-  // The OCTAVE_TYPE_CONV_BODY3 macro declares retval, so they go
-  // inside their own scopes, and we don't declare retval here to
-  // avoid a shadowed declaration warning.
-
-  if (args.length () != 1)
-    print_usage ();
-
-  if (args(0).is_diag_matrix ())
-    {
-      if (args(0).is_complex_type ())
-        {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_diag_matrix,
-                                  octave_float_complex);
-        }
-      else
-        {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_diag_matrix,
-                                  octave_float_scalar);
-        }
-    }
-  else if (args(0).is_sparse_type ())
-    {
-      error ("single: sparse type does not support single precision");
-    }
-  else if (args(0).is_complex_type ())
-    {
-      OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_matrix,
-                              octave_float_complex);
-    }
-  else
-    {
-      OCTAVE_TYPE_CONV_BODY3 (single, octave_float_matrix,
-                              octave_float_scalar);
-    }
-
-  return ovl ();
-}
-
-/*
-%!assert (class (single (1)), "single")
-%!assert (class (single (1 + i)), "single")
-%!assert (class (single (int8 (1))), "single")
-%!assert (class (single (uint8 (1))), "single")
-%!assert (class (single (int16 (1))), "single")
-%!assert (class (single (uint16 (1))), "single")
-%!assert (class (single (int32 (1))), "single")
-%!assert (class (single (uint32 (1))), "single")
-%!assert (class (single (int64 (1))), "single")
-%!assert (class (single (uint64 (1))), "single")
-%!assert (class (single (true)), "single")
-%!assert (class (single ("A")), "single")
-%!error (single (sparse (1)))
-%!test
-%! x = diag ([1 3 2]);
-%! y = single (x);
-%! assert (class (x), "double");
-%! assert (class (y), "single");
-%!test
-%! x = diag ([i 3 2]);
-%! y = single (x);
-%! assert (class (x), "double");
-%! assert (class (y), "single");
-*/

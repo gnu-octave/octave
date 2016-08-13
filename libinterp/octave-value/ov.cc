@@ -74,6 +74,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
 #include "ov-fcn-inline.h"
+#include "ov-type-conv.h"
 #include "ov-typeinfo.h"
 #include "ov-null-mat.h"
 #include "ov-lazy-idx.h"
@@ -1184,6 +1185,138 @@ octave_value::maybe_mutate (void)
 }
 
 octave_value
+octave_value::as_double (void) const
+{
+  if (is_perm_matrix ())
+    return octave_type_conv<octave_perm_matrix, octave_scalar> (*this, "double");
+  else if (is_diag_matrix ())
+    {
+      if (is_complex_type ())
+        return octave_type_conv<octave_complex_diag_matrix, octave_complex> (*this, "double");
+      else
+        return octave_type_conv<octave_diag_matrix, octave_scalar> (*this, "double");
+    }
+  else if (is_sparse_type ())
+    {
+      if (is_complex_type ())
+        return octave_type_conv<octave_sparse_complex_matrix, octave_complex> (*this, "double");
+      else
+        return octave_type_conv<octave_sparse_matrix, octave_scalar> (*this, "double");
+    }
+  else if (is_complex_type ())
+    return octave_type_conv<octave_complex_matrix, octave_complex> (*this, "double");
+  else
+    return octave_type_conv<octave_matrix, octave_scalar> (*this, "double");
+
+  return ovl ();
+}
+
+DEFUN (double, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} double (@var{x})
+Convert @var{x} to double precision type.
+@seealso{single}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return ovl (args(0).as_double ());
+}
+
+/*
+%!assert (class (double (single (1))), "double")
+%!assert (class (double (single (1 + i))), "double")
+%!assert (class (double (int8 (1))), "double")
+%!assert (class (double (uint8 (1))), "double")
+%!assert (class (double (int16 (1))), "double")
+%!assert (class (double (uint16 (1))), "double")
+%!assert (class (double (int32 (1))), "double")
+%!assert (class (double (uint32 (1))), "double")
+%!assert (class (double (int64 (1))), "double")
+%!assert (class (double (uint64 (1))), "double")
+%!assert (class (double (true)), "double")
+%!assert (class (double ("A")), "double")
+%!test
+%! x = sparse (logical ([1 0; 0 1]));
+%! y = double (x);
+%! assert (class (x), "logical");
+%! assert (class (y), "double");
+%! assert (issparse (y));
+%!test
+%! x = diag (single ([1 3 2]));
+%! y = double (x);
+%! assert (class (x), "single");
+%! assert (class (y), "double");
+%!test
+%! x = diag (single ([i 3 2]));
+%! y = double (x);
+%! assert (class (x), "single");
+%! assert (class (y), "double");
+*/
+
+octave_value
+octave_value::as_single (void) const
+{
+  if (is_diag_matrix ())
+    {
+      if (is_complex_type ())
+        return octave_type_conv<octave_float_complex_diag_matrix, octave_float_complex> (*this, "single");
+      else
+        return octave_type_conv<octave_float_diag_matrix, octave_float_scalar> (*this, "single");
+    }
+  else if (is_sparse_type ())
+    error ("single: sparse type does not support single precision");
+  else if (is_complex_type ())
+    return octave_type_conv<octave_float_complex_matrix, octave_float_complex> (*this, "single");
+  else
+    return octave_type_conv<octave_float_matrix, octave_float_scalar> (*this, "single");
+
+  return octave_value ();
+}
+
+DEFUN (single, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} single (@var{x})
+Convert @var{x} to single precision type.
+@seealso{double}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_single ();
+
+  return ovl ();
+}
+
+/*
+%!assert (class (single (1)), "single")
+%!assert (class (single (1 + i)), "single")
+%!assert (class (single (int8 (1))), "single")
+%!assert (class (single (uint8 (1))), "single")
+%!assert (class (single (int16 (1))), "single")
+%!assert (class (single (uint16 (1))), "single")
+%!assert (class (single (int32 (1))), "single")
+%!assert (class (single (uint32 (1))), "single")
+%!assert (class (single (int64 (1))), "single")
+%!assert (class (single (uint64 (1))), "single")
+%!assert (class (single (true)), "single")
+%!assert (class (single ("A")), "single")
+%!error (single (sparse (1)))
+%!test
+%! x = diag ([1 3 2]);
+%! y = single (x);
+%! assert (class (x), "double");
+%! assert (class (y), "single");
+%!test
+%! x = diag ([i 3 2]);
+%! y = single (x);
+%! assert (class (x), "double");
+%! assert (class (y), "single");
+*/
+
+ octave_value
 octave_value::single_subsref (const std::string& type,
                               const octave_value_list& idx)
 {

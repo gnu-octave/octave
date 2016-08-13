@@ -75,33 +75,34 @@ octave_type_conv_body (const octave_value &arg, const std::string& name,
   return retval;
 }
 
-#define OCTAVE_TYPE_CONV_BODY3(NAME, MATRIX_RESULT_T, SCALAR_RESULT_T)  \
-                                                                        \
+template <typename MATRIX_RESULT_T, typename SCALAR_RESULT_T>
+octave_value
+octave_type_conv (const octave_value& arg, const char *t_name)
+{
+  octave_value retval;
+
+  int t_result = MATRIX_RESULT_T::static_type_id ();
+
+  retval = octave_type_conv_body (arg, t_name, t_result);
+
+  if (retval.is_undefined ())
+    {
+      std::string arg_tname = arg.type_name ();
+
+      std::string result_tname = arg.numel () == 1
+        ? SCALAR_RESULT_T::static_type_name ()
+        : MATRIX_RESULT_T::static_type_name ();
+
+      err_invalid_conversion (arg_tname, result_tname);
+    }
+
+  return retval;
+}
+
+#define OCTAVE_TYPE_CONV_BODY(NAME)                                     \
   if (args.length () != 1)                                              \
     print_usage ();                                                     \
                                                                         \
-  octave_value retval;                                                  \
-                                                                        \
-  const octave_value arg = args(0);                                     \
-                                                                        \
-  int t_result = MATRIX_RESULT_T::static_type_id ();                    \
-                                                                        \
-  retval = octave_type_conv_body (arg, #NAME, t_result);                \
-  if (retval.is_undefined ())                                           \
-    {                                                                   \
-      std::string arg_tname = arg.type_name ();                         \
-                                                                        \
-      std::string result_tname = arg.numel () == 1                      \
-        ? SCALAR_RESULT_T::static_type_name ()                          \
-        : MATRIX_RESULT_T::static_type_name ();                         \
-                                                                        \
-      err_invalid_conversion (arg_tname, result_tname);                 \
-    }                                                                   \
-                                                                        \
-  return retval;
-
-#define OCTAVE_TYPE_CONV_BODY(NAME)                             \
-  OCTAVE_TYPE_CONV_BODY3 (NAME, octave_ ## NAME ## _matrix,     \
-                          octave_ ## NAME ## _scalar)
+  return octave_type_conv<octave_ ## NAME ## _matrix, octave_ ## NAME ## _scalar> (args(0), #NAME);
 
 #endif

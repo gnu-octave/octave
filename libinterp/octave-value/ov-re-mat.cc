@@ -60,7 +60,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-diag.h"
 #include "ov-lazy-idx.h"
 #include "ov-perm.h"
-#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 
@@ -935,91 +934,3 @@ octave_matrix::map (unary_mapper_t umap) const
       return octave_base_value::map (umap);
     }
 }
-
-DEFUN (double, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} double (@var{x})
-Convert @var{x} to double precision type.
-@seealso{single}
-@end deftypefn */)
-{
-  // The OCTAVE_TYPE_CONV_BODY3 macro declares retval, so they go
-  // inside their own scopes, and we don't declare retval here to
-  // avoid a shadowed declaration warning.
-
-  if (args.length () != 1)
-    print_usage ();
-
-  if (args(0).is_perm_matrix ())
-    {
-      OCTAVE_TYPE_CONV_BODY3 (double, octave_perm_matrix, octave_scalar);
-    }
-  else if (args(0).is_diag_matrix ())
-    {
-      if (args(0).is_complex_type ())
-        {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix,
-                                  octave_complex);
-        }
-      else
-        {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix,
-                                  octave_scalar);
-        }
-    }
-  else if (args(0).is_sparse_type ())
-    {
-      if (args(0).is_complex_type ())
-        {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_complex_matrix,
-                                  octave_complex);
-        }
-      else
-        {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix,
-                                  octave_scalar);
-        }
-    }
-  else if (args(0).is_complex_type ())
-    {
-      OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_matrix,
-                              octave_complex);
-    }
-  else
-    {
-      OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
-    }
-
-  return ovl ();
-}
-
-/*
-%!assert (class (double (single (1))), "double")
-%!assert (class (double (single (1 + i))), "double")
-%!assert (class (double (int8 (1))), "double")
-%!assert (class (double (uint8 (1))), "double")
-%!assert (class (double (int16 (1))), "double")
-%!assert (class (double (uint16 (1))), "double")
-%!assert (class (double (int32 (1))), "double")
-%!assert (class (double (uint32 (1))), "double")
-%!assert (class (double (int64 (1))), "double")
-%!assert (class (double (uint64 (1))), "double")
-%!assert (class (double (true)), "double")
-%!assert (class (double ("A")), "double")
-%!test
-%! x = sparse (logical ([1 0; 0 1]));
-%! y = double (x);
-%! assert (class (x), "logical");
-%! assert (class (y), "double");
-%! assert (issparse (y));
-%!test
-%! x = diag (single ([1 3 2]));
-%! y = double (x);
-%! assert (class (x), "single");
-%! assert (class (y), "double");
-%!test
-%! x = diag (single ([i 3 2]));
-%! y = double (x);
-%! assert (class (x), "single");
-%! assert (class (y), "double");
-*/

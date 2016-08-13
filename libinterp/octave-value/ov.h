@@ -386,6 +386,11 @@ public:
   octave_value full_value (void) const
   { return rep->full_value (); }
 
+  // Type conversions.
+
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
   octave_base_value *try_narrowing_conversion (void)
   { return rep->try_narrowing_conversion (); }
 

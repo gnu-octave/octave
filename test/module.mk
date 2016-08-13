@@ -98,6 +98,11 @@ test/sparse.tst: test/build-sparse-tests.sh | test/$(octave_dirstamp)
 	$(SHELL) $(srcdir)/test/build-sparse-tests.sh > $@-t && \
 	mv $@-t $@
 
+test/conv.tst: test/build-conv-tests.sh | test/$(octave_dirstamp)
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SHELL) $(srcdir)/test/build-conv-tests.sh > $@-t && \
+	mv $@-t $@
+
 GENERATED_BC_OVERLOADS_DIRS := \
   $(shell $(SHELL) $(srcdir)/test/build-bc-overload-tests.sh test --list-dirs)
 
@@ -112,12 +117,14 @@ test/.bc-overload-tests-stamp: test/build-bc-overload-tests.sh test/bc-overloads
 	touch $@
 
 GENERATED_TEST_FILES = \
+  test/conv.tst \
   test/sparse.tst \
   test/.bc-overload-tests-stamp
 
 fixedtestsdir := $(octtestsdir)/fixed
 
 TEST_INST_FILES = \
+  test/conv.tst \
   test/sparse.tst \
   $(GENERATED_BC_OVERLOADS_FILES) \
   $(filter-out test/fntests.m, $(TEST_FILES))
@@ -145,6 +152,7 @@ uninstall-test-files:
 BUILT_SOURCES += $(GENERATED_TEST_FILES)
 
 test_EXTRA_DIST += \
+  test/build-conv-tests.sh \
   test/build-sparse-tests.sh \
   test/build-bc-overload-tests.sh \
   test/bc-overloads-expected \

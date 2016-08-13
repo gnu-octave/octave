@@ -137,7 +137,7 @@ DEFNDCATOP_FN (fs_fs, float_scalar, float_scalar, float_array, float_array,
 DEFNDCATOP_FN (s_fs, scalar, float_scalar, float_array, float_array, concat)
 DEFNDCATOP_FN (fs_s, float_scalar, scalar, float_array, float_array, concat)
 
-CONVDECL (float_to_scalar)
+CONVDECL (float_to_matrix)
 {
   const octave_float_scalar& v = dynamic_cast<const octave_float_scalar&> (a);
 
@@ -191,5 +191,5 @@ install_fs_fs_ops (void)
   INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_sq_str,
                       octave_float_matrix);
 
-  INSTALL_CONVOP (octave_float_scalar, octave_matrix, float_to_scalar);
+  INSTALL_CONVOP (octave_float_scalar, octave_matrix, float_to_matrix);
 }

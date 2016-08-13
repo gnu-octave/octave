@@ -69,12 +69,12 @@ DEFFLTCONVFN (uint64_scalar_to_float_matrix, uint64_scalar, uint64_array)
 DEFFLTCONVFN (bool_matrix_to_float_matrix, bool_matrix, bool_array)
 DEFFLTCONVFN (bool_scalar_to_float_matrix, bool, bool_array)
 
-DEFFLTCONVFN (range_to_float_matrix, range, array)
+DEFFLTCONVFN (range_to_float_matrix, range, float_array)
 
 DEFSTRFLTCONVFN(char_matrix_str_to_float_matrix, char_matrix_str)
 DEFSTRFLTCONVFN(char_matrix_sq_str_to_float_matrix, char_matrix_sq_str)
 
-DEFFLTCONVFN (float_scalar_to_float_matrix, scalar, array)
+DEFFLTCONVFN (float_scalar_to_float_matrix, float_scalar, float_array)
 
 void
 install_float_conv_ops (void)
@@ -127,6 +127,6 @@ install_float_conv_ops (void)
   INSTALL_CONVOP (octave_char_matrix_sq_str, octave_float_matrix,
                   char_matrix_sq_str_to_float_matrix);
 
-  INSTALL_CONVOP (octave_scalar, octave_float_matrix,
+  INSTALL_CONVOP (octave_float_scalar, octave_float_matrix,
                   float_scalar_to_float_matrix);
 }

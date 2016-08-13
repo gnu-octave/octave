@@ -40,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 
+#include "oct-string.h"
+
 DEFUN (char, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} char (@var{x})
@@ -311,10 +313,10 @@ Return true if @var{x} is a character array.
 static octave_value
 do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
                octave_idx_type n, const char *fcn_name,
-               bool (*array_op) (const charNDArray&, const charNDArray&,
+               bool (*array_op) (const Array<char>&, const Array<char>&,
                                  octave_idx_type),
                bool (*str_op) (const std::string&, const std::string&,
-                               octave_idx_type))
+                               std::string::size_type))
 
 {
   octave_value retval;
@@ -514,21 +516,20 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
   return retval;
 }
 
-// If both args are arrays, dimensions may be significant.
-static bool
-strcmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
-{
-  return (s1.dims () == s2.dims ()
-          && std::equal (s1.data (), s1.data () + s1.numel (), s2.data ()));
-}
 
-// Otherwise, just use strings.
+// These are required so that they match the same signature as strncmp
+// and strncmpi and can therefore be used in do_strcmp_fun.
+
+template <typename T, typename T_size_type>
 static bool
-strcmp_str_op (const std::string& s1, const std::string& s2,
-               octave_idx_type)
-{
-  return s1 == s2;
-}
+strcmp_ignore_n (const T& s1, const T& s2, T_size_type)
+{ return octave::string::strcmp (s1, s2); }
+
+template <typename T, typename T_size_type>
+static bool
+strcmpi_ignore_n (const T& s1, const T& s2, T_size_type)
+{ return octave::string::strcmpi (s1, s2); }
+
 
 DEFUN (strcmp, args, ,
        doc: /* -*- texinfo -*-
@@ -552,7 +553,7 @@ This is just the opposite of the corresponding C library function.
     print_usage ();
 
   return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmp",
-                             strcmp_array_op, strcmp_str_op));
+                             strcmp_ignore_n, strcmp_ignore_n));
 }
 
 /*
@@ -603,29 +604,6 @@ This is just the opposite of the corresponding C library function.
 %!error strcmp ("foo", "bar", 3)
 */
 
-// Apparently, Matlab ignores the dims with strncmp.
-static bool
-strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
-                  octave_idx_type n)
-{
-  octave_idx_type l1 = s1.numel ();
-  octave_idx_type l2 = s2.numel ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data ()));
-}
-
-// Otherwise, just use strings.  Note that we neither extract substrings (which
-// would mean a copy, at least in GCC), nor use string::compare (which is a
-// 3-way compare).
-static bool
-strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
-{
-  octave_idx_type l1 = s1.length ();
-  octave_idx_type l2 = s2.length ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data ()));
-}
-
 DEFUN (strncmp, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} strncmp (@var{s1}, @var{s2}, @var{n})
@@ -665,7 +643,8 @@ This is just the opposite of the corresponding C library function.
 
   if (n > 0)
     return ovl (do_strcmp_fun (args(0), args(1), n, "strncmp",
-                               strncmp_array_op, strncmp_str_op));
+                               octave::string::strncmp,
+                               octave::string::strncmp));
   else
     error ("strncmp: N must be greater than 0");
 }
@@ -682,34 +661,6 @@ This is just the opposite of the corresponding C library function.
 %!error strncmp ()
 %!error strncmp ("abc", "def")
 */
-
-// case-insensitive character equality functor
-struct icmp_char_eq : public std::binary_function<char, char, bool>
-{
-  bool operator () (char x, char y) const
-  {
-    return std::toupper (x) == std::toupper (y);
-  }
-};
-
-// strcmpi is equivalent to strcmp in that it checks all dims.
-static bool
-strcmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
-{
-  return (s1.dims () == s2.dims ()
-          && std::equal (s1.data (), s1.data () + s1.numel (), s2.data (),
-                         icmp_char_eq ()));
-}
-
-// Ditto for string.
-static bool
-strcmpi_str_op (const std::string& s1, const std::string& s2,
-                octave_idx_type)
-{
-  return (s1.size () == s2.size ()
-          && std::equal (s1.data (), s1.data () + s1.size (), s2.data (),
-                         icmp_char_eq ()));
-}
 
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
         doc: /* -*- texinfo -*-
@@ -735,36 +686,12 @@ This is just the opposite of the corresponding C library function.
     print_usage ();
 
   return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmpi",
-                             strcmpi_array_op, strcmpi_str_op));
+                             strcmpi_ignore_n, strcmpi_ignore_n));
 }
 
 /*
 %!assert (strcmpi ("abc123", "ABC123"), true)
 */
-
-// Like strncmp.
-static bool
-strncmpi_array_op (const charNDArray& s1, const charNDArray& s2,
-                   octave_idx_type n)
-{
-  octave_idx_type l1 = s1.numel ();
-  octave_idx_type l2 = s2.numel ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data (),
-                         icmp_char_eq ()));
-}
-
-// Ditto.
-static bool
-strncmpi_str_op (const std::string& s1, const std::string& s2,
-                 octave_idx_type n)
-{
-  octave_idx_type l1 = s1.length ();
-  octave_idx_type l2 = s2.length ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data (),
-                         icmp_char_eq ()));
-}
 
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
         doc: /* -*- texinfo -*-
@@ -793,7 +720,8 @@ This is just the opposite of the corresponding C library function.
 
   if (n > 0)
     return ovl (do_strcmp_fun (args(0), args(1), n, "strncmpi",
-                               strncmpi_array_op, strncmpi_str_op));
+                               octave::string::strncmpi,
+                               octave::string::strncmpi));
   else
     error ("strncmpi: N must be greater than 0");
 }

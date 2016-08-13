@@ -29,6 +29,7 @@ UTIL_INC = \
   liboctave/util/oct-refcount.h \
   liboctave/util/oct-rl-edit.h \
   liboctave/util/oct-rl-hist.h \
+  liboctave/util/oct-string.h \
   liboctave/util/oct-shlib.h \
   liboctave/util/oct-sort.h \
   liboctave/util/pathsearch.h \
@@ -67,6 +68,7 @@ UTIL_SRC = \
   liboctave/util/oct-inttypes.cc \
   liboctave/util/oct-locbuf.cc \
   liboctave/util/oct-mutex.cc \
+  liboctave/util/oct-string.cc \
   liboctave/util/oct-shlib.cc \
   liboctave/util/pathsearch.cc \
   liboctave/util/lo-regexp.cc \

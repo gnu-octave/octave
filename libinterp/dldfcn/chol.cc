@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 #include "sparse-util.h"
 
-#include "caseless-str.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 #include "defun-dld.h"
@@ -41,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
+
+#include "oct-string.h"
 
 template <typename CHOLT>
 static octave_value
@@ -163,13 +164,13 @@ sparse matrices.
   int n = 1;
   while (n < nargin)
     {
-      caseless_str tmp = args(n++).xstring_value ("chol: optional arguments must be strings");
+      std::string tmp = args(n++).xstring_value ("chol: optional arguments must be strings");
 
-      if (tmp.compare ("vector"))
+      if (octave::string::strcmpi (tmp, "vector"))
         vecout = true;
-      else if (tmp.compare ("lower"))
+      else if (octave::string::strcmpi (tmp, "lower"))
         LLt = true;
-      else if (tmp.compare ("upper"))
+      else if (octave::string::strcmpi (tmp, "upper"))
         LLt = false;
       else
         error ("chol: optional argument must be one of \"vector\", \"lower\", or \"upper\"");

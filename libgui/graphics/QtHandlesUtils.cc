@@ -39,6 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Object.h"
 #include "QtHandlesUtils.h"
 
+#include "oct-string.h"
+
 namespace QtHandles
 {
 
@@ -249,24 +251,24 @@ figureCurrentPoint (const graphics_object& fig)
 }
 
 Qt::Alignment
-fromHVAlign (const caseless_str& halign, const caseless_str& valign)
+fromHVAlign (const std::string& halign, const std::string& valign)
 {
   Qt::Alignment flags;
 
-  if (halign.compare ("left"))
+  if (octave::string::strcmpi (halign, "left"))
     flags |= Qt::AlignLeft;
-  else if (halign.compare ("center"))
+  else if (octave::string::strcmpi (halign, "center"))
     flags |= Qt::AlignHCenter;
-  else if (halign.compare ("right"))
+  else if (octave::string::strcmpi (halign, "right"))
     flags |= Qt::AlignRight;
   else
     flags |= Qt::AlignLeft;
 
-  if (valign.compare ("middle"))
+  if (octave::string::strcmpi (valign, "middle"))
     flags |= Qt::AlignVCenter;
-  else if (valign.compare ("top"))
+  else if (octave::string::strcmpi (valign, "top"))
     flags |= Qt::AlignTop;
-  else if (valign.compare ("bottom"))
+  else if (octave::string::strcmpi (valign, "bottom"))
     flags |= Qt::AlignBottom;
   else
     flags |= Qt::AlignVCenter;

@@ -55,8 +55,8 @@ namespace Utils
   QColor fromRgb (const Matrix& rgb);
   Matrix toRgb (const QColor& c);
 
-  Qt::Alignment fromHVAlign (const caseless_str& halign,
-                             const caseless_str& valign);
+  Qt::Alignment fromHVAlign (const std::string& halign,
+                             const std::string& valign);
 
   std::string figureSelectionType (QMouseEvent* event,
                                    bool isDoubleClick = false);

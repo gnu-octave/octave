@@ -351,12 +351,12 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_COMPLEX], [
   fi
 ])
 dnl
-dnl Check whether Qscintilla has version 2.6.0 or later
+dnl Check whether QScintilla has version 2.6.0 or later
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?
 dnl
 AC_DEFUN([OCTAVE_CHECK_QSCINTILLA_VERSION], [
-  AC_CACHE_CHECK([whether Qscintilla has version 2.6.0 or later],
+  AC_CACHE_CHECK([whether QScintilla has version 2.6.0 or later],
     [octave_cv_version_2_6_0],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
@@ -378,7 +378,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA_VERSION], [
   ])
   if test $octave_cv_version_2_6_0 = yes; then
     AC_DEFINE(HAVE_QSCI_VERSION_2_6_0, 1,
-      [Define to 1 if Qscintilla is of Version 2.6.0 or later.])
+      [Define to 1 if QScintilla is of Version 2.6.0 or later.])
   fi
 ])
 dnl
@@ -486,7 +486,7 @@ AC_DEFUN([OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS], [
   fi
 ])
 dnl
-dnl Check whether Qscintilla SetPlaceholderText function exists.
+dnl Check whether QScintilla SetPlaceholderText function exists.
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?
 dnl
@@ -1347,11 +1347,11 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   case "$qt_version" in
     4)
       QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
-      LIBQSCINTILLA=qscintilla2
+      octave_qscintilla_libnames=qscintilla2
     ;;
     5)
       QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5PrintSupport"
-      LIBQSCINTILLA=qt5scintilla2
+      octave_qscintilla_libnames="qscintilla2-qt5 qt5scintilla2"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])
@@ -1493,8 +1493,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       fi
     fi
 
-    ## Check for Qscintilla library which is used in the Qt GUI editor.
-    AC_CACHE_CHECK([whether Qscintilla library is installed],
+    ## Check for QScintilla library which is used in the Qt GUI editor.
+    AC_CACHE_CHECK([for the QScintilla library for Qt $qt_version],
       [octave_cv_lib_qscintilla],
       [save_CPPFLAGS="$CPPFLAGS"
       save_CXXFLAGS="$CXXFLAGS"
@@ -1503,15 +1503,20 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
       CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
       LDFLAGS="$QT_LDFLAGS $LDFLAGS"
-      LIBS="$QT_LIBS -l$LIBQSCINTILLA"
       AC_LANG_PUSH(C++)
-      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-        #include <Qsci/qscilexersql.h>
-        ]], [[
-        QsciLexerSQL sqlLexer(0);
-        ]])],
-        octave_cv_lib_qscintilla=yes,
-        octave_cv_lib_qscintilla=no)
+      for octave_qscintilla_try in $octave_qscintilla_libnames; do
+        LIBS="$QT_LIBS -l$octave_qscintilla_try"
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+          #include <Qsci/qscilexersql.h>
+          ]], [[
+          QsciLexerSQL sqlLexer(0);
+          ]])],
+          octave_cv_lib_qscintilla="-l$octave_qscintilla_try",
+          octave_cv_lib_qscintilla=no)
+        if test $octave_cv_lib_qscintilla != no; then
+          break
+        fi
+      done
       CPPFLAGS="$save_CPPFLAGS"
       CXXFLAGS="$save_CXXFLAGS"
       LDFLAGS="$save_LDFLAGS"
@@ -1520,11 +1525,11 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ])
 
     if test $octave_cv_lib_qscintilla = no; then
-      warn_qscintilla="Qscintilla library not found; disabling built-in Qt GUI editor"
+      warn_qscintilla="QScintilla library not found; disabling built-in Qt GUI editor"
     else
-      ## Let's assume Qscintilla library is at the same location as
+      ## Let's assume QScintilla library is at the same location as
       ## other regular Qt libraries.
-      QT_LIBS="$QT_LIBS -l$LIBQSCINTILLA"
+      QT_LIBS="$QT_LIBS $octave_cv_lib_qscintilla"
       OCTAVE_CHECK_QSCINTILLA_VERSION
       AC_DEFINE(HAVE_QSCINTILLA, 1,
         [Define to 1 if the QScintilla library and header files are available.])

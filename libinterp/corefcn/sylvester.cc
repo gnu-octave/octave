@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (sylvester, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{X} =} syl (@var{A}, @var{B}, @var{C})
+@deftypefn {} {@var{X} =} sylvester (@var{A}, @var{B}, @var{C})
 Solve the Sylvester equation
 @tex
 $$

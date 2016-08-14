@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "utils.h"
 
 DEFUN (sylvester, args, ,
        doc: /* -*- texinfo -*-
@@ -78,21 +77,17 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
   octave_idx_type c_nr = arg_c.rows ();
   octave_idx_type c_nc = arg_c.columns ();
 
-  int arg_a_is_empty = empty_arg ("sylvester", a_nr, a_nc);
-  int arg_b_is_empty = empty_arg ("sylvester", b_nr, b_nc);
-  int arg_c_is_empty = empty_arg ("sylvester", c_nr, c_nc);
-
   bool isfloat = arg_a.is_single_type ()
                  || arg_b.is_single_type ()
                  || arg_c.is_single_type ();
 
-  if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
-    if (isfloat)
-      return ovl (FloatMatrix ());
-    else
-      return ovl (Matrix ());
-  else if (arg_a_is_empty || arg_b_is_empty || arg_c_is_empty)
-    return retval;
+  if (arg_a.is_empty () || arg_b.is_empty () || arg_c.is_empty ())
+    {
+      if (isfloat)
+        return ovl (FloatMatrix ());
+      else
+        return ovl (Matrix ());
+    }
 
   // Arguments are not empty, so check for correct dimensions.
 

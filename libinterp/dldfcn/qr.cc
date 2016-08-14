@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "utils.h"
 
 template <typename MT>
 static octave_value
@@ -224,11 +223,6 @@ permutation vector instead of a permutation matrix.
   octave_value_list retval;
 
   octave_value arg = args(0);
-
-  int arg_is_empty = empty_arg ("qr", arg.rows (), arg.columns ());
-
-  if (arg_is_empty < 0)
-    return retval;
 
   bool economy = false;
   bool is_cmplx = false;
@@ -572,6 +566,11 @@ permutation vector instead of a permutation matrix.
 %!
 %! assert (r, re, sqrt (eps));
 %! assert (q'*b, c, sqrt (eps));
+
+%!test
+%! assert (qr (zeros (0, 0)), zeros (0, 0))
+%! assert (qr (zeros (1, 0)), zeros (1, 0))
+%! assert (qr (zeros (0, 1)), zeros (0, 1))
 
 %!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)

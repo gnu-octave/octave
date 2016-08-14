@@ -39,7 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "utils.h"
 
 #include "oct-string.h"
 
@@ -179,14 +178,7 @@ sparse matrices.
   octave_value_list retval;
   octave_value arg = args(0);
 
-  octave_idx_type nr = arg.rows ();
-  octave_idx_type nc = arg.columns ();
-
-  int arg_is_empty = empty_arg ("chol", nr, nc);
-
-  if (arg_is_empty < 0)
-    return ovl ();
-  if (arg_is_empty > 0)
+  if (arg.is_empty ())
     return ovl (Matrix ());
 
   if (arg.is_sparse_type ())

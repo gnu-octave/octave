@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "utils.h"
 #include "ops.h"
 
 #include "ov-re-mat.h"
@@ -70,19 +69,10 @@ For that, use any of the condition number functions: @code{cond},
 
   octave_value arg = args(0);
 
-  octave_idx_type nr = arg.rows ();
-  octave_idx_type nc = arg.columns ();
-
-  if (nr == 0 && nc == 0)
+  if (arg.is_empty ())
     return ovl (1.0);
 
-  int arg_is_empty = empty_arg ("det", nr, nc);
-  if (arg_is_empty < 0)
-    return ovl ();
-  if (arg_is_empty > 0)
-    return ovl (1.0);
-
-  if (nr != nc)
+  if (arg.rows () != arg.columns ())
     err_square_matrix_required ("det", "A");
 
   octave_value_list retval (2);

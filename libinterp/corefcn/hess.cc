@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "utils.h"
 
 DEFUN (hess, args, nargout,
        doc: /* -*- texinfo -*-
@@ -66,17 +65,10 @@ IEEE Transactions on Automatic Control, 1979).
 
   octave_value arg = args(0);
 
-  octave_idx_type nr = arg.rows ();
-  octave_idx_type nc = arg.columns ();
-
-  int arg_is_empty = empty_arg ("hess", nr, nc);
-
-  if (arg_is_empty < 0)
-    return ovl ();
-  else if (arg_is_empty > 0)
+  if (arg.is_empty ())
     return octave_value_list (2, Matrix ());
 
-  if (nr != nc)
+  if (arg.rows () != arg.columns ())
     err_square_matrix_required ("hess", "A");
 
   octave_value_list retval;

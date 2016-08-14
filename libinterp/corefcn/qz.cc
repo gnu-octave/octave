@@ -297,14 +297,7 @@ compatibility with @sc{matlab}.
 
   octave_value_list retval;
 
-  int arg_is_empty = empty_arg ("qz", nn, args(0).columns ());
-
-  if (arg_is_empty < 0)
-    {
-      warn_empty_arg ("qz: parameter 1");
-      return retval;
-    }
-  else if (arg_is_empty > 0)
+  if (args(0).is_empty ())
     {
       warn_empty_arg ("qz: parameter 1; continuing");
       return octave_value_list (2, Matrix ());

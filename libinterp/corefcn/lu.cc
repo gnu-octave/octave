@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "utils.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
@@ -186,13 +185,9 @@ permutation information.
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
 
-  int arg_is_empty = empty_arg ("lu", nr, nc);
-
   if (issparse)
     {
-      if (arg_is_empty < 0)
-        return ovl ();
-      else if (arg_is_empty > 0)
+      if (arg.is_empty ())
         return octave_value_list (5, SparseMatrix ());
 
       if (arg.is_real_type ())
@@ -330,9 +325,7 @@ permutation information.
     }
   else
     {
-      if (arg_is_empty < 0)
-        return ovl ();
-      else if (arg_is_empty > 0)
+      if (arg.is_empty ())
         return octave_value_list (3, Matrix ());
 
       if (arg.is_real_type ())

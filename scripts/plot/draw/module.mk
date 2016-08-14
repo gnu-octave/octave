@@ -16,7 +16,7 @@ scripts_plot_draw_PRIVATE_FCN_FILES = \
   scripts/plot/draw/private/__pie__.m \
   scripts/plot/draw/private/__plt__.m \
   scripts/plot/draw/private/__quiver__.m \
-  scripts/plot/draw/__rotate_around_axis__.m \
+  scripts/plot/draw/private/__rotate_around_axis__.m \
   scripts/plot/draw/private/__scatter__.m \
   scripts/plot/draw/private/__stem__.m \
   scripts/plot/draw/private/__unite_shared_vertices__.m

@@ -725,6 +725,13 @@ function list = missing_functions ()
   "movegui",
   "movie",
   "movie2avi",
+  "movmax",
+  "movmean",
+  "movmedian",
+  "movmin",
+  "movstd"
+  "movsum",
+  "movvar",
   "multibandread",
   "multibandwrite",
   "NaT",

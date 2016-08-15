@@ -287,6 +287,18 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
+octave_complex::as_double (void) const
+{
+  return scalar;
+}
+
+octave_value
+octave_complex::as_single (void) const
+{
+  return FloatComplex (scalar);
+}
+
+octave_value
 octave_complex::diag (octave_idx_type m, octave_idx_type n) const
 {
   return ComplexDiagMatrix (Array<Complex> (dim_vector (1, 1), scalar), m, n);

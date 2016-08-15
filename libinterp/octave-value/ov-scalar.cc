@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "oct-inttypes.h"
+
 #include "data-conv.h"
 #include "mach-info.h"
 #include "lo-specfun.h"
@@ -116,6 +118,66 @@ octave_scalar::resize (const dim_vector& dv, bool fill) const
 
       return retval;
     }
+}
+
+octave_value
+octave_scalar::as_double (void) const
+{
+  return scalar;
+}
+
+octave_value
+octave_scalar::as_single (void) const
+{
+  return static_cast<float> (scalar);
+}
+
+octave_value
+octave_scalar::as_int8 (void) const
+{
+  return octave_int8 (scalar);
+}
+
+octave_value
+octave_scalar::as_int16 (void) const
+{
+  return octave_int16 (scalar);
+}
+
+octave_value
+octave_scalar::as_int32 (void) const
+{
+  return octave_int32 (scalar);
+}
+
+octave_value
+octave_scalar::as_int64 (void) const
+{
+  return octave_int64 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint8 (void) const
+{
+  return octave_uint8 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint16 (void) const
+{
+  return octave_uint16 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint32 (void) const
+{
+  return octave_uint32 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint64 (void) const
+{
+  return octave_uint64 (scalar);
 }
 
 octave_value

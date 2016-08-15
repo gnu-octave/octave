@@ -246,6 +246,12 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
+octave_value
+octave_sparse_matrix::as_double (void) const
+{
+  return this->matrix;
+}
+
 bool
 octave_sparse_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {

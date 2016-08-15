@@ -204,6 +204,12 @@ octave_sparse_bool_matrix::sparse_complex_matrix_value (bool) const
   return SparseComplexMatrix (this->matrix);
 }
 
+octave_value
+octave_sparse_bool_matrix::as_double (void) const
+{
+  return SparseMatrix (this->matrix);
+}
+
 bool
 octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
 {

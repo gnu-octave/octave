@@ -148,6 +148,19 @@ public:
   octave_value convert_to_str_internal (bool, bool, char type) const
   { return octave_value (matrix, type); }
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   // Unsafe.  This function exists to support the MEX interface.

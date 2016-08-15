@@ -32,9 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "quit.h"
 
-#include "defun.h"
 #include "errwarn.h"
-#include "ovl.h"
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
 #include "ops.h"
@@ -47,7 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-int.h"
 #include "ov-base-int.cc"
 #include "ov-int64.h"
-#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 
@@ -74,22 +71,3 @@ template class octave_base_int_scalar<octave_int64>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int64_scalar,
                                      "int64 scalar", "int64");
-
-DEFUN (int64, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} int64 (@var{x})
-Convert @var{x} to 64-bit integer type.
-@seealso{int8, uint8, int16, uint16, int32, uint32, uint64}
-@end deftypefn */)
-{
-  OCTAVE_TYPE_CONV_BODY (int64);
-}
-
-/*
-%!assert (class (int64 (1)), "int64")
-%!assert (int64 (1.25), int64 (1))
-%!assert (int64 (1.5), int64 (2))
-%!assert (int64 (-1.5), int64 (-2))
-%!assert (int64 (2^65), int64 (2^64-1))
-%!assert (int64 (-2^65), int64 (-2^64))
-*/

@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "oct-inttypes.h"
+
 #include "mx-base.h"
 
 #include "errwarn.h"
@@ -86,6 +88,66 @@ octave_bool::do_index_op (const octave_value_list& idx, bool resize_ok)
   octave_value tmp (new octave_bool_matrix (bool_matrix_value ()));
 
   return tmp.do_index_op (idx, resize_ok);
+}
+
+octave_value
+octave_bool::as_double (void) const
+{
+  return static_cast<double> (scalar);
+}
+
+octave_value
+octave_bool::as_single (void) const
+{
+  return static_cast<float> (scalar);
+}
+
+octave_value
+octave_bool::as_int8 (void) const
+{
+  return octave_int8 (scalar);
+}
+
+octave_value
+octave_bool::as_int16 (void) const
+{
+  return octave_int16 (scalar);
+}
+
+octave_value
+octave_bool::as_int32 (void) const
+{
+  return octave_int32 (scalar);
+}
+
+octave_value
+octave_bool::as_int64 (void) const
+{
+  return octave_int64 (scalar);
+}
+
+octave_value
+octave_bool::as_uint8 (void) const
+{
+  return octave_uint8 (scalar);
+}
+
+octave_value
+octave_bool::as_uint16 (void) const
+{
+  return octave_uint16 (scalar);
+}
+
+octave_value
+octave_bool::as_uint32 (void) const
+{
+  return octave_uint32 (scalar);
+}
+
+octave_value
+octave_bool::as_uint64 (void) const
+{
+  return octave_uint64 (scalar);
 }
 
 octave_value

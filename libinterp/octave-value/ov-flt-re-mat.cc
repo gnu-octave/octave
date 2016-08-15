@@ -29,6 +29,17 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <vector>
 
+#include "dNDArray.h"
+#include "fNDArray.h"
+#include "int8NDArray.h"
+#include "int16NDArray.h"
+#include "int32NDArray.h"
+#include "int64NDArray.h"
+#include "uint8NDArray.h"
+#include "uint16NDArray.h"
+#include "uint32NDArray.h"
+#include "uint64NDArray.h"
+
 #include "data-conv.h"
 #include "lo-ieee.h"
 #include "lo-utils.h"
@@ -236,6 +247,66 @@ octave_float_matrix::sparse_complex_matrix_value (bool) const
   // this function more efficient.  Then this should become
   // return SparseComplexMatrix (matrix.matrix_value ());
   return SparseComplexMatrix (sparse_matrix_value ());
+}
+
+octave_value
+octave_float_matrix::as_double (void) const
+{
+  return NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_single (void) const
+{
+  return FloatNDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int8 (void) const
+{
+  return int8NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int16 (void) const
+{
+  return int16NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int32 (void) const
+{
+  return int32NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int64 (void) const
+{
+  return int64NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint8 (void) const
+{
+  return uint8NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint16 (void) const
+{
+  return uint16NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint32 (void) const
+{
+  return uint32NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint64 (void) const
+{
+  return uint64NDArray (matrix);
 }
 
 octave_value

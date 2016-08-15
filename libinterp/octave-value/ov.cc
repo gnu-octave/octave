@@ -74,7 +74,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
 #include "ov-fcn-inline.h"
-#include "ov-type-conv.h"
 #include "ov-typeinfo.h"
 #include "ov-null-mat.h"
 #include "ov-lazy-idx.h"
@@ -1184,33 +1183,6 @@ octave_value::maybe_mutate (void)
     }
 }
 
-octave_value
-octave_value::as_double (void) const
-{
-  if (is_perm_matrix ())
-    return octave_type_conv<octave_perm_matrix, octave_scalar> (*this, "double");
-  else if (is_diag_matrix ())
-    {
-      if (is_complex_type ())
-        return octave_type_conv<octave_complex_diag_matrix, octave_complex> (*this, "double");
-      else
-        return octave_type_conv<octave_diag_matrix, octave_scalar> (*this, "double");
-    }
-  else if (is_sparse_type ())
-    {
-      if (is_complex_type ())
-        return octave_type_conv<octave_sparse_complex_matrix, octave_complex> (*this, "double");
-      else
-        return octave_type_conv<octave_sparse_matrix, octave_scalar> (*this, "double");
-    }
-  else if (is_complex_type ())
-    return octave_type_conv<octave_complex_matrix, octave_complex> (*this, "double");
-  else
-    return octave_type_conv<octave_matrix, octave_scalar> (*this, "double");
-
-  return ovl ();
-}
-
 DEFUN (double, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} double (@var{x})
@@ -1255,26 +1227,6 @@ Convert @var{x} to double precision type.
 %! assert (class (y), "double");
 */
 
-octave_value
-octave_value::as_single (void) const
-{
-  if (is_diag_matrix ())
-    {
-      if (is_complex_type ())
-        return octave_type_conv<octave_float_complex_diag_matrix, octave_float_complex> (*this, "single");
-      else
-        return octave_type_conv<octave_float_diag_matrix, octave_float_scalar> (*this, "single");
-    }
-  else if (is_sparse_type ())
-    error ("single: sparse type does not support single precision");
-  else if (is_complex_type ())
-    return octave_type_conv<octave_float_complex_matrix, octave_float_complex> (*this, "single");
-  else
-    return octave_type_conv<octave_float_matrix, octave_float_scalar> (*this, "single");
-
-  return octave_value ();
-}
-
 DEFUN (single, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} single (@var{x})
@@ -1316,7 +1268,183 @@ Convert @var{x} to single precision type.
 %! assert (class (y), "single");
 */
 
- octave_value
+DEFUN (int8, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} int8 (@var{x})
+Convert @var{x} to 8-bit integer type.
+@seealso{uint8, int16, uint16, int32, uint32, int64, uint64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_int8 ();
+}
+
+/*
+%!assert (class (int8 (1)), "int8")
+%!assert (int8 (1.25), int8 (1))
+%!assert (int8 (1.5), int8 (2))
+%!assert (int8 (-1.5), int8 (-2))
+%!assert (int8 (2^9), int8 (2^8-1))
+%!assert (int8 (-2^9), int8 (-2^8))
+*/
+
+DEFUN (int16, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} int16 (@var{x})
+Convert @var{x} to 16-bit integer type.
+@seealso{int8, uint8, uint16, int32, uint32, int64, uint64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_int16 ();
+}
+
+/*
+%!assert (class (int16 (1)), "int16")
+%!assert (int16 (1.25), int16 (1))
+%!assert (int16 (1.5), int16 (2))
+%!assert (int16 (-1.5), int16 (-2))
+%!assert (int16 (2^17), int16 (2^16-1))
+%!assert (int16 (-2^17), int16 (-2^16))
+*/
+
+DEFUN (int32, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} int32 (@var{x})
+Convert @var{x} to 32-bit integer type.
+@seealso{int8, uint8, int16, uint16, uint32, int64, uint64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_int32 ();
+}
+
+/*
+%!assert (class (int32 (1)), "int32")
+%!assert (int32 (1.25), int32 (1))
+%!assert (int32 (1.5), int32 (2))
+%!assert (int32 (-1.5), int32 (-2))
+%!assert (int32 (2^33), int32 (2^32-1))
+%!assert (int32 (-2^33), int32 (-2^32))
+*/
+
+DEFUN (int64, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} int64 (@var{x})
+Convert @var{x} to 64-bit integer type.
+@seealso{int8, uint8, int16, uint16, int32, uint32, uint64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_int64 ();
+}
+
+/*
+%!assert (class (int64 (1)), "int64")
+%!assert (int64 (1.25), int64 (1))
+%!assert (int64 (1.5), int64 (2))
+%!assert (int64 (-1.5), int64 (-2))
+%!assert (int64 (2^65), int64 (2^64-1))
+%!assert (int64 (-2^65), int64 (-2^64))
+*/
+
+DEFUN (uint8, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uint8 (@var{x})
+Convert @var{x} to unsigned 8-bit integer type.
+@seealso{int8, int16, uint16, int32, uint32, int64, uint64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_uint8 ();
+}
+
+/*
+%!assert (class (uint8 (1)), "uint8")
+%!assert (uint8 (1.25), uint8 (1))
+%!assert (uint8 (1.5), uint8 (2))
+%!assert (uint8 (-1.5), uint8 (0))
+%!assert (uint8 (2^9), uint8 (2^8-1))
+%!assert (uint8 (-2^9), uint8 (0))
+*/
+
+DEFUN (uint16, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uint16 (@var{x})
+Convert @var{x} to unsigned 16-bit integer type.
+@seealso{int8, uint8, int16, int32, uint32, int64, uint64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_uint16 ();
+}
+
+/*
+%!assert (class (uint16 (1)), "uint16")
+%!assert (uint16 (1.25), uint16 (1))
+%!assert (uint16 (1.5), uint16 (2))
+%!assert (uint16 (-1.5), uint16 (0))
+%!assert (uint16 (2^17), uint16 (2^16-1))
+%!assert (uint16 (-2^17), uint16 (0))
+*/
+
+DEFUN (uint32, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uint32 (@var{x})
+Convert @var{x} to unsigned 32-bit integer type.
+@seealso{int8, uint8, int16, uint16, int32, int64, uint64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_uint32 ();
+}
+
+/*
+%!assert (class (uint32 (1)), "uint32")
+%!assert (uint32 (1.25), uint32 (1))
+%!assert (uint32 (1.5), uint32 (2))
+%!assert (uint32 (-1.5), uint32 (0))
+%!assert (uint32 (2^33), uint32 (2^32-1))
+%!assert (uint32 (-2^33), uint32 (0))
+*/
+
+DEFUN (uint64, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} uint64 (@var{x})
+Convert @var{x} to unsigned 64-bit integer type.
+@seealso{int8, uint8, int16, uint16, int32, uint32, int64}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  return args(0).as_uint64 ();
+}
+
+/*
+%!assert (class (uint64 (1)), "uint64")
+%!assert (uint64 (1.25), uint64 (1))
+%!assert (uint64 (1.5), uint64 (2))
+%!assert (uint64 (-1.5), uint64 (0))
+%!assert (uint64 (2^65), uint64 (2^64-1))
+%!assert (uint64 (-2^65), uint64 (0))
+*/
+
+octave_value
 octave_value::single_subsref (const std::string& type,
                               const octave_value_list& idx)
 {

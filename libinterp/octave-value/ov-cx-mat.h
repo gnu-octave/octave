@@ -138,6 +138,9 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
   octave_value diag (octave_idx_type k = 0) const;
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const;

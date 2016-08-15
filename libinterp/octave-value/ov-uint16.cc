@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "quit.h"
 
-#include "defun.h"
 #include "errwarn.h"
 #include "ovl.h"
 #include "oct-lvalue.h"
@@ -47,7 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-int.h"
 #include "ov-base-int.cc"
 #include "ov-uint16.h"
-#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 
@@ -74,22 +72,3 @@ template class octave_base_int_scalar<octave_uint16>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint16_scalar,
                                      "uint16 scalar", "uint16");
-
-DEFUN (uint16, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} uint16 (@var{x})
-Convert @var{x} to unsigned 16-bit integer type.
-@seealso{int8, uint8, int16, int32, uint32, int64, uint64}
-@end deftypefn */)
-{
-  OCTAVE_TYPE_CONV_BODY (uint16);
-}
-
-/*
-%!assert (class (uint16 (1)), "uint16")
-%!assert (uint16 (1.25), uint16 (1))
-%!assert (uint16 (1.5), uint16 (2))
-%!assert (uint16 (-1.5), uint16 (0))
-%!assert (uint16 (2^17), uint16 (2^16-1))
-%!assert (uint16 (-2^17), uint16 (0))
-*/

@@ -132,6 +132,8 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
+  octave_value as_double (void) const;
+
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,

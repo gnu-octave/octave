@@ -77,13 +77,6 @@ CONVDECL (diag_matrix_to_matrix)
   return new octave_matrix (v.matrix_value ());
 }
 
-CONVDECL (diag_matrix_to_float_diag_matrix)
-{
-  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
-
-  return new octave_float_diag_matrix (v.float_diag_matrix_value ());
-}
-
 void
 install_dm_dm_ops (void)
 {
@@ -98,9 +91,6 @@ install_dm_dm_ops (void)
   INSTALL_BINOP (op_div, octave_diag_matrix, octave_diag_matrix, div);
   INSTALL_BINOP (op_ldiv, octave_diag_matrix, octave_diag_matrix, ldiv);
 
-  INSTALL_CONVOP (octave_diag_matrix, octave_matrix, diag_matrix_to_matrix);
-  INSTALL_CONVOP (octave_diag_matrix, octave_float_diag_matrix,
-                  diag_matrix_to_float_diag_matrix);
   INSTALL_ASSIGNCONV (octave_diag_matrix, octave_matrix, octave_matrix);
   INSTALL_WIDENOP (octave_diag_matrix, octave_matrix, diag_matrix_to_matrix);
 }

@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
+#include "dNDArray.h"
+#include "fNDArray.h"
+
 #include "data-conv.h"
 #include "lo-ieee.h"
 #include "lo-specfun.h"
@@ -285,6 +288,18 @@ SparseComplexMatrix
 octave_complex_matrix::sparse_complex_matrix_value (bool) const
 {
   return SparseComplexMatrix (ComplexMatrix (matrix));
+}
+
+octave_value
+octave_complex_matrix::as_double (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_complex_matrix::as_single (void) const
+{
+  return FloatComplexNDArray (matrix);
 }
 
 octave_value

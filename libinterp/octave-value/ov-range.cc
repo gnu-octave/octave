@@ -26,6 +26,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "dNDArray.h"
+#include "fNDArray.h"
+#include "int8NDArray.h"
+#include "int16NDArray.h"
+#include "int32NDArray.h"
+#include "int64NDArray.h"
+#include "uint8NDArray.h"
+#include "uint16NDArray.h"
+#include "uint32NDArray.h"
+#include "uint64NDArray.h"
+
 #include "lo-ieee.h"
 #include "lo-utils.h"
 
@@ -370,6 +381,66 @@ octave_range::convert_to_str_internal (bool pad, bool force, char type) const
 {
   octave_value tmp (range.matrix_value ());
   return tmp.convert_to_str (pad, force, type);
+}
+
+octave_value
+octave_range::as_double (void) const
+{
+  return range;
+}
+
+octave_value
+octave_range::as_single (void) const
+{
+  return FloatMatrix (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_int8 (void) const
+{
+  return int8NDArray (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_int16 (void) const
+{
+  return int16NDArray (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_int32 (void) const
+{
+  return int32NDArray (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_int64 (void) const
+{
+  return int64NDArray (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_uint8 (void) const
+{
+  return uint8NDArray (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_uint16 (void) const
+{
+  return uint16NDArray (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_uint32 (void) const
+{
+  return uint32NDArray (range.matrix_value ());
+}
+
+octave_value
+octave_range::as_uint64 (void) const
+{
+  return uint64NDArray (range.matrix_value ());
 }
 
 void

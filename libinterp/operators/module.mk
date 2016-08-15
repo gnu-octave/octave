@@ -37,7 +37,6 @@ LIBINTERP_OPERATORS_SRC = \
   libinterp/operators/op-dm-s.cc \
   libinterp/operators/op-dm-scm.cc \
   libinterp/operators/op-dm-sm.cc \
-  libinterp/operators/op-double-conv.cc \
   libinterp/operators/op-fcdm-fcdm.cc \
   libinterp/operators/op-fcdm-fcm.cc \
   libinterp/operators/op-fcdm-fcs.cc \
@@ -62,7 +61,6 @@ LIBINTERP_OPERATORS_SRC = \
   libinterp/operators/op-fdm-fdm.cc \
   libinterp/operators/op-fdm-fm.cc \
   libinterp/operators/op-fdm-fs.cc \
-  libinterp/operators/op-float-conv.cc \
   libinterp/operators/op-fm-fcdm.cc \
   libinterp/operators/op-fm-fcm.cc \
   libinterp/operators/op-fm-fcs.cc \
@@ -79,7 +77,6 @@ LIBINTERP_OPERATORS_SRC = \
   libinterp/operators/op-i64-i64.cc \
   libinterp/operators/op-i8-i8.cc \
   libinterp/operators/op-int-concat.cc \
-  libinterp/operators/op-int-conv.cc \
   libinterp/operators/op-m-cdm.cc \
   libinterp/operators/op-m-cm.cc \
   libinterp/operators/op-m-cs.cc \

@@ -84,7 +84,6 @@ install_pm_pm_ops (void)
   INSTALL_BINOP (op_ldiv, octave_perm_matrix, octave_perm_matrix, ldiv);
   INSTALL_BINOP (op_pow, octave_perm_matrix, octave_scalar, pow);
 
-  INSTALL_CONVOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
   INSTALL_ASSIGNCONV (octave_perm_matrix, octave_matrix, octave_matrix);
   INSTALL_WIDENOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
 }

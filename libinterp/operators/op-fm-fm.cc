@@ -186,13 +186,6 @@ DEFNDASSIGNOP_FNOP (assign_el_mul, float_matrix, float_matrix, float_array,
 DEFNDASSIGNOP_FNOP (assign_el_div, float_matrix, float_matrix, float_array,
                     quotient_eq)
 
-CONVDECL (float_matrix_to_matrix)
-{
-  const octave_float_matrix& v = dynamic_cast<const octave_float_matrix&> (a);
-
-  return new octave_matrix (v.array_value ());
-}
-
 void
 install_fm_fm_ops (void)
 {
@@ -269,6 +262,4 @@ install_fm_fm_ops (void)
                     assign_el_mul);
   INSTALL_ASSIGNOP (op_el_div_eq, octave_float_matrix, octave_float_matrix,
                     assign_el_div);
-
-  INSTALL_CONVOP (octave_float_matrix, octave_matrix, float_matrix_to_matrix);
 }

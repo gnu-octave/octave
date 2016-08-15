@@ -32,9 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "quit.h"
 
-#include "defun.h"
 #include "errwarn.h"
-#include "ovl.h"
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
 #include "ops.h"
@@ -47,7 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-int.h"
 #include "ov-base-int.cc"
 #include "ov-uint8.h"
-#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 
@@ -74,22 +71,3 @@ template class octave_base_int_scalar<octave_uint8>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint8_scalar,
                                      "uint8 scalar", "uint8");
-
-DEFUN (uint8, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} uint8 (@var{x})
-Convert @var{x} to unsigned 8-bit integer type.
-@seealso{int8, int16, uint16, int32, uint32, int64, uint64}
-@end deftypefn */)
-{
-  OCTAVE_TYPE_CONV_BODY (uint8);
-}
-
-/*
-%!assert (class (uint8 (1)), "uint8")
-%!assert (uint8 (1.25), uint8 (1))
-%!assert (uint8 (1.5), uint8 (2))
-%!assert (uint8 (-1.5), uint8 (0))
-%!assert (uint8 (2^9), uint8 (2^8-1))
-%!assert (uint8 (-2^9), uint8 (0))
-*/

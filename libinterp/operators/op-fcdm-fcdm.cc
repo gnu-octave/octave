@@ -76,13 +76,6 @@ DEFBINOP (ldiv, float_complex_diag_matrix, float_complex_diag_matrix)
                    v2.float_complex_diag_matrix_value ());
 }
 
-CONVDECL (float_complex_diag_matrix_to_float_complex_matrix)
-{
-  const octave_float_complex_diag_matrix& v = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
-
-  return new octave_float_complex_matrix (v.float_complex_matrix_value ());
-}
-
 CONVDECL (float_complex_diag_matrix_to_complex_diag_matrix)
 {
   const octave_float_complex_diag_matrix& v = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
@@ -109,10 +102,6 @@ install_fcdm_fcdm_ops (void)
   INSTALL_BINOP (op_ldiv, octave_float_complex_diag_matrix,
                  octave_float_complex_diag_matrix, ldiv);
 
-  INSTALL_CONVOP (octave_float_complex_diag_matrix, octave_complex_diag_matrix,
-                  float_complex_diag_matrix_to_complex_diag_matrix);
-  INSTALL_CONVOP (octave_float_complex_diag_matrix, octave_float_complex_matrix,
-                  float_complex_diag_matrix_to_float_complex_matrix);
   INSTALL_ASSIGNCONV (octave_float_complex_diag_matrix,
                       octave_float_complex_matrix, octave_float_complex_matrix);
   INSTALL_WIDENOP (octave_float_complex_diag_matrix, octave_complex_diag_matrix,

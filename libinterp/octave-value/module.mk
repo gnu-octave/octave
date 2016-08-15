@@ -56,7 +56,6 @@ OCTAVE_VALUE_INC = \
   libinterp/octave-value/ov-scalar.h \
   libinterp/octave-value/ov-str-mat.h \
   libinterp/octave-value/ov-struct.h \
-  libinterp/octave-value/ov-type-conv.h \
   libinterp/octave-value/ov-typeinfo.h \
   libinterp/octave-value/ov-usr-fcn.h \
   libinterp/octave-value/ov.h \

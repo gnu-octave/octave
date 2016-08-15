@@ -216,15 +216,6 @@ DEFNDASSIGNOP_FNOP (assign_el_mul, complex_matrix, complex_matrix,
 DEFNDASSIGNOP_FNOP (assign_el_div, complex_matrix, complex_matrix,
                     complex_array, quotient_eq)
 
-CONVDECL (complex_matrix_to_float_complex_matrix)
-{
-  const octave_complex_matrix& v = dynamic_cast<const octave_complex_matrix&> (a);
-
-  return
-    new octave_float_complex_matrix
-          (FloatComplexNDArray (v.complex_array_value ()));
-}
-
 void
 install_cm_cm_ops (void)
 {
@@ -295,7 +286,4 @@ install_cm_cm_ops (void)
                     assign_el_mul);
   INSTALL_ASSIGNOP (op_el_div_eq, octave_complex_matrix, octave_complex_matrix,
                     assign_el_div);
-
-  INSTALL_CONVOP (octave_complex_matrix, octave_float_complex_matrix,
-                  complex_matrix_to_float_complex_matrix);
 }

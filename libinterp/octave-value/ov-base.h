@@ -242,6 +242,19 @@ public:
 
   virtual octave_value full_value (void) const;
 
+  virtual octave_value as_double (void) const;
+  virtual octave_value as_single (void) const;
+
+  virtual octave_value as_int8 (void) const;
+  virtual octave_value as_int16 (void) const;
+  virtual octave_value as_int32 (void) const;
+  virtual octave_value as_int64 (void) const;
+
+  virtual octave_value as_uint8 (void) const;
+  virtual octave_value as_uint16 (void) const;
+  virtual octave_value as_uint32 (void) const;
+  virtual octave_value as_uint64 (void) const;
+
   virtual octave_base_value *try_narrowing_conversion (void) { return 0; }
 
   virtual void maybe_economize (void) { }

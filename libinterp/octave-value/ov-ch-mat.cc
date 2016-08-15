@@ -28,6 +28,17 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <iostream>
 
+#include "dNDArray.h"
+#include "fNDArray.h"
+#include "int8NDArray.h"
+#include "int16NDArray.h"
+#include "int32NDArray.h"
+#include "int64NDArray.h"
+#include "uint8NDArray.h"
+#include "uint16NDArray.h"
+#include "uint32NDArray.h"
+#include "uint64NDArray.h"
+
 #include "lo-ieee.h"
 #include "mx-base.h"
 
@@ -149,6 +160,66 @@ octave_char_matrix::float_complex_value (bool) const
   retval = static_cast<unsigned char> (matrix(0, 0));
 
   return retval;
+}
+
+octave_value
+octave_char_matrix::as_double (void) const
+{
+  return NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_single (void) const
+{
+  return FloatNDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_int8 (void) const
+{
+  return int8NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_int16 (void) const
+{
+  return int16NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_int32 (void) const
+{
+  return int32NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_int64 (void) const
+{
+  return int64NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_uint8 (void) const
+{
+  return uint8NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_uint16 (void) const
+{
+  return uint16NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_uint32 (void) const
+{
+  return uint32NDArray (matrix);
+}
+
+octave_value
+octave_char_matrix::as_uint64 (void) const
+{
+  return uint64NDArray (matrix);
 }
 
 void

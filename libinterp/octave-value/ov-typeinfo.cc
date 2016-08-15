@@ -160,14 +160,6 @@ octave_value_typeinfo::register_pref_assign_conv (int t_lhs, int t_rhs,
 }
 
 bool
-octave_value_typeinfo::register_type_conv_op (int t, int t_result,
-                                              octave_base_value::type_conv_fcn f)
-{
-  return (instance_ok ())
-         ? instance->do_register_type_conv_op (t, t_result, f) : false;
-}
-
-bool
 octave_value_typeinfo::register_widening_op (int t, int t_result,
                                              octave_base_value::type_conv_fcn f)
 {
@@ -219,8 +211,6 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
         (dim_vector (octave_value::num_assign_ops, len), 0);
 
       pref_assign_conv.resize (dim_vector (len, len), -1);
-
-      type_conv_ops.resize (dim_vector (len, len), 0);
 
       widening_ops.resize (dim_vector (len, len), 0);
     }
@@ -446,24 +436,6 @@ octave_value_typeinfo::do_register_pref_assign_conv (int t_lhs, int t_rhs,
 }
 
 bool
-octave_value_typeinfo::do_register_type_conv_op
-  (int t, int t_result, octave_base_value::type_conv_fcn f)
-{
-  if (lookup_type_conv_op (t, t_result))
-    {
-      std::string t_name = types(t);
-      std::string t_result_name = types(t_result);
-
-      warning ("overriding type conversion op for '%s' to '%s'",
-               t_name.c_str (), t_result_name.c_str ());
-    }
-
-  type_conv_ops.checkelem (t, t_result) = reinterpret_cast<void *> (f);
-
-  return false;
-}
-
-bool
 octave_value_typeinfo::do_register_widening_op
   (int t, int t_result, octave_base_value::type_conv_fcn f)
 {
@@ -578,13 +550,6 @@ int
 octave_value_typeinfo::do_lookup_pref_assign_conv (int t_lhs, int t_rhs)
 {
   return pref_assign_conv.checkelem (t_lhs, t_rhs);
-}
-
-octave_base_value::type_conv_fcn
-octave_value_typeinfo::do_lookup_type_conv_op (int t, int t_result)
-{
-  void *f = type_conv_ops.checkelem (t, t_result);
-  return reinterpret_cast<octave_base_value::type_conv_fcn> (f);
 }
 
 octave_base_value::type_conv_fcn
@@ -907,7 +872,6 @@ octave_value_typeinfo::do_installed_type_info (void) const
   retval.setfield ("assign_ops", assign_ops_map ());
   retval.setfield ("assignany_ops", assignany_ops_map ());
   retval.setfield ("pref_assign_conv", as_nd_array (pref_assign_conv));
-  retval.setfield ("type_conv_ops", as_bool_nd_array (type_conv_ops));
   retval.setfield ("widening_ops", as_bool_nd_array (widening_ops));
 
   return retval;

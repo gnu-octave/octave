@@ -221,6 +221,12 @@ octave_sparse_complex_matrix::sparse_bool_matrix_value (bool warn) const
   return mx_el_ne (matrix, Complex (0.0));
 }
 
+octave_value
+octave_sparse_complex_matrix::as_double (void) const
+{
+  return this->matrix;
+}
+
 bool
 octave_sparse_complex_matrix::save_binary (std::ostream& os,
                                            bool& save_as_floats)

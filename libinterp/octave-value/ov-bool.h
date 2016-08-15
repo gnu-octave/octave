@@ -207,6 +207,19 @@ public:
   boolNDArray bool_array_value (bool = false) const
   { return boolNDArray (dim_vector (1, 1), scalar); }
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;

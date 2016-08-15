@@ -67,10 +67,6 @@ extern void install_ops (void);
   octave_value_typeinfo::register_pref_assign_conv                      \
   (t1::static_type_id (), t2::static_type_id (), tr::static_type_id ());
 
-#define INSTALL_CONVOP(t1, t2, f)                                       \
-  octave_value_typeinfo::register_type_conv_op                          \
-  (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_conv_, f));
-
 #define INSTALL_WIDENOP(t1, t2, f)                                      \
   octave_value_typeinfo::register_widening_op                           \
   (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_conv_, f));
@@ -166,59 +162,8 @@ extern void install_ops (void);
   static octave_base_value *                                    \
   CONCAT2 (oct_conv_, name) (const octave_base_value& a)
 
-#define CONVDECLX(name)                                 \
-  static octave_base_value *                            \
-  CONCAT2 (oct_conv_, name) (const octave_base_value&)
-
 #define DEFCONV(name, a_dummy, b_dummy)         \
   CONVDECL (name)
-
-#define DEFCONVFNX(name, tfrom, ovtto, tto, e)                          \
-  CONVDECL (name)                                                       \
-  {                                                                     \
-    const CONCAT2 (octave_, tfrom)& v = dynamic_cast<const CONCAT2 (octave_, tfrom)&> (a); \
-                                                                        \
-    return new CONCAT2 (octave_, ovtto) (CONCAT2 (tto, NDArray) (v.CONCAT2 (e, array_value) ())); \
-  }
-
-#define DEFCONVFNX2(name, tfrom, ovtto, e)                              \
-  CONVDECL (name)                                                       \
-  {                                                                     \
-    const CONCAT2 (octave_, tfrom)& v = dynamic_cast<const CONCAT2 (octave_, tfrom)&> (a); \
-                                                                        \
-    return new CONCAT2 (octave_, ovtto) (v.CONCAT2 (e, array_value) ()); \
-  }
-
-#define DEFDBLCONVFN(name, ovtfrom, e)                                  \
-  CONVDECL (name)                                                       \
-  {                                                                     \
-    const CONCAT2 (octave_, ovtfrom)& v = dynamic_cast<const CONCAT2 (octave_, ovtfrom)&> (a); \
-                                                                        \
-    return new octave_matrix (NDArray (v.CONCAT2 (e, _value) ()));      \
-  }
-
-#define DEFFLTCONVFN(name, ovtfrom, e)                                  \
-  CONVDECL (name)                                                       \
-  {                                                                     \
-    const CONCAT2 (octave_, ovtfrom)& v = dynamic_cast<const CONCAT2 (octave_, ovtfrom)&> (a); \
-                                                                        \
-    return new octave_float_matrix (FloatNDArray (v.CONCAT2 (e, _value) ())); \
-  }
-
-#define DEFSTRINTCONVFN(name, tto)                                      \
-  DEFCONVFNX(name, char_matrix_str, CONCAT2 (tto, _matrix), tto, char_)
-
-#define DEFSTRDBLCONVFN(name, tfrom)            \
-  DEFCONVFNX(name, tfrom, matrix, , char_)
-
-#define DEFSTRFLTCONVFN(name, tfrom)                    \
-  DEFCONVFNX(name, tfrom, float_matrix, Float, char_)
-
-#define DEFCONVFN(name, tfrom, tto)                                     \
-  DEFCONVFNX2 (name, tfrom, CONCAT2 (tto, _matrix), CONCAT2 (tto, _))
-
-#define DEFCONVFN2(name, tfrom, sm, tto)                                \
-  DEFCONVFNX2 (name, CONCAT3 (tfrom, _, sm), CONCAT2 (tto, _matrix), CONCAT2 (tto, _))
 
 #define DEFUNOPX(name, t)                               \
   static octave_value                                   \

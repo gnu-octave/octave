@@ -264,6 +264,66 @@ octave_perm_matrix::convert_to_str_internal (bool pad, bool force,
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
 
+octave_value
+octave_perm_matrix::as_double (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_perm_matrix::as_single (void) const
+{
+  return float_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_int8 (void) const
+{
+  return int8_array_value  ();
+}
+
+octave_value
+octave_perm_matrix::as_int16 (void) const
+{
+  return int16_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_int32 (void) const
+{
+  return int32_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_int64 (void) const
+{
+  return int64_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint8 (void) const
+{
+  return uint8_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint16 (void) const
+{
+  return uint16_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint32 (void) const
+{
+  return uint32_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint64 (void) const
+{
+  return uint64_array_value ();
+}
+
 bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {

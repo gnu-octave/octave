@@ -235,6 +235,18 @@ octave_float_complex::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
+octave_float_complex::as_double (void) const
+{
+  return Complex (scalar);
+}
+
+octave_value
+octave_float_complex::as_single (void) const
+{
+  return scalar;
+}
+
+octave_value
 octave_float_complex::diag (octave_idx_type m, octave_idx_type n) const
 {
   return

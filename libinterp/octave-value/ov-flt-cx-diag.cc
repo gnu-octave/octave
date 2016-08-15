@@ -118,6 +118,18 @@ octave_float_complex_diag_matrix::float_complex_diag_matrix_value (bool) const
 }
 
 octave_value
+octave_float_complex_diag_matrix::as_double (void) const
+{
+  return ComplexDiagMatrix (matrix);
+}
+
+octave_value
+octave_float_complex_diag_matrix::as_single (void) const
+{
+  return matrix;
+}
+
+octave_value
 octave_float_complex_diag_matrix::map (unary_mapper_t umap) const
 {
   switch (umap)

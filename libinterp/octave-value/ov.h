@@ -388,8 +388,18 @@ public:
 
   // Type conversions.
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double (void) const { return rep->as_double (); }
+  octave_value as_single (void) const { return rep->as_single (); }
+
+  octave_value as_int8 (void) const { return rep->as_int8 (); }
+  octave_value as_int16 (void) const { return rep->as_int16 (); }
+  octave_value as_int32 (void) const { return rep->as_int32 (); }
+  octave_value as_int64 (void) const { return rep->as_int64 (); }
+
+  octave_value as_uint8 (void) const { return rep->as_uint8 (); }
+  octave_value as_uint16 (void) const { return rep->as_uint16 (); }
+  octave_value as_uint32 (void) const { return rep->as_uint32 (); }
+  octave_value as_uint64 (void) const { return rep->as_uint64 (); }
 
   octave_base_value *try_narrowing_conversion (void)
   { return rep->try_narrowing_conversion (); }

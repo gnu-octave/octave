@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "oct-inttypes.h"
+
 #include "ovl.h"
 #include "ov-base.h"
 #include "ov-cx-mat.h"

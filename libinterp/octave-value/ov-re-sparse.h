@@ -134,6 +134,8 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
+  octave_value as_double (void) const;
+
 #if 0
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,

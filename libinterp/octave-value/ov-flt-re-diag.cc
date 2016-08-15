@@ -89,6 +89,66 @@ octave_float_diag_matrix::float_complex_diag_matrix_value (bool) const
 }
 
 octave_value
+octave_float_diag_matrix::as_double (void) const
+{
+  return DiagMatrix (matrix);
+}
+
+octave_value
+octave_float_diag_matrix::as_single (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_float_diag_matrix::as_int8 (void) const
+{
+  return int8_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_int16 (void) const
+{
+  return int16_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_int32 (void) const
+{
+  return int32_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_int64 (void) const
+{
+  return int64_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint8 (void) const
+{
+  return uint8_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint16 (void) const
+{
+  return uint16_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint32 (void) const
+{
+  return uint32_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint64 (void) const
+{
+  return uint64_array_value ();
+}
+
+octave_value
 octave_float_diag_matrix::map (unary_mapper_t umap) const
 {
   switch (umap)

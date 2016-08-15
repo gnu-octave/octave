@@ -158,6 +158,9 @@ public:
     return boolNDArray (dim_vector (1, 1), scalar != 0.0);
   }
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   void increment (void) { scalar += 1.0; }

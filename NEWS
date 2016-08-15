@@ -95,6 +95,13 @@ Summary of important user-visible changes for version 4.2:
     questdlg, and warndlg--now exclusively use Qt for rendering.
     Java based versions have been removed.
 
+ ** The axes properties "TitleFontSizeMultiplier" and "TitleFontWeight"
+    are now implemented which control the default appearance of text
+    created with title() appear.
+    The axes property "LabelFontSizeMultiplier" is now implemented
+    which controls the default appearance of text created with
+    xlabel(), ylabel(), or zlabel().
+
  ** The graphics property 'erasemode' has been hidden, and will
     eventually be removed.  This property has also been removed
     from Matlab, and was never implemented in Octave.

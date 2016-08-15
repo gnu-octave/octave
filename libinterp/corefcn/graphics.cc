@@ -4773,11 +4773,8 @@ void
 axes::properties::set_defaults (base_graphics_object& bgo,
                                 const std::string& mode)
 {
-  box = "on";
-  colororder = default_colororder ();
-  // Note: dataspectratio will be set through update_aspectratios
-  dataaspectratiomode = "auto";
-  layer = "bottom";
+  // FIXME: Should this have all properties in it?
+  // Including ones we do don't implement?
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;
@@ -4786,60 +4783,16 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   ylim = tlim;
   zlim = tlim;
 
-  Matrix cl (1, 2, 0.0);
-  cl(1) = 1;
-  clim = cl;
-
+  alimmode = "auto";
+  climmode = "auto";
   xlimmode = "auto";
   ylimmode = "auto";
   zlimmode = "auto";
-  climmode = "auto";
-  alimmode = "auto";
-
-  xgrid = "off";
-  ygrid = "off";
-  zgrid = "off";
-  xminorgrid = "off";
-  yminorgrid = "off";
-  zminorgrid = "off";
-  xtick = Matrix ();
-  ytick = Matrix ();
-  ztick = Matrix ();
-  xtickmode = "auto";
-  ytickmode = "auto";
-  ztickmode = "auto";
-  xminortick = "off";
-  yminortick = "off";
-  zminortick = "off";
-  xticklabel = "";
-  yticklabel = "";
-  zticklabel = "";
-  xticklabelmode = "auto";
-  yticklabelmode = "auto";
-  zticklabelmode = "auto";
-
-  ticklabelinterpreter = "tex";
-
-  color = color_values ("white");
-  xcolor = color_values ("black");
-  ycolor = color_values ("black");
-  zcolor = color_values ("black");
-  xscale = "linear";
-  yscale = "linear";
-  zscale = "linear";
-  xdir = "normal";
-  ydir = "normal";
-  zdir = "normal";
-  yaxislocation = "left";
-  xaxislocation = "bottom";
-
-  Matrix tview (1, 2, 0.0);
-  tview(1) = 90;
-  view = tview;
-
-  nextplot = "replace";
 
   ambientlightcolor = Matrix (1, 3, 1.0);
+
+  box = "on";
+  boxstyle = "back";
 
   // Note: camera properties (not mode) will be set in update_transform
   camerapositionmode = "auto";
@@ -4847,28 +4800,113 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   cameraupvectormode = "auto";
   cameraviewanglemode = "auto";
 
+  Matrix cl (1, 2, 0.0);
+  cl(1) = 1;
+  clim = cl;
+
+  clippingstyle = "3dbox";
+
+  color = color_values ("white");
+  colororder = default_colororder ();
+  colororderindex = 1.0;
+
+  // Note: dataspectratio (not mode) will be set through update_aspectratios
+  dataaspectratiomode = "auto";
+
   drawmode = "normal";
 
   fontangle = "normal";
   fontname = OCTAVE_DEFAULT_FONTNAME;
   fontsize = 10;
   fontunits = "points";
+  fontsmoothing = "on";
   fontweight = "normal";
 
+  gridalpha = 0.15;
+  gridalphamode = "auto";
+  gridcolor = color_values (0.15, 0.15, 0.15);
+  gridcolormode = "auto";
   gridlinestyle = "-";
+   
+  labelfontsizemultiplier = 1.1; 
+
+  layer = "bottom";
+
   linestyleorder = "-";
+  linestyleorderindex = 1.0;
+
   linewidth = 0.5;
+
+  minorgridalpha = 0.25;
+  minorgridalphamode = "auto";
+  minorgridcolor = color_values (0.1, 0.1, 0.1);
+  minorgridcolormode = "auto";
   minorgridlinestyle = ":";
+
+  nextplot = "replace";
 
   // Note: plotboxaspectratio will be set through update_aspectratios
   plotboxaspectratiomode = "auto";
   projection = "orthographic";
 
+  sortmethod = "depth";
+
   tickdir = "in";
   tickdirmode = "auto";
+  ticklabelinterpreter = "tex";
   ticklength = default_axes_ticklength ();
 
   tightinset = Matrix (1, 4, 0.0);
+
+  titlefontsizemultiplier = 1.1; 
+  titlefontweight = "bold"; 
+
+  Matrix tview (1, 2, 0.0);
+  tview(1) = 90;
+  view = tview;
+
+  xaxislocation = "bottom";
+
+  xcolor = color_values (0.15, 0.15, 0.15);
+  xcolormode = "auto";
+  xdir = "normal";
+  xgrid = "off";
+  xminorgrid = "off";
+  xminortick = "off";
+  xscale = "linear";
+  xtick = Matrix ();
+  xticklabel = "";
+  xticklabelmode = "auto";
+  xticklabelrotation = 0.0;
+  xtickmode = "auto";
+
+  yaxislocation = "left";
+
+  ycolor = color_values (0.15, 0.15, 0.15);
+  ycolormode = "auto";
+  ydir = "normal";
+  ygrid = "off";
+  yminorgrid = "off";
+  yminortick = "off";
+  yscale = "linear";
+  ytick = Matrix ();
+  yticklabel = "";
+  yticklabelmode = "auto";
+  yticklabelrotation = 0.0;
+  ytickmode = "auto";
+
+  zcolor = color_values (0.15, 0.15, 0.15);
+  zcolormode = "auto";
+  zdir = "normal";
+  zgrid = "off";
+  zminorgrid = "off";
+  zminortick = "off";
+  zscale = "linear";
+  ztick = Matrix ();
+  zticklabel = "";
+  zticklabelmode = "auto";
+  zticklabelrotation = 0.0;
+  ztickmode = "auto";
 
   sx = "linear";
   sy = "linear";

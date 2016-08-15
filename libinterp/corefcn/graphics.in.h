@@ -3875,7 +3875,7 @@ public:
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
       radio_property xaxislocation u , "{bottom}|top|zero"
-      color_property xcolor m , color_values (0, 0, 0)
+      color_property xcolor m , color_values (0.15, 0.15, 0.15)
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
       bool_property xgrid , "off"
@@ -3892,7 +3892,7 @@ public:
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
       radio_property yaxislocation u , "{left}|right|zero"
-      color_property ycolor m , color_values (0, 0, 0)
+      color_property ycolor m , color_values (0.15, 0.15, 0.15)
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
       bool_property ygrid , "off"
@@ -3907,7 +3907,7 @@ public:
       radio_property yticklabelmode u , "{auto}|manual"
       double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
-      color_property zcolor m , color_values (0, 0, 0)
+      color_property zcolor m , color_values (0.15, 0.15, 0.15)
       radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"
       bool_property zgrid , "off"

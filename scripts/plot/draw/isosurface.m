@@ -198,8 +198,7 @@ function varargout = isosurface (varargin)
       isonormals (x, y, z, v, pa);
       lights = findobj (hax, "Type", "light");
       if (isempty (lights))
-        ## FIXME: Matlab seems to use camlight (patch #9014) here
-        light ();
+        camlight ();
       endif
 
     case 1

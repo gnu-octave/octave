@@ -4769,11 +4769,12 @@ context of the function that called the present function
     Evaluate an Octave function (built-in or interpreted) and return
     the list of result values.
 
-    @param name the name of the function to call.
-    @param args the arguments to the function.
-    @param nargout the number of output arguments expected.
-    @return the list of output values with length @nargout, except
-      if the function is not defined.
+    @param name The name of the function to call.
+    @param args The arguments to the function.
+    @param nargout The number of output arguments expected.
+    @return A list of output values.  The length of the list is not
+      necessarily the same as @c nargout.
+
 */
 octave_value_list
 feval (const std::string& name, const octave_value_list& args, int nargout)
@@ -4783,9 +4784,7 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
   octave_value fcn = symbol_table::find_function (name, args);
 
   if (fcn.is_defined ())
-    {
-       retval = fcn.do_multi_index_op (nargout, args);
-    }
+    retval = fcn.do_multi_index_op (nargout, args);
   else
     {
       try
@@ -4822,11 +4821,13 @@ get_feval_args (const octave_value_list& args)
     Evaluate an Octave function (built-in or interpreted) and return
     the list of result values.
 
-    @param args the first element of @c args should be a string
-       containing the name of the function to call, then the rest
-       are the actual arguments to the function.
-    @param nargout the number of output arguments expected.
-    @return the list of output values with length @nargout.
+    @param args The first element of @c args is the function to call.
+      It may be the name of the function as a string, a function
+      handle, or an inline function.  The remaining arguments are
+      passed to the function.
+    @param nargout The number of output arguments expected.
+    @return A list of output values.  The length of the list is not
+      necessarily the same as @c nargout.
 */
 octave_value_list
 feval (const octave_value_list& args, int nargout)

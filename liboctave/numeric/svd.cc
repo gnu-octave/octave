@@ -461,8 +461,9 @@ svd<T>::svd (const T& a, svd::Type type,
 
   std::vector<P> work (1);
 
-  octave_idx_type m1 = std::max (m, 1);
-  octave_idx_type nrow_vt1 = std::max (nrow_vt, 1);
+  octave_idx_type m1 = std::max (m, static_cast<octave_idx_type> (1));
+  octave_idx_type nrow_vt1 = std::max (nrow_vt,
+    static_cast<octave_idx_type> (1));
 
   if (m_driver == svd::Driver::GESVD)
     gesvd (jobu, jobv, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,

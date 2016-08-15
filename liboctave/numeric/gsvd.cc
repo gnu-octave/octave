@@ -54,7 +54,7 @@ extern "C"
      F77_DBLE*,                 // Q       (output) DOUBLE PRECISION array, dimension (LDQ,N)
      const F77_INT&,            // LDQ     (input) INTEGER
      F77_DBLE*,                 // WORK    (workspace) DOUBLE PRECISION array
-     int*,                      // IWORK   (workspace/output) INTEGER array, dimension (N)
+     F77_INT*,                  // IWORK   (workspace/output) INTEGER array, dimension (N)
      F77_INT&                   // INFO    (output)INTEGER
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
@@ -86,7 +86,7 @@ extern "C"
      const F77_INT&,            // LDQ     (input) INTEGER
      F77_DBLE_CMPLX*,           // WORK    (workspace) COMPLEX*16 array
      F77_DBLE*,                 // RWORK   (workspace) DOUBLE PRECISION array
-     int*,                      // IWORK   (workspace/output) INTEGER array, dimension (N)
+     F77_INT*,                  // IWORK   (workspace/output) INTEGER array, dimension (N)
      F77_INT&                   // INFO    (output)INTEGER
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL

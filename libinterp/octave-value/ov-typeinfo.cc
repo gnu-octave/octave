@@ -705,7 +705,8 @@ octave_value_typeinfo::unary_ops_map (void) const
 {
   octave_scalar_map retval;
 
-  int len = std::min (non_const_unary_ops.columns (), num_types);
+  int len = std::min (static_cast<int> (non_const_unary_ops.columns ()),
+    num_types);
 
   dim_vector tab_dims (1, len);
 
@@ -729,7 +730,8 @@ octave_value_typeinfo::non_const_unary_ops_map (void) const
 {
   octave_scalar_map retval;
 
-  int len = std::min (non_const_unary_ops.columns (), num_types);
+  int len = std::min (static_cast<int> (non_const_unary_ops.columns ()),
+    num_types);
 
   dim_vector tab_dims (1, len);
 
@@ -753,7 +755,7 @@ octave_value_typeinfo::binary_ops_map (void) const
 {
   octave_scalar_map retval;
 
-  int len = std::min (binary_ops.columns (), num_types);
+  int len = std::min (static_cast<int> (binary_ops.columns ()), num_types);
 
   dim_vector tab_dims (len, len);
 
@@ -778,7 +780,8 @@ octave_value_typeinfo::compound_binary_ops_map (void) const
 {
   octave_scalar_map retval;
 
-  int len = std::min (compound_binary_ops.columns (), num_types);
+  int len = std::min (static_cast<int> (compound_binary_ops.columns ()),
+    num_types);
 
   dim_vector tab_dims (len, len);
 
@@ -803,7 +806,7 @@ octave_value_typeinfo::assign_ops_map (void) const
 {
   octave_scalar_map retval;
 
-  int len = std::min (assign_ops.columns (), num_types);
+  int len = std::min (static_cast<int> (assign_ops.columns ()), num_types);
 
   dim_vector tab_dims (len, len);
 
@@ -828,7 +831,7 @@ octave_value_typeinfo::assignany_ops_map (void) const
 {
   octave_scalar_map retval;
 
-  int len = std::min (assignany_ops.columns (), num_types);
+  int len = std::min (static_cast<int> (assignany_ops.columns ()), num_types);
 
   dim_vector tab_dims (1, len);
 

@@ -1652,7 +1652,8 @@ cdef_object_array::subsasgn (const std::string& type,
 
           bool is_scalar = true;
 
-          Array<idx_vector> iv (dim_vector (1, std::max (ival.length (), 2)));
+          Array<idx_vector> iv (dim_vector (1, std::max (ival.length (), 
+            static_cast<octave_idx_type> (2))));
 
           for (int i = 0; i < ival.length (); i++)
             {
@@ -1678,7 +1679,7 @@ cdef_object_array::subsasgn (const std::string& type,
           // Fill in trailing singleton dimensions so that
           // array.index doesn't create a new blank entry (bug #46660).
           for (int i = ival.length (); i < 2; i++)
-            iv(i) = 1;
+            iv(i) = static_cast<octave_idx_type> (1);
 
           Array<cdef_object> a = array.index (iv, true);
 

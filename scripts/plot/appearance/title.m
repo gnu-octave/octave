@@ -48,7 +48,16 @@ function h = title (varargin)
     print_usage ();
   endif
 
-  htmp = __axis_label__ (hax, "title", varargin{:});
+  htmp = get (hax, "title");
+  
+  set (htmp, "fontangle", get (hax, "fontangle"),
+             "fontname", get (hax, "fontname"),
+             "fontunits", get (hax, "fontunits"),   # must precede fontsize
+             "fontsize", get (hax, "TitleFontSizeMultiplier") *
+                         get (hax, "fontsize"),
+             "fontweight", get (hax, "titlefontweight"),
+             "string", varargin{1},
+             varargin{2:end});
 
   if (nargout > 0)
     h = htmp;
@@ -59,28 +68,22 @@ endfunction
 
 %!demo
 %! clf;
-%! ax = axes ();
-%! h = get (ax, 'title');
-%! title ('Test Title Text');
+%! title ("Test Title Text");
 
 %!demo
 %! clf;
-%! ax = axes ();
-%! h = get (ax, 'title');
-%! title ({'Multi-line'; 'Title'; 'Text'});
+%! title ({"Multi-line"; "Title"; "Text"});
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! h = get (gca, 'title');
-%! title ('Test FontSize Property', 'fontsize', 16);
+%! title ("Test FontSize Property", "fontsize", 16);
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   ax = axes ();
-%!   h = get (ax, "title");
 %!   title ("Test Title Text");
+%!   h = get (gca, "title");
 %!   assert (get (h, "string"), "Test Title Text");
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -89,10 +92,20 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   ax = axes ();
-%!   h = get (ax, "title");
-%!   title ({'Multi-line'; 'Title'; 'Text'});
-%!   assert (get (h, "string"), {'Multi-line'; 'Title'; 'Text'});
+%!   title ({"Multi-line"; "Title"; "Text"});
+%!   h = get (gca, "title");
+%!   assert (get (h, "string"), {"Multi-line"; "Title"; "Text"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   set (gca, "fontsize", 5, "titlefontsizemultiplier", 3);
+%!   ht = title ("title_string", "color", "r");
+%!   assert (get (ht, "fontsize"), 15);
+%!   assert (get (ht, "color"), [1 0 0]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -101,11 +114,10 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
-%!   h = get (gca, "title");
 %!   title ("Test FontSize Property", "fontsize", 16);
+%!   h = get (gca, "title");
 %!   assert (get (h, "string"), "Test FontSize Property");
 %!   assert (get (h, "fontsize"), 16);
-
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

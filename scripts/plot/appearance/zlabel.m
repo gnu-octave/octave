@@ -48,7 +48,8 @@ function h = zlabel (varargin)
   endif
 
   htmp = __axis_label__ (hax, "zlabel", varargin{1},
-                         "color", get (hax, "zcolor"), varargin{2:end});
+                         "color", get (hax, "zcolor"),
+                         varargin{2:end});
 
   if (nargout > 0)
     h = htmp;
@@ -60,24 +61,24 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   z = zlabel ("zlabel_string", "color", "r");
-%!   assert (get (gca, "zlabel"), z);
-%!   assert (get (z, "type"), "text");
-%!   assert (get (z, "visible"), "off");
-%!   assert (get (z, "string"), "zlabel_string");
-%!   assert (get (z, "color"), [1 0 0]);
+%!   view (3);
+%!   hz = zlabel ("zlabel_string");
+%!   assert (get (gca, "zlabel"), hz);
+%!   assert (get (hz, "type"), "text");
+%!   assert (get (hz, "visible"), "off");
+%!   assert (get (hz, "string"), "zlabel_string");
+%!   assert (get (hz, "color"), get (0, "defaultaxeszcolor"));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
 %!test
 %! hf = figure ("visible", "off");
-%! plot3 (0, 0, 0);
 %! unwind_protect
-%!   z = zlabel ("zlabel_string");
-%!   assert (get (gca, "zlabel"), z);
-%!   assert (get (z, "type"), "text");
-%!   assert (get (z, "string"), "zlabel_string");
+%!   set (gca, "fontsize", 5, "labelfontsizemultiplier", 3);
+%!   hz = zlabel ("zlabel_string", "color", "r");
+%!   assert (get (hz, "fontsize"), 15);
+%!   assert (get (hz, "color"), [1 0 0]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

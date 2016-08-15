@@ -49,7 +49,8 @@ function h = xlabel (varargin)
   endif
 
   htmp = __axis_label__ (hax, "xlabel", varargin{1},
-                         "color", get (hax, "xcolor"), varargin{2:end});
+                         "color", get (hax, "xcolor"),
+                         varargin{2:end});
 
   if (nargout > 0)
     h = htmp;
@@ -61,12 +62,23 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   x = xlabel ("xlabel_string", "color", "r");
-%!   assert (get (gca, "xlabel"), x);
-%!   assert (get (x, "type"), "text");
-%!   assert (get (x, "visible"), "on");
-%!   assert (get (x, "string"), "xlabel_string");
-%!   assert (get (x, "color"), [1 0 0]);
+%!   hx = xlabel ("xlabel_string");
+%!   assert (get (gca, "xlabel"), hx);
+%!   assert (get (hx, "type"), "text");
+%!   assert (get (hx, "visible"), "on");
+%!   assert (get (hx, "string"), "xlabel_string");
+%!   assert (get (hx, "color"), get (0, "defaultaxesxcolor"));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   set (gca, "fontsize", 5, "labelfontsizemultiplier", 3);
+%!   hx = xlabel ("xlabel_string", "color", "r");
+%!   assert (get (hx, "fontsize"), 15);
+%!   assert (get (hx, "color"), [1 0 0]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

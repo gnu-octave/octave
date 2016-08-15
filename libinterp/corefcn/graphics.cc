@@ -4827,8 +4827,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   gridcolor = color_values (0.15, 0.15, 0.15);
   gridcolormode = "auto";
   gridlinestyle = "-";
-   
-  labelfontsizemultiplier = 1.1; 
+
+  labelfontsizemultiplier = 1.1;
 
   layer = "bottom";
 
@@ -4858,8 +4858,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
 
   tightinset = Matrix (1, 4, 0.0);
 
-  titlefontsizemultiplier = 1.1; 
-  titlefontweight = "bold"; 
+  titlefontsizemultiplier = 1.1;
+  titlefontweight = "bold";
 
   Matrix tview (1, 2, 0.0);
   tview(1) = 90;

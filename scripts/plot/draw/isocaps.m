@@ -398,7 +398,7 @@ endfunction
 %! isoval = .5;
 %! x = 1:3:22;  y = -14:5:11;  z = linspace (16, 18, 4);
 %! [xx, yy, zz] = meshgrid (x, y, z);
-%! clf; 
+%! clf;
 %! %% two arguments, no output
 %! subplot (2, 2, 1);
 %!  isocaps (v, isoval);
@@ -529,7 +529,7 @@ endfunction
 
 ## five arguments + three strings (different order), three outputs
 %!test
-%! [faces, vertices, fvcdata] = isocaps (x, y, z, val, iso, 
+%! [faces, vertices, fvcdata] = isocaps (x, y, z, val, iso,
 %!                                       "below", "v", "zmax");
 %! assert (columns (faces), 3);
 %! assert (columns (vertices), 3);

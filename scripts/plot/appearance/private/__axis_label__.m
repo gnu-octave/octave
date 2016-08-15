@@ -36,9 +36,9 @@ function retval = __axis_label__ (hax, caller, txt, varargin)
           "string", txt,
           varargin{:});
 
-  ## FIXME: It would be better to delete only the listener that [xyz]label 
+  ## FIXME: It would be better to delete only the listener that [xyz]label
   ##        installed.  But this didn't work, so instead it deletes all
-  ##        listener's on the [xyz]color property. 
+  ##        listener's on the [xyz]color property.
   dellistener (hax, [caller(1) "color"]);
   addlistener (hax, [caller(1) "color"], {@cb_color, h, caller(1)});
 

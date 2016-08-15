@@ -419,7 +419,7 @@ raw_help_from_docstrings_file (const std::string& nm, std::string& h,
 
           // Skip help text.
           file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
- 
+
           // Position of end of help text.
           std::streamoff len = file.tellg () - beg - 1;
 

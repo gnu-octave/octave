@@ -94,7 +94,7 @@ octave_oncleanup::~octave_oncleanup (void)
       std::string msg = last_error_message ();
       warning ("onCleanup: error caught while executing cleanup function:\n%s\n",
                msg.c_str ());
-      
+
     }
   catch (...) // Yes, the black hole.  We're in a d-tor.
     {

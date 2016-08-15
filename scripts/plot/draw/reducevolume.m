@@ -197,7 +197,7 @@ endfunction
 ## two inputs, one output
 %!test
 %! nv = reducevolume (v, [4 3 2]);
-%! nv_expected = [1 25; 4 28];  nv_expected(:,:,2) = [97 121; 100 124]; 
+%! nv_expected = [1 25; 4 28];  nv_expected(:,:,2) = [97 121; 100 124];
 %! assert (nv, nv_expected);
 
 ## two inputs, four outputs
@@ -206,7 +206,7 @@ endfunction
 %! nx_expected(1:2,1,1:2) = 1;  nx_expected(:,2,:) = 5;
 %! ny_expected(1,1:2,1:2) = 1;  ny_expected(2,:,:) = 4;
 %! nz_expected(1:2,1:2,1) = 1;  nz_expected(:,:,2) = 3;
-%! nv_expected = [1 25; 4 28];  nv_expected(:,:,2) = [97 121; 100 124]; 
+%! nv_expected = [1 25; 4 28];  nv_expected(:,:,2) = [97 121; 100 124];
 %! assert (nx, nx_expected);
 %! assert (ny, ny_expected);
 %! assert (nz, nz_expected);
@@ -215,7 +215,7 @@ endfunction
 ## five inputs, one output
 %!test
 %! nv = reducevolume (x, y, z, v, [4 3 2]);
-%! nv_expected = [1 25; 4 28];  nv_expected(:,:,2) = [97 121; 100 124]; 
+%! nv_expected = [1 25; 4 28];  nv_expected(:,:,2) = [97 121; 100 124];
 %! assert (nv, nv_expected);
 
 ## five inputs, four outputs (coordinates are vectors)
@@ -224,7 +224,7 @@ endfunction
 %! nx_expected(1:2,1,1:2) = x(1); nx_expected(:,2,:) = x(5);
 %! ny_expected(1,1:2,1:2) = y(1); ny_expected(2,:,:) = y(4);
 %! nz_expected(1:2,1:2,1) = z(1); nz_expected(:,:,2) = z(3);
-%! nv_expected = [1 25; 4 28]; nv_expected(:,:,2) = [97 121; 100 124]; 
+%! nv_expected = [1 25; 4 28]; nv_expected(:,:,2) = [97 121; 100 124];
 %! assert (nx, nx_expected);
 %! assert (ny, ny_expected);
 %! assert (nz, nz_expected);
@@ -236,7 +236,7 @@ endfunction
 %! nx_expected(1:2,1,1:2) = x(1); nx_expected(:,2,:) = x(5);
 %! ny_expected(1,1:2,1:2) = y(1); ny_expected(2,:,:) = y(4);
 %! nz_expected(1:2,1:2,1) = z(1); nz_expected(:,:,2) = z(3);
-%! nv_expected = [1 25; 4 28]; nv_expected(:,:,2) = [97 121; 100 124]; 
+%! nv_expected = [1 25; 4 28]; nv_expected(:,:,2) = [97 121; 100 124];
 %! assert (nx, nx_expected);
 %! assert (ny, ny_expected);
 %! assert (nz, nz_expected);
@@ -250,7 +250,7 @@ endfunction
 %! ny_expected(1,1:3,1:2) = y(1); ny_expected(2,:,:) = y(4);
 %! nz_expected(1:2,1:3,1) = z(1); nz_expected(:,:,2) = z(4);
 %! nv_expected = [1 19 37; 4 22 40];
-%! nv_expected(:,:,2) = [145 163 181; 148 166 184]; 
+%! nv_expected(:,:,2) = [145 163 181; 148 166 184];
 %! assert (nx, nx_expected);
 %! assert (ny, ny_expected);
 %! assert (nz, nz_expected);

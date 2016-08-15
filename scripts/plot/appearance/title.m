@@ -49,7 +49,7 @@ function h = title (varargin)
   endif
 
   htmp = get (hax, "title");
-  
+
   set (htmp, "fontangle", get (hax, "fontangle"),
              "fontname", get (hax, "fontname"),
              "fontunits", get (hax, "fontunits"),   # must precede fontsize

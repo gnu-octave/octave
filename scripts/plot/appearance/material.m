@@ -304,7 +304,7 @@ endfunction
 %!error <incorrect number of elements in material vector> material ([1 2 3 4 5 6])
 %!error <MTYPE must be a named material or a vector> material ({})
 
-%!error <Invalid call to material.> 
+%!error <Invalid call to material.>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   material (hf);

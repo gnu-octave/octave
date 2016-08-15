@@ -201,7 +201,7 @@ function [faces, vertices, max_faces, patch_handle, fast, verbose] = ...
   endif
 
   ## get reduction_factor
-  if (nargin - num_string_inputs > i_fv) 
+  if (nargin - num_string_inputs > i_fv)
     reduction_factor = varargin{i_fv + 1};
     if (! isscalar (reduction_factor) || reduction_factor <= 0)
       error ("reducepatch: REDUCTION_FACTOR must be a positive scalar");

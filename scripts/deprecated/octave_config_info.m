@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Built-in Function} {} octave_config_info ()
-## @deftypefnx {Built-in Function} {} octave_config_info (@var{option})
+## @deftypefn  {} {} octave_config_info ()
+## @deftypefnx {} {} octave_config_info (@var{option})
 ##
 ## @code{octave_config_info} is deprecated and will be removed in
 ## Octave version 4.6.  Use @code{__have_feature__ (@var{option})} or

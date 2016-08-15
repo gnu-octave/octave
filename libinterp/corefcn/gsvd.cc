@@ -45,11 +45,10 @@ gsvd_type (int nargout)
 
 DEFUN (gsvd, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {Loadable Function} {@var{s} =} gsvd (@var{a}, @var{b})
-@deftypefnx {Loadable Function} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x} [, @var{r}]] =} gsvd (@var{a}, @var{b})
+@deftypefn  {} {@var{s} =} gsvd (@var{a}, @var{b})
+@deftypefnx {} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x} [, @var{r}]] =} gsvd (@var{a}, @var{b})
 @cindex generalised singular value decomposition
 Compute the generalised singular value decomposition of (@var{a}, @var{b}):
-@iftex
 @tex
 $$
  U^H A X = [I 0; 0 C] [0 R]
@@ -59,63 +58,55 @@ $$
  R is upper triangular
 $$
 @end tex
-@end iftex
 @ifinfo
 
 @example
+@group
 u' * a * x = [I 0; 0 c] * [0 r]
 v' * b * x = [0 s; 0 0] * [0 r]
 c * c + s * s = eye(columns(a))
 I and 0 are padding matrices of suitable size
 r is upper triangular
+@end group
 @end example
+
 @end ifinfo
 
 The function @code{gsvd} normally returns the vector of generalised singular
 values
-@iftex
 @tex
 diag(C)./diag(S).
 @end tex
-@end iftex
 @ifinfo
 diag(r)./diag(s).
 @end ifinfo
 If asked for five return values, it computes
-@iftex
 @tex
 $U$, $V$, and $X$.
 @end tex
-@end iftex
 @ifinfo
 U, V, and X.
 @end ifinfo
 With a sixth output argument, it also returns
-@iftex
 @tex
 R,
 @end tex
-@end iftex
 @ifinfo
 r,
 @end ifinfo
-The common upper triangular right term. Other authors, like S. Van Huffel,
+The common upper triangular right term.  Other authors, like S. Van Huffel,
 define this transformation as the simulatenous diagonalisation of the
 input matrices, this can be achieved by multiplying
-@iftex
 @tex
 X
 @end tex
-@end iftex
 @ifinfo
 x
 @end ifinfo
 by the inverse of
-@iftex
 @tex
 [I 0; 0 R].
 @end tex
-@end iftex
 @ifinfo
 [I 0; 0 r].
 @end ifinfo
@@ -130,10 +121,12 @@ gsvd (hilb (3), [1 2 3; 3 2 1])
 returns
 
 @example
+@group
 ans =
 
   0.1055705
   0.0031759
+@end group
 @end example
 
 @noindent
@@ -179,7 +172,8 @@ r =
 
 @end example
 
-The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.
+The code is a wrapper to the corresponding @sc{lapack} dggsvd and zggsvd
+routines.
 
 @end deftypefn */)
 {

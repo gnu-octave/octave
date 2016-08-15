@@ -62,8 +62,8 @@
 ## univariate distributions regardless of their shapes, and will calculate
 ## @code{cov ([@var{x}(:), @var{y}(:)])} whenever the number of elements in
 ## @var{x} and @var{y} are equal.  This will result in a 2x2 matrix.
-## Code relying on @sc{Matlab}'s definition will need to be
-## changed when running in Octave.
+## Code relying on @sc{matlab}'s definition will need to be changed when
+## running in Octave.
 ## @seealso{corr}
 ## @end deftypefn
 

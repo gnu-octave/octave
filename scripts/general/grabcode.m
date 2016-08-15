@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} grabcode (@var{url})
+## @deftypefn  {} {} grabcode (@var{url})
 ## @deftypefnx {} {@var{code_str} =} grabcode (@var{url})
 ##
 ## Grab by the @code{publish} function generated HTML reports from Octave

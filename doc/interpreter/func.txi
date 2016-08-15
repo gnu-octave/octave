@@ -23,10 +23,10 @@
 @cindex functions, user-defined
 @cindex script files
 
-Complicated Octave programs can often be simplified by defining
-functions.  Functions can be defined directly on the command line during
-interactive Octave sessions, or in external files, and can be called just
-like built-in functions.
+Complicated Octave programs can often be simplified by defining functions.
+Functions can be defined directly on the command line during interactive
+Octave sessions, or in external files, and can be called just like built-in
+functions.
 
 @menu
 * Introduction to Function and Script Files::
@@ -944,9 +944,9 @@ zero, as in @code{foo} they are a return value and parameter respectively.  The
 @var{x} in @code{bat} refers to the @var{x} in @code{foo}.
 
 Variable inheritance leads to a problem for @code{eval} and scripts.  If a
-new variable is created in a parent function, it is not clear what should happen
-in nested child functions.  For example, consider a parent function @code{foo}
-with a nested child function @code{bar}:
+new variable is created in a parent function, it is not clear what should
+happen in nested child functions.  For example, consider a parent function
+@code{foo} with a nested child function @code{bar}:
 
 @example
 @group
@@ -1309,13 +1309,13 @@ The counterpart to @code{publish} is @code{grabcode}:
 @subsubsection Using Publishing Markup in script files
 
 To use Publishing Markup, start by typing @samp{##} or @samp{%%} at the
-beginning of a new line.  For Matlab compatibility @samp{%%} is treated the
-same way as @samp{%%}.
+beginning of a new line.  For @sc{matlab} compatibility @samp{%%} is treated
+the same way as @samp{##}.
 
-The lines following @samp{##} or @samp{%%} start with only one of either
+The lines following @samp{##} or @samp{%%} start with one of either
 @samp{#} or @samp{%} followed by at least one space.  These lines are
-interpreted as section.  A section ends with the first line not starting
-with @samp{#} or @samp{%} or the end of the document is reached.
+interpreted as section.  A section ends at the first line not starting
+with @samp{#} or @samp{%}, or when the end of the document is reached.
 
 A section starting in the first line of the document, followed by another
 start of a section that might be empty, is interpreted as a document
@@ -1374,7 +1374,7 @@ A section is started by typing @samp{##} or @samp{%%} at the beginning of
 a new line.  A section title can be provided by writing it, separated by a
 space, in the first line after @samp{##} or @samp{%%}.  Without a section
 title, the section is interpreted as a continuation of the previous section.
-For Matlab compatibility @samp{%%} is treated the same way as @samp{%%}.
+For @sc{matlab} compatibility @samp{%%} is treated the same way as @samp{%%}.
 
 @example
 @group
@@ -1435,7 +1435,7 @@ those lines.
 #  Whether 'tis nobler in the mind to suffer
 #  The slings and arrows of outrageous fortune,
 #  Or to take arms against a sea of troubles,
-#  And by opposing end them? To die: to sleep;"
+#  And by opposing end them?  To die: to sleep;"
 #
 #  --"Hamlet" by W. Shakespeare
 @end group
@@ -1456,10 +1456,12 @@ To create a bulleted list, type
 @end group
 @end example
 
+@noindent
 to get output like
 
 @itemize @bullet
 @item Bulleted list item 1
+
 @item Bulleted list item 2
 @end itemize
 
@@ -1481,10 +1483,12 @@ To create a numbered list, type
 @end group
 @end example
 
+@noindent
 to get output like
 
 @enumerate
 @item Numbered list item 1
+
 @item Numbered list item 2
 @end enumerate
 
@@ -1494,7 +1498,7 @@ after the numbered list!
 @node Including file content
 @subsubsection Including file content
 
-To include the content of an external file, e.g. a file called
+To include the content of an external file, e.g., a file called
 @samp{my_function.m} at the same location as the published Octave script,
 use the following syntax to include it with Octave syntax highlighting.
 
@@ -1516,7 +1520,7 @@ Alternatively, you can write the full or relative path to the file.
 @node Including graphics
 @subsubsection Including graphics
 
-To include external graphics, e.g. a graphic called @samp{my_graphic.png}
+To include external graphics, e.g., a graphic called @samp{my_graphic.png}
 at the same location as the published Octave script, use the following syntax.
 
 Alternatively, you can write the full path to the graphic.
@@ -1571,7 +1575,7 @@ GNU Octave documentations function index.
 @node Mathematical equations
 @subsubsection Mathematical equations
 
-One can insert LaTeX inline math, surrounded by single @samp{$} signs, or
+One can insert @LaTeX{} inline math, surrounded by single @samp{$} signs, or
 displayed math, surrounded by double @samp{$$} signs, directly inside
 sections.
 
@@ -1605,8 +1609,8 @@ that is only visible in this kind of output.
 @node LaTeX markup
 @subsubsection LaTeX markup
 
-If the published output is a LaTeX or PDF report, you can insert LaTeX markup,
-that is only visible in this kind of output.
+If the published output is a @LaTeX{} or PDF report, you can insert @LaTeX{}
+markup, that is only visible in this kind of output.
 
 @example
 @group

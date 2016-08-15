@@ -386,18 +386,18 @@ For example, the range
 @end example
 
 @noindent
-defines the set of values @samp{[ 1, 2, 3, 4, 5 ]}, and the range
+defines the set of values @code{[ 1, 2, 3, 4, 5 ]}, and the range
 
 @example
 1 : 3 : 5
 @end example
 
 @noindent
-defines the set of values @samp{[ 1, 4 ]}.
+defines the set of values @code{[ 1, 4 ]}.
 
 Although a range constant specifies a row vector, Octave does @emph{not}
 normally convert range constants to vectors unless it is necessary to do so.
-This allows you to write a constant like @samp{1 : 10000} without using
+This allows you to write a constant like @code{1 : 10000} without using
 80,000 bytes of storage on a typical 32-bit workstation.
 
 A common example of when it does become necessary to convert ranges into
@@ -443,16 +443,16 @@ a = 2*(1:1e7) - 1;
 @end example
 
 @noindent
-will produce the same result as @samp{1:2:2e7-1}, but without ever forming a
+will produce the same result as @code{1:2:2e7-1}, but without ever forming a
 vector with ten million elements.
 
-Using zero as an increment in the colon notation, as @samp{1:0:1} is not
+Using zero as an increment in the colon notation, as @code{1:0:1} is not
 allowed, because a division by zero would occur in determining the number of
 range elements.  However, ranges with zero increment (i.e., all elements equal)
 are useful, especially in indexing, and Octave allows them to be constructed
-using the built-in function @dfn{ones}.  Note that because a range must be a row
-vector, @samp{ones (1, 10)} produces a range, while @samp{ones (10, 1)} does
-not.
+using the built-in function @code{ones}.  Note that because a range must be a
+row vector, @code{ones (1, 10)} produces a range, while @code{ones (10, 1)}
+does not.
 
 When Octave parses a range expression, it examines the elements of the
 expression to determine whether they are all constants.  If they are, it

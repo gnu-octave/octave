@@ -174,11 +174,12 @@ simpler, but very common, case of a univariate function where the interval
 to search is bounded.  For unbounded minimization of a function with
 potentially many variables use @code{fminunc} or @code{fminsearch}.  The two
 functions use different internal algorithms and some knowledge of the objective
-function is required.  For functions which can be differentiated, @code{fminunc}
-is appropriate.  For functions with discontinuities, or for which a gradient
-search would fail, use @code{fminsearch}.  @xref{Optimization}, for
-minimization with the presence of constraint functions.  Note that searches
-can be made for maxima by simply inverting the objective function
+function is required.  For functions which can be differentiated,
+@code{fminunc} is appropriate.  For functions with discontinuities, or for
+which a gradient search would fail, use @code{fminsearch}.
+@xref{Optimization}, for minimization with the presence of constraint
+functions.  Note that searches can be made for maxima by simply inverting the
+objective function
 @tex
 ($F_{max} = -F_{min}$).
 @end tex

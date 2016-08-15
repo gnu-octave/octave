@@ -37,7 +37,7 @@
 ## sampled over a volume.
 ##
 ## The input @var{isoval} is a scalar that specifies the value for the
-## isosurface.  If @var{isoval} is omitted or empty, a @qcode{"good"} value
+## isosurface.  If @var{isoval} is omitted or empty, a @nospell{"good"} value
 ## for an isosurface is determined from @var{v}.
 ##
 ## When called with a single output argument @code{isosurface} returns a

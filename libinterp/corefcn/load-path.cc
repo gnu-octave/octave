@@ -2547,7 +2547,7 @@ rmpath ("dir1:/dir2:~/dir3")
 
 DEFUN (__dump_load_path__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __dump_load_path__ ()
+@deftypefn {} {} __dump_load_path__ ()
 Undocumented internal function.
 @end deftypefn */)
 {

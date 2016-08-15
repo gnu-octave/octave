@@ -40,9 +40,9 @@ $D_{ij} = 0$ if $i \neq j$
 @ifnottex
 @code{D(i,j) == 0} if @code{i != j}.
 @end ifnottex
-Most often, square diagonal matrices are considered; however, the definition can
-equally be applied to non-square matrices, in which case we usually speak of a
-rectangular diagonal matrix.
+Most often, square diagonal matrices are considered; however, the definition
+can equally be applied to non-square matrices, in which case we usually speak
+of a rectangular diagonal matrix.
 
 A permutation matrix is defined as a square matrix that has a single element
 equal to unity in each row and each column; all other elements are zero.  That
@@ -94,8 +94,8 @@ built-in function @dfn{diag}.  The expression @code{diag (v)}, with @var{v} a
 vector, will create a square diagonal matrix with elements on the main diagonal
 given by the elements of @var{v}, and size equal to the length of @var{v}.
 @code{diag (v, m, n)} can be used to construct a rectangular diagonal matrix.
-The result of these expressions will be a special diagonal matrix object, rather
-than a general matrix object.
+The result of these expressions will be a special diagonal matrix object,
+rather than a general matrix object.
 
 Diagonal matrix with unit elements can be created using @dfn{eye}.
 Some other built-in functions can also return diagonal matrices.  Examples
@@ -129,9 +129,9 @@ Diagonal Matrix
 @node Creating Permutation Matrices
 @subsection Creating Permutation Matrices
 
-For creating permutation matrices, Octave does not introduce a new function, but
-rather overrides an existing syntax: permutation matrices can be conveniently
-created by indexing an identity matrix by permutation vectors.
+For creating permutation matrices, Octave does not introduce a new function,
+but rather overrides an existing syntax: permutation matrices can be
+conveniently created by indexing an identity matrix by permutation vectors.
 That is, if @var{q} is a permutation vector of length @var{n}, the expression
 
 @example
@@ -210,10 +210,10 @@ include
 @node Explicit and Implicit Conversions
 @subsection Explicit and Implicit Conversions
 
-The diagonal and permutation matrices are special objects in their own right.  A
-number of operations and built-in functions are defined for these matrices to
-use special, more efficient code than would be used for a full matrix in the
-same place.  Examples are given in further sections.
+The diagonal and permutation matrices are special objects in their own right.
+A number of operations and built-in functions are defined for these matrices
+to use special, more efficient code than would be used for a full matrix in
+the same place.  Examples are given in further sections.
 
 To facilitate smooth mixing with full matrices, backward compatibility, and
 compatibility with @sc{matlab}, the diagonal and permutation matrices should
@@ -341,10 +341,10 @@ A = A + eps * eye (n)
 is an efficient method of augmenting the diagonal of a matrix.  Subtraction
 works analogically.
 
-When involved in expressions with other element-by-element operators, @code{.*},
-@code{./}, @code{.\} or @code{.^}, an implicit conversion to full matrix will
-take place.  This is not always strictly necessary but chosen to facilitate
-better consistency with @sc{matlab}.
+When involved in expressions with other element-by-element operators,
+@code{.*}, @code{./}, @code{.\} or @code{.^}, an implicit conversion to full
+matrix will take place.  This is not always strictly necessary but chosen to
+facilitate better consistency with @sc{matlab}.
 
 @node Expressions Involving Permutation Matrices
 @subsection Expressions Involving Permutation Matrices
@@ -352,7 +352,8 @@ better consistency with @sc{matlab}.
 If @var{P} is a permutation matrix and @var{M} a matrix, the expression
 @code{P*M} will permute the rows of @var{M}.  Similarly, @code{M*P} will
 yield a column permutation.
-Matrix division @code{P\M} and @code{M/P} can be used to do inverse permutation.
+Matrix division @code{P\M} and @code{M/P} can be used to do inverse
+permutation.
 
 The previously described syntax for creating permutation matrices can actually
 help an user to understand the connection between a permutation matrix and
@@ -382,9 +383,9 @@ expressions for inverse permuting is completely up to the user's taste.
 
 Multiplication and division by permutation matrices works efficiently also when
 combined with sparse matrices, i.e., @code{P*S}, where @var{P} is a permutation
-matrix and @var{S} is a sparse matrix permutes the rows of the sparse matrix and
-returns a sparse matrix.  The expressions @code{S*P}, @code{P\S}, @code{S/P}
-work analogically.
+matrix and @var{S} is a sparse matrix permutes the rows of the sparse matrix
+and returns a sparse matrix.  The expressions @code{S*P}, @code{P\S},
+@code{S/P} work analogically.
 
 Two permutation matrices can be multiplied or divided (if their sizes match),
 performing a composition of permutations.  Also a permutation matrix can be
@@ -513,14 +514,15 @@ the following chapter.  (@pxref{Sparse Matrices})
 
 The IEEE floating point standard defines the result of the expressions
 @code{0*Inf} and @code{0*NaN} as @code{NaN}.  This is widely agreed to be a
-good compromise.  Numerical software dealing with structured and sparse matrices
-(including Octave) however, almost always makes a distinction between a
-"numerical zero" and an "assumed zero".  A "numerical zero" is a zero value
-occurring in a place where any floating-point value could occur.  It is
-normally stored somewhere in memory as an explicit value.  An "assumed zero", on
-the contrary, is a zero matrix element implied by the matrix structure
-(diagonal, triangular) or a sparsity pattern; its value is usually not stored
-explicitly anywhere, but is implied by the underlying data structure.
+good compromise.  Numerical software dealing with structured and sparse
+matrices (including Octave) however, almost always makes a distinction between
+a @nospell{"numerical zero"} and an @nospell{"assumed zero"}.  A
+@nospell{"numerical zero"} is a zero value occurring in a place where any
+floating-point value could occur.  It is normally stored somewhere in memory
+as an explicit value.  An @nospell{"assumed zero"}, on the contrary, is a zero
+matrix element implied by the matrix structure (diagonal, triangular) or a
+sparsity pattern; its value is usually not stored explicitly anywhere, but is
+implied by the underlying data structure.
 
 The primary distinction is that an assumed zero, when multiplied
 by any number, or divided by any nonzero number,

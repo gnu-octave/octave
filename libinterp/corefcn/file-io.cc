@@ -1453,7 +1453,7 @@ string(s) in @var{value} as missing values.
 
 @item @qcode{"ReturnOnError"}
 If set to numerical 1 or true, return normally as soon as an error is
-encountered, such as trying to read a string using @qcode{%f}.
+encountered, such as trying to read a string using @code{%f}.
 If set to 0 or false, return an error and no data.
 
 @item @qcode{"Whitespace"}

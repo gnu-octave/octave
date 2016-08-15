@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} mkdir @var{dir}
 ## @deftypefnx {} {} mkdir (@var{parent}, @var{dir})
-## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (...)
+## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@dots{})
 ## Create a directory named @var{dir} in the directory @var{parent},
 ## creating any intermediate directories if necessary.
 ##

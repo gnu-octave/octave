@@ -60,7 +60,7 @@
 ## @end group
 ## @end example
 ##
-## Instead of the @command{trimesh} function the @command{patch}
+## Instead of the @code{trimesh} function the @code{patch}
 ## function can be used to visualize the geometry.  For example:
 ##
 ## @example

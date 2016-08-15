@@ -209,8 +209,8 @@ trapz (x, y)
 @end example
 
 In general there may be no way of knowing the best distribution of points ahead
-of time.  Or the points may come from an experiment where there is no freedom to
-select the best distribution.  In any case, one must remain aware of this
+of time.  Or the points may come from an experiment where there is no freedom
+to select the best distribution.  In any case, one must remain aware of this
 issue when using @code{trapz}.
 
 @DOCSTRING(trapz)

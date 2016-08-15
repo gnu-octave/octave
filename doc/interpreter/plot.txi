@@ -966,7 +966,7 @@ the OpenGL based toolkits such as @code{fltk} and @code{qt} do not support the
 @qcode{"interpreter"} property of text objects.  This means that when using
 OpenGL toolkits special symbols drawn with the @qcode{"tex"} interpreter will
 appear correctly on-screen but will be rendered with interpreter @qcode{"none"}
-when printing unless one of the @qcode{standalone} (see below) modes is used.
+when printing unless one of the @code{standalone} (see below) modes is used.
 These modes provide access to the pdflatex processor and therefore allow full
 use of @LaTeX{} commands.
 
@@ -1411,10 +1411,11 @@ struct2hdl (fig_struct);
 * Uitoggletool Properties::
 @end menu
 
-In this Section the graphics object properties are discussed in detail, starting
-with the root figure properties and continuing through the objects
-hierarchy.  The documentation about a specific graphics object can be displayed
-using @code{doc} function, e.g., @code{doc ("axes properties")} will show
+In this Section the graphics object properties are discussed in detail,
+starting with the root figure properties and continuing through the objects
+hierarchy.  The documentation about a specific graphics object can be
+displayed using @code{doc} function, e.g., @code{doc ("axes properties")} will
+show
 @ref{Axes Properties}.
 
 The allowed values for radio (string) properties can be retrieved
@@ -2089,7 +2090,8 @@ bars.  @xref{Line Styles}.
 
 @item  edgecolor
 @itemx facecolor
-The line and fill color of the patch objects making up the bars.  @xref{Colors}.
+The line and fill color of the patch objects making up the bars.
+@xref{Colors}.
 
 @item xdata
 The nominal x positions of the bars.  Changes in this property and
@@ -2288,7 +2290,8 @@ The RGB color or color name of the line objects of the quiver.  @xref{Colors}.
 
 @item  linewidth
 @itemx linestyle
-The line width and style of the line objects of the quiver.  @xref{Line Styles}.
+The line width and style of the line objects of the quiver.  @xref{Line
+Styles}.
 
 @item  marker
 @itemx markerfacecolor
@@ -2370,7 +2373,8 @@ The RGB color or color name of the line objects of the stairs.  @xref{Colors}.
 
 @item  linewidth
 @itemx linestyle
-The line width and style of the line objects of the stairs.  @xref{Line Styles}.
+The line width and style of the line objects of the stairs.  @xref{Line
+Styles}.
 
 @item  marker
 @itemx markeredgecolor

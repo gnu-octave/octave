@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} publish (@var{filename})
+## @deftypefn  {} {} publish (@var{filename})
 ## @deftypefnx {} {} publish (@var{filename}, @var{output_format})
 ## @deftypefnx {} {} publish (@var{filename}, @var{option1}, @var{value1}, @dots{})
 ## @deftypefnx {} {} publish (@var{filename}, @var{options})
@@ -71,6 +71,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## which is described below.  The same holds for using option-value-pairs
 ##
 ## @example
@@ -91,7 +92,7 @@
 ## @samp{xml}, or @samp{pdf}.
 ##
 ## The output formats @samp{doc}, @samp{ppt}, and @samp{xml} are currently
-## not supported. To generate a @samp{doc} report, open a generated
+## not supported.  To generate a @samp{doc} report, open a generated
 ## @samp{html} report with your office suite.
 ##
 ## @item
@@ -100,13 +101,13 @@
 ## in a subdirectory @samp{html} relative to the current working directory.
 ##
 ## @item
-## @samp{stylesheet} --- Not supported, only for Matlab compatibility.
+## @samp{stylesheet} --- Not supported, only for @sc{matlab} compatibility.
 ##
 ## @item
-## @samp{createThumbnail} --- Not supported, only for Matlab compatibility.
+## @samp{createThumbnail} --- Not supported, only for @sc{matlab} compatibility.
 ##
 ## @item
-## @samp{figureSnapMethod} --- Not supported, only for Matlab compatibility.
+## @samp{figureSnapMethod} --- Not supported, only for @sc{matlab} compatibility.
 ##
 ## @item
 ## @samp{imageFormat} --- Desired format for images produced, while
@@ -120,7 +121,7 @@
 ## @item @samp{latex} --- @samp{epsc2} (default), any other image format
 ## supported by Octave
 ##
-## @item @samp{pdf} --- @samp{jpg} (default) or @samp{bmp}, note Matlab
+## @item @samp{pdf} --- @samp{jpg} (default) or @samp{bmp}, note @sc{matlab}
 ## uses  @samp{bmp} as default
 ##
 ## @item @samp{doc} or @samp{ppt} --- @samp{png} (default), @samp{jpg},

@@ -209,7 +209,7 @@ have_gnuplot_binary (void)
 
 DEFUN_DLD (__init_gnuplot__, , ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} __init_gnuplot__ ()
+@deftypefn {} {} __init_gnuplot__ ()
 Undocumented internal function.
 @end deftypefn */)
 {

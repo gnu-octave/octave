@@ -71,8 +71,8 @@ imwrite (J, "my_output_image.img");
 
 It is possible to get information about an image file on disk, without actually
 reading it into Octave.  This is done using the @code{imfinfo} function which
-provides read access to many of the parameters stored in the header of the image
-file.
+provides read access to many of the parameters stored in the header of the
+image file.
 
 @DOCSTRING(imfinfo)
 

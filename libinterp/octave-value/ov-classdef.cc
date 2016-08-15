@@ -3720,7 +3720,7 @@ cdef_manager::do_find_package_symbol (const std::string& pack_name)
 
 DEFUN (__meta_get_package__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __meta_get_package__ ()
+@deftypefn {} {} __meta_get_package__ ()
 Undocumented internal function.
 @end deftypefn */)
 {

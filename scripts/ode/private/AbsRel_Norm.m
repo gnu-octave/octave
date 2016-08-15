@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {retval =} AbsRel_Norm (@var{x}, @var{x_old}, @var{AbsTol}, @var{RelTol}, @var{normcoontrol}, @var{y})
+## @deftypefn {} {retval =} AbsRel_Norm (@var{x}, @var{x_old}, @var{AbsTol}, @var{RelTol}, @var{normcoontrol}, @var{y})
 ## Undocumented internal function.
 ## @end deftypefn
 

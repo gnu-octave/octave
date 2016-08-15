@@ -679,8 +679,8 @@ statement instead.  @xref{The try Statement}.
 @item Use @code{ignore_function_time_stamp} when appropriate.
 If you are calling lots of functions, and none of them will need to change
 during your run, set the variable @code{ignore_function_time_stamp} to
-@qcode{"all"}.  This will stop Octave from checking the time stamp of a function
-file to see if it has been updated while the program is being run.
+@qcode{"all"}.  This will stop Octave from checking the time stamp of a
+function file to see if it has been updated while the program is being run.
 @end itemize
 
 @node Examples

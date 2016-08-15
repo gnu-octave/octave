@@ -42,7 +42,7 @@
 ##
 ## @end ifnottex
 ## If @var{x} is of a discrete type such as integer or logical, then
-## the case of even N rounds up (or toward @qcode{true}).
+## the case of even N rounds up (or toward @code{true}).
 ##
 ## If @var{x} is a matrix, compute the median value for each column and
 ## return them in a row vector.

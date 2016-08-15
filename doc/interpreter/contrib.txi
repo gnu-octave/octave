@@ -317,16 +317,20 @@ When constructing matrices, prefer using the comma rather than the space to
 distinguish between columns.
 
 @example
+@group
   M = [1, 2, 3
        4, 5, 6];
+@end group
 @end example
 
 However, if the matrix is large or the indentation makes it clear the comma
 may be dropped.
 
 @example
+@group
   prices = [ 1.01  2.02  3.03
             44.04 55.05  6.06];
+@end group
 @end example
 
 Use lowercase names if possible.  Uppercase is acceptable for variable
@@ -398,8 +402,8 @@ The recommended indent is 2 spaces.  When indenting, indent the statement
 after control structures (like @code{if}, @code{while}, etc.).  If there
 is a compound statement, indent @emph{both} the curly braces and the
 body of the statement (so that the body gets indented by @emph{two}
-indents).  This format is known as "GNU style" and is an option for some
-code formatting tools.  Example indenting:
+indents).  This format is known as @nospell{"GNU style"} and is an option for
+some code formatting tools.  Example indenting:
 
 @example
 @group
@@ -467,7 +471,7 @@ to typecast, use the modern C++ casting operators.  In functions, minimize the
 number of @code{return} statements, but elimination of all but one
 @code{return} is not required.
 
-When an empty string is required, use @code{""}, rather than creating an empty
+When an empty string is required, use @qcode{""}, rather than creating an empty
 string object with @code{std::string ()}.
 
 @node Other Sources

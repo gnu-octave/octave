@@ -41,7 +41,7 @@
 ## @end table
 ##
 ## This function is called by an ode solver function if it was specified in
-## an options structure with the @command{odeset}.  This function is an
+## an options structure with the @code{odeset}.  This function is an
 ## internal helper function therefore it should never be necessary that this
 ## function is called directly by a user.  There is only little error
 ## detection implemented in this function file to achieve the highest

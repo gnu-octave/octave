@@ -65,7 +65,7 @@ Octave programs.
 When you encounter an error condition, call the function @code{error}
 (or @code{print_usage}).  The @code{error} and @code{print_usage} functions
 do not return.  @xref{Errors}.  It is customary to prefix the error message
-with the name of the function that generated it.  For example,
+with the name of the function that generated it.  For example:
 
 @example
 error ("my_cool_function: input A must be a matrix");

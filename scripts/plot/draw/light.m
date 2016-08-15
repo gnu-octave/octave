@@ -24,13 +24,13 @@
 ## Create light object in the current axes or for axes @var{hax}.
 ##
 ## When a light object is present in an axes object and the properties
-## @qcode{"EdgeLighting"} or @qcode{"FaceLighting"} of a @command{patch} or
-## @command{surface} object are set to a value other than @qcode{"none"}, these
+## @qcode{"EdgeLighting"} or @qcode{"FaceLighting"} of a @code{patch} or
+## @code{surface} object are set to a value other than @qcode{"none"}, these
 ## objects are drawn with light and shadow effects.  Supported values for these
 ## properties are @qcode{"none"} (no lighting effects), @qcode{"flat"}
 ## (facetted look of the objects) and @qcode{"gouraud"} (linear interpolation
 ## of the lighting effects between the vertices).
-## For @command{patch} objects, the normals must be set manually (property
+## For @code{patch} objects, the normals must be set manually (property
 ## @qcode{"VertexNormals"}).
 ##
 ## Up to eight light objects are supported per axes.
@@ -43,18 +43,18 @@
 ##
 ## @table @asis
 ## @item @qcode{"Color":} The color of the light object can be passed as an
-## RGB-vector (e.g. @qcode{[1 0 0]} for red) or as a string (e.g. @qcode{"r"}
-## for red).  The default color is white (@qcode{[1 1 1]}).
+## RGB-vector (e.g., @code{[1 0 0]} for red) or as a string (e.g., @qcode{"r"}
+## for red).  The default color is white (@code{[1 1 1]}).
 ##
 ## @item @qcode{"Position":} The direction from which the light emanates as an
-## 1x3-vector.  The default direction is @qcode{[1 0 1]}.
+## 1x3-vector.  The default direction is @code{[1 0 1]}.
 ##
 ## @item @qcode{"Style":} This string defines whether the light emanates from a
 ## light source at infinite distance (@qcode{"infinite"}) or from a local point
 ## source (@qcode{"local"}).
 ## @end table
 ##
-## If @command{light} is called with an axes handle @var{hax}, it must be passed
+## If @code{light} is called with an axes handle @var{hax}, it must be passed
 ## as the first argument.
 ##
 ## Optionally, the handle to the light object is returned in @var{h}.

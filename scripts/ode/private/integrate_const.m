@@ -41,9 +41,11 @@
 ## defines the ODE:
 ##
 ## @ifhtml
+##
 ## @example
 ## @math{y' = f(t,y)}
 ## @end example
+##
 ## @end ifhtml
 ## @ifnothtml
 ## @math{y' = f(t,y)}.

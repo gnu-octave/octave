@@ -35,8 +35,8 @@
 ## sampled over a volume.
 ##
 ## The input @var{isoval} is a scalar that specifies the value for the
-## isosurface.  If @var{isoval} is omitted or empty, a "good" value for an
-## isosurface is determined from @var{v}.
+## isosurface.  If @var{isoval} is omitted or empty, a @nospell{"good"} value
+## for an isosurface is determined from @var{v}.
 ##
 ## When called with a single output argument, @code{isocaps} returns a
 ## structure array @var{fvc} with the fields: @code{faces}, @code{vertices},

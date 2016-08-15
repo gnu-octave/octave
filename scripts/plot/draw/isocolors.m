@@ -31,7 +31,7 @@
 ## the second input argument @var{v} keeps the vertices of a geometry
 ## then return a matrix @var{cd} with color data information for the
 ## geometry at computed points
-## @command{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
+## @code{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
 ## @var{cd} can be taken to manually set FaceVertexCData of a patch.
 ##
 ## If called with further input arguments @var{x}, @var{y} and @var{z}
@@ -39,7 +39,7 @@
 ## then the color data is taken at those given points.  Instead of the
 ## color data @var{c} this function can also be called with RGB values
 ## @var{r}, @var{g}, @var{b}.  If input argumnets @var{x}, @var{y},
-## @var{z} are not given then again @command{meshgrid} computed values
+## @var{z} are not given then again @code{meshgrid} computed values
 ## are taken.
 ##
 ## Optionally, the patch handle @var{p} can be given as the last input

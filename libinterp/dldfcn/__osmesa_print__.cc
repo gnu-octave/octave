@@ -63,7 +63,7 @@ This is a private internal function.
 
 The first method calls gl2ps with the appropriate @var{term} and writes
 the output of gl2ps to @var{file}.  If the first character of @var{file}
-is @qcode{|}, then a process is started and the output of gl2ps is piped
+is @code{|}, then a process is started and the output of gl2ps is piped
 to it.
 
 Valid options for @var{term}, which can be concatenated in one string, are:
@@ -72,11 +72,11 @@ Valid options for @var{term}, which can be concatenated in one string, are:
 @item @qcode{eps}, @qcode{pdf}, @qcode{ps}, @qcode{svg}, @qcode{pgf}, @qcode{tex}
 Select output format.
 
-@item @qcode{is2D}
+@item @code{is2D}
 Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting
 algorithm.
 
-@item @qcode{notext}
+@item @code{notext}
 Don't render text.
 @end table
 

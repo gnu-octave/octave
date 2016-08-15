@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} = } dialog (@dots{}, "@var{property}", @var{value}, @dots{})
+## @deftypefn {} {@var{h} =} dialog (@dots{}, "@var{property}", @var{value}, @dots{})
 ##
 ## Create an empty modal dialog window that other uicontrols can be added to.
 ##
-## The dialog box is a figure object with properties as recommended for a dialog box.
+## The dialog box is a figure object with properties as recommended for a
+## dialog box.
 ##
 ## The default properties differing from a figure are:
 ##

@@ -203,10 +203,10 @@ matrix.
 
 Another typical sparse matrix that is often needed is a random distribution
 of random elements.  The functions @dfn{sprand} and @dfn{sprandn} perform
-this for uniform and normal random distributions of elements.  They have exactly
-the same calling convention, where @code{sprand (@var{r}, @var{c}, @var{d})},
-creates an @var{r}-by-@var{c} sparse matrix with a density of filled
-elements of @var{d}.
+this for uniform and normal random distributions of elements.  They have
+exactly the same calling convention, where @code{sprand (@var{r}, @var{c},
+@var{d})}, creates an @var{r}-by-@var{c} sparse matrix with a density of
+filled elements of @var{d}.
 
 Other functions of interest that directly create sparse matrices, are
 @dfn{diag} or its generalization @dfn{spdiags}, that can take the
@@ -740,9 +740,9 @@ reorder the matrix to maximize performance.
 
 Octave includes a polymorphic solver for sparse matrices, where
 the exact solver used to factorize the matrix, depends on the properties
-of the sparse matrix itself.  Generally, the cost of determining the matrix type
-is small relative to the cost of factorizing the matrix itself, but in any
-case the matrix type is cached once it is calculated, so that it is not
+of the sparse matrix itself.  Generally, the cost of determining the matrix
+type is small relative to the cost of factorizing the matrix itself, but in
+any case the matrix type is cached once it is calculated, so that it is not
 re-determined each time it is used in a linear equation.
 
 The selection tree for how the linear equation is solve is

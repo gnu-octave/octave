@@ -22,7 +22,7 @@
 
     - created file is always in the same directory as the original file;
     - automatically skip files that already have gz/bz2/etc extension;
-    - some olders versions miss the --keep option.
+    - some older versions lack the --keep option.
 
   In addition, because system() does not have a method that allows
   passing a list of arguments, there is the issue of having to escape

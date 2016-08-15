@@ -56,7 +56,8 @@
 ## @end example
 ##
 ## @noindent
-## turns tick marks on for all axes and tick mark labels on for the y-axis only.
+## turns tick marks on for all axes and tick mark labels on for the y-axis
+## only.
 ##
 ## @noindent
 ## The following options control the aspect ratio of the axes.

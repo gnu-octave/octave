@@ -17,31 +17,34 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} normest1 (@var{a})
-## @deftypefnx {Function File} {@var{c} =} normest1 (@var{a}, @var{t})
-## @deftypefnx {Function File} {@var{c} =} normest1 (@var{a}, @var{t}, @var{x0})
-## @deftypefnx {Function File} {@var{c} =} normest1 (@var{afun}, @var{t}, @var{x0}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{v}] =} normest1 (@var{a}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{v}, @var{w}] =} normest1 (@var{a}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{v}, @var{w}, @var{it}] =} normest1 (@var{a}, @dots{})
+## @deftypefn  {} {@var{c} =} normest1 (@var{a})
+## @deftypefnx {} {@var{c} =} normest1 (@var{a}, @var{t})
+## @deftypefnx {} {@var{c} =} normest1 (@var{a}, @var{t}, @var{x0})
+## @deftypefnx {} {@var{c} =} normest1 (@var{afun}, @var{t}, @var{x0}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{v}] =} normest1 (@var{a}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{v}, @var{w}] =} normest1 (@var{a}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{v}, @var{w}, @var{it}] =} normest1 (@var{a}, @dots{})
 ## Estimate the 1-norm of the matrix @var{a} using a block algorithm.
 ##
 ## For a medium size matrix @var{a}, @code{norm (@var{a}, 1)} should be
-## used instead. For a large sparse matrix, when only an estimate of the norm
-## is needed, @code{normest1 (@var{a})} might be faster. Moreover, it can be
+## used instead.  For a large sparse matrix, when only an estimate of the norm
+## is needed, @code{normest1 (@var{a})} might be faster.  Moreover, it can be
 ## used for the estimate of the 1-norm of a linear
 ## operator @var{a} when matrix-vector products @code{@var{a} * @var{x}} and
-## @code{@var{a}' * @var{x}} can be cheaply computed. In this case,
+## @code{@var{a}' * @var{x}} can be cheaply computed.  In this case,
 ## instead of the matrix @var{a}, a function
-## @code{@var{afun} (@var{flag}, @var{x})} can be used. It should return:
+## @code{@var{afun} (@var{flag}, @var{x})} can be used.  It should return:
 ##
 ## @itemize @bullet
 ## @item
 ## the dimension @var{n} of @var{a}, if @var{flag} is @qcode{"dim"}
+##
 ## @item
 ## true if @var{a} is a real operator, if @var{flag} is @qcode{"real"}
+##
 ## @item
 ## the result @code{@var{a} * @var{x}}, if @var{flag} is @qcode{"notransp"}
+##
 ## @item
 ## the result @code{@var{a}' * @var{x}}, if @var{flag} is @qcode{"transp"}
 ## @end itemize
@@ -51,10 +54,12 @@
 ## even forming explicitely @code{@var{b} ^ @var{m}} by:
 ##
 ## @example
+## @group
 ## @var{y} = @var{x};
 ## for @var{i} = 1:@var{m}
 ##   @var{y} = @var{b} * @var{y};
 ## endfor
+## @end group
 ## @end example
 ##
 ## The parameters @var{p1}, @var{p2}, @dots{} are arguments of
@@ -69,7 +74,7 @@
 ## @code{ones (@var{n}, 1) / @var{n}}
 ## and, if @var{t} >  1, the remaining columns with random elements
 ## @code{-1 / @var{n}}, @code{1 / @var{n}}, divided by @var{n}.
-## Therefore, if consistent results are required, the "state" of the
+## Therefore, if consistent results are required, the @qcode{"state"} of the
 ## random generator should be fixed before invoking @code{normest1}.
 ##
 ## On output, @var{c} is the desired estimate, @var{v} and @var{w}

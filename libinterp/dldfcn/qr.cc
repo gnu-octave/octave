@@ -78,7 +78,7 @@ DEFUN_DLD (qr, args, nargout,
 @deftypefn  {} {[@var{Q}, @var{R}] =} qr (@var{A})
 @deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}) # non-sparse A
 @deftypefnx {} {@var{X} =} qr (@var{A})
-@deftypefnx {} {@var{R} =} qr (@var{A})  # sparse A
+@deftypefnx {} {@var{R} =} qr (@var{A}) # sparse A
 @deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, 0)
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, 'vector')
@@ -205,13 +205,13 @@ x = @var{R} \ @var{C}
 @end example
 
 If the final argument is the scalar 0 and the number of rows is larger
-than the number of columns, then an 'economy' factorization is returned,
-omitting zeroes of @var{R} and the corresponding columns of @var{Q}.
-That is, @var{R} will have only @code{size (@var{A},1)} rows.
-In this case, @var{P} is a vector rather than a matrix.
+than the number of columns, then an @qcode{"economy"} factorization is
+returned, omitting zeroes of @var{R} and the corresponding columns of @var{Q}.
+That is, @var{R} will have only @code{size (@var{A},1)} rows.  In this case,
+@var{P} is a vector rather than a matrix.
 
-If the final argument is the string 'vector' then @var{P} is a permutation
-vector instead of a permutation matrix.
+If the final argument is the string @qcode{"vector"} then @var{P} is a
+permutation vector instead of a permutation matrix.
 
 @seealso{chol, hess, lu, qz, schur, svd, qrupdate, qrinsert, qrdelete, qrshift}
 @end deftypefn */)

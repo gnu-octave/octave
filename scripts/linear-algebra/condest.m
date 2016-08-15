@@ -35,24 +35,33 @@
 ##
 ## @itemize @minus
 ## @item @var{afun} which should returns
+##
 ## @itemize @bullet
 ## @item
-## the dimension @var{n} of @var{a}, if @var{flag} is "dim"
+## the dimension @var{n} of @var{a}, if @var{flag} is @qcode{"dim"}
+##
 ## @item
-## true if @var{a} is a real operator, if @var{flag} is "real"
+## true if @var{a} is a real operator, if @var{flag} is @qcode{"real"}
+##
 ## @item
 ## the result @code{@var{a} * @var{x}}, if @var{flag} is "notransp"
+##
 ## @item
 ## the result @code{@var{a}' * @var{x}}, if @var{flag} is "transp"
 ## @end itemize
+##
 ## @item @var{solvefun} which should returns
+##
 ## @itemize @bullet
 ## @item
-## the dimension @var{n} of @var{a}, if @var{flag} is "dim"
+## the dimension @var{n} of @var{a}, if @var{flag} is @qcode{"dim"}
+##
 ## @item
-## true if @var{a} is a real operator, if @var{flag} is "real"
+## true if @var{a} is a real operator, if @var{flag} is @qcode{"real"}
+##
 ## @item
 ## the result @code{@var{a} \ @var{x}}, if @var{flag} is "notransp"
+##
 ## @item
 ## the result @code{@var{a}' \ @var{x}}, if @var{flag} is "transp"
 ## @end itemize
@@ -64,8 +73,9 @@
 ## @dots{})}.
 ##
 ## @code{condest} uses a randomized algorithm to approximate the
-## 1-norms. Therefore, if consistent results are required, the "state" of the
-## random generator should be fixed before invoking @code{normest1}.
+## 1-norms.  Therefore, if consistent results are required, the
+## @qcode{"state"} of the random generator should be fixed before invoking
+## @code{normest1}.
 ##
 ## @code{condest} returns the 1-norm condition estimate @var{est} and a vector
 ## @var{v} satisfying @code{norm (A*v, 1) == norm (A, 1) * norm

@@ -682,9 +682,10 @@ Match between @var{m} and @var{n} times
 
 @item [@dots{}] [^@dots{}]
 
-List operators.  The pattern will match any character listed between "["
-and "]".  If the first character is "^" then the pattern is inverted and
-any character except those listed between brackets will match.
+List operators.  The pattern will match any character listed between
+@qcode{"["} and @qcode{"]"}.  If the first character is @qcode{"^"} then the
+pattern is inverted and any character except those listed between brackets
+will match.
 
 Escape sequences defined below can also be used inside list operators.  For
 example, a template for a floating point number might be @code{[-+.\d]+}.
@@ -1345,7 +1346,7 @@ regexprep ("Bill Dunn", '(\w+) (\w+)', '$2, $1')
 @end example
 
 @noindent
-returns "Dunn, Bill"
+returns @qcode{"Dunn, Bill"}
 
 Options in addition to those of @code{regexp} are
 

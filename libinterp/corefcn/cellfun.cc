@@ -1016,7 +1016,7 @@ The first input argument @var{func} can be a string, a function
 handle, an inline function, or an anonymous function.  The input
 argument @var{A} can be a logic array, a numeric array, a string
 array, a structure array, or a cell array.  By a call of the function
-@command{arrayfun} all elements of @var{A} are passed on to the named
+@code{arrayfun} all elements of @var{A} are passed on to the named
 function @var{func} individually.
 
 The named function can also take more than two input arguments, with

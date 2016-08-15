@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (__dispatch__, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __dispatch__ ()
+@deftypefn {} {} __dispatch__ ()
 Undocumented internal function.
 @end deftypefn */)
 {

@@ -20,7 +20,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{isoval} =} __calc_isovalue_from_data__ (@var{data})
-## Calculate a "good" iso value from histogram of data.
+## Calculate a @nospell{"good"} iso value from histogram of data.
 ## @end deftypefn
 
 ## called from isocaps, isosurface

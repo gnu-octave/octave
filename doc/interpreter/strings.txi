@@ -39,8 +39,8 @@ represent the string whose contents are @samp{parrot}.  Strings in
 Octave can be of any length.
 
 Since the single-quote mark is also used for the transpose operator
-(@pxref{Arithmetic Ops}) but double-quote marks have no other purpose in Octave,
-it is best to use double-quote marks to denote strings.
+(@pxref{Arithmetic Ops}) but double-quote marks have no other purpose in
+Octave, it is best to use double-quote marks to denote strings.
 
 Strings can be concatenated using the notation for defining matrices.  For
 example, the expression

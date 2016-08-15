@@ -46,9 +46,9 @@ makes it easy to perform common mathematical tasks.  Giving that up means
 shifting the focus from solving the real problem to solving a computer
 programming problem.  It means returning to low-level constructs such as
 pointers, memory management, mathematical overflow/underflow, etc.  Because
-of the low level nature, and the fact that the compiled code is executed outside
-of Octave, there is the very real possibility of crashing the interpreter and
-losing work.
+of the low level nature, and the fact that the compiled code is executed
+outside of Octave, there is the very real possibility of crashing the
+interpreter and losing work.
 
 Before going further, you should first determine if you really need to bother
 writing code outside of Octave.
@@ -1316,9 +1316,9 @@ Consider the following short example:
 The first line @code{#include "mex.h"} makes available all of the definitions
 necessary for a mex-file.  One important difference between Octave and
 @sc{matlab} is that the header file @qcode{"matrix.h"} is implicitly included
-through the inclusion of @qcode{"mex.h"}.  This is necessary to avoid a conflict
-with the Octave file @qcode{"Matrix.h"} for operating systems and compilers that
-don't distinguish between filenames in upper and lower case.
+through the inclusion of @qcode{"mex.h"}.  This is necessary to avoid a
+conflict with the Octave file @qcode{"Matrix.h"} for operating systems and
+compilers that don't distinguish between filenames in upper and lower case.
 
 The entry point into the mex-file is defined by @code{mexFunction}.  The
 function takes four arguments:
@@ -2034,7 +2034,7 @@ was started from).  If such a file is found, it is read and defines the initial
 @item Next, Octave searches in the user's home directory.  If a file
 @file{javaclasspath.txt} exists here, its contents are appended to the static
 classpath (if any).  Thus, it is possible to build an initial static classpath
-on a 'per user' basis.
+on a @nospell{'per user'} basis.
 
 @item Finally, Octave looks for a next occurrence of file
 @file{javaclasspath.txt} in the m-files directory where Octave Java functions

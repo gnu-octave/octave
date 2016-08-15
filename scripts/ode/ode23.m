@@ -40,7 +40,7 @@
 ## final times (@code{[tinit, tfinal]}).  If there are more than two elements
 ## then the solution will also be evaluated at these intermediate time
 ## instances unless the integrate function specified is
-## @command{integrate_n_steps}.
+## @code{integrate_n_steps}.
 ##
 ## By default, @code{ode23} uses an adaptive timestep with the
 ## @code{integrate_adaptive} algorithm.  The tolerance for the timestep

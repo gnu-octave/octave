@@ -57,25 +57,25 @@ endfunction
 %! clf;
 %! line ();
 %! ylim ([0.2, 0.8]);
-%! title ('ylim is [0.2, 0.8]');
+%! title ("ylim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! line ();
-%! ylim ('auto');
-%! title ('ylim is auto');
+%! ylim ("auto");
+%! title ("ylim is auto");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! ylim ([0.2, 0.8]);
-%! title ('ylim is [0.2, 0.8]');
+%! title ("ylim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! ylim ('auto');
-%! title ('ylim is auto');
+%! ylim ("auto");
+%! title ("ylim is auto");
 
 %!test
 %! hf = figure ("visible", "off");

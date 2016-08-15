@@ -128,35 +128,35 @@ endfunction
 %! subplot (2,2,1);
 %!  plot (1:100);
 %!  grid off;
-%!  title ('no grid');
+%!  title ("no grid");
 %! subplot (2,2,2);
 %!  plot (1:100);
 %!  grid on;
-%!  title ('grid on');
+%!  title ("grid on");
 %! subplot (2,2,3);
 %!  plot (1:100);
 %!  grid off;
-%!  title ('no grid');
+%!  title ("no grid");
 %! subplot (2,2,4);
 %!  plot (1:100);
 %!  grid minor;
-%!  title ('grid minor');
+%!  title ("grid minor");
 
 %!demo
 %! subplot (2,2,1);
 %!  semilogy (1:100);
 %!  grid off;
-%!  title ('no grid');
+%!  title ("no grid");
 %! subplot (2,2,2);
 %!  semilogy (1:100);
 %!  grid on;
-%!  title ('grid on');
+%!  title ("grid on");
 %! subplot (2,2,3);
 %!  semilogy (1:100);
 %!  grid off;
-%!  title ('no grid');
+%!  title ("no grid");
 %! subplot (2,2,4);
 %!  semilogy (1:100);
 %!  grid minor;
-%!  title ('grid minor');
+%!  title ("grid minor");
 

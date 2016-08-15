@@ -146,30 +146,30 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! meshz (Z);
-%! title ('meshz() plot of peaks() function');
+%! title ("meshz() plot of peaks() function");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! subplot (1,2,1)
 %!  mesh (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('mesh() plot');
+%!  title ("mesh() plot");
 %! subplot (1,2,2)
 %!  meshz (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('meshz() plot');
+%!  title ("meshz() plot");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [X,Y,Z] = peaks ();
 %! [fx, fy] = gradient (Z);
 %! C = sqrt (fx.^2 + fy.^2);
 %! meshz (X,Y,Z,C);
-%! title ('meshz() plot with color determined by gradient');
+%! title ("meshz() plot with color determined by gradient");
 

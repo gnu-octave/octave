@@ -1230,80 +1230,80 @@ endfunction
 %!demo
 %! clf;
 %! plot (rand (2));
-%! title ('legend called with cellstr and string inputs for labels');
-%! h = legend ({'foo'}, 'bar');
-%! legend (h, 'location', 'northeastoutside');
-%! set (h, 'fontsize', 20);
+%! title ("legend called with cellstr and string inputs for labels");
+%! h = legend ({"foo"}, "bar");
+%! legend (h, "location", "northeastoutside");
+%! set (h, "fontsize", 20);
 
 %!demo
 %! clf;
 %! plot (rand (3));
 %! title ('legend ("show") without inputs creates default labels');
-%! h = legend ('show');
+%! h = legend ("show");
 
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x,x,';I am Blue;', x,2*x, x,3*x,';I am Red;');
-%! h = legend ('location', 'northeastoutside');
+%! plot (x,x,";I am Blue;", x,2*x, x,3*x,";I am Red;");
+%! h = legend ("location", "northeastoutside");
 %! ## Placing legend inside should return axes to original size
-%! legend (h, 'location', 'northeast');
-%! title ('Blue and Red keys, with Green missing');
+%! legend (h, "location", "northeast");
+%! title ("Blue and Red keys, with Green missing");
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('incline is blue and decline is green');
-%! legend ({'I am blue', 'I am green'}, 'location', 'east');
+%! title ("incline is blue and decline is green");
+%! legend ({"I am blue", "I am green"}, "location", "east");
 %! legend hide
 %! legend show
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('Legend with keys in horizontal orientation');
-%! legend ({'I am blue', 'I am green'}, ...
-%!         'location', 'east', 'orientation', 'horizontal');
+%! title ("Legend with keys in horizontal orientation");
+%! legend ({"I am blue", "I am green"}, ...
+%!         "location", "east", "orientation", "horizontal");
 %! legend boxoff
 %! legend boxon
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('Legend with box off');
-%! legend ({'I am blue', 'I am green'}, 'location', 'east');
+%! title ("Legend with box off");
+%! legend ({"I am blue", "I am green"}, "location", "east");
 %! legend boxoff
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('Legend with text to the left of key');
-%! legend ({'I am blue', 'I am green'}, 'location', 'east');
+%! title ("Legend with text to the left of key");
+%! legend ({"I am blue", "I am green"}, "location", "east");
 %! legend left
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ({'Use properties to place legend text to the left of key', ...
-%!         'Legend text color is magenta'});
-%! h = legend ({'I am blue', 'I am green'}, 'location', 'east');
-%! legend ('right');
-%! set (h, 'textposition', 'left');
-%! set (h, 'textcolor', [1 0 1]);
+%! title ({"Use properties to place legend text to the left of key", ...
+%!         "Legend text color is magenta"});
+%! h = legend ({"I am blue", "I am green"}, "location", "east");
+%! legend ("right");
+%! set (h, "textposition", "left");
+%! set (h, "textcolor", [1 0 1]);
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('Legend is hidden');
-%! legend ({'I am blue', 'I am green'}, 'location', 'east');
+%! title ("Legend is hidden");
+%! legend ({"I am blue", "I am green"}, "location", "east");
 %! legend hide
 
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x,x,';I am Blue;', x,2*x,';I am Green;', x,3*x,';I am Red;');
-%! title ({'Labels are embedded in call to plot', ...
-%!         'Legend is hidden and then shown'});
+%! plot (x,x,";I am Blue;", x,2*x,";I am Green;", x,3*x,";I am Red;");
+%! title ({"Labels are embedded in call to plot", ...
+%!         "Legend is hidden and then shown"});
 %! legend boxon
 %! legend hide
 %! legend show
@@ -1312,114 +1312,114 @@ endfunction
 %! clf;
 %! x = 0:1;
 %! plot (x,x,  x,2*x, x,3*x);
-%! title ('Labels with interpreted Greek text');
+%! title ("Labels with interpreted Greek text");
 %! h = legend ('\alpha', '\beta=2\alpha', '\gamma=3\alpha');
-%! set (h, 'interpreter', 'tex');
+%! set (h, "interpreter", "tex");
 
 %!demo
 %! clf;
 %! plot (rand (2));
-%! title ('Labels with TeX interpreter turned off');
-%! h = legend ('Hello_World', 'foo^bar');
-%! set (h, 'interpreter', 'none');
+%! title ("Labels with TeX interpreter turned off");
+%! h = legend ("Hello_World", "foo^bar");
+%! set (h, "interpreter", "none");
 
 %!demo
 %! clf;
 %! labels = {};
-%! colororder = get (gca, 'colororder');
+%! colororder = get (gca, "colororder");
 %! for i = 1:5
 %!   h = plot (1:100, i + rand (100,1)); hold on;
-%!   set (h, 'color', colororder(i,:));
-%!   labels = {labels{:}, ['Signal ', num2str(i)]};
-%! end
+%!   set (h, "color", colororder(i,:));
+%!   labels = {labels{:}, ["Signal ", num2str(i)]};
+%! endfor
 %! hold off;
-%! title ({'Signals with random offset and uniform noise';
-%!         'Legend shown below and outside of plot'});
-%! xlabel ('Sample Nr [k]'); ylabel ('Amplitude [V]');
-%! legend (labels, 'location', 'southoutside');
+%! title ({"Signals with random offset and uniform noise";
+%!         "Legend shown below and outside of plot"});
+%! xlabel ("Sample Nr [k]"); ylabel ("Amplitude [V]");
+%! legend (labels, "location", "southoutside");
 
 %!demo
 %! clf;
 %! x = linspace (0, 10);
 %! plot (x, x);
 %! hold on;
-%! stem (x, x.^2, 'g');
-%! title ('First created object gets first label');
-%! legend ('linear');
+%! stem (x, x.^2, "g");
+%! title ("First created object gets first label");
+%! legend ("linear");
 %! hold off;
 
 %!demo
 %! clf;
 %! x = linspace (0, 10);
 %! plot (x, x, x, x.^2);
-%! title ('First created object gets first label');
-%! legend ('linear');
+%! title ("First created object gets first label");
+%! legend ("linear");
 
 %!demo
 %! clf;
 %! x = linspace (0, 10);
 %! plot (x, x, x, x.^2);
-%! title ('Labels are applied in order of object creation');
-%! legend ('linear', 'quadratic');
+%! title ("Labels are applied in order of object creation");
+%! legend ("linear", "quadratic");
 
 %!demo
 %! clf;
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
 %! ylim ([0 1.0]);
-%! title ('legend() works for bar graphs (hggroups)');
-%! legend ({'1st Bar', '2nd Bar', '3rd Bar'});
+%! title ("legend() works for bar graphs (hggroups)");
+%! legend ({"1st Bar", "2nd Bar", "3rd Bar"});
 
 %!demo
 %! clf;
 %! colormap (cool (64));
 %! surf (peaks ());
-%! legend ('peaks()');
-%! title ('legend() works for surface objects too');
+%! legend ("peaks()");
+%! title ("legend() works for surface objects too");
 
 %!demo
-%! clf reset;  % needed to undo colormap assignment in previous demo
+%! clf reset;  # needed to undo colormap assignment in previous demo
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
 %! title ('"left" option places colors to the left of text label');
-%! legend ('1st Bar', '2nd Bar', '3rd Bar');
+%! legend ("1st Bar", "2nd Bar", "3rd Bar");
 %! legend left;
 
 %!demo
 %! clf;
 %! x = 0:0.1:7;
 %! h = plot (x,sin(x), x,cos(x), x,sin(x.^2/10), x,cos(x.^2/10));
-%! title ('Only the sin() objects have keylabels');
-%! legend (h([1, 3]), {'sin (x)', 'sin (x^2/10)'}, 'location', 'southwest');
+%! title ("Only the sin() objects have keylabels");
+%! legend (h([1, 3]), {"sin (x)", "sin (x^2/10)"}, "location", "southwest");
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin (x), ';sin (x);');
+%! plot (x, sin (x), ";sin (x);");
 %! hold on;
-%! plot (x, cos (x), ';cos (x);');
+%! plot (x, cos (x), ";cos (x);");
 %! hold off;
-%! title ('legend constructed from multiple plot calls');
+%! title ("legend constructed from multiple plot calls");
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin (x), ';sin (x);');
+%! plot (x, sin (x), ";sin (x);");
 %! hold on;
-%! plot (x, cos (x), ';cos (x);');
+%! plot (x, cos (x), ";cos (x);");
 %! hold off;
-%! title ('Specified label text overrides previous labels');
-%! legend ({'Sine', 'Cosine'}, 'location', 'northeastoutside');
+%! title ("Specified label text overrides previous labels");
+%! legend ({"Sine", "Cosine"}, "location", "northeastoutside");
 
 %!demo
 %! clf;
 %! x = 0:10;
 %! plot (x, rand (11));
-%! xlabel ('Indices');
-%! ylabel ('Random Values');
-%! title ('Legend ''off'' deletes the legend');
-%! legend (cellstr (num2str ((1:10)')), 'location', 'northeastoutside');
+%! xlabel ("Indices");
+%! ylabel ("Random Values");
+%! title ('Legend "off" deletes the legend');
+%! legend (cellstr (num2str ((1:10)")), "location", "northeastoutside");
 %! legend off;
 %! axis ([0, 10, 0 1]);
 
@@ -1428,23 +1428,23 @@ endfunction
 %! x = (1:5)';
 %! subplot (2,2,1);
 %!  plot (x, rand (numel (x)));
-%!  legend (cellstr (num2str (x)), 'location', 'northwestoutside');
+%!  legend (cellstr (num2str (x)), "location", "northwestoutside");
 %! subplot (2,2,2);
 %!  plot (x, rand (numel (x)));
-%!  legend (cellstr (num2str (x)), 'location', 'northeastoutside');
+%!  legend (cellstr (num2str (x)), "location", "northeastoutside");
 %! subplot (2,2,3);
 %!  plot (x, rand (numel (x)));
-%!  legend (cellstr (num2str (x)), 'location', 'southwestoutside');
+%!  legend (cellstr (num2str (x)), "location", "southwestoutside");
 %! subplot (2,2,4);
 %!  plot (x, rand (numel (x)));
-%!  legend (cellstr (num2str (x)), 'location', 'southeastoutside');
-%! %% Legend works on a per axes basis for each subplot
+%!  legend (cellstr (num2str (x)), "location", "southeastoutside");
+%! ## Legend works on a per axes basis for each subplot
 
 %!demo
 %! clf;
 %! plot (rand (2));
-%! title ('legend() will warn if extra labels are specified');
-%! legend ('Hello', 'World', 'interpreter', 'foobar');
+%! title ("legend() will warn if extra labels are specified");
+%! legend ("Hello", "World", "interpreter", "foobar");
 
 %!demo
 %! clf;
@@ -1452,8 +1452,8 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ('plotyy legend test #1: Blue and Green labels');
-%! legend ([h1, h2], {'Blue', 'Green'}, 'location', 'south');
+%! title ("plotyy legend test 1: Blue and Green labels");
+%! legend ([h1, h2], {"Blue", "Green"}, "location", "south");
 
 %!demo
 %! clf;
@@ -1461,8 +1461,8 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ('plotyy legend test #2: Blue and Green labels');
-%! legend ({'Blue', 'Green'}, 'location', 'south');
+%! title ("plotyy legend test 2: Blue and Green labels");
+%! legend ({"Blue", "Green"}, "location", "south");
 
 %!demo
 %! clf;
@@ -1470,138 +1470,138 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ('plotyy legend test #3: Blue and Green labels');
-%! legend ('Blue', 'Green', 'location', 'south');
+%! title ("plotyy legend test 3: Blue and Green labels");
+%! legend ("Blue", "Green", "location", "south");
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10);
-%! title ('a very long label can sometimes cause problems');
-%! legend ('hello very big world', 'location', 'northeastoutside');
+%! title ("a very long label can sometimes cause problems");
+%! legend ("hello very big world", "location", "northeastoutside");
 
-%!demo % bug 36408
+%!demo  # bug 36408
 %! clf;
-%! option = 'right';
+%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
 %!  xlabel xlabel;
 %!  ylabel ylabel;
-%!  title ('Subplots adjust to the legend placed outside');
-%!  legend ({'1'}, 'location', 'northeastoutside');
+%!  title ("Subplots adjust to the legend placed outside");
+%!  legend ({"1"}, "location", "northeastoutside");
 %!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
 %!  xlabel xlabel;
 %!  ylabel ylabel;
-%!  legend ({'1234567890'}, 'location', 'eastoutside');
+%!  legend ({"1234567890"}, "location", "eastoutside");
 %!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
 %!  xlabel xlabel;
 %!  ylabel ylabel;
-%!  legend ({'12345678901234567890'}, 'location', 'southeastoutside');
+%!  legend ({"12345678901234567890"}, "location", "southeastoutside");
 %!  legend (option);
 
-%!demo % bug 36408
+%!demo  # bug 36408
 %! clf;
-%! option = 'right';
+%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
-%!  title ('Subplots adjust to the legend placed outside');
-%!  legend ({'1'}, 'location', 'northwestoutside');
+%!  title ("Subplots adjust to the legend placed outside");
+%!  legend ({"1"}, "location", "northwestoutside");
 %!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
-%!  legend ({'1234567890'}, 'location', 'westoutside');
+%!  legend ({"1234567890"}, "location", "westoutside");
 %!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
-%!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
+%!  legend ({"12345678901234567890"}, "location", "southwestoutside");
 %!  legend (option);
 
-%!demo % bug 36408
+%!demo  # bug 36408
 %! clf;
-%! option = 'right';
+%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
-%!  set (gca (), 'yaxislocation', 'right');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  title ('Subplots adjust to the legend placed outside');
-%!  legend ({'1'}, 'location', 'northeastoutside');
+%!  set (gca (), "yaxislocation", "right");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  title ("Subplots adjust to the legend placed outside");
+%!  legend ({"1"}, "location", "northeastoutside");
 %!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
-%!  set (gca (), 'yaxislocation', 'right');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  legend ({'1234567890'}, 'location', 'eastoutside');
+%!  set (gca (), "yaxislocation", "right");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  legend ({"1234567890"}, "location", "eastoutside");
 %!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
-%!  set (gca (), 'yaxislocation', 'right');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  legend ({'12345678901234567890'}, 'location', 'southeastoutside');
+%!  set (gca (), "yaxislocation", "right");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  legend ({"12345678901234567890"}, "location", "southeastoutside");
 %!  legend (option);
 
-%!demo % bug 36408
+%!demo  # bug 36408
 %! clf;
-%! option = 'right';
+%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
-%!  set (gca (), 'yaxislocation', 'right');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  title ('Subplots adjust to the legend placed outside');
-%!  legend ({'1'}, 'location', 'northwestoutside');
+%!  set (gca (), "yaxislocation", "right");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  title ("Subplots adjust to the legend placed outside");
+%!  legend ({"1"}, "location", "northwestoutside");
 %!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
-%!  set (gca (), 'yaxislocation', 'right');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  legend ({'1234567890'}, 'location', 'westoutside');
+%!  set (gca (), "yaxislocation", "right");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  legend ({"1234567890"}, "location", "westoutside");
 %!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
-%!  set (gca (), 'yaxislocation', 'right');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
+%!  set (gca (), "yaxislocation", "right");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  legend ({"12345678901234567890"}, "location", "southwestoutside");
 %!  legend (option);
 
-%!demo % bug 36408;
+%!demo  # bug 36408;
 %! clf;
-%! option = 'right';
+%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
-%!  set (gca (), 'xaxislocation', 'top');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  title ('Subplots adjust to the legend placed outside');
-%!  legend ({'1'}, 'location', 'northwestoutside');
+%!  set (gca (), "xaxislocation", "top");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  title ("Subplots adjust to the legend placed outside");
+%!  legend ({"1"}, "location", "northwestoutside");
 %!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
-%!  set (gca (), 'xaxislocation', 'top');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  legend ({'1234567890'}, 'location', 'westoutside');
+%!  set (gca (), "xaxislocation", "top");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  legend ({"1234567890"}, "location", "westoutside");
 %!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
-%!  set (gca (), 'xaxislocation', 'top');
-%!  xlabel ('xlabel');
-%!  ylabel ('ylabel');
-%!  legend ({'12345678901234567890'}, 'location', 'southwestoutside');
+%!  set (gca (), "xaxislocation", "top");
+%!  xlabel ("xlabel");
+%!  ylabel ("ylabel");
+%!  legend ({"12345678901234567890"}, "location", "southwestoutside");
 %!  legend (option);
 
-%!demo % bug 39697
+%!demo  # bug 39697
 %! clf;
 %! plot (1:10);
-%! legend ('Legend Text');
-%! title ({'Multi-line', 'titles', 'are a', 'problem', 'See bug #39697'});
+%! legend ("Legend Text");
+%! title ({"Multi-line", "titles", "are a", "problem", "See bug #39697"});
 
 %!test
 %! toolkit = graphics_toolkit ("gnuplot");

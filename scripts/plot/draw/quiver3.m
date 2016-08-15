@@ -101,27 +101,27 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = peaks (25);
 %! surf (x, y, z);
 %! hold on;
 %! [u, v, w] = surfnorm (x, y, z / 10);
 %! h = quiver3 (x, y, z, u, v, w);
-%! set (h, 'maxheadsize', 0.25);
+%! set (h, "maxheadsize", 0.25);
 %! hold off;
-%! title ('quiver3 of surface normals to peaks() function');
+%! title ("quiver3 of surface normals to peaks() function");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = peaks (25);
 %! surf (x, y, z);
 %! hold on;
 %! [u, v, w] = surfnorm (x, y, z / 10);
 %! h = quiver3 (x, y, z, u, v, w);
-%! set (h, 'maxheadsize', 0.25);
+%! set (h, "maxheadsize", 0.25);
 %! hold off;
 %! shading interp;
-%! title ({'quiver3 of surface normals to peaks() function'; ...
+%! title ({"quiver3 of surface normals to peaks() function"; ...
 %!         'shading "interp"'});
 

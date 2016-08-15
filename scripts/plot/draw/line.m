@@ -64,12 +64,12 @@ endfunction
 
 %!demo
 %! clf;
-%! line ([0 1], [0.8 0.8], 'linestyle', '-', 'color', 'b');
-%! line ([0 1], [0.6 0.6], 'linestyle', '--', 'color', 'g');
-%! line ([0 1], [0.4 0.4], 'linestyle', ':', 'color', 'r');
-%! line ([0 1], [0.2 0.2], 'linestyle', '-.', 'color', 'k');
+%! line ([0 1], [0.8 0.8], "linestyle", "-", "color", "b");
+%! line ([0 1], [0.6 0.6], "linestyle", "--", "color", "g");
+%! line ([0 1], [0.4 0.4], "linestyle", ":", "color", "r");
+%! line ([0 1], [0.2 0.2], "linestyle", "-.", "color", "k");
 %! ylim ([0 1]);
-%! title ('line() with various linestyles');
+%! title ("line() with various linestyles");
 %! legend ('"-"', '"--"', '":"', '"-."', 'location', 'eastoutside');
 
 %!demo
@@ -78,9 +78,9 @@ endfunction
 %! y1 = cos (x);
 %! y2 = sin (x);
 %! subplot (3,1,1);
-%!  args = {'color', 'b', 'marker', 's'};
+%!  args = {"color", "b", "marker", "s"};
 %!  line ([x(:), x(:)], [y1(:), y2(:)], args{:});
-%!  title ('Test broadcasting for line()');
+%!  title ("Test broadcasting for line()");
 %! subplot (3,1,2);
 %!  line (x(:), [y1(:), y2(:)], args{:});
 %! subplot (3,1,3);

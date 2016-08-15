@@ -56,6 +56,6 @@ endfunction
 %! ## Show the 'gray' colormap profile and as an image
 %! cmap = gray (16);
 %! subplot (2, 1, 1);
-%! rgbplot (cmap, "composite");
+%!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
-%! rgbplot (cmap);
+%!  rgbplot (cmap);

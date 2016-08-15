@@ -53,6 +53,6 @@ endfunction
 %! ## Show the 'flag' colormap profile and as an image
 %! cmap = flag (12);  # 4 colors, therefore cycle 3 times
 %! subplot (2, 1, 1);
-%! rgbplot (cmap, "composite");
+%!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
-%! rgbplot (cmap);
+%!  rgbplot (cmap);

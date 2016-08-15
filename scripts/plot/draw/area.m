@@ -248,33 +248,33 @@ endfunction
 %!demo
 %! ## Verify identity sin^2 + cos^2 = 1
 %! clf;
-%! t = linspace (0, 2*pi, 100)';
+%! t = linspace (0, 2*pi, 100)";
 %! y = [sin(t).^2, cos(t).^2];
 %! area (t, y);
 %! axis tight
-%! legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');
-%! title ('area() plot');
+%! legend ("sin^2", "cos^2", "location", "NorthEastOutside");
+%! title ("area() plot");
 
 %!demo
 %! ## Show effects of setting BaseValue
 %! clf;
-%! x = [-2:0.1:2]';
+%! x = [-2:0.1:2]";
 %! y = x.^2 - 1;
 %! subplot (1, 2, 1)
-%! area (x, y);
-%! title ({'Parabola y = x^2 -1';'BaseValue = 0'});
+%!  area (x, y);
+%!  title ({"Parabola y = x^2 -1";"BaseValue = 0"});
 %! subplot (1, 2, 2)
-%! h = area (x, y);
-%! set (h, 'basevalue', -1);
-%! title ({'Parabola y = x^2 -1';'BaseValue = -1'});
+%!  h = area (x, y);
+%!  set (h, "basevalue", -1);
+%!  title ({"Parabola y = x^2 -1";"BaseValue = -1"});
 
 %!demo
 %! clf;
 %! x = 0:10;
 %! y = rand (size (x));
 %! h = area (x, y);
-%! set (h, 'ydata', sort (get (h, 'ydata')));
-%! title ('area() plot of sorted data');
+%! set (h, "ydata", sort (get (h, "ydata")));
+%! title ("area() plot of sorted data");
 
 ## Test input validation
 %!error area ()

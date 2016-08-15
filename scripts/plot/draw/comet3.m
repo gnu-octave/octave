@@ -97,7 +97,7 @@ endfunction
 
 %!demo
 %! clf;
-%! title ('comet3() animation');
+%! title ("comet3() animation");
 %! view (3); hold on;
 %! t = 0:pi/20:5*pi;
 %! comet3 (cos (t), sin (t), t, 0.05);

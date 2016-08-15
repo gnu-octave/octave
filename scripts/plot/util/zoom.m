@@ -181,20 +181,20 @@ endfunction
 %! clf;
 %! sombrero ();
 %! pause (1);
-%! %% zoom in by a factor of 2
+%! ## zoom in by a factor of 2
 %! zoom (2);
 %! pause (1);
-%! %% return to original zoom level
+%! ## return to original zoom level
 %! zoom out;
 %! pause (1);
-%! %% zoom in by a factor of 2
+%! ## zoom in by a factor of 2
 %! zoom (2);
 %! pause (1);
-%! %% set this zoom level as the "initial zoom level"
-%! %% and zoom in some more
+%! ## set this zoom level as the "initial zoom level"
+%! ## and zoom in some more
 %! zoom reset;
 %! zoom (2);
 %! pause (1);
-%! %% return to zoom level set by last call to "zoom reset"
+%! ## return to zoom level set by last call to "zoom reset"
 %! zoom out;
 

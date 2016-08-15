@@ -80,7 +80,7 @@ endfunction
 %! clf;
 %! theta = 0:0.2:6;
 %! stem3 (cos (theta), sin (theta), theta);
-%! title ('stem3() plot');
+%! title ("stem3() plot");
 
 %!error stem3 ()
 %!error <must define X, Y, and Z> stem3 (1,2)

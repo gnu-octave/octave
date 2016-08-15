@@ -125,7 +125,7 @@ endfunction
 %! phi = [0 : 15 : 360] * pi/180;
 %! feather (sin (phi), cos (phi));
 %! axis tight;
-%! title ('feather plot');
+%! title ("feather plot");
 
 ## Test input validation
 %!error feather ()

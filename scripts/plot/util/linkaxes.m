@@ -105,14 +105,14 @@ endfunction
 %!demo
 %! clf;
 %! hax1 = subplot (3,1,1);
-%! bar (rand (4, 1), 'facecolor', 'r');
+%! bar (rand (4, 1), "facecolor", "r");
 %! hax2 = subplot (3,1,2);
-%! bar (5*rand (4, 1), 'facecolor', 'g');
+%! bar (5*rand (4, 1), "facecolor", "g");
 %! hax3 = subplot (3,1,3);
-%! bar (10*rand (4, 1), 'facecolor', 'b');
-%! input ('Type <RETURN> to link axes');
+%! bar (10*rand (4, 1), "facecolor", "b");
+%! input ("Type <RETURN> to link axes");
 %! linkaxes ([hax1, hax2, hax3]);
-%! input ('Type <RETURN> to change ylim');
+%! input ("Type <RETURN> to change ylim");
 %! ylim (hax3, [0 10]);
 
 %!test

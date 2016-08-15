@@ -97,7 +97,7 @@ endfunction
 %! clf;
 %! [x,y] = meshgrid (1:2:20);
 %! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10));
-%! title ('quiver plot');
+%! title ("quiver plot");
 
 %!demo
 %! clf;
@@ -106,6 +106,6 @@ endfunction
 %! theta = 2*pi*x + pi/2;
 %! quiver (x, y, sin (theta)/10, cos (theta)/10, 0.4);
 %! axis equal tight;
-%! hold on; plot (x,y,'r'); hold off;
-%! title ('quiver() with scaled arrows');
+%! hold on; plot (x,y,"r"); hold off;
+%! title ("quiver() with scaled arrows");
 

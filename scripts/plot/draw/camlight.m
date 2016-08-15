@@ -218,7 +218,7 @@ endfunction
 %!   view (a, 30);
 %!   drawnow ();
 %!   pause (0.01);
-%! end
+%! endfor
 
 %!demo
 %! sphere (48);
@@ -233,7 +233,7 @@ endfunction
 %!   camlight (hl, "right");  # update light position
 %!   drawnow ();
 %!   pause (0.01);
-%! end
+%! endfor
 
 %!test
 %! hf = figure ("visible", "off");

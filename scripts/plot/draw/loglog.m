@@ -78,7 +78,7 @@ endfunction
 %! x = sort ((t .* (1 + rand (size (t)))) .^ 2);
 %! y = (t .* (1 + rand (size (t)))) .^ 2;
 %! loglog (x, y);
-%! title ({'loglog() plot', 'Both axes are logarithmic'});
+%! title ({"loglog() plot", "Both axes are logarithmic"});
 
 %!demo
 %! clf;
@@ -87,12 +87,12 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  loglog (a, b);
-%!  xlabel ('loglog (a, b)');
+%!  xlabel ("loglog (a, b)");
 %!
 %! subplot (1,2,2);
 %!  loglog (a, abs (b));
-%!  set (gca, 'ydir', 'reverse');
-%!  xlabel ('loglog (a, abs (b))');
+%!  set (gca, "ydir", "reverse");
+%!  xlabel ("loglog (a, abs (b))");
 
 %!test
 %! hf = figure ("visible", "off");

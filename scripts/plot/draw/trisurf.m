@@ -147,12 +147,12 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, 'facecolor', 'interp', 'edgecolor', 'k');
+%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k");
 
 ## Test input validation
 %!error trisurf ()

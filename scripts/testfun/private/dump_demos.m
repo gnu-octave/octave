@@ -75,6 +75,14 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
   fid = fopen (output, "w");
   fprintf (fid, "%% DO NOT EDIT!  Generated automatically by dump_demos.m\n");
   fprintf (fid, "function %s ()\n", funcname);
+  fprintf (fid, "set (0, 'DefaultAxesColorOrder', ...\n"); 
+  fprintf (fid, "  [ 0.00000   0.00000   1.00000 ;\n");
+  fprintf (fid, "    0.00000   0.50000   0.00000 ;\n");
+  fprintf (fid, "    1.00000   0.00000   0.00000 ;\n");
+  fprintf (fid, "    0.00000   0.75000   0.75000 ;\n");
+  fprintf (fid, "    0.75000   0.00000   0.75000 ;\n");
+  fprintf (fid, "    0.75000   0.75000   0.00000 ;\n");
+  fprintf (fid, "    0.25000   0.25000   0.25000 ]);\n");
   fprintf (fid, "close all\n");
   fprintf (fid, "more off\n");
   fprintf (fid, "diary diary.log\n");
@@ -98,7 +106,7 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
   fprintf (fid, "\ndiary off\n");
 
   ## Create script ending
-  fprintf (fid, "end\n\n")
+  fprintf (fid, "end\n\n");
 
   ## Close script
   fclose (fid);
@@ -179,8 +187,8 @@ endfunction
 function code = oct2mat (code)
 
   ## Simple hacks to make things Matlab compatible
-  code = strrep (code, "%!", "%%");
-  code = strrep (code, "!", "~");
+  code = strrep (code, "%!", "%%");    # system operator !
+  code = strrep (code, "!", "~");      # logical not operator
 
   ## Simply replacing double quotes with single quotes
   ## causes problems with strings like 'hello "world"' or transpose.
@@ -198,21 +206,20 @@ function code = oct2mat (code)
   code = regexprep (code, "[(,;\n][ ]*'[^']*'(*SKIP)(*F)|\"", "'",
                           "lineanchors", "dotexceptnewline");
 
-  code = strrep (code, "#", "%");
+  code = strrep (code, "#", "%");      # comment character
   ## Fix the format specs for the errorbar demos changed by the line above
   code = strrep (code, "%r", "#r");
   code = strrep (code, "%~", "#~");
+  ## Shorten all long forms of endXXX to 'end'
   endkeywords = {"endfor", "endfunction", "endif", "endwhile", "end_try_catch"};
   for k = 1:numel (endkeywords)
     code = strrep (code, endkeywords{k}, "end");
   endfor
+  ## Comment keywords unknown to Matlab
   commentkeywords = {"unwind_protect", "end_unwind_protect"};
   for k = 1:numel (commentkeywords)
     code = strrep (code, commentkeywords{k}, ["%" commentkeywords{k}]);
   endfor
-
-  ## Fix up sombrero which now has default argument in Octave
-  code = strrep (code, "sombrero ()", "sombrero (41)");
 
 endfunction
 

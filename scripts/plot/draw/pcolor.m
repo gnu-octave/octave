@@ -141,18 +141,18 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! pcolor (Z);
-%! title ('pcolor() of peaks with facet shading');
+%! title ("pcolor() of peaks with facet shading");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [X,Y,Z] = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! pcolor (X,Y,Fx+Fy);
 %! shading interp;
 %! axis tight;
-%! title ('pcolor() of peaks with interp shading');
+%! title ("pcolor() of peaks with interp shading");
 

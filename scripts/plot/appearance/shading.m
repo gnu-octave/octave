@@ -100,118 +100,118 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading faceted;
 %! title ('shading ''faceted''');
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading faceted;
-%! h = findobj (gca (), 'type', 'surface');
-%! facecolor = get (h, 'facecolor');
-%! edgecolor = get (h, 'edgecolor');
-%! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
+%! h = findobj (gca (), "type", "surface");
+%! facecolor = get (h, "facecolor");
+%! edgecolor = get (h, "edgecolor");
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
 %! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading flat;
 %! title ('shading ''flat''');
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading flat;
-%! h = findobj (gca (), 'type', 'surface');
-%! facecolor = get (h, 'facecolor');
-%! edgecolor = get (h, 'edgecolor');
-%! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
+%! h = findobj (gca (), "type", "surface");
+%! facecolor = get (h, "facecolor");
+%! edgecolor = get (h, "edgecolor");
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
 %! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading interp;
 %! title ('shading ''interp''');
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading interp;
-%! h = findobj (gca (), 'type', 'surface');
-%! facecolor = get (h, 'facecolor');
-%! edgecolor = get (h, 'edgecolor');
-%! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
+%! h = findobj (gca (), "type", "surface");
+%! facecolor = get (h, "facecolor");
+%! edgecolor = get (h, "edgecolor");
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
 %! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf
-%! colormap ('default')
+%! colormap ("default")
 %! peaks ()
 %! shading interp
-%! h = findobj (gca (), 'type', 'surface');
-%! set (h, 'edgecolor', 'k')
+%! h = findobj (gca (), "type", "surface");
+%! set (h, "edgecolor", "k")
 %! title ({'shading ''interp''', 'with "edgecolor" set to black'})
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading faceted;
 %! title ('shading ''faceted''');
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading faceted;
-%! h = findobj (gca (), 'type', 'surface');
-%! facecolor = get (h, 'facecolor');
-%! edgecolor = get (h, 'edgecolor');
-%! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
+%! h = findobj (gca (), "type", "surface");
+%! facecolor = get (h, "facecolor");
+%! edgecolor = get (h, "edgecolor");
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
 %! title ({'shading ''faceted''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading flat;
 %! title ('shading ''flat''');
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading flat;
-%! h = findobj (gca (), 'type', 'surface');
-%! facecolor = get (h, 'facecolor');
-%! edgecolor = get (h, 'edgecolor');
-%! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
+%! h = findobj (gca (), "type", "surface");
+%! facecolor = get (h, "facecolor");
+%! edgecolor = get (h, "edgecolor");
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
 %! title ({'shading ''flat''', 'with "edgecolor" and "facecolor" reversed'});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading interp;
 %! title ('shading ''interp''');
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading interp;
-%! h = findobj (gca (), 'type', 'surface');
-%! facecolor = get (h, 'facecolor');
-%! edgecolor = get (h, 'edgecolor');
-%! set (h, 'edgecolor', facecolor, 'facecolor', edgecolor)
+%! h = findobj (gca (), "type", "surface");
+%! facecolor = get (h, "facecolor");
+%! edgecolor = get (h, "edgecolor");
+%! set (h, "edgecolor", facecolor, "facecolor", edgecolor)
 %! title ({'shading ''interp''', 'with "edgecolor" and "facecolor" reversed'});
 

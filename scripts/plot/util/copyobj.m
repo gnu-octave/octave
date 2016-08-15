@@ -117,56 +117,56 @@ endfunction
 
 %!demo
 %! hobj = clf;
-%! set (hobj, 'name', 'Original', 'numbertitle', 'off');
+%! set (hobj, "name", "Original", "numbertitle", "off");
 %! hold on;
 %! x = 1:10;
 %! y = x.^2;
 %! dy = 2 * (.2 * x);
 %! y2 = (x - 3).^2;
 %! hg = errorbar (x, y, dy);
-%! set (hg, 'marker', '^', 'markerfacecolor', rand (1,3));
-%! plot (x, y2, 'ok-');
-%! legend ('errorbar', 'line');
+%! set (hg, "marker", "^", "markerfacecolor", rand (1,3));
+%! plot (x, y2, "ok-");
+%! legend ("errorbar", "line");
 %! drawnow ();
-%! pos = get (hobj, 'position');
-%! scrn = get (0, 'screensize');
-%! set (hobj, 'position', [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! pos = get (hobj, "position");
+%! scrn = get (0, "screensize");
+%! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 %! hnew = copyobj (hobj);
 %! drawnow ();
-%! set (hnew, 'name', 'Copyobj');
+%! set (hnew, "name", "Copyobj");
 %! drawnow ();
-%! set (hnew, 'position', [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
 %!demo
 %! hobj = clf;
-%! set (hobj, 'name', 'Original', 'numbertitle', 'off');
+%! set (hobj, "name", "Original", "numbertitle", "off");
 %! subplot (2,2,1);
-%! hold on;
-%! contourf (rand (10, 10));
-%! colorbar ();
+%!  hold on;
+%!  contourf (rand (10, 10));
+%!  colorbar ();
 %! subplot (2,2,2);
-%! quiver (rand (10, 10), rand (10, 10));
+%!  quiver (rand (10, 10), rand (10, 10));
 %! subplot (2,2,3);
-%! colormap (jet (64));
-%! hold on;
-%! sombrero ();
-%! colorbar ('peer', gca, 'NorthOutside');
+%!  colormap (jet (64));
+%!  hold on;
+%!  sombrero ();
+%!  colorbar ("peer", gca, "NorthOutside");
 %! subplot (2,2,4);
-%! imagesc (rand (30, 30));
-%! text (15, 15, 'Rotated text', ...
-%!       'HorizontAlalignment', 'Center', 'Rotation', 30);
+%!  imagesc (rand (30, 30));
+%!  text (15, 15, "Rotated text", ...
+%!        "HorizontAlalignment", "Center", "Rotation", 30);
 %! drawnow ();
-%! pos = get (hobj, 'position');
-%! scrn = get (0, 'screensize');
-%! set (hobj, 'position', [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! pos = get (hobj, "position");
+%! scrn = get (0, "screensize");
+%! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 %! hnew = copyobj (hobj);
 %! drawnow ();
-%! set (hnew, 'name', 'Copyobj');
+%! set (hnew, "name", "Copyobj");
 %! drawnow ();
-%! set (hnew, 'position', [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
 %!testif HAVE_MAGICK

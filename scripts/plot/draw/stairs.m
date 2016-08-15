@@ -288,17 +288,17 @@ endfunction
 %! y = rand_1x10_data2;
 %! [xs, ys] = stairs (x, y);
 %! plot (xs, ys);
-%! title ('plot() of stairs() generated data');
+%! title ("plot() of stairs() generated data");
 
 %!demo
 %! clf;
-%! stairs (1:9, '-o');
-%! title ('stairs() plot with linespec to modify marker');
+%! stairs (1:9, "-o");
+%! title ("stairs() plot with linespec to modify marker");
 
 %!demo
 %! clf;
-%! stairs (9:-1:1, 'marker', 's', 'markersize', 10, 'markerfacecolor', 'm');
-%! title ('stairs() plot with prop/val pairs to modify appearance');
+%! stairs (9:-1:1, "marker", "s", "markersize", 10, "markerfacecolor", "m");
+%! title ("stairs() plot with prop/val pairs to modify appearance");
 
 %!demo
 %! clf;
@@ -307,12 +307,12 @@ endfunction
 %! y = rand (1, N);
 %! hs = stairs (x(1), y(1));
 %! axis ([1, N-1 0, 1]);
-%! title ('stairs plot data modified through handle');
+%! title ("stairs plot data modified through handle");
 %! for k = 2:N
-%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
+%!   set (hs, "xdata", x(1:k), "ydata", y(1:k));
 %!   drawnow ();
 %!   pause (0.2);
-%! end
+%! endfor
 
 ## Invisible figure used for tests
 %!shared hf, hax

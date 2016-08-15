@@ -73,21 +73,21 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! waterfall (Z);
-%! title ('waterfall() plot of peaks() function');
+%! title ("waterfall() plot of peaks() function");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! subplot (1,2,1)
 %!  meshz (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('meshz() plot');
+%!  title ("meshz() plot");
 %! subplot (1,2,2)
 %!  waterfall (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('waterfall() plot');
+%!  title ("waterfall() plot");
 

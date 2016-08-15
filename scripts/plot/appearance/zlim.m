@@ -57,25 +57,25 @@ endfunction
 %! clf;
 %! line ();
 %! zlim ([0.2, 0.8]);
-%! title ('zlim is [0.2, 0.8]');
+%! title ("zlim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! line ();
-%! zlim ('auto');
-%! title ('zlim is auto');
+%! zlim ("auto");
+%! title ("zlim is auto");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! zlim ([0.2, 0.8]);
-%! title ('zlim is [0.2, 0.8]');
+%! title ("zlim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! zlim ('auto');
-%! title ('zlim is auto');
+%! zlim ("auto");
+%! title ("zlim is auto");
 
 %!test
 %! hf = figure ("visible", "off");

@@ -194,27 +194,27 @@ endfunction
 
 %!demo
 %! clf;
-%! %% patch
-%! h_axes = axes;
+%! ## patch
 %! [x,y,z] = meshgrid (-2:0.2:2, -2:0.2:2, -2:0.2:2);
 %! val = x.^2 + y.^2 + z.^2;
 %! fv1 = isosurface (x, y, z, val, 1);
-%! h_patch = patch (fv1, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
-%! isonormals (x, y, z, val, h_patch)
-%! axis equal; axis tight
-%! view (3)
-%! drawnow
-%! h_light = light ();
-%! material ([0 0.5 1 10 .5])
+%! h_patch = patch (fv1, "FaceColor", "r", "EdgeColor", "none", ...
+%!                       "FaceLighting", "Gouraud");
+%! isonormals (x, y, z, val, h_patch);
+%! axis equal;  axis tight;
+%! view (3);
+%! drawnow ();
+%! light ();
+%! material ([0 0.5 1 10 .5]);
 
 %!demo
-%! clf
-%! %% surface
-%! h_axes = axes;
-%! h_surf = surf (h_axes, peaks, "LineStyle", "none", "FaceLighting", "Gouraud");
-%! view (3)
-%! h_light = light ();
-%! material metal
+%! clf;
+%! ## surface
+%! hax = axes ();
+%! surf (hax, peaks, "LineStyle", "none", "FaceLighting", "Gouraud");
+%! view (3);
+%! light ();
+%! material metal;
 
 %!test
 %! hf = figure ("Visible", "off");

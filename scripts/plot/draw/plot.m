@@ -235,46 +235,46 @@ endfunction
 
 %!demo
 %! x = 1:5;  y = 1:5;
-%! plot (x,y,'g');
-%! title ('plot() of green line at 45 degrees');
+%! plot (x,y,"g");
+%! title ("plot() of green line at 45 degrees");
 
 %!demo
 %! x = 1:5;  y = 1:5;
-%! plot (x,y,'g*');
-%! title ('plot() of green stars along a line at 45 degrees');
+%! plot (x,y,"g*");
+%! title ("plot() of green stars along a line at 45 degrees");
 
 %!demo
 %! x1 = 1:5;  y1 = 1:5;
 %! x2 = 5:9; y2 = 5:-1:1;
-%! plot (x1,y1,'bo-', x2,y2,'rs-');
-%! axis ('tight');
-%! title ({'plot() of blue circles ascending and red squares descending';
-%!         'connecting lines drawn'});
+%! plot (x1,y1,"bo-", x2,y2,"rs-");
+%! axis ("tight");
+%! title ({"plot() of blue circles ascending and red squares descending";
+%!         "connecting lines drawn"});
 
 %!demo
 %! x = 0:10;
 %! plot (x, rand (numel (x), 3));
 %! axis ([0 10 0 1]);
-%! title ({'Three random variables', 'x[1x11], y[11x3]'});
+%! title ({"Three random variables", "x[1x11], y[11x3]"});
 
 %!demo
 %! x = 0:10;
 %! plot (x, rand (3, numel (x)));
 %! axis ([0 10 0 1]);
-%! title ({'Three random variables', 'x[1x11], y[3x11]'});
+%! title ({"Three random variables", "x[1x11], y[3x11]"});
 
 %!demo
 %! x = 0:10;
-%! plot (repmat (x, 2, 1), rand (2, numel (x)), '-s');
+%! plot (repmat (x, 2, 1), rand (2, numel (x)), "-s");
 %! axis ([0 10 0 1]);
-%! title ({'Vertical lines with random height and lengths', ...
-%!         'x[2x11], y[2,11]'})
+%! title ({"Vertical lines with random height and lengths", ...
+%!         "x[2x11], y[2,11]"})
 
 %!demo
 %! x = 0:10;
 %! plot (repmat (x(:), 1, 2), rand (numel (x), 2));
 %! axis ([0 10 0 1]);
-%! title ({'Two random variables', 'x[11x2], y[11x2]'});
+%! title ({"Two random variables", "x[11x2], y[11x2]"});
 
 %!demo
 %! x = 0:10;
@@ -283,5 +283,5 @@ endfunction
 %! y = rand (shape);
 %! plot (x, y);
 %! axis ([0 10 0 1]);
-%! title ({'Two random variables', 'squeezed from 4-d arrays'});
+%! title ({"Two random variables", "squeezed from 4-d arrays"});
 

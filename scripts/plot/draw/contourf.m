@@ -90,26 +90,26 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = peaks (50);
 %! contourf (x, y, z, -7:9);
-%! title ({'contourf() plot (filled contour lines)'; 'Z = peaks()'});
+%! title ({"contourf() plot (filled contour lines)"; "Z = peaks()"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [theta, r] = meshgrid (linspace (0,2*pi,64), linspace (0,1,64));
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
 %! contourf (X, Y, abs (Z), 10);
-%! title ({'contourf() plot'; 'polar fcn: Z = sin (2*theta) * (1-r)'});
+%! title ({"contourf() plot"; "polar fcn: Z = sin (2*theta) * (1-r)"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = linspace (-2, 2);
 %! [x, y] = meshgrid (x);
 %! z = sqrt (x.^2 + y.^2) ./ (x.^2 + y.^2 + 1);
 %! contourf (x, y, z, [0.4, 0.4]);
-%! title ('Hole should be filled with the background color');
+%! title ("Hole should be filled with the background color");
 

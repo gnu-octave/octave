@@ -148,16 +148,16 @@ endfunction
 %! data = rand (10, 10, 10);
 %! clf;
 %! subplot (1, 2, 1);
-%! patch (isosurface (data, .5), ...
-%!        'FaceColor', 'blue', 'EdgeColor', 'k');
-%! title ('Original data')
-%! view (3);
-%! smoothed_data = smooth3 (data);
+%!  patch (isosurface (data, .5), ...
+%!         "FaceColor", "blue", "EdgeColor", "k");
+%!  title ("Original data");
+%!  view (3);
+%!  smoothed_data = smooth3 (data);
 %! subplot (1, 2, 2);
-%! patch (isosurface (smoothed_data, .5), ...
-%!        'FaceColor', 'blue', 'EdgeColor', 'k');
-%! title ('Smoothed data');
-%! view (3);
+%!  patch (isosurface (smoothed_data, .5), ...
+%!         "FaceColor", "blue", "EdgeColor", "k");
+%!  title ("Smoothed data");
+%!  view (3);
 
 ## one input argument (method: "box")
 %!test

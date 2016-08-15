@@ -80,9 +80,9 @@ endfunction
 %!demo
 %! clf;
 %! subplot (1, 2, 1);
-%! rgbplot (ocean, "profile");
+%!  rgbplot (ocean, "profile");
 %! subplot (1, 2, 2);
-%! rgbplot (ocean, "composite");
+%!  rgbplot (ocean, "composite");
 
 ## Test input validation
 %!error rgbplot ()

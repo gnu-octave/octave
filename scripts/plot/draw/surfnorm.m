@@ -180,15 +180,15 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! surfnorm (peaks (19));
 %! shading faceted;
-%! title ({'surfnorm() shows surface and normals at each vertex', ...
-%!         'peaks() function with 19 faces'});
+%! title ({"surfnorm() shows surface and normals at each vertex", ...
+%!         "peaks() function with 19 faces"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = sombrero (10);
 %! surfnorm (x, y, z);
 

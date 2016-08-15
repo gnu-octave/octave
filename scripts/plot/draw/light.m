@@ -84,9 +84,9 @@ endfunction
 
 
 %!demo
-%! %% Demonstrate effects of lighting
+%! ## Demonstrate effects of lighting
 %! clf;
-%! %% patches
+%! ## patches
 %! h_axes1 = subplot (2, 2, 1);
 %! [x,y,z] = meshgrid (-2:0.2:2, -2:0.2:2, -2:0.2:2);
 %! val = x.^2 + y.^2 + z.^2;
@@ -110,7 +110,7 @@ endfunction
 %! title ("Patch without lighting");
 %! view (3);
 %!
-%! %% surfaces
+%! ## surfaces
 %! h_axes3 = subplot (2, 2, 3);
 %! h_surf1 = surf (h_axes3, peaks, "LineStyle", "none", ...
 %!                                 "FaceLighting", "Gouraud");
@@ -124,7 +124,7 @@ endfunction
 %! view (3);
 
 %!demo
-%! %% Lighting modes
+%! ## Lighting modes
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.05:.2, -.2:0.05:.2, -.2:0.05:.2);
 %! val = (x.^2 + y.^2 + z.^2);
@@ -149,7 +149,7 @@ endfunction
 %! title ("FaceLighting: none - flat - gouraud");
 
 %!demo
-%! %% multiple lights
+%! ## multiple lights
 %! clf;
 %! h_axes = subplot (1, 2, 1);
 %! [x,y,z] = meshgrid (-2:0.1:2, -2:0.1:2, -2:0.1:2);
@@ -173,7 +173,7 @@ endfunction
 %! h_light3 = light ("Position", [-1 -1 2], "Color", "g");
 
 %!demo
-%! %% Diffuse and specular reflex
+%! ## Diffuse and specular reflection
 %! clf;
 %! h_axes = axes ();
 %! [x,y,z] = meshgrid (-.2:0.04:.2, -.2:0.04:.2, -.2:0.04:.2);
@@ -227,7 +227,7 @@ endfunction
 
 
 %!demo
-%! %% Ambient Strength and Ambient Light Color
+%! ## Ambient Strength and Ambient Light Color
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.05:.2, -.2:0.05:.2, -.2:0.05:.2);
 %! val = (x.^2 + y.^2 + z.^2);
@@ -294,7 +294,7 @@ endfunction
 %! ylabel ("AmbientLightColor [1 1 1]");
 
 %!demo
-%! %% Specular Exponent
+%! ## Specular Exponent
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
 %! val = (x.^2 + y.^2 + z.^2);
@@ -319,7 +319,7 @@ endfunction
 %! xlabel ("SpecularExponent");
 
 %!demo
-%! %% SpecularColorReflectance
+%! ## SpecularColorReflectance
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
 %! val = (x.^2 + y.^2 + z.^2);
@@ -344,7 +344,7 @@ endfunction
 %! xlabel ("SpecularColorReflectance");
 
 %!demo
-%! %% BackFaceLighting
+%! ## BackFaceLighting
 %! [x,y,z] = meshgrid (-.5:0.1:2, -2:0.1:2, -2:0.1:2);
 %! val = x.^2 + y.^2 + z.^2;
 %! fv = isosurface (x, y, z, val, 1);
@@ -377,7 +377,7 @@ endfunction
 %! axis equal
 
 %!demo
-%! %% Colored patch
+%! ## Colored patch
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
 %! val = (x.^2 + y.^2 + z.^2);
@@ -388,23 +388,23 @@ endfunction
 %!             "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularExponent", 15);
 %! isonormals (x, y, z, val, h_patch);
-%! title ('Colored patch');
+%! title ("Colored patch");
 %! h_light = light ("Position", [-1 1 1]);
 %! axis tight
 %! axis equal
 %! view (3);
 
 %!demo
-%! %% Colored mesh (patch)
+%! ## Colored mesh (patch)
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.05:.2, -.2:0.05:.2, -.2:0.05:.2);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! h_axes = axes ();
 %! fv = isosurface (x, y, z, val, .039, z);
-%! h_patch = patch (fv, 'FaceColor', 'w', 'EdgeColor', 'interp');
+%! h_patch = patch (fv, "FaceColor", "w", "EdgeColor", "interp");
 %! isonormals (x, y, z, val, h_patch);
-%! title ('Colored mesh (patch)');
+%! title ("Colored mesh (patch)");
 %! h_light = light;
 %! lighting gouraud
 %! axis tight
@@ -412,51 +412,50 @@ endfunction
 %! view (3);
 
 %!demo
-%! %% Colored mesh (surface)
+%! ## Colored mesh (surface)
 %! clf;
 %! h_mesh = mesh (peaks);
-%! title ('Colored mesh (surface)');
+%! title ("Colored mesh (surface)");
 %! h_light = light;
 %! lighting gouraud
 
 %!demo
-%! %% Light in hggroup
+%! ## Light in hggroup
 %! clf;
 %! h_mesh = mesh (peaks);
 %! h_hg = hggroup ();
-%! title ('Light in hggroup');
-%! h_light = light ('Parent', h_hg);
+%! title ("Light in hggroup");
+%! h_light = light ("Parent", h_hg);
 %! lighting gouraud
 
 %!demo
-%! %% Style local/infinite
+%! ## Style local/infinite
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! h_axes1 = subplot (1,2,1);
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, 'FaceColor', 'r', 'EdgeColor', 'none');
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none");
 %! isonormals (x, y, z, val, h_patch);
 %! title ('"Style" set to "infinite" (default)');
-%! h_light = light ('Position', [.3 0 .3]);
+%! h_light = light ("Position", [.3 0 .3]);
 %! lighting gouraud
 %! axis equal
 %! view (3);
 %!
 %! h_axes2 = subplot (1,2,2);
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, 'FaceColor', 'r', 'EdgeColor', 'none');
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none");
 %! isonormals (x, y, z, val, h_patch);
 %! title ('"Style" set to "local"');
-%! h_light = light ('Style', 'local', 'Position', [.3 0 .3]);
+%! h_light = light ("Style", "local", "Position", [.3 0 .3]);
 %! lighting gouraud
 %! axis equal
 %! view (3);
 
-
 %!test
-%! hf = figure ("Visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h = light ();
 %!   assert (findobj (hf, "Type", "light"), h);
@@ -468,7 +467,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! hf = figure ("Visible", "off");
+%! hf = figure ("visible", "off");
 %! ha = gca;
 %! unwind_protect
 %!   h = light (ha, "Position", [1 2 3], "Color", "r");

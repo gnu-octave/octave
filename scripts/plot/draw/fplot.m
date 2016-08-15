@@ -207,18 +207,18 @@ endfunction
 %!demo
 %! clf;
 %! fplot (@cos, [0, 2*pi]);
-%! title ('fplot() single function');
+%! title ("fplot() single function");
 
 %!demo
 %! clf;
-%! fplot ('[cos(x), sin(x)]', [0, 2*pi]);
-%! title ('fplot() multiple functions');
+%! fplot ("[cos(x), sin(x)]", [0, 2*pi]);
+%! title ("fplot() multiple functions");
 
 %!demo
 %! clf;
 %! fh = @(x) sin (pi*x) ./ (pi*x);
 %! fplot (fh, [-5, 5]);
-%! title ('fplot() sinc function (possible division by 0, near 0)');
+%! title ("fplot() sinc function (possible division by 0, near 0)");
 
 %!test
 %! ## Multi-valued function

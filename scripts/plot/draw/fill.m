@@ -172,8 +172,8 @@ endfunction
 %! y1 = cos (t1);
 %! x2 = sin (t2) + 0.8;
 %! y2 = cos (t2);
-%! h = fill (x1,y1,'r', x2,y2,'g');
-%! title ({'fill() function'; 'cdata specified with string'});
+%! h = fill (x1,y1,"r", x2,y2,"g");
+%! title ({"fill() function"; "cdata specified with string"});
 
 %!demo
 %! clf;
@@ -184,7 +184,7 @@ endfunction
 %! x2 = sin (t2) + 0.8;
 %! y2 = cos (t2);
 %! h = fill (x1,y1,1, x2,y2,2);
-%! title ({'fill() function'; 'cdata = row vector produces FaceColor = "flat"'});
+%! title ({"fill() function"; 'cdata = row vector produces FaceColor = "flat"'});
 
 %!demo
 %! clf;
@@ -198,5 +198,5 @@ endfunction
 %!      1 0.5];
 %! c = [1 2 3 4]';
 %! fill (x, y, c);
-%! title ({'fill() function'; 'cdata = column vector produces FaceColor = "interp"'});
+%! title ({"fill() function"; 'cdata = column vector produces FaceColor = "interp"'});
 

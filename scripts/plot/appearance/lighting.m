@@ -120,59 +120,59 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading flat
 %! lighting flat
 %! light ();
-%! title ('shading flat - lighting flat');
+%! title ("shading flat - lighting flat");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
 %! shading interp
 %! lighting gouraud
 %! light ();
-%! title ('shading interp - lighting gouraud');
+%! title ("shading interp - lighting gouraud");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading flat
 %! lighting flat
 %! light ();
 %! view (3)
-%! title ('shading flat - lighting flat');
+%! title ("shading flat - lighting flat");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks ());
 %! shading interp
 %! lighting gouraud
 %! light ();
 %! view (3)
-%! title ('shading interp - lighting gouraud');
+%! title ("shading interp - lighting gouraud");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! mesh (sombrero ());
 %! shading flat
 %! lighting flat
 %! light ();
-%! title ('shading flat - lighting flat');
+%! title ("shading flat - lighting flat");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! mesh (sombrero ());
 %! shading interp
 %! lighting gouraud
 %! light ();
-%! title ('shading interp - lighting gouraud');
+%! title ("shading interp - lighting gouraud");
 
 %!test
 %! hf = figure ("visible", "off");

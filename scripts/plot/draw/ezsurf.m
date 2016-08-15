@@ -90,13 +90,13 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezsurf (f, [-3, 3]);
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! fx = @(s,t) cos (s) .* cos (t);
 %! fy = @(s,t) sin (s) .* cos (t);
 %! fz = @(s,t) sin (t);
@@ -105,12 +105,12 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) x.^2 + y.^2;
 %! subplot (1,2,1);
 %!  ezsurf (f, [-2,2]);
-%!  title ({'x^2 + y^2'; 'plotted over rectangular grid (default)'});
+%!  title ({"x^2 + y^2"; "plotted over rectangular grid (default)"});
 %! subplot (1,2,2);
-%!  ezsurf (f, [-2,2], 'circ');
-%!  title ({'x^2 + y^2'; 'plotted over circular disk with "circ"'});
+%!  ezsurf (f, [-2,2], "circ");
+%!  title ({"x^2 + y^2"; 'plotted over circular disk with "circ"'});
 

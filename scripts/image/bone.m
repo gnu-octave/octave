@@ -83,6 +83,6 @@ endfunction
 %! ## Show the 'bone' colormap profile and as an image
 %! cmap = bone (256);
 %! subplot (2, 1, 1);
-%! rgbplot (cmap, "composite");
+%!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
-%! rgbplot (cmap);
+%!  rgbplot (cmap);

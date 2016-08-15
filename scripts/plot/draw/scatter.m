@@ -161,28 +161,28 @@ endfunction
 %!     x = rand (n, 1);
 %!     y = rand (n, 1);
 %!     if (m > 1)
-%!       str = 'Three Colors';
+%!       str = "Three Colors";
 %!       idx = ceil (rand (n, 1) * 3);
 %!       colors = eye (3);
 %!       colors = colors(idx, :);
 %!     else
-%!       str = 'Random Colors';
+%!       str = "Random Colors";
 %!       colors = rand (n, m);
-%!     end
+%!     endif
 %!     if (n == 1)
-%!       str = sprintf ('%s: 1 point', str);
+%!       str = sprintf ("%s: 1 point", str);
 %!     elseif (n < 100)
-%!       str = sprintf ('%s: < 100 points', str);
+%!       str = sprintf ("%s: < 100 points", str);
 %!     else
-%!       str = sprintf ('%s: > 100 points', str);
-%!     end
+%!       str = sprintf ("%s: > 100 points", str);
+%!     endif
 %!     subplot (2,3,k);
 %!     k = k + 1;
-%!     scatter (x, y, 15, colors, 'filled');
+%!     scatter (x, y, 15, colors, "filled");
 %!     axis ([0 1 0 1]);
 %!     title (str);
-%!   end
-%! end
+%!   endfor
+%! endfor
 
 %!demo
 %! clf;
@@ -192,26 +192,26 @@ endfunction
 %!     x = rand (n, 1);
 %!     y = rand (n, 1);
 %!     if (m > 1)
-%!       str = 'Three Colors';
+%!       str = "Three Colors";
 %!       idx = ceil (rand (n, 1) * 3);
 %!       colors = eye (3);
 %!       colors = colors(idx, :);
 %!     else
-%!       str = 'Random Colors';
+%!       str = "Random Colors";
 %!       colors = rand (n, m);
-%!     end
+%!     endif
 %!     if (n == 1)
-%!       str = sprintf ('%s: 1 point', str);
+%!       str = sprintf ("%s: 1 point", str);
 %!     elseif (n < 100)
-%!       str = sprintf ('%s: < 100 points', str);
+%!       str = sprintf ("%s: < 100 points", str);
 %!     else
-%!       str = sprintf ('%s: > 100 points', str);
-%!     end
+%!       str = sprintf ("%s: > 100 points", str);
+%!     endif
 %!     subplot (2,3,k);
 %!     k = k + 1;
 %!     scatter (x, y, 15, colors);
 %!     axis ([0 1 0 1]);
 %!     title (str);
-%!   end
-%! end
+%!   endfor
+%! endfor
 

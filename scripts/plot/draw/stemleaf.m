@@ -304,18 +304,18 @@ endfunction
 
 
 %!demo
-%! %% Unsorted plot:
+%! ## Unsorted plot:
 %! x = [-22 12 -28 52  39 -2 12 10 11 11 42 38 44 18 44];
-%! stemleaf (x, 'Unsorted plot');
+%! stemleaf (x, "Unsorted plot");
 
 %!demo
-%! %% Sorted leaves:
+%! ## Sorted leaves:
 %! x = [-22 12 -28 52  39 -2 12 10 11 11 42 38 44 18 44];
 %! y = sort (x);
-%! stemleaf (y, 'Sorted leaves');
+%! stemleaf (y, "Sorted leaves");
 
 %!demo
-%! %% Sorted leaves (large dataset):
+%! ## Sorted leaves (large dataset):
 %! x = [-22 12 -28 52  39 -2 12 10 11 11 42 38 44 18 44 37 113 124 37 48     ...
 %!      127 36 29 31 125 139 131 115 105 132 104 123 35 113 122 42 117 119   ...
 %!      58 109 23 105 63 27 44 105 99 41 128 121 116 125 32 61 37 127 29 113 ...
@@ -325,12 +325,12 @@ endfunction
 %!      34 133 45 120 30 127 31 116 146 21 23 30 10 20 21 30 0 100 110 1 20  ...
 %!      0];
 %! y = sort (x);
-%! stemleaf (y, 'Sorted leaves (large dataset)');
+%! stemleaf (y, "Sorted leaves (large dataset)");
 
 %!demo
-%! %% Gaussian leaves:
+%! ## Gaussian leaves:
 %! x = fix (30 * randn (300,1));
-%! stemleaf (x, 'Gaussian leaves');
+%! stemleaf (x, "Gaussian leaves");
 
 %!test
 %! ## test minus to plus

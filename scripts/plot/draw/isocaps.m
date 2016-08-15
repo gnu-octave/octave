@@ -399,28 +399,28 @@ endfunction
 %! x = 1:3:22;  y = -14:5:11;  z = linspace (16, 18, 4);
 %! [xx, yy, zz] = meshgrid (x, y, z);
 %! clf;
-%! %% two arguments, no output
+%! ## two arguments, no output
 %! subplot (2, 2, 1);
 %!  isocaps (v, isoval);
 %!  view (3);
-%! %% five arguments, no output (x, y, z are vectors)
+%! ## five arguments, no output (x, y, z are vectors)
 %! subplot (2, 2, 2);
 %!  isocaps (x, y, z, v, isoval);
 %!  view (3);
-%! %% five arguments, no output (x, y, z are matrices)
+%! ## five arguments, no output (x, y, z are matrices)
 %! subplot (2, 2, 3);
 %!  isocaps (xx, yy, zz, v, isoval);
 %!  view (3);
-%! %% five arguments, no output (mixed x, y, z)
+%! ## five arguments, no output (mixed x, y, z)
 %! subplot (2, 2, 4);
 %!  isocaps (x, yy, z, v, isoval);
 %!  view (3);
 %!
 %! annotation ("textbox", [0.1 0.9 0.9 0.1], ...
-%!    "String", ["Apart from the first plot having a different scale, " ...
-%!               "all four plots must look the same."], ...
-%!    "HorizontalAlignment", "left", ...
-%!    "FontSize", 12);
+%!     "String", ["Apart from the first plot having a different scale, " ...
+%!     "all four plots must look the same."], ...
+%!     "HorizontalAlignment", "left", ...
+%!     "FontSize", 12);
 
 %!shared x, y, z, xx, yy, zz, val, iso
 %! x = 1:3:22;  y = -14:5:11;  z = linspace (16, 18, 4);

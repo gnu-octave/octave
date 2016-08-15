@@ -77,7 +77,7 @@ endfunction
 %! x = 1:0.01:10;
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogy (x, y);
-%! title ({'semilogx() plot', 'Y-axis is logarithmic'});
+%! title ({"semilogx() plot", "Y-axis is logarithmic"});
 
 %!demo
 %! clf;
@@ -86,11 +86,11 @@ endfunction
 %!
 %! subplot (2,1,1);
 %!  semilogy (x, y);
-%!  ylabel ('semilogy (x, y)');
+%!  ylabel ("semilogy (x, y)");
 %!
 %! subplot (2,1,2);
 %!  semilogy (x, -y);
-%!  ylabel ('semilogy (x, -y)');
+%!  ylabel ("semilogy (x, -y)");
 
 %!demo
 %! clf;
@@ -99,13 +99,13 @@ endfunction
 %!
 %! subplot (2,1,1);
 %!  semilogy (x, y);
-%!  set (gca, 'ydir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  ylabel ({'semilogy (x, y)', 'ydir = reversed'});
+%!  set (gca, "ydir", "reverse", "activepositionproperty", "outerposition");
+%!  ylabel ({"semilogy (x, y)", "ydir = reversed"});
 %!
 %! subplot (2,1,2);
 %!  semilogy (x, -y);
-%!  set (gca, 'ydir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  ylabel ({'semilogy (x, -y)', 'ydir = reversed'});
+%!  set (gca, "ydir", "reverse", "activepositionproperty", "outerposition");
+%!  ylabel ({"semilogy (x, -y)", "ydir = reversed"});
 
 %!test
 %! hf = figure ("visible", "off");

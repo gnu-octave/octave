@@ -280,18 +280,18 @@ endfunction
 %! y1 = sin (x);
 %! y2 = exp (x - 1);
 %! ax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
-%! xlabel ('X');
-%! ylabel (ax(1), 'Axis 1');
-%! ylabel (ax(2), 'Axis 2');
-%! text (0.5, 0.5, 'Left Axis', ...
-%!       'color', [0 0 1], 'horizontalalignment', 'center', 'parent', ax(1));
-%! text (4.5, 80, 'Right Axis', ...
-%!       'color', [0 0.5 0], 'horizontalalignment', 'center', 'parent', ax(2));
-%! title ({'plotyy() example'; 'Left axis uses @plot, Right axis uses @semilogy'});
+%! xlabel ("X");
+%! ylabel (ax(1), "Axis 1");
+%! ylabel (ax(2), "Axis 2");
+%! text (0.5, 0.5, "Left Axis", ...
+%!       "color", [0 0 1], "horizontalalignment", "center", "parent", ax(1));
+%! text (4.5, 80, "Right Axis", ...
+%!       "color", [0 0.5 0], "horizontalalignment", "center", "parent", ax(2));
+%! title ({"plotyy() example"; "Left axis uses @plot, Right axis uses @semilogy"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = linspace (-1, 1, 201);
 %! subplot (2,2,1);
 %!  plotyy (x,sin(pi*x), x,10*cos(pi*x));
@@ -301,7 +301,7 @@ endfunction
 %!  contour (peaks (25));
 %! subplot (2,2,4);
 %!  plotyy (x,10*sin(2*pi*x), x,cos(2*pi*x));
-%! axis square;
+%!  axis square;
 
 %!demo
 %! clf;
@@ -311,9 +311,9 @@ endfunction
 %! y = 5 * cos (t);
 %! [hax, h1, h2] = plotyy (t, x, t, y);
 %! [~, h3, h4] = plotyy (t+1, x, t+1, y);
-%! set ([h3, h4], 'linestyle', '--');
-%! xlabel (hax(1), 'xlabel');
+%! set ([h3, h4], "linestyle", "--");
+%! xlabel (hax(1), "xlabel");
 %! title (hax(2), 'Two plotyy graphs on same figure using "hold on"');
-%! ylabel (hax(1), 'Left axis is Blue');
-%! ylabel (hax(2), 'Right axis is Green');
+%! ylabel (hax(1), "Left axis is Blue");
+%! ylabel (hax(2), "Right axis is Green");
 

@@ -90,13 +90,13 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezmesh (f, [-3, 3]);
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! fx = @(s,t) cos (s) .* cos (t);
 %! fy = @(s,t) sin (s) .* cos (t);
 %! fz = @(s,t) sin (t);

@@ -236,19 +236,19 @@ endfunction
 %!demo
 %! clf;
 %! axis equal;
-%! rectangle ('Position', [0.05, 0.05, 0.9, 0.9], 'Curvature', [0.5, 0.5]);
-%! title ('rectangle() with corners curved');
+%! rectangle ("Position", [0.05, 0.05, 0.9, 0.9], "Curvature", [0.5, 0.5]);
+%! title ("rectangle() with corners curved");
 
 %!demo
 %! clf;
 %! axis equal;
-%! rectangle ('Position', [0.05, 0.05, 0.9, 0.4], 'Curvature', 1.0);
-%! title ('rectangle() with sides as complete arcs');
+%! rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature", 1.0);
+%! title ("rectangle() with sides as complete arcs");
 
 %!demo
 %! clf;
 %! axis equal;
-%! h = rectangle ('Position', [0.05, 0.05, 0.9, 0.4], 'Curvature', 1.0);
-%! set (h, 'FaceColor', [0, 1, 0]);
-%! title ('rectangle() with FaceColor = green');
+%! h = rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature", 1.0);
+%! set (h, "FaceColor", [0, 1, 0]);
+%! title ("rectangle() with FaceColor = green");
 

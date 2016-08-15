@@ -135,11 +135,11 @@ endfunction
 %! X = [x(:) y(:) z(:)];
 %! colormap (jet (64));
 %! h = tetramesh (tetra, X);
-%! set (h(1:2:end), 'Visible', 'off');
+%! set (h(1:2:end), "visible", "off");
 %! axis equal;
 %! view (30, 20);
-%! title ({'tetramesh() plot', ...
-%!         'colormap = jet (64), every other tetrahedron invisible'});
+%! title ({"tetramesh() plot", ...
+%!         "colormap = jet (64), every other tetrahedron invisible"});
 
 %!demo
 %! clf;
@@ -151,9 +151,9 @@ endfunction
 %! tetra = delaunay (x, y, z);
 %! X = [x(:) y(:) z(:)];
 %! colormap (gray (256));
-%! tetramesh (tetra, X, 21:20:241, 'EdgeColor', 'w');
+%! tetramesh (tetra, X, 21:20:241, "EdgeColor", "w");
 %! axis equal;
 %! view (30, 20);
-%! title ({'tetramesh() plot', ...
-%!         'colormap = gray (256) with white edges'});
+%! title ({"tetramesh() plot", ...
+%!         "colormap = gray (256) with white edges"});
 

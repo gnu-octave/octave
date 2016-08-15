@@ -408,36 +408,36 @@ endfunction
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (7*theta);
 %! polar (theta, rho);
-%! title ('polar() plot');
+%! title ("polar() plot");
 
 %!demo
 %! clf;
 %! theta = linspace (0,2*pi,1000);
 %! cplx = theta + i*sin (7*theta);
-%! polar (cplx, 'g');
-%! title ('polar() plot of complex data');
+%! polar (cplx, "g");
+%! title ("polar() plot of complex data");
 
 %!demo
 %! clf;
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (2*theta).*cos (2*theta);
-%! polar (theta, rho, '--r');
-%! set (gca, 'rtick', 0.1:0.1:0.6, 'ttick', 0:20:340);
-%! title ('polar() plot with finer grid');
+%! polar (theta, rho, "--r");
+%! set (gca, "rtick", 0.1:0.1:0.6, "ttick", 0:20:340);
+%! title ("polar() plot with finer grid");
 
 %!demo
 %! clf;
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (2*theta).*cos (2*theta);
-%! polar (theta, rho, '--b');
-%! set (gca, 'fontsize', 12, 'linewidth', 2, 'color', [0.8 0.8 0.8]);
-%! title ('polar() plot with modified axis appearance');
+%! polar (theta, rho, "--b");
+%! set (gca, "fontsize", 12, "linewidth", 2, "color", [0.8 0.8 0.8]);
+%! title ("polar() plot with modified axis appearance");
 
 %!demo
 %! clf;
 %! theta = linspace (0,8*pi,1000);
 %! rho = sin (5/4*theta);
 %! polar (theta, rho);
-%! set (gca, 'rtick', 0.2:0.2:1);
-%! title ('polar() plot');
+%! set (gca, "rtick", 0.2:0.2:1);
+%! title ("polar() plot");
 

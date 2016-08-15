@@ -84,20 +84,20 @@ endfunction
 %! clf;
 %! pie ([3, 2, 1], [0, 0, 1]);
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
-%! title ('pie() with exploded wedge');
+%! title ("pie() with exploded wedge");
 
 %!demo
 %! clf;
-%! pie ([3, 2, 1], [0, 0, 1], {'Cheddar', 'Swiss', 'Camembert'});
+%! pie ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ('pie() with labels');
+%! title ("pie() with labels");
 
 
 %!demo
 %! clf;
-%! pie ([0.17, 0.34, 0.41], {'Cheddar', 'Swiss', 'Camembert'});
+%! pie ([0.17, 0.34, 0.41], {"Cheddar", "Swiss", "Camembert"});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ('pie() with missing slice');
+%! title ("pie() with missing slice");
 

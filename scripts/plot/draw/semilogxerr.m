@@ -89,8 +89,8 @@ endfunction
 %! x = exp (log (0.01):0.2:log (10));
 %! y = wblpdf (x, 2, 2);
 %! ey = 0.5*rand (size (y)) .* y;
-%! semilogxerr (x, y, ey, '#~x-');
+%! semilogxerr (x, y, ey, "#~x-");
 %! xlim (x([1, end]));
-%! title ({'semilogxerr(): semilogx() plot with errorbars', ...
-%!         'X-axis is logarithmic'});
+%! title ({"semilogxerr(): semilogx() plot with errorbars", ...
+%!         "X-axis is logarithmic"});
 

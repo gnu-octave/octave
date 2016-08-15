@@ -346,7 +346,7 @@ endfunction
 %! [x, flag, relres, iter, resvec] = pcr (A,b,[],200);
 %! if (flag == 3)
 %!   printf ("PCR breakdown.  System matrix is [close to] singular\n");
-%! end
+%! endif
 %! clf;
 %! title ("Convergence history");
 %! xlabel ("Iteration"); ylabel ("log(||b-Ax||)");

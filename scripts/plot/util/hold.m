@@ -100,7 +100,7 @@ endfunction
 %! plot (t, sin (t));
 %! hold on;
 %! plot (t, cos (t));
-%! title ({'hold on', '2 plots shown on same graph'});
+%! title ({"hold on", "2 plots shown on same graph"});
 %! hold off;
 
 %!demo
@@ -109,21 +109,21 @@ endfunction
 %! [X, Y] = find (A > 0.95);
 %! imshow (A);
 %! hold on;
-%! plot (X, Y, 'o');
+%! plot (X, Y, "o");
 %! hold off;
-%! title ('hold with image and plot');
+%! title ("hold with image and plot");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! hold on;
 %! imagesc (1 ./ hilb (4));
-%! plot (1:4, '-s');
+%! plot (1:4, "-s");
 %! hold off;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! hold on;
 %! imagesc (1 ./ hilb (2));
 %! imagesc (1 ./ hilb (4));
@@ -131,26 +131,26 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! hold on;
-%! plot (1:4, '-s');
+%! plot (1:4, "-s");
 %! imagesc (1 ./ hilb (4));
 %! hold off;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! t = linspace (-3, 3, 50);
 %! [x, y] = meshgrid (t, t);
 %! z = peaks (x, y);
 %! contourf (x, y, z, 10);
 %! hold on;
-%! plot (x(:), y(:), '^');
-%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], 'red');
+%! plot (x(:), y(:), "^");
+%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], "red");
 %! xlim ([-2.0 2.0]);
 %! ylim ([-2.0 2.0]);
-%! colorbar ('SouthOutside');
-%! title ('Test script for some plot functions');
+%! colorbar ("SouthOutside");
+%! title ("Test script for some plot functions");
 
 ## hold on test
 %!test

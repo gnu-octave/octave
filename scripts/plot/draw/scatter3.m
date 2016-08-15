@@ -103,27 +103,27 @@ endfunction
 %! clf;
 %! [x, y, z] = peaks (20);
 %! scatter3 (x(:), y(:), z(:), [], z(:));
-%! title ({'Default scatter3() plot', ...
-%!         'constant size bubbles and color determined by Z'});
+%! title ({"Default scatter3() plot", ...
+%!         "constant size bubbles and color determined by Z"});
 
 %!demo
 %! clf;
 %! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 10, z(:), 's');
-%! title ({'scatter3() plot', ...
-%!         'marker is square, size is 10, color determined by Z'});
+%! scatter3 (x(:), y(:), z(:), 10, z(:), "s");
+%! title ({"scatter3() plot", ...
+%!         "marker is square, size is 10, color determined by Z"});
 
 %!demo
 %! clf;
 %! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 20*z(:), [], 's');
-%! title ({'scatter3() plot', ...
-%!         'marker is square, size is determined by Z'});
+%! scatter3 (x(:), y(:), z(:), 20*z(:), [], "s");
+%! title ({"scatter3() plot", ...
+%!         "marker is square, size is determined by Z"});
 
 %!demo
 %! clf;
 %! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), 's');
-%! title ({'scatter3() plot', ...
-%!         'marker is square, size and color determined by Z'});
+%! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), "s");
+%! title ({"scatter3() plot", ...
+%!         "marker is square, size and color determined by Z"});
 

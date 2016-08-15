@@ -77,7 +77,7 @@ endfunction
 %! x = 1:0.01:10;
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogx (y, x);
-%! title ({'semilogx() plot', 'X-axis is logarithmic'});
+%! title ({"semilogx() plot", "X-axis is logarithmic"});
 
 %!demo
 %! clf;
@@ -86,11 +86,11 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  semilogx (x, y);
-%!  xlabel ('semilogx (x, y)');
+%!  xlabel ("semilogx (x, y)");
 %!
 %! subplot (1,2,2);
 %!  semilogx (-x, y);
-%!  xlabel ('semilogx (-x, y)');
+%!  xlabel ("semilogx (-x, y)");
 
 %!demo
 %! clf;
@@ -99,13 +99,13 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  semilogx (x, y);
-%!  set (gca, 'xdir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  xlabel ({'semilogx (x, y)', 'xdir = reversed'});
+%!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
+%!  xlabel ({"semilogx (x, y)", "xdir = reversed"});
 %!
 %! subplot (1,2,2);
 %!  semilogx (-x, y);
-%!  set (gca, 'xdir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  xlabel ({'semilogx (-x, y)', 'xdir = reversed'});
+%!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
+%!  xlabel ({"semilogx (-x, y)", "xdir = reversed"});
 
 %!test
 %! hf = figure ("visible", "off");

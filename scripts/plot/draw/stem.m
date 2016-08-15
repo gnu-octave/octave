@@ -137,58 +137,58 @@ endfunction
 %! clf;
 %! y = 1:10;
 %! stem (y);
-%! title ('stem plot of y-values only');
+%! title ("stem plot of y-values only");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
 %! stem (x, y);
-%! title ('stem plot of x and y-values');
+%! title ("stem plot of x and y-values");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, 'r');
-%! title ('stem plot with modified color');
+%! h = stem (x, y, "r");
+%! title ("stem plot with modified color");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, '-.k');
-%! title ('stem plot with modified line style and color');
+%! h = stem (x, y, "-.k");
+%! title ("stem plot with modified line style and color");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, '-.ks');
-%! title ('stem plot with modified line style, color, and marker');
+%! h = stem (x, y, "-.ks");
+%! title ("stem plot with modified line style, color, and marker");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, 'filled');
+%! h = stem (x, y, "filled");
 %! title ('stem plot with "filled" markers');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, 'markerfacecolor', [1 0 1]);
-%! title ('stem plot modified with property/value pair');
+%! h = stem (x, y, "markerfacecolor", [1 0 1]);
+%! title ("stem plot modified with property/value pair");
 
 %!demo
 %! clf;
 %! x = (0 : 10)';
 %! y = [sin(x), cos(x)];
 %! h = stem (x, y);
-%! set (h(2), 'color', 'g');
-%! set (h(1), 'basevalue', -0.75);
-%! title ('stem plots modified through hggroup handle');
+%! set (h(2), "color", "g");
+%! set (h(1), "basevalue", -0.75);
+%! title ("stem plots modified through hggroup handle");
 
 %!demo
 %! clf;
@@ -196,13 +196,13 @@ endfunction
 %! x = 0:(N-1);
 %! y = rand (1, N);
 %! hs = stem (x(1), y(1));
-%! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
-%! title ('stem plot data modified through hggroup handle');
+%! set (gca (), "xlim", [1, N-1], "ylim", [0, 1]);
+%! title ("stem plot data modified through hggroup handle");
 %! for k=2:N
-%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k));
+%!   set (hs, "xdata", x(1:k), "ydata", y(1:k));
 %!   drawnow ();
 %!   pause (0.2);
-%! end
+%! endfor
 
 %!test
 %! ## stemseries share the same baseline and basevalue

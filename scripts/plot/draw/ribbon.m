@@ -114,10 +114,10 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = sombrero ();
 %! ribbon (y, z);
-%! title ('ribbon() plot of sombrero()');
+%! title ("ribbon() plot of sombrero()");
 
 %!FIXME: Could have some input validation tests here
 

@@ -481,75 +481,75 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! imagesc (x);
 %! colorbar ();
-%! title ('colorbar() example');
+%! title ("colorbar() example");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
+%! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.");
+%! imagesc (x);
+%! colorbar ("westoutside");
+
+%!demo
+%! clf;
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! imagesc (x);
-%! colorbar ('westoutside');
+%! colorbar ("peer", gca, "northoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! imagesc (x);
-%! colorbar ('peer', gca, 'northoutside');
+%! colorbar ("southoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
-%! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
-%! imagesc (x);
-%! colorbar ('southoutside');
-
-%!demo
-%! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! contour (peaks ());
-%! colorbar ('west');
+%! colorbar ("west");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! subplot (2,2,1);
 %!  contour (peaks ());
-%!  colorbar ('east');
+%!  colorbar ("east");
 %! subplot (2,2,2);
 %!  contour (peaks ());
-%!  colorbar ('west');
+%!  colorbar ("west");
 %! subplot (2,2,3);
 %!  contour (peaks ());
-%!  colorbar ('north');
+%!  colorbar ("north");
 %! subplot (2,2,4);
 %!  contour (peaks ());
-%!  colorbar ('south');
+%!  colorbar ("south");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (2,2,1);
 %!  imagesc (x);
 %!  colorbar ();
 %! subplot (2,2,2);
 %!  imagesc (x);
-%!  colorbar ('westoutside');
+%!  colorbar ("westoutside");
 %! subplot (2,2,3);
 %!  imagesc (x);
-%!  colorbar ('northoutside');
+%!  colorbar ("northoutside");
 %! subplot (2,2,4);
 %!  imagesc (x);
-%!  colorbar ('southoutside');
+%!  colorbar ("southoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (1,2,1);
 %!  imagesc (x);
@@ -558,24 +558,24 @@ endfunction
 %! subplot (1,2,2);
 %!  imagesc (x);
 %!  axis square;
-%!  colorbar ('westoutside');
+%!  colorbar ("westoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (1,2,1);
 %!  imagesc (x);
 %!  axis square;
-%!  colorbar ('northoutside');
+%!  colorbar ("northoutside");
 %! subplot (1,2,2);
 %!  imagesc (x);
 %!  axis square;
-%!  colorbar ('southoutside');
+%!  colorbar ("southoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (2,1,1);
 %!  imagesc (x);
@@ -584,84 +584,84 @@ endfunction
 %! subplot (2,1,2);
 %!  imagesc (x);
 %!  axis square;
-%!  colorbar ('westoutside');
+%!  colorbar ("westoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (2,1,1);
 %!  imagesc (x);
 %!  axis square;
-%!  colorbar ('northoutside');
+%!  colorbar ("northoutside");
 %! subplot (2,1,2);
 %!  imagesc (x);
 %!  axis square;
-%!  colorbar ('southoutside');
+%!  colorbar ("southoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (1,2,1);
 %!  imagesc (x);
 %!  colorbar ();
 %! subplot (1,2,2);
 %!  imagesc (x);
-%!  colorbar ('westoutside');
+%!  colorbar ("westoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (1,2,1);
 %!  imagesc (x);
-%!  colorbar ('northoutside');
+%!  colorbar ("northoutside");
 %! subplot (1,2,2);
 %!  imagesc (x);
-%!  colorbar ('southoutside');
+%!  colorbar ("southoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (2,1,1);
 %!  imagesc (x);
 %!  colorbar ();
 %! subplot (2,1,2);
 %!  imagesc (x);
-%!  colorbar ('westoutside');
+%!  colorbar ("westoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (2,1,1);
 %!  imagesc (x);
-%!  colorbar ('northoutside');
+%!  colorbar ("northoutside");
 %! subplot (2,1,2);
 %!  imagesc (x);
-%!  colorbar ('southoutside');
+%!  colorbar ("southoutside");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! subplot (1,2,1);
 %!  contour (x);
 %!  axis square;
-%!  colorbar ('east');
+%!  colorbar ("east");
 %!  xlim ([1, 64]);
 %!  ylim ([1, 64]);
 %! subplot (1,2,2);
 %!  contour (x);
-%!  colorbar ('west');
+%!  colorbar ("west");
 %!  xlim ([1, 64]);
 %!  ylim ([1, 64]);
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! contour (x);
 %! xlim ([1, 64]);
@@ -671,7 +671,7 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! contour (x);
 %! xlim ([1, 64]);
@@ -680,22 +680,22 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! imagesc (1 ./ hilb (99));
 %! h = colorbar ();
-%! set (h, 'yscale', 'log');
+%! set (h, "yscale", "log");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! imagesc (log10 (1 ./ hilb (99)));
 %! h = colorbar ();
-%! ytick = get (h, 'ytick');
-%! set (h, 'yticklabel', sprintf ('10^{%g}|', ytick));
+%! ytick = get (h, "ytick");
+%! set (h, "yticklabel", sprintf ("10^{%g}|", ytick));
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 5; x = linspace (0,5,n); y = linspace (0,1,n);
 %! imagesc (1 ./ hilb (n));
 %! axis equal;
@@ -703,7 +703,7 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 5; x = linspace (0,5,n); y = linspace (0,1,n);
 %! imagesc (x, y, 1 ./ hilb (n));
 %! axis equal;
@@ -711,16 +711,16 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! n = 5; x = linspace (0,5,n); y = linspace (0,1,n);
 %! imagesc (y, x, 1 ./ hilb (n));
 %! axis equal;
 %! colorbar ();
 
-## This requires that the axes position be properly determined for 'axis equal'
+## This requires that the axes position be properly determined for "axis equal"
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! axes;
 %! colorbar ();
 %! hold on;
@@ -729,38 +729,38 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! plot ([0, 2]);
-%! colorbar ('east');
+%! colorbar ("east");
 %! axis square;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! plot ([0, 2]);
-%! colorbar ('eastoutside');
+%! colorbar ("eastoutside");
 %! axis square;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! pcolor (peaks (20));
 %! shading interp;
-%! axis ('tight', 'square');
+%! axis ("tight", "square");
 %! colorbar ();
-#%! axes ('color','none','box','on','activepositionproperty','position');
+#%! axes ("color","none","box","on","activepositionproperty","position");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! plot ([0, 2]);
-%! colorbar ('east');
+%! colorbar ("east");
 %! axis equal;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! plot ([0, 2]);
-%! colorbar ('eastoutside');
+%! colorbar ("eastoutside");
 %! axis equal;
 

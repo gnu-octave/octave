@@ -161,7 +161,7 @@ endfunction
 %!                  str2num (dims{1}) * str2num (dims{3}));
 %!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
 %!                     volume, surface), 'Box Dimensions');
-%! end
+%! endif
 
 %!demo
 %! disp ('- test inputdlg with prescribed scalar (2 lines per text field) and defaults.');
@@ -178,7 +178,7 @@ endfunction
 %!                  str2num (dims{1}) * str2num (dims{3}));
 %!    helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
 %!                      volume, surface), 'Box Dimensions');
-%! end
+%! endif
 
 %!demo
 %! disp ('- test inputdlg with prescribed vector [1,2,3] for # of lines per text field and defaults.');
@@ -195,7 +195,7 @@ endfunction
 %!                  str2num (dims{1}) * str2num (dims{3}));
 %!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
 %!                     volume, surface), 'Box Dimensions');
-%! end
+%! endif
 
 %!demo
 %! disp ('- test inputdlg with prescribed row by column sizes and defaults.');
@@ -212,7 +212,7 @@ endfunction
 %!                  str2num (dims{1}) * str2num (dims{3}));
 %!   helpdlg (sprintf ('Results:\nVolume = %.3f\nSurface = %.3f', ...
 %!                     volume, surface), 'Box Dimensions');
-%! end
+%! endif
 
 %!error inputdlg (1, 2, 3, 4, 5)
 %!error <PROMPT must be a character string> inputdlg (1)

@@ -163,7 +163,7 @@ endfunction
 %! imax = numel (s);
 %! for i=1:1:imax
 %!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
-%! end
+%! endfor
 
 %!demo
 %! disp ("- test listdlg with selectionmode and preselection. Has caption and two lines prompt.");
@@ -176,7 +176,7 @@ endfunction
 %! imax = numel (s);
 %! for i=1:1:imax
 %!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
-%! end
+%! endfor
 
 %!demo
 %! disp ("- test listdlg with listsize.");
@@ -187,7 +187,7 @@ endfunction
 %! imax = numel (s);
 %! for i=1:1:imax
 %!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
-%! end
+%! endfor
 
 ## Test input validation
 %!error listdlg ()

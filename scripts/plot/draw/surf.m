@@ -91,28 +91,28 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! surf (Z);
-%! title ({'surf() plot of peaks() function'; 'color determined by height Z'});
+%! title ({"surf() plot of peaks() function"; "color determined by height Z"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! surf (Z, Fx+Fy);
 %! shading interp;
-%! title ({'surf() plot of peaks() function'; ...
-%!         'facecolor is interpolated, color determined by gradient of Z'});
+%! title ({"surf() plot of peaks() function"; ...
+%!         "facecolor is interpolated, color determined by gradient of Z"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [X,Y,Z] = sombrero ();
 %! [~,Fy] = gradient (Z);
 %! surf (X, Y, Z, Fy);
 %! shading interp;
-%! title ({'surf() plot of peaks() function'; ...
-%!         'facecolor is interpolated, color determined by Y-gradient of Z'});
+%! title ({"surf() plot of peaks() function"; ...
+%!         "facecolor is interpolated, color determined by Y-gradient of Z"});
 

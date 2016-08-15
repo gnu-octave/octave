@@ -121,28 +121,28 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! surfc (Z);
-%! title ('surfc() combines surf/contour plots');
+%! title ("surfc() combines surf/contour plots");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! surfc (Z, Fx+Fy);
 %! shading interp;
-%! title ({'surfc() plot of sombrero() function'; ...
-%!         'facecolor is interpolated, color determined by gradient of Z'});
+%! title ({"surfc() plot of sombrero() function"; ...
+%!         "facecolor is interpolated, color determined by gradient of Z"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [X,Y,Z] = sombrero ();
 %! [~,Fy] = gradient (Z);
 %! surfc (X,Y,Z,Fy);
 %! shading interp;
-%! title ({'surfc() plot of peaks() function'; ...
-%!         'facecolor is interpolated, color determined by Y-gradient of Z'});
+%! title ({"surfc() plot of peaks() function"; ...
+%!         "facecolor is interpolated, color determined by Y-gradient of Z"});
 

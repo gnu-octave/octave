@@ -210,28 +210,28 @@ endfunction
 %! h = waitbar (0, '0.00%');
 %! for i = 0:0.01:1
 %!   waitbar (i, h, sprintf ('%.2f%%', 100*i));
-%! end
+%! endfor
 %! close (h);
 
 %!demo
 %! h = waitbar (0, 'please wait...');
 %! for i = 0:0.01:0.6
 %!   waitbar (i);
-%! end
+%! endfor
 %! i = 0.3;
 %! waitbar (i, h, 'don''t you hate taking a step backward?');
 %! pause (0.5);
 %! for i = i:0.005:0.7
 %!   waitbar (i, h);
-%! end
+%! endfor
 %! waitbar (i, h, 'or stalling?');
 %! pause (1);
 %! for i = i:0.003:0.8
 %!   waitbar (i, h, 'just a little longer now');
-%! end
+%! endfor
 %! for i = i:0.001:1
 %!   waitbar (i, h, 'please don''t be impatient');
-%! end
+%! endfor
 %! close (h);
 
 %!demo
@@ -246,7 +246,7 @@ endfunction
 %!   pause (0.5);
 %!   waitbar (i/4, h2);
 %!   pause (0.5);
-%! end
+%! endfor
 %! pause (0.5);
 %! close (h1);
 %! close (h2);

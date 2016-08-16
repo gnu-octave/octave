@@ -222,6 +222,12 @@ function code = oct2mat (code)
   endfor
   ## Fix in-place operators
   code = regexprep (code, '(\S+)(\s*)(.?[+-/*])=', '$1 = $1 $3');
+  ## Fix x = y = z = XXX assignment
+  code = regexprep (code, '^\s*([^=\s]+)\s*=\s*([^=\s]+)\s*=\s*([^=\s]+)\s*=\s*([^=\n]+)$', ...
+                          "$1 = $4\n$2 = $4\n$3 = $4", "lineanchors");
+  ## Fix x = y = XXX assignment
+  code = regexprep (code, '^\s*([^=\s]+)\s*=\s*([^=\s]+)\s*=\s*([^=\n]+)$', ...
+                          "$1 = $3\n$2 = $3", "lineanchors");
 
 endfunction
 

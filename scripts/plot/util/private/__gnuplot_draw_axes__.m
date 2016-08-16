@@ -268,7 +268,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   else
     xaxisloc = "x";
     xaxisloc_using = "x1";
-    if (strcmp (axis_obj.xaxislocation, "zero"))
+    if (any (strcmp (axis_obj.xaxislocation, {"origin", "zero"}))) # FIXME: Remove "zero" in 4.6
       fputs (plot_stream, "set xzeroaxis;\n");
     endif
   endif
@@ -278,7 +278,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   else
     yaxisloc = "y";
     yaxisloc_using = "y1";
-    if (strcmp (axis_obj.yaxislocation, "zero"))
+    if (any (strcmp (axis_obj.yaxislocation, {"origin", "zero"}))) # FIXME: Remove "zero" in 4.6
       fputs (plot_stream, "set yzeroaxis;\n");
     endif
   endif
@@ -1447,7 +1447,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             maybe_do_x2tick_mirror (plot_stream, axis_obj)
           elseif (strcmp (axis_obj.xaxislocation, "bottom"))
             maybe_do_xtick_mirror (plot_stream, axis_obj)
-          else # xaxislocation == zero
+          else # xaxislocation == "origin" or "zero"
             fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                      axis_obj.tickdir);
           endif
@@ -1458,17 +1458,17 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             maybe_do_x2tick_mirror (plot_stream, axis_obj)
           elseif (strcmp (axis_obj.xaxislocation, "bottom"))
             maybe_do_xtick_mirror (plot_stream, axis_obj)
-          else # xaxislocation == zero
+          else # xaxislocation == "origin" or "zero"
             maybe_do_xtick_mirror (plot_stream, axis_obj)
           endif
-        else # yaxislocation == zero
+        else # yaxislocation == "origin" or "zero"
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                    axis_obj.tickdir);
           if (strcmp (axis_obj.xaxislocation, "top"))
             maybe_do_x2tick_mirror (plot_stream, axis_obj)
           elseif (strcmp (axis_obj.xaxislocation, "bottom"))
             maybe_do_xtick_mirror (plot_stream, axis_obj)
-          else # xaxislocation == zero
+          else # xaxislocation == "origin" or "zero"
             maybe_do_xtick_mirror (plot_stream, axis_obj)
             fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                      axis_obj.tickdir);
@@ -1793,10 +1793,10 @@ function idx = do_border_2d (obj, plot_stream, idx)
     arrow (4, obj.ycolor, obj.linewidth, [1,0,0], [1,1,0]);
   endif
 
-  if (strcmp (obj.xaxislocation, "zero"))
+  if (any (strcmp (obj.xaxislocation, {"origin", "zero"}))) # FIXME: Remove "zero" in 4.6
     idx = zeroaxis (idx, obj.xcolor, "x");
   endif
-  if (strcmp (obj.yaxislocation, "zero"))
+  if (any (strcmp (obj.yaxislocation, {"origin", "zero"}))) # FIXME: Remove "zero" in 4.6
     idx = zeroaxis (idx, obj.ycolor, "y");
   endif
 
@@ -2173,7 +2173,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
                obj.xcolor, "x", plot_stream, true, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.xscale, obj.xsgn, gnuplot_term);
-  elseif (strcmp (obj.xaxislocation, "zero"))
+  elseif (any (strcmp (obj.xaxislocation, {"origin", "zero"}))) # FIXME: Remove "zero" in 4.6
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
                obj.xticklabel, obj.xcolor, "x", plot_stream, true,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
@@ -2201,7 +2201,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
                obj.ycolor, "y", plot_stream, ymirror, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.yscale, obj.ysgn, gnuplot_term);
-  elseif (strcmp (obj.yaxislocation, "zero"))
+  elseif (any (strcmp (obj.yaxislocation, {"origin", "zero"}))) # FIXME: Remove "zero" in 4.6
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
                obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror,
                "axis", obj.tickdir, ticklength, fontname, fontspec,

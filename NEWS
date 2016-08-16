@@ -1,6 +1,10 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
+ ** The value "zero" for the axes properties "xaxislocation" and
+    "yaxislocation" has been deprecated and will be removed from
+    Octave 4.6. Use "origin" instead.
+
  ** The parser has been extended to accept, but ignore, underscore
     characters in numbers.  This facilitates writing more legible code
     by using '_' as a thousands separator or to group nibbles into bytes

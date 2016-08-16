@@ -3874,7 +3874,8 @@ public:
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
-      radio_property xaxislocation u , "{bottom}|top|zero"
+      // FIXME: Remove "zero" in 4.6
+      radio_property xaxislocation u , "{bottom}|top|origin|zero"
       color_property xcolor m , color_values (0.15, 0.15, 0.15)
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
@@ -3891,7 +3892,8 @@ public:
       radio_property xticklabelmode u , "{auto}|manual"
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
-      radio_property yaxislocation u , "{left}|right|zero"
+      // FIXME: Remove "zero" in 4.6
+      radio_property yaxislocation u , "{left}|right|origin|zero"
       color_property ycolor m , color_values (0.15, 0.15, 0.15)
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
@@ -3982,12 +3984,22 @@ public:
     void update_layer (void) { update_axes_layout (); }
     void update_yaxislocation (void)
     {
+      // FIXME: Remove warning with "zero" in 4.6
+      if (yaxislocation_is ("zero"))
+        warning_with_id ("Octave:deprecated-property",
+            "Setting 'yaxislocation' to 'zero' is deprecated, "
+            "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       update_ylabel_position ();
     }
     void update_xaxislocation (void)
     {
+      // FIXME: Remove warning with "zero" in 4.6
+      if (xaxislocation_is ("zero"))
+        warning_with_id ("Octave:deprecated-property",
+            "Setting 'xaxislocation' to 'zero' is deprecated, "
+            "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       update_xlabel_position ();

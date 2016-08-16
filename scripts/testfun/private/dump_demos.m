@@ -289,12 +289,6 @@ function dump_helper_fcns (fid)
 
   fprintf (fid, "\n");
 
-  ## Add dummy assert until we've removed all assert from demos
-  fdisp (fid, [
-"function assert (varargin)                                                   "
-"end                                                                          "
-]);  # End of dummy assert
-
   fprintf (fid, "\n%s\n", repmat ("%", [1, 60]));
 
 endfunction

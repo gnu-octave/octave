@@ -246,7 +246,7 @@ endfunction
 %! clf;
 %! imshow (rand (100, 100));
 %! colormap (jet (64));
-%! title ({"imshow with random 100x100 matrix, "colormap() makes color image"});
+%! title ({"imshow with random 100x100 matrix", "colormap() makes color image"});
 
 %!demo
 %! clf;

@@ -123,7 +123,7 @@ xpow (double a, const Matrix& b)
       EIG b_eig (b);
 
       ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -174,7 +174,7 @@ xpow (double a, const ComplexMatrix& b)
   try
     {
       ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -262,7 +262,7 @@ xpow (const Matrix& a, double b)
       try
         {
           ComplexColumnVector lambda (a_eig.eigenvalues ());
-          ComplexMatrix Q (a_eig.eigenvectors ());
+          ComplexMatrix Q (a_eig.right_eigenvectors ());
 
           for (octave_idx_type i = 0; i < nr; i++)
             lambda(i) = std::pow (lambda(i), b);
@@ -338,7 +338,7 @@ xpow (const Matrix& a, const Complex& b)
   try
     {
       ComplexColumnVector lambda (a_eig.eigenvalues ());
-      ComplexMatrix Q (a_eig.eigenvectors ());
+      ComplexMatrix Q (a_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         lambda(i) = std::pow (lambda(i), b);
@@ -386,7 +386,7 @@ xpow (const Complex& a, const Matrix& b)
   try
     {
       ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -434,7 +434,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
   try
     {
       ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -522,7 +522,7 @@ xpow (const ComplexMatrix& a, double b)
       try
         {
           ComplexColumnVector lambda (a_eig.eigenvalues ());
-          ComplexMatrix Q (a_eig.eigenvectors ());
+          ComplexMatrix Q (a_eig.right_eigenvectors ());
 
           for (octave_idx_type i = 0; i < nr; i++)
             lambda(i) = std::pow (lambda(i), b);
@@ -557,7 +557,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
   try
     {
       ComplexColumnVector lambda (a_eig.eigenvalues ());
-      ComplexMatrix Q (a_eig.eigenvectors ());
+      ComplexMatrix Q (a_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         lambda(i) = std::pow (lambda(i), b);
@@ -1527,7 +1527,7 @@ xpow (float a, const FloatMatrix& b)
   try
     {
       FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-      FloatComplexMatrix Q (b_eig.eigenvectors ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -1579,7 +1579,7 @@ xpow (float a, const FloatComplexMatrix& b)
   try
     {
       FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-      FloatComplexMatrix Q (b_eig.eigenvectors ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -1667,7 +1667,7 @@ xpow (const FloatMatrix& a, float b)
       try
         {
           FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-          FloatComplexMatrix Q (a_eig.eigenvectors ());
+          FloatComplexMatrix Q (a_eig.right_eigenvectors ());
 
           for (octave_idx_type i = 0; i < nr; i++)
             lambda(i) = std::pow (lambda(i), b);
@@ -1733,7 +1733,7 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
   try
     {
       FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-      FloatComplexMatrix Q (a_eig.eigenvectors ());
+      FloatComplexMatrix Q (a_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         lambda(i) = std::pow (lambda(i), b);
@@ -1781,7 +1781,7 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
   try
     {
       FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-      FloatComplexMatrix Q (b_eig.eigenvectors ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -1829,7 +1829,7 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
   try
     {
       FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-      FloatComplexMatrix Q (b_eig.eigenvectors ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -1917,7 +1917,7 @@ xpow (const FloatComplexMatrix& a, float b)
       try
         {
           FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-          FloatComplexMatrix Q (a_eig.eigenvectors ());
+          FloatComplexMatrix Q (a_eig.right_eigenvectors ());
 
           for (octave_idx_type i = 0; i < nr; i++)
             lambda(i) = std::pow (lambda(i), b);
@@ -1952,7 +1952,7 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
   try
     {
       FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-      FloatComplexMatrix Q (a_eig.eigenvectors ());
+      FloatComplexMatrix Q (a_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
         lambda(i) = std::pow (lambda(i), b);

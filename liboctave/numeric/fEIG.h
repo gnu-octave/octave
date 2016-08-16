@@ -40,64 +40,66 @@ FloatEIG
 
 public:
 
-  FloatEIG (void)
-    : lambda (), v () { }
+  FloatEIG (void) : lambda (), v (), w () { }
 
-  FloatEIG (const FloatMatrix& a, bool calc_eigenvectors = true)
-    : lambda (), v ()
+  FloatEIG (const FloatMatrix& a, bool calc_rev = true,
+            bool calc_lev = true, bool balance = true)
+    : lambda (), v (), w ()
   {
-    init (a, calc_eigenvectors);
+    init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatMatrix& a, octave_idx_type& info,
-            bool calc_eigenvectors = true)
-    : lambda (), v ()
+            bool calc_rev = true, bool calc_lev = true, bool balance = true)
+    : lambda (), v (), w ()
   {
-    info = init (a, calc_eigenvectors);
+    info = init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatMatrix& a, const FloatMatrix& b,
-            bool calc_eigenvectors = true)
-    : lambda (), v ()
+            bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
+    : lambda (), v (), w ()
   {
-    init (a, b, calc_eigenvectors);
+    init (a, b, calc_rev, calc_lev, force_qz);
   }
 
   FloatEIG (const FloatMatrix& a, const FloatMatrix& b, octave_idx_type& info,
-            bool calc_eigenvectors = true)
-    : lambda (), v ()
+            bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
+    : lambda (), v (), w ()
   {
-    info = init (a, b, calc_eigenvectors);
+    info = init (a, b, calc_rev, calc_lev, force_qz);
   }
 
-  FloatEIG (const FloatComplexMatrix& a, bool calc_eigenvectors = true)
-    : lambda (), v ()
+  FloatEIG (const FloatComplexMatrix& a, bool calc_rev = true,
+            bool calc_lev = true, bool balance = true)
+    : lambda (), v (), w ()
   {
-    init (a, calc_eigenvectors);
+    init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatComplexMatrix& a, octave_idx_type& info,
-            bool calc_eigenvectors = true)
-    : lambda (), v ()
+            bool calc_rev = true, bool calc_lev = true, bool balance = true)
+    : lambda (), v (), w ()
   {
-    info = init (a, calc_eigenvectors);
+    info = init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
-            bool calc_eigenvectors = true)
-    : lambda (), v ()
+            bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
+    : lambda (), v (), w ()
   {
-    init (a, b, calc_eigenvectors);
+    init (a, b, calc_rev, calc_lev, force_qz);
   }
 
   FloatEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
-            octave_idx_type& info, bool calc_eigenvectors = true)
-    : lambda (), v ()
+            octave_idx_type& info, bool calc_rev = true, bool calc_lev = true,
+            bool force_qz = false)
+    : lambda (), v (), w ()
   {
-    info = init (a, b, calc_eigenvectors);
+    info = init (a, b, calc_rev, calc_lev, force_qz);
   }
 
-  FloatEIG (const FloatEIG& a) : lambda (a.lambda), v (a.v) { }
+  FloatEIG (const FloatEIG& a) : lambda (a.lambda), v (a.v), w (a.w) { }
 
   FloatEIG& operator = (const FloatEIG& a)
   {
@@ -105,6 +107,7 @@ public:
       {
         lambda = a.lambda;
         v = a.v;
+        w = a.w;
       }
     return *this;
   }
@@ -112,8 +115,8 @@ public:
   ~FloatEIG (void) { }
 
   FloatComplexColumnVector eigenvalues (void) const { return lambda; }
-
-  FloatComplexMatrix eigenvectors (void) const { return v; }
+  FloatComplexMatrix right_eigenvectors (void) const { return v; }
+  FloatComplexMatrix left_eigenvectors (void) const { return w; }
 
   friend std::ostream&  operator << (std::ostream& os, const FloatEIG& a);
 
@@ -121,22 +124,34 @@ private:
 
   FloatComplexColumnVector lambda;
   FloatComplexMatrix v;
+  FloatComplexMatrix w;
 
-  octave_idx_type init (const FloatMatrix& a, bool calc_eigenvectors);
+  octave_idx_type init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
+                        bool balance);
+
   octave_idx_type init (const FloatMatrix& a, const FloatMatrix& b,
-                        bool calc_eigenvectors);
-  octave_idx_type init (const FloatComplexMatrix& a, bool calc_eigenvectors);
-  octave_idx_type init (const FloatComplexMatrix& a,
-                        const FloatComplexMatrix& b, bool calc_eigenvectors);
+                        bool calc_rev, bool calc_lev, bool force_qz);
 
-  octave_idx_type symmetric_init (const FloatMatrix& a, bool calc_eigenvectors);
+  octave_idx_type init (const FloatComplexMatrix& a, bool calc_rev,
+                        bool calc_lev, bool balance);
+
+  octave_idx_type init (const FloatComplexMatrix& a,
+                        const FloatComplexMatrix& b,
+                        bool calc_rev, bool calc_lev, bool force_qz);
+
+  octave_idx_type symmetric_init (const FloatMatrix& a, bool calc_rev,
+                                  bool calc_lev);
+
   octave_idx_type symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
-                                  bool calc_eigenvectors);
+                                  bool calc_rev, bool calc_lev);
+
   octave_idx_type hermitian_init (const FloatComplexMatrix& a,
-                                  bool calc_eigenvectors);
+                                  bool calc_rev, bool calc_lev);
+
   octave_idx_type hermitian_init (const FloatComplexMatrix& a,
                                   const FloatComplexMatrix& b,
-                                  bool calc_eigenvectors);
+                                  bool calc_rev, bool calc_lev);
+
 };
 
 #endif

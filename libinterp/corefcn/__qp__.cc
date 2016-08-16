@@ -148,7 +148,7 @@ qp (const Matrix& H, const ColumnVector& q,
     }
 
   ColumnVector eigenvalH = real (eigH.eigenvalues ());
-  Matrix eigenvecH = real (eigH.eigenvectors ());
+  Matrix eigenvecH = real (eigH.right_eigenvectors ());
   double minReal = eigenvalH.min ();
   octave_idx_type indminR = 0;
   for (octave_idx_type i = 0; i < n; i++)
@@ -296,7 +296,7 @@ qp (const Matrix& H, const ColumnVector& q,
                 }
 
               ColumnVector eigenvalrH = real (eigrH.eigenvalues ());
-              Matrix eigenvecrH = real (eigrH.eigenvectors ());
+              Matrix eigenvecrH = real (eigrH.right_eigenvectors ());
               double mRrH = eigenvalrH.min ();
               indminR = 0;
               for (octave_idx_type i = 0; i < n; i++)

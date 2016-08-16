@@ -151,7 +151,7 @@ endfunction
 %! imagesc (g, g+12, cos (h/2));
 %! axis ([0 10 0 22]);
 %! hold off;
-%! title ("two consecutive images");
+%! title ("two consecutive images w/hold()");
 
 %!demo
 %! clf;
@@ -164,7 +164,7 @@ endfunction
 %! imagesc (g, g+12, cos (h/2));
 %! axis ([0 10 0 22]);
 %! hold off;
-%! title ("image, line, image");
+%! title ("image, line, image w/hold()");
 
 %!demo
 %! clf;
@@ -179,5 +179,5 @@ endfunction
 %! plot (g, 11.5 * ones (size (g)));
 %! axis ([0 10 0 22]);
 %! hold off;
-%! title ("line, image, line, image, line");
+%! title ("line, image, line, image, line w/hold()");
 

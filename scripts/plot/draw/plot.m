@@ -268,7 +268,7 @@ endfunction
 %! plot (repmat (x, 2, 1), rand (2, numel (x)), "-s");
 %! axis ([0 10 0 1]);
 %! title ({"Vertical lines with random height and lengths", ...
-%!         "x[2x11], y[2,11]"})
+%!         "x[2x11], y[2,11]"});
 
 %!demo
 %! x = 0:10;
@@ -283,5 +283,5 @@ endfunction
 %! y = rand (shape);
 %! plot (x, y);
 %! axis ([0 10 0 1]);
-%! title ({"Two random variables", "squeezed from 4-d arrays"});
+%! title ({"Two random variables", "squeezed from 4-D arrays"});
 

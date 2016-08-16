@@ -204,10 +204,12 @@ endfunction
 %!
 %! ## Add a second light
 %! camlight left
+%!
+%! title ({"camlight()", "lights are left and right"});
 
 %!demo
 %! sphere (48);
-%! title ("This light has a fixed position, even if the camera moves");
+%! title ({"camlight()", "light in fixed position ignores camera change"});
 %! axis equal;
 %! shading flat;
 %! view (30, 30);
@@ -222,7 +224,7 @@ endfunction
 
 %!demo
 %! sphere (48);
-%! title ("Move the camera and update the light position");
+%! title ({"camlight()", "update light position with camera change"});
 %! axis equal;  shading flat
 %! view (30, 30);
 %!

@@ -409,12 +409,12 @@ endfunction
 %!
 %! subplot (222);
 %!  plot (t, x);
-%!  title ("square plot");
+%!  title ("axis square");
 %!  axis ("square");
 %!
 %! subplot (223);
 %!  plot (t, x);
-%!  title ("equal plot");
+%!  title ("axis equal");
 %!  axis ("equal");
 %!
 %! subplot (224);
@@ -429,13 +429,16 @@ endfunction
 %!
 %! subplot (121);
 %!  plot (t, x);
-%!  title ("ij plot");
+%!  title ({"axis ij", "Y-axis reversed"});
 %!  axis ("ij");
+%!  legend ("sine");
 %!
 %! subplot (122);
 %!  plot (t, x);
-%!  title ("xy plot");
+%!  title ("axis xy");
+%!  title ({"axis ij", "Y-axis normal"});
 %!  axis ("xy");
+%!  legend ("sine");
 
 %!demo
 %! clf;

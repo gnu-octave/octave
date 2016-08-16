@@ -86,11 +86,11 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  semilogx (x, y);
-%!  xlabel ("semilogx (x, y)");
+%!  title ("semilogx (x, y)");
 %!
 %! subplot (1,2,2);
 %!  semilogx (-x, y);
-%!  xlabel ("semilogx (-x, y)");
+%!  title ("semilogx (-x, y)");
 
 %!demo
 %! clf;
@@ -100,12 +100,12 @@ endfunction
 %! subplot (1,2,1);
 %!  semilogx (x, y);
 %!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
-%!  xlabel ({"semilogx (x, y)", "xdir = reversed"});
+%!  title ({"semilogx (x, y)", "xdir = reversed"});
 %!
 %! subplot (1,2,2);
 %!  semilogx (-x, y);
 %!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
-%!  xlabel ({"semilogx (-x, y)", "xdir = reversed"});
+%!  title ({"semilogx (-x, y)", "xdir = reversed"});
 
 %!test
 %! hf = figure ("visible", "off");

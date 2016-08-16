@@ -203,9 +203,11 @@ endfunction
 %! isonormals (x, y, z, val, h_patch);
 %! axis equal;  axis tight;
 %! view (3);
+%! box off;
 %! drawnow ();
 %! light ();
 %! material ([0 0.5 1 10 .5]);
+%! title ("material() with numeric input"); 
 
 %!demo
 %! clf;
@@ -215,6 +217,7 @@ endfunction
 %! view (3);
 %! light ();
 %! material metal;
+%! title ("material metal");
 
 %!test
 %! hf = figure ("Visible", "off");

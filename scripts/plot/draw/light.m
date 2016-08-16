@@ -146,7 +146,7 @@ endfunction
 %! axis equal
 %! view (2);
 %! light ("Position", [-1 1 1]);
-%! title ("FaceLighting: none - flat - gouraud");
+%! title ({"FaceLighting", "none - flat - gouraud"});
 
 %!demo
 %! ## multiple lights
@@ -155,7 +155,8 @@ endfunction
 %! [x,y,z] = meshgrid (-2:0.1:2, -2:0.1:2, -2:0.1:2);
 %! val = x.^2 + y.^2 + z.^2;
 %! fv = isosurface (x, y, z, val, 1);
-%! h_patch = patch (fv, "FaceColor", "w", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "w", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! isonormals (x, y, z, val, h_patch);
 %! axis equal; axis tight
 %! title ("Patch with one light");
@@ -163,7 +164,8 @@ endfunction
 %! h_light = light ("Color", "g");
 %!
 %! h_axes2 = subplot (1, 2, 2);
-%! h_patch2 = patch (fv, "FaceColor", "w", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch2 = patch (fv, "FaceColor", "w", "EdgeColor", "none", ...
+%!                       "FaceLighting", "Gouraud");
 %! isonormals (x, y, z, val, h_patch2);
 %! axis equal; axis tight
 %! title ("Patch with three lights");
@@ -180,41 +182,50 @@ endfunction
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 0, "SpecularStrength", 0);
 %! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 0, "SpecularStrength", .5);
 %! isonormals (x+.5, y, z, val, h_patch);
 %! fv = isosurface (x+1, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 0, "SpecularStrength", 1);
 %! isonormals (x+1, y, z, val, h_patch);
 %!
 %! fv = isosurface (x, y+.5, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 0.5, "SpecularStrength", 0);
 %! isonormals (x, y+.5, z, val, h_patch);
 %! fv = isosurface (x+.5, y+.5, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 0.5, "SpecularStrength", .5);
 %! isonormals (x+.5, y+.5, z, val, h_patch);
 %! fv = isosurface (x+1, y+.5, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 0.5, "SpecularStrength", 1);
 %! isonormals (x+1, y+.5, z, val, h_patch);
 %!
 %! fv = isosurface (x, y+1, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 1, "SpecularStrength", 0);
 %! isonormals (x, y+1, z, val, h_patch);
 %! fv = isosurface (x+.5, y+1, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 1, "SpecularStrength", .5);
 %! isonormals (x+.5, y+1, z, val, h_patch);
 %! fv = isosurface (x+1, y+1, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "DiffuseStrength", 1, "SpecularStrength", 1);
 %! isonormals (x+1, y+1, z, val, h_patch);
 %!
@@ -224,7 +235,7 @@ endfunction
 %!
 %! xlabel ("SpecularStrength");
 %! ylabel ("DiffuseStrength");
-
+%! title ("Effects of SpecularStrength and DiffuseStrength");
 
 %!demo
 %! ## Ambient Strength and Ambient Light Color
@@ -235,15 +246,18 @@ endfunction
 %! h_axes1 = subplot (3,1,3);
 %! set (h_axes1, "AmbientLightColor", "g");
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", 0);
 %! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", .7);
 %! isonormals (x+.5, y, z, val, h_patch);
 %! fv = isosurface (x+1, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", 1);
 %! isonormals (x+1, y, z, val, h_patch);
 %! h_light = light ("Position", [-1 1 1]);
@@ -256,15 +270,18 @@ endfunction
 %! h_axes2 = subplot (3,1,2);
 %! set (h_axes2, "AmbientLightColor", [.5 0 1]);
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", 0);
 %! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", .7);
 %! isonormals (x+.5, y, z, val, h_patch);
 %! fv = isosurface (x+1, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", 1);
 %! isonormals (x+1, y, z, val, h_patch);
 %! h_light = light ("Position", [-1 1 1]);
@@ -276,15 +293,18 @@ endfunction
 %! h_axes3 = subplot (3,1,1);
 %! set (h_axes3, "AmbientLightColor", "w");
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", 0);
 %! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", .7);
 %! isonormals (x+.5, y, z, val, h_patch);
 %! fv = isosurface (x+1, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "AmbientStrength", 1);
 %! isonormals (x+1, y, z, val, h_patch);
 %! h_light = light ("Position", [-1 1 1]);
@@ -292,6 +312,7 @@ endfunction
 %! axis equal
 %! view (2);
 %! ylabel ("AmbientLightColor [1 1 1]");
+%! title ("Effects of AmbientLightColor and AmbientStrength");
 
 %!demo
 %! ## Specular Exponent
@@ -301,15 +322,18 @@ endfunction
 %!
 %! h_axes = axes ();
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularExponent", 15);
 %! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularExponent", 5);
 %! isonormals (x+.5, y, z, val, h_patch);
 %! fv = isosurface (x+1, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularExponent", 1);
 %! isonormals (x+1, y, z, val, h_patch);
 %! h_light = light ("Position", [-1 1 1]);
@@ -317,6 +341,7 @@ endfunction
 %! axis equal
 %! view (2);
 %! xlabel ("SpecularExponent");
+%! title ("Effects of SpecularExponent");
 
 %!demo
 %! ## SpecularColorReflectance
@@ -326,15 +351,18 @@ endfunction
 %!
 %! h_axes = axes ();
 %! fv = isosurface (x, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularColorReflectance", 0);
 %! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularColorReflectance", 0.5);
 %! isonormals (x+.5, y, z, val, h_patch);
 %! fv = isosurface (x+1, y, z, val, .039);
-%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", "FaceLighting", "Gouraud");
+%! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularColorReflectance", 1);
 %! isonormals (x+1, y, z, val, h_patch);
 %! h_light = light ("Position", [-1 1 1]);
@@ -342,6 +370,7 @@ endfunction
 %! axis equal
 %! view (2);
 %! xlabel ("SpecularColorReflectance");
+%! title ("Effects of SpecularColorReflectance");
 
 %!demo
 %! ## BackFaceLighting
@@ -351,7 +380,7 @@ endfunction
 %! vn = isonormals (x, y, z, val, fv.vertices, "negate");
 %! h_axes1 = subplot (1, 3, 1);
 %! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", ...
-%!                  "FaceLighting", "Gouraud", "VertexNormals", vn);
+%!                      "FaceLighting", "Gouraud", "VertexNormals", vn);
 %! set (h_patch, "BackFaceLighting", "reverselit");
 %! h_light = light ();
 %! view (h_axes1, [-50 30]);
@@ -360,7 +389,7 @@ endfunction
 %!
 %! h_axes2 = subplot (1, 3, 2);
 %! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", ...
-%!           "FaceLighting", "Gouraud", "VertexNormals", vn);
+%!                      "FaceLighting", "Gouraud", "VertexNormals", vn);
 %! set (h_patch, "BackFaceLighting", "lit");
 %! h_light = light ();
 %! view (h_axes2, [-50 30]);
@@ -369,7 +398,7 @@ endfunction
 %!
 %! h_axes3 = subplot (1, 3, 3);
 %! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", ...
-%!           "FaceLighting", "Gouraud", "VertexNormals", vn);
+%!                      "FaceLighting", "Gouraud", "VertexNormals", vn);
 %! set (h_patch, "BackFaceLighting", "unlit");
 %! h_light = light ();
 %! view (h_axes3, [-50 30]);
@@ -385,7 +414,7 @@ endfunction
 %! h_axes = axes ();
 %! fv = isosurface (x, y, z, val, .039, z);
 %! h_patch = patch (fv, "FaceColor", "flat", "EdgeColor", "none", ...
-%!             "FaceLighting", "Gouraud");
+%!                      "FaceLighting", "Gouraud");
 %! set (h_patch, "SpecularExponent", 15);
 %! isonormals (x, y, z, val, h_patch);
 %! title ("Colored patch");
@@ -407,8 +436,9 @@ endfunction
 %! title ("Colored mesh (patch)");
 %! h_light = light;
 %! lighting gouraud
-%! axis tight
-%! axis equal
+%! axis tight;
+%! axis equal;
+%! box off;
 %! view (3);
 
 %!demo
@@ -438,7 +468,7 @@ endfunction
 %! fv = isosurface (x, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none");
 %! isonormals (x, y, z, val, h_patch);
-%! title ('"Style" set to "infinite" (default)');
+%! title ('"Style" = "infinite" (default)');
 %! h_light = light ("Position", [.3 0 .3]);
 %! lighting gouraud
 %! axis equal
@@ -448,7 +478,7 @@ endfunction
 %! fv = isosurface (x, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none");
 %! isonormals (x, y, z, val, h_patch);
-%! title ('"Style" set to "local"');
+%! title ('"Style" = "local"');
 %! h_light = light ("Style", "local", "Position", [.3 0 .3]);
 %! lighting gouraud
 %! axis equal

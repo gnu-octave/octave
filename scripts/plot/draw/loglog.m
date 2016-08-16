@@ -87,12 +87,12 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  loglog (a, b);
-%!  xlabel ("loglog (a, b)");
+%!  title ("loglog (a, b)");
 %!
 %! subplot (1,2,2);
 %!  loglog (a, abs (b));
 %!  set (gca, "ydir", "reverse");
-%!  xlabel ("loglog (a, abs (b))");
+%!  title ("loglog (a, abs (b))");
 
 %!test
 %! hf = figure ("visible", "off");

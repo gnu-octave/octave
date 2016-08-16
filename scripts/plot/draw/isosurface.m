@@ -369,7 +369,7 @@ endfunction
 %! v = x.^2 + y.^2 + z.^2;
 %! isosurface (x, y, z, v, 1);
 %! axis equal;
-%! title ("isosurface of a sphere");
+%! title ("isosurface() of a sphere");
 
 %!demo
 %! clf;

@@ -103,7 +103,7 @@ endfunction
 %! plot (x,cos(x), x,sin(x));
 %! axis square;
 %! daspect ([1 1 1]);
-%! title ("square plot-box with axis limits [0, 4, -2, 2]");
+%! title ("square plot box with axis limits [0, 4, -2, 2]");
 
 %!demo
 %! clf;
@@ -111,7 +111,7 @@ endfunction
 %! plot (x,cos (x), x,sin (x));
 %! axis ([0 4 -1 1]);
 %! daspect ([2 1 1]);
-%! title ("square plot-box with axis limits [0, 4, -1, 1]");
+%! title ("square plot box with axis limits [0, 4, -1, 1]");
 
 %!demo
 %! clf;
@@ -128,7 +128,7 @@ endfunction
 %! axis square;
 %! set (gca, "activepositionproperty", "position");
 %! daspect ([1 1 1]);
-%! title ("square plot-box with axis limits [0, 4, -2, 2]");
+%! title ("square plot box with axis limits [0, 4, -2, 2]");
 
 %!demo
 %! clf;
@@ -137,7 +137,7 @@ endfunction
 %! axis ([0 4 -1 1]);
 %! set (gca, "activepositionproperty", "position");
 %! daspect ([2 1 1]);
-%! title ("square plot-box with axis limits [0, 4, -1, 1]");
+%! title ("square plot box with axis limits [0, 4, -1, 1]");
 
 ## FIXME: need some input validation tests
 

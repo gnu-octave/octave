@@ -158,7 +158,7 @@ endfunction
 %!  hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
 %!  vn = isonormals (x, y, z, val, vert);  # Compute normals of isosurface
 %!  set (hp, "VertexNormals", vn);         # Manually set vertex normals
-%!  title ('"VertexNormals" from isonormals manually set');
+%!  title ('set "VertexNormals" from isonormals');
 %!  isofinish (hp);
 %!
 %! subplot (2,2,4);

@@ -119,6 +119,7 @@ endfunction
 %! hold on;
 %! imagesc (1 ./ hilb (4));
 %! plot (1:4, "-s");
+%! title ("hold with image and plot");
 %! hold off;
 
 %!demo
@@ -127,6 +128,7 @@ endfunction
 %! hold on;
 %! imagesc (1 ./ hilb (2));
 %! imagesc (1 ./ hilb (4));
+%! title ({"hold with two images", "only second image is visible"});
 %! hold off;
 
 %!demo
@@ -135,6 +137,7 @@ endfunction
 %! hold on;
 %! plot (1:4, "-s");
 %! imagesc (1 ./ hilb (4));
+%! title ({"hold with plot and image", "only image is visible"});
 %! hold off;
 
 %!demo
@@ -150,7 +153,7 @@ endfunction
 %! xlim ([-2.0 2.0]);
 %! ylim ([-2.0 2.0]);
 %! colorbar ("SouthOutside");
-%! title ("Test script for some plot functions");
+%! title ("hold with line, surface, and patch objects");
 
 ## hold on test
 %!test

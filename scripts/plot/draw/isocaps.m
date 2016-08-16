@@ -392,6 +392,7 @@ endfunction
 %!        "VertexNormals", repmat([0 -1 0], rows (fvc_zmax.vertices), 1));
 %! axis equal;
 %! light ();
+%! title ({"isocaps()", "sphere with 6 end-caps"});
 
 %!demo
 %! v = smooth3 (rand (6, 8, 4));

@@ -127,6 +127,7 @@ endfunction
 %! randn_1x9_data = [1.42934, -1.10821, -1.70404, 0.63357, -0.68337, -1.19771, -0.96502, -1.12810, 0.22457];
 %! a = toeplitz ([1;randn_9x1_data], [1,randn_1x9_data]);
 %! compass (eig (a));
+%! title ("compass() example");
 
 ## Test input validation
 %!error compass ()

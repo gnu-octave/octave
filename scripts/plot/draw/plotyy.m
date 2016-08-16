@@ -287,7 +287,7 @@ endfunction
 %!       "color", [0 0 1], "horizontalalignment", "center", "parent", ax(1));
 %! text (4.5, 80, "Right Axis", ...
 %!       "color", [0 0.5 0], "horizontalalignment", "center", "parent", ax(2));
-%! title ({"plotyy() example"; "Left axis uses @plot, Right axis uses @semilogy"});
+%! title ({"plotyy() example"; "left axis uses @plot, right axis uses @semilogy"});
 
 %!demo
 %! clf;

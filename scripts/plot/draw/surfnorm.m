@@ -191,6 +191,8 @@ endfunction
 %! colormap ("default");
 %! [x, y, z] = sombrero (10);
 %! surfnorm (x, y, z);
+%! title ({"surfnorm() shows surface and normals at each vertex", ...
+%!         "sombrero() function with 10 faces"});
 
 ## Test input validation
 %!error surfnorm ()

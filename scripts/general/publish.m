@@ -812,6 +812,12 @@ function str = format_text (str, formatter)
   str = regexprep (str, '<(\S{3,}[^\s<>]*) *([^<>$]*)>', ...
     formatter ("link", "$1", "$2"));
   oldstr = str;
+  ## Save inline "$" and block "$$" LaTeX math
+  [~,~,~,math_cstr] = regexp (str, '\${1,2}.*?\${1,2}');
+  for i = 1:length(math_cstr)
+    str = regexprep (str, '\${1,2}(.*?)\${1,2}', ...
+      ["PUBLISHMATH", num2str(i)], "once");
+  endfor
   ## Loop because of inlined expressions, e.g. *BOLD _ITALIC_*
   do
     oldstr = str;
@@ -822,6 +828,10 @@ function str = format_text (str, formatter)
     ## Monospaced
     str = regexprep (str, '\|([^|$_*]*)\|', formatter ("monospaced", "$1"));
   until (strcmp (str, oldstr))
+  ## Restore inline "$" and block "$$" LaTeX math
+  for i = 1:length(math_cstr)
+    str = strrep (str, ["PUBLISHMATH", num2str(i)], math_cstr{i});
+  endfor
   ## Replace special symbols
   str = strrep (str, "(TM)", formatter("TM"));
   str = strrep (str, "(R)", formatter("R"));

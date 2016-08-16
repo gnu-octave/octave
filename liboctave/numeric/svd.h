@@ -28,6 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <vector>
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 class
 svd
@@ -107,5 +112,8 @@ private:
               octave_idx_type* iwork, octave_idx_type& info);
 
 };
+
+}
+}
 
 #endif

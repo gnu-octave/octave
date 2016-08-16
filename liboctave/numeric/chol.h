@@ -26,6 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 class
 chol
@@ -97,5 +102,8 @@ private:
 template <typename T>
 T
 chol2inv (const T& r);
+
+}
+}
 
 #endif

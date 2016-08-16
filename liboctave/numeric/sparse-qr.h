@@ -31,6 +31,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "dSparse.h"
 #include "CSparse.h"
 
+namespace octave
+{
+namespace math
+{
+
 // If the sparse matrix classes become templated on the element type
 // (i.e., sparse_matrix<double>), then it might be best to make the
 // template parameter of this class also be the element type instead
@@ -124,5 +129,8 @@ qrsolve (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 
 typedef sparse_qr<SparseMatrix> SparseQR;
 typedef sparse_qr<SparseComplexMatrix> SparseComplexQR;
+
+}
+}
 
 #endif

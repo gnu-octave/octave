@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename MT>
 static octave_value
-get_qr_r (const qr<MT>& fact)
+get_qr_r (const octave::math::qr<MT>& fact)
 {
   MT R = fact.R ();
   if (R.is_square () && fact.regular ())
@@ -48,12 +48,12 @@ get_qr_r (const qr<MT>& fact)
 }
 
 template <typename T>
-static typename qr<T>::type
+static typename octave::math::qr<T>::type
 qr_type (int nargin, int nargout)
 {
   return ((nargout == 0 || nargout == 1)
-          ? qr<T>::raw
-          : (nargin == 2) ? qr<T>::economy : qr<T>::std);
+          ? octave::math::qr<T>::raw
+          : (nargin == 2) ? octave::math::qr<T>::economy : octave::math::qr<T>::std);
 }
 
 // [Q, R] = qr (X):      form Q unitary and R upper triangular such
@@ -276,7 +276,7 @@ permutation vector instead of a permutation matrix.
 
       if (is_cmplx)
         {
-          sparse_qr<SparseComplexMatrix> q (arg.sparse_complex_matrix_value ());
+          octave::math::sparse_qr<SparseComplexMatrix> q (arg.sparse_complex_matrix_value ());
 
           if (have_b)
             {
@@ -293,7 +293,7 @@ permutation vector instead of a permutation matrix.
         }
       else
         {
-          sparse_qr<SparseMatrix> q (arg.sparse_matrix_value ());
+          octave::math::sparse_qr<SparseMatrix> q (arg.sparse_matrix_value ());
 
           if (have_b)
             {
@@ -314,7 +314,7 @@ permutation vector instead of a permutation matrix.
         {
           if (arg.is_real_type ())
             {
-              qr<FloatMatrix>::type type
+              octave::math::qr<FloatMatrix>::type type
                 = qr_type<FloatMatrix> (nargin, nargout);
 
               FloatMatrix m = arg.float_matrix_value ();
@@ -324,14 +324,14 @@ permutation vector instead of a permutation matrix.
                 case 0:
                 case 1:
                   {
-                    qr<FloatMatrix> fact (m, type);
+                    octave::math::qr<FloatMatrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    qr<FloatMatrix> fact (m, type);
+                    octave::math::qr<FloatMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                     if (have_b)
                       {
@@ -347,9 +347,9 @@ permutation vector instead of a permutation matrix.
 
                 default:
                   {
-                    qrp<FloatMatrix> fact (m, type);
+                    octave::math::qrp<FloatMatrix> fact (m, type);
 
-                    if (type == qr<FloatMatrix>::economy || vector_p)
+                    if (type == octave::math::qr<FloatMatrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -359,7 +359,7 @@ permutation vector instead of a permutation matrix.
             }
           else if (arg.is_complex_type ())
             {
-              qr<FloatComplexMatrix>::type type
+              octave::math::qr<FloatComplexMatrix>::type type
                 = qr_type<FloatComplexMatrix> (nargin, nargout);
 
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
@@ -369,14 +369,14 @@ permutation vector instead of a permutation matrix.
                 case 0:
                 case 1:
                   {
-                    qr<FloatComplexMatrix> fact (m, type);
+                    octave::math::qr<FloatComplexMatrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    qr<FloatComplexMatrix> fact (m, type);
+                    octave::math::qr<FloatComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                     if (have_b)
                       retval (0) = conj (fact.Q ().transpose ())
@@ -386,8 +386,8 @@ permutation vector instead of a permutation matrix.
 
                 default:
                   {
-                    qrp<FloatComplexMatrix> fact (m, type);
-                    if (type == qr<FloatComplexMatrix>::economy || vector_p)
+                    octave::math::qrp<FloatComplexMatrix> fact (m, type);
+                    if (type == octave::math::qr<FloatComplexMatrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -400,7 +400,7 @@ permutation vector instead of a permutation matrix.
         {
           if (arg.is_real_type ())
             {
-              qr<Matrix>::type type = qr_type<Matrix> (nargin, nargout);
+              octave::math::qr<Matrix>::type type = qr_type<Matrix> (nargin, nargout);
 
               Matrix m = arg.matrix_value ();
 
@@ -409,14 +409,14 @@ permutation vector instead of a permutation matrix.
                 case 0:
                 case 1:
                   {
-                    qr<Matrix> fact (m, type);
+                    octave::math::qr<Matrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    qr<Matrix> fact (m, type);
+                    octave::math::qr<Matrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                     if (have_b)
                       {
@@ -432,8 +432,8 @@ permutation vector instead of a permutation matrix.
 
                 default:
                   {
-                    qrp<Matrix> fact (m, type);
-                    if (type == qr<Matrix>::economy || vector_p)
+                    octave::math::qrp<Matrix> fact (m, type);
+                    if (type == octave::math::qr<Matrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -443,7 +443,7 @@ permutation vector instead of a permutation matrix.
             }
           else if (arg.is_complex_type ())
             {
-              qr<ComplexMatrix>::type type
+              octave::math::qr<ComplexMatrix>::type type
                 = qr_type<ComplexMatrix> (nargin, nargout);
 
               ComplexMatrix m = arg.complex_matrix_value ();
@@ -453,14 +453,14 @@ permutation vector instead of a permutation matrix.
                 case 0:
                 case 1:
                   {
-                    qr<ComplexMatrix> fact (m, type);
+                    octave::math::qr<ComplexMatrix> fact (m, type);
                     retval = ovl (fact.R ());
                   }
                   break;
 
                 case 2:
                   {
-                    qr<ComplexMatrix> fact (m, type);
+                    octave::math::qr<ComplexMatrix> fact (m, type);
                     retval = ovl (fact.Q (), get_qr_r (fact));
                     if (have_b)
                       retval (0) = conj (fact.Q ().transpose ())
@@ -470,8 +470,8 @@ permutation vector instead of a permutation matrix.
 
                 default:
                   {
-                    qrp<ComplexMatrix> fact (m, type);
-                    if (type == qr<ComplexMatrix>::economy || vector_p)
+                    octave::math::qrp<ComplexMatrix> fact (m, type);
+                    if (type == octave::math::qr<ComplexMatrix>::economy || vector_p)
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.Pvec ());
                     else
                       retval = ovl (fact.Q (), get_qr_r (fact), fact.P ());
@@ -923,7 +923,7 @@ economized (R is square).
           FloatMatrix u = argu.float_matrix_value ();
           FloatMatrix v = argv.float_matrix_value ();
 
-          qr<FloatMatrix> fact (Q, R);
+          octave::math::qr<FloatMatrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -935,7 +935,7 @@ economized (R is square).
           Matrix u = argu.matrix_value ();
           Matrix v = argv.matrix_value ();
 
-          qr<Matrix> fact (Q, R);
+          octave::math::qr<Matrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -952,7 +952,7 @@ economized (R is square).
           FloatComplexMatrix u = argu.float_complex_matrix_value ();
           FloatComplexMatrix v = argv.float_complex_matrix_value ();
 
-          qr<FloatComplexMatrix> fact (Q, R);
+          octave::math::qr<FloatComplexMatrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -964,7 +964,7 @@ economized (R is square).
           ComplexMatrix u = argu.complex_matrix_value ();
           ComplexMatrix v = argv.complex_matrix_value ();
 
-          qr<ComplexMatrix> fact (Q, R);
+          octave::math::qr<ComplexMatrix> fact (Q, R);
           fact.update (u, v);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -1107,7 +1107,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           FloatMatrix R = argr.float_matrix_value ();
           FloatMatrix x = argx.float_matrix_value ();
 
-          qr<FloatMatrix> fact (Q, R);
+          octave::math::qr<FloatMatrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -1122,7 +1122,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           Matrix R = argr.matrix_value ();
           Matrix x = argx.matrix_value ();
 
-          qr<Matrix> fact (Q, R);
+          octave::math::qr<Matrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -1145,7 +1145,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           FloatComplexMatrix x =
             argx.float_complex_matrix_value ();
 
-          qr<FloatComplexMatrix> fact (Q, R);
+          octave::math::qr<FloatComplexMatrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -1160,7 +1160,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           ComplexMatrix R = argr.complex_matrix_value ();
           ComplexMatrix x = argx.complex_matrix_value ();
 
-          qr<ComplexMatrix> fact (Q, R);
+          octave::math::qr<ComplexMatrix> fact (Q, R);
 
           if (col)
             fact.insert_col (x, j-one);
@@ -1298,7 +1298,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           FloatMatrix Q = argq.float_matrix_value ();
           FloatMatrix R = argr.float_matrix_value ();
 
-          qr<FloatMatrix> fact (Q, R);
+          octave::math::qr<FloatMatrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1312,7 +1312,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           Matrix Q = argq.matrix_value ();
           Matrix R = argr.matrix_value ();
 
-          qr<Matrix> fact (Q, R);
+          octave::math::qr<Matrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1332,7 +1332,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           FloatComplexMatrix R =
             argr.float_complex_matrix_value ();
 
-          qr<FloatComplexMatrix> fact (Q, R);
+          octave::math::qr<FloatComplexMatrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1346,7 +1346,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
           ComplexMatrix Q = argq.complex_matrix_value ();
           ComplexMatrix R = argr.complex_matrix_value ();
 
-          qr<ComplexMatrix> fact (Q, R);
+          octave::math::qr<ComplexMatrix> fact (Q, R);
 
           if (col)
             fact.delete_col (j-one);
@@ -1524,7 +1524,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
           FloatMatrix Q = argq.float_matrix_value ();
           FloatMatrix R = argr.float_matrix_value ();
 
-          qr<FloatMatrix> fact (Q, R);
+          octave::math::qr<FloatMatrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -1534,7 +1534,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
           Matrix Q = argq.matrix_value ();
           Matrix R = argr.matrix_value ();
 
-          qr<Matrix> fact (Q, R);
+          octave::math::qr<Matrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -1549,7 +1549,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
           FloatComplexMatrix Q = argq.float_complex_matrix_value ();
           FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-          qr<FloatComplexMatrix> fact (Q, R);
+          octave::math::qr<FloatComplexMatrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));
@@ -1559,7 +1559,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
           ComplexMatrix Q = argq.complex_matrix_value ();
           ComplexMatrix R = argr.complex_matrix_value ();
 
-          qr<ComplexMatrix> fact (Q, R);
+          octave::math::qr<ComplexMatrix> fact (Q, R);
           fact.shift_cols (i-1, j-1);
 
           retval = ovl (fact.Q (), get_qr_r (fact));

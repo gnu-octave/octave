@@ -27,6 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 class
 gepbalance
@@ -82,5 +87,8 @@ private:
 
   octave_idx_type init (const T& a, const T& b, const std::string& job);
 };
+
+}
+}
 
 #endif

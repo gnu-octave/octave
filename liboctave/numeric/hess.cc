@@ -153,6 +153,11 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL);
 }
 
+namespace octave
+{
+namespace math
+{
+
 template <>
 octave_idx_type
 hess<Matrix>::init (const Matrix& a)
@@ -402,4 +407,7 @@ hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
         hess_mat.elem (i, j) = 0;
 
   return info;
+}
+
+}
 }

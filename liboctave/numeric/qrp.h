@@ -29,6 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "PermMatrix.h"
 #include "qr.h"
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 class
 qrp : public qr<T>
@@ -68,5 +73,8 @@ private:
 
   PermMatrix p;
 };
+
+}
+}
 
 #endif

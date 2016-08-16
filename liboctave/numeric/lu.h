@@ -28,6 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "PermMatrix.h"
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 class
 lu
@@ -94,5 +99,8 @@ protected:
 
   Array<octave_idx_type> ipvt;
 };
+
+}
+}
 
 #endif

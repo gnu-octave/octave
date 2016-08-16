@@ -26,6 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+namespace octave
+{
+namespace math
+{
+
 template <typename MT>
 class aepbalance
 {
@@ -116,5 +121,8 @@ protected:
   octave_idx_type ihi;
   char job;
 };
+
+}
+}
 
 #endif

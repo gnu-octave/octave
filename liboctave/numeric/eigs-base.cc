@@ -302,7 +302,7 @@ static bool
 make_cholb (Matrix& b, Matrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
-  chol<Matrix> fact (b, info);
+  octave::math::chol<Matrix> fact (b, info);
   octave_idx_type n = b.cols ();
 
   if (info != 0)
@@ -322,7 +322,7 @@ static bool
 make_cholb (SparseMatrix& b, SparseMatrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
-  sparse_chol<SparseMatrix> fact (b, info, false);
+  octave::math::sparse_chol<SparseMatrix> fact (b, info, false);
 
   if (fact.P () != 0)
     return false;
@@ -339,7 +339,7 @@ static bool
 make_cholb (ComplexMatrix& b, ComplexMatrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
-  chol<ComplexMatrix> fact (b, info);
+  octave::math::chol<ComplexMatrix> fact (b, info);
   octave_idx_type n = b.cols ();
 
   if (info != 0)
@@ -360,7 +360,7 @@ make_cholb (SparseComplexMatrix& b, SparseComplexMatrix& bt,
             ColumnVector& permB)
 {
   octave_idx_type info;
-  sparse_chol<SparseComplexMatrix> fact (b, info, false);
+  octave::math::sparse_chol<SparseComplexMatrix> fact (b, info, false);
 
   if (fact.P () != 0)
     return false;
@@ -426,7 +426,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
       AminusSigmaB -= sigmat;
     }
 
-  sparse_lu<SparseMatrix> fact (AminusSigmaB);
+  octave::math::sparse_lu<SparseMatrix> fact (AminusSigmaB);
 
   L = fact.L ();
   U = fact.U ();
@@ -508,7 +508,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
         p[i*(n+1)] -= sigma;
     }
 
-  lu<Matrix> fact (AminusSigmaB);
+  octave::math::lu<Matrix> fact (AminusSigmaB);
 
   L = fact.P ().transpose () * fact.L ();
   U = fact.U ();
@@ -590,7 +590,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
       AminusSigmaB -= sigmat;
     }
 
-  sparse_lu<SparseComplexMatrix> fact (AminusSigmaB);
+  octave::math::sparse_lu<SparseComplexMatrix> fact (AminusSigmaB);
 
   L = fact.L ();
   U = fact.U ();
@@ -672,7 +672,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
         p[i*(n+1)] -= sigma;
     }
 
-  lu<ComplexMatrix> fact (AminusSigmaB);
+  octave::math::lu<ComplexMatrix> fact (AminusSigmaB);
 
   L = fact.P ().transpose () * fact.L ();
   U = fact.U ();

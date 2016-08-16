@@ -115,6 +115,11 @@ get_job (bool noperm, bool noscal)
   return noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
 }
 
+namespace octave
+{
+namespace math
+{
+
 template <>
 aepbalance<Matrix>::aepbalance (const Matrix& a, bool noperm, bool noscal)
   : balanced_mat (a), scale (), ilo (), ihi (), job (get_job (noperm, noscal))
@@ -295,3 +300,6 @@ template class aepbalance<FloatMatrix>;
 template class aepbalance<ComplexMatrix>;
 
 template class aepbalance<FloatComplexMatrix>;
+
+}
+}

@@ -29,6 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 class
 qr
@@ -108,5 +113,8 @@ protected:
 };
 
 extern void warn_qrupdate_once (void);
+
+}
+}
 
 #endif

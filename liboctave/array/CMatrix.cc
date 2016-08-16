@@ -1110,7 +1110,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     {
       if (mattype.is_hermitian ())
         {
-          chol<ComplexMatrix> chol (*this, info, true, calc_cond);
+          octave::math::chol<ComplexMatrix> chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)
@@ -1139,7 +1139,7 @@ ComplexMatrix::pseudo_inverse (double tol) const
 {
   ComplexMatrix retval;
 
-  svd<ComplexMatrix> result (*this, svd<ComplexMatrix>::Type::economy);
+  octave::math::svd<ComplexMatrix> result (*this, octave::math::svd<ComplexMatrix>::Type::economy);
 
   DiagMatrix S = result.singular_values ();
   ComplexMatrix U = result.left_singular_matrix ();
@@ -3491,8 +3491,8 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   // Compute Schur decompositions
 
-  schur<ComplexMatrix> as (a, "U");
-  schur<ComplexMatrix> bs (b, "U");
+  octave::math::schur<ComplexMatrix> as (a, "U");
+  octave::math::schur<ComplexMatrix> bs (b, "U");
 
   // Transform c to new coordinates.
 

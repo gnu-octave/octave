@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
-#include "sparse-qr.h"
 
 #if defined (OCTAVE_ENABLE_64)
 #  define CXSPARSE_NAME(name) cs_dl ## name

@@ -121,6 +121,11 @@ extern "C"
 #endif
 }
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 lu<T>::lu (const T& l, const T& u,
                            const PermMatrix& p)
@@ -882,3 +887,6 @@ template class lu<FloatMatrix>;
 template class lu<ComplexMatrix>;
 
 template class lu<FloatComplexMatrix>;
+
+}
+}

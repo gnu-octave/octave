@@ -179,12 +179,12 @@ in control (see @code{are} and @code{dare}).
 
           if (nargout <= 1)
             {
-              schur<FloatMatrix> result (tmp, ord, false);
+              octave::math::schur<FloatMatrix> result (tmp, ord, false);
               retval = ovl (result.schur_matrix ());
             }
           else
             {
-              schur<FloatMatrix> result (tmp, ord, true);
+              octave::math::schur<FloatMatrix> result (tmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             result.schur_matrix ());
             }
@@ -195,12 +195,12 @@ in control (see @code{are} and @code{dare}).
 
           if (nargout <= 1)
             {
-              schur<FloatComplexMatrix> result (ctmp, ord, false);
+              octave::math::schur<FloatComplexMatrix> result (ctmp, ord, false);
               retval = ovl (mark_upper_triangular (result.schur_matrix ()));
             }
           else
             {
-              schur<FloatComplexMatrix> result (ctmp, ord, true);
+              octave::math::schur<FloatComplexMatrix> result (ctmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             mark_upper_triangular (result.schur_matrix ()));
             }
@@ -214,12 +214,12 @@ in control (see @code{are} and @code{dare}).
 
           if (nargout <= 1)
             {
-              schur<Matrix> result (tmp, ord, false);
+              octave::math::schur<Matrix> result (tmp, ord, false);
               retval = ovl (result.schur_matrix ());
             }
           else
             {
-              schur<Matrix> result (tmp, ord, true);
+              octave::math::schur<Matrix> result (tmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             result.schur_matrix ());
             }
@@ -230,12 +230,12 @@ in control (see @code{are} and @code{dare}).
 
           if (nargout <= 1)
             {
-              schur<ComplexMatrix> result (ctmp, ord, false);
+              octave::math::schur<ComplexMatrix> result (ctmp, ord, false);
               retval = ovl (mark_upper_triangular (result.schur_matrix ()));
             }
           else
             {
-              schur<ComplexMatrix> result (ctmp, ord, true);
+              octave::math::schur<ComplexMatrix> result (ctmp, ord, true);
               retval = ovl (result.unitary_matrix (),
                             mark_upper_triangular (result.schur_matrix ()));
             }
@@ -301,8 +301,8 @@ Note also that @var{U} and @var{T} are not unique.
       FloatMatrix u = args(0).float_matrix_value ();
       FloatMatrix t = args(1).float_matrix_value ();
 
-      schur<FloatComplexMatrix> cs
-        = rsf2csf<FloatComplexMatrix, FloatMatrix> (t, u);
+      octave::math::schur<FloatComplexMatrix> cs
+        = octave::math::rsf2csf<FloatComplexMatrix, FloatMatrix> (t, u);
 
       return ovl (cs.unitary_matrix (), cs.schur_matrix ());
     }
@@ -311,7 +311,8 @@ Note also that @var{U} and @var{T} are not unique.
       Matrix u = args(0).matrix_value ();
       Matrix t = args(1).matrix_value ();
 
-      schur<ComplexMatrix> cs = rsf2csf<ComplexMatrix, Matrix> (t, u);
+      octave::math::schur<ComplexMatrix> cs
+        = octave::math::rsf2csf<ComplexMatrix, Matrix> (t, u);
 
       return ovl (cs.unitary_matrix (), cs.schur_matrix ());
     }

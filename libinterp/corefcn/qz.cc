@@ -613,7 +613,7 @@ compatibility with @sc{matlab}.
       // Complex case.
 
       // The QR decomposition of cbb.
-      qr<ComplexMatrix> cbqr (cbb);
+      octave::math::qr<ComplexMatrix> cbqr (cbb);
       // The R matrix of QR decomposition for cbb.
       cbb = cbqr.R ();
       // (Q*)caa for following work.
@@ -679,7 +679,7 @@ compatibility with @sc{matlab}.
 #endif
 
       // Compute the QR factorization of bb.
-      qr<Matrix> bqr (bb);
+      octave::math::qr<Matrix> bqr (bb);
 
 #if defined (DEBUG)
       std::cout << "qz: qr (bb) done; now peforming qz decomposition"

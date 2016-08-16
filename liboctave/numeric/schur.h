@@ -32,6 +32,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "fMatrix.h"
 #include "fCMatrix.h"
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T> class schur;
 
 template <typename T>
@@ -96,5 +101,8 @@ private:
 template <typename RT, typename AT>
 extern schur<RT>
 rsf2csf (const AT& s, const AT& u);
+
+}
+}
 
 #endif

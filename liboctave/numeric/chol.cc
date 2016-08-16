@@ -420,6 +420,11 @@ chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
   return retval;
 }
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 T
 chol2inv (const T& r)
@@ -463,7 +468,7 @@ chol<T>::update (const VT& u)
 }
 
 template <typename T>
-static bool
+bool
 singular (const T& a)
 {
   static typename T::element_type zero (0);
@@ -1296,3 +1301,6 @@ chol2inv<FloatMatrix> (const FloatMatrix& r);
 
 template FloatComplexMatrix
 chol2inv<FloatComplexMatrix> (const FloatComplexMatrix& r);
+
+}
+}

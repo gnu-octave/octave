@@ -1077,7 +1077,7 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
       if (mattype.is_hermitian ())
         {
           MatrixType tmp_typ (MatrixType::Upper);
-          sparse_chol<SparseComplexMatrix> fact (*this, info, false);
+          octave::math::sparse_chol<SparseComplexMatrix> fact (*this, info, false);
           rcond = fact.rcond ();
           if (info == 0)
             {
@@ -1103,7 +1103,7 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
             Qinit(i) = i;
 
           MatrixType tmp_typ (MatrixType::Upper);
-          sparse_lu<SparseComplexMatrix> fact (*this, Qinit, Matrix (), false, false);
+          octave::math::sparse_lu<SparseComplexMatrix> fact (*this, Qinit, Matrix (), false, false);
           rcond = fact.rcond ();
           double rcond2;
           SparseComplexMatrix InvL = fact.L ().transpose ().

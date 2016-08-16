@@ -87,7 +87,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
-          hess<FloatMatrix> result (tmp);
+          octave::math::hess<FloatMatrix> result (tmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -99,7 +99,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-          hess<FloatComplexMatrix> result (ctmp);
+          octave::math::hess<FloatComplexMatrix> result (ctmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -114,7 +114,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           Matrix tmp = arg.matrix_value ();
 
-          hess<Matrix> result (tmp);
+          octave::math::hess<Matrix> result (tmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -126,7 +126,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-          hess<ComplexMatrix> result (ctmp);
+          octave::math::hess<ComplexMatrix> result (ctmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());

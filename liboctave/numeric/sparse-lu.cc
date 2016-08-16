@@ -35,6 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 #include "sparse-lu.h"
 
+namespace octave
+{
+namespace math
+{
+
 // Wrappers for SuiteSparse (formerly UMFPACK) functions that have
 // different names depending on the sparse matrix data type.
 //
@@ -911,3 +916,6 @@ sparse_lu<lu_type>::Pc_mat (void) const
 template class sparse_lu<SparseMatrix>;
 
 template class sparse_lu<SparseComplexMatrix>;
+
+}
+}

@@ -1115,7 +1115,7 @@ FloatComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     {
       if (mattype.is_hermitian ())
         {
-          chol<FloatComplexMatrix> chol (*this, info, true, calc_cond);
+          octave::math::chol<FloatComplexMatrix> chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)
@@ -1144,7 +1144,7 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
 {
   FloatComplexMatrix retval;
 
-  svd<FloatComplexMatrix> result (*this, svd<FloatComplexMatrix>::Type::economy);
+  octave::math::svd<FloatComplexMatrix> result (*this, octave::math::svd<FloatComplexMatrix>::Type::economy);
 
   FloatDiagMatrix S = result.singular_values ();
   FloatComplexMatrix U = result.left_singular_matrix ();
@@ -3518,8 +3518,8 @@ Sylvester (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   // Compute Schur decompositions
 
-  schur<FloatComplexMatrix> as (a, "U");
-  schur<FloatComplexMatrix> bs (b, "U");
+  octave::math::schur<FloatComplexMatrix> as (a, "U");
+  octave::math::schur<FloatComplexMatrix> bs (b, "U");
 
   // Transform c to new coordinates.
 

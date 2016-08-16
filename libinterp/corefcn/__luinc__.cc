@@ -145,8 +145,8 @@ See documentation for @code{luinc}.
         case 1:
         case 2:
           {
-            sparse_lu<SparseMatrix> fact (sm, Qinit, thresh, false, true, droptol,
-                           milu, udiag);
+            octave::math::sparse_lu<SparseMatrix> fact
+              (sm, Qinit, thresh, false, true, droptol, milu, udiag);
 
             SparseMatrix P = fact.Pr ();
             SparseMatrix L = P.transpose () * fact.L ();
@@ -162,8 +162,8 @@ See documentation for @code{luinc}.
 
         case 3:
           {
-            sparse_lu<SparseMatrix> fact (sm, Qinit, thresh, false, true, droptol,
-                           milu, udiag);
+            octave::math::sparse_lu<SparseMatrix> fact
+              (sm, Qinit, thresh, false, true, droptol, milu, udiag);
 
             if (vecout)
               retval(2) = fact.Pr_vec ();
@@ -181,8 +181,8 @@ See documentation for @code{luinc}.
         case 4:
         default:
           {
-            sparse_lu<SparseMatrix> fact (sm, Qinit, thresh, false, false, droptol,
-                           milu, udiag);
+            octave::math::sparse_lu<SparseMatrix> fact
+              (sm, Qinit, thresh, false, false, droptol, milu, udiag);
 
             if (vecout)
               {
@@ -220,8 +220,8 @@ See documentation for @code{luinc}.
         case 1:
         case 2:
           {
-            sparse_lu<SparseComplexMatrix> fact (sm, Qinit, thresh, false, true,
-                                  droptol, milu, udiag);
+            octave::math::sparse_lu<SparseComplexMatrix> fact
+              (sm, Qinit, thresh, false, true, droptol, milu, udiag);
 
             SparseMatrix P = fact.Pr ();
             SparseComplexMatrix L = P.transpose () * fact.L ();
@@ -237,8 +237,8 @@ See documentation for @code{luinc}.
 
         case 3:
           {
-            sparse_lu<SparseComplexMatrix> fact (sm, Qinit, thresh, false, true,
-                                  droptol, milu, udiag);
+            octave::math::sparse_lu<SparseComplexMatrix> fact
+              (sm, Qinit, thresh, false, true, droptol, milu, udiag);
 
             if (vecout)
               retval(2) = fact.Pr_vec ();
@@ -256,8 +256,8 @@ See documentation for @code{luinc}.
         case 4:
         default:
           {
-            sparse_lu<SparseComplexMatrix> fact (sm, Qinit, thresh, false, false,
-                                  droptol, milu, udiag);
+            octave::math::sparse_lu<SparseComplexMatrix> fact
+              (sm, Qinit, thresh, false, false, droptol, milu, udiag);
 
             if (vecout)
               {

@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename MT>
 static octave_value
-get_lu_l (const lu<MT>& fact)
+get_lu_l (const octave::math::lu<MT>& fact)
 {
   MT L = fact.L ();
   if (L.is_square ())
@@ -48,7 +48,7 @@ get_lu_l (const lu<MT>& fact)
 
 template <typename MT>
 static octave_value
-get_lu_u (const lu<MT>& fact)
+get_lu_u (const octave::math::lu<MT>& fact)
 {
   MT U = fact.U ();
   if (U.is_square () && fact.regular ())
@@ -204,7 +204,7 @@ permutation information.
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
-              sparse_lu<SparseMatrix> fact (m, Qinit, thres, false, true);
+              octave::math::sparse_lu<SparseMatrix> fact (m, Qinit, thres, false, true);
 
               if (nargout < 2)
                 retval(0) = fact.Y ();
@@ -238,7 +238,7 @@ permutation information.
           else
             {
               retval.resize (scale ? 5 : 4);
-              sparse_lu<SparseMatrix> fact (m, thres, scale);
+              octave::math::sparse_lu<SparseMatrix> fact (m, thres, scale);
 
               retval(0) = octave_value (fact.L (),
                                         MatrixType (MatrixType::Lower));
@@ -269,7 +269,7 @@ permutation information.
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
-              sparse_lu<SparseComplexMatrix> fact (m, Qinit, thres, false, true);
+              octave::math::sparse_lu<SparseComplexMatrix> fact (m, Qinit, thres, false, true);
 
               if (nargout < 2)
                 retval(0) = fact.Y ();
@@ -302,7 +302,7 @@ permutation information.
           else
             {
               retval.resize (scale ? 5 : 4);
-              sparse_lu<SparseComplexMatrix> fact (m, thres, scale);
+              octave::math::sparse_lu<SparseComplexMatrix> fact (m, thres, scale);
 
               retval(0) = octave_value (fact.L (),
                                         MatrixType (MatrixType::Lower));
@@ -341,7 +341,7 @@ permutation information.
             {
               FloatMatrix m = arg.float_matrix_value ();
 
-              lu<FloatMatrix> fact (m);
+              octave::math::lu<FloatMatrix> fact (m);
 
               switch (nargout)
                 {
@@ -375,7 +375,7 @@ permutation information.
             {
               Matrix m = arg.matrix_value ();
 
-              lu<Matrix> fact (m);
+              octave::math::lu<Matrix> fact (m);
 
               switch (nargout)
                 {
@@ -412,7 +412,7 @@ permutation information.
             {
               FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-              lu<FloatComplexMatrix> fact (m);
+              octave::math::lu<FloatComplexMatrix> fact (m);
 
               switch (nargout)
                 {
@@ -446,7 +446,7 @@ permutation information.
             {
               ComplexMatrix m = arg.complex_matrix_value ();
 
-              lu<ComplexMatrix> fact (m);
+              octave::math::lu<ComplexMatrix> fact (m);
 
               switch (nargout)
                 {
@@ -647,7 +647,7 @@ factorization from scratch.
           FloatMatrix x = argx.float_matrix_value ();
           FloatMatrix y = argy.float_matrix_value ();
 
-          lu<FloatMatrix> fact (L, U, P);
+          octave::math::lu<FloatMatrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else
@@ -665,7 +665,7 @@ factorization from scratch.
           Matrix x = argx.matrix_value ();
           Matrix y = argy.matrix_value ();
 
-          lu<Matrix> fact (L, U, P);
+          octave::math::lu<Matrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else
@@ -688,7 +688,7 @@ factorization from scratch.
           FloatComplexMatrix x = argx.float_complex_matrix_value ();
           FloatComplexMatrix y = argy.float_complex_matrix_value ();
 
-          lu<FloatComplexMatrix> fact (L, U, P);
+          octave::math::lu<FloatComplexMatrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else
@@ -706,7 +706,7 @@ factorization from scratch.
           ComplexMatrix x = argx.complex_matrix_value ();
           ComplexMatrix y = argy.complex_matrix_value ();
 
-          lu<ComplexMatrix> fact (L, U, P);
+          octave::math::lu<ComplexMatrix> fact (L, U, P);
           if (pivoted)
             fact.update_piv (x, y);
           else

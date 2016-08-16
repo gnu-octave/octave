@@ -34,6 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "MatrixType.h"
 
+namespace octave
+{
+namespace math
+{
+
 template <typename chol_type>
 class sparse_chol<chol_type>::sparse_chol_rep
 {
@@ -588,3 +593,6 @@ chol2inv<SparseMatrix> (const SparseMatrix& r);
 
 template SparseComplexMatrix
 chol2inv<SparseComplexMatrix> (const SparseComplexMatrix& r);
+
+}
+}

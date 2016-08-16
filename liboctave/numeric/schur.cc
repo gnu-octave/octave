@@ -107,6 +107,11 @@ extern "C"
                                  F77_CMPLX *, F77_REAL *, F77_REAL *);
 }
 
+namespace octave
+{
+namespace math
+{
+
 // For real types.
 
 template <typename T>
@@ -535,3 +540,6 @@ template class schur<FloatComplexMatrix>;
 template class schur<FloatMatrix>;
 
 template class schur<Matrix>;
+
+}
+}

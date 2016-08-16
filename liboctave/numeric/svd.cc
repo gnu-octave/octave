@@ -127,6 +127,11 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL);
 }
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 T
 svd<T>::left_singular_matrix (void) const
@@ -494,3 +499,6 @@ template class svd<FloatMatrix>;
 template class svd<ComplexMatrix>;
 
 template class svd<FloatComplexMatrix>;
+
+}
+}

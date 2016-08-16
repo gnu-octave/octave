@@ -272,6 +272,11 @@ extern "C"
 #endif
 }
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 qr<T>::qr (const T& q_arg, const T& r_arg)
   : q (q_arg), r (r_arg)
@@ -2042,3 +2047,6 @@ template class qr<FloatMatrix>;
 template class qr<ComplexMatrix>;
 
 template class qr<FloatComplexMatrix>;
+
+}
+}

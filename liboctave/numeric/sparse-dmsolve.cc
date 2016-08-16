@@ -413,8 +413,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
           ST m = dmsolve_extract (a, pinv, q, dm->rr[2], nr, dm->cc[3], nc,
                                   nnz_remaining, true);
           nnz_remaining -= m.nnz ();
-          RT mtmp = qrsolve (m, dmsolve_extract (btmp, 0, 0, dm->rr[2],
-                                                 b_nr, 0, b_nc), info);
+          RT mtmp = octave::math::qrsolve (m, dmsolve_extract (btmp, 0, 0, dm->rr[2], b_nr, 0, b_nc), info);
           dmsolve_insert (retval, mtmp, q, dm->cc[3], 0);
 
           if (dm->rr[2] > 0 && ! info)
@@ -443,7 +442,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
           if (info != 0)
             {
               info = 0;
-              mtmp = qrsolve (m, btmp2, info);
+              mtmp = octave::math::qrsolve (m, btmp2, info);
             }
 
           dmsolve_insert (retval, mtmp, q, dm->cc[2], 0);
@@ -462,8 +461,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
         {
           ST m = dmsolve_extract (a, pinv, q, 0, dm->rr[1], 0,
                                   dm->cc[2], nnz_remaining, true);
-          RT mtmp = qrsolve (m, dmsolve_extract (btmp, 0, 0, 0, dm->rr[1],
-                                                 0, b_nc), info);
+          RT mtmp = octave::math::qrsolve (m, dmsolve_extract (btmp, 0, 0, 0, dm->rr[1], 0, b_nc), info);
           dmsolve_insert (retval, mtmp, q, 0, 0);
         }
 

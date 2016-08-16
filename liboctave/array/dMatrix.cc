@@ -797,7 +797,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
     {
       if (mattype.is_hermitian ())
         {
-          chol<Matrix> chol (*this, info, true, calc_cond);
+          octave::math::chol<Matrix> chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)
@@ -823,7 +823,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 Matrix
 Matrix::pseudo_inverse (double tol) const
 {
-  svd<Matrix> result (*this, svd<Matrix>::Type::economy);
+  octave::math::svd<Matrix> result (*this, octave::math::svd<Matrix>::Type::economy);
 
   DiagMatrix S = result.singular_values ();
   Matrix U = result.left_singular_matrix ();
@@ -2950,8 +2950,8 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   // Compute Schur decompositions.
 
-  schur<Matrix> as (a, "U");
-  schur<Matrix> bs (b, "U");
+  octave::math::schur<Matrix> as (a, "U");
+  octave::math::schur<Matrix> bs (b, "U");
 
   // Transform c to new coordinates.
 

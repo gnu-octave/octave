@@ -103,6 +103,11 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL);
 }
 
+namespace octave
+{
+namespace math
+{
+
 template <>
 octave_idx_type
 gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
@@ -376,3 +381,6 @@ template class gepbalance<FloatMatrix>;
 template class gepbalance<ComplexMatrix>;
 
 template class gepbalance<FloatComplexMatrix>;
+
+}
+}

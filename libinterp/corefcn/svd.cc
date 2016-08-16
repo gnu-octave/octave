@@ -37,19 +37,23 @@ along with Octave; see the file COPYING.  If not, see
 static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
-static typename svd<T>::Type
+static typename octave::math::svd<T>::Type
 svd_type (int nargin, int nargout)
 {
   return ((nargout == 0 || nargout == 1)
-          ? svd<T>::Type::sigma_only
-          : (nargin == 2) ? svd<T>::Type::economy : svd<T>::Type::std);
+          ? octave::math::svd<T>::Type::sigma_only
+          : ((nargin == 2)
+             ? octave::math::svd<T>::Type::economy
+             : octave::math::svd<T>::Type::std));
 }
 
 template <typename T>
-static typename svd<T>::Driver
+static typename octave::math::svd<T>::Driver
 svd_driver (void)
 {
-  return Vsvd_driver == "gesvd" ? svd<T>::Driver::GESVD : svd<T>::Driver::GESDD;
+  return (Vsvd_driver == "gesvd"
+          ? octave::math::svd<T>::Driver::GESVD
+          : octave::math::svd<T>::Driver::GESDD);
 }
 
 DEFUN (svd, args, nargout,
@@ -160,9 +164,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
           if (tmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          svd<FloatMatrix> result (tmp,
-                                   svd_type<FloatMatrix> (nargin, nargout),
-                                   svd_driver<FloatMatrix> ());
+          octave::math::svd<FloatMatrix> result
+            (tmp, svd_type<FloatMatrix> (nargin, nargout),
+             svd_driver<FloatMatrix> ());
 
           FloatDiagMatrix sigma = result.singular_values ();
 
@@ -180,9 +184,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
           if (ctmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          svd<FloatComplexMatrix> result (ctmp,
-                                          svd_type<FloatComplexMatrix> (nargin, nargout),
-                                          svd_driver<FloatComplexMatrix> ());
+          octave::math::svd<FloatComplexMatrix> result
+            (ctmp, svd_type<FloatComplexMatrix> (nargin, nargout),
+             svd_driver<FloatComplexMatrix> ());
 
           FloatDiagMatrix sigma = result.singular_values ();
 
@@ -203,9 +207,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
           if (tmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          svd<Matrix> result (tmp,
-                              svd_type<Matrix> (nargin, nargout),
-                              svd_driver<Matrix> ());
+          octave::math::svd<Matrix> result
+            (tmp, svd_type<Matrix> (nargin, nargout),
+             svd_driver<Matrix> ());
 
           DiagMatrix sigma = result.singular_values ();
 
@@ -223,9 +227,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
           if (ctmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          svd<ComplexMatrix> result (ctmp,
-                                     svd_type<ComplexMatrix> (nargin, nargout),
-                                     svd_driver<ComplexMatrix> ());
+          octave::math::svd<ComplexMatrix> result
+            (ctmp, svd_type<ComplexMatrix> (nargin, nargout),
+             svd_driver<ComplexMatrix> ());
 
           DiagMatrix sigma = result.singular_values ();
 

@@ -150,7 +150,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
         {
           if (complex_case)
             {
-              aepbalance<FloatComplexMatrix> result (fcaa, noperm, noscal);
+              octave::math::aepbalance<FloatComplexMatrix> result (fcaa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -164,7 +164,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
             }
           else
             {
-              aepbalance<FloatMatrix> result (faa, noperm, noscal);
+              octave::math::aepbalance<FloatMatrix> result (faa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -181,7 +181,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
         {
           if (complex_case)
             {
-              aepbalance<ComplexMatrix> result (caa, noperm, noscal);
+              octave::math::aepbalance<ComplexMatrix> result (caa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -195,7 +195,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
             }
           else
             {
-              aepbalance<Matrix> result (aa, noperm, noscal);
+              octave::math::aepbalance<Matrix> result (aa, noperm, noscal);
 
               if (nargout == 0 || nargout == 1)
                 retval = ovl (result.balanced_matrix ());
@@ -249,7 +249,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
         {
           if (complex_case)
             {
-              gepbalance<FloatComplexMatrix> result (fcaa, fcbb, bal_job);
+              octave::math::gepbalance<FloatComplexMatrix> result (fcaa, fcbb, bal_job);
 
               switch (nargout)
                 {
@@ -274,7 +274,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
             }
           else
             {
-              gepbalance<FloatMatrix> result (faa, fbb, bal_job);
+              octave::math::gepbalance<FloatMatrix> result (faa, fbb, bal_job);
 
               switch (nargout)
                 {
@@ -302,7 +302,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
         {
           if (complex_case)
             {
-              gepbalance<ComplexMatrix> result (caa, cbb, bal_job);
+              octave::math::gepbalance<ComplexMatrix> result (caa, cbb, bal_job);
 
               switch (nargout)
                 {
@@ -327,7 +327,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
             }
           else
             {
-              gepbalance<Matrix> result (aa, bb, bal_job);
+              octave::math::gepbalance<Matrix> result (aa, bb, bal_job);
 
               switch (nargout)
                 {

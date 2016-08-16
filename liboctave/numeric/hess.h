@@ -27,6 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
+namespace octave
+{
+namespace math
+{
+
 template <typename T>
 class
 hess
@@ -81,5 +86,8 @@ private:
 template <typename T>
 extern std::ostream&
 operator << (std::ostream& os, const hess<T>& a);
+
+}
+}
 
 #endif

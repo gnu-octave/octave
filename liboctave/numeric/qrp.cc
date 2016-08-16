@@ -64,6 +64,11 @@ extern "C"
                              const F77_INT&, F77_REAL*, F77_INT&);
 }
 
+namespace octave
+{
+namespace math
+{
+
 // Specialization.
 
 template <>
@@ -324,4 +329,7 @@ qrp<FloatComplexMatrix>::Pvec (void) const
   Array<float> pa (p.col_perm_vec ());
   FloatRowVector pv (MArray<float> (pa) + 1.0f);
   return pv;
+}
+
+}
 }

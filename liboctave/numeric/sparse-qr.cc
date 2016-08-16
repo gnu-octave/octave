@@ -30,6 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "sparse-qr.h"
 
+namespace octave
+{
+namespace math
+{
+  
 template <typename SPARSE_T>
 class
 cxsparse_types
@@ -2304,3 +2309,6 @@ qrsolve (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 template class sparse_qr<SparseMatrix>;
 
 template class sparse_qr<SparseComplexMatrix>;
+
+}
+}

@@ -285,7 +285,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     else
       fstrz = regexprep (regexprep (regexprep (fstrz,
            '\s*\.?(?:\^|\*\*)\s*','^'), '\.([/+-])', '$1'), '\s*\.?\*\s*', ' ');
-      fstr = ["x = " fstrx ",y = " fstry ", z = " fstrz];
+      fstr = ["x = " fstrx ", y = " fstry ", z = " fstrz];
     endif
   else
     fstr = regexprep (regexprep (regexprep (fstr,
@@ -422,9 +422,12 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       h = zeros (length (XX), 1);
       hold_state = get (hax, "nextplot");
       for i = 1 : length (XX)
-        h(i) = plot(hax, XX{i}, YY{i});
         if (i == 1)
+          h(1) = plot (hax, XX{1}, YY{1});
           set (hax, "nextplot", "add");
+          color = get (h(1), "color");
+        else
+          h(i) = plot (hax, XX{i}, YY{i}, "color", color);
         endif
       endfor
       set (hax, "nextplot", hold_state);

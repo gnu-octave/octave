@@ -211,6 +211,7 @@ function code = oct2mat (code)
   ## Fix the format specs for the errorbar demos changed by the line above
   code = strrep (code, "%r", "#r");
   code = strrep (code, "%~", "#~");
+
   ## Shorten all long forms of endXXX to 'end'
   endkeywords = {"endfor", "endfunction", "endif", "endwhile", "end_try_catch"};
   for k = 1:numel (endkeywords)
@@ -221,6 +222,8 @@ function code = oct2mat (code)
   for k = 1:numel (commentkeywords)
     code = strrep (code, commentkeywords{k}, ["%" commentkeywords{k}]);
   endfor
+  ## Fix in-place operators
+  code = regexprep (code, '(\S+)(\s*)(.?[+-/*])=', '$1 = $1 $3');
 
 endfunction
 

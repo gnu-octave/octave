@@ -292,6 +292,8 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
            '\s*\.?(?:\^|\*\*)\s*','^'), '\.([/+-])', '$1'), '\s*\.?\*\s*', ' ');
     if (isplot && nargs == 2)
       fstr = [fstr " = 0"];  # make title string of implicit function
+    elseif (ispolar)
+      fstr = ["r = " fstr];
     endif
   endif
 

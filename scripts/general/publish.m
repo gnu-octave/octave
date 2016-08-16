@@ -829,7 +829,7 @@ function str = format_text (str, formatter)
     str = regexprep (str, '\|([^|$_*]*)\|', formatter ("monospaced", "$1"));
   until (strcmp (str, oldstr))
   ## Restore inline "$" and block "$$" LaTeX math
-  for i = 1:length(math_cstr)
+  for i = length(math_cstr):-1:1
     str = strrep (str, ["PUBLISHMATH", num2str(i)], math_cstr{i});
   endfor
   ## Replace special symbols

@@ -75,7 +75,7 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
   fid = fopen (output, "w");
   fprintf (fid, "%% DO NOT EDIT!  Generated automatically by dump_demos.m\n");
   fprintf (fid, "function %s ()\n", funcname);
-  fprintf (fid, "set (0, 'DefaultAxesColorOrder', ...\n"); 
+  fprintf (fid, "set (0, 'DefaultAxesColorOrder', ...\n");
   fprintf (fid, "  [ 0.00000   0.00000   1.00000 ;\n");
   fprintf (fid, "    0.00000   0.50000   0.00000 ;\n");
   fprintf (fid, "    1.00000   0.00000   0.00000 ;\n");
@@ -134,38 +134,39 @@ function dump_all_demos (directory, fid, fmt)
       ## Wrap each demo in a function which create a local scope
       ## to prevent that a previous demo overwrites i or pi, for example
       fprintf (fid, "\nfunction %s ()\n", base_fn);
-      fprintf (fid, "  try\n");
+      fprintf (fid, "    %s\n\n", demos{d});
+      fprintf (fid, "end\n\n");
+
+      fprintf (fid, "try\n");
       ## First check if the file already exists, skip demo if found
-      fprintf (fid, "   if (~ exist ('%s', 'file'))\n", fn);
+      fprintf (fid, "  if (~ exist ('%s', 'file'))\n", fn);
       ## Invoke the ancient, deprecated random seed generators, but there is an
       ## initialization mismatch with the more modern generators reported
       ## here (https://savannah.gnu.org/bugs/?42557).
       fprintf (fid, "    rand ('seed', 1);\n");
       fprintf (fid, "    tic ();\n");
-      fprintf (fid, "    %s\n\n", demos{d});
+      fprintf (fid, "    %s ();\n", base_fn);
       fprintf (fid, "    t_plot = toc ();\n");
       fprintf (fid, "    fig = (get (0, 'currentfigure'));\n");
       fprintf (fid, "    if (~ isempty (fig))\n");
       fprintf (fid, "      figure (fig);\n");
-      fprintf (fid, "        fprintf ('Printing ""%s"" ... ');\n", fn);
-      fprintf (fid, "        tic ();\n");
-      fprintf (fid, "        print ('-d%s', '%s');\n", fmt, fn);
-      fprintf (fid, "        t_print = toc ();\n");
-      fprintf (fid, "        fprintf ('[%%f %%f] done\\n',t_plot, t_print);\n");
+      fprintf (fid, "      fprintf ('Printing ""%s"" ... ');\n", fn);
+      fprintf (fid, "      tic ();\n");
+      fprintf (fid, "      print ('-d%s', '%s');\n", fmt, fn);
+      fprintf (fid, "      t_print = toc ();\n");
+      fprintf (fid, "      fprintf ('[%%f %%f] done\\n',t_plot, t_print);\n");
       fprintf (fid, "    end\n");
       ## Temporary fix for cruft accumulating in figure window.
       fprintf (fid, "    close ('all');\n");
-      fprintf (fid, "   else\n");
-      fprintf (fid, "     fprintf ('File ""%s"" already exists.\\n');\n", fn);
-      fprintf (fid, "   end\n");
-      fprintf (fid, "  catch\n");
-      fprintf (fid, "    fprintf ('ERROR in %s: %%s\\n', lasterr ());\n", base_fn);
-      fprintf (fid, "    err_fid = fopen ('%s.err', 'w');\n", base_fn);
-      fprintf (fid, "    fprintf (err_fid, '%%s', lasterr ());\n");
-      fprintf (fid, "    fclose (err_fid);\n");
+      fprintf (fid, "  else\n");
+      fprintf (fid, "    fprintf ('File ""%s"" already exists.\\n');\n", fn);
       fprintf (fid, "  end\n");
+      fprintf (fid, "catch\n");
+      fprintf (fid, "  fprintf ('ERROR in %s: %%s\\n', lasterr ());\n", base_fn);
+      fprintf (fid, "  err_fid = fopen ('%s.err', 'w');\n", base_fn);
+      fprintf (fid, "  fprintf (err_fid, '%%s', lasterr ());\n");
+      fprintf (fid, "  fclose (err_fid);\n");
       fprintf (fid, "end\n");
-      fprintf (fid, "%s ();\n", base_fn);
     endfor
   endfor
   fprintf (fid, "\nclose all\n");

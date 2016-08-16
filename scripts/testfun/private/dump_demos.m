@@ -207,10 +207,8 @@ function code = oct2mat (code)
   code = regexprep (code, "[(,;\n][ ]*'[^']*'(*SKIP)(*F)|\"", "'",
                           "lineanchors", "dotexceptnewline");
 
-  code = strrep (code, "#", "%");      # comment character
-  ## Fix the format specs for the errorbar demos changed by the line above
-  code = strrep (code, "%r", "#r");
-  code = strrep (code, "%~", "#~");
+  ## replace # not inside single quotes
+  code = regexprep (code, "[(,;\n][ ]*'[^']*'(*SKIP)(*F)|#", "%");
 
   ## Shorten all long forms of endXXX to 'end'
   endkeywords = {"endfor", "endfunction", "endif", "endwhile", "end_try_catch"};

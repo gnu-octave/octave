@@ -37,181 +37,179 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class base_text_renderer;
 
-class base_text_renderer;
-
-class
-OCTINTERP_API
-text_renderer
-{
-public:
-
-  text_renderer (void);
-
-  ~text_renderer (void);
-
-  bool ok (void) const;
-
-  Matrix get_extent (text_element *elt, double rotation = 0.0);
-
-  Matrix get_extent (const std::string& txt, double rotation = 0.0,
-                     const caseless_str& interpreter = "tex");
-
-  void set_font (const std::string& name, const std::string& weight,
-                 const std::string& angle, double size);
-
-  void set_color (const Matrix& c);
-
-  void text_to_pixels (const std::string& txt,
-                       uint8NDArray& pxls, Matrix& bbox,
-                       int halign, int valign, double rotation = 0.0,
-                       const caseless_str& interpreter = "tex",
-                       bool handle_rotation = true);
-
-  class font
+  class
+  OCTINTERP_API
+  text_renderer
   {
   public:
 
-    font (void)
-      : name (), weight (), angle (), size (0)
-    { }
+    text_renderer (void);
 
-    font (const std::string& nm, const std::string& wt,
-          const std::string& ang, double sz)
-      : name (nm), weight (wt), angle (ang), size (sz)
-    { }
+    ~text_renderer (void);
 
-    font (const font& ft)
-      : name (ft.name), weight (ft.weight), angle (ft.angle),
-        size (ft.size)
-    { }
+    bool ok (void) const;
 
-    ~font (void) { }
+    Matrix get_extent (text_element *elt, double rotation = 0.0);
 
-    font& operator = (const font& ft)
+    Matrix get_extent (const std::string& txt, double rotation = 0.0,
+                       const caseless_str& interpreter = "tex");
+
+    void set_font (const std::string& name, const std::string& weight,
+                   const std::string& angle, double size);
+
+    void set_color (const Matrix& c);
+
+    void text_to_pixels (const std::string& txt,
+                         uint8NDArray& pxls, Matrix& bbox,
+                         int halign, int valign, double rotation = 0.0,
+                         const caseless_str& interpreter = "tex",
+                         bool handle_rotation = true);
+
+    class font
     {
-      if (&ft != this)
-        {
-          name = ft.name;
-          weight = ft.weight;
-          angle = ft.angle;
-          size = ft.size;
-        }
+    public:
 
-      return *this;
-    }
+      font (void)
+        : name (), weight (), angle (), size (0)
+      { }
 
-    std::string get_name (void) const { return name; }
+      font (const std::string& nm, const std::string& wt,
+            const std::string& ang, double sz)
+        : name (nm), weight (wt), angle (ang), size (sz)
+      { }
 
-    std::string get_weight (void) const { return weight; }
+      font (const font& ft)
+        : name (ft.name), weight (ft.weight), angle (ft.angle),
+          size (ft.size)
+      { }
 
-    std::string get_angle (void) const { return angle; }
+      ~font (void) { }
 
-    double get_size (void) const { return size; }
+      font& operator = (const font& ft)
+      {
+        if (&ft != this)
+          {
+            name = ft.name;
+            weight = ft.weight;
+            angle = ft.angle;
+            size = ft.size;
+          }
 
-  protected:
+        return *this;
+      }
 
-    std::string name;
-    std::string weight;
-    std::string angle;
-    double size;
-  };
+      std::string get_name (void) const { return name; }
 
-  // Container for substrings after parsing.
+      std::string get_weight (void) const { return weight; }
 
-  class string
-  {
-  public:
+      std::string get_angle (void) const { return angle; }
 
-    string (const std::string& s, font& f, const double x0, const double y0)
-      : str (s), fnt (f), x (x0), y (y0), z (0.0), code (0),
-        color (Matrix (1,3,0.0))
-    { }
+      double get_size (void) const { return size; }
 
-    string (const string& s)
-      : str (s.str), fnt (s.fnt), x (s.x), y (s.y), code (s.code),
-        color (s.color)
-    { }
+    protected:
 
-    ~string (void) { }
+      std::string name;
+      std::string weight;
+      std::string angle;
+      double size;
+    };
 
-    string& operator = (const string& s)
+    // Container for substrings after parsing.
+
+    class string
     {
-      if (&s != this)
-        {
-          str = s.str;
-          fnt = s.fnt;
-          x = s.x;
-          y = s.y;
-          code = s.code;
-          color = s.color;
-        }
+    public:
 
-      return *this;
-    }
+      string (const std::string& s, font& f, const double x0, const double y0)
+        : str (s), fnt (f), x (x0), y (y0), z (0.0), code (0),
+          color (Matrix (1,3,0.0))
+      { }
 
-    void set_string (const std::string& s) { str = s; }
+      string (const string& s)
+        : str (s.str), fnt (s.fnt), x (s.x), y (s.y), code (s.code),
+          color (s.color)
+      { }
 
-    std::string get_string (void) const { return str; }
+      ~string (void) { }
 
-    std::string get_name (void) const { return fnt.get_name (); }
+      string& operator = (const string& s)
+      {
+        if (&s != this)
+          {
+            str = s.str;
+            fnt = s.fnt;
+            x = s.x;
+            y = s.y;
+            code = s.code;
+            color = s.color;
+          }
 
-    std::string get_weight (void) const { return fnt.get_weight (); }
+        return *this;
+      }
 
-    std::string get_angle (void) const { return fnt.get_angle (); }
+      void set_string (const std::string& s) { str = s; }
 
-    double get_size (void) const { return fnt.get_size (); }
+      std::string get_string (void) const { return str; }
 
-    void set_x (const double x0) { x = x0; }
+      std::string get_name (void) const { return fnt.get_name (); }
 
-    double get_x (void) const { return x; }
+      std::string get_weight (void) const { return fnt.get_weight (); }
 
-    void set_y (const double y0) { y = y0; }
+      std::string get_angle (void) const { return fnt.get_angle (); }
 
-    double get_y (void) const { return y; }
+      double get_size (void) const { return fnt.get_size (); }
 
-    void set_z (const double z0) { z = z0; }
+      void set_x (const double x0) { x = x0; }
 
-    double get_z (void) const { return z; }
+      double get_x (void) const { return x; }
 
-    void set_code (const uint32_t c) { code = c; }
+      void set_y (const double y0) { y = y0; }
 
-    uint32_t get_code (void) const { return code; }
+      double get_y (void) const { return y; }
 
-    void set_color (const uint8NDArray& c)
-    {
-      color(0) = static_cast<double> (c(0)) / 255;
-      color(1) = static_cast<double> (c(1)) / 255;
-      color(2) = static_cast<double> (c(2)) / 255;
-    }
+      void set_z (const double z0) { z = z0; }
 
-    Matrix get_color (void) const { return color; }
+      double get_z (void) const { return z; }
+
+      void set_code (const uint32_t c) { code = c; }
+
+      uint32_t get_code (void) const { return code; }
+
+      void set_color (const uint8NDArray& c)
+      {
+        color(0) = static_cast<double> (c(0)) / 255;
+        color(1) = static_cast<double> (c(1)) / 255;
+        color(2) = static_cast<double> (c(2)) / 255;
+      }
+
+      Matrix get_color (void) const { return color; }
+
+    private:
+
+      std::string str;
+      font fnt;
+      double x, y, z;
+      uint32_t code;
+      Matrix color;
+    };
+
+    void text_to_strlist (const std::string& txt,
+                          std::list<string>& lst, Matrix& box,
+                          int halign, int valign, double rotation = 0.0,
+                          const caseless_str& interpreter = "tex");
 
   private:
 
-    std::string str;
-    font fnt;
-    double x, y, z;
-    uint32_t code;
-    Matrix color;
+    base_text_renderer *rep;
+
+    // No copying!
+
+    text_renderer (const text_renderer&);
+
+    text_renderer& operator = (const text_renderer&);
   };
-
-  void text_to_strlist (const std::string& txt,
-                        std::list<string>& lst, Matrix& box,
-                        int halign, int valign, double rotation = 0.0,
-                        const caseless_str& interpreter = "tex");
-
-private:
-
-  base_text_renderer *rep;
-
-  // No copying!
-
-  text_renderer (const text_renderer&);
-
-  text_renderer& operator = (const text_renderer&);
-};
-
 }
 
 #endif

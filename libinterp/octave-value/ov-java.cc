@@ -184,100 +184,99 @@ bool Vdebug_java = false;
 
 namespace octave
 {
-class JVMArgs
-{
-public:
-
-  JVMArgs (void)
+  class JVMArgs
   {
-    vm_args.version = JNI_VERSION_1_2;
-    vm_args.nOptions = 0;
-    vm_args.options = 0;
-    vm_args.ignoreUnrecognized = false;
-  }
+  public:
 
-  ~JVMArgs (void)
-  {
-    clean ();
-  }
+    JVMArgs (void)
+    {
+      vm_args.version = JNI_VERSION_1_2;
+      vm_args.nOptions = 0;
+      vm_args.options = 0;
+      vm_args.ignoreUnrecognized = false;
+    }
 
-  JavaVMInitArgs *to_args ()
-  {
-    update ();
-    return &vm_args;
-  }
+    ~JVMArgs (void)
+    {
+      clean ();
+    }
 
-  void add (const std::string& opt)
-  {
-    java_opts.push_back (opt);
-  }
+    JavaVMInitArgs *to_args ()
+    {
+      update ();
+      return &vm_args;
+    }
 
-  void read_java_opts (const std::string& filename)
-  {
-    std::ifstream js (filename.c_str ());
+    void add (const std::string& opt)
+    {
+      java_opts.push_back (opt);
+    }
 
-    if (! js.bad () && ! js.fail ())
-      {
-        std::string line;
+    void read_java_opts (const std::string& filename)
+    {
+      std::ifstream js (filename.c_str ());
 
-        while (! js.eof () && ! js.fail ())
-          {
-            std::getline (js, line);
+      if (! js.bad () && ! js.fail ())
+        {
+          std::string line;
 
-            if (line.find ("-") == 0)
-              java_opts.push_back (line);
-            else if (line.length () > 0 && Vdebug_java)
-              std::cerr << "invalid JVM option, skipping: " << line << std::endl;
-          }
-      }
-  }
+          while (! js.eof () && ! js.fail ())
+            {
+              std::getline (js, line);
 
-private:
+              if (line.find ("-") == 0)
+                java_opts.push_back (line);
+              else if (line.length () > 0 && Vdebug_java)
+                std::cerr << "invalid JVM option, skipping: " << line << std::endl;
+            }
+        }
+    }
 
-  void clean (void)
-  {
-    if (vm_args.options != 0)
-      {
-        for (int i = 0; i < vm_args.nOptions; i++)
-          delete [] vm_args.options[i].optionString;
+  private:
 
-        delete [] vm_args.options;
+    void clean (void)
+    {
+      if (vm_args.options != 0)
+        {
+          for (int i = 0; i < vm_args.nOptions; i++)
+            delete [] vm_args.options[i].optionString;
 
-        vm_args.options = 0;
-        vm_args.nOptions = 0;
-      }
-  }
+          delete [] vm_args.options;
 
-  void update (void)
-  {
-    clean ();
+          vm_args.options = 0;
+          vm_args.nOptions = 0;
+        }
+    }
 
-    if (java_opts.size () > 0)
-      {
-        int index = 0;
+    void update (void)
+    {
+      clean ();
 
-        vm_args.nOptions = java_opts.size ();
-        vm_args.options = new JavaVMOption [vm_args.nOptions];
+      if (java_opts.size () > 0)
+        {
+          int index = 0;
 
-        for (std::list<std::string>::const_iterator it = java_opts.begin ();
-             it != java_opts.end (); ++it)
-          {
-            if (Vdebug_java)
-              std::cout << *it << std::endl;
-            vm_args.options[index++].optionString = strsave ((*it).c_str ());
-          }
+          vm_args.nOptions = java_opts.size ();
+          vm_args.options = new JavaVMOption [vm_args.nOptions];
 
-        java_opts.clear ();
-      }
-  }
+          for (std::list<std::string>::const_iterator it = java_opts.begin ();
+               it != java_opts.end (); ++it)
+            {
+              if (Vdebug_java)
+                std::cout << *it << std::endl;
+              vm_args.options[index++].optionString = strsave ((*it).c_str ());
+            }
 
-private:
+          java_opts.clear ();
+        }
+    }
 
-  JavaVMInitArgs vm_args;
+  private:
 
-  std::list<std::string> java_opts;
-};
+    JavaVMInitArgs vm_args;
 
+    std::list<std::string> java_opts;
+  };
 }
 
 #if defined (OCTAVE_USE_WINDOWS_API)

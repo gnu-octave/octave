@@ -28,10 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "cmd-edit.h"
-#include "f77-fcn.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
+#include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "oct-env.h"
 #include "str-vec.h"
@@ -80,14 +80,6 @@ bool octave_interpreter_ready = false;
 
 // TRUE means we've processed all the init code and we are good to go.
 bool octave_initialized = false;
-
-// Kluge.
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL, const F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-}
 
 DEFUN (__version_info__, args, ,
        doc: /* -*- texinfo -*-

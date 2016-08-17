@@ -30,39 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "dRowVector.h"
-#include "f77-fcn.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
 #include "lo-error.h"
+#include "lo-lapack-proto.h"
 #include "oct-locbuf.h"
 #include "qrp.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgeqp3, DGEQP3) (const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&,
-                             F77_INT*, F77_DBLE*, F77_DBLE*,
-                             const F77_INT&, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (sgeqp3, SGEQP3) (const F77_INT&, const F77_INT&,
-                             F77_REAL*, const F77_INT&, F77_INT*,
-                             F77_REAL*, F77_REAL*, const F77_INT&,
-                             F77_INT&);
-  F77_RET_T
-  F77_FUNC (zgeqp3, ZGEQP3) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_INT*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE*,
-                             F77_INT&);
-  F77_RET_T
-  F77_FUNC (cgeqp3, CGEQP3) (const F77_INT&, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_INT*, F77_CMPLX*, F77_CMPLX*,
-                             const F77_INT&, F77_REAL*, F77_INT&);
-}
 
 namespace octave
 {

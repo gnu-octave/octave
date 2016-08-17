@@ -188,22 +188,7 @@ ComplexNDArray::ifourierNd (void) const
 
 #else
 
-extern "C"
-{
-  // Note that the original complex fft routines were not written for
-  // double complex arguments.  They have been modified by adding an
-  // implicit double precision (a-h,o-z) statement at the beginning of
-  // each subroutine.
-
-  F77_RET_T
-  F77_FUNC (zffti, ZFFTI) (const F77_INT&, F77_DBLE_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (zfftf, ZFFTF) (const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (zfftb, ZFFTB) (const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
-}
+#include "lo-fftpack-proto.h"
 
 ComplexNDArray
 ComplexNDArray::fourier (int dim) const

@@ -26,86 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "CMatrix.h"
 #include "dMatrix.h"
-#include "f77-fcn.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "lo-error.h"
+#include "lo-lapack-proto.h"
 #include "schur.h"
-
-typedef octave_idx_type (*double_selector) (const double&, const double&);
-typedef octave_idx_type (*float_selector) (const float&, const float&);
-typedef octave_idx_type (*complex_selector) (const Complex&);
-typedef octave_idx_type (*float_complex_selector) (const FloatComplex&);
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgeesx, DGEESX) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             double_selector,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT&,
-                             F77_DBLE*, F77_DBLE*, F77_DBLE*, const F77_INT&,
-                             F77_DBLE&, F77_DBLE&, F77_DBLE*, const F77_INT&,
-                             F77_INT*, const F77_INT&,
-                             F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgeesx, SGEESX) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             float_selector,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&,
-                             F77_REAL*, F77_REAL*, F77_REAL*, const F77_INT&,
-                             F77_REAL&, F77_REAL&, F77_REAL*, const F77_INT&,
-                             F77_INT*, const F77_INT&,
-                             F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zgeesx, ZGEESX) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             complex_selector,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT&,
-                             F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE&, F77_DBLE&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE*,
-                             F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zrsf2csf, ZRSF2CSF) (const F77_INT&, F77_DBLE_CMPLX *,
-                                 F77_DBLE_CMPLX *, F77_DBLE *, F77_DBLE *);
-  F77_RET_T
-  F77_FUNC (cgeesx, CGEESX) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             float_complex_selector,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_INT&,
-                             F77_CMPLX*, F77_CMPLX*,
-                             const F77_INT&, F77_REAL&, F77_REAL&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_REAL*, F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (crsf2csf, CRSF2CSF) (const F77_INT&, F77_CMPLX *,
-                                 F77_CMPLX *, F77_REAL *, F77_REAL *);
-}
 
 namespace octave
 {

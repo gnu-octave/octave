@@ -32,82 +32,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "aepbalance.h"
 #include "dColVector.h"
 #include "dMatrix.h"
-#include "f77-fcn.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
 #include "fColVector.h"
 #include "fMatrix.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgebal, DGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT&,
-                             F77_INT&, F77_DBLE*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dgebak, DGEBAK) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_DBLE*,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgebal, SGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&,
-                             F77_INT&, F77_REAL*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgebak, SGEBAK) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT&,
-                             F77_INT&, F77_DBLE*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zgebak, ZGEBAK) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_DBLE*,
-                             const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (cgebal, CGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_INT&,
-                             F77_INT&, F77_REAL*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (cgebak, CGEBAK) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-}
+#include "lo-lapack-proto.h"
 
 static inline char
 get_job (bool noperm, bool noscal)

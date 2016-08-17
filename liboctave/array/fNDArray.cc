@@ -187,24 +187,7 @@ FloatNDArray::ifourierNd (void) const
 
 #else
 
-extern "C"
-{
-  // Note that the original complex fft routines were not written for
-  // float complex arguments.  They have been modified by adding an
-  // implicit float precision (a-h,o-z) statement at the beginning of
-  // each subroutine.
-
-  F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const F77_INT&, F77_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const F77_INT&, F77_CMPLX*,
-                           F77_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const F77_INT&, F77_CMPLX*,
-                           F77_CMPLX*);
-}
+#include "lo-fftpack-proto.h"
 
 FloatComplexNDArray
 FloatNDArray::fourier (int dim) const

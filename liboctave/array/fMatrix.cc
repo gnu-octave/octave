@@ -46,13 +46,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "PermMatrix.h"
 #include "DET.h"
 #include "byte-swap.h"
-#include "f77-fcn.h"
 #include "fMatrix.h"
 #include "schur.h"
 #include "svd.h"
 #include "functor.h"
+#include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-lapack-proto.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-fdm-fm.h"
@@ -64,186 +65,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-norm.h"
 #include "quit.h"
-
-// Fortran functions we call.
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (xilaenv, XILAENV) (const F77_INT&,
-                               F77_CONST_CHAR_ARG_DECL,
-                               F77_CONST_CHAR_ARG_DECL,
-                               const F77_INT&, const F77_INT&,
-                               const F77_INT&, const F77_INT&,
-                               F77_INT&
-                               F77_CHAR_ARG_LEN_DECL
-                               F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgebal, SGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&,
-                             F77_INT&, F77_REAL*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgebak, SGEBAK) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgemm, SGEMM) (F77_CONST_CHAR_ARG_DECL,
-                           F77_CONST_CHAR_ARG_DECL,
-                           const F77_INT&, const F77_INT&,
-                           const F77_INT&, const F77_REAL&, const F77_REAL*,
-                           const F77_INT&, const F77_REAL*,
-                           const F77_INT&, const F77_REAL&, F77_REAL*,
-                           const F77_INT&
-                           F77_CHAR_ARG_LEN_DECL
-                           F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const F77_INT&, const F77_INT&,
-                           const F77_REAL&, const F77_REAL*,
-                           const F77_INT&, const F77_REAL*,
-                           const F77_INT&, const F77_REAL&, F77_REAL*,
-                           const F77_INT&
-                           F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (xsdot, XSDOT) (const F77_INT&, const F77_REAL*,
-                           const F77_INT&, const F77_REAL*,
-                           const F77_INT&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (ssyrk, SSYRK) (F77_CONST_CHAR_ARG_DECL,
-                           F77_CONST_CHAR_ARG_DECL,
-                           const F77_INT&, const F77_INT&,
-                           const F77_REAL&, const F77_REAL*, const F77_INT&,
-                           const F77_REAL&, F77_REAL*, const F77_INT&
-                           F77_CHAR_ARG_LEN_DECL
-                           F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgetrf, SGETRF) (const F77_INT&,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&,
-                             F77_INT*, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (sgetrs, SGETRS) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_REAL*, const F77_INT&,
-                             const F77_INT*, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgetri, SGETRI) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, const F77_INT*,
-                             F77_REAL*, const F77_INT&, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (sgecon, SGECON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, const F77_REAL&, F77_REAL&,
-                             F77_REAL*, F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgelsy, SGELSY) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT*,
-                             F77_REAL&, F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (sgelsd, SGELSD) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*, F77_REAL&,
-                             F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT*,
-                             F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL *,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (spocon, SPOCON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, const F77_REAL&,
-                             F77_REAL&, F77_REAL*, F77_INT*,
-                             F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (spotrs, SPOTRS) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_REAL*, const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (strtri, STRTRI) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (strcon, STRCON) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, F77_REAL&,
-                             F77_REAL*, F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (strtrs, STRTRS) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (slartg, SLARTG) (const F77_REAL&, const F77_REAL&, F77_REAL&,
-                             F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (strsyl, STRSYL) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, const F77_REAL*,
-                             const F77_INT&, F77_REAL&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (xslange, XSLANGE) (F77_CONST_CHAR_ARG_DECL,
-                               const F77_INT&,
-                               const F77_INT&, const F77_REAL*,
-                               const F77_INT&, F77_REAL*, F77_REAL&
-                               F77_CHAR_ARG_LEN_DECL);
-}
 
 // Matrix class.
 
@@ -952,22 +773,7 @@ FloatMatrix::ifourier2d (void) const
 
 #else
 
-extern "C"
-{
-  // Note that the original complex fft routines were not written for
-  // float complex arguments.  They have been modified by adding an
-  // implicit float precision (a-h,o-z) statement at the beginning of
-  // each subroutine.
-
-  F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const F77_INT&, F77_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const F77_INT&, F77_CMPLX*, F77_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const F77_INT&, F77_CMPLX*, F77_CMPLX*);
-}
+#include "lo-fftpack-proto.h"
 
 FloatComplexMatrix
 FloatMatrix::fourier (void) const

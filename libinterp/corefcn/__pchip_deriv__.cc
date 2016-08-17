@@ -25,27 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "lo-slatec-proto.h"
+
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
 #include "utils.h"
 #include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dpchim, DPCHIM) (const F77_INT& n, const F77_DBLE *x,
-                             const F77_DBLE *f, F77_DBLE *d,
-                             const F77_INT &incfd,
-                             F77_INT *ierr);
-
-  F77_RET_T
-  F77_FUNC (pchim, PCHIM) (const F77_INT& n, const F77_REAL *x,
-                           const F77_REAL *f, F77_REAL *d,
-                           const F77_INT& incfd,
-                           F77_INT *ierr);
-}
 
 // Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates
 // for piecewise polynomials.

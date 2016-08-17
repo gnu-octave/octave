@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 #include "lo-ieee.h"
+#include "lo-lapack-proto.h"
 #include "lo-mappers.h"
-#include "f77-fcn.h"
 #include "dRowVector.h"
 #include "oct-locbuf.h"
 
@@ -64,89 +64,6 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (USE_QRSOLVE)
 #  include "sparse-dmsolve.h"
 #endif
-
-// Fortran functions we call.
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgbtrf, DGBTRF) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&,
-                             F77_INT*, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (dgbtrs, DGBTRS) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE*, const F77_INT&,
-                             const F77_INT*, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dgbcon, DGBCON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT*,
-                             const F77_DBLE&, F77_DBLE&, F77_DBLE*,
-                             F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dpbtrf, DPBTRF) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dpbtrs, DPBTRS) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dpbcon, DPBCON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&,
-                             const F77_DBLE&, F77_DBLE&, F77_DBLE*,
-                             F77_INT*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (dptsv, DPTSV) (const F77_INT&, const F77_INT&,
-                           F77_DBLE*, F77_DBLE*, F77_DBLE*, const F77_INT&,
-                           F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (dgtsv, DGTSV) (const F77_INT&, const F77_INT&,
-                           F77_DBLE*, F77_DBLE*, F77_DBLE*, F77_DBLE*,
-                           const F77_INT&, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (dgttrf, DGTTRF) (const F77_INT&, F77_DBLE*, F77_DBLE*,
-                             F77_DBLE*, F77_DBLE*, F77_INT*,
-                             F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (dgttrs, DGTTRS) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE*, const F77_DBLE*, const F77_DBLE*,
-                             const F77_DBLE*, const F77_INT*,
-                             F77_DBLE *, const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zptsv, ZPTSV) (const F77_INT&, const F77_INT&,
-                           F77_DBLE*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, const F77_INT&,
-                           F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (zgtsv, ZGTSV) (const F77_INT&, const F77_INT&,
-                           F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
-                           const F77_INT&, F77_INT&);
-
-}
 
 SparseMatrix::SparseMatrix (const SparseBoolMatrix &a)
   : MSparse<double> (a.rows (), a.cols (), a.nnz ())

@@ -34,98 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "dDiagMatrix.h"
 #include "fDiagMatrix.h"
 #include "dMatrix.h"
-#include "f77-fcn.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "lo-error.h"
+#include "lo-lapack-proto.h"
 #include "oct-locbuf.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgesvd, DGESVD) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dgesdd, DGESDD) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT *,
-                             F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgesvd, SGESVD) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_REAL*, const F77_INT&, F77_REAL*,
-                             F77_REAL*, const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sgesdd, SGESDD) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_REAL*, const F77_INT&, F77_REAL*,
-                             F77_REAL*, const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT *,
-                             F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zgesvd, ZGESVD) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE*, F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zgesdd, ZGESDD) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE*, F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE*,
-                             F77_INT *, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (cgesvd, CGESVD) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&, F77_REAL*,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_REAL*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (cgesdd, CGESDD) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&, F77_REAL*,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_REAL*, F77_INT *, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-}
 
 namespace octave
 {

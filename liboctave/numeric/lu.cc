@@ -29,97 +29,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "CMatrix.h"
 #include "dColVector.h"
 #include "dMatrix.h"
-#include "f77-fcn.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
 #include "fColVector.h"
 #include "fMatrix.h"
 #include "lo-error.h"
+#include "lo-lapack-proto.h"
+#include "lo-qrupdate-proto.h"
 #include "lu.h"
 #include "oct-locbuf.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgetrf, DGETRF) (const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&,
-                             F77_INT*, F77_INT&);
-
-#if defined (HAVE_QRUPDATE_LUU)
-  F77_RET_T
-  F77_FUNC (dlu1up, DLU1UP) (const F77_INT&, const F77_INT&,
-                             F77_DBLE *, const F77_INT&,
-                             F77_DBLE *, const F77_INT&,
-                             F77_DBLE *, F77_DBLE *);
-
-  F77_RET_T
-  F77_FUNC (dlup1up, DLUP1UP) (const F77_INT&, const F77_INT&,
-                               F77_DBLE *, const F77_INT&,
-                               F77_DBLE *, const F77_INT&,
-                               F77_INT *, const F77_DBLE *,
-                               const F77_DBLE *, F77_DBLE *);
-#endif
-
-  F77_RET_T
-  F77_FUNC (sgetrf, SGETRF) (const F77_INT&, const F77_INT&,
-                             F77_REAL*, const F77_INT&, F77_INT*,
-                             F77_INT&);
-
-#if defined (HAVE_QRUPDATE_LUU)
-  F77_RET_T
-  F77_FUNC (slu1up, SLU1UP) (const F77_INT&, const F77_INT&,
-                             F77_REAL *, const F77_INT&,
-                             F77_REAL *, const F77_INT&,
-                             F77_REAL *, F77_REAL *);
-
-  F77_RET_T
-  F77_FUNC (slup1up, SLUP1UP) (const F77_INT&, const F77_INT&,
-                               F77_REAL *, const F77_INT&,
-                               F77_REAL *, const F77_INT&,
-                               F77_INT *, const F77_REAL *,
-                               const F77_REAL *, F77_REAL *);
-#endif
-
-  F77_RET_T
-  F77_FUNC (zgetrf, ZGETRF) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_INT*, F77_INT&);
-
-#if defined (HAVE_QRUPDATE_LUU)
-  F77_RET_T
-  F77_FUNC (zlu1up, ZLU1UP) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX *, const F77_INT&,
-                             F77_DBLE_CMPLX *, const F77_INT&,
-                             F77_DBLE_CMPLX *, F77_DBLE_CMPLX *);
-
-  F77_RET_T
-  F77_FUNC (zlup1up, ZLUP1UP) (const F77_INT&, const F77_INT&,
-                               F77_DBLE_CMPLX *, const F77_INT&,
-                               F77_DBLE_CMPLX *, const F77_INT&,
-                               F77_INT *, const F77_DBLE_CMPLX *,
-                               const F77_DBLE_CMPLX *, F77_DBLE_CMPLX *);
-#endif
-
-  F77_RET_T
-  F77_FUNC (cgetrf, CGETRF) (const F77_INT&, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_INT*, F77_INT&);
-
-#if defined (HAVE_QRUPDATE_LUU)
-  F77_RET_T
-  F77_FUNC (clu1up, CLU1UP) (const F77_INT&, const F77_INT&,
-                             F77_CMPLX *, const F77_INT&,
-                             F77_CMPLX *, const F77_INT&,
-                             F77_CMPLX *, F77_CMPLX *);
-
-  F77_RET_T
-  F77_FUNC (clup1up, CLUP1UP) (const F77_INT&, const F77_INT&,
-                               F77_CMPLX *, const F77_INT&,
-                               F77_CMPLX *, const F77_INT&,
-                               F77_INT *, const F77_CMPLX *,
-                               const F77_CMPLX *, F77_CMPLX *);
-#endif
-}
 
 namespace octave
 {

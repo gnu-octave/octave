@@ -36,7 +36,15 @@ NUMERIC_INC = \
   liboctave/numeric/fEIG.h \
   liboctave/numeric/gepbalance.h \
   liboctave/numeric/hess.h \
+  liboctave/numeric/lo-amos-proto.h \
+  liboctave/numeric/lo-arpack-proto.h \
+  liboctave/numeric/lo-blas-proto.h \
+  liboctave/numeric/lo-fftpack-proto.h \
+  liboctave/numeric/lo-lapack-proto.h \
   liboctave/numeric/lo-mappers.h \
+  liboctave/numeric/lo-qrupdate-proto.h \
+  liboctave/numeric/lo-ranlib-proto.h \
+  liboctave/numeric/lo-slatec-proto.h \
   liboctave/numeric/lo-specfun.h \
   liboctave/numeric/lu.h \
   liboctave/numeric/oct-convn.h \

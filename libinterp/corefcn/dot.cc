@@ -24,55 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "f77-fcn.h"
+#include "lo-blas-proto.h"
 #include "mx-base.h"
 #include "error.h"
 #include "defun.h"
 #include "parse.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (ddot3, DDOT3) (const F77_INT&, const F77_INT&,
-                           const F77_INT&, const F77_DBLE*,
-                           const F77_DBLE*, F77_DBLE*);
-
-  F77_RET_T
-  F77_FUNC (sdot3, SDOT3) (const F77_INT&, const F77_INT&,
-                           const F77_INT&, const F77_REAL*,
-                           const F77_REAL*, F77_REAL*);
-
-  F77_RET_T
-  F77_FUNC (zdotc3, ZDOTC3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cdotc3, CDOTC3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_CMPLX*,
-                             const F77_CMPLX*, F77_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (dmatm3, DMATM3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE*, const F77_DBLE*, F77_DBLE*);
-
-  F77_RET_T
-  F77_FUNC (smatm3, SMATM3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_INT&,
-                             const F77_REAL*, const F77_REAL*, F77_REAL*);
-
-  F77_RET_T
-  F77_FUNC (zmatm3, ZMATM3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE_CMPLX*, const F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cmatm3, CMATM3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_INT&,
-                             const F77_CMPLX*, const F77_CMPLX*,
-                             F77_CMPLX*);
-}
 
 static void
 get_red_dims (const dim_vector& x, const dim_vector& y, int dim,

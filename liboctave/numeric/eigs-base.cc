@@ -36,6 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "dSparse.h"
 #include "eigs-base.h"
 #include "f77-fcn.h"
+#include "lo-arpack-proto.h"
+#include "lo-blas-proto.h"
 #include "mx-ops.h"
 #include "oct-locbuf.h"
 #include "oct-rand.h"
@@ -44,120 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-lu.h"
 
 #if defined (HAVE_ARPACK)
-
-// Arpack and blas fortran functions we call.
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dsaupd, DSAUPD) (F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_DBLE&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT*,
-                             F77_INT*, F77_DBLE*, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dseupd, DSEUPD) (const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             F77_INT*, F77_DBLE*, F77_DBLE*,
-                             const F77_INT&, const F77_DBLE&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_DBLE&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT*,
-                             F77_INT*, F77_DBLE*, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dnaupd, DNAUPD) (F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             F77_INT&, const F77_DBLE&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT*,
-                             F77_INT*, F77_DBLE*, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dneupd, DNEUPD) (const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             F77_INT*, F77_DBLE*, F77_DBLE*,
-                             F77_DBLE*, const F77_INT&, const F77_DBLE&,
-                             const F77_DBLE&, F77_DBLE*,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             F77_INT&, const F77_DBLE&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT*,
-                             F77_INT*, F77_DBLE*, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (znaupd, ZNAUPD) (F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_DBLE&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT*,
-                             F77_INT*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE *, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zneupd, ZNEUPD) (const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             F77_INT*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, const F77_DBLE&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT*,
-                             F77_INT*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE *, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const F77_INT&, const F77_INT&,
-                           const F77_DBLE&, const F77_DBLE*,
-                           const F77_INT&, const F77_DBLE*,
-                           const F77_INT&, const F77_DBLE&, F77_DBLE*,
-                           const F77_INT&
-                           F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const F77_INT&, const F77_INT&,
-                           const F77_DBLE_CMPLX&, const F77_DBLE_CMPLX*,
-                           const F77_INT&, const F77_DBLE_CMPLX*,
-                           const F77_INT&, const F77_DBLE_CMPLX&, F77_DBLE_CMPLX*,
-                           const F77_INT&
-                           F77_CHAR_ARG_LEN_DECL);
-
-}
 
 static void
 warn_convergence (void)

@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "dRowVector.h"
-#include "f77-fcn.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
 #include "fCRowVector.h"
@@ -42,195 +41,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "fMatrix.h"
 #include "fRowVector.h"
 #include "lo-error.h"
+#include "lo-lapack-proto.h"
+#include "lo-qrupdate-proto.h"
 #include "oct-locbuf.h"
 #include "oct-norm.h"
 
 #if ! defined (HAVE_QRUPDATE)
 #  include "qr.h"
 #endif
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dpotri, DPOTRI) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dpocon, DPOCON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_DBLE&,
-                             F77_DBLE&, F77_DBLE*, F77_INT*,
-                             F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-#if defined (HAVE_QRUPDATE)
-
-  F77_RET_T
-  F77_FUNC (dch1up, DCH1UP) (const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*, F77_DBLE*);
-
-  F77_RET_T
-  F77_FUNC (dch1dn, DCH1DN) (const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*, F77_DBLE*,
-                             F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (dchinx, DCHINX) (const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*, F77_DBLE*, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (dchdex, DCHDEX) (const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*);
-
-  F77_RET_T
-  F77_FUNC (dchshx, DCHSHX) (const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE*);
-#endif
-
-  F77_RET_T
-  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (spotri, SPOTRI) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (spocon, SPOCON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, const F77_REAL&,
-                             F77_REAL&, F77_REAL*, F77_INT*,
-                             F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-#if defined (HAVE_QRUPDATE)
-
-  F77_RET_T
-  F77_FUNC (sch1up, SCH1UP) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*, F77_REAL*);
-
-  F77_RET_T
-  F77_FUNC (sch1dn, SCH1DN) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*, F77_REAL*,
-                             F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (schinx, SCHINX) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, const F77_INT&,
-                             F77_REAL*, F77_REAL*, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (schdex, SCHDEX) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, const F77_INT&,
-                             F77_REAL*);
-
-  F77_RET_T
-  F77_FUNC (schshx, SCHSHX) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_REAL*);
-#endif
-
-  F77_RET_T
-  F77_FUNC (zpotrf, ZPOTRF) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (zpotri, ZPOTRI) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zpocon, ZPOCON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_DBLE&,
-                             F77_DBLE&, F77_DBLE_CMPLX*, F77_DBLE*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-#if defined (HAVE_QRUPDATE)
-
-  F77_RET_T
-  F77_FUNC (zch1up, ZCH1UP) (const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*);
-
-  F77_RET_T
-  F77_FUNC (zch1dn, ZCH1DN) (const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*,
-                             F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (zchinx, ZCHINX) (const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, F77_DBLE*, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (zchdex, ZCHDEX) (const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*);
-
-  F77_RET_T
-  F77_FUNC (zchshx, ZCHSHX) (const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*);
-#endif
-
-  F77_RET_T
-  F77_FUNC (cpotrf, CPOTRF) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (cpotri, CPOTRI) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (cpocon, CPOCON) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, const F77_REAL&,
-                             F77_REAL&, F77_CMPLX*, F77_REAL*, F77_INT&
-                             F77_CHAR_ARG_LEN_DECL);
-#if defined (HAVE_QRUPDATE)
-
-  F77_RET_T
-  F77_FUNC (cch1up, CCH1UP) (const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_CMPLX*, F77_REAL*);
-
-  F77_RET_T
-  F77_FUNC (cch1dn, CCH1DN) (const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_CMPLX*,
-                             F77_REAL*, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (cchinx, CCHINX) (const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             F77_CMPLX*, F77_REAL*, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (cchdex, CCHDEX) (const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             F77_REAL*);
-
-  F77_RET_T
-  F77_FUNC (cchshx, CCHSHX) (const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_CMPLX*, F77_REAL*);
-#endif
-}
 
 static Matrix
 chol2inv_internal (const Matrix& r, bool is_upper = true)

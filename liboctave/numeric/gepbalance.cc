@@ -30,78 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "CMatrix.h"
 #include "dMatrix.h"
-#include "f77-fcn.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "gepbalance.h"
+#include "lo-lapack-proto.h"
 #include "oct-locbuf.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N,
-                             F77_DBLE* A, const F77_INT& LDA,
-                             F77_DBLE* B, const F77_INT& LDB,
-                             F77_INT& ILO, F77_INT& IHI,
-                             F77_DBLE* LSCALE, F77_DBLE* RSCALE,
-                             F77_DBLE* WORK, F77_INT& INFO
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N,
-                             const F77_INT& ILO,
-                             const F77_INT& IHI,
-                             const F77_DBLE* LSCALE, const F77_DBLE* RSCALE,
-                             F77_INT& M, F77_DBLE* V,
-                             const F77_INT& LDV, F77_INT& INFO
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sggbal, SGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N, F77_REAL* A,
-                             const F77_INT& LDA, F77_REAL* B,
-                             const F77_INT& LDB,
-                             F77_INT& ILO, F77_INT& IHI,
-                             F77_REAL* LSCALE, F77_REAL* RSCALE,
-                             F77_REAL* WORK, F77_INT& INFO
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (sggbak, SGGBAK) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N,
-                             const F77_INT& ILO,
-                             const F77_INT& IHI,
-                             const F77_REAL* LSCALE, const F77_REAL* RSCALE,
-                             F77_INT& M, F77_REAL* V,
-                             const F77_INT& LDV, F77_INT& INFO
-                             F77_CHAR_ARG_LEN_DECL
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N, F77_DBLE_CMPLX* A,
-                             const F77_INT& LDA, F77_DBLE_CMPLX* B,
-                             const F77_INT& LDB,
-                             F77_INT& ILO, F77_INT& IHI,
-                             F77_DBLE* LSCALE, F77_DBLE* RSCALE,
-                             F77_DBLE* WORK, F77_INT& INFO
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (cggbal, CGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N,
-                             F77_CMPLX* A, const F77_INT& LDA,
-                             F77_CMPLX* B, const F77_INT& LDB,
-                             F77_INT& ILO, F77_INT& IHI,
-                             F77_REAL* LSCALE, F77_REAL* RSCALE,
-                             F77_REAL* WORK, F77_INT& INFO
-                             F77_CHAR_ARG_LEN_DECL);
-}
 
 namespace octave
 {

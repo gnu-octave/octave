@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-math.h"
+#include "lo-slatec-proto.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
 
@@ -47,12 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #define RUNI oct_randu()
 #define RNOR oct_randn()
 #define LGAMMA xlgamma
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dlgams, DLGAMS) (const F77_DBLE *, F77_DBLE *, F77_DBLE *);
-}
 
 static double
 xlgamma (double x)

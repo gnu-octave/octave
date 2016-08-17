@@ -26,41 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "lo-lapack-proto.h"
 #include "ovl.h"
-#include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dtrsen, DTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT*, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*, const F77_INT&,
-                             F77_DBLE*, F77_DBLE*, F77_INT&, F77_DBLE&, F77_DBLE&, F77_DBLE*,
-                             const F77_INT&, F77_INT*,
-                             const F77_INT&, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (ztrsen, ZTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT*, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE_CMPLX*, F77_INT&, F77_DBLE&, F77_DBLE&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_INT &);
-
-  F77_RET_T
-  F77_FUNC (strsen, STRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT*, const F77_INT&,
-                             F77_REAL*, const F77_INT&, F77_REAL*, const F77_INT&,
-                             F77_REAL*, F77_REAL*, F77_INT&, F77_REAL&, F77_REAL&, F77_REAL*,
-                             const F77_INT&, F77_INT*,
-                             const F77_INT&, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (ctrsen, CTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT*, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&, F77_CMPLX*, const F77_INT&,
-                             F77_CMPLX*, F77_INT&, F77_REAL&, F77_REAL&, F77_CMPLX*,
-                             const F77_INT&, F77_INT &);
-}
 
 DEFUN (ordschur, args, ,
        doc: /* -*- texinfo -*-

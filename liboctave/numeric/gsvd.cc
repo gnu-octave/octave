@@ -20,79 +20,13 @@
 #endif
 
 #include "gsvd.h"
-#include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-lapack-proto.h"
 #include "CMatrix.h"
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
 
 #include <vector>
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dggsvd, DGGSVD)
-   (
-     F77_CONST_CHAR_ARG_DECL,   // JOBU    (input) CHARACTER*1
-     F77_CONST_CHAR_ARG_DECL,   // JOBV    (input) CHARACTER*1
-     F77_CONST_CHAR_ARG_DECL,   // JOBQ    (input) CHARACTER*1
-     const F77_INT&,            // M       (input) INTEGER
-     const F77_INT&,            // N       (input) INTEGER
-     const F77_INT&,            // P       (input) INTEGER
-     F77_INT &,                 // K       (output) INTEGER
-     F77_INT &,                 // L       (output) INTEGER
-     F77_DBLE*,                 // A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-     const F77_INT&,            // LDA     (input) INTEGER
-     F77_DBLE*,                 // B       (input/output) DOUBLE PRECISION array, dimension (LDB,N)
-     const F77_INT&,            // LDB     (input) INTEGER
-     F77_DBLE*,                 // ALPHA   (output) DOUBLE PRECISION array, dimension (N)
-     F77_DBLE*,                 // BETA    (output) DOUBLE PRECISION array, dimension (N)
-     F77_DBLE*,                 // U       (output) DOUBLE PRECISION array, dimension (LDU,M)
-     const F77_INT&,            // LDU     (input) INTEGER
-     F77_DBLE*,                 // V       (output) DOUBLE PRECISION array, dimension (LDV,P)
-     const F77_INT&,            // LDV     (input) INTEGER
-     F77_DBLE*,                 // Q       (output) DOUBLE PRECISION array, dimension (LDQ,N)
-     const F77_INT&,            // LDQ     (input) INTEGER
-     F77_DBLE*,                 // WORK    (workspace) DOUBLE PRECISION array
-     F77_INT*,                  // IWORK   (workspace/output) INTEGER array, dimension (N)
-     F77_INT&                   // INFO    (output)INTEGER
-     F77_CHAR_ARG_LEN_DECL
-     F77_CHAR_ARG_LEN_DECL
-     F77_CHAR_ARG_LEN_DECL
-     );
-
-  F77_RET_T
-  F77_FUNC (zggsvd, ZGGSVD)
-   (
-     F77_CONST_CHAR_ARG_DECL,   // JOBU    (input) CHARACTER*1
-     F77_CONST_CHAR_ARG_DECL,   // JOBV    (input) CHARACTER*1
-     F77_CONST_CHAR_ARG_DECL,   // JOBQ    (input) CHARACTER*1
-     const F77_INT&,            // M       (input) INTEGER
-     const F77_INT&,            // N       (input) INTEGER
-     const F77_INT&,            // P       (input) INTEGER
-     F77_INT &,                 // K       (output) INTEGER
-     F77_INT &,                 // L       (output) INTEGER
-     F77_DBLE_CMPLX*,           // A       (input/output) COMPLEX*16 array, dimension (LDA,N)
-     const F77_INT&,            // LDA     (input) INTEGER
-     F77_DBLE_CMPLX*,           // B       (input/output) COMPLEX*16 array, dimension (LDB,N)
-     const F77_INT&,            // LDB     (input) INTEGER
-     F77_DBLE*,                 // ALPHA   (output) DOUBLE PRECISION array, dimension (N)
-     F77_DBLE*,                 // BETA    (output) DOUBLE PRECISION array, dimension (N)
-     F77_DBLE_CMPLX*,           // U       (output) COMPLEX*16 array, dimension (LDU,M)
-     const F77_INT&,            // LDU     (input) INTEGER
-     F77_DBLE_CMPLX*,           // V       (output) COMPLEX*16 array, dimension (LDV,P)
-     const F77_INT&,            // LDV     (input) INTEGER
-     F77_DBLE_CMPLX*,           // Q       (output) COMPLEX*16 array, dimension (LDQ,N)
-     const F77_INT&,            // LDQ     (input) INTEGER
-     F77_DBLE_CMPLX*,           // WORK    (workspace) COMPLEX*16 array
-     F77_DBLE*,                 // RWORK   (workspace) DOUBLE PRECISION array
-     F77_INT*,                  // IWORK   (workspace/output) INTEGER array, dimension (N)
-     F77_INT&                   // INFO    (output)INTEGER
-     F77_CHAR_ARG_LEN_DECL
-     F77_CHAR_ARG_LEN_DECL
-     F77_CHAR_ARG_LEN_DECL
-     );
-}
 
 template <>
 void

@@ -188,19 +188,7 @@ FloatComplexNDArray::ifourierNd (void) const
 
 #else
 
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const F77_INT&, F77_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const F77_INT&, F77_CMPLX*,
-                           F77_CMPLX*);
-
-  F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const F77_INT&, F77_CMPLX*,
-                           F77_CMPLX*);
-}
+#include "lo-fftpack-proto.h"
 
 FloatComplexNDArray
 FloatComplexNDArray::fourier (int dim) const

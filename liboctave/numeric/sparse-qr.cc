@@ -34,7 +34,7 @@ namespace octave
 {
 namespace math
 {
-  
+
 template <typename SPARSE_T>
 class
 cxsparse_types

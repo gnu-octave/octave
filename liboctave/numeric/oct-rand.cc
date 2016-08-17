@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "lo-ranlib-proto.h"
 #include "mach-info.h"
 #include "oct-locbuf.h"
 #include "oct-rand.h"
@@ -42,36 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "randmtzig.h"
 #include "randpoisson.h"
 #include "singleton-cleanup.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgennor, DGENNOR) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dgenunf, DGENUNF) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dgenexp, DGENEXP) (const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dignpoi, DIGNPOI) (const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dgengam, DGENGAM) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (setall, SETALL) (const F77_INT4&, const F77_INT4&);
-
-  F77_RET_T
-  F77_FUNC (getsd, GETSD) (F77_INT4&, F77_INT4&);
-
-  F77_RET_T
-  F77_FUNC (setsd, SETSD) (const F77_INT4&, const F77_INT4&);
-
-  F77_RET_T
-  F77_FUNC (setcgn, SETCGN) (const F77_INT4&);
-}
 
 octave_rand *octave_rand::instance = 0;
 

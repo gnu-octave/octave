@@ -29,25 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "Array-util.h"
-#include "f77-fcn.h"
 #include "functor.h"
+#include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
-
-// Fortran functions we call.
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const F77_INT&, const F77_INT&,
-                           const F77_REAL&, const F77_REAL*, const F77_INT&,
-                           const F77_REAL*, const F77_INT&, const F77_REAL&,
-                           F77_REAL*, const F77_INT&
-                           F77_CHAR_ARG_LEN_DECL);
-}
 
 // Column Vector class.
 

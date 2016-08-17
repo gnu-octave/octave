@@ -90,7 +90,7 @@ namespace octave
 
     child_list (void) { }
 
-    class child_list_rep : public octave_base_list<child>
+    class child_list_rep : public base_list<child>
     {
     public:
 

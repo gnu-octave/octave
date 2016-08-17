@@ -45,7 +45,7 @@ class tree_walker;
 // only.
 
 class
-tree_parameter_list : public octave_base_list<tree_decl_elt *>
+tree_parameter_list : public octave::base_list<tree_decl_elt *>
 {
 public:
 
@@ -112,7 +112,7 @@ private:
 // assignment expressions.
 
 class
-tree_return_list : public octave_base_list<tree_index_expression *>
+tree_return_list : public octave::base_list<tree_index_expression *>
 {
 public:
 
@@ -137,7 +137,7 @@ private:
 };
 
 class
-tree_va_return_list : public octave_base_list<octave_value>
+tree_va_return_list : public octave::base_list<octave_value>
 {
 public:
 

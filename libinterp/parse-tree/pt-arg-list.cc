@@ -73,7 +73,7 @@ tree_argument_list::has_magic_end (void) const
 void
 tree_argument_list::append (const element_type& s)
 {
-  octave_base_list<tree_expression *>::append (s);
+  octave::base_list<tree_expression *>::append (s);
 
   if (! list_includes_magic_end && s && s->has_magic_end ())
     list_includes_magic_end = true;

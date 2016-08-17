@@ -41,7 +41,7 @@ class tree_walker;
 // arguments in a function call or index expression.
 
 class
-tree_argument_list : public octave_base_list<tree_expression *>
+tree_argument_list : public octave::base_list<tree_expression *>
 {
 public:
 

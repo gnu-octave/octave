@@ -274,7 +274,7 @@ do_regexp_rep_string_escapes (const std::string& s)
 }
 
 static void
-parse_options (regexp::opts& options, const octave_value_list& args,
+parse_options (octave::regexp::opts& options, const octave_value_list& args,
                const std::string& who, int skip, bool& extra_args)
 {
   extra_args = false;
@@ -339,12 +339,13 @@ octregexp (const octave_value_list &args, int nargout,
   if (args(1).is_sq_string ())
     pattern = do_regexp_ptn_string_escapes (pattern);
 
-  regexp::opts options;
+  octave::regexp::opts options;
   options.case_insensitive (case_insensitive);
   bool extra_options = false;
   parse_options (options, args, who, 2, extra_options);
 
-  regexp::match_data rx_lst = regexp_match (pattern, buffer, options, who);
+  octave::regexp::match_data rx_lst
+    = octave::regexp::match (pattern, buffer, options, who);
 
   string_vector named_pats = rx_lst.named_patterns ();
 
@@ -373,7 +374,7 @@ octregexp (const octave_value_list &args, int nargout,
           Cell tmp (dim_vector (1, sz));
 
           i = 0;
-          for (regexp::match_data::const_iterator p = rx_lst.begin ();
+          for (octave::regexp::match_data::const_iterator p = rx_lst.begin ();
                p != rx_lst.end (); p++)
             {
               string_vector named_tokens = p->named_tokens ();
@@ -389,7 +390,7 @@ octregexp (const octave_value_list &args, int nargout,
 
   if (options.once ())
     {
-      regexp::match_data::const_iterator p = rx_lst.begin ();
+      octave::regexp::match_data::const_iterator p = rx_lst.begin ();
 
       retval(4) = sz ? p->tokens () : Cell ();
       retval(3) = sz ? p->match_string () : "";
@@ -426,7 +427,7 @@ octregexp (const octave_value_list &args, int nargout,
       size_t sp_start = 0;
 
       i = 0;
-      for (regexp::match_data::const_iterator p = rx_lst.begin ();
+      for (octave::regexp::match_data::const_iterator p = rx_lst.begin ();
            p != rx_lst.end (); p++)
         {
           double s = p->start ();
@@ -1322,11 +1323,11 @@ octregexprep (const octave_value_list &args, const std::string &who)
     }
   regexpargs.resize (len);
 
-  regexp::opts options;
+  octave::regexp::opts options;
   bool extra_args = false;
   parse_options (options, regexpargs, who, 0, extra_args);
 
-  return regexp_replace (pattern, buffer, replacement, options, who);
+  return octave::regexp::replace (pattern, buffer, replacement, options, who);
 }
 
 DEFUN (regexprep, args, ,

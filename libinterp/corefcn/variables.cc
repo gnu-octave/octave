@@ -2119,7 +2119,7 @@ name_matches_any_pattern (const std::string& nm, const string_vector& argv,
         {
           if (have_regexp)
             {
-              if (is_regexp_match (patstr, nm))
+              if (octave::regexp::is_match (patstr, nm))
                 {
                   retval = true;
                   break;

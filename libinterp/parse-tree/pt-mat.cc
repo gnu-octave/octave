@@ -64,7 +64,7 @@ tm_row_const
 private:
 
   class
-  tm_row_const_rep : public octave_base_list<octave_value>
+  tm_row_const_rep : public octave::base_list<octave_value>
   {
   public:
 
@@ -462,7 +462,7 @@ tm_row_const::tm_row_const_rep::cellify (void)
 }
 
 class
-tm_const : public octave_base_list<tm_row_const>
+tm_const : public octave::base_list<tm_row_const>
 {
 public:
 

@@ -2055,7 +2055,7 @@ public:
   {
     std::list<symbol_record> retval;
 
-    ::regexp pat (pattern);
+    octave::regexp pat (pattern);
 
     for (global_table_const_iterator p = global_table.begin ();
          p != global_table.end (); p++)
@@ -2795,7 +2795,7 @@ private:
 
   void do_clear_variable_regexp (const std::string& pat)
   {
-    ::regexp pattern (pat);
+    octave::regexp pattern (pat);
 
     for (table_iterator p = table.begin (); p != table.end (); p++)
       {
@@ -2872,7 +2872,7 @@ private:
   {
     std::list<symbol_record> retval;
 
-    ::regexp pat (pattern);
+    octave::regexp pat (pattern);
 
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
       {

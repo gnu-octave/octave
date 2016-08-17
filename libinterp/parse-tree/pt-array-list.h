@@ -34,15 +34,15 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 tree_array_list : public tree_expression,
-                  public octave_base_list<tree_argument_list *>
+                  public octave::base_list<tree_argument_list *>
 {
 public:
 
-  typedef octave_base_list<tree_argument_list *>::iterator iterator;
-  typedef octave_base_list<tree_argument_list *>::const_iterator const_iterator;
+  typedef octave::base_list<tree_argument_list *>::iterator iterator;
+  typedef octave::base_list<tree_argument_list *>::const_iterator const_iterator;
 
   tree_array_list (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_expression (l, c), octave_base_list<tree_argument_list *> ()
+    : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
   {
     if (row)
       append (row);

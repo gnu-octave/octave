@@ -108,14 +108,14 @@ private:
 class
 OCTINTERP_API
 text_element_list
-  : public text_element, public octave_base_list<text_element *>
+  : public text_element, public octave::base_list<text_element *>
 {
 public:
   text_element_list (void)
-    : text_element (), octave_base_list<text_element*> () { }
+    : text_element (), octave::base_list<text_element*> () { }
 
   text_element_list (text_element* e)
-    : text_element (), octave_base_list<text_element*> ()
+    : text_element (), octave::base_list<text_element*> ()
   { push_back (e); }
 
   ~text_element_list (void)

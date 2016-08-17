@@ -88,7 +88,7 @@ private:
 };
 
 class
-tree_if_command_list : public octave_base_list<tree_if_clause *>
+tree_if_command_list : public octave::base_list<tree_if_clause *>
 {
 public:
 
@@ -218,7 +218,7 @@ private:
 };
 
 class
-tree_switch_case_list : public octave_base_list<tree_switch_case *>
+tree_switch_case_list : public octave::base_list<tree_switch_case *>
 {
 public:
 

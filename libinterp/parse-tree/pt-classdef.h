@@ -74,7 +74,7 @@ private:
   tree_classdef_attribute& operator = (const tree_classdef_attribute&);
 };
 
-class tree_classdef_attribute_list : public octave_base_list<tree_classdef_attribute *>
+class tree_classdef_attribute_list : public octave::base_list<tree_classdef_attribute *>
 {
 public:
 
@@ -82,8 +82,8 @@ public:
 
   tree_classdef_attribute_list (tree_classdef_attribute *a) { append (a); }
 
-  tree_classdef_attribute_list (const octave_base_list<tree_classdef_attribute *>& a)
-    : octave_base_list<tree_classdef_attribute *> (a) { }
+  tree_classdef_attribute_list (const octave::base_list<tree_classdef_attribute *>& a)
+    : octave::base_list<tree_classdef_attribute *> (a) { }
 
   ~tree_classdef_attribute_list (void);
 
@@ -122,7 +122,7 @@ private:
   tree_classdef_superclass& operator = (const tree_classdef_superclass&);
 };
 
-class tree_classdef_superclass_list : public octave_base_list<tree_classdef_superclass *>
+class tree_classdef_superclass_list : public octave::base_list<tree_classdef_superclass *>
 {
 public:
 
@@ -130,8 +130,8 @@ public:
 
   tree_classdef_superclass_list (tree_classdef_superclass *sc) { append (sc); }
 
-  tree_classdef_superclass_list (const octave_base_list<tree_classdef_superclass *>& a)
-    : octave_base_list<tree_classdef_superclass *> (a) { }
+  tree_classdef_superclass_list (const octave::base_list<tree_classdef_superclass *>& a)
+    : octave::base_list<tree_classdef_superclass *> (a) { }
 
   ~tree_classdef_superclass_list (void);
 
@@ -152,7 +152,7 @@ class tree_classdef_element : public tree
 public:
 
   tree_classdef_element (tree_classdef_attribute_list *a,
-                         octave_base_list<T> *elist,
+                         octave::base_list<T> *elist,
                          octave_comment_list *lc, octave_comment_list *tc,
                          int l = -1, int c = -1)
     : tree (l, c), attr_list (a), elt_list (elist),
@@ -169,7 +169,7 @@ public:
 
   tree_classdef_attribute_list *attribute_list (void) { return attr_list; }
 
-  octave_base_list<T> *element_list (void) { return elt_list; }
+  octave::base_list<T> *element_list (void) { return elt_list; }
 
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
@@ -183,7 +183,7 @@ private:
   tree_classdef_attribute_list *attr_list;
 
   // The list of objects contained in this block.
-  octave_base_list<T> *elt_list;
+  octave::base_list<T> *elt_list;
 
   // Comment preceding the token marking the beginning of the block.
   octave_comment_list *lead_comm;
@@ -229,7 +229,7 @@ private:
   tree_classdef_property& operator = (const tree_classdef_property&);
 };
 
-class tree_classdef_property_list : public octave_base_list<tree_classdef_property *>
+class tree_classdef_property_list : public octave::base_list<tree_classdef_property *>
 {
 public:
 
@@ -237,8 +237,8 @@ public:
 
   tree_classdef_property_list (tree_classdef_property* p) { append (p); }
 
-  tree_classdef_property_list (const octave_base_list<tree_classdef_property *>& a)
-    : octave_base_list<tree_classdef_property *> (a) { }
+  tree_classdef_property_list (const octave::base_list<tree_classdef_property *>& a)
+    : octave::base_list<tree_classdef_property *> (a) { }
 
   ~tree_classdef_property_list (void);
 
@@ -278,7 +278,7 @@ private:
   tree_classdef_properties_block& operator = (const tree_classdef_properties_block&);
 };
 
-class tree_classdef_methods_list : public octave_base_list<octave_value>
+class tree_classdef_methods_list : public octave::base_list<octave_value>
 {
 public:
 
@@ -286,8 +286,8 @@ public:
 
   tree_classdef_methods_list (const octave_value& f) { append (f); }
 
-  tree_classdef_methods_list (const octave_base_list<octave_value>& a)
-    : octave_base_list<octave_value> (a) { }
+  tree_classdef_methods_list (const octave::base_list<octave_value>& a)
+    : octave::base_list<octave_value> (a) { }
 
   ~tree_classdef_methods_list (void) { }
 
@@ -351,7 +351,7 @@ private:
   tree_classdef_event& operator = (const tree_classdef_event&);
 };
 
-class tree_classdef_events_list : public octave_base_list<tree_classdef_event *>
+class tree_classdef_events_list : public octave::base_list<tree_classdef_event *>
 {
 public:
 
@@ -359,8 +359,8 @@ public:
 
   tree_classdef_events_list (tree_classdef_event *e) { append (e); }
 
-  tree_classdef_events_list (const octave_base_list<tree_classdef_event *>& a)
-    : octave_base_list<tree_classdef_event *> (a) { }
+  tree_classdef_events_list (const octave::base_list<tree_classdef_event *>& a)
+    : octave::base_list<tree_classdef_event *> (a) { }
 
   ~tree_classdef_events_list (void);
 
@@ -432,7 +432,7 @@ private:
   tree_classdef_enum& operator = (const tree_classdef_enum&);
 };
 
-class tree_classdef_enum_list : public octave_base_list<tree_classdef_enum *>
+class tree_classdef_enum_list : public octave::base_list<tree_classdef_enum *>
 {
 public:
 
@@ -440,8 +440,8 @@ public:
 
   tree_classdef_enum_list (tree_classdef_enum *e) { append (e); }
 
-  tree_classdef_enum_list (const octave_base_list<tree_classdef_enum *>& a)
-    : octave_base_list<tree_classdef_enum *> (a) { }
+  tree_classdef_enum_list (const octave::base_list<tree_classdef_enum *>& a)
+    : octave::base_list<tree_classdef_enum *> (a) { }
 
   ~tree_classdef_enum_list (void);
 

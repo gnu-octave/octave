@@ -31,90 +31,88 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-namespace math
-{
-
-template <typename T>
-class
-qr
-{
-public:
-
-  typedef typename T::element_type ELT_T;
-  typedef typename T::row_vector_type RV_T;
-  typedef typename T::column_vector_type CV_T;
-
-  enum type
+  namespace math
   {
-    std,
-    raw,
-    economy
-  };
+    template <typename T>
+    class
+    qr
+    {
+    public:
 
-  qr (void) : q (), r () { }
+      typedef typename T::element_type ELT_T;
+      typedef typename T::row_vector_type RV_T;
+      typedef typename T::column_vector_type CV_T;
 
-  qr (const T& a, type qr_type = qr::std)
-    : q (), r ()
-  {
-    init (a, qr_type);
-  }
+      enum type
+        {
+          std,
+          raw,
+          economy
+        };
 
-  qr (const T& q, const T& r);
+      qr (void) : q (), r () { }
 
-  qr (const qr& a) : q (a.q), r (a.r) { }
-
-  qr& operator = (const qr& a)
-  {
-    if (this != &a)
+      qr (const T& a, type qr_type = qr::std)
+        : q (), r ()
       {
-        q = a.q;
-        r = a.r;
+        init (a, qr_type);
       }
 
-    return *this;
+      qr (const T& q, const T& r);
+
+      qr (const qr& a) : q (a.q), r (a.r) { }
+
+      qr& operator = (const qr& a)
+      {
+        if (this != &a)
+          {
+            q = a.q;
+            r = a.r;
+          }
+
+        return *this;
+      }
+
+      virtual ~qr (void) { }
+
+      T Q (void) const { return q; }
+
+      T R (void) const { return r; }
+
+      type get_type (void) const;
+
+      bool regular (void) const;
+
+      void init (const T& a, type qr_type);
+
+      void update (const CV_T& u, const CV_T& v);
+
+      void update (const T& u, const T& v);
+
+      void insert_col (const CV_T& u, octave_idx_type j);
+
+      void insert_col (const T& u, const Array<octave_idx_type>& j);
+
+      void delete_col (octave_idx_type j);
+
+      void delete_col (const Array<octave_idx_type>& j);
+
+      void insert_row (const RV_T& u, octave_idx_type j);
+
+      void delete_row (octave_idx_type j);
+
+      void shift_cols (octave_idx_type i, octave_idx_type j);
+
+    protected:
+
+      T q;
+      T r;
+
+      void form (octave_idx_type n, T& afact, ELT_T *tau, type qr_type);
+    };
+
+    extern void warn_qrupdate_once (void);
   }
-
-  virtual ~qr (void) { }
-
-  T Q (void) const { return q; }
-
-  T R (void) const { return r; }
-
-  type get_type (void) const;
-
-  bool regular (void) const;
-
-  void init (const T& a, type qr_type);
-
-  void update (const CV_T& u, const CV_T& v);
-
-  void update (const T& u, const T& v);
-
-  void insert_col (const CV_T& u, octave_idx_type j);
-
-  void insert_col (const T& u, const Array<octave_idx_type>& j);
-
-  void delete_col (octave_idx_type j);
-
-  void delete_col (const Array<octave_idx_type>& j);
-
-  void insert_row (const RV_T& u, octave_idx_type j);
-
-  void delete_row (octave_idx_type j);
-
-  void shift_cols (octave_idx_type i, octave_idx_type j);
-
-protected:
-
-  T q;
-  T r;
-
-  void form (octave_idx_type n, T& afact, ELT_T *tau, type qr_type);
-};
-
-extern void warn_qrupdate_once (void);
-
-}
 }
 
 #endif

@@ -32,93 +32,91 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-namespace math
-{
-
-// If the sparse matrix classes become templated on the element type
-// (i.e., sparse_matrix<double>), then it might be best to make the
-// template parameter of this class also be the element type instead
-// of the matrix type.
-
-template <typename lu_type>
-class
-sparse_lu
-{
-public:
-
-  typedef typename lu_type::element_type lu_elt_type;
-
-  sparse_lu (void)
-    : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
-
-  sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
-             bool scale = false);
-
-  sparse_lu (const lu_type& a, const ColumnVector& Qinit,
-             const Matrix& piv_thres, bool scale = false,
-             bool FixedQ = false, double droptol = -1.0,
-             bool milu = false, bool udiag = false);
-
-  sparse_lu (const sparse_lu& a)
-    : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
-      P (a.P), Q (a.Q)
-  { }
-
-  sparse_lu& operator = (const sparse_lu& a)
+  namespace math
   {
-    if (this != &a)
+    // If the sparse matrix classes become templated on the element type
+    // (i.e., sparse_matrix<double>), then it might be best to make the
+    // template parameter of this class also be the element type instead
+    // of the matrix type.
+
+    template <typename lu_type>
+    class
+    sparse_lu
+    {
+    public:
+
+      typedef typename lu_type::element_type lu_elt_type;
+
+      sparse_lu (void)
+        : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
+
+      sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
+                 bool scale = false);
+
+      sparse_lu (const lu_type& a, const ColumnVector& Qinit,
+                 const Matrix& piv_thres, bool scale = false,
+                 bool FixedQ = false, double droptol = -1.0,
+                 bool milu = false, bool udiag = false);
+
+      sparse_lu (const sparse_lu& a)
+        : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
+          P (a.P), Q (a.Q)
+      { }
+
+      sparse_lu& operator = (const sparse_lu& a)
       {
-        Lfact = a.Lfact;
-        Ufact = a.Ufact;
-        cond = a.cond;
-        P = a.P;
-        Q = a.Q;
+        if (this != &a)
+          {
+            Lfact = a.Lfact;
+            Ufact = a.Ufact;
+            cond = a.cond;
+            P = a.P;
+            Q = a.Q;
+          }
+
+        return *this;
       }
 
-    return *this;
+      virtual ~sparse_lu (void) { }
+
+      lu_type L (void) const { return Lfact; }
+
+      lu_type U (void) const { return Ufact; }
+
+      SparseMatrix R (void) const { return Rfact; }
+
+      lu_type Y (void) const;
+
+      SparseMatrix Pc (void) const;
+
+      SparseMatrix Pr (void) const;
+
+      ColumnVector Pc_vec (void) const;
+
+      ColumnVector Pr_vec (void) const;
+
+      PermMatrix Pc_mat (void) const;
+
+      PermMatrix Pr_mat (void) const;
+
+      const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
+
+      const octave_idx_type * col_perm (void) const { return Q.fortran_vec (); }
+
+      double rcond (void) const { return cond; }
+
+    protected:
+
+      lu_type Lfact;
+      lu_type Ufact;
+      SparseMatrix Rfact;
+
+      double cond;
+
+      MArray<octave_idx_type> P;
+      MArray<octave_idx_type> Q;
+    };
   }
-
-  virtual ~sparse_lu (void) { }
-
-  lu_type L (void) const { return Lfact; }
-
-  lu_type U (void) const { return Ufact; }
-
-  SparseMatrix R (void) const { return Rfact; }
-
-  lu_type Y (void) const;
-
-  SparseMatrix Pc (void) const;
-
-  SparseMatrix Pr (void) const;
-
-  ColumnVector Pc_vec (void) const;
-
-  ColumnVector Pr_vec (void) const;
-
-  PermMatrix Pc_mat (void) const;
-
-  PermMatrix Pr_mat (void) const;
-
-  const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
-
-  const octave_idx_type * col_perm (void) const { return Q.fortran_vec (); }
-
-  double rcond (void) const { return cond; }
-
-protected:
-
-  lu_type Lfact;
-  lu_type Ufact;
-  SparseMatrix Rfact;
-
-  double cond;
-
-  MArray<octave_idx_type> P;
-  MArray<octave_idx_type> Q;
-};
-
-}
 }
 
 #endif

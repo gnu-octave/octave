@@ -28,82 +28,80 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-namespace math
-{
-
-template <typename T>
-class
-chol
-{
-public:
-
-  typedef typename T::column_vector_type VT;
-  typedef typename T::real_elt_type COND_T;
-
-  chol (void) : chol_mat (), xrcond (0) { }
-
-  chol (const T& a, bool upper = true, bool calc_cond = false)
-    : chol_mat (), xrcond (0)
+  namespace math
   {
-    init (a, upper, calc_cond);
-  }
+    template <typename T>
+    class
+    chol
+    {
+    public:
 
-  chol (const T& a, octave_idx_type& info, bool upper = true,
-        bool calc_cond = false)
-    : chol_mat (), xrcond (0)
-  {
-    info = init (a, upper, calc_cond);
-  }
+      typedef typename T::column_vector_type VT;
+      typedef typename T::real_elt_type COND_T;
 
-  chol (const chol& a)
-    : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
+      chol (void) : chol_mat (), xrcond (0) { }
 
-  chol& operator = (const chol& a)
-  {
-    if (this != &a)
+      chol (const T& a, bool upper = true, bool calc_cond = false)
+        : chol_mat (), xrcond (0)
       {
-        chol_mat = a.chol_mat;
-        xrcond = a.xrcond;
+        init (a, upper, calc_cond);
       }
 
-    return *this;
+      chol (const T& a, octave_idx_type& info, bool upper = true,
+            bool calc_cond = false)
+        : chol_mat (), xrcond (0)
+      {
+        info = init (a, upper, calc_cond);
+      }
+
+      chol (const chol& a)
+        : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
+
+      chol& operator = (const chol& a)
+      {
+        if (this != &a)
+          {
+            chol_mat = a.chol_mat;
+            xrcond = a.xrcond;
+          }
+
+        return *this;
+      }
+
+      T chol_matrix (void) const { return chol_mat; }
+
+      COND_T rcond (void) const { return xrcond; }
+
+      // Compute the inverse of a matrix using the Cholesky factorization.
+      T inverse (void) const;
+
+      void set (const T& R);
+
+      void update (const VT& u);
+
+      octave_idx_type downdate (const VT& u);
+
+      octave_idx_type insert_sym (const VT& u, octave_idx_type j);
+
+      void delete_sym (octave_idx_type j);
+
+      void shift_sym (octave_idx_type i, octave_idx_type j);
+
+    private:
+
+      T chol_mat;
+
+      COND_T xrcond;
+
+      bool is_upper;
+
+      octave_idx_type init (const T& a, bool upper, bool calc_cond);
+    };
+
+    template <typename T>
+    T
+    chol2inv (const T& r);
   }
-
-  T chol_matrix (void) const { return chol_mat; }
-
-  COND_T rcond (void) const { return xrcond; }
-
-  // Compute the inverse of a matrix using the Cholesky factorization.
-  T inverse (void) const;
-
-  void set (const T& R);
-
-  void update (const VT& u);
-
-  octave_idx_type downdate (const VT& u);
-
-  octave_idx_type insert_sym (const VT& u, octave_idx_type j);
-
-  void delete_sym (octave_idx_type j);
-
-  void shift_sym (octave_idx_type i, octave_idx_type j);
-
-private:
-
-  T chol_mat;
-
-  COND_T xrcond;
-
-  bool is_upper;
-
-  octave_idx_type init (const T& a, bool upper, bool calc_cond);
-};
-
-template <typename T>
-T
-chol2inv (const T& r);
-
-}
 }
 
 #endif

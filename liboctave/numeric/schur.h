@@ -34,75 +34,73 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-namespace math
-{
-
-template <typename T> class schur;
-
-template <typename T>
-class
-schur
-{
-public:
-
-  schur (void) : schur_mat (), unitary_mat () { }
-
-  schur (const T& a, const std::string& ord, bool calc_unitary = true)
-    : schur_mat (), unitary_mat ()
+  namespace math
   {
-    init (a, ord, calc_unitary);
-  }
+    template <typename T> class schur;
 
-  schur (const T& a, const std::string& ord, octave_idx_type& info,
-         bool calc_unitary = true)
-    : schur_mat (), unitary_mat ()
-  {
-    info = init (a, ord, calc_unitary);
-  }
+    template <typename T>
+    class
+    schur
+    {
+    public:
 
-  // This one should really be protected or private but we need it in
-  // rsf2csf and I don't see how to make that function a friend of
-  // this class.
-  schur (const T& s, const T& u) : schur_mat (s), unitary_mat (u) { }
+      schur (void) : schur_mat (), unitary_mat () { }
 
-  schur (const schur& a)
-
-    : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat)
-  { }
-
-  schur& operator = (const schur& a)
-  {
-    if (this != &a)
+      schur (const T& a, const std::string& ord, bool calc_unitary = true)
+        : schur_mat (), unitary_mat ()
       {
-        schur_mat = a.schur_mat;
-        unitary_mat = a.unitary_mat;
+        init (a, ord, calc_unitary);
       }
 
-    return *this;
+      schur (const T& a, const std::string& ord, octave_idx_type& info,
+             bool calc_unitary = true)
+        : schur_mat (), unitary_mat ()
+      {
+        info = init (a, ord, calc_unitary);
+      }
+
+      // This one should really be protected or private but we need it in
+      // rsf2csf and I don't see how to make that function a friend of
+      // this class.
+      schur (const T& s, const T& u) : schur_mat (s), unitary_mat (u) { }
+
+      schur (const schur& a)
+
+        : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat)
+      { }
+
+      schur& operator = (const schur& a)
+      {
+        if (this != &a)
+          {
+            schur_mat = a.schur_mat;
+            unitary_mat = a.unitary_mat;
+          }
+
+        return *this;
+      }
+
+      ~schur (void) { }
+
+      T schur_matrix (void) const { return schur_mat; }
+
+      T unitary_matrix (void) const { return unitary_mat; }
+
+    protected:
+
+    private:
+
+      T schur_mat;
+      T unitary_mat;
+
+      octave_idx_type
+      init (const T& a, const std::string& ord, bool calc_unitary);
+    };
+
+    template <typename RT, typename AT>
+    extern schur<RT>
+    rsf2csf (const AT& s, const AT& u);
   }
-
-  ~schur (void) { }
-
-  T schur_matrix (void) const { return schur_mat; }
-
-  T unitary_matrix (void) const { return unitary_mat; }
-
-protected:
-
-private:
-
-  T schur_mat;
-  T unitary_mat;
-
-  octave_idx_type
-  init (const T& a, const std::string& ord, bool calc_unitary);
-};
-
-template <typename RT, typename AT>
-extern schur<RT>
-rsf2csf (const AT& s, const AT& u);
-
-}
 }
 
 #endif

@@ -33,75 +33,73 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-namespace math
-{
+  namespace math
+  {
+    // If the sparse matrix classes become templated on the element type
+    // (i.e., sparse_matrix<double>), then it might be best to make the
+    // template parameter of this class also be the element type instead
+    // of the matrix type.
 
-// If the sparse matrix classes become templated on the element type
-// (i.e., sparse_matrix<double>), then it might be best to make the
-// template parameter of this class also be the element type instead
-// of the matrix type.
+    template <typename chol_type>
+    class
+    sparse_chol
+    {
+    public:
 
-template <typename chol_type>
-class
-sparse_chol
-{
-public:
+      sparse_chol (void);
 
-  sparse_chol (void);
+      sparse_chol (const chol_type& a, bool natural, bool force);
 
-  sparse_chol (const chol_type& a, bool natural, bool force);
+      sparse_chol (const chol_type& a, octave_idx_type& info,
+                   bool natural, bool force);
 
-  sparse_chol (const chol_type& a, octave_idx_type& info,
-               bool natural, bool force);
+      sparse_chol (const chol_type& a, octave_idx_type& info, bool natural);
 
-  sparse_chol (const chol_type& a, octave_idx_type& info, bool natural);
+      sparse_chol (const chol_type& a, octave_idx_type& info);
 
-  sparse_chol (const chol_type& a, octave_idx_type& info);
+      sparse_chol (const sparse_chol<chol_type>& a);
 
-  sparse_chol (const sparse_chol<chol_type>& a);
+      virtual ~sparse_chol (void);
 
-  virtual ~sparse_chol (void);
+      sparse_chol& operator = (const sparse_chol& a);
 
-  sparse_chol& operator = (const sparse_chol& a);
+      chol_type L (void) const;
 
-  chol_type L (void) const;
+      chol_type R (void) const { return L ().hermitian (); }
 
-  chol_type R (void) const { return L ().hermitian (); }
+      octave_idx_type P (void) const;
 
-  octave_idx_type P (void) const;
+      RowVector perm (void) const;
 
-  RowVector perm (void) const;
+      SparseMatrix Q (void) const;
 
-  SparseMatrix Q (void) const;
+      bool is_positive_definite (void) const;
 
-  bool is_positive_definite (void) const;
+      double rcond (void) const;
 
-  double rcond (void) const;
+      chol_type inverse (void) const;
 
-  chol_type inverse (void) const;
+    protected:
 
-protected:
+      typedef typename chol_type::element_type chol_elt;
 
-  typedef typename chol_type::element_type chol_elt;
+      class sparse_chol_rep;
 
-  class sparse_chol_rep;
+    private:
 
-private:
+      sparse_chol_rep *rep;
+    };
 
-  sparse_chol_rep *rep;
-};
+    template <typename chol_type>
+    chol_type
+    chol2inv (const chol_type& r);
 
-template <typename chol_type>
-chol_type
-chol2inv (const chol_type& r);
+    // SparseComplexMatrix specialization.
 
-// SparseComplexMatrix specialization.
-
-template <>
-sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
-                                               octave_idx_type& info);
-
-}
+    template <>
+    sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
+                                                   octave_idx_type& info);
+  }
 }
 
 #endif

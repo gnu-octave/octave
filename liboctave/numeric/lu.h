@@ -30,77 +30,75 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-namespace math
-{
-
-template <typename T>
-class
-lu
-{
-public:
-
-  typedef typename T::column_vector_type VT;
-  typedef typename T::element_type ELT_T;
-
-  lu (void)
-    : a_fact (), l_fact (), ipvt () { }
-
-  lu (const T& a);
-
-  lu (const lu& a)
-    : a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
-
-  lu (const T& l, const T& u, const PermMatrix& p);
-
-  lu& operator = (const lu& a)
+  namespace math
   {
-    if (this != &a)
+    template <typename T>
+    class
+    lu
+    {
+    public:
+
+      typedef typename T::column_vector_type VT;
+      typedef typename T::element_type ELT_T;
+
+      lu (void)
+        : a_fact (), l_fact (), ipvt () { }
+
+      lu (const T& a);
+
+      lu (const lu& a)
+        : a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
+
+      lu (const T& l, const T& u, const PermMatrix& p);
+
+      lu& operator = (const lu& a)
       {
-        a_fact = a.a_fact;
-        l_fact = a.l_fact;
-        ipvt = a.ipvt;
+        if (this != &a)
+          {
+            a_fact = a.a_fact;
+            l_fact = a.l_fact;
+            ipvt = a.ipvt;
+          }
+
+        return *this;
       }
 
-    return *this;
+      virtual ~lu (void) { }
+
+      bool packed (void) const;
+
+      void unpack (void);
+
+      T L (void) const;
+
+      T U (void) const;
+
+      T Y (void) const;
+
+      PermMatrix P (void) const;
+
+      ColumnVector P_vec (void) const;
+
+      bool regular (void) const;
+
+      void update (const VT& u, const VT& v);
+
+      void update (const T& u, const T& v);
+
+      void update_piv (const VT& u, const VT& v);
+
+      void update_piv (const T& u, const T& v);
+
+    protected:
+
+      Array<octave_idx_type> getp (void) const;
+
+      T a_fact;
+      T l_fact;
+
+      Array<octave_idx_type> ipvt;
+    };
   }
-
-  virtual ~lu (void) { }
-
-  bool packed (void) const;
-
-  void unpack (void);
-
-  T L (void) const;
-
-  T U (void) const;
-
-  T Y (void) const;
-
-  PermMatrix P (void) const;
-
-  ColumnVector P_vec (void) const;
-
-  bool regular (void) const;
-
-  void update (const VT& u, const VT& v);
-
-  void update (const T& u, const T& v);
-
-  void update_piv (const VT& u, const VT& v);
-
-  void update_piv (const T& u, const T& v);
-
-protected:
-
-  Array<octave_idx_type> getp (void) const;
-
-  T a_fact;
-  T l_fact;
-
-  Array<octave_idx_type> ipvt;
-};
-
-}
 }
 
 #endif

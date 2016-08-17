@@ -48,7 +48,7 @@ The procedure for installing Octave from source on a Unix-like system is
 described next.  Building on other platforms will follow similar
 steps.  Note that this description applies to Octave releases.  Building
 the development sources from the Mercurial archive requires additional
-steps as described in @ref{Building the Development Sources}.
+steps as described in the development source itself.
 
 @menu
 * Build Dependencies::

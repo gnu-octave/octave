@@ -170,8 +170,8 @@ use @code{citation}.
 There are a number of ways that you can contribute to help make Octave a
 better system.  Perhaps the most important way to contribute is to write
 high-quality code for solving new problems, and to make your code freely
-available for others to use.  @xref{Contributing Guidelines}, for detailed
-information on contributing new code.
+available for others to use.  See @url{http://www.octave.org/get-involved.html}
+for detailed information.
 
 If you find Octave useful, consider providing additional funding to
 continue its development.  Even a modest amount of additional funding

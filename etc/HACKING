@@ -123,8 +123,7 @@ should output no difference.
 
 The most important advice is to follow any conventions you detect in the
 file being edited.  In addition, Octave maintainers have written a lot
-on the subject.  See "Appendix C: Tips and Standards" and
-"Appendix D: Contributing Guidelines" in the PDF documentation.
+on the subject.  See http://wiki.octave.org/Contribution_guidelines
 
 * Bugs and patches
 

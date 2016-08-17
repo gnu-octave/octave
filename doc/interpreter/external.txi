@@ -1209,7 +1209,7 @@ The warning for division by zero (and in fact all warnings) are disabled in the
 
 The documentation of an oct-file is the fourth string parameter of the
 @w{@code{DEFUN_DLD}} macro.  This string can be formatted in the same manner
-as the help strings for user functions (@pxref{Documentation Tips}),
+as the help strings for user functions,
 however there are some issue that are particular to the formatting of
 help strings within oct-files.
 

@@ -216,7 +216,6 @@ endfunction
 %! legend ("Y errbar", "X errbar");
 %! title ("errorbar() with 2 datasets");
 
-
 %!demo
 %! clf;
 %! x = 0:0.5:2*pi;

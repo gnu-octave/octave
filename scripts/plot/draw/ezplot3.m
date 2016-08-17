@@ -20,6 +20,7 @@
 ## @deftypefn  {} {} ezplot3 (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {} {} ezplot3 (@dots{}, @var{dom})
 ## @deftypefnx {} {} ezplot3 (@dots{}, @var{n})
+## @deftypefnx {} {} ezplot3 (@dots{}, "animate")
 ## @deftypefnx {} {} ezplot3 (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} ezplot3 (@dots{})
 ##
@@ -36,6 +37,9 @@
 ## @var{n} is a scalar defining the number of points to use in plotting the
 ## function.
 ##
+## If the @qcode{"animate"} option is given then the plotting is animated
+## in the style of @code{comet3}.
+##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
@@ -50,7 +54,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{plot3, ezplot, ezmesh, ezsurf}
+## @seealso{plot3, comet3, ezplot, ezmesh, ezsurf}
 ## @end deftypefn
 
 function h = ezplot3 (varargin)

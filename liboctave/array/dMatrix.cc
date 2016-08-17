@@ -1398,7 +1398,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                warn_singular_matrix (rcon);
+                octave::warn_singular_matrix (rcon);
             }
         }
     }
@@ -1487,7 +1487,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                warn_singular_matrix (rcon);
+                octave::warn_singular_matrix (rcon);
             }
         }
     }
@@ -1567,7 +1567,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        warn_singular_matrix (rcon);
+                        octave::warn_singular_matrix (rcon);
                     }
                 }
 
@@ -1620,7 +1620,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -1648,7 +1648,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        warn_singular_matrix (rcon);
+                        octave::warn_singular_matrix (rcon);
                     }
                 }
 
@@ -2344,7 +2344,7 @@ Matrix::operator += (const DiagMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (nr != a_nr || nc != a_nc)
-    err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
+    octave::err_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) += a.elem (i, i);
@@ -2362,7 +2362,7 @@ Matrix::operator -= (const DiagMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (nr != a_nr || nc != a_nc)
-    err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
+    octave::err_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
 
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) -= a.elem (i, i);
@@ -2846,7 +2846,7 @@ xgemm (const Matrix& a, const Matrix& b,
   octave_idx_type b_nc = trb ? b.rows () : b.cols ();
 
   if (a_nc != b_nr)
-    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   if (a_nr == 0 || a_nc == 0 || b_nc == 0)
     retval = Matrix (a_nr, b_nc, 0.0);

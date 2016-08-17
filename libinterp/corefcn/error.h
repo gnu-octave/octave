@@ -32,7 +32,10 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_map;
 class octave_value_list;
-class octave_execution_exception;
+namespace octave
+{
+  class execution_exception;
+}
 
 #define panic_impossible()                                              \
   panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
@@ -64,9 +67,9 @@ OCTAVE_NORETURN OCTINTERP_API extern
 void error (const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
-void verror (octave_execution_exception&, const char *fmt, va_list args);
+void verror (octave::execution_exception&, const char *fmt, va_list args);
 OCTAVE_NORETURN OCTINTERP_API extern
-void error (octave_execution_exception&, const char *fmt, ...);
+void error (octave::execution_exception&, const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void verror_with_cfn (const char *fmt, va_list args);

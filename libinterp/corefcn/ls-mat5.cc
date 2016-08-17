@@ -1213,7 +1213,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                             tc = tmp(0);
                           }
-                        catch (const octave_execution_exception&)
+                        catch (const octave::execution_exception&)
                           {
                             goto data_read_error;
                           }
@@ -2610,7 +2610,7 @@ save_mat5_binary_element (std::ostream& os,
 
               m = tmp(0).map_value ();
             }
-          catch (const octave_execution_exception&)
+          catch (const octave::execution_exception&)
             {
               error ("save: error while writing '%s' to MAT file",
                      name.c_str ());

@@ -284,7 +284,7 @@ generate_struct_completions (const std::string& text,
                   && (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
                 names = tmp.map_keys ();
             }
-          catch (const octave_execution_exception&)
+          catch (const octave::execution_exception&)
             {
               recover_from_exception ();
             }

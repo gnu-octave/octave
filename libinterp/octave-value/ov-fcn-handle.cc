@@ -2047,7 +2047,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                                 {
                                   root_val = make_fcn_handle (head_name);
                                 }
-                              catch (const octave_execution_exception&)
+                              catch (const octave::execution_exception&)
                                 {
                                   recover_from_exception ();
 

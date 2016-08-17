@@ -185,7 +185,7 @@ operator * (const FloatMatrix& m, const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    err_nonconformant ("operator *", nr, nc, a_len, 1);
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   retval.clear (nr);
 
@@ -220,7 +220,7 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    err_nonconformant ("operator *", nr, nc, a_len, 1);
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   if (nr == 0 || nc == 0)
     retval.resize (nr, 0.0);

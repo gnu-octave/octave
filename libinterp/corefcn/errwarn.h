@@ -30,7 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-array-errwarn.h"
 
 class octave_value;
-class octave_execution_exception;
+namespace octave
+{
+  class execution_exception;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Alphabetized list of common errors and warnings.
@@ -90,53 +93,53 @@ OCTAVE_NORETURN OCTINTERP_API extern void
 err_user_supplied_eval (const char *name);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_user_supplied_eval (octave_execution_exception& e, const char *name);
+err_user_supplied_eval (octave::execution_exception& e, const char *name);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const char *name, const char *s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_wrong_type_arg (octave_execution_exception& e, const char *name,
+err_wrong_type_arg (octave::execution_exception& e, const char *name,
                     const char *s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const char *name, const std::string& s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_wrong_type_arg (octave_execution_exception& e, const char *name,
+err_wrong_type_arg (octave::execution_exception& e, const char *name,
                     const std::string& s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const char *name, const octave_value& tc);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_wrong_type_arg (octave_execution_exception& e, const char *name,
+err_wrong_type_arg (octave::execution_exception& e, const char *name,
                     const octave_value& tc);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const std::string& name, const octave_value& tc);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_wrong_type_arg (octave_execution_exception& e, const std::string& name,
+err_wrong_type_arg (octave::execution_exception& e, const std::string& name,
                     const octave_value& tc);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const char *s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_wrong_type_arg (octave_execution_exception& e, const char *s);
+err_wrong_type_arg (octave::execution_exception& e, const char *s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const std::string& s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_wrong_type_arg (octave_execution_exception& e, const std::string& s);
+err_wrong_type_arg (octave::execution_exception& e, const std::string& s);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg (const octave_value& tc);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
-err_wrong_type_arg (octave_execution_exception& e, const octave_value& tc);
+err_wrong_type_arg (octave::execution_exception& e, const octave_value& tc);
 
 OCTAVE_NORETURN OCTINTERP_API extern void
 err_wrong_type_arg_for_binary_op (const octave_value& op);

@@ -928,7 +928,7 @@ Sparse<T>::resize1 (octave_idx_type n)
   else if (nc == 1)
     resize (n, 1);
   else
-    err_invalid_resize ();
+    octave::err_invalid_resize ();
 }
 
 template <typename T>
@@ -1158,7 +1158,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
   const dim_vector idx_dims = idx.orig_dimensions ();
 
   if (idx.extent (nel) > nel)
-    err_del_index_out_of_range (true, idx.extent (nel), nel);
+    octave::err_del_index_out_of_range (true, idx.extent (nel), nel);
 
   if (nc == 1)
     {
@@ -1257,7 +1257,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
       // Deleting columns.
       octave_idx_type lb, ub;
       if (idx_j.extent (nc) > nc)
-        err_del_index_out_of_range (false, idx_j.extent (nc), nc);
+        octave::err_del_index_out_of_range (false, idx_j.extent (nc), nc);
       else if (idx_j.is_cont_range (nc, lb, ub))
         {
           if (lb == 0 && ub == nc)
@@ -1295,7 +1295,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
       // Deleting rows.
       octave_idx_type lb, ub;
       if (idx_i.extent (nr) > nr)
-        err_del_index_out_of_range (false, idx_i.extent (nr), nr);
+        octave::err_del_index_out_of_range (false, idx_i.extent (nr), nr);
       else if (idx_i.is_cont_range (nr, lb, ub))
         {
           if (lb == 0 && ub == nr)
@@ -1414,7 +1414,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
   else if (idx.extent (nel) > nel)
     {
       if (! resize_ok)
-        err_index_out_of_range (1, 1, idx.extent (nel), nel, dims ());
+        octave::err_index_out_of_range (1, 1, idx.extent (nel), nel, dims ());
 
       // resize_ok is completely handled here.
       octave_idx_type ext = idx.extent (nel);
@@ -1602,9 +1602,9 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
           retval = tmp.index (idx_i, idx_j);
         }
       else if (idx_i.extent (nr) > nr)
-        err_index_out_of_range (2, 1, idx_i.extent (nr), nr, dims ());
+        octave::err_index_out_of_range (2, 1, idx_i.extent (nr), nr, dims ());
       else
-        err_index_out_of_range (2, 2, idx_j.extent (nc), nc, dims ());
+        octave::err_index_out_of_range (2, 2, idx_j.extent (nc), nc, dims ());
     }
   else if (nr == 1 && nc == 1)
     {
@@ -1966,7 +1966,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
         assign (idx, Sparse<T> (rhl, 1));
     }
   else
-    err_nonconformant ("=", dim_vector(idx.length (n),1), rhs.dims());
+    octave::err_nonconformant ("=", dim_vector(idx.length (n),1), rhs.dims());
 }
 
 template <typename T>
@@ -2206,7 +2206,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
       assign (idx_i, idx_j, rhs.transpose ());
     }
   else
-    err_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
+    octave::err_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
 }
 
 // Can't use versions of these in Array.cc due to duplication of the

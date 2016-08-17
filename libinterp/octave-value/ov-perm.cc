@@ -81,7 +81,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
           k = 1;
           idx1 = idx(1).index_vector ();
         }
-      catch (index_exception& e)
+      catch (octave::index_exception& e)
         {
           // Rethrow to allow more info to be reported later.
           e.set_pos_if_unset (2, k+1);

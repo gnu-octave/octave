@@ -374,7 +374,7 @@ FloatComplexDiagMatrix::operator += (const FloatDiagMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (r != a_nr || c != a_nc)
-    err_nonconformant ("operator +=", r, c, a_nr, a_nc);
+    octave::err_nonconformant ("operator +=", r, c, a_nr, a_nc);
 
   if (r == 0 || c == 0)
     return *this;
@@ -395,7 +395,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
@@ -420,7 +420,7 @@ operator * (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   if (a_nr == 0 || a_nc == 0 || b_nc == 0)
     return FloatComplexDiagMatrix (a_nr, a_nc, 0.0);
@@ -450,7 +450,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   if (a_nr == 0 || a_nc == 0 || b_nc == 0)
     return FloatComplexDiagMatrix (a_nr, a_nc, 0.0);

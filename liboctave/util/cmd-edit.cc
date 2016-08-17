@@ -1797,7 +1797,7 @@ namespace octave
                     {
                       tmpstr = octave::sys::env::get_current_directory ();
                     }
-                  catch (const octave_execution_exception&)
+                  catch (const octave::execution_exception&)
                     {
                       tmpstr = "";
                     }

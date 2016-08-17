@@ -213,24 +213,24 @@ octave_jit_cast_any_complex (Complex c)
 }
 
 extern "C" void
-octave_jit_err_nan_to_logical_conversion (void)
+octave_jit_octave::err_nan_to_logical_conversion (void)
 {
-  err_nan_to_logical_conversion ();
+  octave::err_nan_to_logical_conversion ();
 }
 
 extern "C" void
 octave_jit_ginvalid_index (void)
 {
-  // FIXME: 0-argument form of err_invalid_index removed in cset dd6345fd8a97
+  // FIXME: 0-argument form of octave::err_invalid_index removed in cset dd6345fd8a97
   //        Report -1 as the bad index for all occurrences.
-  err_invalid_index (static_cast<octave_idx_type> (-1));
+  octave::err_invalid_index (static_cast<octave_idx_type> (-1));
 }
 
 extern "C" void
 octave_jit_gindex_range (int nd, int dim, octave_idx_type iext,
                          octave_idx_type ext)
 {
-  err_index_out_of_range (nd, dim, iext, ext);
+  octave::err_index_out_of_range (nd, dim, iext, ext);
 }
 
 extern "C" jit_matrix
@@ -1506,7 +1506,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   logically_true_fn.stash_name ("logically_true");
 
   jit_function gripe_nantl
-    = create_external (JIT_FN (octave_jit_err_nan_to_logical_conversion), 0);
+    = create_external (JIT_FN (octave_jit_octave::err_nan_to_logical_conversion), 0);
   gripe_nantl.mark_can_error ();
 
   fn = create_internal ("octave_jit_logically_true_scalar", boolean, scalar);

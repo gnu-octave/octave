@@ -199,7 +199,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
           break;
         }
     }
-  catch (index_exception& e)
+  catch (octave::index_exception& e)
     {
       // Rethrow to allow more info to be reported later.
       e.set_pos_if_unset (n_idx, k+1);
@@ -260,9 +260,9 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
             break;
         }
     }
-  catch (const index_exception& e)
+  catch (const octave::index_exception& e)
     {
-      err_invalid_index (e.idx (), n_idx, k+1);
+      octave::err_invalid_index (e.idx (), n_idx, k+1);
     }
 
   // Clear cache.
@@ -364,9 +364,9 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
           break;
         }
     }
-  catch (const index_exception& e)
+  catch (const octave::index_exception& e)
     {
-      err_invalid_index (e.idx (), n_idx, k+1);
+      octave::err_invalid_index (e.idx (), n_idx, k+1);
     }
 
   // Clear cache.
@@ -416,7 +416,7 @@ octave_base_matrix<MT>::is_true (void) const
       MT t1 (matrix.reshape (dim_vector (nel, 1)));
 
       if (t1.any_element_is_nan ())
-        err_nan_to_logical_conversion ();
+        octave::err_nan_to_logical_conversion ();
 
       if (nel > 1)
         warn_array_as_logical (dv);

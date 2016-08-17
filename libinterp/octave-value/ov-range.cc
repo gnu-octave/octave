@@ -148,7 +148,7 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
           else
             retval = range.index (i);
         }
-      catch (index_exception& e)
+      catch (octave::index_exception& e)
         {
           // More info may be added later before displaying error.
 
@@ -358,7 +358,7 @@ octave_range::bool_array_value (bool warn) const
   Matrix m = range.matrix_value ();
 
   if (m.any_element_is_nan ())
-    err_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
   if (warn && m.any_element_not_one_or_zero ())
     warn_logical_conversion ();
 

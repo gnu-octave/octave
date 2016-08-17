@@ -198,7 +198,7 @@ have_gnuplot_binary (void)
           retval = fs.exists ();
         }
     }
-  catch (octave_execution_exception&)
+  catch (octave::execution_exception&)
     {
     }
 

@@ -121,7 +121,7 @@ tree_simple_assignment::rvalue1 (int)
                                        lhs->name ());
             }
         }
-      catch (index_exception& e)
+      catch (octave::index_exception& e)
         {
           e.set_var (lhs->name ());
           std::string msg = e.message ();

@@ -105,30 +105,33 @@ gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
      is1d ? "I" : "..,I,..", idx, ext);
 }
 
-class invalid_index : public index_exception
+namespace octave
 {
-public:
-
-  invalid_index (const std::string& value, octave_idx_type ndim,
-                 octave_idx_type dimen)
-    : index_exception (value, ndim, dimen)
-  { }
-
-  std::string details (void) const
+  class invalid_index : public index_exception
   {
+  public:
+
+    invalid_index (const std::string& value, octave_idx_type ndim,
+                   octave_idx_type dimen)
+      : index_exception (value, ndim, dimen)
+    { }
+
+    std::string details (void) const
+    {
 #if defined (OCTAVE_ENABLE_64)
-    return "subscripts must be either integers 1 to (2^63)-1 or logicals";
+      return "subscripts must be either integers 1 to (2^63)-1 or logicals";
 #else
-    return "subscripts must be either integers 1 to (2^31)-1 or logicals";
+      return "subscripts must be either integers 1 to (2^31)-1 or logicals";
 #endif
-  }
+    }
 
-  // ID of error to throw
-  const char *err_id (void) const
-  {
-    return error_id_invalid_index;
-  }
-};
+    // ID of error to throw
+    const char *err_id (void) const
+    {
+      return error_id_invalid_index;
+    }
+  };
+}
 
 // Complain if an index is negative, fractional, or too big.
 
@@ -136,9 +139,9 @@ void
 gripe_invalid_index (const std::string& idx, octave_idx_type nd,
                      octave_idx_type dim, const std::string&)
 {
-    invalid_index e (idx, nd, dim);
+  octave::invalid_index e (idx, nd, dim);
 
-    throw e;
+  throw e;
 }
 
 void
@@ -179,58 +182,61 @@ gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
 #endif
 }
 
-// Gripe and exception for read access beyond the bounds of an array.
-
-class out_of_range : public index_exception
+namespace octave
 {
-public:
+  // Gripe and exception for read access beyond the bounds of an array.
 
-  out_of_range (const std::string& value, octave_idx_type nd_in,
-                octave_idx_type dim_in)
-    : index_exception (value, nd_in, dim_in), extent (0)
-  { }
-
-  std::string details (void) const
+  class out_of_range : public index_exception
   {
-    std::string expl;
+  public:
 
-    if (nd >= size.ndims ())   // if not an index slice
-      {
-        if (var != "")
-          expl = "but " + var + " has size ";
-        else
-          expl = "but object has size ";
+    out_of_range (const std::string& value, octave_idx_type nd_in,
+                  octave_idx_type dim_in)
+      : index_exception (value, nd_in, dim_in), extent (0)
+    { }
 
-        expl = expl + size.str ('x');
-      }
-    else
-      {
-        std::ostringstream buf;
-        buf << extent;
-        expl = "out of bound " + buf.str ();
-      }
+    std::string details (void) const
+    {
+      std::string expl;
 
-    return expl;
-  }
+      if (nd >= size.ndims ())   // if not an index slice
+        {
+          if (var != "")
+            expl = "but " + var + " has size ";
+          else
+            expl = "but object has size ";
 
-  // ID of error to throw.
-  const char *err_id (void) const
-  {
-    return error_id_index_out_of_bounds;
-  }
+          expl = expl + size.str ('x');
+        }
+      else
+        {
+          std::ostringstream buf;
+          buf << extent;
+          expl = "out of bound " + buf.str ();
+        }
 
-  void set_size (const dim_vector& size_in) { size = size_in; }
+      return expl;
+    }
 
-  void set_extent (octave_idx_type ext) { extent = ext; }
+    // ID of error to throw.
+    const char *err_id (void) const
+    {
+      return error_id_index_out_of_bounds;
+    }
 
-private:
+    void set_size (const dim_vector& size_in) { size = size_in; }
 
-  // Dimension of object being accessed.
-  dim_vector size;
+    void set_extent (octave_idx_type ext) { extent = ext; }
 
-  // Length of dimension being accessed.
-  octave_idx_type extent;
-};
+  private:
+
+    // Dimension of object being accessed.
+    dim_vector size;
+
+    // Length of dimension being accessed.
+    octave_idx_type extent;
+  };
+}
 
 // Complain of an index that is out of range, but we don't know matrix size
 void
@@ -239,7 +245,7 @@ gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
 {
   std::ostringstream buf;
   buf << idx;
-  out_of_range e (buf.str (), nd, dim);
+  octave::out_of_range e (buf.str (), nd, dim);
 
   e.set_extent (ext);
   // ??? Make details method give extent not size.
@@ -255,7 +261,7 @@ gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
 {
   std::ostringstream buf;
   buf << idx;
-  out_of_range e (buf.str (), nd, dim);
+  octave::out_of_range e (buf.str (), nd, dim);
 
   e.set_extent (ext);
   e.set_size (d);

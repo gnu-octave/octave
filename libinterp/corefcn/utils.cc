@@ -1204,7 +1204,7 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx_arg)
 
                   retval *= jdx.length (dv(i));
                 }
-              catch (const index_exception& e)
+              catch (const octave::index_exception& e)
                 {
                   std::string idx = e.idx ();
                   std::string msg = e.details ();
@@ -1372,7 +1372,7 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
       else
         retval = true;
     }
-  catch (const octave_execution_exception&)
+  catch (const octave::execution_exception&)
     {
       recover_from_exception ();
 

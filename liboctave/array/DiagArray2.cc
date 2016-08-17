@@ -138,10 +138,10 @@ DiagArray2<T>::check_idx (octave_idx_type r, octave_idx_type c) const
   bool ok = true;
 
   if (r < 0 || r >= dim1 ())
-    err_index_out_of_range (2, 1, r+1, dim1 (), dims ());
+    octave::err_index_out_of_range (2, 1, r+1, dim1 (), dims ());
 
   if (c < 0 || c >= dim2 ())
-    err_index_out_of_range (2, 2, c+1, dim2 (), dims ());
+    octave::err_index_out_of_range (2, 2, c+1, dim2 (), dims ());
 
   return ok;
 }

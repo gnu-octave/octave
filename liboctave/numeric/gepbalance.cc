@@ -52,7 +52,7 @@ gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
     (*current_liboctave_error_handler) ("GEPBALANCE requires square matrix");
 
   if (a.dims () != b.dims ())
-    err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
+    octave::err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
 
   octave_idx_type info;
   octave_idx_type ilo;
@@ -117,7 +117,7 @@ gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
       ("FloatGEPBALANCE requires square matrix");
 
   if (a.dims () != b.dims ())
-    err_nonconformant ("FloatGEPBALANCE", n, n, b.rows(), b.cols());
+    octave::err_nonconformant ("FloatGEPBALANCE", n, n, b.rows(), b.cols());
 
   octave_idx_type info;
   octave_idx_type ilo;
@@ -183,7 +183,7 @@ gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
       ("ComplexGEPBALANCE requires square matrix");
 
   if (a.dims () != b.dims ())
-    err_nonconformant ("ComplexGEPBALANCE", n, n, b.rows(), b.cols());
+    octave::err_nonconformant ("ComplexGEPBALANCE", n, n, b.rows(), b.cols());
 
   octave_idx_type info;
   octave_idx_type ilo;
@@ -252,7 +252,7 @@ gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
     }
 
   if (a.dims () != b.dims ())
-    err_nonconformant ("FloatComplexGEPBALANCE", n, n, b.rows(), b.cols());
+    octave::err_nonconformant ("FloatComplexGEPBALANCE", n, n, b.rows(), b.cols());
 
   octave_idx_type info;
   octave_idx_type ilo;

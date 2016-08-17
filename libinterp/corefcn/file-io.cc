@@ -2258,7 +2258,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
       oct_data_conv::string_to_data_type (prec, block_size,
                                           input_type, output_type);
     }
-  catch (octave_execution_exception& e)
+  catch (octave::execution_exception& e)
     {
       error (e, "fread: invalid PRECISION specified");
     }
@@ -2269,7 +2269,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
     {
       skip = skip_arg.int_value (true);
     }
-  catch (octave_execution_exception& e)
+  catch (octave::execution_exception& e)
     {
       error (e, "fread: SKIP must be an integer");
     }
@@ -2506,7 +2506,7 @@ do_fwrite (octave_stream& os, const octave_value& data,
     {
       oct_data_conv::string_to_data_type (prec, block_size, output_type);
     }
-  catch (octave_execution_exception& e)
+  catch (octave::execution_exception& e)
     {
       error (e, "fwrite: invalid PRECISION specified");
     }
@@ -2517,7 +2517,7 @@ do_fwrite (octave_stream& os, const octave_value& data,
     {
       skip = skip_arg.int_value (true);
     }
-  catch (octave_execution_exception& e)
+  catch (octave::execution_exception& e)
     {
       error (e, "fwrite: SKIP must be an integer");
     }

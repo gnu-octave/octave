@@ -287,7 +287,7 @@ operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   FloatDiagMatrix c (a_nr, b_nc);
 

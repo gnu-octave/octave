@@ -946,7 +946,7 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
 
         check_exception (jni_env);
       }
-    catch (index_exception& e)
+    catch (octave::index_exception& e)
       {
         // Rethrow to allow more info to be reported later.
         e.set_pos_if_unset (idx.length (), i+1);

@@ -416,7 +416,7 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
@@ -518,7 +518,7 @@ elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
@@ -658,7 +658,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
@@ -725,7 +725,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)

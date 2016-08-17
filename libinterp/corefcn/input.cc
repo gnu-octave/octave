@@ -204,7 +204,7 @@ interactive_input (const std::string& s, bool& eof)
         {
           feval ("drawnow");
         }
-      catch (const octave_execution_exception& e)
+      catch (const octave::execution_exception& e)
         {
           eval_error = true;
 
@@ -710,7 +710,7 @@ get_debug_input (const std::string& prompt)
               octave_quit ();
             }
         }
-      catch (const octave_execution_exception& e)
+      catch (const octave::execution_exception& e)
         {
           std::string stack_trace = e.info ();
 

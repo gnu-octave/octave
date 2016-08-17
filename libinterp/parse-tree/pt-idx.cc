@@ -274,7 +274,7 @@ tree_index_expression::rvalue (int nargout)
 // be needed by pt-lvalue, which calls subsref?)
 
 static void
-final_index_error (index_exception& e, const tree_expression *expr)
+final_index_error (octave::index_exception& e, const tree_expression *expr)
 {
   if (expr->is_identifier ()
       && dynamic_cast<const tree_identifier *> (expr)->is_variable ())
@@ -386,7 +386,7 @@ tree_index_expression::rvalue (int nargout,
                         }
                     }
                 }
-              catch (index_exception& e)  // problems with index range, type etc.
+              catch (octave::index_exception& e)  // problems with index range, type etc.
                 {
                   final_index_error (e, expr);
                 }
@@ -428,7 +428,7 @@ tree_index_expression::rvalue (int nargout,
       retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
                             lvalue_list);
     }
-  catch (index_exception& e)    // problems with range, invalid index type etc.
+  catch (octave::index_exception& e)    // problems with range, invalid index type etc.
     {
       final_index_error (e, expr);
     }
@@ -498,7 +498,7 @@ tree_index_expression::lvalue (void)
             {
               tmp = tmp.subsref (type.substr (tmpi, i-tmpi), tmpidx, true);
             }
-          catch (index_exception& e)  // problems with range, invalid type etc.
+          catch (octave::index_exception& e)  // problems with range, invalid type etc.
             {
               final_index_error (e, expr);
             }

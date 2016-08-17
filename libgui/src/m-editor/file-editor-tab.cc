@@ -389,9 +389,9 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
               bp_table::condition_valid (new_condition.toStdString ());
               valid = true;
             }
-          catch (const index_exception& e) { }
-          catch (const octave_execution_exception& e) { }
-          catch (const octave_interrupt_exception&)
+          catch (const octave::index_exception& e) { }
+          catch (const octave::execution_exception& e) { }
+          catch (const octave::interrupt_exception&)
             {
               ok = false;
               valid = true;
@@ -1758,7 +1758,7 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
     {
       sym = symbol_table::find (base_name);
     }
-  catch (const octave_execution_exception& e)
+  catch (const octave::execution_exception& e)
     {
       // Ignore syntax error.
       // It was in the old file on disk; the user may have fixed it already.

@@ -37,7 +37,7 @@ RT do_mul_dm_sm (const DM& d, const SM& a)
   const octave_idx_type a_nc = a.cols ();
 
   if (nc != a_nr)
-    err_nonconformant ("operator *", nr, nc, a_nr, a_nc);
+    octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);
 
   RT r (nr, a_nc, a.nnz ());
 
@@ -73,7 +73,7 @@ RT do_mul_sm_dm (const SM& a, const DM& d)
   const octave_idx_type a_nc = a.cols ();
 
   if (nr != a_nc)
-    err_nonconformant ("operator *", a_nr, a_nc, nr, nc);
+    octave::err_nonconformant ("operator *", a_nr, a_nc, nr, nc);
 
   const octave_idx_type mnc = nc < a_nc ? nc: a_nc;
   RT r (a_nr, nc, a.cidx (mnc));
@@ -177,7 +177,7 @@ template <typename RT, typename DM, typename SM>
 RT do_add_dm_sm (const DM& d, const SM& a)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    err_nonconformant ("operator +", d.rows (), d.cols (), a.rows (), a.cols ());
+    octave::err_nonconformant ("operator +", d.rows (), d.cols (), a.rows (), a.cols ());
   else
     return do_commutative_add_dm_sm<RT> (d, a);
 }
@@ -186,7 +186,7 @@ template <typename RT, typename DM, typename SM>
 RT do_sub_dm_sm (const DM& d, const SM& a)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    err_nonconformant ("operator -", d.rows (), d.cols (), a.rows (), a.cols ());
+    octave::err_nonconformant ("operator -", d.rows (), d.cols (), a.rows (), a.cols ());
 
   return inner_do_add_sm_dm<RT> (a, d, std::negate<typename SM::element_type> (),
                                  identity_val<typename DM::element_type> ());
@@ -196,7 +196,7 @@ template <typename RT, typename SM, typename DM>
 RT do_add_sm_dm (const SM& a, const DM& d)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    err_nonconformant ("operator +", a.rows (), a.cols (), d.rows (), d.cols ());
+    octave::err_nonconformant ("operator +", a.rows (), a.cols (), d.rows (), d.cols ());
 
   return do_commutative_add_dm_sm<RT> (d, a);
 }
@@ -205,7 +205,7 @@ template <typename RT, typename SM, typename DM>
 RT do_sub_sm_dm (const SM& a, const DM& d)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    err_nonconformant ("operator -", a.rows (), a.cols (), d.rows (), d.cols ());
+    octave::err_nonconformant ("operator -", a.rows (), a.cols (), d.rows (), d.cols ());
 
   return inner_do_add_sm_dm<RT> (a, d,
                                  identity_val<typename SM::element_type> (),

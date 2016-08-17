@@ -192,7 +192,7 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
   octave_value retval;
 
   if (octave::math::isnan (scalar))
-    err_nan_to_character_conversion ();
+    octave::err_nan_to_character_conversion ();
 
   int ival = octave::math::nint (scalar);
 

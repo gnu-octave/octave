@@ -33,11 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #define SNANCHK(s)                              \
   if (octave::math::isnan (s))                  \
-    err_nan_to_logical_conversion ()
+    octave::err_nan_to_logical_conversion ()
 
 #define MNANCHK(m, MT)                          \
   if (do_mx_check (m, mx_inline_any_nan<MT>))   \
-    err_nan_to_logical_conversion ()
+    octave::err_nan_to_logical_conversion ()
 
 // vector by scalar operations.
 
@@ -404,7 +404,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type dm_nc = dm.cols ();                         \
                                                                 \
     if (m_nr != dm_nr || m_nc != dm_nc)                         \
-      err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc);        \
+      octave::err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc);        \
                                                                 \
     r.resize (m_nr, m_nc);                                      \
                                                                 \
@@ -434,7 +434,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type dm_nc = dm.cols ();                                 \
                                                                         \
     if (m_nc != dm_nr)                                                  \
-      err_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc);       \
+      octave::err_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc);       \
                                                                         \
     r = R (m_nr, dm_nc);                                                \
     R::element_type *rd = r.fortran_vec ();                             \
@@ -472,7 +472,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m_nc = m.cols ();                           \
                                                                 \
     if (dm_nr != m_nr || dm_nc != m_nc)                         \
-      err_nonconformant (#OP, dm_nr, dm_nc, m_nr, m_nc);        \
+      octave::err_nonconformant (#OP, dm_nr, dm_nc, m_nr, m_nc);        \
     else                                                        \
       {                                                         \
         if (m_nr > 0 && m_nc > 0)                               \
@@ -504,7 +504,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m_nc = m.cols ();                                   \
                                                                         \
     if (dm_nc != m_nr)                                                  \
-      err_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc);       \
+      octave::err_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc);       \
                                                                         \
     r = R (dm_nr, m_nc);                                                \
     R::element_type *rd = r.fortran_vec ();                             \
@@ -543,7 +543,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type dm2_nc = dm2.cols ();                               \
                                                                         \
     if (dm1_nr != dm2_nr || dm1_nc != dm2_nc)                           \
-      err_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc);          \
+      octave::err_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc);          \
                                                                         \
     r.resize (dm1_nr, dm1_nc);                                          \
                                                                         \
@@ -598,7 +598,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type nc = x.columns ();                                  \
     M result;                                                           \
     if (p.columns () != nr)                                             \
-      err_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
+      octave::err_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
     else                                                                \
       {                                                                 \
         result = M (nr, nc);                                            \
@@ -615,7 +615,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type nc = x.columns ();                                  \
     M result;                                                           \
     if (p.rows () != nc)                                                \
-      err_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
+      octave::err_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
                                                                         \
     result = x.index (idx_vector::colon, p.col_perm_vec ());            \
                                                                         \

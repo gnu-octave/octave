@@ -1092,7 +1092,7 @@ octave_class::reconstruct_exemplar (void)
             {
               result = ctor.do_multi_index_op (1, octave_value_list ());
             }
-          catch (const octave_execution_exception&)
+          catch (const octave::execution_exception&)
             {
               recover_from_exception ();
 

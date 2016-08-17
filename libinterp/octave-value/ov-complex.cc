@@ -61,28 +61,31 @@ template class octave_base_scalar<Complex>;
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
                                      "complex scalar", "double");
 
-// Complain if a complex value is used as a subscript.
-
-class complex_index_exception : public index_exception
+namespace octave
 {
-public:
+  // Complain if a complex value is used as a subscript.
 
-  complex_index_exception (const std::string& value)
-    : index_exception (value) { }
-
-  ~complex_index_exception (void) { }
-
-  std::string details (void) const
+  class complex_index_exception : public index_exception
   {
-    return "subscripts must be real (forgot to initialize i or j?)";
-  }
+  public:
 
-  // ID of error to throw.
-  const char *err_id (void) const
-  {
-    return "Octave:invalid-index";
-  }
-};
+    complex_index_exception (const std::string& value)
+      : index_exception (value) { }
+
+    ~complex_index_exception (void) { }
+
+    std::string details (void) const
+    {
+      return "subscripts must be real (forgot to initialize i or j?)";
+    }
+
+    // ID of error to throw.
+    const char *err_id (void) const
+    {
+      return "Octave:invalid-index";
+    }
+  };
+}
 
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
@@ -137,7 +140,7 @@ octave_complex::index_vector (bool) const
 {
   std::ostringstream buf;
   buf << scalar.real () << std::showpos << scalar.imag () << "i";
-  complex_index_exception e (buf.str ());
+  octave::complex_index_exception e (buf.str ());
 
   throw e;
 }

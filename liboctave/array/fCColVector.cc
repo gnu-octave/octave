@@ -260,7 +260,7 @@ FloatComplexColumnVector::operator += (const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
-    err_nonconformant ("operator +=", len, a_len);
+    octave::err_nonconformant ("operator +=", len, a_len);
 
   if (len == 0)
     return *this;
@@ -279,7 +279,7 @@ FloatComplexColumnVector::operator -= (const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
-    err_nonconformant ("operator -=", len, a_len);
+    octave::err_nonconformant ("operator -=", len, a_len);
 
   if (len == 0)
     return *this;
@@ -310,7 +310,7 @@ operator * (const FloatComplexMatrix& m, const FloatComplexColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    err_nonconformant ("operator *", nr, nc, a_len, 1);
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   retval.clear (nr);
 
@@ -352,7 +352,7 @@ operator * (const FloatDiagMatrix& m, const FloatComplexColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    err_nonconformant ("operator *", nr, nc, a_len, 1);
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   if (nc == 0 || nr == 0)
     return FloatComplexColumnVector (0);
@@ -377,7 +377,7 @@ operator * (const FloatComplexDiagMatrix& m, const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    err_nonconformant ("operator *", nr, nc, a_len, 1);
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   if (nc == 0 || nr == 0)
     return FloatComplexColumnVector (0);
@@ -402,7 +402,7 @@ operator * (const FloatComplexDiagMatrix& m, const FloatComplexColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    err_nonconformant ("operator *", nr, nc, a_len, 1);
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
 
   if (nc == 0 || nr == 0)
     return FloatComplexColumnVector (0);

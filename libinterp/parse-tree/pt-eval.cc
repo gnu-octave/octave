@@ -840,7 +840,7 @@ namespace octave
               try_code->accept (*this);
               in_try_catch--;
             }
-          catch (const octave_execution_exception&)
+          catch (const octave::execution_exception&)
             {
               recover_from_exception ();
 
@@ -912,7 +912,7 @@ namespace octave
         if (list)
           list->accept (*this);
       }
-    catch (const octave_execution_exception&)
+    catch (const octave::execution_exception&)
       {
         recover_from_exception ();
 
@@ -972,7 +972,7 @@ namespace octave
           {
             unwind_protect_code->accept (*this);
           }
-        catch (const octave_execution_exception&)
+        catch (const octave::execution_exception&)
           {
             // FIXME: Maybe we should be able to temporarily set the
             // interpreter's exception handling state to something "safe"

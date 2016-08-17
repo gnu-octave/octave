@@ -62,7 +62,7 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
   else
     {
       std::string nm = "<" + type_name () + ">";
-      err_invalid_index (nm.c_str ());
+      octave::err_invalid_index (nm.c_str ());
     }
 }
 
@@ -141,7 +141,7 @@ octave_sparse_matrix::bool_array_value (bool warn) const
   NDArray m = matrix.matrix_value ();
 
   if (m.any_element_is_nan ())
-    err_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
   if (warn && m.any_element_not_one_or_zero ())
     warn_logical_conversion ();
 
@@ -184,7 +184,7 @@ SparseBoolMatrix
 octave_sparse_matrix::sparse_bool_matrix_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    err_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
   if (warn && matrix.any_element_not_one_or_zero ())
     warn_logical_conversion ();
 
@@ -220,7 +220,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
             double d = matrix.data (i);
 
             if (octave::math::isnan (d))
-              err_nan_to_character_conversion ();
+              octave::err_nan_to_character_conversion ();
 
             int ival = octave::math::nint (d);
 

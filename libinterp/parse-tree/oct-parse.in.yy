@@ -2248,7 +2248,7 @@ namespace octave
 
                     retval = tc_retval;
                   }
-                catch (const octave_execution_exception&)
+                catch (const octave::execution_exception&)
                   {
                     recover_from_exception ();
                   }
@@ -3865,7 +3865,7 @@ namespace octave
 
             retval = tc_retval;
           }
-        catch (const octave_execution_exception&)
+        catch (const octave::execution_exception&)
           {
             recover_from_exception ();
           }
@@ -4032,7 +4032,7 @@ namespace octave
       {
         status = octave_pull_parse (pstate, *this);
       }
-    catch (octave_execution_exception& e)
+    catch (octave::execution_exception& e)
       {
         std::string file = lexer.fcn_file_full_name;
 
@@ -4041,7 +4041,7 @@ namespace octave
         else
           error (e, "parse error in %s", file.c_str ());
       }
-    catch (octave_interrupt_exception &)
+    catch (octave::interrupt_exception &)
       {
         throw;
       }
@@ -4092,7 +4092,7 @@ namespace octave
           {
             status = octave_push_parse (pstate, token, &lval, *this);
           }
-        catch (octave_execution_exception& e)
+        catch (octave::execution_exception& e)
           {
             std::string file = lexer.fcn_file_full_name;
 
@@ -4101,7 +4101,7 @@ namespace octave
             else
               error (e, "parse error in %s", file.c_str ());
           }
-        catch (octave_interrupt_exception &)
+        catch (octave::interrupt_exception &)
           {
             throw;
           }
@@ -4631,7 +4631,7 @@ source_file (const std::string& file_name, const std::string& context,
           fcn = parse_fcn_file (file_full_name, file_name, "", "",
                                 require_file, true, false, false, warn_for);
         }
-      catch (octave_execution_exception& e)
+      catch (octave::execution_exception& e)
         {
           error (e, "source: error sourcing file '%s'",
                  file_full_name.c_str ());
@@ -4791,7 +4791,7 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
         {
           maybe_missing_function_hook (name);
         }
-      catch (octave_execution_exception& e)
+      catch (octave::execution_exception& e)
         {
           error (e, "feval: function '%s' not found", name.c_str ());
         }
@@ -5115,7 +5115,7 @@ does.
     {
       tmp = eval_string (args(0), nargout > 0, parse_status, nargout);
     }
-  catch (const octave_execution_exception&)
+  catch (const octave::execution_exception&)
     {
       recover_from_exception ();
 
@@ -5285,7 +5285,7 @@ Like @code{eval}, except that the expressions are evaluated in the context
       tmp = eval_string (args(1), nargout > 0,
                          parse_status, nargout);
     }
-  catch (const octave_execution_exception&)
+  catch (const octave::execution_exception&)
     {
       recover_from_exception ();
 
@@ -5370,12 +5370,12 @@ s = evalc ("t = 42"), t
   octave_value_list retval;
   int eval_nargout = std::max (0, nargout - 1);
 
-  const octave_execution_exception* eval_exception = 0;
+  const octave::execution_exception* eval_exception = 0;
   try
     {
       retval = Feval (args, eval_nargout);
     }
-  catch (const octave_execution_exception& e)
+  catch (const octave::execution_exception& e)
     {
       // hold back exception from eval until we have restored streams
       eval_exception = &e;

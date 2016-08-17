@@ -1322,7 +1322,7 @@ color_property::do_set (const octave_value& val)
                   return true;
                 }
             }
-          catch (octave_execution_exception& e)
+          catch (octave::execution_exception& e)
             {
               error (e, "invalid value for color property \"%s\" (value = %s)",
                      get_name ().c_str (), s.c_str ());
@@ -2905,7 +2905,7 @@ base_properties::set_from_list (base_graphics_object& bgo,
             {
               bgo.set (pname, prop_val_p.second);
             }
-          catch (octave_execution_exception& e)
+          catch (octave::execution_exception& e)
             {
               error (e, "error setting default property %s", pname.c_str ());
             }
@@ -3222,7 +3222,7 @@ base_graphics_object::remove_all_listeners (void)
           if (p.ok ())
             p.delete_listener ();
         }
-      catch (const octave_execution_exception&)
+      catch (const octave::execution_exception&)
         {
           recover_from_exception ();
         }
@@ -9547,7 +9547,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
             {
               eval_string (s, false, status, 0);
             }
-          catch (octave_execution_exception&)
+          catch (octave::execution_exception&)
             {
               std::cerr << "execution error in graphics callback function"
                         << std::endl;
@@ -9580,7 +9580,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           {
             feval (fcn, args);
           }
-        catch (octave_execution_exception&)
+        catch (octave::execution_exception&)
           {
             std::cerr << "execution error in graphics callback function"
                       << std::endl;
@@ -10380,7 +10380,7 @@ make_graphics_object (const std::string& go_name,
                                             integer_figure_handle,
                                             false, false);
     }
-  catch (octave_execution_exception& e)
+  catch (octave::execution_exception& e)
     {
       error (e, "__go%s__: unable to create graphics handle",
              go_name.c_str ());

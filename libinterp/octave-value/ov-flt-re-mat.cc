@@ -214,7 +214,7 @@ boolNDArray
 octave_float_matrix::bool_array_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    err_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
   if (warn && matrix.any_element_not_one_or_zero ())
     warn_logical_conversion ();
 
@@ -352,7 +352,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
       float d = matrix(i);
 
       if (octave::math::isnan (d))
-        err_nan_to_character_conversion ();
+        octave::err_nan_to_character_conversion ();
 
       int ival = octave::math::nint (d);
 

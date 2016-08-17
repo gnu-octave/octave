@@ -59,7 +59,7 @@ result_ok (octave_idx_type info)
 static void
 solve_singularity_warning (double rcond)
 {
-  warn_singular_matrix (rcond);
+  octave::warn_singular_matrix (rcond);
 }
 
 template <typename T1, typename T2>
@@ -75,7 +75,7 @@ mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
                                                          : a.rows ();
       octave_idx_type b_nc = b.cols ();
 
-      err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
+      octave::err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
@@ -101,7 +101,7 @@ mx_div_conform (const T1& a, const T2& b)
       octave_idx_type a_nr = a.rows ();
       octave_idx_type b_nr = b.rows ();
 
-      err_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
+      octave::err_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
@@ -403,7 +403,7 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ,
 static void
 solve_singularity_warning (float rcond)
 {
-  warn_singular_matrix (rcond);
+  octave::warn_singular_matrix (rcond);
 }
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (FloatMatrix, FloatMatrix);

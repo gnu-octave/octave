@@ -197,7 +197,7 @@ gripe_user_returned_invalid (const char *name)
 void
 gripe_user_supplied_eval (const char *name)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -212,7 +212,7 @@ gripe_user_supplied_eval (const char *name)
 }
 
 void
-gripe_user_supplied_eval (octave_execution_exception& e,
+gripe_user_supplied_eval (octave::execution_exception& e,
                           const char *name)
 {
   error (e, "%s: evaluation of user-supplied function failed", name);
@@ -228,7 +228,7 @@ gripe_warn_complex_cmp (void)
 void
 gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -243,7 +243,7 @@ gripe_wrong_type_arg (const char *name, const char *s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const char *name, const char *s, bool is_error)
 {
   if (is_error)
@@ -255,7 +255,7 @@ gripe_wrong_type_arg (octave_execution_exception& e,
 void
 gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -270,7 +270,7 @@ gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const char *name, const std::string& s, bool is_error)
 {
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
@@ -289,7 +289,7 @@ void
 gripe_wrong_type_arg (const char *name, const octave_value& tc,
                       bool is_error)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -304,7 +304,7 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
 }
 
 void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const char *name, const octave_value& tc,
                       bool is_error)
 {
@@ -326,7 +326,7 @@ void
 gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
                       bool is_error)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -341,7 +341,7 @@ gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
 }
 
 void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const std::string& name, const octave_value& tc,
                       bool is_error)
 {
@@ -360,7 +360,7 @@ gripe_wrong_type_arg (octave_execution_exception& e,
 void
 gripe_wrong_type_arg (const char *s, bool is_error)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -375,7 +375,7 @@ gripe_wrong_type_arg (const char *s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const char *s, bool is_error)
 {
   if (is_error)
@@ -387,7 +387,7 @@ gripe_wrong_type_arg (octave_execution_exception& e,
 void
 gripe_wrong_type_arg (const std::string& s, bool is_error)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -402,7 +402,7 @@ gripe_wrong_type_arg (const std::string& s, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const std::string& s, bool is_error)
 {
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
@@ -420,7 +420,7 @@ gripe_wrong_type_arg (octave_execution_exception& e,
 void
 gripe_wrong_type_arg (const octave_value& tc, bool is_error)
 {
-  octave_execution_exception e;
+  octave::execution_exception e;
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic push
@@ -435,7 +435,7 @@ gripe_wrong_type_arg (const octave_value& tc, bool is_error)
 }
 
 void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const octave_value& tc, bool is_error)
 {
   std::string type = tc.type_name ();

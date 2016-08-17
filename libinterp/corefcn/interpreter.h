@@ -79,8 +79,8 @@ extern OCTINTERP_API bool octave_initialized;
                                                                         \
           F ARGS;                                                       \
         }                                                               \
-      OCTAVE_IGNORE_EXCEPTION (const octave_interrupt_exception&)       \
-        OCTAVE_IGNORE_EXCEPTION (const octave_execution_exception&)     \
+      OCTAVE_IGNORE_EXCEPTION (const octave::interrupt_exception&)       \
+        OCTAVE_IGNORE_EXCEPTION (const octave::execution_exception&)     \
         OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                 \
         }                                                               \
   while (0)

@@ -209,7 +209,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
           else
             err_wrong_type_arg ("sparse", args(2));
         }
-      catch (index_exception& e)
+      catch (octave::index_exception& e)
         {
           // Rethrow to allow more info to be reported later.
           e.set_pos_if_unset (2, k+1);

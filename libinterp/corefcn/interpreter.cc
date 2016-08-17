@@ -362,24 +362,24 @@ safe_source_file (const std::string& file_name,
     {
       source_file (file_name, context, verbose, require_file, warn_for);
     }
-  catch (const index_exception& e)
+  catch (const octave::index_exception& e)
     {
       recover_from_exception ();
 
       std::cerr << "error: index exception in " << file_name << ": "
                 << e.message () << std::endl;
     }
-  catch (const octave_exit_exception& ex)
+  catch (const octave::exit_exception& ex)
     {
       recover_from_exception ();
 
       clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
     }
-  catch (const octave_interrupt_exception&)
+  catch (const octave::interrupt_exception&)
     {
       recover_from_exception ();
     }
-  catch (const octave_execution_exception&)
+  catch (const octave::execution_exception&)
     {
       recover_from_exception ();
 
@@ -396,24 +396,24 @@ execute_pkg_add (const std::string& dir)
     {
       load_path::execute_pkg_add (dir);
     }
-  catch (const index_exception& e)
+  catch (const octave::index_exception& e)
     {
       recover_from_exception ();
 
       std::cerr << "error: index exception in " << file_name << ": "
                 << e.message () << std::endl;
     }
-  catch (const octave_exit_exception& ex)
+  catch (const octave::exit_exception& ex)
     {
       recover_from_exception ();
 
       clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
     }
-  catch (const octave_interrupt_exception&)
+  catch (const octave::interrupt_exception&)
     {
       recover_from_exception ();
     }
-  catch (const octave_execution_exception&)
+  catch (const octave::execution_exception&)
     {
       recover_from_exception ();
 
@@ -678,7 +678,7 @@ namespace octave
           {
             parse_status = execute_eval_option_code (code_to_eval);
           }
-        catch (const octave_execution_exception&)
+        catch (const octave::execution_exception&)
           {
             recover_from_exception ();
 
@@ -711,7 +711,7 @@ namespace octave
 
             execute_command_line_file (script_args[0]);
           }
-        catch (const octave_execution_exception&)
+        catch (const octave::execution_exception&)
           {
             recover_from_exception ();
 
@@ -788,17 +788,17 @@ namespace octave
       {
         eval_string (code, false, parse_status, 0);
       }
-    catch (const octave_exit_exception& ex)
+    catch (const octave::exit_exception& ex)
       {
         recover_from_exception ();
 
         clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
       }
-    catch (const octave_interrupt_exception&)
+    catch (const octave::interrupt_exception&)
       {
         recover_from_exception ();
       }
-    catch (const octave_execution_exception&)
+    catch (const octave::execution_exception&)
       {
         recover_from_exception ();
 
@@ -914,13 +914,13 @@ namespace octave
                   break;
               }
           }
-        catch (const octave_exit_exception& ex)
+        catch (const octave::exit_exception& ex)
           {
             recover_from_exception ();
 
             clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
           }
-        catch (const octave_interrupt_exception&)
+        catch (const octave::interrupt_exception&)
           {
             recover_from_exception ();
 
@@ -928,7 +928,7 @@ namespace octave
             if (octave::application::interactive ())
               octave_stdout << "\n";
           }
-        catch (const index_exception& e)
+        catch (const octave::index_exception& e)
           {
             recover_from_exception ();
 
@@ -936,7 +936,7 @@ namespace octave
                       << e.message () << " -- trying to return to prompt"
                       << std::endl;
           }
-        catch (const octave_execution_exception& e)
+        catch (const octave::execution_exception& e)
           {
             std::string stack_trace = e.info ();
 

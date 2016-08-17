@@ -484,7 +484,7 @@ boolNDArray
 FloatNDArray::operator ! (void) const
 {
   if (any_element_is_nan ())
-    err_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
 
   return do_mx_unary_op<bool, float> (*this, mx_inline_not);
 }

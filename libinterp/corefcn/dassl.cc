@@ -79,7 +79,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = dassl_fcn->do_multi_index_op (1, args);
         }
-      catch (octave_execution_exception& e)
+      catch (octave::execution_exception& e)
         {
           err_user_supplied_eval (e, "dassl");
         }
@@ -129,7 +129,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = dassl_jac->do_multi_index_op (1, args);
         }
-      catch (octave_execution_exception& e)
+      catch (octave::execution_exception& e)
         {
           err_user_supplied_eval (e, "dassl");
         }

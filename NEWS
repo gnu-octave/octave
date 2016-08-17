@@ -176,7 +176,7 @@ Summary of important user-visible changes for version 4.2:
  ** The global error_state variable in Octave's C++ API has been
     deprecated and will be removed in a future version.  Now the error
     and print_usage functions throw an exception
-    (octave_execution_exception) after displaying the error message.
+    (octave::execution_exception) after displaying the error message.
     This makes the error and print_usage functions in C++ work more like
     the corresponding functions in the scripting language.
 

@@ -89,7 +89,7 @@ tree::meets_bp_condition () const
           else
             warning ("Error parsing breakpoint condition");
         }
-      catch (const octave_execution_exception& e)
+      catch (const octave::execution_exception& e)
         {
           warning ("Error evaluating breakpoint condition:\n    %s",
                    last_error_message ().c_str ());

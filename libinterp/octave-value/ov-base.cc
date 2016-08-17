@@ -274,7 +274,7 @@ idx_vector
 octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = "<" + type_name () + ">";
-  err_invalid_index (nm.c_str ());
+  octave::err_invalid_index (nm.c_str ());
 }
 
 octave_value
@@ -507,7 +507,7 @@ octave_base_value::print_info (std::ostream& os,
       {                                                                 \
         d = double_value (frc_str_conv);                                \
       }                                                                 \
-    catch (octave_execution_exception& e)                               \
+    catch (octave::execution_exception& e)                               \
       {                                                                 \
         err_wrong_type_arg (e, "octave_base_value::" #F "_value ()", type_name ()); \
       }                                                                 \
@@ -545,7 +545,7 @@ octave_base_value::nint_value (bool frc_str_conv) const
     {
       d = double_value (frc_str_conv);
     }
-  catch (octave_execution_exception& e)
+  catch (octave::execution_exception& e)
     {
       err_wrong_type_arg (e, "octave_base_value::nint_value ()", type_name ());
     }

@@ -45,7 +45,7 @@ DEFUNOP (not, float_scalar)
   const octave_float_scalar& v = dynamic_cast<const octave_float_scalar&> (a);
   float x = v.float_value ();
   if (octave::math::isnan (x))
-    err_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
 
   return octave_value (x == 0.0f);
 }

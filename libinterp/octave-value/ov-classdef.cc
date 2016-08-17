@@ -1521,7 +1521,7 @@ cdef_object_array::subsref (const std::string& type,
               {
                 iv(i) = ival(i).index_vector ();
               }
-            catch (index_exception& e)
+            catch (octave::index_exception& e)
               {
                 // Rethrow to allow more info to be reported later.
                 e.set_pos_if_unset (ival.length (), i+1);
@@ -1617,7 +1617,7 @@ cdef_object_array::subsasgn (const std::string& type,
                 {
                   iv(i) = ival(i).index_vector ();
                 }
-              catch (index_exception& e)
+              catch (octave::index_exception& e)
                 {
                   e.set_pos_if_unset (ival.length (), i+1);
                   throw;   // var name set in pt-idx.cc / pt-assign.cc
@@ -1661,7 +1661,7 @@ cdef_object_array::subsasgn (const std::string& type,
                 {
                   iv(i) = ival(i).index_vector ();
                 }
-              catch (index_exception& e)
+              catch (octave::index_exception& e)
                 {
                   // Rethrow to allow more info to be reported later.
                   e.set_pos_if_unset (ival.length (), i+1);

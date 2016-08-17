@@ -87,7 +87,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
     {
       dval = tc.double_value ();
     }
-  catch (const octave_execution_exception&)
+  catch (const octave::execution_exception&)
     {
       recover_from_exception ();
 
@@ -6464,7 +6464,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
     {
       get_size (size, nr, nc, one_elt_size_spec, "fread");
     }
-  catch (const octave_execution_exception&)
+  catch (const octave::execution_exception&)
     {
       invalid_operation ("fread", "reading");
     }

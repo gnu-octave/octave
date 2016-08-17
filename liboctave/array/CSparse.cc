@@ -1700,7 +1700,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -1715,7 +1715,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
 
@@ -1982,7 +1982,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -1997,7 +1997,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
   return retval;
@@ -2211,7 +2211,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -2226,7 +2226,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
 
@@ -2493,7 +2493,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -2508,7 +2508,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
 
@@ -2742,7 +2742,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -2757,7 +2757,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
 
@@ -3043,7 +3043,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -3058,7 +3058,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
 
@@ -3295,7 +3295,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -3310,7 +3310,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
 
@@ -3595,7 +3595,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
 
       volatile double rcond_plus_one = rcond + 1.0;
@@ -3610,7 +3610,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               mattype.mark_as_rectangular ();
             }
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
     }
 
@@ -3755,7 +3755,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
 
             }
           else
@@ -3853,7 +3853,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
             }
           else
             {
@@ -4056,7 +4056,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
             }
         }
       else if (typ != MatrixType::Tridiagonal_Hermitian)
@@ -4152,7 +4152,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
             }
           else
             {
@@ -4324,7 +4324,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -4410,7 +4410,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
             }
           else
             {
@@ -4443,7 +4443,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -4568,7 +4568,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -4687,7 +4687,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
             }
           else
             {
@@ -4720,7 +4720,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -4884,7 +4884,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -4968,7 +4968,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
             }
           else
             {
@@ -5001,7 +5001,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -5128,7 +5128,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -5252,7 +5252,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                warn_singular_matrix ();
+                octave::warn_singular_matrix ();
             }
           else
             {
@@ -5285,7 +5285,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        warn_singular_matrix (rcond);
+                        octave::warn_singular_matrix (rcond);
                     }
                 }
               else
@@ -5440,7 +5440,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
           if (sing_handler)
             sing_handler (rcond);
           else
-            warn_singular_matrix (rcond);
+            octave::warn_singular_matrix (rcond);
         }
       else if (status < 0)
         {
@@ -5600,7 +5600,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    warn_singular_matrix (rcond);
+                    octave::warn_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -5860,7 +5860,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    warn_singular_matrix (rcond);
+                    octave::warn_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -6148,7 +6148,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    warn_singular_matrix (rcond);
+                    octave::warn_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -6387,7 +6387,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    warn_singular_matrix (rcond);
+                    octave::warn_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -6518,7 +6518,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   if (sing_handler)
                     sing_handler (rcond);
                   else
-                    warn_singular_matrix (rcond);
+                    octave::warn_singular_matrix (rcond);
                 }
 
               UMFPACK_ZNAME (report_info) (control, info);
@@ -7060,7 +7060,7 @@ SparseBoolMatrix
 SparseComplexMatrix::operator ! (void) const
 {
   if (any_element_is_nan ())
-    err_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -7622,7 +7622,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
       else if (b_nr == 0 || b_nc == 0)
         r.resize (b_nr, b_nc);
       else
-        err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
     }
 
   return r;
@@ -7739,7 +7739,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
       else if (b_nr == 0 || b_nc == 0)
         r.resize (b_nr, b_nc);
       else
-        err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
     }
 
   return r;

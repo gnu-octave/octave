@@ -297,14 +297,14 @@ pr_where (std::ostream& os, const char *who)
     }
 }
 
-static octave_execution_exception
+static octave::execution_exception
 make_execution_exception (const char *who)
 {
   std::ostringstream buf;
 
   pr_where (buf, who);
 
-  octave_execution_exception retval;
+  octave::execution_exception retval;
 
   retval.set_stack_trace (buf.str ());
 
@@ -312,7 +312,7 @@ make_execution_exception (const char *who)
 }
 
 static void
-maybe_enter_debugger (octave_execution_exception& e,
+maybe_enter_debugger (octave::execution_exception& e,
                       bool show_stack_trace = false)
 {
   if ((octave::application::interactive ()
@@ -415,7 +415,7 @@ message_with_id (const char *name, const char *id, const char *fmt, ...)
 
 OCTAVE_NORETURN static
 void
-usage_1 (octave_execution_exception& e, const char *id,
+usage_1 (octave::execution_exception& e, const char *id,
          const char *fmt, va_list args)
 {
   verror (true, std::cerr, "usage", id, fmt, args);
@@ -429,7 +429,7 @@ OCTAVE_NORETURN static
 void
 usage_1 (const char *id, const char *fmt, va_list args)
 {
-  octave_execution_exception e = make_execution_exception ("usage");
+  octave::execution_exception e = make_execution_exception ("usage");
 
   usage_1 (e, id, fmt, args);
 }
@@ -466,7 +466,7 @@ usage_with_id (const char *id, const char *fmt, ...)
 
 OCTAVE_NORETURN static
 void
-error_1 (octave_execution_exception& e, std::ostream& os,
+error_1 (octave::execution_exception& e, std::ostream& os,
          const char *name, const char *id, const char *fmt,
          va_list args, bool with_cfn = false)
 {
@@ -517,7 +517,7 @@ void
 error_1 (std::ostream& os, const char *name, const char *id,
          const char *fmt, va_list args, bool with_cfn = false)
 {
-  octave_execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e = make_execution_exception ("error");
 
   error_1 (e, os, name, id, fmt, args, with_cfn);
 }
@@ -538,13 +538,13 @@ error (const char *fmt, ...)
 }
 
 void
-verror (octave_execution_exception& e, const char *fmt, va_list args)
+verror (octave::execution_exception& e, const char *fmt, va_list args)
 {
   error_1 (e, std::cerr, "error", "", fmt, args);
 }
 
 void
-error (octave_execution_exception& e, const char *fmt, ...)
+error (octave::execution_exception& e, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);

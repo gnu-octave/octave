@@ -204,7 +204,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
           break;
         }
     }
-  catch (index_exception& e)
+  catch (octave::index_exception& e)
     {
       // Rethrow to allow more info to be reported later.
       e.set_pos_if_unset (n, k+1);
@@ -235,7 +235,7 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
         {
           ra_idx(i) = idx_arg(i).index_vector ();
         }
-      catch (index_exception& e)
+      catch (octave::index_exception& e)
         {
           // Rethrow to allow more info to be reported later.
           e.set_pos (len, i+1);
@@ -259,7 +259,7 @@ Cell::delete_elements (const octave_value_list& idx_arg)
       {
         ra_idx.xelem (i) = idx_arg(i).index_vector ();
       }
-    catch (index_exception& e)
+    catch (octave::index_exception& e)
         {
           // Rethrow to allow more info to be reported later.
           e.set_pos (len, i+1);

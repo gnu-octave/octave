@@ -358,7 +358,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
     {
       m = val.matrix_value (true);
     }
-  catch (const octave_execution_exception& e)
+  catch (const octave::execution_exception& e)
     {
       recover_from_exception ();
 

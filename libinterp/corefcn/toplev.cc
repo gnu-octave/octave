@@ -229,7 +229,7 @@ command shell that is started to run the command.
         {
           return_output = args(1).is_true ();
         }
-      catch (octave_execution_exception& e)
+      catch (octave::execution_exception& e)
         {
           error (e, "system: RETURN_OUTPUT must be boolean value true or false");
         }

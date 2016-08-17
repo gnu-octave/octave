@@ -78,7 +78,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
     {
       tmp = func.do_multi_index_op (nargout, inputlist);
     }
-  catch (const octave_execution_exception& e)
+  catch (const octave::execution_exception& e)
     {
       if (error_handler.is_defined ())
         {

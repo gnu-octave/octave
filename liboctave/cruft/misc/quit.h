@@ -60,87 +60,99 @@ OCTAVE_NORETURN OCTAVE_API extern void octave_jump_to_enclosing_context (void);
 
 #if defined (__cplusplus)
 
-class
-octave_execution_exception
+namespace octave
 {
-public:
-
-  octave_execution_exception (void) : m_stack_trace () { }
-
-  octave_execution_exception (const octave_execution_exception& x)
-    : m_stack_trace (x.m_stack_trace) { }
-
-  octave_execution_exception& operator = (const octave_execution_exception& x)
+  class
+  execution_exception
   {
-    if (&x != this)
-      m_stack_trace = x.m_stack_trace;
+  public:
 
-    return *this;
-  }
+    execution_exception (void) : m_stack_trace () { }
 
-  ~octave_execution_exception (void) { }
+    execution_exception (const execution_exception& x)
+      : m_stack_trace (x.m_stack_trace) { }
 
-  virtual void set_stack_trace (const std::string& st)
+    execution_exception& operator = (const execution_exception& x)
+    {
+      if (&x != this)
+        m_stack_trace = x.m_stack_trace;
+
+      return *this;
+    }
+
+    ~execution_exception (void) { }
+
+    virtual void set_stack_trace (const std::string& st)
+    {
+      m_stack_trace = st;
+    }
+
+    virtual void set_stack_trace (void)
+    {
+      m_stack_trace = "";
+    }
+
+    virtual std::string info (void) const
+    {
+      return m_stack_trace;
+    }
+
+  private:
+
+    std::string m_stack_trace;
+  };
+
+  class
+  exit_exception
   {
-    m_stack_trace = st;
-  }
+  public:
 
-  virtual void set_stack_trace (void)
+    exit_exception (int exit_status = 0, bool safe_to_return = false)
+      : m_exit_status (exit_status), m_safe_to_return (safe_to_return)
+    { }
+
+    exit_exception (const exit_exception& ex)
+      : m_exit_status (ex.m_exit_status), m_safe_to_return (ex.m_safe_to_return)
+    { }
+
+    exit_exception& operator = (exit_exception& ex)
+    {
+      if (this != &ex)
+        {
+          m_exit_status = ex.m_exit_status;
+          m_safe_to_return = ex.m_safe_to_return;
+        }
+
+      return *this;
+    }
+
+    ~exit_exception (void) { }
+
+    int exit_status (void) const { return m_exit_status; }
+
+    bool safe_to_return (void) const { return m_safe_to_return; }
+
+  private:
+
+    int m_exit_status;
+
+    bool m_safe_to_return;
+  };
+
+  class
+  interrupt_exception
   {
-    m_stack_trace = "";
-  }
+  };
+}
 
-  virtual std::string info (void) const
-  {
-    return m_stack_trace;
-  }
+OCTAVE_DEPRECATED ("use 'octave::execution_exception' instead")
+typedef octave::exit_exception octave_execution_exception;
 
-private:
+OCTAVE_DEPRECATED ("use 'octave::exit_exception' instead")
+typedef octave::exit_exception octave_exit_exception;
 
-  std::string m_stack_trace;
-};
-
-class
-octave_exit_exception
-{
-public:
-
-  octave_exit_exception (int exit_status = 0, bool safe_to_return = false)
-    : m_exit_status (exit_status), m_safe_to_return (safe_to_return)
-  { }
-
-  octave_exit_exception (const octave_exit_exception& ex)
-    : m_exit_status (ex.m_exit_status), m_safe_to_return (ex.m_safe_to_return)
-  { }
-
-  octave_exit_exception& operator = (octave_exit_exception& ex)
-  {
-    if (this != &ex)
-      {
-        m_exit_status = ex.m_exit_status;
-        m_safe_to_return = ex.m_safe_to_return;
-      }
-
-    return *this;
-  }
-
-  ~octave_exit_exception (void) { }
-
-  int exit_status (void) const { return m_exit_status; }
-
-  bool safe_to_return (void) const { return m_safe_to_return; }
-
-private:
-
-  int m_exit_status;
-
-  bool m_safe_to_return;
-};
-
-class
-octave_interrupt_exception
-{
-};
+OCTAVE_DEPRECATED ("use 'octave::interrupt_exception' instead")
+typedef octave::interrupt_exception octave_interrupt_exception;
 
 #endif
 
@@ -265,12 +277,12 @@ inline void octave_quit (void)
 
 #define END_INTERRUPT_WITH_EXCEPTIONS                                   \
     }                                                                   \
-  catch (const octave_interrupt_exception&)                             \
+  catch (const octave::interrupt_exception&)                            \
     {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_jump_to_enclosing_context ();                              \
     }                                                                   \
-  catch (const octave_execution_exception&)                             \
+  catch (const octave::execution_exception&)                            \
     {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_exception_state = octave_exec_exception;                   \
@@ -282,7 +294,7 @@ inline void octave_quit (void)
       octave_exception_state = octave_alloc_exception;                  \
       octave_jump_to_enclosing_context ();                              \
     }                                                                   \
-  catch (const octave_exit_exception& ex)                               \
+  catch (const octave::exit_exception& ex)                              \
     {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_exception_state = octave_quit_exception;                   \

@@ -476,7 +476,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
       return do_bsxfun_op (x, y, op, op1, op2);
     }
   else
-    err_nonconformant (opname, dx, dy);
+    octave::err_nonconformant (opname, dx, dy);
 }
 
 template <typename R, typename X, typename Y>
@@ -513,7 +513,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
   else if (is_valid_inplace_bsxfun (opname, dr, dx))
     do_inplace_bsxfun_op (r, x, op, op1);
   else
-    err_nonconformant (opname, dr, dx);
+    octave::err_nonconformant (opname, dr, dx);
 
   return r;
 }

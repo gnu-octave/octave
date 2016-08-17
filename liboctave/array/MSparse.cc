@@ -38,7 +38,7 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char* op_name)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nr != b_nr || a_nc != b_nc)
-    err_nonconformant (op_name , a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant (op_name , a_nr, a_nc, b_nr, b_nc);
 
   r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
 
@@ -302,7 +302,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
         }
     }
   else if (a_nr != b_nr || a_nc != b_nc)
-    err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
   else
     {
       r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
@@ -423,7 +423,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
         }
     }
   else if (a_nr != b_nr || a_nc != b_nc)
-    err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
   else
     {
       r = MSparse<T> (a_nr, a_nc, (a.nnz () > b.nnz () ? a.nnz () : b.nnz ()));
@@ -543,7 +543,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
         }
     }
   else if (a_nr != b_nr || a_nc != b_nc)
-    err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
   else
     {
       r = MSparse<T> (a_nr, a_nc, (Zero / Zero));

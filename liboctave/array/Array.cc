@@ -201,9 +201,9 @@ Array<T>::checkelem (octave_idx_type n)
 {
   // Do checks directly to avoid recomputing slice_len.
   if (n < 0)
-    err_invalid_index (n);
+    octave::err_invalid_index (n);
   if (n >= slice_len)
-    err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
+    octave::err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
 
   return elem (n);
 }
@@ -235,9 +235,9 @@ Array<T>::checkelem (octave_idx_type n) const
 {
   // Do checks directly to avoid recomputing slice_len.
   if (n < 0)
-    err_invalid_index (n);
+    octave::err_invalid_index (n);
   if (n >= slice_len)
-    err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
+    octave::err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
 
   return elem (n);
 }
@@ -271,7 +271,7 @@ Array<T>::column (octave_idx_type k) const
   octave_idx_type r = dimensions(0);
 #if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   if (k < 0 || k > dimensions.numel (1))
-    err_index_out_of_range (2, 2, k+1, dimensions.numel (1), dimensions);
+    octave::err_index_out_of_range (2, 2, k+1, dimensions.numel (1), dimensions);
 #endif
 
   return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
@@ -286,7 +286,7 @@ Array<T>::page (octave_idx_type k) const
   octave_idx_type p = r*c;
 #if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   if (k < 0 || k > dimensions.numel (2))
-    err_index_out_of_range (3, 3, k+1, dimensions.numel (2), dimensions);
+    octave::err_index_out_of_range (3, 3, k+1, dimensions.numel (2), dimensions);
 #endif
 
   return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
@@ -298,9 +298,9 @@ Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 {
 #if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   if (lo < 0)
-    err_index_out_of_range (1, 1, lo+1, numel (), dimensions);
+    octave::err_index_out_of_range (1, 1, lo+1, numel (), dimensions);
   if (up > numel ())
-    err_index_out_of_range (1, 1, up, numel (), dimensions);
+    octave::err_index_out_of_range (1, 1, up, numel (), dimensions);
 #endif
   if (up < lo) up = lo;
   return Array<T> (*this, dim_vector (up - lo, 1), lo, up);
@@ -728,7 +728,7 @@ Array<T>::index (const idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        err_index_out_of_range (1, 1, i.extent (n), n, dimensions); // throws
+        octave::err_index_out_of_range (1, 1, i.extent (n), n, dimensions); // throws
 
       // FIXME: this is the only place where orig_dimensions are used.
       dim_vector rd = i.orig_dimensions ();
@@ -795,9 +795,9 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
   else
     {
       if (i.extent (r) != r)
-        err_index_out_of_range (2, 1, i.extent (r), r, dimensions); // throws
+        octave::err_index_out_of_range (2, 1, i.extent (r), r, dimensions); // throws
       if (j.extent (c) != c)
-        err_index_out_of_range (2, 2, j.extent (c), c, dimensions); // throws
+        octave::err_index_out_of_range (2, 2, j.extent (c), c, dimensions); // throws
 
       octave_idx_type n = numel ();
       octave_idx_type il = i.length (r);
@@ -857,7 +857,7 @@ Array<T>::index (const Array<idx_vector>& ia) const
       for (int i = 0; i < ial; i++)
         {
           if (ia(i).extent (dv(i)) != dv(i))
-            err_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i), dimensions); // throws
+            octave::err_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i), dimensions); // throws
 
           all_colons = all_colons && ia(i).is_colon ();
         }
@@ -914,7 +914,7 @@ void
 Array<T>::resize1 (octave_idx_type n, const T& rfv)
 {
   if (n < 0 || ndims () != 2)
-    err_invalid_resize ();
+    octave::err_invalid_resize ();
 
   dim_vector dv;
   // This is driven by Matlab's behavior of giving a *row* vector
@@ -933,7 +933,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
     invalid = true;
 
   if (invalid)
-    err_invalid_resize ();
+    octave::err_invalid_resize ();
 
   octave_idx_type nx = numel ();
   if (n == nx - 1 && n > 0)
@@ -985,7 +985,7 @@ void
 Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
 {
   if (r < 0 || c < 0 || ndims () != 2)
-    err_invalid_resize ();
+    octave::err_invalid_resize ();
 
   octave_idx_type rx = rows ();
   octave_idx_type cx = columns ();
@@ -1032,7 +1032,7 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
   else if (dimensions != dv)
     {
       if (dimensions.ndims () > dvl || dv.any_neg ())
-        err_invalid_resize ();
+        octave::err_invalid_resize ();
 
       Array<T> tmp (dv);
       // Prepare for recursive resizing.
@@ -1135,7 +1135,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
   octave_idx_type rhl = rhs.numel ();
 
   if (rhl != 1 && i.length (n) != rhl)
-    err_nonconformant ("=", dim_vector(i.length(n),1), rhs.dims());
+    octave::err_nonconformant ("=", dim_vector(i.length(n),1), rhs.dims());
 
   octave_idx_type nx = i.extent (n);
   bool colon = i.is_colon_equiv (nx);
@@ -1274,7 +1274,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
     }
   // any empty RHS can be assigned to an empty LHS
   else if ((il != 0 && jl != 0) || (rhdv(0) != 0 && rhdv(1) != 0))
-    err_nonconformant ("=", il, jl, rhs.dim1 (), rhs.dim2 ());
+    octave::err_nonconformant ("=", il, jl, rhs.dim1 (), rhs.dim2 ());
 }
 
 // Assignment to a multi-dimensional array
@@ -1388,7 +1388,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
               rhsempty = rhsempty || (rhdv(j++) == 0);
             }
           if (! lhsempty || ! rhsempty)
-            err_nonconformant ("=", dv, rhdv);
+            octave::err_nonconformant ("=", dv, rhdv);
         }
     }
 }
@@ -1413,7 +1413,7 @@ Array<T>::delete_elements (const idx_vector& i)
   else if (i.length (n) != 0)
     {
       if (i.extent (n) != n)
-        err_del_index_out_of_range (true, i.extent (n), n);
+        octave::err_del_index_out_of_range (true, i.extent (n), n);
 
       octave_idx_type l, u;
       bool col_vec = ndims () == 2 && columns () == 1 && rows () != 1;
@@ -1456,7 +1456,7 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
   else if (i.length (n) != 0)
     {
       if (i.extent (n) != n)
-        err_del_index_out_of_range (false, i.extent (n), n);
+        octave::err_del_index_out_of_range (false, i.extent (n), n);
 
       octave_idx_type l, u;
 

@@ -91,7 +91,7 @@ load_path::dir_info::update (void)
                   initialize ();
                 }
             }
-          catch (const octave_execution_exception&)
+          catch (const octave::execution_exception&)
             {
               // Skip updating if we don't know where we are but
               // don't treat it as an error.
@@ -159,7 +159,7 @@ load_path::dir_info::initialize (void)
 
           abs_dir_cache[abs_name] = *this;
         }
-      catch (const octave_execution_exception&)
+      catch (const octave::execution_exception&)
         {
           // Skip updating if we don't know where we are but don't treat
           // it as an error.

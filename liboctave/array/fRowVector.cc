@@ -176,7 +176,7 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (a_nr != len)
-    err_nonconformant ("operator *", 1, len, a_nr, a_nc);
+    octave::err_nonconformant ("operator *", 1, len, a_nr, a_nc);
 
   if (len == 0)
     retval.resize (a_nc, 0.0);
@@ -297,7 +297,7 @@ operator * (const FloatRowVector& v, const FloatColumnVector& a)
   octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
-    err_nonconformant ("operator *", len, a_len);
+    octave::err_nonconformant ("operator *", len, a_len);
 
   if (len != 0)
     F77_FUNC (xsdot, XSDOT) (len, v.data (), 1, a.data (), 1, retval);

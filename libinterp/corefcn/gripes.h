@@ -31,7 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-array-gripes.h"
 
 class octave_value;
-class octave_execution_exception;
+namespace octave
+{
+  class execution_exception;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Alphabetized list of gripes.
@@ -144,7 +147,7 @@ gripe_user_supplied_eval (const char *name);
 
 OCTAVE_DEPRECATED ("use 'err_user_supplied_eval' instead")
 OCTAVE_NORETURN OCTINTERP_API extern void
-gripe_user_supplied_eval (octave_execution_exception& e, const char *name);
+gripe_user_supplied_eval (octave::execution_exception& e, const char *name);
 
 OCTAVE_DEPRECATED ("use 'warn_complex_cmp' instead")
 OCTINTERP_API extern void
@@ -157,7 +160,7 @@ gripe_wrong_type_arg (const char *name, const char *s,
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
 OCTINTERP_API extern void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const char *name, const char *s,
                       bool is_error = true);
 
@@ -168,7 +171,7 @@ gripe_wrong_type_arg (const char *name, const std::string& s,
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
 OCTINTERP_API extern void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const char *name, const std::string& s,
                       bool is_error = true);
 
@@ -179,7 +182,7 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
 OCTINTERP_API extern void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const char *name, const octave_value& tc,
                       bool is_error = true);
 
@@ -190,7 +193,7 @@ gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
 OCTINTERP_API extern void
-gripe_wrong_type_arg (octave_execution_exception& e,
+gripe_wrong_type_arg (octave::execution_exception& e,
                       const std::string& name, const octave_value& tc,
                       bool is_error = true);
 
@@ -200,7 +203,7 @@ gripe_wrong_type_arg (const char *s, bool is_error = true);
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
 OCTINTERP_API extern void
-gripe_wrong_type_arg (octave_execution_exception& e, const char *s,
+gripe_wrong_type_arg (octave::execution_exception& e, const char *s,
                       bool is_error = true);
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
@@ -209,7 +212,7 @@ gripe_wrong_type_arg (const std::string& s, bool is_error = true);
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
 OCTINTERP_API extern void
-gripe_wrong_type_arg (octave_execution_exception& e, const std::string& s,
+gripe_wrong_type_arg (octave::execution_exception& e, const std::string& s,
                       bool is_error = true);
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
@@ -218,7 +221,7 @@ gripe_wrong_type_arg (const octave_value& tc, bool is_error = true);
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg' instead")
 OCTINTERP_API extern void
-gripe_wrong_type_arg (octave_execution_exception& e, const octave_value& tc,
+gripe_wrong_type_arg (octave::execution_exception& e, const octave_value& tc,
                       bool is_error = true);
 
 OCTAVE_DEPRECATED ("use 'err_wrong_type_arg_for_binary_op' instead")

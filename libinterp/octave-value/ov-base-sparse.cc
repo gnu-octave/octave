@@ -93,7 +93,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
           error ("sparse indexing needs 1 or 2 indices");
         }
     }
-  catch (index_exception& e)
+  catch (octave::index_exception& e)
     {
       // Rethrow to allow more info to be reported later.
       e.set_pos_if_unset (n_idx, k+1);
@@ -218,7 +218,7 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
           error ("sparse indexing needs 1 or 2 indices");
         }
     }
-  catch (index_exception& e)
+  catch (octave::index_exception& e)
     {
       // Rethrow to allow more info to be reported later.
       e.set_pos_if_unset (len, k+1);
@@ -270,7 +270,7 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
           error ("sparse indexing needs 1 or 2 indices");
         }
     }
-  catch (index_exception& e)
+  catch (octave::index_exception& e)
     {
       // Rethrow to allow more info to be reported later.
       e.set_pos_if_unset (len, k+1);
@@ -304,7 +304,7 @@ octave_base_sparse<T>::is_true (void) const
       T t1 (matrix.reshape (dim_vector (nel, 1)));
 
       if (t1.any_element_is_nan ())
-        err_nan_to_logical_conversion ();
+        octave::err_nan_to_logical_conversion ();
 
       if (nel > 1)
         warn_array_as_logical (dv);

@@ -200,7 +200,7 @@ public:
   bool bool_value (bool warn = false) const
   {
     if (octave::math::isnan (scalar))
-      err_nan_to_logical_conversion ();
+      octave::err_nan_to_logical_conversion ();
     if (warn && scalar != 0 && scalar != 1)
       warn_logical_conversion ();
 
@@ -210,7 +210,7 @@ public:
   boolNDArray bool_array_value (bool warn = false) const
   {
     if (octave::math::isnan (scalar))
-      err_nan_to_logical_conversion ();
+      octave::err_nan_to_logical_conversion ();
     if (warn && scalar != 0 && scalar != 1)
       warn_logical_conversion ();
 

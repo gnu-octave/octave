@@ -48,7 +48,7 @@ public:
           {
             val = a.double_value ();
           }
-        catch (octave_execution_exception& e)
+        catch (octave::execution_exception& e)
           {
             error (e, "invalid handle");
           }

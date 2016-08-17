@@ -56,7 +56,7 @@
 ##
 ## With only @var{filename} given, a HTML report is generated in a
 ## subdirectory @samp{html} relative to the current working directory.
-## The Octave commands are evaluated in a seperate context and any
+## The Octave commands are evaluated in a separate context and any
 ## figures created while executing the script file are included in the
 ## report.  All formatting syntax of @var{filename} is treated according
 ## to the specified output format and included in the report.

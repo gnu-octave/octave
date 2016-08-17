@@ -39,7 +39,7 @@
 ## for the name of the running build,
 ##
 ## @item @qcode{"-java"}
-## for version information of the Java VM,
+## for version information of the Java @nospell{VM},
 ##
 ## @item @qcode{"-fftw"}
 ## for version information for the linked @sc{fftw},

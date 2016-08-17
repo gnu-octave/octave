@@ -547,7 +547,7 @@ directory.
 If @var{dir} is defined the compressed files are placed in this directory,
 rather than the original directory where the uncompressed file resides.
 Note that this does not replicate a directory tree in @var{dir} which may
-lead to files overwritting each other if there are multiple files with the
+lead to files overwriting each other if there are multiple files with the
 same name.
 
 If @var{dir} does not exist it is created.
@@ -590,7 +590,7 @@ compressed files will be silently overwritten.
 If @var{dir} is defined the compressed files are placed in this directory,
 rather than the original directory where the uncompressed file resides.
 Note that this does not replicate a directory tree in @var{dir} which may
-lead to files overwritting each other if there are multiple files with the
+lead to files overwriting each other if there are multiple files with the
 same name.
 
 If @var{dir} does not exist it is created.

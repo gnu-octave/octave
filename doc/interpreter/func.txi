@@ -1616,7 +1616,7 @@ markup, that is only visible in this kind of output.
 @group
 ##
 # <latex>
-# Some output only visible in \LaTeX or PDF reports.
+# Some output only visible in @nospell{LaTeX} or PDF reports.
 # \begin@{equation@}
 # e^x = \lim\limits_@{n\rightarrow\infty@}\left(1+\dfrac@{x@}@{n@}\right)^@{n@}
 # \end@{equation@}

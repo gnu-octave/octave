@@ -28,7 +28,7 @@
 ## @code{surface} object are set to a value other than @qcode{"none"}, these
 ## objects are drawn with light and shadow effects.  Supported values for these
 ## properties are @qcode{"none"} (no lighting effects), @qcode{"flat"}
-## (facetted look of the objects) and @qcode{"gouraud"} (linear interpolation
+## (faceted look of the objects) and @qcode{"gouraud"} (linear interpolation
 ## of the lighting effects between the vertices).
 ## For @code{patch} objects, the normals must be set manually (property
 ## @qcode{"VertexNormals"}).

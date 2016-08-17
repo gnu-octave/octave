@@ -1,5 +1,5 @@
-## Copyright (C) 2015 Mike Miller
-## Copyright (C) 2005-2015 Michael Zeising
+## Copyright (C) 2016 Mike Miller
+## Copyright (C) 2005-2016 Michael Zeising
 ##
 ## This file is part of Octave.
 ##

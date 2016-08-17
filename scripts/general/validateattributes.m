@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Carnë Draug
+## Copyright (C) 2013-2016 Carnë Draug
 ## Copyright (C) 2016 Carlo de Falco
 ##
 ## This file is part of Octave.

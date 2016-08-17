@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 John W. Eaton and Paul Kienzle
+Copyright (C) 2001-2016 John W. Eaton and Paul Kienzle
 
 This file is part of Octave.
 

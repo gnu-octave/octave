@@ -1,5 +1,5 @@
 @c Copyright (C) 2012 John W. Eaton
-@c Copyright (C) 2008-2015 Jaroslav Hajek
+@c Copyright (C) 2008-2016 Jaroslav Hajek
 @c
 @c This file is part of Octave.
 @c
@@ -199,7 +199,7 @@ comment header (use appropriate year, name and comment marks):
 
 @example
 @group
-## Copyright (C) 1996-2015 John W. Eaton <jwe@@octave.org>
+## Copyright (C) 1996-2016 John W. Eaton <jwe@@octave.org>
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ## Copyright (C) 2009-2010 VZLU Prague
 ##
 ## This file is part of Octave.

@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2015 Julien Bect
-## Copyright (C) 2000-2015 Gabriele Pannocchia.
+## Copyright (C) 2013-2016 Julien Bect
+## Copyright (C) 2000-2016 Gabriele Pannocchia.
 ##
 ## This file is part of Octave.
 ##

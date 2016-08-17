@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 Ross Lippert and Paul Kienzle
+Copyright (C) 2001-2016 Ross Lippert and Paul Kienzle
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.

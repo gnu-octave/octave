@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Martin Helm
+## Copyright (C) 2012-2016 Martin Helm
 ##
 ## This file is part of Octave.
 ##

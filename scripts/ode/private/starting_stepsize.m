@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.
 ##

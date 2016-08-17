@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 N. J. Higham
+## Copyright (C) 2008-2016 N. J. Higham
 ## Copyright (C) 2010 Richard T. Guy
 ## Copyright (C) 2010 Marco Caliari
 ##

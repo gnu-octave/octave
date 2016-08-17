@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2015 Nicolo' Giorgetti
-Copyright (C) 2013-2015 Sébastien Villemot <sebastien@debian.org>
+Copyright (C) 2005-2016 Nicolo' Giorgetti
+Copyright (C) 2013-2016 Sébastien Villemot <sebastien@debian.org>
 
 This file is part of Octave.
 

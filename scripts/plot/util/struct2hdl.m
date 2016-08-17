@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 pdiribarne
+## Copyright (C) 2012-2016 pdiribarne
 ##
 ## This file is part of Octave.
 ##

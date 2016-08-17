@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2015 Mohamed Kamoun
-Copyright (C) 2006-2015 Bill Denney
+Copyright (C) 2005-2016 Mohamed Kamoun
+Copyright (C) 2006-2016 Bill Denney
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 

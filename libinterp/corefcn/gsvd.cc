@@ -1,6 +1,6 @@
-// Copyright (C) 1996, 1997 John W. Eaton
-// Copyright (C) 2006, 2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
 // Copyright (C) 2016 Barbara Lócsi
+// Copyright (C) 2006, 2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+// Copyright (C) 1996, 1997 John W. Eaton
 //
 // This program is free software; you can redistribute it and/or modify it under
 // the terms of the GNU General Public License as published by the Free Software

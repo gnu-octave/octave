@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2015 Julien Bect
-## Copyright (C) 2009-2015 Robert T. Short
+## Copyright (C) 2013-2016 Julien Bect
+## Copyright (C) 2009-2016 Robert T. Short
 ##
 ## This file is part of Octave.
 ##

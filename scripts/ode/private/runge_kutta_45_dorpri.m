@@ -1,4 +1,4 @@
-## Copyright (C) 2015 Carlo de Falco
+## Copyright (C) 2016 Carlo de Falco
 ## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.

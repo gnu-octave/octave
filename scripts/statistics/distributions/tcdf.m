@@ -1,6 +1,6 @@
-## Copyright (C) 2013-2015 Julien Bect
+## Copyright (C) 2013-2016 Julien Bect
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##

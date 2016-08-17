@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2015 Carnë Draug
-## Copyright (C) 2008-2015 Thomas L. Scofield
+## Copyright (C) 2013-2016 Carnë Draug
+## Copyright (C) 2008-2016 Thomas L. Scofield
 ## Copyright (C) 2008 Kristian Rumberg
 ## Copyright (C) 2006 Thomas Weber
 ## Copyright (C) 2005 Stefan van der Walt

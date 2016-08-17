@@ -1,5 +1,5 @@
-## Copyright (C) 2012-2015 Rik Wehbring
-## Parts Copyright (C) 2012-2015 Philip Nienhuis
+## Copyright (C) 2012-2016 Rik Wehbring
+## Parts Copyright (C) 2012-2016 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##

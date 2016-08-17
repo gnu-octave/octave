@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2012-2015 Michael Goffioul.
-Copyright (C) 2012-2015 Jacob Dawid.
+Copyright (C) 2012-2016 Michael Goffioul.
+Copyright (C) 2012-2016 Jacob Dawid.
 
 This file is part of QTerminal.
 

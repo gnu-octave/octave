@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2015 Eduardo Ramos Fernández <eduradical951@gmail.com>
-## Copyright (C) 2013-2015 Kai T. Ohlhus <k.ohlhus@gmail.com>
+## Copyright (C) 2014-2016 Eduardo Ramos Fernández <eduradical951@gmail.com>
+## Copyright (C) 2013-2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
 ##
 ## This file is part of Octave.
 ##
@@ -151,6 +151,9 @@
 ## Cholesky Factorization}, 1992.
 ## @seealso{chol, ilu, pcg}
 ## @end deftypefn
+
+## Author: Eduardo Ramos Fernández <eduradical951@gmail.com>
+## Author: Kai T. Ohlhus <k.ohlhus@gmail.com>
 
 function L = ichol (A, opts = struct ())
 

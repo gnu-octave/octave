@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 David Bateman and Marco Caliari
+## Copyright (C) 2006-2016 David Bateman and Marco Caliari
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.

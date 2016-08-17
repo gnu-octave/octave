@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2015 Andreas Weber <andy.weber.aw@gmail.com>
+Copyright (C) 2016 Andreas Weber <andy.weber.aw@gmail.com>
 
 This file is part of Octave.
 

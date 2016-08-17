@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Jordi Gutiérrez Hermoso
+## Copyright (C) 2007-2016 Jordi Gutiérrez Hermoso
 ## Copyright (C) 2007 Stallmanfacts.com
 ##
 ## This file is part of Octave.

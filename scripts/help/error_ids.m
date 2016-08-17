@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Juan Pablo Carbajal
+## Copyright (C) 2012-2016 Juan Pablo Carbajal
 ##
 ## This file is part of Octave.
 ##

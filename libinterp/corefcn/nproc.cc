@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Iain Murray
+Copyright (C) 2012-2016 Iain Murray
 
 This file is part of Octave.
 

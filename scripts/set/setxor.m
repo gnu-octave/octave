@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2015 Julien Bect
-## Copyright (C) 2008-2015 Jaroslav Hajek
+## Copyright (C) 2014-2016 Julien Bect
+## Copyright (C) 2008-2016 Jaroslav Hajek
 ## Copyright (C) 2000, 2006-2007 Paul Kienzle
 ##
 ## This file is part of Octave.

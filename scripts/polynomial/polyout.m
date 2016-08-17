@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Auburn University.  All rights reserved.
+## Copyright (C) 1995-2016 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##

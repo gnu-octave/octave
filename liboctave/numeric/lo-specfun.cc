@@ -1,10 +1,10 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2007-2010 D. Martin
 Copyright (C) 2010 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
-Copyright (C) 2015 Carnë Draug
+Copyright (C) 2016 Carnë Draug
 
 This file is part of Octave.
 

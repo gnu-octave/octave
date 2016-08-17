@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Ben Abbott  <bpabbott@mac.com>
+## Copyright (C) 2016 Ben Abbott  <bpabbott@mac.com>
 ##
 ## This file is part of Octave.
 ##

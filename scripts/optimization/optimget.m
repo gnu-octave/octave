@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Jaroslav Hajek
+## Copyright (C) 2008-2016 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.

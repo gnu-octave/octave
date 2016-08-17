@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Tony Richardson, Jaroslav Hajek
+## Copyright (C) 2009-2016 Tony Richardson, Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2014 Endre Kozma
+## Copyright (C) 2014-2016 Endre Kozma
 ##
 ## This file is part of Octave.
 ##

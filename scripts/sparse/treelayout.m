@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Ivana Varekova & Radek Salac
+## Copyright (C) 2008-2016 Ivana Varekova & Radek Salac
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 Vytautas Jančauskas
+Copyright (C) 2013-2016 Vytautas Jančauskas
 Copyright (C) 2016 Damjan Angelovski
 
 This file is part of Octave.

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2012-2015 Richard Crozier
-Copyright (C) 2013-2015 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2016 Richard Crozier
+Copyright (C) 2013-2016 Torsten <ttl@justmail.de>
 
 This file is part of Octave.
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2015 Rik Wehbring
+Copyright (C) 2016 Rik Wehbring
 
 This file is part of Octave.
 

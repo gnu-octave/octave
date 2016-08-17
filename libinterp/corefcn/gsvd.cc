@@ -181,7 +181,7 @@ routines.
 
   if (nr == 0 || nc == 0)
     {
-      if (nargout == 5) 
+      if (nargout == 5)
           retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
                         Matrix (nr, nc), identity_matrix (nr, nr),
                         identity_matrix (nr, nr));

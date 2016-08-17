@@ -45,7 +45,7 @@ cat <<EOF
 %! ui16m = uint16 (rand (5) * 10);
 %! ui32m = uint32 (rand (5) * 10);
 %! ui64m = uint64 (rand (5) * 10);
-%! 
+%!
 %!assert (typeinfo (r), "range")
 %!assert (typeinfo (dq), "string")
 %!assert (typeinfo (sq), "sq_string")

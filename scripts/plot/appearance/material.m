@@ -207,7 +207,7 @@ endfunction
 %! drawnow ();
 %! light ();
 %! material ([0 0.5 1 10 .5]);
-%! title ("material() with numeric input"); 
+%! title ("material() with numeric input");
 
 %!demo
 %! clf;

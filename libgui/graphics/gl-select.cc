@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gl-select.h"
 
+namespace octave
+{
+
 void
 opengl_selector::apply_pick_matrix (void)
 {
@@ -228,4 +231,6 @@ opengl_selector::draw_image (const image::properties& props)
   glVertex3dv (p3.data ());
   glVertex3dv (p4.data ());
   glEnd ();
+}
+
 }

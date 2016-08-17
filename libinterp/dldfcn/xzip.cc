@@ -72,458 +72,462 @@
 #include "defun-int.h"
 #include "errwarn.h"
 
-//! RIIA wrapper for std::FILE*
-/*! If error handling is available for failing to close the file, use
+namespace octave
+{
+  //! RIIA wrapper for std::FILE*
+  /*! If error handling is available for failing to close the file, use
     the close method which throws.
 
     If the file has been closed, fp is set to nullptr.  Remember that
     behavior is undefined if the value of the pointer stream is used
     after fclose.
-*/
-class CFile
-{
-public:
-  std::FILE* fp;
+  */
 
-  CFile (const std::string& path, const std::string& mode)
+  class CFile
   {
-    fp = std::fopen (path.c_str (), mode.c_str ());
-    if (! fp)
-      throw std::runtime_error ("unable to open file");
-  }
-
-  void
-  close (void)
-  {
-    if (std::fclose (fp))
-      throw std::runtime_error ("unable to close file");
-    fp = nullptr;
-  }
-
-  ~CFile ()
-  {
-    if (fp)
-      std::fclose (fp);
-  }
-};
-
-#if defined (HAVE_BZ2)
-
-class bz2
-{
-private:
-  class zipper
-  {
-  private:
-    int status = BZ_OK;
-    CFile source;
-    CFile dest;
-    BZFILE* bz;
-
   public:
-    zipper (const std::string& source_path, const std::string& dest_path)
-      : source (source_path, "rb"), dest (dest_path, "wb")
-    {
-      bz = BZ2_bzWriteOpen (&status, dest.fp, 9, 0, 30);
-      if (status != BZ_OK)
-        throw std::runtime_error ("failed to open bzip2 stream");
-    }
+    std::FILE* fp;
 
-    void
-    deflate (void)
+    CFile (const std::string& path, const std::string& mode)
     {
-      const std::size_t buf_len = 8192;
-      char buf[buf_len];
-      std::size_t n_read;
-      while ((n_read = std::fread (buf, sizeof (buf[0]), buf_len, source.fp)) != 0)
-        {
-          if (std::ferror (source.fp))
-            throw std::runtime_error ("failed to read from source file");
-          BZ2_bzWrite (&status, bz, buf, n_read);
-          if (status == BZ_IO_ERROR)
-            throw std::runtime_error ("failed to write or compress");
-        }
-      if (std::ferror (source.fp))
-        throw std::runtime_error ("failed to read from source file");
+      fp = std::fopen (path.c_str (), mode.c_str ());
+      if (! fp)
+        throw std::runtime_error ("unable to open file");
     }
 
     void
     close (void)
     {
-      int abandon = (status == BZ_IO_ERROR) ? 1 : 0;
-      BZ2_bzWriteClose (&status, bz, abandon, 0, 0);
-      if (status != BZ_OK)
-        throw std::runtime_error ("failed to close bzip2 stream");
-      bz = nullptr;
-
-      // We have no error handling for failing to close source, let
-      // the destructor close it.
-      dest.close ();
+      if (std::fclose (fp))
+        throw std::runtime_error ("unable to close file");
+      fp = nullptr;
     }
 
-    ~zipper ()
+    ~CFile ()
     {
-      if (bz != nullptr)
-        BZ2_bzWriteClose (&status, bz, 1, 0, 0);
+      if (fp)
+        std::fclose (fp);
     }
   };
 
-public:
-  static const constexpr char* extension = ".bz2";
+#if defined (HAVE_BZ2)
 
-  static void
-  zip (const std::string& source_path, const std::string& dest_path)
+  class bz2
   {
-    bz2::zipper z (source_path, dest_path);
-    z.deflate ();
-    z.close ();
-  }
+  private:
+    class zipper
+    {
+    private:
+      int status = BZ_OK;
+      CFile source;
+      CFile dest;
+      BZFILE* bz;
 
-};
+    public:
+      zipper (const std::string& source_path, const std::string& dest_path)
+        : source (source_path, "rb"), dest (dest_path, "wb")
+      {
+        bz = BZ2_bzWriteOpen (&status, dest.fp, 9, 0, 30);
+        if (status != BZ_OK)
+          throw std::runtime_error ("failed to open bzip2 stream");
+      }
+
+      void
+      deflate (void)
+      {
+        const std::size_t buf_len = 8192;
+        char buf[buf_len];
+        std::size_t n_read;
+        while ((n_read = std::fread (buf, sizeof (buf[0]), buf_len, source.fp)) != 0)
+          {
+            if (std::ferror (source.fp))
+              throw std::runtime_error ("failed to read from source file");
+            BZ2_bzWrite (&status, bz, buf, n_read);
+            if (status == BZ_IO_ERROR)
+              throw std::runtime_error ("failed to write or compress");
+          }
+        if (std::ferror (source.fp))
+          throw std::runtime_error ("failed to read from source file");
+      }
+
+      void
+      close (void)
+      {
+        int abandon = (status == BZ_IO_ERROR) ? 1 : 0;
+        BZ2_bzWriteClose (&status, bz, abandon, 0, 0);
+        if (status != BZ_OK)
+          throw std::runtime_error ("failed to close bzip2 stream");
+        bz = nullptr;
+
+        // We have no error handling for failing to close source, let
+        // the destructor close it.
+        dest.close ();
+      }
+
+      ~zipper ()
+      {
+        if (bz != nullptr)
+          BZ2_bzWriteClose (&status, bz, 1, 0, 0);
+      }
+    };
+
+  public:
+    static const constexpr char* extension = ".bz2";
+
+    static void
+    zip (const std::string& source_path, const std::string& dest_path)
+    {
+      bz2::zipper z (source_path, dest_path);
+      z.deflate ();
+      z.close ();
+    }
+
+  };
 
 #endif
 
-// Note about zlib and gzip
-//
-// gzip is a format for compressed single files.  zlib is a format
-// designed for in-memory and communication channel applications.
-// gzip uses the same format internally for the compressed data but
-// has different headers and trailers.
-//
-// zlib is also a library but gzip is not.  Very old versions of zlib do
-// not include functions to create useful gzip headers and trailers:
-//
-//      Note that you cannot specify special gzip header contents (e.g.
-//      a file name or modification date), nor will inflate tell you what
-//      was in the gzip header. If you need to customize the header or
-//      see what's in it, you can use the raw deflate and inflate
-//      operations and the crc32() function and roll your own gzip
-//      encoding and decoding. Read the gzip RFC 1952 for details of the
-//      header and trailer format.
-//                                                          zlib FAQ
-//
-// Recent versions (on which we are already dependent) have deflateInit2()
-// to do it.  We still need to get the right metadata for the header
-// ourselves though.
-//
-// The header is defined in RFC #1952
-// GZIP file format specification version 4.3
+  // Note about zlib and gzip
+  //
+  // gzip is a format for compressed single files.  zlib is a format
+  // designed for in-memory and communication channel applications.
+  // gzip uses the same format internally for the compressed data but
+  // has different headers and trailers.
+  //
+  // zlib is also a library but gzip is not.  Very old versions of zlib do
+  // not include functions to create useful gzip headers and trailers:
+  //
+  //      Note that you cannot specify special gzip header contents (e.g.
+  //      a file name or modification date), nor will inflate tell you what
+  //      was in the gzip header. If you need to customize the header or
+  //      see what's in it, you can use the raw deflate and inflate
+  //      operations and the crc32() function and roll your own gzip
+  //      encoding and decoding. Read the gzip RFC 1952 for details of the
+  //      header and trailer format.
+  //                                                          zlib FAQ
+  //
+  // Recent versions (on which we are already dependent) have deflateInit2()
+  // to do it.  We still need to get the right metadata for the header
+  // ourselves though.
+  //
+  // The header is defined in RFC #1952
+  // GZIP file format specification version 4.3
 
 
 #if defined (HAVE_Z)
 
-class gz
-{
-private:
-
-  // Util class to get a non-const char*
-  class uchar_array
-  {
-  public:
-    // Bytef is a typedef for unsigned char
-    unsigned char* p;
-
-    uchar_array (const std::string& str)
-    {
-      p = new Bytef[str.length () +1];
-      std::strcpy (reinterpret_cast<char*> (p), str.c_str ());
-    }
-
-    ~uchar_array (void) { delete[] p; }
-  };
-
-  class gzip_header : public gz_header
+  class gz
   {
   private:
-    // This must be kept for gz_header.name
-    uchar_array basename;
 
-  public:
-    gzip_header (const std::string& source_path)
-      : basename (octave::sys::env::base_pathname (source_path))
+    // Util class to get a non-const char*
+    class uchar_array
     {
-      const octave::sys::file_stat source_stat (source_path);
-      if (! source_stat)
-        throw std::runtime_error ("unable to stat source file");
+    public:
+      // Bytef is a typedef for unsigned char
+      unsigned char* p;
 
-      // time_t may be a signed int in which case it will be a
-      // positive number so it is safe to uLong.  Or is it?  Can
-      // unix_time really never be negative?
-      time = uLong (source_stat.mtime ().unix_time ());
+      uchar_array (const std::string& str)
+      {
+        p = new Bytef[str.length () +1];
+        std::strcpy (reinterpret_cast<char*> (p), str.c_str ());
+      }
 
-      //  If FNAME is set, an original file name is present,
-      //  terminated by a zero byte.  The name must consist of ISO
-      //  8859-1 (LATIN-1) characters; on operating systems using
-      //  EBCDIC or any other character set for file names, the name
-      //  must be translated to the ISO LATIN-1 character set.  This
-      //  is the original name of the file being compressed, with any
-      //  directory components removed, and, if the file being
-      //  compressed is on a file system with case insensitive names,
-      //  forced to lower case.
-      name = basename.p;
+      ~uchar_array (void) { delete[] p; }
+    };
 
-      // If we don't set it to Z_NULL, then it will set FCOMMENT (4th bit)
-      // on the FLG byte, and then write {0, 3} comment.
-      comment = Z_NULL;
+    class gzip_header : public gz_header
+    {
+    private:
+      // This must be kept for gz_header.name
+      uchar_array basename;
 
-      // Seems to already be the default but we are not taking chances.
-      extra = Z_NULL;
+    public:
+      gzip_header (const std::string& source_path)
+        : basename (octave::sys::env::base_pathname (source_path))
+      {
+        const octave::sys::file_stat source_stat (source_path);
+        if (! source_stat)
+          throw std::runtime_error ("unable to stat source file");
 
-      // We do not want a CRC for the header.  That would be only 2 more
-      // bytes, and maybe it would be a good thing but we want to generate
-      // gz files similar to the default gzip application.
-      hcrc = 0;
+        // time_t may be a signed int in which case it will be a
+        // positive number so it is safe to uLong.  Or is it?  Can
+        // unix_time really never be negative?
+        time = uLong (source_stat.mtime ().unix_time ());
 
-      // OS (Operating System):
-      //      0 - FAT filesystem (MS-DOS, OS/2, NT/Win32)
-      //      1 - Amiga
-      //      2 - VMS (or OpenVMS)
-      //      3 - Unix
-      //      4 - VM/CMS
-      //      5 - Atari TOS
-      //      6 - HPFS filesystem (OS/2, NT)
-      //      7 - Macintosh
-      //      8 - Z-System
-      //      9 - CP/M
-      //     10 - TOPS-20
-      //     11 - NTFS filesystem (NT)
-      //     12 - QDOS
-      //     13 - Acorn RISCOS
-      //    255 - unknown
-      //
-      // The list is problematic because it mixes OS and filesystem.  It
-      // also does not specify whether filesystem relates to source or
-      // destination file.
+        //  If FNAME is set, an original file name is present,
+        //  terminated by a zero byte.  The name must consist of ISO
+        //  8859-1 (LATIN-1) characters; on operating systems using
+        //  EBCDIC or any other character set for file names, the name
+        //  must be translated to the ISO LATIN-1 character set.  This
+        //  is the original name of the file being compressed, with any
+        //  directory components removed, and, if the file being
+        //  compressed is on a file system with case insensitive names,
+        //  forced to lower case.
+        name = basename.p;
+
+        // If we don't set it to Z_NULL, then it will set FCOMMENT (4th bit)
+        // on the FLG byte, and then write {0, 3} comment.
+        comment = Z_NULL;
+
+        // Seems to already be the default but we are not taking chances.
+        extra = Z_NULL;
+
+        // We do not want a CRC for the header.  That would be only 2 more
+        // bytes, and maybe it would be a good thing but we want to generate
+        // gz files similar to the default gzip application.
+        hcrc = 0;
+
+        // OS (Operating System):
+        //      0 - FAT filesystem (MS-DOS, OS/2, NT/Win32)
+        //      1 - Amiga
+        //      2 - VMS (or OpenVMS)
+        //      3 - Unix
+        //      4 - VM/CMS
+        //      5 - Atari TOS
+        //      6 - HPFS filesystem (OS/2, NT)
+        //      7 - Macintosh
+        //      8 - Z-System
+        //      9 - CP/M
+        //     10 - TOPS-20
+        //     11 - NTFS filesystem (NT)
+        //     12 - QDOS
+        //     13 - Acorn RISCOS
+        //    255 - unknown
+        //
+        // The list is problematic because it mixes OS and filesystem.  It
+        // also does not specify whether filesystem relates to source or
+        // destination file.
 
 #if defined (__WIN32__)
-      // Or should it be 11?
-      os = 0;
+        // Or should it be 11?
+        os = 0;
 #elif defined (__APPLE__)
-      os = 7;
+        os = 7;
 #else
-      // Unix by default?
-      os = 3;
+        // Unix by default?
+        os = 3;
 #endif
-    }
-  };
+      }
+    };
 
-  class zipper
-  {
-  private:
-    CFile source;
-    CFile dest;
-    gzip_header header;
-    z_stream* strm;
+    class zipper
+    {
+    private:
+      CFile source;
+      CFile dest;
+      gzip_header header;
+      z_stream* strm;
+
+    public:
+      zipper (const std::string& source_path, const std::string& dest_path)
+        : source (source_path, "rb"), dest (dest_path, "wb"),
+          header (source_path), strm (new z_stream)
+      {
+        strm->zalloc = Z_NULL;
+        strm->zfree = Z_NULL;
+        strm->opaque = Z_NULL;
+      }
+
+      void
+      deflate ()
+      {
+        // int deflateInit2 (z_streamp strm,
+        //                   int  level,      // compression level (default is 8)
+        //                   int  method,
+        //                   int  windowBits, // 15 (default) + 16 (gzip format)
+        //                   int  memLevel,   // memory usage (default is 8)
+        //                   int  strategy);
+        int status = deflateInit2 (strm, 8, Z_DEFLATED, 31, 8,
+                                   Z_DEFAULT_STRATEGY);
+        if (status != Z_OK)
+          throw std::runtime_error ("failed to open zlib stream");
+
+        deflateSetHeader (strm, &header);
+
+        const std::size_t buf_len = 8192;
+        unsigned char buf_in[buf_len];
+        unsigned char buf_out[buf_len];
+
+        while ((strm->avail_in = std::fread (buf_in, sizeof (buf_in[0]),
+                                             buf_len, source.fp)) != 0)
+          {
+            if (std::ferror (source.fp))
+              throw std::runtime_error ("failed to read source file");
+
+            strm->next_in = buf_in;
+            const int flush = std::feof (source.fp) ? Z_FINISH : Z_NO_FLUSH;
+
+            // If deflate returns Z_OK and with zero avail_out, it must be
+            // called again after making room in the output buffer because
+            // there might be more output pending.
+            do
+              {
+                strm->avail_out = buf_len;
+                strm->next_out = buf_out;
+                status = ::deflate (strm, flush);
+                if (status == Z_STREAM_ERROR)
+                  throw std::runtime_error ("failed to deflate");
+
+                std::fwrite (buf_out, sizeof (buf_out[0]),
+                             buf_len - strm->avail_out, dest.fp);
+                if (std::ferror (dest.fp))
+                  throw std::runtime_error ("failed to write file");
+              }
+            while (strm->avail_out == 0);
+
+            if (strm->avail_in != 0)
+              throw std::runtime_error ("failed to wrote file");
+          }
+      }
+
+      void
+      close (void)
+      {
+        if (deflateEnd (strm) != Z_OK)
+          throw std::runtime_error ("failed to close zlib stream");
+        strm = nullptr;
+
+        // We have no error handling for failing to close source, let
+        // the destructor close it.
+        dest.close ();
+      }
+
+      ~zipper (void)
+      {
+        if (strm)
+          deflateEnd (strm);
+        delete strm;
+      }
+    };
 
   public:
-    zipper (const std::string& source_path, const std::string& dest_path)
-      : source (source_path, "rb"), dest (dest_path, "wb"),
-        header (source_path), strm (new z_stream)
+    static const constexpr char* extension = ".gz";
+
+    static void
+    zip (const std::string& source_path, const std::string& dest_path)
     {
-      strm->zalloc = Z_NULL;
-      strm->zfree = Z_NULL;
-      strm->opaque = Z_NULL;
-    }
-
-    void
-    deflate ()
-    {
-      // int deflateInit2 (z_streamp strm,
-      //                   int  level,      // compression level (default is 8)
-      //                   int  method,
-      //                   int  windowBits, // 15 (default) + 16 (gzip format)
-      //                   int  memLevel,   // memory usage (default is 8)
-      //                   int  strategy);
-      int status = deflateInit2 (strm, 8, Z_DEFLATED, 31, 8,
-                                 Z_DEFAULT_STRATEGY);
-      if (status != Z_OK)
-        throw std::runtime_error ("failed to open zlib stream");
-
-      deflateSetHeader (strm, &header);
-
-      const std::size_t buf_len = 8192;
-      unsigned char buf_in[buf_len];
-      unsigned char buf_out[buf_len];
-
-      while ((strm->avail_in = std::fread (buf_in, sizeof (buf_in[0]),
-                                           buf_len, source.fp)) != 0)
-        {
-          if (std::ferror (source.fp))
-            throw std::runtime_error ("failed to read source file");
-
-          strm->next_in = buf_in;
-          const int flush = std::feof (source.fp) ? Z_FINISH : Z_NO_FLUSH;
-
-          // If deflate returns Z_OK and with zero avail_out, it must be
-          // called again after making room in the output buffer because
-          // there might be more output pending.
-          do
-            {
-              strm->avail_out = buf_len;
-              strm->next_out = buf_out;
-              status = ::deflate (strm, flush);
-              if (status == Z_STREAM_ERROR)
-                throw std::runtime_error ("failed to deflate");
-
-              std::fwrite (buf_out, sizeof (buf_out[0]),
-                           buf_len - strm->avail_out, dest.fp);
-              if (std::ferror (dest.fp))
-                throw std::runtime_error ("failed to write file");
-            }
-          while (strm->avail_out == 0);
-
-          if (strm->avail_in != 0)
-            throw std::runtime_error ("failed to wrote file");
-        }
-    }
-
-    void
-    close (void)
-    {
-      if (deflateEnd (strm) != Z_OK)
-        throw std::runtime_error ("failed to close zlib stream");
-      strm = nullptr;
-
-      // We have no error handling for failing to close source, let
-      // the destructor close it.
-      dest.close ();
-    }
-
-    ~zipper (void)
-    {
-      if (strm)
-        deflateEnd (strm);
-      delete strm;
+      gz::zipper z (source_path, dest_path);
+      z.deflate ();
+      z.close ();
     }
   };
-
-public:
-  static const constexpr char* extension = ".gz";
-
-  static void
-  zip (const std::string& source_path, const std::string& dest_path)
-  {
-    gz::zipper z (source_path, dest_path);
-    z.deflate ();
-    z.close ();
-  }
-};
 
 #endif
 
 
-template<typename X>
-string_vector
-xzip (const Array<std::string>& source_patterns,
-      const std::function<std::string(const std::string&)>& mk_dest_path)
-{
-  std::list<std::string> dest_paths;
-
-  std::function<void(const std::string&)> walk;
-  walk = [&walk, &mk_dest_path, &dest_paths] (const std::string& path) -> void
+  template<typename X>
+  string_vector
+  xzip (const Array<std::string>& source_patterns,
+        const std::function<std::string(const std::string&)>& mk_dest_path)
   {
-    const octave::sys::file_stat fs (path);
-    // is_dir and is_reg will return false if failed to stat.
-    if (fs.is_dir ())
+    std::list<std::string> dest_paths;
+
+    std::function<void(const std::string&)> walk;
+    walk = [&walk, &mk_dest_path, &dest_paths] (const std::string& path) -> void
       {
-        octave::sys::dir_entry dir (path);
-        if (dir)
+        const octave::sys::file_stat fs (path);
+        // is_dir and is_reg will return false if failed to stat.
+        if (fs.is_dir ())
           {
-            // Collect the whole list of filenames first, before recursion
-            // to avoid issues with infinite loop if the action generates
-            // files in the same directory (highly likely).
-            string_vector dirlist = dir.read ();
-            for (octave_idx_type i = 0; i < dirlist.numel (); i++)
-              if (dirlist(i) != "." && dirlist(i) != "..")
-                walk (octave::sys::file_ops::concat (path, dirlist(i)));
+            octave::sys::dir_entry dir (path);
+            if (dir)
+              {
+                // Collect the whole list of filenames first, before recursion
+                // to avoid issues with infinite loop if the action generates
+                // files in the same directory (highly likely).
+                string_vector dirlist = dir.read ();
+                for (octave_idx_type i = 0; i < dirlist.numel (); i++)
+                  if (dirlist(i) != "." && dirlist(i) != "..")
+                    walk (octave::sys::file_ops::concat (path, dirlist(i)));
+              }
+            // Note that we skip any problem with directories.
           }
-        // Note that we skip any problem with directories.
-      }
-    else if (fs.is_reg ())
+        else if (fs.is_reg ())
+          {
+            const std::string dest_path = mk_dest_path (path);
+            try
+              {
+                X::zip (path, dest_path);
+              }
+            catch (...)
+              {
+                // Error "handling" is not including filename on the output list.
+                // Also remove created file which maybe was not even created
+                // in the first place.  Note that it is possible for the file
+                // to exist in the first place and for X::zip to not have
+                // clobber it yet but we remove it anyway by design.
+                octave::sys::unlink (dest_path);
+                return;
+              }
+            dest_paths.push_front (dest_path);
+          }
+        // Skip all other file types and errors.
+        return;
+      };
+
+    for (octave_idx_type i = 0; i < source_patterns.numel (); i++)
       {
-        const std::string dest_path = mk_dest_path (path);
-        try
-          {
-            X::zip (path, dest_path);
-          }
-        catch (...)
-          {
-            // Error "handling" is not including filename on the output list.
-            // Also remove created file which maybe was not even created
-            // in the first place.  Note that it is possible for the file
-            // to exist in the first place and for X::zip to not have
-            // clobber it yet but we remove it anyway by design.
-            octave::sys::unlink (dest_path);
-            return;
-          }
-        dest_paths.push_front (dest_path);
+        const glob_match pattern (octave::sys::file_ops::tilde_expand (source_patterns(i)));
+        const string_vector filepaths = pattern.glob ();
+        for (octave_idx_type j = 0; j < filepaths.numel (); j++)
+          walk (filepaths(j));
       }
-    // Skip all other file types and errors.
-    return;
-  };
-
-  for (octave_idx_type i = 0; i < source_patterns.numel (); i++)
-    {
-      const glob_match pattern (octave::sys::file_ops::tilde_expand (source_patterns(i)));
-      const string_vector filepaths = pattern.glob ();
-      for (octave_idx_type j = 0; j < filepaths.numel (); j++)
-        walk (filepaths(j));
-    }
-  return string_vector (dest_paths);
-}
+    return string_vector (dest_paths);
+  }
 
 
-template<typename X>
-string_vector
-xzip (const Array<std::string>& source_patterns)
-{
-  const std::string ext = X::extension;
-  const std::function<std::string(const std::string&)> mk_dest_path
-    = [&ext] (const std::string& source_path) -> std::string
+  template<typename X>
+  string_vector
+  xzip (const Array<std::string>& source_patterns)
   {
-    return source_path + ext;
-  };
-  return xzip<X> (source_patterns, mk_dest_path);
-}
+    const std::string ext = X::extension;
+    const std::function<std::string(const std::string&)> mk_dest_path
+      = [&ext] (const std::string& source_path) -> std::string
+      {
+        return source_path + ext;
+      };
+    return xzip<X> (source_patterns, mk_dest_path);
+  }
 
-template<typename X>
-string_vector
-xzip (const Array<std::string>& source_patterns, const std::string& out_dir)
-{
-  const std::string ext = X::extension;
-  const std::function<std::string(const std::string&)> mk_dest_path
-    = [&out_dir, &ext] (const std::string& source_path) -> std::string
+  template<typename X>
+  string_vector
+  xzip (const Array<std::string>& source_patterns, const std::string& out_dir)
   {
-    const std::string basename = octave::sys::env::base_pathname (source_path);
-    return octave::sys::file_ops::concat (out_dir, basename + ext);
-  };
+    const std::string ext = X::extension;
+    const std::function<std::string(const std::string&)> mk_dest_path
+      = [&out_dir, &ext] (const std::string& source_path) -> std::string
+      {
+        const std::string basename = octave::sys::env::base_pathname (source_path);
+        return octave::sys::file_ops::concat (out_dir, basename + ext);
+      };
 
-  // We don't care if mkdir fails.  Maybe it failed because it already
-  // exists, or maybe it can't bre created.  If the first, then there's
-  // nothing to do, if the later, then it will be handled later.  Any
-  // is to be handled by not listing files in the output.
-  octave::sys::mkdir (out_dir, 0777);
-  return xzip<X> (source_patterns, mk_dest_path);
-}
+    // We don't care if mkdir fails.  Maybe it failed because it already
+    // exists, or maybe it can't bre created.  If the first, then there's
+    // nothing to do, if the later, then it will be handled later.  Any
+    // is to be handled by not listing files in the output.
+    octave::sys::mkdir (out_dir, 0777);
+    return xzip<X> (source_patterns, mk_dest_path);
+  }
 
-template<typename X>
-static octave_value_list
-xzip (const std::string& func_name, const octave_value_list& args)
-{
-  const octave_idx_type nargin = args.length ();
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
+  template<typename X>
+  static octave_value_list
+  xzip (const std::string& func_name, const octave_value_list& args)
+  {
+    const octave_idx_type nargin = args.length ();
+    if (nargin < 1 || nargin > 2)
+      print_usage ();
 
-  const Array<std::string> source_patterns
-    = args(0).xcellstr_value ("%s: FILES must be a character array or cellstr",
-                              func_name.c_str ());
-  if (nargin == 1)
-    return octave_value (Cell (xzip<X> (source_patterns)));
-  else // nargin == 2
-    {
-      const std::string out_dir = args(1).string_value ();
-      return octave_value (Cell (xzip<X> (source_patterns, out_dir)));
-    }
+    const Array<std::string> source_patterns
+      = args(0).xcellstr_value ("%s: FILES must be a character array or cellstr",
+                                func_name.c_str ());
+    if (nargin == 1)
+      return octave_value (Cell (xzip<X> (source_patterns)));
+    else // nargin == 2
+      {
+        const std::string out_dir = args(1).string_value ();
+        return octave_value (Cell (xzip<X> (source_patterns, out_dir)));
+      }
+  }
 }
 
 DEFUN_DLD (gzip, args, ,
@@ -554,7 +558,7 @@ The optional output @var{filelist} is a list of the compressed files.
 {
 #if defined (HAVE_Z)
 
-  return xzip<gz> ("gzip", args);
+  return octave::xzip<octave::gz> ("gzip", args);
 
 #else
 
@@ -597,7 +601,7 @@ The optional output @var{filelist} is a list of the compressed files.
 {
 #if defined (HAVE_BZ2)
 
-  return xzip<bz2> ("bzip2", args);
+  return octave::xzip<octave::bz2> ("bzip2", args);
 
 #else
 

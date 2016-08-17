@@ -159,7 +159,7 @@ instead.
   else
     {
       // return RGB image
-      opengl_renderer rend;
+      octave::opengl_renderer rend;
 
       // Draw and finish () or there may primitives missing in the
       // output.

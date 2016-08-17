@@ -8740,7 +8740,7 @@ void
 uicontrol::properties::update_text_extent (void)
 {
   text_element *elt;
-  text_renderer txt_renderer;
+  octave::text_renderer txt_renderer;
   Matrix box;
 
   // FIXME: parsed content should be cached for efficiency

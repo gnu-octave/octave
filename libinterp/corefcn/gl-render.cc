@@ -42,6 +42,20 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_OPENGL)
 
+static int
+next_power_of_2 (int n)
+{
+  int m = 1;
+
+  while (m < n && m < std::numeric_limits<int>::max ())
+    m <<= 1;
+
+  return m;
+}
+
+namespace octave
+{
+
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
 // Use symbolic names for axes
@@ -155,17 +169,6 @@ public:
   bool is_valid (void) const
   { return rep->valid; }
 };
-
-static int
-next_power_of_2 (int n)
-{
-  int m = 1;
-
-  while (m < n && m < std::numeric_limits<int>::max ())
-    m <<= 1;
-
-  return m;
-}
 
 opengl_texture
 opengl_texture::create (const octave_value& data)
@@ -4011,4 +4014,6 @@ opengl_renderer::render_text (const std::string& txt,
   panic_impossible ();
 
 #endif
+}
+
 }

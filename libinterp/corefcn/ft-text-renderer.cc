@@ -87,6 +87,9 @@ warn_glyph_render (FT_ULong c)
 // Forward declaration
 static void ft_face_destroyed (void *object);
 
+namespace octave
+{
+
 class
 ft_manager
 {
@@ -311,11 +314,16 @@ private:
 
 ft_manager *ft_manager::instance = 0;
 
+}
+
 static void
 ft_face_destroyed (void *object)
-{ ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object)); }
+{
+  octave::ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
+}
 
-// ---------------------------------------------------------------------------
+namespace octave
+{
 
 class
 OCTINTERP_API
@@ -1363,14 +1371,19 @@ ft_text_renderer::ft_font::get_face (void) const
   return face;
 }
 
+}
+
 #endif
 
-base_text_renderer *
-make_ft_text_renderer (void)
+namespace octave
 {
+  base_text_renderer *
+  make_ft_text_renderer (void)
+  {
 #if defined (HAVE_FREETYPE)
-  return new ft_text_renderer ();
+    return new ft_text_renderer ();
 #else
-  return 0;
+    return 0;
 #endif
+  }
 }

@@ -35,6 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "txt-eng.h"
 
+namespace octave
+{
+
 class base_text_renderer;
 
 class
@@ -208,5 +211,7 @@ private:
 
   text_renderer& operator = (const text_renderer&);
 };
+
+}
 
 #endif

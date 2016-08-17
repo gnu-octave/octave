@@ -57,7 +57,7 @@ GLCanvas::draw (const graphics_handle& gh)
 
   if (go)
     {
-      opengl_renderer r;
+      octave::opengl_renderer r;
 
       r.set_viewport (width (), height ());
       r.draw(go);
@@ -89,7 +89,7 @@ GLCanvas::selectFromAxes (const graphics_object& ax, const QPoint& pt)
 
   if (ax)
     {
-      opengl_selector s;
+      octave::opengl_selector s;
 
       s.set_viewport (width (), height ());
       return s.select (ax, pt.x (), height () - pt.y ());

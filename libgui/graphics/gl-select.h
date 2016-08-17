@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl-render.h"
 #include "oct-opengl.h"
 
+namespace octave
+{
+
 enum select_flags
 {
   select_ignore_hittest = 0x01,
@@ -75,5 +78,7 @@ private:
   // The OpenGL name mapping
   std::map<GLuint, graphics_object> object_map;
 };
+
+}
 
 #endif

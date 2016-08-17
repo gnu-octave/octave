@@ -182,6 +182,8 @@ bool Vjava_matrix_autoconversion = false;
 bool Vjava_unsigned_autoconversion = true;
 bool Vdebug_java = false;
 
+namespace octave
+{
 class JVMArgs
 {
 public:
@@ -275,6 +277,8 @@ private:
 
   std::list<std::string> java_opts;
 };
+
+}
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
@@ -616,7 +620,7 @@ initialize_jvm (void)
     {
       // No JVM exists, create one
 
-      JVMArgs vm_args;
+      octave::JVMArgs vm_args;
 
       vm_args.add ("-Djava.class.path=" + initial_class_path ());
       vm_args.add ("-Xrs");

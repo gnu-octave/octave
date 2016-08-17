@@ -26,8 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-class base_text_renderer;
+namespace octave
+{
+  class base_text_renderer;
 
-extern base_text_renderer *make_ft_text_renderer (void);
+  extern base_text_renderer *make_ft_text_renderer (void);
+}
 
 #endif

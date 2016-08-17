@@ -3790,7 +3790,7 @@ public:
     bool xySym, xyzSym, zSign, nearhoriz;
 
     // Text renderer, used for calculation of text (tick labels) size
-    text_renderer txt_renderer;
+    octave::text_renderer txt_renderer;
 
     void set_text_child (handle_property& h, const std::string& who,
                          const octave_value& v);
@@ -4520,7 +4520,7 @@ public:
     const uint8NDArray& get_pixels (void) const { return pixels; }
 
     // Text renderer, used for calculation of text size
-    text_renderer txt_renderer;
+    octave::text_renderer txt_renderer;
 
   protected:
     void init (void)

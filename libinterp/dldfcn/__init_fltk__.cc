@@ -171,7 +171,7 @@ public:
 
 private:
   double number;
-  opengl_renderer renderer;
+  octave::opengl_renderer renderer;
   bool in_zoom;
   // (x1,y1,x2,y2)
   Matrix zoom_box;

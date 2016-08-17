@@ -48,6 +48,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 #include "text-renderer.h"
 
+namespace octave
+{
+
 class
 OCTINTERP_API
 gl2ps_renderer : public opengl_renderer
@@ -55,7 +58,7 @@ gl2ps_renderer : public opengl_renderer
 public:
 
   gl2ps_renderer (FILE *_fp, const std::string& _term)
-    : opengl_renderer () , fp (_fp), term (_term), fontsize (),
+    : octave::opengl_renderer () , fp (_fp), term (_term), fontsize (),
       fontname (), buffer_overflow (false)
   { }
 
@@ -66,7 +69,7 @@ public:
   // have to do this?  Without the using declaration or a name change,
   // the base class functions will be hidden.  That may be OK, but it
   // can also cause some confusion.
-  using opengl_renderer::draw;
+  using octave::opengl_renderer::draw;
 
   void draw (const graphics_object& go, const std::string& print_cmd);
 
@@ -86,7 +89,7 @@ protected:
     gl2psBeginViewport (vp);
 
     // Draw and finish () or there may primitives missing in the gl2ps output.
-    opengl_renderer::draw_axes (props);
+    octave::opengl_renderer::draw_axes (props);
     finish ();
 
     // Finalize viewport
@@ -113,7 +116,7 @@ protected:
 
   void set_linestyle (const std::string& s, bool use_stipple = false)
   {
-    opengl_renderer::set_linestyle (s, use_stipple);
+    octave::opengl_renderer::set_linestyle (s, use_stipple);
 
     if (s == "-" && ! use_stipple)
       gl2psDisable (GL2PS_LINE_STIPPLE);
@@ -125,13 +128,13 @@ protected:
   {
     if (on)
       {
-        opengl_renderer::set_polygon_offset (on, offset);
+        octave::opengl_renderer::set_polygon_offset (on, offset);
         gl2psEnable (GL2PS_POLYGON_OFFSET_FILL);
       }
     else
       {
         gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
-        opengl_renderer::set_polygon_offset (on, offset);
+        octave::opengl_renderer::set_polygon_offset (on, offset);
       }
   }
 
@@ -146,7 +149,7 @@ private:
   // that have been parsed by freetype
   void fix_strlist_position (double x, double y, double z,
                              Matrix box, double rotation,
-                             std::list<text_renderer::string>& lst);
+                             std::list<octave::text_renderer::string>& lst);
 
   int alignment_to_mode (int ha, int va) const;
   FILE *fp;
@@ -257,7 +260,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
               error ("gl2ps_renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
             }
 
-          opengl_renderer::draw (go);
+          octave::opengl_renderer::draw (go);
 
           if (! buffer_overflow)
             old_print_cmd = print_cmd;
@@ -288,7 +291,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
         }
     }
   else
-    opengl_renderer::draw (go);
+    octave::opengl_renderer::draw (go);
 }
 
 int
@@ -329,10 +332,10 @@ gl2ps_renderer::alignment_to_mode (int ha, int va) const
 
 void
 gl2ps_renderer::fix_strlist_position (double x, double y, double z,
-                                     Matrix box, double rotation,
-                                     std::list<text_renderer::string>& lst)
+                                      Matrix box, double rotation,
+                                      std::list<octave::text_renderer::string>& lst)
 {
-  for (std::list<text_renderer::string>::iterator p = lst.begin ();
+  for (std::list<octave::text_renderer::string>::iterator p = lst.begin ();
        p != lst.end (); p++)
     {
       // Get pixel coordinates
@@ -353,6 +356,8 @@ gl2ps_renderer::fix_strlist_position (double x, double y, double z,
       (*p).set_y (coord(1));
       (*p).set_z (coord(2));
     }
+}
+
 }
 
 static std::string
@@ -565,6 +570,9 @@ escape_character (const std::string chr, std::string& str)
     }
 }
 
+namespace octave
+{
+
 Matrix
 gl2ps_renderer::render_text (const std::string& txt,
                             double x, double y, double z,
@@ -579,7 +587,7 @@ gl2ps_renderer::render_text (const std::string& txt,
   // string using freetype
   Matrix bbox;
   std::string str = txt;
-  std::list<text_renderer::string> lst;
+  std::list<octave::text_renderer::string> lst;
 
   text_to_strlist (str, lst, bbox, ha, va, rotation);
 
@@ -592,7 +600,7 @@ gl2ps_renderer::render_text (const std::string& txt,
       int sz = fontsize;
       if (! lst.empty () && term.find ("tex") == std::string::npos)
         {
-          text_renderer::string s = lst.front ();
+          octave::text_renderer::string s = lst.front ();
           name = select_font (s.get_name (), s.get_weight () == "bold",
                               s.get_angle () == "italic");
           set_color (s.get_color ());
@@ -618,7 +626,7 @@ gl2ps_renderer::render_text (const std::string& txt,
   // Translate and rotate coordinates in order to use bottom-left alignment
   fix_strlist_position (x, y, z, bbox, rotation, lst);
 
-  for (std::list<text_renderer::string>::iterator p = lst.begin ();
+  for (std::list<octave::text_renderer::string>::iterator p = lst.begin ();
        p != lst.end (); p++)
     {
       fontname = select_font ((*p).get_name (),
@@ -665,7 +673,7 @@ gl2ps_renderer::render_text (const std::string& txt,
 void
 gl2ps_renderer::set_font (const base_properties& props)
 {
-  opengl_renderer::set_font (props);
+  octave::opengl_renderer::set_font (props);
 
   // Set the interpreter so that text_to_pixels can parse strings properly
   if (props.has_property ("interpreter"))
@@ -758,6 +766,8 @@ gl2ps_renderer::draw_text (const text::properties& props)
                halign, valign, props.get_rotation ());
 }
 
+}
+
 static void
 safe_pclose (FILE *f)
 {
@@ -773,6 +783,9 @@ safe_fclose (FILE *f)
 }
 
 #endif
+
+namespace octave
+{
 
 // If the name of the stream begins with '|', open a pipe to the command
 // named by the rest of the string.  Otherwise, write to the named file.
@@ -827,4 +840,6 @@ gl2ps_print (const graphics_object& fig, const std::string& stream,
 #else
   err_disabled_feature ("gl2ps_print", "gl2ps");
 #endif
+}
+
 }

@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "text-renderer.h"
 
+namespace octave
+{
+
 class
 OCTINTERP_API
 opengl_renderer
@@ -205,5 +208,7 @@ private:
 private:
   class patch_tesselator;
 };
+
+}
 
 #endif

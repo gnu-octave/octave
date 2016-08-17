@@ -46,14 +46,15 @@ gsvd_type (int nargout)
 DEFUN (gsvd, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} gsvd (@var{a}, @var{b})
-@deftypefnx {} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x} [, @var{r}]] =} gsvd (@var{a}, @var{b})
-@cindex generalised singular value decomposition
-Compute the generalised singular value decomposition of (@var{a}, @var{b}):
+@deftypefnx {} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x}] =} gsvd (@var{a}, @var{b})
+@deftypefnx {} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x}, @var{r}] =} gsvd (@var{a}, @var{b})
+@cindex generalized singular value decomposition
+Compute the generalized singular value decomposition of (@var{a}, @var{b}):
 @tex
 $$
  U^H A X = [I 0; 0 C] [0 R]
  V^H B X = [0 S; 0 0] [0 R]
- C*C + S*S = eye(columns(A))
+ C*C + S*S = eye (columns (A))
  I and 0 are padding matrices of suitable size
  R is upper triangular
 $$
@@ -64,7 +65,7 @@ $$
 @group
 u' * a * x = [I 0; 0 c] * [0 r]
 v' * b * x = [0 s; 0 0] * [0 r]
-c * c + s * s = eye(columns(a))
+c * c + s * s = eye (columns (a))
 I and 0 are padding matrices of suitable size
 r is upper triangular
 @end group
@@ -72,13 +73,13 @@ r is upper triangular
 
 @end ifinfo
 
-The function @code{gsvd} normally returns the vector of generalised singular
+The function @code{gsvd} normally returns the vector of generalized singular
 values
 @tex
-diag(C)./diag(S).
+diag (C) ./ diag (S).
 @end tex
 @ifinfo
-diag(r)./diag(s).
+diag (r) ./ diag (s).
 @end ifinfo
 If asked for five return values, it computes
 @tex
@@ -94,9 +95,9 @@ R,
 @ifinfo
 r,
 @end ifinfo
-The common upper triangular right term.  Other authors, like S. Van Huffel,
-define this transformation as the simulatenous diagonalisation of the
-input matrices, this can be achieved by multiplying
+The common upper triangular right term.  Other authors, like
+@nospell{S. Van Huffel}, define this transformation as the simultaneous
+diagonalization of the input matrices, this can be achieved by multiplying
 @tex
 X
 @end tex
@@ -115,31 +116,19 @@ For example,
 
 @example
 gsvd (hilb (3), [1 2 3; 3 2 1])
-@end example
 
-@noindent
-returns
-
-@example
-@group
-ans =
-
+@result{}
   0.1055705
   0.0031759
-@end group
 @end example
 
 @noindent
 and
 
 @example
-[u, v, c, s, x, r] = gsvd (hilb (3),  [1 2 3; 3 2 1])
-@end example
+[u, v, c, s, x, r] = gsvd (hilb (3), [1 2 3; 3 2 1])
+@result{}
 
-@noindent
-returns
-
-@example
 u =
 
   -0.965609   0.240893   0.097825
@@ -177,27 +166,22 @@ routines.
 
 @end deftypefn */)
 {
+  if (args.length () !=  2)
+    print_usage ();
+
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin < 2 || nargin > 2 || (nargout > 1 && (nargout < 5 || nargout > 6)))
-    {
-      print_usage ();
-      return retval;
-    }
-
-  octave_value argA = args(0), argB = args(1);
+  octave_value argA = args(0);
+  octave_value argB = args(1);
 
   octave_idx_type nr = argA.rows ();
   octave_idx_type nc = argA.columns ();
 
-//  octave_idx_type  nn = argB.rows ();
-  octave_idx_type  np = argB.columns ();
+  octave_idx_type np = argB.columns ();
 
   if (nr == 0 || nc == 0)
     {
-      if (nargout == 5)
+      if (nargout == 5) 
           retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
                         Matrix (nr, nc), identity_matrix (nr, nr),
                         identity_matrix (nr, nr));
@@ -211,30 +195,21 @@ routines.
     }
   else
     {
-      if ((nc != np))
-        {
-          print_usage ();
-          return retval;
-        }
+      if (nc != np)
+        print_usage ();
 
       if (argA.is_real_type () && argB.is_real_type ())
         {
           Matrix tmpA = argA.matrix_value ();
           Matrix tmpB = argB.matrix_value ();
 
+          // FIXME: This code is still using error_state
           if (! error_state)
             {
               if (tmpA.any_element_is_inf_or_nan ())
-                {
-                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
-                  return retval;
-                }
-
+                error ("gsvd: B cannot have Inf or NaN values");
               if (tmpB.any_element_is_inf_or_nan ())
-                {
-                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
-                  return retval;
-                }
+                error ("gsvd: B cannot have Inf or NaN values");
 
               gsvd<Matrix> result (tmpA, tmpB, gsvd_type<Matrix> (nargout));
 
@@ -242,8 +217,8 @@ routines.
 
               if (nargout == 0 || nargout == 1)
                 {
-                  DiagMatrix sigA =  result.singular_values_A ();
-                  DiagMatrix sigB =  result.singular_values_B ();
+                  DiagMatrix sigA = result.singular_values_A ();
+                  DiagMatrix sigB = result.singular_values_B ();
                   for (int i = sigA.rows() - 1; i >=0; i--)
                     sigA.dgxelem(i) /= sigB.dgxelem(i);
                   retval = ovl (sigA.diag());
@@ -274,24 +249,19 @@ routines.
           if (! error_state)
             {
               if (ctmpA.any_element_is_inf_or_nan ())
-                {
-                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
-                  return retval;
-                }
+                error ("gsvd: A cannot have Inf or NaN values");
               if (ctmpB.any_element_is_inf_or_nan ())
-                {
-                  error ("gsvd: cannot take gsvd of matrix containing Inf or NaN values");
-                  return retval;
-                }
+                error ("gsvd: B cannot have Inf or NaN values");
 
-              gsvd<ComplexMatrix> result (ctmpA, ctmpB, gsvd_type<ComplexMatrix> (nargout));
+              gsvd<ComplexMatrix> result (ctmpA, ctmpB,
+                                          gsvd_type<ComplexMatrix> (nargout));
 
               // DiagMatrix sigma = result.singular_values ();
 
               if (nargout == 0 || nargout == 1)
                 {
-                  DiagMatrix sigA =  result.singular_values_A ();
-                  DiagMatrix sigB =  result.singular_values_B ();
+                  DiagMatrix sigA = result.singular_values_A ();
+                  DiagMatrix sigB = result.singular_values_B ();
                   for (int i = sigA.rows() - 1; i >=0; i--)
                     sigA.dgxelem(i) /= sigB.dgxelem(i);
                   retval = ovl (sigA.diag());
@@ -316,9 +286,9 @@ routines.
         }
       else
         {
+          // Actually, can't tell which arg is at fault
           err_wrong_type_arg ("gsvd", argA);
-          err_wrong_type_arg ("gsvd", argB);
-          return retval;
+          //err_wrong_type_arg ("gsvd", argB);
         }
     }
 
@@ -326,180 +296,187 @@ routines.
 }
 
 /*
-%# a few tests for gsvd.m
+## a few tests for gsvd.m
 %!shared A, A0, B, B0, U, V, C, S, X, R, D1, D2
+%! A0 = randn (5, 3);
+%! B0 = diag ([1 2 4]);
+%! A = A0;
+%! B = B0;
 
-%! A0=randn(5, 3); B0=diag([1 2 4]);
-%! A = A0; B = B0;
-%! # disp('Full rank, 5x3 by 3x3 matrices');
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 3); D1(1:3, 1:3) = C;
+## A (5x3) and B (3x3) are full rank
+%!test
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros (5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('A 5x3 full rank, B 3x3 rank deficient');
+## A: 5x3 full rank, B: 3x3 rank deficient
+%!test
 %! B(2, 2) = 0;
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 3); D1(1, 1) = 1; D1(2:3, 2:3) = C;
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros (5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
 %! D2 = [zeros(2, 1) S; zeros(1, 3)];
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(2, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('A 5x3 rank deficient, B 3x3 full rank');
+## A: 5x3 rank deficient, B: 3x3 full rank
+%!test
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 3); D1(1:3, 1:3) = C;
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp("A 5x3, B 3x3, [A' B'] rank deficient");
+## A and B are both rank deficient
+%!test
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 2); D1(1:2, 1:2) = C;
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
 %! D2 = [S; zeros(1, 2)];
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(2, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*[zeros(2, 1) R]) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*[zeros(2, 1) R]) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*[zeros(2, 1) R]) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*[zeros(2, 1) R]) <= 1e-6);
 
-%! # now, A is 3x5
-%! A = A0.'; B0=diag([1 2 4 8 16]); B = B0;
-%! # disp('Full rank, 3x5 by 5x5 matrices');
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-
-%! [U, V, C, S, X, R] = gsvd(A, B);
+## A (now 3x5) and B (now 5x5) are full rank
+%!test
+%! A = A0.';
+%! B0 = diag ([1 2 4 8 16]);
+%! B = B0;
+%! [U, V, C, S, X, R] = gsvd (A, B);
 %! D1 = [C zeros(3,2)];
 %! D2 = [S zeros(3,2); zeros(2, 3) eye(2)];
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('A 5x3 full rank, B 5x5 rank deficient');
+## A: 3x5 full rank, B: 5x5 rank deficient
+%!test
 %! B(2, 2) = 0;
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-
-%! [U, V, C, S, X, R] = gsvd(A, B);
+%! [U, V, C, S, X, R] = gsvd (A, B);
 %! D1 = zeros(3, 5); D1(1, 1) = 1; D1(2:3, 2:3) = C;
-%! D2 = zeros(5, 5); D2(1:2, 2:3) = S; D2(3:4, 4:5) = eye(2);
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(2, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! D2 = zeros(5, 5); D2(1:2, 2:3) = S; D2(3:4, 4:5) = eye (2);
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('A 3x5 rank deficient, B 5x5 full rank');
+## A: 3x5 rank deficient, B: 5x5 full rank
+%!test
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(3, 5); D1(1:3, 1:3) = C;
-%! D2 = zeros(5, 5); D2(1:3, 1:3) = S; D2(4:5, 4:5) = eye(2);
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros (3, 5);  D1(1:3, 1:3) = C;
+%! D2 = zeros (5, 5);  D2(1:3, 1:3) = S;  D2(4:5, 4:5) = eye (2);
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp("A 5x3, B 5x5, [A' B'] rank deficient");
+## A and B are both rank deficient
+%!test
 %! A = A0.'; B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R]=gsvd(A, B);
+%! [U, V, C, S, X, R]=gsvd (A, B);
 %! D1 = zeros(3, 4); D1(1:3, 1:3) = C;
-%! D2 = eye(4); D2(1:3, 1:3) = S; D2(5,:) = 0;
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*[zeros(4, 1) R]) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*[zeros(4, 1) R]) <= 1e-6)
+%! D2 = eye (4); D2(1:3, 1:3) = S; D2(5,:) = 0;
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*[zeros(4, 1) R]) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*[zeros(4, 1) R]) <= 1e-6);
 
-%! A0 = A0 +j * randn(5, 3); B0 =  B0=diag([1 2 4]) + j*diag([4 -2 -1]);
-%! A = A0; B = B0;
-%! # disp('Complex: Full rank, 5x3 by 3x3 matrices');
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 3); D1(1:3, 1:3) = C;
+## A: 5x3 complex full rank, B: 3x3 complex full rank
+%!test
+%! A0 = A0 + j*randn (5, 3);
+%! B0 = diag ([1 2 4]) + j*diag ([4 -2 -1]);
+%! A = A0;
+%! B = B0;
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('Complex: A 5x3 full rank, B 3x3 rank deficient');
+## A: 5x3 complex full rank, B: 3x3 complex rank deficient
+%!test
 %! B(2, 2) = 0;
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 3); D1(1, 1) = 1; D1(2:3, 2:3) = C;
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
 %! D2 = [zeros(2, 1) S; zeros(1, 3)];
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(2, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('Complex: A 5x3 rank deficient, B 3x3 full rank');
+## A: 5x3 complex rank deficient, B: 3x3 complex full rank
+%!test
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 3); D1(1:3, 1:3) = C;
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp("Complex: A 5x3, B 3x3, [A' B'] rank deficient");
+## A (5x3) and B (3x3) are both complex rank deficient
+%!test
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(5, 2); D1(1:2, 1:2) = C;
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
 %! D2 = [S; zeros(1, 2)];
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(2, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*[zeros(2, 1) R]) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*[zeros(2, 1) R]) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*[zeros(2, 1) R]) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*[zeros(2, 1) R]) <= 1e-6);
 
-%! # now, A is 3x5
-%! A = A0.'; B0=diag([1 2 4 8 16])+j*diag([-5 4 -3 2 -1]);
+## A (now 3x5) complex and B (now 5x5) complex are full rank
+## now, A is 3x5
+%!test
+%! A = A0.';
+%! B0 = diag ([1 2 4 8 16]) + j*diag ([-5 4 -3 2 -1]);
 %! B = B0;
-%! # disp('Complex: Full rank, 3x5 by 5x5 matrices');
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
+%! [U, V, C, S, X, R] = gsvd (A, B);
 %! D1 = [C zeros(3,2)];
 %! D2 = [S zeros(3,2); zeros(2, 3) eye(2)];
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('Complex: A 5x3 full rank, B 5x5 rank deficient');
+## A: 3x5 complex full rank, B: 5x5 complex rank deficient
+%!test
 %! B(2, 2) = 0;
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(3, 5); D1(1, 1) = 1; D1(2:3, 2:3) = C;
-%! D2 = zeros(5,5); D2(1:2, 2:3) = S; D2(3:4, 4:5) = eye(2);
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(2, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(3, 5);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
+%! D2 = zeros(5,5);  D2(1:2, 2:3) = S;  D2(3:4, 4:5) = eye (2);
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp('Complex: A 3x5 rank deficient, B 5x5 full rank');
+## A: 3x5 complex rank deficient, B: 5x5 complex full rank
+%!test
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R] = gsvd(A, B);
-%! D1 = zeros(3, 5); D1(1:3, 1:3) = C;
-%! D2 = zeros(5,5); D2(1:3, 1:3) = S; D2(4:5, 4:5) = eye(2);
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*R) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*R) <= 1e-6)
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(3, 5);  D1(1:3, 1:3) = C;
+%! D2 = zeros(5,5);  D2(1:3, 1:3) = S;  D2(4:5, 4:5) = eye (2);
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
-%! # disp("Complex: A 5x3, B 5x5, [A' B'] rank deficient");
-%! A = A0.'; B = B0.';
+## A and B are both complex rank deficient
+%!test
+%! A = A0.';
+%! B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! # disp([rank(A) rank(B) rank([A' B'])]);
-%! [U, V, C, S, X, R]=gsvd(A, B);
-%! D1 = zeros(3, 4); D1(1:3, 1:3) = C;
-%! D2 = eye(4); D2(1:3, 1:3) = S; D2(5,:) = 0;
-%!assert(norm(diag(C).^2+diag(S).^2 - ones(3, 1)) <= 1e-6)
-%!assert(norm((U'*A*X)-D1*[zeros(4, 1) R]) <= 1e-6)
-%!assert(norm((V'*B*X)-D2*[zeros(4, 1) R]) <= 1e-6)
+%! [U, V, C, S, X, R] = gsvd (A, B);
+%! D1 = zeros(3, 4);  D1(1:3, 1:3) = C;
+%! D2 = eye (4);  D2(1:3, 1:3) = S;  D2(5,:) = 0;
+%! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
+%! assert (norm ((U'*A*X) - D1*[zeros(4, 1) R]) <= 1e-6);
+%! assert (norm ((V'*B*X) - D2*[zeros(4, 1) R]) <= 1e-6);
 
 */

@@ -11106,7 +11106,13 @@ undocumented.
 
           go.get_toolkit ().print_figure (go, term, file, debug_file);
 
-          octave_sleep (0.05); // FIXME: really needed?
+          // FIXME: In ObjectProxy.cc ObjectProxy::init
+          // we now use connect (..., Qt::BlockingQueuedConnection)
+          // which should make the sleep unnecessary.
+          // See bug #44463 and #48519
+          // Remove it and the FIXME block above after testing.
+
+          // octave_sleep (0.05);
 
           gh_manager::lock ();
         }

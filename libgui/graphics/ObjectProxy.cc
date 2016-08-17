@@ -68,7 +68,8 @@ ObjectProxy::init (Object* obj)
           connect (this, SIGNAL (sendRedraw (void)),
                    m_object, SLOT (slotRedraw (void)));
           connect (this, SIGNAL (sendPrint (const QString&, const QString&)),
-                   m_object, SLOT (slotPrint (const QString&, const QString&)));
+                   m_object, SLOT (slotPrint (const QString&, const QString&)),
+                   Qt::BlockingQueuedConnection);
         }
     }
 }

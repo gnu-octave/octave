@@ -172,7 +172,7 @@ namespace octave
 
         in_draw = true;
 
-        GLint gl2ps_term;
+        GLint gl2ps_term = GL2PS_PS;
         if (term.find ("eps") != std::string::npos)
           gl2ps_term = GL2PS_EPS;
         else if (term.find ("pdf") != std::string::npos)
@@ -186,7 +186,8 @@ namespace octave
         else if (term.find ("tex") != std::string::npos)
           gl2ps_term = GL2PS_TEX;
         else
-          error ("gl2ps_renderer::draw: Unknown terminal %s", term.c_str ());
+          warning ("gl2ps_renderer::draw: Unknown terminal %s, using 'ps'",
+                   term.c_str ());
 
         GLint gl2ps_text = 0;
         if (term.find ("notxt") != std::string::npos)

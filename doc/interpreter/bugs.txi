@@ -54,7 +54,7 @@ where people's opinions differ as to what is best.
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::
 * How To Get Help with Octave::
-* How to distinguish between Octave and Matlab::
+* How to Distinguish Between Octave and Matlab::
 @end menu
 
 @node Actual Bugs
@@ -401,8 +401,8 @@ But before you submit a bug report, please read
 @url{http://www.octave.org/bugs.html} to learn how to submit a useful
 bug report.
 
-@node How to distinguish between Octave and Matlab
-@appendixsec How to distinguish between Octave and Matlab
+@node How to Distinguish Between Octave and Matlab
+@appendixsec How to Distinguish Between Octave and Matlab
 @cindex Octave and @sc{matlab}, how to distinguish between
 
 Octave and @sc{matlab} are very similar, but handle Java slightly different.

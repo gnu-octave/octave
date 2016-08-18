@@ -92,7 +92,7 @@ modified versions.
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 4 for Octave version @value{VERSION}
-@subtitle March 2015
+@subtitle September 2016
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
@@ -111,7 +111,7 @@ modified versions.
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007, 2011, 2013, 2015 John W. Eaton.
+2007, 2011, 2013, 2015, 2016 John W. Eaton.
 
 This is the fourth edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.
@@ -248,9 +248,9 @@ Command Line Editing
 
 * Cursor Motion::
 * Killing and Yanking::
-* Commands For Text::
-* Commands For Completion::
-* Commands For History::
+* Commands for Text::
+* Commands for Completion::
+* Commands for History::
 * Customizing readline::
 * Customizing the Prompt::
 * Diary and Echo Commands::
@@ -419,6 +419,27 @@ Function Files
 * Function Locking::
 * Function Precedence::
 
+Script Files
+
+* Publish Octave Script Files::
+* Publishing Markup::
+
+Publishing Markup
+
+* Using Publishing Markup in Script Files::
+* Text Formatting::
+* Sections::
+* Preformatted Code::
+* Preformatted Text::
+* Bulleted Lists::
+* Numbered Lists::
+* Including File Content::
+* Including Graphics::
+* Including URLs::
+* Mathematical Equations::
+* HTML Markup::
+* LaTeX Markup::
+
 Function Handles Anonymous Functions Inline Functions
 
 * Function Handles::
@@ -543,7 +564,9 @@ Graphics Object Properties
 * Image Properties::
 * Patch Properties::
 * Surface Properties::
+* Light Properties::
 * Uimenu Properties::
+* Uibuttongroup Properties::
 * Uicontextmenu Properties::
 * Uipanel Properties::
 * Uicontrol Properties::
@@ -858,9 +881,9 @@ Mex-Files
 Java Interface
 
 * Java Interface Functions::
-* Making Java classes available::
-* Creating an instance of a Java class::
-* Handling Java memory limitations::
+* Making Java Classes Available::
+* Creating an Instance of a Java Class::
+* Handling Java Memory Limitations::
 
 Test and Demo Functions
 
@@ -889,7 +912,7 @@ Trouble
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::
 * How To Get Help with Octave::
-* How to distinguish between Octave and Matlab::
+* How to Distinguish Between Octave and Matlab::
 
 Reporting Bugs
 

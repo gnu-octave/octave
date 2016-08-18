@@ -1840,9 +1840,9 @@ a library like
 
 @menu
 * Java Interface Functions::
-* Making Java classes available::
-* Creating an instance of a Java class::
-* Handling Java memory limitations::
+* Making Java Classes Available::
+* Creating an Instance of a Java Class::
+* Handling Java Memory Limitations::
 @end menu
 
 @node Java Interface Functions
@@ -1986,8 +1986,8 @@ between Octave and the Java Virtual Machine.
 
 @DOCSTRING(debug_java)
 
-@node Making Java classes available
-@subsection Making Java classes available
+@node Making Java Classes Available
+@subsection Making Java Classes Available
 
 @c - index -
 @cindex classpath, setting
@@ -2098,8 +2098,8 @@ javaaddpath ("~/octave/myclasses.jar");
 @end example
 
 @c ------------------------------------------------------------------------
-@node Creating an instance of a Java class
-@subsection Creating an instance of a Java class
+@node Creating an Instance of a Java Class
+@subsection Creating an Instance of a Java Class
 @c - index -
 @cindex object, how to create
 @cindex instance, how to create
@@ -2113,8 +2113,8 @@ Example:
 Passenger = javaObject ("package.FirstClass", row, seat);
 @end example
 
-@node Handling Java memory limitations
-@subsection Handling Java memory limitations
+@node Handling Java Memory Limitations
+@subsection Handling Java Memory Limitations
 @cindex memory, limitations
 
 In order to execute Java code Octave creates a Java Virtual Machine (JVM).

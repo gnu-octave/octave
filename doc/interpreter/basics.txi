@@ -498,9 +498,9 @@ characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 @menu
 * Cursor Motion::
 * Killing and Yanking::
-* Commands For Text::
-* Commands For Completion::
-* Commands For History::
+* Commands for Text::
+* Commands for Completion::
+* Commands for History::
 * Customizing readline::
 * Customizing the Prompt::
 * Diary and Echo Commands::
@@ -614,8 +614,8 @@ ring is not line specific; the text that you killed on a previously
 typed line is available to be yanked back later, when you are typing
 another line.
 
-@node Commands For Text
-@subsection Commands For Changing Text
+@node Commands for Text
+@subsection Commands for Changing Text
 
 The following commands can be used for entering characters that would
 otherwise have a special meaning (e.g., @key{TAB}, @kbd{C-q}, etc.), or
@@ -653,8 +653,8 @@ next word if the cursor is between words), moving the cursor to the end
 of the word.
 @end table
 
-@node Commands For Completion
-@subsection Letting Readline Type For You
+@node Commands for Completion
+@subsection Letting Readline Type for You
 @cindex command completion
 
 The following commands allow Octave to complete command and variable
@@ -673,8 +673,8 @@ List the possible completions of the text before the cursor.
 
 @DOCSTRING(completion_matches)
 
-@node Commands For History
-@subsection Commands For Manipulating The History
+@node Commands for History
+@subsection Commands for Manipulating the History
 @cindex command history
 @cindex input history
 @cindex history of commands

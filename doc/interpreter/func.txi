@@ -1266,12 +1266,12 @@ execute commands from any file.
 @DOCSTRING(source)
 
 @menu
-* Publish Octave script files::
+* Publish Octave Script Files::
 * Publishing Markup::
 @end menu
 
-@node Publish Octave script files
-@subsection Publish Octave script files
+@node Publish Octave Script Files
+@subsection Publish Octave Script Files
 
 The function @code{publish} provides a dynamic possibility to document your
 script file.  Unlike static documentation, @code{publish} runs the script
@@ -1290,23 +1290,23 @@ The counterpart to @code{publish} is @code{grabcode}:
 @subsection Publishing Markup
 
 @menu
-* Using Publishing Markup in script files::
-* Text formatting::
+* Using Publishing Markup in Script Files::
+* Text Formatting::
 * Sections::
-* Preformatted code::
-* Preformatted text::
-* Bulleted lists::
-* Numbered lists::
-* Including file content::
-* Including graphics::
+* Preformatted Code::
+* Preformatted Text::
+* Bulleted Lists::
+* Numbered Lists::
+* Including File Content::
+* Including Graphics::
 * Including URLs::
-* Mathematical equations::
-* HTML markup::
-* LaTeX markup::
+* Mathematical Equations::
+* HTML Markup::
+* LaTeX Markup::
 @end menu
 
-@node Using Publishing Markup in script files
-@subsubsection Using Publishing Markup in script files
+@node Using Publishing Markup in Script Files
+@subsubsection Using Publishing Markup in Script Files
 
 To use Publishing Markup, start by typing @samp{##} or @samp{%%} at the
 beginning of a new line.  For @sc{matlab} compatibility @samp{%%} is treated
@@ -1344,8 +1344,8 @@ sombrero ()
 @end group
 @end example
 
-@node Text formatting
-@subsubsection Text formatting
+@node Text Formatting
+@subsubsection Text Formatting
 
 Basic text formatting is supported inside sections, see the example
 given below:
@@ -1397,8 +1397,8 @@ some_code ();
 @end group
 @end example
 
-@node Preformatted code
-@subsubsection Preformatted code
+@node Preformatted Code
+@subsubsection Preformatted Code
 
 To write preformatted code inside a section, indent the code by three
 spaces after @samp{#} at the beginning of each line and leave the lines
@@ -1418,8 +1418,8 @@ those lines.
 @end group
 @end example
 
-@node Preformatted text
-@subsubsection Preformatted text
+@node Preformatted Text
+@subsubsection Preformatted Text
 
 To write preformatted text inside a section, indent the code by two spaces
 after @samp{#} at the beginning of each line and leave the lines above and
@@ -1441,8 +1441,8 @@ those lines.
 @end group
 @end example
 
-@node Bulleted lists
-@subsubsection Bulleted lists
+@node Bulleted Lists
+@subsubsection Bulleted Lists
 
 To create a bulleted list, type
 
@@ -1468,8 +1468,8 @@ to get output like
 Notice the blank lines, except for the @samp{#} or @samp{%} before and
 after the bulleted list!
 
-@node Numbered lists
-@subsubsection Numbered lists
+@node Numbered Lists
+@subsubsection Numbered Lists
 
 To create a numbered list, type
 
@@ -1495,8 +1495,8 @@ to get output like
 Notice the blank lines, except for the @samp{#} or @samp{%} before and
 after the numbered list!
 
-@node Including file content
-@subsubsection Including file content
+@node Including File Content
+@subsubsection Including File Content
 
 To include the content of an external file, e.g., a file called
 @samp{my_function.m} at the same location as the published Octave script,
@@ -1517,8 +1517,8 @@ Alternatively, you can write the full or relative path to the file.
 @end group
 @end example
 
-@node Including graphics
-@subsubsection Including graphics
+@node Including Graphics
+@subsubsection Including Graphics
 
 To include external graphics, e.g., a graphic called @samp{my_graphic.png}
 at the same location as the published Octave script, use the following syntax.
@@ -1572,8 +1572,8 @@ GNU Octave documentations function index.
 @end group
 @end example
 
-@node Mathematical equations
-@subsubsection Mathematical equations
+@node Mathematical Equations
+@subsubsection Mathematical Equations
 
 One can insert @LaTeX{} inline math, surrounded by single @samp{$} signs, or
 displayed math, surrounded by double @samp{$$} signs, directly inside
@@ -1589,8 +1589,8 @@ sections.
 @end group
 @end example
 
-@node HTML markup
-@subsubsection HTML markup
+@node HTML Markup
+@subsubsection HTML Markup
 
 If the published output is a HTML report, you can insert HTML markup,
 that is only visible in this kind of output.
@@ -1606,8 +1606,8 @@ that is only visible in this kind of output.
 @end group
 @end example
 
-@node LaTeX markup
-@subsubsection LaTeX markup
+@node LaTeX Markup
+@subsubsection LaTeX Markup
 
 If the published output is a @LaTeX{} or PDF report, you can insert @LaTeX{}
 markup, that is only visible in this kind of output.

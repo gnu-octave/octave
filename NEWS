@@ -1,10 +1,6 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
- ** The value "zero" for the axes properties "xaxislocation" and
-    "yaxislocation" has been deprecated and will be removed from
-    Octave 4.6. Use "origin" instead.
-
  ** The parser has been extended to accept, but ignore, underscore
     characters in numbers.  This facilitates writing more legible code
     by using '_' as a thousands separator or to group nibbles into bytes
@@ -106,12 +102,16 @@ Summary of important user-visible changes for version 4.2:
     which controls the default appearance of text created with
     xlabel(), ylabel(), or zlabel().
 
- ** The graphics property 'erasemode' has been hidden, and will
+ ** The graphics property "erasemode" has been hidden, and will
     eventually be removed.  This property has also been removed
     from Matlab, and was never implemented in Octave.
 
- ** The graphics property 'graphicssmothing' for figures now controls whether
+ ** The graphics property "graphicssmothing" for figures now controls whether
     anti-aliasing will be use for lines.  The default is "on".
+
+ ** The value "zero" for the axes properties "xaxislocation" and
+    "yaxislocation" has been deprecated and will be removed from
+    Octave 4.6.  Use "origin" instead.
 
  ** The publish function allows easy publication of Octave script files
     in HTML or other formats, including figures and output created by this
@@ -122,6 +122,7 @@ Summary of important user-visible changes for version 4.2:
 
       audioformats
       camlight
+      condeig
       deg2rad
       dialog
       evalc
@@ -133,10 +134,13 @@ Summary of important user-visible changes for version 4.2:
       localfunctions
       material
       normest1
+      ode23
       ode45
       odeget
+      odeplot
       odeset
       padecoef
+      profexport
       psi
       rad2deg
       reducepatch

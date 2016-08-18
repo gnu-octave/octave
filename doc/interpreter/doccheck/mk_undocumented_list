@@ -1,44 +1,53 @@
 #!/usr/bin/perl -w
 
 ################################################################################
+# File: mk_undocumented_list
+# Purpose: Create a list of functions present in Octave, but without a
+#          corresponding DOCSTRING entry in one of the *.txi files
+# Usage: make doc/interpreter/undocumented_list
+# Documentation: see README in doccheck directory
+################################################################################
 # Get a list from Octave of all visible functions
 @octave_output = <<`_END_OCT_SCRIPT_`;
 ../../run-octave --norc --silent --no-history --eval '\
- funclist = vertcat (__list_functions__ , __builtins__); \
- funclist = funclist(! strncmp (funclist, \"meta.\", 5)) \
- disp("#!-separator-!#") \
- where = cellfun (\@which, funclist, \"UniformOutput\", 0)'
+  funclist = vertcat (__list_functions__ , __builtins__); \
+  funclist = funclist(! strncmp (funclist, \"meta.\", 5)) \
+  disp ("#!-separator-!#") \
+  where = cellfun (\@which, funclist, \"UniformOutput\", 0)'
 _END_OCT_SCRIPT_
 
-unless (@octave_output) { die "Unable to invoke 'run-octave'.  Exiting\n" ;}
+unless (@octave_output) { die "Unable to invoke 'run-octave'.  Exiting\n" }
 
 ################################################################################
 # Winnow list of functions that require a DOCSTRING
 
+# First, divide output in to list of functions and list of locations
 $idx = 0;
 while (($_ = $octave_output[$idx++]) !~ /^#!-separator-!#$/)
 {
-   push(@all_functions, $1) if (/] = (\w+)$/);
+  push(@all_functions, $1) if (/] = (\w+)$/);
 }
 while ($_ = $octave_output[$idx++])
 {
-   push(@where, $1) if (/] = (\S*)$/);
+  push(@where, $1) if (/] = (\S*)$/);
 }
 
-# Remove functions based on directory location
+# Second, remove functions based on directory location
 # deprecated directory, doc/interpreter directory, test/ directory
 FUNC: foreach $idx (0 .. $#where)
 {
-   next FUNC if ($where[$idx] =~ /deprecated/i);
-   next FUNC if ($where[$idx] =~ /interpreter/i);
-   next FUNC if ($where[$idx] =~ m#test/#i);
+  next FUNC if ($where[$idx] =~ /deprecated/i);
+  next FUNC if ($where[$idx] =~ /interpreter/i);
+  next FUNC if ($where[$idx] =~ m#test/#i);
 
-   push (@functions, $all_functions[$idx]);
+  push (@functions, $all_functions[$idx]);
 }
 
+# Third, remove functions based on naming patterns
 # Remove internal functions from the list of features requiring a DOCSTRING
 @functions = grep (! /^__/, @functions);
 
+# Fourth, remove exceptions based on name that do not require documentation
 # Load list of function exceptions not requiring a DOCSTRING
 # Exception data is stored at the bottom of this script
 map { chomp, $exceptions{$_}=1; } <DATA>;
@@ -50,11 +59,11 @@ map { chomp, $exceptions{$_}=1; } <DATA>;
 # Get a list of all documented functions
 foreach $txi_file (glob("*.txi"))
 {
-   open(TXI_FILE, $txi_file) or die "Unable to open $txi_file for reading\n";
-   while (<TXI_FILE>)
-   {
-      $docstrings{$1} = 1 if (/\@DOCSTRING\((\w+)\)/) ;
-   }
+  open(TXI_FILE, $txi_file) or die "Unable to open $txi_file for reading\n";
+  while (<TXI_FILE>)
+  {
+    $docstrings{$1} = 1 if (/\@DOCSTRING\((\w+)\)/);
+  }
 }
 
 ################################################################################
@@ -66,6 +75,7 @@ exit(0) if (! @undocumented);
 
 $, = "\n";  # Set output record separator
 print sort(@undocumented);
+print "\n";
 exit(1);
 
 ################################################################################
@@ -80,7 +90,6 @@ besselk
 bessely
 bug_report
 chdir
-comma
 debug
 dbnext
 end
@@ -110,7 +119,6 @@ lstat
 metaclass
 nan
 nargchk
-octave_tmp_file_name
 O_APPEND
 O_ASYNC
 O_CREAT
@@ -121,16 +129,13 @@ O_RDWR
 O_SYNC
 O_TRUNC
 O_WRONLY
-paren
 putenv
 SEEK_CUR
 SEEK_END
-semicolon
 setenv
 tmpnam
 toc
 triu
-unimplemented
 upper
 ylabel
 ylim

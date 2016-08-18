@@ -864,26 +864,31 @@ DEFUN (__list_functions__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{retval} =} __list_functions__ ()
 @deftypefnx {} {@var{retval} =} __list_functions__ (@var{directory})
-Undocumented internal function.
+Return a list of all functions (.m and .oct functions) in the load path.
+
+If the optional argument @var{directory} is given then list only the functions
+in that directory.
+@seealso{path}
 @end deftypefn */)
 {
   octave_value retval;
 
-  // Get list of functions
-  string_vector ffl = load_path::fcn_names ();
-  string_vector afl = autoloaded_functions ();
-
   if (args.length () == 0)
-    retval = Cell (ffl.append (afl));
+    {
+      // Get list of all functions
+      string_vector ffl = load_path::fcn_names ();
+      string_vector afl = autoloaded_functions ();
+
+      retval = Cell (ffl.append (afl));
+    }
   else
     {
       std::string dir = args(0).xstring_value ("__list_functions__: DIRECTORY argument must be a string");
 
       string_vector fl = load_path::files (dir, true);
 
-      // Return a sorted list with unique entries (in case of
-      // .m and .oct versions of the same function in a given
-      // directory, for example).
+      // Return a sorted list with unique entries (in case of .m and .oct
+      // versions of the same function in a given directory, for example).
       fl.sort (true);
 
       retval = Cell (fl);

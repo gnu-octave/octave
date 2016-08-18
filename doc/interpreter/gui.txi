@@ -155,4 +155,6 @@ programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 
 @DOCSTRING(ispref)
 
+@DOCSTRING(prefdir)
+
 @DOCSTRING(preferences)

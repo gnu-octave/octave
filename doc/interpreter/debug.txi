@@ -245,6 +245,8 @@ and the profiler also records that it is recursive.
 
 @DOCSTRING(profshow)
 
+@DOCSTRING(profexport)
+
 @DOCSTRING(profexplore)
 
 @node Profiler Example

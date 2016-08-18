@@ -101,8 +101,8 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
 
       if (   tpos(1) != xmin && tpos(1) != xmax
           && tpos(2) != ymin && tpos(2) != ymax)
-        trot = 180 / pi * atan2 (diff (c(2,i+j-1:i+j)),
-                                 diff (c(1,i+j-1:i+j)));
+        trot = 180 / pi * atan2 (diff (c(2,i+j-1:i+j)) * yspacing,
+                                 diff (c(1,i+j-1:i+j)) * xspacing);
         if (abs (trot) > 90)
           trot += 180;
         endif

@@ -784,6 +784,161 @@ AC_ARG_ENABLE([link-all-dependencies],
   [link_all_deps=no])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
+### Look for math library.  If found, this will add -lm to LIBS.
+
+dnl Keep this check before the check for the Fortran compiler,
+dnl in case -lm is needed to compile Fortran programs.
+AC_CHECK_LIB(m, sin)
+
+### Determine the Fortran compiler and how to invoke it
+
+## Prefer gfortran, but the user's F77 environment variable will override.
+AC_PROG_F77([gfortran])
+if test -z "$F77"; then
+  ## No gfortran found, search for any other installed compiler.
+  AC_PROG_F77
+fi
+if test "$F77" = g77; then
+  AC_MSG_ERROR([g77 is not a supported Fortran compiler.  Select another compiler by setting the environment variable F77 and re-running configure.])
+fi
+
+AC_MSG_CHECKING([whether a usable Fortran compiler was found])
+if test -n "$F77"; then
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([A Fortran compiler is required])
+fi
+
+AC_F77_LIBRARY_LDFLAGS
+AC_F77_DUMMY_MAIN
+AC_F77_WRAPPERS
+
+F77_TOLOWER=yes
+F77_APPEND_UNDERSCORE=yes
+F77_APPEND_EXTRA_UNDERSCORE=yes
+
+case $ac_cv_f77_mangling in
+  "upper case") F77_TOLOWER=no ;;
+esac
+case $ac_cv_f77_mangling in
+  "no underscore") F77_APPEND_UNDERSCORE=no ;;
+esac
+case $ac_cv_f77_mangling in
+  "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=no ;;
+esac
+
+case $canonical_host_type in
+  i[[3456789]]86-*-*)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      OCTAVE_F77_FLAG([-mieee-fp])
+    fi
+  ;;
+  alpha*-*-*)
+    if test $ac_cv_f77_compiler_gnu = yes; then
+      OCTAVE_F77_FLAG([-mieee])
+    else
+      OCTAVE_F77_FLAG([-ieee])
+      OCTAVE_F77_FLAG([-fpe1])
+    fi
+  ;;
+  powerpc-apple-machten*)
+    FFLAGS=
+  ;;
+esac
+
+if test $ac_cv_f77_compiler_gnu = yes; then
+  FORTRAN_CALLING_CONVENTION=gfortran
+else
+  FORTRAN_CALLING_CONVENTION=unknown
+fi
+AC_ARG_ENABLE([fortran-calling-convention],
+  [AS_HELP_STRING([--enable-fortran-calling-convention=OPTION],
+    [Select C++ to Fortran calling convention.  "gfortran" should be detected automatically.  Other options are "cray", "visual-fortran", or "f2c".])],
+  [FORTRAN_CALLING_CONVENTION="$enableval"], [])
+
+case "$FORTRAN_CALLING_CONVENTION" in
+  gfortran)
+    AC_DEFINE(F77_USES_GFORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the gfortran calling convention.])
+  ;;
+  cray)
+    AC_DEFINE(F77_USES_CRAY_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Cray Fortran calling convention.])
+  ;;
+  visual-fortran)
+    AC_DEFINE(F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Visual Fortran calling convention.])
+  ;;
+  f2c)
+    AC_DEFINE(F77_USES_F2C_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the f2c calling convention.])
+  ;;
+  *)
+    AC_MSG_ERROR([to build Octave, the C++ to Fortran calling convention must be known.])
+  ;;
+esac
+
+if test -n "$FFLAGS"; then
+  AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
+fi
+
+AC_SUBST(F77_TOLOWER)
+AC_SUBST(F77_APPEND_UNDERSCORE)
+AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
+
+if test -z "$F77"; then
+  AC_MSG_ERROR([to build Octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
+fi
+
+OCTAVE_CHECK_FUNC_FORTRAN_ISNAN
+F77_ISNAN_MACRO=
+if test $octave_cv_func_fortran_isnan = no; then
+  AC_MSG_NOTICE([substituting ISNAN(X) with X.NE.X in Fortran sources])
+  F77_ISNAN_MACRO="s|ISNAN(\(@<:@^)@:>@*\))|(\1.NE.\1)|"
+fi
+AC_SUBST(F77_ISNAN_MACRO)
+
+OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
+if test $octave_cv_sizeof_fortran_integer = no; then
+  if test $ENABLE_64 = yes; then
+    case $F77 in
+      *gfortran*)
+        case $F77_INTEGER_8_FLAG in
+          *-fdefault-integer-8*)
+          ;;
+          *)
+            case $FFLAGS in
+              *-fdefault-integer-8*)
+                AC_MSG_NOTICE([setting -fdefault-integer-8 in F77_INTEGER_8_FLAG instead of FFLAGS])
+                FFLAGS=`echo $FFLAGS | $SED 's/-fdefault-integer-8//g'`
+                F77_INTEGER_8_FLAG="-fdefault-integer-8"
+              ;;
+              *)
+                AC_MSG_NOTICE([adding -fdefault-integer-8 to F77_INTEGER_8_FLAG])
+                F77_INTEGER_8_FLAG="-fdefault-integer-8"
+                ## Invalidate the cache and try again.
+                $as_unset octave_cv_sizeof_fortran_integer
+              ;;
+            esac
+          ;;
+        esac
+      ;;
+    esac
+    if test -z "$octave_cv_sizeof_fortran_integer"; then
+      OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
+    fi
+    if test $octave_cv_sizeof_fortran_integer = no; then
+      AC_MSG_ERROR([to build Octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
+    fi
+  else
+    AC_MSG_ERROR([your Fortran compiler must have an option to make integers the same size as octave_idx_type ($OCTAVE_IDX_TYPE).  See the file INSTALL for more information.])
+  fi
+fi
+AC_SUBST(F77_INTEGER_8_FLAG)
+
+OCTAVE_F77_FLAG([-ffloat-store], [
+  AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
+  F77_FLOAT_STORE_FLAG=-ffloat-store
+  AC_SUBST(F77_FLOAT_STORE_FLAG)
+])
+
 ## Dynamic linking is now enabled only if we are building shared
 ## libs and some API for dynamic linking has been detected.
 
@@ -1056,162 +1211,6 @@ AC_ARG_VAR([BUILD_LDFLAGS],
   [build system C++ compiler link flags (used if cross compiling)])
 AC_ARG_VAR([BUILD_EXEEXT],
   [build system executable extension (used if cross compiling)])
-
-
-### Look for math library.  If found, this will add -lm to LIBS.
-
-dnl Keep this check before the check for the Fortran compiler,
-dnl in case -lm is needed to compile Fortran programs.
-AC_CHECK_LIB(m, sin)
-
-### Determine the Fortran compiler and how to invoke it
-
-## Prefer gfortran, but the user's F77 environment variable will override.
-AC_PROG_F77([gfortran])
-if test -z "$F77"; then
-  ## No gfortran found, search for any other installed compiler.
-  AC_PROG_F77
-fi
-if test "$F77" = g77; then
-  AC_MSG_ERROR([g77 is not a supported Fortran compiler.  Select another compiler by setting the environment variable F77 and re-running configure.])
-fi
-
-AC_MSG_CHECKING([whether a usable Fortran compiler was found])
-if test -n "$F77"; then
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-  AC_MSG_ERROR([A Fortran compiler is required])
-fi
-
-AC_F77_LIBRARY_LDFLAGS
-AC_F77_DUMMY_MAIN
-AC_F77_WRAPPERS
-
-F77_TOLOWER=yes
-F77_APPEND_UNDERSCORE=yes
-F77_APPEND_EXTRA_UNDERSCORE=yes
-
-case $ac_cv_f77_mangling in
-  "upper case") F77_TOLOWER=no ;;
-esac
-case $ac_cv_f77_mangling in
-  "no underscore") F77_APPEND_UNDERSCORE=no ;;
-esac
-case $ac_cv_f77_mangling in
-  "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=no ;;
-esac
-
-case $canonical_host_type in
-  i[[3456789]]86-*-*)
-    if test $ac_cv_f77_compiler_gnu = yes; then
-      OCTAVE_F77_FLAG([-mieee-fp])
-    fi
-  ;;
-  alpha*-*-*)
-    if test $ac_cv_f77_compiler_gnu = yes; then
-      OCTAVE_F77_FLAG([-mieee])
-    else
-      OCTAVE_F77_FLAG([-ieee])
-      OCTAVE_F77_FLAG([-fpe1])
-    fi
-  ;;
-  powerpc-apple-machten*)
-    FFLAGS=
-  ;;
-esac
-
-if test $ac_cv_f77_compiler_gnu = yes; then
-  FORTRAN_CALLING_CONVENTION=gfortran
-else
-  FORTRAN_CALLING_CONVENTION=unknown
-fi
-AC_ARG_ENABLE([fortran-calling-convention],
-  [AS_HELP_STRING([--enable-fortran-calling-convention=OPTION],
-    [Select C++ to Fortran calling convention.  "gfortran" should be detected automatically.  Other options are "cray", "visual-fortran", or "f2c".])],
-  [FORTRAN_CALLING_CONVENTION="$enableval"], [])
-
-case "$FORTRAN_CALLING_CONVENTION" in
-  gfortran)
-    AC_DEFINE(F77_USES_GFORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the gfortran calling convention.])
-  ;;
-  cray)
-    AC_DEFINE(F77_USES_CRAY_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Cray Fortran calling convention.])
-  ;;
-  visual-fortran)
-    AC_DEFINE(F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Visual Fortran calling convention.])
-  ;;
-  f2c)
-    AC_DEFINE(F77_USES_F2C_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the f2c calling convention.])
-  ;;
-  *)
-    AC_MSG_ERROR([to build Octave, the C++ to Fortran calling convention must be known.])
-  ;;
-esac
-
-if test -n "$FFLAGS"; then
-  AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
-fi
-
-AC_SUBST(F77_TOLOWER)
-AC_SUBST(F77_APPEND_UNDERSCORE)
-AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
-
-if test -z "$F77"; then
-  AC_MSG_ERROR([to build Octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
-fi
-
-OCTAVE_CHECK_FUNC_FORTRAN_ISNAN
-F77_ISNAN_MACRO=
-if test $octave_cv_func_fortran_isnan = no; then
-  AC_MSG_NOTICE([substituting ISNAN(X) with X.NE.X in Fortran sources])
-  F77_ISNAN_MACRO="s|ISNAN(\(@<:@^)@:>@*\))|(\1.NE.\1)|"
-fi
-AC_SUBST(F77_ISNAN_MACRO)
-
-OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
-if test $octave_cv_sizeof_fortran_integer = no; then
-  if test $ENABLE_64 = yes; then
-    case $F77 in
-      *gfortran*)
-        case $F77_INTEGER_8_FLAG in
-          *-fdefault-integer-8*)
-          ;;
-          *)
-            case $FFLAGS in
-              *-fdefault-integer-8*)
-                AC_MSG_NOTICE([setting -fdefault-integer-8 in F77_INTEGER_8_FLAG instead of FFLAGS])
-                FFLAGS=`echo $FFLAGS | $SED 's/-fdefault-integer-8//g'`
-                F77_INTEGER_8_FLAG="-fdefault-integer-8"
-              ;;
-              *)
-                AC_MSG_NOTICE([adding -fdefault-integer-8 to F77_INTEGER_8_FLAG])
-                F77_INTEGER_8_FLAG="-fdefault-integer-8"
-                ## Invalidate the cache and try again.
-                $as_unset octave_cv_sizeof_fortran_integer
-              ;;
-            esac
-          ;;
-        esac
-      ;;
-    esac
-    if test -z "$octave_cv_sizeof_fortran_integer"; then
-      OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
-    fi
-    if test $octave_cv_sizeof_fortran_integer = no; then
-      AC_MSG_ERROR([to build Octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
-    fi
-  else
-    AC_MSG_ERROR([your Fortran compiler must have an option to make integers the same size as octave_idx_type ($OCTAVE_IDX_TYPE).  See the file INSTALL for more information.])
-  fi
-fi
-AC_SUBST(F77_INTEGER_8_FLAG)
-
-OCTAVE_F77_FLAG([-ffloat-store], [
-  AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
-  F77_FLOAT_STORE_FLAG=-ffloat-store
-  AC_SUBST(F77_FLOAT_STORE_FLAG)
-])
 
 ### Check for the Qhull library
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2016 Kai Habel
+## Copyright (C) 2010-2015 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@
 function [retval, defname, defdir] = __file_filter__ (caller, file_filter)
 
   #keyboard;
-  revtal = {};
+  retval = {};
   defname = "";
   defdir = "";
 
@@ -63,7 +63,9 @@ function [retval, defname, defdir] = __file_filter__ (caller, file_filter)
   endif
 
   ## Delete any "*.*" pattern, and add "* All Files"
-  retval(strcmp (retval(1,:), "*.*"), :) = [];
+  if (! isempty (retval))
+    retval(strcmp (retval(1,:), "*.*"), :) = [];
+  endif
   retval(end+1,:) = {"*", __default_filtername__("*")};
 
 endfunction

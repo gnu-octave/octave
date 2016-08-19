@@ -49,6 +49,16 @@
 ## extensions.
 ## Example: @code{uigetfile (@{"*.gif;*.png;*.jpg", "Supported Picture
 ## Formats"@})}
+##
+## @item A directory name or path name
+## If the folder name of path name contains a trailing file separator, the
+## contents of that folder will be displayed.  If no trailing file separator
+## is present the parent directory is listed.  The substring to the right of
+## the rightmost file separator (if any) will be interpreted as a file or
+## directory name and if that file or directory exists it will be highlighted.
+## If the path name or directory name is wholly or partly nonexistent, the
+## current working directory will be displayed.
+## No filter will be active.
 ## @end table
 ##
 ## @var{dialog_name} can be used to customize the dialog title.

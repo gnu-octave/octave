@@ -1340,6 +1340,15 @@ namespace octave
         bool tick_along_z = nearhoriz || octave::math::isinf (fy);
         bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
+        // set styles when drawing only minor grid
+        if (do_xminorgrid && ! do_xgrid)
+          {
+            gridstyle = minorgridstyle;
+            gridcolor = minorgridcolor;
+            gridalpha = minorgridalpha;
+            do_xgrid = true;
+          }
+
         set_color (props.get_xcolor_rgb ());
 
         // grid lines
@@ -1456,6 +1465,15 @@ namespace octave
         bool mirror = props.is_box () && ystate != AXE_ANY_DIR
           && (! props.has_property ("__plotyy_axes__"));
 
+        // set styles when drawing only minor grid
+        if (do_yminorgrid && ! do_ygrid)
+          {
+            gridstyle = minorgridstyle;
+            gridcolor = minorgridcolor;
+            gridalpha = minorgridalpha;
+            do_ygrid = true;
+          }
+
         set_color (props.get_ycolor_rgb ());
 
         // grid lines
@@ -1559,6 +1577,15 @@ namespace octave
         int wmax = 0;
         int hmax = 0;
         bool mirror = props.is_box () && zstate != AXE_ANY_DIR;
+
+        // set styles when drawing only minor grid
+        if (do_zminorgrid && ! do_zgrid)
+          {
+            gridstyle = minorgridstyle;
+            gridcolor = minorgridcolor;
+            gridalpha = minorgridalpha;
+            do_zgrid = true;
+          }
 
         set_color (props.get_zcolor_rgb ());
 

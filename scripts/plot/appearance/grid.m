@@ -122,25 +122,32 @@ function grid (varargin)
 
 endfunction
 
-
 %!demo
 %! clf;
-%! subplot (2,2,1);
+%! subplot (2, 3, 1);
 %!  plot (1:100);
 %!  grid off;
 %!  title ("no grid");
-%! subplot (2,2,2);
+%! subplot (2, 3, 2);
 %!  plot (1:100);
 %!  grid on;
 %!  title ("grid on");
-%! subplot (2,2,3);
+%! subplot (2, 3, 3);
 %!  plot (1:100);
-%!  grid off;
-%!  title ("no grid");
-%! subplot (2,2,4);
+%!  set (gca, "xgrid", "on")
+%!  title ("xgrid on");
+%! subplot (2, 3, 4);
+%!  plot (1:100);
+%!  set (gca, "ygrid", "on")
+%!  title ("ygrid on");
+%! subplot (2, 3, 5);
 %!  plot (1:100);
 %!  grid minor;
 %!  title ("grid minor");
+%! subplot (2, 3, 6);
+%!  plot (1:100);
+%!  set (gca, "yminorgrid", "on")
+%!  title ("yminorgrid on");
 
 %!demo
 %! subplot (2,2,1);
@@ -159,4 +166,3 @@ endfunction
 %!  semilogy (1:100);
 %!  grid minor;
 %!  title ("grid minor");
-

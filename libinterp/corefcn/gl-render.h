@@ -115,8 +115,9 @@ namespace octave
     virtual void draw_pixels (int w, int h, const uint8_t *data);
     virtual void draw_pixels (int w, int h, const uint16_t *data);
 
-    virtual void render_grid (const std::string& gridstyle, const Matrix& ticks,
-                              double lim1, double lim2,
+    virtual void render_grid (const std::string& gridstyle,
+                              const Matrix& gridcolor, const double gridalpha,
+                              const Matrix& ticks, double lim1, double lim2,
                               double p1, double p1N, double p2, double p2N,
                               int xyz, bool is_3D);
 

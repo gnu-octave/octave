@@ -823,12 +823,14 @@ namespace octave
 
   void
   opengl_renderer::render_grid (const std::string& gridstyle,
+                                const Matrix& gridcolor, const double gridalpha,
                                 const Matrix& ticks, double lim1, double lim2,
                                 double p1, double p1N, double p2, double p2N,
                                 int xyz, bool is_3D)
   {
 #if defined (HAVE_OPENGL)
 
+    glColor4d (gridcolor(0), gridcolor(1), gridcolor(2), gridalpha);
     set_linestyle (gridstyle, true);
     glBegin (GL_LINES);
     for (int i = 0; i < ticks.numel (); i++)
@@ -867,10 +869,14 @@ namespace octave
       }
     glEnd ();
     set_linestyle ("-", true);
+    double black[3] = {0, 0, 0};
+    glColor3dv (black);
 
 #else
 
     octave_unused_parameter (gridstyle);
+    octave_unused_parameter (gridcolor);
+    octave_unused_parameter (gridalpha);
     octave_unused_parameter (ticks);
     octave_unused_parameter (lim1);
     octave_unused_parameter (lim2);
@@ -1318,6 +1324,10 @@ namespace octave
 
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
+        Matrix gridcolor = props.get_gridcolor_rgb ();
+        Matrix minorgridcolor = props.get_minorgridcolor_rgb ();
+        double gridalpha = props.get_gridalpha ();
+        double minorgridalpha = props.get_minorgridalpha ();
         bool do_xgrid = (props.is_xgrid () && (gridstyle != "none"));
         bool do_xminorgrid = (props.is_xminorgrid ()
                               && (minorgridstyle != "none"));
@@ -1334,7 +1344,7 @@ namespace octave
 
         // grid lines
         if (do_xgrid)
-          render_grid (gridstyle, xticks, x_min, x_max,
+          render_grid (gridstyle, gridcolor, gridalpha, xticks, x_min, x_max,
                        yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
                        zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
 
@@ -1372,7 +1382,8 @@ namespace octave
 
         // minor grid lines
         if (do_xminorgrid)
-          render_grid (minorgridstyle, xmticks, x_min, x_max,
+          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+                       xmticks, x_min, x_max,
                        yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
                        zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
 
@@ -1428,6 +1439,10 @@ namespace octave
 
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
+        Matrix gridcolor = props.get_gridcolor_rgb ();
+        Matrix minorgridcolor = props.get_minorgridcolor_rgb ();
+        double gridalpha = props.get_gridalpha ();
+        double minorgridalpha = props.get_minorgridalpha ();
         bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
         bool do_yminorgrid = (props.is_yminorgrid ()
                               && (minorgridstyle != "none"));
@@ -1445,7 +1460,7 @@ namespace octave
 
         // grid lines
         if (do_ygrid)
-          render_grid (gridstyle, yticks, y_min, y_max,
+          render_grid (gridstyle, gridcolor, gridalpha, yticks, y_min, y_max,
                        xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
                        zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
 
@@ -1480,7 +1495,8 @@ namespace octave
 
         // minor grid lines
         if (do_yminorgrid)
-          render_grid (minorgridstyle, ymticks, y_min, y_max,
+          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+                       ymticks, y_min, y_max,
                        xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
                        zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
 
@@ -1529,6 +1545,10 @@ namespace octave
 
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
+        Matrix gridcolor = props.get_gridcolor_rgb ();
+        Matrix minorgridcolor = props.get_minorgridcolor_rgb ();
+        double gridalpha = props.get_gridalpha ();
+        double minorgridalpha = props.get_minorgridalpha ();
         bool do_zgrid = (props.is_zgrid () && (gridstyle != "none"));
         bool do_zminorgrid = (props.is_zminorgrid ()
                               && (minorgridstyle != "none"));
@@ -1544,7 +1564,7 @@ namespace octave
 
         // grid lines
         if (do_zgrid)
-          render_grid (gridstyle, zticks, z_min, z_max,
+          render_grid (gridstyle, gridcolor, gridalpha, zticks, z_min, z_max,
                        xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
 
         // tick marks
@@ -1607,7 +1627,8 @@ namespace octave
 
         // minor grid lines
         if (do_zminorgrid)
-          render_grid (minorgridstyle, zmticks, z_min, z_max,
+          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+                       zmticks, z_min, z_max,
                        xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
 
         // minor tick marks

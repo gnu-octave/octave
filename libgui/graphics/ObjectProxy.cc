@@ -86,7 +86,7 @@ ObjectProxy::update (int pId)
 {
   if (octave_thread::is_octave_thread ())
     emit sendUpdate (pId);
-  else
+  else if (m_object)
     m_object->slotUpdate (pId);
 }
 

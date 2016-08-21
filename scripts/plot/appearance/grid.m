@@ -124,27 +124,27 @@ endfunction
 
 %!demo
 %! clf;
-%! subplot (2, 3, 1);
+%! subplot (3, 2, 1);
 %!  plot (1:100);
 %!  grid off;
-%!  title ("no grid");
-%! subplot (2, 3, 2);
+%!  title ("grid off");
+%! subplot (3, 2, 2);
 %!  plot (1:100);
 %!  grid on;
 %!  title ("grid on");
-%! subplot (2, 3, 3);
+%! subplot (3, 2, 3);
 %!  plot (1:100);
 %!  set (gca, "xgrid", "on")
 %!  title ("xgrid on");
-%! subplot (2, 3, 4);
+%! subplot (3, 2, 4);
 %!  plot (1:100);
 %!  set (gca, "ygrid", "on")
 %!  title ("ygrid on");
-%! subplot (2, 3, 5);
+%! subplot (3, 2, 5);
 %!  plot (1:100);
 %!  grid minor;
 %!  title ("grid minor");
-%! subplot (2, 3, 6);
+%! subplot (3, 2, 6);
 %!  plot (1:100);
 %!  set (gca, "yminorgrid", "on")
 %!  title ("yminorgrid on");
@@ -153,7 +153,7 @@ endfunction
 %! subplot (2,2,1);
 %!  semilogy (1:100);
 %!  grid off;
-%!  title ("no grid");
+%!  title ("grid off");
 %! subplot (2,2,2);
 %!  semilogy (1:100);
 %!  grid on;
@@ -166,3 +166,4 @@ endfunction
 %!  semilogy (1:100);
 %!  grid minor;
 %!  title ("grid minor");
+

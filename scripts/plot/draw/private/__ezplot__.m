@@ -449,7 +449,6 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         comet3 (hax, X, Y, Z, .05);
       endif
       h = feval (pltfunc, hax, X, Y, Z);
-      set (hax, "box", "off");
       grid (hax, "on");
       zlabel (hax, "z");
     else  # mesh and surf plots

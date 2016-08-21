@@ -22,13 +22,14 @@ Summary of important user-visible changes for version 4.2:
     "luminance profile" and is also more similar to Matlab's new default
     colormap "parula".
 
- ** The graphics command "hold on" now ensures that each new plot added to
-    an existing plot has a different color or linestyle according to the
-    "ColorOrder" and/or "LineStyleOrder" properties.  This is equivalent
-    to the old command "hold all" and was made for Matlab compatibility.
-    Existing code *may* produce differently colored plots if it did not
-    specify the color for a plot and relied on each new plot having the
-    default first color in the "ColorOrder" property.
+ ** The graphics command "hold on" now ensures that each new plot added
+    to an existing plot has a different color or linestyle according to
+    the "ColorOrder" and/or "LineStyleOrder" properties.  This is
+    equivalent to the old command "hold all" and was made for Matlab
+    compatibility.  Existing code *may* produce differently colored
+    plots if it did not specify the color for a plot and relied on each
+    new plot having the default first color in the "ColorOrder"
+    property.
 
  ** When starting, Octave now looks in the function path for a file
     startup.m and executes any commands found there.  This change was
@@ -102,21 +103,27 @@ Summary of important user-visible changes for version 4.2:
     which controls the default appearance of text created with
     xlabel(), ylabel(), or zlabel().
 
+ ** The graphics property "box" for axes now defaults to "off".
+    To obtain equivalent plots to previous versions of Octave use
+      set (0, "DefaultAxesBox", "off");
+    in your .octaverc file.
+
  ** The graphics property "erasemode" has been hidden, and will
     eventually be removed.  This property has also been removed
     from Matlab, and was never implemented in Octave.
 
- ** The graphics property "graphicssmothing" for figures now controls whether
-    anti-aliasing will be use for lines.  The default is "on".
+ ** The graphics property "graphicssmothing" for figures now controls
+    whether anti-aliasing will be used for lines.  The default is "on".
 
  ** The value "zero" for the axes properties "xaxislocation" and
     "yaxislocation" has been deprecated and will be removed from
     Octave 4.6.  Use "origin" instead.
 
  ** The publish function allows easy publication of Octave script files
-    in HTML or other formats, including figures and output created by this
-    script.  It comes with its counterpart grabcode, which lets one literally
-    grab the HTML published code from a remote website, for example.
+    in HTML or other formats, including figures and output created by
+    this script.  It comes with its counterpart grabcode, which lets one
+    literally grab the HTML published code from a remote website, for
+    example.
 
  ** Other new functions added in 4.2:
 

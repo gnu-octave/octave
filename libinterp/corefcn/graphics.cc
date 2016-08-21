@@ -4791,7 +4791,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
 
   ambientlightcolor = Matrix (1, 3, 1.0);
 
-  box = "on";
+  box = "off";
   boxstyle = "back";
 
   // Note: camera properties (not mode) will be set in update_transform

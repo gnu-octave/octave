@@ -79,7 +79,7 @@ function h = trisurf (tri, x, y, z, varargin)
                 "FaceVertexCData", c, varargin{:});
 
   if (! ishold ())
-    set (hax, "view", [-37.5, 30], "box", "off",
+    set (hax, "view", [-37.5, 30],
               "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 

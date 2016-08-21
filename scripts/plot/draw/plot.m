@@ -220,6 +220,10 @@ function h = plot (varargin)
   unwind_protect
     hax = newplot (hax);
     htmp = __plt__ ("plot", hax, varargin{:});
+
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

@@ -106,7 +106,7 @@ function h = tetramesh (varargin)
   endif
 
   if (! ishold ())
-    set (hax, "view", [-37.5, 30], "box", "off");
+    set (hax, "view", [-37.5, 30]);
   endif
 
   if (nargout > 0)

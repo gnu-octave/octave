@@ -81,7 +81,7 @@ function [c, h] = contour3 (varargin)
   end_unwind_protect
 
   if (! ishold ())
-    set (hax, "view", [-37.5, 30], "box", "off",
+    set (hax, "view", [-37.5, 30],
               "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 

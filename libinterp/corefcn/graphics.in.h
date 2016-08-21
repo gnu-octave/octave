@@ -3812,7 +3812,7 @@ public:
       row_vector_property alim m , default_lim ()
       radio_property alimmode , "{auto}|manual"
       color_property ambientlightcolor , color_values (1, 1, 1)
-      bool_property box , "on"
+      bool_property box , "off"
       radio_property boxstyle , "{back}|full"
       array_property cameraposition m , Matrix (1, 3, 0.0)
       radio_property camerapositionmode , "{auto}|manual"

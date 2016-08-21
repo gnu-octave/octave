@@ -193,7 +193,7 @@ function varargout = isosurface (varargin)
                   "FaceColor", "flat", "EdgeColor", ec,
                   "FaceLighting", "gouraud");
       if (! ishold ())
-        set (hax, "View", [-37.5, 30], "Box", "off");
+        set (hax, "View", [-37.5, 30]);
       endif
       isonormals (x, y, z, v, pa);
       lights = findobj (hax, "Type", "light");

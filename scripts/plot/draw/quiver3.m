@@ -83,7 +83,7 @@ function h = quiver3 (varargin)
     htmp = __quiver__ (hax, true, varargin{:});
 
     if (! ishold (hax))
-      set (hax, "view", [-37.5, 30], "box", "off",
+      set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   unwind_protect_cleanup

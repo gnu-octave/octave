@@ -184,7 +184,7 @@ function h = slice (varargin)
     endif
 
     if (! ishold ())
-      set (hax, "view", [-37.5, 30.0], "box", "off",
+      set (hax, "view", [-37.5, 30.0],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
 

@@ -1858,17 +1858,18 @@ namespace octave
     if (antialias == GL_TRUE)
       glDisable (GL_LINE_SMOOTH);
 
-    // draw axes object
-    draw_axes_planes (props);
-    if (props.get_tag () != "legend" || props.get_box () != "off")
-      draw_axes_boxes (props);
-
     set_font (props);
     set_interpreter (props.get_ticklabelinterpreter ());
+
+    // draw axes object
+    draw_axes_planes (props);
 
     draw_axes_x_grid (props);
     draw_axes_y_grid (props);
     draw_axes_z_grid (props);
+
+    if (props.get_tag () != "legend" || props.get_box () != "off")
+      draw_axes_boxes (props);
 
     set_linestyle ("-");
 

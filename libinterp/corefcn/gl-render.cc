@@ -1345,13 +1345,35 @@ namespace octave
             do_xgrid = true;
           }
 
-        set_color (props.get_xcolor_rgb ());
+        // minor grid lines
+        if (do_xminorgrid)
+          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+                       xmticks, x_min, x_max,
+                       yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
+                       zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
 
         // grid lines
         if (do_xgrid)
           render_grid (gridstyle, gridcolor, gridalpha, xticks, x_min, x_max,
                        yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
                        zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
+
+        set_color (props.get_xcolor_rgb ());
+
+        // minor tick marks
+        if (do_xminortick)
+          {
+            if (tick_along_z)
+              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
+                                zpTick, zpTickN, 0., 0.,
+                                octave::math::signum (zpTick-zpTickN)*fz*xticklen/2,
+                                0, mirror);
+            else
+              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
+                                zpTick, zpTick, 0.,
+                                octave::math::signum (ypTick-ypTickN)*fy*xticklen/2,
+                                0., 0, mirror);
+          }
 
         // tick marks
         if (tick_along_z)
@@ -1383,28 +1405,6 @@ namespace octave
               render_ticktexts (xticks, xticklabels, x_min, x_max,
                                 ypTick+octave::math::signum (ypTick-ypTickN)*fy*xtickoffset,
                                 zpTick, 0, halign, valign, wmax, hmax);
-          }
-
-        // minor grid lines
-        if (do_xminorgrid)
-          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
-                       xmticks, x_min, x_max,
-                       yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
-                       zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
-
-        // minor tick marks
-        if (do_xminortick)
-          {
-            if (tick_along_z)
-              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
-                                zpTick, zpTickN, 0., 0.,
-                                octave::math::signum (zpTick-zpTickN)*fz*xticklen/2,
-                                0, mirror);
-            else
-              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
-                                zpTick, zpTick, 0.,
-                                octave::math::signum (ypTick-ypTickN)*fy*xticklen/2,
-                                0., 0, mirror);
           }
 
         gh_manager::get_object (props.get_xlabel ()).set ("visible", "on");
@@ -1470,13 +1470,35 @@ namespace octave
             do_ygrid = true;
           }
 
-        set_color (props.get_ycolor_rgb ());
+        // minor grid lines
+        if (do_yminorgrid)
+          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+                       ymticks, y_min, y_max,
+                       xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
+                       zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
 
         // grid lines
         if (do_ygrid)
           render_grid (gridstyle, gridcolor, gridalpha, yticks, y_min, y_max,
                        xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
                        zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
+
+        set_color (props.get_ycolor_rgb ());
+
+        // minor tick marks
+        if (do_yminortick)
+          {
+            if (tick_along_z)
+              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
+                                zpTick, zpTickN, 0., 0.,
+                                octave::math::signum (zpTick-zpTickN)*fz*yticklen/2,
+                                1, mirror);
+            else
+              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
+                                zpTick, zpTick,
+                                octave::math::signum (xpTick-xpTickN)*fx*yticklen/2,
+                                0., 0., 1, mirror);
+          }
 
         // tick marks
         if (tick_along_z)
@@ -1505,28 +1527,6 @@ namespace octave
               render_ticktexts (yticks, yticklabels, y_min, y_max,
                                 xpTick+octave::math::signum (xpTick-xpTickN)*fx*ytickoffset,
                                 zpTick, 1, halign, valign, wmax, hmax);
-          }
-
-        // minor grid lines
-        if (do_yminorgrid)
-          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
-                       ymticks, y_min, y_max,
-                       xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
-                       zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
-
-        // minor tick marks
-        if (do_yminortick)
-          {
-            if (tick_along_z)
-              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
-                                zpTick, zpTickN, 0., 0.,
-                                octave::math::signum (zpTick-zpTickN)*fz*yticklen/2,
-                                1, mirror);
-            else
-              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
-                                zpTick, zpTick,
-                                octave::math::signum (xpTick-xpTickN)*fx*yticklen/2,
-                                0., 0., 1, mirror);
           }
 
         gh_manager::get_object (props.get_ylabel ()).set ("visible", "on");
@@ -1583,76 +1583,18 @@ namespace octave
             do_zgrid = true;
           }
 
-        set_color (props.get_zcolor_rgb ());
+        // minor grid lines
+        if (do_zminorgrid)
+          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+                       zmticks, z_min, z_max,
+                       xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
 
         // grid lines
         if (do_zgrid)
           render_grid (gridstyle, gridcolor, gridalpha, zticks, z_min, z_max,
                        xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
 
-        // tick marks
-        if (xySym)
-          {
-            if (octave::math::isinf (fy))
-              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
-                                yPlane, yPlane,
-                                octave::math::signum (xPlaneN-xPlane)*fx*zticklen,
-                                0., 0., 2, mirror);
-            else
-              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
-                                yPlane, yPlane, 0.,
-                                octave::math::signum (yPlane-yPlaneN)*fy*zticklen,
-                                0., 2, false);
-          }
-        else
-          {
-            if (octave::math::isinf (fx))
-              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
-                                yPlaneN, yPlane, 0.,
-                                octave::math::signum (yPlaneN-yPlane)*fy*zticklen,
-                                0., 2, mirror);
-            else
-              render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
-                                yPlaneN, yPlane,
-                                octave::math::signum (xPlane-xPlaneN)*fx*zticklen,
-                                0., 0., 2, false);
-          }
-
-        // FIXME: tick texts
-        if (zticklabels.numel () > 0)
-          {
-            int halign = 2;
-            int valign = (zstate == AXE_VERT_DIR ? 1 : (zSign ? 3 : 2));
-
-            if (xySym)
-              {
-                if (octave::math::isinf (fy))
-                  render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlaneN+octave::math::signum (xPlaneN-xPlane)*fx*ztickoffset,
-                                    yPlane, 2, halign, valign, wmax, hmax);
-                else
-                  render_ticktexts (zticks, zticklabels, z_min, z_max, xPlaneN,
-                                    yPlane+octave::math::signum (yPlane-yPlaneN)*fy*ztickoffset,
-                                    2, halign, valign, wmax, hmax);
-              }
-            else
-              {
-                if (octave::math::isinf (fx))
-                  render_ticktexts (zticks, zticklabels, z_min, z_max, xPlane,
-                                    yPlaneN+octave::math::signum (yPlaneN-yPlane)*fy*ztickoffset,
-                                    2, halign, valign, wmax, hmax);
-                else
-                  render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlane+octave::math::signum (xPlane-xPlaneN)*fx*ztickoffset,
-                                    yPlaneN, 2, halign, valign, wmax, hmax);
-              }
-          }
-
-        // minor grid lines
-        if (do_zminorgrid)
-          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
-                       zmticks, z_min, z_max,
-                       xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
+        set_color (props.get_zcolor_rgb ());
 
         // minor tick marks
         if (do_zminortick)
@@ -1682,6 +1624,64 @@ namespace octave
                                     yPlaneN, yPlaneN,
                                     octave::math::signum (xPlane-xPlaneN)*fx*zticklen/2,
                                     0., 0., 2, false);
+              }
+          }
+
+        // tick marks
+        if (xySym)
+          {
+            if (octave::math::isinf (fy))
+              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                                yPlane, yPlane,
+                                octave::math::signum (xPlaneN-xPlane)*fx*zticklen,
+                                0., 0., 2, mirror);
+            else
+              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
+                                yPlane, yPlane, 0.,
+                                octave::math::signum (yPlane-yPlaneN)*fy*zticklen,
+                                0., 2, false);
+          }
+        else
+          {
+            if (octave::math::isinf (fx))
+              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                                yPlaneN, yPlane, 0.,
+                                octave::math::signum (yPlaneN-yPlane)*fy*zticklen,
+                                0., 2, mirror);
+            else
+              render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
+                                yPlaneN, yPlane,
+                                octave::math::signum (xPlane-xPlaneN)*fx*zticklen,
+                                0., 0., 2, false);
+          }
+
+        // tick texts
+        if (zticklabels.numel () > 0)
+          {
+            int halign = 2;
+            int valign = (zstate == AXE_VERT_DIR ? 1 : (zSign ? 3 : 2));
+
+            if (xySym)
+              {
+                if (octave::math::isinf (fy))
+                  render_ticktexts (zticks, zticklabels, z_min, z_max,
+                                    xPlaneN+octave::math::signum (xPlaneN-xPlane)*fx*ztickoffset,
+                                    yPlane, 2, halign, valign, wmax, hmax);
+                else
+                  render_ticktexts (zticks, zticklabels, z_min, z_max, xPlaneN,
+                                    yPlane+octave::math::signum (yPlane-yPlaneN)*fy*ztickoffset,
+                                    2, halign, valign, wmax, hmax);
+              }
+            else
+              {
+                if (octave::math::isinf (fx))
+                  render_ticktexts (zticks, zticklabels, z_min, z_max, xPlane,
+                                    yPlaneN+octave::math::signum (yPlaneN-yPlane)*fy*ztickoffset,
+                                    2, halign, valign, wmax, hmax);
+                else
+                  render_ticktexts (zticks, zticklabels, z_min, z_max,
+                                    xPlane+octave::math::signum (xPlane-xPlaneN)*fx*ztickoffset,
+                                    yPlaneN, 2, halign, valign, wmax, hmax);
               }
           }
 

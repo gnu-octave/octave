@@ -67,7 +67,11 @@ function [y, ia, ib] = union (a, b, varargin)
     y = unique (y, varargin{:});
   else
     [y, idx] = unique (y, varargin{:});
-    na = numel (a);
+    if (by_rows)
+      na = rows (a);
+    else
+      na = numel (a);
+    end
     ia = idx(idx <= na);
     ib = idx(idx > na) - na;
   endif
@@ -79,6 +83,8 @@ endfunction
 %!assert (union ([1; 2; 4], [2, 3, 5]), [1; 2; 3; 4; 5])
 %!assert (union ([1; 2; 4], [2; 3; 5]), [1; 2; 3; 4; 5])
 %!assert (union ([1, 2, 3], [5; 7; 9]), [1; 2; 3; 5; 7; 9])
+%!assert (union ([1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"),
+%!        [1 2; 2 3; 3 4; 4 5; 5 6])
 
 ## Test multi-dimensional arrays
 %!test
@@ -93,6 +99,10 @@ endfunction
 %! [y, ia, ib] = union (a, b.');
 %! assert (y, [1; 2; 3; 4; 5]);
 %! assert (y, sort ([a(ia)'; b(ib)']));
+
+%!assert (nthargout (2:3, @union, [1, 2, 4], [2, 3, 5]), {[1, 3], [1, 2, 3]})
+%!assert (nthargout (2:3, @union, [1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"),
+%!        {[1; 3], [1; 2; 3]})
 
 ## Test empty cell string array unions
 %!assert (union ({}, []), cell (0,1))

@@ -766,8 +766,8 @@ public:
     callback (window_close, static_cast<void*> (this));
 
     // The size of the resize_dummy box also determines the minimum window size
-    resize_dummy = new Fl_Box (5 * status_h + 1, menu_h + 1,
-                               ww - 5 * status_h - 1, hh);
+    resize_dummy = new Fl_Box (5 * status_h, menu_h,
+                               ww - 5 * status_h, hh);
     // See http://fltk.org/articles.php?L415+I0+T+M1000+P1
     // for how resizable works
     resizable (resize_dummy);
@@ -788,8 +788,8 @@ public:
     // Only "status" should be resized.
 
     int toolbar_y = menu_h + hh + 1;
-    status = new Fl_Output (5 * status_h + 1, toolbar_y,
-                            ww - 5 * status_h - 1, status_h, "");
+    status = new Fl_Output (5 * status_h, toolbar_y,
+                            ww - 5 * status_h, status_h, "");
 
     status->textcolor (FL_BLACK);
     status->color (FL_GRAY);
@@ -985,9 +985,8 @@ public:
     panzoom->position (2 * status_h, toolbar_y);
     rotate->position (3 * status_h, toolbar_y);
     help->position (4 * status_h, toolbar_y);
-    status->resize (5 * status_h + 1, toolbar_y,
-                    w () - 5 * status_h - 1, status_h);
-
+    status->resize (5 * status_h, toolbar_y,
+                    w () - 5 * status_h, status_h);
     init_sizes ();
     redraw ();
   }

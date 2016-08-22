@@ -153,7 +153,7 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
     }
 
   if (fp.menubar_is ("figure") || hasUiMenuChildren (fp))
-    toffset += m_menuBar->sizeHint ().height () + 1;
+    toffset += m_menuBar->sizeHint ().height ();
   else
     m_menuBar->hide ();
 
@@ -430,10 +430,10 @@ Figure::update (int pId)
               toffset += tb->sizeHint ().height ();
 
           if (! m_menuBar->isHidden ())
-            toffset += m_menuBar->sizeHint ().height () + 1;
+            toffset += m_menuBar->sizeHint ().height ();
 
           if (! m_statusBar->isHidden ())
-            boffset += m_statusBar->sizeHint ().height () + 1;
+            boffset += m_statusBar->sizeHint ().height ();
 
           win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
         }
@@ -544,9 +544,9 @@ Figure::showMenuBar (bool visible)
   if (! visible)
     visible = hasUiMenuChildren (properties<figure> ());
 
-  if ((! m_menuBar->isHidden ()) != visible)
+  if (! m_menuBar->isHidden ())
     {
-      int dy = qMax (h1, h2) + 1;
+      int dy = qMax (h1, h2);
       QRect r = qWidget<QWidget> ()->geometry ();
 
       //qDebug () << "Figure::showMenuBar:" << r;

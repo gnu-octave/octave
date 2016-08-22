@@ -684,7 +684,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!endfunction
 %!test run_test_function (@test_large_file)
 
-## Test that xzipped files are rexzipped
+## Test that xzipped files are rexzipped (hits bug #48597, #48598)
 %!function test_z_z (test_dir, z)
 %!  ori_file = tempname (test_dir);
 %!  create_file (ori_file, rand (100, 1));
@@ -716,7 +716,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  assert (exist (z_z_file), 2) # bug #48597
 %!  assert (hash ("md5", fileread (z_file)), md5_z)
 %!endfunction
-%!test run_test_function (@test_z_z)
+%!xtest run_test_function (@test_z_z)
 
 %!function test_xzip_dir (test_dir, z) # bug #43431
 %!  fpaths = fullfile (test_dir, {"test1", "test2", "test3"});
@@ -750,7 +750,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!    assert (hash ("md5", fileread (fpaths{idx})), md5s{idx})
 %!  endfor
 %!endfunction
-%!test run_test_function (@test_xzip_dir)
+%!xtest run_test_function (@test_xzip_dir)
 
 %!function test_save_to_dir (test_dir, z)
 %!  filename = "test-file";

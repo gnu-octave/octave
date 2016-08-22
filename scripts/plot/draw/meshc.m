@@ -71,7 +71,8 @@ function h = meshc (varargin)
     ## FIXME: gnuplot does not support a filled surface and a
     ##        non-filled contour.  3D filled patches are also not supported.
     ##        Thus, the facecolor will be transparent for the gnuplot backend.
-    mesh_props = {"facecolor", "w", "edgecolor", "flat"};
+    mesh_props = {"facecolor", "w", "edgecolor", "flat", ...
+                  "facelighting", "none", "edgelighting", "flat"};
     chararg = find (cellfun ("isclass", varargin, "char"), 1);
     if (isempty (chararg))
       htmp = surface (varargin{:}, mesh_props{:});

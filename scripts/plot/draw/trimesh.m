@@ -82,6 +82,7 @@ function h = trimesh (tri, x, y, z, varargin)
     ## Tag object as "trimesh" so that hidden() can find it.
     htmp = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
                   "FaceVertexCdata", c, "EdgeColor", "flat", "FaceColor", "w",
+                  "FaceLighting", "none", "EdgeLighting", "flat",
                   "Tag", "trimesh", varargin{:});
     if (! ishold ())
       set (hax, "view", [-37.5, 30],

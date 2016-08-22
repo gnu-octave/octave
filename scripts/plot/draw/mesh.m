@@ -70,7 +70,8 @@ function h = mesh (varargin)
   unwind_protect
     hax = newplot (hax);
 
-    mesh_props = {"facecolor", "w", "edgecolor", "flat"};
+    mesh_props = {"facecolor", "w", "edgecolor", "flat", ...
+                  "facelighting", "none", "edgelighting", "flat"};
     chararg = find (cellfun ("isclass", varargin, "char"), 1);
     if (isempty (chararg))
       htmp = surface (varargin{:}, mesh_props{:});

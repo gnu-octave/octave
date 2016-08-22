@@ -1195,7 +1195,6 @@ namespace octave
     // Axes box
 
     set_linestyle ("-", true);
-    set_linewidth (props.get_linewidth ());
 
     glBegin (GL_LINES);
 
@@ -1860,6 +1859,7 @@ namespace octave
 
     set_font (props);
     set_interpreter (props.get_ticklabelinterpreter ());
+    set_linewidth (props.get_linewidth ());
 
     // draw axes object
     draw_axes_planes (props);
@@ -1980,7 +1980,7 @@ namespace octave
               glEnd ();
           }
 
-        set_linewidth (0.5);
+        set_linewidth (0.5f);
         set_linestyle ("-");
       }
 
@@ -2548,7 +2548,7 @@ namespace octave
               }
 
             set_linestyle ("-");
-            set_linewidth (0.5);
+            set_linewidth (0.5f);
 
             if ((el_mode > 0) && (num_lights > 0))
               glDisable (GL_LIGHTING);
@@ -3018,7 +3018,7 @@ namespace octave
               }
 
             set_linestyle ("-");
-            set_linewidth (0.5);
+            set_linewidth (0.5f);
 
             if ((el_mode > 0) && (num_lights > 0) && has_normals)
               glDisable (GL_LIGHTING);

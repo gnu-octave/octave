@@ -1177,6 +1177,7 @@ namespace octave
     bool xySym = props.get_xySym ();
     bool layer2Dtop = props.get_layer2Dtop ();
     bool is2d = props.get_is2D ();
+    bool boxFull = (props.get_boxstyle () == "full");
     double xPlane = props.get_xPlane ();
     double yPlane = props.get_yPlane ();
     double zPlane = props.get_zPlane ();
@@ -1214,8 +1215,11 @@ namespace octave
           {
             glVertex3d (xPlaneN, ypTickN, zpTickN);
             glVertex3d (xPlane, ypTickN, zpTickN);
-            glVertex3d (xPlaneN, ypTick, zpTickN);
-            glVertex3d (xPlane, ypTick, zpTickN);
+            if (boxFull)
+              {
+                glVertex3d (xPlaneN, ypTick, zpTickN);
+                glVertex3d (xPlane, ypTick, zpTickN);
+              }
           }
       }
 
@@ -1233,8 +1237,11 @@ namespace octave
           {
             glVertex3d (xpTickN, yPlaneN, zpTickN);
             glVertex3d (xpTickN, yPlane, zpTickN);
-            glVertex3d (xpTick, yPlaneN, zpTickN);
-            glVertex3d (xpTick, yPlane, zpTickN);
+            if (boxFull)
+              {
+                glVertex3d (xpTick, yPlaneN, zpTickN);
+                glVertex3d (xpTick, yPlane, zpTickN);
+              }
           }
       }
 
@@ -1270,8 +1277,11 @@ namespace octave
                 glVertex3d (xPlaneN, yPlane, zPlane);
               }
 
-            glVertex3d (xPlaneN, yPlaneN, zPlaneN);
-            glVertex3d (xPlaneN, yPlaneN, zPlane);
+            if (boxFull)
+              {
+                glVertex3d (xPlaneN, yPlaneN, zPlaneN);
+                glVertex3d (xPlaneN, yPlaneN, zPlane);
+              }
           }
       }
 

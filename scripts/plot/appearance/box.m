@@ -69,3 +69,39 @@ function box (varargin)
 
 endfunction
 
+
+%!demo
+%! clf;
+%! plot (1:10, "o-");
+%! box off;
+%! title ("box off");
+
+%!demo
+%! clf;
+%! plot (1:10, "o-");
+%! box on;
+%! title ("box on");
+
+%!demo
+%! clf;
+%! z = [0:0.05:5];
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
+%! box off;
+%! title ("box off");
+
+%!demo
+%! clf;
+%! z = [0:0.05:5];
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
+%! box on;
+%! set (gca, "boxstyle", "back");
+%! title ({"box on", 'boxstyle = "back"'});
+
+%!demo
+%! clf;
+%! z = [0:0.05:5];
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
+%! box on;
+%! set (gca, "boxstyle", "full");
+%! title ({"box on", 'boxstyle = "full"'});
+

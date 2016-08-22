@@ -108,6 +108,10 @@ Summary of important user-visible changes for version 4.2:
       set (0, "DefaultAxesBox", "off");
     in your .octaverc file.
 
+ ** The graphics property "boxstyle" has been implemented.  The default
+    is "back" which draws only the back planes in a 3-D view.  If the
+    option is "full" then all planes are drawn.
+
  ** The graphics property "erasemode" has been hidden, and will
     eventually be removed.  This property has also been removed
     from Matlab, and was never implemented in Octave.

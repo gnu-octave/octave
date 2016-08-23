@@ -151,6 +151,7 @@ function varargout = ode23 (fun, trange, init, varargin)
            "ode23: FUN must be a valid function handle");
   endif
 
+
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set.
   [defaults, classes, attributes] = odedefaults (numel (init),

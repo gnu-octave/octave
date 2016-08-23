@@ -15,11 +15,14 @@ scripts_ode_PRIVATE_FCN_FILES = \
   scripts/ode/private/starting_stepsize.m
 
 scripts_ode_FCN_FILES =  \
+  scripts/ode/ode15i.m \
+  scripts/ode/ode15s.m \
   scripts/ode/ode23.m \
   scripts/ode/ode45.m \
   scripts/ode/odeset.m \
   scripts/ode/odeget.m \
-  scripts/ode/odeplot.m
+  scripts/ode/odeplot.m \
+  scripts/ode/decic.m
 
 scripts_odedir = $(fcnfiledir)/ode
 

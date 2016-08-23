@@ -82,7 +82,7 @@ function retval = scatter3 (varargin)
 
     htmp = __scatter__ (hax, 3, "scatter3", varargin{:});
 
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif

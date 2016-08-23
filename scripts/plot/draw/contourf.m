@@ -74,6 +74,11 @@ function [c, h] = contourf (varargin)
 
     [ctmp, htmp] = __contour__ (hax, "none", "fill", "on",
                                      "linecolor", "black", varargin{:});
+
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

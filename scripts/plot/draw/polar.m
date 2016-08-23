@@ -95,7 +95,7 @@ function h = polar (varargin)
       print_usage ();
     endif
 
-    if (! ishold (hax))
+    if (! ishold ())
       hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
 
       set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],

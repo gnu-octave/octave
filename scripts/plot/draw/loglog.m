@@ -53,7 +53,7 @@ function h = loglog (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log", "yscale", "log");
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "xminortick", "on", "yminortick", "on", "box", "on");
     endif
 

@@ -195,7 +195,7 @@ function varargout = __bar__ (vertical, func, varargin)
       htmp = bars (hax, vertical, x, y, xb, yb, gwidth, group,
                    have_line_spec, bv, newargs{:});
 
-      if (! ishold (hax))
+      if (! ishold ())
         if (all (x(:,1) == fix (x(:,1))))
           if (vertical)
             set (hax, "xtick", x(:,1));

@@ -63,7 +63,7 @@ function h = loglogerr (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log", "yscale", "log");
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "xminortick", "on", "yminortick", "on", "box", "on");
     endif
     htmp = __errplot__ ("loglogerr", hax, varargin{:});

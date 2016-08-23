@@ -116,7 +116,7 @@ function h = area (varargin)
     hax = newplot (hax);
     htmp = __area__ (hax, x, y, bv, varargin{num_numeric+1:end});
 
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "box", "on");
     endif
 

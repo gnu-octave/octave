@@ -669,6 +669,7 @@ endfunction
 %! ylim ([1, 64]);
 %! colorbar ();
 %! colorbar off;
+%! title ("colorbar off");
 
 %!demo
 %! clf;

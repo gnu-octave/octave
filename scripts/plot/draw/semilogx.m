@@ -53,7 +53,7 @@ function h = semilogx (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log");
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "xminortick", "on", "box", "on");
     endif
 

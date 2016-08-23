@@ -73,7 +73,7 @@ function [c, h] = contour (varargin)
 
     [ctmp, htmp] = __contour__ (hax, "none", varargin{:});
 
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "box", "on");
     endif
 

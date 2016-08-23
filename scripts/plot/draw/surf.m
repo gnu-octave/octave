@@ -71,7 +71,7 @@ function retval = surf (varargin)
 
     htmp = surface (varargin{:});
 
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif

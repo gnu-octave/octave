@@ -53,7 +53,7 @@ function h = semilogy (varargin)
     hax = newplot (hax);
 
     set (hax, "yscale", "log");
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "yminortick", "on", "box", "on");
     endif
 

@@ -181,3 +181,10 @@ endfunction
 %! hold off;
 %! title ("line, image, line, image, line w/hold()");
 
+%!demo  # bug #48879
+%! clf;
+%! img = reshape (1:100, 10, 10);
+%! imagesc (img);
+%! colormap (prism (10));
+%! title ("10 vertical color bars");
+

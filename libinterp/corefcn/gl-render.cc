@@ -3212,7 +3212,7 @@ namespace octave
     Matrix x = props.get_xdata ().matrix_value ();
     Matrix y = props.get_ydata ().matrix_value ();
 
-    // Someone wants us to draw an empty image? No way.
+    // Someone wants us to draw an empty image?  No way.
     if (x.is_empty () || y.is_empty ())
       return;
 
@@ -3225,7 +3225,8 @@ namespace octave
     const ColumnVector p0 = xform.transform (x(0), y(0), 0);
     const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 
-    if (octave::math::isnan (p0(0)) || octave::math::isnan (p0(1)) || octave::math::isnan (p1(0)) || octave::math::isnan (p1(1)))
+    if (octave::math::isnan (p0(0)) || octave::math::isnan (p0(1))
+        || octave::math::isnan (p1(0)) || octave::math::isnan (p1(1)))
       {
         warning ("opengl_renderer: image X,Y data too large to draw");
         return;
@@ -3238,8 +3239,8 @@ namespace octave
 
     if (w > 1)
       {
-        pix_dx = (p1(0) - p0(0))/(w-1);
-        nor_dx = (x(1) - x(0))/(w-1);
+        pix_dx = (p1(0) - p0(0)) / (w-1);
+        nor_dx = (x(1) - x(0)) / (w-1);
       }
     else
       {
@@ -3250,8 +3251,8 @@ namespace octave
 
     if (h > 1)
       {
-        pix_dy = (p1(1) - p0(1))/(h-1);
-        nor_dy = (y(1) - y(0))/(h-1);
+        pix_dy = (p1(1) - p0(1)) / (h-1);
+        nor_dy = (y(1) - y(0)) / (h-1);
       }
     else
       {
@@ -3288,7 +3289,6 @@ namespace octave
         GLfloat vp[4];
         glGetFloatv (GL_VIEWPORT, vp);
         // FIXME: actually add the code to do it!
-
       }
 
     if (i0 >= i1 || j0 >= j1)

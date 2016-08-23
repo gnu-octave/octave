@@ -852,7 +852,7 @@ convert_cdata_2 (bool is_scaled, bool is_real, double clim_0, double clim_1,
                  octave_idx_type nc, octave_idx_type i, double *av)
 {
   if (is_scaled)
-    x = octave::math::round ((nc - 1) * (x - clim_0) / (clim_1 - clim_0));
+    x = octave::math::fix (nc * (x - clim_0) / (clim_1 - clim_0));
   else if (is_real)
     x = octave::math::round (x - 1);
 

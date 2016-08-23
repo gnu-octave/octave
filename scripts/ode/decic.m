@@ -91,7 +91,7 @@ function [y0_new, yp0_new, resnrm] = decic (odefun, t0, y0, fixed_y0, yp0,
   if (nargin < 6 || nargin > 7 || nargout > 3)
     print_usage ();
   endif
-
+ 
   #Check input
   if (! isa (odefun, "function_handle"))
     error ("Octave:invalid-input-arg",

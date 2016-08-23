@@ -104,6 +104,9 @@ namespace octave
     extern const char *HDF5_LDFLAGS;
     extern const char *HDF5_LIBS;
     extern const char *INCLUDEDIR;
+    extern const char *KLU_CPPFLAGS;
+    extern const char *KLU_LDFLAGS;
+    extern const char *KLU_LIBS;
     extern const char *LAPACK_LIBS;
     extern const char *LDFLAGS;
     extern const char *LD_CXX;
@@ -155,6 +158,12 @@ namespace octave
     extern const char *SH_LDFLAGS;
     extern const char *STATIC_LIBS;
     extern const char *SUITESPARSE_CONFIG_LIBS;
+    extern const char *SUNDIALS_IDA_CPPFLAGS;
+    extern const char *SUNDIALS_IDA_LDFLAGS;
+    extern const char *SUNDIALS_IDA_LIBS;
+    extern const char *SUNDIALS_NVECSERIAL_CPPFLAGS;
+    extern const char *SUNDIALS_NVECSERIAL_LDFLAGS;
+    extern const char *SUNDIALS_NVECSERIAL_LIBS;
     extern const char *TERM_LIBS;
     extern const char *UMFPACK_CPPFLAGS;
     extern const char *UMFPACK_LDFLAGS;

@@ -1698,6 +1698,32 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
   ])
 ])
 dnl
+dnl Check whether sundials_ida library is configured with double precision realtype
+dnl
+AC_DEFUN([OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE], [
+  AC_CACHE_CHECK([whether sundials_ida is configured with double precision realtype],
+    [octave_cv_sizeof_ida_double],
+    [AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #if defined (HAVE_IDA_IDA_H)
+        #include <ida/ida.h>
+        #else
+        #include <ida.h>
+        #endif
+        #include <assert.h>
+        ]], [[
+        assert (sizeof (double) == sizeof (realtype));
+      ]])],
+      octave_cv_sizeof_ida_double=yes,
+      octave_cv_sizeof_ida_double=no)
+  ])
+  if test $octave_cv_sizeof_ida_double = yes; then
+    AC_DEFINE(HAVE_SUNDIALS_IDA_DOUBLE, 1,
+      [Define to 1 if sundials_ida is configured with realtype as double.])
+  else
+    warn_sundials_ida="sundials_ida library found, but it's not configured with double precision realtype; function ode15i and ode15s will be disabled"
+  fi
+])
+dnl
 dnl Add warning to final summary.
 dnl
 AC_DEFUN([OCTAVE_CONFIGURE_WARNING], [

@@ -80,6 +80,13 @@ function h = quiver (varargin)
   unwind_protect
     hax = newplot (hax);
     htmp = __quiver__ (hax, false, varargin{:});
+
+    ## FIXME: This should be moved into __quiver__ when problem with
+    ##        re-initialization of title object is fixed.
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

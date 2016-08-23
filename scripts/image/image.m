@@ -194,7 +194,7 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
     endif  # ! isempty (img)
 
-    set (hax, "view", [0, 90], "ydir", "reverse", "layer", "top");
+    set (hax, "view", [0, 90], "ydir", "reverse", "layer", "top", "box", "on");
 
   endif  # do_new
 

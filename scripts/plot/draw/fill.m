@@ -88,6 +88,9 @@ function h = fill (varargin)
   unwind_protect
     hax = newplot (hax);
     old_nxtplt = get (hax, "nextplot");
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
     unwind_protect
       set (hax, "nextplot", "add");
 

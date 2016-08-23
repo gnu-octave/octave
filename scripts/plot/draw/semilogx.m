@@ -54,7 +54,7 @@ function h = semilogx (varargin)
 
     set (hax, "xscale", "log");
     if (! ishold (hax))
-      set (hax, "xminortick", "on");
+      set (hax, "xminortick", "on", "box", "on");
     endif
 
     htmp = __plt__ ("semilogx", hax, varargin{:});

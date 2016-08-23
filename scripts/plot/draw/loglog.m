@@ -54,7 +54,7 @@ function h = loglog (varargin)
 
     set (hax, "xscale", "log", "yscale", "log");
     if (! ishold (hax))
-      set (hax, "xminortick", "on", "yminortick", "on");
+      set (hax, "xminortick", "on", "yminortick", "on", "box", "on");
     endif
 
     htmp = __plt__ ("loglog", hax, varargin{:});

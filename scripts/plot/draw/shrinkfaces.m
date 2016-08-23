@@ -158,6 +158,7 @@ endfunction
 %! patch ("Faces", faces, "Vertices", vertices, "FaceColor", "none");
 %! fv = shrinkfaces (faces, vertices, 0.25);
 %! patch (fv);
+%! axis auto;   # Kludge required for Octave
 %! axis equal;
 
 %!demo
@@ -167,6 +168,7 @@ endfunction
 %! patch ("Faces", faces, "Vertices", vertices, "FaceColor", "none");
 %! fv = shrinkfaces (faces, vertices, 0.25);
 %! patch (fv);
+%! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
 
@@ -177,6 +179,7 @@ endfunction
 %! patch ("Faces", faces, "Vertices", vertices, "FaceColor", "none");
 %! fv = shrinkfaces (faces, vertices, 0.25);
 %! patch (fv);
+%! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
 %! title "faces which are not convex are clearly not allowed"
@@ -189,6 +192,7 @@ endfunction
 %! p = patch ("Faces", tri, "Vertices", v, "FaceColor", "none");
 %! fv = shrinkfaces (p);
 %! patch (fv);
+%! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
 
@@ -201,6 +205,7 @@ endfunction
 %!
 %! p = patch ("Faces", fv.faces, "Vertices", fv.vertices, "FaceVertexCData", ...
 %!            fv.facevertexcdata, "FaceColor", "interp", "EdgeColor", "black");
+%! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! view (115, 30);
 %! drawnow;

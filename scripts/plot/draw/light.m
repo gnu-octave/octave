@@ -265,7 +265,7 @@ endfunction
 %! axis equal
 %! view (2);
 %! xlabel ("AmbientStrength");
-%! ylabel ("AmbientLightColor [0 1 0]");
+%! ylabel ({"AmbientLightColor", "[0 1 0]"});
 %!
 %! h_axes2 = subplot (3,1,2);
 %! set (h_axes2, "AmbientLightColor", [.5 0 1]);
@@ -288,7 +288,7 @@ endfunction
 %! axis tight
 %! axis equal
 %! view (2);
-%! ylabel ("AmbientLightColor [.5 0 1]");
+%! ylabel ({"AmbientLightColor", "[.5 0 1]"});
 %!
 %! h_axes3 = subplot (3,1,1);
 %! set (h_axes3, "AmbientLightColor", "w");
@@ -311,7 +311,7 @@ endfunction
 %! axis tight
 %! axis equal
 %! view (2);
-%! ylabel ("AmbientLightColor [1 1 1]");
+%! ylabel ({"AmbientLightColor", "[1 1 1]"});
 %! title ("Effects of AmbientLightColor and AmbientStrength");
 
 %!demo

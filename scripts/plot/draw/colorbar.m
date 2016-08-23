@@ -195,7 +195,8 @@ function h = colorbar (varargin)
     cax = __go_axes__ (hpar, "tag", "colorbar",
                              "handlevisibility", "on",
                              "activepositionproperty", "position",
-                             "position", cpos);
+                             "position", cpos,
+                             "box", "on");
     addproperty ("location", cax, "radio",
                  "eastoutside|east|westoutside|west|northoutside|north|southoutside|south",
                  loc);
@@ -677,13 +678,6 @@ endfunction
 %! xlim ([1, 64]);
 %! ylim ([1, 64]);
 %! colorbar ();
-
-%!demo
-%! clf;
-%! colormap ("default");
-%! imagesc (1 ./ hilb (99));
-%! h = colorbar ();
-%! set (h, "yscale", "log");
 
 %!demo
 %! clf;

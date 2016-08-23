@@ -80,6 +80,11 @@ function [xs, ys] = stairs (varargin)
     unwind_protect
       hax = newplot (hax);
       [htmp, xxs, yys] = __stairs__ (true, varargin{:});
+
+      if (! ishold ())
+        set (hax, "box", "on");
+      endif
+
     unwind_protect_cleanup
       if (! isempty (oldfig))
         set (0, "currentfigure", oldfig);

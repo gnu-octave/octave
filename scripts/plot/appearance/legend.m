@@ -1452,7 +1452,7 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ("plotyy legend test 1: Blue and Green labels");
+%! title ("plotyy legend test #1: Blue and Green labels");
 %! legend ([h1, h2], {"Blue", "Green"}, "location", "south");
 
 %!demo
@@ -1461,7 +1461,7 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ("plotyy legend test 2: Blue and Green labels");
+%! title ("plotyy legend test #2: Blue and Green labels");
 %! legend ({"Blue", "Green"}, "location", "south");
 
 %!demo
@@ -1470,7 +1470,7 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ("plotyy legend test 3: Blue and Green labels");
+%! title ("plotyy legend test #3: Blue and Green labels");
 %! legend ("Blue", "Green", "location", "south");
 
 %!demo

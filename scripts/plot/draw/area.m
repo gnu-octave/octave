@@ -115,6 +115,11 @@ function h = area (varargin)
   unwind_protect
     hax = newplot (hax);
     htmp = __area__ (hax, x, y, bv, varargin{num_numeric+1:end});
+
+    if (! ishold (hax))
+      set (hax, "box", "on");
+    endif
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -248,7 +253,7 @@ endfunction
 %!demo
 %! ## Verify identity sin^2 + cos^2 = 1
 %! clf;
-%! t = linspace (0, 2*pi, 100)";
+%! t = linspace (0, 2*pi, 100)';
 %! y = [sin(t).^2, cos(t).^2];
 %! area (t, y);
 %! axis tight
@@ -258,7 +263,7 @@ endfunction
 %!demo
 %! ## Show effects of setting BaseValue
 %! clf;
-%! x = [-2:0.1:2]";
+%! x = [-2:0.1:2]';
 %! y = x.^2 - 1;
 %! subplot (1, 2, 1)
 %!  area (x, y);

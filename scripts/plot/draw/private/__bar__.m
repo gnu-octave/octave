@@ -209,6 +209,7 @@ function varargout = __bar__ (vertical, func, varargin)
         else
           set (hax, "clim", [0 1], "ylimmode", "manual");
         endif
+        set (hax, "box", "on");
       endif
     unwind_protect_cleanup
       if (! isempty (oldfig))

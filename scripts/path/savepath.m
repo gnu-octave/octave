@@ -189,33 +189,43 @@ endfunction
 
 %!test
 %! fname = tempname ();
-%! status = savepath (fname);
-%! assert (status == 0);
-%! old_dir = pwd;
+%! test_dir = tempname ();
 %! unwind_protect
-%!   cd (P_tmpdir);
-%!   if (exist (fullfile (pwd, ".octaverc")))
-%!     unlink (".octaverc");
+%!   if (! mkdir (test_dir))
+%!     error ("unable to create directory for tests");
 %!   endif
-%!   ## Create blank .octaverc file
-%!   fid = fopen (".octaverc", "wt");
-%!   assert (fid >= 0);
-%!   fclose (fid);
-%!   ## Save path into local .octaverc file
-%!   warning ("off", "Octave:savepath-local", "local");
-%!   status = savepath ();
+%!   status = savepath (fname);
 %!   assert (status == 0);
-%!   ## Compare old and new versions
-%!   fid = fopen (fname, "rb");
-%!   assert (fid >= 0);
-%!   orig_data = fread (fid);
-%!   fclose (fid);
-%!   fid = fopen (".octaverc", "rb");
-%!   assert (fid >= 0);
-%!   new_data = fread (fid);
-%!   fclose (fid);
-%!   assert (orig_data, new_data);
+%!   old_dir = pwd;
+%!   unwind_protect
+%!     cd (test_dir);
+%!     if (exist (fullfile (pwd, ".octaverc")))
+%!       unlink (".octaverc");
+%!     endif
+%!     ## Create blank .octaverc file
+%!     fid = fopen (".octaverc", "wt");
+%!     assert (fid >= 0);
+%!     fclose (fid);
+%!     ## Save path into local .octaverc file
+%!     warning ("off", "Octave:savepath-local", "local");
+%!     status = savepath ();
+%!     assert (status == 0);
+%!     ## Compare old and new versions
+%!     fid = fopen (fname, "rb");
+%!     assert (fid >= 0);
+%!     orig_data = fread (fid);
+%!     fclose (fid);
+%!     fid = fopen (".octaverc", "rb");
+%!     assert (fid >= 0);
+%!     new_data = fread (fid);
+%!     fclose (fid);
+%!     assert (orig_data, new_data);
+%!   unwind_protect_cleanup
+%!     cd (old_dir);
+%!   end_unwind_protect
 %! unwind_protect_cleanup
-%!   cd (old_dir);
+%!   confirm_recursive_rmdir (false, "local");
+%!   rmdir (test_dir, "s");
+%!   unlink (fname);
 %! end_unwind_protect
 

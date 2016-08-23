@@ -120,6 +120,8 @@ endfunction
 %! unwind_protect_cleanup
 %!   unlink (filename);
 %!   unlink ([dirname, filesep, basename, ext]);
+%!   unlink (zipfile);
+%!   unlink ([zipfile ".zip"]);
 %!   rmdir (dirname);
 %! end_unwind_protect
 

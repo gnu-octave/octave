@@ -334,7 +334,8 @@ endfunction
 %! unwind_protect_cleanup
 %!   unlink (filename);
 %!   unlink ([filename ".orig"]);
-%!   rmdir (dirname);
+%!   confirm_recursive_rmdir (false, "local");
+%!   rmdir (dirname, "s");
 %! end_unwind_protect
 
 ## Test input validation

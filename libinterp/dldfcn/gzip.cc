@@ -763,20 +763,27 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  if (! mkdir (out_dirs{1}))
 %!    error ("unable to create directory for test");
 %!  endif
-%!  for idx = 1:numel(out_dirs)
-%!    out_dir = out_dirs{idx};
-%!    uz_file = fullfile (out_dir, filename);
-%!    z_file = [uz_file z.ext];
+%!  unwind_protect
+%!    for idx = 1:numel(out_dirs)
+%!      out_dir = out_dirs{idx};
+%!      uz_file = fullfile (out_dir, filename);
+%!      z_file = [uz_file z.ext];
 %!
-%!    z_filelist = z.zip (filepath, out_dir);
-%!    assert (z_filelist, {z_file})
-%!    assert (exist (z_file, "file"), 2)
+%!      z_filelist = z.zip (filepath, out_dir);
+%!      assert (z_filelist, {z_file})
+%!      assert (exist (z_file, "file"), 2)
 %!
-%!    uz_filelist = z.unzip (z_file);
-%!    assert (uz_filelist, {uz_file}) # bug #48598
+%!      uz_filelist = z.unzip (z_file);
+%!      assert (uz_filelist, {uz_file}) # bug #48598
 %!
-%!    assert (hash ("md5", fileread (uz_file)), md5)
-%!  endfor
+%!      assert (hash ("md5", fileread (uz_file)), md5)
+%!    endfor
+%!  unwind_protect_cleanup
+%!    confirm_recursive_rmdir (false, "local");
+%!    for idx = 1:numel(out_dirs)
+%!      rmdir (out_dirs{idx}, "s");
+%!    endfor
+%!  end_unwind_protect
 %!endfunction
 %!test run_test_function (@test_save_to_dir)
 */

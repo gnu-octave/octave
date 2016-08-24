@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 
 #include "pathsearch.h"

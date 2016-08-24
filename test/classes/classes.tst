@@ -309,18 +309,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Test overloaded vertcat() for the Snork class
-%% See bug #38128 (http://savannah.gnu.org/bugs/?38128)
-%!test   s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!xtest  s = [s1; x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!xtest  s = [x1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
+%!test <38128>
+%! s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
+%!test <38128>
+%! s = [s1; x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
+%!test <38128>
+%! s = [x1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
 
 %% Test overloaded horzcat() for the Snork class
-%% See bug #38128 (http://savannah.gnu.org/bugs/?38128)
-%!test   s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!xtest  s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!xtest  s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
+%!test <38128>
+%! s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
+%!test <38128>
+%! s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
+%!test <38128>
+%! s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 
-%% Test with the Blork class, where neither vertcat() nor horzcat() is overloaded
+%% Test with the Blork class, where neither vertcat() nor horzcat()
+%% is overloaded
 %!shared x1, x2, x3
 %!test x1 = Blork ();
 %!test x2 = [x1 x1];
@@ -384,8 +389,8 @@
 %!assert (isequal (ndims (st), 2))
 %!assert (isequal (rows (st), 1))
 %!xtest assert (isequal (columns (st), 2))
-%!assert (isequal (st, st))                # bug #44334
-%!xtest assert (not (isscalar (st)))       # bug #44498
+%!assert <44334> (isequal (st, st))
+%!assert <44498> (not (isscalar (st)))
 %!assert (isvector (st))
 
 %!test st = SizeTester ([2 3]);
@@ -394,9 +399,9 @@
 %!assert (isequal (ndims (st), 2))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))
-%!assert (isequal (st, st))                # bug #44334
-%!xtest assert (not (isscalar (st)))       # bug #44498
-%!xtest assert (not (isvector (st)))       # bug #44498
+%!assert <44334> (isequal (st, st))
+%!assert <44498> (not (isscalar (st)))
+%!assert <44498> (not (isvector (st)))
 
 %!test st = SizeTester ([2 3 4]);
 %! assert (isequal (size (st), [2 3 4]));
@@ -404,6 +409,6 @@
 %!xtest assert (isequal (ndims (st), 3))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))
-%!assert (isequal (st, st))                # bug #44334
-%!xtest assert (not (isscalar (st)))       # bug #44498
-%!xtest assert (not (isvector (st)))       # bug #44498
+%!assert <44334> (isequal (st, st))
+%!assert <44498> (not (isscalar (st)))
+%!assert <44498> (not (isvector (st)))

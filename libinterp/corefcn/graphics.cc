@@ -6856,7 +6856,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   double lo = (lims.get ().matrix_value ())(0);
   double hi = (lims.get ().matrix_value ())(1);
   bool is_negative = lo < 0 && hi < 0;
-  double tmp;
+
   // FIXME: should this be checked for somewhere else? (i.e., set{x,y,z}lim)
   if (hi < lo)
     std::swap (hi, lo);
@@ -6865,7 +6865,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     {
       if (is_negative)
         {
-          tmp = hi;
+          double tmp = hi;
           hi = std::log10 (-lo);
           lo = std::log10 (-tmp);
         }
@@ -6888,8 +6888,8 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   else
     tick_sep = calc_tick_sep (lo, hi);
 
-  int i1 = static_cast<int> (std::floor (lo / tick_sep));
-  int i2 = static_cast<int> (std::ceil (hi / tick_sep));
+  double i1 = std::floor (lo / tick_sep);
+  double i2 = std::ceil (hi / tick_sep);
 
   if (limmode_is_auto)
     {
@@ -6906,7 +6906,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
             tmp_lims(0) = std::pow (10., lo);
           if (is_negative)
             {
-              tmp = tmp_lims(0);
+              double tmp = tmp_lims(0);
               tmp_lims(0) = -tmp_lims(1);
               tmp_lims(1) = -tmp;
             }
@@ -6923,7 +6923,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     }
 
   Matrix tmp_ticks (1, i2-i1+1);
-  for (int i = 0; i <= i2-i1; i++)
+  for (int i = 0; i <= static_cast<int> (i2-i1); i++)
     {
       tmp_ticks(i) = tick_sep * (i+i1);
       if (is_logscale)
@@ -6933,7 +6933,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     {
       Matrix rev_ticks (1, i2-i1+1);
       rev_ticks = -tmp_ticks;
-      for (int i = 0; i <= i2-i1; i++)
+      for (int i = 0; i <= static_cast<int> (i2-i1); i++)
         tmp_ticks(i) = rev_ticks(i2-i1-i);
     }
 

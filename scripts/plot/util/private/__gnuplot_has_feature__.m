@@ -49,7 +49,7 @@ function res = __gnuplot_has_feature__ (feature)
       ## Don't throw an error if gnuplot isn't installed
       gnuplot_version = "0.0.0";
     end_try_catch
-    versions = {"4.2.5", "4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4", "4.4", "4.3", "5.0", "4.6", "5.0"};
+    versions = {"4.2.5", "4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4", "4.4", "4.3", "4.6", "4.6", "5.0"};
     operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
     have_features = false (size (features));
     for n = 1 : numel (have_features)

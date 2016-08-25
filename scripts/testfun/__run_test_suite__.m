@@ -84,7 +84,9 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
       printf ("See the file %s for additional details.\n", logfile);
       if (dxf > 0)
         puts ("\n");
-        puts ("Expected failures (listed as XFAIL above) are known bugs.\n");
+        puts ("Items listed as XFAIL above are known bugs.\n");
+        puts ("Bug report numbers for them may be found in the log file:\n");
+        puts (logfile);
         puts ("Please help improve Octave by contributing fixes for them.\n");
       endif
       if (dsk > 0)

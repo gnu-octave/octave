@@ -27,25 +27,43 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT) && (defined (_MSC_VER) || defined (__GNUC__))
-#  if defined (_MSC_VER)
+#if (defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT) \
+     && (defined (__GNUC__) || defined (_MSC_VER)))
+
+#  if defined (__GNUC__)
+
+#    define OCTAVE_ATOMIC_INCREMENT(x) __sync_add_and_fetch (x,  1)
+#    define OCTAVE_ATOMIC_DECREMENT(x) __sync_add_and_fetch (x, -1)
+#    define OCTAVE_ATOMIC_POST_INCREMENT(x) __sync_fetch_and_add (x,  1)
+#    define OCTAVE_ATOMIC_POST_DECREMENT(x) __sync_fetch_and_add (x, -1)
+
+#  elif defined (_MSC_VER)
+
 #    include <intrin.h>
-#    define OCTREFCOUNT_ATOMIC_INCREMENT(x) _InterlockedIncrement((long*)x)
-#    define OCTREFCOUNT_ATOMIC_DECREMENT(x) _InterlockedDecrement((long*)x)
-#    define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) _InterlockedExchangeAdd((long*)x,  1)
-#    define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) _InterlockedExchangeAdd((long*)x, -1)
-#  elif defined (__GNUC__)
-#    define OCTREFCOUNT_ATOMIC_INCREMENT(x) __sync_add_and_fetch(x,  1)
-#    define OCTREFCOUNT_ATOMIC_DECREMENT(x) __sync_add_and_fetch(x, -1)
-#    define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) __sync_fetch_and_add(x,  1)
-#    define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) __sync_fetch_and_add(x, -1)
+
+#    define OCTAVE_ATOMIC_INCREMENT(x)                  \
+  _InterlockedIncrement (static_cast<long *> (x))
+
+#    define OCTAVE_ATOMIC_DECREMENT(x)                  \
+  _InterlockedDecrement (static_cast<long *> (x))
+
+#    define OCTAVE_ATOMIC_POST_INCREMENT(x)             \
+  _InterlockedExchangeAdd (static_cast<long *> (x))
+
+#    define OCTAVE_ATOMIC_POST_DECREMENT(x)             \
+  _InterlockedExchangeAdd (static_cast<long *> (x))
+
 #  endif
+
 #else
+
 // Generic non-locking versions
-#  define OCTREFCOUNT_ATOMIC_INCREMENT(x) ++(*(x))
-#  define OCTREFCOUNT_ATOMIC_DECREMENT(x) --(*(x))
-#  define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) (*(x))++
-#  define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) (*(x))--
+
+#  define OCTAVE_ATOMIC_INCREMENT(x) ++(*(x))
+#  define OCTAVE_ATOMIC_DECREMENT(x) --(*(x))
+#  define OCTAVE_ATOMIC_POST_INCREMENT(x) (*(x))++
+#  define OCTAVE_ATOMIC_POST_DECREMENT(x) (*(x))--
+
 #endif
 
 // Encapsulates a reference counter.
@@ -53,29 +71,32 @@ template <typename T>
 class octave_refcount
 {
 public:
+
   typedef T count_type;
 
-  octave_refcount(count_type initial_count) : count(initial_count) { }
+  octave_refcount (count_type initial_count)
+    : count (initial_count)
+  { }
 
   // Increment/Decrement.  int is postfix.
-  count_type operator++(void)
+  count_type operator++ (void)
   {
-    return OCTREFCOUNT_ATOMIC_INCREMENT (&count);
+    return OCTAVE_ATOMIC_INCREMENT (&count);
   }
 
-  count_type operator++(int)
+  count_type operator++ (int)
   {
-    return OCTREFCOUNT_ATOMIC_INCREMENT_POST (&count);
+    return OCTAVE_ATOMIC_POST_INCREMENT (&count);
   }
 
-  count_type operator--(void)
+  count_type operator-- (void)
   {
-    return OCTREFCOUNT_ATOMIC_DECREMENT (&count);
+    return OCTAVE_ATOMIC_DECREMENT (&count);
   }
 
-  count_type operator--(int)
+  count_type operator-- (int)
   {
-    return OCTREFCOUNT_ATOMIC_DECREMENT_POST (&count);
+    return OCTAVE_ATOMIC_POST_DECREMENT (&count);
   }
 
   operator count_type (void) const
@@ -89,6 +110,7 @@ public:
   }
 
 private:
+
   count_type count;
 };
 

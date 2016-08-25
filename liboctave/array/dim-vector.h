@@ -157,7 +157,7 @@ private:
       {
         octave_idx_type *new_rep = clonerep ();
 
-        if (OCTREFCOUNT_ATOMIC_DECREMENT(&(count())) == 0)
+        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
           freerep ();
 
         rep = new_rep;
@@ -259,10 +259,10 @@ public:
   static octave_idx_type dim_max (void);
 
   explicit dim_vector (void) : rep (nil_rep ())
-  { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
+  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
 
   dim_vector (const dim_vector& dv) : rep (dv.rep)
-  { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
+  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
 
   // FIXME: Should be private, but required by array constructor for jit
   explicit dim_vector (octave_idx_type *r) : rep (r) { }
@@ -276,11 +276,11 @@ public:
   {
     if (&dv != this)
       {
-        if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
+        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
           freerep ();
 
         rep = dv.rep;
-        OCTREFCOUNT_ATOMIC_INCREMENT (&(count()));
+        OCTAVE_ATOMIC_INCREMENT (&(count ()));
       }
 
     return *this;
@@ -288,7 +288,7 @@ public:
 
   ~dim_vector (void)
   {
-    if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
+    if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
       freerep ();
   }
 
@@ -321,7 +321,7 @@ public:
       {
         octave_idx_type *r = resizerep (n, fill_value);
 
-        if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
+        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
           freerep ();
 
         rep = r;

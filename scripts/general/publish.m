@@ -184,10 +184,17 @@ function output_file = publish (file, varargin)
     error ("publish: FILE does not exist.");
   endif
 
-  ## Check file extension and for an Octave script
-  [~, file_name, file_ext] = fileparts (file);
-  file_info = __which__ (file_name);
+  ## Check file to be in Octave's load path
+  [file_path, file_name, file_ext] = fileparts (file);
+  if (isempty (file_path))
+    file_path = pwd;
+  endif
+  if (isempty (which ([file_name, file_ext])))
+    error (["publish: ", file, " is not in the load path."]);
+  endif
 
+  ## Check file extension and for an Octave script
+  file_info = __which__ (file_name);
   if ((! strcmp (file_ext, ".m")) || (! strcmp (file_info.type, "script")))
     error ("publish: Only Octave script files can be published.");
   endif
@@ -236,7 +243,7 @@ function output_file = publish (file, varargin)
   if (! isfield (options, "outputDir"))
     ## Matlab R2016a doc says default is "", but specifies to create a sub
     ## directory named "html" in the current working directory.
-    options.outputDir = "html";
+    options.outputDir = [file_path, filesep(), "html"];
   elseif (! ischar (options.outputDir))
     error ("publish: OUTPUTDIR must be a string");
   endif
@@ -719,9 +726,9 @@ function ofile = create_output (doc_struct, options)
     [~,title_str] = fileparts (doc_struct.m_source_file_name);
   endif
 
-  content = formatter ("header", title_str, ...
+  content = formatter ("header", format_text(title_str, formatter), ...
     format_output (doc_struct.intro, formatter, options), ...
-    get_toc (doc_struct.body));
+    get_toc (doc_struct.body, formatter));
   content = [content, format_output(doc_struct.body, formatter, options)];
   content = [content, formatter("footer", strjoin (doc_struct.m_source, "\n"))];
 
@@ -746,7 +753,7 @@ endfunction
 
 
 
-function toc_cstr = get_toc (cstr)
+function toc_cstr = get_toc (cstr, formatter)
   ## GET_TOC extracts the table of contents from a cellstring (e.g.
   ##   doc_struct.body) with each section headline as a cell in a returned
   ##   cellstring.
@@ -754,7 +761,7 @@ function toc_cstr = get_toc (cstr)
   toc_cstr = cell ();
   for i = 1:length(cstr)
     if (strcmp (cstr{i}.type, "section"))
-      toc_cstr{end + 1} = cstr{i}.content;
+      toc_cstr{end + 1} = format_text (cstr{i}.content, formatter);
     endif
   endfor
 endfunction
@@ -780,7 +787,7 @@ function str = format_output (cstr, formatter, options)
         if (options.evalCode)
           str = [str, formatter("code_output", cstr{i}.output)];
         endif
-      case "text"
+      case {"text", "section"}
         str = [str, formatter(cstr{i}.type, ...
           format_text (cstr{i}.content, formatter))];
       case {"bulleted_list", "numbered_list"}

@@ -34,6 +34,7 @@ function outstr = handle_header (title_str, intro_str, toc_cstr)
     "\\documentclass[10pt]{article}\n", ...
     "\\usepackage{listings}\n", ...
     "\\usepackage{mathtools}\n", ...
+    "\\usepackage{amssymb}\n", ...
     "\\usepackage{graphicx}\n", ...
     "\\usepackage{hyperref}\n", ...
     "\\usepackage{xcolor}\n", ...
@@ -51,14 +52,13 @@ function outstr = handle_header (title_str, intro_str, toc_cstr)
     "showstringspaces=false,\n", ...
     "breaklines=true}\n"];
 
-  ## Escape "_" in title_str, as many file names contain it
   latex_head = ["\n\n", ...
     "\\titleformat*{\\section}{\\Huge\\bfseries}\n", ...
     "\\titleformat*{\\subsection}{\\large\\bfseries}\n", ...
     "\\renewcommand{\\contentsname}{\\Large\\bfseries Contents}\n", ...
     "\\setlength{\\parindent}{0pt}\n\n",...
     "\\begin{document}\n\n", ...
-    "{\\Huge\\section*{", escape_chars(title_str),"}}\n\n", ...
+    "{\\Huge\\section*{", escape_latex(title_str),"}}\n\n", ...
     "\\tableofcontents\n", ...
     "\\vspace*{4em}\n\n"];
 
@@ -81,8 +81,8 @@ endfunction
 
 function outstr = handle_section (str)
   outstr = ["\n\n\\phantomsection\n", ...
-    "\\addcontentsline{toc}{section}{", str, "}\n", ...
-    "\\subsection*{", str, "}\n\n"];
+    "\\addcontentsline{toc}{section}{", escape_latex(str), "}\n", ...
+    "\\subsection*{", escape_latex(str), "}\n\n"];
 endfunction
 
 function outstr = handle_preformatted_code (str)
@@ -97,7 +97,7 @@ endfunction
 function outstr = handle_bulleted_list (cstr)
   outstr = "\n\\begin{itemize}\n";
   for i = 1:length(cstr)
-    outstr = [outstr, "\\item ", cstr{i}, "\n"];
+    outstr = [outstr, "\\item ", escape_latex(cstr{i}), "\n"];
   endfor
   outstr = [outstr, "\\end{itemize}\n"];
 endfunction
@@ -105,7 +105,7 @@ endfunction
 function outstr = handle_numbered_list (cstr)
   outstr = "\n\\begin{enumerate}\n";
   for i = 1:length(cstr)
-    outstr = [outstr, "\\item ", cstr{i}, "\n"];
+    outstr = [outstr, "\\item ", escape_latex(cstr{i}), "\n"];
   endfor
   outstr = [outstr, "\\end{enumerate}\n"];
 endfunction
@@ -129,7 +129,7 @@ function outstr = handle_link (url_str, str)
 endfunction
 
 function outstr = handle_text (str)
-  outstr = ["\n\n", str, "\n\n"];
+  outstr = ["\n\n", escape_latex(str), "\n\n"];
 endfunction
 
 function outstr = handle_bold (str)
@@ -145,14 +145,22 @@ function outstr = handle_monospaced (str)
 endfunction
 
 function outstr = handle_TM ()
-  outstr = "\\texttrademark";
+  outstr = "\\texttrademark ";
 endfunction
 
 function outstr = handle_R ()
-  outstr = "\\textregistered";
+  outstr = "\\textregistered ";
 endfunction
 
-function str = escape_chars (str)
-  ## Escape "_"
-  str = regexprep (str, '([^\\]|^)(_)', "$1\\_");
+function str = escape_latex (str)
+  ## Escape "&", "%", "#", "_", "~", "^", "<", ">"
+  ## TODO: "\", "{", "}"
+  str = regexprep (str, '(?<!\\)(&)', "\\&");
+  str = regexprep (str, '(?<!\\)(%)', "\\%");
+  str = regexprep (str, '(?<!\\)(#)', "\\#");
+  str = regexprep (str, '(?<!\\)(_)', "\\_");
+  str = regexprep (str, '(?<!\\)(~)', "\\ensuremath{\\tilde{\;}}");
+  str = regexprep (str, '(?<!\\)(\^)', "\\^{}");
+  str = regexprep (str, '(?<!\\)(<)', "\\ensuremath{<}");
+  str = regexprep (str, '(?<!\\)(>)', "\\ensuremath{>}");
 endfunction

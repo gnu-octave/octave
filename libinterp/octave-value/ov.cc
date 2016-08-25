@@ -3162,10 +3162,15 @@ If @var{idx} is an empty structure array with fields @samp{type} and
   else
     {
       octave_value arg0 = args(0);
+      octave_value arg2 = args(2);
 
       arg0.make_unique ();
 
-      return ovl (arg0.subsasgn (type, idx, args(2)));
+      bool arg2_null = arg2.is_zero_by_zero () && arg2.is_double_type ();
+
+      return ovl (arg0.subsasgn (type, idx, (arg2_null
+                                             ? octave_null_matrix::instance
+                                             : arg2)));
     }
 }
 
@@ -3190,6 +3195,10 @@ If @var{idx} is an empty structure array with fields @samp{type} and
 %!      0    0   14    0    0
 %!      0   10   15   20    0];
 %! assert (a, b);
+
+%!test
+%! x = 1:10;
+%! assert (subsasgn (x, substruct ("()", {1}), zeros (0, 0)), 2:10);
 
 %!test
 %! c = num2cell (reshape ([1:25],5,5));

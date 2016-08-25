@@ -327,7 +327,9 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
       ## Assume the block will succeed.
       __success = true;
       __msg = [];
+      __istest = false;
       __isxtest = false;
+      __bug_id = "";
 
 ### DEMO
 
@@ -338,8 +340,6 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
 
       __isdemo = strcmp (__type, "demo");
       if (__grabdemo || __isdemo)
-        __istest = false;
-
         if (__grabdemo && __isdemo)
           if (isempty (__demo_code))
             __demo_code = __code;
@@ -368,8 +368,6 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
 ### SHARED
 
       elseif (strcmp (__type, "shared"))
-        __istest = false;
-
         ## Separate initialization code from variables.
         __idx = find (__code == "\n");
         if (isempty (__idx))
@@ -409,7 +407,6 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
 ### FUNCTION
 
       elseif (strcmp (__type, "function"))
-        __istest = false;
         persistent __fn = 0;
         __name_position = function_name (__block);
         if (isempty (__name_position))
@@ -433,15 +430,19 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
       elseif (strcmp (__type, "endfunction"))
         ## endfunction simply declares the end of a previous function block.
         ## There is no processing to be done here, just skip to next block.
-        __istest = false;
         __code = "";
 
 ### ASSERT/FAIL
 
       elseif (strcmp (__type, "assert") || strcmp (__type, "fail"))
-        __istest = true;
+        [__bug_id, __code] = getbugid (__code);
+        if (isempty (__bug_id))
+          __istest = true;
+        else
+          __isxtest = true;
+        endif
         ## Put the keyword back on the code.
-        __code = __block;
+        __code = [__type __code];
         ## The code will be evaluated below as a test block.
 
 ### ERROR/WARNING
@@ -528,17 +529,30 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
 
       elseif (strcmp (__type, "testif"))
         __e = regexp (__code, '.$', 'lineanchors', 'once');
-        ## Strip any comment from testif line before looking for features
+        ## Strip any comment and bug-id from testif line before
+        ## looking for features
         __feat_line = strtok (__code(1:__e), '#%');
+        __idx1 = index (__feat_line, "<");
+        if (__idx1)
+          __tmp = __feat_line(__idx1+1:end);
+          __idx2 = index (__tmp, ">");
+          if (__idx2)
+            __bug_id = __tmp(1:__idx2-1);
+            __feat_line = __feat_line(1:__idx1-1);
+          endif
+        endif
         __feat = regexp (__feat_line, '\w+', 'match');
         __feat = strrep (__feat, "HAVE_", "");
         __have_feat = __have_feature__ (__feat);
         if (__have_feat)
-          __istest = true;
+          if (isempty (__bug_id))
+            __istest = true;
+          else
+            __isxtest = true;
+          endif
           __code = __code(__e + 1 : end);
         else
           __xskip += 1;
-          __istest = false;
           __code = ""; # Skip the code.
           __msg = [__signal_skip "skipped test\n"];
         endif
@@ -546,20 +560,24 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
 ### TEST
 
       elseif (strcmp (__type, "test"))
-        __istest = true;
+        [__bug_id, __code] = getbugid (__code);
+        if (! isempty (__bug_id))
+          __isxtest = true;
+        else
+          __istest = true;
+        endif
         ## Code will be evaluated below.
 
 ### XTEST
 
       elseif (strcmp (__type, "xtest"))
-        __istest = false;
         __isxtest = true;
+        [__bug_id, __code] = getbugid (__code);
         ## Code will be evaluated below.
 
 ### Comment block.
 
       elseif (strcmp (__block(1:1), "#"))
-        __istest = false;
         __code = ""; # skip the code
 
 ### Unknown block.
@@ -586,16 +604,24 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
                     "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
           endif
         catch
-          if (strcmp (__type, "xtest"))
-            __msg = [__signal_fail "known failure\n"];
-            __xfail += 1;
-            __success = false;
-          else
-            __msg = [__signal_fail "test failed\n" lasterr()];
-            __success = false;
-          endif
           if (isempty (lasterr ()))
             error ("test: empty error text, probably Ctrl-C --- aborting");
+          else
+            __success = false;
+            if (__isxtest)
+              __xfail += 1;
+              if (isempty (__bug_id))
+                __msg = [__signal_fail "known failure\n"];
+              else
+                if (all (isdigit (__bug_id)))
+                  __bug_id = ["http://octave.org/testfailure/?" __bug_id];
+                endif
+                __msg = ["known bug: " __bug_id "\n"];
+              endif
+            else
+              __msg = "test failed\n";
+            endif
+            __msg = [__signal_fail __msg lasterr()];
           endif
         end_try_catch
         clear __test__;
@@ -651,7 +677,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
   if (nargout == 0)
     if (__tests || __xfail || __xskip)
       if (__xfail)
-        printf ("PASSES %d out of %d test%s (%d expected failure%s)\n",
+        printf ("PASSES %d out of %d test%s (%d known failure%s)\n",
                 __successes, __tests, ifelse (__tests > 1, "s", ""),
                 __xfail, ifelse (__xfail > 1, "s", ""));
       else
@@ -713,7 +739,7 @@ function pos = function_name (def)
 endfunction
 
 ## Strip <pattern> from '<pattern> code'.
-## Also handles 'id=ID code'
+## Optionally also handles 'id=ID code'
 function [pattern, id, rest] = getpattern (str)
 
   pattern = ".";
@@ -731,6 +757,24 @@ function [pattern, id, rest] = getpattern (str)
   endif
 
 endfunction
+
+## Strip <bug-id> from '<pattern> code'.
+function [bug_id, rest] = getbugid (str)
+
+  bug_id = "";
+  id = [];
+  rest = str;
+  str = trimleft (str);
+  if (! isempty (str) && str(1) == "<")
+    close = index (str, ">");
+    if (close)
+      bug_id = str(2:close-1);
+      rest = str(close+1:end);
+    endif
+  endif
+
+endfunction
+
 
 ## Strip '.*prefix:' from '.*prefix: msg\n' and strip trailing blanks.
 function msg = trimerr (msg, prefix)
@@ -901,7 +945,7 @@ endfunction
 
 ## All of the following tests should fail.  These tests should
 ## be disabled unless you are developing test() since users don't
-## like to be presented with expected failures.
+## like to be presented with known failures.
 ## %!test   error("---------Failure tests.  Use test('test','verbose',1)");
 ## %!test   assert([a,b,c],[1,3,6]);   # variables have wrong values
 ## %!invalid                   # unknown block type

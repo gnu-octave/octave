@@ -332,42 +332,73 @@ PASSES 3 out of 4 tests (1 expected failure)
 
 @table @code
 @item %!test
-check that entire block is correct
+@itemx %!test <MESSAGE>
+Check that entire block is correct.  If @code{<MESSAGE>} is present, the
+test block is interpreted as for @code{xtest}.
 
 @item %!testif HAVE_XXX
-check block only if Octave was compiled with feature HAVE_XXX.
+@itemx %!testif HAVE_XXX, HAVE_YYY, @dots{}
+@itemx %!testif @dots{} <MESSAGE>
+Check block only if Octave was compiled with feature HAVE_XXX.  If
+@code{<MESSAGE>} is present, the test block is interpreted as for
+@code{xtest}.
 
 @item %!xtest
-check block, report a test failure but do not abort testing.
+@itemx %!xtest <MESSAGE>
+Check block, report a test failure but do not abort testing.  If
+@code{<MESSAGE>} is present, then the text of the message is displayed
+if the test fails, like this:
+
+@example
+!!!!! Known bug:  MESSAGE
+@end example
+
+@noindent
+If the message is an integer, it is interpreted as a bug ID for the
+Octave bug tracker and reported as
+
+@example
+!!!!! Known bug: http://octave.org/testfailure/?BUG-ID
+@end example
+
+@noindent
+in which BUG-ID is the integer bug number.  The intent is to allow
+clearer documentation of known problems.
 
 @item %!error
-check for correct error message
-
-@item %!warning
-check for correct warning message
+@itemx %!error <MESSAGE>
+@itemx %!warning
+@itemx %!warning <MESSAGE>
+Check for correct error or warning message.  If @code{<MESSAGE>} is
+supplied it is interpreted as a regular expression pattern that is
+expected to match the error or warning message.
 
 @item %!demo
-demo only executes in interactive mode
+Demo only executes in interactive mode.
 
 @item %!#
-comment: ignore everything within the block
+Comment.  Ignore everything within the block
 
 @item %!shared x,y,z
-declare variables for use in multiple tests
+Declare variables for use in multiple tests.
 
 @item %!function
-define a function for use in multiple tests
+Define a function for use in multiple tests.
 
 @item %!endfunction
-close a function definition
+Close a function definition.
 
 @item %!assert (x, y, tol)
-shorthand for @code{%!test assert (x, y, tol)}
-
+@item %!assert <MESSAGE> (x, y, tol)
 @item %!fail (CODE, PATTERN)
-shorthand for @code{%!test fail (CODE, PATTERN)}
+@item %!fail <MESSAGE> (CODE, PATTERN)
+Shorthand for @code{%!test assert (x, y, tol)} or
+@code{%!test fail (CODE, PATTERN)}.  If @code{<MESSAGE>} is present, the
+test block is interpreted as for @code{xtest}.
 
 @end table
+
+@anchor{test-message-anchor}
 
 When coding tests the Octave convention is that lines that begin with a block
 type do not have a semicolon at the end.  Any code that is within a block,

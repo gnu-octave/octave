@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "oct-refcount.h"
 #include "oct-time.h"
 #include "ovl.h"
 #include "pager.h"
@@ -137,7 +138,7 @@ public:
 
 private:
 
-  int count;
+  octave_refcount<int> count;
 
   int pflag;
 

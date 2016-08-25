@@ -142,21 +142,22 @@ namespace octave
         jump_to_enclosing_context_sync ();
       else
         {
-          // 64-bit Windows does not appear to have threadContext.Eip.
-          // Something else must be done here to allow interrupts to
-          // properly work across threads.
-
-#if ! (defined (__MINGW64__) || defined (_WIN64))
 
           CONTEXT threadContext;
 
           SuspendThread (thread);
           threadContext.ContextFlags = CONTEXT_CONTROL;
           GetThreadContext (thread, &threadContext);
+
+#if (defined (__MINGW64__) || defined (_WIN64))
+          threadContext.Rip = (DWORD64) jump_to_enclosing_context_sync;
+#else
           threadContext.Eip = (DWORD) jump_to_enclosing_context_sync;
-          SetThreadContext (thread, &threadContext);
-          ResumeThread (thread);
 #endif
+
+          SetThreadContext (thread, &threadContext);
+
+          ResumeThread (thread);
         }
     }
 

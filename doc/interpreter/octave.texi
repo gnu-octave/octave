@@ -188,8 +188,6 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Packages::
 * External Code Interface::
 * Test and Demo Functions::
-* Tips and Standards::
-* Contributing Guidelines::
 * Obsolete Functions::
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
@@ -890,23 +888,6 @@ Test and Demo Functions
 * Test Functions::
 * Demonstration Functions::
 
-Tips and Standards
-
-* Style Tips::                  Writing clean and robust programs.
-* Comment Tips::                Conventions for writing comments.
-* Function Headers::            Standard headers for functions.
-* Documentation Tips::          Writing readable documentation strings.
-
-Contributing Guidelines
-
-* How to Contribute::
-* Building the Development Sources::
-* Basics of Generating a Changeset::
-* General Guidelines::
-* Octave Sources (m-files)::
-* C++ Sources::
-* Other Sources::
-
 Trouble
 
 * Actual Bugs::                 Bugs we will fix later.
@@ -994,8 +975,6 @@ Grammar and Parser
 
 @include external.texi
 @include testfun.texi
-@include tips.texi
-@include contrib.texi
 @include obsolete.texi
 @include bugs.texi
 @include install.texi

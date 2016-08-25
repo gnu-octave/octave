@@ -611,17 +611,17 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
             if (__isxtest)
               __xfail += 1;
               if (isempty (__bug_id))
-                __msg = [__signal_fail "known failure\n"];
+                __msg = "known failure";
               else
                 if (all (isdigit (__bug_id)))
                   __bug_id = ["http://octave.org/testfailure/?" __bug_id];
                 endif
-                __msg = ["known bug: " __bug_id "\n"];
+                __msg = ["known bug: " __bug_id];
               endif
             else
-              __msg = "test failed\n";
+              __msg = "test failed";
             endif
-            __msg = [__signal_fail __msg lasterr()];
+            __msg = [__signal_fail __msg "\n" lasterr()];
           endif
         end_try_catch
         clear __test__;

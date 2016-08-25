@@ -155,7 +155,7 @@ function retval = material (varargin)
 
   elseif (isvector (mtype))
     num_mtype = numel (mtype);
-    if (num_mtype < 2 || num_mtype > 5)
+    if (num_mtype < 3 || num_mtype > 5)
       error ("material: incorrect number of elements in material vector");
     endif
     as = mtype(1);

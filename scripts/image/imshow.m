@@ -256,7 +256,7 @@ endfunction
 %!demo
 %! clf;
 %! imshow (100*rand (100, 100, 3));
-%! title ({"imshow with random 100x100x3 matrix", "Indexed color"});
+%! title ({"imshow with random 100x100x3 matrix", "RGB values > 1 are clipped"});
 
 ## Test input validation
 %!error imshow ()

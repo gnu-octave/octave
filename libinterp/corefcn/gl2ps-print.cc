@@ -691,7 +691,13 @@ namespace octave
   void
   gl2ps_renderer::draw_pixels (int w, int h, const float *data)
   {
-    gl2psDrawPixels (w, h, 0, 0, GL_RGB, GL_FLOAT, data);
+    // Clip data between 0 and 1 for float values 
+    OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+
+    for (int i = 0; i < 3*h*w; i++)
+      tmp_data[i] = (data[i] < 0.0f ? 0.0f : (data[i] > 1.0f ? 1.0f : data[i]));
+        
+    gl2psDrawPixels (w, h, 0, 0, GL_RGB, GL_FLOAT, tmp_data);
   }
 
   void

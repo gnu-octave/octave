@@ -235,7 +235,7 @@ instead.
 %!   unwind_protect
 %!     plot (sin (0:0.1:2*pi));
 %!     __osmesa_print__ (hf, fn, "svgis2d");
-%!     assert (stat (fn).size, 7438, -0.1);
+%!     assert (stat (fn).size, 6276, -0.1);
 %!     img = __osmesa_print__ (hf);
 %!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
 %!     ## Use pixel sum per RGB channel as fingerprint

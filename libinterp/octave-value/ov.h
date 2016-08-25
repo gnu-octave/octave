@@ -694,7 +694,7 @@ public:
   // Are the dimensions of this constant zero by zero?
 
   bool is_zero_by_zero (void) const
-  { return (rows () == 0 && columns () == 0); }
+  { return (ndims () == 2 && rows () == 0 && columns () == 0); }
 
   bool is_constant (void) const
   { return rep->is_constant (); }

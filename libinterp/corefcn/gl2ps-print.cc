@@ -113,9 +113,10 @@ namespace octave
     void draw_pixels (int w, int h, const uint8_t *data);
     void draw_pixels (int w, int h, const uint16_t *data);
 
-    void set_linestyle (const std::string& s, bool use_stipple = false)
+    void set_linestyle (const std::string& s, bool use_stipple = false,
+                        double linewidth = 0.5)
     {
-      octave::opengl_renderer::set_linestyle (s, use_stipple);
+      octave::opengl_renderer::set_linestyle (s, use_stipple, linewidth);
 
       if (s == "-" && ! use_stipple)
         gl2psDisable (GL2PS_LINE_STIPPLE);

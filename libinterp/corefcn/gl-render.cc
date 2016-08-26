@@ -827,7 +827,8 @@ namespace octave
   }
 
   void
-  opengl_renderer::render_grid (const std::string& gridstyle,
+  opengl_renderer::render_grid (const double linewidth,
+                                const std::string& gridstyle,
                                 const Matrix& gridcolor, const double gridalpha,
                                 const Matrix& ticks, double lim1, double lim2,
                                 double p1, double p1N, double p2, double p2N,
@@ -836,7 +837,7 @@ namespace octave
 #if defined (HAVE_OPENGL)
 
     glColor4d (gridcolor(0), gridcolor(1), gridcolor(2), gridalpha);
-    set_linestyle (gridstyle, true);
+    set_linestyle (gridstyle, true, linewidth);
     glBegin (GL_LINES);
     for (int i = 0; i < ticks.numel (); i++)
       {
@@ -873,7 +874,7 @@ namespace octave
           }
       }
     glEnd ();
-    set_linestyle ("-", true);
+    set_linestyle ("-");  // Disable LineStipple
     double black[3] = {0, 0, 0};
     glColor3dv (black);
 
@@ -1186,6 +1187,7 @@ namespace octave
     bool layer2Dtop = props.get_layer2Dtop ();
     bool is2d = props.get_is2D ();
     bool boxFull = (props.get_boxstyle () == "full");
+    double linewidth = props.get_linewidth ();
     double xPlane = props.get_xPlane ();
     double yPlane = props.get_yPlane ();
     double zPlane = props.get_zPlane ();
@@ -1203,7 +1205,7 @@ namespace octave
 
     // Axes box
 
-    set_linestyle ("-", true);
+    set_linestyle ("-", true, linewidth);
 
     glBegin (GL_LINES);
 
@@ -1336,6 +1338,7 @@ namespace octave
 
         // X grid
 
+        double linewidth = props.get_linewidth ();
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
         Matrix gridcolor = props.get_gridcolor_rgb ();
@@ -1365,16 +1368,19 @@ namespace octave
 
         // minor grid lines
         if (do_xminorgrid)
-          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+          render_grid (linewidth,
+                       minorgridstyle, minorgridcolor, minorgridalpha,
                        xmticks, x_min, x_max,
-                       yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
-                       zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
+                       yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
+                       0, (zstate != AXE_DEPTH_DIR));
 
         // grid lines
         if (do_xgrid)
-          render_grid (gridstyle, gridcolor, gridalpha, xticks, x_min, x_max,
-                       yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
-                       zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
+          render_grid (linewidth,
+                       gridstyle, gridcolor, gridalpha,
+                       xticks, x_min, x_max,
+                       yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
+                       0, (zstate != AXE_DEPTH_DIR));
 
         set_color (props.get_xcolor_rgb ());
 
@@ -1460,6 +1466,7 @@ namespace octave
 
         // Y grid
 
+        double linewidth = props.get_linewidth ();
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
         Matrix gridcolor = props.get_gridcolor_rgb ();
@@ -1490,16 +1497,19 @@ namespace octave
 
         // minor grid lines
         if (do_yminorgrid)
-          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+          render_grid (linewidth,
+                       minorgridstyle, minorgridcolor, minorgridalpha,
                        ymticks, y_min, y_max,
-                       xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
-                       zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
+                       xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
+                       1, (zstate != AXE_DEPTH_DIR));
 
         // grid lines
         if (do_ygrid)
-          render_grid (gridstyle, gridcolor, gridalpha, yticks, y_min, y_max,
-                       xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
-                       zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
+          render_grid (linewidth,
+                       gridstyle, gridcolor, gridalpha,
+                       yticks, y_min, y_max,
+                       xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
+                       1, (zstate != AXE_DEPTH_DIR));
 
         set_color (props.get_ycolor_rgb ());
 
@@ -1575,6 +1585,7 @@ namespace octave
 
         // Z Grid
 
+        double linewidth = props.get_linewidth ();
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
         Matrix gridcolor = props.get_gridcolor_rgb ();
@@ -1603,13 +1614,16 @@ namespace octave
 
         // minor grid lines
         if (do_zminorgrid)
-          render_grid (minorgridstyle, minorgridcolor, minorgridalpha,
+          render_grid (linewidth,
+                       minorgridstyle, minorgridcolor, minorgridalpha,
                        zmticks, z_min, z_max,
                        xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
 
         // grid lines
         if (do_zgrid)
-          render_grid (gridstyle, gridcolor, gridalpha, zticks, z_min, z_max,
+          render_grid (linewidth,
+                       gridstyle, gridcolor, gridalpha,
+                       zticks, z_min, z_max,
                        xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
 
         set_color (props.get_zcolor_rgb ());
@@ -1889,7 +1903,7 @@ namespace octave
     if (props.get_tag () != "legend" || props.get_box () != "off")
       draw_axes_boxes (props);
 
-    set_linestyle ("-");
+    set_linestyle ("-");  // Disable LineStipple
 
     set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 
@@ -1942,7 +1956,7 @@ namespace octave
     if (! props.linestyle_is ("none") && ! props.color_is ("none"))
       {
         set_color (props.get_color_rgb ());
-        set_linestyle (props.get_linestyle (), false);
+        set_linestyle (props.get_linestyle (), false, props.get_linewidth ());
         set_linewidth (props.get_linewidth ());
 
         if (has_z)
@@ -2368,7 +2382,8 @@ namespace octave
             glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD) ? GL_SMOOTH
                           : GL_FLAT);
 
-            set_linestyle (props.get_linestyle (), false);
+            set_linestyle (props.get_linestyle (), false,
+                           props.get_linewidth ());
             set_linewidth (props.get_linewidth ());
 
             // Mesh along Y-axis
@@ -2565,7 +2580,7 @@ namespace octave
                   }
               }
 
-            set_linestyle ("-");
+            set_linestyle ("-");  // Disable LineStipple
             set_linewidth (0.5f);
 
             if ((el_mode > 0) && (num_lights > 0))
@@ -2949,8 +2964,9 @@ namespace octave
             if ((el_mode > 0) && (num_lights > 0) && has_normals)
               glEnable (GL_LIGHTING);
 
-            set_linestyle (props.get_linestyle (), false);
-            set_linewidth (props.get_linewidth ());
+            double linewidth = props.get_linewidth ();
+            set_linestyle (props.get_linestyle (), false, linewidth);
+            set_linewidth (linewidth);
 
             // NOTE: patch contour cannot be offset.  Offset must occur with the
             // filled portion of the patch above.  The tesselator uses
@@ -3035,7 +3051,7 @@ namespace octave
                   }
               }
 
-            set_linestyle ("-");
+            set_linestyle ("-");  // Disable LineStipple
             set_linewidth (0.5f);
 
             if ((el_mode > 0) && (num_lights > 0) && has_normals)
@@ -3570,7 +3586,8 @@ namespace octave
   }
 
   void
-  opengl_renderer::set_linestyle (const std::string& s, bool use_stipple)
+  opengl_renderer::set_linestyle (const std::string& s, bool use_stipple,
+                                  double linewidth)
   {
 #if defined (HAVE_OPENGL)
 
@@ -3582,11 +3599,11 @@ namespace octave
         solid = true;
       }
     else if (s == ":")
-      glLineStipple (1, static_cast<unsigned short> (0x8888));
+      glLineStipple (linewidth, static_cast<unsigned short> (0x5555));
     else if (s == "--")
-      glLineStipple (1, static_cast<unsigned short> (0xF0F0));
+      glLineStipple (linewidth, static_cast<unsigned short> (0x0F0F));
     else if (s == "-.")
-      glLineStipple (1, static_cast<unsigned short> (0x020F));
+      glLineStipple (linewidth, static_cast<unsigned short> (0x6F6F));
     else
       glLineStipple (1, static_cast<unsigned short> (0x0000));
 

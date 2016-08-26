@@ -80,7 +80,8 @@ namespace octave
     virtual void set_color (const Matrix& c);
     virtual void set_polygon_offset (bool on, float offset = 0.0f);
     virtual void set_linewidth (float w);
-    virtual void set_linestyle (const std::string& s, bool stipple = false);
+    virtual void set_linestyle (const std::string& s, bool stipple = false,
+                                double linewidth = 0.5);
     virtual void set_clipbox (double x1, double x2, double y1, double y2,
                               double z1, double z2);
     virtual void set_clipping (bool on);
@@ -115,7 +116,8 @@ namespace octave
     virtual void draw_pixels (int w, int h, const uint8_t *data);
     virtual void draw_pixels (int w, int h, const uint16_t *data);
 
-    virtual void render_grid (const std::string& gridstyle,
+    virtual void render_grid (const double linewidth,
+                              const std::string& gridstyle,
                               const Matrix& gridcolor, const double gridalpha,
                               const Matrix& ticks, double lim1, double lim2,
                               double p1, double p1N, double p2, double p2N,

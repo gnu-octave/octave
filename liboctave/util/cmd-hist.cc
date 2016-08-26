@@ -773,11 +773,7 @@ namespace octave
 
   void
   command_history::do_process_histcontrol (const std::string&)
-  {
-    (*current_liboctave_warning_with_id_handler)
-      ("Octave:history-control",
-       "readline is not linked, so history control is not available");
-  }
+  { }
 
   void
   command_history::do_initialize (bool read_history_file,

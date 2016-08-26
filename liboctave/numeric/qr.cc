@@ -236,7 +236,7 @@ namespace octave
       if (j < 0 || j > n)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      init (::insert_col (q*r, j, u), get_type ());
+      init (octave::math::insert_col (q*r, j, u), get_type ());
     }
 
     template <typename T>
@@ -266,7 +266,7 @@ namespace octave
         {
           T a = q*r;
           for (octave_idx_type i = 0; i < js.numel (); i++)
-            a = ::insert_col (a, js(i), u.column (i));
+            a = octave::math::insert_col (a, js(i), u.column (i));
           init (a, get_type ());
         }
     }
@@ -282,7 +282,7 @@ namespace octave
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      init (::delete_col (q*r, j), get_type ());
+      init (octave::math::delete_col (q*r, j), get_type ());
     }
 
     template <typename T>
@@ -309,7 +309,7 @@ namespace octave
         {
           T a = q*r;
           for (octave_idx_type i = 0; i < js.numel (); i++)
-            a = ::delete_col (a, js(i));
+            a = octave::math::delete_col (a, js(i));
           init (a, get_type ());
         }
     }
@@ -328,7 +328,7 @@ namespace octave
       if (j < 0 || j > m)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      init (::insert_row (q*r, j, u), get_type ());
+      init (octave::math::insert_row (q*r, j, u), get_type ());
     }
 
     template <typename T>
@@ -344,7 +344,7 @@ namespace octave
       if (j < 0 || j > m-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      init (::delete_row (q*r, j), get_type ());
+      init (octave::math::delete_row (q*r, j), get_type ());
     }
 
     template <typename T>
@@ -358,7 +358,7 @@ namespace octave
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrshift: index out of range");
 
-      init (::shift_cols (q*r, i, j), get_type ());
+      init (octave::math::shift_cols (q*r, i, j), get_type ());
     }
 
 #endif

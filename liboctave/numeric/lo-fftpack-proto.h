@@ -58,3 +58,5 @@ extern "C"
   F77_RET_T
   F77_FUNC (zffti, ZFFTI) (const F77_INT&, F77_DBLE_CMPLX*);
 }
+
+#endif

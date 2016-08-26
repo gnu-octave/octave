@@ -56,8 +56,8 @@ public:
     first parameter, and begin, end, and size methods, i.e., a class with
     similar interface as the STL containers.
   */
-  template<template <typename...> class String_Container>
-  string_vector (const String_Container<std::string>& lst);
+  template<template <typename...> class String_Container, typename... Other>
+  string_vector (const String_Container<std::string, Other...>& lst);
 
   string_vector (const Array<std::string>& s)
     : Array<std::string> (s.as_column ()) { }
@@ -127,8 +127,8 @@ public:
 };
 
 
-template<template <typename...> class String_Container>
-string_vector::string_vector (const String_Container<std::string>& lst)
+template<template <typename...> class String_Container, typename... Other>
+string_vector::string_vector (const String_Container<std::string, Other...>& lst)
   : Array<std::string> ()
 {
   resize (lst.size ());

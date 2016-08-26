@@ -2332,7 +2332,7 @@ namespace octave
           }
       }
 
-    if (! props.edgecolor_is ("none"))
+    if (! props.edgecolor_is ("none") && ! props.linestyle_is ("none"))
       {
         if (props.get_edgealpha_double () == 1)
           {
@@ -2912,7 +2912,7 @@ namespace octave
           }
       }
 
-    if (! props.edgecolor_is ("none"))
+    if (! props.edgecolor_is ("none") && ! props.linestyle_is ("none"))
       {
         // FIXME: adapt to double-radio property
         if (props.get_edgealpha_double () == 1)

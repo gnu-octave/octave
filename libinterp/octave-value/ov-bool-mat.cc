@@ -104,33 +104,25 @@ octave_bool_matrix::try_narrowing_conversion (void)
 double
 octave_bool_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
-
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("bool matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "bool matrix", "real scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return matrix(0, 0);
 }
 
 float
 octave_bool_matrix::float_value (bool) const
 {
-  float retval = lo_ieee_float_nan_value ();
-
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("bool matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "bool matrix", "real scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return matrix(0, 0);
 }
 
 Complex

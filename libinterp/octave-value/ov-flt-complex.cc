@@ -94,29 +94,21 @@ octave_float_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 double
 octave_float_complex::double_value (bool force_conversion) const
 {
-  double retval;
-
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real scalar");
 
-  retval = scalar.real ();
-
-  return retval;
+  return scalar.real ();
 }
 
 float
 octave_float_complex::float_value (bool force_conversion) const
 {
-  float retval;
-
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex scalar", "real scalar");
 
-  retval = scalar.real ();
-
-  return retval;
+  return scalar.real ();
 }
 
 Matrix

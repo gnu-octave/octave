@@ -65,33 +65,25 @@ octave_char_matrix::index_vector (bool /* require_integers */) const
 double
 octave_char_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
-
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("character matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "real scalar");
 
-  retval = static_cast<unsigned char> (matrix(0, 0));
-
-  return retval;
+  return static_cast<unsigned char> (matrix(0, 0));
 }
 
 float
 octave_char_matrix::float_value (bool) const
 {
-  float retval = lo_ieee_float_nan_value ();
-
   if (rows () == 0 && columns () == 0)
     err_invalid_conversion ("character matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "real scalar");
 
-  retval = static_cast<unsigned char> (matrix(0, 0));
-
-  return retval;
+  return static_cast<unsigned char> (matrix(0, 0));
 }
 
 octave_int64

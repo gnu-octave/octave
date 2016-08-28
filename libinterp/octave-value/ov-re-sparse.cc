@@ -95,8 +95,6 @@ octave_sparse_matrix::try_narrowing_conversion (void)
 double
 octave_sparse_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
-
   if (is_empty ())
     err_invalid_conversion ("real sparse matrix", "real scalar");
 
@@ -104,9 +102,7 @@ octave_sparse_matrix::double_value (bool) const
     warn_implicit_conversion ("Octave:array-to-scalar",
                               "real sparse matrix", "real scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return matrix(0, 0);
 }
 
 Complex

@@ -190,8 +190,6 @@ octave_range::index_vector (bool require_integers) const
 double
 octave_range::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
-
   octave_idx_type nel = range.numel ();
 
   if (nel == 0)
@@ -200,16 +198,12 @@ octave_range::double_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "range", "real scalar");
 
-  retval = range.base ();
-
-  return retval;
+  return range.base ();
 }
 
 float
 octave_range::float_value (bool) const
 {
-  float retval = lo_ieee_float_nan_value ();
-
   octave_idx_type nel = range.numel ();
 
   if (nel == 0)
@@ -218,9 +212,7 @@ octave_range::float_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "range", "real scalar");
 
-  retval = range.base ();
-
-  return retval;
+  return range.base ();
 }
 
 charNDArray

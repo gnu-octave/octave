@@ -99,33 +99,25 @@ octave_float_matrix::try_narrowing_conversion (void)
 double
 octave_float_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
-
   if (is_empty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "real matrix", "real scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return matrix(0, 0);
 }
 
 float
 octave_float_matrix::float_value (bool) const
 {
-  float retval = lo_ieee_float_nan_value ();
-
   if (is_empty ())
     err_invalid_conversion ("real matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "real matrix", "real scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return matrix(0, 0);
 }
 
 // FIXME

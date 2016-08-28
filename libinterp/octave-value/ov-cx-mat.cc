@@ -105,8 +105,6 @@ octave_complex_matrix::try_narrowing_conversion (void)
 double
 octave_complex_matrix::double_value (bool force_conversion) const
 {
-  double retval = lo_ieee_nan_value ();
-
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex matrix", "real scalar");
@@ -117,16 +115,12 @@ octave_complex_matrix::double_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "complex matrix", "real scalar");
 
-  retval = octave::math::real (matrix(0, 0));
-
-  return retval;
+  return octave::math::real (matrix(0, 0));
 }
 
 float
 octave_complex_matrix::float_value (bool force_conversion) const
 {
-  float retval = lo_ieee_float_nan_value ();
-
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex matrix", "real scalar");
@@ -137,9 +131,7 @@ octave_complex_matrix::float_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "complex matrix", "real scalar");
 
-  retval = octave::math::real (matrix(0, 0));
-
-  return retval;
+  return octave::math::real (matrix(0, 0));
 }
 
 NDArray

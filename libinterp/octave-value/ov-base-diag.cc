@@ -300,7 +300,6 @@ template <typename DMT, typename MT>
 double
 octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
 {
-  double retval = lo_ieee_nan_value ();
   typedef typename DMT::element_type el_type;
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
@@ -313,33 +312,26 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             type_name (), "real scalar");
 
-  retval = helper_getreal (el_type (matrix (0, 0)));
-
-  return retval;
+  return helper_getreal (el_type (matrix (0, 0)));
 }
 
 template <typename DMT, typename MT>
 float
 octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
 {
-  float retval = lo_ieee_float_nan_value ();
   typedef typename DMT::element_type el_type;
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
                               "complex matrix", "real scalar");
 
-  if (numel () > 0)
-    {
-      warn_implicit_conversion ("Octave:array-to-scalar",
-                                type_name (), "real scalar");
-
-      retval = helper_getreal (el_type (matrix (0, 0)));
-    }
-  else
+  if (! (numel () > 0))
     err_invalid_conversion (type_name (), "real scalar");
 
-  return retval;
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            type_name (), "real scalar");
+
+  return helper_getreal (el_type (matrix (0, 0)));
 }
 
 template <typename DMT, typename MT>

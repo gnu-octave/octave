@@ -484,6 +484,50 @@ AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
+### Check for pthread library
+
+AX_PTHREAD
+## Include pthread libs and flags early in case other tests need them.
+## They seem to be required for the OpenGL tests on Debian systems.
+LIBS="$PTHREAD_LIBS $LIBS"
+XTRA_CFLAGS="$XTRA_CFLAGS $PTHREAD_CFLAGS"
+XTRA_CXXFLAGS="$XTRA_CXXFLAGS $PTHREAD_CFLAGS"
+## Set these for any other tests that may require them.  They will be
+## reset before output files are generated.
+CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
+
+### Test whether the compiler supports OpenMP.  This is enabled by default
+### now to allow the option of using OpenMP in loadable modules.
+
+ENABLE_OPENMP=no
+check_for_openmp=yes
+AC_ARG_ENABLE([openmp],
+  [AS_HELP_STRING([--disable-openmp],
+    [disable OpenMP SMP multi-threading])],
+  [if test "$enableval" = no; then check_for_openmp=no; fi], [])
+if test $check_for_openmp = yes; then
+  AC_LANG_PUSH(C)
+  AX_OPENMP([XTRA_CFLAGS="$XTRA_CFLAGS $OPENMP_CFLAGS"; ENABLE_OPENMP=yes], [])
+  AC_LANG_POP(C)
+  AC_LANG_PUSH(C++)
+  AX_OPENMP([XTRA_CXXFLAGS="$XTRA_CXXFLAGS $OPENMP_CXXFLAGS"; ENABLE_OPENMP=yes], [])
+  AC_LANG_POP(C++)
+fi
+
+## Set these for any other tests that may require them.  They will be
+## reset before output files are generated.
+CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+
+dnl Define here since it is skipped if the first argument to
+dnl AX_OPENMP is not empty.
+if test $ENABLE_OPENMP = yes; then
+  AC_CHECK_HEADERS([omp.h])
+  AC_CHECK_FUNCS([omp_get_num_threads])
+  AC_DEFINE(OCTAVE_ENABLE_OPENMP, 1, [Define if OpenMP is enabled])
+fi
+
 ### Start determination of shared vs. static libraries
 
 ## Use -static if compiling on Alpha OSF/1 1.3 systems.
@@ -1054,50 +1098,6 @@ AC_SUBST(MKOCTFILE_DL_LD)
 AC_SUBST(MKOCTFILE_F77)
 AC_SUBST(MKOCTFILE_LD_CXX)
 AC_SUBST(MKOCTFILE_RANLIB)
-
-### Check for pthread library
-
-AX_PTHREAD
-## Include pthread libs and flags early in case other tests need them.
-## They seem to be required for the OpenGL tests on Debian systems.
-LIBS="$PTHREAD_LIBS $LIBS"
-XTRA_CFLAGS="$XTRA_CFLAGS $PTHREAD_CFLAGS"
-XTRA_CXXFLAGS="$XTRA_CXXFLAGS $PTHREAD_CFLAGS"
-## Set these for any other tests that may require them.  They will be
-## reset before output files are generated.
-CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
-
-### Test whether the compiler supports OpenMP.  This is enabled by default
-### now to allow the option of using OpenMP in loadable modules.
-
-ENABLE_OPENMP=no
-check_for_openmp=yes
-AC_ARG_ENABLE([openmp],
-  [AS_HELP_STRING([--disable-openmp],
-    [disable OpenMP SMP multi-threading])],
-  [if test "$enableval" = no; then check_for_openmp=no; fi], [])
-if test $check_for_openmp = yes; then
-  AC_LANG_PUSH(C)
-  AX_OPENMP([XTRA_CFLAGS="$XTRA_CFLAGS $OPENMP_CFLAGS"; ENABLE_OPENMP=yes], [])
-  AC_LANG_POP(C)
-  AC_LANG_PUSH(C++)
-  AX_OPENMP([XTRA_CXXFLAGS="$XTRA_CXXFLAGS $OPENMP_CXXFLAGS"; ENABLE_OPENMP=yes], [])
-  AC_LANG_POP(C++)
-fi
-
-## Set these for any other tests that may require them.  They will be
-## reset before output files are generated.
-CFLAGS="$CFLAGS $OPENMP_CFLAGS"
-CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
-
-dnl Define here since it is skipped if the first argument to
-dnl AX_OPENMP is not empty.
-if test $ENABLE_OPENMP = yes; then
-  AC_CHECK_HEADERS([omp.h])
-  AC_CHECK_FUNCS([omp_get_num_threads])
-  AC_DEFINE(OCTAVE_ENABLE_OPENMP, 1, [Define if OpenMP is enabled])
-fi
 
 ### When compiling math for x87, problems may arise in some code comparing
 ### floating-point intermediate results.  The root cause is the extra precision

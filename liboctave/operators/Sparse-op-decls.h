@@ -184,3 +184,4 @@ class SparseBoolMatrix;
   SPARSE_SMM_BOOL_OP_DECLS (M1, M2, API)
 
 #endif
+

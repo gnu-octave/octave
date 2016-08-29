@@ -651,7 +651,8 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 FloatMatrix
 FloatMatrix::pseudo_inverse (float tol) const
 {
-  octave::math::svd<FloatMatrix> result (*this, octave::math::svd<FloatMatrix>::Type::economy);
+  octave::math::svd<FloatMatrix> result (*this,
+                                         octave::math::svd<FloatMatrix>::Type::economy);
 
   FloatDiagMatrix S = result.singular_values ();
   FloatMatrix U = result.left_singular_matrix ();
@@ -810,7 +811,8 @@ FloatMatrix::fourier (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   return retval;
@@ -851,7 +853,8 @@ FloatMatrix::ifourier (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -895,7 +898,8 @@ FloatMatrix::fourier2d (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   npts = nc;
@@ -961,7 +965,8 @@ FloatMatrix::ifourier2d (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -3112,3 +3117,4 @@ SM_BOOL_OPS (float, FloatMatrix)
 
 MM_CMP_OPS (FloatMatrix, FloatMatrix)
 MM_BOOL_OPS (FloatMatrix, FloatMatrix)
+

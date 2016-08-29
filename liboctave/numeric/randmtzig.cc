@@ -265,7 +265,8 @@ oct_init_by_entropy (void)
           unsigned char word[4];
           if (std::fread (word, 4, 1, urandom) != 1)
             break;
-          entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(static_cast<uint32_t>(word[3])<<24);
+          entropy[n++] = word[0] + (word[1]<<8) + (word[2]<<16)
+                         + (static_cast<uint32_t> (word[3])<<24);
         }
       std::fclose (urandom);
     }
@@ -863,3 +864,4 @@ oct_fill_float_rande (octave_idx_type n, float *p)
   for (i = 0; i < n; i++)
     p[i] = oct_float_rande ();
 }
+

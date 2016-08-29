@@ -265,7 +265,7 @@ namespace octave
         // Index of subpattern in first two bytes MSB first of name.
         // Extract index.
         nidx[i] = (static_cast<int> (nametable[i*nameentrysize])) << 8
-          | static_cast<int> (nametable[i*nameentrysize+1]);
+                  | static_cast<int> (nametable[i*nameentrysize+1]);
       }
 
     while (true)
@@ -589,7 +589,7 @@ namespace octave
           {
             OCTAVE_QUIT;
             delta += static_cast<int> (replen)
-              - static_cast<int> (p->end () - p->start () + 1);
+                     - static_cast<int> (p->end () - p->start () + 1);
             p++;
           }
 
@@ -613,3 +613,4 @@ namespace octave
     return retval;
   }
 }
+

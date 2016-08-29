@@ -857,7 +857,8 @@ Array<T>::index (const Array<idx_vector>& ia) const
       for (int i = 0; i < ial; i++)
         {
           if (ia(i).extent (dv(i)) != dv(i))
-            octave::err_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i), dimensions); // throws
+            octave::err_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i),
+                                            dimensions); // throws
 
           all_colons = all_colons && ia(i).is_colon ();
         }
@@ -2869,3 +2870,4 @@ operator << (std::ostream& os, const Array<T>& a)
 
   return os;
 }
+

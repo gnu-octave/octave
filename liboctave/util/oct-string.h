@@ -102,7 +102,7 @@ namespace octave
     //! True if the first N characters are the same.
     template <typename T>
     bool strncmp (const T& str_a, const typename T::value_type* str_b,
-                   const typename T::size_type n);
+                  const typename T::size_type n);
 
     //! True if the first N characters are the same, ignoring case.
     /*!
@@ -124,3 +124,4 @@ namespace octave
 }
 
 #endif
+

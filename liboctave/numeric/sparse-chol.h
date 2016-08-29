@@ -97,9 +97,10 @@ namespace octave
     // SparseComplexMatrix specialization.
 
     template <>
-    sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
-                                                   octave_idx_type& info);
+    sparse_chol<SparseComplexMatrix>::sparse_chol
+      (const SparseComplexMatrix& a, octave_idx_type& info);
   }
 }
 
 #endif
+

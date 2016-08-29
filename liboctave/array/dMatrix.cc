@@ -645,7 +645,8 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 Matrix
 Matrix::pseudo_inverse (double tol) const
 {
-  octave::math::svd<Matrix> result (*this, octave::math::svd<Matrix>::Type::economy);
+  octave::math::svd<Matrix> result (*this,
+                                    octave::math::svd<Matrix>::Type::economy);
 
   DiagMatrix S = result.singular_values ();
   Matrix U = result.left_singular_matrix ();
@@ -804,7 +805,8 @@ Matrix::fourier (void) const
     {
       octave_quit ();
 
-      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]), F77_DBLE_CMPLX_ARG (pwsave));
+      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_DBLE_CMPLX_ARG (pwsave));
     }
 
   return retval;
@@ -845,7 +847,8 @@ Matrix::ifourier (void) const
     {
       octave_quit ();
 
-      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]), F77_DBLE_CMPLX_ARG (pwsave));
+      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_DBLE_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -889,7 +892,8 @@ Matrix::fourier2d (void) const
     {
       octave_quit ();
 
-      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]), F77_DBLE_CMPLX_ARG (pwsave));
+      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_DBLE_CMPLX_ARG (pwsave));
     }
 
   npts = nc;
@@ -911,7 +915,8 @@ Matrix::fourier2d (void) const
       for (octave_idx_type i = 0; i < npts; i++)
         prow[i] = tmp_data[i*nr + j];
 
-      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow), F77_DBLE_CMPLX_ARG (pwsave));
+      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow),
+                               F77_DBLE_CMPLX_ARG (pwsave));
 
       for (octave_idx_type i = 0; i < npts; i++)
         tmp_data[i*nr + j] = prow[i];
@@ -955,7 +960,8 @@ Matrix::ifourier2d (void) const
     {
       octave_quit ();
 
-      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]), F77_DBLE_CMPLX_ARG (pwsave));
+      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_DBLE_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -980,7 +986,8 @@ Matrix::ifourier2d (void) const
       for (octave_idx_type i = 0; i < npts; i++)
         prow[i] = tmp_data[i*nr + j];
 
-      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow), F77_DBLE_CMPLX_ARG (pwsave));
+      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow),
+                               F77_DBLE_CMPLX_ARG (pwsave));
 
       for (octave_idx_type i = 0; i < npts; i++)
         tmp_data[i*nr + j] = prow[i] / static_cast<double> (npts);
@@ -3102,3 +3109,4 @@ SM_BOOL_OPS (double, Matrix)
 
 MM_CMP_OPS (Matrix, Matrix)
 MM_BOOL_OPS (Matrix, Matrix)
+

@@ -48,25 +48,25 @@ namespace octave
 
       time (time_t t, int us)
         : ot_unix_time (t), ot_usec ()
-        {
-          int rem, extra;
+      {
+        int rem, extra;
 
-          if (us >= 0)
-            {
-              rem = us % 1000000;
-              extra = (us - rem) / 1000000;
-            }
-          else
-            {
-              us = -us;
-              rem = us % 1000000;
-              extra = - (1 + (us - rem) / 1000000);
-              rem = 1000000 - us % 1000000;
-            }
+        if (us >= 0)
+          {
+            rem = us % 1000000;
+            extra = (us - rem) / 1000000;
+          }
+        else
+          {
+            us = -us;
+            rem = us % 1000000;
+            extra = - (1 + (us - rem) / 1000000);
+            rem = 1000000 - us % 1000000;
+          }
 
-          ot_usec = rem;
-          ot_unix_time += extra;
-        }
+        ot_usec = rem;
+        ot_unix_time += extra;
+      }
 
       time (double d);
 
@@ -76,15 +76,15 @@ namespace octave
         : ot_unix_time (ot.ot_unix_time), ot_usec (ot.ot_usec) { }
 
       time& operator = (const time& ot)
-        {
-          if (this != &ot)
-            {
-              ot_unix_time = ot.ot_unix_time;
-              ot_usec = ot.ot_usec;
-            }
+      {
+        if (this != &ot)
+          {
+            ot_unix_time = ot.ot_unix_time;
+            ot_usec = ot.ot_usec;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       ~time (void) { }
 
@@ -161,7 +161,7 @@ namespace octave
     operator + (const time& t1, const time& t2)
     {
       return time (t1.unix_time () + t2.unix_time (),
-                          t1.usec () + t2.usec ());
+                   t1.usec () + t2.usec ());
     }
 
     class
@@ -174,35 +174,35 @@ namespace octave
         : m_usec (0), m_sec (0), m_min (0), m_hour (0),
           m_mday (0), m_mon (0), m_year (0), m_wday (0),
           m_yday (0), m_isdst (0), m_gmtoff (0), m_zone ("unknown")
-        { }
+      { }
 
       base_tm (const base_tm& tm)
         : m_usec (tm.m_usec), m_sec (tm.m_sec), m_min (tm.m_min),
           m_hour (tm.m_hour), m_mday (tm.m_mday), m_mon (tm.m_mon),
           m_year (tm.m_year), m_wday (tm.m_wday), m_yday (tm.m_yday),
           m_isdst (tm.m_isdst), m_gmtoff (tm.m_gmtoff), m_zone (tm.m_zone)
-        { }
+      { }
 
       base_tm& operator = (const base_tm& tm)
-        {
-          if (this != &tm)
-            {
-              m_usec = tm.m_usec;
-              m_sec = tm.m_sec;
-              m_min = tm.m_min;
-              m_hour = tm.m_hour;
-              m_mday = tm.m_mday;
-              m_mon = tm.m_mon;
-              m_year = tm.m_year;
-              m_wday = tm.m_wday;
-              m_yday = tm.m_yday;
-              m_isdst = tm.m_isdst;
-              m_gmtoff = tm.m_gmtoff;
-              m_zone = tm.m_zone;
-            }
+      {
+        if (this != &tm)
+          {
+            m_usec = tm.m_usec;
+            m_sec = tm.m_sec;
+            m_min = tm.m_min;
+            m_hour = tm.m_hour;
+            m_mday = tm.m_mday;
+            m_mon = tm.m_mon;
+            m_year = tm.m_year;
+            m_wday = tm.m_wday;
+            m_yday = tm.m_yday;
+            m_isdst = tm.m_isdst;
+            m_gmtoff = tm.m_gmtoff;
+            m_zone = tm.m_zone;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       virtual ~base_tm (void) { }
 
@@ -294,10 +294,10 @@ namespace octave
         : base_tm (t) { }
 
       localtime& operator = (const localtime& t)
-        {
-          base_tm::operator = (t);
-          return *this;
-        }
+      {
+        base_tm::operator = (t);
+        return *this;
+      }
 
       ~localtime (void) { }
 
@@ -319,10 +319,10 @@ namespace octave
         : base_tm () { init (ot); }
 
       gmtime& operator = (const gmtime& t)
-        {
-          base_tm::operator = (t);
-          return *this;
-        }
+      {
+        base_tm::operator = (t);
+        return *this;
+      }
 
       ~gmtime (void) { }
 
@@ -339,19 +339,19 @@ namespace octave
 
       strptime (const std::string& str, const std::string& fmt)
         : base_tm (), nchars (0)
-        {
-          init (str, fmt);
-        }
+      {
+        init (str, fmt);
+      }
 
       strptime (const strptime& s)
         : base_tm (s), nchars (s.nchars) { }
 
       strptime& operator = (const strptime& s)
-        {
-          base_tm::operator = (s);
-          nchars = s.nchars;
-          return *this;
-        }
+      {
+        base_tm::operator = (s);
+        nchars = s.nchars;
+        return *this;
+      }
 
       int characters_converted (void) const { return nchars; }
 
@@ -541,3 +541,4 @@ typedef octave::sys::strptime octave_strptime;
 #endif
 
 #endif
+

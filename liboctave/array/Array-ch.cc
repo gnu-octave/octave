@@ -50,3 +50,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&,
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<char>;
+

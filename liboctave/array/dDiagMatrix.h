@@ -125,3 +125,4 @@ operator * (const DiagMatrix& a, const DiagMatrix& b);
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, DiagMatrix, double)
 
 #endif
+

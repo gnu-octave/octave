@@ -53,7 +53,8 @@ bool xis_zero (double x)
 
 bool xtoo_large_for_float (double x)
 {
-  return (octave::math::finite (x) && fabs (x) > std::numeric_limits<float>::max ());
+  return (octave::math::finite (x)
+          && fabs (x) > std::numeric_limits<float>::max ());
 }
 
 bool xtoo_large_for_float (const Complex& x)
@@ -428,3 +429,4 @@ octave_write_float_complex (std::ostream& os, const FloatComplex& c)
   octave_write_float (os, imag (c));
   os << ")";
 }
+

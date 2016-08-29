@@ -105,7 +105,7 @@ namespace octave
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
-          // This effectively chooses the same phase of the branch cut as Matlab.
+          // This chooses the same phase of the branch cut as Matlab.
           double xr = std::real (x);
           tmp = Complex (1.0 - xr*xr);
         }
@@ -135,7 +135,7 @@ namespace octave
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
-          // This effectively chooses the same phase of the branch cut as Matlab.
+          // This chooses the same phase of the branch cut as Matlab.
           float xr = std::real (x);
           tmp = FloatComplex (1.0f - xr*xr);
         }
@@ -165,7 +165,7 @@ namespace octave
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
-          // This effectively chooses the same phase of the branch cut as Matlab.
+          // This chooses the same phase of the branch cut as Matlab.
           double xr = std::real (x);
           tmp = Complex (1.0 - xr*xr);
         }
@@ -195,7 +195,7 @@ namespace octave
         {
           // If the imaginary part of X is 0, then avoid generating an
           // imaginary part of -0 for the expression 1-x*x.
-          // This effectively chooses the same phase of the branch cut as Matlab.
+          // This chooses the same phase of the branch cut as Matlab.
           float xr = std::real (x);
           tmp = FloatComplex (1.0f - xr*xr);
         }
@@ -413,7 +413,8 @@ namespace octave
       else if (x < std::numeric_limits<octave_idx_type>::min ())
         return std::numeric_limits<octave_idx_type>::min ();
       else
-        return static_cast<octave_idx_type> ((x > 0.0) ? (x + 0.5) : (x - 0.5));
+        return static_cast<octave_idx_type> ((x > 0.0) ? (x + 0.5)
+                                                       : (x - 0.5));
     }
 
     octave_idx_type
@@ -424,7 +425,8 @@ namespace octave
       else if (x < std::numeric_limits<octave_idx_type>::min ())
         return std::numeric_limits<octave_idx_type>::min ();
       else
-        return static_cast<octave_idx_type> ((x > 0.0f) ? (x + 0.5f) : (x - 0.5f));
+        return static_cast<octave_idx_type> ((x > 0.0f) ? (x + 0.5f)
+                                                        : (x - 0.5f));
     }
 
     int
@@ -458,7 +460,8 @@ namespace octave
     FloatComplex
     rc_acos (float x)
     {
-      return fabsf (x) > 1.0f ? acos (FloatComplex (x)) : FloatComplex (::acosf (x));
+      return fabsf (x) > 1.0f ? acos (FloatComplex (x))
+                              : FloatComplex (::acosf (x));
     }
 
     Complex
@@ -482,7 +485,8 @@ namespace octave
     FloatComplex
     rc_asin (float x)
     {
-      return fabsf (x) > 1.0f ? asin (FloatComplex (x)) : FloatComplex (::asinf (x));
+      return fabsf (x) > 1.0f ? asin (FloatComplex (x))
+                              : FloatComplex (::asinf (x));
     }
 
     Complex
@@ -494,7 +498,8 @@ namespace octave
     FloatComplex
     rc_atanh (float x)
     {
-      return fabsf (x) > 1.0f ? atanh (FloatComplex (x)) : FloatComplex (atanh (x));
+      return fabsf (x) > 1.0f ? atanh (FloatComplex (x))
+                              : FloatComplex (atanh (x));
     }
 
     Complex
@@ -508,7 +513,8 @@ namespace octave
     rc_log (float x)
     {
       const float pi = 3.14159265358979323846f;
-      return x < 0.0f ? FloatComplex (std::log (-x), pi) : FloatComplex (std::log (x));
+      return x < 0.0f ? FloatComplex (std::log (-x), pi)
+                      : FloatComplex (std::log (x));
     }
 
     Complex
@@ -522,7 +528,8 @@ namespace octave
     rc_log2 (float x)
     {
       const float pil2 = 4.53236014182719380962f; // = pi / log(2)
-      return x < 0.0f ? FloatComplex (log2 (-x), pil2) : FloatComplex (log2 (x));
+      return x < 0.0f ? FloatComplex (log2 (-x), pil2)
+                      : FloatComplex (log2 (x));
     }
 
     Complex
@@ -536,7 +543,8 @@ namespace octave
     rc_log10 (float x)
     {
       const float pil10 = 1.36437635384184134748f; // = pi / log(10)
-      return x < 0.0f ? FloatComplex (log10 (-x), pil10) : FloatComplex (log10f (x));
+      return x < 0.0f ? FloatComplex (log10 (-x), pil10)
+                      : FloatComplex (log10f (x));
     }
 
     Complex
@@ -548,7 +556,9 @@ namespace octave
     FloatComplex
     rc_sqrt (float x)
     {
-      return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x)) : FloatComplex (sqrtf (x));
+      return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x))
+                      : FloatComplex (sqrtf (x));
     }
   }
 }
+

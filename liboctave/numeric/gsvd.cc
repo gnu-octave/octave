@@ -31,12 +31,12 @@
 template <>
 void
 gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq, octave_idx_type m,
-                    octave_idx_type n, octave_idx_type p, octave_idx_type& k,
-                    octave_idx_type& l, double *tmp_dataA, octave_idx_type m1,
-                    double *tmp_dataB, octave_idx_type p1, Matrix& alpha,
-                    Matrix& beta, double *u, octave_idx_type nrow_u, double *v,
-                    octave_idx_type nrow_v, double *q, octave_idx_type nrow_q,
-                    Matrix& work, octave_idx_type* iwork, octave_idx_type& info)
+                     octave_idx_type n, octave_idx_type p, octave_idx_type& k,
+                     octave_idx_type& l, double *tmp_dataA, octave_idx_type m1,
+                     double *tmp_dataB, octave_idx_type p1, Matrix& alpha,
+                     Matrix& beta, double *u, octave_idx_type nrow_u, double *v,
+                     octave_idx_type nrow_v, double *q, octave_idx_type nrow_q,
+                     Matrix& work, octave_idx_type* iwork, octave_idx_type& info)
 {
   F77_XFCN (dggsvd, DGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                              F77_CONST_CHAR_ARG2 (&jobv, 1),
@@ -165,24 +165,24 @@ gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
 
   switch (gsvd_type)
     {
-      case gsvd<T>::Type::sigma_only:
+    case gsvd<T>::Type::sigma_only:
 
-        // Note:  for this case, both jobu and jobv should be 'N', but
-        // there seems to be a bug in dgesvd from Lapack V2.0.  To
-        // demonstrate the bug, set both jobu and jobv to 'N' and find
-        // the singular values of [eye(3), eye(3)].  The result is
-        // [-sqrt(2), -sqrt(2), -sqrt(2)].
-        //
-        // For Lapack 3.0, this problem seems to be fixed.
+      // Note:  for this case, both jobu and jobv should be 'N', but
+      // there seems to be a bug in dgesvd from Lapack V2.0.  To
+      // demonstrate the bug, set both jobu and jobv to 'N' and find
+      // the singular values of [eye(3), eye(3)].  The result is
+      // [-sqrt(2), -sqrt(2), -sqrt(2)].
+      //
+      // For Lapack 3.0, this problem seems to be fixed.
 
-        jobu = 'N';
-        jobv = 'N';
-        jobq = 'N';
-        nrow_u = nrow_v = nrow_q = 1;
-        break;
+      jobu = 'N';
+      jobv = 'N';
+      jobq = 'N';
+      nrow_u = nrow_v = nrow_q = 1;
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
 
   type = gsvd_type;
@@ -247,16 +247,17 @@ gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
                   // (R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N),
                   // ( 0  R22 R23 )
 
-                   for (i = 0; i < m; i++)
-                     for (j = 0; j < k+l; j++)
-                       R.xelem (i, j) = atmp.xelem (i, astart + j);
-                   // and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
-                   for (i = k+l-1; i >=m; i--) {
-                     for (j = 0; j < m; j++)
-                       R.xelem(i, j) = 0.0;
-                     for (j = m; j < k+l; j++)
-                       R.xelem (i, j) = btmp.xelem (i - k, astart + j);
-                   }
+                  for (i = 0; i < m; i++)
+                    for (j = 0; j < k+l; j++)
+                      R.xelem (i, j) = atmp.xelem (i, astart + j);
+                  // and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
+                  for (i = k+l-1; i >=m; i--)
+                    {
+                      for (j = 0; j < m; j++)
+                        R.xelem(i, j) = 0.0;
+                      for (j = m; j < k+l; j++)
+                        R.xelem (i, j) = btmp.xelem (i - k, astart + j);
+                    }
                 }
             }
 
@@ -291,3 +292,4 @@ gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
 template class gsvd<Matrix>;
 
 template class gsvd<ComplexMatrix>;
+

@@ -30,7 +30,8 @@ extern "C"
 {
 #endif
 
-enum {
+enum
+{
   HC_IGNSPACE = 0x01,
   HC_IGNDUPS = 0x02,
   HC_ERASEDUPS = 0x04
@@ -83,3 +84,4 @@ extern void octave_replace_history_entry (int, const char *);
 #endif
 
 #endif
+

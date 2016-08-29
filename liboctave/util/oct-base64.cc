@@ -88,3 +88,4 @@ octave_base64_decode (const std::string& str)
   return retval;
 }
 
+

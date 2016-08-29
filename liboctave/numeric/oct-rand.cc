@@ -873,3 +873,4 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
 
   return;
 }
+

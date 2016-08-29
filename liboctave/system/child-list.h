@@ -52,19 +52,19 @@ namespace octave
 
     child (const child& oc)
       : pid (oc.pid), handler (oc.handler),
-      have_status (oc.have_status), status (oc.status) { }
+        have_status (oc.have_status), status (oc.status) { }
 
     child& operator = (const child& oc)
-      {
-        if (&oc != this)
-          {
-            pid = oc.pid;
-            handler = oc.handler;
-            have_status = oc.have_status;
-            status = oc.status;
-          }
-        return *this;
-      }
+    {
+      if (&oc != this)
+        {
+          pid = oc.pid;
+          handler = oc.handler;
+          have_status = oc.have_status;
+          status = oc.status;
+        }
+      return *this;
+    }
 
     ~child (void) { }
 
@@ -134,3 +134,4 @@ typedef octave::child_list octave_child_list;
 #endif
 
 #endif
+

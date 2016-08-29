@@ -300,3 +300,4 @@ operator >> (std::istream& is, ColumnVector& a)
     }
   return is;
 }
+

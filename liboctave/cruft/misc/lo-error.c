@@ -34,20 +34,20 @@ along with Octave; see the file COPYING.  If not, see
    symbol errors when creating shared versions of libcruft. */
 
 /* Pointer to the current error handling function. */
-OCTAVE_NORETURN liboctave_error_handler current_liboctave_error_handler
-  = liboctave_fatal;
+OCTAVE_NORETURN liboctave_error_handler
+  current_liboctave_error_handler = liboctave_fatal;
 
 /* Pointer to the current error_with_id handling function. */
-OCTAVE_NORETURN liboctave_error_with_id_handler current_liboctave_error_with_id_handler
-  = liboctave_fatal_with_id;
+OCTAVE_NORETURN liboctave_error_with_id_handler
+  current_liboctave_error_with_id_handler = liboctave_fatal_with_id;
 
 /* Pointer to the current warning handler. */
-liboctave_warning_handler current_liboctave_warning_handler
-  = liboctave_warning;
+liboctave_warning_handler
+  current_liboctave_warning_handler = liboctave_warning;
 
 /* Pointer to the current warning_with_id handler. */
-liboctave_warning_with_id_handler current_liboctave_warning_with_id_handler
-  = liboctave_warning_with_id;
+liboctave_warning_with_id_handler
+  current_liboctave_warning_with_id_handler = liboctave_warning_with_id;
 
 static void
 verror (const char *name, const char *fmt, va_list args)
@@ -70,7 +70,8 @@ set_liboctave_error_handler (OCTAVE_NORETURN liboctave_error_handler f)
 }
 
 void
-set_liboctave_error_with_id_handler (OCTAVE_NORETURN liboctave_error_with_id_handler f)
+set_liboctave_error_with_id_handler (OCTAVE_NORETURN
+                                     liboctave_error_with_id_handler f)
 {
   if (f)
     current_liboctave_error_with_id_handler = f;
@@ -139,3 +140,4 @@ liboctave_warning_with_id (const char *id, const char *fmt, ...)
   verror ("warning", fmt, args);
   va_end (args);
 }
+

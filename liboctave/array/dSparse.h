@@ -510,3 +510,4 @@ SPARSE_SMSM_BOOL_OP_DECLS (SparseMatrix, SparseMatrix, OCTAVE_API)
 SPARSE_FORWARD_DEFS (MSparse, SparseMatrix, Matrix, double)
 
 #endif
+

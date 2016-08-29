@@ -62,3 +62,4 @@ assign_double (double *unaligned_ptr, double value)
 
 #endif
 #endif
+

@@ -559,7 +559,8 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (octave::math::x_nint (r_val) != r_val || octave::math::x_nint (i_val) != i_val)
+      if (octave::math::x_nint (r_val) != r_val
+          || octave::math::x_nint (i_val) != i_val)
         return false;
     }
 
@@ -906,3 +907,4 @@ BSXFUN_STDOP_DEFS_MXLOOP (FloatComplexNDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (FloatComplexNDArray)
 
 BSXFUN_OP_DEF_MXLOOP (pow, FloatComplexNDArray, mx_inline_pow)
+

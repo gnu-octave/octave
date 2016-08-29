@@ -42,30 +42,30 @@ namespace octave
       password (void)
         : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
           m_dir (), m_shell (), valid (false)
-        { }
+      { }
 
       password (const password& pw)
         : m_name (pw.m_name), m_passwd (pw.m_passwd),
           m_uid (pw.m_uid), m_gid (pw.m_gid), m_gecos (pw.m_gecos),
           m_dir (pw.m_dir), m_shell (pw.m_shell), valid (pw.valid)
-        { }
+      { }
 
       password& operator = (const password& pw)
-        {
-          if (this != &pw)
-            {
-              m_name = pw.m_name;
-              m_passwd = pw.m_passwd;
-              m_uid = pw.m_uid;
-              m_gid = pw.m_gid;
-              m_gecos = pw.m_gecos;
-              m_dir = pw.m_dir;
-              m_shell = pw.m_shell;
-              valid = pw.valid;
-            }
+      {
+        if (this != &pw)
+          {
+            m_name = pw.m_name;
+            m_passwd = pw.m_passwd;
+            m_uid = pw.m_uid;
+            m_gid = pw.m_gid;
+            m_gecos = pw.m_gecos;
+            m_dir = pw.m_dir;
+            m_shell = pw.m_shell;
+            valid = pw.valid;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       ~password (void) { }
 
@@ -143,3 +143,4 @@ typedef octave::sys::password octave_passwd;
 #endif
 
 #endif
+

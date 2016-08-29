@@ -44,3 +44,4 @@ octave_frexpf_wrapper (float x, int *expptr)
 {
   return frexpf (x, expptr);
 }
+

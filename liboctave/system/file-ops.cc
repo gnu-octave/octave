@@ -111,24 +111,28 @@ namespace octave
     // expansions.  The function is called with the text sans tilde, and
     // returns a malloc()'ed string which is the expansion, or a NULL
     // pointer if the expansion fails.
-    octave::sys::file_ops::tilde_expansion_hook octave::sys::file_ops::tilde_expansion_preexpansion_hook = 0;
+    octave::sys::file_ops::tilde_expansion_hook
+      octave::sys::file_ops::tilde_expansion_preexpansion_hook = 0;
 
     // If non-null, this contains the address of a function to call if the
     // standard meaning for expanding a tilde fails.  The function is
     // called with the text (sans tilde, as in "foo"), and returns a
     // malloc()'ed string which is the expansion, or a NULL pointer if
     // there is no expansion.
-    octave::sys::file_ops::tilde_expansion_hook octave::sys::file_ops::tilde_expansion_failure_hook = 0;
+    octave::sys::file_ops::tilde_expansion_hook
+      octave::sys::file_ops::tilde_expansion_failure_hook = 0;
 
     // When non-null, this is a NULL terminated array of strings which are
     // duplicates for a tilde prefix.  Bash uses this to expand '=~' and
     // ':~'.
-    string_vector octave::sys::file_ops::tilde_additional_prefixes = default_prefixes;
+    string_vector octave::sys::file_ops::tilde_additional_prefixes =
+      default_prefixes;
 
     // When non-null, this is a NULL terminated array of strings which
     // match the end of a username, instead of just "/".  Bash sets this
     // to ':' and '=~'.
-    string_vector octave::sys::file_ops::tilde_additional_suffixes = default_suffixes;
+    string_vector octave::sys::file_ops::tilde_additional_suffixes =
+      default_suffixes;
 
     // Find the start of a tilde expansion in S, and return the index
     // of the tilde which starts the expansion.  Place the length of the
@@ -371,10 +375,10 @@ namespace octave
     octave::sys::file_ops::concat (const std::string& dir, const std::string& file)
     {
       return dir.empty ()
-        ? file
-        : (is_dir_sep (dir[dir.length ()-1])
-           ? dir + file
-           : dir + dir_sep_char () + file);
+             ? file
+             : (is_dir_sep (dir[dir.length ()-1])
+                ? dir + file
+                : dir + dir_sep_char () + file);
     }
 
     std::string
@@ -471,7 +475,7 @@ namespace octave
 
     int
     symlink (const std::string& old_name,
-                    const std::string& new_name, std::string& msg)
+             const std::string& new_name, std::string& msg)
     {
       msg = "";
 
@@ -671,7 +675,7 @@ namespace octave
 
     std::string
     tempnam (const std::string& dir, const std::string& pfx,
-                    std::string& msg)
+             std::string& msg)
     {
       msg = "";
 
@@ -745,3 +749,4 @@ namespace octave
     }
   }
 }
+

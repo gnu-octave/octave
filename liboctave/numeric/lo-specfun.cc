@@ -939,7 +939,7 @@ namespace octave
           if (ierr == 0 || ierr == 3)
             {
               Complex tmp2 = (2.0 / M_PI) * sin (M_PI * alpha)
-                * zbesk (z, alpha, kode, ierr);
+                             * zbesk (z, alpha, kode, ierr);
 
               if (kode == 2)
                 {
@@ -1415,7 +1415,8 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesj, CBESJ) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
+          F77_FUNC (cbesj, CBESJ) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
+                                   F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -1442,12 +1443,12 @@ namespace octave
           alpha = -alpha;
 
           FloatComplex tmp = cosf (static_cast<float> (M_PI) * alpha)
-            * cbesj (z, alpha, kode, ierr);
+                             * cbesj (z, alpha, kode, ierr);
 
           if (ierr == 0 || ierr == 3)
             {
               tmp -= sinf (static_cast<float> (M_PI) * alpha)
-                * cbesy (z, alpha, kode, ierr);
+                     * cbesy (z, alpha, kode, ierr);
 
               retval = bessel_return_value (tmp, ierr);
             }
@@ -1480,7 +1481,8 @@ namespace octave
             }
           else
             {
-              F77_FUNC (cbesy, CBESY) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, F77_CMPLX_ARG (&w), ierr);
+              F77_FUNC (cbesy, CBESY) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
+                                       F77_CMPLX_ARG (&y), nz, F77_CMPLX_ARG (&w), ierr);
 
               if (kode != 2)
                 {
@@ -1508,12 +1510,12 @@ namespace octave
           alpha = -alpha;
 
           FloatComplex tmp = cosf (static_cast<float> (M_PI) * alpha)
-            * cbesy (z, alpha, kode, ierr);
+                             * cbesy (z, alpha, kode, ierr);
 
           if (ierr == 0 || ierr == 3)
             {
               tmp += sinf (static_cast<float> (M_PI) * alpha)
-                * cbesj (z, alpha, kode, ierr);
+                     * cbesj (z, alpha, kode, ierr);
 
               retval = bessel_return_value (tmp, ierr);
             }
@@ -1536,7 +1538,8 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesi, CBESI) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
+          F77_FUNC (cbesi, CBESI) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
+                                   F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -1558,8 +1561,8 @@ namespace octave
           if (ierr == 0 || ierr == 3)
             {
               FloatComplex tmp2 = static_cast<float> (2.0 / M_PI)
-                * sinf (static_cast<float> (M_PI) * alpha)
-                * cbesk (z, alpha, kode, ierr);
+                                  * sinf (static_cast<float> (M_PI) * alpha)
+                                  * cbesk (z, alpha, kode, ierr);
 
               if (kode == 2)
                 {
@@ -1598,7 +1601,8 @@ namespace octave
             }
           else
             {
-              F77_FUNC (cbesk, CBESK) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
+              F77_FUNC (cbesk, CBESK) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
+                                       F77_CMPLX_ARG (&y), nz, ierr);
 
               if (kode != 2)
                 {
@@ -1640,7 +1644,8 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, 1, F77_CMPLX_ARG (&y), nz, ierr);
+          F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, 1,
+                                   F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -1664,7 +1669,7 @@ namespace octave
           static const FloatComplex eye = FloatComplex (0.0, 1.0);
 
           FloatComplex tmp = exp (static_cast<float> (M_PI) * alpha * eye)
-            * cbesh1 (z, alpha, kode, ierr);
+                             * cbesh1 (z, alpha, kode, ierr);
 
           retval = bessel_return_value (tmp, ierr);
         }
@@ -1683,7 +1688,8 @@ namespace octave
 
           octave_idx_type nz;
 
-          F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 2, 1, F77_CMPLX_ARG (&y), nz, ierr);
+          F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 2, 1,
+                                   F77_CMPLX_ARG (&y), nz, ierr);
 
           if (kode != 2)
             {
@@ -1707,7 +1713,7 @@ namespace octave
           static const FloatComplex eye = FloatComplex (0.0, 1.0);
 
           FloatComplex tmp = exp (-static_cast<float> (M_PI) * alpha * eye)
-            * cbesh2 (z, alpha, kode, ierr);
+                             * cbesh2 (z, alpha, kode, ierr);
 
           retval = bessel_return_value (tmp, ierr);
         }
@@ -2104,7 +2110,8 @@ namespace octave
 
       octave_idx_type id = deriv ? 1 : 0;
 
-      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a), nz, ierr);
+      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a),
+                               nz, ierr);
 
       float ar = a.real ();
       float ai = a.imag ();
@@ -2135,7 +2142,8 @@ namespace octave
 
       octave_idx_type id = deriv ? 1 : 0;
 
-      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a), ierr);
+      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a),
+                               ierr);
 
       float ar = a.real ();
       float ai = a.imag ();
@@ -2540,7 +2548,7 @@ namespace octave
     {
       if (a < 0.0 || x < 0.0)
         (*current_liboctave_error_handler)
-              ("gammainc: A and X must be non-negative");
+          ("gammainc: A and X must be non-negative");
 
       err = false;
 
@@ -2703,7 +2711,7 @@ namespace octave
     {
       if (a < 0.0 || x < 0.0)
         (*current_liboctave_error_handler)
-              ("gammainc: A and X must be non-negative");
+          ("gammainc: A and X must be non-negative");
 
       err = false;
 
@@ -3509,7 +3517,8 @@ namespace octave
       if (m < 0 || m > 1)
         {
           (*current_liboctave_warning_with_id_handler)
-            ("Octave:ellipj-invalid-m", "ellipj: invalid M value, required value 0 <= M <= 1");
+            ("Octave:ellipj-invalid-m",
+             "ellipj: invalid M value, required value 0 <= M <= 1");
 
           sn = cn = dn = lo_ieee_nan_value ();
 
@@ -3629,7 +3638,8 @@ namespace octave
       // gammaFunctions psi_coef[k] = - (2k+1) * lg_coef[k] (see melina++
       // gamma functions -1/12, 3/360,-5/1260, 7/1680,-9/1188,
       // 11*691/360360,-13/156, 15*3617/122400, ? , ?
-      static const T dg_coeff[10] = {
+      static const T dg_coeff[10] =
+      {
         -0.83333333333333333e-1, 0.83333333333333333e-2,
         -0.39682539682539683e-2, 0.41666666666666667e-2,
         -0.75757575757575758e-2, 0.21092796092796093e-1,
@@ -3651,7 +3661,8 @@ namespace octave
     T
     xpsi (T z)
     {
-      static const double euler_mascheroni = 0.577215664901532860606512090082402431042;
+      static const double euler_mascheroni =
+        0.577215664901532860606512090082402431042;
 
       const bool is_int = (octave::math::floor (z) == z);
 
@@ -3963,3 +3974,4 @@ Array<double> betaincinv (const Array<double>& x, const Array<double>& a, double
 Array<double> betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b) { return octave::math::betaincinv (x, a, b); }
 
 #endif
+

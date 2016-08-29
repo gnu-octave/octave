@@ -138,3 +138,4 @@ SM_BOOL_OPS (char, charMatrix)
 
 MM_CMP_OPS (charMatrix, charMatrix)
 MM_BOOL_OPS (charMatrix, charMatrix)
+

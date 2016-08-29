@@ -52,3 +52,4 @@ bool octave_idx_vector_comp (octave_idx_vector_sort* i,
                              octave_idx_vector_sort* j);
 
 #endif
+

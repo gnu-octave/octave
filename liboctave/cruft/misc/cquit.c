@@ -64,3 +64,4 @@ sig_atomic_t octave_exit_exception_status = 0;
 sig_atomic_t octave_exit_exception_safe_to_return = 0;
 
 volatile sig_atomic_t octave_signal_caught = 0;
+

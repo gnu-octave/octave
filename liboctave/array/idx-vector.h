@@ -180,8 +180,10 @@ private:
     octave_idx_type length (octave_idx_type) const { return len; }
 
     octave_idx_type extent (octave_idx_type n) const
-    { return len ? std::max (n, (start + 1 + (step < 0 ? 0 : step * (len - 1))))
-                 : n; }
+    {
+      return len ? std::max (n, start + 1 + (step < 0 ? 0 : step * (len - 1)))
+                 : n;
+    }
 
     idx_class_type idx_class (void) const { return class_range; }
 
@@ -1037,3 +1039,4 @@ private:
 };
 
 #endif
+

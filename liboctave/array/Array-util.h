@@ -115,3 +115,4 @@ permute_vector
 extern int OCTAVE_API permute_vector_compare (const void *a, const void *b);
 
 #endif
+

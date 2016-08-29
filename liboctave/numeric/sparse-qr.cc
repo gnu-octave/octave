@@ -954,7 +954,8 @@ namespace octave
       // Prevents the methods below making a copy of the data.
       A.p = const_cast<octave_idx_type *>(a.cidx ());
       A.i = const_cast<octave_idx_type *>(a.ridx ());
-      A.x = const_cast<cs_complex_t *>(reinterpret_cast<const cs_complex_t *> (a.data ()));
+      A.x = const_cast<cs_complex_t *> (
+              reinterpret_cast<const cs_complex_t *> (a.data ()));
       A.nz = -1;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -1044,7 +1045,8 @@ namespace octave
       octave_idx_type nc = N->U->n;
       octave_idx_type nz = N->U->nzmax;
 
-      SparseComplexMatrix ret ((econ ? (nc > nrows ? nrows : nc) : nrows), nc, nz);
+      SparseComplexMatrix ret ((econ ? (nc > nrows ? nrows : nc) : nrows),
+                               nc, nz);
 
       for (octave_idx_type j = 0; j < nc+1; j++)
         ret.xcidx (j) = N->U->p[j];
@@ -1075,7 +1077,7 @@ namespace octave
       octave_idx_type b_nc = b.cols ();
       octave_idx_type nc = N->L->n;
       octave_idx_type nr = nrows;
-      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>(b.fortran_vec ());
+      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *> (b.fortran_vec ());
       ComplexMatrix ret (b_nr, b_nc);
       Complex *vec = ret.fortran_vec ();
 
@@ -1088,14 +1090,18 @@ namespace octave
         {
           OCTAVE_LOCAL_BUFFER (Complex, buf, S->m2);
 
-          for (volatile octave_idx_type j = 0, idx = 0; j < b_nc; j++, idx+=b_nr)
+          for (volatile octave_idx_type j = 0, idx = 0;
+               j < b_nc;
+               j++, idx += b_nr)
             {
               octave_quit ();
 
               volatile octave_idx_type nm = (nr < nc ? nr : nc);
 
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec + idx, reinterpret_cast<cs_complex_t *>(buf), b_nr);
+              CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec + idx,
+                                       reinterpret_cast<cs_complex_t *> (buf),
+                                       b_nr);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               for (volatile octave_idx_type i = 0; i < nm; i++)
@@ -1103,7 +1109,8 @@ namespace octave
                   octave_quit ();
 
                   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-                  CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i], reinterpret_cast<cs_complex_t *>(buf));
+                  CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i],
+                                            reinterpret_cast<cs_complex_t *> (buf));
                   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                 }
 
@@ -1156,7 +1163,9 @@ namespace octave
               volatile octave_idx_type nm = (nr < nc ? nr : nc);
 
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec, reinterpret_cast<cs_complex_t *>(buf), nr);
+              CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec,
+                                       reinterpret_cast<cs_complex_t *> (buf),
+                                       nr);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               for (volatile octave_idx_type i = 0; i < nm; i++)
@@ -1164,7 +1173,8 @@ namespace octave
                   octave_quit ();
 
                   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-                  CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i], reinterpret_cast<cs_complex_t *>(buf));
+                  CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i],
+                                            reinterpret_cast<cs_complex_t *> (buf));
                   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                 }
 
@@ -1187,8 +1197,9 @@ namespace octave
     template <>
     template <>
     SparseComplexMatrix
-    sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseComplexMatrix>
-    (const SparseComplexMatrix& b, octave_idx_type& info) const
+    sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix,
+                                                       SparseComplexMatrix>
+      (const SparseComplexMatrix& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1302,8 +1313,9 @@ namespace octave
     template <>
     template <>
     SparseComplexMatrix
-    sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseComplexMatrix>
-    (const SparseComplexMatrix& b, octave_idx_type& info) const
+    sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix,
+                                                       SparseComplexMatrix>
+      (const SparseComplexMatrix& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1423,8 +1435,9 @@ namespace octave
     template <>
     template <>
     ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>, ComplexMatrix>
-    (const MArray<double>& b, octave_idx_type& info) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>,
+                                                              ComplexMatrix>
+      (const MArray<double>& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1453,7 +1466,9 @@ namespace octave
             buf[j] = cs_complex_t (0.0, 0.0);
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_ipvec) (S->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+          CXSPARSE_ZNAME (_ipvec) (S->pinv,
+                                   reinterpret_cast<cs_complex_t *>(Xx),
+                                   buf, nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
@@ -1487,8 +1502,9 @@ namespace octave
     template <>
     template <>
     ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<double>, ComplexMatrix>
-    (const MArray<double>& b, octave_idx_type& info) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<double>,
+                                                              ComplexMatrix>
+      (const MArray<double>& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1526,7 +1542,8 @@ namespace octave
             buf[j] = cs_complex_t (0.0, 0.0);
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+          CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx),
+                                  buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
@@ -1560,8 +1577,9 @@ namespace octave
     template <>
     template <>
     SparseComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseComplexMatrix>
-    (const SparseMatrix& b, octave_idx_type& info) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix,
+                                                              SparseComplexMatrix>
+      (const SparseMatrix& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1593,7 +1611,9 @@ namespace octave
             buf[j] = cs_complex_t (0.0, 0.0);
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_ipvec) (S->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+          CXSPARSE_ZNAME (_ipvec) (S->pinv,
+                                   reinterpret_cast<cs_complex_t *>(Xx),
+                                   buf, nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
@@ -1607,7 +1627,9 @@ namespace octave
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_usolve) (N->U, buf);
-          CXSPARSE_ZNAME (_ipvec) (S->q, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+          CXSPARSE_ZNAME (_ipvec) (S->q, buf,
+                                   reinterpret_cast<cs_complex_t *> (Xx),
+                                   nc);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
@@ -1651,8 +1673,9 @@ namespace octave
     template <>
     template <>
     SparseComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseComplexMatrix>
-    (const SparseMatrix& b, octave_idx_type& info) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix,
+                                                              SparseComplexMatrix>
+      (const SparseMatrix& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1692,7 +1715,9 @@ namespace octave
             buf[j] = cs_complex_t (0.0, 0.0);
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+          CXSPARSE_ZNAME (_pvec) (S->q,
+                                  reinterpret_cast<cs_complex_t *>(Xx),
+                                  buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
@@ -1706,7 +1731,9 @@ namespace octave
             }
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_pvec) (S->pinv, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+          CXSPARSE_ZNAME (_pvec) (S->pinv, buf,
+                                  reinterpret_cast<cs_complex_t *> (Xx),
+                                  nc);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
@@ -1750,8 +1777,9 @@ namespace octave
     template <>
     template <>
     ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, ComplexMatrix>
-    (const MArray<Complex>& b, octave_idx_type& info) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>,
+                                                              ComplexMatrix>
+      (const MArray<Complex>& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1763,11 +1791,12 @@ namespace octave
       octave_idx_type b_nc = b.cols ();
       octave_idx_type b_nr = b.rows ();
 
-      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>(b.fortran_vec ());
+      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>
+                                 (b.fortran_vec ());
 
       ComplexMatrix x (nc, b_nc);
       cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
-        (x.fortran_vec ());
+                          (x.fortran_vec ());
 
       OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
 
@@ -1814,8 +1843,9 @@ namespace octave
     template <>
     template <>
     ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, ComplexMatrix>
-    (const MArray<Complex>& b, octave_idx_type& info) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>,
+                                                              ComplexMatrix>
+      (const MArray<Complex>& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1830,7 +1860,8 @@ namespace octave
       octave_idx_type b_nc = b.cols ();
       octave_idx_type b_nr = b.rows ();
 
-      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>(b.fortran_vec ());
+      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>
+                                 (b.fortran_vec ());
 
       ComplexMatrix x (nc, b_nc);
       cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
@@ -1887,7 +1918,7 @@ namespace octave
     template <>
     SparseComplexMatrix
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseComplexMatrix>
-    (const SparseComplexMatrix& b, octave_idx_type& info) const
+      (const SparseComplexMatrix& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -1919,7 +1950,9 @@ namespace octave
             buf[j] = cs_complex_t (0.0, 0.0);
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_ipvec) (S->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+          CXSPARSE_ZNAME (_ipvec) (S->pinv,
+                                   reinterpret_cast<cs_complex_t *>(Xx),
+                                   buf, nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
@@ -1933,7 +1966,9 @@ namespace octave
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_usolve) (N->U, buf);
-          CXSPARSE_ZNAME (_ipvec) (S->q, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+          CXSPARSE_ZNAME (_ipvec) (S->q, buf,
+                                   reinterpret_cast<cs_complex_t *> (Xx),
+                                   nc);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
@@ -1978,7 +2013,7 @@ namespace octave
     template <>
     SparseComplexMatrix
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseComplexMatrix>
-    (const SparseComplexMatrix& b, octave_idx_type& info) const
+      (const SparseComplexMatrix& b, octave_idx_type& info) const
     {
       info = -1;
 
@@ -2018,7 +2053,8 @@ namespace octave
             buf[j] = cs_complex_t (0.0, 0.0);
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+          CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx),
+                                  buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
@@ -2032,7 +2068,8 @@ namespace octave
             }
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_pvec) (S->pinv, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+          CXSPARSE_ZNAME (_pvec) (S->pinv, buf,
+                                  reinterpret_cast<cs_complex_t *>(Xx), nc);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
@@ -2209,7 +2246,7 @@ namespace octave
 
       if (nr < 0 || nc < 0 || nr != b_nr)
         (*current_liboctave_error_handler)
-               ("matrix dimension mismatch in solution of minimum norm problem");
+          ("matrix dimension mismatch in solution of minimum norm problem");
 
       if (nr == 0 || nc == 0 || b_nc == 0)
         {
@@ -2251,56 +2288,66 @@ namespace octave
     qrsolve (const SparseMatrix& a, const MArray<double>& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseMatrix>::solve<MArray<double>, Matrix> (a, b, info);
+      return sparse_qr<SparseMatrix>::solve<MArray<double>, Matrix> (a, b,
+                                                                     info);
     }
 
     SparseMatrix
     qrsolve (const SparseMatrix& a, const SparseMatrix& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseMatrix>::solve<SparseMatrix, SparseMatrix> (a, b, info);
+      return sparse_qr<SparseMatrix>::solve<SparseMatrix, SparseMatrix> (a, b,
+                                                                         info);
     }
 
     ComplexMatrix
     qrsolve (const SparseMatrix& a, const MArray<Complex>& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseMatrix>::solve<MArray<Complex>, ComplexMatrix> (a, b, info);
+      return sparse_qr<SparseMatrix>::solve<MArray<Complex>,
+                                            ComplexMatrix> (a, b, info);
     }
 
     SparseComplexMatrix
     qrsolve (const SparseMatrix& a, const SparseComplexMatrix& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseMatrix>::solve<SparseComplexMatrix, SparseComplexMatrix> (a, b, info);
+      return sparse_qr<SparseMatrix>::solve<SparseComplexMatrix,
+                                            SparseComplexMatrix> (a, b, info);
     }
 
     ComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const MArray<double>& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseComplexMatrix>::solve<MArray<double>, ComplexMatrix> (a, b, info);
+      return sparse_qr<SparseComplexMatrix>::solve<MArray<double>,
+                                                   ComplexMatrix> (a, b, info);
     }
 
     SparseComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const SparseMatrix& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseComplexMatrix>::solve<SparseMatrix, SparseComplexMatrix> (a, b, info);
+      return sparse_qr<SparseComplexMatrix>::solve<SparseMatrix,
+                                                   SparseComplexMatrix>
+                                             (a, b, info);
     }
 
     ComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const MArray<Complex>& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseComplexMatrix>::solve<MArray<Complex>, ComplexMatrix> (a, b, info);
+      return sparse_qr<SparseComplexMatrix>::solve<MArray<Complex>,
+                                                   ComplexMatrix> (a, b, info);
     }
 
     SparseComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
              octave_idx_type& info)
     {
-      return sparse_qr<SparseComplexMatrix>::solve<SparseComplexMatrix, SparseComplexMatrix> (a, b, info);
+      return sparse_qr<SparseComplexMatrix>::solve<SparseComplexMatrix,
+                                                   SparseComplexMatrix>
+                                             (a, b, info);
     }
 
     // Instantiations we need.
@@ -2310,3 +2357,4 @@ namespace octave
     template class sparse_qr<SparseComplexMatrix>;
   }
 }
+

@@ -606,3 +606,4 @@ operator - (const MSparse<T>& a)
     retval.data (i) = - retval.data (i);
   return retval;
 }
+

@@ -705,3 +705,4 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
                     T (*read_fcn) (std::istream&));
 
 #endif
+

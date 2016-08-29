@@ -311,3 +311,4 @@ operator * (const FloatRowVector& v, const FloatComplexColumnVector& a)
   FloatComplexRowVector tmp (v);
   return tmp * a;
 }
+

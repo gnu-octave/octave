@@ -50,8 +50,8 @@ namespace octave
       static std::string base_pathname (const std::string& s);
 
       static std::string
-        make_absolute (const std::string& s,
-                       const std::string& dot_path = get_current_directory ());
+      make_absolute (const std::string& s,
+                     const std::string& dot_path = get_current_directory ());
 
       static std::string get_current_directory (void);
 
@@ -158,3 +158,4 @@ typedef octave::sys::env octave_env;
 #endif
 
 #endif
+

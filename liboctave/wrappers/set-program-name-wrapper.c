@@ -40,3 +40,4 @@ octave_set_program_name_wrapper (const char *pname)
   // Let gnulib strip off things like the "lt-" prefix from libtool.
   return program_name;
 }
+

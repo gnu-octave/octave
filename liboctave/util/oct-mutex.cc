@@ -173,3 +173,4 @@ init_rep (void)
 }
 
 octave_mutex::octave_mutex (void) : rep (init_rep ()) { }
+

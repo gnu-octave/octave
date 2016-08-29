@@ -39,7 +39,7 @@ namespace octave
 
     command_history (void)
       : initialized (false), ignoring_additions (false), history_control (0),
-      lines_in_file (0), lines_this_session (0), xfile (), xsize (-1) { }
+        lines_in_file (0), lines_this_session (0), xfile (), xsize (-1) { }
 
   public:
 
@@ -241,3 +241,4 @@ typedef octave::command_history command_history;
 #endif
 
 #endif
+

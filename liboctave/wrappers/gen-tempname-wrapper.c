@@ -37,3 +37,4 @@ octave_gen_tempname_wrapper (char *tmpl)
 {
   return gen_tempname (tmpl, 0, 0, GT_NOCREATE);
 }
+

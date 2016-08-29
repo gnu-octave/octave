@@ -126,3 +126,4 @@ OCTAVE_API FloatDiagMatrix operator * (const FloatDiagMatrix& a,
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, FloatDiagMatrix, float)
 
 #endif
+

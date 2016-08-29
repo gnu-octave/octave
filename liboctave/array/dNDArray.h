@@ -194,3 +194,4 @@ BSXFUN_OP2_DECL (pow, ComplexNDArray, NDArray,
                  ComplexNDArray, OCTAVE_API)
 
 #endif
+

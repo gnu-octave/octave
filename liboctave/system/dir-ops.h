@@ -41,26 +41,26 @@ namespace octave
 
       dir_entry (const std::string& n = "")
         : name (n), dir (0), fail (false), errmsg ()
-        {
-          if (! name.empty ())
-            open ();
-        }
+      {
+        if (! name.empty ())
+          open ();
+      }
 
       dir_entry (const dir_entry& d)
         : name (d.name), dir (d.dir), fail (d.fail), errmsg (d.errmsg) { }
 
       dir_entry& operator = (const dir_entry& d)
-        {
-          if (this != &d)
-            {
-              name = d.name;
-              dir = d.dir;
-              fail = d.fail;
-              errmsg = d.errmsg;
-            }
+      {
+        if (this != &d)
+          {
+            name = d.name;
+            dir = d.dir;
+            fail = d.fail;
+            errmsg = d.errmsg;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       ~dir_entry (void) { close (); }
 
@@ -105,3 +105,4 @@ typedef octave::sys::dir_entry dir_entry;
 #endif
 
 #endif
+

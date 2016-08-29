@@ -50,7 +50,8 @@ public:
   // Return the current seed.
   static double seed (void)
   {
-    return instance_ok () ? instance->do_seed () : octave::numeric_limits<double>::NaN ();
+    return instance_ok () ? instance->do_seed ()
+                          : octave::numeric_limits<double>::NaN ();
   }
 
   // Set the seed.
@@ -135,13 +136,15 @@ public:
   // Return the next number from the sequence.
   static double scalar (double a = 1.0)
   {
-    return instance_ok () ? instance->do_scalar (a) : octave::numeric_limits<double>::NaN ();
+    return instance_ok () ? instance->do_scalar (a)
+                          : octave::numeric_limits<double>::NaN ();
   }
 
   // Return the next number from the sequence.
   static float float_scalar (float a = 1.0)
   {
-    return instance_ok () ? instance->do_float_scalar (a) : octave::numeric_limits<float>::NaN ();
+    return instance_ok () ? instance->do_float_scalar (a)
+                          : octave::numeric_limits<float>::NaN ();
   }
 
   // Return an array of numbers from the sequence.
@@ -274,3 +277,4 @@ private:
 };
 
 #endif
+

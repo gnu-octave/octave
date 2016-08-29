@@ -945,7 +945,8 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
 {
   FloatComplexMatrix retval;
 
-  octave::math::svd<FloatComplexMatrix> result (*this, octave::math::svd<FloatComplexMatrix>::Type::economy);
+  octave::math::svd<FloatComplexMatrix> result
+    (*this, octave::math::svd<FloatComplexMatrix>::Type::economy);
 
   FloatDiagMatrix S = result.singular_values ();
   FloatComplexMatrix U = result.left_singular_matrix ();
@@ -1108,7 +1109,8 @@ FloatComplexMatrix::fourier (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   return retval;
@@ -1149,7 +1151,8 @@ FloatComplexMatrix::ifourier (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -1193,7 +1196,8 @@ FloatComplexMatrix::fourier2d (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   npts = nc;
@@ -1259,7 +1263,8 @@ FloatComplexMatrix::ifourier2d (void) const
     {
       octave_quit ();
 
-      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]), F77_CMPLX_ARG (pwsave));
+      F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (&tmp_data[npts*j]),
+                               F77_CMPLX_ARG (pwsave));
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -2453,7 +2458,8 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
       Array<octave_idx_type> iwork (dim_vector (liwork, 1));
       octave_idx_type* piwork = iwork.fortran_vec ();
 
-      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m, F77_CMPLX_ARG (pretval), maxmn,
+      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m,
+                                 F77_CMPLX_ARG (pretval), maxmn,
                                  ps, rcon, rank, F77_CMPLX_ARG (work.fortran_vec ()),
                                  lwork, prwork, piwork, info));
 
@@ -2490,7 +2496,8 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (octave::math::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
-      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m, F77_CMPLX_ARG (pretval),
+      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m,
+                                 F77_CMPLX_ARG (pretval),
                                  maxmn, ps, rcon, rank,
                                  F77_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  prwork, piwork, info));
@@ -2644,7 +2651,8 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
       Array<octave_idx_type> iwork (dim_vector (liwork, 1));
       octave_idx_type* piwork = iwork.fortran_vec ();
 
-      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m, F77_CMPLX_ARG (pretval), maxmn,
+      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m,
+                                 F77_CMPLX_ARG (pretval), maxmn,
                                  ps, rcon, rank, F77_CMPLX_ARG (work.fortran_vec ()),
                                  lwork, prwork, piwork, info));
 
@@ -2653,7 +2661,8 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
       rwork.resize (dim_vector (static_cast<octave_idx_type> (rwork(0)), 1));
       iwork.resize (dim_vector (iwork(0), 1));
 
-      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m, F77_CMPLX_ARG (pretval),
+      F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m,
+                                 F77_CMPLX_ARG (pretval),
                                  maxmn, ps, rcon, rank,
                                  F77_CMPLX_ARG (work.fortran_vec ()), lwork,
                                  prwork, piwork, info));
@@ -3286,7 +3295,8 @@ Givens (const FloatComplex& x, const FloatComplex& y)
   float cc;
   FloatComplex cs, temp_r;
 
-  F77_FUNC (clartg, CLARTG) (F77_CONST_CMPLX_ARG (&x), F77_CONST_CMPLX_ARG (&y), cc, F77_CMPLX_ARG (&cs), F77_CMPLX_ARG (&temp_r));
+  F77_FUNC (clartg, CLARTG) (F77_CONST_CMPLX_ARG (&x), F77_CONST_CMPLX_ARG (&y),
+                             cc, F77_CMPLX_ARG (&cs), F77_CMPLX_ARG (&temp_r));
 
   FloatComplexMatrix g (2, 2);
 
@@ -3474,15 +3484,18 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
         {
           if (cja == cjb)
             {
-              F77_FUNC (xcdotu, XCDOTU) (a_nc, F77_CONST_CMPLX_ARG (a.data ()), 1, F77_CONST_CMPLX_ARG (b.data ()), 1,
+              F77_FUNC (xcdotu, XCDOTU) (a_nc, F77_CONST_CMPLX_ARG (a.data ()), 1,
+                                         F77_CONST_CMPLX_ARG (b.data ()), 1,
                                          F77_CMPLX_ARG (c));
               if (cja) *c = octave::math::conj (*c);
             }
           else if (cja)
-            F77_FUNC (xcdotc, XCDOTC) (a_nc, F77_CONST_CMPLX_ARG (a.data ()), 1, F77_CONST_CMPLX_ARG (b.data ()), 1,
+            F77_FUNC (xcdotc, XCDOTC) (a_nc, F77_CONST_CMPLX_ARG (a.data ()), 1,
+                                       F77_CONST_CMPLX_ARG (b.data ()), 1,
                                        F77_CMPLX_ARG (c));
           else
-            F77_FUNC (xcdotc, XCDOTC) (a_nc, F77_CONST_CMPLX_ARG (b.data ()), 1, F77_CONST_CMPLX_ARG (a.data ()), 1,
+            F77_FUNC (xcdotc, XCDOTC) (a_nc, F77_CONST_CMPLX_ARG (b.data ()), 1,
+                                       F77_CONST_CMPLX_ARG (a.data ()), 1,
                                        F77_CMPLX_ARG (c));
         }
       else if (b_nc == 1 && ! cjb)
@@ -3586,7 +3599,8 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
-            result(i, j) = octave::math::min (octave::math::real (a(i, j)), octave::math::real (b(i, j)));
+            result(i, j) = octave::math::min (octave::math::real (a(i, j)),
+                                              octave::math::real (b(i, j)));
         }
       else
         {
@@ -3659,7 +3673,8 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result(i, j) = octave::math::max (octave::math::real (a(i, j)), octave::math::real (b(i, j)));
+              result(i, j) = octave::math::max (octave::math::real (a(i, j)),
+                                                octave::math::real (b(i, j)));
             }
         }
       else
@@ -3721,3 +3736,4 @@ SM_BOOL_OPS (FloatComplex, FloatComplexMatrix)
 
 MM_CMP_OPS (FloatComplexMatrix, FloatComplexMatrix)
 MM_BOOL_OPS (FloatComplexMatrix, FloatComplexMatrix)
+

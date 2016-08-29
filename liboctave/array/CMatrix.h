@@ -469,3 +469,4 @@ MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArray, ComplexMatrix, Complex)
 
 #endif
+

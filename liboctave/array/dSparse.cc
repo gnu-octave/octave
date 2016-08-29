@@ -999,7 +999,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
               else
                 pivot = data (cidx (jidx));
               if (pivot == 0.)
-                  (*current_liboctave_error_handler) ("division by zero");
+                (*current_liboctave_error_handler) ("division by zero");
 
               work[j] = v / pivot;
             }
@@ -1111,7 +1111,9 @@ SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
             Qinit(i) = i;
 
           MatrixType tmp_typ (MatrixType::Upper);
-          octave::math::sparse_lu<SparseMatrix> fact (*this, Qinit, Matrix (), false, false);
+          octave::math::sparse_lu<SparseMatrix> fact (*this,
+                                                      Qinit, Matrix (),
+                                                      false, false);
           rcond = fact.rcond ();
           double rcond2;
           SparseMatrix InvL = fact.L ().transpose ().tinverse (tmp_typ,
@@ -4063,7 +4065,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
           retval = b;
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (result),
+          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL),
+                                   F77_DBLE_CMPLX_ARG (result),
                                    b_nr, err));
 
           if (err != 0)
@@ -4121,7 +4124,8 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
           retval = b;
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
+          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL),
+                                   F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
                                    b_nr, err));
 
           if (err != 0)
@@ -7885,3 +7889,4 @@ SPARSE_SSM_BOOL_OPS (double, SparseMatrix, 0.0)
 
 SPARSE_SMSM_CMP_OPS (SparseMatrix, 0.0, , SparseMatrix, 0.0, )
 SPARSE_SMSM_BOOL_OPS (SparseMatrix, SparseMatrix, 0.0)
+

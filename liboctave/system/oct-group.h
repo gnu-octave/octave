@@ -43,26 +43,26 @@ namespace octave
 
       group (void)
         : m_name (), m_passwd (), m_gid (0), m_mem (), valid (false)
-        { }
+      { }
 
       group (const group& gr)
         : m_name (gr.m_name), m_passwd (gr.m_passwd),
-        m_gid (gr.m_gid), m_mem (gr.m_mem), valid (gr.valid)
-        { }
+          m_gid (gr.m_gid), m_mem (gr.m_mem), valid (gr.valid)
+      { }
 
       group& operator = (const group& gr)
-        {
-          if (this != &gr)
-            {
-              m_name = gr.m_name;
-              m_passwd = gr.m_passwd;
-              m_gid = gr.m_gid;
-              m_mem = gr.m_mem;
-              valid = gr.valid;
-            }
+      {
+        if (this != &gr)
+          {
+            m_name = gr.m_name;
+            m_passwd = gr.m_passwd;
+            m_gid = gr.m_gid;
+            m_mem = gr.m_mem;
+            valid = gr.valid;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       std::string name (void) const;
 
@@ -123,3 +123,4 @@ typedef octave::sys::group octave_group;
 #endif
 
 #endif
+

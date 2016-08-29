@@ -749,7 +749,8 @@ template <typename T>
 octave_int<T>
 pow (const octave_int<T>& a, const double& b)
 {
-  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == octave::math::round (b))
+  return ((b >= 0 && b < std::numeric_limits<T>::digits
+           && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (pow (a.double_value (), b)));
 }
@@ -763,7 +764,8 @@ template <typename T>
 octave_int<T>
 pow (const octave_int<T>& a, const float& b)
 {
-  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == octave::math::round (b))
+  return ((b >= 0 && b < std::numeric_limits<T>::digits
+           && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
 }
@@ -780,7 +782,8 @@ template <typename T>
 octave_int<T>
 powf (const octave_int<T>& a, const float& b)
 {
-  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == octave::math::round (b))
+  return ((b >= 0 && b < std::numeric_limits<T>::digits
+           && b == octave::math::round (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
 }
@@ -846,3 +849,4 @@ INSTANTIATE_INTTYPE (uint64_t);
 %!assert (int64 (char (128)), int64 (128))
 %!assert (int64 (char (255)), int64 (255))
 */
+

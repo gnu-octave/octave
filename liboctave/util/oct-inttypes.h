@@ -839,7 +839,7 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t, int64_t);
 // This class simply selects the proper arithmetics.
 template <typename T>
 class octave_int_arith
- : public octave_int_arith_base<T, std::numeric_limits<T>::is_signed>
+: public octave_int_arith_base<T, std::numeric_limits<T>::is_signed>
 { };
 
 template <typename T>
@@ -1361,3 +1361,4 @@ xmin (const octave_int<T>& x, const octave_int<T>& y)
 }
 
 #endif
+

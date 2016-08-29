@@ -310,3 +310,4 @@ dim_vector::redim (int n) const
       return retval;
     }
 }
+

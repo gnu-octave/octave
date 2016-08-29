@@ -174,8 +174,8 @@ public:
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
 
-OCTAVE_NORETURN float do_integrate (octave_idx_type& ier,
-                                    octave_idx_type& neval, float& abserr);
+  OCTAVE_NORETURN float do_integrate (octave_idx_type& ier,
+                                      octave_idx_type& neval, float& abserr);
 
 private:
 
@@ -249,3 +249,4 @@ private:
 };
 
 #endif
+

@@ -99,3 +99,4 @@ OCTAVE_API extern void
 gripe_singular_matrix (double rcond = 0.0);
 
 #endif
+

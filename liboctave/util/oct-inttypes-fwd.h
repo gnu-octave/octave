@@ -38,3 +38,4 @@ typedef octave_int<uint32_t> octave_uint32;
 typedef octave_int<uint64_t> octave_uint64;
 
 #endif
+

@@ -94,3 +94,4 @@ extern OCTAVE_API void oct_fill_float_randn (octave_idx_type n, float *p);
 extern OCTAVE_API void oct_fill_float_rande (octave_idx_type n, float *p);
 
 #endif
+

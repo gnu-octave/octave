@@ -42,3 +42,4 @@ INSTANTIATE_SPARSE (bool, OCTAVE_API);
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<bool>&);
 #endif
+

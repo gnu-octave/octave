@@ -413,7 +413,8 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
   if (len != a_len)
     octave::err_nonconformant ("operator *", len, a_len);
   if (len != 0)
-    F77_FUNC (xzdotu, XZDOTU) (len, F77_CONST_DBLE_CMPLX_ARG (v.data ()), 1, F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, F77_DBLE_CMPLX_ARG (&retval));
+    F77_FUNC (xzdotu, XZDOTU) (len, F77_CONST_DBLE_CMPLX_ARG (v.data ()), 1,
+                               F77_CONST_DBLE_CMPLX_ARG (a.data ()), 1, F77_DBLE_CMPLX_ARG (&retval));
 
   return retval;
 }
@@ -440,3 +441,4 @@ linspace (const Complex& x1, const Complex& x2, octave_idx_type n)
 
   return retval;
 }
+

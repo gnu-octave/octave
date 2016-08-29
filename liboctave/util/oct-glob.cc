@@ -174,12 +174,12 @@ namespace octave
                     escaped += '/';
                   else
 #endif
-                  {
-                    if (xpat[j] == ']' || xpat[j] == '[')
-                      escaped += '\\';
+                    {
+                      if (xpat[j] == ']' || xpat[j] == '[')
+                        escaped += '\\';
 
-                    escaped += xpat[j];
-                  }
+                      escaped += xpat[j];
+                    }
                 }
 
               // Replace trailing "*.*" by "*".
@@ -224,13 +224,13 @@ namespace octave
                                 unescaped += '\\';
                               else
 #endif
-                              {
-                                if (tmp[m] == '\\'
-                                    && ++m == tmp.length ())
-                                  break;
+                                {
+                                  if (tmp[m] == '\\'
+                                      && ++m == tmp.length ())
+                                    break;
 
-                                unescaped += tmp[m];
-                              }
+                                  unescaped += tmp[m];
+                                }
                             }
 
                           retval[k++] = unescaped;
@@ -246,3 +246,4 @@ namespace octave
     }
   }
 }
+

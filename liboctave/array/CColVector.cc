@@ -489,3 +489,4 @@ operator >> (std::istream& is, ComplexColumnVector& a)
     }
   return is;
 }
+

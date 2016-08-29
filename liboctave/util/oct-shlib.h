@@ -120,30 +120,30 @@ namespace octave
       : rep (dynlib_rep::get_instance (f, fake)) { }
 
     ~dynamic_library (void)
-      {
-        if (--rep->count == 0)
-          delete rep;
-      }
+    {
+      if (--rep->count == 0)
+        delete rep;
+    }
 
     dynamic_library (const dynamic_library& sl)
       : rep (sl.rep)
-      {
-        rep->count++;
-      }
+    {
+      rep->count++;
+    }
 
     dynamic_library& operator = (const dynamic_library& sl)
-      {
-        if (rep != sl.rep)
-          {
-            if (--rep->count == 0)
-              delete rep;
+    {
+      if (rep != sl.rep)
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-            rep = sl.rep;
-            rep->count++;
-          }
+          rep = sl.rep;
+          rep->count++;
+        }
 
-        return *this;
-      }
+      return *this;
+    }
 
     bool operator == (const dynamic_library& sl) const
     { return (rep == sl.rep); }
@@ -202,3 +202,4 @@ typedef octave::dynamic_library octave_shlib;
 #endif
 
 #endif
+

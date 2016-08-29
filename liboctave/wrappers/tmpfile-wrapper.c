@@ -37,3 +37,4 @@ octave_tmpfile_wrapper (void)
 {
   return tmpfile ();
 }
+

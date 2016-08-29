@@ -115,7 +115,11 @@ idx_vector::idx_colon_rep::print (std::ostream& os) const
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
                                           octave_idx_type _limit,
                                           octave_idx_type _step)
-  : start(_start), len (_step ? std::max ((_limit - _start) / _step, static_cast<octave_idx_type> (0)) : -1), step (_step)
+  : start(_start),
+    len (_step ? std::max ((_limit - _start) / _step,
+                           static_cast<octave_idx_type> (0))
+               : -1),
+    step (_step)
 {
   if (len < 0)
     err_invalid_range ();
@@ -1325,3 +1329,4 @@ INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint64)
 %!assert ((1:3)(find ([1,0,1] != 0)), [1,3])
 
 */
+

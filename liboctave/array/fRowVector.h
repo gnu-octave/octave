@@ -123,3 +123,4 @@ OCTAVE_API FloatRowVector linspace (float x1, float x2, octave_idx_type n);
 MARRAY_FORWARD_DEFS (MArray, FloatRowVector, float)
 
 #endif
+

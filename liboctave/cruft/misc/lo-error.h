@@ -43,21 +43,26 @@ liboctave_warning_with_id (const char *id, const char *fmt, ...);
 
 typedef void (*liboctave_error_handler) (const char *, ...);
 
-typedef void (*liboctave_error_with_id_handler) (const char *, const char *, ...);
+typedef void (*liboctave_error_with_id_handler) (const char *, const char *,
+                                                 ...);
 
 typedef void (*liboctave_warning_handler) (const char *, ...);
 
-typedef void (*liboctave_warning_with_id_handler) (const char *, const char *, ...);
+typedef void (*liboctave_warning_with_id_handler) (const char *, const char *,
+                                                   ...);
 
 /* Would be nice to make these pointers private, but we want to share
    them among all the liboctave classes. */
-OCTAVE_NORETURN OCTAVE_API extern liboctave_error_handler current_liboctave_error_handler;
+OCTAVE_NORETURN OCTAVE_API extern liboctave_error_handler
+  current_liboctave_error_handler;
 
-OCTAVE_NORETURN OCTAVE_API extern liboctave_error_with_id_handler current_liboctave_error_with_id_handler;
+OCTAVE_NORETURN OCTAVE_API extern liboctave_error_with_id_handler
+  current_liboctave_error_with_id_handler;
 
 OCTAVE_API extern liboctave_warning_handler current_liboctave_warning_handler;
 
-OCTAVE_API extern liboctave_warning_with_id_handler current_liboctave_warning_with_id_handler;
+OCTAVE_API extern liboctave_warning_with_id_handler
+  current_liboctave_warning_with_id_handler;
 
 OCTAVE_API extern void
 set_liboctave_error_handler (OCTAVE_NORETURN liboctave_error_handler f);
@@ -76,3 +81,4 @@ set_liboctave_warning_with_id_handler (liboctave_warning_with_id_handler f);
 #endif
 
 #endif
+

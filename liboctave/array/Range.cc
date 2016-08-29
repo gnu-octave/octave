@@ -581,3 +581,4 @@ Range::init (void)
 
   clear_cache ();
 }
+

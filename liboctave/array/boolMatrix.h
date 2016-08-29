@@ -92,3 +92,4 @@ SM_BOOL_OP_DECLS (bool, boolMatrix, OCTAVE_API)
 MM_CMP_OP_DECLS (boolMatrix, boolMatrix, OCTAVE_API)
 
 #endif
+

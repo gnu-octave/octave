@@ -230,3 +230,4 @@ namespace octave
     template class aepbalance<FloatComplexMatrix>;
   }
 }
+

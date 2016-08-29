@@ -319,3 +319,4 @@ extern OCTAVE_API void (*octave_bad_alloc_hook) (void);
 #endif
 
 #endif
+

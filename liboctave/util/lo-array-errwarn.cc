@@ -36,7 +36,8 @@ static const char *error_id_index_out_of_bounds = "Octave:index-out-of-bounds";
 
 static const char *error_id_invalid_index = "Octave:invalid-index";
 
-static const char *warning_id_nearly_singular_matrix = "Octave:nearly-singular-matrix";
+static const char *warning_id_nearly_singular_matrix =
+  "Octave:nearly-singular-matrix";
 
 static const char *warning_id_singular_matrix = "Octave:singular-matrix";
 
@@ -328,3 +329,4 @@ namespace octave
 }
 
 /* Tests in test/index.tst */
+

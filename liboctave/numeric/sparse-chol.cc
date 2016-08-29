@@ -577,8 +577,9 @@ namespace octave
     template <>
     sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
                                                    octave_idx_type& info)
-      : rep (
-             new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info, true, false))
+      : rep (new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info,
+                                                                    true,
+                                                                    false))
     { }
 
     // Instantiations we need.
@@ -594,3 +595,4 @@ namespace octave
     chol2inv<SparseComplexMatrix> (const SparseComplexMatrix& r);
   }
 }
+

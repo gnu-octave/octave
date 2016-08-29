@@ -42,30 +42,30 @@ namespace octave
           m_release ("unknown"), m_version ("unknown"),
           m_machine ("unknown"),
           msg ("uname not supported on this system"), err (-1)
-        { init (); }
+      { init (); }
 
       uname (const uname& unm)
         : m_sysname (unm.m_sysname), m_nodename (unm.m_nodename),
           m_release (unm.m_release), m_version (unm.m_version),
           m_machine (unm.m_machine), msg (unm.msg), err (unm.err)
-        { }
+      { }
 
       uname& operator = (const uname& unm)
-        {
-          if (this != &unm)
-            {
-              m_sysname = unm.m_sysname;
-              m_nodename = unm.m_nodename;
-              m_release = unm.m_release;
-              m_version = unm.m_version;
-              m_machine = unm.m_machine;
+      {
+        if (this != &unm)
+          {
+            m_sysname = unm.m_sysname;
+            m_nodename = unm.m_nodename;
+            m_release = unm.m_release;
+            m_version = unm.m_version;
+            m_machine = unm.m_machine;
 
-              msg = unm.msg;
-              err = unm.err;
-            }
+            msg = unm.msg;
+            err = unm.err;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       ~uname (void) { }
 
@@ -102,3 +102,4 @@ typedef octave::sys::uname octave_uname;
 #endif
 
 #endif
+

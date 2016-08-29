@@ -59,7 +59,8 @@ namespace octave
 
     template <typename T>
     octave_idx_type
-    umfpack_get_lunz (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric);
+    umfpack_get_lunz (octave_idx_type *lnz, octave_idx_type *unz,
+                      void *Numeric);
 
     template <typename T>
     octave_idx_type
@@ -97,7 +98,8 @@ namespace octave
     template <typename T>
     void
     umfpack_report_matrix (octave_idx_type n_row, octave_idx_type n_col,
-                           const octave_idx_type *Ap, const octave_idx_type *Ai,
+                           const octave_idx_type *Ap,
+                           const octave_idx_type *Ai,
                            const T *Ax, // Or Az_packed
                            octave_idx_type col_form, const double *Control);
 
@@ -210,7 +212,8 @@ namespace octave
      const octave_idx_type *Ai, const double *Ax, octave_idx_type col_form,
      const double *Control)
     {
-      UMFPACK_DNAME (report_matrix) (n_row, n_col, Ap, Ai, Ax, col_form, Control);
+      UMFPACK_DNAME (report_matrix) (n_row, n_col, Ap, Ai, Ax,
+                                     col_form, Control);
     }
 
     template <>
@@ -431,12 +434,15 @@ namespace octave
       const octave_idx_type *Ai = a.ridx ();
       const lu_elt_type *Ax = a.data ();
 
-      umfpack_report_matrix<lu_elt_type> (nr, nc, Ap, Ai, Ax, static_cast<octave_idx_type> (1), control);
+      umfpack_report_matrix<lu_elt_type> (nr, nc, Ap, Ai, Ax,
+                                          static_cast<octave_idx_type> (1),
+                                          control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
-      int status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, 0, &Symbolic, control, info);
+      int status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, 0,
+                                                   &Symbolic, control, info);
 
       if (status < 0)
         {
@@ -453,7 +459,8 @@ namespace octave
           umfpack_report_symbolic<lu_elt_type> (Symbolic, control);
 
           void *Numeric;
-          status = umfpack_numeric<lu_elt_type> (Ap, Ai, Ax, Symbolic, &Numeric, control, info);
+          status = umfpack_numeric<lu_elt_type> (Ap, Ai, Ax, Symbolic,
+                                                 &Numeric, control, info);
           umfpack_free_symbolic<lu_elt_type> (&Symbolic);
 
           cond = Info (UMFPACK_RCOND);
@@ -490,7 +497,8 @@ namespace octave
                   octave_idx_type n_inner = (nr < nc ? nr : nc);
 
                   if (lnz < 1)
-                    Lfact = lu_type (n_inner, nr, static_cast<octave_idx_type> (1));
+                    Lfact = lu_type (n_inner, nr,
+                                     static_cast<octave_idx_type> (1));
                   else
                     Lfact = lu_type (n_inner, nr, lnz);
 
@@ -499,7 +507,8 @@ namespace octave
                   lu_elt_type *Ltx = Lfact.data ();
 
                   if (unz < 1)
-                    Ufact = lu_type (n_inner, nc, static_cast<octave_idx_type> (1));
+                    Ufact = lu_type (n_inner, nc,
+                                     static_cast<octave_idx_type> (1));
                   else
                     Ufact = lu_type (n_inner, nc, unz);
 
@@ -523,7 +532,11 @@ namespace octave
                   octave_idx_type *q = Q.fortran_vec ();
 
                   octave_idx_type do_recip;
-                  status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx, Up, Uj, Ux, p, q, 0, &do_recip, Rx, Numeric);
+                  status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
+                                                             Up, Uj, Ux,
+                                                             p, q, 0,
+                                                             &do_recip, Rx,
+                                                             Numeric);
 
                   umfpack_free_numeric<lu_elt_type> (&Numeric);
 
@@ -542,8 +555,18 @@ namespace octave
                         for (octave_idx_type i = 0; i < nr; i++)
                           Rx[i] = 1.0 / Rx[i];
 
-                      umfpack_report_matrix<lu_elt_type> (nr, n_inner, Lfact.cidx (), Lfact.ridx (), Lfact.data (), static_cast<octave_idx_type> (1), control);
-                      umfpack_report_matrix<lu_elt_type> (n_inner, nc, Ufact.cidx (), Ufact.ridx (), Ufact.data (), static_cast<octave_idx_type> (1), control);
+                      umfpack_report_matrix<lu_elt_type> (nr, n_inner,
+                                                          Lfact.cidx (),
+                                                          Lfact.ridx (),
+                                                          Lfact.data (),
+                                                          static_cast<octave_idx_type> (1),
+                                                          control);
+                      umfpack_report_matrix<lu_elt_type> (n_inner, nc,
+                                                          Ufact.cidx (),
+                                                          Ufact.ridx (),
+                                                          Ufact.data (),
+                                                          static_cast<octave_idx_type> (1),
+                                                          control);
                       umfpack_report_perm<lu_elt_type> (nr, p, control);
                       umfpack_report_perm<lu_elt_type> (nc, q, control);
                     }
@@ -636,7 +659,9 @@ namespace octave
       const octave_idx_type *Ai = a.ridx ();
       const lu_elt_type *Ax = a.data ();
 
-      umfpack_report_matrix<lu_elt_type> (nr, nc, Ap, Ai, Ax, static_cast<octave_idx_type> (1), control);
+      umfpack_report_matrix<lu_elt_type> (nr, nc, Ap, Ai, Ax,
+                                          static_cast<octave_idx_type> (1),
+                                          control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
@@ -651,7 +676,9 @@ namespace octave
           for (octave_idx_type i = 0; i < nc; i++)
             qinit[i] = static_cast<octave_idx_type> (Qinit (i));
 
-          status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, qinit, &Symbolic, control, info);
+          status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax,
+                                                   qinit, &Symbolic, control,
+                                                   info);
         }
       while (0);
 
@@ -670,7 +697,8 @@ namespace octave
           umfpack_report_symbolic<lu_elt_type> (Symbolic, control);
 
           void *Numeric;
-          status = umfpack_numeric<lu_elt_type> (Ap, Ai, Ax, Symbolic, &Numeric, control, info);
+          status = umfpack_numeric<lu_elt_type> (Ap, Ai, Ax, Symbolic,
+                                                 &Numeric, control, info);
           umfpack_free_symbolic<lu_elt_type> (&Symbolic);
 
           cond = Info (UMFPACK_RCOND);
@@ -707,7 +735,8 @@ namespace octave
                   octave_idx_type n_inner = (nr < nc ? nr : nc);
 
                   if (lnz < 1)
-                    Lfact = lu_type (n_inner, nr, static_cast<octave_idx_type> (1));
+                    Lfact = lu_type (n_inner, nr,
+                                     static_cast<octave_idx_type> (1));
                   else
                     Lfact = lu_type (n_inner, nr, lnz);
 
@@ -716,7 +745,8 @@ namespace octave
                   lu_elt_type *Ltx = Lfact.data ();
 
                   if (unz < 1)
-                    Ufact = lu_type (n_inner, nc, static_cast<octave_idx_type> (1));
+                    Ufact = lu_type (n_inner, nc,
+                                     static_cast<octave_idx_type> (1));
                   else
                     Ufact = lu_type (n_inner, nc, unz);
 
@@ -740,7 +770,11 @@ namespace octave
                   octave_idx_type *q = Q.fortran_vec ();
 
                   octave_idx_type do_recip;
-                  status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx, Up, Uj, Ux, p, q, 0, &do_recip, Rx, Numeric);
+                  status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
+                                                             Up, Uj, Ux,
+                                                             p, q, 0,
+                                                             &do_recip,
+                                                             Rx, Numeric);
 
                   umfpack_free_numeric<lu_elt_type> (&Numeric);
 
@@ -759,8 +793,18 @@ namespace octave
                         for (octave_idx_type i = 0; i < nr; i++)
                           Rx[i] = 1.0 / Rx[i];
 
-                      umfpack_report_matrix<lu_elt_type> (nr, n_inner, Lfact.cidx (), Lfact.ridx (), Lfact.data (), static_cast<octave_idx_type> (1), control);
-                      umfpack_report_matrix<lu_elt_type> (n_inner, nc, Ufact.cidx (), Ufact.ridx (), Ufact.data (), static_cast<octave_idx_type> (1), control);
+                      umfpack_report_matrix<lu_elt_type> (nr, n_inner,
+                                                          Lfact.cidx (),
+                                                          Lfact.ridx (),
+                                                          Lfact.data (),
+                                                          static_cast<octave_idx_type> (1),
+                                                          control);
+                      umfpack_report_matrix<lu_elt_type> (n_inner, nc,
+                                                          Ufact.cidx (),
+                                                          Ufact.ridx (),
+                                                          Ufact.data (),
+                                                          static_cast<octave_idx_type> (1),
+                                                          control);
                       umfpack_report_perm<lu_elt_type> (nr, p, control);
                       umfpack_report_perm<lu_elt_type> (nc, q, control);
                     }
@@ -917,3 +961,4 @@ namespace octave
     template class sparse_lu<SparseComplexMatrix>;
   }
 }
+

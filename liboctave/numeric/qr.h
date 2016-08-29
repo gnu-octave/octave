@@ -44,11 +44,11 @@ namespace octave
       typedef typename T::column_vector_type CV_T;
 
       enum type
-        {
-          std,
-          raw,
-          economy
-        };
+      {
+        std,
+        raw,
+        economy
+      };
 
       qr (void) : q (), r () { }
 
@@ -116,3 +116,4 @@ namespace octave
 }
 
 #endif
+

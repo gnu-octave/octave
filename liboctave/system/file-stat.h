@@ -56,29 +56,29 @@ namespace octave
           m_blksize (fs.m_blksize), m_blocks (fs.m_blocks) { }
 
       base_file_stat& operator = (const base_file_stat& fs)
-        {
-          if (this != &fs)
-            {
-              initialized = fs.initialized;
-              fail = fs.fail;
-              errmsg = fs.errmsg;
-              m_mode = fs.m_mode;
-              m_ino = fs.m_ino;
-              m_dev = fs.m_dev;
-              m_nlink = fs.m_nlink;
-              m_uid = fs.m_uid;
-              m_gid = fs.m_gid;
-              m_size = fs.m_size;
-              m_atime = fs.m_atime;
-              m_mtime = fs.m_mtime;
-              m_ctime = fs.m_ctime;
-              m_rdev = fs.m_rdev;
-              m_blksize = fs.m_blksize;
-              m_blocks = fs.m_blocks;
-            }
+      {
+        if (this != &fs)
+          {
+            initialized = fs.initialized;
+            fail = fs.fail;
+            errmsg = fs.errmsg;
+            m_mode = fs.m_mode;
+            m_ino = fs.m_ino;
+            m_dev = fs.m_dev;
+            m_nlink = fs.m_nlink;
+            m_uid = fs.m_uid;
+            m_gid = fs.m_gid;
+            m_size = fs.m_size;
+            m_atime = fs.m_atime;
+            m_mtime = fs.m_mtime;
+            m_ctime = fs.m_ctime;
+            m_rdev = fs.m_rdev;
+            m_blksize = fs.m_blksize;
+            m_blocks = fs.m_blocks;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       // The minimum difference in file time stamp values.
       // FIXME: This value should come from the filesystem itself.
@@ -220,20 +220,20 @@ namespace octave
 
       file_stat (const file_stat& fs)
         : base_file_stat (fs), file_name (fs.file_name),
-        follow_links (fs.follow_links) { }
+          follow_links (fs.follow_links) { }
 
       file_stat& operator = (const file_stat& fs)
-        {
-          if (this != &fs)
-            {
-              base_file_stat::operator = (fs);
+      {
+        if (this != &fs)
+          {
+            base_file_stat::operator = (fs);
 
-              file_name = fs.file_name;
-              follow_links = fs.follow_links;
-            }
+            file_name = fs.file_name;
+            follow_links = fs.follow_links;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       ~file_stat (void) { }
 
@@ -282,16 +282,16 @@ namespace octave
         : base_file_stat (fs), fid (fs.fid) { }
 
       file_fstat& operator = (const file_fstat& fs)
-        {
-          if (this != &fs)
-            {
-              base_file_stat::operator = (fs);
+      {
+        if (this != &fs)
+          {
+            base_file_stat::operator = (fs);
 
-              fid = fs.fid;
-            }
+            fid = fs.fid;
+          }
 
-          return *this;
-        }
+        return *this;
+      }
 
       ~file_fstat (void) { }
 
@@ -337,3 +337,4 @@ typedef octave::sys::file_fstat file_fstat;
 #endif
 
 #endif
+

@@ -34,7 +34,8 @@ class ComplexMatrix;
 
 typedef ColumnVector (*EigsFunc) (const ColumnVector& x, int& eigs_error);
 
-typedef ComplexColumnVector (*EigsComplexFunc) (const ComplexColumnVector& x, int& eigs_error);
+typedef ComplexColumnVector (*EigsComplexFunc) (const ComplexColumnVector& x,
+                                                int& eigs_error);
 
 template <typename M>
 octave_idx_type
@@ -129,3 +130,4 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              int disp, int maxit);
 
 #endif
+

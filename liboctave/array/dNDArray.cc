@@ -268,7 +268,8 @@ NDArray::fourier (int dim) const
           for (octave_idx_type i = 0; i < npts; i++)
             tmp[i] = elem ((i + k*npts)*stride + j*dist);
 
-          F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (tmp), F77_DBLE_CMPLX_ARG (pwsave));
+          F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (tmp),
+                                   F77_DBLE_CMPLX_ARG (pwsave));
 
           for (octave_idx_type i = 0; i < npts; i++)
             retval((i + k*npts)*stride + j*dist) = tmp[i];
@@ -315,7 +316,8 @@ NDArray::ifourier (int dim) const
           for (octave_idx_type i = 0; i < npts; i++)
             tmp[i] = elem ((i + k*npts)*stride + j*dist);
 
-          F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (tmp), F77_DBLE_CMPLX_ARG (pwsave));
+          F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (tmp),
+                                   F77_DBLE_CMPLX_ARG (pwsave));
 
           for (octave_idx_type i = 0; i < npts; i++)
             retval((i + k*npts)*stride + j*dist) = tmp[i] /
@@ -361,7 +363,8 @@ NDArray::fourier2d (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow), F77_DBLE_CMPLX_ARG (pwsave));
+              F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow),
+                                       F77_DBLE_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) = prow[l];
@@ -409,7 +412,8 @@ NDArray::ifourier2d (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow), F77_DBLE_CMPLX_ARG (pwsave));
+              F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow),
+                                       F77_DBLE_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) =
@@ -457,7 +461,8 @@ NDArray::fourierNd (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow), F77_DBLE_CMPLX_ARG (pwsave));
+              F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow),
+                                       F77_DBLE_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) = prow[l];
@@ -504,7 +509,8 @@ NDArray::ifourierNd (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow), F77_DBLE_CMPLX_ARG (pwsave));
+              F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow),
+                                       F77_DBLE_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) =
@@ -903,3 +909,4 @@ BSXFUN_OP2_DEF_MXLOOP (pow, ComplexNDArray, ComplexNDArray,
                        NDArray, mx_inline_pow)
 BSXFUN_OP2_DEF_MXLOOP (pow, ComplexNDArray, NDArray,
                        ComplexNDArray, mx_inline_pow)
+

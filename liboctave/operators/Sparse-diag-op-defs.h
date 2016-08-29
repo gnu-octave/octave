@@ -177,7 +177,8 @@ template <typename RT, typename DM, typename SM>
 RT do_add_dm_sm (const DM& d, const SM& a)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    octave::err_nonconformant ("operator +", d.rows (), d.cols (), a.rows (), a.cols ());
+    octave::err_nonconformant ("operator +",
+                               d.rows (), d.cols (), a.rows (), a.cols ());
   else
     return do_commutative_add_dm_sm<RT> (d, a);
 }
@@ -186,9 +187,11 @@ template <typename RT, typename DM, typename SM>
 RT do_sub_dm_sm (const DM& d, const SM& a)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    octave::err_nonconformant ("operator -", d.rows (), d.cols (), a.rows (), a.cols ());
+    octave::err_nonconformant ("operator -",
+                               d.rows (), d.cols (), a.rows (), a.cols ());
 
-  return inner_do_add_sm_dm<RT> (a, d, std::negate<typename SM::element_type> (),
+  return inner_do_add_sm_dm<RT> (a, d,
+                                 std::negate<typename SM::element_type> (),
                                  identity_val<typename DM::element_type> ());
 }
 
@@ -196,7 +199,8 @@ template <typename RT, typename SM, typename DM>
 RT do_add_sm_dm (const SM& a, const DM& d)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    octave::err_nonconformant ("operator +", a.rows (), a.cols (), d.rows (), d.cols ());
+    octave::err_nonconformant ("operator +",
+                               a.rows (), a.cols (), d.rows (), d.cols ());
 
   return do_commutative_add_dm_sm<RT> (d, a);
 }
@@ -205,7 +209,8 @@ template <typename RT, typename SM, typename DM>
 RT do_sub_sm_dm (const SM& a, const DM& d)
 {
   if (a.rows () != d.rows () || a.cols () != d.cols ())
-    octave::err_nonconformant ("operator -", a.rows (), a.cols (), d.rows (), d.cols ());
+    octave::err_nonconformant ("operator -",
+                               a.rows (), a.cols (), d.rows (), d.cols ());
 
   return inner_do_add_sm_dm<RT> (a, d,
                                  identity_val<typename SM::element_type> (),
@@ -213,3 +218,4 @@ RT do_sub_sm_dm (const SM& a, const DM& d)
 }
 
 #endif
+

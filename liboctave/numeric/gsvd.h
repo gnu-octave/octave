@@ -47,20 +47,20 @@ public:
       R(a.R) { }
 
   gsvd& operator = (const gsvd& a)
-    {
-      if (this != &a)
-        {
-          type = a.type;
-          sigmaA = a.sigmaA;
-          sigmaB = a.sigmaB;
-          left_smA = a.left_smA;
-          left_smB = a.left_smB;
-          right_sm = a.right_sm;
-          R = a.R;
-        }
+  {
+    if (this != &a)
+      {
+        type = a.type;
+        sigmaA = a.sigmaA;
+        sigmaB = a.sigmaB;
+        left_smA = a.left_smA;
+        left_smB = a.left_smB;
+        right_sm = a.right_sm;
+        R = a.R;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~gsvd (void) { }
 
@@ -93,3 +93,4 @@ private:
 };
 
 #endif
+

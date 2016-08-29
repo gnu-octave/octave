@@ -95,155 +95,277 @@ namespace octave
     extern OCTAVE_API float lgamma (float x);
     extern OCTAVE_API FloatComplex rc_lgamma (float x);
 
-    extern OCTAVE_API Complex besselj (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API Complex bessely (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API Complex besseli (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API Complex besselk (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API Complex besselh1 (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API Complex besselh2 (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API Complex besselj (double alpha, const Complex& x, bool scaled,
+                                       octave_idx_type& ierr);
+    extern OCTAVE_API Complex bessely (double alpha, const Complex& x, bool scaled,
+                                       octave_idx_type& ierr);
+    extern OCTAVE_API Complex besseli (double alpha, const Complex& x, bool scaled,
+                                       octave_idx_type& ierr);
+    extern OCTAVE_API Complex besselk (double alpha, const Complex& x, bool scaled,
+                                       octave_idx_type& ierr);
+    extern OCTAVE_API Complex besselh1 (double alpha, const Complex& x, bool scaled,
+                                        octave_idx_type& ierr);
+    extern OCTAVE_API Complex besselh2 (double alpha, const Complex& x, bool scaled,
+                                        octave_idx_type& ierr);
 
-    extern OCTAVE_API ComplexMatrix besselj (double alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix bessely (double alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besseli (double alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselk (double alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh1 (double alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh2 (double alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselj (double alpha, const ComplexMatrix& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix bessely (double alpha, const ComplexMatrix& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besseli (double alpha, const ComplexMatrix& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselk (double alpha, const ComplexMatrix& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh1 (double alpha, const ComplexMatrix& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh2 (double alpha, const ComplexMatrix& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API ComplexMatrix besselj (const Matrix& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix bessely (const Matrix& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besseli (const Matrix& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselk (const Matrix& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh1 (const Matrix& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh2 (const Matrix& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselj (const Matrix& alpha, const Complex& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix bessely (const Matrix& alpha, const Complex& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besseli (const Matrix& alpha, const Complex& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselk (const Matrix& alpha, const Complex& x,
+                                             bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh1 (const Matrix& alpha, const Complex& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh2 (const Matrix& alpha, const Complex& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API ComplexMatrix besselj (const Matrix& alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix bessely (const Matrix& alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besseli (const Matrix& alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselk (const Matrix& alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh1 (const Matrix& alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh2 (const Matrix& alpha, const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselj (const Matrix& alpha,
+                                             const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix bessely (const Matrix& alpha,
+                                             const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besseli (const Matrix& alpha,
+                                             const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselk (const Matrix& alpha,
+                                             const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh1 (const Matrix& alpha,
+                                              const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh2 (const Matrix& alpha,
+                                              const ComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API ComplexNDArray besselj (double alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray bessely (double alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besseli (double alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselk (double alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselh1 (double alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselh2 (double alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselj (double alpha, const ComplexNDArray& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray bessely (double alpha, const ComplexNDArray& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besseli (double alpha, const ComplexNDArray& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselk (double alpha, const ComplexNDArray& x,
+                                              bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselh1 (double alpha,
+                                               const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselh2 (double alpha,
+                                               const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API ComplexNDArray besselj (const NDArray& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray bessely (const NDArray& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besseli (const NDArray& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselk (const NDArray& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselh1 (const NDArray& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselh2 (const NDArray& alpha, const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselj (const NDArray& alpha,
+                                              const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray bessely (const NDArray& alpha,
+                                              const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besseli (const NDArray& alpha,
+                                              const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselk (const NDArray& alpha,
+                                              const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselh1 (const NDArray& alpha,
+                                               const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselh2 (const NDArray& alpha,
+                                               const Complex& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API ComplexNDArray besselj (const NDArray& alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray bessely (const NDArray& alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besseli (const NDArray& alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselk (const NDArray& alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselh1 (const NDArray& alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray besselh2 (const NDArray& alpha, const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselj (const NDArray& alpha,
+                                              const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray bessely (const NDArray& alpha,
+                                              const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besseli (const NDArray& alpha,
+                                              const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselk (const NDArray& alpha,
+                                              const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselh1 (const NDArray& alpha,
+                                               const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray besselh2 (const NDArray& alpha,
+                                               const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API ComplexMatrix besselj (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix bessely (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besseli (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselk (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh1 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix besselh2 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselj (const RowVector& alpha,
+                                             const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix bessely (const RowVector& alpha,
+                                             const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besseli (const RowVector& alpha,
+                                             const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselk (const RowVector& alpha,
+                                             const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh1 (const RowVector& alpha,
+                                              const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix besselh2 (const RowVector& alpha,
+                                              const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplex besselj (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API FloatComplex bessely (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API FloatComplex besseli (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API FloatComplex besselk (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API FloatComplex besselh1 (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API FloatComplex besselh2 (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex besselj (float alpha, const FloatComplex& x,
+                                            bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex bessely (float alpha, const FloatComplex& x,
+                                            bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex besseli (float alpha, const FloatComplex& x,
+                                            bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex besselk (float alpha, const FloatComplex& x,
+                                            bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex besselh1 (float alpha, const FloatComplex& x,
+                                             bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex besselh2 (float alpha, const FloatComplex& x,
+                                             bool scaled, octave_idx_type& ierr);
 
-    extern OCTAVE_API FloatComplexMatrix besselj (float alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix bessely (float alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besseli (float alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselk (float alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh1 (float alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh2 (float alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselj (float alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix bessely (float alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besseli (float alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselk (float alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh1 (float alpha,
+                                                   const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh2 (float alpha,
+                                                   const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplexMatrix besselj (const FloatMatrix& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix bessely (const FloatMatrix& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besseli (const FloatMatrix& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselk (const FloatMatrix& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh1 (const FloatMatrix& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatMatrix& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselj (const FloatMatrix& alpha,
+                                                  const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix bessely (const FloatMatrix& alpha,
+                                                  const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besseli (const FloatMatrix& alpha,
+                                                  const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselk (const FloatMatrix& alpha,
+                                                  const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh1 (const FloatMatrix& alpha,
+                                                   const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatMatrix& alpha,
+                                                   const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplexMatrix besselj (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix bessely (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besseli (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselk (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh1 (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselj (const FloatMatrix& alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix bessely (const FloatMatrix& alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besseli (const FloatMatrix& alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselk (const FloatMatrix& alpha,
+                                                  const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh1 (const FloatMatrix& alpha,
+                                                   const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatMatrix& alpha,
+                                                   const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplexNDArray besselj (float alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray bessely (float alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besseli (float alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselk (float alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselh1 (float alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselh2 (float alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselj (float alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray bessely (float alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besseli (float alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselk (float alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselh1 (float alpha,
+                                                    const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselh2 (float alpha,
+                                                    const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplexNDArray besselj (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray bessely (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besseli (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselk (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselh1 (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselh2 (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselj (const FloatNDArray& alpha,
+                                                   const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray bessely (const FloatNDArray& alpha,
+                                                   const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besseli (const FloatNDArray& alpha,
+                                                   const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselk (const FloatNDArray& alpha,
+                                                   const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselh1 (const FloatNDArray& alpha,
+                                                    const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselh2 (const FloatNDArray& alpha,
+                                                    const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplexNDArray besselj (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray bessely (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besseli (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselk (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselh1 (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray besselh2 (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselj (const FloatNDArray& alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray bessely (const FloatNDArray& alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besseli (const FloatNDArray& alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselk (const FloatNDArray& alpha,
+                                                   const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselh1 (const FloatNDArray& alpha,
+                                                    const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray besselh2 (const FloatNDArray& alpha,
+                                                    const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplexMatrix besselj (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix bessely (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besseli (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselk (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh1 (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselj (const FloatRowVector& alpha,
+                                                  const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix bessely (const FloatRowVector& alpha,
+                                                  const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besseli (const FloatRowVector& alpha,
+                                                  const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselk (const FloatRowVector& alpha,
+                                                  const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh1 (const FloatRowVector& alpha,
+                                                   const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix besselh2 (const FloatRowVector& alpha,
+                                                   const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API Complex airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API Complex biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API Complex airy (const Complex& z, bool deriv, bool scaled,
+                                    octave_idx_type& ierr);
+    extern OCTAVE_API Complex biry (const Complex& z, bool deriv, bool scaled,
+                                    octave_idx_type& ierr);
 
-    extern OCTAVE_API ComplexMatrix airy (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexMatrix biry (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix airy (const ComplexMatrix& z, bool deriv,
+                                          bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexMatrix biry (const ComplexMatrix& z, bool deriv,
+                                          bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API ComplexNDArray airy (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API ComplexNDArray biry (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray airy (const ComplexNDArray& z, bool deriv,
+                                           bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API ComplexNDArray biry (const ComplexNDArray& z, bool deriv,
+                                           bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplex airy (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr);
-    extern OCTAVE_API FloatComplex biry (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex airy (const FloatComplex& z, bool deriv,
+                                         bool scaled, octave_idx_type& ierr);
+    extern OCTAVE_API FloatComplex biry (const FloatComplex& z, bool deriv,
+                                         bool scaled, octave_idx_type& ierr);
 
-    extern OCTAVE_API FloatComplexMatrix airy (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexMatrix biry (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix airy (const FloatComplexMatrix& z,
+                                               bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexMatrix biry (const FloatComplexMatrix& z,
+                                               bool deriv, bool scaled, Array<octave_idx_type>& ierr);
 
-    extern OCTAVE_API FloatComplexNDArray airy (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
-    extern OCTAVE_API FloatComplexNDArray biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray airy (const FloatComplexNDArray& z,
+                                                bool deriv, bool scaled, Array<octave_idx_type>& ierr);
+    extern OCTAVE_API FloatComplexNDArray biry (const FloatComplexNDArray& z,
+                                                bool deriv, bool scaled, Array<octave_idx_type>& ierr);
 
     extern OCTAVE_API double betainc (double x, double a, double b);
-    extern OCTAVE_API Array<double> betainc (double x, double a, const Array<double>& b);
-    extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a, double b);
-    extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a, const Array<double>& b);
+    extern OCTAVE_API Array<double> betainc (double x, double a,
+                                             const Array<double>& b);
+    extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a,
+                                             double b);
+    extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a,
+                                             const Array<double>& b);
 
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a, double b);
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a, const Array<double>& b);
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x, const Array<double>& a, double b);
-    extern OCTAVE_API Array<double> betainc (const Array<double>& x, const Array<double>& a, const Array<double>& b);
+    extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a,
+                                             double b);
+    extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a,
+                                             const Array<double>& b);
+    extern OCTAVE_API Array<double> betainc (const Array<double>& x,
+                                             const Array<double>& a, double b);
+    extern OCTAVE_API Array<double> betainc (const Array<double>& x,
+                                             const Array<double>& a, const Array<double>& b);
 
     extern OCTAVE_API float betainc (float x, float a, float b);
-    extern OCTAVE_API Array<float> betainc (float x, float a, const Array<float>& b);
-    extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a, float b);
-    extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a, const Array<float>& b);
+    extern OCTAVE_API Array<float> betainc (float x, float a,
+                                            const Array<float>& b);
+    extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a,
+                                            float b);
+    extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a,
+                                            const Array<float>& b);
 
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a, float b);
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a, const Array<float>& b);
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x, const Array<float>& a, float b);
-    extern OCTAVE_API Array<float> betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b);
+    extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a,
+                                            float b);
+    extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a,
+                                            const Array<float>& b);
+    extern OCTAVE_API Array<float> betainc (const Array<float>& x,
+                                            const Array<float>& a, float b);
+    extern OCTAVE_API Array<float> betainc (const Array<float>& x,
+                                            const Array<float>& a, const Array<float>& b);
 
     extern OCTAVE_API double gammainc (double x, double a, bool& err);
     inline double gammainc (double x, double a)
@@ -269,11 +391,13 @@ namespace octave
 
     extern OCTAVE_API FloatMatrix gammainc (float x, const FloatMatrix& a);
     extern OCTAVE_API FloatMatrix gammainc (const FloatMatrix& x, float a);
-    extern OCTAVE_API FloatMatrix gammainc (const FloatMatrix& x, const FloatMatrix& a);
+    extern OCTAVE_API FloatMatrix gammainc (const FloatMatrix& x,
+                                            const FloatMatrix& a);
 
     extern OCTAVE_API FloatNDArray gammainc (float x, const FloatNDArray& a);
     extern OCTAVE_API FloatNDArray gammainc (const FloatNDArray& x, float a);
-    extern OCTAVE_API FloatNDArray gammainc (const FloatNDArray& x, const FloatNDArray& a);
+    extern OCTAVE_API FloatNDArray gammainc (const FloatNDArray& x,
+                                             const FloatNDArray& a);
 
     extern OCTAVE_API Complex rc_log1p (double x);
     extern OCTAVE_API FloatComplex rc_log1p (float x);
@@ -300,17 +424,26 @@ namespace octave
     extern OCTAVE_API FloatComplex dawson (const FloatComplex& x);
 
     extern OCTAVE_API double betaincinv (double x, double a, double b);
-    extern OCTAVE_API Array<double> betaincinv (double x, double a, const Array<double>& b);
-    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a, double b);
-    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a, const Array<double>& b);
+    extern OCTAVE_API Array<double> betaincinv (double x, double a,
+                                                const Array<double>& b);
+    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
+                                                double b);
+    extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a,
+                                                const Array<double>& b);
 
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, double b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, const Array<double>& b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, double b);
-    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b);
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
+                                                double b);
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a,
+                                                const Array<double>& b);
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
+                                                const Array<double>& a, double b);
+    extern OCTAVE_API Array<double> betaincinv (const Array<double>& x,
+                                                const Array<double>& a, const Array<double>& b);
 
-    extern OCTAVE_API void ellipj (double u, double m, double& sn, double& cn, double& dn, double& err);
-    extern OCTAVE_API void ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn, double& err);
+    extern OCTAVE_API void ellipj (double u, double m, double& sn, double& cn,
+                                   double& dn, double& err);
+    extern OCTAVE_API void ellipj (const Complex& u, double m, Complex& sn,
+                                   Complex& cn, Complex& dn, double& err);
 
     extern OCTAVE_API double psi (double x);
     extern OCTAVE_API float psi (float x);
@@ -861,3 +994,4 @@ psi (octave_idx_type n, float z)
 #endif
 
 #endif
+

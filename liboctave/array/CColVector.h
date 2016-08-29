@@ -151,3 +151,4 @@ public:
 MARRAY_FORWARD_DEFS (MArray, ComplexColumnVector, Complex)
 
 #endif
+

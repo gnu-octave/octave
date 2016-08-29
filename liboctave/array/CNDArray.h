@@ -176,3 +176,4 @@ BSXFUN_STDREL_DECLS (ComplexNDArray, OCTAVE_API)
 BSXFUN_OP_DECL (pow, ComplexNDArray, OCTAVE_API)
 
 #endif
+

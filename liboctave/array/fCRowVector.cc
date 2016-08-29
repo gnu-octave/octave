@@ -415,7 +415,8 @@ operator * (const FloatComplexRowVector& v, const FloatComplexColumnVector& a)
     octave::err_nonconformant ("operator *", len, a_len);
 
   if (len != 0)
-    F77_FUNC (xcdotu, XCDOTU) (len, F77_CONST_CMPLX_ARG (v.data ()), 1, F77_CONST_CMPLX_ARG (a.data ()), 1, F77_CMPLX_ARG (&retval));
+    F77_FUNC (xcdotu, XCDOTU) (len, F77_CONST_CMPLX_ARG (v.data ()), 1,
+                               F77_CONST_CMPLX_ARG (a.data ()), 1, F77_CMPLX_ARG (&retval));
 
   return retval;
 }
@@ -442,3 +443,4 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n)
 
   return retval;
 }
+

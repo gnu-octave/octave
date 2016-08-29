@@ -647,3 +647,4 @@ DASRT::error_message (void) const
 
   return retval;
 }
+

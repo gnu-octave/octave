@@ -62,3 +62,4 @@ INSTANTIATE_SPARSE (Complex, OCTAVE_API);
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<Complex>&);
 #endif
+

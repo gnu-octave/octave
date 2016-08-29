@@ -69,7 +69,7 @@ namespace octave
           {
             ok = false;
             errmsg = "__ftp_mget__: can not create directory '"
-              + target + sep + directory + "': " + msg;
+                     + target + sep + directory + "': " + msg;
             return;
           }
       }
@@ -169,7 +169,7 @@ namespace octave
                   {
                     ok = false;
                     errmsg = "__ftp__mput: file '" + realfile
-                      + "' does not exist";
+                             + "' does not exist";
                     break;
                   }
 
@@ -190,7 +190,7 @@ namespace octave
                       {
                         ok = false;
                         errmsg = "__ftp_mput__: unable to open file '"
-                          + realfile + "'";
+                                 + realfile + "'";
                         break;
                       }
 
@@ -209,7 +209,7 @@ namespace octave
           {
             ok = false;
             errmsg = "__ftp_mput__: can not read the directory '"
-              + realdir + "'";
+                     + realdir + "'";
           }
       }
 
@@ -792,3 +792,4 @@ namespace octave
 #undef REP_CLASS
 
 }
+

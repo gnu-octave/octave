@@ -41,7 +41,8 @@ namespace octave
     typedef typename std::list<elt_type>::const_iterator const_iterator;
 
     typedef typename std::list<elt_type>::reverse_iterator reverse_iterator;
-    typedef typename std::list<elt_type>::const_reverse_iterator const_reverse_iterator;
+    typedef typename std::list<elt_type>::const_reverse_iterator
+                                                     const_reverse_iterator;
 
     bool empty (void) const { return lst.empty (); }
 
@@ -132,3 +133,4 @@ namespace octave
 }
 
 #endif
+

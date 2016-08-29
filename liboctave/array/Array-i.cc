@@ -76,3 +76,4 @@ INSTANTIATE_ARRAY (octave_uint64, OCTAVE_API);
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<int>;
+

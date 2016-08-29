@@ -158,3 +158,4 @@ public:
 MARRAY_FORWARD_DEFS (MArray, FloatComplexColumnVector, FloatComplex)
 
 #endif
+

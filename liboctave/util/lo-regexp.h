@@ -50,29 +50,29 @@ namespace octave
             const regexp::opts& opt = regexp::opts (),
             const std::string& w = "regexp")
       : pattern (pat), options (opt), data (0), named_pats (),
-      nnames (0), named_idx (), who (w)
+        nnames (0), named_idx (), who (w)
     {
       compile_internal ();
     }
 
     regexp (const regexp& rx)
       : pattern (rx.pattern), data (rx.data), named_pats (rx.named_pats),
-      nnames (rx.nnames), named_idx (rx.named_idx)
-      { }
+        nnames (rx.nnames), named_idx (rx.named_idx)
+    { }
 
     regexp& operator = (const regexp& rx)
-      {
-        if (this != &rx)
-          {
-            pattern = rx.pattern;
-            data = rx.data;
-            named_pats = rx.named_pats;
-            nnames = rx.nnames;
-            named_idx = rx.named_idx;
-          }
+    {
+      if (this != &rx)
+        {
+          pattern = rx.pattern;
+          data = rx.data;
+          named_pats = rx.named_pats;
+          nnames = rx.nnames;
+          named_idx = rx.named_idx;
+        }
 
-        return *this;
-      }
+      return *this;
+    }
 
     ~regexp (void) { free (); }
 
@@ -242,7 +242,7 @@ namespace octave
 
       match_data (const match_data& rx_lst)
         : base_list<match_element> (rx_lst),
-        named_pats (rx_lst.named_pats)
+          named_pats (rx_lst.named_pats)
       { }
 
       match_data& operator = (const match_data& rx_lst)
@@ -336,3 +336,4 @@ regexp_replace (const std::string& pat,
 #endif
 
 #endif
+

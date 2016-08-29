@@ -86,7 +86,7 @@ MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
 }
 
 template <typename T, T op (typename ref_param<T>::type,
-                         typename ref_param<T>::type)>
+                            typename ref_param<T>::type)>
 struct _idxbinop_helper
 {
   T *array;
@@ -359,3 +359,4 @@ operator - (const MArray<T>& a)
 {
   return do_mx_unary_op<T, T> (a, mx_inline_uminus);
 }
+

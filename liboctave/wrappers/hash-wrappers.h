@@ -65,3 +65,4 @@ octave_sha512_buffer_wrapper (const char *buf, size_t len, void *res);
 #endif
 
 #endif
+

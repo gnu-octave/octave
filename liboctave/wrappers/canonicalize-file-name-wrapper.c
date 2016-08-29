@@ -38,3 +38,4 @@ octave_canonicalize_file_name_wrapper (const char *name)
 {
   return canonicalize_file_name (name);
 }
+

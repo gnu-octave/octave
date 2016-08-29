@@ -43,15 +43,15 @@ namespace octave
       enum class Type
       {
         std,
-          economy,
-          sigma_only
-          };
+        economy,
+        sigma_only
+      };
 
       enum class Driver
       {
         GESVD,
-          GESDD
-          };
+        GESDD
+      };
 
       svd (void)
         : m_type (), m_driver (), left_sm (), sigma (), right_sm ()
@@ -114,3 +114,4 @@ namespace octave
 }
 
 #endif
+

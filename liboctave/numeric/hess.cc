@@ -197,12 +197,14 @@ namespace octave
       Array<Complex> work (dim_vector (lwork, 1));
       Complex *pwork = work.fortran_vec ();
 
-      F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (h), n, F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork), lwork, info));
+      F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (h), n,
+                                 F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork), lwork, info));
 
       unitary_hess_mat = hess_mat;
       Complex *z = unitary_hess_mat.fortran_vec ();
 
-      F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (z), n, F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork),
+      F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (z), n,
+                                 F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork),
                                  lwork, info));
 
       F77_XFCN (zgebak, ZGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -261,12 +263,14 @@ namespace octave
       Array<FloatComplex> work (dim_vector (lwork, 1));
       FloatComplex *pwork = work.fortran_vec ();
 
-      F77_XFCN (cgehrd, CGEHRD, (n, ilo, ihi, F77_CMPLX_ARG (h), n, F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork), lwork, info));
+      F77_XFCN (cgehrd, CGEHRD, (n, ilo, ihi, F77_CMPLX_ARG (h), n,
+                                 F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork), lwork, info));
 
       unitary_hess_mat = hess_mat;
       FloatComplex *z = unitary_hess_mat.fortran_vec ();
 
-      F77_XFCN (cunghr, CUNGHR, (n, ilo, ihi, F77_CMPLX_ARG (z), n, F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork),
+      F77_XFCN (cunghr, CUNGHR, (n, ilo, ihi, F77_CMPLX_ARG (z), n,
+                                 F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork),
                                  lwork, info));
 
       F77_XFCN (cgebak, CGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -288,3 +292,4 @@ namespace octave
     }
   }
 }
+

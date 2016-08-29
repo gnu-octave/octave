@@ -264,3 +264,4 @@ is_equivalent_type<float> (oct_data_conv::data_type t)
 }
 
 #endif
+

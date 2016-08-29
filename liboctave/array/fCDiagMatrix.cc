@@ -515,3 +515,4 @@ operator << (std::ostream& os, const FloatComplexDiagMatrix& a)
     }
   return os;
 }
+

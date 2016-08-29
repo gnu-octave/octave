@@ -1090,7 +1090,8 @@ extern "C"
                              F77_REAL&, F77_REAL&);
 
   F77_RET_T
-  F77_FUNC (zlartg, ZLARTG) (const F77_DBLE_CMPLX*, const F77_DBLE_CMPLX*, F77_DBLE&,
+  F77_FUNC (zlartg, ZLARTG) (const F77_DBLE_CMPLX*, const F77_DBLE_CMPLX*,
+                             F77_DBLE&,
                              F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
 
   // ORGHR
@@ -1666,3 +1667,4 @@ extern "C"
 }
 
 #endif
+

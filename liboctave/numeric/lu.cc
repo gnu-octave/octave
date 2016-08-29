@@ -534,7 +534,8 @@ namespace octave
 
       octave_idx_type info = 0;
 
-      F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, F77_DBLE_CMPLX_ARG (tmp_data), a_nr, pipvt, info));
+      F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, F77_DBLE_CMPLX_ARG (tmp_data), a_nr,
+                                 pipvt, info));
 
       for (octave_idx_type i = 0; i < mn; i++)
         pipvt[i] -= 1;
@@ -562,8 +563,10 @@ namespace octave
 
       ComplexColumnVector utmp = u;
       ComplexColumnVector vtmp = v;
-      F77_XFCN (zlu1up, ZLU1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()), m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
-                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ())));
+      F77_XFCN (zlu1up, ZLU1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()), m,
+                                 F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
+                                 F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ())));
     }
 
     template <>
@@ -589,7 +592,8 @@ namespace octave
           ComplexColumnVector vtmp = v.column (i);
           F77_XFCN (zlu1up, ZLU1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
                                      m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
-                                     F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ())));
+                                     F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
+                                     F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ())));
         }
     }
 
@@ -618,7 +622,8 @@ namespace octave
       F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
                                    m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
-                                   F77_CONST_DBLE_CMPLX_ARG (utmp.data ()), F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
+                                   F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
+                                   F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
@@ -648,7 +653,8 @@ namespace octave
           F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
                                        m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
                                        ipvt.fortran_vec (),
-                                       F77_CONST_DBLE_CMPLX_ARG (utmp.data ()), F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
+                                       F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
+                                       F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
         }
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
@@ -670,7 +676,8 @@ namespace octave
 
       octave_idx_type info = 0;
 
-      F77_XFCN (cgetrf, CGETRF, (a_nr, a_nc, F77_CMPLX_ARG (tmp_data), a_nr, pipvt, info));
+      F77_XFCN (cgetrf, CGETRF, (a_nr, a_nc, F77_CMPLX_ARG (tmp_data), a_nr, pipvt,
+                                 info));
 
       for (octave_idx_type i = 0; i < mn; i++)
         pipvt[i] -= 1;
@@ -697,7 +704,8 @@ namespace octave
         {
           FloatComplexColumnVector utmp = u;
           FloatComplexColumnVector vtmp = v;
-          F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()), m, F77_CMPLX_ARG (r.fortran_vec ()), k,
+          F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()), m,
+                                     F77_CMPLX_ARG (r.fortran_vec ()), k,
                                      F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ())));
         }
       else
@@ -757,7 +765,8 @@ namespace octave
       F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                    m, F77_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
-                                   F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()), F77_CMPLX_ARG (w)));
+                                   F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()),
+                                   F77_CMPLX_ARG (w)));
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
@@ -788,7 +797,8 @@ namespace octave
           F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                        m, F77_CMPLX_ARG (r.fortran_vec ()), k,
                                        ipvt.fortran_vec (),
-                                       F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()), F77_CMPLX_ARG (w)));
+                                       F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()),
+                                       F77_CMPLX_ARG (w)));
         }
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
@@ -806,3 +816,4 @@ namespace octave
     template class lu<FloatComplexMatrix>;
   }
 }
+

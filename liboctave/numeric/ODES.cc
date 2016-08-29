@@ -42,3 +42,4 @@ ODES::initialize (const ColumnVector& xx, double tt,
   xdot = ColumnVector (xx.numel (), 0.0);
   theta = xtheta;
 }
+

@@ -31,7 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-lapack-proto.h"
 
 octave_idx_type
-FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev, bool balance)
+FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
+                bool balance)
 {
   if (a.any_element_is_inf_or_nan ())
     (*current_liboctave_error_handler)
@@ -746,3 +747,4 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
 
   return info;
 }
+

@@ -981,3 +981,4 @@ write_floats (std::ostream& os, const float *data, save_type type,
       break;
     }
 }
+

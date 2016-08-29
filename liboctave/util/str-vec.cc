@@ -265,3 +265,4 @@ string_vector::list_in_columns (std::ostream& os, int width,
 
   return os;
 }
+

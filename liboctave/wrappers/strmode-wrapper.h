@@ -36,3 +36,4 @@ extern void octave_strmode_wrapper (mode_t mode, char *buffer);
 #endif
 
 #endif
+

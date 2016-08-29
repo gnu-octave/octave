@@ -352,7 +352,8 @@ namespace octave
       if (len == 2 && s[0] == '.' && s[1] == '.')
         return true;
 
-      if (len > 2 && s[0] == '.' && s[1] == '.' && octave::sys::file_ops::is_dir_sep (s[2]))
+      if (len > 2 && s[0] == '.' && s[1] == '.'
+          && octave::sys::file_ops::is_dir_sep (s[2]))
         return true;
 
       return false;
@@ -489,7 +490,8 @@ namespace octave
 
       if (hd.empty ())
         {
-          octave::sys::password pw = octave::sys::password::getpwuid (octave::sys::getuid ());
+          octave::sys::password pw = octave::sys::password::getpwuid (
+                                       octave::sys::getuid ());
 
           hd = pw ? pw.dir () : std::string (octave::sys::file_ops::dir_sep_str ());
         }
@@ -502,7 +504,8 @@ namespace octave
     {
       if (user_name.empty ())
         {
-          octave::sys::password pw = octave::sys::password::getpwuid (octave::sys::getuid ());
+          octave::sys::password pw = octave::sys::password::getpwuid (
+                                       octave::sys::getuid ());
 
           user_name = pw ? pw.name () : std::string ("unknown");
         }
@@ -612,3 +615,4 @@ namespace octave
     }
   }
 }
+

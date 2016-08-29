@@ -549,7 +549,8 @@ do_mx_check (const Array<T>& a,
 // magic to avoid underflows, which we don't need here.
 template <typename T>
 inline T cabsq (const std::complex<T>& c)
-{ return c.real () * c.real () + c.imag () * c.imag ();
+{
+  return c.real () * c.real () + c.imag () * c.imag ();
 }
 
 // default.  works for integers and bool.
@@ -1698,3 +1699,4 @@ mx_inline_xsum (const T *v, T *r,
 OP_RED_FCNN (mx_inline_xsum, T, T)
 
 #endif
+

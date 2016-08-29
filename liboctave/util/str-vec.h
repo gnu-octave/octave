@@ -128,7 +128,8 @@ public:
 
 
 template<template <typename...> class String_Container, typename... Other>
-string_vector::string_vector (const String_Container<std::string, Other...>& lst)
+string_vector::string_vector (const String_Container<std::string, Other...>&
+                              lst)
   : Array<std::string> ()
 {
   resize (lst.size ());
@@ -139,3 +140,4 @@ string_vector::string_vector (const String_Container<std::string, Other...>& lst
 }
 
 #endif
+

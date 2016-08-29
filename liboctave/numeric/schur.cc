@@ -314,7 +314,8 @@ namespace octave
                                  F77_CONST_CHAR_ARG2 (&sort, 1),
                                  selector,
                                  F77_CONST_CHAR_ARG2 (&sense, 1),
-                                 n, F77_DBLE_CMPLX_ARG (s), n, sdim, F77_DBLE_CMPLX_ARG (pw), F77_DBLE_CMPLX_ARG (q), n, rconde, rcondv,
+                                 n, F77_DBLE_CMPLX_ARG (s), n, sdim, F77_DBLE_CMPLX_ARG (pw),
+                                 F77_DBLE_CMPLX_ARG (q), n, rconde, rcondv,
                                  F77_DBLE_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)
@@ -421,7 +422,8 @@ namespace octave
                                  F77_CONST_CHAR_ARG2 (&sort, 1),
                                  selector,
                                  F77_CONST_CHAR_ARG2 (&sense, 1),
-                                 n, F77_CMPLX_ARG (s), n, sdim, F77_CMPLX_ARG (pw), F77_CMPLX_ARG (q), n, rconde, rcondv,
+                                 n, F77_CMPLX_ARG (s), n, sdim, F77_CMPLX_ARG (pw), F77_CMPLX_ARG (q), n, rconde,
+                                 rcondv,
                                  F77_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)
@@ -432,7 +434,8 @@ namespace octave
 
     template <>
     schur<FloatComplexMatrix>
-    rsf2csf<FloatComplexMatrix, FloatMatrix> (const FloatMatrix& s_arg, const FloatMatrix& u_arg)
+    rsf2csf<FloatComplexMatrix, FloatMatrix> (const FloatMatrix& s_arg,
+                                              const FloatMatrix& u_arg)
     {
       FloatComplexMatrix s (s_arg);
       FloatComplexMatrix u (u_arg);
@@ -466,3 +469,4 @@ namespace octave
     template class schur<Matrix>;
   }
 }
+

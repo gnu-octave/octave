@@ -258,3 +258,4 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
   BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, FloatNDArray, INT_TYPE, mx_inline_pow)
 
 #endif
+

@@ -66,3 +66,4 @@ DECLARE_COLROW_NORM_FUNCS(Sparse, , double)
 DECLARE_COLROW_NORM_FUNCS(SparseComplex, , double)
 
 #endif
+

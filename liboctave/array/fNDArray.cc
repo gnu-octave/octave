@@ -872,3 +872,4 @@ BSXFUN_OP2_DEF_MXLOOP (pow, FloatComplexNDArray, FloatComplexNDArray,
                        FloatNDArray, mx_inline_pow)
 BSXFUN_OP2_DEF_MXLOOP (pow, FloatComplexNDArray, FloatNDArray,
                        FloatComplexNDArray, mx_inline_pow)
+

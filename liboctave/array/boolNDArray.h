@@ -120,3 +120,4 @@ BSXFUN_OP_DECL (and, boolNDArray, OCTAVE_API);
 BSXFUN_OP_DECL (or, boolNDArray, OCTAVE_API);
 
 #endif
+

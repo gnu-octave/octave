@@ -180,7 +180,9 @@ SparseComplexMatrix::is_hermitian (void) const
   return false;
 }
 
-static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (), octave::numeric_limits<double>::NaN ());
+static const Complex
+  Complex_NaN_result (octave::numeric_limits<double>::NaN (),
+                      octave::numeric_limits<double>::NaN ());
 
 SparseComplexMatrix
 SparseComplexMatrix::max (int dim) const
@@ -1031,7 +1033,9 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
             Qinit(i) = i;
 
           MatrixType tmp_typ (MatrixType::Upper);
-          octave::math::sparse_lu<SparseComplexMatrix> fact (*this, Qinit, Matrix (), false, false);
+          octave::math::sparse_lu<SparseComplexMatrix> fact (*this,
+                                                             Qinit, Matrix (),
+                                                             false, false);
           rcond = fact.rcond ();
           double rcond2;
           SparseComplexMatrix InvL = fact.L ().transpose ().
@@ -3684,7 +3688,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (result),
+          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL),
+                                   F77_DBLE_CMPLX_ARG (result),
                                    b.rows (), err));
 
           if (err != 0)
@@ -3741,7 +3746,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
+          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL),
+                                   F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
                                    b.rows (), err));
 
           if (err != 0)
@@ -3840,7 +3846,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
                   }
             }
 
-          F77_XFCN (zgttrf, ZGTTRF, (nr, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt, err));
+          F77_XFCN (zgttrf, ZGTTRF, (nr, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D),
+                                     F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt, err));
 
           if (err != 0)
             {
@@ -3876,7 +3883,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
 
                   F77_XFCN (zgttrs, ZGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, 1, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt,
+                             nr, 1, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU),
+                             F77_DBLE_CMPLX_ARG (DU2), pipvt,
                              F77_DBLE_CMPLX_ARG (work), b.rows (), err
                              F77_CHAR_ARG_LEN (1)));
 
@@ -3984,7 +3992,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (result),
+          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, F77_DBLE_CMPLX_ARG (DL),
+                                   F77_DBLE_CMPLX_ARG (result),
                                    b_nr, err));
 
           if (err != 0)
@@ -4042,7 +4051,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
+          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, F77_DBLE_CMPLX_ARG (DL),
+                                   F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (result),
                                    b_nr, err));
 
           if (err != 0)
@@ -4139,7 +4149,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
                   }
             }
 
-          F77_XFCN (zgttrf, ZGTTRF, (nr, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt, err));
+          F77_XFCN (zgttrf, ZGTTRF, (nr, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D),
+                                     F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt, err));
 
           if (err != 0)
             {
@@ -4177,7 +4188,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
 
                   F77_XFCN (zgttrs, ZGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, 1, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt,
+                             nr, 1, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU),
+                             F77_DBLE_CMPLX_ARG (DU2), pipvt,
                              F77_DBLE_CMPLX_ARG (Bx), b_nr, err
                              F77_CHAR_ARG_LEN (1)));
 
@@ -4394,7 +4406,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
           Array<octave_idx_type> ipvt (dim_vector (nr, 1));
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-          F77_XFCN (zgbtrf, ZGBTRF, (nr, nc, n_lower, n_upper, F77_DBLE_CMPLX_ARG (tmp_data),
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nc, n_lower, n_upper,
+                                     F77_DBLE_CMPLX_ARG (tmp_data),
                                      ldm, pipvt, err));
 
           // Throw-away extra info LAPACK gives so as to not
@@ -4673,7 +4686,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
           Array<octave_idx_type> ipvt (dim_vector (nr, 1));
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, F77_DBLE_CMPLX_ARG (tmp_data),
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper,
+                                     F77_DBLE_CMPLX_ARG (tmp_data),
                                      ldm, pipvt, err));
 
           if (err != 0)
@@ -4954,7 +4968,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
           Array<octave_idx_type> ipvt (dim_vector (nr, 1));
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, F77_DBLE_CMPLX_ARG (tmp_data),
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper,
+                                     F77_DBLE_CMPLX_ARG (tmp_data),
                                      ldm, pipvt, err));
 
           if (err != 0)
@@ -5238,7 +5253,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           Array<octave_idx_type> ipvt (dim_vector (nr, 1));
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, F77_DBLE_CMPLX_ARG (tmp_data),
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper,
+                                     F77_DBLE_CMPLX_ARG (tmp_data),
                                      ldm, pipvt, err));
 
           if (err != 0)
@@ -6799,7 +6815,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<SparseComplexMatrix, SparseComplexMatrix,
-                       SparseComplexMatrix> (*this, b, err);
+      SparseComplexMatrix> (*this, b, err);
 #endif
     }
 
@@ -7188,7 +7204,8 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (octave::math::x_nint (r_val) != r_val || octave::math::x_nint (i_val) != i_val)
+      if (octave::math::x_nint (r_val) != r_val
+          || octave::math::x_nint (i_val) != i_val)
         return false;
     }
 
@@ -7756,3 +7773,4 @@ SPARSE_SSM_BOOL_OPS (Complex, SparseComplexMatrix, 0.0)
 SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, 0.0, real, SparseComplexMatrix,
                      0.0, real)
 SPARSE_SMSM_BOOL_OPS (SparseComplexMatrix, SparseComplexMatrix, 0.0)
+

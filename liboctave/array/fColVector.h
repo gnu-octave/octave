@@ -126,3 +126,4 @@ extern OCTAVE_API FloatColumnVector imag (const FloatComplexColumnVector& a);
 MARRAY_FORWARD_DEFS (MArray, FloatColumnVector, float)
 
 #endif
+

@@ -402,3 +402,4 @@ template <typename T>
 void read_int (std::istream& is, bool swap_bytes, T& val);
 
 #endif
+

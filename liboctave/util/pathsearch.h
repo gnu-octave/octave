@@ -39,10 +39,10 @@ namespace octave
     directory_path (const std::string& s = "", const std::string& d = "")
       : m_orig_path (s), m_default_path (d), m_initialized (false),
         m_expanded_path (), m_path_elements ()
-      {
-        if (! m_orig_path.empty ())
-          init ();
-      }
+    {
+      if (! m_orig_path.empty ())
+        init ();
+    }
 
     directory_path (const directory_path& dp)
       : m_orig_path (dp.m_orig_path),
@@ -50,21 +50,21 @@ namespace octave
         m_initialized (dp.m_initialized),
         m_expanded_path (dp.m_expanded_path),
         m_path_elements (dp.m_path_elements)
-      { }
+    { }
 
     directory_path& operator = (const directory_path& dp)
-      {
-        if (this != &dp)
-          {
-            m_orig_path = dp.m_orig_path;
-            m_default_path = dp.m_default_path;
-            m_initialized = dp.m_initialized;
-            m_expanded_path = dp.m_expanded_path;
-            m_path_elements = dp.m_path_elements;
-          }
+    {
+      if (this != &dp)
+        {
+          m_orig_path = dp.m_orig_path;
+          m_default_path = dp.m_default_path;
+          m_initialized = dp.m_initialized;
+          m_expanded_path = dp.m_expanded_path;
+          m_path_elements = dp.m_path_elements;
+        }
 
-        return *this;
-      }
+      return *this;
+    }
 
     ~directory_path (void) { }
 
@@ -192,3 +192,4 @@ typedef octave::directory_path dir_path;
 #endif
 
 #endif
+

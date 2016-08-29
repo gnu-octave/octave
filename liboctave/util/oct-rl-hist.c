@@ -318,3 +318,4 @@ octave_replace_history_entry (int which, const char *line)
 }
 
 #endif
+

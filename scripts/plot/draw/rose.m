@@ -61,17 +61,23 @@ function [thout, rout] = rose (varargin)
     print_usage ();
   endif
 
-  ## Force theta to [0,2*pi] range
   th = varargin{1};
-  th = atan2 (sin (th), cos (th)) + pi;
+  ## Force theta to [0,2*pi] range
+  th = atan2 (sin (th), cos (th));
+  th(th < 0) += 2*pi;
 
+  do_bin_check = false;
   if (nargin > 1)
     x = varargin{2};
     if (isscalar (x))
+      do_bin_check = (x < 3); 
       x = [0.5/x : 1/x : 1] * 2*pi;
     else
       ## Force theta to [0,2*pi] range
-      x = atan2 (sin (x), cos (x)) + pi;
+      x = atan2 (sin (x), cos (x));
+      x(x < 0) += 2*pi;
+      x = sort (x);
+      do_bin_check = true;
     endif
   else
     x = [1/40 : 1/20 : 1] * 2*pi;
@@ -85,6 +91,10 @@ function [thout, rout] = rose (varargin)
   x1 = xx(1:end-1) + diff (xx, 1) / 2;
   x1 = [x1 ; x1; x1; x1](:);
   th = [0; 0; x1; 2*pi ; 2*pi];
+  if (do_bin_check && any (diff (th) >= pi))
+    warning ("rose: bin sizes >= pi will not plot correctly");
+  endif
+
   r = zeros (4 * rows (nn), columns (nn));
   r(2:4:end, :) = nn;
   r(3:4:end, :) = nn;
@@ -123,4 +133,9 @@ endfunction
 %! clf;
 %! rose ([2*randn(1e5, 1), pi + 2*randn(1e5, 1)]);
 %! title ("rose() angular histogram plot with 2 data series");
+
+## Test input validation
+%!error rose ()
+%!warning <bin sizes .= pi will not plot correctly>
+%! [th, r] = rose ([1 2 2 4 4 4], [1 2 pi]);
 

@@ -127,8 +127,8 @@ endfunction
 %!   axis equal;
 %!   set (hp, "VertexNormals", -get (hp, "VertexNormals"));  # Revert normals
 %!   shading interp;
-%!   set (hp, "FaceLighting", "gouraud");
-%!   set (hp, "BackFaceLighting", "unlit");
+%!   lighting gouraud;
+%!   set (hp, "BackFaceLighting", "lit");
 %!   light ();
 %! endfunction
 %!
@@ -145,6 +145,7 @@ endfunction
 %!  hp = patch ("Faces", fac, "Vertices", vert, "FaceVertexCData", cdat);
 %!  title ("without isonormals");
 %!  isofinish (hp);
+%!  set (hp, "VertexNormalsMode", "auto");  # for Matlab compatibility
 %!
 %! subplot (2,2,2);
 %!  view (-38, 20);

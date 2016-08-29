@@ -64,30 +64,30 @@
     <message>
         <location filename="../src/settings-dialog.cc" line="+132"/>
         <source>Difference to the default size</source>
-        <translation type="unfinished">Lehenetsitako tamainarekiko aldea</translation>
+        <translation>Lehenetsitako tamainarekiko aldea</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Background color, pink (255,0,255) means default</source>
-        <translation type="unfinished">Kolore magentak (255,0,255) lehenetsia ezan nahi du</translation>
+        <translation>Atzeko planoa, kolore magentak (255,0,255) lehenetsia esan nahi du</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>b</source>
         <comment>short form for bold</comment>
-        <translation type="unfinished">l</translation>
+        <translation>l</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>i</source>
         <comment>short form for italic</comment>
-        <translation type="unfinished">e</translation>
+        <translation>e</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>u</source>
         <comment>short form for underlined</comment>
-        <translation type="unfinished">a</translation>
+        <translation>a</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+46"/>
         <source>Edit %1 at line %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 editatu %2. lerroan</translation>
     </message>
 </context>
 <context>
@@ -131,72 +131,72 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Akatsa</translation>
+        <translation>Akatsa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Zenbakia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitz gakoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bikoitzarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bakarrarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Eragilea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikatzailea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Eskalarra</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametro-hedapena</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Alderantzizko kakotxak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Mugatzailea hemen dokumentatu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Kakotxa bakunak hemen dokumentatu</translation>
     </message>
 </context>
 <context>
@@ -204,42 +204,42 @@
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitz gakoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiketa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide command character</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezkutatu karaktere-komandoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>External command</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanpoko komandoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldagaia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Eragilea</translation>
     </message>
 </context>
 <context>
@@ -247,212 +247,212 @@
     <message>
         <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation>Berez desaktibatuta</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>C iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta C iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>C++ iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta C++ iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc estiloko C iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta JavaDoc estiloko C iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Zenbakia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta zenbakia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitz gakoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta hitz gakoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bikoitzarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta katea kakotxa bikoitzarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bakarrarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta katea kakotxa bakarrarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta IDL UUID</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Aurreprozesadore-blokea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta aurreprozesadore-blokea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Eragilea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta eragilea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikatzailea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta identifikatzailea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Itxi gabeko katea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta itxi gabeko katea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>C# kate literala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta C# kate literala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaScript adierazpen erregularra</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta JavaScript adierazpen erregularra</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc estiloko C++ iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta JavaDoc estiloko C++ iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Bigarren mailako hitz gakoak eta identifikatzaileak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta bigarren mailako hitz gakoak eta identifikatzaileak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc hitz gakoak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta JavaDoc hitz gakoak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc hitz gako akatsa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta JavaDoc hitz gako akatsa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Klase orokorrak eta typedefak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta klase orokorrak eta typedefak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>C++ kate gordina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Desaktibatuta C++ kate gordina</translation>
     </message>
 </context>
 <context>
@@ -460,42 +460,42 @@
     <message>
         <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Komandoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation>Goiburua</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Posizioa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezabatutako lerroa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished"></translation>
+        <translation>Erantsitako lerroa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldatutako lerroa</translation>
     </message>
 </context>
 <context>
@@ -503,47 +503,47 @@
     <message>
         <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Komandoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Zenbakia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitz gakoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bakarrarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Eragilea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikatzailea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bikoitzarekin</translation>
     </message>
 </context>
 <context>
@@ -551,207 +551,207 @@
     <message>
         <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Akatsa</translation>
+        <translation>Akatsa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Iruzkina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD</source>
-        <translation type="unfinished"></translation>
+        <translation>POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Zenbakia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitz gakoa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bikoitzarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bakarrarekin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Eragilea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikatzailea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Eskalarra</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Array</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrizea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hash</source>
-        <translation type="unfinished"></translation>
+        <translation>Traola</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Symbol table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikur-taula</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Adierazpen erregularra</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordezkapena</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Alderantzizko kakotxak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Data section</source>
-        <translation type="unfinished"></translation>
+        <translation>Datu-atala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Mugatzailea hemen dokumentatu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bakarrarekin hemen dokumentatu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bikoitzarekin hemen dokumentatu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Alderantzizko kakotxak hemen dokumentatu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (q)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (q)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (qq)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (qx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (qr)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qw)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (qw)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
+        <translation>POD literala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Subroutine prototype</source>
-        <translation type="unfinished"></translation>
+        <translation>Azpirrutina-eredua</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatu-identifikatzailea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format body</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatuaren gorputza</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bikoitzarekin (interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Itzulpena</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adierazpen erregularra (interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordezkapena (interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alderantzizko kakotxak (interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxa bikoitzarekin hemen dokumentatu (interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alderantzizko kakotxak hemen dokumentatu (interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (qq, interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (qx, interpolatutako aldagaia)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea kakotxekin (qr, interpolatutako aldagaia)</translation>
     </message>
 </context>
 <context>
@@ -759,37 +759,37 @@
     <message>
         <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Desegin</translation>
+        <translation>&amp;Desegin</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Berregin</translation>
+        <translation>&amp;Berregin</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Eba&amp;ki</translation>
+        <translation>Eba&amp;ki</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Kopiatu</translation>
+        <translation>&amp;Kopiatu</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Itsatsi</translation>
+        <translation>&amp;Itsatsi</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezabatu</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu dena</translation>
     </message>
 </context>
 <context>
@@ -797,7 +797,7 @@
     <message>
         <location filename="../graphics/Figure.cc" line="+298"/>
         <source>Figure ToolBar</source>
-        <translation>Irudien tresna-barra</translation>
+        <translation>Irudien Tresna-barra</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -848,7 +848,7 @@
         <location line="+7"/>
         <location line="+463"/>
         <source>About Octave</source>
-        <translation type="unfinished">&quot;Octave&quot;-ri buruz</translation>
+        <translation>&quot;Octave&quot;-ri buruz</translation>
     </message>
     <message>
         <location line="-465"/>
@@ -900,153 +900,153 @@
     <message>
         <location filename="../graphics/annotation-dialog.ui" line="+17"/>
         <source>Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Oharra</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Testua</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Katea</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Font</source>
-        <translation type="unfinished">Letra-tipo mota</translation>
+        <translation>Letra-tipoa</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>bold</source>
-        <translation type="unfinished"></translation>
+        <translation>lodia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>b</source>
-        <translation type="unfinished">l</translation>
+        <translation>l</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>italic</source>
-        <translation type="unfinished"></translation>
+        <translation>etzana</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>i</source>
-        <translation type="unfinished">e</translation>
+        <translation>e</translation>
     </message>
     <message>
         <location line="+428"/>
         <source>color</source>
-        <translation type="unfinished"></translation>
+        <translation>kolorea</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Horz alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Lerrokatze horizontala</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>left</source>
-        <translation type="unfinished"></translation>
+        <translation>ezkerra</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+29"/>
         <source>middle</source>
-        <translation type="unfinished"></translation>
+        <translation>erdia</translation>
     </message>
     <message>
         <location line="-24"/>
         <source>right</source>
-        <translation type="unfinished"></translation>
+        <translation>eskuma</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vert alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Lerrokatze bertikala</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>top</source>
-        <translation type="unfinished"></translation>
+        <translation>goia</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>behea</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Posizioa</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Zabalera</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Altuera</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>units</source>
-        <translation type="unfinished"></translation>
+        <translation>unitateak</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>normalized</source>
-        <translation type="unfinished"></translation>
+        <translation>normalizatua</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Fit to box</source>
-        <translation type="unfinished"></translation>
+        <translation>Egokitu koadrora</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Koadroa</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Atzeko planoa</translation>
     </message>
     <message>
         <location line="+444"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Ertza</translation>
     </message>
     <message>
         <location line="+133"/>
         <source>Line style</source>
-        <translation type="unfinished"></translation>
+        <translation>Lerroaren estiloa</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>batere ez</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Lerroaren zabalera</translation>
     </message>
 </context>
 <context>
@@ -1228,7 +1228,7 @@ fitxategia ez dago. Sortu nahi duzu?</translation>
     <message>
         <location line="-1425"/>
         <source>File Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategi-kodifikazioa:</translation>
     </message>
     <message>
         <location line="+259"/>
@@ -1260,12 +1260,12 @@ Izen bera duen beste fitxategi bat irekita dago editorean</translation>
     <message>
         <location line="+61"/>
         <source>%1 is a built-in function</source>
-        <translation type="unfinished">%1 Octaven integratutako funtzioa da</translation>
+        <translation>%1 integratutako funtzioa da</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Can not find function %1</source>
-        <translation type="unfinished">Ezin da %1 funtzioa aurkitu</translation>
+        <translation>Ezin da %1 funtzioa aurkitu</translation>
     </message>
     <message>
         <location line="+862"/>
@@ -1421,22 +1421,22 @@ Izen bera duen beste fitxategi bat irekita dago editorean</translation>
     <message>
         <location line="+22"/>
         <source>Show &amp;Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi &amp;Tresna-barra</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show &amp;Statusbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi &amp;Egoera-barra</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show &amp;Horizontal Scrollbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakusti &amp;Higitze-barra horizontala</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Azken fitxategiak</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -1451,12 +1451,12 @@ Izen bera duen beste fitxategi bat irekita dago editorean</translation>
     <message>
         <location line="-117"/>
         <source>Find &amp;Next...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilatu &amp;Hurrengoa...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp;Previous...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilatu &amp;Aurrekoa...</translation>
     </message>
     <message>
         <location line="+118"/>
@@ -1605,34 +1605,36 @@ fitxategia ezebatu edo izenez aldatu da. Berreskuratu nahi duzu?%2</translation>
     <message>
         <location line="-1817"/>
         <source>encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>kodifikazioa:</translation>
     </message>
     <message>
         <location line="+239"/>
         <source>Breakpoint condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Etenune-baldintza</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or canel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin zaio aldatutako fitxategiari etenunea gehitu.
+Gorde eta etenunea gehitu, edo bertan behera utzi?</translation>
     </message>
     <message>
         <location line="+1322"/>
         <source>Debug or Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Akasgabetu edo Gorde</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>This file is currently being executed.
 Quit debugging and save?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategi hau exekutatzen ari da.
+Akasgabetzea kendu eta gorde?</translation>
     </message>
     <message>
         <location line="+175"/>
         <source>File Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategi-kodifikazioa:</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -1669,7 +1671,13 @@ If you keep this filename, you will not be able to
 call your script using its name as an Octave command.
 
 Do you want to choose another name?</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot;
+ez da baliozko identifikazioa.
+
+Izena bere horretan uzten baduzu, scriptari ezin izango
+zaio Octaveren komando modura deitu.
+
+Beste izen bat aukeratu nahi duzu?</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1678,7 +1686,11 @@ with the selected codec %1.
 Using it will result in data loss!
 
 Do you want to chose another codec?</source>
-        <translation type="unfinished"></translation>
+        <translation>Editorearen uneko edukia ezin da kodifikatu
+aukeratutako %1 kodearekin .
+Erabiliz gero datuak galduko dira!
+
+Beste kode bat aukeratu nahi duzu?</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -1722,12 +1734,12 @@ Do you want to chose another codec?</source>
     <message>
         <location line="-26"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zabaldu sistemaren fitxategi-arakatzailean</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Zabaldu testu-editorean</translation>
     </message>
     <message>
         <location line="+154"/>
@@ -1763,37 +1775,37 @@ Do you want to chose another codec?</source>
     <message>
         <location line="-49"/>
         <source>Browse your files</source>
-        <translation type="unfinished"></translation>
+        <translation>Arakatu zure fitxategietan</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Txandakatu lerroen koloreak</translation>
+        <translation>Txandakatu lerroen koloreak</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>filesdockwidget/showFileSize</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>filesdockwidget/showFileType</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>filesdockwidget/showLastModified</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>filesdockwidget/showHiddenFiles</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>filesdockwidget/useAlternatingRowColors</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2239,7 +2251,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+15"/>
         <source>Filename/location</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategiaren izena/kokapena</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2320,12 +2332,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+4"/>
         <source>Hide filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezkutatu filtroa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi filtroa</translation>
     </message>
 </context>
 <context>
@@ -2520,12 +2532,12 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
     <message>
         <location line="+36"/>
         <source>Contribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Laguntza eman</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Donate to Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Octaveri dohaintza egin</translation>
     </message>
     <message>
         <location line="-123"/>
@@ -2794,7 +2806,7 @@ edo aktibatu web-konexioa azken berrikuntzak Octaveren sare ezarpen-elkarrizketa
     <message>
         <location line="+15"/>
         <source>dbstop if ...</source>
-        <translation type="unfinished"></translation>
+        <translation>etenuneak ezarri akasgabetzean bada ...</translation>
     </message>
 </context>
 <context>
@@ -3183,7 +3195,7 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
     <message>
         <location line="-75"/>
         <source>Tab width min.</source>
-        <translation>Tabuladorearen gutxieneko zabalera.</translation>
+        <translation>Tabuladorearen zabalera: min.</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -3194,8 +3206,7 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
         <location line="-231"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
         <translation>Tarte finkodun letra-tipoekin ibiliko da zuzen.
-
-Karaktereen zabaleraren araberako kokapena hartzen du marraztutako lerroa, lehenetsitako
+Karaktereen zabaleraren araberako kokapena hartzen du marraztutako lerroak, lehenetsitako
 letra-tipoaren arabera. Baliteke ongi ez funtzionatzea estiloek letra-tipo proportzionalak
 erabiltzen badituzte edo askotariko estiloak nahasten badira: askotariko tamainakoak edo
 letra lodiak, etzanak eta normalak.</translation>
@@ -3228,7 +3239,7 @@ letra lodiak, etzanak eta normalak.</translation>
     <message>
         <location line="-299"/>
         <source>Show tool bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi Tresna-barra</translation>
     </message>
     <message>
         <location line="+383"/>
@@ -3273,7 +3284,7 @@ letra lodiak, etzanak eta normalak.</translation>
     <message>
         <location line="+93"/>
         <source>Text encoding used for loading and saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Testu-kodifikatzailea kargatzeko eta gordetzeko erabiltzen da</translation>
     </message>
     <message>
         <location line="+73"/>
@@ -3308,7 +3319,7 @@ letra lodiak, etzanak eta normalak.</translation>
     <message>
         <location line="+54"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Lehenetsitako testu-editoren irekiko diren fitxategi-luzapenak (honakoagatik banatuta &quot;;&quot;)</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -3318,7 +3329,7 @@ letra lodiak, etzanak eta normalak.</translation>
     <message>
         <location line="+35"/>
         <source>Colors for variable attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldagaien atributuentzako koloreak</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3328,23 +3339,23 @@ letra lodiak, etzanak eta normalak.</translation>
     <message>
         <location line="+101"/>
         <source>Import shortcut set</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu lasterbide-multzoa</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Export current shortcut set</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu momentuko lasterbide-multzoa</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Reset shortcuts to their defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Leheneratu lasterbideak</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+80"/>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <location line="-71"/>
@@ -3354,7 +3365,7 @@ letra lodiak, etzanak eta normalak.</translation>
     <message>
         <location line="+76"/>
         <source>Actual</source>
-        <translation type="unfinished"></translation>
+        <translation>Momentukoa</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3459,12 +3470,12 @@ letra lodiak, etzanak eta normalak.</translation>
     <message>
         <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave Ezarpenak</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Unable to save settings.  Missing settings file or unknown directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin dira hobespenak gorde. Ez dago hobespen-fitxategirik edo direktorioa ezezaguna da.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3816,12 +3827,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Find Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Hurrengoa bilatu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Aurrekoa bilatu</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3948,63 +3959,64 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+48"/>
         <source>Switch to Left Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldatu ezkerreko tabuladorera</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Switch to Right Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldatu eskumako tabuladorera</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Move Tab Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Mugitu tabuladorea ezkerrera</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Move Tab Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Mugitu tabuladorea eskumara</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Global</source>
-        <translation type="unfinished"></translation>
+        <translation>Orokorra</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabuladoreak</translation>
     </message>
     <message>
         <location line="+98"/>
         <source>Enter new Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu lasterbidea</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>Overwriting Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Lasterbideak gainidatzi</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
-        <translation type="unfinished"></translation>
+        <translation>Lasterbide guztiak gainidatziko dituzu.
+Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Don&apos;t save</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez gorde</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Import shortcuts from file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu lasterbideen fitxategia ...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts into file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu lasterbideen fitxategia ...</translation>
     </message>
     <message>
         <location line="-571"/>
@@ -4069,17 +4081,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+2"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi Tresna-barra</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show Statusbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi Egoera-barra</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show Horizontal Scrollbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi Higitze-barra horizontala</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4354,37 +4366,37 @@ Aurrez zehaztutako lasterbidea ezabatuko da. Jarraitu nahi duzu?</translation>
     <message>
         <location line="+9"/>
         <source>Only top-level symbols may be renamed</source>
-        <translation type="unfinished"></translation>
+        <translation>Maila goreneko sinboloak baino ezin dira berrizendatu</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Hide filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezkutatu filtroa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi filtroa</translation>
     </message>
     <message>
         <location line="+149"/>
         <source>Class</source>
-        <translation type="unfinished">Mota</translation>
+        <translation>Mota</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Dimentsioa</translation>
+        <translation>Dimentsioa</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Balioa</translation>
+        <translation>Balioa</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Atributua</translation>
+        <translation>Atributua</translation>
     </message>
     <message>
         <location line="-17"/>

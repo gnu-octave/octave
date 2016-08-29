@@ -286,21 +286,18 @@
     <message>
         <location line="+11"/>
         <source>left</source>
-        <translatorcomment>Do not translate!</translatorcomment>
-        <translation>left</translation>
+        <translation>gauche</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+29"/>
         <source>middle</source>
-        <translatorcomment>Do not translate</translatorcomment>
-        <translation>middle</translation>
+        <translation>milieu</translation>
     </message>
     <message>
         <location line="-24"/>
         <source>right</source>
-        <translatorcomment>Do not translate</translatorcomment>
-        <translation>right</translation>
+        <translation>droite</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -310,14 +307,12 @@
     <message>
         <location line="+11"/>
         <source>top</source>
-        <translatorcomment>Do not translate</translatorcomment>
-        <translation>top</translation>
+        <translation>haut</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>bottom</source>
-        <translatorcomment>Do not translate</translatorcomment>
-        <translation>bottom</translation>
+        <translation>bas</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -352,8 +347,7 @@
     <message>
         <location line="+11"/>
         <source>normalized</source>
-        <translatorcomment>Do not translate</translatorcomment>
-        <translation>normalized</translation>
+        <translation>normalisée</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -383,8 +377,7 @@
     <message>
         <location line="+11"/>
         <source>none</source>
-        <translatorcomment>Do not translate</translatorcomment>
-        <translation>none</translation>
+        <translation>aucune</translation>
     </message>
     <message>
         <location line="+8"/>

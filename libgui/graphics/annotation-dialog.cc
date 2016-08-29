@@ -130,16 +130,36 @@ annotation_dialog::get_gui_props ()
   props.append (ovl ("textbox", position));
 
   props.append (ovl ("string", ui->edit_string->text ().toStdString ()));
-  props.append (ovl ("fitboxtotext", ui->cb_fit_box_to_text->isChecked() ? "on" : "off" ));
-  props.append (ovl ("units", ui->cb_units->currentText ().toStdString () ));
-  props.append (ovl ("horizontalalignment", ui->cb_horz_align->currentText ().toStdString () ));
-  props.append (ovl ("verticalalignment", ui->cb_vert_align->currentText ().toStdString () ));
-  props.append (ovl ("fontname", ui->cb_font_name->currentText ().toStdString()));
+  props.append (ovl ("fitboxtotext", ui->cb_fit_box_to_text->isChecked() ? 
+                     "on" : "off" ));
+
+  // FIXME: only "normalized" units is selectable, change the code bellow
+  //        once more units are added in the UI.
+  std::string tmpval;
+  props.append (ovl ("units", "normalized"));
+  
+  tmpval = (ui->cb_horz_align->currentIndex () == 0 ? "left" :
+            (ui->cb_horz_align->currentIndex () == 1 ? "center" : "right"));
+  props.append (ovl ("horizontalalignment", tmpval));
+
+  tmpval = (ui->cb_vert_align->currentIndex () == 0 ? "top" :
+            (ui->cb_horz_align->currentIndex () == 1 ? "middle" : "bottom"));
+  props.append (ovl ("verticalalignment", tmpval));
+
+  tmpval = ui->cb_font_name->currentText ().toStdString();
+  props.append (ovl ("fontname", tmpval));
+
   props.append (ovl ("fontsize", ui->sb_font_size->value ()));
-  props.append (ovl ("fontweight", ui->cb_font_bold->isChecked() ? "bold" : "normal" ));
-  props.append (ovl ("fontangle", ui->cb_font_italic->isChecked() ? "italic" : "normal" ));
-  props.append (ovl ("color", Utils::toRgb (ui->btn_color->palette ().color (QPalette::Button))));
-  props.append (ovl ("linestyle", ui->cb_line_style->currentText ().toStdString ()));
+  props.append (ovl ("fontweight", ui->cb_font_bold->isChecked() ? 
+                     "bold" : "normal" ));
+  props.append (ovl ("fontangle", ui->cb_font_italic->isChecked() ? 
+                     "italic" : "normal" ));
+  props.append (ovl ("color", Utils::toRgb (ui->btn_color->palette ().
+                                            color (QPalette::Button))));
+
+  // FIXME: only "none" linestyle is selectable, change the code bellow
+  //        once more linestyles are added in the UI.
+  props.append (ovl ("linestyle", "none"));
 }
 
 void

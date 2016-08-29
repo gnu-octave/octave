@@ -377,7 +377,7 @@ endfunction
 %! [x,y,z] = meshgrid (-.5:0.1:2, -2:0.1:2, -2:0.1:2);
 %! val = x.^2 + y.^2 + z.^2;
 %! fv = isosurface (x, y, z, val, 1);
-%! vn = isonormals (x, y, z, val, fv.vertices, "negate");
+%! vn = isonormals (x, y, z, val, fv.vertices);
 %! h_axes1 = subplot (1, 3, 1);
 %! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", ...
 %!                      "FaceLighting", "Gouraud", "VertexNormals", vn);
@@ -389,7 +389,7 @@ endfunction
 %!
 %! h_axes2 = subplot (1, 3, 2);
 %! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", ...
-%!                      "FaceLighting", "Gouraud", "VertexNormals", vn);
+%!                      "FaceLighting", "Gouraud", "VertexNormals", -vn);
 %! set (h_patch, "BackFaceLighting", "lit");
 %! h_light = light ();
 %! view (h_axes2, [-50 30]);
@@ -398,12 +398,78 @@ endfunction
 %!
 %! h_axes3 = subplot (1, 3, 3);
 %! h_patch = patch (fv, "FaceColor", "c", "EdgeColor", "none", ...
-%!                      "FaceLighting", "Gouraud", "VertexNormals", vn);
+%!                      "FaceLighting", "Gouraud", "VertexNormals", -vn);
 %! set (h_patch, "BackFaceLighting", "unlit");
 %! h_light = light ();
 %! view (h_axes3, [-50 30]);
 %! title ("unlit");
 %! axis equal
+
+%!demo
+%! ## BackFaceLighting 2
+%! ## Matlab fails for "reverselit" with negated isonormals and for "unlit"
+%! N = 30; iso = .8;
+%! lin = linspace (-1, 1, N);
+%! [x, y, z] = meshgrid (1.2*lin, 1.2*lin, lin);
+%! val = (x).^2 + (y).^2 - iso/2.7*cos (2*pi*z);
+%! val(x>0 & (y-x)>0) = NaN;
+%! fv = isosurface (x, y, z, val, iso);
+%! vn = isonormals (x, y, z, val, fv.vertices);
+%! 
+%! clf;
+%! subplot (2, 3, 1);
+%! view (140, 20);
+%! axis equal
+%! hp = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!             "BackFaceLighting", "reverselit", "VertexNormals", -vn);
+%! hl = light ("Position", [1 0 .5]);
+%! lighting gouraud
+%! title ({"BackFaceLighting", '"reverselit"', 'isonormals(...,"negate")'});
+%! 
+%! subplot (2, 3, 2);
+%! view (140, 20);
+%! axis equal
+%! hp = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!             "BackFaceLighting", "lit", "VertexNormals", -vn);
+%! hl = light ("Position", [1 0 .5]);
+%! lighting gouraud
+%! title ({"BackFaceLighting", '"lit"', 'isonormals(...,"negate")'});
+%! 
+%! subplot (2, 3, 3);
+%! view (140, 20);
+%! axis equal
+%! hp = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!             "BackFaceLighting", "unlit", "VertexNormals", -vn);
+%! hl = light ("Position", [1 0 .5]);
+%! lighting gouraud
+%! title ({"BackFaceLighting", '"unlit"', 'isonormals(...,"negate")'});
+%! 
+%! subplot (2, 3, 4);
+%! view (140, 20);
+%! axis equal
+%! hp = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!             "BackFaceLighting", "reverselit", "VertexNormals", vn);
+%! hl = light ("Position", [1 0 .5]);
+%! lighting gouraud
+%! title ({"BackFaceLighting", '"reverselit"', "isonormals(...)"});
+%! 
+%! subplot (2, 3, 5);
+%! view (140, 20);
+%! axis equal
+%! hp = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!             "BackFaceLighting", "lit", "VertexNormals", vn);
+%! hl = light ("Position", [1 0 .5]);
+%! lighting gouraud
+%! title ({"BackFaceLighting", '"lit"', "isonormals(...)"});
+%! 
+%! subplot (2, 3, 6);
+%! view (140, 20);
+%! axis equal
+%! hp = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
+%!             "BackFaceLighting", "unlit", "VertexNormals", vn);
+%! hl = light ("Position", [1 0 .5]);
+%! lighting gouraud
+%! title ({"BackFaceLighting", '"unlit"', "isonormals(...)"});
 
 %!demo
 %! ## Colored patch

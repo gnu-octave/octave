@@ -62,11 +62,15 @@ function grid (varargin)
   grid_on = any (strcmp (get (hax, {"xgrid", "ygrid", "zgrid"}), "on"));
 
   minor_on = any (strcmp (get (hax, {"xminorgrid", "yminorgrid", "zminorgrid"}),
-                         "on"));
+                         "on") &
+                  ! strcmp (get (hax, {"xscale", "yscale", "zscale"}), "log"));
 
   minor_auto = true;
   if (nargs == 0)
     grid_on = ! grid_on;
+    if (! grid_on)
+      minor_auto = false;
+    endif
   else
     arg1 = varargin{1};
     if (! ischar (arg1))
@@ -78,6 +82,8 @@ function grid (varargin)
       minor_auto = false;
     elseif (strcmpi (arg1, "on"))
       grid_on = true;
+      minor_on = false;
+      minor_auto = true;
     elseif (strcmpi (arg1, "minor"))
       minor_auto = false;
       if (nargs == 2)
@@ -162,8 +168,20 @@ endfunction
 %!  grid minor;
 %!  title ("grid minor");
 
+%!demo
+%! ## Display minor grid lines at major ticks
+%! clf;
+%! subplot (1,2,1)
+%!  plot (1:10);
+%!  set (gca, "xminorgrid", "on");
+%!  set (gca, "yminorgrid", "on");
+%! subplot (1,2,2)
+%!  semilogy (1:100);
+%!  set (gca, "xminorgrid", "on");
+%!  set (gca, "yminorgrid", "on");
+
 ## linear scaling
-%!test
+%!test <48533>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ();
@@ -209,6 +227,72 @@ endfunction
 %!   assert (get (hax, "zgrid"), "on");
 %!   assert (get (hax, "xminorgrid"), "off");
 %!   assert (get (hax, "yminorgrid"), "off");
+%!   assert (get (hax, "zminorgrid"), "off");
+%!   grid
+%!   assert (get (hax, "xgrid"), "off");
+%!   assert (get (hax, "ygrid"), "off");
+%!   assert (get (hax, "zgrid"), "off");
+%!   assert (get (hax, "xminorgrid"), "off");
+%!   assert (get (hax, "yminorgrid"), "off");
+%!   assert (get (hax, "zminorgrid"), "off");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## semilog scaling
+%!test <48533>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   semilogy (1:100);
+%!   grid on
+%!   assert (get (hax, "xgrid"), "on");
+%!   assert (get (hax, "ygrid"), "on");
+%!   assert (get (hax, "zgrid"), "on");
+%!   assert (get (hax, "xminorgrid"), "off");
+%!   assert (get (hax, "yminorgrid"), "on");
+%!   assert (get (hax, "zminorgrid"), "off");
+%!   grid on
+%!   assert (get (hax, "xgrid"), "on");
+%!   assert (get (hax, "ygrid"), "on");
+%!   assert (get (hax, "zgrid"), "on");
+%!   assert (get (hax, "xminorgrid"), "off");
+%!   assert (get (hax, "yminorgrid"), "on");
+%!   assert (get (hax, "zminorgrid"), "off");
+%!   grid minor
+%!   assert (get (hax, "xgrid"), "on");
+%!   assert (get (hax, "ygrid"), "on");
+%!   assert (get (hax, "zgrid"), "on");
+%!   assert (get (hax, "xminorgrid"), "on");
+%!   assert (get (hax, "yminorgrid"), "on");
+%!   assert (get (hax, "zminorgrid"), "on");
+%!   grid off
+%!   assert (get (hax, "xgrid"), "off");
+%!   assert (get (hax, "ygrid"), "off");
+%!   assert (get (hax, "zgrid"), "off");
+%!   assert (get (hax, "xminorgrid"), "off");
+%!   assert (get (hax, "yminorgrid"), "off");
+%!   assert (get (hax, "zminorgrid"), "off");
+%!   grid minor
+%!   assert (get (hax, "xgrid"), "off");
+%!   assert (get (hax, "ygrid"), "off");
+%!   assert (get (hax, "zgrid"), "off");
+%!   assert (get (hax, "xminorgrid"), "on");
+%!   assert (get (hax, "yminorgrid"), "on");
+%!   assert (get (hax, "zminorgrid"), "on");
+%!   grid minor
+%!   assert (get (hax, "xgrid"), "off");
+%!   assert (get (hax, "ygrid"), "off");
+%!   assert (get (hax, "zgrid"), "off");
+%!   assert (get (hax, "xminorgrid"), "off");
+%!   assert (get (hax, "yminorgrid"), "off");
+%!   assert (get (hax, "zminorgrid"), "off");
+%!   grid
+%!   assert (get (hax, "xgrid"), "on");
+%!   assert (get (hax, "ygrid"), "on");
+%!   assert (get (hax, "zgrid"), "on");
+%!   assert (get (hax, "xminorgrid"), "off");
+%!   assert (get (hax, "yminorgrid"), "on");
 %!   assert (get (hax, "zminorgrid"), "off");
 %!   grid
 %!   assert (get (hax, "xgrid"), "off");

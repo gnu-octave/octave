@@ -628,8 +628,8 @@ main (int argc, char **argv)
                   size_t spos = line.rfind ('/', pos);
                   std::string ofile =
                     (spos == std::string::npos
-                      ? line.substr (0, pos+2)
-                      : line.substr (spos+1, pos-spos+1));
+                     ? line.substr (0, pos+2)
+                     : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " "
                      << dfile << line.substr (pos) << std::endl;
                 }
@@ -662,8 +662,8 @@ main (int argc, char **argv)
                   size_t spos = line.rfind ('/', pos);
                   std::string ofile =
                     (spos == std::string::npos
-                      ? line.substr (0, pos+2)
-                      : line.substr (spos+1, pos-spos+1));
+                     ? line.substr (0, pos+2)
+                     : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " "
                      << dfile << line.substr (pos+2) << std::endl;
                 }
@@ -824,3 +824,4 @@ main (int argc, char **argv)
 
   return result;
 }
+

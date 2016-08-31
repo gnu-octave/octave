@@ -149,6 +149,7 @@
 ## @item @samp{r} @tab Red
 ## @item @samp{g} @tab Green
 ## @item @samp{b} @tab Blue
+## @item @samp{y} @tab Yellow
 ## @item @samp{m} @tab Magenta
 ## @item @samp{c} @tab Cyan
 ## @item @samp{w} @tab White
